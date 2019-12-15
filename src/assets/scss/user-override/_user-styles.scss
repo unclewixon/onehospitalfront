@@ -1,0 +1,14 @@
+// Add styles here you want to override
+a{cursor: pointer;}
+.balance {
+	.balance-title {
+		font-size: 0.80rem;
+	}
+	.strong {
+		margin-top: -2px;
+
+		small {
+			font-weight: bold !important;font-size: 1.08rem;
+		}
+	}
+}

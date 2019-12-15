@@ -21,3 +21,8 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# others
+src/assets/css/*.css
+src/assets/css/*.css.map
+template
