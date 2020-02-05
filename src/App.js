@@ -20,6 +20,7 @@ const Pharmacy = lazy(() => import('./pages/Pharmacy'));
 const Vitals = lazy(() => import('./pages/Vitals'));
 const Staff = lazy(() => import('./pages/Staff'));
 const Inventory = lazy(() => import('./pages/Inventory'));
+const Settings = lazy(() => import('./pages/Settings'));
 
 class App extends Component {
 	componentDidMount() {
@@ -42,10 +43,10 @@ class App extends Component {
 								<div className="all-wrapper with-side-panel solid-bg-all">
 									<div className="layout-w">
 										{/* user role determines main menu */}
-										<MainMenu role="hr" />
+										<MainMenu role="admin" />
 										<div className="content-w">
 											{/* user role determines topbar menu */}
-											<TopBar role="hr" />
+											<TopBar role="admin" />
 											<Switch>
 												<Route path="/doctor" component={Doctor} />
 												<Route path="/front-desk" component={FrontDesk} />
@@ -56,6 +57,7 @@ class App extends Component {
 												<Route path="/vitals" component={Vitals} />
 												<Route path="/staff-mgt" component={Staff} />
 												<Route path="/inventory" component={Inventory} />
+												<Route path="/settings" component={Settings} />
 												<Route component={NoMatch} />
 											</Switch>
 										</div>

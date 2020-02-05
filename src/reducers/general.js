@@ -11,6 +11,7 @@ import {
 	TOGGLE_UPDATE_QTY,
 	TOGGLE_CREATE_INV_CAT,
 	TOGGLE_EDIT_INV_CAT,
+	TOGGLE_CREATE_ROLE,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -24,6 +25,7 @@ const INITIAL_STATE = {
 	update_inventory_qty: false,
 	create_inv_cat: false,
 	edit_inv_cat: false,
+	create_role: false,
 };
 
 const general = (state = INITIAL_STATE, action) => {
@@ -52,6 +54,8 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, create_inv_cat: action.payload };
 		case TOGGLE_EDIT_INV_CAT:
 			return { ...state, edit_inv_cat: action.payload };
+		case TOGGLE_CREATE_ROLE:
+			return { ...state, create_role: action.payload };
 		default:
 			return state;
 	}

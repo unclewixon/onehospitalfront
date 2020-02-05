@@ -9,8 +9,9 @@ import ModalEditInventory from './ModalEditInventory';
 import ModalUpdInventoryQty from './ModalUpdInventoryQty';
 import ModalCreateInvCategory from './ModalCreateInvCategory';
 import ModalEditInvCategory from './ModalEditInvCategory';
+import ModalCreateRole from './ModalCreateRole';
 
-const ModalDialogs = ({ create_staff, set_leave, show_history, create_inventory, edit_inventory, update_inventory_qty, create_inv_cat, edit_inv_cat }) => {
+const ModalDialogs = ({ create_staff, set_leave, show_history, create_inventory, edit_inventory, update_inventory_qty, create_inv_cat, edit_inv_cat, create_role }) => {
 	return (
 		<>
 			{create_staff && <ModalCreateStaff />}
@@ -21,6 +22,7 @@ const ModalDialogs = ({ create_staff, set_leave, show_history, create_inventory,
 			{update_inventory_qty && <ModalUpdInventoryQty />}
 			{create_inv_cat && <ModalCreateInvCategory />}
 			{edit_inv_cat && <ModalEditInvCategory />}
+			{create_role && <ModalCreateRole />}
 		</>
 	);
 };
@@ -35,6 +37,7 @@ const mapStateToProps = (state, ownProps) => {
 		update_inventory_qty: state.general.update_inventory_qty,
 		create_inv_cat: state.general.create_inv_cat,
 		edit_inv_cat: state.general.edit_inv_cat,
+		create_role: state.general.create_role,
 	};
 };
 
