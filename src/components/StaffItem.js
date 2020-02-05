@@ -30,7 +30,7 @@ class StaffItem extends Component {
 						<a href="#" className="secondary" title="Disable Staff">
 							<i className="os-icon os-icon-edit-32" />
 						</a>
-						<a href="#" className="secondary" title="Enable Staff">
+						<a href="#" className="success" title="Enable Staff">
 							<i className="os-icon os-icon-check-circle" />
 						</a>
 						<a href="#" className="danger" title="Disable Staff">

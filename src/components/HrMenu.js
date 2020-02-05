@@ -1,14 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const PatientMenu = () => {
+const HrMenu = () => {
 	return (
 		<>
 			<li className="sub-header">
 				<span>Staff Mgt</span>
 			</li>
 			<li>
-				<Link to="/settings/staff/list">
+				<Link to="/staff-mgt/list">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers"/>
 					</div>
@@ -16,7 +16,7 @@ const PatientMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/settings/staff/payroll">
+				<Link to="/staff-mgt/payroll">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers"/>
 					</div>
@@ -24,7 +24,7 @@ const PatientMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/settings/staff/leave-mgt">
+				<Link to="/staff-mgt/leave-mgt">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers"/>
 					</div>
@@ -32,7 +32,7 @@ const PatientMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/settings/staff/roster">
+				<Link to="/staff-mgt/roster">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers"/>
 					</div>
@@ -43,4 +43,4 @@ const PatientMenu = () => {
 	);
 };
 
-export default PatientMenu;
+export default HrMenu;

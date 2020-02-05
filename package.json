@@ -2,9 +2,8 @@
   "name": "emr",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://netfingers.com/",
   "scripts": {
-    "start": "react-scripts start",
+    "start": "yarn scss && react-scripts start",
     "scss": "node-sass src/assets/scss/main.scss src/assets/css/main.css --source-map true",
     "scss:watch": "yarn scss && node-sass src/assets/scss/main.scss src/assets/css/main.css -rw --source-map true",
     "scss:build": "node-sass -r --output-style compressed src/assets/scss/main.scss -o src/assets/css",
@@ -16,6 +15,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "antd": "^3.26.8",
     "jquery": "^3.4.1",
     "lodash.capitalize": "^4.2.1",
     "moment": "^2.24.0",

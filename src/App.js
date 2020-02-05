@@ -19,6 +19,7 @@ const PatientProfile = lazy(() => import('./pages/PatientProfile'));
 const Pharmacy = lazy(() => import('./pages/Pharmacy'));
 const Vitals = lazy(() => import('./pages/Vitals'));
 const Staff = lazy(() => import('./pages/Staff'));
+const Inventory = lazy(() => import('./pages/Inventory'));
 
 class App extends Component {
 	componentDidMount() {
@@ -46,14 +47,15 @@ class App extends Component {
 											{/* user role determines topbar menu */}
 											<TopBar role="hr" />
 											<Switch>
-												<Route path="/dashboard/doctor" component={Doctor} />
-												<Route path="/dashboard/front-desk" component={FrontDesk} />
-												<Route path="/dashboard/in-patient" component={InPatient} />
-												<Route path="/dashboard/lab" component={Laboratory} />
-												<Route path="/dashboard/patient/:id" component={PatientProfile} />
-												<Route path="/dashboard/pharmacy" component={Pharmacy} />
-												<Route path="/dashboard/vitals" component={Vitals} />
-												<Route path="/settings/staff" component={Staff} />
+												<Route path="/doctor" component={Doctor} />
+												<Route path="/front-desk" component={FrontDesk} />
+												<Route path="/in-patient" component={InPatient} />
+												<Route path="/lab" component={Laboratory} />
+												<Route path="/patient/:id" component={PatientProfile} />
+												<Route path="/pharmacy" component={Pharmacy} />
+												<Route path="/vitals" component={Vitals} />
+												<Route path="/staff-mgt" component={Staff} />
+												<Route path="/inventory" component={Inventory} />
 												<Route component={NoMatch} />
 											</Switch>
 										</div>

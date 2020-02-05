@@ -3,6 +3,11 @@ import {
 	TOGGLE_CREATE_STAFF,
 	TOGGLE_SET_LEAVE,
 	TOGGLE_SHOW_HISTORY,
+	TOGGLE_CREATE_INVENTORY,
+	TOGGLE_EDIT_INVENTORY,
+	TOGGLE_UPDATE_QTY,
+	TOGGLE_CREATE_INV_CAT,
+	TOGGLE_EDIT_INV_CAT,
 } from './types';
 
 export const toggleModal = status => {
@@ -33,12 +38,54 @@ export const toggleSetLeave = status => {
 	};
 };
 
+// inventory modals
+export const toggleCreateInventory = status => {
+	return {
+		type: TOGGLE_CREATE_INVENTORY,
+		payload: status,
+	};
+};
+
+export const toggleEditInventory = status => {
+	return {
+		type: TOGGLE_EDIT_INVENTORY,
+		payload: status,
+	};
+};
+
+export const toggleUpdateQuantity = status => {
+	return {
+		type: TOGGLE_UPDATE_QTY,
+		payload: status,
+	};
+};
+
+export const toggleCreateInvCategory = status => {
+	return {
+		type: TOGGLE_CREATE_INV_CAT,
+		payload: status,
+	};
+};
+
+export const toggleEditInvCategory = status => {
+	return {
+		type: TOGGLE_EDIT_INV_CAT,
+		payload: status,
+	};
+};
+
+// close modals
 export const closeModals = () => {
 	return dispatch => {
 		dispatch(toggleModal(false));
 		dispatch(toggleCreateStaff(false));
 		dispatch(toggleShowHistory(false));
 		dispatch(toggleSetLeave(false));
+		dispatch(toggleCreateInventory(false));
+		dispatch(toggleEditInventory(false));
+		dispatch(toggleUpdateQuantity(false));
+		dispatch(toggleCreateInvCategory(false));
+		dispatch(toggleEditInvCategory(false));
 	};
 };
 
@@ -63,5 +110,46 @@ export const setLeave = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleSetLeave(action));
+	};
+};
+
+// inventory modal toggles
+export const createInventory = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleCreateInventory(action));
+	};
+};
+
+export const editInventory = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleEditInventory(action));
+	};
+};
+
+export const updateQuantity = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleUpdateQuantity(action));
+	};
+};
+
+export const createInventoryCat = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleCreateInvCategory(action));
+	};
+};
+
+export const editInventoryCat = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleEditInvCategory(action));
 	};
 };
