@@ -8,6 +8,7 @@ import {
 	TOGGLE_UPDATE_QTY,
 	TOGGLE_CREATE_INV_CAT,
 	TOGGLE_EDIT_INV_CAT,
+	TOGGLE_CREATE_ROLE,
 } from './types';
 
 export const toggleModal = status => {
@@ -74,6 +75,13 @@ export const toggleEditInvCategory = status => {
 	};
 };
 
+export const toggleCreateRole = status => {
+	return {
+		type: TOGGLE_CREATE_ROLE,
+		payload: status,
+	};
+};
+
 // close modals
 export const closeModals = () => {
 	return dispatch => {
@@ -86,6 +94,7 @@ export const closeModals = () => {
 		dispatch(toggleUpdateQuantity(false));
 		dispatch(toggleCreateInvCategory(false));
 		dispatch(toggleEditInvCategory(false));
+		dispatch(toggleCreateRole(false));
 	};
 };
 
@@ -151,5 +160,13 @@ export const editInventoryCat = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleEditInvCategory(action));
+	};
+};
+
+export const createRole = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleCreateRole(action));
 	};
 };
