@@ -19,6 +19,9 @@ const PatientProfile = lazy(() => import('./pages/PatientProfile'));
 const Pharmacy = lazy(() => import('./pages/Pharmacy'));
 const Vitals = lazy(() => import('./pages/Vitals'));
 const Staff = lazy(() => import('./pages/Staff'));
+const Role = lazy(() => import('./pages/Role'));
+
+
 
 class App extends Component {
 	componentDidMount() {
@@ -54,6 +57,8 @@ class App extends Component {
 												<Route path="/dashboard/pharmacy" component={Pharmacy} />
 												<Route path="/dashboard/vitals" component={Vitals} />
 												<Route path="/settings/staff" component={Staff} />
+												<Route path="/settings/role" component={Role} />
+
 												<Route component={NoMatch} />
 											</Switch>
 										</div>
