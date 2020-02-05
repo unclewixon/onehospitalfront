@@ -7,6 +7,7 @@ import avatar1 from '../assets/images/avatar1.jpg';
 import PatientMenu from './PatientMenu';
 import HrMenu from './HrMenu';
 import DoctorMenu from './DoctorMenu';
+import InventoryMenu from './InventoryMenu';
 
 class MainMenu extends Component {
 	componentDidMount() {
@@ -82,6 +83,9 @@ class MainMenu extends Component {
 					)}
 					{role === 'doctor' && (
 						<DoctorMenu />
+					)}
+					{role === 'inventory' && (
+						<InventoryMenu />
 					)}
 				</ul>
 			</div>
