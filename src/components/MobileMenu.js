@@ -16,10 +16,10 @@ class MobileMenu extends Component {
 					</a>
 					<div className="mm-buttons">
 						<div className="content-panel-open">
-							<div className="os-icon os-icon-grid-circles"></div>
+							<div className="os-icon os-icon-grid-circles"/>
 						</div>
 						<div className="mobile-menu-trigger">
-							<div className="os-icon os-icon-hamburger-menu-1"></div>
+							<div className="os-icon os-icon-hamburger-menu-1"/>
 						</div>
 					</div>
 				</div>
@@ -37,7 +37,7 @@ class MobileMenu extends Component {
 						<li className="has-sub-menu">
 							<a href="index.html">
 								<div className="icon-w">
-									<div className="os-icon os-icon-layout"></div>
+									<div className="os-icon os-icon-layout"/>
 								</div>
 								<span>Dashboard</span>
 							</a>
@@ -68,7 +68,7 @@ class MobileMenu extends Component {
 						<li className="has-sub-menu">
 							<a href="layouts_menu_top_image.html">
 								<div className="icon-w">
-									<div className="os-icon os-icon-layers"></div>
+									<div className="os-icon os-icon-layers"/>
 								</div>
 								<span>Menu Styles</span>
 							</a>
@@ -145,7 +145,7 @@ class MobileMenu extends Component {
 						<li className="has-sub-menu">
 							<a href="apps_bank.html">
 								<div className="icon-w">
-									<div className="os-icon os-icon-package"></div>
+									<div className="os-icon os-icon-package"/>
 								</div>
 								<span>Applications</span>
 							</a>
@@ -202,7 +202,7 @@ class MobileMenu extends Component {
 						<li className="has-sub-menu">
 							<a href="#">
 								<div className="icon-w">
-									<div className="os-icon os-icon-file-text"></div>
+									<div className="os-icon os-icon-file-text"/>
 								</div>
 								<span>Pages</span>
 							</a>
@@ -242,7 +242,7 @@ class MobileMenu extends Component {
 						<li className="has-sub-menu">
 							<a href="#">
 								<div className="icon-w">
-									<div className="os-icon os-icon-life-buoy"></div>
+									<div className="os-icon os-icon-life-buoy"/>
 								</div>
 								<span>UI Kit</span>
 							</a>
@@ -281,7 +281,7 @@ class MobileMenu extends Component {
 						<li className="has-sub-menu">
 							<a href="#">
 								<div className="icon-w">
-									<div className="os-icon os-icon-mail"></div>
+									<div className="os-icon os-icon-mail"/>
 								</div>
 								<span>Emails</span>
 							</a>
@@ -306,7 +306,7 @@ class MobileMenu extends Component {
 						<li className="has-sub-menu">
 							<a href="#">
 								<div className="icon-w">
-									<div className="os-icon os-icon-users"></div>
+									<div className="os-icon os-icon-users"/>
 								</div>
 								<span>Users</span>
 							</a>
@@ -322,7 +322,7 @@ class MobileMenu extends Component {
 						<li className="has-sub-menu">
 							<a href="#">
 								<div className="icon-w">
-									<div className="os-icon os-icon-edit-32"></div>
+									<div className="os-icon os-icon-edit-32"/>
 								</div>
 								<span>Forms</span>
 							</a>
@@ -347,7 +347,7 @@ class MobileMenu extends Component {
 						<li className="has-sub-menu">
 							<a href="#">
 								<div className="icon-w">
-									<div className="os-icon os-icon-grid"></div>
+									<div className="os-icon os-icon-grid"/>
 								</div>
 								<span>Tables</span>
 							</a>
@@ -366,7 +366,7 @@ class MobileMenu extends Component {
 						<li className="has-sub-menu">
 							<a href="#">
 								<div className="icon-w">
-									<div className="os-icon os-icon-zap"></div>
+									<div className="os-icon os-icon-zap"/>
 								</div>
 								<span>Icons</span>
 							</a>

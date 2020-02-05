@@ -1,0 +1,11 @@
+// general
+export const START_PRELOADING = 'START_PRELOADING';
+export const STOP_PRELOADING = 'STOP_PRELOADING';
+export const TOGGLE_MODAL = 'TOGGLE_MODAL';
+export const TOGGLE_CREATE_STAFF = 'TOGGLE_CREATE_STAFF';
+export const TOGGLE_SET_LEAVE = 'TOGGLE_SET_LEAVE';
+export const TOGGLE_SHOW_HISTORY = 'TOGGLE_SHOW_HISTORY';
+
+// user
+export const SET_PROFILE = 'SET_PROFILE';
+export const SIGN_OUT = 'SIGN_OUT';

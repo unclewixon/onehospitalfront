@@ -15,21 +15,20 @@ class Login extends Component {
 	componentWillUnmount() {
 		window.document.body.className = '';
 	}
-	
+
 	doLogin = e => {
 		e.preventDefault();
 		const { role } = this.state;
-		if(role && role !== ''){
+		if (role && role !== '') {
 			this.props.history.push(`/dashboard/${role}`);
+		} else {
 		}
-		else {
-		}
-	}
+	};
 
 	onChange = e => {
 		const role = e.target.value;
 		this.setState({ role });
-	}
+	};
 
 	render() {
 		return (
@@ -44,12 +43,8 @@ class Login extends Component {
 					<form>
 						<div className="form-group">
 							<label htmlFor="">Username</label>
-							<input
-								className="form-control"
-								placeholder="Enter your username"
-								type="text"
-							/>
-							<div className="pre-icon os-icon os-icon-user-male-circle"></div>
+							<input className="form-control" placeholder="Enter your username" type="text" />
+							<div className="pre-icon os-icon os-icon-user-male-circle"/>
 						</div>
 						<div className="form-group">
 							<label htmlFor="">Password</label>
@@ -58,23 +53,12 @@ class Login extends Component {
 								placeholder="Enter your password"
 								type="password"
 							/>
-							<div className="pre-icon os-icon os-icon-fingerprint"></div>
-						</div><div className="form-group">
-							<label htmlFor="">Role</label>
-							<select className="form-control" name="role" onChange={this.onChange}>
-								<option>Select Role</option>
-								<option value="front-desk">Front Desk</option>
-								<option value="doctor">Doctor</option>
-								<option value="in-patient">In Patient</option>
-								<option value="lab">Lab</option>
-								<option value="patient/1">Patient Profile</option>
-								<option value="pharmacy">Pharmacy</option>
-								<option value="vitals">Vitals</option>
-							</select>
-							<div className="pre-icon os-icon os-icon-hierarchy-structure-2"></div>
+							<div className="pre-icon os-icon os-icon-fingerprint"/>
 						</div>
 						<div className="buttons-w">
-							<button className="btn btn-primary" onClick={this.doLogin}>Log me in</button>
+							<button className="btn btn-primary" onClick={this.doLogin}>
+								Log me in
+							</button>
 						</div>
 					</form>
 				</div>

@@ -14,15 +14,15 @@ class TopBar extends Component {
 		return (
 			<div className="top-bar color-scheme-transparent">
 				<div className="top-menu-controls">
-					<div className="element-search autosuggest-search-activator">
+					{/* <div className="element-search autosuggest-search-activator">
 						<input placeholder="Start typing to search..." type="text" />
-					</div>
-					<div className="messages-notifications os-dropdown-trigger os-dropdown-position-left">
-						<i className="os-icon os-icon-mail-14"></i>
+					</div> */}
+					{/* <div className="messages-notifications os-dropdown-trigger os-dropdown-position-left">
+						<i className="os-icon os-icon-mail-14"/>
 						<div className="new-messages-count">12</div>
-					</div>
+					</div> */}
 					{/* <div className="top-icon top-settings os-dropdown-trigger os-dropdown-position-left">
-						<i className="os-icon os-icon-ui-46"></i>
+						<i className="os-icon os-icon-ui-46"/>
 					</div> */}
 					<div className="logged-user-w">
 						<div className="logged-user-i">
@@ -40,12 +40,12 @@ class TopBar extends Component {
 									</div>
 								</div>
 								<div className="bg-icon">
-									<i className="os-icon os-icon-wallet-loaded"></i>
+									<i className="os-icon os-icon-wallet-loaded"/>
 								</div>
 								<ul>
 									<li>
 										<Link to="/">
-											<i className="os-icon os-icon-signs-11"></i>
+											<i className="os-icon os-icon-signs-11"/>
 											<span>Logout</span>
 										</Link>
 									</li>

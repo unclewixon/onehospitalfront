@@ -1,14 +1,92 @@
 // Add styles here you want to override
-a{cursor: pointer;}
+a {
+	cursor: pointer;
+}
+button {outline: 0 none !important;}
+
 .balance {
 	.balance-title {
-		font-size: 0.80rem;
+		font-size: 0.8rem;
 	}
 	.strong {
 		margin-top: -2px;
 
 		small {
-			font-weight: bold !important;font-size: 1.08rem;
+			font-weight: bold !important;
+			font-size: 1.08rem;
+		}
+	}
+}
+
+.row-expand-icon {
+	color: #1890ff;
+	text-decoration: none;
+	cursor: pointer;
+	-webkit-transition: color 0.3s;
+	transition: color 0.3s;
+	display: inline-block;
+	width: 17px;
+	height: 17px;
+	color: inherit;
+	line-height: 13px;
+	text-align: center;
+	background: $white;
+	border: 1px solid #e8e8e8;
+	border-radius: 2px;
+	outline: none;
+	-webkit-transition: all 0.3s;
+	transition: all 0.3s;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.row-collapsed::after {
+	content: '+';
+}
+
+.row-expanded::after {
+	content: '-';
+}
+
+.expanded-row {
+	background: #fbfbfb !important;
+
+	.table {
+		background: #fbfbfb;
+	}
+
+	.table-striped tr {
+		background: #fbfbfb !important;
+	}
+}
+
+.onboarding-modal {
+	.onboarding-content {
+		margin: 20px 0;
+		
+		&.with-gradient {
+			padding: 20px 32px;
+		}
+	}
+}
+
+.table {
+	.row-actions {
+		a {
+			&.primary {
+				color: $primary !important;
+			}
+			&.secondary {
+				color: $secondary !important;
+			}
+			&.danger {
+				color: $dark-red !important;
+			}
+		}
+		.os-icon-basic-2-259-calendar:before {
+			color: $dark-red;
 		}
 	}
 }

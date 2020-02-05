@@ -1,17 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
-import history from './history';
 
 import './assets/css/main.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import configureStore from './store';
+import history from './services/history';
+
+const store = configureStore();
 
 ReactDOM.render(
-	<Router history={history}>
-		<App />
-	</Router>,
+	<Provider store={store}>
+		<Router history={history}>
+			<App />
+		</Router>
+	</Provider>,
 	document.getElementById('root')
 );
 

@@ -13,14 +13,14 @@ class SearchFrame extends Component {
 							type="text"
 						>
 							<div className="close-search-suggestions">
-								<i className="os-icon os-icon-x"></i>
+								<i className="os-icon os-icon-x"/>
 							</div>
 						</input>
 					</div>
 					<div className="search-suggestions-group">
 						<div className="ssg-header">
 							<div className="ssg-icon">
-								<div className="os-icon os-icon-box"></div>
+								<div className="os-icon os-icon-box"/>
 							</div>
 							<div className="ssg-name">Projects</div>
 							<div className="ssg-info">24 Total</div>
@@ -33,7 +33,7 @@ class SearchFrame extends Component {
 										style={{
 											backgroundImage: `url(${require('images/company6.png')})`,
 										}}
-									></div>
+									/>
 									<div className="item-name">
 										Integ<span>ration</span> with API
 									</div>
@@ -44,7 +44,7 @@ class SearchFrame extends Component {
 										style={{
 											backgroundImage: `url(${require('images/company7.png')})`,
 										}}
-									></div>
+									/>
 									<div className="item-name">
 										Deve<span>lopm</span>ent Project
 									</div>
@@ -55,7 +55,7 @@ class SearchFrame extends Component {
 					<div className="search-suggestions-group">
 						<div className="ssg-header">
 							<div className="ssg-icon">
-								<div className="os-icon os-icon-users"></div>
+								<div className="os-icon os-icon-users"/>
 							</div>
 							<div className="ssg-name">Customers</div>
 							<div className="ssg-info">12 Total</div>
@@ -68,7 +68,7 @@ class SearchFrame extends Component {
 										style={{
 											backgroundImage: `url(${require('images/avatar1.jpg')})`,
 										}}
-									></div>
+									/>
 									<div className="item-name">
 										John Ma<span>yer</span>s
 									</div>
@@ -79,7 +79,7 @@ class SearchFrame extends Component {
 										style={{
 											backgroundImage: `url(${require('images/avatar2.jpg')})`,
 										}}
-									></div>
+									/>
 									<div className="item-name">
 										Th<span>omas</span> Mullier
 									</div>
@@ -90,7 +90,7 @@ class SearchFrame extends Component {
 										style={{
 											backgroundImage: `url(${require('images/avatar3.jpg')})`,
 										}}
-									></div>
+									/>
 									<div className="item-name">
 										Kim C<span>olli</span>ns
 									</div>
@@ -101,7 +101,7 @@ class SearchFrame extends Component {
 					<div className="search-suggestions-group">
 						<div className="ssg-header">
 							<div className="ssg-icon">
-								<div className="os-icon os-icon-folder"></div>
+								<div className="os-icon os-icon-folder"/>
 							</div>
 							<div className="ssg-name">Files</div>
 							<div className="ssg-info">17 Total</div>
@@ -110,7 +110,7 @@ class SearchFrame extends Component {
 							<div className="ssg-items ssg-items-blocks">
 								<a className="ssg-item" href="#">
 									<div className="item-icon">
-										<i className="os-icon os-icon-file-text"></i>
+										<i className="os-icon os-icon-file-text"/>
 									</div>
 									<div className="item-name">
 										Work<span>Not</span>e.txt
@@ -118,7 +118,7 @@ class SearchFrame extends Component {
 								</a>
 								<a className="ssg-item" href="#">
 									<div className="item-icon">
-										<i className="os-icon os-icon-film"></i>
+										<i className="os-icon os-icon-film"/>
 									</div>
 									<div className="item-name">
 										V<span>ideo</span>.avi
@@ -126,7 +126,7 @@ class SearchFrame extends Component {
 								</a>
 								<a className="ssg-item" href="#">
 									<div className="item-icon">
-										<i className="os-icon os-icon-database"></i>
+										<i className="os-icon os-icon-database"/>
 									</div>
 									<div className="item-name">
 										User<span>Tabl</span>e.sql
@@ -134,7 +134,7 @@ class SearchFrame extends Component {
 								</a>
 								<a className="ssg-item" href="#">
 									<div className="item-icon">
-										<i className="os-icon os-icon-image"></i>
+										<i className="os-icon os-icon-image"/>
 									</div>
 									<div className="item-name">
 										wed<span>din</span>g.jpg
@@ -143,7 +143,7 @@ class SearchFrame extends Component {
 							</div>
 							<div className="ssg-nothing-found">
 								<div className="icon-w">
-									<i className="os-icon os-icon-eye-off"></i>
+									<i className="os-icon os-icon-eye-off"/>
 								</div>
 								<span>No files were found. Try changing your query...</span>
 							</div>
