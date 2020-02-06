@@ -1,65 +1,107 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component } from 'react';
+import React, { Component, useState } from "react";
 
-// import avatar1 from '../assets/images/avatar1.jpg';
-// import avatar2 from '../assets/images/avatar2.jpg';
-// import avatar3 from '../assets/images/avatar3.jpg';
-// import avatar4 from '../assets/images/avatar4.jpg';
-// import usFlag from '../assets/images/flags-icons/us.png';
-// import caFlag from '../assets/images/flags-icons/ca.png';
-// import ukFlag from '../assets/images/flags-icons/uk.png';
-import Queue from '../components/Queue';
+import LabTest from "../components/LabTest";
+import LabParameter from "../components/LabParameter";
+import LabCategory from "../components/LabCategory";
+import LabGroup from "../components/LabGroup";
 
-class Laboratory extends Component {
-	render() {
-		return (
-			<div className="content-i">
-				<div className="content-box">
-					<div className="row">
-						<div className="col-sm-12">
-							<div className="element-wrapper">
-								<div className="element-actions">
-									<form className="form-inline justify-content-sm-end">
-										<select className="form-control form-control-sm rounded">
-											<option value="Pending">Today</option>
-											<option value="Active">Last Week</option>
-											<option value="Cancelled">Last 30 Days</option>
-										</select>
-									</form>
-								</div>
-								<h6 className="element-header">Doctor Info</h6>
-								<div className="element-content">
-									<div className="row">
-										<div className="col-sm-4 col-xxxl-3">
-											<a className="element-box el-tablo" href="#">
-												<div className="label">Appointments Seen</div>
-												<div className="value">57</div>
-												<div className="trending">
-													<span>Patients</span>
-												</div>
-											</a>
-										</div>
-										<div className="col-sm-4 col-xxxl-3">
-											<a className="element-box el-tablo" href="#">
-												<div className="label">Appointments Left</div>
-												<div className="value">47</div>
-												<div className="trending">
-													<span>Patients</span>
-												</div>
-											</a>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div className="content-panel compact">
-					<Queue />
-				</div>
-			</div>
-		);
-	}
-}
+const Laboratory = () => {
+  const [ShowLabTest, setLabTest] = useState(true);
+  const [ShowLabParameter, SetLabParameter] = useState(false);
+  const [ShowLabCategory, SetLabCategory] = useState(false);
+  const [ShowLabGroup, SetLabGroup] = useState(false);
+
+  const onLabTest = () => {
+    setLabTest(true);
+    SetLabParameter(false);
+    SetLabCategory(false);
+    SetLabGroup(false);
+  };
+
+  const onLabParameter = () => {
+    setLabTest(false);
+    SetLabParameter(true);
+    SetLabCategory(false);
+    SetLabGroup(false);
+  };
+
+  const onLabCategory = () => {
+    setLabTest(false);
+    SetLabParameter(false);
+    SetLabCategory(true);
+    SetLabGroup(false);
+  };
+
+  const onLabGroup = () => {
+    setLabTest(false);
+    SetLabParameter(false);
+    SetLabCategory(false);
+    SetLabGroup(true);
+  };
+
+  return (
+    <div className="content-i">
+      <div className="content-box">
+        <div className="row">
+          <div className="col-sm-12">
+            <div className="element-wrapper">
+              <div className="os-tabs-w mx-4">
+                <div className="os-tabs-controls">
+                  <ul className="nav nav-tabs upper">
+                    <li className="nav-item">
+                      <a
+                        aria-expanded="true"
+                        className={ShowLabTest ? "nav-link active"  : "nav-link"}
+                        data-toggle="tab"
+                        onClick={onLabTest}
+                      >
+                        Tests
+                      </a>
+                    </li>
+                    <li className="nav-item">
+                      <a
+                        aria-expanded="false"
+                        className={ShowLabParameter ? "nav-link active"  : "nav-link"}
+                        data-toggle="tab"
+                        onClick={onLabParameter}
+                      >
+                        Parameters
+                      </a>
+                    </li>
+                    <li className="nav-item">
+                      <a
+                        aria-expanded="false"
+                        className={ShowLabCategory ? "nav-link active"  : "nav-link"}
+                        data-toggle="tab"
+                        onClick={onLabCategory}
+                      >
+                        Categories
+                      </a>
+                    </li>
+                    <li className="nav-item">
+                      <a
+                        aria-expanded="false"
+                        className={ShowLabGroup ? "nav-link active"  : "nav-link"}
+                        data-toggle="tab"
+                        onClick={onLabGroup}
+                      >
+                        Groups
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              {ShowLabTest === true && <LabTest />}
+              {ShowLabParameter === true && <LabParameter />}
+              {ShowLabCategory === true && <LabCategory />}
+              {ShowLabGroup === true && <LabGroup />}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default Laboratory;
