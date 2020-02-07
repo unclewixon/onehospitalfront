@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component, useState } from "react";
 
+import TopBar from "../components/TopBar"
 import LabTest from "../components/LabTest";
 import LabParameter from "../components/LabParameter";
 import LabCategory from "../components/LabCategory";
