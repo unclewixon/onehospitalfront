@@ -47,7 +47,7 @@ const Laboratory = () => {
         <div className="row">
           <div className="col-sm-12">
             <div className="element-wrapper">
-              <div className="os-tabs-w mx-4">
+              <div className="os-tabs-w mx-1">
                 <div className="os-tabs-controls">
                   <ul className="nav nav-tabs upper">
                     <li className="nav-item">
