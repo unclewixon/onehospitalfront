@@ -18,18 +18,14 @@ class StaffItem extends Component {
 					<td><div role="button" tabIndex="0" className={`row-expand-icon ${collapsed ? 'row-collapsed' : 'row-expanded'}`} onClick={this.toggle}/></td>
 					<td>John Mayers</td>
 					<td>john.meyers</td>
-					<td>Doctor</td>
-					<td>08063352837</td>
-					<td>ICT</td>
+					<td>56366383</td>
 					<td className="text-center">
 						<div className="status-pill green"/>
 						{/* <div className="status-pill red"/> */}
 						{/* <div className="status-pill yellow"/> */}
 					</td>
 					<td className="text-right row-actions">
-						<a href="#" className="secondary" title="Disable Staff">
-							<i className="os-icon os-icon-edit-32" />
-						</a>
+						
 						<a href="#" className="success" title="Enable Staff">
 							<i className="os-icon os-icon-check-circle" />
 						</a>
