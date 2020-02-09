@@ -5,7 +5,7 @@ class LabTest extends React.Component {
     return (
       <div className="row">
       <div className="col-lg-8">
-        <div className="padded-lg">
+        <div>
         <div className="row">
             <div className="col-lg-4 col-xxl-3">
          
