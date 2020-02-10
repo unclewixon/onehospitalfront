@@ -6,7 +6,9 @@ import Lab from "./Laboratory";
 import Diagnosis from "./Diagnosis";
 import Consultation from "./Consultation";
 import RoomMgmt from "./RoomMgmt";
-import Departments from "./Departments"
+import Departments from "./Departments";
+import LeaveCategory from "./LeaveCategory";
+import ServicesCategory from "./ServiceCategory";
 import NoMatch from './NoMatch';
 
 const Settings = ({ match }) => {
@@ -18,6 +20,9 @@ const Settings = ({ match }) => {
 			<Route path={`${match.url}/diagnosis`} component={Diagnosis} />
 			<Route path={`${match.url}/lab-mgt`} component={Lab} />
 			<Route path={`${match.url}/room-mgt`} component={RoomMgmt} />
+			<Route path={`${match.url}/leave-category`} component={LeaveCategory} />
+			<Route path={`${match.url}/services-category`} component={ServicesCategory} />
+
 			<Route component={NoMatch} />
 		</Switch>
 	);
