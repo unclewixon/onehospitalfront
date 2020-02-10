@@ -41,7 +41,7 @@ const HmoList = () => {
                         <tr>
                           <td>
                             <div class="user-with-avatar">
-                              <img alt="" src="img/avatar1.jpg" />
+                              <img alt="" src={require("../assets/images/avatar1.jpg")} />
                             </div>
                           </td>
                           <td>
@@ -69,7 +69,7 @@ const HmoList = () => {
                         <tr>
                           <td>
                             <div class="user-with-avatar">
-                              <img alt="" src="img/avatar2.jpg" />
+                              <img alt="" src={require("../assets/images/avatar2.jpg")} />
                             </div>
                           </td>
                           <td>
@@ -97,7 +97,7 @@ const HmoList = () => {
                         <tr>
                           <td>
                             <div class="user-with-avatar">
-                              <img alt="" src="img/avatar3.jpg" />
+                              <img alt="" src={require("../assets/images/avatar3.jpg")} />
                             </div>
                           </td>
                           <td>
@@ -153,7 +153,7 @@ const HmoList = () => {
                         <tr>
                           <td>
                             <div class="user-with-avatar">
-                              <img alt="" src="img/avatar4.jpg" />
+                              <img alt="" src={require("../assets/images/avatar4.jpg")} />
                             </div>
                           </td>
                           <td>
@@ -181,7 +181,7 @@ const HmoList = () => {
                         <tr>
                           <td>
                             <div class="user-with-avatar">
-                              <img alt="" src="img/avatar2.jpg" />
+                              <img alt="" src={require("../assets/images/avatar2.jpg")} />
                             </div>
                           </td>
                           <td>
