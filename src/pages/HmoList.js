@@ -257,7 +257,7 @@ const HmoList = () => {
                   </div>
                   <div className="form-buttons-w">
                     <button className="btn btn-primary" type="submit">
-                      Upload
+                      Add
                     </button>
                   </div>
                 </form>
