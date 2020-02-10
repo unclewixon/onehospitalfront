@@ -12,16 +12,14 @@ class Roles extends Component {
 					<div className="row">
 						<div className="col-sm-12">
 							<div className="element-wrapper">
-								<div className="element-wrapper pb-4 mb-4 border-bottom">
-									<div className="element-box-tp">
-										<button className="btn btn-primary" onClick={() => this.props.createRole(true)}>
-											<i className="os-icon os-icon-plus-circle" />
-											<span>Create New Role</span>
-										</button>
-									</div>
+								<div className="element-actions">
+									<a className="btn btn-primary btn-sm" href="#" onClick={() => this.props.createRole(true)}>
+										<i className="os-icon os-icon-plus-circle"/>
+										<span>Create New Role</span>
+									</a>
 								</div>
+								<h6 className="element-header">Roles</h6>
 								<div className="element-box">
-									<h5 className="form-header">Roles</h5>
 									<div>content / table here</div>
 								</div>
 							</div>
