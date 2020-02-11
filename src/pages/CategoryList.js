@@ -18,16 +18,14 @@ class CategoryList extends Component {
 					<div className="row">
 						<div className="col-sm-12">
 							<div className="element-wrapper">
-								<div className="element-wrapper pb-4 mb-4 border-bottom">
-									<div className="element-box-tp">
-										<button className="btn btn-primary" onClick={() => this.props.createInventoryCat(true)}>
-											<i className="os-icon os-icon-plus-circle" />
-											<span>Create New Category</span>
-										</button>
-									</div>
+								<div className="element-actions">
+									<a className="btn btn-primary btn-sm" href="#" onClick={() => this.props.createInventoryCat(true)}>
+										<i className="os-icon os-icon-plus-circle"/>
+										<span>Create New Category</span>
+									</a>
 								</div>
+								<h6 className="element-header">Category List</h6>
 								<div className="element-box">
-									<h5 className="form-header">Category List</h5>
 									<div className="table-responsive">
 										<table className="table table-striped">
 											<thead>

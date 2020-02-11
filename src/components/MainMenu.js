@@ -8,7 +8,7 @@ import PatientMenu from './PatientMenu';
 import HrMenu from './HrMenu';
 import DoctorMenu from './DoctorMenu';
 import InventoryMenu from './InventoryMenu';
-import SettingsMenu from './SettingsMenu';
+import AdminMenu from './AdminMenu';
 
 class MainMenu extends Component {
 	componentDidMount() {

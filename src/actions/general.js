@@ -1,5 +1,6 @@
 import {
 	TOGGLE_MODAL,
+	TOGGLE_IS_MODAL,
 	TOGGLE_CREATE_STAFF,
 	TOGGLE_SET_LEAVE,
 	TOGGLE_ADD_TASK,
@@ -10,7 +11,19 @@ import {
 	TOGGLE_CREATE_INV_CAT,
 	TOGGLE_EDIT_INV_CAT,
 	TOGGLE_CREATE_ROLE,
+	TOGGLE_VIEW_APPRAISAL,
+	TOGGLE_VIEW_PAYROLL_HISTORY,
+	TOGGLE_VIEW_CURRENT_PAYROLL,
+	TOGGLE_PREPARE_PAYROLL,
+	TOGGLE_EDIT_PAYROLL,
 } from './types';
+
+export const toggleIsModal = status => {
+	return {
+		type: TOGGLE_IS_MODAL,
+		payload: status,
+	};
+};
 
 export const toggleModal = status => {
 	return {
@@ -26,16 +39,16 @@ export const toggleCreateStaff = status => {
 	};
 };
 
-export const toggleShowHistory = status => {
+export const toggleEditStaff = status => {
 	return {
-		type: TOGGLE_SHOW_HISTORY,
+		type: TOGGLE_EDIT_STAFF,
 		payload: status,
 	};
 };
 
-export const toggleSetLeave = status => {
+export const toggleShowHistory = status => {
 	return {
-		type: TOGGLE_SET_LEAVE,
+		type: TOGGLE_SHOW_HISTORY,
 		payload: status,
 	};
 };
@@ -91,6 +104,43 @@ export const toggleCreateRole = status => {
 	};
 };
 
+// appraisals
+export const toggleViewAppraisal = status => {
+	return {
+		type: TOGGLE_VIEW_APPRAISAL,
+		payload: status,
+	};
+};
+
+// payroll
+export const toggleViewPayrollHistory = status => {
+	return {
+		type: TOGGLE_VIEW_PAYROLL_HISTORY,
+		payload: status,
+	};
+};
+
+export const togglePreparePayroll = status => {
+	return {
+		type: TOGGLE_PREPARE_PAYROLL,
+		payload: status,
+	};
+};
+
+export const toggleCurrentPayroll = status => {
+	return {
+		type: TOGGLE_VIEW_CURRENT_PAYROLL,
+		payload: status,
+	};
+};
+
+export const toggleEditPayroll = status => {
+	return {
+		type: TOGGLE_EDIT_PAYROLL,
+		payload: status,
+	};
+};
+
 // close modals
 export const closeModals = () => {
 	return dispatch => {
@@ -105,6 +155,29 @@ export const closeModals = () => {
 		dispatch(toggleCreateInvCategory(false));
 		dispatch(toggleEditInvCategory(false));
 		dispatch(toggleCreateRole(false));
+		dispatch(toggleViewAppraisal(false));
+		dispatch(toggleViewPayrollHistory(false));
+		dispatch(toggleCurrentPayroll(false));
+		dispatch(togglePreparePayroll(false));
+		dispatch(toggleEditPayroll(false));
+	};
+};
+
+export const closeCurrentPayRoll = is_modal => {
+	return dispatch => {
+		if (!is_modal) {
+			dispatch(toggleModal(false));
+		}
+		dispatch(toggleCurrentPayroll(false));
+	};
+};
+
+export const closeEditPayRoll = is_modal => {
+	return dispatch => {
+		if (!is_modal) {
+			dispatch(toggleModal(false));
+		}
+		dispatch(toggleEditPayroll(false));
 	};
 };
 
@@ -116,11 +189,11 @@ export const createStaff = action => {
 	};
 };
 
-export const showHistory = action => {
+export const editStaff = action => {
 	return dispatch => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
-		dispatch(toggleShowHistory(action));
+		dispatch(toggleEditStaff(action));
 	};
 };
 
@@ -137,7 +210,7 @@ export const setLeave = action => {
 	return dispatch => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
-		dispatch(toggleSetLeave(action));
+		dispatch(toggleShowHistory(action));
 	};
 };
 
@@ -187,5 +260,47 @@ export const createRole = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleCreateRole(action));
+	};
+};
+
+export const viewAppraisal = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleViewAppraisal(action));
+	};
+};
+
+export const viewPayrollHistory = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleViewPayrollHistory(action));
+	};
+};
+
+export const viewCurrentPayroll = (action, isModal) => {
+	return dispatch => {
+		if (!isModal) {
+			dispatch(closeModals());
+			dispatch(toggleModal(true));
+		}
+		dispatch(toggleIsModal(isModal ? true : false));
+		dispatch(toggleCurrentPayroll(action));
+	};
+};
+
+export const preparePayroll = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(togglePreparePayroll(action));
+	};
+};
+
+export const viewEditPayroll = (action, isModal) => {
+	return dispatch => {
+		dispatch(toggleIsModal(isModal ? true : false));
+		dispatch(toggleEditPayroll(action));
 	};
 };
