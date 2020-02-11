@@ -24,6 +24,14 @@ const SettingsMenu = () => {
 				</Link>
 			</li>
 			<li>
+				<Link to="/settings/consultation">
+					<div className="icon-w">
+						<div className="os-icon os-icon-layers"/>
+					</div>
+					<span>Consultation</span>
+				</Link>
+			</li>
+			<li>
 				<Link to="/settings/diagnosis">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers"/>

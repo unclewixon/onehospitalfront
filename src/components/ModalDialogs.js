@@ -2,7 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import ModalCreateStaff from './ModalCreateStaff';
-import ModalEditStaff from './ModalEditStaff';
+import ModalSetLeave from './ModalSetLeave';
+import ModalAddTask from "./ModalAddTask";
 import ModalLeaveHistory from './ModalLeaveHistory';
 import ModalCreateInventory from './ModalCreateInventory';
 import ModalEditInventory from './ModalEditInventory';
@@ -16,11 +17,12 @@ import ModalCurrentPayroll from './ModalCurrentPayroll';
 import ModalPreparePayroll from './ModalPreparePayroll';
 import ModalEditPayroll from './ModalEditPayroll';
 
-const ModalDialogs = ({ create_staff, edit_staff, show_history, create_inventory, edit_inventory, update_inventory_qty, create_inv_cat, edit_inv_cat, create_role, view_appraisal, view_payroll_history, current_payroll, prepare_payroll, edit_payroll }) => {
+const ModalDialogs = ({ create_staff, set_leave,add_task,  show_history, create_inventory, edit_inventory, update_inventory_qty, create_inv_cat, edit_inv_cat, create_role }) => {
 	return (
 		<>
 			{create_staff && <ModalCreateStaff />}
-			{edit_staff && <ModalEditStaff />}
+			{set_leave && <ModalSetLeave />}
+			{add_task && <ModalAddTask />}
 			{show_history && <ModalLeaveHistory />}
 			{create_inventory && <ModalCreateInventory />}
 			{edit_inventory && <ModalEditInventory />}
@@ -42,6 +44,8 @@ const mapStateToProps = (state, ownProps) => {
 		create_staff: state.general.create_staff,
 		edit_staff: state.general.edit_staff,
 		show_history: state.general.show_history,
+		add_task: state.general.add_task,
+		set_leave: state.general.set_leave,
 		create_inventory: state.general.create_inventory,
 		edit_inventory: state.general.edit_inventory,
 		update_inventory_qty: state.general.update_inventory_qty,
