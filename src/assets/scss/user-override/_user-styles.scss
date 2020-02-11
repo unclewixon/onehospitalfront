@@ -20,7 +20,12 @@ button {
 		}
 	}
 }
-
+.pagination-center {position: relative;justify-content: flex-end;}
+.ant-pagination-total-text {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
 .row-expand-icon {
 	color: #1890ff;
 	text-decoration: none;

@@ -14,8 +14,9 @@ import ModalViewAppraisal from './ModalViewAppraisal';
 import ModalPayrollHistory from './ModalPayrollHistory';
 import ModalCurrentPayroll from './ModalCurrentPayroll';
 import ModalPreparePayroll from './ModalPreparePayroll';
+import ModalEditPayroll from './ModalEditPayroll';
 
-const ModalDialogs = ({ create_staff, edit_staff, show_history, create_inventory, edit_inventory, update_inventory_qty, create_inv_cat, edit_inv_cat, create_role, view_appraisal, view_payroll_history, current_payroll, prepare_payroll }) => {
+const ModalDialogs = ({ create_staff, edit_staff, show_history, create_inventory, edit_inventory, update_inventory_qty, create_inv_cat, edit_inv_cat, create_role, view_appraisal, view_payroll_history, current_payroll, prepare_payroll, edit_payroll }) => {
 	return (
 		<>
 			{create_staff && <ModalCreateStaff />}
@@ -31,6 +32,7 @@ const ModalDialogs = ({ create_staff, edit_staff, show_history, create_inventory
 			{view_payroll_history && <ModalPayrollHistory />}
 			{current_payroll && <ModalCurrentPayroll />}
 			{prepare_payroll && <ModalPreparePayroll />}
+			{edit_payroll && <ModalEditPayroll />}
 		</>
 	);
 };
@@ -50,6 +52,7 @@ const mapStateToProps = (state, ownProps) => {
 		view_payroll_history: state.general.view_payroll_history,
 		current_payroll: state.general.current_payroll,
 		prepare_payroll: state.general.prepare_payroll,
+		edit_payroll: state.general.edit_payroll,
 	};
 };
 

@@ -33,7 +33,7 @@ class ModalPayrollHistory extends Component {
 										<th>Total Deduction</th>
 										<th>Month</th>
 										<th>Year</th>
-										<th>Date</th>
+										<th>Date Created</th>
 										<th className="text-right">Actions</th>
 									</tr>
 									</thead>

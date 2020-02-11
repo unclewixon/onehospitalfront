@@ -14,6 +14,7 @@ import {
 	TOGGLE_VIEW_PAYROLL_HISTORY,
 	TOGGLE_VIEW_CURRENT_PAYROLL,
 	TOGGLE_PREPARE_PAYROLL,
+	TOGGLE_EDIT_PAYROLL,
 } from './types';
 
 export const toggleIsModal = status => {
@@ -124,6 +125,13 @@ export const toggleCurrentPayroll = status => {
 	};
 };
 
+export const toggleEditPayroll = status => {
+	return {
+		type: TOGGLE_EDIT_PAYROLL,
+		payload: status,
+	};
+};
+
 // close modals
 export const closeModals = () => {
 	return dispatch => {
@@ -141,15 +149,25 @@ export const closeModals = () => {
 		dispatch(toggleViewPayrollHistory(false));
 		dispatch(toggleCurrentPayroll(false));
 		dispatch(togglePreparePayroll(false));
+		dispatch(toggleEditPayroll(false));
 	};
 };
 
 export const closeCurrentPayRoll = is_modal => {
 	return dispatch => {
-		if(!is_modal) {
+		if (!is_modal) {
 			dispatch(toggleModal(false));
 		}
 		dispatch(toggleCurrentPayroll(false));
+	};
+};
+
+export const closeEditPayRoll = is_modal => {
+	return dispatch => {
+		if (!is_modal) {
+			dispatch(toggleModal(false));
+		}
+		dispatch(toggleEditPayroll(false));
 	};
 };
 
@@ -244,7 +262,7 @@ export const viewPayrollHistory = action => {
 
 export const viewCurrentPayroll = (action, isModal) => {
 	return dispatch => {
-		if(!isModal){
+		if (!isModal) {
 			dispatch(closeModals());
 			dispatch(toggleModal(true));
 		}
@@ -258,5 +276,12 @@ export const preparePayroll = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(togglePreparePayroll(action));
+	};
+};
+
+export const viewEditPayroll = (action, isModal) => {
+	return dispatch => {
+		dispatch(toggleIsModal(isModal ? true : false));
+		dispatch(toggleEditPayroll(action));
 	};
 };

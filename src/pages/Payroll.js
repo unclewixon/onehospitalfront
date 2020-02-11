@@ -1,15 +1,31 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Pagination from 'antd/lib/pagination';
 
 import PayrollItem from '../components/PayrollItem';
 import { preparePayroll } from '../actions/general';
+
+const itemRender = (current, type, originalElement) => {
+	if (type === 'prev') {
+		return <a>Previous</a>;
+	}
+	if (type === 'next') {
+		return <a>Next</a>;
+	}
+	return originalElement;
+};
+const pageSize = 10;
 
 class Payroll extends Component {
 	doPreparePayroll = e => {
 		e.preventDefault();
 		console.log('prepare payroll');
 		this.props.preparePayroll(true);
+	};
+
+	onNavigatePage = pageNumber => {
+		console.log(pageNumber);
 	};
 
 	render() {
@@ -69,21 +85,32 @@ class Payroll extends Component {
 									<div className="table-responsive">
 										<table className="table table-striped">
 											<thead>
-											<tr>
-												<th>ID</th>
-												<th>Name</th>
-												<th>Total Allowance</th>
-												<th>Total Deduction</th>
-												<th>Month</th>
-												<th>Year</th>
-												<th>Date</th>
-												<th className="text-right">Actions</th>
-											</tr>
+												<tr>
+													<th>ID</th>
+													<th>Name</th>
+													<th>Total Allowance</th>
+													<th>Total Deduction</th>
+													<th>Department</th>
+													<th>Month</th>
+													<th>Year</th>
+													<th>Date Created</th>
+													<th className="text-right">Actions</th>
+												</tr>
 											</thead>
 											<tbody>
 												<PayrollItem />
 											</tbody>
 										</table>
+									</div>
+									<div className="pagination pagination-center mt-4">
+										<Pagination
+											current={1}
+											pageSize={pageSize}
+											total={0}
+											showTotal={total => `Total ${total} staffs`}
+											itemRender={itemRender}
+											onChange={this.onNavigatePage}
+										/>
 									</div>
 								</div>
 							</div>
