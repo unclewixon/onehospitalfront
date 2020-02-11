@@ -107,7 +107,7 @@ class ModalAddTask extends Component {
                   {" "}
                   Save changes
                 </button>
-                <button class="btn btn-link" data-dismiss="modal" type="button">
+                <button class="btn btn-link" data-dismiss="modal" type="button" onClick={() => this.props.closeModals(false)}>
                   {" "}
                   Cancel
                 </button>

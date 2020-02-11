@@ -21,6 +21,7 @@ const Vitals = lazy(() => import('./pages/Vitals'));
 const Staff = lazy(() => import('./pages/Staff'));
 const Inventory = lazy(() => import('./pages/Inventory'));
 const Settings = lazy(() => import('./pages/Settings'));
+const Hmo = lazy(() => import('./pages/Hmo'))
 
 class App extends Component {
 	componentDidMount() {
@@ -58,6 +59,7 @@ class App extends Component {
 												<Route path="/staff-mgt" component={Staff} />
 												<Route path="/inventory" component={Inventory} />
 												<Route path="/settings" component={Settings} />
+												<Route path="/hmo" component={Hmo} />
 												<Route component={NoMatch} />
 											</Switch>
 										</div>
