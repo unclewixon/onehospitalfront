@@ -2,13 +2,6 @@
 import React, { Component } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, } from 'recharts';
 
-// import avatar1 from '../assets/images/avatar1.jpg';
-// import avatar2 from '../assets/images/avatar2.jpg';
-// import avatar3 from '../assets/images/avatar3.jpg';
-// import avatar4 from '../assets/images/avatar4.jpg';
-// import usFlag from '../assets/images/flags-icons/us.png';
-// import caFlag from '../assets/images/flags-icons/ca.png';
-// import ukFlag from '../assets/images/flags-icons/uk.png';
 
 const data = [
 	{

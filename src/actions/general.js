@@ -2,6 +2,7 @@ import {
 	TOGGLE_MODAL,
 	TOGGLE_CREATE_STAFF,
 	TOGGLE_SET_LEAVE,
+	TOGGLE_ADD_TASK,
 	TOGGLE_SHOW_HISTORY,
 	TOGGLE_CREATE_INVENTORY,
 	TOGGLE_EDIT_INVENTORY,
@@ -38,6 +39,14 @@ export const toggleSetLeave = status => {
 		payload: status,
 	};
 };
+
+
+export const toggleAddTask = status => {
+	return{
+		type: TOGGLE_ADD_TASK,
+		payload: status,
+	}
+}
 
 // inventory modals
 export const toggleCreateInventory = status => {
@@ -88,6 +97,7 @@ export const closeModals = () => {
 		dispatch(toggleModal(false));
 		dispatch(toggleCreateStaff(false));
 		dispatch(toggleShowHistory(false));
+		dispatch(toggleAddTask(false))
 		dispatch(toggleSetLeave(false));
 		dispatch(toggleCreateInventory(false));
 		dispatch(toggleEditInventory(false));
@@ -113,6 +123,15 @@ export const showHistory = action => {
 		dispatch(toggleShowHistory(action));
 	};
 };
+
+
+export const addTask = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true))
+		dispatch(toggleAddTask(action))
+	}
+}
 
 export const setLeave = action => {
 	return dispatch => {
