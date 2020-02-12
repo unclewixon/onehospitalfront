@@ -12,7 +12,10 @@ import {
   TOGGLE_UPDATE_QTY,
   TOGGLE_CREATE_INV_CAT,
   TOGGLE_EDIT_INV_CAT,
-  TOGGLE_CREATE_ROLE
+  TOGGLE_CREATE_ROLE,
+  TOGGLE_REGISTER_NEW_PATIENT,
+  TOGGLE_CREATE_APPOINTMENT,
+  TOGGLE_VIEW_APPOINTMENT_DETAIL
 } from "../actions/types";
 
 const INITIAL_STATE = {
@@ -27,7 +30,10 @@ const INITIAL_STATE = {
   update_inventory_qty: false,
   create_inv_cat: false,
   edit_inv_cat: false,
-  create_role: false
+  create_role: false,
+  register_new_patient: false,
+  create_new_appointment: false,
+  view_appointment_detail: false,
 };
 
 const general = (state = INITIAL_STATE, action) => {
@@ -60,6 +66,12 @@ const general = (state = INITIAL_STATE, action) => {
       return { ...state, edit_inv_cat: action.payload };
     case TOGGLE_CREATE_ROLE:
       return { ...state, create_role: action.payload };
+    case TOGGLE_REGISTER_NEW_PATIENT:
+      return { ...state, register_new_patient: action.payload };
+    case TOGGLE_CREATE_APPOINTMENT:
+      return { ...state, create_new_appointment: action.payload };
+    case TOGGLE_VIEW_APPOINTMENT_DETAIL:
+      return{...state, view_appointment_detail: action.payload}
     default:
       return state;
   }

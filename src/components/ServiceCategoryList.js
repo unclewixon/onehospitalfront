@@ -1,13 +1,6 @@
 import React from "react";
-import {connect} from "react-redux"
-import {addTask} from "../actions/general"
-
 
 const ServiceCategoryList = () => {
-  const onAddTask=e=> {
-    e.preventDefault();
-		this.props.addTask(true);
-  }
   return (
     <div className="row">
       <div className="col-lg-8">
@@ -124,4 +117,4 @@ const ServiceCategoryList = () => {
     </div>
   );
 };
-export default connect(null, )(ServiceCategoryList);
+export default ServiceCategoryList;
