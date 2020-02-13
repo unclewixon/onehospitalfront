@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import ModalCreateStaff from './ModalCreateStaff';
-import ModalSetLeave from './ModalSetLeave';
+import ModalEditStaff from './ModalEditStaff';
 import ModalAddTask from "./ModalAddTask";
 import ModalLeaveHistory from './ModalLeaveHistory';
 import ModalCreateInventory from './ModalCreateInventory';
@@ -17,11 +17,11 @@ import ModalCurrentPayroll from './ModalCurrentPayroll';
 import ModalPreparePayroll from './ModalPreparePayroll';
 import ModalEditPayroll from './ModalEditPayroll';
 
-const ModalDialogs = ({ create_staff, set_leave,add_task,  show_history, create_inventory, edit_inventory, update_inventory_qty, create_inv_cat, edit_inv_cat, create_role }) => {
+const ModalDialogs = ({ create_staff, edit_staff,add_task,  show_history, create_inventory, edit_inventory, update_inventory_qty, create_inv_cat, edit_inv_cat, create_role, view_appraisal, view_payroll_history, current_payroll, prepare_payroll, edit_payroll}) => {
 	return (
 		<>
 			{create_staff && <ModalCreateStaff />}
-			{set_leave && <ModalSetLeave />}
+			{edit_staff && <ModalEditStaff />}
 			{add_task && <ModalAddTask />}
 			{show_history && <ModalLeaveHistory />}
 			{create_inventory && <ModalCreateInventory />}

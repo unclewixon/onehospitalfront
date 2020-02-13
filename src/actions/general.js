@@ -3,6 +3,7 @@ import {
 	TOGGLE_IS_MODAL,
 	TOGGLE_CREATE_STAFF,
 	TOGGLE_SET_LEAVE,
+	TOGGLE_EDIT_STAFF,
 	TOGGLE_ADD_TASK,
 	TOGGLE_SHOW_HISTORY,
 	TOGGLE_CREATE_INVENTORY,
@@ -148,7 +149,7 @@ export const closeModals = () => {
 		dispatch(toggleCreateStaff(false));
 		dispatch(toggleShowHistory(false));
 		dispatch(toggleAddTask(false))
-		dispatch(toggleSetLeave(false));
+		dispatch(toggleEditStaff(false));
 		dispatch(toggleCreateInventory(false));
 		dispatch(toggleEditInventory(false));
 		dispatch(toggleUpdateQuantity(false));
@@ -206,7 +207,7 @@ export const addTask = action => {
 	}
 }
 
-export const setLeave = action => {
+export const showHistory = action => {
 	return dispatch => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));

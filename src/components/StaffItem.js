@@ -41,6 +41,8 @@ class StaffItem extends Component {
 					<td>John Mayers</td>
 					<td>john.meyers</td>
 					<td>56366383</td>
+					<td>56366383</td>
+					<td>Nursing</td>
 					<td className="text-center">
 						{enabled === 1 ? (
 							<Tooltip title="Enabled"><div className="status-pill green"/></Tooltip>
