@@ -46,7 +46,7 @@ class MainMenu extends Component {
 
 	render() {
 		let { role } = this.props;
-		role = "front-desk"
+		role = "patient"
 		return (
 			<div className="menu-w color-scheme-dark color-style-bright menu-position-side menu-side-left sub-menu-style-over sub-menu-color-bright selected-menu-color-light menu-activated-on-hover menu-has-selected-link" ref="menu_activated_on_hover">
 				<div className="logo-w">
