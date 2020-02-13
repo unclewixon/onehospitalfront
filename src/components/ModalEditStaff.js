@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { closeModals } from '../actions/general';
 
-class ModalCreateStaff extends Component {
+class ModalEditStaff extends Component {
 	componentDidMount() {
 		document.body.classList.add('modal-open');
 	}
@@ -21,8 +21,8 @@ class ModalCreateStaff extends Component {
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
-							<h4 className="onboarding-title">Create New Staff</h4>
-							<div className="onboarding-text">create new staff profile</div>
+							<h4 className="onboarding-title">Edit Staff</h4>
+							<div className="onboarding-text">edit staff profile</div>
 							<div className="form-block">
 								<form>
 									<div className="row">
@@ -307,4 +307,4 @@ class ModalCreateStaff extends Component {
 	}
 }
 
-export default connect(null, { closeModals })(ModalCreateStaff);
+export default connect(null, { closeModals })(ModalEditStaff);

@@ -44,7 +44,7 @@ class InventoryItem extends Component {
 						<i className="os-icon os-icon-edit-32" />
 					</a>
 					<a href="#" onClick={this.doUpdateQuantity} className="secondary" title="Update Quantity">
-						<i className="os-icon os-icon-grid-squares-2" />
+						<i className="os-icon os-icon-folder-plus" />
 					</a>
 				</td>
 			</tr>

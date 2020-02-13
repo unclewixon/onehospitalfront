@@ -7,7 +7,9 @@ import avatar1 from '../assets/images/avatar1.jpg';
 import PatientMenu from './PatientMenu';
 import HrMenu from './HrMenu';
 import DoctorMenu from './DoctorMenu';
-import FrontDeskMenu from "./FrontDeskMenu"
+import InventoryMenu from './InventoryMenu';
+import AdminMenu from './AdminMenu';
+import FrontDeskMenu from "./FrontDeskMenu";
 
 class MainMenu extends Component {
 	componentDidMount() {
