@@ -1,6 +1,45 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import {notifySuccess, notifyError} from "../services/notify"
+import {
+  getAllDepartments,
+  createDepartment,
+  deleteDepartment
+} from "../actions/settings";
 
-const Departments = () => {
+const Departments = props => {
+  useEffect(() => {
+    props.getAllDepartments()
+  }, []);
+
+  const [name, setName] = useState("Pharmacy");
+  const [description, setDescription] = useState("");
+
+  const handleNameInputChange = e => {
+    setName(e.target.value);
+  };
+
+  const handleDescriptionInputChange = e => {
+    setDescription(e.target.value);
+  };
+
+  const onCreateDepartment = e => {
+    e.preventDefault();
+    props.createDepartment({ name, description });
+  };
+
+  const onDeleteDepartment = data => {
+    props.deleteDepartment(data).then(data => {
+      notifySuccess("Deleted")
+    }).catch(error => {
+      notifyError("Error deleting")
+    })
+  };
+
+  
+
+  let Departments = props.state.settings.department;
+
   return (
     <div className="content-i">
       <div className="content-box">
@@ -35,128 +74,39 @@ const Departments = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td className="nowrap">
-                            <span className="status-pill smaller green"></span>
-                            <span>Clinical Laboratory Department</span>
-                          </td>
-                          <td>
-                            <span>Philip Okudo</span>
-                          </td>
-                          <td className="row-actions text-right">
-                            <a href="#">
-                              <i className="os-icon os-icon-ui-49"></i>
-                            </a>
-                            <a href="#">
-                              <i className="os-icon os-icon-grid-10"></i>
-                            </a>
-                            <a className="danger" href="#">
-                              <i className="os-icon os-icon-ui-15"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td className="nowrap">
-                            <span className="status-pill smaller red"></span>
-                            <span>Medicine & Consultation Department</span>
-                          </td>
-                          <td>
-                            <span>Sunday Onuh</span>
-                          </td>
-                          <td className="row-actions text-right">
-                            <a href="#">
-                              <i className="os-icon os-icon-ui-49"></i>
-                            </a>
-                            <a href="#">
-                              <i className="os-icon os-icon-grid-10"></i>
-                            </a>
-                            <a className="danger" href="#">
-                              <i className="os-icon os-icon-ui-15"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td className="nowrap">
-                            <span className="status-pill smaller yellow"></span>
-                            <span>Nursing Department</span>
-                          </td>
-                          <td>
-                            <span>Elsie Onwuama</span>
-                          </td>
-                          <td className="row-actions text-right">
-                            <a href="#">
-                              <i className="os-icon os-icon-ui-49"></i>
-                            </a>
-                            <a href="#">
-                              <i className="os-icon os-icon-grid-10"></i>
-                            </a>
-                            <a className="danger" href="#">
-                              <i className="os-icon os-icon-ui-15"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td className="nowrap">
-                            <span className="status-pill smaller yellow"></span>
-                            <span>Quality Assurance Department</span>
-                          </td>
-                          <td>
-                            <span>Stella Etubi</span>
-                          </td>
-                          <td className="row-actions text-right">
-                            <a href="#">
-                              <i className="os-icon os-icon-ui-49"></i>
-                            </a>
-                            <a href="#">
-                              <i className="os-icon os-icon-grid-10"></i>
-                            </a>
-                            <a className="danger" href="#">
-                              <i className="os-icon os-icon-ui-15"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td className="nowrap">
-                            <span className="status-pill smaller green"></span>
-                            <span>
-                              Health Management Organizations Department
-                            </span>
-                          </td>
-                          <td>
-                            <span>Joy Onuh</span>
-                          </td>
-                          <td className="row-actions text-right">
-                            <a href="#">
-                              <i className="os-icon os-icon-ui-49"></i>
-                            </a>
-                            <a href="#">
-                              <i className="os-icon os-icon-grid-10"></i>
-                            </a>
-                            <a className="danger" href="#">
-                              <i className="os-icon os-icon-ui-15"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td className="nowrap">
-                            <span className="status-pill smaller yellow"></span>
-                            <span>Pharmacy Department</span>
-                          </td>
-                          <td>
-                            <span>Chris Ngigechukwu</span>
-                          </td>
-                          <td className="row-actions text-right">
-                            <a href="#">
-                              <i className="os-icon os-icon-ui-49"></i>
-                            </a>
-                            <a href="#">
-                              <i className="os-icon os-icon-grid-10"></i>
-                            </a>
-                            <a className="danger" href="#">
-                              <i className="os-icon os-icon-ui-15"></i>
-                            </a>
-                          </td>
-                        </tr>
+                        {Departments.map(department => {
+                          return (
+                            <tr>
+                              <td className="nowrap">
+                                <span
+                                  className={
+                                    department.isActive
+                                      ? "status-pill smaller green"
+                                      : "status-pill smaller red"
+                                  }
+                                ></span>
+                                <span>{department.name}</span>
+                              </td>
+                              <td>
+                                <span>{department.description}</span>
+                              </td>
+                              <td className="row-actions text-right">
+                                <a href="#">
+                                  <i className="os-icon os-icon-ui-49"></i>
+                                </a>
+                                <a href="#">
+                                  <i className="os-icon os-icon-grid-10"></i>
+                                </a>
+                                <a
+                                  className="danger"
+                                  onClick={() => onDeleteDepartment(department)}
+                                >
+                                  <i className="os-icon os-icon-ui-15"></i>
+                                </a>
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
@@ -166,7 +116,7 @@ const Departments = () => {
             <div className="col-lg-4 col-xxl-3  d-xxl-block">
               <div className="element-wrapper">
                 <div className="element-box">
-                  <form>
+                  <form onSubmit={onCreateDepartment}>
                     <h5 className="element-box-header">Add New Department</h5>
                     <div className="form-group">
                       <label className="lighter" for="">
@@ -177,28 +127,36 @@ const Departments = () => {
                           className="form-control"
                           placeholder="Enter Department Name..."
                           type="text"
+                          value={description}
+                          onChange={handleDescriptionInputChange}
                         />
                         <div className="input-group-append">
                           <div className="input-group-text">Dept</div>
                         </div>
                       </div>
                     </div>
+
                     <div className="form-group">
                       <label className="lighter" for="">
                         Head of Department
                       </label>
-                      <select class="form-control">
-                        <option value="">Pharmacy</option>
-                        <option value="">Clinical Laboratory</option>
-                        <option value="">Front-Desk</option>
+                      <select
+                        class="form-control"
+                        value={name}
+                        onChange={handleNameInputChange}
+                      >
+                        <option value="Pharmacy">Pharmacy</option>
+                        <option value="Clinical Laboratory">
+                          Clinical Laboratory
+                        </option>
+                        <option value="Front-Desk">Front-Desk</option>
                       </select>
                     </div>
 
                     <div className="form-buttons-w text-right compact">
-                      <a className="btn btn-primary" href="#">
+                      <button className="btn btn-primary" type="submit">
                         <span>Save</span>
-                        <i class="os-icon os-icon-grid-18"></i>
-                      </a>
+                      </button>
                     </div>
                   </form>
                 </div>
@@ -211,4 +169,14 @@ const Departments = () => {
   );
 };
 
-export default Departments;
+const mapStateToProps = state => {
+  return {
+    state
+  };
+};
+
+export default connect(mapStateToProps, {
+  getAllDepartments,
+  createDepartment,
+  deleteDepartment
+})(Departments);
