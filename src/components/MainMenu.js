@@ -6,6 +6,7 @@ import $ from 'jquery';
 import avatar1 from '../assets/images/avatar1.jpg';
 import PatientMenu from './PatientMenu';
 import HrMenu from './HrMenu';
+import SettingsMenu from './SettingsMenu';
 import DoctorMenu from './DoctorMenu';
 import InventoryMenu from './InventoryMenu';
 import AdminMenu from './AdminMenu';

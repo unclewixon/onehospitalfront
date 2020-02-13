@@ -3,6 +3,7 @@ import {
 	TOGGLE_IS_MODAL,
 	TOGGLE_CREATE_STAFF,
 	TOGGLE_SET_LEAVE,
+	TOGGLE_EDIT_STAFF,
 	TOGGLE_ADD_TASK,
 	TOGGLE_SHOW_HISTORY,
 	TOGGLE_CREATE_INVENTORY,
@@ -15,7 +16,6 @@ import {
 	TOGGLE_VIEW_PAYROLL_HISTORY,
 	TOGGLE_VIEW_CURRENT_PAYROLL,
 	TOGGLE_PREPARE_PAYROLL,
-  TOGGLE_EDIT_STAFF,
 	TOGGLE_EDIT_PAYROLL,
   TOGGLE_REGISTER_NEW_PATIENT,
   TOGGLE_CREATE_APPOINTMENT,
@@ -182,7 +182,7 @@ export const closeModals = () => {
 		dispatch(toggleCreateStaff(false));
 		dispatch(toggleShowHistory(false));
 		dispatch(toggleAddTask(false))
-		dispatch(toggleSetLeave(false));
+		dispatch(toggleEditStaff(false));
 		dispatch(toggleCreateInventory(false));
 		dispatch(toggleEditInventory(false));
 		dispatch(toggleUpdateQuantity(false));
@@ -246,14 +246,6 @@ export const addTask = action => {
     dispatch(closeModals());
     dispatch(toggleModal(true));
     dispatch(toggleAddTask(action));
-  };
-};
-
-export const setLeave = action => {
-  return dispatch => {
-    dispatch(closeModals());
-    dispatch(toggleModal(true));
-    dispatch(toggleSetLeave(action));
   };
 };
 

@@ -1,7 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import ModalCreateStaff from "./ModalCreateStaff";
+import ModalCreateStaff from './ModalCreateStaff';
+import ModalEditStaff from './ModalEditStaff';
 import ModalAddTask from "./ModalAddTask";
 import ModalLeaveHistory from './ModalLeaveHistory';
 import ModalCreateInventory from './ModalCreateInventory';
