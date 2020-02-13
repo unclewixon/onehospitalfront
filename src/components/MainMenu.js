@@ -10,6 +10,7 @@ import SettingsMenu from './SettingsMenu';
 import DoctorMenu from './DoctorMenu';
 import InventoryMenu from './InventoryMenu';
 import AdminMenu from './AdminMenu';
+import FrontDeskMenu from "./FrontDeskMenu";
 
 class MainMenu extends Component {
 	componentDidMount() {
@@ -45,7 +46,8 @@ class MainMenu extends Component {
 	}
 
 	render() {
-		const { role } = this.props;
+		let { role } = this.props;
+		role = "patient"
 		return (
 			<div className="menu-w color-scheme-dark color-style-bright menu-position-side menu-side-left sub-menu-style-over sub-menu-color-bright selected-menu-color-light menu-activated-on-hover menu-has-selected-link" ref="menu_activated_on_hover">
 				<div className="logo-w">
@@ -77,21 +79,18 @@ class MainMenu extends Component {
 				</div> */}
 				<h1 className="menu-page-header">Page Header</h1>
 				<ul className="main-menu">
-					{/* {role === 'patient' && ( */}
+					{role === 'patient' && (
 						<PatientMenu />
-					{/* )}
-					{role === 'hr' && ( */}
+					)}
+					{role === 'hr' && (
 						<HrMenu />
-					{/* )}
-					{role === 'doctor' && ( */}
+					)}
+					{role === 'doctor' && (
 						<DoctorMenu />
-					{/* )}
-					{role === 'inventory' && ( */}
-						<InventoryMenu />
-					{/* )}
-					{role === 'admin' && ( */}
-						<SettingsMenu />
-					{/* )} */}
+					)}
+					{role ==="front-desk" && (
+						<FrontDeskMenu />
+					)}
 				</ul>
 			</div>
 		);
