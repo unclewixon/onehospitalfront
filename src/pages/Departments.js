@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import {notifySuccess, notifyError} from "../services/notify"
+import { notifySuccess, notifyError } from "../services/notify";
 import {
   getAllDepartments,
   createDepartment,
@@ -8,10 +8,6 @@ import {
 } from "../actions/settings";
 
 const Departments = props => {
-  useEffect(() => {
-    props.getAllDepartments()
-  }, []);
-
   const [name, setName] = useState("Pharmacy");
   const [description, setDescription] = useState("");
 
@@ -29,16 +25,19 @@ const Departments = props => {
   };
 
   const onDeleteDepartment = data => {
-    props.deleteDepartment(data).then(data => {
-      notifySuccess("Deleted")
-    }).catch(error => {
-      notifyError("Error deleting")
-    })
+    props
+      .deleteDepartment(data)
+      .then(data => {
+        notifySuccess("Deleted");
+      })
+      .catch(error => {
+        notifyError("Error deleting");
+      });
   };
 
-  
-
-  let Departments = props.state.settings.department;
+  useEffect(() => {
+    props.getAllDepartments();
+  }, []);
 
   return (
     <div className="content-i">
@@ -74,7 +73,7 @@ const Departments = props => {
                         </tr>
                       </thead>
                       <tbody>
-                        {Departments.map(department => {
+                        {props.Departments.map(department => {
                           return (
                             <tr>
                               <td className="nowrap">
@@ -171,7 +170,7 @@ const Departments = props => {
 
 const mapStateToProps = state => {
   return {
-    state
+    Departments: state.settings.department
   };
 };
 
