@@ -12,7 +12,19 @@ import {
   ADD_ROOM_CATEGORY,
   GET_ALL_ROOM_CATEGORIES,
   UPDATE_ROOM_CATEGORY,
-  DELETE_ROOM_CATEGORY
+  DELETE_ROOM_CATEGORY,
+  ADD_LAB_TEST,
+  GET_ALL_LAB_TESTS,
+  UPDATE_LAB_TEST,
+  DELETE_LAB_TEST,
+  ADD_LAB_TEST_CATEGORY,
+  GET_ALL_LAB_TEST_CATEGORIES,
+  UPDATE_LAB_TEST_CATEGORY,
+  DELETE_LAB_TEST_CATEGORY,
+  ADD_LAB_TEST_PARAMETER,
+  GET_ALL_LAB_TEST_PARAMETERS,
+  UPDATE_LAB_TEST_PARAMETER,
+  DELETE_LAB_TEST_PARAMETER
 } from "./types";
 
 //department
@@ -101,6 +113,91 @@ export const delete_room_category = payload => {
   };
 };
 
+//Lab
+export const add_lab_test = payload => {
+  return {
+    type: ADD_LAB_TEST,
+    payload
+  };
+};
+
+export const get_all_lab_tests = payload => {
+  return {
+    type: GET_ALL_LAB_TESTS,
+    payload
+  };
+};
+
+export const update_lab_test = payload => {
+  return {
+    type: UPDATE_LAB_TEST,
+    payload
+  };
+};
+
+export const delete_lab_test = payload => {
+  return {
+    type: DELETE_LAB_TEST,
+    payload
+  };
+};
+
+export const add_lab_test_category = payload => {
+  return {
+    type: ADD_LAB_TEST_CATEGORY,
+    payload
+  };
+};
+
+export const get_all_lab_test_categories = payload => {
+  return {
+    type: GET_ALL_LAB_TEST_CATEGORIES,
+    payload
+  };
+};
+
+export const update_lab_test_category = payload => {
+  return {
+    type: UPDATE_LAB_TEST_CATEGORY,
+    payload
+  };
+};
+
+export const delete_lab_test_category = payload => {
+  return {
+    type: DELETE_LAB_TEST_CATEGORY,
+    payload
+  };
+};
+
+export const add_lab_test_parameter = payload => {
+  return {
+    type: ADD_LAB_TEST_PARAMETER,
+    payload
+  };
+};
+
+export const get_all_lab_test_parameters = payload => {
+  return {
+    type: GET_ALL_LAB_TEST_PARAMETERS,
+    payload
+  };
+};
+
+export const update_lab_test_parameter = payload => {
+  return {
+    type: UPDATE_LAB_TEST_PARAMETER,
+    payload
+  };
+};
+
+export const delete_lab_test_parameter = payload => {
+  return {
+    type: DELETE_LAB_TEST_PARAMETER,
+    payload
+  };
+};
+
 //department
 export const createDepartment = data => {
   return dispatch => {
@@ -165,7 +262,7 @@ export const deleteDepartment = data => {
 
 //room
 export const addRoom = data => {
-    console.log(data)
+  console.log(data);
   return dispatch => {
     return axios
       .post(`http://178.128.36.29:3000/rooms`, {
@@ -279,6 +376,177 @@ export const deleteRoomCategory = data => {
       .delete(`http://178.128.36.29:3000/rooms/categories/${data.id}`)
       .then(response => {
         return dispatch(delete_room_category(data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+//Lab
+export const addLabTest = data => {
+  console.log(data);
+  return dispatch => {
+    return axios
+      .post(`http://178.128.36.29:3000/lab-tests`, {
+        name: data.name
+      })
+      .then(response => {
+        return dispatch(add_lab_test(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const getAllLabTests = () => {
+  return dispatch => {
+    return axios
+      .get(`http://178.128.36.29:3000/lab-tests`)
+      .then(response => {
+        return dispatch(get_all_lab_tests(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const updateLabTest = data => {
+  return dispatch => {
+    return axios
+      .put(`http://178.128.36.29:3000/lab-tests/${data.id}`, {
+        name: data.name
+      })
+      .then(response => {
+        return dispatch(update_lab_test(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const deleteLabTest = data => {
+  return dispatch => {
+    return axios
+      .delete(`http://178.128.36.29:3000/lab-tests/${data.id}`)
+      .then(response => {
+        return dispatch(delete_lab_test(data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const addLabTestCategory = data => {
+  return dispatch => {
+    return axios
+      .post(`http://178.128.36.29:3000/lab-tests/categories`, {
+        name: data.name
+      })
+      .then(response => {
+        return dispatch(add_lab_test_category(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const getAllLabTestCategories = () => {
+  return dispatch => {
+    return axios
+      .get(`http://178.128.36.29:3000/lab-tests/categories`)
+      .then(response => {
+        return dispatch(get_all_lab_test_categories(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const updateLabTestCategory = data => {
+  return dispatch => {
+    return axios
+      .put(`http://178.128.36.29:3000/lab-tests/categories/${data.id}`, {
+        name: data.name
+      })
+      .then(response => {
+        return dispatch(update_lab_test_category(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const deleteLabTestCategory = data => {
+  return dispatch => {
+    return axios
+      .delete(`http://178.128.36.29:3000/lab-tests/categories/${data.id}`)
+      .then(response => {
+        return dispatch(delete_lab_test_category(data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const addLabTestParameter = data => {
+  return dispatch => {
+    return axios
+      .post(`http://178.128.36.29:3000/lab-tests/parameters`, {
+        name: data.name
+      })
+      .then(response => {
+        return dispatch(add_lab_test_parameter(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const getAllLabTestParameters = () => {
+  return dispatch => {
+    return axios
+      .get(`http://178.128.36.29:3000/lab-tests/parameters`)
+      .then(response => {
+        return dispatch(get_all_lab_test_parameters(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const updateLabTestParameter = data => {
+  return dispatch => {
+    return axios
+      .put(`http://178.128.36.29:3000/lab-tests/parameters/${data.id}`, {
+        name: data.name,
+        referenceRange: data.referenceRange
+      })
+      .then(response => {
+        return dispatch(update_lab_test_parameter(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const deleteLabTestParameters = data => {
+  return dispatch => {
+    return axios
+      .delete(`http://178.128.36.29:3000/lab-tests/parameters/${data.id}`)
+      .then(response => {
+        return dispatch(delete_lab_test_parameter(data));
       })
       .catch(error => {
         console.log(error);
