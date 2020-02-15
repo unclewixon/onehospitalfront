@@ -389,7 +389,11 @@ export const addLabTest = data => {
   return dispatch => {
     return axios
       .post(`http://178.128.36.29:3000/lab-tests`, {
-        name: data.name
+        name: data.name,
+        price: data.name,
+        lab_category_id: data.category,
+        test_type: data.testType,
+        parameters: data.parameters
       })
       .then(response => {
         return dispatch(add_lab_test(response.data));
