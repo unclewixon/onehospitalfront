@@ -35,17 +35,16 @@ const LabTest = props => {
 
   const onAddLabTest = e => {
     e.preventDefault();
-    console.log(name, price, category, parameters, testType);
     props
       .addLabTest({ name, price, category, parameters, testType })
       .then(response => {
         setState({ ...initialState });
-        setParameter(null)
+        setParameter(null);
       });
   };
 
   const onDeleteLabTest = data => {
-    console.log(data)
+    console.log(data);
     props
       .deleteLabTest(data)
       .then(data => {
