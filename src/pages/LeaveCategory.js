@@ -63,35 +63,41 @@ const LeaveCategory = props => {
           <div className="row">
             <div className="col-lg-8">
               <div className="row">
-              {props.LeaveCategories.map(LeaveCategory => {
-              return (
-                <div className="col-lg-4 col-xxl-3">
-                  <div className="pt-3">
-                    <div className="pipeline-item">
-                      <div className="pi-controls">
-                        <div className="pi-settings os-dropdown-trigger">
-                          <i className="os-icon os-icon-ui-49"></i>
-                        </div>
-                        <div className="pi-settings os-dropdown-trigger">
-                          <i
-                            className="os-icon os-icon-ui-15"
-                            onClick={() => onDeleteLeaveCategory(LeaveCategory)}
-                          ></i>
-                        </div>
-                      </div>
-                      <div className="pi-body">
-                        <div className="pi-info">
-                          <div className="h6 pi-name">{LeaveCategory.name}</div>
-                          <div className="pi-sub">{LeaveCategory.duration}</div>
+                {props.LeaveCategories.map(LeaveCategory => {
+                  return (
+                    <div className="col-lg-4 col-xxl-3">
+                      <div className="pt-3">
+                        <div className="pipeline-item">
+                          <div className="pi-controls">
+                            <div className="pi-settings os-dropdown-trigger">
+                              <i className="os-icon os-icon-ui-49"></i>
+                            </div>
+                            <div className="pi-settings os-dropdown-trigger">
+                              <i
+                                className="os-icon os-icon-ui-15"
+                                onClick={() =>
+                                  onDeleteLeaveCategory(LeaveCategory)
+                                }
+                              ></i>
+                            </div>
+                          </div>
+                          <div className="pi-body">
+                            <div className="pi-info">
+                              <div className="h6 pi-name">
+                                {LeaveCategory.name}
+                              </div>
+                              <div className="pi-sub">
+                                {LeaveCategory.duration}
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              );
-            })}
-               </div>
-               </div>
+                  );
+                })}
+              </div>
+            </div>
             <div className="col-lg-4 col-xxl-3  d-xxl-block">
               <div className="element-wrapper">
                 <div className="element-box">
@@ -109,6 +115,7 @@ const LeaveCategory = props => {
                           placeholder="Enter leave type"
                           type="text"
                           name="name"
+                          value={name}
                           onChange={handleInputChange}
                         />
                       </div>
@@ -123,6 +130,7 @@ const LeaveCategory = props => {
                           placeholder="Enter leave duration"
                           type="text"
                           name="duration"
+                          value={duration}
                           onChange={handleInputChange}
                         />
                       </div>
