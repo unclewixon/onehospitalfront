@@ -10,14 +10,12 @@ import {
 	TOGGLE_CREATE_INVENTORY,
 	TOGGLE_EDIT_INVENTORY,
 	TOGGLE_UPDATE_QTY,
-	TOGGLE_CREATE_INV_CAT,
-	TOGGLE_EDIT_INV_CAT,
-	TOGGLE_CREATE_ROLE,
 	TOGGLE_VIEW_APPRAISAL,
 	TOGGLE_VIEW_PAYROLL_HISTORY,
 	TOGGLE_VIEW_CURRENT_PAYROLL,
 	TOGGLE_PREPARE_PAYROLL,
 	TOGGLE_EDIT_PAYROLL,
+	TOGGLE_TOGGLE_PROFILE,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -30,14 +28,12 @@ const INITIAL_STATE = {
 	create_inventory: false,
 	edit_inventory: false,
 	update_inventory_qty: false,
-	create_inv_cat: false,
-	edit_inv_cat: false,
-	create_role: false,
 	view_appraisal: false,
 	view_payroll_history: false,
 	current_payroll: false,
 	prepare_payroll: false,
 	edit_payroll: false,
+	is_profile_open: false,
 };
 
 const general = (state = INITIAL_STATE, action) => {
@@ -50,6 +46,8 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, preloading: false };
 		case TOGGLE_IS_MODAL:
 			return { ...state, is_modal: action.payload };
+		case TOGGLE_TOGGLE_PROFILE:
+			return { ...state, is_profile_open: action.payload };
 		case TOGGLE_MODAL:
 			return { ...state, is_modal_open: action.payload };
 		case TOGGLE_CREATE_STAFF:
@@ -64,12 +62,6 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, edit_inventory: action.payload };
 		case TOGGLE_UPDATE_QTY:
 			return { ...state, update_inventory_qty: action.payload };
-		case TOGGLE_CREATE_INV_CAT:
-			return { ...state, create_inv_cat: action.payload };
-		case TOGGLE_EDIT_INV_CAT:
-			return { ...state, edit_inv_cat: action.payload };
-		case TOGGLE_CREATE_ROLE:
-			return { ...state, create_role: action.payload };
 		case TOGGLE_VIEW_APPRAISAL:
 			return { ...state, view_appraisal: action.payload };
 		case TOGGLE_VIEW_PAYROLL_HISTORY:

@@ -1,34 +1,38 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useState } from 'react';
 
-import { createRole } from '../actions/general';
+import RoleBlock from '../components/RoleBlock';
+import Permission from '../components/Permission';
 
-class Roles extends Component {
-	render() {
-		return (
-			<div className="content-i">
-				<div className="content-box">
-					<div className="row">
-						<div className="col-sm-12">
-							<div className="element-wrapper">
-								<div className="element-actions">
-									<a className="btn btn-primary btn-sm" href="#" onClick={() => this.props.createRole(true)}>
-										<i className="os-icon os-icon-plus-circle"/>
-										<span>Create New Role</span>
-									</a>
-								</div>
-								<h6 className="element-header">Roles</h6>
-								<div className="element-box">
-									<div>content / table here</div>
+const Roles = () => {
+	const [tab, setTab] = useState('roles');
+
+	return (
+		<div className="content-i">
+			<div className="content-box">
+				<div className="row">
+					<div className="col-sm-12">
+						<div className="element-wrapper">
+							<div className="os-tabs-w mx-1">
+								<div className="os-tabs-controls">
+									<ul className="nav nav-tabs upper">
+										<li className="nav-item">
+											<a className={tab === 'roles' ? 'nav-link active' : 'nav-link'}  onClick={() => setTab('roles')}>ROLES</a>
+										</li>
+										<li className="nav-item">
+											<a className={tab === 'permissions' ? 'nav-link active' : 'nav-link'} onClick={() => setTab('permissions')}>PERMISSIONS</a>
+										</li>
+									</ul>
 								</div>
 							</div>
+							{tab === 'roles' && <RoleBlock />}
+             		 		{tab === 'permissions' && <Permission />}
 						</div>
 					</div>
 				</div>
 			</div>
-		);
-	}
-}
+		</div>
+	);
+};
 
-export default connect(null, { createRole })(Roles);
+export default Roles;

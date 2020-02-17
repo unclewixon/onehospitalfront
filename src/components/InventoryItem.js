@@ -18,7 +18,8 @@ class InventoryItem extends Component {
 	};
 
 	render() {
-		const { quantity } = this.props;
+		// const { item } = this.props;
+		const quantity = 0;
 		return (
 			<tr>
 				<td>23</td>
