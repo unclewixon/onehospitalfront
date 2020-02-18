@@ -30,7 +30,7 @@ class App extends Component {
 	}
 	
 	render() {
-		const { loggedIn, preloading, isModalOpen } = this.props;
+		const { loggedIn, preloading, is_modal_open } = this.props;
 		return  preloading ? (
 			<Splash />
 		) : 
@@ -44,10 +44,10 @@ class App extends Component {
 								<div className="all-wrapper with-side-panel solid-bg-all">
 									<div className="layout-w">
 										{/* user role determines main menu */}
-										<MainMenu role="admin" />
+										<MainMenu role="hr" />
 										<div className="content-w">
 											{/* user role determines topbar menu */}
-											<TopBar role="admin" />
+											<TopBar role="hr" />
 											<Switch>
 												<Route path="/doctor" component={Doctor} />
 												<Route path="/front-desk" component={FrontDesk} />
@@ -66,7 +66,9 @@ class App extends Component {
 									</div>
 									<ModalDialogs />
 								</div>
-								{isModalOpen && <div className={`modal-backdrop fade show`}/>}
+								{is_modal_open && (
+									<div className={`modal-backdrop fade show`}/>
+								)}
 							</>
 						) : (
 							<Switch>
@@ -84,7 +86,7 @@ class App extends Component {
 const mapStateToProps = state => {
 	return {
 		preloading: state.general.preloading,
-		isModalOpen: state.general.isModalOpen,
+		is_modal_open: state.general.is_modal_open,
 		loggedIn: state.user.loggedIn,
 	};
 };

@@ -74,8 +74,8 @@ const FrontDesk = () => {
                 </div>
               </div>
               {ShowAppointment === true && (<Appointments />)}
-			  {ShowDashboard === true && (<Dashboard />)}
-			  {ShowIncoming === true && (<Incoming />)}
+						  {ShowDashboard === true && (<Dashboard />)}
+						  {ShowIncoming === true && (<Incoming />)}
             </div>
           </div>
         </div>

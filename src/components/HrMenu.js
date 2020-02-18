@@ -16,6 +16,14 @@ const HrMenu = () => {
 				</Link>
 			</li>
 			<li>
+				<Link to="/staff-mgt/appraisal">
+					<div className="icon-w">
+						<div className="os-icon os-icon-layers"/>
+					</div>
+					<span>Appraisal</span>
+				</Link>
+			</li>
+			<li>
 				<Link to="/staff-mgt/payroll">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers"/>
