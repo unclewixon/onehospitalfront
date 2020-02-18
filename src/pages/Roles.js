@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component, useState } from "react";
 
-import TopBar from "../components/TopBar"
+import TopBar from "../components/TopBar";
 import ROLES from "../components/ROLES";
 import Permission from "../components/Permission";
 
@@ -18,7 +18,7 @@ const Roles = () => {
   const onPermission = () => {
     setROLES(false);
     SetPermission(true);
-  
+
   };
 
 

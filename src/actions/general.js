@@ -9,18 +9,23 @@ import {
 	TOGGLE_CREATE_INVENTORY,
 	TOGGLE_EDIT_INVENTORY,
 	TOGGLE_UPDATE_QTY,
-	TOGGLE_CREATE_INV_CAT,
-	TOGGLE_EDIT_INV_CAT,
-	TOGGLE_CREATE_ROLE,
 	TOGGLE_VIEW_APPRAISAL,
 	TOGGLE_VIEW_PAYROLL_HISTORY,
 	TOGGLE_VIEW_CURRENT_PAYROLL,
 	TOGGLE_PREPARE_PAYROLL,
 	TOGGLE_EDIT_PAYROLL,
+	TOGGLE_TOGGLE_PROFILE,
   TOGGLE_REGISTER_NEW_PATIENT,
   TOGGLE_CREATE_APPOINTMENT,
   TOGGLE_VIEW_APPOINTMENT_DETAIL
 } from './types';
+
+export const toggleProfile = status => {
+	return {
+		type: TOGGLE_TOGGLE_PROFILE,
+		payload: status,
+	};
+};
 
 export const toggleIsModal = status => {
 	return {
@@ -186,9 +191,6 @@ export const closeModals = () => {
 		dispatch(toggleCreateInventory(false));
 		dispatch(toggleEditInventory(false));
 		dispatch(toggleUpdateQuantity(false));
-		dispatch(toggleCreateInvCategory(false));
-		dispatch(toggleEditInvCategory(false));
-		dispatch(toggleCreateRole(false));
 		dispatch(toggleViewAppraisal(false));
 		dispatch(toggleViewPayrollHistory(false));
 		dispatch(toggleCurrentPayroll(false));
