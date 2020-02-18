@@ -23,7 +23,7 @@ const FrontDeskMenu = () => {
 					<span>Out-Patient</span>
 				</Link>
 			</li>
-			
+
             <li className="sub-header">
 				<span>GENERAL</span>
 			</li>
@@ -44,21 +44,21 @@ const FrontDeskMenu = () => {
 				</Link>
 			</li>
             <li class="has-sub-menu">
-                        <a href="layouts_menu_top_image.html">
-                            <div class="icon-w">
-                                <div class="os-icon os-icon-layers"></div>
-                            </div><span>Tools</span></a>
-                        <div class="sub-menu-w">
-                            <div class="sub-menu-header">Tools</div>
-                            <div class="sub-menu-icon"><i class="os-icon os-icon-layers"></i></div>
-                            <div class="sub-menu-i">
-                                <ul class="sub-menu">
-                                    <li><a href="layouts_menu_side_mini.html">SMS</a></li>
-                                    <li><a href="layouts_menu_side_mini.html">Emails</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
+              <a href="layouts_menu_top_image.html">
+                  <div class="icon-w">
+                      <div class="os-icon os-icon-layers"></div>
+                  </div><span>Tools</span></a>
+              <div class="sub-menu-w">
+                  <div class="sub-menu-header">Tools</div>
+                  <div class="sub-menu-icon"><i class="os-icon os-icon-layers"></i></div>
+                  <div class="sub-menu-i">
+                      <ul class="sub-menu">
+                          <li><a href="layouts_menu_side_mini.html">SMS</a></li>
+                          <li><a href="layouts_menu_side_mini.html">Emails</a></li>
+                      </ul>
+                  </div>
+              </div>
+          </li>
 		</>
 	);
 };
