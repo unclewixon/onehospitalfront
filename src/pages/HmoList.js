@@ -1,6 +1,56 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { addHmo, getAllHmos, updateHmo, deleteHmo } from "../actions/hmo";
 
-const HmoList = () => {
+const HmoList = props => {
+  const initialState = {
+    name: "",
+    email: "",
+    phoneNumber: "",
+    address: ""
+  };
+  const [{ name, email, phoneNumber, address }, setState] = useState(
+    initialState
+  );
+  const [logo, setLogo] = useState(null);
+  const handleInputChange = e => {
+    const { name, value } = e.target;
+    setState(prevState => ({ ...prevState, [name]: value }));
+  };
+
+  const handleFileChange = e => {
+    setLogo(e.target.files[0]);
+  };
+
+  const onAddHmo = e => {
+    e.preventDefault();
+    const data = new FormData();
+    data.append("name", name);
+    data.append("email", email);
+    data.append("phoneNumber", phoneNumber);
+    data.append("address", address);
+    data.append("logo", logo);
+
+    props.addHmo(data).then(response => {
+      setState({ ...initialState });
+    });
+  };
+
+  const onDeleteHmo = data => {
+    console.log(data);
+    props
+      .deleteHmo(data)
+      .then(data => {
+        console.log(data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+  useEffect(() => {
+    props.getAllHmos();
+  }, []);
+
   return (
     <div className="content-i">
       <div className="content-box">
@@ -38,174 +88,44 @@ const HmoList = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td>
-                            <div class="user-with-avatar">
-                              <img alt="" src={require("../assets/images/avatar1.jpg")} />
-                            </div>
-                          </td>
-                          <td>
-                            <div class="smaller lighter">Precious HMO</div>
-                          </td>
-                          <td>
-                            <span>08025087899</span>
-                          </td>
+                        {props.hmoList.map(hmo => {
+                          return (
+                            <tr>
+                              <td>
+                                <div class="user-with-avatar">
+                                  <img
+                                    alt=""
+                                    src={require("../assets/images/avatar1.jpg")}
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                <div class="smaller lighter">{hmo.name}</div>
+                              </td>
+                              <td>
+                                <span>{hmo.phoneNumber}</span>
+                              </td>
 
-                          <td class="nowrap">
-                            <span>support@hygeiahmo.com</span>
-                          </td>
-                          <td class="row-actions">
-                            <a href="#">
-                              <i class="os-icon os-icon-grid-10"></i>
-                            </a>
-                            <a href="#">
-                              <i class="os-icon os-icon-ui-44"></i>
-                            </a>
-                            <a class="danger" href="#">
-                              <i class="os-icon os-icon-ui-15"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="user-with-avatar">
-                              <img alt="" src={require("../assets/images/avatar2.jpg")} />
-                            </div>
-                          </td>
-                          <td>
-                            <div class="smaller lighter">Staff HMO</div>
-                          </td>
-                          <td>
-                            <span>08059275150</span>
-                          </td>
-
-                          <td class="nowrap">
-                            <span>kachi.agu@dedahospital.com</span>
-                          </td>
-                          <td class="row-actions">
-                            <a href="#">
-                              <i class="os-icon os-icon-grid-10"></i>
-                            </a>
-                            <a href="#">
-                              <i class="os-icon os-icon-ui-44"></i>
-                            </a>
-                            <a class="danger" href="#">
-                              <i class="os-icon os-icon-ui-15"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="user-with-avatar">
-                              <img alt="" src={require("../assets/images/avatar3.jpg")} />
-                            </div>
-                          </td>
-                          <td>
-                            <div class="smaller lighter">Mansard HMO</div>
-                          </td>
-                          <td>
-                            <span>07038142372</span>
-                          </td>
-
-                          <td class="nowrap">
-                            <span>benevolence@yahoo.com</span>
-                          </td>
-                          <td class="row-actions">
-                            <a href="#">
-                              <i class="os-icon os-icon-grid-10"></i>
-                            </a>
-                            <a href="#">
-                              <i class="os-icon os-icon-ui-44"></i>
-                            </a>
-                            <a class="danger" href="#">
-                              <i class="os-icon os-icon-ui-15"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="user-with-avatar">
-                              <img alt="" src="img/avatar1.jpg" />
-                            </div>
-                          </td>
-                          <td>
-                            <div class="smaller lighter">Zenith HMO</div>
-                          </td>
-                          <td>
-                            <span>09054736477</span>
-                          </td>
-
-                          <td class="nowrap">
-                            <span>welcome@hospital.com</span>
-                          </td>
-                          <td class="row-actions">
-                            <a href="#">
-                              <i class="os-icon os-icon-grid-10"></i>
-                            </a>
-                            <a href="#">
-                              <i class="os-icon os-icon-ui-44"></i>
-                            </a>
-                            <a class="danger" href="#">
-                              <i class="os-icon os-icon-ui-15"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="user-with-avatar">
-                              <img alt="" src={require("../assets/images/avatar4.jpg")} />
-                            </div>
-                          </td>
-                          <td>
-                            <div class="smaller lighter">Central Bank</div>
-                          </td>
-                          <td>
-                            <span>08187273749</span>
-                          </td>
-
-                          <td class="nowrap">
-                            <span>dedahospital@dedahospital.com</span>
-                          </td>
-                          <td class="row-actions">
-                            <a href="#">
-                              <i class="os-icon os-icon-grid-10"></i>
-                            </a>
-                            <a href="#">
-                              <i class="os-icon os-icon-ui-44"></i>
-                            </a>
-                            <a class="danger" href="#">
-                              <i class="os-icon os-icon-ui-15"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="user-with-avatar">
-                              <img alt="" src={require("../assets/images/avatar2.jpg")} />
-                            </div>
-                          </td>
-                          <td>
-                            <div class="smaller lighter">Reliance HMO</div>
-                          </td>
-                          <td>
-                            <span>08077355932</span>
-                          </td>
-
-                          <td class="nowrap">
-                            <span>emmanuelozomah@yahoo.com</span>
-                          </td>
-                          <td class="row-actions">
-                            <a href="#">
-                              <i class="os-icon os-icon-grid-10"></i>
-                            </a>
-                            <a href="#">
-                              <i class="os-icon os-icon-ui-44"></i>
-                            </a>
-                            <a class="danger" href="#">
-                              <i class="os-icon os-icon-ui-15"></i>
-                            </a>
-                          </td>
-                        </tr>
+                              <td class="nowrap">
+                                <span>{hmo.email}</span>
+                              </td>
+                              <td class="row-actions">
+                                <a href="#">
+                                  <i class="os-icon os-icon-grid-10"></i>
+                                </a>
+                                <a href="#">
+                                  <i class="os-icon os-icon-ui-44"></i>
+                                </a>
+                                <a
+                                  class="danger"
+                                  onClick={() => onDeleteHmo(hmo)}
+                                >
+                                  <i class="os-icon os-icon-ui-15"></i>
+                                </a>
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
@@ -217,13 +137,16 @@ const HmoList = () => {
             </div>
             <div className="col-lg-4 col-xxl-3  d-xxl-block">
               <div className="pipeline white lined-warning">
-                <form>
+                <form onSubmit={onAddHmo}>
                   <h6 className="form-header">Add New HMO</h6>
                   <div className="form-group">
                     <input
                       className="form-control"
                       placeholder="HMO Name"
                       type="text"
+                      name="name"
+                      value={name}
+                      onChange={handleInputChange}
                     />
                   </div>
                   <div className="form-group">
@@ -231,29 +154,45 @@ const HmoList = () => {
                       className="form-control"
                       placeholder="E-mail"
                       type="email"
+                      name="email"
+                      onChange={handleInputChange}
+                      value={email}
                     />
                   </div>
                   <div className="form-group">
                     <input
                       className="form-control"
-                      placeholder="Phone"
+                      placeholder="Phone Number"
                       type="Phone"
+                      name="phoneNumber"
+                      onChange={handleInputChange}
+                      value={phoneNumber}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <input
+                      className="form-control"
+                      placeholder="Address"
+                      name="address"
+                      type="text"
+                      onChange={handleInputChange}
+                      value={address}
                     />
                   </div>
                   <legend>
                     <span>Upload Logo</span>
                   </legend>
                   <div className="form-group">
-                    <form>
-                      <div className="form-group">
-                        <input
-                          type="file"
-                          class="form-control"
-                          placeholder="Upload Logo"
-                          id="exampleFormControlFile1"
-                        />
-                      </div>
-                    </form>
+                    <div className="form-group">
+                      <input
+                        type="file"
+                        class="form-control"
+                        placeholder="Upload Logo"
+                        id="exampleFormControlFile1"
+                        name="logo"
+                        onChange={handleFileChange}
+                      />
+                    </div>
                   </div>
                   <div className="form-buttons-w">
                     <button className="btn btn-primary" type="submit">
@@ -270,4 +209,15 @@ const HmoList = () => {
   );
 };
 
-export default HmoList;
+const mapStateToProps = state => {
+  return {
+    hmoList: state.hmo.hmo_list
+  };
+};
+
+export default connect(mapStateToProps, {
+  addHmo,
+  getAllHmos,
+  updateHmo,
+  deleteHmo
+})(HmoList);

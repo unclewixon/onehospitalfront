@@ -1,17 +1,19 @@
-import { combineReducers } from 'redux';
-import { routerReducer } from 'react-router-redux';
-import { reducer as formReducer } from 'redux-form';
+import { combineReducers } from "redux";
+import { routerReducer } from "react-router-redux";
+import { reducer as formReducer } from "redux-form";
 
-import user from './user';
-import general from './general';
-import settings from "./settings"
+import user from "./user";
+import general from "./general";
+import settings from "./settings";
+import hmo from "./hmo";
 
 const reducers = combineReducers({
-	form: formReducer,
-	routing: routerReducer,
-	user,
-	general,
-	settings
+  form: formReducer,
+  routing: routerReducer,
+  user,
+  general,
+  settings,
+  hmo
 });
 
 export default reducers;
