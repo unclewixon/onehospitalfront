@@ -10,13 +10,28 @@ import {
   ADD_ROOM_CATEGORY,
   GET_ALL_ROOM_CATEGORIES,
   UPDATE_ROOM_CATEGORY,
-  DELETE_ROOM_CATEGORY
+  DELETE_ROOM_CATEGORY,
+  ADD_LAB_TEST,
+  GET_ALL_LAB_TESTS,
+  UPDATE_LAB_TEST,
+  DELETE_LAB_TEST,
+  ADD_LAB_TEST_CATEGORY,
+  GET_ALL_LAB_TEST_CATEGORIES,
+  UPDATE_LAB_TEST_CATEGORY,
+  DELETE_LAB_TEST_CATEGORY,
+  ADD_LAB_TEST_PARAMETER,
+  GET_ALL_LAB_TEST_PARAMETERS,
+  UPDATE_LAB_TEST_PARAMETER,
+  DELETE_LAB_TEST_PARAMETER
 } from "../actions/types";
 
 const INITIAL_STATE = {
   department: [],
   rooms: [],
-  room_categories: []
+  room_categories: [],
+  lab_tests: [],
+  lab_categories: [],
+  lab_parameters: []
 };
 
 const settings = (state = INITIAL_STATE, action) => {
@@ -60,6 +75,54 @@ const settings = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         room_categories: state.room_categories.filter(
+          deletedItem => deletedItem.id !== action.payload.id
+        )
+      };
+    case ADD_LAB_TEST:
+      return {
+        ...state,
+        lab_tests: [...state.lab_tests, action.payload]
+      };
+    case GET_ALL_LAB_TESTS:
+      return { ...state, lab_tests: action.payload };
+    case UPDATE_LAB_TEST:
+      return { ...state, updated_room: action.payload };
+    case DELETE_LAB_TEST:
+      return {
+        ...state,
+        lab_tests: state.lab_tests.filter(
+          deletedItem => deletedItem.id !== action.payload.id
+        )
+      };
+    case ADD_LAB_TEST_CATEGORY:
+      return {
+        ...state,
+        lab_categories: [...state.lab_categories, action.payload]
+      };
+    case GET_ALL_LAB_TEST_CATEGORIES:
+      return { ...state, lab_categories: action.payload };
+    case UPDATE_LAB_TEST_CATEGORY:
+      return { ...state, updated_room: action.payload };
+    case DELETE_LAB_TEST_CATEGORY:
+      return {
+        ...state,
+        lab_categories: state.lab_categories.filter(
+          deletedItem => deletedItem.id !== action.payload.id
+        )
+      };
+    case ADD_LAB_TEST_PARAMETER:
+      return {
+        ...state,
+        lab_parameters: [...state.lab_parameters, action.payload]
+      };
+    case GET_ALL_LAB_TEST_PARAMETERS:
+      return { ...state, lab_parameters: action.payload };
+    case UPDATE_LAB_TEST_PARAMETER:
+      return { ...state, updated_room: action.payload };
+    case DELETE_LAB_TEST_PARAMETER:
+      return {
+        ...state,
+        lab_parameters: state.lab_parameters.filter(
           deletedItem => deletedItem.id !== action.payload.id
         )
       };
