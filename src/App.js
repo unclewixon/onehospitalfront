@@ -8,6 +8,7 @@ import TopBar from './components/TopBar';
 import MainMenu from './components/MainMenu';
 import ModalDialogs from './components/ModalDialogs';
 import Splash from './components/Splash';
+import SlidingPane from './components/SlidingPane';
 
 const Login = lazy(() => import('./pages/Login'));
 const Doctor = lazy(() => import('./pages/Doctor'));
@@ -21,19 +22,20 @@ const Vitals = lazy(() => import('./pages/Vitals'));
 const Staff = lazy(() => import('./pages/Staff'));
 const Inventory = lazy(() => import('./pages/Inventory'));
 const Settings = lazy(() => import('./pages/Settings'));
-const Hmo = lazy(() => import('./pages/Hmo'))
+const StaffProfile = lazy(() => import('./pages/StaffProfile'));
+const Hmo = lazy(() => import('./pages/Hmo'));
 
 class App extends Component {
 	componentDidMount() {
 		window.document.body.className =
 			'menu-position-side menu-side-left with-content-panel';
 	}
-	
+
 	render() {
-		const { loggedIn, preloading, is_modal_open } = this.props;
+		const { loggedIn, preloading, is_modal_open, is_profile_open } = this.props;
 		return  preloading ? (
 			<Splash />
-		) : 
+		) :
 		(
 			<>
 				<ToastContainer autoClose={3500} />
@@ -44,16 +46,15 @@ class App extends Component {
 								<div className="all-wrapper with-side-panel solid-bg-all">
 									<div className="layout-w">
 										{/* user role determines main menu */}
-										<MainMenu role="hr" />
+										<MainMenu role="admin" />
 										<div className="content-w">
 											{/* user role determines topbar menu */}
-											<TopBar role="hr" />
+											<TopBar role="admin" />
 											<Switch>
 												<Route path="/doctor" component={Doctor} />
 												<Route path="/front-desk" component={FrontDesk} />
 												<Route path="/in-patient" component={InPatient} />
 												<Route path="/lab" component={Laboratory} />
-												<Route path="/patient/:id" component={PatientProfile} />
 												<Route path="/pharmacy" component={Pharmacy} />
 												<Route path="/vitals" component={Vitals} />
 												<Route path="/staff-mgt" component={Staff} />
@@ -65,6 +66,12 @@ class App extends Component {
 										</div>
 									</div>
 									<ModalDialogs />
+									<SlidingPane isOpen={is_profile_open}>
+										<StaffProfile />
+									</SlidingPane>
+									<SlidingPane isOpen={false}>
+										<PatientProfile />
+									</SlidingPane>
 								</div>
 								{is_modal_open && (
 									<div className={`modal-backdrop fade show`}/>
@@ -88,6 +95,7 @@ const mapStateToProps = state => {
 		preloading: state.general.preloading,
 		is_modal_open: state.general.is_modal_open,
 		loggedIn: state.user.loggedIn,
+		is_profile_open: state.general.is_profile_open,
 	};
 };
 

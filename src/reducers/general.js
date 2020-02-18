@@ -21,6 +21,7 @@ import {
 	TOGGLE_VIEW_CURRENT_PAYROLL,
 	TOGGLE_PREPARE_PAYROLL,
 	TOGGLE_EDIT_PAYROLL,
+	TOGGLE_TOGGLE_PROFILE,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -44,6 +45,7 @@ const INITIAL_STATE = {
 	current_payroll: false,
 	prepare_payroll: false,
 	edit_payroll: false,
+	is_profile_open: false,
 };
 
 const general = (state = INITIAL_STATE, action) => {
@@ -56,6 +58,8 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, preloading: false };
 		case TOGGLE_IS_MODAL:
 			return { ...state, is_modal: action.payload };
+		case TOGGLE_TOGGLE_PROFILE:
+			return { ...state, is_profile_open: action.payload };
 		case TOGGLE_MODAL:
 			return { ...state, is_modal_open: action.payload };
 		case TOGGLE_CREATE_STAFF:

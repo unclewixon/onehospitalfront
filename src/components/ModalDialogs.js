@@ -8,9 +8,6 @@ import ModalLeaveHistory from './ModalLeaveHistory';
 import ModalCreateInventory from './ModalCreateInventory';
 import ModalEditInventory from './ModalEditInventory';
 import ModalUpdInventoryQty from './ModalUpdInventoryQty';
-import ModalCreateInvCategory from './ModalCreateInvCategory';
-import ModalEditInvCategory from './ModalEditInvCategory';
-import ModalCreateRole from './ModalCreateRole';
 import ModalViewAppraisal from './ModalViewAppraisal';
 import ModalPayrollHistory from './ModalPayrollHistory';
 import ModalCurrentPayroll from './ModalCurrentPayroll';
@@ -29,9 +26,6 @@ const ModalDialogs = ({ create_staff, add_task,  show_history, create_inventory,
 			{create_inventory && <ModalCreateInventory />}
 			{edit_inventory && <ModalEditInventory />}
 			{update_inventory_qty && <ModalUpdInventoryQty />}
-			{create_inv_cat && <ModalCreateInvCategory />}
-			{edit_inv_cat && <ModalEditInvCategory />}
-			{create_role && <ModalCreateRole />}
 			{view_appraisal && <ModalViewAppraisal />}
 			{view_payroll_history && <ModalPayrollHistory />}
 			{current_payroll && <ModalCurrentPayroll />}

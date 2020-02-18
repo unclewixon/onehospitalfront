@@ -1,20 +1,18 @@
 import React, { useState } from "react";
-import {connect} from "react-redux"
-import {addTask} from "../actions/general"
+import { connect } from "react-redux";
+import { addTask } from "../actions/general";
 
-
-const ServicesList = (props) => {
+const ServicesList = props => {
   const [moreDetailConsultation, setMoreDetailConsultation] = useState(false);
 
   const onMoreDetailConsultation = () => {
     setMoreDetailConsultation(!moreDetailConsultation);
   };
 
-  const onAddTask=e=> {
+  const onAddTask = e => {
     e.preventDefault();
-    console.log(props)
-		props.addTask(true);
-  }
+    props.addTask(true);
+  };
 
   return (
     <div className="pipelines-w">
@@ -415,10 +413,8 @@ const ServicesList = (props) => {
             </div>
           </div>
         </div>
-        
       </div>
-      
     </div>
   );
 };
-export default connect(null, {addTask})(ServicesList);
+export default connect(null, { addTask })(ServicesList);

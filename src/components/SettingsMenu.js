@@ -3,10 +3,7 @@ import { Link } from 'react-router-dom';
 
 const SettingsMenu = () => {
 	return (
-		<>
-			<li className="sub-header">
-				<span>Settings Mgt</span>
-			</li>
+		<ul>
 			<li>
 				<Link to="/settings/roles">
 					<div className="icon-w">
@@ -55,7 +52,7 @@ const SettingsMenu = () => {
 					<span>Room Management</span>
 				</Link>
 			</li>
-		</>
+		</ul>
 	);
 };
 
