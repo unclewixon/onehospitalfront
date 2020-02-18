@@ -10,7 +10,9 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import configureStore from './store';
 import history from './services/history';
+import Notify from './services/notify';
 
+Notify.notifications.subscribe(alert => alert instanceof Function && alert());
 const store = configureStore();
 
 ReactDOM.render(

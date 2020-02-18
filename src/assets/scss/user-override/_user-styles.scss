@@ -5,7 +5,8 @@ a {
 button {
 	outline: 0 none !important;
 }
-
+.text-bold {font-weight: bold !important;}
+.alert {border-right: 0 none;border-left: none;border-radius: 0;padding: 0.25rem 1.25rem;}
 .balance {
 	.balance-title {
 		font-size: 0.8rem;
@@ -19,7 +20,12 @@ button {
 		}
 	}
 }
-
+.pagination-center {position: relative;justify-content: flex-end;}
+.ant-pagination-total-text {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
 .row-expand-icon {
 	color: #1890ff;
 	text-decoration: none;
@@ -58,9 +64,11 @@ button {
 	.table {
 		background: #fbfbfb;
 	}
-
 	.table-striped tr {
-		background: #fbfbfb !important;
+		background: #fbfbfb;
+	}
+	.table-striped tbody tr:nth-of-type(odd) {
+		background: #fbfbfb;
 	}
 }
 
@@ -136,4 +144,23 @@ button {
 		height: 72px;
 		opacity: 0;
 	}
+}
+.leave-box {
+	.element-header {margin-top: 24px;}
+	.table-striped tbody tr:nth-of-type(odd) {
+		background: #ffffff;
+	}
+	.table {
+		background: #ffffff;
+	}
+	.table-striped tr {
+		background: #ffffff;
+	}
+}
+.payroll-details {
+    background-color: #fff6f2;
+	border-radius: 6px;
+	padding: 20px 25px;
+
+	&.deductions {background-color: #f6f2ff;}
 }

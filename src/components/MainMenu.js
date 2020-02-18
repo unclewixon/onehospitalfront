@@ -6,8 +6,11 @@ import $ from 'jquery';
 import avatar1 from '../assets/images/avatar1.jpg';
 import PatientMenu from './PatientMenu';
 import HrMenu from './HrMenu';
+import SettingsMenu from './SettingsMenu';
 import DoctorMenu from './DoctorMenu';
-import FrontDeskMenu from "./FrontDeskMenu"
+import InventoryMenu from './InventoryMenu';
+import AdminMenu from './AdminMenu';
+import FrontDeskMenu from "./FrontDeskMenu";
 
 class MainMenu extends Component {
 	componentDidMount() {
@@ -44,9 +47,9 @@ class MainMenu extends Component {
 
 	render() {
 		let { role } = this.props;
-		role = "hr"
+		role = "patient"
 		return (
-			<div className="menu-w color-scheme-dark color-style-bright menu-position-side menu-side-left sub-menu-style-over sub-menu-color-bright selected-menu-color-light menu-activated-on-hover menu-has-selected-link" ref="menu_activated_on_hover">
+			<div className={`menu-w selected-menu-color-light color-scheme-dark color-style-bright menu-position-side menu-side-left sub-menu-color-bright sub-menu-style-over menu-activated-on-hover menu-has-selected-link ${role !== 'admins' ? '' : 'menu-layout-compact'}`} ref="menu_activated_on_hover">
 				<div className="logo-w">
 					<Link className="logo" to="/">
 						<div className="logo-element"/>

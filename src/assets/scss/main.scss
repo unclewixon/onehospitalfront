@@ -42,6 +42,10 @@ TABLE OF CONTENTS
 ##. Responsive Styles
 
 */
+
+// antd
+@import '~antd/dist/antd.css';
+
 /* 1. Theme Variables */
 @import "theme-variables";
 /* 1a. User Override Variables */
@@ -123,3 +127,4 @@ TABLE OF CONTENTS
 @import "responsive";
 /* ##. User Override Styles */
 @import "user-override/user-styles";
+@import "user-override/modal-slide"

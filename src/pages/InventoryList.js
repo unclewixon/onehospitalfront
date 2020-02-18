@@ -1,27 +1,44 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import InventoryItem from '../components/InventoryItem';
 import { createInventory } from '../actions/general';
 
+import { request } from '../services/utilities';
+import { API_URI, inventoryAPI } from '../services/constants';
+import { loadInventories } from '../actions/inventory';
+
 class InventoryList extends Component {
+	componentDidMount() {
+		//this.fetchInventories();
+	}
+	
+	fetchInventories = async () => {
+		try {
+			const rs = await request(`${API_URI}${inventoryAPI}/stocks-by-category/c3f6d099-6c65-4d15-bf8c-b2c06b38aeb0`, 'GET', true);
+			this.props.loadInventories(rs)
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	render() {
+		const { inventories } = this.props;
 		return (
 			<div className="content-i">
 				<div className="content-box">
 					<div className="row">
 						<div className="col-sm-12">
 							<div className="element-wrapper">
-								<div className="element-wrapper pb-4 mb-4 border-bottom">
-									<div className="element-box-tp">
-										<button className="btn btn-primary" onClick={() => this.props.createInventory(true)}>
-											<i className="os-icon os-icon-plus-circle" />
-											<span>Create New Inventory</span>
-										</button>
-									</div>
+								<div className="element-actions">
+									<a className="btn btn-primary btn-sm" href="#" onClick={() => this.props.createInventory(true)}>
+										<i className="os-icon os-icon-plus-circle"/>
+										<span>Create New Inventory</span>
+									</a>
 								</div>
+								<h6 className="form-header">Inventory List</h6>
 								<div className="element-box">
-									<h5 className="form-header">Inventory List</h5>
 									<div className="table-responsive">
 										<table className="table table-striped">
 											<thead>
@@ -38,10 +55,14 @@ class InventoryList extends Component {
 												</tr>
 											</thead>
 											<tbody>
-												<InventoryItem quantity={14} />
-												<InventoryItem quantity={2} />
-												<InventoryItem quantity={8} />
-												<InventoryItem quantity={24} />
+												{inventories.map((inv, i) => {
+													return (
+														<InventoryItem
+															key={i}
+															item={inv}
+														/>
+													)
+												})}
 											</tbody>
 										</table>
 									</div>
@@ -55,4 +76,10 @@ class InventoryList extends Component {
 	}
 }
 
-export default connect(null, { createInventory })(InventoryList);
+const mapStateToProps = (state, ownProps) => {
+	return {
+		inventories: state.inventory.inventories,
+	}
+};
+
+export default connect(mapStateToProps, { createInventory, loadInventories })(InventoryList);

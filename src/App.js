@@ -8,6 +8,7 @@ import TopBar from './components/TopBar';
 import MainMenu from './components/MainMenu';
 import ModalDialogs from './components/ModalDialogs';
 import Splash from './components/Splash';
+import SlidingPane from './components/SlidingPane';
 
 const Login = lazy(() => import('./pages/Login'));
 const Doctor = lazy(() => import('./pages/Doctor'));
@@ -21,19 +22,20 @@ const Vitals = lazy(() => import('./pages/Vitals'));
 const Staff = lazy(() => import('./pages/Staff'));
 const Inventory = lazy(() => import('./pages/Inventory'));
 const Settings = lazy(() => import('./pages/Settings'));
-const Hmo = lazy(() => import('./pages/Hmo'))
+const StaffProfile = lazy(() => import('./pages/StaffProfile'));
+const Hmo = lazy(() => import('./pages/Hmo'));
 
 class App extends Component {
 	componentDidMount() {
 		window.document.body.className =
 			'menu-position-side menu-side-left with-content-panel';
 	}
-	
+
 	render() {
-		const { loggedIn, preloading, isModalOpen } = this.props;
+		const { loggedIn, preloading, is_modal_open, is_profile_open } = this.props;
 		return  preloading ? (
 			<Splash />
-		) : 
+		) :
 		(
 			<>
 				<ToastContainer autoClose={3500} />
@@ -53,7 +55,6 @@ class App extends Component {
 												<Route path="/front-desk" component={FrontDesk} />
 												<Route path="/in-patient" component={InPatient} />
 												<Route path="/lab" component={Laboratory} />
-												<Route path="/patient/:id" component={PatientProfile} />
 												<Route path="/pharmacy" component={Pharmacy} />
 												<Route path="/vitals" component={Vitals} />
 												<Route path="/staff-mgt" component={Staff} />
@@ -65,8 +66,16 @@ class App extends Component {
 										</div>
 									</div>
 									<ModalDialogs />
+									<SlidingPane isOpen={is_profile_open}>
+										<StaffProfile />
+									</SlidingPane>
+									<SlidingPane isOpen={false}>
+										<PatientProfile />
+									</SlidingPane>
 								</div>
-								{isModalOpen && <div className={`modal-backdrop fade show`}/>}
+								{is_modal_open && (
+									<div className={`modal-backdrop fade show`}/>
+								)}
 							</>
 						) : (
 							<Switch>
@@ -84,8 +93,9 @@ class App extends Component {
 const mapStateToProps = state => {
 	return {
 		preloading: state.general.preloading,
-		isModalOpen: state.general.isModalOpen,
+		is_modal_open: state.general.is_modal_open,
 		loggedIn: state.user.loggedIn,
+		is_profile_open: state.general.is_profile_open,
 	};
 };
 

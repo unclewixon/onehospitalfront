@@ -35,7 +35,7 @@ class NotificationService {
 		} catch (ex) {
 			notifications.next(() => toast.error(ex.message, this.configuration));
 		}
-		notifications.next(null);
+		// notifications.next(null);
 	};
 }
 

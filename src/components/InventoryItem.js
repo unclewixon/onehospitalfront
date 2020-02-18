@@ -18,7 +18,8 @@ class InventoryItem extends Component {
 	};
 
 	render() {
-		const { quantity } = this.props;
+		// const { item } = this.props;
+		const quantity = 0;
 		return (
 			<tr>
 				<td>23</td>
@@ -44,7 +45,7 @@ class InventoryItem extends Component {
 						<i className="os-icon os-icon-edit-32" />
 					</a>
 					<a href="#" onClick={this.doUpdateQuantity} className="secondary" title="Update Quantity">
-						<i className="os-icon os-icon-grid-squares-2" />
+						<i className="os-icon os-icon-folder-plus" />
 					</a>
 				</td>
 			</tr>
