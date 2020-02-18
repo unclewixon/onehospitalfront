@@ -24,7 +24,11 @@ import {
   ADD_LAB_TEST_PARAMETER,
   GET_ALL_LAB_TEST_PARAMETERS,
   UPDATE_LAB_TEST_PARAMETER,
-  DELETE_LAB_TEST_PARAMETER
+  DELETE_LAB_TEST_PARAMETER,
+  ADD_LEAVE_CATEGORY,
+  GET_ALL_LEAVE_CATEGORIES,
+  UPDATE_LEAVE_CATEGORY,
+  DELETE_LEAVE_CATEGORY
 } from "./types";
 
 //department
@@ -194,6 +198,35 @@ export const update_lab_test_parameter = payload => {
 export const delete_lab_test_parameter = payload => {
   return {
     type: DELETE_LAB_TEST_PARAMETER,
+    payload
+  };
+};
+
+//Leave Category
+export const add_leave_category = payload => {
+  return {
+    type: ADD_LEAVE_CATEGORY,
+    payload
+  };
+};
+
+export const get_all_leave_category = payload => {
+  return {
+    type: GET_ALL_LEAVE_CATEGORIES,
+    payload
+  };
+};
+
+export const update_leave_category = payload => {
+  return {
+    type: UPDATE_LEAVE_CATEGORY,
+    payload
+  };
+};
+
+export const delete_leave_category = payload => {
+  return {
+    type: DELETE_LEAVE_CATEGORY,
     payload
   };
 };
@@ -551,6 +584,62 @@ export const deleteLabTestParameters = data => {
       .delete(`http://178.128.36.29:3000/lab-tests/parameters/${data.id}`)
       .then(response => {
         return dispatch(delete_lab_test_parameter(data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+//Leave Category
+export const addLeaveCategory = data => {
+  return dispatch => {
+    return axios
+      .post(`http://178.128.36.29:3000/leave-category`, {
+        name: data.name,
+        duration: data.name
+      })
+      .then(response => {
+        return dispatch(add_leave_category(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const getAllLeaveCategory = data => {
+  return dispatch => {
+    return axios
+      .get(`http://178.128.36.29:3000/leave-category`)
+      .then(response => {
+        return dispatch(get_all_leave_category(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const updateLeaveCategory = data => {
+  return dispatch => {
+    return axios
+      .patch(`http://178.128.36.29:3000/leave-category`, { name: data.name })
+      .then(response => {
+        return dispatch(update_leave_category(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const deleteLeaveCategory = data => {
+  return dispatch => {
+    return axios
+      .delete(`http://178.128.36.29:3000/leave-category/${data.id}`)
+      .then(response => {
+        return dispatch(delete_leave_category(data));
       })
       .catch(error => {
         console.log(error);

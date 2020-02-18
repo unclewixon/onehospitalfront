@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-
+import { Carousel } from "react-bootstrap";
 import { closeModals } from "../actions/general";
 
 class ModalRegisterNewPatient extends Component {
+  state = {
+    index: 0
+  };
   componentDidMount() {
     document.body.classList.add("modal-open");
   }
@@ -12,6 +15,10 @@ class ModalRegisterNewPatient extends Component {
     document.body.classList.remove("modal-open");
   }
 
+  handleSelect = (selectedIndex, e) => {
+    this.setState({ index: selectedIndex });
+  };
+
   render() {
     return (
       <div
@@ -19,7 +26,7 @@ class ModalRegisterNewPatient extends Component {
         role="dialog"
         style={{ display: "block" }}
       >
-        <div class="modal-dialog modal-centered" role="document">
+        <div class="modal-dialog modal-lg" role="document">
           <div class="modal-content text-center">
             <div class="modal-header faded smaller">
               <div class="modal-title">
@@ -42,141 +49,355 @@ class ModalRegisterNewPatient extends Component {
                 <span aria-hidden="true"> ×</span>
               </button>
             </div>
-
-            <div class="onboarding-content with-gradient">
-              <div class="modal-body">
-                <form>
-                  <div class="form-group">
-                    <label for=""> Email address</label>
-                    <input
-                      class="form-control"
-                      placeholder="Enter email"
-                      type="email"
-                    />
-                  </div>
-                  <div class="row">
-                    <div class="col-sm-6">
-                      <div class="form-group">
-                        <label for=""> Password</label>
-                        <input
-                          class="form-control"
-                          placeholder="Password"
-                          type="password"
-                        />
-                      </div>
-                    </div>
-                    <div class="col-sm-6">
-                      <div class="form-group">
-                        <label for="">Confirm Password</label>
-                        <input
-                          class="form-control"
-                          placeholder="Password"
-                          type="password"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for=""> Regular select</label>
-                    <select class="form-control">
-                      <option>Select State</option>
-                      <option>New York</option>
-                      <option>California</option>
-                      <option>Boston</option>
-                      <option>Texas</option>
-                      <option>Colorado</option>
-                    </select>
-                  </div>
-
-                  <fieldset class="form-group">
-                    <div class="row">
-                      <div class="col-sm-6">
-                        <div class="form-group">
-                          <label for=""> First Name</label>
-                          <input
-                            class="form-control"
-                            placeholder="First Name"
-                            type="text"
-                          />
-                        </div>
-                      </div>
-                      <div class="col-sm-6">
-                        <div class="form-group">
-                          <label for="">Last Name</label>
-                          <input
-                            class="form-control"
-                            placeholder="Last Name"
-                            type="text"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-sm-6">
-                        <div class="form-group">
-                          <label for=""> Date Picker</label>
-                          <div class="date-input">
-                            <input
-                              class="single-daterange form-control"
-                              placeholder="Date of birth"
-                              type="text"
-                              value="04/12/1978"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-sm-6">
-                        <div class="form-group">
-                          <label for="">Phone number</label>
-                          <div class="input-group">
-                            <div class="input-group-prepend">
-                              <div class="input-group-text">+234</div>
-                            </div>
+            <Carousel
+              activeIndex={this.state.index}
+              onSelect={this.handleSelect}
+              controls={false}
+            >
+              <Carousel.Item>
+                <h5 class="form-header">New patient registration</h5>
+                <div class="form-desc"></div>
+                <div class="onboarding-content with-gradient">
+                  <div class="modal-body">
+                    <form>
+                      <div class="row">
+                        <div class="col-sm">
+                          <div class="form-group">
+                            <label for="">First Name</label>
                             <input
                               class="form-control"
-                              placeholder="Twitter Username"
+                              placeholder="Enter first name"
                               type="text"
+                              value=""
+                            />
+                          </div>
+                        </div>
+                        <div class="col-sm">
+                          <div class="form-group">
+                            <label for="">Last Name</label>
+                            <input
+                              class="form-control"
+                              placeholder="Enter last name"
+                              type="text"
+                              value=""
+                            />
+                          </div>
+                        </div>
+                        <div class="col-sm">
+                          <div class="form-group">
+                            <label for="">Other Name</label>
+                            <input
+                              class="form-control"
+                              placeholder="Enter other names here"
+                              type="text"
+                              value=""
                             />
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div class="form-group">
-                      <label> Example textarea</label>
-                      <textarea class="form-control" rows="3"></textarea>
-                    </div>
-                  </fieldset>
-                  <div class="form-check">
-                    <label class="form-check-label">
-                      <input class="form-check-input" type="checkbox" />I agree
-                      to terms and conditions
-                    </label>
+                      <div class="row">
+                        <div class="col-sm">
+                          <div class="form-group">
+                            <label for="">Date of birth</label>
+                            <input
+                              class="form-control"
+                              placeholder="04/12/1978"
+                              type="text"
+                              value=""
+                            />
+                          </div>
+                        </div>
+                        <div class="col-sm">
+                          <div class="form-group">
+                            <label for="">Gender</label>
+                            <select
+                              class="form-control"
+                              placeholder="Enter your full name..."
+                              type="text"
+                              value=""
+                            >
+                              <option>Male</option>
+                              <option>Female</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-sm">
+                          <div class="form-group">
+                            <label for="">Marital Status</label>
+                            <select
+                              class="form-control"
+                              placeholder="Enter your full name..."
+                              type="text"
+                              value=""
+                            >
+                              <option>Single</option>
+                              <option>Married</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm">
+                          <div class="form-group">
+                            <label for="">HMO</label>
+                            <select
+                              class="form-control"
+                              placeholder="Enter your full name..."
+                              type="text"
+                              value=""
+                            >
+                              <option>Hmo list</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-sm">
+                          <div class="form-group">
+                            <label for="">Occupation</label>
+                            <input
+                              class="form-control"
+                              placeholder="Enter your full name..."
+                              type="text"
+                              value=""
+                            />
+                          </div>
+                        </div>
+                        <div class="col-sm">
+                          <div class="form-group">
+                            <label for="">Ethnicity</label>
+                            <select
+                              class="form-control"
+                              placeholder="Enter your full name..."
+                              type="text"
+                              value=""
+                            >
+                              <option>Igbo</option>
+                              <option>Hausa</option>
+                              <option>Kanuri</option>
+                              <option>Other</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-8">
+                          <div class="form-group">
+                            <label for="">Address</label>
+                            <input
+                              class="form-control"
+                              placeholder="Enter your full name..."
+                              type="text"
+                              value=""
+                            />
+                          </div>
+                        </div>
+                        <div class="col-sm">
+                          <div class="form-group">
+                            <label for="">Email</label>
+                            <input
+                              class="form-control"
+                              placeholder="example@email.com"
+                              type="text"
+                              value=""
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </form>
                   </div>
-                  <div class="form-buttons-w">
-                    <button class="btn btn-primary" type="submit">
+
+                  <div class="modal-footer buttons-on-right">
+                    <button
+                      class="btn btn-teal"
+                      type="button"
+                      onClick={() => this.props.closeModals(false)}
+                    >
                       {" "}
-                      Save
+                      Cancel
+                    </button>
+                    <button
+                      class="btn btn-link"
+                      data-dismiss="modal"
+                      type="button"
+                      onClick={() => this.setState({ index: 1 })}
+                    >
+                      {" "}
+                      Next
                     </button>
                   </div>
-                </form>
-              </div>
+                </div>
+              </Carousel.Item>
+              <Carousel.Item>
+                <h6 class="form-header">Partner/Next of Kin</h6>
+                <div class="form-desc"></div>
+                <div class="onboarding-content with-gradient">
+                  <div class="modal-body">
+                    <form>
+                      <div class="row">
+                        <div class="col-sm">
+                          <div class="form-group">
+                            <label for="">First Name</label>
+                            <input
+                              class="form-control"
+                              placeholder="Enter first name"
+                              type="text"
+                              value=""
+                            />
+                          </div>
+                        </div>
+                        <div class="col-sm">
+                          <div class="form-group">
+                            <label for="">Last Name</label>
+                            <input
+                              class="form-control"
+                              placeholder="Enter last name"
+                              type="text"
+                              value=""
+                            />
+                          </div>
+                        </div>
+                        <div class="col-sm">
+                          <div class="form-group">
+                            <label for="">Other Name</label>
+                            <input
+                              class="form-control"
+                              placeholder="Enter other names here"
+                              type="text"
+                              value=""
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm">
+                          <div class="form-group">
+                            <label for="">Date of birth</label>
+                            <input
+                              class="form-control"
+                              placeholder="04/12/1978"
+                              type="text"
+                              value=""
+                            />
+                          </div>
+                        </div>
+                        <div class="col-sm">
+                          <div class="form-group">
+                            <label for="">Gender</label>
+                            <select
+                              class="form-control"
+                              placeholder="Enter your full name..."
+                              type="text"
+                              value=""
+                            >
+                              <option>Male</option>
+                              <option>Female</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-sm">
+                          <div class="form-group">
+                            <label for="">Marital Status</label>
+                            <select
+                              class="form-control"
+                              placeholder="Enter your full name..."
+                              type="text"
+                              value=""
+                            >
+                              <option>Single</option>
+                              <option>Married</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm">
+                          <div class="form-group">
+                            <label for="">HMO</label>
+                            <select
+                              class="form-control"
+                              placeholder="Enter your full name..."
+                              type="text"
+                              value=""
+                            >
+                              <option>Hmo list</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-sm">
+                          <div class="form-group">
+                            <label for="">Occupation</label>
+                            <input
+                              class="form-control"
+                              placeholder="Enter your full name..."
+                              type="text"
+                              value=""
+                            />
+                          </div>
+                        </div>
+                        <div class="col-sm">
+                          <div class="form-group">
+                            <label for="">Ethnicity</label>
+                            <select
+                              class="form-control"
+                              placeholder="Enter your full name..."
+                              type="text"
+                              value=""
+                            >
+                              <option>Igbo</option>
+                              <option>Hausa</option>
+                              <option>Kanuri</option>
+                              <option>Other</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-8">
+                          <div class="form-group">
+                            <label for="">Address</label>
+                            <input
+                              class="form-control"
+                              placeholder="Enter your full name..."
+                              type="text"
+                              value=""
+                            />
+                          </div>
+                        </div>
+                        <div class="col-sm">
+                          <div class="form-group">
+                            <label for="">Email</label>
+                            <input
+                              class="form-control"
+                              placeholder="example@email.com"
+                              type="text"
+                              value=""
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
 
-              <div class="modal-footer buttons-on-left">
-                <button class="btn btn-teal" type="button">
-                  {" "}
-                  Save changes
-                </button>
-                <button
-                  class="btn btn-link"
-                  data-dismiss="modal"
-                  type="button"
-                  onClick={() => this.props.closeModals(false)}
-                >
-                  {" "}
-                  Cancel
-                </button>
-              </div>
-            </div>
+                  <div class="modal-footer ">
+                    <button
+                      class="btn btn-teal buttons-on-left"
+                      type="button"
+                      onClick={() => this.setState({ index: 0 })}
+                    >
+                      {" "}
+                      Previous
+                    </button>
+                    <button
+                      class="btn btn-teal buttons-on-right"
+                      type="button"
+                      onClick={() => this.setState({ index: 0 })}
+                    >
+                      {" "}
+                      Submit
+                    </button>
+                  </div>
+                </div>
+              </Carousel.Item>
+            </Carousel>
           </div>
         </div>
       </div>

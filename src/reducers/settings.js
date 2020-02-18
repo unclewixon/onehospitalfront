@@ -22,7 +22,11 @@ import {
   ADD_LAB_TEST_PARAMETER,
   GET_ALL_LAB_TEST_PARAMETERS,
   UPDATE_LAB_TEST_PARAMETER,
-  DELETE_LAB_TEST_PARAMETER
+  DELETE_LAB_TEST_PARAMETER,
+  ADD_LEAVE_CATEGORY,
+  GET_ALL_LEAVE_CATEGORIES,
+  UPDATE_LEAVE_CATEGORY,
+  DELETE_LEAVE_CATEGORY
 } from "../actions/types";
 
 const INITIAL_STATE = {
@@ -31,7 +35,8 @@ const INITIAL_STATE = {
   room_categories: [],
   lab_tests: [],
   lab_categories: [],
-  lab_parameters: []
+  lab_parameters: [],
+  leave_categories: []
 };
 
 const settings = (state = INITIAL_STATE, action) => {
@@ -41,7 +46,7 @@ const settings = (state = INITIAL_STATE, action) => {
     case GET_ALL_DEPARTMENTS:
       return { ...state, department: action.payload };
     case UPDATE_DEPARTMENT:
-      return { ...state, updated_department: action.payload };
+      return { ...state, department: [...state.department, action.payload] };
     case DELETE_DEPARTMENT:
       return {
         ...state,
@@ -54,7 +59,7 @@ const settings = (state = INITIAL_STATE, action) => {
     case GET_ALL_ROOMS:
       return { ...state, rooms: action.payload };
     case UPDATE_ROOM:
-      return { ...state, updated_room: action.payload };
+      return { ...state, rooms: [...state.rooms, action.payload] };
     case DELETE_ROOM:
       return {
         ...state,
@@ -70,7 +75,10 @@ const settings = (state = INITIAL_STATE, action) => {
     case GET_ALL_ROOM_CATEGORIES:
       return { ...state, room_categories: action.payload };
     case UPDATE_ROOM_CATEGORY:
-      return { ...state, updated_room: action.payload };
+      return {
+        ...state,
+        room_categories: [...state.room_categories, action.payload]
+      };
     case DELETE_ROOM_CATEGORY:
       return {
         ...state,
@@ -86,7 +94,7 @@ const settings = (state = INITIAL_STATE, action) => {
     case GET_ALL_LAB_TESTS:
       return { ...state, lab_tests: action.payload };
     case UPDATE_LAB_TEST:
-      return { ...state, updated_room: action.payload };
+      return { ...state, lab_tests: [...state.lab_tests, action.payload] };
     case DELETE_LAB_TEST:
       return {
         ...state,
@@ -102,7 +110,10 @@ const settings = (state = INITIAL_STATE, action) => {
     case GET_ALL_LAB_TEST_CATEGORIES:
       return { ...state, lab_categories: action.payload };
     case UPDATE_LAB_TEST_CATEGORY:
-      return { ...state, updated_room: action.payload };
+      return {
+        ...state,
+        lab_categories: [...state.lab_categories, action.payload]
+      };
     case DELETE_LAB_TEST_CATEGORY:
       return {
         ...state,
@@ -118,11 +129,33 @@ const settings = (state = INITIAL_STATE, action) => {
     case GET_ALL_LAB_TEST_PARAMETERS:
       return { ...state, lab_parameters: action.payload };
     case UPDATE_LAB_TEST_PARAMETER:
-      return { ...state, updated_room: action.payload };
+      return {
+        ...state,
+        lab_parameters: [...state.lab_parameters, action.payload]
+      };
     case DELETE_LAB_TEST_PARAMETER:
       return {
         ...state,
         lab_parameters: state.lab_parameters.filter(
+          deletedItem => deletedItem.id !== action.payload.id
+        )
+      };
+    case ADD_LEAVE_CATEGORY:
+      return {
+        ...state,
+        leave_categories: [...state.leave_categories, action.payload]
+      };
+    case GET_ALL_LEAVE_CATEGORIES:
+      return { ...state, leave_categories: action.payload };
+    case UPDATE_LEAVE_CATEGORY:
+      return {
+        ...state,
+        leave_categories: [...state.lab_categories, action.payload]
+      };
+    case DELETE_LEAVE_CATEGORY:
+      return {
+        ...state,
+        leave_categories: state.leave_categories.filter(
           deletedItem => deletedItem.id !== action.payload.id
         )
       };
