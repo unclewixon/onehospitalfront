@@ -1,27 +1,27 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component, useState } from "react";
 
-import TopBar from "../components/TopBar";
-import ROLES from "../components/ROLES";
-import Permission from "../components/Permission";
+import TopBar from "../components/TopBar"
+import RoomCategory from "../components/RoomCategory";
+import RoomList from "../components/RoomList";
 
-const Roles = () => {
-  const [ShowROLES, setROLES] = useState(true);
-  const [ShowPermission, SetPermission] = useState(false);
-
-  const onROLES = () => {
-    setROLES(true);
-    SetPermission(false);
-
+const RoomMgmt = () => {
+  const [ShowRoomCategory, SetRoomCategory] = useState(true);
+  const [ShowRoomList, SetRoomList] = useState(false);
+  
+  const onRoomCategory = () => {
+    SetRoomCategory(true);
+    SetRoomList(false);
+  
   };
 
-  const onPermission = () => {
-    setROLES(false);
-    SetPermission(true);
-
+  const onRoomList = () => {
+    SetRoomCategory(false);
+    SetRoomList(true);
+   
   };
 
-
+  
 
   return (
     <div className="content-i">
@@ -29,36 +29,34 @@ const Roles = () => {
         <div className="row">
           <div className="col-sm-12">
             <div className="element-wrapper">
-              <div className="os-tabs-w mx-1">
+              <div className="os-tabs-w mx-4">
                 <div className="os-tabs-controls">
                   <ul className="nav nav-tabs upper">
                     <li className="nav-item">
                       <a
                         aria-expanded="true"
-                        className={ShowROLES ? "nav-link active"  : "nav-link"}
+                        className={ShowRoomCategory ? "nav-link active"  : "nav-link"}
                         data-toggle="tab"
-                        onClick={onROLES}
+                        onClick={onRoomCategory}
                       >
-                        ROLES
+                        CATEGORIES
                       </a>
                     </li>
                     <li className="nav-item">
                       <a
                         aria-expanded="false"
-                        className={ShowPermission ? "nav-link active"  : "nav-link"}
+                        className={ShowRoomList ? "nav-link active"  : "nav-link"}
                         data-toggle="tab"
-                        onClick={onPermission}
+                        onClick={onRoomList}
                       >
-                        PERMISSIONS
+                        ROOM
                       </a>
                     </li>
-
                   </ul>
                 </div>
               </div>
-              {ShowROLES === true && <ROLES />}
-              {ShowPermission === true && <Permission />}
-
+              {ShowRoomCategory === true && <RoomCategory />}
+              {ShowRoomList === true && <RoomList />}
             </div>
           </div>
         </div>
@@ -67,4 +65,4 @@ const Roles = () => {
   );
 };
 
-export default Roles;
+export default RoomMgmt;

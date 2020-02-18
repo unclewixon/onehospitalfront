@@ -1,6 +1,6 @@
 import React from "react";
 
-const Permission = () => {
+const ServiceCategoryList = () => {
   return (
     <div className="row">
       <div className="col-lg-8">
@@ -10,7 +10,7 @@ const Permission = () => {
               <div className="project-box">
                 <div className="project-info">
                   <div className="element-wrapper compact pt-4">
-                    <h6 className="element-header">Permissions</h6>
+                    <h6 className="element-header">Services Categories</h6>
                     <div className="element-box-tp">
                       <table className="table table-clean">
                         <tbody>
@@ -95,7 +95,7 @@ const Permission = () => {
       <div className="col-lg-4 col-xxl-3">
         <div className="pipeline white lined-warning">
           <form>
-            <h6 className="form-header">Grant Permission</h6>
+            <h6 className="form-header">New Services Category</h6>
 
             <div class="form-group">
               <input
@@ -117,4 +117,4 @@ const Permission = () => {
     </div>
   );
 };
-export default Permission;
+export default ServiceCategoryList;

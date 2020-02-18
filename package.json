@@ -15,7 +15,8 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "antd": "^3.26.8",
+    "antd": "^3.26.9",
+    "axios": "^0.19.2",
     "jquery": "^3.4.1",
     "lodash.capitalize": "^4.2.1",
     "moment": "^2.24.0",
@@ -28,13 +29,15 @@
     "react-router-dom": "^5.1.2",
     "react-router-redux": "^4.0.8",
     "react-scripts": "3.3.0",
+    "react-select": "^3.0.8",
     "react-toastify": "^5.5.0",
     "recharts": "^2.0.0-beta.1",
     "redux": "^4.0.5",
     "redux-form": "^8.3.0",
     "redux-thunk": "^2.3.0",
     "rxjs": "^6.5.4",
-    "universal-cookie": "^4.0.3"
+    "universal-cookie": "^4.0.3",
+    "yarn": "^1.22.0"
   },
   "devDependencies": {
     "redux-logger": "^3.0.6"

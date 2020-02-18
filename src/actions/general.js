@@ -2,7 +2,9 @@ import {
 	TOGGLE_MODAL,
 	TOGGLE_IS_MODAL,
 	TOGGLE_CREATE_STAFF,
+	TOGGLE_SET_LEAVE,
 	TOGGLE_EDIT_STAFF,
+	TOGGLE_ADD_TASK,
 	TOGGLE_SHOW_HISTORY,
 	TOGGLE_CREATE_INVENTORY,
 	TOGGLE_EDIT_INVENTORY,
@@ -13,6 +15,9 @@ import {
 	TOGGLE_PREPARE_PAYROLL,
 	TOGGLE_EDIT_PAYROLL,
 	TOGGLE_TOGGLE_PROFILE,
+  TOGGLE_REGISTER_NEW_PATIENT,
+  TOGGLE_CREATE_APPOINTMENT,
+  TOGGLE_VIEW_APPOINTMENT_DETAIL
 } from './types';
 
 export const toggleProfile = status => {
@@ -30,17 +35,19 @@ export const toggleIsModal = status => {
 };
 
 export const toggleModal = status => {
-	return {
-		type: TOGGLE_MODAL,
-		payload: status,
-	};
+  return {
+    type: TOGGLE_MODAL,
+    payload: status
+  };
 };
 
+//Hr Modals
+
 export const toggleCreateStaff = status => {
-	return {
-		type: TOGGLE_CREATE_STAFF,
-		payload: status,
-	};
+  return {
+    type: TOGGLE_CREATE_STAFF,
+    payload: status
+  };
 };
 
 export const toggleEditStaff = status => {
@@ -57,26 +64,83 @@ export const toggleShowHistory = status => {
 	};
 };
 
+export const toggleSetLeave = status => {
+  return {
+    type: TOGGLE_SET_LEAVE,
+    payload: status
+  };
+}
+
+export const toggleAddTask = status => {
+  return {
+    type: TOGGLE_ADD_TASK,
+    payload: status
+  };
+};
+
 // inventory modals
 export const toggleCreateInventory = status => {
-	return {
-		type: TOGGLE_CREATE_INVENTORY,
-		payload: status,
-	};
+  return {
+    type: TOGGLE_CREATE_INVENTORY,
+    payload: status
+  };
 };
 
 export const toggleEditInventory = status => {
-	return {
-		type: TOGGLE_EDIT_INVENTORY,
-		payload: status,
-	};
+  return {
+    type: TOGGLE_EDIT_INVENTORY,
+    payload: status
+  };
 };
 
 export const toggleUpdateQuantity = status => {
-	return {
-		type: TOGGLE_UPDATE_QTY,
-		payload: status,
-	};
+  return {
+    type: TOGGLE_UPDATE_QTY,
+    payload: status
+  };
+};
+
+export const toggleCreateInvCategory = status => {
+  return {
+    type: TOGGLE_CREATE_INV_CAT,
+    payload: status
+  };
+};
+
+export const toggleEditInvCategory = status => {
+  return {
+    type: TOGGLE_EDIT_INV_CAT,
+    payload: status
+  };
+};
+
+export const toggleCreateRole = status => {
+  return {
+    type: TOGGLE_CREATE_ROLE,
+    payload: status
+  };
+};
+
+//frontdesk modals
+export const toggleRegisterNewPatient = status => {
+  return {
+    type: TOGGLE_REGISTER_NEW_PATIENT,
+    payload: status
+  };
+};
+
+export const toggleNewAppointment = status => {
+  return {
+    type: TOGGLE_CREATE_APPOINTMENT,
+    payload: status
+  };
+};
+
+export const toggleViewAppointDetail = status => {
+  return {
+    type: TOGGLE_VIEW_APPOINTMENT_DETAIL,
+    payload: status
+  };
 };
 
 // appraisals
@@ -122,6 +186,7 @@ export const closeModals = () => {
 		dispatch(toggleModal(false));
 		dispatch(toggleCreateStaff(false));
 		dispatch(toggleShowHistory(false));
+		dispatch(toggleAddTask(false))
 		dispatch(toggleEditStaff(false));
 		dispatch(toggleCreateInventory(false));
 		dispatch(toggleEditInventory(false));
@@ -131,6 +196,9 @@ export const closeModals = () => {
 		dispatch(toggleCurrentPayroll(false));
 		dispatch(togglePreparePayroll(false));
 		dispatch(toggleEditPayroll(false));
+    dispatch(toggleRegisterNewPatient(false));
+    dispatch(toggleNewAppointment(false));
+    dispatch(toggleViewAppointDetail(false))
 	};
 };
 
@@ -153,12 +221,19 @@ export const closeEditPayRoll = is_modal => {
 };
 
 export const createStaff = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleCreateStaff(action));
-	};
+  return dispatch => {
+    dispatch(closeModals());
+    dispatch(toggleModal(true));
+    dispatch(toggleCreateStaff(action));
+  };
 };
+export const showHistory = action => {
+  return dispatch => {
+    dispatch(closeModals());
+    dispatch(toggleModal(true));
+    dispatch(toggleShowHistory(action));
+  };
+}
 
 export const editStaff = action => {
 	return dispatch => {
@@ -168,39 +243,89 @@ export const editStaff = action => {
 	};
 };
 
-export const showHistory = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleShowHistory(action));
-	};
+export const addTask = action => {
+  return dispatch => {
+    dispatch(closeModals());
+    dispatch(toggleModal(true));
+    dispatch(toggleAddTask(action));
+  };
 };
 
 // inventory modal toggles
 export const createInventory = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleCreateInventory(action));
-	};
+  return dispatch => {
+    dispatch(closeModals());
+    dispatch(toggleModal(true));
+    dispatch(toggleCreateInventory(action));
+  };
 };
 
 export const editInventory = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleEditInventory(action));
-	};
+  return dispatch => {
+    dispatch(closeModals());
+    dispatch(toggleModal(true));
+    dispatch(toggleEditInventory(action));
+  };
 };
 
 export const updateQuantity = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleUpdateQuantity(action));
-	};
+  return dispatch => {
+    dispatch(closeModals());
+    dispatch(toggleModal(true));
+    dispatch(toggleUpdateQuantity(action));
+  };
 };
 
+export const createInventoryCat = action => {
+  return dispatch => {
+    dispatch(closeModals());
+    dispatch(toggleModal(true));
+    dispatch(toggleCreateInvCategory(action));
+  };
+};
+
+export const editInventoryCat = action => {
+  return dispatch => {
+    dispatch(closeModals());
+    dispatch(toggleModal(true));
+    dispatch(toggleEditInvCategory(action));
+  };
+};
+
+export const createRole = action => {
+  return dispatch => {
+    dispatch(closeModals());
+    dispatch(toggleModal(true));
+    dispatch(toggleCreateRole(action));
+  };
+};
+
+//frontdesk modals
+export const registerNewPatient = action => {
+  return dispatch => {
+    dispatch(closeModals());
+    dispatch(toggleModal(true));
+    dispatch(toggleRegisterNewPatient(action));
+  };
+};
+
+export const createNewAppointment = action => {
+  return dispatch => {
+    dispatch(closeModals());
+    dispatch(toggleModal(true));
+    dispatch(toggleNewAppointment(action));
+  };
+};
+
+export const viewAppointmentDetail = action => {
+  return dispatch => {
+    dispatch(closeModals())
+    dispatch(toggleModal(true))
+    dispatch(toggleViewAppointDetail(action))
+  }
+}
+
+//appraisal modals
 export const viewAppraisal = action => {
 	return dispatch => {
 		dispatch(closeModals());

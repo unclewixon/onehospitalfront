@@ -23,18 +23,19 @@ const Staff = lazy(() => import('./pages/Staff'));
 const Inventory = lazy(() => import('./pages/Inventory'));
 const Settings = lazy(() => import('./pages/Settings'));
 const StaffProfile = lazy(() => import('./pages/StaffProfile'));
+const Hmo = lazy(() => import('./pages/Hmo'));
 
 class App extends Component {
 	componentDidMount() {
 		window.document.body.className =
 			'menu-position-side menu-side-left with-content-panel';
 	}
-	
+
 	render() {
 		const { loggedIn, preloading, is_modal_open, is_profile_open } = this.props;
 		return  preloading ? (
 			<Splash />
-		) : 
+		) :
 		(
 			<>
 				<ToastContainer autoClose={3500} />
@@ -59,6 +60,7 @@ class App extends Component {
 												<Route path="/staff-mgt" component={Staff} />
 												<Route path="/inventory" component={Inventory} />
 												<Route path="/settings" component={Settings} />
+												<Route path="/hmo" component={Hmo} />
 												<Route component={NoMatch} />
 											</Switch>
 										</div>

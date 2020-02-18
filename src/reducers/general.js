@@ -10,6 +10,12 @@ import {
 	TOGGLE_CREATE_INVENTORY,
 	TOGGLE_EDIT_INVENTORY,
 	TOGGLE_UPDATE_QTY,
+	TOGGLE_CREATE_INV_CAT,
+	TOGGLE_EDIT_INV_CAT,
+	TOGGLE_CREATE_ROLE,
+  TOGGLE_REGISTER_NEW_PATIENT,
+  TOGGLE_CREATE_APPOINTMENT,
+  TOGGLE_VIEW_APPOINTMENT_DETAIL,
 	TOGGLE_VIEW_APPRAISAL,
 	TOGGLE_VIEW_PAYROLL_HISTORY,
 	TOGGLE_VIEW_CURRENT_PAYROLL,
@@ -28,6 +34,12 @@ const INITIAL_STATE = {
 	create_inventory: false,
 	edit_inventory: false,
 	update_inventory_qty: false,
+	create_inv_cat: false,
+	edit_inv_cat: false,
+	create_role: false,
+  register_new_patient: false,
+  create_new_appointment: false,
+  view_appointment_detail: false,
 	view_appraisal: false,
 	view_payroll_history: false,
 	current_payroll: false,
@@ -62,6 +74,18 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, edit_inventory: action.payload };
 		case TOGGLE_UPDATE_QTY:
 			return { ...state, update_inventory_qty: action.payload };
+		case TOGGLE_CREATE_INV_CAT:
+			return { ...state, create_inv_cat: action.payload };
+		case TOGGLE_EDIT_INV_CAT:
+			return { ...state, edit_inv_cat: action.payload };
+		case TOGGLE_CREATE_ROLE:
+			return { ...state, create_role: action.payload };
+    case TOGGLE_REGISTER_NEW_PATIENT:
+      return { ...state, register_new_patient: action.payload };
+    case TOGGLE_CREATE_APPOINTMENT:
+      return { ...state, create_new_appointment: action.payload };
+    case TOGGLE_VIEW_APPOINTMENT_DETAIL:
+      return{...state, view_appointment_detail: action.payload}
 		case TOGGLE_VIEW_APPRAISAL:
 			return { ...state, view_appraisal: action.payload };
 		case TOGGLE_VIEW_PAYROLL_HISTORY:
