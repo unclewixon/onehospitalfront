@@ -46,10 +46,11 @@ export const get_all_department = payload => {
   };
 };
 
-export const update_department = payload => {
+export const update_department = (payload, previousData) => {
   return {
     type: UPDATE_DEPARTMENT,
-    payload
+    payload,
+    previousData
   };
 };
 
@@ -75,10 +76,11 @@ export const get_all_room = payload => {
   };
 };
 
-export const update_room = payload => {
+export const update_room = (payload, previousData) => {
   return {
     type: UPDATE_ROOM,
-    payload
+    payload,
+    previousData
   };
 };
 
@@ -103,10 +105,11 @@ export const get_all_room_category = payload => {
   };
 };
 
-export const update_room_category = payload => {
+export const update_room_category = (payload, previousData) => {
   return {
     type: UPDATE_ROOM_CATEGORY,
-    payload
+    payload,
+    previousData
   };
 };
 
@@ -132,10 +135,11 @@ export const get_all_lab_tests = payload => {
   };
 };
 
-export const update_lab_test = payload => {
+export const update_lab_test = (payload, previousData) => {
   return {
     type: UPDATE_LAB_TEST,
-    payload
+    payload,
+    previousData
   };
 };
 
@@ -160,10 +164,11 @@ export const get_all_lab_test_categories = payload => {
   };
 };
 
-export const update_lab_test_category = payload => {
+export const update_lab_test_category = (payload, previousData) => {
   return {
     type: UPDATE_LAB_TEST_CATEGORY,
-    payload
+    payload,
+    previousData
   };
 };
 
@@ -188,10 +193,11 @@ export const get_all_lab_test_parameters = payload => {
   };
 };
 
-export const update_lab_test_parameter = payload => {
+export const update_lab_test_parameter = (payload, previousData) => {
   return {
     type: UPDATE_LAB_TEST_PARAMETER,
-    payload
+    payload,
+    previousData
   };
 };
 
@@ -217,10 +223,11 @@ export const get_all_leave_category = payload => {
   };
 };
 
-export const update_leave_category = payload => {
+export const update_leave_category = (payload, previousData) => {
   return {
     type: UPDATE_LEAVE_CATEGORY,
-    payload
+    payload,
+    previousData
   };
 };
 
@@ -295,14 +302,14 @@ export const deleteDepartment = data => {
 
 //room
 export const addRoom = data => {
-  console.log(data);
+  console.log(data, "from action");
   return dispatch => {
     return axios
       .post(`http://178.128.36.29:3000/rooms`, {
         name: data.name,
         status: data.status,
         floor: data.floor,
-        room_category_id: data.room_category_id
+        category: data.category
       })
       .then(response => {
         return dispatch(add_room(response.data));
@@ -329,13 +336,14 @@ export const getAllRooms = () => {
 export const updateRoom = data => {
   return dispatch => {
     return axios
-      .put(`http://178.128.36.29:3000/rooms/${data.id}`, {
+      .patch(`http://178.128.36.29:3000/rooms/${data.id}/update`, {
         name: data.name,
         status: data.status,
-        room_category_id: data.room_category_id
+        floor: data.status,
+        category: data.category
       })
       .then(response => {
-        return dispatch(update_room(response.data));
+        return dispatch(update_room(response.data, data));
       })
       .catch(error => {
         console.log(error);
@@ -387,15 +395,16 @@ export const getAllRoomCategories = () => {
 };
 
 export const updateRoomCategory = data => {
+  console.log(data);
   return dispatch => {
     return axios
-      .put(`http://178.128.36.29:3000/rooms/categories/${data.id}`, {
+      .patch(`http://178.128.36.29:3000/rooms/categories/${data.id}/update`, {
         name: data.name,
         price: data.price,
         discount: data.discount
       })
       .then(response => {
-        return dispatch(update_room_category(response.data));
+        return dispatch(update_room_category(response.data, data));
       })
       .catch(error => {
         console.log(error);
@@ -421,7 +430,7 @@ export const addLabTest = data => {
   console.log(data);
   return dispatch => {
     return axios
-      .post(`http://178.128.36.29:3000/lab-tests`, {
+      .post(`http://178.128.36.29:3000/lab-tests/categories`, {
         name: data.name,
         price: data.name,
         lab_category_id: data.category,
@@ -440,7 +449,7 @@ export const addLabTest = data => {
 export const getAllLabTests = () => {
   return dispatch => {
     return axios
-      .get(`http://178.128.36.29:3000/lab-tests`)
+      .get(`http://178.128.36.29:3000/lab-tests/categories`)
       .then(response => {
         return dispatch(get_all_lab_tests(response.data));
       })
@@ -453,7 +462,7 @@ export const getAllLabTests = () => {
 export const updateLabTest = data => {
   return dispatch => {
     return axios
-      .put(`http://178.128.36.29:3000/lab-tests/${data.id}`, {
+      .patch(`http://178.128.36.29:3000/lab-tests/${data.id}/update`, {
         name: data.name
       })
       .then(response => {
@@ -509,11 +518,13 @@ export const getAllLabTestCategories = () => {
 export const updateLabTestCategory = data => {
   return dispatch => {
     return axios
-      .put(`http://178.128.36.29:3000/lab-tests/categories/${data.id}`, {
+      .patch(`http://178.128.36.29:3000/lab-tests/categories/${data.id}/update`, {
         name: data.name
       })
       .then(response => {
-        return dispatch(update_lab_test_category(response.data));
+        return dispatch(
+          update_lab_test_category(response.data , data)
+        );
       })
       .catch(error => {
         console.log(error);
@@ -565,12 +576,12 @@ export const getAllLabTestParameters = () => {
 export const updateLabTestParameter = data => {
   return dispatch => {
     return axios
-      .put(`http://178.128.36.29:3000/lab-tests/parameters/${data.id}`, {
+      .patch(`http://178.128.36.29:3000/lab-tests/parameters/${data.id}/update`, {
         name: data.name,
-        referenceRange: data.referenceRange
+       
       })
       .then(response => {
-        return dispatch(update_lab_test_parameter(response.data));
+        return dispatch(update_lab_test_parameter(response.data, data));
       })
       .catch(error => {
         console.log(error);
@@ -624,9 +635,12 @@ export const getAllLeaveCategory = data => {
 export const updateLeaveCategory = data => {
   return dispatch => {
     return axios
-      .patch(`http://178.128.36.29:3000/leave-category`, { name: data.name })
+      .patch(`http://178.128.36.29:3000/leave-category/${data.id}/update`, {
+        name: data.name,
+        duration: data.duration
+      })
       .then(response => {
-        return dispatch(update_leave_category(response.data));
+        return dispatch(update_leave_category(response.data, data));
       })
       .catch(error => {
         console.log(error);

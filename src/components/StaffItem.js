@@ -1,5 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Tooltip } from 'antd';
+
+import { editStaff } from '../actions/general';
 
 class StaffItem extends Component {
 	state = {
@@ -10,28 +14,55 @@ class StaffItem extends Component {
 		this.setState({ collapsed: !this.state.collapsed });
 	}
 
+	doEditStaff = e => {
+		e.preventDefault();
+		console.log('edit staff');
+		this.props.editStaff(true);
+	};
+
+	doEnable = e => {
+		e.preventDefault();
+		console.log('enable staff');
+	};
+
+	doDisable = e => {
+		e.preventDefault();
+		console.log('disable staff');
+	};
+
 	render() {
+		const { enabled } = this.props;
 		const { collapsed } = this.state;
 		return (
 			<>
 				<tr>
 					<td><div role="button" tabIndex="0" className={`row-expand-icon ${collapsed ? 'row-collapsed' : 'row-expanded'}`} onClick={this.toggle}/></td>
+					<td>ST123</td>
 					<td>John Mayers</td>
 					<td>john.meyers</td>
 					<td>56366383</td>
+					<td>56366383</td>
+					<td>Nursing</td>
 					<td className="text-center">
-						<div className="status-pill green"/>
-						{/* <div className="status-pill red"/> */}
-						{/* <div className="status-pill yellow"/> */}
+						{enabled === 1 ? (
+							<Tooltip title="Enabled"><div className="status-pill green"/></Tooltip>
+						) : (
+							<Tooltip title="Disabled"><div className="status-pill red"/></Tooltip>
+						)}
 					</td>
 					<td className="text-right row-actions">
-						
-						<a href="#" className="success" title="Enable Staff">
-							<i className="os-icon os-icon-check-circle" />
+						<a href="#" onClick={this.doEditStaff} className="secondary" title="Edit Staff">
+							<i className="os-icon os-icon-edit-32" />
 						</a>
-						<a href="#" className="danger" title="Disable Staff">
-							<i className="os-icon os-icon-x-circle" />
-						</a>
+						{enabled === 1 ? (
+							<a href="#" onClick={this.doDisable}className="danger" title="Disable Staff">
+								<i className="os-icon os-icon-x-circle" />
+							</a>
+						) : (
+							<a href="#" onClick={this.doEnable} className="success" title="Enable Staff">
+								<i className="os-icon os-icon-check-circle" />
+							</a>
+						)}
 					</td>
 				</tr>
 				{!collapsed && (
@@ -39,7 +70,7 @@ class StaffItem extends Component {
 						<td/>
 						<td colSpan="8">
 							<div className="table-responsive">
-								<table className="table table-striped">
+								<table className="table table-striped table-sm">
 									<tbody>
 										<tr>
 											<th>Specialization</th>
@@ -68,4 +99,4 @@ class StaffItem extends Component {
 	}
 }
 
-export default StaffItem;
+export default connect(null, { editStaff })(StaffItem);

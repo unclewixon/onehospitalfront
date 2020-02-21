@@ -21,9 +21,17 @@ class ModalUpdInventoryQty extends Component {
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
-							<h4 className="onboarding-title">Update Inventory Quantity</h4>
+							<h4 className="onboarding-title">Update Quantity</h4>
 							<div className="form-block">
 								<form>
+									<div className="row">
+										<div className="col-sm-12">
+											<div className="form-group">
+												<label htmlFor="">Name</label>
+												<input className="form-control" placeholder="Enter quantity" disabled="disabled" value="Surgical Blade" />
+											</div>
+										</div>
+									</div>
 									<div className="row">
 										<div className="col-sm-12">
 											<div className="form-group">

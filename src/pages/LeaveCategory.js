@@ -10,9 +10,15 @@ import {
 const LeaveCategory = props => {
   const initialState = {
     name: "",
-    duration: ""
+    duration: "",
+    save: true,
+    edit: false,
+    id: ""
   };
   const [{ name, duration }, setState] = useState(initialState);
+  const [Loading, setLoading] = useState(false);
+  const [{ edit, save }, setSubmitButton] = useState(initialState);
+  const [data, getDataToEdit] = useState(null);
 
   const handleInputChange = e => {
     const { name, value } = e.target;
@@ -21,23 +27,63 @@ const LeaveCategory = props => {
 
   const onAddLeaveCategory = e => {
     e.preventDefault();
-    props.addLeaveCategory({ name, duration }).then(response => {
+    setLoading(true);
+    props
+      .addLeaveCategory({ name, duration })
+      .then(response => {
+        setLoading(false);
+        setState({ ...initialState });
+      })
+      .catch(error => {
+        setLoading(false);
+      });
+  };
+
+  const onEditLeaveCategory = e => {
+    setLoading(true)
+    e.preventDefault();
+    props.updateLeaveCategory({ id: data.id, name, duration }, data).then(response => {
       setState({ ...initialState });
-    });
+      setSubmitButton({save: true, edit: false})
+      setLoading(false)
+    }).catch(error => {
+      setState({ ...initialState });
+      setSubmitButton({save: true, edit: false})
+      setLoading(false)
+    })
+  };
+
+  const onClickEdit = data => {
+    setSubmitButton({ edit: true, save: false });
+    setState(prevState => ({
+      ...prevState,
+      name: data.name,
+      duration: data.duration,
+      id: data.id
+    }));
+    getDataToEdit(data);
   };
 
   const onDeleteLeaveCategory = data => {
     props
       .deleteLeaveCategory(data)
       .then(data => {
+        setLoading(false);
         console.log(data);
       })
       .catch(error => {
+        setLoading(false);
         console.log(error);
       });
   };
 
+  const cancelEditButton = () => {
+    setSubmitButton({save: true, edit: false})
+    setState({...initialState})
+  }
+
   useEffect(() => {
+    console.log(save, edit);
     props.getAllLeaveCategory();
   }, []);
   return (
@@ -70,7 +116,10 @@ const LeaveCategory = props => {
                         <div className="pipeline-item">
                           <div className="pi-controls">
                             <div className="pi-settings os-dropdown-trigger">
-                              <i className="os-icon os-icon-ui-49"></i>
+                              <i
+                                className="os-icon os-icon-ui-49"
+                                onClick={() => onClickEdit(LeaveCategory)}
+                              ></i>
                             </div>
                             <div className="pi-settings os-dropdown-trigger">
                               <i
@@ -101,7 +150,9 @@ const LeaveCategory = props => {
             <div className="col-lg-4 col-xxl-3  d-xxl-block">
               <div className="element-wrapper">
                 <div className="element-box">
-                  <form onSubmit={onAddLeaveCategory}>
+                  <form
+                    onSubmit={edit ? onEditLeaveCategory : onAddLeaveCategory}
+                  >
                     <h5 className="element-box-header">
                       Add New Leave category
                     </h5>
@@ -135,21 +186,42 @@ const LeaveCategory = props => {
                         />
                       </div>
                     </div>
-                    {/* <div className="form-group">
-                      <label className="lighter" for="">
-                        Head of Department
-                      </label>
-                      <select className="form-control">
-                        <option value="">Pharmacy</option>
-                        <option value="">Clinical Laboratory</option>
-                        <option value="">Front-Desk</option>
-                      </select>
-                    </div> */}
 
                     <div className="form-buttons-w text-right compact">
-                      <button className="btn btn-primary" href="#">
-                        <span>Save</span>
-                      </button>
+                      {save && (
+                        <button
+                          className={
+                            Loading
+                              ? "btn btn-primary disabled"
+                              : "btn btn-primary"
+                          }
+                        >
+                          <span>{Loading ? "Saving" : "save"}</span>
+                        </button>
+                      )}
+                      {edit && (
+                        <>
+                         <button
+                         className={
+                           Loading
+                             ? "btn btn-primary disabled"
+                             : "btn btn-primary"
+                         }
+                         onClick={cancelEditButton}
+                       >
+                         <span>{Loading ? "cancel" : "cancel"}</span>
+                       </button>
+                        <button
+                          className={
+                            Loading
+                              ? "btn btn-primary disabled"
+                              : "btn btn-primary"
+                          }
+                        >
+                          <span>{Loading ? "saving" : "save"}</span>
+                        </button>
+                        </>
+                      )}
                     </div>
                   </form>
                 </div>

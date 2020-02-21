@@ -8,11 +8,11 @@ import Permission from "../components/Permission";
 const Roles = () => {
   const [ShowROLES, setROLES] = useState(true);
   const [ShowPermission, SetPermission] = useState(false);
-  
+
   const onROLES = () => {
     setROLES(true);
     SetPermission(false);
-    
+
   };
 
   const onPermission = () => {
@@ -21,7 +21,7 @@ const Roles = () => {
   
   };
 
-  
+
 
   return (
     <div className="content-i">
@@ -52,13 +52,13 @@ const Roles = () => {
                         PERMISSIONS
                       </a>
                     </li>
-                    
+
                   </ul>
                 </div>
               </div>
               {ShowROLES === true && <ROLES />}
               {ShowPermission === true && <Permission />}
-              
+
             </div>
           </div>
         </div>
