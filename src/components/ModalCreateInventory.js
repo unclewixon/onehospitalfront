@@ -36,7 +36,7 @@ class ModalCreateInventory extends Component {
 	createInventory = async data => {
 		this.setState({ submitting: true });
 		try {
-			const rs = await request(`${API_URI}${inventoryAPI}/stocks`, 'POST', true, data);
+			const rs = await request(`${API_URI}${inventoryAPI}`, 'POST', true, data);
 			this.props.addInventory(rs);
 			this.props.reset('create_inventory');
 			notifySuccess('inventory item created!');
@@ -90,7 +90,8 @@ class ModalCreateInventory extends Component {
 												id="category_id"
 												name="category_id"
 												component={renderSelect}
-												label="Select Category"
+												label="Category"
+												placeholder="Select Category"
 												data={categories}
 											/>
 										</div>
@@ -99,7 +100,8 @@ class ModalCreateInventory extends Component {
 												id="sub_category_id"
 												name="sub_category_id"
 												component={renderSelect}
-												label="Select Sub Category"
+												label="Sub Category"
+												placeholder="Sub Category"
 												data={sub_categories}
 											/>
 										</div>

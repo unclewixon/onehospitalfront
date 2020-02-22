@@ -1,4 +1,5 @@
 import {
+	TOGGLE_PRELOADING,
 	TOGGLE_MODAL,
 	TOGGLE_IS_MODAL,
 	TOGGLE_CREATE_STAFF,
@@ -20,9 +21,9 @@ import {
   TOGGLE_VIEW_APPOINTMENT_DETAIL
 } from './types';
 
-export const toggleProfile = status => {
+export const togglePreloading = status => {
 	return {
-		type: TOGGLE_TOGGLE_PROFILE,
+		type: TOGGLE_PRELOADING,
 		payload: status,
 	};
 };

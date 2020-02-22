@@ -9,6 +9,8 @@ import MainMenu from './components/MainMenu';
 import ModalDialogs from './components/ModalDialogs';
 import Splash from './components/Splash';
 import SlidingPane from './components/SlidingPane';
+import SSRStorage from './services/storage';
+import { FULLSCREEN_COOKIE, MODE_COOKIE } from './services/constants';
 
 const Login = lazy(() => import('./pages/Login'));
 const Doctor = lazy(() => import('./pages/Doctor'));
@@ -26,14 +28,16 @@ const StaffProfile = lazy(() => import('./pages/StaffProfile'));
 const Hmo = lazy(() => import('./pages/Hmo'));
 
 class App extends Component {
-	componentDidMount() {
-		window.document.body.className =
-			'menu-position-side menu-side-left with-content-panel';
+	async componentDidMount() {
+		const fullscreen = await new SSRStorage().getItem(FULLSCREEN_COOKIE);
+		const theme_mode = await new SSRStorage().getItem(MODE_COOKIE);
+
+		window.document.body.className = `menu-position-side menu-side-left ${fullscreen ? 'full-screen' : ''} with-content-panel ${theme_mode ? 'color-scheme-dark' : ''}`;
 	}
 
 	render() {
-		const { loggedIn, preloading, is_modal_open, is_profile_open } = this.props;
-		return  preloading ? (
+		const { loggedIn, preloading, is_modal_open, isStaffOpen, isPatientOpen, theme_mode } = this.props;
+		return preloading ? (
 			<Splash />
 		) :
 		(
@@ -46,7 +50,7 @@ class App extends Component {
 								<div className="all-wrapper with-side-panel solid-bg-all">
 									<div className="layout-w">
 										{/* user role determines main menu */}
-										<MainMenu role="admin" />
+										<MainMenu role="admin" theme_mode={theme_mode} />
 										<div className="content-w">
 											{/* user role determines topbar menu */}
 											<TopBar role="admin" />
@@ -66,15 +70,15 @@ class App extends Component {
 										</div>
 									</div>
 									<ModalDialogs />
-									<SlidingPane isOpen={is_profile_open}>
+									<SlidingPane isOpen={isStaffOpen}>
 										<StaffProfile />
 									</SlidingPane>
-									<SlidingPane isOpen={false}>
+									<SlidingPane isOpen={isPatientOpen}>
 										<PatientProfile />
 									</SlidingPane>
 								</div>
 								{is_modal_open && (
-									<div className={`modal-backdrop fade show`}/>
+									<div className={`modal-backdrop fade show`} />
 								)}
 							</>
 						) : (
@@ -95,7 +99,10 @@ const mapStateToProps = state => {
 		preloading: state.general.preloading,
 		is_modal_open: state.general.is_modal_open,
 		loggedIn: state.user.loggedIn,
-		is_profile_open: state.general.is_profile_open,
+		isStaffOpen: state.user.isStaffOpen,
+		isPatientOpen: state.user.isPatientOpen,
+		theme_mode: state.user.theme_mode,
+		fullscreen: state.user.fullscreen,
 	};
 };
 

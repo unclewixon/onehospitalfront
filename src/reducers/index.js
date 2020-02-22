@@ -8,6 +8,9 @@ import settings from "./settings";
 import hmo from "./hmo";
 import inventory from './inventory';
 import role from './role';
+import hr from './hr';
+import setting from './setting';
+import utility from './utility';
 
 const reducers = combineReducers({
   form: formReducer,
@@ -18,6 +21,9 @@ const reducers = combineReducers({
   hmo,
 	inventory,
 	role,
+	hr,
+	setting,
+	utility,
 });
 
 export default reducers;
