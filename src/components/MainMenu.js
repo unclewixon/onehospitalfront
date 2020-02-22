@@ -46,10 +46,10 @@ class MainMenu extends Component {
 	}
 
 	render() {
-		let { role } = this.props;
-		role = "settings"
+		const { role, theme_mode } = this.props;
+		role = "settings";
 		return (
-			<div className={`menu-w selected-menu-color-light color-scheme-dark color-style-bright menu-position-side menu-side-left sub-menu-color-bright sub-menu-style-over menu-activated-on-hover menu-has-selected-link ${role !== 'admins' ? '' : 'menu-layout-compact'}`} ref="menu_activated_on_hover">
+			<div className={`menu-w color-scheme-dark ${theme_mode ? '' : 'color-style-bright'} menu-position-side menu-side-left menu-layout-full sub-menu-style-over sub-menu-color-bright selected-menu-color-light menu-activated-on-hover menu-has-selected-link ${role !== 'admins' ? '' : 'menu-layout-compact'}`} ref="menu_activated_on_hover">
 				<div className="logo-w">
 					<Link className="logo" to="/">
 						<div className="logo-element"/>

@@ -11,12 +11,12 @@ import { loadInventories } from '../actions/inventory';
 
 class InventoryList extends Component {
 	componentDidMount() {
-		//this.fetchInventories();
+		this.fetchInventories();
 	}
 	
 	fetchInventories = async () => {
 		try {
-			const rs = await request(`${API_URI}${inventoryAPI}/stocks-by-category/c3f6d099-6c65-4d15-bf8c-b2c06b38aeb0`, 'GET', true);
+			const rs = await request(`${API_URI}${inventoryAPI}`, 'GET', true);
 			this.props.loadInventories(rs)
 		} catch (error) {
 			console.log(error);
@@ -32,7 +32,7 @@ class InventoryList extends Component {
 						<div className="col-sm-12">
 							<div className="element-wrapper">
 								<div className="element-actions">
-									<a className="btn btn-primary btn-sm" href="#" onClick={() => this.props.createInventory(true)}>
+									<a className="btn btn-primary btn-sm text-white" onClick={() => this.props.createInventory(true)}>
 										<i className="os-icon os-icon-plus-circle"/>
 										<span>Create New Inventory</span>
 									</a>
@@ -46,7 +46,7 @@ class InventoryList extends Component {
 													<th>ID</th>
 													<th>Category</th>
 													<th>Name</th>
-													<th>Description</th>
+													<th>Sub Category</th>
 													<th>Cost Price</th>
 													<th>Selling Price</th>
 													<th>Quantity</th>
@@ -59,6 +59,7 @@ class InventoryList extends Component {
 													return (
 														<InventoryItem
 															key={i}
+															index={i+1}
 															item={inv}
 														/>
 													)

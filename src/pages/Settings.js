@@ -1,5 +1,6 @@
-import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React, { useState } from 'react';
+import { Switch, Route, Link } from 'react-router-dom';
 
 import Roles from './Roles';
 import Lab from "./Laboratory";
@@ -11,7 +12,9 @@ import LeaveCategory from "./LeaveCategory";
 import ServicesCategory from "./ServiceCategory";
 import NoMatch from './NoMatch';
 
-const Settings = ({ match }) => {
+const Settings = ({ match, location }) => {
+	const [toggle, setToggle] = useState(false);
+	const page = location.pathname.split('/').pop();
 	return (
 		<Switch>
 			<Route path={`${match.url}/roles`} component={Roles} />

@@ -258,7 +258,7 @@ class ModalEditPayroll extends Component {
 																		<input className="form-control" placeholder="Amount"/>
 																	</div>
 																	<div className="col-1 text-right">
-																		<a className="text-danger" href="#" onClick={this.removeDeduction(d)} style={{lineHeight: '37px'}}><i className="os-icon os-icon-cancel-circle"/></a>
+																		<a className="text-danger" onClick={this.removeDeduction(d)} style={{lineHeight: '37px'}}><i className="os-icon os-icon-cancel-circle"/></a>
 																	</div>
 																</div>
 															</td>
@@ -268,7 +268,7 @@ class ModalEditPayroll extends Component {
 												<tr>
 													<td className="text-right mb-3" colSpan="2">
 														<div className="text-right mt-2">
-															<a className="btn btn-success btn-sm" href="#" onClick={this.addDeduction}>
+															<a className="btn btn-success btn-sm" onClick={this.addDeduction}>
 																<i className="os-icon os-icon-plus-circle"/>
 																<span>Add Deduction</span>
 															</a>

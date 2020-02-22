@@ -46,7 +46,15 @@ const settings = (state = INITIAL_STATE, action) => {
     case GET_ALL_DEPARTMENTS:
       return { ...state, department: action.payload };
     case UPDATE_DEPARTMENT:
-      return { ...state, department: [...state.department, action.payload] };
+      return {
+        ...state,
+        department: [
+          ...state.department.filter(
+            deletedItem => deletedItem.id !== action.previousData.id
+          ),
+          action.payload
+        ]
+      };
     case DELETE_DEPARTMENT:
       return {
         ...state,
@@ -59,7 +67,15 @@ const settings = (state = INITIAL_STATE, action) => {
     case GET_ALL_ROOMS:
       return { ...state, rooms: action.payload };
     case UPDATE_ROOM:
-      return { ...state, rooms: [...state.rooms, action.payload] };
+      return {
+        ...state,
+        rooms: [
+          ...state.rooms.filter(
+            deletedItem => deletedItem.id !== action.previousData.id
+          ),
+          action.payload
+        ]
+      };
     case DELETE_ROOM:
       return {
         ...state,
@@ -77,7 +93,12 @@ const settings = (state = INITIAL_STATE, action) => {
     case UPDATE_ROOM_CATEGORY:
       return {
         ...state,
-        room_categories: [...state.room_categories, action.payload]
+        room_categories: [
+          ...state.room_categories.filter(
+            deletedItem => deletedItem.id !== action.previousData.id
+          ),
+          action.payload
+        ]
       };
     case DELETE_ROOM_CATEGORY:
       return {
@@ -94,7 +115,15 @@ const settings = (state = INITIAL_STATE, action) => {
     case GET_ALL_LAB_TESTS:
       return { ...state, lab_tests: action.payload };
     case UPDATE_LAB_TEST:
-      return { ...state, lab_tests: [...state.lab_tests, action.payload] };
+      return {
+        ...state,
+        lab_tests: [
+          ...state.lab_tests.filter(
+            deletedItem => deletedItem.id !== action.previousData.id
+          ),
+          action.payload
+        ]
+      };
     case DELETE_LAB_TEST:
       return {
         ...state,
@@ -112,7 +141,12 @@ const settings = (state = INITIAL_STATE, action) => {
     case UPDATE_LAB_TEST_CATEGORY:
       return {
         ...state,
-        lab_categories: [...state.lab_categories, action.payload]
+        lab_categories: [
+          ...state.lab_categories.filter(
+            deletedItem => deletedItem.id !== action.previousData.id
+          ),
+          action.payload
+        ]
       };
     case DELETE_LAB_TEST_CATEGORY:
       return {
@@ -131,7 +165,12 @@ const settings = (state = INITIAL_STATE, action) => {
     case UPDATE_LAB_TEST_PARAMETER:
       return {
         ...state,
-        lab_parameters: [...state.lab_parameters, action.payload]
+        lab_parameters: [
+          ...state.lab_parameters.filter(
+            deletedItem => deletedItem.id !== action.previousData.id
+          ),
+          action.payload
+        ]
       };
     case DELETE_LAB_TEST_PARAMETER:
       return {
@@ -150,7 +189,12 @@ const settings = (state = INITIAL_STATE, action) => {
     case UPDATE_LEAVE_CATEGORY:
       return {
         ...state,
-        leave_categories: [...state.lab_categories, action.payload]
+        leave_categories: [
+          ...state.leave_categories.filter(
+            deletedItem => deletedItem.id !== action.previousData.id
+          ),
+          action.payload
+        ]
       };
     case DELETE_LEAVE_CATEGORY:
       return {

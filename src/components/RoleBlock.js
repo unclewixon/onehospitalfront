@@ -1,3 +1,4 @@
+/* eslint-disable no-script-url */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -28,7 +29,9 @@ class RoleBlock extends Component {
 	};
 
 	editRole = (role, action) => () => {
-		this.setState({ roleID: role ? role.id : role, edit: action });
+		this.setState({ roleID: null, edit: false }, () => {
+			this.setState({ roleID: role ? role.id : role, edit: action });
+		});
 	};
 
 	render() {
@@ -54,12 +57,12 @@ class RoleBlock extends Component {
 									<tbody>
 										{roles.map((role, i) => {
 											return (
-												<tr>
+												<tr key={i}>
 													<td>{i+1}</td>
 													<td>{role.name}</td>
 													<td>{role.description}</td>
 													<td className="row-actions text-right">
-														<a href="#" onClick={() => this.editRole(role, true)} className="secondary" title="Edit Inventory Category">
+														<a onClick={this.editRole(role, true)} className="secondary" title="Edit Role">
 															<i className="os-icon os-icon-edit-32" />
 														</a>
 													</td>

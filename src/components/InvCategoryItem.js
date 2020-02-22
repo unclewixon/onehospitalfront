@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 
 // import { request } from '../services/utilities';
 // import { API_URI, inventoryAPI } from '../services/constants';
-import { updateCategory } from '../actions/inventory';
+import { updateInvCategory } from '../actions/inventory';
 // import { notifySuccess, notifyError } from '../services/notify';
 
-class CategoryItem extends Component {
+class InvCategoryItem extends Component {
 	enableCategory = async () => {
 		const { item } = this.props;
 		console.log(item);
@@ -37,15 +37,15 @@ class CategoryItem extends Component {
 					<div className={`status-pill ${item.isActive ? 'green' : 'red'}`}/>
 				</td>
 				<td className="text-right row-actions">
-					<a href="#" onClick={editCategory(item, true)} className="secondary" title="Edit Inventory Category">
+					<a  onClick={editCategory(item, true)} className="secondary" title="Edit Inventory Category">
 						<i className="os-icon os-icon-edit-32" />
 					</a>
 					{item.isActive ? (
-						<a href="#" onClick={this.disableCategory} className="danger" title="Disable Category">
+						<a  onClick={this.disableCategory} className="danger" title="Disable Category">
 							<i className="os-icon os-icon-x-circle" />
 						</a>
 					) : (
-						<a href="#" onClick={this.enableCategory} className="success" title="Enable Category">
+						<a  onClick={this.enableCategory} className="success" title="Enable Category">
 							<i className="os-icon os-icon-check-circle" />
 						</a>
 					)}
@@ -55,4 +55,4 @@ class CategoryItem extends Component {
 	}
 }
 
-export default connect(null, { updateCategory })(CategoryItem);
+export default connect(null, { updateInvCategory })(InvCategoryItem);

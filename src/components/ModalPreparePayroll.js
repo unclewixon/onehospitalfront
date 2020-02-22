@@ -59,7 +59,7 @@ class ModalPreparePayroll extends Component {
 									<button className="btn btn-secondary btn-sm ml-4" type="submit">
 										Generate Payroll
 									</button>
-									<a className="btn btn-primary btn-sm ml-4" href="#" onClick={this.payStaff}>
+									<a className="btn btn-primary btn-sm ml-4 text-white" onClick={this.payStaff}>
 										<i className="os-icon os-icon-checkmark"/>
 										<span>Pay Staff</span>
 									</a>

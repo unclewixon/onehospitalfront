@@ -43,8 +43,10 @@ TABLE OF CONTENTS
 
 */
 
-// antd
+// antd, fullcalendar
 @import '~antd/dist/antd.css';
+@import '~@fullcalendar/core/main.css';
+@import '~@fullcalendar/daygrid/main.css';
 
 /* 1. Theme Variables */
 @import "theme-variables";

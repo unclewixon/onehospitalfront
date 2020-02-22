@@ -54,11 +54,11 @@ class LeaveItem extends Component {
 					</td>
 					<td className="text-right row-actions">
 						{hasRequest && (
-							<a href="#" onClick={this.toggle} className="secondary" title="Approve Leave">
+							<a  onClick={this.toggle} className="secondary" title="Approve Leave">
 								<i className="os-icon os-icon-check-circle" />
 							</a>
 						)}
-						<a href="#" onClick={this.doLeaveHistory} className="danger" title="Leave History">
+						<a  onClick={this.doLeaveHistory} className="danger" title="Leave History">
 							<i className="os-icon os-icon-basic-2-259-calendar" />
 						</a>
 					</td>
@@ -69,11 +69,11 @@ class LeaveItem extends Component {
 						<td colSpan="8">
 							<div className="element-wrapper">
 								<div className="element-actions">
-									<a href="#" className="btn btn-success btn-sm mr-2" onClick={this.doApproveLeave}>
+									<a  className="btn btn-success btn-sm mr-2" onClick={this.doApproveLeave}>
 										<i className="os-icon os-icon-check-circle" />
 										<span>Approve Leave</span>
 									</a>
-									<a href="#" className="btn btn-secondary btn-sm" onClick={this.doDeclineLeave}>
+									<a  className="btn btn-secondary btn-sm" onClick={this.doDeclineLeave}>
 										<i className="os-icon os-icon-x-circle" />
 										<span>Decline</span>
 									</a>

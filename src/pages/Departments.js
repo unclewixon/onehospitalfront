@@ -8,15 +8,16 @@ import {
 } from "../actions/settings";
 
 const Departments = props => {
-  const [name, setName] = useState("Pharmacy");
-  const [description, setDescription] = useState("");
-
-  const handleNameInputChange = e => {
-    setName(e.target.value);
+  const initialState = {
+    name: "",
+    description: "",
+    headOfDept: ""
   };
 
-  const handleDescriptionInputChange = e => {
-    setDescription(e.target.value);
+  const [{ name, description, headOfDept }, setState] = useState(initialState);
+  const handleInputChange = e => {
+    const { name, value } = e.target;
+    setState(previouState => setState({ ...previouState, [name]: value }));
   };
 
   const onCreateDepartment = e => {
@@ -127,7 +128,7 @@ const Departments = props => {
                           placeholder="Enter Department Name..."
                           type="text"
                           value={description}
-                          onChange={handleDescriptionInputChange}
+                          onChange={handleInputChange}
                         />
                         <div className="input-group-append">
                           <div className="input-group-text">Dept</div>
@@ -137,12 +138,20 @@ const Departments = props => {
 
                     <div className="form-group">
                       <label className="lighter" for="">
-                        Head of Department
+                        Description
                       </label>
+                      <div className="form-group">
+                        <textarea
+                          className="form-control"
+                          placeholder="Description"
+                          type="text"
+                          name="description"
+                        />
+                      </div>
                       <select
                         class="form-control"
                         value={name}
-                        onChange={handleNameInputChange}
+                        onChange={handleInputChange}
                       >
                         <option value="Pharmacy">Pharmacy</option>
                         <option value="Clinical Laboratory">

@@ -24,14 +24,15 @@ class EditRole extends Component {
 	doEditRole = async data => {
 		this.setState({ submitting: true });
 		try {
-			const rs = await request(`${API_URI}${rolesAPI}`, 'POST', true, data);
+			const { roleID } = this.props;
+			const rs = await request(`${API_URI}${rolesAPI}/${roleID}/update`, 'PATCH', true, data);
 			this.props.updateRole(rs);
 			this.setState({ submitting: false });
 			this.props.reset('edit_role');
 			notifySuccess('role updated!');
 		} catch (e) {
 			this.setState({ submitting: false });
-			throw new SubmissionError({ _error: e.message || 'could not create role' });
+			throw new SubmissionError({ _error: e.message || 'could not update role' });
 		}
 	};
 

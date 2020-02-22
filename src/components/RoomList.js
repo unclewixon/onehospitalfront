@@ -10,13 +10,17 @@ import {
 const RoomList = props => {
   const initialState = {
     name: "",
-    status: "",
+    status: "Occupied",
     floor: "",
-    room_category_id: ""
+    category: "",
+    create: true,
+    edit: false
   };
-  const [{ name, status, floor, room_category_id }, setState] = useState(
-    initialState
-  );
+  const [{ name, status, floor, category }, setState] = useState(initialState);
+  const [Loading, setLoading] = useState(false);
+  const [{ edit, create }, setSubmitButton] = useState(initialState);
+
+  const [data, getDataToEdit] = useState(null);
 
   const handleInputChange = e => {
     const { name, value } = e.target;
@@ -25,9 +29,38 @@ const RoomList = props => {
 
   const onAddRoom = e => {
     e.preventDefault();
-    props.addRoom({ name, status, floor, room_category_id }).then(response => {
+    props.addRoom({ name, status, floor, category }).then(response => {
       setState({ ...initialState });
     });
+  };
+
+  const onEditRoom = e => {
+    setLoading(true);
+    e.preventDefault();
+    props
+      .updateRoom({ id: data.id, name, status, floor, category }, data)
+      .then(response => {
+        setState({ ...initialState });
+        setLoading(false);
+      })
+      .catch(error => {
+        setState({ ...initialState });
+        setLoading(false);
+      });
+  };
+
+  const onClickEdit = data => {
+    console.log(data);
+    setSubmitButton({ edit: true, create: false });
+    setState(prevState => ({
+      ...prevState,
+      name: data.name,
+      status: data.status,
+      floor: data.floor,
+      category: data.category,
+      id: data.id
+    }));
+    getDataToEdit(data);
   };
 
   const onDeleteRoom = data => {
@@ -41,10 +74,14 @@ const RoomList = props => {
       });
   };
 
+  const cancelEditButton = () => {
+    setSubmitButton({create: true, edit: false})
+    setState({...initialState})
+  }
+
   useEffect(() => {
     props.getAllRooms();
   }, []);
-  console.log(props.Rooms);
   return (
     <div className="row">
       <div className="col-lg-8">
@@ -59,7 +96,7 @@ const RoomList = props => {
                     <th>Category Name</th>
                     <th>Price</th>
                     <th>Discount</th>
-                    <th class="text-right">Order Total</th>
+                    <th class="text-right">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -71,7 +108,10 @@ const RoomList = props => {
                         <td>{Room.category.discount}</td>
                         <td className="row-actions text-right">
                           <a href="#">
-                            <i className="os-icon os-icon-ui-49"></i>
+                            <i
+                              className="os-icon os-icon-ui-49"
+                              onClick={() => onClickEdit(Room)}
+                            ></i>
                           </a>
                           <a href="#">
                             <i className="os-icon os-icon-grid-10"></i>
@@ -91,7 +131,7 @@ const RoomList = props => {
       </div>
       <div className="col-lg-4 col-xxl-3  d-xxl-block">
         <div className="pipeline white lined-warning">
-          <form onSubmit={onAddRoom}>
+          <form onSubmit={edit ? onEditRoom : onAddRoom}>
             <h6 className="form-header">Add New Room</h6>
             <div className="form-group">
               <input
@@ -99,19 +139,22 @@ const RoomList = props => {
                 placeholder="Room Number"
                 type="text"
                 name="name"
+                value={name}
                 onChange={handleInputChange}
               />
             </div>
             <div className="form-group">
               <select
                 className="form-control"
-                name="room_category_id"
-                value={room_category_id}
+                name="category"
+                value={category}
                 onChange={handleInputChange}
               >
                 {props.Room_Categories.map(RoomCategory => {
                   return (
-                    <option value={RoomCategory.id}>{RoomCategory.name}</option>
+                    <option value={RoomCategory.name}>
+                      {RoomCategory.name}
+                    </option>
                   );
                 })}
               </select>
@@ -122,25 +165,53 @@ const RoomList = props => {
                 placeholder="Floor"
                 type="text"
                 name="floor"
+                value={floor}
                 onChange={handleInputChange}
               />
             </div>
             <div className="form-group">
               <select
                 className="form-control"
-                value="status"
+                name="status"
+                value={status}
                 onChange={handleInputChange}
               >
-                <option value={"Occupied"}>Occupied</option>
-                <option value={"Not occupied"}>Not Occupied</option>
+                <option value="Occupied">Occupied</option>
+                <option value="Not occupied">Not Occupied</option>
               </select>
             </div>
 
             <div className="form-buttons-w">
-              <button className="btn btn-primary" type="submit">
-                {" "}
-                Create
-              </button>
+              {create && (
+                <button
+                  className={
+                    Loading ? "btn btn-primary disabled" : "btn btn-primary"
+                  }
+                >
+                  <span>{Loading ? "creating" : "create"}</span>
+                </button>
+              )}
+              {edit && (
+                <>
+                 <button
+                className={
+                  Loading ? "btn btn-primary disabled" : "btn btn-primary"
+                }
+                onClick={cancelEditButton}
+              >
+                <span>{Loading ? "cancel" : "cancel"}</span>
+              </button> 
+                <button
+                  className={
+                    Loading ? "btn btn-primary disabled" : "btn btn-primary"
+                  }
+                >
+                  <span>{Loading ? "saving" : "edit"}</span>
+                </button>
+                
+               
+              </>
+              )}
             </div>
           </form>
         </div>

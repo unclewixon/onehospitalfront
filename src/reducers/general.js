@@ -1,6 +1,5 @@
 import {
-	START_PRELOADING,
-	STOP_PRELOADING,
+	TOGGLE_PRELOADING,
 	SIGN_OUT,
 	TOGGLE_IS_MODAL,
 	TOGGLE_MODAL,
@@ -18,11 +17,10 @@ import {
 	TOGGLE_VIEW_CURRENT_PAYROLL,
 	TOGGLE_PREPARE_PAYROLL,
 	TOGGLE_EDIT_PAYROLL,
-	TOGGLE_TOGGLE_PROFILE,
 } from '../actions/types';
 
 const INITIAL_STATE = {
-	preloading: false,
+	preloading: true,
 	is_modal_open: false,
 	is_modal: false,
 	create_staff: false,
@@ -39,21 +37,16 @@ const INITIAL_STATE = {
 	current_payroll: false,
 	prepare_payroll: false,
 	edit_payroll: false,
-	is_profile_open: false,
 };
 
 const general = (state = INITIAL_STATE, action) => {
 	switch (action.type) {
-		case START_PRELOADING:
-			return { ...state, preloading: true };
-		case STOP_PRELOADING:
-			return { ...state, preloading: false };
+		case TOGGLE_PRELOADING:
+			return { ...state, preloading: action.payload };
 		case SIGN_OUT:
 			return { ...state, preloading: false };
 		case TOGGLE_IS_MODAL:
 			return { ...state, is_modal: action.payload };
-		case TOGGLE_TOGGLE_PROFILE:
-			return { ...state, is_profile_open: action.payload };
 		case TOGGLE_MODAL:
 			return { ...state, is_modal_open: action.payload };
 		case TOGGLE_CREATE_STAFF:
