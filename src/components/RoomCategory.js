@@ -11,9 +11,14 @@ const RoomCategory = props => {
   const initialState = {
     name: "",
     price: "",
-    discount: ""
+    discount: "",
+    edit: false,
+    create: true
   };
   const [{ name, price, discount }, setState] = useState(initialState);
+  const [Loading, setLoading] = useState(false);
+  const [{ edit, create }, setSubmitButton] = useState(initialState);
+  const [data, getDataToEdit] = useState(null);
 
   const handleInputChange = e => {
     const { name, value } = e.target;
@@ -21,11 +26,53 @@ const RoomCategory = props => {
   };
 
   const onAddRoom = e => {
+    setLoading(true);
     e.preventDefault();
-    props.addRoomCategory({ name, price, discount }).then(response => {
-      setState({ ...initialState });
-    });
+    props
+      .addRoomCategory({ name, price, discount })
+      .then(response => {
+        setLoading(false);
+        setState({ ...initialState });
+      })
+      .catch(error => {
+        setLoading(false);
+        setState({ ...initialState });
+      });
   };
+
+  const onEditRoomCategory = e => {
+    setLoading(true);
+    e.preventDefault();
+    props
+      .updateRoomCategory({ id: data.id, name, price, discount }, data)
+      .then(response => {
+        setState({ ...initialState });
+        setSubmitButton({create: true, edit: false})
+        setLoading(false);
+      })
+      .catch(error => {
+        setState({ ...initialState });
+        setSubmitButton({create: true, edit: false})
+        setLoading(false);
+      });
+  };
+
+  const onClickEdit = data => {
+    setSubmitButton({ edit: true, create: false });
+    setState(prevState => ({
+      ...prevState,
+      name: data.name,
+      discount: data.discount,
+      price: data.price,
+      id: data.id
+    }));
+    getDataToEdit(data);
+  };
+
+const cancelEditButton = () => {
+  setSubmitButton({create: true, edit: false})
+  setState({...initialState})
+}
 
   const onDeleteRoomCategory = data => {
     props
@@ -56,7 +103,7 @@ const RoomCategory = props => {
                     <th>Category Name</th>
                     <th>Price</th>
                     <th>Discount</th>
-                    <th class="text-right">Order Total</th>
+                    <th class="text-right">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -68,7 +115,10 @@ const RoomCategory = props => {
                         <td>{RoomCategory.discount}</td>
                         <td className="row-actions text-right">
                           <a href="#">
-                            <i className="os-icon os-icon-ui-49"></i>
+                            <i
+                              className="os-icon os-icon-ui-49"
+                              onClick={() => onClickEdit(RoomCategory)}
+                            ></i>
                           </a>
                           <a href="#">
                             <i className="os-icon os-icon-grid-10"></i>
@@ -91,7 +141,7 @@ const RoomCategory = props => {
       </div>
       <div className="col-lg-4 col-xxl-3  d-xxl-block">
         <div className="pipeline white lined-warning">
-          <form onSubmit={onAddRoom}>
+          <form onSubmit={edit ? onEditRoomCategory : onAddRoom}>
             <h6 className="form-header">New category</h6>
             <div className="form-group">
               <input
@@ -124,10 +174,36 @@ const RoomCategory = props => {
               />
             </div>
             <div className="form-buttons-w">
-              <button className="btn btn-primary" type="submit">
-                {" "}
-                Create
-              </button>
+            {create && (
+                <button
+                  className={
+                    Loading ? "btn btn-primary disabled" : "btn btn-primary"
+                  }
+                >
+                  <span>{Loading ? "creating" : "create"}</span>
+                </button>
+              )}
+            {edit && (
+                <>
+                 <button
+                className={
+                  Loading ? "btn btn-primary disabled" : "btn btn-primary"
+                }
+                onClick={cancelEditButton}
+              >
+                <span>{Loading ? "cancel" : "cancel"}</span>
+              </button> 
+                <button
+                  className={
+                    Loading ? "btn btn-primary disabled" : "btn btn-primary"
+                  }
+                >
+                  <span>{Loading ? "Saving" : "edit"}</span>
+                </button>
+                
+               
+              </>
+              )}
             </div>
           </form>
         </div>

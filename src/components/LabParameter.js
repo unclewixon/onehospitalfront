@@ -9,9 +9,14 @@ import {
 
 const LabParameter = props => {
   const initialState = {
-    name: ""
+    name: "",
+    edit: false,
+    create: true
   };
   const [{ name }, setState] = useState(initialState);
+  const [Loading, setLoading] = useState(false);
+  const [{ edit, create }, setSubmitButton] = useState(initialState);
+  const [data, getDataToEdit] = useState(null);
 
   const handleInputChange = e => {
     const { name, value } = e.target;
@@ -23,6 +28,37 @@ const LabParameter = props => {
     props.addLabTestParameter({ name }).then(response => {
       setState({ ...initialState });
     });
+  };
+
+  const onEditLabParameter = e => {
+    setLoading(true);
+    e.preventDefault();
+    props
+      .updateLabTestParameter({ id: data.id, name }, data)
+      .then(response => {
+        setState({ ...initialState });
+        setSubmitButton({ create: true, edit: false });
+        setLoading(false);
+      })
+      .catch(error => {
+        setState({ ...initialState });
+        setSubmitButton({ create: true, edit: false });
+        setLoading(false);
+      });
+  };
+
+  const onClickEdit = data => {
+    setSubmitButton({ edit: true, create: false });
+    setState(prevState => ({
+      ...prevState,
+      name: data.name
+    }));
+    getDataToEdit(data);
+  };
+
+  const cancelEditButton = () => {
+    setSubmitButton({ create: true, edit: false });
+    setState({ ...initialState });
   };
 
   const onDeleteLabParameter = data => {
@@ -53,7 +89,10 @@ const LabParameter = props => {
                       <div className="pipeline-item">
                         <div className="pi-controls">
                           <div className="pi-settings os-dropdown-trigger">
-                            <i className="os-icon os-icon-ui-49"></i>
+                            <i
+                              className="os-icon os-icon-ui-49"
+                              onClick={() => onClickEdit(LabParameter)}
+                            ></i>
                           </div>
                           <div className="pi-settings os-dropdown-trigger">
                             <i
@@ -81,7 +120,7 @@ const LabParameter = props => {
       </div>
       <div className="col-lg-4 col-xxl-3  d-xxl-block">
         <div className="pipeline white lined-warning">
-          <form onSubmit={onAddLabParameter}>
+          <form onSubmit={edit ? onEditLabParameter : onAddLabParameter}>
             <h6 className="form-header">Create Parameter</h6>
             <div className="form-group">
               <input
@@ -95,10 +134,34 @@ const LabParameter = props => {
             </div>
 
             <div className="form-buttons-w">
-              <button className="btn btn-primary" type="submit">
-                {" "}
-                Create
-              </button>
+              {create && (
+                <button
+                  className={
+                    Loading ? "btn btn-primary disabled" : "btn btn-primary"
+                  }
+                >
+                  <span>{Loading ? "creating" : "create"}</span>
+                </button>
+              )}
+              {edit && (
+                <>
+                  <button
+                    className={
+                      Loading ? "btn btn-primary disabled" : "btn btn-primary"
+                    }
+                    onClick={cancelEditButton}
+                  >
+                    <span>{Loading ? "cancel" : "cancel"}</span>
+                  </button>
+                  <button
+                    className={
+                      Loading ? "btn btn-primary disabled" : "btn btn-primary"
+                    }
+                  >
+                    <span>{Loading ? "Saving" : "edit"}</span>
+                  </button>
+                </>
+              )}
             </div>
           </form>
         </div>
