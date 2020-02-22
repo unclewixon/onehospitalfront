@@ -25,12 +25,13 @@ const Staff = lazy(() => import('./pages/Staff'));
 const Inventory = lazy(() => import('./pages/Inventory'));
 const Settings = lazy(() => import('./pages/Settings'));
 const StaffProfile = lazy(() => import('./pages/StaffProfile'));
+const Hmo = lazy(() => import('./pages/Hmo'));
 
 class App extends Component {
 	async componentDidMount() {
 		const fullscreen = await new SSRStorage().getItem(FULLSCREEN_COOKIE);
 		const theme_mode = await new SSRStorage().getItem(MODE_COOKIE);
-		
+
 		window.document.body.className = `menu-position-side menu-side-left ${fullscreen ? 'full-screen' : ''} with-content-panel ${theme_mode ? 'color-scheme-dark' : ''}`;
 	}
 
@@ -38,7 +39,8 @@ class App extends Component {
 		const { loggedIn, preloading, is_modal_open, isStaffOpen, isPatientOpen, theme_mode } = this.props;
 		return preloading ? (
 			<Splash />
-		) : (
+		) :
+		(
 			<>
 				<ToastContainer autoClose={3500} />
 				<Suspense fallback={<Splash />}>
@@ -62,6 +64,7 @@ class App extends Component {
 												<Route path="/staff-mgt" component={Staff} />
 												<Route path="/inventory" component={Inventory} />
 												<Route path="/settings" component={Settings} />
+												<Route path="/hmo" component={Hmo} />
 												<Route component={NoMatch} />
 											</Switch>
 										</div>

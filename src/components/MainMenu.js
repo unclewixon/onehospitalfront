@@ -6,9 +6,11 @@ import $ from 'jquery';
 import avatar1 from '../assets/images/avatar1.jpg';
 import PatientMenu from './PatientMenu';
 import HrMenu from './HrMenu';
+import SettingsMenu from './SettingsMenu';
 import DoctorMenu from './DoctorMenu';
 import InventoryMenu from './InventoryMenu';
 import AdminMenu from './AdminMenu';
+import FrontDeskMenu from "./FrontDeskMenu";
 
 class MainMenu extends Component {
 	componentDidMount() {
@@ -42,7 +44,7 @@ class MainMenu extends Component {
 			}
 		);
 	}
-		
+
 	render() {
 		const { role, theme_mode } = this.props;
 		return (
@@ -85,11 +87,8 @@ class MainMenu extends Component {
 					{role === 'doctor' && (
 						<DoctorMenu />
 					)}
-					{role === 'inventory' && (
-						<InventoryMenu />
-					)}
-					{role === 'admin' && (
-						<AdminMenu />
+					{role ==="front-desk" && (
+						<FrontDeskMenu />
 					)}
 				</ul>
 			</div>
