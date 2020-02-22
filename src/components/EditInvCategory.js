@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError, reset } from 'redux-form';
 
 import { renderTextInput, request } from '../services/utilities';
-import { API_URI, inventoryAPI } from '../services/constants';
+import { API_URI, inventoryCatAPI } from '../services/constants';
 import { notifySuccess } from '../services/notify';
 import waiting from '../assets/images/waiting.gif';
-import { updateCategory } from '../actions/inventory';
+import { updateInvCategory } from '../actions/inventory';
 
 const validate = values => {
 	const errors = {};
@@ -25,8 +25,8 @@ class EditInvCategory extends Component {
 		const { categoryID } = this.props;
 		this.setState({ submitting: true });
 		try {
-			const rs = await request(`${API_URI}${inventoryAPI}/categories/${categoryID}/update`, 'PATCH', true, data);
-			this.props.updateCategory(rs);
+			const rs = await request(`${API_URI}${inventoryCatAPI}/${categoryID}/update`, 'PATCH', true, data);
+			this.props.updateInvCategory(rs);
 			notifySuccess('category saved!');
 			this.setState({ submitting: false });
 			this.props.reset('edit_category');
@@ -90,4 +90,4 @@ const mapStateToProps = (state, ownProps) => {
 	};
 };
 
-export default connect(mapStateToProps, { reset, updateCategory })(EditInvCategory);
+export default connect(mapStateToProps, { reset, updateInvCategory })(EditInvCategory);

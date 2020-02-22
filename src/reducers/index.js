@@ -6,6 +6,9 @@ import user from './user';
 import general from './general';
 import inventory from './inventory';
 import role from './role';
+import hr from './hr';
+import setting from './setting';
+import utility from './utility';
 
 const reducers = combineReducers({
 	form: formReducer,
@@ -14,6 +17,9 @@ const reducers = combineReducers({
 	general,
 	inventory,
 	role,
+	hr,
+	setting,
+	utility,
 });
 
 export default reducers;

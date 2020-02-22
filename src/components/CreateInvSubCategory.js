@@ -2,21 +2,21 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError, reset } from 'redux-form';
 
-import { renderTextInput, request } from '../services/utilities';
-import { API_URI, inventoryCatAPI } from '../services/constants';
+import { renderTextInput, request, renderSelect } from '../services/utilities';
+import { API_URI, inventorySubCatAPI } from '../services/constants';
 import { notifySuccess } from '../services/notify';
 import waiting from '../assets/images/waiting.gif';
-import { addInvCategory } from '../actions/inventory';
+import { addInvSubCategory } from '../actions/inventory';
 
 const validate = values => {
 	const errors = {};
 	if (!values.name) {
-        errors.name = 'enter category';
+        errors.name = 'enter sub category';
     }
     return errors;
 };
 
-class CreateInvCategory extends Component {
+class CreateInvSubCategory extends Component {
 	state = {
 		submitting: false,
 	};
@@ -24,27 +24,37 @@ class CreateInvCategory extends Component {
 	createCategory = async data => {
 		this.setState({ submitting: true });
 		try {
-			const rs = await request(`${API_URI}${inventoryCatAPI}`, 'POST', true, data);
-			this.props.addInvCategory(rs);
+			const rs = await request(`${API_URI}${inventorySubCatAPI}`, 'POST', true, data);
+			this.props.addInvSubCategory(rs);
 			this.setState({ submitting: false });
-			this.props.reset('create_category');
-			notifySuccess('category created!');
+			this.props.reset('create_sub_category');
+			notifySuccess('sub category created!');
 		} catch (e) {
 			this.setState({ submitting: false });
-			throw new SubmissionError({ _error: e.message || 'could not create category' });
+			throw new SubmissionError({ _error: e.message || 'could not create sub category' });
 		}
 	};
 
 	render() {
 		const { submitting } = this.state;
-		const { error, handleSubmit } = this.props;
+		const { error, handleSubmit, categories } = this.props;
 		return (
 			<div className="element-wrapper">
 				<div className="element-box pipeline white lined-warning">
 					<form onSubmit={handleSubmit(this.createCategory)}>
-						<h6 className="form-header">Create Category</h6>
+						<h6 className="form-header">Create Sub Category</h6>
 						{error && <div className="alert alert-danger" dangerouslySetInnerHTML={{__html: `<strong>Error!</strong> ${error}`}}/>}
 						<div className="row">
+							<div className="col-sm-12">
+								<Field
+									id="inventory_category_id"
+									name="inventory_category_id"
+									component={renderSelect}
+									label="Category"
+									placeholder="Select Category"
+									data={categories}
+								/>
+							</div>
 							<div className="col-sm-12">
 								<Field
 									id="name"
@@ -68,9 +78,15 @@ class CreateInvCategory extends Component {
 	}
 }
 
-CreateInvCategory = reduxForm({
-	form: 'create_category',
+CreateInvSubCategory = reduxForm({
+	form: 'create_sub_category',
 	validate,
-})(CreateInvCategory);
+})(CreateInvSubCategory);
 
-export default connect(null, { reset, addInvCategory })(CreateInvCategory);
+const mapStateToProps = (state, ownProps) => {
+	return {
+		categories: state.inventory.categories,
+	}
+};
+
+export default connect(mapStateToProps, { reset, addInvSubCategory })(CreateInvSubCategory);

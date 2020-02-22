@@ -4,9 +4,26 @@ import { connect } from 'react-redux';
 
 import StaffItem from '../components/StaffItem';
 import { createStaff } from '../actions/general';
+import { request } from '../services/utilities';
+import { API_URI, staffAPI } from '../services/constants';
+import { loadStaff } from '../actions/hr';
 
 class StaffList extends Component {
+	componentDidMount() {
+		this.fetchStaffs();
+	}
+	
+	fetchStaffs = async () => {
+		try {
+			const rs = await request(`${API_URI}${staffAPI}`, 'GET', true);
+			this.props.loadStaff(rs);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	render() {
+		const { staffs } = this.props;
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -14,7 +31,7 @@ class StaffList extends Component {
 						<div className="col-sm-12">
 							<div className="element-wrapper">
 								<div className="element-actions">
-									<a className="btn btn-primary btn-sm" href="#" onClick={() => this.props.createStaff(true)}>
+									<a className="btn btn-primary btn-sm text-white" onClick={() => this.props.createStaff(true)}>
 										<i className="os-icon os-icon-ui-22"/>
 										<span>Create New Staff</span>
 									</a>
@@ -29,7 +46,7 @@ class StaffList extends Component {
 													<th>Staff ID</th>
 													<th>Name</th>
 													<th>Username</th>
-													<th>Profession</th>
+													<th>Job Title</th>
 													<th>Phone</th>
 													<th>Department</th>
 													<th className="text-center">Status</th>
@@ -37,9 +54,14 @@ class StaffList extends Component {
 												</tr>
 											</thead>
 											<tbody>
-												<StaffItem enabled={1} />
-												<StaffItem enabled={0}/>
-												<StaffItem enabled={1} />
+												{staffs.map((staff, i) => {
+													return (
+														<StaffItem
+															key={i}
+															staff={staff}
+														/>
+													)
+												})}
 											</tbody>
 										</table>
 									</div>
@@ -53,4 +75,10 @@ class StaffList extends Component {
 	}
 }
 
-export default connect(null, { createStaff })(StaffList);
+const mapStateToProps = (state, ownProps) => {
+	return {
+		staffs: state.hr.staffs,
+	}
+};
+
+export default connect(mapStateToProps, { createStaff, loadStaff })(StaffList);

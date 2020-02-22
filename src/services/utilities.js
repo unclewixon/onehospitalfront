@@ -1,5 +1,8 @@
 import React from 'react';
 import numeral from 'numeral';
+import uppercase from 'lodash.uppercase';
+import startCase from 'lodash.startcase';
+import padLeft from 'pad-left';
 
 import SSRStorage from './storage';
 import { TOKEN_COOKIE } from './constants';
@@ -41,17 +44,17 @@ const checkStatus = async response => {
 	return response;
 };
 
+export const defaultHeaders = {
+	Accept: 'application/json',
+	'Content-Type': 'application/json',
+};
+
 const headers = token => {
 	const jwt = `Bearer ${token}`;
 	return { ...defaultHeaders, Authorization: jwt };
 };
 
 const parseJSON = response => response.json();
-
-const defaultHeaders = {
-	Accept: 'application/json',
-	'Content-Type': 'application/json',
-};
 
 export const request = async (url, method, authed = false, data) => {
 	// prettier-ignore
@@ -61,6 +64,12 @@ export const request = async (url, method, authed = false, data) => {
 		headers: authed ? headers(token) : { ...defaultHeaders },
 		body: JSON.stringify(data),
 	});
+	const result = await checkStatus(response);
+	return parseJSON(result);
+};
+
+export const upload = async (url, method, body) => {
+	const response = await fetch(url, { method, headers, body });
 	const result = await checkStatus(response);
 	return parseJSON(result);
 };
@@ -93,13 +102,46 @@ export const renderTextInputGroup = ({input, append, label, icon, type, id, plac
 	</div>
 );
 
-export const renderSelect = ({input, label, id, data, meta: {touched, error}}) => (
+export const renderSelect = ({input, label, placeholder, id, data, meta: {touched, error}}) => (
 	<div className={`form-group ${touched && (error ? 'has-error has-danger' : '')}`}>
 		<label htmlFor={id}>{label}</label>
-		<select {...input} className="form-control" placeholder={label}>
-			<option>{label}</option>
+		<select {...input} className="form-control">
+			<option value="">{placeholder}</option>
 			{data.map((d, i) => <option key={i} value={d.id}>{d.name}</option>)}
 		</select>
 		{touched && (error && <div className="help-block form-text with-errors form-control-feedback"><ul className="list-unstyled"><li>{error}</li></ul></div>)}
 	</div>
 );
+
+const firstLetter = item => item && item !== '' ? `${item.substring(0, 1)}.` : '';
+
+const parseDuty = item => item && item !== '' ? ` [${uppercase(item)}]` : '';
+
+const parseClass = item => {
+	if(item === 'o') {
+		return 'bg-secondary';
+	} else if(item === 'm'  || item === 'n') {
+		return 'bg-primary';
+	} else {
+		return 'bg-primary';
+	}
+};
+
+export const parseRoster = result => {
+	let rosters = [];
+	result.forEach(item => {
+		item.schedule.forEach(schedule => {
+			if(schedule.duty !== '') {
+				rosters = [
+					...rosters,
+					{
+						title: `${startCase(item.last_name)} ${firstLetter(item.first_name)}${parseDuty(schedule.duty)}`,
+						date: `${item.period}-${schedule.date !== '' ? padLeft(schedule.date, 2, '0') : ''}`,
+						className: parseClass(schedule.duty),
+					},
+				];
+			}
+		});
+	});
+	return rosters;
+};

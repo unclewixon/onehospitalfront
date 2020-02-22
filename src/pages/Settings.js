@@ -1,22 +1,84 @@
-import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React, { useState } from 'react';
+import { Switch, Route, Link } from 'react-router-dom';
 
 import Roles from './Roles';
 import NoMatch from './NoMatch';
 
-const Settings = ({ match }) => {
+const Settings = ({ match, location }) => {
+	const [toggle, setToggle] = useState(false);
+	const page = location.pathname.split('/').pop();
 	return (
-		<Switch>
-			<Route path={`${match.url}/roles`} component={Roles} />
-			<Route path={`${match.url}/departments`} component={Roles} />
-			<Route path={`${match.url}/consultation`} component={Roles} />
-			<Route path={`${match.url}/diagnosis`} component={Roles} />
-			<Route path={`${match.url}/lab-mgt`} component={Roles} />
-			<Route path={`${match.url}/room-mgt`} component={Roles} />
-			<Route path={`${match.url}/leave-category`} component={Roles} />
-			<Route path={`${match.url}/services-category`} component={Roles} />
-			<Route component={NoMatch} />
-		</Switch>
+		<div className={`settings-menu ${toggle ? 'compact-menu' : ''}`}>
+			<div className="ae-side-menu">
+				<div className="aem-head">
+					<a className="ae-side-menu-toggler" onClick={() => setToggle(!toggle)}>
+						<i className="os-icon os-icon-hamburger-menu-2"/>
+					</a>
+				</div>
+				<ul className="ae-main-menu">
+					<li className={page === 'roles' ? 'active' : ''}>
+						<Link to="/settings/roles">
+							<i className="os-icon os-icon-hierarchy-structure-2"/>
+							<span>Roles</span>
+						</Link>
+					</li>
+					<li className={page === 'departments' ? 'active' : ''}>
+						<Link to="/settings/departments">
+							<i className="os-icon os-icon-folder-plus"/>
+							<span>Departments</span>
+						</Link>
+					</li>
+					<li className={page === 'consultation' ? 'active' : ''}>
+						<Link to="/settings/consultation">
+							<i className="os-icon os-icon-documents-03"/>
+							<span>Consultation</span>
+						</Link>
+					</li>
+					<li className={page === 'diagnosis' ? 'active' : ''}>
+						<Link to="/settings/diagnosis">
+							<i className="os-icon os-icon-search"/>
+							<span>Diagnosis</span>
+						</Link>
+					</li>
+					<li className={page === 'lab-mgt' ? 'active' : ''}>
+						<Link to="/settings/lab-mgt">
+							<i className="os-icon os-icon-ui-44"/>
+							<span>Lab MGT</span>
+						</Link>
+					</li>
+					<li className={page === 'room-mgt' ? 'active' : ''}>
+						<Link to="/settings/room-mgt">
+							<i className="os-icon os-icon-home"/>
+							<span>Room MGT</span>
+						</Link>
+					</li>
+					<li className={page === 'leave-category' ? 'active' : ''}>
+						<Link to="/settings/leave-category">
+							<i className="os-icon os-icon-map"/>
+							<span>Leave<br/>Categories</span>
+						</Link>
+					</li>
+					<li className={page === 'services-category' ? 'active' : ''}>
+						<Link to="/settings/services-category">
+							<i className="os-icon os-icon-layers"/>
+							<span>Services<br/>Categories</span>
+						</Link>
+					</li>
+				</ul>
+			</div>
+			<Switch>
+				<Route path={`${match.url}/roles`} component={Roles} />
+				<Route path={`${match.url}/departments`} component={Roles} />
+				<Route path={`${match.url}/consultation`} component={Roles} />
+				<Route path={`${match.url}/diagnosis`} component={Roles} />
+				<Route path={`${match.url}/lab-mgt`} component={Roles} />
+				<Route path={`${match.url}/room-mgt`} component={Roles} />
+				<Route path={`${match.url}/leave-category`} component={Roles} />
+				<Route path={`${match.url}/services-category`} component={Roles} />
+				<Route component={NoMatch} />
+			</Switch>
+		</div>
 	);
 };
 

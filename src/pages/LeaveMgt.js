@@ -2,9 +2,26 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import LeaveItem from '../components/LeaveItem';
+import { loadStaffLeave } from '../actions/hr';
+import { request } from '../services/utilities';
+import { API_URI, leaveMgtAPI } from '../services/constants';
 
 class LeaveMgt extends Component {
+	componentDidMount() {
+		this.fetchStaffLeave();
+	}
+	
+	fetchStaffLeave = async () => {
+		try {
+			const rs = await request(`${API_URI}${leaveMgtAPI}`, 'GET', true);
+			this.props.loadStaffLeave(rs);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	render() {
+		const { staff_leave } = this.props;
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -52,26 +69,16 @@ class LeaveMgt extends Component {
 												</tr>
 											</thead>
 											<tbody>
-												<LeaveItem
-													onLeave={true}
-													hasRequest={false}
-												/>
-												<LeaveItem
-													onLeave={false}
-													hasRequest={true}
-												/>
-												<LeaveItem
-													onLeave={true}
-													hasRequest={false}
-												/>
-												<LeaveItem
-													onLeave={false}
-													hasRequest={true}
-												/>
-												<LeaveItem
-													onLeave={false}
-													hasRequest={true}
-												/>
+												{staff_leave.map((leave, i) => {
+													return (
+														<LeaveItem
+															key={i}
+															onLeave={true}
+															hasRequest={false}
+															leave={leave}
+														/>
+													)
+												})}
 											</tbody>
 										</table>
 									</div>
@@ -85,4 +92,10 @@ class LeaveMgt extends Component {
 	}
 }
 
-export default connect(null)(LeaveMgt);
+const mapStateToProps = (state, ownProps) => {
+	return {
+		staff_leave: state.hr.staff_leave,
+	}
+};
+
+export default connect(mapStateToProps, { loadStaffLeave })(LeaveMgt);
