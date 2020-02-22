@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const SettingsMenu = () => {
 	return (
-		<ul>
+		<>
 			<li>
 				<Link to="/settings/roles">
 					<div className="icon-w">
@@ -52,7 +52,15 @@ const SettingsMenu = () => {
 					<span>Room Management</span>
 				</Link>
 			</li>
-		</ul>
+			<li>
+				<Link to="/settings/leave-category">
+					<div className="icon-w">
+						<div className="os-icon os-icon-layers"/>
+					</div>
+					<span>Leave Category</span>
+				</Link>
+			</li>
+		</>
 	);
 };
 

@@ -100,27 +100,6 @@ export const toggleUpdateQuantity = status => {
   };
 };
 
-export const toggleCreateInvCategory = status => {
-  return {
-    type: TOGGLE_CREATE_INV_CAT,
-    payload: status
-  };
-};
-
-export const toggleEditInvCategory = status => {
-  return {
-    type: TOGGLE_EDIT_INV_CAT,
-    payload: status
-  };
-};
-
-export const toggleCreateRole = status => {
-  return {
-    type: TOGGLE_CREATE_ROLE,
-    payload: status
-  };
-};
-
 //frontdesk modals
 export const toggleRegisterNewPatient = status => {
   return {
@@ -273,30 +252,6 @@ export const updateQuantity = action => {
     dispatch(closeModals());
     dispatch(toggleModal(true));
     dispatch(toggleUpdateQuantity(action));
-  };
-};
-
-export const createInventoryCat = action => {
-  return dispatch => {
-    dispatch(closeModals());
-    dispatch(toggleModal(true));
-    dispatch(toggleCreateInvCategory(action));
-  };
-};
-
-export const editInventoryCat = action => {
-  return dispatch => {
-    dispatch(closeModals());
-    dispatch(toggleModal(true));
-    dispatch(toggleEditInvCategory(action));
-  };
-};
-
-export const createRole = action => {
-  return dispatch => {
-    dispatch(closeModals());
-    dispatch(toggleModal(true));
-    dispatch(toggleCreateRole(action));
   };
 };
 
