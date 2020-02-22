@@ -47,7 +47,6 @@ class MainMenu extends Component {
 
 	render() {
 		const { role, theme_mode } = this.props;
-		role = "settings";
 		return (
 			<div className={`menu-w color-scheme-dark ${theme_mode ? '' : 'color-style-bright'} menu-position-side menu-side-left menu-layout-full sub-menu-style-over sub-menu-color-bright selected-menu-color-light menu-activated-on-hover menu-has-selected-link ${role !== 'admins' ? '' : 'menu-layout-compact'}`} ref="menu_activated_on_hover">
 				<div className="logo-w">
