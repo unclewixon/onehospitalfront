@@ -16,11 +16,16 @@ const LabTest = props => {
     name: "",
     category: "",
     price: "",
-    testType: "single"
+    testType: "single",
+    edit: false,
+    create: true
   };
   const [{ name, category, price, testType }, setState] = useState(
     initialState
   );
+  const [Loading, setLoading] = useState(false);
+  const [{ edit, create }, setSubmitButton] = useState(initialState);
+  const [data, getDataToEdit] = useState(null);
 
   const [parameters, setParameter] = useState(null);
 
@@ -41,6 +46,46 @@ const LabTest = props => {
         setState({ ...initialState });
         setParameter(null);
       });
+  };
+
+  const onEditLabTest = e => {
+    setLoading(true);
+    e.preventDefault();
+    props
+      .updateLabTest(
+        { id: data.id, name, price, category, parameters, testType },
+        data
+      )
+      .then(response => {
+        setState({ ...initialState });
+        setSubmitButton({ create: true, edit: false });
+        setLoading(false);
+      })
+      .catch(error => {
+        setState({ ...initialState });
+        setSubmitButton({ create: true, edit: false });
+        setLoading(false);
+      });
+  };
+
+  const onClickEdit = data => {
+    setSubmitButton({ edit: true, create: false });
+    setState(prevState => ({
+      ...prevState,
+      name: data.name,
+      price: data.price,
+      category: data.category,
+      parameters: data.parameters,
+      testType: data.testType,
+      id: data.id
+    }));
+    setParameter(data.parameters);
+    getDataToEdit(data);
+  };
+
+  const cancelEditButton = () => {
+    setSubmitButton({ create: true, edit: false });
+    setState({ ...initialState });
   };
 
   const onDeleteLabTest = data => {
@@ -77,7 +122,10 @@ const LabTest = props => {
                     <div className="pipeline-item">
                       <div className="pi-controls">
                         <div className="pi-settings os-dropdown-trigger">
-                          <i className="os-icon os-icon-ui-49"></i>
+                          <i
+                            className="os-icon os-icon-ui-49"
+                            onClick={() => onClickEdit(LabTest)}
+                          ></i>
                         </div>
                         <div className="pi-settings os-dropdown-trigger">
                           <i
@@ -102,7 +150,7 @@ const LabTest = props => {
       </div>
       <div className="col-lg-4 col-xxl-3  d-xxl-block">
         <div className="pipeline white lined-warning">
-          <form onSubmit={onAddLabTest}>
+          <form onSubmit={edit ? onEditLabTest : onAddLabTest}>
             <h6 className="form-header">Create Test</h6>
             <div className="form-group">
               <input
@@ -128,6 +176,7 @@ const LabTest = props => {
               <select
                 className="form-control"
                 name="testType"
+                value={testType}
                 onChange={handleInputChange}
               >
                 <option value="single">Single</option>;
@@ -151,7 +200,7 @@ const LabTest = props => {
                 <span>Parameters</span>
               </legend>
               <Select
-                className="form-control select2"
+                className="form-control"
                 isMulti
                 onChange={handleMultipleSelectInput}
                 options={options}
@@ -162,10 +211,34 @@ const LabTest = props => {
               <legend></legend>
             </fieldset>
             <div className="form-buttons-w">
-              <button className="btn btn-primary" type="submit">
-                {" "}
-                Create
-              </button>
+              {create && (
+                <button
+                  className={
+                    Loading ? "btn btn-primary disabled" : "btn btn-primary"
+                  }
+                >
+                  <span>{Loading ? "creating" : "create"}</span>
+                </button>
+              )}
+              {edit && (
+                <>
+                  <button
+                    className={
+                      Loading ? "btn btn-primary disabled" : "btn btn-primary"
+                    }
+                    onClick={cancelEditButton}
+                  >
+                    <span>{Loading ? "cancel" : "cancel"}</span>
+                  </button>
+                  <button
+                    className={
+                      Loading ? "btn btn-primary disabled" : "btn btn-primary"
+                    }
+                  >
+                    <span>{Loading ? "Saving" : "edit"}</span>
+                  </button>
+                </>
+              )}
             </div>
           </form>
         </div>
