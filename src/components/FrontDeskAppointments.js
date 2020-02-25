@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
 
 const Appointment = () => {
@@ -25,8 +26,7 @@ const Appointment = () => {
                             <div className="modal-header">
                               <h5
                                 className="modal-title"
-                                id="exampleModalLabel"
-                              ></h5>
+                              >Appointment</h5>
                               <button
                                 aria-label="Close"
                                 className="close"
@@ -212,7 +212,7 @@ const Appointment = () => {
                                             plugin for bootstrap.
                                             <a
                                               href="http://1000hz.github.io/bootstrap-validator/"
-                                              target="_blank"
+                                              target="_blank" rel="noreferrer noopener"
                                             >
                                               Learn more about Bootstrap
                                               Validator

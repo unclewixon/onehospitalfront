@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
 
 const FrontDeskIncoming = () => {
@@ -79,10 +80,7 @@ const FrontDeskIncoming = () => {
                         <div className="modal-dialog modal-lg">
                           <div className="modal-content">
                             <div className="modal-header">
-                              <h5
-                                className="modal-title"
-                                id="exampleModalLabel"
-                              ></h5>
+                              <h5 className="modal-title">Todays Appointment</h5>
                               <button
                                 aria-label="Close"
                                 className="close"
@@ -268,7 +266,7 @@ const FrontDeskIncoming = () => {
                                             plugin for bootstrap.
                                             <a
                                               href="http://1000hz.github.io/bootstrap-validator/"
-                                              target="_blank"
+                                              target="_blank" rel="noopener noreferrer"
                                             >
                                               Learn more about Bootstrap
                                               Validator

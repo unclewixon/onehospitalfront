@@ -43,16 +43,16 @@ const FrontDeskMenu = () => {
 					<span>Appointments</span>
 				</Link>
 			</li>
-            <li class="has-sub-menu">
+            <li className="has-sub-menu">
               <a href="layouts_menu_top_image.html">
-                  <div class="icon-w">
-                      <div class="os-icon os-icon-layers"></div>
+                  <div className="icon-w">
+                      <div className="os-icon os-icon-layers"></div>
                   </div><span>Tools</span></a>
-              <div class="sub-menu-w">
-                  <div class="sub-menu-header">Tools</div>
-                  <div class="sub-menu-icon"><i class="os-icon os-icon-layers"></i></div>
-                  <div class="sub-menu-i">
-                      <ul class="sub-menu">
+              <div className="sub-menu-w">
+                  <div className="sub-menu-header">Tools</div>
+                  <div className="sub-menu-icon"><i className="os-icon os-icon-layers"></i></div>
+                  <div className="sub-menu-i">
+                      <ul className="sub-menu">
                           <li><a href="layouts_menu_side_mini.html">SMS</a></li>
                           <li><a href="layouts_menu_side_mini.html">Emails</a></li>
                       </ul>
