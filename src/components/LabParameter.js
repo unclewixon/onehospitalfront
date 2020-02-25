@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import {confirmAlert} from "react-confirm-alert"
 import {
   addLabTestParameter,
   getAllLabTestParameters,
@@ -61,6 +62,40 @@ const LabParameter = props => {
     setState({ ...initialState });
   };
 
+
+  const confirmDelete = data => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className="custom-ui">
+            <h1>Are you sure?</h1>
+            <p>You want to delete this remove ?</p>
+            <div style={{}}>
+              <button
+                className="btn btn-primary"
+                style={{ margin: 10 }}
+                onClick={onClose}
+              >
+                No
+              </button>
+              <button
+                className="btn btn-danger"
+                style={{ margin: 10 }}
+                onClick={() => {
+                  onDeleteLabParameter(data);
+                  onClose();
+                }}
+              >
+                Yes, Delete it!
+              </button>
+            </div>
+          </div>
+        );
+      }
+    });
+  };
+
+
   const onDeleteLabParameter = data => {
     props
       .deleteLabTestParameters(data)
@@ -71,6 +106,8 @@ const LabParameter = props => {
         console.log(error);
       });
   };
+
+  
 
   useEffect(() => {
     props.getAllLabTestParameters();
@@ -97,7 +134,7 @@ const LabParameter = props => {
                           <div className="pi-settings os-dropdown-trigger">
                             <i
                               className="os-icon os-icon-ui-15"
-                              onClick={() => onDeleteLabParameter(LabParameter)}
+                              onClick={() => confirmDelete(LabParameter)}
                             ></i>
                           </div>
                         </div>

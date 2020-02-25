@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import {confirmAlert} from "react-confirm-alert"
+
 import {
   addRoomCategory,
   getAllRoomCategories,
@@ -85,6 +87,39 @@ const cancelEditButton = () => {
       });
   };
 
+  const confirmDelete = data => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className="custom-ui">
+            <h1>Are you sure?</h1>
+            <p>You want to delete this remove ?</p>
+            <div style={{}}>
+              <button
+                className="btn btn-primary"
+                style={{ margin: 10 }}
+                onClick={onClose}
+              >
+                No
+              </button>
+              <button
+                className="btn btn-danger"
+                style={{ margin: 10 }}
+                onClick={() => {
+                  onDeleteRoomCategory(data);
+                  onClose();
+                }}
+              >
+                Yes, Delete it!
+              </button>
+            </div>
+          </div>
+        );
+      }
+    });
+  };
+
+
   useEffect(() => {
     props.getAllRoomCategories();
   }, []);
@@ -125,7 +160,7 @@ const cancelEditButton = () => {
                           </a>
                           <a
                             class="danger"
-                            onClick={() => onDeleteRoomCategory(RoomCategory)}
+                            onClick={() => confirmDelete(RoomCategory)}
                           >
                             <i className="os-icon os-icon-ui-15"></i>
                           </a>

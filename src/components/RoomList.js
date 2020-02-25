@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import { confirmAlert } from "react-confirm-alert";
+
 import {
   addRoom,
   getAllRooms,
@@ -74,10 +76,42 @@ const RoomList = props => {
       });
   };
 
+  const confirmDelete = data => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className="custom-ui">
+            <h1>Are you sure?</h1>
+            <p>You want to delete this remove ?</p>
+            <div style={{}}>
+              <button
+                className="btn btn-primary"
+                style={{ margin: 10 }}
+                onClick={onClose}
+              >
+                No
+              </button>
+              <button
+                className="btn btn-danger"
+                style={{ margin: 10 }}
+                onClick={() => {
+                  onDeleteRoom(data);
+                  onClose();
+                }}
+              >
+                Yes, Delete it!
+              </button>
+            </div>
+          </div>
+        );
+      }
+    });
+  };
+
   const cancelEditButton = () => {
-    setSubmitButton({create: true, edit: false})
-    setState({...initialState})
-  }
+    setSubmitButton({ create: true, edit: false });
+    setState({ ...initialState });
+  };
 
   useEffect(() => {
     props.getAllRooms();
@@ -116,7 +150,7 @@ const RoomList = props => {
                           <a href="#">
                             <i className="os-icon os-icon-grid-10"></i>
                           </a>
-                          <a class="danger" onClick={() => onDeleteRoom(Room)}>
+                          <a class="danger" onClick={() => confirmDelete(Room)}>
                             <i className="os-icon os-icon-ui-15"></i>
                           </a>
                         </td>
@@ -193,24 +227,22 @@ const RoomList = props => {
               )}
               {edit && (
                 <>
-                 <button
-                className={
-                  Loading ? "btn btn-primary disabled" : "btn btn-primary"
-                }
-                onClick={cancelEditButton}
-              >
-                <span>{Loading ? "cancel" : "cancel"}</span>
-              </button> 
-                <button
-                  className={
-                    Loading ? "btn btn-primary disabled" : "btn btn-primary"
-                  }
-                >
-                  <span>{Loading ? "saving" : "edit"}</span>
-                </button>
-                
-               
-              </>
+                  <button
+                    className={
+                      Loading ? "btn btn-primary disabled" : "btn btn-primary"
+                    }
+                    onClick={cancelEditButton}
+                  >
+                    <span>{Loading ? "cancel" : "cancel"}</span>
+                  </button>
+                  <button
+                    className={
+                      Loading ? "btn btn-primary disabled" : "btn btn-primary"
+                    }
+                  >
+                    <span>{Loading ? "saving" : "edit"}</span>
+                  </button>
+                </>
               )}
             </div>
           </form>

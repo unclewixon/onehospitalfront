@@ -28,7 +28,11 @@ import {
   ADD_LEAVE_CATEGORY,
   GET_ALL_LEAVE_CATEGORIES,
   UPDATE_LEAVE_CATEGORY,
-  DELETE_LEAVE_CATEGORY
+  DELETE_LEAVE_CATEGORY,
+  ADD_SPECIALIZATION,
+  GET_ALL_SPECIALIZATIONS,
+  UPDATE_SPECIALIZATION,
+  DELETE_SPECIALIZATION
 } from "./types";
 
 //department
@@ -234,6 +238,36 @@ export const update_leave_category = (payload, previousData) => {
 export const delete_leave_category = payload => {
   return {
     type: DELETE_LEAVE_CATEGORY,
+    payload
+  };
+};
+
+//Specialization
+export const add_specialziation = payload => {
+  return {
+    type: ADD_SPECIALIZATION,
+    payload
+  };
+};
+
+export const get_all_specializations = payload => {
+  return {
+    type: GET_ALL_SPECIALIZATIONS,
+    payload
+  };
+};
+
+export const update_specialization = (payload, previousData) => {
+  return {
+    type: UPDATE_SPECIALIZATION,
+    payload,
+    previousData
+  };
+};
+
+export const delete_specialization = payload => {
+  return {
+    type: DELETE_SPECIALIZATION,
     payload
   };
 };
@@ -463,7 +497,11 @@ export const updateLabTest = data => {
   return dispatch => {
     return axios
       .patch(`http://178.128.36.29:3000/lab-tests/${data.id}/update`, {
-        name: data.name
+        name: data.name,
+
+        category: data.category,
+        price: data.price,
+        testType: data.testType
       })
       .then(response => {
         return dispatch(update_lab_test(response.data));
@@ -518,13 +556,14 @@ export const getAllLabTestCategories = () => {
 export const updateLabTestCategory = data => {
   return dispatch => {
     return axios
-      .patch(`http://178.128.36.29:3000/lab-tests/categories/${data.id}/update`, {
-        name: data.name
-      })
+      .patch(
+        `http://178.128.36.29:3000/lab-tests/categories/${data.id}/update`,
+        {
+          name: data.name
+        }
+      )
       .then(response => {
-        return dispatch(
-          update_lab_test_category(response.data , data)
-        );
+        return dispatch(update_lab_test_category(response.data, data));
       })
       .catch(error => {
         console.log(error);
@@ -576,10 +615,12 @@ export const getAllLabTestParameters = () => {
 export const updateLabTestParameter = data => {
   return dispatch => {
     return axios
-      .patch(`http://178.128.36.29:3000/lab-tests/parameters/${data.id}/update`, {
-        name: data.name,
-       
-      })
+      .patch(
+        `http://178.128.36.29:3000/lab-tests/parameters/${data.id}/update`,
+        {
+          name: data.name
+        }
+      )
       .then(response => {
         return dispatch(update_lab_test_parameter(response.data, data));
       })
@@ -654,6 +695,63 @@ export const deleteLeaveCategory = data => {
       .delete(`http://178.128.36.29:3000/leave-category/${data.id}`)
       .then(response => {
         return dispatch(delete_leave_category(data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+//Specialization
+export const addSpecialization = data => {
+  return dispatch => {
+    return axios
+      .post(`http://178.128.36.29:3000/specializations`, {
+        name: data.name
+      })
+      .then(response => {
+        return dispatch(add_specialziation(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const getAllSpecialization = data => {
+  return dispatch => {
+    return axios
+      .get(`http://178.128.36.29:3000/specializations`)
+      .then(response => {
+        return dispatch(get_all_specializations(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const updateSpecialization = data => {
+  return dispatch => {
+    return axios
+      .patch(`http://178.128.36.29:3000/specializations/${data.id}/update`, {
+        name: data.name
+      })
+      .then(response => {
+        return dispatch(update_specialization(response.data, data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const deleteSpecialization = data => {
+  return dispatch => {
+    return axios
+      .delete(`http://178.128.36.29:3000/specializations/${data.id}`)
+      .then(response => {
+        return dispatch(delete_specialization(data));
       })
       .catch(error => {
         console.log(error);

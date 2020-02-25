@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import {confirmAlert} from "react-confirm-alert"
+
 import {
   addLabTestCategory,
   getAllLabTestCategories,
@@ -77,6 +79,39 @@ const LabCategory = props => {
       });
   };
 
+  const confirmDelete = data => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className="custom-ui">
+            <h1>Are you sure?</h1>
+            <p>You want to delete this remove ?</p>
+            <div style={{}}>
+              <button
+                className="btn btn-primary"
+                style={{ margin: 10 }}
+                onClick={onClose}
+              >
+                No
+              </button>
+              <button
+                className="btn btn-danger"
+                style={{ margin: 10 }}
+                onClick={() => {
+                  onDeleteLabCategory(data);
+                  onClose();
+                }}
+              >
+                Yes, Delete it!
+              </button>
+            </div>
+          </div>
+        );
+      }
+    });
+  };
+
+
   useEffect(() => {
     props.getAllLabTestCategories();
   }, []);
@@ -102,7 +137,7 @@ const LabCategory = props => {
                           <div className="pi-settings os-dropdown-trigger">
                             <i
                               className="os-icon os-icon-ui-15"
-                              onClick={() => onDeleteLabCategory(LabCategory)}
+                              onClick={() => confirmDelete(LabCategory)}
                             ></i>
                           </div>
                         </div>

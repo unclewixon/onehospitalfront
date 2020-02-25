@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import {confirmAlert} from "react-confirm-alert"
 import Select from "react-select";
 
 import {
@@ -50,6 +51,7 @@ const LabTest = props => {
 
   const onEditLabTest = e => {
     setLoading(true);
+    console.log(name, price, category, parameters);
     e.preventDefault();
     props
       .updateLabTest(
@@ -69,14 +71,12 @@ const LabTest = props => {
   };
 
   const onClickEdit = data => {
+    console.log(data);
     setSubmitButton({ edit: true, create: false });
     setState(prevState => ({
       ...prevState,
       name: data.name,
       price: data.price,
-      category: data.category,
-      parameters: data.parameters,
-      testType: data.testType,
       id: data.id
     }));
     setParameter(data.parameters);
@@ -99,6 +99,40 @@ const LabTest = props => {
         console.log(error);
       });
   };
+
+  const confirmDelete = data => {
+    alert(data.id)
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className="custom-ui">
+            <h1>Are you sure?</h1>
+            <p>You want to delete this remove ?</p>
+            <div style={{}}>
+              <button
+                className="btn btn-primary"
+                style={{ margin: 10 }}
+                onClick={onClose}
+              >
+                No
+              </button>
+              <button
+                className="btn btn-danger"
+                style={{ margin: 10 }}
+                onClick={() => {
+                  onDeleteLabTest(data);
+                  onClose();
+                }}
+              >
+                Yes, Delete it!
+              </button>
+            </div>
+          </div>
+        );
+      }
+    });
+  };
+
 
   useEffect(() => {
     props.getAllLabTests();
@@ -130,7 +164,7 @@ const LabTest = props => {
                         <div className="pi-settings os-dropdown-trigger">
                           <i
                             className="os-icon os-icon-ui-15"
-                            onClick={() => onDeleteLabTest(LabTest)}
+                            onClick={() => confirmDelete(LabTest)}
                           ></i>
                         </div>
                       </div>

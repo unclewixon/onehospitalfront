@@ -5,6 +5,7 @@ import { Router } from 'react-router-dom';
 
 import './assets/css/main.css';
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-confirm-alert/src/react-confirm-alert.css'; 
 
 import App from './App';
 import * as serviceWorker from './serviceWorker';

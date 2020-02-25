@@ -9,6 +9,7 @@ import RoomMgmt from "./RoomMgmt";
 import Departments from "./Departments";
 import LeaveCategory from "./LeaveCategory";
 import ServicesCategory from "./ServiceCategory";
+import Specialization from "./Specialization"
 import NoMatch from './NoMatch';
 
 const Settings = ({ match }) => {
@@ -22,7 +23,7 @@ const Settings = ({ match }) => {
 			<Route path={`${match.url}/room-mgt`} component={RoomMgmt} />
 			<Route path={`${match.url}/leave-category`} component={LeaveCategory} />
 			<Route path={`${match.url}/services-category`} component={ServicesCategory} />
-
+			<Route path={`${match.url}/specializations`} component={Specialization} />
 			<Route component={NoMatch} />
 		</Switch>
 	);

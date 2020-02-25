@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import { confirmAlert } from "react-confirm-alert";
+
 import { addHmo, getAllHmos, updateHmo, deleteHmo } from "../actions/hmo";
 
 const HmoList = props => {
@@ -7,12 +9,18 @@ const HmoList = props => {
     name: "",
     email: "",
     phoneNumber: "",
-    address: ""
+    address: "",
+    add: true,
+    edit: false
   };
   const [{ name, email, phoneNumber, address }, setState] = useState(
     initialState
   );
+  const [Loading, setLoading] = useState(false);
+  const [{ edit, add }, setSubmitButton] = useState(initialState);
+  const [data, getDataToEdit] = useState(null);
   const [logo, setLogo] = useState(null);
+
   const handleInputChange = e => {
     const { name, value } = e.target;
     setState(prevState => ({ ...prevState, [name]: value }));
@@ -36,6 +44,49 @@ const HmoList = props => {
     });
   };
 
+  const onEdiHmo = e => {
+    setLoading(true);
+    e.preventDefault();
+    const EditedData = new FormData();
+    EditedData.append("name", name);
+    EditedData.append("email", email);
+    EditedData.append("phoneNumber", phoneNumber);
+    EditedData.append("address", address);
+    EditedData.append("logo", logo);
+    EditedData.append("id", data.id);
+    console.log(EditedData);
+    props
+      .updateHmo(EditedData, data)
+      .then(response => {
+        setState({ ...initialState });
+        setSubmitButton({ add: true, edit: false });
+        setLoading(false);
+      })
+      .catch(error => {
+        setState({ ...initialState });
+        setSubmitButton({ add: true, edit: false });
+        setLoading(false);
+      });
+  };
+
+  const onClickEdit = data => {
+    setSubmitButton({ edit: true, add: false });
+    setState(prevState => ({
+      ...prevState,
+      name: data.name,
+      email: data.email,
+      phoneNumber: data.phoneNumber,
+      address: data.address,
+      logo: data.logo
+    }));
+    getDataToEdit(data);
+  };
+
+  const cancelEditButton = () => {
+    setSubmitButton({ add: true, edit: false });
+    setState({ ...initialState });
+  };
+
   const onDeleteHmo = data => {
     console.log(data);
     props
@@ -47,6 +98,39 @@ const HmoList = props => {
         console.log(error);
       });
   };
+
+  const confirmDelete = data => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className="custom-ui">
+            <h1>Are you sure?</h1>
+            <p>You want to delete this remove ?</p>
+            <div style={{}}>
+              <button
+                className="btn btn-primary"
+                style={{ margin: 10 }}
+                onClick={onClose}
+              >
+                No
+              </button>
+              <button
+                className="btn btn-danger"
+                style={{ margin: 10 }}
+                onClick={() => {
+                  onDeleteHmo(data);
+                  onClose();
+                }}
+              >
+                Yes, Delete it!
+              </button>
+            </div>
+          </div>
+        );
+      }
+    });
+  };
+
   useEffect(() => {
     props.getAllHmos();
   }, []);
@@ -111,16 +195,19 @@ const HmoList = props => {
                               </td>
                               <td class="row-actions">
                                 <a href="#">
-                                  <i class="os-icon os-icon-grid-10"></i>
+                                  <i
+                                    class="os-icon os-icon-grid-10"
+                                    onClick={() => onClickEdit(hmo)}
+                                  ></i>
                                 </a>
                                 <a href="#">
                                   <i class="os-icon os-icon-ui-44"></i>
                                 </a>
-                                <a
-                                  class="danger"
-                                  onClick={() => onDeleteHmo(hmo)}
-                                >
-                                  <i class="os-icon os-icon-ui-15"></i>
+                                <a class="danger">
+                                  <i
+                                    class="os-icon os-icon-ui-15"
+                                    onClick={() => confirmDelete(hmo)}
+                                  ></i>
                                 </a>
                               </td>
                             </tr>
@@ -137,7 +224,7 @@ const HmoList = props => {
             </div>
             <div className="col-lg-4 col-xxl-3  d-xxl-block">
               <div className="pipeline white lined-warning">
-                <form onSubmit={onAddHmo}>
+                <form onSubmit={edit ? onEdiHmo : onAddHmo}>
                   <h6 className="form-header">Add New HMO</h6>
                   <div className="form-group">
                     <input
@@ -195,9 +282,40 @@ const HmoList = props => {
                     </div>
                   </div>
                   <div className="form-buttons-w">
-                    <button className="btn btn-primary" type="submit">
-                      Add
-                    </button>
+                    {add && (
+                      <button
+                        className={
+                          Loading
+                            ? "btn btn-primary disabled"
+                            : "btn btn-primary"
+                        }
+                      >
+                        <span>{Loading ? "saving" : "Add"}</span>
+                      </button>
+                    )}
+                    {edit && (
+                      <>
+                        <button
+                          className={
+                            Loading
+                              ? "btn btn-primary disabled"
+                              : "btn btn-primary"
+                          }
+                          onClick={cancelEditButton}
+                        >
+                          <span>{Loading ? "cancel" : "cancel"}</span>
+                        </button>
+                        <button
+                          className={
+                            Loading
+                              ? "btn btn-primary disabled"
+                              : "btn btn-primary"
+                          }
+                        >
+                          <span>{Loading ? "Saving" : "edit"}</span>
+                        </button>
+                      </>
+                    )}
                   </div>
                 </form>
               </div>

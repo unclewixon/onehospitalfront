@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import { confirmAlert } from "react-confirm-alert";
 import { notifySuccess, notifyError } from "../services/notify";
 import {
   getAllDepartments,
@@ -25,6 +26,7 @@ const Departments = props => {
     props.createDepartment({ name, description });
   };
 
+  
   const onDeleteDepartment = data => {
     props
       .deleteDepartment(data)
@@ -34,6 +36,30 @@ const Departments = props => {
       .catch(error => {
         notifyError("Error deleting");
       });
+  };
+
+  const confirmDelete = data => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className='custom-ui'>
+            <h1>Are you sure?</h1>
+            <p>You want to delete this category?</p>
+            <div style={{}}>
+            <button className="btn btn-primary" style={{margin: 10}} onClick={onClose}>No</button>
+            <button className="btn btn-danger" style={{margin: 10}}
+              onClick={() => {
+                onDeleteDepartment(data)
+                onClose();
+              }}
+            >
+              Yes, Delete it!
+            </button>
+            </div>
+          </div>
+        );
+      }
+    });
   };
 
   useEffect(() => {
@@ -99,7 +125,7 @@ const Departments = props => {
                                 </a>
                                 <a
                                   className="danger"
-                                  onClick={() => onDeleteDepartment(department)}
+                                  onClick={() => confirmDelete(department)}
                                 >
                                   <i className="os-icon os-icon-ui-15"></i>
                                 </a>
