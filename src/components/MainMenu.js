@@ -6,7 +6,6 @@ import $ from 'jquery';
 import avatar1 from '../assets/images/avatar1.jpg';
 import PatientMenu from './PatientMenu';
 import HrMenu from './HrMenu';
-import SettingsMenu from './SettingsMenu';
 import DoctorMenu from './DoctorMenu';
 import InventoryMenu from './InventoryMenu';
 import AdminMenu from './AdminMenu';
@@ -89,6 +88,7 @@ class MainMenu extends Component {
 					{/* 	)}
 					{role === 'doctor' && ( */}
 						<DoctorMenu />
+<<<<<<< HEAD
 					{/* 	)}
 					{role ==="front-desk" && ( */}
 						<FrontDeskMenu />
@@ -96,6 +96,18 @@ class MainMenu extends Component {
 					{role ==="settings" && ( */}
 						<SettingsMenu />
 					{/* 	)} */}
+=======
+					)}
+					{role === 'inventory' && (
+						<InventoryMenu />
+					)}
+					{role ==="front-desk" && (
+						<FrontDeskMenu />
+					)}
+					{role === 'admin' && (
+						<AdminMenu />
+					)}
+>>>>>>> 860dc8541ea17e34d237a18dac0f07e8a241bd36
 				</ul>
 			</div>
 		);
