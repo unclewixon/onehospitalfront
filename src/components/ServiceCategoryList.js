@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
 
 const ServiceCategoryList = () => {
@@ -73,7 +74,7 @@ const ServiceCategoryList = () => {
                               <a href="#">
                                 <i className="os-icon os-icon-grid-10"></i>
                               </a>
-                              <a class="danger" href="#">
+                              <a className="danger" href="#">
                                 <i className="os-icon os-icon-ui-15"></i>
                               </a>
                             </td>
@@ -97,7 +98,7 @@ const ServiceCategoryList = () => {
           <form>
             <h6 className="form-header">New Services Category</h6>
 
-            <div class="form-group">
+            <div className="form-group">
               <input
                 className="form-control"
                 placeholder="Name of Category"
