@@ -26,7 +26,6 @@ const Departments = props => {
     props.createDepartment({ name, description });
   };
 
-  
   const onDeleteDepartment = data => {
     props
       .deleteDepartment(data)
@@ -42,19 +41,27 @@ const Departments = props => {
     confirmAlert({
       customUI: ({ onClose }) => {
         return (
-          <div className='custom-ui'>
+          <div className="custom-ui">
             <h1>Are you sure?</h1>
             <p>You want to delete this category?</p>
             <div style={{}}>
-            <button className="btn btn-primary" style={{margin: 10}} onClick={onClose}>No</button>
-            <button className="btn btn-danger" style={{margin: 10}}
-              onClick={() => {
-                onDeleteDepartment(data)
-                onClose();
-              }}
-            >
-              Yes, Delete it!
-            </button>
+              <button
+                className="btn btn-primary"
+                style={{ margin: 10 }}
+                onClick={onClose}
+              >
+                No
+              </button>
+              <button
+                className="btn btn-danger"
+                style={{ margin: 10 }}
+                onClick={() => {
+                  onDeleteDepartment(data);
+                  onClose();
+                }}
+              >
+                Yes, Delete it!
+              </button>
             </div>
           </div>
         );
