@@ -37,8 +37,6 @@ class Consultation extends Component {
 												</tr>
 											</thead>
 											<tbody>
-												<StaffItem />
-												<StaffItem />
 											</tbody>
 										</table>
 									</div>

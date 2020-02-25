@@ -78,21 +78,24 @@ class MainMenu extends Component {
 				</div> */}
 				<h1 className="menu-page-header">Page Header</h1>
 				<ul className="main-menu">
-					{role === 'patient' && (
+					{/* {role === 'patient' && ( */}
 						<PatientMenu />
-					)}
-					{role === 'hr' && (
+					{/* )}
+					{role === 'hr' && ( */}
 						<HrMenu />
-					)}
-					{role === 'doctor' && (
+					{/* 	)}
+					{role === 'hr' && ( */}
+						<InventoryMenu />
+					{/* 	)}
+					{role === 'doctor' && ( */}
 						<DoctorMenu />
-					)}
-					{role ==="front-desk" && (
+					{/* 	)}
+					{role ==="front-desk" && ( */}
 						<FrontDeskMenu />
-					)}
-					{role ==="settings" && (
+					{/* )}
+					{role ==="settings" && ( */}
 						<SettingsMenu />
-					)}
+					{/* 	)} */}
 				</ul>
 			</div>
 		);
