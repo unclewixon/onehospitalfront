@@ -1,68 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
 
-const FrontDeskIncoming = () => {
+const Appointment = () => {
   return (
     <div className="tab-content">
       <div className="tab-pane active show" id="tab_overview">
         <div className="row">
           <div className="col-sm-12">
-            <div className="element-wrapper">
-              <div className="element-actions">
-                <form className="form-inline justify-content-sm-end">
-                  <select className="form-control form-control-sm rounded">
-                    <option value="Pending">Today</option>
-                    <option value="Active">Last Week </option>
-                    <option value="Cancelled">Last 30 Days</option>
-                  </select>
-                </form>
-              </div>
-              <h6 className="element-header">Clinical Lab Dashboard</h6>
-              <div className="element-content">
-                <div className="row">
-                  <div className="col-sm-4 col-xxxl-3">
-                    <a className="element-box el-tablo" href="#">
-                      <div className="label">Pending Requests</div>
-                      <div className="value">57</div>
-                      <div className="trending trending-up-basic">
-                        <span>12%</span>
-                        <i className="os-icon os-icon-arrow-up2"></i>
-                      </div>
-                    </a>
-                  </div>
-                  <div className="col-sm-4 col-xxxl-3">
-                    <a className="element-box el-tablo" href="#">
-                      <div className="label">Completed Requests</div>
-                      <div className="value">457</div>
-                      <div className="trending trending-down-basic">
-                        <span>12%</span>
-                        <i className="os-icon os-icon-arrow-down"></i>
-                      </div>
-                    </a>
-                  </div>
-                  <div className="col-sm-4 col-xxxl-3">
-                    <a className="element-box el-tablo" href="#">
-                      <div className="label">Sent Requests</div>
-                      <div className="value">125</div>
-                      <div className="trending trending-down-basic">
-                        <span>9%</span>
-                        <i className="os-icon os-icon-arrow-down"></i>
-                      </div>
-                    </a>
-                  </div>
-                  <div className="d-none d-xxxl-block col-xxxl-3">
-                    <a className="element-box el-tablo" href="#">
-                      <div className="label">Refunds Processed</div>
-                      <div className="value">294</div>
-                      <div className="trending trending-up-basic">
-                        <span>12%</span>
-                        <i className="os-icon os-icon-arrow-up2"></i>
-                      </div>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
             <div className="row">
               <div className="col-sm-12">
                 <div className="element-wrapper">
@@ -73,14 +17,16 @@ const FrontDeskIncoming = () => {
                         aria-labelledby="myLargeModalLabel"
                         className="modal fade bd-example-modal-lg"
                         role="dialog"
-                        tabindex="-1"
+                        tabIndex="-1"
                         aria-hidden="true"
                         style={{ display: "none" }}
                       >
                         <div className="modal-dialog modal-lg">
                           <div className="modal-content">
                             <div className="modal-header">
-                              <h5 className="modal-title">Todays Appointment</h5>
+                              <h5
+                                className="modal-title"
+                              >Appointment</h5>
                               <button
                                 aria-label="Close"
                                 className="close"
@@ -97,7 +43,7 @@ const FrontDeskIncoming = () => {
                                     <div
                                       className="up-head-w"
                                       style={{
-                                        backgroundImage: require("../assets/images/bigicon2.png")
+                                        backgroundImage: require("../../assets/images/bigicon2.png")
                                       }}
                                     >
                                       <div className="up-social">
@@ -249,7 +195,7 @@ const FrontDeskIncoming = () => {
                                   <div className="element-wrapper">
                                     <form
                                       id="formValidate"
-                                      novalidate="true"
+                                      noValidate={true}
                                     ></form>
                                     <div className="element-info">
                                       <div className="element-info-with-icon">
@@ -266,7 +212,7 @@ const FrontDeskIncoming = () => {
                                             plugin for bootstrap.
                                             <a
                                               href="http://1000hz.github.io/bootstrap-validator/"
-                                              target="_blank" rel="noopener noreferrer"
+                                              target="_blank" rel="noreferrer noopener"
                                             >
                                               Learn more about Bootstrap
                                               Validator
@@ -276,7 +222,7 @@ const FrontDeskIncoming = () => {
                                       </div>
                                     </div>
                                     <div className="form-group">
-                                      <label for=""> Email address</label>
+                                      <label htmlFor=""> Email address</label>
                                       <input
                                         className="form-control"
                                         data-error="Your email address is invalid"
@@ -523,4 +469,4 @@ const FrontDeskIncoming = () => {
     </div>
   );
 };
-export default FrontDeskIncoming;
+export default Appointment;

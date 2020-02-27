@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import capitalize from 'lodash.capitalize';
 import $ from 'jquery';
 
-import avatar1 from '../assets/images/avatar1.jpg';
+import avatar1 from '../../assets/images/avatar1.jpg';
 import PatientMenu from './PatientMenu';
 import HrMenu from './HrMenu';
 import DoctorMenu from './DoctorMenu';
@@ -88,26 +88,16 @@ class MainMenu extends Component {
 					{/* 	)}
 					{role === 'doctor' && ( */}
 						<DoctorMenu />
-<<<<<<< HEAD
-					{/* 	)}
+					{/* )}
+					{role === 'inventory' && ( */}
+						<InventoryMenu />
+					{/* )}
 					{role ==="front-desk" && ( */}
 						<FrontDeskMenu />
 					{/* )}
-					{role ==="settings" && ( */}
-						<SettingsMenu />
-					{/* 	)} */}
-=======
-					)}
-					{role === 'inventory' && (
-						<InventoryMenu />
-					)}
-					{role ==="front-desk" && (
-						<FrontDeskMenu />
-					)}
-					{role === 'admin' && (
+					{role === 'admin' && ( */}
 						<AdminMenu />
-					)}
->>>>>>> 860dc8541ea17e34d237a18dac0f07e8a241bd36
+					{/* )} */}
 				</ul>
 			</div>
 		);

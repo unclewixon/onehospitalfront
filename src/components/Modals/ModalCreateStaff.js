@@ -5,12 +5,12 @@ import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import orderBy from 'lodash.orderby';
 
-import { renderTextInput, request, renderSelect } from '../services/utilities';
-import { API_URI, staffAPI } from '../services/constants';
-import { notifySuccess } from '../services/notify';
-import waiting from '../assets/images/waiting.gif';
-import { addStaff } from '../actions/hr';
-import { closeModals } from '../actions/general';
+import { renderTextInput, request, renderSelect } from '../../services/utilities';
+import { API_URI, staffAPI } from '../../services/constants';
+import { notifySuccess } from '../../services/notify';
+import waiting from '../../assets/images/waiting.gif';
+import { addStaff } from '../../actions/hr';
+import { closeModals } from '../../actions/general';
 
 const validate = values => {
 	const errors = {};

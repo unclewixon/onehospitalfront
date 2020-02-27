@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { closeModals } from '../actions/general';
+import { closeModals } from '../../actions/general';
 
-class ModalUpdInventoryQty extends Component {
+class ModalEditInvCategory extends Component {
 	componentDidMount() {
 		document.body.classList.add('modal-open');
 	}
@@ -21,22 +21,14 @@ class ModalUpdInventoryQty extends Component {
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
-							<h4 className="onboarding-title">Update Quantity</h4>
+							<h4 className="onboarding-title">Edit Inventory Category</h4>
 							<div className="form-block">
 								<form>
 									<div className="row">
 										<div className="col-sm-12">
 											<div className="form-group">
 												<label htmlFor="">Name</label>
-												<input className="form-control" placeholder="Enter quantity" disabled="disabled" value="Surgical Blade" />
-											</div>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-sm-12">
-											<div className="form-group">
-												<label htmlFor="">Quantity</label>
-												<input className="form-control" placeholder="Enter quantity" />
+												<input className="form-control" placeholder="Enter name" />
 											</div>
 										</div>
 									</div>
@@ -55,4 +47,4 @@ class ModalUpdInventoryQty extends Component {
 	}
 }
 
-export default connect(null, { closeModals })(ModalUpdInventoryQty);
+export default connect(null, { closeModals })(ModalEditInvCategory);

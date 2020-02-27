@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { closeModals } from '../actions/general';
+import { closeModals } from '../../actions/general';
 
 class ModalViewAppointment extends Component {
 	componentDidMount() {
@@ -42,7 +42,7 @@ class ModalViewAppointment extends Component {
 											<div
 												className="up-head-w"
 												style={{
-													backgroundImage: require('../assets/images/profile_bg1.jpg'),
+													backgroundImage: require('../../assets/images/profile_bg1.jpg'),
 												}}
 											>
 												<div className="up-social">

@@ -23,8 +23,6 @@ const FrontDeskMenu = () => {
 					<span>Out-Patient</span>
 				</Link>
 			</li>
-<<<<<<< HEAD
-=======
 
             <li className="sub-header">
 				<span>GENERAL</span>
@@ -61,7 +59,6 @@ const FrontDeskMenu = () => {
                   </div>
               </div>
           </li>
->>>>>>> 860dc8541ea17e34d237a18dac0f07e8a241bd36
 		</>
 	);
 };

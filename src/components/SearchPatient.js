@@ -20,7 +20,7 @@ class SearchPatient extends Component {
 			search: '',
 			focused: false,
 			searching: false,
-			users: [],
+			patients: [],
 			hasSearched: false
 		};
 
@@ -36,14 +36,13 @@ class SearchPatient extends Component {
 
 	doSearch = async searchTerm => {
 		if(size(searchTerm) >= 3){
-			const users = [{id:1,name:'patient name 1',},{id:2,name:'patient name 2',}];
 			try {
 				this.setState({ searching: true, error: false, hasSearched: true });
-				const rs = await request(`${API_URI}${searchAPI}?q=${searchTerm}`, 'GET', true);
-				console.log(rs);
-				this.setState({ searching: false, users });
+				const patients = await request(`${API_URI}${searchAPI}?q=${searchTerm}`, 'GET', true);
+				// console.log(rs);
+				this.setState({ searching: false, patients });
 			} catch(e) {
-				this.setState({ searching: false, users });
+				this.setState({ searching: false });
 			}
 		}
 	};
@@ -53,7 +52,7 @@ class SearchPatient extends Component {
 			this.setFocus();
 		}
 		if(nextProps.style.display === 'none' && nextState.focused){
-			this.setState({ focused: false, search: '', users: [] });
+			this.setState({ focused: false, search: '', patients: [] });
 		}
 	}
 
@@ -75,7 +74,7 @@ class SearchPatient extends Component {
 	};
 
 	render() {
-		const { search, users, searching, hasSearched } = this.state;
+		const { search, patients, searching, hasSearched } = this.state;
 		const { style, onExit } = this.props;
 		return (
 			<div className="search-with-suggestions-w over-search-field" style={style}>
@@ -96,19 +95,20 @@ class SearchPatient extends Component {
 									<div className="os-icon os-icon-users"></div>
 								</div>
 								<div className="ssg-name">Patients</div>
-								<div className="ssg-info">{users.length} Total</div>
+								<div className="ssg-info">{patients.length} Total</div>
 							</div>
 							<div className="ssg-content">
 								<div className="ssg-items ssg-items-list">
-									{users.length === 0 && hasSearched && (
+									{patients.length === 0 && hasSearched && (
 										<div className="alert alert-danger">No Patient Record(s) Found!</div>
 									)}
-									{users.map(u => {
-										const p = split(u.id, search);
+									{patients.map(p => {
+										// const ps = split(p.id, search);
 										return (
-											<div style={{display: 'flex'}} key={u.id}>
-												<a onClick={this.showProfile(u.id)} className="ssg-item cursor">
-													<div className="item-name" dangerouslySetInnerHTML={{__html: `${u.name} - ${p.length === 1 ? u.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/>
+											<div style={{display: 'flex'}} key={p.id}>
+												<a onClick={this.showProfile(p.id)} className="ssg-item cursor">
+													{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
+													<div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${p.surname + ' ' +p.other_names}`}}/>
 												</a>
 											</div>
 										)
