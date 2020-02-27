@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Switch, Route, Link } from 'react-router-dom';
 
-import Roles from './Roles';
+import Roles from "./Roles";
 import Lab from "./Laboratory";
 import Diagnosis from "./Diagnosis";
 import Consultation from "./Consultation";
@@ -10,7 +10,9 @@ import RoomMgmt from "./RoomMgmt";
 import Departments from "./Departments";
 import LeaveCategory from "./LeaveCategory";
 import ServicesCategory from "./ServiceCategory";
-import NoMatch from './NoMatch';
+import Specialization from "./Specialization";
+import ConsultatingRoom from "./ConsultatingRoom";
+import NoMatch from "./NoMatch";
 
 const Settings = ({ match, location }) => {
 	const [toggle, setToggle] = useState(false);

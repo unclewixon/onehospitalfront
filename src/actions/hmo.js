@@ -15,10 +15,11 @@ export const get_all_hmo = payload => {
   };
 };
 
-export const update_hmo = payload => {
+export const update_hmo = (payload, previousData) => {
   return {
     type: UPDATE_HMO,
-    payload
+    payload,
+    previousData
   };
 };
 
@@ -55,18 +56,16 @@ export const getAllHmos = data => {
   };
 };
 
-export const updateHmo = data => {
+export const updateHmo = (EditedData, previousData) => {
+  console.log(previousData.id, EditedData)
   return dispatch => {
     return axios
-      .patch(`http://178.128.36.29:3000/hmos/${data.id}`, {
-        name: data.name,
-        address: data.address,
-        phoneNumber: data.phoneNumber,
-        email: data.email,
-        logo: data.logo
-      })
+      .patch(`http://178.128.36.29:3000/hmos/${previousData.id}/update`, 
+       EditedData
+      )
       .then(response => {
-        return dispatch(update_hmo(response.data));
+       
+        return dispatch(update_hmo(response.data, previousData));
       })
       .catch(error => {
         console.log(error);

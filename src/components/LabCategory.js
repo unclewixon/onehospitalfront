@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import {confirmAlert} from "react-confirm-alert"
+
 import {
 	addLabTestCategory,
 	getAllLabTestCategories,
@@ -81,67 +83,97 @@ const LabCategory = props => {
 			});
 	};
 
-	useEffect(() => {
-		if (!loaded) {
-			props.getAllLabTestCategories();
-		}
-		setLoaded(true);
-	}, [loaded, props]);
+  const confirmDelete = data => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className="custom-ui">
+            <h1>Are you sure?</h1>
+            <p>You want to delete this remove ?</p>
+            <div style={{}}>
+              <button
+                className="btn btn-primary"
+                style={{ margin: 10 }}
+                onClick={onClose}
+              >
+                No
+              </button>
+              <button
+                className="btn btn-danger"
+                style={{ margin: 10 }}
+                onClick={() => {
+                  onDeleteLabCategory(data);
+                  onClose();
+                }}
+              >
+                Yes, Delete it!
+              </button>
+            </div>
+          </div>
+        );
+      }
+    });
+  };
 
-	return (
-		<div className="row">
-			<div className="col-lg-8">
-				<div>
-					<div className="pipelines-w">
-						<div className="row">
-							{props.LabCategories.map((LabCategory, i) => {
-								return (
-									<div key={i} className="col-lg-4 col-xxl-3">
-										<div className="pt-3">
-											<div className="pipeline-item">
-												<div className="pi-controls">
-													<div className="pi-settings os-dropdown-trigger">
-														<i
-															className="os-icon os-icon-ui-49"
-															onClick={() => onClickEdit(LabCategory)}
-														></i>
-													</div>
-													<div className="pi-settings os-dropdown-trigger">
-														<i
-															className="os-icon os-icon-ui-15"
-															onClick={() => onDeleteLabCategory(LabCategory)}
-														></i>
-													</div>
-												</div>
-												<div className="pi-body">
-													<div className="pi-info">
-														<div className="h6 pi-name">{LabCategory.name}</div>
-														<div className="pi-sub">{LabCategory.name}</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								);
-							})}
-						</div>
-					</div>
-				</div>
-			</div>
-			<div className="col-lg-4 col-xxl-3  d-xxl-block">
-				<div className="pipeline white lined-warning">
-					<form onSubmit={edit ? onEditLabCategories : onAddLabCategory}>
-						<h6 className="form-header">Create category</h6>
-						<div className="form-group">
-							<input
-								className="form-control"
-								placeholder="Category name"
-								type="text"
-								name="name"
-								onChange={handleInputChange}
-								value={name}
-							/>
-						</div>
+
+  useEffect(() => {
+    props.getAllLabTestCategories();
+  }, []);
+
+  return (
+    <div className="row">
+      <div className="col-lg-8">
+        <div>
+          <div className="pipelines-w">
+            <div className="row">
+              {props.LabCategories.map(LabCategory => {
+                return (
+                  <div className="col-lg-4 col-xxl-3">
+                    <div className="pt-3">
+                      <div className="pipeline-item">
+                        <div className="pi-controls">
+                          <div className="pi-settings os-dropdown-trigger">
+                            <i
+                              className="os-icon os-icon-ui-49"
+                              onClick={() => onClickEdit(LabCategory)}
+                            ></i>
+                          </div>
+                          <div className="pi-settings os-dropdown-trigger">
+                            <i
+                              className="os-icon os-icon-ui-15"
+                              onClick={() => confirmDelete(LabCategory)}
+                            ></i>
+                          </div>
+                        </div>
+                        <div className="pi-body">
+                          <div className="pi-info">
+                            <div className="h6 pi-name">{LabCategory.name}</div>
+                            <div className="pi-sub">{LabCategory.name}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="col-lg-4 col-xxl-3  d-xxl-block">
+        <div className="pipeline white lined-warning">
+          <form onSubmit={edit ? onEditLabCategories : onAddLabCategory}>
+            <h6 className="form-header">Create category</h6>
+            <div className="form-group">
+              <input
+                className="form-control"
+                placeholder="Category name"
+                type="text"
+                name="name"
+                onChange={handleInputChange}
+                value={name}
+              />
+            </div>
 
 						<div className="form-buttons-w">
 							{create && (

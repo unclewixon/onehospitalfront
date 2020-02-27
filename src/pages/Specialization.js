@@ -1,52 +1,49 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { confirmAlert } from "react-confirm-alert";
-
 import {
-	addLeaveCategory,
-	getAllLeaveCategory,
-	updateLeaveCategory,
-	deleteLeaveCategory,
-} from '../actions/settings';
+  addSpecialization,
+  getAllSpecialization,
+  updateSpecialization,
+  deleteSpecialization
+} from "../actions/settings";
 
-const LeaveCategory = props => {
-	const initialState = {
-		name: '',
-		duration: '',
-		save: true,
-		edit: false,
-		id: '',
-	};
-	const [{ name, duration }, setState] = useState(initialState);
-	const [Loading, setLoading] = useState(false);
-	const [{ edit, save }, setSubmitButton] = useState(initialState);
-	const [data, getDataToEdit] = useState(null);
-	const [loaded, setLoaded] = useState(false);
+const Specialization = props => {
+  const initialState = {
+    name: "",
+    save: true,
+    edit: false,
+    id: ""
+  };
+  const [{ name }, setState] = useState(initialState);
+  const [Loading, setLoading] = useState(false);
+  const [{ edit, save }, setSubmitButton] = useState(initialState);
+  const [data, getDataToEdit] = useState(null);
 
-	const handleInputChange = e => {
-		const { name, value } = e.target;
-		setState(prevState => ({ ...prevState, [name]: value }));
-	};
+  const handleInputChange = e => {
+    const { name, value } = e.target;
+    setState(prevState => ({ ...prevState, [name]: value }));
+  };
 
-	const onAddLeaveCategory = e => {
-		e.preventDefault();
-		setLoading(true);
-		props
-			.addLeaveCategory({ name, duration })
-			.then(response => {
-				setLoading(false);
-				setState({ ...initialState });
-			})
-			.catch(error => {
-				setLoading(false);
-			});
-	};
+  const onAddSpecialization = e => {
+    e.preventDefault();
+    setLoading(true);
+    props
+      .addSpecialization({ name })
+      .then(response => {
+        setLoading(false);
+        setState({ ...initialState });
+      })
+      .catch(error => {
+        setLoading(false);
+      });
+  };
 
-  const onEditLeaveCategory = e => {
+  const onEditSpecialization = e => {
     setLoading(true);
     e.preventDefault();
     props
-      .updateLeaveCategory({ id: data.id, name, duration }, data)
+      .updateSpecialization({ id: data.id, name }, data)
       .then(response => {
         setState({ ...initialState });
         setSubmitButton({ save: true, edit: false });
@@ -59,47 +56,55 @@ const LeaveCategory = props => {
       });
   };
 
-	const onClickEdit = data => {
-		setSubmitButton({ edit: true, save: false });
-		setState(prevState => ({
-			...prevState,
-			name: data.name,
-			duration: data.duration,
-			id: data.id,
-		}));
-		getDataToEdit(data);
-	};
+  const onClickEdit = data => {
+    setSubmitButton({ edit: true, save: false });
+    setState(prevState => ({
+      ...prevState,
+      name: data.name,
+      duration: data.duration,
+      id: data.id
+    }));
+    getDataToEdit(data);
+  };
 
-	const onDeleteLeaveCategory = data => {
-		props
-			.deleteLeaveCategory(data)
-			.then(data => {
-				setLoading(false);
-				console.log(data);
-			})
-			.catch(error => {
-				setLoading(false);
-				console.log(error);
-			});
-	};
+  const onDeleteSpecialization = data => {
+    props
+      .deleteSpecialization(data)
+      .then(data => {
+        setLoading(false);
+        console.log(data);
+      })
+      .catch(error => {
+        setLoading(false);
+        console.log(error);
+      });
+  };
 
   const confirmDelete = data => {
     confirmAlert({
       customUI: ({ onClose }) => {
         return (
-          <div className='custom-ui'>
+          <div className="custom-ui">
             <h1>Are you sure?</h1>
             <p>You want to delete this category?</p>
             <div style={{}}>
-            <button className="btn btn-primary" style={{margin: 10}} onClick={onClose}>No</button>
-            <button className="btn btn-danger" style={{margin: 10}}
-              onClick={() => {
-                onDeleteLeaveCategory(data)
-                onClose();
-              }}
-            >
-              Yes, Delete it!
-            </button>
+              <button
+                className="btn btn-primary"
+                style={{ margin: 10 }}
+                onClick={onClose}
+              >
+                No
+              </button>
+              <button
+                className="btn btn-danger"
+                style={{ margin: 10 }}
+                onClick={() => {
+                  onDeleteSpecialization(data);
+                  onClose();
+                }}
+              >
+                Yes, Delete it!
+              </button>
             </div>
           </div>
         );
@@ -112,32 +117,34 @@ const LeaveCategory = props => {
     setState({ ...initialState });
   };
 
-	useEffect(() => {
-		if (!loaded) {
-			props.getAllLeaveCategory();
-		}
-		setLoaded(true);
-	}, [loaded, props]);
+  useEffect(() => {
+    console.log(save, edit);
+    props.getAllSpecialization();
+  }, []);
+  return (
+    <div className="content-i">
+      <div className="content-box">
+        <div className="element-wrapper">
+          <div className="os-tabs-w mx-1">
+            <div className="os-tabs-controls">
+              <ul className="nav nav-tabs upper">
+                <li className="nav-item">
+                  <a
+                    aria-expanded="true"
+                    className="nav-link active"
+                    data-toggle="tab"
+                  >
+                    Specialization
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
 
-return (
-	<div className="content-i">
-		<div className="content-box">
-			<div className="element-wrapper">
-				<div className="os-tabs-w mx-1">
-					<div className="os-tabs-controls">
-						<ul className="nav nav-tabs upper">
-							<li className="nav-item">
-								<a aria-expanded="true" className="nav-link active">
-									Leave categories
-								</a>
-							</li>
-						</ul>
-					</div>
-				</div>
           <div className="row">
             <div className="col-lg-8">
               <div className="row">
-                {props.LeaveCategories.map(LeaveCategory => {
+                {props.Specializations.map(Specialization => {
                   return (
                     <div className="col-lg-4 col-xxl-3">
                       <div className="pt-3">
@@ -146,23 +153,20 @@ return (
                             <div className="pi-settings os-dropdown-trigger">
                               <i
                                 className="os-icon os-icon-ui-49"
-                                onClick={() => onClickEdit(LeaveCategory)}
+                                onClick={() => onClickEdit(Specialization)}
                               ></i>
                             </div>
                             <div className="pi-settings os-dropdown-trigger">
                               <i
                                 className="os-icon os-icon-ui-15"
-                                onClick={() => confirmDelete(LeaveCategory)}
+                                onClick={() => confirmDelete(Specialization)}
                               ></i>
                             </div>
                           </div>
                           <div className="pi-body">
                             <div className="pi-info">
                               <div className="h6 pi-name">
-                                {LeaveCategory.name}
-                              </div>
-                              <div className="pi-sub">
-                                {LeaveCategory.duration}
+                                {Specialization.name}
                               </div>
                             </div>
                           </div>
@@ -177,14 +181,12 @@ return (
               <div className="element-wrapper">
                 <div className="element-box">
                   <form
-                    onSubmit={edit ? onEditLeaveCategory : onAddLeaveCategory}
+                    onSubmit={edit ? onEditSpecialization : onAddSpecialization}
                   >
-                    <h5 className="element-box-header">
-                      Add New Leave category
-                    </h5>
+                    <h5 className="element-box-header">Add New</h5>
                     <div className="form-group">
                       <label className="lighter" for="">
-                        Type of leave
+                        Name
                       </label>
                       <div className="input-group mb-2 mr-sm-2 mb-sm-0">
                         <input
@@ -197,7 +199,7 @@ return (
                         />
                       </div>
                     </div>
-                    <div className="form-group">
+                    {/* <div className="form-group">
                       <label className="lighter" for="">
                         Leave duration
                       </label>
@@ -211,7 +213,7 @@ return (
                           onChange={handleInputChange}
                         />
                       </div>
-                    </div>
+                    </div> */}
 
                     <div className="form-buttons-w text-right compact">
                       {save && (
@@ -261,13 +263,13 @@ return (
 };
 
 const mapStateToProps = state => {
-	return {
-		leaveCategories: state.settings.leave_categories,
-	};
+  return {
+    Specializations: state.settings.specializations
+  };
 };
 export default connect(mapStateToProps, {
-	addLeaveCategory,
-	getAllLeaveCategory,
-	updateLeaveCategory,
-	deleteLeaveCategory,
-})(LeaveCategory);
+  addSpecialization,
+  getAllSpecialization,
+  updateSpecialization,
+  deleteSpecialization
+})(Specialization);
