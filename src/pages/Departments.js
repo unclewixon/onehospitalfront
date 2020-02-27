@@ -1,6 +1,12 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { confirmAlert } from "react-confirm-alert";
+import { notifySuccess, notifyError } from "../services/notify";
+import {
+  getAllDepartments,
+  createDepartment,
+  deleteDepartment
+} from "../actions/settings";
 
 import { createDepartment } from '../actions/settings';
 import DepartmentList from '../components/DepartmentList';
@@ -12,18 +18,49 @@ const Departments = props => {
 		headOfDept: '',
 	};
 
-	const [{ name, description }, setState] = useState(initialState);
-	const handleInputChange = e => {
-		const { name, value } = e.target;
-		setState(previouState => setState({ ...previouState, [name]: value }));
-	};
+  const confirmDelete = data => {
+    console.log(data)
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className="custom-ui">
+            <h1>Are you sure?</h1>
+            <p>You want to delete this category?</p>
+            <div style={{}}>
+              <button
+                className="btn btn-primary"
+                style={{ margin: 10 }}
+                onClick={onClose}
+              >
+                No
+              </button>
+              <button
+                className="btn btn-danger"
+                style={{ margin: 10 }}
+                onClick={() => {
+                  onDeleteDepartment(data);
+                  onClose();
+                }}
+              >
+                Yes, Delete it!
+              </button>
+            </div>
+          </div>
+        );
+      }
+    });
+  };
+
+  useEffect(() => {
+    props.getAllDepartments();
+  }, []);
 
 	const onCreateDepartment = e => {
 		e.preventDefault();
 		props.createDepartment({ name, description });
 	};
 
-	return (
+  return (
 		<div className="content-i">
 			<div className="content-box">
 				<div className="element-wrapper">
@@ -42,7 +79,6 @@ const Departments = props => {
 							</ul>
 						</div>
 					</div>
-
 					<div className="row">
 						<div className="col-lg-8">
 							<DepartmentList />

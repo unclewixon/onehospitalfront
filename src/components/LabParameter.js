@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import {confirmAlert} from "react-confirm-alert"
+
 import {
 	addLabTestParameter,
 	getAllLabTestParameters,
@@ -62,80 +64,113 @@ const LabParameter = props => {
 		setState({ ...initialState });
 	};
 
-	const onDeleteLabParameter = data => {
-		props
-			.deleteLabTestParameters(data)
-			.then(data => {
-				console.log(data);
-			})
-			.catch(error => {
-				console.log(error);
-			});
-	};
 
-	useEffect(() => {
-		if (!loaded) {
-			props.getAllLabTestParameters();
-		}
-		setLoaded(true);
-	}, [loaded, props]);
+  const confirmDelete = data => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className="custom-ui">
+            <h1>Are you sure?</h1>
+            <p>You want to delete this remove ?</p>
+            <div style={{}}>
+              <button
+                className="btn btn-primary"
+                style={{ margin: 10 }}
+                onClick={onClose}
+              >
+                No
+              </button>
+              <button
+                className="btn btn-danger"
+                style={{ margin: 10 }}
+                onClick={() => {
+                  onDeleteLabParameter(data);
+                  onClose();
+                }}
+              >
+                Yes, Delete it!
+              </button>
+            </div>
+          </div>
+        );
+      }
+    });
+  };
 
-	return (
-		<div className="row">
-			<div className="col-lg-8">
-				<div>
-					<div className="pipelines-w">
-						<div className="row">
-							{props.LabParameters.map((LabParameter, i) => {
-								return (
-									<div key={i} className="col-lg-4 col-xxl-3">
-										<div className="pt-3">
-											<div className="pipeline-item">
-												<div className="pi-controls">
-													<div className="pi-settings os-dropdown-trigger">
-														<i
-															className="os-icon os-icon-ui-49"
-															onClick={() => onClickEdit(LabParameter)}
-														></i>
-													</div>
-													<div className="pi-settings os-dropdown-trigger">
-														<i
-															className="os-icon os-icon-ui-15"
-															onClick={() => onDeleteLabParameter(LabParameter)}
-														></i>
-													</div>
-												</div>
-												<div className="pi-body">
-													<div className="pi-info">
-														<div className="h6 pi-name">
-															{LabParameter.name}
-														</div>
-														<div className="pi-sub">{LabParameter.name}</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								);
-							})}
-						</div>
-					</div>
-				</div>
-			</div>
-			<div className="col-lg-4 col-xxl-3  d-xxl-block">
-				<div className="pipeline white lined-warning">
-					<form onSubmit={edit ? onEditLabParameter : onAddLabParameter}>
-						<h6 className="form-header">Create Parameter</h6>
-						<div className="form-group">
-							<input
-								className="form-control"
-								placeholder="Parameter Name"
-								type="text"
-								onChange={handleInputChange}
-								name="name"
-								value={name}
-							/>
-						</div>
+
+  const onDeleteLabParameter = data => {
+    props
+      .deleteLabTestParameters(data)
+      .then(data => {
+        console.log(data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+
+
+  useEffect(() => {
+    props.getAllLabTestParameters();
+  }, []);
+
+  return (
+    <div className="row">
+      <div className="col-lg-8">
+        <div>
+          <div className="pipelines-w">
+            <div className="row">
+              {props.LabParameters.map(LabParameter => {
+                return (
+                  <div className="col-lg-4 col-xxl-3">
+                    <div className="pt-3">
+                      <div className="pipeline-item">
+                        <div className="pi-controls">
+                          <div className="pi-settings os-dropdown-trigger">
+                            <i
+                              className="os-icon os-icon-ui-49"
+                              onClick={() => onClickEdit(LabParameter)}
+                            ></i>
+                          </div>
+                          <div className="pi-settings os-dropdown-trigger">
+                            <i
+                              className="os-icon os-icon-ui-15"
+                              onClick={() => confirmDelete(LabParameter)}
+                            ></i>
+                          </div>
+                        </div>
+                        <div className="pi-body">
+                          <div className="pi-info">
+                            <div className="h6 pi-name">
+                              {LabParameter.name}
+                            </div>
+                            <div className="pi-sub">{LabParameter.name}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="col-lg-4 col-xxl-3  d-xxl-block">
+        <div className="pipeline white lined-warning">
+          <form onSubmit={edit ? onEditLabParameter : onAddLabParameter}>
+            <h6 className="form-header">Create Parameter</h6>
+            <div className="form-group">
+              <input
+                className="form-control"
+                placeholder="Parameter Name"
+                type="text"
+                onChange={handleInputChange}
+                name="name"
+                value={name}
+              />
+            </div>
 
 						<div className="form-buttons-w">
 							{create && (
