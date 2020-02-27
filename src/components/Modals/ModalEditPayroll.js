@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { closeEditPayRoll } from '../actions/general';
-import { formatCurrency } from '../services/utilities';
+import { closeEditPayRoll } from '../../actions/general';
+import { formatCurrency } from '../../services/utilities';
 
 class ModalEditPayroll extends Component {
 	state = {

@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 
-import { closeModals } from '../actions/general';
-import PayrollItem from './PayrollItem';
+import { closeModals } from '../../actions/general';
+import PayrollItem from '../PayrollItem';
 
 const itemRender = (current, type, originalElement) => {
 	if (type === 'prev') {

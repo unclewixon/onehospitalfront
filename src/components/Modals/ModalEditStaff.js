@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { closeModals } from '../actions/general';
+import { closeModals } from '../../actions/general';
 
 class ModalEditStaff extends Component {
 	componentDidMount() {

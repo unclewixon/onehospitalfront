@@ -1,12 +1,29 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
+import { connect } from "react-redux";
+import { viewAppointmentDetail } from "../../actions/general.js";
 
-const Appointment = () => {
+const FrontDeskDashboard = props => {
+  const ViewAppointmentDetail = e => {
+    e.preventDefault();
+    props.viewAppointmentDetail(true);
+  };
   return (
     <div className="tab-content">
       <div className="tab-pane active show" id="tab_overview">
         <div className="row">
           <div className="col-sm-12">
+            <div className="element-wrapper">
+              <div className="element-actions">
+                <form className="form-inline justify-content-sm-end">
+                  <select className="form-control form-control-sm rounded">
+                    <option value="Pending">Today</option>
+                    <option value="Active">Last Week </option>
+                    <option value="Cancelled">Last 30 Days</option>
+                  </select>
+                </form>
+              </div>
+            </div>
             <div className="row">
               <div className="col-sm-12">
                 <div className="element-wrapper">
@@ -26,6 +43,7 @@ const Appointment = () => {
                             <div className="modal-header">
                               <h5
                                 className="modal-title"
+                                id="exampleModalLabel"
                               >Appointment</h5>
                               <button
                                 aria-label="Close"
@@ -43,7 +61,7 @@ const Appointment = () => {
                                     <div
                                       className="up-head-w"
                                       style={{
-                                        backgroundImage: require("../assets/images/bigicon2.png")
+                                        backgroundImage: require("../../assets/images/bigicon2.png")
                                       }}
                                     >
                                       <div className="up-social">
@@ -212,7 +230,7 @@ const Appointment = () => {
                                             plugin for bootstrap.
                                             <a
                                               href="http://1000hz.github.io/bootstrap-validator/"
-                                              target="_blank" rel="noreferrer noopener"
+                                              target="_blank" rel="noopener noreferrer"
                                             >
                                               Learn more about Bootstrap
                                               Validator
@@ -285,6 +303,7 @@ const Appointment = () => {
                                 href="#"
                                 data-target=".bd-example-modal-lg"
                                 data-toggle="modal"
+                                onClick={ViewAppointmentDetail}
                               >
                                 <i className="os-icon os-icon-user"></i>
                               </a>
@@ -469,4 +488,4 @@ const Appointment = () => {
     </div>
   );
 };
-export default Appointment;
+export default connect(null, { viewAppointmentDetail })(FrontDeskDashboard);

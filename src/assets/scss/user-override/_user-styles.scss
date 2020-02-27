@@ -281,3 +281,11 @@ button {
 .bg-primary {background-color: $primary;}
 .bg-secondary {background-color: $secondary;}
 .bg-success {background-color: $success;}
+
+.onboarding-modal 
+.onboarding-content.with-gradient {
+    padding: 0px 32px;
+}
+.form-header, .form-desc {
+	margin-bottom: 0 !important;
+}
