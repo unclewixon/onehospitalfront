@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { closeCurrentPayRoll } from '../actions/general';
-import { formatCurrency } from '../services/utilities';
+import { closeCurrentPayRoll } from '../../actions/general';
+import { formatCurrency } from '../../services/utilities';
 
 class ModalCurrentPayroll extends Component {
 	componentDidMount() {

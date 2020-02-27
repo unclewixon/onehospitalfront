@@ -5,52 +5,12 @@ import { connect } from 'react-redux';
 import { registerNewPatient, createNewAppointment } from '../actions/general';
 
 class Queue extends Component {
-	RegisterNewPatient = e => {
-		e.preventDefault();
-		this.props.registerNewPatient(true);
-	};
-
-	CreateNewAppointment = e => {
-		e.preventDefault();
-		this.props.createNewAppointment(true);
-	};
+	
 	render() {
 		return (
 			<div className="element-wrapper compact">
 				<h6 className="element-header">Queue</h6>
 				<div className="element-box-tp">
-					<div className="profile-tile">
-						<a
-							className="profile-tile-box faded"
-							// data-target="#exampleModal1"
-							// data-toggle="modal"
-							onClick={this.RegisterNewPatient}
-						>
-							<div className="pt-new-icon">
-								<i className="os-icon os-icon-plus"></i>
-							</div>
-							<div className="pt-user-name">
-								New
-								<br /> Registration
-							</div>
-						</a>
-						<div className="profile-tile-meta">
-							<a
-								className="profile-tile-box faded"
-								// data-target="#myModal"
-								// data-toggle="modal"
-								onClick={this.CreateNewAppointment}
-							>
-								<div className="pt-new-icon">
-									<i className="os-icon os-icon-plus"></i>
-								</div>
-								<div className="pt-user-name">
-									New
-									<br /> Appointment
-								</div>
-							</a>
-						</div>
-					</div>
 					<div className="todo-list">
 						<Link className="todo-item" to="/dashboard/patient/123">
 							<div className="ti-info">
@@ -86,6 +46,4 @@ class Queue extends Component {
 	}
 }
 
-export default connect(null, { registerNewPatient, createNewAppointment })(
-	Queue
-);
+export default Queue;

@@ -1,13 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
-import { connect } from "react-redux";
-import { viewAppointmentDetail } from "../actions/general.js";
 
-const FrontDeskDashboard = props => {
-  const ViewAppointmentDetail = e => {
-    e.preventDefault();
-    props.viewAppointmentDetail(true);
-  };
+const FrontDeskIncoming = () => {
   return (
     <div className="tab-content">
       <div className="tab-pane active show" id="tab_overview">
@@ -86,10 +80,7 @@ const FrontDeskDashboard = props => {
                         <div className="modal-dialog modal-lg">
                           <div className="modal-content">
                             <div className="modal-header">
-                              <h5
-                                className="modal-title"
-                                id="exampleModalLabel"
-                              >Appointment</h5>
+                              <h5 className="modal-title">Todays Appointment</h5>
                               <button
                                 aria-label="Close"
                                 className="close"
@@ -106,7 +97,7 @@ const FrontDeskDashboard = props => {
                                     <div
                                       className="up-head-w"
                                       style={{
-                                        backgroundImage: require("../assets/images/bigicon2.png")
+                                        backgroundImage: require("../../assets/images/bigicon2.png")
                                       }}
                                     >
                                       <div className="up-social">
@@ -348,7 +339,6 @@ const FrontDeskDashboard = props => {
                                 href="#"
                                 data-target=".bd-example-modal-lg"
                                 data-toggle="modal"
-                                onClick={ViewAppointmentDetail}
                               >
                                 <i className="os-icon os-icon-user"></i>
                               </a>
@@ -533,4 +523,4 @@ const FrontDeskDashboard = props => {
     </div>
   );
 };
-export default connect(null, { viewAppointmentDetail })(FrontDeskDashboard);
+export default FrontDeskIncoming;

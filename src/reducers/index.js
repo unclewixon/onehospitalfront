@@ -10,6 +10,7 @@ import inventory from './inventory';
 import role from './role';
 import hr from './hr';
 import setting from './setting';
+import patient from './patient';
 import utility from './utility';
 
 const reducers = combineReducers({
@@ -24,6 +25,7 @@ const reducers = combineReducers({
 	hr,
 	setting,
 	utility,
+	patient
 });
 
 export default reducers;

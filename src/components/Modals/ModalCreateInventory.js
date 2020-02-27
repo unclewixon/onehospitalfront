@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError, reset } from 'redux-form';
 
-import { closeModals } from '../actions/general';
-import { renderTextInput, request, renderTextInputGroup, renderSelect } from '../services/utilities';
-import { API_URI, inventoryAPI } from '../services/constants';
-import { notifySuccess } from '../services/notify';
-import waiting from '../assets/images/waiting.gif';
-import { addInventory } from '../actions/inventory';
+import { closeModals } from '../../actions/general';
+import { renderTextInput, request, renderTextInputGroup, renderSelect } from '../../services/utilities';
+import { API_URI, inventoryAPI } from '../../services/constants';
+import { notifySuccess } from '../../services/notify';
+import waiting from '../../assets/images/waiting.gif';
+import { addInventory } from '../../actions/inventory';
 
 const validate = values => {
 	const errors = {};

@@ -2,9 +2,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { closeModals } from '../actions/general';
+import { closeModals } from '../../actions/general';
 
-class ModalAddTask extends Component {
+class ModalCreateAppointment extends Component {
 	componentDidMount() {
 		document.body.classList.add('modal-open');
 	}
@@ -28,7 +28,7 @@ class ModalAddTask extends Component {
 								<img
 									alt=""
 									className="avatar"
-									src={require('../assets/images/avatar1.jpg')}
+									src={require('../../assets/images/avatar1.jpg')}
 								/>
 								<span>Due Date: </span>
 								<strong>Sep 12th, 2017</strong>
@@ -67,9 +67,18 @@ class ModalAddTask extends Component {
 									<div className="form-group">
 										<label for="">Media Attached</label>
 										<div className="attached-media-w">
-											<img src={require('../assets/images/portfolio9.jpg')} alt="" />
-											<img src={require('../assets/images/portfolio2.jpg')} alt="" />
-											<img src={require('../assets/images/portfolio12.jpg')} alt="" />
+											<img
+												src={require('../../assets/images/portfolio1.jpg')}
+												alt=""
+											/>
+											<img
+												src={require('../../assets/images/portfolio2.jpg')}
+												alt=""
+											/>
+											<img
+												src={require('../../assets/images/portfolio12.jpg')}
+												alt=""
+											/>
 											<a className="attach-media-btn" href="#">
 												<i className="os-icon os-icon-ui-22"></i>
 												<span>Add Photos</span>
@@ -126,4 +135,4 @@ class ModalAddTask extends Component {
 	}
 }
 
-export default connect(null, { closeModals })(ModalAddTask);
+export default connect(null, { closeModals })(ModalCreateAppointment);

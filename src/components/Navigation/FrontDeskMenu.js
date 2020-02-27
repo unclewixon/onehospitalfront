@@ -16,7 +16,7 @@ const FrontDeskMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/staff-mgt/payroll">
+				<Link to="#">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers"/>
 					</div>
