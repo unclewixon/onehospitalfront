@@ -88,16 +88,16 @@ class MainMenu extends Component {
 					)}
 					{role === 'doctor' && (
 						<DoctorMenu />
-					{ )}
-					{role === 'inventory' && ( }
+					)}
+					{role === 'inventory' && (
 						<InventoryMenu />
-					{ )}
-					{role ==="front-desk" && ( }
+					)}
+					{role ==="front-desk" && (
 						<FrontDeskMenu />
-					{ )}
-					{role === 'admin' && (}
+					)}
+					{role === 'admin' && (
 						<AdminMenu />
-					{ )} }
+					)}
 				</ul>
 			</div>
 		);
