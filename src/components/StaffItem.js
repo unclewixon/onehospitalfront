@@ -31,35 +31,35 @@ class StaffItem extends Component {
 	};
 
 	render() {
-		const { enabled } = this.props;
+		const { staff } = this.props;
 		const { collapsed } = this.state;
 		return (
 			<>
 				<tr>
 					<td><div role="button" tabIndex="0" className={`row-expand-icon ${collapsed ? 'row-collapsed' : 'row-expanded'}`} onClick={this.toggle}/></td>
-					<td>ST123</td>
-					<td>John Mayers</td>
-					<td>john.meyers</td>
-					<td>56366383</td>
-					<td>56366383</td>
-					<td>Nursing</td>
+					<td>{staff.emp_code}</td>
+					<td>{`${staff.first_name} ${staff.last_name}`}</td>
+					<td>{staff.user.username}</td>
+					<td>{staff.job_title}</td>
+					<td>{staff.phone_number}</td>
+					<td>{staff.department.name}</td>
 					<td className="text-center">
-						{enabled === 1 ? (
+						{staff.isActive ? (
 							<Tooltip title="Enabled"><div className="status-pill green"/></Tooltip>
 						) : (
 							<Tooltip title="Disabled"><div className="status-pill red"/></Tooltip>
 						)}
 					</td>
 					<td className="text-right row-actions">
-						<a href="#" onClick={this.doEditStaff} className="secondary" title="Edit Staff">
+						{/* <a onClick={this.doEditStaff} className="secondary" title="Edit Staff">
 							<i className="os-icon os-icon-edit-32" />
-						</a>
-						{enabled === 1 ? (
-							<a href="#" onClick={this.doDisable}className="danger" title="Disable Staff">
+						</a> */}
+						{staff.isActive ? (
+							<a onClick={this.doDisable}className="danger" title="Disable Staff">
 								<i className="os-icon os-icon-x-circle" />
 							</a>
 						) : (
-							<a href="#" onClick={this.doEnable} className="success" title="Enable Staff">
+							<a onClick={this.doEnable} className="success" title="Enable Staff">
 								<i className="os-icon os-icon-check-circle" />
 							</a>
 						)}
@@ -73,20 +73,16 @@ class StaffItem extends Component {
 								<table className="table table-striped table-sm">
 									<tbody>
 										<tr>
-											<th>Specialization</th>
-											<td>Consultant</td>
+											<th>Gender</th>
+											<td>{staff.gender}</td>
 										</tr>
 										<tr>
 											<th>Email</th>
-											<td>caihedoro@gmail.com</td>
+											<td>{staff.email}</td>
 										</tr>
 										<tr>
 											<th>Consultant</th>
-											<td>YES</td>
-										</tr>
-										<tr>
-											<th>Folio Number</th>
-											<td>RA(MLS):18881</td>
+											<td>{staff.is_consultant ? 'YES' : 'NO'}</td>
 										</tr>
 									</tbody>
 								</table>

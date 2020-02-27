@@ -28,7 +28,7 @@ class AppraisalItem extends Component {
 					)}
 				</td>
 				<td className="text-right row-actions">
-					<a href="#" onClick={this.doViewAppraisal} className="secondary" title="View Appraisal">
+					<a onClick={this.doViewAppraisal} className="secondary" title="View Appraisal">
 						<i className="os-icon os-icon-eye" />
 					</a>
 				</td>

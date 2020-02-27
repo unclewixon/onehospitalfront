@@ -26,11 +26,12 @@ class PayrollItem extends Component {
 	};
 
 	render() {
-		const { modal, is_new } = this.props;
+		const { item, modal, is_new, index } = this.props;
+		console.log(item);
 		return (
 			<tr>
 				{is_new && <td><input type="checkbox"/></td>}
-				<td>1</td>
+				<td>{index}</td>
 				{!modal && <td>My Name</td>}
 				<td>{formatCurrency(1200000)}</td>
 				<td>{formatCurrency(2000000)}</td>
@@ -40,16 +41,16 @@ class PayrollItem extends Component {
 				{!is_new && <td>12 Jan, 2020</td>}
 				<td className="text-right row-actions">
 					{is_new ? (
-						<a href="#" onClick={this.doEditPayroll} className="primary" title="View Current Payslip">
+						<a  onClick={this.doEditPayroll} className="primary" title="View Current Payslip">
 							<i className="os-icon os-icon-edit-1" />
 						</a>
 					) : (
-						<a href="#" onClick={this.doViewCurrentPayroll} className="primary" title="View Current Payslip">
+						<a  onClick={this.doViewCurrentPayroll} className="primary" title="View Current Payslip">
 							<i className="os-icon os-icon-credit-card" />
 						</a>
 					)}
 					{!modal && !is_new && (
-						<a href="#" onClick={this.doViewPayroll} className="secondary" title="View Payment History">
+						<a  onClick={this.doViewPayroll} className="secondary" title="View Payment History">
 							<i className="os-icon os-icon-ui-83" />
 						</a>
 					)}

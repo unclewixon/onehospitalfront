@@ -2,9 +2,26 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import AppraisalItem from '../components/AppraisalItem';
+import { request } from '../services/utilities';
+import { API_URI, staffAPI } from '../services/constants';
+import { loadAppraisals } from '../actions/hr';
 
 class Appraisal extends Component {
+	componentDidMount() {
+		this.fetchApprasails();
+	}
+	
+	fetchApprasails = async () => {
+		try {
+			const rs = await request(`${API_URI}${staffAPI}`, 'GET', true);
+			this.props.loadAppraisals(rs);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	render() {
+		const { appraisals } = this.props;
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -27,9 +44,15 @@ class Appraisal extends Component {
 												</tr>
 											</thead>
 											<tbody>
-												<AppraisalItem approved={1} />
-												<AppraisalItem approved={0} />
-												<AppraisalItem approved={1} />
+												{appraisals.map((item, i) => {
+													return (
+														<AppraisalItem
+															key={i}
+															item={item}
+															approved={1}
+														/>
+													)
+												})}
 											</tbody>
 										</table>
 									</div>
@@ -43,4 +66,10 @@ class Appraisal extends Component {
 	}
 }
 
-export default connect(null)(Appraisal);
+const mapStateToProps = (state, ownProps) => {
+	return {
+		appraisals: state.hr.appraisals,
+	}
+};
+
+export default connect(mapStateToProps, { loadAppraisals })(Appraisal);

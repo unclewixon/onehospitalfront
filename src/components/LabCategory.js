@@ -3,81 +3,85 @@ import { connect } from "react-redux";
 import {confirmAlert} from "react-confirm-alert"
 
 import {
-  addLabTestCategory,
-  getAllLabTestCategories,
-  updateLabTestCategory,
-  deleteLabTestCategory
-} from "../actions/settings";
+	addLabTestCategory,
+	getAllLabTestCategories,
+	updateLabTestCategory,
+	deleteLabTestCategory,
+} from '../actions/settings';
 
 const LabCategory = props => {
-  const initialState = {
-    name: "",
-    edit: false,
-    create: true
-  };
-  const [{ name }, setState] = useState(initialState);
-  const [Loading, setLoading] = useState(false);
-  const [{ edit, create }, setSubmitButton] = useState(initialState);
-  const [data, getDataToEdit] = useState(null);
+	const initialState = {
+		name: '',
+		edit: false,
+		create: true,
+	};
+	const [{ name }, setState] = useState(initialState);
+	const [Loading, setLoading] = useState(false);
+	const [{ edit, create }, setSubmitButton] = useState(initialState);
+	const [data, getDataToEdit] = useState(null);
+	const [loaded, setLoaded] = useState(false);
 
-  const handleInputChange = e => {
-    const { name, value } = e.target;
-    setState(prevState => ({ ...prevState, [name]: value }));
-  };
+	const handleInputChange = e => {
+		const { name, value } = e.target;
+		setState(prevState => ({ ...prevState, [name]: value }));
+	};
 
-  const onAddLabCategory = e => {
-    setLoading(true)
-    e.preventDefault();
-    props.addLabTestCategory({ name }).then(response => {
-      setLoading(false)
-      setState({ ...initialState });
-    }).catch(error => {
-      setLoading(false)
-      setState({ ...initialState });
-    })
-  };
+	const onAddLabCategory = e => {
+		setLoading(true);
+		e.preventDefault();
+		props
+			.addLabTestCategory({ name })
+			.then(response => {
+				setLoading(false);
+				setState({ ...initialState });
+			})
+			.catch(error => {
+				setLoading(false);
+				setState({ ...initialState });
+			});
+	};
 
-  const onEditLabCategories = e => {
-    setLoading(true);
-    e.preventDefault();
-    props
-      .updateLabTestCategory({ id: data.id, name }, data)
-      .then(response => {
-        setState({ ...initialState });
-        setSubmitButton({ create: true, edit: false });
-        setLoading(false);
-      })
-      .catch(error => {
-        setState({ ...initialState });
-        setSubmitButton({ create: true, edit: false });
-        setLoading(false);
-      });
-  };
+	const onEditLabCategories = e => {
+		setLoading(true);
+		e.preventDefault();
+		props
+			.updateLabTestCategory({ id: data.id, name }, data)
+			.then(response => {
+				setState({ ...initialState });
+				setSubmitButton({ create: true, edit: false });
+				setLoading(false);
+			})
+			.catch(error => {
+				setState({ ...initialState });
+				setSubmitButton({ create: true, edit: false });
+				setLoading(false);
+			});
+	};
 
-  const onClickEdit = data => {
-    setSubmitButton({ edit: true, create: false });
-    setState(prevState => ({
-      ...prevState,
-      name: data.name
-    }));
-    getDataToEdit(data);
-  };
+	const onClickEdit = data => {
+		setSubmitButton({ edit: true, create: false });
+		setState(prevState => ({
+			...prevState,
+			name: data.name,
+		}));
+		getDataToEdit(data);
+	};
 
-  const cancelEditButton = () => {
-    setSubmitButton({ create: true, edit: false });
-    setState({ ...initialState });
-  };
+	const cancelEditButton = () => {
+		setSubmitButton({ create: true, edit: false });
+		setState({ ...initialState });
+	};
 
-  const onDeleteLabCategory = data => {
-    props
-      .deleteLabTestCategory(data)
-      .then(data => {
-        console.log(data);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  };
+	const onDeleteLabCategory = data => {
+		props
+			.deleteLabTestCategory(data)
+			.then(data => {
+				console.log(data);
+			})
+			.catch(error => {
+				console.log(error);
+			});
+	};
 
   const confirmDelete = data => {
     confirmAlert({
@@ -171,52 +175,52 @@ const LabCategory = props => {
               />
             </div>
 
-            <div className="form-buttons-w">
-              {create && (
-                <button
-                  className={
-                    Loading ? "btn btn-primary disabled" : "btn btn-primary"
-                  }
-                >
-                  <span>{Loading ? "creating" : "create"}</span>
-                </button>
-              )}
-              {edit && (
-                <>
-                  <button
-                    className={
-                      Loading ? "btn btn-primary disabled" : "btn btn-primary"
-                    }
-                    onClick={cancelEditButton}
-                  >
-                    <span>{Loading ? "cancel" : "cancel"}</span>
-                  </button>
-                  <button
-                    className={
-                      Loading ? "btn btn-primary disabled" : "btn btn-primary"
-                    }
-                  >
-                    <span>{Loading ? "Saving" : "edit"}</span>
-                  </button>
-                </>
-              )}
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  );
+						<div className="form-buttons-w">
+							{create && (
+								<button
+									className={
+										Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
+									}
+								>
+									<span>{Loading ? 'creating' : 'create'}</span>
+								</button>
+							)}
+							{edit && (
+								<>
+									<button
+										className={
+											Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
+										}
+										onClick={cancelEditButton}
+									>
+										<span>{Loading ? 'cancel' : 'cancel'}</span>
+									</button>
+									<button
+										className={
+											Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
+										}
+									>
+										<span>{Loading ? 'Saving' : 'edit'}</span>
+									</button>
+								</>
+							)}
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	);
 };
 
 const mapStateToProps = state => {
-  return {
-    LabCategories: state.settings.lab_categories
-  };
+	return {
+		LabCategories: state.settings.lab_categories,
+	};
 };
 
 export default connect(mapStateToProps, {
-  addLabTestCategory,
-  getAllLabTestCategories,
-  updateLabTestCategory,
-  deleteLabTestCategory
+	addLabTestCategory,
+	getAllLabTestCategories,
+	updateLabTestCategory,
+	deleteLabTestCategory,
 })(LabCategory);

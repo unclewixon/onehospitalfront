@@ -1,44 +1,46 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { confirmAlert } from "react-confirm-alert";
+
 import {
-  addLeaveCategory,
-  getAllLeaveCategory,
-  updateLeaveCategory,
-  deleteLeaveCategory
-} from "../actions/settings";
+	addLeaveCategory,
+	getAllLeaveCategory,
+	updateLeaveCategory,
+	deleteLeaveCategory,
+} from '../actions/settings';
 
 const LeaveCategory = props => {
-  const initialState = {
-    name: "",
-    duration: "",
-    save: true,
-    edit: false,
-    id: ""
-  };
-  const [{ name, duration }, setState] = useState(initialState);
-  const [Loading, setLoading] = useState(false);
-  const [{ edit, save }, setSubmitButton] = useState(initialState);
-  const [data, getDataToEdit] = useState(null);
+	const initialState = {
+		name: '',
+		duration: '',
+		save: true,
+		edit: false,
+		id: '',
+	};
+	const [{ name, duration }, setState] = useState(initialState);
+	const [Loading, setLoading] = useState(false);
+	const [{ edit, save }, setSubmitButton] = useState(initialState);
+	const [data, getDataToEdit] = useState(null);
+	const [loaded, setLoaded] = useState(false);
 
-  const handleInputChange = e => {
-    const { name, value } = e.target;
-    setState(prevState => ({ ...prevState, [name]: value }));
-  };
+	const handleInputChange = e => {
+		const { name, value } = e.target;
+		setState(prevState => ({ ...prevState, [name]: value }));
+	};
 
-  const onAddLeaveCategory = e => {
-    e.preventDefault();
-    setLoading(true);
-    props
-      .addLeaveCategory({ name, duration })
-      .then(response => {
-        setLoading(false);
-        setState({ ...initialState });
-      })
-      .catch(error => {
-        setLoading(false);
-      });
-  };
+	const onAddLeaveCategory = e => {
+		e.preventDefault();
+		setLoading(true);
+		props
+			.addLeaveCategory({ name, duration })
+			.then(response => {
+				setLoading(false);
+				setState({ ...initialState });
+			})
+			.catch(error => {
+				setLoading(false);
+			});
+	};
 
   const onEditLeaveCategory = e => {
     setLoading(true);
@@ -57,47 +59,29 @@ const LeaveCategory = props => {
       });
   };
 
-  const onClickEdit = data => {
-    setSubmitButton({ edit: true, save: false });
-    setState(prevState => ({
-      ...prevState,
-      name: data.name,
-      duration: data.duration,
-      id: data.id
-    }));
-    getDataToEdit(data);
-  };
+	const onClickEdit = data => {
+		setSubmitButton({ edit: true, save: false });
+		setState(prevState => ({
+			...prevState,
+			name: data.name,
+			duration: data.duration,
+			id: data.id,
+		}));
+		getDataToEdit(data);
+	};
 
-  const onDeleteLeaveCategory = data => {
-    props
-      .deleteLeaveCategory(data)
-      .then(data => {
-        setLoading(false);
-        console.log(data);
-      })
-      .catch(error => {
-        setLoading(false);
-        console.log(error);
-      });
-  };
-
-  
-  // const confirmDelete = data => {
-  //   confirmAlert({onclose,
-  //     title: "Confirm to delete",
-  //     message: "Are you sure to delete this.",
-  //     buttons: [
-  //       {
-  //         label: "Yes",
-  //         onClick: () => onDeleteLeaveCategory(data)
-  //       },
-  //       {
-  //         label: "No",
-  //         onClick: () => onclose
-  //       }
-  //     ]
-  //   });
-  // };
+	const onDeleteLeaveCategory = data => {
+		props
+			.deleteLeaveCategory(data)
+			.then(data => {
+				setLoading(false);
+				console.log(data);
+			})
+			.catch(error => {
+				setLoading(false);
+				console.log(error);
+			});
+	};
 
   const confirmDelete = data => {
     confirmAlert({
@@ -128,30 +112,28 @@ const LeaveCategory = props => {
     setState({ ...initialState });
   };
 
-  useEffect(() => {
-    console.log(save, edit);
-    props.getAllLeaveCategory();
-  }, []);
-  return (
-    <div className="content-i">
-      <div className="content-box">
-        <div className="element-wrapper">
-          <div className="os-tabs-w mx-1">
-            <div className="os-tabs-controls">
-              <ul className="nav nav-tabs upper">
-                <li className="nav-item">
-                  <a
-                    aria-expanded="true"
-                    className="nav-link active"
-                    data-toggle="tab"
-                  >
-                    Leave categories
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
+	useEffect(() => {
+		if (!loaded) {
+			props.getAllLeaveCategory();
+		}
+		setLoaded(true);
+	}, [loaded, props]);
 
+return (
+	<div className="content-i">
+		<div className="content-box">
+			<div className="element-wrapper">
+				<div className="os-tabs-w mx-1">
+					<div className="os-tabs-controls">
+						<ul className="nav nav-tabs upper">
+							<li className="nav-item">
+								<a aria-expanded="true" className="nav-link active">
+									Leave categories
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
           <div className="row">
             <div className="col-lg-8">
               <div className="row">
@@ -279,13 +261,13 @@ const LeaveCategory = props => {
 };
 
 const mapStateToProps = state => {
-  return {
-    LeaveCategories: state.settings.leave_categories
-  };
+	return {
+		leaveCategories: state.settings.leave_categories,
+	};
 };
 export default connect(mapStateToProps, {
-  addLeaveCategory,
-  getAllLeaveCategory,
-  updateLeaveCategory,
-  deleteLeaveCategory
+	addLeaveCategory,
+	getAllLeaveCategory,
+	updateLeaveCategory,
+	deleteLeaveCategory,
 })(LeaveCategory);

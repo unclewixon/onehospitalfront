@@ -26,23 +26,23 @@ const HmoList = props => {
     setState(prevState => ({ ...prevState, [name]: value }));
   };
 
-  const handleFileChange = e => {
-    setLogo(e.target.files[0]);
-  };
+	const handleFileChange = e => {
+		setLogo(e.target.files[0]);
+	};
 
-  const onAddHmo = e => {
-    e.preventDefault();
-    const data = new FormData();
-    data.append("name", name);
-    data.append("email", email);
-    data.append("phoneNumber", phoneNumber);
-    data.append("address", address);
-    data.append("logo", logo);
+	const onAddHmo = e => {
+		e.preventDefault();
+		const data = new FormData();
+		data.append('name', name);
+		data.append('email', email);
+		data.append('phoneNumber', phoneNumber);
+		data.append('address', address);
+		data.append('logo', logo);
 
-    props.addHmo(data).then(response => {
-      setState({ ...initialState });
-    });
-  };
+		props.addHmo(data).then(response => {
+			setState({ ...initialState });
+		});
+	};
 
   const onEdiHmo = e => {
     setLoading(true);
@@ -135,60 +135,62 @@ const HmoList = props => {
     props.getAllHmos();
   }, []);
 
-  return (
-    <div className="content-i">
-      <div className="content-box">
-        <div className="element-wrapper">
-          <div className="os-tabs-w mx-1">
-            <div className="os-tabs-controls">
-              <ul className="nav nav-tabs upper">
-                <li className="nav-item">
-                  <a
-                    aria-expanded="true"
-                    className="nav-link active"
-                    data-toggle="tab"
-                  >
-                    HEALTH MANAGEMENT ORGANIZATIONS
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
+	return (
+		<div className="content-i">
+			<div className="content-box">
+				<div className="element-wrapper">
+					<div className="os-tabs-w mx-1">
+						<div className="os-tabs-controls">
+							<ul className="nav nav-tabs upper">
+								<li className="nav-item">
+									<a
+										aria-expanded="true"
+										className="nav-link active"
+										data-toggle="tab"
+									>
+										HEALTH MANAGEMENT ORGANIZATIONS
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
 
-          <div className="row">
-            <div class="col-lg-8 col-xxl-8">
-              <div class="element-wrapper">
-                <div class="element-box-tp">
-                  <div class="table-responsive">
-                    <table class="table table-padded">
-                      <thead>
-                        <tr>
-                          <th>Logo</th>
-                          <th>Name</th>
-                          <th class="text-center">Phone</th>
+					<div className="row">
+						<div className="col-lg-8 col-xxl-8">
+							<div className="element-wrapper">
+								<div className="element-box-tp">
+									<div className="table-responsive">
+										<table className="table table-padded">
+											<thead>
+												<tr>
+													<th>Logo</th>
+													<th>Name</th>
+													<th className="text-center">Phone</th>
 
-                          <th>Email</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {props.hmoList.map(hmo => {
-                          return (
-                            <tr>
-                              <td>
-                                <div class="user-with-avatar">
-                                  <img
-                                    alt=""
-                                    src={require("../assets/images/avatar1.jpg")}
-                                  />
-                                </div>
-                              </td>
-                              <td>
-                                <div class="smaller lighter">{hmo.name}</div>
-                              </td>
-                              <td>
-                                <span>{hmo.phoneNumber}</span>
-                              </td>
+													<th>Email</th>
+													<th>Actions</th>
+												</tr>
+											</thead>
+											<tbody>
+												{props.hmoList.map(hmo => {
+													return (
+														<tr>
+															<td>
+																<div className="user-with-avatar">
+																	<img
+																		alt=""
+																		src={require('../assets/images/avatar1.jpg')}
+																	/>
+																</div>
+															</td>
+															<td>
+																<div className="smaller lighter">
+																	{hmo.name}
+																</div>
+															</td>
+															<td>
+																<span>{hmo.phoneNumber}</span>
+															</td>
 
                               <td class="nowrap">
                                 <span>{hmo.email}</span>
@@ -328,14 +330,14 @@ const HmoList = props => {
 };
 
 const mapStateToProps = state => {
-  return {
-    hmoList: state.hmo.hmo_list
-  };
+	return {
+		hmoList: state.hmo.hmo_list,
+	};
 };
 
 export default connect(mapStateToProps, {
-  addHmo,
-  getAllHmos,
-  updateHmo,
-  deleteHmo
+	addHmo,
+	getAllHmos,
+	updateHmo,
+	deleteHmo,
 })(HmoList);

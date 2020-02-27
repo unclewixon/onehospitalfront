@@ -1,4 +1,5 @@
 import {
+	TOGGLE_PRELOADING,
 	TOGGLE_MODAL,
 	TOGGLE_IS_MODAL,
 	TOGGLE_CREATE_STAFF,
@@ -9,9 +10,6 @@ import {
 	TOGGLE_CREATE_INVENTORY,
 	TOGGLE_EDIT_INVENTORY,
 	TOGGLE_UPDATE_QTY,
-	TOGGLE_CREATE_INV_CAT,
-	TOGGLE_EDIT_INV_CAT,
-	TOGGLE_CREATE_ROLE,
 	TOGGLE_VIEW_APPRAISAL,
 	TOGGLE_VIEW_PAYROLL_HISTORY,
 	TOGGLE_VIEW_CURRENT_PAYROLL,
@@ -21,6 +19,13 @@ import {
   TOGGLE_CREATE_APPOINTMENT,
   TOGGLE_VIEW_APPOINTMENT_DETAIL
 } from './types';
+
+export const togglePreloading = status => {
+	return {
+		type: TOGGLE_PRELOADING,
+		payload: status,
+	};
+};
 
 export const toggleIsModal = status => {
 	return {
@@ -95,27 +100,6 @@ export const toggleUpdateQuantity = status => {
   };
 };
 
-export const toggleCreateInvCategory = status => {
-  return {
-    type: TOGGLE_CREATE_INV_CAT,
-    payload: status
-  };
-};
-
-export const toggleEditInvCategory = status => {
-  return {
-    type: TOGGLE_EDIT_INV_CAT,
-    payload: status
-  };
-};
-
-export const toggleCreateRole = status => {
-  return {
-    type: TOGGLE_CREATE_ROLE,
-    payload: status
-  };
-};
-
 //frontdesk modals
 export const toggleRegisterNewPatient = status => {
   return {
@@ -186,9 +170,6 @@ export const closeModals = () => {
 		dispatch(toggleCreateInventory(false));
 		dispatch(toggleEditInventory(false));
 		dispatch(toggleUpdateQuantity(false));
-		dispatch(toggleCreateInvCategory(false));
-		dispatch(toggleEditInvCategory(false));
-		dispatch(toggleCreateRole(false));
 		dispatch(toggleViewAppraisal(false));
 		dispatch(toggleViewPayrollHistory(false));
 		dispatch(toggleCurrentPayroll(false));
@@ -271,30 +252,6 @@ export const updateQuantity = action => {
     dispatch(closeModals());
     dispatch(toggleModal(true));
     dispatch(toggleUpdateQuantity(action));
-  };
-};
-
-export const createInventoryCat = action => {
-  return dispatch => {
-    dispatch(closeModals());
-    dispatch(toggleModal(true));
-    dispatch(toggleCreateInvCategory(action));
-  };
-};
-
-export const editInventoryCat = action => {
-  return dispatch => {
-    dispatch(closeModals());
-    dispatch(toggleModal(true));
-    dispatch(toggleEditInvCategory(action));
-  };
-};
-
-export const createRole = action => {
-  return dispatch => {
-    dispatch(closeModals());
-    dispatch(toggleModal(true));
-    dispatch(toggleCreateRole(action));
   };
 };
 

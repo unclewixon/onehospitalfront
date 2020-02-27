@@ -1,3 +1,10 @@
+// variables
+$content-panel-bg-dark: #2d3756;
+$white: #ffffff;
+$primary: #047bf8;
+$secondary: #292b2c;
+$success: #28a745;
+
 // Add styles here you want to override
 a {
 	cursor: pointer;
@@ -5,8 +12,15 @@ a {
 button {
 	outline: 0 none !important;
 }
-.text-bold {font-weight: bold !important;}
-
+.text-bold {
+	font-weight: bold !important;
+}
+.alert {
+	border-right: 0 none;
+	border-left: none;
+	border-radius: 0;
+	padding: 0.25rem 1.25rem;
+}
 .balance {
 	.balance-title {
 		font-size: 0.8rem;
@@ -20,11 +34,14 @@ button {
 		}
 	}
 }
-.pagination-center {position: relative;justify-content: flex-end;}
+.pagination-center {
+	position: relative;
+	justify-content: flex-end;
+}
 .ant-pagination-total-text {
-    position: absolute;
-    left: 0;
-    top: 0;
+	position: absolute;
+	left: 0;
+	top: 0;
 }
 .row-expand-icon {
 	color: #1890ff;
@@ -146,7 +163,9 @@ button {
 	}
 }
 .leave-box {
-	.element-header {margin-top: 24px;}
+	.element-header {
+		margin-top: 24px;
+	}
 	.table-striped tbody tr:nth-of-type(odd) {
 		background: #ffffff;
 	}
@@ -158,9 +177,115 @@ button {
 	}
 }
 .payroll-details {
-    background-color: #fff6f2;
+	background-color: #fff6f2;
 	border-radius: 6px;
 	padding: 20px 25px;
 
-	&.deductions {background-color: #f6f2ff;}
+	&.deductions {
+		background-color: #f6f2ff;
+	}
+}
+.settings-menu {
+	display: flex;
+	-webkit-box-align: stretch;
+	align-items: stretch;
+	background-color: #fff;
+	border-radius: 6px;
+
+	.ae-side-menu {
+		flex: 0 0 200px;
+	}
+
+	&.compact-menu {
+		.ae-side-menu {
+			-webkit-box-flex: 0;
+			flex: 0 0 60px;
+			text-align: center;
+
+			li a span {
+				display: none;
+			}
+		}
+	}
+}
+.color-scheme-dark {
+	.settings-menu {
+		background-color: $content-panel-bg-dark;
+	}
+	.table .row-actions a {
+		color: $white !important;
+	}
+	.search-with-suggestions-w .search-with-suggestions-modal {
+		background-color: $content-panel-bg-dark;
+	}
+}
+
+.search-with-suggestions-w {
+	&.over-search-field {
+		width: 420px;
+	}
+	.search-with-suggestions-modal {
+		.element-search input {
+			padding: 8px 26px 8px 31px;
+		}
+		.close-search-suggestions {
+			right: 4px;
+		}
+	}
+}
+
+.top-bar.color-scheme-light .top-menu-controls .element-search input,
+.top-bar.color-scheme-transparent .top-menu-controls .element-search input {
+	background-color: $white;
+}
+
+.form-group {
+	.custom-date-input {
+		.react-datepicker-wrapper {
+			width: 100%;
+
+			.react-datepicker__input-container {
+				&::before {
+					content: "\e972";
+					font-family: 'osfont' !important;
+					font-style: normal;
+					font-weight: normal;
+					font-feature-settings: normal;
+					font-variant: normal;
+					text-transform: none;
+					line-height: 1;
+					-webkit-font-smoothing: antialiased;
+					-moz-osx-font-smoothing: grayscale;
+					font-size: 15px;
+					color: #047bf8;
+					position: absolute;
+					top: 50%;
+					left: 10px;
+					transform: translateY(-50%);
+				}
+
+				.form-control {
+					padding-left: 35px;
+				}
+			}
+		}
+	}
+}
+
+.ant-popover {
+	&.download-roster, &.upload-roster {
+		.ant-popover-inner-content {padding: 0;}
+	}
+}
+
+.bg-primary {background-color: $primary;}
+.bg-secondary {background-color: $secondary;}
+.bg-success {background-color: $success;}
+
+.onboarding-modal 
+.onboarding-content.with-gradient {
+    padding: 0px 32px;
+}
+.form-header, .form-desc {
+	margin-bottom: 0 !important;
 }
