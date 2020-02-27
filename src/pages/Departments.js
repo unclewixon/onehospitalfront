@@ -38,6 +38,7 @@ const Departments = props => {
   };
 
   const confirmDelete = data => {
+    console.log(data)
     confirmAlert({
       customUI: ({ onClose }) => {
         return (

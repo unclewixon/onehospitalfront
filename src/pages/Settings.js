@@ -1,7 +1,7 @@
-import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import React from "react";
+import { Switch, Route } from "react-router-dom";
 
-import Roles from './Roles';
+import Roles from "./Roles";
 import Lab from "./Laboratory";
 import Diagnosis from "./Diagnosis";
 import Consultation from "./Consultation";
@@ -9,24 +9,32 @@ import RoomMgmt from "./RoomMgmt";
 import Departments from "./Departments";
 import LeaveCategory from "./LeaveCategory";
 import ServicesCategory from "./ServiceCategory";
-import Specialization from "./Specialization"
-import NoMatch from './NoMatch';
+import Specialization from "./Specialization";
+import ConsultatingRoom from "./ConsultatingRoom";
+import NoMatch from "./NoMatch";
 
 const Settings = ({ match }) => {
-	return (
-		<Switch>
-			<Route path={`${match.url}/roles`} component={Roles} />
-			<Route path={`${match.url}/departments`} component={Departments} />
-			<Route path={`${match.url}/consultation`} component={Consultation} />
-			<Route path={`${match.url}/diagnosis`} component={Diagnosis} />
-			<Route path={`${match.url}/lab-mgt`} component={Lab} />
-			<Route path={`${match.url}/room-mgt`} component={RoomMgmt} />
-			<Route path={`${match.url}/leave-category`} component={LeaveCategory} />
-			<Route path={`${match.url}/services-category`} component={ServicesCategory} />
-			<Route path={`${match.url}/specializations`} component={Specialization} />
-			<Route component={NoMatch} />
-		</Switch>
-	);
+  return (
+    <Switch>
+      <Route path={`${match.url}/roles`} component={Roles} />
+      <Route path={`${match.url}/departments`} component={Departments} />
+      <Route path={`${match.url}/consultation`} component={Consultation} />
+      <Route path={`${match.url}/diagnosis`} component={Diagnosis} />
+      <Route path={`${match.url}/lab-mgt`} component={Lab} />
+      <Route path={`${match.url}/room-mgt`} component={RoomMgmt} />
+      <Route path={`${match.url}/leave-category`} component={LeaveCategory} />
+      <Route
+        path={`${match.url}/consultating-room`}
+        component={ConsultatingRoom}
+      />
+      <Route
+        path={`${match.url}/services-category`}
+        component={ServicesCategory}
+      />
+      <Route path={`${match.url}/specializations`} component={Specialization} />
+      <Route component={NoMatch} />
+    </Switch>
+  );
 };
 
 export default Settings;

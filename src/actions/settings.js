@@ -32,7 +32,11 @@ import {
   ADD_SPECIALIZATION,
   GET_ALL_SPECIALIZATIONS,
   UPDATE_SPECIALIZATION,
-  DELETE_SPECIALIZATION
+  DELETE_SPECIALIZATION,
+  ADD_CONSULTATING_ROOM,
+  UPDATE_CONSULTATING_ROOM,
+  DELETE_CONSULTATING_ROOM,
+  GET_ALL_CONSULTATING_ROOMS
 } from "./types";
 
 //department
@@ -268,6 +272,36 @@ export const update_specialization = (payload, previousData) => {
 export const delete_specialization = payload => {
   return {
     type: DELETE_SPECIALIZATION,
+    payload
+  };
+};
+
+//Consultating Room
+export const add_consultating_room = payload => {
+  return {
+    type: ADD_CONSULTATING_ROOM,
+    payload
+  };
+};
+
+export const get_all_consultating_rooms = payload => {
+  return {
+    type: GET_ALL_CONSULTATING_ROOMS,
+    payload
+  };
+};
+
+export const update_consultating_room = (payload, previousData) => {
+  return {
+    type: UPDATE_CONSULTATING_ROOM,
+    payload,
+    previousData
+  };
+};
+
+export const delete_consultating_room = payload => {
+  return {
+    type: DELETE_CONSULTATING_ROOM,
     payload
   };
 };
@@ -752,6 +786,63 @@ export const deleteSpecialization = data => {
       .delete(`http://178.128.36.29:3000/specializations/${data.id}`)
       .then(response => {
         return dispatch(delete_specialization(data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+//Consultating Room
+export const addConsultatingRoom = data => {
+  return dispatch => {
+    return axios
+      .post(`http://178.128.36.29:3000/consulting-rooms`, {
+        name: data.name
+      })
+      .then(response => {
+        return dispatch(add_consultating_room(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const getAllConsultatingRooms = data => {
+  return dispatch => {
+    return axios
+      .get(`http://178.128.36.29:3000/consulting-rooms`)
+      .then(response => {
+        return dispatch(get_all_consultating_rooms(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const updateConsultatingRoom = data => {
+  return dispatch => {
+    return axios
+      .patch(`http://178.128.36.29:3000/consulting-rooms/${data.id}/update`, {
+        name: data.name
+      })
+      .then(response => {
+        return dispatch(update_consultating_room(response.data, data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const deleteConsultatingRoom = data => {
+  return dispatch => {
+    return axios
+      .delete(`http://178.128.36.29:3000/consulting-rooms/${data.id}`)
+      .then(response => {
+        return dispatch(delete_consultating_room(data));
       })
       .catch(error => {
         console.log(error);
