@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
 
-import LabTest from '../components/LabTest';
-import LabParameter from '../components/LabParameter';
-import LabCategory from '../components/LabCategory';
-import LabGroup from '../components/LabGroup';
+import LabTest from '../../components/LabTest';
+import LabParameter from '../../components/LabParameter';
+import LabCategory from '../../components/LabCategory';
+import LabGroup from '../../components/LabGroup';
 
 const Laboratory = () => {
 	const [ShowLabTest, setLabTest] = useState(true);

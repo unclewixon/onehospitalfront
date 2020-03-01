@@ -8,12 +8,12 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 
-import { request, upload, parseRoster } from '../services/utilities';
-import { API_URI, rosterAPI } from '../services/constants';
-import { loadRoster } from '../actions/hr';
-import waiting from '../assets/images/waiting.gif';
-import { notifyError } from '../services/notify';
-import { notifySuccess } from '../services/notify';
+import { request, upload, parseRoster } from '../../services/utilities';
+import { API_URI, rosterAPI } from '../../services/constants';
+import { loadRoster } from '../../actions/hr';
+import waiting from '../../assets/images/waiting.gif';
+import { notifyError } from '../../services/notify';
+import { notifySuccess } from '../../services/notify';
 
 const DownloadRoster = ({ onHide, downloading, doDownload, departments }) => {
 	const [department, setDepartment] = useState('');

@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 import moment from 'moment';
 
-import PayrollItem from '../components/PayrollItem';
-import { preparePayroll } from '../actions/general';
-import { loadPayroll } from '../actions/hr';
-import { request } from '../services/utilities';
-import { API_URI, payrollAPI } from '../services/constants';
-import waiting from '../assets/images/waiting.gif';
+import PayrollItem from '../../components/PayrollItem';
+import { preparePayroll } from '../../actions/general';
+import { loadPayroll } from '../../actions/hr';
+import { request } from '../../services/utilities';
+import { API_URI, payrollAPI } from '../../services/constants';
+import waiting from '../../assets/images/waiting.gif';
 
 const itemRender = (current, type, originalElement) => {
 	if (type === 'prev') {

@@ -4,70 +4,50 @@ import {confirmAlert} from "react-confirm-alert"
 import Select from "react-select";
 
 import {
-	addLabTest,
-	getAllLabTests,
-	updateLabTest,
-	deleteLabTest,
-	getAllLabTestCategories,
-	getAllLabTestParameters,
-} from '../actions/settings';
+  addLabTest,
+  getAllLabTests,
+  updateLabTest,
+  deleteLabTest,
+  getAllLabTestCategories,
+  getAllLabTestParameters
+} from "../actions/settings";
 
 const LabTest = props => {
-	const initialState = {
-		name: '',
-		category: '',
-		price: '',
-		testType: 'single',
-		edit: false,
-		create: true,
-	};
-	const [{ name, category, price, testType }, setState] = useState(
-		initialState
-	);
-	const [Loading, setLoading] = useState(false);
-	const [{ edit, create }, setSubmitButton] = useState(initialState);
-	const [data, getDataToEdit] = useState(null);
-	const [parameters, setParameter] = useState(null);
-	const [loaded, setLoaded] = useState(false);
+  const initialState = {
+    name: "",
+    category: "",
+    price: "",
+    testType: "single",
+    edit: false,
+    create: true
+  };
+  const [{ name, category, price, testType }, setState] = useState(
+    initialState
+  );
+  const [Loading, setLoading] = useState(false);
+  const [{ edit, create }, setSubmitButton] = useState(initialState);
+  const [data, getDataToEdit] = useState(null);
 
-	const handleMultipleSelectInput = selectedOption => {
-		setParameter(selectedOption);
-	};
+  const [parameters, setParameter] = useState(null);
 
-	const handleInputChange = e => {
-		const { name, value } = e.target;
-		setState(prevState => ({ ...prevState, [name]: value }));
-	};
+  const handleMultipleSelectInput = selectedOption => {
+    setParameter(selectedOption);
+  };
 
-	const onAddLabTest = e => {
-		e.preventDefault();
-		props
-			.addLabTest({ name, price, category, parameters, testType })
-			.then(response => {
-				setState({ ...initialState });
-				setParameter(null);
-			});
-	};
+  const handleInputChange = e => {
+    const { name, value } = e.target;
+    setState(prevState => ({ ...prevState, [name]: value }));
+  };
 
-	const onEditLabTest = e => {
-		setLoading(true);
-		e.preventDefault();
-		props
-			.updateLabTest(
-				{ id: data.id, name, price, category, parameters, testType },
-				data
-			)
-			.then(response => {
-				setState({ ...initialState });
-				setSubmitButton({ create: true, edit: false });
-				setLoading(false);
-			})
-			.catch(error => {
-				setState({ ...initialState });
-				setSubmitButton({ create: true, edit: false });
-				setLoading(false);
-			});
-	};
+  const onAddLabTest = e => {
+    e.preventDefault();
+    props
+      .addLabTest({ name, price, category, parameters, testType })
+      .then(response => {
+        setState({ ...initialState });
+        setParameter(null);
+      });
+  };
 
   const onEditLabTest = e => {
     setLoading(true);
@@ -103,26 +83,22 @@ const LabTest = props => {
     getDataToEdit(data);
   };
 
-	const onDeleteLabTest = data => {
-		console.log(data);
-		props
-			.deleteLabTest(data)
-			.then(data => {
-				console.log(data);
-			})
-			.catch(error => {
-				console.log(error);
-			});
-	};
+  const cancelEditButton = () => {
+    setSubmitButton({ create: true, edit: false });
+    setState({ ...initialState });
+  };
 
-	useEffect(() => {
-		if (!loaded) {
-			props.getAllLabTests();
-			props.getAllLabTestCategories();
-			props.getAllLabTestParameters();
-		}
-		setLoaded(true);
-	}, [loaded, props]);
+  const onDeleteLabTest = data => {
+    console.log(data);
+    props
+      .deleteLabTest(data)
+      .then(data => {
+        console.log(data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 
   const confirmDelete = data => {
     alert(data.id)
@@ -306,18 +282,18 @@ const LabTest = props => {
 };
 
 const mapStateToProps = state => {
-	return {
-		labCategories: state.settings.lab_categories,
-		labParameters: state.settings.lab_parameters,
-		labTests: state.settings.lab_tests,
-	};
+  return {
+    LabCategories: state.settings.lab_categories,
+    LabParameters: state.settings.lab_parameters,
+    LabTests: state.settings.lab_tests
+  };
 };
 
 export default connect(mapStateToProps, {
-	addLabTest,
-	getAllLabTests,
-	updateLabTest,
-	deleteLabTest,
-	getAllLabTestCategories,
-	getAllLabTestParameters,
+  addLabTest,
+  getAllLabTests,
+  updateLabTest,
+  deleteLabTest,
+  getAllLabTestCategories,
+  getAllLabTestParameters
 })(LabTest);

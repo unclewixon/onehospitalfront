@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 // import usFlag from '../assets/images/flags-icons/us.png';
 // import caFlag from '../assets/images/flags-icons/ca.png';
 // import ukFlag from '../assets/images/flags-icons/uk.png';
-import Queue from '../components/Queue';
+import Queue from '../../components/Queue';
 
 class Pharmacy extends Component {
 	render() {

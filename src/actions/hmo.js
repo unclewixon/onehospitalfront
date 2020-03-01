@@ -1,5 +1,6 @@
 import { ADD_HMO, GET_ALL_HMOS, UPDATE_HMO, DELETE_HMO } from "./types";
 import axios from "axios";
+import { API_URI } from "../services/constants";
 
 export const add_hmo = payload => {
   return {
@@ -33,7 +34,7 @@ export const delete_hmo = payload => {
 export const addHmo = data => {
   return dispatch => {
     return axios
-      .post(`http://178.128.36.29:3000/hmos`, data)
+      .post(`${API_URI}/hmos`, data)
       .then(response => {
         return dispatch(add_hmo(response.data));
       })
@@ -46,7 +47,7 @@ export const addHmo = data => {
 export const getAllHmos = data => {
   return dispatch => {
     return axios
-      .get(`http://178.128.36.29:3000/hmos`, {})
+      .get(`${API_URI}/hmos`, {})
       .then(response => {
         return dispatch(get_all_hmo(response.data));
       })
@@ -60,7 +61,7 @@ export const updateHmo = (EditedData, previousData) => {
   console.log(previousData.id, EditedData)
   return dispatch => {
     return axios
-      .patch(`http://178.128.36.29:3000/hmos/${previousData.id}/update`, 
+      .patch(`${API_URI}/hmos/${previousData.id}/update`, 
        EditedData
       )
       .then(response => {
@@ -76,7 +77,7 @@ export const updateHmo = (EditedData, previousData) => {
 export const deleteHmo = data => {
   return dispatch => {
     return axios
-      .delete(`http://178.128.36.29:3000/hmos/${data.id}`)
+      .delete(`${API_URI}/hmos/${data.id}`)
       .then(response => {
         console.log(response.data);
         return dispatch(delete_hmo(data));

@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
 
-import RoleBlock from '../components/RoleBlock';
-import Permission from '../components/Permission';
+import RoleBlock from '../../components/RoleBlock';
+import Permission from '../../components/Permission';
 
 const Roles = () => {
 	const [tab, setTab] = useState('roles');

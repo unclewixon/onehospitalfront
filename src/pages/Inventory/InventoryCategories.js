@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
 
-import InvCategories from '../components/InvCategories';
-import InvSubCategories from '../components/InvSubCategories';
+import InvCategories from '../../components/InvCategories';
+import InvSubCategories from '../../components/InvSubCategories';
 
 const InventoryCategories = () => {
 	const [tab, setTab] = useState('categories');

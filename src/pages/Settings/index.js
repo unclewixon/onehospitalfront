@@ -12,7 +12,7 @@ import LeaveCategory from "./LeaveCategory";
 import ServicesCategory from "./ServiceCategory";
 import Specialization from "./Specialization";
 import ConsultatingRoom from "./ConsultatingRoom";
-import NoMatch from "./NoMatch";
+import NoMatch from "../NoMatch";
 
 const Settings = ({ match, location }) => {
 	const [toggle, setToggle] = useState(false);

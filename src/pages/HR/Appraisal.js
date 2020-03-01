@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import AppraisalItem from '../components/AppraisalItem';
-import { request } from '../services/utilities';
-import { API_URI, staffAPI } from '../services/constants';
-import { loadAppraisals } from '../actions/hr';
+import AppraisalItem from '../../components/AppraisalItem';
+import { request } from '../../services/utilities';
+import { API_URI, staffAPI } from '../../services/constants';
+import { loadAppraisals } from '../../actions/hr';
 
 class Appraisal extends Component {
 	componentDidMount() {

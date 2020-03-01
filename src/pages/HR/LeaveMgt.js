@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import LeaveItem from '../components/LeaveItem';
-import { loadStaffLeave } from '../actions/hr';
-import { request } from '../services/utilities';
-import { API_URI, leaveMgtAPI } from '../services/constants';
+import LeaveItem from '../../components/LeaveItem';
+import { loadStaffLeave } from '../../actions/hr';
+import { request } from '../../services/utilities';
+import { API_URI, leaveMgtAPI } from '../../services/constants';
 
 class LeaveMgt extends Component {
 	componentDidMount() {

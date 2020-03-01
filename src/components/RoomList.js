@@ -113,11 +113,6 @@ const RoomList = props => {
     });
   };
 
-  const cancelEditButton = () => {
-    setSubmitButton({ create: true, edit: false });
-    setState({ ...initialState });
-  };
-
   useEffect(() => {
     props.getAllRooms();
   }, []);
