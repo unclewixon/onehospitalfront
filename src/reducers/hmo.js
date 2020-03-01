@@ -16,7 +16,15 @@ const hmo = (state = INITIAL_STATE, action) => {
     case GET_ALL_HMOS:
       return { ...state, hmo_list: action.payload };
     case UPDATE_HMO:
-      return { ...state, hmo_list: [...state.hmo_list, action.payload] };
+      return {
+        ...state,
+        hmo_list: [
+          ...state.hmo_list.filter(
+            deletedItem => deletedItem.id !== action.previousData.id
+          ),
+          action.payload
+        ]
+      };
     case DELETE_HMO:
       return {
         ...state,
