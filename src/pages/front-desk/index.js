@@ -62,7 +62,7 @@ const FrontDesk = (props) => {
                   New Appointment
                 </button>
               </div>
-              <h6 className="element-header">APPOINTMENTS</h6>
+              <h6 className="element-header mb-3">TODAY's APPOINTMENTS</h6>
               <Appointments />
             </div>
           </div>

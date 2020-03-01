@@ -13,9 +13,9 @@ import ModalPayrollHistory from './ModalPayrollHistory';
 import ModalCurrentPayroll from './ModalCurrentPayroll';
 import ModalPreparePayroll from './ModalPreparePayroll';
 import ModalEditPayroll from './ModalEditPayroll';
-import ModalRegisterPatient from './ModalRegisterPatient';
-import ModalCreateAppointment from './ModalCreateAppointment';
+import AppointmentFormModal from './AppointmentFormModal';
 import ModalViewAppointment from './ModalViewAppointment';
+import PatientFormModal from './PatientFormModal';
 
 const ModalDialogs = ({
 	create_staff,
@@ -51,8 +51,8 @@ const ModalDialogs = ({
 			{current_payroll && <ModalCurrentPayroll />}
 			{prepare_payroll && <ModalPreparePayroll />}
 			{edit_payroll && <ModalEditPayroll />}
-			{register_new_patient && <ModalRegisterPatient />}
-			{create_new_appointment && <ModalCreateAppointment />}
+			{register_new_patient && <PatientFormModal />}
+			{create_new_appointment && <AppointmentFormModal />}
 			{view_appointment_detail && <ModalViewAppointment />}
 		</>
 	);

@@ -3,15 +3,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import debounce from 'lodash.debounce';
 import size from 'lodash.size';
-import template from 'lodash.template';
-import split from 'lodash.split';
 
 import searchingGIF from '../assets/images/searching.gif';
 import { request } from '../services/utilities';
 import { API_URI, searchAPI } from '../services/constants';
 import { toggleProfile } from '../actions/user';
 
-const compiled = template('<span><%= emrid %></span>');
+// const compiled = template('<span><%= emrid %></span>');
 
 class SearchPatient extends Component {
 	constructor(props, context) {
