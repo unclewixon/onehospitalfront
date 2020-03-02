@@ -155,18 +155,13 @@ const Departments = props => {
                       <label className="lighter" for="">
                         Name of Department
                       </label>
-                      <div className="input-group mb-2 mr-sm-2 mb-sm-0">
                         <input
                           className="form-control"
                           placeholder="Enter Department Name..."
                           type="text"
-                          value={description}
+                          value={name}
                           onChange={handleInputChange}
                         />
-                        <div className="input-group-append">
-                          <div className="input-group-text">Dept</div>
-                        </div>
-                      </div>
                     </div>
 
                     <div className="form-group">

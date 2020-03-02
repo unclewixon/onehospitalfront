@@ -7,9 +7,9 @@ import InventoryMenu from './InventoryMenu';
 const AdminMenu = () => {
 	return (
 		<>
-			<HrMenu />
+			{/* <HrMenu /> */}
 			<li className="sub-header">
-				<span>Settings Mgt</span>
+				<span>Configurations</span>
 			</li>
 			<li>
 				<Link to="/settings/roles">
@@ -19,7 +19,7 @@ const AdminMenu = () => {
 					<span>Settings</span>
 				</Link>
 			</li>
-			<InventoryMenu />
+			{/* <InventoryMenu /> */}
 		</>
 	);
 };

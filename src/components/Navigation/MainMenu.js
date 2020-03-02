@@ -54,7 +54,7 @@ class MainMenu extends Component {
 						<div className="logo-label">Deda Hospital</div>
 					</Link>
 				</div>
-				<div className="logged-user-w avatar-inline">
+				{/* <div className="logged-user-w avatar-inline">
 					<div className="logged-user-i">
 						<div className="avatar-w">
 							<img alt="" src={avatar1} />
@@ -64,7 +64,7 @@ class MainMenu extends Component {
 							<div className="logged-user-role">{capitalize(role)}</div>
 						</div>
 					</div>
-				</div>
+				</div> */}
 				{/* <div className="menu-actions">
 					<div className="messages-notifications os-dropdown-trigger os-dropdown-position-right">
 						<i className="os-icon os-icon-mail-14"/>
@@ -77,7 +77,10 @@ class MainMenu extends Component {
 				</div> */}
 				<h1 className="menu-page-header">Page Header</h1>
 				<ul className="main-menu">
-					{/* {role === 'patient' && ( */}
+					{/* {role ==="front-desk" && ( */}
+						<FrontDeskMenu />
+					{/* )}
+					{role === 'patient' && (  */}
 						<PatientMenu />
 					{/* )}
 					{role === 'hr' && ( */}
@@ -87,14 +90,12 @@ class MainMenu extends Component {
 						<InventoryMenu />
 					{/* )}
 					{role === 'doctor' && ( */}
-						<DoctorMenu />
+						{/* <DoctorMenu /> */}
 					{/* )}
 					{role === 'inventory' && ( */}
-						<InventoryMenu />
+						{/* <InventoryMenu /> */}
 					{/* )}
-					{role ==="front-desk" && ( */}
-						<FrontDeskMenu />
-					{/* )}
+					
 					{role === 'admin' && ( */}
 						<AdminMenu />
 					{/* )}a */}

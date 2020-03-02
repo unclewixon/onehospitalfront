@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
 const PatientMenu = () => {
 	return (
-		<>
-			<li className="sub-header">
+		<Fragment>
+			{/* <li className="sub-header">
 				<span>Encounter</span>
 			</li>
 			<li>
@@ -13,7 +13,7 @@ const PatientMenu = () => {
 					</div>
 					<span>Start Encounter</span>
 				</a>
-			</li>
+			</li> */}
 			<li className="sub-header">
 				<span>General</span>
 			</li>
@@ -118,7 +118,7 @@ const PatientMenu = () => {
 					<span>IVF</span>
 				</a>
 			</li>
-		</>
+		</Fragment>
 	);
 };
 

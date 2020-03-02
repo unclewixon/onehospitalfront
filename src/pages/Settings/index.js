@@ -39,9 +39,9 @@ const Settings = ({ match, location }) => {
 						</Link>
 					</li>
 					<li className={page === 'consultation' ? 'active' : ''}>
-						<Link to="/settings/consultation">
+						<Link to="/settings/consulting-rooms">
 							<i className="os-icon os-icon-documents-03"/>
-							<span>Consultation</span>
+							<span>Consulting<br/> Rooms MGT</span>
 						</Link>
 					</li>
 					<li className={page === 'diagnosis' ? 'active' : ''}>
@@ -53,7 +53,7 @@ const Settings = ({ match, location }) => {
 					<li className={page === 'lab-mgt' ? 'active' : ''}>
 						<Link to="/settings/lab-mgt">
 							<i className="os-icon os-icon-ui-44"/>
-							<span>Lab MGT</span>
+							<span>Lab Tests <br/> Management</span>
 						</Link>
 					</li>
 					<li className={page === 'room-mgt' ? 'active' : ''}>
@@ -74,6 +74,12 @@ const Settings = ({ match, location }) => {
 							<span>Services<br/>Categories</span>
 						</Link>
 					</li>
+					<li className={page === 'services-category' ? 'active' : ''}>
+						<Link to="/settings/specializations">
+							<i className="os-icon os-icon-layers"/>
+							<span>Specializations</span>
+						</Link>
+					</li>
 				</ul>
 			</div>
 			<Switch>
@@ -85,6 +91,8 @@ const Settings = ({ match, location }) => {
 				<Route path={`${match.url}/room-mgt`} component={RoomMgmt} />
 				<Route path={`${match.url}/leave-category`} component={LeaveCategory} />
 				<Route path={`${match.url}/services-category`} component={ServicesCategory} />
+				<Route path={`${match.url}/specializations`} component={Specialization} />
+				<Route path={`${match.url}/consulting-rooms`} component={ConsultatingRoom} />
 				<Route component={NoMatch} />
 			</Switch>
 		</div>
