@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { toggleProfile } from '../actions/user';
+import { toggleProfile } from '../../actions/user';
 
 class StaffProfile extends Component {
 	componentDidMount() {

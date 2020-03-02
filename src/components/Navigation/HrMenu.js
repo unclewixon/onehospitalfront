@@ -5,7 +5,7 @@ const HrMenu = () => {
 	return (
 		<>
 			<li className="sub-header">
-				<span>Staff Mgt</span>
+				<span>HR & Payroll</span>
 			</li>
 			<li>
 				<Link to="/staff-mgt/list">

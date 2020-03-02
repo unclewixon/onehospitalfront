@@ -3,7 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 
 import InventoryList from './InventoryList';
 import InventoryCategories from './InventoryCategories';
-import NoMatch from './NoMatch';
+import NoMatch from '../NoMatch';
 
 const Inventory = ({ match }) => {
 	return (

@@ -2,12 +2,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import InventoryItem from '../components/InventoryItem';
-import { createInventory } from '../actions/general';
+import InventoryItem from '../../components/InventoryItem';
+import { createInventory } from '../../actions/general';
 
-import { request } from '../services/utilities';
-import { API_URI, inventoryAPI } from '../services/constants';
-import { loadInventories } from '../actions/inventory';
+import { request } from '../../services/utilities';
+import { API_URI, inventoryAPI } from '../../services/constants';
+import { loadInventories } from '../../actions/inventory';
 
 class InventoryList extends Component {
 	componentDidMount() {

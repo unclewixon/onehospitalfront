@@ -13,18 +13,18 @@ import SSRStorage from './services/storage';
 import { FULLSCREEN_COOKIE, MODE_COOKIE } from './services/constants';
 
 const Login = lazy(() => import('./pages/Login'));
-const Doctor = lazy(() => import('./pages/Doctor'));
+const Doctor = lazy(() => import('./pages/HR/Doctor'));
 const NoMatch = lazy(() => import('./pages/NoMatch'));
-const FrontDesk = lazy(() => import('./pages/front-desk/index'));
-const InPatient = lazy(() => import('./pages/InPatient'));
-const Laboratory = lazy(() => import('./pages/Laboratory'));
-const PatientProfile = lazy(() => import('./pages/PatientProfile'));
-const Pharmacy = lazy(() => import('./pages/Pharmacy'));
-const Vitals = lazy(() => import('./pages/Vitals'));
-const Staff = lazy(() => import('./pages/Staff'));
-const Inventory = lazy(() => import('./pages/Inventory'));
+const FrontDesk = lazy(() => import('./pages/FrontDesk/index'));
+const InPatient = lazy(() => import('./pages/Patient/InPatient'));
+const Laboratory = lazy(() => import('./pages/Settings/Laboratory'));
+const PatientProfile = lazy(() => import('./pages/Patient/PatientProfile'));
+const Pharmacy = lazy(() => import('./pages/Inventory/Pharmacy'));
+const Vitals = lazy(() => import('./pages/Patient/Vitals'));
+const Staff = lazy(() => import('./pages/HR/Appraisal'));
+const Inventory = lazy(() => import('./pages/Inventory/index'));
 const Settings = lazy(() => import('./pages/Settings'));
-const StaffProfile = lazy(() => import('./pages/StaffProfile'));
+const StaffProfile = lazy(() => import('./pages/HR/StaffProfile'));
 const Hmo = lazy(() => import('./pages/Hmo'));
 
 class App extends Component {

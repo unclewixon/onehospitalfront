@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { confirmAlert } from "react-confirm-alert";
 import {
-  addSpecialization,
-  getAllSpecialization,
-  updateSpecialization,
-  deleteSpecialization
-} from "../actions/settings";
+  addConsultatingRoom,
+  getAllConsultatingRooms,
+  updateConsultatingRoom,
+  deleteConsultatingRoom
+} from "../../actions/settings";
 
-const Specialization = props => {
+const ConsultatingRoom = props => {
   const initialState = {
     name: "",
     save: true,
@@ -25,11 +25,11 @@ const Specialization = props => {
     setState(prevState => ({ ...prevState, [name]: value }));
   };
 
-  const onAddSpecialization = e => {
+  const onAddConsultatingRoom = e => {
     e.preventDefault();
     setLoading(true);
     props
-      .addSpecialization({ name })
+      .addConsultatingRoom({ name })
       .then(response => {
         setLoading(false);
         setState({ ...initialState });
@@ -39,11 +39,11 @@ const Specialization = props => {
       });
   };
 
-  const onEditSpecialization = e => {
+  const onEditConsultatingRoom = e => {
     setLoading(true);
     e.preventDefault();
     props
-      .updateSpecialization({ id: data.id, name }, data)
+      .updateConsultatingRoom({ id: data.id, name }, data)
       .then(response => {
         setState({ ...initialState });
         setSubmitButton({ save: true, edit: false });
@@ -67,9 +67,9 @@ const Specialization = props => {
     getDataToEdit(data);
   };
 
-  const onDeleteSpecialization = data => {
+  const onDeleteConsultatingRoom = data => {
     props
-      .deleteSpecialization(data)
+      .deleteConsultatingRoom(data)
       .then(data => {
         setLoading(false);
         console.log(data);
@@ -99,7 +99,7 @@ const Specialization = props => {
                 className="btn btn-danger"
                 style={{ margin: 10 }}
                 onClick={() => {
-                  onDeleteSpecialization(data);
+                  onDeleteConsultatingRoom(data);
                   onClose();
                 }}
               >
@@ -119,7 +119,7 @@ const Specialization = props => {
 
   useEffect(() => {
     console.log(save, edit);
-    props.getAllSpecialization();
+    props.getAllConsultatingRooms();
   }, []);
   return (
     <div className="content-i">
@@ -134,7 +134,7 @@ const Specialization = props => {
                     className="nav-link active"
                     data-toggle="tab"
                   >
-                    Specialization
+                    Consultating Room
                   </a>
                 </li>
               </ul>
@@ -144,7 +144,7 @@ const Specialization = props => {
           <div className="row">
             <div className="col-lg-8">
               <div className="row">
-                {props.Specializations.map(Specialization => {
+                {props.ConsultatingRooms.map(ConsultatingRoom => {
                   return (
                     <div className="col-lg-4 col-xxl-3">
                       <div className="pt-3">
@@ -153,20 +153,20 @@ const Specialization = props => {
                             <div className="pi-settings os-dropdown-trigger">
                               <i
                                 className="os-icon os-icon-ui-49"
-                                onClick={() => onClickEdit(Specialization)}
+                                onClick={() => onClickEdit(ConsultatingRoom)}
                               ></i>
                             </div>
                             <div className="pi-settings os-dropdown-trigger">
                               <i
                                 className="os-icon os-icon-ui-15"
-                                onClick={() => confirmDelete(Specialization)}
+                                onClick={() => confirmDelete(ConsultatingRoom)}
                               ></i>
                             </div>
                           </div>
                           <div className="pi-body">
                             <div className="pi-info">
                               <div className="h6 pi-name">
-                                {Specialization.name}
+                                {ConsultatingRoom.name}
                               </div>
                             </div>
                           </div>
@@ -181,9 +181,13 @@ const Specialization = props => {
               <div className="element-wrapper">
                 <div className="element-box">
                   <form
-                    onSubmit={edit ? onEditSpecialization : onAddSpecialization}
+                    onSubmit={
+                      edit ? onEditConsultatingRoom : onAddConsultatingRoom
+                    }
                   >
-                    <h5 className="element-box-header">Add New</h5>
+                    <h5 className="element-box-header">
+                      Add New Consultating room
+                    </h5>
                     <div className="form-group">
                       <label className="lighter" for="">
                         Name
@@ -191,7 +195,7 @@ const Specialization = props => {
                       <div className="input-group mb-2 mr-sm-2 mb-sm-0">
                         <input
                           className="form-control"
-                          placeholder="Enter leave type"
+                          placeholder="Enter Consultating Room"
                           type="text"
                           name="name"
                           value={name}
@@ -199,21 +203,6 @@ const Specialization = props => {
                         />
                       </div>
                     </div>
-                    {/* <div className="form-group">
-                      <label className="lighter" for="">
-                        Leave duration
-                      </label>
-                      <div className="input-group mb-2 mr-sm-2 mb-sm-0">
-                        <input
-                          className="form-control"
-                          placeholder="Enter leave duration"
-                          type="text"
-                          name="duration"
-                          value={duration}
-                          onChange={handleInputChange}
-                        />
-                      </div>
-                    </div> */}
 
                     <div className="form-buttons-w text-right compact">
                       {save && (
@@ -264,12 +253,12 @@ const Specialization = props => {
 
 const mapStateToProps = state => {
   return {
-    Specializations: state.settings.specializations
+    ConsultatingRooms: state.settings.consultating_room
   };
 };
 export default connect(mapStateToProps, {
-  addSpecialization,
-  getAllSpecialization,
-  updateSpecialization,
-  deleteSpecialization
-})(Specialization);
+  addConsultatingRoom,
+  getAllConsultatingRooms,
+  updateConsultatingRoom,
+  deleteConsultatingRoom
+})(ConsultatingRoom);

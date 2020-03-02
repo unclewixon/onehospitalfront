@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
 
-import RoomCategory from '../components/RoomCategory';
-import RoomList from '../components/RoomList';
+import RoomCategory from '../../components/RoomCategory';
+import RoomList from '../../components/RoomList';
 
 const RoomMgmt = () => {
 	const [ShowRoomCategory, SetRoomCategory] = useState(true);

@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
 
-import ServiceCategoryList from '../components/ServiceCategoryList';
-import ServicesList from '../components/ServicesList';
+import ServiceCategoryList from '../../components/ServiceCategoryList';
+import ServicesList from '../../components/ServicesList';
 
 const ServicesCategory = () => {
 	const [ShowServiceCategoryList, setServiceCategoryList] = useState(true);

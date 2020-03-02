@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import { API_URI } from '../services/constants';
 import {
   CREATE_DEPARTMENT,
   GET_ALL_DEPARTMENTS,
@@ -310,7 +310,7 @@ export const delete_consultating_room = payload => {
 export const createDepartment = data => {
 	return dispatch => {
 		return axios
-			.post(`http://178.128.36.29:3000/departments`, {
+			.post(`${API_URI}/departments`, {
 				name: data.name,
 				description: data.description,
 			})
@@ -326,7 +326,7 @@ export const createDepartment = data => {
 export const getAllDepartments = () => {
 	return dispatch => {
 		return axios
-			.get(`http://178.128.36.29:3000/departments`)
+			.get(`${API_URI}/departments`)
 			.then(response => {
 				return dispatch(get_all_department(response.data));
 			})
@@ -339,7 +339,7 @@ export const getAllDepartments = () => {
 export const updateDepartment = data => {
 	return dispatch => {
 		return axios
-			.put(`http://178.128.36.29:3000/departments/${data.id}`, {
+			.put(`${API_URI}/departments/${data.id}`, {
 				name: data.name,
 				description: data.description,
 			})
@@ -355,7 +355,7 @@ export const updateDepartment = data => {
 export const deleteDepartment = data => {
 	return dispatch => {
 		return axios
-			.delete(`http://178.128.36.29:3000/departments/${data.id}`, {
+			.delete(`${API_URI}/departments/${data.id}`, {
 				name: data.name,
 				description: data.description,
 			})
@@ -373,7 +373,7 @@ export const addRoom = data => {
 	console.log(data, 'from action');
 	return dispatch => {
 		return axios
-			.post(`http://178.128.36.29:3000/rooms`, {
+			.post(`${API_URI}/rooms`, {
 				name: data.name,
 				status: data.status,
 				floor: data.floor,
@@ -391,7 +391,7 @@ export const addRoom = data => {
 export const getAllRooms = () => {
 	return dispatch => {
 		return axios
-			.get(`http://178.128.36.29:3000/rooms`)
+			.get(`${API_URI}/rooms`)
 			.then(response => {
 				return dispatch(get_all_room(response.data));
 			})
@@ -404,7 +404,7 @@ export const getAllRooms = () => {
 export const updateRoom = data => {
 	return dispatch => {
 		return axios
-			.patch(`http://178.128.36.29:3000/rooms/${data.id}/update`, {
+			.patch(`${API_URI}/rooms/${data.id}/update`, {
 				name: data.name,
 				status: data.status,
 				floor: data.status,
@@ -422,7 +422,7 @@ export const updateRoom = data => {
 export const deleteRoom = data => {
 	return dispatch => {
 		return axios
-			.delete(`http://178.128.36.29:3000/rooms/${data.id}`)
+			.delete(`${API_URI}/rooms/${data.id}`)
 			.then(response => {
 				return dispatch(delete_room(data));
 			})
@@ -435,7 +435,7 @@ export const deleteRoom = data => {
 export const addRoomCategory = data => {
 	return dispatch => {
 		return axios
-			.post(`http://178.128.36.29:3000/rooms/categories`, {
+			.post(`${API_URI}/rooms/categories`, {
 				name: data.name,
 				price: data.price,
 				discount: data.discount,
@@ -452,7 +452,7 @@ export const addRoomCategory = data => {
 export const getAllRoomCategories = () => {
 	return dispatch => {
 		return axios
-			.get(`http://178.128.36.29:3000/rooms/categories`)
+			.get(`${API_URI}/rooms/categories`)
 			.then(response => {
 				return dispatch(get_all_room_category(response.data));
 			})
@@ -466,7 +466,7 @@ export const updateRoomCategory = data => {
 	console.log(data);
 	return dispatch => {
 		return axios
-			.patch(`http://178.128.36.29:3000/rooms/categories/${data.id}/update`, {
+			.patch(`${API_URI}/rooms/categories/${data.id}/update`, {
 				name: data.name,
 				price: data.price,
 				discount: data.discount,
@@ -483,7 +483,7 @@ export const updateRoomCategory = data => {
 export const deleteRoomCategory = data => {
 	return dispatch => {
 		return axios
-			.delete(`http://178.128.36.29:3000/rooms/categories/${data.id}`)
+			.delete(`${API_URI}/rooms/categories/${data.id}`)
 			.then(response => {
 				return dispatch(delete_room_category(data));
 			})
@@ -498,7 +498,7 @@ export const addLabTest = data => {
 	console.log(data);
 	return dispatch => {
 		return axios
-			.post(`http://178.128.36.29:3000/lab-tests/categories`, {
+			.post(`${API_URI}/lab-tests/categories`, {
 				name: data.name,
 				price: data.name,
 				lab_category_id: data.category,
@@ -517,7 +517,7 @@ export const addLabTest = data => {
 export const getAllLabTests = () => {
 	return dispatch => {
 		return axios
-			.get(`http://178.128.36.29:3000/lab-tests/categories`)
+			.get(`${API_URI}/lab-tests/categories`)
 			.then(response => {
 				return dispatch(get_all_lab_tests(response.data));
 			})
@@ -530,7 +530,7 @@ export const getAllLabTests = () => {
 export const updateLabTest = data => {
   return dispatch => {
     return axios
-      .patch(`http://178.128.36.29:3000/lab-tests/${data.id}/update`, {
+      .patch(`${API_URI}/lab-tests/${data.id}/update`, {
         name: data.name,
 
         category: data.category,
@@ -549,7 +549,7 @@ export const updateLabTest = data => {
 export const deleteLabTest = data => {
 	return dispatch => {
 		return axios
-			.delete(`http://178.128.36.29:3000/lab-tests/${data.id}`)
+			.delete(`${API_URI}/lab-tests/${data.id}`)
 			.then(response => {
 				return dispatch(delete_lab_test(data));
 			})
@@ -562,7 +562,7 @@ export const deleteLabTest = data => {
 export const addLabTestCategory = data => {
 	return dispatch => {
 		return axios
-			.post(`http://178.128.36.29:3000/lab-tests/categories`, {
+			.post(`${API_URI}/lab-tests/categories`, {
 				name: data.name,
 			})
 			.then(response => {
@@ -577,7 +577,7 @@ export const addLabTestCategory = data => {
 export const getAllLabTestCategories = () => {
 	return dispatch => {
 		return axios
-			.get(`http://178.128.36.29:3000/lab-tests/categories`)
+			.get(`${API_URI}/lab-tests/categories`)
 			.then(response => {
 				return dispatch(get_all_lab_test_categories(response.data));
 			})
@@ -591,7 +591,7 @@ export const updateLabTestCategory = data => {
   return dispatch => {
     return axios
       .patch(
-        `http://178.128.36.29:3000/lab-tests/categories/${data.id}/update`,
+        `${API_URI}/lab-tests/categories/${data.id}/update`,
         {
           name: data.name
         }
@@ -608,7 +608,7 @@ export const updateLabTestCategory = data => {
 export const deleteLabTestCategory = data => {
 	return dispatch => {
 		return axios
-			.delete(`http://178.128.36.29:3000/lab-tests/categories/${data.id}`)
+			.delete(`${API_URI}/lab-tests/categories/${data.id}`)
 			.then(response => {
 				return dispatch(delete_lab_test_category(data));
 			})
@@ -621,7 +621,7 @@ export const deleteLabTestCategory = data => {
 export const addLabTestParameter = data => {
 	return dispatch => {
 		return axios
-			.post(`http://178.128.36.29:3000/lab-tests/parameters`, {
+			.post(`${API_URI}/lab-tests/parameters`, {
 				name: data.name,
 			})
 			.then(response => {
@@ -636,7 +636,7 @@ export const addLabTestParameter = data => {
 export const getAllLabTestParameters = () => {
 	return dispatch => {
 		return axios
-			.get(`http://178.128.36.29:3000/lab-tests/parameters`)
+			.get(`${API_URI}/lab-tests/parameters`)
 			.then(response => {
 				return dispatch(get_all_lab_test_parameters(response.data));
 			})
@@ -650,7 +650,7 @@ export const updateLabTestParameter = data => {
   return dispatch => {
     return axios
       .patch(
-        `http://178.128.36.29:3000/lab-tests/parameters/${data.id}/update`,
+        `${API_URI}/lab-tests/parameters/${data.id}/update`,
         {
           name: data.name
         }
@@ -667,7 +667,7 @@ export const updateLabTestParameter = data => {
 export const deleteLabTestParameters = data => {
 	return dispatch => {
 		return axios
-			.delete(`http://178.128.36.29:3000/lab-tests/parameters/${data.id}`)
+			.delete(`${API_URI}/lab-tests/parameters/${data.id}`)
 			.then(response => {
 				return dispatch(delete_lab_test_parameter(data));
 			})
@@ -681,7 +681,7 @@ export const deleteLabTestParameters = data => {
 export const addLeaveCategory = data => {
 	return dispatch => {
 		return axios
-			.post(`http://178.128.36.29:3000/leave-category`, {
+			.post(`${API_URI}/leave-category`, {
 				name: data.name,
 				duration: data.name,
 			})
@@ -697,7 +697,7 @@ export const addLeaveCategory = data => {
 export const getAllLeaveCategory = data => {
 	return dispatch => {
 		return axios
-			.get(`http://178.128.36.29:3000/leave-category`)
+			.get(`${API_URI}/leave-category`)
 			.then(response => {
 				return dispatch(get_all_leave_category(response.data));
 			})
@@ -710,7 +710,7 @@ export const getAllLeaveCategory = data => {
 export const updateLeaveCategory = data => {
 	return dispatch => {
 		return axios
-			.patch(`http://178.128.36.29:3000/leave-category/${data.id}/update`, {
+			.patch(`${API_URI}/leave-category/${data.id}/update`, {
 				name: data.name,
 				duration: data.duration,
 			})
@@ -726,7 +726,7 @@ export const updateLeaveCategory = data => {
 export const deleteLeaveCategory = data => {
 	return dispatch => {
 		return axios
-			.delete(`http://178.128.36.29:3000/leave-category/${data.id}`)
+			.delete(`${API_URI}/leave-category/${data.id}`)
 			.then(response => {
 				return dispatch(delete_leave_category(data));
 			})
@@ -740,7 +740,7 @@ export const deleteLeaveCategory = data => {
 export const addSpecialization = data => {
   return dispatch => {
     return axios
-      .post(`http://178.128.36.29:3000/specializations`, {
+      .post(`${API_URI}/specializations`, {
         name: data.name
       })
       .then(response => {
@@ -755,7 +755,7 @@ export const addSpecialization = data => {
 export const getAllSpecialization = data => {
   return dispatch => {
     return axios
-      .get(`http://178.128.36.29:3000/specializations`)
+      .get(`${API_URI}/specializations`)
       .then(response => {
         return dispatch(get_all_specializations(response.data));
       })
@@ -768,7 +768,7 @@ export const getAllSpecialization = data => {
 export const updateSpecialization = data => {
   return dispatch => {
     return axios
-      .patch(`http://178.128.36.29:3000/specializations/${data.id}/update`, {
+      .patch(`${API_URI}/specializations/${data.id}/update`, {
         name: data.name
       })
       .then(response => {
@@ -783,7 +783,7 @@ export const updateSpecialization = data => {
 export const deleteSpecialization = data => {
   return dispatch => {
     return axios
-      .delete(`http://178.128.36.29:3000/specializations/${data.id}`)
+      .delete(`${API_URI}/specializations/${data.id}`)
       .then(response => {
         return dispatch(delete_specialization(data));
       })
@@ -797,7 +797,7 @@ export const deleteSpecialization = data => {
 export const addConsultatingRoom = data => {
   return dispatch => {
     return axios
-      .post(`http://178.128.36.29:3000/consulting-rooms`, {
+      .post(`${API_URI}/consulting-rooms`, {
         name: data.name
       })
       .then(response => {
@@ -812,7 +812,7 @@ export const addConsultatingRoom = data => {
 export const getAllConsultatingRooms = data => {
   return dispatch => {
     return axios
-      .get(`http://178.128.36.29:3000/consulting-rooms`)
+      .get(`${API_URI}/consulting-rooms`)
       .then(response => {
         return dispatch(get_all_consultating_rooms(response.data));
       })
@@ -825,7 +825,7 @@ export const getAllConsultatingRooms = data => {
 export const updateConsultatingRoom = data => {
   return dispatch => {
     return axios
-      .patch(`http://178.128.36.29:3000/consulting-rooms/${data.id}/update`, {
+      .patch(`${API_URI}/consulting-rooms/${data.id}/update`, {
         name: data.name
       })
       .then(response => {
@@ -840,7 +840,7 @@ export const updateConsultatingRoom = data => {
 export const deleteConsultatingRoom = data => {
   return dispatch => {
     return axios
-      .delete(`http://178.128.36.29:3000/consulting-rooms/${data.id}`)
+      .delete(`${API_URI}/consulting-rooms/${data.id}`)
       .then(response => {
         return dispatch(delete_consultating_room(data));
       })

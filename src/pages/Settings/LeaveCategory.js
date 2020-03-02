@@ -7,7 +7,7 @@ import {
 	getAllLeaveCategory,
 	updateLeaveCategory,
 	deleteLeaveCategory,
-} from '../actions/settings';
+} from '../../actions/settings';
 
 const LeaveCategory = props => {
 	const initialState = {
@@ -137,7 +137,7 @@ return (
           <div className="row">
             <div className="col-lg-8">
               <div className="row">
-                {props.LeaveCategories.map(LeaveCategory => {
+                {props.leaveCategories.map(leaveCategory => {
                   return (
                     <div className="col-lg-4 col-xxl-3">
                       <div className="pt-3">
@@ -146,23 +146,23 @@ return (
                             <div className="pi-settings os-dropdown-trigger">
                               <i
                                 className="os-icon os-icon-ui-49"
-                                onClick={() => onClickEdit(LeaveCategory)}
+                                onClick={() => onClickEdit(leaveCategory)}
                               ></i>
                             </div>
                             <div className="pi-settings os-dropdown-trigger">
                               <i
                                 className="os-icon os-icon-ui-15"
-                                onClick={() => confirmDelete(LeaveCategory)}
+                                onClick={() => confirmDelete(leaveCategory)}
                               ></i>
                             </div>
                           </div>
                           <div className="pi-body">
                             <div className="pi-info">
                               <div className="h6 pi-name">
-                                {LeaveCategory.name}
+                                {leaveCategory.name}
                               </div>
                               <div className="pi-sub">
-                                {LeaveCategory.duration}
+                                {leaveCategory.duration}
                               </div>
                             </div>
                           </div>

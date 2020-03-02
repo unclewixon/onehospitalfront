@@ -4,7 +4,7 @@ import { closeModals } from '../../actions/general';
 import PatientForm from '../PatientForm';
 import PatientNOKForm from '../PatientNOKForm';
 
-class ModalRegisterNewPatient extends Component {
+class PatientFormModal extends Component {
 	
 	componentDidMount() {
 		document.body.classList.add('modal-open');
@@ -65,4 +65,4 @@ const mapStateToProps = (state, ownProps) => {
 	}
 };
 
-export default connect(mapStateToProps, { closeModals })(ModalRegisterNewPatient);
+export default connect(mapStateToProps, { closeModals })(PatientFormModal);

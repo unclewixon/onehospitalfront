@@ -8,7 +8,7 @@ class Queue extends Component {
 	
 	render() {
 		return (
-			<div className="element-wrapper compact">
+			<div className="element-wrapper compact pt-3">
 				<h6 className="element-header">Queue</h6>
 				<div className="element-box-tp">
 					<div className="todo-list">
