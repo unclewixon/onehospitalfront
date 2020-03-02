@@ -21,7 +21,7 @@ const Laboratory = lazy(() => import('./pages/Settings/Laboratory'));
 const PatientProfile = lazy(() => import('./pages/Patient/PatientProfile'));
 const Pharmacy = lazy(() => import('./pages/Inventory/Pharmacy'));
 const Vitals = lazy(() => import('./pages/Patient/Vitals'));
-const Staff = lazy(() => import('./pages/HR/Appraisal'));
+const Staff = lazy(() => import('./pages/HR/index'));
 const Inventory = lazy(() => import('./pages/Inventory/index'));
 const Settings = lazy(() => import('./pages/Settings'));
 const StaffProfile = lazy(() => import('./pages/HR/StaffProfile'));
@@ -61,7 +61,7 @@ class App extends Component {
 												<Route path="/lab" component={Laboratory} />
 												<Route path="/pharmacy" component={Pharmacy} />
 												<Route path="/vitals" component={Vitals} />
-												<Route path="/staff-mgt" component={Staff} />
+												<Route path="/hr" component={Staff} />
 												<Route path="/inventory" component={Inventory} />
 												<Route path="/settings" component={Settings} />
 												<Route path="/hmo" component={Hmo} />

@@ -8,7 +8,7 @@ const HrMenu = () => {
 				<span>HR & Payroll</span>
 			</li>
 			<li>
-				<Link to="/staff-mgt/list">
+				<Link to="/hr/list">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers"/>
 					</div>
@@ -16,7 +16,7 @@ const HrMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/staff-mgt/appraisal">
+				<Link to="/hr/appraisal">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers"/>
 					</div>
@@ -24,7 +24,7 @@ const HrMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/staff-mgt/payroll">
+				<Link to="/hr/payroll">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers"/>
 					</div>
@@ -32,7 +32,7 @@ const HrMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/staff-mgt/leave-mgt">
+				<Link to="/hr/leave-mgt">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers"/>
 					</div>
@@ -40,7 +40,7 @@ const HrMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/staff-mgt/roster">
+				<Link to="/hr/roster">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers"/>
 					</div>
