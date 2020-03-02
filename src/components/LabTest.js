@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import {confirmAlert} from "react-confirm-alert"
+import { confirmAlert } from "react-confirm-alert";
 import Select from "react-select";
 
 import {
@@ -101,7 +101,6 @@ const LabTest = props => {
   };
 
   const confirmDelete = data => {
-    alert(data.id)
     confirmAlert({
       customUI: ({ onClose }) => {
         return (
@@ -132,7 +131,6 @@ const LabTest = props => {
       }
     });
   };
-
 
   useEffect(() => {
     props.getAllLabTests();
