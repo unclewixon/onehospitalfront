@@ -377,7 +377,7 @@ export const addRoom = data => {
 				name: data.name,
 				status: data.status,
 				floor: data.floor,
-				category: data.category,
+				room_category_id: data.category,
 			})
 			.then(response => {
 				return dispatch(add_room(response.data));
@@ -677,7 +677,7 @@ export const addLeaveCategory = data => {
 		return axios
 			.post(`${API_URI}/leave-category`, {
 				name: data.name,
-				duration: data.name,
+				duration: data.duration,
 			})
 			.then(response => {
 				return dispatch(add_leave_category(response.data));

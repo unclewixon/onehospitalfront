@@ -101,6 +101,7 @@ const LabTest = props => {
 			});
 	};
 
+<<<<<<< HEAD
 	const confirmDelete = data => {
 		alert(data.id);
 		confirmAlert({
@@ -145,8 +146,50 @@ const LabTest = props => {
 
 	const options = props.LabParameters.map(Par => {
 		return { value: Par.name, label: Par.name };
+=======
+  const confirmDelete = data => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className="custom-ui">
+            <h1>Are you sure?</h1>
+            <p>You want to delete this remove ?</p>
+            <div style={{}}>
+              <button
+                className="btn btn-primary"
+                style={{ margin: 10 }}
+                onClick={onClose}
+              >
+                No
+              </button>
+              <button
+                className="btn btn-danger"
+                style={{ margin: 10 }}
+                onClick={() => {
+                  onDeleteLabTest(data);
+                  onClose();
+                }}
+              >
+                Yes, Delete it!
+              </button>
+            </div>
+          </div>
+        );
+      }
+    });
+  };
+
+  useEffect(() => {
+    props.getAllLabTests();
+    props.getAllLabTestCategories();
+    props.getAllLabTestParameters();
+  }, []);
+
+  const options = props.LabParameters.map(Par => {
+    return { value: Par.name, label: Par.name };
+>>>>>>> 166eee3b8b178b1f42a9fc4a1e9a60808903c306
   });
-  
+
 	return (
 		<div className="row">
 			<div className="col-lg-8">
