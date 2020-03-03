@@ -7,7 +7,7 @@ const SlidingPane = ({ isOpen, title, children }) => {
 			ariaHideApp={false}
 			className="slide-pane slide-pane_from_right"
 			style={{
-				content: { width: '90%' },
+				content: { width: '96%' },
 			}}
 			overlayClassName="slide-pane__overlay"
 			closeTimeoutMS={500}
