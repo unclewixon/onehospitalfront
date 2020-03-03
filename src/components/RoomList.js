@@ -122,12 +122,9 @@ const RoomList = props => {
 		});
 	};
 
-	useEffect(() => {
-		if (!loaded) {
-			props.getAllRooms();
-		}
-		setLoaded(true);
-  }, [props, loaded]);
+  useEffect(() => {
+    props.getAllRooms();
+  }, []);
 
 	return (
 		<div className="row">
