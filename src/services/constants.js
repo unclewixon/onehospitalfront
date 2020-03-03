@@ -19,6 +19,21 @@ export const departmentAPI = '/departments';
 export const utilityAPI = '/utility';
 export const payrollAPI = '/hr/payroll';
 
+export const months = [
+	'January',
+	'February',
+	'March',
+	'April',
+	'May',
+	'June',
+	'July',
+	'August',
+	'September',
+	'October',
+	'November',
+	'December',
+];
+
 export const ethnicities = [
     {value: 'Igbo', label: 'Igbo'},
     {value: 'Hausa', label: 'Hausa'},

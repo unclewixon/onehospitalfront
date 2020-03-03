@@ -4,9 +4,9 @@ import capitalize from 'lodash.capitalize';
 import $ from 'jquery';
 
 import avatar1 from '../../assets/images/avatar1.jpg';
-import PatientMenu from './PatientMenu';
+// import PatientMenu from './PatientMenu';
 import HrMenu from './HrMenu';
-import DoctorMenu from './DoctorMenu';
+// import DoctorMenu from './DoctorMenu';
 import InventoryMenu from './InventoryMenu';
 import AdminMenu from './AdminMenu';
 import FrontDeskMenu from "./FrontDeskMenu";
@@ -54,7 +54,7 @@ class MainMenu extends Component {
 						<div className="logo-label">Deda Hospital</div>
 					</Link>
 				</div>
-				{/* <div className="logged-user-w avatar-inline">
+				<div className="logged-user-w avatar-inline">
 					<div className="logged-user-i">
 						<div className="avatar-w">
 							<img alt="" src={avatar1} />
@@ -64,7 +64,7 @@ class MainMenu extends Component {
 							<div className="logged-user-role">{capitalize(role)}</div>
 						</div>
 					</div>
-				</div> */}
+				</div>
 				{/* <div className="menu-actions">
 					<div className="messages-notifications os-dropdown-trigger os-dropdown-position-right">
 						<i className="os-icon os-icon-mail-14"/>
@@ -80,22 +80,12 @@ class MainMenu extends Component {
 					{/* {role ==="front-desk" && ( */}
 						<FrontDeskMenu />
 					{/* )}
-					{role === 'patient' && (  */}
-						<PatientMenu />
-					{/* )}
 					{role === 'hr' && ( */}
 						<HrMenu />
 					{/* )}
-					{role === 'hr' && ( */}
+					{role === 'inventory' && ( */}
 						<InventoryMenu />
 					{/* )}
-					{role === 'doctor' && ( */}
-						{/* <DoctorMenu /> */}
-					{/* )}
-					{role === 'inventory' && ( */}
-						{/* <InventoryMenu /> */}
-					{/* )}
-					
 					{role === 'admin' && ( */}
 						<AdminMenu />
 					{/* )}a */}

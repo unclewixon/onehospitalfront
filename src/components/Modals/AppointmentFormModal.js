@@ -1,11 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import { closeModals } from '../../actions/general';
 import { request } from '../../services/utilities';
 import { API_URI } from '../../services/constants';
-import * as moment from 'moment';
+import moment from 'moment';
 import { useForm } from 'react-hook-form';
 
 const AppointmentFormModal = (props) => {

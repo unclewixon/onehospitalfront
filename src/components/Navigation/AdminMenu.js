@@ -1,13 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import HrMenu from './HrMenu';
-import InventoryMenu from './InventoryMenu';
-
 const AdminMenu = () => {
 	return (
 		<>
-			{/* <HrMenu /> */}
 			<li className="sub-header">
 				<span>Configurations</span>
 			</li>
@@ -19,7 +15,6 @@ const AdminMenu = () => {
 					<span>Settings</span>
 				</Link>
 			</li>
-			{/* <InventoryMenu /> */}
 		</>
 	);
 };

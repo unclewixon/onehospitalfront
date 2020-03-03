@@ -5,6 +5,8 @@ import {
 	LOAD_DUTY_ROSTERS,
 	LOAD_PAYROLL,
 	ADD_STAFF,
+	LOAD_UNPAID_PAYROLL,
+	LOAD_PAYROLL_HISTORY,
 } from './types';
 
 export const loadStaff = data => {
@@ -42,9 +44,24 @@ export const loadRoster = data => {
 	};
 };
 
+// payroll
 export const loadPayroll = data => {
 	return {
 		type: LOAD_PAYROLL,
+		payload: data,
+	};
+};
+
+export const loadUnpaidPayroll = data => {
+	return {
+		type: LOAD_UNPAID_PAYROLL,
+		payload: data,
+	};
+};
+
+export const loadPayrollHistory = data => {
+	return {
+		type: LOAD_PAYROLL_HISTORY,
 		payload: data,
 	};
 };

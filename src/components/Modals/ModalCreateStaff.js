@@ -92,6 +92,9 @@ const validate = values => {
 	if (!values.next_of_kin_address) {
         errors.next_of_kin_address = 'enter next of kin address';
     }
+	if (!values.specialization_id) {
+        errors.specialization_id = 'select your specialization';
+    }
     return errors;
 };
 
@@ -158,7 +161,7 @@ class ModalCreateStaff extends Component {
 	};
 
 	render() {
-		const { error, handleSubmit, roles, departments, banks, countries } = this.props;
+		const { error, handleSubmit, roles, departments, banks, countries, specializations } = this.props;
 		const { submitting, date_of_birth, next_of_kin_dob, employment_start_date, states } = this.state;
 		const _countries = countries.map(c => ({id: c.id, name: c.name}));
 		const sortedCountries = orderBy(_countries, ['name'], ['asc']);
@@ -388,15 +391,16 @@ class ModalCreateStaff extends Component {
 												placeholder="Enter job title"
 											/>
 										</div>
-										{/* <div className="col-sm-4">
-											<div className="form-group">
-												<label htmlFor="">Specialization</label>
-												<select className="form-control">
-													<option>Consultant Gnyae</option>
-													<option>Consulant Pediatrics</option>
-												</select>
-											</div>
-										</div> */}
+										<div className="col-sm-4">
+											<Field
+												id="specialization_id"
+												name="specialization_id"
+												component={renderSelect}
+												label="Specialization"
+												placeholder="Select Specialization"
+												data={specializations}
+											/>
+										</div>
 										<div className="col-sm-4">
 											<Field
 												id="pension_mngr"
@@ -610,9 +614,10 @@ const mapStateToProps = (state, ownProps) => {
 			annual_salary: 0,
 		},
 		roles: state.role.roles,
-		departments: state.setting.departments,
+		departments: state.settings.departments,
 		countries: state.utility.countries,
 		banks: state.utility.banks,
+		specializations: state.settings.specializations,
 	}
 };
 

@@ -80,7 +80,7 @@ class DepartmentList extends Component {
 
 const mapStateToProps = state => {
 	return {
-		departments: state.settings.department,
+		departments: state.settings.departments,
 	};
 };
 
