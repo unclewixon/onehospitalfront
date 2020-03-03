@@ -3,12 +3,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 import moment from 'moment';
+import padLeft from 'pad-left';
 
 import PayrollItem from '../../components/PayrollItem';
 import { preparePayroll } from '../../actions/general';
 import { loadPayroll } from '../../actions/hr';
 import { request } from '../../services/utilities';
-import { API_URI, payrollAPI } from '../../services/constants';
+import { API_URI, payrollAPI, months } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 
 const itemRender = (current, type, originalElement) => {
@@ -24,7 +25,8 @@ const pageSize = 10;
 
 class Payroll extends Component {
 	state = {
-		period: null,
+		year: '',
+		month: '',
 		department_id: '',
 		filtering: false,
 	};
@@ -40,10 +42,12 @@ class Payroll extends Component {
 
 	componentDidMount() {
 		const { departments } = this.props;
-		const period = moment().format('YYYY-MM');
+		const month = moment().subtract(1, 'months').format('MM');
+		const year = moment().subtract(1, 'months').format('YYYY');
+		const period = `${year}-${month}`;
 		const department = departments.length > 0 ? departments[0] : null;
 		if (department) {
-			this.setState({ department_id: department.id, period });
+			this.setState({ department_id: department.id, month, year  });
 			this.fetchPayroll(period, department.id);
 		}
 	}
@@ -52,7 +56,8 @@ class Payroll extends Component {
 		try {
 			const data = { period, department_id };
 			const rs = await request(`${API_URI}${payrollAPI}/list-payroll`, 'POST', true, data);
-			this.props.loadPayroll(rs);
+			const payrolls = rs.filter(p => p.status === 1);
+			this.props.loadPayroll([...payrolls]);
 			this.setState({ filtering: false });
 		} catch (error) {
 			console.log(error);
@@ -60,20 +65,23 @@ class Payroll extends Component {
 		}
 	};
 
-	onChange = (e, type) => {
-		this.setState({ [type]: e.target.value });
+	onChange = ({ target }, type) => {
+		this.setState({ [type]: target.value });
 	};
 
 	doFilter = e => {
 		e.preventDefault();
 		this.setState({ filtering: true });
-		const { period, department_id } = this.state;
-		this.fetchRoster(period, department_id);
+		const { year, month, department_id } = this.state;
+		const period = `${year}-${month}`;
+		this.fetchPayroll(period, department_id);
 	};
 
 	render() {
 		const { payrolls, departments } = this.props;
-		const { department_id, filtering } = this.state;
+		const { department_id, filtering, year, month } = this.state;
+		const y = parseInt(moment().format('YYYY'), 10) + 1;
+		const years = [...Array(y - 2000).keys()].map(x => y - ++x );
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -104,16 +112,18 @@ class Payroll extends Component {
 												</div>
 												<div className="form-group mr-4">
 													<label className="mr-2" htmlFor="">Month</label>
-													<select className="form-control-sm">
-														<option>January</option>
-														<option>February</option>
+													<select className="form-control-sm" onChange={(e) => this.onChange(e, 'month')} value={month}>
+														{months.map(((month, i) => {
+															return <option key={i} value={padLeft((i+1), 2, '0')}>{month}</option>
+														}))}
 													</select>
 												</div>
 												<div className="form-group mr-4">
 													<label className="mr-2" htmlFor="">Year</label>
-													<select className="form-control-sm">
-														<option>1990</option>
-														<option>1991</option>
+													<select className="form-control-sm" onChange={(e) => this.onChange(e, 'year')} value={year}>
+														{years.map(((year, i) => {
+															return <option key={i} value={year}>{year}</option>
+														}))}
 													</select>
 												</div>
 												<div className="form-group mr-4">
@@ -179,7 +189,7 @@ class Payroll extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		payrolls: state.hr.payrolls,
-		departments: state.setting.departments,
+		departments: state.settings.departments,
 	}
 };
 

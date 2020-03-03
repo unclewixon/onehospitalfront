@@ -7,7 +7,7 @@ import axios from 'axios';
 import './assets/css/main.css';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-datepicker/dist/react-datepicker.css';
-import 'react-confirm-alert/src/react-confirm-alert.css'; 
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 import App from './App';
 import * as serviceWorker from './serviceWorker';
@@ -27,7 +27,7 @@ import {
 import { initMode, initFullscreen } from './actions/user';
 import SSRStorage from './services/storage';
 import { defaultHeaders } from './services/utilities';
-import { loadDepartments } from './actions/setting';
+import { get_all_department, get_all_specializations } from './actions/settings';
 import { loadInvCategories, loadInvSubCategories } from './actions/inventory';
 import { togglePreloading } from './actions/general';
 import { loadRoles } from './actions/role';
@@ -57,6 +57,7 @@ const initData = async () => {
 			rs_roles,
 			rs_banks,
 			rs_countries,
+			rs_specializations,
 		] = await Promise.all([
 			axiosFetch(`${API_URI}${departmentAPI}`),
 			axiosFetch(`${API_URI}${inventoryCatAPI}`),
@@ -64,10 +65,11 @@ const initData = async () => {
 			axiosFetch(`${API_URI}${rolesAPI}`),
 			axiosFetch(`${API_URI}${utilityAPI}/banks`),
 			axiosFetch(`${API_URI}${utilityAPI}/countries`),
+			axiosFetch(`${API_URI}/specializations`),
 		]);
 
 		if (rs_depts && rs_depts.data) {
-			store.dispatch(loadDepartments(rs_depts.data));
+			store.dispatch(get_all_department(rs_depts.data));
 		}
 		if (rs_invcategories && rs_invcategories.data) {
 			store.dispatch(loadInvCategories(rs_invcategories.data));
@@ -83,6 +85,9 @@ const initData = async () => {
 		}
 		if (rs_countries && rs_countries.data) {
 			store.dispatch(loadCountries(rs_countries.data));
+		}
+		if (rs_specializations && rs_specializations.data) {
+			store.dispatch(get_all_specializations(rs_specializations.data));
 		}
 	} catch (e) {
 		console.log(e);

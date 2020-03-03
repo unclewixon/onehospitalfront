@@ -96,8 +96,20 @@
 .slide-pane__content {
 	position: relative;
 	overflow-y: auto;
-	padding: 24px 32px;
+	// padding: 24px 32px;
 	flex: 1 1 auto;
+	background-color: #f2f4f8;
+
+	button.close {
+		position: absolute;
+		right: 20px;
+		top: 20px;
+		z-index: 99;
+		background-color: #ffffff;
+		padding: 10px;
+		border-radius: 50%;
+		opacity: 1;
+	}
 }
 .slide-pane__subtitle {
 	font-size: 12px;
