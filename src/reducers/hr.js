@@ -5,6 +5,8 @@ import {
 	LOAD_DUTY_ROSTERS,
 	LOAD_PAYROLL,
 	ADD_STAFF,
+	LOAD_UNPAID_PAYROLL,
+	LOAD_PAYROLL_HISTORY,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -13,6 +15,8 @@ const INITIAL_STATE = {
 	staff_leave: [],
 	duty_rosters: [],
 	payrolls: [],
+	unpaid_payrolls: [],
+	history_payrolls: [],
 };
 
 const user = (state = INITIAL_STATE, action) => {
@@ -29,6 +33,10 @@ const user = (state = INITIAL_STATE, action) => {
 			return { ...state, duty_rosters: action.payload };
 		case LOAD_PAYROLL:
 			return { ...state, payrolls: action.payload };
+		case LOAD_UNPAID_PAYROLL:
+			return { ...state, unpaid_payrolls: action.payload };
+		case LOAD_PAYROLL_HISTORY:
+			return { ...state, history_payrolls: action.payload };
 		default:
 			return state;
 	}

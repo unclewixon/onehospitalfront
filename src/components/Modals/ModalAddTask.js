@@ -48,7 +48,7 @@ class ModalAddTask extends Component {
 							<div className="modal-body">
 								<form>
 									<div className="form-group">
-										<label for="">Name</label>
+										<label htmlFor="">Name</label>
 										<input
 											className="form-control"
 											placeholder="Enter task name"
@@ -57,7 +57,7 @@ class ModalAddTask extends Component {
 										/>
 									</div>
 									<div className="form-group">
-										<label for="">Description</label>
+										<label htmlFor="">Description</label>
 										<textarea className="form-control" name="" rows="3">
 											The similar diesel only tell deference and likewise,
 											thought, nonetheless, for ahead school. The were
@@ -65,7 +65,7 @@ class ModalAddTask extends Component {
 										</textarea>
 									</div>
 									<div className="form-group">
-										<label for="">Media Attached</label>
+										<label htmlFor="">Media Attached</label>
 										<div className="attached-media-w">
 											<img src={require('../../assets/images/portfolio9.jpg')} alt="" />
 											<img src={require('../../assets/images/portfolio2.jpg')} alt="" />
@@ -79,7 +79,7 @@ class ModalAddTask extends Component {
 									<div className="row">
 										<div className="col-sm-6">
 											<div className="form-group">
-												<label for=""> Due Date</label>
+												<label htmlFor=""> Due Date</label>
 												<div className="date-input">
 													<input
 														className="single-daterange form-control"
@@ -92,7 +92,7 @@ class ModalAddTask extends Component {
 										</div>
 										<div className="col-sm-6">
 											<div className="form-group">
-												<label for="">Priority</label>
+												<label htmlFor="">Priority</label>
 												<select className="form-control">
 													<option>High Priority</option>
 													<option>Normal Priority</option>
