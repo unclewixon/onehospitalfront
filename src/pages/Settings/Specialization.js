@@ -4,28 +4,29 @@ import waiting from "../../assets/images/waiting.gif";
 import { notifySuccess, notifyError } from "../../services/notify";
 import { confirmAction } from "../../services/utilities";
 import {
-  addSpecialization,
-  getAllSpecialization,
-  updateSpecialization,
-  deleteSpecialization
-} from "../../actions/settings";
+	addSpecialization,
+	getAllSpecialization,
+	updateSpecialization,
+	deleteSpecialization,
+} from '../../actions/settings';
 
 const Specialization = props => {
-  const initialState = {
-    name: "",
-    save: true,
-    edit: false,
-    id: ""
-  };
-  const [{ name }, setState] = useState(initialState);
-  const [Loading, setLoading] = useState(false);
-  const [{ edit, save }, setSubmitButton] = useState(initialState);
-  const [data, getDataToEdit] = useState(null);
+	const initialState = {
+		name: '',
+		save: true,
+		edit: false,
+		id: '',
+	};
+	const [{ name }, setState] = useState(initialState);
+	const [Loading, setLoading] = useState(false);
+	const [{ edit, save }, setSubmitButton] = useState(initialState);
+	const [data, getDataToEdit] = useState(null);
+	const [loaded, setLoaded] = useState(false);
 
-  const handleInputChange = e => {
-    const { name, value } = e.target;
-    setState(prevState => ({ ...prevState, [name]: value }));
-  };
+	const handleInputChange = e => {
+		const { name, value } = e.target;
+		setState(prevState => ({ ...prevState, [name]: value }));
+	};
 
   const onAddSpecialization = e => {
     e.preventDefault();
@@ -62,16 +63,16 @@ const Specialization = props => {
       });
   };
 
-  const onClickEdit = data => {
-    setSubmitButton({ edit: true, save: false });
-    setState(prevState => ({
-      ...prevState,
-      name: data.name,
-      duration: data.duration,
-      id: data.id
-    }));
-    getDataToEdit(data);
-  };
+	const onClickEdit = data => {
+		setSubmitButton({ edit: true, save: false });
+		setState(prevState => ({
+			...prevState,
+			name: data.name,
+			duration: data.duration,
+			id: data.id,
+		}));
+		getDataToEdit(data);
+	};
 
   const onDeleteSpecialization = data => {
     props
@@ -90,35 +91,19 @@ const Specialization = props => {
     confirmAction(onDeleteSpecialization, data);
   };
 
-  const cancelEditButton = () => {
-    setSubmitButton({ save: true, edit: false });
-    setState({ ...initialState });
-  };
+	const cancelEditButton = () => {
+		setSubmitButton({ save: true, edit: false });
+		setState({ ...initialState });
+	};
 
-  useEffect(() => {
-    console.log(save, edit);
-    props.getAllSpecialization();
-  }, []);
-  return (
-    <div className="content-i">
-      <div className="content-box">
-        <div className="element-wrapper">
-          <div className="os-tabs-w mx-1">
-            <div className="os-tabs-controls">
-              <ul className="nav nav-tabs upper">
-                <li className="nav-item">
-                  <a
-                    aria-expanded="true"
-                    className="nav-link active"
-                    data-toggle="tab"
-                  >
-                    Specialization
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
+	useEffect(() => {
+		if (!loaded) {
+			props.getAllSpecialization();
+		}
+		setLoaded(true);
+	}, [loaded, props]);
 
+	return (
           <div className="row">
             <div className="col-lg-8">
               <div className="row">
@@ -234,13 +219,13 @@ const Specialization = props => {
 };
 
 const mapStateToProps = state => {
-  return {
-    Specializations: state.settings.specializations
-  };
+	return {
+		Specializations: state.settings.specializations,
+	};
 };
 export default connect(mapStateToProps, {
-  addSpecialization,
-  getAllSpecialization,
-  updateSpecialization,
-  deleteSpecialization
+	addSpecialization,
+	getAllSpecialization,
+	updateSpecialization,
+	deleteSpecialization,
 })(Specialization);

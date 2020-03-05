@@ -21,7 +21,7 @@ const Laboratory = lazy(() => import('./pages/Settings/Laboratory'));
 const PatientProfile = lazy(() => import('./pages/Patient/PatientProfile'));
 const Pharmacy = lazy(() => import('./pages/Inventory/Pharmacy'));
 const Vitals = lazy(() => import('./pages/Patient/Vitals'));
-const Staff = lazy(() => import('./pages/HR/Appraisal'));
+const Staff = lazy(() => import('./pages/HR/index'));
 const Inventory = lazy(() => import('./pages/Inventory/index'));
 const Settings = lazy(() => import('./pages/Settings'));
 const StaffProfile = lazy(() => import('./pages/HR/StaffProfile'));
@@ -50,10 +50,10 @@ class App extends Component {
 								<div className="all-wrapper with-side-panel solid-bg-all">
 									<div className="layout-w">
 										{/* user role determines main menu */}
-										<MainMenu role="admin" theme_mode={theme_mode} />
+										<MainMenu role="front-desk" theme_mode={theme_mode} />
 										<div className="content-w">
 											{/* user role determines topbar menu */}
-											<TopBar role="admin" />
+											<TopBar role="front-desk" />
 											<Switch>
 												<Route path="/doctor" component={Doctor} />
 												<Route path="/front-desk" component={FrontDesk} />
@@ -61,7 +61,7 @@ class App extends Component {
 												<Route path="/lab" component={Laboratory} />
 												<Route path="/pharmacy" component={Pharmacy} />
 												<Route path="/vitals" component={Vitals} />
-												<Route path="/staff-mgt" component={Staff} />
+												<Route path="/hr" component={Staff} />
 												<Route path="/inventory" component={Inventory} />
 												<Route path="/settings" component={Settings} />
 												<Route path="/hmo" component={Hmo} />

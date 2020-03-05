@@ -99,6 +99,7 @@ const RoomList = props => {
   useEffect(() => {
     props.getAllRooms();
   }, []);
+  
   return (
     <div className="row">
       <div className="col-lg-8">
@@ -172,7 +173,7 @@ const RoomList = props => {
                   return <option value={category.id}>{category.name}</option>;
                 })}
               </select>
-              
+
             </div>
             <div className="form-group">
               <input

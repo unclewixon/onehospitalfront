@@ -6,7 +6,7 @@ import Payroll from './Payroll';
 import LeaveMgt from './LeaveMgt';
 import Roster from './Roster';
 import Appraisal from './Appraisal';
-import NoMatch from './NoMatch';
+import NoMatch from '../NoMatch';
 
 const Staff = ({ match }) => {
 	return (

@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useRef } from "react";
+import React, { Fragment } from "react";
 import { closeModals } from '../actions/general';
 import { nextStep } from '../actions/patient';
 import { connect } from 'react-redux';
@@ -11,7 +11,7 @@ function PatientForm (props) {
     
     const formData = props.formData;
 
-    const { register, handleSubmit, watch, errors, setValue } = useForm({
+    const { register, handleSubmit, errors, setValue } = useForm({
         validationSchema: patientSchema,
         defaultValues: {
             surname: formData.surname || '',

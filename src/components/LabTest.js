@@ -3,44 +3,44 @@ import { connect } from "react-redux";
 import waiting from "../assets/images/waiting.gif";
 import { notifySuccess, notifyError } from "../services/notify";
 import { confirmAction } from "../services/utilities";
-
 import Select from "react-select";
 
 import {
-  addLabTest,
-  getAllLabTests,
-  updateLabTest,
-  deleteLabTest,
-  getAllLabTestCategories,
-  getAllLabTestParameters
-} from "../actions/settings";
+	addLabTest,
+	getAllLabTests,
+	updateLabTest,
+	deleteLabTest,
+	getAllLabTestCategories,
+	getAllLabTestParameters,
+} from '../actions/settings';
 
 const LabTest = props => {
-  const initialState = {
-    name: "",
-    category: "",
-    price: "",
-    testType: "single",
-    edit: false,
-    create: true
-  };
-  const [{ name, category, price, testType }, setState] = useState(
-    initialState
-  );
-  const [Loading, setLoading] = useState(false);
-  const [{ edit, create }, setSubmitButton] = useState(initialState);
-  const [data, getDataToEdit] = useState(null);
+	const initialState = {
+		name: '',
+		category: '',
+		price: '',
+		testType: 'single',
+		edit: false,
+		create: true,
+	};
+	const [{ name, category, price, testType }, setState] = useState(
+		initialState
+	);
+	const [Loading, setLoading] = useState(false);
+	const [{ edit, create }, setSubmitButton] = useState(initialState);
+	const [data, getDataToEdit] = useState(null);
+	const [loaded, setLoaded] = useState(false);
 
-  const [parameters, setParameter] = useState(null);
+	const [parameters, setParameter] = useState(null);
 
-  const handleMultipleSelectInput = selectedOption => {
-    setParameter(selectedOption);
-  };
+	const handleMultipleSelectInput = selectedOption => {
+		setParameter(selectedOption);
+	};
 
-  const handleInputChange = e => {
-    const { name, value } = e.target;
-    setState(prevState => ({ ...prevState, [name]: value }));
-  };
+	const handleInputChange = e => {
+		const { name, value } = e.target;
+		setState(prevState => ({ ...prevState, [name]: value }));
+	};
 
   const onAddLabTest = e => {
     setLoading(true);
@@ -80,23 +80,23 @@ const LabTest = props => {
       });
   };
 
-  const onClickEdit = data => {
-    console.log(data);
-    setSubmitButton({ edit: true, create: false });
-    setState(prevState => ({
-      ...prevState,
-      name: data.name,
-      price: data.price,
-      id: data.id
-    }));
-    setParameter(data.parameters);
-    getDataToEdit(data);
-  };
+	const onClickEdit = data => {
+		console.log(data);
+		setSubmitButton({ edit: true, create: false });
+		setState(prevState => ({
+			...prevState,
+			name: data.name,
+			price: data.price,
+			id: data.id,
+		}));
+		setParameter(data.parameters);
+		getDataToEdit(data);
+	};
 
-  const cancelEditButton = () => {
-    setSubmitButton({ create: true, edit: false });
-    setState({ ...initialState });
-  };
+	const cancelEditButton = () => {
+		setSubmitButton({ create: true, edit: false });
+		setState({ ...initialState });
+	};
 
   const onDeleteLabTest = data => {
     console.log(data);
@@ -271,18 +271,18 @@ const LabTest = props => {
 };
 
 const mapStateToProps = state => {
-  return {
-    LabCategories: state.settings.lab_categories,
-    LabParameters: state.settings.lab_parameters,
-    LabTests: state.settings.lab_tests
-  };
+	return {
+		LabCategories: state.settings.lab_categories,
+		LabParameters: state.settings.lab_parameters,
+		LabTests: state.settings.lab_tests,
+	};
 };
 
 export default connect(mapStateToProps, {
-  addLabTest,
-  getAllLabTests,
-  updateLabTest,
-  deleteLabTest,
-  getAllLabTestCategories,
-  getAllLabTestParameters
+	addLabTest,
+	getAllLabTests,
+	updateLabTest,
+	deleteLabTest,
+	getAllLabTestCategories,
+	getAllLabTestParameters,
 })(LabTest);
