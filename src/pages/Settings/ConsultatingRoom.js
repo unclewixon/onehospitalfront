@@ -1,7 +1,8 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { confirmAlert } from 'react-confirm-alert';
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import waiting from "../../assets/images/waiting.gif";
+import { notifySuccess, notifyError } from "../../services/notify";
+import { confirmAction } from "../../services/utilities";
 import {
 	addConsultatingRoom,
 	getAllConsultatingRooms,
@@ -27,36 +28,40 @@ const ConsultatingRoom = props => {
 		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onAddConsultatingRoom = e => {
-		e.preventDefault();
-		setLoading(true);
-		props
-			.addConsultatingRoom({ name })
-			.then(response => {
-				setLoading(false);
-				setState({ ...initialState });
-			})
-			.catch(error => {
-				setLoading(false);
-			});
-	};
+  const onAddConsultatingRoom = e => {
+    e.preventDefault();
+    setLoading(true);
+    props
+      .addConsultatingRoom({ name })
+      .then(response => {
+        setLoading(false);
+        setState({ ...initialState });
+        notifySuccess("Consultating room added");
+      })
+      .catch(error => {
+        setLoading(false);
+        notifyError("Error creating consultating room");
+      });
+  };
 
-	const onEditConsultatingRoom = e => {
-		setLoading(true);
-		e.preventDefault();
-		props
-			.updateConsultatingRoom({ id: data.id, name }, data)
-			.then(response => {
-				setState({ ...initialState });
-				setSubmitButton({ save: true, edit: false });
-				setLoading(false);
-			})
-			.catch(error => {
-				setState({ ...initialState });
-				setSubmitButton({ save: true, edit: false });
-				setLoading(false);
-			});
-	};
+  const onEditConsultatingRoom = e => {
+    setLoading(true);
+    e.preventDefault();
+    props
+      .updateConsultatingRoom({ id: data.id, name }, data)
+      .then(response => {
+        setState({ ...initialState });
+        setSubmitButton({ save: true, edit: false });
+        setLoading(false);
+        notifySuccess("Consultating room updated");
+      })
+      .catch(error => {
+        setState({ ...initialState });
+        setSubmitButton({ save: true, edit: false });
+        setLoading(false);
+        notifyError("Error editing consultating room");
+      });
+  };
 
 	const onClickEdit = data => {
 		setSubmitButton({ edit: true, save: false });
@@ -69,50 +74,22 @@ const ConsultatingRoom = props => {
 		getDataToEdit(data);
 	};
 
-	const onDeleteConsultatingRoom = data => {
-		props
-			.deleteConsultatingRoom(data)
-			.then(data => {
-				setLoading(false);
-				console.log(data);
-			})
-			.catch(error => {
-				setLoading(false);
-				console.log(error);
-			});
-	};
+  const onDeleteConsultatingRoom = data => {
+    props
+      .deleteConsultatingRoom(data)
+      .then(data => {
+        setLoading(false);
+        notifySuccess("Consultating room deleted");
+      })
+      .catch(error => {
+        setLoading(false);
+        notifyError("Error deleting consultating room");
+      });
+  };
 
-	const confirmDelete = data => {
-		confirmAlert({
-			customUI: ({ onClose }) => {
-				return (
-					<div className="custom-ui">
-						<h1>Are you sure?</h1>
-						<p>You want to delete this category?</p>
-						<div style={{}}>
-							<button
-								className="btn btn-primary"
-								style={{ margin: 10 }}
-								onClick={onClose}
-							>
-								No
-							</button>
-							<button
-								className="btn btn-danger"
-								style={{ margin: 10 }}
-								onClick={() => {
-									onDeleteConsultatingRoom(data);
-									onClose();
-								}}
-							>
-								Yes, Delete it!
-							</button>
-						</div>
-					</div>
-				);
-			},
-		});
-	};
+  const confirmDelete = data => {
+    confirmAction(onDeleteConsultatingRoom, data);
+  };
 
 	const cancelEditButton = () => {
 		setSubmitButton({ save: true, edit: false });
@@ -145,113 +122,59 @@ const ConsultatingRoom = props => {
 							</ul>
 						</div>
 					</div>
-
-					<div className="row">
-						<div className="col-lg-8">
-							<div className="row">
-								{props.ConsultatingRooms.map((room, i) => {
-									return (
-										<div className="col-lg-4 col-xxl-3" key={i}>
-											<div className="pt-3">
-												<div className="pipeline-item">
-													<div className="pi-controls">
-														<div className="pi-settings os-dropdown-trigger">
-															<i
-																className="os-icon os-icon-ui-49"
-																onClick={() => onClickEdit(room)}
-															></i>
-														</div>
-														<div className="pi-settings os-dropdown-trigger">
-															<i
-																className="os-icon os-icon-ui-15"
-																onClick={() => confirmDelete(room)}
-															></i>
-														</div>
-													</div>
-													<div className="pi-body">
-														<div className="pi-info">
-															<div className="h6 pi-name">{room.name}</div>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									);
-								})}
-							</div>
-						</div>
-						<div className="col-lg-4 col-xxl-3  d-xxl-block">
-							<div className="element-wrapper">
-								<div className="element-box">
-									<form
-										onSubmit={
-											edit ? onEditConsultatingRoom : onAddConsultatingRoom
-										}
-									>
-										<h5 className="element-box-header">
-											Add New Consultating room
-										</h5>
-										<div className="form-group">
-											<label className="lighter" htmlFor="">
-												Name
-											</label>
-											<div className="input-group mb-2 mr-sm-2 mb-sm-0">
-												<input
-													className="form-control"
-													placeholder="Enter Consultating Room"
-													type="text"
-													name="name"
-													value={name}
-													onChange={handleInputChange}
-												/>
-											</div>
-										</div>
-
-										<div className="form-buttons-w text-right compact">
-											{save && (
-												<button
-													className={
-														Loading
-															? 'btn btn-primary disabled'
-															: 'btn btn-primary'
-													}
-												>
-													<span>{Loading ? 'Saving' : 'save'}</span>
-												</button>
-											)}
-											{edit && (
-												<>
-													<button
-														className={
-															Loading
-																? 'btn btn-primary disabled'
-																: 'btn btn-primary'
-														}
-														onClick={cancelEditButton}
-													>
-														<span>{Loading ? 'cancel' : 'cancel'}</span>
-													</button>
-													<button
-														className={
-															Loading
-																? 'btn btn-primary disabled'
-																: 'btn btn-primary'
-														}
-													>
-														<span>{Loading ? 'saving' : 'save'}</span>
-													</button>
-												</>
-											)}
-										</div>
-									</form>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
+                    <div className="form-buttons-w text-right compact">
+                      {save && (
+                        <button
+                          className={
+                            Loading
+                              ? "btn btn-primary disabled"
+                              : "btn btn-primary"
+                          }
+                        >
+                          {Loading ? (
+                            <img src={waiting} alt="submitting" />
+                          ) : (
+                            <span> save</span>
+                          )}
+                        </button>
+                      )}
+                      {edit && (
+                        <>
+                          <button
+                            className={
+                              Loading
+                                ? "btn btn-primary disabled"
+                                : "btn btn-primary"
+                            }
+                            onClick={cancelEditButton}
+                          >
+                            <span>{Loading ? "cancel" : "cancel"}</span>
+                          </button>
+                          <button
+                            className={
+                              Loading
+                                ? "btn btn-primary disabled"
+                                : "btn btn-primary"
+                            }
+                          >
+                            {Loading ? (
+                              <img src={waiting} alt="submitting" />
+                            ) : (
+                              <span> edit</span>
+                            )}
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 const mapStateToProps = state => {
