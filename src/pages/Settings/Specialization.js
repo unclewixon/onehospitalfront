@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { confirmAlert } from "react-confirm-alert";
+import waiting from "../../assets/images/waiting.gif";
+import { notifySuccess, notifyError } from "../../services/notify";
+import { confirmAction } from "../../services/utilities";
 import {
   addSpecialization,
   getAllSpecialization,
@@ -33,9 +35,11 @@ const Specialization = props => {
       .then(response => {
         setLoading(false);
         setState({ ...initialState });
+        notifySuccess("Specialization created");
       })
       .catch(error => {
         setLoading(false);
+        notifyError("Error creating Specialization");
       });
   };
 
@@ -48,11 +52,13 @@ const Specialization = props => {
         setState({ ...initialState });
         setSubmitButton({ save: true, edit: false });
         setLoading(false);
+        notifySuccess("Specialization updated");
       })
       .catch(error => {
         setState({ ...initialState });
         setSubmitButton({ save: true, edit: false });
         setLoading(false);
+        notifyError("Error updating Specialization");
       });
   };
 
@@ -70,46 +76,18 @@ const Specialization = props => {
   const onDeleteSpecialization = data => {
     props
       .deleteSpecialization(data)
-      .then(data => {
+      .then(response => {
         setLoading(false);
-        console.log(data);
+        notifySuccess("Specialization deleted");
       })
       .catch(error => {
         setLoading(false);
-        console.log(error);
+        notifyError("Error deleting Specialization");
       });
   };
 
   const confirmDelete = data => {
-    confirmAlert({
-      customUI: ({ onClose }) => {
-        return (
-          <div className="custom-ui">
-            <h1>Are you sure?</h1>
-            <p>You want to delete this category?</p>
-            <div style={{}}>
-              <button
-                className="btn btn-primary"
-                style={{ margin: 10 }}
-                onClick={onClose}
-              >
-                No
-              </button>
-              <button
-                className="btn btn-danger"
-                style={{ margin: 10 }}
-                onClick={() => {
-                  onDeleteSpecialization(data);
-                  onClose();
-                }}
-              >
-                Yes, Delete it!
-              </button>
-            </div>
-          </div>
-        );
-      }
-    });
+    confirmAction(onDeleteSpecialization, data);
   };
 
   const cancelEditButton = () => {
@@ -199,21 +177,6 @@ const Specialization = props => {
                         />
                       </div>
                     </div>
-                    {/* <div className="form-group">
-                      <label className="lighter" for="">
-                        Leave duration
-                      </label>
-                      <div className="input-group mb-2 mr-sm-2 mb-sm-0">
-                        <input
-                          className="form-control"
-                          placeholder="Enter leave duration"
-                          type="text"
-                          name="duration"
-                          value={duration}
-                          onChange={handleInputChange}
-                        />
-                      </div>
-                    </div> */}
 
                     <div className="form-buttons-w text-right compact">
                       {save && (
@@ -224,7 +187,11 @@ const Specialization = props => {
                               : "btn btn-primary"
                           }
                         >
-                          <span>{Loading ? "Saving" : "save"}</span>
+                          {Loading ? (
+                            <img src={waiting} alt="submitting" />
+                          ) : (
+                            <span> create</span>
+                          )}
                         </button>
                       )}
                       {edit && (
@@ -246,7 +213,11 @@ const Specialization = props => {
                                 : "btn btn-primary"
                             }
                           >
-                            <span>{Loading ? "saving" : "save"}</span>
+                            {Loading ? (
+                              <img src={waiting} alt="submitting" />
+                            ) : (
+                              <span> edit</span>
+                            )}
                           </button>
                         </>
                       )}

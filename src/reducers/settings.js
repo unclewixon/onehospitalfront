@@ -34,7 +34,12 @@ import {
   ADD_CONSULTATING_ROOM,
   UPDATE_CONSULTATING_ROOM,
   DELETE_CONSULTATING_ROOM,
-  GET_ALL_CONSULTATING_ROOMS
+  GET_ALL_CONSULTATING_ROOMS,
+  ADD_PERMISSION,
+  GET_ALL_PERMISSIONS,
+  UPDATE_PERMISSION,
+  DELETE_PERMISSION,
+  LOAD_STAFFS
 } from "../actions/types";
 
 const INITIAL_STATE = {
@@ -46,7 +51,10 @@ const INITIAL_STATE = {
   lab_parameters: [],
   leave_categories: [],
   specializations: [],
-  consultating_room: []
+  consultating_room: [],
+  staff_list: [],
+  roles: [],
+  permissions: []
 };
 
 const settings = (state = INITIAL_STATE, action) => {
@@ -258,6 +266,32 @@ const settings = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         consultating_room: state.consultating_room.filter(
+          deletedItem => deletedItem.id !== action.payload.id
+        )
+      };
+    case LOAD_STAFFS:
+      return { ...state, staff_list: action.payload };
+    case ADD_PERMISSION:
+      return {
+        ...state,
+        permissions: [...state.permissions, action.payload]
+      };
+    case GET_ALL_PERMISSIONS:
+      return { ...state, permissions: action.payload };
+    case UPDATE_PERMISSION:
+      return {
+        ...state,
+        permissions: [
+          ...state.permissions.filter(
+            deletedItem => deletedItem.id !== action.previousData.id
+          ),
+          action.payload
+        ]
+      };
+    case DELETE_PERMISSION:
+      return {
+        ...state,
+        permissions: state.permissions.filter(
           deletedItem => deletedItem.id !== action.payload.id
         )
       };

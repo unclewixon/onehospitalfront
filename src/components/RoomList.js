@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { confirmAlert } from "react-confirm-alert";
-
+import { confirmAction } from "../services/utilities";
+import waiting from "../assets/images/waiting.gif";
+import { notifySuccess, notifyError } from "../services/notify";
 import {
   addRoom,
   getAllRooms,
@@ -14,7 +15,7 @@ const RoomList = props => {
     name: "",
     status: "Occupied",
     floor: "",
-    category: props.Room_Categories[0].id,
+    category: "",
     create: true,
     edit: false
   };
@@ -31,16 +32,17 @@ const RoomList = props => {
   const onAddRoom = e => {
     e.preventDefault();
     setLoading(true);
-    // console.log(props.Room_Categories[0].id);
     props
       .addRoom({ name, status, floor, category })
       .then(response => {
         setState({ ...initialState });
         setLoading(false);
+        notifySuccess("Room created");
       })
       .catch(error => {
         setState({ ...initialState });
         setLoading(false);
+        notifyError("Error creating room");
       });
   };
 
@@ -52,15 +54,16 @@ const RoomList = props => {
       .then(response => {
         setState({ ...initialState });
         setLoading(false);
+        notifySuccess("Room updated");
       })
       .catch(error => {
         setState({ ...initialState });
         setLoading(false);
+        notifyError("Error updating room");
       });
   };
 
   const onClickEdit = data => {
-    console.log(data);
     setSubmitButton({ edit: true, create: false });
     setState(prevState => ({
       ...prevState,
@@ -77,10 +80,10 @@ const RoomList = props => {
     props
       .deleteRoom(data)
       .then(data => {
-        console.log(data);
+        notifySuccess("Room deleted");
       })
       .catch(error => {
-        console.log(error);
+        notifyError("Error deleting room");
       });
   };
 
@@ -90,35 +93,7 @@ const RoomList = props => {
   };
 
   const confirmDelete = data => {
-    confirmAlert({
-      customUI: ({ onClose }) => {
-        return (
-          <div className="custom-ui">
-            <h1>Are you sure?</h1>
-            <p>You want to delete this remove ?</p>
-            <div style={{}}>
-              <button
-                className="btn btn-primary"
-                style={{ margin: 10 }}
-                onClick={onClose}
-              >
-                No
-              </button>
-              <button
-                className="btn btn-danger"
-                style={{ margin: 10 }}
-                onClick={() => {
-                  onDeleteRoom(data);
-                  onClose();
-                }}
-              >
-                Yes, Delete it!
-              </button>
-            </div>
-          </div>
-        );
-      }
-    });
+    confirmAction(onDeleteRoom, data);
   };
 
   useEffect(() => {
@@ -144,7 +119,7 @@ const RoomList = props => {
                 <tbody>
                   {props.Rooms.map(Room => {
                     return (
-                      <tr>
+                      <tr key={Room.id}>
                         <td>{Room.name}</td>
                         <td>{Room.category.price}</td>
                         <td>{Room.category.discount}</td>
@@ -192,10 +167,12 @@ const RoomList = props => {
                 onChange={handleInputChange}
                 value={category}
               >
+                <option></option>
                 {props.Room_Categories.map(category => {
                   return <option value={category.id}>{category.name}</option>;
                 })}
               </select>
+              
             </div>
             <div className="form-group">
               <input
@@ -226,7 +203,11 @@ const RoomList = props => {
                     Loading ? "btn btn-primary disabled" : "btn btn-primary"
                   }
                 >
-                  <span>{Loading ? "creating" : "create"}</span>
+                  {Loading ? (
+                    <img src={waiting} alt="submitting" />
+                  ) : (
+                    <span> create</span>
+                  )}
                 </button>
               )}
               {edit && (
@@ -244,7 +225,11 @@ const RoomList = props => {
                       Loading ? "btn btn-primary disabled" : "btn btn-primary"
                     }
                   >
-                    <span>{Loading ? "Saving" : "edit"}</span>
+                    {Loading ? (
+                      <img src={waiting} alt="submitting" />
+                    ) : (
+                      <span>edit</span>
+                    )}
                   </button>
                 </>
               )}

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { confirmAlert } from "react-confirm-alert";
+import waiting from "../../assets/images/waiting.gif";
+import { notifySuccess, notifyError } from "../../services/notify";
+import { confirmAction } from "../../services/utilities";
 import {
   addConsultatingRoom,
   getAllConsultatingRooms,
@@ -33,9 +35,11 @@ const ConsultatingRoom = props => {
       .then(response => {
         setLoading(false);
         setState({ ...initialState });
+        notifySuccess("Consultating room added");
       })
       .catch(error => {
         setLoading(false);
+        notifyError("Error creating consultating room");
       });
   };
 
@@ -48,11 +52,13 @@ const ConsultatingRoom = props => {
         setState({ ...initialState });
         setSubmitButton({ save: true, edit: false });
         setLoading(false);
+        notifySuccess("Consultating room updated");
       })
       .catch(error => {
         setState({ ...initialState });
         setSubmitButton({ save: true, edit: false });
         setLoading(false);
+        notifyError("Error editing consultating room");
       });
   };
 
@@ -72,44 +78,16 @@ const ConsultatingRoom = props => {
       .deleteConsultatingRoom(data)
       .then(data => {
         setLoading(false);
-        console.log(data);
+        notifySuccess("Consultating room deleted");
       })
       .catch(error => {
         setLoading(false);
-        console.log(error);
+        notifyError("Error deleting consultating room");
       });
   };
 
   const confirmDelete = data => {
-    confirmAlert({
-      customUI: ({ onClose }) => {
-        return (
-          <div className="custom-ui">
-            <h1>Are you sure?</h1>
-            <p>You want to delete this category?</p>
-            <div style={{}}>
-              <button
-                className="btn btn-primary"
-                style={{ margin: 10 }}
-                onClick={onClose}
-              >
-                No
-              </button>
-              <button
-                className="btn btn-danger"
-                style={{ margin: 10 }}
-                onClick={() => {
-                  onDeleteConsultatingRoom(data);
-                  onClose();
-                }}
-              >
-                Yes, Delete it!
-              </button>
-            </div>
-          </div>
-        );
-      }
-    });
+    confirmAction(onDeleteConsultatingRoom, data);
   };
 
   const cancelEditButton = () => {
@@ -213,7 +191,11 @@ const ConsultatingRoom = props => {
                               : "btn btn-primary"
                           }
                         >
-                          <span>{Loading ? "Saving" : "save"}</span>
+                          {Loading ? (
+                            <img src={waiting} alt="submitting" />
+                          ) : (
+                            <span> save</span>
+                          )}
                         </button>
                       )}
                       {edit && (
@@ -235,7 +217,11 @@ const ConsultatingRoom = props => {
                                 : "btn btn-primary"
                             }
                           >
-                            <span>{Loading ? "saving" : "save"}</span>
+                            {Loading ? (
+                              <img src={waiting} alt="submitting" />
+                            ) : (
+                              <span> edit</span>
+                            )}
                           </button>
                         </>
                       )}

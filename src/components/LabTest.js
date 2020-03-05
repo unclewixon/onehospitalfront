@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { confirmAlert } from "react-confirm-alert";
+import waiting from "../assets/images/waiting.gif";
+import { notifySuccess, notifyError } from "../services/notify";
+import { confirmAction } from "../services/utilities";
+
 import Select from "react-select";
 
 import {
@@ -40,18 +43,23 @@ const LabTest = props => {
   };
 
   const onAddLabTest = e => {
+    setLoading(true);
     e.preventDefault();
     props
       .addLabTest({ name, price, category, parameters, testType })
       .then(response => {
         setState({ ...initialState });
+        setLoading(false);
         setParameter(null);
+        notifySuccess("Lab test created");
+      })
+      .catch(error => {
+        notifyError("Error creating lab test");
       });
   };
 
   const onEditLabTest = e => {
     setLoading(true);
-    console.log(name, price, category, parameters);
     e.preventDefault();
     props
       .updateLabTest(
@@ -62,11 +70,13 @@ const LabTest = props => {
         setState({ ...initialState });
         setSubmitButton({ create: true, edit: false });
         setLoading(false);
+        notifySuccess("Lab test updated");
       })
       .catch(error => {
         setState({ ...initialState });
         setSubmitButton({ create: true, edit: false });
         setLoading(false);
+        notifyError("Error updating lab test");
       });
   };
 
@@ -93,43 +103,15 @@ const LabTest = props => {
     props
       .deleteLabTest(data)
       .then(data => {
-        console.log(data);
+        notifySuccess("Lab test deleted");
       })
       .catch(error => {
-        console.log(error);
+        notifyError("Error deleting lab test");
       });
   };
 
   const confirmDelete = data => {
-    confirmAlert({
-      customUI: ({ onClose }) => {
-        return (
-          <div className="custom-ui">
-            <h1>Are you sure?</h1>
-            <p>You want to delete this remove ?</p>
-            <div style={{}}>
-              <button
-                className="btn btn-primary"
-                style={{ margin: 10 }}
-                onClick={onClose}
-              >
-                No
-              </button>
-              <button
-                className="btn btn-danger"
-                style={{ margin: 10 }}
-                onClick={() => {
-                  onDeleteLabTest(data);
-                  onClose();
-                }}
-              >
-                Yes, Delete it!
-              </button>
-            </div>
-          </div>
-        );
-      }
-    });
+    confirmAction(onDeleteLabTest, data);
   };
 
   useEffect(() => {
@@ -141,7 +123,7 @@ const LabTest = props => {
   const options = props.LabParameters.map(Par => {
     return { value: Par.name, label: Par.name };
   });
-  console.log(options);
+
   return (
     <div className="row">
       <div className="col-lg-8">
@@ -222,6 +204,7 @@ const LabTest = props => {
                 onChange={handleInputChange}
                 value={category}
               >
+                <option value={""}> </option>;
                 {props.LabCategories.map(category => {
                   return <option value={category.id}>{category.name}</option>;
                 })}
@@ -249,7 +232,11 @@ const LabTest = props => {
                     Loading ? "btn btn-primary disabled" : "btn btn-primary"
                   }
                 >
-                  <span>{Loading ? "creating" : "create"}</span>
+                  {Loading ? (
+                    <img src={waiting} alt="submitting" />
+                  ) : (
+                    <span> create</span>
+                  )}
                 </button>
               )}
               {edit && (
@@ -267,7 +254,11 @@ const LabTest = props => {
                       Loading ? "btn btn-primary disabled" : "btn btn-primary"
                     }
                   >
-                    <span>{Loading ? "Saving" : "edit"}</span>
+                    {Loading ? (
+                      <img src={waiting} alt="submitting" />
+                    ) : (
+                      <span> save</span>
+                    )}
                   </button>
                 </>
               )}
