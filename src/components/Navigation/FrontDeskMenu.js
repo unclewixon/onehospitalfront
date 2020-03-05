@@ -23,6 +23,14 @@ const FrontDeskMenu = () => {
           <span>Pay Point</span>
         </Link>
       </li>
+      <li>
+        <Link to='/front-desk/staffprofile'>
+          <div className='icon-w'>
+            <div className='os-icon os-icon-layers' />
+          </div>
+          <span>Staff Profile</span>
+        </Link>
+      </li>
     </>
   );
 };
