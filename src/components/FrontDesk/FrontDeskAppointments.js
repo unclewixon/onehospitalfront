@@ -1,21 +1,42 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from "react";
 import { request } from "../../services/utilities";
-import { API_URI } from "../../services/constants";
+import { viewAppointmentDetail } from "../../actions/general.js";
+import { API_URI, socket } from "../../services/constants";
 import searchingGIF from '../../assets/images/searching.gif';
 import { notifyError } from '../../services/notify';
+import * as moment from "moment";
+import { connect } from "react-redux";
 
-const Appointment = () => {
+const Appointment = (props) => {
 
-  const [loading, setLoading] = useState(true);
-  const [appointments, setAppointments] = useState();
+  const [loading, setLoading] = useState(false);
+  const [appointments, setAppointments] = useState([]);
+
+  useEffect(() => {
+		socket.on('appointmentSaved', (res) => {
+			if(res.success){
+        const appointment = res.appointment;
+        const today = moment().format('YYYY-MM-DD');
+        if(appointment.appointment_date === today) {
+          setAppointments(appointments => [...appointments, appointment]);
+        }
+			}
+    })
+  }, [appointments])
+  
+  const ViewAppointmentDetail = e => {
+    e.preventDefault();
+    props.viewAppointmentDetail(true);
+  };
 
   useEffect(() => {
     getAppointments();
-  }, [])
+  }, []);
 
   async function getAppointments() {
     try {
+      setLoading(true)
 			const res = await request(`${API_URI}/front-desk/appointments/today`, 'GET', true);
       setAppointments(res); 
       setLoading(false);
@@ -60,11 +81,11 @@ const Appointment = () => {
                               </td>
                             </tr>
                           ):(
-                          appointments.map((appointment, i) => (
+                          appointments && appointments.map((appointment, i) => (
                             <tr key={i}>
                               <td>
+                                <span className="smaller lighter">{appointment.patient.fileNumber}</span><br/>                                
                                 <span>{`${appointment.patient.surname}, ${appointment.patient.other_names}`}</span>
-                                <span className="smaller lighter">{appointment.patient.fileNumber}</span>
                               </td>
                               <td className="cell-with-media">
                                 <span>
@@ -76,10 +97,10 @@ const Appointment = () => {
                                 <span>Complete</span>
                               </td>
                               <td className="row-actions">
-                                <a href="#">
+                                <a href="#" onClick={ViewAppointmentDetail}>
                                   <i className="os-icon os-icon-folder"></i>
                                 </a>
-                                {/* <a
+                                <a
                                   href="#"
                                   data-target=".bd-example-modal-lg"
                                   data-toggle="modal"
@@ -88,7 +109,7 @@ const Appointment = () => {
                                 </a>
                                 <a className="danger" href="#">
                                   <i className="os-icon os-icon-ui-15"></i>
-                                </a> */}
+                                </a>
                               </td>
                             </tr>
                           )))}
@@ -134,4 +155,4 @@ const Appointment = () => {
     </div>
   );
 };
-export default Appointment;
+export default connect(null, { viewAppointmentDetail })(Appointment);
