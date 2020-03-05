@@ -4,91 +4,92 @@ import { connect } from 'react-redux';
 import { confirmAlert } from 'react-confirm-alert';
 
 import {
-  addRoom,
-  getAllRooms,
-  updateRoom,
-  deleteRoom
-} from "../actions/settings";
+	addRoom,
+	getAllRooms,
+	updateRoom,
+	deleteRoom,
+} from '../actions/settings';
 
 const RoomList = props => {
-  const initialState = {
-    name: "",
-    status: "Occupied",
-    floor: "",
-    category: props.Room_Categories[0].id,
-    create: true,
-    edit: false
-  };
-  const [{ name, status, floor, category }, setState] = useState(initialState);
-  const [Loading, setLoading] = useState(false);
-  const [{ edit, create }, setSubmitButton] = useState(initialState);
-  const [data, getDataToEdit] = useState(null);
+	const initialState = {
+		name: '',
+		status: 'Occupied',
+		floor: '',
+		category: props.Room_Categories[0].id,
+		create: true,
+		edit: false,
+	};
+	const [{ name, status, floor, category }, setState] = useState(initialState);
+	const [Loading, setLoading] = useState(false);
+	const [{ edit, create }, setSubmitButton] = useState(initialState);
+	const [data, getDataToEdit] = useState(null);
+	const [loaded, setLoaded] = useState(false);
 
-  const handleInputChange = e => {
-    const { name, value } = e.target;
-    setState(prevState => ({ ...prevState, [name]: value }));
-  };
+	const handleInputChange = e => {
+		const { name, value } = e.target;
+		setState(prevState => ({ ...prevState, [name]: value }));
+	};
 
-  const onAddRoom = e => {
-    e.preventDefault();
-    setLoading(true);
-    // console.log(props.Room_Categories[0].id);
-    props
-      .addRoom({ name, status, floor, category })
-      .then(response => {
-        setState({ ...initialState });
-        setLoading(false);
-      })
-      .catch(error => {
-        setState({ ...initialState });
-        setLoading(false);
-      });
-  };
+	const onAddRoom = e => {
+		e.preventDefault();
+		setLoading(true);
+		// console.log(props.Room_Categories[0].id);
+		props
+			.addRoom({ name, status, floor, category })
+			.then(response => {
+				setState({ ...initialState });
+				setLoading(false);
+			})
+			.catch(error => {
+				setState({ ...initialState });
+				setLoading(false);
+			});
+	};
 
-  const onEditRoom = e => {
-    setLoading(true);
-    e.preventDefault();
-    props
-      .updateRoom({ id: data.id, name, status, floor, category }, data)
-      .then(response => {
-        setState({ ...initialState });
-        setLoading(false);
-      })
-      .catch(error => {
-        setState({ ...initialState });
-        setLoading(false);
-      });
-  };
+	const onEditRoom = e => {
+		setLoading(true);
+		e.preventDefault();
+		props
+			.updateRoom({ id: data.id, name, status, floor, category }, data)
+			.then(response => {
+				setState({ ...initialState });
+				setLoading(false);
+			})
+			.catch(error => {
+				setState({ ...initialState });
+				setLoading(false);
+			});
+	};
 
-  const onClickEdit = data => {
-    console.log(data);
-    setSubmitButton({ edit: true, create: false });
-    setState(prevState => ({
-      ...prevState,
-      name: data.name,
-      status: data.status,
-      floor: data.floor,
-      category: data.category,
-      id: data.id
-    }));
-    getDataToEdit(data);
-  };
+	const onClickEdit = data => {
+		console.log(data);
+		setSubmitButton({ edit: true, create: false });
+		setState(prevState => ({
+			...prevState,
+			name: data.name,
+			status: data.status,
+			floor: data.floor,
+			category: data.category,
+			id: data.id,
+		}));
+		getDataToEdit(data);
+	};
 
-  const onDeleteRoom = data => {
-    props
-      .deleteRoom(data)
-      .then(data => {
-        console.log(data);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  };
+	const onDeleteRoom = data => {
+		props
+			.deleteRoom(data)
+			.then(data => {
+				console.log(data);
+			})
+			.catch(error => {
+				console.log(error);
+			});
+	};
 
-  const cancelEditButton = () => {
-    setSubmitButton({ create: true, edit: false });
-    setState({ ...initialState });
-  };
+	const cancelEditButton = () => {
+		setSubmitButton({ create: true, edit: false });
+		setState({ ...initialState });
+	};
 
 	const confirmDelete = data => {
 		confirmAlert({
@@ -122,9 +123,12 @@ const RoomList = props => {
 		});
 	};
 
-  useEffect(() => {
-    props.getAllRooms();
-  }, []);
+	useEffect(() => {
+		if (!loaded) {
+			props.getAllRooms();
+		}
+		setLoaded(true);
+	}, [props, loaded]);
 
 	return (
 		<div className="row">
@@ -266,15 +270,15 @@ const RoomList = props => {
 };
 
 const mapStateToProps = state => {
-  return {
-    Room_Categories: state.settings.room_categories,
-    Rooms: state.settings.rooms
-  };
+	return {
+		Room_Categories: state.settings.room_categories,
+		Rooms: state.settings.rooms,
+	};
 };
 
 export default connect(mapStateToProps, {
-  addRoom,
-  getAllRooms,
-  updateRoom,
-  deleteRoom
+	addRoom,
+	getAllRooms,
+	updateRoom,
+	deleteRoom,
 })(RoomList);

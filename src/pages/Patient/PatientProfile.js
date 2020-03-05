@@ -5,64 +5,18 @@ import { connect } from 'react-redux';
 import { toggleProfile } from '../../actions/user';
 import background from '../../assets/images/b3.jpeg';
 import profilepix from '../../assets/images/a6.jpeg';
+import PatientData from '../../components/PatientData';
+import PatientMenu from '../../components/Navigation/PatientMenu';
 
 class PatientProfile extends Component {
-	componentDidMount() {
-		// fetch profile
-	}
-
 	render() {
-		const { userID } = this.props;
+		const { patient } = this.props;
 		return (
 			<div className="layout-w">
 				<button aria-label="Close" className="close" type="button" onClick={() => this.props.toggleProfile(false)}>
 					<span className="os-icon os-icon-close"></span>
 				</button>
-				<div className="menu-w selected-menu-color-light menu-activated-on-hover menu-has-selected-link color-scheme-dark color-style-bright sub-menu-color-bright menu-position-side menu-side-left menu-layout-compact sub-menu-style-over">
-					<ul className="main-menu">
-						<li className="sub-header">
-							<span>Encounter</span>
-						</li>
-						<li>
-							<a href="index.html">
-								<div className="icon-w">
-									<div className="os-icon os-icon-layout"></div>
-								</div>
-								<span>Start Encounter</span>
-							</a>
-						</li>
-						<li className="sub-header">
-							<span>General</span>
-						</li>
-						<li className="sub-header">
-							<span>Enroll</span>
-						</li>
-						<li>
-							<a href="layouts_menu_top_image.html">
-								<div className="icon-w">
-									<div className="os-icon os-icon-layers"></div>
-								</div>
-								<span>Antenatal</span>
-							</a>
-						</li>
-						<li>
-							<a href="layouts_menu_top_image.html">
-								<div className="icon-w">
-									<div className="os-icon os-icon-layers"></div>
-								</div>
-								<span>Immunization</span>
-							</a>
-						</li>
-						<li>
-							<a href="layouts_menu_top_image.html">
-								<div className="icon-w">
-									<div className="os-icon os-icon-layers"></div>
-								</div>
-								<span>IVF</span>
-							</a>
-						</li>
-					</ul>
-				</div>
+				<PatientMenu />
 				<div className="content-w">
 					<div className="top-bar color-scheme-transparent"></div>
 					<div className="content-i">
@@ -78,7 +32,7 @@ class PatientProfile extends Component {
 															<span className="avatar w-64"><img src={profilepix} alt="" /> <i className="on"></i></span>
 														</a>
 														<div className="mx-3">
-															<h5 className="mt-2">Jacqueline Reid</h5>
+															<h5 className="mt-2">{`${patient.surname} ${patient.other_names}`}</h5>
 															<div className="text-fade text-sm">
 																<span className="m-r">Senior Industrial Designer</span> <small><i className="fa fa-map-marker mr-2"></i> London, UK</small>
 															</div>
@@ -94,19 +48,22 @@ class PatientProfile extends Component {
 										<div className="d-flex">
 											<ul className="nav nav-pills">
 												<li className="nav-item button-space">
-													<a className="btn btn-primary" href="#"><i className="os-icon os-icon-documents-03"></i><span>Upload Document</span></a>
-												</li>
-												<li className="nav-item button-space">
-													<a className="btn btn-grey" href="#"><i className="os-icon os-icon-log-out"></i><span>Other Details</span></a>
-												</li>
-												<li className="nav-item button-space">
 													<a className="btn btn-grey" href="#"><i className="os-icon os-icon-edit"></i><span>Edit Profile</span></a>
 												</li>
 												<li className="nav-item button-space">
-													<a className="btn btn-grey d-sm-inline-block" href="#"><i className="os-icon os-icon-plus-circle"></i><span>Request Admission</span></a>
+													<a className="btn btn-info d-sm-inline-block text-white" href="#"><i className="os-icon os-icon-plus-circle"></i><span>Request Admission</span></a>
 												</li>
 												<li className="nav-item button-space">
 													<a className="btn btn-grey d-sm-inline-block" href="#"><i className="os-icon os-icon-plus-circle"></i><span>Enroll Antenatal</span></a>
+												</li>
+												<li className="nav-item button-space">
+													<a className="btn btn-grey d-sm-inline-block" href="#"><i className="os-icon os-icon-plus-circle"></i><span>Enroll Immunization</span></a>
+												</li>
+												<li className="nav-item button-space">
+													<a className="btn btn-grey d-sm-inline-block" href="#"><i className="os-icon os-icon-plus-circle"></i><span>Enroll IVF</span></a>
+												</li>
+												<li className="nav-item button-space">
+													<a className="btn btn-primary" href="#"><i className="os-icon os-icon-documents-03"></i><span>Upload Document</span></a>
 												</li>
 											</ul>
 										</div>
@@ -115,82 +72,7 @@ class PatientProfile extends Component {
 								<div className="col-sm-3">
 									<div className="user-profile compact">
 										<div className="up-contents">
-											<div className="m-b">
-												<div className="row m-b">
-													<div className="col-sm-12 b-r b-b">
-
-													</div>
-												</div>
-												<div className="element-balances justify-content-between mobile-full-width">
-													<div className="balance balance-v2">
-														<div className="balance-title">
-															Outstanding balance
-														</div>
-														<div className="balance-value">
-															<span className="d-xxl-none">‎72,245</span><span className="d-none d-xxl-inline-block">171,473</span><span className="trending trending-down-basic"><span>NGN</span><i className="os-icon os-icon-arrow-2-down"></i></span>
-														</div>
-													</div>
-												</div>
-												<div className="element-box-tp">
-													<table className="table table-clean">
-														<tbody>
-															<tr>
-																<td>
-																	<div className="value">
-																		Gender
-																	</div>
-																</td>
-																<td className="text-right">
-																	<div className="value text-success">
-																		Female
-																	</div>
-
-																</td>
-															</tr>
-															<tr>
-																<td>
-																	<div className="value">
-																		Date of Birth
-																	</div>
-																</td>
-																<td className="text-right">
-																	<div className="value text-success">
-																		03 Mar 20
-																	</div>
-
-																</td>
-															</tr>
-															<tr>
-																<td>
-																	<div className="value">
-																		Insurance Status
-																	</div>
-
-																</td>
-																<td className="text-right">
-																	<div className="value text-success">
-																		Private
-																	</div>
-
-																</td>
-															</tr>
-															<tr>
-																<td>
-																	<div className="value">
-																		Admission
-																	</div>
-																</td>
-																<td className="text-right">
-																	<div className="value text-success">
-																		No
-																	</div>
-
-																</td>
-															</tr>
-														</tbody>
-													</table>
-												</div>
-											</div>
+											<PatientData patient={patient}/>
 										</div>
 									</div>
 								</div>
@@ -212,7 +94,6 @@ class PatientProfile extends Component {
 
 const mapStateToProps = (state, ownProps) => {
 	return {
-		userID: state.user.userID,
 		patient: state.user.patient,
 	}
 };

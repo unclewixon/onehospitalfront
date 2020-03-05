@@ -101,47 +101,50 @@ const LabTest = props => {
 			});
 	};
 
-  const confirmDelete = data => {
-    confirmAlert({
-      customUI: ({ onClose }) => {
-        return (
-          <div className="custom-ui">
-            <h1>Are you sure?</h1>
-            <p>You want to delete this remove ?</p>
-            <div style={{}}>
-              <button
-                className="btn btn-primary"
-                style={{ margin: 10 }}
-                onClick={onClose}
-              >
-                No
-              </button>
-              <button
-                className="btn btn-danger"
-                style={{ margin: 10 }}
-                onClick={() => {
-                  onDeleteLabTest(data);
-                  onClose();
-                }}
-              >
-                Yes, Delete it!
-              </button>
-            </div>
-          </div>
-        );
-      }
-    });
-  };
+	const confirmDelete = data => {
+		confirmAlert({
+			customUI: ({ onClose }) => {
+				return (
+					<div className="custom-ui">
+						<h1>Are you sure?</h1>
+						<p>You want to delete this remove ?</p>
+						<div style={{}}>
+							<button
+								className="btn btn-primary"
+								style={{ margin: 10 }}
+								onClick={onClose}
+							>
+								No
+							</button>
+							<button
+								className="btn btn-danger"
+								style={{ margin: 10 }}
+								onClick={() => {
+									onDeleteLabTest(data);
+									onClose();
+								}}
+							>
+								Yes, Delete it!
+							</button>
+						</div>
+					</div>
+				);
+			},
+		});
+	};
 
-  useEffect(() => {
-    props.getAllLabTests();
-    props.getAllLabTestCategories();
-    props.getAllLabTestParameters();
-  }, []);
+	useEffect(() => {
+		if (!loaded) {
+			props.getAllLabTests();
+			props.getAllLabTestCategories();
+			props.getAllLabTestParameters();
+		}
+		setLoaded(true);
+	}, [loaded, props]);
 
-  const options = props.LabParameters.map(Par => {
-    return { value: Par.name, label: Par.name };
-  });
+	const options = props.LabParameters.map(Par => {
+		return { value: Par.name, label: Par.name };
+	});
 
 	return (
 		<div className="row">
@@ -224,7 +227,11 @@ const LabTest = props => {
 								value={category}
 							>
 								{props.LabCategories.map((category, i) => {
-									return <option key={i} value={category.id}>{category.name}</option>;
+									return (
+										<option key={i} value={category.id}>
+											{category.name}
+										</option>
+									);
 								})}
 							</select>
 						</div>
