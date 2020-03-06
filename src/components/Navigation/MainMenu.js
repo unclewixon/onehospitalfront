@@ -4,7 +4,6 @@ import capitalize from 'lodash.capitalize';
 import $ from 'jquery';
 
 import avatar1 from '../../assets/images/avatar1.jpg';
-// import PatientMenu from './PatientMenu';
 import HrMenu from './HrMenu';
 // import DoctorMenu from './DoctorMenu';
 import InventoryMenu from './InventoryMenu';
