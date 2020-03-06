@@ -12,7 +12,7 @@ import Appointments from "../../components/FrontDesk/FrontDeskAppointments";
 import Incoming from "../../components/FrontDesk/Incoming";
 
 import NoMatch from "../NoMatch";
-import PayPointPage from "./PayPoint";
+import PayPointPage from "../PayPoint";
 
 const FrontDesk = props => {
   const [ShowDashboard, setDashboard] = useState(true);
@@ -75,14 +75,7 @@ const FrontDesk = props => {
                 </button>
               </div>
               <h6 className='element-header mb-3'>TODAY's APPOINTMENTS</h6>
-              <Switch>
-                <Route exact path={`${match.url}/`} component={Appointments} />
-                <Route
-                  path={`${match.url}/paypoint`}
-                  component={PayPointPage}
-                />
-                <Route component={NoMatch} />
-              </Switch>
+              <Appointments />
             </div>
           </div>
         </div>

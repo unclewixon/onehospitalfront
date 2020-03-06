@@ -24,13 +24,19 @@ const FrontDeskMenu = () => {
         </Link>
       </li>
       <li>
-        <Link to='/front-desk/staffprofile'>
+        <Link to='/front-desk/clinical-lab'>
           <div className='icon-w'>
             <div className='os-icon os-icon-layers' />
           </div>
-          <span>Staff Profile</span>
+          <span>Clinical Lab</span>
         </Link>
       </li>
+      <Link to='/front-desk/staffprofile'>
+        <div className='icon-w'>
+          <div className='os-icon os-icon-layers' />
+        </div>
+        <span>Staff Profile</span>
+      </Link>
     </>
   );
 };
