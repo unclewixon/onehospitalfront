@@ -13,6 +13,7 @@ import Incoming from "../../components/FrontDesk/Incoming";
 
 import NoMatch from "../NoMatch";
 import PayPointPage from "./PayPoint";
+import ClinicalLab from "./ClinicalLab";
 
 const FrontDesk = props => {
   const [ShowDashboard, setDashboard] = useState(true);
@@ -55,35 +56,47 @@ const FrontDesk = props => {
       <div className='content-box'>
         <div className='row'>
           <div className='col-sm-12'>
-            <div className='element-wrapper'>
-              <div className='element-actions'>
-                <button
-                  className='btn btn-primary'
-                  type='submit'
-                  onClick={RegisterNewPatient}
-                >
-                  <i className='os-icon os-icon-plus'></i>
-                  Add New Patient
-                </button>
-                <button
-                  className='btn btn-primary'
-                  type='submit'
-                  onClick={CreateNewAppointment}
-                >
-                  <i className='os-icon os-icon-plus'></i>
-                  New Appointment
-                </button>
+            {page === "clinical-lab" ? (
+              <ClinicalLab />
+            ) : (
+              <div className='element-wrapper'>
+                <div className='element-actions'>
+                  <button
+                    className='btn btn-primary'
+                    type='submit'
+                    onClick={RegisterNewPatient}
+                  >
+                    <i className='os-icon os-icon-plus'></i>
+                    Add New Patient
+                  </button>
+                  <button
+                    className='btn btn-primary'
+                    type='submit'
+                    onClick={CreateNewAppointment}
+                  >
+                    <i className='os-icon os-icon-plus'></i>
+                    New Appointment
+                  </button>
+                </div>
+                <h6 className='element-header mb-3'>TODAY's APPOINTMENTS</h6>
+                <Switch>
+                  <Route
+                    exact
+                    path={`${match.url}/`}
+                    component={Appointments}
+                  />
+                  <Route
+                    path={`${match.url}/paypoint`}
+                    component={PayPointPage}
+                  />
+                  <Route
+                    path={`${match.url}/clinical-lab`}
+                    component={ClinicalLab}
+                  />
+                  <Route component={NoMatch} />
+                </Switch>
               </div>
-              <h6 className='element-header mb-3'>TODAY's APPOINTMENTS</h6>
-              <Switch>
-                <Route exact path={`${match.url}/`} component={Appointments} />
-                <Route
-                  path={`${match.url}/paypoint`}
-                  component={PayPointPage}
-                />
-                <Route component={NoMatch} />
-              </Switch>
-            </div>
+            )}
           </div>
         </div>
       </div>
