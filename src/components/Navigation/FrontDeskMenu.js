@@ -16,7 +16,7 @@ const FrontDeskMenu = () => {
         </Link>
       </li>
       <li>
-        <Link to='/front-desk/paypoint'>
+        <Link to='/billing-paypoint'>
           <div className='icon-w'>
             <div className='os-icon os-icon-layers' />
           </div>
@@ -24,19 +24,11 @@ const FrontDeskMenu = () => {
         </Link>
       </li>
       <li>
-        <Link to='/front-desk/clinical-lab'>
+        <Link to='/lab'>
           <div className='icon-w'>
             <div className='os-icon os-icon-layers' />
           </div>
           <span>Clinical Lab</span>
-        </Link>
-      </li>
-      <li>
-        <Link to='/front-desk/staffprofile'>
-          <div className='icon-w'>
-            <div className='os-icon os-icon-layers' />
-          </div>
-          <span>Staff Profile</span>
         </Link>
       </li>
     </>
