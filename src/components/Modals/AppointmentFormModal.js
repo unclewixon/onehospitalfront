@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import { closeModals } from '../../actions/general';
@@ -32,7 +32,7 @@ const AppointmentFormModal = (props) => {
 	useEffect(() => {
 		document.body.classList.add('modal-open');
 		return () => {
-			document.body.classList.remove('modal-open');			
+			document.body.classList.remove('modal-open');
 		}
 	})
 
@@ -94,7 +94,7 @@ const AppointmentFormModal = (props) => {
 
 	useEffect(() => {
 		socket.on('appointmentSaved', (res) => {
-			setSubmitting(false);			
+			setSubmitting(false);
 			if(res.success){
 				notifySuccess('New appointment record has been saved!');
 				props.closeModals(false);
@@ -139,7 +139,7 @@ const AppointmentFormModal = (props) => {
 							<div className="modal-body">
 								<div className="form-group">
 									<label htmlFor="">Patient</label>
-									<Select 
+									<Select
 										id="patient"
 										placeholder="Select Patient"
 										options={patients}
@@ -156,7 +156,7 @@ const AppointmentFormModal = (props) => {
 									<div className="col-sm-6">
 										<div className="form-group">
 											<label htmlFor=""> Department</label>
-											<Select 
+											<Select
 												id="department"
 												placeholder="Select Department"
 												options={departments}
@@ -174,10 +174,10 @@ const AppointmentFormModal = (props) => {
 									<div className="col-sm-6">
 										<div className="form-group">
 											<label htmlFor="">Whom To See?</label>
-											<Select 
+											<Select
 												id="gender"
 												placeholder="Select Whom to see"
-												options={specializations}	
+												options={specializations}
 												ref={register({name: 'specialization_id'})}
 												onChange={evt => {
 													if (evt == null) {
@@ -185,14 +185,14 @@ const AppointmentFormModal = (props) => {
 													} else {
 													  setValue("specialization_id", String(evt.value));
 													}
-												}}									
+												}}
 											/>
 										</div>
 									</div>
 								</div>
 								<div className="form-group">
 									<label htmlFor="">Appointment Type</label>
-									<Select 
+									<Select
 										id="gender"
 										placeholder=""
 										options={options}
@@ -211,11 +211,11 @@ const AppointmentFormModal = (props) => {
 										<div className="form-group">
 											<label htmlFor=""> Appointment Date</label>
 											<div className="date-input">
-												<DatePicker 
+												<DatePicker
 													dateFormat="yyyy-MM-dd"
 													className="single-daterange form-control"
 													ref={register({name: 'appointment_date', defaultValue: appointmentDate})}
-													selected={appointmentDate} 
+													selected={appointmentDate}
 													onChange={date => {
 														setValue('appointment_date', date)
 														setAppointmentDate(date)
@@ -226,10 +226,10 @@ const AppointmentFormModal = (props) => {
 									<div className="col-sm-6">
 										<div className="form-group">
 											<label htmlFor="">Consulting Room</label>
-											<Select 
+											<Select
 												id="gender"
 												placeholder="Select"
-												options={rooms}		
+												options={rooms}
 												ref={register({name: 'consulting_room_id'})}
 												onChange={evt => {
 													if (evt == null) {
@@ -237,7 +237,7 @@ const AppointmentFormModal = (props) => {
 													} else {
 													  setValue("consulting_room_id", String(evt.value));
 													}
-												}}										
+												}}
 											/>
 										</div>
 									</div>

@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 import { formatCurrency } from '../services/utilities';
 import { viewPayrollHistory, viewCurrentPayroll, viewEditPayroll } from '../actions/general';
@@ -8,37 +9,50 @@ import { viewPayrollHistory, viewCurrentPayroll, viewEditPayroll } from '../acti
 class PayrollItem extends Component {
 	doViewPayroll = e => {
 		e.preventDefault();
-		console.log('view payroll');
-		this.props.viewPayrollHistory(true);
+		const { item } = this.props;
+		const staff = { emp_code: item.emp_code, name: item.staff_name };
+		this.props.viewPayrollHistory(true, staff);
 	};
 	
 	doViewCurrentPayroll = e => {
 		e.preventDefault();
-		console.log('current payroll');
-		const { modal } = this.props;
-		this.props.viewCurrentPayroll(true, modal);
+		const { modal, item } = this.props;
+		this.props.viewCurrentPayroll(true, modal, item.id);
 	};
 	
 	doEditPayroll = e => {
 		e.preventDefault();
-		console.log('edit payroll');
-		this.props.viewEditPayroll(true, true);
+		const { item } = this.props;
+		this.props.viewEditPayroll(true, true, item.id);
 	};
 
+	onCheckbox = ({ target }) => {
+		this.props.setChecked(target.checked, target.name);
+	}
+
 	render() {
-		const { item, modal, is_new, index } = this.props;
-		console.log(item);
+		const { item, modal, is_new, index, isChecked } = this.props;
+		const date = moment(item.payment_month, 'YYYY-MM');
 		return (
 			<tr>
-				{is_new && <td><input type="checkbox"/></td>}
+				{is_new && (
+					<td>
+						<input
+							name={item.emp_code}
+							checked={!!isChecked}
+							type="checkbox"
+							onChange={this.onCheckbox}
+						/>
+					</td>
+				)}
 				<td>{index}</td>
-				{!modal && <td>My Name</td>}
-				<td>{formatCurrency(1200000)}</td>
-				<td>{formatCurrency(2000000)}</td>
-				{!modal && <td>My Department</td>}
-				{!is_new && <td>January</td>}
-				{!is_new && <td>2020</td>}
-				{!is_new && <td>12 Jan, 2020</td>}
+				{!modal && <td>{item.staff_name}</td>}
+				<td>{formatCurrency(item.total_allowance)}</td>
+				<td>{formatCurrency(item.total_deduction)}</td>
+				{!modal && <td>{item.department}</td>}
+				{!is_new && <td>{date.format('MMMM')}</td>}
+				{!is_new && <td>{date.format('YYYY')}</td>}
+				{!is_new && <td>{moment(item.createdAt).format('D MMM, YYYY')}</td>}
 				<td className="text-right row-actions">
 					{is_new ? (
 						<a  onClick={this.doEditPayroll} className="primary" title="View Current Payslip">

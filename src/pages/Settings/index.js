@@ -2,17 +2,17 @@
 import React, { useState } from 'react';
 import { Switch, Route, Link } from 'react-router-dom';
 
-import Roles from "./Roles";
-import Lab from "./Laboratory";
-import Diagnosis from "./Diagnosis";
-import Consultation from "./Consultation";
-import RoomMgmt from "./RoomMgmt";
-import Departments from "./Departments";
-import LeaveCategory from "./LeaveCategory";
-import ServicesCategory from "./ServiceCategory";
-import Specialization from "./Specialization";
-import ConsultatingRoom from "./ConsultatingRoom";
-import NoMatch from "../NoMatch";
+import Roles from './Roles';
+import Lab from './Laboratory';
+import Diagnosis from './Diagnosis';
+import Consultation from './Consultation';
+import RoomMgmt from './RoomMgmt';
+import Departments from './Departments';
+import LeaveCategory from './LeaveCategory';
+import ServicesCategory from './ServiceCategory';
+import Specialization from './Specialization';
+import ConsultatingRoom from './ConsultatingRoom';
+import NoMatch from '../NoMatch';
 
 const Settings = ({ match, location }) => {
 	const [toggle, setToggle] = useState(false);
@@ -39,7 +39,7 @@ const Settings = ({ match, location }) => {
 						</Link>
 					</li>
 					<li className={page === 'consultation' ? 'active' : ''}>
-						<Link to="/settings/consulting-rooms">
+						<Link to="/settings/consulting-room">
 							<i className="os-icon os-icon-documents-03"/>
 							<span>Consulting<br/> Rooms MGT</span>
 						</Link>
@@ -74,7 +74,7 @@ const Settings = ({ match, location }) => {
 							<span>Services<br/>Categories</span>
 						</Link>
 					</li>
-					<li className={page === 'services-category' ? 'active' : ''}>
+					<li className={page === 'specializations' ? 'active' : ''}>
 						<Link to="/settings/specializations">
 							<i className="os-icon os-icon-layers"/>
 							<span>Specializations</span>
@@ -92,7 +92,7 @@ const Settings = ({ match, location }) => {
 				<Route path={`${match.url}/leave-category`} component={LeaveCategory} />
 				<Route path={`${match.url}/services-category`} component={ServicesCategory} />
 				<Route path={`${match.url}/specializations`} component={Specialization} />
-				<Route path={`${match.url}/consulting-rooms`} component={ConsultatingRoom} />
+				<Route path={`${match.url}/consulting-room`} component={ConsultatingRoom} />
 				<Route component={NoMatch} />
 			</Switch>
 		</div>

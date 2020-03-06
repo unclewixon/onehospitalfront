@@ -50,10 +50,10 @@ class App extends Component {
 								<div className="all-wrapper with-side-panel solid-bg-all">
 									<div className="layout-w">
 										{/* user role determines main menu */}
-										<MainMenu role="admin" theme_mode={theme_mode} />
+										<MainMenu role="front-desk" theme_mode={theme_mode} />
 										<div className="content-w">
 											{/* user role determines topbar menu */}
-											<TopBar role="admin" />
+											<TopBar role="front-desk" />
 											<Switch>
 												<Route path="/doctor" component={Doctor} />
 												<Route path="/front-desk" component={FrontDesk} />
