@@ -1,49 +1,55 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { registerNewPatient, createNewAppointment } from '../actions/general';
+import { API_URI, socket } from '../services/constants';
+import { notifyError } from '../services/notify';
+import { request } from '../services/utilities';
 
-class Queue extends Component {
+const Queue = (props) => {
+	const [queues, setQueues] = useState([]);
+
+	useEffect(() => {
+		getQueueList();
+	}, []);
+
+	useEffect(() => {
+		socket.on('appointmentSaved', (res) => {
+			if(res.success && res.queue){
+				const queue = res.queue;
+				setQueues(queues => [...queues, queue]);
+			}
+		})
+	}, [queues])
+
+	async function getQueueList() {
+		try {
+			const res = await request(`${API_URI}/front-desk/queue-system/get-lists`, 'GET', true);
+			setQueues(res); 
+		} catch (e) {
+		  	notifyError(e.message || 'could not fetch queue list');
+		}
+	}
 	
-	render() {
-		return (
-			<div className="element-wrapper compact pt-3">
-				<h6 className="element-header">Queue</h6>
-				<div className="element-box-tp">
-					<div className="todo-list">
-						<Link className="todo-item" to="/dashboard/patient/123">
+	return (
+		<div className="element-wrapper compact pt-3">
+			<h6 className="element-header">Queue</h6>
+			<div className="element-box-tp">
+				<div className="todo-list">
+					{ queues && queues.map((queue, i) => (
+						<Link className="todo-item" to="/dashboard/patient/123" key={i}>
 							<div className="ti-info">
-								<div className="ti-header">Appointment</div>
-								<div className="ti-sub-header">EMR ID: 25322</div>
+								<div className="ti-header">{queue.patientName}</div>
+								<div className="ti-sub-header">Queue No: {queue.queueNumber}</div>
 							</div>
 							<div className="ti-icon">
 								<i className="os-icon os-icon-arrow-right7" />
 							</div>
 						</Link>
-						<Link className="todo-item" to="/dashboard/patient/23">
-							<div className="ti-info">
-								<div className="ti-header">Lab</div>
-								<div className="ti-sub-header">EMR ID: 20923</div>
-							</div>
-							<div className="ti-icon">
-								<i className="os-icon os-icon-arrow-right7" />
-							</div>
-						</Link>
-						<Link className="todo-item complete" to="/dashboard/patient/3">
-							<div className="ti-info">
-								<div className="ti-header">Appointment</div>
-								<div className="ti-sub-header">EMR ID: 5343</div>
-							</div>
-							<div className="ti-icon">
-								<i className="os-icon os-icon-check" />
-							</div>
-						</Link>
-					</div>
+					))}
 				</div>
 			</div>
-		);
-	}
+		</div>
+	);
 }
 
 export default Queue;

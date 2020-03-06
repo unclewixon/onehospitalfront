@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { confirmAlert } from 'react-confirm-alert';
-import Select from 'react-select';
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import waiting from "../assets/images/waiting.gif";
+import { notifySuccess, notifyError } from "../services/notify";
+import { confirmAction } from "../services/utilities";
+import Select from "react-select";
 
 import {
 	addLabTest,
@@ -40,36 +42,43 @@ const LabTest = props => {
 		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onAddLabTest = e => {
-		e.preventDefault();
-		props
-			.addLabTest({ name, price, category, parameters, testType })
-			.then(response => {
-				setState({ ...initialState });
-				setParameter(null);
-			});
-	};
+  const onAddLabTest = e => {
+    setLoading(true);
+    e.preventDefault();
+    props
+      .addLabTest({ name, price, category, parameters, testType })
+      .then(response => {
+        setState({ ...initialState });
+        setLoading(false);
+        setParameter(null);
+        notifySuccess("Lab test created");
+      })
+      .catch(error => {
+        notifyError("Error creating lab test");
+      });
+  };
 
-	const onEditLabTest = e => {
-		setLoading(true);
-		console.log(name, price, category, parameters);
-		e.preventDefault();
-		props
-			.updateLabTest(
-				{ id: data.id, name, price, category, parameters, testType },
-				data
-			)
-			.then(response => {
-				setState({ ...initialState });
-				setSubmitButton({ create: true, edit: false });
-				setLoading(false);
-			})
-			.catch(error => {
-				setState({ ...initialState });
-				setSubmitButton({ create: true, edit: false });
-				setLoading(false);
-			});
-	};
+  const onEditLabTest = e => {
+    setLoading(true);
+    e.preventDefault();
+    props
+      .updateLabTest(
+        { id: data.id, name, price, category, parameters, testType },
+        data
+      )
+      .then(response => {
+        setState({ ...initialState });
+        setSubmitButton({ create: true, edit: false });
+        setLoading(false);
+        notifySuccess("Lab test updated");
+      })
+      .catch(error => {
+        setState({ ...initialState });
+        setSubmitButton({ create: true, edit: false });
+        setLoading(false);
+        notifyError("Error updating lab test");
+      });
+  };
 
 	const onClickEdit = data => {
 		console.log(data);
@@ -89,17 +98,17 @@ const LabTest = props => {
 		setState({ ...initialState });
 	};
 
-	const onDeleteLabTest = data => {
-		console.log(data);
-		props
-			.deleteLabTest(data)
-			.then(data => {
-				console.log(data);
-			})
-			.catch(error => {
-				console.log(error);
-			});
-	};
+  const onDeleteLabTest = data => {
+    console.log(data);
+    props
+      .deleteLabTest(data)
+      .then(data => {
+        notifySuccess("Lab test deleted");
+      })
+      .catch(error => {
+        notifyError("Error deleting lab test");
+      });
+  };
 
 	const confirmDelete = data => {
 		confirmAlert({
