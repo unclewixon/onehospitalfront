@@ -1,6 +1,14 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from "react";
+import { Dropdown } from "react-bootstrap";
+
 
 class ClinicalLab extends Component {
+  state = {};
+
+  handleEdit = () => {
+    alert("I am toSee Details this guy");
+  };
   render() {
     return (
       <>
@@ -8,8 +16,8 @@ class ClinicalLab extends Component {
           <h6 className='element-header'>Doctors Dashboard</h6>
           <div className='element-content'>
             <div className='row'>
-              <div class='col-md-12'>
-                <div class='row'>
+              <div className='col-md-12'>
+                <div className='row'>
                   <div className='col-sm-4 col-xxxl-3'>
                     <a className='element-box el-tablo'>
                       <div className='label'>Pending Requests</div>
@@ -147,50 +155,50 @@ class ClinicalLab extends Component {
 
                             <td>
                               <div className='item-action dropdown'>
-                                <a
-                                  data-toggle='dropdown'
-                                  className='text-muted'
-                                  aria-expanded='false'
-                                >
-                                  <svg
-                                    xmlns='http://www.w3.org/2000/svg'
-                                    width='16'
-                                    height='16'
-                                    viewBox='0 0 24 24'
-                                    fill='none'
-                                    stroke='currentColor'
-                                    stroke-width='2'
-                                    stroke-linecap='round'
-                                    stroke-linejoin='round'
-                                    className='feather feather-more-vertical'
+                                <Dropdown>
+                                  <Dropdown.Toggle className='dropdown-button'>
+                                    <a
+                                      data-toggle='dropdown'
+                                      className='text-muted'
+                                      aria-expanded='false'
+                                    >
+                                      <svg
+                                        xmlns='http://www.w3.org/2000/svg'
+                                        width='16'
+                                        height='16'
+                                        viewBox='0 0 24 24'
+                                        fill='none'
+                                        stroke='currentColor'
+                                        strokeWidth='2'
+                                        strokeLinecap='round'
+                                        strokenlinejoin='round'
+                                        className='feather feather-more-vertical'
+                                      >
+                                        <circle cx='12' cy='12' r='1'></circle>
+                                        <circle cx='12' cy='5' r='1'></circle>
+                                        <circle cx='12' cy='19' r='1'></circle>
+                                      </svg>
+                                    </a>
+                                  </Dropdown.Toggle>
+
+                                  <Dropdown.Menu
+                                    style={{
+                                      position: "absolute",
+                                      transform: "translate3d(16px, 20px, 0px)",
+                                      top: "0px",
+                                      left: "0px",
+                                      willChange: "transform"
+                                    }}
                                   >
-                                    <circle cx='12' cy='12' r='1'></circle>
-                                    <circle cx='12' cy='5' r='1'></circle>
-                                    <circle cx='12' cy='19' r='1'></circle>
-                                  </svg>
-                                </a>
-                                <div
-                                  className='dropdown-menu dropdown-menu-right bg-black'
-                                  role='menu'
-                                  x-placement='bottom-end'
-                                  style={{
-                                    position: "absolute",
-                                    transform: "translate3d(16px, 20px, 0px)",
-                                    top: "0px",
-                                    left: "0px",
-                                    willChange: "transform"
-                                  }}
-                                >
-                                  <a className='dropdown-item'>See detail </a>
-                                  <a className='dropdown-item download'>
-                                    Download{" "}
-                                  </a>
-                                  <a className='dropdown-item edit'>Edit</a>
-                                  <div className='dropdown-divider'></div>
-                                  <a className='dropdown-item trash'>
-                                    Delete item
-                                  </a>
-                                </div>
+                                    <Dropdown.Item onClick={this.handleEdit}>
+                                      See Details
+                                    </Dropdown.Item>
+                                    <Dropdown.Item>Download</Dropdown.Item>
+                                    <Dropdown.Item>Edit</Dropdown.Item>
+                                    <Dropdown.Divider />
+                                    <Dropdown.Item>Delete Item</Dropdown.Item>
+                                  </Dropdown.Menu>
+                                </Dropdown>
                               </div>
                             </td>
                           </tr>
@@ -220,41 +228,42 @@ class ClinicalLab extends Component {
 
                             <td>
                               <div className='item-action dropdown'>
-                                <a
-                                  data-toggle='dropdown'
-                                  className='text-muted'
-                                >
-                                  <svg
-                                    xmlns='http://www.w3.org/2000/svg'
-                                    width='16'
-                                    height='16'
-                                    viewBox='0 0 24 24'
-                                    fill='none'
-                                    stroke='currentColor'
-                                    stroke-width='2'
-                                    stroke-linecap='round'
-                                    stroke-linejoin='round'
-                                    className='feather feather-more-vertical'
-                                  >
-                                    <circle cx='12' cy='12' r='1'></circle>
-                                    <circle cx='12' cy='5' r='1'></circle>
-                                    <circle cx='12' cy='19' r='1'></circle>
-                                  </svg>
-                                </a>
-                                <div
-                                  className='dropdown-menu dropdown-menu-right bg-black'
-                                  role='menu'
-                                >
-                                  <a className='dropdown-item'>See detail </a>
-                                  <a className='dropdown-item download'>
-                                    Download{" "}
-                                  </a>
-                                  <a className='dropdown-item edit'>Edit</a>
-                                  <div className='dropdown-divider'></div>
-                                  <a className='dropdown-item trash'>
-                                    Delete item
-                                  </a>
-                                </div>
+                                <Dropdown>
+                                  <Dropdown.Toggle className='dropdown-button'>
+                                    <a
+                                      data-toggle='dropdown'
+                                      className='text-muted'
+                                      aria-expanded='false'
+                                    >
+                                      <svg
+                                        xmlns='http://www.w3.org/2000/svg'
+                                        width='16'
+                                        height='16'
+                                        viewBox='0 0 24 24'
+                                        fill='none'
+                                        stroke='currentColor'
+                                        strokeWidth='2'
+                                        strokeLinecap='round'
+                                        strokenlinejoin='round'
+                                        className='feather feather-more-vertical'
+                                      >
+                                        <circle cx='12' cy='12' r='1'></circle>
+                                        <circle cx='12' cy='5' r='1'></circle>
+                                        <circle cx='12' cy='19' r='1'></circle>
+                                      </svg>
+                                    </a>
+                                  </Dropdown.Toggle>
+
+                                  <Dropdown.Menu>
+                                    <Dropdown.Item onClick={this.handleEdit}>
+                                      See Details
+                                    </Dropdown.Item>
+                                    <Dropdown.Item>Download</Dropdown.Item>
+                                    <Dropdown.Item>Edit</Dropdown.Item>
+                                    <Dropdown.Divider />
+                                    <Dropdown.Item>Delete Item</Dropdown.Item>
+                                  </Dropdown.Menu>
+                                </Dropdown>
                               </div>
                             </td>
                           </tr>
@@ -284,41 +293,42 @@ class ClinicalLab extends Component {
 
                             <td>
                               <div className='item-action dropdown'>
-                                <a
-                                  data-toggle='dropdown'
-                                  className='text-muted'
-                                >
-                                  <svg
-                                    xmlns='http://www.w3.org/2000/svg'
-                                    width='16'
-                                    height='16'
-                                    viewBox='0 0 24 24'
-                                    fill='none'
-                                    stroke='currentColor'
-                                    stroke-width='2'
-                                    stroke-linecap='round'
-                                    stroke-linejoin='round'
-                                    className='feather feather-more-vertical'
-                                  >
-                                    <circle cx='12' cy='12' r='1'></circle>
-                                    <circle cx='12' cy='5' r='1'></circle>
-                                    <circle cx='12' cy='19' r='1'></circle>
-                                  </svg>
-                                </a>
-                                <div
-                                  className='dropdown-menu dropdown-menu-right bg-black'
-                                  role='menu'
-                                >
-                                  <a className='dropdown-item'>See detail </a>
-                                  <a className='dropdown-item download'>
-                                    Download{" "}
-                                  </a>
-                                  <a className='dropdown-item edit'>Edit</a>
-                                  <div className='dropdown-divider'></div>
-                                  <a className='dropdown-item trash'>
-                                    Delete item
-                                  </a>
-                                </div>
+                                <Dropdown>
+                                  <Dropdown.Toggle className='dropdown-button'>
+                                    <a
+                                      data-toggle='dropdown'
+                                      className='text-muted'
+                                      aria-expanded='false'
+                                    >
+                                      <svg
+                                        xmlns='http://www.w3.org/2000/svg'
+                                        width='16'
+                                        height='16'
+                                        viewBox='0 0 24 24'
+                                        fill='none'
+                                        stroke='currentColor'
+                                        strokeWidth='2'
+                                        strokeLinecap='round'
+                                        strokenlinejoin='round'
+                                        className='feather feather-more-vertical'
+                                      >
+                                        <circle cx='12' cy='12' r='1'></circle>
+                                        <circle cx='12' cy='5' r='1'></circle>
+                                        <circle cx='12' cy='19' r='1'></circle>
+                                      </svg>
+                                    </a>
+                                  </Dropdown.Toggle>
+
+                                  <Dropdown.Menu>
+                                    <Dropdown.Item onClick={this.handleEdit}>
+                                      See Details
+                                    </Dropdown.Item>
+                                    <Dropdown.Item>Download</Dropdown.Item>
+                                    <Dropdown.Item>Edit</Dropdown.Item>
+                                    <Dropdown.Divider />
+                                    <Dropdown.Item>Delete Item</Dropdown.Item>
+                                  </Dropdown.Menu>
+                                </Dropdown>
                               </div>
                             </td>
                           </tr>
@@ -348,41 +358,42 @@ class ClinicalLab extends Component {
 
                             <td>
                               <div className='item-action dropdown'>
-                                <a
-                                  data-toggle='dropdown'
-                                  className='text-muted'
-                                >
-                                  <svg
-                                    xmlns='http://www.w3.org/2000/svg'
-                                    width='16'
-                                    height='16'
-                                    viewBox='0 0 24 24'
-                                    fill='none'
-                                    stroke='currentColor'
-                                    stroke-width='2'
-                                    stroke-linecap='round'
-                                    stroke-linejoin='round'
-                                    className='feather feather-more-vertical'
-                                  >
-                                    <circle cx='12' cy='12' r='1'></circle>
-                                    <circle cx='12' cy='5' r='1'></circle>
-                                    <circle cx='12' cy='19' r='1'></circle>
-                                  </svg>
-                                </a>
-                                <div
-                                  className='dropdown-menu dropdown-menu-right bg-black'
-                                  role='menu'
-                                >
-                                  <a className='dropdown-item'>See detail </a>
-                                  <a className='dropdown-item download'>
-                                    Download{" "}
-                                  </a>
-                                  <a className='dropdown-item edit'>Edit</a>
-                                  <div className='dropdown-divider'></div>
-                                  <a className='dropdown-item trash'>
-                                    Delete item
-                                  </a>
-                                </div>
+                                <Dropdown>
+                                  <Dropdown.Toggle className='dropdown-button'>
+                                    <a
+                                      data-toggle='dropdown'
+                                      className='text-muted'
+                                      aria-expanded='false'
+                                    >
+                                      <svg
+                                        xmlns='http://www.w3.org/2000/svg'
+                                        width='16'
+                                        height='16'
+                                        viewBox='0 0 24 24'
+                                        fill='none'
+                                        stroke='currentColor'
+                                        strokeWidth='2'
+                                        strokeLinecap='round'
+                                        strokenlinejoin='round'
+                                        className='feather feather-more-vertical'
+                                      >
+                                        <circle cx='12' cy='12' r='1'></circle>
+                                        <circle cx='12' cy='5' r='1'></circle>
+                                        <circle cx='12' cy='19' r='1'></circle>
+                                      </svg>
+                                    </a>
+                                  </Dropdown.Toggle>
+
+                                  <Dropdown.Menu>
+                                    <Dropdown.Item onClick={this.handleEdit}>
+                                      See Details
+                                    </Dropdown.Item>
+                                    <Dropdown.Item>Download</Dropdown.Item>
+                                    <Dropdown.Item>Edit</Dropdown.Item>
+                                    <Dropdown.Divider />
+                                    <Dropdown.Item>Delete Item</Dropdown.Item>
+                                  </Dropdown.Menu>
+                                </Dropdown>
                               </div>
                             </td>
                           </tr>
@@ -412,41 +423,42 @@ class ClinicalLab extends Component {
 
                             <td>
                               <div className='item-action dropdown'>
-                                <a
-                                  data-toggle='dropdown'
-                                  className='text-muted'
-                                >
-                                  <svg
-                                    xmlns='http://www.w3.org/2000/svg'
-                                    width='16'
-                                    height='16'
-                                    viewBox='0 0 24 24'
-                                    fill='none'
-                                    stroke='currentColor'
-                                    stroke-width='2'
-                                    stroke-linecap='round'
-                                    stroke-linejoin='round'
-                                    className='feather feather-more-vertical'
-                                  >
-                                    <circle cx='12' cy='12' r='1'></circle>
-                                    <circle cx='12' cy='5' r='1'></circle>
-                                    <circle cx='12' cy='19' r='1'></circle>
-                                  </svg>
-                                </a>
-                                <div
-                                  className='dropdown-menu dropdown-menu-right bg-black'
-                                  role='menu'
-                                >
-                                  <a className='dropdown-item'>See detail </a>
-                                  <a className='dropdown-item download'>
-                                    Download{" "}
-                                  </a>
-                                  <a className='dropdown-item edit'>Edit</a>
-                                  <div className='dropdown-divider'></div>
-                                  <a className='dropdown-item trash'>
-                                    Delete item
-                                  </a>
-                                </div>
+                                <Dropdown>
+                                  <Dropdown.Toggle className='dropdown-button'>
+                                    <a
+                                      data-toggle='dropdown'
+                                      className='text-muted'
+                                      aria-expanded='false'
+                                    >
+                                      <svg
+                                        xmlns='http://www.w3.org/2000/svg'
+                                        width='16'
+                                        height='16'
+                                        viewBox='0 0 24 24'
+                                        fill='none'
+                                        stroke='currentColor'
+                                        strokeWidth='2'
+                                        strokeLinecap='round'
+                                        strokenlinejoin='round'
+                                        className='feather feather-more-vertical'
+                                      >
+                                        <circle cx='12' cy='12' r='1'></circle>
+                                        <circle cx='12' cy='5' r='1'></circle>
+                                        <circle cx='12' cy='19' r='1'></circle>
+                                      </svg>
+                                    </a>
+                                  </Dropdown.Toggle>
+
+                                  <Dropdown.Menu>
+                                    <Dropdown.Item onClick={this.handleEdit}>
+                                      See Details
+                                    </Dropdown.Item>
+                                    <Dropdown.Item>Download</Dropdown.Item>
+                                    <Dropdown.Item>Edit</Dropdown.Item>
+                                    <Dropdown.Divider />
+                                    <Dropdown.Item>Delete Item</Dropdown.Item>
+                                  </Dropdown.Menu>
+                                </Dropdown>
                               </div>
                             </td>
                           </tr>
@@ -476,41 +488,42 @@ class ClinicalLab extends Component {
 
                             <td>
                               <div className='item-action dropdown'>
-                                <a
-                                  data-toggle='dropdown'
-                                  className='text-muted'
-                                >
-                                  <svg
-                                    xmlns='http://www.w3.org/2000/svg'
-                                    width='16'
-                                    height='16'
-                                    viewBox='0 0 24 24'
-                                    fill='none'
-                                    stroke='currentColor'
-                                    stroke-width='2'
-                                    stroke-linecap='round'
-                                    stroke-linejoin='round'
-                                    className='feather feather-more-vertical'
-                                  >
-                                    <circle cx='12' cy='12' r='1'></circle>
-                                    <circle cx='12' cy='5' r='1'></circle>
-                                    <circle cx='12' cy='19' r='1'></circle>
-                                  </svg>
-                                </a>
-                                <div
-                                  className='dropdown-menu dropdown-menu-right bg-black'
-                                  role='menu'
-                                >
-                                  <a className='dropdown-item'>See detail </a>
-                                  <a className='dropdown-item download'>
-                                    Download{" "}
-                                  </a>
-                                  <a className='dropdown-item edit'>Edit</a>
-                                  <div className='dropdown-divider'></div>
-                                  <a className='dropdown-item trash'>
-                                    Delete item
-                                  </a>
-                                </div>
+                                <Dropdown>
+                                  <Dropdown.Toggle className='dropdown-button'>
+                                    <a
+                                      data-toggle='dropdown'
+                                      className='text-muted'
+                                      aria-expanded='false'
+                                    >
+                                      <svg
+                                        xmlns='http://www.w3.org/2000/svg'
+                                        width='16'
+                                        height='16'
+                                        viewBox='0 0 24 24'
+                                        fill='none'
+                                        stroke='currentColor'
+                                        strokeWidth='2'
+                                        strokeLinecap='round'
+                                        strokenlinejoin='round'
+                                        className='feather feather-more-vertical'
+                                      >
+                                        <circle cx='12' cy='12' r='1'></circle>
+                                        <circle cx='12' cy='5' r='1'></circle>
+                                        <circle cx='12' cy='19' r='1'></circle>
+                                      </svg>
+                                    </a>
+                                  </Dropdown.Toggle>
+
+                                  <Dropdown.Menu>
+                                    <Dropdown.Item
+                                      onClick={this.handleEdit}
+                                    ></Dropdown.Item>
+                                    <Dropdown.Item>Download</Dropdown.Item>
+                                    <Dropdown.Item>Edit</Dropdown.Item>
+                                    <Dropdown.Divider />
+                                    <Dropdown.Item>Delete Item</Dropdown.Item>
+                                  </Dropdown.Menu>
+                                </Dropdown>
                               </div>
                             </td>
                           </tr>
