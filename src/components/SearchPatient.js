@@ -67,8 +67,10 @@ class SearchPatient extends Component {
 		}, 10);
 	}
 
-	showProfile = (id) => () => {
-		const info = { id, type: 'patient' };
+	showProfile = id => () => {
+		const { patients } = this.state;
+		const patient = patients.find(p => p.id === id);
+		const info = { patient, type: 'patient' };
 		this.props.toggleProfile(true, info);
 	};
 

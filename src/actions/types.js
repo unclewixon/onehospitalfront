@@ -48,6 +48,7 @@ export const UPDATE_SUB_CATEGORY = "UPDATE_SUB_CATEGORY";
 export const LOAD_ROLES = "LOAD_ROLES";
 export const NEW_ROLE = "NEW_ROLE";
 export const UPDATE_ROLE = "UPDATE_ROLE";
+export const DELETE_ROLE = "DELETE_ROLE";
 
 // hr
 export const LOAD_STAFFS = "LOAD_STAFFS";
@@ -55,8 +56,8 @@ export const LOAD_DUTY_ROSTERS = "LOAD_DUTY_ROSTERS";
 export const LOAD_LEAVE = "LOAD_LEAVE";
 export const LOAD_APPRAISALS = "LOAD_APPRAISALS";
 export const LOAD_PAYROLL = "LOAD_PAYROLL";
-export const LOAD_UNPAID_PAYROLL = "LOAD_UNPAID_PAYROLL";
 export const ADD_STAFF = "ADD_STAFF";
+export const LOAD_UNPAID_PAYROLL = "LOAD_UNPAID_PAYROLL";
 export const LOAD_PAYROLL_HISTORY = "LOAD_PAYROLL_HISTORY";
 
 //Department
@@ -121,3 +122,9 @@ export const LOAD_COUNTRIES = "LOAD_COUNTRIES";
 export const NEXT_STEP = "NEXT_STEP";
 export const PREV_STEP = "PREV_STEP";
 export const SAVE_PATIENT_DETAILS = "SAVE_PATIENT_DETAILS";
+
+//Permission
+export const ADD_PERMISSION = "ADD_PERMISSION";
+export const GET_ALL_PERMISSIONS = "GET_ALL_PERMISSIONS";
+export const DELETE_PERMISSION = "DELETE_PERMISSION";
+export const UPDATE_PERMISSION = "UPDATE_PERMISSION";
