@@ -102,6 +102,84 @@ const RoomList = props => {
 		setLoaded(true);
 	}, [props, loaded]);
   return (
+    <div className="row">
+      <div className="col-lg-8">
+        <div className="element-wrapper">
+          <div className="element-box">
+            <h5 className="form-header">Room list</h5>
+            <div className="form-desc"></div>
+            <div className="table-responsive">
+              <table className="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Category Name</th>
+                    <th>Price</th>
+                    <th>Discount</th>
+                    <th className="text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {props.Rooms.map(Room => {
+                    return (
+                      <tr>
+                        <td>{Room.name}</td>
+                        <td>{Room.category.price}</td>
+                        <td>{Room.category.discount}</td>
+                        <td className="row-actions text-right">
+                          <a href="#">
+                            <i
+                              className="os-icon os-icon-ui-49"
+                              onClick={() => onClickEdit(Room)}
+                            ></i>
+                          </a>
+                          <a href="#">
+                            <i className="os-icon os-icon-grid-10"></i>
+                          </a>
+                          <a
+                            className="danger"
+                            onClick={() => confirmDelete(Room)}
+                          >
+                            <i className="os-icon os-icon-ui-15"></i>
+                          </a>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div className="col-lg-4 col-xxl-3  d-xxl-block">
+        <div className="pipeline white lined-warning">
+          <form onSubmit={edit ? onEditRoom : onAddRoom}>
+            <h6 className="form-header">Add New Room</h6>
+            <div className="form-group">
+              <input
+                className="form-control"
+                placeholder="Room Number"
+                type="text"
+                name="name"
+                value={name}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="form-group">
+              <select
+                className="form-control"
+                name="category"
+                value={category}
+                onChange={handleInputChange}
+              >
+                {props.Room_Categories.map(RoomCategory => {
+                  return (
+                    <option value={RoomCategory.name}>
+                      {RoomCategory.name}
+                    </option>
+                  );
+                })}
+              </select>
             </div>
             <div className="form-group">
               <input
