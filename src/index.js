@@ -29,7 +29,7 @@ import {
 import { initMode, initFullscreen, toggleProfile } from './actions/user';
 import SSRStorage from './services/storage';
 import { defaultHeaders } from './services/utilities';
-import { get_all_department, get_all_specializations } from './actions/settings';
+import { getAllDepartments, getAllSpecialization } from './actions/settings';
 import { loadInvCategories, loadInvSubCategories } from './actions/inventory';
 import { togglePreloading } from './actions/general';
 import { loadRoles } from './actions/role';
@@ -72,7 +72,7 @@ const initData = async () => {
 		]);
 
 		if (rs_depts && rs_depts.data) {
-			store.dispatch(get_all_department(rs_depts.data));
+			store.dispatch(getAllDepartments(rs_depts.data));
 		}
 		if (rs_invcategories && rs_invcategories.data) {
 			store.dispatch(loadInvCategories(rs_invcategories.data));
@@ -90,7 +90,7 @@ const initData = async () => {
 			store.dispatch(loadCountries(rs_countries.data));
 		}
 		if (rs_specializations && rs_specializations.data) {
-			store.dispatch(get_all_specializations(rs_specializations.data));
+			store.dispatch(getAllSpecialization(rs_specializations.data));
 		}
 	} catch (e) {
 		console.log(e);
