@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import axios from 'axios';
 
+import './assets/icon_fonts_assets/feather/style.css';
 import './assets/css/main.css';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -23,8 +24,9 @@ import {
 	inventorySubCatAPI,
 	rolesAPI,
 	utilityAPI,
+	USER_RECORD,
 } from './services/constants';
-import { initMode, initFullscreen } from './actions/user';
+import { initMode, initFullscreen, toggleProfile } from './actions/user';
 import SSRStorage from './services/storage';
 import { defaultHeaders } from './services/utilities';
 import { getAllDepartments, getAllSpecialization } from './actions/settings';
@@ -35,10 +37,11 @@ import { loadBanks, loadCountries } from './actions/utility';
 
 Notify.notifications.subscribe(alert => alert instanceof Function && alert());
 const store = configureStore();
+const storage = new SSRStorage();
 
 const initSettings = async () => {
-	const theme_mode = await new SSRStorage().getItem(MODE_COOKIE);
-	const fullscreen = await new SSRStorage().getItem(FULLSCREEN_COOKIE);
+	const theme_mode = await storage.getItem(MODE_COOKIE);
+	const fullscreen = await storage.getItem(FULLSCREEN_COOKIE);
 
 	store.dispatch(initMode(theme_mode));
 	store.dispatch(initFullscreen(fullscreen));
@@ -94,6 +97,13 @@ const initData = async () => {
 	}
 
 	store.dispatch(togglePreloading(false));
+
+	setTimeout(async () => {
+		const user_record = await storage.getItem(USER_RECORD);
+		if(user_record) {
+			store.dispatch(toggleProfile(true, user_record));
+		}
+	}, 200);
 };
 initData();
 

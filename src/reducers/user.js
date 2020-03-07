@@ -8,7 +8,7 @@ import {
 	TOGGLE_PROFILE,
 } from '../actions/types';
 import SSRStorage from '../services/storage';
-import { FULLSCREEN_COOKIE, MODE_COOKIE } from '../services/constants';
+import { FULLSCREEN_COOKIE, MODE_COOKIE, USER_RECORD } from '../services/constants';
 
 const storage = new SSRStorage();
 
@@ -51,6 +51,7 @@ const user = (state = INITIAL_STATE, action) => {
 				const type = action.info.type;
 				const { patient, staff } = action.info;
 				const data = type === 'patient' ? { patient } : { staff };
+				storage.setItem(USER_RECORD, { ...data, type });
 				return {
 					...state,
 					isStaffOpen: type === 'staff',
