@@ -11,7 +11,7 @@ import NoMatch from '../NoMatch';
 const Staff = ({ match }) => {
 	return (
 		<Switch>
-			<Route path={`${match.url}/list`} component={StaffList} />
+			<Route path={`${match.url}/staffs`} component={StaffList} />
 			<Route path={`${match.url}/payroll`} component={Payroll} />
 			<Route path={`${match.url}/leave-mgt`} component={LeaveMgt} />
 			<Route path={`${match.url}/roster`} component={Roster} />

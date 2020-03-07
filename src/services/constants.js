@@ -6,6 +6,7 @@ export const API_URI = `${BASE_API}`;
 export const TOKEN_COOKIE = 'EMR:TOKEN_COOKIE';
 export const MODE_COOKIE = 'EMR:MODE_COOKIE';
 export const FULLSCREEN_COOKIE = 'EMR:FULLSCREEN_COOKIE';
+export const USER_RECORD = 'EMR:USER_RECORD';
 
 export const inventoryAPI = '/inventory/stocks';
 export const inventoryCatAPI = '/inventory/categories';

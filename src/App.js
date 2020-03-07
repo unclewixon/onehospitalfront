@@ -11,6 +11,8 @@ import Splash from './components/Splash';
 import SlidingPane from './components/SlidingPane';
 import SSRStorage from './services/storage';
 import { FULLSCREEN_COOKIE, MODE_COOKIE } from './services/constants';
+import { toggleProfile } from './actions/user';
+import PatientProfile from './pages/Patient/PatientProfile';
 
 const Login = lazy(() => import('./pages/Login'));
 const Doctor = lazy(() => import('./pages/HR/Doctor'));
@@ -18,7 +20,6 @@ const NoMatch = lazy(() => import('./pages/NoMatch'));
 const FrontDesk = lazy(() => import('./pages/FrontDesk/index'));
 const InPatient = lazy(() => import('./pages/Patient/InPatient'));
 const Laboratory = lazy(() => import('./pages/Settings/Laboratory'));
-const PatientProfile = lazy(() => import('./pages/Patient/PatientProfile'));
 const Pharmacy = lazy(() => import('./pages/Inventory/Pharmacy'));
 const Vitals = lazy(() => import('./pages/Patient/Vitals'));
 const Staff = lazy(() => import('./pages/HR/index'));
@@ -27,11 +28,13 @@ const Settings = lazy(() => import('./pages/Settings'));
 const StaffProfile = lazy(() => import('./pages/HR/StaffProfile'));
 const Hmo = lazy(() => import('./pages/Hmo'));
 
+const storage = new SSRStorage();
+
 class App extends Component {
 	async componentDidMount() {
-		const fullscreen = await new SSRStorage().getItem(FULLSCREEN_COOKIE);
-		const theme_mode = await new SSRStorage().getItem(MODE_COOKIE);
-
+		const fullscreen = await storage.getItem(FULLSCREEN_COOKIE);
+		const theme_mode = await storage.getItem(MODE_COOKIE);
+		
 		window.document.body.className = `menu-position-side menu-side-left ${fullscreen ? 'full-screen' : ''} with-content-panel ${theme_mode ? 'color-scheme-dark' : ''}`;
 	}
 
@@ -106,4 +109,4 @@ const mapStateToProps = state => {
 	};
 };
 
-export default withRouter(connect(mapStateToProps)(App));
+export default withRouter(connect(mapStateToProps, { toggleProfile })(App));

@@ -8,7 +8,7 @@ const HrMenu = () => {
 				<span>HR & Payroll</span>
 			</li>
 			<li>
-				<Link to="/hr/list">
+				<Link to="/hr/staffs">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers"/>
 					</div>
