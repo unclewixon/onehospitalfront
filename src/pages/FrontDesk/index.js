@@ -5,14 +5,11 @@ import {
   registerNewPatient,
   createNewAppointment
 } from "../../actions/general";
-import { Switch, Route } from "react-router-dom";
+
 import Queue from "../../components/Queue";
 import Dashboard from "../../components/FrontDesk/FrontDeskDashboard";
 import Appointments from "../../components/FrontDesk/FrontDeskAppointments";
 import Incoming from "../../components/FrontDesk/Incoming";
-
-import NoMatch from "../NoMatch";
-import PayPointPage from "./PayPoint";
 
 const FrontDesk = props => {
   const [ShowDashboard, setDashboard] = useState(true);
@@ -75,14 +72,7 @@ const FrontDesk = props => {
                 </button>
               </div>
               <h6 className='element-header mb-3'>TODAY's APPOINTMENTS</h6>
-              <Switch>
-                <Route exact path={`${match.url}/`} component={Appointments} />
-                <Route
-                  path={`${match.url}/paypoint`}
-                  component={PayPointPage}
-                />
-                <Route component={NoMatch} />
-              </Switch>
+              <Appointments />
             </div>
           </div>
         </div>

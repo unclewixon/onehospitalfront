@@ -7,6 +7,7 @@ import searchingGIF from '../../assets/images/searching.gif';
 import { notifyError } from '../../services/notify';
 import * as moment from "moment";
 import { connect } from "react-redux";
+import { toggleProfile } from '../../actions/user';
 
 const Appointment = (props) => {
 
@@ -22,7 +23,7 @@ const Appointment = (props) => {
           setAppointments(appointments => [...appointments, appointment]);
         }
 			}
-    })
+    });
   }, [appointments])
   
   const ViewAppointmentDetail = e => {
@@ -45,6 +46,12 @@ const Appointment = (props) => {
       notifyError(e.message || 'could not fetch appointments');
 		}
   }
+
+  const showProfile = (patient) => () => {
+		const info = { id: patient.id, data: patient, type: 'patient' };
+		props.toggleProfile(true, info);
+  };
+  
   return (
     <div className="tab-content">
       <div className="tab-pane active show" id="tab_overview">
@@ -93,8 +100,8 @@ const Appointment = (props) => {
                                 </span>
                               </td>
                               <td className="nowrap">
-                                <span className="status-pill smaller green"></span>
-                                <span>Complete</span>
+                                {/* <span className="status-pill smaller green"></span> */}
+                                <span>{ appointment.status}</span>
                               </td>
                               <td className="row-actions">
                                 <a href="#" onClick={ViewAppointmentDetail}>
@@ -102,8 +109,7 @@ const Appointment = (props) => {
                                 </a>
                                 <a
                                   href="#"
-                                  data-target=".bd-example-modal-lg"
-                                  data-toggle="modal"
+                                  onClick={showProfile(appointment.patient)} 
                                 >
                                   <i className="os-icon os-icon-user"></i>
                                 </a>
@@ -155,4 +161,4 @@ const Appointment = (props) => {
     </div>
   );
 };
-export default connect(null, { viewAppointmentDetail })(Appointment);
+export default connect(null, { viewAppointmentDetail, toggleProfile })(Appointment);

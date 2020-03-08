@@ -1,125 +1,142 @@
-import React, { Fragment } from 'react';
+import React from 'react';
+import { Link, withRouter } from 'react-router-dom';
 
-const PatientMenu = () => {
+const PatientMenu = ({ location }) => {
 	return (
-		<Fragment>
-			{/* <li className="sub-header">
-				<span>Encounter</span>
-			</li>
-			<li>
-				<a href="index.html">
-					<div className="icon-w">
-						<div className="os-icon os-icon-layout"/>
-					</div>
-					<span>Start Encounter</span>
-				</a>
-			</li> */}
-			<li className="sub-header">
-				<span>General</span>
-			</li>
-			<li className="has-sub-menu">
-				<a href="layouts_menu_top_image.html">
-					<div className="icon-w">
-						<div className="os-icon os-icon-layers"/>
-					</div>
+		<div className="menu-w selected-menu-color-light menu-activated-on-hover menu-has-selected-link color-scheme-dark color-style-bright sub-menu-color-bright menu-position-side menu-side-left menu-layout-compact sub-menu-style-over">
+			<ul className="main-menu">
+				<li>
+					<Link to={`${location.pathname}#dashboard`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout"/>
+						</div>
+						<span>Dashboard</span>
+					</Link>
+				</li>
+				<li className="sub-header">
+					<span>Encounters</span>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#visit-entry`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout"/>
+						</div>
+						<span>New Vist Entry</span>
+					</Link>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#anc-visit-entry`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout"/>
+						</div>
+						<span>New Antenatal Visit Entry</span>
+					</Link>
+				</li>
+				<li className="sub-header">
 					<span>Requests</span>
-				</a>
-				<div className="sub-menu-w">
-					<div className="sub-menu-header">Requests</div>
-					<div className="sub-menu-icon">
-						<i className="os-icon os-icon-layers"/>
-					</div>
-					<div className="sub-menu-i">
-						<ul className="sub-menu">
-							<li>
-								<a href="layouts_menu_side_mini.html">Clinical Lab</a>
-							</li>
-							<li>
-								<a href="layouts_menu_side_mini.html">
-									Pharmacy (Regimen)
-								</a>
-							</li>
-							<li>
-								<a href="layouts_menu_side_full.html">Physiotherapy</a>
-							</li>
-							<li>
-								<a href="layouts_menu_side_full_dark.html">
-									Opthalmology
-								</a>
-							</li>
-							<li>
-								<a href="layouts_menu_side_transparent.html">
-									Dentistry
-								</a>
-							</li>
-							<li>
-								<a href="apps_pipeline.html">Imaging</a>
-							</li>
-							<li>
-								<a href="apps_projects.html">Procedure</a>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</li>
-			<li className="has-sub-menu">
-				<a href="layouts_menu_top_image.html">
-					<div className="icon-w">
-						<div className="os-icon os-icon-layers"/>
-					</div>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#lab`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout"/>
+						</div>
+						<span>Clinical Lab</span>
+					</Link>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#pharmacy`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout"/>
+						</div>
+						<span>Pharmacy (Regimen)</span>
+					</Link>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#physio`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout"/>
+						</div>
+						<span>Physiotherapy</span>
+					</Link>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#opthalmology`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout"/>
+						</div>
+						<span>Opthalmology</span>
+					</Link>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#dentistry`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout"/>
+						</div>
+						<span>Dentistry</span>
+					</Link>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#imaging`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout"/>
+						</div>
+						<span>Imaging</span>
+					</Link>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#procedure`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout"/>
+						</div>
+						<span>Procedure</span>
+					</Link>
+				</li>
+				<li className="sub-header">
 					<span>Reports</span>
-				</a>
-				<div className="sub-menu-w">
-					<div className="sub-menu-header">Reports</div>
-					<div className="sub-menu-icon">
-						<i className="os-icon os-icon-layers"/>
-					</div>
-					<div className="sub-menu-i">
-						<ul className="sub-menu">
-							<li>
-								<a href="layouts_menu_side_mini.html">Visit Summary</a>
-							</li>
-							<li>
-								<a href="layouts_menu_side_mini.html">
-									Appointment History
-								</a>
-							</li>
-							<li>
-								<a href="layouts_menu_side_full.html">IVF History</a>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</li>
-			<li className="sub-header">
-				<span>Enroll</span>
-			</li>
-			<li>
-				<a href="layouts_menu_top_image.html">
-					<div className="icon-w">
-						<div className="os-icon os-icon-layers"/>
-					</div>
-					<span>Antenatal</span>
-				</a>
-			</li>
-			<li>
-				<a href="layouts_menu_top_image.html">
-					<div className="icon-w">
-						<div className="os-icon os-icon-layers"/>
-					</div>
-					<span>Immunization</span>
-				</a>
-			</li>
-			<li>
-				<a href="layouts_menu_top_image.html">
-					<div className="icon-w">
-						<div className="os-icon os-icon-layers"/>
-					</div>
-					<span>IVF</span>
-				</a>
-			</li>
-		</Fragment>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#visit-summary`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout"/>
+						</div>
+						<span>Visit Summary</span>
+					</Link>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#encounters`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout"/>
+						</div>
+						<span>Encounters</span>
+					</Link>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#appointment-history`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout"/>
+						</div>
+						<span>Appointment History</span>
+					</Link>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#anc-history`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout"/>
+						</div>
+						<span>Antenatal History</span>
+					</Link>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#ivf-history`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout"/>
+						</div>
+						<span>IVF History</span>
+					</Link>
+				</li>
+			</ul>
+		</div>
 	);
 };
 
-export default PatientMenu;
+export default withRouter(PatientMenu);

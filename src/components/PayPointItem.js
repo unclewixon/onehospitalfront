@@ -5,7 +5,11 @@ export class PayPointItem extends Component {
   render() {
     const { payPoint } = this.props;
     return (
-      <div className={`balance ${payPoint.percent > 0 ? "hidden-mobile" : ""}`}>
+      <div
+        className={`balance col-md-4 ${
+          payPoint.percent > 0 ? "hidden-mobile" : ""
+        }`}
+      >
         <div className='balance-title'>{payPoint.type}</div>
         <div className='balance-value'>
           <span>&#8358;{payPoint.total}</span>

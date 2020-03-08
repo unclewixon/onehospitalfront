@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import waiting from "../assets/images/waiting.gif";
 import { notifySuccess, notifyError } from "../services/notify";
 import { confirmAction } from "../services/utilities";
+import { confirmAlert } from 'react-confirm-alert';
 import Select from "react-select";
 
 import {
@@ -110,15 +111,46 @@ const LabTest = props => {
       });
   };
 
-  const confirmDelete = data => {
-    confirmAction(onDeleteLabTest, data);
-  };
+	const confirmDelete = data => {
+		confirmAlert({
+			customUI: ({ onClose }) => {
+				return (
+					<div className="custom-ui">
+						<h1>Are you sure?</h1>
+						<p>You want to delete this remove ?</p>
+						<div style={{}}>
+							<button
+								className="btn btn-primary"
+								style={{ margin: 10 }}
+								onClick={onClose}
+							>
+								No
+							</button>
+							<button
+								className="btn btn-danger"
+								style={{ margin: 10 }}
+								onClick={() => {
+									onDeleteLabTest(data);
+									onClose();
+								}}
+							>
+								Yes, Delete it!
+							</button>
+						</div>
+					</div>
+				);
+			},
+		});
+	};
 
-  useEffect(() => {
-    props.getAllLabTests();
-    props.getAllLabTestCategories();
-    props.getAllLabTestParameters();
-  }, []);
+	useEffect(() => {
+		if (!loaded) {
+			props.getAllLabTests();
+			props.getAllLabTestCategories();
+			props.getAllLabTestParameters();
+		}
+		setLoaded(true);
+	}, [loaded, props]);
 
   const options = props.LabParameters.map(Par => {
     return { value: Par.name, label: Par.name };
@@ -205,8 +237,12 @@ const LabTest = props => {
                 value={category}
               >
                 <option value={""}> </option>;
-                {props.LabCategories.map(category => {
-                  return <option value={category.id}>{category.name}</option>;
+                {props.LabCategories.map((category, i) => {
+									return (
+										<option key={i} value={category.id}>
+											{category.name}
+										</option>
+									);
                 })}
               </select>
             </div>
