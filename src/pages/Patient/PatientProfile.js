@@ -1,4 +1,4 @@
-import React, { Component, Suspense, lazy } from 'react';
+import React, { Component, Suspense, lazy, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Switch, withRouter, Link } from 'react-router-dom';
 
@@ -63,113 +63,126 @@ class PatientProfile extends Component {
 				>
 					<span className="os-icon os-icon-close" />
 				</button>
-				<PatientMenu />
-				<div className="content-w">
-					<div className="top-bar color-scheme-transparent"></div>
-					<div className="content-i">
-						<div className="content-box">
-							<div className="row">
-								<div className="col-sm-12 pb-4">
-									<div
-										className="card-header bg-dark bg-img p-0 no-border"
-										style={{
-											backgroundImage: `url(${background})`,
-											backgroundPosition: '50% -114.052px',
-										}}
-									>
-										<div className="bg-dark-overlay r-2x no-r-b">
-											<div className="d-md-flex">
-												<div className="p-4">
-													<div className="d-flex">
-														<Link to={`${location.pathname}#dashboard`}>
-															<span className="avatar w-64">
-																<img src={profilepix} alt="" />{' '}
-																<i className="on"></i>
-															</span>
-														</Link>
-														<div className="mx-3">
-															<h5 className="mt-2">{`${patient.surname} ${patient.other_names}`}</h5>
-															<div className="text-fade text-sm">
-																<span className="m-r">
-																	Senior Industrial Designer
-																</span>{' '}
-																<small>
-																	<i className="fa fa-map-marker mr-2"></i>{' '}
-																	London, UK
-																</small>
+				{patient ? (
+					<Fragment>
+						<PatientMenu />
+						<div className="content-w">
+							<div className="top-bar color-scheme-transparent"></div>
+							<div className="content-i">
+								<div className="content-box">
+									<div className="row">
+										<div className="col-sm-12 pb-4">
+											<div
+												className="card-header bg-dark bg-img p-0 no-border"
+												style={{
+													backgroundImage: `url(${background})`,
+													backgroundPosition: '50% -114.052px',
+												}}
+											>
+												<div className="bg-dark-overlay r-2x no-r-b">
+													<div className="d-md-flex">
+														<div className="p-4">
+															<div className="d-flex">
+																<Link to={`${location.pathname}#dashboard`}>
+																	<span className="avatar w-64">
+																		<img src={profilepix} alt="" />{' '}
+																		<i className="on"></i>
+																	</span>
+																</Link>
+																<div className="mx-3">
+																	<h5 className="mt-2">{`${patient.surname} ${patient.other_names}`}</h5>
+																	<div className="text-fade text-sm">
+																		<span className="m-r">
+																			Senior Industrial Designer
+																		</span>{' '}
+																		<small>
+																			<i className="fa fa-map-marker mr-2"></i>{' '}
+																			London, UK
+																		</small>
+																	</div>
+																</div>
 															</div>
 														</div>
+														<span className="flex"></span>
+														<div className="align-items-center d-flex p-4"></div>
 													</div>
 												</div>
-												<span className="flex"></span>
-												<div className="align-items-center d-flex p-4"></div>
+											</div>
+											<div className="p-3">
+												<div className="d-flex">
+													<ul className="nav nav-pills">
+														<li className="nav-item button-space">
+															<Link className="btn btn-grey" to="#">
+																<i className="os-icon os-icon-edit"></i>
+																<span>Edit Profile</span>
+															</Link>
+														</li>
+														<li className="nav-item button-space">
+															<Link
+																className="btn btn-info d-sm-inline-block text-white"
+																to="#"
+															>
+																<i className="os-icon os-icon-plus-circle"></i>
+																<span>Request Admission</span>
+															</Link>
+														</li>
+														<li className="nav-item button-space">
+															<Link
+																className="btn btn-grey d-sm-inline-block"
+																to="#"
+															>
+																<i className="os-icon os-icon-plus-circle"></i>
+																<span>Enroll Antenatal</span>
+															</Link>
+														</li>
+														<li className="nav-item button-space">
+															<Link
+																className="btn btn-grey d-sm-inline-block"
+																to="#"
+															>
+																<i className="os-icon os-icon-plus-circle"></i>
+																<span>Enroll Immunization</span>
+															</Link>
+														</li>
+														<li className="nav-item button-space">
+															<Link
+																className="btn btn-grey d-sm-inline-block"
+																to="#"
+															>
+																<i className="os-icon os-icon-plus-circle"></i>
+																<span>Enroll IVF</span>
+															</Link>
+														</li>
+														<li className="nav-item button-space">
+															<Link className="btn btn-primary" to="#">
+																<i className="os-icon os-icon-documents-03"></i>
+																<span>Upload Document</span>
+															</Link>
+														</li>
+													</ul>
+												</div>
 											</div>
 										</div>
-									</div>
-									<div className="p-3">
-										<div className="d-flex">
-											<ul className="nav nav-pills">
-												<li className="nav-item button-space">
-													<Link className="btn btn-grey" to="#">
-														<i className="os-icon os-icon-edit"></i>
-														<span>Edit Profile</span>
-													</Link>
-												</li>
-												<li className="nav-item button-space">
-													<Link
-														className="btn btn-info d-sm-inline-block text-white"
-														to="#"
-													>
-														<i className="os-icon os-icon-plus-circle"></i>
-														<span>Request Admission</span>
-													</Link>
-												</li>
-												<li className="nav-item button-space">
-													<Link
-														className="btn btn-grey d-sm-inline-block"
-														to="#"
-													>
-														<i className="os-icon os-icon-plus-circle"></i>
-														<span>Enroll Antenatal</span>
-													</Link>
-												</li>
-												<li className="nav-item button-space">
-													<Link
-														className="btn btn-grey d-sm-inline-block"
-														to="#"
-													>
-														<i className="os-icon os-icon-plus-circle"></i>
-														<span>Enroll Immunization</span>
-													</Link>
-												</li>
-												<li className="nav-item button-space">
-													<Link
-														className="btn btn-grey d-sm-inline-block"
-														to="#"
-													>
-														<i className="os-icon os-icon-plus-circle"></i>
-														<span>Enroll IVF</span>
-													</Link>
-												</li>
-												<li className="nav-item button-space">
-													<Link className="btn btn-primary" to="#">
-														<i className="os-icon os-icon-documents-03"></i>
-														<span>Upload Document</span>
-													</Link>
-												</li>
-											</ul>
-										</div>
+										<Suspense fallback={<Splash />}>
+											<Switch>
+												<HashRoute hash={location.hash} component={Page} />
+											</Switch>
+										</Suspense>
 									</div>
 								</div>
-								<Suspense fallback={<Splash />}>
-									<Switch>
-										<HashRoute hash={location.hash} component={Page} />
-									</Switch>
-								</Suspense>
+							</div>
+						</div>
+					</Fragment>
+				) : (
+					<div className="content-w">
+						<div className="top-bar color-scheme-transparent"></div>
+						<div className="content-i">
+							<div className="content-box text-center">
+								<h5>Patient record was not found</h5>
 							</div>
 						</div>
 					</div>
-				</div>
+				)}
 			</div>
 		);
 	}

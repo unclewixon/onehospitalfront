@@ -67,9 +67,7 @@ class SearchPatient extends Component {
 		}, 10);
 	}
 
-	showProfile = id => () => {
-		const { patients } = this.state;
-		const patient = patients.find(p => p.id === id);
+	showProfile = patient => () => {
 		const info = { patient, type: 'patient' };
 		this.props.toggleProfile(true, info);
 	};
@@ -107,7 +105,7 @@ class SearchPatient extends Component {
 										//const ps = split(p.id, search);
 										return (
 											<div style={{display: 'flex'}} key={p.id}>
-												<a onClick={this.showProfile(p.id)} className="ssg-item cursor">
+												<a onClick={this.showProfile(p)} className="ssg-item cursor">
 													{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
 													<div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${p.surname} ${p.other_names}`}}/>
 												</a>

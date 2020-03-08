@@ -48,7 +48,7 @@ const Appointment = (props) => {
   }
 
   const showProfile = (patient) => () => {
-		const info = { id: patient.id, data: patient, type: 'patient' };
+		const info = { patient, type: 'patient' };
 		props.toggleProfile(true, info);
   };
   
