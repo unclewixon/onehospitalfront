@@ -12,7 +12,6 @@ import SlidingPane from "./components/SlidingPane";
 import SSRStorage from "./services/storage";
 import { FULLSCREEN_COOKIE, MODE_COOKIE } from "./services/constants";
 import { toggleProfile } from './actions/user';
-import PatientProfile from './pages/Patient/PatientProfile';
 
 const Login = lazy(() => import("./pages/Login"));
 const Doctor = lazy(() => import("./pages/HR/Doctor"));
