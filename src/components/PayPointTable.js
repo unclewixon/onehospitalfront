@@ -50,9 +50,9 @@ export class PayPointTable extends Component {
                   <td>
                     <img alt='' src={ca} style={{ width: "25px" }} />
                   </td>
-                  <td class='text-center'>
+                  <td className='text-center'>
                     <div
-                      class='status-pill red'
+                      className='status-pill red'
                       data-title='Cancelled'
                       data-toggle='tooltip'
                       data-original-title=''
@@ -67,16 +67,16 @@ export class PayPointTable extends Component {
                   <td>
                     <img alt='' src={uk} style={{ width: "25px" }} />
                   </td>
-                  <td class='text-center'>
+                  <td className='text-center'>
                     <div
-                      class='status-pill green'
+                      className='status-pill green'
                       data-title='Complete'
                       data-toggle='tooltip'
                       data-original-title=''
                       title=''
                     ></div>
                   </td>
-                  <td class='text-right'>$156</td>
+                  <td className='text-right'>$156</td>
                 </tr>
                 <tr>
                   <td>Joe Trulli</td>
@@ -84,16 +84,16 @@ export class PayPointTable extends Component {
                   <td>
                     <img alt='' src={es} style={{ width: "25px" }} />
                   </td>
-                  <td class='text-center'>
+                  <td className='text-center'>
                     <div
-                      class='status-pill yellow'
+                      className='status-pill yellow'
                       data-title='Pending'
                       data-toggle='tooltip'
                       data-original-title=''
                       title=''
                     ></div>
                   </td>
-                  <td class='text-right'>$1,120</td>
+                  <td className='text-right'>$1,120</td>
                 </tr>
                 <tr>
                   <td>Fred Kolton</td>
@@ -101,16 +101,16 @@ export class PayPointTable extends Component {
                   <td>
                     <img alt='' src={fr} style={{ width: "25px" }} />
                   </td>
-                  <td class='text-center'>
+                  <td className='text-center'>
                     <div
-                      class='status-pill green'
+                      className='status-pill green'
                       data-title='Complete'
                       data-toggle='tooltip'
                       data-original-title=''
                       title=''
                     ></div>
                   </td>
-                  <td class='text-right'>$74</td>
+                  <td className='text-right'>$74</td>
                 </tr>
               </tbody>
             </table>
