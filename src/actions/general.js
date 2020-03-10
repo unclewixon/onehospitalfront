@@ -18,7 +18,8 @@ import {
   TOGGLE_REGISTER_NEW_PATIENT,
   TOGGLE_CREATE_APPOINTMENT,
   TOGGLE_VIEW_APPOINTMENT_DETAIL,
-  TOGGLE_VIEW_PAYPOINT
+  TOGGLE_VIEW_PAYPOINT,
+  TOGGLE_UPLOAD_SERVICE
 } from "./types";
 
 export const togglePreloading = status => {
@@ -190,6 +191,7 @@ export const closeModals = () => {
     dispatch(toggleNewAppointment(false));
     dispatch(toggleViewAppointDetail(false));
     dispatch(toggleViewPayPoint(false));
+    dispatch(toggleUploadService(false));
   };
 };
 
@@ -198,7 +200,7 @@ export const closeCurrentPayRoll = is_modal => {
     if (!is_modal) {
       dispatch(toggleModal(false));
     }
-    dispatch(toggleCurrentPayroll(false, null));
+    dispatch(toggleCurrentPayroll(false));
   };
 };
 
@@ -207,7 +209,7 @@ export const closeEditPayRoll = is_modal => {
     if (!is_modal) {
       dispatch(toggleModal(false));
     }
-    dispatch(toggleEditPayroll(false, null));
+    dispatch(toggleEditPayroll(false));
   };
 };
 

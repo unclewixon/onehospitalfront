@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from "react";
 import { connect } from "react-redux";
-
 import { addTask } from "../actions/general";
+import { uploadService } from "../actions/general";
 
 const ServicesList = props => {
   const [moreDetailConsultation, setMoreDetailConsultation] = useState(false);
@@ -11,9 +11,9 @@ const ServicesList = props => {
     setMoreDetailConsultation(!moreDetailConsultation);
   };
 
-  const onAddTask = e => {
+  const onUploadService = e => {
     e.preventDefault();
-    props.addTask(true);
+    props.uploadService(true);
   };
 
   return (
@@ -35,7 +35,7 @@ const ServicesList = props => {
                   className="add-task-btn"
                   data-target="#taskModal"
                   data-toggle="modal"
-                  onClick={onAddTask}
+                  onClick={onUploadService}
                 >
                   <i className="os-icon os-icon-ui-22"></i>
                   <span>Add service</span>
@@ -419,4 +419,4 @@ const ServicesList = props => {
     </div>
   );
 };
-export default connect(null, { addTask })(ServicesList);
+export default connect(null, { uploadService })(ServicesList);
