@@ -41,7 +41,16 @@ import {
   ADD_PERMISSION,
   GET_ALL_PERMISSIONS,
   UPDATE_PERMISSION,
-  DELETE_PERMISSION
+  DELETE_PERMISSION,
+  ADD_SERVICE_CATEGORY,
+  GET_ALL_SERVICE_CATEGORIES,
+  UPDATE_SERVICE_CATEGORY,
+  DELETE_SERVICE_CATEGORY,
+  UPLOAD_SERVICE,
+  GET_ALL_SERIVCES,
+  UPDATE_SERVICE,
+  DOWNLOAD_SERVICE,
+  DELETE_SERVICE
 } from "./types";
 
 //department
@@ -333,7 +342,7 @@ export const get_all_permissions = payload => {
   };
 };
 
-const update_peermission = (payload, previousData) => {
+const update_permission = (payload, previousData) => {
   return {
     type: UPDATE_PERMISSION,
     payload,
@@ -344,6 +353,66 @@ const update_peermission = (payload, previousData) => {
 const delete_permission = payload => {
   return {
     type: DELETE_PERMISSION,
+    payload
+  };
+};
+
+//Service Category
+const add_service_category = payload => {
+  return {
+    type: ADD_SERVICE_CATEGORY,
+    payload
+  };
+};
+
+export const get_all_service_categories = payload => {
+  return {
+    type: GET_ALL_SERVICE_CATEGORIES,
+    payload
+  };
+};
+
+const update_service_category = (payload, previousData) => {
+  return {
+    type: UPDATE_SERVICE_CATEGORY,
+    payload,
+    previousData
+  };
+};
+
+const delete_service_category = payload => {
+  return {
+    type: DELETE_SERVICE_CATEGORY,
+    payload
+  };
+};
+
+//Service
+const upload_service = payload => {
+  return {
+    type: UPLOAD_SERVICE,
+    payload
+  };
+};
+
+export const get_all_services = payload => {
+  return {
+    type: GET_ALL_SERIVCES,
+    payload
+  };
+};
+
+const update_service = (payload, previousData) => {
+  return {
+    type: UPDATE_SERVICE,
+    payload,
+    previousData
+  };
+};
+
+const delete_service = payload => {
+  return {
+    type: DELETE_SERVICE,
     payload
   };
 };
@@ -446,7 +515,7 @@ export const getAllRooms = () => {
 };
 
 export const updateRoom = data => {
-  console.log(data)
+  console.log(data);
   return dispatch => {
     return axios
       .patch(`${API_URI}/rooms/${data.id}/update`, {
@@ -575,7 +644,6 @@ export const updateLabTest = data => {
     return axios
       .patch(`${API_URI}/lab-tests/${data.id}/update`, {
         name: data.name,
-
         category: data.category,
         price: data.price,
         testType: data.testType
@@ -937,7 +1005,7 @@ export const updatePermission = data => {
         name: data.name
       })
       .then(response => {
-        return dispatch(update_peermission(response.data, data));
+        return dispatch(update_permission(response.data, data));
       })
       .catch(error => {
         console.log(error);
@@ -951,6 +1019,119 @@ export const deletePermission = data => {
       .delete(`${API_URI}/settings/permissions/${data.id}`)
       .then(response => {
         return dispatch(delete_permission(data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+//Service Category
+export const addServiceCategory = data => {
+  return dispatch => {
+    return axios
+      .post(`${API_URI}/services/categories`, {
+        name: data.name
+      })
+      .then(response => {
+        return dispatch(add_service_category(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const getAllServiceCategory = data => {
+  return dispatch => {
+    return axios
+      .get(`${API_URI}/services/categories`)
+      .then(response => {
+        return dispatch(get_all_service_categories(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const updateServiceCategory = data => {
+  return dispatch => {
+    return axios
+      .patch(`${API_URI}/services/categories/${data.id}/update`, {
+        name: data.name
+      })
+      .then(response => {
+        return dispatch(update_service_category(response.data, data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const deleteServiceCategory = data => {
+  return dispatch => {
+    return axios
+      .delete(`${API_URI}/services/categories/${data.id}`)
+      .then(response => {
+        return dispatch(delete_service_category(data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+//Service
+export const uploadService = data => {
+  console.log(data)
+  return dispatch => {
+    return axios
+      .post(`${API_URI}/services/upload-services`, data)
+      .then(response => {
+        return dispatch(upload_service(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const getAllService = data => {
+  return dispatch => {
+    return axios
+      .get(`${API_URI}/services`)
+      .then(response => {
+        return dispatch(get_all_services(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const updateService = data => {
+  return dispatch => {
+    return axios
+      .patch(`${API_URI}/services/${data.id}/update`, {
+        name: data.name
+      })
+      .then(response => {
+        return dispatch(update_service(response.data, data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const deleteService = data => {
+  return dispatch => {
+    return axios
+      .delete(`${API_URI}/services/${data.id}`)
+      .then(response => {
+        return dispatch(delete_service(data));
       })
       .catch(error => {
         console.log(error);

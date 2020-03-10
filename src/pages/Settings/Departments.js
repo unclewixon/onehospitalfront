@@ -107,8 +107,9 @@ const Departments = props => {
     props.getAllDepartments();
     props.getAllStaff();
   }, []);
-
-  console.log(props.StaffList, "Staff list");
+  
+  
+ const {StaffList} = props.StaffList;
   return (
     <div className="content-i">
       <div className="content-box">
@@ -218,7 +219,7 @@ const Departments = props => {
                         onChange={handleInputChange}
                         value={headOfDept}
                       >
-                        <option value={""}> </option>
+                        <option value={headOfDept}>{props.StaffList[headOfDept]} </option>
                         {props.StaffList.map(hod => {
                           return (
                             <option value={hod.id}>

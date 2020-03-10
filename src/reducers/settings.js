@@ -39,7 +39,11 @@ import {
   GET_ALL_PERMISSIONS,
   UPDATE_PERMISSION,
   DELETE_PERMISSION,
-  LOAD_STAFFS
+  LOAD_STAFFS,
+  ADD_SERVICE_CATEGORY,
+  GET_ALL_SERVICE_CATEGORIES,
+  DELETE_SERVICE_CATEGORY,
+  UPDATE_SERVICE_CATEGORY
 } from "../actions/types";
 
 const INITIAL_STATE = {
@@ -54,7 +58,8 @@ const INITIAL_STATE = {
   consultating_room: [],
   staff_list: [],
   roles: [],
-  permissions: []
+  permissions: [],
+  service_categories: []
 };
 
 const settings = (state = INITIAL_STATE, action) => {
@@ -292,6 +297,30 @@ const settings = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         permissions: state.permissions.filter(
+          deletedItem => deletedItem.id !== action.payload.id
+        )
+      };
+    case ADD_SERVICE_CATEGORY:
+      return {
+        ...state,
+        service_categories: [...state.service_categories, action.payload]
+      };
+    case GET_ALL_SERVICE_CATEGORIES:
+      return { ...state, service_categories: action.payload };
+    case UPDATE_SERVICE_CATEGORY:
+      return {
+        ...state,
+        service_categories: [
+          ...state.service_categories.filter(
+            deletedItem => deletedItem.id !== action.previousData.id
+          ),
+          action.payload
+        ]
+      };
+    case DELETE_SERVICE_CATEGORY:
+      return {
+        ...state,
+        service_categories: state.service_categories.filter(
           deletedItem => deletedItem.id !== action.payload.id
         )
       };
