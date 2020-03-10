@@ -59,7 +59,7 @@ function PatientNOKForm (props) {
                         <div className="row">
                             <div className="col-sm">
                                 <div className="form-group">
-                                    <label htmlFor="">Surame</label>
+                                    <label htmlhtmlFor="">Surame</label>
                                     <input
                                         className="form-control"
                                         placeholder="Enter surnam name"
@@ -74,7 +74,7 @@ function PatientNOKForm (props) {
                             </div>
                             <div className="col-sm">
                                 <div className="form-group">
-                                    <label htmlFor="">Other Names</label>
+                                    <label htmlhtmlFor="">Other Names</label>
                                     <input
                                         className="form-control"
                                         placeholder="Other Names"
@@ -91,7 +91,7 @@ function PatientNOKForm (props) {
                         <div className="row">
                             <div className="col-sm">
                                 <div className="form-group">
-                                    <label htmlFor="">Date of birth</label>
+                                    <label htmlhtmlFor="">Date of birth</label>
                                     <input
                                         className="form-control"
                                         placeholder="04/12/1978"
@@ -106,7 +106,7 @@ function PatientNOKForm (props) {
                             </div>
                             <div className="col-sm">
                                 <div className="form-group">
-                                    <label htmlFor="gender">Gender</label>
+                                    <label htmlhtmlFor="gender">Gender</label>
                                     <Select 
                                         name="nok_gender"
                                         ref={register}
@@ -123,7 +123,7 @@ function PatientNOKForm (props) {
                             </div>
                             <div className="col-sm">
                                 <div className="form-group">
-                                    <label htmlFor="nok_maritalStatus">Marital Status</label>
+                                    <label htmlhtmlFor="nok_maritalStatus">Marital Status</label>
                                     <Select 
                                         name="nok_maritalStatus"
                                         ref={register}
@@ -142,7 +142,7 @@ function PatientNOKForm (props) {
                         <div className="row">
                             <div className="col-sm">
                                 <div className="form-group">
-                                    <label for="">Occupation</label>
+                                    <label htmlFor="">Occupation</label>
                                     <input
                                         className="form-control"
                                         placeholder=""
@@ -154,7 +154,7 @@ function PatientNOKForm (props) {
                             </div>
                             <div className="col-sm">
                                 <div className="form-group">
-                                    <label for="">Ethnicity</label>
+                                    <label htmlFor="">Ethnicity</label>
                                     <Select 
                                         id="nok_ethnicity"
                                         ref={register}
@@ -173,7 +173,7 @@ function PatientNOKForm (props) {
                         <div className="row">
                             <div className="col-sm">
                                 <div className="form-group">
-                                    <label htmlFor="">Address</label>
+                                    <label htmlhtmlFor="">Address</label>
                                     <input
                                         className="form-control"
                                         name="nok_address"
@@ -184,7 +184,7 @@ function PatientNOKForm (props) {
                             </div>
                             <div className="col-sm">
                                 <div className="form-group">
-                                    <label htmlFor="">Phone Number</label>
+                                    <label htmlhtmlFor="">Phone Number</label>
                                     <input
                                         className="form-control"
                                         name="nok_phoneNumber"
@@ -195,7 +195,7 @@ function PatientNOKForm (props) {
                             </div>
                             <div className="col-sm">
                                 <div className="form-group">
-                                    <label htmlFor="">Email</label>
+                                    <label htmlhtmlFor="">Email</label>
                                     <input
                                         className="form-control"
                                         name="nok_email"
@@ -214,7 +214,6 @@ function PatientNOKForm (props) {
                             type="button"
                             onClick={() => props.prevStep(1)}
                         >
-                            {' '}
                             Previous
                         </button>
                         <button

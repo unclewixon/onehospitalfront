@@ -12,6 +12,8 @@ a {
 button {
 	outline: 0 none !important;
 }
+.element-wrapper {padding-bottom: 1.5rem;}
+.ant-tooltip {z-index: 9999;}
 .text-bold {
 	font-weight: bold !important;
 }
@@ -193,7 +195,7 @@ button {
 	border-radius: 6px;
 
 	.ae-side-menu {
-		flex: 0 0 200px;
+		flex: 0 0 210px;
 	}
 
 	&.compact-menu {

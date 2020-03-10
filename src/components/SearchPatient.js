@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import debounce from 'lodash.debounce';
 import size from 'lodash.size';
+// import template from 'lodash.template';
+// import split from 'lodash.split';
 
 import searchingGIF from '../assets/images/searching.gif';
 import { request } from '../services/utilities';
@@ -37,7 +39,6 @@ class SearchPatient extends Component {
 			try {
 				this.setState({ searching: true, error: false, hasSearched: true });
 				const patients = await request(`${API_URI}${searchAPI}?q=${searchTerm}`, 'GET', true);
-				// console.log(rs);
 				this.setState({ searching: false, patients });
 			} catch(e) {
 				this.setState({ searching: false });
@@ -66,8 +67,8 @@ class SearchPatient extends Component {
 		}, 10);
 	}
 
-	showProfile = (id) => () => {
-		const info = { id, type: 'patient' };
+	showProfile = patient => () => {
+		const info = { patient, type: 'patient' };
 		this.props.toggleProfile(true, info);
 	};
 
@@ -101,12 +102,12 @@ class SearchPatient extends Component {
 										<div className="alert alert-danger">No Patient Record(s) Found!</div>
 									)}
 									{patients.map(p => {
-										// const ps = split(p.id, search);
+										//const ps = split(p.id, search);
 										return (
 											<div style={{display: 'flex'}} key={p.id}>
-												<a onClick={this.showProfile(p.id)} className="ssg-item cursor">
+												<a onClick={this.showProfile(p)} className="ssg-item cursor">
 													{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
-													<div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${p.surname + ' ' +p.other_names}`}}/>
+													<div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${p.surname} ${p.other_names}`}}/>
 												</a>
 											</div>
 										)

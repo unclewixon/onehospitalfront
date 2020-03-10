@@ -195,7 +195,7 @@ class ModalViewAppointment extends Component {
 												</div>
 											</div>
 											<div className="form-group">
-												<label for=""> Email address</label>
+												<label htmlFor=""> Email address</label>
 												<input
 													className="form-control"
 													data-error="Your email address is invalid"

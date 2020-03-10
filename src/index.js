@@ -4,10 +4,11 @@ import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import axios from 'axios';
 
+import './assets/icon_fonts_assets/feather/style.css';
 import './assets/css/main.css';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-datepicker/dist/react-datepicker.css';
-import 'react-confirm-alert/src/react-confirm-alert.css'; 
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 import App from './App';
 import * as serviceWorker from './serviceWorker';
@@ -23,11 +24,12 @@ import {
 	inventorySubCatAPI,
 	rolesAPI,
 	utilityAPI,
+	USER_RECORD,
 } from './services/constants';
-import { initMode, initFullscreen } from './actions/user';
+import { initMode, initFullscreen, toggleProfile } from './actions/user';
 import SSRStorage from './services/storage';
 import { defaultHeaders } from './services/utilities';
-import { loadDepartments } from './actions/setting';
+import { getAllDepartments, getAllSpecialization } from './actions/settings';
 import { loadInvCategories, loadInvSubCategories } from './actions/inventory';
 import { togglePreloading } from './actions/general';
 import { loadRoles } from './actions/role';
@@ -35,10 +37,11 @@ import { loadBanks, loadCountries } from './actions/utility';
 
 Notify.notifications.subscribe(alert => alert instanceof Function && alert());
 const store = configureStore();
+const storage = new SSRStorage();
 
 const initSettings = async () => {
-	const theme_mode = await new SSRStorage().getItem(MODE_COOKIE);
-	const fullscreen = await new SSRStorage().getItem(FULLSCREEN_COOKIE);
+	const theme_mode = await storage.getItem(MODE_COOKIE);
+	const fullscreen = await storage.getItem(FULLSCREEN_COOKIE);
 
 	store.dispatch(initMode(theme_mode));
 	store.dispatch(initFullscreen(fullscreen));
@@ -57,6 +60,7 @@ const initData = async () => {
 			rs_roles,
 			rs_banks,
 			rs_countries,
+			rs_specializations,
 		] = await Promise.all([
 			axiosFetch(`${API_URI}${departmentAPI}`),
 			axiosFetch(`${API_URI}${inventoryCatAPI}`),
@@ -64,10 +68,11 @@ const initData = async () => {
 			axiosFetch(`${API_URI}${rolesAPI}`),
 			axiosFetch(`${API_URI}${utilityAPI}/banks`),
 			axiosFetch(`${API_URI}${utilityAPI}/countries`),
+			axiosFetch(`${API_URI}/specializations`),
 		]);
 
 		if (rs_depts && rs_depts.data) {
-			store.dispatch(loadDepartments(rs_depts.data));
+			store.dispatch(getAllDepartments(rs_depts.data));
 		}
 		if (rs_invcategories && rs_invcategories.data) {
 			store.dispatch(loadInvCategories(rs_invcategories.data));
@@ -84,11 +89,21 @@ const initData = async () => {
 		if (rs_countries && rs_countries.data) {
 			store.dispatch(loadCountries(rs_countries.data));
 		}
+		if (rs_specializations && rs_specializations.data) {
+			store.dispatch(getAllSpecialization(rs_specializations.data));
+		}
 	} catch (e) {
 		console.log(e);
 	}
 
 	store.dispatch(togglePreloading(false));
+
+	setTimeout(async () => {
+		const user_record = await storage.getItem(USER_RECORD);
+		if(user_record) {
+			store.dispatch(toggleProfile(true, user_record));
+		}
+	}, 200);
 };
 initData();
 

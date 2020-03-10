@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import waiting from "../../assets/images/waiting.gif";
@@ -168,7 +169,7 @@ const LeaveCategory = props => {
                       Add New Leave category
                     </h5>
                     <div className="form-group">
-                      <label className="lighter" for="">
+                      <label className="lighter" htmlFor="">
                         Type of leave
                       </label>
                       <div className="input-group mb-2 mr-sm-2 mb-sm-0">
@@ -183,7 +184,7 @@ const LeaveCategory = props => {
                       </div>
                     </div>
                     <div className="form-group">
-                      <label className="lighter" for="">
+                      <label className="lighter" htmlFor="">
                         Leave duration
                       </label>
                       <div className="input-group mb-2 mr-sm-2 mb-sm-0">

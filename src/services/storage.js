@@ -83,6 +83,6 @@ export default class SSRStorage {
 	}
 
 	async removeCookie(key, options) {
-		await this.$cookies.remove(key, { path: '/' });
+		this.$cookies.remove(key, { path: '/' });
 	}
 }

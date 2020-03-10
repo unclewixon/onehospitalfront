@@ -1,3 +1,5 @@
+import socketIOClient from "socket.io-client";
+
 export const DEBUG = process.env.REACT_APP_DEBUG;
 export const APP_NAME = process.env.REACT_APP_NAME;
 export const BASE_API = process.env.REACT_APP_API;
@@ -6,6 +8,8 @@ export const API_URI = `${BASE_API}`;
 export const TOKEN_COOKIE = 'EMR:TOKEN_COOKIE';
 export const MODE_COOKIE = 'EMR:MODE_COOKIE';
 export const FULLSCREEN_COOKIE = 'EMR:FULLSCREEN_COOKIE';
+export const USER_RECORD = 'EMR:USER_RECORD';
+export const socket = socketIOClient(API_URI, {transports: ['websocket']});
 
 export const inventoryAPI = '/inventory/stocks';
 export const inventoryCatAPI = '/inventory/categories';
@@ -18,6 +22,21 @@ export const searchAPI = '/patient/find';
 export const departmentAPI = '/departments';
 export const utilityAPI = '/utility';
 export const payrollAPI = '/hr/payroll';
+
+export const months = [
+	'January',
+	'February',
+	'March',
+	'April',
+	'May',
+	'June',
+	'July',
+	'August',
+	'September',
+	'October',
+	'November',
+	'December',
+];
 
 export const ethnicities = [
     {value: 'Igbo', label: 'Igbo'},
@@ -77,12 +96,11 @@ export const gender = [
 
 export const maritalStatus = [
     {value: 'Single', label: 'Single'},
-    {value: 'Married', label: 'Married'},    
+    {value: 'Married', label: 'Married'},
 ];
 
 export const insuranceStatus = [
     {value: 'HMO', label: 'HMO'},
-    {value: 'Cooperate', label: 'Cooperate'},    
-    {value: 'Private', label: 'Private'},    
+    {value: 'Cooperate', label: 'Cooperate'},
+    {value: 'Private', label: 'Private'},
 ];
-

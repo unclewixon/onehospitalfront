@@ -250,11 +250,11 @@ const settings = (state = INITIAL_STATE, action) => {
           deletedItem => deletedItem.id !== action.payload.id
         )
       };
-    case ADD_CONSULTATING_ROOM:
-      return {
-        ...state,
-        consultating_room: [...state.consultating_room, action.payload]
-      };
+    // case ADD_CONSULTATING_ROOM:
+    //   return {
+    //     ...state,
+    //     consultating_room: [...state.consultating_room, action.payload]
+    //   };
     case GET_ALL_CONSULTATING_ROOMS:
       return { ...state, consultating_room: action.payload };
     case UPDATE_CONSULTATING_ROOM:

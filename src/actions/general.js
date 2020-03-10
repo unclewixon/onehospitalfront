@@ -18,6 +18,7 @@ import {
   TOGGLE_REGISTER_NEW_PATIENT,
   TOGGLE_CREATE_APPOINTMENT,
   TOGGLE_VIEW_APPOINTMENT_DETAIL,
+  TOGGLE_VIEW_PAYPOINT,
   TOGGLE_UPLOAD_SERVICE
 } from "./types";
 
@@ -132,10 +133,11 @@ export const toggleViewAppraisal = status => {
 };
 
 // payroll
-export const toggleViewPayrollHistory = status => {
+export const toggleViewPayrollHistory = (status, staff) => {
   return {
     type: TOGGLE_VIEW_PAYROLL_HISTORY,
-    payload: status
+    payload: status,
+    staff
   };
 };
 
@@ -146,23 +148,25 @@ export const togglePreparePayroll = status => {
   };
 };
 
-export const toggleCurrentPayroll = status => {
+export const toggleCurrentPayroll = (status, id) => {
   return {
     type: TOGGLE_VIEW_CURRENT_PAYROLL,
-    payload: status
+    payload: status,
+    id
   };
 };
 
-export const toggleEditPayroll = status => {
+export const toggleEditPayroll = (status, id) => {
   return {
     type: TOGGLE_EDIT_PAYROLL,
-    payload: status
+    payload: status,
+    id
   };
 };
 
-export const toggleUploadService = status => {
+export const toggleViewPayPoint = status => {
   return {
-    type: TOGGLE_UPLOAD_SERVICE,
+    type: TOGGLE_VIEW_PAYPOINT,
     payload: status
   };
 };
@@ -186,6 +190,7 @@ export const closeModals = () => {
     dispatch(toggleRegisterNewPatient(false));
     dispatch(toggleNewAppointment(false));
     dispatch(toggleViewAppointDetail(false));
+    dispatch(toggleViewPayPoint(false));
     dispatch(toggleUploadService(false));
   };
 };
@@ -298,22 +303,22 @@ export const viewAppraisal = action => {
   };
 };
 
-export const viewPayrollHistory = action => {
+export const viewPayrollHistory = (action, staff) => {
   return dispatch => {
     dispatch(closeModals());
     dispatch(toggleModal(true));
-    dispatch(toggleViewPayrollHistory(action));
+    dispatch(toggleViewPayrollHistory(action, staff));
   };
 };
 
-export const viewCurrentPayroll = (action, isModal) => {
+export const viewCurrentPayroll = (action, isModal, id) => {
   return dispatch => {
     if (!isModal) {
       dispatch(closeModals());
       dispatch(toggleModal(true));
     }
     dispatch(toggleIsModal(isModal ? true : false));
-    dispatch(toggleCurrentPayroll(action));
+    dispatch(toggleCurrentPayroll(action, id));
   };
 };
 
@@ -325,17 +330,19 @@ export const preparePayroll = action => {
   };
 };
 
-export const viewEditPayroll = (action, isModal) => {
+export const viewEditPayroll = (action, isModal, id) => {
   return dispatch => {
     dispatch(toggleIsModal(isModal ? true : false));
-    dispatch(toggleEditPayroll(action));
+    dispatch(toggleEditPayroll(action, id));
   };
 };
 
-export const uploadService = action => {
+//paypoint
+
+export const viewPayPoint = action => {
   return dispatch => {
     dispatch(closeModals());
     dispatch(toggleModal(true));
-    dispatch(toggleUploadService(action));
+    dispatch(toggleViewPayPoint(action));
   };
 };

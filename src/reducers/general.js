@@ -17,6 +17,7 @@ import {
   TOGGLE_VIEW_CURRENT_PAYROLL,
   TOGGLE_PREPARE_PAYROLL,
   TOGGLE_EDIT_PAYROLL,
+  TOGGLE_VIEW_PAYPOINT,
   TOGGLE_UPLOAD_SERVICE
 } from "../actions/types";
 
@@ -38,6 +39,9 @@ const INITIAL_STATE = {
   current_payroll: false,
   prepare_payroll: false,
   edit_payroll: false,
+  view_paypoint: false,
+  payroll_id: null,
+  payroll_staff: null,
   upload_service: false
 };
 
@@ -72,13 +76,23 @@ const general = (state = INITIAL_STATE, action) => {
     case TOGGLE_VIEW_APPRAISAL:
       return { ...state, view_appraisal: action.payload };
     case TOGGLE_VIEW_PAYROLL_HISTORY:
-      return { ...state, view_payroll_history: action.payload };
+      return {
+        ...state,
+        view_payroll_history: action.payload,
+        payroll_staff: action.staff
+      };
     case TOGGLE_VIEW_CURRENT_PAYROLL:
-      return { ...state, current_payroll: action.payload };
+      return {
+        ...state,
+        current_payroll: action.payload,
+        payroll_id: action.id
+      };
     case TOGGLE_PREPARE_PAYROLL:
       return { ...state, prepare_payroll: action.payload };
     case TOGGLE_EDIT_PAYROLL:
-      return { ...state, edit_payroll: action.payload };
+      return { ...state, edit_payroll: action.payload, payroll_id: action.id };
+    case TOGGLE_VIEW_PAYPOINT:
+      return { ...state, view_paypoint: action.payload };
     case TOGGLE_UPLOAD_SERVICE:
       return { ...state, upload_service: action.payload };
     default:
