@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from "react";
-import Queue from "../../components/Queue";
-import SaleSummary from "../../components/SaleSummary";
-import Overall from "../../components/Overall";
+import Queue from "../components/Queue";
+import SaleSummary from "../components/SaleSummary";
+import Overall from "../components/Overall";
 
 export class Pharmacy2 extends Component {
   state = {
