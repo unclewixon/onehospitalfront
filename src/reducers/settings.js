@@ -43,7 +43,15 @@ import {
   ADD_SERVICE_CATEGORY,
   GET_ALL_SERVICE_CATEGORIES,
   DELETE_SERVICE_CATEGORY,
-  UPDATE_SERVICE_CATEGORY
+  UPDATE_SERVICE_CATEGORY,
+  UPLOAD_SERVICE,
+  GET_ALL_SERIVCES,
+  UPDATE_SERVICE,
+  DELETE_SERVICE,
+  UPDATE_DIAGNOSIS,
+  GET_ALL_DIAGNOSISES,
+  DELETE_DIAGNOSIS,
+  UPLOAD_DIAGNOSIS
 } from "../actions/types";
 
 const INITIAL_STATE = {
@@ -59,7 +67,9 @@ const INITIAL_STATE = {
   staff_list: [],
   roles: [],
   permissions: [],
-  service_categories: []
+  service_categories: [],
+  services: [],
+  diagnosis: []
 };
 
 const settings = (state = INITIAL_STATE, action) => {
@@ -321,6 +331,44 @@ const settings = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         service_categories: state.service_categories.filter(
+          deletedItem => deletedItem.id !== action.payload.id
+        )
+      };
+    case GET_ALL_SERIVCES:
+      return { ...state, services: action.payload };
+    case UPDATE_SERVICE:
+      return {
+        ...state,
+        services: [
+          ...state.services.filter(
+            deletedItem => deletedItem.id !== action.previousData.id
+          ),
+          action.payload
+        ]
+      };
+    case DELETE_DIAGNOSIS:
+      return {
+        ...state,
+        diagnosis: state.diagnosis.filter(
+          deletedItem => deletedItem.id !== action.payload.id
+        )
+      };
+    case GET_ALL_DIAGNOSISES:
+      return { ...state, diagnosis: action.payload };
+    case UPDATE_DIAGNOSIS:
+      return {
+        ...state,
+        diagnosis: [
+          ...state.diagnosis.filter(
+            deletedItem => deletedItem.id !== action.previousData.id
+          ),
+          action.payload
+        ]
+      };
+    case DELETE_DIAGNOSIS:
+      return {
+        ...state,
+        diagnosis: state.diagnosis.filter(
           deletedItem => deletedItem.id !== action.payload.id
         )
       };

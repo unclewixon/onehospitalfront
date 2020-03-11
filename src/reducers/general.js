@@ -18,7 +18,8 @@ import {
   TOGGLE_PREPARE_PAYROLL,
   TOGGLE_EDIT_PAYROLL,
   TOGGLE_VIEW_PAYPOINT,
-  TOGGLE_UPLOAD_SERVICE
+  TOGGLE_UPLOAD_SERVICE,
+  TOGGLE_UPLOAD_DIAGNOSIS
 } from "../actions/types";
 
 const INITIAL_STATE = {
@@ -42,7 +43,8 @@ const INITIAL_STATE = {
   view_paypoint: false,
   payroll_id: null,
   payroll_staff: null,
-  upload_service: false
+  upload_service: false,
+  upload_diagnosis: false
 };
 
 const general = (state = INITIAL_STATE, action) => {
@@ -95,6 +97,8 @@ const general = (state = INITIAL_STATE, action) => {
       return { ...state, view_paypoint: action.payload };
     case TOGGLE_UPLOAD_SERVICE:
       return { ...state, upload_service: action.payload };
+    case TOGGLE_UPLOAD_DIAGNOSIS:
+      return { ...state, upload_diagnosis: action.payload };
     default:
       return state;
   }
