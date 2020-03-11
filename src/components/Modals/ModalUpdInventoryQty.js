@@ -14,10 +14,17 @@ class ModalUpdInventoryQty extends Component {
 
 	render() {
 		return (
-			<div className="onboarding-modal modal fade animated show" role="dialog" style={{ display: 'block' }}>
+			<div
+				className="onboarding-modal modal fade animated show"
+				role="dialog"
+				style={{ display: 'block' }}>
 				<div className="modal-dialog modal-sm modal-centered" role="document">
 					<div className="modal-content text-center">
-						<button aria-label="Close" className="close" type="button" onClick={() => this.props.closeModals(false)}>
+						<button
+							aria-label="Close"
+							className="close"
+							type="button"
+							onClick={() => this.props.closeModals(false)}>
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
@@ -27,16 +34,24 @@ class ModalUpdInventoryQty extends Component {
 									<div className="row">
 										<div className="col-sm-12">
 											<div className="form-group">
-												<label htmlFor="">Name</label>
-												<input className="form-control" placeholder="Enter quantity" disabled="disabled" value="Surgical Blade" />
+												<label>Name</label>
+												<input
+													className="form-control"
+													placeholder="Enter quantity"
+													disabled="disabled"
+													value="Surgical Blade"
+												/>
 											</div>
 										</div>
 									</div>
 									<div className="row">
 										<div className="col-sm-12">
 											<div className="form-group">
-												<label htmlFor="">Quantity</label>
-												<input className="form-control" placeholder="Enter quantity" />
+												<label>Quantity</label>
+												<input
+													className="form-control"
+													placeholder="Enter quantity"
+												/>
 											</div>
 										</div>
 									</div>

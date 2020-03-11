@@ -90,7 +90,7 @@ const Departments = (props) => {
 			...prevState,
 			name: data.name,
 			headOfDept: data.id,
-			hod: data.staff.first_name + ' ' + data.staff.last_name,
+			hod: data.staff ? `${data.staff.first_name} ${data.staff.last_name}` : '',
 			description: data.description,
 		}));
 		getDataToEdit(data);
@@ -147,9 +147,9 @@ const Departments = (props) => {
 												</tr>
 											</thead>
 											<tbody>
-												{props.departments.map((department) => {
+												{props.departments.map((department, i) => {
 													return (
-														<tr>
+														<tr key={i}>
 															<td className="nowrap">
 																<span
 																	className={
@@ -197,9 +197,7 @@ const Departments = (props) => {
 									<form onSubmit={edit ? onEditDept : onCreateDepartment}>
 										<h5 className="element-box-header">Add New Department</h5>
 										<div className="form-group">
-											<label className="lighter" for="">
-												Name of Department
-											</label>
+											<label className="lighter">Name of Department</label>
 											<input
 												className="form-control"
 												placeholder="Enter Department Name..."
@@ -210,18 +208,16 @@ const Departments = (props) => {
 											/>
 										</div>
 										<div className="form-group">
-											<label className="lighter" for="">
-												Head of Department
-											</label>
+											<label className="lighter">Head of Department</label>
 											<select
 												className="form-control"
 												name="headOfDept"
 												onChange={handleInputChange}
 												value={headOfDept}>
 												<option value={''}> </option>
-												{props.StaffList.map((hod) => {
+												{props.StaffList.map((hod, i) => {
 													return (
-														<option value={hod.id}>
+														<option value={hod.id} key={i}>
 															{hod.first_name} {hod.last_name}
 														</option>
 													);
@@ -229,9 +225,7 @@ const Departments = (props) => {
 											</select>
 										</div>
 										<div className="form-group">
-											<label className="lighter" for="">
-												Description
-											</label>
+											<label className="lighter">Description</label>
 											<div className="form-group">
 												<textarea
 													className="form-control"

@@ -12,20 +12,20 @@ class StaffItem extends Component {
 
 	toggle = () => {
 		this.setState({ collapsed: !this.state.collapsed });
-	}
+	};
 
-	doEditStaff = e => {
+	doEditStaff = (e) => {
 		e.preventDefault();
 		console.log('edit staff');
 		this.props.editStaff(true);
 	};
 
-	doEnable = e => {
+	doEnable = (e) => {
 		e.preventDefault();
 		console.log('enable staff');
 	};
 
-	doDisable = e => {
+	doDisable = (e) => {
 		e.preventDefault();
 		console.log('disable staff');
 	};
@@ -36,18 +36,31 @@ class StaffItem extends Component {
 		return (
 			<>
 				<tr>
-					<td><div role="button" tabIndex="0" className={`row-expand-icon ${collapsed ? 'row-collapsed' : 'row-expanded'}`} onClick={this.toggle}/></td>
+					<td>
+						<div
+							role="button"
+							tabIndex="0"
+							className={`row-expand-icon ${
+								collapsed ? 'row-collapsed' : 'row-expanded'
+							}`}
+							onClick={this.toggle}
+						/>
+					</td>
 					<td>{staff.emp_code}</td>
 					<td>{`${staff.first_name} ${staff.last_name}`}</td>
 					<td>{staff.user.username}</td>
 					<td>{staff.job_title}</td>
 					<td>{staff.phone_number}</td>
-					<td>{staff.department.name}</td>
+					<td>{staff.department ? staff.department.name : ''}</td>
 					<td className="text-center">
 						{staff.isActive ? (
-							<Tooltip title="Enabled"><div className="status-pill green"/></Tooltip>
+							<Tooltip title="Enabled">
+								<div className="status-pill green" />
+							</Tooltip>
 						) : (
-							<Tooltip title="Disabled"><div className="status-pill red"/></Tooltip>
+							<Tooltip title="Disabled">
+								<div className="status-pill red" />
+							</Tooltip>
 						)}
 					</td>
 					<td className="text-right row-actions">
@@ -55,11 +68,17 @@ class StaffItem extends Component {
 							<i className="os-icon os-icon-edit-32" />
 						</a> */}
 						{staff.isActive ? (
-							<a onClick={this.doDisable}className="danger" title="Disable Staff">
+							<a
+								onClick={this.doDisable}
+								className="danger"
+								title="Disable Staff">
 								<i className="os-icon os-icon-x-circle" />
 							</a>
 						) : (
-							<a onClick={this.doEnable} className="success" title="Enable Staff">
+							<a
+								onClick={this.doEnable}
+								className="success"
+								title="Enable Staff">
 								<i className="os-icon os-icon-check-circle" />
 							</a>
 						)}
@@ -67,7 +86,7 @@ class StaffItem extends Component {
 				</tr>
 				{!collapsed && (
 					<tr className="expanded-row">
-						<td/>
+						<td />
 						<td colSpan="8">
 							<div className="table-responsive">
 								<table className="table table-striped table-sm">

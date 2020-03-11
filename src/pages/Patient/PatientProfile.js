@@ -15,6 +15,7 @@ const Dashboard = lazy(() => import('../../components/Patient/Dashboard'));
 const Lab = lazy(() => import('../../components/Patient/Lab'));
 const Encounter = lazy(() => import('../../components/Patient/Encounter'));
 const Pharmacy = lazy(() => import('../../components/Patient/Pharmacy'));
+const Vitals = lazy(() => import('../../components/Patient/Vitals'));
 
 const storage = new SSRStorage();
 
@@ -27,6 +28,8 @@ const Page = ({ location }) => {
 			return <Lab />;
 		case 'pharmacy':
 			return <Pharmacy />;
+		case 'vitals':
+			return <Vitals />;
 		case 'dashboard':
 		default:
 			return <Dashboard />;
@@ -41,11 +44,11 @@ class PatientProfile extends Component {
 
 	componentDidMount() {
 		const { location } = this.props;
-		if(!location.hash){
+		if (!location.hash) {
 			this.props.history.push(`${location.pathname}#dashboard`);
 		}
 	}
-	
+
 	componentWillUnmount() {
 		const { location } = this.props;
 		this.props.history.push(location.pathname);
@@ -59,8 +62,7 @@ class PatientProfile extends Component {
 					aria-label="Close"
 					className="close"
 					type="button"
-					onClick={this.closeProfile}
-				>
+					onClick={this.closeProfile}>
 					<span className="os-icon os-icon-close" />
 				</button>
 				{patient ? (
@@ -77,8 +79,7 @@ class PatientProfile extends Component {
 												style={{
 													backgroundImage: `url(${background})`,
 													backgroundPosition: '50% -114.052px',
-												}}
-											>
+												}}>
 												<div className="bg-dark-overlay r-2x no-r-b">
 													<div className="d-md-flex">
 														<div className="p-4">
@@ -120,8 +121,7 @@ class PatientProfile extends Component {
 														<li className="nav-item button-space">
 															<Link
 																className="btn btn-info d-sm-inline-block text-white"
-																to="#"
-															>
+																to="#">
 																<i className="os-icon os-icon-plus-circle"></i>
 																<span>Request Admission</span>
 															</Link>
@@ -129,8 +129,7 @@ class PatientProfile extends Component {
 														<li className="nav-item button-space">
 															<Link
 																className="btn btn-grey d-sm-inline-block"
-																to="#"
-															>
+																to="#">
 																<i className="os-icon os-icon-plus-circle"></i>
 																<span>Enroll Antenatal</span>
 															</Link>
@@ -138,8 +137,7 @@ class PatientProfile extends Component {
 														<li className="nav-item button-space">
 															<Link
 																className="btn btn-grey d-sm-inline-block"
-																to="#"
-															>
+																to="#">
 																<i className="os-icon os-icon-plus-circle"></i>
 																<span>Enroll Immunization</span>
 															</Link>
@@ -147,8 +145,7 @@ class PatientProfile extends Component {
 														<li className="nav-item button-space">
 															<Link
 																className="btn btn-grey d-sm-inline-block"
-																to="#"
-															>
+																to="#">
 																<i className="os-icon os-icon-plus-circle"></i>
 																<span>Enroll IVF</span>
 															</Link>
