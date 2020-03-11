@@ -18,13 +18,10 @@ const Encounter = lazy(() => import("../../components/Patient/Encounter"));
 const Pharmacy = lazy(() => import("../../components/Patient/Pharmacy"));
 const Imaging = lazy(() => import("../../components/Patient/Imaging"));
 const Dentistry = lazy(() => import("../../components/Patient/Dentistry"));
-const Opthalmology = lazy(() =>
-  import("../../components/Patient/Opthalmology")
-);
+const Opthalmology = lazy(() => import("../../components/Patient/Opthalmology"));
 const Procedure = lazy(() => import("../../components/Patient/Procedure"));
-const Physiotherapy = lazy(() =>
-  import("../../components/Patient/Physiotherapy")
-);
+const Physiotherapy = lazy(() => import("../../components/Patient/Physiotherapy"));
+const Vitals = lazy(() => import('../../components/Patient/Vitals'));
 
 const storage = new SSRStorage();
 
@@ -37,7 +34,8 @@ const Page = ({ location }) => {
       return <Lab />;
     case "pharmacy":
       return <Pharmacy />;
-
+    case 'vitals':
+			return <Vitals />;
     case "imaging":
       return <Imaging />;
     case "opthalmology":

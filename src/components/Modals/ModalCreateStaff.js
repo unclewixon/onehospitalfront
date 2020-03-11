@@ -5,97 +5,101 @@ import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import orderBy from 'lodash.orderby';
 
-import { renderTextInput, request, renderSelect } from '../../services/utilities';
+import {
+	renderTextInput,
+	request,
+	renderSelect,
+} from '../../services/utilities';
 import { API_URI, staffAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
 import { addStaff } from '../../actions/hr';
 import { closeModals } from '../../actions/general';
 
-const validate = values => {
+const validate = (values) => {
 	const errors = {};
 	if (!values.username) {
-        errors.username = 'enter username';
+		errors.username = 'enter username';
 	}
 	if (!values.password) {
-        errors.password = 'enter password';
+		errors.password = 'enter password';
 	}
 	if (!values.role_id || values.role_id === '') {
-        errors.role_id = 'select role';
-    }
+		errors.role_id = 'select role';
+	}
 	if (!values.first_name) {
-        errors.first_name = 'enter first name';
-    }
+		errors.first_name = 'enter first name';
+	}
 	if (!values.last_name) {
-        errors.last_name = 'enter last name';
-    }
+		errors.last_name = 'enter last name';
+	}
 	if (!values.department_id || values.department_id === '') {
-        errors.department_id = 'select department';
-    }
+		errors.department_id = 'select department';
+	}
 	if (!values.religion || values.religion === '') {
-        errors.religion = 'select religion';
-    }
+		errors.religion = 'select religion';
+	}
 	if (!values.email) {
-        errors.email = 'enter email address';
-    }
+		errors.email = 'enter email address';
+	}
 	if (!values.phone_number) {
-        errors.phone_number = 'enter phone number';
-    }
+		errors.phone_number = 'enter phone number';
+	}
 	if (!values.gender || values.gender === '') {
-        errors.gender = 'select gender';
-    }
+		errors.gender = 'select gender';
+	}
 	if (!values.nationality || values.nationality === '') {
-        errors.nationality = 'select nationality';
-    }
+		errors.nationality = 'select nationality';
+	}
 	if (!values.state_of_origin || values.state_of_origin === '') {
-        errors.state_of_origin = 'select state of origin';
-    }
+		errors.state_of_origin = 'select state of origin';
+	}
 	if (!values.lga) {
-        errors.lga = 'enter local government area';
-    }
+		errors.lga = 'enter local government area';
+	}
 	if (!values.address) {
-        errors.address = 'enter address';
-    }
+		errors.address = 'enter address';
+	}
 	if (!values.job_title) {
-        errors.job_title = 'enter job title';
-    }
+		errors.job_title = 'enter job title';
+	}
 	if (!values.marital_status || values.marital_status === '') {
-        errors.marital_status = 'select marital status';
-    }
+		errors.marital_status = 'select marital status';
+	}
 	if (!values.number_of_children) {
-        errors.number_of_children = 'enter number of children';
-    }
+		errors.number_of_children = 'enter number of children';
+	}
 	if (!values.bank_name || values.bank_name === '') {
-        errors.bank_name = 'select bank';
-    }
+		errors.bank_name = 'select bank';
+	}
 	if (!values.account_number) {
-        errors.account_number = 'enter account number';
-    }
+		errors.account_number = 'enter account number';
+	}
 	if (!values.contract_type || values.contract_type === '') {
-        errors.contract_type = 'select type of contract';
-    }
+		errors.contract_type = 'select type of contract';
+	}
 	if (!values.monthly_salary) {
-        errors.monthly_salary = 'enter monthly salary';
-    }
+		errors.monthly_salary = 'enter monthly salary';
+	}
 	if (!values.annual_salary) {
-        errors.annual_salary = 'enter annual salary';
-    }
+		errors.annual_salary = 'enter annual salary';
+	}
 	if (!values.next_of_kin) {
-        errors.next_of_kin = 'enter next of kin name';
-    }
+		errors.next_of_kin = 'enter next of kin name';
+	}
 	if (!values.next_of_kin_relationship) {
-        errors.next_of_kin_relationship = 'enter next of kin relationship';
-    }
+		errors.next_of_kin_relationship = 'enter next of kin relationship';
+	}
 	if (!values.next_of_kin_contact_no) {
-        errors.next_of_kin_contact_no = 'enter next of kin phone number';
-    }
+		errors.next_of_kin_contact_no = 'enter next of kin phone number';
+	}
 	if (!values.next_of_kin_address) {
-        errors.next_of_kin_address = 'enter next of kin address';
-    }
+		errors.next_of_kin_address = 'enter next of kin address';
+	}
 	if (!values.specialization_id) {
-        errors.specialization_id = 'select your specialization';
-    }
-    return errors;
+		errors.specialization_id = 'select your specialization';
+	}
+	return errors;
 };
 
 class ModalCreateStaff extends Component {
@@ -115,19 +119,23 @@ class ModalCreateStaff extends Component {
 		document.body.classList.remove('modal-open');
 	}
 
-	doCreateStaff = async data => {
-		const { date_of_birth, next_of_kin_dob, employment_start_date } = this.state;
-		if(!date_of_birth) {
+	doCreateStaff = async (data) => {
+		const {
+			date_of_birth,
+			next_of_kin_dob,
+			employment_start_date,
+		} = this.state;
+		if (!date_of_birth) {
 			throw new SubmissionError({ _error: 'select date of birth' });
 		}
-		if(!employment_start_date) {
+		if (!employment_start_date) {
 			throw new SubmissionError({ _error: 'select date of employment' });
 		}
-		if(!next_of_kin_dob) {
+		if (!next_of_kin_dob) {
 			throw new SubmissionError({ _error: 'select nok date of birth' });
 		}
 		let staff = {
-			...data, 
+			...data,
 			date_of_birth: moment(date_of_birth).format('YYYY-MM-DD'),
 			next_of_kin_dob: moment(next_of_kin_dob).format('YYYY-MM-DD'),
 			employment_start_date: moment(employment_start_date).format('YYYY-MM-DD'),
@@ -136,12 +144,19 @@ class ModalCreateStaff extends Component {
 		try {
 			const rs = await request(`${API_URI}${staffAPI}`, 'POST', true, staff);
 			this.props.addStaff(rs);
-			this.setState({ submitting: false, next_of_kin_dob: null, date_of_birth: null, employment_start_date: null });
+			this.setState({
+				submitting: false,
+				next_of_kin_dob: null,
+				date_of_birth: null,
+				employment_start_date: null,
+			});
 			this.props.reset('create_staff');
 			notifySuccess('new staff created!');
 		} catch (e) {
 			this.setState({ submitting: false });
-			throw new SubmissionError({ _error: e.message || 'could not create staff' });
+			throw new SubmissionError({
+				_error: e.message || 'could not create staff',
+			});
 		}
 	};
 
@@ -149,11 +164,11 @@ class ModalCreateStaff extends Component {
 		this.setState({ [type]: date });
 	};
 
-	onSelectCountry = e => {
+	onSelectCountry = (e) => {
 		const { countries } = this.props;
 		const countryId = e.target.value;
-		const country = countries.find(c => c.id === parseInt(countryId, 10));
-		if(country) {
+		const country = countries.find((c) => c.id === parseInt(countryId, 10));
+		if (country) {
 			this.setState({ states: country.states });
 		} else {
 			this.setState({ states: [] });
@@ -161,35 +176,56 @@ class ModalCreateStaff extends Component {
 	};
 
 	render() {
-		const { error, handleSubmit, roles, departments, banks, countries, specializations } = this.props;
-		const { submitting, date_of_birth, next_of_kin_dob, employment_start_date, states } = this.state;
-		const _countries = countries.map(c => ({id: c.id, name: c.name}));
+		const {
+			error,
+			handleSubmit,
+			roles,
+			departments,
+			banks,
+			countries,
+			specializations,
+		} = this.props;
+		const {
+			submitting,
+			date_of_birth,
+			next_of_kin_dob,
+			employment_start_date,
+			states,
+		} = this.state;
+		const _countries = countries.map((c) => ({ id: c.id, name: c.name }));
 		const sortedCountries = orderBy(_countries, ['name'], ['asc']);
 		const genders = [
-			{id: 'Female', name: 'Female'},
-			{id: 'Male', name: 'Male'},
+			{ id: 'Female', name: 'Female' },
+			{ id: 'Male', name: 'Male' },
 		];
 		const marital_status = [
-			{id: 'Married', name: 'Married'},
-			{id: 'Single', name: 'Single'},
+			{ id: 'Married', name: 'Married' },
+			{ id: 'Single', name: 'Single' },
 		];
 		const contracts = [
-			{id: 'Full time', name: 'Full time'},
-			{id: 'Part time', name: 'Part time'},
+			{ id: 'Full time', name: 'Full time' },
+			{ id: 'Part time', name: 'Part time' },
 		];
 		const religions = [
-			{id: 'Atheist', name: 'Atheist'},
-			{id: 'Buddhism', name: 'Buddhism'},
-			{id: 'Christianity', name: 'Christianity'},
-			{id: 'Hinduism', name: 'Hinduism'},
-			{id: 'Islam', name: 'Islam'},
+			{ id: 'Atheist', name: 'Atheist' },
+			{ id: 'Buddhism', name: 'Buddhism' },
+			{ id: 'Christianity', name: 'Christianity' },
+			{ id: 'Hinduism', name: 'Hinduism' },
+			{ id: 'Islam', name: 'Islam' },
 		];
 
 		return (
-			<div className="onboarding-modal modal fade animated show" role="dialog" style={{ display: 'block' }}>
+			<div
+				className="onboarding-modal modal fade animated show"
+				role="dialog"
+				style={{ display: 'block' }}>
 				<div className="modal-dialog modal-lg modal-centered" role="document">
 					<div className="modal-content text-center">
-						<button aria-label="Close" className="close" type="button" onClick={() => this.props.closeModals(false)}>
+						<button
+							aria-label="Close"
+							className="close"
+							type="button"
+							onClick={() => this.props.closeModals(false)}>
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
@@ -197,7 +233,14 @@ class ModalCreateStaff extends Component {
 							<div className="onboarding-text">create new staff profile</div>
 							<div className="form-block">
 								<form onSubmit={handleSubmit(this.doCreateStaff)}>
-									{error && <div className="alert alert-danger" dangerouslySetInnerHTML={{__html: `<strong>Error!</strong> ${error}`}}/>}
+									{error && (
+										<div
+											className="alert alert-danger"
+											dangerouslySetInnerHTML={{
+												__html: `<strong>Error!</strong> ${error}`,
+											}}
+										/>
+									)}
 									<div className="row">
 										<div className="col-sm-4">
 											<Field
@@ -275,11 +318,13 @@ class ModalCreateStaff extends Component {
 										</div>
 										<div className="col-sm-4">
 											<div className="form-group">
-												<label htmlFor="">Date of Birth</label>
+												<label>Date of Birth</label>
 												<div className="custom-date-input">
 													<DatePicker
 														selected={date_of_birth}
-														onChange={date => this.setDate(date, 'date_of_birth')}
+														onChange={(date) =>
+															this.setDate(date, 'date_of_birth')
+														}
 														peekNextMonth
 														showMonthDropdown
 														showYearDropdown
@@ -457,11 +502,13 @@ class ModalCreateStaff extends Component {
 										</div>
 										<div className="col-sm-4">
 											<div className="form-group">
-												<label htmlFor="">Employment start date</label>
+												<label>Employment start date</label>
 												<div className="custom-date-input">
 													<DatePicker
 														selected={employment_start_date}
-														onChange={date => this.setDate(date, 'employment_start_date')}
+														onChange={(date) =>
+															this.setDate(date, 'employment_start_date')
+														}
 														peekNextMonth
 														showMonthDropdown
 														showYearDropdown
@@ -552,11 +599,13 @@ class ModalCreateStaff extends Component {
 										</div>
 										<div className="col-sm-4">
 											<div className="form-group">
-												<label htmlFor="">Next of Kin Date of Birth</label>
+												<label>Next of Kin Date of Birth</label>
 												<div className="custom-date-input">
 													<DatePicker
 														selected={next_of_kin_dob}
-														onChange={date => this.setDate(date, 'next_of_kin_dob')}
+														onChange={(date) =>
+															this.setDate(date, 'next_of_kin_dob')
+														}
 														peekNextMonth
 														showMonthDropdown
 														showYearDropdown
@@ -580,7 +629,16 @@ class ModalCreateStaff extends Component {
 									</div> */}
 									<div className="row">
 										<div className="col-sm-12 text-right">
-											<button className="btn btn-primary" disabled={submitting} type="submit">{submitting ? <img src={waiting} alt="submitting"/> : 'Create Profile'}</button>
+											<button
+												className="btn btn-primary"
+												disabled={submitting}
+												type="submit">
+												{submitting ? (
+													<img src={waiting} alt="submitting" />
+												) : (
+													'Create Profile'
+												)}
+											</button>
 										</div>
 									</div>
 								</form>
@@ -618,7 +676,9 @@ const mapStateToProps = (state, ownProps) => {
 		countries: state.utility.countries,
 		banks: state.utility.banks,
 		specializations: state.settings.specializations,
-	}
+	};
 };
 
-export default connect(mapStateToProps, { reset, closeModals, addStaff })(ModalCreateStaff);
+export default connect(mapStateToProps, { reset, closeModals, addStaff })(
+	ModalCreateStaff
+);

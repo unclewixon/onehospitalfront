@@ -18,8 +18,7 @@ class ModalAddTask extends Component {
 			<div
 				className="onboarding-modal modal fade animated show"
 				role="dialog"
-				style={{ display: 'block' }}
-			>
+				style={{ display: 'block' }}>
 				<div className="modal-dialog modal-centered" role="document">
 					<div className="modal-content text-center">
 						<div className="modal-header faded smaller">
@@ -38,8 +37,7 @@ class ModalAddTask extends Component {
 								className="close"
 								data-dismiss="modal"
 								type="button"
-								onClick={() => this.props.closeModals(false)}
-							>
+								onClick={() => this.props.closeModals(false)}>
 								<span aria-hidden="true"> ×</span>
 							</button>
 						</div>
@@ -48,7 +46,7 @@ class ModalAddTask extends Component {
 							<div className="modal-body">
 								<form>
 									<div className="form-group">
-										<label htmlFor="">Name</label>
+										<label>Name</label>
 										<input
 											className="form-control"
 											placeholder="Enter task name"
@@ -57,7 +55,7 @@ class ModalAddTask extends Component {
 										/>
 									</div>
 									<div className="form-group">
-										<label htmlFor="">Description</label>
+										<label>Description</label>
 										<textarea className="form-control" name="" rows="3">
 											The similar diesel only tell deference and likewise,
 											thought, nonetheless, for ahead school. The were
@@ -65,11 +63,20 @@ class ModalAddTask extends Component {
 										</textarea>
 									</div>
 									<div className="form-group">
-										<label htmlFor="">Media Attached</label>
+										<label>Media Attached</label>
 										<div className="attached-media-w">
-											<img src={require('../../assets/images/portfolio9.jpg')} alt="" />
-											<img src={require('../../assets/images/portfolio2.jpg')} alt="" />
-											<img src={require('../../assets/images/portfolio12.jpg')} alt="" />
+											<img
+												src={require('../../assets/images/portfolio9.jpg')}
+												alt=""
+											/>
+											<img
+												src={require('../../assets/images/portfolio2.jpg')}
+												alt=""
+											/>
+											<img
+												src={require('../../assets/images/portfolio12.jpg')}
+												alt=""
+											/>
 											<a className="attach-media-btn" href="#">
 												<i className="os-icon os-icon-ui-22"></i>
 												<span>Add Photos</span>
@@ -79,7 +86,7 @@ class ModalAddTask extends Component {
 									<div className="row">
 										<div className="col-sm-6">
 											<div className="form-group">
-												<label htmlFor=""> Due Date</label>
+												<label> Due Date</label>
 												<div className="date-input">
 													<input
 														className="single-daterange form-control"
@@ -92,7 +99,7 @@ class ModalAddTask extends Component {
 										</div>
 										<div className="col-sm-6">
 											<div className="form-group">
-												<label htmlFor="">Priority</label>
+												<label>Priority</label>
 												<select className="form-control">
 													<option>High Priority</option>
 													<option>Normal Priority</option>
@@ -112,8 +119,7 @@ class ModalAddTask extends Component {
 									className="btn btn-link"
 									data-dismiss="modal"
 									type="button"
-									onClick={() => this.props.closeModals(false)}
-								>
+									onClick={() => this.props.closeModals(false)}>
 									{' '}
 									Cancel
 								</button>

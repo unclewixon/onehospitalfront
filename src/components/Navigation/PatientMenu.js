@@ -8,9 +8,17 @@ const PatientMenu = ({ location }) => {
 				<li>
 					<Link to={`${location.pathname}#dashboard`}>
 						<div className="icon-w">
-							<div className="os-icon os-icon-layout"/>
+							<div className="os-icon os-icon-layout" />
 						</div>
 						<span>Dashboard</span>
+					</Link>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#vitals`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout" />
+						</div>
+						<span>Vitals</span>
 					</Link>
 				</li>
 				<li className="sub-header">
@@ -19,7 +27,7 @@ const PatientMenu = ({ location }) => {
 				<li>
 					<Link to={`${location.pathname}#visit-entry`}>
 						<div className="icon-w">
-							<div className="os-icon os-icon-layout"/>
+							<div className="os-icon os-icon-layout" />
 						</div>
 						<span>New Vist Entry</span>
 					</Link>
@@ -27,7 +35,7 @@ const PatientMenu = ({ location }) => {
 				<li>
 					<Link to={`${location.pathname}#anc-visit-entry`}>
 						<div className="icon-w">
-							<div className="os-icon os-icon-layout"/>
+							<div className="os-icon os-icon-layout" />
 						</div>
 						<span>New Antenatal Visit Entry</span>
 					</Link>
@@ -38,7 +46,7 @@ const PatientMenu = ({ location }) => {
 				<li>
 					<Link to={`${location.pathname}#lab`}>
 						<div className="icon-w">
-							<div className="os-icon os-icon-layout"/>
+							<div className="os-icon os-icon-layout" />
 						</div>
 						<span>Clinical Lab</span>
 					</Link>
@@ -46,7 +54,7 @@ const PatientMenu = ({ location }) => {
 				<li>
 					<Link to={`${location.pathname}#pharmacy`}>
 						<div className="icon-w">
-							<div className="os-icon os-icon-layout"/>
+							<div className="os-icon os-icon-layout" />
 						</div>
 						<span>Pharmacy (Regimen)</span>
 					</Link>
@@ -54,7 +62,7 @@ const PatientMenu = ({ location }) => {
 				<li>
 					<Link to={`${location.pathname}#physio`}>
 						<div className="icon-w">
-							<div className="os-icon os-icon-layout"/>
+							<div className="os-icon os-icon-layout" />
 						</div>
 						<span>Physiotherapy</span>
 					</Link>
@@ -62,7 +70,7 @@ const PatientMenu = ({ location }) => {
 				<li>
 					<Link to={`${location.pathname}#opthalmology`}>
 						<div className="icon-w">
-							<div className="os-icon os-icon-layout"/>
+							<div className="os-icon os-icon-layout" />
 						</div>
 						<span>Opthalmology</span>
 					</Link>
@@ -70,7 +78,7 @@ const PatientMenu = ({ location }) => {
 				<li>
 					<Link to={`${location.pathname}#dentistry`}>
 						<div className="icon-w">
-							<div className="os-icon os-icon-layout"/>
+							<div className="os-icon os-icon-layout" />
 						</div>
 						<span>Dentistry</span>
 					</Link>
@@ -78,7 +86,7 @@ const PatientMenu = ({ location }) => {
 				<li>
 					<Link to={`${location.pathname}#imaging`}>
 						<div className="icon-w">
-							<div className="os-icon os-icon-layout"/>
+							<div className="os-icon os-icon-layout" />
 						</div>
 						<span>Imaging</span>
 					</Link>
@@ -86,7 +94,7 @@ const PatientMenu = ({ location }) => {
 				<li>
 					<Link to={`${location.pathname}#procedure`}>
 						<div className="icon-w">
-							<div className="os-icon os-icon-layout"/>
+							<div className="os-icon os-icon-layout" />
 						</div>
 						<span>Procedure</span>
 					</Link>
@@ -97,7 +105,7 @@ const PatientMenu = ({ location }) => {
 				<li>
 					<Link to={`${location.pathname}#visit-summary`}>
 						<div className="icon-w">
-							<div className="os-icon os-icon-layout"/>
+							<div className="os-icon os-icon-layout" />
 						</div>
 						<span>Visit Summary</span>
 					</Link>
@@ -105,7 +113,7 @@ const PatientMenu = ({ location }) => {
 				<li>
 					<Link to={`${location.pathname}#encounters`}>
 						<div className="icon-w">
-							<div className="os-icon os-icon-layout"/>
+							<div className="os-icon os-icon-layout" />
 						</div>
 						<span>Encounters</span>
 					</Link>
@@ -113,7 +121,7 @@ const PatientMenu = ({ location }) => {
 				<li>
 					<Link to={`${location.pathname}#appointment-history`}>
 						<div className="icon-w">
-							<div className="os-icon os-icon-layout"/>
+							<div className="os-icon os-icon-layout" />
 						</div>
 						<span>Appointment History</span>
 					</Link>
@@ -121,7 +129,7 @@ const PatientMenu = ({ location }) => {
 				<li>
 					<Link to={`${location.pathname}#anc-history`}>
 						<div className="icon-w">
-							<div className="os-icon os-icon-layout"/>
+							<div className="os-icon os-icon-layout" />
 						</div>
 						<span>Antenatal History</span>
 					</Link>
@@ -129,7 +137,7 @@ const PatientMenu = ({ location }) => {
 				<li>
 					<Link to={`${location.pathname}#ivf-history`}>
 						<div className="icon-w">
-							<div className="os-icon os-icon-layout"/>
+							<div className="os-icon os-icon-layout" />
 						</div>
 						<span>IVF History</span>
 					</Link>
