@@ -14,10 +14,17 @@ class ModalEditInventory extends Component {
 
 	render() {
 		return (
-			<div className="onboarding-modal modal fade animated show" role="dialog" style={{ display: 'block' }}>
+			<div
+				className="onboarding-modal modal fade animated show"
+				role="dialog"
+				style={{ display: 'block' }}>
 				<div className="modal-dialog modal-centered" role="document">
 					<div className="modal-content text-center">
-						<button aria-label="Close" className="close" type="button" onClick={() => this.props.closeModals(false)}>
+						<button
+							aria-label="Close"
+							className="close"
+							type="button"
+							onClick={() => this.props.closeModals(false)}>
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
@@ -27,13 +34,16 @@ class ModalEditInventory extends Component {
 									<div className="row">
 										<div className="col-sm-6">
 											<div className="form-group">
-												<label htmlFor="">Name</label>
-												<input className="form-control" placeholder="Enter name" />
+												<label>Name</label>
+												<input
+													className="form-control"
+													placeholder="Enter name"
+												/>
 											</div>
 										</div>
 										<div className="col-sm-6">
 											<div className="form-group">
-												<label htmlFor="">Select Category</label>
+												<label>Select Category</label>
 												<select className="form-control">
 													<option>Pharmacy</option>
 													<option>Cafeteria</option>
@@ -44,24 +54,30 @@ class ModalEditInventory extends Component {
 									<div className="row">
 										<div className="col-sm-6">
 											<div className="form-group">
-												<label htmlFor="">Cost Price</label>
+												<label>Cost Price</label>
 												<div className="input-group">
 													<div className="input-group-prepend">
 														<div className="input-group-text">₦</div>
 													</div>
-													<input className="form-control" placeholder="Enter cost price" />
+													<input
+														className="form-control"
+														placeholder="Enter cost price"
+													/>
 												</div>
 											</div>
 										</div>
 										<div className="col-sm-6">
 											<div className="form-group">
 												<div className="form-group">
-													<label htmlFor="">Selling Price</label>
+													<label>Selling Price</label>
 													<div className="input-group">
 														<div className="input-group-prepend">
 															<div className="input-group-text">₦</div>
 														</div>
-														<input className="form-control" placeholder="Enter selling price" />
+														<input
+															className="form-control"
+															placeholder="Enter selling price"
+														/>
 													</div>
 												</div>
 											</div>
@@ -71,8 +87,11 @@ class ModalEditInventory extends Component {
 										<div className="col-sm-6">
 											<div className="form-group">
 												<div className="form-group">
-													<label htmlFor="">Description</label>
-													<input className="form-control" placeholder="Enter description" />
+													<label>Description</label>
+													<input
+														className="form-control"
+														placeholder="Enter description"
+													/>
 												</div>
 											</div>
 										</div>

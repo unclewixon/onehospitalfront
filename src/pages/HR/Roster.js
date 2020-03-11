@@ -20,10 +20,17 @@ const DownloadRoster = ({ onHide, downloading, doDownload, departments }) => {
 	const [period, setPeriod] = useState(null);
 
 	return (
-		<div className="onboarding-modal fade animated show" role="dialog" style={{ width: '300px' }}>
+		<div
+			className="onboarding-modal fade animated show"
+			role="dialog"
+			style={{ width: '300px' }}>
 			<div className="modal-centered" role="document">
 				<div className="modal-content text-center">
-					<button aria-label="Close" className="close" type="button" onClick={() => onHide()}>
+					<button
+						aria-label="Close"
+						className="close"
+						type="button"
+						onClick={() => onHide()}>
 						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -32,11 +39,11 @@ const DownloadRoster = ({ onHide, downloading, doDownload, departments }) => {
 								<div className="row">
 									<div className="col-sm-12">
 										<div className="form-group">
-											<label htmlFor="">Period</label>
+											<label>Period</label>
 											<div className="custom-date-input">
 												<DatePicker
 													selected={period}
-													onChange={date => setPeriod(date)}
+													onChange={(date) => setPeriod(date)}
 													peekNextMonth
 													dateFormat="MMM-yyyy"
 													className="single-daterange form-control"
@@ -48,18 +55,34 @@ const DownloadRoster = ({ onHide, downloading, doDownload, departments }) => {
 									<div className="col-sm-12">
 										<div className="form-group">
 											<label htmlFor="department">Department</label>
-											<select id="department" className="form-control" onChange={e => setDepartment(e.target.value)}>
+											<select
+												id="department"
+												className="form-control"
+												onChange={(e) => setDepartment(e.target.value)}>
 												<option>Select Department</option>
-												{departments.map(((dept,i) => {
-													return <option key={i} value={dept.id}>{dept.name}</option>
-												}))}
+												{departments.map((dept, i) => {
+													return (
+														<option key={i} value={dept.id}>
+															{dept.name}
+														</option>
+													);
+												})}
 											</select>
 										</div>
 									</div>
 								</div>
 								<div className="row">
 									<div className="col-sm-12 text-right">
-										<button className="btn btn-primary" disabled={downloading} type="submit">{downloading ? <img src={waiting} alt="submitting"/> : 'download'}</button>
+										<button
+											className="btn btn-primary"
+											disabled={downloading}
+											type="submit">
+											{downloading ? (
+												<img src={waiting} alt="submitting" />
+											) : (
+												'download'
+											)}
+										</button>
 									</div>
 								</div>
 							</form>
@@ -78,10 +101,17 @@ const UploadRoster = ({ onHide, uploading, doUpload, departments }) => {
 	let uploadAttachment;
 
 	return (
-		<div className="onboarding-modal fade animated show" role="dialog" style={{ width: '300px' }}>
+		<div
+			className="onboarding-modal fade animated show"
+			role="dialog"
+			style={{ width: '300px' }}>
 			<div className="modal-centered" role="document">
 				<div className="modal-content text-center">
-					<button aria-label="Close" className="close" type="button" onClick={() => onHide()}>
+					<button
+						aria-label="Close"
+						className="close"
+						type="button"
+						onClick={() => onHide()}>
 						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -90,11 +120,11 @@ const UploadRoster = ({ onHide, uploading, doUpload, departments }) => {
 								<div className="row">
 									<div className="col-sm-12">
 										<div className="form-group">
-											<label htmlFor="">Period</label>
+											<label>Period</label>
 											<div className="custom-date-input">
 												<DatePicker
 													selected={period}
-													onChange={date => setPeriod(date)}
+													onChange={(date) => setPeriod(date)}
 													peekNextMonth
 													dateFormat="MMM-yyyy"
 													className="single-daterange form-control"
@@ -106,20 +136,41 @@ const UploadRoster = ({ onHide, uploading, doUpload, departments }) => {
 									<div className="col-sm-12">
 										<div className="form-group">
 											<label htmlFor="department">Department</label>
-											<select id="department" className="form-control" onChange={e => setDepartment(e.target.value)}>
+											<select
+												id="department"
+												className="form-control"
+												onChange={(e) => setDepartment(e.target.value)}>
 												<option>Select Department</option>
-												{departments.map(((dept,i) => {
-													return <option key={i} value={dept.id}>{dept.name}</option>
-												}))}
+												{departments.map((dept, i) => {
+													return (
+														<option key={i} value={dept.id}>
+															{dept.name}
+														</option>
+													);
+												})}
 											</select>
 										</div>
 									</div>
 									<div className="col-sm-12">
 										<div className="form-group">
-											<input className="d-none" onClick={(e) => { e.target.value = null; }} type="file" ref={(el) => { uploadAttachment = el; }} onChange={(e) => setFile(e.target.files)} />
+											<input
+												className="d-none"
+												onClick={(e) => {
+													e.target.value = null;
+												}}
+												type="file"
+												ref={(el) => {
+													uploadAttachment = el;
+												}}
+												onChange={(e) => setFile(e.target.files)}
+											/>
 											<label htmlFor="department">File</label>
-											<a className="btn btn-outline-secondary ml-4" onClick={() => { uploadAttachment.click() }}>
-												<i className="os-icon os-icon-ui-51"/>
+											<a
+												className="btn btn-outline-secondary ml-4"
+												onClick={() => {
+													uploadAttachment.click();
+												}}>
+												<i className="os-icon os-icon-ui-51" />
 												<span>Select File</span>
 											</a>
 										</div>
@@ -127,7 +178,16 @@ const UploadRoster = ({ onHide, uploading, doUpload, departments }) => {
 								</div>
 								<div className="row">
 									<div className="col-sm-12 text-right">
-										<button className="btn btn-primary" disabled={uploading} type="submit">{uploading ? <img src={waiting} alt="submitting"/> : 'upload'}</button>
+										<button
+											className="btn btn-primary"
+											disabled={uploading}
+											type="submit">
+											{uploading ? (
+												<img src={waiting} alt="submitting" />
+											) : (
+												'upload'
+											)}
+										</button>
 									</div>
 								</div>
 							</form>
@@ -168,12 +228,12 @@ class Roster extends Component {
 		e.preventDefault();
 		this.setState({ downloading: true });
 		try {
-			if(!period) {
+			if (!period) {
 				this.setState({ downloading: false });
 				notifyError('select period');
 				return false;
 			}
-			if(department === '') {
+			if (department === '') {
 				this.setState({ downloading: false });
 				notifyError('select department');
 				return false;
@@ -182,7 +242,9 @@ class Roster extends Component {
 				department_id: department,
 				period: moment(period).format('YYYY-MM'),
 			};
-			const qs = Object.keys(data).map(k => k + '=' + data[k]).join('&');
+			const qs = Object.keys(data)
+				.map((k) => k + '=' + data[k])
+				.join('&');
 			const url = `${API_URI}${rosterAPI}/download-roaster?${qs}`;
 			setTimeout(() => {
 				window.open(url, '_blank').focus();
@@ -195,18 +257,23 @@ class Roster extends Component {
 		return false;
 	};
 
-	onDownloadVisibleChange = visible => {
+	onDownloadVisibleChange = (visible) => {
 		this.setState({ download_visible: visible });
 	};
 
-	handleUploadVisibleChange = visible => {
+	handleUploadVisibleChange = (visible) => {
 		this.setState({ upload_visible: visible });
 	};
-	
+
 	fetchRoster = async (period, department_id) => {
 		try {
 			const data = { period, department_id };
-			const rs = await request(`${API_URI}${rosterAPI}/list-roaster`, 'POST', true, data);
+			const rs = await request(
+				`${API_URI}${rosterAPI}/list-roaster`,
+				'POST',
+				true,
+				data
+			);
 			const rosters = parseRoster(rs);
 			this.props.loadRoster(rosters);
 			this.setState({ filtering: false });
@@ -217,13 +284,13 @@ class Roster extends Component {
 		}
 	};
 
-	doFilter = e => {
+	doFilter = (e) => {
 		e.preventDefault();
 		this.setState({ filtering: true });
 		const { period, department_id } = this.state;
 		this.fetchRoster(period, department_id);
 	};
-	
+
 	onUpload = async (e, files, period, department_id) => {
 		e.preventDefault();
 		const { departments } = this.props;
@@ -236,11 +303,17 @@ class Roster extends Component {
 				formData.append('period', moment(period).format('YYYY-MM'));
 				formData.append('department_id', department_id);
 
-				const rs = await upload(`${API_URI}${rosterAPI}/upload-roaster`, 'POST', formData);
+				const rs = await upload(
+					`${API_URI}${rosterAPI}/upload-roaster`,
+					'POST',
+					formData
+				);
 				const rosters = parseRoster(rs);
 				this.props.loadRoster(rosters);
-				const dept = departments.find(d => d.id === department_id);
-				notifySuccess(`roster uploaded for ${dept ? dept.name : ''} department`);
+				const dept = departments.find((d) => d.id === department_id);
+				notifySuccess(
+					`roster uploaded for ${dept ? dept.name : ''} department`
+				);
 				this.setState({ uplaading: false, period, department_id });
 				this.fetchRoster(period, department_id);
 				this.setState({ upload_visible: false });
@@ -251,17 +324,24 @@ class Roster extends Component {
 		}
 	};
 
-	onChange = e => {
+	onChange = (e) => {
 		this.setState({ department_id: e.target.value });
 	};
 
-	handleDateClick = arg => {
+	handleDateClick = (arg) => {
 		console.log(arg);
 	};
 
 	render() {
 		const { duty_rosters, departments } = this.props;
-		const { upload_visible, download_visible, downloading, uploading, filtering, department_id } = this.state;
+		const {
+			upload_visible,
+			download_visible,
+			downloading,
+			uploading,
+			filtering,
+			department_id,
+		} = this.state;
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -271,7 +351,7 @@ class Roster extends Component {
 								<div className="element-actions">
 									<Popover
 										content={
-											<DownloadRoster 
+											<DownloadRoster
 												onHide={this.hide}
 												downloading={downloading}
 												doDownload={this.downloadTemplate}
@@ -281,13 +361,15 @@ class Roster extends Component {
 										overlayClassName="download-roster"
 										trigger="click"
 										visible={download_visible}
-										onVisibleChange={this.onDownloadVisibleChange}
-									>
-										<a className="btn btn-success btn-sm text-white"><i className="os-icon os-icon-download"/><span>Download Template</span></a>
+										onVisibleChange={this.onDownloadVisibleChange}>
+										<a className="btn btn-success btn-sm text-white">
+											<i className="os-icon os-icon-download" />
+											<span>Download Template</span>
+										</a>
 									</Popover>
 									<Popover
 										content={
-											<UploadRoster 
+											<UploadRoster
 												onHide={this.hide}
 												uploading={uploading}
 												doUpload={this.onUpload}
@@ -297,10 +379,9 @@ class Roster extends Component {
 										overlayClassName="upload-roster"
 										trigger="click"
 										visible={upload_visible}
-										onVisibleChange={this.handleUploadVisibleChange}
-									>
+										onVisibleChange={this.handleUploadVisibleChange}>
 										<a className="btn btn-sm btn-link btn-upper mr-4 d-lg-inline-block">
-											<i className="os-icon os-icon-upload"/>
+											<i className="os-icon os-icon-upload" />
 											<span>Upload Roster</span>
 										</a>
 									</Popover>
@@ -311,25 +392,41 @@ class Roster extends Component {
 										<div className="col-8">
 											<form action="" className="form-inline">
 												<div className="form-group">
-													<label className="mr-2" htmlFor="">Filter by: </label>
+													<label className="mr-2">Filter by: </label>
 												</div>
 												<div className="form-group mr-4">
-													<label className="mr-2" htmlFor="">Department</label>
-													<select id="department" className="form-control-sm" onChange={this.onChange} value={department_id}>
-														{departments.map(((dept,i) => {
-															return <option key={i} value={dept.id}>{dept.name}</option>
-														}))}
+													<label className="mr-2">Department</label>
+													<select
+														id="department"
+														className="form-control-sm"
+														onChange={this.onChange}
+														value={department_id}>
+														{departments.map((dept, i) => {
+															return (
+																<option key={i} value={dept.id}>
+																	{dept.name}
+																</option>
+															);
+														})}
 													</select>
 												</div>
 												<div className="form-group mr-4">
-													<a className="btn btn-sm btn-primary btn-upper text-white" onClick={this.doFilter}>
-														<i className="os-icon os-icon-ui-37"/>
-														<span>{filtering ? <img src={waiting} alt="submitting"/> : 'Filter'}</span>
+													<a
+														className="btn btn-sm btn-primary btn-upper text-white"
+														onClick={this.doFilter}>
+														<i className="os-icon os-icon-ui-37" />
+														<span>
+															{filtering ? (
+																<img src={waiting} alt="submitting" />
+															) : (
+																'Filter'
+															)}
+														</span>
 													</a>
 												</div>
 											</form>
 										</div>
-										<div className="col-4 text-right"/>
+										<div className="col-4 text-right" />
 									</div>
 								</div>
 								<div className="element-box">
@@ -337,10 +434,10 @@ class Roster extends Component {
 										header={{
 											left: 'title',
 											center: '',
-											right: ''
+											right: '',
 										}}
-										defaultView="dayGridMonth" 
-										plugins={[ dayGridPlugin, interactionPlugin ]} 
+										defaultView="dayGridMonth"
+										plugins={[dayGridPlugin, interactionPlugin]}
 										events={duty_rosters}
 										dateClick={this.handleDateClick}
 										eventClick={(info) => console.log(info)}
@@ -360,7 +457,7 @@ const mapStateToProps = (state, ownProps) => {
 	return {
 		duty_rosters: state.hr.duty_rosters,
 		departments: state.settings.departments,
-	}
+	};
 };
 
 export default connect(mapStateToProps, { loadRoster })(Roster);

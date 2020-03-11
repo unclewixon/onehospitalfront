@@ -31,32 +31,41 @@ class Payroll extends Component {
 		filtering: false,
 	};
 
-	doPreparePayroll = e => {
+	doPreparePayroll = (e) => {
 		e.preventDefault();
 		this.props.preparePayroll(true);
 	};
 
-	onNavigatePage = pageNumber => {
+	onNavigatePage = (pageNumber) => {
 		console.log(pageNumber);
 	};
 
 	componentDidMount() {
 		const { departments } = this.props;
-		const month = moment().subtract(1, 'months').format('MM');
-		const year = moment().subtract(1, 'months').format('YYYY');
+		const month = moment()
+			.subtract(1, 'months')
+			.format('MM');
+		const year = moment()
+			.subtract(1, 'months')
+			.format('YYYY');
 		const period = `${year}-${month}`;
 		const department = departments.length > 0 ? departments[0] : null;
 		if (department) {
-			this.setState({ department_id: department.id, month, year  });
+			this.setState({ department_id: department.id, month, year });
 			this.fetchPayroll(period, department.id);
 		}
 	}
-	
+
 	fetchPayroll = async (period, department_id) => {
 		try {
 			const data = { period, department_id };
-			const rs = await request(`${API_URI}${payrollAPI}/list-payroll`, 'POST', true, data);
-			const payrolls = rs.filter(p => p.status === 1);
+			const rs = await request(
+				`${API_URI}${payrollAPI}/list-payroll`,
+				'POST',
+				true,
+				data
+			);
+			const payrolls = rs.filter((p) => p.status === 1);
 			this.props.loadPayroll([...payrolls]);
 			this.setState({ filtering: false });
 		} catch (error) {
@@ -69,7 +78,7 @@ class Payroll extends Component {
 		this.setState({ [type]: target.value });
 	};
 
-	doFilter = e => {
+	doFilter = (e) => {
 		e.preventDefault();
 		this.setState({ filtering: true });
 		const { year, month, department_id } = this.state;
@@ -81,7 +90,7 @@ class Payroll extends Component {
 		const { payrolls, departments } = this.props;
 		const { department_id, filtering, year, month } = this.state;
 		const y = parseInt(moment().format('YYYY'), 10) + 1;
-		const years = [...Array(y - 2000).keys()].map(x => y - ++x );
+		const years = [...Array(y - 2000).keys()].map((x) => y - ++x);
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -89,8 +98,10 @@ class Payroll extends Component {
 						<div className="col-sm-12">
 							<div className="element-wrapper">
 								<div className="element-actions">
-									<a className="btn btn-success btn-sm text-white" onClick={this.doPreparePayroll}>
-										<i className="os-icon os-icon-grid-10"/>
+									<a
+										className="btn btn-success btn-sm text-white"
+										onClick={this.doPreparePayroll}>
+										<i className="os-icon os-icon-grid-10" />
 										<span>Prepare Payroll</span>
 									</a>
 								</div>
@@ -100,41 +111,71 @@ class Payroll extends Component {
 										<div className="col-9">
 											<form action="" className="form-inline">
 												<div className="form-group">
-													<label className="mr-2" htmlFor="">Filter by: </label>
+													<label className="mr-2">Filter by: </label>
 												</div>
 												<div className="form-group mr-4">
-													<label className="mr-2" htmlFor="">Department</label>
-													<select id="department" className="form-control-sm" onChange={(e) => this.onChange(e, 'department_id')} value={department_id}>
-														{departments.map(((dept,i) => {
-															return <option key={i} value={dept.id}>{dept.name}</option>
-														}))}
+													<label className="mr-2">Department</label>
+													<select
+														id="department"
+														className="form-control-sm"
+														onChange={(e) => this.onChange(e, 'department_id')}
+														value={department_id}>
+														{departments.map((dept, i) => {
+															return (
+																<option key={i} value={dept.id}>
+																	{dept.name}
+																</option>
+															);
+														})}
 													</select>
 												</div>
 												<div className="form-group mr-4">
-													<label className="mr-2" htmlFor="">Month</label>
-													<select className="form-control-sm" onChange={(e) => this.onChange(e, 'month')} value={month}>
-														{months.map(((month, i) => {
-															return <option key={i} value={padLeft((i+1), 2, '0')}>{month}</option>
-														}))}
+													<label className="mr-2">Month</label>
+													<select
+														className="form-control-sm"
+														onChange={(e) => this.onChange(e, 'month')}
+														value={month}>
+														{months.map((month, i) => {
+															return (
+																<option key={i} value={padLeft(i + 1, 2, '0')}>
+																	{month}
+																</option>
+															);
+														})}
 													</select>
 												</div>
 												<div className="form-group mr-4">
-													<label className="mr-2" htmlFor="">Year</label>
-													<select className="form-control-sm" onChange={(e) => this.onChange(e, 'year')} value={year}>
-														{years.map(((year, i) => {
-															return <option key={i} value={year}>{year}</option>
-														}))}
+													<label className="mr-2">Year</label>
+													<select
+														className="form-control-sm"
+														onChange={(e) => this.onChange(e, 'year')}
+														value={year}>
+														{years.map((year, i) => {
+															return (
+																<option key={i} value={year}>
+																	{year}
+																</option>
+															);
+														})}
 													</select>
 												</div>
 												<div className="form-group mr-4">
-													<a className="btn btn-sm btn-primary btn-upper text-white" onClick={this.doFilter}>
-														<i className="os-icon os-icon-ui-37"/>
-														<span>{filtering ? <img src={waiting} alt="submitting"/> : 'Filter'}</span>
+													<a
+														className="btn btn-sm btn-primary btn-upper text-white"
+														onClick={this.doFilter}>
+														<i className="os-icon os-icon-ui-37" />
+														<span>
+															{filtering ? (
+																<img src={waiting} alt="submitting" />
+															) : (
+																'Filter'
+															)}
+														</span>
 													</a>
 												</div>
 											</form>
 										</div>
-										<div className="col-3 text-right"/>
+										<div className="col-3 text-right" />
 									</div>
 								</div>
 								<div className="element-box">
@@ -156,12 +197,8 @@ class Payroll extends Component {
 											<tbody>
 												{payrolls.map((item, i) => {
 													return (
-														<PayrollItem
-															key={i}
-															index={i+1}
-															item={item}
-														/>
-													)
+														<PayrollItem key={i} index={i + 1} item={item} />
+													);
 												})}
 											</tbody>
 										</table>
@@ -171,7 +208,7 @@ class Payroll extends Component {
 											current={1}
 											pageSize={pageSize}
 											total={0}
-											showTotal={total => `Total ${total} staffs`}
+											showTotal={(total) => `Total ${total} staffs`}
 											itemRender={itemRender}
 											onChange={this.onNavigatePage}
 										/>
@@ -190,7 +227,9 @@ const mapStateToProps = (state, ownProps) => {
 	return {
 		payrolls: state.hr.payrolls,
 		departments: state.settings.departments,
-	}
+	};
 };
 
-export default connect(mapStateToProps, { preparePayroll, loadPayroll })(Payroll);
+export default connect(mapStateToProps, { preparePayroll, loadPayroll })(
+	Payroll
+);
