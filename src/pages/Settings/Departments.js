@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { confirmAlert } from "react-confirm-alert";
@@ -107,21 +108,20 @@ const Departments = props => {
     props.getAllDepartments();
     props.getAllStaff();
   }, []);
-  
-  
- const {StaffList} = props.StaffList;
+
+  const { StaffList } = props.StaffList;
   return (
-    <div className="content-i">
-      <div className="content-box">
-        <div className="element-wrapper">
-          <div className="os-tabs-w mx-1">
-            <div className="os-tabs-controls">
-              <ul className="nav nav-tabs upper">
-                <li className="nav-item">
+    <div className='content-i'>
+      <div className='content-box'>
+        <div className='element-wrapper'>
+          <div className='os-tabs-w mx-1'>
+            <div className='os-tabs-controls'>
+              <ul className='nav nav-tabs upper'>
+                <li className='nav-item'>
                   <a
-                    aria-expanded="true"
-                    className="nav-link active"
-                    data-toggle="tab"
+                    aria-expanded='true'
+                    className='nav-link active'
+                    data-toggle='tab'
                   >
                     Deda Departments
                   </a>
@@ -130,12 +130,12 @@ const Departments = props => {
             </div>
           </div>
 
-          <div className="row">
-            <div className="col-lg-8">
-              <div className="element-wrapper">
-                <div className="element-box-tp">
-                  <div className="table-responsive">
-                    <table className="table table-padded">
+          <div className='row'>
+            <div className='col-lg-8'>
+              <div className='element-wrapper'>
+                <div className='element-box-tp'>
+                  <div className='table-responsive'>
+                    <table className='table table-padded'>
                       <thead>
                         <tr>
                           <th>Department</th>
@@ -147,7 +147,7 @@ const Departments = props => {
                         {props.Departments.map(department => {
                           return (
                             <tr>
-                              <td className="nowrap">
+                              <td className='nowrap'>
                                 <span
                                   className={
                                     department.isActive
@@ -165,21 +165,21 @@ const Departments = props => {
                                       department.staff.last_name}
                                 </span>
                               </td>
-                              <td className="row-actions text-right">
-                                <a href="#">
+                              <td className='row-actions text-right'>
+                                <a href='#'>
                                   <i
-                                    className="os-icon os-icon-ui-49"
+                                    className='os-icon os-icon-ui-49'
                                     onClick={() => onClickEdit(department)}
                                   ></i>
                                 </a>
-                                <a href="#">
-                                  <i className="os-icon os-icon-grid-10"></i>
+                                <a href='#'>
+                                  <i className='os-icon os-icon-grid-10'></i>
                                 </a>
                                 <a
-                                  className="danger"
+                                  className='danger'
                                   onClick={() => DeleteDept(department)}
                                 >
-                                  <i className="os-icon os-icon-ui-15"></i>
+                                  <i className='os-icon os-icon-ui-15'></i>
                                 </a>
                               </td>
                             </tr>
@@ -191,31 +191,31 @@ const Departments = props => {
                 </div>
               </div>
             </div>
-            <div className="col-lg-4 col-xxl-3  d-xxl-block">
-              <div className="element-wrapper">
-                <div className="element-box">
+            <div className='col-lg-4 col-xxl-3  d-xxl-block'>
+              <div className='element-wrapper'>
+                <div className='element-box'>
                   <form onSubmit={edit ? onEditDept : onCreateDepartment}>
-                    <h5 className="element-box-header">Add New Department</h5>
-                    <div className="form-group">
-                      <label className="lighter" for="">
+                    <h5 className='element-box-header'>Add New Department</h5>
+                    <div className='form-group'>
+                      <label className='lighter' for=''>
                         Name of Department
                       </label>
                       <input
-                        className="form-control"
-                        placeholder="Enter Department Name..."
-                        type="text"
-                        name="name"
+                        className='form-control'
+                        placeholder='Enter Department Name...'
+                        type='text'
+                        name='name'
                         value={name}
                         onChange={handleInputChange}
                       />
                     </div>
-                    <div className="form-group">
-                      <label className="lighter" for="">
+                    <div className='form-group'>
+                      <label className='lighter' for=''>
                         Head of Department
                       </label>
                       <select
-                        className="form-control"
-                        name="headOfDept"
+                        className='form-control'
+                        name='headOfDept'
                         onChange={handleInputChange}
                         value={headOfDept}
                       >
@@ -229,23 +229,23 @@ const Departments = props => {
                         })}
                       </select>
                     </div>
-                    <div className="form-group">
-                      <label className="lighter" for="">
+                    <div className='form-group'>
+                      <label className='lighter' for=''>
                         Description
                       </label>
-                      <div className="form-group">
+                      <div className='form-group'>
                         <textarea
-                          className="form-control"
-                          placeholder="Description"
-                          type="text"
-                          name="description"
+                          className='form-control'
+                          placeholder='Description'
+                          type='text'
+                          name='description'
                           value={description}
                           onChange={handleInputChange}
                         />
                       </div>
                     </div>
 
-                    <div className="form-buttons-w text-right compact">
+                    <div className='form-buttons-w text-right compact'>
                       {save && (
                         <button
                           className={
@@ -255,7 +255,7 @@ const Departments = props => {
                           }
                         >
                           {Loading ? (
-                            <img src={waiting} alt="submitting" />
+                            <img src={waiting} alt='submitting' />
                           ) : (
                             <span> create</span>
                           )}
@@ -271,7 +271,7 @@ const Departments = props => {
                             }
                           >
                             {Loading ? (
-                              <img src={waiting} alt="submitting" />
+                              <img src={waiting} alt='submitting' />
                             ) : (
                               <span> edit</span>
                             )}

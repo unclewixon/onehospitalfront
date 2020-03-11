@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { confirmAction } from "../services/utilities";
@@ -101,20 +102,20 @@ const RoomCategory = props => {
   }, []);
 
   return (
-    <div className="row">
-      <div className="col-lg-8">
-        <div className="element-wrapper">
-          <div className="element-box">
-            <h5 className="form-header">Room Categories</h5>
-            <div className="form-desc"></div>
-            <div className="table-responsive">
-              <table className="table table-striped">
+    <div className='row'>
+      <div className='col-lg-8'>
+        <div className='element-wrapper'>
+          <div className='element-box'>
+            <h5 className='form-header'>Room Categories</h5>
+            <div className='form-desc'></div>
+            <div className='table-responsive'>
+              <table className='table table-striped'>
                 <thead>
                   <tr>
                     <th>Category Name</th>
                     <th>Price</th>
                     <th>Discount</th>
-                    <th class="text-right">Action</th>
+                    <th class='text-right'>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -124,21 +125,21 @@ const RoomCategory = props => {
                         <td>{RoomCategory.name}</td>
                         <td>{RoomCategory.price}</td>
                         <td>{RoomCategory.discount}</td>
-                        <td className="row-actions text-right">
-                          <a href="#">
+                        <td className='row-actions text-right'>
+                          <a href='#'>
                             <i
-                              className="os-icon os-icon-ui-49"
+                              className='os-icon os-icon-ui-49'
                               onClick={() => onClickEdit(RoomCategory)}
                             ></i>
                           </a>
-                          <a href="#">
-                            <i className="os-icon os-icon-grid-10"></i>
+                          <a href='#'>
+                            <i className='os-icon os-icon-grid-10'></i>
                           </a>
                           <a
-                            class="danger"
+                            class='danger'
                             onClick={() => confirmDelete(RoomCategory)}
                           >
-                            <i className="os-icon os-icon-ui-15"></i>
+                            <i className='os-icon os-icon-ui-15'></i>
                           </a>
                         </td>
                       </tr>
@@ -150,41 +151,41 @@ const RoomCategory = props => {
           </div>
         </div>
       </div>
-      <div className="col-lg-4 col-xxl-3  d-xxl-block">
-        <div className="pipeline white lined-warning">
+      <div className='col-lg-4 col-xxl-3  d-xxl-block'>
+        <div className='pipeline white lined-warning'>
           <form onSubmit={edit ? onEditRoomCategory : onAddRoom}>
-            <h6 className="form-header">New category</h6>
-            <div className="form-group">
+            <h6 className='form-header'>New category</h6>
+            <div className='form-group'>
               <input
-                className="form-control"
-                placeholder="Category Name"
-                type="text"
-                name="name"
+                className='form-control'
+                placeholder='Category Name'
+                type='text'
+                name='name'
                 onChange={handleInputChange}
                 value={name}
               />
             </div>
-            <div className="form-group">
+            <div className='form-group'>
               <input
-                className="form-control"
-                placeholder="Price"
-                type="text"
-                name="price"
+                className='form-control'
+                placeholder='Price'
+                type='text'
+                name='price'
                 onChange={handleInputChange}
                 value={price}
               />
             </div>
-            <div className="form-group">
+            <div className='form-group'>
               <input
-                className="form-control"
-                placeholder="Discount Rate"
-                type="text"
-                name="discount"
+                className='form-control'
+                placeholder='Discount Rate'
+                type='text'
+                name='discount'
                 onChange={handleInputChange}
                 value={discount}
               />
             </div>
-            <div className="form-buttons-w">
+            <div className='form-buttons-w'>
               {create && (
                 <button
                   className={
@@ -192,7 +193,7 @@ const RoomCategory = props => {
                   }
                 >
                   {Loading ? (
-                    <img src={waiting} alt="submitting" />
+                    <img src={waiting} alt='submitting' />
                   ) : (
                     <span> create</span>
                   )}
@@ -214,7 +215,7 @@ const RoomCategory = props => {
                     }
                   >
                     {Loading ? (
-                      <img src={waiting} alt="submitting" />
+                      <img src={waiting} alt='submitting' />
                     ) : (
                       <span> edit</span>
                     )}
