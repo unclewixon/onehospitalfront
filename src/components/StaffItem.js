@@ -1,14 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import Tooltip from 'antd/lib/tooltip';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import Tooltip from "antd/lib/tooltip";
 
-import { editStaff } from '../actions/general';
+import { editStaff } from "../actions/general";
 
 class StaffItem extends Component {
-	state = {
-		collapsed: true,
-	};
+  state = {
+    collapsed: true
+  };
 
 	toggle = () => {
 		this.setState({ collapsed: !this.state.collapsed });

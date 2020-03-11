@@ -20,6 +20,7 @@ const FrontDesk = lazy(() => import("./pages/FrontDesk/index"));
 const InPatient = lazy(() => import("./pages/Patient/InPatient"));
 const PatientProfile = lazy(() => import("./pages/Patient/PatientProfile"));
 const Pharmacy = lazy(() => import("./pages/Inventory/Pharmacy"));
+const Pharmacy2 = lazy(() => import("./pages/Pharmacy"));
 const Vitals = lazy(() => import("./pages/Patient/Vitals"));
 const Staff = lazy(() => import("./pages/HR/index"));
 const Inventory = lazy(() => import("./pages/Inventory/index"));
@@ -69,6 +70,7 @@ class App extends Component {
                         <Route path='/front-desk' component={FrontDesk} />
                         <Route path='/in-patient' component={InPatient} />
                         <Route path='/pharmacy' component={Pharmacy} />
+                        <Route path='/pharmacy2' component={Pharmacy2} />
                         <Route path='/vitals' component={Vitals} />
                         <Route path='/hr' component={Staff} />
                         <Route path='/inventory' component={Inventory} />

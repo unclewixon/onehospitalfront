@@ -31,6 +31,14 @@ const FrontDeskMenu = () => {
           <span>Clinical Lab</span>
         </Link>
       </li>
+      <li>
+        <Link to='/pharmacy2'>
+          <div className='icon-w'>
+            <div className='os-icon os-icon-layers' />
+          </div>
+          <span>Pharmacy</span>
+        </Link>
+      </li>
     </>
   );
 };

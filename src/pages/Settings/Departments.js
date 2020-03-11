@@ -1,10 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { confirmAlert } from "react-confirm-alert";
+import waiting from "../../assets/images/waiting.gif";
+import { notifySuccess, notifyError } from "../../services/notify";
+import { confirmAction } from "../../services/utilities";
 
-import waiting from '../../assets/images/waiting.gif';
-import { notifySuccess, notifyError } from '../../services/notify';
-import { confirmAction } from '../../services/utilities';
 import {
 	getAllDepartments,
 	createDepartment,

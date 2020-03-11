@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
-
 import { confirmAction } from '../../services/utilities';
+
 import {
 	addLeaveCategory,
 	getAllLeaveCategory,

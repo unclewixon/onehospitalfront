@@ -18,7 +18,9 @@ import {
   TOGGLE_REGISTER_NEW_PATIENT,
   TOGGLE_CREATE_APPOINTMENT,
   TOGGLE_VIEW_APPOINTMENT_DETAIL,
-  TOGGLE_VIEW_PAYPOINT
+  TOGGLE_VIEW_PAYPOINT,
+  TOGGLE_UPLOAD_SERVICE,
+  TOGGLE_UPLOAD_DIAGNOSIS
 } from "./types";
 
 export const togglePreloading = status => {
@@ -170,6 +172,20 @@ export const toggleViewPayPoint = status => {
   };
 };
 
+export const toggleUploadService = status => {
+  return {
+    type: TOGGLE_UPLOAD_SERVICE,
+    payload: status
+  };
+};
+
+export const toggleUploadDiagnosis = status => {
+  return {
+    type: TOGGLE_UPLOAD_DIAGNOSIS,
+    payload: status
+  };
+};
+
 // close modals
 export const closeModals = () => {
   return dispatch => {
@@ -190,6 +206,8 @@ export const closeModals = () => {
     dispatch(toggleNewAppointment(false));
     dispatch(toggleViewAppointDetail(false));
     dispatch(toggleViewPayPoint(false));
+    dispatch(toggleUploadService(false));
+    dispatch(toggleUploadDiagnosis(false));
   };
 };
 
@@ -198,7 +216,7 @@ export const closeCurrentPayRoll = is_modal => {
     if (!is_modal) {
       dispatch(toggleModal(false));
     }
-    dispatch(toggleCurrentPayroll(false, null));
+    dispatch(toggleCurrentPayroll(false));
   };
 };
 
@@ -207,7 +225,7 @@ export const closeEditPayRoll = is_modal => {
     if (!is_modal) {
       dispatch(toggleModal(false));
     }
-    dispatch(toggleEditPayroll(false, null));
+    dispatch(toggleEditPayroll(false));
   };
 };
 
@@ -342,5 +360,21 @@ export const viewPayPoint = action => {
     dispatch(closeModals());
     dispatch(toggleModal(true));
     dispatch(toggleViewPayPoint(action));
+  };
+};
+
+export const uploadServiceModal = action => {
+  return dispatch => {
+    dispatch(closeModals());
+    dispatch(toggleModal(true));
+    dispatch(toggleUploadService(action));
+  };
+};
+
+export const uploadDiagnosis = action => {
+  return dispatch => {
+    dispatch(closeModals());
+    dispatch(toggleModal(true));
+    dispatch(toggleUploadDiagnosis(action));
   };
 };
