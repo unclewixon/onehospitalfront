@@ -50,7 +50,11 @@ import {
   GET_ALL_SERIVCES,
   UPDATE_SERVICE,
   DOWNLOAD_SERVICE,
-  DELETE_SERVICE
+  DELETE_SERVICE,
+  UPDATE_DIAGNOSIS,
+  GET_ALL_DIAGNOSISES,
+  DELETE_DIAGNOSIS,
+  UPLOAD_DIAGNOSIS
 } from "./types";
 
 //department
@@ -413,6 +417,36 @@ const update_service = (payload, previousData) => {
 const delete_service = payload => {
   return {
     type: DELETE_SERVICE,
+    payload
+  };
+};
+
+//Diagnosis
+const upload_diagnosis = payload => {
+  return {
+    type: UPDATE_DIAGNOSIS,
+    payload
+  };
+};
+
+export const get_all_diagnosis = payload => {
+  return {
+    type: GET_ALL_DIAGNOSISES,
+    payload
+  };
+};
+
+const update_diagnosis = (payload, previousData) => {
+  return {
+    type: UPLOAD_DIAGNOSIS,
+    payload,
+    previousData
+  };
+};
+
+const delete_diagnosis = payload => {
+  return {
+    type: DELETE_DIAGNOSIS,
     payload
   };
 };
@@ -843,116 +877,116 @@ export const deleteLeaveCategory = data => {
 
 //Specialization
 export const addSpecialization = data => {
-	return dispatch => {
-		return axios
-			.post(`${API_URI}/specializations`, {
-				name: data.name,
-			})
-			.then(response => {
-				return dispatch(add_specialziation(response.data));
-			})
-			.catch(error => {
-				console.log(error);
-			});
-	};
+  return dispatch => {
+    return axios
+      .post(`${API_URI}/specializations`, {
+        name: data.name
+      })
+      .then(response => {
+        return dispatch(add_specialziation(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 };
 
 export const getAllSpecialization = data => {
-	return dispatch => {
-		return axios
-			.get(`${API_URI}/specializations`)
-			.then(response => {
-				return dispatch(get_all_specializations(response.data));
-			})
-			.catch(error => {
-				console.log(error);
-			});
-	};
+  return dispatch => {
+    return axios
+      .get(`${API_URI}/specializations`)
+      .then(response => {
+        return dispatch(get_all_specializations(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 };
 
 export const updateSpecialization = data => {
-	return dispatch => {
-		return axios
-			.patch(`${API_URI}/specializations/${data.id}/update`, {
-				name: data.name,
-			})
-			.then(response => {
-				return dispatch(update_specialization(response.data, data));
-			})
-			.catch(error => {
-				console.log(error);
-			});
-	};
+  return dispatch => {
+    return axios
+      .patch(`${API_URI}/specializations/${data.id}/update`, {
+        name: data.name
+      })
+      .then(response => {
+        return dispatch(update_specialization(response.data, data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 };
 
 export const deleteSpecialization = data => {
-	return dispatch => {
-		return axios
-			.delete(`${API_URI}/specializations/${data.id}`)
-			.then(response => {
-				return dispatch(delete_specialization(data));
-			})
-			.catch(error => {
-				console.log(error);
-			});
-	};
+  return dispatch => {
+    return axios
+      .delete(`${API_URI}/specializations/${data.id}`)
+      .then(response => {
+        return dispatch(delete_specialization(data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 };
 
 //Consultating Room
 export const addConsultatingRoom = data => {
-	return dispatch => {
-		return axios
-			.post(`${API_URI}/consulting-rooms`, {
-				name: data.name,
-			})
-			.then(response => {
-				return dispatch(add_consultating_room(response.data));
-			})
-			.catch(error => {
-				console.log(error);
-			});
-	};
+  return dispatch => {
+    return axios
+      .post(`${API_URI}/consulting-rooms`, {
+        name: data.name
+      })
+      .then(response => {
+        return dispatch(add_consultating_room(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 };
 
 export const getAllConsultatingRooms = data => {
-	return dispatch => {
-		return axios
-			.get(`${API_URI}/consulting-rooms`)
-			.then(response => {
-				return dispatch(get_all_consultating_rooms(response.data));
-			})
-			.catch(error => {
-				console.log(error);
-			});
-	};
+  return dispatch => {
+    return axios
+      .get(`${API_URI}/consulting-rooms`)
+      .then(response => {
+        return dispatch(get_all_consultating_rooms(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 };
 
 export const updateConsultatingRoom = data => {
-	return dispatch => {
-		return axios
-			.patch(`${API_URI}/consulting-rooms/${data.id}/update`, {
-				name: data.name,
-			})
-			.then(response => {
-				return dispatch(update_consultating_room(response.data, data));
-			})
-			.catch(error => {
-				console.log(error);
-			});
-	};
+  return dispatch => {
+    return axios
+      .patch(`${API_URI}/consulting-rooms/${data.id}/update`, {
+        name: data.name
+      })
+      .then(response => {
+        return dispatch(update_consultating_room(response.data, data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 };
 
 export const deleteConsultatingRoom = data => {
-	return dispatch => {
-		return axios
-			.delete(`${API_URI}/consulting-rooms/${data.id}`)
-			.then(response => {
-				return dispatch(delete_consultating_room(data));
-			})
-			.catch(error => {
-				console.log(error);
-			});
-	};
+  return dispatch => {
+    return axios
+      .delete(`${API_URI}/consulting-rooms/${data.id}`)
+      .then(response => {
+        return dispatch(delete_consultating_room(data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 };
 
 //GET ALL STAFF
@@ -1085,7 +1119,7 @@ export const deleteServiceCategory = data => {
 
 //Service
 export const uploadService = data => {
-  console.log(data)
+  console.log(data);
   return dispatch => {
     return axios
       .post(`${API_URI}/services/upload-services`, data)
@@ -1132,6 +1166,64 @@ export const deleteService = data => {
       .delete(`${API_URI}/services/${data.id}`)
       .then(response => {
         return dispatch(delete_service(data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+//Diagnosis
+export const uploadDiagnosis = data => {
+  return dispatch => {
+    return axios
+      .post(`${API_URI}/services/diagnosis/upload`, data)
+      .then(response => {
+        return dispatch(upload_diagnosis(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const getAllDiagnosises = data => {
+  return dispatch => {
+    return axios
+      .get(`${API_URI}/diagnosis`)
+      .then(response => {
+        return dispatch(get_all_diagnosis(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const updateDiagnosis = data => {
+  return dispatch => {
+    return axios
+      .patch(`${API_URI}/diagnosis/${data.id}/update`, {
+        procedureCode: data.procedureCode,
+        icd10Code: data.icd10Code,
+        description: data.description,
+        codeStatus: data.codeStatus
+      })
+      .then(response => {
+        return dispatch(update_diagnosis(response.data, data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+};
+
+export const deleteDiagnosis = data => {
+  return dispatch => {
+    return axios
+      .delete(`${API_URI}/diagnosis/${data.id}`)
+      .then(response => {
+        return dispatch(delete_diagnosis(data));
       })
       .catch(error => {
         console.log(error);

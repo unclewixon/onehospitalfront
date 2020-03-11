@@ -19,7 +19,8 @@ import {
   TOGGLE_CREATE_APPOINTMENT,
   TOGGLE_VIEW_APPOINTMENT_DETAIL,
   TOGGLE_VIEW_PAYPOINT,
-  TOGGLE_UPLOAD_SERVICE
+  TOGGLE_UPLOAD_SERVICE,
+  TOGGLE_UPLOAD_DIAGNOSIS
 } from "./types";
 
 export const togglePreloading = status => {
@@ -178,6 +179,13 @@ export const toggleUploadService = status => {
   };
 };
 
+export const toggleUploadDiagnosis = status => {
+  return {
+    type: TOGGLE_UPLOAD_DIAGNOSIS,
+    payload: status
+  };
+};
+
 // close modals
 export const closeModals = () => {
   return dispatch => {
@@ -199,6 +207,7 @@ export const closeModals = () => {
     dispatch(toggleViewAppointDetail(false));
     dispatch(toggleViewPayPoint(false));
     dispatch(toggleUploadService(false));
+    dispatch(toggleUploadDiagnosis(false));
   };
 };
 
@@ -354,10 +363,18 @@ export const viewPayPoint = action => {
   };
 };
 
-export const uploadService = action => {
+export const uploadServiceModal = action => {
   return dispatch => {
     dispatch(closeModals());
     dispatch(toggleModal(true));
     dispatch(toggleUploadService(action));
+  };
+};
+
+export const uploadDiagnosis = action => {
+  return dispatch => {
+    dispatch(closeModals());
+    dispatch(toggleModal(true));
+    dispatch(toggleUploadDiagnosis(action));
   };
 };
