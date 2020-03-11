@@ -18,7 +18,7 @@ const storage = new SSRStorage();
 
 const INITIAL_STATE = {
 	profile: null,
-	loggedIn: false,
+	loggedIn: true,
 	theme_mode: false,
 	fullscreen: false,
 	userID: null,
