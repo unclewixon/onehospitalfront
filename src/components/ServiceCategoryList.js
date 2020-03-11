@@ -117,7 +117,7 @@ console.log(props)
                                 </td>
                                 <td className="row-actions text-right">
                                   <a
-                                    onClick={() => this.onClickEdit(category)}
+                                    onClick={() => onClickEdit(category)}
                                   >
                                     <i className="os-icon os-icon-ui-49"></i>
                                   </a>
@@ -127,7 +127,7 @@ console.log(props)
                                   <a
                                     className="danger"
                                     onClick={() =>
-                                      this.confirmDelete(category)
+                                      confirmDelete(category)
                                     }
                                   >
                                     <i className="os-icon os-icon-ui-15"></i>
@@ -136,7 +136,7 @@ console.log(props)
                               </tr>
                             );
                           })}
-                         
+
                         </tbody>
                       </table>
                       <a className="centered-load-more-link" href="#">
