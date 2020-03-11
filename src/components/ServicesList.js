@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { addTask } from "../actions/general";
-import { uploadService } from "../actions/general";
+import { uploadService } from "../actions/settings";
 
 const ServicesList = props => {
   const [moreDetailConsultation, setMoreDetailConsultation] = useState(false);

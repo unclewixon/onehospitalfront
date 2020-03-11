@@ -171,6 +171,13 @@ export const toggleViewPayPoint = status => {
   };
 };
 
+export const toggleUploadService = status => {
+  return {
+    type: TOGGLE_UPLOAD_SERVICE,
+    payload: status
+  };
+};
+
 // close modals
 export const closeModals = () => {
   return dispatch => {
@@ -344,5 +351,13 @@ export const viewPayPoint = action => {
     dispatch(closeModals());
     dispatch(toggleModal(true));
     dispatch(toggleViewPayPoint(action));
+  };
+};
+
+export const uploadService = action => {
+  return dispatch => {
+    dispatch(closeModals());
+    dispatch(toggleModal(true));
+    dispatch(toggleUploadService(action));
   };
 };
