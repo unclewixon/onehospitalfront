@@ -8,13 +8,17 @@ import {
 	TOGGLE_PROFILE,
 } from '../actions/types';
 import SSRStorage from '../services/storage';
-import { FULLSCREEN_COOKIE, MODE_COOKIE, USER_RECORD } from '../services/constants';
+import {
+	FULLSCREEN_COOKIE,
+	MODE_COOKIE,
+	USER_RECORD,
+} from '../services/constants';
 
 const storage = new SSRStorage();
 
 const INITIAL_STATE = {
 	profile: null,
-	loggedIn: true,
+	loggedIn: false,
 	theme_mode: false,
 	fullscreen: false,
 	userID: null,
@@ -31,12 +35,16 @@ const user = (state = INITIAL_STATE, action) => {
 		case TOGGLE_MODE:
 			storage.setItem(MODE_COOKIE, !state.theme_mode);
 			const theme_mode = !state.theme_mode;
-			window.document.body.className = `menu-position-side menu-side-left ${state.fullscreen ? 'full-screen' : ''} with-content-panel ${theme_mode ? 'color-scheme-dark' : ''}`;
+			window.document.body.className = `menu-position-side menu-side-left ${
+				state.fullscreen ? 'full-screen' : ''
+			} with-content-panel ${theme_mode ? 'color-scheme-dark' : ''}`;
 			return { ...state, theme_mode };
 		case TOGGLE_FULLSCREEN:
 			storage.setItem(FULLSCREEN_COOKIE, !state.fullscreen);
 			const fullscreen = !state.fullscreen;
-			window.document.body.className = `menu-position-side menu-side-left ${fullscreen ? 'full-screen' : ''} with-content-panel ${state.theme_mode ? 'color-scheme-dark' : ''}`;
+			window.document.body.className = `menu-position-side menu-side-left ${
+				fullscreen ? 'full-screen' : ''
+			} with-content-panel ${state.theme_mode ? 'color-scheme-dark' : ''}`;
 			return { ...state, fullscreen };
 		case INIT_MODE:
 			storage.setItem(MODE_COOKIE, action.payload);
