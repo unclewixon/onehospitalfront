@@ -30,6 +30,7 @@
     "lodash.startcase": "^4.4.0",
     "lodash.template": "^4.5.0",
     "lodash.uppercase": "^4.3.0",
+    "mdbreact": "^4.25.3",
     "moment": "^2.24.0",
     "node-sass": "^4.13.0",
     "numeral": "^2.0.6",

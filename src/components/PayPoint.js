@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from "react";
 import PayPointItem from "./PayPointItem";
 class PayPoint extends Component {
@@ -40,10 +41,12 @@ class PayPoint extends Component {
     const { payPoints } = this.state;
     return (
       <div className='col-sm-12 col-xxl-12'>
-        <div className='element-balances' style={{ flexWrap: "wrap" }}>
-          {payPoints.map((payPoint, i) => {
-            return <PayPointItem payPoint={payPoint} key={i} />;
-          })}
+        <div className='element-content'>
+          <div className='row'>
+            {payPoints.map((payPoint, i) => {
+              return <PayPointItem payPoint={payPoint} key={i} />;
+            })}
+          </div>
         </div>
       </div>
     );

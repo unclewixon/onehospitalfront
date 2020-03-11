@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import Tooltip from "antd/lib/tooltip";
 
 import Queue from "../components/Queue";
-
+import ClinicalLabItem from "../components/ClinicalLabItem";
 class ClinicalLab extends Component {
   state = {};
 
@@ -17,12 +17,6 @@ class ClinicalLab extends Component {
           <div className='row'>
             <div className='col-sm-12'>
               <div className='element-wrapper'>
-                <div className='element-actions'>
-                  <a className='btn btn-primary btn-sm text-white'>
-                    <i className='os-icon os-icon-plus-circle' />
-                    <span>New Lab Request</span>
-                  </a>
-                </div>
                 <h6 className='element-header'>Lab</h6>
                 <div className='row'>
                   <div className='col-sm-12'>
@@ -61,6 +55,10 @@ class ClinicalLab extends Component {
                             <thead>
                               <tr>
                                 <th>
+                                  <div className='th-inner '></div>
+                                  <div className='fht-cell'></div>
+                                </th>
+                                <th>
                                   <div className='th-inner sortable both'>
                                     Request Date
                                   </div>
@@ -91,129 +89,8 @@ class ClinicalLab extends Component {
                               </tr>
                             </thead>
                             <tbody>
-                              <tr data-index='0' data-id='20'>
-                                <td>
-                                  <span>Today</span>
-                                  <span className='smaller lighter'>
-                                    1:52am
-                                  </span>
-                                </td>
-                                <td>
-                                  <a>
-                                    <span className='w-32 avatar gd-warning'>
-                                      IN32456789
-                                    </span>
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-
-                                <td className='text-right row-actions'>
-                                  <Tooltip title='Receive Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-folder-plus' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Edit Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-edit-32' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Delete Request'>
-                                    <a className='danger'>
-                                      <i className='os-icon os-icon-ui-15' />
-                                    </a>
-                                  </Tooltip>
-                                </td>
-                              </tr>
-                              <tr className='expanded-row'>
-                                <td colSpan='5'>
-                                  <div className='table-responsive'>
-                                    <table className='table table-sm'>
-                                      <tbody>
-                                        <tr>
-                                          <th>Specimen</th>
-                                          <td>blood</td>
-                                        </tr>
-                                        <tr>
-                                          <th>Lab</th>
-                                          <td>CS</td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </div>
-                                </td>
-                              </tr>
-
-                              <tr data-index='0' data-id='20'>
-                                <td>
-                                  <span>Today</span>
-                                  <span className='smaller lighter'>
-                                    1:52am
-                                  </span>
-                                </td>
-                                <td>
-                                  <a>
-                                    <span className='w-32 avatar gd-warning'>
-                                      IN32456789
-                                    </span>
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-
-                                <td className='text-right row-actions'>
-                                  <Tooltip title='Receive Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-folder-plus' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Edit Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-edit-32' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Delete Request'>
-                                    <a className='danger'>
-                                      <i className='os-icon os-icon-ui-15' />
-                                    </a>
-                                  </Tooltip>
-                                </td>
-                              </tr>
-                              <tr className='expanded-row'>
-                                <td colSpan='5'>
-                                  <div className='table-responsive'>
-                                    <table className='table table-sm'>
-                                      <tbody>
-                                        <tr>
-                                          <th>Specimen</th>
-                                          <td>blood</td>
-                                        </tr>
-                                        <tr>
-                                          <th>Lab</th>
-                                          <td>CS</td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </div>
-                                </td>
-                              </tr>
+                              <ClinicalLabItem />
+                              <ClinicalLabItem />
                             </tbody>
                           </table>
                         </div>
@@ -232,6 +109,10 @@ class ClinicalLab extends Component {
                           >
                             <thead>
                               <tr>
+                                <th data-field='collapse'>
+                                  <div className='th-inner '></div>
+                                  <div className='fht-cell'></div>
+                                </th>
                                 <th data-field='request-date'>
                                   <div className='th-inner sortable both'>
                                     Request Date
@@ -268,311 +149,12 @@ class ClinicalLab extends Component {
                               </tr>
                             </thead>
                             <tbody>
-                              <tr data-index='0' data-id='20'>
-                                <td>
-                                  <span>Today</span>
-                                  <span className='smaller lighter'>
-                                    1:52am
-                                  </span>
-                                </td>
-                                <td>
-                                  <a>
-                                    <span className='w-32 avatar gd-warning'>
-                                      IN32456789
-                                    </span>
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-
-                                <td className='text-right row-actions'>
-                                  <Tooltip title='Receive Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-folder-plus' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Edit Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-edit-32' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Delete Request'>
-                                    <a className='danger'>
-                                      <i className='os-icon os-icon-ui-15' />
-                                    </a>
-                                  </Tooltip>
-                                </td>
-                              </tr>
-                              <tr className='expanded-row'>
-                                <td colSpan='5'>
-                                  <div className='table-responsive'>
-                                    <table className='table table-striped table-sm'>
-                                      <tbody>
-                                        <tr>
-                                          <th>Specimen</th>
-                                          <td>blood</td>
-                                        </tr>
-                                        <tr>
-                                          <th>Lab</th>
-                                          <td>CS</td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr data-index='0' data-id='20'>
-                                <td>
-                                  <span>Today</span>
-                                  <span className='smaller lighter'>
-                                    1:52am
-                                  </span>
-                                </td>
-                                <td>
-                                  <a>
-                                    <span className='w-32 avatar gd-warning'>
-                                      IN32456789
-                                    </span>
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-
-                                <td className='text-right row-actions'>
-                                  <Tooltip title='Receive Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-folder-plus' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Edit Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-edit-32' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Delete Request'>
-                                    <a className='danger'>
-                                      <i className='os-icon os-icon-ui-15' />
-                                    </a>
-                                  </Tooltip>
-                                </td>
-                              </tr>
-                              <tr className='expanded-row'>
-                                <td colSpan='5'>
-                                  <div className='table-responsive'>
-                                    <table className='table table-striped table-sm'>
-                                      <tbody>
-                                        <tr>
-                                          <th>Specimen</th>
-                                          <td>blood</td>
-                                        </tr>
-                                        <tr>
-                                          <th>Lab</th>
-                                          <td>CS</td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr data-index='0' data-id='20'>
-                                <td>
-                                  <span>Today</span>
-                                  <span className='smaller lighter'>
-                                    1:52am
-                                  </span>
-                                </td>
-                                <td>
-                                  <a>
-                                    <span className='w-32 avatar gd-warning'>
-                                      IN32456789
-                                    </span>
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-
-                                <td className='text-right row-actions'>
-                                  <Tooltip title='Receive Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-folder-plus' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Edit Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-edit-32' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Delete Request'>
-                                    <a className='danger'>
-                                      <i className='os-icon os-icon-ui-15' />
-                                    </a>
-                                  </Tooltip>
-                                </td>
-                              </tr>
-                              <tr className='expanded-row'>
-                                <td colSpan='5'>
-                                  <div className='table-responsive'>
-                                    <table className='table table-striped table-sm'>
-                                      <tbody>
-                                        <tr>
-                                          <th>Specimen</th>
-                                          <td>blood</td>
-                                        </tr>
-                                        <tr>
-                                          <th>Lab</th>
-                                          <td>CS</td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr data-index='0' data-id='20'>
-                                <td>
-                                  <span>Today</span>
-                                  <span className='smaller lighter'>
-                                    1:52am
-                                  </span>
-                                </td>
-                                <td>
-                                  <a>
-                                    <span className='w-32 avatar gd-warning'>
-                                      IN32456789
-                                    </span>
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-
-                                <td className='text-right row-actions'>
-                                  <Tooltip title='Receive Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-folder-plus' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Edit Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-edit-32' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Delete Request'>
-                                    <a className='danger'>
-                                      <i className='os-icon os-icon-ui-15' />
-                                    </a>
-                                  </Tooltip>
-                                </td>
-                              </tr>
-                              <tr className='expanded-row'>
-                                <td colSpan='5'>
-                                  <div className='table-responsive'>
-                                    <table className='table table-striped table-sm'>
-                                      <tbody>
-                                        <tr>
-                                          <th>Specimen</th>
-                                          <td>blood</td>
-                                        </tr>
-                                        <tr>
-                                          <th>Lab</th>
-                                          <td>CS</td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr data-index='0' data-id='20'>
-                                <td>
-                                  <span>Today</span>
-                                  <span className='smaller lighter'>
-                                    1:52am
-                                  </span>
-                                </td>
-                                <td>
-                                  <a>
-                                    <span className='w-32 avatar gd-warning'>
-                                      IN32456789
-                                    </span>
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-
-                                <td className='text-right row-actions'>
-                                  <Tooltip title='Receive Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-folder-plus' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Edit Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-edit-32' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Delete Request'>
-                                    <a className='danger'>
-                                      <i className='os-icon os-icon-ui-15' />
-                                    </a>
-                                  </Tooltip>
-                                </td>
-                              </tr>
-                              <tr className='expanded-row'>
-                                <td colSpan='5'>
-                                  <div className='table-responsive'>
-                                    <table className='table table-striped table-sm'>
-                                      <tbody>
-                                        <tr>
-                                          <th>Specimen</th>
-                                          <td>blood</td>
-                                        </tr>
-                                        <tr>
-                                          <th>Lab</th>
-                                          <td>CS</td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </div>
-                                </td>
-                              </tr>
+                              <ClinicalLabItem />
+                              <ClinicalLabItem />
+                              <ClinicalLabItem />
+                              <ClinicalLabItem />
+                              <ClinicalLabItem />
+                              <ClinicalLabItem />
                             </tbody>
                           </table>
                         </div>

@@ -10,11 +10,8 @@ export class PayPointTable extends Component {
     return (
       <div className='col-sm-12'>
         <div className='element-box'>
-          <h6 class='element-header'>Staff List</h6>
-          <div className='form-desc'>
-            You can add className <code>.table-striped</code> and{" "}
-            <code>.table</code> to a table element to get striped table:
-          </div>
+          <h6 class='element-header'>Recent Transactions</h6>
+
           <div className='table-responsive'>
             <table className='table table-striped'>
               <thead>

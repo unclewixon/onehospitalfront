@@ -2,8 +2,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Tooltip from "antd/lib/tooltip";
-const Pharmacy = () => {
-  const newPharmacyRequest = () => {
+const Dentistry = () => {
+  const newDentistRequest = () => {
     alert("new Lab");
   };
   return (
@@ -13,13 +13,13 @@ const Pharmacy = () => {
           <button
             className='btn btn-primary'
             type='submit'
-            onClick={newPharmacyRequest}
+            onClick={newDentistRequest}
           >
             <i className='os-icon os-icon-plus'></i>
-            New Pharmacy Request
+            New Dentist Request
           </button>
         </div>
-        <h6 className='element-header'>Pharmacy Requests</h6>
+        <h6 className='element-header'>Dentistry Requests</h6>
         <div className='element-box'>
           <div className='bootstrap-table'>
             <div className='fixed-table-toolbar'>
@@ -142,4 +142,4 @@ const Pharmacy = () => {
   );
 };
 
-export default Pharmacy;
+export default Dentistry;

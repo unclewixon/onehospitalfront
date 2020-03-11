@@ -58,7 +58,7 @@ export class SaleSummary extends Component {
 
                                       <td>
                                           <a>
-                                              <span className='w-32 avatar gd-warning'>
+                                              <span className='w-32 avatar gd-warning'  style={{ boxShadow: "none" }}>
                                                   IN32456789
                                     </span>
                                           </a>
@@ -103,7 +103,7 @@ export class SaleSummary extends Component {
 
                                       <td>
                                           <a>
-                                              <span className='w-32 avatar gd-warning'>
+                                              <span className='w-32 avatar gd-warning'  style={{ boxShadow: "none" }}>
                                                   IN32456789
                                     </span>
                                           </a>
@@ -148,7 +148,7 @@ export class SaleSummary extends Component {
 
                                       <td>
                                           <a>
-                                              <span className='w-32 avatar gd-warning'>
+                                              <span className='w-32 avatar gd-warning'  style={{ boxShadow: "none" }}>
                                                   IN32456789
                                     </span>
                                           </a>
@@ -192,7 +192,7 @@ export class SaleSummary extends Component {
 
                                       <td>
                                           <a>
-                                              <span className='w-32 avatar gd-warning'>
+                                              <span className='w-32 avatar gd-warning'  style={{ boxShadow: "none" }}>
                                                   IN32456789
                                     </span>
                                           </a>
@@ -239,7 +239,7 @@ export class SaleSummary extends Component {
 
                                       <td>
                                           <a>
-                                              <span className='w-32 avatar gd-warning'>
+                                              <span className='w-32 avatar gd-warning'  style={{ boxShadow: "none" }}>
                                                   IN32456789
                                     </span>
                                           </a>
