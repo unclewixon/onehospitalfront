@@ -25,35 +25,25 @@ class ClinicalLab extends Component {
                 </div>
                 <h6 className='element-header'>Lab</h6>
                 <div className='row'>
-                  <div className='col-md-12'>
+                  <div className='col-sm-12'>
                     <div className='element-content'>
                       <div className='row'>
-                        <div className='col-sm-4 col-xxxl-3'>
+                        <div className='col-sm-4 col-xxxl-4'>
                           <a className='element-box el-tablo'>
                             <div className='label'>Pending Requests</div>
                             <div className='value'>57</div>
                           </a>
                         </div>
-                        <div className='col-sm-4 col-xxxl-3'>
+                        <div className='col-sm-4 col-xxxl-4'>
                           <a className='element-box el-tablo'>
                             <div className='label'>Pending Approval</div>
                             <div className='value text-center'>457</div>
                           </a>
                         </div>
-                        <div className='col-sm-4 col-xxxl-3'>
+                        <div className='col-sm-4 col-xxxl-4'>
                           <a className='element-box el-tablo'>
                             <div className='label'>Completed Requests</div>
                             <div className='value'>125</div>
-                          </a>
-                        </div>
-                        <div className='d-none d-xxxl-block col-xxxl-3'>
-                          <a className='element-box el-tablo'>
-                            <div className='label'>Refunds Processed</div>
-                            <div className='value'>294</div>
-                            <div className='trending trending-up-basic'>
-                              <span>12%</span>
-                              <i className='os-icon os-icon-arrow-up2'></i>
-                            </div>
                           </a>
                         </div>
                       </div>
@@ -84,20 +74,6 @@ class ClinicalLab extends Component {
                                 </th>
                                 <th>
                                   <div className='th-inner sortable both'>
-                                    Lab
-                                  </div>
-                                  <div className='fht-cell'></div>
-                                </th>
-                                <th>
-                                  <div className='th-inner'>
-                                    <span className='d-none d-sm-block'>
-                                      Request Specimen(s)
-                                    </span>
-                                  </div>
-                                  <div className='fht-cell'></div>
-                                </th>
-                                <th>
-                                  <div className='th-inner sortable both'>
                                     Patient
                                   </div>
                                   <div className='fht-cell'></div>
@@ -115,26 +91,18 @@ class ClinicalLab extends Component {
                               </tr>
                             </thead>
                             <tbody>
-                              <tr className='' data-index='0' data-id='20'>
+                              <tr data-index='0' data-id='20'>
                                 <td>
                                   <span>Today</span>
                                   <span className='smaller lighter'>
                                     1:52am
                                   </span>
                                 </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon ios app
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
+                                <td>
+                                  <a>
+                                    <span className='w-32 avatar gd-warning'>
+                                      IN32456789
+                                    </span>
                                   </a>
                                 </td>
                                 <td className='flex'>
@@ -166,21 +134,37 @@ class ClinicalLab extends Component {
                                   </Tooltip>
                                 </td>
                               </tr>
-                              <tr className='' data-index='1' data-id='8'>
+                              <tr className='expanded-row'>
+                                <td colSpan='5'>
+                                  <div className='table-responsive'>
+                                    <table className='table table-sm'>
+                                      <tbody>
+                                        <tr>
+                                          <th>Specimen</th>
+                                          <td>blood</td>
+                                        </tr>
+                                        <tr>
+                                          <th>Lab</th>
+                                          <td>CS</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </td>
+                              </tr>
+
+                              <tr data-index='0' data-id='20'>
                                 <td>
-                                  <span>Jan 19th</span>
+                                  <span>Today</span>
                                   <span className='smaller lighter'>
-                                    3:22pm
+                                    1:52am
                                   </span>
                                 </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    DEV DAY 2018
-                                  </a>
-                                </td>
-                                <td className=''>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
+                                <td>
+                                  <a>
+                                    <span className='w-32 avatar gd-warning'>
+                                      IN32456789
+                                    </span>
                                   </a>
                                 </td>
                                 <td className='flex'>
@@ -193,11 +177,7 @@ class ClinicalLab extends Component {
                                     Netflix hackathon
                                   </a>
                                 </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
+
                                 <td className='text-right row-actions'>
                                   <Tooltip title='Receive Request'>
                                     <a className='secondary'>
@@ -214,6 +194,24 @@ class ClinicalLab extends Component {
                                       <i className='os-icon os-icon-ui-15' />
                                     </a>
                                   </Tooltip>
+                                </td>
+                              </tr>
+                              <tr className='expanded-row'>
+                                <td colSpan='5'>
+                                  <div className='table-responsive'>
+                                    <table className='table table-sm'>
+                                      <tbody>
+                                        <tr>
+                                          <th>Specimen</th>
+                                          <td>blood</td>
+                                        </tr>
+                                        <tr>
+                                          <th>Lab</th>
+                                          <td>CS</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
                                 </td>
                               </tr>
                             </tbody>
@@ -246,18 +244,7 @@ class ClinicalLab extends Component {
                                   </div>
                                   <div className='fht-cell'></div>
                                 </th>
-                                <th data-field='owner'>
-                                  <div className='th-inner sortable both'>
-                                    Lab
-                                  </div>
-                                  <div className='fht-cell'></div>
-                                </th>
-                                <th data-field='project'>
-                                  <div className='th-inner sortable both'>
-                                    Request Specimen(s)
-                                  </div>
-                                  <div className='fht-cell'></div>
-                                </th>
+
                                 <th data-field='task'>
                                   <div className='th-inner '>
                                     <span className='d-none d-sm-block'>
@@ -301,7 +288,60 @@ class ClinicalLab extends Component {
                                   </a>
                                 </td>
                                 <td className='flex'>
-                                  <a className='item-title text-color'>blood</a>
+                                  <a className='item-title text-color'>
+                                    Netflix hackathon
+                                  </a>
+                                </td>
+
+                                <td className='text-right row-actions'>
+                                  <Tooltip title='Receive Request'>
+                                    <a className='secondary'>
+                                      <i className='os-icon os-icon-folder-plus' />
+                                    </a>
+                                  </Tooltip>
+                                  <Tooltip title='Edit Request'>
+                                    <a className='secondary'>
+                                      <i className='os-icon os-icon-edit-32' />
+                                    </a>
+                                  </Tooltip>
+                                  <Tooltip title='Delete Request'>
+                                    <a className='danger'>
+                                      <i className='os-icon os-icon-ui-15' />
+                                    </a>
+                                  </Tooltip>
+                                </td>
+                              </tr>
+                              <tr className='expanded-row'>
+                                <td colSpan='5'>
+                                  <div className='table-responsive'>
+                                    <table className='table table-striped table-sm'>
+                                      <tbody>
+                                        <tr>
+                                          <th>Specimen</th>
+                                          <td>blood</td>
+                                        </tr>
+                                        <tr>
+                                          <th>Lab</th>
+                                          <td>CS</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr data-index='0' data-id='20'>
+                                <td>
+                                  <span>Today</span>
+                                  <span className='smaller lighter'>
+                                    1:52am
+                                  </span>
+                                </td>
+                                <td>
+                                  <a>
+                                    <span className='w-32 avatar gd-warning'>
+                                      IN32456789
+                                    </span>
+                                  </a>
                                 </td>
                                 <td className='flex'>
                                   <a className='item-title text-color'>
@@ -332,6 +372,24 @@ class ClinicalLab extends Component {
                                   </Tooltip>
                                 </td>
                               </tr>
+                              <tr className='expanded-row'>
+                                <td colSpan='5'>
+                                  <div className='table-responsive'>
+                                    <table className='table table-striped table-sm'>
+                                      <tbody>
+                                        <tr>
+                                          <th>Specimen</th>
+                                          <td>blood</td>
+                                        </tr>
+                                        <tr>
+                                          <th>Lab</th>
+                                          <td>CS</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </td>
+                              </tr>
                               <tr data-index='0' data-id='20'>
                                 <td>
                                   <span>Today</span>
@@ -345,14 +403,6 @@ class ClinicalLab extends Component {
                                       IN32456789
                                     </span>
                                   </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>blood</a>
                                 </td>
                                 <td className='flex'>
                                   <a className='item-title text-color'>
@@ -383,7 +433,24 @@ class ClinicalLab extends Component {
                                   </Tooltip>
                                 </td>
                               </tr>
-
+                              <tr className='expanded-row'>
+                                <td colSpan='5'>
+                                  <div className='table-responsive'>
+                                    <table className='table table-striped table-sm'>
+                                      <tbody>
+                                        <tr>
+                                          <th>Specimen</th>
+                                          <td>blood</td>
+                                        </tr>
+                                        <tr>
+                                          <th>Lab</th>
+                                          <td>CS</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </td>
+                              </tr>
                               <tr data-index='0' data-id='20'>
                                 <td>
                                   <span>Today</span>
@@ -397,14 +464,6 @@ class ClinicalLab extends Component {
                                       IN32456789
                                     </span>
                                   </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>blood</a>
                                 </td>
                                 <td className='flex'>
                                   <a className='item-title text-color'>
@@ -435,7 +494,24 @@ class ClinicalLab extends Component {
                                   </Tooltip>
                                 </td>
                               </tr>
-
+                              <tr className='expanded-row'>
+                                <td colSpan='5'>
+                                  <div className='table-responsive'>
+                                    <table className='table table-striped table-sm'>
+                                      <tbody>
+                                        <tr>
+                                          <th>Specimen</th>
+                                          <td>blood</td>
+                                        </tr>
+                                        <tr>
+                                          <th>Lab</th>
+                                          <td>CS</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </td>
+                              </tr>
                               <tr data-index='0' data-id='20'>
                                 <td>
                                   <span>Today</span>
@@ -449,14 +525,6 @@ class ClinicalLab extends Component {
                                       IN32456789
                                     </span>
                                   </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>blood</a>
                                 </td>
                                 <td className='flex'>
                                   <a className='item-title text-color'>
@@ -487,56 +555,22 @@ class ClinicalLab extends Component {
                                   </Tooltip>
                                 </td>
                               </tr>
-
-                              <tr data-index='0' data-id='20'>
-                                <td>
-                                  <span>Today</span>
-                                  <span className='smaller lighter'>
-                                    1:52am
-                                  </span>
-                                </td>
-                                <td>
-                                  <a>
-                                    <span className='w-32 avatar gd-warning'>
-                                      IN32456789
-                                    </span>
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>blood</a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-
-                                <td className='text-right row-actions'>
-                                  <Tooltip title='Receive Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-folder-plus' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Edit Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-edit-32' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Delete Request'>
-                                    <a className='danger'>
-                                      <i className='os-icon os-icon-ui-15' />
-                                    </a>
-                                  </Tooltip>
+                              <tr className='expanded-row'>
+                                <td colSpan='5'>
+                                  <div className='table-responsive'>
+                                    <table className='table table-striped table-sm'>
+                                      <tbody>
+                                        <tr>
+                                          <th>Specimen</th>
+                                          <td>blood</td>
+                                        </tr>
+                                        <tr>
+                                          <th>Lab</th>
+                                          <td>CS</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
                                 </td>
                               </tr>
                             </tbody>

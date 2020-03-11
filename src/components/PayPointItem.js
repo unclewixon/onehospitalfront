@@ -19,13 +19,13 @@ export class PayPointItem extends Component {
               <i className='os-icon os-icon-arrow-2-down'></i>
             </span>
           ) : null}
-          <div class='balance-link'>
+          <div className='balance-link'>
             <button
               className='btn btn-link btn-underlined'
               onClick={() => this.props.viewPayPoint(true)}
             >
               <span>View Statement</span>
-              <i class='os-icon os-icon-arrow-right4'></i>
+              <i className='os-icon os-icon-arrow-right4'></i>
             </button>
           </div>
         </div>
