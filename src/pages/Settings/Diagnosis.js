@@ -9,10 +9,14 @@ import {
 } from "../../actions/settings";
 
 const Diagnosis = props => {
+  const [loaded, setLoaded] = useState(false);
+
   useEffect(() => {
-    props.getAllDiagnosises();
-  }, [props]);
-  console.log(props);
+    if (!loaded) {
+      props.getAllDiagnosises();
+    }
+    setLoaded(true);
+  }, [props, loaded]);
   return (
     <div className="content-i">
       <div className="content-box">

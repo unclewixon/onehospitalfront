@@ -14,6 +14,8 @@ import waiting from "../assets/images/waiting.gif";
 const ServicesList = props => {
   const [moreDetailConsultation, setMoreDetailConsultation] = useState(false);
   const [ServicesList, getServiceList] = useState([]);
+  const [loaded, setLoaded] = useState(false);
+
   const onMoreDetailConsultation = category => {
     setMoreDetailConsultation(category);
     getServiceList(
@@ -22,7 +24,6 @@ const ServicesList = props => {
       })
     );
   };
-
 
   const onDeleteService = data => {
     props
@@ -45,8 +46,11 @@ const ServicesList = props => {
   };
 
   useEffect(() => {
-    props.getAllService();
-  }, []);
+    if (!loaded) {
+      props.getAllService();
+    }
+    setLoaded(true);
+  }, [props, loaded]);
   return (
     <div className="pipelines-w">
       <div className="todo-app-w">

@@ -26,6 +26,7 @@ const Departments = props => {
   const [{ name, description, headOfDept }, setState] = useState(initialState);
   const [Loading, setLoading] = useState(false);
   const [data, getDataToEdit] = useState(null);
+  const [loaded, setLoaded] = useState(false);
 
   const [{ edit, save }, setSubmitButton] = useState(initialState);
   const handleInputChange = e => {
@@ -104,12 +105,14 @@ const Departments = props => {
   };
 
   useEffect(() => {
-    props.getAllDepartments();
-    props.getAllStaff();
-  }, []);
-  
-  
- const {StaffList} = props.StaffList;
+    if (!loaded) {
+      props.getAllDepartments();
+      props.getAllStaff();
+    }
+    setLoaded(true);
+  }, [props, loaded]);
+
+  const { StaffList } = props.StaffList;
   return (
     <div className="content-i">
       <div className="content-box">
@@ -197,9 +200,7 @@ const Departments = props => {
                   <form onSubmit={edit ? onEditDept : onCreateDepartment}>
                     <h5 className="element-box-header">Add New Department</h5>
                     <div className="form-group">
-                      <label className="lighter" >
-                        Name of Department
-                      </label>
+                      <label className="lighter">Name of Department</label>
                       <input
                         className="form-control"
                         placeholder="Enter Department Name..."
@@ -210,9 +211,7 @@ const Departments = props => {
                       />
                     </div>
                     <div className="form-group">
-                      <label className="lighter" >
-                        Head of Department
-                      </label>
+                      <label className="lighter">Head of Department</label>
                       <select
                         className="form-control"
                         name="headOfDept"
@@ -230,9 +229,7 @@ const Departments = props => {
                       </select>
                     </div>
                     <div className="form-group">
-                      <label className="lighter" >
-                        Description
-                      </label>
+                      <label className="lighter">Description</label>
                       <div className="form-group">
                         <textarea
                           className="form-control"

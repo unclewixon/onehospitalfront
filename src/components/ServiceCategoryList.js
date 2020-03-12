@@ -21,6 +21,7 @@ const ServiceCategoryList = props => {
   const [Loading, setLoading] = useState(false);
   const [{ edit, create }, setSubmitButton] = useState(initialState);
   const [data, getDataToEdit] = useState(null);
+  const [loaded, setLoaded] = useState(false);
 
   const handleInputChange = e => {
     const { name, value } = e.target;
@@ -92,10 +93,13 @@ const ServiceCategoryList = props => {
   const confirmDelete = data => {
     confirmAction(onDeleteServiceCategory, data);
   };
-  
+
   useEffect(() => {
-    props.getAllServiceCategory();
-  }, [props]);
+    if (!loaded) {
+      props.getAllServiceCategory();
+    }
+    setLoaded(true);
+  }, [props, loaded]);
   return (
     <div className="row">
       <div className="col-lg-8">
@@ -116,9 +120,7 @@ const ServiceCategoryList = props => {
                                   <div className="value">{category.name}</div>
                                 </td>
                                 <td className="row-actions text-right">
-                                  <a
-                                    onClick={() => onClickEdit(category)}
-                                  >
+                                  <a onClick={() => onClickEdit(category)}>
                                     <i className="os-icon os-icon-ui-49"></i>
                                   </a>
                                   <a href="#">
@@ -126,9 +128,7 @@ const ServiceCategoryList = props => {
                                   </a>
                                   <a
                                     className="danger"
-                                    onClick={() =>
-                                      confirmDelete(category)
-                                    }
+                                    onClick={() => confirmDelete(category)}
                                   >
                                     <i className="os-icon os-icon-ui-15"></i>
                                   </a>
@@ -136,7 +136,6 @@ const ServiceCategoryList = props => {
                               </tr>
                             );
                           })}
-
                         </tbody>
                       </table>
                       <a className="centered-load-more-link" href="#">

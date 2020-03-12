@@ -22,6 +22,7 @@ const RoomCategory = props => {
   const [Loading, setLoading] = useState(false);
   const [{ edit, create }, setSubmitButton] = useState(initialState);
   const [data, getDataToEdit] = useState(null);
+  const [loaded, setLoaded] = useState(false);
 
   const handleInputChange = e => {
     const { name, value } = e.target;
@@ -97,8 +98,11 @@ const RoomCategory = props => {
   };
 
   useEffect(() => {
-    props.getAllRoomCategories();
-  }, []);
+		if (!loaded) {
+			props.getAllRoomCategories();
+		}
+		setLoaded(true);
+	}, [props, loaded]);
 
   return (
     <div className="row">

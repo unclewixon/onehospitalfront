@@ -21,6 +21,7 @@ const ConsultatingRoom = props => {
   const [Loading, setLoading] = useState(false);
   const [{ edit, save }, setSubmitButton] = useState(initialState);
   const [data, getDataToEdit] = useState(null);
+  const [loaded, setLoaded] = useState(false);
 
   const handleInputChange = e => {
     const { name, value } = e.target;
@@ -96,9 +97,11 @@ const ConsultatingRoom = props => {
   };
 
   useEffect(() => {
-    console.log(save, edit);
-    props.getAllConsultatingRooms();
-  }, []);
+    if (!loaded) {
+      props.getAllConsultatingRooms();
+    }
+    setLoaded(true);
+  }, [props, loaded]);
   return (
     <div className="content-i">
       <div className="content-box">
@@ -167,9 +170,7 @@ const ConsultatingRoom = props => {
                       Add New Consultating room
                     </h5>
                     <div className="form-group">
-                      <label className="lighter">
-                        Name
-                      </label>
+                      <label className="lighter">Name</label>
                       <div className="input-group mb-2 mr-sm-2 mb-sm-0">
                         <input
                           className="form-control"

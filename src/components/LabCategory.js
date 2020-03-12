@@ -94,8 +94,11 @@ const LabCategory = props => {
   };
 
   useEffect(() => {
-    props.getAllLabTestCategories();
-  }, []);
+    if (!loaded) {
+      props.getAllLabTestCategories();
+    }
+    setLoaded(true);
+  }, [props, loaded]);
 
   return (
     <div className="row">

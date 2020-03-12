@@ -21,6 +21,7 @@ const Specialization = props => {
   const [Loading, setLoading] = useState(false);
   const [{ edit, save }, setSubmitButton] = useState(initialState);
   const [data, getDataToEdit] = useState(null);
+  const [loaded, setLoaded] = useState(false);
 
   const handleInputChange = e => {
     const { name, value } = e.target;
@@ -96,9 +97,10 @@ const Specialization = props => {
   };
 
   useEffect(() => {
-    console.log(save, edit);
-    props.getAllSpecialization();
-  }, []);
+    if (!loaded) {
+      props.getAllSpecialization();
+    }
+  }, [props, loaded]);
   return (
     <div className="content-i">
       <div className="content-box">

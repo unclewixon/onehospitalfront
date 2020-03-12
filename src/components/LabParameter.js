@@ -92,8 +92,11 @@ const LabParameter = props => {
   };
 
   useEffect(() => {
-    props.getAllLabTestParameters();
-  }, []);
+    if (!loaded) {
+      props.getAllLabTestParameters();
+    }
+    setLoaded(true);
+  }, [props, loaded]);
 
   return (
     <div className="row">
