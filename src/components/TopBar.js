@@ -15,7 +15,7 @@ class TopBar extends Component {
 	state = {
 		hover_settings: false,
 		focus: false,
-		style: { display: 'none', },
+		style: { display: 'none' },
 	};
 
 	getCoords = elem => {
@@ -23,8 +23,8 @@ class TopBar extends Component {
 	};
 
 	openProfile = () => {
-		const id = 1;
-		const info = { id, type: 'staff' };
+		const { profile } = this.props;
+		const info = { staff: profile, type: 'staff' };
 		this.props.toggleProfile(true, info);
 	};
 
@@ -42,13 +42,13 @@ class TopBar extends Component {
 	};
 
 	onFocus = () => {
-		const style = { display: 'block', };
+		const style = { display: 'block' };
 		const coords = this.getCoords(this.refs.searchBox);
 		this.setState({ style: { ...style, ...coords }, focus: true });
 	};
 
 	onExit = () => {
-		const style = { display: 'none', };
+		const style = { display: 'none' };
 		this.setState({ style, focus: false });
 	};
 
@@ -63,12 +63,20 @@ class TopBar extends Component {
 				{title && title !== '' && (
 					<div className="fancy-selector-w">
 						<div className="fancy-selector-current">
-							<div className="fs-img shadowless pr-0"><img alt="" src={topimg}/></div>
+							<div className="fs-img shadowless pr-0">
+								<img alt="" src={topimg} />
+							</div>
 							<div className="fs-main-info">
 								<div className="fs-name">
-									<span>{`${upperCase(title.replace('-mgt', ''))} MANAGEMENT`}</span>
+									<span>{`${upperCase(
+										title.replace('-mgt', '')
+									)} MANAGEMENT`}</span>
 								</div>
-								{sub_title && <div className="fs-sub"><span>{startCase(sub_title)}</span></div>}
+								{sub_title && (
+									<div className="fs-sub">
+										<span>{startCase(sub_title)}</span>
+									</div>
+								)}
 							</div>
 						</div>
 					</div>
@@ -76,31 +84,36 @@ class TopBar extends Component {
 				<div className="top-menu-controls" ref="searchBox">
 					<SearchPatient style={style} onExit={this.onExit} focus={focus} />
 					<div className="element-search autosuggest-search-activator">
-						<input placeholder="Find patient..." type="text" onFocus={this.onFocus}/>
+						<input
+							placeholder="Find patient..."
+							type="text"
+							onFocus={this.onFocus}
+						/>
 					</div>
 					{/* <div className="messages-notifications os-dropdown-trigger os-dropdown-position-left">
 						<i className="os-icon os-icon-mail-14"/>
 						<div className="new-messages-count">12</div>
 					</div> */}
 					<div
-						className={`top-icon top-settings os-dropdown-trigger os-dropdown-position-left ${hover_settings ? 'over' : ''}`}
-						onClick={this.toggleSettings}
-					>
-						<i className="os-icon os-icon-ui-46"/>
+						className={`top-icon top-settings os-dropdown-trigger os-dropdown-position-left ${
+							hover_settings ? 'over' : ''
+						}`}
+						onClick={this.toggleSettings}>
+						<i className="os-icon os-icon-ui-46" />
 						<div className="os-dropdown">
 							<div className="icon-w">
-								<i className="os-icon os-icon-ui-46"/>
+								<i className="os-icon os-icon-ui-46" />
 							</div>
 							<ul>
 								<li>
 									<a onClick={this.doToggleMode}>
-										<i className="os-icon os-icon-ui-49"/>
+										<i className="os-icon os-icon-ui-49" />
 										<span>Dark Mode ON/OFF</span>
 									</a>
 								</li>
 								<li>
 									<a onClick={this.doToggleFullscreen}>
-										<i className="os-icon os-icon-grid-10"/>
+										<i className="os-icon os-icon-grid-10" />
 										<span>Fullscreen ON/OFF</span>
 									</a>
 								</li>
@@ -150,4 +163,14 @@ class TopBar extends Component {
 	}
 }
 
-export default withRouter(connect(null, { toggleProfile, toggleMode, toggleFullscreen })(TopBar));
+const mapStateToProps = (state, ownProps) => {
+	return {
+		profile: state.user.profile,
+	};
+};
+
+export default withRouter(
+	connect(mapStateToProps, { toggleProfile, toggleMode, toggleFullscreen })(
+		TopBar
+	)
+);
