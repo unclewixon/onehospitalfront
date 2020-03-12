@@ -28,14 +28,14 @@ import {
 } from './services/constants';
 import { initMode, initFullscreen, toggleProfile } from './actions/user';
 import SSRStorage from './services/storage';
-import { defaultHeaders } from './services/utilities';
+import { defaultHeaders, getUserID } from './services/utilities';
 import { getAllDepartments, getAllSpecialization } from './actions/settings';
 import { loadInvCategories, loadInvSubCategories } from './actions/inventory';
 import { togglePreloading } from './actions/general';
 import { loadRoles } from './actions/role';
 import { loadBanks, loadCountries } from './actions/utility';
 
-Notify.notifications.subscribe(alert => alert instanceof Function && alert());
+Notify.notifications.subscribe((alert) => alert instanceof Function && alert());
 const store = configureStore();
 const storage = new SSRStorage();
 
@@ -47,7 +47,7 @@ const initSettings = async () => {
 	store.dispatch(initFullscreen(fullscreen));
 };
 
-const axiosFetch = url => axios.get(url, { headers: defaultHeaders });
+const axiosFetch = (url) => axios.get(url, { headers: defaultHeaders });
 
 const initData = async () => {
 	await initSettings();
@@ -96,15 +96,23 @@ const initData = async () => {
 		console.log(e);
 	}
 
-	store.dispatch(togglePreloading(false));
+	const userID = await getUserID();
+	if (userID) {
+		store.dispatch(togglePreloading(false));
+	} else {
+		store.dispatch(togglePreloading(false));
 
-	setTimeout(async () => {
-		const user_record = await storage.getItem(USER_RECORD);
-		if(user_record) {
-			store.dispatch(toggleProfile(true, user_record));
-		}
-	}, 200);
+		setTimeout(async () => {
+			const user_record = await storage.getItem(USER_RECORD);
+			if (user_record) {
+				store.dispatch(toggleProfile(true, user_record));
+			}
+		}, 200);
+
+		history.push('/?not-authenticated');
+	}
 };
+
 initData();
 
 ReactDOM.render(

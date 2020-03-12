@@ -18,8 +18,7 @@ class ModalViewAppointment extends Component {
 			<div
 				className="onboarding-modal modal fade animated show"
 				role="dialog"
-				style={{ display: 'block' }}
-			>
+				style={{ display: 'block' }}>
 				<div className="modal-dialog modal-lg" role="document">
 					<div className="modal-content text-center">
 						<div className="modal-header  smaller">
@@ -28,8 +27,7 @@ class ModalViewAppointment extends Component {
 								className="close"
 								data-dismiss="modal"
 								type="button"
-								onClick={() => this.props.closeModals(false)}
-							>
+								onClick={() => this.props.closeModals(false)}>
 								<span aria-hidden="true"> ×</span>
 							</button>
 						</div>
@@ -43,8 +41,7 @@ class ModalViewAppointment extends Component {
 												className="up-head-w"
 												style={{
 													backgroundImage: require('../../assets/images/profile_bg1.jpg'),
-												}}
-											>
+												}}>
 												<div className="up-social">
 													<a href="#">
 														<i className="os-icon os-icon-twitter"></i>
@@ -101,16 +98,13 @@ class ModalViewAppointment extends Component {
 															</div>
 															<div
 																className="bar-level-1"
-																style={{ width: '100%' }}
-															>
+																style={{ width: '100%' }}>
 																<div
 																	className="bar-level-2"
-																	style={{ width: '80%' }}
-																>
+																	style={{ width: '80%' }}>
 																	<div
 																		className="bar-level-3"
-																		style={{ width: '30%' }}
-																	></div>
+																		style={{ width: '30%' }}></div>
 																</div>
 															</div>
 														</div>
@@ -126,16 +120,13 @@ class ModalViewAppointment extends Component {
 															</div>
 															<div
 																className="bar-level-1"
-																style={{ width: '100%' }}
-															>
+																style={{ width: '100%' }}>
 																<div
 																	className="bar-level-2"
-																	style={{ width: '30%' }}
-																>
+																	style={{ width: '30%' }}>
 																	<div
 																		className="bar-level-3"
-																		style={{ width: '10%' }}
-																	></div>
+																		style={{ width: '10%' }}></div>
 																</div>
 															</div>
 														</div>
@@ -151,16 +142,13 @@ class ModalViewAppointment extends Component {
 															</div>
 															<div
 																className="bar-level-1"
-																style={{ width: '100%' }}
-															>
+																style={{ width: '100%' }}>
 																<div
 																	className="bar-level-2"
-																	style={{ width: '80%' }}
-																>
+																	style={{ width: '80%' }}>
 																	<div
 																		className="bar-level-3"
-																		style={{ width: '60%' }}
-																	></div>
+																		style={{ width: '60%' }}></div>
 																</div>
 															</div>
 														</div>
@@ -186,8 +174,8 @@ class ModalViewAppointment extends Component {
 															powerful validator plugin for bootstrap.
 															<a
 																href="http://1000hz.github.io/bootstrap-validator/"
-																target="_blank" rel="noreferrer noopener"
-															>
+																target="_blank"
+																rel="noreferrer noopener">
 																Learn more about Bootstrap Validator
 															</a>
 														</div>
@@ -195,7 +183,7 @@ class ModalViewAppointment extends Component {
 												</div>
 											</div>
 											<div className="form-group">
-												<label htmlFor=""> Email address</label>
+												<label> Email address</label>
 												<input
 													className="form-control"
 													data-error="Your email address is invalid"
@@ -218,8 +206,7 @@ class ModalViewAppointment extends Component {
 									className="btn btn-link"
 									data-dismiss="modal"
 									type="button"
-									onClick={() => this.props.closeModals(false)}
-								>
+									onClick={() => this.props.closeModals(false)}>
 									{' '}
 									Cancel
 								</button>

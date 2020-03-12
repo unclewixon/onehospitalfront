@@ -2,21 +2,23 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
-
-const Lab = () => {
-	const AddNewLab = () => {
+const Dentistry = () => {
+	const newDentistRequest = () => {
 		alert('new Lab');
 	};
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<div className="element-actions">
-					<button className="btn btn-primary" type="submit" onClick={AddNewLab}>
+					<button
+						className="btn btn-primary"
+						type="submit"
+						onClick={newDentistRequest}>
 						<i className="os-icon os-icon-plus"></i>
-						Lab New Request
+						New Dentist Request
 					</button>
 				</div>
-				<h6 className="element-header">Lab Requests</h6>
+				<h6 className="element-header">Dentistry Requests</h6>
 				<div className="element-box">
 					<div className="bootstrap-table">
 						<div className="fixed-table-toolbar">
@@ -137,4 +139,4 @@ const Lab = () => {
 	);
 };
 
-export default Lab;
+export default Dentistry;

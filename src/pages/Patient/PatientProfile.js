@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component, Suspense, lazy, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Switch, withRouter, Link } from 'react-router-dom';
@@ -15,6 +16,16 @@ const Dashboard = lazy(() => import('../../components/Patient/Dashboard'));
 const Lab = lazy(() => import('../../components/Patient/Lab'));
 const Encounter = lazy(() => import('../../components/Patient/Encounter'));
 const Pharmacy = lazy(() => import('../../components/Patient/Pharmacy'));
+const Imaging = lazy(() => import('../../components/Patient/Imaging'));
+const Dentistry = lazy(() => import('../../components/Patient/Dentistry'));
+const Opthalmology = lazy(() =>
+	import('../../components/Patient/Opthalmology')
+);
+const Procedure = lazy(() => import('../../components/Patient/Procedure'));
+const Physiotherapy = lazy(() =>
+	import('../../components/Patient/Physiotherapy')
+);
+const Vitals = lazy(() => import('../../components/Patient/Vitals'));
 
 const storage = new SSRStorage();
 
@@ -27,25 +38,46 @@ const Page = ({ location }) => {
 			return <Lab />;
 		case 'pharmacy':
 			return <Pharmacy />;
-		case 'dashboard':
+		case 'vitals':
+			return <Vitals />;
+		case 'imaging':
+			return <Imaging />;
+		case 'opthalmology':
+			return <Opthalmology />;
+		case 'procedure':
+			return <Procedure />;
+		case 'physio':
+			return <Physiotherapy />;
+		case 'dentistry':
+			return <Dentistry />;
+
 		default:
 			return <Dashboard />;
 	}
 };
 
 class PatientProfile extends Component {
+	state = {
+		dropdown: false,
+	};
 	closeProfile = () => {
 		storage.removeItem(USER_RECORD);
 		this.props.toggleProfile(false);
 	};
 
+	toggleDropdown = () => {
+		this.setState((prevState, props) => ({
+			dropdown: !prevState.dropdown,
+		}));
+	};
+
 	componentDidMount() {
 		const { location } = this.props;
-		if(!location.hash){
+		if (!location.hash) {
 			this.props.history.push(`${location.pathname}#dashboard`);
 		}
 	}
-	
+
 	componentWillUnmount() {
 		const { location } = this.props;
 		this.props.history.push(location.pathname);
@@ -59,8 +91,7 @@ class PatientProfile extends Component {
 					aria-label="Close"
 					className="close"
 					type="button"
-					onClick={this.closeProfile}
-				>
+					onClick={this.closeProfile}>
 					<span className="os-icon os-icon-close" />
 				</button>
 				{patient ? (
@@ -77,8 +108,7 @@ class PatientProfile extends Component {
 												style={{
 													backgroundImage: `url(${background})`,
 													backgroundPosition: '50% -114.052px',
-												}}
-											>
+												}}>
 												<div className="bg-dark-overlay r-2x no-r-b">
 													<div className="d-md-flex">
 														<div className="p-4">
@@ -103,63 +133,96 @@ class PatientProfile extends Component {
 																</div>
 															</div>
 														</div>
-														<span className="flex"></span>
-														<div className="align-items-center d-flex p-4"></div>
+														<span
+															className="flex"
+															style={{ flex: '1 1 auto' }}></span>
+														<div className="align-items-center d-flex p-4">
+															<div className="toolbar">
+																<a
+																	data-toggle="dropdown"
+																	className="text-muted bg-dark-overlay btn-rounded btn btn-sm btn-icon"
+																	aria-expanded="false"
+																	onClick={this.toggleDropdown}>
+																	<svg
+																		xmlns="http://www.w3.org/2000/svg"
+																		width="12"
+																		height="12"
+																		viewBox="0 0 24 24"
+																		fill="none"
+																		stroke="currentColor"
+																		strokeWidth="2"
+																		strokeLinecap="round"
+																		strokeLinejoin="round"
+																		className="feather feather-more-vertical text-fade">
+																		<circle
+																			cx="12"
+																			cy="12"
+																			r="2"
+																			style={{ color: '#fff' }}></circle>
+																		<circle
+																			cx="12"
+																			cy="5"
+																			r="2"
+																			style={{ color: '#fff' }}></circle>
+																		<circle
+																			cx="12"
+																			cy="19"
+																			r="2"
+																			style={{ color: '#fff' }}></circle>
+																	</svg>
+																</a>
+																<div
+																	className="dropdown-menu dropdown-menu-right bg-black"
+																	role="menu"
+																	x-placement="bottom-end"
+																	style={{
+																		position: 'absolute',
+																		transform: 'translate3d(750px, 69px, 0px)',
+																		top: '0px',
+																		left: '0px',
+																		willChange: 'transform',
+																		display: this.state.dropdown
+																			? 'block'
+																			: 'none',
+																	}}
+																	onClick={this.toggleDropdown}>
+																	<Link className="dropdown-item " to="#">
+																		<i className="os-icon os-icon-edit"></i>
+																		<span className=" ml-2">Edit Profile</span>
+																	</Link>
+
+																	<Link className="dropdown-item" to="#">
+																		<i className="os-icon os-icon-plus-circle"></i>
+																		<span className="ml-2">
+																			Request Admission
+																		</span>
+																	</Link>
+																	<Link className="dropdown-item" to="#">
+																		<i className="os-icon os-icon-plus-circle"></i>
+																		<span className="ml-2">
+																			Enroll Antenatal
+																		</span>
+																	</Link>
+																	<Link className="dropdown-item " to="#">
+																		<i className="os-icon os-icon-plus-circle"></i>
+																		<span className="ml-2">
+																			Enroll Immunization
+																		</span>
+																	</Link>
+																	<Link className="dropdown-item" to="#">
+																		<i className="os-icon os-icon-plus-circle"></i>
+																		<span className="ml-2">Enroll IVF</span>
+																	</Link>
+																	<Link className="dropdown-item" to="#">
+																		<i className="os-icon os-icon-documents-03"></i>
+																		<span className="ml-2">
+																			Upload Document
+																		</span>
+																	</Link>
+																</div>
+															</div>
+														</div>
 													</div>
-												</div>
-											</div>
-											<div className="p-3">
-												<div className="d-flex">
-													<ul className="nav nav-pills">
-														<li className="nav-item button-space">
-															<Link className="btn btn-grey" to="#">
-																<i className="os-icon os-icon-edit"></i>
-																<span>Edit Profile</span>
-															</Link>
-														</li>
-														<li className="nav-item button-space">
-															<Link
-																className="btn btn-info d-sm-inline-block text-white"
-																to="#"
-															>
-																<i className="os-icon os-icon-plus-circle"></i>
-																<span>Request Admission</span>
-															</Link>
-														</li>
-														<li className="nav-item button-space">
-															<Link
-																className="btn btn-grey d-sm-inline-block"
-																to="#"
-															>
-																<i className="os-icon os-icon-plus-circle"></i>
-																<span>Enroll Antenatal</span>
-															</Link>
-														</li>
-														<li className="nav-item button-space">
-															<Link
-																className="btn btn-grey d-sm-inline-block"
-																to="#"
-															>
-																<i className="os-icon os-icon-plus-circle"></i>
-																<span>Enroll Immunization</span>
-															</Link>
-														</li>
-														<li className="nav-item button-space">
-															<Link
-																className="btn btn-grey d-sm-inline-block"
-																to="#"
-															>
-																<i className="os-icon os-icon-plus-circle"></i>
-																<span>Enroll IVF</span>
-															</Link>
-														</li>
-														<li className="nav-item button-space">
-															<Link className="btn btn-primary" to="#">
-																<i className="os-icon os-icon-documents-03"></i>
-																<span>Upload Document</span>
-															</Link>
-														</li>
-													</ul>
 												</div>
 											</div>
 										</div>
