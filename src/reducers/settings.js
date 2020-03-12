@@ -346,10 +346,10 @@ const settings = (state = INITIAL_STATE, action) => {
           action.payload
         ]
       };
-    case DELETE_DIAGNOSIS:
+    case DELETE_SERVICE:
       return {
         ...state,
-        diagnosis: state.diagnosis.filter(
+        services: state.services.filter(
           deletedItem => deletedItem.id !== action.payload.id
         )
       };

@@ -197,7 +197,7 @@ const Departments = props => {
                   <form onSubmit={edit ? onEditDept : onCreateDepartment}>
                     <h5 className="element-box-header">Add New Department</h5>
                     <div className="form-group">
-                      <label className="lighter" for="">
+                      <label className="lighter" >
                         Name of Department
                       </label>
                       <input
@@ -210,7 +210,7 @@ const Departments = props => {
                       />
                     </div>
                     <div className="form-group">
-                      <label className="lighter" for="">
+                      <label className="lighter" >
                         Head of Department
                       </label>
                       <select
@@ -230,7 +230,7 @@ const Departments = props => {
                       </select>
                     </div>
                     <div className="form-group">
-                      <label className="lighter" for="">
+                      <label className="lighter" >
                         Description
                       </label>
                       <div className="form-group">

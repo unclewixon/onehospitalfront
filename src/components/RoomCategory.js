@@ -118,9 +118,9 @@ const RoomCategory = props => {
                   </tr>
                 </thead>
                 <tbody>
-                  {props.Room_Categories.map(RoomCategory => {
+                  {props.Room_Categories.map((RoomCategory, index) => {
                     return (
-                      <tr>
+                      <tr key={index + 1}>
                         <td>{RoomCategory.name}</td>
                         <td>{RoomCategory.price}</td>
                         <td>{RoomCategory.discount}</td>

@@ -12,12 +12,6 @@ import { notifySuccess, notifyError } from "../services/notify";
 import waiting from "../assets/images/waiting.gif";
 
 const ServicesList = props => {
-  const initialState = {
-    ...props.ServiceCategories.map(category => {
-      return category.name;
-    })
-  };
-
   const [moreDetailConsultation, setMoreDetailConsultation] = useState(false);
   const [ServicesList, getServiceList] = useState([]);
   const onMoreDetailConsultation = category => {
@@ -28,12 +22,28 @@ const ServicesList = props => {
       })
     );
   };
+
+
+  const onDeleteService = data => {
+    props
+      .deleteService(data)
+      .then(response => {
+        notifySuccess("Service deleted");
+      })
+      .catch(error => {
+        notifyError("Error deleting Service");
+      });
+  };
+
+  const confirmDelete = data => {
+    confirmAction(onDeleteService, data);
+  };
+
   const onUploadService = e => {
     e.preventDefault();
     props.uploadServiceModal(true);
   };
 
-  console.log(ServicesList);
   useEffect(() => {
     props.getAllService();
   }, []);
@@ -89,7 +99,10 @@ const ServicesList = props => {
                                         <i className="os-icon os-icon-ui-49"></i>
                                       </div>
                                       <div className="pi-settings os-dropdown-trigger">
-                                        <i className="os-icon os-icon-ui-15"></i>
+                                        <i
+                                          className="os-icon os-icon-ui-15"
+                                          onClick={() => confirmDelete(service)}
+                                        ></i>
                                       </div>
                                     </div>
                                     <div className="pi-body">

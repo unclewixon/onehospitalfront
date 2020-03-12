@@ -82,20 +82,20 @@ const ServiceCategoryList = props => {
     props
       .deleteServiceCategory(data)
       .then(response => {
-        notifySuccess("Room Category deleted");
+        notifySuccess("Service Category deleted");
       })
       .catch(error => {
-        notifyError("Error deleting room category");
+        notifyError("Error deleting service category");
       });
   };
 
   const confirmDelete = data => {
     confirmAction(onDeleteServiceCategory, data);
   };
-console.log(props)
+  
   useEffect(() => {
     props.getAllServiceCategory();
-  }, []);
+  }, [props]);
   return (
     <div className="row">
       <div className="col-lg-8">

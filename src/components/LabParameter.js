@@ -30,14 +30,17 @@ const LabParameter = props => {
 
   const onAddLabParameter = e => {
     e.preventDefault();
-    setLoading(true)
-    props.addLabTestParameter({ name }).then(response => {
-      setState({ ...initialState });
-      setLoading(false)
-      notifySuccess('Lab Parameter created')
-    }).catch(error => {
-      notifyError('Error creating lab parameter')
-    })
+    setLoading(true);
+    props
+      .addLabTestParameter({ name })
+      .then(response => {
+        setState({ ...initialState });
+        setLoading(false);
+        notifySuccess("Lab Parameter created");
+      })
+      .catch(error => {
+        notifyError("Error creating lab parameter");
+      });
   };
 
   const onEditLabParameter = e => {
@@ -49,13 +52,13 @@ const LabParameter = props => {
         setState({ ...initialState });
         setSubmitButton({ create: true, edit: false });
         setLoading(false);
-        notifySuccess('Lab Parameter updated')
+        notifySuccess("Lab Parameter updated");
       })
       .catch(error => {
         setState({ ...initialState });
         setSubmitButton({ create: true, edit: false });
         setLoading(false);
-        notifyError('Error updating lab paramter')
+        notifyError("Error updating lab paramter");
       });
   };
 
@@ -74,17 +77,17 @@ const LabParameter = props => {
   };
 
   const confirmDelete = data => {
-   confirmAction(onDeleteLabParameter, data)
+    confirmAction(onDeleteLabParameter, data);
   };
 
   const onDeleteLabParameter = data => {
     props
       .deleteLabTestParameters(data)
       .then(data => {
-        notifySuccess('Lab Parameter deleted')
+        notifySuccess("Lab Parameter deleted");
       })
       .catch(error => {
-        notifyError('Error deleting lab parameter')
+        notifyError("Error deleting lab parameter");
       });
   };
 
@@ -98,9 +101,9 @@ const LabParameter = props => {
         <div>
           <div className="pipelines-w">
             <div className="row">
-              {props.LabParameters.map(LabParameter => {
+              {props.LabParameters.map((LabParameter, index) => {
                 return (
-                  <div className="col-lg-4 col-xxl-3">
+                  <div className="col-lg-4 col-xxl-3" key={index + 1}>
                     <div className="pt-3">
                       <div className="pipeline-item">
                         <div className="pi-controls">
@@ -155,7 +158,7 @@ const LabParameter = props => {
                     Loading ? "btn btn-primary disabled" : "btn btn-primary"
                   }
                 >
-                 {Loading ? (
+                  {Loading ? (
                     <img src={waiting} alt="submitting" />
                   ) : (
                     <span> create</span>
@@ -177,11 +180,11 @@ const LabParameter = props => {
                       Loading ? "btn btn-primary disabled" : "btn btn-primary"
                     }
                   >
-                   {Loading ? (
-                    <img src={waiting} alt="submitting" />
-                  ) : (
-                    <span> edit</span>
-                  )}
+                    {Loading ? (
+                      <img src={waiting} alt="submitting" />
+                    ) : (
+                      <span> edit</span>
+                    )}
                   </button>
                 </>
               )}

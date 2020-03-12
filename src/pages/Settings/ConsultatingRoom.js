@@ -122,9 +122,9 @@ const ConsultatingRoom = props => {
           <div className="row">
             <div className="col-lg-8">
               <div className="row">
-                {props.ConsultatingRooms.map(ConsultatingRoom => {
+                {props.ConsultatingRooms.map((ConsultatingRoom, index) => {
                   return (
-                    <div className="col-lg-4 col-xxl-3">
+                    <div className="col-lg-4 col-xxl-3" key={index + 1}>
                       <div className="pt-3">
                         <div className="pipeline-item">
                           <div className="pi-controls">
@@ -167,7 +167,7 @@ const ConsultatingRoom = props => {
                       Add New Consultating room
                     </h5>
                     <div className="form-group">
-                      <label className="lighter" for="">
+                      <label className="lighter">
                         Name
                       </label>
                       <div className="input-group mb-2 mr-sm-2 mb-sm-0">

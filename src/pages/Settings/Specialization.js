@@ -122,9 +122,9 @@ const Specialization = props => {
           <div className="row">
             <div className="col-lg-8">
               <div className="row">
-                {props.Specializations.map(Specialization => {
+                {props.Specializations.map((Specialization, index) => {
                   return (
-                    <div className="col-lg-4 col-xxl-3">
+                    <div className="col-lg-4 col-xxl-3" key={index}>
                       <div className="pt-3">
                         <div className="pipeline-item">
                           <div className="pi-controls">

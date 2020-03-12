@@ -97,60 +97,60 @@ const LabCategory = props => {
     props.getAllLabTestCategories();
   }, []);
 
-	return (
-		<div className="row">
-			<div className="col-lg-8">
-				<div>
-					<div className="pipelines-w">
-						<div className="row">
-							{props.LabCategories.map((LabCategory, i) => {
-								return (
-									<div className="col-lg-4 col-xxl-3" key={i}>
-										<div className="pt-3">
-											<div className="pipeline-item">
-												<div className="pi-controls">
-													<div className="pi-settings os-dropdown-trigger">
-														<i
-															className="os-icon os-icon-ui-49"
-															onClick={() => onClickEdit(LabCategory)}
-														></i>
-													</div>
-													<div className="pi-settings os-dropdown-trigger">
-														<i
-															className="os-icon os-icon-ui-15"
-															onClick={() => confirmDelete(LabCategory)}
-														></i>
-													</div>
-												</div>
-												<div className="pi-body">
-													<div className="pi-info">
-														<div className="h6 pi-name">{LabCategory.name}</div>
-														<div className="pi-sub">{LabCategory.name}</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								);
-							})}
-						</div>
-					</div>
-				</div>
-			</div>
-			<div className="col-lg-4 col-xxl-3  d-xxl-block">
-				<div className="pipeline white lined-warning">
-					<form onSubmit={edit ? onEditLabCategories : onAddLabCategory}>
-						<h6 className="form-header">Create category</h6>
-						<div className="form-group">
-							<input
-								className="form-control"
-								placeholder="Category name"
-								type="text"
-								name="name"
-								onChange={handleInputChange}
-								value={name}
-							/>
-						</div>
+  return (
+    <div className="row">
+      <div className="col-lg-8">
+        <div>
+          <div className="pipelines-w">
+            <div className="row">
+              {props.LabCategories.map((LabCategory, i) => {
+                return (
+                  <div className="col-lg-4 col-xxl-3" key={i + 1}>
+                    <div className="pt-3">
+                      <div className="pipeline-item">
+                        <div className="pi-controls">
+                          <div className="pi-settings os-dropdown-trigger">
+                            <i
+                              className="os-icon os-icon-ui-49"
+                              onClick={() => onClickEdit(LabCategory)}
+                            ></i>
+                          </div>
+                          <div className="pi-settings os-dropdown-trigger">
+                            <i
+                              className="os-icon os-icon-ui-15"
+                              onClick={() => confirmDelete(LabCategory)}
+                            ></i>
+                          </div>
+                        </div>
+                        <div className="pi-body">
+                          <div className="pi-info">
+                            <div className="h6 pi-name">{LabCategory.name}</div>
+                            <div className="pi-sub">{LabCategory.name}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="col-lg-4 col-xxl-3  d-xxl-block">
+        <div className="pipeline white lined-warning">
+          <form onSubmit={edit ? onEditLabCategories : onAddLabCategory}>
+            <h6 className="form-header">Create category</h6>
+            <div className="form-group">
+              <input
+                className="form-control"
+                placeholder="Category name"
+                type="text"
+                name="name"
+                onChange={handleInputChange}
+                value={name}
+              />
+            </div>
 
             <div className="form-buttons-w">
               {create && (
