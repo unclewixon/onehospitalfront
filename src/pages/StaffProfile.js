@@ -48,6 +48,18 @@ class StaffProfile extends Component {
 		this.props.toggleProfile(false);
 	};
 
+	componentDidMount() {
+		const { location } = this.props;
+		if (!location.hash) {
+			this.props.history.push(`${location.pathname}#dashboard`);
+		}
+	}
+
+	componentWillUnmount() {
+		const { location } = this.props;
+		this.props.history.push(location.pathname);
+	}
+
 	render() {
 		const { location } = this.props;
 		return (
