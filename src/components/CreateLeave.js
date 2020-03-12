@@ -27,7 +27,12 @@ class CreateLeave extends Component {
 		submitting: false,
 		leave_date: null,
 		leave_return: null,
-	};
+    };
+    
+    setDate = (date, type) => {
+        this.setState({ [type]: date });
+    };
+
 	render() {
         const { error, leave_categories } = this.props;
         const {
