@@ -1,0 +1,298 @@
+// variables
+$content-panel-bg-dark: #2d3756;
+$white: #ffffff;
+$primary: #047bf8;
+$secondary: #292b2c;
+$success: #28a745;
+
+// Add styles here you want to override
+a {
+	cursor: pointer;
+}
+button {
+	outline: 0 none !important;
+}
+.element-wrapper {padding-bottom: 1.5rem;}
+.ant-tooltip {z-index: 9999;}
+.text-bold {
+	font-weight: bold !important;
+}
+.alert {
+	border-right: 0 none;
+	border-left: none;
+	border-radius: 0;
+	padding: 0.25rem 1.25rem;
+}
+.balance {
+	.balance-title {
+		font-size: 0.8rem;
+	}
+	.strong {
+		margin-top: -2px;
+
+		small {
+			font-weight: bold !important;
+			font-size: 1.08rem;
+		}
+	}
+}
+.pagination-center {
+	position: relative;
+	justify-content: flex-end;
+}
+.ant-pagination-total-text {
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+.row-expand-icon {
+	color: #1890ff;
+	text-decoration: none;
+	cursor: pointer;
+	-webkit-transition: color 0.3s;
+	transition: color 0.3s;
+	display: inline-block;
+	width: 17px;
+	height: 17px;
+	color: inherit;
+	line-height: 13px;
+	text-align: center;
+	background: $white;
+	border: 1px solid #e8e8e8;
+	border-radius: 2px;
+	outline: none;
+	-webkit-transition: all 0.3s;
+	transition: all 0.3s;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.row-collapsed::after {
+	content: '+';
+}
+
+.row-expanded::after {
+	content: '-';
+}
+
+.expanded-row {
+	background: #fbfbfb !important;
+
+	.table {
+		background: #fbfbfb;
+	}
+	.table-striped tr {
+		background: #fbfbfb;
+	}
+	.table-striped tbody tr:nth-of-type(odd) {
+		background: #fbfbfb;
+	}
+}
+
+.onboarding-modal {
+	.onboarding-content {
+		margin: 20px 0;
+
+		&.with-gradient {
+			padding: 20px 32px;
+		}
+	}
+}
+
+.table {
+	.row-actions {
+		a {
+			&.primary {
+				color: $primary !important;
+			}
+			&.secondary {
+				color: $secondary !important;
+			}
+			&.success {
+				color: $success !important;
+			}
+			&.danger {
+				color: $dark-red !important;
+			}
+		}
+		.os-icon-basic-2-259-calendar:before {
+			color: $dark-red;
+		}
+	}
+}
+.lds-loading {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	margin: auto;
+	width: 80px;
+	height: 80px;
+}
+.lds-ripple {
+	display: inline-block;
+	position: relative;
+	width: 80px;
+	height: 80px;
+}
+.lds-ripple div {
+	position: absolute;
+	border: 4px solid #cef;
+	opacity: 1;
+	border-radius: 50%;
+	animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+.lds-ripple div:nth-child(2) {
+	animation-delay: -0.5s;
+}
+@keyframes lds-ripple {
+	0% {
+		top: 36px;
+		left: 36px;
+		width: 0;
+		height: 0;
+		opacity: 1;
+	}
+	100% {
+		top: 0px;
+		left: 0px;
+		width: 72px;
+		height: 72px;
+		opacity: 0;
+	}
+}
+.leave-box {
+	.element-header {
+		margin-top: 24px;
+	}
+	.table-striped tbody tr:nth-of-type(odd) {
+		background: #ffffff;
+	}
+	.table {
+		background: #ffffff;
+	}
+	.table-striped tr {
+		background: #ffffff;
+	}
+}
+.payroll-details {
+	background-color: #fff6f2;
+	border-radius: 6px;
+	padding: 20px 25px;
+
+	&.deductions {
+		background-color: #f6f2ff;
+	}
+}
+.settings-menu {
+	display: flex;
+	-webkit-box-align: stretch;
+	align-items: stretch;
+	background-color: #fff;
+	border-radius: 6px;
+
+	.ae-side-menu {
+		flex: 0 0 210px;
+	}
+
+	&.compact-menu {
+		.ae-side-menu {
+			-webkit-box-flex: 0;
+			flex: 0 0 60px;
+			text-align: center;
+
+			li a span {
+				display: none;
+			}
+		}
+	}
+}
+.color-scheme-dark {
+	.settings-menu {
+		background-color: $content-panel-bg-dark;
+	}
+	.table .row-actions a {
+		color: $white !important;
+	}
+	.search-with-suggestions-w .search-with-suggestions-modal {
+		background-color: $content-panel-bg-dark;
+	}
+}
+
+.search-with-suggestions-w {
+	&.over-search-field {
+		width: 420px;
+	}
+	.search-with-suggestions-modal {
+		.element-search input {
+			padding: 8px 26px 8px 31px;
+		}
+		.close-search-suggestions {
+			right: 4px;
+		}
+	}
+}
+
+.top-bar.color-scheme-light .top-menu-controls .element-search input,
+.top-bar.color-scheme-transparent .top-menu-controls .element-search input {
+	background-color: $white;
+}
+
+.form-group {
+	.custom-date-input {
+		.react-datepicker-wrapper {
+			width: 100%;
+
+			.react-datepicker__input-container {
+				&::before {
+					content: "\e972";
+					font-family: 'osfont' !important;
+					font-style: normal;
+					font-weight: normal;
+					font-feature-settings: normal;
+					font-variant: normal;
+					text-transform: none;
+					line-height: 1;
+					-webkit-font-smoothing: antialiased;
+					-moz-osx-font-smoothing: grayscale;
+					font-size: 15px;
+					color: #047bf8;
+					position: absolute;
+					top: 50%;
+					left: 10px;
+					transform: translateY(-50%);
+				}
+
+				.form-control {
+					padding-left: 35px;
+				}
+			}
+		}
+	}
+}
+
+.ant-popover {
+	&.download-roster, &.upload-roster {
+		.ant-popover-inner-content {padding: 0;}
+	}
+}
+
+.bg-primary {background-color: $primary;}
+.bg-secondary {background-color: $secondary;}
+.bg-success {background-color: $success;}
+
+.onboarding-modal 
+.onboarding-content.with-gradient {
+    padding: 0px 32px;
+}
+.form-header, .form-desc {
+	margin-bottom: 0 !important;
+}
+.auth-box-w {
+	.logo-w {
+		padding: 10%;
+	}
+}
