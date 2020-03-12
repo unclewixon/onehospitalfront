@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useReducer } from "react";
 import { connect } from "react-redux";
-import { uploadServiceModal } from "../actions/general";
+import { uploadServiceModal, editService } from "../actions/general";
 import {
   getAllService,
   updateService,
@@ -100,7 +100,12 @@ const ServicesList = props => {
                                   >
                                     <div className="pi-controls">
                                       <div className="pi-settings os-dropdown-trigger">
-                                        <i className="os-icon os-icon-ui-49"></i>
+                                        <i
+                                          className="os-icon os-icon-ui-49"
+                                          onClick={() =>
+                                            props.editService(true, service)
+                                          }
+                                        ></i>
                                       </div>
                                       <div className="pi-settings os-dropdown-trigger">
                                         <i
@@ -146,6 +151,7 @@ const mapStateToProps = state => {
 };
 export default connect(mapStateToProps, {
   uploadServiceModal,
+  editService,
   getAllService,
   updateService,
   deleteService

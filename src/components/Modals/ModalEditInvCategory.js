@@ -16,7 +16,7 @@ class ModalEditInvCategory extends Component {
 		return (
 			<div className="onboarding-modal modal fade animated show" role="dialog" style={{ display: 'block' }}>
 				<div className="modal-dialog modal-sm modal-centered" role="document">
-					<div className="modal-content text-center">
+					<div className="modal-service_category_idcontent text-center">
 						<button aria-label="Close" className="close" type="button" onClick={() => this.props.closeModals(false)}>
 							<span className="os-icon os-icon-close"></span>
 						</button>

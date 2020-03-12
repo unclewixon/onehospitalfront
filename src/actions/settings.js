@@ -339,7 +339,7 @@ const add_permission = payload => {
   };
 };
 
-export const get_all_permissions = payload => {
+const get_all_permissions = payload => {
   return {
     type: GET_ALL_PERMISSIONS,
     payload
@@ -369,7 +369,7 @@ const add_service_category = payload => {
   };
 };
 
-export const get_all_service_categories = payload => {
+const get_all_service_categories = payload => {
   return {
     type: GET_ALL_SERVICE_CATEGORIES,
     payload
@@ -399,7 +399,7 @@ const upload_service = payload => {
   };
 };
 
-export const get_all_services = payload => {
+const get_all_services = payload => {
   return {
     type: GET_ALL_SERIVCES,
     payload
@@ -744,7 +744,7 @@ export const deleteLabTest = data => {
           return resolve({ success: true });
         })
         .catch(error => {
-          return resolve({ success: false });
+          return reject({ success: false });
         });
     });
   };
@@ -1284,11 +1284,14 @@ export const getAllService = data => {
 };
 
 export const updateService = data => {
+  console.log(data)
   return dispatch => {
     return new Promise((resolve, reject) => {
       axios
         .patch(`${API_URI}/services/${data.id}/update`, {
-          name: data.name
+          name: data.name,
+          tariff: data.tariff,
+          service_category_id: data.category_id
         })
         .then(response => {
           dispatch(update_service(response.data, data));
