@@ -8,6 +8,7 @@ import { USER_RECORD } from '../services/constants';
 import SSRStorage from '../services/storage';
 import Splash from '../components/Splash';
 import HashRoute from '../components/HashRoute';
+import CreateLeave from '../components/CreateLeave';
 
 const Dashboard = lazy(() => import('../components/StaffBlock/Dashboard'));
 const EditStaff = lazy(() => import('../components/StaffBlock/EditStaff'));
@@ -36,6 +37,8 @@ const Page = ({ location }) => {
 			return <ExcuseDuty />;
 		case 'appraisal':
 			return <Appraisal />;
+		case 'create-leave':
+			return <CreateLeave />;
 
 		default:
 			return <Dashboard />;
@@ -51,6 +54,7 @@ class StaffProfile extends Component {
 	componentDidMount() {
 		const { location } = this.props;
 		if (!location.hash) {
+			console.log(location.pathname);
 			this.props.history.push(`${location.pathname}#dashboard`);
 		}
 	}
@@ -89,7 +93,10 @@ class StaffProfile extends Component {
 														<img alt="" src={avatar1} />
 														<span>Stella Marris Etubi</span>
 													</Link>
-													<div className="actions" href="#">
+													<div
+														className="actions"
+														style={{ zIndex: 100 }}
+														href="#">
 														<i className="os-icon os-icon-ui-46"></i>
 														<div className="actions-list">
 															<Link to={`${location.pathname}#edit-staff`}>

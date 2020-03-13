@@ -19,8 +19,8 @@ export class ClinicalLabItem extends Component {
 						<div
 							onClick={this.toggleCollapse}
 							role="button"
-							tabindex="0"
-							class="row-expand-icon row-collapsed"></div>
+							tabIndex="0"
+							className="row-expand-icon row-collapsed"></div>
 					</td>
 					<td>
 						<a>
