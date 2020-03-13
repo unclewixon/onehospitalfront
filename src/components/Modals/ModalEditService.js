@@ -16,25 +16,25 @@ class ModalEditService extends Component {
 		Loading: false,
 	};
 
-	handleInputChange = (e) => {
+	handleInputChange = e => {
 		const { name, value } = e.target;
 		this.setState({
 			[name]: value,
 		});
 	};
 
-	updateService = (e) => {
+	updateService = e => {
 		e.preventDefault();
 		this.setState({ Loading: true });
 		let { name, tariff, service_category_id, id } = this.state;
 		this.props
 			.updateService({ name, tariff, service_category_id, id })
-			.then((response) => {
+			.then(response => {
 				this.setState({ Loading: false });
 				notifySuccess('Service updated');
 				this.props.closeModals();
 			})
-			.catch((error) => {
+			.catch(error => {
 				this.setState({ Loading: false });
 				notifyError('Error updating service');
 			});
@@ -148,7 +148,7 @@ class ModalEditService extends Component {
 	}
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
 	return {
 		edit_service: state.general.edit_service,
 		ServiceCategories: state.settings.service_categories,

@@ -6,7 +6,7 @@ export class ClinicalLabItem extends Component {
 		collapse: true,
 	};
 	toggleCollapse = () => {
-		this.setState((prevState) => ({
+		this.setState(prevState => ({
 			collapse: !prevState.collapse,
 		}));
 	};

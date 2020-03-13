@@ -14,18 +14,18 @@ class StaffItem extends Component {
 		this.setState({ collapsed: !this.state.collapsed });
 	};
 
-	doEditStaff = (e) => {
+	doEditStaff = e => {
 		e.preventDefault();
 		console.log('edit staff');
 		this.props.editStaff(true);
 	};
 
-	doEnable = (e) => {
+	doEnable = e => {
 		e.preventDefault();
 		console.log('enable staff');
 	};
 
-	doDisable = (e) => {
+	doDisable = e => {
 		e.preventDefault();
 		console.log('disable staff');
 	};

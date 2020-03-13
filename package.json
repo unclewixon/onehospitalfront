@@ -31,7 +31,6 @@
     "lodash.startcase": "^4.4.0",
     "lodash.template": "^4.5.0",
     "lodash.uppercase": "^4.3.0",
-    "mdbreact": "^4.25.3",
     "moment": "^2.24.0",
     "node-sass": "^4.13.0",
     "numeral": "^2.0.6",
@@ -49,7 +48,7 @@
     "react-scripts": "^3.4.0",
     "react-select": "^3.0.8",
     "react-toastify": "^5.5.0",
-    "recharts": "^2.0.0-beta.1",
+    "recharts": "^2.0.0-beta.2",
     "redux": "^4.0.5",
     "redux-form": "^8.3.0",
     "redux-thunk": "^2.3.0",
@@ -70,7 +69,9 @@
     }
   },
   "lint-staged": {
-    "*.js": ["prettier --write"]
+    "*.js": [
+      "prettier --write"
+    ]
   },
   "eslintConfig": {
     "extends": "react-app"

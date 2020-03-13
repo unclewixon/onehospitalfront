@@ -82,7 +82,7 @@ const settings = (state = INITIAL_STATE, action) => {
 				...state,
 				departments: [
 					...state.departments.filter(
-						(deletedItem) => deletedItem.id !== action.previousData.id
+						deletedItem => deletedItem.id !== action.previousData.id
 					),
 					action.payload,
 				],
@@ -91,7 +91,7 @@ const settings = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				departments: state.departments.filter(
-					(deletedItem) => deletedItem.id !== action.payload.id
+					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};
 		case ADD_ROOM:
@@ -103,7 +103,7 @@ const settings = (state = INITIAL_STATE, action) => {
 				...state,
 				rooms: [
 					...state.rooms.filter(
-						(deletedItem) => deletedItem.id !== action.previousData.id
+						deletedItem => deletedItem.id !== action.previousData.id
 					),
 					action.payload,
 				],
@@ -112,7 +112,7 @@ const settings = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				rooms: state.rooms.filter(
-					(deletedItem) => deletedItem.id !== action.payload.id
+					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};
 		case ADD_ROOM_CATEGORY:
@@ -127,7 +127,7 @@ const settings = (state = INITIAL_STATE, action) => {
 				...state,
 				room_categories: [
 					...state.room_categories.filter(
-						(deletedItem) => deletedItem.id !== action.previousData.id
+						deletedItem => deletedItem.id !== action.previousData.id
 					),
 					action.payload,
 				],
@@ -136,7 +136,7 @@ const settings = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				room_categories: state.room_categories.filter(
-					(deletedItem) => deletedItem.id !== action.payload.id
+					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};
 		case ADD_LAB_TEST:
@@ -151,7 +151,7 @@ const settings = (state = INITIAL_STATE, action) => {
 				...state,
 				lab_tests: [
 					...state.lab_tests.filter(
-						(deletedItem) => deletedItem.id !== action.previousData.id
+						deletedItem => deletedItem.id !== action.previousData.id
 					),
 					action.payload,
 				],
@@ -160,7 +160,7 @@ const settings = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				lab_tests: state.lab_tests.filter(
-					(deletedItem) => deletedItem.id !== action.payload.id
+					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};
 		case ADD_LAB_TEST_CATEGORY:
@@ -175,7 +175,7 @@ const settings = (state = INITIAL_STATE, action) => {
 				...state,
 				lab_categories: [
 					...state.lab_categories.filter(
-						(deletedItem) => deletedItem.id !== action.previousData.id
+						deletedItem => deletedItem.id !== action.previousData.id
 					),
 					action.payload,
 				],
@@ -184,7 +184,7 @@ const settings = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				lab_categories: state.lab_categories.filter(
-					(deletedItem) => deletedItem.id !== action.payload.id
+					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};
 		case ADD_LAB_TEST_PARAMETER:
@@ -199,7 +199,7 @@ const settings = (state = INITIAL_STATE, action) => {
 				...state,
 				lab_parameters: [
 					...state.lab_parameters.filter(
-						(deletedItem) => deletedItem.id !== action.previousData.id
+						deletedItem => deletedItem.id !== action.previousData.id
 					),
 					action.payload,
 				],
@@ -208,7 +208,7 @@ const settings = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				lab_parameters: state.lab_parameters.filter(
-					(deletedItem) => deletedItem.id !== action.payload.id
+					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};
 		case ADD_LEAVE_CATEGORY:
@@ -223,7 +223,7 @@ const settings = (state = INITIAL_STATE, action) => {
 				...state,
 				leave_categories: [
 					...state.leave_categories.filter(
-						(deletedItem) => deletedItem.id !== action.previousData.id
+						deletedItem => deletedItem.id !== action.previousData.id
 					),
 					action.payload,
 				],
@@ -232,7 +232,7 @@ const settings = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				leave_categories: state.leave_categories.filter(
-					(deletedItem) => deletedItem.id !== action.payload.id
+					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};
 		case ADD_SPECIALIZATION:
@@ -247,7 +247,7 @@ const settings = (state = INITIAL_STATE, action) => {
 				...state,
 				specializations: [
 					...state.specializations.filter(
-						(deletedItem) => deletedItem.id !== action.previousData.id
+						deletedItem => deletedItem.id !== action.previousData.id
 					),
 					action.payload,
 				],
@@ -256,7 +256,7 @@ const settings = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				specializations: state.specializations.filter(
-					(deletedItem) => deletedItem.id !== action.payload.id
+					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};
 		// case ADD_CONSULTATING_ROOM:
@@ -271,7 +271,7 @@ const settings = (state = INITIAL_STATE, action) => {
 				...state,
 				consultating_room: [
 					...state.consultating_room.filter(
-						(deletedItem) => deletedItem.id !== action.previousData.id
+						deletedItem => deletedItem.id !== action.previousData.id
 					),
 					action.payload,
 				],
@@ -280,7 +280,7 @@ const settings = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				consultating_room: state.consultating_room.filter(
-					(deletedItem) => deletedItem.id !== action.payload.id
+					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};
 		case LOAD_STAFFS:
@@ -297,7 +297,7 @@ const settings = (state = INITIAL_STATE, action) => {
 				...state,
 				permissions: [
 					...state.permissions.filter(
-						(deletedItem) => deletedItem.id !== action.previousData.id
+						deletedItem => deletedItem.id !== action.previousData.id
 					),
 					action.payload,
 				],
@@ -306,7 +306,7 @@ const settings = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				permissions: state.permissions.filter(
-					(deletedItem) => deletedItem.id !== action.payload.id
+					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};
 		case ADD_SERVICE_CATEGORY:
@@ -321,7 +321,7 @@ const settings = (state = INITIAL_STATE, action) => {
 				...state,
 				service_categories: [
 					...state.service_categories.filter(
-						(deletedItem) => deletedItem.id !== action.previousData.id
+						deletedItem => deletedItem.id !== action.previousData.id
 					),
 					action.payload,
 				],
@@ -330,7 +330,7 @@ const settings = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				service_categories: state.service_categories.filter(
-					(deletedItem) => deletedItem.id !== action.payload.id
+					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};
 		case GET_ALL_SERIVCES:
@@ -340,7 +340,7 @@ const settings = (state = INITIAL_STATE, action) => {
 				...state,
 				services: [
 					...state.services.filter(
-						(deletedItem) => deletedItem.id !== action.previousData.id
+						deletedItem => deletedItem.id !== action.previousData.id
 					),
 					action.payload,
 				],
@@ -349,7 +349,7 @@ const settings = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				diagnosis: state.diagnosis.filter(
-					(deletedItem) => deletedItem.id !== action.payload.id
+					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};
 		case GET_ALL_DIAGNOSISES:
@@ -359,7 +359,7 @@ const settings = (state = INITIAL_STATE, action) => {
 				...state,
 				diagnosis: [
 					...state.diagnosis.filter(
-						(deletedItem) => deletedItem.id !== action.previousData.id
+						deletedItem => deletedItem.id !== action.previousData.id
 					),
 					action.payload,
 				],
@@ -368,7 +368,7 @@ const settings = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				diagnosis: state.diagnosis.filter(
-					(deletedItem) => deletedItem.id !== action.payload.id
+					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};
 		default:

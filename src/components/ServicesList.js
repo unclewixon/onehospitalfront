@@ -11,36 +11,36 @@ import { confirmAction } from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
 import waiting from '../assets/images/waiting.gif';
 
-const ServicesList = (props) => {
+const ServicesList = props => {
 	const [moreDetailConsultation, setMoreDetailConsultation] = useState(false);
 	const [ServicesList, getServiceList] = useState([]);
 	const [loaded, setLoaded] = useState(false);
 
-	const onMoreDetailConsultation = (category) => {
+	const onMoreDetailConsultation = category => {
 		setMoreDetailConsultation(category);
 		getServiceList(
-			props.ServicesList.filter((service) => {
+			props.ServicesList.filter(service => {
 				return service.category.name === category;
 			})
 		);
 	};
 
-	const onDeleteService = (data) => {
+	const onDeleteService = data => {
 		props
 			.deleteService(data)
-			.then((response) => {
+			.then(response => {
 				notifySuccess('Service deleted');
 			})
-			.catch((error) => {
+			.catch(error => {
 				notifyError('Error deleting Service');
 			});
 	};
 
-	const confirmDelete = (data) => {
+	const confirmDelete = data => {
 		confirmAction(onDeleteService, data);
 	};
 
-	const onUploadService = (e) => {
+	const onUploadService = e => {
 		e.preventDefault();
 		props.uploadServiceModal(true);
 	};
@@ -143,7 +143,7 @@ const ServicesList = (props) => {
 	);
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
 	return {
 		ServicesList: state.settings.services,
 		ServiceCategories: state.settings.service_categories,

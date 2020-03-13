@@ -11,7 +11,7 @@ import {
 	deleteRoom,
 } from '../actions/settings';
 
-const RoomList = (props) => {
+const RoomList = props => {
 	const initialState = {
 		name: '',
 		status: 'Occupied',
@@ -26,45 +26,45 @@ const RoomList = (props) => {
 	const [data, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
 
-	const handleInputChange = (e) => {
+	const handleInputChange = e => {
 		const { name, value } = e.target;
-		setState((prevState) => ({ ...prevState, [name]: value }));
+		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onAddRoom = (e) => {
+	const onAddRoom = e => {
 		e.preventDefault();
 		setLoading(true);
 		props
 			.addRoom({ name, status, floor, category })
-			.then((response) => {
+			.then(response => {
 				setState({ ...initialState });
 				setLoading(false);
 			})
-			.catch((error) => {
+			.catch(error => {
 				setState({ ...initialState });
 				setLoading(false);
 			});
 	};
 
-	const onEditRoom = (e) => {
+	const onEditRoom = e => {
 		setLoading(true);
 		e.preventDefault();
 		props
 			.updateRoom({ id: data.id, name, status, floor, category }, data)
-			.then((response) => {
+			.then(response => {
 				setState({ ...initialState });
 				setLoading(false);
 			})
-			.catch((error) => {
+			.catch(error => {
 				setState({ ...initialState });
 				setLoading(false);
 			});
 	};
 
-	const onClickEdit = (data) => {
+	const onClickEdit = data => {
 		console.log(data);
 		setSubmitButton({ edit: true, create: false });
-		setState((prevState) => ({
+		setState(prevState => ({
 			...prevState,
 			name: data.name,
 			status: data.status,
@@ -75,13 +75,13 @@ const RoomList = (props) => {
 		getDataToEdit(data);
 	};
 
-	const onDeleteRoom = (data) => {
+	const onDeleteRoom = data => {
 		props
 			.deleteRoom(data)
-			.then((data) => {
+			.then(data => {
 				console.log(data);
 			})
-			.catch((error) => {
+			.catch(error => {
 				console.log(error);
 			});
 	};
@@ -91,7 +91,7 @@ const RoomList = (props) => {
 		setState({ ...initialState });
 	};
 
-	const confirmDelete = (data) => {
+	const confirmDelete = data => {
 		confirmAction(onDeleteRoom, data);
 	};
 
@@ -169,7 +169,7 @@ const RoomList = (props) => {
 								name="category"
 								value={category}
 								onChange={handleInputChange}>
-								{props.Room_Categories.map((RoomCategory) => {
+								{props.Room_Categories.map(RoomCategory => {
 									return (
 										<option value={RoomCategory.name}>
 											{RoomCategory.name}
@@ -241,7 +241,7 @@ const RoomList = (props) => {
 	);
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
 	return {
 		Room_Categories: state.settings.room_categories,
 		Rooms: state.settings.rooms,

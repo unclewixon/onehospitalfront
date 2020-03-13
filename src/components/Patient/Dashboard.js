@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import PatientData from '../PatientData';
 
 const Dashboard = () => {
-	const patient = useSelector((state) => state.user.patient);
+	const patient = useSelector(state => state.user.patient);
 
 	return (
 		<>
