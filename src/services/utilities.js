@@ -5,7 +5,6 @@ import startCase from 'lodash.startcase';
 import padLeft from 'pad-left';
 import { confirmAlert } from 'react-confirm-alert';
 import JwtDecode from 'jwt-decode';
-import Multiselect from 'react-widgets/lib/Multiselect';
 
 import SSRStorage from './storage';
 import { TOKEN_COOKIE } from './constants';
@@ -124,18 +123,6 @@ export const renderTextArea = ({
 			</div>
 		)}
 	</div>
-);
-
-//multiselect input
-export const renderMultiselect = ({ input, data, valueField, textField }) => (
-	<Multiselect
-		{...input}
-		onBlur={() => input.onBlur()}
-		value={input.value || []} // requires value to be an array
-		data={data}
-		valueField={valueField}
-		textField={textField}
-	/>
 );
 
 // prettier-ignore
