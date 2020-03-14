@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import { confirmAlert } from "react-confirm-alert";
-import waiting from "../../assets/images/waiting.gif";
-import { notifySuccess, notifyError } from "../../services/notify";
-import { confirmAction } from "../../services/utilities";
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { confirmAlert } from 'react-confirm-alert';
+import waiting from '../../assets/images/waiting.gif';
+import { notifySuccess, notifyError } from '../../services/notify';
+import { confirmAction } from '../../services/utilities';
 
 import {
 	getAllDepartments,
@@ -14,7 +14,7 @@ import {
 	getAllStaff,
 } from '../../actions/settings';
 
-const Departments = (props) => {
+const Departments = props => {
 	const initialState = {
 		name: '',
 		description: '',
@@ -31,52 +31,52 @@ const Departments = (props) => {
 	const [loaded, setLoaded] = useState(false);
 
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
-	const handleInputChange = (e) => {
+	const handleInputChange = e => {
 		const { name, value } = e.target;
-		setState((prevState) => ({ ...prevState, [name]: value }));
+		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onCreateDepartment = (e) => {
+	const onCreateDepartment = e => {
 		e.preventDefault();
 		setLoading(true);
 		props
 			.createDepartment({ name, headOfDept, description })
-			.then((response) => {
+			.then(response => {
 				setLoading(false);
 				setState({ ...initialState });
 				notifySuccess('Head of department added');
 			})
-			.catch((error) => {
+			.catch(error => {
 				setLoading(false);
 				setState({ ...initialState });
 				notifyError('Error creating head of department');
 			});
 	};
 
-	const onDeleteDepartment = (data) => {
+	const onDeleteDepartment = data => {
 		props
 			.deleteDepartment(data)
-			.then((data) => {
+			.then(data => {
 				notifySuccess('Head of department deleted');
 			})
-			.catch((error) => {
+			.catch(error => {
 				notifyError('Error deleting head of department');
 			});
 	};
 
-	const onEditDept = (e) => {
+	const onEditDept = e => {
 		setLoading(true);
 		console.log(name, headOfDept, description);
 		e.preventDefault();
 		props
 			.updateDepartment({ id: data.id, name, description, headOfDept }, data)
-			.then((response) => {
+			.then(response => {
 				setState({ ...initialState });
 				setSubmitButton({ create: true, edit: false });
 				setLoading(false);
 				notifySuccess('Head of department updated');
 			})
-			.catch((error) => {
+			.catch(error => {
 				setState({ ...initialState });
 				setSubmitButton({ create: true, edit: false });
 				setLoading(false);
@@ -84,10 +84,10 @@ const Departments = (props) => {
 			});
 	};
 
-	const onClickEdit = (data) => {
+	const onClickEdit = data => {
 		console.log(data);
 		setSubmitButton({ edit: true, create: false });
-		setState((prevState) => ({
+		setState(prevState => ({
 			...prevState,
 			name: data.name,
 			headOfDept: data.id,
@@ -102,7 +102,7 @@ const Departments = (props) => {
 		setState({ ...initialState });
 	};
 
-	const DeleteDept = (data) => {
+	const DeleteDept = data => {
 		confirmAction(onDeleteDepartment, data, null);
 	};
 
@@ -291,7 +291,7 @@ const Departments = (props) => {
 	);
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
 	return {
 		departments: state.settings.departments,
 		StaffList: state.settings.staff_list,
