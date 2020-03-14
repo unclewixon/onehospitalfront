@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import LeaveRecord from '../LeaveRecord';
 import { Link, withRouter } from 'react-router-dom';

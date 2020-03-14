@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import Queue from "../components/Queue";
 import Tooltip from "antd/lib/tooltip";
+
 class Radiology extends Component {
   render() {
     return (
@@ -269,6 +270,7 @@ class Radiology extends Component {
                             </tbody>
                           </table>
                         </div>
+                      
                       </div>
                     </div>
                   </div>

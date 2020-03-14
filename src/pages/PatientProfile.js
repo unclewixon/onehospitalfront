@@ -22,6 +22,26 @@ const Opthalmology = lazy(() => import('../components/Patient/Opthalmology'));
 const Procedure = lazy(() => import('../components/Patient/Procedure'));
 const Physiotherapy = lazy(() => import('../components/Patient/Physiotherapy'));
 const Vitals = lazy(() => import('../components/Patient/Vitals'));
+const LabRequest = lazy(() => import('../components/Patient/LabRequest'));
+const PharmacyRequest = lazy(() =>
+	import('../components/Patient/PharmacyRequest')
+);
+const OpthalmologyRequest = lazy(() =>
+	import('../components/Patient/OpthalmologyRequest')
+);
+const PhysiotherapyRequest = lazy(() =>
+	import('../components/Patient/PhysiotherapyRequest')
+);
+const ImagingRequest = lazy(() =>
+	import('../components/Patient/ImagingRequest')
+);
+
+const DentistryRequest = lazy(() =>
+	import('../components/Patient/DentistryRequest')
+);
+const ProcedureRequest = lazy(() =>
+	import('../components/Patient/ProcedureRequest')
+);
 
 const storage = new SSRStorage();
 
@@ -46,7 +66,22 @@ const Page = ({ location }) => {
 			return <Physiotherapy />;
 		case 'dentistry':
 			return <Dentistry />;
+		case 'lab-request':
+			return <LabRequest />;
+		case 'pharmacy-request':
+			return <PharmacyRequest />;
+		case 'opthalmology-request':
+			return <OpthalmologyRequest />;
 
+		case 'physiotherapy-request':
+			return <PhysiotherapyRequest />;
+		case 'imaging-request':
+			return <ImagingRequest />;
+
+		case 'dentistry-request':
+			return <DentistryRequest />;
+		case 'procedure-request':
+			return <ProcedureRequest />;
 		default:
 			return <Dashboard />;
 	}
