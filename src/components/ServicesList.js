@@ -84,50 +84,54 @@ const ServicesList = props => {
 										</a>
 									</div>
 									{moreDetailConsultation === category.name && (
-										<div className="tasks-list-w">
-											<div className="pipelines-w">
-												<div className="row">
-													<div className="col-lg-4 col-xxl-3">
-														<div className="pipeline-body">
-															{ServicesList.map((service, index) => {
-																return (
-																	<div
-																		className="pipeline-item"
-																		key={index + 1}>
-																		<div className="pi-controls">
-																			<div className="pi-settings os-dropdown-trigger">
-																				<i
-																					className="os-icon os-icon-ui-49"
-																					onClick={() =>
-																						props.editService(true, service)
-																					}></i>
-																			</div>
-																			<div className="pi-settings os-dropdown-trigger">
-																				<i
-																					className="os-icon os-icon-ui-15"
-																					onClick={() =>
-																						confirmDelete(service)
-																					}></i>
-																			</div>
-																		</div>
-																		<div className="pi-body">
-																			<div className="pi-info">
-																				<div className="h6 pi-name">
-																					{service.name}
-																				</div>
-																				<div className="pi-sub">
-																					{service.traffic}
-																				</div>
-																			</div>
-																		</div>
-																	</div>
-																);
-															})}
-														</div>
-													</div>
-												</div>
-											</div>
+										// <div className="tasks-list-w">
+										// 	<div className="pipelines-w">
+										// 		<div className="row">
+
+										<div className="table-responsive">
+											<table className="table table-striped">
+												<thead>
+													<tr>
+														<th>Name</th>
+														{/* <th>Price</th>
+										<th>Discount</th> */}
+														<th className="text-right">Action</th>
+													</tr>
+												</thead>
+												<tbody>
+													{ServicesList.map((service, index) => {
+														return (
+															<tr key={index + 1}>
+																<td>{service.name}</td>
+																{/* <td>{Room.category.price}</td>
+												<td>{Room.category.discount}</td>  */}
+																<td className="row-actions text-right">
+																	<a href="#">
+																		<i
+																			className="os-icon os-icon-ui-49"
+																			onClick={() =>
+																				props.editService(true, category)
+																			}></i>
+																	</a>
+																	<a href="#">
+																		<i className="os-icon os-icon-grid-10"></i>
+																	</a>
+																	<a
+																		className="danger"
+																		onClick={() => confirmDelete(service)}>
+																		<i className="os-icon os-icon-ui-15"></i>
+																	</a>
+																</td>
+															</tr>
+														);
+													})}
+												</tbody>
+											</table>
 										</div>
+
+										// 		</div>
+										// 	</div>
+										// </div>
 									)}
 								</div>
 							);

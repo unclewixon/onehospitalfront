@@ -36,7 +36,6 @@ class ModalEditService extends Component {
 			})
 			.catch(error => {
 				this.setState({ Loading: false });
-
 				notifyError('Error updating service');
 			});
 	};
