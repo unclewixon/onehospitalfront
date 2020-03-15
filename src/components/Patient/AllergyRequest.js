@@ -43,7 +43,11 @@ const AllergyRequest = () => {
 										options={serviceCenter}
 										ref={register({ name: 'category' })}
 										onChange={evt => {
-											setValue('category', String(evt.value));
+											if (evt === null) {
+												setValue('category', null);
+											} else {
+												setValue('category', String(evt.value));
+											}
 										}}
 										required
 									/>
@@ -80,7 +84,11 @@ const AllergyRequest = () => {
 										options={labCategories}
 										ref={register({ name: 'severity' })}
 										onChange={evt => {
-											setValue('severity', String(evt.value));
+											if (evt === null) {
+												setValue('severity', null);
+											} else {
+												setValue('severity', String(evt.value));
+											}
 										}}
 										required
 									/>
