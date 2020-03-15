@@ -10,6 +10,7 @@ import {
 import { confirmAction } from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
 import waiting from '../assets/images/waiting.gif';
+import searchingGIF from '../assets/images/searching.gif';
 
 const ServicesList = props => {
 	const [moreDetailConsultation, setMoreDetailConsultation] = useState(false);
@@ -47,7 +48,12 @@ const ServicesList = props => {
 
 	useEffect(() => {
 		if (!loaded) {
-			props.getAllService();
+			props
+				.getAllService()
+				.then(response => {})
+				.catch(e => {
+					notifyError(e.message || 'could not fetch services list');
+				});
 		}
 		setLoaded(true);
 	}, [props, loaded]);
@@ -56,86 +62,87 @@ const ServicesList = props => {
 			<div className="todo-app-w">
 				<div className="todo-content">
 					<div className="all-tasks-w">
-						{props.ServiceCategories.map((category, index) => {
-							return (
-								<div className="task-section" key={index + 1}>
-									<div className="tasks-header-w">
-										<a
-											className="tasks-header-toggler"
-											onClick={() => onMoreDetailConsultation(category.name)}>
-											<i className="os-icon os-icon-ui-23"></i>
-										</a>
-										{moreDetailConsultation === category.name && (
-											<a
-												className="tasks-header-toggler"
-												onClick={() => onMoreDetailConsultation()}>
-												<i className="os-icon os-icon-ui-23"></i>
-											</a>
-										)}
-										<h5 className="tasks-header">{category.name}</h5>
-										{/* <span className="tasks-sub-header">Mon, Sep 23th</span> */}
-										<a
-											className="add-task-btn"
-											data-target="#taskModal"
-											data-toggle="modal"
-											onClick={onUploadService}>
-											<i className="os-icon os-icon-ui-22"></i>
-											<span>Add service</span>
-										</a>
-									</div>
-									{moreDetailConsultation === category.name && (
-										// <div className="tasks-list-w">
-										// 	<div className="pipelines-w">
-										// 		<div className="row">
+						{!loaded ? (
+							<tr>
+								<td colSpan="4" className="text-center">
+									<img alt="searching" src={searchingGIF} />
+								</td>
+							</tr>
+						) : (
+							<>
+								{props.ServiceCategories.map((category, index) => {
+									return (
+										<div className="task-section" key={index + 1}>
+											<div className="tasks-header-w">
+												<a
+													className="tasks-header-toggler"
+													onClick={() =>
+														onMoreDetailConsultation(category.name)
+													}>
+													<i className="os-icon os-icon-ui-23"></i>
+												</a>
+												{moreDetailConsultation === category.name && (
+													<a
+														className="tasks-header-toggler"
+														onClick={() => onMoreDetailConsultation()}>
+														<i className="os-icon os-icon-ui-23"></i>
+													</a>
+												)}
+												<h5 className="tasks-header">{category.name}</h5>
+												<a
+													className="add-task-btn"
+													data-target="#taskModal"
+													data-toggle="modal"
+													onClick={onUploadService}>
+													<i className="os-icon os-icon-ui-22"></i>
+													<span>Add service</span>
+												</a>
+											</div>
+											{moreDetailConsultation === category.name && (
+												<div className="table-responsive">
+													<table className="table table-striped">
+														<thead>
+															<tr>
+																<th>Name</th>
 
-										<div className="table-responsive">
-											<table className="table table-striped">
-												<thead>
-													<tr>
-														<th>Name</th>
-														{/* <th>Price</th>
-										<th>Discount</th> */}
-														<th className="text-right">Action</th>
-													</tr>
-												</thead>
-												<tbody>
-													{ServicesList.map((service, index) => {
-														return (
-															<tr key={index + 1}>
-																<td>{service.name}</td>
-																{/* <td>{Room.category.price}</td>
-												<td>{Room.category.discount}</td>  */}
-																<td className="row-actions text-right">
-																	<a href="#">
-																		<i
-																			className="os-icon os-icon-ui-49"
-																			onClick={() =>
-																				props.editService(true, category)
-																			}></i>
-																	</a>
-																	<a href="#">
-																		<i className="os-icon os-icon-grid-10"></i>
-																	</a>
-																	<a
-																		className="danger"
-																		onClick={() => confirmDelete(service)}>
-																		<i className="os-icon os-icon-ui-15"></i>
-																	</a>
-																</td>
+																<th className="text-right">Action</th>
 															</tr>
-														);
-													})}
-												</tbody>
-											</table>
-										</div>
+														</thead>
+														<tbody>
+															{ServicesList.map((service, index) => {
+																return (
+																	<tr key={index + 1}>
+																		<td>{service.name}</td>
 
-										// 		</div>
-										// 	</div>
-										// </div>
-									)}
-								</div>
-							);
-						})}
+																		<td className="row-actions text-right">
+																			<a href="#">
+																				<i
+																					className="os-icon os-icon-ui-49"
+																					onClick={() =>
+																						props.editService(true, category)
+																					}></i>
+																			</a>
+																			<a href="#">
+																				<i className="os-icon os-icon-grid-10"></i>
+																			</a>
+																			<a
+																				className="danger"
+																				onClick={() => confirmDelete(service)}>
+																				<i className="os-icon os-icon-ui-15"></i>
+																			</a>
+																		</td>
+																	</tr>
+																);
+															})}
+														</tbody>
+													</table>
+												</div>
+											)}
+										</div>
+									);
+								})}
+							</>
+						)}
 					</div>
 				</div>
 			</div>
