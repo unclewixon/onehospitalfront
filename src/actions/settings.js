@@ -489,19 +489,22 @@ export const getAllDepartments = () => {
 };
 
 export const updateDepartment = data => {
+	console.log(data);
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
-				.patch(`${API_URI}/departments/${data.id}`, {
+				.patch(`${API_URI}/departments/${data.id}/update`, {
 					name: data.name,
 					hod_id: data.headOfDept,
 					description: data.description,
 				})
 				.then(response => {
-					dispatch(update_department(response.data));
+					console.log(response);
+					dispatch(update_department(response.data, data));
 					return resolve({ success: true });
 				})
 				.catch(error => {
+					console.log(error);
 					return reject({ success: false });
 				});
 		});
@@ -529,6 +532,7 @@ export const deleteDepartment = data => {
 
 //room
 export const addRoom = data => {
+	console.log(data);
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
@@ -714,17 +718,19 @@ export const getAllLabTests = () => {
 };
 
 export const updateLabTest = data => {
+	console.log(data);
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
 				.patch(`${API_URI}/lab-tests/${data.id}/update`, {
 					name: data.name,
-					category: data.category,
+					lab_category_id: data.category,
 					price: data.price,
-					testType: data.testType,
+					test_type: data.testType,
+					parameters: data.parameters,
 				})
 				.then(response => {
-					dispatch(update_lab_test(response.data));
+					dispatch(update_lab_test(response.data, data));
 					return resolve({ success: true });
 				})
 				.catch(error => {
