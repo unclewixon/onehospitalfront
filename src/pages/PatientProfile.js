@@ -22,6 +22,7 @@ const Opthalmology = lazy(() => import('../components/Patient/Opthalmology'));
 const Procedure = lazy(() => import('../components/Patient/Procedure'));
 const Physiotherapy = lazy(() => import('../components/Patient/Physiotherapy'));
 const Vitals = lazy(() => import('../components/Patient/Vitals'));
+const Allergies = lazy(() => import('../components/Patient/Allergies'));
 const LabRequest = lazy(() => import('../components/Patient/LabRequest'));
 const PharmacyRequest = lazy(() =>
 	import('../components/Patient/PharmacyRequest')
@@ -42,6 +43,9 @@ const DentistryRequest = lazy(() =>
 const ProcedureRequest = lazy(() =>
 	import('../components/Patient/ProcedureRequest')
 );
+const AllergyRequest = lazy(() =>
+	import('../components/Patient/AllergyRequest')
+);
 
 const storage = new SSRStorage();
 
@@ -56,6 +60,8 @@ const Page = ({ location }) => {
 			return <Pharmacy />;
 		case 'vitals':
 			return <Vitals />;
+		case 'allergies':
+			return <Allergies />;
 		case 'imaging':
 			return <Imaging />;
 		case 'opthalmology':
@@ -82,6 +88,9 @@ const Page = ({ location }) => {
 			return <DentistryRequest />;
 		case 'procedure-request':
 			return <ProcedureRequest />;
+
+		case 'allergy-request':
+			return <AllergyRequest />;
 		default:
 			return <Dashboard />;
 	}
