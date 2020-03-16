@@ -126,6 +126,7 @@ class PatientProfile extends Component {
 
 	render() {
 		const { location, patient } = this.props;
+		console.log(patient);
 		return (
 			<div className="layout-w">
 				<button
