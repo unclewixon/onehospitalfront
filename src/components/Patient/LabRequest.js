@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import { API_URI, socket } from '../../services/constants';
@@ -18,6 +19,7 @@ const serviceCenter = [
 	{ value: 'monthly', label: 'monthly' },
 ];
 const LabRequest = () => {
+	// const page = location.pathname.split('/').pop();
 	const { register, handleSubmit, setValue } = useForm();
 	const [submitting, setSubmitting] = useState(false);
 
@@ -34,6 +36,22 @@ const LabRequest = () => {
 				<div className="element-box">
 					<div className="form-block w-100">
 						<form onSubmit={handleSubmit(onSubmit)}>
+							<div className="row">
+								<div className="form-group col-sm-12">
+									<label>Patient Id</label>
+									<Select
+										name="patient_id"
+										placeholder="Select patient Id"
+										options={serviceCenter}
+										ref={register({ name: 'patient_id' })}
+										onChange={evt => {
+											setValue('patient_id', String(evt.value));
+										}}
+										required
+									/>
+								</div>
+							</div>
+
 							<div className="row">
 								<div className="form-group col-sm-6">
 									<label>Service Center</label>

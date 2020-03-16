@@ -4,18 +4,20 @@ import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import { API_URI, socket } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
-const labCategories = [
-	{ value: 'cancer', label: 'cancer' },
-	{ value: 'x-ray', label: 'x-ray' },
-	{ value: 'blood', label: 'blood' },
+const allergyCategories = [
+	{ value: 'Drug', label: 'Drug' },
+	{ value: 'Food', label: 'Food' },
+	{ value: 'Environment', label: 'Environment' },
+	{ value: 'other', label: 'other' },
 ];
-const serviceCenter = [
+const severity = [
 	{
-		value: 'daily',
-		label: 'daily',
+		value: 'mild',
+		label: 'mild',
 	},
-	{ value: 'weekend', label: 'weekend' },
-	{ value: 'monthly', label: 'monthly' },
+	{ value: 'moderate', label: 'moderate' },
+	{ value: 'severe', label: 'severe' },
+	{ value: 'intolerance', label: 'intolerance' },
 ];
 const AllergyRequest = () => {
 	const { register, handleSubmit, setValue } = useForm();
@@ -40,7 +42,7 @@ const AllergyRequest = () => {
 									<Select
 										name="category"
 										placeholder="Select Allergy Category"
-										options={serviceCenter}
+										options={allergyCategories}
 										ref={register({ name: 'category' })}
 										onChange={evt => {
 											if (evt === null) {
@@ -71,7 +73,7 @@ const AllergyRequest = () => {
 									<Select
 										name="severity"
 										placeholder="Select severity"
-										options={labCategories}
+										options={severity}
 										ref={register({ name: 'severity' })}
 										onChange={evt => {
 											if (evt === null) {

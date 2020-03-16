@@ -58,28 +58,32 @@ export class index extends Component {
 									</div>
 									<h6 className="element-header">Pay Point</h6>
 									<div className="row">
-										<Suspense fallback={<Splash />}>
-											<Switch>
-												<Route
-													exact
-													path={`${match.url}/`}
-													component={Dashboard}
-												/>
-												<Route
-													path={`${match.url}/insurance-bills`}
-													component={InsuranceBills}
-												/>
-												<Route
-													path={`${match.url}/review-transaction`}
-													component={ReviewTransaction}
-												/>
-												<Route
-													path={`${match.url}/new-transaction`}
-													component={NewTransaction}
-												/>
-												<Route component={NoMatch} />
-											</Switch>
-										</Suspense>
+										<div className="col-sm-12">
+											<div className="element-box">
+												<Suspense fallback={<Splash />}>
+													<Switch>
+														<Route
+															exact
+															path={`${match.url}/`}
+															component={Dashboard}
+														/>
+														<Route
+															path={`${match.url}/insurance-bills`}
+															component={InsuranceBills}
+														/>
+														<Route
+															path={`${match.url}/review-transaction`}
+															component={ReviewTransaction}
+														/>
+														<Route
+															path={`${match.url}/new-transaction`}
+															component={NewTransaction}
+														/>
+														<Route component={NoMatch} />
+													</Switch>
+												</Suspense>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
