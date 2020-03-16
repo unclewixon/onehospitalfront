@@ -10,7 +10,7 @@ export class PayPointTable extends Component {
 		return (
 			<div className="col-sm-12">
 				<div className="element-box">
-					<h6 class="element-header">Recent Transactions</h6>
+					<h6 className="element-header">Recent Transactions</h6>
 
 					<div className="table-responsive">
 						<table className="table table-striped">
@@ -54,7 +54,7 @@ export class PayPointTable extends Component {
 											data-original-title=""
 											title=""></div>
 									</td>
-									<td class="text-right">$94</td>
+									<td className="text-right">$94</td>
 								</tr>
 								<tr>
 									<td>Tim Howard</td>

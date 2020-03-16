@@ -339,7 +339,7 @@ const add_permission = payload => {
 	};
 };
 
-const get_all_permissions = payload => {
+export const get_all_permissions = payload => {
 	return {
 		type: GET_ALL_PERMISSIONS,
 		payload,
@@ -369,7 +369,7 @@ const add_service_category = payload => {
 	};
 };
 
-const get_all_service_categories = payload => {
+export const get_all_service_categories = payload => {
 	return {
 		type: GET_ALL_SERVICE_CATEGORIES,
 		payload,
@@ -399,7 +399,7 @@ const upload_service = payload => {
 	};
 };
 
-const get_all_services = payload => {
+export const get_all_services = payload => {
 	return {
 		type: GET_ALL_SERIVCES,
 		payload,
@@ -750,7 +750,7 @@ export const deleteLabTest = data => {
 					return resolve({ success: true });
 				})
 				.catch(error => {
-					return reject({ success: false });
+					return resolve({ success: false });
 				});
 		});
 	};

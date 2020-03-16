@@ -1,22 +1,18 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
-const Pharmacy = () => {
-	const newPharmacyRequest = () => {
-		alert('new Lab');
-	};
+const Pharmacy = ({ location }) => {
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<div className="element-actions">
-					<button
+					<Link
 						className="btn btn-primary"
-						type="submit"
-						onClick={newPharmacyRequest}>
+						to={`${location.pathname}#pharmacy-request`}>
 						<i className="os-icon os-icon-plus"></i>
 						New Pharmacy Request
-					</button>
+					</Link>
 				</div>
 				<h6 className="element-header">Pharmacy Requests</h6>
 				<div className="element-box">
@@ -139,4 +135,4 @@ const Pharmacy = () => {
 	);
 };
 
-export default Pharmacy;
+export default withRouter(Pharmacy);

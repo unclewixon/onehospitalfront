@@ -1,20 +1,19 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
 
-const Lab = () => {
-	const AddNewLab = () => {
-		alert('new Lab');
-	};
+const Lab = ({ location }) => {
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<div className="element-actions">
-					<button className="btn btn-primary" type="submit" onClick={AddNewLab}>
+					<Link
+						to={`${location.pathname}#lab-request`}
+						className="btn btn-primary">
 						<i className="os-icon os-icon-plus"></i>
-						Lab New Request
-					</button>
+						New Lab Request
+					</Link>
 				</div>
 				<h6 className="element-header">Lab Requests</h6>
 				<div className="element-box">
@@ -137,4 +136,4 @@ const Lab = () => {
 	);
 };
 
-export default Lab;
+export default withRouter(Lab);
