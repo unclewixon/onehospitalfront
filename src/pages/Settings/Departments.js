@@ -87,13 +87,12 @@ const Departments = props => {
 	};
 
 	const onClickEdit = data => {
-		console.log(data);
 		setSubmitButton({ edit: true, create: false });
 		setState(prevState => ({
 			...prevState,
 			name: data.name,
 			id: data.id,
-			headOfDept: data.staff.id,
+			headOfDept: data.staff ? data.staff.id : null,
 			hod: data.staff
 				? `${data.staff.first_name} ${data.staff.last_name}`
 				: null,
