@@ -36,7 +36,6 @@ class ModalEditService extends Component {
 			})
 			.catch(error => {
 				this.setState({ Loading: false });
-
 				notifyError('Error updating service');
 			});
 	};
@@ -123,11 +122,7 @@ class ModalEditService extends Component {
 										className={
 											Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
 										}>
-										{Loading ? (
-											<img src={waiting} alt="submitting" />
-										) : (
-											<span> cancel </span>
-										)}
+										<span> cancel </span>
 									</button>
 									<button
 										className={

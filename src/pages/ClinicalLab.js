@@ -4,6 +4,8 @@ import Tooltip from 'antd/lib/tooltip';
 
 import Queue from '../components/Queue';
 import ClinicalLabItem from '../components/ClinicalLabItem';
+import LabRequest2 from '../components/Patient/LabRequest';
+
 class ClinicalLab extends Component {
 	state = {};
 
@@ -123,7 +125,6 @@ class ClinicalLab extends Component {
 																	</div>
 																	<div className="fht-cell"></div>
 																</th>
-
 																<th data-field="task">
 																	<div className="th-inner ">
 																		<span className="d-none d-sm-block">
@@ -158,6 +159,9 @@ class ClinicalLab extends Component {
 												</div>
 											</div>
 										</div>
+									</div>
+									<div className="col-sm-12">
+										<LabRequest2 />
 									</div>
 								</div>
 							</div>

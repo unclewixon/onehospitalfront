@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
-
+import { confirmAction } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
+import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import { confirmAlert } from 'react-confirm-alert';
 
@@ -15,12 +16,13 @@ import {
 	getAllLabTestParameters,
 } from '../actions/settings';
 
-const LabTest = (props) => {
+const LabTest = props => {
 	const initialState = {
 		name: '',
 		category: '',
 		price: '',
 		testType: 'single',
+		selectTestType: '',
 		edit: false,
 		create: true,
 	};
@@ -34,32 +36,32 @@ const LabTest = (props) => {
 
 	const [parameters, setParameter] = useState(null);
 
-	const handleMultipleSelectInput = (selectedOption) => {
+	const handleMultipleSelectInput = selectedOption => {
 		setParameter(selectedOption);
 	};
 
-	const handleInputChange = (e) => {
+	const handleInputChange = e => {
 		const { name, value } = e.target;
-		setState((prevState) => ({ ...prevState, [name]: value }));
+		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onAddLabTest = (e) => {
+	const onAddLabTest = e => {
 		setLoading(true);
 		e.preventDefault();
 		props
 			.addLabTest({ name, price, category, parameters, testType })
-			.then((response) => {
+			.then(response => {
 				setState({ ...initialState });
 				setLoading(false);
 				setParameter(null);
 				notifySuccess('Lab test created');
 			})
-			.catch((error) => {
+			.catch(error => {
 				notifyError('Error creating lab test');
 			});
 	};
 
-	const onEditLabTest = (e) => {
+	const onEditLabTest = e => {
 		setLoading(true);
 		e.preventDefault();
 		props
@@ -67,90 +69,71 @@ const LabTest = (props) => {
 				{ id: data.id, name, price, category, parameters, testType },
 				data
 			)
-			.then((response) => {
+			.then(response => {
 				setState({ ...initialState });
 				setSubmitButton({ create: true, edit: false });
 				setLoading(false);
 				notifySuccess('Lab test updated');
 			})
-			.catch((error) => {
+			.catch(error => {
 				setState({ ...initialState });
-				setSubmitButton({ create: true, edit: false });
+				setSubmitButton({ ...initialState });
 				setLoading(false);
 				notifyError('Error updating lab test');
 			});
 	};
 
-	const onClickEdit = (data) => {
+	const onClickEdit = data => {
 		console.log(data);
 		setSubmitButton({ edit: true, create: false });
-		setState((prevState) => ({
+		setState(prevState => ({
 			...prevState,
 			name: data.name,
 			price: data.price,
 			id: data.id,
+			testType: data.test_type ? `${data.test_type}` : null,
+			parameters: data.parameter_type ? `${data.parameter_type}` : null,
+			category: data.category ? category : null,
 		}));
 		setParameter(data.parameters);
 		getDataToEdit(data);
 	};
 
 	const cancelEditButton = () => {
-		setSubmitButton({ create: true, edit: false });
+		setSubmitButton({ ...initialState });
 		setState({ ...initialState });
 	};
 
-	const onDeleteLabTest = (data) => {
-		console.log(data);
+	const onDeleteLabTest = data => {
 		props
 			.deleteLabTest(data)
-			.then((data) => {
+			.then(data => {
 				notifySuccess('Lab test deleted');
 			})
-			.catch((error) => {
+			.catch(error => {
 				notifyError('Error deleting lab test');
 			});
 	};
 
-	const confirmDelete = (data) => {
-		confirmAlert({
-			customUI: ({ onClose }) => {
-				return (
-					<div className="custom-ui">
-						<h1>Are you sure?</h1>
-						<p>You want to delete this remove ?</p>
-						<div style={{}}>
-							<button
-								className="btn btn-primary"
-								style={{ margin: 10 }}
-								onClick={onClose}>
-								No
-							</button>
-							<button
-								className="btn btn-danger"
-								style={{ margin: 10 }}
-								onClick={() => {
-									onDeleteLabTest(data);
-									onClose();
-								}}>
-								Yes, Delete it!
-							</button>
-						</div>
-					</div>
-				);
-			},
-		});
+	const confirmDelete = data => {
+		confirmAction(onDeleteLabTest, data);
 	};
 
 	useEffect(() => {
 		if (!loaded) {
-			props.getAllLabTests();
+			props
+				.getAllLabTests()
+				.then(response => {})
+				.catch(e => {
+					notifyError(e.message || 'could not fetch lab tests');
+				});
 			props.getAllLabTestCategories();
 			props.getAllLabTestParameters();
 		}
 		setLoaded(true);
 	}, [loaded, props]);
 
-	const options = props.LabParameters.map((Par) => {
+	const options = props.LabParameters.map(Par => {
 		return { value: Par.name, label: Par.name };
 	});
 
@@ -159,34 +142,44 @@ const LabTest = (props) => {
 			<div className="col-lg-8">
 				<div>
 					<div className="row">
-						{props.LabTests.map((LabTest, i) => {
-							return (
-								<div className="col-lg-4 col-xxl-3" key={i}>
-									<div className="pt-3">
-										<div className="pipeline-item">
-											<div className="pi-controls">
-												<div className="pi-settings os-dropdown-trigger">
-													<i
-														className="os-icon os-icon-ui-49"
-														onClick={() => onClickEdit(LabTest)}></i>
-												</div>
-												<div className="pi-settings os-dropdown-trigger">
-													<i
-														className="os-icon os-icon-ui-15"
-														onClick={() => confirmDelete(LabTest)}></i>
-												</div>
-											</div>
-											<div className="pi-body">
-												<div className="pi-info">
-													<div className="h6 pi-name">{LabTest.name}</div>
-													<div className="pi-sub">{LabTest.name}</div>
+						{!loaded ? (
+							<tr>
+								<td colSpan="4" className="text-center">
+									<img alt="searching" src={searchingGIF} />
+								</td>
+							</tr>
+						) : (
+							<>
+								{props.LabTests.map((LabTest, i) => {
+									return (
+										<div className="col-lg-4 col-xxl-3" key={i}>
+											<div className="pt-3">
+												<div className="pipeline-item">
+													<div className="pi-controls">
+														<div className="pi-settings os-dropdown-trigger">
+															<i
+																className="os-icon os-icon-ui-49"
+																onClick={() => onClickEdit(LabTest)}></i>
+														</div>
+														<div className="pi-settings os-dropdown-trigger">
+															<i
+																className="os-icon os-icon-ui-15"
+																onClick={() => confirmDelete(LabTest)}></i>
+														</div>
+													</div>
+													<div className="pi-body">
+														<div className="pi-info">
+															<div className="h6 pi-name">{LabTest.name}</div>
+															<div className="pi-sub">{LabTest.name}</div>
+														</div>
+													</div>
 												</div>
 											</div>
 										</div>
-									</div>
-								</div>
-							);
-						})}
+									);
+								})}
+							</>
+						)}
 					</div>
 				</div>
 			</div>
@@ -220,6 +213,7 @@ const LabTest = (props) => {
 								name="testType"
 								value={testType}
 								onChange={handleInputChange}>
+								{testType && <option value={testType}>{testType}</option>}
 								<option value="single">Single</option>;
 								<option value="combo">Combo</option>;
 							</select>
@@ -230,7 +224,10 @@ const LabTest = (props) => {
 								name="category"
 								onChange={handleInputChange}
 								value={category}>
-								<option value={''}> </option>;
+								{category && (
+									<option value={category.id}>{category.name}</option>
+								)}
+								{!category && <option value={''}> </option>};
 								{props.LabCategories.map((category, i) => {
 									return (
 										<option key={i} value={category.id}>
@@ -272,7 +269,9 @@ const LabTest = (props) => {
 								<>
 									<button
 										className={
-											Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
+											Loading
+												? 'btn btn-secondary ml-3 disabled'
+												: 'btn btn-secondary ml-3'
 										}
 										onClick={cancelEditButton}>
 										<span>{Loading ? 'cancel' : 'cancel'}</span>
@@ -297,7 +296,7 @@ const LabTest = (props) => {
 	);
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
 	return {
 		LabCategories: state.settings.lab_categories,
 		LabParameters: state.settings.lab_parameters,

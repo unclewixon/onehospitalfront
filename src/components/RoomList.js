@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { confirmAction } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
+import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import {
 	addRoom,
@@ -16,7 +17,7 @@ const RoomList = props => {
 		name: '',
 		status: 'Occupied',
 		floor: '',
-		category: props.Room_Categories[0].id,
+		category: props.RoomCategeries ? props.Room_Categories[0].id : '',
 		create: true,
 		edit: false,
 	};
@@ -37,10 +38,12 @@ const RoomList = props => {
 		props
 			.addRoom({ name, status, floor, category })
 			.then(response => {
+				notifySuccess('Room  created');
 				setState({ ...initialState });
 				setLoading(false);
 			})
 			.catch(error => {
+				notifyError('Error creating room');
 				setState({ ...initialState });
 				setLoading(false);
 			});
@@ -62,7 +65,6 @@ const RoomList = props => {
 	};
 
 	const onClickEdit = data => {
-		console.log(data);
 		setSubmitButton({ edit: true, create: false });
 		setState(prevState => ({
 			...prevState,
@@ -97,52 +99,68 @@ const RoomList = props => {
 
 	useEffect(() => {
 		if (!loaded) {
-			props.getAllRooms();
+			props
+				.getAllRooms()
+				.then(response => {})
+				.catch(e => {
+					notifyError(e.message || 'could not fetch room list');
+				});
 		}
 		setLoaded(true);
 	}, [props, loaded]);
+	console.log(props.Rooms);
 	return (
 		<div className="row">
 			<div className="col-lg-8">
 				<div className="element-wrapper">
 					<div className="element-box">
 						<h5 className="form-header">Room list</h5>
-						<div className="form-desc"></div>
 						<div className="table-responsive">
 							<table className="table table-striped">
 								<thead>
 									<tr>
-										<th>Category Name</th>
-										<th>Price</th>
-										<th>Discount</th>
+										<th>Room Number</th>
+										<th>Floor</th>
+										{/* <th>Price</th> */}
+										<th>Status</th>
 										<th className="text-right">Action</th>
 									</tr>
 								</thead>
 								<tbody>
-									{props.Rooms.map((Room, index) => {
-										return (
-											<tr key={index + 1}>
-												<td>{Room.name}</td>
-												<td>{Room.category.price}</td>
-												<td>{Room.category.discount}</td>
-												<td className="row-actions text-right">
-													<a href="#">
-														<i
-															className="os-icon os-icon-ui-49"
-															onClick={() => onClickEdit(Room)}></i>
-													</a>
-													<a href="#">
-														<i className="os-icon os-icon-grid-10"></i>
-													</a>
-													<a
-														className="danger"
-														onClick={() => confirmDelete(Room)}>
-														<i className="os-icon os-icon-ui-15"></i>
-													</a>
-												</td>
-											</tr>
-										);
-									})}
+									{!loaded ? (
+										<tr>
+											<td colSpan="4" className="text-center">
+												<img alt="searching" src={searchingGIF} />
+											</td>
+										</tr>
+									) : (
+										<>
+											{props.Rooms.map((Room, index) => {
+												return (
+													<tr key={index}>
+														<td>{Room.name}</td>
+														<td>{Room.floor}</td>
+														<td>{Room.status}</td>
+														<td className="row-actions text-right">
+															<a href="#">
+																<i
+																	className="os-icon os-icon-ui-49"
+																	onClick={() => onClickEdit(Room)}></i>
+															</a>
+															<a href="#">
+																<i className="os-icon os-icon-grid-10"></i>
+															</a>
+															<a
+																className="danger"
+																onClick={() => confirmDelete(Room)}>
+																<i className="os-icon os-icon-ui-15"></i>
+															</a>
+														</td>
+													</tr>
+												);
+											})}
+										</>
+									)}
 								</tbody>
 							</table>
 						</div>
@@ -169,9 +187,13 @@ const RoomList = props => {
 								name="category"
 								value={category}
 								onChange={handleInputChange}>
-								{props.Room_Categories.map(RoomCategory => {
+								{category && (
+									<option value={category.id}>{category.name}</option>
+								)}
+								{!category && <option value=""></option>}
+								{props.Room_Categories.map((RoomCategory, i) => {
 									return (
-										<option value={RoomCategory.name}>
+										<option value={RoomCategory.id} key={i}>
 											{RoomCategory.name}
 										</option>
 									);
@@ -194,6 +216,7 @@ const RoomList = props => {
 								name="status"
 								value={status}
 								onChange={handleInputChange}>
+								{status && <option value={status}>{status}</option>}
 								<option value="Occupied">Occupied</option>
 								<option value="Not occupied">Not Occupied</option>
 							</select>
@@ -216,7 +239,9 @@ const RoomList = props => {
 								<>
 									<button
 										className={
-											Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
+											Loading
+												? 'btn btn-secondary ml-3'
+												: 'btn btn-secondary ml-3'
 										}
 										onClick={cancelEditButton}>
 										<span>{Loading ? 'cancel' : 'cancel'}</span>

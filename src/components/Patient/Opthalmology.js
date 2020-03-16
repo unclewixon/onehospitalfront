@@ -1,22 +1,18 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
-const Opthalmology = () => {
-	const newOpthalRequest = () => {
-		alert('new Lab');
-	};
+const Opthalmology = ({ location }) => {
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<div className="element-actions">
-					<button
+					<Link
 						className="btn btn-primary"
-						type="submit"
-						onClick={newOpthalRequest}>
+						to={`${location.pathname}#opthalmology-request`}>
 						<i className="os-icon os-icon-plus"></i>
 						New Opthalmology Request
-					</button>
+					</Link>
 				</div>
 				<h6 className="element-header">Opthalmology Requests</h6>
 				<div className="element-box">
@@ -139,4 +135,4 @@ const Opthalmology = () => {
 	);
 };
 
-export default Opthalmology;
+export default withRouter(Opthalmology);

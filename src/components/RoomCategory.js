@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { confirmAction } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
+import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 
 import {
@@ -12,7 +13,7 @@ import {
 	deleteRoomCategory,
 } from '../actions/settings';
 
-const RoomCategory = (props) => {
+const RoomCategory = props => {
 	const initialState = {
 		name: '',
 		price: '',
@@ -26,40 +27,40 @@ const RoomCategory = (props) => {
 	const [data, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
 
-	const handleInputChange = (e) => {
+	const handleInputChange = e => {
 		const { name, value } = e.target;
-		setState((prevState) => ({ ...prevState, [name]: value }));
+		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onAddRoom = (e) => {
+	const onAddRoom = e => {
 		setLoading(true);
 		e.preventDefault();
 		props
 			.addRoomCategory({ name, price, discount })
-			.then((response) => {
+			.then(response => {
 				setLoading(false);
 				setState({ ...initialState });
 				notifySuccess('Room Category created');
 			})
-			.catch((error) => {
+			.catch(error => {
 				setLoading(false);
 				setState({ ...initialState });
 				notifyError('Error creating room category');
 			});
 	};
 
-	const onEditRoomCategory = (e) => {
+	const onEditRoomCategory = e => {
 		setLoading(true);
 		e.preventDefault();
 		props
 			.updateRoomCategory({ id: data.id, name, price, discount }, data)
-			.then((response) => {
+			.then(response => {
 				setState({ ...initialState });
 				setSubmitButton({ create: true, edit: false });
 				setLoading(false);
 				notifySuccess('Room Category updated');
 			})
-			.catch((error) => {
+			.catch(error => {
 				setState({ ...initialState });
 				setSubmitButton({ create: true, edit: false });
 				setLoading(false);
@@ -67,9 +68,9 @@ const RoomCategory = (props) => {
 			});
 	};
 
-	const onClickEdit = (data) => {
+	const onClickEdit = data => {
 		setSubmitButton({ edit: true, create: false });
-		setState((prevState) => ({
+		setState(prevState => ({
 			...prevState,
 			name: data.name,
 			discount: data.discount,
@@ -84,24 +85,29 @@ const RoomCategory = (props) => {
 		setState({ ...initialState });
 	};
 
-	const onDeleteRoomCategory = (data) => {
+	const onDeleteRoomCategory = data => {
 		props
 			.deleteRoomCategory(data)
-			.then((response) => {
+			.then(response => {
 				notifySuccess('Room Category deleted');
 			})
-			.catch((error) => {
+			.catch(error => {
 				notifyError('Error deleting room category');
 			});
 	};
 
-	const confirmDelete = (data) => {
+	const confirmDelete = data => {
 		confirmAction(onDeleteRoomCategory, data);
 	};
 
 	useEffect(() => {
 		if (!loaded) {
-			props.getAllRoomCategories();
+			props
+				.getAllRoomCategories()
+				.then(response => {})
+				.catch(e => {
+					notifyError(e.message || 'could not fetch room categories');
+				});
 		}
 		setLoaded(true);
 	}, [loaded, props]);
@@ -124,30 +130,40 @@ const RoomCategory = (props) => {
 									</tr>
 								</thead>
 								<tbody>
-									{props.Room_Categories.map((RoomCategory, i) => {
-										return (
-											<tr key={i}>
-												<td>{RoomCategory.name}</td>
-												<td>{RoomCategory.price}</td>
-												<td>{RoomCategory.discount}</td>
-												<td className="row-actions text-right">
-													<a href="#">
-														<i
-															className="os-icon os-icon-ui-49"
-															onClick={() => onClickEdit(RoomCategory)}></i>
-													</a>
-													<a href="#">
-														<i className="os-icon os-icon-grid-10"></i>
-													</a>
-													<a
-														className="danger"
-														onClick={() => confirmDelete(RoomCategory)}>
-														<i className="os-icon os-icon-ui-15"></i>
-													</a>
-												</td>
-											</tr>
-										);
-									})}
+									{!loaded ? (
+										<tr>
+											<td colSpan="4" className="text-center">
+												<img alt="searching" src={searchingGIF} />
+											</td>
+										</tr>
+									) : (
+										<>
+											{props.Room_Categories.map((RoomCategory, i) => {
+												return (
+													<tr key={i}>
+														<td>{RoomCategory.name}</td>
+														<td>{RoomCategory.price}</td>
+														<td>{RoomCategory.discount}</td>
+														<td className="row-actions text-right">
+															<a href="#">
+																<i
+																	className="os-icon os-icon-ui-49"
+																	onClick={() => onClickEdit(RoomCategory)}></i>
+															</a>
+															<a href="#">
+																<i className="os-icon os-icon-grid-10"></i>
+															</a>
+															<a
+																className="danger"
+																onClick={() => confirmDelete(RoomCategory)}>
+																<i className="os-icon os-icon-ui-15"></i>
+															</a>
+														</td>
+													</tr>
+												);
+											})}
+										</>
+									)}
 								</tbody>
 							</table>
 						</div>
@@ -205,7 +221,9 @@ const RoomCategory = (props) => {
 								<>
 									<button
 										className={
-											Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
+											Loading
+												? 'btn btn-secondary ml-3 disabled'
+												: 'btn btn-secondary ml-3'
 										}
 										onClick={cancelEditButton}>
 										<span>{Loading ? 'cancel' : 'cancel'}</span>
@@ -230,7 +248,7 @@ const RoomCategory = (props) => {
 	);
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
 	return {
 		Room_Categories: state.settings.room_categories,
 	};
