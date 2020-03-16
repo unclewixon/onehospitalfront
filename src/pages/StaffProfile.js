@@ -19,12 +19,14 @@ const LeaveRequest = lazy(() =>
 	import('../components/StaffBlock/LeaveRequest')
 );
 const Appraisal = lazy(() => import('../components/StaffBlock/Appraisal'));
-
+const StaffDetail = lazy(() => import('../components/StaffBlock/StaffDetail'));
 const storage = new SSRStorage();
 
 const Page = ({ location }) => {
 	const hash = location.hash.substr(1);
 	switch (hash) {
+		case 'staff-detail':
+			return <StaffDetail />;
 		case 'edit-staff':
 			return <EditStaff />;
 		case 'billing':
