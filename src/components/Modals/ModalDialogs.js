@@ -19,6 +19,7 @@ import PatientFormModal from './PatientFormModal';
 import ModalViewPayPoint from './ModalViewPayPoint';
 import ModalUploadService from './ModalUploadService';
 import ModalUploadDiagnosis from './ModalUploadDiagnosis';
+import ModalEditService from './ModalEditService';
 
 const ModalDialogs = ({
 	create_staff,
@@ -39,6 +40,7 @@ const ModalDialogs = ({
 	view_paypoint,
 	upload_service,
 	upload_diagnosis,
+	edit_service,
 }) => {
 	return (
 		<>
@@ -60,6 +62,7 @@ const ModalDialogs = ({
 			{view_paypoint && <ModalViewPayPoint />}
 			{upload_service && <ModalUploadService />}
 			{upload_diagnosis && <ModalUploadDiagnosis />}
+			{edit_service.status && <ModalEditService />}
 		</>
 	);
 };
@@ -84,6 +87,7 @@ const mapStateToProps = (state, ownProps) => {
 		view_paypoint: state.general.view_paypoint,
 		upload_service: state.general.upload_service,
 		upload_diagnosis: state.general.upload_diagnosis,
+		edit_service: state.general.edit_service,
 	};
 };
 

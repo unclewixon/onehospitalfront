@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import waiting from '../../assets/images/waiting.gif';
+import searchingGIF from '../../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { confirmAction } from '../../services/utilities';
 
@@ -12,7 +13,7 @@ import {
 	deleteLeaveCategory,
 } from '../../actions/settings';
 
-const LeaveCategory = (props) => {
+const LeaveCategory = props => {
 	const initialState = {
 		name: '',
 		duration: '',
@@ -26,39 +27,39 @@ const LeaveCategory = (props) => {
 	const [data, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
 
-	const handleInputChange = (e) => {
+	const handleInputChange = e => {
 		const { name, value } = e.target;
-		setState((prevState) => ({ ...prevState, [name]: value }));
+		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onAddLeaveCategory = (e) => {
+	const onAddLeaveCategory = e => {
 		e.preventDefault();
 		setLoading(true);
 		props
 			.addLeaveCategory({ name, duration })
-			.then((response) => {
+			.then(response => {
 				setLoading(false);
 				setState({ ...initialState });
 				notifySuccess('Leave Category created');
 			})
-			.catch((error) => {
+			.catch(error => {
 				setLoading(false);
 				notifyError('Error creating Leave Category');
 			});
 	};
 
-	const onEditLeaveCategory = (e) => {
+	const onEditLeaveCategory = e => {
 		setLoading(true);
 		e.preventDefault();
 		props
 			.updateLeaveCategory({ id: data.id, name, duration }, data)
-			.then((response) => {
+			.then(response => {
 				setState({ ...initialState });
 				setSubmitButton({ save: true, edit: false });
 				setLoading(false);
 				notifySuccess('Leave Category updated');
 			})
-			.catch((error) => {
+			.catch(error => {
 				setState({ ...initialState });
 				setSubmitButton({ save: true, edit: false });
 				setLoading(false);
@@ -66,9 +67,9 @@ const LeaveCategory = (props) => {
 			});
 	};
 
-	const onClickEdit = (data) => {
+	const onClickEdit = data => {
 		setSubmitButton({ edit: true, save: false });
-		setState((prevState) => ({
+		setState(prevState => ({
 			...prevState,
 			name: data.name,
 			duration: data.duration,
@@ -77,20 +78,20 @@ const LeaveCategory = (props) => {
 		getDataToEdit(data);
 	};
 
-	const onDeleteLeaveCategory = (data) => {
+	const onDeleteLeaveCategory = data => {
 		props
 			.deleteLeaveCategory(data)
-			.then((data) => {
+			.then(data => {
 				setLoading(false);
 				notifySuccess('Leave Category deleted');
 			})
-			.catch((error) => {
+			.catch(error => {
 				setLoading(false);
 				notifyError('Error deleting Leave Category');
 			});
 	};
 
-	const confirmDelete = (data) => {
+	const confirmDelete = data => {
 		confirmAction(onDeleteLeaveCategory, data);
 	};
 
@@ -101,7 +102,12 @@ const LeaveCategory = (props) => {
 
 	useEffect(() => {
 		if (!loaded) {
-			props.getAllLeaveCategory();
+			props
+				.getAllLeaveCategory()
+				.then(response => {})
+				.catch(e => {
+					notifyError(e.message || 'could not fetch leave categories');
+				});
 		}
 		setLoaded(true);
 	}, [loaded, props]);
@@ -124,40 +130,52 @@ const LeaveCategory = (props) => {
 					<div className="row">
 						<div className="col-lg-8">
 							<div className="row">
-								{props.leaveCategories.map((leaveCategory, i) => {
-									return (
-										<div className="col-lg-4 col-xxl-3" key={i}>
-											<div className="pt-3">
-												<div className="pipeline-item">
-													<div className="pi-controls">
-														<div className="pi-settings os-dropdown-trigger">
-															<i
-																className="os-icon os-icon-ui-49"
-																onClick={() => onClickEdit(leaveCategory)}></i>
-														</div>
-														<div className="pi-settings os-dropdown-trigger">
-															<i
-																className="os-icon os-icon-ui-15"
-																onClick={() =>
-																	confirmDelete(leaveCategory)
-																}></i>
-														</div>
-													</div>
-													<div className="pi-body">
-														<div className="pi-info">
-															<div className="h6 pi-name">
-																{leaveCategory.name}
+								{!loaded ? (
+									<tr>
+										<td colSpan="4" className="text-center">
+											<img alt="searching" src={searchingGIF} />
+										</td>
+									</tr>
+								) : (
+									<>
+										{props.leaveCategories.map((leaveCategory, i) => {
+											return (
+												<div className="col-lg-4 col-xxl-3" key={i}>
+													<div className="pt-3">
+														<div className="pipeline-item">
+															<div className="pi-controls">
+																<div className="pi-settings os-dropdown-trigger">
+																	<i
+																		className="os-icon os-icon-ui-49"
+																		onClick={() =>
+																			onClickEdit(leaveCategory)
+																		}></i>
+																</div>
+																<div className="pi-settings os-dropdown-trigger">
+																	<i
+																		className="os-icon os-icon-ui-15"
+																		onClick={() =>
+																			confirmDelete(leaveCategory)
+																		}></i>
+																</div>
 															</div>
-															<div className="pi-sub">
-																{leaveCategory.duration}
+															<div className="pi-body">
+																<div className="pi-info">
+																	<div className="h6 pi-name">
+																		{leaveCategory.name}
+																	</div>
+																	<div className="pi-sub">
+																		{leaveCategory.duration}
+																	</div>
+																</div>
 															</div>
 														</div>
 													</div>
 												</div>
-											</div>
-										</div>
-									);
-								})}
+											);
+										})}
+									</>
+								)}
 							</div>
 						</div>
 						<div className="col-lg-4 col-xxl-3  d-xxl-block">
@@ -215,8 +233,8 @@ const LeaveCategory = (props) => {
 													<button
 														className={
 															Loading
-																? 'btn btn-primary disabled'
-																: 'btn btn-primary'
+																? 'btn btn-secondary ml-3 disabled'
+																: 'btn btn-secondary ml-3'
 														}
 														onClick={cancelEditButton}>
 														<span>{Loading ? 'cancel' : 'cancel'}</span>
@@ -247,7 +265,7 @@ const LeaveCategory = (props) => {
 	);
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
 	return {
 		leaveCategories: state.settings.leave_categories,
 	};

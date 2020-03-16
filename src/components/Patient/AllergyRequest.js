@@ -32,7 +32,7 @@ const AllergyRequest = () => {
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">
-				<h6 className="element-header">New Allergy Request</h6>
+				<h6 className="element-header">New Allergy</h6>
 				<div className="element-box">
 					<div className="form-block w-100">
 						<form onSubmit={handleSubmit(onSubmit)}>
@@ -68,17 +68,7 @@ const AllergyRequest = () => {
 							</div>
 
 							<div className="row">
-								<div className="form-group col-sm-6">
-									<label>Reaction</label>
-									<textarea
-										required
-										className="form-control"
-										name="reaction"
-										rows="3"
-										placeholder="Enter reaction"
-										ref={register}></textarea>
-								</div>
-								<div className="form-group col-sm-6">
+								<div className="form-group col-sm-12">
 									<label>Severity </label>
 									<Select
 										name="severity"
@@ -94,6 +84,18 @@ const AllergyRequest = () => {
 										}}
 										required
 									/>
+								</div>
+							</div>
+							<div className="row">
+								<div className="form-group col-sm-12">
+									<label>Reaction</label>
+									<textarea
+										required
+										className="form-control"
+										name="reaction"
+										rows="3"
+										placeholder="Enter reaction"
+										ref={register}></textarea>
 								</div>
 							</div>
 
