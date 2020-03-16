@@ -12,6 +12,7 @@ class ModalEditService extends Component {
 		tariff: '',
 		service_category_id: '',
 		previous_cateogry_id: '',
+		Category: '',
 		id: '',
 		Loading: false,
 	};
@@ -26,9 +27,9 @@ class ModalEditService extends Component {
 	updateService = e => {
 		e.preventDefault();
 		this.setState({ Loading: true });
-		let { name, tariff, service_category_id, id } = this.state;
+		let { name, tariff, service_category_id, Category, id } = this.state;
 		this.props
-			.updateService({ name, tariff, service_category_id, id })
+			.updateService({ name, tariff, service_category_id, Category, id })
 			.then(response => {
 				this.setState({ Loading: false });
 				notifySuccess('Service updated');
@@ -43,16 +44,15 @@ class ModalEditService extends Component {
 		let { data } = this.props.edit_service;
 		let { name, tariff } = this.props.edit_service.data;
 		let { service_category_id } = data.category.id;
-		let { id } = data;
-
+		let { id, category } = data;
 		this.setState({
 			name: name,
 			tariff: tariff,
 			service_category_id: service_category_id,
 			previous_cateogry_id: service_category_id,
 			id: id,
+			Category: category,
 		});
-		console.log(this.state);
 		document.body.classList.add('modal-open');
 	}
 
@@ -61,7 +61,7 @@ class ModalEditService extends Component {
 	}
 
 	render() {
-		const { Loading, name, tariff, service_category_id } = this.state;
+		const { Loading, name, tariff, service_category_id, Category } = this.state;
 		const { ServiceCategories } = this.props;
 		return (
 			<div
@@ -105,8 +105,11 @@ class ModalEditService extends Component {
 									<select
 										className="form-control"
 										name="service_category_id"
-										value={service_category_id}
+										value={service_category_id ? service_category_id : Category}
 										onChange={this.handleInputChange}>
+										{Category && (
+											<option value={Category.id}>{Category.name}</option>
+										)}
 										{ServiceCategories.map((category, index) => {
 											return (
 												<option value={category.id} key={index}>
@@ -120,7 +123,9 @@ class ModalEditService extends Component {
 									<button
 										onClick={() => this.props.closeModals(false)}
 										className={
-											Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
+											Loading
+												? 'btn btn-secondary ml-3 disabled'
+												: 'btn btn-secondary ml-3'
 										}>
 										<span> cancel </span>
 									</button>

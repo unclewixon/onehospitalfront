@@ -1290,17 +1290,24 @@ export const getAllService = data => {
 };
 
 export const updateService = data => {
+	let service_category_id = data.service_category_id
+		? data.service_category_id
+		: data.Category.id;
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
 				.patch(`${API_URI}/services/${data.id}/update`, {
 					name: data.name,
+					tariff: data.tariff,
+					service_category_id: service_category_id,
 				})
 				.then(response => {
+					console.log(response);
 					dispatch(update_service(response.data, data));
 					return resolve({ success: true });
 				})
 				.catch(error => {
+					console.log(error);
 					return reject({ success: false });
 				});
 		});
@@ -1329,7 +1336,7 @@ export const uploadDiagnosis = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
-				.post(`${API_URI}/services/diagnosis/upload`, data)
+				.post(`${API_URI}/settings/diagnosis/upload`, data)
 				.then(response => {
 					dispatch(upload_diagnosis(response.data));
 					return resolve({ success: true });
@@ -1345,7 +1352,7 @@ export const getAllDiagnosises = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
-				.get(`${API_URI}/diagnosis`)
+				.get(`${API_URI}/settings/diagnosis`)
 				.then(response => {
 					dispatch(get_all_diagnosis(response.data));
 					return resolve({ success: true });
@@ -1361,7 +1368,7 @@ export const updateDiagnosis = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
-				.patch(`${API_URI}/diagnosis/${data.id}/update`, {
+				.patch(`${API_URI}/settings/diagnosis/${data.id}/update`, {
 					procedureCode: data.procedureCode,
 					icd10Code: data.icd10Code,
 					description: data.description,

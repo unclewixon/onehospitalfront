@@ -119,7 +119,7 @@ const ServicesList = props => {
 																				<i
 																					className="os-icon os-icon-ui-49"
 																					onClick={() =>
-																						props.editService(true, category)
+																						props.editService(true, service)
 																					}></i>
 																			</a>
 																			<a href="#">
