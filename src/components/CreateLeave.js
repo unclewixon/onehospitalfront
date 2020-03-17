@@ -81,53 +81,52 @@ class CreateLeave extends Component {
 											</div>
 										</div>
 
-                    <div className="col-sm-4">
-                        <div className="form-group">
-                            <label>Appointment (Date/time)</label>
-                            <div className="custom-date-input">
-                                <DatePicker
-                                    selected={leave_date}
-                                    onChange={(date) =>
-                                        this.setDate(date, 'leave_date')
-                                    }
-                                    peekNextMonth
-                                    showMonthDropdown
-                                    showYearDropdown
-                                    dropdownMode="select"
-                                    dateFormat="dd-MMM-yyyy"
-                                    className="single-daterange form-control"
-                                    placeholderText="Select date of leave"
-                                    minDate={new Date()}
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-									<div className="row">
-										<div className="col-sm-12">
-											<Field
-												id="reason"
-												name="reason"
-												component={renderTextArea}
-												label="Leave Reason"
-												type="text"
-												placeholder="Enter your leave reason"
-											/>
+										<div className="col-sm-4">
+											<div className="form-group">
+												<label>Appointment (Date/time)</label>
+												<div className="custom-date-input">
+													<DatePicker
+														selected={leave_date}
+														onChange={date => this.setDate(date, 'leave_date')}
+														peekNextMonth
+														showMonthDropdown
+														showYearDropdown
+														dropdownMode="select"
+														dateFormat="dd-MMM-yyyy"
+														className="single-daterange form-control"
+														placeholderText="Select date of leave"
+														minDate={new Date()}
+													/>
+												</div>
+											</div>
 										</div>
-									</div>
 
-									<div className="row">
-										<div className="col-sm-12 text-right">
-											<button
-												className="btn btn-primary"
-												disabled={submitting}
-												type="submit">
-												{submitting ? (
-													<img src={waiting} alt="submitting" />
-												) : (
-													'Create leave request'
-												)}
-											</button>
+										<div className="row">
+											<div className="col-sm-12">
+												<Field
+													id="reason"
+													name="reason"
+													component={renderTextArea}
+													label="Leave Reason"
+													type="text"
+													placeholder="Enter your leave reason"
+												/>
+											</div>
+										</div>
+
+										<div className="row">
+											<div className="col-sm-12 text-right">
+												<button
+													className="btn btn-primary"
+													disabled={submitting}
+													type="submit">
+													{submitting ? (
+														<img src={waiting} alt="submitting" />
+													) : (
+														'Create leave request'
+													)}
+												</button>
+											</div>
 										</div>
 									</div>
 								</form>
