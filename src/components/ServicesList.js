@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useReducer } from 'react';
 import { connect } from 'react-redux';
-import { uploadServiceModal } from '../actions/general';
+import { uploadServiceModal, editService } from '../actions/general';
 import {
 	getAllService,
 	updateService,
@@ -10,44 +10,50 @@ import {
 import { confirmAction } from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
 import waiting from '../assets/images/waiting.gif';
+import searchingGIF from '../assets/images/searching.gif';
 
-const ServicesList = (props) => {
+const ServicesList = props => {
 	const [moreDetailConsultation, setMoreDetailConsultation] = useState(false);
 	const [ServicesList, getServiceList] = useState([]);
 	const [loaded, setLoaded] = useState(false);
 
-	const onMoreDetailConsultation = (category) => {
+	const onMoreDetailConsultation = category => {
 		setMoreDetailConsultation(category);
 		getServiceList(
-			props.ServicesList.filter((service) => {
+			props.ServicesList.filter(service => {
 				return service.category.name === category;
 			})
 		);
 	};
 
-	const onDeleteService = (data) => {
+	const onDeleteService = data => {
 		props
 			.deleteService(data)
-			.then((response) => {
+			.then(response => {
 				notifySuccess('Service deleted');
 			})
-			.catch((error) => {
+			.catch(error => {
 				notifyError('Error deleting Service');
 			});
 	};
 
-	const confirmDelete = (data) => {
+	const confirmDelete = data => {
 		confirmAction(onDeleteService, data);
 	};
 
-	const onUploadService = (e) => {
+	const onUploadService = e => {
 		e.preventDefault();
 		props.uploadServiceModal(true);
 	};
 
 	useEffect(() => {
 		if (!loaded) {
-			props.getAllService();
+			props
+				.getAllService()
+				.then(response => {})
+				.catch(e => {
+					notifyError(e.message || 'could not fetch services list');
+				});
 		}
 		setLoaded(true);
 	}, [props, loaded]);
@@ -56,78 +62,87 @@ const ServicesList = (props) => {
 			<div className="todo-app-w">
 				<div className="todo-content">
 					<div className="all-tasks-w">
-						{props.ServiceCategories.map((category, index) => {
-							return (
-								<div className="task-section" key={index + 1}>
-									<div className="tasks-header-w">
-										<a
-											className="tasks-header-toggler"
-											onClick={() => onMoreDetailConsultation(category.name)}>
-											<i className="os-icon os-icon-ui-23"></i>
-										</a>
-										{moreDetailConsultation === category.name && (
-											<a
-												className="tasks-header-toggler"
-												onClick={() => onMoreDetailConsultation()}>
-												<i className="os-icon os-icon-ui-23"></i>
-											</a>
-										)}
-										<h5 className="tasks-header">{category.name}</h5>
-										{/* <span className="tasks-sub-header">Mon, Sep 23th</span> */}
-										<a
-											className="add-task-btn"
-											data-target="#taskModal"
-											data-toggle="modal"
-											onClick={onUploadService}>
-											<i className="os-icon os-icon-ui-22"></i>
-											<span>Add service</span>
-										</a>
-									</div>
-									{moreDetailConsultation === category.name && (
-										<div className="tasks-list-w">
-											<div className="pipelines-w">
-												<div className="row">
-													<div className="col-lg-4 col-xxl-3">
-														<div className="pipeline-body">
+						{!loaded ? (
+							<tr>
+								<td colSpan="4" className="text-center">
+									<img alt="searching" src={searchingGIF} />
+								</td>
+							</tr>
+						) : (
+							<>
+								{props.ServiceCategories.map((category, index) => {
+									return (
+										<div className="task-section" key={index + 1}>
+											<div className="tasks-header-w">
+												<a
+													className="tasks-header-toggler"
+													onClick={() =>
+														onMoreDetailConsultation(category.name)
+													}>
+													<i className="os-icon os-icon-ui-23"></i>
+												</a>
+												{moreDetailConsultation === category.name && (
+													<a
+														className="tasks-header-toggler"
+														onClick={() => onMoreDetailConsultation()}>
+														<i className="os-icon os-icon-ui-23"></i>
+													</a>
+												)}
+												<h5 className="tasks-header">{category.name}</h5>
+												<a
+													className="add-task-btn"
+													data-target="#taskModal"
+													data-toggle="modal"
+													onClick={onUploadService}>
+													<i className="os-icon os-icon-ui-22"></i>
+													<span>Add service</span>
+												</a>
+											</div>
+											{moreDetailConsultation === category.name && (
+												<div className="table-responsive">
+													<table className="table table-striped">
+														<thead>
+															<tr>
+																<th>Name</th>
+
+																<th className="text-right">Action</th>
+															</tr>
+														</thead>
+														<tbody>
 															{ServicesList.map((service, index) => {
 																return (
-																	<div
-																		className="pipeline-item"
-																		key={index + 1}>
-																		<div className="pi-controls">
-																			<div className="pi-settings os-dropdown-trigger">
-																				<i className="os-icon os-icon-ui-49"></i>
-																			</div>
-																			<div className="pi-settings os-dropdown-trigger">
+																	<tr key={index + 1}>
+																		<td>{service.name}</td>
+
+																		<td className="row-actions text-right">
+																			<a href="#">
 																				<i
-																					className="os-icon os-icon-ui-15"
+																					className="os-icon os-icon-ui-49"
 																					onClick={() =>
-																						confirmDelete(service)
+																						props.editService(true, service)
 																					}></i>
-																			</div>
-																		</div>
-																		<div className="pi-body">
-																			<div className="pi-info">
-																				<div className="h6 pi-name">
-																					{service.name}
-																				</div>
-																				<div className="pi-sub">
-																					{service.traffic}
-																				</div>
-																			</div>
-																		</div>
-																	</div>
+																			</a>
+																			<a href="#">
+																				<i className="os-icon os-icon-grid-10"></i>
+																			</a>
+																			<a
+																				className="danger"
+																				onClick={() => confirmDelete(service)}>
+																				<i className="os-icon os-icon-ui-15"></i>
+																			</a>
+																		</td>
+																	</tr>
 																);
 															})}
-														</div>
-													</div>
+														</tbody>
+													</table>
 												</div>
-											</div>
+											)}
 										</div>
-									)}
-								</div>
-							);
-						})}
+									);
+								})}
+							</>
+						)}
 					</div>
 				</div>
 			</div>
@@ -135,7 +150,7 @@ const ServicesList = (props) => {
 	);
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
 	return {
 		ServicesList: state.settings.services,
 		ServiceCategories: state.settings.service_categories,
@@ -143,6 +158,7 @@ const mapStateToProps = (state) => {
 };
 export default connect(mapStateToProps, {
 	uploadServiceModal,
+	editService,
 	getAllService,
 	updateService,
 	deleteService,
