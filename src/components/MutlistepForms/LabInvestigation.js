@@ -16,7 +16,7 @@ const fetal = [
 	{ value: 'weekend', label: 'weekend' },
 	{ value: 'monthly', label: 'monthly' },
 ];
-const fetal2 = ['daily', 'weekend', 'monthly'];
+
 class LabInvestigation extends Component {
 	render() {
 		const { handleSubmit, previousPage, error } = this.props;
@@ -69,7 +69,6 @@ class LabInvestigation extends Component {
 								component={renderTextInput}
 								label="Preferred Specimen(s)"
 								placeholder="Preferred Specimen(s)"
-								data={fetal}
 							/>
 						</div>
 					</div>
