@@ -54,7 +54,7 @@ class LabInvestigation extends Component {
 					</div>
 					<div className="row">
 						<div className="col-sm-6">
-							<label>Lab tests to requestc</label>
+							<label>Lab tests to request</label>
 							<Field
 								name="lab_tests_to_request"
 								component={renderMultiselect}
