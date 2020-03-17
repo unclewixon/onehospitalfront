@@ -19,7 +19,7 @@ class ModalEditInvCategory extends Component {
 				role="dialog"
 				style={{ display: 'block' }}>
 				<div className="modal-dialog modal-sm modal-centered" role="document">
-					<div className="modal-content text-center">
+					<div className="modal-service_category_idcontent text-center">
 						<button
 							aria-label="Close"
 							className="close"

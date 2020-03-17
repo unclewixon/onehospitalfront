@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { closeModals } from '../../actions/general';
-import {
-	uploadDiagnosis,
-	getAllDiagnosises,
-	updateDiagnosis,
-	deleteDiagnosis,
-} from '../../actions/settings';
+import { updateService } from '../../actions/settings';
 import { confirmAction } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
@@ -16,33 +11,48 @@ class ModalEditService extends Component {
 		name: '',
 		tariff: '',
 		service_category_id: '',
+		previous_cateogry_id: '',
+		Category: '',
+		id: '',
 		Loading: false,
 	};
 
-	handleInputChange = (e) => {
+	handleInputChange = e => {
+		const { name, value } = e.target;
 		this.setState({
-			file: e.target.files[0],
+			[name]: value,
 		});
 	};
 
-	onUpload = (e) => {
-		this.setState({ Loading: true });
+	updateService = e => {
 		e.preventDefault();
-		const data = new FormData();
-		data.append('file', this.state.file);
+		this.setState({ Loading: true });
+		let { name, tariff, service_category_id, Category, id } = this.state;
 		this.props
-			.updateDiagnosis(data)
-			.then((response) => {
+			.updateService({ name, tariff, service_category_id, Category, id })
+			.then(response => {
 				this.setState({ Loading: false });
-				this.props.closeModals(false);
-				notifySuccess('Service file uploaded');
+				notifySuccess('Service updated');
+				this.props.closeModals();
 			})
-			.catch((error) => {
+			.catch(error => {
 				this.setState({ Loading: false });
+				notifyError('Error updating service');
 			});
 	};
-
 	componentDidMount() {
+		let { data } = this.props.edit_service;
+		let { name, tariff } = this.props.edit_service.data;
+		let { service_category_id } = data.category.id;
+		let { id, category } = data;
+		this.setState({
+			name: name,
+			tariff: tariff,
+			service_category_id: service_category_id,
+			previous_cateogry_id: service_category_id,
+			id: id,
+			Category: category,
+		});
 		document.body.classList.add('modal-open');
 	}
 
@@ -51,7 +61,8 @@ class ModalEditService extends Component {
 	}
 
 	render() {
-		const { Loading } = this.state;
+		const { Loading, name, tariff, service_category_id, Category } = this.state;
+		const { ServiceCategories } = this.props;
 		return (
 			<div
 				className="onboarding-modal modal fade animated show"
@@ -67,37 +78,57 @@ class ModalEditService extends Component {
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
-							<h4 className="onboarding-title">Upload Diagnosis</h4>
+							<h4 className="onboarding-title">Edit service</h4>
 
-							<form onSubmit={this.onUpload}>
+							<form onSubmit={this.updateService}>
 								<div className="form-group">
 									<input
 										className="form-control"
-										placeholder="Category Name"
-										type="file"
-										name="file"
+										placeholder="Name"
+										type="text"
+										name="name"
+										value={name}
 										onChange={this.handleInputChange}
 									/>
 								</div>
 								<div className="form-group">
 									<input
 										className="form-control"
-										placeholder="Category Name"
-										type="file"
-										name="file"
+										placeholder=" Tariff"
+										type="text"
+										name="tariff"
+										value={tariff}
 										onChange={this.handleInputChange}
 									/>
 								</div>
 								<div className="form-group">
-									<input
+									<select
 										className="form-control"
-										placeholder="Category Name"
-										type="file"
-										name="file"
-										onChange={this.handleInputChange}
-									/>
+										name="service_category_id"
+										value={service_category_id ? service_category_id : Category}
+										onChange={this.handleInputChange}>
+										{Category && (
+											<option value={Category.id}>{Category.name}</option>
+										)}
+										{ServiceCategories.map((category, index) => {
+											return (
+												<option value={category.id} key={index}>
+													{category.name}
+												</option>
+											);
+										})}
+									</select>
 								</div>
 								<div className="form-buttons-w">
+									<button
+										onClick={() => this.props.closeModals(false)}
+										className={
+											Loading
+												? 'btn btn-secondary ml-3 disabled'
+												: 'btn btn-secondary ml-3'
+										}>
+										<span> cancel </span>
+									</button>
 									<button
 										className={
 											Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
@@ -118,10 +149,14 @@ class ModalEditService extends Component {
 	}
 }
 
-export default connect(null, {
+const mapStateToProps = state => {
+	return {
+		edit_service: state.general.edit_service,
+		ServiceCategories: state.settings.service_categories,
+	};
+};
+
+export default connect(mapStateToProps, {
 	closeModals,
-	uploadDiagnosis,
-	getAllDiagnosises,
-	updateDiagnosis,
-	deleteDiagnosis,
+	updateService,
 })(ModalEditService);

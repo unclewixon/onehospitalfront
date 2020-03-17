@@ -10,6 +10,7 @@ import avatar1 from '../assets/images/avatar1.jpg';
 import topimg from '../assets/images/company5.png';
 import { toggleProfile, toggleMode, toggleFullscreen } from '../actions/user';
 import SearchPatient from './SearchPatient';
+import { fullname } from '../services/utilities';
 
 class TopBar extends Component {
 	state = {
@@ -53,7 +54,7 @@ class TopBar extends Component {
 	};
 
 	render() {
-		const { role, location } = this.props;
+		const { role, location, profile } = this.props;
 		const paths = location.pathname.split('/');
 		const title = paths.length > 1 ? paths[1] : '';
 		const sub_title = paths.length > 2 ? paths[2] : '';
@@ -131,7 +132,9 @@ class TopBar extends Component {
 										<img alt="" src={avatar1} />
 									</div>
 									<div className="logged-user-info-w">
-										<div className="logged-user-name">Maria Gomez</div>
+										<div className="logged-user-name">
+											{fullname(profile.details)}
+										</div>
 										<div className="logged-user-role">
 											{role !== 'patient' ? capitalize(role) : 'Doctor'}
 										</div>
@@ -148,7 +151,7 @@ class TopBar extends Component {
 										</a>
 									</li>
 									<li>
-										<Link to="/">
+										<Link to="/logout">
 											<i className="os-icon os-icon-signs-11" />
 											<span>Logout</span>
 										</Link>

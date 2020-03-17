@@ -10,8 +10,9 @@ import {
 import { confirmAction } from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
 import waiting from '../assets/images/waiting.gif';
+import searchingGIF from '../assets/images/searching.gif';
 
-const ServiceCategoryList = (props) => {
+const ServiceCategoryList = props => {
 	const initialState = {
 		name: '',
 		edit: false,
@@ -23,40 +24,40 @@ const ServiceCategoryList = (props) => {
 	const [data, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
 
-	const handleInputChange = (e) => {
+	const handleInputChange = e => {
 		const { name, value } = e.target;
-		setState((prevState) => ({ ...prevState, [name]: value }));
+		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onAddServiceCat = (e) => {
+	const onAddServiceCat = e => {
 		setLoading(true);
 		e.preventDefault();
 		props
 			.addServiceCategory({ name })
-			.then((response) => {
+			.then(response => {
 				setLoading(false);
 				setState({ ...initialState });
 				notifySuccess('Service Category created');
 			})
-			.catch((error) => {
+			.catch(error => {
 				setLoading(false);
 				setState({ ...initialState });
 				notifyError('Error creating service category');
 			});
 	};
 
-	const onEditServiceCategory = (e) => {
+	const onEditServiceCategory = e => {
 		setLoading(true);
 		e.preventDefault();
 		props
 			.updateServiceCategory({ id: data.id, name }, data)
-			.then((response) => {
+			.then(response => {
 				setState({ ...initialState });
 				setSubmitButton({ create: true, edit: false });
 				setLoading(false);
 				notifySuccess('Service Category updated');
 			})
-			.catch((error) => {
+			.catch(error => {
 				setState({ ...initialState });
 				setSubmitButton({ create: true, edit: false });
 				setLoading(false);
@@ -64,9 +65,9 @@ const ServiceCategoryList = (props) => {
 			});
 	};
 
-	const onClickEdit = (data) => {
+	const onClickEdit = data => {
 		setSubmitButton({ edit: true, create: false });
-		setState((prevState) => ({
+		setState(prevState => ({
 			...prevState,
 			name: data.name,
 			id: data.id,
@@ -79,24 +80,29 @@ const ServiceCategoryList = (props) => {
 		setState({ ...initialState });
 	};
 
-	const onDeleteServiceCategory = (data) => {
+	const onDeleteServiceCategory = data => {
 		props
 			.deleteServiceCategory(data)
-			.then((response) => {
+			.then(response => {
 				notifySuccess('Service Category deleted');
 			})
-			.catch((error) => {
+			.catch(error => {
 				notifyError('Error deleting service category');
 			});
 	};
 
-	const confirmDelete = (data) => {
+	const confirmDelete = data => {
 		confirmAction(onDeleteServiceCategory, data);
 	};
 
 	useEffect(() => {
 		if (!loaded) {
-			props.getAllServiceCategory();
+			props
+				.getAllServiceCategory()
+				.then(response => {})
+				.catch(e => {
+					notifyError(e.message || 'could not fetch service categories');
+				});
 		}
 		setLoaded(true);
 	}, [props, loaded]);
@@ -113,28 +119,40 @@ const ServiceCategoryList = (props) => {
 										<div className="element-box-tp">
 											<table className="table table-clean">
 												<tbody>
-													{props.ServiceCategories.map((category, i) => {
-														return (
-															<tr key={i}>
-																<td>
-																	<div className="value">{category.name}</div>
-																</td>
-																<td className="row-actions text-right">
-																	<a onClick={() => onClickEdit(category)}>
-																		<i className="os-icon os-icon-ui-49"></i>
-																	</a>
-																	<a href="#">
-																		<i className="os-icon os-icon-grid-10"></i>
-																	</a>
-																	<a
-																		className="danger"
-																		onClick={() => confirmDelete(category)}>
-																		<i className="os-icon os-icon-ui-15"></i>
-																	</a>
-																</td>
-															</tr>
-														);
-													})}
+													{!loaded ? (
+														<tr>
+															<td colSpan="4" className="text-center">
+																<img alt="searching" src={searchingGIF} />
+															</td>
+														</tr>
+													) : (
+														<>
+															{props.ServiceCategories.map((category, i) => {
+																return (
+																	<tr key={i}>
+																		<td>
+																			<div className="value">
+																				{category.name}
+																			</div>
+																		</td>
+																		<td className="row-actions text-right">
+																			<a onClick={() => onClickEdit(category)}>
+																				<i className="os-icon os-icon-ui-49"></i>
+																			</a>
+																			<a href="#">
+																				<i className="os-icon os-icon-grid-10"></i>
+																			</a>
+																			<a
+																				className="danger"
+																				onClick={() => confirmDelete(category)}>
+																				<i className="os-icon os-icon-ui-15"></i>
+																			</a>
+																		</td>
+																	</tr>
+																);
+															})}
+														</>
+													)}
 												</tbody>
 											</table>
 											<a className="centered-load-more-link" href="#">
@@ -206,7 +224,7 @@ const ServiceCategoryList = (props) => {
 	);
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
 	return {
 		ServiceCategories: state.settings.service_categories,
 	};

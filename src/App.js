@@ -33,6 +33,7 @@ const Radiology = lazy(() => import('./pages/Radiology/index'));
 const Antennatal = lazy(() => import('./pages/Antennatal/index'));
 const IVF = lazy(() => import('./pages/IVF'));
 const Nicu = lazy(() => import('./pages/Nicu'));
+const Logout = lazy(() => import('./pages/Logout'));
 
 const storage = new SSRStorage();
 
@@ -54,6 +55,7 @@ class App extends Component {
 			isStaffOpen,
 			isPatientOpen,
 			theme_mode,
+			profile,
 		} = this.props;
 		return preloading ? (
 			<Splash />
@@ -67,10 +69,13 @@ class App extends Component {
 								<div className="all-wrapper with-side-panel solid-bg-all">
 									<div className="layout-w">
 										{/* user role determines main menu */}
-										<MainMenu role="front-desk" theme_mode={theme_mode} />
+										<MainMenu
+											role={profile.role.slug}
+											theme_mode={theme_mode}
+										/>
 										<div className="content-w">
 											{/* user role determines topbar menu */}
-											<TopBar role="front-desk" />
+											<TopBar role={profile.role.slug} />
 											<Switch>
 												<Route path="/doctor" component={Doctor} />
 												<Route path="/front-desk" component={FrontDesk} />
@@ -88,6 +93,7 @@ class App extends Component {
 												<Route path="/hmo" component={Hmo} />
 												<Route path="/lab" component={ClinicalLab} />
 												<Route path="/billing-paypoint" component={PayPoint} />
+												<Route path="/logout" component={Logout} />
 												<Route component={NoMatch} />
 											</Switch>
 										</div>
@@ -122,6 +128,7 @@ const mapStateToProps = state => {
 		preloading: state.general.preloading,
 		is_modal_open: state.general.is_modal_open,
 		loggedIn: state.user.loggedIn,
+		profile: state.user.profile,
 		isStaffOpen: state.user.isStaffOpen,
 		isPatientOpen: state.user.isPatientOpen,
 		theme_mode: state.user.theme_mode,

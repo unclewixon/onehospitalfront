@@ -55,8 +55,8 @@ const AntennatalRequest = lazy(() =>
 const storage = new SSRStorage();
 
 const Page = ({ location }) => {
-	const hash = location.hash.substr(1);
-	switch (hash) {
+	const hash = location.hash.substr(1).split('#');
+	switch (hash[0]) {
 		case 'encounter':
 			return <Encounter />;
 		case 'lab':
@@ -64,7 +64,7 @@ const Page = ({ location }) => {
 		case 'pharmacy':
 			return <Pharmacy />;
 		case 'vitals':
-			return <Vitals />;
+			return <Vitals type={hash[1].split('%20').join(' ')} />;
 		case 'allergies':
 			return <Allergies />;
 		case 'imaging':
@@ -236,34 +236,46 @@ class PatientProfile extends Component {
 																			: 'none',
 																	}}
 																	onClick={this.toggleDropdown}>
-																	<Link className="dropdown-item " to="#">
+																	<Link
+																		className="dropdown-item "
+																		to={`${location.pathname}#edit-profile`}>
 																		<i className="os-icon os-icon-edit"></i>
 																		<span className=" ml-2">Edit Profile</span>
 																	</Link>
 
-																	<Link className="dropdown-item" to="#">
+																	<Link
+																		className="dropdown-item"
+																		to={`${location.pathname}#start-admission`}>
 																		<i className="os-icon os-icon-plus-circle"></i>
 																		<span className="ml-2">
-																			Request Admission
+																			Start Admission
 																		</span>
 																	</Link>
-																	<Link className="dropdown-item" to="#">
+																	<Link
+																		className="dropdown-item"
+																		to={`${location.pathname}#enroll-antenatal`}>
 																		<i className="os-icon os-icon-plus-circle"></i>
 																		<span className="ml-2">
 																			Enroll Antenatal
 																		</span>
 																	</Link>
-																	<Link className="dropdown-item " to="#">
+																	<Link
+																		className="dropdown-item "
+																		to={`${location.pathname}#enroll-immunization`}>
 																		<i className="os-icon os-icon-plus-circle"></i>
 																		<span className="ml-2">
 																			Enroll Immunization
 																		</span>
 																	</Link>
-																	<Link className="dropdown-item" to="#">
+																	<Link
+																		className="dropdown-item"
+																		to={`${location.pathname}#enroll-ivf`}>
 																		<i className="os-icon os-icon-plus-circle"></i>
 																		<span className="ml-2">Enroll IVF</span>
 																	</Link>
-																	<Link className="dropdown-item" to="#">
+																	<Link
+																		className="dropdown-item"
+																		to={`${location.pathname}#upload-document`}>
 																		<i className="os-icon os-icon-documents-03"></i>
 																		<span className="ml-2">
 																			Upload Document

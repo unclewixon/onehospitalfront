@@ -21,6 +21,7 @@ import {
 	TOGGLE_VIEW_PAYPOINT,
 	TOGGLE_UPLOAD_SERVICE,
 	TOGGLE_UPLOAD_DIAGNOSIS,
+	TOGGLE_EDIT_SERIVCE,
 } from './types';
 
 export const togglePreloading = status => {
@@ -186,6 +187,13 @@ export const toggleUploadDiagnosis = status => {
 	};
 };
 
+export const toggleEditService = (status, data) => {
+	return {
+		type: TOGGLE_EDIT_SERIVCE,
+		payload: { status, data },
+	};
+};
+
 // close modals
 export const closeModals = () => {
 	return dispatch => {
@@ -208,6 +216,7 @@ export const closeModals = () => {
 		dispatch(toggleViewPayPoint(false));
 		dispatch(toggleUploadService(false));
 		dispatch(toggleUploadDiagnosis(false));
+		dispatch(toggleEditService(false, null));
 	};
 };
 
@@ -376,5 +385,13 @@ export const uploadDiagnosis = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleUploadDiagnosis(action));
+	};
+};
+
+export const editService = (action, data) => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleEditService(action, data));
 	};
 };

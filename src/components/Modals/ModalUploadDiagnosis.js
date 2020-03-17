@@ -17,25 +17,25 @@ class ModalUploadDiagnosis extends Component {
 		Loading: false,
 	};
 
-	handleInputChange = (e) => {
+	handleInputChange = e => {
 		this.setState({
 			file: e.target.files[0],
 		});
 	};
 
-	onUpload = (e) => {
+	onUpload = e => {
 		this.setState({ Loading: true });
 		e.preventDefault();
 		const data = new FormData();
 		data.append('file', this.state.file);
 		this.props
 			.updateDiagnosis(data)
-			.then((response) => {
+			.then(response => {
 				this.setState({ Loading: false });
 				this.props.closeModals(false);
 				notifySuccess('Service file uploaded');
 			})
-			.catch((error) => {
+			.catch(error => {
 				this.setState({ Loading: false });
 			});
 	};
