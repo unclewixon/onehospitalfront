@@ -25,6 +25,7 @@
     "jwt-decode": "^2.2.0",
     "lodash.capitalize": "^4.2.1",
     "lodash.debounce": "^4.0.8",
+    "lodash.kebabcase": "^4.1.1",
     "lodash.orderby": "^4.6.0",
     "lodash.size": "^4.2.0",
     "lodash.split": "^4.4.2",

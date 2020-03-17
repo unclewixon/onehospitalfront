@@ -5,17 +5,26 @@ import { Field, reduxForm, SubmissionError } from 'redux-form';
 
 import logo from '../assets/images/logo-big.png';
 import waiting from '../assets/images/waiting.gif';
-import { request } from '../services/utilities';
+import { request, redirectToPage } from '../services/utilities';
 import { API_URI } from '../services/constants';
 import { notifySuccess } from '../services/notify';
+import { loginUser } from '../actions/user';
+import SSRStorage from '../services/storage';
+import {
+	FULLSCREEN_COOKIE,
+	MODE_COOKIE,
+	TOKEN_COOKIE,
+} from '../services/constants';
 
-const validate = (values) => {
+const storage = new SSRStorage();
+
+const validate = values => {
 	const errors = {};
 	if (!values.username) {
-		errors.name = 'enter username';
+		errors.username = 'enter username';
 	}
 	if (!values.password) {
-		errors.name = 'enter password';
+		errors.password = 'enter password';
 	}
 	return errors;
 };
@@ -45,17 +54,23 @@ class Login extends Component {
 		window.document.body.className = 'auth-wrapper';
 	}
 
-	componentWillUnmount() {
-		window.document.body.className = '';
+	async componentWillUnmount() {
+		const fullscreen = await storage.getItem(FULLSCREEN_COOKIE);
+		const theme_mode = await storage.getItem(MODE_COOKIE);
+
+		window.document.body.className = `menu-position-side menu-side-left ${
+			fullscreen ? 'full-screen' : ''
+		} with-content-panel ${theme_mode ? 'color-scheme-dark' : ''}`;
 	}
 
-	doLogin = async (data) => {
+	doLogin = async data => {
 		this.setState({ submitting: true });
 		try {
-			const rs = await request(`${API_URI}/login`, 'POST', true, data);
-			console.log(rs);
-			this.setState({ submitting: false });
+			const rs = await request(`${API_URI}/auth/login`, 'POST', true, data);
+			this.props.loginUser(rs);
+			storage.setItem(TOKEN_COOKIE, rs);
 			notifySuccess('login successful!');
+			redirectToPage(rs.role, this.props.history);
 		} catch (e) {
 			this.setState({ submitting: false });
 			throw new SubmissionError({
@@ -127,4 +142,4 @@ Login = reduxForm({
 	validate,
 })(Login);
 
-export default connect(null, {})(Login);
+export default connect(null, { loginUser })(Login);

@@ -26,16 +26,21 @@ import {
 	utilityAPI,
 	USER_RECORD,
 } from './services/constants';
-import { initMode, initFullscreen, toggleProfile } from './actions/user';
+import {
+	initMode,
+	initFullscreen,
+	toggleProfile,
+	loginUser,
+} from './actions/user';
 import SSRStorage from './services/storage';
-import { defaultHeaders, getUserID } from './services/utilities';
+import { defaultHeaders, getUser, redirectToPage } from './services/utilities';
 import { getAllDepartments, getAllSpecialization } from './actions/settings';
 import { loadInvCategories, loadInvSubCategories } from './actions/inventory';
 import { togglePreloading } from './actions/general';
 import { loadRoles } from './actions/role';
 import { loadBanks, loadCountries } from './actions/utility';
 
-Notify.notifications.subscribe((alert) => alert instanceof Function && alert());
+Notify.notifications.subscribe(alert => alert instanceof Function && alert());
 const store = configureStore();
 const storage = new SSRStorage();
 
@@ -47,7 +52,7 @@ const initSettings = async () => {
 	store.dispatch(initFullscreen(fullscreen));
 };
 
-const axiosFetch = (url) => axios.get(url, { headers: defaultHeaders });
+const axiosFetch = url => axios.get(url, { headers: defaultHeaders });
 
 const initData = async () => {
 	await initSettings();
@@ -96,11 +101,11 @@ const initData = async () => {
 		console.log(e);
 	}
 
-	const userID = await getUserID();
-	if (userID) {
+	const user = await getUser();
+	if (user) {
+		store.dispatch(loginUser(user));
 		store.dispatch(togglePreloading(false));
-	} else {
-		store.dispatch(togglePreloading(false));
+		redirectToPage(user.role, history);
 
 		setTimeout(async () => {
 			const user_record = await storage.getItem(USER_RECORD);
@@ -108,7 +113,8 @@ const initData = async () => {
 				store.dispatch(toggleProfile(true, user_record));
 			}
 		}, 200);
-
+	} else {
+		store.dispatch(togglePreloading(false));
 		history.push('/?not-authenticated');
 	}
 };
