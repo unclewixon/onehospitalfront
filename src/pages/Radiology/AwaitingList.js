@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+
 import Tooltip from 'antd/lib/tooltip';
 export class AwaitingList extends Component {
 	render() {
@@ -265,4 +265,4 @@ export class AwaitingList extends Component {
 	}
 }
 
-export default withRouter(AwaitingList);
+export default AwaitingList;

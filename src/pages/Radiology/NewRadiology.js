@@ -1,11 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
-import Tooltip from 'antd/lib/tooltip';
 
 import { Field, reduxForm } from 'redux-form';
 import {
-	renderTextInput,
 	renderSelect,
 	renderMultiselect,
 	renderTextArea,
@@ -109,4 +106,4 @@ NewRadiology = reduxForm({
 	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
 })(NewRadiology);
 
-export default withRouter(NewRadiology);
+export default NewRadiology;

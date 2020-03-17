@@ -1,12 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+
 import Tooltip from 'antd/lib/tooltip';
 class OpenRequest extends Component {
 	render() {
-		const { location, match } = this.props;
-		const page = location.pathname.split('/').pop();
-
 		return (
 			<div className="row">
 				<div className="col-md-12">
@@ -266,4 +263,4 @@ class OpenRequest extends Component {
 	}
 }
 
-export default withRouter(OpenRequest);
+export default OpenRequest;

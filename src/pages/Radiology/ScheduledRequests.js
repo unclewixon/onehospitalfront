@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
 export class ScheduledRequests extends Component {
 	render() {
@@ -263,4 +262,4 @@ export class ScheduledRequests extends Component {
 	}
 }
 
-export default withRouter(ScheduledRequests);
+export default ScheduledRequests;
