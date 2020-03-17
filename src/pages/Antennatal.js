@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from "react";
 import Tooltip from "antd/lib/tooltip";
+import {Link} from "react-router-dom"
 
 import Queue from "../components/Queue";
 class Antennatal extends Component {
@@ -11,6 +12,15 @@ class Antennatal extends Component {
           <div className='row'>
             <div className='col-sm-12'>
               <div className='element-wrapper'>
+                <div className="element-actions">
+                
+                  <Link
+                      className="btn btn-primary"
+                    to="/antennatal/enrolment">
+
+                    New Enrolment
+					</Link>
+                </div>
                 <h6 className='element-header'>Antennatal</h6>
                 <div className='row'>
                   <div className='col-md-12'>

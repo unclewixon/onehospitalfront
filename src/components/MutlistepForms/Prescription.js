@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { validate } from '../../services/validationSchemas';
 import {
 	renderTextInput,
-	request,
 	renderSelect,
 	renderTextArea,
 } from '../../services/utilities';

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 import GeneralAssessment from '../MutlistepForms/GeneralAssessment';
 import GeneralComments from '../MutlistepForms/GeneralComments';
