@@ -6,6 +6,7 @@ import {
 	INIT_FULLSCREEN,
 	SET_PATIENT_RECORD,
 	TOGGLE_PROFILE,
+	SIGN_OUT,
 } from '../actions/types';
 import SSRStorage from '../services/storage';
 import {
@@ -18,7 +19,7 @@ const storage = new SSRStorage();
 
 const INITIAL_STATE = {
 	profile: null,
-	loggedIn: true,
+	loggedIn: false,
 	theme_mode: false,
 	fullscreen: false,
 	userID: null,
@@ -32,6 +33,17 @@ const user = (state = INITIAL_STATE, action) => {
 	switch (action.type) {
 		case SET_PROFILE:
 			return { ...state, profile: action.payload, loggedIn: action.status };
+		case SIGN_OUT:
+			return {
+				...state,
+				profile: null,
+				loggedIn: false,
+				userID: null,
+				patient: null,
+				staff: null,
+				isPatientOpen: false,
+				isStaffOpen: false,
+			};
 		case TOGGLE_MODE:
 			storage.setItem(MODE_COOKIE, !state.theme_mode);
 			const theme_mode = !state.theme_mode;

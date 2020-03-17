@@ -100,10 +100,12 @@
 	flex: 1 1 auto;
 	background-color: #f2f4f8;
 
+	.content-box {padding: 1.6rem;}
+
 	button.close {
 		position: absolute;
-		right: 20px;
-		top: 20px;
+		right: 10px;
+		top: 10px;
 		z-index: 99;
 		background-color: #ffffff;
 		padding: 10px;

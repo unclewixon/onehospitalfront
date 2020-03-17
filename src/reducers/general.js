@@ -54,7 +54,7 @@ const general = (state = INITIAL_STATE, action) => {
 		case TOGGLE_PRELOADING:
 			return { ...state, preloading: action.payload };
 		case SIGN_OUT:
-			return { ...state, preloading: false };
+			return { ...state, ...INITIAL_STATE, preloading: false };
 		case TOGGLE_IS_MODAL:
 			return { ...state, is_modal: action.payload };
 		case TOGGLE_MODAL:

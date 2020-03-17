@@ -43,7 +43,7 @@ const checkStatus = async response => {
 		}
 		const message = await response.text();
 		const err = JSON.parse(message);
-		throw Object.freeze({ message: err.error });
+		throw Object.freeze({ message: err.message || err.error });
 	}
 	return response;
 };
@@ -311,18 +311,24 @@ export const parseRoster = result => {
 	return rosters;
 };
 
-export const getUserID = async () => {
-	// const date = new Date();
+export const getUser = async () => {
+	const date = new Date();
 	// prettier-ignore
-	const token = await (new SSRStorage()).getItem(TOKEN_COOKIE);
-	if (token) {
+	const user = await (new SSRStorage()).getItem(TOKEN_COOKIE);
+	if (user) {
+		const token = user.token;
 		const decoded = JwtDecode(token);
-		console.log(decoded);
-		// const userid = decoded.sub;
-		// if (decoded.exp < date.getTime()) {
-		// 	return userid;
-		// }
+		if (decoded.exp > date.getTime() / 1000) {
+			return user;
+		}
 	}
 
 	return null;
 };
+
+export const redirectToPage = (role, history) => {
+	console.log(role);
+	history.push('/settings/roles');
+};
+
+export const fullname = user => `${user.first_name} ${user.last_name}`;

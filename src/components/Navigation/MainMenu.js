@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import capitalize from 'lodash.capitalize';
 import $ from 'jquery';
+import { connect } from 'react-redux';
 
 import avatar1 from '../../assets/images/avatar1.jpg';
 import HrMenu from './HrMenu';
 // import DoctorMenu from './DoctorMenu';
 import InventoryMenu from './InventoryMenu';
 import AdminMenu from './AdminMenu';
-import FrontDeskMenu from "./FrontDeskMenu";
+import FrontDeskMenu from './FrontDeskMenu';
+import { fullname } from '../../services/utilities';
 
 class MainMenu extends Component {
 	componentDidMount() {
@@ -44,12 +46,18 @@ class MainMenu extends Component {
 	}
 
 	render() {
-		const { role, theme_mode } = this.props;
+		const { role, theme_mode, profile } = this.props;
 		return (
-			<div className={`menu-w color-scheme-dark ${theme_mode ? '' : 'color-style-bright'} menu-position-side menu-side-left menu-layout-full sub-menu-style-over sub-menu-color-bright selected-menu-color-light menu-activated-on-hover menu-has-selected-link ${role !== 'admins' ? '' : 'menu-layout-compact'}`} ref="menu_activated_on_hover">
+			<div
+				className={`menu-w color-scheme-dark ${
+					theme_mode ? '' : 'color-style-bright'
+				} menu-position-side menu-side-left menu-layout-full sub-menu-style-over sub-menu-color-bright selected-menu-color-light menu-activated-on-hover menu-has-selected-link ${
+					role !== 'admins' ? '' : 'menu-layout-compact'
+				}`}
+				ref="menu_activated_on_hover">
 				<div className="logo-w">
 					<Link className="logo" to="/">
-						<div className="logo-element"/>
+						<div className="logo-element" />
 						<div className="logo-label">Deda Hospital</div>
 					</Link>
 				</div>
@@ -59,7 +67,9 @@ class MainMenu extends Component {
 							<img alt="" src={avatar1} />
 						</div>
 						<div className="logged-user-info-w">
-							<div className="logged-user-name">Maria Gomez</div>
+							<div className="logged-user-name">
+								{fullname(profile.details)}
+							</div>
 							<div className="logged-user-role">{capitalize(role)}</div>
 						</div>
 					</div>
@@ -76,22 +86,20 @@ class MainMenu extends Component {
 				</div> */}
 				<h1 className="menu-page-header">Page Header</h1>
 				<ul className="main-menu">
-					{/* {role ==="front-desk" && ( */}
-						<FrontDeskMenu />
-					{/* )}
-					{role === 'hr' && ( */}
-						<HrMenu />
-					{/* )}
-					{role === 'inventory' && ( */}
-						<InventoryMenu />
-					{/* )}
-					{role === 'admin' && ( */}
-						<AdminMenu />
-					{/* )}a */}
+					{(role === 'front-desk' || role === 'admin') && <FrontDeskMenu />}
+					{(role === 'hr' || role === 'admin') && <HrMenu />}
+					{(role === 'inventory' || role === 'admin') && <InventoryMenu />}
+					{role === 'admin' && <AdminMenu />}
 				</ul>
 			</div>
 		);
 	}
 }
 
-export default MainMenu;
+const mapStateToProps = (state, ownProps) => {
+	return {
+		profile: state.user.profile,
+	};
+};
+
+export default connect(mapStateToProps)(MainMenu);

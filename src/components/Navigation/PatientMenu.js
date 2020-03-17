@@ -14,7 +14,7 @@ const PatientMenu = ({ location }) => {
 					</Link>
 				</li>
 				<li>
-					<Link to={`${location.pathname}#vitals`}>
+					<Link to={`${location.pathname}#vitals#BMI`}>
 						<div className="icon-w">
 							<div className="os-icon os-icon-layout" />
 						</div>

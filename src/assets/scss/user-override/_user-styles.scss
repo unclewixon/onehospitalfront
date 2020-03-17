@@ -12,8 +12,31 @@ a {
 button {
 	outline: 0 none !important;
 }
-.element-wrapper {padding-bottom: 1.5rem;}
-.ant-tooltip {z-index: 9999;}
+.element-wrapper {
+	padding-bottom: 1.5rem;
+}
+.ant-tooltip {
+	z-index: 9999;
+}
+.ant-popover {
+	z-index: 9999;
+
+	&.vitals {
+		.ant-popover-inner-content {
+			padding: 0;
+		}
+
+		input::-webkit-outer-spin-button,
+		input::-webkit-inner-spin-button {
+			-webkit-appearance: none;
+			margin: 0;
+		}
+
+		input[type='number'] {
+			-moz-appearance: textfield;
+		}
+	}
+}
 .text-bold {
 	font-weight: bold !important;
 }
@@ -45,6 +68,19 @@ button {
 	left: 0;
 	top: 0;
 }
+
+.element-wrapper {
+	.element-header {
+		&.text-center {
+			&:after {
+				right: 0;
+				margin: auto;
+				width: 30px;
+			}
+		}
+	}
+}
+
 .row-expand-icon {
 	color: #1890ff;
 	text-decoration: none;
@@ -248,7 +284,7 @@ button {
 
 			.react-datepicker__input-container {
 				&::before {
-					content: "\e972";
+					content: '\e972';
 					font-family: 'osfont' !important;
 					font-style: normal;
 					font-weight: normal;
@@ -275,24 +311,51 @@ button {
 }
 
 .ant-popover {
-	&.download-roster, &.upload-roster {
-		.ant-popover-inner-content {padding: 0;}
+	&.download-roster,
+	&.upload-roster {
+		.ant-popover-inner-content {
+			padding: 0;
+		}
 	}
 }
 
-.bg-primary {background-color: $primary;}
-.bg-secondary {background-color: $secondary;}
-.bg-success {background-color: $success;}
-
-.onboarding-modal 
-.onboarding-content.with-gradient {
-    padding: 0px 32px;
+.bg-primary {
+	background-color: $primary;
 }
-.form-header, .form-desc {
+.bg-secondary {
+	background-color: $secondary;
+}
+.bg-success {
+	background-color: $success;
+}
+
+.onboarding-modal .onboarding-content.with-gradient {
+	padding: 0px 32px;
+}
+.form-header,
+.form-desc {
 	margin-bottom: 0 !important;
 }
 .auth-box-w {
 	.logo-w {
 		padding: 10%;
+	}
+}
+.vital {
+	.col-4 {
+		> div {
+			margin-top: 60px;
+			line-height: 24px;
+		}
+	}
+
+	.reading {
+		font-size: 1.4rem;
+		margin: 14px 0;
+	}
+
+	.new-reading {
+		color: $primary;
+		cursor: pointer;
 	}
 }
