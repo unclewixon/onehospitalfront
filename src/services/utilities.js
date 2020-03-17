@@ -9,12 +9,11 @@ import JwtDecode from 'jwt-decode';
 import SSRStorage from './storage';
 import { TOKEN_COOKIE } from './constants';
 
-export const formatCurrency = (amount) =>
-	`₦${numeral(amount).format('0,0.00')}`;
+export const formatCurrency = amount => `₦${numeral(amount).format('0,0.00')}`;
 
-export const isUnset = (o) => typeof o === 'undefined' || o === null;
+export const isUnset = o => typeof o === 'undefined' || o === null;
 
-export const isSet = (o) => !isUnset(o);
+export const isSet = o => !isUnset(o);
 
 export function encodeValue(val) {
 	if (typeof val === 'string') {
@@ -34,7 +33,7 @@ export function decodeValue(val) {
 	return val;
 }
 
-const checkStatus = async (response) => {
+const checkStatus = async response => {
 	if (!response.ok) {
 		if (response.statusText === 'Unauthorized') {
 			// prettier-ignore
@@ -52,12 +51,12 @@ export const defaultHeaders = {
 	'Content-Type': 'application/json',
 };
 
-const headers = (token) => {
+const headers = token => {
 	const jwt = `Bearer ${token}`;
 	return { ...defaultHeaders, Authorization: jwt };
 };
 
-const parseJSON = (response) => response.json();
+const parseJSON = response => response.json();
 
 export const request = async (url, method, authed = false, data) => {
 	// prettier-ignore
@@ -89,6 +88,33 @@ export const renderTextInput = ({input, label, type, id, placeholder, meta: { to
 			className="form-control"
 			placeholder={placeholder || label}
 		/>
+		{touched && error && (
+			<div className="help-block form-text with-errors form-control-feedback">
+				<ul className="list-unstyled">
+					<li>{error}</li>
+				</ul>
+			</div>
+		)}
+	</div>
+);
+
+export const renderTextArea = ({
+	input,
+	label,
+	type,
+	id,
+	placeholder,
+	meta: { touched, error },
+}) => (
+	<div
+		className={`form-group ${touched &&
+			(error ? 'has-error has-danger' : '')}`}>
+		<label htmlFor={id}>{label}</label>
+		<textarea
+			{...input}
+			type={type}
+			className="form-control"
+			placeholder={placeholder || label}></textarea>
 		{touched && error && (
 			<div className="help-block form-text with-errors form-control-feedback">
 				<ul className="list-unstyled">
@@ -194,13 +220,12 @@ export const renderSelect = ({
 	</div>
 );
 
-const firstLetter = (item) =>
+const firstLetter = item =>
 	item && item !== '' ? `${item.substring(0, 1)}.` : '';
 
-const parseDuty = (item) =>
-	item && item !== '' ? ` [${uppercase(item)}]` : '';
+const parseDuty = item => (item && item !== '' ? ` [${uppercase(item)}]` : '');
 
-const parseClass = (item) => {
+const parseClass = item => {
 	if (item === 'o') {
 		return 'bg-secondary';
 	} else if (item === 'm' || item === 'n') {
@@ -210,10 +235,10 @@ const parseClass = (item) => {
 	}
 };
 
-export const parseRoster = (result) => {
+export const parseRoster = result => {
 	let rosters = [];
-	result.forEach((item) => {
-		item.schedule.forEach((schedule) => {
+	result.forEach(item => {
+		item.schedule.forEach(schedule => {
 			if (schedule.duty !== '') {
 				rosters = [
 					...rosters,

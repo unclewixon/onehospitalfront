@@ -22,6 +22,30 @@ const Opthalmology = lazy(() => import('../components/Patient/Opthalmology'));
 const Procedure = lazy(() => import('../components/Patient/Procedure'));
 const Physiotherapy = lazy(() => import('../components/Patient/Physiotherapy'));
 const Vitals = lazy(() => import('../components/Patient/Vitals'));
+const Allergies = lazy(() => import('../components/Patient/Allergies'));
+const LabRequest = lazy(() => import('../components/Patient/LabRequest'));
+const PharmacyRequest = lazy(() =>
+	import('../components/Patient/PharmacyRequest')
+);
+const OpthalmologyRequest = lazy(() =>
+	import('../components/Patient/OpthalmologyRequest')
+);
+const PhysiotherapyRequest = lazy(() =>
+	import('../components/Patient/PhysiotherapyRequest')
+);
+const ImagingRequest = lazy(() =>
+	import('../components/Patient/ImagingRequest')
+);
+
+const DentistryRequest = lazy(() =>
+	import('../components/Patient/DentistryRequest')
+);
+const ProcedureRequest = lazy(() =>
+	import('../components/Patient/ProcedureRequest')
+);
+const AllergyRequest = lazy(() =>
+	import('../components/Patient/AllergyRequest')
+);
 
 const storage = new SSRStorage();
 
@@ -36,6 +60,8 @@ const Page = ({ location }) => {
 			return <Pharmacy />;
 		case 'vitals':
 			return <Vitals />;
+		case 'allergies':
+			return <Allergies />;
 		case 'imaging':
 			return <Imaging />;
 		case 'opthalmology':
@@ -46,7 +72,25 @@ const Page = ({ location }) => {
 			return <Physiotherapy />;
 		case 'dentistry':
 			return <Dentistry />;
+		case 'lab-request':
+			return <LabRequest />;
+		case 'pharmacy-request':
+			return <PharmacyRequest />;
+		case 'opthalmology-request':
+			return <OpthalmologyRequest />;
 
+		case 'physiotherapy-request':
+			return <PhysiotherapyRequest />;
+		case 'imaging-request':
+			return <ImagingRequest />;
+
+		case 'dentistry-request':
+			return <DentistryRequest />;
+		case 'procedure-request':
+			return <ProcedureRequest />;
+
+		case 'allergy-request':
+			return <AllergyRequest />;
 		default:
 			return <Dashboard />;
 	}
@@ -82,6 +126,7 @@ class PatientProfile extends Component {
 
 	render() {
 		const { location, patient } = this.props;
+		console.log(patient);
 		return (
 			<div className="layout-w">
 				<button

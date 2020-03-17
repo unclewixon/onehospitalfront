@@ -1,22 +1,18 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
-const Physiotherapy = () => {
-	const newPhysioRequest = () => {
-		alert('new Lab');
-	};
+const Physiotherapy = ({ location }) => {
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<div className="element-actions">
-					<button
+					<Link
 						className="btn btn-primary"
-						type="submit"
-						onClick={newPhysioRequest}>
+						to={`${location.pathname}#physiotherapy-request`}>
 						<i className="os-icon os-icon-plus"></i>
 						New Physiotherapy Request
-					</button>
+					</Link>
 				</div>
 				<h6 className="element-header">Physiotherapy Requests</h6>
 				<div className="element-box">
@@ -139,4 +135,4 @@ const Physiotherapy = () => {
 	);
 };
 
-export default Physiotherapy;
+export default withRouter(Physiotherapy);
