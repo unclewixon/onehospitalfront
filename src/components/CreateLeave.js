@@ -81,28 +81,27 @@ class CreateLeave extends Component {
 											</div>
 										</div>
 
-										<div className="col-sm-4">
-											<div className="form-group">
-												<label>Date of leave return </label>
-												<div className="custom-date-input">
-													<DatePicker
-														selected={leave_return}
-														onChange={date =>
-															this.setDate(date, 'leave_return')
-														}
-														peekNextMonth
-														showMonthDropdown
-														showYearDropdown
-														dropdownMode="select"
-														dateFormat="dd-MMM-yyyy"
-														className="single-daterange form-control"
-														placeholderText="Select date of leave return"
-														minDate={new Date()}
-													/>
-												</div>
-											</div>
-										</div>
-									</div>
+                    <div className="col-sm-4">
+                        <div className="form-group">
+                            <label>Appointment (Date/time)</label>
+                            <div className="custom-date-input">
+                                <DatePicker
+                                    selected={leave_date}
+                                    onChange={(date) =>
+                                        this.setDate(date, 'leave_date')
+                                    }
+                                    peekNextMonth
+                                    showMonthDropdown
+                                    showYearDropdown
+                                    dropdownMode="select"
+                                    dateFormat="dd-MMM-yyyy"
+                                    className="single-daterange form-control"
+                                    placeholderText="Select date of leave"
+                                    minDate={new Date()}
+                                />
+                            </div>
+                        </div>
+                    </div>
 
 									<div className="row">
 										<div className="col-sm-12">

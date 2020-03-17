@@ -45,7 +45,7 @@ const PatientMenu = ({ location }) => {
 						<div className="icon-w">
 							<div className="os-icon os-icon-layout" />
 						</div>
-						<span>New Antenatal Visit Entry</span>
+						<span>Antenatal</span>
 					</Link>
 				</li>
 				<li className="sub-header">
