@@ -16,6 +16,7 @@ const ServicesList = props => {
 	const [moreDetailConsultation, setMoreDetailConsultation] = useState(false);
 	const [ServicesList, getServiceList] = useState([]);
 	const [loaded, setLoaded] = useState(false);
+	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const onMoreDetailConsultation = category => {
 		setMoreDetailConsultation(category);
@@ -50,7 +51,9 @@ const ServicesList = props => {
 		if (!loaded) {
 			props
 				.getAllService()
-				.then(response => {})
+				.then(response => {
+					setDataLoaded(true);
+				})
 				.catch(e => {
 					notifyError(e.message || 'could not fetch services list');
 				});
@@ -62,7 +65,7 @@ const ServicesList = props => {
 			<div className="todo-app-w">
 				<div className="todo-content">
 					<div className="all-tasks-w">
-						{!loaded ? (
+						{!dataLoaded ? (
 							<tr>
 								<td colSpan="4" className="text-center">
 									<img alt="searching" src={searchingGIF} />

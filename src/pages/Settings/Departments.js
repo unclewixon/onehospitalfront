@@ -32,7 +32,7 @@ const Departments = props => {
 	const [Loading, setLoading] = useState(false);
 	const [data, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
-
+	const [dataLoaded, setDataLoaded] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -114,8 +114,11 @@ const Departments = props => {
 		if (!loaded) {
 			props
 				.getAllDepartments()
-				.then(response => {})
+				.then(response => {
+					setDataLoaded(true);
+				})
 				.catch(e => {
+					setDataLoaded(true);
 					notifyError(e.message || 'could not fetch departments');
 				});
 			props.getAllStaff();
@@ -156,7 +159,7 @@ const Departments = props => {
 												</tr>
 											</thead>
 											<tbody>
-												{!loaded ? (
+												{!dataLoaded ? (
 													<tr>
 														<td colSpan="4" className="text-center">
 															<img alt="searching" src={searchingGIF} />

@@ -26,6 +26,7 @@ const LeaveCategory = props => {
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
+	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -104,8 +105,11 @@ const LeaveCategory = props => {
 		if (!loaded) {
 			props
 				.getAllLeaveCategory()
-				.then(response => {})
+				.then(response => {
+					setDataLoaded(true);
+				})
 				.catch(e => {
+					setDataLoaded(true);
 					notifyError(e.message || 'could not fetch leave categories');
 				});
 		}
@@ -130,7 +134,7 @@ const LeaveCategory = props => {
 					<div className="row">
 						<div className="col-lg-8">
 							<div className="row">
-								{!loaded ? (
+								{!dataLoaded ? (
 									<tr>
 										<td colSpan="4" className="text-center">
 											<img alt="searching" src={searchingGIF} />
