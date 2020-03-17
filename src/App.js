@@ -28,7 +28,11 @@ const Settings = lazy(() => import('./pages/Settings'));
 const StaffProfile = lazy(() => import('./pages/StaffProfile'));
 const Hmo = lazy(() => import('./pages/Hmo'));
 const ClinicalLab = lazy(() => import('./pages/ClinicalLab'));
-const PayPoint = lazy(() => import('./pages/PayPoint'));
+const PayPoint = lazy(() => import('./pages/PayPoint/index'));
+const Radiology = lazy(() => import('./pages/Radiology'));
+const Antennatal = lazy(() => import('./pages/Antennatal/index'));
+const IVF = lazy(() => import('./pages/IVF'));
+const Nicu = lazy(() => import('./pages/Nicu'));
 const Logout = lazy(() => import('./pages/Logout'));
 
 const storage = new SSRStorage();
@@ -78,6 +82,10 @@ class App extends Component {
 												<Route path="/in-patient" component={InPatient} />
 												<Route path="/pharmacy" component={Pharmacy} />
 												<Route path="/pharmacy2" component={Pharmacy2} />
+												<Route path="/radiology" component={Radiology} />
+												<Route path="/antennatal" component={Antennatal} />
+												<Route path="/ivf" component={IVF} />
+												<Route path="/nicu" component={Nicu} />
 												<Route path="/vitals" component={Vitals} />
 												<Route path="/hr" component={Staff} />
 												<Route path="/inventory" component={Inventory} />

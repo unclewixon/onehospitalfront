@@ -5,6 +5,8 @@ import startCase from 'lodash.startcase';
 import padLeft from 'pad-left';
 import { confirmAlert } from 'react-confirm-alert';
 import JwtDecode from 'jwt-decode';
+import Multiselect from 'react-widgets/lib/Multiselect';
+import DatePicker from 'react-datepicker';
 
 import SSRStorage from './storage';
 import { TOKEN_COOKIE } from './constants';
@@ -98,6 +100,33 @@ export const renderTextInput = ({input, label, type, id, placeholder, meta: { to
 	</div>
 );
 
+export const renderTextArea = ({
+	input,
+	label,
+	type,
+	id,
+	placeholder,
+	meta: { touched, error },
+}) => (
+	<div
+		className={`form-group ${touched &&
+			(error ? 'has-error has-danger' : '')}`}>
+		<label htmlFor={id}>{label}</label>
+		<textarea
+			{...input}
+			type={type}
+			className="form-control"
+			placeholder={placeholder || label}></textarea>
+		{touched && error && (
+			<div className="help-block form-text with-errors form-control-feedback">
+				<ul className="list-unstyled">
+					<li>{error}</li>
+				</ul>
+			</div>
+		)}
+	</div>
+);
+
 // prettier-ignore
 export const renderTextInputGroup = ({input, append, label, icon, type, id, placeholder, meta: { touched, error }}) => (
 	<div
@@ -129,6 +158,57 @@ export const renderTextInputGroup = ({input, append, label, icon, type, id, plac
 				</ul>
 			</div>
 		)}
+	</div>
+);
+
+export const renderMultiselect = ({
+	input,
+	data,
+	valueField,
+	textField,
+	label,
+}) => (
+	<Multiselect
+		{...input}
+		onBlur={() => input.onBlur()}
+		value={input.value || []} // requires value to be an array
+		data={data}
+		valueField={valueField}
+		textField={textField}
+		label={label}
+	/>
+);
+
+export const renderDateTimePicker = ({
+	input,
+	placeholder,
+	minDate,
+	maxDate,
+}) => (
+	<div className="custom-date-input">
+		<DatePicker
+			className="single-daterange form-control"
+			dateFormat="yyyy/MM/dd"
+			selected={input.value || null}
+			onChange={input.onChange}
+			minDate={minDate}
+			maxDate={maxDate}
+			disabledKeyboardNavigation
+			placeholderText={placeholder}
+		/>
+	</div>
+);
+
+export const renderTimePicker = ({ input, placeholder, minDate, maxDate }) => (
+	<div className="custom-date-input">
+		<DatePicker
+			className="single-daterange form-control"
+			dateFormat="Pp"
+			selected={input.value || null}
+			onChange={input.onChange}
+			disabledKeyboardNavigation
+			placeholderText={placeholder}
+		/>
 	</div>
 );
 

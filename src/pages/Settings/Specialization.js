@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import waiting from '../../assets/images/waiting.gif';
+import searchingGIF from '../../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { confirmAction } from '../../services/utilities';
 import {
@@ -11,7 +12,7 @@ import {
 	deleteSpecialization,
 } from '../../actions/settings';
 
-const Specialization = (props) => {
+const Specialization = props => {
 	const initialState = {
 		name: '',
 		save: true,
@@ -24,39 +25,39 @@ const Specialization = (props) => {
 	const [data, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
 
-	const handleInputChange = (e) => {
+	const handleInputChange = e => {
 		const { name, value } = e.target;
-		setState((prevState) => ({ ...prevState, [name]: value }));
+		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onAddSpecialization = (e) => {
+	const onAddSpecialization = e => {
 		e.preventDefault();
 		setLoading(true);
 		props
 			.addSpecialization({ name })
-			.then((response) => {
+			.then(response => {
 				setLoading(false);
 				setState({ ...initialState });
 				notifySuccess('Specialization created');
 			})
-			.catch((error) => {
+			.catch(error => {
 				setLoading(false);
 				notifyError('Error creating Specialization');
 			});
 	};
 
-	const onEditSpecialization = (e) => {
+	const onEditSpecialization = e => {
 		setLoading(true);
 		e.preventDefault();
 		props
 			.updateSpecialization({ id: data.id, name }, data)
-			.then((response) => {
+			.then(response => {
 				setState({ ...initialState });
 				setSubmitButton({ save: true, edit: false });
 				setLoading(false);
 				notifySuccess('Specialization updated');
 			})
-			.catch((error) => {
+			.catch(error => {
 				setState({ ...initialState });
 				setSubmitButton({ save: true, edit: false });
 				setLoading(false);
@@ -64,9 +65,9 @@ const Specialization = (props) => {
 			});
 	};
 
-	const onClickEdit = (data) => {
+	const onClickEdit = data => {
 		setSubmitButton({ edit: true, save: false });
-		setState((prevState) => ({
+		setState(prevState => ({
 			...prevState,
 			name: data.name,
 			duration: data.duration,
@@ -75,20 +76,20 @@ const Specialization = (props) => {
 		getDataToEdit(data);
 	};
 
-	const onDeleteSpecialization = (data) => {
+	const onDeleteSpecialization = data => {
 		props
 			.deleteSpecialization(data)
-			.then((response) => {
+			.then(response => {
 				setLoading(false);
 				notifySuccess('Specialization deleted');
 			})
-			.catch((error) => {
+			.catch(error => {
 				setLoading(false);
 				notifyError('Error deleting Specialization');
 			});
 	};
 
-	const confirmDelete = (data) => {
+	const confirmDelete = data => {
 		confirmAction(onDeleteSpecialization, data);
 	};
 
@@ -98,9 +99,13 @@ const Specialization = (props) => {
 	};
 
 	useEffect(() => {
-		console.log(save, edit);
 		if (!loaded) {
-			props.getAllSpecialization();
+			props
+				.getAllSpecialization()
+				.then(response => {})
+				.catch(e => {
+					notifyError(e.message || 'could not fetch specializations');
+				});
 		}
 		setLoaded(true);
 	}, [edit, loaded, props, save]);
@@ -126,37 +131,49 @@ const Specialization = (props) => {
 					<div className="row">
 						<div className="col-lg-8">
 							<div className="row">
-								{props.Specializations.map((Specialization, i) => {
-									return (
-										<div className="col-lg-4 col-xxl-3" key={i}>
-											<div className="pt-3">
-												<div className="pipeline-item">
-													<div className="pi-controls">
-														<div className="pi-settings os-dropdown-trigger">
-															<i
-																className="os-icon os-icon-ui-49"
-																onClick={() => onClickEdit(Specialization)}></i>
-														</div>
-														<div className="pi-settings os-dropdown-trigger">
-															<i
-																className="os-icon os-icon-ui-15"
-																onClick={() =>
-																	confirmDelete(Specialization)
-																}></i>
-														</div>
-													</div>
-													<div className="pi-body">
-														<div className="pi-info">
-															<div className="h6 pi-name">
-																{Specialization.name}
+								{!loaded ? (
+									<tr>
+										<td colSpan="4" className="text-center">
+											<img alt="searching" src={searchingGIF} />
+										</td>
+									</tr>
+								) : (
+									<>
+										{props.Specializations.map((Specialization, i) => {
+											return (
+												<div className="col-lg-4 col-xxl-3" key={i}>
+													<div className="pt-3">
+														<div className="pipeline-item">
+															<div className="pi-controls">
+																<div className="pi-settings os-dropdown-trigger">
+																	<i
+																		className="os-icon os-icon-ui-49"
+																		onClick={() =>
+																			onClickEdit(Specialization)
+																		}></i>
+																</div>
+																<div className="pi-settings os-dropdown-trigger">
+																	<i
+																		className="os-icon os-icon-ui-15"
+																		onClick={() =>
+																			confirmDelete(Specialization)
+																		}></i>
+																</div>
+															</div>
+															<div className="pi-body">
+																<div className="pi-info">
+																	<div className="h6 pi-name">
+																		{Specialization.name}
+																	</div>
+																</div>
 															</div>
 														</div>
 													</div>
 												</div>
-											</div>
-										</div>
-									);
-								})}
+											);
+										})}
+									</>
+								)}
 							</div>
 						</div>
 						<div className="col-lg-4 col-xxl-3  d-xxl-block">
@@ -201,8 +218,8 @@ const Specialization = (props) => {
 													<button
 														className={
 															Loading
-																? 'btn btn-primary disabled'
-																: 'btn btn-primary'
+																? 'btn btn-secondary ml-3 disabled'
+																: 'btn btn-secondary ml-3'
 														}
 														onClick={cancelEditButton}>
 														<span>{Loading ? 'cancel' : 'cancel'}</span>
@@ -233,7 +250,7 @@ const Specialization = (props) => {
 	);
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
 	return {
 		Specializations: state.settings.specializations,
 	};

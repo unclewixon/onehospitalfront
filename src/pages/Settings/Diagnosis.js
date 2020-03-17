@@ -1,7 +1,29 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { uploadDiagnosis } from '../../actions/general';
+import { notifySuccess, notifyError } from '../../services/notify';
+import searchingGIF from '../../assets/images/searching.gif';
+import {
+	getAllDiagnosises,
+	updateDiagnosis,
+	deleteDiagnosis,
+} from '../../actions/settings';
 
-const Diagnosis = () => {
+const Diagnosis = props => {
+	const [loaded, setLoaded] = useState(false);
+
+	useEffect(() => {
+		if (!loaded) {
+			props
+				.getAllDiagnosises()
+				.then(response => {})
+				.catch(e => {
+					notifyError(e.message || 'could not fetch diagnosis');
+				});
+		}
+		setLoaded(true);
+	}, [props, loaded]);
 	return (
 		<div className="content-i">
 			<div className="content-box">
@@ -13,8 +35,7 @@ const Diagnosis = () => {
 									<a
 										aria-expanded="true"
 										className="nav-link active"
-										data-toggle="tab"
-									>
+										data-toggle="tab">
 										Diagnosis
 									</a>
 								</li>
@@ -30,15 +51,16 @@ const Diagnosis = () => {
 										<div className="controls-above-table">
 											<div className="row">
 												<div className="col-sm-6">
-													<a className="btn btn-sm btn-secondary" href="#">
+													<button
+														className="btn btn-sm btn-secondary"
+														onClick={() => props.uploadDiagnosis(true)}>
 														Upload Diagnosis Data
-													</a>
+													</button>
 												</div>
 												<div className="col-sm-6">
 													<form
 														className="form-inline justify-content-sm-end"
-														style={{ marginBottom: '7px' }}
-													>
+														style={{ marginBottom: '7px' }}>
 														<input
 															className="form-control form-control-sm rounded bright"
 															placeholder="Search"
@@ -61,173 +83,50 @@ const Diagnosis = () => {
 													</tr>
 												</thead>
 												<tbody>
-													<tr>
-														<td>
-															<div className="user-with-avatar">SB</div>
-														</td>
-														<td>
-															<div className="smaller lighter">0DS80ZZ</div>
-														</td>
-														<td>
-															<span>
-																Reposition Small Intestine, Open Approach
-															</span>
-														</td>
+													{!loaded ? (
+														<tr>
+															<td colSpan="4" className="text-center">
+																<img alt="searching" src={searchingGIF} />
+															</td>
+														</tr>
+													) : (
+														<>
+															{props.Diagnosis.map((diagnosis, index) => {
+																return (
+																	<tr>
+																		<td>
+																			<div className="user-with-avatar">
+																				{diagnosis.procedureCode}
+																			</div>
+																		</td>
+																		<td>
+																			<div className="smaller lighter">
+																				{diagnosis.icd10Code}
+																			</div>
+																		</td>
+																		<td>
+																			<span>{diagnosis.description}</span>
+																		</td>
 
-														<td className="nowrap">
-															<span>No Change</span>
-														</td>
-														<td className="row-actions">
-															<a href="#">
-																<i className="os-icon os-icon-grid-10"></i>
-															</a>
-															<a href="#">
-																<i className="os-icon os-icon-ui-44"></i>
-															</a>
-															<a className="danger" href="#">
-																<i className="os-icon os-icon-ui-15"></i>
-															</a>
-														</td>
-													</tr>
-													<tr>
-														<td>
-															<div className="user-with-avatar">SB</div>
-														</td>
-														<td>
-															<div className="smaller lighter">0DS84ZZ</div>
-														</td>
-														<td>
-															<span>
-																Reposition Small Intestine, Perctaneous
-																Endoscopic Approach
-															</span>
-														</td>
-
-														<td className="nowrap">
-															<span>No Change</span>
-														</td>
-														<td className="row-actions">
-															<a href="#">
-																<i className="os-icon os-icon-grid-10"></i>
-															</a>
-															<a href="#">
-																<i className="os-icon os-icon-ui-44"></i>
-															</a>
-															<a className="danger" href="#">
-																<i className="os-icon os-icon-ui-15"></i>
-															</a>
-														</td>
-													</tr>
-													<tr>
-														<td>
-															<div className="user-with-avatar">SB</div>
-														</td>
-														<td>
-															<div className="smaller lighter">0DS90ZZ</div>
-														</td>
-														<td>
-															<span>Reposition Duodenum, Open Approach</span>
-														</td>
-
-														<td className="nowrap">
-															<span>No Charge</span>
-														</td>
-														<td className="row-actions">
-															<a href="#">
-																<i className="os-icon os-icon-grid-10"></i>
-															</a>
-															<a href="#">
-																<i className="os-icon os-icon-ui-44"></i>
-															</a>
-															<a className="danger" href="#">
-																<i className="os-icon os-icon-ui-15"></i>
-															</a>
-														</td>
-													</tr>
-													<tr>
-														<td>
-															<div className="user-with-avatar">SB</div>
-														</td>
-														<td>
-															<div className="smaller lighter">0DS94ZZ</div>
-														</td>
-														<td>
-															<span>
-																Reposition Duodenum, Percutaneous Endoscopic
-																Approach
-															</span>
-														</td>
-
-														<td className="nowrap">
-															<span>No Change</span>
-														</td>
-														<td className="row-actions">
-															<a href="#">
-																<i className="os-icon os-icon-grid-10"></i>
-															</a>
-															<a href="#">
-																<i className="os-icon os-icon-ui-44"></i>
-															</a>
-															<a className="danger" href="#">
-																<i className="os-icon os-icon-ui-15"></i>
-															</a>
-														</td>
-													</tr>
-													<tr>
-														<td>
-															<div className="user-with-avatar">SB</div>
-														</td>
-														<td>
-															<div className="smaller lighter">0dsa0zz</div>
-														</td>
-														<td>
-															<span>Reposition Jejunum, Open Approach</span>
-														</td>
-
-														<td className="nowrap">
-															<span>No Change</span>
-														</td>
-														<td className="row-actions">
-															<a href="#">
-																<i className="os-icon os-icon-grid-10"></i>
-															</a>
-															<a href="#">
-																<i className="os-icon os-icon-ui-44"></i>
-															</a>
-															<a className="danger" href="#">
-																<i className="os-icon os-icon-ui-15"></i>
-															</a>
-														</td>
-													</tr>
-													<tr>
-														<td>
-															<div className="user-with-avatar">SB</div>
-														</td>
-														<td>
-															<div className="smaller lighter">0DSA477</div>
-														</td>
-														<td>
-															<span>
-																Reposition Jejunum,Percutaneous Endoscopic
-																Approach
-															</span>
-														</td>
-
-														<td className="nowrap">
-															<span>No Change</span>
-														</td>
-														<td className="row-actions">
-															<a href="#">
-																<i className="os-icon os-icon-grid-10"></i>
-															</a>
-															<a href="#">
-																<i className="os-icon os-icon-ui-44"></i>
-															</a>
-															<a className="danger" href="#">
-																<i className="os-icon os-icon-ui-15"></i>
-															</a>
-														</td>
-													</tr>
+																		<td className="nowrap">
+																			<span>{diagnosis.codeStatus}</span>
+																		</td>
+																		<td className="row-actions">
+																			<a href="#">
+																				<i className="os-icon os-icon-grid-10"></i>
+																			</a>
+																			<a href="#">
+																				<i className="os-icon os-icon-ui-44"></i>
+																			</a>
+																			<a className="danger" href="#">
+																				<i className="os-icon os-icon-ui-15"></i>
+																			</a>
+																		</td>
+																	</tr>
+																);
+															})}
+														</>
+													)}
 												</tbody>
 											</table>
 										</div>
@@ -274,4 +173,15 @@ const Diagnosis = () => {
 	);
 };
 
-export default Diagnosis;
+const mapStateToProps = state => {
+	return {
+		Diagnosis: state.settings.diagnosis,
+	};
+};
+
+export default connect(mapStateToProps, {
+	uploadDiagnosis,
+	getAllDiagnosises,
+	updateDiagnosis,
+	deleteDiagnosis,
+})(Diagnosis);

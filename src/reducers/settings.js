@@ -31,6 +31,7 @@ import {
 	GET_ALL_SPECIALIZATIONS,
 	UPDATE_SPECIALIZATION,
 	DELETE_SPECIALIZATION,
+	ADD_CONSULTATING_ROOM,
 	UPDATE_CONSULTATING_ROOM,
 	DELETE_CONSULTATING_ROOM,
 	GET_ALL_CONSULTATING_ROOMS,
@@ -43,11 +44,14 @@ import {
 	GET_ALL_SERVICE_CATEGORIES,
 	DELETE_SERVICE_CATEGORY,
 	UPDATE_SERVICE_CATEGORY,
+	UPLOAD_SERVICE,
 	GET_ALL_SERIVCES,
 	UPDATE_SERVICE,
+	DELETE_SERVICE,
 	UPDATE_DIAGNOSIS,
 	GET_ALL_DIAGNOSISES,
 	DELETE_DIAGNOSIS,
+	UPLOAD_DIAGNOSIS,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -256,11 +260,11 @@ const settings = (state = INITIAL_STATE, action) => {
 					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};
-		// case ADD_CONSULTATING_ROOM:
-		//   return {
-		//     ...state,
-		//     consultating_room: [...state.consultating_room, action.payload]
-		//   };
+		case ADD_CONSULTATING_ROOM:
+			return {
+				...state,
+				consultating_room: [...state.consultating_room, action.payload],
+			};
 		case GET_ALL_CONSULTATING_ROOMS:
 			return { ...state, consultating_room: action.payload };
 		case UPDATE_CONSULTATING_ROOM:
@@ -360,6 +364,13 @@ const settings = (state = INITIAL_STATE, action) => {
 					),
 					action.payload,
 				],
+			};
+		case DELETE_DIAGNOSIS:
+			return {
+				...state,
+				diagnosis: state.diagnosis.filter(
+					deletedItem => deletedItem.id !== action.payload.id
+				),
 			};
 		default:
 			return state;
