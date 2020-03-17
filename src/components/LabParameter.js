@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { confirmAction } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
+import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 
 import {
@@ -11,7 +12,7 @@ import {
 	deleteLabTestParameters,
 } from '../actions/settings';
 
-const LabParameter = (props) => {
+const LabParameter = props => {
 	const initialState = {
 		name: '',
 		edit: false,
@@ -23,38 +24,38 @@ const LabParameter = (props) => {
 	const [data, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
 
-	const handleInputChange = (e) => {
+	const handleInputChange = e => {
 		const { name, value } = e.target;
-		setState((prevState) => ({ ...prevState, [name]: value }));
+		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onAddLabParameter = (e) => {
+	const onAddLabParameter = e => {
 		e.preventDefault();
 		setLoading(true);
 		props
 			.addLabTestParameter({ name })
-			.then((response) => {
+			.then(response => {
 				setState({ ...initialState });
 				setLoading(false);
 				notifySuccess('Lab Parameter created');
 			})
-			.catch((error) => {
+			.catch(error => {
 				notifyError('Error creating lab parameter');
 			});
 	};
 
-	const onEditLabParameter = (e) => {
+	const onEditLabParameter = e => {
 		setLoading(true);
 		e.preventDefault();
 		props
 			.updateLabTestParameter({ id: data.id, name }, data)
-			.then((response) => {
+			.then(response => {
 				setState({ ...initialState });
 				setSubmitButton({ create: true, edit: false });
 				setLoading(false);
 				notifySuccess('Lab Parameter updated');
 			})
-			.catch((error) => {
+			.catch(error => {
 				setState({ ...initialState });
 				setSubmitButton({ create: true, edit: false });
 				setLoading(false);
@@ -62,9 +63,9 @@ const LabParameter = (props) => {
 			});
 	};
 
-	const onClickEdit = (data) => {
+	const onClickEdit = data => {
 		setSubmitButton({ edit: true, create: false });
-		setState((prevState) => ({
+		setState(prevState => ({
 			...prevState,
 			name: data.name,
 		}));
@@ -72,28 +73,32 @@ const LabParameter = (props) => {
 	};
 
 	const cancelEditButton = () => {
-		setSubmitButton({ create: true, edit: false });
+		setSubmitButton({ ...initialState });
 		setState({ ...initialState });
 	};
 
-	const confirmDelete = (data) => {
-		confirmAction(onDeleteLabParameter, data);
-	};
-
-	const onDeleteLabParameter = (data) => {
+	const onDeleteLabParameter = data => {
 		props
 			.deleteLabTestParameters(data)
-			.then((data) => {
+			.then(data => {
 				notifySuccess('Lab Parameter deleted');
 			})
-			.catch((error) => {
+			.catch(error => {
 				notifyError('Error deleting lab parameter');
 			});
+	};
+	const confirmDelete = data => {
+		confirmAction(onDeleteLabParameter, data);
 	};
 
 	useEffect(() => {
 		if (!loaded) {
-			props.getAllLabTestParameters();
+			props
+				.getAllLabTestParameters()
+				.then(response => {})
+				.catch(e => {
+					notifyError(e.message || 'could not fetch lab parameters');
+				});
 		}
 		setLoaded(true);
 	}, [props, loaded]);
@@ -104,36 +109,47 @@ const LabParameter = (props) => {
 				<div>
 					<div className="pipelines-w">
 						<div className="row">
-							{props.LabParameters.map((LabParameter, index) => {
-								return (
-									<div className="col-lg-4 col-xxl-3" key={index + 1}>
-										<div className="pt-3">
-											<div className="pipeline-item">
-												<div className="pi-controls">
-													<div className="pi-settings os-dropdown-trigger">
-														<i
-															className="os-icon os-icon-ui-49"
-															onClick={() => onClickEdit(LabParameter)}></i>
-													</div>
-													<div className="pi-settings os-dropdown-trigger">
-														<i
-															className="os-icon os-icon-ui-15"
-															onClick={() => confirmDelete(LabParameter)}></i>
-													</div>
-												</div>
-												<div className="pi-body">
-													<div className="pi-info">
-														<div className="h6 pi-name">
-															{LabParameter.name}
+							{!loaded ? (
+								<tr>
+									<td colSpan="4" className="text-center">
+										<img alt="searching" src={searchingGIF} />
+									</td>
+								</tr>
+							) : (
+								<>
+									{props.LabParameters.map((LabParameter, index) => {
+										return (
+											<div className="col-lg-4 col-xxl-3" key={index}>
+												<div className="pt-3">
+													<div className="pipeline-item">
+														<div className="pi-controls">
+															<div className="pi-settings os-dropdown-trigger">
+																<i
+																	className="os-icon os-icon-ui-49"
+																	onClick={() => onClickEdit(LabParameter)}></i>
+															</div>
+															<div className="pi-settings os-dropdown-trigger">
+																<i
+																	className="os-icon os-icon-ui-15"
+																	onClick={() =>
+																		confirmDelete(LabParameter)
+																	}></i>
+															</div>
 														</div>
-														{/* <div className="pi-sub">{LabParameter.name}</div> */}
+														<div className="pi-body">
+															<div className="pi-info">
+																<div className="h6 pi-name">
+																	{LabParameter.name}
+																</div>
+															</div>
+														</div>
 													</div>
 												</div>
 											</div>
-										</div>
-									</div>
-								);
-							})}
+										);
+									})}
+								</>
+							)}
 						</div>
 					</div>
 				</div>
@@ -169,7 +185,9 @@ const LabParameter = (props) => {
 								<>
 									<button
 										className={
-											Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
+											Loading
+												? 'btn btn-secondary ml-3 disabled'
+												: 'btn btn-secondary ml-3'
 										}
 										onClick={cancelEditButton}>
 										<span>{Loading ? 'cancel' : 'cancel'}</span>
@@ -194,7 +212,7 @@ const LabParameter = (props) => {
 	);
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
 	return {
 		LabParameters: state.settings.lab_parameters,
 	};

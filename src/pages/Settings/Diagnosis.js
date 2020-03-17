@@ -2,18 +2,25 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { uploadDiagnosis } from '../../actions/general';
+import { notifySuccess, notifyError } from '../../services/notify';
+import searchingGIF from '../../assets/images/searching.gif';
 import {
 	getAllDiagnosises,
 	updateDiagnosis,
 	deleteDiagnosis,
 } from '../../actions/settings';
 
-const Diagnosis = (props) => {
+const Diagnosis = props => {
 	const [loaded, setLoaded] = useState(false);
 
 	useEffect(() => {
 		if (!loaded) {
-			props.getAllDiagnosises();
+			props
+				.getAllDiagnosises()
+				.then(response => {})
+				.catch(e => {
+					notifyError(e.message || 'could not fetch diagnosis');
+				});
 		}
 		setLoaded(true);
 	}, [props, loaded]);
@@ -76,40 +83,50 @@ const Diagnosis = (props) => {
 													</tr>
 												</thead>
 												<tbody>
-													{props.Diagnosis.map((diagnosis, index) => {
-														return (
-															<tr>
-																<td>
-																	<div className="user-with-avatar">
-																		{diagnosis.procedureCode}
-																	</div>
-																</td>
-																<td>
-																	<div className="smaller lighter">
-																		{diagnosis.icd10Code}
-																	</div>
-																</td>
-																<td>
-																	<span>{diagnosis.description}</span>
-																</td>
+													{!loaded ? (
+														<tr>
+															<td colSpan="4" className="text-center">
+																<img alt="searching" src={searchingGIF} />
+															</td>
+														</tr>
+													) : (
+														<>
+															{props.Diagnosis.map((diagnosis, index) => {
+																return (
+																	<tr>
+																		<td>
+																			<div className="user-with-avatar">
+																				{diagnosis.procedureCode}
+																			</div>
+																		</td>
+																		<td>
+																			<div className="smaller lighter">
+																				{diagnosis.icd10Code}
+																			</div>
+																		</td>
+																		<td>
+																			<span>{diagnosis.description}</span>
+																		</td>
 
-																<td className="nowrap">
-																	<span>{diagnosis.codeStatus}</span>
-																</td>
-																<td className="row-actions">
-																	<a href="#">
-																		<i className="os-icon os-icon-grid-10"></i>
-																	</a>
-																	<a href="#">
-																		<i className="os-icon os-icon-ui-44"></i>
-																	</a>
-																	<a className="danger" href="#">
-																		<i className="os-icon os-icon-ui-15"></i>
-																	</a>
-																</td>
-															</tr>
-														);
-													})}
+																		<td className="nowrap">
+																			<span>{diagnosis.codeStatus}</span>
+																		</td>
+																		<td className="row-actions">
+																			<a href="#">
+																				<i className="os-icon os-icon-grid-10"></i>
+																			</a>
+																			<a href="#">
+																				<i className="os-icon os-icon-ui-44"></i>
+																			</a>
+																			<a className="danger" href="#">
+																				<i className="os-icon os-icon-ui-15"></i>
+																			</a>
+																		</td>
+																	</tr>
+																);
+															})}
+														</>
+													)}
 												</tbody>
 											</table>
 										</div>
@@ -156,7 +173,7 @@ const Diagnosis = (props) => {
 	);
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
 	return {
 		Diagnosis: state.settings.diagnosis,
 	};

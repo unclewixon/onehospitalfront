@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import waiting from '../../assets/images/waiting.gif';
+import searchingGIF from '../../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { confirmAction } from '../../services/utilities';
 import {
@@ -11,7 +12,7 @@ import {
 	deleteConsultatingRoom,
 } from '../../actions/settings';
 
-const ConsultatingRoom = (props) => {
+const ConsultatingRoom = props => {
 	const initialState = {
 		name: '',
 		save: true,
@@ -24,49 +25,49 @@ const ConsultatingRoom = (props) => {
 	const [data, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(null);
 
-	const handleInputChange = (e) => {
+	const handleInputChange = e => {
 		const { name, value } = e.target;
-		setState((prevState) => ({ ...prevState, [name]: value }));
+		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onAddConsultatingRoom = (e) => {
+	const onAddConsultatingRoom = e => {
 		e.preventDefault();
 		setLoading(true);
 		props
 			.addConsultatingRoom({ name })
-			.then((response) => {
+			.then(response => {
 				setLoading(false);
 				setState({ ...initialState });
 				notifySuccess('Consultating room added');
 			})
-			.catch((error) => {
+			.catch(error => {
 				setLoading(false);
 				notifyError('Error creating consultating room');
 			});
 	};
 
-	const onEditConsultatingRoom = (e) => {
+	const onEditConsultatingRoom = e => {
 		setLoading(true);
 		e.preventDefault();
 		props
 			.updateConsultatingRoom({ id: data.id, name }, data)
-			.then((response) => {
+			.then(response => {
 				setState({ ...initialState });
 				setSubmitButton({ save: true, edit: false });
 				setLoading(false);
 				notifySuccess('Consultating room updated');
 			})
-			.catch((error) => {
+			.catch(error => {
 				setState({ ...initialState });
 				setSubmitButton({ save: true, edit: false });
 				setLoading(false);
-				notifyError('Error editing consultating room');
+				notifyError('Error editing consultating rooms');
 			});
 	};
 
-	const onClickEdit = (data) => {
+	const onClickEdit = data => {
 		setSubmitButton({ edit: true, save: false });
-		setState((prevState) => ({
+		setState(prevState => ({
 			...prevState,
 			name: data.name,
 			duration: data.duration,
@@ -75,20 +76,20 @@ const ConsultatingRoom = (props) => {
 		getDataToEdit(data);
 	};
 
-	const onDeleteConsultatingRoom = (data) => {
+	const onDeleteConsultatingRoom = data => {
 		props
 			.deleteConsultatingRoom(data)
-			.then((data) => {
+			.then(data => {
 				setLoading(false);
 				notifySuccess('Consultating room deleted');
 			})
-			.catch((error) => {
+			.catch(error => {
 				setLoading(false);
 				notifyError('Error deleting consultating room');
 			});
 	};
 
-	const confirmDelete = (data) => {
+	const confirmDelete = data => {
 		confirmAction(onDeleteConsultatingRoom, data);
 	};
 
@@ -100,7 +101,12 @@ const ConsultatingRoom = (props) => {
 	useEffect(() => {
 		console.log(save, edit);
 		if (!loaded) {
-			props.getAllConsultatingRooms();
+			props
+				.getAllConsultatingRooms()
+				.then(response => {})
+				.catch(e => {
+					notifyError(e.message || 'could not fetch consultating room');
+				});
 		}
 		setLoaded(true);
 	}, [edit, loaded, props, save]);
@@ -126,39 +132,49 @@ const ConsultatingRoom = (props) => {
 					<div className="row">
 						<div className="col-lg-8">
 							<div className="row">
-								{props.ConsultatingRooms.map((ConsultatingRoom, i) => {
-									return (
-										<div className="col-lg-4 col-xxl-3" key={i}>
-											<div className="pt-3">
-												<div className="pipeline-item">
-													<div className="pi-controls">
-														<div className="pi-settings os-dropdown-trigger">
-															<i
-																className="os-icon os-icon-ui-49"
-																onClick={() =>
-																	onClickEdit(ConsultatingRoom)
-																}></i>
-														</div>
-														<div className="pi-settings os-dropdown-trigger">
-															<i
-																className="os-icon os-icon-ui-15"
-																onClick={() =>
-																	confirmDelete(ConsultatingRoom)
-																}></i>
-														</div>
-													</div>
-													<div className="pi-body">
-														<div className="pi-info">
-															<div className="h6 pi-name">
-																{ConsultatingRoom.name}
+								{!loaded ? (
+									<tr>
+										<td colSpan="4" className="align-self-center">
+											<img alt="searching" src={searchingGIF} />
+										</td>
+									</tr>
+								) : (
+									<>
+										{props.ConsultatingRooms.map((ConsultatingRoom, i) => {
+											return (
+												<div className="col-lg-4 col-xxl-3" key={i}>
+													<div className="pt-3">
+														<div className="pipeline-item">
+															<div className="pi-controls">
+																<div className="pi-settings os-dropdown-trigger">
+																	<i
+																		className="os-icon os-icon-ui-49"
+																		onClick={() =>
+																			onClickEdit(ConsultatingRoom)
+																		}></i>
+																</div>
+																<div className="pi-settings os-dropdown-trigger">
+																	<i
+																		className="os-icon os-icon-ui-15"
+																		onClick={() =>
+																			confirmDelete(ConsultatingRoom)
+																		}></i>
+																</div>
+															</div>
+															<div className="pi-body">
+																<div className="pi-info">
+																	<div className="h6 pi-name">
+																		{ConsultatingRoom.name}
+																	</div>
+																</div>
 															</div>
 														</div>
 													</div>
 												</div>
-											</div>
-										</div>
-									);
-								})}
+											);
+										})}
+									</>
+								)}
 							</div>
 						</div>
 						<div className="col-lg-4 col-xxl-3  d-xxl-block">
@@ -205,8 +221,8 @@ const ConsultatingRoom = (props) => {
 													<button
 														className={
 															Loading
-																? 'btn btn-primary disabled'
-																: 'btn btn-primary'
+																? 'btn btn-secondary ml-3 disabled'
+																: 'btn btn-secondary ml-3'
 														}
 														onClick={cancelEditButton}>
 														<span>{Loading ? 'cancel' : 'cancel'}</span>
@@ -237,7 +253,7 @@ const ConsultatingRoom = (props) => {
 	);
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
 	return {
 		ConsultatingRooms: state.settings.consultating_room,
 	};

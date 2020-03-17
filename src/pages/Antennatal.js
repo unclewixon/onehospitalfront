@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import Tooltip from "antd/lib/tooltip";
 import {Link} from "react-router-dom"
 
-import Queue from "../components/Queue";
+import Queue from '../components/Queue';
 class Antennatal extends Component {
   render() {
     return (
@@ -13,13 +13,13 @@ class Antennatal extends Component {
             <div className='col-sm-12'>
               <div className='element-wrapper'>
                 <div className="element-actions">
-                
+
                   <Link
                       className="btn btn-primary"
                     to="/antennatal/enrolment">
 
                     New Enrolment
-					</Link>
+	               </Link>
                 </div>
                 <h6 className='element-header'>Antennatal</h6>
                 <div className='row'>
@@ -77,223 +77,218 @@ class Antennatal extends Component {
                                   <div className='fht-cell'></div>
                                 </th>
 
-                                <th data-field='5'>
-                                  <div className='th-inner '></div>
-                                  <div className='fht-cell'></div>
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr data-index='0' data-id='20'>
-                                <td>
-                                  <a>
-                                    <span
-                                      className='w-32 avatar gd-warning'
-                                      style={{ boxShadow: "none" }}
-                                    >
-                                      IN32456789
-                                    </span>
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>blood</a>
-                                </td>
+																<th data-field="5">
+																	<div className="th-inner "></div>
+																	<div className="fht-cell"></div>
+																</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr data-index="0" data-id="20">
+																<td>
+																	<a>
+																		<span
+																			className="w-32 avatar gd-warning"
+																			style={{ boxShadow: 'none' }}>
+																			IN32456789
+																		</span>
+																	</a>
+																</td>
+																<td className="flex">
+																	<a className="item-title text-color">
+																		Netflix hackathon
+																	</a>
+																</td>
+																<td className="flex">
+																	<a className="item-title text-color">blood</a>
+																</td>
 
-                                <td className='text-right row-actions'>
-                                  <Tooltip title='Receive Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-folder-plus' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Edit Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-edit-32' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Delete Request'>
-                                    <a className='danger'>
-                                      <i className='os-icon os-icon-ui-15' />
-                                    </a>
-                                  </Tooltip>
-                                </td>
-                              </tr>
-                              <tr data-index='0' data-id='20'>
-                                <td>
-                                  <a>
-                                    <span
-                                      className='w-32 avatar gd-warning'
-                                      style={{ boxShadow: "none" }}
-                                    >
-                                      IN32456789
-                                    </span>
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>blood</a>
-                                </td>
+																<td className="text-right row-actions">
+																	<Tooltip title="Receive Request">
+																		<a className="secondary">
+																			<i className="os-icon os-icon-folder-plus" />
+																		</a>
+																	</Tooltip>
+																	<Tooltip title="Edit Request">
+																		<a className="secondary">
+																			<i className="os-icon os-icon-edit-32" />
+																		</a>
+																	</Tooltip>
+																	<Tooltip title="Delete Request">
+																		<a className="danger">
+																			<i className="os-icon os-icon-ui-15" />
+																		</a>
+																	</Tooltip>
+																</td>
+															</tr>
+															<tr data-index="0" data-id="20">
+																<td>
+																	<a>
+																		<span
+																			className="w-32 avatar gd-warning"
+																			style={{ boxShadow: 'none' }}>
+																			IN32456789
+																		</span>
+																	</a>
+																</td>
+																<td className="flex">
+																	<a className="item-title text-color">
+																		Netflix hackathon
+																	</a>
+																</td>
+																<td className="flex">
+																	<a className="item-title text-color">blood</a>
+																</td>
 
-                                <td className='text-right row-actions'>
-                                  <Tooltip title='Receive Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-folder-plus' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Edit Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-edit-32' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Delete Request'>
-                                    <a className='danger'>
-                                      <i className='os-icon os-icon-ui-15' />
-                                    </a>
-                                  </Tooltip>
-                                </td>
-                              </tr>
+																<td className="text-right row-actions">
+																	<Tooltip title="Receive Request">
+																		<a className="secondary">
+																			<i className="os-icon os-icon-folder-plus" />
+																		</a>
+																	</Tooltip>
+																	<Tooltip title="Edit Request">
+																		<a className="secondary">
+																			<i className="os-icon os-icon-edit-32" />
+																		</a>
+																	</Tooltip>
+																	<Tooltip title="Delete Request">
+																		<a className="danger">
+																			<i className="os-icon os-icon-ui-15" />
+																		</a>
+																	</Tooltip>
+																</td>
+															</tr>
 
-                              <tr data-index='0' data-id='20'>
-                                <td>
-                                  <a>
-                                    <span
-                                      className='w-32 avatar gd-warning'
-                                      style={{ boxShadow: "none" }}
-                                    >
-                                      IN32456789
-                                    </span>
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>blood</a>
-                                </td>
+															<tr data-index="0" data-id="20">
+																<td>
+																	<a>
+																		<span
+																			className="w-32 avatar gd-warning"
+																			style={{ boxShadow: 'none' }}>
+																			IN32456789
+																		</span>
+																	</a>
+																</td>
+																<td className="flex">
+																	<a className="item-title text-color">
+																		Netflix hackathon
+																	</a>
+																</td>
+																<td className="flex">
+																	<a className="item-title text-color">blood</a>
+																</td>
 
-                                <td className='text-right row-actions'>
-                                  <Tooltip title='Receive Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-folder-plus' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Edit Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-edit-32' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Delete Request'>
-                                    <a className='danger'>
-                                      <i className='os-icon os-icon-ui-15' />
-                                    </a>
-                                  </Tooltip>
-                                </td>
-                              </tr>
+																<td className="text-right row-actions">
+																	<Tooltip title="Receive Request">
+																		<a className="secondary">
+																			<i className="os-icon os-icon-folder-plus" />
+																		</a>
+																	</Tooltip>
+																	<Tooltip title="Edit Request">
+																		<a className="secondary">
+																			<i className="os-icon os-icon-edit-32" />
+																		</a>
+																	</Tooltip>
+																	<Tooltip title="Delete Request">
+																		<a className="danger">
+																			<i className="os-icon os-icon-ui-15" />
+																		</a>
+																	</Tooltip>
+																</td>
+															</tr>
 
-                              <tr data-index='0' data-id='20'>
-                                <td>
-                                  <a>
-                                    <span
-                                      className='w-32 avatar gd-warning'
-                                      style={{ boxShadow: "none" }}
-                                    >
-                                      IN32456789
-                                    </span>
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>blood</a>
-                                </td>
+															<tr data-index="0" data-id="20">
+																<td>
+																	<a>
+																		<span
+																			className="w-32 avatar gd-warning"
+																			style={{ boxShadow: 'none' }}>
+																			IN32456789
+																		</span>
+																	</a>
+																</td>
+																<td className="flex">
+																	<a className="item-title text-color">
+																		Netflix hackathon
+																	</a>
+																</td>
+																<td className="flex">
+																	<a className="item-title text-color">blood</a>
+																</td>
 
-                                <td className='text-right row-actions'>
-                                  <Tooltip title='Receive Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-folder-plus' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Edit Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-edit-32' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Delete Request'>
-                                    <a className='danger'>
-                                      <i className='os-icon os-icon-ui-15' />
-                                    </a>
-                                  </Tooltip>
-                                </td>
-                              </tr>
+																<td className="text-right row-actions">
+																	<Tooltip title="Receive Request">
+																		<a className="secondary">
+																			<i className="os-icon os-icon-folder-plus" />
+																		</a>
+																	</Tooltip>
+																	<Tooltip title="Edit Request">
+																		<a className="secondary">
+																			<i className="os-icon os-icon-edit-32" />
+																		</a>
+																	</Tooltip>
+																	<Tooltip title="Delete Request">
+																		<a className="danger">
+																			<i className="os-icon os-icon-ui-15" />
+																		</a>
+																	</Tooltip>
+																</td>
+															</tr>
 
-                              <tr data-index='0' data-id='20'>
-                                <td>
-                                  <a>
-                                    <span
-                                      className='w-32 avatar gd-warning'
-                                      style={{ boxShadow: "none" }}
-                                    >
-                                      IN32456789
-                                    </span>
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>
-                                    Netflix hackathon
-                                  </a>
-                                </td>
-                                <td className='flex'>
-                                  <a className='item-title text-color'>blood</a>
-                                </td>
+															<tr data-index="0" data-id="20">
+																<td>
+																	<a>
+																		<span
+																			className="w-32 avatar gd-warning"
+																			style={{ boxShadow: 'none' }}>
+																			IN32456789
+																		</span>
+																	</a>
+																</td>
+																<td className="flex">
+																	<a className="item-title text-color">
+																		Netflix hackathon
+																	</a>
+																</td>
+																<td className="flex">
+																	<a className="item-title text-color">blood</a>
+																</td>
 
-                                <td className='text-right row-actions'>
-                                  <Tooltip title='Receive Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-folder-plus' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Edit Request'>
-                                    <a className='secondary'>
-                                      <i className='os-icon os-icon-edit-32' />
-                                    </a>
-                                  </Tooltip>
-                                  <Tooltip title='Delete Request'>
-                                    <a className='danger'>
-                                      <i className='os-icon os-icon-ui-15' />
-                                    </a>
-                                  </Tooltip>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className='content-panel compact'>
-          <Queue />
-        </div>
-      </div>
-    );
-  }
+																<td className="text-right row-actions">
+																	<Tooltip title="Receive Request">
+																		<a className="secondary">
+																			<i className="os-icon os-icon-folder-plus" />
+																		</a>
+																	</Tooltip>
+																	<Tooltip title="Edit Request">
+																		<a className="secondary">
+																			<i className="os-icon os-icon-edit-32" />
+																		</a>
+																	</Tooltip>
+																	<Tooltip title="Delete Request">
+																		<a className="danger">
+																			<i className="os-icon os-icon-ui-15" />
+																		</a>
+																	</Tooltip>
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div className="content-panel compact">
+					<Queue />
+				</div>
+			</div>
+		);
+	}
 }
 
 export default Antennatal;
