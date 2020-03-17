@@ -70,7 +70,7 @@ class CreateLeave extends Component {
 
                                         <div className="col-sm-4">
                                             <div className="form-group">
-                                                <label>Date of leave start </label>
+                                                <label>Appointment (Date/time)</label>
                                                 <div className="custom-date-input">
                                                     <DatePicker
                                                         selected={leave_date}

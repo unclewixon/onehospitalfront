@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import axios from 'axios';
 
+import 'react-widgets/dist/css/react-widgets.css';
 import './assets/icon_fonts_assets/feather/style.css';
 import './assets/css/main.css';
 import 'react-toastify/dist/ReactToastify.css';
@@ -35,7 +36,7 @@ import { togglePreloading } from './actions/general';
 import { loadRoles } from './actions/role';
 import { loadBanks, loadCountries } from './actions/utility';
 
-Notify.notifications.subscribe((alert) => alert instanceof Function && alert());
+Notify.notifications.subscribe(alert => alert instanceof Function && alert());
 const store = configureStore();
 const storage = new SSRStorage();
 
@@ -47,7 +48,7 @@ const initSettings = async () => {
 	store.dispatch(initFullscreen(fullscreen));
 };
 
-const axiosFetch = (url) => axios.get(url, { headers: defaultHeaders });
+const axiosFetch = url => axios.get(url, { headers: defaultHeaders });
 
 const initData = async () => {
 	await initSettings();

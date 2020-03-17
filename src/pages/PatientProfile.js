@@ -47,6 +47,11 @@ const AllergyRequest = lazy(() =>
 	import('../components/Patient/AllergyRequest')
 );
 
+const Antennatal = lazy(() => import('../components/Patient/Antennatal'));
+const AntennatalRequest = lazy(() =>
+	import('../components/Patient/AntennatalRequest')
+);
+
 const storage = new SSRStorage();
 
 const Page = ({ location }) => {
@@ -91,6 +96,10 @@ const Page = ({ location }) => {
 
 		case 'allergy-request':
 			return <AllergyRequest />;
+		case 'anc-visit-entry':
+			return <Antennatal />;
+		case 'antennal-request':
+			return <AntennatalRequest />;
 		default:
 			return <Dashboard />;
 	}
