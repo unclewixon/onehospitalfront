@@ -26,7 +26,7 @@ const RoomList = props => {
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
-
+	const [dataLoaded, setDataLoaded] = useState(false);
 	const handleInputChange = e => {
 		const { name, value } = e.target;
 		setState(prevState => ({ ...prevState, [name]: value }));
@@ -101,14 +101,16 @@ const RoomList = props => {
 		if (!loaded) {
 			props
 				.getAllRooms()
-				.then(response => {})
+				.then(response => {
+					setDataLoaded(true);
+				})
 				.catch(e => {
+					setDataLoaded(true);
 					notifyError(e.message || 'could not fetch room list');
 				});
 		}
 		setLoaded(true);
 	}, [props, loaded]);
-	console.log(props.Rooms);
 	return (
 		<div className="row">
 			<div className="col-lg-8">
@@ -127,7 +129,7 @@ const RoomList = props => {
 									</tr>
 								</thead>
 								<tbody>
-									{!loaded ? (
+									{!dataLoaded ? (
 										<tr>
 											<td colSpan="4" className="text-center">
 												<img alt="searching" src={searchingGIF} />

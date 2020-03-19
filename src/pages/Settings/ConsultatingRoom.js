@@ -24,6 +24,7 @@ const ConsultatingRoom = props => {
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(null);
+	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -99,12 +100,14 @@ const ConsultatingRoom = props => {
 	};
 
 	useEffect(() => {
-		console.log(save, edit);
 		if (!loaded) {
 			props
 				.getAllConsultatingRooms()
-				.then(response => {})
+				.then(response => {
+					setDataLoaded(true);
+				})
 				.catch(e => {
+					setDataLoaded(true);
 					notifyError(e.message || 'could not fetch consultating room');
 				});
 		}
@@ -132,7 +135,7 @@ const ConsultatingRoom = props => {
 					<div className="row">
 						<div className="col-lg-8">
 							<div className="row">
-								{!loaded ? (
+								{!dataLoaded ? (
 									<tr>
 										<td colSpan="4" className="align-self-center">
 											<img alt="searching" src={searchingGIF} />

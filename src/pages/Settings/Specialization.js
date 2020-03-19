@@ -24,6 +24,7 @@ const Specialization = props => {
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
+	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -102,8 +103,11 @@ const Specialization = props => {
 		if (!loaded) {
 			props
 				.getAllSpecialization()
-				.then(response => {})
+				.then(response => {
+					setDataLoaded(true);
+				})
 				.catch(e => {
+					setDataLoaded(true);
 					notifyError(e.message || 'could not fetch specializations');
 				});
 		}
@@ -131,7 +135,7 @@ const Specialization = props => {
 					<div className="row">
 						<div className="col-lg-8">
 							<div className="row">
-								{!loaded ? (
+								{!dataLoaded ? (
 									<tr>
 										<td colSpan="4" className="text-center">
 											<img alt="searching" src={searchingGIF} />

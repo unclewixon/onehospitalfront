@@ -12,13 +12,17 @@ import {
 
 const Diagnosis = props => {
 	const [loaded, setLoaded] = useState(false);
+	const [dataLoaded, setDataLoaded] = useState(false);
 
 	useEffect(() => {
 		if (!loaded) {
 			props
 				.getAllDiagnosises()
-				.then(response => {})
+				.then(response => {
+					setDataLoaded(true);
+				})
 				.catch(e => {
+					setDataLoaded(true);
 					notifyError(e.message || 'could not fetch diagnosis');
 				});
 		}
@@ -83,7 +87,7 @@ const Diagnosis = props => {
 													</tr>
 												</thead>
 												<tbody>
-													{!loaded ? (
+													{!dataLoaded ? (
 														<tr>
 															<td colSpan="4" className="text-center">
 																<img alt="searching" src={searchingGIF} />
