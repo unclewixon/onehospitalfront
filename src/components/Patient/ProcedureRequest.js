@@ -65,7 +65,7 @@ const ProcedureRequest = () => {
 							</div>
 
 							<div className="row">
-								<div className="form-group col-sm-4">
+								<div className="form-group col-sm-12">
 									<label>Primary Diagnosis</label>
 									<input
 										className="form-control"
@@ -75,29 +75,8 @@ const ProcedureRequest = () => {
 										ref={register}
 									/>
 								</div>
-
-								<div className="form-group col-sm-4">
-									<label>Bill number</label>
-									<input
-										className="form-control"
-										placeholder="Bill number"
-										type="text"
-										name="bill_number"
-										ref={register}
-									/>
-								</div>
-								<div className="form-group col-sm-4">
-									<label>Bill *</label>
-									<input
-										className="form-control"
-										placeholder="bill whatever"
-										type="number"
-										name="bill_*"
-										min="0"
-										ref={register}
-									/>
-								</div>
 							</div>
+
 							<div className="row">
 								<div className="form-group col-sm-12">
 									<label>Request Note</label>
@@ -108,6 +87,33 @@ const ProcedureRequest = () => {
 										rows="3"
 										placeholder="Enter request note"
 										ref={register}></textarea>
+								</div>
+							</div>
+
+							<div className="row">
+								<div className="form-group col-sm-3">
+									<div className="d-flex">
+										<input
+											className="form-control"
+											placeholder="Bill number"
+											type="radio"
+											name="bill"
+											ref={register}
+										/>
+										<label className="mx-1">Bill now</label>
+									</div>
+								</div>
+								<div className="form-group col-sm-3">
+									<div className="d-flex">
+										<input
+											className="form-control"
+											placeholder="bill later"
+											type="radio"
+											name="bill"
+											ref={register}
+										/>
+										<label className="mx-1">Bill later </label>
+									</div>
 								</div>
 							</div>
 

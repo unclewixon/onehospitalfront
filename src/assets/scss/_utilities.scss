@@ -192,10 +192,11 @@ a.with-avatar {
 }
 
 .labmgtAddButton {
-	position: absolute;
-	right: 3em;
+	position: fixed;
+	right: 2em;
+	bottom: 2em;
 	font-size: 2em;
-	background-color: rgb(220, 0, 78);
+	background-color: #28a745;
 	color: #fff;
 	width: 50px;
 	height: 50px;

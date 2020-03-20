@@ -114,11 +114,11 @@ export class LabDetail extends Component {
 								</tbody>
 								<div className="mt-4">
 									<button class="btn btn-link pl-0">
-										<i class="os-icon os-icon-edit-32"></i>
+										<i class="icon-printer"></i>
 										<span>CLOSE MANAGEMENT</span>
 									</button>
 									<button class="btn btn-link ml-0">
-										<i class="os-icon os-icon-edit-32"></i>
+										<i class="icon-printer"></i>
 										<span>PRINT VIEW</span>
 									</button>
 								</div>
@@ -174,16 +174,16 @@ export class LabDetail extends Component {
 								{tab === 'risk-assessment' && <RiskAssessment />}
 								{tab === 'delivery' && <Recorddelivery />}
 							</Suspense>
-
-							<button
-								type="button"
-								className="labmgtAddButton"
-								onClick={() => this.createForm()}>
-								+
-							</button>
 						</div>
 					</div>
 				</div>
+
+				<button
+					type="button"
+					className="labmgtAddButton btn-success"
+					onClick={() => this.createForm()}>
+					+
+				</button>
 			</div>
 		);
 	}
