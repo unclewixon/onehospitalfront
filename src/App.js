@@ -33,6 +33,7 @@ const Radiology = lazy(() => import('./pages/Radiology/index'));
 const Antennatal = lazy(() => import('./pages/Antennatal/index'));
 const IVF = lazy(() => import('./pages/IVF'));
 const Nicu = lazy(() => import('./pages/Nicu'));
+const LabMgt = lazy(() => import('./pages/LabourMgt/index'));
 const Logout = lazy(() => import('./pages/Logout'));
 
 const storage = new SSRStorage();
@@ -92,6 +93,7 @@ class App extends Component {
 												<Route path="/settings" component={Settings} />
 												<Route path="/hmo" component={Hmo} />
 												<Route path="/lab" component={ClinicalLab} />
+												<Route path="/lab-mgt" component={LabMgt} />
 												<Route path="/billing-paypoint" component={PayPoint} />
 												<Route path="/logout" component={Logout} />
 												<Route component={NoMatch} />

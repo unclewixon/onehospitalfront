@@ -20,6 +20,10 @@ import ModalViewPayPoint from './ModalViewPayPoint';
 import ModalUploadService from './ModalUploadService';
 import ModalUploadDiagnosis from './ModalUploadDiagnosis';
 import ModalEditService from './ModalEditService';
+import ModalCreateLabMeasurement from './ModalCreateLabMeasurement';
+import ModalCreateRiskAssessment from './ModalCreateRiskAssessment';
+import ModalCreateRecordDelivery from './ModalCreateRecordDelivery';
+import ModalCreateRecordVital from './ModalCreateRecordVital';
 
 const ModalDialogs = ({
 	create_staff,
@@ -38,6 +42,10 @@ const ModalDialogs = ({
 	create_new_appointment,
 	view_appointment_detail,
 	view_paypoint,
+	create_labour_measurement,
+	create_record_delivery,
+	create_risk_assessment,
+	create_record_vital,
 	upload_service,
 	upload_diagnosis,
 	edit_service,
@@ -60,6 +68,10 @@ const ModalDialogs = ({
 			{create_new_appointment && <AppointmentFormModal />}
 			{view_appointment_detail && <ModalViewAppointment />}
 			{view_paypoint && <ModalViewPayPoint />}
+			{create_labour_measurement && <ModalCreateLabMeasurement />}
+			{create_risk_assessment && <ModalCreateRiskAssessment />}
+			{create_record_delivery && <ModalCreateRecordDelivery />}
+			{create_record_vital && <ModalCreateRecordVital />}
 			{upload_service && <ModalUploadService />}
 			{upload_diagnosis && <ModalUploadDiagnosis />}
 			{edit_service.status && <ModalEditService />}
@@ -85,6 +97,10 @@ const mapStateToProps = (state, ownProps) => {
 		prepare_payroll: state.general.prepare_payroll,
 		edit_payroll: state.general.edit_payroll,
 		view_paypoint: state.general.view_paypoint,
+		create_labour_measurement: state.general.create_labour_measurement,
+		create_record_delivery: state.general.create_record_delivery,
+		create_risk_assessment: state.general.create_risk_assessment,
+		create_record_vital: state.general.create_record_vital,
 		upload_service: state.general.upload_service,
 		upload_diagnosis: state.general.upload_diagnosis,
 		edit_service: state.general.edit_service,

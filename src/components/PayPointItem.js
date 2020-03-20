@@ -11,12 +11,7 @@ export class PayPointItem extends Component {
 					<div className="label">{payPoint.type}</div>
 					<div className="value">
 						<span>&#8358;{payPoint.total}</span>
-						{payPoint.percent > 0 ? (
-							<span className="trending trending-down-basic">
-								<span>%{payPoint.percent}</span>
-								<i className="os-icon os-icon-arrow-2-down"></i>
-							</span>
-						) : null}
+
 						<div className="balance-link">
 							<button
 								className="btn btn-link btn-underlined"
