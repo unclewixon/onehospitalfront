@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
-
 import Select from 'react-select';
+import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { API_URI, socket } from '../../services/constants';
+import { request } from '../../services/utilities';
+import { API_URI, socket, patientAPI } from '../../services/constants';
+import { AddAllergies } from '../../actions/patient';
 import waiting from '../../assets/images/waiting.gif';
+import { notifySuccess, notifyError } from '../../services/notify';
+import { SubmissionError } from 'redux-form';
+
 const allergyCategories = [
 	{ value: 'Drug', label: 'Drug' },
 	{ value: 'Food', label: 'Food' },
@@ -19,14 +24,35 @@ const severity = [
 	{ value: 'severe', label: 'severe' },
 	{ value: 'intolerance', label: 'intolerance' },
 ];
-const AllergyRequest = () => {
+const AllergyRequest = props => {
 	const { register, handleSubmit, setValue } = useForm();
 	const [submitting, setSubmitting] = useState(false);
 
 	const onSubmit = async values => {
-		console.log(values);
+		let { patient } = props;
+		let data = {
+			category: values.category,
+			allergy: values.allergy,
+			severity: values.severity,
+			reaction: values.reaction,
+			patient_id: patient.id,
+		};
 		setSubmitting(true);
-		// socket.emit('saveAppointment', values);
+		try {
+			const rs = await request(
+				`${API_URI}${patientAPI}/save-allergies`,
+				'POST',
+				true,
+				data
+			);
+			props.AddAllergies(rs);
+
+			notifySuccess('allergies saved');
+			setSubmitting(false);
+		} catch (e) {
+			setSubmitting(false);
+			notifyError(e.message || 'could not save allergies');
+		}
 	};
 
 	return (
@@ -118,4 +144,10 @@ const AllergyRequest = () => {
 	);
 };
 
-export default AllergyRequest;
+const mapStateToProps = (state, ownProps) => {
+	return {
+		patient: state.user.patient,
+	};
+};
+
+export default connect(mapStateToProps, { AddAllergies })(AllergyRequest);

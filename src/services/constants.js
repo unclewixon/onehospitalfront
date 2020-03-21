@@ -22,6 +22,7 @@ export const searchAPI = '/patient/find';
 export const departmentAPI = '/departments';
 export const utilityAPI = '/utility';
 export const payrollAPI = '/hr/payroll';
+export const patientAPI = '/patient';
 
 export const months = [
 	'January',
