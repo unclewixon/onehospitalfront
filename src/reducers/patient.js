@@ -20,7 +20,7 @@ const patient = (state = INITIAL_STATE, action) => {
 		case GET_ALLERGIES:
 			return { ...state, allergies: action.payload };
 		case SAVE_ALLERGIES:
-			return { ...state, allergies: [action.payload, ...state.allergies] };
+			return { ...state, allergies: [...state.allergies, action.payload] };
 		default:
 			return state;
 	}

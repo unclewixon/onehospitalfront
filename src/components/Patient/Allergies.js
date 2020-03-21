@@ -82,24 +82,28 @@ class Allergies extends Component {
 												</tr>
 											) : (
 												<>
-													{allergies.map((allergy, i) => {
+													{allergies.map((item, i) => {
 														return (
-															<tr className="" data-index="0" data-id="20">
+															<tr
+																className=""
+																data-index="0"
+																data-id="20"
+																key={i}>
 																{/* <td>
 															<span className="text-bold">LAB/32456789</span>
 														</td> */}
 																<td>
-																	<span>{allergy.category}</span>
+																	<span>{item.category}</span>
 																</td>
 																<td>
-																	<span>{allergy.allergy}</span>
+																	<span>{item.allergy}</span>
 																</td>
 																{/* <td>
 															<Link to="/">{allergy.allergy}</Link>
 														</td> */}
-																<td>{allergy.reaction}</td>
+																<td>{item.reaction}</td>
 																<td className="text-center">
-																	<span>{allergy.severity}</span>
+																	<span>{item.severity}</span>
 																</td>
 																{/* <td className="row-actions text-right">
 															<Tooltip title="View Request">

@@ -46,8 +46,8 @@ const AllergyRequest = props => {
 				true,
 				data
 			);
-			props.AddAllergies(rs);
-			// history.push()
+			props.AddAllergies(rs.allergy);
+			history.push('settings/roles#allergies');
 			notifySuccess('allergies saved');
 			setSubmitting(false);
 		} catch (e) {
@@ -55,7 +55,6 @@ const AllergyRequest = props => {
 			notifyError(e.message || 'could not save allergies');
 		}
 	};
-	console.log(props, 'props here');
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">
@@ -148,6 +147,7 @@ const AllergyRequest = props => {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		patient: state.user.patient,
+		allergies: state.patient.allergies,
 	};
 };
 
