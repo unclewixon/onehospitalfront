@@ -7,7 +7,7 @@ import { API_URI, socket, patientAPI } from '../../services/constants';
 import { AddAllergies } from '../../actions/patient';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
-import { SubmissionError } from 'redux-form';
+import { useHistory } from 'react-router-dom';
 
 const allergyCategories = [
 	{ value: 'Drug', label: 'Drug' },
@@ -25,6 +25,7 @@ const severity = [
 	{ value: 'intolerance', label: 'intolerance' },
 ];
 const AllergyRequest = props => {
+	let history = useHistory();
 	const { register, handleSubmit, setValue } = useForm();
 	const [submitting, setSubmitting] = useState(false);
 
@@ -46,7 +47,7 @@ const AllergyRequest = props => {
 				data
 			);
 			props.AddAllergies(rs);
-
+			// history.push()
 			notifySuccess('allergies saved');
 			setSubmitting(false);
 		} catch (e) {
@@ -54,7 +55,7 @@ const AllergyRequest = props => {
 			notifyError(e.message || 'could not save allergies');
 		}
 	};
-
+	console.log(props, 'props here');
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">

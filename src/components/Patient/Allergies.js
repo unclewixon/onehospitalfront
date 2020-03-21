@@ -5,15 +5,20 @@ import { request } from '../../services/utilities';
 import { API_URI, patientAPI } from '../../services/constants';
 import { GetAllergies } from '../../actions/patient';
 import { notifySuccess, notifyError } from '../../services/notify';
+import searchingGIF from '../../assets/images/searching.gif';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
 
 class Allergies extends Component {
+	state = {
+		loaded: false,
+	};
 	componentDidMount() {
 		this.fetchAllergies();
 	}
 
 	fetchAllergies = async () => {
+		this.setState({ loaded: true });
 		const { patient } = this.props;
 		try {
 			const rs = await request(
@@ -22,12 +27,16 @@ class Allergies extends Component {
 				true
 			);
 			this.props.GetAllergies(rs);
+			this.setState({ loaded: false });
 		} catch (error) {
+			this.setState({ loaded: false });
+
 			notifyError('error fetching allergies for the patient');
 		}
 	};
 	render() {
 		const { location, allergies } = this.props;
+		const { loaded } = this.state;
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
@@ -65,26 +74,34 @@ class Allergies extends Component {
 											</tr>
 										</thead>
 										<tbody>
-											{allergies.map((allergy, i) => {
-												return (
-													<tr className="" data-index="0" data-id="20">
-														{/* <td>
+											{loaded ? (
+												<tr>
+													<td colSpan="4" className="text-center">
+														<img alt="searching" src={searchingGIF} />
+													</td>
+												</tr>
+											) : (
+												<>
+													{allergies.map((allergy, i) => {
+														return (
+															<tr className="" data-index="0" data-id="20">
+																{/* <td>
 															<span className="text-bold">LAB/32456789</span>
 														</td> */}
-														<td>
-															<span>{allergy.category}</span>
-														</td>
-														<td>
-															<span>{allergy.allergy}</span>
-														</td>
-														{/* <td>
+																<td>
+																	<span>{allergy.category}</span>
+																</td>
+																<td>
+																	<span>{allergy.allergy}</span>
+																</td>
+																{/* <td>
 															<Link to="/">{allergy.allergy}</Link>
 														</td> */}
-														<td>{allergy.reaction}</td>
-														<td className="text-center">
-															<span>{allergy.severity}</span>
-														</td>
-														{/* <td className="row-actions text-right">
+																<td>{allergy.reaction}</td>
+																<td className="text-center">
+																	<span>{allergy.severity}</span>
+																</td>
+																{/* <td className="row-actions text-right">
 															<Tooltip title="View Request">
 																<a href="#">
 																	<i className="os-icon os-icon-documents-03" />
@@ -96,9 +113,11 @@ class Allergies extends Component {
 																</a>
 															</Tooltip>
 														</td> */}
-													</tr>
-												);
-											})}
+															</tr>
+														);
+													})}
+												</>
+											)}
 										</tbody>
 									</table>
 								</div>
