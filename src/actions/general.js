@@ -19,6 +19,10 @@ import {
 	TOGGLE_CREATE_APPOINTMENT,
 	TOGGLE_VIEW_APPOINTMENT_DETAIL,
 	TOGGLE_VIEW_PAYPOINT,
+	TOGGLE_CREATE_LABOUR_MEASUREMENT,
+	TOGGLE_CREATE_RISK_ASSESSMENT,
+	TOGGLE_CREATE_RECORD_DELIVERY,
+	TOGGLE_CREATE_RECORD_VITAL,
 	TOGGLE_UPLOAD_SERVICE,
 	TOGGLE_UPLOAD_DIAGNOSIS,
 	TOGGLE_EDIT_SERIVCE,
@@ -172,6 +176,32 @@ export const toggleViewPayPoint = status => {
 		payload: status,
 	};
 };
+export const toggleCreateLabourMeasurement = status => {
+	return {
+		type: TOGGLE_CREATE_LABOUR_MEASUREMENT,
+		payload: status,
+	};
+};
+
+export const toggleCreateRiskAssessment = status => {
+	return {
+		type: TOGGLE_CREATE_RISK_ASSESSMENT,
+		payload: status,
+	};
+};
+
+export const toggleCreateRecordVital = status => {
+	return {
+		type: TOGGLE_CREATE_RECORD_VITAL,
+		payload: status,
+	};
+};
+export const toggleCreateRecordDelivery = status => {
+	return {
+		type: TOGGLE_CREATE_RECORD_DELIVERY,
+		payload: status,
+	};
+};
 
 export const toggleUploadService = status => {
 	return {
@@ -214,6 +244,10 @@ export const closeModals = () => {
 		dispatch(toggleNewAppointment(false));
 		dispatch(toggleViewAppointDetail(false));
 		dispatch(toggleViewPayPoint(false));
+		dispatch(toggleCreateLabourMeasurement(false));
+		dispatch(toggleCreateRiskAssessment(false));
+		dispatch(toggleCreateRecordDelivery(false));
+		dispatch(toggleCreateRecordVital(false));
 		dispatch(toggleUploadService(false));
 		dispatch(toggleUploadDiagnosis(false));
 		dispatch(toggleEditService(false, null));
@@ -393,5 +427,36 @@ export const editService = (action, data) => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleEditService(action, data));
+	};
+};
+
+export const createLabourMeasurement = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleCreateLabourMeasurement(action));
+	};
+};
+
+export const createRiskAssessment = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleCreateRiskAssessment(action));
+	};
+};
+export const createRecordDelivery = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleCreateRecordDelivery(action));
+	};
+};
+
+export const createRecordVital = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleCreateRecordVital(action));
 	};
 };

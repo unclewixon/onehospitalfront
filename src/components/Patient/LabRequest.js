@@ -67,7 +67,7 @@ const LabRequest = () => {
 									/>
 								</div>
 								<div className="form-group col-sm-6">
-									<label>Label Categories</label>
+									<label>Lab Categories</label>
 									<Select
 										name="lab_categories"
 										placeholder="Select lab categories"
@@ -97,7 +97,7 @@ const LabRequest = () => {
 									/>
 								</div>
 								<div className="form-group col-sm-6">
-									<label>Label Tests to request</label>
+									<label>Lab Tests to request</label>
 									<Select
 										name="lab_tests_torequest"
 										placeholder="Select lab tests to request"
