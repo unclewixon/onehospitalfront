@@ -154,3 +154,4 @@ export const DELETE_DIAGNOSIS = 'DELETE_DIAGNOSIS';
 //Patient
 export const SAVE_ALLERGIES = 'SAVE_ALLERGIES';
 export const GET_ALLERGIES = 'GET_ALLERGIES';
+export const ALLERGY = 'ALLERGY';

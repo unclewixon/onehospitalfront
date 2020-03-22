@@ -3,11 +3,13 @@ import {
 	PREV_STEP,
 	SAVE_ALLERGIES,
 	GET_ALLERGIES,
+	ALLERGY,
 } from '../actions/types';
 
 const INITIAL_STATE = {
 	formStep: 1,
 	formData: {},
+	allergy: {},
 	allergies: [],
 };
 
@@ -21,6 +23,8 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, allergies: action.payload };
 		case SAVE_ALLERGIES:
 			return { ...state, allergies: [...state.allergies, action.payload] };
+		case ALLERGY:
+			return { ...state, allergy: action.payload };
 		default:
 			return state;
 	}

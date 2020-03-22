@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { request } from '../../services/utilities';
 import { API_URI, patientAPI } from '../../services/constants';
-import { GetAllergies } from '../../actions/patient';
+import { GetAllergies, Allergy } from '../../actions/patient';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { Link, withRouter } from 'react-router-dom';
@@ -30,7 +30,6 @@ class Allergies extends Component {
 			this.setState({ loaded: false });
 		} catch (error) {
 			this.setState({ loaded: false });
-
 			notifyError('error fetching allergies for the patient');
 		}
 	};
@@ -70,7 +69,7 @@ class Allergies extends Component {
 												<th>Allergy</th>
 												<th>Reaction</th>
 												<th className="text-center">Severity</th>
-												{/* <th className="text-right" /> */}
+												<th className="text-right" />
 											</tr>
 										</thead>
 										<tbody>
@@ -105,18 +104,20 @@ class Allergies extends Component {
 																<td className="text-center">
 																	<span>{item.severity}</span>
 																</td>
-																{/* <td className="row-actions text-right">
-															<Tooltip title="View Request">
-																<a href="#">
-																	<i className="os-icon os-icon-documents-03" />
-																</a>
-															</Tooltip>
-															<Tooltip title="Print Request">
-																<a className="ml-2" href="#">
-																	<i className="icon-feather-printer" />
-																</a>
-															</Tooltip>
-														</td> */}
+																<td className="row-actions text-right">
+																	<Tooltip title="Update allergy">
+																		<Link
+																			className=""
+																			to={`${location.pathname}#update-allergy`}
+																			state={item}>
+																			<i
+																				className="os-icon os-icon-ui-49"
+																				onClick={() =>
+																					this.props.Allergy(item)
+																				}></i>
+																		</Link>
+																	</Tooltip>
+																</td>
 															</tr>
 														);
 													})}
@@ -142,5 +143,5 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default withRouter(
-	connect(mapStateToProps, { GetAllergies })(Allergies)
+	connect(mapStateToProps, { GetAllergies, Allergy })(Allergies)
 );
