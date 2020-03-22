@@ -1,10 +1,41 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { request } from '../../services/utilities';
+import { API_URI, patientAPI } from '../../services/constants';
+import { GetAllergies, Allergy } from '../../actions/patient';
+import { notifySuccess, notifyError } from '../../services/notify';
+import searchingGIF from '../../assets/images/searching.gif';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
+
 class Allergies extends Component {
+	state = {
+		loaded: false,
+	};
+	componentDidMount() {
+		this.fetchAllergies();
+	}
+
+	fetchAllergies = async () => {
+		this.setState({ loaded: true });
+		const { patient } = this.props;
+		try {
+			const rs = await request(
+				`${API_URI}${patientAPI}/${patient.id}/allergies`,
+				'GET',
+				true
+			);
+			this.props.GetAllergies(rs);
+			this.setState({ loaded: false });
+		} catch (error) {
+			this.setState({ loaded: false });
+			notifyError('error fetching allergies for the patient');
+		}
+	};
 	render() {
-		const { location } = this.props;
+		const { location, allergies } = this.props;
+		const { loaded } = this.state;
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
@@ -33,7 +64,7 @@ class Allergies extends Component {
 										className="table table-theme v-middle table-hover">
 										<thead>
 											<tr>
-												<th>ID</th>
+												{/* <th>ID</th> */}
 												<th>Category</th>
 												<th>Allergy</th>
 												<th>Reaction</th>
@@ -42,90 +73,56 @@ class Allergies extends Component {
 											</tr>
 										</thead>
 										<tbody>
-											<tr className="" data-index="0" data-id="20">
-												<td>
-													<span className="text-bold">LAB/32456789</span>
-												</td>
-												<td>
-													<span>20-Jan-2020</span>
-													<span className="smaller lighter ml-1">3:22pm</span>
-												</td>
-												<td>
-													<Link to="/">Uchechi I.</Link>
-												</td>
-												<td>Blood</td>
-												<td className="text-center">
-													<span className="badge badge-secondary">pending</span>
-												</td>
-												<td className="row-actions text-right">
-													<Tooltip title="View Request">
-														<a href="#">
-															<i className="os-icon os-icon-documents-03" />
-														</a>
-													</Tooltip>
-													<Tooltip title="Print Request">
-														<a className="ml-2" href="#">
-															<i className="icon-feather-printer" />
-														</a>
-													</Tooltip>
-												</td>
-											</tr>
-											<tr className="" data-index="0" data-id="20">
-												<td>
-													<span className="text-bold">LAB/32456789</span>
-												</td>
-												<td>
-													<span>20-Jan-2020</span>
-													<span className="smaller lighter ml-1">3:22pm</span>
-												</td>
-												<td>
-													<Link to="/">Uchechi I.</Link>
-												</td>
-												<td>Blood</td>
-												<td className="text-center">
-													<span className="badge badge-success">completed</span>
-												</td>
-												<td className="row-actions text-right">
-													<Tooltip title="View Request">
-														<a href="#">
-															<i className="os-icon os-icon-documents-03" />
-														</a>
-													</Tooltip>
-													<Tooltip title="Print Request">
-														<a className="ml-2" href="#">
-															<i className="icon-feather-printer" />
-														</a>
-													</Tooltip>
-												</td>
-											</tr>
-											<tr className="" data-index="0" data-id="20">
-												<td>
-													<span className="text-bold">LAB/32456789</span>
-												</td>
-												<td>
-													<span>20-Jan-2020</span>
-													<span className="smaller lighter ml-1">3:22pm</span>
-												</td>
-												<td>
-													<Link to="/">Uchechi I.</Link>
-												</td>
-												<td>Blood</td>
-												<td className="text-center">
-													<span className="badge badge-danger">pending</span>
-												</td>
-												<td className="row-actions text-right">
-													<Tooltip title="View Request">
-														<a href="#">
-															<i className="os-icon os-icon-documents-03" />
-														</a>
-													</Tooltip>
-													<Tooltip title="Print Request">
-														<a className="ml-2" href="#">
-															<i className="icon-feather-printer" />
-														</a>
-													</Tooltip>
-												</td>
-											</tr>
+											{loaded ? (
+												<tr>
+													<td colSpan="4" className="text-center">
+														<img alt="searching" src={searchingGIF} />
+													</td>
+												</tr>
+											) : (
+												<>
+													{allergies.map((item, i) => {
+														return (
+															<tr
+																className=""
+																data-index="0"
+																data-id="20"
+																key={i}>
+																{/* <td>
+															<span className="text-bold">LAB/32456789</span>
+														</td> */}
+																<td>
+																	<span>{item.category}</span>
+																</td>
+																<td>
+																	<span>{item.allergy}</span>
+																</td>
+																{/* <td>
+															<Link to="/">{allergy.allergy}</Link>
+														</td> */}
+																<td>{item.reaction}</td>
+																<td className="text-center">
+																	<span>{item.severity}</span>
+																</td>
+																<td className="row-actions text-right">
+																	<Tooltip title="Update allergy">
+																		<Link
+																			className=""
+																			to={`${location.pathname}#update-allergy`}
+																			state={item}>
+																			<i
+																				className="os-icon os-icon-ui-49"
+																				onClick={() =>
+																					this.props.Allergy(item)
+																				}></i>
+																		</Link>
+																	</Tooltip>
+																</td>
+															</tr>
+														);
+													})}
+												</>
+											)}
 										</tbody>
 									</table>
 								</div>
@@ -138,4 +135,13 @@ class Allergies extends Component {
 	}
 }
 
-export default withRouter(Allergies);
+const mapStateToProps = (state, ownProps) => {
+	return {
+		patient: state.user.patient,
+		allergies: state.patient.allergies,
+	};
+};
+
+export default withRouter(
+	connect(mapStateToProps, { GetAllergies, Allergy })(Allergies)
+);
