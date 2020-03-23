@@ -110,67 +110,61 @@ const ServiceCategoryList = props => {
 		}
 		setLoaded(true);
 	}, [props, loaded]);
+
 	return (
 		<div className="row">
 			<div className="col-lg-8">
-				<div>
-					<div className="pipelines-w">
-						<div className="projects-list">
-							<div className="project-box">
-								<div className="project-info">
-									<div className="element-wrapper compact pt-4">
-										<h6 className="element-header">Services Categories</h6>
-										<div className="element-box-tp">
-											<table className="table table-clean">
-												<tbody>
-													{!dataLoaded ? (
-														<tr>
-															<td colSpan="4" className="text-center">
-																<img alt="searching" src={searchingGIF} />
-															</td>
-														</tr>
-													) : (
-														<>
-															{props.ServiceCategories.map((category, i) => {
-																return (
-																	<tr key={i}>
-																		<td>
-																			<div className="value">
-																				{category.name}
-																			</div>
-																		</td>
-																		<td className="row-actions text-right">
-																			<a onClick={() => onClickEdit(category)}>
-																				<i className="os-icon os-icon-ui-49"></i>
-																			</a>
-																			<a href="#">
-																				<i className="os-icon os-icon-grid-10"></i>
-																			</a>
-																			<a
-																				className="danger"
-																				onClick={() => confirmDelete(category)}>
-																				<i className="os-icon os-icon-ui-15"></i>
-																			</a>
-																		</td>
-																	</tr>
-																);
-															})}
-														</>
-													)}
-												</tbody>
-											</table>
-											<a className="centered-load-more-link" href="#">
-												<span>Load More Categories</span>
-											</a>
-										</div>
-									</div>
-								</div>
-							</div>
+				<div className="element-wrapper">
+					<div className="element-box">
+						<div className="table-responsive">
+							<table className="table table-striped">
+								<thead>
+									<tr>
+										<th>S/N</th>
+										<th>Name</th>
+										<th className="text-right">Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									{!loaded ? (
+										<tr>
+											<td colSpan="4" className="text-center">
+												<img alt="searching" src={searchingGIF} />
+											</td>
+										</tr>
+									) : (
+										<>
+											{props.ServiceCategories.map((category, i) => {
+												return (
+													<tr key={i}>
+														<td>{i + 1}</td>
+														<td>
+															<div className="value">{category.name}</div>
+														</td>
+														<td className="row-actions text-right">
+															<a onClick={() => onClickEdit(category)}>
+																<i className="os-icon os-icon-ui-49"></i>
+															</a>
+															<a href="#">
+																<i className="os-icon os-icon-grid-10"></i>
+															</a>
+															<a
+																className="danger"
+																onClick={() => confirmDelete(category)}>
+																<i className="os-icon os-icon-ui-15"></i>
+															</a>
+														</td>
+													</tr>
+												);
+											})}
+										</>
+									)}
+								</tbody>
+							</table>
 						</div>
 					</div>
 				</div>
 			</div>
-
 			<div className="col-lg-4 col-xxl-3">
 				<div className="pipeline white lined-warning">
 					<form onSubmit={edit ? onEditServiceCategory : onAddServiceCat}>

@@ -1,5 +1,5 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import capitalize from 'lodash.capitalize';
 import $ from 'jquery';
 import { connect } from 'react-redux';
@@ -8,8 +8,9 @@ import avatar1 from '../../assets/images/avatar1.jpg';
 import HrMenu from './HrMenu';
 // import DoctorMenu from './DoctorMenu';
 import InventoryMenu from './InventoryMenu';
-import AdminMenu from './AdminMenu';
+import SettingsMenu from './SettingsMenu';
 import FrontDeskMenu from './FrontDeskMenu';
+import HMOMenu from './HMOMenu';
 import { fullname } from '../../services/utilities';
 
 class MainMenu extends Component {
@@ -56,10 +57,10 @@ class MainMenu extends Component {
 				}`}
 				ref="menu_activated_on_hover">
 				<div className="logo-w">
-					<Link className="logo" to="/">
+					<a className="logo">
 						<div className="logo-element" />
 						<div className="logo-label">Deda Hospital</div>
-					</Link>
+					</a>
 				</div>
 				<div className="logged-user-w avatar-inline">
 					<div className="logged-user-i">
@@ -89,7 +90,8 @@ class MainMenu extends Component {
 					{(role === 'front-desk' || role === 'admin') && <FrontDeskMenu />}
 					{(role === 'hr' || role === 'admin') && <HrMenu />}
 					{(role === 'inventory' || role === 'admin') && <InventoryMenu />}
-					{role === 'admin' && <AdminMenu />}
+					{(role === 'hmo' || role === 'admin') && <HMOMenu />}
+					{role === 'admin' && <SettingsMenu />}
 				</ul>
 			</div>
 		);
