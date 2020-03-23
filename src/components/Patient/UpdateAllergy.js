@@ -3,7 +3,7 @@ import Select from 'react-select';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { request } from '../../services/utilities';
-import { API_URI, socket, patientAPI } from '../../services/constants';
+import { API_URI, patientAPI } from '../../services/constants';
 import { AddAllergies } from '../../actions/patient';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
@@ -24,7 +24,7 @@ const severity = [
 	{ value: 'severe', label: 'severe' },
 	{ value: 'intolerance', label: 'intolerance' },
 ];
-const AllergyRequest = props => {
+const UpdateAllergy = props => {
 	let history = useHistory();
 	const { register, handleSubmit, setValue } = useForm();
 	const [submitting, setSubmitting] = useState(false);
@@ -55,10 +55,11 @@ const AllergyRequest = props => {
 			notifyError(e.message || 'could not save allergies');
 		}
 	};
+	let { allergy } = props;
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">
-				<h6 className="element-header">New Allergy</h6>
+				<h6 className="element-header">Update Allergy</h6>
 				<div className="element-box">
 					<div className="form-block w-100">
 						<form onSubmit={handleSubmit(onSubmit)}>
@@ -131,7 +132,7 @@ const AllergyRequest = props => {
 										{submitting ? (
 											<img src={waiting} alt="submitting" />
 										) : (
-											'Create Allergy Request'
+											'Update Allergy Request'
 										)}
 									</button>
 								</div>
@@ -148,7 +149,8 @@ const mapStateToProps = (state, ownProps) => {
 	return {
 		patient: state.user.patient,
 		allergies: state.patient.allergies,
+		allergy: state.patient.allergy,
 	};
 };
 
-export default connect(mapStateToProps, { AddAllergies })(AllergyRequest);
+export default connect(mapStateToProps, { AddAllergies })(UpdateAllergy);

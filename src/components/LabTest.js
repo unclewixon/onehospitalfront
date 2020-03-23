@@ -33,7 +33,7 @@ const LabTest = props => {
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
-
+	const [dataLoaded, setDataLoaded] = useState(false);
 	const [parameters, setParameter] = useState(null);
 
 	const handleMultipleSelectInput = selectedOption => {
@@ -123,8 +123,11 @@ const LabTest = props => {
 		if (!loaded) {
 			props
 				.getAllLabTests()
-				.then(response => {})
+				.then(response => {
+					setDataLoaded(true);
+				})
 				.catch(e => {
+					setDataLoaded(true);
 					notifyError(e.message || 'could not fetch lab tests');
 				});
 			props.getAllLabTestCategories();
@@ -142,7 +145,7 @@ const LabTest = props => {
 			<div className="col-lg-8">
 				<div>
 					<div className="row">
-						{!loaded ? (
+						{!dataLoaded ? (
 							<tr>
 								<td colSpan="4" className="text-center">
 									<img alt="searching" src={searchingGIF} />

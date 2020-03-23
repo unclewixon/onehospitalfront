@@ -47,6 +47,7 @@ const AllergyRequest = lazy(() =>
 	import('../components/Patient/AllergyRequest')
 );
 
+const UpdateAllergy = lazy(() => import('../components/Patient/UpdateAllergy'));
 const Antennatal = lazy(() => import('../components/Patient/Antennatal'));
 const AntennatalRequest = lazy(() =>
 	import('../components/Patient/AntennatalRequest')
@@ -96,6 +97,8 @@ const Page = ({ location }) => {
 
 		case 'allergy-request':
 			return <AllergyRequest />;
+		case 'update-allergy':
+			return <UpdateAllergy />;
 		case 'anc-visit-entry':
 			return <Antennatal />;
 		case 'antennal-request':

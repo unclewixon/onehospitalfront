@@ -23,6 +23,7 @@ const ServiceCategoryList = props => {
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
+	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -99,8 +100,11 @@ const ServiceCategoryList = props => {
 		if (!loaded) {
 			props
 				.getAllServiceCategory()
-				.then(response => {})
+				.then(response => {
+					setDataLoaded(true);
+				})
 				.catch(e => {
+					setDataLoaded(true);
 					notifyError(e.message || 'could not fetch service categories');
 				});
 		}

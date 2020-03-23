@@ -23,6 +23,7 @@ const LabCategory = props => {
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
+	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -98,8 +99,11 @@ const LabCategory = props => {
 		if (!loaded) {
 			props
 				.getAllLabTestCategories()
-				.then(response => {})
+				.then(response => {
+					setDataLoaded(true);
+				})
 				.catch(e => {
+					setDataLoaded(true);
 					notifyError(e.message || 'could not fetch lab categories');
 				});
 		}
@@ -112,7 +116,7 @@ const LabCategory = props => {
 				<div>
 					<div className="pipelines-w">
 						<div className="row">
-							{!loaded ? (
+							{!dataLoaded ? (
 								<tr>
 									<td colSpan="4" className="text-center">
 										<img alt="searching" src={searchingGIF} />

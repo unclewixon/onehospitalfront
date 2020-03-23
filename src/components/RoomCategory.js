@@ -26,6 +26,7 @@ const RoomCategory = props => {
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
+	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -104,7 +105,9 @@ const RoomCategory = props => {
 		if (!loaded) {
 			props
 				.getAllRoomCategories()
-				.then(response => {})
+				.then(response => {
+					setDataLoaded(true);
+				})
 				.catch(e => {
 					notifyError(e.message || 'could not fetch room categories');
 				});
@@ -128,7 +131,7 @@ const RoomCategory = props => {
 									</tr>
 								</thead>
 								<tbody>
-									{!loaded ? (
+									{!dataLoaded ? (
 										<tr>
 											<td colSpan="4" className="text-center">
 												<img alt="searching" src={searchingGIF} />

@@ -58,9 +58,7 @@ class ModalViewPayPoint extends Component {
 										<tr data-index="0" data-id="20">
 											<td>
 												<a>
-													<span className="w-32 avatar gd-warning">
-														IN32456789
-													</span>
+													<span className="w-32 gd-warning">IN32456789</span>
 												</a>
 											</td>
 											<td className="flex">
@@ -75,27 +73,7 @@ class ModalViewPayPoint extends Component {
 										<tr data-index="0" data-id="20">
 											<td>
 												<a>
-													<span className="w-32 avatar gd-warning">
-														IN32456789
-													</span>
-												</a>
-											</td>
-											<td className="flex">
-												<a className="item-title text-color">
-													Netflix hackathon
-												</a>
-											</td>
-											<td className="flex">
-												<a className="item-title text-color">blood</a>
-											</td>
-										</tr>
-
-										<tr data-index="0" data-id="20">
-											<td>
-												<a>
-													<span className="w-32 avatar gd-warning">
-														IN32456789
-													</span>
+													<span className="w-32 gd-warning">IN32456789</span>
 												</a>
 											</td>
 											<td className="flex">
@@ -111,9 +89,7 @@ class ModalViewPayPoint extends Component {
 										<tr data-index="0" data-id="20">
 											<td>
 												<a>
-													<span className="w-32 avatar gd-warning">
-														IN32456789
-													</span>
+													<span className="w-32 gd-warning">IN32456789</span>
 												</a>
 											</td>
 											<td className="flex">
@@ -129,9 +105,23 @@ class ModalViewPayPoint extends Component {
 										<tr data-index="0" data-id="20">
 											<td>
 												<a>
-													<span className="w-32 avatar gd-warning">
-														IN32456789
-													</span>
+													<span className="w-32 gd-warning">IN32456789</span>
+												</a>
+											</td>
+											<td className="flex">
+												<a className="item-title text-color">
+													Netflix hackathon
+												</a>
+											</td>
+											<td className="flex">
+												<a className="item-title text-color">blood</a>
+											</td>
+										</tr>
+
+										<tr data-index="0" data-id="20">
+											<td>
+												<a>
+													<span className="w-32 gd-warning">IN32456789</span>
 												</a>
 											</td>
 											<td className="flex">

@@ -21,6 +21,10 @@ import {
 	TOGGLE_UPLOAD_SERVICE,
 	TOGGLE_UPLOAD_DIAGNOSIS,
 	TOGGLE_EDIT_SERIVCE,
+	TOGGLE_CREATE_LABOUR_MEASUREMENT,
+	TOGGLE_CREATE_RISK_ASSESSMENT,
+	TOGGLE_CREATE_RECORD_VITAL,
+	TOGGLE_CREATE_RECORD_DELIVERY,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -42,6 +46,10 @@ const INITIAL_STATE = {
 	prepare_payroll: false,
 	edit_payroll: false,
 	view_paypoint: false,
+	create_labour_measurement: false,
+	create_risk_assessment: false,
+	create_record_delivery: false,
+	create_record_vital: false,
 	payroll_id: null,
 	payroll_staff: null,
 	upload_service: false,
@@ -97,6 +105,14 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, edit_payroll: action.payload, payroll_id: action.id };
 		case TOGGLE_VIEW_PAYPOINT:
 			return { ...state, view_paypoint: action.payload };
+		case TOGGLE_CREATE_LABOUR_MEASUREMENT:
+			return { ...state, create_labour_measurement: action.payload };
+		case TOGGLE_CREATE_RISK_ASSESSMENT:
+			return { ...state, create_risk_assessment: action.payload };
+		case TOGGLE_CREATE_RECORD_DELIVERY:
+			return { ...state, create_record_delivery: action.payload };
+		case TOGGLE_CREATE_RECORD_VITAL:
+			return { ...state, create_record_vital: action.payload };
 		case TOGGLE_UPLOAD_SERVICE:
 			return { ...state, upload_service: action.payload };
 		case TOGGLE_UPLOAD_DIAGNOSIS:
