@@ -4,8 +4,10 @@ import { Field, reduxForm, reset } from 'redux-form';
 import searchingGIF from '../assets/images/searching.gif';
 import { renderTextInput, renderTextArea } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
-import DatePicker from 'antd/lib/date-picker';
+import { DatePicker } from 'antd';
+import moment from 'moment';
 const { RangePicker } = DatePicker;
+
 class CreateExcuseDuty extends Component {
 	state = {
 		submitting: false,
@@ -53,7 +55,7 @@ class CreateExcuseDuty extends Component {
 							<div className="row">
 								<div className="col-sm-6">
 									<label>Date</label>
-									<RangePicker />
+									<RangePicker defaultValue={[moment(), moment()]} />
 								</div>
 								<div className="col-sm-6">
 									<Field

@@ -18,6 +18,7 @@ import {
 	TOGGLE_PREPARE_PAYROLL,
 	TOGGLE_EDIT_PAYROLL,
 	TOGGLE_VIEW_PAYPOINT,
+	TOGGLE_CREATE_VOUCHER,
 	TOGGLE_UPLOAD_SERVICE,
 	TOGGLE_UPLOAD_DIAGNOSIS,
 	TOGGLE_EDIT_SERIVCE,
@@ -46,6 +47,7 @@ const INITIAL_STATE = {
 	prepare_payroll: false,
 	edit_payroll: false,
 	view_paypoint: false,
+	create_voucher: false,
 	create_labour_measurement: false,
 	create_risk_assessment: false,
 	create_record_delivery: false,
@@ -113,6 +115,8 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, create_record_delivery: action.payload };
 		case TOGGLE_CREATE_RECORD_VITAL:
 			return { ...state, create_record_vital: action.payload };
+		case TOGGLE_CREATE_VOUCHER:
+			return { ...state, create_voucher: action.payload };
 		case TOGGLE_UPLOAD_SERVICE:
 			return { ...state, upload_service: action.payload };
 		case TOGGLE_UPLOAD_DIAGNOSIS:
