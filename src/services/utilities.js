@@ -10,6 +10,7 @@ import DatePicker from 'react-datepicker';
 
 import SSRStorage from './storage';
 import { TOKEN_COOKIE } from './constants';
+import axios from 'axios';
 
 export const formatCurrency = amount => `₦${numeral(amount).format('0,0.00')}`;
 
@@ -50,6 +51,13 @@ const checkStatus = async response => {
 
 export const defaultHeaders = {
 	Accept: 'application/json',
+	'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH',
+	'Content-Type': 'application/json',
+};
+
+export const patchHeaders = {
+	Accept: 'application/json',
+	'Access-Control-Allow-Origin': '*',
 	'Content-Type': 'application/json',
 };
 
@@ -58,7 +66,27 @@ const headers = token => {
 	return { ...defaultHeaders, Authorization: jwt };
 };
 
+const headersPatch = token => {
+	const jwt = `Bearer ${token}`;
+	return { ...patchHeaders, Authorization: jwt };
+};
+
 const parseJSON = response => response.json();
+
+export const requestPatch = async (url, authed = false, data) => {
+	axios.defaults.headers.post['Access-Control-Allow-Origin'] =
+		'GET, POST,HEAD, OPTIONS,PUT, DELETE';
+	axios.defaults.headers.post['Access-Control-Request-Headers'] = '*';
+	axios.defaults.headers.post['Content-Type'] = 'application/json';
+	axios.defaults.headers.post['Accept'] = 'application/json';
+	if (authed) {
+		console.log('f');
+		const token = await new SSRStorage().getItem(TOKEN_COOKIE);
+		axios.defaults.headers.common['Authorization'] = token;
+	}
+	const result = await axios.patch(url, data);
+	return parseJSON(result);
+};
 
 export const request = async (url, method, authed = false, data) => {
 	// prettier-ignore
@@ -79,10 +107,10 @@ export const upload = async (url, method, body) => {
 };
 
 // prettier-ignore
-export const renderTextInput = ({input, label, type, id, placeholder, meta: { touched, error }}) => (
+export const renderTextInput = ({ input, label, type, id, placeholder, meta: { touched, error } }) => (
 	<div
 		className={`form-group ${touched &&
-			(error ? 'has-error has-danger' : '')}`}>
+		(error ? 'has-error has-danger' : '')}`}>
 		<label htmlFor={id}>{label}</label>
 		<input
 			{...input}
@@ -128,10 +156,10 @@ export const renderTextArea = ({
 );
 
 // prettier-ignore
-export const renderTextInputGroup = ({input, append, label, icon, type, id, placeholder, meta: { touched, error }}) => (
+export const renderTextInputGroup = ({ input, append, label, icon, type, id, placeholder, meta: { touched, error } }) => (
 	<div
 		className={`form-group ${touched &&
-			(error ? 'has-error has-danger' : '')}`}>
+		(error ? 'has-error has-danger' : '')}`}>
 		<label htmlFor={id}>{label}</label>
 		<div className="input-group">
 			{!append && (

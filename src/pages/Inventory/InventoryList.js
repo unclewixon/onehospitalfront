@@ -1,30 +1,246 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 
 import InventoryItem from '../../components/InventoryItem';
 import { createInventory } from '../../actions/general';
 
-import { request } from '../../services/utilities';
-import { API_URI, inventoryAPI } from '../../services/constants';
+import { parseRoster, request, upload } from '../../services/utilities';
+import {
+	API_URI,
+	inventoryAPI,
+	inventoryDownloadAPI,
+	inventoryUploadAPI,
+	rosterAPI,
+} from '../../services/constants';
 import { loadInventories } from '../../actions/inventory';
+import Popover from 'antd/lib/popover';
+import DatePicker from 'react-datepicker';
+import waiting from '../../assets/images/waiting.gif';
+import { notifyError, notifySuccess } from '../../services/notify';
+import moment from 'moment';
+
+const DownloadInventory = ({ onHide, downloading, doDownload }) => {
+	return (
+		<div
+			className="onboarding-modal fade animated show"
+			role="dialog"
+			style={{ width: '300px' }}>
+			<div className="modal-centered" role="document">
+				<div className="modal-content text-center">
+					<button
+						aria-label="Close"
+						className="close"
+						type="button"
+						onClick={() => onHide()}>
+						<span className="os-icon os-icon-close"></span>
+					</button>
+					<div className="onboarding-content with-gradient">
+						<div className="form-block">
+							<form onSubmit={e => doDownload(e)}>
+								<div className="row">
+									<div className="col-sm-12 text-right">
+										<button
+											className="btn btn-primary"
+											disabled={downloading}
+											type="submit">
+											{downloading ? (
+												<img src={waiting} alt="submitting" />
+											) : (
+												'download'
+											)}
+										</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+};
+
+const UploadInventory = ({ onHide, uploading, doUpload, categories }) => {
+	const [Category, setCategory] = useState('');
+	const [files, setFile] = useState(null);
+	let uploadAttachment;
+
+	return (
+		<div
+			className="onboarding-modal fade animated show"
+			role="dialog"
+			style={{ width: '300px' }}>
+			<div className="modal-centered" role="document">
+				<div className="modal-content text-center">
+					<button
+						aria-label="Close"
+						className="close"
+						type="button"
+						onClick={() => onHide()}>
+						<span className="os-icon os-icon-close"></span>
+					</button>
+					<div className="onboarding-content with-gradient">
+						<div className="form-block">
+							<form onSubmit={e => doUpload(e, files, categories)}>
+								<div className="row">
+									<div className="col-sm-12">
+										<div className="form-group">
+											<label htmlFor="category">Category</label>
+											<select
+												id="department"
+												className="form-control"
+												onChange={e => setCategory(e.target.value)}>
+												<option>Select Department</option>
+												{categories.map((cat, i) => {
+													return (
+														<option key={i} value={cat.id}>
+															{cat.name}
+														</option>
+													);
+												})}
+											</select>
+										</div>
+									</div>
+									<div className="col-sm-12">
+										<div className="form-group">
+											<input
+												className="d-none"
+												onClick={e => {
+													e.target.value = null;
+												}}
+												type="file"
+												ref={el => {
+													uploadAttachment = el;
+												}}
+												onChange={e => setFile(e.target.files)}
+											/>
+											<label htmlFor="department">File</label>
+											<a
+												className="btn btn-outline-secondary ml-4"
+												onClick={() => {
+													uploadAttachment.click();
+												}}>
+												<i className="os-icon os-icon-ui-51" />
+												<span>Select File</span>
+											</a>
+										</div>
+									</div>
+								</div>
+								<div className="row">
+									<div className="col-sm-12 text-right">
+										<button
+											className="btn btn-primary"
+											disabled={uploading}
+											type="submit">
+											{uploading ? (
+												<img src={waiting} alt="submitting" />
+											) : (
+												'upload'
+											)}
+										</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+};
 
 class InventoryList extends Component {
+	state = {
+		upload_visible: false,
+		download_visible: false,
+		downloading: false,
+		uploading: false,
+		category_id: '',
+		period: null,
+		filtering: false,
+	};
+
 	componentDidMount() {
 		this.fetchInventories();
 	}
-	
+
+	hide = () => {
+		this.setState({ upload_visible: false, download_visible: false });
+	};
+
+	onUpload = async (e, files, category_id) => {
+		e.preventDefault();
+		const { categories } = this.props;
+		const file = files[0];
+		if (file) {
+			this.setState({ uploading: true });
+			try {
+				let formData = new FormData();
+				formData.append('file', file);
+				formData.append('category_id', category_id);
+
+				const rs = await upload(
+					`${API_URI}${inventoryUploadAPI}`,
+					'POST',
+					formData
+				);
+				const rosters = parseRoster(rs);
+				this.props.loadRoster(rosters);
+				const cat = categories.find(d => d.id === category_id);
+				notifySuccess(`roster uploaded for ${cat ? cat.name : ''} category`);
+				this.setState({ uploading: false, category_id });
+				//this.fetchRoster(period, department_id);
+				this.setState({ upload_visible: false });
+			} catch (error) {
+				console.log(error);
+				this.setState({ uploading: false });
+			}
+		}
+	};
+
+	downloadTemplate = async e => {
+		e.preventDefault();
+		this.setState({ downloading: true });
+		try {
+			const url = `${API_URI}${inventoryDownloadAPI}`;
+			setTimeout(() => {
+				window.open(url, '_blank').focus();
+				this.setState({ downloading: false, download_visible: false });
+			}, 2000);
+		} catch (error) {
+			notifyError(error.message || 'could not download template');
+			this.setState({ downloading: false });
+		}
+		return false;
+	};
+
+	onDownloadVisibleChange = visible => {
+		this.setState({ download_visible: visible });
+	};
+
+	handleUploadVisibleChange = visible => {
+		this.setState({ upload_visible: visible });
+	};
 	fetchInventories = async () => {
 		try {
 			const rs = await request(`${API_URI}${inventoryAPI}`, 'GET', true);
-			this.props.loadInventories(rs)
+			this.props.loadInventories(rs);
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
 	render() {
-		const { inventories } = this.props;
+		const { duty_rosters, categories, inventories } = this.props;
+		const {
+			upload_visible,
+			download_visible,
+			downloading,
+			uploading,
+			filtering,
+			department_id,
+		} = this.state;
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -32,10 +248,46 @@ class InventoryList extends Component {
 						<div className="col-sm-12">
 							<div className="element-wrapper">
 								<div className="element-actions">
-									<a className="btn btn-primary btn-sm text-white" onClick={() => this.props.createInventory(true)}>
-										<i className="os-icon os-icon-plus-circle"/>
+									<a
+										className="btn btn-primary btn-sm text-white"
+										onClick={() => this.props.createInventory(true)}>
+										<i className="os-icon os-icon-plus-circle" />
 										<span>Create New Inventory</span>
 									</a>
+									<Popover
+										content={
+											<DownloadInventory
+												onHide={this.hide}
+												downloading={downloading}
+												doDownload={this.downloadTemplate}
+											/>
+										}
+										overlayClassName="download-roster"
+										trigger="click"
+										visible={download_visible}
+										onVisibleChange={this.onDownloadVisibleChange}>
+										<a className="btn btn-success btn-sm text-white">
+											<i className="os-icon os-icon-download" />
+											<span>Download Template</span>
+										</a>
+									</Popover>
+									<Popover
+										content={
+											<UploadInventory
+												onHide={this.hide}
+												uploading={uploading}
+												doUpload={this.onUpload}
+											/>
+										}
+										overlayClassName="upload-roster"
+										trigger="click"
+										visible={upload_visible}
+										onVisibleChange={this.handleUploadVisibleChange}>
+										<a className="btn btn-sm btn-link btn-upper mr-4 d-lg-inline-block">
+											<i className="os-icon os-icon-upload" />
+											<span>Upload Roster</span>
+										</a>
+									</Popover>
 								</div>
 								<h6 className="form-header">Inventory List</h6>
 								<div className="element-box">
@@ -57,12 +309,8 @@ class InventoryList extends Component {
 											<tbody>
 												{inventories.map((inv, i) => {
 													return (
-														<InventoryItem
-															key={i}
-															index={i+1}
-															item={inv}
-														/>
-													)
+														<InventoryItem key={i} index={i + 1} item={inv} />
+													);
 												})}
 											</tbody>
 										</table>
@@ -80,7 +328,10 @@ class InventoryList extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		inventories: state.inventory.inventories,
-	}
+		categories: state.inventory.categories,
+	};
 };
 
-export default connect(mapStateToProps, { createInventory, loadInventories })(InventoryList);
+export default connect(mapStateToProps, { createInventory, loadInventories })(
+	InventoryList
+);

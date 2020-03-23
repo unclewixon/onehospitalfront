@@ -7,16 +7,16 @@ import { editInventory, updateQuantity } from '../actions/general';
 import { formatCurrency } from '../services/utilities';
 
 class InventoryItem extends Component {
-	doEditInventory = e => {
-		e.preventDefault();
+	doEditInventory = item => {
+		//e.preventDefault();
 		console.log('edit inventory');
-		this.props.editInventory(true);
+		this.props.editInventory(item);
 	};
 
-	doUpdateQuantity = e => {
-		e.preventDefault();
-		console.log('update qty');
-		this.props.updateQuantity(true);
+	doUpdateQuantity = item => {
+		//	e.preventDefault();
+		console.log('update qty', item);
+		this.props.updateQuantity(item);
 	};
 
 	render() {
@@ -33,31 +33,31 @@ class InventoryItem extends Component {
 				<td className="text-center">
 					{item.quantity >= 10 ? (
 						<>
-							<span className="status-pill smaller green"/>
+							<span className="status-pill smaller green" />
 							<span>In Stock</span>
 						</>
+					) : item.quantity >= 4 ? (
+						<>
+							<span className="status-pill smaller yellow" />
+							<span>Refill</span>
+						</>
 					) : (
-						item.quantity >= 4 ? (
-							<>
-								<span className="status-pill smaller yellow"/>
-								<span>Refill</span>
-							</>
-						) : (
-							<>
-								<span className="status-pill smaller red"/>
-								<span>No Stock</span>
-							</>
-						)
+						<>
+							<span className="status-pill smaller red" />
+							<span>No Stock</span>
+						</>
 					)}
 				</td>
 				<td className="text-right row-actions">
 					<Tooltip title="Update Quantity">
-						<a  onClick={this.doUpdateQuantity} className="secondary">
+						<a
+							onClick={() => this.doUpdateQuantity(item)}
+							className="secondary">
 							<i className="os-icon os-icon-folder-plus" />
 						</a>
 					</Tooltip>
 					<Tooltip title="Edit Inventory Item">
-						<a  onClick={this.doEditInventory} className="secondary">
+						<a onClick={() => this.doEditInventory(item)} className="secondary">
 							<i className="os-icon os-icon-edit-32" />
 						</a>
 					</Tooltip>
