@@ -8,6 +8,8 @@ const NewTransaction = lazy(() => import('./NewTransaction'));
 const InsuranceBills = lazy(() => import('./InsuranceBills'));
 const Dashboard = lazy(() => import('./Dashboard'));
 const ReviewTransaction = lazy(() => import('./ReviewTransaction'));
+const Voucher = lazy(() => import('./Voucher'));
+
 export class index extends Component {
 	render() {
 		const { match, location } = this.props;
@@ -20,7 +22,8 @@ export class index extends Component {
 						<div className="row">
 							<div className="col-sm-12">
 								<div className="element-wrapper">
-									<div className="element-actions">
+									<h6 className="element-header">Pay Point</h6>
+									<div className="row mt-2 mb-4">
 										<Link
 											to={`${match.path}/`}
 											className={`mx-2 btn btn-primary btn-sm  ${
@@ -48,6 +51,14 @@ export class index extends Component {
 											Review Transaction
 										</Link>
 										<Link
+											to={`${match.path}/paypoint-voucher`}
+											className={`mr-2 btn btn-primary btn-sm  ${
+												page === 'paypoint-voucher' ? 'btn-outline-primary' : ''
+											}`}>
+											{' '}
+											Paypoint Voucher
+										</Link>
+										<Link
 											to={`${match.path}/new-transaction`}
 											className={`mr-2 btn btn-primary btn-sm ${
 												page === 'new-transaction' ? 'btn-outline-primary' : ''
@@ -56,7 +67,7 @@ export class index extends Component {
 											New Transaction
 										</Link>
 									</div>
-									<h6 className="element-header">Pay Point</h6>
+
 									<div className="row">
 										<div className="col-sm-12">
 											<div className="element-box">
@@ -76,7 +87,12 @@ export class index extends Component {
 															component={ReviewTransaction}
 														/>
 														<Route
-															path={`${match.url}/new-transaction`}
+															path={`${match.url}/paypoint-voucher`}
+															component={Voucher}
+														/>
+
+														<Route
+															path={`${match.url}/new-voucher`}
 															component={NewTransaction}
 														/>
 														<Route component={NoMatch} />
