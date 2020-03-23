@@ -132,11 +132,9 @@ const Specialization = props => {
 						<div className="col-lg-8">
 							<div className="row">
 								{!loaded ? (
-									<tr>
-										<td colSpan="4" className="text-center">
-											<img alt="searching" src={searchingGIF} />
-										</td>
-									</tr>
+									<div colSpan="4" className="text-center">
+										<img alt="searching" src={searchingGIF} />
+									</div>
 								) : (
 									<>
 										{props.Specializations.map((Specialization, i) => {

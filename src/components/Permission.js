@@ -111,62 +111,55 @@ class Permission extends Component {
 		return (
 			<div className="row">
 				<div className="col-lg-8">
-					<div className="pipelines-w">
-						<div className="projects-list">
-							<div className="project-box">
-								<div className="project-info">
-									<div className="element-wrapper compact pt-4">
-										<h6 className="element-header">Permissions</h6>
-										<div className="element-box-tp">
-											<table className="table table-clean">
-												<tbody>
-													{loaded ? (
-														<tr>
-															<td colSpan="4" className="text-center">
-																<img alt="searching" src={searchingGIF} />
+					<div className="element-wrapper">
+						<div className="element-box">
+							<div className="table-responsive">
+								<table className="table table-striped">
+									<thead>
+										<tr>
+											<th>S/N</th>
+											<th>Name</th>
+											<th className="text-right">Actions</th>
+										</tr>
+									</thead>
+									<tbody>
+										{loaded ? (
+											<tr>
+												<td colSpan="4" className="text-center">
+													<img alt="searching" src={searchingGIF} />
+												</td>
+											</tr>
+										) : (
+											<>
+												{Permissions.map((permission, i) => {
+													return (
+														<tr key={i}>
+															<td>{i + 1}</td>
+															<td>
+																<div className="value">{permission.name}</div>
+															</td>
+															<td className="row-actions text-right">
+																<a onClick={() => this.onClickEdit(permission)}>
+																	<i className="os-icon os-icon-ui-49"></i>
+																</a>
+																<a href="#">
+																	<i className="os-icon os-icon-grid-10"></i>
+																</a>
+																<a
+																	className="danger"
+																	onClick={() =>
+																		this.confirmDelete(permission)
+																	}>
+																	<i className="os-icon os-icon-ui-15"></i>
+																</a>
 															</td>
 														</tr>
-													) : (
-														<>
-															{Permissions.map((permission, i) => {
-																return (
-																	<tr key={i}>
-																		<td>
-																			<div className="value">
-																				{permission.name}
-																			</div>
-																		</td>
-																		<td className="row-actions text-right">
-																			<a
-																				onClick={() =>
-																					this.onClickEdit(permission)
-																				}>
-																				<i className="os-icon os-icon-ui-49"></i>
-																			</a>
-																			<a href="#">
-																				<i className="os-icon os-icon-grid-10"></i>
-																			</a>
-																			<a
-																				className="danger"
-																				onClick={() =>
-																					this.confirmDelete(permission)
-																				}>
-																				<i className="os-icon os-icon-ui-15"></i>
-																			</a>
-																		</td>
-																	</tr>
-																);
-															})}
-														</>
-													)}
-												</tbody>
-											</table>
-											<a className="centered-load-more-link" href="#">
-												<span>Load More Categories</span>
-											</a>
-										</div>
-									</div>
-								</div>
+													);
+												})}
+											</>
+										)}
+									</tbody>
+								</table>
 							</div>
 						</div>
 					</div>

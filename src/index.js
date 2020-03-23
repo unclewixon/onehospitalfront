@@ -106,7 +106,7 @@ const initData = async () => {
 	if (user) {
 		store.dispatch(loginUser(user));
 		store.dispatch(togglePreloading(false));
-		redirectToPage(user.role, history);
+		// redirectToPage(user.role, history);
 
 		setTimeout(async () => {
 			const user_record = await storage.getItem(USER_RECORD);

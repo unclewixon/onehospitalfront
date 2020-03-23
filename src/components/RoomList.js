@@ -114,7 +114,6 @@ const RoomList = props => {
 			<div className="col-lg-8">
 				<div className="element-wrapper">
 					<div className="element-box">
-						<h5 className="form-header">Room list</h5>
 						<div className="table-responsive">
 							<table className="table table-striped">
 								<thead>
