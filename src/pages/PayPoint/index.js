@@ -92,7 +92,7 @@ export class index extends Component {
 														/>
 
 														<Route
-															path={`${match.url}/new-voucher`}
+															path={`${match.url}/new-transaction`}
 															component={NewTransaction}
 														/>
 														<Route component={NoMatch} />

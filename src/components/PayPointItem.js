@@ -8,9 +8,9 @@ export class PayPointItem extends Component {
 		return (
 			<div className="col-sm-4 col-xxxl-4">
 				<a className="element-box el-tablo">
-					<div className="label">{payPoint.type}</div>
-					<div className="value">
-						<span>&#8358;{payPoint.total}</span>
+					<div className="label ">{payPoint.type} (&#8358;)</div>
+					<div className="value ">
+						<span>{payPoint.total}</span>
 
 						<div className="balance-link">
 							<button
