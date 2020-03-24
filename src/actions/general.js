@@ -19,6 +19,7 @@ import {
 	TOGGLE_CREATE_APPOINTMENT,
 	TOGGLE_VIEW_APPOINTMENT_DETAIL,
 	TOGGLE_VIEW_PAYPOINT,
+	TOGGLE_CREATE_VOUCHER,
 	TOGGLE_CREATE_LABOUR_MEASUREMENT,
 	TOGGLE_CREATE_RISK_ASSESSMENT,
 	TOGGLE_CREATE_RECORD_DELIVERY,
@@ -176,6 +177,13 @@ export const toggleViewPayPoint = status => {
 		payload: status,
 	};
 };
+
+export const toggleCreateVoucher = status => {
+	return {
+		type: TOGGLE_CREATE_VOUCHER,
+		payload: status,
+	};
+};
 export const toggleCreateLabourMeasurement = status => {
 	return {
 		type: TOGGLE_CREATE_LABOUR_MEASUREMENT,
@@ -244,6 +252,7 @@ export const closeModals = () => {
 		dispatch(toggleNewAppointment(false));
 		dispatch(toggleViewAppointDetail(false));
 		dispatch(toggleViewPayPoint(false));
+		dispatch(toggleCreateVoucher(false));
 		dispatch(toggleCreateLabourMeasurement(false));
 		dispatch(toggleCreateRiskAssessment(false));
 		dispatch(toggleCreateRecordDelivery(false));
@@ -458,5 +467,13 @@ export const createRecordVital = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleCreateRecordVital(action));
+	};
+};
+
+export const createVoucher = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleCreateVoucher(action));
 	};
 };

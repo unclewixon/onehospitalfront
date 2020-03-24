@@ -112,8 +112,7 @@ const HmoList = props => {
 							<button
 								className="btn btn-primary"
 								style={{ margin: 10 }}
-								onClick={onClose}
-							>
+								onClick={onClose}>
 								No
 							</button>
 							<button
@@ -122,8 +121,7 @@ const HmoList = props => {
 								onClick={() => {
 									onDeleteHmo(data);
 									onClose();
-								}}
-							>
+								}}>
 								Yes, Delete it!
 							</button>
 						</div>
@@ -151,8 +149,7 @@ const HmoList = props => {
 									<a
 										aria-expanded="true"
 										className="nav-link active"
-										data-toggle="tab"
-									>
+										data-toggle="tab">
 										HEALTH MANAGEMENT ORGANIZATIONS
 									</a>
 								</li>
@@ -177,9 +174,9 @@ const HmoList = props => {
 												</tr>
 											</thead>
 											<tbody>
-												{props.hmoList.map(hmo => {
+												{props.hmoList.map((hmo, i) => {
 													return (
-														<tr>
+														<tr key={i}>
 															<td>
 																<div className="user-with-avatar">
 																	<img
@@ -204,8 +201,7 @@ const HmoList = props => {
 																<a href="#">
 																	<i
 																		className="os-icon os-icon-grid-10"
-																		onClick={() => onClickEdit(hmo)}
-																	></i>
+																		onClick={() => onClickEdit(hmo)}></i>
 																</a>
 																<a href="#">
 																	<i className="os-icon os-icon-ui-44"></i>
@@ -213,8 +209,7 @@ const HmoList = props => {
 																<a className="danger">
 																	<i
 																		className="os-icon os-icon-ui-15"
-																		onClick={() => confirmDelete(hmo)}
-																	></i>
+																		onClick={() => confirmDelete(hmo)}></i>
 																</a>
 															</td>
 														</tr>
@@ -295,8 +290,7 @@ const HmoList = props => {
 													Loading
 														? 'btn btn-primary disabled'
 														: 'btn btn-primary'
-												}
-											>
+												}>
 												<span>{Loading ? 'saving' : 'Add'}</span>
 											</button>
 										)}
@@ -308,8 +302,7 @@ const HmoList = props => {
 															? 'btn btn-primary disabled'
 															: 'btn btn-primary'
 													}
-													onClick={cancelEditButton}
-												>
+													onClick={cancelEditButton}>
 													<span>{Loading ? 'cancel' : 'cancel'}</span>
 												</button>
 												<button
@@ -317,8 +310,7 @@ const HmoList = props => {
 														Loading
 															? 'btn btn-primary disabled'
 															: 'btn btn-primary'
-													}
-												>
+													}>
 													<span>{Loading ? 'Saving' : 'edit'}</span>
 												</button>
 											</>

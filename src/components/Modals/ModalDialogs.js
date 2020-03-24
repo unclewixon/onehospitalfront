@@ -24,6 +24,7 @@ import ModalCreateLabMeasurement from './ModalCreateLabMeasurement';
 import ModalCreateRiskAssessment from './ModalCreateRiskAssessment';
 import ModalCreateRecordDelivery from './ModalCreateRecordDelivery';
 import ModalCreateRecordVital from './ModalCreateRecordVital';
+import ModalCreateVoucher from './ModalCreateVoucher';
 
 const ModalDialogs = ({
 	create_staff,
@@ -49,6 +50,7 @@ const ModalDialogs = ({
 	upload_service,
 	upload_diagnosis,
 	edit_service,
+	create_voucher,
 }) => {
 	return (
 		<>
@@ -75,6 +77,7 @@ const ModalDialogs = ({
 			{upload_service && <ModalUploadService />}
 			{upload_diagnosis && <ModalUploadDiagnosis />}
 			{edit_service.status && <ModalEditService />}
+			{create_voucher && <ModalCreateVoucher />}
 		</>
 	);
 };
@@ -104,6 +107,7 @@ const mapStateToProps = (state, ownProps) => {
 		upload_service: state.general.upload_service,
 		upload_diagnosis: state.general.upload_diagnosis,
 		edit_service: state.general.edit_service,
+		create_voucher: state.general.create_voucher,
 	};
 };
 

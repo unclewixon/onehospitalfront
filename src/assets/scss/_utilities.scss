@@ -163,6 +163,11 @@ a.with-avatar {
 	width: 100%;
 }
 
+.ant-calendar-picker-input {
+	line-height: 1.5;
+	padding: 0.375rem 0.75rem;
+}
+
 .labmgt {
 	margin-top: 40px;
 	width: 100%;
@@ -202,4 +207,8 @@ a.with-avatar {
 	height: 50px;
 	border-radius: 50%;
 	border: none;
+}
+
+.el-tablo .value {
+	font-size: 2rem;
 }

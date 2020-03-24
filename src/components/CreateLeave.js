@@ -34,10 +34,10 @@ class CreateLeave extends Component {
 		const { error, leave_categories } = this.props;
 		const { submitting, leave_date, leave_return } = this.state;
 		return (
-			<div className="row">
+			<div className="row my-4">
 				<div className="col-sm-12">
 					<div className="element-wrapper">
-						<h6 className="element-header">Create New Leave Request</h6>
+						<h6 className="element-header">Create Leave Request</h6>
 						<div className="element-box">
 							<div className="form-block">
 								<form>
@@ -100,33 +100,32 @@ class CreateLeave extends Component {
 												</div>
 											</div>
 										</div>
-
-										<div className="row">
-											<div className="col-sm-12">
-												<Field
-													id="reason"
-													name="reason"
-													component={renderTextArea}
-													label="Leave Reason"
-													type="text"
-													placeholder="Enter your leave reason"
-												/>
-											</div>
+									</div>
+									<div className="row">
+										<div className="col-sm-12">
+											<Field
+												id="reason"
+												name="reason"
+												component={renderTextArea}
+												label="Leave Reason"
+												type="text"
+												placeholder="Enter your leave reason"
+											/>
 										</div>
+									</div>
 
-										<div className="row">
-											<div className="col-sm-12 text-right">
-												<button
-													className="btn btn-primary"
-													disabled={submitting}
-													type="submit">
-													{submitting ? (
-														<img src={waiting} alt="submitting" />
-													) : (
-														'Create leave request'
-													)}
-												</button>
-											</div>
+									<div className="row">
+										<div className="col-sm-12 text-right">
+											<button
+												className="btn btn-primary"
+												disabled={submitting}
+												type="submit">
+												{submitting ? (
+													<img src={waiting} alt="submitting" />
+												) : (
+													'Create leave request'
+												)}
+											</button>
 										</div>
 									</div>
 								</form>

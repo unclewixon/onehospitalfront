@@ -8,7 +8,6 @@ import { USER_RECORD } from '../services/constants';
 import SSRStorage from '../services/storage';
 import Splash from '../components/Splash';
 import HashRoute from '../components/HashRoute';
-import CreateLeave from '../components/CreateLeave';
 
 const Dashboard = lazy(() => import('../components/StaffBlock/Dashboard'));
 const EditStaff = lazy(() => import('../components/StaffBlock/EditStaff'));
@@ -20,6 +19,8 @@ const LeaveRequest = lazy(() =>
 );
 const Appraisal = lazy(() => import('../components/StaffBlock/Appraisal'));
 const StaffDetail = lazy(() => import('../components/StaffBlock/StaffDetail'));
+const CreateLeave = lazy(() => import('../components/CreateLeave'));
+const CreateExcuseDuty = lazy(() => import('../components/CreateExcuseDuty'));
 const storage = new SSRStorage();
 
 const Page = ({ location }) => {
@@ -41,6 +42,8 @@ const Page = ({ location }) => {
 			return <Appraisal />;
 		case 'create-leave':
 			return <CreateLeave />;
+		case 'create-excuse':
+			return <CreateExcuseDuty />;
 
 		default:
 			return <Dashboard />;
