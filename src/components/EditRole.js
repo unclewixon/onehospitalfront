@@ -22,6 +22,7 @@ class EditRole extends Component {
 	};
 
 	doEditRole = async data => {
+		console.log(data);
 		this.setState({ submitting: true });
 		try {
 			const { roleID, previousRole } = this.props;

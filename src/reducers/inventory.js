@@ -7,16 +7,20 @@ import {
 	LOAD_SUB_CATEGORIES,
 	ADD_SUB_CATEGORY,
 	UPDATE_SUB_CATEGORY,
+	TOGGLE_UPDATE_QTY,
 } from '../actions/types';
 
 const INITIAL_STATE = {
 	inventories: [],
+	item: [],
 	categories: [],
 	sub_categories: [],
 };
 
 const inventory = (state = INITIAL_STATE, action) => {
 	switch (action.type) {
+		case TOGGLE_UPDATE_QTY:
+			return { ...state, item: action.payload };
 		case LOAD_INVENTORIES:
 			return { ...state, inventories: action.payload };
 		case ADD_INVENTORY:
