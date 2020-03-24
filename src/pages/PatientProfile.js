@@ -11,6 +11,7 @@ import SSRStorage from '../services/storage';
 import { USER_RECORD } from '../services/constants';
 import HashRoute from '../components/HashRoute';
 import Splash from '../components/Splash';
+import { confirmAction } from '../services/utilities';
 
 const Dashboard = lazy(() => import('../components/Patient/Dashboard'));
 const Lab = lazy(() => import('../components/Patient/Lab'));
@@ -51,6 +52,10 @@ const UpdateAllergy = lazy(() => import('../components/Patient/UpdateAllergy'));
 const Antennatal = lazy(() => import('../components/Patient/Antennatal'));
 const AntennatalRequest = lazy(() =>
 	import('../components/Patient/AntennatalRequest')
+);
+
+const PatientAdmission = lazy(() =>
+	import('../components/Patient/PatientAdmission')
 );
 
 const storage = new SSRStorage();
@@ -103,6 +108,8 @@ const Page = ({ location }) => {
 			return <Antennatal />;
 		case 'antennal-request':
 			return <AntennatalRequest />;
+		case 'start-admission':
+			return <PatientAdmission />;
 		default:
 			return <Dashboard />;
 	}
@@ -122,6 +129,20 @@ class PatientProfile extends Component {
 		this.setState((prevState, props) => ({
 			dropdown: !prevState.dropdown,
 		}));
+	};
+
+	startAdmission = () => {
+		const { location } = this.props;
+		this.props.history.push(`${location.pathname}#start-admission`);
+	};
+
+	confirmStartAdmission = () => {
+		confirmAction(
+			this.startAdmission,
+			null,
+			'Are you sure you want to place this patient on admission ?',
+			'Confirm Admission'
+		);
 	};
 
 	componentDidMount() {
@@ -246,14 +267,16 @@ class PatientProfile extends Component {
 																		<span className=" ml-2">Edit Profile</span>
 																	</Link>
 
-																	<Link
+																	<button
 																		className="dropdown-item"
-																		to={`${location.pathname}#start-admission`}>
+																		onClick={() =>
+																			this.confirmStartAdmission()
+																		}>
 																		<i className="os-icon os-icon-plus-circle"></i>
 																		<span className="ml-2">
 																			Start Admission
 																		</span>
-																	</Link>
+																	</button>
 																	<Link
 																		className="dropdown-item"
 																		to={`${location.pathname}#enroll-antenatal`}>
