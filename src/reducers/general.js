@@ -26,6 +26,7 @@ import {
 	TOGGLE_CREATE_RISK_ASSESSMENT,
 	TOGGLE_CREATE_RECORD_VITAL,
 	TOGGLE_CREATE_RECORD_DELIVERY,
+	TOGGLE_CREATE_CLINICAL_TASK,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -56,6 +57,7 @@ const INITIAL_STATE = {
 	payroll_staff: null,
 	upload_service: false,
 	upload_diagnosis: false,
+	create_clinical_task: false,
 	edit_service: { status: false, data: null },
 };
 
@@ -117,6 +119,8 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, create_record_vital: action.payload };
 		case TOGGLE_CREATE_VOUCHER:
 			return { ...state, create_voucher: action.payload };
+		case TOGGLE_CREATE_CLINICAL_TASK:
+			return { ...state, create_clinical_task: action.payload };
 		case TOGGLE_UPLOAD_SERVICE:
 			return { ...state, upload_service: action.payload };
 		case TOGGLE_UPLOAD_DIAGNOSIS:

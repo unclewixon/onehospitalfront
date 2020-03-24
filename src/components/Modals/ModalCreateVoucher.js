@@ -110,6 +110,7 @@ export class ModalCreateVoucher extends Component {
 											/>
 										</div>
 									</div>
+
 									<div className="row">
 										<div className="col-sm-6">
 											<Field

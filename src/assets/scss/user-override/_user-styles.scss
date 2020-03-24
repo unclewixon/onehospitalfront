@@ -59,6 +59,12 @@ button {
 		}
 	}
 }
+.modal-backdrop {
+	z-index: 2040;
+}
+.modal {
+	z-index: 2050;
+}
 .pagination-center {
 	position: relative;
 	justify-content: flex-end;
@@ -358,4 +364,8 @@ button {
 		color: $primary;
 		cursor: pointer;
 	}
+}
+
+div.react-confirm-alert-overlay {
+	z-index: 2060;
 }

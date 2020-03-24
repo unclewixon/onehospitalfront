@@ -241,7 +241,7 @@ export const renderTimePicker = ({ input, placeholder, minDate, maxDate }) => (
 	</div>
 );
 
-export const confirmAction = (action, payload, alertText) => {
+export const confirmAction = (action, payload, alertText, alertHead) => {
 	confirmAlert({
 		customUI: ({ onClose }) => {
 			const onclick = async () => {
@@ -249,8 +249,8 @@ export const confirmAction = (action, payload, alertText) => {
 				onClose();
 			};
 			return (
-				<div className="custom-ui">
-					<h1>Are you sure?</h1>
+				<div className="custom-ui text-center">
+					<h1 className="">{alertHead ? alertHead : 'Are you sure?'}</h1>
 					<p>{alertText ? alertText : 'You want to delete this remove'}</p>
 					<div>
 						<button
