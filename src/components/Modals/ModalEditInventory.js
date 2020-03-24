@@ -6,6 +6,7 @@ import {
 	formatCurrency,
 	renderSelect,
 	renderTextInput,
+	renderTextInputGroup,
 	request,
 } from '../../services/utilities';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
@@ -13,6 +14,7 @@ import { API_URI, inventoryAPI, rolesAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
 import { updateInventory } from '../../actions/inventory';
+import inventory from '../../reducers/inventory';
 
 const validate = values => {
 	const errors = {};
@@ -44,12 +46,18 @@ class ModalEditInventory extends Component {
 		this.setState({ submitting: true });
 		const { items } = this.props;
 		let invID = items.id;
+
+		let dataWithQuantity = {
+			...data,
+			quantity: items.quantity,
+		};
+
 		try {
 			const rs = await request(
 				`${API_URI}${inventoryAPI}/${invID}/update`,
 				'PATCH',
 				true,
-				data
+				dataWithQuantity
 			);
 			this.props.updateInventory(rs);
 			this.setState({ submitting: false });
@@ -139,66 +147,48 @@ class ModalEditInventory extends Component {
 												/>
 											</div>
 										</div>
+
+										<div className="col-sm-6">
+											<div className="form-group">
+												<Field
+													id="description"
+													name="description"
+													component={renderTextInput}
+													label="Description"
+													type="text"
+													placeholder="Enter description"
+												/>
+											</div>
+										</div>
 									</div>
 
 									<div className="row">
 										<div className="col-sm-6">
-											<div className="form-group">
-												<label>Cost Price</label>
-												<div className="input-group">
-													<div className="input-group-prepend">
-														<div className="input-group-text">₦</div>
-													</div>
-
-													<Field
-														id="cost_price"
-														name="cost_price"
-														component={renderTextInput}
-														//label="Name"
-														type="text"
-														placeholder="Enter cost price"
-													/>
-												</div>
-											</div>
+											<Field
+												id="cost_price"
+												name="cost_price"
+												component={renderTextInputGroup}
+												label="Cost Price"
+												type="number"
+												placeholder="Enter cost price"
+												icon="₦"
+												append={false}
+											/>
 										</div>
 										<div className="col-sm-6">
-											<div className="form-group">
-												<div className="form-group">
-													<label>Selling Price</label>
-													<div className="input-group">
-														<div className="input-group-prepend">
-															<div className="input-group-text">₦</div>
-														</div>
+											<Field
+												id="sales_price"
+												name="sales_price"
+												component={renderTextInputGroup}
+												label="Selling Price"
+												type="number"
+												placeholder="Enter selling price"
+												icon="₦"
+												append={false}
+											/>
+										</div>
+									</div>
 
-														<Field
-															id="sales_price"
-															name="sales_price"
-															component={renderTextInput}
-															//label="Selling Price"
-															type="text"
-															placeholder="Enter selling price"
-														/>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-sm-6">
-											<div className="form-group">
-												<div className="form-group">
-													<Field
-														id="description"
-														name="description"
-														component={renderTextInput}
-														label="Description"
-														type="text"
-														placeholder="Enter description"
-													/>
-												</div>
-											</div>
-										</div>
-									</div>
 									<div className="form-buttons-w">
 										<button className="btn btn-secondary ml-3" type="button">
 											Cancel
