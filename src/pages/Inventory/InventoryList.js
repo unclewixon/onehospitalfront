@@ -149,8 +149,24 @@ const UploadInventory = ({ onHide, uploading, doUpload, categories }) => {
 	);
 };
 
+const sortTypes = {
+	up: {
+		class: 'sort-up',
+		fn: (a, b) => a.name - b.name,
+	},
+	down: {
+		class: 'sort-down',
+		fn: (a, b) => b.name - a.name,
+	},
+	default: {
+		class: 'sort',
+		fn: (a, b) => a,
+	},
+};
+
 class InventoryList extends Component {
 	state = {
+		currentSort: 'default',
 		upload_visible: false,
 		download_visible: false,
 		downloading: false,
@@ -158,6 +174,19 @@ class InventoryList extends Component {
 		category_id: '',
 		period: null,
 		filtering: false,
+	};
+
+	onSortChange = () => {
+		const { currentSort } = this.state;
+		let nextSort;
+
+		if (currentSort === 'down') nextSort = 'up';
+		else if (currentSort === 'up') nextSort = 'default';
+		else if (currentSort === 'default') nextSort = 'down';
+
+		this.setState({
+			currentSort: nextSort,
+		});
 	};
 
 	componentDidMount() {
@@ -237,6 +266,7 @@ class InventoryList extends Component {
 			download_visible,
 			downloading,
 			uploading,
+			currentSort,
 			filtering,
 			department_id,
 		} = this.state;
@@ -297,7 +327,14 @@ class InventoryList extends Component {
 											<thead>
 												<tr>
 													<th>ID</th>
-													<th>Category</th>
+													<th>
+														Category
+														<button onClick={this.onSortChange}>
+															<i
+																className={`fas fa-${sortTypes[currentSort].class}`}
+															/>
+														</button>
+													</th>
 													<th>Name</th>
 													<th>Sub Category</th>
 													<th>Cost Price</th>
@@ -308,11 +345,13 @@ class InventoryList extends Component {
 												</tr>
 											</thead>
 											<tbody>
-												{inventories.map((inv, i) => {
-													return (
-														<InventoryItem key={i} index={i + 1} item={inv} />
-													);
-												})}
+												{[...inventories]
+													.sort(sortTypes[currentSort].fn)
+													.map((inv, i) => {
+														return (
+															<InventoryItem key={i} index={i + 1} item={inv} />
+														);
+													})}
 											</tbody>
 										</table>
 									</div>

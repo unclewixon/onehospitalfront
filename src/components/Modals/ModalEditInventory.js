@@ -30,11 +30,13 @@ const validate = values => {
 class ModalEditInventory extends Component {
 	state = {
 		submitting: false,
+		sub_categories: [],
 	};
 
 	componentDidMount() {
-		const { item } = this.props;
+		const { item, sub_categories } = this.props;
 		this.setState({ item: item });
+		this.setState({ sub_categories: sub_categories });
 		document.body.classList.add('modal-open');
 	}
 
@@ -72,15 +74,23 @@ class ModalEditInventory extends Component {
 		}
 	};
 
+	handleChange = event => {
+		const { sub_categories, categories } = this.props;
+		let newValue = event.target.value;
+		let newSubCat = sub_categories.filter(service => {
+			return service.category.id === newValue;
+		});
+		let placeHolderName = categories.filter(p => {
+			return p.id === newValue;
+		});
+
+		this.setState({ sub_categories: newSubCat });
+		this.setState({ placeholder: placeHolderName[0].name });
+	};
+
 	render() {
-		const {
-			item,
-			error,
-			handleSubmit,
-			categories,
-			sub_categories,
-		} = this.props;
-		const { submitting } = this.state;
+		const { item, error, handleSubmit, categories } = this.props;
+		const { submitting, sub_categories } = this.state;
 		return (
 			<div
 				className="onboarding-modal modal fade animated show"
@@ -126,6 +136,7 @@ class ModalEditInventory extends Component {
 													id="category_id"
 													name="category_id"
 													component={renderSelect}
+													onChange={this.handleChange}
 													label="Category"
 													placeholder="Select Category"
 													data={categories}

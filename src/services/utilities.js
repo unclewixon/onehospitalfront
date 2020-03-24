@@ -107,7 +107,7 @@ export const upload = async (url, method, body) => {
 };
 
 // prettier-ignore
-export const renderTextInput = ({input, label, type, id, placeholder,readOnly=false ,meta: { touched, error }}) => (
+export const renderTextInput = ({ input, label, type, id, placeholder, readOnly = false, meta: { touched, error } }) => (
 	<div
 		className={`form-group ${touched &&
 		(error ? 'has-error has-danger' : '')}`}>
@@ -271,6 +271,37 @@ export const confirmAction = (action, payload, alertText) => {
 		},
 	});
 };
+
+export const renderSelectWithChange = ({
+	input,
+	label,
+	onChangeSubmitAction,
+	placeholder,
+	id,
+	data,
+	meta: { touched, error },
+}) => (
+	<div
+		className={`form-group ${touched &&
+			(error ? 'has-error has-danger' : '')}`}>
+		<label htmlFor={id}>{label}</label>
+		<select {...input} className="form-control" onChange={onChangeSubmitAction}>
+			<option value="">{placeholder}</option>
+			{data.map((d, i) => (
+				<option key={i} value={d.id}>
+					{d.name}
+				</option>
+			))}
+		</select>
+		{touched && error && (
+			<div className="help-block form-text with-errors form-control-feedback">
+				<ul className="list-unstyled">
+					<li>{error}</li>
+				</ul>
+			</div>
+		)}
+	</div>
+);
 
 export const renderSelect = ({
 	input,
