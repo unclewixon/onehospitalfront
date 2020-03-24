@@ -75,17 +75,12 @@ class ModalEditInventory extends Component {
 	};
 
 	handleChange = event => {
-		const { sub_categories, categories } = this.props;
+		const { sub_categories } = this.props;
 		let newValue = event.target.value;
 		let newSubCat = sub_categories.filter(service => {
 			return service.category.id === newValue;
 		});
-		let placeHolderName = categories.filter(p => {
-			return p.id === newValue;
-		});
-
 		this.setState({ sub_categories: newSubCat });
-		this.setState({ placeholder: placeHolderName[0].name });
 	};
 
 	render() {
