@@ -7,6 +7,7 @@ import {
 	LOAD_SUB_CATEGORIES,
 	ADD_SUB_CATEGORY,
 	UPDATE_SUB_CATEGORY,
+	UPDATE_INVENTORY,
 } from './types';
 
 // categories
@@ -42,6 +43,13 @@ export const loadInventories = data => {
 export const addInventory = data => {
 	return {
 		type: ADD_INVENTORY,
+		payload: data,
+	};
+};
+
+export const updateInventory = data => {
+	return {
+		type: UPDATE_INVENTORY,
 		payload: data,
 	};
 };

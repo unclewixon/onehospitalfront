@@ -12,7 +12,11 @@ export const USER_RECORD = 'EMR:USER_RECORD';
 export const socket = socketIOClient(API_URI, { transports: ['websocket'] });
 
 export const inventoryAPI = '/inventory/stocks';
+export const inventoryUpdateQuantityAPI = '/inventory/stocks/update-quantity';
+export const stocksAPI = '/stocks';
 export const inventoryCatAPI = '/inventory/categories';
+export const inventoryDownloadAPI = '/inventory/download';
+export const inventoryUploadAPI = '/inventory/stocks/bulk-upload';
 export const inventorySubCatAPI = '/inventory/sub-categories';
 export const rolesAPI = '/settings/roles';
 export const staffAPI = '/hr/staffs';
