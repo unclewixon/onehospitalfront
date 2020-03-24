@@ -27,6 +27,7 @@ import {
 	TOGGLE_UPLOAD_SERVICE,
 	TOGGLE_UPLOAD_DIAGNOSIS,
 	TOGGLE_EDIT_SERIVCE,
+	TOGGLE_CREATE_CLINICAL_TASK,
 } from './types';
 
 export const togglePreloading = status => {
@@ -211,6 +212,13 @@ export const toggleCreateRecordDelivery = status => {
 	};
 };
 
+export const toggleCreateClinicalTask = status => {
+	return {
+		type: TOGGLE_CREATE_CLINICAL_TASK,
+		payload: status,
+	};
+};
+
 export const toggleUploadService = status => {
 	return {
 		type: TOGGLE_UPLOAD_SERVICE,
@@ -256,6 +264,7 @@ export const closeModals = () => {
 		dispatch(toggleCreateLabourMeasurement(false));
 		dispatch(toggleCreateRiskAssessment(false));
 		dispatch(toggleCreateRecordDelivery(false));
+		dispatch(toggleCreateClinicalTask(false));
 		dispatch(toggleCreateRecordVital(false));
 		dispatch(toggleUploadService(false));
 		dispatch(toggleUploadDiagnosis(false));
@@ -475,5 +484,13 @@ export const createVoucher = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleCreateVoucher(action));
+	};
+};
+
+export const createClinicalTask = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleCreateClinicalTask(action));
 	};
 };
