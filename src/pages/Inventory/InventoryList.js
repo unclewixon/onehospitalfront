@@ -5,13 +5,12 @@ import { connect } from 'react-redux';
 import InventoryItem from '../../components/InventoryItem';
 import { createInventory } from '../../actions/general';
 
-import { parseRoster, request, upload } from '../../services/utilities';
+import { request, upload } from '../../services/utilities';
 import {
 	API_URI,
 	inventoryAPI,
 	inventoryDownloadAPI,
 	inventoryUploadAPI,
-	rosterAPI,
 } from '../../services/constants';
 import { loadInventories } from '../../actions/inventory';
 import Popover from 'antd/lib/popover';
@@ -39,7 +38,7 @@ const DownloadInventory = ({ onHide, downloading, doDownload }) => {
 						<div className="form-block">
 							<form onSubmit={e => doDownload(e)}>
 								<div className="row">
-									<div className="col-sm-12 text-right">
+									<div className="col-sm-6">
 										<button
 											className="btn btn-primary"
 											disabled={downloading}
@@ -62,7 +61,7 @@ const DownloadInventory = ({ onHide, downloading, doDownload }) => {
 };
 
 const UploadInventory = ({ onHide, uploading, doUpload, categories }) => {
-	const [Category, setCategory] = useState('');
+	const [category, setCategory] = useState('');
 	const [files, setFile] = useState(null);
 	let uploadAttachment;
 
@@ -82,16 +81,16 @@ const UploadInventory = ({ onHide, uploading, doUpload, categories }) => {
 					</button>
 					<div className="onboarding-content with-gradient">
 						<div className="form-block">
-							<form onSubmit={e => doUpload(e, files, categories)}>
+							<form onSubmit={e => doUpload(e, files, category)}>
 								<div className="row">
 									<div className="col-sm-12">
 										<div className="form-group">
 											<label htmlFor="category">Category</label>
 											<select
-												id="department"
+												id="category"
 												className="form-control"
 												onChange={e => setCategory(e.target.value)}>
-												<option>Select Department</option>
+												<option>Select Category</option>
 												{categories.map((cat, i) => {
 													return (
 														<option key={i} value={cat.id}>
@@ -185,12 +184,11 @@ class InventoryList extends Component {
 					'POST',
 					formData
 				);
-				const rosters = parseRoster(rs);
-				this.props.loadRoster(rosters);
+
 				const cat = categories.find(d => d.id === category_id);
-				notifySuccess(`roster uploaded for ${cat ? cat.name : ''} category`);
+				this.fetchInventories();
+				notifySuccess(`Inventory uploaded for ${cat ? cat.name : ''} Category`);
 				this.setState({ uploading: false, category_id });
-				//this.fetchRoster(period, department_id);
 				this.setState({ upload_visible: false });
 			} catch (error) {
 				console.log(error);
@@ -222,6 +220,7 @@ class InventoryList extends Component {
 	handleUploadVisibleChange = visible => {
 		this.setState({ upload_visible: visible });
 	};
+
 	fetchInventories = async () => {
 		try {
 			const rs = await request(`${API_URI}${inventoryAPI}`, 'GET', true);
@@ -232,7 +231,7 @@ class InventoryList extends Component {
 	};
 
 	render() {
-		const { duty_rosters, categories, inventories } = this.props;
+		const { categories, inventories } = this.props;
 		const {
 			upload_visible,
 			download_visible,
@@ -259,14 +258,15 @@ class InventoryList extends Component {
 											<DownloadInventory
 												onHide={this.hide}
 												downloading={downloading}
-												doDownload={this.downloadTemplate}
 											/>
 										}
 										overlayClassName="download-roster"
 										trigger="click"
 										visible={download_visible}
 										onVisibleChange={this.onDownloadVisibleChange}>
-										<a className="btn btn-success btn-sm text-white">
+										<a
+											className="btn btn-success btn-sm text-white"
+											onClick={e => this.downloadTemplate(e)}>
 											<i className="os-icon os-icon-download" />
 											<span>Download Template</span>
 										</a>
@@ -277,6 +277,7 @@ class InventoryList extends Component {
 												onHide={this.hide}
 												uploading={uploading}
 												doUpload={this.onUpload}
+												categories={categories}
 											/>
 										}
 										overlayClassName="upload-roster"
@@ -285,7 +286,7 @@ class InventoryList extends Component {
 										onVisibleChange={this.handleUploadVisibleChange}>
 										<a className="btn btn-sm btn-link btn-upper mr-4 d-lg-inline-block">
 											<i className="os-icon os-icon-upload" />
-											<span>Upload Roster</span>
+											<span>Upload Inventory</span>
 										</a>
 									</Popover>
 								</div>

@@ -39,7 +39,7 @@ class ModalUpdInventoryQty extends Component {
 		document.body.classList.remove('modal-open');
 	}
 
-	editInventoryQuantity = e => {
+	editInventoryQuantity = async e => {
 		e.preventDefault();
 		let data = {
 			id: this.state.item.id,
@@ -47,12 +47,13 @@ class ModalUpdInventoryQty extends Component {
 		};
 		this.setState({ submitting: true });
 		try {
-			const rs = request(
+			const rs = await request(
 				`${API_URI}${inventoryUpdateQuantityAPI}`,
 				'PATCH',
 				true,
 				data
 			);
+			console.log(rs);
 			this.props.updateInventory(rs);
 			notifySuccess('Quantity Updated');
 			this.props.closeModals(true);
