@@ -220,6 +220,7 @@ class InventoryList extends Component {
 	handleUploadVisibleChange = visible => {
 		this.setState({ upload_visible: visible });
 	};
+
 	fetchInventories = async () => {
 		try {
 			const rs = await request(`${API_URI}${inventoryAPI}`, 'GET', true);
