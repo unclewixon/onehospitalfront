@@ -120,8 +120,6 @@ const RoomCategory = props => {
 			<div className="col-lg-8">
 				<div className="element-wrapper">
 					<div className="element-box">
-						<h5 className="form-header">Room Categories</h5>
-						<div className="form-desc"></div>
 						<div className="table-responsive">
 							<table className="table table-striped">
 								<thead>

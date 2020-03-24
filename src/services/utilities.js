@@ -107,7 +107,7 @@ export const upload = async (url, method, body) => {
 };
 
 // prettier-ignore
-export const renderTextInput = ({ input, label, type, id, placeholder, meta: { touched, error } }) => (
+export const renderTextInput = ({input, label, type, id, placeholder,readOnly=false ,meta: { touched, error }}) => (
 	<div
 		className={`form-group ${touched &&
 		(error ? 'has-error has-danger' : '')}`}>
@@ -117,6 +117,7 @@ export const renderTextInput = ({ input, label, type, id, placeholder, meta: { t
 			type={type}
 			className="form-control"
 			placeholder={placeholder || label}
+			readOnly={readOnly}
 		/>
 		{touched && error && (
 			<div className="help-block form-text with-errors form-control-feedback">

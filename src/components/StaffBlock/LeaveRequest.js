@@ -19,7 +19,7 @@ export class LeaveRequest extends Component {
 		const { location } = this.props;
 
 		return (
-			<div className="row">
+			<div className="row my-4">
 				<div className="col-sm-12">
 					<div className="element-wrapper">
 						<div className="element-actions">

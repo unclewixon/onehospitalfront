@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const AdminMenu = () => {
+const SettingsMenu = () => {
 	return (
 		<>
 			<li className="sub-header">
@@ -19,4 +19,4 @@ const AdminMenu = () => {
 	);
 };
 
-export default AdminMenu;
+export default SettingsMenu;
