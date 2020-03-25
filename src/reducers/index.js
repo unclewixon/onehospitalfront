@@ -7,6 +7,7 @@ import general from './general';
 import settings from './settings';
 import hmo from './hmo';
 import inventory from './inventory';
+import vitals from './vitals';
 import role from './role';
 import hr from './hr';
 import patient from './patient';
@@ -20,6 +21,7 @@ const reducers = combineReducers({
 	settings,
 	hmo,
 	inventory,
+	vitals,
 	role,
 	hr,
 	utility,
