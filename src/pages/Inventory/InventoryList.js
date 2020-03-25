@@ -18,6 +18,10 @@ import DatePicker from 'react-datepicker';
 import waiting from '../../assets/images/waiting.gif';
 import { notifyError, notifySuccess } from '../../services/notify';
 import moment from 'moment';
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+import BootstrapTable from 'react-bootstrap-table-next';
+import Tooltip from 'antd/lib/tooltip';
+import InventoryTable from '../../components/Inventory/InventoryTable';
 
 const DownloadInventory = ({ onHide, downloading, doDownload }) => {
 	return (
@@ -149,21 +153,6 @@ const UploadInventory = ({ onHide, uploading, doUpload, categories }) => {
 	);
 };
 
-const sortTypes = {
-	up: {
-		class: 'sort-up',
-		fn: (a, b) => a.name - b.name,
-	},
-	down: {
-		class: 'sort-down',
-		fn: (a, b) => b.name - a.name,
-	},
-	default: {
-		class: 'sort',
-		fn: (a, b) => a,
-	},
-};
-
 class InventoryList extends Component {
 	state = {
 		currentSort: 'default',
@@ -174,19 +163,6 @@ class InventoryList extends Component {
 		category_id: '',
 		period: null,
 		filtering: false,
-	};
-
-	onSortChange = () => {
-		const { currentSort } = this.state;
-		let nextSort;
-
-		if (currentSort === 'down') nextSort = 'up';
-		else if (currentSort === 'up') nextSort = 'default';
-		else if (currentSort === 'default') nextSort = 'down';
-
-		this.setState({
-			currentSort: nextSort,
-		});
 	};
 
 	componentDidMount() {
@@ -266,9 +242,6 @@ class InventoryList extends Component {
 			download_visible,
 			downloading,
 			uploading,
-			currentSort,
-			filtering,
-			department_id,
 		} = this.state;
 		return (
 			<div className="content-i">
@@ -323,37 +296,7 @@ class InventoryList extends Component {
 								<h6 className="form-header">Inventory List</h6>
 								<div className="element-box">
 									<div className="table-responsive">
-										<table className="table table-striped">
-											<thead>
-												<tr>
-													<th>ID</th>
-													<th>
-														Category
-														<button onClick={this.onSortChange}>
-															<i
-																className={`fas fa-${sortTypes[currentSort].class}`}
-															/>
-														</button>
-													</th>
-													<th>Name</th>
-													<th>Sub Category</th>
-													<th>Cost Price</th>
-													<th>Selling Price</th>
-													<th>Quantity</th>
-													<th className="text-center">Status</th>
-													<th className="text-right">Actions</th>
-												</tr>
-											</thead>
-											<tbody>
-												{[...inventories]
-													.sort(sortTypes[currentSort].fn)
-													.map((inv, i) => {
-														return (
-															<InventoryItem key={i} index={i + 1} item={inv} />
-														);
-													})}
-											</tbody>
-										</table>
+										<InventoryTable data={inventories} />
 									</div>
 								</div>
 							</div>
