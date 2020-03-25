@@ -6,6 +6,7 @@ import {
 	ALLERGY,
 	UPDATE_ALLERGY,
 	DELETE_ALLERGY,
+	GET_PHYSIOTHERAPIES,
 } from './types';
 
 export const nextStep = data => {
@@ -55,5 +56,12 @@ export const delete_allergy = payload => {
 	return {
 		type: DELETE_ALLERGY,
 		payload,
+	};
+};
+
+export const getPhysiotherapies = data => {
+	return {
+		type: GET_PHYSIOTHERAPIES,
+		payload: data,
 	};
 };
