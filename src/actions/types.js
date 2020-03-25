@@ -170,8 +170,6 @@ export const SAVE_VITALS = 'SAVE_VITALS';
 export const UPDATE_VITALS = 'UPDATE_VITALS';
 export const GET_VITALS = 'GET_VITALS';
 export const VITALS = 'VITALS';
-export const UPDATE_ALLERGY = 'UPDATE_ALLERGY';
-export const DELETE_ALLERGY = 'DELETE_ALLERGY';
 
 //Physiotherapies
 export const GET_PHYSIOTHERAPIES = 'GET_PHYSIOTHERAPIES';
