@@ -4,6 +4,8 @@ import {
 	SAVE_ALLERGIES,
 	GET_ALLERGIES,
 	ALLERGY,
+	UPDATE_ALLERGY,
+	DELETE_ALLERGY,
 	GET_PHYSIOTHERAPIES,
 } from '../actions/types';
 
@@ -29,6 +31,23 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, allergy: action.payload };
 		case GET_PHYSIOTHERAPIES:
 			return { ...state, allergies: action.payload };
+		case UPDATE_ALLERGY:
+			return {
+				...state,
+				allergies: [
+					...state.allergies.filter(
+						deletedItem => deletedItem.id !== action.previousData.id
+					),
+					action.payload,
+				],
+			};
+		case DELETE_ALLERGY:
+			return {
+				...state,
+				allergies: state.allergies.filter(
+					deletedItem => deletedItem.id !== action.payload.id
+				),
+			};
 		default:
 			return state;
 	}

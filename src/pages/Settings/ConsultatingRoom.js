@@ -187,15 +187,13 @@ const ConsultatingRoom = props => {
 										onSubmit={
 											edit ? onEditConsultatingRoom : onAddConsultatingRoom
 										}>
-										<h5 className="element-box-header">
-											Add New Consultating room
-										</h5>
+										<h5 className="element-box-header">Add New</h5>
 										<div className="form-group">
 											<label className="lighter">Name</label>
 											<div className="input-group mb-2 mr-sm-2 mb-sm-0">
 												<input
 													className="form-control"
-													placeholder="Enter Consultating Room"
+													placeholder="Consulting room name"
 													type="text"
 													name="name"
 													value={name}
