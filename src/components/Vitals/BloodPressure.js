@@ -49,13 +49,6 @@ const BloodPressure = ({ patient, vitals }) => {
 		],
 	};
 
-	useEffect(() => {
-		getData(patient, info.title).then(__vitals => {
-			setCurrentVitals(__vitals.reading.blood_pressure);
-		});
-		//
-	}, []);
-
 	return (
 		<div className="row vital">
 			<div className="col-8">
