@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { request } from '../../services/utilities';
+import { confirmAction } from '../../services/utilities';
 import { API_URI, patientAPI } from '../../services/constants';
 import { GetAllergies, Allergy } from '../../actions/patient';
 import { notifySuccess, notifyError } from '../../services/notify';
@@ -32,6 +33,20 @@ class Allergies extends Component {
 			this.setState({ loaded: false });
 			notifyError('error fetching allergies for the patient');
 		}
+	};
+	deleteAllergy = data => {
+		this.props
+			.deleteLabTest(data)
+			.then(data => {
+				notifySuccess('Lab test deleted');
+			})
+			.catch(error => {
+				notifyError('Error deleting lab test');
+			});
+	};
+
+	confirmDelete = data => {
+		confirmAction(this.deleteAllergy, data);
 	};
 	render() {
 		const { location, allergies } = this.props;
@@ -116,8 +131,18 @@ class Allergies extends Component {
 																					this.props.Allergy(item)
 																				}></i>
 																		</Link>
+																		<Tooltip title="Update allergy">
+																			<i
+																				className="os-icon os-icon-ui-15"
+																				onClick={() =>
+																					this.confirmDelete(item)
+																				}></i>
+																		</Tooltip>
 																	</Tooltip>
 																</td>
+																{/* <td className="row-actions text-right">
+																	
+																</td> */}
 															</tr>
 														);
 													})}

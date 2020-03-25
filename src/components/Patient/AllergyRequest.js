@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { request } from '../../services/utilities';
 import { API_URI, socket, patientAPI } from '../../services/constants';
-import { AddAllergies } from '../../actions/patient';
+import { add_allergies } from '../../actions/patient';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { useHistory } from 'react-router-dom';
@@ -46,7 +46,7 @@ const AllergyRequest = props => {
 				true,
 				data
 			);
-			props.AddAllergies(rs.allergy);
+			props.add_allergies(rs.allergy);
 			history.push('settings/roles#allergies');
 			notifySuccess('allergies saved');
 			setSubmitting(false);
@@ -151,4 +151,4 @@ const mapStateToProps = (state, ownProps) => {
 	};
 };
 
-export default connect(mapStateToProps, { AddAllergies })(AllergyRequest);
+export default connect(mapStateToProps, { add_allergies })(AllergyRequest);

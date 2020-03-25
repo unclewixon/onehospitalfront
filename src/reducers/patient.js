@@ -4,6 +4,7 @@ import {
 	SAVE_ALLERGIES,
 	GET_ALLERGIES,
 	ALLERGY,
+	UPDATE_ALLERGY,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -25,6 +26,16 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, allergies: [...state.allergies, action.payload] };
 		case ALLERGY:
 			return { ...state, allergy: action.payload };
+		case UPDATE_ALLERGY:
+			return {
+				...state,
+				allergies: [
+					...state.allergies.filter(
+						deletedItem => deletedItem.id !== action.previousData.id
+					),
+					action.payload,
+				],
+			};
 		default:
 			return state;
 	}
