@@ -162,6 +162,8 @@ export const DELETE_DIAGNOSIS = 'DELETE_DIAGNOSIS';
 export const SAVE_ALLERGIES = 'SAVE_ALLERGIES';
 export const GET_ALLERGIES = 'GET_ALLERGIES';
 export const ALLERGY = 'ALLERGY';
+export const UPDATE_ALLERGY = 'UPDATE_ALLERGY';
+export const DELETE_ALLERGY = 'DELETE_ALLERGY';
 
 //Vitals
 export const SAVE_VITALS = 'SAVE_VITALS';
