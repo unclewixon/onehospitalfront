@@ -12,42 +12,16 @@ import {
 	deleteRequestService,
 } from '../../actions/settings';
 
-const requestTypes = [
-	{
-		value: 'Physiotherapy',
-		label: 'Physiotherapy',
-	},
-	{
-		value: 'Dentistry',
-		label: 'Dentistry',
-	},
-	{
-		value: 'Opthalmology',
-		label: 'Opthalmology',
-	},
-	{
-		value: 'Imaging',
-		label: 'Imaging',
-	},
-	{
-		value: 'Pharmacy',
-		label: 'Pharmacy',
-	},
-	{
-		value: 'Clinical lab',
-		label: 'Clinical lab',
-	},
-];
-
+import { requestTypes } from '../../services/constants';
 const RequestServices = props => {
 	const initialState = {
 		name: '',
-		request_type: '',
+		group: '',
 		edit: false,
 		create: true,
 	};
 
-	const [{ name, request_type }, setState] = useState(initialState);
+	const [{ name, group }, setState] = useState(initialState);
 	const [loaded, setLoaded] = useState(false);
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
@@ -66,9 +40,9 @@ const RequestServices = props => {
 	const onAddRequestService = e => {
 		setLoading(true);
 		e.preventDefault();
-		console.log({ name, request_type });
+
 		props
-			.addRequestService({ name, request_type })
+			.addRequestService({ name, group })
 			.then(response => {
 				setLoading(false);
 				setState({ ...initialState });
@@ -86,7 +60,7 @@ const RequestServices = props => {
 		setState(prevState => ({
 			...prevState,
 			name: data.name,
-			request_type: data.request_type,
+			group: data.group,
 			id: data.id,
 		}));
 		getDataToEdit(data);
@@ -95,7 +69,7 @@ const RequestServices = props => {
 		setLoading(true);
 		e.preventDefault();
 		props
-			.updateRequestService({ id: data.id, name }, data)
+			.updateRequestService({ id: data.id, name, group }, data)
 			.then(response => {
 				setState({ ...initialState });
 				setSubmitButton({ create: true, edit: false });
@@ -129,6 +103,7 @@ const RequestServices = props => {
 			props
 				.getAllRequestServices()
 				.then(response => {
+					console.log(response);
 					setDataLoaded(true);
 				})
 				.catch(e => {
@@ -176,7 +151,7 @@ const RequestServices = props => {
 											</tr>
 										</thead>
 										<tbody>
-											{!loaded ? (
+											{!dataLoaded ? (
 												<tr>
 													<td colSpan="4" className="text-center">
 														<img alt="searching" src={searchingGIF} />
@@ -184,39 +159,31 @@ const RequestServices = props => {
 												</tr>
 											) : (
 												<>
-													<tr>
-														<td>1</td>
-														<td>
-															<div className="value">leg</div>
-														</td>
-														<td>
-															<div className="value">Physiotherapy</div>
-														</td>
-														<td className="row-actions text-right">
-															<a
-																onClick={() =>
-																	onClickEdit({
-																		name: 'leg',
-																		request_type: 'Imageing',
-																	})
-																}>
-																<i className="os-icon os-icon-ui-49"></i>
-															</a>
-															<a href="#">
-																<i className="os-icon os-icon-grid-10"></i>
-															</a>
-															<a
-																className="danger"
-																onClick={() =>
-																	confirmDelete({
-																		name: 'leg',
-																		request_type: 'Imageing',
-																	})
-																}>
-																<i className="os-icon os-icon-ui-15"></i>
-															</a>
-														</td>
-													</tr>
+													{props.requestServices &&
+														props.requestServices.map((req, i) => {
+															return (
+																<tr key={i}>
+																	<td>{i + 1}</td>
+																	<td>
+																		<div className="value">{req.name}</div>
+																	</td>
+																	<td>
+																		<div className="value">{req.group}</div>
+																	</td>
+																	<td className="row-actions text-right">
+																		<a onClick={() => onClickEdit(req)}>
+																			<i className="os-icon os-icon-ui-49"></i>
+																		</a>
+
+																		<a
+																			className="danger"
+																			onClick={() => confirmDelete(req)}>
+																			<i className="os-icon os-icon-ui-15"></i>
+																		</a>
+																	</td>
+																</tr>
+															);
+														})}
 												</>
 											)}
 										</tbody>
@@ -234,15 +201,18 @@ const RequestServices = props => {
 								<div className="form-group my-2">
 									<label>Request Type</label>
 									<select
-										id="requestType"
-										name="request_type"
+										id="group"
+										name="group"
 										className="form-control"
 										required
 										onChange={e => handleInputChange(e)}>
-										<option>Choose ...</option>
+										<option disabled>Choose ...</option>
 										{requestTypes.map((req, i) => {
 											return (
-												<option key={i} value={req.value}>
+												<option
+													key={i}
+													value={req.value}
+													selected={req.value === group}>
 													{req.label}
 												</option>
 											);

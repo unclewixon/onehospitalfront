@@ -136,3 +136,30 @@ export const vitalItems = [
 	'Weight',
 	'Others',
 ];
+
+export const requestTypes = [
+	{
+		value: 'Physiotherapy',
+		label: 'Physiotherapy',
+	},
+	{
+		value: 'Dentistry',
+		label: 'Dentistry',
+	},
+	{
+		value: 'Opthalmology',
+		label: 'Opthalmology',
+	},
+	{
+		value: 'Imaging',
+		label: 'Imaging',
+	},
+	{
+		value: 'Pharmacy',
+		label: 'Pharmacy',
+	},
+	{
+		value: 'Clinical lab',
+		label: 'Clinical lab',
+	},
+];
