@@ -3,7 +3,13 @@ import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError, reset } from 'redux-form';
 
 import { closeModals } from '../../actions/general';
-import { renderTextInput, request, renderTextInputGroup, renderSelect } from '../../services/utilities';
+import {
+	renderTextInput,
+	request,
+	renderTextInputGroup,
+	renderSelect,
+	renderSelectWithChange,
+} from '../../services/utilities';
 import { API_URI, inventoryAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
@@ -12,20 +18,23 @@ import { addInventory } from '../../actions/inventory';
 const validate = values => {
 	const errors = {};
 	if (!values.name) {
-        errors.name = 'enter name';
+		errors.name = 'enter name';
 	}
 	if (values.category_id === null || values.category_id === '') {
-        errors.category_id = 'select category';
-    }
-    return errors;
+		errors.category_id = 'select category';
+	}
+	return errors;
 };
 
 class ModalCreateInventory extends Component {
 	state = {
 		submitting: false,
+		sub_categories: [],
 	};
 
 	componentDidMount() {
+		const { sub_categories } = this.props;
+		this.setState({ sub_categories: sub_categories });
 		document.body.classList.add('modal-open');
 	}
 
@@ -43,25 +52,50 @@ class ModalCreateInventory extends Component {
 			this.setState({ submitting: false });
 		} catch (e) {
 			this.setState({ submitting: false });
-			throw new SubmissionError({ _error: e.message || 'could not create inventory item' });
+			throw new SubmissionError({
+				_error: e.message || 'could not create inventory item',
+			});
 		}
 	};
 
+	handleChange = event => {
+		const { sub_categories } = this.props;
+		let newValue = event.target.value;
+		let newSubCat = sub_categories.filter(service => {
+			return service.category.id === newValue;
+		});
+		this.setState({ sub_categories: newSubCat });
+	};
+
 	render() {
-		const { submitting } = this.state;
-		const { error, handleSubmit, categories, sub_categories } = this.props;
+		const { submitting, sub_categories } = this.state;
+		const { error, handleSubmit, categories } = this.props;
 		return (
-			<div className="onboarding-modal modal fade animated show" role="dialog" style={{ display: 'block' }}>
+			<div
+				className="onboarding-modal modal fade animated show"
+				role="dialog"
+				style={{ display: 'block' }}>
 				<div className="modal-dialog modal-centered" role="document">
 					<div className="modal-content text-center">
-						<button aria-label="Close" className="close" type="button" onClick={() => this.props.closeModals(false)}>
+						<button
+							aria-label="Close"
+							className="close"
+							type="button"
+							onClick={() => this.props.closeModals(false)}>
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
 							<h4 className="onboarding-title">Create Inventory Item</h4>
 							<div className="form-block">
 								<form onSubmit={handleSubmit(this.createInventory)}>
-									{error && <div className="alert alert-danger" dangerouslySetInnerHTML={{__html: `<strong>Error!</strong> ${error}`}}/>}
+									{error && (
+										<div
+											className="alert alert-danger"
+											dangerouslySetInnerHTML={{
+												__html: `<strong>Error!</strong> ${error}`,
+											}}
+										/>
+									)}
 									<div className="row">
 										<div className="col-sm-6">
 											<Field
@@ -90,6 +124,7 @@ class ModalCreateInventory extends Component {
 												id="category_id"
 												name="category_id"
 												component={renderSelect}
+												onChange={this.handleChange}
 												label="Category"
 												placeholder="Select Category"
 												data={categories}
@@ -156,7 +191,16 @@ class ModalCreateInventory extends Component {
 									</div>
 									<div className="row">
 										<div className="col-sm-12 text-right">
-											<button className="btn btn-primary" disabled={submitting} type="submit">{submitting ? <img src={waiting} alt="submitting"/> : 'save'}</button>
+											<button
+												className="btn btn-primary"
+												disabled={submitting}
+												type="submit">
+												{submitting ? (
+													<img src={waiting} alt="submitting" />
+												) : (
+													'save'
+												)}
+											</button>
 										</div>
 									</div>
 								</form>
@@ -185,7 +229,9 @@ const mapStateToProps = (state, ownProps) => {
 		},
 		categories: state.inventory.categories,
 		sub_categories: state.inventory.sub_categories,
-	}
+	};
 };
 
-export default connect(mapStateToProps, { closeModals, reset, addInventory })(ModalCreateInventory);
+export default connect(mapStateToProps, { closeModals, reset, addInventory })(
+	ModalCreateInventory
+);
