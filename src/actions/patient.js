@@ -4,6 +4,7 @@ import {
 	SAVE_ALLERGIES,
 	GET_ALLERGIES,
 	ALLERGY,
+	GET_PHYSIOTHERAPIES,
 } from './types';
 
 export const nextStep = data => {
@@ -37,6 +38,13 @@ export const GetAllergies = data => {
 export const Allergy = data => {
 	return {
 		type: ALLERGY,
+		payload: data,
+	};
+};
+
+export const getPhysiotherapies = data => {
+	return {
+		type: GET_PHYSIOTHERAPIES,
 		payload: data,
 	};
 };
