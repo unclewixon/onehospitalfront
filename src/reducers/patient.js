@@ -5,6 +5,7 @@ import {
 	GET_ALLERGIES,
 	ALLERGY,
 	UPDATE_ALLERGY,
+	DELETE_ALLERGY,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -35,6 +36,13 @@ const patient = (state = INITIAL_STATE, action) => {
 					),
 					action.payload,
 				],
+			};
+		case DELETE_ALLERGY:
+			return {
+				...state,
+				allergies: state.allergies.filter(
+					deletedItem => deletedItem.id !== action.payload.id
+				),
 			};
 		default:
 			return state;

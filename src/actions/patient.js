@@ -5,6 +5,7 @@ import {
 	GET_ALLERGIES,
 	ALLERGY,
 	UPDATE_ALLERGY,
+	DELETE_ALLERGY,
 } from './types';
 
 export const nextStep = data => {
@@ -36,7 +37,7 @@ export const update_allergy = (data, previousData) => {
 	};
 };
 
-export const GetAllergies = data => {
+export const Fetch_Allergies = data => {
 	return {
 		type: GET_ALLERGIES,
 		payload: data,
@@ -47,5 +48,12 @@ export const Allergy = data => {
 	return {
 		type: ALLERGY,
 		payload: data,
+	};
+};
+
+export const delete_allergy = payload => {
+	return {
+		type: DELETE_ALLERGY,
+		payload,
 	};
 };

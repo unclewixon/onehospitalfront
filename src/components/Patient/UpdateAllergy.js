@@ -59,11 +59,11 @@ const UpdateAllergy = props => {
 			);
 			props.update_allergy(rs.allergy, Allergy);
 			history.push('settings/roles#allergies');
-			notifySuccess('allergy updated');
+			notifySuccess('Allergy updated');
 			setSubmitting(false);
 		} catch (e) {
 			setSubmitting(false);
-			notifyError(e.message || 'could not update allergy');
+			notifyError(e.message || 'Could not update allergy');
 		}
 	};
 	const handleInputChange = e => {
