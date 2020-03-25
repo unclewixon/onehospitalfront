@@ -1435,9 +1435,9 @@ export const addRequestService = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
-				.post(`${API_URI}/services/request-services`, {
+				.post(`${API_URI}/request-types`, {
 					name: data.name,
-					request_type: data.request_type,
+					group: data.group,
 				})
 				.then(response => {
 					dispatch(add_request_service(response.data));
@@ -1453,7 +1453,7 @@ export const getAllRequestServices = () => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
-				.get(`${API_URI}/services/request-services`)
+				.get(`${API_URI}/request-types`)
 				.then(response => {
 					dispatch(get_all_request_services(response.data));
 					return resolve({ success: true });
@@ -1469,8 +1469,9 @@ export const updateRequestService = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
-				.patch(`${API_URI}/request-service/${data.id}/update`, {
+				.patch(`${API_URI}/request-types/${data.id}/update`, {
 					name: data.name,
+					group: data.group,
 				})
 				.then(response => {
 					dispatch(update_request_service(response.data, data));
@@ -1487,7 +1488,7 @@ export const deleteRequestService = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
-				.delete(`${API_URI}/services/categories/${data.id}`)
+				.delete(`${API_URI}/request-types/${data.id}`)
 				.then(response => {
 					dispatch(delete_request_service(data));
 					return resolve({ success: true });
