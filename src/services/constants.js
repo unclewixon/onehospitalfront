@@ -23,6 +23,7 @@ export const staffAPI = '/hr/staffs';
 export const leaveMgtAPI = '/hr/leave-management';
 export const rosterAPI = '/hr/housekeeping';
 export const searchAPI = '/patient/find';
+export const vitalsAPI = '/patient/save-vitals';
 export const departmentAPI = '/departments';
 export const utilityAPI = '/utility';
 export const payrollAPI = '/hr/payroll';
