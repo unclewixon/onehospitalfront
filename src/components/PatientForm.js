@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { closeModals } from '../actions/general';
 import { nextStep } from '../actions/patient';
 import { connect } from 'react-redux';
@@ -11,9 +11,13 @@ import {
 	maritalStatus,
 	insuranceStatus,
 } from '../services/constants';
+import { getAllHmos } from '../actions/hmo';
 
 function PatientForm(props) {
 	const formData = props.formData;
+	const [loaded, setLoaded] = useState(false);
+	const [isHmo, setIsHmo] = useState(false);
+	const [hmos, setHmos] = useState([]);
 
 	const { register, handleSubmit, errors, setValue } = useForm({
 		validationSchema: patientSchema,
@@ -29,10 +33,28 @@ function PatientForm(props) {
 		},
 	});
 
-	const onSubmit = (values) => {
+	const onSubmit = values => {
 		props.nextStep(values);
 	};
 
+	const getAllHmos = () => {
+		let hmos = props.hmoList.map(hmo => {
+			return {
+				value: hmo.id,
+				label: hmo.name,
+			};
+		});
+
+		setHmos(hmos);
+	};
+
+	useEffect(() => {
+		if (!loaded) {
+			props.getAllHmos();
+		}
+		getAllHmos();
+		setLoaded(true);
+	}, [loaded, props]);
 	return (
 		<Fragment>
 			<h5 className="form-header">New patient registration</h5>
@@ -46,7 +68,7 @@ function PatientForm(props) {
 									<label>Surame</label>
 									<input
 										className="form-control"
-										placeholder="Enter surnam name"
+										placeholder="Enter surname name"
 										name="surname"
 										type="text"
 										ref={register}
@@ -56,7 +78,7 @@ function PatientForm(props) {
 									</small>
 								</div>
 							</div>
-							<div className="col-sm-8">
+							<div className="col-sm">
 								<div className="form-group">
 									<label>Other Names</label>
 									<input
@@ -69,6 +91,18 @@ function PatientForm(props) {
 									<small className="text-danger">
 										{errors.other_names && errors.other_names.message}
 									</small>
+								</div>
+							</div>
+							<div className="col-sm">
+								<div className="form-group">
+									<label>Email</label>
+									<input
+										className="form-control"
+										name="email"
+										ref={register}
+										placeholder="example@email.com"
+										type="text"
+									/>
 								</div>
 							</div>
 						</div>
@@ -95,7 +129,7 @@ function PatientForm(props) {
 										id="gender"
 										ref={register({ name: 'gender' })}
 										options={gender}
-										onChange={(evt) => {
+										onChange={evt => {
 											if (evt == null) {
 												setValue('gender', null);
 											} else {
@@ -112,7 +146,7 @@ function PatientForm(props) {
 										id="maritalStatus"
 										ref={register({ name: 'maritalStatus' })}
 										options={maritalStatus}
-										onChange={(evt) => {
+										onChange={evt => {
 											if (evt == null) {
 												setValue('maritalStatus', null);
 											} else {
@@ -131,11 +165,35 @@ function PatientForm(props) {
 										id="insurranceStatus"
 										ref={register({ name: 'insurranceStatus' })}
 										options={insuranceStatus}
-										onChange={(evt) => {
+										onChange={evt => {
 											if (evt == null) {
 												setValue('insurranceStatus', null);
 											} else {
-												setValue('insurranceStatus', String(evt.value));
+												if (evt.value === 'HMO') {
+													setIsHmo(true);
+													setValue('insurranceStatus', String(evt.value));
+												} else {
+													setIsHmo(false);
+													setValue('insurranceStatus', String(evt.value));
+													setValue('hmoId', null);
+												}
+											}
+										}}
+									/>
+								</div>
+							</div>
+							<div className="col-sm">
+								<div className="form-group">
+									<label>Hmos</label>
+									<Select
+										id="hmoId"
+										ref={register({ name: 'hmoId' })}
+										options={isHmo ? hmos : []}
+										onChange={evt => {
+											if (evt == null) {
+												setValue('hmoId', null);
+											} else {
+												setValue('hmoId', String(evt.value));
 											}
 										}}
 									/>
@@ -150,23 +208,6 @@ function PatientForm(props) {
 										type="text"
 										name="occupation"
 										ref={register}
-									/>
-								</div>
-							</div>
-							<div className="col-sm">
-								<div className="form-group">
-									<label>Ethnicity</label>
-									<Select
-										name="ethnicity"
-										ref={register({ name: 'ethnicity' })}
-										options={ethnicities}
-										onChange={(evt) => {
-											if (evt == null) {
-												setValue('ethnicity', null);
-											} else {
-												setValue('ethnicity', String(evt.value));
-											}
-										}}
 									/>
 								</div>
 							</div>
@@ -196,13 +237,18 @@ function PatientForm(props) {
 							</div>
 							<div className="col-sm">
 								<div className="form-group">
-									<label>Email</label>
-									<input
-										className="form-control"
-										name="email"
-										ref={register}
-										placeholder="example@email.com"
-										type="text"
+									<label>Ethnicity</label>
+									<Select
+										name="ethnicity"
+										ref={register({ name: 'ethnicity' })}
+										options={ethnicities}
+										onChange={evt => {
+											if (evt == null) {
+												setValue('ethnicity', null);
+											} else {
+												setValue('ethnicity', String(evt.value));
+											}
+										}}
 									/>
 								</div>
 							</div>
@@ -230,7 +276,10 @@ function PatientForm(props) {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		formData: state.patient.formData,
+		hmoList: state.hmo.hmo_list,
 	};
 };
 
-export default connect(mapStateToProps, { closeModals, nextStep })(PatientForm);
+export default connect(mapStateToProps, { closeModals, nextStep, getAllHmos })(
+	PatientForm
+);

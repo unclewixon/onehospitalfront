@@ -134,4 +134,5 @@ export const vitalItems = [
 	'Temperature',
 	'Urine',
 	'Weight',
+	'Others',
 ];

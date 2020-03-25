@@ -146,7 +146,7 @@ const Departments = props => {
 					</div>
 
 					<div className="row">
-						<div className="col-lg-8">
+						<div className="col-lg-7">
 							<div className="element-wrapper">
 								<div className="element-box-tp">
 									<div className="table-responsive">
@@ -215,16 +215,16 @@ const Departments = props => {
 								</div>
 							</div>
 						</div>
-						<div className="col-lg-4 col-xxl-3  d-xxl-block">
+						<div className="col-lg-5 col-xxl-3  d-xxl-block">
 							<div className="element-wrapper">
 								<div className="element-box">
 									<form onSubmit={edit ? onEditDept : onCreateDepartment}>
-										<h5 className="element-box-header">Add New Department</h5>
+										<h5 className="element-box-header">Add New</h5>
 										<div className="form-group">
-											<label className="lighter">Name of Department</label>
+											<label className="lighter">Department Name</label>
 											<input
 												className="form-control"
-												placeholder="Enter Department Name..."
+												placeholder="Department Name"
 												type="text"
 												name="name"
 												value={name}
