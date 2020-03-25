@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Popover from 'antd/lib/popover';
 import {
 	LineChart,
@@ -12,11 +12,28 @@ import {
 import kebabCase from 'lodash.kebabcase';
 
 import TakeReadings from './TakeReadings';
+import { connect } from 'react-redux';
+import { getData } from '../../services/utilities';
 
 const unit = '';
 
-const MUAC = () => {
+const MUAC = ({ patient, vitals }) => {
 	const [visible, setVisible] = useState(false);
+	const [currentVitals, setCurrentVitals] = useState(0);
+	useEffect(() => {
+		try {
+			console.log(vitals);
+			setCurrentVitals(vitals.reading.muac);
+		} catch (e) {}
+	}, [vitals]);
+	useEffect(() => {
+		getData(patient, info.title).then(vitals => {
+			try {
+				console.log(vitals);
+				setCurrentVitals(vitals.reading.muac);
+			} catch (e) {}
+		});
+	}, []);
 	const data = [
 		{ name: '20-Oct-20', item: 420 },
 		{ name: '21-Oct-20', item: 400 },
@@ -50,7 +67,10 @@ const MUAC = () => {
 			<div className="col-4">
 				<div className="text-center">
 					<div className="last-reading">Last MUAC Reading:</div>
-					<div className="reading">{`30${unit}`}</div>
+					<div className="reading">
+						{currentVitals}
+						{`${unit}`}
+					</div>
 					<div className="time-captured">on 29-Oct-2020 4:20pm</div>
 					<div className="new-reading">
 						<Popover
@@ -71,4 +91,11 @@ const MUAC = () => {
 	);
 };
 
-export default MUAC;
+const mapStateToProps = (state, ownProps) => {
+	return {
+		patient: state.user.patient,
+		vitals: state.vitals ? state.vitals.vitals : [],
+	};
+};
+
+export default connect(mapStateToProps)(MUAC);

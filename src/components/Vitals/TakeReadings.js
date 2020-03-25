@@ -5,19 +5,39 @@ import { Field, reduxForm, SubmissionError, reset } from 'redux-form';
 import {
 	renderTextInput,
 	renderTextInputGroup,
+	request,
 } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
+import { API_URI, inventoryAPI, vitalsAPI } from '../../services/constants';
+import { notifySuccess } from '../../services/notify';
+import { addVital, updateVitals } from '../../actions/vitals';
 
 class TakeReadings extends Component {
 	state = {
 		submitting: false,
 	};
 
-	takeReading = data => {
-		const { patient } = this.props;
-		console.log(patient);
-		console.log(data);
-		throw new SubmissionError({ _error: 'not submitting yet. stay tuned!' });
+	takeReading = async data => {
+		const { patient, info } = this.props;
+		const { title } = info;
+		this.setState({ submitting: true });
+		try {
+			let toSave = {
+				readingType: title,
+				reading: data,
+				patient_id: patient.id,
+			};
+			const rs = await request(`${API_URI}${vitalsAPI}`, 'POST', true, toSave);
+			this.props.updateVitals(rs.readings);
+			notifySuccess(title + ' updated!');
+			this.setState({ submitting: false });
+			this.props.doHide(true);
+		} catch (e) {
+			this.setState({ submitting: false });
+			throw new SubmissionError({
+				_error: e.message || 'could not create ' + title,
+			});
+		}
 	};
 
 	render() {
@@ -98,7 +118,8 @@ TakeReadings = reduxForm({
 const mapStateToProps = (state, ownProps) => {
 	return {
 		patient: state.user.patient,
+		vitals: state.vitals ? state.vitals.vitals : [],
 	};
 };
 
-export default connect(mapStateToProps, { reset })(TakeReadings);
+export default connect(mapStateToProps, { reset, updateVitals })(TakeReadings);

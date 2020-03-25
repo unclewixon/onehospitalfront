@@ -1,24 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import {
-	closeModals,
-	toggleModal,
-	toggleUpdateQuantity,
-} from '../../actions/general';
+import { closeModals } from '../../actions/general';
 import { request, requestPatch } from '../../services/utilities';
-import {
-	API_URI,
-	inventoryAPI,
-	inventoryUpdateQuantityAPI,
-	stocksAPI,
-} from '../../services/constants';
+import { API_URI, inventoryUpdateQuantityAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
 import { SubmissionError } from 'redux-form';
 import waiting from '../../assets/images/waiting.gif';
 import { updateInventory } from '../../actions/inventory';
-import InventoryItem from '../InventoryItem';
-import InventoryList from '../../pages/Inventory/InventoryList';
 
 class ModalUpdInventoryQty extends Component {
 	state = {
@@ -53,7 +42,6 @@ class ModalUpdInventoryQty extends Component {
 				true,
 				data
 			);
-			console.log(rs);
 			this.props.updateInventory(rs);
 			notifySuccess('Quantity Updated');
 			this.props.closeModals(true);
