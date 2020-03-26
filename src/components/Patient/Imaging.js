@@ -1,16 +1,119 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
+import moment from 'moment';
+import { loadImagingRequests } from '../../actions/patient';
+import searchingGIF from '../../assets/images/searching.gif';
+import { API_URI, patientAPI } from '../../services/constants';
+import { request } from '../../services/utilities';
+import { notifySuccess, notifyError } from '../../services/notify';
 
-const Imaging = ({ location }) => {
+const Imaging = props => {
+	const [loading, setLoading] = useState(false);
+	const fetchImaging = async () => {
+		setLoading(true);
+		const { patient } = props;
+		try {
+			const rs = await request(
+				`${API_URI}/patient/${patient.id}/request/imaging?startDate=&endDate=`,
+				'GET',
+				true
+			);
+			console.log(rs);
+			props.loadImagingRequests(rs);
+			setLoading(false);
+		} catch (error) {
+			console.log(error);
+			setLoading(false);
+			notifyError('error fetching imaging requests for the patient');
+		}
+	};
+
+	const convertToIndividualRequest = data => {
+		console.log(data);
+		let newData = [];
+		data.forEach(value => {
+			if (Array.isArray(value.requestBody)) {
+				value.requestBody.forEach(val => {
+					newData.push({
+						id: value.id,
+						isActive: value.isActive,
+						createdAt: value.createdAt,
+						updateAt: value.updateAt,
+						requestType: value.requestType,
+						requestBody: {
+							amount: val.amount,
+							service_id: val.service_id,
+							specialization: val.specialization,
+						},
+						status: value.status,
+					});
+				});
+			} else {
+				newData.push(value);
+			}
+		});
+
+		return newData;
+	};
+
+	const tableBody = () => {
+		let requests = convertToIndividualRequest(props.imagingRequests);
+		return requests.length > 0 ? (
+			requests.map((data, i) => {
+				return (
+					<tr className="" data-index="0" data-id="20" key={i}>
+						<td>{i + 1}</td>
+						<td>
+							<span className="text-bold">
+								{data.requestBody.specialization}
+							</span>
+						</td>
+						<td>{data.requestBody.amount}</td>
+						<td>{moment(data.createdAt).format('DD-MM-YYYY LT')}</td>
+
+						<td className="text-center">
+							<span className="badge badge-secondary">
+								{data.status === 0 ? 'pending' : 'completed'}
+							</span>
+						</td>
+						<td className="row-actions text-right">
+							<Tooltip title="View Request">
+								<a>
+									<i className="os-icon os-icon-documents-03" />
+								</a>
+							</Tooltip>
+							<Tooltip title="Print Request">
+								<a className="ml-2">
+									<i className="icon-feather-printer" />
+								</a>
+							</Tooltip>
+						</td>
+					</tr>
+				);
+			})
+		) : (
+			<tr>
+				<td colSpan="4" className="text-center">
+					No Imaging request
+				</td>
+			</tr>
+		);
+	};
+
+	useEffect(() => {
+		fetchImaging();
+	}, []);
+
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<div className="element-actions">
 					<Link
 						className="btn btn-primary"
-						to={`${location.pathname}#imaging-request`}>
+						to={`${props.location.pathname}#imaging-request`}>
 						<i className="os-icon os-icon-plus"></i>
 						New Imaging Request
 					</Link>
@@ -32,99 +135,24 @@ const Imaging = ({ location }) => {
 									className="table table-theme v-middle table-hover">
 									<thead>
 										<tr>
-											<th>ID</th>
-											<th>Request Date</th>
-											<th>Requested By</th>
-											<th>Request Specimen</th>
+											<th>S/N</th>
+											<th>Specialization</th>
+											<th>Amount (&#x20A6;)</th>
+											<th>Requested Date</th>
 											<th className="text-center">Request Status</th>
 											<th className="text-right" />
 										</tr>
 									</thead>
 									<tbody>
-										<tr>
-											<td>
-												<span className="text-bold">LAB/32456789</span>
-											</td>
-											<td>
-												<span>20-Jan-2020</span>
-												<span className="smaller lighter ml-1">3:22pm</span>
-											</td>
-											<td>
-												<Link to="/">Uchechi I.</Link>
-											</td>
-											<td>Blood</td>
-											<td className="text-center">
-												<span className="badge badge-secondary">pending</span>
-											</td>
-											<td className="row-actions text-right">
-												<Tooltip title="View Request">
-													<a href="#">
-														<i className="os-icon os-icon-documents-03" />
-													</a>
-												</Tooltip>
-												<Tooltip title="Print Request">
-													<a className="ml-2" href="#">
-														<i className="icon-feather-printer" />
-													</a>
-												</Tooltip>
-											</td>
-										</tr>
-										<tr className="" data-index="0" data-id="20">
-											<td>
-												<span className="text-bold">LAB/32456789</span>
-											</td>
-											<td>
-												<span>20-Jan-2020</span>
-												<span className="smaller lighter ml-1">3:22pm</span>
-											</td>
-											<td>
-												<Link to="/">Uchechi I.</Link>
-											</td>
-											<td>Blood</td>
-											<td className="text-center">
-												<span className="badge badge-success">completed</span>
-											</td>
-											<td className="row-actions text-right">
-												<Tooltip title="View Request">
-													<a href="#">
-														<i className="os-icon os-icon-documents-03" />
-													</a>
-												</Tooltip>
-												<Tooltip title="Print Request">
-													<a className="ml-2" href="#">
-														<i className="icon-feather-printer" />
-													</a>
-												</Tooltip>
-											</td>
-										</tr>
-										<tr className="" data-index="0" data-id="20">
-											<td>
-												<span className="text-bold">LAB/32456789</span>
-											</td>
-											<td>
-												<span>20-Jan-2020</span>
-												<span className="smaller lighter ml-1">3:22pm</span>
-											</td>
-											<td>
-												<Link to="/">Uchechi I.</Link>
-											</td>
-											<td>Blood</td>
-											<td className="text-center">
-												<span className="badge badge-danger">pending</span>
-											</td>
-											<td className="row-actions text-right">
-												<Tooltip title="View Request">
-													<a href="#">
-														<i className="os-icon os-icon-documents-03" />
-													</a>
-												</Tooltip>
-												<Tooltip title="Print Request">
-													<a className="ml-2" href="#">
-														<i className="icon-feather-printer" />
-													</a>
-												</Tooltip>
-											</td>
-										</tr>
+										{loading ? (
+											<tr>
+												<td colSpan="4" className="text-center">
+													<img alt="searching" src={searchingGIF} />
+												</td>
+											</tr>
+										) : (
+											<>{tableBody()}</>
+										)}
 									</tbody>
 								</table>
 							</div>
@@ -136,4 +164,13 @@ const Imaging = ({ location }) => {
 	);
 };
 
-export default withRouter(Imaging);
+const mapStateToProps = state => {
+	return {
+		patient: state.user.patient,
+		imagingRequests: state.patient.imagingRequests,
+	};
+};
+
+export default withRouter(
+	connect(mapStateToProps, { loadImagingRequests })(Imaging)
+);
