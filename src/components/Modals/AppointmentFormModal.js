@@ -7,25 +7,23 @@ import DatePicker from 'react-datepicker';
 import { useForm } from 'react-hook-form';
 
 import { closeModals } from '../../actions/general';
-import { request } from '../../services/utilities';
+import { request, formatNumber } from '../../services/utilities';
 import { API_URI, socket } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import 'react-datepicker/dist/react-datepicker.css';
 
-const AppointmentFormModal = (props) => {
-	const { register, handleSubmit, setValue } = useForm();
+const AppointmentFormModal = props => {
+	const { register, handleSubmit, setValue, getValues } = useForm();
 	const [departments, setDepartments] = useState();
 	const [rooms, setRooms] = useState();
 	const [specializations, setSpecializations] = useState();
+	const [validationMessage, setValidationMessage] = useState();
 	const [patients, setPatients] = useState();
 	const [appointmentDate, setAppointmentDate] = useState(new Date());
 	const [submitting, setSubmitting] = useState(false);
+	const [services, setServices] = useState([]);
 
-	const options = [
-		{ label: 'Initial Consltuation', value: 'Initial Conslutation' },
-		{ label: 'Follow Up', value: 'Follow Up' },
-	];
 	const today = moment().format('YYYY-MM-DD');
 
 	useEffect(() => {
@@ -37,16 +35,25 @@ const AppointmentFormModal = (props) => {
 
 	async function getPatients() {
 		const rs = await request(`${API_URI}/patient/list`, 'GET', true);
-		const res = rs.map((patient) => ({
+		const res = rs.map(patient => ({
 			value: patient.id,
 			label: patient.surname + ', ' + patient.other_names,
 		}));
 		setPatients(res);
 	}
 
+	async function getConsultationServices() {
+		const rs = await request(`${API_URI}/services/consultations`, 'GET', true);
+		const res = rs.map(service => ({
+			value: service,
+			label: service.name + ' N' + formatNumber(service.tariff),
+		}));
+		setServices(res);
+	}
+
 	async function getDepartments() {
 		const rs = await request(`${API_URI}/departments`, 'GET', true);
-		const res = rs.map((department) => ({
+		const res = rs.map(department => ({
 			value: department.id,
 			label: department.name,
 		}));
@@ -55,7 +62,7 @@ const AppointmentFormModal = (props) => {
 
 	async function getConsultingRooms() {
 		const rs = await request(`${API_URI}/consulting-rooms`, 'GET', true);
-		const res = rs.map((room) => ({
+		const res = rs.map(room => ({
 			value: room.id,
 			label: room.name,
 		}));
@@ -64,12 +71,31 @@ const AppointmentFormModal = (props) => {
 
 	async function getSpecializations() {
 		const rs = await request(`${API_URI}/specializations`, 'GET', true);
-		const res = rs.map((spec) => ({
+		const res = rs.map(spec => ({
 			value: spec.id,
 			label: spec.name,
 		}));
 		setSpecializations(res);
 	}
+
+	async function validateAppointment(patient_id, service_id) {
+		const rs = await request(
+			`${API_URI}/front-desk/appointments/validate?patient_id=${patient_id}&service_id=${service_id}`,
+			'GET',
+			true
+		);
+		setValidationMessage(`The patient is to pay N${formatNumber(rs.amount)}`);
+	}
+
+	const handleAppointmentTypeChange = service => {
+		setValue('serviceType', service.id);
+		const values = getValues();
+		if (values.patient_id) {
+			validateAppointment(values.patient_id, values.serviceType);
+		} else {
+			notifyError('Please select a patient');
+		}
+	};
 
 	useEffect(() => {
 		getPatients();
@@ -77,6 +103,10 @@ const AppointmentFormModal = (props) => {
 
 	useEffect(() => {
 		getDepartments();
+	}, []);
+
+	useEffect(() => {
+		getConsultationServices();
 	}, []);
 
 	useEffect(() => {
@@ -92,7 +122,7 @@ const AppointmentFormModal = (props) => {
 	}, []);
 
 	useEffect(() => {
-		socket.on('appointmentSaved', (res) => {
+		socket.on('appointmentSaved', res => {
 			setSubmitting(false);
 			if (res.success) {
 				notifySuccess('New appointment record has been saved!');
@@ -103,7 +133,7 @@ const AppointmentFormModal = (props) => {
 		});
 	}, [socket]);
 
-	const onSubmit = async (values) => {
+	const onSubmit = async values => {
 		// console.log(values);
 		setSubmitting(true);
 		socket.emit('saveAppointment', values);
@@ -138,7 +168,7 @@ const AppointmentFormModal = (props) => {
 										placeholder="Select Patient"
 										options={patients}
 										ref={register({ name: 'patient_id' })}
-										onChange={(evt) => {
+										onChange={evt => {
 											setValue('patient_id', String(evt.value));
 										}}
 									/>
@@ -161,7 +191,7 @@ const AppointmentFormModal = (props) => {
 												placeholder="Select Department"
 												options={departments}
 												ref={register({ name: 'department_id' })}
-												onChange={(evt) => {
+												onChange={evt => {
 													if (evt == null) {
 														setValue('department_id', null);
 													} else {
@@ -179,7 +209,7 @@ const AppointmentFormModal = (props) => {
 												placeholder="Select Whom to see"
 												options={specializations}
 												ref={register({ name: 'specialization_id' })}
-												onChange={(evt) => {
+												onChange={evt => {
 													if (evt == null) {
 														setValue('specialization_id', null);
 													} else {
@@ -195,16 +225,21 @@ const AppointmentFormModal = (props) => {
 									<Select
 										id="gender"
 										placeholder=""
-										options={options}
-										ref={register({ name: 'appointment_type' })}
-										onChange={(evt) => {
+										options={services}
+										ref={register({ name: 'serviceType' })}
+										onChange={evt => {
 											if (evt == null) {
-												setValue('appointment_type', null);
+												setValue('serviceType', null);
 											} else {
-												setValue('appointment_type', String(evt.value));
+												handleAppointmentTypeChange(evt.value);
 											}
 										}}
 									/>
+									{validationMessage && (
+										<div className="help-text text-danger">
+											{validationMessage}
+										</div>
+									)}
 								</div>
 								<div className="row">
 									<div className="col-sm-6">
@@ -219,7 +254,7 @@ const AppointmentFormModal = (props) => {
 														defaultValue: appointmentDate,
 													})}
 													selected={appointmentDate}
-													onChange={(date) => {
+													onChange={date => {
 														setValue('appointment_date', date);
 														setAppointmentDate(date);
 													}}
@@ -235,7 +270,7 @@ const AppointmentFormModal = (props) => {
 												placeholder="Select"
 												options={rooms}
 												ref={register({ name: 'consulting_room_id' })}
-												onChange={(evt) => {
+												onChange={evt => {
 													if (evt == null) {
 														setValue('consulting_room_id', null);
 													} else {

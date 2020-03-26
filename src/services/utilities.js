@@ -9,9 +9,12 @@ import Multiselect from 'react-widgets/lib/Multiselect';
 import DatePicker from 'react-datepicker';
 
 import SSRStorage from './storage';
-import { TOKEN_COOKIE } from './constants';
+import { API_URI, patientAPI, TOKEN_COOKIE } from './constants';
 import axios from 'axios';
+import { addVital } from '../actions/vitals';
+import configureStore from '../store';
 
+const store = configureStore();
 export const formatCurrency = amount => `₦${numeral(amount).format('0,0.00')}`;
 
 export const isUnset = o => typeof o === 'undefined' || o === null;
@@ -24,6 +27,26 @@ export function encodeValue(val) {
 	}
 
 	return JSON.stringify(val);
+}
+
+export async function getData2(patient, title) {
+	const res = await request(
+		`${API_URI}${patientAPI}/` + patient.id + '/vitals',
+		'GET',
+		true
+	);
+	return res.find(c => c.readingType === title);
+}
+
+export async function getData(patient, title) {
+	const res = await request(
+		`${API_URI}${patientAPI}/` + patient.id + '/vitals',
+		'GET',
+		true
+	);
+	await store.dispatch(addVital(res));
+	res.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
+	return res.find(c => c.readingType === title);
 }
 
 export function decodeValue(val) {
@@ -107,7 +130,7 @@ export const upload = async (url, method, body) => {
 };
 
 // prettier-ignore
-export const renderTextInput = ({input, label, type, id, placeholder,readOnly=false ,meta: { touched, error }}) => (
+export const renderTextInput = ({ input, label, type, id, placeholder, readOnly = false, meta: { touched, error } }) => (
 	<div
 		className={`form-group ${touched &&
 		(error ? 'has-error has-danger' : '')}`}>
@@ -272,6 +295,37 @@ export const confirmAction = (action, payload, alertText, alertHead) => {
 	});
 };
 
+export const renderSelectWithChange = ({
+	input,
+	label,
+	onChangeSubmitAction,
+	placeholder,
+	id,
+	data,
+	meta: { touched, error },
+}) => (
+	<div
+		className={`form-group ${touched &&
+			(error ? 'has-error has-danger' : '')}`}>
+		<label htmlFor={id}>{label}</label>
+		<select {...input} className="form-control" onChange={onChangeSubmitAction}>
+			<option value="">{placeholder}</option>
+			{data.map((d, i) => (
+				<option key={i} value={d.id}>
+					{d.name}
+				</option>
+			))}
+		</select>
+		{touched && error && (
+			<div className="help-block form-text with-errors form-control-feedback">
+				<ul className="list-unstyled">
+					<li>{error}</li>
+				</ul>
+			</div>
+		)}
+	</div>
+);
+
 export const renderSelect = ({
 	input,
 	label,
@@ -361,3 +415,6 @@ export const redirectToPage = (role, history) => {
 };
 
 export const fullname = user => `${user.first_name} ${user.last_name}`;
+
+export const formatNumber = n =>
+	parseFloat(n).toLocaleString(undefined, { maximumFractionDigits: 2 });

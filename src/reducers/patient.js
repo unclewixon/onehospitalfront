@@ -3,7 +3,10 @@ import {
 	PREV_STEP,
 	SAVE_ALLERGIES,
 	GET_ALLERGIES,
+	LOAD_ENCOUNTERS,
 	ALLERGY,
+	UPDATE_ALLERGY,
+	DELETE_ALLERGY,
 	GET_PHYSIOTHERAPIES,
 	GET_DENTISTRY_REQUESTS,
 	GET_IMAGING_REQUESTS,
@@ -15,6 +18,7 @@ const INITIAL_STATE = {
 	formData: {},
 	allergy: {},
 	allergies: [],
+	encounters: [],
 	physiotherapies: [],
 	dentistryRequests: [],
 	imagingRequests: [],
@@ -33,6 +37,8 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, allergies: [...state.allergies, action.payload] };
 		case ALLERGY:
 			return { ...state, allergy: action.payload };
+		case LOAD_ENCOUNTERS:
+			return { ...state, encounters: [...action.payload] };
 		case GET_PHYSIOTHERAPIES:
 			return { ...state, allergies: action.payload };
 		case GET_DENTISTRY_REQUESTS:
@@ -41,6 +47,23 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, imagingRequests: action.payload };
 		case GET_OPTHALMOLOGY_REQUESTS:
 			return { ...state, opthalmologyRequests: action.payload };
+		case UPDATE_ALLERGY:
+			return {
+				...state,
+				allergies: [
+					...state.allergies.filter(
+						deletedItem => deletedItem.id !== action.previousData.id
+					),
+					action.payload,
+				],
+			};
+		case DELETE_ALLERGY:
+			return {
+				...state,
+				allergies: state.allergies.filter(
+					deletedItem => deletedItem.id !== action.payload.id
+				),
+			};
 		default:
 			return state;
 	}

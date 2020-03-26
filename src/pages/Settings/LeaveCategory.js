@@ -110,7 +110,7 @@ const LeaveCategory = props => {
 				})
 				.catch(e => {
 					setDataLoaded(true);
-					notifyError(e.message || 'could not fetch leave categories');
+					notifyError(e.message || 'Could not fetch leave categories');
 				});
 		}
 		setLoaded(true);
@@ -187,9 +187,7 @@ const LeaveCategory = props => {
 								<div className="element-box">
 									<form
 										onSubmit={edit ? onEditLeaveCategory : onAddLeaveCategory}>
-										<h5 className="element-box-header">
-											Add New Leave category
-										</h5>
+										<h5 className="element-box-header">Add New</h5>
 										<div className="form-group">
 											<label className="lighter">Type of leave</label>
 											<div className="input-group mb-2 mr-sm-2 mb-sm-0">

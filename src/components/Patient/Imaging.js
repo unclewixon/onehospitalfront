@@ -9,6 +9,7 @@ import searchingGIF from '../../assets/images/searching.gif';
 import { API_URI, patientAPI } from '../../services/constants';
 import { request } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
+
 const Imaging = props => {
 	const [loading, setLoading] = useState(false);
 	const fetchImaging = async () => {
@@ -105,6 +106,7 @@ const Imaging = props => {
 	useEffect(() => {
 		fetchImaging();
 	}, []);
+
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">

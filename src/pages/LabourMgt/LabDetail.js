@@ -113,12 +113,12 @@ export class LabDetail extends Component {
 									</tr>
 								</tbody>
 								<div className="mt-4">
-									<button class="btn btn-link pl-0">
-										<i class="icon-printer"></i>
+									<button className="btn btn-link pl-0">
+										<i className="icon-printer" />
 										<span>CLOSE MANAGEMENT</span>
 									</button>
-									<button class="btn btn-link ml-0">
-										<i class="icon-printer"></i>
+									<button className="btn btn-link ml-0">
+										<i className="icon-printer" />
 										<span>PRINT VIEW</span>
 									</button>
 								</div>

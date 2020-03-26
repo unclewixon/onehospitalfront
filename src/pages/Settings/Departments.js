@@ -219,12 +219,12 @@ const Departments = props => {
 							<div className="element-wrapper">
 								<div className="element-box">
 									<form onSubmit={edit ? onEditDept : onCreateDepartment}>
-										<h5 className="element-box-header">Add New Department</h5>
+										<h5 className="element-box-header">Add New</h5>
 										<div className="form-group">
-											<label className="lighter">Name of Department</label>
+											<label className="lighter">Department Name</label>
 											<input
 												className="form-control"
-												placeholder="Enter Department Name..."
+												placeholder="Department Name"
 												type="text"
 												name="name"
 												value={name}

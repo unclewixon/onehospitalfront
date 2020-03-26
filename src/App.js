@@ -100,13 +100,13 @@ class App extends Component {
 											</Switch>
 										</div>
 									</div>
-									<ModalDialogs />
 									<SlidingPane isOpen={isStaffOpen}>
 										<StaffProfile />
 									</SlidingPane>
 									<SlidingPane isOpen={isPatientOpen}>
 										<PatientProfile />
 									</SlidingPane>
+									<ModalDialogs />
 								</div>
 								{is_modal_open && (
 									<div className={`modal-backdrop fade show`} />
