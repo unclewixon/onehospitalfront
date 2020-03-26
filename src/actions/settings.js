@@ -1438,6 +1438,7 @@ export const addRequestService = data => {
 				.post(`${API_URI}/request-types`, {
 					name: data.name,
 					group: data.group,
+					amount: data.amount,
 				})
 				.then(response => {
 					dispatch(add_request_service(response.data));
@@ -1472,6 +1473,7 @@ export const updateRequestService = data => {
 				.patch(`${API_URI}/request-types/${data.id}/update`, {
 					name: data.name,
 					group: data.group,
+					amount: data.amount,
 				})
 				.then(response => {
 					dispatch(update_request_service(response.data, data));

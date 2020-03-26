@@ -17,11 +17,12 @@ const RequestServices = props => {
 	const initialState = {
 		name: '',
 		group: '',
+		amount: '',
 		edit: false,
 		create: true,
 	};
 
-	const [{ name, group }, setState] = useState(initialState);
+	const [{ name, group, amount }, setState] = useState(initialState);
 	const [loaded, setLoaded] = useState(false);
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
@@ -42,8 +43,9 @@ const RequestServices = props => {
 		e.preventDefault();
 
 		props
-			.addRequestService({ name, group })
+			.addRequestService({ name, group, amount })
 			.then(response => {
+				console.log(response);
 				setLoading(false);
 				setState({ ...initialState });
 				notifySuccess('Request Service successfully  created');
@@ -62,6 +64,7 @@ const RequestServices = props => {
 			name: data.name,
 			group: data.group,
 			id: data.id,
+			amount: data.amount,
 		}));
 		getDataToEdit(data);
 	};
@@ -69,7 +72,7 @@ const RequestServices = props => {
 		setLoading(true);
 		e.preventDefault();
 		props
-			.updateRequestService({ id: data.id, name, group }, data)
+			.updateRequestService({ id: data.id, name, group, amount }, data)
 			.then(response => {
 				setState({ ...initialState });
 				setSubmitButton({ create: true, edit: false });
@@ -98,6 +101,37 @@ const RequestServices = props => {
 	const confirmDelete = data => {
 		confirmAction(onDeleteRequestService, data);
 	};
+
+	const tableBody = () => (
+		<>
+			{props.requestServices &&
+				props.requestServices.map((req, i) => {
+					return (
+						<tr key={i}>
+							<td>{i + 1}</td>
+							<td>
+								<div className="value">{req.name}</div>
+							</td>
+							<td>
+								<div className="value">{req.group}</div>
+							</td>
+							<td>
+								<div className="value">{req.amount}</div>
+							</td>
+							<td className="row-actions text-right">
+								<a onClick={() => onClickEdit(req)}>
+									<i className="os-icon os-icon-ui-49"></i>
+								</a>
+
+								<a className="danger" onClick={() => confirmDelete(req)}>
+									<i className="os-icon os-icon-ui-15"></i>
+								</a>
+							</td>
+						</tr>
+					);
+				})}
+		</>
+	);
 	useEffect(() => {
 		if (!loaded) {
 			props
@@ -147,6 +181,7 @@ const RequestServices = props => {
 												<th>S/N</th>
 												<th>Name</th>
 												<th>Request Type</th>
+												<th>Amount (&#x20A6;)</th>
 												<th className="text-right">Actions</th>
 											</tr>
 										</thead>
@@ -157,34 +192,10 @@ const RequestServices = props => {
 														<img alt="searching" src={searchingGIF} />
 													</td>
 												</tr>
+											) : props.requestServices.length === 0 ? (
+												<div className="w-100 text-center my-4">No Result</div>
 											) : (
-												<>
-													{props.requestServices &&
-														props.requestServices.map((req, i) => {
-															return (
-																<tr key={i}>
-																	<td>{i + 1}</td>
-																	<td>
-																		<div className="value">{req.name}</div>
-																	</td>
-																	<td>
-																		<div className="value">{req.group}</div>
-																	</td>
-																	<td className="row-actions text-right">
-																		<a onClick={() => onClickEdit(req)}>
-																			<i className="os-icon os-icon-ui-49"></i>
-																		</a>
-
-																		<a
-																			className="danger"
-																			onClick={() => confirmDelete(req)}>
-																			<i className="os-icon os-icon-ui-15"></i>
-																		</a>
-																	</td>
-																</tr>
-															);
-														})}
-												</>
+												tableBody()
 											)}
 										</tbody>
 									</table>
@@ -228,6 +239,22 @@ const RequestServices = props => {
 										name="name"
 										onChange={e => handleInputChange(e)}
 										value={name}
+										required
+									/>
+								</div>
+
+								<div className="form-group my-2">
+									<label>Amount</label>
+									<input
+										className="form-control"
+										placeholder="Amount"
+										name="amount"
+										onChange={e => handleInputChange(e)}
+										value={amount}
+										required
+										pattern="[0-9.]+"
+										type="number"
+										min="0"
 									/>
 								</div>
 
