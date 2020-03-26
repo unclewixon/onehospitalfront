@@ -3,6 +3,7 @@ import {
 	PREV_STEP,
 	SAVE_ALLERGIES,
 	GET_ALLERGIES,
+	LOAD_ENCOUNTERS,
 	ALLERGY,
 	UPDATE_ALLERGY,
 	DELETE_ALLERGY,
@@ -14,6 +15,7 @@ const INITIAL_STATE = {
 	formData: {},
 	allergy: {},
 	allergies: [],
+	encounters: [],
 	physiotherapies: [],
 };
 
@@ -29,6 +31,8 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, allergies: [...state.allergies, action.payload] };
 		case ALLERGY:
 			return { ...state, allergy: action.payload };
+		case LOAD_ENCOUNTERS:
+			return { ...state, encounters: [...action.payload] };
 		case GET_PHYSIOTHERAPIES:
 			return { ...state, allergies: action.payload };
 		case UPDATE_ALLERGY:

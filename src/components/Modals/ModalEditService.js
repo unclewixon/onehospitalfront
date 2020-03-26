@@ -35,17 +35,37 @@ class ModalEditService extends Component {
 		const categories = ServiceCategories.find(item => {
 			const found = item.id === category;
 			return found;
-		})
-		this.setState({'category_id': category});
-		this.setState({'subCategories': categories.subCateogries});
-	}
+		});
+		this.setState({ category_id: category });
+		this.setState({ subCategories: categories.subCateogries });
+	};
 
 	updateService = e => {
 		e.preventDefault();
 		this.setState({ Loading: true });
-		let { name, tariff, category_id, sub_cateogry_id, subCategory, category, id, noOfVisits, gracePeriod, note } = this.state;
+		let {
+			name,
+			tariff,
+			category_id,
+			sub_cateogry_id,
+			subCategory,
+			category,
+			id,
+			noOfVisits,
+			gracePeriod,
+			note,
+		} = this.state;
 		this.props
-			.updateService({ name, tariff, category_id, sub_cateogry_id, id, noOfVisits, gracePeriod, note })
+			.updateService({
+				name,
+				tariff,
+				category_id,
+				sub_cateogry_id,
+				id,
+				noOfVisits,
+				gracePeriod,
+				note,
+			})
 			.then(response => {
 				this.setState({ Loading: false });
 				notifySuccess('Service updated');
@@ -80,7 +100,7 @@ class ModalEditService extends Component {
 			note: note,
 			category: category,
 			subCategory: subCategory,
-			subCategories: selectedCat ? selectedCat.subCateogries : []
+			subCategories: selectedCat ? selectedCat.subCateogries : [],
 		});
 		document.body.classList.add('modal-open');
 	}
@@ -90,7 +110,19 @@ class ModalEditService extends Component {
 	}
 
 	render() {
-		const { Loading, name, tariff, category_id, category, sub_cateogry_id, subCategory, subCategories, noOfVisits, gracePeriod, note } = this.state;
+		const {
+			Loading,
+			name,
+			tariff,
+			category_id,
+			category,
+			sub_cateogry_id,
+			subCategory,
+			subCategories,
+			noOfVisits,
+			gracePeriod,
+			note,
+		} = this.state;
 		const { ServiceCategories } = this.props;
 		return (
 			<div
@@ -116,7 +148,6 @@ class ModalEditService extends Component {
 										name="category_id"
 										value={category_id ? category_id : category.id}
 										onChange={this.handleCategoryChange}>
-										
 										{ServiceCategories.map((category, index) => {
 											return (
 												<option value={category.id} key={index}>
@@ -130,16 +161,22 @@ class ModalEditService extends Component {
 									<select
 										className="form-control"
 										name="category_id"
-										value={sub_cateogry_id ? sub_cateogry_id : (subCategory ? subCategory.id : '')}
+										value={
+											sub_cateogry_id
+												? sub_cateogry_id
+												: subCategory
+												? subCategory.id
+												: ''
+										}
 										onChange={this.handleInputChange}>
-										
-										{subCategories && subCategories.map((category, index) => {
-											return (
-												<option value={category.id} key={index}>
-													{category.name}
-												</option>
-											);
-										})}
+										{subCategories &&
+											subCategories.map((category, index) => {
+												return (
+													<option value={category.id} key={index}>
+														{category.name}
+													</option>
+												);
+											})}
 									</select>
 								</div>
 								<div className="form-group">
@@ -192,7 +229,7 @@ class ModalEditService extends Component {
 										onChange={this.handleInputChange}
 									/>
 								</div>
-								
+
 								<div className="form-buttons-w">
 									<button
 										onClick={() => this.props.closeModals(false)}

@@ -129,7 +129,7 @@ class Allergies extends Component {
 																			<i
 																				className="os-icon os-icon-ui-49"
 																				onClick={() =>
-																					this.props.Allergy(item)
+																					this.props.setAllergy(item)
 																				}></i>
 																		</Link>
 																		<Tooltip title="Delete">

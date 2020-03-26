@@ -163,3 +163,17 @@ export const requestTypes = [
 		label: 'Clinical lab',
 	},
 ];
+
+export const encounters = [
+	'Presenting Complaints',
+	'Review of Systems',
+	'Hx',
+	'Past Medical History',
+	'Allergies',
+	'Physical Examination',
+	'Physical Examination Summary',
+	'Diagnosis',
+	'Investigations',
+	'Plan',
+	'Consumable',
+];

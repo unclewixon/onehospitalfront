@@ -28,6 +28,7 @@ import {
 	TOGGLE_UPLOAD_DIAGNOSIS,
 	TOGGLE_EDIT_SERIVCE,
 	TOGGLE_CREATE_CLINICAL_TASK,
+	TOGGLE_OPEN_ENCOUNTER,
 } from './types';
 
 export const togglePreloading = status => {
@@ -52,7 +53,6 @@ export const toggleModal = status => {
 };
 
 //Hr Modals
-
 export const toggleCreateStaff = status => {
 	return {
 		type: TOGGLE_CREATE_STAFF,
@@ -240,6 +240,15 @@ export const toggleEditService = (status, data) => {
 	};
 };
 
+// patient
+export const toggleOpenEncounter = (status, id) => {
+	return {
+		type: TOGGLE_OPEN_ENCOUNTER,
+		payload: status,
+		id,
+	};
+};
+
 // close modals
 export const closeModals = () => {
 	return dispatch => {
@@ -269,6 +278,7 @@ export const closeModals = () => {
 		dispatch(toggleUploadService(false));
 		dispatch(toggleUploadDiagnosis(false));
 		dispatch(toggleEditService(false, null));
+		dispatch(toggleOpenEncounter(false, null));
 	};
 };
 
@@ -415,7 +425,6 @@ export const viewEditPayroll = (action, isModal, id) => {
 };
 
 //paypoint
-
 export const viewPayPoint = action => {
 	return dispatch => {
 		dispatch(closeModals());
@@ -476,6 +485,14 @@ export const createRecordVital = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleCreateRecordVital(action));
+	};
+};
+
+export const openEncounter = (action, id) => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleOpenEncounter(action, id));
 	};
 };
 

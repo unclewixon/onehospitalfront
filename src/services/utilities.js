@@ -406,4 +406,5 @@ export const redirectToPage = (role, history) => {
 
 export const fullname = user => `${user.first_name} ${user.last_name}`;
 
-export const formatNumber = n => parseFloat(n).toLocaleString(undefined, {maximumFractionDigits: 2});
+export const formatNumber = n =>
+	parseFloat(n).toLocaleString(undefined, { maximumFractionDigits: 2 });

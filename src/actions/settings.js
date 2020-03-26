@@ -1330,7 +1330,7 @@ export const updateService = data => {
 					gracePeriod: data.gracePeriod,
 					noOfVisits: data.noOfVisits,
 					category_id: service_category_id,
-					note: data.note
+					note: data.note,
 				})
 				.then(response => {
 					console.log(response);

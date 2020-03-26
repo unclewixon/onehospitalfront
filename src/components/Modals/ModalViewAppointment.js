@@ -21,11 +21,10 @@ class ModalViewAppointment extends Component {
 				style={{ display: 'block' }}>
 				<div className="modal-dialog modal-lg" role="document">
 					<div className="modal-content text-center">
-						<div className="modal-header  smaller">
+						<div className="modal-header smaller">
 							<button
 								aria-label="Close"
 								className="close"
-								data-dismiss="modal"
 								type="button"
 								onClick={() => this.props.closeModals(false)}>
 								<span aria-hidden="true"> ×</span>
