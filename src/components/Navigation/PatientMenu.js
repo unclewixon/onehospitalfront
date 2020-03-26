@@ -33,6 +33,14 @@ const PatientMenu = ({ location }) => {
 					<span>Encounters</span>
 				</li>
 				<li>
+					<Link to={`${location.pathname}#encounters`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout" />
+						</div>
+						<span>Encounters</span>
+					</Link>
+				</li>
+				<li>
 					<Link to={`${location.pathname}#visit-entry`}>
 						<div className="icon-w">
 							<div className="os-icon os-icon-layout" />
@@ -116,14 +124,6 @@ const PatientMenu = ({ location }) => {
 							<div className="os-icon os-icon-layout" />
 						</div>
 						<span>Visit Summary</span>
-					</Link>
-				</li>
-				<li>
-					<Link to={`${location.pathname}#encounters`}>
-						<div className="icon-w">
-							<div className="os-icon os-icon-layout" />
-						</div>
-						<span>Encounters</span>
 					</Link>
 				</li>
 				<li>

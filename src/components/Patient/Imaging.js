@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
+
 const Imaging = ({ location }) => {
 	return (
 		<div className="col-sm-12">
@@ -40,7 +41,7 @@ const Imaging = ({ location }) => {
 										</tr>
 									</thead>
 									<tbody>
-										<tr className="" data-index="0" data-id="20">
+										<tr>
 											<td>
 												<span className="text-bold">LAB/32456789</span>
 											</td>

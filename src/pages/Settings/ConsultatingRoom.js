@@ -136,11 +136,9 @@ const ConsultatingRoom = props => {
 						<div className="col-lg-8">
 							<div className="row">
 								{!dataLoaded ? (
-									<tr>
-										<td colSpan="4" className="align-self-center">
-											<img alt="searching" src={searchingGIF} />
-										</td>
-									</tr>
+									<div className="align-self-center">
+										<img alt="searching" src={searchingGIF} />
+									</div>
 								) : (
 									<>
 										{props.ConsultatingRooms.map((ConsultatingRoom, i) => {

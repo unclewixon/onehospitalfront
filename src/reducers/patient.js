@@ -3,7 +3,8 @@ import {
 	PREV_STEP,
 	SAVE_ALLERGIES,
 	GET_ALLERGIES,
-	ALLERGY,
+	SET_ALLERGY,
+	LOAD_ENCOUNTERS,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -11,6 +12,7 @@ const INITIAL_STATE = {
 	formData: {},
 	allergy: {},
 	allergies: [],
+	encounters: [],
 };
 
 const patient = (state = INITIAL_STATE, action) => {
@@ -23,8 +25,10 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, allergies: action.payload };
 		case SAVE_ALLERGIES:
 			return { ...state, allergies: [...state.allergies, action.payload] };
-		case ALLERGY:
+		case SET_ALLERGY:
 			return { ...state, allergy: action.payload };
+		case LOAD_ENCOUNTERS:
+			return { ...state, encounters: [...action.payload] };
 		default:
 			return state;
 	}

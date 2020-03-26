@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { request } from '../../services/utilities';
 import { API_URI, patientAPI } from '../../services/constants';
-import { GetAllergies, Allergy } from '../../actions/patient';
+import { GetAllergies, setAllergy } from '../../actions/patient';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { Link, withRouter } from 'react-router-dom';
@@ -113,7 +113,7 @@ class Allergies extends Component {
 																			<i
 																				className="os-icon os-icon-ui-49"
 																				onClick={() =>
-																					this.props.Allergy(item)
+																					this.props.setAllergy(item)
 																				}></i>
 																		</Link>
 																	</Tooltip>
@@ -143,5 +143,5 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default withRouter(
-	connect(mapStateToProps, { GetAllergies, Allergy })(Allergies)
+	connect(mapStateToProps, { GetAllergies, setAllergy })(Allergies)
 );

@@ -4,6 +4,7 @@ $white: #ffffff;
 $primary: #047bf8;
 $secondary: #292b2c;
 $success: #28a745;
+$backgroundColor: #f2f4f8;
 
 // Add styles here you want to override
 a {
@@ -56,6 +57,60 @@ button {
 		small {
 			font-weight: bold !important;
 			font-size: 1.08rem;
+		}
+	}
+}
+.ReactModal__Body--open {
+	overflow: hidden;
+}
+.modal-backdrop {
+	z-index: 2040;
+}
+.modal {
+	z-index: 2050;
+}
+.top-modal {
+	.modal-dialog {
+		max-width: 98%;
+	}
+	overflow: scroll;
+}
+.top-menu {
+	margin-bottom: 0 !important;
+	width: 100%;
+	.modal-content {
+		border-radius: 6px;
+    	overflow-x: hidden;
+	}
+	.content-w {
+		border-radius: 0 !important;
+
+		.content-box {padding: 2rem 1rem;}
+	}
+	.main-menu {padding: 0 !important;}
+	li {
+		border-left: 1px solid #f2f4f8!important;
+		border-right: 1px solid #f2f4f8 !important;
+		border-top: 1px solid #f2f4f8 !important;
+
+		a {
+			flex-direction: column;
+			align-items: flex-start !important;
+			height: 75px;
+			transition: none !important;
+		}
+
+		.step {white-space: nowrap;font-size: 0.8rem;}
+
+		span {
+			white-space: normal !important;padding: 0 !important;font-size: 0.85rem;
+		}
+
+		&.active {
+			a {
+				color: #293145 !important;
+				background-color: $backgroundColor;
+			}
 		}
 	}
 }
@@ -357,5 +412,36 @@ button {
 	.new-reading {
 		color: $primary;
 		cursor: pointer;
+	}
+}
+
+.diagnosis-type {
+	.float-right {
+		width: 74px;
+		display: flex;
+		line-height: 30px;
+
+		input {
+			height: 27px;width: 25px;
+		}
+
+		label {
+			margin-bottom: 0 !important;
+		}
+	}
+}
+.encounter {
+	.form-group {margin-bottom: 0 !important;margin-top: 12px;}
+
+	input[type="checkbox"] {
+		display: inline-block;
+		width: auto;
+		margin-right: 6px;
+	}
+
+	input[type="radio"] {
+		display: inline-block;
+		width: auto;
+		margin-right: 6px;
 	}
 }

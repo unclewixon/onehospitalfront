@@ -55,7 +55,7 @@ const UpdateAllergy = props => {
 			notifyError(e.message || 'could not save allergies');
 		}
 	};
-	let { allergy } = props;
+
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">
@@ -149,7 +149,6 @@ const mapStateToProps = (state, ownProps) => {
 	return {
 		patient: state.user.patient,
 		allergies: state.patient.allergies,
-		allergy: state.patient.allergy,
 	};
 };
 

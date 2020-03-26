@@ -3,7 +3,7 @@ import {
 	PREV_STEP,
 	SAVE_ALLERGIES,
 	GET_ALLERGIES,
-	ALLERGY,
+	SET_ALLERGY,
 } from './types';
 
 export const nextStep = data => {
@@ -34,9 +34,9 @@ export const GetAllergies = data => {
 	};
 };
 
-export const Allergy = data => {
+export const setAllergy = data => {
 	return {
-		type: ALLERGY,
+		type: SET_ALLERGY,
 		payload: data,
 	};
 };

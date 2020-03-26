@@ -25,6 +25,7 @@ import {
 	TOGGLE_CREATE_RISK_ASSESSMENT,
 	TOGGLE_CREATE_RECORD_VITAL,
 	TOGGLE_CREATE_RECORD_DELIVERY,
+	TOGGLE_OPEN_ENCOUNTER,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -55,6 +56,8 @@ const INITIAL_STATE = {
 	upload_service: false,
 	upload_diagnosis: false,
 	edit_service: { status: false, data: null },
+	openEncounter: false,
+	encounterId: null,
 };
 
 const general = (state = INITIAL_STATE, action) => {
@@ -119,6 +122,12 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, upload_diagnosis: action.payload };
 		case TOGGLE_EDIT_SERIVCE:
 			return { ...state, edit_service: action.payload };
+		case TOGGLE_OPEN_ENCOUNTER:
+			return {
+				...state,
+				openEncounter: action.payload,
+				encounterId: action.id,
+			};
 		default:
 			return state;
 	}
