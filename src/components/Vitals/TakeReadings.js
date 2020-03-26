@@ -116,9 +116,11 @@ TakeReadings = reduxForm({
 })(TakeReadings);
 
 const mapStateToProps = (state, ownProps) => {
+	const { allVitals } = ownProps;
 	return {
+		fullVitals: allVitals,
 		patient: state.user.patient,
-		vitals: state.vitals ? state.vitals.vitals : [],
+		newVital: state.vitals ? state.vitals.vitals : [],
 	};
 };
 

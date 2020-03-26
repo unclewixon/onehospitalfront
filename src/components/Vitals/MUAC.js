@@ -17,23 +17,20 @@ import { getData } from '../../services/utilities';
 
 const unit = '';
 
-const MUAC = ({ patient, vitals }) => {
+const MUAC = ({ fullVitals, newVital }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(0);
 	useEffect(() => {
 		try {
-			console.log(vitals);
-			setCurrentVitals(vitals.reading.muac);
+			let v = fullVitals.find(c => c.readingType === info.title);
+			setCurrentVitals(v.reading.muac);
 		} catch (e) {}
-	}, [vitals]);
+	}, [fullVitals]);
 	useEffect(() => {
-		getData(patient, info.title).then(vitals => {
-			try {
-				console.log(vitals);
-				setCurrentVitals(vitals.reading.muac);
-			} catch (e) {}
-		});
-	}, []);
+		try {
+			setCurrentVitals(newVital.reading.muac);
+		} catch (e) {}
+	}, [newVital]);
 	const data = [
 		{ name: '20-Oct-20', item: 420 },
 		{ name: '21-Oct-20', item: 400 },
@@ -92,9 +89,11 @@ const MUAC = ({ patient, vitals }) => {
 };
 
 const mapStateToProps = (state, ownProps) => {
+	const { allVitals } = ownProps;
 	return {
+		fullVitals: allVitals,
 		patient: state.user.patient,
-		vitals: state.vitals ? state.vitals.vitals : [],
+		newVital: state.vitals ? state.vitals.vitals : [],
 	};
 };
 

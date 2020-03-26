@@ -18,22 +18,29 @@ import { API_URI, patientAPI } from '../../services/constants';
 import { addVital } from '../../actions/vitals';
 
 const unit = 'mmHg';
+const mapStateToProps = (state, ownProps) => {
+	const { allVitals } = ownProps;
+	return {
+		fullVitals: allVitals,
+		patient: state.user.patient,
+		newVital: state.vitals ? state.vitals.vitals : [],
+	};
+};
 
-const BloodPressure = ({ patient, vitals }) => {
+const BloodPressure = ({ fullVitals, newVital }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(0);
 	useEffect(() => {
 		try {
-			setCurrentVitals(vitals.reading.blood_pressure);
+			let v = fullVitals.find(c => c.readingType === info.title);
+			setCurrentVitals(v.reading.blood_pressure);
 		} catch (e) {}
-	}, [vitals]);
+	}, [fullVitals]);
 	useEffect(() => {
-		getData(patient, info.title).then(vitals => {
-			try {
-				setCurrentVitals(vitals.reading.blood_pressure);
-			} catch (e) {}
-		});
-	}, []);
+		try {
+			setCurrentVitals(newVital.reading.blood_pressure);
+		} catch (e) {}
+	}, [newVital]);
 
 	const data = [
 		{ name: '20-Oct-20', item: 420 },
@@ -98,13 +105,6 @@ const BloodPressure = ({ patient, vitals }) => {
 			</div>
 		</div>
 	);
-};
-
-const mapStateToProps = (state, ownProps) => {
-	return {
-		patient: state.user.patient,
-		vitals: state.vitals ? state.vitals.vitals : [],
-	};
 };
 
 export default connect(mapStateToProps)(BloodPressure);
