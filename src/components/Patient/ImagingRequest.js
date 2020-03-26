@@ -1,31 +1,101 @@
 import React, { useState, useEffect } from 'react';
-
+import { connect } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
-import { API_URI, socket } from '../../services/constants';
+import { API_URI, socket, patientAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
-const labCategories = [
-	{ value: 'cancer', label: 'cancer' },
-	{ value: 'x-ray', label: 'x-ray' },
-	{ value: 'blood', label: 'blood' },
-];
-const serviceCenter = [
-	{
-		value: 'daily',
-		label: 'daily',
-	},
-	{ value: 'weekend', label: 'weekend' },
-	{ value: 'monthly', label: 'monthly' },
-];
-const ImagingRequest = () => {
+import { notifySuccess, notifyError } from '../../services/notify';
+
+import { request } from '../../services/utilities';
+
+import { getAllRequestServices } from '../../actions/settings';
+
+const ImagingRequest = props => {
+	let history = useHistory();
 	const { register, handleSubmit, setValue } = useForm();
 	const [submitting, setSubmitting] = useState(false);
+	const [loaded, setLoaded] = useState(false);
+	const [Loading, setLoading] = useState(false);
+	const [data, getDataToEdit] = useState(null);
+	const [dataLoaded, setDataLoaded] = useState(false);
+	const [imagingServices, setImagingServices] = useState([]);
+	const [multi, setMulti] = useState(false);
 
 	const onSubmit = async values => {
 		console.log(values);
-		setSubmitting(true);
+
+		if (
+			values.service_request === undefined ||
+			values.service_request.length === 0
+		) {
+			setMulti(true);
+			return;
+		}
+
 		// socket.emit('saveAppointment', values);
+		setSubmitting(true);
+		try {
+			let data = {
+				requestType: values.requestType.toLowerCase(),
+				patient_id: props.patient.id,
+				requestNote: values.request_note,
+				requestBody: values.service_request.map(req => {
+					return {
+						specialization: req.label,
+						service_id: req.value,
+						amount: req.amount,
+					};
+				}),
+			};
+
+			console.log(data);
+
+			const rs = await request(
+				`${API_URI}${patientAPI}/save-request`,
+				'POST',
+				true,
+				data
+			);
+
+			history.push('settings/roles#imaging');
+			notifySuccess('Imaging request saved');
+			setSubmitting(false);
+		} catch (e) {
+			setSubmitting(false);
+			notifyError(e.message || 'could not save Imaging request');
+		}
 	};
+
+	const imagingValue = () => {
+		let imagingServices = props.requestServices
+			.filter(service => service.group === 'Imaging')
+			.map(service => {
+				return {
+					value: service.id,
+					label: service.name,
+					amount: service.amount,
+				};
+			});
+		console.log(imagingServices);
+		setImagingServices(imagingServices);
+	};
+
+	useEffect(() => {
+		if (!loaded && props.requestServices.length === 0) {
+			props
+				.getAllRequestServices()
+				.then(response => {
+					setDataLoaded(true);
+				})
+				.catch(e => {
+					setDataLoaded(true);
+					notifyError(e.message || 'could not fetch request services');
+				});
+		}
+		setLoaded(true);
+		imagingValue();
+	}, [props, loaded]);
 
 	return (
 		<div className="col-sm-12">
@@ -36,28 +106,38 @@ const ImagingRequest = () => {
 						<form onSubmit={handleSubmit(onSubmit)}>
 							<div className="row">
 								<div className="form-group col-sm-6">
-									<label>Service Center</label>
-									<Select
-										name="service_center"
-										placeholder="Select Service Center"
-										options={serviceCenter}
-										ref={register({ name: 'service_center' })}
-										onChange={evt => {
-											setValue('service_center', String(evt.value));
-										}}
-										required
+									<label>Request Type</label>
+
+									<input
+										className="form-control"
+										placeholder="Request Type"
+										type="text"
+										name="requestType"
+										value="Imaging"
+										readOnly
+										ref={register}
 									/>
 								</div>
 								<div className="form-group col-sm-6">
-									<label>Scan to request</label>
+									<label>
+										Service to request{' '}
+										{multi ? (
+											<span className="mx-1 text-danger">* required </span>
+										) : (
+											''
+										)}
+									</label>
 									<Select
-										name="scan_to_request"
-										placeholder="Select scan to request from"
+										name="service_request"
+										placeholder="Select service to request from"
 										isMulti
-										options={labCategories}
-										ref={register({ name: 'scan_to request' })}
+										options={imagingServices}
+										ref={register({ name: 'service_request' })}
 										onChange={evt => {
-											setValue('scan_to request', String(evt.value));
+											if (evt) {
+												setMulti(false);
+												setValue('service_request', evt);
+											}
 										}}
 										required
 									/>
@@ -96,4 +176,12 @@ const ImagingRequest = () => {
 	);
 };
 
-export default ImagingRequest;
+const mapStateToProps = state => {
+	return {
+		patient: state.user.patient,
+		requestServices: state.settings.request_services,
+	};
+};
+export default connect(mapStateToProps, { getAllRequestServices })(
+	ImagingRequest
+);

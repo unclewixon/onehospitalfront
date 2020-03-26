@@ -1,31 +1,98 @@
 import React, { useState, useEffect } from 'react';
 
+import { connect } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
-import { API_URI, socket } from '../../services/constants';
+import { API_URI, socket, patientAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
-const labCategories = [
-	{ value: 'cancer', label: 'cancer' },
-	{ value: 'x-ray', label: 'x-ray' },
-	{ value: 'blood', label: 'blood' },
-];
-const serviceCenter = [
-	{
-		value: 'daily',
-		label: 'daily',
-	},
-	{ value: 'weekend', label: 'weekend' },
-	{ value: 'monthly', label: 'monthly' },
-];
-const OpthalmologyRequest = () => {
+import { notifySuccess, notifyError } from '../../services/notify';
+
+import { request } from '../../services/utilities';
+
+import { getAllRequestServices } from '../../actions/settings';
+const OpthalmologyRequest = props => {
+	let history = useHistory();
 	const { register, handleSubmit, setValue } = useForm();
 	const [submitting, setSubmitting] = useState(false);
+	const [loaded, setLoaded] = useState(false);
+	const [Loading, setLoading] = useState(false);
+	const [data, getDataToEdit] = useState(null);
+	const [dataLoaded, setDataLoaded] = useState(false);
+	const [opthalServices, setOpthalServices] = useState([]);
+	const [multi, setMulti] = useState(false);
 
 	const onSubmit = async values => {
-		console.log(values);
-		setSubmitting(true);
+		if (
+			values.service_request === undefined ||
+			values.service_request.length === 0
+		) {
+			setMulti(true);
+			return;
+		}
+
 		// socket.emit('saveAppointment', values);
+		setSubmitting(true);
+		try {
+			let data = {
+				requestType: values.requestType.toLowerCase(),
+				patient_id: props.patient.id,
+				requestNote: values.request_note,
+				requestBody: values.service_request.map(req => {
+					return {
+						specialization: req.label,
+						service_id: req.value,
+						amount: req.amount,
+					};
+				}),
+				referredBy: values.referredBy,
+			};
+
+			const rs = await request(
+				`${API_URI}${patientAPI}/save-request`,
+				'POST',
+				true,
+				data
+			);
+
+			history.push('settings/roles#opthalmology');
+			notifySuccess('Opthalmology request saved');
+			setSubmitting(false);
+		} catch (e) {
+			setSubmitting(false);
+			notifyError(e.message || 'could not save Opthalmology request');
+		}
 	};
+
+	const opthalmologyValue = () => {
+		let opthalValue = props.requestServices
+			.filter(service => service.group === 'Opthalmology')
+			.map(service => {
+				return {
+					value: service.id,
+					label: service.name,
+					amount: service.amount,
+				};
+			});
+
+		setOpthalServices(opthalValue);
+	};
+
+	useEffect(() => {
+		if (!loaded && props.requestServices.length === 0) {
+			props
+				.getAllRequestServices()
+				.then(response => {
+					setDataLoaded(true);
+				})
+				.catch(e => {
+					setDataLoaded(true);
+					notifyError(e.message || 'could not fetch request services');
+				});
+		}
+		setLoaded(true);
+		opthalmologyValue();
+	}, [props, loaded]);
 
 	return (
 		<div className="col-sm-12">
@@ -36,28 +103,39 @@ const OpthalmologyRequest = () => {
 						<form onSubmit={handleSubmit(onSubmit)}>
 							<div className="row">
 								<div className="form-group col-sm-6">
-									<label>Service Center</label>
-									<Select
-										name="service_center"
-										placeholder="Select Service Center"
-										options={serviceCenter}
-										ref={register({ name: 'service_center' })}
-										onChange={evt => {
-											setValue('service_center', String(evt.value));
-										}}
-										required
+									<label>Request Type</label>
+
+									<input
+										className="form-control"
+										placeholder="Request Type"
+										type="text"
+										name="requestType"
+										value="Opthalmology"
+										readOnly
+										ref={register}
 									/>
 								</div>
 								<div className="form-group col-sm-6">
-									<label>Optometry service to request </label>
+									<label>
+										Service to request{' '}
+										{multi ? (
+											<span className="mx-1 text-danger">* required </span>
+										) : (
+											''
+										)}
+									</label>
+									{}
 									<Select
-										name="specialization"
-										placeholder="Select speicalization"
+										name="service_request"
+										placeholder="Select service to request from"
 										isMulti
-										options={labCategories}
-										ref={register({ name: 'specialization' })}
+										options={opthalServices}
+										ref={register({ name: 'service_request' })}
 										onChange={evt => {
-											setValue('specilization', String(evt.value));
+											if (evt) {
+												setMulti(false);
+												setValue('service_request', evt);
+											}
 										}}
 										required
 									/>
@@ -71,8 +149,9 @@ const OpthalmologyRequest = () => {
 										className="form-control"
 										placeholder="Referred By"
 										type="text"
-										name="referred_by"
+										name="referredBy"
 										ref={register}
+										required
 									/>
 								</div>
 								<div className="form-group col-sm-6">
@@ -93,7 +172,7 @@ const OpthalmologyRequest = () => {
 										{submitting ? (
 											<img src={waiting} alt="submitting" />
 										) : (
-											'Create Physiotherapy Request'
+											'Create Opthalmology Request'
 										)}
 									</button>
 								</div>
@@ -105,5 +184,13 @@ const OpthalmologyRequest = () => {
 		</div>
 	);
 };
+const mapStateToProps = state => {
+	return {
+		patient: state.user.patient,
+		requestServices: state.settings.request_services,
+	};
+};
 
-export default OpthalmologyRequest;
+export default connect(mapStateToProps, { getAllRequestServices })(
+	OpthalmologyRequest
+);

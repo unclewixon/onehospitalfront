@@ -5,6 +5,9 @@ import {
 	GET_ALLERGIES,
 	ALLERGY,
 	GET_PHYSIOTHERAPIES,
+	GET_DENTISTRY_REQUESTS,
+	GET_IMAGING_REQUESTS,
+	GET_OPTHALMOLOGY_REQUESTS,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -13,6 +16,9 @@ const INITIAL_STATE = {
 	allergy: {},
 	allergies: [],
 	physiotherapies: [],
+	dentistryRequests: [],
+	imagingRequests: [],
+	opthalmologyRequests: [],
 };
 
 const patient = (state = INITIAL_STATE, action) => {
@@ -29,6 +35,12 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, allergy: action.payload };
 		case GET_PHYSIOTHERAPIES:
 			return { ...state, allergies: action.payload };
+		case GET_DENTISTRY_REQUESTS:
+			return { ...state, dentistryRequests: action.payload };
+		case GET_IMAGING_REQUESTS:
+			return { ...state, imagingRequests: action.payload };
+		case GET_OPTHALMOLOGY_REQUESTS:
+			return { ...state, opthalmologyRequests: action.payload };
 		default:
 			return state;
 	}
