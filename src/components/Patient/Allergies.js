@@ -2,8 +2,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { request } from '../../services/utilities';
+import { confirmAction } from '../../services/utilities';
 import { API_URI, patientAPI } from '../../services/constants';
-import { GetAllergies, setAllergy } from '../../actions/patient';
+import {
+	Fetch_Allergies,
+	Allergy,
+	delete_allergy,
+} from '../../actions/patient';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { Link, withRouter } from 'react-router-dom';
@@ -26,12 +31,29 @@ class Allergies extends Component {
 				'GET',
 				true
 			);
-			this.props.GetAllergies(rs);
+			this.props.Fetch_Allergies(rs);
 			this.setState({ loaded: false });
 		} catch (error) {
 			this.setState({ loaded: false });
-			notifyError('error fetching allergies for the patient');
+			notifyError('Could not fetch allergies for the patient');
 		}
+	};
+	deleteAllergy = async data => {
+		try {
+			const rs = await request(
+				`${API_URI}${patientAPI}/${data.id}/delete-allergy`,
+				'DELETE',
+				true
+			);
+			this.props.delete_allergy(rs);
+			notifySuccess('Allergy deleted');
+		} catch (error) {
+			notifyError('Could not delete allergy');
+		}
+	};
+
+	confirmDelete = data => {
+		confirmAction(this.deleteAllergy, data);
 	};
 	render() {
 		const { location, allergies } = this.props;
@@ -88,24 +110,18 @@ class Allergies extends Component {
 																data-index="0"
 																data-id="20"
 																key={i}>
-																{/* <td>
-															<span className="text-bold">LAB/32456789</span>
-														</td> */}
 																<td>
 																	<span>{item.category}</span>
 																</td>
 																<td>
 																	<span>{item.allergy}</span>
 																</td>
-																{/* <td>
-															<Link to="/">{allergy.allergy}</Link>
-														</td> */}
 																<td>{item.reaction}</td>
 																<td className="text-center">
 																	<span>{item.severity}</span>
 																</td>
 																<td className="row-actions text-right">
-																	<Tooltip title="Update allergy">
+																	<Tooltip title="Update">
 																		<Link
 																			className=""
 																			to={`${location.pathname}#update-allergy`}
@@ -116,6 +132,13 @@ class Allergies extends Component {
 																					this.props.setAllergy(item)
 																				}></i>
 																		</Link>
+																		<Tooltip title="Delete">
+																			<i
+																				className="os-icon os-icon-ui-15"
+																				onClick={() =>
+																					this.confirmDelete(item)
+																				}></i>
+																		</Tooltip>
 																	</Tooltip>
 																</td>
 															</tr>
@@ -143,5 +166,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default withRouter(
-	connect(mapStateToProps, { GetAllergies, setAllergy })(Allergies)
+	connect(mapStateToProps, { Fetch_Allergies, Allergy, delete_allergy })(
+		Allergies
+	)
 );

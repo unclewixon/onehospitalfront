@@ -55,7 +55,35 @@ import {
 	GET_ALL_DIAGNOSISES,
 	DELETE_DIAGNOSIS,
 	UPLOAD_DIAGNOSIS,
+	ADD_REQUEST_SERVICE,
+	GET_ALL_REQUEST_SERVICES,
+	UPDATE_REQUEST_SERVICE,
+	DELETE_REQUEST_SERVICE,
 } from './types';
+
+//Request Service
+
+const add_request_service = payload => {
+	return {
+		type: ADD_REQUEST_SERVICE,
+		payload,
+	};
+};
+
+const get_all_request_services = payload => {
+	return { type: GET_ALL_REQUEST_SERVICES, payload };
+};
+
+const update_request_service = (payload, previousData) => {
+	return { type: UPDATE_REQUEST_SERVICE, payload, previousData };
+};
+
+const delete_request_service = payload => {
+	return {
+		type: DELETE_REQUEST_SERVICE,
+		payload,
+	};
+};
 
 //department
 const create_department = payload => {
@@ -1299,7 +1327,10 @@ export const updateService = data => {
 				.patch(`${API_URI}/services/${data.id}/update`, {
 					name: data.name,
 					tariff: data.tariff,
-					service_category_id: service_category_id,
+					gracePeriod: data.gracePeriod,
+					noOfVisits: data.noOfVisits,
+					category_id: service_category_id,
+					note: data.note,
 				})
 				.then(response => {
 					console.log(response);
@@ -1392,6 +1423,79 @@ export const deleteDiagnosis = data => {
 				.delete(`${API_URI}/diagnosis/${data.id}`)
 				.then(response => {
 					dispatch(delete_diagnosis(data));
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return reject({ success: false });
+				});
+		});
+	};
+};
+
+//Request service
+
+export const addRequestService = data => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			axios
+				.post(`${API_URI}/request-types`, {
+					name: data.name,
+					group: data.group,
+					amount: data.amount,
+				})
+				.then(response => {
+					dispatch(add_request_service(response.data));
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return reject({ success: false });
+				});
+		});
+	};
+};
+export const getAllRequestServices = () => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			axios
+				.get(`${API_URI}/request-types`)
+				.then(response => {
+					dispatch(get_all_request_services(response.data));
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return reject({ success: false });
+				});
+		});
+	};
+};
+
+export const updateRequestService = data => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			axios
+				.patch(`${API_URI}/request-types/${data.id}/update`, {
+					name: data.name,
+					group: data.group,
+					amount: data.amount,
+				})
+				.then(response => {
+					dispatch(update_request_service(response.data, data));
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return reject({ success: false });
+				});
+		});
+	};
+};
+
+export const deleteRequestService = data => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			axios
+				.delete(`${API_URI}/request-types/${data.id}`)
+				.then(response => {
+					dispatch(delete_request_service(data));
 					return resolve({ success: true });
 				})
 				.catch(error => {

@@ -9,8 +9,11 @@ import Multiselect from 'react-widgets/lib/Multiselect';
 import DatePicker from 'react-datepicker';
 
 import SSRStorage from './storage';
-import { TOKEN_COOKIE } from './constants';
-
+import { API_URI, patientAPI, TOKEN_COOKIE } from './constants';
+import axios from 'axios';
+import { addVital } from '../actions/vitals';
+import configureStore from '../store';
+const store = configureStore();
 export const formatCurrency = amount => `₦${numeral(amount).format('0,0.00')}`;
 
 export const isUnset = o => typeof o === 'undefined' || o === null;
@@ -23,6 +26,17 @@ export function encodeValue(val) {
 	}
 
 	return JSON.stringify(val);
+}
+
+export async function getData(patient, title) {
+	const res = await request(
+		`${API_URI}${patientAPI}/` + patient.id + '/vitals',
+		'GET',
+		true
+	);
+	store.dispatch(addVital(res));
+	res.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
+	return res.find(c => c.readingType === title);
 }
 
 export function decodeValue(val) {
@@ -50,6 +64,13 @@ const checkStatus = async response => {
 
 export const defaultHeaders = {
 	Accept: 'application/json',
+	'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH',
+	'Content-Type': 'application/json',
+};
+
+export const patchHeaders = {
+	Accept: 'application/json',
+	'Access-Control-Allow-Origin': '*',
 	'Content-Type': 'application/json',
 };
 
@@ -58,7 +79,27 @@ const headers = token => {
 	return { ...defaultHeaders, Authorization: jwt };
 };
 
+const headersPatch = token => {
+	const jwt = `Bearer ${token}`;
+	return { ...patchHeaders, Authorization: jwt };
+};
+
 const parseJSON = response => response.json();
+
+export const requestPatch = async (url, authed = false, data) => {
+	axios.defaults.headers.post['Access-Control-Allow-Origin'] =
+		'GET, POST,HEAD, OPTIONS,PUT, DELETE';
+	axios.defaults.headers.post['Access-Control-Request-Headers'] = '*';
+	axios.defaults.headers.post['Content-Type'] = 'application/json';
+	axios.defaults.headers.post['Accept'] = 'application/json';
+	if (authed) {
+		console.log('f');
+		const token = await new SSRStorage().getItem(TOKEN_COOKIE);
+		axios.defaults.headers.common['Authorization'] = token;
+	}
+	const result = await axios.patch(url, data);
+	return parseJSON(result);
+};
 
 export const request = async (url, method, authed = false, data) => {
 	// prettier-ignore
@@ -79,16 +120,17 @@ export const upload = async (url, method, body) => {
 };
 
 // prettier-ignore
-export const renderTextInput = ({input, label, type, id, placeholder, meta: { touched, error }}) => (
+export const renderTextInput = ({ input, label, type, id, placeholder, readOnly = false, meta: { touched, error } }) => (
 	<div
 		className={`form-group ${touched &&
-			(error ? 'has-error has-danger' : '')}`}>
+		(error ? 'has-error has-danger' : '')}`}>
 		<label htmlFor={id}>{label}</label>
 		<input
 			{...input}
 			type={type}
 			className="form-control"
 			placeholder={placeholder || label}
+			readOnly={readOnly}
 		/>
 		{touched && error && (
 			<div className="help-block form-text with-errors form-control-feedback">
@@ -128,10 +170,10 @@ export const renderTextArea = ({
 );
 
 // prettier-ignore
-export const renderTextInputGroup = ({input, append, label, icon, type, id, placeholder, meta: { touched, error }}) => (
+export const renderTextInputGroup = ({ input, append, label, icon, type, id, placeholder, meta: { touched, error } }) => (
 	<div
 		className={`form-group ${touched &&
-			(error ? 'has-error has-danger' : '')}`}>
+		(error ? 'has-error has-danger' : '')}`}>
 		<label htmlFor={id}>{label}</label>
 		<div className="input-group">
 			{!append && (
@@ -212,7 +254,7 @@ export const renderTimePicker = ({ input, placeholder, minDate, maxDate }) => (
 	</div>
 );
 
-export const confirmAction = (action, payload, alertText) => {
+export const confirmAction = (action, payload, alertText, alertHead) => {
 	confirmAlert({
 		customUI: ({ onClose }) => {
 			const onclick = async () => {
@@ -220,8 +262,8 @@ export const confirmAction = (action, payload, alertText) => {
 				onClose();
 			};
 			return (
-				<div className="custom-ui">
-					<h1>Are you sure?</h1>
+				<div className="custom-ui text-center">
+					<h1 className="">{alertHead ? alertHead : 'Are you sure?'}</h1>
 					<p>{alertText ? alertText : 'You want to delete this remove'}</p>
 					<div>
 						<button
@@ -242,6 +284,37 @@ export const confirmAction = (action, payload, alertText) => {
 		},
 	});
 };
+
+export const renderSelectWithChange = ({
+	input,
+	label,
+	onChangeSubmitAction,
+	placeholder,
+	id,
+	data,
+	meta: { touched, error },
+}) => (
+	<div
+		className={`form-group ${touched &&
+			(error ? 'has-error has-danger' : '')}`}>
+		<label htmlFor={id}>{label}</label>
+		<select {...input} className="form-control" onChange={onChangeSubmitAction}>
+			<option value="">{placeholder}</option>
+			{data.map((d, i) => (
+				<option key={i} value={d.id}>
+					{d.name}
+				</option>
+			))}
+		</select>
+		{touched && error && (
+			<div className="help-block form-text with-errors form-control-feedback">
+				<ul className="list-unstyled">
+					<li>{error}</li>
+				</ul>
+			</div>
+		)}
+	</div>
+);
 
 export const renderSelect = ({
 	input,
@@ -332,3 +405,6 @@ export const redirectToPage = (role, history) => {
 };
 
 export const fullname = user => `${user.first_name} ${user.last_name}`;
+
+export const formatNumber = n =>
+	parseFloat(n).toLocaleString(undefined, { maximumFractionDigits: 2 });

@@ -43,7 +43,11 @@ const PhysiotherapyRequest = () => {
 										options={serviceCenter}
 										ref={register({ name: 'service_center' })}
 										onChange={evt => {
-											setValue('service_center', String(evt.value));
+											if (evt === null) {
+												setValue('service_center', null);
+											} else {
+												setValue('service_center', String(evt.value));
+											}
 										}}
 										required
 									/>
@@ -57,7 +61,11 @@ const PhysiotherapyRequest = () => {
 										options={labCategories}
 										ref={register({ name: 'specialization' })}
 										onChange={evt => {
-											setValue('specilization', String(evt.value));
+											if (evt === null) {
+												setValue('specilization', null);
+											} else {
+												setValue('specilization', String(evt.value));
+											}
 										}}
 										required
 									/>

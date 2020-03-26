@@ -12,13 +12,18 @@ export const USER_RECORD = 'EMR:USER_RECORD';
 export const socket = socketIOClient(API_URI, { transports: ['websocket'] });
 
 export const inventoryAPI = '/inventory/stocks';
+export const inventoryUpdateQuantityAPI = '/inventory/stocks/update-quantity';
+export const stocksAPI = '/stocks';
 export const inventoryCatAPI = '/inventory/categories';
+export const inventoryDownloadAPI = '/inventory/download';
+export const inventoryUploadAPI = '/inventory/stocks/bulk-upload';
 export const inventorySubCatAPI = '/inventory/sub-categories';
 export const rolesAPI = '/settings/roles';
 export const staffAPI = '/hr/staffs';
 export const leaveMgtAPI = '/hr/leave-management';
 export const rosterAPI = '/hr/housekeeping';
 export const searchAPI = '/patient/find';
+export const vitalsAPI = '/patient/save-vitals';
 export const departmentAPI = '/departments';
 export const utilityAPI = '/utility';
 export const payrollAPI = '/hr/payroll';
@@ -129,6 +134,34 @@ export const vitalItems = [
 	'Temperature',
 	'Urine',
 	'Weight',
+	'Others',
+];
+
+export const requestTypes = [
+	{
+		value: 'Physiotherapy',
+		label: 'Physiotherapy',
+	},
+	{
+		value: 'Dentistry',
+		label: 'Dentistry',
+	},
+	{
+		value: 'Opthalmology',
+		label: 'Opthalmology',
+	},
+	{
+		value: 'Imaging',
+		label: 'Imaging',
+	},
+	{
+		value: 'Pharmacy',
+		label: 'Pharmacy',
+	},
+	{
+		value: 'Clinical lab',
+		label: 'Clinical lab',
+	},
 ];
 
 export const encounters = [

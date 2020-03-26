@@ -10,6 +10,7 @@ import { USER_RECORD } from '../services/constants';
 import HashRoute from '../components/HashRoute';
 import Splash from '../components/Splash';
 import ProfileBlock from '../components/ProfileBlock';
+import { confirmAction } from '../services/utilities';
 
 const Dashboard = lazy(() => import('../components/Patient/Dashboard'));
 const Lab = lazy(() => import('../components/Patient/Lab'));
@@ -50,6 +51,10 @@ const UpdateAllergy = lazy(() => import('../components/Patient/UpdateAllergy'));
 const Antennatal = lazy(() => import('../components/Patient/Antennatal'));
 const AntennatalRequest = lazy(() =>
 	import('../components/Patient/AntennatalRequest')
+);
+
+const PatientAdmission = lazy(() =>
+	import('../components/Patient/PatientAdmission')
 );
 
 const storage = new SSRStorage();
@@ -102,6 +107,8 @@ const Page = ({ location }) => {
 			return <Antennatal />;
 		case 'antennal-request':
 			return <AntennatalRequest />;
+		case 'start-admission':
+			return <PatientAdmission />;
 		default:
 			return <Dashboard />;
 	}
@@ -121,6 +128,20 @@ class PatientProfile extends Component {
 		this.setState((prevState, props) => ({
 			dropdown: !prevState.dropdown,
 		}));
+	};
+
+	startAdmission = () => {
+		const { location } = this.props;
+		this.props.history.push(`${location.pathname}#start-admission`);
+	};
+
+	confirmStartAdmission = () => {
+		confirmAction(
+			this.startAdmission,
+			null,
+			'Are you sure you want to place this patient on admission ?',
+			'Confirm Admission'
+		);
 	};
 
 	componentDidMount() {

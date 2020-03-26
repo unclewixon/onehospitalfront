@@ -23,7 +23,7 @@ class OpenRequest extends Component {
 							</div>
 							<div className="col-sm-4 col-xxxl-4">
 								<a className="element-box el-tablo">
-									<div className="label">LOAN STOCK</div>
+									<div className="label">LOW STOCK</div>
 									<div className="value text-center">125</div>
 								</a>
 							</div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Popover from 'antd/lib/popover';
 import {
 	LineChart,
@@ -12,11 +12,45 @@ import {
 import kebabCase from 'lodash.kebabcase';
 
 import TakeReadings from './TakeReadings';
+import createStore from 'antd/es/table/createStore';
+import vitals from '../../reducers/vitals';
+import { getData, request } from '../../services/utilities';
+import { API_URI, patientAPI, vitalsAPI } from '../../services/constants';
+import { notifyError, notifySuccess } from '../../services/notify';
+import { SubmissionError } from 'redux-form';
+import { connect } from 'react-redux';
+import { toggleProfile } from '../../actions/user';
+import configureStore from '../../store';
+import { addVital } from '../../actions/vitals';
+
+const store = configureStore();
 
 const unit = 'kg/m²';
 
-const BMI = () => {
+const mapStateToProps = (state, ownProps) => {
+	return {
+		patient: state.user.patient,
+		vitals: state.vitals ? state.vitals.vitals : {},
+	};
+};
+
+const BMI = ({ patient, vitals }) => {
+	useEffect(() => {
+		try {
+			setCurrentVitals(vitals.reading.height);
+		} catch (e) {}
+	}, [vitals]);
+	useEffect(() => {
+		getData(patient, info.title).then(vitals => {
+			try {
+				setCurrentVitals(vitals.reading.height);
+			} catch (e) {}
+		});
+	}, []);
+
 	const [visible, setVisible] = useState(false);
+	const [currentVitals, setCurrentVitals] = useState(0);
+
 	const data = [
 		{ name: '20-Oct-20', item: 420 },
 		{ name: '21-Oct-20', item: 400 },
@@ -55,7 +89,10 @@ const BMI = () => {
 			<div className="col-4">
 				<div className="text-center">
 					<div className="last-reading">Last BMI Reading:</div>
-					<div className="reading">{`30${unit}`}</div>
+					<div className="reading">
+						{currentVitals}
+						{`${unit}`}
+					</div>
 					<div className="time-captured">on 29-Oct-2020 4:20pm</div>
 					<div className="new-reading">
 						<Popover
@@ -76,4 +113,4 @@ const BMI = () => {
 	);
 };
 
-export default BMI;
+export default connect(mapStateToProps)(BMI);

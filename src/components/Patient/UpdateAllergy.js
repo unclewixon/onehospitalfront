@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { request } from '../../services/utilities';
 import { API_URI, patientAPI } from '../../services/constants';
-import { AddAllergies } from '../../actions/patient';
+import { update_allergy } from '../../actions/patient';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { useHistory } from 'react-router-dom';
@@ -15,7 +15,7 @@ const allergyCategories = [
 	{ value: 'Environment', label: 'Environment' },
 	{ value: 'other', label: 'other' },
 ];
-const severity = [
+const severityCategory = [
 	{
 		value: 'mild',
 		label: 'mild',
@@ -25,44 +25,61 @@ const severity = [
 	{ value: 'intolerance', label: 'intolerance' },
 ];
 const UpdateAllergy = props => {
+	let { Allergy } = props;
+	const initialState = {
+		category: Allergy.category,
+		allergy: Allergy.allergy,
+		severity: Allergy.severity,
+		reaction: Allergy.reaction,
+		patient_id: Allergy.patient_id,
+	};
 	let history = useHistory();
-	const { register, handleSubmit, setValue } = useForm();
+	const [{ category, allergy, severity, reaction }, setState] = useState(
+		initialState
+	);
 	const [submitting, setSubmitting] = useState(false);
 
-	const onSubmit = async values => {
+	const onSubmit = async e => {
+		e.preventDefault();
 		let { patient } = props;
 		let data = {
-			category: values.category,
-			allergy: values.allergy,
-			severity: values.severity,
-			reaction: values.reaction,
+			category: category,
+			allergy: allergy,
+			severity: severity,
+			reaction: reaction,
 			patient_id: patient.id,
 		};
 		setSubmitting(true);
 		try {
 			const rs = await request(
-				`${API_URI}${patientAPI}/save-allergies`,
-				'POST',
+				`${API_URI}${patientAPI}/${Allergy.id}/update-allergy`,
+				'PATCH',
 				true,
 				data
 			);
-			props.AddAllergies(rs.allergy);
+			props.update_allergy(rs.allergy, Allergy);
 			history.push('settings/roles#allergies');
-			notifySuccess('allergies saved');
+			notifySuccess('Allergy updated');
 			setSubmitting(false);
 		} catch (e) {
 			setSubmitting(false);
-			notifyError(e.message || 'could not save allergies');
+			notifyError(e.message || 'Could not update allergy');
 		}
 	};
+	const handleInputChange = e => {
+		console.log(e.target);
+		const { name, value } = e.target;
+		setState(prevState => ({ ...prevState, [name]: value }));
+	};
 
+	// let { allergy } = props;
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<h6 className="element-header">Update Allergy</h6>
 				<div className="element-box">
 					<div className="form-block w-100">
-						<form onSubmit={handleSubmit(onSubmit)}>
+						<form onSubmit={onSubmit}>
 							<div className="row">
 								<div className="form-group col-sm-6">
 									<label>Category</label>
@@ -70,13 +87,13 @@ const UpdateAllergy = props => {
 										name="category"
 										placeholder="Select Allergy Category"
 										options={allergyCategories}
-										ref={register({ name: 'category' })}
+										defaultValue={{ label: category, value: category }}
+										value={{ label: category, value: category }}
 										onChange={evt => {
-											if (evt === null) {
-												setValue('category', null);
-											} else {
-												setValue('category', String(evt.value));
-											}
+											setState(prevState => ({
+												...prevState,
+												category: evt.value,
+											}));
 										}}
 										required
 									/>
@@ -89,7 +106,8 @@ const UpdateAllergy = props => {
 										placeholder="Allergy"
 										type="text"
 										name="allergy"
-										ref={register}
+										value={allergy}
+										onChange={handleInputChange}
 									/>
 								</div>
 							</div>
@@ -100,14 +118,14 @@ const UpdateAllergy = props => {
 									<Select
 										name="severity"
 										placeholder="Select severity"
-										options={severity}
-										ref={register({ name: 'severity' })}
+										options={severityCategory}
+										value={{ label: severity, value: severity }}
+										defaultValue={{ label: severity, value: severity }}
 										onChange={evt => {
-											if (evt === null) {
-												setValue('severity', null);
-											} else {
-												setValue('severity', String(evt.value));
-											}
+											setState(prevState => ({
+												...prevState,
+												severity: evt.value,
+											}));
 										}}
 										required
 									/>
@@ -122,7 +140,8 @@ const UpdateAllergy = props => {
 										name="reaction"
 										rows="3"
 										placeholder="Enter reaction"
-										ref={register}></textarea>
+										value={reaction}
+										onChange={handleInputChange}></textarea>
 								</div>
 							</div>
 
@@ -149,7 +168,8 @@ const mapStateToProps = (state, ownProps) => {
 	return {
 		patient: state.user.patient,
 		allergies: state.patient.allergies,
+		Allergy: state.patient.allergy,
 	};
 };
 
-export default connect(mapStateToProps, { AddAllergies })(UpdateAllergy);
+export default connect(mapStateToProps, { update_allergy })(UpdateAllergy);

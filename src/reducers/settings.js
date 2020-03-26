@@ -52,6 +52,10 @@ import {
 	GET_ALL_DIAGNOSISES,
 	DELETE_DIAGNOSIS,
 	UPLOAD_DIAGNOSIS,
+	ADD_REQUEST_SERVICE,
+	GET_ALL_REQUEST_SERVICES,
+	UPDATE_REQUEST_SERVICE,
+	DELETE_REQUEST_SERVICE,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -70,6 +74,7 @@ const INITIAL_STATE = {
 	service_categories: [],
 	services: [],
 	diagnosis: [],
+	request_services: [],
 };
 
 const settings = (state = INITIAL_STATE, action) => {
@@ -369,6 +374,31 @@ const settings = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				diagnosis: state.diagnosis.filter(
+					deletedItem => deletedItem.id !== action.payload.id
+				),
+			};
+		case ADD_REQUEST_SERVICE:
+			return {
+				...state,
+				request_services: [...state.request_services, action.payload],
+			};
+
+		case GET_ALL_REQUEST_SERVICES:
+			return { ...state, request_services: action.payload };
+		case UPDATE_REQUEST_SERVICE:
+			return {
+				...state,
+				request_services: [
+					...state.request_services.filter(
+						deletedItem => deletedItem.id !== action.previousData.id
+					),
+					action.payload,
+				],
+			};
+		case DELETE_REQUEST_SERVICE:
+			return {
+				...state,
+				request_services: state.request_services.filter(
 					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};

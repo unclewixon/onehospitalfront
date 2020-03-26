@@ -19,6 +19,7 @@ import {
 	TOGGLE_CREATE_APPOINTMENT,
 	TOGGLE_VIEW_APPOINTMENT_DETAIL,
 	TOGGLE_VIEW_PAYPOINT,
+	TOGGLE_CREATE_VOUCHER,
 	TOGGLE_CREATE_LABOUR_MEASUREMENT,
 	TOGGLE_CREATE_RISK_ASSESSMENT,
 	TOGGLE_CREATE_RECORD_DELIVERY,
@@ -26,6 +27,7 @@ import {
 	TOGGLE_UPLOAD_SERVICE,
 	TOGGLE_UPLOAD_DIAGNOSIS,
 	TOGGLE_EDIT_SERIVCE,
+	TOGGLE_CREATE_CLINICAL_TASK,
 	TOGGLE_OPEN_ENCOUNTER,
 } from './types';
 
@@ -176,6 +178,13 @@ export const toggleViewPayPoint = status => {
 		payload: status,
 	};
 };
+
+export const toggleCreateVoucher = status => {
+	return {
+		type: TOGGLE_CREATE_VOUCHER,
+		payload: status,
+	};
+};
 export const toggleCreateLabourMeasurement = status => {
 	return {
 		type: TOGGLE_CREATE_LABOUR_MEASUREMENT,
@@ -199,6 +208,13 @@ export const toggleCreateRecordVital = status => {
 export const toggleCreateRecordDelivery = status => {
 	return {
 		type: TOGGLE_CREATE_RECORD_DELIVERY,
+		payload: status,
+	};
+};
+
+export const toggleCreateClinicalTask = status => {
+	return {
+		type: TOGGLE_CREATE_CLINICAL_TASK,
 		payload: status,
 	};
 };
@@ -253,9 +269,11 @@ export const closeModals = () => {
 		dispatch(toggleNewAppointment(false));
 		dispatch(toggleViewAppointDetail(false));
 		dispatch(toggleViewPayPoint(false));
+		dispatch(toggleCreateVoucher(false));
 		dispatch(toggleCreateLabourMeasurement(false));
 		dispatch(toggleCreateRiskAssessment(false));
 		dispatch(toggleCreateRecordDelivery(false));
+		dispatch(toggleCreateClinicalTask(false));
 		dispatch(toggleCreateRecordVital(false));
 		dispatch(toggleUploadService(false));
 		dispatch(toggleUploadDiagnosis(false));
@@ -470,11 +488,26 @@ export const createRecordVital = action => {
 	};
 };
 
-// patient
 export const openEncounter = (action, id) => {
 	return dispatch => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleOpenEncounter(action, id));
+	};
+};
+
+export const createVoucher = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleCreateVoucher(action));
+	};
+};
+
+export const createClinicalTask = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleCreateClinicalTask(action));
 	};
 };

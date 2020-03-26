@@ -1,63 +1,121 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component } from "react";
-import Queue from "../components/Queue";
-import SaleSummary from "../components/SaleSummary";
-import Overall from "../components/Overall";
+import React, { Component, Suspense, lazy } from 'react';
+import { Switch, Route, withRouter, Link } from 'react-router-dom';
+import Queue from '../components/Queue';
+import SaleSummary from '../components/SaleSummary';
 
+import NoMatch from './NoMatch';
+import Splash from '../components/Splash';
+
+const Overall = lazy(() => import('../components/Overall'));
+const PharmRecentRequest = lazy(() =>
+	import('../components/PharmRecentRequest')
+);
+const PharmAllRequest = lazy(() => import('../components/PharmAllRequest'));
+const PharmFillRequest = lazy(() => import('../components/PharmFillRequest'));
+const PharmNewRequest = lazy(() => import('../components/PharmNewRequest'));
 export class Pharmacy2 extends Component {
-  state = {
-    tab: "overall"
-  };
+	// state = {
+	// 	tab: 'overall',
+	// };
 
-  changeTab = tab => {
-    this.setState({ tab });
-  };
-  render() {
-    const { tab } = this.state;
-    return (
-      <div className='content-i'>
-        <div className='content-box'>
-          <div className='row'>
-            <div className='col-sm-12'>
-              <div className='element-wrapper'>
-                <div className='os-tabs-w mx-1'>
-                  <div className='os-tabs-controls'>
-                    <ul className='nav nav-tabs upper'>
-                      <li className='nav-item'>
-                        <a
-                          className={
-                            tab === "overall" ? "nav-link active" : "nav-link"
-                          }
-                          onClick={() => this.changeTab("overall")}
-                        >
-                          OVERALL
-                        </a>
-                      </li>
-                      <li className='nav-item'>
-                        <a
-                          className={
-                            tab === "sale" ? "nav-link active" : "nav-link"
-                          }
-                          onClick={() => this.changeTab("sale")}
-                        >
-                          SALE SUMMARY
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                {tab === "overall" && <Overall />}
-                {tab === "sale" && <SaleSummary />}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className='content-panel compact'>
-          <Queue />
-        </div>
-      </div>
-    );
-  }
+	// changeTab = tab => {
+	// 	this.setState({ tab });
+	// };
+	render() {
+		const { match, location } = this.props;
+		const page = location.pathname.split('/').pop();
+		return (
+			<div className="content-i">
+				<div className="content-box">
+					<div className="row">
+						<div className="col-sm-12">
+							<div className="element-wrapper">
+								<h6 className="element-header">Pharmacy</h6>
+								<div className="row mt-2 mb-4">
+									<Link
+										to={`${match.path}/`}
+										className={`mx-2 btn btn-primary btn-sm  ${
+											page === '' ? 'btn-outline-primary' : ''
+										}`}>
+										{' '}
+										Dashboard
+									</Link>
+									<Link
+										to={`${match.path}/recent-request`}
+										className={`mr-2 btn btn-primary btn-sm  ${
+											page === 'recent-request' ? 'btn-outline-primary' : ''
+										}`}>
+										{' '}
+										Recent Request
+									</Link>
+									<Link
+										to={`${match.path}/filled-request`}
+										className={`mr-2 btn btn-primary btn-sm  ${
+											page === 'filled-request' ? 'btn-outline-primary' : ''
+										}`}>
+										{' '}
+										Filled Request
+									</Link>
+									<Link
+										to={`${match.path}/all-request`}
+										className={`mr-2 btn btn-primary btn-sm  ${
+											page === 'all-request' ? 'btn-outline-primary' : ''
+										}`}>
+										{' '}
+										All Request
+									</Link>
+									<Link
+										to={`${match.path}/new-request`}
+										className={`mr-2 btn btn-primary btn-sm  ${
+											page === 'new-request' ? 'btn-outline-primary' : ''
+										}`}>
+										{' '}
+										New Request
+									</Link>
+								</div>
+
+								<div className="row">
+									<div className="col-sm-12">
+										<Suspense fallback={<Splash />}>
+											<Switch>
+												<Route
+													exact
+													path={`${match.url}/`}
+													component={Overall}
+												/>
+												<Route
+													path={`${match.url}/recent-request`}
+													component={PharmRecentRequest}
+												/>
+												<Route
+													path={`${match.url}/filled-request`}
+													component={PharmFillRequest}
+												/>
+												<Route
+													path={`${match.url}/all-request`}
+													component={PharmAllRequest}
+												/>
+												<Route
+													path={`${match.url}/new-request`}
+													component={PharmNewRequest}
+												/>
+
+												<Route component={NoMatch} />
+											</Switch>
+										</Suspense>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div className="content-panel compact">
+					<Queue />
+				</div>
+			</div>
+		);
+	}
 }
 
-export default Pharmacy2;
+export default withRouter(Pharmacy2);

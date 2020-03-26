@@ -3,8 +3,11 @@ import {
 	PREV_STEP,
 	SAVE_ALLERGIES,
 	GET_ALLERGIES,
-	SET_ALLERGY,
 	LOAD_ENCOUNTERS,
+	ALLERGY,
+	UPDATE_ALLERGY,
+	DELETE_ALLERGY,
+	GET_PHYSIOTHERAPIES,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -13,6 +16,7 @@ const INITIAL_STATE = {
 	allergy: {},
 	allergies: [],
 	encounters: [],
+	physiotherapies: [],
 };
 
 const patient = (state = INITIAL_STATE, action) => {
@@ -25,10 +29,29 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, allergies: action.payload };
 		case SAVE_ALLERGIES:
 			return { ...state, allergies: [...state.allergies, action.payload] };
-		case SET_ALLERGY:
+		case ALLERGY:
 			return { ...state, allergy: action.payload };
 		case LOAD_ENCOUNTERS:
 			return { ...state, encounters: [...action.payload] };
+		case GET_PHYSIOTHERAPIES:
+			return { ...state, allergies: action.payload };
+		case UPDATE_ALLERGY:
+			return {
+				...state,
+				allergies: [
+					...state.allergies.filter(
+						deletedItem => deletedItem.id !== action.previousData.id
+					),
+					action.payload,
+				],
+			};
+		case DELETE_ALLERGY:
+			return {
+				...state,
+				allergies: state.allergies.filter(
+					deletedItem => deletedItem.id !== action.payload.id
+				),
+			};
 		default:
 			return state;
 	}
