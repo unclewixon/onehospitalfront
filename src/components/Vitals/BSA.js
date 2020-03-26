@@ -15,26 +15,33 @@ import TakeReadings from './TakeReadings';
 import { connect } from 'react-redux';
 import configureStore from '../../store';
 import { getData, request } from '../../services/utilities';
-import { API_URI, patientAPI } from '../../services/constants';
-import { addVital } from '../../actions/vitals';
+import { allVitals } from '../../actions/vitals';
+
 const store = configureStore();
 const unit = 'kg/m²';
 
-const BSA = ({ patient, vitals }) => {
+const mapStateToProps = (state, ownProps) => {
+	const { allVitals } = ownProps;
+	return {
+		fullVitals: allVitals,
+		patient: state.user.patient,
+		newVital: state.vitals ? state.vitals.vitals : [],
+	};
+};
+const BSA = ({ fullVitals, newVital }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(0);
 	useEffect(() => {
 		try {
-			setCurrentVitals(vitals.reading.height);
+			let v = fullVitals.find(c => c.readingType === info.title);
+			setCurrentVitals(v.reading.weight);
 		} catch (e) {}
-	}, [vitals]);
+	}, [fullVitals]);
 	useEffect(() => {
-		getData(patient, info.title).then(vitals => {
-			try {
-				setCurrentVitals(vitals.reading.height);
-			} catch (e) {}
-		});
-	}, []);
+		try {
+			setCurrentVitals(newVital.reading.weight);
+		} catch (e) {}
+	}, [newVital]);
 
 	const data = [
 		{ name: '20-Oct-20', item: 420 },
@@ -98,11 +105,4 @@ const BSA = ({ patient, vitals }) => {
 	);
 };
 
-const mapStateToProps = (state, ownProps) => {
-	return {
-		patient: state.user.patient,
-		vitals: state.vitals ? state.vitals.vitals : [],
-	};
-};
-
-export default connect(mapStateToProps)(BSA);
+export default connect(mapStateToProps, { allVitals })(BSA);

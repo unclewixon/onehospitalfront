@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Popover from 'antd/lib/popover';
 import {
 	LineChart,
@@ -12,11 +12,25 @@ import {
 import kebabCase from 'lodash.kebabcase';
 
 import TakeReadings from './TakeReadings';
+import { connect } from 'react-redux';
+import { getData } from '../../services/utilities';
 
 const unit = '';
 
-const Protein = () => {
+const Protein = ({ fullVitals, newVital }) => {
 	const [visible, setVisible] = useState(false);
+	const [currentVitals, setCurrentVitals] = useState(0);
+	useEffect(() => {
+		try {
+			let v = fullVitals.find(c => c.readingType === info.title);
+			setCurrentVitals(v.reading.protein);
+		} catch (e) {}
+	}, [fullVitals]);
+	useEffect(() => {
+		try {
+			setCurrentVitals(newVital.reading.protein);
+		} catch (e) {}
+	}, [newVital]);
 	const data = [
 		{ name: '20-Oct-20', item: 420 },
 		{ name: '21-Oct-20', item: 400 },
@@ -50,7 +64,10 @@ const Protein = () => {
 			<div className="col-4">
 				<div className="text-center">
 					<div className="last-reading">Last Protein Reading:</div>
-					<div className="reading">{`30${unit}`}</div>
+					<div className="reading">
+						{currentVitals}
+						{`${unit}`}
+					</div>
 					<div className="time-captured">on 29-Oct-2020 4:20pm</div>
 					<div className="new-reading">
 						<Popover
@@ -71,4 +88,12 @@ const Protein = () => {
 	);
 };
 
-export default Protein;
+const mapStateToProps = (state, ownProps) => {
+	const { allVitals } = ownProps;
+	return {
+		fullVitals: allVitals,
+		patient: state.user.patient,
+		newVital: state.vitals ? state.vitals.vitals : [],
+	};
+};
+export default connect(mapStateToProps)(Protein);

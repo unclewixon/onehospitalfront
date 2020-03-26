@@ -28,25 +28,26 @@ const store = configureStore();
 const unit = 'kg/m²';
 
 const mapStateToProps = (state, ownProps) => {
+	const { allVitals } = ownProps;
 	return {
+		fullVitals: allVitals,
 		patient: state.user.patient,
-		vitals: state.vitals ? state.vitals.vitals : {},
+		newVital: state.vitals ? state.vitals.vitals : [],
 	};
 };
 
-const BMI = ({ patient, vitals }) => {
+const BMI = ({ fullVitals, newVital }) => {
 	useEffect(() => {
 		try {
-			setCurrentVitals(vitals.reading.height);
+			let v = fullVitals.find(c => c.readingType === info.title);
+			setCurrentVitals(v.reading.weight);
 		} catch (e) {}
-	}, [vitals]);
+	}, [fullVitals]);
 	useEffect(() => {
-		getData(patient, info.title).then(vitals => {
-			try {
-				setCurrentVitals(vitals.reading.height);
-			} catch (e) {}
-		});
-	}, []);
+		try {
+			setCurrentVitals(newVital.reading.weight);
+		} catch (e) {}
+	}, [newVital]);
 
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(0);
@@ -112,5 +113,5 @@ const BMI = ({ patient, vitals }) => {
 		</div>
 	);
 };
-
-export default connect(mapStateToProps)(BMI);
+export default connect(mapStateToProps, { addVital })(BMI);
+//export default connect(mapStateToProps)(BMI);

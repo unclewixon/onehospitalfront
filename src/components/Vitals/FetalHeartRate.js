@@ -17,21 +17,20 @@ import { getData } from '../../services/utilities';
 
 const unit = 'bps';
 
-const FetalHeartRate = ({ patient, vitals }) => {
+const FetalHeartRate = ({ fullVitals, newVital }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(0);
 	useEffect(() => {
 		try {
-			setCurrentVitals(vitals.reading.rate);
+			let v = fullVitals.find(c => c.readingType === info.title);
+			setCurrentVitals(v.reading.rate);
 		} catch (e) {}
-	}, [vitals]);
+	}, [fullVitals]);
 	useEffect(() => {
-		getData(patient, info.title).then(vitals => {
-			try {
-				setCurrentVitals(vitals.reading.rate);
-			} catch (e) {}
-		});
-	}, []);
+		try {
+			setCurrentVitals(newVital.reading.rate);
+		} catch (e) {}
+	}, [newVital]);
 
 	const data = [
 		{ name: '20-Oct-20', item: 420 },
@@ -96,9 +95,11 @@ const FetalHeartRate = ({ patient, vitals }) => {
 	);
 };
 const mapStateToProps = (state, ownProps) => {
+	const { allVitals } = ownProps;
 	return {
+		fullVitals: allVitals,
 		patient: state.user.patient,
-		vitals: state.vitals ? state.vitals.vitals : [],
+		newVital: state.vitals ? state.vitals.vitals : [],
 	};
 };
 

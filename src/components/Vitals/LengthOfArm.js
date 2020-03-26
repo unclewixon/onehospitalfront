@@ -17,23 +17,20 @@ import { getData } from '../../services/utilities';
 
 const unit = 'cm';
 
-const LengthOfArm = ({ patient, vitals }) => {
+const LengthOfArm = ({ fullVitals, newVital }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(0);
 	useEffect(() => {
 		try {
-			console.log(vitals);
-			setCurrentVitals(vitals.reading.length);
+			let v = fullVitals.find(c => c.readingType === info.title);
+			setCurrentVitals(v.reading.length);
 		} catch (e) {}
-	}, [vitals]);
+	}, [fullVitals]);
 	useEffect(() => {
-		getData(patient, info.title).then(vitals => {
-			try {
-				console.log(vitals);
-				setCurrentVitals(vitals.reading.length);
-			} catch (e) {}
-		});
-	}, []);
+		try {
+			setCurrentVitals(newVital.reading.length);
+		} catch (e) {}
+	}, [newVital]);
 
 	const data = [
 		{ name: '20-Oct-20', item: 420 },
@@ -99,9 +96,11 @@ const LengthOfArm = ({ patient, vitals }) => {
 };
 
 const mapStateToProps = (state, ownProps) => {
+	const { allVitals } = ownProps;
 	return {
+		fullVitals: allVitals,
 		patient: state.user.patient,
-		vitals: state.vitals ? state.vitals.vitals : [],
+		newVital: state.vitals ? state.vitals.vitals : [],
 	};
 };
 
