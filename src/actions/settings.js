@@ -1327,7 +1327,10 @@ export const updateService = data => {
 				.patch(`${API_URI}/services/${data.id}/update`, {
 					name: data.name,
 					tariff: data.tariff,
-					service_category_id: service_category_id,
+					gracePeriod: data.gracePeriod,
+					noOfVisits: data.noOfVisits,
+					category_id: service_category_id,
+					note: data.note
 				})
 				.then(response => {
 					console.log(response);
