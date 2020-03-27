@@ -14,29 +14,32 @@ import kebabCase from 'lodash.kebabcase';
 import TakeReadings from './TakeReadings';
 import { connect } from 'react-redux';
 import { getData } from '../../services/utilities';
+import moment from 'moment';
 
 const unit = '';
 
-const PainScale = ({ fullVitals, newVital }) => {
+const PainScale = ({ newVital }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(0);
+	const [data, setData] = useState([]);
 	useEffect(() => {
 		try {
-			let v = fullVitals.find(c => c.readingType === info.title);
+			newVital.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
+			let v = newVital.find(c => c.readingType === info.title);
+			const data = [];
+			newVital
+				.filter(c => c.readingType === info.title)
+				.slice(0, 5)
+				.forEach(function(item, index) {
+					let StartDate = moment(item.createdAt).format('DD-MM-YY');
+					let res = { name: StartDate, item: item.reading.pain_scale };
+					data.push(res);
+				});
+			setData(data);
 			setCurrentVitals(v.reading.pain_scale);
 		} catch (e) {}
-	}, [fullVitals]);
-	useEffect(() => {
-		try {
-			setCurrentVitals(newVital.reading.pain_scale);
-		} catch (e) {}
 	}, [newVital]);
-	const data = [
-		{ name: '20-Oct-20', item: 420 },
-		{ name: '21-Oct-20', item: 400 },
-		{ name: '22-Oct-20', item: 300 },
-		{ name: '23-Oct-20', item: 500 },
-	];
+
 	const info = {
 		title: 'Pain Scale',
 		type: kebabCase('Pain Scale'),
@@ -91,9 +94,7 @@ const PainScale = ({ fullVitals, newVital }) => {
 };
 
 const mapStateToProps = (state, ownProps) => {
-	const { allVitals } = ownProps;
 	return {
-		fullVitals: allVitals,
 		patient: state.user.patient,
 		newVital: state.vitals ? state.vitals.vitals : [],
 	};

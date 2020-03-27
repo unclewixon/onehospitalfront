@@ -13,7 +13,6 @@ import hr from './hr';
 import patient from './patient';
 import transaction from './transaction';
 import utility from './utility';
-import { connectRouter } from 'connected-react-router';
 
 const reducers = history =>
 	combineReducers({

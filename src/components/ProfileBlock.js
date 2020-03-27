@@ -66,7 +66,7 @@ const ProfileBlock = ({
 							<div className="toolbar">
 								<a
 									className="text-muted bg-dark-overlay btn-rounded btn btn-sm btn-icon"
-									onClick={toggleDropdown}>
+									onClick={toggleDropdown()}>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
 										width="12"

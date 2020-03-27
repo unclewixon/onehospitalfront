@@ -20,44 +20,39 @@ import { notifyError, notifySuccess } from '../../services/notify';
 import { SubmissionError } from 'redux-form';
 import { connect } from 'react-redux';
 import { toggleProfile } from '../../actions/user';
-import configureStore from '../../store';
 import { addVital } from '../../actions/vitals';
-
-const store = configureStore();
+import moment from 'moment';
 
 const unit = 'kg/m²';
 
 const mapStateToProps = (state, ownProps) => {
-	const { allVitals } = ownProps;
 	return {
-		fullVitals: allVitals,
 		patient: state.user.patient,
 		newVital: state.vitals ? state.vitals.vitals : [],
 	};
 };
 
-const BMI = ({ fullVitals, newVital }) => {
+const BMI = ({ newVital }) => {
 	useEffect(() => {
 		try {
-			let v = fullVitals.find(c => c.readingType === info.title);
+			newVital.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
+			const data = [];
+			newVital
+				.filter(c => c.readingType === info.title)
+				.slice(0, 5)
+				.forEach(function(item, index) {
+					let StartDate = moment(item.createdAt).format('DD-MM-YY');
+					let res = { name: StartDate, item: item.reading.weight };
+					data.push(res);
+				});
+			let v = newVital.find(c => c.readingType === info.title);
 			setCurrentVitals(v.reading.weight);
-		} catch (e) {}
-	}, [fullVitals]);
-	useEffect(() => {
-		try {
-			setCurrentVitals(newVital.reading.weight);
+			setData(data);
 		} catch (e) {}
 	}, [newVital]);
-
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(0);
-
-	const data = [
-		{ name: '20-Oct-20', item: 420 },
-		{ name: '21-Oct-20', item: 400 },
-		{ name: '22-Oct-20', item: 300 },
-		{ name: '23-Oct-20', item: 500 },
-	];
+	const [data, setData] = useState([]);
 	const info = {
 		title: 'BMI',
 		type: kebabCase('BMI'),

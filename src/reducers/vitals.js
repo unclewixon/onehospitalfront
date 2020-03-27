@@ -5,11 +5,12 @@ const INITIAL_STATE = {
 };
 
 const vitals = (state = INITIAL_STATE, action) => {
+	console.log(action.type);
 	switch (action.type) {
 		case SAVE_VITALS:
 			return { ...state, vitals: [...action.payload] };
 		case UPDATE_VITALS:
-			return { ...state, vitals: action.payload };
+			return { ...state, vitals: [...state.vitals, action.payload] };
 		default:
 			return state;
 	}

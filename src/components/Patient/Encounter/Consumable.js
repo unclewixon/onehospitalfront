@@ -40,11 +40,21 @@ class Consumable extends Component {
 		return (
 			<div className="form-block encounter">
 				<div className="row">
-					<div className="col-sm-12">
+					<div className="col-sm-6">
 						<div className="form-group">
 							<label>Business Unit/Service Center</label>
 							<select
 								placeholder="-- Select a service center --"
+								className="form-control">
+								<option value=""></option>
+							</select>
+						</div>
+					</div>
+					<div className="col-sm-6">
+						<div className="form-group">
+							<label>Item Generic Name</label>
+							<select
+								placeholder="-- Select item generic name --"
 								className="form-control">
 								<option value=""></option>
 							</select>
@@ -65,17 +75,7 @@ class Consumable extends Component {
 					return (
 						item.deleted === 0 && (
 							<div className="row" key={i}>
-								<div className="col-sm-4">
-									<div className="form-group">
-										<label>Item Generic Name</label>
-										<select
-											placeholder="-- Select item generic name --"
-											className="form-control">
-											<option value=""></option>
-										</select>
-									</div>
-								</div>
-								<div className="col-sm-4">
+								<div className="col-sm-5">
 									<div className="form-group">
 										<label>Item</label>
 										<select
@@ -85,7 +85,7 @@ class Consumable extends Component {
 										</select>
 									</div>
 								</div>
-								<div className="col-sm-2">
+								<div className="col-sm-5">
 									<div className="form-group">
 										<label>Quantity</label>
 										<input
