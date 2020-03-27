@@ -11,21 +11,25 @@ import vitals from './vitals';
 import role from './role';
 import hr from './hr';
 import patient from './patient';
+import transaction from './transaction';
 import utility from './utility';
 
-const reducers = combineReducers({
-	form: formReducer,
-	routing: routerReducer,
-	user,
-	general,
-	settings,
-	hmo,
-	inventory,
-	vitals,
-	role,
-	hr,
-	utility,
-	patient,
-});
+const reducers = history =>
+	combineReducers({
+		router: connectRouter(history),
+		form: formReducer,
+		routing: routerReducer,
+		user,
+		general,
+		settings,
+		hmo,
+		inventory,
+		vitals,
+		role,
+		hr,
+		utility,
+		patient,
+		transaction,
+	});
 
 export default reducers;

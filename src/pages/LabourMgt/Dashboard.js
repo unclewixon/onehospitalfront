@@ -142,7 +142,7 @@ class Dashboard extends Component {
 										</td>
 										<td className="text-right row-actions">
 											<Tooltip title="view detail">
-												<Link to="/lab-mgt/detail" className="secondary">
+												<Link to="/labour-mgt/detail" className="secondary">
 													<i className="os-icon os-icon-folder-plus" />
 												</Link>
 											</Tooltip>
@@ -169,7 +169,7 @@ class Dashboard extends Component {
 										</td>
 										<td className="text-right row-actions">
 											<Tooltip title="view detail">
-												<Link to="/lab-mgt/detail" className="secondary">
+												<Link to="/labour-mgt/detail" className="secondary">
 													<i className="os-icon os-icon-folder-plus" />
 												</Link>
 											</Tooltip>
@@ -197,7 +197,7 @@ class Dashboard extends Component {
 										</td>
 										<td className="text-right row-actions">
 											<Tooltip title="view detail">
-												<Link to="/lab-mgt/detail" className="secondary">
+												<Link to="/labour-mgt/detail" className="secondary">
 													<i className="os-icon os-icon-folder-plus" />
 												</Link>
 											</Tooltip>
