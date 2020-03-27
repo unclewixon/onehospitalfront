@@ -17,18 +17,14 @@ import { getData } from '../../services/utilities';
 
 const unit = 'breaths/min';
 
-const Respiration = ({ fullVitals, newVital }) => {
+const Respiration = ({ newVital }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(0);
 	useEffect(() => {
 		try {
-			let v = fullVitals.find(c => c.readingType === info.title);
+			newVital.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
+			let v = newVital.find(c => c.readingType === info.title);
 			setCurrentVitals(v.reading.respiration);
-		} catch (e) {}
-	}, [fullVitals]);
-	useEffect(() => {
-		try {
-			setCurrentVitals(newVital.reading.respiration);
 		} catch (e) {}
 	}, [newVital]);
 	const data = [
@@ -97,9 +93,7 @@ const Respiration = ({ fullVitals, newVital }) => {
 };
 
 const mapStateToProps = (state, ownProps) => {
-	const { allVitals } = ownProps;
 	return {
-		fullVitals: allVitals,
 		patient: state.user.patient,
 		newVital: state.vitals ? state.vitals.vitals : [],
 	};

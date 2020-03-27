@@ -16,19 +16,21 @@ import { connect } from 'react-redux';
 import { getData } from '../../services/utilities';
 
 const unit = 'cm';
+const mapStateToProps = (state, ownProps) => {
+	return {
+		patient: state.user.patient,
+		newVital: state.vitals ? state.vitals.vitals : [],
+	};
+};
 
-const Dilation = ({ fullVitals, newVital }) => {
+const Dilation = ({ newVital }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(0);
 	useEffect(() => {
 		try {
-			let v = fullVitals.find(c => c.readingType === info.title);
+			newVital.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
+			let v = newVital.find(c => c.readingType === info.title);
 			setCurrentVitals(v.reading.dilation);
-		} catch (e) {}
-	}, [fullVitals]);
-	useEffect(() => {
-		try {
-			setCurrentVitals(newVital.reading.dilation);
 		} catch (e) {}
 	}, [newVital]);
 
@@ -93,15 +95,6 @@ const Dilation = ({ fullVitals, newVital }) => {
 			</div>
 		</div>
 	);
-};
-
-const mapStateToProps = (state, ownProps) => {
-	const { allVitals } = ownProps;
-	return {
-		fullVitals: allVitals,
-		patient: state.user.patient,
-		newVital: state.vitals ? state.vitals.vitals : [],
-	};
 };
 
 export default connect(mapStateToProps)(Dilation);

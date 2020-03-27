@@ -17,18 +17,14 @@ import { connect } from 'react-redux';
 
 const unit = '°C';
 
-const Temperature = ({ fullVitals, newVital }) => {
+const Temperature = ({ newVital }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(0);
 	useEffect(() => {
 		try {
-			let v = fullVitals.find(c => c.readingType === info.title);
+			newVital.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
+			let v = newVital.find(c => c.readingType === info.title);
 			setCurrentVitals(v.reading.temperature);
-		} catch (e) {}
-	}, []);
-	useEffect(() => {
-		try {
-			setCurrentVitals(newVital.reading.temperature);
 		} catch (e) {}
 	}, [newVital]);
 	const data = [
@@ -95,9 +91,7 @@ const Temperature = ({ fullVitals, newVital }) => {
 };
 
 const mapStateToProps = (state, ownProps) => {
-	const { allVitals } = ownProps;
 	return {
-		fullVitals: allVitals,
 		patient: state.user.patient,
 		newVital: state.vitals ? state.vitals.vitals : [],
 	};

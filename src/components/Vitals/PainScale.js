@@ -17,18 +17,14 @@ import { getData } from '../../services/utilities';
 
 const unit = '';
 
-const PainScale = ({ fullVitals, newVital }) => {
+const PainScale = ({ newVital }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(0);
 	useEffect(() => {
 		try {
-			let v = fullVitals.find(c => c.readingType === info.title);
+			newVital.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
+			let v = newVital.find(c => c.readingType === info.title);
 			setCurrentVitals(v.reading.pain_scale);
-		} catch (e) {}
-	}, [fullVitals]);
-	useEffect(() => {
-		try {
-			setCurrentVitals(newVital.reading.pain_scale);
 		} catch (e) {}
 	}, [newVital]);
 	const data = [
@@ -91,9 +87,7 @@ const PainScale = ({ fullVitals, newVital }) => {
 };
 
 const mapStateToProps = (state, ownProps) => {
-	const { allVitals } = ownProps;
 	return {
-		fullVitals: allVitals,
 		patient: state.user.patient,
 		newVital: state.vitals ? state.vitals.vitals : [],
 	};

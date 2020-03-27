@@ -17,18 +17,14 @@ import { connect } from 'react-redux';
 
 const unit = '';
 
-const Urine = ({ fullVitals, newVital }) => {
+const Urine = ({ newVital }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(0);
 	useEffect(() => {
 		try {
-			let v = fullVitals.find(c => c.readingType === info.title);
+			newVital.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
+			let v = newVital.find(c => c.readingType === info.title);
 			setCurrentVitals(v.reading.urine);
-		} catch (e) {}
-	}, [fullVitals]);
-	useEffect(() => {
-		try {
-			setCurrentVitals(newVital.reading.urine);
 		} catch (e) {}
 	}, [newVital]);
 	const data = [
@@ -89,9 +85,7 @@ const Urine = ({ fullVitals, newVital }) => {
 };
 
 const mapStateToProps = (state, ownProps) => {
-	const { allVitals } = ownProps;
 	return {
-		fullVitals: allVitals,
 		patient: state.user.patient,
 		newVital: state.vitals ? state.vitals.vitals : [],
 	};

@@ -14,20 +14,19 @@ import patient from './patient';
 import utility from './utility';
 import { connectRouter } from 'connected-react-router';
 
-const reducers = history =>
-	combineReducers({
-		form: formReducer,
-		routing: routerReducer,
-		user,
-		general,
-		settings,
-		hmo,
-		inventory,
-		vitals,
-		role,
-		hr,
-		utility,
-		patient,
-	});
+const reducers = {
+	form: formReducer,
+	routing: routerReducer,
+	user,
+	general,
+	settings,
+	hmo,
+	inventory,
+	vitals,
+	role,
+	hr,
+	utility,
+	patient,
+};
 
 export default reducers;

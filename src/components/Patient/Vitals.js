@@ -31,59 +31,58 @@ const Temperature = lazy(() => import('../Vitals/Temperature'));
 const Urine = lazy(() => import('../Vitals/Urine'));
 const Weight = lazy(() => import('../Vitals/Weight'));
 
-const Page = ({ type, allVitals }) => {
+const Page = ({ type }) => {
 	switch (type) {
 		case 'Urine':
-			return <Urine allVitals={allVitals} />;
+			return <Urine />;
 		case 'Weight':
-			return <Weight allVitals={allVitals} />;
+			return <Weight />;
 		case 'Temperature':
-			return <Temperature allVitals={allVitals} />;
+			return <Temperature />;
 		case 'Surface Area':
-			return <SurfaceArea allVitals={allVitals} />;
+			return <SurfaceArea />;
 		case 'SpO2':
-			return <SPO allVitals={allVitals} />;
+			return <SPO />;
 		case 'Respiration':
-			return <Respiration allVitals={allVitals} />;
+			return <Respiration />;
 		case 'Pulse':
-			return <Pulse allVitals={allVitals} />;
+			return <Pulse />;
 		case 'Protein':
-			return <Protein allVitals={allVitals} />;
+			return <Protein />;
 		case 'PCV':
-			return <PCV allVitals={allVitals} />;
+			return <PCV />;
 		case 'Pain Scale':
-			return <PainScale allVitals={allVitals} />;
+			return <PainScale />;
 		case 'MUAC':
-			return <MUAC allVitals={allVitals} />;
+			return <MUAC />;
 		case 'Mid-Arm Circumference':
-			return <MidArmCircumference allVitals={allVitals} />;
+			return <MidArmCircumference />;
 		case 'Length of Arm':
-			return <LengthOfArm allVitals={allVitals} />;
+			return <LengthOfArm />;
 		case 'Height':
-			return <Height allVitals={allVitals} />;
+			return <Height />;
 		case 'Head Circumference':
-			return <HeadCircumference allVitals={allVitals} />;
+			return <HeadCircumference />;
 		case 'Glucose':
-			return <Glucose allVitals={allVitals} />;
+			return <Glucose />;
 		case 'Dilation':
-			return <Dilation allVitals={allVitals} />;
+			return <Dilation />;
 		case 'Fetal Heart Rate':
-			return <FetalHeartRate allVitals={allVitals} />;
+			return <FetalHeartRate />;
 		case 'Fundus Height':
-			return <FundusHeight allVitals={allVitals} />;
+			return <FundusHeight />;
 		case 'Blood Pressure':
-			return <BloodPressure allVitals={allVitals} />;
+			return <BloodPressure />;
 		case 'BSA':
-			return <BSA allVitals={allVitals} />;
+			return <BSA />;
 		case 'BMI':
 		default:
-			return <BMI allVitals={allVitals} />;
+			return <BMI />;
 	}
 };
 //const store = configureStore();
-const Vitals = ({ type, location, patient, vitals }) => {
+const Vitals = ({ type, location, patient }) => {
 	const [vitalPage, setVitalPage] = useState(type);
-	const [allVitals, setAllVitals] = useState({});
 	const vitalClick = vital => {
 		setVitalPage(vital);
 	};
@@ -98,7 +97,6 @@ const Vitals = ({ type, location, patient, vitals }) => {
 		);
 		await store.dispatch(addVital(res));
 		res.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
-		await setAllVitals(res);
 		return res;
 	}
 
@@ -120,7 +118,7 @@ const Vitals = ({ type, location, patient, vitals }) => {
 				</div>
 				<h6 className="element-header text-center">{vitalPage}</h6>
 				<div className="element-box">
-					<Page type={vitalPage} allVitals={allVitals} />
+					<Page type={vitalPage} />
 				</div>
 			</div>
 		</div>

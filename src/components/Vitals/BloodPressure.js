@@ -16,29 +16,24 @@ import { connect } from 'react-redux';
 import { getData, request } from '../../services/utilities';
 import { API_URI, patientAPI } from '../../services/constants';
 import { addVital } from '../../actions/vitals';
+import { store } from '../../store';
 
 const unit = 'mmHg';
 const mapStateToProps = (state, ownProps) => {
-	const { allVitals } = ownProps;
 	return {
-		fullVitals: allVitals,
 		patient: state.user.patient,
 		newVital: state.vitals ? state.vitals.vitals : [],
 	};
 };
 
-const BloodPressure = ({ fullVitals, newVital }) => {
+const BloodPressure = ({ newVital }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(0);
 	useEffect(() => {
 		try {
-			let v = fullVitals.find(c => c.readingType === info.title);
+			newVital.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
+			let v = newVital.find(c => c.readingType === info.title);
 			setCurrentVitals(v.reading.blood_pressure);
-		} catch (e) {}
-	}, [fullVitals]);
-	useEffect(() => {
-		try {
-			setCurrentVitals(newVital.reading.blood_pressure);
 		} catch (e) {}
 	}, [newVital]);
 
