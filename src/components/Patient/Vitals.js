@@ -82,13 +82,10 @@ const Page = ({ type }) => {
 };
 //const store = configureStore();
 const Vitals = ({ type, location, patient }) => {
-	const [vitalPage, setVitalPage] = useState(type);
-	const vitalClick = vital => {
-		setVitalPage(vital);
-	};
 	useEffect(() => {
 		getData(patient);
 	}, []);
+
 	async function getData(patient) {
 		const res = await request(
 			`${API_URI}${patientAPI}/` + patient.id + '/vitals',
@@ -106,19 +103,19 @@ const Vitals = ({ type, location, patient }) => {
 				<div className="element-box-tp mb-3">
 					<div className="el-buttons-list">
 						{vitalItems.map((vital, i) => (
-							<a
-								onClick={() => vitalClick(vital)}
+							<Link
 								className="btn btn-white btn-sm mr-2"
+								to={`${location.pathname}#vitals#${vital}`}
 								key={i}>
 								<i className="os-icon os-icon-delivery-box-2" />
 								<span>{vital}</span>
-							</a>
+							</Link>
 						))}
 					</div>
 				</div>
-				<h6 className="element-header text-center">{vitalPage}</h6>
+				<h6 className="element-header text-center">{type}</h6>
 				<div className="element-box">
-					<Page type={vitalPage} />
+					<Page type={type} />
 				</div>
 			</div>
 		</div>
