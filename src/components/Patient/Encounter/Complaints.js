@@ -12,6 +12,7 @@ class Complaints extends Component {
 							<SunEditor
 								width="100%"
 								placeholder="Please type here..."
+								setContents="Presenting Complaints:"
 								autoFocus={false}
 								enableToolbar={true}
 								setOptions={{
