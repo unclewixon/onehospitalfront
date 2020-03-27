@@ -11,6 +11,7 @@ import vitals from './vitals';
 import role from './role';
 import hr from './hr';
 import patient from './patient';
+import transaction from './transaction';
 import utility from './utility';
 import { connectRouter } from 'connected-react-router';
 
@@ -29,6 +30,7 @@ const reducers = history =>
 		hr,
 		utility,
 		patient,
+		transaction,
 	});
 
 export default reducers;

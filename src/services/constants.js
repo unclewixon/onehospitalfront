@@ -28,6 +28,7 @@ export const departmentAPI = '/departments';
 export const utilityAPI = '/utility';
 export const payrollAPI = '/hr/payroll';
 export const patientAPI = '/patient';
+export const transactionsAPI = '/transactions';
 
 export const months = [
 	'January',
