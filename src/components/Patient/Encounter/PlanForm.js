@@ -47,6 +47,7 @@ class PlanForm extends Component {
 							<SunEditor
 								width="100%"
 								placeholder="Please type here..."
+								setContents="Treatment Plan:"
 								autoFocus={false}
 								enableToolbar={true}
 								setOptions={{

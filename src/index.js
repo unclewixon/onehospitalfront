@@ -3,8 +3,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import axios from 'axios';
-import { ConnectedRouter } from 'connected-react-router';
-import { Route, Switch } from 'react-router';
+
 import 'react-widgets/dist/css/react-widgets.css';
 import './assets/icon_fonts_assets/feather/style.css';
 import './assets/css/main.css';

@@ -12,9 +12,8 @@ import role from './role';
 import hr from './hr';
 import patient from './patient';
 import utility from './utility';
-import { connectRouter } from 'connected-react-router';
 
-const reducers = {
+const reducers = combineReducers({
 	form: formReducer,
 	routing: routerReducer,
 	user,
@@ -27,6 +26,6 @@ const reducers = {
 	hr,
 	utility,
 	patient,
-};
+});
 
 export default reducers;

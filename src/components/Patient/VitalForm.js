@@ -7,7 +7,6 @@ import DatePicker from 'react-datepicker';
 
 import { renderTextInput, renderSelect } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
-// import DateTimePicker from 'react-datetime-picker';
 
 const religions = [
 	{ label: 'Atheist', value: 'Atheist' },
