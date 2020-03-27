@@ -14,25 +14,32 @@ import kebabCase from 'lodash.kebabcase';
 import TakeReadings from './TakeReadings';
 import { getData } from '../../services/utilities';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 const unit = '';
 
 const Urine = ({ newVital }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(0);
+	const [data, setData] = useState([]);
 	useEffect(() => {
 		try {
 			newVital.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
+			const data = [];
+			newVital
+				.filter(c => c.readingType === info.title)
+				.slice(0, 5)
+				.forEach(function(item, index) {
+					let StartDate = moment(item.createdAt).format('DD-MM-YY');
+					let res = { name: StartDate, item: item.reading.urine };
+					data.push(res);
+				});
+			setData(data);
 			let v = newVital.find(c => c.readingType === info.title);
 			setCurrentVitals(v.reading.urine);
 		} catch (e) {}
 	}, [newVital]);
-	const data = [
-		{ name: '20-Oct-20', item: 420 },
-		{ name: '21-Oct-20', item: 400 },
-		{ name: '22-Oct-20', item: 300 },
-		{ name: '23-Oct-20', item: 500 },
-	];
+
 	const info = {
 		title: 'Urine',
 		type: kebabCase('Urine'),

@@ -17,6 +17,7 @@ import { getData, request } from '../../services/utilities';
 import { API_URI, patientAPI } from '../../services/constants';
 import { addVital } from '../../actions/vitals';
 import { store } from '../../store';
+import moment from 'moment';
 
 const unit = 'mmHg';
 const mapStateToProps = (state, ownProps) => {
@@ -29,20 +30,29 @@ const mapStateToProps = (state, ownProps) => {
 const BloodPressure = ({ newVital }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(0);
+	const [data, setData] = useState([]);
+	function charth(item, index) {
+		document.getElementById('demo').innerHTML += index + ':' + item + '<br>';
+	}
+
 	useEffect(() => {
 		try {
 			newVital.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
+			const data = [];
+			newVital
+				.filter(c => c.readingType === info.title)
+				.slice(0, 5)
+				.forEach(function(item, index) {
+					let StartDate = moment(item.createdAt).format('DD-MM-YY');
+					let res = { name: StartDate, item: item.reading.blood_pressure };
+					data.push(res);
+				});
 			let v = newVital.find(c => c.readingType === info.title);
 			setCurrentVitals(v.reading.blood_pressure);
+			setData(data);
 		} catch (e) {}
 	}, [newVital]);
 
-	const data = [
-		{ name: '20-Oct-20', item: 420 },
-		{ name: '21-Oct-20', item: 400 },
-		{ name: '22-Oct-20', item: 300 },
-		{ name: '23-Oct-20', item: 500 },
-	];
 	const info = {
 		title: 'Blood Pressure',
 		type: kebabCase('Blood Pressure'),
