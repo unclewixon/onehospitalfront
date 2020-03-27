@@ -12,9 +12,9 @@ import SSRStorage from './storage';
 import { API_URI, patientAPI, TOKEN_COOKIE } from './constants';
 import axios from 'axios';
 import { addVital } from '../actions/vitals';
-import configureStore from '../store';
+import { store } from '../store';
 
-const store = configureStore();
+//const store = configureStore();
 export const formatCurrency = amount => `₦${numeral(amount).format('0,0.00')}`;
 
 export const isUnset = o => typeof o === 'undefined' || o === null;
