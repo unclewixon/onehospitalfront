@@ -16,7 +16,6 @@ import { connectRouter } from 'connected-react-router';
 
 const reducers = history =>
 	combineReducers({
-		router: connectRouter(history),
 		form: formReducer,
 		routing: routerReducer,
 		user,

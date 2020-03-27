@@ -6,7 +6,7 @@ import { API_URI, patientAPI, vitalItems } from '../../services/constants';
 import { getData, request } from '../../services/utilities';
 import { addVital } from '../../actions/vitals';
 import { connect } from 'react-redux';
-import configureStore from '../../store';
+import { store } from '../../store';
 
 const BMI = lazy(() => import('../Vitals/BMI'));
 const BloodPressure = lazy(() => import('../Vitals/BloodPressure'));
@@ -80,7 +80,7 @@ const Page = ({ type, allVitals }) => {
 			return <BMI allVitals={allVitals} />;
 	}
 };
-const store = configureStore();
+//const store = configureStore();
 const Vitals = ({ type, location, patient, vitals }) => {
 	const [vitalPage, setVitalPage] = useState(type);
 	const [allVitals, setAllVitals] = useState({});

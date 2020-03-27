@@ -13,11 +13,9 @@ import kebabCase from 'lodash.kebabcase';
 
 import TakeReadings from './TakeReadings';
 import { connect } from 'react-redux';
-import configureStore from '../../store';
 import { getData, request } from '../../services/utilities';
 import { allVitals } from '../../actions/vitals';
 
-const store = configureStore();
 const unit = 'kg/m²';
 
 const mapStateToProps = (state, ownProps) => {

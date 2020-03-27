@@ -20,10 +20,7 @@ import { notifyError, notifySuccess } from '../../services/notify';
 import { SubmissionError } from 'redux-form';
 import { connect } from 'react-redux';
 import { toggleProfile } from '../../actions/user';
-import configureStore from '../../store';
 import { addVital } from '../../actions/vitals';
-
-const store = configureStore();
 
 const unit = 'kg/m²';
 
