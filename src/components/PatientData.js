@@ -28,17 +28,7 @@ const PatientData = ({ patient }) => {
 						</tr>
 						<tr>
 							<td>
-								<div className="value">Date of Birth</div>
-							</td>
-							<td className="text-right">
-								<div className="value text-success">
-									{moment(patient.date_of_birth, 'DD-MM-YYYY').format('D MMM, YYYY')}
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div className="value">Insurance Status</div>
+								<div className="value">Insurance</div>
 							</td>
 							<td className="text-right">
 								<div className="value text-success">

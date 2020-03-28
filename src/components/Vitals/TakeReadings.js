@@ -8,19 +8,18 @@ import {
 	request,
 } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
-import { API_URI, inventoryAPI, vitalsAPI } from '../../services/constants';
+import { API_URI, vitalsAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
-import { addVital, updateVitals } from '../../actions/vitals';
+import { updateVitals } from '../../actions/patient';
 
 class TakeReadings extends Component {
 	state = {
 		submitting: false,
 	};
 
-	takeReading = async data => {
-		const { patient, info } = this.props;
-		const { title } = info;
-		this.setState({ submitting: true });
+	takeExtraReadings = async (data, title) => {
+		const { patient } = this.props;
+
 		try {
 			let toSave = {
 				readingType: title,
@@ -29,13 +28,47 @@ class TakeReadings extends Component {
 			};
 			const rs = await request(`${API_URI}${vitalsAPI}`, 'POST', true, toSave);
 			this.props.updateVitals(rs.readings);
-			notifySuccess(title + ' updated!');
+		} catch (e) {}
+	};
+
+	takeReading = async data => {
+		const { patient, info } = this.props;
+		const { title } = info;
+		this.setState({ submitting: true });
+		let _data = data;
+		if (info.type === 'blood-pressure') {
+			_data = { blood_pressure: `${data.systolic}/${data.diastolic}` };
+		} else if (info.type === 'bmi') {
+			_data = { bmi: (data.weight / data.height).toFixed(2) };
+		} else if (info.type === 'bsa') {
+			_data = {
+				bsa: (Math.sqrt(data.height) * (data.weight / 3600)).toFixed(2),
+			};
+		}
+
+		try {
+			let toSave = {
+				readingType: title,
+				reading: _data,
+				patient_id: patient.id,
+			};
+			const rs = await request(`${API_URI}${vitalsAPI}`, 'POST', true, toSave);
+			this.props.updateVitals(rs.readings);
+
+			if (info.type === 'bmi' || info.type === 'bsa') {
+				// store individual readings for weight and height as well
+				await this.takeExtraReadings({ weight: data.weight }, 'Weight');
+				await this.takeExtraReadings({ height: data.height }, 'Height');
+			}
+
+			notifySuccess(`${title} updated!`);
+			this.props.reset('take-reading');
 			this.setState({ submitting: false });
 			this.props.doHide(true);
 		} catch (e) {
 			this.setState({ submitting: false });
 			throw new SubmissionError({
-				_error: e.message || 'could not create ' + title,
+				_error: e.message || `could not take reading for ${title}`,
 			});
 		}
 	};
@@ -116,11 +149,9 @@ TakeReadings = reduxForm({
 })(TakeReadings);
 
 const mapStateToProps = (state, ownProps) => {
-	const { allVitals } = ownProps;
 	return {
-		fullVitals: allVitals,
 		patient: state.user.patient,
-		newVital: state.vitals ? state.vitals.vitals : [],
+		vitals: state.patient.vitals,
 	};
 };
 

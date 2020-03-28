@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Popover from 'antd/lib/popover';
 import {
 	LineChart,
 	Line,
@@ -10,62 +9,46 @@ import {
 	Legend,
 } from 'recharts';
 import kebabCase from 'lodash.kebabcase';
-
-import TakeReadings from './TakeReadings';
-import createStore from 'antd/es/table/createStore';
-import vitals from '../../reducers/vitals';
-import { getData, request } from '../../services/utilities';
-import { API_URI, patientAPI, vitalsAPI } from '../../services/constants';
-import { notifyError, notifySuccess } from '../../services/notify';
-import { SubmissionError } from 'redux-form';
 import { connect } from 'react-redux';
-import { toggleProfile } from '../../actions/user';
-import configureStore from '../../store';
-import { addVital } from '../../actions/vitals';
+import moment from 'moment';
 
-const store = configureStore();
+import Reading from '../Patient/Reading';
 
 const unit = 'kg/m²';
 
-const mapStateToProps = (state, ownProps) => {
-	const { allVitals } = ownProps;
-	return {
-		fullVitals: allVitals,
-		patient: state.user.patient,
-		newVital: state.vitals ? state.vitals.vitals : [],
-	};
+const info = {
+	title: 'BMI',
+	type: kebabCase('BMI'),
+	inputs: [
+		{ name: 'weight', title: 'Weight', weight: 'kg' },
+		{ name: 'height', title: 'Height', weight: 'm' },
+	],
 };
 
-const BMI = ({ fullVitals, newVital }) => {
-	useEffect(() => {
-		try {
-			let v = fullVitals.find(c => c.readingType === info.title);
-			setCurrentVitals(v.reading.weight);
-		} catch (e) {}
-	}, [fullVitals]);
-	useEffect(() => {
-		try {
-			setCurrentVitals(newVital.reading.weight);
-		} catch (e) {}
-	}, [newVital]);
-
+const BMI = ({ vitals }) => {
 	const [visible, setVisible] = useState(false);
-	const [currentVitals, setCurrentVitals] = useState(0);
+	const [currentVitals, setCurrentVitals] = useState(null);
+	const [data, setData] = useState([]);
 
-	const data = [
-		{ name: '20-Oct-20', item: 420 },
-		{ name: '21-Oct-20', item: 400 },
-		{ name: '22-Oct-20', item: 300 },
-		{ name: '23-Oct-20', item: 500 },
-	];
-	const info = {
-		title: 'BMI',
-		type: kebabCase('BMI'),
-		inputs: [
-			{ name: 'weight', title: 'Weight', weight: 'kg' },
-			{ name: 'height', title: 'Height', weight: 'm' },
-		],
-	};
+	useEffect(() => {
+		try {
+			let data = [];
+			vitals.forEach((item, index) => {
+				const date = moment(item.createdAt).format('DD-MM-YY');
+				const res = { name: date, bmi: item.reading.bmi };
+				data = [...data, res];
+			});
+
+			if (vitals.length > 0) {
+				let lastReading = vitals[0];
+				setCurrentVitals({
+					...lastReading,
+					_reading: lastReading.reading.bmi,
+				});
+			}
+			setData(data);
+		} catch (e) {}
+	}, [vitals]);
 
 	return (
 		<div className="row vital">
@@ -76,7 +59,7 @@ const BMI = ({ fullVitals, newVital }) => {
 						height={300}
 						data={data}
 						margin={{ top: 5, right: 20, bottom: 5, left: 30 }}>
-						<Line type="monotone" dataKey="item" stroke="#8884d8" />
+						<Line type="monotone" dataKey="bmi" stroke="#8884d8" />
 						<CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
 						<XAxis dataKey="name" />
 						<YAxis
@@ -87,31 +70,22 @@ const BMI = ({ fullVitals, newVital }) => {
 					</LineChart>
 				</div>
 			</div>
-			<div className="col-4">
-				<div className="text-center">
-					<div className="last-reading">Last BMI Reading:</div>
-					<div className="reading">
-						{currentVitals}
-						{`${unit}`}
-					</div>
-					<div className="time-captured">on 29-Oct-2020 4:20pm</div>
-					<div className="new-reading">
-						<Popover
-							title=""
-							overlayClassName="vitals"
-							content={
-								<TakeReadings info={info} doHide={() => setVisible(false)} />
-							}
-							trigger="click"
-							visible={visible}
-							onVisibleChange={status => setVisible(status)}>
-							<div>Take New Reading</div>
-						</Popover>
-					</div>
-				</div>
-			</div>
+			<Reading
+				visible={visible}
+				vital={currentVitals}
+				info={info}
+				setVisible={setVisible}
+				unit={unit}
+			/>
 		</div>
 	);
 };
-export default connect(mapStateToProps, { addVital })(BMI);
-//export default connect(mapStateToProps)(BMI);
+
+const mapStateToProps = (state, ownProps) => {
+	return {
+		patient: state.user.patient,
+		vitals: state.patient.vitals.filter(c => c.readingType === info.title),
+	};
+};
+
+export default connect(mapStateToProps)(BMI);
