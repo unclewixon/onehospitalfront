@@ -14,6 +14,7 @@ import 'suneditor/dist/css/suneditor.min.css';
 
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import configureStore from './store';
 import history from './services/history';
 import Notify from './services/notify';
 import {
@@ -40,10 +41,9 @@ import { loadInvCategories, loadInvSubCategories } from './actions/inventory';
 import { togglePreloading } from './actions/general';
 import { loadRoles } from './actions/role';
 import { loadBanks, loadCountries } from './actions/utility';
-import { PersistGate } from 'redux-persist/integration/react';
-import { persistor, store } from './store';
 
 Notify.notifications.subscribe(alert => alert instanceof Function && alert());
+const store = configureStore();
 const storage = new SSRStorage();
 
 const initSettings = async () => {
@@ -58,6 +58,7 @@ const axiosFetch = url => axios.get(url, { headers: defaultHeaders });
 
 const initData = async () => {
 	await initSettings();
+
 	try {
 		let [
 			rs_depts,
@@ -125,9 +126,7 @@ initData();
 ReactDOM.render(
 	<Provider store={store}>
 		<Router history={history}>
-			<PersistGate loading={null} persistor={persistor}>
-				<App />
-			</PersistGate>
+			<App />
 		</Router>
 	</Provider>,
 	document.getElementById('root')

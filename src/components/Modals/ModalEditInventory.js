@@ -3,18 +3,16 @@ import { connect } from 'react-redux';
 
 import { closeModals } from '../../actions/general';
 import {
-	formatCurrency,
 	renderSelect,
 	renderTextInput,
 	renderTextInputGroup,
 	request,
 } from '../../services/utilities';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
-import { API_URI, inventoryAPI, rolesAPI } from '../../services/constants';
+import { API_URI, inventoryAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
 import { updateInventory } from '../../actions/inventory';
-import inventory from '../../reducers/inventory';
 
 const validate = values => {
 	const errors = {};
@@ -84,7 +82,7 @@ class ModalEditInventory extends Component {
 	};
 
 	render() {
-		const { item, error, handleSubmit, categories } = this.props;
+		const { error, handleSubmit, categories } = this.props;
 		const { submitting, sub_categories } = this.state;
 		return (
 			<div
