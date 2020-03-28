@@ -11,6 +11,8 @@ import {
 	GET_DENTISTRY_REQUESTS,
 	GET_IMAGING_REQUESTS,
 	GET_OPTHALMOLOGY_REQUESTS,
+	LOAD_VITALS,
+	UPDATE_VITALS,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -23,6 +25,7 @@ const INITIAL_STATE = {
 	dentistryRequests: [],
 	imagingRequests: [],
 	opthalmologyRequests: [],
+	vitals: [],
 };
 
 const patient = (state = INITIAL_STATE, action) => {
@@ -64,6 +67,10 @@ const patient = (state = INITIAL_STATE, action) => {
 					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};
+		case LOAD_VITALS:
+			return { ...state, vitals: [...action.payload] };
+		case UPDATE_VITALS:
+			return { ...state, vitals: [action.payload, ...state.vitals] };
 		default:
 			return state;
 	}

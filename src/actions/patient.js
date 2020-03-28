@@ -1,6 +1,3 @@
-import axios from 'axios';
-import { API_URI, patientAPI } from '../services/constants';
-
 import {
 	NEXT_STEP,
 	PREV_STEP,
@@ -13,6 +10,8 @@ import {
 	GET_DENTISTRY_REQUESTS,
 	GET_IMAGING_REQUESTS,
 	GET_OPTHALMOLOGY_REQUESTS,
+	LOAD_VITALS,
+	UPDATE_VITALS,
 } from './types';
 
 export const nextStep = data => {
@@ -89,6 +88,21 @@ export const loadImagingRequests = data => {
 export const loadOpthalmologyRequests = data => {
 	return {
 		type: GET_OPTHALMOLOGY_REQUESTS,
+		payload: data,
+	};
+};
+
+// vitals
+export const loadVitals = data => {
+	return {
+		type: LOAD_VITALS,
+		payload: data,
+	};
+};
+
+export const updateVitals = data => {
+	return {
+		type: UPDATE_VITALS,
 		payload: data,
 	};
 };

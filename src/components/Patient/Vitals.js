@@ -3,10 +3,9 @@ import React, { lazy, useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 
 import { API_URI, patientAPI, vitalItems } from '../../services/constants';
-import { getData, request } from '../../services/utilities';
-import { addVital } from '../../actions/vitals';
+import { request } from '../../services/utilities';
+import { loadVitals } from '../../actions/patient';
 import { connect } from 'react-redux';
-import { store } from '../../store';
 
 const BMI = lazy(() => import('../Vitals/BMI'));
 const BloodPressure = lazy(() => import('../Vitals/BloodPressure'));
@@ -80,20 +79,30 @@ const Page = ({ type }) => {
 			return <BMI />;
 	}
 };
-//const store = configureStore();
-const Vitals = ({ type, location, patient }) => {
+
+const Vitals = props => {
+	const { type, location, patient } = props;
+
+	const [loaded, setLoaded] = useState(false);
+
 	useEffect(() => {
-		getData(patient);
-	}, []);
+		async function doLoadVitals() {
+			const rs = await getData(patient);
+			props.loadVitals(rs.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
+			setLoaded(true);
+		}
+
+		if (!loaded) {
+			doLoadVitals();
+		}
+	}, [loaded, patient, props]);
 
 	async function getData(patient) {
 		const res = await request(
-			`${API_URI}${patientAPI}/` + patient.id + '/vitals',
+			`${API_URI}${patientAPI}/${patient.id}/vitals`,
 			'GET',
 			true
 		);
-		await store.dispatch(addVital(res));
-		res.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
 		return res;
 	}
 
@@ -126,4 +135,4 @@ const mapStateToProps = (state, ownProps) => {
 		patient: state.user.patient,
 	};
 };
-export default connect(mapStateToProps, { addVital })(withRouter(Vitals));
+export default connect(mapStateToProps, { loadVitals })(withRouter(Vitals));
