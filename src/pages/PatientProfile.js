@@ -12,6 +12,7 @@ import Splash from '../components/Splash';
 import ProfileBlock from '../components/ProfileBlock';
 import { confirmAction } from '../services/utilities';
 import EnrollAntenatal from '../components/Patient/EnrollAntenatal';
+import PatientDataUpload from '../components/Patient/PatientDataUpload';
 
 const Dashboard = lazy(() => import('../components/Patient/Dashboard'));
 const Lab = lazy(() => import('../components/Patient/Lab'));
@@ -115,6 +116,8 @@ const Page = ({ location }) => {
 			return <EditPatient />;
 		case 'enroll-antenatal':
 			return <AntennatalRequest />;
+		case 'upload-document':
+			return <PatientDataUpload />;
 		default:
 			return <Dashboard />;
 	}
