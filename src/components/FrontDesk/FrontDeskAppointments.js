@@ -5,7 +5,7 @@ import { viewAppointmentDetail } from '../../actions/general.js';
 import { API_URI, socket } from '../../services/constants';
 import searchingGIF from '../../assets/images/searching.gif';
 import { notifyError } from '../../services/notify';
-import * as moment from 'moment';
+import moment from 'moment';
 import { connect } from 'react-redux';
 import { toggleProfile } from '../../actions/user';
 
@@ -56,7 +56,27 @@ const Appointment = props => {
 	};
 
 	const changeDate = e => {
-		console.log(e);
+		console.log(e.target.value);
+		let value = e.target.value;
+		let startDate = moment().format('YYYY-MM-DD');
+		let endDate = moment().format('YYYY-MM-DD');
+
+		if (value === 'last week') {
+			startDate = moment()
+				.subtract(1, 'weeks')
+				.startOf('week')
+				.format('YYYY-MM-DD');
+
+			endDate = moment()
+				.subtract(1, 'weeks')
+				.endOf('week')
+				.format('YYYY-MM-DD');
+		} else if (value === '30 days') {
+			startDate = moment()
+				.subtract(30, 'days')
+				.format('YYYY-MM-DD');
+		}
+		console.log(startDate, endDate);
 	};
 
 	return (
@@ -85,7 +105,7 @@ const Appointment = props => {
 													<tr>
 														<th>Patient</th>
 														<th>Whom to see</th>
-														<th className="text-left">Satus</th>
+														<th className="text-left">Status</th>
 														<th className="text-center">Actions</th>
 													</tr>
 												</thead>
