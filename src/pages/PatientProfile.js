@@ -11,6 +11,7 @@ import HashRoute from '../components/HashRoute';
 import Splash from '../components/Splash';
 import ProfileBlock from '../components/ProfileBlock';
 import { confirmAction } from '../services/utilities';
+import EnrollAntenatal from '../components/Patient/EnrollAntenatal';
 
 const Dashboard = lazy(() => import('../components/Patient/Dashboard'));
 const Lab = lazy(() => import('../components/Patient/Lab'));
@@ -56,6 +57,7 @@ const AntennatalRequest = lazy(() =>
 const PatientAdmission = lazy(() =>
 	import('../components/Patient/PatientAdmission')
 );
+const EditPatient = lazy(() => import('../components/Patient/EditPatient'));
 
 const storage = new SSRStorage();
 
@@ -109,6 +111,10 @@ const Page = ({ location }) => {
 			return <AntennatalRequest />;
 		case 'start-admission':
 			return <PatientAdmission />;
+		case 'edit-profile':
+			return <EditPatient />;
+		case 'enroll-antenatal':
+			return <AntennatalRequest />;
 		default:
 			return <Dashboard />;
 	}
