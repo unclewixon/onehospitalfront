@@ -21,7 +21,7 @@ const LabTest = props => {
 		name: '',
 		category: '',
 		price: '',
-		testType: 'single',
+		testType: 'Single',
 		selectTestType: '',
 		edit: false,
 		create: true,
@@ -189,7 +189,7 @@ const LabTest = props => {
 			<div className="col-lg-4 col-xxl-3  d-xxl-block">
 				<div className="pipeline white lined-warning">
 					<form onSubmit={edit ? onEditLabTest : onAddLabTest}>
-						<h6 className="form-header">Create Test</h6>
+						<h6 className="form-header">{ edit ? "Edit Test" : "Create Test"}</h6>
 						<div className="form-group">
 							<input
 								className="form-control"
@@ -200,7 +200,7 @@ const LabTest = props => {
 								value={name}
 							/>
 						</div>
-						{/* <div className="form-group">
+						<div className="form-group">
 							<input
 								className="form-control"
 								placeholder="Test Price"
@@ -209,16 +209,16 @@ const LabTest = props => {
 								onChange={handleInputChange}
 								value={price}
 							/>
-						</div> */}
+						</div>
 						<div className="form-group">
 							<select
 								className="form-control"
 								name="testType"
 								value={testType}
 								onChange={handleInputChange}>
-								{testType && <option value={testType}>{testType}</option>}
-								<option value="single">Single</option>;
-								<option value="combo">Combo</option>;
+								{testType && (<option value={testType}>{testType}</option>)}
+								{/* <option value="single">Single</option>; */}
+								{/* <option value="combo">Combo</option>; */}
 							</select>
 						</div>
 						<div className="form-group">
