@@ -181,10 +181,8 @@ export const GET_IMAGING_REQUESTS = 'GET_IMAGING_REQUESTS';
 export const GET_OPTHALMOLOGY_REQUESTS = 'GET_OPTHALMOLOGY_REQUESTS';
 
 //Vitals
-export const SAVE_VITALS = 'SAVE_VITALS';
 export const UPDATE_VITALS = 'UPDATE_VITALS';
-export const GET_VITALS = 'GET_VITALS';
-export const VITALS = 'VITALS';
+export const LOAD_VITALS = 'LOAD_VITALS';
 
 //Transaction
 

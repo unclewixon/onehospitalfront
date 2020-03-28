@@ -11,8 +11,8 @@ import DatePicker from 'react-datepicker';
 import SSRStorage from './storage';
 import { API_URI, patientAPI, TOKEN_COOKIE } from './constants';
 import axios from 'axios';
-import { addVital } from '../actions/vitals';
-import { store } from '../store';
+// import { addVital } from '../actions/patient';
+// import { store } from '../store';
 
 //const store = configureStore();
 export const formatCurrency = amount => `₦${numeral(amount).format('0,0.00')}`;
@@ -31,21 +31,10 @@ export function encodeValue(val) {
 
 export async function getData2(patient, title) {
 	const res = await request(
-		`${API_URI}${patientAPI}/` + patient.id + '/vitals',
+		`${API_URI}${patientAPI}/${patient.id}/vitals`,
 		'GET',
 		true
 	);
-	return res.find(c => c.readingType === title);
-}
-
-export async function getData(patient, title) {
-	const res = await request(
-		`${API_URI}${patientAPI}/` + patient.id + '/vitals',
-		'GET',
-		true
-	);
-	await store.dispatch(addVital(res));
-	res.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
 	return res.find(c => c.readingType === title);
 }
 
@@ -78,21 +67,21 @@ export const defaultHeaders = {
 	'Content-Type': 'application/json',
 };
 
-export const patchHeaders = {
-	Accept: 'application/json',
-	'Access-Control-Allow-Origin': '*',
-	'Content-Type': 'application/json',
-};
+// export const patchHeaders = {
+// 	Accept: 'application/json',
+// 	'Access-Control-Allow-Origin': '*',
+// 	'Content-Type': 'application/json',
+// };
 
 const headers = token => {
 	const jwt = `Bearer ${token}`;
 	return { ...defaultHeaders, Authorization: jwt };
 };
 
-const headersPatch = token => {
-	const jwt = `Bearer ${token}`;
-	return { ...patchHeaders, Authorization: jwt };
-};
+// const headersPatch = token => {
+// 	const jwt = `Bearer ${token}`;
+// 	return { ...patchHeaders, Authorization: jwt };
+// };
 
 const parseJSON = response => response.json();
 

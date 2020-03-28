@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Popover from 'antd/lib/popover';
 import {
 	LineChart,
 	Line,
@@ -10,56 +9,51 @@ import {
 	Legend,
 } from 'recharts';
 import kebabCase from 'lodash.kebabcase';
-
-import TakeReadings from './TakeReadings';
 import { connect } from 'react-redux';
-import { getData, request } from '../../services/utilities';
-import { API_URI, patientAPI } from '../../services/constants';
-import { addVital } from '../../actions/vitals';
-import { store } from '../../store';
 import moment from 'moment';
 
+import Reading from '../Patient/Reading';
+
 const unit = 'mmHg';
-const mapStateToProps = (state, ownProps) => {
-	return {
-		patient: state.user.patient,
-		newVital: state.vitals ? state.vitals.vitals : [],
-	};
+
+const info = {
+	title: 'Blood Pressure',
+	type: kebabCase('Blood Pressure'),
+	inputs: [
+		{ name: 'systolic', title: 'Systolic', weight: '' },
+		{ name: 'diastolic', title: 'Diastolic', weight: '' },
+	],
 };
 
-const BloodPressure = ({ newVital }) => {
+const BloodPressure = ({ vitals }) => {
 	const [visible, setVisible] = useState(false);
-	const [currentVitals, setCurrentVitals] = useState(0);
+	const [currentVitals, setCurrentVitals] = useState(null);
 	const [data, setData] = useState([]);
-	function charth(item, index) {
-		document.getElementById('demo').innerHTML += index + ':' + item + '<br>';
-	}
 
 	useEffect(() => {
 		try {
-			newVital.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
-			const data = [];
-			newVital
-				.filter(c => c.readingType === info.title)
-				.slice(0, 5)
-				.forEach(function(item, index) {
-					let StartDate = moment(item.createdAt).format('DD-MM-YY');
-					let res = { name: StartDate, item: item.reading.blood_pressure };
-					data.push(res);
+			let data = [];
+			vitals.forEach((item, index) => {
+				const date = moment(item.createdAt).format('DD-MM-YY');
+				const items = item.reading.blood_pressure.split('/');
+				const res = {
+					name: date,
+					systolic: items[0],
+					diastolic: items[1],
+				};
+				data = [...data, res];
+			});
+
+			if (vitals.length > 0) {
+				let lastReading = vitals[0];
+				setCurrentVitals({
+					...lastReading,
+					_reading: lastReading.reading.blood_pressure,
 				});
-			let v = newVital.find(c => c.readingType === info.title);
-			setCurrentVitals(v.reading.blood_pressure);
+			}
 			setData(data);
 		} catch (e) {}
-	}, [newVital]);
-
-	const info = {
-		title: 'Blood Pressure',
-		type: kebabCase('Blood Pressure'),
-		inputs: [
-			{ name: 'blood_pressure', title: 'Blood Pressure', weight: 'mmHg' },
-		],
-	};
+	}, [vitals]);
 
 	return (
 		<div className="row vital">
@@ -70,8 +64,19 @@ const BloodPressure = ({ newVital }) => {
 						height={300}
 						data={data}
 						margin={{ top: 5, right: 20, bottom: 5, left: 30 }}>
-						<Line type="monotone" dataKey="item" stroke="#8884d8" />
-						<CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+						<Line
+							name="systolic"
+							type="monotone"
+							dataKey="systolic"
+							stroke="#8884d8"
+						/>
+						<Line
+							name="diastolic"
+							type="monotone"
+							dataKey="diastolic"
+							stroke="#82ca9d"
+						/>
+						<CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
 						<XAxis dataKey="name" />
 						<YAxis
 							label={{
@@ -85,31 +90,22 @@ const BloodPressure = ({ newVital }) => {
 					</LineChart>
 				</div>
 			</div>
-			<div className="col-4">
-				<div className="text-center">
-					<div className="last-reading">Last Blood Pressure Reading:</div>
-					<div className="reading">
-						{currentVitals}
-						{`${unit}`}
-					</div>
-					<div className="time-captured">on 29-Oct-2020 4:20pm</div>
-					<div className="new-reading">
-						<Popover
-							title=""
-							overlayClassName="vitals"
-							content={
-								<TakeReadings info={info} doHide={() => setVisible(false)} />
-							}
-							trigger="click"
-							visible={visible}
-							onVisibleChange={status => setVisible(status)}>
-							<div>Take New Reading</div>
-						</Popover>
-					</div>
-				</div>
-			</div>
+			<Reading
+				visible={visible}
+				vital={currentVitals}
+				info={info}
+				setVisible={setVisible}
+				unit={unit}
+			/>
 		</div>
 	);
+};
+
+const mapStateToProps = (state, ownProps) => {
+	return {
+		patient: state.user.patient,
+		vitals: state.patient.vitals.filter(c => c.readingType === info.title),
+	};
 };
 
 export default connect(mapStateToProps)(BloodPressure);
