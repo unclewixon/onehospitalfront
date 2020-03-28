@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Popover from 'antd/lib/popover';
 import {
 	LineChart,
 	Line,
@@ -10,38 +9,43 @@ import {
 	Legend,
 } from 'recharts';
 import kebabCase from 'lodash.kebabcase';
-
-import TakeReadings from './TakeReadings';
+import moment from 'moment';
 import { connect } from 'react-redux';
-import { getData } from '../../services/utilities';
+
+import Reading from '../Patient/Reading';
 
 const unit = 'cm';
 
-const FundusHeight = ({ fullVitals, newVital }) => {
+const info = {
+	title: 'Fundus Height',
+	type: kebabCase('Fundus Height'),
+	inputs: [{ name: 'fundus_height', title: 'Fundus Height', weight: 'cm' }],
+};
+
+const FundusHeight = ({ vitals }) => {
 	const [visible, setVisible] = useState(false);
-	const [currentVitals, setCurrentVitals] = useState(0);
+	const [currentVitals, setCurrentVitals] = useState(null);
+	const [data, setData] = useState([]);
+
 	useEffect(() => {
 		try {
-			let v = fullVitals.find(c => c.readingType === info.title);
-			setCurrentVitals(v.reading.height);
+			let data = [];
+			vitals.forEach((item, index) => {
+				const date = moment(item.createdAt).format('DD-MM-YY');
+				const res = { name: date, item: item.reading.fundus_height };
+				data = [...data, res];
+			});
+
+			if (vitals.length > 0) {
+				let lastReading = vitals[0];
+				setCurrentVitals({
+					...lastReading,
+					_reading: lastReading.reading.fundus_height,
+				});
+			}
+			setData(data);
 		} catch (e) {}
-	}, [fullVitals]);
-	useEffect(() => {
-		try {
-			setCurrentVitals(newVital.reading.height);
-		} catch (e) {}
-	}, [newVital]);
-	const data = [
-		{ name: '20-Oct-20', item: 420 },
-		{ name: '21-Oct-20', item: 400 },
-		{ name: '22-Oct-20', item: 300 },
-		{ name: '23-Oct-20', item: 500 },
-	];
-	const info = {
-		title: 'Fundus Height',
-		type: kebabCase('Fundus Height'),
-		inputs: [{ name: 'height', title: 'Fundus Height', weight: 'cm' }],
-	};
+	}, [vitals]);
 
 	return (
 		<div className="row vital">
@@ -67,39 +71,21 @@ const FundusHeight = ({ fullVitals, newVital }) => {
 					</LineChart>
 				</div>
 			</div>
-			<div className="col-4">
-				<div className="text-center">
-					<div className="last-reading">Last Fundus Height Reading:</div>
-					<div className="reading">
-						{currentVitals}
-						{`${unit}`}
-					</div>
-					<div className="time-captured">on 29-Oct-2020 4:20pm</div>
-					<div className="new-reading">
-						<Popover
-							title=""
-							overlayClassName="vitals"
-							content={
-								<TakeReadings info={info} doHide={() => setVisible(false)} />
-							}
-							trigger="click"
-							visible={visible}
-							onVisibleChange={status => setVisible(status)}>
-							<div>Take New Reading</div>
-						</Popover>
-					</div>
-				</div>
-			</div>
+			<Reading
+				visible={visible}
+				vital={currentVitals}
+				info={info}
+				setVisible={setVisible}
+				unit={unit}
+			/>
 		</div>
 	);
 };
 
 const mapStateToProps = (state, ownProps) => {
-	const { allVitals } = ownProps;
 	return {
-		fullVitals: allVitals,
 		patient: state.user.patient,
-		newVital: state.vitals ? state.vitals.vitals : [],
+		vitals: state.patient.vitals.filter(c => c.readingType === info.title),
 	};
 };
 

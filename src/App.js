@@ -129,14 +129,14 @@ class App extends Component {
 
 const mapStateToProps = state => {
 	return {
-		preloading: state.general.preloading,
-		is_modal_open: state.general.is_modal_open,
-		loggedIn: state.user.loggedIn,
-		profile: state.user.profile,
-		isStaffOpen: state.user.isStaffOpen,
-		isPatientOpen: state.user.isPatientOpen,
-		theme_mode: state.user.theme_mode,
-		fullscreen: state.user.fullscreen,
+		preloading: state.general?.preloading,
+		is_modal_open: state.general?.is_modal_open,
+		loggedIn: state.user?.loggedIn,
+		profile: state.user?.profile,
+		isStaffOpen: state.user?.isStaffOpen,
+		isPatientOpen: state.user?.isPatientOpen,
+		theme_mode: state.user?.theme_mode,
+		fullscreen: state.user?.fullscreen,
 	};
 };
 
