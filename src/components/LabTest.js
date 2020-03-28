@@ -5,7 +5,6 @@ import { confirmAction } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
-import { confirmAlert } from 'react-confirm-alert';
 
 import {
 	addLabTest,
@@ -35,9 +34,25 @@ const LabTest = props => {
 	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [parameters, setParameter] = useState(null);
+	const [updateParameter, setUpdateParameter] = useState({});
+	const [range, setRange] = useState({});
 
 	const handleMultipleSelectInput = selectedOption => {
+		let param = {};
+		selectedOption &&
+			selectedOption.map(option => {
+				param[option.label] = option;
+				return param;
+			});
+		setUpdateParameter(param);
 		setParameter(selectedOption);
+	};
+
+	const handleParamInputChange = e => {
+		const { name, value } = e.target;
+		let newRange = { ...range };
+		newRange[name] = value;
+		setRange(newRange);
 	};
 
 	const handleInputChange = e => {
@@ -48,8 +63,14 @@ const LabTest = props => {
 	const onAddLabTest = e => {
 		setLoading(true);
 		e.preventDefault();
+		let params =
+			parameters &&
+			parameters.map(param => {
+				param.value = `${param.value}${range[param.label]}`;
+				return param;
+			});
 		props
-			.addLabTest({ name, price, category, parameters, testType })
+			.addLabTest({ name, price, category, parameters: params, testType })
 			.then(response => {
 				setState({ ...initialState });
 				setLoading(false);
@@ -84,7 +105,6 @@ const LabTest = props => {
 	};
 
 	const onClickEdit = data => {
-		console.log(data);
 		setSubmitButton({ edit: true, create: false });
 		setState(prevState => ({
 			...prevState,
@@ -244,6 +264,29 @@ const LabTest = props => {
 							<legend>
 								<span>Parameters</span>
 							</legend>
+							{Object.keys(updateParameter).length
+								? Object.keys(updateParameter).map(val => {
+										return (
+											<div className="row">
+												<div className="col-5">
+													<span className="small centered">
+														{`${updateParameter[val]['value']}-`}{' '}
+													</span>
+												</div>
+												<div className="col-7">
+													<input
+														className="form-control"
+														placeholder="Enter Range"
+														type="text"
+														name={val}
+														onChange={handleParamInputChange}
+														value={range[val]}
+													/>
+												</div>
+											</div>
+										);
+								  })
+								: null}
 							<Select
 								className="form-control"
 								isMulti
