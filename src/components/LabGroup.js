@@ -23,12 +23,13 @@ const LabGroup = props => {
 		name: '',
 		category: '',
 		price: '',
-		testType: 'Combo',
+		testType: 'combo',
 		selectTestType: '',
+		description: '',
 		edit: false,
 		create: true,
 	};
-	const [{ name, category, price, testType }, setState] = useState(
+	const [{ name, category, price, testType, description }, setState] = useState(
 		initialState
 	);
 	const [Loading, setLoading] = useState(false);
@@ -37,10 +38,30 @@ const LabGroup = props => {
 	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [parameters, setParameter] = useState(null);
+	const [updateParameter, setUpdateParameter] = useState({});
+	const [referenceRange, setReferenceRange] = useState({});
 	const [labTests, setLabTests] = useState(null);
 
 	const handleMultipleSelectInput = selectedOption => {
+		let param = {};
+		selectedOption &&
+			selectedOption.map(option => {
+				param[option.label] = option;
+				return param;
+			});
+		setUpdateParameter(param);
 		setParameter(selectedOption);
+	};
+
+	const handleMultipleLabTestsInput = selectedOption => {
+		setLabTests(selectedOption);
+	};
+
+	const handleParamInputChange = e => {
+		const { name, value } = e.target;
+		let newRange = { ...referenceRange };
+		newRange[name] = value;
+		setReferenceRange(newRange);
 	};
 
 	const handleInputChange = e => {
@@ -51,16 +72,24 @@ const LabGroup = props => {
 	const onAddLabGroup = e => {
 		setLoading(true);
 		e.preventDefault();
+		let params =
+			parameters &&
+			parameters.map(param => {
+				param.value = `${param.value}${referenceRange[param.label]}`;
+				return param;
+			});
 		props
-			.addLabGroup({ name, price, category, parameters, testType, labTests })
+			.addLabGroup({ name, price, category, parameters: params, testType, description, labTests })
 			.then(response => {
 				setState({ ...initialState });
 				setLoading(false);
 				setParameter(null);
-				notifySuccess('Lab Group created');
+				notifySuccess('Lab group created');
+				setUpdateParameter({})
+				setReferenceRange({})
 			})
 			.catch(error => {
-				notifyError('Error creating lab Group');
+				notifyError('Error creating lab group');
 			});
 	};
 
@@ -69,7 +98,7 @@ const LabGroup = props => {
 		e.preventDefault();
 		props
 			.updateLabGroup(
-				{ id: data.id, name, price, category, parameters, testType, labTests },
+				{ id: data.id, name, price, category, parameters, testType, labTests, description },
 				data
 			)
 			.then(response => {
@@ -87,7 +116,6 @@ const LabGroup = props => {
 	};
 
 	const onClickEdit = data => {
-		console.log(data);
 		setSubmitButton({ edit: true, create: false });
 		setState(prevState => ({
 			...prevState,
@@ -97,6 +125,8 @@ const LabGroup = props => {
 			testType: data.test_type ? `${data.test_type}` : null,
 			parameters: data.parameter_type ? `${data.parameter_type}` : null,
 			category: data.category ? category : null,
+			labTests: data.lab_tests ? `${data.lab_tests}` : null,
+			description: data.description ? description : null,
 		}));
 		setParameter(data.parameters);
 		getDataToEdit(data);
@@ -143,9 +173,14 @@ const LabGroup = props => {
 	const options = props.LabParameters.map(Par => {
 		return { value: Par.name, label: Par.name };
 	});
-		return (
-			<div className="row">
-				<div className="col-lg-8">
+
+	const labTestOptions = props.LabTests.map(tests => {
+		return { value: tests.name, label: tests.name };
+	});
+
+	return (
+		<div className="row">
+			<div className="col-lg-8">
 				<div>
 					<div className="row">
 						{!dataLoaded ? (
@@ -196,7 +231,7 @@ const LabGroup = props => {
 						<div className="form-group">
 							<input
 								className="form-control"
-								placeholder="Group Name"
+								placeholder="Test Name"
 								type="text"
 								name="name"
 								onChange={handleInputChange}
@@ -206,7 +241,7 @@ const LabGroup = props => {
 						<div className="form-group">
 							<input
 								className="form-control"
-								placeholder="Group Price"
+								placeholder="Test Price"
 								type="text"
 								name="price"
 								onChange={handleInputChange}
@@ -228,10 +263,7 @@ const LabGroup = props => {
 								name="category"
 								onChange={handleInputChange}
 								value={category}>
-								{category && (
-									<option value={category.id}>{category.name}</option>
-								)}
-								{!category && <option value={''}></option>};
+								{!category && <option value={''}>Select Category</option>};
 								{props.LabCategories.map((category, i) => {
 									return (
 										<option key={i} value={category.id}>
@@ -245,6 +277,29 @@ const LabGroup = props => {
 							<legend>
 								<span>Parameters</span>
 							</legend>
+							{Object.keys(updateParameter).length
+								? Object.keys(updateParameter).map(val => {
+										return (
+											<div className="row">
+												<div className="col-5">
+													<span className="small centered">
+														{`${updateParameter[val]['value']}-`}{' '}
+													</span>
+												</div>
+												<div className="col-7">
+													<input
+														className="form-control"
+														placeholder="Enter Range"
+														type="text"
+														name={val}
+														onChange={handleParamInputChange}
+														value={referenceRange[val]}
+													/>
+												</div>
+											</div>
+										);
+								  })
+								: null}
 							<Select
 								className="form-control"
 								isMulti
@@ -252,6 +307,27 @@ const LabGroup = props => {
 								options={options}
 								value={parameters}
 							/>
+						</div>
+						<div>
+						<Select
+								className="form-control"
+								isMulti
+								onChange={handleMultipleLabTestsInput}
+								options={labTestOptions}
+								value={labTests}
+							/>
+						</div>
+						<div className="form-group">
+							<textarea
+								className="form-control"
+								placeholder="Description"
+								type="textarea"
+								name="description"
+								onChange={handleInputChange}
+								value={description}
+								rows={4}
+							>
+							</textarea>
 						</div>
 						<fieldset className="form-group">
 							<legend></legend>
@@ -296,8 +372,8 @@ const LabGroup = props => {
 					</form>
 				</div>
 			</div>
-			</div>
-		);
+		</div>
+	);
 	}
 
 	const mapStateToProps = state => {

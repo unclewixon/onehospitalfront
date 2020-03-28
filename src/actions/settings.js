@@ -749,10 +749,11 @@ export const addLabTest = data => {
 			axios
 				.post(`${API_URI}/lab-tests`, {
 					name: data.name,
-					price: data.name,
+					price: data.price,
 					lab_category_id: data.category,
 					test_type: data.testType,
 					parameters: data.parameters,
+					description: data.description
 				})
 				.then(response => {
 					dispatch(add_lab_test(response.data));
@@ -771,6 +772,7 @@ export const getAllLabTests = () => {
 			axios
 				.get(`${API_URI}/lab-tests`)
 				.then(response => {
+					const res = response.data.filter(grp => grp.test_type === 'single')
 					dispatch(get_all_lab_tests(response.data));
 					return resolve({ success: true });
 				})
@@ -824,12 +826,14 @@ export const addLabGroup = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
-				.post(`${API_URI}/`, {
+				.post(`${API_URI}/lab-tests`, {
 					name: data.name,
-					price: data.name,
+					price: data.price,
 					lab_category_id: data.category,
 					test_type: data.testType,
 					parameters: data.parameters,
+					description: data.description,
+					lab_test: data.labTests
 				})
 				.then(response => {
 					dispatch(add_lab_group(response.data));
@@ -846,9 +850,10 @@ export const getAllLabGroups = () => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
-				.get(`${API_URI}/`)
+				.get(`${API_URI}/lab-tests`)
 				.then(response => {
-					dispatch(get_all_lab_groups(response.data));
+					const res = response.data.filter(grp => grp.test_type === 'combo')
+					dispatch(get_all_lab_groups(res));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -863,13 +868,14 @@ export const updateLabGroup = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
-				.patch(`${API_URI}/ /${data.id}/update`, {
+				.patch(`${API_URI}/lab-tests/${data.id}/update`, {
 					name: data.name,
 					lab_category_id: data.category,
 					price: data.price,
 					test_type: data.testType,
-					lab_test: data.labTest,
+					lab_test: data.labTests,
 					parameters: data.parameters,
+					description: data.description
 				})
 				.then(response => {
 					dispatch(update_lab_group(response.data, data));
@@ -886,7 +892,7 @@ export const deleteLabGroup = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
-				.delete(`${API_URI}/ /${data.id}`)
+				.delete(`${API_URI}/lab-tests/${data.id}`)
 				.then(response => {
 					dispatch(delete_lab_group(data));
 					return resolve({ success: true });
