@@ -220,7 +220,7 @@ const LabTest = props => {
 								value={name}
 							/>
 						</div>
-						{/* <div className="form-group">
+						<div className="form-group">
 							<input
 								className="form-control"
 								placeholder="Test Price"
@@ -229,7 +229,7 @@ const LabTest = props => {
 								onChange={handleInputChange}
 								value={price}
 							/>
-						</div> */}
+						</div>
 						<div className="form-group">
 							<select
 								className="form-control"
