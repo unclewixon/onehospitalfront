@@ -3,20 +3,20 @@ import { connect } from 'react-redux';
 import { useHistory, withRouter } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
-import { API_URI, socket, transactionsAPI } from '../services/constants';
+import {
+	API_URI,
+	socket,
+	transactionsAPI,
+	paymentType,
+} from '../services/constants';
 import { request, formatNumber } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import { getAllRequestServices } from '../actions/settings';
 
-const paymentStatus = [
-	{ value: 0, label: 'processing' },
-	{ value: 1, label: 'done' },
-];
-
 const CreateNewTransaction = props => {
 	let history = useHistory();
-	const { register, handleSubmit, setValue } = useForm();
+	const { register, handleSubmit, setValue, setError, errors } = useForm();
 	const [submitting, setSubmitting] = useState(false);
 	const [loaded, setLoaded] = useState(false);
 	const [Loading, setLoading] = useState(false);
@@ -31,17 +31,18 @@ const CreateNewTransaction = props => {
 
 	const onSubmit = async values => {
 		console.log(values);
+
 		setSubmitting(true);
 
 		try {
 			let data = {
 				patient_id: values.patient_id,
-				department_id: values.revenue_category.value,
+				department_id: values.revenue_category,
 				amount: values.amount,
-				serviceType: values.service_request.value,
+				serviceType: values.service_request,
 				description: values.description,
+				paymentType: values.payment_type,
 			};
-
 			console.log(data);
 
 			const rs = await request(
@@ -132,11 +133,17 @@ const CreateNewTransaction = props => {
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className="row">
 					<div className="form-group col-sm-6">
-						<label>Patient</label>
+						<label>
+							Patient{' '}
+							<div className="text-danger">
+								{errors.patient_id && errors.patient_id.message}
+							</div>
+						</label>
 						<Select
 							id="patient"
 							placeholder="Select Patient"
 							options={patients}
+							rules={{ required: 'Please select an option' }}
 							ref={register({ name: 'patient_id' })}
 							onChange={evt => {
 								setValue('patient_id', String(evt.value));
@@ -147,11 +154,9 @@ const CreateNewTransaction = props => {
 					<div className="form-group col-sm-6">
 						<label>
 							Revenue Category{' '}
-							{multi ? (
-								<span className="mx-1 text-danger">* required </span>
-							) : (
-								''
-							)}
+							<div className="text-danger">
+								{errors.revenue_category && errors.revenue_category.message}
+							</div>
 						</label>
 
 						<Select
@@ -164,7 +169,7 @@ const CreateNewTransaction = props => {
 								if (evt === null) {
 									setValue('revenue_category', null);
 								} else {
-									setValue('revenue_category', evt);
+									setValue('revenue_category', evt.value);
 								}
 							}}
 							required
@@ -194,7 +199,7 @@ const CreateNewTransaction = props => {
 								} else {
 									console.log(evt.value);
 									filterRequest(evt.value);
-									setValue('service_center', evt);
+									setValue('service_center', evt.value);
 								}
 							}}
 							required
@@ -221,7 +226,7 @@ const CreateNewTransaction = props => {
 									setValue('service_request', null);
 								} else {
 									settingAmount(evt.amount);
-									setValue('service_request', evt);
+									setValue('service_request', evt.value);
 								}
 							}}
 							required
@@ -230,7 +235,7 @@ const CreateNewTransaction = props => {
 				</div>
 
 				<div className="row">
-					<div className="form-group col-sm-12">
+					<div className="form-group col-sm-6">
 						<label>Amount</label>
 
 						<input
@@ -247,9 +252,34 @@ const CreateNewTransaction = props => {
 									setValue('amount', null);
 								} else {
 									setAmount(evt);
-									setValue('amount', evt);
+									setValue('amount', evt.value);
 								}
 							}}
+						/>
+					</div>
+					<div className="form-group col-sm-6">
+						<label>
+							Payment TYpe{' '}
+							{multi ? (
+								<span className="mx-1 text-danger">* required </span>
+							) : (
+								''
+							)}
+						</label>
+
+						<Select
+							name="payment_type"
+							placeholder="Select Payment Type"
+							options={paymentType}
+							ref={register({ name: 'payment_type' })}
+							onChange={evt => {
+								if (evt === null) {
+									setValue('payment_type', null);
+								} else {
+									setValue('payment_type', evt.value);
+								}
+							}}
+							required
 						/>
 					</div>
 				</div>
