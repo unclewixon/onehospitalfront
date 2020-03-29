@@ -135,8 +135,8 @@ const LabTest = props => {
 			id: data.id,
 			testType: data.test_type ? `${data.test_type}` : null,
 			parameters: data.parameter_type ? `${data.parameter_type}` : null,
-			category: data.category ? category : null,
-			description: data.description ? description : null,
+			category: data.category ? data.category.id : '',
+			description: data.description ? data.description : '',
 		}));
 		setParameter({});
 		getDataToEdit(data);

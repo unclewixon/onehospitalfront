@@ -145,9 +145,9 @@ const LabGroup = props => {
 			id: data.id,
 			testType: data.test_type ? `${data.test_type}` : null,
 			parameters: data.parameter_type ? `${data.parameter_type}` : null,
-			category: data.category ? category : null,
-			labTests: data.lab_tests ? `${data.lab_tests}` : null,
-			description: data.description ? description : null,
+			category: data.category ? data.category.id : '',
+			labTests: data.lab_tests ? data.lab_tests : null,
+			description: data.description ? data.description : '',
 		}));
 		setParameter(data.parameters);
 		getDataToEdit(data);
@@ -202,7 +202,7 @@ const LabGroup = props => {
 
 	return (
 		<div className="row">
-			<div className="col-lg-8">
+			<div className="col-lg-7">
 				<div>
 					<div className="row">
 						{!dataLoaded ? (
@@ -246,7 +246,7 @@ const LabGroup = props => {
 					</div>
 				</div>
 			</div>
-			<div className="col-lg-4 col-xxl-3  d-xxl-block">
+			<div className="col-lg-5 col-xxl-4  d-xxl-block">
 				<div className="pipeline white lined-warning">
 					<form onSubmit={edit ? onEditLabGroup : onAddLabGroup}>
 						<h6 className="form-header">
