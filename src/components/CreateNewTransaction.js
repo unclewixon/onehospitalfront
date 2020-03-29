@@ -3,7 +3,12 @@ import { connect } from 'react-redux';
 import { useHistory, withRouter } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
-import { API_URI, socket, transactionsAPI } from '../services/constants';
+import {
+	API_URI,
+	paymentType,
+	socket,
+	transactionsAPI,
+} from '../services/constants';
 import { request, formatNumber } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
@@ -192,7 +197,6 @@ const CreateNewTransaction = props => {
 								if (evt === null) {
 									setValue('service_center', null);
 								} else {
-									console.log(evt.value);
 									filterRequest(evt.value);
 									setValue('service_center', evt);
 								}
@@ -230,7 +234,7 @@ const CreateNewTransaction = props => {
 				</div>
 
 				<div className="row">
-					<div className="form-group col-sm-12">
+					<div className="form-group col-sm-6">
 						<label>Amount</label>
 
 						<input
@@ -250,6 +254,32 @@ const CreateNewTransaction = props => {
 									setValue('amount', evt);
 								}
 							}}
+						/>
+					</div>
+					<div className="form-group col-sm-6">
+						<label>
+							Payment Type{' '}
+							{multi ? (
+								<span className="mx-1 text-danger">* required </span>
+							) : (
+								''
+							)}
+						</label>
+
+						<Select
+							name="payment_type"
+							placeholder="Select Payment Type"
+							options={paymentType}
+							ref={register({ name: 'payment_type' })}
+							defaultValue={{ value: '' }}
+							onChange={evt => {
+								if (evt === null) {
+									setValue('payment_type', null);
+								} else {
+									setValue('payment_type', evt);
+								}
+							}}
+							required
 						/>
 					</div>
 				</div>

@@ -111,6 +111,13 @@ export const yesNO = [
 	{ value: 'No', label: 'No' },
 ];
 
+export const paymentType = [
+	{ value: 'POS', label: 'POS' },
+	{ value: 'Cash', label: 'Cash' },
+	{ value: 'Cheque', label: 'Cheque' },
+	{ value: 'Transfer', label: 'Transfer' },
+];
+
 export const insuranceStatus = [
 	{ value: 'HMO', label: 'HMO' },
 	{ value: 'Cooperate', label: 'Cooperate' },
