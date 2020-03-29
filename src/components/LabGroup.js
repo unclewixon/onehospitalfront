@@ -231,7 +231,7 @@ const LabGroup = props => {
 						<div className="form-group">
 							<input
 								className="form-control"
-								placeholder="Test Name"
+								placeholder="Group Name"
 								type="text"
 								name="name"
 								onChange={handleInputChange}
@@ -241,7 +241,7 @@ const LabGroup = props => {
 						<div className="form-group">
 							<input
 								className="form-control"
-								placeholder="Test Price"
+								placeholder="Group Price"
 								type="text"
 								name="price"
 								onChange={handleInputChange}
@@ -317,6 +317,9 @@ const LabGroup = props => {
 								value={labTests}
 							/>
 						</div>
+						<fieldset className="form-group">
+							<legend></legend>
+						</fieldset>
 						<div className="form-group">
 							<textarea
 								className="form-control"
@@ -329,9 +332,7 @@ const LabGroup = props => {
 							>
 							</textarea>
 						</div>
-						<fieldset className="form-group">
-							<legend></legend>
-						</fieldset>
+						
 						<div className="form-buttons-w">
 							{create && (
 								<button
