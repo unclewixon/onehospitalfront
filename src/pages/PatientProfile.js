@@ -13,6 +13,7 @@ import ProfileBlock from '../components/ProfileBlock';
 import { confirmAction } from '../services/utilities';
 import EnrollAntenatal from '../components/Patient/EnrollAntenatal';
 import PatientDataUpload from '../components/Patient/PatientDataUpload';
+import EnrollImmunization from '../components/Patient/EnrollImmunization';
 
 const Dashboard = lazy(() => import('../components/Patient/Dashboard'));
 const Lab = lazy(() => import('../components/Patient/Lab'));
@@ -118,6 +119,8 @@ const Page = ({ location }) => {
 			return <AntennatalRequest />;
 		case 'upload-document':
 			return <PatientDataUpload />;
+		case 'enroll-immunization':
+			return <EnrollImmunization />;
 		default:
 			return <Dashboard />;
 	}
