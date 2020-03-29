@@ -12,11 +12,9 @@ const labCategories = [
 ];
 const serviceCenter = [
 	{
-		value: 'daily',
-		label: 'daily',
-	},
-	{ value: 'weekend', label: 'weekend' },
-	{ value: 'monthly', label: 'monthly' },
+		value: 'LAB',
+		label: 'LAB',
+	}
 ];
 const LabRequest = () => {
 	// const page = location.pathname.split('/').pop();
@@ -37,7 +35,7 @@ const LabRequest = () => {
 					<div className="form-block w-100">
 						<form onSubmit={handleSubmit(onSubmit)}>
 							<div className="row">
-								<div className="form-group col-sm-12">
+								{/* <div className="form-group col-sm-12">
 									<label>Patient Id</label>
 									<Select
 										name="patient_id"
@@ -49,7 +47,7 @@ const LabRequest = () => {
 										}}
 										required
 									/>
-								</div>
+								</div> */}
 							</div>
 
 							<div className="row">
