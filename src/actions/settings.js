@@ -773,7 +773,7 @@ export const getAllLabTests = () => {
 				.get(`${API_URI}/lab-tests`)
 				.then(response => {
 					const res = response.data.filter(grp => grp.test_type === 'single');
-					dispatch(get_all_lab_tests(response.data));
+					dispatch(get_all_lab_tests(res));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -794,6 +794,7 @@ export const updateLabTest = data => {
 					price: data.price,
 					test_type: data.testType,
 					parameters: data.parameters,
+					description: data.description,
 				})
 				.then(response => {
 					dispatch(update_lab_test(response.data, data));
@@ -831,9 +832,9 @@ export const addLabGroup = data => {
 					price: data.price,
 					lab_category_id: data.category,
 					test_type: data.testType,
+					sub_test: data.labTests,
 					parameters: data.parameters,
 					description: data.description,
-					lab_test: data.labTests,
 				})
 				.then(response => {
 					dispatch(add_lab_group(response.data));
@@ -873,7 +874,7 @@ export const updateLabGroup = data => {
 					lab_category_id: data.category,
 					price: data.price,
 					test_type: data.testType,
-					lab_test: data.labTests,
+					sub_test: data.labTests,
 					parameters: data.parameters,
 					description: data.description,
 				})

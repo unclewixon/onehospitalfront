@@ -51,7 +51,7 @@ const Laboratory = () => {
 									<ul className="nav nav-tabs upper">
 										<li className="nav-item">
 											<a
-												aria-expanded="false"
+												aria-expanded="true"
 												className={
 													ShowLabCategory ? 'nav-link active' : 'nav-link'
 												}
@@ -73,7 +73,7 @@ const Laboratory = () => {
 										</li>
 										<li className="nav-item">
 											<a
-												aria-expanded="true"
+												aria-expanded="false"
 												className={ShowLabTest ? 'nav-link active' : 'nav-link'}
 												data-toggle="tab"
 												onClick={onLabTest}>
@@ -94,9 +94,9 @@ const Laboratory = () => {
 									</ul>
 								</div>
 							</div>
-							{ShowLabTest === true && <LabTest />}
-							{ShowLabParameter === true && <LabParameter />}
 							{ShowLabCategory === true && <LabCategory />}
+							{ShowLabParameter === true && <LabParameter />}
+							{ShowLabTest === true && <LabTest />}
 							{ShowLabGroup === true && <LabGroup />}
 						</div>
 					</div>

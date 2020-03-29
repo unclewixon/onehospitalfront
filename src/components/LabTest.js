@@ -71,7 +71,7 @@ const LabTest = props => {
 		setLoading(true);
 		e.preventDefault();
 		let params = Object.values(parameters).length
-			? parameters.map(param => param)
+			? Object.values(parameters).map(param => param)
 			: [];
 		props
 			.addLabTest({
@@ -85,10 +85,13 @@ const LabTest = props => {
 			.then(response => {
 				setState({ ...initialState });
 				setLoading(false);
-				setParameter(null);
+				setParameter({});
+				setParamsUI([]);
 				notifySuccess('Lab test created');
 			})
 			.catch(error => {
+				setLoading(false);
+				setParamsUI([]);
 				notifyError('Error creating lab test');
 			});
 	};
@@ -307,7 +310,8 @@ const LabTest = props => {
 								name="description"
 								onChange={handleInputChange}
 								value={description}
-								rows={4}></textarea>
+								rows={4}
+							/>
 						</div>
 						<div className="form-buttons-w">
 							{create && (
