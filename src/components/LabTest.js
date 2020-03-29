@@ -234,12 +234,9 @@ const LabTest = props => {
 							<select
 								className="form-control"
 								name="testType"
-								value={testType}
-								onChange={handleInputChange}>
-								{testType && <option value={testType}>{testType}</option>}
-								<option value="single">Single</option>;
-								<option value="combo">Combo</option>;
-							</select>
+								value="single"
+								onChange={handleInputChange}
+							/>
 						</div>
 						<div className="form-group">
 							<select
@@ -247,10 +244,7 @@ const LabTest = props => {
 								name="category"
 								onChange={handleInputChange}
 								value={category}>
-								{category && (
-									<option value={category.id}>{category.name}</option>
-								)}
-								{!category && <option value={''}></option>};
+								{!category && <option value={''}>Select Category</option>};
 								{props.LabCategories.map((category, i) => {
 									return (
 										<option key={i} value={category.id}>
