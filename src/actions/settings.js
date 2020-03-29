@@ -62,6 +62,10 @@ import {
 	GET_DENTISTRY_REQUESTS,
 	GET_IMAGING_REQUESTS,
 	GET_OPTHALMOLOGY_REQUESTS,
+	ADD_LAB_GROUP,
+	UPDATE_LAB_GROUP,
+	DELETE_LAB_GROUP,
+	GET_ALL_LAB_GROUPS,
 } from './types';
 
 //Request Service
@@ -203,6 +207,35 @@ const update_lab_test = (payload, previousData) => {
 const delete_lab_test = payload => {
 	return {
 		type: DELETE_LAB_TEST,
+		payload,
+	};
+};
+
+const add_lab_group = payload => {
+	return {
+		type: ADD_LAB_GROUP,
+		payload,
+	};
+};
+
+const get_all_lab_groups = payload => {
+	return {
+		type: GET_ALL_LAB_GROUPS,
+		payload,
+	};
+};
+
+const update_lab_group = (payload, previousData) => {
+	return {
+		type: UPDATE_LAB_GROUP,
+		payload,
+		previousData,
+	};
+};
+
+const delete_lab_group = payload => {
+	return {
+		type: DELETE_LAB_GROUP,
 		payload,
 	};
 };
@@ -716,10 +749,11 @@ export const addLabTest = data => {
 			axios
 				.post(`${API_URI}/lab-tests`, {
 					name: data.name,
-					price: data.name,
+					price: data.price,
 					lab_category_id: data.category,
 					test_type: data.testType,
 					parameters: data.parameters,
+					description: data.description,
 				})
 				.then(response => {
 					dispatch(add_lab_test(response.data));
@@ -738,6 +772,7 @@ export const getAllLabTests = () => {
 			axios
 				.get(`${API_URI}/lab-tests`)
 				.then(response => {
+					const res = response.data.filter(grp => grp.test_type === 'single');
 					dispatch(get_all_lab_tests(response.data));
 					return resolve({ success: true });
 				})
@@ -778,6 +813,88 @@ export const deleteLabTest = data => {
 				.delete(`${API_URI}/lab-tests/${data.id}`)
 				.then(response => {
 					dispatch(delete_lab_test(data));
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return resolve({ success: false });
+				});
+		});
+	};
+};
+
+export const addLabGroup = data => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			axios
+				.post(`${API_URI}/lab-tests`, {
+					name: data.name,
+					price: data.price,
+					lab_category_id: data.category,
+					test_type: data.testType,
+					parameters: data.parameters,
+					description: data.description,
+					lab_test: data.labTests,
+				})
+				.then(response => {
+					dispatch(add_lab_group(response.data));
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return reject({ success: false });
+				});
+		});
+	};
+};
+
+export const getAllLabGroups = () => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			axios
+				.get(`${API_URI}/lab-tests`)
+				.then(response => {
+					const res = response.data.filter(grp => grp.test_type === 'combo');
+					dispatch(get_all_lab_groups(res));
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return reject({ success: false });
+				});
+		});
+	};
+};
+
+export const updateLabGroup = data => {
+	console.log(data);
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			axios
+				.patch(`${API_URI}/lab-tests/${data.id}/update`, {
+					name: data.name,
+					lab_category_id: data.category,
+					price: data.price,
+					test_type: data.testType,
+					lab_test: data.labTests,
+					parameters: data.parameters,
+					description: data.description,
+				})
+				.then(response => {
+					dispatch(update_lab_group(response.data, data));
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return reject({ success: false });
+				});
+		});
+	};
+};
+
+export const deleteLabGroup = data => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			axios
+				.delete(`${API_URI}/lab-tests/${data.id}`)
+				.then(response => {
+					dispatch(delete_lab_group(data));
 					return resolve({ success: true });
 				})
 				.catch(error => {

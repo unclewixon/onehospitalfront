@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import Select from 'react-select';
 import { confirmAction } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
+import LabParameterPicker from './LabParameterPicker';
 
 import {
 	addLabTest,
@@ -22,37 +22,44 @@ const LabTest = props => {
 		price: '',
 		testType: 'single',
 		selectTestType: '',
+		description: '',
 		edit: false,
 		create: true,
 	};
-	const [{ name, category, price, testType }, setState] = useState(
+
+	const [{ name, category, price, testType, description }, setState] = useState(
 		initialState
 	);
+
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
-	const [parameters, setParameter] = useState(null);
-	const [updateParameter, setUpdateParameter] = useState({});
-	const [range, setRange] = useState({});
+	const [parameters, setParameter] = useState({});
+	const [paramsUI, setParamsUI] = useState([]);
 
-	const handleMultipleSelectInput = selectedOption => {
-		let param = {};
-		selectedOption &&
-			selectedOption.map(option => {
-				param[option.label] = option;
-				return param;
-			});
-		setUpdateParameter(param);
-		setParameter(selectedOption);
+	const handleParamInputChange = (e, index) => {
+		const { name, value } = e.target;
+		let newParam = { ...parameters };
+		if (name === 'parameter') {
+			newParam[index] = { parameter: value };
+		} else if (name === 'referenceRange') {
+			newParam[index] = { ...newParam[index], referenceRange: value };
+		}
+		setParameter(newParam);
 	};
 
-	const handleParamInputChange = e => {
-		const { name, value } = e.target;
-		let newRange = { ...range };
-		newRange[name] = value;
-		setRange(newRange);
+	const removeParam = index => {
+		const newParametersUI = paramsUI.map((ui, i) => {
+			if (i === index) {
+				return null;
+			}
+			return ui;
+		});
+		const { [index]: i, ...rest } = parameters;
+		setParamsUI(newParametersUI);
+		setParameter(rest);
 	};
 
 	const handleInputChange = e => {
@@ -63,14 +70,18 @@ const LabTest = props => {
 	const onAddLabTest = e => {
 		setLoading(true);
 		e.preventDefault();
-		let params =
-			parameters &&
-			parameters.map(param => {
-				param.value = `${param.value}${range[param.label]}`;
-				return param;
-			});
+		let params = Object.values(parameters).length
+			? parameters.map(param => param)
+			: [];
 		props
-			.addLabTest({ name, price, category, parameters: params, testType })
+			.addLabTest({
+				name,
+				price,
+				category,
+				parameters: params,
+				testType,
+				description,
+			})
 			.then(response => {
 				setState({ ...initialState });
 				setLoading(false);
@@ -87,7 +98,15 @@ const LabTest = props => {
 		e.preventDefault();
 		props
 			.updateLabTest(
-				{ id: data.id, name, price, category, parameters, testType },
+				{
+					id: data.id,
+					name,
+					price,
+					category,
+					parameters,
+					testType,
+					description,
+				},
 				data
 			)
 			.then(response => {
@@ -114,8 +133,9 @@ const LabTest = props => {
 			testType: data.test_type ? `${data.test_type}` : null,
 			parameters: data.parameter_type ? `${data.parameter_type}` : null,
 			category: data.category ? category : null,
+			description: data.description ? description : null,
 		}));
-		setParameter(data.parameters);
+		setParameter({});
 		getDataToEdit(data);
 	};
 
@@ -156,13 +176,14 @@ const LabTest = props => {
 		setLoaded(true);
 	}, [loaded, props]);
 
-	const options = props.LabParameters.map(Par => {
-		return { value: Par.name, label: Par.name };
-	});
+	const addParameterUI = () => {
+		let paramUI = [...paramsUI, LabParameterPicker];
+		setParamsUI(paramUI);
+	};
 
 	return (
 		<div className="row">
-			<div className="col-lg-8">
+			<div className="col-lg-7">
 				<div>
 					<div className="row">
 						{!dataLoaded ? (
@@ -206,10 +227,12 @@ const LabTest = props => {
 					</div>
 				</div>
 			</div>
-			<div className="col-lg-4 col-xxl-3  d-xxl-block">
+			<div className="col-lg-5 col-xxl-4  d-xxl-block">
 				<div className="pipeline white lined-warning">
 					<form onSubmit={edit ? onEditLabTest : onAddLabTest}>
-						<h6 className="form-header">Create Test</h6>
+						<h6 className="form-header">
+							{edit ? 'Edit Test' : 'Create Test'}
+						</h6>
 						<div className="form-group">
 							<input
 								className="form-control"
@@ -233,14 +256,6 @@ const LabTest = props => {
 						<div className="form-group">
 							<select
 								className="form-control"
-								name="testType"
-								value="single"
-								onChange={handleInputChange}
-							/>
-						</div>
-						<div className="form-group">
-							<select
-								className="form-control"
 								name="category"
 								onChange={handleInputChange}
 								value={category}>
@@ -254,44 +269,46 @@ const LabTest = props => {
 								})}
 							</select>
 						</div>
-						<div className="form-group">
-							<legend>
-								<span>Parameters</span>
-							</legend>
-							{Object.keys(updateParameter).length
-								? Object.keys(updateParameter).map(val => {
-										return (
-											<div className="row">
-												<div className="col-5">
-													<span className="small centered">
-														{`${updateParameter[val]['value']}-`}{' '}
-													</span>
-												</div>
-												<div className="col-7">
-													<input
-														className="form-control"
-														placeholder="Enter Range"
-														type="text"
-														name={val}
-														onChange={handleParamInputChange}
-														value={range[val]}
-													/>
-												</div>
-											</div>
-										);
-								  })
-								: null}
-							<Select
-								className="form-control"
-								isMulti
-								onChange={handleMultipleSelectInput}
-								options={options}
-								value={parameters}
-							/>
+
+						<legend>
+							<span>Parameters</span>
+						</legend>
+						<div className="form-buttons-w">
+							<button
+								type="button"
+								className="btn btn-primary"
+								onClick={addParameterUI}>
+								Add Parameter
+							</button>
 						</div>
-						<fieldset className="form-group">
-							<legend></legend>
-						</fieldset>
+
+						<div className="form-group">
+							{paramsUI &&
+								paramsUI.map((ParamPicker, i) => {
+									if (ParamPicker) {
+										return (
+											<ParamPicker
+												index={i}
+												parameterArray={props.LabParameters}
+												parameters={parameters}
+												removeParams={removeParam}
+												handleParamInputChange={handleParamInputChange}
+											/>
+										);
+									}
+									return null;
+								})}
+						</div>
+						<div className="form-group">
+							<textarea
+								className="form-control"
+								placeholder="Description"
+								type="textarea"
+								name="description"
+								onChange={handleInputChange}
+								value={description}
+								rows={4}></textarea>
+						</div>
 						<div className="form-buttons-w">
 							{create && (
 								<button
@@ -301,7 +318,7 @@ const LabTest = props => {
 									{Loading ? (
 										<img src={waiting} alt="submitting" />
 									) : (
-										<span> create</span>
+										<span> Create</span>
 									)}
 								</button>
 							)}
@@ -314,7 +331,7 @@ const LabTest = props => {
 												: 'btn btn-secondary ml-3'
 										}
 										onClick={cancelEditButton}>
-										<span>{Loading ? 'cancel' : 'cancel'}</span>
+										<span>{Loading ? 'Cancel' : 'Cancel'}</span>
 									</button>
 									<button
 										className={
@@ -323,7 +340,7 @@ const LabTest = props => {
 										{Loading ? (
 											<img src={waiting} alt="submitting" />
 										) : (
-											<span> save</span>
+											<span> Save</span>
 										)}
 									</button>
 								</>
