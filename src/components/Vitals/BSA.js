@@ -33,11 +33,14 @@ const BSA = ({ vitals }) => {
 	useEffect(() => {
 		try {
 			let data = [];
-			vitals.forEach((item, index) => {
-				const date = moment(item.createdAt).format('DD-MM-YY');
-				const res = { name: date, bsa: item.reading.bsa };
-				data = [...data, res];
-			});
+			const cloneVitals = [...vitals];
+			cloneVitals
+				.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1))
+				.forEach((item, index) => {
+					const date = moment(item.createdAt).format('DD-MM-YY');
+					const res = { name: date, bsa: item.reading.bsa };
+					data = [...data, res];
+				});
 
 			if (vitals.length > 0) {
 				let lastReading = vitals[0];
