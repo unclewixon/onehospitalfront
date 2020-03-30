@@ -12,12 +12,14 @@ import hr from './hr';
 import patient from './patient';
 import transaction from './transaction';
 import utility from './utility';
+import paypoint from './paypoint';
 
 const reducers = combineReducers({
 	form: formReducer,
 	routing: routerReducer,
 	user,
 	general,
+	paypoint,
 	settings,
 	hmo,
 	inventory,

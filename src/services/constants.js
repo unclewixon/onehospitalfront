@@ -29,6 +29,7 @@ export const utilityAPI = '/utility';
 export const payrollAPI = '/hr/payroll';
 export const patientAPI = '/patient';
 export const transactionsAPI = '/transactions';
+export const vouchersAPI = '/vouchers';
 
 export const months = [
 	'January',
@@ -109,6 +110,13 @@ export const maritalStatus = [
 export const yesNO = [
 	{ value: 'Yes', label: 'Yes' },
 	{ value: 'No', label: 'No' },
+];
+
+export const paymentType = [
+	{ value: 'POS', label: 'POS' },
+	{ value: 'Cash', label: 'Cash' },
+	{ value: 'Cheque', label: 'Cheque' },
+	{ value: 'Transfer', label: 'Transfer' },
 ];
 
 export const insuranceStatus = [
