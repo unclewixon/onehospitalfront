@@ -26,11 +26,13 @@ import {
 	TOGGLE_CREATE_RECORD_VITAL,
 	TOGGLE_UPLOAD_SERVICE,
 	TOGGLE_UPLOAD_DIAGNOSIS,
+	TOGGLE_UPLOAD_HMO,
 	TOGGLE_EDIT_SERIVCE,
 	TOGGLE_CREATE_CLINICAL_TASK,
 	TOGGLE_OPEN_ENCOUNTER,
 	TOGGLE_APPROVE_TRANSACTION,
 	TOGGLE_APPLY_VOUCHER,
+	TOGGLE_UPLOAD_HMO_TARIFF,
 } from './types';
 
 export const togglePreloading = status => {
@@ -250,6 +252,20 @@ export const toggleUploadDiagnosis = status => {
 	};
 };
 
+export const toggleUploadHmo = status => {
+	return {
+		type: TOGGLE_UPLOAD_HMO,
+		payload: status,
+	};
+};
+
+export const toggleUploadHmoTariff = status => {
+	return {
+		type: TOGGLE_UPLOAD_HMO_TARIFF,
+		payload: status,
+	};
+};
+
 export const toggleEditService = (status, data) => {
 	return {
 		type: TOGGLE_EDIT_SERIVCE,
@@ -296,6 +312,8 @@ export const closeModals = () => {
 		dispatch(toggleCreateRecordVital(false));
 		dispatch(toggleUploadService(false));
 		dispatch(toggleUploadDiagnosis(false));
+		dispatch(toggleUploadHmo(false));
+		dispatch(toggleUploadHmoTariff(false));
 		dispatch(toggleEditService(false, null));
 		dispatch(toggleOpenEncounter(false, null));
 	};
@@ -473,6 +491,22 @@ export const uploadDiagnosis = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleUploadDiagnosis(action));
+	};
+};
+
+export const uploadHmo = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleUploadHmo(action));
+	};
+};
+
+export const uploadHmoTariff = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleUploadHmoTariff(action));
 	};
 };
 

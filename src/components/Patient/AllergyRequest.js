@@ -3,7 +3,7 @@ import Select from 'react-select';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { request } from '../../services/utilities';
-import { API_URI, socket, patientAPI } from '../../services/constants';
+import { API_URI, patientAPI } from '../../services/constants';
 import { add_allergies } from '../../actions/patient';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
