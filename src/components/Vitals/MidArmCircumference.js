@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Popover from 'antd/lib/popover';
 import {
 	LineChart,
 	Line,
@@ -10,40 +9,51 @@ import {
 	Legend,
 } from 'recharts';
 import kebabCase from 'lodash.kebabcase';
-
-import TakeReadings from './TakeReadings';
+import moment from 'moment';
 import { connect } from 'react-redux';
-import { getData } from '../../services/utilities';
+
+import Reading from '../Patient/Reading';
 
 const unit = 'cm';
 
-const MidArmCircumference = ({ fullVitals, newVital }) => {
+const info = {
+	title: 'Mid-Arm Circumference',
+	type: kebabCase('Mid-Arm Circumference'),
+	inputs: [
+		{
+			name: 'mid_arm_circumference',
+			title: 'Mid-Arm Circumference',
+			weight: 'cm',
+		},
+	],
+};
+
+const MidArmCircumference = ({ vitals }) => {
 	const [visible, setVisible] = useState(false);
-	const [currentVitals, setCurrentVitals] = useState(0);
+	const [currentVitals, setCurrentVitals] = useState(null);
+	const [data, setData] = useState([]);
+
 	useEffect(() => {
 		try {
-			let v = fullVitals.find(c => c.readingType === info.title);
-			setCurrentVitals(v.reading.circumference);
+			let data = [];
+			const cloneVitals = [...vitals];
+			cloneVitals
+				.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1))
+				.forEach((item, index) => {
+					const date = moment(item.createdAt).format('DD-MM-YY');
+					const res = { name: date, item: item.reading.mid_arm_circumference };
+					data = [...data, res];
+				});
+			if (vitals.length > 0) {
+				let lastReading = vitals[0];
+				setCurrentVitals({
+					...lastReading,
+					_reading: lastReading.reading.mid_arm_circumference,
+				});
+			}
+			setData(data);
 		} catch (e) {}
-	}, [fullVitals]);
-	useEffect(() => {
-		try {
-			setCurrentVitals(newVital.reading.circumference);
-		} catch (e) {}
-	}, [newVital]);
-	const data = [
-		{ name: '20-Oct-20', item: 420 },
-		{ name: '21-Oct-20', item: 400 },
-		{ name: '22-Oct-20', item: 300 },
-		{ name: '23-Oct-20', item: 500 },
-	];
-	const info = {
-		title: 'Mid-Arm Circumference',
-		type: kebabCase('Mid-Arm Circumference'),
-		inputs: [
-			{ name: 'circumference', title: 'Mid-Arm Circumference', weight: 'cm' },
-		],
-	};
+	}, [vitals]);
 
 	return (
 		<div className="row vital">
@@ -69,40 +79,20 @@ const MidArmCircumference = ({ fullVitals, newVital }) => {
 					</LineChart>
 				</div>
 			</div>
-			<div className="col-4">
-				<div className="text-center">
-					<div className="last-reading">
-						Last Mid-Arm Circumference Reading:
-					</div>
-					<div className="reading">
-						{currentVitals}
-						{`${unit}`}
-					</div>
-					<div className="time-captured">on 29-Oct-2020 4:20pm</div>
-					<div className="new-reading">
-						<Popover
-							title=""
-							overlayClassName="vitals"
-							content={
-								<TakeReadings info={info} doHide={() => setVisible(false)} />
-							}
-							trigger="click"
-							visible={visible}
-							onVisibleChange={status => setVisible(status)}>
-							<div>Take New Reading</div>
-						</Popover>
-					</div>
-				</div>
-			</div>
+			<Reading
+				visible={visible}
+				vital={currentVitals}
+				info={info}
+				setVisible={setVisible}
+				unit={unit}
+			/>
 		</div>
 	);
 };
 const mapStateToProps = (state, ownProps) => {
-	const { allVitals } = ownProps;
 	return {
-		fullVitals: allVitals,
 		patient: state.user.patient,
-		newVital: state.vitals ? state.vitals.vitals : [],
+		vitals: state.patient.vitals.filter(c => c.readingType === info.title),
 	};
 };
 export default connect(mapStateToProps)(MidArmCircumference);

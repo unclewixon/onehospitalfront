@@ -7,28 +7,27 @@ import general from './general';
 import settings from './settings';
 import hmo from './hmo';
 import inventory from './inventory';
-import vitals from './vitals';
 import role from './role';
 import hr from './hr';
 import patient from './patient';
+import transaction from './transaction';
 import utility from './utility';
-import { connectRouter } from 'connected-react-router';
+import paypoint from './paypoint';
 
-const reducers = history =>
-	combineReducers({
-		router: connectRouter(history),
-		form: formReducer,
-		routing: routerReducer,
-		user,
-		general,
-		settings,
-		hmo,
-		inventory,
-		vitals,
-		role,
-		hr,
-		utility,
-		patient,
-	});
+const reducers = combineReducers({
+	form: formReducer,
+	routing: routerReducer,
+	user,
+	general,
+	paypoint,
+	settings,
+	hmo,
+	inventory,
+	role,
+	hr,
+	utility,
+	patient,
+	transaction,
+});
 
 export default reducers;

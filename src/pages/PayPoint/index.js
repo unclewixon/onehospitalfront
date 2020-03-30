@@ -14,7 +14,6 @@ export class index extends Component {
 	render() {
 		const { match, location } = this.props;
 		const page = location.pathname.split('/').pop();
-		console.log(page);
 		return (
 			<>
 				<div className="content-i">
@@ -105,9 +104,9 @@ export class index extends Component {
 							</div>
 						</div>
 					</div>
-					<div className="content-panel compact">
-						<Queue />
-					</div>
+					{/*<div className="content-panel compact">*/}
+					{/*	<Queue />*/}
+					{/*</div>*/}
 				</div>
 			</>
 		);

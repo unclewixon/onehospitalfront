@@ -27,10 +27,12 @@ export default class SSRStorage {
 		// Cookies
 		let value = this.getCookie(key);
 
-		// Local Storage
-		if (isUnset(value)) {
-			value = this.getLocalStorage(key);
-		}
+		try {
+			// Local Storage
+			if (isUnset(value)) {
+				value = this.getLocalStorage(key);
+			}
+		} catch (e) {}
 
 		return value;
 	}

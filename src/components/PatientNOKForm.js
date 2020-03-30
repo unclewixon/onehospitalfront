@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { prevStep } from '../actions/patient';
 import { closeModals } from '../actions/general';
 import { connect } from 'react-redux';
@@ -14,12 +14,21 @@ import {
 import { request } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
+import { setPatientRecord } from '../actions/user';
 
 function PatientNOKForm(props) {
 	const formData = props.formData;
-	const { register, handleSubmit, errors, setValue } = useForm({
-		validationSchema: patientNOKSchema,
-		defaultValues: {
+	const patient = props.patient;
+	const register_new_patient = props.register_new_patient;
+	const [formTitle, setFormTitle] = useState('');
+	const [patientData, setPatientData] = useState({});
+	const [submitting, setSubmitting] = useState(false);
+	const [genderValue, setGenderValue] = useState('');
+	const [ethValue, setEthValue] = useState('');
+	const [maritalValue, setMaritalValue] = useState('');
+
+	useEffect(() => {
+		let formValues = {
 			nok_surname: formData.nok_surname || '',
 			nok_other_names: formData.nok_other_names || '',
 			nok_date_of_birth: formData.nok_date_of_birth || '',
@@ -28,25 +37,110 @@ function PatientNOKForm(props) {
 			nok_occupation: formData.nok_occupation || '',
 			nok_address: formData.nok_address || '',
 			nok_phoneNumber: formData.nok_phoneNumber || '',
-		},
-	});
-	const [submitting, setSubmitting] = useState(false);
+		};
+		setFormTitle('Partner/Next of Kin');
+		setPatientData(formValues);
+		if (!register_new_patient) {
+			setFormTitle('Edit Partner/Next of Kin');
+			formValues = {
+				nok_surname: patient.nextOfKin?.surname || '',
+				nok_other_names: patient.nextOfKin?.other_names || '',
+				nok_date_of_birth: patient.nextOfKin?.date_of_birth || '',
+				nok_email: patient.nextOfKin?.email || '',
+				nok_gender: patient.nextOfKin?.gender || '',
+				nok_occupation: patient.nextOfKin?.occupation || '',
+				nok_address: patient.nextOfKin?.address || '',
+				nok_ethnicity: patient.nextOfKin?.ethnicity || '',
+				nok_maritalStatus: patient.nextOfKin?.maritalStatus || '',
+				nok_phoneNumber: patient.nextOfKin?.phoneNumber || '',
+			};
+			setGenderValue(
+				gender.filter(option => option.label === formValues.nok_gender)
+			);
+			setEthValue(
+				ethnicities.filter(option => option.label === formValues.nok_ethnicity)
+			);
+			setMaritalValue(
+				maritalStatus.filter(
+					option => option.label === formValues.nok_maritalStatus
+				)
+			);
 
-	const onSubmit = async (values) => {
+			handleChange(
+				'nok_ethnicity',
+				formValues.nok_ethnicity,
+				setEthValue,
+				ethnicities
+			);
+			handleChange(
+				'nok_maritalStatus',
+				formValues.nok_maritalStatus,
+				setMaritalValue,
+				maritalStatus
+			);
+			handleChange('nok_gender', formValues.nok_gender, setGenderValue, gender);
+			setPatientData(formValues);
+		}
+	}, [formTitle]);
+
+	const { register, handleSubmit, errors, setValue } = useForm({
+		validationSchema: patientNOKSchema,
+		defaultValues: patientData,
+	});
+
+	const handleChange = (name, type, fn, lists = []) => {
+		let res = lists.find(p => p.value === type);
+		fn(res);
+		if (type == null) {
+			setValue(name, null);
+		} else {
+			setValue(name, type);
+		}
+	};
+	const onSubmit = async values => {
 		const data = { ...formData, ...values };
 		setSubmitting(true);
-		try {
-			const res = await request(`${API_URI}/patient/save`, 'POST', true, data);
-			setSubmitting(false);
-			if (res.success) {
-				notifySuccess('New patient record was created!');
-				props.closeModals(false);
-			} else {
-				notifyError(res.message);
+		if (!register_new_patient) {
+			try {
+				const res = await request(
+					`${API_URI}/patient/` + patient.id + '/update',
+					'PATCH',
+					true,
+					data
+				);
+				setSubmitting(false);
+				if (res.success) {
+					props.setPatientRecord(res.patient);
+					notifySuccess(patient.other_names + ' record was updated!');
+					props.closeModals(false);
+				} else {
+					notifyError(res.message);
+				}
+			} catch (e) {
+				setSubmitting(false);
+				notifyError(
+					e.message || 'could not update ' + patient.other_names + ' record'
+				);
 			}
-		} catch (e) {
-			setSubmitting(false);
-			notifyError(e.message || 'could not save patient record');
+		} else {
+			try {
+				const res = await request(
+					`${API_URI}/patient/save`,
+					'POST',
+					true,
+					data
+				);
+				setSubmitting(false);
+				if (res.success) {
+					notifySuccess('New patient record was created!');
+					props.closeModals(false);
+				} else {
+					notifyError(res.message);
+				}
+			} catch (e) {
+				setSubmitting(false);
+				notifyError(e.message || 'could not save patient record');
+			}
 		}
 	};
 
@@ -56,7 +150,7 @@ function PatientNOKForm(props) {
 
 	return (
 		<Fragment>
-			<h6 className="form-header">Partner/Next of Kin</h6>
+			<h6 className="form-header">{formTitle}</h6>
 			<div className="form-desc"></div>
 			<div className="onboarding-content with-gradient">
 				<form onSubmit={handleSubmit(onSubmit)}>
@@ -67,7 +161,8 @@ function PatientNOKForm(props) {
 									<label>Surame</label>
 									<input
 										className="form-control"
-										placeholder="Enter surnam name"
+										placeholder="Enter surname name"
+										defaultValue={patientData.nok_surname || ''}
 										name="nok_surname"
 										type="text"
 										ref={register}
@@ -84,6 +179,7 @@ function PatientNOKForm(props) {
 										className="form-control"
 										placeholder="Other Names"
 										name="nok_other_names"
+										defaultValue={patientData.nok_other_names || ''}
 										type="text"
 										ref={register}
 									/>
@@ -101,6 +197,7 @@ function PatientNOKForm(props) {
 										className="form-control"
 										placeholder="04/12/1978"
 										type="text"
+										defaultValue={patientData.nok_date_of_birth || ''}
 										name="nok_date_of_birth"
 										ref={register}
 									/>
@@ -112,34 +209,38 @@ function PatientNOKForm(props) {
 							</div>
 							<div className="col-sm">
 								<div className="form-group">
-									<label htmlhtmlFor="gender">Gender</label>
+									<label htmlFor="gender">Gender</label>
 									<Select
 										name="nok_gender"
 										ref={register}
 										options={gender}
-										onChange={(evt) => {
-											if (evt == null) {
-												setValue('nok_gender', null);
-											} else {
-												setValue('nok_gender', String(evt.value));
-											}
+										value={genderValue}
+										onChange={evt => {
+											handleChange(
+												'nok_gender',
+												String(evt.value),
+												setGenderValue,
+												gender
+											);
 										}}
 									/>
 								</div>
 							</div>
 							<div className="col-sm">
 								<div className="form-group">
-									<label htmlhtmlFor="nok_maritalStatus">Marital Status</label>
+									<label htmlFor="nok_maritalStatus">Marital Status</label>
 									<Select
 										name="nok_maritalStatus"
 										ref={register}
 										options={maritalStatus}
-										onChange={(evt) => {
-											if (evt == null) {
-												setValue('nok_maritalStatus', null);
-											} else {
-												setValue('nok_marialStatus', String(evt.value));
-											}
+										value={maritalValue}
+										onChange={evt => {
+											handleChange(
+												'nok_maritalStatus',
+												String(evt.value),
+												setMaritalValue,
+												maritalStatus
+											);
 										}}
 									/>
 								</div>
@@ -153,6 +254,7 @@ function PatientNOKForm(props) {
 										className="form-control"
 										placeholder=""
 										type="text"
+										defaultValue={patientData.nok_occupation || ''}
 										name="nok_occupation"
 										ref={register}
 									/>
@@ -165,12 +267,14 @@ function PatientNOKForm(props) {
 										id="nok_ethnicity"
 										ref={register}
 										options={ethnicities}
-										onChange={(evt) => {
-											if (evt == null) {
-												setValue('nok_ethnicity', null);
-											} else {
-												setValue('nok_ethnicity', String(evt.value));
-											}
+										value={ethValue}
+										onChange={evt => {
+											handleChange(
+												'nok_ethnicity',
+												String(evt.value),
+												setEthValue,
+												ethnicities
+											);
 										}}
 									/>
 								</div>
@@ -183,6 +287,7 @@ function PatientNOKForm(props) {
 									<input
 										className="form-control"
 										name="nok_address"
+										defaultValue={patientData.nok_address || ''}
 										ref={register}
 										type="text"
 									/>
@@ -194,6 +299,7 @@ function PatientNOKForm(props) {
 									<input
 										className="form-control"
 										name="nok_phoneNumber"
+										defaultValue={patientData.nok_phoneNumber || ''}
 										ref={register}
 										type="text"
 									/>
@@ -206,6 +312,7 @@ function PatientNOKForm(props) {
 										className="form-control"
 										name="nok_email"
 										ref={register}
+										defaultValue={patientData.nok_email || ''}
 										placeholder="example@email.com"
 										type="text"
 									/>
@@ -230,11 +337,16 @@ function PatientNOKForm(props) {
 		</Fragment>
 	);
 }
+
 const mapStateToProps = (state, ownProps) => {
 	return {
 		formData: state.patient.formData,
+		patient: state.user.patient,
+		register_new_patient: state.general.register_new_patient,
 	};
 };
-export default connect(mapStateToProps, { prevStep, closeModals })(
-	PatientNOKForm
-);
+export default connect(mapStateToProps, {
+	setPatientRecord,
+	prevStep,
+	closeModals,
+})(PatientNOKForm);

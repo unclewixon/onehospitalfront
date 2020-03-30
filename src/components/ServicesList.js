@@ -19,6 +19,7 @@ const ServicesList = props => {
 	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const onMoreDetailConsultation = category => {
+		console.log(category);
 		setMoreDetailConsultation(category);
 		getServiceList(
 			props.ServicesList.filter(service => {

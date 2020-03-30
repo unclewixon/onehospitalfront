@@ -34,6 +34,7 @@ const Antennatal = lazy(() => import('./pages/Antennatal/index'));
 const IVF = lazy(() => import('./pages/IVF'));
 const Nicu = lazy(() => import('./pages/Nicu'));
 const LabMgt = lazy(() => import('./pages/LabourMgt/index'));
+const Cafeteria = lazy(() => import('./pages/Cafeteria'));
 const Logout = lazy(() => import('./pages/Logout'));
 
 const storage = new SSRStorage();
@@ -94,6 +95,7 @@ class App extends Component {
 												<Route path="/hmo" component={Hmo} />
 												<Route path="/lab" component={ClinicalLab} />
 												<Route path="/labour-mgt" component={LabMgt} />
+												<Route path="/cafeteria" component={Cafeteria} />
 												<Route path="/billing-paypoint" component={PayPoint} />
 												<Route path="/logout" component={Logout} />
 												<Route component={NoMatch} />
@@ -127,14 +129,14 @@ class App extends Component {
 
 const mapStateToProps = state => {
 	return {
-		preloading: state.general.preloading,
-		is_modal_open: state.general.is_modal_open,
-		loggedIn: state.user.loggedIn,
-		profile: state.user.profile,
-		isStaffOpen: state.user.isStaffOpen,
-		isPatientOpen: state.user.isPatientOpen,
-		theme_mode: state.user.theme_mode,
-		fullscreen: state.user.fullscreen,
+		preloading: state.general?.preloading,
+		is_modal_open: state.general?.is_modal_open,
+		loggedIn: state.user?.loggedIn,
+		profile: state.user?.profile,
+		isStaffOpen: state.user?.isStaffOpen,
+		isPatientOpen: state.user?.isPatientOpen,
+		theme_mode: state.user?.theme_mode,
+		fullscreen: state.user?.fullscreen,
 	};
 };
 

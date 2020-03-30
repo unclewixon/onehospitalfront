@@ -30,6 +30,8 @@ import {
 	TOGGLE_CREATE_RECORD_DELIVERY,
 	TOGGLE_OPEN_ENCOUNTER,
 	TOGGLE_CREATE_CLINICAL_TASK,
+	TOGGLE_APPROVE_TRANSACTION,
+	TOGGLE_APPLY_VOUCHER,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -52,6 +54,7 @@ const INITIAL_STATE = {
 	edit_payroll: false,
 	view_paypoint: false,
 	create_voucher: false,
+	apply_voucher: false,
 	create_labour_measurement: false,
 	create_risk_assessment: false,
 	create_record_delivery: false,
@@ -88,6 +91,8 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, create_inventory: action.payload };
 		case TOGGLE_EDIT_INVENTORY:
 			return { ...state, edit_inventory: action.payload };
+		case TOGGLE_APPROVE_TRANSACTION:
+			return { ...state, approve_transaction: action.payload };
 		case TOGGLE_UPDATE_QTY:
 			return { ...state, update_inventory_qty: action.payload };
 		case TOGGLE_REGISTER_NEW_PATIENT:
@@ -126,6 +131,8 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, create_record_vital: action.payload };
 		case TOGGLE_CREATE_VOUCHER:
 			return { ...state, create_voucher: action.payload };
+		case TOGGLE_APPLY_VOUCHER:
+			return { ...state, apply_voucher: action.payload };
 		case TOGGLE_CREATE_CLINICAL_TASK:
 			return { ...state, create_clinical_task: action.payload };
 		case TOGGLE_UPLOAD_SERVICE:
