@@ -1,3 +1,5 @@
+import axios from 'axios';
+import { API_URI } from '../services/constants';
 import {
 	NEXT_STEP,
 	PREV_STEP,
@@ -12,6 +14,7 @@ import {
 	GET_OPTHALMOLOGY_REQUESTS,
 	LOAD_VITALS,
 	UPDATE_VITALS,
+	CREATE_LAB_REQUEST,
 } from './types';
 
 export const nextStep = data => {
@@ -104,5 +107,39 @@ export const updateVitals = data => {
 	return {
 		type: UPDATE_VITALS,
 		payload: data,
+	};
+};
+
+const create_lab_request = data => {
+	return {
+		type: CREATE_LAB_REQUEST,
+		payload: data,
+	};
+};
+
+export const createLabRequest = data => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			axios
+				.post(`${API_URI}/patient/save-request`, {
+					requestType: data.service_center,
+					requestBody: {
+						specialization: "",
+						sessionCount: "",
+						combination: data.lab_combo,
+						test: data.lab_test,
+						referredSpeciment: data.referred_specimen,
+						requestNote: data.request_note,
+					},
+					patient_id: data.patient_id
+				})
+				.then(response => {
+					dispatch(create_lab_request(response.data));
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return reject({ success: false });
+				});
+		});
 	};
 };
