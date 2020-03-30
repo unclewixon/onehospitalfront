@@ -1,7 +1,61 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { uploadHmoTariff } from '../actions/general';
+import { notifySuccess, notifyError } from '../services/notify';
+import waiting from '../assets/images/waiting.gif';
+import searchingGIF from '../assets/images/searching.gif';
+import { getAllHmos, fetchHmoTariff } from '../actions/hmo';
 
-const HmoBulkUpload = () => {
+const HmoBulkUpload = props => {
+	const initialState = {
+		selectedHmo: null,
+	};
+
+	const [{ selectedHmo }, setState] = useState(initialState);
+	const [loaded, setLoaded] = useState(false);
+	const [dataLoaded, setDataLoaded] = useState(false);
+
+	const handleInputChange = e => {
+		const { name, value } = e.target;
+		setState({ [name]: value });
+		props
+			.fetchHmoTariff(value)
+			.then(response => {
+				setDataLoaded(true);
+			})
+			.catch(error => {
+				setDataLoaded(true);
+			});
+	};
+
+	useEffect(() => {
+		if (!loaded) {
+			props
+				.getAllHmos()
+				.then(response => {})
+				.catch(e => {
+					console.log(e);
+					notifyError(e.message || 'could not fetch lab tests');
+				});
+		}
+		setLoaded(true);
+	}, [loaded, props]);
+
+	props
+		.fetchHmoTariff(selectedHmo)
+		.then(response => {
+			console.log(response);
+			setDataLoaded(true);
+		})
+		.catch(error => {
+			console.log(error);
+			setDataLoaded(true);
+		});
+
+	const hmos = props.hmoList.map(hmo => {
+		return { label: hmo.name, value: hmo.id };
+	});
 	return (
 		<div className="content-i">
 			<div className="content-box">
@@ -29,21 +83,24 @@ const HmoBulkUpload = () => {
 										<div className="controls-above-table">
 											<div className="row">
 												<div className="col-sm-6">
-													<a className="btn btn-sm btn-secondary" href="#">
+													<button
+														className="btn btn-sm btn-secondary"
+														onClick={() => props.uploadHmoTariff(true)}>
 														Upload HMO Services
-													</a>
+													</button>
 												</div>
 												<div className="col-sm-6">
 													<form className="form-inline justify-content-sm-end">
 														<select
 															className="form-control form-control-sm rounded bright"
-															defaultValue="AXA Mansard HMO">
-															<option value="AXA Mansard HMO">
-																AXA Mansard HMO
-															</option>
-															<option value="Pending">Pending</option>
-															<option value="Active">Active</option>
-															<option value="Cancelled">Cancelled</option>
+															name="selectedHmo"
+															value={selectedHmo}
+															onChange={handleInputChange}>
+															{hmos.map(hmo => {
+																return (
+																	<option value={hmo.value}>{hmo.label}</option>
+																);
+															})}
 														</select>
 													</form>
 												</div>
@@ -54,176 +111,62 @@ const HmoBulkUpload = () => {
 												<thead>
 													<tr>
 														<th>Code</th>
-														<th>Name</th>
-														<th className="text-center">Price</th>
-
-														<th>Discount</th>
+														<th>Service</th>
+														<th className="text-center">rate</th>
+														<th>percentage</th>
+														{/* <th>Discount</th> */}
 														<th>Actions</th>
 													</tr>
 												</thead>
 												<tbody>
-													<tr>
-														<td>
-															<div className="user-with-avatar">0011</div>
-														</td>
-														<td>
-															<div className="smaller lighter">
-																Precious HMO
-															</div>
-														</td>
-														<td>
-															<span>₦500,000.00</span>
-														</td>
+													{!dataLoaded ? (
+														<tr>
+															<td colSpan="4" className="text-center">
+																<img alt="searching" src={searchingGIF} />
+															</td>
+														</tr>
+													) : (
+														<>
+															{props.hmoTariff.map((hmo, i) => {
+																return (
+																	<tr key={i}>
+																		<td>
+																			<div className="smaller lighter">
+																				{i + 1}
+																			</div>
+																		</td>
+																		<td>
+																			<div className="smaller lighter">
+																				{hmo.service.name}
+																			</div>
+																		</td>
+																		<td>
+																			<span>{hmo.rate}</span>
+																		</td>
 
-														<td className="nowrap">
-															<span>4%</span>
-														</td>
-														<td className="row-actions">
-															<a href="#">
-																<i className="os-icon os-icon-grid-10"></i>
-															</a>
-															<a href="#">
-																<i className="os-icon os-icon-ui-44"></i>
-															</a>
-															<a className="danger" href="#">
-																<i className="os-icon os-icon-ui-15"></i>
-															</a>
-														</td>
-													</tr>
-													<tr>
-														<td>
-															<div className="user-with-avatar">0012</div>
-														</td>
-														<td>
-															<div className="smaller lighter">Staff HMO</div>
-														</td>
-														<td>
-															<span>₦250,000.00</span>
-														</td>
-
-														<td className="nowrap">
-															<span>3.5%</span>
-														</td>
-														<td className="row-actions">
-															<a href="#">
-																<i className="os-icon os-icon-grid-10"></i>
-															</a>
-															<a href="#">
-																<i className="os-icon os-icon-ui-44"></i>
-															</a>
-															<a className="danger" href="#">
-																<i className="os-icon os-icon-ui-15"></i>
-															</a>
-														</td>
-													</tr>
-													<tr>
-														<td>
-															<div className="user-with-avatar">0013</div>
-														</td>
-														<td>
-															<div className="smaller lighter">Mansard HMO</div>
-														</td>
-														<td>
-															<span>₦50,000.00</span>
-														</td>
-
-														<td className="nowrap">
-															<span>6%</span>
-														</td>
-														<td className="row-actions">
-															<a href="#">
-																<i className="os-icon os-icon-grid-10"></i>
-															</a>
-															<a href="#">
-																<i className="os-icon os-icon-ui-44"></i>
-															</a>
-															<a className="danger" href="#">
-																<i className="os-icon os-icon-ui-15"></i>
-															</a>
-														</td>
-													</tr>
-													<tr>
-														<td>
-															<div className="user-with-avatar">0014</div>
-														</td>
-														<td>
-															<div className="smaller lighter">Zenith HMO</div>
-														</td>
-														<td>
-															<span>₦18,500.00</span>
-														</td>
-
-														<td className="nowrap">
-															<span>3.35%</span>
-														</td>
-														<td className="row-actions">
-															<a href="#">
-																<i className="os-icon os-icon-grid-10"></i>
-															</a>
-															<a href="#">
-																<i className="os-icon os-icon-ui-44"></i>
-															</a>
-															<a className="danger" href="#">
-																<i className="os-icon os-icon-ui-15"></i>
-															</a>
-														</td>
-													</tr>
-													<tr>
-														<td>
-															<div className="user-with-avatar">0015</div>
-														</td>
-														<td>
-															<div className="smaller lighter">
-																Central Bank
-															</div>
-														</td>
-														<td>
-															<span>₦314,000.00</span>
-														</td>
-
-														<td className="nowrap">
-															<span>4%</span>
-														</td>
-														<td className="row-actions">
-															<a href="#">
-																<i className="os-icon os-icon-grid-10"></i>
-															</a>
-															<a href="#">
-																<i className="os-icon os-icon-ui-44"></i>
-															</a>
-															<a className="danger" href="#">
-																<i className="os-icon os-icon-ui-15"></i>
-															</a>
-														</td>
-													</tr>
-													<tr>
-														<td>
-															<div className="user-with-avatar">016</div>
-														</td>
-														<td>
-															<div className="smaller lighter">
-																Reliance HMO
-															</div>
-														</td>
-														<td>
-															<span>₦300,000.00</span>
-														</td>
-
-														<td className="nowrap">
-															<span>8%</span>
-														</td>
-														<td className="row-actions">
-															<a href="#">
-																<i className="os-icon os-icon-grid-10"></i>
-															</a>
-															<a href="#">
-																<i className="os-icon os-icon-ui-44"></i>
-															</a>
-															<a className="danger" href="#">
-																<i className="os-icon os-icon-ui-15"></i>
-															</a>
-														</td>
-													</tr>
+																		<td className="nowrap">
+																			<span>{hmo.percentage}</span>
+																		</td>
+																		<td className="row-actions">
+																			<a href="#">
+																				<i
+																					className="os-icon os-icon-grid-10"
+																					onClick={() => alert(hmo)}></i>
+																			</a>
+																			<a href="#">
+																				<i className="os-icon os-icon-ui-44"></i>
+																			</a>
+																			<a className="danger">
+																				<i
+																					className="os-icon os-icon-ui-15"
+																					onClick={() => alert(hmo)}></i>
+																			</a>
+																		</td>
+																	</tr>
+																);
+															})}
+														</>
+													)}
 												</tbody>
 											</table>
 										</div>
@@ -241,4 +184,15 @@ const HmoBulkUpload = () => {
 	);
 };
 
-export default HmoBulkUpload;
+const mapStateToProps = state => {
+	return {
+		hmoList: state.hmo.hmo_list,
+		hmoTariff: state.hmo.hmo_tariff,
+	};
+};
+
+export default connect(mapStateToProps, {
+	uploadHmoTariff,
+	getAllHmos,
+	fetchHmoTariff,
+})(HmoBulkUpload);

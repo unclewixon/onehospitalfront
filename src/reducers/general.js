@@ -21,6 +21,8 @@ import {
 	TOGGLE_CREATE_VOUCHER,
 	TOGGLE_UPLOAD_SERVICE,
 	TOGGLE_UPLOAD_DIAGNOSIS,
+	TOGGLE_UPLOAD_HMO,
+	TOGGLE_UPLOAD_HMO_TARIFF,
 	TOGGLE_EDIT_SERIVCE,
 	TOGGLE_CREATE_LABOUR_MEASUREMENT,
 	TOGGLE_CREATE_RISK_ASSESSMENT,
@@ -58,6 +60,8 @@ const INITIAL_STATE = {
 	payroll_staff: null,
 	upload_service: false,
 	upload_diagnosis: false,
+	upload_hmo: false,
+	upload_hmo_tariff: false,
 	create_clinical_task: false,
 	edit_service: { status: false, data: null },
 	openEncounter: false,
@@ -128,6 +132,10 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, upload_service: action.payload };
 		case TOGGLE_UPLOAD_DIAGNOSIS:
 			return { ...state, upload_diagnosis: action.payload };
+		case TOGGLE_UPLOAD_HMO:
+			return { ...state, upload_hmo: action.payload };
+		case TOGGLE_UPLOAD_HMO_TARIFF:
+			return { ...state, upload_hmo_tariff: action.payload };
 		case TOGGLE_EDIT_SERIVCE:
 			return { ...state, edit_service: action.payload };
 		case TOGGLE_OPEN_ENCOUNTER:
