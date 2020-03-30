@@ -13,12 +13,17 @@ import {
 	deleteTransaction,
 } from '../actions/transaction';
 import Tooltip from 'antd/lib/tooltip';
-import { approveTransaction } from '../actions/general';
+import {
+	applyVoucher,
+	approveTransaction,
+	createVoucher,
+} from '../actions/general';
 
 export class PayPointTable extends Component {
 	state = {
 		loading: false,
 	};
+
 	componentDidMount() {
 		this.fetchTransaction();
 	}
@@ -59,6 +64,9 @@ export class PayPointTable extends Component {
 
 	doApproveTransaction = item => {
 		this.props.approveTransaction(item);
+	};
+	doApplyVoucher = item => {
+		this.props.applyVoucher(item);
 	};
 
 	render() {
@@ -110,6 +118,14 @@ export class PayPointTable extends Component {
 														: 'Not specified'}
 												</td>
 												<td className="text-center row-actions">
+													<Tooltip title="Apply Voucher">
+														<a
+															className="secondary"
+															onClick={() => this.doApplyVoucher(transaction)}>
+															<i className="os-icon os-icon-thumbs-up" />
+														</a>
+													</Tooltip>
+
 													<Tooltip title="Approve Transactions">
 														<a
 															className="secondary"
@@ -153,6 +169,7 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
 	loadTodayTransaction,
+	applyVoucher,
 	approveTransaction,
 	deleteTransaction,
 })(PayPointTable);

@@ -249,7 +249,6 @@ ModalApproveTransaction = reduxForm({
 
 const mapStateToProps = (state, ownProps) => {
 	const items = state.general.approve_transaction;
-	console.log(items);
 	return {
 		initialValues: {
 			amount_paid: items.q_amount,

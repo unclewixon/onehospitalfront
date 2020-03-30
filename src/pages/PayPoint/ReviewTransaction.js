@@ -13,6 +13,7 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 
 import { loadTransaction, deleteTransaction } from '../../actions/transaction';
+import { applyVoucher, approveTransaction } from '../../actions/general';
 
 const { RangePicker } = DatePicker;
 const departments = [
@@ -102,6 +103,12 @@ class ReviewTransaction extends Component {
 	};
 	confirmDelete = data => {
 		confirmAction(this.onDeleteTransaction, data);
+	};
+	doApproveTransaction = item => {
+		this.props.approveTransaction(item);
+	};
+	doApplyVoucher = item => {
+		this.props.applyVoucher(item);
 	};
 
 	render() {
@@ -227,12 +234,36 @@ class ReviewTransaction extends Component {
 																? transaction.q_paymentType
 																: 'Not specified'}
 														</td>
-														<td className="text-center">
-															<a
-																className="text-danger"
-																onClick={() => this.confirmDelete(transaction)}>
-																<i className="os-icon os-icon-ui-15"></i>
-															</a>
+														<td className="text-center row-actions">
+															<Tooltip title="Apply Voucher">
+																<a
+																	className="secondary"
+																	onClick={() =>
+																		this.doApplyVoucher(transaction)
+																	}>
+																	<i className="os-icon os-icon-thumbs-up" />
+																</a>
+															</Tooltip>
+
+															<Tooltip title="Approve Transactions">
+																<a
+																	className="secondary"
+																	onClick={() =>
+																		this.doApproveTransaction(transaction)
+																	}>
+																	<i className="os-icon os-icon-folder-plus" />
+																</a>
+															</Tooltip>
+
+															<Tooltip title="Delete Transactions">
+																<a
+																	className="text-danger"
+																	onClick={() =>
+																		this.confirmDelete(transaction)
+																	}>
+																	<i className="os-icon os-icon-ui-15"></i>
+																</a>
+															</Tooltip>
 														</td>
 													</tr>
 												);
@@ -259,6 +290,9 @@ const mapStateToProps = state => {
 	};
 };
 
-export default connect(mapStateToProps, { loadTransaction, deleteTransaction })(
-	ReviewTransaction
-);
+export default connect(mapStateToProps, {
+	applyVoucher,
+	approveTransaction,
+	loadTransaction,
+	deleteTransaction,
+})(ReviewTransaction);
