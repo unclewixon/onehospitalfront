@@ -17,84 +17,87 @@ const fetal = [
 ];
 class GeneralAssessment extends Component {
 	render() {
-		const { handleSubmit, error } = this.props;
+		const { handleSubmit, error, page } = this.props;
 		return (
-			<div className="form-block">
-				<form onSubmit={handleSubmit}>
-					{error && (
-						<div
-							className="alert alert-danger"
-							dangerouslySetInnerHTML={{
-								__html: `<strong>Error!</strong> ${error}`,
-							}}
-						/>
-					)}
-					<div className="row">
-						<div className="col-sm-6">
-							<Field
-								id="heart_of_fundus"
-								name="heart_of_fundus"
-								component={renderTextInput}
-								label="Height of Fundus (cm)"
-								type="text"
-								placeholder="Enter height of fundus"
+			<>
+				<h6 className="element-header">Step {page}. General Assessment</h6>
+				<div className="form-block">
+					<form onSubmit={handleSubmit}>
+						{error && (
+							<div
+								className="alert alert-danger"
+								dangerouslySetInnerHTML={{
+									__html: `<strong>Error!</strong> ${error}`,
+								}}
 							/>
-						</div>
-						<div className="col-sm-6">
-							<Field
-								id="fetal_heart_rate"
-								name="fetal_heart_rate"
-								component={renderTextInput}
-								label="Fetal Heart Rate"
-								type="text"
-								placeholder="Enter fetal heart rate"
-							/>
-						</div>
-					</div>
-
-					<div className="row">
-						<div className="col-sm-4">
-							<Field
-								id="presentation_position_fetals"
-								name="presentation_position_fetals"
-								component={renderSelect}
-								label="Presentation and Position of Fetals"
-								placeholder="Select Presentation and Position of Fetals"
-								data={fetal}
-							/>
-						</div>
-						<div className="col-sm-4">
-							<Field
-								id="fetal_lie"
-								name="fetal_lie"
-								component={renderSelect}
-								label="Fetal Lie"
-								placeholder="Select fetal lie"
-								data={fetal}
-							/>
+						)}
+						<div className="row">
+							<div className="col-sm-6">
+								<Field
+									id="heart_of_fundus"
+									name="heart_of_fundus"
+									component={renderTextInput}
+									label="Height of Fundus (cm)"
+									type="text"
+									placeholder="Enter height of fundus"
+								/>
+							</div>
+							<div className="col-sm-6">
+								<Field
+									id="fetal_heart_rate"
+									name="fetal_heart_rate"
+									component={renderTextInput}
+									label="Fetal Heart Rate"
+									type="text"
+									placeholder="Enter fetal heart rate"
+								/>
+							</div>
 						</div>
 
-						<div className="col-sm-4">
-							<Field
-								id="relationship_to_brim"
-								name="relationship_to_brim"
-								component={renderSelect}
-								label="Relationship to Brim"
-								placeholder="Select Relationship to Brim"
-								data={fetal}
-							/>
-						</div>
-					</div>
+						<div className="row">
+							<div className="col-sm-4">
+								<Field
+									id="presentation_position_fetals"
+									name="presentation_position_fetals"
+									component={renderSelect}
+									label="Presentation and Position of Fetals"
+									placeholder="Select Presentation and Position of Fetals"
+									data={fetal}
+								/>
+							</div>
+							<div className="col-sm-4">
+								<Field
+									id="fetal_lie"
+									name="fetal_lie"
+									component={renderSelect}
+									label="Fetal Lie"
+									placeholder="Select fetal lie"
+									data={fetal}
+								/>
+							</div>
 
-					<div className="row">
-						<div className="col-sm-12 text-right">
-							<button className="btn btn-primary" type="submit">
-								Next
-							</button>
+							<div className="col-sm-4">
+								<Field
+									id="relationship_to_brim"
+									name="relationship_to_brim"
+									component={renderSelect}
+									label="Relationship to Brim"
+									placeholder="Select Relationship to Brim"
+									data={fetal}
+								/>
+							</div>
 						</div>
-					</div>
-				</form>
-			</div>
+
+						<div className="row">
+							<div className="col-sm-12 text-right">
+								<button className="btn btn-primary" type="submit">
+									Next
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</>
 		);
 	}
 }

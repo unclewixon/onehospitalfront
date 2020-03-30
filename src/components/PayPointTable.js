@@ -79,13 +79,14 @@ export class PayPointTable extends Component {
 									<th className="text-center">DEPARTMENT</th>
 									<th className="text-center">SERVICE</th>
 									<th className="text-center">AMOUNT (&#x20A6;)</th>
+									<th className="text-center">PAYMENT TYPE (&#x20A6;)</th>
 									<th className="text-right">ACTIONS</th>
 								</tr>
 							</thead>
 							<tbody>
 								{loading ? (
 									<tr>
-										<td colSpan="4" className="text-center">
+										<td colSpan="6" className="text-center">
 											<img alt="searching" src={searchingGIF} />
 										</td>
 									</tr>
@@ -93,16 +94,21 @@ export class PayPointTable extends Component {
 									transactions.map(transaction => {
 										return (
 											<tr key={transaction.q_id}>
-												<td className="text-center">
+												<td className="">
 													{`${transaction.surname} ${transaction.other_names}`}
 												</td>
-												<td className="text-center">{transaction.deptname}</td>
-												<td className="text-center">
+												<td className="">{transaction.deptname}</td>
+												<td className="">
 													{transaction.q_service_id
 														? transaction.q_service_id
 														: 'No service yet'}
 												</td>
-												<td className="text-center">{transaction.q_amount}</td>
+												<td className="">{transaction.q_amount}</td>
+												<td className="">
+													{transaction.q_paymentType
+														? transaction.q_paymentType
+														: 'Not specified'}
+												</td>
 												<td className="text-center row-actions">
 													<Tooltip title="Approve Transactions">
 														<a
@@ -126,7 +132,7 @@ export class PayPointTable extends Component {
 										);
 									})
 								) : (
-									<tr className="text-center">
+									<tr colSpan="6" className="text-center">
 										<td>No transaction for today yet</td>
 									</tr>
 								)}

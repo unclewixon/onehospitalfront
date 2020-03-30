@@ -188,6 +188,7 @@ class ReviewTransaction extends Component {
 											<th className="text-center">DEPARTMENT</th>
 											<th className="text-center">SERVICE</th>
 											<th className="text-center">AMOUNT (&#x20A6;)</th>
+											<th className="text-center">PAYMENT TYPE</th>
 											<th className="text-right">ACTIONS</th>
 										</tr>
 									</thead>
@@ -220,6 +221,11 @@ class ReviewTransaction extends Component {
 														</td>
 														<td className="text-center">
 															{transaction.q_amount}
+														</td>
+														<td className="text-center">
+															{transaction.q_paymentType
+																? transaction.q_paymentType
+																: 'Not specified'}
 														</td>
 														<td className="text-center">
 															<a
