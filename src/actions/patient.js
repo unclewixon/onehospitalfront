@@ -121,7 +121,7 @@ export const createLabRequest = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
-				.post(`${API_URI}/`, {
+				.post(`${API_URI}/patient/save-request`, {
 					requestType: data.service_center,
 					requestBody: {
 						specialization: "",
