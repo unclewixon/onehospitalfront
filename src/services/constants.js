@@ -119,6 +119,14 @@ export const paymentType = [
 	{ value: 'Transfer', label: 'Transfer' },
 ];
 
+export const transactionPaymentType = [
+	{ id: 'POS', name: 'POS' },
+	{ id: 'Cash', name: 'Cash' },
+	{ id: 'Cheque', name: 'Cheque' },
+	{ id: 'Transfer', name: 'Transfer' },
+	{ id: 'Voucher', name: 'Voucher' },
+];
+
 export const insuranceStatus = [
 	{ value: 'HMO', label: 'HMO' },
 	{ value: 'Cooperate', label: 'Cooperate' },

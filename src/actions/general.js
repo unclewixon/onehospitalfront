@@ -29,6 +29,7 @@ import {
 	TOGGLE_EDIT_SERIVCE,
 	TOGGLE_CREATE_CLINICAL_TASK,
 	TOGGLE_OPEN_ENCOUNTER,
+	TOGGLE_APPROVE_TRANSACTION,
 } from './types';
 
 export const togglePreloading = status => {
@@ -99,6 +100,13 @@ export const toggleCreateInventory = status => {
 export const toggleEditInventory = status => {
 	return {
 		type: TOGGLE_EDIT_INVENTORY,
+		payload: status,
+	};
+};
+
+export const toggleApproveTransaction = status => {
+	return {
+		type: TOGGLE_APPROVE_TRANSACTION,
 		payload: status,
 	};
 };
@@ -259,6 +267,7 @@ export const closeModals = () => {
 		dispatch(toggleEditStaff(false));
 		dispatch(toggleCreateInventory(false));
 		dispatch(toggleEditInventory(false));
+		dispatch(toggleApproveTransaction(false));
 		dispatch(toggleUpdateQuantity(false));
 		dispatch(toggleViewAppraisal(false));
 		dispatch(toggleViewPayrollHistory(false));
@@ -345,6 +354,14 @@ export const editInventory = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleEditInventory(action));
+	};
+};
+
+export const approveTransaction = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleApproveTransaction(action));
 	};
 };
 

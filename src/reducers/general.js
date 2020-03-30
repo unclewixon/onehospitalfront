@@ -28,6 +28,7 @@ import {
 	TOGGLE_CREATE_RECORD_DELIVERY,
 	TOGGLE_OPEN_ENCOUNTER,
 	TOGGLE_CREATE_CLINICAL_TASK,
+	TOGGLE_APPROVE_TRANSACTION,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -84,6 +85,8 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, create_inventory: action.payload };
 		case TOGGLE_EDIT_INVENTORY:
 			return { ...state, edit_inventory: action.payload };
+		case TOGGLE_APPROVE_TRANSACTION:
+			return { ...state, approve_transaction: action.payload };
 		case TOGGLE_UPDATE_QTY:
 			return { ...state, update_inventory_qty: action.payload };
 		case TOGGLE_REGISTER_NEW_PATIENT:
