@@ -34,7 +34,7 @@ const Antennatal = lazy(() => import('./pages/Antennatal/index'));
 const IVF = lazy(() => import('./pages/IVF'));
 const Nicu = lazy(() => import('./pages/Nicu'));
 const LabMgt = lazy(() => import('./pages/LabourMgt/index'));
-const Cafeteria = lazy(() => import('./pages/Cafeteria'));
+const Cafeteria = lazy(() => import('./pages/Cafeteria/index'));
 const Logout = lazy(() => import('./pages/Logout'));
 
 const storage = new SSRStorage();
