@@ -32,11 +32,14 @@ const Respiration = ({ vitals }) => {
 	useEffect(() => {
 		try {
 			let data = [];
-			vitals.forEach((item, index) => {
-				const date = moment(item.createdAt).format('DD-MM-YY');
-				const res = { name: date, item: item.reading.respiration };
-				data = [...data, res];
-			});
+			const cloneVitals = [...vitals];
+			cloneVitals
+				.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1))
+				.forEach((item, index) => {
+					const date = moment(item.createdAt).format('DD-MM-YY');
+					const res = { name: date, item: item.reading.respiration };
+					data = [...data, res];
+				});
 
 			if (vitals.length > 0) {
 				let lastReading = vitals[0];
@@ -86,8 +89,8 @@ const Respiration = ({ vitals }) => {
 
 const mapStateToProps = (state, ownProps) => {
 	return {
-		patient: state.user.patient.filter(c => c.readingType === info.title),
-		vitals: state.patient.vitals,
+		patient: state.user.patient,
+		vitals: state.patient.vitals.filter(c => c.readingType === info.title),
 	};
 };
 export default connect(mapStateToProps)(Respiration);

@@ -39,7 +39,7 @@ class TakeReadings extends Component {
 		if (info.type === 'blood-pressure') {
 			_data = { blood_pressure: `${data.systolic}/${data.diastolic}` };
 		} else if (info.type === 'bmi') {
-			_data = { bmi: (data.weight / data.height).toFixed(2) };
+			_data = { bmi: (data.weight / (data.height * data.height)).toFixed(2) };
 		} else if (info.type === 'bsa') {
 			_data = {
 				bsa: (Math.sqrt(data.height) * (data.weight / 3600)).toFixed(2),

@@ -106,6 +106,11 @@ export const maritalStatus = [
 	{ value: 'Married', label: 'Married' },
 ];
 
+export const yesNO = [
+	{ value: 'Yes', label: 'Yes' },
+	{ value: 'No', label: 'No' },
+];
+
 export const insuranceStatus = [
 	{ value: 'HMO', label: 'HMO' },
 	{ value: 'Cooperate', label: 'Cooperate' },
