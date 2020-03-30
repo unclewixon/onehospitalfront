@@ -12,6 +12,7 @@ import {
 	loadTodayTransaction,
 	deleteTransaction,
 } from '../actions/transaction';
+import Tooltip from 'antd/lib/tooltip';
 
 export class PayPointTable extends Component {
 	state = {
@@ -96,12 +97,20 @@ export class PayPointTable extends Component {
 														: 'No service yet'}
 												</td>
 												<td className="text-center">{transaction.q_amount}</td>
-												<td className="text-center">
-													<a
-														className="text-danger"
-														onClick={() => this.confirmDelete(transaction)}>
-														<i className="os-icon os-icon-ui-15"></i>
-													</a>
+												<td className="text-center row-actions">
+													<Tooltip title="Approve Transactions">
+														<a className="secondary">
+															<i className="os-icon os-icon-folder-plus" />
+														</a>
+													</Tooltip>
+
+													<Tooltip title="Delete Transactions">
+														<a
+															className="text-danger"
+															onClick={() => this.confirmDelete(transaction)}>
+															<i className="os-icon os-icon-ui-15"></i>
+														</a>
+													</Tooltip>
 												</td>
 											</tr>
 										);
