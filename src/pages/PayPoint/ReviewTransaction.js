@@ -116,7 +116,7 @@ class ReviewTransaction extends Component {
 						<h6 className="element-header">Filter by:</h6>
 
 						<form className="row">
-							<div className="form-group col-md-6">
+							<div className="form-group col-md-3">
 								<label className="" htmlFor="patient_id">
 									ID
 								</label>
@@ -136,11 +136,11 @@ class ReviewTransaction extends Component {
 									})}
 								</select>
 							</div>
-							<div className="form-group col-md-6">
+							<div className="form-group col-md-3">
 								<label>From - To</label>
 								<RangePicker onChange={e => this.dateChange(e)} />
 							</div>
-							<div className="form-group col-md-6">
+							<div className="form-group col-md-3">
 								<label className="mr-2 " htmlFor="id">
 									Status
 								</label>
@@ -160,7 +160,7 @@ class ReviewTransaction extends Component {
 									})}
 								</select>
 							</div>
-							<div className="form-group col-md-6 mt-4">
+							<div className="form-group col-md-3 mt-4">
 								<div
 									className="btn btn-sm btn-primary btn-upper text-white"
 									onClick={this.doFilter}>
