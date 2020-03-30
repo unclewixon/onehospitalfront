@@ -28,9 +28,12 @@ class ModalUploadHmo extends Component {
 			.then(response => {
 				this.setState({ Loading: false });
 				this.props.closeModals(false);
-				notifySuccess('Service file uploaded');
+				notifySuccess('Hmos uploaded');
 			})
 			.catch(error => {
+				this.setState({ Loading: false });
+				this.props.closeModals(false);
+				notifyError(e.message || 'could not upload file');
 				this.setState({ Loading: false });
 			});
 	};
@@ -61,7 +64,7 @@ class ModalUploadHmo extends Component {
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
-							<h4 className="onboarding-title">Upload Diagnosis</h4>
+							<h4 className="onboarding-title">Bulk upload hmo</h4>
 
 							<form onSubmit={this.onUpload}>
 								<div className="form-group">

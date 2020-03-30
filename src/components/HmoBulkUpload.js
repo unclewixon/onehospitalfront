@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { uploadHmoTariff } from '../actions/general';
+import { uploadHmoTariff, uploadHmo } from '../actions/general';
 import { notifySuccess, notifyError } from '../services/notify';
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
@@ -82,11 +82,18 @@ const HmoBulkUpload = props => {
 									<div className="element-box-tp">
 										<div className="controls-above-table">
 											<div className="row">
-												<div className="col-sm-6">
+												<div className="col-sm-3">
 													<button
 														className="btn btn-sm btn-secondary"
 														onClick={() => props.uploadHmoTariff(true)}>
 														Upload HMO Services
+													</button>
+												</div>
+												<div className="col-sm-3">
+													<button
+														className="btn btn-sm btn-secondary"
+														onClick={() => props.uploadHmo(true)}>
+														Upload HMOS
 													</button>
 												</div>
 												<div className="col-sm-6">
@@ -193,6 +200,7 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
 	uploadHmoTariff,
+	uploadHmo,
 	getAllHmos,
 	fetchHmoTariff,
 })(HmoBulkUpload);

@@ -40,10 +40,11 @@ class ModalUploadHmoTariff extends Component {
 			.then(response => {
 				this.setState({ Loading: false });
 				this.props.closeModals(false);
-				notifySuccess('Service file uploaded');
+				notifySuccess('Hmo services  uploaded');
 			})
 			.catch(error => {
 				this.setState({ Loading: false });
+				notifyError(e.message || 'could not upload file');
 			});
 	};
 	componentDidMount() {
