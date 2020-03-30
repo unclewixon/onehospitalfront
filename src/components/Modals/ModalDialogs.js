@@ -27,6 +27,7 @@ import ModalCreateRecordVital from './ModalCreateRecordVital';
 import OpenEncounter from '../Patient/Modals/OpenEncounter';
 import ModalCreateVoucher from './ModalCreateVoucher';
 import ModalCreateClinicalTask from './ModalCreateClinicalTask';
+import ModalApproveTransaction from './ModalApproveTransaction';
 
 const ModalDialogs = ({
 	create_staff,
@@ -35,6 +36,7 @@ const ModalDialogs = ({
 	show_history,
 	create_inventory,
 	edit_inventory,
+	approve_transaction,
 	update_inventory_qty,
 	view_appraisal,
 	view_payroll_history,
@@ -64,6 +66,7 @@ const ModalDialogs = ({
 			{show_history && <ModalLeaveHistory />}
 			{create_inventory && <ModalCreateInventory />}
 			{edit_inventory && <ModalEditInventory />}
+			{approve_transaction && <ModalApproveTransaction />}
 			{update_inventory_qty && <ModalUpdInventoryQty />}
 			{view_appraisal && <ModalViewAppraisal />}
 			{view_payroll_history && <ModalPayrollHistory />}
@@ -96,6 +99,7 @@ const mapStateToProps = (state, ownProps) => {
 		add_task: state.general.add_task,
 		create_inventory: state.general.create_inventory,
 		edit_inventory: state.general.edit_inventory,
+		approve_transaction: state.general.approve_transaction,
 		update_inventory_qty: state.general.update_inventory_qty,
 		register_new_patient: state.general.register_new_patient,
 		create_new_appointment: state.general.create_new_appointment,
