@@ -191,3 +191,19 @@ export const encounters = [
 	'Plan',
 	'Consumable',
 ];
+
+export const paymentType = [
+	{
+		value: 'Cash',
+		label: 'Cash',
+	},
+	{
+		value: 'Transfer',
+		label: 'Transfer',
+	},
+
+	{
+		value: 'POS',
+		label: 'POS',
+	},
+];
