@@ -12,6 +12,7 @@ import {
 	loadTodayTransaction,
 	deleteTransaction,
 } from '../actions/transaction';
+import Tooltip from 'antd/lib/tooltip';
 
 export class PayPointTable extends Component {
 	state = {
@@ -79,7 +80,7 @@ export class PayPointTable extends Component {
 							<tbody>
 								{loading ? (
 									<tr>
-										<td colSpan="4" className="text-center">
+										<td colSpan="6" className="text-center">
 											<img alt="searching" src={searchingGIF} />
 										</td>
 									</tr>
@@ -87,33 +88,41 @@ export class PayPointTable extends Component {
 									transactions.map(transaction => {
 										return (
 											<tr key={transaction.q_id}>
-												<td className="text-center">
+												<td className="">
 													{`${transaction.surname} ${transaction.other_names}`}
 												</td>
-												<td className="text-center">{transaction.deptname}</td>
-												<td className="text-center">
+												<td className="">{transaction.deptname}</td>
+												<td className="">
 													{transaction.q_service_id
 														? transaction.q_service_id
 														: 'No service yet'}
 												</td>
-												<td className="text-center">{transaction.q_amount}</td>
-												<td className="text-center">
+												<td className="">{transaction.q_amount}</td>
+												<td className="">
 													{transaction.q_paymentType
 														? transaction.q_paymentType
 														: 'Not specified'}
 												</td>
-												<td className="text-center">
-													<a
-														className="text-danger"
-														onClick={() => this.confirmDelete(transaction)}>
-														<i className="os-icon os-icon-ui-15"></i>
-													</a>
+												<td className="text-center row-actions">
+													<Tooltip title="Approve Transactions">
+														<a className="secondary">
+															<i className="os-icon os-icon-folder-plus" />
+														</a>
+													</Tooltip>
+
+													<Tooltip title="Delete Transactions">
+														<a
+															className="text-danger"
+															onClick={() => this.confirmDelete(transaction)}>
+															<i className="os-icon os-icon-ui-15"></i>
+														</a>
+													</Tooltip>
 												</td>
 											</tr>
 										);
 									})
 								) : (
-									<tr className="text-center">
+									<tr colSpan="6" className="text-center">
 										<td>No transaction for today yet</td>
 									</tr>
 								)}
