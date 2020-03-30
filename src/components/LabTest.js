@@ -5,7 +5,6 @@ import { confirmAction } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
-import { confirmAlert } from 'react-confirm-alert';
 
 import {
 	addLabTest,
@@ -23,10 +22,11 @@ const LabTest = props => {
 		price: '',
 		testType: 'single',
 		selectTestType: '',
+		description: '',
 		edit: false,
 		create: true,
 	};
-	const [{ name, category, price, testType }, setState] = useState(
+	const [{ name, category, price, testType, description }, setState] = useState(
 		initialState
 	);
 	const [Loading, setLoading] = useState(false);
@@ -35,9 +35,25 @@ const LabTest = props => {
 	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [parameters, setParameter] = useState(null);
+	const [updateParameter, setUpdateParameter] = useState({});
+	const [referenceRange, setReferenceRange] = useState({});
 
 	const handleMultipleSelectInput = selectedOption => {
+		let param = {};
+		selectedOption &&
+			selectedOption.map(option => {
+				param[option.label] = option;
+				return param;
+			});
+		setUpdateParameter(param);
 		setParameter(selectedOption);
+	};
+
+	const handleParamInputChange = e => {
+		const { name, value } = e.target;
+		let newRange = { ...referenceRange };
+		newRange[name] = value;
+		setReferenceRange(newRange);
 	};
 
 	const handleInputChange = e => {
@@ -48,12 +64,19 @@ const LabTest = props => {
 	const onAddLabTest = e => {
 		setLoading(true);
 		e.preventDefault();
+		let params =
+			parameters &&
+			parameters.map(param => {
+				param.value = `${param.value}${referenceRange[param.label]}`;
+				return param;
+			});
 		props
-			.addLabTest({ name, price, category, parameters, testType })
+			.addLabTest({ name, price, category, parameters: params, testType, description })
 			.then(response => {
 				setState({ ...initialState });
 				setLoading(false);
 				setParameter(null);
+				setUpdateParameter({});
 				notifySuccess('Lab test created');
 			})
 			.catch(error => {
@@ -66,7 +89,7 @@ const LabTest = props => {
 		e.preventDefault();
 		props
 			.updateLabTest(
-				{ id: data.id, name, price, category, parameters, testType },
+				{ id: data.id, name, price, category, parameters, testType, description },
 				data
 			)
 			.then(response => {
@@ -84,7 +107,6 @@ const LabTest = props => {
 	};
 
 	const onClickEdit = data => {
-		console.log(data);
 		setSubmitButton({ edit: true, create: false });
 		setState(prevState => ({
 			...prevState,
@@ -94,6 +116,7 @@ const LabTest = props => {
 			testType: data.test_type ? `${data.test_type}` : null,
 			parameters: data.parameter_type ? `${data.parameter_type}` : null,
 			category: data.category ? category : null,
+			description: data.description ? description : null,
 		}));
 		setParameter(data.parameters);
 		getDataToEdit(data);
@@ -189,7 +212,7 @@ const LabTest = props => {
 			<div className="col-lg-4 col-xxl-3  d-xxl-block">
 				<div className="pipeline white lined-warning">
 					<form onSubmit={edit ? onEditLabTest : onAddLabTest}>
-						<h6 className="form-header">Create Test</h6>
+						<h6 className="form-header">{ edit ? "Edit Test" : "Create Test"}</h6>
 						<div className="form-group">
 							<input
 								className="form-control"
@@ -200,7 +223,7 @@ const LabTest = props => {
 								value={name}
 							/>
 						</div>
-						{/* <div className="form-group">
+						<div className="form-group">
 							<input
 								className="form-control"
 								placeholder="Test Price"
@@ -209,16 +232,14 @@ const LabTest = props => {
 								onChange={handleInputChange}
 								value={price}
 							/>
-						</div> */}
+						</div>
 						<div className="form-group">
 							<select
 								className="form-control"
 								name="testType"
 								value={testType}
 								onChange={handleInputChange}>
-								{testType && <option value={testType}>{testType}</option>}
-								<option value="single">Single</option>;
-								<option value="combo">Combo</option>;
+								{testType && (<option value={testType}>{testType}</option>)}
 							</select>
 						</div>
 						<div className="form-group">
@@ -227,10 +248,7 @@ const LabTest = props => {
 								name="category"
 								onChange={handleInputChange}
 								value={category}>
-								{category && (
-									<option value={category.id}>{category.name}</option>
-								)}
-								{!category && <option value={''}></option>};
+								{!category && <option value={''}>Select Category</option>};
 								{props.LabCategories.map((category, i) => {
 									return (
 										<option key={i} value={category.id}>
@@ -244,6 +262,29 @@ const LabTest = props => {
 							<legend>
 								<span>Parameters</span>
 							</legend>
+							{Object.keys(updateParameter).length
+								? Object.keys(updateParameter).map(val => {
+										return (
+											<div className="row">
+												<div className="col-5">
+													<span className="small centered">
+														{`${updateParameter[val]['value']}-`}{' '}
+													</span>
+												</div>
+												<div className="col-7">
+													<input
+														className="form-control"
+														placeholder="Enter Range"
+														type="text"
+														name={val}
+														onChange={handleParamInputChange}
+														value={referenceRange[val]}
+													/>
+												</div>
+											</div>
+										);
+								  })
+								: null}
 							<Select
 								className="form-control"
 								isMulti
@@ -251,6 +292,18 @@ const LabTest = props => {
 								options={options}
 								value={parameters}
 							/>
+						</div>
+						<div className="form-group">
+							<textarea
+								className="form-control"
+								placeholder="Description"
+								type="textarea"
+								name="description"
+								onChange={handleInputChange}
+								value={description}
+								rows={4}
+							>
+							</textarea>
 						</div>
 						<fieldset className="form-group">
 							<legend></legend>

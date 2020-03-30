@@ -56,6 +56,10 @@ import {
 	GET_ALL_REQUEST_SERVICES,
 	UPDATE_REQUEST_SERVICE,
 	DELETE_REQUEST_SERVICE,
+	ADD_LAB_GROUP,
+	UPDATE_LAB_GROUP,
+	DELETE_LAB_GROUP,
+	GET_ALL_LAB_GROUPS,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -65,6 +69,7 @@ const INITIAL_STATE = {
 	lab_tests: [],
 	lab_categories: [],
 	lab_parameters: [],
+	lab_groups: [],
 	leave_categories: [],
 	specializations: [],
 	consultating_room: [],
@@ -166,6 +171,30 @@ const settings = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				lab_tests: state.lab_tests.filter(
+					deletedItem => deletedItem.id !== action.payload.id
+				),
+			};
+			case ADD_LAB_GROUP:
+			return {
+				...state,
+				lab_groups: [...state.lab_groups, action.payload],
+			};
+		case GET_ALL_LAB_GROUPS:
+			return { ...state, lab_groups: action.payload };
+		case UPDATE_LAB_GROUP:
+			return {
+				...state,
+				lab_groups: [
+					...state.lab_groups.filter(
+						deletedItem => deletedItem.id !== action.previousData.id
+					),
+					action.payload,
+				],
+			};
+		case DELETE_LAB_GROUP:
+			return {
+				...state,
+				lab_groups: state.lab_groups.filter(
 					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};
