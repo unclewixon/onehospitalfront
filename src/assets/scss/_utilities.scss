@@ -212,3 +212,7 @@ a.with-avatar {
 .el-tablo .value {
 	font-size: 2rem;
 }
+
+div.react-confirm-alert-overlay {
+	z-index: 9999;
+}
