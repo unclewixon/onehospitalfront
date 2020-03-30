@@ -46,29 +46,35 @@ class AntennatalRequest extends Component {
 				<div className="element-wrapper">
 					<h6 className="element-header">Antennal Request</h6>
 					<div className="element-box">
-						{page === 1 && <GeneralAssessment onSubmit={this.nextPage} />}
+						{page === 1 && (
+							<GeneralAssessment onSubmit={this.nextPage} page={page} />
+						)}
 						{page === 2 && (
 							<GeneralComments
 								previousPage={this.previousPage}
 								onSubmit={this.nextPage}
+								page={page}
 							/>
 						)}
 						{page === 3 && (
 							<LabInvestigation
 								previousPage={this.previousPage}
 								onSubmit={this.nextPage}
+								page={page}
 							/>
 						)}
 						{page === 4 && (
 							<RadiologicalInvestigation
 								previousPage={this.previousPage}
 								onSubmit={this.nextPage}
+								page={page}
 							/>
 						)}
 						{page === 5 && (
 							<Prescription
 								previousPage={this.previousPage}
 								onSubmit={this.nextPage}
+								page={page}
 							/>
 						)}
 						{page === 6 && (
@@ -76,6 +82,7 @@ class AntennatalRequest extends Component {
 								submitting={submitting}
 								previousPage={this.previousPage}
 								onSubmit={this.nextPage}
+								page={page}
 							/>
 						)}
 					</div>

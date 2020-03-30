@@ -33,16 +33,19 @@ const BloodPressure = ({ vitals }) => {
 	useEffect(() => {
 		try {
 			let data = [];
-			vitals.forEach((item, index) => {
-				const date = moment(item.createdAt).format('DD-MM-YY');
-				const items = item.reading.blood_pressure.split('/');
-				const res = {
-					name: date,
-					systolic: items[0],
-					diastolic: items[1],
-				};
-				data = [...data, res];
-			});
+			const cloneVitals = [...vitals];
+			cloneVitals
+				.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1))
+				.forEach((item, index) => {
+					const date = moment(item.createdAt).format('DD-MM-YY');
+					const items = item.reading.blood_pressure.split('/');
+					const res = {
+						name: date,
+						systolic: items[0],
+						diastolic: items[1],
+					};
+					data = [...data, res];
+				});
 
 			if (vitals.length > 0) {
 				let lastReading = vitals[0];
@@ -51,6 +54,7 @@ const BloodPressure = ({ vitals }) => {
 					_reading: lastReading.reading.blood_pressure,
 				});
 			}
+			//.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1))
 			setData(data);
 		} catch (e) {}
 	}, [vitals]);

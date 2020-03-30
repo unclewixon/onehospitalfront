@@ -19,75 +19,78 @@ const fetal = [
 
 class LabInvestigation extends Component {
 	render() {
-		const { handleSubmit, previousPage, error } = this.props;
+		const { handleSubmit, previousPage, error, page } = this.props;
 		return (
-			<div className="form-block">
-				<form onSubmit={handleSubmit}>
-					{error && (
-						<div
-							className="alert alert-danger"
-							dangerouslySetInnerHTML={{
-								__html: `<strong>Error!</strong> ${error}`,
-							}}
-						/>
-					)}
-					<div className="row">
-						<div className="col-sm-6">
-							<Field
-								id="laboratory"
-								name="laboratory"
-								component={renderSelect}
-								label="Laboratory"
-								placeholder="Select Laboratory"
-								data={fetal}
+			<>
+				<h6 className="element-header">Step {page}. Lab Investigation</h6>
+				<div className="form-block">
+					<form onSubmit={handleSubmit}>
+						{error && (
+							<div
+								className="alert alert-danger"
+								dangerouslySetInnerHTML={{
+									__html: `<strong>Error!</strong> ${error}`,
+								}}
 							/>
+						)}
+						<div className="row">
+							<div className="col-sm-6">
+								<Field
+									id="laboratory"
+									name="laboratory"
+									component={renderSelect}
+									label="Laboratory"
+									placeholder="Select Laboratory"
+									data={fetal}
+								/>
+							</div>
+							<div className="col-sm-6">
+								<label>Lab combination</label>
+								<Field
+									name="lab_combos"
+									component={renderMultiselect}
+									defaultValue={[]}
+									data={['Guitar', 'Cycling', 'Hiking']}
+								/>
+							</div>
 						</div>
-						<div className="col-sm-6">
-							<label>Lab combination</label>
-							<Field
-								name="lab_combos"
-								component={renderMultiselect}
-								defaultValue={[]}
-								data={['Guitar', 'Cycling', 'Hiking']}
-							/>
+						<div className="row">
+							<div className="col-sm-6">
+								<label>Lab tests to request</label>
+								<Field
+									name="lab_tests_to_request"
+									component={renderMultiselect}
+									defaultValue={[]}
+									data={['Guitar', 'Cycling', 'Hiking']}
+								/>
+							</div>
+							<div className="col-sm-6">
+								<Field
+									id="preferred_specimen"
+									name="preferred_specimen"
+									component={renderTextInput}
+									label="Preferred Specimen(s)"
+									placeholder="Preferred Specimen(s)"
+								/>
+							</div>
 						</div>
-					</div>
-					<div className="row">
-						<div className="col-sm-6">
-							<label>Lab tests to request</label>
-							<Field
-								name="lab_tests_to_request"
-								component={renderMultiselect}
-								defaultValue={[]}
-								data={['Guitar', 'Cycling', 'Hiking']}
-							/>
-						</div>
-						<div className="col-sm-6">
-							<Field
-								id="preferred_specimen"
-								name="preferred_specimen"
-								component={renderTextInput}
-								label="Preferred Specimen(s)"
-								placeholder="Preferred Specimen(s)"
-							/>
-						</div>
-					</div>
 
-					<div className="row">
-						<div className="col-sm-12 text-right">
-							<button
-								className="btn btn-primary"
-								type="button"
-								onClick={previousPage}>
-								Previous
-							</button>
-							<button className="btn btn-primary" type="submit">
-								Next
-							</button>
+						<div className="row">
+							<div className="col-sm-12 text-right">
+								<button
+									className="btn btn-primary"
+									type="button"
+									onClick={previousPage}>
+									Previous
+								</button>
+								<button className="btn btn-primary" type="submit">
+									Next
+								</button>
+							</div>
 						</div>
-					</div>
-				</form>
-			</div>
+					</form>
+				</div>
+			</>
 		);
 	}
 }
