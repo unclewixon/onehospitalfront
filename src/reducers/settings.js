@@ -174,7 +174,7 @@ const settings = (state = INITIAL_STATE, action) => {
 					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};
-			case ADD_LAB_GROUP:
+		case ADD_LAB_GROUP:
 			return {
 				...state,
 				lab_groups: [...state.lab_groups, action.payload],

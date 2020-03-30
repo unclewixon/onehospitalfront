@@ -56,8 +56,7 @@ const Laboratory = () => {
 													ShowLabCategory ? 'nav-link active' : 'nav-link'
 												}
 												data-toggle="tab"
-												onClick={onLabCategory}
-											>
+												onClick={onLabCategory}>
 												Categories
 											</a>
 										</li>
@@ -68,8 +67,7 @@ const Laboratory = () => {
 													ShowLabParameter ? 'nav-link active' : 'nav-link'
 												}
 												data-toggle="tab"
-												onClick={onLabParameter}
-											>
+												onClick={onLabParameter}>
 												Parameters
 											</a>
 										</li>
@@ -78,8 +76,7 @@ const Laboratory = () => {
 												aria-expanded="false"
 												className={ShowLabTest ? 'nav-link active' : 'nav-link'}
 												data-toggle="tab"
-												onClick={onLabTest}
-											>
+												onClick={onLabTest}>
 												Tests
 											</a>
 										</li>
@@ -90,8 +87,7 @@ const Laboratory = () => {
 													ShowLabGroup ? 'nav-link active' : 'nav-link'
 												}
 												data-toggle="tab"
-												onClick={onLabGroup}
-											>
+												onClick={onLabGroup}>
 												Groups
 											</a>
 										</li>

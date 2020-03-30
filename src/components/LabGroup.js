@@ -6,6 +6,7 @@ import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import { confirmAlert } from 'react-confirm-alert';
+import LabParameterPicker from './LabParameterPicker';
 
 import {
 	addLabGroup,
@@ -16,7 +17,6 @@ import {
 	getAllLabTestCategories,
 	getAllLabTestParameters,
 } from '../actions/settings';
-
 
 const LabGroup = props => {
 	const initialState = {
@@ -37,31 +37,35 @@ const LabGroup = props => {
 	const [data, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
-	const [parameters, setParameter] = useState(null);
-	const [updateParameter, setUpdateParameter] = useState({});
-	const [referenceRange, setReferenceRange] = useState({});
 	const [labTests, setLabTests] = useState(null);
+	const [parameters, setParameter] = useState({});
+	const [paramsUI, setParamsUI] = useState([]);
 
-	const handleMultipleSelectInput = selectedOption => {
-		let param = {};
-		selectedOption &&
-			selectedOption.map(option => {
-				param[option.label] = option;
-				return param;
-			});
-		setUpdateParameter(param);
-		setParameter(selectedOption);
+	const handleParamInputChange = (e, index) => {
+		const { name, value } = e.target;
+		let newParam = { ...parameters };
+		if (name === 'parameter') {
+			newParam[index] = { parameter: value };
+		} else if (name === 'referenceRange') {
+			newParam[index] = { ...newParam[index], referenceRange: value };
+		}
+		setParameter(newParam);
+	};
+
+	const removeParam = index => {
+		const newParametersUI = paramsUI.map((ui, i) => {
+			if (i === index) {
+				return null;
+			}
+			return ui;
+		});
+		const { [index]: i, ...rest } = parameters;
+		setParamsUI(newParametersUI);
+		setParameter(rest);
 	};
 
 	const handleMultipleLabTestsInput = selectedOption => {
 		setLabTests(selectedOption);
-	};
-
-	const handleParamInputChange = e => {
-		const { name, value } = e.target;
-		let newRange = { ...referenceRange };
-		newRange[name] = value;
-		setReferenceRange(newRange);
 	};
 
 	const handleInputChange = e => {
@@ -72,23 +76,31 @@ const LabGroup = props => {
 	const onAddLabGroup = e => {
 		setLoading(true);
 		e.preventDefault();
-		let params =
-			parameters &&
-			parameters.map(param => {
-				param.value = `${param.value}${referenceRange[param.label]}`;
-				return param;
-			});
+		let params = Object.values(parameters).length
+			? Object.values(parameters).map(param => param)
+			: [];
 		props
-			.addLabGroup({ name, price, category, parameters: params, testType, description, labTests })
+			.addLabGroup({
+				name,
+				price,
+				category,
+				parameters: params,
+				testType,
+				description,
+				labTests,
+			})
 			.then(response => {
 				setState({ ...initialState });
 				setLoading(false);
-				setParameter(null);
+				setParameter({});
+				setParamsUI([]);
+				setLabTests(null);
 				notifySuccess('Lab group created');
-				setUpdateParameter({})
-				setReferenceRange({})
 			})
 			.catch(error => {
+				setParameter({});
+				setParamsUI([]);
+				setLabTests(null);
 				notifyError('Error creating lab group');
 			});
 	};
@@ -98,7 +110,16 @@ const LabGroup = props => {
 		e.preventDefault();
 		props
 			.updateLabGroup(
-				{ id: data.id, name, price, category, parameters, testType, labTests, description },
+				{
+					id: data.id,
+					name,
+					price,
+					category,
+					parameters,
+					testType,
+					labTests,
+					description,
+				},
 				data
 			)
 			.then(response => {
@@ -124,9 +145,9 @@ const LabGroup = props => {
 			id: data.id,
 			testType: data.test_type ? `${data.test_type}` : null,
 			parameters: data.parameter_type ? `${data.parameter_type}` : null,
-			category: data.category ? category : null,
-			labTests: data.lab_tests ? `${data.lab_tests}` : null,
-			description: data.description ? description : null,
+			category: data.category ? data.category.id : '',
+			labTests: data.lab_tests ? data.lab_tests : null,
+			description: data.description ? data.description : '',
 		}));
 		setParameter(data.parameters);
 		getDataToEdit(data);
@@ -170,17 +191,18 @@ const LabGroup = props => {
 		setLoaded(true);
 	}, [loaded, props]);
 
-	const options = props.LabParameters.map(Par => {
-		return { value: Par.name, label: Par.name };
-	});
-
 	const labTestOptions = props.LabTests.map(tests => {
 		return { value: tests.name, label: tests.name };
 	});
 
+	const addParameterUI = () => {
+		let paramUI = [...paramsUI, LabParameterPicker];
+		setParamsUI(paramUI);
+	};
+
 	return (
 		<div className="row">
-			<div className="col-lg-8">
+			<div className="col-lg-7">
 				<div>
 					<div className="row">
 						{!dataLoaded ? (
@@ -224,10 +246,12 @@ const LabGroup = props => {
 					</div>
 				</div>
 			</div>
-			<div className="col-lg-4 col-xxl-3  d-xxl-block">
+			<div className="col-lg-5 col-xxl-4  d-xxl-block">
 				<div className="pipeline white lined-warning">
 					<form onSubmit={edit ? onEditLabGroup : onAddLabGroup}>
-						<h6 className="form-header">{ edit ? "Edit Group" : "Create Group"}</h6>
+						<h6 className="form-header">
+							{edit ? 'Edit Group' : 'Create Group'}
+						</h6>
 						<div className="form-group">
 							<input
 								className="form-control"
@@ -251,15 +275,6 @@ const LabGroup = props => {
 						<div className="form-group">
 							<select
 								className="form-control"
-								name="testType"
-								value={testType}
-								onChange={handleInputChange}>
-								{testType && (<option value={testType}>{testType}</option>)}
-							</select>
-						</div>
-						<div className="form-group">
-							<select
-								className="form-control"
 								name="category"
 								onChange={handleInputChange}
 								value={category}>
@@ -273,43 +288,34 @@ const LabGroup = props => {
 								})}
 							</select>
 						</div>
+						<div className="form-buttons-w">
+							<button
+								type="button"
+								className="btn btn-primary"
+								onClick={addParameterUI}>
+								Add Parameter
+							</button>
+						</div>
+
 						<div className="form-group">
-							<legend>
-								<span>Parameters</span>
-							</legend>
-							{Object.keys(updateParameter).length
-								? Object.keys(updateParameter).map(val => {
+							{paramsUI &&
+								paramsUI.map((ParamPicker, i) => {
+									if (ParamPicker) {
 										return (
-											<div className="row">
-												<div className="col-5">
-													<span className="small centered">
-														{`${updateParameter[val]['value']}-`}{' '}
-													</span>
-												</div>
-												<div className="col-7">
-													<input
-														className="form-control"
-														placeholder="Enter Range"
-														type="text"
-														name={val}
-														onChange={handleParamInputChange}
-														value={referenceRange[val]}
-													/>
-												</div>
-											</div>
+											<ParamPicker
+												index={i}
+												parameterArray={props.LabParameters}
+												parameters={parameters}
+												removeParams={removeParam}
+												handleParamInputChange={handleParamInputChange}
+											/>
 										);
-								  })
-								: null}
-							<Select
-								className="form-control"
-								isMulti
-								onChange={handleMultipleSelectInput}
-								options={options}
-								value={parameters}
-							/>
+									}
+									return null;
+								})}
 						</div>
 						<div>
-						<Select
+							<Select
 								className="form-control"
 								isMulti
 								onChange={handleMultipleLabTestsInput}
@@ -317,10 +323,7 @@ const LabGroup = props => {
 								value={labTests}
 							/>
 						</div>
-						<fieldset className="form-group">
-							<legend></legend>
-						</fieldset>
-						<div className="form-group">
+						<div className="form-group mt-4">
 							<textarea
 								className="form-control"
 								placeholder="Description"
@@ -329,10 +332,9 @@ const LabGroup = props => {
 								onChange={handleInputChange}
 								value={description}
 								rows={4}
-							>
-							</textarea>
+							/>
 						</div>
-						
+
 						<div className="form-buttons-w">
 							{create && (
 								<button
@@ -342,7 +344,7 @@ const LabGroup = props => {
 									{Loading ? (
 										<img src={waiting} alt="submitting" />
 									) : (
-										<span> create</span>
+										<span> Create</span>
 									)}
 								</button>
 							)}
@@ -355,7 +357,7 @@ const LabGroup = props => {
 												: 'btn btn-secondary ml-3'
 										}
 										onClick={cancelEditButton}>
-										<span>{Loading ? 'cancel' : 'cancel'}</span>
+										<span>{Loading ? 'Cancel' : 'Cancel'}</span>
 									</button>
 									<button
 										className={
@@ -364,7 +366,7 @@ const LabGroup = props => {
 										{Loading ? (
 											<img src={waiting} alt="submitting" />
 										) : (
-											<span> save</span>
+											<span> Save</span>
 										)}
 									</button>
 								</>
@@ -375,23 +377,23 @@ const LabGroup = props => {
 			</div>
 		</div>
 	);
-	}
+};
 
-	const mapStateToProps = state => {
-		return {
-			LabCategories: state.settings.lab_categories,
-			LabParameters: state.settings.lab_parameters,
-			LabTests: state.settings.lab_tests,
-			LabGroups: state.settings.lab_groups,
-		};
+const mapStateToProps = state => {
+	return {
+		LabCategories: state.settings.lab_categories,
+		LabParameters: state.settings.lab_parameters,
+		LabTests: state.settings.lab_tests,
+		LabGroups: state.settings.lab_groups,
 	};
+};
 
-	export default connect(mapStateToProps, {
-		addLabGroup,
-		getAllLabGroups,
-		updateLabGroup,
-		deleteLabGroup,
-		getAllLabTests,
-		getAllLabTestCategories,
-		getAllLabTestParameters,
-	})(LabGroup);
+export default connect(mapStateToProps, {
+	addLabGroup,
+	getAllLabGroups,
+	updateLabGroup,
+	deleteLabGroup,
+	getAllLabTests,
+	getAllLabTestCategories,
+	getAllLabTestParameters,
+})(LabGroup);

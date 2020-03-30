@@ -215,30 +215,30 @@ const add_lab_group = payload => {
 	return {
 		type: ADD_LAB_GROUP,
 		payload,
-	}
-}
+	};
+};
 
 const get_all_lab_groups = payload => {
 	return {
 		type: GET_ALL_LAB_GROUPS,
 		payload,
-	}
-}
+	};
+};
 
 const update_lab_group = (payload, previousData) => {
 	return {
 		type: UPDATE_LAB_GROUP,
 		payload,
 		previousData,
-	}
-}
+	};
+};
 
 const delete_lab_group = payload => {
 	return {
 		type: DELETE_LAB_GROUP,
 		payload,
-	}
-}
+	};
+};
 
 const add_lab_test_category = payload => {
 	return {
@@ -753,7 +753,7 @@ export const addLabTest = data => {
 					lab_category_id: data.category,
 					test_type: data.testType,
 					parameters: data.parameters,
-					description: data.description
+					description: data.description,
 				})
 				.then(response => {
 					dispatch(add_lab_test(response.data));
@@ -772,7 +772,7 @@ export const getAllLabTests = () => {
 			axios
 				.get(`${API_URI}/lab-tests`)
 				.then(response => {
-					const res = response.data.filter(grp => grp.test_type === 'single')
+					const res = response.data.filter(grp => grp.test_type === 'single');
 					dispatch(get_all_lab_tests(res));
 					return resolve({ success: true });
 				})
@@ -794,7 +794,7 @@ export const updateLabTest = data => {
 					price: data.price,
 					test_type: data.testType,
 					parameters: data.parameters,
-					description: data.description
+					description: data.description,
 				})
 				.then(response => {
 					dispatch(update_lab_test(response.data, data));
@@ -834,7 +834,7 @@ export const addLabGroup = data => {
 					test_type: data.testType,
 					sub_test: data.labTests,
 					parameters: data.parameters,
-					description: data.description
+					description: data.description,
 				})
 				.then(response => {
 					dispatch(add_lab_group(response.data));
@@ -853,7 +853,7 @@ export const getAllLabGroups = () => {
 			axios
 				.get(`${API_URI}/lab-tests`)
 				.then(response => {
-					const res = response.data.filter(grp => grp.test_type === 'combo')
+					const res = response.data.filter(grp => grp.test_type === 'combo');
 					dispatch(get_all_lab_groups(res));
 					return resolve({ success: true });
 				})
@@ -876,7 +876,7 @@ export const updateLabGroup = data => {
 					test_type: data.testType,
 					sub_test: data.labTests,
 					parameters: data.parameters,
-					description: data.description
+					description: data.description,
 				})
 				.then(response => {
 					dispatch(update_lab_group(response.data, data));
