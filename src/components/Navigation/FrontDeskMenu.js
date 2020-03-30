@@ -79,14 +79,6 @@ const FrontDeskMenu = () => {
 					<span>Labour Mgt</span>
 				</Link>
 			</li>
-			<li>
-				<Link to="/cafeteria">
-					<div className="icon-w">
-						<div className="os-icon os-icon-layers" />
-					</div>
-					<span>Cafeteria</span>
-				</Link>
-			</li>
 		</>
 	);
 };
