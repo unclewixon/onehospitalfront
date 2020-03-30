@@ -258,7 +258,7 @@ const CreateNewTransaction = props => {
 					</div>
 					<div className="form-group col-sm-6">
 						<label>
-							Payment TYpe{' '}
+							Payment Type{' '}
 							{multi ? (
 								<span className="mx-1 text-danger">* required </span>
 							) : (
@@ -276,32 +276,6 @@ const CreateNewTransaction = props => {
 									setValue('payment_type', null);
 								} else {
 									setValue('payment_type', evt.value);
-								}
-							}}
-							required
-						/>
-					</div>
-					<div className="form-group col-sm-6">
-						<label>
-							Payment Type{' '}
-							{multi ? (
-								<span className="mx-1 text-danger">* required </span>
-							) : (
-								''
-							)}
-						</label>
-
-						<Select
-							name="payment_type"
-							placeholder="Select Payment Type"
-							options={paymentType}
-							ref={register({ name: 'payment_type' })}
-							defaultValue={{ value: '' }}
-							onChange={evt => {
-								if (evt === null) {
-									setValue('payment_type', null);
-								} else {
-									setValue('payment_type', evt);
 								}
 							}}
 							required
