@@ -123,15 +123,16 @@ export const createLabRequest = data => {
 			axios
 				.post(`${API_URI}/patient/save-request`, {
 					requestType: data.service_center,
+					category_id: data.category,
 					requestBody: {
-						specialization: "",
-						sessionCount: "",
+						specialization: '',
+						sessionCount: '',
 						combination: data.lab_combo,
 						test: data.lab_test,
 						referredSpeciment: data.referred_specimen,
 						requestNote: data.request_note,
 					},
-					patient_id: data.patient_id
+					patient_id: data.patient_id,
 				})
 				.then(response => {
 					dispatch(create_lab_request(response.data));
