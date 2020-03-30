@@ -7,66 +7,87 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import {
 	getAllLabTests,
 	getAllLabGroups,
-	getAllLabTestCategories
+	getAllLabTestCategories,
 } from '../../actions/settings';
-import {
-	createLabRequest
-} from '../../actions/patient';
+import { createLabRequest } from '../../actions/patient';
 
 const serviceCenter = [
 	{
 		value: 'lab',
 		label: 'LAB',
-	}
+	},
 ];
 const LabRequest = props => {
 	// const page = location.pathname.split('/').pop();
 	const { register, handleSubmit, setValue } = useForm({
 		defaultValues: {
-			'service_center': 'lab'
-		}
+			service_center: 'lab',
+		},
 	});
 	const [submitting, setSubmitting] = useState(false);
-	const [loaded, setLoaded] = useState(false)
-	const [category, setCategory] = useState('')
-	const [labTests, setLabTests] = useState(null)
-	const [labCombos, setLabCombos] = useState(null)
+	const [loaded, setLoaded] = useState(false);
+	const [category, setCategory] = useState('');
+	const [labTests, setLabTests] = useState(null);
+	const [labCombos, setLabCombos] = useState(null);
 
 	const handleMultipleSelectInput = (field, selected) => {
-		if(field === 'lab_combos'){
-			setLabCombos(selected)
+		if (field === 'lab_combos') {
+			setLabCombos(selected);
 		}
-		if(field === 'lab_tests_torequest'){
-			setLabTests(selected)
+		if (field === 'lab_tests_torequest') {
+			setLabTests(selected);
 		}
-	}
+	};
 
 	const onCategoryChange = e => {
 		setCategory(e.value);
-	}
+	};
 
-	const labCatsOptions = props && props.LabCategories ? props.LabCategories.map((cats, index) => {
-		return { value: cats.id, label: cats.name }
-	}) : [];
+	const labCatsOptions =
+		props && props.LabCategories
+			? props.LabCategories.map((cats, index) => {
+					return { value: cats.id, label: cats.name };
+			  })
+			: [];
 
-	const labGroupOptions = props && props.LabGroups ? props.LabGroups.filter(groups => groups && groups.category && groups.category.id === category ? true : false).map((grp, index) => {
-		return { value: grp.id, label: grp.name }
-	}) : [];
+	const labGroupOptions =
+		props && props.LabGroups
+			? props.LabGroups.filter(groups =>
+					groups && groups.category && groups.category.id === category
+						? true
+						: false
+			  ).map((grp, index) => {
+					return { value: grp.id, label: grp.name };
+			  })
+			: [];
 
-	const labTestOptions = props && props.LabTests ? props.LabTests.filter(test => test.category.id === category).map((test, index) => {
-		return { value: test.id, label: test.name }
-	}) : [];
+	const labTestOptions =
+		props && props.LabTests
+			? props.LabTests.filter(test => test.category.id === category).map(
+					(test, index) => {
+						return { value: test.id, label: test.name };
+					}
+			  )
+			: [];
 
-	const lab_test = labTests ? labTests.map(test => {
-		return { id: test.value, name: test.label}
-	}) : [];
+	const lab_test = labTests
+		? labTests.map(test => {
+				return { id: test.value, name: test.label };
+		  })
+		: [];
 
-	const lab_combo = labCombos ? labCombos.map(grp => {
-		return { id: grp.value, name: grp.label}
-	}): [];
+	const lab_combo = labCombos
+		? labCombos.map(grp => {
+				return { id: grp.value, name: grp.label };
+		  })
+		: [];
 
-	const onSubmit = ({service_center, referred_specimen, request_note}) => {
-		const { patient } = props
+	const onSubmit = ({ service_center, referred_specimen, request_note }) => {
+		const { patient } = props;
+		if (!category) {
+			notifyError('Please select a category');
+			return;
+		}
 		setSubmitting(true);
 		props
 			.createLabRequest({
@@ -76,22 +97,22 @@ const LabRequest = props => {
 				lab_test,
 				lab_combo,
 				category,
-				patient_id : patient && patient.id ? patient.id : "",
+				patient_id: patient && patient.id ? patient.id : '',
 			})
 			.then(response => {
-				setSubmitting(false)
+				setSubmitting(false);
 				notifySuccess('Lab request created');
 			})
 			.catch(error => {
-				setSubmitting(false)
+				setSubmitting(false);
 				notifyError('Error creating lab request');
 			});
 	};
 
 	useEffect(() => {
-		const {getAllLabGroups, getAllLabTests, getAllLabTestCategories} = props
+		const { getAllLabGroups, getAllLabTests, getAllLabTestCategories } = props;
 		if (!loaded) {
-			getAllLabGroups()
+			getAllLabGroups();
 			getAllLabTests();
 			getAllLabTestCategories();
 		}
@@ -112,7 +133,7 @@ const LabRequest = props => {
 										name="service_center"
 										placeholder="Select Service Center"
 										options={serviceCenter}
-										value={{label: 'LAB', value: 'lab'}}
+										value={{ label: 'LAB', value: 'lab' }}
 										ref={register({ name: 'service_center' })}
 										onChange={evt => {
 											setValue('service_center', String(evt.value));
@@ -142,7 +163,9 @@ const LabRequest = props => {
 										options={labGroupOptions}
 										ref={register({ name: 'lab_combos' })}
 										value={labCombos}
-										onChange={val => handleMultipleSelectInput('lab_combos', val)}
+										onChange={val =>
+											handleMultipleSelectInput('lab_combos', val)
+										}
 										required
 									/>
 								</div>
@@ -155,7 +178,9 @@ const LabRequest = props => {
 										options={labTestOptions}
 										ref={register({ name: 'lab_test_torequest' })}
 										value={labTests}
-										onChange={val => handleMultipleSelectInput('lab_tests_torequest', val)}
+										onChange={val =>
+											handleMultipleSelectInput('lab_tests_torequest', val)
+										}
 										required
 									/>
 								</div>
@@ -203,8 +228,8 @@ const LabRequest = props => {
 										{submitting ? (
 											<img src={waiting} alt="submitting" />
 										) : (
-												'Create Lab Request'
-											)}
+											'Create Lab Request'
+										)}
 									</button>
 								</div>
 							</div>
