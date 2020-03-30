@@ -30,6 +30,7 @@ import {
 	TOGGLE_CREATE_CLINICAL_TASK,
 	TOGGLE_OPEN_ENCOUNTER,
 	TOGGLE_APPROVE_TRANSACTION,
+	TOGGLE_APPLY_VOUCHER,
 } from './types';
 
 export const togglePreloading = status => {
@@ -193,6 +194,14 @@ export const toggleCreateVoucher = status => {
 		payload: status,
 	};
 };
+
+export const toggleApplyVoucher = status => {
+	return {
+		type: TOGGLE_APPLY_VOUCHER,
+		payload: status,
+	};
+};
+
 export const toggleCreateLabourMeasurement = status => {
 	return {
 		type: TOGGLE_CREATE_LABOUR_MEASUREMENT,
@@ -266,6 +275,7 @@ export const closeModals = () => {
 		dispatch(toggleAddTask(false));
 		dispatch(toggleEditStaff(false));
 		dispatch(toggleCreateInventory(false));
+		dispatch(toggleApplyVoucher(false));
 		dispatch(toggleEditInventory(false));
 		dispatch(toggleApproveTransaction(false));
 		dispatch(toggleUpdateQuantity(false));
@@ -510,6 +520,15 @@ export const openEncounter = (action, id) => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleOpenEncounter(action, id));
+	};
+};
+
+export const applyVoucher = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleApplyVoucher(true));
+		dispatch(toggleCreateVoucher(action));
 	};
 };
 

@@ -25,7 +25,6 @@ import { createVoucher, createVoucherData } from '../../actions/paypoint';
 
 const validate = values => {
 	const errors = {};
-
 	if (
 		values.patient_id === null ||
 		values.patient_id === '' ||
@@ -82,17 +81,25 @@ export class ModalCreateVoucher extends Component {
 
 	createVoucher = async data => {
 		this.setState({ submitting: true });
-		console.log(data);
+		const { items, apply_voucher, create_voucher } = this.props;
+		if (apply_voucher) {
+			data.transaction_id = create_voucher.q_id;
+		}
 		try {
 			const rs = await request(`${API_URI}${vouchersAPI}`, 'POST', true, data);
 			this.props.createVoucherData(rs.voucher);
-			notifySuccess('voucher item created!');
+			notifySuccess(
+				apply_voucher ? 'Voucher Applied!' : 'Voucher item created!'
+			);
 			this.setState({ submitting: false });
 			this.props.closeModals(true);
 		} catch (e) {
 			this.setState({ submitting: false });
 			throw new SubmissionError({
-				_error: e.message || 'could not create voucher',
+				_error:
+					e.message || apply_voucher
+						? 'Could not apply voucher'
+						: 'Could not create voucher',
 			});
 		}
 	};
@@ -102,7 +109,7 @@ export class ModalCreateVoucher extends Component {
 	};
 
 	render() {
-		const { error, handleSubmit } = this.props;
+		const { error, handleSubmit, apply_voucher } = this.props;
 		const { submitting, voucher_date, patientList } = this.state;
 		return (
 			<div
@@ -119,7 +126,9 @@ export class ModalCreateVoucher extends Component {
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
-							<h4 className="onboarding-title">Create New Voucher</h4>
+							<h4 className="onboarding-title">
+								{apply_voucher ? 'Apply Voucher' : 'Create New Voucher'}
+							</h4>
 
 							<div className="form-block">
 								<form onSubmit={handleSubmit(this.createVoucher)}>
@@ -145,7 +154,7 @@ export class ModalCreateVoucher extends Component {
 										</div>
 									</div>
 									<div className="row">
-										<div className="col-sm-6">
+										<div className="col-sm-6" hidden={apply_voucher}>
 											<Field
 												id="patient_id"
 												name="patient_id"
@@ -198,7 +207,7 @@ export class ModalCreateVoucher extends Component {
 										</div>
 									</div>
 
-									<div className="row">
+									<div className="row" hidden={apply_voucher}>
 										<div className="col-sm-12 d-flex">
 											<div>
 												<Field
@@ -246,12 +255,17 @@ ModalCreateVoucher = reduxForm({
 })(ModalCreateVoucher);
 
 const mapStateToProps = (state, ownProps) => {
+	const toApply = state.general.apply_voucher;
+	const voucher = state.general.create_voucher;
 	return {
 		initialValues: {
 			voucher_no: moment()
 				.toDate()
 				.getTime(),
+			patient_id: toApply ? voucher.q_patient_id : '',
 		},
+		create_voucher: voucher,
+		apply_voucher: toApply,
 	};
 };
 
