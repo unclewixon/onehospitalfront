@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { uploadHmoTariff, uploadHmo } from '../actions/general';
 import { notifySuccess, notifyError } from '../services/notify';
+import { API_URI, hmoAPI } from '../services/constants';
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 import { getAllHmos, fetchHmoTariff } from '../actions/hmo';
@@ -45,7 +46,6 @@ const HmoBulkUpload = props => {
 	props
 		.fetchHmoTariff(selectedHmo)
 		.then(response => {
-			console.log(response);
 			setDataLoaded(true);
 		})
 		.catch(error => {
@@ -68,7 +68,7 @@ const HmoBulkUpload = props => {
 										aria-expanded="true"
 										className="nav-link active"
 										data-toggle="tab">
-										HEALTH MANAGEMENT ORGANIZATIONS BULK UPLOAD
+										HEALTH MANAGEMENT ORGANIZATIONS SERVICES
 									</a>
 								</li>
 							</ul>
@@ -90,12 +90,14 @@ const HmoBulkUpload = props => {
 													</button>
 												</div>
 												<div className="col-sm-3">
-													<button
+													<a
 														className="btn btn-sm btn-secondary"
-														onClick={() => props.uploadHmo(true)}>
-														Upload HMOS
-													</button>
+														href={`${API_URI}${hmoAPI}/download-tariff-sample?downloadType=services`}
+														download>
+														Download Hmo Services
+													</a>
 												</div>
+
 												<div className="col-sm-6">
 													<form className="form-inline justify-content-sm-end">
 														<select
