@@ -12,7 +12,11 @@ import {
 import { request, formatNumber } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
-import { getAllRequestServices } from '../actions/settings';
+import {
+	getAllRequestServices,
+	getAllService,
+	getAllServiceCategory,
+} from '../actions/settings';
 
 const CreateNewTransaction = props => {
 	let history = useHistory();
@@ -26,25 +30,26 @@ const CreateNewTransaction = props => {
 	const [patients, setPatients] = useState();
 	const [departments, setDepartments] = useState();
 	const [multi, setMulti] = useState(false);
+	const [serviceList, setServiceList] = useState([]);
 	const [services, setServices] = useState([]);
 	const [amount, setAmount] = useState(0);
+	const [multiple, setMultiple] = useState([]);
 
 	const onSubmit = async values => {
 		console.log(values);
 
 		setSubmitting(true);
+		let data = {
+			patient_id: values.patient_id,
+			department_id: values.revenue_category,
+			amount: values.amount,
+			serviceType: values.service_request.map(req => req.value),
+			description: values.description,
+			paymentType: values.payment_type,
+		};
+		console.log(data);
 
 		try {
-			let data = {
-				patient_id: values.patient_id,
-				department_id: values.revenue_category,
-				amount: values.amount,
-				serviceType: values.service_request,
-				description: values.description,
-				paymentType: values.payment_type,
-			};
-			console.log(data);
-
 			const rs = await request(
 				`${API_URI}${transactionsAPI}`,
 				'POST',
@@ -65,33 +70,52 @@ const CreateNewTransaction = props => {
 	};
 
 	const filterServiceCenter = () => {
-		return Array.from(new Set(serviceCenter.map(data => data.group))).map(
-			service => {
-				return {
-					value: service,
-					label: service,
-				};
-			}
-		);
+		return serviceCenter.map(center => {
+			return {
+				value: center.id,
+				label: center.name,
+			};
+		});
 	};
 
+	const changeMulti = evt => {
+		if (evt !== null) {
+			settingAmount(evt);
+		}
+		setMultiple(evt);
+		setValue('service_request', evt);
+	};
 	const filterRequest = center => {
 		setServices([]);
+		changeMulti(null);
 		setAmount(0);
-		let requestType = serviceCenter
-			.filter(service => service.group === center)
+		let requestType = serviceList
+			.filter(service => {
+				return service.category.id === center;
+			})
 			.map(data => {
 				return {
 					value: data.id,
 					label: data.name,
-					amount: data.amount,
+					amount: data.tariff,
 				};
 			});
+
 		setServices(requestType);
+
+		// console.log(serviceList.map(service => service.category.id));
 	};
 
-	const settingAmount = value => {
-		setAmount(value);
+	const settingAmount = requests => {
+		// let total = 0;
+		// total += requests.forEach(request => {
+		// 	console.log(+request.amount);
+		// 	return +request.amount;
+		// });
+
+		setAmount(
+			requests.reduce((total, request) => total + parseInt(request.amount), 0)
+		);
 	};
 	async function getPatients() {
 		const rs = await request(`${API_URI}/patient/list`, 'GET', true);
@@ -111,14 +135,14 @@ const CreateNewTransaction = props => {
 		setDepartments(res);
 	}
 
-	async function getRequestService() {
-		const rs = await request(`${API_URI}/request-types`, 'GET', true);
-		setServiceCenter(rs);
-	}
+	// async function getRequestService() {
+	// 	const rs = await request(`${API_URI}/request-types`, 'GET', true);
+	// 	setServiceCenter(rs);
+	// }
 
-	useEffect(() => {
-		getRequestService();
-	}, []);
+	// useEffect(() => {
+	// 	getRequestService();
+	// }, []);
 
 	useEffect(() => {
 		getPatients();
@@ -127,6 +151,39 @@ const CreateNewTransaction = props => {
 	useEffect(() => {
 		getDepartments();
 	}, []);
+
+	useEffect(() => {
+		if (!loaded) {
+			props
+				.getAllService()
+				.then(response => {
+					setDataLoaded(true);
+				})
+				.catch(e => {
+					notifyError(e.message || 'could not fetch services list');
+				});
+		}
+		setLoaded(true);
+		console.log(props.ServicesList);
+		setServiceList(props.ServicesList);
+	}, [props, loaded]);
+
+	useEffect(() => {
+		if (!loaded) {
+			props
+				.getAllServiceCategory()
+				.then(response => {
+					setDataLoaded(true);
+				})
+				.catch(e => {
+					setDataLoaded(true);
+					notifyError(e.message || 'could not fetch service categories');
+				});
+		}
+		setLoaded(true);
+		console.log(props.ServiceCategories);
+		setServiceCenter(props.ServiceCategories);
+	}, [props, loaded]);
 
 	return (
 		<div className="form-block w-100">
@@ -197,6 +254,7 @@ const CreateNewTransaction = props => {
 								if (evt === null) {
 									setValue('service_center', null);
 								} else {
+									console.log(evt.value);
 									filterRequest(evt.value);
 									setValue('service_center', evt.value);
 								}
@@ -217,17 +275,12 @@ const CreateNewTransaction = props => {
 
 						<Select
 							name="service_request"
-							placeholder="Select service_request"
+							placeholder="Select services to request"
+							value={multiple}
+							isMulti
 							options={services}
 							ref={register({ name: 'service_request' })}
-							onChange={evt => {
-								if (evt === null) {
-									setValue('service_request', null);
-								} else {
-									settingAmount(evt.amount);
-									setValue('service_request', evt.value);
-								}
-							}}
+							onChange={evt => changeMulti(evt)}
 							required
 						/>
 					</div>
@@ -312,9 +365,15 @@ const mapStateToProps = state => {
 	return {
 		patient: state.user.patient,
 		requestServices: state.settings.request_services,
+		ServicesList: state.settings.services,
+		ServiceCategories: state.settings.service_categories,
 	};
 };
 
 export default withRouter(
-	connect(mapStateToProps, { getAllRequestServices })(CreateNewTransaction)
+	connect(mapStateToProps, {
+		getAllRequestServices,
+		getAllService,
+		getAllServiceCategory,
+	})(CreateNewTransaction)
 );
