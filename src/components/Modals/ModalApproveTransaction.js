@@ -73,7 +73,9 @@ class ModalApproveTransaction extends Component {
 		let newValue = event.target.value;
 		this.setState({ hidden: true });
 		if (newValue === 'Voucher') {
-			this.fetchVoucher();
+			const { items } = this.props;
+			let data = { patient_id: items.q_patient_id };
+			this.fetchVoucher(data);
 			this.setState({ hidden: false });
 		}
 		console.log(newValue);
@@ -90,10 +92,9 @@ class ModalApproveTransaction extends Component {
 		try {
 			//this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}${vouchersAPI}/list`,
+				`${API_URI}${vouchersAPI}/list` + '?patient_id=' + data.patient_id,
 				'GET',
-				true,
-				data
+				true
 			);
 			this.props.loadVoucher(rs);
 			//this.setState({ loading: false });
@@ -136,7 +137,7 @@ class ModalApproveTransaction extends Component {
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
-							<h4 className="onboarding-title">Edit Inventory Item</h4>
+							<h4 className="onboarding-title">Process transaction</h4>
 							<div className="form-block">
 								<form onSubmit={handleSubmit(this.approveTransaction)}>
 									{error && (
@@ -204,7 +205,7 @@ class ModalApproveTransaction extends Component {
 									</div>
 
 									<div className="row">
-										<div className="col-sm-6">
+										<div className="col-sm-12">
 											<Field
 												id="note"
 												name="note"
@@ -216,7 +217,7 @@ class ModalApproveTransaction extends Component {
 										</div>
 									</div>
 
-									<div className="form-buttons-w">
+									<div className="form-buttons-w text-right">
 										<button className="btn btn-secondary ml-3" type="button">
 											Cancel
 										</button>
@@ -248,6 +249,7 @@ ModalApproveTransaction = reduxForm({
 
 const mapStateToProps = (state, ownProps) => {
 	const items = state.general.approve_transaction;
+	console.log(items);
 	return {
 		initialValues: {
 			amount_paid: items.q_amount,
