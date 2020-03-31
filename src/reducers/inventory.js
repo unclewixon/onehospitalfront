@@ -9,6 +9,15 @@ import {
 	UPDATE_SUB_CATEGORY,
 	TOGGLE_UPDATE_QTY,
 	UPDATE_INVENTORY,
+	ADD_CAFETERIA_CATEGORY,
+	GET_ALL_CAFETERIA_CATEGORY,
+	UPDATE_CAFETERIA_CATEGORY,
+	DELETE_CAFETERIA_CATEGORY,
+	ADD_CAFETERIA_ITEM,
+	GET_ALL_CAFETERIA_ITEMS,
+	UPDATE_CAFETERIA_ITEM,
+	DELETE_CAFETERIA_ITEM,
+	FILTER_CAFETERIA_ITEM,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -16,6 +25,9 @@ const INITIAL_STATE = {
 	item: [],
 	categories: [],
 	sub_categories: [],
+	cafeteriaCategories: [],
+	cafeteriaItems: [],
+	filteredCafeteriaItems: [],
 };
 
 const inventory = (state = INITIAL_STATE, action) => {
@@ -82,6 +94,66 @@ const inventory = (state = INITIAL_STATE, action) => {
 				};
 			}
 			return state;
+		case ADD_CAFETERIA_CATEGORY:
+			return {
+				...state,
+				cafeteriaCategory: [...state.cafeteriaCategory, action.payload],
+			};
+		case GET_ALL_CAFETERIA_CATEGORY:
+			return { ...state, cafeteriaCategory: action.payload };
+		case UPDATE_CAFETERIA_CATEGORY:
+			return {
+				...state,
+				cafeteriaCategory: [
+					...state.cafeteriaCategory.filter(
+						deletedItem => deletedItem.id !== action.previousData.id
+					),
+					action.payload,
+				],
+			};
+		case DELETE_CAFETERIA_CATEGORY:
+			return {
+				...state,
+				cafeteriaCategory: state.cafeteriaCategory.filter(
+					deletedItem => deletedItem.id !== action.payload.id
+				),
+			};
+
+		case ADD_CAFETERIA_ITEM:
+			return {
+				...state,
+				cafeteriaItems: [...state.cafeteriaItems, action.payload],
+			};
+		case GET_ALL_CAFETERIA_ITEMS:
+			return { ...state, cafeteriaItems: action.payload };
+		case UPDATE_CAFETERIA_ITEM:
+			return {
+				...state,
+				cafeteriaItems: [
+					...state.cafeteriaItems.filter(
+						deletedItem => deletedItem.id !== action.previousData.id
+					),
+					action.payload,
+				],
+			};
+
+		case DELETE_CAFETERIA_ITEM:
+			return {
+				...state,
+				cafeteriaItems: state.cafeteriaItems.filter(
+					deletedItem => deletedItem.id !== action.payload.id
+				),
+			};
+
+		case FILTER_CAFETERIA_ITEM:
+			return {
+				...state,
+				filteredCafeteriaItems: state.cafeteriaItems.filter(
+					deletedItem =>
+						deletedItem.category.id === action.payload.category ||
+						deletedItem.name === action.payload.item
+				),
+			};
 		default:
 			return state;
 	}
