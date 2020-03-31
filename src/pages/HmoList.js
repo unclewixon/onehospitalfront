@@ -1,11 +1,13 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { uploadHmo } from '../actions/general';
 import { confirmAlert } from 'react-confirm-alert';
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import { addHmo, getAllHmos, updateHmo, deleteHmo } from '../actions/hmo';
+import { API_URI, hmoAPI } from '../services/constants';
 
 const HmoList = props => {
 	const initialState = {
@@ -166,7 +168,23 @@ const HmoList = props => {
 							</ul>
 						</div>
 					</div>
-
+					<div className="row">
+						<div className="col-sm-2">
+							<button
+								className="btn btn-sm btn-secondary"
+								onClick={() => props.uploadHmo(true)}>
+								Upload HMOS
+							</button>
+						</div>
+						<div className="col-sm-3">
+							<a
+								className="btn btn-sm btn-secondary"
+								href={`${API_URI}${hmoAPI}/download-sample`}
+								download>
+								Download Hmo Services
+							</a>
+						</div>
+					</div>
 					<div className="row">
 						<div className="col-lg-8 col-xxl-8">
 							<div className="element-wrapper">
@@ -316,6 +334,7 @@ const HmoList = props => {
 										)}
 										{edit && (
 											<>
+												￼￼￼ CODE CODE CODE
 												<button
 													className={
 														Loading
@@ -356,5 +375,6 @@ export default connect(mapStateToProps, {
 	addHmo,
 	getAllHmos,
 	updateHmo,
+	uploadHmo,
 	deleteHmo,
 })(HmoList);
