@@ -6,24 +6,39 @@ import { connect } from "react-redux";
 import searchingGIF from '../../assets/images/searching.gif';
 import { notifyError } from '../../services/notify';
 import { getRequestByType } from './../../actions/patient';
+import Modal from 'react-bootstrap/Modal';
+import moment from 'moment';
+import Select from 'react-select';
 
 const Lab = props => {
 	const [loaded, setLoaded] = useState(false)
 	const [dataLoaded, setDataLoaded] = useState(false)
+	const [showModal, setShowModal] = useState(false)
+	const [activeRequest, setActiveRequest] = useState(null)
 
+	const { location, patient } = props;
 
-	const { location } = props;
+	const onModalClick = () => {
+		setShowModal(!showModal)
+	}
+
+	const requestStatus = [
+		{ value: 'pending', label: 'Pending' },
+		{ value: 'approved', label: 'Approved' },
+		{ value: 'declined', label: 'Declined' }
+	]
 
 	useEffect(() => {
 		const { patient, getRequestByType } = props
 		const patient_id = patient && patient.id ? patient.id : '';
 		if (!loaded) {
+			setDataLoaded(true);
 			getRequestByType(patient_id)
 				.then(response => {
-					setDataLoaded(true);
+					setDataLoaded(false);
 				})
 				.catch(e => {
-					setDataLoaded(true);
+					setDataLoaded(false);
 					notifyError(e.message || 'could not fetch request type');
 				});
 		}
@@ -49,14 +64,66 @@ const Lab = props => {
 								<div id="toolbar"></div>
 							</div>
 						</div>
-						{dataLoaded ? (
-							<tr>
-								<td colSpan="4" className="text-center">
-									<img alt="searching" src={searchingGIF} />
-								</td>
-							</tr>
-						) : (
+						{
+							activeRequest ? (
+								<Modal
+									show={showModal}
+									size="lg"
+									aria-labelledby="contained-modal-title-vcenter"
+									centered
+									onHide={onModalClick}
+								>
+									<Modal.Header closeButton>
+										<Modal.Title id="contained-modal-title-vcenter">
+											{`${patient.surname.toUpperCase()} ${patient.other_names.toUpperCase()}`}
+										</Modal.Title>
+									</Modal.Header>
+									<Modal.Body>
+										<div className='row'>
+											<div className="form-group col-lg-6">
+												<h5>Request Note</h5>
+												<div>
+													<p className='justify'>{activeRequest.requestBody.requestNote}</p>
+												</div>
 
+											</div>
+											<div className='col-lg-3'>
+												<h5>Tests</h5>
+												{
+													activeRequest.requestBody && activeRequest.requestBody.test ?
+														activeRequest.requestBody.test.map((test, index) => {
+															return (
+																<div key={index}>
+																	<p>{test.name}</p>
+																</div>
+															)
+														}) : null
+												}
+											</div>
+											<div className='col-lg-3'>
+												<h5>Groups</h5>
+												{
+													activeRequest.requestBody && activeRequest.requestBody.combination ?
+														activeRequest.requestBody.combination.map((combo, index) => {
+															return (
+																<div key={index}>
+																	<p>{combo.name}</p>
+																</div>
+															)
+														}) : null
+												}
+											</div>
+										</div>
+									</Modal.Body>
+								</Modal>
+							) : null
+						}
+
+						{dataLoaded ? (
+							<div colSpan="4" className="text-center">
+								<img alt="searching" src={searchingGIF} />
+							</div>
+						) : (
 								<div
 									className="fixed-table-container"
 									style={{ paddingBottom: '0px' }}>
@@ -75,29 +142,35 @@ const Lab = props => {
 												</tr>
 											</thead>
 											<tbody>
-												{
+												{props.Requests && props.Requests.length ?
 													props.Requests.map((request, index) => {
 														return (
-															<tr className="" data-index="0" data-id="20">
+															<tr className="" data-index="0" data-id="20" key={index}>
 																<td>
-																	<span className="text-bold">LAB/32456789</span>
+																	<span className="text-bold"></span>
 																</td>
 																<td>
-																	<span>20-Jan-2020</span>
-																	<span className="smaller lighter ml-1">3:22pm</span>
+																	<span>{moment(request.createdAt).format("DD/MM/YYYY hh:mm")}</span>
 																</td>
 																<td>
-																	<Link to="/">Uchechi I.</Link>
+																	<Link to="/">{`${patient.surname.toUpperCase()} ${patient.other_names.toUpperCase()}`}</Link>
 																</td>
-																<td>Blood</td>
+																<td>{request.requestBody.referredSpeciment}</td>
 																<td className="text-center">
-																	<span className="badge badge-secondary">pending</span>
+																	<div className="form-group">
+																		<Select
+																			name="service_center"
+																			placeholder="Set Status"
+																			options={requestStatus}
+																		/>
+																	</div>
 																</td>
 																<td className="row-actions text-right">
 																	<Tooltip title="View Request">
-																		<a href="#">
-																			<i className="os-icon os-icon-documents-03" />
-																		</a>
+																		<button className="btn btn-primary" onClick={() => {
+																			setActiveRequest(request)
+																			onModalClick()
+																		}}>View Request</button>
 																	</Tooltip>
 																	<Tooltip title="Print Request">
 																		<a className="ml-2" href="#">
@@ -107,7 +180,7 @@ const Lab = props => {
 																</td>
 															</tr>
 														)
-													})
+													}) : null
 												}
 											</tbody>
 										</table>

@@ -11,6 +11,7 @@ import InventoryMenu from './InventoryMenu';
 import SettingsMenu from './SettingsMenu';
 import FrontDeskMenu from './FrontDeskMenu';
 import HMOMenu from './HMOMenu';
+import CafeteriaMenu from './CafeteriaMenu';
 import { fullname } from '../../services/utilities';
 
 class MainMenu extends Component {
@@ -90,6 +91,7 @@ class MainMenu extends Component {
 					{(role === 'front-desk' || role === 'admin') && <FrontDeskMenu />}
 					{(role === 'hr' || role === 'admin') && <HrMenu />}
 					{(role === 'inventory' || role === 'admin') && <InventoryMenu />}
+					{(role === 'cafeteria' || role === 'admin') && <CafeteriaMenu />}
 					{(role === 'hmo' || role === 'admin') && <HMOMenu />}
 					{role === 'admin' && <SettingsMenu />}
 				</ul>

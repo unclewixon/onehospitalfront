@@ -2,7 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { confirmAlert } from 'react-confirm-alert';
-
+import waiting from '../assets/images/waiting.gif';
+import searchingGIF from '../assets/images/searching.gif';
+import { notifySuccess, notifyError } from '../services/notify';
 import { addHmo, getAllHmos, updateHmo, deleteHmo } from '../actions/hmo';
 
 const HmoList = props => {
@@ -22,6 +24,7 @@ const HmoList = props => {
 	const [data, getDataToEdit] = useState(null);
 	const [logo, setLogo] = useState(null);
 	const [loaded, setLoaded] = useState(false);
+	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -133,11 +136,18 @@ const HmoList = props => {
 
 	useEffect(() => {
 		if (!loaded) {
-			props.getAllHmos();
+			props
+				.getAllHmos()
+				.then(response => {
+					setDataLoaded(true);
+				})
+				.catch(e => {
+					setDataLoaded(true);
+					notifyError(e.message || 'could not fetch lab tests');
+				});
 		}
 		setLoaded(true);
 	}, [loaded, props]);
-
 	return (
 		<div className="content-i">
 			<div className="content-box">
@@ -174,47 +184,57 @@ const HmoList = props => {
 												</tr>
 											</thead>
 											<tbody>
-												{props.hmoList.map((hmo, i) => {
-													return (
-														<tr key={i}>
-															<td>
-																<div className="user-with-avatar">
-																	<img
-																		alt=""
-																		src={require('../assets/images/avatar1.jpg')}
-																	/>
-																</div>
-															</td>
-															<td>
-																<div className="smaller lighter">
-																	{hmo.name}
-																</div>
-															</td>
-															<td>
-																<span>{hmo.phoneNumber}</span>
-															</td>
+												{!dataLoaded ? (
+													<tr>
+														<td colSpan="4" className="text-center">
+															<img alt="searching" src={searchingGIF} />
+														</td>
+													</tr>
+												) : (
+													<>
+														{props.hmoList.map(hmo => {
+															return (
+																<tr>
+																	<td>
+																		<div className="user-with-avatar">
+																			<img
+																				alt=""
+																				src={require('../assets/images/avatar1.jpg')}
+																			/>
+																		</div>
+																	</td>
+																	<td>
+																		<div className="smaller lighter">
+																			{hmo.name}
+																		</div>
+																	</td>
+																	<td>
+																		<span>{hmo.phoneNumber}</span>
+																	</td>
 
-															<td className="nowrap">
-																<span>{hmo.email}</span>
-															</td>
-															<td className="row-actions">
-																<a href="#">
-																	<i
-																		className="os-icon os-icon-grid-10"
-																		onClick={() => onClickEdit(hmo)}></i>
-																</a>
-																<a href="#">
-																	<i className="os-icon os-icon-ui-44"></i>
-																</a>
-																<a className="danger">
-																	<i
-																		className="os-icon os-icon-ui-15"
-																		onClick={() => confirmDelete(hmo)}></i>
-																</a>
-															</td>
-														</tr>
-													);
-												})}
+																	<td className="nowrap">
+																		<span>{hmo.email}</span>
+																	</td>
+																	<td className="row-actions">
+																		<a href="#">
+																			<i
+																				className="os-icon os-icon-grid-10"
+																				onClick={() => onClickEdit(hmo)}></i>
+																		</a>
+																		<a href="#">
+																			<i className="os-icon os-icon-ui-44"></i>
+																		</a>
+																		<a className="danger">
+																			<i
+																				className="os-icon os-icon-ui-15"
+																				onClick={() => confirmDelete(hmo)}></i>
+																		</a>
+																	</td>
+																</tr>
+															);
+														})}
+													</>
+												)}
 											</tbody>
 										</table>
 									</div>
@@ -299,8 +319,8 @@ const HmoList = props => {
 												<button
 													className={
 														Loading
-															? 'btn btn-primary disabled'
-															: 'btn btn-primary'
+															? 'btn btn-secondary disabled'
+															: 'btn btn-secondary'
 													}
 													onClick={cancelEditButton}>
 													<span>{Loading ? 'cancel' : 'cancel'}</span>

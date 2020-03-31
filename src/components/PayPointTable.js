@@ -12,11 +12,18 @@ import {
 	loadTodayTransaction,
 	deleteTransaction,
 } from '../actions/transaction';
+import Tooltip from 'antd/lib/tooltip';
+import {
+	applyVoucher,
+	approveTransaction,
+	createVoucher,
+} from '../actions/general';
 
 export class PayPointTable extends Component {
 	state = {
 		loading: false,
 	};
+
 	componentDidMount() {
 		this.fetchTransaction();
 	}
@@ -54,6 +61,14 @@ export class PayPointTable extends Component {
 	confirmDelete = data => {
 		confirmAction(this.onDeleteTransaction, data);
 	};
+
+	doApproveTransaction = item => {
+		this.props.approveTransaction(item);
+	};
+	doApplyVoucher = item => {
+		this.props.applyVoucher(item);
+	};
+
 	render() {
 		const { loading } = this.state;
 		const transactions = this.props.todayTransaction;
@@ -72,13 +87,14 @@ export class PayPointTable extends Component {
 									<th className="text-center">DEPARTMENT</th>
 									<th className="text-center">SERVICE</th>
 									<th className="text-center">AMOUNT (&#x20A6;)</th>
+									<th className="text-center">PAYMENT TYPE (&#x20A6;)</th>
 									<th className="text-right">ACTIONS</th>
 								</tr>
 							</thead>
 							<tbody>
 								{loading ? (
 									<tr>
-										<td colSpan="4" className="text-center">
+										<td colSpan="6" className="text-center">
 											<img alt="searching" src={searchingGIF} />
 										</td>
 									</tr>
@@ -86,28 +102,53 @@ export class PayPointTable extends Component {
 									transactions.map(transaction => {
 										return (
 											<tr key={transaction.q_id}>
-												<td className="text-center">
+												<td className="">
 													{`${transaction.surname} ${transaction.other_names}`}
 												</td>
-												<td className="text-center">{transaction.deptname}</td>
-												<td className="text-center">
+												<td className="">{transaction.deptname}</td>
+												<td className="">
 													{transaction.q_service_id
 														? transaction.q_service_id
 														: 'No service yet'}
 												</td>
-												<td className="text-center">{transaction.q_amount}</td>
-												<td className="text-center">
-													<a
-														className="text-danger"
-														onClick={() => this.confirmDelete(transaction)}>
-														<i className="os-icon os-icon-ui-15"></i>
-													</a>
+												<td className="">{transaction.q_amount}</td>
+												<td className="">
+													{transaction.q_paymentType
+														? transaction.q_paymentType
+														: 'Not specified'}
+												</td>
+												<td className="text-center row-actions">
+													<Tooltip title="Apply Voucher">
+														<a
+															className="secondary"
+															onClick={() => this.doApplyVoucher(transaction)}>
+															<i className="os-icon os-icon-thumbs-up" />
+														</a>
+													</Tooltip>
+
+													<Tooltip title="Approve Transactions">
+														<a
+															className="secondary"
+															onClick={() =>
+																this.doApproveTransaction(transaction)
+															}>
+															<i className="os-icon os-icon-folder-plus" />
+														</a>
+													</Tooltip>
+
+													<Tooltip title="Delete Transactions">
+														<a
+															className="text-danger"
+															onClick={() => this.confirmDelete(transaction)}>
+															<i className="os-icon os-icon-ui-15"></i>
+														</a>
+													</Tooltip>
 												</td>
 											</tr>
 										);
 									})
 								) : (
-									<tr className="text-center">
+									<tr colSpan="6" className="text-center">
 										<td>No transaction for today yet</td>
 									</tr>
 								)}
@@ -128,5 +169,7 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
 	loadTodayTransaction,
+	applyVoucher,
+	approveTransaction,
 	deleteTransaction,
 })(PayPointTable);

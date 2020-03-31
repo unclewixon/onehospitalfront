@@ -11,6 +11,7 @@ export const FULLSCREEN_COOKIE = 'EMR:FULLSCREEN_COOKIE';
 export const USER_RECORD = 'EMR:USER_RECORD';
 export const socket = socketIOClient(API_URI, { transports: ['websocket'] });
 
+export const hmoAPI = '/hmos';
 export const inventoryAPI = '/inventory/stocks';
 export const inventoryUpdateQuantityAPI = '/inventory/stocks/update-quantity';
 export const stocksAPI = '/stocks';
@@ -29,6 +30,7 @@ export const utilityAPI = '/utility';
 export const payrollAPI = '/hr/payroll';
 export const patientAPI = '/patient';
 export const transactionsAPI = '/transactions';
+export const vouchersAPI = '/vouchers';
 
 export const months = [
 	'January',
@@ -104,6 +106,26 @@ export const gender = [
 export const maritalStatus = [
 	{ value: 'Single', label: 'Single' },
 	{ value: 'Married', label: 'Married' },
+];
+
+export const yesNO = [
+	{ value: 'Yes', label: 'Yes' },
+	{ value: 'No', label: 'No' },
+];
+
+export const paymentType = [
+	{ value: 'POS', label: 'POS' },
+	{ value: 'Cash', label: 'Cash' },
+	{ value: 'Cheque', label: 'Cheque' },
+	{ value: 'Transfer', label: 'Transfer' },
+];
+
+export const transactionPaymentType = [
+	{ id: 'POS', name: 'POS' },
+	{ id: 'Cash', name: 'Cash' },
+	{ id: 'Cheque', name: 'Cheque' },
+	{ id: 'Transfer', name: 'Transfer' },
+	{ id: 'Voucher', name: 'Voucher' },
 ];
 
 export const insuranceStatus = [

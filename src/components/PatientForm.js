@@ -12,31 +12,23 @@ import {
 	insuranceStatus,
 } from '../services/constants';
 import { getAllHmos } from '../actions/hmo';
+import moment from 'moment';
 
 function PatientForm(props) {
 	const formData = props.formData;
+	const patient = props.patient;
+	console.log(patient);
+	const register_new_patient = props.register_new_patient;
+	const [formTitle, setFormTitle] = useState('');
+	const [patientData, setPatientData] = useState({});
+	const [genderValue, setGenderValue] = useState('');
+	const [insValue, setInsValue] = useState('');
+	const [hmoValue, setHmoValue] = useState('');
+	const [ethValue, setEthValue] = useState('');
+	const [maritalValue, setMaritalValue] = useState('');
 	const [loaded, setLoaded] = useState(false);
 	const [isHmo, setIsHmo] = useState(false);
 	const [hmos, setHmos] = useState([]);
-
-	const { register, handleSubmit, errors, setValue } = useForm({
-		validationSchema: patientSchema,
-		defaultValues: {
-			surname: formData.surname || '',
-			other_names: formData.other_names || '',
-			date_of_birth: formData.date_of_birth || '',
-			email: formData.email || '',
-			gender: formData.gender || '',
-			occupation: formData.occupation || '',
-			address: formData.address || '',
-			phoneNumber: formData.phoneNumber || '',
-		},
-	});
-
-	const onSubmit = values => {
-		props.nextStep(values);
-	};
-
 	const getAllHmos = () => {
 		let hmos = props.hmoList.map(hmo => {
 			return {
@@ -46,6 +38,106 @@ function PatientForm(props) {
 		});
 
 		setHmos(hmos);
+	};
+	useEffect(() => {
+		let formValues = {
+			surname: formData.surname || '',
+			other_names: formData.other_names || '',
+			date_of_birth: formData.date_of_birth || '',
+			email: formData.email || '',
+			gender: formData.gender || '',
+			occupation: formData.occupation || '',
+			address: formData.address || '',
+			phoneNumber: formData.phoneNumber || '',
+			maritalStatus: formData.maritalStatus || '',
+			ethnicity: formData.ethnicity || '',
+			insurranceStatus: formData.insurranceStatus || '',
+			hmo: formData.hmo || '',
+		};
+		setFormTitle('New patient registration');
+		setPatientData(formValues);
+		if (!register_new_patient) {
+			setFormTitle('Edit patient data');
+			formValues = {
+				surname: patient.surname,
+				other_names: patient.other_names || '',
+				date_of_birth: patient.date_of_birth || '',
+				email: patient.email || '',
+				maritalStatus: patient.maritalStatus || '',
+				insurranceStatus: patient.insurranceStatus || '',
+				ethnicity: patient.ethnicity || '',
+				gender: patient.gender || '',
+				occupation: patient.occupation || '',
+				address: patient.address || '',
+				phoneNumber: patient.phoneNumber || '',
+				hmo: patient.hmo || '',
+			};
+			setGenderValue(
+				gender.filter(option => option.label === formValues.gender)
+			);
+			setInsValue(
+				insuranceStatus.filter(
+					option => option.label === formValues.insurranceStatus
+				)
+			);
+			setHmoValue(hmos.filter(option => option.label === formValues.hmo));
+			setEthValue(
+				ethnicities.filter(option => option.label === formValues.ethnicity)
+			);
+			setMaritalValue(
+				maritalStatus.filter(
+					option => option.label === formValues.maritalStatus
+				)
+			);
+
+			handleChange('gender', formValues.gender, setGenderValue, gender);
+			handleChange(
+				'maritalStatus',
+				formValues.maritalStatus,
+				setMaritalValue,
+				maritalStatus
+			);
+			handleChange(
+				'insurranceStatus',
+				formValues.insurranceStatus,
+				setInsValue,
+				insuranceStatus
+			);
+			handleChange('hmoId', formValues.hmo, setHmoValue, hmos);
+			handleChange('ethnicity', formValues.ethnicity, setEthValue, ethnicities);
+			setPatientData(formValues);
+		}
+	}, [formTitle]);
+
+	const { register, handleSubmit, errors, setValue } = useForm({
+		validationSchema: patientSchema,
+		defaultValues: patientData,
+	});
+
+	const onSubmit = values => {
+		console.log(values);
+		props.nextStep(values);
+	};
+
+	const handleChange = (name, type, fn, lists = []) => {
+		let res = lists.find(p => p.value === type);
+		fn(res);
+		if (type == null) {
+			setValue(name, null);
+		} else {
+			if (name === 'insurranceStatus') {
+				if (type === 'HMO') {
+					setIsHmo(true);
+					setValue(name, type);
+				} else {
+					setIsHmo(false);
+					setValue(name, type);
+					setValue('hmoId', null);
+				}
+			} else {
+				setValue(name, type);
+			}
+		}
 	};
 
 	useEffect(() => {
@@ -57,7 +149,7 @@ function PatientForm(props) {
 	}, [loaded, props]);
 	return (
 		<Fragment>
-			<h5 className="form-header">New patient registration</h5>
+			<h5 className="form-header">{formTitle}</h5>
 			<div className="form-desc"></div>
 			<div className="onboarding-content with-gradient">
 				<form onSubmit={handleSubmit(onSubmit)}>
@@ -69,6 +161,7 @@ function PatientForm(props) {
 									<input
 										className="form-control"
 										placeholder="Enter surname name"
+										defaultValue={patientData.surname || ''}
 										name="surname"
 										type="text"
 										ref={register}
@@ -84,6 +177,7 @@ function PatientForm(props) {
 									<input
 										className="form-control"
 										placeholder="Other Names"
+										defaultValue={patientData.other_names || ''}
 										name="other_names"
 										type="text"
 										ref={register}
@@ -100,6 +194,7 @@ function PatientForm(props) {
 										className="form-control"
 										name="email"
 										ref={register}
+										defaultValue={patientData.email || ''}
 										placeholder="example@email.com"
 										type="text"
 									/>
@@ -114,6 +209,7 @@ function PatientForm(props) {
 										className="form-control"
 										placeholder="04/12/1978"
 										type="text"
+										defaultValue={patientData.date_of_birth || ''}
 										name="date_of_birth"
 										ref={register}
 									/>
@@ -129,12 +225,14 @@ function PatientForm(props) {
 										id="gender"
 										ref={register({ name: 'gender' })}
 										options={gender}
+										value={genderValue}
 										onChange={evt => {
-											if (evt == null) {
-												setValue('gender', null);
-											} else {
-												setValue('gender', String(evt.value));
-											}
+											handleChange(
+												'gender',
+												String(evt.value),
+												setGenderValue,
+												gender
+											);
 										}}
 									/>
 								</div>
@@ -146,12 +244,14 @@ function PatientForm(props) {
 										id="maritalStatus"
 										ref={register({ name: 'maritalStatus' })}
 										options={maritalStatus}
+										value={maritalValue}
 										onChange={evt => {
-											if (evt == null) {
-												setValue('maritalStatus', null);
-											} else {
-												setValue('maritalStatus', String(evt.value));
-											}
+											handleChange(
+												'maritalStatus',
+												String(evt.value),
+												setMaritalValue,
+												maritalStatus
+											);
 										}}
 									/>
 								</div>
@@ -165,19 +265,14 @@ function PatientForm(props) {
 										id="insurranceStatus"
 										ref={register({ name: 'insurranceStatus' })}
 										options={insuranceStatus}
+										value={insValue}
 										onChange={evt => {
-											if (evt == null) {
-												setValue('insurranceStatus', null);
-											} else {
-												if (evt.value === 'HMO') {
-													setIsHmo(true);
-													setValue('insurranceStatus', String(evt.value));
-												} else {
-													setIsHmo(false);
-													setValue('insurranceStatus', String(evt.value));
-													setValue('hmoId', null);
-												}
-											}
+											handleChange(
+												'insurranceStatus',
+												String(evt.value),
+												setInsValue,
+												insuranceStatus
+											);
 										}}
 									/>
 								</div>
@@ -189,12 +284,14 @@ function PatientForm(props) {
 										id="hmoId"
 										ref={register({ name: 'hmoId' })}
 										options={isHmo ? hmos : []}
+										value={hmoValue}
 										onChange={evt => {
-											if (evt == null) {
-												setValue('hmoId', null);
-											} else {
-												setValue('hmoId', String(evt.value));
-											}
+											handleChange(
+												'hmoId',
+												String(evt.value),
+												setHmoValue,
+												hmos
+											);
 										}}
 									/>
 								</div>
@@ -206,6 +303,7 @@ function PatientForm(props) {
 										className="form-control"
 										placeholder=""
 										type="text"
+										defaultValue={patientData.occupation || ''}
 										name="occupation"
 										ref={register}
 									/>
@@ -219,6 +317,7 @@ function PatientForm(props) {
 									<input
 										className="form-control"
 										name="address"
+										defaultValue={patientData.address || ''}
 										ref={register}
 										type="text"
 									/>
@@ -230,6 +329,7 @@ function PatientForm(props) {
 									<input
 										className="form-control"
 										name="phoneNumber"
+										defaultValue={patientData.phoneNumber || ''}
 										ref={register}
 										type="text"
 									/>
@@ -242,12 +342,14 @@ function PatientForm(props) {
 										name="ethnicity"
 										ref={register({ name: 'ethnicity' })}
 										options={ethnicities}
+										value={ethValue}
 										onChange={evt => {
-											if (evt == null) {
-												setValue('ethnicity', null);
-											} else {
-												setValue('ethnicity', String(evt.value));
-											}
+											handleChange(
+												'ethnicity',
+												String(evt.value),
+												setEthValue,
+												ethnicities
+											);
 										}}
 									/>
 								</div>
@@ -273,9 +375,12 @@ function PatientForm(props) {
 		</Fragment>
 	);
 }
+
 const mapStateToProps = (state, ownProps) => {
 	return {
 		formData: state.patient.formData,
+		patient: state.user.patient,
+		register_new_patient: state.general.register_new_patient,
 		hmoList: state.hmo.hmo_list,
 	};
 };

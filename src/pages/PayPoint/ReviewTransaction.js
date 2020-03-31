@@ -13,6 +13,7 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 
 import { loadTransaction, deleteTransaction } from '../../actions/transaction';
+import { applyVoucher, approveTransaction } from '../../actions/general';
 
 const { RangePicker } = DatePicker;
 const departments = [
@@ -103,6 +104,12 @@ class ReviewTransaction extends Component {
 	confirmDelete = data => {
 		confirmAction(this.onDeleteTransaction, data);
 	};
+	doApproveTransaction = item => {
+		this.props.approveTransaction(item);
+	};
+	doApplyVoucher = item => {
+		this.props.applyVoucher(item);
+	};
 
 	render() {
 		const { filtering, loading, patients } = this.state;
@@ -116,7 +123,7 @@ class ReviewTransaction extends Component {
 						<h6 className="element-header">Filter by:</h6>
 
 						<form className="row">
-							<div className="form-group col-md-6">
+							<div className="form-group col-md-3">
 								<label className="" htmlFor="patient_id">
 									ID
 								</label>
@@ -136,11 +143,11 @@ class ReviewTransaction extends Component {
 									})}
 								</select>
 							</div>
-							<div className="form-group col-md-6">
+							<div className="form-group col-md-3">
 								<label>From - To</label>
 								<RangePicker onChange={e => this.dateChange(e)} />
 							</div>
-							<div className="form-group col-md-6">
+							<div className="form-group col-md-3">
 								<label className="mr-2 " htmlFor="id">
 									Status
 								</label>
@@ -160,7 +167,7 @@ class ReviewTransaction extends Component {
 									})}
 								</select>
 							</div>
-							<div className="form-group col-md-6 mt-4">
+							<div className="form-group col-md-3 mt-4">
 								<div
 									className="btn btn-sm btn-primary btn-upper text-white"
 									onClick={this.doFilter}>
@@ -184,17 +191,18 @@ class ReviewTransaction extends Component {
 									<thead>
 										<tr>
 											<th>DATE</th>
-											<th className="text-center">PATIENT NAME</th>
-											<th className="text-center">DEPARTMENT</th>
-											<th className="text-center">SERVICE</th>
-											<th className="text-center">AMOUNT (&#x20A6;)</th>
-											<th className="text-right">ACTIONS</th>
+											<th className="">PATIENT NAME</th>
+											<th className="">DEPARTMENT</th>
+											<th className="">SERVICE</th>
+											<th className="">AMOUNT (&#x20A6;)</th>
+											<th className="">PAYMENT TYPE</th>
+											<th className="">ACTIONS</th>
 										</tr>
 									</thead>
 									<tbody>
 										{loading ? (
 											<tr>
-												<td colSpan="4" className="text-center">
+												<td colSpan="7" className="text-center">
 													<img alt="searching" src={searchingGIF} />
 												</td>
 											</tr>
@@ -207,33 +215,58 @@ class ReviewTransaction extends Component {
 																'YYYY/MM/DD'
 															)}
 														</td>
-														<td className="text-center">
+														<td className="">
 															{`${transaction.surname} ${transaction.other_names}`}
 														</td>
-														<td className="text-center">
-															{transaction.deptname}
-														</td>
-														<td className="text-center">
+														<td className="">{transaction.deptname}</td>
+														<td className="">
 															{transaction.q_service_id
 																? transaction.q_service_id
 																: 'No service yet'}
 														</td>
-														<td className="text-center">
-															{transaction.q_amount}
+														<td className="">{transaction.q_amount}</td>
+														<td className="">
+															{transaction.q_paymentType
+																? transaction.q_paymentType
+																: 'Not specified'}
 														</td>
-														<td className="text-center">
-															<a
-																className="text-danger"
-																onClick={() => this.confirmDelete(transaction)}>
-																<i className="os-icon os-icon-ui-15"></i>
-															</a>
+														<td className="text-center row-actions">
+															<Tooltip title="Apply Voucher">
+																<a
+																	className="secondary"
+																	onClick={() =>
+																		this.doApplyVoucher(transaction)
+																	}>
+																	<i className="os-icon os-icon-thumbs-up" />
+																</a>
+															</Tooltip>
+
+															<Tooltip title="Approve Transactions">
+																<a
+																	className="secondary"
+																	onClick={() =>
+																		this.doApproveTransaction(transaction)
+																	}>
+																	<i className="os-icon os-icon-folder-plus" />
+																</a>
+															</Tooltip>
+
+															<Tooltip title="Delete Transactions">
+																<a
+																	className="text-danger"
+																	onClick={() =>
+																		this.confirmDelete(transaction)
+																	}>
+																	<i className="os-icon os-icon-ui-15"></i>
+																</a>
+															</Tooltip>
 														</td>
 													</tr>
 												);
 											})
 										) : (
 											<tr className="text-center">
-												<td>No transaction for today yet</td>
+												<td colSpan="6">No transaction for today yet</td>
 											</tr>
 										)}
 									</tbody>
@@ -253,6 +286,9 @@ const mapStateToProps = state => {
 	};
 };
 
-export default connect(mapStateToProps, { loadTransaction, deleteTransaction })(
-	ReviewTransaction
-);
+export default connect(mapStateToProps, {
+	applyVoucher,
+	approveTransaction,
+	loadTransaction,
+	deleteTransaction,
+})(ReviewTransaction);
