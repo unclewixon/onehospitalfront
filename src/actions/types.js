@@ -138,6 +138,7 @@ export const NEXT_STEP = 'NEXT_STEP';
 export const PREV_STEP = 'PREV_STEP';
 export const SAVE_PATIENT_DETAILS = 'SAVE_PATIENT_DETAILS';
 export const CREATE_LAB_REQUEST = 'CREATE_LAB_REQUEST';
+export const GET_REQUESTS_BY_TYPE = 'GET_REQUESTS_BY_TYPE';
 
 //Permission
 export const ADD_PERMISSION = 'ADD_PERMISSION';

@@ -1,9 +1,35 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
+import { connect } from "react-redux";
+import searchingGIF from '../../assets/images/searching.gif';
+import { notifyError } from '../../services/notify';
+import { getRequestByType } from './../../actions/patient';
 
-const Lab = ({ location }) => {
+const Lab = props => {
+	const [loaded, setLoaded] = useState(false)
+	const [dataLoaded, setDataLoaded] = useState(false)
+
+
+	const { location } = props;
+
+	useEffect(() => {
+		const { patient, getRequestByType } = props
+		const patient_id = patient && patient.id ? patient.id : '';
+		if (!loaded) {
+			getRequestByType(patient_id)
+				.then(response => {
+					setDataLoaded(true);
+				})
+				.catch(e => {
+					setDataLoaded(true);
+					notifyError(e.message || 'could not fetch request type');
+				});
+		}
+		setLoaded(true);
+	}, [loaded, props]);
+
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">
@@ -23,112 +49,72 @@ const Lab = ({ location }) => {
 								<div id="toolbar"></div>
 							</div>
 						</div>
-						<div
-							className="fixed-table-container"
-							style={{ paddingBottom: '0px' }}>
-							<div className="fixed-table-body">
-								<table
-									id="table"
-									className="table table-theme v-middle table-hover">
-									<thead>
-										<tr>
-											<th>ID</th>
-											<th>Request Date</th>
-											<th>Requested By</th>
-											<th>Request Specimen</th>
-											<th className="text-center">Request Status</th>
-											<th className="text-right" />
-										</tr>
-									</thead>
-									<tbody>
-										<tr className="" data-index="0" data-id="20">
-											<td>
-												<span className="text-bold">LAB/32456789</span>
-											</td>
-											<td>
-												<span>20-Jan-2020</span>
-												<span className="smaller lighter ml-1">3:22pm</span>
-											</td>
-											<td>
-												<Link to="/">Uchechi I.</Link>
-											</td>
-											<td>Blood</td>
-											<td className="text-center">
-												<span className="badge badge-secondary">pending</span>
-											</td>
-											<td className="row-actions text-right">
-												<Tooltip title="View Request">
-													<a href="#">
-														<i className="os-icon os-icon-documents-03" />
-													</a>
-												</Tooltip>
-												<Tooltip title="Print Request">
-													<a className="ml-2" href="#">
-														<i className="icon-feather-printer" />
-													</a>
-												</Tooltip>
-											</td>
-										</tr>
-										<tr className="" data-index="0" data-id="20">
-											<td>
-												<span className="text-bold">LAB/32456789</span>
-											</td>
-											<td>
-												<span>20-Jan-2020</span>
-												<span className="smaller lighter ml-1">3:22pm</span>
-											</td>
-											<td>
-												<Link to="/">Uchechi I.</Link>
-											</td>
-											<td>Blood</td>
-											<td className="text-center">
-												<span className="badge badge-success">completed</span>
-											</td>
-											<td className="row-actions text-right">
-												<Tooltip title="View Request">
-													<a href="#">
-														<i className="os-icon os-icon-documents-03" />
-													</a>
-												</Tooltip>
-												<Tooltip title="Print Request">
-													<a className="ml-2" href="#">
-														<i className="icon-feather-printer" />
-													</a>
-												</Tooltip>
-											</td>
-										</tr>
-										<tr className="" data-index="0" data-id="20">
-											<td>
-												<span className="text-bold">LAB/32456789</span>
-											</td>
-											<td>
-												<span>20-Jan-2020</span>
-												<span className="smaller lighter ml-1">3:22pm</span>
-											</td>
-											<td>
-												<Link to="/">Uchechi I.</Link>
-											</td>
-											<td>Blood</td>
-											<td className="text-center">
-												<span className="badge badge-danger">pending</span>
-											</td>
-											<td className="row-actions text-right">
-												<Tooltip title="View Request">
-													<a href="#">
-														<i className="os-icon os-icon-documents-03" />
-													</a>
-												</Tooltip>
-												<Tooltip title="Print Request">
-													<a className="ml-2" href="#">
-														<i className="icon-feather-printer" />
-													</a>
-												</Tooltip>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
+						{dataLoaded ? (
+							<tr>
+								<td colSpan="4" className="text-center">
+									<img alt="searching" src={searchingGIF} />
+								</td>
+							</tr>
+						) : (
+
+								<div
+									className="fixed-table-container"
+									style={{ paddingBottom: '0px' }}>
+									<div className="fixed-table-body">
+										<table
+											id="table"
+											className="table table-theme v-middle table-hover">
+											<thead>
+												<tr>
+													<th>ID</th>
+													<th>Request Date</th>
+													<th>Requested By</th>
+													<th>Request Specimen</th>
+													<th className="text-center">Request Status</th>
+													<th className="text-right" />
+												</tr>
+											</thead>
+											<tbody>
+												{
+													props.Requests.map((request, index) => {
+														return (
+															<tr className="" data-index="0" data-id="20">
+																<td>
+																	<span className="text-bold">LAB/32456789</span>
+																</td>
+																<td>
+																	<span>20-Jan-2020</span>
+																	<span className="smaller lighter ml-1">3:22pm</span>
+																</td>
+																<td>
+																	<Link to="/">Uchechi I.</Link>
+																</td>
+																<td>Blood</td>
+																<td className="text-center">
+																	<span className="badge badge-secondary">pending</span>
+																</td>
+																<td className="row-actions text-right">
+																	<Tooltip title="View Request">
+																		<a href="#">
+																			<i className="os-icon os-icon-documents-03" />
+																		</a>
+																	</Tooltip>
+																	<Tooltip title="Print Request">
+																		<a className="ml-2" href="#">
+																			<i className="icon-feather-printer" />
+																		</a>
+																	</Tooltip>
+																</td>
+															</tr>
+														)
+													})
+												}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							)
+						}
 					</div>
 				</div>
 			</div>
@@ -136,4 +122,13 @@ const Lab = ({ location }) => {
 	);
 };
 
-export default withRouter(Lab);
+const mapStateToProps = state => {
+	return {
+		patient: state.user.patient,
+		Requests: state.patient.request_type
+	};
+};
+
+export default connect(mapStateToProps, {
+	getRequestByType
+})(withRouter(Lab));
