@@ -11,6 +11,7 @@ export const FULLSCREEN_COOKIE = 'EMR:FULLSCREEN_COOKIE';
 export const USER_RECORD = 'EMR:USER_RECORD';
 export const socket = socketIOClient(API_URI, { transports: ['websocket'] });
 
+export const hmoAPI = '/hmos';
 export const inventoryAPI = '/inventory/stocks';
 export const inventoryUpdateQuantityAPI = '/inventory/stocks/update-quantity';
 export const stocksAPI = '/stocks';
@@ -117,6 +118,14 @@ export const paymentType = [
 	{ value: 'Cash', label: 'Cash' },
 	{ value: 'Cheque', label: 'Cheque' },
 	{ value: 'Transfer', label: 'Transfer' },
+];
+
+export const transactionPaymentType = [
+	{ id: 'POS', name: 'POS' },
+	{ id: 'Cash', name: 'Cash' },
+	{ id: 'Cheque', name: 'Cheque' },
+	{ id: 'Transfer', name: 'Transfer' },
+	{ id: 'Voucher', name: 'Voucher' },
 ];
 
 export const insuranceStatus = [

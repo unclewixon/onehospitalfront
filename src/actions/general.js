@@ -26,10 +26,14 @@ import {
 	TOGGLE_CREATE_RECORD_VITAL,
 	TOGGLE_UPLOAD_SERVICE,
 	TOGGLE_UPLOAD_DIAGNOSIS,
+	TOGGLE_UPLOAD_HMO,
 	TOGGLE_EDIT_SERIVCE,
 	TOGGLE_CREATE_CLINICAL_TASK,
 	TOGGLE_OPEN_ENCOUNTER,
 	TOGGLE_ADD_CAFETERIA_FILE,
+	TOGGLE_APPROVE_TRANSACTION,
+	TOGGLE_APPLY_VOUCHER,
+	TOGGLE_UPLOAD_HMO_TARIFF,
 } from './types';
 
 export const togglePreloading = status => {
@@ -100,6 +104,13 @@ export const toggleCreateInventory = status => {
 export const toggleEditInventory = status => {
 	return {
 		type: TOGGLE_EDIT_INVENTORY,
+		payload: status,
+	};
+};
+
+export const toggleApproveTransaction = status => {
+	return {
+		type: TOGGLE_APPROVE_TRANSACTION,
 		payload: status,
 	};
 };
@@ -186,6 +197,14 @@ export const toggleCreateVoucher = status => {
 		payload: status,
 	};
 };
+
+export const toggleApplyVoucher = status => {
+	return {
+		type: TOGGLE_APPLY_VOUCHER,
+		payload: status,
+	};
+};
+
 export const toggleCreateLabourMeasurement = status => {
 	return {
 		type: TOGGLE_CREATE_LABOUR_MEASUREMENT,
@@ -241,6 +260,20 @@ export const toggleUploadDiagnosis = status => {
 	};
 };
 
+export const toggleUploadHmo = status => {
+	return {
+		type: TOGGLE_UPLOAD_HMO,
+		payload: status,
+	};
+};
+
+export const toggleUploadHmoTariff = status => {
+	return {
+		type: TOGGLE_UPLOAD_HMO_TARIFF,
+		payload: status,
+	};
+};
+
 export const toggleEditService = (status, data) => {
 	return {
 		type: TOGGLE_EDIT_SERIVCE,
@@ -266,7 +299,9 @@ export const closeModals = () => {
 		dispatch(toggleAddTask(false));
 		dispatch(toggleEditStaff(false));
 		dispatch(toggleCreateInventory(false));
+		dispatch(toggleApplyVoucher(false));
 		dispatch(toggleEditInventory(false));
+		dispatch(toggleApproveTransaction(false));
 		dispatch(toggleUpdateQuantity(false));
 		dispatch(toggleViewAppraisal(false));
 		dispatch(toggleViewPayrollHistory(false));
@@ -286,6 +321,8 @@ export const closeModals = () => {
 		dispatch(toggleAddCafeteriaFile(false));
 		dispatch(toggleUploadService(false));
 		dispatch(toggleUploadDiagnosis(false));
+		dispatch(toggleUploadHmo(false));
+		dispatch(toggleUploadHmoTariff(false));
 		dispatch(toggleEditService(false, null));
 		dispatch(toggleOpenEncounter(false, null));
 	};
@@ -354,6 +391,14 @@ export const editInventory = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleEditInventory(action));
+	};
+};
+
+export const approveTransaction = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleApproveTransaction(action));
 	};
 };
 
@@ -458,6 +503,22 @@ export const uploadDiagnosis = action => {
 	};
 };
 
+export const uploadHmo = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleUploadHmo(action));
+	};
+};
+
+export const uploadHmoTariff = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleUploadHmoTariff(action));
+	};
+};
+
 export const editService = (action, data) => {
 	return dispatch => {
 		dispatch(closeModals());
@@ -502,6 +563,15 @@ export const openEncounter = (action, id) => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleOpenEncounter(action, id));
+	};
+};
+
+export const applyVoucher = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleApplyVoucher(true));
+		dispatch(toggleCreateVoucher(action));
 	};
 };
 
