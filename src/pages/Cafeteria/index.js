@@ -9,6 +9,12 @@ const CafeteriaItems = lazy(() => import('../../components/CafeteriaItems'));
 const CafeteriaCategory = lazy(() =>
 	import('../../components/CafeteriaCategory')
 );
+const CafeteriaInvCategory = lazy(() =>
+	import('../../components/CafeteriaInvCategory')
+);
+const CafeteriaInventory = lazy(() =>
+	import('../../components/CafeteriaInventory')
+);
 export class index extends Component {
 	render() {
 		const { match } = this.props;
@@ -29,8 +35,13 @@ export class index extends Component {
 						/>
 						<Route
 							exact
+							path={`${match.url}/inventory/category`}
+							component={CafeteriaInvCategory}
+						/>
+						<Route
+							exact
 							path={`${match.url}/inventory`}
-							component={Inventory}
+							component={CafeteriaInventory}
 						/>
 						<Route component={NoMatch} />
 					</Switch>

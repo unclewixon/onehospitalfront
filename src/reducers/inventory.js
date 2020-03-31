@@ -18,6 +18,14 @@ import {
 	UPDATE_CAFETERIA_ITEM,
 	DELETE_CAFETERIA_ITEM,
 	FILTER_CAFETERIA_ITEM,
+	ADD_CAFETERIA_INV_CATEGORY,
+	GET_ALL_CAFETERIA_INV_CATEGORY,
+	UPDATE_CAFETERIA_INV_CATEGORY,
+	DELETE_CAFETERIA_INV_CATEGORY,
+	ADD_CAFETERIA_INVENTORY,
+	GET_ALL_CAFETERIA_INVENTORY,
+	UPDATE_CAFETERIA_INVENTORY,
+	DELETE_CAFETERIA_INVENTORY,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -25,9 +33,11 @@ const INITIAL_STATE = {
 	item: [],
 	categories: [],
 	sub_categories: [],
-	cafeteriaCategories: [],
+	cafeteriaCategory: [],
 	cafeteriaItems: [],
 	filteredCafeteriaItems: [],
+	cafeteriaInvCategory: [],
+	cafeteriaInventory: [],
 };
 
 const inventory = (state = INITIAL_STATE, action) => {
@@ -152,6 +162,55 @@ const inventory = (state = INITIAL_STATE, action) => {
 					deletedItem =>
 						deletedItem.category.id === action.payload.category ||
 						deletedItem.name === action.payload.item
+				),
+			};
+
+		case ADD_CAFETERIA_INV_CATEGORY:
+			return {
+				...state,
+				cafeteriaInvCategory: [...state.cafeteriaInvCategory, action.payload],
+			};
+		case GET_ALL_CAFETERIA_INV_CATEGORY:
+			return { ...state, cafeteriaInvCategory: action.payload };
+		case UPDATE_CAFETERIA_INV_CATEGORY:
+			return {
+				...state,
+				cafeteriaInvCategory: [
+					...state.cafeteriaInvCategory.filter(
+						deletedItem => deletedItem.id !== action.previousData.id
+					),
+					action.payload,
+				],
+			};
+		case DELETE_CAFETERIA_INV_CATEGORY:
+			return {
+				...state,
+				cafeteriaInvCategory: state.cafeteriaInvCategory.filter(
+					deletedItem => deletedItem.id !== action.payload.id
+				),
+			};
+		case ADD_CAFETERIA_INVENTORY:
+			return {
+				...state,
+				cafeteriaInventory: [...state.cafeteriaInventory, action.payload],
+			};
+		case GET_ALL_CAFETERIA_INVENTORY:
+			return { ...state, cafeteriaInventory: action.payload };
+		case UPDATE_CAFETERIA_INVENTORY:
+			return {
+				...state,
+				cafeteriaInventory: [
+					...state.cafeteriaInventory.filter(
+						deletedItem => deletedItem.id !== action.previousData.id
+					),
+					action.payload,
+				],
+			};
+		case DELETE_CAFETERIA_INVENTORY:
+			return {
+				...state,
+				cafeteriaInventory: state.cafeteriaInventory.filter(
+					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};
 		default:
