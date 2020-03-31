@@ -154,37 +154,23 @@ const HmoList = props => {
 		<div className="content-i">
 			<div className="content-box">
 				<div className="element-wrapper">
-					<div className="os-tabs-w mx-1">
-						<div className="os-tabs-controls">
-							<ul className="nav nav-tabs upper">
-								<li className="nav-item">
-									<a
-										aria-expanded="true"
-										className="nav-link active"
-										data-toggle="tab">
-										HEALTH MANAGEMENT ORGANIZATIONS
-									</a>
-								</li>
-							</ul>
-						</div>
+					<div className="element-actions">
+						<a
+							className="btn btn-success btn-sm"
+							onClick={() => props.uploadHmo(true)}
+							href="#">
+							<i className="os-icon os-icon-grid-10"></i>
+							<span>Upload HMOS</span>
+						</a>
+						<a
+							className="btn btn-primary btn-sm"
+							href={`${API_URI}${hmoAPI}/download-sample`}
+							download>
+							<i className="os-icon os-icon-ui-22"></i>
+							<span>Download Sample</span>
+						</a>
 					</div>
-					<div className="row">
-						<div className="col-sm-2">
-							<button
-								className="btn btn-sm btn-secondary"
-								onClick={() => props.uploadHmo(true)}>
-								Upload HMOS
-							</button>
-						</div>
-						<div className="col-sm-3">
-							<a
-								className="btn btn-sm btn-secondary"
-								href={`${API_URI}${hmoAPI}/download-sample`}
-								download>
-								Download Hmo Services
-							</a>
-						</div>
-					</div>
+					<h6 className="element-header">Health Management Organization</h6>
 					<div className="row">
 						<div className="col-lg-8 col-xxl-8">
 							<div className="element-wrapper">
@@ -196,7 +182,6 @@ const HmoList = props => {
 													<th>Logo</th>
 													<th>Name</th>
 													<th className="text-center">Phone</th>
-
 													<th>Email</th>
 													<th>Actions</th>
 												</tr>
@@ -204,7 +189,7 @@ const HmoList = props => {
 											<tbody>
 												{!dataLoaded ? (
 													<tr>
-														<td colSpan="4" className="text-center">
+														<td colSpan="5" className="text-center">
 															<img alt="searching" src={searchingGIF} />
 														</td>
 													</tr>
