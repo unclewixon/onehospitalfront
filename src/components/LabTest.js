@@ -43,7 +43,7 @@ const LabTest = props => {
 		const { name, value } = e.target;
 		let newParam = { ...parameters };
 		if (name === 'parameter') {
-			newParam[index] = { parameter: value };
+			newParam[index] = { parameter_id: value };
 		} else if (name === 'referenceRange') {
 			newParam[index] = { ...newParam[index], referenceRange: value };
 		}
@@ -99,6 +99,9 @@ const LabTest = props => {
 	const onEditLabTest = e => {
 		setLoading(true);
 		e.preventDefault();
+		let params = Object.values(parameters).length
+			? Object.values(parameters).map(param => param)
+			: [];
 		props
 			.updateLabTest(
 				{
@@ -106,7 +109,7 @@ const LabTest = props => {
 					name,
 					price,
 					category,
-					parameters,
+					parameters: params,
 					testType,
 					description,
 				},
@@ -134,11 +137,25 @@ const LabTest = props => {
 			price: data.price,
 			id: data.id,
 			testType: data.test_type ? `${data.test_type}` : null,
-			parameters: data.parameter_type ? `${data.parameter_type}` : null,
 			category: data.category ? data.category.id : '',
 			description: data.description ? data.description : '',
 		}));
-		setParameter({});
+		let newParameter = {};
+		let newParameterUI = [];
+		if (Array.isArray(data.parameters)) {
+			data.parameters.map((param, i) => {
+				let newParamDetails = {
+					parameter_id:
+						param.parameter && param.parameter.id ? param.parameter.id : '',
+					referenceRange: param.referenceRange ? param.referenceRange : '',
+				};
+				newParameter[i] = newParamDetails;
+				newParameterUI.push(LabParameterPicker);
+				return param;
+			});
+		}
+		setParameter(newParameter);
+		setParamsUI(newParameterUI);
 		getDataToEdit(data);
 	};
 
@@ -190,11 +207,9 @@ const LabTest = props => {
 				<div>
 					<div className="row">
 						{!dataLoaded ? (
-							<tr>
-								<td colSpan="4" className="text-center">
-									<img alt="searching" src={searchingGIF} />
-								</td>
-							</tr>
+							<div colSpan="4" className="text-center">
+								<img alt="searching" src={searchingGIF} />
+							</div>
 						) : (
 							<>
 								{props.LabTests.map((LabTest, i) => {
@@ -291,6 +306,7 @@ const LabTest = props => {
 									if (ParamPicker) {
 										return (
 											<ParamPicker
+												key={i}
 												index={i}
 												parameterArray={props.LabParameters}
 												parameters={parameters}
