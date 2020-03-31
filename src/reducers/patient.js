@@ -27,7 +27,7 @@ const INITIAL_STATE = {
 	imagingRequests: [],
 	opthalmologyRequests: [],
 	vitals: [],
-	request_type: []
+	request_type: [],
 };
 
 const patient = (state = INITIAL_STATE, action) => {
@@ -74,7 +74,7 @@ const patient = (state = INITIAL_STATE, action) => {
 		case UPDATE_VITALS:
 			return { ...state, vitals: [action.payload, ...state.vitals] };
 		case GET_REQUESTS_BY_TYPE:
-			return { ...state, request_type: action.payload}
+			return { ...state, request_type: action.payload };
 		default:
 			return state;
 	}

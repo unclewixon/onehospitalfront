@@ -15,7 +15,7 @@ import {
 	LOAD_VITALS,
 	UPDATE_VITALS,
 	CREATE_LAB_REQUEST,
-	GET_REQUESTS_BY_TYPE
+	GET_REQUESTS_BY_TYPE,
 } from './types';
 
 export const nextStep = data => {
@@ -167,4 +167,4 @@ export const getRequestByType = data => {
 				});
 		});
 	};
-}
+};
