@@ -15,6 +15,7 @@ import {
 	LOAD_VITALS,
 	UPDATE_VITALS,
 	CREATE_LAB_REQUEST,
+	GET_REQUESTS_BY_TYPE
 } from './types';
 
 export const nextStep = data => {
@@ -117,6 +118,13 @@ const create_lab_request = data => {
 	};
 };
 
+const get_requests_by_type = data => {
+	return {
+		type: GET_REQUESTS_BY_TYPE,
+		payload: data,
+	};
+};
+
 export const createLabRequest = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
@@ -144,3 +152,19 @@ export const createLabRequest = data => {
 		});
 	};
 };
+
+export const getRequestByType = data => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			axios
+				.get(`${API_URI}/patient/${data}/request/lab?startDate=&endDate=`)
+				.then(response => {
+					dispatch(get_requests_by_type(response.data));
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return reject({ success: false });
+				});
+		});
+	};
+}

@@ -13,6 +13,7 @@ import {
 	GET_OPTHALMOLOGY_REQUESTS,
 	LOAD_VITALS,
 	UPDATE_VITALS,
+	GET_REQUESTS_BY_TYPE,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -26,6 +27,7 @@ const INITIAL_STATE = {
 	imagingRequests: [],
 	opthalmologyRequests: [],
 	vitals: [],
+	request_type: []
 };
 
 const patient = (state = INITIAL_STATE, action) => {
@@ -71,6 +73,8 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, vitals: [...action.payload] };
 		case UPDATE_VITALS:
 			return { ...state, vitals: [action.payload, ...state.vitals] };
+		case GET_REQUESTS_BY_TYPE:
+			return { ...state, request_type: action.payload}
 		default:
 			return state;
 	}
