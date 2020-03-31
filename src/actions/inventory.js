@@ -256,6 +256,7 @@ export const getAllCafeteriaItem = data => {
 };
 
 export const updateCafeteriaItem = data => {
+	console.log(data);
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios

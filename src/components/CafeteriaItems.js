@@ -16,6 +16,7 @@ import {
 	deleteCafeteriaItem,
 	filterCafeteriaItem,
 } from '../actions/inventory';
+import { addCafeteriaFile } from '../actions/general';
 import { v4 as uuidv4 } from 'uuid';
 
 const CafeteriaItems = props => {
@@ -30,9 +31,19 @@ const CafeteriaItems = props => {
 		save: true,
 		edit: false,
 		id: '',
+		item_code: '',
 	};
 	const [
-		{ name, price, discount_price, description, category_id, category, item },
+		{
+			name,
+			price,
+			discount_price,
+			description,
+			category_id,
+			category,
+			item,
+			item_code,
+		},
 		setState,
 	] = useState(initialState);
 	const [Loading, setLoading] = useState(false);
@@ -52,7 +63,7 @@ const CafeteriaItems = props => {
 		e.preventDefault();
 		setLoading(true);
 		console.log({ name, price, category_id, description, discount_price });
-		let item_code = `RC-${uuidv4().substring(0, 4)}`;
+		item_code = `RC-${uuidv4().substring(0, 4)}`;
 		props
 			.addCafeteriaItem({
 				name,
@@ -77,7 +88,15 @@ const CafeteriaItems = props => {
 		setLoading(true);
 		e.preventDefault();
 		props
-			.updateCafeteriaItem({ id: data.id, name }, data)
+			.updateCafeteriaItem({
+				id: data.id,
+				name,
+				price,
+				discount_price,
+				description,
+				category_id,
+				item_code,
+			})
 			.then(response => {
 				setState({ ...initialState });
 				setSubmitButton({ save: true, edit: false });
@@ -102,6 +121,7 @@ const CafeteriaItems = props => {
 			category_id: data.category.id,
 			description: data.description,
 			discount_price: data.discount_price,
+			item_code: data.item_code,
 		}));
 		getDataToEdit(data);
 	};
@@ -392,18 +412,28 @@ const CafeteriaItems = props => {
 
 											<div className="form-buttons-w text-right compact">
 												{save && (
-													<button
-														className={
-															Loading
-																? 'btn btn-primary disabled'
-																: 'btn btn-primary'
-														}>
-														{Loading ? (
-															<img src={waiting} alt="submitting" />
-														) : (
-															<span> save</span>
-														)}
-													</button>
+													<>
+														<button
+															className={
+																Loading
+																	? 'btn btn-primary disabled'
+																	: 'btn btn-primary'
+															}>
+															{Loading ? (
+																<img src={waiting} alt="submitting" />
+															) : (
+																<span> save</span>
+															)}
+														</button>
+
+														<button
+															className="btn btn-success btn-sm"
+															type="button"
+															onClick={() => props.addCafeteriaFile(true)}>
+															<i className="os-icon os-icon-upload"></i>
+															Upload file
+														</button>
+													</>
 												)}
 												{edit && (
 													<>
@@ -459,5 +489,6 @@ export default withRouter(
 		updateCafeteriaItem,
 		deleteCafeteriaItem,
 		filterCafeteriaItem,
+		addCafeteriaFile,
 	})(CafeteriaItems)
 );
