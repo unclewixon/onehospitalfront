@@ -19,6 +19,14 @@ import {
 	UPDATE_CAFETERIA_ITEM,
 	DELETE_CAFETERIA_ITEM,
 	FILTER_CAFETERIA_ITEM,
+	ADD_CAFETERIA_INV_CATEGORY,
+	GET_ALL_CAFETERIA_INV_CATEGORY,
+	UPDATE_CAFETERIA_INV_CATEGORY,
+	DELETE_CAFETERIA_INV_CATEGORY,
+	ADD_CAFETERIA_INVENTORY,
+	GET_ALL_CAFETERIA_INVENTORY,
+	UPDATE_CAFETERIA_INVENTORY,
+	DELETE_CAFETERIA_INVENTORY,
 } from './types';
 
 // categories
@@ -154,6 +162,64 @@ const filter_cafeteria_item = payload => {
 	};
 };
 
+const add_cafeteria_inv_category = payload => {
+	return {
+		type: ADD_CAFETERIA_INV_CATEGORY,
+		payload,
+	};
+};
+
+const get_all_cafeteria_inv_categorys = payload => {
+	return {
+		type: GET_ALL_CAFETERIA_INV_CATEGORY,
+		payload,
+	};
+};
+
+const update_cafeteria_inv_category = (payload, previousData) => {
+	return {
+		type: UPDATE_CAFETERIA_INV_CATEGORY,
+		payload,
+		previousData,
+	};
+};
+
+const delete_cafeteria_inv_category = payload => {
+	return {
+		type: DELETE_CAFETERIA_INV_CATEGORY,
+		payload,
+	};
+};
+
+const add_cafeteria_inventory = payload => {
+	return {
+		type: ADD_CAFETERIA_INVENTORY,
+		payload,
+	};
+};
+
+const get_all_cafeteria_inventory = payload => {
+	return {
+		type: GET_ALL_CAFETERIA_INVENTORY,
+		payload,
+	};
+};
+
+const update_cafeteria_inventory = (payload, previousData) => {
+	return {
+		type: UPDATE_CAFETERIA_INVENTORY,
+		payload,
+		previousData,
+	};
+};
+
+const delete_cafeteria_inventory = payload => {
+	return {
+		type: DELETE_CAFETERIA_INVENTORY,
+		payload,
+	};
+};
+
 export const addCafeteriaCategory = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
@@ -256,7 +322,6 @@ export const getAllCafeteriaItem = data => {
 };
 
 export const updateCafeteriaItem = data => {
-	console.log(data);
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
@@ -292,5 +357,136 @@ export const filterCafeteriaItem = data => {
 	return dispatch => {
 		console.log(data);
 		dispatch(filter_cafeteria_item(data));
+	};
+};
+
+export const addCafeteriaInvCategory = data => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			axios
+				.post(`${API_URI}/cafeteria/inventory/categories`, {
+					name: data.name,
+				})
+				.then(response => {
+					dispatch(add_cafeteria_inv_category(response.data));
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return reject({ success: false });
+				});
+		});
+	};
+};
+
+export const getAllCafeteriaInvCategory = data => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			axios
+				.get(`${API_URI}/cafeteria/inventory/categories`)
+				.then(response => {
+					dispatch(get_all_cafeteria_inv_categorys(response.data));
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return reject({ success: false });
+				});
+		});
+	};
+};
+
+export const updateCafeteriaInvCategory = data => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			axios
+				.patch(`${API_URI}/cafeteria/inventory/categories/${data.id}/update`, {
+					name: data.name,
+				})
+				.then(response => {
+					dispatch(update_cafeteria_inv_category(response.data, data));
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return reject({ success: false });
+				});
+		});
+	};
+};
+
+export const deleteCafeteriaInvCategory = data => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			axios
+				.delete(`${API_URI}/cafeteria/inventory/categories/${data.id}`)
+				.then(response => {
+					dispatch(delete_cafeteria_inv_category(data));
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return reject({ success: false });
+				});
+		});
+	};
+};
+
+export const addCafeteriaInventory = data => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			axios
+				.post(`${API_URI}/cafeteria/inventories`, data)
+				.then(response => {
+					dispatch(add_cafeteria_inventory(response.data));
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return reject({ success: false });
+				});
+		});
+	};
+};
+export const getAllCafeteriaInventory = data => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			axios
+				.get(`${API_URI}/cafeteria/inventories`)
+				.then(response => {
+					dispatch(get_all_cafeteria_inventory(response.data));
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return reject({ success: false });
+				});
+		});
+	};
+};
+
+export const updateCafeteriaInventory = data => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			axios
+				.patch(`${API_URI}/cafeteria/inventory/${data.id}/update`, data)
+				.then(response => {
+					dispatch(update_cafeteria_inventory(response.data, data));
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return reject({ success: false });
+				});
+		});
+	};
+};
+
+export const deleteCafeteriaInventory = data => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			axios
+				.delete(`${API_URI}/cafeteria/inventory/${data.id}`)
+				.then(response => {
+					dispatch(delete_cafeteria_inventory(data));
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return reject({ success: false });
+				});
+		});
 	};
 };
