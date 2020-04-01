@@ -58,17 +58,17 @@ export class Voucher extends Component {
 									<table className="table table-striped">
 										<thead>
 											<tr>
-												<th className="text-center">Patient</th>
-												<th className="text-center">Voucher Number</th>
-												<th className="text-center">Amount (₦)</th>
-												<th className="text-center">Date Created</th>
-												<th className="text-right">Actions</th>
+												<th className="">Patient</th>
+												<th className="">Voucher Number</th>
+												<th className="">Amount (₦)</th>
+												<th className="">Date Created</th>
+												<th className="">Actions</th>
 											</tr>
 										</thead>
 										<tbody>
 											{loading ? (
 												<tr>
-													<td colSpan="4" className="text-center">
+													<td colSpan="5" className="text-center">
 														<img alt="searching" src={searchingGIF} />
 													</td>
 												</tr>
@@ -110,7 +110,7 @@ export class Voucher extends Component {
 												})
 											) : (
 												<tr className="text-center">
-													<td>No voucher for today yet</td>
+													<td colSpan="5">No voucher for today yet</td>
 												</tr>
 											)}
 										</tbody>

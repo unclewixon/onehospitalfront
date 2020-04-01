@@ -11,6 +11,7 @@ export const FULLSCREEN_COOKIE = 'EMR:FULLSCREEN_COOKIE';
 export const USER_RECORD = 'EMR:USER_RECORD';
 export const socket = socketIOClient(API_URI, { transports: ['websocket'] });
 
+export const hmoAPI = '/hmos';
 export const inventoryAPI = '/inventory/stocks';
 export const inventoryUpdateQuantityAPI = '/inventory/stocks/update-quantity';
 export const stocksAPI = '/stocks';

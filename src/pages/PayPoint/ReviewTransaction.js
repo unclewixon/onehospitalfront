@@ -123,7 +123,7 @@ class ReviewTransaction extends Component {
 						<h6 className="element-header">Filter by:</h6>
 
 						<form className="row">
-							<div className="form-group col-md-6">
+							<div className="form-group col-md-3">
 								<label className="" htmlFor="patient_id">
 									ID
 								</label>
@@ -143,11 +143,11 @@ class ReviewTransaction extends Component {
 									})}
 								</select>
 							</div>
-							<div className="form-group col-md-6">
+							<div className="form-group col-md-3">
 								<label>From - To</label>
 								<RangePicker onChange={e => this.dateChange(e)} />
 							</div>
-							<div className="form-group col-md-6">
+							<div className="form-group col-md-3">
 								<label className="mr-2 " htmlFor="id">
 									Status
 								</label>
@@ -167,7 +167,7 @@ class ReviewTransaction extends Component {
 									})}
 								</select>
 							</div>
-							<div className="form-group col-md-6 mt-4">
+							<div className="form-group col-md-3 mt-4">
 								<div
 									className="btn btn-sm btn-primary btn-upper text-white"
 									onClick={this.doFilter}>
@@ -191,18 +191,18 @@ class ReviewTransaction extends Component {
 									<thead>
 										<tr>
 											<th>DATE</th>
-											<th className="text-center">PATIENT NAME</th>
-											<th className="text-center">DEPARTMENT</th>
-											<th className="text-center">SERVICE</th>
-											<th className="text-center">AMOUNT (&#x20A6;)</th>
-											<th className="text-center">PAYMENT TYPE</th>
-											<th className="text-right">ACTIONS</th>
+											<th className="">PATIENT NAME</th>
+											<th className="">DEPARTMENT</th>
+											<th className="">SERVICE</th>
+											<th className="">AMOUNT (&#x20A6;)</th>
+											<th className="">PAYMENT TYPE</th>
+											<th className="">ACTIONS</th>
 										</tr>
 									</thead>
 									<tbody>
 										{loading ? (
 											<tr>
-												<td colSpan="4" className="text-center">
+												<td colSpan="7" className="text-center">
 													<img alt="searching" src={searchingGIF} />
 												</td>
 											</tr>
@@ -215,21 +215,17 @@ class ReviewTransaction extends Component {
 																'YYYY/MM/DD'
 															)}
 														</td>
-														<td className="text-center">
+														<td className="">
 															{`${transaction.surname} ${transaction.other_names}`}
 														</td>
-														<td className="text-center">
-															{transaction.deptname}
-														</td>
-														<td className="text-center">
+														<td className="">{transaction.deptname}</td>
+														<td className="">
 															{transaction.q_service_id
 																? transaction.q_service_id
 																: 'No service yet'}
 														</td>
-														<td className="text-center">
-															{transaction.q_amount}
-														</td>
-														<td className="text-center">
+														<td className="">{transaction.q_amount}</td>
+														<td className="">
 															{transaction.q_paymentType
 																? transaction.q_paymentType
 																: 'Not specified'}
@@ -269,7 +265,7 @@ class ReviewTransaction extends Component {
 											})
 										) : (
 											<tr className="text-center">
-												<td>No transaction for today yet</td>
+												<td colSpan="6">No transaction for today yet</td>
 											</tr>
 										)}
 									</tbody>
