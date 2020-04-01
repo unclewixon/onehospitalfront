@@ -1,25 +1,23 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-import Tooltip from 'antd/lib/tooltip';
-import avatar1 from '../assets/images/avatar1.jpg';
-export class Cafeteria extends Component {
+import { Link } from 'react-router-dom';
+import avatar1 from '../../assets/images/avatar1.jpg';
+export class Inventory extends Component {
 	render() {
 		return (
 			<div className="content-i">
 				<div className="content-box">
 					<div className="element-wrapper compact pt-4">
 						<div className="element-actions">
-							<a className="btn btn-primary btn-sm" href="#">
+							<Link
+								className="btn btn-primary btn-sm"
+								to="/cafeteria/inventory">
 								<i className="os-icon os-icon-ui-22"></i>
-								<span>Add Account</span>
-							</a>
-							<a className="btn btn-success btn-sm" href="#">
-								<i className="os-icon os-icon-grid-10"></i>
-								<span>Make Payment</span>
-							</a>
+								Items
+							</Link>
 						</div>
-						<h6 className="element-header">Cafeteria</h6>
+
 						<div className="element-box-tp">
+							<h6 className="element-header">Item</h6>
 							<div className="row">
 								<div className="col-lg-7">
 									<div className="padded-lg">
@@ -380,4 +378,4 @@ export class Cafeteria extends Component {
 	}
 }
 
-export default Cafeteria;
+export default Inventory;

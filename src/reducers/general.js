@@ -21,6 +21,8 @@ import {
 	TOGGLE_CREATE_VOUCHER,
 	TOGGLE_UPLOAD_SERVICE,
 	TOGGLE_UPLOAD_DIAGNOSIS,
+	TOGGLE_UPLOAD_HMO,
+	TOGGLE_UPLOAD_HMO_TARIFF,
 	TOGGLE_EDIT_SERIVCE,
 	TOGGLE_CREATE_LABOUR_MEASUREMENT,
 	TOGGLE_CREATE_RISK_ASSESSMENT,
@@ -28,6 +30,7 @@ import {
 	TOGGLE_CREATE_RECORD_DELIVERY,
 	TOGGLE_OPEN_ENCOUNTER,
 	TOGGLE_CREATE_CLINICAL_TASK,
+	TOGGLE_ADD_CAFETERIA_FILE,
 	TOGGLE_APPROVE_TRANSACTION,
 	TOGGLE_APPLY_VOUCHER,
 } from '../actions/types';
@@ -57,10 +60,13 @@ const INITIAL_STATE = {
 	create_risk_assessment: false,
 	create_record_delivery: false,
 	create_record_vital: false,
+	add_cafeteria_file: false,
 	payroll_id: null,
 	payroll_staff: null,
 	upload_service: false,
 	upload_diagnosis: false,
+	upload_hmo: false,
+	upload_hmo_tariff: false,
 	create_clinical_task: false,
 	edit_service: { status: false, data: null },
 	openEncounter: false,
@@ -135,6 +141,10 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, upload_service: action.payload };
 		case TOGGLE_UPLOAD_DIAGNOSIS:
 			return { ...state, upload_diagnosis: action.payload };
+		case TOGGLE_UPLOAD_HMO:
+			return { ...state, upload_hmo: action.payload };
+		case TOGGLE_UPLOAD_HMO_TARIFF:
+			return { ...state, upload_hmo_tariff: action.payload };
 		case TOGGLE_EDIT_SERIVCE:
 			return { ...state, edit_service: action.payload };
 		case TOGGLE_OPEN_ENCOUNTER:
@@ -143,6 +153,9 @@ const general = (state = INITIAL_STATE, action) => {
 				openEncounter: action.payload,
 				encounterId: action.id,
 			};
+
+		case TOGGLE_ADD_CAFETERIA_FILE:
+			return { ...state, add_cafeteria_file: action.payload };
 		default:
 			return state;
 	}

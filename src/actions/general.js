@@ -26,11 +26,14 @@ import {
 	TOGGLE_CREATE_RECORD_VITAL,
 	TOGGLE_UPLOAD_SERVICE,
 	TOGGLE_UPLOAD_DIAGNOSIS,
+	TOGGLE_UPLOAD_HMO,
 	TOGGLE_EDIT_SERIVCE,
 	TOGGLE_CREATE_CLINICAL_TASK,
 	TOGGLE_OPEN_ENCOUNTER,
+	TOGGLE_ADD_CAFETERIA_FILE,
 	TOGGLE_APPROVE_TRANSACTION,
 	TOGGLE_APPLY_VOUCHER,
+	TOGGLE_UPLOAD_HMO_TARIFF,
 } from './types';
 
 export const togglePreloading = status => {
@@ -229,6 +232,13 @@ export const toggleCreateRecordDelivery = status => {
 	};
 };
 
+export const toggleAddCafeteriaFile = status => {
+	return {
+		type: TOGGLE_ADD_CAFETERIA_FILE,
+		payload: status,
+	};
+};
+
 export const toggleCreateClinicalTask = status => {
 	return {
 		type: TOGGLE_CREATE_CLINICAL_TASK,
@@ -246,6 +256,20 @@ export const toggleUploadService = status => {
 export const toggleUploadDiagnosis = status => {
 	return {
 		type: TOGGLE_UPLOAD_DIAGNOSIS,
+		payload: status,
+	};
+};
+
+export const toggleUploadHmo = status => {
+	return {
+		type: TOGGLE_UPLOAD_HMO,
+		payload: status,
+	};
+};
+
+export const toggleUploadHmoTariff = status => {
+	return {
+		type: TOGGLE_UPLOAD_HMO_TARIFF,
 		payload: status,
 	};
 };
@@ -294,8 +318,11 @@ export const closeModals = () => {
 		dispatch(toggleCreateRecordDelivery(false));
 		dispatch(toggleCreateClinicalTask(false));
 		dispatch(toggleCreateRecordVital(false));
+		dispatch(toggleAddCafeteriaFile(false));
 		dispatch(toggleUploadService(false));
 		dispatch(toggleUploadDiagnosis(false));
+		dispatch(toggleUploadHmo(false));
+		dispatch(toggleUploadHmoTariff(false));
 		dispatch(toggleEditService(false, null));
 		dispatch(toggleOpenEncounter(false, null));
 	};
@@ -476,6 +503,22 @@ export const uploadDiagnosis = action => {
 	};
 };
 
+export const uploadHmo = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleUploadHmo(action));
+	};
+};
+
+export const uploadHmoTariff = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleUploadHmoTariff(action));
+	};
+};
+
 export const editService = (action, data) => {
 	return dispatch => {
 		dispatch(closeModals());
@@ -545,5 +588,13 @@ export const createClinicalTask = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleCreateClinicalTask(action));
+	};
+};
+
+export const addCafeteriaFile = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleAddCafeteriaFile(action));
 	};
 };

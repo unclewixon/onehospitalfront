@@ -16,7 +16,7 @@ const CafeteriaMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="">
+				<Link to="/cafeteria/inventory">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers" />
 					</div>
@@ -24,7 +24,7 @@ const CafeteriaMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="">
+				<Link to="/cafeteria/items/">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers" />
 					</div>
