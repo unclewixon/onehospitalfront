@@ -240,7 +240,6 @@ class ReviewTransaction extends Component {
 																	<i className="os-icon os-icon-thumbs-up" />
 																</a>
 															</Tooltip>
-
 															<Tooltip title="Approve Transactions">
 																<a
 																	className="secondary"
