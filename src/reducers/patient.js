@@ -13,6 +13,7 @@ import {
 	GET_OPTHALMOLOGY_REQUESTS,
 	LOAD_VITALS,
 	UPDATE_VITALS,
+	LOAD_PATIENTS,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -26,6 +27,7 @@ const INITIAL_STATE = {
 	imagingRequests: [],
 	opthalmologyRequests: [],
 	vitals: [],
+	patients: [],
 };
 
 const patient = (state = INITIAL_STATE, action) => {
@@ -34,6 +36,9 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, formData: action.payload, formStep: 2 };
 		case PREV_STEP:
 			return { ...state, formStep: action.payload };
+
+		case LOAD_PATIENTS:
+			return { ...state, patients: action.payload };
 		case GET_ALLERGIES:
 			return { ...state, allergies: action.payload };
 		case SAVE_ALLERGIES:

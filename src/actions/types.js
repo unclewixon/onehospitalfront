@@ -138,6 +138,7 @@ export const LOAD_COUNTRIES = 'LOAD_COUNTRIES';
 export const NEXT_STEP = 'NEXT_STEP';
 export const PREV_STEP = 'PREV_STEP';
 export const SAVE_PATIENT_DETAILS = 'SAVE_PATIENT_DETAILS';
+export const LOAD_PATIENTS = 'LOAD_PATIENTS ';
 
 //Permission
 export const ADD_PERMISSION = 'ADD_PERMISSION';
