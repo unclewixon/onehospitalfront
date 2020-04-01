@@ -1,11 +1,16 @@
-import React, { Component } from 'react';
+import React, { Component, lazy, Suspense } from 'react';
+import Splash from '../Splash';
 
-import GeneralAssessment from '../MutlistepForms/GeneralAssessment';
-import GeneralComments from '../MutlistepForms/GeneralComments';
-import LabInvestigation from '../MutlistepForms/LabInvestigation';
-import RadiologicalInvestigation from '../MutlistepForms/RadiologicalInvestigation';
-import Prescription from '../MutlistepForms/Prescription';
-import NextAppointment from '../MutlistepForms/NextAppointment';
+const General = lazy(() => import('../Enrollment/General'));
+const FathersInfo = lazy(() => import('../Enrollment/FathersInfo'));
+const ObstericsHistory = lazy(() => import('../Enrollment/ObstericsHistory'));
+const PreviousPregnancies = lazy(() =>
+	import('../Enrollment/PreviousPregnancies')
+);
+const EnrollmentPackages = lazy(() =>
+	import('../Enrollment/EnrollmentPackages')
+);
+
 class AntennatalRequest extends Component {
 	state = {
 		page: 1,
@@ -13,7 +18,7 @@ class AntennatalRequest extends Component {
 	};
 
 	nextPage = () => {
-		if (this.state.page === 6) {
+		if (this.state.page === 5) {
 			this.setState(prevState => {
 				return {
 					...prevState,
@@ -46,45 +51,40 @@ class AntennatalRequest extends Component {
 				<div className="element-wrapper">
 					<h6 className="element-header">Antennal Request</h6>
 					<div className="element-box">
-						{page === 1 && (
-							<GeneralAssessment onSubmit={this.nextPage} page={page} />
-						)}
-						{page === 2 && (
-							<GeneralComments
-								previousPage={this.previousPage}
-								onSubmit={this.nextPage}
-								page={page}
-							/>
-						)}
-						{page === 3 && (
-							<LabInvestigation
-								previousPage={this.previousPage}
-								onSubmit={this.nextPage}
-								page={page}
-							/>
-						)}
-						{page === 4 && (
-							<RadiologicalInvestigation
-								previousPage={this.previousPage}
-								onSubmit={this.nextPage}
-								page={page}
-							/>
-						)}
-						{page === 5 && (
-							<Prescription
-								previousPage={this.previousPage}
-								onSubmit={this.nextPage}
-								page={page}
-							/>
-						)}
-						{page === 6 && (
-							<NextAppointment
-								submitting={submitting}
-								previousPage={this.previousPage}
-								onSubmit={this.nextPage}
-								page={page}
-							/>
-						)}
+						<Suspense fallback={<Splash />}>
+							{page === 1 && <General onSubmit={this.nextPage} page={page} />}
+							{page === 2 && (
+								<FathersInfo
+									previousPage={this.previousPage}
+									onSubmit={this.nextPage}
+									page={page}
+								/>
+							)}
+
+							{page === 3 && (
+								<ObstericsHistory
+									previousPage={this.previousPage}
+									onSubmit={this.nextPage}
+									page={page}
+								/>
+							)}
+							{page === 4 && (
+								<PreviousPregnancies
+									previousPage={this.previousPage}
+									onSubmit={this.nextPage}
+									page={page}
+								/>
+							)}
+
+							{page === 5 && (
+								<EnrollmentPackages
+									submitting={submitting}
+									previousPage={this.previousPage}
+									page={page}
+									onSubmit={this.nextPage}
+								/>
+							)}
+						</Suspense>
 					</div>
 				</div>
 			</div>

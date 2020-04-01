@@ -7,6 +7,8 @@ import {
 	GET_ALLERGIES,
 	ALLERGY,
 	UPDATE_ALLERGY,
+	LOAD_PATIENT_UPLOAD_DATA,
+	ADD_PATIENT_UPLOAD_DATA,
 	DELETE_ALLERGY,
 	GET_PHYSIOTHERAPIES,
 	GET_DENTISTRY_REQUESTS,
@@ -27,6 +29,20 @@ export const nextStep = data => {
 export const prevStep = data => {
 	return {
 		type: PREV_STEP,
+		payload: data,
+	};
+};
+
+export const loadPatientUploadData = data => {
+	return {
+		type: LOAD_PATIENT_UPLOAD_DATA,
+		payload: data,
+	};
+};
+
+export const addPatientUploadData = data => {
+	return {
+		type: ADD_PATIENT_UPLOAD_DATA,
 		payload: data,
 	};
 };
