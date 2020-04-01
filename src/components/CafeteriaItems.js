@@ -33,7 +33,7 @@ const CafeteriaItems = props => {
 		id: '',
 		item_code: '',
 	};
-	const [
+	let [
 		{
 			name,
 			price,

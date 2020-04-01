@@ -20,7 +20,15 @@ import {
 	GET_REQUESTS_BY_TYPE,
 	LOAD_PATIENT_PROCEDURE_DATA,
 	ADD_PATIENT_PROCEDURE_DATA,
+	LOAD_PATIENTS,
 } from './types';
+
+export const loadPatients = data => {
+	return {
+		type: LOAD_PATIENTS,
+		payload: data,
+	};
+};
 
 export const nextStep = data => {
 	return {

@@ -18,6 +18,7 @@ import {
 	LOAD_PATIENT_PROCEDURE_DATA,
 	ADD_PATIENT_PROCEDURE_DATA,
 	GET_REQUESTS_BY_TYPE,
+	LOAD_PATIENTS,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -32,6 +33,7 @@ const INITIAL_STATE = {
 	opthalmologyRequests: [],
 	patient_upload: [],
 	vitals: [],
+	patients: [],
 	request_type: [],
 };
 
@@ -56,7 +58,8 @@ const patient = (state = INITIAL_STATE, action) => {
 				...state,
 				patient_procedure: [...state.patient_procedure, action.payload],
 			};
-
+		case LOAD_PATIENTS:
+			return { ...state, patients: action.payload };
 		case GET_ALLERGIES:
 			return { ...state, allergies: action.payload };
 		case SAVE_ALLERGIES:
