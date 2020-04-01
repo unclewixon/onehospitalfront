@@ -18,6 +18,7 @@ import {
 	addPatientUploadData,
 	loadPatientUploadData,
 } from '../../actions/patient';
+import searchingGIF from '../../assets/images/searching.gif';
 
 const UploadPatientData = ({ onHide, uploading, doUpload, documentType }) => {
 	const [theDocumentType, setDocumentType] = useState('');
@@ -109,6 +110,7 @@ const UploadPatientData = ({ onHide, uploading, doUpload, documentType }) => {
 };
 
 const PatientDataUpload = props => {
+	const [loading, setLoading] = useState(false);
 	const [uploading, setUploading] = useState(false);
 	const [upload_visible, setUploadVisible] = useState(false);
 	const hide = () => {
@@ -124,6 +126,7 @@ const PatientDataUpload = props => {
 	}, []);
 	const listDocuments = async () => {
 		try {
+			setLoading(true);
 			let patient = props.patient;
 			const rs = await request(
 				`${API_URI}${patientAPI}` + '/' + patient.id + '/documents',
@@ -131,8 +134,10 @@ const PatientDataUpload = props => {
 				true
 			);
 			props.loadPatientUploadData(rs);
+			setLoading(false);
 		} catch (e) {
 			console.log(e);
+			setLoading(false);
 			throw new SubmissionError({
 				_error: e.message || 'could not load data',
 			});
@@ -153,8 +158,6 @@ const PatientDataUpload = props => {
 					'POST',
 					formData
 				);
-
-				console.log(rs);
 				//props.addPatientUploadData(rs);
 				const doc = documentType.find(d => d.id === documentID);
 				notifySuccess(
@@ -213,54 +216,36 @@ const PatientDataUpload = props => {
 														</tr>
 													</thead>
 													<tbody>
-														<tr>
-															<td>
-																<div className="user-with-avatar">1</div>
-															</td>
-															<td>
-																<div className="smaller lighter">Vitals</div>
-															</td>
-															<td>
-																<span>PDF</span>
-															</td>
-
-															<td className="row-actions">
-																<a href="#">
-																	<i className="os-icon os-icon-grid-10"></i>
-																</a>
-																<a href="#">
-																	<i className="os-icon os-icon-ui-44"></i>
-																</a>
-																<a className="danger" href="#">
-																	<i className="os-icon os-icon-ui-15"></i>
-																</a>
-															</td>
-														</tr>
-														<tr>
-															<td>
-																<div className="user-with-avatar">2</div>
-															</td>
-															<td>
-																<div className="smaller lighter">
-																	Consultation History
-																</div>
-															</td>
-															<td>
-																<span>Excel</span>
-															</td>
-
-															<td className="row-actions">
-																<a href="#">
-																	<i className="os-icon os-icon-grid-10"></i>
-																</a>
-																<a href="#">
-																	<i className="os-icon os-icon-ui-44"></i>
-																</a>
-																<a className="danger" href="#">
-																	<i className="os-icon os-icon-ui-15"></i>
-																</a>
-															</td>
-														</tr>
+														{loading ? (
+															<tr>
+																<td colSpan="4" className="text-center">
+																	<img alt="searching" src={searchingGIF} />
+																</td>
+															</tr>
+														) : (
+															<>
+																{props.patient_upload.map((doc, i) => {
+																	return (
+																		<tr key={i}>
+																			<td>{i + 1}</td>
+																			<td>{doc.document_name}</td>
+																			<td>{doc.document_type}</td>
+																			<td className="row-actions">
+																				<a href="#">
+																					<i className="os-icon os-icon-grid-10"></i>
+																				</a>
+																				<a href="#">
+																					<i className="os-icon os-icon-ui-44"></i>
+																				</a>
+																				<a className="danger" href="#">
+																					<i className="os-icon os-icon-ui-15"></i>
+																				</a>
+																			</td>
+																		</tr>
+																	);
+																})}
+															</>
+														)}
 													</tbody>
 												</table>
 											</div>
@@ -282,6 +267,7 @@ const PatientDataUpload = props => {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		patient: state.user.patient,
+		patient_upload: state.patient.patient_upload,
 	};
 };
 export default connect(mapStateToProps, {
