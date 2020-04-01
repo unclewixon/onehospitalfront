@@ -1,15 +1,27 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PatientForm from '../PatientForm';
 import PatientNOKForm from '../PatientNOKForm';
 import Popover from 'antd/lib/popover';
 import waiting from '../../assets/images/waiting.gif';
-import { upload } from '../../services/utilities';
-import { API_URI, inventoryUploadAPI } from '../../services/constants';
+import { request, upload } from '../../services/utilities';
+import {
+	API_URI,
+	documentType,
+	inventoryUploadAPI,
+	patientAPI,
+} from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
+import { connect } from 'react-redux';
+import { SubmissionError } from 'redux-form';
+import {
+	addPatientUploadData,
+	loadPatientUploadData,
+} from '../../actions/patient';
+import searchingGIF from '../../assets/images/searching.gif';
 
-const UploadPatientData = ({ onHide, uploading, doUpload }) => {
-	const [category, setCategory] = useState('');
+const UploadPatientData = ({ onHide, uploading, doUpload, documentType }) => {
+	const [theDocumentType, setDocumentType] = useState('');
 	const [files, setFile] = useState(null);
 	let uploadAttachment;
 
@@ -29,19 +41,24 @@ const UploadPatientData = ({ onHide, uploading, doUpload }) => {
 					</button>
 					<div className="onboarding-content with-gradient">
 						<div className="form-block">
-							<form onSubmit={e => doUpload(e, files)}>
+							<form onSubmit={e => doUpload(e, files, theDocumentType)}>
 								<div className="row">
 									<div className="col-sm-12">
 										<div className="form-group">
-											<label htmlFor="category">Document Name</label>
-
-											<input
+											<label htmlFor="category">Category</label>
+											<select
+												id="category"
 												className="form-control"
-												placeholder="Document Name"
-												type="text"
-												name="name"
-												required
-											/>
+												onChange={e => setDocumentType(e.target.value)}>
+												<option>Select Document Type</option>
+												{documentType.map((doc, i) => {
+													return (
+														<option key={i} value={doc.id}>
+															{doc.name}
+														</option>
+													);
+												})}
+											</select>
 										</div>
 									</div>
 									<div className="col-sm-12">
@@ -92,7 +109,8 @@ const UploadPatientData = ({ onHide, uploading, doUpload }) => {
 	);
 };
 
-const PatientDataUpload = () => {
+const PatientDataUpload = props => {
+	const [loading, setLoading] = useState(false);
 	const [uploading, setUploading] = useState(false);
 	const [upload_visible, setUploadVisible] = useState(false);
 	const hide = () => {
@@ -103,8 +121,58 @@ const PatientDataUpload = () => {
 		setUploadVisible(visible);
 	};
 
-	const onUpload = async (e, files, category_id) => {
+	useEffect(() => {
+		listDocuments();
+	}, []);
+	const listDocuments = async () => {
+		try {
+			setLoading(true);
+			let patient = props.patient;
+			const rs = await request(
+				`${API_URI}${patientAPI}` + '/' + patient.id + '/documents',
+				'GET',
+				true
+			);
+			props.loadPatientUploadData(rs);
+			setLoading(false);
+		} catch (e) {
+			console.log(e);
+			setLoading(false);
+			throw new SubmissionError({
+				_error: e.message || 'could not load data',
+			});
+		}
+	};
+	const onUpload = async (e, files, documentID) => {
+		let patient = props.patient;
 		e.preventDefault();
+		const file = files[0];
+		if (file) {
+			setUploading(true);
+			try {
+				let formData = new FormData();
+				formData.append('file', file);
+				formData.append('document_type', documentID);
+				const rs = await upload(
+					`${API_URI}${patientAPI}` + '/' + patient.id + '/upload-document',
+					'POST',
+					formData
+				);
+				//props.addPatientUploadData(rs);
+				const doc = documentType.find(d => d.id === documentID);
+				notifySuccess(
+					`Patient Data Uploaded for ${doc ? doc.name : ''} Document`
+				);
+				setUploading(false);
+				setUploadVisible(false);
+			} catch (error) {
+				console.log(error);
+				setUploading(false);
+				throw new SubmissionError({
+					_error: e.message || 'could not upload data',
+				});
+			}
+		}
 	};
 	return (
 		<div className="col-sm-12">
@@ -116,6 +184,7 @@ const PatientDataUpload = () => {
 								onHide={hide}
 								uploading={uploading}
 								doUpload={onUpload}
+								documentType={documentType}
 							/>
 						}
 						overlayClassName="upload-roster"
@@ -147,54 +216,36 @@ const PatientDataUpload = () => {
 														</tr>
 													</thead>
 													<tbody>
-														<tr>
-															<td>
-																<div className="user-with-avatar">1</div>
-															</td>
-															<td>
-																<div className="smaller lighter">Vitals</div>
-															</td>
-															<td>
-																<span>PDF</span>
-															</td>
-
-															<td className="row-actions">
-																<a href="#">
-																	<i className="os-icon os-icon-grid-10"></i>
-																</a>
-																<a href="#">
-																	<i className="os-icon os-icon-ui-44"></i>
-																</a>
-																<a className="danger" href="#">
-																	<i className="os-icon os-icon-ui-15"></i>
-																</a>
-															</td>
-														</tr>
-														<tr>
-															<td>
-																<div className="user-with-avatar">2</div>
-															</td>
-															<td>
-																<div className="smaller lighter">
-																	Consultation History
-																</div>
-															</td>
-															<td>
-																<span>Excel</span>
-															</td>
-
-															<td className="row-actions">
-																<a href="#">
-																	<i className="os-icon os-icon-grid-10"></i>
-																</a>
-																<a href="#">
-																	<i className="os-icon os-icon-ui-44"></i>
-																</a>
-																<a className="danger" href="#">
-																	<i className="os-icon os-icon-ui-15"></i>
-																</a>
-															</td>
-														</tr>
+														{loading ? (
+															<tr>
+																<td colSpan="4" className="text-center">
+																	<img alt="searching" src={searchingGIF} />
+																</td>
+															</tr>
+														) : (
+															<>
+																{props.patient_upload.map((doc, i) => {
+																	return (
+																		<tr key={i}>
+																			<td>{i + 1}</td>
+																			<td>{doc.document_name}</td>
+																			<td>{doc.document_type}</td>
+																			<td className="row-actions">
+																				<a href="#">
+																					<i className="os-icon os-icon-grid-10"></i>
+																				</a>
+																				<a href="#">
+																					<i className="os-icon os-icon-ui-44"></i>
+																				</a>
+																				<a className="danger" href="#">
+																					<i className="os-icon os-icon-ui-15"></i>
+																				</a>
+																			</td>
+																		</tr>
+																	);
+																})}
+															</>
+														)}
 													</tbody>
 												</table>
 											</div>
@@ -213,4 +264,13 @@ const PatientDataUpload = () => {
 	);
 };
 
-export default PatientDataUpload;
+const mapStateToProps = (state, ownProps) => {
+	return {
+		patient: state.user.patient,
+		patient_upload: state.patient.patient_upload,
+	};
+};
+export default connect(mapStateToProps, {
+	addPatientUploadData,
+	loadPatientUploadData,
+})(PatientDataUpload);

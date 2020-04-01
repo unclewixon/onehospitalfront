@@ -31,6 +31,7 @@ export const payrollAPI = '/hr/payroll';
 export const patientAPI = '/patient';
 export const transactionsAPI = '/transactions';
 export const vouchersAPI = '/vouchers';
+export const serviceAPI = '/services';
 
 export const months = [
 	'January',
@@ -111,6 +112,17 @@ export const maritalStatus = [
 export const yesNO = [
 	{ value: 'Yes', label: 'Yes' },
 	{ value: 'No', label: 'No' },
+];
+
+export const documentType = [
+	{ id: 'Case notes', name: 'Case notes' },
+	{ id: 'Admissions', name: 'Admissions' },
+	{ id: 'Financial', name: 'Financial' },
+	{ id: 'Labs', name: 'Labs' },
+	{ id: 'Imaging', name: 'Imaging' },
+	{ id: 'Procedures', name: 'Procedures' },
+	{ id: 'Antenatal', name: 'Antenatal' },
+	{ id: 'Prescription', name: 'Prescription' },
 ];
 
 export const paymentType = [

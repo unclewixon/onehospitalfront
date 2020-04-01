@@ -8,11 +8,19 @@ import { Field, reduxForm } from 'redux-form';
 
 const fetal = [
 	{
-		value: 'daily',
-		label: 'daily',
+		id: 'daily',
+		name: 'daily',
 	},
-	{ value: 'weekend', label: 'weekend' },
-	{ value: 'monthly', label: 'monthly' },
+	{ id: 'weekend', name: 'weekend' },
+	{ id: 'monthly', name: 'monthly' },
+];
+
+const lmp = [
+	{
+		id: 'Obsterics',
+		name: 'Obsterics',
+	},
+	{ id: 'Gynaecologist', name: 'Gynaecologist' },
 ];
 export class General extends Component {
 	render() {
@@ -72,7 +80,7 @@ export class General extends Component {
 									component={renderSelect}
 									label="Select Lmp Source"
 									placeholder="Select lmp source"
-									data={['Obsterics', 'Gynaecologist']}
+									data={lmp}
 								/>
 							</div>
 						</div>
