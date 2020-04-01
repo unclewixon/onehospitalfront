@@ -2,40 +2,44 @@ import React, { useState, useEffect } from 'react';
 
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
-import { API_URI, serviceAPI, socket } from '../../services/constants';
+import {
+	API_URI,
+	diagnosisAPI,
+	patientAPI,
+	serviceAPI,
+	socket,
+	transactionsAPI,
+} from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request } from '../../services/utilities';
-import { notifyError } from '../../services/notify';
+import { notifyError, notifySuccess } from '../../services/notify';
 import { connect } from 'react-redux';
 import { closeModals } from '../../actions/general';
-import { nextStep } from '../../actions/patient';
+import { loadPatientProcedureData, nextStep } from '../../actions/patient';
 import { getAllHmos } from '../../actions/hmo';
+import AsyncSelect from 'react-select/async';
+import debounce from 'lodash.debounce';
+import { Link, withRouter } from 'react-router-dom';
+
 import {
+	get_all_diagnosis,
 	get_all_services,
 	getAllServiceCategory,
 } from '../../actions/settings';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
+import { SubmissionError } from 'redux-form';
+import Redirect from 'react-router-dom/es/Redirect';
+import { compose } from 'redux';
 
-const labCategories = [
-	{ value: 'cancer', label: 'cancer' },
-	{ value: 'x-ray', label: 'x-ray' },
-	{ value: 'blood', label: 'blood' },
-];
-const serviceCenter = [
-	{
-		value: 'daily',
-		label: 'daily',
-	},
-	{ value: 'weekend', label: 'weekend' },
-	{ value: 'monthly', label: 'monthly' },
-];
 const ProcedureRequest = props => {
 	const { register, handleSubmit, setValue } = useForm();
 	const [submitting, setSubmitting] = useState(false);
 	const [servicesCategory, setServicesCategory] = useState([]);
 	const [services, setServices] = useState('');
 	const [loaded, setLoaded] = useState(false);
+	const [selectedOption, setSelectedOption] = useState('');
+
 	useEffect(() => {
 		if (!loaded) {
 			props
@@ -59,9 +63,26 @@ const ProcedureRequest = props => {
 		setServices(services);
 		setLoaded(true);
 	}, [props, loaded]);
-	useEffect(() => {
-		//fetchServices();
-	}, []);
+
+	const getOptionValues = option => option.id;
+
+	const getOptionLabels = option => option.description;
+
+	const handleChangeOptions = selectedOption => {
+		setSelectedOption(selectedOption);
+	};
+	const getOptions = async inputValue => {
+		if (!inputValue) {
+			return [];
+		}
+		const res = await request(
+			`${API_URI}${diagnosisAPI}` + '/search?q=' + inputValue,
+			'GET',
+			true
+		);
+		console.log(res);
+		return res;
+	};
 
 	const fetchServicesByCategory = async id => {
 		try {
@@ -78,16 +99,42 @@ const ProcedureRequest = props => {
 	};
 
 	const onSubmit = async values => {
-		console.log(values);
 		setSubmitting(true);
-	};
-	const handleChange = (name, type, fn, lists = []) => {
-		let res = lists.find(p => p.value === type);
-		fn(res);
-		if (type == null) {
-			setValue(name, null);
-		} else {
-			setValue(name, type);
+		let requestData = [];
+		let theRequest = {};
+		values.procedure.forEach(value => {
+			requestData = [
+				...requestData,
+				{
+					service_id: value.value,
+					service_name: value.label,
+				},
+			];
+		});
+		theRequest.requestType = 'procedure';
+		theRequest.bill_now = values.bill === 'on' ? 'true' : 'false';
+		theRequest.request_note = values.request_note;
+		theRequest.patient_id = props.patient.id;
+		theRequest.primary_diagnosis = selectedOption.icd10Code;
+		theRequest.requestBody = requestData;
+
+		try {
+			const rs = await request(
+				`${API_URI}${patientAPI}/save-request`,
+				'POST',
+				true,
+				theRequest
+			);
+
+			setSubmitting(false);
+			notifySuccess('Procedure Request Saved');
+			props.history.push('/settings/roles#procedure');
+			// return  <Redirect  to="/settings/roles#procedure" />
+		} catch (e) {
+			setSubmitting(false);
+			throw new SubmissionError({
+				_error: e.message || 'could not save Procedure Request',
+			});
 		}
 	};
 
@@ -95,6 +142,10 @@ const ProcedureRequest = props => {
 		let value = String(evt.value);
 		fetchServicesByCategory(value);
 		setValue('service_center', value);
+	};
+
+	const handleChangeProcedure = evt => {
+		setValue('procedure', evt);
 	};
 
 	return (
@@ -130,9 +181,7 @@ const ProcedureRequest = props => {
 												isMulti
 												options={services}
 												ref={register({ name: 'procedure' })}
-												onChange={evt => {
-													setValue('procedure', String(evt.value));
-												}}
+												onChange={evt => handleChangeProcedure(evt)}
 												required
 											/>
 										</div>
@@ -141,12 +190,16 @@ const ProcedureRequest = props => {
 									<div className="row">
 										<div className="form-group col-sm-12">
 											<label>Primary Diagnosis</label>
-											<input
-												className="form-control"
+											<AsyncSelect
+												required
+												cacheOptions
+												value={selectedOption}
+												getOptionValue={getOptionValues}
+												getOptionLabel={getOptionLabels}
+												defaultOptions
+												loadOptions={getOptions}
+												onChange={handleChangeOptions}
 												placeholder="primary diagnosis"
-												type="text"
-												name="primary_diagnosis"
-												ref={register}
 											/>
 										</div>
 									</div>
@@ -214,12 +267,17 @@ const ProcedureRequest = props => {
 
 const mapStateToProps = (state, ownProps) => {
 	return {
+		patient: state.user.patient,
 		service: state.settings.services,
 		ServiceCategories: state.settings.service_categories,
 	};
 };
 
-export default connect(mapStateToProps, {
-	get_all_services,
-	getAllServiceCategory,
-})(ProcedureRequest);
+export default compose(
+	withRouter,
+	connect(mapStateToProps, {
+		get_all_services,
+		get_all_diagnosis,
+		getAllServiceCategory,
+	})
+)(ProcedureRequest);

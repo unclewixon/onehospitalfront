@@ -1,8 +1,57 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
-const Procedure = ({ location }) => {
+import { request } from '../../services/utilities';
+import { API_URI, patientAPI } from '../../services/constants';
+import { notifyError, notifySuccess } from '../../services/notify';
+import { SubmissionError } from 'redux-form';
+import searchingGIF from '../../assets/images/searching.gif';
+import { connect } from 'react-redux';
+import {
+	get_all_diagnosis,
+	get_all_services,
+	getAllServiceCategory,
+} from '../../actions/settings';
+import { loadPatientProcedureData } from '../../actions/patient';
+import { compose } from 'redux';
+import moment from 'moment';
+
+const Procedure = props => {
+	const [loading, setLoading] = useState(false);
+	let location = props.location;
+	let patient = props.patient;
+
+	useEffect(() => {
+		loadProcedure();
+	}, []);
+
+	const getRequests = arr => {
+		let rer = [];
+		arr.forEach(val => {
+			rer = [...rer, val.service_name];
+		});
+		return rer.join(', ');
+	};
+
+	const loadProcedure = async () => {
+		try {
+			setLoading(true);
+			const rs = await request(
+				`${API_URI}${patientAPI}/` + patient.id + '/request/procedure',
+				'GET',
+				true
+			);
+			props.loadPatientProcedureData(rs);
+			console.log(rs);
+			setLoading(false);
+		} catch (e) {
+			setLoading(false);
+			console.log(e);
+			notifyError(e.message || 'could not fetch procedure');
+		}
+	};
+
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">
@@ -40,90 +89,42 @@ const Procedure = ({ location }) => {
 										</tr>
 									</thead>
 									<tbody>
-										<tr className="" data-index="0" data-id="20">
-											<td>
-												<span className="text-bold">LAB/32456789</span>
-											</td>
-											<td>
-												<span>20-Jan-2020</span>
-												<span className="smaller lighter ml-1">3:22pm</span>
-											</td>
-											<td>
-												<Link to="/">Uchechi I.</Link>
-											</td>
-											<td>Blood</td>
-											<td className="text-center">
-												<span className="badge badge-secondary">pending</span>
-											</td>
-											<td className="row-actions text-right">
-												<Tooltip title="View Request">
-													<a href="#">
-														<i className="os-icon os-icon-documents-03" />
-													</a>
-												</Tooltip>
-												<Tooltip title="Print Request">
-													<a className="ml-2" href="#">
-														<i className="icon-feather-printer" />
-													</a>
-												</Tooltip>
-											</td>
-										</tr>
-										<tr className="" data-index="0" data-id="20">
-											<td>
-												<span className="text-bold">LAB/32456789</span>
-											</td>
-											<td>
-												<span>20-Jan-2020</span>
-												<span className="smaller lighter ml-1">3:22pm</span>
-											</td>
-											<td>
-												<Link to="/">Uchechi I.</Link>
-											</td>
-											<td>Blood</td>
-											<td className="text-center">
-												<span className="badge badge-success">completed</span>
-											</td>
-											<td className="row-actions text-right">
-												<Tooltip title="View Request">
-													<a href="#">
-														<i className="os-icon os-icon-documents-03" />
-													</a>
-												</Tooltip>
-												<Tooltip title="Print Request">
-													<a className="ml-2" href="#">
-														<i className="icon-feather-printer" />
-													</a>
-												</Tooltip>
-											</td>
-										</tr>
-										<tr className="" data-index="0" data-id="20">
-											<td>
-												<span className="text-bold">LAB/32456789</span>
-											</td>
-											<td>
-												<span>20-Jan-2020</span>
-												<span className="smaller lighter ml-1">3:22pm</span>
-											</td>
-											<td>
-												<Link to="/">Uchechi I.</Link>
-											</td>
-											<td>Blood</td>
-											<td className="text-center">
-												<span className="badge badge-danger">pending</span>
-											</td>
-											<td className="row-actions text-right">
-												<Tooltip title="View Request">
-													<a href="#">
-														<i className="os-icon os-icon-documents-03" />
-													</a>
-												</Tooltip>
-												<Tooltip title="Print Request">
-													<a className="ml-2" href="#">
-														<i className="icon-feather-printer" />
-													</a>
-												</Tooltip>
-											</td>
-										</tr>
+										{loading ? (
+											<tr>
+												<td colSpan="4" className="text-center">
+													<img alt="searching" src={searchingGIF} />
+												</td>
+											</tr>
+										) : (
+											<>
+												{props.patient_procedure
+													? props.patient_procedure.map((req, i) => {
+															return (
+																<tr key={i}>
+																	<td>{i + 1}</td>
+																	<td>
+																		{moment(req.createdAt).format('DD-MM-YY')}
+																	</td>
+																	<td>{req.createdBy}</td>
+																	<td>{getRequests(req.requestBody)}</td>
+																	<td className="row-actions text-right">
+																		<Tooltip title="View Request">
+																			<a href="#">
+																				<i className="os-icon os-icon-documents-03" />
+																			</a>
+																		</Tooltip>
+																		<Tooltip title="Print Request">
+																			<a className="ml-2" href="#">
+																				<i className="icon-feather-printer" />
+																			</a>
+																		</Tooltip>
+																	</td>
+																</tr>
+															);
+													  })
+													: ''}
+											</>
+										)}
 									</tbody>
 								</table>
 							</div>
@@ -135,4 +136,14 @@ const Procedure = ({ location }) => {
 	);
 };
 
-export default withRouter(Procedure);
+const mapStateToProps = (state, ownProps) => {
+	return {
+		patient: state.user.patient,
+		patient_procedure: state.patient.patient_procedure,
+	};
+};
+
+export default compose(
+	withRouter,
+	connect(mapStateToProps, { loadPatientProcedureData })
+)(Procedure);
