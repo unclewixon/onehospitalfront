@@ -14,7 +14,6 @@ export class index extends Component {
 	render() {
 		const { match, location } = this.props;
 		const page = location.pathname.split('/').pop();
-		console.log(page);
 		return (
 			<>
 				<div className="content-i">

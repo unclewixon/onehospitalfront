@@ -30,6 +30,13 @@ class VoucherTable extends Component {
 				text: 'Patient',
 				sort: true,
 			},
+
+			{
+				dataField: 'q_voucher_no',
+				text: 'Voucher Number',
+				sort: true,
+			},
+
 			{
 				dataField: 'q_amount',
 				text: 'Amount (₦)',
