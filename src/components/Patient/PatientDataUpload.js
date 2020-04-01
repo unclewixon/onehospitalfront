@@ -19,6 +19,13 @@ import {
 	loadPatientUploadData,
 } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
+import { Link, withRouter } from 'react-router-dom';
+import { compose } from 'redux';
+import {
+	get_all_diagnosis,
+	get_all_services,
+	getAllServiceCategory,
+} from '../../actions/settings';
 
 const UploadPatientData = ({ onHide, uploading, doUpload, documentType }) => {
 	const [theDocumentType, setDocumentType] = useState('');
@@ -143,6 +150,14 @@ const PatientDataUpload = props => {
 			});
 		}
 	};
+
+	const reload = () => {
+		const current = props.location.pathname;
+		this.props.history.replace(`/reload`);
+		setTimeout(() => {
+			this.props.history.replace(current);
+		});
+	};
 	const onUpload = async (e, files, documentID) => {
 		let patient = props.patient;
 		e.preventDefault();
@@ -165,6 +180,9 @@ const PatientDataUpload = props => {
 				);
 				setUploading(false);
 				setUploadVisible(false);
+				//props.history.pushState(null, '/');
+				//props.history.pushState(null, '/settings/roles#upload-document');
+				props.history.push('/settings/roles#upload-document');
 			} catch (error) {
 				console.log(error);
 				setUploading(false);
@@ -270,7 +288,11 @@ const mapStateToProps = (state, ownProps) => {
 		patient_upload: state.patient.patient_upload,
 	};
 };
-export default connect(mapStateToProps, {
-	addPatientUploadData,
-	loadPatientUploadData,
-})(PatientDataUpload);
+
+export default compose(
+	withRouter,
+	connect(mapStateToProps, {
+		addPatientUploadData,
+		loadPatientUploadData,
+	})
+)(PatientDataUpload);

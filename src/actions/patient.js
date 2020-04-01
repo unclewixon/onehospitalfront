@@ -18,6 +18,8 @@ import {
 	UPDATE_VITALS,
 	CREATE_LAB_REQUEST,
 	GET_REQUESTS_BY_TYPE,
+	LOAD_PATIENT_PROCEDURE_DATA,
+	ADD_PATIENT_PROCEDURE_DATA,
 } from './types';
 
 export const nextStep = data => {
@@ -30,6 +32,20 @@ export const nextStep = data => {
 export const prevStep = data => {
 	return {
 		type: PREV_STEP,
+		payload: data,
+	};
+};
+
+export const loadPatientProcedureData = data => {
+	return {
+		type: LOAD_PATIENT_PROCEDURE_DATA,
+		payload: data,
+	};
+};
+
+export const addPatientProcedureData = data => {
+	return {
+		type: ADD_PATIENT_PROCEDURE_DATA,
 		payload: data,
 	};
 };

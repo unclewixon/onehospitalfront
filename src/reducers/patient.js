@@ -15,6 +15,8 @@ import {
 	UPDATE_VITALS,
 	LOAD_PATIENT_UPLOAD_DATA,
 	ADD_PATIENT_UPLOAD_DATA,
+	LOAD_PATIENT_PROCEDURE_DATA,
+	ADD_PATIENT_PROCEDURE_DATA,
 	GET_REQUESTS_BY_TYPE,
 } from '../actions/types';
 
@@ -46,6 +48,15 @@ const patient = (state = INITIAL_STATE, action) => {
 				...state,
 				patient_upload: [...state.patient_upload, action.payload],
 			};
+
+		case LOAD_PATIENT_PROCEDURE_DATA:
+			return { ...state, patient_procedure: action.payload };
+		case ADD_PATIENT_PROCEDURE_DATA:
+			return {
+				...state,
+				patient_procedure: [...state.patient_procedure, action.payload],
+			};
+
 		case GET_ALLERGIES:
 			return { ...state, allergies: action.payload };
 		case SAVE_ALLERGIES:
