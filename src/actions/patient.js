@@ -7,6 +7,8 @@ import {
 	GET_ALLERGIES,
 	ALLERGY,
 	UPDATE_ALLERGY,
+	LOAD_PATIENT_UPLOAD_DATA,
+	ADD_PATIENT_UPLOAD_DATA,
 	DELETE_ALLERGY,
 	GET_PHYSIOTHERAPIES,
 	GET_DENTISTRY_REQUESTS,
@@ -27,6 +29,20 @@ export const nextStep = data => {
 export const prevStep = data => {
 	return {
 		type: PREV_STEP,
+		payload: data,
+	};
+};
+
+export const loadPatientUploadData = data => {
+	return {
+		type: LOAD_PATIENT_UPLOAD_DATA,
+		payload: data,
+	};
+};
+
+export const addPatientUploadData = data => {
+	return {
+		type: ADD_PATIENT_UPLOAD_DATA,
 		payload: data,
 	};
 };
@@ -124,14 +140,14 @@ export const createLabRequest = data => {
 				.post(`${API_URI}/patient/save-request`, {
 					requestType: data.service_center,
 					requestBody: {
-						specialization: "",
-						sessionCount: "",
+						specialization: '',
+						sessionCount: '',
 						combination: data.lab_combo,
 						test: data.lab_test,
 						referredSpeciment: data.referred_specimen,
 						requestNote: data.request_note,
 					},
-					patient_id: data.patient_id
+					patient_id: data.patient_id,
 				})
 				.then(response => {
 					dispatch(create_lab_request(response.data));
