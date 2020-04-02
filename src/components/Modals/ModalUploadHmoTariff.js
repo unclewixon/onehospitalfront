@@ -81,17 +81,21 @@ class ModalUploadHmoTariff extends Component {
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
-							<h4 className="onboarding-title">Upload hmo services</h4>
+							<h4 className="onboarding-title">Upload HMO Services</h4>
 
 							<form onSubmit={this.onUpload}>
 								<div className="form-group">
-									<input
-										className="form-control"
-										placeholder="Category Name"
-										type="file"
-										name="file"
-										onChange={this.handleFileChange}
-									/>
+									<label>Select Hmo</label>
+									<select
+										className="form-control bright"
+										name="selectedHmo"
+										value={selectedHmo}
+										defaultValue={defaultValue}
+										onChange={this.handleInputChange}>
+										{hmos.map(hmo => {
+											return <option value={hmo.value}>{hmo.label}</option>;
+										})}
+									</select>
 								</div>
 								<div className="form-group">
 									<label>Upload type</label>
@@ -106,17 +110,13 @@ class ModalUploadHmoTariff extends Component {
 									</select>
 								</div>
 								<div className="form-group">
-									<label>Select Hmo</label>
-									<select
-										className="form-control bright"
-										name="selectedHmo"
-										value={selectedHmo}
-										defaultValue={defaultValue}
-										onChange={this.handleInputChange}>
-										{hmos.map(hmo => {
-											return <option value={hmo.value}>{hmo.label}</option>;
-										})}
-									</select>
+									<input
+										className="form-control"
+										placeholder="Category Name"
+										type="file"
+										name="file"
+										onChange={this.handleFileChange}
+									/>
 								</div>
 								<div className="form-buttons-w">
 									<button

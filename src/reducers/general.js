@@ -30,6 +30,7 @@ import {
 	TOGGLE_CREATE_RECORD_DELIVERY,
 	TOGGLE_OPEN_ENCOUNTER,
 	TOGGLE_CREATE_CLINICAL_TASK,
+	TOGGLE_ADD_CAFETERIA_FILE,
 	TOGGLE_APPROVE_TRANSACTION,
 	TOGGLE_APPLY_VOUCHER,
 } from '../actions/types';
@@ -59,6 +60,7 @@ const INITIAL_STATE = {
 	create_risk_assessment: false,
 	create_record_delivery: false,
 	create_record_vital: false,
+	add_cafeteria_file: false,
 	payroll_id: null,
 	payroll_staff: null,
 	upload_service: false,
@@ -151,6 +153,9 @@ const general = (state = INITIAL_STATE, action) => {
 				openEncounter: action.payload,
 				encounterId: action.id,
 			};
+
+		case TOGGLE_ADD_CAFETERIA_FILE:
+			return { ...state, add_cafeteria_file: action.payload };
 		default:
 			return state;
 	}

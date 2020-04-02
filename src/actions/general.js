@@ -30,6 +30,7 @@ import {
 	TOGGLE_EDIT_SERIVCE,
 	TOGGLE_CREATE_CLINICAL_TASK,
 	TOGGLE_OPEN_ENCOUNTER,
+	TOGGLE_ADD_CAFETERIA_FILE,
 	TOGGLE_APPROVE_TRANSACTION,
 	TOGGLE_APPLY_VOUCHER,
 	TOGGLE_UPLOAD_HMO_TARIFF,
@@ -231,6 +232,13 @@ export const toggleCreateRecordDelivery = status => {
 	};
 };
 
+export const toggleAddCafeteriaFile = status => {
+	return {
+		type: TOGGLE_ADD_CAFETERIA_FILE,
+		payload: status,
+	};
+};
+
 export const toggleCreateClinicalTask = status => {
 	return {
 		type: TOGGLE_CREATE_CLINICAL_TASK,
@@ -310,6 +318,7 @@ export const closeModals = () => {
 		dispatch(toggleCreateRecordDelivery(false));
 		dispatch(toggleCreateClinicalTask(false));
 		dispatch(toggleCreateRecordVital(false));
+		dispatch(toggleAddCafeteriaFile(false));
 		dispatch(toggleUploadService(false));
 		dispatch(toggleUploadDiagnosis(false));
 		dispatch(toggleUploadHmo(false));
@@ -579,5 +588,13 @@ export const createClinicalTask = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleCreateClinicalTask(action));
+	};
+};
+
+export const addCafeteriaFile = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleAddCafeteriaFile(action));
 	};
 };

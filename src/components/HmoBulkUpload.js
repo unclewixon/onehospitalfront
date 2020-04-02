@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { uploadHmoTariff, uploadHmo } from '../actions/general';
 import { notifySuccess, notifyError } from '../services/notify';
+import { API_URI, hmoAPI } from '../services/constants';
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 import { getAllHmos, fetchHmoTariff } from '../actions/hmo';
@@ -45,7 +46,6 @@ const HmoBulkUpload = props => {
 	props
 		.fetchHmoTariff(selectedHmo)
 		.then(response => {
-			console.log(response);
 			setDataLoaded(true);
 		})
 		.catch(error => {
@@ -60,20 +60,23 @@ const HmoBulkUpload = props => {
 		<div className="content-i">
 			<div className="content-box">
 				<div className="element-wrapper">
-					<div className="os-tabs-w mx-1">
-						<div className="os-tabs-controls">
-							<ul className="nav nav-tabs upper">
-								<li className="nav-item">
-									<a
-										aria-expanded="true"
-										className="nav-link active"
-										data-toggle="tab">
-										HEALTH MANAGEMENT ORGANIZATIONS BULK UPLOAD
-									</a>
-								</li>
-							</ul>
-						</div>
+					<div className="element-actions">
+						<a
+							className="btn btn-success btn-sm"
+							onClick={() => props.uploadHmoTariff(true)}
+							href="#">
+							<i className="os-icon os-icon-grid-10"></i>
+							<span>Upload HMO Services</span>
+						</a>
+						<a
+							className="btn btn-primary btn-sm"
+							href={`${API_URI}${hmoAPI}/download-tariff-sample?downloadType=services`}
+							download>
+							<i className="os-icon os-icon-ui-22"></i>
+							<span>Download Sample</span>
+						</a>
 					</div>
+					<h6 className="element-header">HMO Services</h6>
 
 					<div className="pipelines-w">
 						<div className="row">
@@ -82,21 +85,7 @@ const HmoBulkUpload = props => {
 									<div className="element-box-tp">
 										<div className="controls-above-table">
 											<div className="row">
-												<div className="col-sm-3">
-													<button
-														className="btn btn-sm btn-secondary"
-														onClick={() => props.uploadHmoTariff(true)}>
-														Upload HMO Services
-													</button>
-												</div>
-												<div className="col-sm-3">
-													<button
-														className="btn btn-sm btn-secondary"
-														onClick={() => props.uploadHmo(true)}>
-														Upload HMOS
-													</button>
-												</div>
-												<div className="col-sm-6">
+												<div className="col-sm-12">
 													<form className="form-inline justify-content-sm-end">
 														<select
 															className="form-control form-control-sm rounded bright"
@@ -128,7 +117,7 @@ const HmoBulkUpload = props => {
 												<tbody>
 													{!dataLoaded ? (
 														<tr>
-															<td colSpan="4" className="text-center">
+															<td colSpan="5" className="text-center">
 																<img alt="searching" src={searchingGIF} />
 															</td>
 														</tr>

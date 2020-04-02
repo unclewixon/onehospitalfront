@@ -29,7 +29,7 @@ class ModalUploadDiagnosis extends Component {
 		const data = new FormData();
 		data.append('file', this.state.file);
 		this.props
-			.updateDiagnosis(data)
+			.uploadDiagnosis(data)
 			.then(response => {
 				this.setState({ Loading: false });
 				this.props.closeModals(false);

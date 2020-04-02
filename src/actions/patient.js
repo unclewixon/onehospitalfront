@@ -7,6 +7,8 @@ import {
 	GET_ALLERGIES,
 	ALLERGY,
 	UPDATE_ALLERGY,
+	LOAD_PATIENT_UPLOAD_DATA,
+	ADD_PATIENT_UPLOAD_DATA,
 	DELETE_ALLERGY,
 	GET_PHYSIOTHERAPIES,
 	GET_DENTISTRY_REQUESTS,
@@ -15,8 +17,18 @@ import {
 	LOAD_VITALS,
 	UPDATE_VITALS,
 	CREATE_LAB_REQUEST,
-	GET_REQUESTS_BY_TYPE
+	GET_REQUESTS_BY_TYPE,
+	LOAD_PATIENT_PROCEDURE_DATA,
+	ADD_PATIENT_PROCEDURE_DATA,
+	LOAD_PATIENTS,
 } from './types';
+
+export const loadPatients = data => {
+	return {
+		type: LOAD_PATIENTS,
+		payload: data,
+	};
+};
 
 export const nextStep = data => {
 	return {
@@ -28,6 +40,34 @@ export const nextStep = data => {
 export const prevStep = data => {
 	return {
 		type: PREV_STEP,
+		payload: data,
+	};
+};
+
+export const loadPatientProcedureData = data => {
+	return {
+		type: LOAD_PATIENT_PROCEDURE_DATA,
+		payload: data,
+	};
+};
+
+export const addPatientProcedureData = data => {
+	return {
+		type: ADD_PATIENT_PROCEDURE_DATA,
+		payload: data,
+	};
+};
+
+export const loadPatientUploadData = data => {
+	return {
+		type: LOAD_PATIENT_UPLOAD_DATA,
+		payload: data,
+	};
+};
+
+export const addPatientUploadData = data => {
+	return {
+		type: ADD_PATIENT_UPLOAD_DATA,
 		payload: data,
 	};
 };
@@ -167,4 +207,4 @@ export const getRequestByType = data => {
 				});
 		});
 	};
-}
+};
