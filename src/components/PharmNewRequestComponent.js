@@ -8,6 +8,7 @@ import { ReactComponent as EditIcon } from '../assets/svg-icons/edit.svg';
 import { ReactComponent as TrashIcon } from '../assets/svg-icons/trash.svg';
 import { ReactComponent as ViewIcon } from '../assets/svg-icons/view.svg';
 import { Table } from 'react-bootstrap';
+import Modal from 'react-bootstrap/Modal';
 
 const dummyData = [
 	{ value: '', label: 'Select one', name: 'formulary' },
@@ -36,24 +37,45 @@ const dummyData3 = [
 	{ value: '14', label: 'Line0101', name: 'drugName' },
 ];
 
-const PharmNewRequestComponent = props => {
+const defaultValues = {
+	serviceUnit: '',
+	formulary: '',
+	genericName: '',
+	drugName: '',
+	icdioCode: '',
+	quantity: '',
+	anotherFacility: '',
+	refills: '',
+	frequency: '',
+	eg: '',
+	duration: '',
+	refillNote: '',
+};
+
+const PharmNewRequestComponent = ({ patient }) => {
 	const [refillable, setRefillable] = useState(false);
-	const { register, handleSubmit, setValue, reset } = useForm();
+	const { register, handleSubmit, setValue, reset } = useForm({
+		defaultValues,
+	});
 	const [submitting, setSubmitting] = useState(false);
 	const [pharmRequest, setPharmRequest] = useState([]);
 	const [editing, setEditing] = useState(false);
+	const [showModal, setShowModal] = useState(false);
+	const [activeRequest, setActiveRequest] = useState(null);
 
 	const onRefillableClick = () => {
 		setRefillable(!refillable);
+	};
+
+	const onModalClick = () => {
+		setShowModal(!showModal);
 	};
 
 	const onFormSubmit = (data, e) => {
 		let newPharm = [...pharmRequest, data];
 		setPharmRequest(newPharm);
 		setEditing(false);
-		Object.keys(data).map(req => {
-			setValue(req, '');
-		});
+		reset(defaultValues);
 	};
 
 	const onTrash = index => {
@@ -71,8 +93,10 @@ const PharmNewRequestComponent = props => {
 	};
 
 	const onHandleSelectChange = e => {
-		const { name, value } = e;
-		setValue(name, value);
+		if (e) {
+			const { name, value } = e;
+			setValue(name, value);
+		}
 	};
 
 	const onHandleInputChange = e => {
@@ -82,6 +106,75 @@ const PharmNewRequestComponent = props => {
 	return (
 		<div className="row">
 			<div className="col-lg-12 form-block w-100">
+				{activeRequest ? (
+					<Modal
+						show={showModal}
+						size="lg"
+						aria-labelledby="contained-modal-title-vcenter"
+						centered
+						onHide={onModalClick}>
+						<Modal.Header closeButton>
+							{patient ? (
+								<Modal.Title id="contained-modal-title-vcenter">
+									{`${patient && patient.surname.toUpperCase()} ${patient &&
+										patient.other_names.toUpperCase()}`}
+								</Modal.Title>
+							) : null}
+						</Modal.Header>
+						<Modal.Body>
+							<div className="row">
+								<div className="form-group col-lg-6">
+									<h4 className="primary">Service Unit</h4>
+									<div>
+										<p className="justify">{activeRequest.serviceUnit}</p>
+									</div>
+									<h5>Formulary</h5>
+									<div>
+										<p className="justify">{activeRequest.formulary}</p>
+									</div>
+									<h5>Drug Generic Name</h5>
+									<div>
+										<p className="justify">{activeRequest.genericName}</p>
+									</div>
+									<h5>Drug Name</h5>
+									<div>
+										<p className="justify">{activeRequest.drugName}</p>
+									</div>
+									<h5>Dose Quantity</h5>
+									<div>
+										<p className="justify">{activeRequest.quantity}</p>
+									</div>
+								</div>
+								<div className="col-lg-6">
+									<h4 className="primary">Number of refills</h4>
+									<div>
+										<p className="justify">{activeRequest.refills}</p>
+									</div>
+									<h5>E.g. 3</h5>
+									<div>
+										<p className="justify">{activeRequest.eg}</p>
+									</div>
+									<h5>Frequency type</h5>
+									<div>
+										<p className="justify">{activeRequest.frequency}</p>
+									</div>
+									<h5>Duration</h5>
+									<div>
+										<p className="justify">{activeRequest.duration}</p>
+									</div>
+									<h5>Note</h5>
+									<div>
+										<p className="justify">{activeRequest.refillNote}</p>
+									</div>
+									<h5>ICDIO Code</h5>
+									<div>
+										<p className="justify">{activeRequest.icdioCode}</p>
+									</div>
+								</div>
+							</div>
+						</Modal.Body>
+					</Modal>
+				) : null}
 				<form onSubmit={handleSubmit(onFormSubmit)}>
 					<div className="row">
 						<div className="form-group col-sm-6">
@@ -91,6 +184,7 @@ const PharmNewRequestComponent = props => {
 								ref={register({ name: 'serviceUnit', required: true })}
 								name="serviceUnit"
 								options={dummyData1}
+								onChange={onHandleSelectChange}
 							/>
 						</div>
 						<div className="form-group col-sm-6">
@@ -177,13 +271,17 @@ const PharmNewRequestComponent = props => {
 									/>
 								</div>
 								<div className="form-group col-sm-4">
-									<input
-										type="text"
-										className="form-control"
+									<Select
 										placeholder="Frequency type"
-										ref={register}
+										ref={register({ name: 'frequency', required: true })}
 										name="frequency"
-										onChange={onHandleInputChange}
+										options={[
+											{ value: '', label: 'Select one', name: 'frequency' },
+											{ value: 'daily', label: 'Daily', name: 'frequency' },
+											{ value: 'weekly', label: 'Weekly', name: 'frequency' },
+											{ value: 'monthly', label: 'Monthly', name: 'frequency' },
+										]}
+										onChange={onHandleSelectChange}
 									/>
 								</div>
 							</div>
@@ -209,61 +307,65 @@ const PharmNewRequestComponent = props => {
 									/>
 								</div>
 							</div>
-							<div>
-								<h6>Diagnosis Data</h6>
-							</div>
-							<div className="row">
-								<div className="form-group col-sm-12">
-									<input
-										type="text"
-										className="form-control"
-										placeholder="Enter ICDIO Code"
-										ref={register}
-										name="icdioCode"
-										onChange={onHandleInputChange}
-									/>
-								</div>
-							</div>
-							<div>
-								<h6>Prescription from another facility</h6>
-							</div>
-							<div className="row">
-								<div className="form-group col-sm-3">
-									<label>
-										<input
-											type="radio"
-											name="anotherFacility"
-											ref={register}
-											value="Yes"
-										/>{' '}
-										Yes
-									</label>
-								</div>
-								<div className="form-group col-sm-3">
-									<label>
-										<input
-											type="radio"
-											name="anotherFacility"
-											ref={register}
-											value="No"
-										/>{' '}
-										No
-									</label>
-								</div>
-							</div>
 						</div>
 					) : null}
+					<div>
+						<h6>Diagnosis Data</h6>
+					</div>
+					<div className="row">
+						<div className="form-group col-sm-12">
+							<Select
+								isClearable
+								isSearchable
+								placeholder="Enter ICDIO Code"
+								name="icdioCode"
+								onChange={onHandleSelectChange}
+								ref={register({ name: 'icdioCode', required: true })}
+								options={dummyData3}
+							/>
+						</div>
+					</div>
+					<div>
+						<h6>Prescription from another facility</h6>
+					</div>
+					<div className="row">
+						<div className="form-group col-sm-3">
+							<label>
+								<input
+									type="radio"
+									name="anotherFacility"
+									ref={register}
+									value="Yes"
+								/>{' '}
+								Yes
+							</label>
+						</div>
+						<div className="form-group col-sm-3">
+							<label>
+								<input
+									type="radio"
+									name="anotherFacility"
+									ref={register}
+									value="No"
+								/>{' '}
+								No
+							</label>
+						</div>
+					</div>
 					<div className="row">
 						{!editing ? (
 							<div className="form-group col-sm-3">
-								<PlusIcon
+								<button
 									onClick={handleSubmit}
-									style={{
-										width: '1.5rem',
-										height: '1.5rem',
-										cursor: 'pointer',
-									}}
-								/>
+									style={{ backgroundColor: 'transparent', border: 'none' }}>
+									<PlusIcon
+										style={{
+											width: '1.5rem',
+											height: '1.5rem',
+											cursor: 'pointer',
+										}}
+									/>
+								</button>
 							</div>
 						) : (
 							<button onClick={handleSubmit} className="btn btn-primary">
@@ -298,6 +400,10 @@ const PharmNewRequestComponent = props => {
 												<td>{request.diagnosis ? request.diagnosis : ''}</td>
 												<td>
 													<ViewIcon
+														onClick={() => {
+															setActiveRequest(request);
+															onModalClick();
+														}}
 														style={{
 															width: '1rem',
 															height: '1rem',
