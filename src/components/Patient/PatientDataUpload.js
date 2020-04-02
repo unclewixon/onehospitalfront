@@ -8,10 +8,11 @@ import { request, upload } from '../../services/utilities';
 import {
 	API_URI,
 	documentType,
+	inventoryDownloadAPI,
 	inventoryUploadAPI,
 	patientAPI,
 } from '../../services/constants';
-import { notifySuccess } from '../../services/notify';
+import { notifyError, notifySuccess } from '../../services/notify';
 import { connect } from 'react-redux';
 import { SubmissionError } from 'redux-form';
 import {
@@ -26,6 +27,7 @@ import {
 	get_all_services,
 	getAllServiceCategory,
 } from '../../actions/settings';
+import Tooltip from 'antd/lib/tooltip';
 
 const UploadPatientData = ({ onHide, uploading, doUpload, documentType }) => {
 	const [theDocumentType, setDocumentType] = useState('');
@@ -126,6 +128,28 @@ const PatientDataUpload = props => {
 
 	const handleUploadVisibleChange = visible => {
 		setUploadVisible(visible);
+	};
+
+	const handleDownload = async (evt, data) => {
+		try {
+			setLoading(true);
+			// const rs = await request(
+			// 	`${API_URI}${patientAPI}` + '/download/' + data.document_name,
+			// 	'GET',
+			// 	true
+			// );
+			//
+			const url = `${API_URI}${patientAPI}` + '/download/' + data.document_name;
+			setTimeout(() => {
+				window.open(url, '_blank').focus();
+				setLoading(false);
+			}, 2000);
+		} catch (e) {
+			console.log(e);
+			setLoading(false);
+			notifyError(e.message || 'could not download data');
+		}
+		console.log(data);
 	};
 
 	useEffect(() => {
@@ -258,6 +282,14 @@ const PatientDataUpload = props => {
 																				<a className="danger" href="#">
 																					<i className="os-icon os-icon-ui-15"></i>
 																				</a>
+																				<Tooltip title="Download File">
+																					<a
+																						onClick={evt =>
+																							handleDownload(evt, doc)
+																						}>
+																						<i className="os-icon os-icon-download-cloud" />
+																					</a>
+																				</Tooltip>
 																			</td>
 																		</tr>
 																	);
