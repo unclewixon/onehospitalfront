@@ -44,7 +44,16 @@ const PharmNewRequest = (props) => {
 
 	const onFormSubmit = (data, e) => {
 		let newPharm = [...pharmRequest, data]
-		setPharmRequest(newPharm)
+		setPharmRequest(newPharm);
+	}
+
+	const onTrashClick = (index) => {
+		console.log(index)
+		debugger
+		let newPharm = pharmRequest.slice(index, 1);
+		debugger
+		console.log(newPharm)
+		setPharmRequest(newPharm);
 	}
 
 	const onHandleSelectChange = e => {
@@ -295,6 +304,7 @@ const PharmNewRequest = (props) => {
 														height: '1rem',
 														cursor: 'pointer'
 													}}
+													onClick={() => onTrashClick(index)}
 												/>
 											</td>
 										</tr>
