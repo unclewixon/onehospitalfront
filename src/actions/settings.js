@@ -784,7 +784,6 @@ export const getAllLabTests = () => {
 };
 
 export const updateLabTest = data => {
-	console.log(data);
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
@@ -810,14 +809,33 @@ export const updateLabTest = data => {
 export const deleteLabTest = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
+			let updatedStructure = [];
+			if (Array.isArray(data.parameters)) {
+				data.parameters.map((param, i) => {
+					let newParams = {
+						parameter_id:
+							param.parameter && param.parameter.id ? param.parameter.id : '',
+						referenceRange: param.referenceRange,
+					};
+					updatedStructure.push(newParams);
+				});
+			}
+			let newStructure = {
+				name: data.name,
+				price: data.price,
+				test_type: 'single',
+				lab_category_id:
+					data.category && data.category.id ? data.category.id : '',
+				parameters: updatedStructure,
+			};
 			axios
-				.delete(`${API_URI}/lab-tests/${data.id}`)
+				.delete(`${API_URI}/lab-tests/${data.id}`, newStructure)
 				.then(response => {
 					dispatch(delete_lab_test(data));
 					return resolve({ success: true });
 				})
 				.catch(error => {
-					return resolve({ success: false });
+					return reject({ success: false });
 				});
 		});
 	};
@@ -899,7 +917,7 @@ export const deleteLabGroup = data => {
 					return resolve({ success: true });
 				})
 				.catch(error => {
-					return resolve({ success: false });
+					return reject({ success: false });
 				});
 		});
 	};

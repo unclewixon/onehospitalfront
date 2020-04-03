@@ -81,15 +81,13 @@ const Diagnosis = props => {
 														<th>Procedure Code</th>
 														<th>ICD 10 Code</th>
 														<th className="text-center">Description</th>
-
-														<th>Code Status</th>
 														<th>Actions</th>
 													</tr>
 												</thead>
 												<tbody>
 													{!dataLoaded ? (
 														<tr>
-															<td colSpan="4" className="text-center">
+															<td colSpan="5" className="text-center">
 																<img alt="searching" src={searchingGIF} />
 															</td>
 														</tr>
@@ -110,10 +108,6 @@ const Diagnosis = props => {
 																		</td>
 																		<td>
 																			<span>{diagnosis.description}</span>
-																		</td>
-
-																		<td className="nowrap">
-																			<span>{diagnosis.codeStatus}</span>
 																		</td>
 																		<td className="row-actions">
 																			<a href="#">

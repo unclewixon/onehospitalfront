@@ -67,11 +67,9 @@ const ServicesList = props => {
 				<div className="todo-content">
 					<div className="all-tasks-w">
 						{!dataLoaded ? (
-							<tr>
-								<td colSpan="4" className="text-center">
-									<img alt="searching" src={searchingGIF} />
-								</td>
-							</tr>
+							<div className="text-center">
+								<img alt="searching" src={searchingGIF} />
+							</div>
 						) : (
 							<>
 								{props.ServiceCategories.map((category, index) => {

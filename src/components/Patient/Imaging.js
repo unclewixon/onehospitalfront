@@ -6,12 +6,88 @@ import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
 import { loadImagingRequests } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
-import { API_URI, patientAPI } from '../../services/constants';
-import { request } from '../../services/utilities';
+import { API_URI, documentType, patientAPI } from '../../services/constants';
+import { request, upload } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
+import Popover from 'antd/lib/popover';
+import waiting from '../../assets/images/waiting.gif';
+import { SubmissionError } from 'redux-form';
+import Select from 'react-select';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 const Imaging = props => {
 	const [loading, setLoading] = useState(false);
+	const [upload_visible, setUploadVisible] = useState(false);
+	const [uploading, setUploading] = useState(false);
+	const [hidden, setHidden] = useState(false);
+	const [selectedRequest, setRequest] = useState(false);
+
+	const UploadImagingData = ({ uploading, doUpload, onBackClick }) => {
+		const [files, setFile] = useState(null);
+		let uploadAttachment;
+		return (
+			<div className="col-sm-12">
+				<div className="element-wrapper">
+					<h6 className="element-header">New Procedure Request</h6>
+					<div className="element-box">
+						<div className="form-block w-100">
+							<form onSubmit={e => doUpload(e, files)}>
+								<div className="row">
+									<div className="col-sm-12">
+										<div className="form-group">
+											<input
+												className="d-none"
+												onClick={e => {
+													e.target.value = null;
+												}}
+												type="file"
+												multiple
+												ref={el => {
+													uploadAttachment = el;
+												}}
+												onChange={e => setFile(e.target.files)}
+											/>
+											<label htmlFor="department">File</label>
+											<a
+												className="btn btn-outline-secondary ml-4"
+												onClick={() => {
+													uploadAttachment.click();
+												}}>
+												<i className="os-icon os-icon-ui-51" />
+												<span>Select File</span>
+											</a>
+										</div>
+									</div>
+								</div>
+								<div className="row">
+									<div className="col-sm-12 text-right">
+										<button
+											className="btn btn-primary"
+											disabled={uploading}
+											type="submit">
+											{uploading ? (
+												<img src={waiting} alt="submitting" />
+											) : (
+												'upload'
+											)}
+										</button>
+
+										<button
+											onClick={onBackClick}
+											className="btn btn-primary"
+											type="button">
+											back
+										</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	};
+
 	const fetchImaging = async () => {
 		setLoading(true);
 		const { patient } = props;
@@ -31,8 +107,53 @@ const Imaging = props => {
 		}
 	};
 
+	const handleUpload = (evt, data) => {
+		setRequest(data);
+		setHidden(true);
+	};
+	const onBackClick = () => {
+		setHidden(false);
+	};
+
+	const onUpload = async (e, files) => {
+		e.preventDefault();
+		setUploading(true);
+		const { patient } = props;
+
+		let fileData = [];
+		fileData.files = [...files];
+
+		console.log(fileData);
+		//files: [file1, file2, file3]
+		const file = files[0];
+		if (file) {
+			try {
+				let formData = new FormData();
+				formData.append('file', fileData);
+				formData.append('document_type', 'Imaging');
+				const rs = await upload(
+					`${API_URI}${patientAPI}` +
+						'/' +
+						patient.id +
+						'/upload-request-document',
+					'POST',
+					formData
+				);
+				notifySuccess(`Patient Imaging Data Uploaded`);
+				setHidden(false);
+				setUploading(false);
+				console.log(rs);
+			} catch (error) {
+				console.log(error);
+				setUploading(false);
+				throw new SubmissionError({
+					_error: e.message || 'could not upload data',
+				});
+			}
+		}
+	};
+
 	const convertToIndividualRequest = data => {
-		console.log(data);
 		let newData = [];
 		data.forEach(value => {
 			if (Array.isArray(value.requestBody)) {
@@ -85,6 +206,11 @@ const Imaging = props => {
 									<i className="os-icon os-icon-documents-03" />
 								</a>
 							</Tooltip>
+							<Tooltip title="Upload Document">
+								<a onClick={evt => handleUpload(evt, data)}>
+									<i className="os-icon os-icon-upload-cloud" />
+								</a>
+							</Tooltip>
 							<Tooltip title="Print Request">
 								<a className="ml-2">
 									<i className="icon-feather-printer" />
@@ -109,7 +235,7 @@ const Imaging = props => {
 
 	return (
 		<div className="col-sm-12">
-			<div className="element-wrapper">
+			<div className="element-wrapper" hidden={hidden}>
 				<div className="element-actions">
 					<Link
 						className="btn btn-primary"
@@ -159,6 +285,13 @@ const Imaging = props => {
 						</div>
 					</div>
 				</div>
+			</div>
+			<div hidden={!hidden}>
+				<UploadImagingData
+					uploading={uploading}
+					doUpload={onUpload}
+					onBackClick={onBackClick}
+				/>
 			</div>
 		</div>
 	);
