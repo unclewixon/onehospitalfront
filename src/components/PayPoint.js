@@ -1,42 +1,71 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import PayPointItem from './PayPointItem';
+import moment from 'moment';
+import { request } from '../services/utilities';
+import { API_URI, transactionsAPI } from '../services/constants';
+
 class PayPoint extends Component {
 	state = {
-		payPoints: [
-			{
-				type: 'Total Balance',
-				total: '350',
-				percent: 12,
-			},
-			{
-				type: 'Credit Available',
-				total: '17,800',
-				percent: 0,
-			},
-
-			{
-				type: 'Total Balance',
-				total: '350',
-				percent: 12,
-			},
-			{
-				type: 'Credit Available',
-				total: '17,800',
-				percent: 0,
-			},
-			{
-				type: 'Total Balance',
-				total: '350',
-				percent: 12,
-			},
-			{
-				type: 'Credit Available',
-				total: '17,800',
-				percent: 0,
-			},
-		],
+		payPoints: [],
 	};
+
+	componentDidMount() {
+		this.fetchTransaction();
+	}
+
+	fetchTransaction = async () => {
+		try {
+			let today = moment().format('YYYY-MM-DD');
+			console.log(today);
+			const rs = await request(
+				`${API_URI}${transactionsAPI}/dashboard`,
+				'GET',
+				true
+			);
+			this.setState({
+				payPoints: [
+					{
+						type: 'Daily Total',
+						id: 'daily-total',
+						total: rs.dailyTotal.dailyTotal ? rs.dailyTotal.dailyTotal : 0,
+					},
+					{
+						type: 'total-unpaid',
+						id: 'unpaidTotal',
+						total: rs.unpaidTotal.dailyTotal ? rs.unpaidTotal.dailyTotal : 0,
+					},
+
+					{
+						type: 'Total Cash',
+						id: 'total-cash',
+						total: rs.totalCash.dailyTotal ? rs.totalCash.dailyTotal : 0,
+					},
+					{
+						type: 'Total POS',
+						id: 'total-pos',
+						total: rs.totalPOS.dailyTotal ? rs.totalPOS.dailyTotal : 0,
+					},
+					{
+						type: 'Total Cheque',
+						id: 'total-cheque',
+						total: rs.totalCheque.dailyTotal ? rs.totalCheque.dailyTotal : 0,
+					},
+					{
+						type: 'Total Outstanding',
+						id: 'total-outstanding',
+						total: rs.totalOutstanding.dailyTotal
+							? rs.totalOutstanding.dailyTotal
+							: 0,
+					},
+				],
+			});
+			console.log(rs);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	render() {
 		const { payPoints } = this.state;
 		return (
