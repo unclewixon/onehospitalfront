@@ -14,6 +14,8 @@ import {
 	LOAD_VITALS,
 	UPDATE_VITALS,
 	LOAD_PATIENTS,
+	LOAD_CLINICAL_LAB,
+	LOAD_RADIOLOGY,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -28,6 +30,8 @@ const INITIAL_STATE = {
 	opthalmologyRequests: [],
 	vitals: [],
 	patients: [],
+	clinicalLab: [],
+	radiology: [],
 };
 
 const patient = (state = INITIAL_STATE, action) => {
@@ -76,6 +80,10 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, vitals: [...action.payload] };
 		case UPDATE_VITALS:
 			return { ...state, vitals: [action.payload, ...state.vitals] };
+		case LOAD_CLINICAL_LAB:
+			return { ...state, clinicalLab: [...action.payload] };
+		case LOAD_RADIOLOGY:
+			return { ...state, radiology: [...action.payload] };
 		default:
 			return state;
 	}

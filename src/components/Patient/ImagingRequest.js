@@ -9,7 +9,7 @@ import { notifySuccess, notifyError } from '../../services/notify';
 
 import { request } from '../../services/utilities';
 
-import { getAllRequestServices } from '../../actions/settings';
+import { getAllService } from '../../actions/settings';
 
 const ImagingRequest = props => {
 	let history = useHistory();
@@ -21,6 +21,7 @@ const ImagingRequest = props => {
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [imagingServices, setImagingServices] = useState([]);
 	const [multi, setMulti] = useState(false);
+	const [services, setServices] = useState([]);
 
 	const onSubmit = async values => {
 		console.log(values);
@@ -44,7 +45,6 @@ const ImagingRequest = props => {
 					return {
 						specialization: req.label,
 						service_id: req.value,
-						amount: req.amount,
 					};
 				}),
 			};
@@ -69,12 +69,11 @@ const ImagingRequest = props => {
 
 	const imagingValue = () => {
 		let imagingServices = props.requestServices
-			.filter(service => service.group === 'Imaging')
+			.filter(service => service.category.name === 'Ultrasound')
 			.map(service => {
 				return {
 					value: service.id,
 					label: service.name,
-					amount: service.amount,
 				};
 			});
 		console.log(imagingServices);
@@ -84,7 +83,7 @@ const ImagingRequest = props => {
 	useEffect(() => {
 		if (!loaded && props.requestServices.length === 0) {
 			props
-				.getAllRequestServices()
+				.getAllService()
 				.then(response => {
 					setDataLoaded(true);
 				})
@@ -179,9 +178,7 @@ const ImagingRequest = props => {
 const mapStateToProps = state => {
 	return {
 		patient: state.user.patient,
-		requestServices: state.settings.request_services,
+		requestServices: state.settings.services,
 	};
 };
-export default connect(mapStateToProps, { getAllRequestServices })(
-	ImagingRequest
-);
+export default connect(mapStateToProps, { getAllService })(ImagingRequest);

@@ -13,6 +13,8 @@ import {
 	LOAD_VITALS,
 	UPDATE_VITALS,
 	LOAD_PATIENTS,
+	LOAD_CLINICAL_LAB,
+	LOAD_RADIOLOGY,
 } from './types';
 
 export const loadPatients = data => {
@@ -111,6 +113,20 @@ export const loadVitals = data => {
 export const updateVitals = data => {
 	return {
 		type: UPDATE_VITALS,
+		payload: data,
+	};
+};
+
+export const loadClinicalLab = data => {
+	return {
+		type: LOAD_CLINICAL_LAB,
+		payload: data,
+	};
+};
+
+export const loadRadiology = data => {
+	return {
+		type: LOAD_RADIOLOGY,
 		payload: data,
 	};
 };

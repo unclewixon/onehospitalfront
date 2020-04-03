@@ -21,6 +21,13 @@ export class NewLab extends Component {
 							</Link>
 							<Link
 								className={`btn btn-primary ${
+									page === '/all-request' ? 'btn-outline-primary' : ''
+								}`}
+								to="/lab/all-request">
+								All Request
+							</Link>
+							<Link
+								className={`btn btn-primary ${
 									page === 'lab-request' ? 'btn-outline-primary' : ''
 								}`}
 								to="/lab/lab-request">
