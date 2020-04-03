@@ -184,10 +184,10 @@ export const toggleEditPayroll = (status, id) => {
 	};
 };
 
-export const toggleViewPayPoint = status => {
+export const toggleViewPayPoint = (status, id) => {
 	return {
 		type: TOGGLE_VIEW_PAYPOINT,
-		payload: status,
+		payload: id,
 	};
 };
 
@@ -479,11 +479,12 @@ export const viewEditPayroll = (action, isModal, id) => {
 };
 
 //paypoint
-export const viewPayPoint = action => {
+export const viewPayPoint = (action, id) => {
+	console.log(id);
 	return dispatch => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
-		dispatch(toggleViewPayPoint(action));
+		dispatch(toggleViewPayPoint(action, id));
 	};
 };
 
