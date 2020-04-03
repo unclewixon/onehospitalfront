@@ -21,6 +21,7 @@ import {
 	LOAD_PATIENT_PROCEDURE_DATA,
 	ADD_PATIENT_PROCEDURE_DATA,
 	LOAD_PATIENTS,
+	ADD_PHARMACY_REQUEST,
 } from './types';
 
 export const loadPatients = data => {
@@ -165,6 +166,13 @@ const get_requests_by_type = data => {
 	};
 };
 
+const add_pharmacy_request = data => {
+	return {
+		type: ADD_PHARMACY_REQUEST,
+		payload: data,
+	}
+}
+
 export const createLabRequest = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
@@ -203,6 +211,43 @@ export const getRequestByType = data => {
 					return resolve({ success: true });
 				})
 				.catch(error => {
+					return reject({ success: false });
+				});
+		});
+	};
+};
+
+export const addPharmacyRequest = (data, id, diagnosis, prescription, cb) => {
+	return dispatch => {
+		const requestData = data ? data.map(request => ({
+			forumalary: request.formulary,
+			drug_generic_name: request.genericName,
+			drug_name: request.drugName,
+			dose_quantity: request.quantity,
+			refillable: {
+				number_of_refills: request && request.refills ? request.refills : 0,
+				eg: request && request.eg ? request.eg : 0,
+				frequency_type: request && request.frequency ? request.frequency : "",
+				duration: request && request.duration ? request.duration : 0,
+				note: request && request.refillNote ? request.refillNote : "",
+			}
+		})) : [];
+		return new Promise((resolve, reject) => {
+			axios
+				.post(`${API_URI}/patient/${id ? id : ""}/request/pharmacy?startDate=&endDate=`, {
+					requestType: "pharmacy",
+					requestBody: requestData,
+					diagnosis: diagnosis ? diagnosis : "",
+					prescription: prescription ? prescription : "",
+					patient_id: id ? id : ""
+				})
+				.then(response => {
+					dispatch(add_pharmacy_request(response.data));
+					cb('success')
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					cb(null)
 					return reject({ success: false });
 				});
 		});

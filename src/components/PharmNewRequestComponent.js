@@ -9,6 +9,7 @@ import { ReactComponent as TrashIcon } from '../assets/svg-icons/trash.svg';
 import { ReactComponent as ViewIcon } from '../assets/svg-icons/view.svg';
 import { Table } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
+import { notifySuccess, notifyError } from './../services/notify';
 
 const dummyData = [
 	{ value: '', label: 'Select one', name: 'formulary' },
@@ -42,9 +43,8 @@ const defaultValues = {
 	formulary: '',
 	genericName: '',
 	drugName: '',
-	icdioCode: '',
 	quantity: '',
-	anotherFacility: '',
+	anotherFacility: false,
 	refills: '',
 	frequency: '',
 	eg: '',
@@ -52,7 +52,7 @@ const defaultValues = {
 	refillNote: '',
 };
 
-const PharmNewRequestComponent = ({ patient }) => {
+const PharmNewRequestComponent = ({ patient, saveRequest }) => {
 	const [refillable, setRefillable] = useState(false);
 	const { register, handleSubmit, setValue, reset } = useForm({
 		defaultValues,
@@ -62,18 +62,25 @@ const PharmNewRequestComponent = ({ patient }) => {
 	const [editing, setEditing] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
+	const [diagnosis, setDiagnosis] = useState("")
+	const [prescription, setPrescription] = useState(false)
 
 	const onRefillableClick = () => {
 		setRefillable(!refillable);
 	};
+
+
 
 	const onModalClick = () => {
 		setShowModal(!showModal);
 	};
 
 	const onFormSubmit = (data, e) => {
-		let newPharm = [...pharmRequest, data];
+		const { diagnosis, ...rest } = data;
+		const newDiagnosis = diagnosis
+		let newPharm = [...pharmRequest, rest];
 		setPharmRequest(newPharm);
+		setDiagnosis(newDiagnosis)
 		setEditing(false);
 		reset(defaultValues);
 	};
@@ -92,6 +99,21 @@ const PharmNewRequestComponent = ({ patient }) => {
 		setEditing(true);
 	};
 
+	const saveTableData = e => {
+		setSubmitting(true)
+		e.preventDefault();
+
+		const patient_id = patient && patient.id ? patient.id : '';
+		saveRequest(pharmRequest, patient_id, diagnosis, prescription, message => {
+			if (message) {
+				setSubmitting(false)
+				notifySuccess('Saved new pharmacy request')
+			} else {
+				setSubmitting(false)
+				notifyError('Error saving new pharmacy request')
+			}
+		})
+	}
 	const onHandleSelectChange = e => {
 		if (e) {
 			const { name, value } = e;
@@ -288,7 +310,7 @@ const PharmNewRequestComponent = ({ patient }) => {
 							<div className="row">
 								<div className="form-group col-sm-6">
 									<input
-										type="text"
+										type="number"
 										className="form-control"
 										placeholder="Duration"
 										ref={register}
@@ -318,9 +340,7 @@ const PharmNewRequestComponent = ({ patient }) => {
 								isClearable
 								isSearchable
 								placeholder="Enter ICDIO Code"
-								name="icdioCode"
-								onChange={onHandleSelectChange}
-								ref={register({ name: 'icdioCode', required: true })}
+								onChange={e => setDiagnosis(e.value)}
 								options={dummyData3}
 							/>
 						</div>
@@ -333,9 +353,8 @@ const PharmNewRequestComponent = ({ patient }) => {
 							<label>
 								<input
 									type="radio"
-									name="anotherFacility"
-									ref={register}
-									value="Yes"
+									checked={prescription}
+									onChange={() => setPrescription(true)}
 								/>{' '}
 								Yes
 							</label>
@@ -344,9 +363,8 @@ const PharmNewRequestComponent = ({ patient }) => {
 							<label>
 								<input
 									type="radio"
-									name="anotherFacility"
-									ref={register}
-									value="No"
+									checked={!prescription}
+									onChange={() => setPrescription(false)}
 								/>{' '}
 								No
 							</label>
@@ -368,10 +386,10 @@ const PharmNewRequestComponent = ({ patient }) => {
 								</button>
 							</div>
 						) : (
-							<button onClick={handleSubmit} className="btn btn-primary">
-								Done
-							</button>
-						)}
+								<button onClick={handleSubmit} className="btn btn-primary">
+									Done
+								</button>
+							)}
 
 						{/* <div className="form-group col-sm-3">
 							<MinusIcon style={{ width: '1.5rem', height: '1.5rem', cursor: 'pointer' }} />
@@ -392,66 +410,67 @@ const PharmNewRequestComponent = ({ patient }) => {
 						<tbody>
 							{pharmRequest
 								? pharmRequest.map((request, index) => {
-										return (
-											<tr key={index}>
-												<td>{request.genericName}</td>
-												<td>{request.drugName}</td>
-												<td>{request.quantity}</td>
-												<td>{request.diagnosis ? request.diagnosis : ''}</td>
-												<td>
-													<ViewIcon
-														onClick={() => {
-															setActiveRequest(request);
-															onModalClick();
-														}}
-														style={{
-															width: '1rem',
-															height: '1rem',
-															cursor: 'pointer',
-														}}
-													/>{' '}
-													{'  '}
-													<EditIcon
-														onClick={() => {
-															if (editing) {
-																return;
-															} else {
-																startEdit(request, index);
-															}
-														}}
-														style={{
-															width: '1rem',
-															height: '1rem',
-															cursor: 'pointer',
-														}}
-													/>{' '}
-													{'  '}
-													<TrashIcon
-														onClick={() => onTrash(index)}
-														style={{
-															width: '1rem',
-															height: '1rem',
-															cursor: 'pointer',
-														}}
-													/>
-												</td>
-											</tr>
-										);
-								  })
+									return (
+										<tr key={index}>
+											<td>{request.genericName}</td>
+											<td>{request.drugName}</td>
+											<td>{request.quantity}</td>
+											<td>{diagnosis ? diagnosis : ''}</td>
+											<td>
+												<ViewIcon
+													onClick={() => {
+														setActiveRequest(request);
+														onModalClick();
+													}}
+													style={{
+														width: '1rem',
+														height: '1rem',
+														cursor: 'pointer',
+													}}
+												/>{' '}
+												{'  '}
+												<EditIcon
+													onClick={() => {
+														if (editing) {
+															return;
+														} else {
+															startEdit(request, index);
+														}
+													}}
+													style={{
+														width: '1rem',
+														height: '1rem',
+														cursor: 'pointer',
+													}}
+												/>{' '}
+												{'  '}
+												<TrashIcon
+													onClick={() => onTrash(index)}
+													style={{
+														width: '1rem',
+														height: '1rem',
+														cursor: 'pointer',
+													}}
+												/>
+											</td>
+										</tr>
+									);
+								})
 								: []}
 						</tbody>
 					</Table>
 				</div>
 				<div>
 					<button
+						onClick={saveTableData}
 						className={
 							submitting ? 'btn btn-primary disabled' : 'btn btn-primary'
 						}>
 						{submitting ? (
 							<img src={waiting} alt="submitting" />
 						) : (
-							<span> Save</span>
-						)}
+								<span> Save</span>
+							)}
 					</button>
 				</div>
 			</div>
