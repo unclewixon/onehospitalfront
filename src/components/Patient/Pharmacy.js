@@ -1,24 +1,23 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
 import { connect } from 'react-redux';
-import searchingGIF from '../../assets/images/searching.gif';
+import { getRequestByType } from '../../actions/patient';
 import { notifyError } from '../../services/notify';
-import { getRequestByType } from './../../actions/patient';
+import searchingGIF from '../../assets/images/searching.gif';
 import Modal from 'react-bootstrap/Modal';
 import moment from 'moment';
 import Select from 'react-select';
 
-
 const Pharmacy = props => {
-
+	const { location, Requests } = props;
 	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
 
-	const { location, patient } = props;
+	const { patient } = props;
 
 	const onModalClick = () => {
 		setShowModal(!showModal);
@@ -31,17 +30,17 @@ const Pharmacy = props => {
 	];
 
 	useEffect(() => {
-		const { patient, getRequestByType } = props;
+		const { getRequestByType, patient } = props;
 		const patient_id = patient && patient.id ? patient.id : '';
 		if (!loaded) {
 			setDataLoaded(true);
-			getRequestByType(patient_id)
+			getRequestByType(patient_id, 'pharmarcy')
 				.then(response => {
 					setDataLoaded(false);
 				})
 				.catch(e => {
 					setDataLoaded(false);
-					notifyError(e.message || 'could not fetch pharmacy request');
+					notifyError('could not fetch pharmacy requests');
 				});
 		}
 		setLoaded(true);
@@ -121,7 +120,7 @@ const Pharmacy = props => {
 							</Modal>
 						) : null}
 
-{dataLoaded ? (
+						{dataLoaded ? (
 							<div colSpan="4" className="text-center">
 								<img alt="searching" src={searchingGIF} />
 							</div>
@@ -144,7 +143,7 @@ const Pharmacy = props => {
 											</tr>
 										</thead>
 										<tbody>
-											{props.Requests && props.Requests.length
+											{Requests && Requests.length
 												? props.Requests.map((request, index) => {
 														return (
 															<tr
@@ -208,13 +207,11 @@ const Pharmacy = props => {
 	);
 };
 
-const mapStateToProps = state => {
-	return {
-		patient: state.user.patient,
-		Requests: state.patient.pharmacy,
-	};
-};
+const mapStateToProps = ({ patient, user }) => ({
+	patient: user.patient,
+	Requests: patient.pharmRequest,
+});
 
-export default connect(mapStateToProps, {
-	getRequestByType,
-})(withRouter(Pharmacy));
+export default connect(mapStateToProps, { getRequestByType })(
+	withRouter(Pharmacy)
+);
