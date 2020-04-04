@@ -1,8 +1,33 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
-const Pharmacy = ({ location }) => {
+import { connect } from 'react-redux';
+import { getRequestByType } from '../../actions/patient';
+import { notifyError, notifySuccess } from '../../services/notify';
+
+const Pharmacy = props => {
+	const { location, Requests } = props;
+	const [loaded, setLoaded] = useState(false);
+	const [dataLoaded, setDataLoaded] = useState(false);
+
+	useEffect(() => {
+		const { getRequestByType, patient } = props;
+		const patient_id = patient && patient.id ? patient.id : '';
+		if (!loaded) {
+			setDataLoaded(true);
+			getRequestByType(patient_id, 'pharmarcy')
+				.then(response => {
+					setDataLoaded(false);
+				})
+				.catch(e => {
+					setDataLoaded(false);
+					notifyError('could not fetch pharmacy requests');
+				});
+		}
+		setLoaded(true);
+	}, [loaded, props]);
+
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">
@@ -135,4 +160,11 @@ const Pharmacy = ({ location }) => {
 	);
 };
 
-export default withRouter(Pharmacy);
+const mapStateToProps = ({ patient, user }) => ({
+	patient: user.patient,
+	Requests: patient.pharmRequest,
+});
+
+export default connect(mapStateToProps, { getRequestByType })(
+	withRouter(Pharmacy)
+);

@@ -33,7 +33,7 @@ const Lab = props => {
 		const patient_id = patient && patient.id ? patient.id : '';
 		if (!loaded) {
 			setDataLoaded(true);
-			getRequestByType(patient_id)
+			getRequestByType(patient_id, 'lab')
 				.then(response => {
 					setDataLoaded(false);
 				})
@@ -209,7 +209,7 @@ const Lab = props => {
 const mapStateToProps = state => {
 	return {
 		patient: state.user.patient,
-		Requests: state.patient.request_type,
+		Requests: state.patient.labRequests,
 	};
 };
 
