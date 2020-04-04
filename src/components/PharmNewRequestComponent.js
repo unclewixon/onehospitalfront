@@ -8,7 +8,10 @@ import { ReactComponent as EditIcon } from '../assets/svg-icons/edit.svg';
 import { ReactComponent as TrashIcon } from '../assets/svg-icons/trash.svg';
 import { ReactComponent as ViewIcon } from '../assets/svg-icons/view.svg';
 import { Table } from 'react-bootstrap';
-import Modal from 'react-bootstrap/Modal';
+import { notifySuccess, notifyError } from './../services/notify';
+import PharmNewRequestViewModal from './PharmNewRequestViewModal';
+import { addPharmacyRequest } from '../actions/patient';
+import { connect } from 'react-redux';
 
 const dummyData = [
 	{ value: '', label: 'Select one', name: 'formulary' },
@@ -42,9 +45,8 @@ const defaultValues = {
 	formulary: '',
 	genericName: '',
 	drugName: '',
-	icdioCode: '',
 	quantity: '',
-	anotherFacility: '',
+	anotherFacility: false,
 	refills: '',
 	frequency: '',
 	eg: '',
@@ -52,9 +54,13 @@ const defaultValues = {
 	refillNote: '',
 };
 
-const PharmNewRequestComponent = ({ patient }) => {
+const PharmNewRequestComponent = ({
+	patient,
+	diagnosisList,
+	addPharmacyRequest,
+}) => {
 	const [refillable, setRefillable] = useState(false);
-	const { register, handleSubmit, setValue, reset } = useForm({
+	const { register, handleSubmit, setValue, reset, watch } = useForm({
 		defaultValues,
 	});
 	const [submitting, setSubmitting] = useState(false);
@@ -62,17 +68,22 @@ const PharmNewRequestComponent = ({ patient }) => {
 	const [editing, setEditing] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
+	const [diagnosis, setDiagnosis] = useState('');
+	const [prescription, setPrescription] = useState(false);
 
 	const onRefillableClick = () => {
 		setRefillable(!refillable);
 	};
+
+	const values = watch();
 
 	const onModalClick = () => {
 		setShowModal(!showModal);
 	};
 
 	const onFormSubmit = (data, e) => {
-		let newPharm = [...pharmRequest, data];
+		const { diagnosis, ...rest } = data;
+		let newPharm = [...pharmRequest, rest];
 		setPharmRequest(newPharm);
 		setEditing(false);
 		reset(defaultValues);
@@ -92,6 +103,27 @@ const PharmNewRequestComponent = ({ patient }) => {
 		setEditing(true);
 	};
 
+	const saveTableData = e => {
+		setSubmitting(true);
+		e.preventDefault();
+
+		const patient_id = patient && patient.id ? patient.id : '';
+		addPharmacyRequest(
+			pharmRequest,
+			patient_id,
+			diagnosis,
+			prescription,
+			message => {
+				if (message) {
+					setSubmitting(false);
+					notifySuccess('Saved new pharmacy request');
+				} else {
+					setSubmitting(false);
+					notifyError('Error saving new pharmacy request');
+				}
+			}
+		);
+	};
 	const onHandleSelectChange = e => {
 		if (e) {
 			const { name, value } = e;
@@ -103,77 +135,17 @@ const PharmNewRequestComponent = ({ patient }) => {
 		const { name, value } = e.target;
 		setValue(name, value);
 	};
+
 	return (
-		<div className="row">
+		<div className="row" style={{ width: '100%' }}>
 			<div className="col-lg-12 form-block w-100">
 				{activeRequest ? (
-					<Modal
-						show={showModal}
-						size="lg"
-						aria-labelledby="contained-modal-title-vcenter"
-						centered
-						onHide={onModalClick}>
-						<Modal.Header closeButton>
-							{patient ? (
-								<Modal.Title id="contained-modal-title-vcenter">
-									{`${patient && patient.surname.toUpperCase()} ${patient &&
-										patient.other_names.toUpperCase()}`}
-								</Modal.Title>
-							) : null}
-						</Modal.Header>
-						<Modal.Body>
-							<div className="row">
-								<div className="form-group col-lg-6">
-									<h4 className="primary">Service Unit</h4>
-									<div>
-										<p className="justify">{activeRequest.serviceUnit}</p>
-									</div>
-									<h5>Formulary</h5>
-									<div>
-										<p className="justify">{activeRequest.formulary}</p>
-									</div>
-									<h5>Drug Generic Name</h5>
-									<div>
-										<p className="justify">{activeRequest.genericName}</p>
-									</div>
-									<h5>Drug Name</h5>
-									<div>
-										<p className="justify">{activeRequest.drugName}</p>
-									</div>
-									<h5>Dose Quantity</h5>
-									<div>
-										<p className="justify">{activeRequest.quantity}</p>
-									</div>
-								</div>
-								<div className="col-lg-6">
-									<h4 className="primary">Number of refills</h4>
-									<div>
-										<p className="justify">{activeRequest.refills}</p>
-									</div>
-									<h5>E.g. 3</h5>
-									<div>
-										<p className="justify">{activeRequest.eg}</p>
-									</div>
-									<h5>Frequency type</h5>
-									<div>
-										<p className="justify">{activeRequest.frequency}</p>
-									</div>
-									<h5>Duration</h5>
-									<div>
-										<p className="justify">{activeRequest.duration}</p>
-									</div>
-									<h5>Note</h5>
-									<div>
-										<p className="justify">{activeRequest.refillNote}</p>
-									</div>
-									<h5>ICDIO Code</h5>
-									<div>
-										<p className="justify">{activeRequest.icdioCode}</p>
-									</div>
-								</div>
-							</div>
-						</Modal.Body>
-					</Modal>
+					<PharmNewRequestViewModal
+						activeRequest={activeRequest}
+						patient={patient}
+						showModal={showModal}
+						onModalClick={onModalClick}
+					/>
 				) : null}
 				<form onSubmit={handleSubmit(onFormSubmit)}>
 					<div className="row">
@@ -185,6 +157,7 @@ const PharmNewRequestComponent = ({ patient }) => {
 								name="serviceUnit"
 								options={dummyData1}
 								onChange={onHandleSelectChange}
+								value={{ label: values.serviceUnit, value: values.serviceUnit }}
 							/>
 						</div>
 						<div className="form-group col-sm-6">
@@ -195,6 +168,7 @@ const PharmNewRequestComponent = ({ patient }) => {
 								ref={register({ name: 'formulary', required: true })}
 								onChange={onHandleSelectChange}
 								options={dummyData}
+								value={{ label: values.formulary, value: values.formulary }}
 							/>
 						</div>
 					</div>
@@ -207,6 +181,7 @@ const PharmNewRequestComponent = ({ patient }) => {
 								ref={register({ name: 'genericName', required: true })}
 								onChange={onHandleSelectChange}
 								options={dummyData2}
+								value={{ label: values.genericName, value: values.genericName }}
 							/>
 						</div>
 					</div>
@@ -219,6 +194,7 @@ const PharmNewRequestComponent = ({ patient }) => {
 								name="drugName"
 								options={dummyData3}
 								onChange={onHandleSelectChange}
+								value={{ label: values.drugName, value: values.drugName }}
 							/>
 						</div>
 						<div className="form-group col-sm-6">
@@ -282,13 +258,14 @@ const PharmNewRequestComponent = ({ patient }) => {
 											{ value: 'monthly', label: 'Monthly', name: 'frequency' },
 										]}
 										onChange={onHandleSelectChange}
+										value={{ label: values.frequency, value: values.frequency }}
 									/>
 								</div>
 							</div>
 							<div className="row">
 								<div className="form-group col-sm-6">
 									<input
-										type="text"
+										type="number"
 										className="form-control"
 										placeholder="Duration"
 										ref={register}
@@ -318,10 +295,11 @@ const PharmNewRequestComponent = ({ patient }) => {
 								isClearable
 								isSearchable
 								placeholder="Enter ICDIO Code"
-								name="icdioCode"
-								onChange={onHandleSelectChange}
-								ref={register({ name: 'icdioCode', required: true })}
-								options={dummyData3}
+								onChange={e => {
+									setDiagnosis(e.value);
+								}}
+								options={diagnosisList}
+								value={{ label: diagnosis, value: diagnosis }}
 							/>
 						</div>
 					</div>
@@ -333,9 +311,8 @@ const PharmNewRequestComponent = ({ patient }) => {
 							<label>
 								<input
 									type="radio"
-									name="anotherFacility"
-									ref={register}
-									value="Yes"
+									checked={prescription}
+									onChange={() => setPrescription(true)}
 								/>{' '}
 								Yes
 							</label>
@@ -344,9 +321,8 @@ const PharmNewRequestComponent = ({ patient }) => {
 							<label>
 								<input
 									type="radio"
-									name="anotherFacility"
-									ref={register}
-									value="No"
+									checked={!prescription}
+									onChange={() => setPrescription(false)}
 								/>{' '}
 								No
 							</label>
@@ -397,7 +373,7 @@ const PharmNewRequestComponent = ({ patient }) => {
 												<td>{request.genericName}</td>
 												<td>{request.drugName}</td>
 												<td>{request.quantity}</td>
-												<td>{request.diagnosis ? request.diagnosis : ''}</td>
+												<td>{diagnosis ? diagnosis : ''}</td>
 												<td>
 													<ViewIcon
 														onClick={() => {
@@ -444,6 +420,7 @@ const PharmNewRequestComponent = ({ patient }) => {
 				</div>
 				<div>
 					<button
+						onClick={saveTableData}
 						className={
 							submitting ? 'btn btn-primary disabled' : 'btn btn-primary'
 						}>
@@ -459,4 +436,4 @@ const PharmNewRequestComponent = ({ patient }) => {
 	);
 };
 
-export default PharmNewRequestComponent;
+export default connect(null, { addPharmacyRequest })(PharmNewRequestComponent);

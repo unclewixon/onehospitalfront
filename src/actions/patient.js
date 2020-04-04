@@ -17,10 +17,12 @@ import {
 	LOAD_VITALS,
 	UPDATE_VITALS,
 	CREATE_LAB_REQUEST,
-	GET_REQUESTS_BY_TYPE,
 	LOAD_PATIENT_PROCEDURE_DATA,
 	ADD_PATIENT_PROCEDURE_DATA,
 	LOAD_PATIENTS,
+	ADD_PHARMACY_REQUEST,
+	GET_PHARMACY_REQUESTS,
+	GET_LAB_REQUESTS,
 	LOAD_CLINICAL_LAB,
 	LOAD_RADIOLOGY,
 } from './types';
@@ -174,9 +176,9 @@ export const loadRadiology = data => {
 	};
 };
 
-export const get_requests_by_type = data => {
+export const add_pharmacy_request = data => {
 	return {
-		type: GET_REQUESTS_BY_TYPE,
+		type: ADD_PHARMACY_REQUEST,
 		payload: data,
 	};
 };
@@ -209,16 +211,71 @@ export const createLabRequest = data => {
 	};
 };
 
-export const getRequestByType = data => {
+export const getRequestByType = (data, type) => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
-				.get(`${API_URI}/patient/${data}/request/lab?startDate=&endDate=`)
+				.get(
+					data
+						? `${API_URI}/patient/${data}/request/${type}?startDate=&endDate=`
+						: `${API_URI}/request-types/${type}`
+				)
 				.then(response => {
-					dispatch(get_requests_by_type(response.data));
+					if (type === 'lab') {
+						dispatch({
+							type: GET_LAB_REQUESTS,
+							payload: response.data,
+						});
+					}
+					if (type === 'pharmarcy') {
+						dispatch({
+							type: GET_PHARMACY_REQUESTS,
+							payload: response.data,
+						});
+					}
 					return resolve({ success: true });
 				})
 				.catch(error => {
+					return reject({ success: false });
+				});
+		});
+	};
+};
+
+export const addPharmacyRequest = (data, id, diagnosis, prescription, cb) => {
+	return dispatch => {
+		const requestData = data
+			? data.map(request => ({
+					forumalary: request.formulary,
+					drug_generic_name: request.genericName,
+					drug_name: request.drugName,
+					dose_quantity: request.quantity,
+					refillable: {
+						number_of_refills: request && request.refills ? request.refills : 0,
+						eg: request && request.eg ? request.eg : 0,
+						frequency_type:
+							request && request.frequency ? request.frequency : '',
+						duration: request && request.duration ? request.duration : 0,
+						note: request && request.refillNote ? request.refillNote : '',
+					},
+			  }))
+			: [];
+		return new Promise((resolve, reject) => {
+			axios
+				.post(`${API_URI}/patient/save-request`, {
+					requestType: 'pharmacy',
+					requestBody: requestData,
+					diagnosis: diagnosis ? diagnosis : '',
+					prescription: prescription ? prescription : '',
+					patient_id: id ? id : '',
+				})
+				.then(response => {
+					dispatch(add_pharmacy_request(response.data));
+					cb('success');
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					cb(null);
 					return reject({ success: false });
 				});
 		});
