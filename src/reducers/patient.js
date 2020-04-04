@@ -17,7 +17,6 @@ import {
 	ADD_PATIENT_UPLOAD_DATA,
 	LOAD_PATIENT_PROCEDURE_DATA,
 	ADD_PATIENT_PROCEDURE_DATA,
-	GET_REQUESTS_BY_TYPE,
 	LOAD_PATIENTS,
 	GET_LAB_REQUESTS,
 	GET_PHARMACY_REQUESTS,
@@ -40,7 +39,6 @@ const INITIAL_STATE = {
 	patients: [],
 	clinicalLab: [],
 	radiology: [],
-	request_type: [],
 	labRequests: [],
 	pharmarcyRequests: [],
 };
@@ -109,8 +107,6 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, clinicalLab: [...action.payload] };
 		case LOAD_RADIOLOGY:
 			return { ...state, radiology: [...action.payload] };
-		case GET_REQUESTS_BY_TYPE:
-			return { ...state, request_type: action.payload };
 		case GET_LAB_REQUESTS:
 			return { ...state, labRequests: action.payload };
 		case GET_PHARMACY_REQUESTS:
