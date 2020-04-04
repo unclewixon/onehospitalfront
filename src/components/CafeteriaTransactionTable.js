@@ -177,8 +177,11 @@ const CafeteriaTransactionTable = props => {
 								</tr>
 							</tbody>
 						</table>
-						<form onSubmit={handleSubmit}>
-							<select className="form-control" onChange={handleType} required>
+						<form onSubmit={handleSubmit} className="form row">
+							<select
+								className="form-control col-md-8"
+								onChange={handleType}
+								required>
 								<option value="">Choose Payment type ...</option>
 								{paymentType &&
 									paymentType.map(type => {
@@ -189,12 +192,13 @@ const CafeteriaTransactionTable = props => {
 										);
 									})}
 							</select>
-							<div className="form-buttons-w text-right compact">
+
+							<div className="col-md-4 text-right">
 								<button
 									className={
 										props.submitting
-											? 'btn btn-primary my-2 py-2 disabled'
-											: 'btn btn-primary my-2 py-2'
+											? 'btn btn-primary py-2 my-0 ml-2 disabled'
+											: 'btn btn-primary py-2 my-0 ml-2'
 									}>
 									{props.submitting ? (
 										<img src={waiting} alt="submitting" />

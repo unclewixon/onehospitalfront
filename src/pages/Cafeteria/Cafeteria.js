@@ -77,6 +77,8 @@ const Cafeteria = props => {
 		// value = items.find(el => el.q_id === product);
 		setItem({ ...item, item: product });
 		setItems([]);
+
+		document.getElementById('product').value = product.q_name;
 	};
 
 	const searchCustomer = async () => {
@@ -162,6 +164,20 @@ const Cafeteria = props => {
 		setSelectedCustomer(pat);
 		setPatients([]);
 		setStaffs([]);
+		let name;
+		if (customer === 'patient') {
+			name =
+				(pat.surname ? pat.surname : '') +
+				' ' +
+				(pat.other_names ? pat.other_names : '');
+		} else {
+			name =
+				(pat.first_name ? pat.first_name : '') +
+				' ' +
+				(pat.last_name ? pat.last_name : '');
+		}
+
+		document.getElementById('cust').value = name;
 	};
 
 	const saveSale = async summary => {
@@ -294,6 +310,7 @@ const Cafeteria = props => {
 
 																<input
 																	className="form-control"
+																	id="cust"
 																	onChange={handleCustomerChange}
 																	placeholder={
 																		customer === 'staff'
@@ -373,6 +390,7 @@ const Cafeteria = props => {
 																className="form-control"
 																onChange={handleCustomerChange}
 																name="item"
+																id="product"
 																placeholder="Search Cafeteria Item"
 																type="text"
 																autoComplete="off"

@@ -19,6 +19,8 @@ import {
 	ADD_PATIENT_PROCEDURE_DATA,
 	GET_REQUESTS_BY_TYPE,
 	LOAD_PATIENTS,
+	LOAD_CLINICAL_LAB,
+	LOAD_RADIOLOGY,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -34,6 +36,8 @@ const INITIAL_STATE = {
 	patient_upload: [],
 	vitals: [],
 	patients: [],
+	clinicalLab: [],
+	radiology: [],
 	request_type: [],
 };
 
@@ -97,6 +101,10 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, vitals: [...action.payload] };
 		case UPDATE_VITALS:
 			return { ...state, vitals: [action.payload, ...state.vitals] };
+		case LOAD_CLINICAL_LAB:
+			return { ...state, clinicalLab: [...action.payload] };
+		case LOAD_RADIOLOGY:
+			return { ...state, radiology: [...action.payload] };
 		case GET_REQUESTS_BY_TYPE:
 			return { ...state, request_type: action.payload };
 		default:

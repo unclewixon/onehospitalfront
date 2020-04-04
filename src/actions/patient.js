@@ -21,6 +21,8 @@ import {
 	LOAD_PATIENT_PROCEDURE_DATA,
 	ADD_PATIENT_PROCEDURE_DATA,
 	LOAD_PATIENTS,
+	LOAD_CLINICAL_LAB,
+	LOAD_RADIOLOGY,
 } from './types';
 
 export const loadPatients = data => {
@@ -151,14 +153,28 @@ export const updateVitals = data => {
 	};
 };
 
-const create_lab_request = data => {
+export const create_lab_request = data => {
 	return {
 		type: CREATE_LAB_REQUEST,
 		payload: data,
 	};
 };
 
-const get_requests_by_type = data => {
+export const loadClinicalLab = data => {
+	return {
+		type: LOAD_CLINICAL_LAB,
+		payload: data,
+	};
+};
+
+export const loadRadiology = data => {
+	return {
+		type: LOAD_RADIOLOGY,
+		payload: data,
+	};
+};
+
+export const get_requests_by_type = data => {
 	return {
 		type: GET_REQUESTS_BY_TYPE,
 		payload: data,
