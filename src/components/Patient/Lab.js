@@ -39,7 +39,7 @@ const Lab = props => {
 				})
 				.catch(e => {
 					setDataLoaded(false);
-					notifyError(e.message || 'could not fetch request type');
+					notifyError(e.message || 'could not fetch lab request');
 				});
 		}
 		setLoaded(true);
