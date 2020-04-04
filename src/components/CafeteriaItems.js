@@ -115,13 +115,13 @@ const CafeteriaItems = props => {
 		setSubmitButton({ edit: true, save: false });
 		setState(prevState => ({
 			...prevState,
-			name: data.name,
-			price: data.price,
-			id: data.id,
-			category_id: data.category.id,
-			description: data.description,
-			discount_price: data.discount_price,
-			item_code: data.item_code,
+			name: data.q_name,
+			price: data.q_price,
+			id: data.q_id,
+			category_id: data.q_categoryId,
+			description: data.q_description,
+			discount_price: data.q_discount_price,
+			item_code: data.q_item_code,
 		}));
 		getDataToEdit(data);
 	};
@@ -182,6 +182,7 @@ const CafeteriaItems = props => {
 		}
 		setLoaded(true);
 		setItems(props.cafeteriaItems);
+		console.log(props.cafeteriaItems);
 	}, [edit, loaded, props, save]);
 
 	return (
@@ -269,7 +270,7 @@ const CafeteriaItems = props => {
 											<thead>
 												<tr>
 													<th className="text-center">Item code </th>
-													<th className="text-center">Category</th>
+													{/* <th className="text-center">Category</th> */}
 													<th className="text-center">Name</th>
 													<th className="text-center">Price(&#x20A6;)</th>
 													<th className="text-right">ACTIONS</th>
@@ -287,16 +288,18 @@ const CafeteriaItems = props => {
 														{items &&
 															items.map(item => {
 																return (
-																	<tr key={item.item_code}>
+																	<tr key={item.q_item_code}>
 																		<th className="text-center">
-																			{item.item_code}
+																			{item.q_item_code}
 																		</th>
-																		<th className="text-center">
+																		{/* <th className="text-center">
 																			{item.category.name}
-																		</th>
-																		<th className="text-center">{item.name}</th>
+																		</th> */}
 																		<th className="text-center">
-																			{item.price}
+																			{item.q_name}
+																		</th>
+																		<th className="text-center">
+																			{item.q_price}
 																		</th>
 																		<th className="text-right">
 																			<a className="pi-settings os-dropdown-trigger">

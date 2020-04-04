@@ -19,20 +19,18 @@ const status = [
 	{ value: 0, label: 'processing' },
 	{ value: 1, label: 'done' },
 ];
-export class SearchScan extends Component {
+export class RecentRequest extends Component {
 	state = {
-		filtering: false,
 		loading: false,
-		id: null,
-		startDate: '',
-		endDate: '',
-		status: '',
 	};
 	componentDidMount() {
 		this.fetchRadiology();
 	}
 	fetchRadiology = async () => {
-		const { startDate, endDate, status } = this.state;
+		let startDate = moment()
+			.subtract(1, 'd')
+			.format('YYYY-MM-DD');
+		let endDate = moment().format('YYYY-MM-DD');
 
 		try {
 			this.setState({ loading: true });
@@ -53,29 +51,6 @@ export class SearchScan extends Component {
 			notifyError('Error fetching all radiology request');
 			this.setState({ loading: false, filtering: false });
 		}
-	};
-
-	doFilter = e => {
-		e.preventDefault();
-		this.setState({ filtering: true });
-
-		this.fetchRadiology();
-	};
-
-	change = e => {
-		this.setState({ [e.target.name]: e.target.value });
-	};
-
-	dateChange = e => {
-		let date = e.map(d => {
-			return moment(d._d).format('YYYY-MM-DD');
-		});
-
-		this.setState({
-			...this.state,
-			startDate: date[0],
-			endDate: date[1],
-		});
 	};
 
 	convertToIndividualRequest = data => {
@@ -110,59 +85,14 @@ export class SearchScan extends Component {
 
 		return newData.reverse();
 	};
-
 	render() {
-		const { filtering, loading } = this.state;
-		const { location, radiology } = this.props;
-
-		const page = location.pathname.split('/').pop();
+		const { loading } = this.state;
+		const { radiology } = this.props;
 		return (
 			<div className="row">
 				<div className="col-sm-12">
 					<div className="element-wrapper">
-						<h6 className="element-header">Search Scan</h6>
-						<div className="col-md-12">
-							<form className="row">
-								<div className="form-group col-md-6">
-									<label>From - To</label>
-									<RangePicker onChange={e => this.dateChange(e)} />
-								</div>
-								<div className="form-group col-md-3">
-									<label className="mr-2 " htmlFor="id">
-										Status
-									</label>
-									<select
-										style={{ height: '32px' }}
-										id="status"
-										className="form-control"
-										name="status"
-										onChange={e => this.change(e)}>
-										<option value="">Choose status</option>
-										{status.map((status, i) => {
-											return (
-												<option key={i} value={status.value}>
-													{status.label}
-												</option>
-											);
-										})}
-									</select>
-								</div>
-								<div className="form-group col-md-3 mt-4">
-									<div
-										className="btn btn-sm btn-primary btn-upper text-white"
-										onClick={this.doFilter}>
-										<i className="os-icon os-icon-ui-37" />
-										<span>
-											{filtering ? (
-												<img src={waiting} alt="submitting" />
-											) : (
-												'Filter'
-											)}
-										</span>
-									</div>
-								</div>
-							</form>
-						</div>
+						<h6 className="element-header">Recent Request</h6>
 
 						<div className="element-box">
 							<div className="table table-responsive">
@@ -245,4 +175,5 @@ const mapStateToProps = state => {
 		radiology: state.patient.radiology,
 	};
 };
-export default connect(mapStateToProps, { loadRadiology })(SearchScan);
+
+export default connect(mapStateToProps, { loadRadiology })(RecentRequest);

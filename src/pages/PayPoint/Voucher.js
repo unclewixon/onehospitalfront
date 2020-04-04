@@ -11,6 +11,12 @@ import { API_URI, patientAPI, vouchersAPI } from '../../services/constants';
 import { loadVoucher } from '../../actions/paypoint';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
+import { compose } from 'redux';
+import {
+	get_all_diagnosis,
+	get_all_services,
+	getAllServiceCategory,
+} from '../../actions/settings';
 export class Voucher extends Component {
 	state = {
 		loading: false,
@@ -18,7 +24,7 @@ export class Voucher extends Component {
 
 	componentDidMount() {
 		this.fetchVoucher();
-		document.body.classList.add('modal-open');
+		//document.body.classList.add('modal-open');
 	}
 
 	fetchVoucher = async data => {
@@ -131,6 +137,7 @@ const mapStateToProps = (state, ownProps) => {
 		voucher: state.paypoint.voucher,
 	};
 };
-export default connect(mapStateToProps, { loadVoucher, createVoucher })(
-	withRouter(Voucher)
-);
+export default compose(
+	withRouter,
+	connect(mapStateToProps, { loadVoucher, createVoucher })
+)(Voucher);
