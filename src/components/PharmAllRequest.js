@@ -4,22 +4,57 @@ import Tooltip from 'antd/lib/tooltip';
 import waiting from '../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
+import { getRequestByType } from '../actions/patient';
+import { connect } from 'react-redux';
+import { notifyError } from '../services/notify';
+import Modal from 'react-bootstrap/Modal';
+import Select from 'react-select';
+import { Link } from 'react-router-dom';
 
 const { RangePicker } = DatePicker;
 const departments = [
 	{ id: 'ejejekek', name: 'angel' },
 	{ id: 'sislkas', name: 'kafta' },
 ];
+
+const requestStatus = [
+	{ value: 'pending', label: 'Pending' },
+	{ value: 'approved', label: 'Approved' },
+	{ value: 'declined', label: 'Declined' },
+];
+
 export class PharmAllRequest extends Component {
 	state = {
 		filtering: false,
+		loading: false,
+		activeRequest: null,
+		showModal: false,
+	};
+
+	onModalClick = () => {
+		this.setState(prevState => ({ showModal: !prevState.showModal }));
 	};
 
 	change = e => {
 		console.log(e.target.value);
 	};
+
+	componentDidMount() {
+		const { getRequestByType } = this.props;
+		this.setState({ loading: true });
+		getRequestByType(null, 'pharmacy')
+			.then(response => {
+				this.setState({ loading: false });
+			})
+			.catch(e => {
+				this.setState({ loading: false });
+				notifyError('could not fetch pharmacy requests');
+			});
+	}
+
 	render() {
 		const { filtering } = this.state;
+		const { Requests } = this.props;
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
@@ -76,123 +111,61 @@ export class PharmAllRequest extends Component {
 								<thead>
 									<tr>
 										<th className="text-center"> Date</th>
-										<th className="text-center"> Folder No</th>
-										<th className="text-center"> Prescription</th>
+										<th className="text-center"> File No</th>
 										<th className="text-center"> Request From</th>
 										<th className="text-center"> Action</th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr data-index="0" data-id="20">
-										<td className="flex text-center">
-											<a className="item-title text-color">03-26-2015</a>
-										</td>
-										<td className="text-center">
-											<span>IN32456789</span>
-										</td>
-										<td className="text-center">
-											<a className="item-title text-color">Netflix hackathon</a>
-										</td>
-										<td className="flex text-center">
-											<a className="item-title text-color">03-26-2014</a>
-										</td>
-
-										<td className="text-center row-actions">
-											<Tooltip title="View filled Request">
-												<a className="secondary">
-													<i className="os-icon os-icon-folder-plus" />
-												</a>
-											</Tooltip>
-											<Tooltip title="Edit filled Request">
-												<a className="secondary">
-													<i className="os-icon os-icon-edit-32" />
-												</a>
-											</Tooltip>
-										</td>
-									</tr>
-									<tr data-index="0" data-id="20">
-										<td className="flex text-center">
-											<a className="item-title text-color">03-26-2015</a>
-										</td>
-										<td className="text-center">
-											<span>IN32456789</span>
-										</td>
-										<td className="text-center">
-											<a className="item-title text-color">Netflix hackathon</a>
-										</td>
-										<td className="flex text-center">
-											<a className="item-title text-color">03-26-2014</a>
-										</td>
-
-										<td className="text-center row-actions">
-											<Tooltip title="View filled Request">
-												<a className="secondary">
-													<i className="os-icon os-icon-folder-plus" />
-												</a>
-											</Tooltip>
-											<Tooltip title="Edit filled Request">
-												<a className="secondary">
-													<i className="os-icon os-icon-edit-32" />
-												</a>
-											</Tooltip>
-										</td>
-									</tr>
-
-									<tr data-index="0" data-id="20">
-										<td className="flex text-center">
-											<a className="item-title text-color">03-26-2015</a>
-										</td>
-										<td className="text-center">
-											<span>IN32456789</span>
-										</td>
-										<td className="text-center">
-											<a className="item-title text-color">Netflix hackathon</a>
-										</td>
-										<td className="flex text-center">
-											<a className="item-title text-color">03-26-2014</a>
-										</td>
-
-										<td className="text-center row-actions">
-											<Tooltip title="View filled Request">
-												<a className="secondary">
-													<i className="os-icon os-icon-folder-plus" />
-												</a>
-											</Tooltip>
-											<Tooltip title="Edit filled Request">
-												<a className="secondary">
-													<i className="os-icon os-icon-edit-32" />
-												</a>
-											</Tooltip>
-										</td>
-									</tr>
-
-									<tr data-index="0" data-id="20">
-										<td className="flex text-center">
-											<a className="item-title text-color">03-26-2015</a>
-										</td>
-										<td className="text-center">
-											<span>IN32456789</span>
-										</td>
-										<td className="text-center">
-											<a className="item-title text-color">Netflix hackathon</a>
-										</td>
-										<td className="flex text-center">
-											<a className="item-title text-color">03-26-2014</a>
-										</td>
-
-										<td className="text-center row-actions">
-											<Tooltip title="View filled Request">
-												<a className="secondary">
-													<i className="os-icon os-icon-folder-plus" />
-												</a>
-											</Tooltip>
-											<Tooltip title="Edit filled Request">
-												<a className="secondary">
-													<i className="os-icon os-icon-edit-32" />
-												</a>
-											</Tooltip>
-										</td>
-									</tr>
+									{Requests && Requests.length
+										? Requests.map((request, index) => {
+												return (
+													<tr
+														className=""
+														data-index="0"
+														data-id="20"
+														key={index}>
+														<td>
+															<span>
+																{moment(request.createdAt).format('DD/MM/YYYY')}
+															</span>
+														</td>
+														<td>{request.patient.fileNumber}</td>
+														<td>
+															<Link to="/">{`${request.patient &&
+																request.patient.surname.toUpperCase()} ${request.patient &&
+																request.patient.other_names.toUpperCase()}`}</Link>
+														</td>
+														<td className="text-center">
+															<div className="form-group">
+																<Select
+																	name="service_center"
+																	placeholder="Set Status"
+																	options={requestStatus}
+																/>
+															</div>
+														</td>
+														<td className="row-actions text-right">
+															<Tooltip title="View Request">
+																<a
+																	className="secondary"
+																	onClick={() => {
+																		this.setState({ activeRequest: request });
+																		this.onModalClick();
+																	}}>
+																	<i className="os-icon os-icon-folder-plus" />
+																</a>
+															</Tooltip>
+															<Tooltip title="Print Request">
+																<a className="ml-2" href="#">
+																	<i className="icon-feather-printer" />
+																</a>
+															</Tooltip>
+														</td>
+													</tr>
+												);
+										  })
+										: null}
 								</tbody>
 							</table>
 						</div>
@@ -230,4 +203,8 @@ export class PharmAllRequest extends Component {
 	}
 }
 
-export default PharmAllRequest;
+const mapStateToProps = ({ patient }) => ({
+	Requests: patient.pharmacyRequests,
+});
+
+export default connect(mapStateToProps, { getRequestByType })(PharmAllRequest);

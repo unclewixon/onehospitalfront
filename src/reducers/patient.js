@@ -17,10 +17,10 @@ import {
 	ADD_PATIENT_UPLOAD_DATA,
 	LOAD_PATIENT_PROCEDURE_DATA,
 	ADD_PATIENT_PROCEDURE_DATA,
-	GET_REQUESTS_BY_TYPE,
 	LOAD_PATIENTS,
 	GET_LAB_REQUESTS,
 	GET_PHARMACY_REQUESTS,
+	GET_ALL_REQUESTS,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -37,7 +37,8 @@ const INITIAL_STATE = {
 	vitals: [],
 	patients: [],
 	labRequests: [],
-	pharmarcyRequests: [],
+	pharmacyRequests: [],
+	allRequests: [],
 };
 
 const patient = (state = INITIAL_STATE, action) => {
@@ -103,7 +104,9 @@ const patient = (state = INITIAL_STATE, action) => {
 		case GET_LAB_REQUESTS:
 			return { ...state, labRequests: action.payload };
 		case GET_PHARMACY_REQUESTS:
-			return { ...state, pharmarcyRequests: action.payload };
+			return { ...state, pharmacyRequests: action.payload };
+		case GET_ALL_REQUESTS:
+			return { ...state, allRequests: action.payload };
 		default:
 			return state;
 	}

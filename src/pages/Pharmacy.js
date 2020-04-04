@@ -15,13 +15,6 @@ const PharmAllRequest = lazy(() => import('../components/PharmAllRequest'));
 const PharmFillRequest = lazy(() => import('../components/PharmFillRequest'));
 const PharmNewRequest = lazy(() => import('../components/PharmNewRequest'));
 export class Pharmacy2 extends Component {
-	// state = {
-	// 	tab: 'overall',
-	// };
-
-	// changeTab = tab => {
-	// 	this.setState({ tab });
-	// };
 	render() {
 		const { match, location } = this.props;
 		const page = location.pathname.split('/').pop();
