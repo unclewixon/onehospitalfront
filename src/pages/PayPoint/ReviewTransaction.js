@@ -14,6 +14,7 @@ import searchingGIF from '../../assets/images/searching.gif';
 
 import { loadTransaction, deleteTransaction } from '../../actions/transaction';
 import { applyVoucher, approveTransaction } from '../../actions/general';
+import TransactionTable from '../../components/Tables/TransactionTable';
 
 const { RangePicker } = DatePicker;
 const departments = [
@@ -46,7 +47,6 @@ class ReviewTransaction extends Component {
 		console.log(patient_id, startDate, endDate, status);
 		try {
 			this.setState({ loading: true });
-
 			const rs = await request(
 				`${API_URI}${transactionsAPI}/list?patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}`,
 				'GET',
@@ -199,76 +199,11 @@ class ReviewTransaction extends Component {
 											<th className="">ACTIONS</th>
 										</tr>
 									</thead>
-									<tbody>
-										{loading ? (
-											<tr>
-												<td colSpan="7" className="text-center">
-													<img alt="searching" src={searchingGIF} />
-												</td>
-											</tr>
-										) : transactions.length > 0 ? (
-											transactions.map(transaction => {
-												return (
-													<tr key={transaction.q_id}>
-														<td className="text-center">
-															{moment(transaction.q_createdAt).format(
-																'YYYY/MM/DD'
-															)}
-														</td>
-														<td className="">
-															{`${transaction.surname} ${transaction.other_names}`}
-														</td>
-														<td className="">{transaction.deptname}</td>
-														<td className="">
-															{transaction.q_service_id
-																? transaction.q_service_id
-																: 'No service yet'}
-														</td>
-														<td className="">{transaction.q_amount}</td>
-														<td className="">
-															{transaction.q_paymentType
-																? transaction.q_paymentType
-																: 'Not specified'}
-														</td>
-														<td className="text-center row-actions">
-															<Tooltip title="Apply Voucher">
-																<a
-																	className="secondary"
-																	onClick={() =>
-																		this.doApplyVoucher(transaction)
-																	}>
-																	<i className="os-icon os-icon-thumbs-up" />
-																</a>
-															</Tooltip>
-															<Tooltip title="Approve Transactions">
-																<a
-																	className="secondary"
-																	onClick={() =>
-																		this.doApproveTransaction(transaction)
-																	}>
-																	<i className="os-icon os-icon-folder-plus" />
-																</a>
-															</Tooltip>
-
-															<Tooltip title="Delete Transactions">
-																<a
-																	className="text-danger"
-																	onClick={() =>
-																		this.confirmDelete(transaction)
-																	}>
-																	<i className="os-icon os-icon-ui-15"></i>
-																</a>
-															</Tooltip>
-														</td>
-													</tr>
-												);
-											})
-										) : (
-											<tr className="text-center">
-												<td colSpan="6">No transaction for today yet</td>
-											</tr>
-										)}
-									</tbody>
+									<TransactionTable
+										transactions={transactions}
+										loading={loading}
+										today={false}
+									/>
 								</table>
 							</div>
 						</div>
