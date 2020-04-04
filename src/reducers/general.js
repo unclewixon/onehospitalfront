@@ -21,6 +21,8 @@ import {
 	TOGGLE_CREATE_VOUCHER,
 	TOGGLE_UPLOAD_SERVICE,
 	TOGGLE_UPLOAD_DIAGNOSIS,
+	TOGGLE_UPLOAD_HMO,
+	TOGGLE_UPLOAD_HMO_TARIFF,
 	TOGGLE_EDIT_SERIVCE,
 	TOGGLE_CREATE_LABOUR_MEASUREMENT,
 	TOGGLE_CREATE_RISK_ASSESSMENT,
@@ -29,6 +31,8 @@ import {
 	TOGGLE_OPEN_ENCOUNTER,
 	TOGGLE_CREATE_CLINICAL_TASK,
 	TOGGLE_ADD_CAFETERIA_FILE,
+	TOGGLE_APPROVE_TRANSACTION,
+	TOGGLE_APPLY_VOUCHER,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -51,6 +55,7 @@ const INITIAL_STATE = {
 	edit_payroll: false,
 	view_paypoint: false,
 	create_voucher: false,
+	apply_voucher: false,
 	create_labour_measurement: false,
 	create_risk_assessment: false,
 	create_record_delivery: false,
@@ -60,6 +65,8 @@ const INITIAL_STATE = {
 	payroll_staff: null,
 	upload_service: false,
 	upload_diagnosis: false,
+	upload_hmo: false,
+	upload_hmo_tariff: false,
 	create_clinical_task: false,
 	edit_service: { status: false, data: null },
 	openEncounter: false,
@@ -86,6 +93,8 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, create_inventory: action.payload };
 		case TOGGLE_EDIT_INVENTORY:
 			return { ...state, edit_inventory: action.payload };
+		case TOGGLE_APPROVE_TRANSACTION:
+			return { ...state, approve_transaction: action.payload };
 		case TOGGLE_UPDATE_QTY:
 			return { ...state, update_inventory_qty: action.payload };
 		case TOGGLE_REGISTER_NEW_PATIENT:
@@ -124,12 +133,18 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, create_record_vital: action.payload };
 		case TOGGLE_CREATE_VOUCHER:
 			return { ...state, create_voucher: action.payload };
+		case TOGGLE_APPLY_VOUCHER:
+			return { ...state, apply_voucher: action.payload };
 		case TOGGLE_CREATE_CLINICAL_TASK:
 			return { ...state, create_clinical_task: action.payload };
 		case TOGGLE_UPLOAD_SERVICE:
 			return { ...state, upload_service: action.payload };
 		case TOGGLE_UPLOAD_DIAGNOSIS:
 			return { ...state, upload_diagnosis: action.payload };
+		case TOGGLE_UPLOAD_HMO:
+			return { ...state, upload_hmo: action.payload };
+		case TOGGLE_UPLOAD_HMO_TARIFF:
+			return { ...state, upload_hmo_tariff: action.payload };
 		case TOGGLE_EDIT_SERIVCE:
 			return { ...state, edit_service: action.payload };
 		case TOGGLE_OPEN_ENCOUNTER:

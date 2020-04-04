@@ -13,6 +13,8 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 
 import { loadTransaction, deleteTransaction } from '../../actions/transaction';
+import { applyVoucher, approveTransaction } from '../../actions/general';
+import TransactionTable from '../../components/Tables/TransactionTable';
 
 const { RangePicker } = DatePicker;
 const departments = [
@@ -40,14 +42,14 @@ class ReviewTransaction extends Component {
 		this.fetchTransaction();
 		this.getPatients();
 	}
+
 	fetchTransaction = async () => {
 		const { patient_id, startDate, endDate, status } = this.state;
 		console.log(patient_id, startDate, endDate, status);
 		try {
 			this.setState({ loading: true });
-
 			const rs = await request(
-				`${API_URI}${transactionsAPI}/list?patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}`,
+				`${API_URI}${transactionsAPI}/list?patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}&transaction_type=billing`,
 				'GET',
 				true
 			);
@@ -102,6 +104,12 @@ class ReviewTransaction extends Component {
 	};
 	confirmDelete = data => {
 		confirmAction(this.onDeleteTransaction, data);
+	};
+	doApproveTransaction = item => {
+		this.props.approveTransaction(item);
+	};
+	doApplyVoucher = item => {
+		this.props.applyVoucher(item);
 	};
 
 	render() {
@@ -184,65 +192,19 @@ class ReviewTransaction extends Component {
 									<thead>
 										<tr>
 											<th>DATE</th>
-											<th className="text-center">PATIENT NAME</th>
-											<th className="text-center">DEPARTMENT</th>
-											<th className="text-center">SERVICE</th>
-											<th className="text-center">AMOUNT (&#x20A6;)</th>
-											<th className="text-center">PAYMENT TYPE</th>
-											<th className="text-right">ACTIONS</th>
+											<th className="">PATIENT NAME</th>
+											<th className="">DEPARTMENT</th>
+											<th className="">SERVICE</th>
+											<th className="">AMOUNT (&#x20A6;)</th>
+											<th className="">PAYMENT TYPE</th>
+											<th className="">ACTIONS</th>
 										</tr>
 									</thead>
-									<tbody>
-										{loading ? (
-											<tr>
-												<td colSpan="4" className="text-center">
-													<img alt="searching" src={searchingGIF} />
-												</td>
-											</tr>
-										) : transactions.length > 0 ? (
-											transactions.map(transaction => {
-												return (
-													<tr key={transaction.q_id}>
-														<td className="text-center">
-															{moment(transaction.q_createdAt).format(
-																'YYYY/MM/DD'
-															)}
-														</td>
-														<td className="text-center">
-															{`${transaction.surname} ${transaction.other_names}`}
-														</td>
-														<td className="text-center">
-															{transaction.deptname}
-														</td>
-														<td className="text-center">
-															{transaction.q_service_id
-																? transaction.q_service_id
-																: 'No service yet'}
-														</td>
-														<td className="text-center">
-															{transaction.q_amount}
-														</td>
-														<td className="text-center">
-															{transaction.q_paymentType
-																? transaction.q_paymentType
-																: 'Not specified'}
-														</td>
-														<td className="text-center">
-															<a
-																className="text-danger"
-																onClick={() => this.confirmDelete(transaction)}>
-																<i className="os-icon os-icon-ui-15"></i>
-															</a>
-														</td>
-													</tr>
-												);
-											})
-										) : (
-											<tr className="text-center">
-												<td>No transaction for today yet</td>
-											</tr>
-										)}
-									</tbody>
+									<TransactionTable
+										transactions={transactions}
+										loading={loading}
+										today={false}
+									/>
 								</table>
 							</div>
 						</div>
@@ -259,6 +221,9 @@ const mapStateToProps = state => {
 	};
 };
 
-export default connect(mapStateToProps, { loadTransaction, deleteTransaction })(
-	ReviewTransaction
-);
+export default connect(mapStateToProps, {
+	applyVoucher,
+	approveTransaction,
+	loadTransaction,
+	deleteTransaction,
+})(ReviewTransaction);

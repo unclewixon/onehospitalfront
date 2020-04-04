@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { viewPayPoint } from '../actions/general';
+
 export class PayPointItem extends Component {
 	render() {
 		const { payPoint } = this.props;
@@ -15,7 +16,7 @@ export class PayPointItem extends Component {
 						<div className="balance-link">
 							<button
 								className="btn btn-link btn-underlined"
-								onClick={() => this.props.viewPayPoint(true)}>
+								onClick={() => this.props.viewPayPoint(true, payPoint.id)}>
 								<span>View Statement</span>
 								<i className="os-icon os-icon-arrow-right4"></i>
 							</button>

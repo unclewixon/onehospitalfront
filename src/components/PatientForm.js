@@ -17,7 +17,6 @@ import moment from 'moment';
 function PatientForm(props) {
 	const formData = props.formData;
 	const patient = props.patient;
-	console.log(patient);
 	const register_new_patient = props.register_new_patient;
 	const [formTitle, setFormTitle] = useState('');
 	const [patientData, setPatientData] = useState({});

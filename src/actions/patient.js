@@ -1,3 +1,5 @@
+import axios from 'axios';
+import { API_URI } from '../services/constants';
 import {
 	NEXT_STEP,
 	PREV_STEP,
@@ -5,6 +7,8 @@ import {
 	GET_ALLERGIES,
 	ALLERGY,
 	UPDATE_ALLERGY,
+	LOAD_PATIENT_UPLOAD_DATA,
+	ADD_PATIENT_UPLOAD_DATA,
 	DELETE_ALLERGY,
 	GET_PHYSIOTHERAPIES,
 	GET_DENTISTRY_REQUESTS,
@@ -12,6 +16,10 @@ import {
 	GET_OPTHALMOLOGY_REQUESTS,
 	LOAD_VITALS,
 	UPDATE_VITALS,
+	CREATE_LAB_REQUEST,
+	GET_REQUESTS_BY_TYPE,
+	LOAD_PATIENT_PROCEDURE_DATA,
+	ADD_PATIENT_PROCEDURE_DATA,
 	LOAD_PATIENTS,
 	LOAD_CLINICAL_LAB,
 	LOAD_RADIOLOGY,
@@ -34,6 +42,34 @@ export const nextStep = data => {
 export const prevStep = data => {
 	return {
 		type: PREV_STEP,
+		payload: data,
+	};
+};
+
+export const loadPatientProcedureData = data => {
+	return {
+		type: LOAD_PATIENT_PROCEDURE_DATA,
+		payload: data,
+	};
+};
+
+export const addPatientProcedureData = data => {
+	return {
+		type: ADD_PATIENT_PROCEDURE_DATA,
+		payload: data,
+	};
+};
+
+export const loadPatientUploadData = data => {
+	return {
+		type: LOAD_PATIENT_UPLOAD_DATA,
+		payload: data,
+	};
+};
+
+export const addPatientUploadData = data => {
+	return {
+		type: ADD_PATIENT_UPLOAD_DATA,
 		payload: data,
 	};
 };
@@ -117,6 +153,13 @@ export const updateVitals = data => {
 	};
 };
 
+export const create_lab_request = data => {
+	return {
+		type: CREATE_LAB_REQUEST,
+		payload: data,
+	};
+};
+
 export const loadClinicalLab = data => {
 	return {
 		type: LOAD_CLINICAL_LAB,
@@ -128,5 +171,56 @@ export const loadRadiology = data => {
 	return {
 		type: LOAD_RADIOLOGY,
 		payload: data,
+	};
+};
+
+export const get_requests_by_type = data => {
+	return {
+		type: GET_REQUESTS_BY_TYPE,
+		payload: data,
+	};
+};
+
+export const createLabRequest = data => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			axios
+				.post(`${API_URI}/patient/save-request`, {
+					requestType: data.service_center,
+					category_id: data.category,
+					requestBody: {
+						specialization: '',
+						sessionCount: '',
+						combination: data.lab_combo,
+						test: data.lab_test,
+						referredSpeciment: data.referred_specimen,
+						requestNote: data.request_note,
+					},
+					patient_id: data.patient_id,
+				})
+				.then(response => {
+					dispatch(create_lab_request(response.data));
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return reject({ success: false });
+				});
+		});
+	};
+};
+
+export const getRequestByType = data => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			axios
+				.get(`${API_URI}/patient/${data}/request/lab?startDate=&endDate=`)
+				.then(response => {
+					dispatch(get_requests_by_type(response.data));
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return reject({ success: false });
+				});
+		});
 	};
 };

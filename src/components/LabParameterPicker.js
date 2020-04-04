@@ -24,8 +24,10 @@ const LabParameterPicker = ({
 							name="parameter"
 							onChange={e => handleParamInputChange(e, index)}
 							value={
-								parameters && parameters[index] && parameters[index].parameter
-									? parameters[index].parameter
+								parameters &&
+								parameters[index] &&
+								parameters[index].parameter_id
+									? parameters[index].parameter_id
 									: ''
 							}>
 							<option value={''}>Select Parameter</option>
