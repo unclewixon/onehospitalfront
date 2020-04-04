@@ -42,13 +42,14 @@ class ReviewTransaction extends Component {
 		this.fetchTransaction();
 		this.getPatients();
 	}
+
 	fetchTransaction = async () => {
 		const { patient_id, startDate, endDate, status } = this.state;
 		console.log(patient_id, startDate, endDate, status);
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}${transactionsAPI}/list?patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}`,
+				`${API_URI}${transactionsAPI}/list?patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}&transaction_type=billing`,
 				'GET',
 				true
 			);
