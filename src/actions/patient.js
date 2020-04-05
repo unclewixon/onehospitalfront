@@ -23,6 +23,8 @@ import {
 	ADD_PHARMACY_REQUEST,
 	GET_PHARMACY_REQUESTS,
 	GET_LAB_REQUESTS,
+	LOAD_CLINICAL_LAB,
+	LOAD_RADIOLOGY,
 } from './types';
 
 export const loadPatients = data => {
@@ -153,14 +155,28 @@ export const updateVitals = data => {
 	};
 };
 
-const create_lab_request = data => {
+export const create_lab_request = data => {
 	return {
 		type: CREATE_LAB_REQUEST,
 		payload: data,
 	};
 };
 
-const add_pharmacy_request = data => {
+export const loadClinicalLab = data => {
+	return {
+		type: LOAD_CLINICAL_LAB,
+		payload: data,
+	};
+};
+
+export const loadRadiology = data => {
+	return {
+		type: LOAD_RADIOLOGY,
+		payload: data,
+	};
+};
+
+export const add_pharmacy_request = data => {
 	return {
 		type: ADD_PHARMACY_REQUEST,
 		payload: data,

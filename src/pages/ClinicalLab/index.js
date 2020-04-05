@@ -8,6 +8,7 @@ import Splash from '../../components/Splash';
 const NewLab = lazy(() => import('./NewLab'));
 
 const ClinicalLab = lazy(() => import('./ClinicalLab'));
+const AllRequest = lazy(() => import('./AllRequest'));
 
 class Clinical extends Component {
 	state = {};
@@ -29,6 +30,11 @@ class Clinical extends Component {
 									exact
 									path={`${match.url}/lab-request`}
 									component={NewLab}
+								/>
+								<Route
+									exact
+									path={`${match.url}/all-request`}
+									component={AllRequest}
 								/>
 
 								<Route component={NoMatch} />

@@ -95,7 +95,7 @@ class ModalViewPayPoint extends Component {
 												return (
 													<tr key={transaction.transaction_id}>
 														<td className="">
-															{`${transaction.patient?.surname} ${transaction.patient?.other_names}`}
+															{`${transaction.surname} ${transaction.other_names}`}
 														</td>
 														<td className="flex">
 															{transaction.transaction_amount}

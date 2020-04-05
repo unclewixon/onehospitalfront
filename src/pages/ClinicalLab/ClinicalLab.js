@@ -1,11 +1,43 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import ClinicalLabItem from '../../components/ClinicalLabItem';
-
+import { request } from '../../services/utilities';
+import { API_URI, patientAPI } from '../../services/constants';
+import { loadClinicalLab } from '../../actions/patient';
+import searchingGIF from '../../assets/images/searching.gif';
+import moment from 'moment';
+import _ from 'lodash';
 class ClinicalLab extends Component {
+	state = {
+		loading: false,
+	};
+	componentDidMount() {
+		this.fetchClinicalLab();
+	}
+
+	fetchClinicalLab = async () => {
+		try {
+			this.setState({ ...this.state, loading: true });
+
+			let today = moment().format('YYYY-MM-DD');
+			const rs = await request(
+				`${API_URI}${patientAPI}/requests/lab?startDate=${today}=&endDate=${today}`,
+				'GET',
+				true
+			);
+			this.props.loadClinicalLab(rs);
+			this.setState({ ...this.state, loading: false });
+		} catch (error) {
+			console.log(error);
+			this.setState({ ...this.state, loading: false });
+		}
+	};
 	render() {
-		const { location } = this.props;
+		const { location, clinicalLab } = this.props;
+		const { loading } = this.state;
 		const page = location.pathname.split('/').pop();
+		console.log(clinicalLab);
 
 		return (
 			<div className="col-sm-12">
@@ -17,6 +49,13 @@ class ClinicalLab extends Component {
 							}`}
 							to="/lab">
 							Dashboard
+						</Link>
+						<Link
+							className={`btn btn-primary ${
+								page === '/all-request' ? 'btn-outline-primary' : ''
+							}`}
+							to="/lab/all-request">
+							All Request
 						</Link>
 						<Link
 							className={`btn btn-primary ${
@@ -73,17 +112,21 @@ class ClinicalLab extends Component {
 														<div className="fht-cell"></div>
 													</th>
 													<th>
-														<div className="th-inner sortable both">ID</div>
-														<div className="fht-cell"></div>
-													</th>
-													<th>
 														<div className="th-inner sortable both">
-															Patient
+															Patiend ID
 														</div>
 														<div className="fht-cell"></div>
 													</th>
 													<th>
-														<div className="th-inner sortable both">By</div>
+														<div className="th-inner sortable both">
+															Patient Name
+														</div>
+														<div className="fht-cell"></div>
+													</th>
+													<th>
+														<div className="th-inner sortable both">
+															Request By
+														</div>
 														<div className="fht-cell"></div>
 													</th>
 													<th>
@@ -93,65 +136,22 @@ class ClinicalLab extends Component {
 												</tr>
 											</thead>
 											<tbody>
-												<ClinicalLabItem />
+												{loading ? (
+													<tr>
+														<td colSpan="4" className="text-center">
+															<img alt="searching" src={searchingGIF} />
+														</td>
+													</tr>
+												) : null}
+												{clinicalLab &&
+													clinicalLab.map(lab => {
+														return <ClinicalLabItem key={lab.id} lab={lab} />;
+													})}
 											</tbody>
 										</table>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div className="col-sm-12">
-							<div className="element-wrapper">
-								<h6 className="element-header">Previous Requests</h6>
-								<div className="element-box">
-									<div className="table table-responsive">
-										<table
-											id="table"
-											className="table table-theme v-middle table-hover">
-											<thead>
-												<tr>
-													<th data-field="collapse">
-														<div className="th-inner "></div>
-														<div className="fht-cell"></div>
-													</th>
-													<th data-field="request-date">
-														<div className="th-inner sortable both">
-															Request Date
-														</div>
-														<div className="fht-cell"></div>
-													</th>
-													<th data-field="id">
-														<div className="th-inner sortable both">ID</div>
-														<div className="fht-cell"></div>
-													</th>
-
-													<th data-field="task">
-														<div className="th-inner ">
-															<span className="d-none d-sm-block">Patient</span>
-														</div>
-														<div className="fht-cell"></div>
-													</th>
-													<th data-field="task">
-														<div className="th-inner ">
-															<span className="d-none d-sm-block">By</span>
-														</div>
-														<div className="fht-cell"></div>
-													</th>
-													<th data-field="5">
-														<div className="th-inner "></div>
-														<div className="fht-cell"></div>
-													</th>
-												</tr>
-											</thead>
-											<tbody>
-												<ClinicalLabItem />
-												<ClinicalLabItem />
-												<ClinicalLabItem />
-												<ClinicalLabItem />
-												<ClinicalLabItem />
-											</tbody>
-										</table>
+										{!_.isEmpty(clinicalLab) ? null : (
+											<div className="text-center">No clinical Lab request</div>
+										)}
 									</div>
 								</div>
 							</div>
@@ -163,4 +163,9 @@ class ClinicalLab extends Component {
 	}
 }
 
-export default ClinicalLab;
+const mapStateToProps = state => {
+	return {
+		clinicalLab: state.patient.clinicalLab,
+	};
+};
+export default connect(mapStateToProps, { loadClinicalLab })(ClinicalLab);

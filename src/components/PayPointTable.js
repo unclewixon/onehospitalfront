@@ -34,14 +34,14 @@ export class PayPointTable extends Component {
 			let today = moment().format('YYYY-MM-DD');
 			console.log(today);
 			const rs = await request(
-				`${API_URI}${transactionsAPI}/list?patient_id=&startDate${today}=&endDate=${today}&status=`,
+				`${API_URI}${transactionsAPI}/list?patient_id=&startDate=${today}&endDate=${today}&transaction_type=billing	&status=`,
 				'GET',
 				true
 			);
+			console.log(rs);
 			const res = rs.sort((a, b) => a.q_createdAt.localeCompare(b.q_createdAt));
 			this.props.loadTodayTransaction(res.reverse());
 			this.setState({ loading: false });
-			console.log(this.props.todayTransaction);
 		} catch (error) {
 			console.log(error);
 		}
@@ -61,12 +61,12 @@ export class PayPointTable extends Component {
 						<table className="table table-striped">
 							<thead>
 								<tr>
-									<th className="text-center">PATIENT NAME</th>
-									<th className="text-center">DEPARTMENT</th>
-									<th className="text-center">SERVICE</th>
-									<th className="text-center">AMOUNT (&#x20A6;)</th>
-									<th className="text-center">PAYMENT TYPE (&#x20A6;)</th>
-									<th className="text-right">ACTIONS</th>
+									<th className="">PATIENT NAME</th>
+									<th className="">DEPARTMENT</th>
+									<th className="">SERVICE</th>
+									<th className="">AMOUNT (&#x20A6;)</th>
+									<th className="">PAYMENT TYPE (&#x20A6;)</th>
+									<th className="">ACTIONS</th>
 								</tr>
 							</thead>
 							<TransactionTable

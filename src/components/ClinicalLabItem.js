@@ -1,6 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import Tooltip from 'antd/lib/tooltip';
+import moment from 'moment';
+import { Label } from 'recharts';
 export class ClinicalLabItem extends Component {
 	state = {
 		collapse: true,
@@ -12,6 +14,7 @@ export class ClinicalLabItem extends Component {
 	};
 	render() {
 		const { collapse } = this.state;
+		const { lab } = this.props;
 		return (
 			<>
 				<tr data-index="0" data-id="20">
@@ -27,18 +30,23 @@ export class ClinicalLabItem extends Component {
 							<span
 								className="w-32 avatar gd-warning"
 								style={{ boxShadow: 'none', justifyContent: 'start' }}>
-								IN32456789
+								{moment(lab.createdAt).format('DD-MM-YYYY')}
 							</span>
 						</a>
 					</td>
 					<td className="flex">
-						<a className="item-title text-color">Netflix hackathon</a>
+						<a className="item-title text-color">{lab.patient.fileNumber}</a>
 					</td>
 					<td className="flex">
-						<a className="item-title text-color">blood</a>
+						<a className="item-title text-color">
+							{lab.patient.surname ? lab.patient.surname : ''}{' '}
+							{lab.patient.other_names ? lab.patient.other_names : ''}
+						</a>
 					</td>
 					<td className="flex">
-						<a className="item-title text-color">Netflix hackathon</a>
+						<a className="item-title text-color">
+							{lab.requestedBy ? lab.requestedBy : 'No yet available'}
+						</a>
 					</td>
 
 					<td className="text-right row-actions">
@@ -67,11 +75,14 @@ export class ClinicalLabItem extends Component {
 									<tbody>
 										<tr>
 											<th>Specimen</th>
-											<td>blood</td>
+											<td>{lab.requestBody.referredSpeciment}</td>
 										</tr>
 										<tr>
 											<th>Lab</th>
-											<td>CS</td>
+											<td>
+												{lab.requestBody.test &&
+													lab.requestBody.test.map(test => test.name).join(',')}
+											</td>
 										</tr>
 									</tbody>
 								</table>
