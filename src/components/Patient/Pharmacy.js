@@ -34,7 +34,7 @@ const Pharmacy = props => {
 		const patient_id = patient && patient.id ? patient.id : '';
 		if (!loaded) {
 			setDataLoaded(true);
-			getRequestByType(patient_id, 'pharmarcy')
+			getRequestByType(patient_id, 'pharmacy')
 				.then(response => {
 					setDataLoaded(false);
 				})
