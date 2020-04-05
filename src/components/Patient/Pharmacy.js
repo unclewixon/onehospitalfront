@@ -9,15 +9,16 @@ import searchingGIF from '../../assets/images/searching.gif';
 import Modal from 'react-bootstrap/Modal';
 import moment from 'moment';
 import Select from 'react-select';
+import { ReactComponent as ViewIcon } from '../../assets/svg-icons/view.svg';
 
 const Pharmacy = props => {
-	const { location, Requests } = props;
+	const { location, Requests, patient } = props;
 	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
 
-	const { patient } = props;
+	console.log(Requests)
 
 	const onModalClick = () => {
 		setShowModal(!showModal);
@@ -26,7 +27,6 @@ const Pharmacy = props => {
 	const requestStatus = [
 		{ value: 'pending', label: 'Pending' },
 		{ value: 'approved', label: 'Approved' },
-		{ value: 'declined', label: 'Declined' },
 	];
 
 	useEffect(() => {
@@ -134,10 +134,10 @@ const Pharmacy = props => {
 										className="table table-theme v-middle table-hover">
 										<thead>
 											<tr>
-												<th>ID</th>
-												<th>Request Date</th>
-												<th>Requested By</th>
-												<th>Request Specimen</th>
+												<th>Drug Generic Name</th>
+												<th>Drug Name</th>
+												<th>Quantity</th>
+												<th>Diagnosis</th>
 												<th className="text-center">Request Status</th>
 												<th className="text-right" />
 											</tr>
@@ -161,29 +161,31 @@ const Pharmacy = props => {
 																		)}
 																	</span>
 																</td>
-																<td>
-																	<Link to="/">{`${patient.surname.toUpperCase()} ${patient.other_names.toUpperCase()}`}</Link>
-																</td>
 																<td>{request.requestBody.referredSpeciment}</td>
+																<td>
+																	<Link to="/">{`${"Dr. Dolittle".toUpperCase()}`}</Link>
+																</td>
 																<td className="text-center">
 																	<div className="form-group">
 																		<Select
 																			name="service_center"
-																			placeholder="Set Status"
 																			options={requestStatus}
 																		/>
 																	</div>
 																</td>
 																<td className="row-actions text-right">
 																	<Tooltip title="View Request">
-																		<button
-																			className="btn btn-primary"
-																			onClick={() => {
-																				setActiveRequest(request);
-																				onModalClick();
-																			}}>
-																			View
-																		</button>
+																	<ViewIcon
+														onClick={() => {
+															setActiveRequest(request);
+															onModalClick();
+														}}
+														style={{
+															width: '1rem',
+															height: '1rem',
+															cursor: 'pointer',
+														}}
+													/>
 																	</Tooltip>
 																	<Tooltip title="Print Request">
 																		<a className="ml-2" href="#">

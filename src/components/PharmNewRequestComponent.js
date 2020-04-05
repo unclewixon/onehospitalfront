@@ -138,6 +138,8 @@ const PharmNewRequestComponent = ({
 
 	return (
 		<div className="row" style={{ width: '100%' }}>
+			
+			<div className="col-sm-12 element-box">
 			<div className="col-lg-12 form-block w-100">
 				{activeRequest ? (
 					<PharmNewRequestViewModal
@@ -431,6 +433,7 @@ const PharmNewRequestComponent = ({
 						)}
 					</button>
 				</div>
+			</div>
 			</div>
 		</div>
 	);
