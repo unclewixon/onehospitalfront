@@ -89,8 +89,8 @@ export class RecentRequest extends Component {
 										{filtering ? (
 											<img src={waiting} alt="submitting" />
 										) : (
-												'Filter'
-											)}
+											'Filter'
+										)}
 									</span>
 								</a>
 							</div>
@@ -114,56 +114,52 @@ export class RecentRequest extends Component {
 								<tbody>
 									{Requests && Requests.length
 										? Requests.map((request, index) => {
-											return (
-												<tr
-													className=""
-													data-index="0"
-													data-id="20"
-													key={index}>
-													<td>
-														<span>
-															{moment(request.createdAt).format('DD/MM/YYYY')}
-														</span>
-													</td>
-													<td>{request.patient.fileNumber}</td>
-													<td>
-														{`${"Dr. DooLittle".toUpperCase()}`}
-													</td>
-													<td className="nowrap">
-														{
-															request.status === 1 ? (
+												return (
+													<tr
+														className=""
+														data-index="0"
+														data-id="20"
+														key={index}>
+														<td>
+															<span>
+																{moment(request.createdAt).format('DD/MM/YYYY')}
+															</span>
+														</td>
+														<td>{request.patient.fileNumber}</td>
+														<td>{`${'Dr. DooLittle'.toUpperCase()}`}</td>
+														<td className="nowrap">
+															{request.status === 1 ? (
 																<div>
 																	<span className="status-pill smaller green"></span>
 																	<span>Approved</span>
 																</div>
 															) : (
-																	<div>
-																		<span className="status-pill smaller yellow"></span>
-																		<span>Pending</span>
-																	</div>
-																)
-														}
-													</td>
-													<td className="row-actions text-right">
-														<Tooltip title="View Request">
-															<a
-																className="secondary"
-																onClick={() => {
-																	this.setState({ activeRequest: request });
-																	this.onModalClick();
-																}}>
-																<i className="os-icon os-icon-file" />
-															</a>
-														</Tooltip>
-														<Tooltip title="Print Request">
-															<a className="ml-2" href="#">
-																<i className="icon-feather-printer" />
-															</a>
-														</Tooltip>
-													</td>
-												</tr>
-											);
-										})
+																<div>
+																	<span className="status-pill smaller yellow"></span>
+																	<span>Pending</span>
+																</div>
+															)}
+														</td>
+														<td className="row-actions text-right">
+															<Tooltip title="View Request">
+																<a
+																	className="secondary"
+																	onClick={() => {
+																		this.setState({ activeRequest: request });
+																		this.onModalClick();
+																	}}>
+																	<i className="os-icon os-icon-file" />
+																</a>
+															</Tooltip>
+															<Tooltip title="Print Request">
+																<a className="ml-2" href="#">
+																	<i className="icon-feather-printer" />
+																</a>
+															</Tooltip>
+														</td>
+													</tr>
+												);
+										  })
 										: null}
 								</tbody>
 							</table>

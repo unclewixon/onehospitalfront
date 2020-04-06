@@ -12,9 +12,9 @@ import ClinicalLabItem from '../../components/ClinicalLabItem';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadRadiology } from '../../actions/patient';
+import { uploadRadiology } from '../../actions/general';
 import _ from 'lodash';
-const { RangePicker } = DatePicker;
-class OpenRequest extends Component {
+export class Dashboard extends Component {
 	state = {
 		filtering: false,
 		loading: false,
@@ -114,7 +114,17 @@ class OpenRequest extends Component {
 				</div>
 				<div className="col-sm-12">
 					<div className="element-wrapper">
-						<h6 className="element-header">Open Request</h6>
+						<div className="element-actions">
+							<a
+								className="btn btn-success btn-sm text-white"
+								onClick={() => {
+									this.props.uploadRadiology(true);
+								}}>
+								<i className="os-icon os-icon-grid-10" />
+								<span>Upload Image</span>
+							</a>
+						</div>
+						<h6 className="element-header">Dashboard</h6>
 						<div className="element-box">
 							<div className="table table-responsive">
 								<table
@@ -197,4 +207,6 @@ const mapStateToProps = state => {
 	};
 };
 
-export default connect(mapStateToProps, { loadRadiology })(OpenRequest);
+export default connect(mapStateToProps, { loadRadiology, uploadRadiology })(
+	Dashboard
+);
