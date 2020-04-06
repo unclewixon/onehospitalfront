@@ -68,7 +68,7 @@ class Login extends Component {
 		try {
 			const rs = await request(`${API_URI}/auth/login`, 'POST', true, data);
 			this.props.loginUser(rs);
-			storage.setItem(TOKEN_COOKIE, rs);
+			storage.setItem(TOKEN_COOKIE, rs.token);
 			notifySuccess('login successful!');
 			redirectToPage(rs.role, this.props.history);
 		} catch (e) {
