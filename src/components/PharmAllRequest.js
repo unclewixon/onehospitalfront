@@ -17,12 +17,6 @@ const departments = [
 	{ id: 'sislkas', name: 'kafta' },
 ];
 
-const requestStatus = [
-	{ value: 'pending', label: 'Pending' },
-	{ value: 'approved', label: 'Approved' },
-	{ value: 'declined', label: 'Declined' },
-];
-
 export class PharmAllRequest extends Component {
 	state = {
 		filtering: false,
@@ -95,8 +89,8 @@ export class PharmAllRequest extends Component {
 										{filtering ? (
 											<img src={waiting} alt="submitting" />
 										) : (
-											'Filter'
-										)}
+												'Filter'
+											)}
 									</span>
 								</a>
 							</div>
@@ -110,61 +104,66 @@ export class PharmAllRequest extends Component {
 								className="table table-theme v-middle table-hover">
 								<thead>
 									<tr>
-										<th className="text-center"> Date</th>
-										<th className="text-center"> File No</th>
-										<th className="text-center"> Request From</th>
-										<th className="text-center"> Action</th>
+										<th> Date</th>
+										<th> File No</th>
+										<th> Request From</th>
+										<th> Request Status</th>
+										<th> Action</th>
 									</tr>
 								</thead>
 								<tbody>
 									{Requests && Requests.length
 										? Requests.map((request, index) => {
-												return (
-													<tr
-														className=""
-														data-index="0"
-														data-id="20"
-														key={index}>
-														<td>
-															<span>
-																{moment(request.createdAt).format('DD/MM/YYYY')}
-															</span>
-														</td>
-														<td>{request.patient.fileNumber}</td>
-														<td>
-															<Link to="/">{`${request.patient &&
-																request.patient.surname.toUpperCase()} ${request.patient &&
-																request.patient.other_names.toUpperCase()}`}</Link>
-														</td>
-														<td className="text-center">
-															<div className="form-group">
-																<Select
-																	name="service_center"
-																	placeholder="Set Status"
-																	options={requestStatus}
-																/>
-															</div>
-														</td>
-														<td className="row-actions text-right">
-															<Tooltip title="View Request">
-																<a
-																	className="secondary"
-																	onClick={() => {
-																		this.setState({ activeRequest: request });
-																		this.onModalClick();
-																	}}>
-																	<i className="os-icon os-icon-folder-plus" />
-																</a>
-															</Tooltip>
-															<Tooltip title="Print Request">
-																<a className="ml-2" href="#">
-																	<i className="icon-feather-printer" />
-																</a>
-															</Tooltip>
-														</td>
-													</tr>
-												);
-										  })
+											return (
+												<tr
+													className=""
+													data-index="0"
+													data-id="20"
+													key={index}>
+													<td>
+														<span>
+															{moment(request.createdAt).format('DD/MM/YYYY')}
+														</span>
+													</td>
+													<td>{request.patient.fileNumber}</td>
+													<td>
+														{`${"Dr. DooLittle".toUpperCase()}`}
+													</td>
+													<td className="nowrap">
+														{
+															request.status === 1 ? (
+																<div>
+																	<span className="status-pill smaller green"></span>
+																	<span>Approved</span>
+																</div>
+															) : (
+																	<div>
+																		<span className="status-pill smaller yellow"></span>
+																		<span>Pending</span>
+																	</div>
+																)
+														}
+													</td>
+													<td className="row-actions text-right">
+														<Tooltip title="View Request">
+															<a
+																className="secondary"
+																onClick={() => {
+																	this.setState({ activeRequest: request });
+																	this.onModalClick();
+																}}>
+																<i className="os-icon os-icon-file" />
+															</a>
+														</Tooltip>
+														<Tooltip title="Print Request">
+															<a className="ml-2" href="#">
+																<i className="icon-feather-printer" />
+															</a>
+														</Tooltip>
+													</td>
+												</tr>
+											);
+										})
 										: null}
 								</tbody>
 							</table>

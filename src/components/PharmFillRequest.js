@@ -91,7 +91,7 @@ export class PharmFillRequest extends Component {
 																		this.setState({ activeRequest: request });
 																		this.onModalClick();
 																	}}>
-																	<i className="os-icon os-icon-folder-plus" />
+																	<i className="os-icon os-icon-file" />
 																</a>
 															</Tooltip>
 															<Tooltip title="Print Request">

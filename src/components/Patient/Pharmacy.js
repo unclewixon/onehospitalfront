@@ -18,8 +18,6 @@ const Pharmacy = props => {
 	const [showModal, setShowModal] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
 
-	console.log(Requests)
-
 	const onModalClick = () => {
 		setShowModal(!showModal);
 	};
@@ -78,44 +76,8 @@ const Pharmacy = props => {
 									</Modal.Title>
 								</Modal.Header>
 								<Modal.Body>
-									<div className="row">
-										<div className="form-group col-lg-6">
-											<h5>Request Note</h5>
-											<div>
-												<p className="justify">
-													{activeRequest.requestBody.requestNote}
-												</p>
-											</div>
-										</div>
-										<div className="col-lg-3">
-											<h5>Tests</h5>
-											{activeRequest.requestBody &&
-											activeRequest.requestBody.test
-												? activeRequest.requestBody.test.map((test, index) => {
-														return (
-															<div key={index}>
-																<p>{test.name}</p>
-															</div>
-														);
-												  })
-												: null}
-										</div>
-										<div className="col-lg-3">
-											<h5>Groups</h5>
-											{activeRequest.requestBody &&
-											activeRequest.requestBody.combination
-												? activeRequest.requestBody.combination.map(
-														(combo, index) => {
-															return (
-																<div key={index}>
-																	<p>{combo.name}</p>
-																</div>
-															);
-														}
-												  )
-												: null}
-										</div>
-									</div>
+									
+									
 								</Modal.Body>
 							</Modal>
 						) : null}
@@ -134,9 +96,8 @@ const Pharmacy = props => {
 										className="table table-theme v-middle table-hover">
 										<thead>
 											<tr>
-												<th>Drug Generic Name</th>
-												<th>Drug Name</th>
-												<th>Quantity</th>
+												<th>Request Date</th>
+												<th>Request Type</th>
 												<th>Diagnosis</th>
 												<th className="text-center">Request Status</th>
 												<th className="text-right" />
@@ -151,27 +112,23 @@ const Pharmacy = props => {
 																data-index="0"
 																data-id="20"
 																key={index}>
-																<td>
-																	<span className="text-bold"></span>
-																</td>
-																<td>
-																	<span>
-																		{moment(request.createdAt).format(
-																			'DD/MM/YYYY hh:mm'
-																		)}
-																	</span>
-																</td>
-																<td>{request.requestBody.referredSpeciment}</td>
-																<td>
-																	<Link to="/">{`${"Dr. Dolittle".toUpperCase()}`}</Link>
-																</td>
+																<td>{moment(request.createdAt).format("DD-MM-YYYY : hh mm")}</td>
+														<td>{request.requestType}</td>
+														<td>{request && request.diagnosis ? request.diagnosis : ""}</td>
 																<td className="text-center">
-																	<div className="form-group">
-																		<Select
-																			name="service_center"
-																			options={requestStatus}
-																		/>
+																{
+															request.status === 1 ? (
+																<div>
+																	<span className="status-pill smaller green"></span>
+																	<span>Approved</span>
+																</div>
+															) : (
+																	<div>
+																		<span className="status-pill smaller yellow"></span>
+																		<span>Pending</span>
 																	</div>
+																)
+														}
 																</td>
 																<td className="row-actions text-right">
 																	<Tooltip title="View Request">
@@ -211,7 +168,7 @@ const Pharmacy = props => {
 
 const mapStateToProps = ({ patient, user }) => ({
 	patient: user.patient,
-	Requests: patient.pharmRequest,
+	Requests: patient.pharmacyRequests,
 });
 
 export default connect(mapStateToProps, { getRequestByType })(
