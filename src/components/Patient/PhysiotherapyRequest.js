@@ -43,6 +43,7 @@ const PhysiotherapyRequest = props => {
 
 		if (parameters.length === 0) {
 			notifyError('Please select service to request');
+			return;
 		}
 
 		try {
@@ -242,12 +243,12 @@ const PhysiotherapyRequest = props => {
 							</div>
 
 							<div>
-								<div className="col-sm-12 text-right">
+								<div className="col-sm-12 text-right mt-2 pr-0">
 									<button className="btn btn-primary" disabled={submitting}>
 										{submitting ? (
 											<img src={waiting} alt="submitting" />
 										) : (
-											'Create Physiotherapy Request'
+											'Create'
 										)}
 									</button>
 								</div>

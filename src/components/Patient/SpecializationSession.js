@@ -25,12 +25,13 @@ const SpeciliazationSession = ({
 		console.log(parameters);
 	}, [parameters]);
 	return (
-		<div className="w-100 my-1">
+		<div className="w-100 my-2 px-2">
 			<div className="pipeline-item">
 				<div className="pi-controls">
 					<div className="pi-settings os-dropdown-trigger">
 						<i
 							className="os-icon os-icon-ui-15"
+							style={{ fontSize: '1rem' }}
 							onClick={() => removeParams(index)}></i>
 					</div>
 				</div>
