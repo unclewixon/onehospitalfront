@@ -3,8 +3,16 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
-import { API_URI, socket } from '../../services/constants';
+import {
+	API_URI,
+	socket,
+	patientAPI,
+	searchAPI,
+} from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
+import { notifySuccess, notifyError } from '../../services/notify';
+import { request } from '../../services/utilities';
+import searchingGIF from '../../assets/images/searching.gif';
 const labCategories = [
 	{ value: 'cancer', label: 'cancer' },
 	{ value: 'x-ray', label: 'x-ray' },
@@ -22,11 +30,48 @@ const LabRequest = () => {
 	// const page = location.pathname.split('/').pop();
 	const { register, handleSubmit, setValue } = useForm();
 	const [submitting, setSubmitting] = useState(false);
+	const [query, setQuery] = useState('');
+	const [searching, setSearching] = useState(false);
+	const [patients, setPatients] = useState([]);
 
 	const onSubmit = async values => {
 		console.log(values);
 		setSubmitting(true);
 		// socket.emit('saveAppointment', values);
+	};
+
+	const handlePatientChange = e => {
+		setQuery(e.target.value);
+		searchPatient();
+	};
+
+	const searchPatient = async () => {
+		if (query.length > 2) {
+			try {
+				setSearching(true);
+				const rs = await request(
+					`${API_URI}${searchAPI}?q=${query}`,
+					'GET',
+					true
+				);
+
+				setPatients(rs);
+				setSearching(false);
+			} catch (e) {
+				notifyError('Error Occurred');
+				setSearching(false);
+			}
+		}
+	};
+
+	const patientSet = pat => {
+		setValue('patient_id', pat.id);
+		let name =
+			(pat.surname ? pat.surname : '') +
+			' ' +
+			(pat.other_names ? pat.other_names : '');
+		document.getElementById('patient').value = name;
+		setPatients([]);
 	};
 
 	return (
@@ -39,16 +84,46 @@ const LabRequest = () => {
 							<div className="row">
 								<div className="form-group col-sm-12">
 									<label>Patient Id</label>
-									<Select
+
+									<input
+										className="form-control"
+										placeholder="Search for patient"
+										type="text"
 										name="patient_id"
-										placeholder="Select patient Id"
-										options={serviceCenter}
+										defaultValue=""
+										id="patient"
 										ref={register({ name: 'patient_id' })}
-										onChange={evt => {
-											setValue('patient_id', String(evt.value));
-										}}
+										onChange={handlePatientChange}
+										autoComplete="off"
 										required
 									/>
+									{searching && (
+										<div className="searching text-center">
+											<img alt="searching" src={searchingGIF} />
+										</div>
+									)}
+
+									{patients &&
+										patients.map(pat => {
+											return (
+												<div
+													style={{ display: 'flex' }}
+													key={pat.id}
+													className="element-box">
+													<a
+														onClick={() => patientSet(pat)}
+														className="ssg-item cursor">
+														{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
+														<div
+															className="item-name"
+															dangerouslySetInnerHTML={{
+																__html: `${pat.surname} ${pat.other_names}`,
+															}}
+														/>
+													</a>
+												</div>
+											);
+										})}
 								</div>
 							</div>
 

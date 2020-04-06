@@ -30,6 +30,7 @@ import {
 	TOGGLE_CREATE_CLINICAL_TASK,
 	TOGGLE_OPEN_ENCOUNTER,
 	TOGGLE_ADD_CAFETERIA_FILE,
+	TOGGLE_UPLOAD_RADIOLOGY,
 } from './types';
 
 export const togglePreloading = status => {
@@ -241,6 +242,13 @@ export const toggleUploadDiagnosis = status => {
 	};
 };
 
+export const toggleUploadRadiology = status => {
+	return {
+		type: TOGGLE_UPLOAD_RADIOLOGY,
+		payload: status,
+	};
+};
+
 export const toggleEditService = (status, data) => {
 	return {
 		type: TOGGLE_EDIT_SERIVCE,
@@ -286,6 +294,7 @@ export const closeModals = () => {
 		dispatch(toggleAddCafeteriaFile(false));
 		dispatch(toggleUploadService(false));
 		dispatch(toggleUploadDiagnosis(false));
+		dispatch(toggleUploadRadiology(false));
 		dispatch(toggleEditService(false, null));
 		dispatch(toggleOpenEncounter(false, null));
 	};
@@ -526,5 +535,13 @@ export const addCafeteriaFile = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleAddCafeteriaFile(action));
+	};
+};
+
+export const uploadRadiology = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleUploadRadiology(action));
 	};
 };

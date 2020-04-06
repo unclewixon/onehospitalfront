@@ -5,30 +5,6 @@ export class ScheduledRequests extends Component {
 	render() {
 		return (
 			<div className="row">
-				<div className="col-md-12">
-					<div className="element-content">
-						<div className="row">
-							<div className="col-sm-4 col-xxxl-4">
-								<a className="element-box el-tablo">
-									<div className="label">TOTAL OPEN</div>
-									<div className="value text-center">57</div>
-								</a>
-							</div>
-							<div className="col-sm-4 col-xxxl-4">
-								<a className="element-box el-tablo">
-									<div className="label">TOTAl FILLED</div>
-									<div className="value text-center">457</div>
-								</a>
-							</div>
-							<div className="col-sm-4 col-xxxl-4">
-								<a className="element-box el-tablo">
-									<div className="label">LOAN STOCK</div>
-									<div className="value text-center">125</div>
-								</a>
-							</div>
-						</div>
-					</div>
-				</div>
 				<div className="col-sm-12">
 					<div className="element-wrapper">
 						<h6 className="element-header">Prescription</h6>

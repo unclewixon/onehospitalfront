@@ -6,13 +6,14 @@ import NoMatch from '../NoMatch';
 import Queue from '../../components/Queue';
 import Splash from '../../components/Splash';
 
-const OpenRequest = lazy(() => import('./OpenRequest'));
+const AllRequest = lazy(() => import('./AllRequest'));
 const ScheduledRequests = lazy(() => import('./ScheduledRequests'));
 const AppraisalList = lazy(() => import('./AppraisalList'));
 const AwaitingList = lazy(() => import('./AwaitingList'));
 const SearchScan = lazy(() => import('./SearchScan'));
 const NewRadiology = lazy(() => import('./NewRadiology'));
-const RecentRequest = lazy(() => import('./RecentRequest'));
+
+const Dashboard = lazy(() => import('./Dashboard'));
 
 class index extends Component {
 	render() {
@@ -33,7 +34,14 @@ class index extends Component {
 										className={`btn btn-primary btn-sm my-1 ${
 											page === '' ? 'btn-outline-primary' : ''
 										}`}>
-										Open Request
+										Dashboard
+									</Link>
+									<Link
+										to={`${match.path}/all-request`}
+										className={`btn btn-primary btn-sm my-1 ${
+											page === 'all-request' ? 'btn-outline-primary' : ''
+										}`}>
+										All Request
 									</Link>
 
 									<Link
@@ -64,15 +72,9 @@ class index extends Component {
 										to={`${match.path}/search-scan`}>
 										Search Scan
 									</Link>
+
 									<Link
 										className={`btn btn-primary btn-sm my-1 ${
-											page === 'recent-request' ? 'btn-outline-primary' : ''
-										}`}
-										to={`${match.path}/recent-request`}>
-										Recent Request
-									</Link>
-									<Link
-										className={`btn btn-primary btn-sm my-1  ml-0 ${
 											page === 'new-radiology' ? 'btn-outline-primary' : ''
 										}`}
 										to={`${match.path}/new-radiology`}>
@@ -84,7 +86,13 @@ class index extends Component {
 										<Route
 											exact
 											path={`${match.path}/`}
-											component={OpenRequest}
+											component={Dashboard}
+										/>
+
+										<Route
+											exact
+											path={`${match.path}/all-request`}
+											component={AllRequest}
 										/>
 										<Route
 											exact
@@ -113,11 +121,6 @@ class index extends Component {
 											path={`${match.path}/search-scan`}
 											component={SearchScan}
 										/>
-										<Route
-											exact
-											path={`${match.path}/recent-request`}
-											component={RecentRequest}
-										/>
 
 										<Route component={NoMatch} />
 									</Switch>
@@ -125,9 +128,6 @@ class index extends Component {
 							</div>
 						</div>
 					</div>
-				</div>
-				<div className="content-panel compact">
-					<Queue />
 				</div>
 			</div>
 		);

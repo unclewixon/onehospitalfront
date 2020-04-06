@@ -29,6 +29,7 @@ import {
 	TOGGLE_OPEN_ENCOUNTER,
 	TOGGLE_CREATE_CLINICAL_TASK,
 	TOGGLE_ADD_CAFETERIA_FILE,
+	TOGGLE_UPLOAD_RADIOLOGY,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -60,6 +61,7 @@ const INITIAL_STATE = {
 	payroll_staff: null,
 	upload_service: false,
 	upload_diagnosis: false,
+	upload_radiology: false,
 	create_clinical_task: false,
 	edit_service: { status: false, data: null },
 	openEncounter: false,
@@ -130,6 +132,8 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, upload_service: action.payload };
 		case TOGGLE_UPLOAD_DIAGNOSIS:
 			return { ...state, upload_diagnosis: action.payload };
+		case TOGGLE_UPLOAD_RADIOLOGY:
+			return { ...state, upload_radiology: action.payload };
 		case TOGGLE_EDIT_SERIVCE:
 			return { ...state, edit_service: action.payload };
 		case TOGGLE_OPEN_ENCOUNTER:

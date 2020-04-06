@@ -28,6 +28,7 @@ import OpenEncounter from '../Patient/Modals/OpenEncounter';
 import ModalCreateVoucher from './ModalCreateVoucher';
 import ModalCreateClinicalTask from './ModalCreateClinicalTask';
 import AddCafeteriaFile from './AddCafeteriaFile';
+import ModalUploadRadiology from './ModalUploadRadiology';
 
 const ModalDialogs = ({
 	create_staff,
@@ -57,6 +58,7 @@ const ModalDialogs = ({
 	create_voucher,
 	create_clinical_task,
 	add_cafeteria_file,
+	upload_radiology,
 }) => {
 	return (
 		<>
@@ -87,6 +89,7 @@ const ModalDialogs = ({
 			{create_clinical_task && <ModalCreateClinicalTask />}
 			{openEncounter && <OpenEncounter />}
 			{add_cafeteria_file && <AddCafeteriaFile />}
+			{upload_radiology && <ModalUploadRadiology />}
 		</>
 	);
 };
@@ -120,6 +123,7 @@ const mapStateToProps = (state, ownProps) => {
 		create_voucher: state.general.create_voucher,
 		create_clinical_task: state.general.create_clinical_task,
 		add_cafeteria_file: state.general.add_cafeteria_file,
+		upload_radiology: state.general.upload_radiology,
 	};
 };
 
