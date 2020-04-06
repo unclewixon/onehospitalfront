@@ -43,6 +43,7 @@ const PhysiotherapyRequest = props => {
 
 		if (parameters.length === 0) {
 			notifyError('Please select service to request');
+			setSubmitting(false);
 			return;
 		}
 
