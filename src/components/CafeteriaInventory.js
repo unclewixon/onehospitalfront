@@ -210,7 +210,7 @@ const CafeteriaInventory = props => {
 								<form className="row">
 									<div className="form-group col-md-4">
 										<label className="" htmlFor="category">
-											ID
+											Category
 										</label>
 										<select
 											style={{ height: '32px' }}
@@ -232,7 +232,7 @@ const CafeteriaInventory = props => {
 
 									<div className="form-group col-md-3">
 										<label className="mr-2 " htmlFor="item">
-											Status
+											Name
 										</label>
 										<select
 											style={{ height: '32px' }}
@@ -281,7 +281,7 @@ const CafeteriaInventory = props => {
 											<tbody>
 												{!dataLoaded ? (
 													<tr>
-														<td colSpan="4" className="text-center">
+														<td colSpan="6" className="text-center">
 															<img alt="searching" src={searchingGIF} />
 														</td>
 													</tr>

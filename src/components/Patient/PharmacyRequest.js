@@ -1,17 +1,34 @@
-import React, { Component } from 'react';
-import Pharmacy from './Pharmacy';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect } from 'react';
+import PharmNewRequestComponent from '../PharmNewRequestComponent';
+import { connect } from 'react-redux';
+import { getAllDiagnosises } from '../../actions/settings';
 
-class PharmacyRequest extends Component {
-	render() {
-		return (
-			<div className="col-sm-12">
-				<div className="element-wrapper">
-					<h6 className="element-header">New Pharmacy Request</h6>
-					<div className="element-box"></div>
-				</div>
-			</div>
-		);
-	}
-}
+const PharmacyRequest = props => {
+	const { patient, diagnosis } = props;
 
-export default PharmacyRequest;
+	useEffect(() => {
+		const { getAllDiagnosises } = props;
+		getAllDiagnosises();
+	}, []);
+
+	const diagnosisList = diagnosis
+		? diagnosis.map(diag => {
+				return {
+					label: diag.icd10Code,
+					value: diag.icd10Code,
+				};
+		  })
+		: [];
+
+	return (
+		<PharmNewRequestComponent patient={patient} diagnosisList={diagnosisList} />
+	);
+};
+
+const mapStateToProps = ({ user, settings }) => ({
+	patient: user.patient,
+	diagnosis: settings.diagnosis,
+});
+
+export default connect(mapStateToProps, { getAllDiagnosises })(PharmacyRequest);

@@ -13,7 +13,14 @@ import {
 	GET_OPTHALMOLOGY_REQUESTS,
 	LOAD_VITALS,
 	UPDATE_VITALS,
+	LOAD_PATIENT_UPLOAD_DATA,
+	ADD_PATIENT_UPLOAD_DATA,
+	LOAD_PATIENT_PROCEDURE_DATA,
+	ADD_PATIENT_PROCEDURE_DATA,
 	LOAD_PATIENTS,
+	GET_LAB_REQUESTS,
+	GET_PHARMACY_REQUESTS,
+	GET_ALL_REQUESTS,
 	LOAD_CLINICAL_LAB,
 	LOAD_RADIOLOGY,
 } from '../actions/types';
@@ -28,10 +35,14 @@ const INITIAL_STATE = {
 	dentistryRequests: [],
 	imagingRequests: [],
 	opthalmologyRequests: [],
+	patient_upload: [],
 	vitals: [],
 	patients: [],
 	clinicalLab: [],
 	radiology: [],
+	labRequests: [],
+	pharmacyRequests: [],
+	allRequests: [],
 };
 
 const patient = (state = INITIAL_STATE, action) => {
@@ -40,7 +51,21 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, formData: action.payload, formStep: 2 };
 		case PREV_STEP:
 			return { ...state, formStep: action.payload };
+		case LOAD_PATIENT_UPLOAD_DATA:
+			return { ...state, patient_upload: action.payload };
+		case ADD_PATIENT_UPLOAD_DATA:
+			return {
+				...state,
+				patient_upload: [...state.patient_upload, action.payload],
+			};
 
+		case LOAD_PATIENT_PROCEDURE_DATA:
+			return { ...state, patient_procedure: action.payload };
+		case ADD_PATIENT_PROCEDURE_DATA:
+			return {
+				...state,
+				patient_procedure: [...state.patient_procedure, action.payload],
+			};
 		case LOAD_PATIENTS:
 			return { ...state, patients: action.payload };
 		case GET_ALLERGIES:
@@ -84,6 +109,12 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, clinicalLab: [...action.payload] };
 		case LOAD_RADIOLOGY:
 			return { ...state, radiology: [...action.payload] };
+		case GET_LAB_REQUESTS:
+			return { ...state, labRequests: action.payload };
+		case GET_PHARMACY_REQUESTS:
+			return { ...state, pharmacyRequests: action.payload };
+		case GET_ALL_REQUESTS:
+			return { ...state, allRequests: action.payload };
 		default:
 			return state;
 	}

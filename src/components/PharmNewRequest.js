@@ -1,9 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PharmNewRequestComponent from './PharmNewRequestComponent';
 
-export class PharmNewRequest extends Component {
-	render() {
-		return <div>Pharmacy new request form</div>;
-	}
-}
+const PharmNewRequest = () => {
+	return <PharmNewRequestComponent />;
+};
 
 export default PharmNewRequest;

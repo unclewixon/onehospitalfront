@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { closeModals } from '../../actions/general';
-import {
-	uploadDiagnosis,
-	getAllDiagnosises,
-	updateDiagnosis,
-	deleteDiagnosis,
-} from '../../actions/settings';
+import { uploadHmo } from '../../actions/hmo';
 import { confirmAction } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
-
-class ModalUploadDiagnosis extends Component {
+import { ProgressBar } from 'react-bootstrap';
+class ModalUploadHmo extends Component {
 	state = {
 		file: null,
 		Loading: false,
@@ -29,13 +24,16 @@ class ModalUploadDiagnosis extends Component {
 		const data = new FormData();
 		data.append('file', this.state.file);
 		this.props
-			.uploadDiagnosis(data)
+			.uploadHmo(data)
 			.then(response => {
 				this.setState({ Loading: false });
 				this.props.closeModals(false);
-				notifySuccess('Service file uploaded');
+				notifySuccess('Hmos uploaded');
 			})
 			.catch(error => {
+				this.setState({ Loading: false });
+				this.props.closeModals(false);
+				notifyError(e.message || 'could not upload file');
 				this.setState({ Loading: false });
 			});
 	};
@@ -50,6 +48,7 @@ class ModalUploadDiagnosis extends Component {
 
 	render() {
 		const { Loading } = this.state;
+		const { progress } = this.props;
 		return (
 			<div
 				className="onboarding-modal modal fade animated show"
@@ -65,7 +64,7 @@ class ModalUploadDiagnosis extends Component {
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
-							<h4 className="onboarding-title">Upload Diagnosis</h4>
+							<h4 className="onboarding-title">Bulk upload hmo</h4>
 
 							<form onSubmit={this.onUpload}>
 								<div className="form-group">
@@ -91,6 +90,11 @@ class ModalUploadDiagnosis extends Component {
 								</div>
 							</form>
 						</div>
+						{Loading && (
+							<div className="onboarding-content with-gradient">
+								<ProgressBar now={progress} />
+							</div>
+						)}
 					</div>
 				</div>
 			</div>
@@ -98,10 +102,13 @@ class ModalUploadDiagnosis extends Component {
 	}
 }
 
-export default connect(null, {
+const mapStateToProps = state => {
+	return {
+		progress: state.hmo.hmo_upload_progress,
+	};
+};
+
+export default connect(mapStateToProps, {
 	closeModals,
-	uploadDiagnosis,
-	getAllDiagnosises,
-	updateDiagnosis,
-	deleteDiagnosis,
-})(ModalUploadDiagnosis);
+	uploadHmo,
+})(ModalUploadHmo);

@@ -6,7 +6,8 @@ import LabInvestigation from '../MutlistepForms/LabInvestigation';
 import RadiologicalInvestigation from '../MutlistepForms/RadiologicalInvestigation';
 import Prescription from '../MutlistepForms/Prescription';
 import NextAppointment from '../MutlistepForms/NextAppointment';
-class AntennatalRequest extends Component {
+import EnrollmentForm from '../Enrollment/EnrollmentForm';
+class EnrollAntenatalPatient extends Component {
 	state = {
 		page: 1,
 		submitting: false,
@@ -44,49 +45,16 @@ class AntennatalRequest extends Component {
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
-					<h6 className="element-header">Antennal Request</h6>
-					<div className="element-box">
-						{page === 1 && <GeneralAssessment onSubmit={this.nextPage} />}
-						{page === 2 && (
-							<GeneralComments
-								previousPage={this.previousPage}
-								onSubmit={this.nextPage}
-							/>
-						)}
-						{page === 3 && (
-							<LabInvestigation
-								previousPage={this.previousPage}
-								onSubmit={this.nextPage}
-							/>
-						)}
-						{page === 4 && (
-							<RadiologicalInvestigation
-								previousPage={this.previousPage}
-								onSubmit={this.nextPage}
-							/>
-						)}
-						{page === 5 && (
-							<Prescription
-								previousPage={this.previousPage}
-								onSubmit={this.nextPage}
-							/>
-						)}
-						{page === 6 && (
-							<NextAppointment
-								submitting={submitting}
-								previousPage={this.previousPage}
-								onSubmit={this.nextPage}
-							/>
-						)}
-					</div>
+					<h6 className="element-header">Enroll Antenatal</h6>
+					<EnrollmentForm />
 				</div>
 			</div>
 		);
 	}
 }
 
-// AntennatalRequest.propTypes = {
+// EnrollPatient.propTypes = {
 // 	onSubmit: PropTypes.func.isRequired,
 // };
 
-export default AntennatalRequest;
+export default EnrollAntenatalPatient;

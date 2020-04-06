@@ -1,3 +1,5 @@
+import axios from 'axios';
+import { API_URI } from '../services/constants';
 import {
 	NEXT_STEP,
 	PREV_STEP,
@@ -5,6 +7,8 @@ import {
 	GET_ALLERGIES,
 	ALLERGY,
 	UPDATE_ALLERGY,
+	LOAD_PATIENT_UPLOAD_DATA,
+	ADD_PATIENT_UPLOAD_DATA,
 	DELETE_ALLERGY,
 	GET_PHYSIOTHERAPIES,
 	GET_DENTISTRY_REQUESTS,
@@ -12,7 +16,13 @@ import {
 	GET_OPTHALMOLOGY_REQUESTS,
 	LOAD_VITALS,
 	UPDATE_VITALS,
+	CREATE_LAB_REQUEST,
+	LOAD_PATIENT_PROCEDURE_DATA,
+	ADD_PATIENT_PROCEDURE_DATA,
 	LOAD_PATIENTS,
+	ADD_PHARMACY_REQUEST,
+	GET_PHARMACY_REQUESTS,
+	GET_LAB_REQUESTS,
 	LOAD_CLINICAL_LAB,
 	LOAD_RADIOLOGY,
 } from './types';
@@ -34,6 +44,34 @@ export const nextStep = data => {
 export const prevStep = data => {
 	return {
 		type: PREV_STEP,
+		payload: data,
+	};
+};
+
+export const loadPatientProcedureData = data => {
+	return {
+		type: LOAD_PATIENT_PROCEDURE_DATA,
+		payload: data,
+	};
+};
+
+export const addPatientProcedureData = data => {
+	return {
+		type: ADD_PATIENT_PROCEDURE_DATA,
+		payload: data,
+	};
+};
+
+export const loadPatientUploadData = data => {
+	return {
+		type: LOAD_PATIENT_UPLOAD_DATA,
+		payload: data,
+	};
+};
+
+export const addPatientUploadData = data => {
+	return {
+		type: ADD_PATIENT_UPLOAD_DATA,
 		payload: data,
 	};
 };
@@ -117,6 +155,13 @@ export const updateVitals = data => {
 	};
 };
 
+export const create_lab_request = data => {
+	return {
+		type: CREATE_LAB_REQUEST,
+		payload: data,
+	};
+};
+
 export const loadClinicalLab = data => {
 	return {
 		type: LOAD_CLINICAL_LAB,
@@ -128,5 +173,111 @@ export const loadRadiology = data => {
 	return {
 		type: LOAD_RADIOLOGY,
 		payload: data,
+	};
+};
+
+export const add_pharmacy_request = data => {
+	return {
+		type: ADD_PHARMACY_REQUEST,
+		payload: data,
+	};
+};
+
+export const createLabRequest = data => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			axios
+				.post(`${API_URI}/patient/save-request`, {
+					requestType: data.service_center,
+					category_id: data.category,
+					requestBody: {
+						specialization: '',
+						sessionCount: '',
+						combination: data.lab_combo,
+						test: data.lab_test,
+						referredSpeciment: data.referred_specimen,
+						requestNote: data.request_note,
+					},
+					patient_id: data.patient_id,
+				})
+				.then(response => {
+					dispatch(create_lab_request(response.data));
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return reject({ success: false });
+				});
+		});
+	};
+};
+
+export const getRequestByType = (patientId, type) => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			axios
+				.get(
+					patientId
+						? `${API_URI}/patient/${patientId}/request/${type}?startDate=&endDate=`
+						: `${API_URI}/patient/requests/${type}?startDate=&endDate=`
+				)
+				.then(response => {
+					if (type === 'lab') {
+						dispatch({
+							type: GET_LAB_REQUESTS,
+							payload: response.data,
+						});
+					}
+					if (type === 'pharmacy') {
+						dispatch({
+							type: GET_PHARMACY_REQUESTS,
+							payload: response.data,
+						});
+					}
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return reject({ success: false });
+				});
+		});
+	};
+};
+
+export const addPharmacyRequest = (data, id, diagnosis, prescription, cb) => {
+	return dispatch => {
+		const requestData = data
+			? data.map(request => ({
+					forumalary: request.formulary,
+					drug_generic_name: request.genericName,
+					drug_name: request.drugName,
+					dose_quantity: request.quantity,
+					refillable: {
+						number_of_refills: request && request.refills ? request.refills : 0,
+						eg: request && request.eg ? request.eg : 0,
+						frequency_type:
+							request && request.frequency ? request.frequency : '',
+						duration: request && request.duration ? request.duration : 0,
+						note: request && request.refillNote ? request.refillNote : '',
+					},
+			  }))
+			: [];
+		return new Promise((resolve, reject) => {
+			axios
+				.post(`${API_URI}/patient/save-request`, {
+					requestType: 'pharmacy',
+					requestBody: requestData,
+					diagnosis: diagnosis ? diagnosis : '',
+					prescription: prescription ? prescription : '',
+					patient_id: id ? id : '',
+				})
+				.then(response => {
+					dispatch(add_pharmacy_request(response.data));
+					cb('success');
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					cb(null);
+					return reject({ success: false });
+				});
+		});
 	};
 };
