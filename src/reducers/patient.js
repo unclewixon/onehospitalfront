@@ -77,7 +77,7 @@ const patient = (state = INITIAL_STATE, action) => {
 		case LOAD_ENCOUNTERS:
 			return { ...state, encounters: [...action.payload] };
 		case GET_PHYSIOTHERAPIES:
-			return { ...state, allergies: action.payload };
+			return { ...state, physiotherapies: action.payload };
 		case GET_DENTISTRY_REQUESTS:
 			return { ...state, dentistryRequests: action.payload };
 		case GET_IMAGING_REQUESTS:

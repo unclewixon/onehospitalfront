@@ -192,6 +192,8 @@ const LabTest = props => {
 				});
 			props.getAllLabTestCategories();
 			props.getAllLabTestParameters();
+
+			console.log(props.LabParameters);
 		}
 		setLoaded(true);
 	}, [loaded, props]);
