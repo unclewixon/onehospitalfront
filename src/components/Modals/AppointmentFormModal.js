@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 
 import { closeModals } from '../../actions/general';
 import { request, formatNumber } from '../../services/utilities';
-import { API_URI, socket } from '../../services/constants';
+import { API_URI, serviceAPI, socket } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -23,6 +23,7 @@ const AppointmentFormModal = props => {
 	const [appointmentDate, setAppointmentDate] = useState(new Date());
 	const [submitting, setSubmitting] = useState(false);
 	const [services, setServices] = useState([]);
+	const [servicesCategory, setServicesCategory] = useState([]);
 
 	const today = moment().format('YYYY-MM-DD');
 
@@ -40,6 +41,33 @@ const AppointmentFormModal = props => {
 			label: patient.surname + ', ' + patient.other_names,
 		}));
 		setPatients(res);
+	}
+
+	const fetchServicesByCategory = async id => {
+		try {
+			const rs = await request(
+				`${API_URI}${serviceAPI}` + '/categories/' + id,
+				'GET',
+				true
+			);
+			const res = rs.map(service => ({
+				value: service,
+				label: service.name + ' N' + formatNumber(service.tariff),
+			}));
+			setServices(res);
+		} catch (error) {
+			console.log(error);
+			notifyError('error fetching imaging requests for the patient');
+		}
+	};
+
+	async function getConsultationServicesCategory() {
+		const rs = await request(`${API_URI}/services/categories`, 'GET', true);
+		const res = rs.map(service => ({
+			value: service.id,
+			label: service.name,
+		}));
+		setServicesCategory(res);
 	}
 
 	async function getConsultationServices() {
@@ -87,6 +115,11 @@ const AppointmentFormModal = props => {
 		setValidationMessage(`The patient is to pay N${formatNumber(rs.amount)}`);
 	}
 
+	const handleServiceCategoryChange = evt => {
+		setValue('serviceType', null);
+		fetchServicesByCategory(evt);
+	};
+
 	const handleAppointmentTypeChange = service => {
 		setValue('serviceType', service.id);
 		const values = getValues();
@@ -106,7 +139,7 @@ const AppointmentFormModal = props => {
 	}, []);
 
 	useEffect(() => {
-		getConsultationServices();
+		getConsultationServicesCategory();
 	}, []);
 
 	useEffect(() => {
@@ -220,27 +253,56 @@ const AppointmentFormModal = props => {
 										</div>
 									</div>
 								</div>
-								<div className="form-group">
-									<label>Appointment Type</label>
-									<Select
-										id="gender"
-										placeholder=""
-										options={services}
-										ref={register({ name: 'serviceType' })}
-										onChange={evt => {
-											if (evt == null) {
-												setValue('serviceType', null);
-											} else {
-												handleAppointmentTypeChange(evt.value);
-											}
-										}}
-									/>
-									{validationMessage && (
-										<div className="help-text text-danger">
-											{validationMessage}
+
+								<div className="row">
+									<div className="col-sm-6">
+										<div className="form-group">
+											<label>Appointment Category</label>
+											<Select
+												id="serviceCategory"
+												placeholder=""
+												options={servicesCategory}
+												ref={register({ name: 'serviceCategory' })}
+												onChange={evt => {
+													if (evt == null) {
+														setValue('serviceCategory', null);
+													} else {
+														handleServiceCategoryChange(evt.value);
+													}
+												}}
+											/>
+											{validationMessage && (
+												<div className="help-text text-danger">
+													{validationMessage}
+												</div>
+											)}
 										</div>
-									)}
+									</div>
+									<div className="col-sm-6">
+										<div className="form-group">
+											<label>Appointment Type</label>
+											<Select
+												id="serviceType"
+												placeholder=""
+												options={services}
+												ref={register({ name: 'serviceType' })}
+												onChange={evt => {
+													if (evt == null) {
+														setValue('serviceType', null);
+													} else {
+														handleAppointmentTypeChange(evt.value);
+													}
+												}}
+											/>
+											{validationMessage && (
+												<div className="help-text text-danger">
+													{validationMessage}
+												</div>
+											)}
+										</div>
+									</div>
 								</div>
+
 								<div className="row">
 									<div className="col-sm-6">
 										<div className="form-group">
