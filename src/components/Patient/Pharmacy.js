@@ -9,15 +9,14 @@ import searchingGIF from '../../assets/images/searching.gif';
 import Modal from 'react-bootstrap/Modal';
 import moment from 'moment';
 import Select from 'react-select';
+import { ReactComponent as ViewIcon } from '../../assets/svg-icons/view.svg';
 
 const Pharmacy = props => {
-	const { location, Requests } = props;
+	const { location, Requests, patient } = props;
 	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
-
-	const { patient } = props;
 
 	const onModalClick = () => {
 		setShowModal(!showModal);
@@ -26,7 +25,6 @@ const Pharmacy = props => {
 	const requestStatus = [
 		{ value: 'pending', label: 'Pending' },
 		{ value: 'approved', label: 'Approved' },
-		{ value: 'declined', label: 'Declined' },
 	];
 
 	useEffect(() => {
@@ -34,7 +32,7 @@ const Pharmacy = props => {
 		const patient_id = patient && patient.id ? patient.id : '';
 		if (!loaded) {
 			setDataLoaded(true);
-			getRequestByType(patient_id, 'pharmarcy')
+			getRequestByType(patient_id, 'pharmacy')
 				.then(response => {
 					setDataLoaded(false);
 				})
@@ -78,44 +76,8 @@ const Pharmacy = props => {
 									</Modal.Title>
 								</Modal.Header>
 								<Modal.Body>
-									<div className="row">
-										<div className="form-group col-lg-6">
-											<h5>Request Note</h5>
-											<div>
-												<p className="justify">
-													{activeRequest.requestBody.requestNote}
-												</p>
-											</div>
-										</div>
-										<div className="col-lg-3">
-											<h5>Tests</h5>
-											{activeRequest.requestBody &&
-											activeRequest.requestBody.test
-												? activeRequest.requestBody.test.map((test, index) => {
-														return (
-															<div key={index}>
-																<p>{test.name}</p>
-															</div>
-														);
-												  })
-												: null}
-										</div>
-										<div className="col-lg-3">
-											<h5>Groups</h5>
-											{activeRequest.requestBody &&
-											activeRequest.requestBody.combination
-												? activeRequest.requestBody.combination.map(
-														(combo, index) => {
-															return (
-																<div key={index}>
-																	<p>{combo.name}</p>
-																</div>
-															);
-														}
-												  )
-												: null}
-										</div>
-									</div>
+									
+									
 								</Modal.Body>
 							</Modal>
 						) : null}
@@ -134,10 +96,9 @@ const Pharmacy = props => {
 										className="table table-theme v-middle table-hover">
 										<thead>
 											<tr>
-												<th>ID</th>
 												<th>Request Date</th>
-												<th>Requested By</th>
-												<th>Request Specimen</th>
+												<th>Request Type</th>
+												<th>Diagnosis</th>
 												<th className="text-center">Request Status</th>
 												<th className="text-right" />
 											</tr>
@@ -151,39 +112,37 @@ const Pharmacy = props => {
 																data-index="0"
 																data-id="20"
 																key={index}>
-																<td>
-																	<span className="text-bold"></span>
-																</td>
-																<td>
-																	<span>
-																		{moment(request.createdAt).format(
-																			'DD/MM/YYYY hh:mm'
-																		)}
-																	</span>
-																</td>
-																<td>
-																	<Link to="/">{`${patient.surname.toUpperCase()} ${patient.other_names.toUpperCase()}`}</Link>
-																</td>
-																<td>{request.requestBody.referredSpeciment}</td>
+																<td>{moment(request.createdAt).format("DD-MM-YYYY : hh mm")}</td>
+														<td>{request.requestType}</td>
+														<td>{request && request.diagnosis ? request.diagnosis : ""}</td>
 																<td className="text-center">
-																	<div className="form-group">
-																		<Select
-																			name="service_center"
-																			placeholder="Set Status"
-																			options={requestStatus}
-																		/>
+																{
+															request.status === 1 ? (
+																<div>
+																	<span className="status-pill smaller green"></span>
+																	<span>Approved</span>
+																</div>
+															) : (
+																	<div>
+																		<span className="status-pill smaller yellow"></span>
+																		<span>Pending</span>
 																	</div>
+																)
+														}
 																</td>
 																<td className="row-actions text-right">
 																	<Tooltip title="View Request">
-																		<button
-																			className="btn btn-primary"
-																			onClick={() => {
-																				setActiveRequest(request);
-																				onModalClick();
-																			}}>
-																			View
-																		</button>
+																	<ViewIcon
+														onClick={() => {
+															setActiveRequest(request);
+															onModalClick();
+														}}
+														style={{
+															width: '1rem',
+															height: '1rem',
+															cursor: 'pointer',
+														}}
+													/>
 																	</Tooltip>
 																	<Tooltip title="Print Request">
 																		<a className="ml-2" href="#">
@@ -209,7 +168,7 @@ const Pharmacy = props => {
 
 const mapStateToProps = ({ patient, user }) => ({
 	patient: user.patient,
-	Requests: patient.pharmRequest,
+	Requests: patient.pharmacyRequests,
 });
 
 export default connect(mapStateToProps, { getRequestByType })(

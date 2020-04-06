@@ -211,14 +211,14 @@ export const createLabRequest = data => {
 	};
 };
 
-export const getRequestByType = (data, type) => {
+export const getRequestByType = (patientId, type) => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
 				.get(
-					data
-						? `${API_URI}/patient/${data}/request/${type}?startDate=&endDate=`
-						: `${API_URI}/request-types/${type}`
+					patientId
+						? `${API_URI}/patient/${patientId}/request/${type}?startDate=&endDate=`
+						: `${API_URI}/patient/requests/${type}?startDate=&endDate=`
 				)
 				.then(response => {
 					if (type === 'lab') {
@@ -227,7 +227,7 @@ export const getRequestByType = (data, type) => {
 							payload: response.data,
 						});
 					}
-					if (type === 'pharmarcy') {
+					if (type === 'pharmacy') {
 						dispatch({
 							type: GET_PHARMACY_REQUESTS,
 							payload: response.data,
