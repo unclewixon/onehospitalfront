@@ -52,7 +52,7 @@ class ClinicalLab extends Component {
 							Dashboard
 						</Link>
 						<Link
-							to={`lab/recent-request`}
+							to={`/lab/recent-request`}
 							className={`btn btn-primary ${
 								page === '/recent-request' ? 'btn-outline-primary' : ''
 								}`}>
@@ -60,7 +60,7 @@ class ClinicalLab extends Component {
 										Recent Request
 									</Link>
 						<Link
-							to={`lab/filled-request`}
+							to={`/lab/filled-request`}
 							className={`btn btn-primary ${
 								page === '/filled-request' ? 'btn-outline-primary' : ''
 								}`}>
@@ -88,22 +88,22 @@ class ClinicalLab extends Component {
 							<div className="element-content">
 								<div className="row">
 									<div className="col-sm-4 col-xxxl-4">
-										<a className="element-box el-tablo">
+										<Link className="element-box el-tablo">
 											<div className="label">Pending Requests</div>
 											<div className="value">57</div>
-										</a>
+										</Link>
 									</div>
 									<div className="col-sm-4 col-xxxl-4">
-										<a className="element-box el-tablo">
+										<Link className="element-box el-tablo">
 											<div className="label">Pending Approval</div>
 											<div className="value text-center">457</div>
-										</a>
+										</Link>
 									</div>
 									<div className="col-sm-4 col-xxxl-4">
-										<a className="element-box el-tablo">
+										<Link className="element-box el-tablo">
 											<div className="label">Completed Requests</div>
 											<div className="value">125</div>
-										</a>
+										</Link>
 									</div>
 								</div>
 							</div>

@@ -112,7 +112,7 @@ class LabRecentRequest extends Component {
 							Dashboard
 						</Link>
 						<Link
-							to={`lab/recent-request`}
+							to={`/lab/recent-request`}
 							className={`btn btn-primary ${
 								page === '/recent-request' ? 'btn-outline-primary' : ''
 								}`}>
@@ -120,7 +120,7 @@ class LabRecentRequest extends Component {
 										Recent Request
 									</Link>
 						<Link
-							to={`lab/filled-request`}
+							to={`/lab/filled-request`}
 							className={`btn btn-primary ${
 								page === '/filled-request' ? 'btn-outline-primary' : ''
 								}`}>

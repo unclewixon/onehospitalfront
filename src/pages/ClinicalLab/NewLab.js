@@ -20,7 +20,7 @@ export class NewLab extends Component {
 							Dashboard
 						</Link>
 						<Link
-							to={`lab/recent-request`}
+							to={`/lab/recent-request`}
 							className={`btn btn-primary ${
 								page === '/recent-request' ? 'btn-outline-primary' : ''
 								}`}>
@@ -28,7 +28,7 @@ export class NewLab extends Component {
 										Recent Request
 									</Link>
 						<Link
-							to={`lab/filled-request`}
+							to={`/lab/filled-request`}
 							className={`btn btn-primary ${
 								page === '/filled-request' ? 'btn-outline-primary' : ''
 								}`}>

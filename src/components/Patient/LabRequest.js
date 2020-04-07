@@ -29,6 +29,7 @@ const LabRequest = props => {
 	const [category, setCategory] = useState('');
 	const [labTests, setLabTests] = useState(null);
 	const [labCombos, setLabCombos] = useState(null);
+	const [urgent, setUrgent] = useState(false)
 
 	const handleMultipleSelectInput = (field, selected) => {
 		if (field === 'lab_combos') {
@@ -97,6 +98,7 @@ const LabRequest = props => {
 				lab_test,
 				lab_combo,
 				category,
+				urgent: urgent ? urgent : false,
 				patient_id: patient && patient.id ? patient.id : '',
 			})
 			.then(response => {
@@ -216,7 +218,8 @@ const LabRequest = props => {
 											className="form-check-input mt-0"
 											name="urgent"
 											type="checkbox"
-											value={true}
+											checked={urgent}
+											onChange={e => setUrgent(!urgent)}
 											ref={register}
 										/>{' '}
 										Please check if urgent
