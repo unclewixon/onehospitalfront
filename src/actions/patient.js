@@ -190,7 +190,6 @@ export const createLabRequest = data => {
 				.post(`${API_URI}/patient/save-request`, {
 					requestType: data.service_center,
 					category_id: data.category,
-					urgent: data.urgent,
 					requestBody: {
 						specialization: '',
 						sessionCount: '',
@@ -198,6 +197,7 @@ export const createLabRequest = data => {
 						test: data.lab_test,
 						referredSpeciment: data.referred_specimen,
 						requestNote: data.request_note,
+						urgent: data.urgent,
 					},
 					patient_id: data.patient_id,
 				})

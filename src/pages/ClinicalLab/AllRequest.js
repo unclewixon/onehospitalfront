@@ -12,6 +12,7 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadClinicalLab } from '../../actions/patient';
 import _ from 'lodash';
+import ModalClinicalLab from './../../components/Modals/ModalClinicalLab';
 const { RangePicker } = DatePicker;
 // const departments = [
 //     { id: 'ejejekek', name: 'angel' },
@@ -30,6 +31,8 @@ class AllRequest extends Component {
 		startDate: '',
 		endDate: '',
 		status: '',
+		showModal: false,
+		activeRequest: null
 	};
 
 	componentDidMount() {
@@ -77,6 +80,12 @@ class AllRequest extends Component {
 		});
 	};
 
+	onModalClick = () => {
+		this.setState({
+			showModal: !this.state.showModal
+		})
+	}
+
 	onDeleteTransaction = data => {
 		this.props
 			.deleteTransaction(data)
@@ -91,60 +100,72 @@ class AllRequest extends Component {
 		confirmAction(this.onDeleteTransaction, data);
 	};
 
+	modalFunction = (lab) => {
+		this.onModalClick();
+		this.setState({ activeRequest: lab });
+	}
+
 	render() {
 		const { filtering, loading } = this.state;
 		const { location, clinicalLab } = this.props;
-		console.log(
-			clinicalLab.sort((a, b) => a.createdAt.localeCompare(b.createdAt))
-		);
 
 		const page = location.pathname.split('/').pop();
 		return (
 			<>
 				<div className="col-sm-12">
 					<div className="element-wrapper">
-					<div className="element-actions">
-						<Link
-							className={`btn btn-primary ${
-								page === '/' ? 'btn-outline-primary' : ''
-								}`}
-							to="/lab">
-							Dashboard
-						</Link>
-						<Link
-							to={`/lab/recent-request`}
-							className={`btn btn-primary ${
-								page === '/recent-request' ? 'btn-outline-primary' : ''
-								}`}>
-							{' '}
-										Recent Request
-									</Link>
-						<Link
-							to={`/lab/filled-request`}
-							className={`btn btn-primary ${
-								page === '/filled-request' ? 'btn-outline-primary' : ''
-								}`}>
-							{' '}
-										Filled Request
-									</Link>
-						<Link
-							className={`btn btn-primary ${
-								page === '/all-request' ? 'btn-outline-primary' : ''
-								}`}
-							to="/lab/all-request">
-							All Request
-						</Link>
-						<Link
-							className={`btn btn-primary ${
-								page === '/lab-request' ? 'btn-outline-primary' : ''
-								}`}
-							to="/lab/lab-request">
-							New Lab Request
-						</Link>
-					</div>
+
 						<h6 className="element-header">All Lab Requests</h6>
 						<div className="row">
+							<div className="row mt-2 mb-4">
+								<Link
+									className={`mr-2 btn btn-primary btn-sm  ${
+										page === '/' ? 'btn-outline-primary' : ''
+										}`}
+									to="/lab">
+									Dashboard
+						</Link>
+								<Link
+									to={`/lab/recent-request`}
+									className={`mr-2 btn btn-primary btn-sm  ${
+										page === '/recent-request' ? 'btn-outline-primary' : ''
+										}`}>
+									{' '}
+										Recent Request
+									</Link>
+								<Link
+									to={`/lab/filled-request`}
+									className={`mr-2 btn btn-primary btn-sm ${
+										page === '/filled-request' ? 'btn-outline-primary' : ''
+										}`}>
+									{' '}
+										Filled Request
+									</Link>
+								<Link
+									className={`mr-2 btn btn-primary btn-sm  ${
+										page === '/all-request' ? 'btn-outline-primary' : ''
+										}`}
+									to="/lab/all-request">
+									All Request
+						</Link>
+								<Link
+									className={`mr-2 btn btn-primary btn-sm  ${
+										page === '/lab-request' ? 'btn-outline-primary' : ''
+										}`}
+									to="/lab/lab-request">
+									New Lab Request
+						</Link>
+							</div>
+						</div>
+						<div className="row">
 							<div className="col-md-12">
+								{this.state.activeRequest ? (
+									<ModalClinicalLab
+										activeRequest={this.state.activeRequest}
+										showModal={this.state.showModal}
+										onModalClick={this.onModalClick}
+									/>
+								) : null}
 								<h6 className="element-header">Filter by:</h6>
 
 								<form className="row">
@@ -181,8 +202,8 @@ class AllRequest extends Component {
 												{filtering ? (
 													<img src={waiting} alt="submitting" />
 												) : (
-													'Filter'
-												)}
+														'Filter'
+													)}
 											</span>
 										</div>
 									</div>
@@ -240,7 +261,11 @@ class AllRequest extends Component {
 												) : null}
 												{clinicalLab &&
 													clinicalLab.reverse().map(lab => {
-														return <ClinicalLabItem key={lab.id} lab={lab} />;
+														return <ClinicalLabItem
+															key={lab.id}
+															lab={lab}
+															modalClick={(LAB) => this.modalFunction(LAB)}
+														/>;
 													})}
 											</tbody>
 										</table>

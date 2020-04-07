@@ -43,9 +43,12 @@ class ClinicalLab extends Component {
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
-					<div className="element-actions">
+					
+					<h6 className="element-header">Lab</h6>
+					<div className="row">
+					<div className="row mt-2 mb-4">
 						<Link
-							className={`btn btn-primary ${
+							className={`mr-2 btn btn-primary btn-sm  ${
 								page === '/' ? 'btn-outline-primary' : ''
 								}`}
 							to="/lab">
@@ -53,7 +56,7 @@ class ClinicalLab extends Component {
 						</Link>
 						<Link
 							to={`/lab/recent-request`}
-							className={`btn btn-primary ${
+							className={`mr-2 btn btn-primary btn-sm  ${
 								page === '/recent-request' ? 'btn-outline-primary' : ''
 								}`}>
 							{' '}
@@ -61,49 +64,49 @@ class ClinicalLab extends Component {
 									</Link>
 						<Link
 							to={`/lab/filled-request`}
-							className={`btn btn-primary ${
+							className={`mr-2 btn btn-primary btn-sm ${
 								page === '/filled-request' ? 'btn-outline-primary' : ''
 								}`}>
 							{' '}
 										Filled Request
 									</Link>
 						<Link
-							className={`btn btn-primary ${
+							className={`mr-2 btn btn-primary btn-sm  ${
 								page === '/all-request' ? 'btn-outline-primary' : ''
 								}`}
 							to="/lab/all-request">
 							All Request
 						</Link>
 						<Link
-							className={`btn btn-primary ${
+							className={`mr-2 btn btn-primary btn-sm  ${
 								page === '/lab-request' ? 'btn-outline-primary' : ''
 								}`}
 							to="/lab/lab-request">
 							New Lab Request
 						</Link>
 					</div>
-					<h6 className="element-header">Lab</h6>
+					</div>
 					<div className="row">
 						<div className="col-sm-12">
 							<div className="element-content">
 								<div className="row">
 									<div className="col-sm-4 col-xxxl-4">
-										<Link className="element-box el-tablo">
+										<a className="element-box el-tablo">
 											<div className="label">Pending Requests</div>
 											<div className="value">57</div>
-										</Link>
+										</a>
 									</div>
 									<div className="col-sm-4 col-xxxl-4">
-										<Link className="element-box el-tablo">
+										<a className="element-box el-tablo">
 											<div className="label">Pending Approval</div>
 											<div className="value text-center">457</div>
-										</Link>
+										</a>
 									</div>
 									<div className="col-sm-4 col-xxxl-4">
-										<Link className="element-box el-tablo">
+										<a className="element-box el-tablo">
 											<div className="label">Completed Requests</div>
 											<div className="value">125</div>
-										</Link>
+										</a>
 									</div>
 								</div>
 							</div>
