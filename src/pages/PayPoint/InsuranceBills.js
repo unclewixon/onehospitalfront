@@ -39,7 +39,7 @@ export class InsuranceBills extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}${transactionsAPI}/list?patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}&transaction_type=billing`,
+				`${API_URI}/hmos/transactions?patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}`,
 				'GET',
 				true
 			);
@@ -71,7 +71,6 @@ export class InsuranceBills extends Component {
 	doFilter = e => {
 		e.preventDefault();
 		this.setState({ filtering: true });
-
 		this.fetchTransaction();
 	};
 

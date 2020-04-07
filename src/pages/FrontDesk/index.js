@@ -8,10 +8,8 @@ import {
 
 import Queue from '../../components/Queue';
 import Dashboard from '../../components/FrontDesk/FrontDeskDashboard';
-import Appointments from '../../components/FrontDesk/FrontDeskAppointments';
+//import Appointments from '../../components/FrontDesk/FrontDeskAppointments';
 import Incoming from '../../components/FrontDesk/Incoming';
-import Switch from 'antd/es/switch';
-import Route from 'react-router-dom/es/Route';
 import { compose } from 'redux';
 import {
 	addPatientUploadData,
@@ -19,18 +17,14 @@ import {
 } from '../../actions/patient';
 import NoMatch from '../NoMatch';
 
-import { Link, withRouter } from 'react-router-dom';
 import Splash from '../../components/Splash';
-
-const Overall = lazy(() => import('../../components/Overall'));
-const PharmRecentRequest = lazy(() =>
-	import('../../components/PharmRecentRequest')
+import { Switch, Route, withRouter, Link } from 'react-router-dom';
+const Appointments = lazy(() =>
+	import('../../components/FrontDesk/FrontDeskAppointments')
 );
-const PharmAllRequest = lazy(() => import('../../components/PharmAllRequest'));
-const PharmFillRequest = lazy(() =>
-	import('../../components/PharmFillRequest')
+const AllAppointments = lazy(() =>
+	import('../../components/FrontDesk/AllAppointments')
 );
-const PharmNewRequest = lazy(() => import('../../components/PharmNewRequest'));
 
 const FrontDesk = props => {
 	const [ShowDashboard, setDashboard] = useState(true);
@@ -84,36 +78,30 @@ const FrontDesk = props => {
 									Dashboard
 								</Link>
 								<Link
-									to={`${match.path}/recent-request`}
+									to={`${match.path}/all-appointments`}
 									className={`mr-2 btn btn-primary btn-sm  ${
 										page === 'recent-request' ? 'btn-outline-primary' : ''
 									}`}>
 									{' '}
-									Recent Request
+									All appointments
 								</Link>
 								<Link
-									to={`${match.path}/filled-request`}
+									to="#"
+									onClick={RegisterNewPatient}
 									className={`mr-2 btn btn-primary btn-sm  ${
 										page === 'filled-request' ? 'btn-outline-primary' : ''
 									}`}>
 									{' '}
-									Filled Request
+									Add new patient
 								</Link>
 								<Link
-									to={`${match.path}/all-request`}
+									to="#"
+									onClick={CreateNewAppointment}
 									className={`mr-2 btn btn-primary btn-sm  ${
 										page === 'all-request' ? 'btn-outline-primary' : ''
 									}`}>
 									{' '}
-									All Request
-								</Link>
-								<Link
-									to={`${match.path}/new-request`}
-									className={`mr-2 btn btn-primary btn-sm  ${
-										page === 'new-request' ? 'btn-outline-primary' : ''
-									}`}>
-									{' '}
-									New Request
+									New appointment
 								</Link>
 							</div>
 
@@ -121,22 +109,14 @@ const FrontDesk = props => {
 								<div className="col-sm-12">
 									<Suspense fallback={<Splash />}>
 										<Switch>
-											<Route exact path={`${match.url}/`} component={Overall} />
 											<Route
-												path={`${match.url}/recent-request`}
-												component={PharmRecentRequest}
+												exact
+												path={`${match.url}/`}
+												component={Appointments}
 											/>
 											<Route
-												path={`${match.url}/filled-request`}
-												component={PharmFillRequest}
-											/>
-											<Route
-												path={`${match.url}/all-request`}
-												component={PharmAllRequest}
-											/>
-											<Route
-												path={`${match.url}/new-request`}
-												component={PharmNewRequest}
+												path={`${match.url}/all-appointments`}
+												component={AllAppointments}
 											/>
 
 											<Route component={NoMatch} />
