@@ -1,14 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component, lazy, Suspense } from 'react';
-import Tooltip from 'antd/lib/tooltip';
-import { Switch, Link, withRouter, Route } from 'react-router-dom';
+import { Switch, withRouter, Route } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Queue from '../../components/Queue';
 import Splash from '../../components/Splash';
 const NewLab = lazy(() => import('./NewLab'));
-
 const ClinicalLab = lazy(() => import('./ClinicalLab'));
 const AllRequest = lazy(() => import('./AllRequest'));
+const LabRecentRequest = lazy(() => import('./LabRecentRequest'));
+const LabFilledRequest = lazy(() => import('./LabFilledRequest'));
+
 
 class Clinical extends Component {
 	state = {};
@@ -36,7 +37,16 @@ class Clinical extends Component {
 									path={`${match.url}/all-request`}
 									component={AllRequest}
 								/>
-
+								<Route
+									exact
+									path={`${match.url}/recent-request`}
+									component={LabRecentRequest}
+								/>
+								<Route
+									exact
+									path={`${match.url}/filled-request`}
+									component={LabFilledRequest}
+								/>
 								<Route component={NoMatch} />
 							</Switch>
 						</Suspense>

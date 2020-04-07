@@ -8,6 +8,7 @@ import { loadClinicalLab } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
 import _ from 'lodash';
+
 class ClinicalLab extends Component {
 	state = {
 		loading: false,
@@ -46,21 +47,37 @@ class ClinicalLab extends Component {
 						<Link
 							className={`btn btn-primary ${
 								page === '/' ? 'btn-outline-primary' : ''
-							}`}
+								}`}
 							to="/lab">
 							Dashboard
 						</Link>
 						<Link
+							to={`lab/recent-request`}
+							className={`btn btn-primary ${
+								page === '/recent-request' ? 'btn-outline-primary' : ''
+								}`}>
+							{' '}
+										Recent Request
+									</Link>
+						<Link
+							to={`lab/filled-request`}
+							className={`btn btn-primary ${
+								page === '/filled-request' ? 'btn-outline-primary' : ''
+								}`}>
+							{' '}
+										Filled Request
+									</Link>
+						<Link
 							className={`btn btn-primary ${
 								page === '/all-request' ? 'btn-outline-primary' : ''
-							}`}
+								}`}
 							to="/lab/all-request">
 							All Request
 						</Link>
 						<Link
 							className={`btn btn-primary ${
 								page === '/lab-request' ? 'btn-outline-primary' : ''
-							}`}
+								}`}
 							to="/lab/lab-request">
 							New Lab Request
 						</Link>

@@ -22,7 +22,7 @@ const status = [
 	{ value: 0, label: 'processing' },
 	{ value: 1, label: 'done' },
 ];
-class AllRequest extends Component {
+class LabFilledRequest extends Component {
 	state = {
 		filtering: false,
 		loading: false,
@@ -103,7 +103,7 @@ class AllRequest extends Component {
 			<>
 				<div className="col-sm-12">
 					<div className="element-wrapper">
-					<div className="element-actions">
+          <div className="element-actions">
 						<Link
 							className={`btn btn-primary ${
 								page === '/' ? 'btn-outline-primary' : ''
@@ -264,4 +264,4 @@ const mapStateToProps = state => {
 	};
 };
 
-export default connect(mapStateToProps, { loadClinicalLab })(AllRequest);
+export default connect(mapStateToProps, { loadClinicalLab })(LabFilledRequest);
