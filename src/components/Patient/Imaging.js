@@ -12,8 +12,9 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import Popover from 'antd/lib/popover';
 import waiting from '../../assets/images/waiting.gif';
 import { SubmissionError } from 'redux-form';
-import Select from 'react-select';
+
 import { uploadRadiology } from '../../actions/general';
+
 const Imaging = props => {
 	const [loading, setLoading] = useState(false);
 	const [upload_visible, setUploadVisible] = useState(false);
@@ -21,45 +22,55 @@ const Imaging = props => {
 	const [hidden, setHidden] = useState(false);
 	const [selectedRequest, setRequest] = useState(false);
 
-	const UploadImagingData = ({ uploading, doUpload, onBackClick }) => {
-		const [files, setFile] = useState(null);
+	const UploadImagingData = ({ uploading, doUpload, hide }) => {
+		const [files, setFiles] = useState(null);
+		const [label, setLabel] = useState('');
 		let uploadAttachment;
+		const handleChange = e => {
+			setFiles(e.target.files);
+
+			let label = Array.from(e.target.files)
+				.map(file => {
+					return file.name;
+				})
+				.join(',');
+			setLabel(label);
+		};
 		return (
-			<div className="col-sm-12">
-				<div className="element-wrapper">
-					<h6 className="element-header">New Procedure Request</h6>
-					<div className="element-box">
-						<div className="form-block w-100">
-							<form onSubmit={e => doUpload(e, files)}>
-								<div className="row">
-									<div className="col-sm-12">
-										<div className="form-group">
-											<input
-												className="d-none"
-												onClick={e => {
-													e.target.value = null;
-												}}
-												type="file"
-												multiple
-												ref={el => {
-													uploadAttachment = el;
-												}}
-												onChange={e => setFile(e.target.files)}
-											/>
-											<label htmlFor="department">File</label>
-											<a
-												className="btn btn-outline-secondary ml-4"
-												onClick={() => {
-													uploadAttachment.click();
-												}}>
-												<i className="os-icon os-icon-ui-51" />
-												<span>Select File</span>
-											</a>
-										</div>
+			<div
+				className="onboarding-modal fade animated show"
+				role="dialog"
+				style={{ width: '400px' }}>
+				<div className="modal-centered">
+					<div className="modal-content text-center">
+						<button onClick={hide} className="close" type="button">
+							<span class="os-icon os-icon-close"></span>
+						</button>
+						<div className="onboarding-content with-gradient">
+							<h4 class="onboarding-title">Upload Imaging</h4>
+
+							<form
+								className="form-block w-100"
+								onSubmit={e => doUpload(e, files)}>
+								<div className="row my-3">
+									<div className="custom-file col-12">
+										{/* {label ? <textarea>{label}</textarea> : null} */}
+										<input
+											type="file"
+											className="custom-file-input"
+											name="file"
+											accept="image/*"
+											onChange={handleChange}
+											multiple
+										/>
+										<label className="custom-file-label">
+											{label.substring(0, 40) || 'Choose File(s)'}
+										</label>
 									</div>
 								</div>
+
 								<div className="row">
-									<div className="col-sm-12 text-right">
+									<div className="col-sm-12 text-right pr-0">
 										<button
 											className="btn btn-primary"
 											disabled={uploading}
@@ -69,13 +80,6 @@ const Imaging = props => {
 											) : (
 												'upload'
 											)}
-										</button>
-
-										<button
-											onClick={onBackClick}
-											className="btn btn-primary"
-											type="button">
-											back
 										</button>
 									</div>
 								</div>
@@ -114,8 +118,21 @@ const Imaging = props => {
 		setHidden(false);
 	};
 
+	const handleUploadVisibleChange = visible => {
+		setUploadVisible(visible);
+	};
+
+	const hide = () => {
+		setUploadVisible(false);
+	};
+
 	const onUpload = async (e, files) => {
 		e.preventDefault();
+		console.log(files);
+		if (!files) {
+			notifyError('You did not select any image file');
+			return;
+		}
 		setUploading(true);
 		const { patient } = props;
 
@@ -179,6 +196,9 @@ const Imaging = props => {
 		return newData;
 	};
 
+	const togglePopover = () => {
+		setUploadVisible(true);
+	};
 	const tableBody = () => {
 		let requests = convertToIndividualRequest(props.imagingRequests);
 		return requests.length > 0 ? (
@@ -205,8 +225,29 @@ const Imaging = props => {
 									<i className="os-icon os-icon-documents-03" />
 								</a>
 							</Tooltip>
-							<Tooltip title="Upload Document">
-								<a onClick={() => props.uploadRadiology(true)}>
+							{/* 
+							<Popover
+								content={
+									<UploadImagingData
+										uploading={uploading}
+										doUpload={onUpload}
+										hide={hide}
+									/>
+								}
+								placement="leftTop"
+								overlayClassName="upload-roster"
+								trigger="click"
+								visible={upload_visible}
+								onVisibleChange={handleUploadVisibleChange}>
+								<a>
+									<i className="os-icon os-icon-upload-cloud" />
+								</a>
+							</Popover> */}
+							<Tooltip title="Upload image">
+								<a
+									onClick={() => {
+										togglePopover();
+									}}>
 									<i className="os-icon os-icon-upload-cloud" />
 								</a>
 							</Tooltip>
@@ -244,6 +285,16 @@ const Imaging = props => {
 					</Link>
 				</div>
 				<h6 className="element-header">Imaging Requests</h6>
+				<div
+					hidden={!upload_visible}
+					className="element-actions"
+					style={{ position: 'absolute', right: '40px' }}>
+					<UploadImagingData
+						uploading={uploading}
+						doUpload={onUpload}
+						hide={hide}
+					/>
+				</div>
 				<div className="element-box">
 					<div className="bootstrap-table">
 						<div className="fixed-table-toolbar">

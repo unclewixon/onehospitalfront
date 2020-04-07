@@ -80,16 +80,20 @@ button {
 	width: 100%;
 	.modal-content {
 		border-radius: 6px;
-    	overflow-x: hidden;
+		overflow-x: hidden;
 	}
 	.content-w {
 		border-radius: 0 !important;
 
-		.content-box {padding: 2rem 1rem;}
+		.content-box {
+			padding: 2rem 1rem;
+		}
 	}
-	.main-menu {padding: 0 !important;}
+	.main-menu {
+		padding: 0 !important;
+	}
 	li {
-		border-left: 1px solid #f2f4f8!important;
+		border-left: 1px solid #f2f4f8 !important;
 		border-right: 1px solid #f2f4f8 !important;
 		border-top: 1px solid #f2f4f8 !important;
 
@@ -100,10 +104,15 @@ button {
 			transition: none !important;
 		}
 
-		.step {white-space: nowrap;font-size: 0.8rem;}
+		.step {
+			white-space: nowrap;
+			font-size: 0.8rem;
+		}
 
 		span {
-			white-space: normal !important;padding: 0 !important;font-size: 0.85rem;
+			white-space: normal !important;
+			padding: 0 !important;
+			font-size: 0.85rem;
 		}
 
 		&.active {
@@ -422,7 +431,8 @@ button {
 		line-height: 30px;
 
 		input {
-			height: 27px;width: 25px;
+			height: 27px;
+			width: 25px;
 		}
 
 		label {
@@ -431,15 +441,18 @@ button {
 	}
 }
 .encounter {
-	.form-group {margin-bottom: 0 !important;margin-top: 12px;}
+	.form-group {
+		margin-bottom: 0 !important;
+		margin-top: 12px;
+	}
 
-	input[type="checkbox"] {
+	input[type='checkbox'] {
 		display: inline-block;
 		width: auto;
 		margin-right: 6px;
 	}
 
-	input[type="radio"] {
+	input[type='radio'] {
 		display: inline-block;
 		width: auto;
 		margin-right: 6px;
