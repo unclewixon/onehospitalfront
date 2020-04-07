@@ -13,8 +13,7 @@ import Popover from 'antd/lib/popover';
 import waiting from '../../assets/images/waiting.gif';
 import { SubmissionError } from 'redux-form';
 import Select from 'react-select';
-import AsyncSelect from 'react-select/async/dist/react-select.esm';
-
+import { uploadRadiology } from '../../actions/general';
 const Imaging = props => {
 	const [loading, setLoading] = useState(false);
 	const [upload_visible, setUploadVisible] = useState(false);
@@ -207,7 +206,7 @@ const Imaging = props => {
 								</a>
 							</Tooltip>
 							<Tooltip title="Upload Document">
-								<a onClick={evt => handleUpload(evt, data)}>
+								<a onClick={() => props.uploadRadiology(true)}>
 									<i className="os-icon os-icon-upload-cloud" />
 								</a>
 							</Tooltip>
@@ -286,13 +285,13 @@ const Imaging = props => {
 					</div>
 				</div>
 			</div>
-			<div hidden={!hidden}>
+			{/* <div hidden={!hidden}>
 				<UploadImagingData
 					uploading={uploading}
 					doUpload={onUpload}
 					onBackClick={onBackClick}
 				/>
-			</div>
+			</div> */}
 		</div>
 	);
 };
@@ -305,5 +304,5 @@ const mapStateToProps = state => {
 };
 
 export default withRouter(
-	connect(mapStateToProps, { loadImagingRequests })(Imaging)
+	connect(mapStateToProps, { loadImagingRequests, uploadRadiology })(Imaging)
 );
