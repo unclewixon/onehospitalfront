@@ -73,9 +73,13 @@ export const defaultHeaders = {
 // 	'Content-Type': 'application/json',
 // };
 
-const headers = token => {
-	const jwt = `Bearer ${token}`;
-	return { ...defaultHeaders, Authorization: jwt };
+const headers = user => {
+	if (user) {
+		const jwt = `Bearer ${user.token}`;
+		return { ...defaultHeaders, Authorization: jwt };
+	} else {
+		return defaultHeaders;		
+	}
 };
 
 // const headersPatch = token => {
@@ -102,10 +106,10 @@ export const requestPatch = async (url, authed = false, data) => {
 
 export const request = async (url, method, authed = false, data) => {
 	// prettier-ignore
-	const token = await (new SSRStorage()).getItem(TOKEN_COOKIE);
+	const user = await (new SSRStorage()).getItem(TOKEN_COOKIE);
 	const response = await fetch(url, {
 		method: method,
-		headers: authed ? headers(token) : { ...defaultHeaders },
+		headers: authed ? headers(user) : { ...defaultHeaders },
 		body: JSON.stringify(data),
 	});
 	const result = await checkStatus(response);
