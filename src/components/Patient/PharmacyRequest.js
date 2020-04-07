@@ -1,15 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PharmNewRequestComponent from '../PharmNewRequestComponent';
 import { connect } from 'react-redux';
 import { getAllDiagnosises } from '../../actions/settings';
 
 const PharmacyRequest = props => {
 	const { patient, diagnosis } = props;
+	const [diagnosisLoading, setDiagnosisLoading] = useState(false);
 
 	useEffect(() => {
 		const { getAllDiagnosises } = props;
-		getAllDiagnosises();
+		setDiagnosisLoading(true);
+		getAllDiagnosises(() => {
+			setDiagnosisLoading(false);
+		});
 	}, []);
 
 	const diagnosisList = diagnosis
@@ -22,7 +26,11 @@ const PharmacyRequest = props => {
 		: [];
 
 	return (
-		<PharmNewRequestComponent patient={patient} diagnosisList={diagnosisList} />
+		<PharmNewRequestComponent
+			patient={patient}
+			diagnosisList={diagnosisList}
+			diagnosisLoading={diagnosisLoading}
+		/>
 	);
 };
 

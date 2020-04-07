@@ -596,7 +596,6 @@ export const deleteDepartment = data => {
 
 //room
 export const addRoom = data => {
-	console.log(data);
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
@@ -1518,7 +1517,7 @@ export const uploadDiagnosis = data => {
 	};
 };
 
-export const getAllDiagnosises = data => {
+export const getAllDiagnosises = (cb = () => {}) => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
@@ -1529,7 +1528,8 @@ export const getAllDiagnosises = data => {
 				})
 				.catch(error => {
 					return reject({ success: false });
-				});
+				})
+				.finally(() => cb());
 		});
 	};
 };

@@ -35,14 +35,6 @@ export class Pharmacy2 extends Component {
 										Dashboard
 									</Link>
 									<Link
-										to={`${match.path}/recent-request`}
-										className={`mr-2 btn btn-primary btn-sm  ${
-											page === 'recent-request' ? 'btn-outline-primary' : ''
-										}`}>
-										{' '}
-										Recent Request
-									</Link>
-									<Link
 										to={`${match.path}/filled-request`}
 										className={`mr-2 btn btn-primary btn-sm  ${
 											page === 'filled-request' ? 'btn-outline-primary' : ''
@@ -75,10 +67,6 @@ export class Pharmacy2 extends Component {
 												<Route
 													exact
 													path={`${match.url}/`}
-													component={Overall}
-												/>
-												<Route
-													path={`${match.url}/recent-request`}
 													component={PharmRecentRequest}
 												/>
 												<Route

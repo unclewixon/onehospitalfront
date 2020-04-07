@@ -1,11 +1,19 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import Tooltip from 'antd/lib/tooltip';
+import waiting from '../assets/images/waiting.gif';
 import moment from 'moment';
 import { getRequestByType } from '../actions/patient';
 import { connect } from 'react-redux';
 import { notifyError } from '../services/notify';
 import { Link } from 'react-router-dom';
+import DatePicker from 'antd/lib/date-picker';
+
+const { RangePicker } = DatePicker;
+const departments = [
+	{ id: 'ejejekek', name: 'angel' },
+	{ id: 'sislkas', name: 'kafta' },
+];
 
 export class PharmFillRequest extends Component {
 	state = {
@@ -38,6 +46,7 @@ export class PharmFillRequest extends Component {
 
 	render() {
 		const { Requests } = this.props;
+		const { filtering } = this.state;
 		const acceptedRequests =
 			Requests && Array.isArray(Requests)
 				? Requests.filter(request => request.status === 1)
@@ -46,6 +55,49 @@ export class PharmFillRequest extends Component {
 			<div className="col-sm-12">
 				<div className="element-wrapper">
 					<h6 className="element-header">Filled Request</h6>
+					<div className="row my-4">
+						<form action="" className="form-inline pl-3">
+							<div className="form-group">
+								<label className="mr-2">Filter by: </label>
+							</div>
+							<div className="form-group mr-2">
+								<label className="mr-2 " htmlFor="id">
+									ID
+								</label>
+								<select
+									style={{ height: '32px' }}
+									id="department"
+									className="form-control"
+									name="id"
+									onChange={e => this.change(e)}>
+									{departments.map((dept, i) => {
+										return (
+											<option key={i} value={dept.id}>
+												{dept.name}
+											</option>
+										);
+									})}
+								</select>
+							</div>
+							<div className="form-group mr-2">
+								<RangePicker />
+							</div>
+							<div className="form-group mr-2">
+								<a
+									className="btn btn-sm btn-primary btn-upper text-white"
+									onClick={this.doFilter}>
+									<i className="os-icon os-icon-ui-37" />
+									<span>
+										{filtering ? (
+											<img src={waiting} alt="submitting" />
+										) : (
+											'Filter'
+										)}
+									</span>
+								</a>
+							</div>
+						</form>
+					</div>
 					<div className="element-box">
 						<div className="table table-responsive">
 							<table
