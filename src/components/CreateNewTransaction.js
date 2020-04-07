@@ -8,6 +8,7 @@ import {
 	socket,
 	transactionsAPI,
 	paymentType,
+	paymentTypeExtra,
 } from '../services/constants';
 import { request, formatNumber } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
@@ -322,7 +323,7 @@ const CreateNewTransaction = props => {
 						<Select
 							name="payment_type"
 							placeholder="Select Payment Type"
-							options={paymentType}
+							options={paymentTypeExtra}
 							ref={register({ name: 'payment_type' })}
 							onChange={evt => {
 								if (evt === null) {

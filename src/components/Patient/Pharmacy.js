@@ -75,10 +75,7 @@ const Pharmacy = props => {
 										{`${patient.surname.toUpperCase()} ${patient.other_names.toUpperCase()}`}
 									</Modal.Title>
 								</Modal.Header>
-								<Modal.Body>
-									
-									
-								</Modal.Body>
+								<Modal.Body></Modal.Body>
 							</Modal>
 						) : null}
 
@@ -112,37 +109,43 @@ const Pharmacy = props => {
 																data-index="0"
 																data-id="20"
 																key={index}>
-																<td>{moment(request.createdAt).format("DD-MM-YYYY : hh mm")}</td>
-														<td>{request.requestType}</td>
-														<td>{request && request.diagnosis ? request.diagnosis : ""}</td>
+																<td>
+																	{moment(request.createdAt).format(
+																		'DD-MM-YYYY : hh mm'
+																	)}
+																</td>
+																<td>{request.requestType}</td>
+																<td>
+																	{request && request.diagnosis
+																		? request.diagnosis
+																		: ''}
+																</td>
 																<td className="text-center">
-																{
-															request.status === 1 ? (
-																<div>
-																	<span className="status-pill smaller green"></span>
-																	<span>Approved</span>
-																</div>
-															) : (
-																	<div>
-																		<span className="status-pill smaller yellow"></span>
-																		<span>Pending</span>
-																	</div>
-																)
-														}
+																	{request.status === 1 ? (
+																		<div>
+																			<span className="status-pill smaller green"></span>
+																			<span>Approved</span>
+																		</div>
+																	) : (
+																		<div>
+																			<span className="status-pill smaller yellow"></span>
+																			<span>Pending</span>
+																		</div>
+																	)}
 																</td>
 																<td className="row-actions text-right">
 																	<Tooltip title="View Request">
-																	<ViewIcon
-														onClick={() => {
-															setActiveRequest(request);
-															onModalClick();
-														}}
-														style={{
-															width: '1rem',
-															height: '1rem',
-															cursor: 'pointer',
-														}}
-													/>
+																		<ViewIcon
+																			onClick={() => {
+																				setActiveRequest(request);
+																				onModalClick();
+																			}}
+																			style={{
+																				width: '1rem',
+																				height: '1rem',
+																				cursor: 'pointer',
+																			}}
+																		/>
 																	</Tooltip>
 																	<Tooltip title="Print Request">
 																		<a className="ml-2" href="#">

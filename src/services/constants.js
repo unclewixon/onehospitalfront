@@ -126,6 +126,14 @@ export const documentType = [
 	{ id: 'Prescription', name: 'Prescription' },
 ];
 
+export const paymentTypeExtra = [
+	{ value: 'POS', label: 'POS' },
+	{ value: 'Cash', label: 'Cash' },
+	{ value: 'Cheque', label: 'Cheque' },
+	{ value: 'Transfer', label: 'Transfer' },
+	{ value: 'Hmo', label: 'Hmo' },
+];
+
 export const paymentType = [
 	{ value: 'POS', label: 'POS' },
 	{ value: 'Cash', label: 'Cash' },
@@ -139,6 +147,7 @@ export const transactionPaymentType = [
 	{ id: 'Cheque', name: 'Cheque' },
 	{ id: 'Transfer', name: 'Transfer' },
 	{ id: 'Voucher', name: 'Voucher' },
+	{ id: 'Hmo', name: 'Hmo' },
 ];
 
 export const insuranceStatus = [
