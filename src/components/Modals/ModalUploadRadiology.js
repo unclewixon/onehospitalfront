@@ -46,7 +46,7 @@ const ModalUploadRadiology = props => {
 					formData
 				);
 
-				history.push('/radiology');
+				history.push('/radiology#imaging');
 				props.closeModals(true);
 
 				notifySuccess('Radiology file uploaded successfully');
@@ -56,9 +56,9 @@ const ModalUploadRadiology = props => {
 				setSubmitting(false);
 			}
 		} else if (!patientId) {
-			notifyError('Make sure you select  patient');
+			notifyError('Make sure you select patient');
 		} else {
-			notifyError('Make sure you select  file');
+			notifyError('Make sure you select file(s)');
 		}
 	};
 
@@ -96,6 +96,10 @@ const ModalUploadRadiology = props => {
 		document.getElementById('patient').value = name;
 		setPatients([]);
 	};
+
+	useEffect(() => {
+		setPatientId(props.patient.id);
+	}, []);
 	return (
 		<div
 			className="onboarding-modal modal fade animated show"
@@ -111,62 +115,63 @@ const ModalUploadRadiology = props => {
 						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div className="onboarding-content with-gradient">
-						<h4 className="onboarding-title">Upload Radiology</h4>
+						<h4 className="onboarding-title">Upload Imaging</h4>
 
 						<div className="form-block">
 							<form onSubmit={onSubmit}>
-								<div className="row my-4">
-									<div className="form-group col-12 px-0">
-										<label>Patient</label>
+								{!props.patient.id ? (
+									<div className="row my-4">
+										<div className="form-group col-12 px-0">
+											<label>Patient</label>
 
-										<input
-											className="form-control"
-											placeholder="Search for patient"
-											type="text"
-											name="patient"
-											defaultValue=""
-											id="patient"
-											onChange={handlePatientChange}
-											autoComplete="off"
-											required
-										/>
-										{searching && (
-											<div className="searching text-center">
-												<img alt="searching" src={searchingGIF} />
-											</div>
-										)}
+											<input
+												className="form-control"
+												placeholder="Search for patient"
+												type="text"
+												name="patient"
+												defaultValue=""
+												id="patient"
+												onChange={handlePatientChange}
+												autoComplete="off"
+												required
+											/>
+											{searching && (
+												<div className="searching text-center">
+													<img alt="searching" src={searchingGIF} />
+												</div>
+											)}
 
-										{patients &&
-											patients.map(pat => {
-												return (
-													<div
-														style={{ display: 'flex' }}
-														key={pat.id}
-														className="element-box">
-														<a
-															onClick={() => patientSet(pat)}
-															className="ssg-item cursor">
-															{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
-															<div
-																className="item-name"
-																dangerouslySetInnerHTML={{
-																	__html: `${pat.surname} ${pat.other_names}`,
-																}}
-															/>
-														</a>
-													</div>
-												);
-											})}
+											{patients &&
+												patients.map(pat => {
+													return (
+														<div
+															style={{ display: 'flex' }}
+															key={pat.id}
+															className="element-box">
+															<a
+																onClick={() => patientSet(pat)}
+																className="ssg-item cursor">
+																{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
+																<div
+																	className="item-name"
+																	dangerouslySetInnerHTML={{
+																		__html: `${pat.surname} ${pat.other_names}`,
+																	}}
+																/>
+															</a>
+														</div>
+													);
+												})}
+										</div>
 									</div>
-								</div>
+								) : null}
 								<div className="row my-4">
 									<div className="custom-file col-12">
 										<input
 											type="file"
 											className="custom-file-input"
 											name="file"
-											pattern="^.+\.(xlsx|xls|csv)$"
-											accept=".doc,.docx,.pdf"
+											accept="image/*"
 											onChange={handleChange}
 											multiple
 										/>
@@ -205,4 +210,11 @@ const ModalUploadRadiology = props => {
 	);
 };
 
-export default connect(null, { closeModals })(ModalUploadRadiology);
+const mapStateToProps = state => {
+	return {
+		patient: state.user.patient,
+		imagingRequests: state.patient.imagingRequests,
+	};
+};
+
+export default connect(mapStateToProps, { closeModals })(ModalUploadRadiology);

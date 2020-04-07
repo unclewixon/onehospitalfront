@@ -14,6 +14,7 @@ import searchingGIF from '../../assets/images/searching.gif';
 import { loadRadiology } from '../../actions/patient';
 import { uploadRadiology } from '../../actions/general';
 import _ from 'lodash';
+import { toggleProfile } from '../../actions/user';
 export class Dashboard extends Component {
 	state = {
 		filtering: false,
@@ -74,6 +75,7 @@ export class Dashboard extends Component {
 							' ' +
 							(value.patient.other_names ? value.patient.other_names : ''),
 						fileNumber: value.patient.fileNumber,
+						patient: value.patient,
 					});
 				});
 			} else {
@@ -82,6 +84,17 @@ export class Dashboard extends Component {
 		});
 
 		return newData.reverse();
+	};
+
+	showProfile = patient => () => {
+		const info = { patient, type: 'patient' };
+		this.props.toggleProfile(true, info);
+	};
+	upload = req => {
+		console.log(req);
+		const info = { patient: req.patient, type: 'patient' };
+		this.props.toggleProfile(true, info);
+		this.props.uploadRadiology(true);
 	};
 	render() {
 		const { filtering, loading } = this.state;
@@ -114,16 +127,6 @@ export class Dashboard extends Component {
 				</div>
 				<div className="col-sm-12">
 					<div className="element-wrapper">
-						<div className="element-actions">
-							<a
-								className="btn btn-success btn-sm text-white"
-								onClick={() => {
-									this.props.uploadRadiology(true);
-								}}>
-								<i className="os-icon os-icon-grid-10" />
-								<span>Upload Image</span>
-							</a>
-						</div>
 						<h6 className="element-header">Dashboard</h6>
 						<div className="element-box">
 							<div className="table table-responsive">
@@ -174,9 +177,9 @@ export class Dashboard extends Component {
 																		<i className="os-icon os-icon-folder-plus" />
 																	</a>
 																</Tooltip>
-																<Tooltip title="Edit Request">
-																	<a className="secondary">
-																		<i className="os-icon os-icon-edit-32" />
+																<Tooltip title="Upload Document">
+																	<a onClick={() => this.upload(request)}>
+																		<i className="os-icon os-icon-upload-cloud" />
 																	</a>
 																</Tooltip>
 																<Tooltip title="Delete Request">
@@ -207,6 +210,8 @@ const mapStateToProps = state => {
 	};
 };
 
-export default connect(mapStateToProps, { loadRadiology, uploadRadiology })(
-	Dashboard
-);
+export default connect(mapStateToProps, {
+	loadRadiology,
+	uploadRadiology,
+	toggleProfile,
+})(Dashboard);
