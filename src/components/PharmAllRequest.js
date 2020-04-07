@@ -23,15 +23,16 @@ export class PharmAllRequest extends Component {
 		loading: false,
 		activeRequest: null,
 		showModal: false,
+		dateRange: []
 	};
 
 	onModalClick = () => {
 		this.setState(prevState => ({ showModal: !prevState.showModal }));
 	};
 
-	change = e => {
-		console.log(e.target.value);
-	};
+	// change = e => {
+	// 	console.log(e.target.value);
+	// };
 
 	componentDidMount() {
 		const { getRequestByType } = this.props;
@@ -78,7 +79,14 @@ export class PharmAllRequest extends Component {
 								</select>
 							</div>
 							<div className="form-group mr-2">
-								<RangePicker />
+								<RangePicker
+									value={this.state.dateRange}
+									onChange={e => e.map((date) => {
+										const range = moment(date).format("DD/MM/YYYY hh:mm");
+										console.log(range)
+										return range
+									})}
+								/>
 							</div>
 							<div className="form-group mr-2">
 								<a
@@ -89,8 +97,8 @@ export class PharmAllRequest extends Component {
 										{filtering ? (
 											<img src={waiting} alt="submitting" />
 										) : (
-												'Filter'
-											)}
+											'Filter'
+										)}
 									</span>
 								</a>
 							</div>
@@ -114,56 +122,52 @@ export class PharmAllRequest extends Component {
 								<tbody>
 									{Requests && Requests.length
 										? Requests.map((request, index) => {
-											return (
-												<tr
-													className=""
-													data-index="0"
-													data-id="20"
-													key={index}>
-													<td>
-														<span>
-															{moment(request.createdAt).format('DD/MM/YYYY')}
-														</span>
-													</td>
-													<td>{request.patient.fileNumber}</td>
-													<td>
-														{`${"Dr. DooLittle".toUpperCase()}`}
-													</td>
-													<td className="nowrap">
-														{
-															request.status === 1 ? (
+												return (
+													<tr
+														className=""
+														data-index="0"
+														data-id="20"
+														key={index}>
+														<td>
+															<span>
+																{moment(request.createdAt).format('DD/MM/YYYY')}
+															</span>
+														</td>
+														<td>{request.patient.fileNumber}</td>
+														<td>{`${'Dr. DooLittle'.toUpperCase()}`}</td>
+														<td className="nowrap">
+															{request.status === 1 ? (
 																<div>
 																	<span className="status-pill smaller green"></span>
 																	<span>Approved</span>
 																</div>
 															) : (
-																	<div>
-																		<span className="status-pill smaller yellow"></span>
-																		<span>Pending</span>
-																	</div>
-																)
-														}
-													</td>
-													<td className="row-actions text-right">
-														<Tooltip title="View Request">
-															<a
-																className="secondary"
-																onClick={() => {
-																	this.setState({ activeRequest: request });
-																	this.onModalClick();
-																}}>
-																<i className="os-icon os-icon-file" />
-															</a>
-														</Tooltip>
-														<Tooltip title="Print Request">
-															<a className="ml-2" href="#">
-																<i className="icon-feather-printer" />
-															</a>
-														</Tooltip>
-													</td>
-												</tr>
-											);
-										})
+																<div>
+																	<span className="status-pill smaller yellow"></span>
+																	<span>Pending</span>
+																</div>
+															)}
+														</td>
+														<td className="row-actions text-right">
+															<Tooltip title="View Request">
+																<a
+																	className="secondary"
+																	onClick={() => {
+																		this.setState({ activeRequest: request });
+																		this.onModalClick();
+																	}}>
+																	<i className="os-icon os-icon-file" />
+																</a>
+															</Tooltip>
+															<Tooltip title="Print Request">
+																<a className="ml-2" href="#">
+																	<i className="icon-feather-printer" />
+																</a>
+															</Tooltip>
+														</td>
+													</tr>
+												);
+										  })
 										: null}
 								</tbody>
 							</table>

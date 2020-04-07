@@ -8,6 +8,7 @@ import { loadClinicalLab } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
 import _ from 'lodash';
+
 class ClinicalLab extends Component {
 	state = {
 		loading: false,
@@ -42,30 +43,49 @@ class ClinicalLab extends Component {
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
-					<div className="element-actions">
+					
+					<h6 className="element-header">Lab</h6>
+					<div className="row">
+					<div className="row mt-2 mb-4">
 						<Link
-							className={`btn btn-primary ${
+							className={`mr-2 btn btn-primary btn-sm  ${
 								page === '/' ? 'btn-outline-primary' : ''
-							}`}
+								}`}
 							to="/lab">
 							Dashboard
 						</Link>
 						<Link
-							className={`btn btn-primary ${
+							to={`/lab/recent-request`}
+							className={`mr-2 btn btn-primary btn-sm  ${
+								page === '/recent-request' ? 'btn-outline-primary' : ''
+								}`}>
+							{' '}
+										Recent Request
+									</Link>
+						<Link
+							to={`/lab/filled-request`}
+							className={`mr-2 btn btn-primary btn-sm ${
+								page === '/filled-request' ? 'btn-outline-primary' : ''
+								}`}>
+							{' '}
+										Filled Request
+									</Link>
+						<Link
+							className={`mr-2 btn btn-primary btn-sm  ${
 								page === '/all-request' ? 'btn-outline-primary' : ''
-							}`}
+								}`}
 							to="/lab/all-request">
 							All Request
 						</Link>
 						<Link
-							className={`btn btn-primary ${
+							className={`mr-2 btn btn-primary btn-sm  ${
 								page === '/lab-request' ? 'btn-outline-primary' : ''
-							}`}
+								}`}
 							to="/lab/lab-request">
 							New Lab Request
 						</Link>
 					</div>
-					<h6 className="element-header">Lab</h6>
+					</div>
 					<div className="row">
 						<div className="col-sm-12">
 							<div className="element-content">

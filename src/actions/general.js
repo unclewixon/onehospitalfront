@@ -31,6 +31,7 @@ import {
 	TOGGLE_CREATE_CLINICAL_TASK,
 	TOGGLE_OPEN_ENCOUNTER,
 	TOGGLE_ADD_CAFETERIA_FILE,
+	TOGGLE_UPLOAD_RADIOLOGY,
 	TOGGLE_APPROVE_TRANSACTION,
 	TOGGLE_APPLY_VOUCHER,
 	TOGGLE_UPLOAD_HMO_TARIFF,
@@ -260,6 +261,13 @@ export const toggleUploadDiagnosis = status => {
 	};
 };
 
+export const toggleUploadRadiology = status => {
+	return {
+		type: TOGGLE_UPLOAD_RADIOLOGY,
+		payload: status,
+	};
+};
+
 export const toggleUploadHmo = status => {
 	return {
 		type: TOGGLE_UPLOAD_HMO,
@@ -321,6 +329,7 @@ export const closeModals = () => {
 		dispatch(toggleAddCafeteriaFile(false));
 		dispatch(toggleUploadService(false));
 		dispatch(toggleUploadDiagnosis(false));
+		dispatch(toggleUploadRadiology(false));
 		dispatch(toggleUploadHmo(false));
 		dispatch(toggleUploadHmoTariff(false));
 		dispatch(toggleEditService(false, null));
@@ -597,5 +606,13 @@ export const addCafeteriaFile = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleAddCafeteriaFile(action));
+	};
+};
+
+export const uploadRadiology = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleUploadRadiology(action));
 	};
 };

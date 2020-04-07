@@ -49,6 +49,15 @@ export const months = [
 	'December',
 ];
 
+export const relationships = [
+	{ value: 'Father', label: 'Father' },
+	{ value: 'Mother', label: 'Mother' },
+	{ value: 'Sister', label: 'Sister' },
+	{ value: 'Brother', label: 'Brother' },
+	{ value: 'Aunt', label: 'Aunt' },
+	{ value: 'Others', label: 'Others' },
+];
+
 export const ethnicities = [
 	{ value: 'Igbo', label: 'Igbo' },
 	{ value: 'Hausa', label: 'Hausa' },

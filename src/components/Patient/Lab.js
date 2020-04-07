@@ -89,29 +89,29 @@ const Lab = props => {
 										<div className="col-lg-3">
 											<h5>Tests</h5>
 											{activeRequest.requestBody &&
-												activeRequest.requestBody.test
+											activeRequest.requestBody.test
 												? activeRequest.requestBody.test.map((test, index) => {
-													return (
-														<div key={index}>
-															<p>{test.name}</p>
-														</div>
-													);
-												})
+														return (
+															<div key={index}>
+																<p>{test.name}</p>
+															</div>
+														);
+												  })
 												: null}
 										</div>
 										<div className="col-lg-3">
 											<h5>Groups</h5>
 											{activeRequest.requestBody &&
-												activeRequest.requestBody.combination
+											activeRequest.requestBody.combination
 												? activeRequest.requestBody.combination.map(
-													(combo, index) => {
-														return (
-															<div key={index}>
-																<p>{combo.name}</p>
-															</div>
-														);
-													}
-												)
+														(combo, index) => {
+															return (
+																<div key={index}>
+																	<p>{combo.name}</p>
+																</div>
+															);
+														}
+												  )
 												: null}
 										</div>
 									</div>
@@ -124,26 +124,26 @@ const Lab = props => {
 								<img alt="searching" src={searchingGIF} />
 							</div>
 						) : (
-								<div
-									className="fixed-table-container"
-									style={{ paddingBottom: '0px' }}>
-									<div className="fixed-table-body">
-										<table
-											id="table"
-											className="table table-theme v-middle table-hover">
-											<thead>
-												<tr>
-													<th>ID</th>
-													<th>Request Date</th>
-													<th>Requested By</th>
-													<th>Request Specimen</th>
-													<th className="text-center">Request Status</th>
-													<th className="text-right" />
-												</tr>
-											</thead>
-											<tbody>
-												{props.Requests && props.Requests.length
-													? props.Requests.map((request, index) => {
+							<div
+								className="fixed-table-container"
+								style={{ paddingBottom: '0px' }}>
+								<div className="fixed-table-body">
+									<table
+										id="table"
+										className="table table-theme v-middle table-hover">
+										<thead>
+											<tr>
+												<th>ID</th>
+												<th>Request Date</th>
+												<th>Requested By</th>
+												<th>Request Specimen</th>
+												<th className="text-center">Request Status</th>
+												<th className="text-right" />
+											</tr>
+										</thead>
+										<tbody>
+											{props.Requests && props.Requests.length
+												? props.Requests.map((request, index) => {
 														return (
 															<tr
 																className=""
@@ -165,19 +165,17 @@ const Lab = props => {
 																</td>
 																<td>{request.requestBody.referredSpeciment}</td>
 																<td className="text-center">
-																	{
-																		request.status === 1 ? (
-																			<div>
-																				<span className="status-pill smaller green"></span>
-																				<span>Approved</span>
-																			</div>
-																		) : (
-																				<div>
-																					<span className="status-pill smaller yellow"></span>
-																					<span>Pending</span>
-																				</div>
-																			)
-																	}
+																	{request.status === 1 ? (
+																		<div>
+																			<span className="status-pill smaller green"></span>
+																			<span>Approved</span>
+																		</div>
+																	) : (
+																		<div>
+																			<span className="status-pill smaller yellow"></span>
+																			<span>Pending</span>
+																		</div>
+																	)}
 																</td>
 																<td className="row-actions text-right">
 																	<Tooltip title="View Request">
@@ -198,13 +196,13 @@ const Lab = props => {
 																</td>
 															</tr>
 														);
-													})
-													: null}
-											</tbody>
-										</table>
-									</div>
+												  })
+												: null}
+										</tbody>
+									</table>
 								</div>
-							)}
+							</div>
+						)}
 					</div>
 				</div>
 			</div>
