@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
+import intersectionBy from 'lodash.intersectionby';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import {
@@ -57,7 +58,7 @@ const LabRequest = props => {
 						? true
 						: false
 			  ).map((grp, index) => {
-					return { value: grp.id, label: grp.name };
+					return { value: grp.id, label: grp.name, id: grp.id };
 			  })
 			: [];
 
@@ -65,21 +66,17 @@ const LabRequest = props => {
 		props && props.LabTests
 			? props.LabTests.filter(test => test.category.id === category).map(
 					(test, index) => {
-						return { value: test.id, label: test.name };
+						return { value: test.id, label: test.name, id: test.id };
 					}
 			  )
 			: [];
 
 	const lab_test = labTests
-		? labTests.map(test => {
-				return { id: test.value, name: test.label };
-		  })
+		? intersectionBy(props.LabTests, labTests, 'id')
 		: [];
 
 	const lab_combo = labCombos
-		? labCombos.map(grp => {
-				return { id: grp.value, name: grp.label };
-		  })
+		? intersectionBy(props.LabGroups, labCombos, 'id')
 		: [];
 
 	const onSubmit = ({ service_center, referred_specimen, request_note }) => {

@@ -186,20 +186,22 @@ export const add_pharmacy_request = data => {
 export const createLabRequest = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
+			console.log(data);
+			let newRequestObj = {
+				requestType: data.service_center,
+				category_id: data.category,
+				patient_id: data.patient_id,
+				requestBody: {
+					specialization: '',
+					sessionCount: '',
+					combination: data.lab_combo,
+					group: [],
+					refferredSpecimen: data.referred_specimen,
+					requestNote: data.request_note,
+				},
+			};
 			axios
-				.post(`${API_URI}/patient/save-request`, {
-					requestType: data.service_center,
-					category_id: data.category,
-					requestBody: {
-						specialization: '',
-						sessionCount: '',
-						combination: data.lab_combo,
-						test: data.lab_test,
-						referredSpeciment: data.referred_specimen,
-						requestNote: data.request_note,
-					},
-					patient_id: data.patient_id,
-				})
+				.post(`${API_URI}/patient/save-request`, newRequestObj)
 				.then(response => {
 					dispatch(create_lab_request(response.data));
 					return resolve({ success: true });
