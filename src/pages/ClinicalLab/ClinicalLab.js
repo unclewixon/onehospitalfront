@@ -8,6 +8,7 @@ import { loadClinicalLab } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
 import _ from 'lodash';
+
 class ClinicalLab extends Component {
 	state = {
 		loading: false,
@@ -37,34 +38,10 @@ class ClinicalLab extends Component {
 		const { location, clinicalLab } = this.props;
 		const { loading } = this.state;
 		const page = location.pathname.split('/').pop();
-		console.log(clinicalLab);
 
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
-					<div className="element-actions">
-						<Link
-							className={`btn btn-primary ${
-								page === '/' ? 'btn-outline-primary' : ''
-							}`}
-							to="/lab">
-							Dashboard
-						</Link>
-						<Link
-							className={`btn btn-primary ${
-								page === '/all-request' ? 'btn-outline-primary' : ''
-							}`}
-							to="/lab/all-request">
-							All Request
-						</Link>
-						<Link
-							className={`btn btn-primary ${
-								page === '/lab-request' ? 'btn-outline-primary' : ''
-							}`}
-							to="/lab/lab-request">
-							New Lab Request
-						</Link>
-					</div>
 					<h6 className="element-header">Lab</h6>
 					<div className="row">
 						<div className="col-sm-12">

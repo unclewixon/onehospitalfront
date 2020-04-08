@@ -14,10 +14,17 @@ export class ClinicalLabItem extends Component {
 	};
 	render() {
 		const { collapse } = this.state;
-		const { lab } = this.props;
+		const { lab, modalClick } = this.props;
 		return (
 			<>
-				<tr data-index="0" data-id="20">
+				<tr
+					data-index="0"
+					data-id="20"
+					className={
+						lab && lab.requestBody && lab.requestBody.urgent
+							? 'table urgent'
+							: ''
+					}>
 					<td>
 						<div
 							onClick={this.toggleCollapse}
@@ -51,7 +58,7 @@ export class ClinicalLabItem extends Component {
 
 					<td className="text-right row-actions">
 						<Tooltip title="Receive Request">
-							<a className="secondary">
+							<a className="secondary" onClick={() => modalClick(lab)}>
 								<i className="os-icon os-icon-folder-plus" />
 							</a>
 						</Tooltip>
