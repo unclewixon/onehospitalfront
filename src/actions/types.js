@@ -117,6 +117,7 @@ export const FETCH_ALL_HMOS_DATA = 'FETCH_ALL_HMOS_DATA';
 export const UPDATE_HMO = 'GET_ALL_HMOS';
 export const DELETE_HMO = 'DELTE_HMO';
 export const FETCH_HMO_TARIFF = 'FETCH_HMO_TARIFF';
+export const LOAD_HMO_TRANSACTION = 'LOAD_HMO_TRANSACTION';
 
 //Leave category
 export const ADD_LEAVE_CATEGORY = 'ADD_LEAVE_CATEGORY';

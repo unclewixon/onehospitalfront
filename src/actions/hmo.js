@@ -5,6 +5,7 @@ import {
 	DELETE_HMO,
 	UPLOAD_HMO,
 	FETCH_HMO_TARIFF,
+	LOAD_HMO_TRANSACTION,
 } from './types';
 import axios from 'axios';
 import { API_URI, hmoAPI } from '../services/constants';
@@ -48,6 +49,13 @@ export const delete_hmo = payload => {
 const upload_hmo_progress = payload => {
 	return {
 		type: UPLOAD_HMO,
+		payload,
+	};
+};
+
+export const loadHmoTransaction = payload => {
+	return {
+		type: LOAD_HMO_TRANSACTION,
 		payload,
 	};
 };

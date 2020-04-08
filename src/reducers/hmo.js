@@ -5,12 +5,14 @@ import {
 	UPDATE_HMO,
 	UPLOAD_HMO,
 	DELETE_HMO,
+	LOAD_HMO_TRANSACTION,
 } from '../actions/types';
 
 const INITIAL_STATE = {
 	hmo_list: [],
 	hmo_tariff: [],
 	hmo_upload_progress: 0,
+	hmo_transactions: [],
 };
 
 const hmo = (state = INITIAL_STATE, action) => {
@@ -19,6 +21,8 @@ const hmo = (state = INITIAL_STATE, action) => {
 			return { ...state, hmo_list: [...state.hmo_list, action.payload] };
 		case FETCH_ALL_HMOS_DATA:
 			return { ...state, hmo_list: action.payload };
+		case LOAD_HMO_TRANSACTION:
+			return { ...state, hmo_transactions: action.payload };
 		case FETCH_HMO_TARIFF:
 			console.log(action, 'from reducer');
 			return { ...state, hmo_tariff: action.payload };
