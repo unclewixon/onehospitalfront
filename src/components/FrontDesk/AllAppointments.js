@@ -43,6 +43,7 @@ export class AllAppointments extends Component {
 				'GET',
 				true
 			);
+			console.log(rs);
 			this.props.loadTransaction(
 				rs.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1))
 			);
@@ -84,7 +85,7 @@ export class AllAppointments extends Component {
 						<h6 className="element-header">Filter by:</h6>
 
 						<form className="row">
-							<div className="form-group col-md-3">
+							<div className="form-group col-md-6">
 								<label>From - To</label>
 								<RangePicker onChange={e => this.dateChange(e)} />
 							</div>
@@ -115,6 +116,7 @@ export class AllAppointments extends Component {
 											<th className="text-center">Queue Number</th>
 											<th className="text-center">Patient Name</th>
 											<th className="text-center">Department</th>
+											<th className="text-center">Status</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -141,6 +143,9 @@ export class AllAppointments extends Component {
 														</td>
 														<td className="text-center">
 															{transaction.q_department_id}
+														</td>
+														<td className="text-center">
+															{transaction.q_status}
 														</td>
 													</tr>
 												);
