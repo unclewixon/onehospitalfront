@@ -49,6 +49,15 @@ export const months = [
 	'December',
 ];
 
+export const relationships = [
+	{ value: 'Father', label: 'Father' },
+	{ value: 'Mother', label: 'Mother' },
+	{ value: 'Sister', label: 'Sister' },
+	{ value: 'Brother', label: 'Brother' },
+	{ value: 'Aunt', label: 'Aunt' },
+	{ value: 'Others', label: 'Others' },
+];
+
 export const ethnicities = [
 	{ value: 'Igbo', label: 'Igbo' },
 	{ value: 'Hausa', label: 'Hausa' },
@@ -126,6 +135,14 @@ export const documentType = [
 	{ id: 'Prescription', name: 'Prescription' },
 ];
 
+export const paymentTypeExtra = [
+	{ value: 'POS', label: 'POS' },
+	{ value: 'Cash', label: 'Cash' },
+	{ value: 'Cheque', label: 'Cheque' },
+	{ value: 'Transfer', label: 'Transfer' },
+	{ value: 'Hmo', label: 'Hmo' },
+];
+
 export const paymentType = [
 	{ value: 'POS', label: 'POS' },
 	{ value: 'Cash', label: 'Cash' },
@@ -139,6 +156,7 @@ export const transactionPaymentType = [
 	{ id: 'Cheque', name: 'Cheque' },
 	{ id: 'Transfer', name: 'Transfer' },
 	{ id: 'Voucher', name: 'Voucher' },
+	{ id: 'Hmo', name: 'Hmo' },
 ];
 
 export const insuranceStatus = [

@@ -8,6 +8,7 @@ import { getPhysiotherapies, Allergy } from '../../actions/patient';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import Tooltip from 'antd/lib/tooltip';
+import moment from 'moment';
 class Physiotherapy extends Component {
 	state = {
 		loaded: false,
@@ -21,7 +22,7 @@ class Physiotherapy extends Component {
 		const { patient } = this.props;
 		try {
 			const rs = await request(
-				`${API_URI}${patientAPI}/${patient.id}/physiotherapy`,
+				`${API_URI}${patientAPI}/${patient.id}/request/physiotherapy?startDate=&endDate=`,
 				'GET',
 				true
 			);
@@ -36,9 +37,83 @@ class Physiotherapy extends Component {
 		}
 	};
 
+	convertToIndividualRequest = data => {
+		let newData = [];
+		data.forEach(value => {
+			if (Array.isArray(value.requestBody)) {
+				value.requestBody.forEach(val => {
+					newData.push({
+						id: value.id,
+						isActive: value.isActive,
+						createdAt: value.createdAt,
+						updateAt: value.updateAt,
+						requestType: value.requestType,
+						requestBody: {
+							amount: val.amount,
+							service_id: val.service_id,
+							specialization: val.specialization,
+							sessionCount: val.sessionCount,
+						},
+						status: value.status,
+					});
+				});
+			} else {
+				newData.push(value);
+			}
+		});
+
+		return newData;
+	};
+
+	table = () =>
+		this.props.physiotherapies &&
+		this.convertToIndividualRequest(this.props.physiotherapies).map(
+			(physio, i) => {
+				return (
+					<tr className="" data-index="0" key={i}>
+						<td className="text-center">
+							<span className="text-bold">{i + 1}</span>
+						</td>
+						<td className="text-center">
+							{moment(physio.createdAt).format('DD-MM-YYYY')}
+						</td>
+						<td className="text-center">{physio.requestBody.specialization}</td>
+						<td className="text-center">{physio.requestBody.sessionCount}</td>
+
+						<td className="text-center">
+							{physio.status === 0 ? (
+								<>
+									<span className="status-pill smaller yellow"></span>
+									<span>Pending</span>
+								</>
+							) : (
+								<>
+									<span className="status-pill smaller green"></span>
+									<span>Approved</span>
+								</>
+							)}
+						</td>
+						<td className="row-actions text-right">
+							<Tooltip title="View Request">
+								<a href="#">
+									<i className="os-icon os-icon-documents-03" />
+								</a>
+							</Tooltip>
+							<Tooltip title="Print Request">
+								<a className="ml-2" href="#">
+									<i className="icon-feather-printer" />
+								</a>
+							</Tooltip>
+						</td>
+					</tr>
+				);
+			}
+		);
+
 	render() {
-		const { location } = this.props;
+		const { location, physiotherapies } = this.props;
 		const { loaded } = this.state;
+		console.log(physiotherapies);
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
@@ -67,10 +142,10 @@ class Physiotherapy extends Component {
 										className="table table-theme v-middle table-hover">
 										<thead>
 											<tr>
-												<th>ID</th>
-												<th>Request Date</th>
-												<th>Requested By</th>
-												<th>Request Specimen</th>
+												<th className="text-center">S/N</th>
+												<th className="text-center">Request Date</th>
+												<th className="text-center">Specialization</th>
+												<th className="text-center">Session Count</th>
 												<th className="text-center">Request Status</th>
 												<th className="text-right" />
 											</tr>
@@ -83,104 +158,7 @@ class Physiotherapy extends Component {
 													</td>
 												</tr>
 											) : (
-												<>
-													<tr className="" data-index="0" data-id="20">
-														<td>
-															<span className="text-bold">LAB/32456789</span>
-														</td>
-														<td>
-															<span>20-Jan-2020</span>
-															<span className="smaller lighter ml-1">
-																3:22pm
-															</span>
-														</td>
-														<td>
-															<Link to="/">Uchechi I.</Link>
-														</td>
-														<td>Blood</td>
-														<td className="text-center">
-															<span className="badge badge-secondary">
-																pending
-															</span>
-														</td>
-														<td className="row-actions text-right">
-															<Tooltip title="View Request">
-																<a href="#">
-																	<i className="os-icon os-icon-documents-03" />
-																</a>
-															</Tooltip>
-															<Tooltip title="Print Request">
-																<a className="ml-2" href="#">
-																	<i className="icon-feather-printer" />
-																</a>
-															</Tooltip>
-														</td>
-													</tr>
-													<tr className="" data-index="0" data-id="20">
-														<td>
-															<span className="text-bold">LAB/32456789</span>
-														</td>
-														<td>
-															<span>20-Jan-2020</span>
-															<span className="smaller lighter ml-1">
-																3:22pm
-															</span>
-														</td>
-														<td>
-															<Link to="/">Uchechi I.</Link>
-														</td>
-														<td>Blood</td>
-														<td className="text-center">
-															<span className="badge badge-success">
-																completed
-															</span>
-														</td>
-														<td className="row-actions text-right">
-															<Tooltip title="View Request">
-																<a href="#">
-																	<i className="os-icon os-icon-documents-03" />
-																</a>
-															</Tooltip>
-															<Tooltip title="Print Request">
-																<a className="ml-2" href="#">
-																	<i className="icon-feather-printer" />
-																</a>
-															</Tooltip>
-														</td>
-													</tr>
-													<tr className="" data-index="0" data-id="20">
-														<td>
-															<span className="text-bold">LAB/32456789</span>
-														</td>
-														<td>
-															<span>20-Jan-2020</span>
-															<span className="smaller lighter ml-1">
-																3:22pm
-															</span>
-														</td>
-														<td>
-															<Link to="/">Uchechi I.</Link>
-														</td>
-														<td>Blood</td>
-														<td className="text-center">
-															<span className="badge badge-danger">
-																pending
-															</span>
-														</td>
-														<td className="row-actions text-right">
-															<Tooltip title="View Request">
-																<a href="#">
-																	<i className="os-icon os-icon-documents-03" />
-																</a>
-															</Tooltip>
-															<Tooltip title="Print Request">
-																<a className="ml-2" href="#">
-																	<i className="icon-feather-printer" />
-																</a>
-															</Tooltip>
-														</td>
-													</tr>
-												</>
+												<>{this.table()}</>
 											)}
 										</tbody>
 									</table>

@@ -114,8 +114,6 @@ class ReviewTransaction extends Component {
 
 	render() {
 		const { filtering, loading, patients } = this.state;
-
-		console.log(patients);
 		const transactions = this.props.reviewTransaction;
 		return (
 			<>

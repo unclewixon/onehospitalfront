@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import intersectionBy from 'lodash.intersectionby';
+import {
+	API_URI,
+	socket,
+	patientAPI,
+	searchAPI,
+} from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
+import { request } from '../../services/utilities';
+import searchingGIF from '../../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import {
 	getAllLabTests,
@@ -11,7 +20,6 @@ import {
 	getAllLabTestCategories,
 } from '../../actions/settings';
 import { createLabRequest } from '../../actions/patient';
-
 const serviceCenter = [
 	{
 		value: 'lab',
@@ -26,6 +34,9 @@ const LabRequest = props => {
 		},
 	});
 	const [submitting, setSubmitting] = useState(false);
+	const [query, setQuery] = useState('');
+	const [searching, setSearching] = useState(false);
+	const [patients, setPatients] = useState([]);
 	const [loaded, setLoaded] = useState(false);
 	const [category, setCategory] = useState('');
 	const [labTests, setLabTests] = useState(null);
@@ -80,7 +91,12 @@ const LabRequest = props => {
 		? intersectionBy(props.LabGroups, labCombos, 'id')
 		: [];
 
-	const onSubmit = ({ service_center, referred_specimen, request_note }) => {
+	const onSubmit = ({
+		service_center,
+		referred_specimen,
+		request_note,
+		patient_id,
+	}) => {
 		const { patient } = props;
 		if (!category) {
 			notifyError('Please select a category');
@@ -108,6 +124,40 @@ const LabRequest = props => {
 			});
 	};
 
+	const handlePatientChange = e => {
+		setQuery(e.target.value);
+		searchPatient();
+	};
+
+	const searchPatient = async () => {
+		if (query.length > 2) {
+			try {
+				setSearching(true);
+				const rs = await request(
+					`${API_URI}${searchAPI}?q=${query}`,
+					'GET',
+					true
+				);
+
+				setPatients(rs);
+				setSearching(false);
+			} catch (e) {
+				notifyError('Error Occurred');
+				setSearching(false);
+			}
+		}
+	};
+
+	const patientSet = pat => {
+		setValue('patient_id', pat.id);
+		let name =
+			(pat.surname ? pat.surname : '') +
+			' ' +
+			(pat.other_names ? pat.other_names : '');
+		document.getElementById('patient').value = name;
+		setPatients([]);
+	};
+
 	useEffect(() => {
 		const { getAllLabGroups, getAllLabTests, getAllLabTestCategories } = props;
 		if (!loaded) {
@@ -116,6 +166,7 @@ const LabRequest = props => {
 			getAllLabTestCategories();
 		}
 		setLoaded(true);
+		console.log(props.location);
 	}, [loaded, props]);
 
 	return (
@@ -125,6 +176,53 @@ const LabRequest = props => {
 				<div className="element-box">
 					<div className="form-block w-100">
 						<form onSubmit={handleSubmit(onSubmit)}>
+							{props.location.hash ? null : (
+								<div className="row">
+									<div className="form-group col-sm-12">
+										<label>Patient Id</label>
+
+										<input
+											className="form-control"
+											placeholder="Search for patient"
+											type="text"
+											name="patient_id"
+											defaultValue=""
+											id="patient"
+											ref={register({ name: 'patient_id' })}
+											onChange={handlePatientChange}
+											autoComplete="off"
+											required
+										/>
+										{searching && (
+											<div className="searching text-center">
+												<img alt="searching" src={searchingGIF} />
+											</div>
+										)}
+
+										{patients &&
+											patients.map(pat => {
+												return (
+													<div
+														style={{ display: 'flex' }}
+														key={pat.id}
+														className="element-box">
+														<a
+															onClick={() => patientSet(pat)}
+															className="ssg-item cursor">
+															{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
+															<div
+																className="item-name"
+																dangerouslySetInnerHTML={{
+																	__html: `${pat.surname} ${pat.other_names}`,
+																}}
+															/>
+														</a>
+													</div>
+												);
+											})}
+									</div>
+								</div>
+							)}
 							<div className="row">
 								<div className="form-group col-sm-6">
 									<label>Service Center</label>
@@ -250,9 +348,11 @@ const mapStateToProps = state => {
 	};
 };
 
-export default connect(mapStateToProps, {
-	createLabRequest,
-	getAllLabGroups,
-	getAllLabTests,
-	getAllLabTestCategories,
-})(LabRequest);
+export default withRouter(
+	connect(mapStateToProps, {
+		createLabRequest,
+		getAllLabGroups,
+		getAllLabTests,
+		getAllLabTestCategories,
+	})(LabRequest)
+);
