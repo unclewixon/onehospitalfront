@@ -60,8 +60,8 @@ const TransactionTable = props => {
 							</td>
 							<td className="">{transaction.department?.name}</td>
 							<td className="">
-								{transaction.q_service_id
-									? transaction.q_service_id
+								{transaction.service?.name
+									? transaction.service.name
 									: 'No service yet'}
 							</td>
 							<td className="">{transaction.q_amount}</td>
