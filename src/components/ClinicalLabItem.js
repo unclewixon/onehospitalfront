@@ -57,45 +57,45 @@ export class ClinicalLabItem extends Component {
 
 					<td className="text-right row-actions">
 						<Tooltip title="Receive Request">
-							<a className="secondary" onClick={() => modalClick(lab)}>
-								<i className="os-icon os-icon-folder-plus" />
-							</a>
+							<a className="secondary" onClick={() => {
+							if(typeof modalClick === 'function'){
+								modalClick(lab)
+							}}}>
+							<i className="os-icon os-icon-folder-plus" />
+						</a>
 						</Tooltip>
-						<Tooltip title="Edit Request">
-							<a className="secondary">
-								<i className="os-icon os-icon-edit-32" />
-							</a>
-						</Tooltip>
-						<Tooltip title="Delete Request">
-							<a className="danger">
-								<i className="os-icon os-icon-ui-15" />
-							</a>
-						</Tooltip>
+					<Tooltip title="Delete Request">
+						<a className="danger">
+							<i className="os-icon os-icon-ui-15" />
+						</a>
+					</Tooltip>
+					</td>
+			</tr>
+				{
+			collapse ? null : (
+				<tr className="expanded-row">
+					<td colSpan="5">
+						<div className="table-responsive">
+							<table className="table table-sm">
+								<tbody>
+									<tr>
+										<th>Specimen</th>
+										<td>{lab.requestBody.refferredSpecimen}</td>
+									</tr>
+									<tr>
+										<th>Lab</th>
+										<td>
+											{lab.requestBody.test &&
+												lab.requestBody.test.map(test => test.name).join(',')}
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</td>
 				</tr>
-				{collapse ? null : (
-					<tr className="expanded-row">
-						<td colSpan="5">
-							<div className="table-responsive">
-								<table className="table table-sm">
-									<tbody>
-										<tr>
-											<th>Specimen</th>
-											<td>{lab.requestBody.refferredSpecimen}</td>
-										</tr>
-										<tr>
-											<th>Lab</th>
-											<td>
-												{lab.requestBody.test &&
-													lab.requestBody.test.map(test => test.name).join(',')}
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</td>
-					</tr>
-				)}
+			)
+		}
 			</>
 		);
 	}
