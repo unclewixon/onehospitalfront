@@ -67,6 +67,7 @@ import {
 	DELETE_LAB_GROUP,
 	GET_ALL_LAB_GROUPS,
 } from './types';
+import { request } from '../services/utilities';
 
 //Request Service
 
@@ -635,19 +636,18 @@ export const getAllRooms = () => {
 export const updateRoom = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.patch(`${API_URI}/rooms/${data.id}/update`, {
-					name: data.name,
-					status: data.status,
-					floor: data.status,
-					room_category_id: data.category,
-				})
+			request(`${API_URI}/rooms/${data.id}/update`, 'PUT', true, {
+				name: data.name,
+				status: data.status,
+				floor: data.status,
+				room_category_id: data.category,
+			})
 				.then(response => {
 					dispatch(update_room(response.data, data));
 					return resolve({ success: true });
 				})
 				.catch(error => {
-					return resolve({ success: false });
+					return reject({ success: false });
 				});
 		});
 	};
@@ -745,17 +745,16 @@ export const deleteRoomCategory = data => {
 export const addLabTest = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.post(`${API_URI}/lab-tests`, {
-					name: data.name,
-					price: data.price,
-					lab_category_id: data.category,
-					test_type: data.testType,
-					parameters: data.parameters,
-					description: data.description,
-				})
+			request(`${API_URI}/lab-tests`, 'POST', true, {
+				name: data.name,
+				price: data.price,
+				lab_category_id: data.category,
+				test_type: data.testType,
+				parameters: data.parameters,
+				description: data.description,
+			})
 				.then(response => {
-					dispatch(add_lab_test(response.data));
+					dispatch(add_lab_test(response));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -768,10 +767,9 @@ export const addLabTest = data => {
 export const getAllLabTests = () => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.get(`${API_URI}/lab-tests`)
+			request(`${API_URI}/lab-tests`, 'GET', true)
 				.then(response => {
-					const res = response.data.filter(grp => grp.test_type === 'single');
+					const res = response.filter(grp => grp.test_type === 'single');
 					dispatch(get_all_lab_tests(res));
 					return resolve({ success: true });
 				})
@@ -843,18 +841,17 @@ export const deleteLabTest = data => {
 export const addLabGroup = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.post(`${API_URI}/lab-tests`, {
-					name: data.name,
-					price: data.price,
-					lab_category_id: data.category,
-					test_type: data.testType,
-					sub_test: data.labTests,
-					parameters: data.parameters,
-					description: data.description,
-				})
+			request(`${API_URI}/lab-tests`, 'POST', true, {
+				name: data.name,
+				price: data.price,
+				lab_category_id: data.category,
+				test_type: data.testType,
+				sub_test: data.labTests,
+				parameters: data.parameters,
+				description: data.description,
+			})
 				.then(response => {
-					dispatch(add_lab_group(response.data));
+					dispatch(add_lab_group(response));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -867,10 +864,9 @@ export const addLabGroup = data => {
 export const getAllLabGroups = () => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.get(`${API_URI}/lab-tests`)
+			request(`${API_URI}/lab-tests`, 'GET', true)
 				.then(response => {
-					const res = response.data.filter(grp => grp.test_type === 'combo');
+					const res = response.filter(grp => grp.test_type === 'combo');
 					dispatch(get_all_lab_groups(res));
 					return resolve({ success: true });
 				})
@@ -882,21 +878,19 @@ export const getAllLabGroups = () => {
 };
 
 export const updateLabGroup = data => {
-	console.log(data);
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.patch(`${API_URI}/lab-tests/${data.id}/update`, {
-					name: data.name,
-					lab_category_id: data.category,
-					price: data.price,
-					test_type: data.testType,
-					sub_test: data.labTests,
-					parameters: data.parameters,
-					description: data.description,
-				})
+			request(`${API_URI}/lab-tests/${data.id}/update`, 'PUT', true, {
+				name: data.name,
+				lab_category_id: data.category,
+				price: data.price,
+				test_type: data.testType,
+				sub_test: data.labTests,
+				parameters: data.parameters,
+				description: data.description,
+			})
 				.then(response => {
-					dispatch(update_lab_group(response.data, data));
+					dispatch(update_lab_group(response));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -909,8 +903,7 @@ export const updateLabGroup = data => {
 export const deleteLabGroup = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.delete(`${API_URI}/lab-tests/${data.id}`)
+			request(`${API_URI}/lab-tests/${data.id}`, 'DELETE', true)
 				.then(response => {
 					dispatch(delete_lab_group(data));
 					return resolve({ success: true });
@@ -925,12 +918,11 @@ export const deleteLabGroup = data => {
 export const addLabTestCategory = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.post(`${API_URI}/lab-tests/categories`, {
-					name: data.name,
-				})
+			request(`${API_URI}/lab-tests/categories`, 'POST', true, {
+				name: data.name,
+			})
 				.then(response => {
-					dispatch(add_lab_test_category(response.data));
+					dispatch(add_lab_test_category(response));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -943,10 +935,9 @@ export const addLabTestCategory = data => {
 export const getAllLabTestCategories = () => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.get(`${API_URI}/lab-tests/categories`)
+			request(`${API_URI}/lab-tests/categories`, 'GET', true)
 				.then(response => {
-					dispatch(get_all_lab_test_categories(response.data));
+					dispatch(get_all_lab_test_categories(response));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -959,12 +950,16 @@ export const getAllLabTestCategories = () => {
 export const updateLabTestCategory = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.patch(`${API_URI}/lab-tests/categories/${data.id}/update`, {
+			request(
+				`${API_URI}/lab-tests/categories/${data.id}/update`,
+				'PUT',
+				true,
+				{
 					name: data.name,
-				})
+				}
+			)
 				.then(response => {
-					dispatch(update_lab_test_category(response.data, data));
+					dispatch(update_lab_test_category(response, data));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -977,8 +972,7 @@ export const updateLabTestCategory = data => {
 export const deleteLabTestCategory = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.delete(`${API_URI}/lab-tests/categories/${data.id}`)
+			request(`${API_URI}/lab-tests/categories/${data.id}`, 'DELETE', true)
 				.then(response => {
 					dispatch(delete_lab_test_category(data));
 					return resolve({ success: true });
@@ -993,12 +987,11 @@ export const deleteLabTestCategory = data => {
 export const addLabTestParameter = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.post(`${API_URI}/lab-tests/parameters`, {
-					name: data.name,
-				})
+			request(`${API_URI}/lab-tests/parameters`, 'POST', true, {
+				name: data.name,
+			})
 				.then(response => {
-					dispatch(add_lab_test_parameter(response.data));
+					dispatch(add_lab_test_parameter(response));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -1011,10 +1004,9 @@ export const addLabTestParameter = data => {
 export const getAllLabTestParameters = () => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.get(`${API_URI}/lab-tests/parameters`)
+			request(`${API_URI}/lab-tests/parameters`, 'GET', true)
 				.then(response => {
-					dispatch(get_all_lab_test_parameters(response.data));
+					dispatch(get_all_lab_test_parameters(response));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -1027,12 +1019,16 @@ export const getAllLabTestParameters = () => {
 export const updateLabTestParameter = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.patch(`${API_URI}/lab-tests/parameters/${data.id}/update`, {
+			request(
+				`${API_URI}/lab-tests/parameters/${data.id}/update`,
+				'PUT',
+				true,
+				{
 					name: data.name,
-				})
+				}
+			)
 				.then(response => {
-					dispatch(update_lab_test_parameter(response.data, data));
+					dispatch(update_lab_test_parameter(response, data));
 					return resolve({ success: true });
 				})
 				.catch(error => {

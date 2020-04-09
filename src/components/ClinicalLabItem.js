@@ -42,13 +42,12 @@ export class ClinicalLabItem extends Component {
 						</a>
 					</td>
 					<td className="flex">
-						<a className="item-title text-color">{lab.patient.fileNumber}</a>
+						<a className="item-title text-color">{'No yet available'}</a>
 					</td>
 					<td className="flex">
-						<a className="item-title text-color">
-							{lab.patient.surname ? lab.patient.surname : ''}{' '}
-							{lab.patient.other_names ? lab.patient.other_names : ''}
-						</a>
+						<p className="item-title text-color">
+							{lab.patient_name ? lab.patient_name : ''}
+						</p>
 					</td>
 					<td className="flex">
 						<a className="item-title text-color">
@@ -82,7 +81,7 @@ export class ClinicalLabItem extends Component {
 									<tbody>
 										<tr>
 											<th>Specimen</th>
-											<td>{lab.requestBody.referredSpeciment}</td>
+											<td>{lab.requestBody.refferredSpecimen}</td>
 										</tr>
 										<tr>
 											<th>Lab</th>

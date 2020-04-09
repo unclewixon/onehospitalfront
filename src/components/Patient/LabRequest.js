@@ -4,12 +4,7 @@ import { withRouter } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import intersectionBy from 'lodash.intersectionby';
-import {
-	API_URI,
-	socket,
-	patientAPI,
-	searchAPI,
-} from '../../services/constants';
+import { API_URI, searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
@@ -112,13 +107,14 @@ const LabRequest = props => {
 				lab_combo,
 				category,
 				urgent: urgent ? urgent : false,
-				patient_id: patient && patient.id ? patient.id : '',
+				patient_id: patient && patient.id ? patient.id : patient_id,
 			})
 			.then(response => {
 				setSubmitting(false);
 				notifySuccess('Lab request created');
 			})
 			.catch(error => {
+				console.log(error);
 				setSubmitting(false);
 				notifyError('Error creating lab request');
 			});
@@ -166,7 +162,6 @@ const LabRequest = props => {
 			getAllLabTestCategories();
 		}
 		setLoaded(true);
-		console.log(props.location);
 	}, [loaded, props]);
 
 	return (

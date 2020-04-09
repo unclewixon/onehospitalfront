@@ -22,21 +22,18 @@ const ModalClinicalLab = ({
 				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-				<div
-					style={{
-						border: '1px solid black',
-						padding: '30px',
-					}}>
+				<div className="p-4 bg-light border-2">
 					<div className="row">
 						<div className="col-sm-6">
 							<p>
 								<span>Patient Name: </span>
+								{activeRequest.patient_name ? activeRequest.patient_name : ''}
 							</p>
 						</div>
 						<div className="col-sm-6">
 							<p>
 								<span>Patient ID: </span>
-								{activeRequest.patient.fileNumber}
+								{'No yet available'}
 							</p>
 						</div>
 					</div>
@@ -44,7 +41,7 @@ const ModalClinicalLab = ({
 						<div className="col-sm-6">
 							<p>
 								<span>Specimen: </span>
-								{activeRequest.referredSpeciment}
+								{activeRequest.requestBody.refferredSpecimen}
 							</p>
 						</div>
 						<div className="col-sm-6">
@@ -55,124 +52,102 @@ const ModalClinicalLab = ({
 						</div>
 					</div>
 				</div>
-				<div
-					style={{
-						border: '1px solid black',
-						padding: '30px',
-						margin: '30px 0px 0px 0px',
-					}}>
+				<div className="mt-4 p-4 bg-light border-2">
 					<div>
-						<div>
-							<h6>GROUPS</h6>
-						</div>
-						<div
-							style={{
-								marginLeft: '30px',
-							}}>
-							<p>Group Name: </p>
-						</div>
-						<div
-							style={{
-								marginLeft: '60px',
-							}}>
-							<p>Test Name</p>
-						</div>
-						<div
-							style={{
-								marginLeft: '90px',
-							}}>
-							<Table className="table bordered">
-								<thead>
-									<tr>
-										<th>Param Name</th>
-										<th>Range</th>
-										<th>Result</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td></td>
-										<td></td>
-										<td></td>
-									</tr>
-								</tbody>
-							</Table>
-							<div>
-								<p>Parameter</p>
-							</div>
-							<div>
-								<Table className="table bordered">
-									<thead>
-										<tr>
-											<th>Param Name</th>
-											<th>Range</th>
-											<th>Result</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td></td>
-											<td></td>
-											<td></td>
-										</tr>
-									</tbody>
-								</Table>
-							</div>
-						</div>
+						<h6>GROUPS</h6>
 					</div>
+					{activeRequest &&
+						activeRequest.requestBody &&
+						activeRequest.requestBody.group &&
+						activeRequest.requestBody.group.map(grp => (
+							<div>
+								<div className="ml-4">
+									<p>Group Name: </p>
+								</div>
+								{grp.tests &&
+									grp.tests.map(test => (
+										<div className="ml-2 p-4 bg-white border-2">
+											<Table className="table bordered">
+												<thead>
+													<tr>
+														<th>Param Name</th>
+														<th>Range</th>
+														<th>Result</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td></td>
+														<td></td>
+														<td></td>
+													</tr>
+												</tbody>
+											</Table>
+											<div />
+											))
+										</div>
+									))}
+
+								{grp.parameters &&
+									grp.parameters.map(parameter => (
+										<div className="ml-2 p-4 bg-white border-2">
+											<Table className="table bordered">
+												<thead>
+													<tr>
+														<th>Param Name</th>
+														<th>Range</th>
+														<th>Result</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td></td>
+														<td></td>
+														<td></td>
+													</tr>
+												</tbody>
+											</Table>
+										</div>
+									))}
+							</div>
+						))}
+				</div>
+
+				<div className="mt-4 p-4 bg-light border-2">
 					<div>
-						<div>
-							<h6>TESTS</h6>
-						</div>
-						<div
-							style={{
-								marginLeft: '30px',
-							}}>
-							<p>Test Name</p>
-						</div>
-						<div
-							style={{
-								marginLeft: '60px',
-							}}>
-							<Table className="table bordered">
-								<thead>
-									<tr>
-										<th>Param Name</th>
-										<th>Range</th>
-										<th>Result</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td></td>
-										<td></td>
-										<td></td>
-									</tr>
-								</tbody>
-							</Table>
-							<div>
-								<p>Parameter</p>
-							</div>
-							<div>
-								<Table className="table bordered">
-									<thead>
-										<tr>
-											<th>Param Name</th>
-											<th>Range</th>
-											<th>Result</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td></td>
-											<td></td>
-											<td></td>
-										</tr>
-									</tbody>
-								</Table>
-							</div>
-						</div>
+						<h6>TESTS</h6>
 					</div>
+					{activeRequest &&
+						activeRequest.requestBody &&
+						activeRequest.requestBody.test &&
+						activeRequest.requestBody.test.map(tst => (
+							<div>
+								<div className="ml-4">
+									<p>Test Name: </p>
+								</div>
+								{tst.parameters &&
+									tst.parameters.map(parameter => (
+										<div className="ml-2 p-4 bg-white border-2">
+											<Table className="table bordered">
+												<thead>
+													<tr>
+														<th>Param Name</th>
+														<th>Range</th>
+														<th>Result</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td></td>
+														<td></td>
+														<td></td>
+													</tr>
+												</tbody>
+											</Table>
+										</div>
+									))}
+							</div>
+						))}
 				</div>
 			</Modal.Body>
 		</Modal>

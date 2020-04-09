@@ -82,7 +82,7 @@ const LabGroup = props => {
 		props
 			.addLabGroup({
 				name,
-				amount: price,
+				price,
 				category,
 				parameters: params,
 				testType,
