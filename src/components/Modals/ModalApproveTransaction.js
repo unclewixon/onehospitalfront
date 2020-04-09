@@ -35,10 +35,15 @@ class ModalApproveTransaction extends Component {
 	state = {
 		submitting: false,
 		hidden: true,
+		amountClass: 'col-sm-6',
 		voucherList: [],
 	};
 
 	componentDidMount() {
+		const { approve_hmo_transaction } = this.props;
+		if (approve_hmo_transaction) {
+			this.setState({ amountClass: 'col-sm-12' });
+		}
 		document.body.classList.add('modal-open');
 	}
 
@@ -47,12 +52,18 @@ class ModalApproveTransaction extends Component {
 	}
 
 	approveTransaction = async data => {
-		const { items } = this.props;
+		const { items, approve_hmo_transaction } = this.props;
+		let id = items.q_id;
+		if (approve_hmo_transaction) {
+			data.payment_type = 'Hmo';
+			id = items.id;
+		}
+		console.log(data);
 		console.log(items);
 		this.setState({ submitting: true });
 		try {
 			const rs = await request(
-				`${API_URI}${transactionsAPI}/` + items.q_id + '/process',
+				`${API_URI}${transactionsAPI}/` + id + '/process',
 				'PATCH',
 				true,
 				data
@@ -120,8 +131,8 @@ class ModalApproveTransaction extends Component {
 	}
 
 	render() {
-		const { error, handleSubmit } = this.props;
-		const { submitting, hidden, voucherList } = this.state;
+		const { error, handleSubmit, approve_hmo_transaction } = this.props;
+		const { submitting, hidden, voucherList, amountClass } = this.state;
 		return (
 			<div
 				className="onboarding-modal modal fade animated show"
@@ -149,7 +160,7 @@ class ModalApproveTransaction extends Component {
 										/>
 									)}
 									<div className="row">
-										<div className="col-sm-6">
+										<div className="col-sm-6" hidden={approve_hmo_transaction}>
 											<div className="form-group">
 												<Field
 													id="payment_type"
@@ -162,7 +173,7 @@ class ModalApproveTransaction extends Component {
 												/>
 											</div>
 										</div>
-										<div className="col-sm-6">
+										<div className={amountClass}>
 											<div className="form-group">
 												<Field
 													id="amount_paid"
@@ -254,6 +265,7 @@ const mapStateToProps = (state, ownProps) => {
 			amount_paid: items.q_amount,
 		},
 		voucher: state.paypoint.voucher,
+		approve_hmo_transaction: state.general.approve_hmo_transaction,
 		items,
 	};
 };
