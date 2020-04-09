@@ -206,7 +206,7 @@ const LabGroup = props => {
 	}, [loaded, props]);
 
 	const labTestOptions = props.LabTests.map(tests => {
-		return { value: tests.name, label: tests.name };
+		return { value: tests.name, label: tests.name, id: tests.id };
 	});
 
 	const addParameterUI = () => {

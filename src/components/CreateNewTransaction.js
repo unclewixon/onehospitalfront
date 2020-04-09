@@ -37,8 +37,6 @@ const CreateNewTransaction = props => {
 	const [multiple, setMultiple] = useState([]);
 
 	const onSubmit = async values => {
-		console.log(values);
-
 		setSubmitting(true);
 		let data = {
 			patient_id: values.patient_id,

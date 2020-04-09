@@ -23,7 +23,7 @@ export class PharmAllRequest extends Component {
 		loading: false,
 		activeRequest: null,
 		showModal: false,
-		dateRange: []
+		dateRange: [],
 	};
 
 	onModalClick = () => {
@@ -81,11 +81,13 @@ export class PharmAllRequest extends Component {
 							<div className="form-group mr-2">
 								<RangePicker
 									value={this.state.dateRange}
-									onChange={e => e.map((date) => {
-										const range = moment(date).format("DD/MM/YYYY hh:mm");
-										console.log(range)
-										return range
-									})}
+									onChange={e =>
+										e.map(date => {
+											const range = moment(date).format('DD/MM/YYYY hh:mm');
+											console.log(range);
+											return range;
+										})
+									}
 								/>
 							</div>
 							<div className="form-group mr-2">

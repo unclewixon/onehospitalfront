@@ -22,11 +22,6 @@ const Pharmacy = props => {
 		setShowModal(!showModal);
 	};
 
-	const requestStatus = [
-		{ value: 'pending', label: 'Pending' },
-		{ value: 'approved', label: 'Approved' },
-	];
-
 	useEffect(() => {
 		const { getRequestByType, patient } = props;
 		const patient_id = patient && patient.id ? patient.id : '';

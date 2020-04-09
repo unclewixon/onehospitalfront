@@ -7,14 +7,12 @@ import DatePicker from 'antd/lib/date-picker';
 import { getRequestByType } from '../actions/patient';
 import { connect } from 'react-redux';
 import { notifyError } from '../services/notify';
-import Modal from 'react-bootstrap/Modal';
 import Select from 'react-select';
-import { Link } from 'react-router-dom';
 
 const { RangePicker } = DatePicker;
-const departments = [
-	{ id: 'ejejekek', name: 'angel' },
-	{ id: 'sislkas', name: 'kafta' },
+const patients = [
+	{ label: 'Chinedu', value: 'Chinedu' },
+	{ label: 'Joel', value: 'Joel' },
 ];
 
 export class RecentRequest extends Component {
@@ -23,6 +21,7 @@ export class RecentRequest extends Component {
 		loading: false,
 		activeRequest: null,
 		showModal: false,
+		filteredPatient: null,
 	};
 
 	onModalClick = () => {
@@ -47,35 +46,30 @@ export class RecentRequest extends Component {
 	}
 
 	render() {
-		const { filtering } = this.state;
+		const { filtering, filteredPatient } = this.state;
 		const { Requests } = this.props;
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
-					<h6 className="element-header">All Request</h6>
-					<div className="row my-4">
+					<h6 className="element-header">Recent Requests</h6>
+					<div className="row">
 						<form action="" className="form-inline pl-3">
 							<div className="form-group">
 								<label className="mr-2">Filter by: </label>
 							</div>
 							<div className="form-group mr-2">
-								<label className="mr-2 " htmlFor="id">
+								<label className="mr-2 " htmlFor="patient">
 									ID
 								</label>
-								<select
-									style={{ height: '32px' }}
-									id="department"
-									className="form-control"
-									name="id"
-									onChange={e => this.change(e)}>
-									{departments.map((dept, i) => {
-										return (
-											<option key={i} value={dept.id}>
-												{dept.name}
-											</option>
-										);
-									})}
-								</select>
+								<Select
+									id="patient"
+									name="patient"
+									onChange={val => this.setState({ filteredPatient: val })}
+									options={patients}
+									value={filteredPatient}
+									defaultValue={patients[0]}
+									styles={{ height: '2rem' }}
+								/>
 							</div>
 							<div className="form-group mr-2">
 								<RangePicker />
@@ -84,12 +78,11 @@ export class RecentRequest extends Component {
 								<a
 									className="btn btn-sm btn-primary btn-upper text-white"
 									onClick={this.doFilter}>
-									<i className="os-icon os-icon-ui-37" />
 									<span>
 										{filtering ? (
 											<img src={waiting} alt="submitting" />
 										) : (
-											'Filter'
+											<i className="os-icon os-icon-ui-37" />
 										)}
 									</span>
 								</a>

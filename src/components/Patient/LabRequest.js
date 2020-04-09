@@ -3,12 +3,8 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
-import {
-	API_URI,
-	socket,
-	patientAPI,
-	searchAPI,
-} from '../../services/constants';
+import intersectionBy from 'lodash.intersectionby';
+import { API_URI, searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
@@ -40,7 +36,7 @@ const LabRequest = props => {
 	const [category, setCategory] = useState('');
 	const [labTests, setLabTests] = useState(null);
 	const [labCombos, setLabCombos] = useState(null);
-	const [urgent, setUrgent] = useState(false)
+	const [urgent, setUrgent] = useState(false);
 
 	const handleMultipleSelectInput = (field, selected) => {
 		if (field === 'lab_combos') {
@@ -69,7 +65,7 @@ const LabRequest = props => {
 						? true
 						: false
 			  ).map((grp, index) => {
-					return { value: grp.id, label: grp.name };
+					return { value: grp.id, label: grp.name, id: grp.id };
 			  })
 			: [];
 
@@ -77,21 +73,17 @@ const LabRequest = props => {
 		props && props.LabTests
 			? props.LabTests.filter(test => test.category.id === category).map(
 					(test, index) => {
-						return { value: test.id, label: test.name };
+						return { value: test.id, label: test.name, id: test.id };
 					}
 			  )
 			: [];
 
 	const lab_test = labTests
-		? labTests.map(test => {
-				return { id: test.value, name: test.label };
-		  })
+		? intersectionBy(props.LabTests, labTests, 'id')
 		: [];
 
 	const lab_combo = labCombos
-		? labCombos.map(grp => {
-				return { id: grp.value, name: grp.label };
-		  })
+		? intersectionBy(props.LabGroups, labCombos, 'id')
 		: [];
 
 	const onSubmit = ({
@@ -115,13 +107,14 @@ const LabRequest = props => {
 				lab_combo,
 				category,
 				urgent: urgent ? urgent : false,
-				patient_id: patient && patient.id ? patient.id : '',
+				patient_id: patient && patient.id ? patient.id : patient_id,
 			})
 			.then(response => {
 				setSubmitting(false);
 				notifySuccess('Lab request created');
 			})
 			.catch(error => {
+				console.log(error);
 				setSubmitting(false);
 				notifyError('Error creating lab request');
 			});
@@ -169,7 +162,6 @@ const LabRequest = props => {
 			getAllLabTestCategories();
 		}
 		setLoaded(true);
-		console.log(props.location);
 	}, [loaded, props]);
 
 	return (

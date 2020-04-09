@@ -26,6 +26,7 @@ import {
 	LOAD_CLINICAL_LAB,
 	LOAD_RADIOLOGY,
 } from './types';
+import { request } from '../services/utilities';
 
 export const loadPatients = data => {
 	return {
@@ -186,23 +187,51 @@ export const add_pharmacy_request = data => {
 export const createLabRequest = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.post(`${API_URI}/patient/save-request`, {
-					requestType: data.service_center,
-					category_id: data.category,
-					requestBody: {
-						specialization: '',
-						sessionCount: '',
-						combination: data.lab_combo,
-						test: data.lab_test,
-						referredSpeciment: data.referred_specimen,
-						requestNote: data.request_note,
-						urgent: data.urgent,
-					},
-					patient_id: data.patient_id,
-				})
+			let newGroup = data.lab_combo.map(grp => {
+				return {
+					name: grp.name,
+					amount: grp.price,
+					tests: grp.tests
+						? grp.tests.map(test => {
+								return {
+									testName: test.name,
+									paramenters: test.paramenters.map(param => {
+										return {
+											name: param.parameter.name,
+											range: param.referenceRange,
+											result: '',
+										};
+									}),
+								};
+						  })
+						: [],
+					parameters: grp.paramenters
+						? grp.paramenters.map(param => {
+								return {
+									name: param.parameter.name,
+									range: param.referenceRange,
+									result: '',
+								};
+						  })
+						: [],
+				};
+			});
+			let newRequestObj = {
+				requestType: data.service_center,
+				category_id: data.category,
+				patient_id: data.patient_id,
+				requestBody: {
+					specialization: '',
+					sessionCount: '',
+					group: newGroup,
+					refferredSpecimen: data.referred_specimen,
+					requestNote: data.request_note,
+				},
+			};
+			debugger;
+			request(`${API_URI}/patient/save-request`, 'POST', true, newRequestObj)
 				.then(response => {
-					dispatch(create_lab_request(response.data));
+					dispatch(create_lab_request(response));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -215,23 +244,24 @@ export const createLabRequest = data => {
 export const getRequestByType = (patientId, type) => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.get(
-					patientId
-						? `${API_URI}/patient/${patientId}/request/${type}?startDate=&endDate=`
-						: `${API_URI}/patient/requests/${type}?startDate=&endDate=`
-				)
+			request(
+				patientId
+					? `${API_URI}/patient/${patientId}/request/${type}?startDate=&endDate=`
+					: `${API_URI}/patient/requests/${type}?startDate=&endDate=`,
+				'GET',
+				true
+			)
 				.then(response => {
 					if (type === 'lab') {
 						dispatch({
 							type: GET_LAB_REQUESTS,
-							payload: response.data,
+							payload: response,
 						});
 					}
 					if (type === 'pharmacy') {
 						dispatch({
 							type: GET_PHARMACY_REQUESTS,
-							payload: response.data,
+							payload: response,
 						});
 					}
 					return resolve({ success: true });

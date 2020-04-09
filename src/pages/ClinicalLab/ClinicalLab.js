@@ -38,54 +38,11 @@ class ClinicalLab extends Component {
 		const { location, clinicalLab } = this.props;
 		const { loading } = this.state;
 		const page = location.pathname.split('/').pop();
-		console.log(clinicalLab);
 
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
-					
 					<h6 className="element-header">Lab</h6>
-					<div className="row">
-					<div className="row mt-2 mb-4">
-						<Link
-							className={`mr-2 btn btn-primary btn-sm  ${
-								page === '/' ? 'btn-outline-primary' : ''
-								}`}
-							to="/lab">
-							Dashboard
-						</Link>
-						<Link
-							to={`/lab/recent-request`}
-							className={`mr-2 btn btn-primary btn-sm  ${
-								page === '/recent-request' ? 'btn-outline-primary' : ''
-								}`}>
-							{' '}
-										Recent Request
-									</Link>
-						<Link
-							to={`/lab/filled-request`}
-							className={`mr-2 btn btn-primary btn-sm ${
-								page === '/filled-request' ? 'btn-outline-primary' : ''
-								}`}>
-							{' '}
-										Filled Request
-									</Link>
-						<Link
-							className={`mr-2 btn btn-primary btn-sm  ${
-								page === '/all-request' ? 'btn-outline-primary' : ''
-								}`}
-							to="/lab/all-request">
-							All Request
-						</Link>
-						<Link
-							className={`mr-2 btn btn-primary btn-sm  ${
-								page === '/lab-request' ? 'btn-outline-primary' : ''
-								}`}
-							to="/lab/lab-request">
-							New Lab Request
-						</Link>
-					</div>
-					</div>
 					<div className="row">
 						<div className="col-sm-12">
 							<div className="element-content">

@@ -17,7 +17,14 @@ export class ClinicalLabItem extends Component {
 		const { lab, modalClick } = this.props;
 		return (
 			<>
-				<tr data-index="0" data-id="20" className={ lab  && lab.requestBody && lab.requestBody.urgent ? "table urgent" : ""}>
+				<tr
+					data-index="0"
+					data-id="20"
+					className={
+						lab && lab.requestBody && lab.requestBody.urgent
+							? 'table urgent'
+							: ''
+					}>
 					<td>
 						<div
 							onClick={this.toggleCollapse}
@@ -35,13 +42,12 @@ export class ClinicalLabItem extends Component {
 						</a>
 					</td>
 					<td className="flex">
-						<a className="item-title text-color">{lab.patient.fileNumber}</a>
+						<a className="item-title text-color">{'No yet available'}</a>
 					</td>
 					<td className="flex">
-						<a className="item-title text-color">
-							{lab.patient.surname ? lab.patient.surname : ''}{' '}
-							{lab.patient.other_names ? lab.patient.other_names : ''}
-						</a>
+						<p className="item-title text-color">
+							{lab.patient_name ? lab.patient_name : ''}
+						</p>
 					</td>
 					<td className="flex">
 						<a className="item-title text-color">
@@ -51,11 +57,7 @@ export class ClinicalLabItem extends Component {
 
 					<td className="text-right row-actions">
 						<Tooltip title="Receive Request">
-							<a 
-								className="secondary"
-								onClick={
-									() => modalClick(lab)}
-							>
+							<a className="secondary" onClick={() => modalClick(lab)}>
 								<i className="os-icon os-icon-folder-plus" />
 							</a>
 						</Tooltip>
@@ -79,7 +81,7 @@ export class ClinicalLabItem extends Component {
 									<tbody>
 										<tr>
 											<th>Specimen</th>
-											<td>{lab.requestBody.referredSpeciment}</td>
+											<td>{lab.requestBody.refferredSpecimen}</td>
 										</tr>
 										<tr>
 											<th>Lab</th>

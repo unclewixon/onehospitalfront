@@ -78,7 +78,7 @@ const headers = user => {
 		const jwt = `Bearer ${user.token}`;
 		return { ...defaultHeaders, Authorization: jwt };
 	} else {
-		return defaultHeaders;		
+		return defaultHeaders;
 	}
 };
 
