@@ -185,12 +185,14 @@ export const add_pharmacy_request = data => {
 };
 
 export const createLabRequest = data => {
+	console.log(data.lab_combo)
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			let newGroup = data.lab_combo.map(grp => {
 				return {
 					name: grp.name,
 					amount: grp.price,
+					service_id: grp.id,
 					tests: grp.tests
 						? grp.tests.map(test => {
 							return {
@@ -220,12 +222,12 @@ export const createLabRequest = data => {
 			let newTest = data.lab_test ? data.lab_test.map(test => {
 				return {
 					testName: test && test.name ? test.name : "",
-					testId: test && test.value ? test.value : "",
+					service_id: test && test.id ? test.id : "",
 					amount: test && test.price ? test.price : "",
 					paramenters: test.parameters && test.parameters.map(param => {
 						return {
-							name: param && param.name ? param.name : "",
-							range: param && param.range ? param.range : "",
+							name: param && param.parameter && param.parameter.name ? param.parameter.name : "",
+							range: param && param.referenceRange ? param.referenceRange : "",
 							result: ""
 						}
 					})
