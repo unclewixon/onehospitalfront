@@ -94,9 +94,6 @@ class LabFilledRequest extends Component {
 	render() {
 		const { filtering, loading } = this.state;
 		const { location, clinicalLab } = this.props;
-		console.log(
-			clinicalLab.sort((a, b) => a.createdAt.localeCompare(b.createdAt))
-		);
 
 		const page = location.pathname.split('/').pop();
 		return (
