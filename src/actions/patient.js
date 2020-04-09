@@ -228,7 +228,6 @@ export const createLabRequest = data => {
 					requestNote: data.request_note,
 				},
 			};
-			debugger;
 			request(`${API_URI}/patient/save-request`, 'POST', true, newRequestObj)
 				.then(response => {
 					dispatch(create_lab_request(response));
