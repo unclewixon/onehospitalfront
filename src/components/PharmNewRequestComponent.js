@@ -34,10 +34,10 @@ const dummyData2 = [
 ];
 
 const dummyData3 = [
-	{ value: '', label: 'Select one', name: 'drugName' },
-	{ value: '12', label: 'Line0000', name: 'drugName' },
-	{ value: '13', label: 'Line1111', name: 'drugName' },
-	{ value: '14', label: 'Line0101', name: 'drugName' },
+	{ value: '', label: 'Select one', name: 'drugName', id: "drug-id" },
+	{ value: '12', label: 'Line0000', name: 'drugName', id: "drug-id" },
+	{ value: '13', label: 'Line1111', name: 'drugName', id: "drug-id" },
+	{ value: '14', label: 'Line0101', name: 'drugName', id: "drug-id" },
 ];
 
 const defaultValues = {
@@ -74,6 +74,7 @@ const PharmNewRequestComponent = ({
 	const [diagnosis, setDiagnosis] = useState('');
 	const [prescription, setPrescription] = useState(false);
 	const [chosenPatient, setChosenPatient] = useState(null);
+	const [serviceId, setServiceId] = useState("")
 
 	const onRefillableClick = () => {
 		setRefillable(!refillable);
@@ -126,6 +127,7 @@ const PharmNewRequestComponent = ({
 			patient_id,
 			diagnosis,
 			prescription,
+			serviceId,
 			message => {
 				if (message) {
 					setSubmitting(false);
@@ -148,6 +150,11 @@ const PharmNewRequestComponent = ({
 		const { name, value } = e.target;
 		setValue(name, value);
 	};
+
+	const onDrugSelection = e => {
+		onHandleSelectChange(e)
+		setServiceId(e.id)
+	}
 
 	return (
 		<div className="row" style={{ width: '100%' }}>
@@ -205,7 +212,10 @@ const PharmNewRequestComponent = ({
 										ref={register({ name: 'formulary', required: true })}
 										onChange={onHandleSelectChange}
 										options={dummyData}
-										value={{ label: values.formulary, value: values.formulary }}
+										value={{ 
+											label: values.formulary, 
+											value: values.formulary 
+										}}
 									/>
 								</div>
 							</div>
@@ -233,8 +243,11 @@ const PharmNewRequestComponent = ({
 										ref={register({ name: 'drugName', required: true })}
 										name="drugName"
 										options={dummyData3}
-										onChange={onHandleSelectChange}
-										value={{ label: values.drugName, value: values.drugName }}
+										onChange={(e) => onDrugSelection(e)}
+										value={{ 
+											label: values.drugName, 
+											value: values.drugName,
+									  }}
 									/>
 								</div>
 								<div className="form-group col-sm-6">

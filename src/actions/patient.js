@@ -216,6 +216,22 @@ export const createLabRequest = data => {
 						: [],
 				};
 			});
+
+			let newTest = data.lab_test ? data.lab_test.map(test => {
+				return {
+					testName: test && test.name ? test.name : "",
+					testId: test && test.value ? test.value : "",
+					amount: test && test.price ? test.price : "",
+					paramenters: test.parameters && test.parameters.map(param => {
+						return {
+							name: param && param.name ? param.name : "",
+							range: param && param.range ? param.range : "",
+							result: ""
+						}
+					})
+				}
+			}) : []
+
 			let newRequestObj = {
 				requestType: data.service_center,
 				category_id: data.category,
@@ -224,6 +240,7 @@ export const createLabRequest = data => {
 					specialization: '',
 					sessionCount: '',
 					group: newGroup,
+					test: newTest,
 					refferredSpecimen: data.referred_specimen,
 					requestNote: data.request_note,
 				},
@@ -272,7 +289,7 @@ export const getRequestByType = (patientId, type) => {
 	};
 };
 
-export const addPharmacyRequest = (data, id, diagnosis, prescription, cb) => {
+export const addPharmacyRequest = (data, id, diagnosis, prescription, serviceId, cb) => {
 	return dispatch => {
 		const requestData = data
 			? data.map(request => ({
@@ -280,6 +297,7 @@ export const addPharmacyRequest = (data, id, diagnosis, prescription, cb) => {
 				drug_generic_name: request.genericName,
 				drug_name: request.drugName,
 				dose_quantity: request.quantity,
+				service_id: request.serviceId,
 				refillable: {
 					number_of_refills: request && request.refills ? request.refills : 0,
 					eg: request && request.eg ? request.eg : 0,
