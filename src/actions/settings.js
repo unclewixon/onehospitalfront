@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API_URI } from '../services/constants';
+import { API_URI, patientAPI } from '../services/constants';
 import {
 	CREATE_DEPARTMENT,
 	GET_ALL_DEPARTMENTS,
@@ -67,6 +67,7 @@ import {
 	DELETE_LAB_GROUP,
 	GET_ALL_LAB_GROUPS,
 } from './types';
+import { request } from '../services/utilities';
 
 //Request Service
 

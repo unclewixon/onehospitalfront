@@ -20,6 +20,10 @@ import {
 export class Voucher extends Component {
 	state = {
 		loading: false,
+		patient_id: '',
+		startDate: '',
+		endDate: '',
+		status: '',
 	};
 
 	componentDidMount() {
@@ -28,13 +32,13 @@ export class Voucher extends Component {
 	}
 
 	fetchVoucher = async data => {
+		const { patient_id, startDate, endDate, status } = this.state;
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}${vouchersAPI}/list`,
+				`${API_URI}${vouchersAPI}/list?patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}`,
 				'GET',
-				true,
-				data
+				true
 			);
 			this.props.loadVoucher(rs);
 			this.setState({ loading: false });
@@ -64,11 +68,11 @@ export class Voucher extends Component {
 									<table className="table table-striped">
 										<thead>
 											<tr>
-												<th className="">Patient</th>
-												<th className="">Voucher Number</th>
-												<th className="">Amount (₦)</th>
-												<th className="">Date Created</th>
-												<th className="">Actions</th>
+												<th className="text-center">Patient</th>
+												<th className="text-center">Voucher Number</th>
+												<th className="text-center">Amount (₦)</th>
+												<th className="text-center">Date Created</th>
+												<th className="text-center">Actions</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -79,18 +83,16 @@ export class Voucher extends Component {
 													</td>
 												</tr>
 											) : voucher.length > 0 ? (
-												voucher.map(voucher => {
+												voucher.map((voucher, i) => {
 													return (
-														<tr key={voucher.q_id}>
+														<tr key={i}>
 															<td className="text-center">
-																{`${voucher.surname} ${voucher.other_names}`}
+																{voucher.patient_name}
 															</td>
 															<td className="text-center">
-																{voucher.q_voucher_no}
+																{voucher.voucher_no}
 															</td>
-															<td className="text-center">
-																{voucher.q_amount}
-															</td>
+															<td className="text-center">{voucher.amount}</td>
 															<td className="text-center">
 																{moment(voucher.q_createdAt).format('DD-MM-YY')}
 															</td>
