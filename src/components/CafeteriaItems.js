@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
-import { confirmAction } from '../services/utilities';
+import { confirmAction, request } from '../services/utilities';
 
 import {
 	getAllCafeteriaCategory,
@@ -18,6 +18,7 @@ import {
 } from '../actions/inventory';
 import { addCafeteriaFile } from '../actions/general';
 import { v4 as uuidv4 } from 'uuid';
+import { API_URI } from '../services/constants';
 
 const CafeteriaItems = props => {
 	const initialState = {
@@ -56,6 +57,9 @@ const CafeteriaItems = props => {
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
+		if (name === 'category') {
+			setItems(props.cafeteriaItems);
+		}
 		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
@@ -147,9 +151,19 @@ const CafeteriaItems = props => {
 		setSubmitButton({ save: true, edit: false });
 		setState({ ...initialState });
 	};
-	const doFilter = () => {
+	const doFilter = async () => {
 		setFiltering(true);
-		setFiltering(false);
+		try {
+			const rs = await request(
+				`${API_URI}/cafeteria/inventories-by-category/${category}`
+			);
+			await setItems(rs);
+			console.log(rs);
+			setFiltering(false);
+		} catch (e) {
+			notifyError('Filtering not successful');
+			setFiltering(false);
+		}
 	};
 
 	useEffect(() => {
@@ -208,12 +222,12 @@ const CafeteriaItems = props => {
 							<div className="col-md-7">
 								<form className="row">
 									<div className="form-group col-md-4">
-										<label className="" htmlFor="patient_id">
+										<label className="" htmlFor="category">
 											ID
 										</label>
 										<select
 											style={{ height: '32px' }}
-											id="patient_id"
+											id="category"
 											className="form-control"
 											name="category"
 											onChange={handleInputChange}>
@@ -288,18 +302,18 @@ const CafeteriaItems = props => {
 														{items &&
 															items.map(item => {
 																return (
-																	<tr key={item.q_item_code}>
+																	<tr key={item.q_item_code || item.stock_code}>
 																		<th className="text-center">
-																			{item.q_item_code}
+																			{item.q_item_code || item.stock_code}
 																		</th>
 																		{/* <th className="text-center">
 																			{item.category.name}
 																		</th> */}
 																		<th className="text-center">
-																			{item.q_name}
+																			{item.q_name || item.name}
 																		</th>
 																		<th className="text-center">
-																			{item.q_price}
+																			{item.q_price || item.cost_price}
 																		</th>
 																		<th className="text-right">
 																			<a className="pi-settings os-dropdown-trigger">

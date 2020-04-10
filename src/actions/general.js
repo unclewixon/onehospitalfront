@@ -35,6 +35,7 @@ import {
 	TOGGLE_APPROVE_TRANSACTION,
 	TOGGLE_APPLY_VOUCHER,
 	TOGGLE_UPLOAD_HMO_TARIFF,
+	TOGGLE_APPROVE_HMO_TRANSACTION,
 } from './types';
 
 export const togglePreloading = status => {
@@ -112,6 +113,13 @@ export const toggleEditInventory = status => {
 export const toggleApproveTransaction = status => {
 	return {
 		type: TOGGLE_APPROVE_TRANSACTION,
+		payload: status,
+	};
+};
+
+export const toggleApproveHmoTransaction = status => {
+	return {
+		type: TOGGLE_APPROVE_HMO_TRANSACTION,
 		payload: status,
 	};
 };
@@ -322,6 +330,7 @@ export const closeModals = () => {
 		dispatch(toggleViewPayPoint(false));
 		dispatch(toggleCreateVoucher(false));
 		dispatch(toggleCreateLabourMeasurement(false));
+		dispatch(toggleApproveHmoTransaction(false));
 		dispatch(toggleCreateRiskAssessment(false));
 		dispatch(toggleCreateRecordDelivery(false));
 		dispatch(toggleCreateClinicalTask(false));
@@ -400,6 +409,24 @@ export const editInventory = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleEditInventory(action));
+	};
+};
+
+export const approveHmoTransaction = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleApproveHmoTransaction(true));
+		dispatch(toggleApproveTransaction(action));
+	};
+};
+
+export const applyVoucher = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleApplyVoucher(true));
+		dispatch(toggleCreateVoucher(action));
 	};
 };
 
@@ -573,15 +600,6 @@ export const openEncounter = (action, id) => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleOpenEncounter(action, id));
-	};
-};
-
-export const applyVoucher = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleApplyVoucher(true));
-		dispatch(toggleCreateVoucher(action));
 	};
 };
 

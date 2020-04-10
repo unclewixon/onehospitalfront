@@ -1,13 +1,20 @@
 import React, { Component } from 'react';
 import waiting from '../../assets/images/waiting.gif';
 import TransactionTable from '../../components/Tables/TransactionTable';
-import { request } from '../../services/utilities';
+import { confirmAction, request } from '../../services/utilities';
 import { API_URI, transactionsAPI } from '../../services/constants';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { applyVoucher, approveTransaction } from '../../actions/general';
+import {
+	applyVoucher,
+	approveHmoTransaction,
+	approveTransaction,
+} from '../../actions/general';
 import { deleteTransaction, loadTransaction } from '../../actions/transaction';
 import DatePicker from 'antd/lib/date-picker';
+import searchingGIF from '../../assets/images/searching.gif';
+import Tooltip from 'antd/lib/tooltip';
+import { notifyError, notifySuccess } from '../../services/notify';
 
 const { RangePicker } = DatePicker;
 const paymentStatus = [
@@ -43,11 +50,31 @@ export class InsuranceBills extends Component {
 				'GET',
 				true
 			);
+			console.log(rs);
 			this.props.loadTransaction(rs);
 			this.setState({ loading: false, filtering: false });
 		} catch (error) {
 			console.log(error);
 		}
+	};
+
+	onDeleteTransaction = data => {
+		this.props
+			.deleteTransaction(data)
+			.then(response => {
+				notifySuccess('Transaction deleted');
+			})
+			.catch(error => {
+				notifyError('Error deleting  transaction ');
+			});
+	};
+
+	confirmDelete = data => {
+		confirmAction(this.onDeleteTransaction, data);
+	};
+
+	doApproveTransaction = item => {
+		this.props.approveHmoTransaction(item);
 	};
 
 	getPatients = async () => {
@@ -187,20 +214,80 @@ export class InsuranceBills extends Component {
 								<table className="table table-striped">
 									<thead>
 										<tr>
-											<th>DATE</th>
-											<th className="">PATIENT NAME</th>
-											<th className="">HMO</th>
-											<th className="">SERVICE</th>
-											<th className="">AMOUNT (&#x20A6;)</th>
-											<th className="">PAYMENT TYPE</th>
-											<th className="">ACTIONS</th>
+											<th className="text-center">DATE</th>
+											<th className="text-center">PATIENT NAME</th>
+											<th className="text-center">HMO</th>
+											<th className="text-center">SERVICE</th>
+											<th className="text-center">AMOUNT (&#x20A6;)</th>
+											<th className="text-center">PAYMENT TYPE</th>
+											<th className="text-center">ACTIONS</th>
 										</tr>
 									</thead>
-									<TransactionTable
-										transactions={transactions}
-										loading={loading}
-										today={false}
-									/>
+									<tbody>
+										{loading ? (
+											<tr>
+												<td colSpan="6" className="text-center">
+													<img alt="searching" src={searchingGIF} />
+												</td>
+											</tr>
+										) : transactions.length > 0 ? (
+											transactions.map(transaction => {
+												return (
+													<tr key={transaction.id}>
+														<td className="text-center">
+															{moment(transaction.q_createdAt).format(
+																'YYYY/MM/DD'
+															)}
+														</td>
+														<td className="text-center">
+															{`${transaction.patient_name}`}
+														</td>
+														<td className="text-center">
+															{transaction.hmo_name}
+														</td>
+														<td className="text-center">
+															{transaction.service?.name
+																? transaction.service.name
+																: 'No service yet'}
+														</td>
+														<td className="text-center">
+															{transaction.amount}
+														</td>
+														<td className="text-center">
+															{transaction.payment_type
+																? transaction.payment_type
+																: 'Not specified'}
+														</td>
+														<td className="text-center row-actions">
+															<Tooltip title="Approve Transactions">
+																<a
+																	className="secondary"
+																	onClick={() =>
+																		this.doApproveTransaction(transaction)
+																	}>
+																	<i className="os-icon os-icon-folder-plus" />
+																</a>
+															</Tooltip>
+
+															<Tooltip title="Delete Transactions">
+																<a
+																	className="text-danger"
+																	onClick={() =>
+																		this.confirmDelete(transaction)
+																	}>
+																	<i className="os-icon os-icon-ui-15"></i>
+																</a>
+															</Tooltip>
+														</td>
+													</tr>
+												);
+											})
+										) : (
+											<tr colSpan="6" className="text-center">
+												<td>No transaction</td>
+											</tr>
+										)}
+									</tbody>
 								</table>
 							</div>
 						</div>
@@ -220,7 +307,7 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
 	applyVoucher,
-	approveTransaction,
+	approveHmoTransaction,
 	loadTransaction,
 	deleteTransaction,
 })(InsuranceBills);

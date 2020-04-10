@@ -8,6 +8,14 @@ const HMOMenu = () => {
 				<span>HMO Mgt</span>
 			</li>
 			<li>
+				<Link to="/hmo/dashboard">
+					<div className="icon-w">
+						<div className="os-icon os-icon-layers" />
+					</div>
+					<span>Dashboard</span>
+				</Link>
+			</li>
+			<li>
 				<Link to="/hmo/list">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers" />
