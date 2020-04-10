@@ -185,7 +185,6 @@ export const add_pharmacy_request = data => {
 };
 
 export const createLabRequest = data => {
-	console.log(data.lab_combo)
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			let newGroup = data.lab_combo.map(grp => {
