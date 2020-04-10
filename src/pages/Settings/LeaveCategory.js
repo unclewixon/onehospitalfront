@@ -4,13 +4,13 @@ import { connect } from 'react-redux';
 import waiting from '../../assets/images/waiting.gif';
 import searchingGIF from '../../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
-import { confirmAction } from '../../services/utilities';
-
+import { request, confirmAction } from '../../services/utilities';
+import { API_URI } from '../../services/constants';
 import {
-	addLeaveCategory,
-	getAllLeaveCategory,
-	updateLeaveCategory,
-	deleteLeaveCategory,
+	add_leave_category,
+	get_all_leave_category,
+	update_leave_category,
+	delete_leave_category,
 } from '../../actions/settings';
 
 const LeaveCategory = props => {
@@ -24,7 +24,7 @@ const LeaveCategory = props => {
 	const [{ name, duration }, setState] = useState(initialState);
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
-	const [data, getDataToEdit] = useState(null);
+	const [payload, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
@@ -33,39 +33,51 @@ const LeaveCategory = props => {
 		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onAddLeaveCategory = e => {
+	const onAddLeaveCategory = async e => {
 		e.preventDefault();
 		setLoading(true);
-		props
-			.addLeaveCategory({ name, duration })
-			.then(response => {
-				setLoading(false);
-				setState({ ...initialState });
-				notifySuccess('Leave Category created');
-			})
-			.catch(error => {
-				setLoading(false);
-				notifyError('Error creating Leave Category');
-			});
+		let data = {
+			name,
+			duration,
+		};
+		try {
+			const rs = await request(`${API_URI}/leave-category`, 'POST', true, data);
+			props.add_leave_category(rs);
+			setLoading(false);
+			setState({ ...initialState });
+			notifySuccess('Leave Category created');
+		} catch (error) {
+			setLoading(false);
+			notifyError('Error creating Leave Category');
+		}
 	};
 
-	const onEditLeaveCategory = e => {
+	const onEditLeaveCategory = async e => {
 		setLoading(true);
 		e.preventDefault();
-		props
-			.updateLeaveCategory({ id: data.id, name, duration }, data)
-			.then(response => {
-				setState({ ...initialState });
-				setSubmitButton({ save: true, edit: false });
-				setLoading(false);
-				notifySuccess('Leave Category updated');
-			})
-			.catch(error => {
-				setState({ ...initialState });
-				setSubmitButton({ save: true, edit: false });
-				setLoading(false);
-				notifyError('Error updating Leave Category');
-			});
+
+		let data = {
+			name,
+			duration,
+		};
+		try {
+			const rs = await request(
+				`${API_URI}/leave-category/${payload.id}/update`,
+				'PATCH',
+				true,
+				data
+			);
+			props.update_leave_category(rs, payload);
+			setState({ ...initialState });
+			setSubmitButton({ save: true, edit: false });
+			setLoading(false);
+			notifySuccess('Leave Category updated');
+		} catch (error) {
+			setState({ ...initialState });
+			setSubmitButton({ save: true, edit: false });
+			setLoading(false);
+			notifyError('Error updating Leave Category');
+		}
 	};
 
 	const onClickEdit = data => {
@@ -79,17 +91,20 @@ const LeaveCategory = props => {
 		getDataToEdit(data);
 	};
 
-	const onDeleteLeaveCategory = data => {
-		props
-			.deleteLeaveCategory(data)
-			.then(data => {
-				setLoading(false);
-				notifySuccess('Leave Category deleted');
-			})
-			.catch(error => {
-				setLoading(false);
-				notifyError('Error deleting Leave Category');
-			});
+	const onDeleteLeaveCategory = async data => {
+		try {
+			const rs = await request(
+				`${API_URI}/leave-category/${data.id}`,
+				'DELETE',
+				true
+			);
+			props.delete_leave_category(data);
+			setLoading(false);
+			notifySuccess('Leave Category deleted');
+		} catch (error) {
+			setLoading(false);
+			notifyError('Error deleting Leave Category');
+		}
 	};
 
 	const confirmDelete = data => {
@@ -101,20 +116,21 @@ const LeaveCategory = props => {
 		setState({ ...initialState });
 	};
 
-	useEffect(() => {
-		if (!loaded) {
-			props
-				.getAllLeaveCategory()
-				.then(response => {
-					setDataLoaded(true);
-				})
-				.catch(e => {
-					setDataLoaded(true);
-					notifyError(e.message || 'Could not fetch leave categories');
-				});
+	const fetchLeaveCategory = async () => {
+		setDataLoaded(false);
+		try {
+			const rs = await request(`${API_URI}/leave-category`, 'GET', true);
+			props.get_all_leave_category(rs);
+			setDataLoaded(true);
+		} catch (error) {
+			setDataLoaded(true);
+			notifyError(error.message || 'could not fetch consulting rooms!');
 		}
-		setLoaded(true);
-	}, [loaded, props]);
+	};
+
+	useEffect(() => {
+		fetchLeaveCategory();
+	}, []);
 
 	return (
 		<div className="content-i">
@@ -273,8 +289,8 @@ const mapStateToProps = state => {
 	};
 };
 export default connect(mapStateToProps, {
-	addLeaveCategory,
-	getAllLeaveCategory,
-	updateLeaveCategory,
-	deleteLeaveCategory,
+	add_leave_category,
+	get_all_leave_category,
+	update_leave_category,
+	delete_leave_category,
 })(LeaveCategory);

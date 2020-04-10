@@ -93,9 +93,9 @@ const Diagnosis = props => {
 														</tr>
 													) : (
 														<>
-															{props.Diagnosis.map((diagnosis, index) => {
+															{props.Diagnosis.map((diagnosis, i) => {
 																return (
-																	<tr>
+																	<tr key={i}>
 																		<td>
 																			<div className="user-with-avatar">
 																				{diagnosis.procedureCode}

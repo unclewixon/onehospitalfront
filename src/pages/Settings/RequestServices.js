@@ -1,15 +1,17 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { confirmAction } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
 import searchingGIF from '../../assets/images/searching.gif';
+import { request, confirmAction } from '../../services/utilities';
+import { API_URI } from '../../services/constants';
+
 import {
-	addRequestService,
-	getAllRequestServices,
-	updateRequestService,
-	deleteRequestService,
+	add_request_service,
+	get_all_request_services,
+	update_request_service,
+	delete_request_service,
 } from '../../actions/settings';
 
 import { requestTypes } from '../../services/constants';
@@ -26,7 +28,7 @@ const RequestServices = props => {
 	const [loaded, setLoaded] = useState(false);
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
-	const [data, getDataToEdit] = useState(null);
+	const [payload, getDataToEdit] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const handleInputChange = e => {
@@ -38,23 +40,25 @@ const RequestServices = props => {
 		setSubmitButton({ create: true, edit: false });
 		setState({ ...initialState });
 	};
-	const onAddRequestService = e => {
+	const onAddRequestService = async e => {
 		setLoading(true);
 		e.preventDefault();
-
-		props
-			.addRequestService({ name, group, amount })
-			.then(response => {
-				console.log(response);
-				setLoading(false);
-				setState({ ...initialState });
-				notifySuccess('Request Service successfully  created');
-			})
-			.catch(error => {
-				setLoading(false);
-				setState({ ...initialState });
-				notifyError('Error creating request service ');
-			});
+		let data = {
+			name,
+			group,
+			amount,
+		};
+		try {
+			const rs = await request(`${API_URI}/request-types`, 'POST', true, data);
+			props.add_request_service(rs);
+			setLoading(false);
+			setState({ ...initialState });
+			notifySuccess('Request Service successfully  created');
+		} catch (error) {
+			setLoading(false);
+			setState({ ...initialState });
+			notifyError('Error creating request service ');
+		}
 	};
 
 	const onClickEdit = data => {
@@ -68,34 +72,48 @@ const RequestServices = props => {
 		}));
 		getDataToEdit(data);
 	};
-	const onEditRequestService = e => {
+	const onEditRequestService = async e => {
 		setLoading(true);
 		e.preventDefault();
-		props
-			.updateRequestService({ id: data.id, name, group, amount }, data)
-			.then(response => {
-				setState({ ...initialState });
-				setSubmitButton({ create: true, edit: false });
-				setLoading(false);
-				notifySuccess('Service Category updated');
-			})
-			.catch(error => {
-				setState({ ...initialState });
-				setSubmitButton({ create: true, edit: false });
-				setLoading(false);
-				notifyError('Error updating service category');
-			});
+		let data = {
+			name,
+			group,
+			amount,
+		};
+		try {
+			const rs = await request(
+				`${API_URI}/request-types/${payload.id}/update`,
+				'PATCH',
+				true,
+				data
+			);
+			props.update_request_service(rs, payload);
+			setState({ ...initialState });
+			setSubmitButton({ create: true, edit: false });
+			setLoading(false);
+			notifySuccess('Service Category updated');
+		} catch (error) {
+			setState({ ...initialState });
+			setSubmitButton({ create: true, edit: false });
+			setLoading(false);
+			notifyError('Error updating service category');
+		}
 	};
 
-	const onDeleteRequestService = data => {
-		props
-			.deleteRequestService(data)
-			.then(response => {
-				notifySuccess('Request Service  deleted');
-			})
-			.catch(error => {
-				notifyError('Error deleting  request service ');
-			});
+	const onDeleteRequestService = async data => {
+		try {
+			const rs = await request(
+				`${API_URI}/request-types/${data.id}`,
+				'DELETE',
+				true
+			);
+			props.delete_request_service(data);
+			notifySuccess('Request Service  deleted');
+		} catch (error) {
+			setLoading(false);
+			setState({ ...initialState });
+			notifyError('Error deleting  request service ');
+		}
 	};
 
 	const confirmDelete = data => {
@@ -132,21 +150,21 @@ const RequestServices = props => {
 				})}
 		</>
 	);
-	useEffect(() => {
-		if (!loaded) {
-			props
-				.getAllRequestServices()
-				.then(response => {
-					console.log(response);
-					setDataLoaded(true);
-				})
-				.catch(e => {
-					setDataLoaded(true);
-					notifyError(e.message || 'could not fetch request services');
-				});
+	const fetchRequestServices = async () => {
+		setDataLoaded(false);
+		try {
+			const rs = await request(`${API_URI}/request-types`, 'GET', true);
+			props.get_all_request_services(rs);
+			setDataLoaded(true);
+		} catch (error) {
+			setDataLoaded(true);
+			notifyError(error.message || 'could not fetch consulting rooms!');
 		}
-		setLoaded(true);
-	}, [props, loaded]);
+	};
+
+	useEffect(() => {
+		fetchRequestServices();
+	}, []);
 	return (
 		<div className="content-i">
 			<div className="content-box">
@@ -313,8 +331,8 @@ const mapStateToProps = state => {
 };
 
 export default connect(mapStateToProps, {
-	addRequestService,
-	getAllRequestServices,
-	updateRequestService,
-	deleteRequestService,
+	add_request_service,
+	get_all_request_services,
+	update_request_service,
+	delete_request_service,
 })(RequestServices);
