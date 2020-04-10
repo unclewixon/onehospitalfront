@@ -27,6 +27,7 @@ const HmoList = props => {
 	const [logo, setLogo] = useState(null);
 	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
+	const [adding, setAdding] = useState(false);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -45,9 +46,10 @@ const HmoList = props => {
 		data.append('phoneNumber', phoneNumber);
 		data.append('address', address);
 		data.append('logo', logo);
-
+		setAdding(true);
 		props.addHmo(data).then(response => {
 			setState({ ...initialState });
+			setAdding(false);
 		});
 	};
 
@@ -310,16 +312,21 @@ const HmoList = props => {
 										{add && (
 											<button
 												className={
-													Loading
+													adding
 														? 'btn btn-primary disabled'
 														: 'btn btn-primary'
 												}>
-												<span>{Loading ? 'saving' : 'Add'}</span>
+												<span>
+													{adding ? (
+														<img src={waiting} alt="submitting" />
+													) : (
+														'Add'
+													)}
+												</span>
 											</button>
 										)}
 										{edit && (
 											<>
-												￼￼￼ CODE CODE CODE
 												<button
 													className={
 														Loading
@@ -335,7 +342,13 @@ const HmoList = props => {
 															? 'btn btn-primary disabled'
 															: 'btn btn-primary'
 													}>
-													<span>{Loading ? 'Saving' : 'edit'}</span>
+													<span>
+														{Loading ? (
+															<img src={waiting} alt="submitting" />
+														) : (
+															'edit'
+														)}
+													</span>
 												</button>
 											</>
 										)}

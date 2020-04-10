@@ -312,6 +312,7 @@ const Cafeteria = props => {
 																	className="form-control"
 																	id="cust"
 																	onChange={handleCustomerChange}
+																	autoComplete="off"
 																	placeholder={
 																		customer === 'staff'
 																			? ' Search Staff ...'

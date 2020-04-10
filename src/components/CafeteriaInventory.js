@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
-import { confirmAction } from '../services/utilities';
+import { confirmAction, request } from '../services/utilities';
 
 import {
 	getAllCafeteriaInvCategory,
@@ -16,8 +16,8 @@ import {
 	deleteCafeteriaInventory,
 } from '../actions/inventory';
 import { addCafeteriaFile } from '../actions/general';
-import { v4 as uuidv4 } from 'uuid';
 
+import { API_URI } from '../services/constants';
 const CafeteriaInventory = props => {
 	const initialState = {
 		name: '',
@@ -55,6 +55,9 @@ const CafeteriaInventory = props => {
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
+		if (name === 'category') {
+			setItems(props.cafeteriaInventory);
+		}
 		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
@@ -145,8 +148,20 @@ const CafeteriaInventory = props => {
 		setSubmitButton({ save: true, edit: false });
 		setState({ ...initialState });
 	};
-	const doFilter = () => {
+	const doFilter = async () => {
 		setFiltering(true);
+		try {
+			const rs = await request(
+				`${API_URI}/cafeteria/inventories-by-category/${category}`
+			);
+			console.log(rs);
+			await setItems(rs);
+
+			setFiltering(false);
+		} catch (e) {
+			notifyError('Filtering not successful');
+			setFiltering(false);
+		}
 		setFiltering(false);
 	};
 
@@ -295,7 +310,9 @@ const CafeteriaInventory = props => {
 																			{item.stock_code}
 																		</th>
 																		<th className="text-center">
-																			{item.category.name}
+																			{item.category
+																				? item.category.name
+																				: '---'}
 																		</th>
 																		<th className="text-center">{item.name}</th>
 																		<th className="text-center">
