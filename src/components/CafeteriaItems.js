@@ -93,7 +93,7 @@ const CafeteriaItems = props => {
 		e.preventDefault();
 		props
 			.updateCafeteriaItem({
-				id: data.id,
+				id: data.q_id,
 				name,
 				price,
 				discount_price,
@@ -119,13 +119,15 @@ const CafeteriaItems = props => {
 		setSubmitButton({ edit: true, save: false });
 		setState(prevState => ({
 			...prevState,
-			name: data.q_name,
-			price: data.q_price,
-			id: data.q_id,
-			category_id: data.q_categoryId,
-			description: data.q_description,
-			discount_price: data.q_discount_price,
-			item_code: data.q_item_code,
+			name: data.q_name ? data.q_name : data.name,
+			price: data.q_price ? data.q_price : data.price,
+			id: data.q_id ? data.q_id : data.id,
+			category_id: data.q_categoryId ? data.q_categoryId : category,
+			description: data.q_description ? data.q_description : data.description,
+			discount_price: data.q_discount_price
+				? data.q_discount_price
+				: data.discount_price,
+			item_code: data.q_item_code ? data.q_item_code : data.item_code,
 		}));
 		getDataToEdit(data);
 	};
@@ -136,6 +138,7 @@ const CafeteriaItems = props => {
 			.then(data => {
 				setLoading(false);
 				notifySuccess(' Cafeteria item deleted');
+				console.log(props.cafeteriaItems);
 			})
 			.catch(error => {
 				setLoading(false);
@@ -155,12 +158,32 @@ const CafeteriaItems = props => {
 		setFiltering(true);
 		try {
 			const rs = await request(
-				`${API_URI}/cafeteria/inventories-by-category/${category}`
+				`${API_URI}/cafeteria/items-by-category/${category}`
 			);
-			await setItems(rs);
 			console.log(rs);
+			let filterItems = rs.map(el => {
+				return {
+					q_categoryId: category,
+					q_createdAt: el.createdAt,
+					q_createdBy: el.createdBy,
+					q_description: el.description,
+					q_discount_price: el.discount_price,
+					q_id: el.id,
+					q_isActive: el.isActive,
+					q_item_code: el.item_code,
+					q_lastChangedBy: null,
+					q_name: el.name,
+					q_price: el.price,
+					q_updateAt: el.updateAt,
+				};
+			});
+
+			console.log(rs, filterItems);
+			await setItems(filterItems);
+
 			setFiltering(false);
 		} catch (e) {
+			console.log(e);
 			notifyError('Filtering not successful');
 			setFiltering(false);
 		}
@@ -243,7 +266,7 @@ const CafeteriaItems = props => {
 										</select>
 									</div>
 
-									<div className="form-group col-md-3">
+									{/* <div className="form-group col-md-3">
 										<label className="mr-2 " htmlFor="item">
 											Status
 										</label>
@@ -262,8 +285,8 @@ const CafeteriaItems = props => {
 												);
 											})}
 										</select>
-									</div>
-									<div className="form-group col-md-4 mt-4 ">
+									</div> */}
+									<div className="form-group col-md-4 mt-4 text-right">
 										<div
 											className="btn btn-sm btn-primary btn-upper text-white"
 											onClick={doFilter}>
@@ -302,9 +325,9 @@ const CafeteriaItems = props => {
 														{items &&
 															items.map(item => {
 																return (
-																	<tr key={item.q_item_code || item.stock_code}>
+																	<tr key={item.q_item_code || item.item_code}>
 																		<th className="text-center">
-																			{item.q_item_code || item.stock_code}
+																			{item.q_item_code || item.item_code}
 																		</th>
 																		{/* <th className="text-center">
 																			{item.category.name}
@@ -313,7 +336,7 @@ const CafeteriaItems = props => {
 																			{item.q_name || item.name}
 																		</th>
 																		<th className="text-center">
-																			{item.q_price || item.cost_price}
+																			{item.q_price || item.price}
 																		</th>
 																		<th className="text-right">
 																			<a className="pi-settings os-dropdown-trigger">
@@ -414,6 +437,7 @@ const CafeteriaItems = props => {
 													<select
 														className="form-control"
 														name="category_id"
+														required
 														value={category_id}
 														onChange={handleInputChange}>
 														<option>Select Item Category</option>

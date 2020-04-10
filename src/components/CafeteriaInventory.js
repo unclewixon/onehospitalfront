@@ -26,6 +26,7 @@ const CafeteriaInventory = props => {
 		description: '',
 		category: '',
 		category_id: '',
+
 		item: '',
 		save: true,
 		edit: false,
@@ -52,6 +53,7 @@ const CafeteriaInventory = props => {
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [filtering, setFiltering] = useState(false);
 	const [items, setItems] = useState([]);
+	const [catName, setCatName] = useState('');
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -119,7 +121,7 @@ const CafeteriaInventory = props => {
 			name: data.name,
 			cost_price: data.cost_price,
 			id: data.id,
-			category_id: data.category.id,
+			category_id: category,
 			description: data.description,
 			quantity: data.quantity,
 			stock_code: data.stock_code,
@@ -155,6 +157,9 @@ const CafeteriaInventory = props => {
 				`${API_URI}/cafeteria/inventories-by-category/${category}`
 			);
 			console.log(rs);
+			let cat = props.cafeteriaInvCategory.find(el => el.id === category);
+			console.log(cat);
+			await setCatName(cat.name);
 			await setItems(rs);
 
 			setFiltering(false);
@@ -245,7 +250,7 @@ const CafeteriaInventory = props => {
 										</select>
 									</div>
 
-									<div className="form-group col-md-3">
+									{/* <div className="form-group col-md-3">
 										<label className="mr-2 " htmlFor="item">
 											Name
 										</label>
@@ -264,8 +269,9 @@ const CafeteriaInventory = props => {
 												);
 											})}
 										</select>
-									</div>
-									<div className="form-group col-md-4 mt-4 ">
+									</div> */}
+									<div className="form-group col-md-4"></div>
+									<div className="form-group col-md-4 mt-4 text-right">
 										<div
 											className="btn btn-sm btn-primary btn-upper text-white"
 											onClick={doFilter}>
@@ -312,7 +318,7 @@ const CafeteriaInventory = props => {
 																		<th className="text-center">
 																			{item.category
 																				? item.category.name
-																				: '---'}
+																				: catName}
 																		</th>
 																		<th className="text-center">{item.name}</th>
 																		<th className="text-center">
