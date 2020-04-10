@@ -89,9 +89,6 @@ class LabRecentRequest extends Component {
 	render() {
 		const { filtering, loading } = this.state;
 		const { clinicalLab } = this.props;
-		console.log(
-			clinicalLab.sort((a, b) => a.createdAt.localeCompare(b.createdAt))
-		);
 
 		return (
 			<>

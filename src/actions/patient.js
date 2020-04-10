@@ -185,37 +185,55 @@ export const add_pharmacy_request = data => {
 };
 
 export const createLabRequest = data => {
+	console.log(data.lab_combo)
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			let newGroup = data.lab_combo.map(grp => {
 				return {
 					name: grp.name,
 					amount: grp.price,
+					service_id: grp.id,
 					tests: grp.tests
 						? grp.tests.map(test => {
-								return {
-									testName: test.name,
-									paramenters: test.paramenters.map(param => {
-										return {
-											name: param.parameter.name,
-											range: param.referenceRange,
-											result: '',
-										};
-									}),
-								};
-						  })
+							return {
+								testName: test.name,
+								paramenters: test.paramenters.map(param => {
+									return {
+										name: param.parameter.name,
+										range: param.referenceRange,
+										result: '',
+									};
+								}),
+							};
+						})
 						: [],
 					parameters: grp.paramenters
 						? grp.paramenters.map(param => {
-								return {
-									name: param.parameter.name,
-									range: param.referenceRange,
-									result: '',
-								};
-						  })
+							return {
+								name: param.parameter.name,
+								range: param.referenceRange,
+								result: '',
+							};
+						})
 						: [],
 				};
 			});
+
+			let newTest = data.lab_test ? data.lab_test.map(test => {
+				return {
+					testName: test && test.name ? test.name : "",
+					service_id: test && test.id ? test.id : "",
+					amount: test && test.price ? test.price : "",
+					paramenters: test.parameters && test.parameters.map(param => {
+						return {
+							name: param && param.parameter && param.parameter.name ? param.parameter.name : "",
+							range: param && param.referenceRange ? param.referenceRange : "",
+							result: ""
+						}
+					})
+				}
+			}) : []
+
 			let newRequestObj = {
 				requestType: data.service_center,
 				category_id: data.category,
@@ -224,11 +242,11 @@ export const createLabRequest = data => {
 					specialization: '',
 					sessionCount: '',
 					group: newGroup,
+					test: newTest,
 					refferredSpecimen: data.referred_specimen,
 					requestNote: data.request_note,
 				},
 			};
-			debugger;
 			request(`${API_URI}/patient/save-request`, 'POST', true, newRequestObj)
 				.then(response => {
 					dispatch(create_lab_request(response));
@@ -273,33 +291,33 @@ export const getRequestByType = (patientId, type) => {
 	};
 };
 
-export const addPharmacyRequest = (data, id, diagnosis, prescription, cb) => {
+export const addPharmacyRequest = (data, id, diagnosis, prescription, serviceId, cb) => {
 	return dispatch => {
 		const requestData = data
 			? data.map(request => ({
-					forumalary: request.formulary,
-					drug_generic_name: request.genericName,
-					drug_name: request.drugName,
-					dose_quantity: request.quantity,
-					refillable: {
-						number_of_refills: request && request.refills ? request.refills : 0,
-						eg: request && request.eg ? request.eg : 0,
-						frequency_type:
-							request && request.frequency ? request.frequency : '',
-						duration: request && request.duration ? request.duration : 0,
-						note: request && request.refillNote ? request.refillNote : '',
-					},
-			  }))
+				forumalary: request.formulary,
+				drug_generic_name: request.genericName,
+				drug_name: request.drugName,
+				dose_quantity: request.quantity,
+				service_id: request.serviceId,
+				refillable: {
+					number_of_refills: request && request.refills ? request.refills : 0,
+					eg: request && request.eg ? request.eg : 0,
+					frequency_type:
+						request && request.frequency ? request.frequency : '',
+					duration: request && request.duration ? request.duration : 0,
+					note: request && request.refillNote ? request.refillNote : '',
+				},
+			}))
 			: [];
 		return new Promise((resolve, reject) => {
-			axios
-				.post(`${API_URI}/patient/save-request`, {
-					requestType: 'pharmacy',
-					requestBody: requestData,
-					diagnosis: diagnosis ? diagnosis : '',
-					prescription: prescription ? prescription : '',
-					patient_id: id ? id : '',
-				})
+			request(`${API_URI}/patient/save-request`, "POST", true, {
+				requestType: 'pharmacy',
+				requestBody: requestData,
+				diagnosis: diagnosis ? diagnosis : '',
+				prescription: prescription ? prescription : '',
+				patient_id: id ? id : '',
+			})
 				.then(response => {
 					dispatch(add_pharmacy_request(response.data));
 					cb('success');
