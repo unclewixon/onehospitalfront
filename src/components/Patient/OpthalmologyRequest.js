@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -9,8 +9,13 @@ import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 
 import { request } from '../../services/utilities';
+import { serviceAPI } from '../../services/constants';
 
-import { getAllRequestServices } from '../../actions/settings';
+import {
+	get_all_services,
+	getAllRequestServices,
+	getAllServiceCategory,
+} from '../../actions/settings';
 const OpthalmologyRequest = props => {
 	let history = useHistory();
 	const { register, handleSubmit, setValue } = useForm();
@@ -64,10 +69,11 @@ const OpthalmologyRequest = props => {
 		}
 	};
 
-	const opthalmologyValue = () => {
-		let opthalValue = props.requestServices
-			.filter(service => service.group === 'Opthalmology')
-			.map(service => {
+	const opthalmologyValue = useCallback(() => {
+		let opthalValue =
+			props &&
+			props.services &&
+			props.services.map(service => {
 				return {
 					value: service.id,
 					label: service.name,
@@ -76,23 +82,45 @@ const OpthalmologyRequest = props => {
 			});
 
 		setOpthalServices(opthalValue);
+	}, [props]);
+
+	const fetchServicesByCategory = async id => {
+		try {
+			const rs = await request(
+				`${API_URI}${serviceAPI}/categories/${id}`,
+				'GET',
+				true
+			);
+			props.get_all_services(rs);
+		} catch (error) {
+			console.log(error);
+			notifyError('error fetching imaging requests for the patient');
+		}
+	};
+
+	const onServiceSelect = e => {
+		fetchServicesByCategory(e.value);
 	};
 
 	useEffect(() => {
-		if (!loaded && props.requestServices.length === 0) {
-			props
-				.getAllRequestServices()
-				.then(response => {
-					setDataLoaded(true);
-				})
-				.catch(e => {
-					setDataLoaded(true);
-					notifyError(e.message || 'could not fetch request services');
-				});
+		const { getAllRequestServices, getAllServiceCategory } = props;
+		if (!loaded) {
+			getAllRequestServices();
+			getAllServiceCategory();
 		}
 		setLoaded(true);
 		opthalmologyValue();
-	}, [props, loaded]);
+	}, [props, loaded, opthalmologyValue]);
+
+	const serviceCats =
+		props &&
+		props.serviceCategories &&
+		props.serviceCategories.map(cats => {
+			return {
+				label: cats.name,
+				value: cats.id,
+			};
+		});
 
 	return (
 		<div className="col-sm-12">
@@ -102,7 +130,7 @@ const OpthalmologyRequest = props => {
 					<div className="form-block w-100">
 						<form onSubmit={handleSubmit(onSubmit)}>
 							<div className="row">
-								<div className="form-group col-sm-6">
+								<div className="form-group col-sm-12">
 									<label>Request Type</label>
 
 									<input
@@ -113,6 +141,20 @@ const OpthalmologyRequest = props => {
 										value="Opthalmology"
 										readOnly
 										ref={register}
+									/>
+								</div>
+							</div>
+							<div className="row">
+								<div className="form-group col-sm-6">
+									<label>Service Category</label>
+									{}
+									<Select
+										name="service_request"
+										placeholder="Select category"
+										options={serviceCats}
+										ref={register({ name: 'service_category' })}
+										onChange={evt => onServiceSelect(evt)}
+										required
 									/>
 								</div>
 								<div className="form-group col-sm-6">
@@ -141,20 +183,8 @@ const OpthalmologyRequest = props => {
 									/>
 								</div>
 							</div>
-
 							<div className="row">
-								<div className="form-group col-sm-6">
-									<label>Referred By</label>
-									<input
-										className="form-control"
-										placeholder="Referred By"
-										type="text"
-										name="referredBy"
-										ref={register}
-										required
-									/>
-								</div>
-								<div className="form-group col-sm-6">
+								<div className="form-group col-sm-12">
 									<label>Request Note</label>
 									<textarea
 										required
@@ -187,10 +217,14 @@ const OpthalmologyRequest = props => {
 const mapStateToProps = state => {
 	return {
 		patient: state.user.patient,
+		services: state.settings.services,
 		requestServices: state.settings.request_services,
+		serviceCategories: state.settings.service_categories,
 	};
 };
 
-export default connect(mapStateToProps, { getAllRequestServices })(
-	OpthalmologyRequest
-);
+export default connect(mapStateToProps, {
+	get_all_services,
+	getAllRequestServices,
+	getAllServiceCategory,
+})(OpthalmologyRequest);

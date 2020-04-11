@@ -185,7 +185,6 @@ export const add_pharmacy_request = data => {
 };
 
 export const createLabRequest = data => {
-	console.log(data.lab_combo);
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			let newGroup = data.lab_combo.map(grp => {
@@ -244,13 +243,12 @@ export const createLabRequest = data => {
 
 			let newRequestObj = {
 				requestType: data.service_center,
-				category_id: data.category,
 				patient_id: data.patient_id,
 				requestBody: {
 					specialization: '',
 					sessionCount: '',
-					group: newGroup,
-					test: newTest,
+					groups: newGroup,
+					tests: newTest,
 					refferredSpecimen: data.referred_specimen,
 					requestNote: data.request_note,
 				},
