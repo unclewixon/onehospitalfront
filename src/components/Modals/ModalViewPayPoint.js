@@ -25,8 +25,11 @@ class ModalViewPayPoint extends Component {
 		try {
 			const { type } = this.props;
 			this.setState({ loading: true });
+			let today = moment().format('YYYY-MM-DD');
 			const rs = await request(
-				`${API_URI}${transactionsAPI}/dashboard-list?transactionType=` + type,
+				`${API_URI}${transactionsAPI}/dashboard-list?transactionType=` +
+					type +
+					`&startDate=${today}&endDate=${today}`,
 				'GET',
 				true
 			);

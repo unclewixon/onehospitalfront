@@ -32,6 +32,7 @@ export class InsuranceBills extends Component {
 		startDate: '',
 		endDate: '',
 		status: '',
+		hmo_id: '',
 	};
 
 	componentDidMount() {
@@ -41,12 +42,12 @@ export class InsuranceBills extends Component {
 	}
 
 	fetchTransaction = async () => {
-		const { patient_id, startDate, endDate, status } = this.state;
-		console.log(patient_id, startDate, endDate, status);
+		const { patient_id, startDate, endDate, status, hmo_id } = this.state;
+		console.log(patient_id, startDate, endDate, status, hmo_id);
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}/hmos/transactions?patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}`,
+				`${API_URI}/hmos/transactions?patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}&hmo_id=${hmo_id}`,
 				'GET',
 				true
 			);
@@ -231,9 +232,9 @@ export class InsuranceBills extends Component {
 												</td>
 											</tr>
 										) : transactions.length > 0 ? (
-											transactions.map(transaction => {
+											transactions.map((transaction, index) => {
 												return (
-													<tr key={transaction.id}>
+													<tr key={index}>
 														<td className="text-center">
 															{moment(transaction.q_createdAt).format(
 																'YYYY/MM/DD'

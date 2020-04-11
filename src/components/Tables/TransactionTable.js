@@ -49,9 +49,9 @@ const TransactionTable = props => {
 					</td>
 				</tr>
 			) : transactions.length > 0 ? (
-				transactions.map(transaction => {
+				transactions.map((transaction, index) => {
 					return (
-						<tr key={transaction.q_id}>
+						<tr key={index}>
 							<td className="text-center" hidden={today}>
 								{moment(transaction.q_createdAt).format('YYYY/MM/DD')}
 							</td>
