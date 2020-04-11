@@ -36,23 +36,28 @@ export class AllTransaction extends Component {
 		endDate: '',
 		status: '',
 		searching: '',
+		searchHmo: false,
 		hmos: [],
 		query: '',
 		patient_id: '',
 		patients: [],
+		hmoQuery: '',
+		hmo_id: '',
 	};
+	patient = React.createRef();
+	hmo = React.createRef();
 
 	componentDidMount() {
 		this.fetchHmoTransaction();
 	}
 
 	fetchHmoTransaction = async () => {
-		const { status, startDate, endDate, patient_id } = this.state;
+		const { status, startDate, endDate, patient_id, hmo_id } = this.state;
 
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}${hmoAPI}${transactionsAPI}?startDate=${startDate}&endDate=${endDate}&patient_id=${patient_id}&status=${status}&page=1&limit=10`,
+				`${API_URI}${hmoAPI}${transactionsAPI}?startDate=${startDate}&endDate=${endDate}&patient_id=${patient_id}&status=${status}&page=1&limit=10&hmo_id=${hmo_id}`,
 				'GET',
 				true
 			);
@@ -64,7 +69,6 @@ export class AllTransaction extends Component {
 				filtering: false,
 				startDate: '',
 				endDate: '',
-				patient_id: '',
 			});
 		} catch (error) {
 			console.log(error);
@@ -77,6 +81,11 @@ export class AllTransaction extends Component {
 		e.preventDefault();
 		// this.setState({ filtering: true });
 		this.setState({ ...this.state, filtering: true });
+		console.log(this.state.patient_id);
+		// if (this.state.query < 3) {
+		// 	this.setState({ ...this.state, patient_id: '' });
+		// 	console.log(this.state.patient_id);
+		// }
 		this.fetchHmoTransaction();
 	};
 
@@ -96,15 +105,21 @@ export class AllTransaction extends Component {
 		});
 	};
 
-	patientSet = pat => {
+	patientSet = (pat, type) => {
 		console.log(pat);
-		let name =
-			(pat.surname ? pat.surname : '') +
-			' ' +
-			(pat.other_names ? pat.other_names : '');
-		document.getElementById('patient').value = name;
-		// setPatients([]);
-		this.setState({ ...this.state, patient_id: pat.id, patients: [] });
+
+		if (type === 'patient') {
+			let name =
+				(pat.surname ? pat.surname : '') +
+				' ' +
+				(pat.other_names ? pat.other_names : '');
+			document.getElementById('patient').value = name;
+			// setPatients([]);
+			this.setState({ ...this.state, patient_id: pat.id, patients: [] });
+		} else {
+			document.getElementById('hmo').value = pat.name;
+			this.setState({ ...this.state, hmo_id: pat.id, hmos: [] });
+		}
 	};
 
 	searchPatient = async () => {
@@ -125,16 +140,65 @@ export class AllTransaction extends Component {
 				});
 			} catch (e) {
 				notifyError('Error Occurred');
-				this.setState({ ...this.state, searching: true });
+				this.setState({ ...this.state, searching: false });
+			}
+		}
+	};
+
+	searchHmo = async () => {
+		if (this.state.hmoQuery.length > 2) {
+			try {
+				this.setState({ ...this.state, searchHmo: true });
+				const rs = await request(
+					`${API_URI}/hmos?name=${this.state.hmoQuery}`,
+					'GET',
+					true
+				);
+
+				this.setState({
+					...this.state,
+					hmos: rs,
+					searchHmo: false,
+					hmoQuery: '',
+				});
+			} catch (e) {
+				notifyError('Error searching hmo ');
+				this.setState({ ...this.state, searchHmo: false });
 			}
 		}
 	};
 	handlePatientChange = e => {
-		this.setState({ ...this.state, query: e.target.value });
-		this.searchPatient();
+		const { name, value } = e.target;
+
+		if (name === 'patient') {
+			if (this.patient.current.value.length < 4) {
+				this.setState({ patients: [], patient_id: '' });
+				return;
+			}
+			this.setState({ ...this.state, query: value });
+			this.searchPatient();
+		} else if (name === 'hmo') {
+			if (this.hmo.current.value.length < 4) {
+				this.setState({ hmo_id: '', hmos: [] });
+				return;
+			}
+			this.setState({ ...this.state, hmoQuery: value });
+			this.searchHmo();
+		} else {
+			return;
+		}
 	};
+
 	render() {
-		const { filtering, loading, searching, hmos, patients } = this.state;
+		const {
+			filtering,
+			loading,
+			searching,
+			hmos,
+			patients,
+			searchHmo,
+			query,
+		} = this.state;
 		const { hmoTransactions } = this.props;
 		const hmoReversed = hmoTransactions.reverse();
 		return (
@@ -145,15 +209,16 @@ export class AllTransaction extends Component {
 
 						<div className="col-md-12 px-0">
 							<form className="row">
-								<div className="form-group col-sm-3">
-									<label>Hmo</label>
+								<div className="form-group col-sm-2.5 pr-0">
+									<label>Patient</label>
 
 									<input
 										className="form-control"
-										placeholder="Search for hmo name"
+										placeholder="Search for patient name"
 										type="text"
 										name="patient"
 										defaultValue=""
+										ref={this.patient}
 										id="patient"
 										onChange={this.handlePatientChange}
 										autoComplete="off"
@@ -174,9 +239,8 @@ export class AllTransaction extends Component {
 													key={pat.id}
 													className="element-box">
 													<a
-														onClick={() => this.patientSet(pat)}
+														onClick={() => this.patientSet(pat, 'patient')}
 														className="ssg-item cursor">
-														{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
 														<div
 															className="item-name"
 															dangerouslySetInnerHTML={{
@@ -188,14 +252,57 @@ export class AllTransaction extends Component {
 											);
 										})}
 								</div>
-								<div className="form-group col-md-4">
+								<div className="form-group col-sm-3 pr-0">
+									<label>Hmo</label>
+
+									<input
+										className="form-control"
+										placeholder="Search for hmo name"
+										type="text"
+										name="hmo"
+										defaultValue=""
+										id="hmo"
+										onChange={this.handlePatientChange}
+										ref={this.hmo}
+										autoComplete="off"
+										required
+										style={{ height: '32px' }}
+									/>
+									{searchHmo && (
+										<div className="searching text-center">
+											<img alt="searching" src={searchingGIF} />
+										</div>
+									)}
+
+									{hmos &&
+										hmos.map(pat => {
+											return (
+												<div
+													style={{ display: 'flex' }}
+													key={pat.id}
+													className="element-box">
+													<a
+														onClick={() => this.patientSet(pat, 'hmo')}
+														className="ssg-item cursor">
+														<div
+															className="item-name"
+															dangerouslySetInnerHTML={{
+																__html: `${pat.name}`,
+															}}
+														/>
+													</a>
+												</div>
+											);
+										})}
+								</div>
+								<div className="form-group col-md-3 pr-0">
 									<label>From - To</label>
 									<RangePicker
 										onChange={e => this.dateChange(e)}
 										defaultValue={[this.state.startDate, this.state.endDate]}
 									/>
 								</div>
-								<div className="form-group col-md-3">
+								<div className="form-group col-md-2 pr-0">
 									<label className="mr-2 " htmlFor="id">
 										Status
 									</label>
@@ -215,7 +322,7 @@ export class AllTransaction extends Component {
 										})}
 									</select>
 								</div>
-								<div className="form-group col-md-2 mt-4">
+								<div className="form-group col-md-1 pr-0 mt-4">
 									<div
 										className="btn btn-sm btn-primary btn-upper text-white"
 										onClick={this.doFilter}>

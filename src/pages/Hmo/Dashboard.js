@@ -53,6 +53,8 @@ export class Dashboard extends Component {
 	render() {
 		const { loading } = this.state;
 		const { hmoTransactions } = this.props;
+		console.log(hmoTransactions);
+		const hmoReversed = hmoTransactions.reverse();
 		return (
 			<>
 				<div className="col-sm-12 col-xxl-12">
@@ -135,17 +137,32 @@ export class Dashboard extends Component {
 											</td>
 										</tr>
 									) : (
-										hmoTransactions &&
-										hmoTransactions.map(trans => {
+										hmoReversed &&
+										hmoReversed.map(trans => {
 											return (
 												<tr>
-													<td>Somebody</td>
-													<td>Somebody</td>
-													<td>10000</td>
-													<td>Cash</td>
-													<td>Pending</td>
+													<td className="text-center">
+														{moment(trans.createdAt).format('DD-MM-YYYY')}
+													</td>
+													<td className="text-center"> {trans.patient_name}</td>
+													<td className="text-center">
+														{trans.transaction_type}
+													</td>
+													<td className="text-center">{trans.amount}</td>
+													<td className="text-center">
+														{trans.hmo_approval_status === 0 ? (
+															<>
+																<span className="status-pill smaller yellow"></span>
+																<span>Pending</span>
+															</>
+														) : (
+															<>
+																<span className="status-pill smaller green"></span>
+																<span>Approved</span>
+															</>
+														)}
+													</td>
 													<td>
-														{' '}
 														<Tooltip title="Change status">
 															<a className="secondary">
 																<i className="os-icon os-icon-folder-plus" />

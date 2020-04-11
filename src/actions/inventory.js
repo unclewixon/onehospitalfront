@@ -290,7 +290,6 @@ export const deleteCafeteriaCategory = data => {
 
 export const addCafeteriaItem = data => {
 	return dispatch => {
-		console.log(data);
 		return new Promise((resolve, reject) => {
 			axios
 				.post(`${API_URI}/cafeteria/items`, data)
@@ -327,7 +326,25 @@ export const updateCafeteriaItem = data => {
 			axios
 				.patch(`${API_URI}/cafeteria/items/${data.id}/update`, data)
 				.then(response => {
-					dispatch(update_cafeteria_item(response.data, data));
+					let arr = [response.data];
+					let formatItem = arr.map(el => {
+						return {
+							q_category: el.category,
+							q_createdAt: el.createdAt,
+							q_createdBy: el.createdBy,
+							q_description: el.description,
+							q_discount_price: el.discount_price,
+							q_id: el.id,
+							q_isActive: el.isActive,
+							q_item_code: el.item_code,
+							q_lastChangedBy: null,
+							q_name: el.name,
+							q_price: el.price,
+							q_updateAt: el.updateAt,
+						};
+					});
+
+					dispatch(update_cafeteria_item(formatItem[0], data));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -341,7 +358,7 @@ export const deleteCafeteriaItem = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
-				.delete(`${API_URI}/cafeteria/items/${data.id}`)
+				.delete(`${API_URI}/cafeteria/items/${data.q_id}`)
 				.then(response => {
 					dispatch(delete_cafeteria_item(data));
 					return resolve({ success: true });

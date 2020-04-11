@@ -22,12 +22,6 @@ const Lab = props => {
 		setShowModal(!showModal);
 	};
 
-	const requestStatus = [
-		{ value: 'pending', label: 'Pending' },
-		{ value: 'approved', label: 'Approved' },
-		{ value: 'declined', label: 'Declined' },
-	];
-
 	useEffect(() => {
 		const { patient, getRequestByType } = props;
 		const patient_id = patient && patient.id ? patient.id : '';

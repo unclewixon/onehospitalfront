@@ -248,32 +248,26 @@ const Cafeteria = props => {
 													<a className="element-box el-tablo" href="#">
 														<div className="label">Products Sold</div>
 														<div className="value">57</div>
-														<div className="trending trending-up-basic">
-															<span>12%</span>
-															<i className="os-icon os-icon-arrow-up2"></i>
-														</div>
 													</a>
 												</div>
 												<div className="col-sm-4 col-xxxl-3">
-													<a className="element-box el-tablo" href="#">
-														<div className="label">Gross Profit</div>
-														<div className="value">$457</div>
+													<a className="element-box el-tablo">
+														<div className="label">Gross Profit(&#x20A6;)</div>
+														<div className="value">457</div>
 													</a>
 												</div>
 												<div className="col-sm-4 col-xxxl-3">
-													<a className="element-box el-tablo" href="#">
+													<a className="element-box el-tablo">
 														<div className="label">New Customers</div>
 														<div className="value">125</div>
-														<div className="trending trending-down-basic">
-															<span>9%</span>
-															<i className="os-icon os-icon-arrow-down"></i>
-														</div>
 													</a>
 												</div>
 												<div className="d-none d-xxxl-block col-xxxl-3">
-													<a className="element-box el-tablo" href="#">
-														<div className="label">Refunds Processed</div>
-														<div className="value">$294</div>
+													<a className="element-box el-tablo">
+														<div className="label">
+															Refunds Processed (&#x20A6;)
+														</div>
+														<div className="value">294</div>
 													</a>
 												</div>
 											</div>
@@ -312,6 +306,7 @@ const Cafeteria = props => {
 																	className="form-control"
 																	id="cust"
 																	onChange={handleCustomerChange}
+																	autoComplete="off"
 																	placeholder={
 																		customer === 'staff'
 																			? ' Search Staff ...'

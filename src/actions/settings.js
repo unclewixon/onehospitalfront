@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { request } from '../services/utilities';
-import { API_URI } from '../services/constants';
+import { API_URI, patientAPI } from '../services/constants';
+
 import {
 	CREATE_DEPARTMENT,
 	GET_ALL_DEPARTMENTS,
