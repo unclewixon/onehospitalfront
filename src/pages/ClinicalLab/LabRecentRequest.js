@@ -12,7 +12,6 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadClinicalLab } from '../../actions/patient';
 import _ from 'lodash';
-import ModalClinicalLab from './../../components/Modals/ModalClinicalLab';
 const { RangePicker } = DatePicker;
 // const departments = [
 //     { id: 'ejejekek', name: 'angel' },
@@ -23,7 +22,7 @@ const status = [
 	{ value: 0, label: 'processing' },
 	{ value: 1, label: 'done' },
 ];
-class AllRequest extends Component {
+class LabFilledRequest extends Component {
 	state = {
 		filtering: false,
 		loading: false,
@@ -31,8 +30,6 @@ class AllRequest extends Component {
 		startDate: '',
 		endDate: '',
 		status: '',
-		showModal: false,
-		activeRequest: null,
 	};
 
 	componentDidMount() {
@@ -80,12 +77,6 @@ class AllRequest extends Component {
 		});
 	};
 
-	onModalClick = () => {
-		this.setState({
-			showModal: !this.state.showModal,
-		});
-	};
-
 	onDeleteTransaction = data => {
 		this.props
 			.deleteTransaction(data)
@@ -100,11 +91,6 @@ class AllRequest extends Component {
 		confirmAction(this.onDeleteTransaction, data);
 	};
 
-	modalFunction = lab => {
-		this.onModalClick();
-		this.setState({ activeRequest: lab });
-	};
-
 	render() {
 		const { filtering, loading } = this.state;
 		const { location, clinicalLab } = this.props;
@@ -116,13 +102,6 @@ class AllRequest extends Component {
 					<div className="element-wrapper">
 						<div className="row">
 							<div className="col-md-12">
-								{this.state.activeRequest ? (
-									<ModalClinicalLab
-										activeRequest={this.state.activeRequest}
-										showModal={this.state.showModal}
-										onModalClick={this.onModalClick}
-									/>
-								) : null}
 								<h6 className="element-header">Filter by:</h6>
 
 								<form className="row">
@@ -218,13 +197,7 @@ class AllRequest extends Component {
 												) : null}
 												{clinicalLab &&
 													clinicalLab.reverse().map(lab => {
-														return (
-															<ClinicalLabItem
-																key={lab.id}
-																lab={lab}
-																modalClick={LAB => this.modalFunction(LAB)}
-															/>
-														);
+														return <ClinicalLabItem key={lab.id} lab={lab} />;
 													})}
 											</tbody>
 										</table>
@@ -248,4 +221,4 @@ const mapStateToProps = state => {
 	};
 };
 
-export default connect(mapStateToProps, { loadClinicalLab })(AllRequest);
+export default connect(mapStateToProps, { loadClinicalLab })(LabFilledRequest);

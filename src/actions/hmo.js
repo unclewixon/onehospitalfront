@@ -5,10 +5,11 @@ import {
 	DELETE_HMO,
 	UPLOAD_HMO,
 	FETCH_HMO_TARIFF,
+	LOAD_HMO_TRANSACTION,
 } from './types';
 import axios from 'axios';
 import { API_URI, hmoAPI } from '../services/constants';
-
+import { request } from '../services/utilities';
 export const add_hmo = payload => {
 	return {
 		type: ADD_HMO,
@@ -52,33 +53,39 @@ const upload_hmo_progress = payload => {
 	};
 };
 
+export const loadHmoTransaction = payload => {
+	return {
+		type: LOAD_HMO_TRANSACTION,
+		payload,
+	};
+};
+
 export const addHmo = data => {
+	console.log(data);
 	return dispatch => {
 		return axios
-			.post(`${API_URI}/${hmoAPI}`, data)
+			.post(`${API_URI}${hmoAPI}`, data)
 			.then(response => {
+				console.log(response);
 				return dispatch(add_hmo(response.data));
 			})
 			.catch(error => {
+				console.log(error);
 				return error;
 			});
 	};
 };
 
 export const getAllHmos = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.get(`${API_URI}${hmoAPI}`, {})
-				.then(response => {
-					console.log(response.data, 'get All hmo');
-					dispatch(fetch_all_hmos_data(response.data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
+	return async dispatch => {
+		try {
+			const rs = await request(`${API_URI}${hmoAPI}`, 'GET', true);
+			console.log(rs, 'get All hmo');
+			dispatch(fetch_all_hmos_data(rs));
+			return { success: true };
+		} catch (e) {
+			return { success: false };
+		}
 	};
 };
 

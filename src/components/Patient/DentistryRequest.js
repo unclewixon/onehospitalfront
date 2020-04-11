@@ -3,28 +3,61 @@ import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
-import { API_URI, socket, patientAPI } from '../../services/constants';
+import {
+	API_URI,
+	socket,
+	patientAPI,
+	serviceAPI,
+} from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 
 import { request } from '../../services/utilities';
 
-import { getAllRequestServices } from '../../actions/settings';
+import {
+	get_all_services,
+	getAllRequestServices,
+	getAllServiceCategory,
+} from '../../actions/settings';
 
 const DentistryRequest = props => {
 	let history = useHistory();
 	const { register, handleSubmit, setValue } = useForm();
 	const [submitting, setSubmitting] = useState(false);
 	const [loaded, setLoaded] = useState(false);
-	const [Loading, setLoading] = useState(false);
-	const [data, getDataToEdit] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [dentistryServices, setDentistryServices] = useState([]);
 	const [multi, setMulti] = useState(false);
+	const [servicesCategory, setServicesCategory] = useState([]);
+	const [services, setServices] = useState('');
+
+	useEffect(() => {
+		if (!loaded) {
+			props
+				.getAllServiceCategory()
+				.then(response => {})
+				.catch(e => {
+					notifyError(e.message || 'could not fetch service categories');
+				});
+		}
+		let data = [];
+		let services = [];
+		props.ServiceCategories.forEach((item, index) => {
+			const res = { label: item.name, value: item.id };
+			data = [...data, res];
+		});
+		props.service.forEach((item, index) => {
+			const res = { label: item.name, value: item.id };
+			services = [...services, res];
+		});
+		setServicesCategory(data);
+		setServices(services);
+		setLoaded(true);
+	}, [props, loaded]);
 
 	const onSubmit = async values => {
 		console.log(values);
-
+		const { service } = props;
 		if (
 			values.service_request === undefined ||
 			values.service_request.length === 0
@@ -36,26 +69,29 @@ const DentistryRequest = props => {
 		// socket.emit('saveAppointment', values);
 		setSubmitting(true);
 		try {
-			let data = {
-				requestType: values.requestType.toLowerCase(),
-				patient_id: props.patient.id,
-				requestNote: values.request_note,
-				requestBody: values.service_request.map(req => {
-					return {
-						specialization: req.label,
-						service_id: req.value,
-						amount: req.amount,
-					};
-				}),
-			};
-
+			let requestData = [];
+			let theRequest = {};
+			values.service_request.forEach(value => {
+				requestData = [
+					...requestData,
+					{
+						service_id: value.value,
+						service_name: value.label,
+					},
+				];
+			});
+			theRequest.requestType = values.requestType.toLowerCase();
+			//theRequest.bill_now =  'true';
+			theRequest.request_note = values.request_note;
+			theRequest.patient_id = props.patient.id;
+			//theRequest.primary_diagnosis = selectedOption.icd10Code;
+			theRequest.requestBody = requestData;
 			const rs = await request(
 				`${API_URI}${patientAPI}/save-request`,
 				'POST',
 				true,
-				data
+				theRequest
 			);
-
 			history.push('settings/roles#dentistry');
 			notifySuccess('Dentistry request saved');
 			setSubmitting(false);
@@ -65,34 +101,29 @@ const DentistryRequest = props => {
 		}
 	};
 
-	const dentistryValue = () => {
-		let dentistryServices = props.requestServices
-			.filter(service => service.group === 'Dentistry')
-			.map(service => {
-				return {
-					value: service.id,
-					label: service.name,
-					amount: service.amount,
-				};
-			});
-		setDentistryServices(dentistryServices);
+	const handleChangeServiceCategory = evt => {
+		let value = String(evt.value);
+		fetchServicesByCategory(value);
+		setValue('service_center', value);
 	};
 
-	useEffect(() => {
-		if (!loaded && props.requestServices.length === 0) {
-			props
-				.getAllRequestServices()
-				.then(response => {
-					setDataLoaded(true);
-				})
-				.catch(e => {
-					setDataLoaded(true);
-					notifyError(e.message || 'could not fetch request services');
-				});
+	const handleChangeProcedure = evt => {
+		setValue('service_request', evt);
+	};
+
+	const fetchServicesByCategory = async id => {
+		try {
+			const rs = await request(
+				`${API_URI}${serviceAPI}` + '/categories/' + id,
+				'GET',
+				true
+			);
+			props.get_all_services(rs);
+		} catch (error) {
+			console.log(error);
+			notifyError('error fetching imaging requests for the patient');
 		}
-		setLoaded(true);
-		dentistryValue();
-	}, [props, loaded]);
+	};
 
 	return (
 		<div className="col-sm-12">
@@ -115,6 +146,20 @@ const DentistryRequest = props => {
 										ref={register}
 									/>
 								</div>
+							</div>
+
+							<div className="row">
+								<div className="form-group col-sm-6">
+									<label>Service Center</label>
+									<Select
+										name="service_center"
+										placeholder="Select Service Center"
+										options={servicesCategory}
+										ref={register({ name: 'service_center' })}
+										onChange={evt => handleChangeServiceCategory(evt)}
+										required
+									/>
+								</div>
 								<div className="form-group col-sm-6">
 									<label>
 										Service to request{' '}
@@ -128,14 +173,9 @@ const DentistryRequest = props => {
 										name="service_request"
 										placeholder="Select service to request from"
 										isMulti
-										options={dentistryServices}
+										options={services}
 										ref={register({ name: 'service_request' })}
-										onChange={evt => {
-											if (evt) {
-												setMulti(false);
-												setValue('service_request', evt);
-											}
-										}}
+										onChange={evt => handleChangeProcedure(evt)}
 										required
 									/>
 								</div>
@@ -176,10 +216,12 @@ const DentistryRequest = props => {
 const mapStateToProps = state => {
 	return {
 		patient: state.user.patient,
-		requestServices: state.settings.request_services,
+		service: state.settings.services,
+		ServiceCategories: state.settings.service_categories,
 	};
 };
 
-export default connect(mapStateToProps, { getAllRequestServices })(
-	DentistryRequest
-);
+export default connect(mapStateToProps, {
+	get_all_services,
+	getAllServiceCategory,
+})(DentistryRequest);

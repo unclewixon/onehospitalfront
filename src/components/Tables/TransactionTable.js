@@ -49,9 +49,9 @@ const TransactionTable = props => {
 					</td>
 				</tr>
 			) : transactions.length > 0 ? (
-				transactions.map(transaction => {
+				transactions.map((transaction, index) => {
 					return (
-						<tr key={transaction.q_id}>
+						<tr key={index}>
 							<td className="text-center" hidden={today}>
 								{moment(transaction.q_createdAt).format('YYYY/MM/DD')}
 							</td>
@@ -60,8 +60,8 @@ const TransactionTable = props => {
 							</td>
 							<td className="">{transaction.department?.name}</td>
 							<td className="">
-								{transaction.q_service_id
-									? transaction.q_service_id
+								{transaction.service?.name
+									? transaction.service.name
 									: 'No service yet'}
 							</td>
 							<td className="">{transaction.q_amount}</td>

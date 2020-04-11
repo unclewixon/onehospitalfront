@@ -8,6 +8,7 @@ import {
 	socket,
 	transactionsAPI,
 	paymentType,
+	paymentTypeExtra,
 } from '../services/constants';
 import { request, formatNumber } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
@@ -36,8 +37,6 @@ const CreateNewTransaction = props => {
 	const [multiple, setMultiple] = useState([]);
 
 	const onSubmit = async values => {
-		console.log(values);
-
 		setSubmitting(true);
 		let data = {
 			patient_id: values.patient_id,
@@ -45,10 +44,8 @@ const CreateNewTransaction = props => {
 			amount: values.amount,
 			serviceType: values.service_request.map(req => req.value),
 			description: values.description,
-			paymentType: values.payment_type,
+			payment_type: values.payment_type,
 		};
-		console.log(data);
-
 		try {
 			const rs = await request(
 				`${API_URI}${transactionsAPI}`,
@@ -322,7 +319,7 @@ const CreateNewTransaction = props => {
 						<Select
 							name="payment_type"
 							placeholder="Select Payment Type"
-							options={paymentType}
+							options={paymentTypeExtra}
 							ref={register({ name: 'payment_type' })}
 							onChange={evt => {
 								if (evt === null) {

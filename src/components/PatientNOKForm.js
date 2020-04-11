@@ -10,6 +10,7 @@ import {
 	ethnicities,
 	gender,
 	maritalStatus,
+	relationships,
 } from '../services/constants';
 import { request } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
@@ -25,6 +26,7 @@ function PatientNOKForm(props) {
 	const [submitting, setSubmitting] = useState(false);
 	const [genderValue, setGenderValue] = useState('');
 	const [ethValue, setEthValue] = useState('');
+	const [relationshipValue, setRelationshipValue] = useState('');
 	const [maritalValue, setMaritalValue] = useState('');
 
 	useEffect(() => {
@@ -37,6 +39,7 @@ function PatientNOKForm(props) {
 			nok_occupation: formData.nok_occupation || '',
 			nok_address: formData.nok_address || '',
 			nok_phoneNumber: formData.nok_phoneNumber || '',
+			nok_relationship: formData.nok_relationship || '',
 		};
 		setFormTitle('Partner/Next of Kin');
 		setPatientData(formValues);
@@ -53,6 +56,7 @@ function PatientNOKForm(props) {
 				nok_ethnicity: patient.nextOfKin?.ethnicity || '',
 				nok_maritalStatus: patient.nextOfKin?.maritalStatus || '',
 				nok_phoneNumber: patient.nextOfKin?.phoneNumber || '',
+				nok_relationship: patient.nextOfKin?.relationship || '',
 			};
 			setGenderValue(
 				gender.filter(option => option.label === formValues.nok_gender)
@@ -65,12 +69,23 @@ function PatientNOKForm(props) {
 					option => option.label === formValues.nok_maritalStatus
 				)
 			);
+			setRelationshipValue(
+				relationships.filter(
+					option => option.label === formValues.nok_relationship
+				)
+			);
 
 			handleChange(
 				'nok_ethnicity',
 				formValues.nok_ethnicity,
 				setEthValue,
 				ethnicities
+			);
+			handleChange(
+				'nok_relationship',
+				formValues.nok_relationship,
+				setRelationshipValue,
+				relationships
 			);
 			handleChange(
 				'nok_maritalStatus',
@@ -147,6 +162,7 @@ function PatientNOKForm(props) {
 	register({ name: 'nok_gender' });
 	register({ name: 'nok_maritalStatus' });
 	register({ name: 'nok_ethnicity' });
+	register({ name: 'nok_relationship' });
 
 	return (
 		<Fragment>
@@ -252,7 +268,7 @@ function PatientNOKForm(props) {
 									<label>Occupation</label>
 									<input
 										className="form-control"
-										placeholder=""
+										placeholder="Occupation"
 										type="text"
 										defaultValue={patientData.nok_occupation || ''}
 										name="nok_occupation"
@@ -279,6 +295,25 @@ function PatientNOKForm(props) {
 									/>
 								</div>
 							</div>
+							<div className="col-sm">
+								<div className="form-group">
+									<label>Relationship to patient</label>
+									<Select
+										id="nok_relationship"
+										ref={register}
+										options={relationships}
+										value={relationshipValue}
+										onChange={evt => {
+											handleChange(
+												'nok_relationship',
+												String(evt.value),
+												setRelationshipValue,
+												relationships
+											);
+										}}
+									/>
+								</div>
+							</div>
 						</div>
 						<div className="row">
 							<div className="col-sm">
@@ -286,6 +321,7 @@ function PatientNOKForm(props) {
 									<label>Address</label>
 									<input
 										className="form-control"
+										placeholder="Address"
 										name="nok_address"
 										defaultValue={patientData.nok_address || ''}
 										ref={register}
@@ -299,6 +335,7 @@ function PatientNOKForm(props) {
 									<input
 										className="form-control"
 										name="nok_phoneNumber"
+										placeholder="Phone No."
 										defaultValue={patientData.nok_phoneNumber || ''}
 										ref={register}
 										type="text"
@@ -311,6 +348,7 @@ function PatientNOKForm(props) {
 									<input
 										className="form-control"
 										name="nok_email"
+										placeholder="Email"
 										ref={register}
 										defaultValue={patientData.nok_email || ''}
 										placeholder="example@email.com"

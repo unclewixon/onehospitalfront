@@ -2,20 +2,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-	addPermission,
-	getAllPermission,
-	updatePermission,
-	deletePermission,
+	add_permission,
+	get_all_permissions,
+	update_permission,
+	delete_permission,
 } from '../actions/settings';
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
-import { confirmAction } from '../services/utilities';
+import { request, confirmAction } from '../services/utilities';
+import { API_URI } from '../services/constants';
 
 class Permission extends Component {
 	state = {
 		name: '',
 		permissionID: null,
+		payload: null,
 		create: true,
 		edit: false,
 		loading: false,
@@ -23,7 +25,7 @@ class Permission extends Component {
 	};
 
 	componentDidMount() {
-		this.fetchPermission();
+		this.fetchPermissions();
 	}
 
 	handleInputChange = e => {
@@ -31,33 +33,38 @@ class Permission extends Component {
 		this.setState({ [name]: value });
 	};
 
-	fetchPermission = async () => {
-		this.setState({ loaded: true });
+	fetchPermissions = async () => {
+		this.setState({ loading: true });
 		try {
-			this.props.getAllPermission().then(response => {
-				this.setState({ loaded: false });
-			});
+			const rs = await request(`${API_URI}/settings/permissions`, 'GET', true);
+			this.props.get_all_permissions(rs);
+			this.setState({ loading: false });
 		} catch (error) {
+			this.setState({ loading: false });
 			notifyError(error.message || 'could not fetch permissions');
-
-			this.setState({ loaded: false });
 		}
 	};
 
-	AddPermission = e => {
+	AddPermission = async e => {
 		e.preventDefault();
 		this.setState({ loading: true });
 		const { name } = this.state;
-		this.props
-			.addPermission({ name })
-			.then(response => {
-				this.setState({ name: '', create: true, edit: false, loading: false });
-				notifySuccess('permission created!');
-			})
-			.catch(error => {
-				this.setState({ name: '', create: true, edit: false, loading: false });
-				notifyError('An error occured creating permission');
-			});
+		const data = {
+			name,
+		};
+		try {
+			const rs = await request(
+				`${API_URI}/settings/permissions`,
+				'POST',
+				true,
+				data
+			);
+			this.props.add_permission(rs);
+			this.setState({ loading: false, name: '' });
+		} catch (error) {
+			this.setState({ loading: false });
+			notifyError(error.message || 'An error occured creating permission');
+		}
 	};
 
 	onClickEdit = data => {
@@ -66,39 +73,54 @@ class Permission extends Component {
 			id: data.id,
 			edit: true,
 			create: false,
-			data: data,
+			payload: data,
 		});
 	};
 
-	onEditPermission = e => {
+	onEditPermission = async e => {
 		e.preventDefault();
 		this.setState({ loading: true });
-		let { name, data } = this.state;
-		this.props
-			.updatePermission({ id: data.id, name }, data)
-			.then(response => {
-				this.setState({ name: '', create: true, edit: false, loading: false });
-				notifySuccess('permission updated!');
-			})
-			.catch(error => {
-				this.setState({ name: '', create: true, edit: false, loading: false });
-				notifyError('An error occured editing permission');
-			});
+		let { name, id, payload } = this.state;
+		let data = {
+			name,
+		};
+		try {
+			const rs = await request(
+				`${API_URI}/settings/permissions/${id}/update`,
+				'PATCH',
+				true,
+				data
+			);
+			this.props.update_permission(rs, payload);
+			this.setState({ name: '', create: true, edit: false, loading: false });
+			notifySuccess('permission updated!');
+		} catch (error) {
+			console.log(error);
+			this.setState({ name: '', create: true, edit: false, loading: false });
+			notifyError('An error occured editing permission');
+		}
 	};
 
 	cancelEditButton = () => {
 		this.setState({ create: true, edit: false, name: '', data: null });
 	};
 
-	DeletePermission = permission => {
-		this.props
-			.deletePermission(permission)
-			.then(response => {
-				notifySuccess('permission deleted!');
-			})
-			.catch(error => {
-				notifyError('An error occured deleting permission');
-			});
+	DeletePermission = async data => {
+		try {
+			const rs = await request(
+				`${API_URI}/settings/permissions/${data.id}`,
+				'DELETE',
+				true,
+				data
+			);
+			this.props.delete_permission(data);
+			this.setState({ name: '', create: true, edit: false, loading: false });
+			notifySuccess('permission deleted!');
+		} catch (error) {
+			this.setState({ name: '', create: true, edit: false, loading: false });
+			console.log(error);
+			notifyError('An error occured deleting permission');
+		}
 	};
 
 	confirmDelete = permission => {
@@ -123,7 +145,7 @@ class Permission extends Component {
 										</tr>
 									</thead>
 									<tbody>
-										{loaded ? (
+										{loading ? (
 											<tr>
 												<td colSpan="4" className="text-center">
 													<img alt="searching" src={searchingGIF} />
@@ -230,8 +252,8 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default connect(mapStateToProps, {
-	addPermission,
-	getAllPermission,
-	updatePermission,
-	deletePermission,
+	add_permission,
+	get_all_permissions,
+	update_permission,
+	delete_permission,
 })(Permission);

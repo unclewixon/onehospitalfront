@@ -46,11 +46,17 @@ export class ModalCreateVoucher extends Component {
 	state = {
 		voucher_date: null,
 		submitting: false,
+		amountClass: 'col-sm-6',
 		patientList: [],
 	};
 
 	componentDidMount() {
 		this.fetchPatient();
+		const { apply_voucher } = this.props;
+		if (apply_voucher) {
+			this.setState({ amountClass: 'col-sm-12' });
+		}
+
 		document.body.classList.add('modal-open');
 	}
 
@@ -110,7 +116,7 @@ export class ModalCreateVoucher extends Component {
 
 	render() {
 		const { error, handleSubmit, apply_voucher } = this.props;
-		const { submitting, voucher_date, patientList } = this.state;
+		const { submitting, voucher_date, patientList, amountClass } = this.state;
 		return (
 			<div
 				className="onboarding-modal modal fade animated show d-flex align-items-center"
@@ -166,7 +172,7 @@ export class ModalCreateVoucher extends Component {
 											/>
 										</div>
 
-										<div className="col-sm-6">
+										<div className={amountClass}>
 											<Field
 												id="amount"
 												name="amount"

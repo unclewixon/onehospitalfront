@@ -32,6 +32,7 @@ export const patientAPI = '/patient';
 export const transactionsAPI = '/transactions';
 export const vouchersAPI = '/vouchers';
 export const serviceAPI = '/services';
+export const settingsAPI = '/settings/';
 export const diagnosisAPI = '/settings/diagnosis';
 
 export const months = [
@@ -47,6 +48,15 @@ export const months = [
 	'October',
 	'November',
 	'December',
+];
+
+export const relationships = [
+	{ value: 'Father', label: 'Father' },
+	{ value: 'Mother', label: 'Mother' },
+	{ value: 'Sister', label: 'Sister' },
+	{ value: 'Brother', label: 'Brother' },
+	{ value: 'Aunt', label: 'Aunt' },
+	{ value: 'Others', label: 'Others' },
 ];
 
 export const ethnicities = [
@@ -126,6 +136,14 @@ export const documentType = [
 	{ id: 'Prescription', name: 'Prescription' },
 ];
 
+export const paymentTypeExtra = [
+	{ value: 'POS', label: 'POS' },
+	{ value: 'Cash', label: 'Cash' },
+	{ value: 'Cheque', label: 'Cheque' },
+	{ value: 'Transfer', label: 'Transfer' },
+	{ value: 'Hmo', label: 'Hmo' },
+];
+
 export const paymentType = [
 	{ value: 'POS', label: 'POS' },
 	{ value: 'Cash', label: 'Cash' },
@@ -139,6 +157,7 @@ export const transactionPaymentType = [
 	{ id: 'Cheque', name: 'Cheque' },
 	{ id: 'Transfer', name: 'Transfer' },
 	{ id: 'Voucher', name: 'Voucher' },
+	{ id: 'Hmo', name: 'Hmo' },
 ];
 
 export const insuranceStatus = [

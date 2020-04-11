@@ -31,7 +31,9 @@ import {
 	TOGGLE_OPEN_ENCOUNTER,
 	TOGGLE_CREATE_CLINICAL_TASK,
 	TOGGLE_ADD_CAFETERIA_FILE,
+	TOGGLE_UPLOAD_RADIOLOGY,
 	TOGGLE_APPROVE_TRANSACTION,
+	TOGGLE_APPROVE_HMO_TRANSACTION,
 	TOGGLE_APPLY_VOUCHER,
 } from '../actions/types';
 
@@ -53,6 +55,7 @@ const INITIAL_STATE = {
 	current_payroll: false,
 	prepare_payroll: false,
 	edit_payroll: false,
+	approve_hmo_transaction: false,
 	view_paypoint: false,
 	create_voucher: false,
 	apply_voucher: false,
@@ -65,6 +68,7 @@ const INITIAL_STATE = {
 	payroll_staff: null,
 	upload_service: false,
 	upload_diagnosis: false,
+	upload_radiology: false,
 	upload_hmo: false,
 	upload_hmo_tariff: false,
 	create_clinical_task: false,
@@ -95,6 +99,8 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, edit_inventory: action.payload };
 		case TOGGLE_APPROVE_TRANSACTION:
 			return { ...state, approve_transaction: action.payload };
+		case TOGGLE_APPROVE_HMO_TRANSACTION:
+			return { ...state, approve_hmo_transaction: action.payload };
 		case TOGGLE_UPDATE_QTY:
 			return { ...state, update_inventory_qty: action.payload };
 		case TOGGLE_REGISTER_NEW_PATIENT:
@@ -141,6 +147,8 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, upload_service: action.payload };
 		case TOGGLE_UPLOAD_DIAGNOSIS:
 			return { ...state, upload_diagnosis: action.payload };
+		case TOGGLE_UPLOAD_RADIOLOGY:
+			return { ...state, upload_radiology: action.payload };
 		case TOGGLE_UPLOAD_HMO:
 			return { ...state, upload_hmo: action.payload };
 		case TOGGLE_UPLOAD_HMO_TARIFF:

@@ -22,12 +22,6 @@ const Lab = props => {
 		setShowModal(!showModal);
 	};
 
-	const requestStatus = [
-		{ value: 'pending', label: 'Pending' },
-		{ value: 'approved', label: 'Approved' },
-		{ value: 'declined', label: 'Declined' },
-	];
-
 	useEffect(() => {
 		const { patient, getRequestByType } = props;
 		const patient_id = patient && patient.id ? patient.id : '';
@@ -161,28 +155,32 @@ const Lab = props => {
 																	</span>
 																</td>
 																<td>
-																	<Link to="/">{`${patient.surname.toUpperCase()} ${patient.other_names.toUpperCase()}`}</Link>
+																	{`${patient.surname.toUpperCase()} ${patient.other_names.toUpperCase()}`}
 																</td>
 																<td>{request.requestBody.referredSpeciment}</td>
 																<td className="text-center">
-																	<div className="form-group">
-																		<Select
-																			name="service_center"
-																			placeholder="Set Status"
-																			options={requestStatus}
-																		/>
-																	</div>
+																	{request.status === 1 ? (
+																		<div>
+																			<span className="status-pill smaller green"></span>
+																			<span>Approved</span>
+																		</div>
+																	) : (
+																		<div>
+																			<span className="status-pill smaller yellow"></span>
+																			<span>Pending</span>
+																		</div>
+																	)}
 																</td>
 																<td className="row-actions text-right">
 																	<Tooltip title="View Request">
-																		<button
-																			className="btn btn-primary"
+																		<a
+																			className="secondary"
 																			onClick={() => {
 																				setActiveRequest(request);
 																				onModalClick();
 																			}}>
-																			View
-																		</button>
+																			<i className="os-icon os-icon-file" />
+																		</a>
 																	</Tooltip>
 																	<Tooltip title="Print Request">
 																		<a className="ml-2" href="#">

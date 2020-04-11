@@ -12,8 +12,8 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import Popover from 'antd/lib/popover';
 import waiting from '../../assets/images/waiting.gif';
 import { SubmissionError } from 'redux-form';
-import Select from 'react-select';
-import AsyncSelect from 'react-select/async/dist/react-select.esm';
+
+import { uploadRadiology } from '../../actions/general';
 
 const Imaging = props => {
 	const [loading, setLoading] = useState(false);
@@ -22,45 +22,55 @@ const Imaging = props => {
 	const [hidden, setHidden] = useState(false);
 	const [selectedRequest, setRequest] = useState(false);
 
-	const UploadImagingData = ({ uploading, doUpload, onBackClick }) => {
-		const [files, setFile] = useState(null);
+	const UploadImagingData = ({ uploading, doUpload, hide }) => {
+		const [files, setFiles] = useState(null);
+		const [label, setLabel] = useState('');
 		let uploadAttachment;
+		const handleChange = e => {
+			setFiles(e.target.files);
+
+			let label = Array.from(e.target.files)
+				.map(file => {
+					return file.name;
+				})
+				.join(',');
+			setLabel(label);
+		};
 		return (
-			<div className="col-sm-12">
-				<div className="element-wrapper">
-					<h6 className="element-header">New Procedure Request</h6>
-					<div className="element-box">
-						<div className="form-block w-100">
-							<form onSubmit={e => doUpload(e, files)}>
-								<div className="row">
-									<div className="col-sm-12">
-										<div className="form-group">
-											<input
-												className="d-none"
-												onClick={e => {
-													e.target.value = null;
-												}}
-												type="file"
-												multiple
-												ref={el => {
-													uploadAttachment = el;
-												}}
-												onChange={e => setFile(e.target.files)}
-											/>
-											<label htmlFor="department">File</label>
-											<a
-												className="btn btn-outline-secondary ml-4"
-												onClick={() => {
-													uploadAttachment.click();
-												}}>
-												<i className="os-icon os-icon-ui-51" />
-												<span>Select File</span>
-											</a>
-										</div>
+			<div
+				className="onboarding-modal fade animated show"
+				role="dialog"
+				style={{ width: '400px' }}>
+				<div className="modal-centered">
+					<div className="modal-content text-center">
+						<button onClick={hide} className="close" type="button">
+							<span className="os-icon os-icon-close"></span>
+						</button>
+						<div className="onboarding-content with-gradient">
+							<h4 className="onboarding-title">Upload Imaging</h4>
+
+							<form
+								className="form-block w-100"
+								onSubmit={e => doUpload(e, files)}>
+								<div className="row my-3">
+									<div className="custom-file col-12">
+										{/* {label ? <textarea>{label}</textarea> : null} */}
+										<input
+											type="file"
+											className="custom-file-input"
+											name="file"
+											accept="image/*"
+											onChange={handleChange}
+											multiple
+										/>
+										<label className="custom-file-label">
+											{label.substring(0, 40) || 'Choose File(s)'}
+										</label>
 									</div>
 								</div>
+
 								<div className="row">
-									<div className="col-sm-12 text-right">
+									<div className="col-sm-12 text-right pr-0">
 										<button
 											className="btn btn-primary"
 											disabled={uploading}
@@ -70,13 +80,6 @@ const Imaging = props => {
 											) : (
 												'upload'
 											)}
-										</button>
-
-										<button
-											onClick={onBackClick}
-											className="btn btn-primary"
-											type="button">
-											back
 										</button>
 									</div>
 								</div>
@@ -115,8 +118,21 @@ const Imaging = props => {
 		setHidden(false);
 	};
 
+	const handleUploadVisibleChange = visible => {
+		setUploadVisible(visible);
+	};
+
+	const hide = () => {
+		setUploadVisible(false);
+	};
+
 	const onUpload = async (e, files) => {
 		e.preventDefault();
+		console.log(files);
+		if (!files) {
+			notifyError('You did not select any image file');
+			return;
+		}
 		setUploading(true);
 		const { patient } = props;
 
@@ -180,19 +196,45 @@ const Imaging = props => {
 		return newData;
 	};
 
+	const togglePopover = () => {
+		setUploadVisible(true);
+	};
+
+	const getRequests = arr => {
+		let rer = [];
+		arr.forEach(val => {
+			rer = [...rer, val.service_name];
+		});
+		return rer.join(', ');
+	};
+
+	const calculateAmount = arr => {
+		let sum = 0;
+		arr.forEach(val => {
+			let amt = val.amount;
+			if (amt === undefined) {
+				amt = 0;
+			}
+			try {
+				sum += parseInt(amt);
+			} catch (e) {
+				sum += 0;
+			}
+		});
+		return sum;
+	};
+
 	const tableBody = () => {
-		let requests = convertToIndividualRequest(props.imagingRequests);
-		return requests.length > 0 ? (
-			requests.map((data, i) => {
+		//let requests = convertToIndividualRequest(props.imagingRequests);
+		return props.imagingRequests.length > 0 ? (
+			props.imagingRequests.map((data, i) => {
 				return (
 					<tr className="" data-index="0" data-id="20" key={i}>
 						<td>{i + 1}</td>
 						<td>
-							<span className="text-bold">
-								{data.requestBody.specialization}
-							</span>
+							<span className="text-bold">{getRequests(data.requestBody)}</span>
 						</td>
-						<td>{data.requestBody.amount}</td>
+						<td>{calculateAmount(data.requestBody)}</td>
 						<td>{moment(data.createdAt).format('DD-MM-YYYY LT')}</td>
 
 						<td className="text-center">
@@ -204,11 +246,6 @@ const Imaging = props => {
 							<Tooltip title="View Request">
 								<a>
 									<i className="os-icon os-icon-documents-03" />
-								</a>
-							</Tooltip>
-							<Tooltip title="Upload Document">
-								<a onClick={evt => handleUpload(evt, data)}>
-									<i className="os-icon os-icon-upload-cloud" />
 								</a>
 							</Tooltip>
 							<Tooltip title="Print Request">
@@ -245,6 +282,16 @@ const Imaging = props => {
 					</Link>
 				</div>
 				<h6 className="element-header">Imaging Requests</h6>
+				<div
+					hidden={!upload_visible}
+					className="element-actions"
+					style={{ position: 'absolute', right: '40px' }}>
+					<UploadImagingData
+						uploading={uploading}
+						doUpload={onUpload}
+						hide={hide}
+					/>
+				</div>
 				<div className="element-box">
 					<div className="bootstrap-table">
 						<div className="fixed-table-toolbar">
@@ -286,13 +333,13 @@ const Imaging = props => {
 					</div>
 				</div>
 			</div>
-			<div hidden={!hidden}>
+			{/* <div hidden={!hidden}>
 				<UploadImagingData
 					uploading={uploading}
 					doUpload={onUpload}
 					onBackClick={onBackClick}
 				/>
-			</div>
+			</div> */}
 		</div>
 	);
 };
@@ -305,5 +352,5 @@ const mapStateToProps = state => {
 };
 
 export default withRouter(
-	connect(mapStateToProps, { loadImagingRequests })(Imaging)
+	connect(mapStateToProps, { loadImagingRequests, uploadRadiology })(Imaging)
 );

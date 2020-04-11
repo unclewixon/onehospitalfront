@@ -1,5 +1,7 @@
 import axios from 'axios';
-import { API_URI } from '../services/constants';
+import { request } from '../services/utilities';
+import { API_URI, patientAPI } from '../services/constants';
+
 import {
 	CREATE_DEPARTMENT,
 	GET_ALL_DEPARTMENTS,
@@ -70,22 +72,22 @@ import {
 
 //Request Service
 
-const add_request_service = payload => {
+export const add_request_service = payload => {
 	return {
 		type: ADD_REQUEST_SERVICE,
 		payload,
 	};
 };
 
-const get_all_request_services = payload => {
+export const get_all_request_services = payload => {
 	return { type: GET_ALL_REQUEST_SERVICES, payload };
 };
 
-const update_request_service = (payload, previousData) => {
+export const update_request_service = (payload, previousData) => {
 	return { type: UPDATE_REQUEST_SERVICE, payload, previousData };
 };
 
-const delete_request_service = payload => {
+export const delete_request_service = payload => {
 	return {
 		type: DELETE_REQUEST_SERVICE,
 		payload,
@@ -93,21 +95,21 @@ const delete_request_service = payload => {
 };
 
 //department
-const create_department = payload => {
+export const create_department = payload => {
 	return {
 		type: CREATE_DEPARTMENT,
 		payload,
 	};
 };
 
-const get_all_department = payload => {
+export const get_all_department = payload => {
 	return {
 		type: GET_ALL_DEPARTMENTS,
 		payload,
 	};
 };
 
-const update_department = (payload, previousData) => {
+export const update_department = (payload, previousData) => {
 	return {
 		type: UPDATE_DEPARTMENT,
 		payload,
@@ -115,7 +117,7 @@ const update_department = (payload, previousData) => {
 	};
 };
 
-const delete_department = payload => {
+export const delete_department = payload => {
 	return {
 		type: DELETE_DEPARTMENT,
 		payload,
@@ -123,21 +125,21 @@ const delete_department = payload => {
 };
 
 //room
-const add_room = payload => {
+export const add_room = payload => {
 	return {
 		type: ADD_ROOM,
 		payload,
 	};
 };
 
-const get_all_room = payload => {
+export const get_all_room = payload => {
 	return {
 		type: GET_ALL_ROOMS,
 		payload,
 	};
 };
 
-const update_room = (payload, previousData) => {
+export const update_room = (payload, previousData) => {
 	return {
 		type: UPDATE_ROOM,
 		payload,
@@ -145,7 +147,7 @@ const update_room = (payload, previousData) => {
 	};
 };
 
-const delete_room = payload => {
+export const delete_room = payload => {
 	return {
 		type: DELETE_ROOM,
 		payload,
@@ -299,21 +301,21 @@ const delete_lab_test_parameter = payload => {
 };
 
 //Leave Category
-const add_leave_category = payload => {
+export const add_leave_category = payload => {
 	return {
 		type: ADD_LEAVE_CATEGORY,
 		payload,
 	};
 };
 
-const get_all_leave_category = payload => {
+export const get_all_leave_category = payload => {
 	return {
 		type: GET_ALL_LEAVE_CATEGORIES,
 		payload,
 	};
 };
 
-const update_leave_category = (payload, previousData) => {
+export const update_leave_category = (payload, previousData) => {
 	return {
 		type: UPDATE_LEAVE_CATEGORY,
 		payload,
@@ -321,7 +323,7 @@ const update_leave_category = (payload, previousData) => {
 	};
 };
 
-const delete_leave_category = payload => {
+export const delete_leave_category = payload => {
 	return {
 		type: DELETE_LEAVE_CATEGORY,
 		payload,
@@ -329,21 +331,21 @@ const delete_leave_category = payload => {
 };
 
 //Specialization
-const add_specialziation = payload => {
+export const add_specialziation = payload => {
 	return {
 		type: ADD_SPECIALIZATION,
 		payload,
 	};
 };
 
-const get_all_specializations = payload => {
+export const get_all_specializations = payload => {
 	return {
 		type: GET_ALL_SPECIALIZATIONS,
 		payload,
 	};
 };
 
-const update_specialization = (payload, previousData) => {
+export const update_specialization = (payload, previousData) => {
 	return {
 		type: UPDATE_SPECIALIZATION,
 		payload,
@@ -351,7 +353,7 @@ const update_specialization = (payload, previousData) => {
 	};
 };
 
-const delete_specialization = payload => {
+export const delete_specialization = payload => {
 	return {
 		type: DELETE_SPECIALIZATION,
 		payload,
@@ -359,21 +361,21 @@ const delete_specialization = payload => {
 };
 
 //Consultating Room
-const add_consultating_room = payload => {
+export const add_consultating_room = payload => {
 	return {
 		type: ADD_CONSULTATING_ROOM,
 		payload,
 	};
 };
 
-const get_all_consultating_rooms = payload => {
+export const get_all_consultating_rooms = payload => {
 	return {
 		type: GET_ALL_CONSULTATING_ROOMS,
 		payload,
 	};
 };
 
-const update_consultating_room = (payload, previousData) => {
+export const update_consultating_room = (payload, previousData) => {
 	return {
 		type: UPDATE_CONSULTATING_ROOM,
 		payload,
@@ -381,14 +383,14 @@ const update_consultating_room = (payload, previousData) => {
 	};
 };
 
-const delete_consultating_room = payload => {
+export const delete_consultating_room = payload => {
 	return {
 		type: DELETE_CONSULTATING_ROOM,
 		payload,
 	};
 };
 
-const get_all_staff = payload => {
+export const get_all_staff = payload => {
 	return {
 		type: LOAD_STAFFS,
 		payload,
@@ -396,7 +398,7 @@ const get_all_staff = payload => {
 };
 
 //Permission
-const add_permission = payload => {
+export const add_permission = payload => {
 	return {
 		type: ADD_PERMISSION,
 		payload,
@@ -410,7 +412,7 @@ export const get_all_permissions = payload => {
 	};
 };
 
-const update_permission = (payload, previousData) => {
+export const update_permission = (payload, previousData) => {
 	return {
 		type: UPDATE_PERMISSION,
 		payload,
@@ -418,7 +420,7 @@ const update_permission = (payload, previousData) => {
 	};
 };
 
-const delete_permission = payload => {
+export const delete_permission = payload => {
 	return {
 		type: DELETE_PERMISSION,
 		payload,
@@ -596,7 +598,6 @@ export const deleteDepartment = data => {
 
 //room
 export const addRoom = data => {
-	console.log(data);
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
@@ -636,19 +637,18 @@ export const getAllRooms = () => {
 export const updateRoom = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.patch(`${API_URI}/rooms/${data.id}/update`, {
-					name: data.name,
-					status: data.status,
-					floor: data.status,
-					room_category_id: data.category,
-				})
+			request(`${API_URI}/rooms/${data.id}/update`, 'PUT', true, {
+				name: data.name,
+				status: data.status,
+				floor: data.status,
+				room_category_id: data.category,
+			})
 				.then(response => {
 					dispatch(update_room(response.data, data));
 					return resolve({ success: true });
 				})
 				.catch(error => {
-					return resolve({ success: false });
+					return reject({ success: false });
 				});
 		});
 	};
@@ -746,17 +746,16 @@ export const deleteRoomCategory = data => {
 export const addLabTest = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.post(`${API_URI}/lab-tests`, {
-					name: data.name,
-					price: data.price,
-					lab_category_id: data.category,
-					test_type: data.testType,
-					parameters: data.parameters,
-					description: data.description,
-				})
+			request(`${API_URI}/lab-tests`, 'POST', true, {
+				name: data.name,
+				price: data.price,
+				lab_category_id: data.category,
+				test_type: data.testType,
+				parameters: data.parameters,
+				description: data.description,
+			})
 				.then(response => {
-					dispatch(add_lab_test(response.data));
+					dispatch(add_lab_test(response));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -769,10 +768,9 @@ export const addLabTest = data => {
 export const getAllLabTests = () => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.get(`${API_URI}/lab-tests`)
+			request(`${API_URI}/lab-tests`, 'GET', true)
 				.then(response => {
-					const res = response.data.filter(grp => grp.test_type === 'single');
+					const res = response.filter(grp => grp.test_type === 'single');
 					dispatch(get_all_lab_tests(res));
 					return resolve({ success: true });
 				})
@@ -844,18 +842,17 @@ export const deleteLabTest = data => {
 export const addLabGroup = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.post(`${API_URI}/lab-tests`, {
-					name: data.name,
-					price: data.price,
-					lab_category_id: data.category,
-					test_type: data.testType,
-					sub_test: data.labTests,
-					parameters: data.parameters,
-					description: data.description,
-				})
+			request(`${API_URI}/lab-tests`, 'POST', true, {
+				name: data.name,
+				price: data.price,
+				lab_category_id: data.category,
+				test_type: data.testType,
+				sub_test: data.labTests,
+				parameters: data.parameters,
+				description: data.description,
+			})
 				.then(response => {
-					dispatch(add_lab_group(response.data));
+					dispatch(add_lab_group(response));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -868,10 +865,9 @@ export const addLabGroup = data => {
 export const getAllLabGroups = () => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.get(`${API_URI}/lab-tests`)
+			request(`${API_URI}/lab-tests`, 'GET', true)
 				.then(response => {
-					const res = response.data.filter(grp => grp.test_type === 'combo');
+					const res = response.filter(grp => grp.test_type === 'combo');
 					dispatch(get_all_lab_groups(res));
 					return resolve({ success: true });
 				})
@@ -883,21 +879,19 @@ export const getAllLabGroups = () => {
 };
 
 export const updateLabGroup = data => {
-	console.log(data);
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.patch(`${API_URI}/lab-tests/${data.id}/update`, {
-					name: data.name,
-					lab_category_id: data.category,
-					price: data.price,
-					test_type: data.testType,
-					sub_test: data.labTests,
-					parameters: data.parameters,
-					description: data.description,
-				})
+			request(`${API_URI}/lab-tests/${data.id}/update`, 'PUT', true, {
+				name: data.name,
+				lab_category_id: data.category,
+				price: data.price,
+				test_type: data.testType,
+				sub_test: data.labTests,
+				parameters: data.parameters,
+				description: data.description,
+			})
 				.then(response => {
-					dispatch(update_lab_group(response.data, data));
+					dispatch(update_lab_group(response));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -910,8 +904,7 @@ export const updateLabGroup = data => {
 export const deleteLabGroup = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.delete(`${API_URI}/lab-tests/${data.id}`)
+			request(`${API_URI}/lab-tests/${data.id}`, 'DELETE', true)
 				.then(response => {
 					dispatch(delete_lab_group(data));
 					return resolve({ success: true });
@@ -926,12 +919,11 @@ export const deleteLabGroup = data => {
 export const addLabTestCategory = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.post(`${API_URI}/lab-tests/categories`, {
-					name: data.name,
-				})
+			request(`${API_URI}/lab-tests/categories`, 'POST', true, {
+				name: data.name,
+			})
 				.then(response => {
-					dispatch(add_lab_test_category(response.data));
+					dispatch(add_lab_test_category(response));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -944,10 +936,9 @@ export const addLabTestCategory = data => {
 export const getAllLabTestCategories = () => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.get(`${API_URI}/lab-tests/categories`)
+			request(`${API_URI}/lab-tests/categories`, 'GET', true)
 				.then(response => {
-					dispatch(get_all_lab_test_categories(response.data));
+					dispatch(get_all_lab_test_categories(response));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -960,12 +951,16 @@ export const getAllLabTestCategories = () => {
 export const updateLabTestCategory = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.patch(`${API_URI}/lab-tests/categories/${data.id}/update`, {
+			request(
+				`${API_URI}/lab-tests/categories/${data.id}/update`,
+				'PUT',
+				true,
+				{
 					name: data.name,
-				})
+				}
+			)
 				.then(response => {
-					dispatch(update_lab_test_category(response.data, data));
+					dispatch(update_lab_test_category(response, data));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -978,8 +973,7 @@ export const updateLabTestCategory = data => {
 export const deleteLabTestCategory = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.delete(`${API_URI}/lab-tests/categories/${data.id}`)
+			request(`${API_URI}/lab-tests/categories/${data.id}`, 'DELETE', true)
 				.then(response => {
 					dispatch(delete_lab_test_category(data));
 					return resolve({ success: true });
@@ -994,12 +988,11 @@ export const deleteLabTestCategory = data => {
 export const addLabTestParameter = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.post(`${API_URI}/lab-tests/parameters`, {
-					name: data.name,
-				})
+			request(`${API_URI}/lab-tests/parameters`, 'POST', true, {
+				name: data.name,
+			})
 				.then(response => {
-					dispatch(add_lab_test_parameter(response.data));
+					dispatch(add_lab_test_parameter(response));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -1012,10 +1005,9 @@ export const addLabTestParameter = data => {
 export const getAllLabTestParameters = () => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.get(`${API_URI}/lab-tests/parameters`)
+			request(`${API_URI}/lab-tests/parameters`, 'GET', true)
 				.then(response => {
-					dispatch(get_all_lab_test_parameters(response.data));
+					dispatch(get_all_lab_test_parameters(response));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -1028,12 +1020,16 @@ export const getAllLabTestParameters = () => {
 export const updateLabTestParameter = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.patch(`${API_URI}/lab-tests/parameters/${data.id}/update`, {
+			request(
+				`${API_URI}/lab-tests/parameters/${data.id}/update`,
+				'PUT',
+				true,
+				{
 					name: data.name,
-				})
+				}
+			)
 				.then(response => {
-					dispatch(update_lab_test_parameter(response.data, data));
+					dispatch(update_lab_test_parameter(response, data));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -1518,7 +1514,7 @@ export const uploadDiagnosis = data => {
 	};
 };
 
-export const getAllDiagnosises = data => {
+export const getAllDiagnosises = (cb = () => {}) => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
@@ -1529,7 +1525,8 @@ export const getAllDiagnosises = data => {
 				})
 				.catch(error => {
 					return reject({ success: false });
-				});
+				})
+				.finally(() => cb());
 		});
 	};
 };

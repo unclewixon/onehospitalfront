@@ -31,9 +31,11 @@ import {
 	TOGGLE_CREATE_CLINICAL_TASK,
 	TOGGLE_OPEN_ENCOUNTER,
 	TOGGLE_ADD_CAFETERIA_FILE,
+	TOGGLE_UPLOAD_RADIOLOGY,
 	TOGGLE_APPROVE_TRANSACTION,
 	TOGGLE_APPLY_VOUCHER,
 	TOGGLE_UPLOAD_HMO_TARIFF,
+	TOGGLE_APPROVE_HMO_TRANSACTION,
 } from './types';
 
 export const togglePreloading = status => {
@@ -111,6 +113,13 @@ export const toggleEditInventory = status => {
 export const toggleApproveTransaction = status => {
 	return {
 		type: TOGGLE_APPROVE_TRANSACTION,
+		payload: status,
+	};
+};
+
+export const toggleApproveHmoTransaction = status => {
+	return {
+		type: TOGGLE_APPROVE_HMO_TRANSACTION,
 		payload: status,
 	};
 };
@@ -260,6 +269,13 @@ export const toggleUploadDiagnosis = status => {
 	};
 };
 
+export const toggleUploadRadiology = status => {
+	return {
+		type: TOGGLE_UPLOAD_RADIOLOGY,
+		payload: status,
+	};
+};
+
 export const toggleUploadHmo = status => {
 	return {
 		type: TOGGLE_UPLOAD_HMO,
@@ -314,6 +330,7 @@ export const closeModals = () => {
 		dispatch(toggleViewPayPoint(false));
 		dispatch(toggleCreateVoucher(false));
 		dispatch(toggleCreateLabourMeasurement(false));
+		dispatch(toggleApproveHmoTransaction(false));
 		dispatch(toggleCreateRiskAssessment(false));
 		dispatch(toggleCreateRecordDelivery(false));
 		dispatch(toggleCreateClinicalTask(false));
@@ -321,6 +338,7 @@ export const closeModals = () => {
 		dispatch(toggleAddCafeteriaFile(false));
 		dispatch(toggleUploadService(false));
 		dispatch(toggleUploadDiagnosis(false));
+		dispatch(toggleUploadRadiology(false));
 		dispatch(toggleUploadHmo(false));
 		dispatch(toggleUploadHmoTariff(false));
 		dispatch(toggleEditService(false, null));
@@ -391,6 +409,24 @@ export const editInventory = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleEditInventory(action));
+	};
+};
+
+export const approveHmoTransaction = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleApproveHmoTransaction(true));
+		dispatch(toggleApproveTransaction(action));
+	};
+};
+
+export const applyVoucher = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleApplyVoucher(true));
+		dispatch(toggleCreateVoucher(action));
 	};
 };
 
@@ -567,15 +603,6 @@ export const openEncounter = (action, id) => {
 	};
 };
 
-export const applyVoucher = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleApplyVoucher(true));
-		dispatch(toggleCreateVoucher(action));
-	};
-};
-
 export const createVoucher = action => {
 	return dispatch => {
 		dispatch(closeModals());
@@ -597,5 +624,13 @@ export const addCafeteriaFile = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleAddCafeteriaFile(action));
+	};
+};
+
+export const uploadRadiology = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleUploadRadiology(action));
 	};
 };

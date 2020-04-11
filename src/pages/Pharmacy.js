@@ -15,13 +15,6 @@ const PharmAllRequest = lazy(() => import('../components/PharmAllRequest'));
 const PharmFillRequest = lazy(() => import('../components/PharmFillRequest'));
 const PharmNewRequest = lazy(() => import('../components/PharmNewRequest'));
 export class Pharmacy2 extends Component {
-	// state = {
-	// 	tab: 'overall',
-	// };
-
-	// changeTab = tab => {
-	// 	this.setState({ tab });
-	// };
 	render() {
 		const { match, location } = this.props;
 		const page = location.pathname.split('/').pop();
@@ -40,14 +33,6 @@ export class Pharmacy2 extends Component {
 										}`}>
 										{' '}
 										Dashboard
-									</Link>
-									<Link
-										to={`${match.path}/recent-request`}
-										className={`mr-2 btn btn-primary btn-sm  ${
-											page === 'recent-request' ? 'btn-outline-primary' : ''
-										}`}>
-										{' '}
-										Recent Request
 									</Link>
 									<Link
 										to={`${match.path}/filled-request`}
@@ -82,10 +67,6 @@ export class Pharmacy2 extends Component {
 												<Route
 													exact
 													path={`${match.url}/`}
-													component={Overall}
-												/>
-												<Route
-													path={`${match.url}/recent-request`}
 													component={PharmRecentRequest}
 												/>
 												<Route

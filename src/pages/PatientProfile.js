@@ -56,6 +56,10 @@ const AntennatalRequest = lazy(() =>
 	import('../components/Patient/AntennatalRequest')
 );
 
+const EnrollAntenatalPatient = lazy(() =>
+	import('../components/Patient/EnrollAntenatalPatient')
+);
+
 const PatientAdmission = lazy(() =>
 	import('../components/Patient/PatientAdmission')
 );
@@ -116,7 +120,7 @@ const Page = ({ location }) => {
 		case 'edit-profile':
 			return <EditPatient />;
 		case 'enroll-antenatal':
-			return <AntennatalRequest />;
+			return <EnrollAntenatalPatient />;
 		case 'upload-document':
 			return <PatientDataUpload />;
 		case 'enroll-immunization':

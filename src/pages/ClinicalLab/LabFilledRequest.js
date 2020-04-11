@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { API_URI, patientAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
@@ -12,18 +11,13 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadClinicalLab } from '../../actions/patient';
 import _ from 'lodash';
-import ModalClinicalLab from './../../components/Modals/ModalClinicalLab';
 const { RangePicker } = DatePicker;
-// const departments = [
-//     { id: 'ejejekek', name: 'angel' },
-//     { id: 'sislkas', name: 'kafta' },
-// ];
 
 const status = [
 	{ value: 0, label: 'processing' },
 	{ value: 1, label: 'done' },
 ];
-class AllRequest extends Component {
+class LabRecentRequest extends Component {
 	state = {
 		filtering: false,
 		loading: false,
@@ -31,8 +25,6 @@ class AllRequest extends Component {
 		startDate: '',
 		endDate: '',
 		status: '',
-		showModal: false,
-		activeRequest: null,
 	};
 
 	componentDidMount() {
@@ -80,12 +72,6 @@ class AllRequest extends Component {
 		});
 	};
 
-	onModalClick = () => {
-		this.setState({
-			showModal: !this.state.showModal,
-		});
-	};
-
 	onDeleteTransaction = data => {
 		this.props
 			.deleteTransaction(data)
@@ -100,29 +86,16 @@ class AllRequest extends Component {
 		confirmAction(this.onDeleteTransaction, data);
 	};
 
-	modalFunction = lab => {
-		this.onModalClick();
-		this.setState({ activeRequest: lab });
-	};
-
 	render() {
 		const { filtering, loading } = this.state;
-		const { location, clinicalLab } = this.props;
+		const { clinicalLab } = this.props;
 
-		const page = location.pathname.split('/').pop();
 		return (
 			<>
 				<div className="col-sm-12">
 					<div className="element-wrapper">
 						<div className="row">
 							<div className="col-md-12">
-								{this.state.activeRequest ? (
-									<ModalClinicalLab
-										activeRequest={this.state.activeRequest}
-										showModal={this.state.showModal}
-										onModalClick={this.onModalClick}
-									/>
-								) : null}
 								<h6 className="element-header">Filter by:</h6>
 
 								<form className="row">
@@ -218,13 +191,7 @@ class AllRequest extends Component {
 												) : null}
 												{clinicalLab &&
 													clinicalLab.reverse().map(lab => {
-														return (
-															<ClinicalLabItem
-																key={lab.id}
-																lab={lab}
-																modalClick={LAB => this.modalFunction(LAB)}
-															/>
-														);
+														return <ClinicalLabItem key={lab.id} lab={lab} />;
 													})}
 											</tbody>
 										</table>
@@ -248,4 +215,4 @@ const mapStateToProps = state => {
 	};
 };
 
-export default connect(mapStateToProps, { loadClinicalLab })(AllRequest);
+export default connect(mapStateToProps, { loadClinicalLab })(LabRecentRequest);
