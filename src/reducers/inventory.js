@@ -141,7 +141,7 @@ const inventory = (state = INITIAL_STATE, action) => {
 				...state,
 				cafeteriaItems: [
 					...state.cafeteriaItems.filter(
-						deletedItem => deletedItem.id !== action.previousData.id
+						deletedItem => deletedItem.q_id !== action.payload.q_id
 					),
 					action.payload,
 				],
@@ -151,7 +151,7 @@ const inventory = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				cafeteriaItems: state.cafeteriaItems.filter(
-					deletedItem => deletedItem.id !== action.payload.id
+					deletedItem => deletedItem.q_id !== action.payload.q_id
 				),
 			};
 
