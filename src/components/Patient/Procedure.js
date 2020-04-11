@@ -137,6 +137,7 @@ const Procedure = props => {
 };
 
 const mapStateToProps = (state, ownProps) => {
+	console.log(state.patient.patient_procedure);
 	return {
 		patient: state.user.patient,
 		patient_procedure: state.patient.patient_procedure,

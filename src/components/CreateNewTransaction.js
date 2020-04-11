@@ -44,10 +44,8 @@ const CreateNewTransaction = props => {
 			amount: values.amount,
 			serviceType: values.service_request.map(req => req.value),
 			description: values.description,
-			paymentType: values.payment_type,
+			payment_type: values.payment_type,
 		};
-		console.log(data);
-
 		try {
 			const rs = await request(
 				`${API_URI}${transactionsAPI}`,

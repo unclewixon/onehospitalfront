@@ -135,7 +135,7 @@ export class PharmAllRequest extends Component {
 																{moment(request.createdAt).format('DD/MM/YYYY')}
 															</span>
 														</td>
-														<td>{request.patient.fileNumber}</td>
+														<td></td>
 														<td>{`${'Dr. DooLittle'.toUpperCase()}`}</td>
 														<td className="nowrap">
 															{request.status === 1 ? (

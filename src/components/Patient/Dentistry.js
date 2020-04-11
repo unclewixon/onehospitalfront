@@ -24,6 +24,7 @@ const Dentistry = props => {
 				true
 			);
 
+			console.log(rs);
 			props.loadDentistryRequests(rs);
 			setLoading(false);
 		} catch (error) {
@@ -64,19 +65,41 @@ const Dentistry = props => {
 		return [];
 	};
 
+	const getRequests = arr => {
+		let rer = [];
+		arr.forEach(val => {
+			rer = [...rer, val.service_name];
+		});
+		return rer.join(', ');
+	};
+
+	const calculateAmount = arr => {
+		let sum = 0;
+		arr.forEach(val => {
+			let amt = val.amount;
+			if (amt === undefined) {
+				amt = 0;
+			}
+			try {
+				sum += parseInt(amt);
+			} catch (e) {
+				sum += 0;
+			}
+		});
+		return sum;
+	};
+
 	const tableBody = () => {
 		let requests = convertToIndividualRequest(props.dentistryRequests);
-		return requests.length > 0 ? (
-			requests.map((data, i) => {
+		return props.dentistryRequests?.length > 0 ? (
+			props.dentistryRequests.map((data, i) => {
 				return (
 					<tr className="" data-index="0" data-id="20" key={i}>
 						<td>{i + 1}</td>
 						<td>
-							<span className="text-bold">
-								{data.requestBody.specialization}
-							</span>
+							<span className="text-bold">{getRequests(data.requestBody)}</span>
 						</td>
-						<td>{data.requestBody.amount}</td>
+						<td>{calculateAmount(data.requestBody)}</td>
 						<td>{moment(data.createdAt).format('DD-MM-YYYY LT')}</td>
 
 						<td className="text-center">
@@ -168,6 +191,7 @@ const Dentistry = props => {
 };
 
 const mapStateToProps = state => {
+	console.log(state.patient.dentistryRequests);
 	return {
 		patient: state.user.patient,
 		dentistryRequests: state.patient.dentistryRequests,

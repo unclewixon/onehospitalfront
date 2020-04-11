@@ -124,7 +124,7 @@ const CafeteriaInvCategory = props => {
 					<div className="element-actions">
 						<Link
 							className="btn btn-primary btn-sm"
-							to={`${props.location.pathname}/inventory/category`}>
+							to={`cafeteria/inventory/category`}>
 							<i className="os-icon os-icon-ui-22"></i>
 							Inventory Category
 						</Link>

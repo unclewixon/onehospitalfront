@@ -57,13 +57,14 @@ export class ClinicalLabItem extends Component {
 
 					<td className="text-right row-actions">
 						<Tooltip title="Receive Request">
-							<a className="secondary" onClick={() => modalClick(lab)}>
+							<a
+								className="secondary"
+								onClick={() => {
+									if (typeof modalClick === 'function') {
+										modalClick(lab);
+									}
+								}}>
 								<i className="os-icon os-icon-folder-plus" />
-							</a>
-						</Tooltip>
-						<Tooltip title="Edit Request">
-							<a className="secondary">
-								<i className="os-icon os-icon-edit-32" />
 							</a>
 						</Tooltip>
 						<Tooltip title="Delete Request">
