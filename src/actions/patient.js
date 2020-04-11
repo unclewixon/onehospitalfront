@@ -192,29 +192,31 @@ export const createLabRequest = data => {
 					name: grp.name,
 					amount: grp.price,
 					service_id: grp.id,
-					tests: grp.tests
-						? grp.tests.map(test => {
-							return {
-								testName: test.name,
-								paramenters: test.paramenters.map(param => {
-									return {
-										name: param.parameter.name,
-										range: param.referenceRange,
-										result: '',
-									};
-								}),
-							};
-						})
-						: [],
-					parameters: grp.paramenters
-						? grp.paramenters.map(param => {
-							return {
-								name: param.parameter.name,
-								range: param.referenceRange,
-								result: '',
-							};
-						})
-						: [],
+					tests: grp.parameters
+						? grp.parameters
+							.map(test => {
+								return {
+									testName: test && test.name ? test.name : "",
+									paramenters: test && test.parameters ? test.parameters
+									.filter(params => params.parameter_type === "test")
+									.map(param => {
+										return {
+											name: param.parameter.name,
+											range: param.referenceRange,
+											result: '',
+										}
+									}) : []
+								}
+							}) : [],
+					parameters: grp.parameters
+						? grp.parameters.filter(params => params.parameter_type === "parameter")
+							.map(param => {
+								return {
+									name: param.parameter.name,
+									range: param.referenceRange,
+									result: '',
+								};
+							}) : [],
 				};
 			});
 
@@ -235,7 +237,6 @@ export const createLabRequest = data => {
 
 			let newRequestObj = {
 				requestType: data.service_center,
-				category_id: data.category,
 				patient_id: data.patient_id,
 				requestBody: {
 					specialization: '',
