@@ -4,12 +4,13 @@ import { connect } from 'react-redux';
 import waiting from '../../assets/images/waiting.gif';
 import searchingGIF from '../../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
-import { confirmAction } from '../../services/utilities';
+import { request, confirmAction } from '../../services/utilities';
+import { API_URI } from '../../services/constants';
 import {
-	addSpecialization,
-	getAllSpecialization,
-	updateSpecialization,
-	deleteSpecialization,
+	add_specialziation,
+	get_all_specializations,
+	update_specialization,
+	delete_specialization,
 } from '../../actions/settings';
 
 const Specialization = props => {
@@ -22,7 +23,7 @@ const Specialization = props => {
 	const [{ name }, setState] = useState(initialState);
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
-	const [data, getDataToEdit] = useState(null);
+	const [payload, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
@@ -31,39 +32,55 @@ const Specialization = props => {
 		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onAddSpecialization = e => {
+	const onAddSpecialization = async e => {
 		e.preventDefault();
 		setLoading(true);
-		props
-			.addSpecialization({ name })
-			.then(response => {
-				setLoading(false);
-				setState({ ...initialState });
-				notifySuccess('Specialization created');
-			})
-			.catch(error => {
-				setLoading(false);
-				notifyError('Error creating Specialization');
-			});
+
+		let data = {
+			name,
+		};
+		try {
+			const rs = await request(
+				`${API_URI}/specializations`,
+				'POST',
+				true,
+				data
+			);
+			props.add_specialziation(rs);
+			setLoading(false);
+			setState({ ...initialState });
+			notifySuccess('Specialization created');
+		} catch (error) {
+			setLoading(false);
+			notifyError('Error creating Specialization');
+		}
 	};
 
-	const onEditSpecialization = e => {
+	const onEditSpecialization = async e => {
 		setLoading(true);
 		e.preventDefault();
-		props
-			.updateSpecialization({ id: data.id, name }, data)
-			.then(response => {
-				setState({ ...initialState });
-				setSubmitButton({ save: true, edit: false });
-				setLoading(false);
-				notifySuccess('Specialization updated');
-			})
-			.catch(error => {
-				setState({ ...initialState });
-				setSubmitButton({ save: true, edit: false });
-				setLoading(false);
-				notifyError('Error updating Specialization');
-			});
+
+		let data = {
+			name,
+		};
+		try {
+			const rs = await request(
+				`${API_URI}/specializations/${payload.id}/update`,
+				'PATCH',
+				true,
+				data
+			);
+			props.update_specialization(rs, payload);
+			setState({ ...initialState });
+			setSubmitButton({ save: true, edit: false });
+			setLoading(false);
+			notifySuccess('Specialization updated');
+		} catch (error) {
+			setState({ ...initialState });
+			setSubmitButton({ save: true, edit: false });
+			setLoading(false);
+			notifyError('Error updating Specialization');
+		}
 	};
 
 	const onClickEdit = data => {
@@ -77,17 +94,16 @@ const Specialization = props => {
 		getDataToEdit(data);
 	};
 
-	const onDeleteSpecialization = data => {
-		props
-			.deleteSpecialization(data)
-			.then(response => {
-				setLoading(false);
-				notifySuccess('Specialization deleted');
-			})
-			.catch(error => {
-				setLoading(false);
-				notifyError('Error deleting Specialization');
-			});
+	const onDeleteSpecialization = async data => {
+		try {
+			await request(`${API_URI}/specializations/${data.id}`, 'DELETE', true);
+			props.delete_specialization(data);
+			setLoading(false);
+			notifySuccess('Specialization deleted');
+		} catch (error) {
+			setLoading(false);
+			notifyError('Error deleting Specialization');
+		}
 	};
 
 	const confirmDelete = data => {
@@ -99,20 +115,21 @@ const Specialization = props => {
 		setState({ ...initialState });
 	};
 
-	useEffect(() => {
-		if (!loaded) {
-			props
-				.getAllSpecialization()
-				.then(response => {
-					setDataLoaded(true);
-				})
-				.catch(e => {
-					setDataLoaded(true);
-					notifyError(e.message || 'could not fetch specializations');
-				});
+	const fetchSpecialization = async () => {
+		setDataLoaded(false);
+		try {
+			const rs = await request(`${API_URI}/specializations`, 'GET', true);
+			props.get_all_specializations(rs);
+			setDataLoaded(true);
+		} catch (error) {
+			setDataLoaded(true);
+			notifyError(error.message || 'could not fetch specializations!');
 		}
-		setLoaded(true);
-	}, [edit, loaded, props, save]);
+	};
+
+	useEffect(() => {
+		fetchSpecialization();
+	}, []);
 	return (
 		<div className="content-i">
 			<div className="content-box">
@@ -135,7 +152,7 @@ const Specialization = props => {
 					<div className="row">
 						<div className="col-lg-8">
 							<div className="row">
-								{!loaded ? (
+								{!dataLoaded ? (
 									<div colSpan="4" className="text-center">
 										<img alt="searching" src={searchingGIF} />
 									</div>
@@ -258,8 +275,8 @@ const mapStateToProps = state => {
 	};
 };
 export default connect(mapStateToProps, {
-	addSpecialization,
-	getAllSpecialization,
-	updateSpecialization,
-	deleteSpecialization,
+	add_specialziation,
+	get_all_specializations,
+	update_specialization,
+	delete_specialization,
 })(Specialization);

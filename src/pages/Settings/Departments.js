@@ -62,12 +62,7 @@ const Departments = props => {
 
 	const onDeleteDepartment = async data => {
 		try {
-			const rs = await request(
-				`${API_URI}/departments/${data.id}`,
-				'DELETE',
-				true,
-				data
-			);
+			await request(`${API_URI}/departments/${data.id}`, 'DELETE', true, data);
 			props.delete_department(data);
 			notifySuccess('Head of department deleted');
 		} catch (error) {
@@ -87,7 +82,6 @@ const Departments = props => {
 			hod_id: headOfDept,
 			description,
 		};
-		console.log(data, 'Payload here');
 		try {
 			const rs = await request(
 				`${API_URI}/departments/${data.id}/update`,

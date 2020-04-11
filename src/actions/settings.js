@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { request } from '../services/utilities';
-import { API_URI, patientAPI } from '../services/constants';
-
+import { API_URI } from '../services/constants';
 import {
 	CREATE_DEPARTMENT,
 	GET_ALL_DEPARTMENTS,
@@ -428,7 +427,7 @@ export const delete_permission = payload => {
 };
 
 //Service Category
-const add_service_category = payload => {
+export const add_service_category = payload => {
 	return {
 		type: ADD_SERVICE_CATEGORY,
 		payload,
@@ -442,7 +441,7 @@ export const get_all_service_categories = payload => {
 	};
 };
 
-const update_service_category = (payload, previousData) => {
+export const update_service_category = (payload, previousData) => {
 	return {
 		type: UPDATE_SERVICE_CATEGORY,
 		payload,
@@ -450,7 +449,7 @@ const update_service_category = (payload, previousData) => {
 	};
 };
 
-const delete_service_category = payload => {
+export const delete_service_category = payload => {
 	return {
 		type: DELETE_SERVICE_CATEGORY,
 		payload,
@@ -1589,6 +1588,7 @@ export const addRequestService = data => {
 		});
 	};
 };
+
 export const getAllRequestServices = () => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {

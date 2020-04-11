@@ -93,11 +93,7 @@ const LeaveCategory = props => {
 
 	const onDeleteLeaveCategory = async data => {
 		try {
-			const rs = await request(
-				`${API_URI}/leave-category/${data.id}`,
-				'DELETE',
-				true
-			);
+			await request(`${API_URI}/leave-category/${data.id}`, 'DELETE', true);
 			props.delete_leave_category(data);
 			setLoading(false);
 			notifySuccess('Leave Category deleted');
