@@ -25,9 +25,9 @@ const Appointment = props => {
 		});
 	}, [appointments]);
 
-	const ViewAppointmentDetail = e => {
-		e.preventDefault();
-		props.viewAppointmentDetail(true);
+	const ViewAppointmentDetail = appointment => {
+		console.log(appointment);
+		props.viewAppointmentDetail(appointment);
 	};
 
 	useEffect(() => {
@@ -94,7 +94,7 @@ const Appointment = props => {
 												className="form-control form-control-sm"
 												onChange={e => changeDate(e)}>
 												<option value="today">Today</option>
-												<option value="last week">Last Week </option>
+												<option value="last week">Last Week</option>
 												<option value="30 days">Last 30 Days</option>
 											</select>
 										</form>
@@ -138,7 +138,11 @@ const Appointment = props => {
 																	<span>{appointment.status}</span>
 																</td>
 																<td className="row-actions">
-																	<a href="#" onClick={ViewAppointmentDetail}>
+																	<a
+																		href="#"
+																		onClick={() =>
+																			ViewAppointmentDetail(appointment)
+																		}>
 																		<i className="os-icon os-icon-folder"></i>
 																	</a>
 																	<a

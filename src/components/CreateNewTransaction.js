@@ -9,11 +9,13 @@ import {
 	transactionsAPI,
 	paymentType,
 	paymentTypeExtra,
+	serviceAPI,
 } from '../services/constants';
 import { request, formatNumber } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import {
+	get_all_services,
 	getAllRequestServices,
 	getAllService,
 	getAllServiceCategory,
@@ -33,6 +35,7 @@ const CreateNewTransaction = props => {
 	const [multi, setMulti] = useState(false);
 	const [serviceList, setServiceList] = useState([]);
 	const [services, setServices] = useState([]);
+	const [servicesCategory, setServicesCategory] = useState([]);
 	const [amount, setAmount] = useState(0);
 	const [multiple, setMultiple] = useState([]);
 
@@ -48,6 +51,8 @@ const CreateNewTransaction = props => {
 			description: values.description,
 			payment_type: values.payment_type,
 		};
+
+		console.log(data);
 		try {
 			const rs = await request(
 				`${API_URI}${transactionsAPI}`,
@@ -55,9 +60,7 @@ const CreateNewTransaction = props => {
 				true,
 				data
 			);
-
 			console.log(props.location, history);
-
 			history.push('/billing-paypoint');
 			notifySuccess('New payment request saved');
 			setSubmitting(false);
@@ -68,54 +71,6 @@ const CreateNewTransaction = props => {
 		}
 	};
 
-	const filterServiceCenter = () => {
-		return serviceCenter.map(center => {
-			return {
-				value: center.id,
-				label: center.name,
-			};
-		});
-	};
-
-	const changeMulti = evt => {
-		if (evt !== null) {
-			settingAmount(evt);
-		}
-		setMultiple(evt);
-		setValue('service_request', evt);
-	};
-	const filterRequest = center => {
-		setServices([]);
-		changeMulti(null);
-		setAmount(0);
-		let requestType = serviceList
-			.filter(service => {
-				return service.category.id === center;
-			})
-			.map(data => {
-				return {
-					value: data.id,
-					label: data.name,
-					amount: data.tariff,
-				};
-			});
-
-		setServices(requestType);
-
-		// console.log(serviceList.map(service => service.category.id));
-	};
-
-	const settingAmount = requests => {
-		// let total = 0;
-		// total += requests.forEach(request => {
-		// 	console.log(+request.amount);
-		// 	return +request.amount;
-		// });
-
-		setAmount(
-			requests.reduce((total, request) => total + parseInt(request.amount), 0)
-		);
-	};
 	async function getPatients() {
 		const rs = await request(`${API_URI}/patient/list`, 'GET', true);
 		const res = rs.map(patient => ({
@@ -134,15 +89,6 @@ const CreateNewTransaction = props => {
 		setDepartments(res);
 	}
 
-	// async function getRequestService() {
-	// 	const rs = await request(`${API_URI}/request-types`, 'GET', true);
-	// 	setServiceCenter(rs);
-	// }
-
-	// useEffect(() => {
-	// 	getRequestService();
-	// }, []);
-
 	useEffect(() => {
 		getPatients();
 	}, []);
@@ -154,35 +100,58 @@ const CreateNewTransaction = props => {
 	useEffect(() => {
 		if (!loaded) {
 			props
-				.getAllService()
-				.then(response => {
-					setDataLoaded(true);
-				})
-				.catch(e => {
-					notifyError(e.message || 'could not fetch services list');
-				});
-		}
-		setLoaded(true);
-		console.log(props.ServicesList);
-		setServiceList(props.ServicesList);
-	}, [props, loaded]);
-
-	useEffect(() => {
-		if (!loaded) {
-			props
 				.getAllServiceCategory()
-				.then(response => {
-					setDataLoaded(true);
-				})
+				.then(response => {})
 				.catch(e => {
-					setDataLoaded(true);
 					notifyError(e.message || 'could not fetch service categories');
 				});
 		}
+		let data = [];
+		let services = [];
+		props.ServiceCategories.forEach((item, index) => {
+			const res = { label: item.name, value: item.id };
+			data = [...data, res];
+		});
+		props.service.forEach((item, index) => {
+			const res = { label: item.name, value: item.id };
+			services = [...services, res];
+		});
+		setServicesCategory(data);
+		setServices(services);
 		setLoaded(true);
-		console.log(props.ServiceCategories);
-		setServiceCenter(props.ServiceCategories);
 	}, [props, loaded]);
+
+	const handleChangeServiceCategory = evt => {
+		let value = String(evt.value);
+		fetchServicesByCategory(value);
+		setValue('service_center', value);
+	};
+
+	const handleChangeProcedure = evt => {
+		const { service } = props;
+
+		let sum = 0;
+		evt.forEach(val => {
+			let result = service.find(p => p.id === val.value);
+			sum += parseInt(result.tariff);
+		});
+		setAmount(sum);
+		setValue('service_request', evt);
+	};
+
+	const fetchServicesByCategory = async id => {
+		try {
+			const rs = await request(
+				`${API_URI}${serviceAPI}` + '/categories/' + id,
+				'GET',
+				true
+			);
+			props.get_all_services(rs);
+		} catch (error) {
+			console.log(error);
+			notifyError('error fetching imaging requests for the patient');
+		}
+	};
 
 	return (
 		<div className="form-block w-100">
@@ -243,25 +212,15 @@ const CreateNewTransaction = props => {
 								''
 							)}
 						</label>
-
 						<Select
 							name="service_center"
 							placeholder="Select Service Center"
-							options={filterServiceCenter()}
+							options={servicesCategory}
 							ref={register({ name: 'service_center' })}
-							onChange={evt => {
-								if (evt === null) {
-									setValue('service_center', null);
-								} else {
-									console.log(evt.value);
-									filterRequest(evt.value);
-									setValue('service_center', evt.value);
-								}
-							}}
+							onChange={evt => handleChangeServiceCategory(evt)}
 							required
 						/>
 					</div>
-
 					<div className="form-group col-sm-6">
 						<label>
 							Service to request{' '}
@@ -271,19 +230,69 @@ const CreateNewTransaction = props => {
 								''
 							)}
 						</label>
-
 						<Select
 							name="service_request"
 							placeholder="Select services to request"
-							value={multiple}
 							isMulti
 							options={services}
 							ref={register({ name: 'service_request' })}
-							onChange={evt => changeMulti(evt)}
+							onChange={evt => handleChangeProcedure(evt)}
 							required
 						/>
 					</div>
 				</div>
+
+				{/*<div className="row">*/}
+				{/*	<div className="form-group col-sm-6">*/}
+				{/*		<label>*/}
+				{/*			Service Center{' '}*/}
+				{/*			{multi ? (*/}
+				{/*				<span className="mx-1 text-danger">* required </span>*/}
+				{/*			) : (*/}
+				{/*				''*/}
+				{/*			)}*/}
+				{/*		</label>*/}
+
+				{/*		<Select*/}
+				{/*			name="service_center"*/}
+				{/*			placeholder="Select Service Center"*/}
+				{/*			options={filterServiceCenter()}*/}
+				{/*			ref={register({ name: 'service_center' })}*/}
+				{/*			onChange={evt => {*/}
+				{/*				if (evt === null) {*/}
+				{/*					setValue('service_center', null);*/}
+				{/*				} else {*/}
+				{/*					console.log(evt.value);*/}
+				{/*					filterRequest(evt.value);*/}
+				{/*					setValue('service_center', evt.value);*/}
+				{/*				}*/}
+				{/*			}}*/}
+				{/*			required*/}
+				{/*		/>*/}
+				{/*	</div>*/}
+
+				{/*	<div className="form-group col-sm-6">*/}
+				{/*		<label>*/}
+				{/*			Service to request{' '}*/}
+				{/*			{multi ? (*/}
+				{/*				<span className="mx-1 text-danger">* required </span>*/}
+				{/*			) : (*/}
+				{/*				''*/}
+				{/*			)}*/}
+				{/*		</label>*/}
+
+				{/*		<Select*/}
+				{/*			name="service_request"*/}
+				{/*			placeholder="Select services to request"*/}
+				{/*			value={multiple}*/}
+				{/*			isMulti*/}
+				{/*			options={services}*/}
+				{/*			ref={register({ name: 'service_request' })}*/}
+				{/*			onChange={evt => changeMulti(evt)}*/}
+				{/*			required*/}
+				{/*		/>*/}
+				{/*	</div>*/}
+				{/*</div>*/}
 
 				<div className="row">
 					<div className="form-group col-sm-6">
@@ -364,7 +373,7 @@ const mapStateToProps = state => {
 	return {
 		patient: state.user.patient,
 		requestServices: state.settings.request_services,
-		ServicesList: state.settings.services,
+		service: state.settings.services,
 		ServiceCategories: state.settings.service_categories,
 	};
 };
@@ -372,7 +381,7 @@ const mapStateToProps = state => {
 export default withRouter(
 	connect(mapStateToProps, {
 		getAllRequestServices,
-		getAllService,
+		get_all_services,
 		getAllServiceCategory,
 	})(CreateNewTransaction)
 );
