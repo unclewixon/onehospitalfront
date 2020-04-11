@@ -2,12 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import {
-	addServiceCategory,
-	getAllServiceCategory,
-	updateServiceCategory,
-	deleteServiceCategory,
+	add_service_category,
+	get_all_service_categories,
+	update_service_category,
+	delete_service_category,
 } from '../actions/settings';
-import { confirmAction } from '../services/utilities';
+import { confirmAction, request } from '../services/utilities';
+import { API_URI } from '../services/constants';
 import { notifySuccess, notifyError } from '../services/notify';
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
@@ -21,7 +22,7 @@ const ServiceCategoryList = props => {
 	const [{ name }, setState] = useState(initialState);
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
-	const [data, getDataToEdit] = useState(null);
+	const [payload, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
@@ -30,40 +31,55 @@ const ServiceCategoryList = props => {
 		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onAddServiceCat = e => {
+	const onAddServiceCat = async e => {
 		setLoading(true);
 		e.preventDefault();
-		props
-			.addServiceCategory({ name })
-			.then(response => {
-				setLoading(false);
-				setState({ ...initialState });
-				notifySuccess('Service Category created');
-			})
-			.catch(error => {
-				setLoading(false);
-				setState({ ...initialState });
-				notifyError('Error creating service category');
-			});
+
+		let data = {
+			name,
+		};
+		try {
+			const rs = await request(
+				`${API_URI}/services/categories`,
+				'POST',
+				true,
+				data
+			);
+			props.add_service_category(rs);
+			setLoading(false);
+			setState({ ...initialState });
+			notifySuccess('Service category created');
+		} catch (error) {
+			setLoading(false);
+			setState({ ...initialState });
+			notifyError('Error creating service category');
+		}
 	};
 
-	const onEditServiceCategory = e => {
+	const onEditServiceCategory = async e => {
 		setLoading(true);
 		e.preventDefault();
-		props
-			.updateServiceCategory({ id: data.id, name }, data)
-			.then(response => {
-				setState({ ...initialState });
-				setSubmitButton({ create: true, edit: false });
-				setLoading(false);
-				notifySuccess('Service Category updated');
-			})
-			.catch(error => {
-				setState({ ...initialState });
-				setSubmitButton({ create: true, edit: false });
-				setLoading(false);
-				notifyError('Error updating service category');
-			});
+		let data = {
+			name,
+		};
+		try {
+			const rs = await request(
+				`${API_URI}/services/categories/${payload.id}/update`,
+				'PATCH',
+				true,
+				data
+			);
+			props.update_service_category(rs, payload);
+			setState({ ...initialState });
+			setSubmitButton({ create: true, edit: false });
+			setLoading(false);
+			notifySuccess('Service Category updated');
+		} catch (error) {
+			setState({ ...initialState });
+			setSubmitButton({ create: true, edit: false });
+			setLoading(false);
+			notifyError('Error updating service category!');
+		}
 	};
 
 	const onClickEdit = data => {
@@ -81,35 +97,41 @@ const ServiceCategoryList = props => {
 		setState({ ...initialState });
 	};
 
-	const onDeleteServiceCategory = data => {
-		props
-			.deleteServiceCategory(data)
-			.then(response => {
-				notifySuccess('Service Category deleted');
-			})
-			.catch(error => {
-				notifyError('Error deleting service category');
-			});
+	const onDeleteServiceCategory = async data => {
+		try {
+			await request(
+				`${API_URI}/services/categories/${data.id}`,
+				'DELETE',
+				true
+			);
+			props.delete_service_category(data);
+			setLoading(false);
+			notifySuccess('Service category deleted');
+		} catch (error) {
+			setLoading(false);
+			notifyError('Error deleting service category!');
+		}
 	};
 
 	const confirmDelete = data => {
 		confirmAction(onDeleteServiceCategory, data);
 	};
 
-	useEffect(() => {
-		if (!loaded) {
-			props
-				.getAllServiceCategory()
-				.then(response => {
-					setDataLoaded(true);
-				})
-				.catch(e => {
-					setDataLoaded(true);
-					notifyError(e.message || 'could not fetch service categories');
-				});
+	const fetchServiceCategories = async () => {
+		setDataLoaded(false);
+		try {
+			const rs = await request(`${API_URI}/services/categories`, 'GET', true);
+			props.get_all_service_categories(rs);
+			setDataLoaded(true);
+		} catch (error) {
+			setDataLoaded(true);
+			notifyError(error.message || 'could not fetch services categories!');
 		}
-		setLoaded(true);
-	}, [props, loaded]);
+	};
+
+	useEffect(() => {
+		fetchServiceCategories();
+	}, []);
 
 	return (
 		<div className="row">
@@ -126,7 +148,7 @@ const ServiceCategoryList = props => {
 									</tr>
 								</thead>
 								<tbody>
-									{!loaded ? (
+									{!dataLoaded ? (
 										<tr>
 											<td colSpan="4" className="text-center">
 												<img alt="searching" src={searchingGIF} />
@@ -229,8 +251,8 @@ const mapStateToProps = state => {
 };
 
 export default connect(mapStateToProps, {
-	addServiceCategory,
-	getAllServiceCategory,
-	updateServiceCategory,
-	deleteServiceCategory,
+	add_service_category,
+	get_all_service_categories,
+	update_service_category,
+	delete_service_category,
 })(ServiceCategoryList);

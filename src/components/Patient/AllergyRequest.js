@@ -46,7 +46,7 @@ const AllergyRequest = props => {
 				true,
 				data
 			);
-			props.add_allergies(rs.allergy);
+			props.add_allergies(rs);
 			history.push('settings/roles#allergies');
 			notifySuccess('allergies saved');
 			setSubmitting(false);

@@ -5,7 +5,7 @@ import { request } from '../../services/utilities';
 import { confirmAction } from '../../services/utilities';
 import { API_URI, patientAPI } from '../../services/constants';
 import {
-	Fetch_Allergies,
+	fetch_Allergies,
 	Allergy,
 	delete_allergy,
 } from '../../actions/patient';
@@ -31,7 +31,7 @@ class Allergies extends Component {
 				'GET',
 				true
 			);
-			this.props.Fetch_Allergies(rs);
+			this.props.fetch_Allergies(rs);
 			this.setState({ loaded: false });
 		} catch (error) {
 			this.setState({ loaded: false });
@@ -166,7 +166,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default withRouter(
-	connect(mapStateToProps, { Fetch_Allergies, Allergy, delete_allergy })(
+	connect(mapStateToProps, { fetch_Allergies, Allergy, delete_allergy })(
 		Allergies
 	)
 );

@@ -47,7 +47,6 @@ const Departments = props => {
 			hod_id: headOfDept,
 			description,
 		};
-
 		try {
 			const rs = await request(`${API_URI}/departments`, 'POST', true, data);
 			props.create_department(rs);
@@ -63,12 +62,7 @@ const Departments = props => {
 
 	const onDeleteDepartment = async data => {
 		try {
-			const rs = await request(
-				`${API_URI}/departments/${data.id}`,
-				'DELETE',
-				true,
-				data
-			);
+			await request(`${API_URI}/departments/${data.id}`, 'DELETE', true, data);
 			props.delete_department(data);
 			notifySuccess('Head of department deleted');
 		} catch (error) {
@@ -81,10 +75,11 @@ const Departments = props => {
 	const onEditDept = async e => {
 		setLoading(true);
 		e.preventDefault();
+
 		let data = {
 			name: name,
 			id: payload.id,
-			hod: headOfDept,
+			hod_id: headOfDept,
 			description,
 		};
 		try {
@@ -114,9 +109,7 @@ const Departments = props => {
 			name: data.name,
 			id: data.id,
 			headOfDept: data.staff ? data.staff.id : null,
-			hod: data.staff
-				? `${data.staff.first_name} ${data.staff.last_name}`
-				: null,
+			hod: data.hod_name ? `${data.hod_name}` : null,
 			description: data.description,
 		}));
 		setDataToEdit(data);
@@ -215,10 +208,8 @@ const Departments = props => {
 																	</td>
 																	<td>
 																		<span>
-																			{department.staff &&
-																				department.staff.first_name +
-																					' ' +
-																					department.staff.last_name}
+																			{department.hod_name &&
+																				department.hod_name}
 																		</span>
 																	</td>
 																	<td className="row-actions text-right">
