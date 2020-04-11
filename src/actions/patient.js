@@ -92,7 +92,7 @@ export const update_allergy = (data, previousData) => {
 	};
 };
 
-export const Fetch_Allergies = data => {
+export const fetch_Allergies = data => {
 	return {
 		type: GET_ALLERGIES,
 		payload: data,
