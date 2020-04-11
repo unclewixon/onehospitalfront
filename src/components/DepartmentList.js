@@ -3,23 +3,33 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
-import { getAllDepartments, deleteDepartment } from '../actions/settings';
+import { request, confirmAction } from '../services/utilities';
+import { API_URI } from '../services/constants';
+import {
+	get_all_department,
+	delete_department,
+	getAllDepartments,
+} from '../actions/settings';
 
 class DepartmentList extends Component {
 	state = {
 		loading: false,
 	};
 	componentDidMount() {
-		this.setState({ loading: true });
-		this.props
-			.getAllDepartments()
-			.then(response => {
-				this.setState({ loading: false });
-			})
-			.catch(error => {
-				this.setState({ loading: false });
-			});
+		this.fetchDepartments();
 	}
+
+	fetchDepartments = async () => {
+		this.setState({ loading: true });
+		try {
+			const rs = await request(`${API_URI}/departments`, 'GET', true);
+			this.props.get_all_department(rs);
+			this.setState({ loading: false });
+		} catch (error) {
+			this.setState({ loading: false });
+			notifyError(error.message || 'could not fetch departments!');
+		}
+	};
 
 	onDeleteDepartment = data => {
 		this.props

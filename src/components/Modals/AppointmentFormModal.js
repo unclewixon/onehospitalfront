@@ -271,11 +271,6 @@ const AppointmentFormModal = props => {
 													}
 												}}
 											/>
-											{validationMessage && (
-												<div className="help-text text-danger">
-													{validationMessage}
-												</div>
-											)}
 										</div>
 									</div>
 									<div className="col-sm-6">
