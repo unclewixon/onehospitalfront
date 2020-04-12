@@ -127,7 +127,7 @@ const Lab = props => {
 										className="table table-theme v-middle table-hover">
 										<thead>
 											<tr>
-												<th>ID</th>
+												<th>S/N</th>
 												<th>Request Date</th>
 												<th>Requested By</th>
 												<th>Request Specimen</th>
@@ -145,7 +145,9 @@ const Lab = props => {
 																data-id="20"
 																key={index}>
 																<td>
-																	<span className="text-bold"></span>
+																	<span className="text-bold">
+																		{index + 1}.
+																	</span>
 																</td>
 																<td>
 																	<span>

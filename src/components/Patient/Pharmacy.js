@@ -75,7 +75,7 @@ const Pharmacy = props => {
 						) : null}
 
 						{dataLoaded ? (
-							<div colSpan="4" className="text-center">
+							<div colSpan="5" className="text-center">
 								<img alt="searching" src={searchingGIF} />
 							</div>
 						) : (
