@@ -86,7 +86,6 @@ const LabRequest = props => {
 		? intersectionBy(props.LabGroups, labCombos, 'id')
 		: [];
 
-
 	const onSubmit = ({
 		service_center,
 		referred_specimen,

@@ -5,14 +5,14 @@ import { confirmAlert } from 'react-confirm-alert';
 import waiting from '../../assets/images/waiting.gif';
 import searchingGIF from '../../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
-import { confirmAction } from '../../services/utilities';
-
+import { request, confirmAction } from '../../services/utilities';
+import { API_URI } from '../../services/constants';
 import {
-	getAllDepartments,
-	createDepartment,
-	updateDepartment,
-	deleteDepartment,
-	getAllStaff,
+	create_department,
+	get_all_department,
+	get_all_staff,
+	update_department,
+	delete_department,
 } from '../../actions/settings';
 
 const Departments = props => {
@@ -30,7 +30,7 @@ const Departments = props => {
 		initialState
 	);
 	const [Loading, setLoading] = useState(false);
-	const [data, getDataToEdit] = useState(null);
+	const [payload, setDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
@@ -39,51 +39,67 @@ const Departments = props => {
 		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onCreateDepartment = e => {
+	const onCreateDepartment = async e => {
 		e.preventDefault();
 		setLoading(true);
-		props
-			.createDepartment({ name, headOfDept, description })
-			.then(response => {
-				setLoading(false);
-				setState({ ...initialState });
-				notifySuccess('Head of department added');
-			})
-			.catch(error => {
-				setLoading(false);
-				setState({ ...initialState });
-				notifyError('Error creating head of department');
-			});
+		let data = {
+			name,
+			hod_id: headOfDept,
+			description,
+		};
+		try {
+			const rs = await request(`${API_URI}/departments`, 'POST', true, data);
+			props.create_department(rs);
+			setLoading(false);
+			setState({ ...initialState });
+			notifySuccess('Head of department added');
+		} catch (error) {
+			setLoading(false);
+			setState({ ...initialState });
+			notifyError('Error creating head of department');
+		}
 	};
 
-	const onDeleteDepartment = data => {
-		props
-			.deleteDepartment(data)
-			.then(data => {
-				notifySuccess('Head of department deleted');
-			})
-			.catch(error => {
-				notifyError('Error deleting head of department');
-			});
+	const onDeleteDepartment = async data => {
+		try {
+			await request(`${API_URI}/departments/${data.id}`, 'DELETE', true, data);
+			props.delete_department(data);
+			notifySuccess('Head of department deleted');
+		} catch (error) {
+			setLoading(false);
+			setState({ ...initialState });
+			notifyError('Error deleting head of department');
+		}
 	};
 
-	const onEditDept = e => {
+	const onEditDept = async e => {
 		setLoading(true);
 		e.preventDefault();
-		props
-			.updateDepartment({ id: data.id, name, description, headOfDept }, data)
-			.then(response => {
-				setState({ ...initialState });
-				setSubmitButton({ create: true, edit: false });
-				setLoading(false);
-				notifySuccess('Head of department updated');
-			})
-			.catch(error => {
-				setState({ ...initialState });
-				setSubmitButton({ ...initialState });
-				setLoading(false);
-				notifyError('Error updating head of department');
-			});
+
+		let data = {
+			name: name,
+			id: payload.id,
+			hod_id: headOfDept,
+			description,
+		};
+		try {
+			const rs = await request(
+				`${API_URI}/departments/${data.id}/update`,
+				'PATCH',
+				true,
+				data
+			);
+			props.update_department(rs, payload);
+			setState({ ...initialState });
+			setSubmitButton({ create: true, edit: false });
+			setLoading(false);
+			notifySuccess('Head of department updated');
+		} catch (error) {
+			setState({ ...initialState });
+			setSubmitButton({ ...initialState });
+			setLoading(false);
+			notifyError('Error updating head of department');
+		}
 	};
 
 	const onClickEdit = data => {
@@ -93,12 +109,10 @@ const Departments = props => {
 			name: data.name,
 			id: data.id,
 			headOfDept: data.staff ? data.staff.id : null,
-			hod: data.staff
-				? `${data.staff.first_name} ${data.staff.last_name}`
-				: null,
+			hod: data.hod_name ? `${data.hod_name}` : null,
 			description: data.description,
 		}));
-		getDataToEdit(data);
+		setDataToEdit(data);
 	};
 
 	const cancelEditButton = () => {
@@ -110,21 +124,34 @@ const Departments = props => {
 		confirmAction(onDeleteDepartment, data, null);
 	};
 
-	useEffect(() => {
-		if (!loaded) {
-			props
-				.getAllDepartments()
-				.then(response => {
-					setDataLoaded(true);
-				})
-				.catch(e => {
-					setDataLoaded(true);
-					notifyError(e.message || 'could not fetch departments');
-				});
-			props.getAllStaff();
+	const fetchDepartment = async () => {
+		setDataLoaded(false);
+		try {
+			const rs = await request(`${API_URI}/departments`, 'GET', true);
+			props.get_all_department(rs);
+			setDataLoaded(true);
+		} catch (error) {
+			setDataLoaded(true);
+			notifyError(error.message || 'could not fetch departments!');
 		}
-		setLoaded(true);
-	}, [loaded, props]);
+	};
+
+	const fetchAllStaff = async () => {
+		setDataLoaded(false);
+		try {
+			const rs = await request(`${API_URI}/hr/staffs`, 'GET', true);
+			props.get_all_staff(rs);
+			setDataLoaded(true);
+		} catch (error) {
+			setDataLoaded(true);
+			notifyError(error.message || 'could not fetch staff list!');
+		}
+	};
+
+	useEffect(() => {
+		fetchDepartment();
+		fetchAllStaff();
+	}, []);
 
 	return (
 		<div className="content-i">
@@ -181,10 +208,8 @@ const Departments = props => {
 																	</td>
 																	<td>
 																		<span>
-																			{department.staff &&
-																				department.staff.first_name +
-																					' ' +
-																					department.staff.last_name}
+																			{department.hod_name &&
+																				department.hod_name}
 																		</span>
 																	</td>
 																	<td className="row-actions text-right">
@@ -323,9 +348,9 @@ const mapStateToProps = state => {
 };
 
 export default connect(mapStateToProps, {
-	getAllDepartments,
-	getAllStaff,
-	updateDepartment,
-	createDepartment,
-	deleteDepartment,
+	create_department,
+	get_all_department,
+	get_all_staff,
+	update_department,
+	delete_department,
 })(Departments);

@@ -6,7 +6,7 @@ import { request, confirmAction } from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
 import searchingGIF from '../assets/images/searching.gif';
 import { API_URI, rolesAPI } from '../services/constants';
-import { loadRoles, deleteRole } from '../actions/role';
+import { loadRoles, delete_role } from '../actions/role';
 import CreateRole from './CreateRole';
 import EditRole from './EditRole';
 
@@ -26,9 +26,11 @@ class RoleBlock extends Component {
 	fetchRoles = async () => {
 		try {
 			const rs = await request(`${API_URI}${rolesAPI}`, 'GET', true);
+			console.log(rs);
 			this.props.loadRoles(rs);
 			this.setState({ loading: false });
 		} catch (error) {
+			console.log(error);
 			this.setState({ loading: false });
 			notifyError(error.message || 'could not fetch roles');
 		}
@@ -44,14 +46,18 @@ class RoleBlock extends Component {
 
 	DeleteRole = role => async () => {
 		this.setState({ roleID: role.id });
-		this.props
-			.deleteRole(role)
-			.then(response => {
-				notifySuccess('Role deleted');
-			})
-			.catch(error => {
-				notifyError('Error deleting role');
-			});
+		try {
+			const rs = await request(
+				`${API_URI}/settings/roles/${role.id}`,
+				'DELETE',
+				true
+			);
+			this.props.delete_role(role);
+			notifySuccess('Role deleted');
+		} catch (error) {
+			console.log(error);
+			notifyError('Error deleting role');
+		}
 	};
 
 	confirmDelete = role => {
@@ -137,4 +143,4 @@ const mapStateToProps = (state, ownProps) => {
 	};
 };
 
-export default connect(mapStateToProps, { loadRoles, deleteRole })(RoleBlock);
+export default connect(mapStateToProps, { loadRoles, delete_role })(RoleBlock);

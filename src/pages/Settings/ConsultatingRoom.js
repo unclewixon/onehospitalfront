@@ -4,12 +4,13 @@ import { connect } from 'react-redux';
 import waiting from '../../assets/images/waiting.gif';
 import searchingGIF from '../../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
-import { confirmAction } from '../../services/utilities';
+import { request, confirmAction } from '../../services/utilities';
+import { API_URI } from '../../services/constants';
 import {
-	addConsultatingRoom,
-	getAllConsultatingRooms,
-	updateConsultatingRoom,
-	deleteConsultatingRoom,
+	add_consultating_room,
+	get_all_consultating_rooms,
+	update_consultating_room,
+	delete_consultating_room,
 } from '../../actions/settings';
 
 const ConsultatingRoom = props => {
@@ -22,7 +23,7 @@ const ConsultatingRoom = props => {
 	const [{ name }, setState] = useState(initialState);
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
-	const [data, getDataToEdit] = useState(null);
+	const [payload, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
@@ -31,39 +32,55 @@ const ConsultatingRoom = props => {
 		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onAddConsultatingRoom = e => {
+	const onAddConsultatingRoom = async e => {
 		e.preventDefault();
 		setLoading(true);
-		props
-			.addConsultatingRoom({ name })
-			.then(response => {
-				setLoading(false);
-				setState({ ...initialState });
-				notifySuccess('Consultating room added');
-			})
-			.catch(error => {
-				setLoading(false);
-				notifyError('Error creating consultating room');
-			});
+		let data = {
+			name,
+		};
+		try {
+			const rs = await request(
+				`${API_URI}/consulting-rooms`,
+				'POST',
+				true,
+				data
+			);
+			props.add_consultating_room(rs);
+			setLoading(false);
+			setState({ ...initialState });
+			notifySuccess('Consultating room added');
+		} catch (error) {
+			setLoading(false);
+			notifyError('Error creating consultating room');
+		}
 	};
 
-	const onEditConsultatingRoom = e => {
+	const onEditConsultatingRoom = async e => {
 		setLoading(true);
 		e.preventDefault();
-		props
-			.updateConsultatingRoom({ id: data.id, name }, data)
-			.then(response => {
-				setState({ ...initialState });
-				setSubmitButton({ save: true, edit: false });
-				setLoading(false);
-				notifySuccess('Consultating room updated');
-			})
-			.catch(error => {
-				setState({ ...initialState });
-				setSubmitButton({ save: true, edit: false });
-				setLoading(false);
-				notifyError('Error editing consultating rooms');
-			});
+		let data = {
+			name,
+			id: payload.id,
+		};
+
+		try {
+			const rs = await request(
+				`${API_URI}/consulting-rooms/${data.id}/update`,
+				'PATCH',
+				true,
+				data
+			);
+			props.update_consultating_room(rs, payload);
+			setState({ ...initialState });
+			setSubmitButton({ save: true, edit: false });
+			setLoading(false);
+			notifySuccess('Consultating room updated');
+		} catch (error) {
+			setState({ ...initialState });
+			setSubmitButton({ save: true, edit: false });
+			setLoading(false);
+			notifyError('Error editing consultating rooms');
+		}
 	};
 
 	const onClickEdit = data => {
@@ -77,17 +94,21 @@ const ConsultatingRoom = props => {
 		getDataToEdit(data);
 	};
 
-	const onDeleteConsultatingRoom = data => {
-		props
-			.deleteConsultatingRoom(data)
-			.then(data => {
-				setLoading(false);
-				notifySuccess('Consultating room deleted');
-			})
-			.catch(error => {
-				setLoading(false);
-				notifyError('Error deleting consultating room');
-			});
+	const onDeleteConsultatingRoom = async data => {
+		try {
+			const rs = await request(
+				`${API_URI}/consulting-rooms/${data.id}`,
+				'DELETE',
+				true,
+				data
+			);
+			props.delete_consultating_room(data);
+			notifySuccess('Consultating room deleted');
+		} catch (error) {
+			setLoading(false);
+			setState({ ...initialState });
+			notifyError('Error deleting consultating room');
+		}
 	};
 
 	const confirmDelete = data => {
@@ -99,20 +120,21 @@ const ConsultatingRoom = props => {
 		setState({ ...initialState });
 	};
 
-	useEffect(() => {
-		if (!loaded) {
-			props
-				.getAllConsultatingRooms()
-				.then(response => {
-					setDataLoaded(true);
-				})
-				.catch(e => {
-					setDataLoaded(true);
-					notifyError(e.message || 'could not fetch consultating room');
-				});
+	const fetchConsultatingRoom = async () => {
+		setDataLoaded(false);
+		try {
+			const rs = await request(`${API_URI}/consulting-rooms`, 'GET', true);
+			props.get_all_consultating_rooms(rs);
+			setDataLoaded(true);
+		} catch (error) {
+			setDataLoaded(true);
+			notifyError(error.message || 'could not fetch consulting rooms!');
 		}
-		setLoaded(true);
-	}, [edit, loaded, props, save]);
+	};
+
+	useEffect(() => {
+		fetchConsultatingRoom();
+	}, []);
 	return (
 		<div className="content-i">
 			<div className="content-box">
@@ -258,8 +280,8 @@ const mapStateToProps = state => {
 	};
 };
 export default connect(mapStateToProps, {
-	addConsultatingRoom,
-	getAllConsultatingRooms,
-	updateConsultatingRoom,
-	deleteConsultatingRoom,
+	add_consultating_room,
+	get_all_consultating_rooms,
+	update_consultating_room,
+	delete_consultating_room,
 })(ConsultatingRoom);

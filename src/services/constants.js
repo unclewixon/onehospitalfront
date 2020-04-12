@@ -32,6 +32,7 @@ export const patientAPI = '/patient';
 export const transactionsAPI = '/transactions';
 export const vouchersAPI = '/vouchers';
 export const serviceAPI = '/services';
+export const settingsAPI = '/settings/';
 export const diagnosisAPI = '/settings/diagnosis';
 
 export const months = [

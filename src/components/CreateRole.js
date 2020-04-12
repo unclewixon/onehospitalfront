@@ -11,9 +11,9 @@ import { addRole } from '../actions/role';
 const validate = values => {
 	const errors = {};
 	if (!values.name) {
-        errors.name = 'enter role';
-    }
-    return errors;
+		errors.name = 'enter role';
+	}
+	return errors;
 };
 
 class CreateRole extends Component {
@@ -26,12 +26,15 @@ class CreateRole extends Component {
 		try {
 			const rs = await request(`${API_URI}${rolesAPI}`, 'POST', true, data);
 			this.props.addRole(rs);
+			console.log(rs);
 			this.setState({ submitting: false });
 			this.props.reset('create_role');
 			notifySuccess('role created!');
 		} catch (e) {
 			this.setState({ submitting: false });
-			throw new SubmissionError({ _error: e.message || 'could not create role' });
+			throw new SubmissionError({
+				_error: e.message || 'could not create role',
+			});
 		}
 	};
 
@@ -42,7 +45,14 @@ class CreateRole extends Component {
 			<div className="pipeline white lined-warning">
 				<form onSubmit={handleSubmit(this.doCreateRole)}>
 					<h6 className="form-header">Create Role</h6>
-					{error && <div className="alert alert-danger" dangerouslySetInnerHTML={{__html: `<strong>Error!</strong> ${error}`}}/>}
+					{error && (
+						<div
+							className="alert alert-danger"
+							dangerouslySetInnerHTML={{
+								__html: `<strong>Error!</strong> ${error}`,
+							}}
+						/>
+					)}
 					<Field
 						id="name"
 						name="name"
@@ -60,7 +70,12 @@ class CreateRole extends Component {
 						placeholder="Enter description"
 					/>
 					<div className="form-buttons-w">
-						<button className="btn btn-primary" disabled={submitting} type="submit">{submitting ? <img src={waiting} alt="submitting"/> : 'save'}</button>
+						<button
+							className="btn btn-primary"
+							disabled={submitting}
+							type="submit">
+							{submitting ? <img src={waiting} alt="submitting" /> : 'save'}
+						</button>
 					</div>
 				</form>
 			</div>

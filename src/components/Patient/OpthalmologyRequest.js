@@ -9,9 +9,13 @@ import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 
 import { request } from '../../services/utilities';
-import { serviceAPI } from '../../services/constants'
+import { serviceAPI } from '../../services/constants';
 
-import { get_all_services, getAllRequestServices, getAllServiceCategory } from '../../actions/settings';
+import {
+	get_all_services,
+	getAllRequestServices,
+	getAllServiceCategory,
+} from '../../actions/settings';
 const OpthalmologyRequest = props => {
 	let history = useHistory();
 	const { register, handleSubmit, setValue } = useForm();
@@ -66,8 +70,10 @@ const OpthalmologyRequest = props => {
 	};
 
 	const opthalmologyValue = useCallback(() => {
-		let opthalValue = props && props.services && props.services
-			.map(service => {
+		let opthalValue =
+			props &&
+			props.services &&
+			props.services.map(service => {
 				return {
 					value: service.id,
 					label: service.name,
@@ -93,25 +99,28 @@ const OpthalmologyRequest = props => {
 	};
 
 	const onServiceSelect = e => {
-		fetchServicesByCategory(e.value)
-	}
+		fetchServicesByCategory(e.value);
+	};
 
 	useEffect(() => {
 		const { getAllRequestServices, getAllServiceCategory } = props;
 		if (!loaded) {
-			getAllRequestServices()
-			getAllServiceCategory()
+			getAllRequestServices();
+			getAllServiceCategory();
 		}
 		setLoaded(true);
 		opthalmologyValue();
 	}, [props, loaded, opthalmologyValue]);
 
-	const serviceCats = props && props.serviceCategories && props.serviceCategories.map(cats => {
-		return { 
-			label: cats.name,
-			value: cats.id
-		}
-	})
+	const serviceCats =
+		props &&
+		props.serviceCategories &&
+		props.serviceCategories.map(cats => {
+			return {
+				label: cats.name,
+				value: cats.id,
+			};
+		});
 
 	return (
 		<div className="col-sm-12">
@@ -137,16 +146,14 @@ const OpthalmologyRequest = props => {
 							</div>
 							<div className="row">
 								<div className="form-group col-sm-6">
-									<label>
-										Service Category
-									</label>
+									<label>Service Category</label>
 									{}
 									<Select
 										name="service_request"
 										placeholder="Select category"
 										options={serviceCats}
 										ref={register({ name: 'service_category' })}
-										onChange={evt =>  onServiceSelect(evt) }
+										onChange={evt => onServiceSelect(evt)}
 										required
 									/>
 								</div>
@@ -156,8 +163,8 @@ const OpthalmologyRequest = props => {
 										{multi ? (
 											<span className="mx-1 text-danger">* required </span>
 										) : (
-												''
-											)}
+											''
+										)}
 									</label>
 									{}
 									<Select
@@ -195,8 +202,8 @@ const OpthalmologyRequest = props => {
 										{submitting ? (
 											<img src={waiting} alt="submitting" />
 										) : (
-												'Create Opthalmology Request'
-											)}
+											'Create Opthalmology Request'
+										)}
 									</button>
 								</div>
 							</div>

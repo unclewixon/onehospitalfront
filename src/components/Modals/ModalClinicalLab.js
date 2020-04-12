@@ -125,32 +125,28 @@ const ModalClinicalLab = ({
 														</tr>
 													</thead>
 													<tbody>
-														{
-															grp.parameters.map(param => (
-																<tr>
-																	<td>{param.name}</td>
-																	<td>{param.range}</td>
-																	<td>
-																		<input
-																			type="text"
-																			name="groupParameterResult"
-																			id={param.id}
-																			onChange
-																		/>
-																	</td>
-																</tr>
-															))
-														}
+														{grp.parameters.map(param => (
+															<tr>
+																<td>{param.name}</td>
+																<td>{param.range}</td>
+																<td>
+																	<input
+																		type="text"
+																		name="groupParameterResult"
+																		id={param.id}
+																		onChange
+																	/>
+																</td>
+															</tr>
+														))}
 													</tbody>
 												</Table>
 											</div>
 										</div>
-									) : null
-									}
+									) : null}
 								</div>
 							</div>
-						))
-					}
+						))}
 					{activeRequest &&
 						activeRequest.requestBody &&
 						activeRequest.requestBody.group &&
@@ -166,7 +162,7 @@ const ModalClinicalLab = ({
 									{/* {grp.tests &&
 										grp.tests.map(test => (
 											<div className="ml-2 p-4 bg-white border-2">
-												<p >{test.name}</p>
+												<p>{test.name}</p>
 												<Table className="table bordered">
 													<thead>
 														<tr>
@@ -176,15 +172,11 @@ const ModalClinicalLab = ({
 														</tr>
 													</thead>
 													<tbody>
-														{
-															test.parameters && test.parameters.map(param => (
+														{test.parameters &&
+															test.parameters.map(param => (
 																<tr>
-																	<td>
-																		{param.name}
-																	</td>
-																	<td>
-																		{param.refferedRange}
-																	</td>
+																	<td>{param.name}</td>
+																	<td>{param.refferedRange}</td>
 																	<td>
 																		<input
 																			type="text"
@@ -195,8 +187,7 @@ const ModalClinicalLab = ({
 																		/>
 																	</td>
 																</tr>
-															))
-														}
+															))}
 													</tbody>
 												</Table>
 											</div>
@@ -218,32 +209,28 @@ const ModalClinicalLab = ({
 														</tr>
 													</thead>
 													<tbody>
-														{
-															grp.parameters.map(param => (
-																<tr>
-																	<td>{param.name}</td>
-																	<td>{param.range}</td>
-																	<td>
-																		<input
-																			type="text"
-																			name="groupParameterResult"
-																			id={param.id}
-																			onChange
-																		/>
-																	</td>
-																</tr>
-															))
-														}
+														{grp.parameters.map(param => (
+															<tr>
+																<td>{param.name}</td>
+																<td>{param.range}</td>
+																<td>
+																	<input
+																		type="text"
+																		name="groupParameterResult"
+																		id={param.id}
+																		onChange
+																	/>
+																</td>
+															</tr>
+														))}
 													</tbody>
 												</Table>
 											</div>
 										</div>
-									) : null
-									}
+									) : null}
 								</div>
 							</div>
-						))
-					}
+						))}
 				</div>
 				<div className="mt-4 p-4 bg-light border-2">
 					<div>
@@ -263,42 +250,39 @@ const ModalClinicalLab = ({
 								<div className="ml-4">
 									<p>Parameters: </p>
 								</div>
-								{
-									tst.paramenters && tst.paramenters.length ? (
-										<div className="ml-2 p-4 bg-white border-2">
-											<Table className="table bordered">
-												<thead>
-													<tr>
-														<th>Param Name</th>
-														<th>Range</th>
-														<th>Result</th>
-													</tr>
-												</thead>
-												<tbody>
-													{tst.paramenters &&
-														tst.paramenters.map(param => (
-															<tr>
-																<td>{param.name}</td>
-																<td>{param.range}</td>
-																<td>
-																	<input
-																		type="text"
-																		name="parameterResult"
-																		id={param.id}
-																		onChange
-																	/>
-																</td>
-															</tr>
-														))}
-												</tbody>
-											</Table>
-										</div>
-									) : null
-								}
-
+								{tst.paramenters && tst.paramenters.length ? (
+									<div className="ml-2 p-4 bg-white border-2">
+										<Table className="table bordered">
+											<thead>
+												<tr>
+													<th>Param Name</th>
+													<th>Range</th>
+													<th>Result</th>
+												</tr>
+											</thead>
+											<tbody>
+												{tst.paramenters &&
+													tst.paramenters.map(param => (
+														<tr>
+															<td>{param.name}</td>
+															<td>{param.range}</td>
+															<td>
+																<input
+																	type="text"
+																	name="parameterResult"
+																	id={param.id}
+																	onChange
+																/>
+															</td>
+														</tr>
+													))}
+											</tbody>
+										</Table>
+									</div>
+								) : null}
 							</div>
 						))}
-						{activeRequest &&
+					{activeRequest &&
 						activeRequest.requestBody &&
 						activeRequest.requestBody.test &&
 						activeRequest.requestBody.test.map(tst => (
@@ -312,56 +296,53 @@ const ModalClinicalLab = ({
 								<div className="ml-4">
 									<p>Parameters: </p>
 								</div>
-								{
-									tst.paramenters && tst.paramenters.length ? (
-										<div className="ml-2 p-4 bg-white border-2">
-											<Table className="table bordered">
-												<thead>
-													<tr>
-														<th>Param Name</th>
-														<th>Range</th>
-														<th>Result</th>
-													</tr>
-												</thead>
-												<tbody>
-													{tst.paramenters &&
-														tst.paramenters.map(param => (
-															<tr>
-																<td>{param.name}</td>
-																<td>{param.range}</td>
-																<td>
-																	<input
-																		type="text"
-																		name="parameterResult"
-																		id={param.id}
-																		onChange
-																	/>
-																</td>
-															</tr>
-														))}
-												</tbody>
-											</Table>
-										</div>
-									) : null
-								}
-
+								{tst.paramenters && tst.paramenters.length ? (
+									<div className="ml-2 p-4 bg-white border-2">
+										<Table className="table bordered">
+											<thead>
+												<tr>
+													<th>Param Name</th>
+													<th>Range</th>
+													<th>Result</th>
+												</tr>
+											</thead>
+											<tbody>
+												{tst.paramenters &&
+													tst.paramenters.map(param => (
+														<tr>
+															<td>{param.name}</td>
+															<td>{param.range}</td>
+															<td>
+																<input
+																	type="text"
+																	name="parameterResult"
+																	id={param.id}
+																	onChange
+																/>
+															</td>
+														</tr>
+													))}
+											</tbody>
+										</Table>
+									</div>
+								) : null}
 							</div>
 						))}
 				</div>
 				<div>
-				<button
-										className={
-											Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
-										}>
-										{Loading ? (
-											<img src={waiting} alt="submitting" />
-										) : (
-											<span> Save</span>
-										)}
-									</button>
+					<button
+						className={
+							Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
+						}>
+						{Loading ? (
+							<img src={waiting} alt="submitting" />
+						) : (
+							<span> Save</span>
+						)}
+					</button>
 				</div>
 			</Modal.Body>
 		</Modal>
-	)
-}
+	);
+};
 export default ModalClinicalLab;

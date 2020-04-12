@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { API_URI, patientAPI } from '../services/constants';
+import { request } from '../services/utilities';
+import { API_URI } from '../services/constants';
 import {
 	CREATE_DEPARTMENT,
 	GET_ALL_DEPARTMENTS,
@@ -67,26 +68,25 @@ import {
 	DELETE_LAB_GROUP,
 	GET_ALL_LAB_GROUPS,
 } from './types';
-import { request } from '../services/utilities';
 
 //Request Service
 
-const add_request_service = payload => {
+export const add_request_service = payload => {
 	return {
 		type: ADD_REQUEST_SERVICE,
 		payload,
 	};
 };
 
-const get_all_request_services = payload => {
+export const get_all_request_services = payload => {
 	return { type: GET_ALL_REQUEST_SERVICES, payload };
 };
 
-const update_request_service = (payload, previousData) => {
+export const update_request_service = (payload, previousData) => {
 	return { type: UPDATE_REQUEST_SERVICE, payload, previousData };
 };
 
-const delete_request_service = payload => {
+export const delete_request_service = payload => {
 	return {
 		type: DELETE_REQUEST_SERVICE,
 		payload,
@@ -94,21 +94,21 @@ const delete_request_service = payload => {
 };
 
 //department
-const create_department = payload => {
+export const create_department = payload => {
 	return {
 		type: CREATE_DEPARTMENT,
 		payload,
 	};
 };
 
-const get_all_department = payload => {
+export const get_all_department = payload => {
 	return {
 		type: GET_ALL_DEPARTMENTS,
 		payload,
 	};
 };
 
-const update_department = (payload, previousData) => {
+export const update_department = (payload, previousData) => {
 	return {
 		type: UPDATE_DEPARTMENT,
 		payload,
@@ -116,7 +116,7 @@ const update_department = (payload, previousData) => {
 	};
 };
 
-const delete_department = payload => {
+export const delete_department = payload => {
 	return {
 		type: DELETE_DEPARTMENT,
 		payload,
@@ -124,21 +124,21 @@ const delete_department = payload => {
 };
 
 //room
-const add_room = payload => {
+export const add_room = payload => {
 	return {
 		type: ADD_ROOM,
 		payload,
 	};
 };
 
-const get_all_room = payload => {
+export const get_all_room = payload => {
 	return {
 		type: GET_ALL_ROOMS,
 		payload,
 	};
 };
 
-const update_room = (payload, previousData) => {
+export const update_room = (payload, previousData) => {
 	return {
 		type: UPDATE_ROOM,
 		payload,
@@ -146,7 +146,7 @@ const update_room = (payload, previousData) => {
 	};
 };
 
-const delete_room = payload => {
+export const delete_room = payload => {
 	return {
 		type: DELETE_ROOM,
 		payload,
@@ -300,21 +300,21 @@ const delete_lab_test_parameter = payload => {
 };
 
 //Leave Category
-const add_leave_category = payload => {
+export const add_leave_category = payload => {
 	return {
 		type: ADD_LEAVE_CATEGORY,
 		payload,
 	};
 };
 
-const get_all_leave_category = payload => {
+export const get_all_leave_category = payload => {
 	return {
 		type: GET_ALL_LEAVE_CATEGORIES,
 		payload,
 	};
 };
 
-const update_leave_category = (payload, previousData) => {
+export const update_leave_category = (payload, previousData) => {
 	return {
 		type: UPDATE_LEAVE_CATEGORY,
 		payload,
@@ -322,7 +322,7 @@ const update_leave_category = (payload, previousData) => {
 	};
 };
 
-const delete_leave_category = payload => {
+export const delete_leave_category = payload => {
 	return {
 		type: DELETE_LEAVE_CATEGORY,
 		payload,
@@ -330,21 +330,21 @@ const delete_leave_category = payload => {
 };
 
 //Specialization
-const add_specialziation = payload => {
+export const add_specialziation = payload => {
 	return {
 		type: ADD_SPECIALIZATION,
 		payload,
 	};
 };
 
-const get_all_specializations = payload => {
+export const get_all_specializations = payload => {
 	return {
 		type: GET_ALL_SPECIALIZATIONS,
 		payload,
 	};
 };
 
-const update_specialization = (payload, previousData) => {
+export const update_specialization = (payload, previousData) => {
 	return {
 		type: UPDATE_SPECIALIZATION,
 		payload,
@@ -352,7 +352,7 @@ const update_specialization = (payload, previousData) => {
 	};
 };
 
-const delete_specialization = payload => {
+export const delete_specialization = payload => {
 	return {
 		type: DELETE_SPECIALIZATION,
 		payload,
@@ -360,21 +360,21 @@ const delete_specialization = payload => {
 };
 
 //Consultating Room
-const add_consultating_room = payload => {
+export const add_consultating_room = payload => {
 	return {
 		type: ADD_CONSULTATING_ROOM,
 		payload,
 	};
 };
 
-const get_all_consultating_rooms = payload => {
+export const get_all_consultating_rooms = payload => {
 	return {
 		type: GET_ALL_CONSULTATING_ROOMS,
 		payload,
 	};
 };
 
-const update_consultating_room = (payload, previousData) => {
+export const update_consultating_room = (payload, previousData) => {
 	return {
 		type: UPDATE_CONSULTATING_ROOM,
 		payload,
@@ -382,14 +382,14 @@ const update_consultating_room = (payload, previousData) => {
 	};
 };
 
-const delete_consultating_room = payload => {
+export const delete_consultating_room = payload => {
 	return {
 		type: DELETE_CONSULTATING_ROOM,
 		payload,
 	};
 };
 
-const get_all_staff = payload => {
+export const get_all_staff = payload => {
 	return {
 		type: LOAD_STAFFS,
 		payload,
@@ -397,7 +397,7 @@ const get_all_staff = payload => {
 };
 
 //Permission
-const add_permission = payload => {
+export const add_permission = payload => {
 	return {
 		type: ADD_PERMISSION,
 		payload,
@@ -411,7 +411,7 @@ export const get_all_permissions = payload => {
 	};
 };
 
-const update_permission = (payload, previousData) => {
+export const update_permission = (payload, previousData) => {
 	return {
 		type: UPDATE_PERMISSION,
 		payload,
@@ -419,7 +419,7 @@ const update_permission = (payload, previousData) => {
 	};
 };
 
-const delete_permission = payload => {
+export const delete_permission = payload => {
 	return {
 		type: DELETE_PERMISSION,
 		payload,
@@ -427,7 +427,7 @@ const delete_permission = payload => {
 };
 
 //Service Category
-const add_service_category = payload => {
+export const add_service_category = payload => {
 	return {
 		type: ADD_SERVICE_CATEGORY,
 		payload,
@@ -441,7 +441,7 @@ export const get_all_service_categories = payload => {
 	};
 };
 
-const update_service_category = (payload, previousData) => {
+export const update_service_category = (payload, previousData) => {
 	return {
 		type: UPDATE_SERVICE_CATEGORY,
 		payload,
@@ -449,7 +449,7 @@ const update_service_category = (payload, previousData) => {
 	};
 };
 
-const delete_service_category = payload => {
+export const delete_service_category = payload => {
 	return {
 		type: DELETE_SERVICE_CATEGORY,
 		payload,
@@ -1454,7 +1454,8 @@ export const getAllService = data => {
 export const updateService = data => {
 	let service_category_id = data.service_category_id
 		? data.service_category_id
-		: data.Category.id;
+		: data.category_id;
+
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
@@ -1588,6 +1589,7 @@ export const addRequestService = data => {
 		});
 	};
 };
+
 export const getAllRequestServices = () => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {

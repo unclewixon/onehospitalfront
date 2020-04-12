@@ -12,7 +12,6 @@ import LeaveCategory from './LeaveCategory';
 import ServicesCategory from './ServiceCategory';
 import Specialization from './Specialization';
 import ConsultatingRoom from './ConsultatingRoom';
-import RequestServices from './RequestServices';
 
 const Settings = ({ match, location }) => {
 	const [toggle, setToggle] = useState(false);
@@ -95,16 +94,6 @@ const Settings = ({ match, location }) => {
 							<span>Specializations</span>
 						</Link>
 					</li>
-					<li className={page === 'request-services' ? 'active' : ''}>
-						<Link to="/settings/request-services">
-							<i className="os-icon os-icon-layers" />
-							<span>
-								Request
-								<br />
-								Services
-							</span>
-						</Link>
-					</li>
 				</ul>
 			</div>
 			<Switch>
@@ -127,10 +116,7 @@ const Settings = ({ match, location }) => {
 					path={`${match.url}/consulting-room`}
 					component={ConsultatingRoom}
 				/>
-				<Route
-					path={`${match.url}/request-services`}
-					component={RequestServices}
-				/>
+
 				<Route component={Roles} />
 			</Switch>
 		</div>
