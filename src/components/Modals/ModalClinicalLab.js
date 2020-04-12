@@ -11,9 +11,6 @@ const ModalClinicalLab = ({
 	activeRequest,
 }) => {
 	const [Loading, setLoading] = useState(false);
-
-	console.log(activeRequest)
-
 	return (
 		<Modal
 			show={showModal}
@@ -154,6 +151,99 @@ const ModalClinicalLab = ({
 							</div>
 						))
 					}
+					{activeRequest &&
+						activeRequest.requestBody &&
+						activeRequest.requestBody.group &&
+						activeRequest.requestBody.group.map(grp => (
+							<div>
+								<div>
+									<div className="ml-4">
+										<p>
+											<span>Group Name: </span>
+											{grp.name}
+										</p>
+									</div>
+									{/* {grp.tests &&
+										grp.tests.map(test => (
+											<div className="ml-2 p-4 bg-white border-2">
+												<p >{test.name}</p>
+												<Table className="table bordered">
+													<thead>
+														<tr>
+															<th>Param Name</th>
+															<th>Range</th>
+															<th>Result</th>
+														</tr>
+													</thead>
+													<tbody>
+														{
+															test.parameters && test.parameters.map(param => (
+																<tr>
+																	<td>
+																		{param.name}
+																	</td>
+																	<td>
+																		{param.refferedRange}
+																	</td>
+																	<td>
+																		<input
+																			type="text"
+																			name="groupTestResult"
+																			id={param.id}
+																			value=""
+																			onChange
+																		/>
+																	</td>
+																</tr>
+															))
+														}
+													</tbody>
+												</Table>
+											</div>
+										))} */}
+									{grp.parameters && grp.parameters.length ? (
+										<div>
+											<div className="ml-4">
+												<p>
+													<span>Parameters: </span>
+												</p>
+											</div>
+											<div className="ml-2 p-4 bg-white border-2">
+												<Table className="table bordered">
+													<thead>
+														<tr>
+															<th>Param Name</th>
+															<th>Range</th>
+															<th>Result</th>
+														</tr>
+													</thead>
+													<tbody>
+														{
+															grp.parameters.map(param => (
+																<tr>
+																	<td>{param.name}</td>
+																	<td>{param.range}</td>
+																	<td>
+																		<input
+																			type="text"
+																			name="groupParameterResult"
+																			id={param.id}
+																			onChange
+																		/>
+																	</td>
+																</tr>
+															))
+														}
+													</tbody>
+												</Table>
+											</div>
+										</div>
+									) : null
+									}
+								</div>
+							</div>
+						))
+					}
 				</div>
 				<div className="mt-4 p-4 bg-light border-2">
 					<div>
@@ -163,6 +253,55 @@ const ModalClinicalLab = ({
 						activeRequest.requestBody &&
 						activeRequest.requestBody.tests &&
 						activeRequest.requestBody.tests.map(tst => (
+							<div>
+								<div className="ml-4">
+									<p>
+										<span>Test Name: </span>
+										{tst.testName}
+									</p>
+								</div>
+								<div className="ml-4">
+									<p>Parameters: </p>
+								</div>
+								{
+									tst.paramenters && tst.paramenters.length ? (
+										<div className="ml-2 p-4 bg-white border-2">
+											<Table className="table bordered">
+												<thead>
+													<tr>
+														<th>Param Name</th>
+														<th>Range</th>
+														<th>Result</th>
+													</tr>
+												</thead>
+												<tbody>
+													{tst.paramenters &&
+														tst.paramenters.map(param => (
+															<tr>
+																<td>{param.name}</td>
+																<td>{param.range}</td>
+																<td>
+																	<input
+																		type="text"
+																		name="parameterResult"
+																		id={param.id}
+																		onChange
+																	/>
+																</td>
+															</tr>
+														))}
+												</tbody>
+											</Table>
+										</div>
+									) : null
+								}
+
+							</div>
+						))}
+						{activeRequest &&
+						activeRequest.requestBody &&
+						activeRequest.requestBody.test &&
+						activeRequest.requestBody.test.map(tst => (
 							<div>
 								<div className="ml-4">
 									<p>
