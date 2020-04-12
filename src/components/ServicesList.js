@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useReducer } from 'react';
 import { connect } from 'react-redux';
+
 import { uploadServiceModal, editService } from '../actions/general';
 import {
 	getAllService,
@@ -13,19 +14,20 @@ import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 
 const ServicesList = props => {
-	const [moreDetailConsultation, setMoreDetailConsultation] = useState(false);
-	const [ServicesList, getServiceList] = useState([]);
+	const [moreDetailConsultation, setMoreDetailConsultation] = useState('');
+	const [ServicesList, setServiceList] = useState([]);
 	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const onMoreDetailConsultation = category => {
-		console.log(category);
 		setMoreDetailConsultation(category);
-		getServiceList(
-			props.ServicesList.filter(service => {
-				return service.category.name === category;
-			})
-		);
+		if (category) {
+			setServiceList(
+				props.ServicesList.filter(service => {
+					return service.category.name === category;
+				})
+			);
+		}
 	};
 
 	const onDeleteService = data => {
@@ -60,6 +62,8 @@ const ServicesList = props => {
 				});
 		}
 		setLoaded(true);
+
+		onMoreDetailConsultation(moreDetailConsultation);
 	}, [props, loaded]);
 	return (
 		<div className="pipelines-w">
@@ -117,14 +121,14 @@ const ServicesList = props => {
 																		<td>{service.name}</td>
 
 																		<td className="row-actions text-right">
-																			<a href="#">
+																			<a>
 																				<i
 																					className="os-icon os-icon-ui-49"
 																					onClick={() =>
 																						props.editService(true, service)
 																					}></i>
 																			</a>
-																			<a href="#">
+																			<a>
 																				<i className="os-icon os-icon-grid-10"></i>
 																			</a>
 																			<a
