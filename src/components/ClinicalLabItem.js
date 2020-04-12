@@ -51,12 +51,12 @@ export class ClinicalLabItem extends Component {
 					</td>
 					<td className="flex">
 						<a className="item-title text-color">
-							{lab.requestedBy ? lab.requestedBy : 'No yet available'}
+							{lab.created_by ? lab.created_by : 'No yet available'}
 						</a>
 					</td>
 
 					<td className="text-right row-actions">
-						<Tooltip title="Receive Request">
+						<Tooltip title="Fill Request">
 							<a className="secondary" onClick={() => {
 							if(typeof modalClick === 'function'){
 								modalClick(lab)
