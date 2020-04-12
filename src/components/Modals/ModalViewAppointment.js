@@ -42,10 +42,12 @@ class ModalViewAppointment extends Component {
 											<div
 												className="up-head-w"
 												style={{
-													backgroundImage: require('../../assets/images/profile_bg1.jpg'),
+													backgroundImage: require('../../assets/images/b3.jpeg'),
 												}}>
 												<div className="up-main-info">
-													<h2 className="up-header">
+													<h2
+														className="up-header"
+														style={{ color: '#334152' }}>
 														{view_appointment_detail.patient.surname}{' '}
 														{view_appointment_detail.patient.other_names}
 													</h2>
@@ -54,55 +56,66 @@ class ModalViewAppointment extends Component {
 
 											<div className="up-contents">
 												<div className="m-b">
-													<div className="row m-b">
-														<div className="col-sm-12 b-b">
-															<div className="el-tablo centered padded-v">
-																<div className="value">
-																	{
-																		view_appointment_detail.patient
-																			.date_of_birth
-																	}
-																</div>
-																<div className="label">Date of Birth</div>
-															</div>
-														</div>
-													</div>
+													<div className="element-box-tp">
+														<table className="table table-clean">
+															<tbody>
+																<tr>
+																	<td>
+																		<div className="text-left">
+																			Date of Birth
+																		</div>
+																	</td>
+																	<td className="text-right">
+																		<div className="value text-success">
+																			{
+																				view_appointment_detail.patient
+																					.date_of_birth
+																			}
+																		</div>
+																	</td>
+																</tr>
+																<tr>
+																	<td>
+																		<div className="text-left">Gender</div>
+																	</td>
+																	<td className="text-right">
+																		<div className="value text-success">
+																			{view_appointment_detail.patient.gender}
+																		</div>
+																	</td>
+																</tr>
 
-													<div className="padded">
-														<div className="os-progress-bar primary">
-															<div className="col-sm-12 b-b">
-																<div className="el-tablo centered padded-v">
-																	<div className="label">Gender</div>
-																	<div className="value">
-																		{view_appointment_detail.patient.gender}
-																	</div>
-																</div>
-															</div>
-														</div>
+																<tr>
+																	<td>
+																		<div className="text-left">
+																			Insurance status
+																		</div>
+																	</td>
+																	<td className="text-right">
+																		<div className="value text-success">
+																			{
+																				view_appointment_detail.patient
+																					.insurranceStatus
+																			}
+																		</div>
+																	</td>
+																</tr>
 
-														<div className="os-progress-bar primary">
-															<div className="col-sm-12 b-b">
-																<div className="el-tablo centered padded-v">
-																	<div className="label">Insurance Status</div>
-																	<div className="value">
-																		{
-																			view_appointment_detail.patient
-																				.insurranceStatus
-																		}
-																	</div>
-																</div>
-															</div>
-														</div>
-														<div className="os-progress-bar primary">
-															<div className="col-sm-12 b-b">
-																<div className="el-tablo centered padded-v">
-																	<div className="label">File Number</div>
-																	<div className="value">
-																		{view_appointment_detail.patient.fileNumber}
-																	</div>
-																</div>
-															</div>
-														</div>
+																<tr>
+																	<td>
+																		<div className="text-left">File Number</div>
+																	</td>
+																	<td className="text-right">
+																		<div className="value text-success">
+																			{
+																				view_appointment_detail.patient
+																					.fileNumber
+																			}
+																		</div>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
 													</div>
 												</div>
 											</div>
@@ -110,7 +123,6 @@ class ModalViewAppointment extends Component {
 									</div>
 									<div className="col-sm-8">
 										<div className="element-wrapper">
-											<form id="formValidate" novalidate="true"></form>
 											<div className="element-info">
 												<div className="element-info-with-icon">
 													<div className="element-info-icon">
@@ -128,66 +140,40 @@ class ModalViewAppointment extends Component {
 													</div>
 												</div>
 											</div>
+											<table className="table table-padded">
+												<tbody>
+													<tr>
+														<td class="font-weight-bold">Appointment Date</td>
+														<td>{view_appointment_detail.appointment_date}</td>
+													</tr>
 
-											<div className="">
-												<div className="row">
-													<div className="col-sm">
-														<div className="form-group">
-															<label>Appointment Date</label>
-															<span className="form-control">
-																{view_appointment_detail.appointment_date}
-															</span>
-														</div>
-													</div>
-												</div>
-
-												<div className="row">
-													<div className="col-sm">
-														<div className="form-group">
-															<label>Department</label>
-															<span className="form-control">
-																{view_appointment_detail.department.name}
-															</span>
-														</div>
-													</div>
-												</div>
-
-												<div className="row">
-													<div className="col-sm">
-														<div className="form-group">
-															<label>Specialization</label>
-															<span className="form-control">
-																{view_appointment_detail.specialization.name}
-															</span>
-														</div>
-													</div>
-												</div>
-
-												<div className="row">
-													<div className="col-sm">
-														<div className="form-group">
-															<label>Whom to See</label>
-															<span className="form-control">
-																{
-																	view_appointment_detail.department?.staff
-																		?.first_name
-																}
-															</span>
-														</div>
-													</div>
-												</div>
-
-												<div className="row">
-													<div className="col-sm">
-														<div className="form-group">
-															<label>Consulting Room</label>
-															<span className="form-control">
-																{view_appointment_detail.consultingRoom.name}
-															</span>
-														</div>
-													</div>
-												</div>
-											</div>
+													<tr>
+														<td class="font-weight-bold">Department</td>
+														<td>{view_appointment_detail.department.name}</td>
+													</tr>
+													<tr>
+														<td class="font-weight-bold">Specialization</td>
+														<td>
+															{view_appointment_detail.specialization.name}
+														</td>
+													</tr>
+													<tr>
+														<td class="font-weight-bold">Whom to See</td>
+														<td>
+															{
+																view_appointment_detail.department.staff
+																	.first_name
+															}
+														</td>
+													</tr>
+													<tr>
+														<td class="font-weight-bold">Consultation Room</td>
+														<td>
+															{view_appointment_detail.consultingRoom.name}
+														</td>
+													</tr>
+												</tbody>
+											</table>
 										</div>
 									</div>
 								</div>

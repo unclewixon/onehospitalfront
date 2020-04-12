@@ -60,12 +60,12 @@ const Lab = props => {
 							</div>
 						</div>
 						{activeRequest ? (
-								<ModalClinicalLab
-									activeRequest={activeRequest}
-									showModal={showModal}
-									onModalClick={onModalClick}
-								/>
-							) : null}
+							<ModalClinicalLab
+								activeRequest={activeRequest}
+								showModal={showModal}
+								onModalClick={onModalClick}
+							/>
+						) : null}
 
 						{dataLoaded ? (
 							<div colSpan="4" className="text-center">
@@ -92,7 +92,7 @@ const Lab = props => {
 										<tbody>
 											{props.Requests && props.Requests.length
 												? props.Requests.map((request, index) => {
-													console.log(request)
+														console.log(request);
 														return (
 															<tr
 																className=""
@@ -111,9 +111,7 @@ const Lab = props => {
 																		)}
 																	</span>
 																</td>
-																<td>
-																	{`${request.created_by.toUpperCase()}`}
-																</td>
+																<td>{`${request.created_by.toUpperCase()}`}</td>
 																<td>{`${request.requestBody.refferredSpecimen}`}</td>
 																<td className="text-center">
 																	{request.status === 1 ? (
