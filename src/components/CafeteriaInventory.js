@@ -26,7 +26,6 @@ const CafeteriaInventory = props => {
 		description: '',
 		category: '',
 		category_id: '',
-
 		item: '',
 		save: true,
 		edit: false,
@@ -121,7 +120,7 @@ const CafeteriaInventory = props => {
 			name: data.name,
 			cost_price: data.cost_price,
 			id: data.id,
-			category_id: category,
+			category_id: category ? category : data.category.id,
 			description: data.description,
 			quantity: data.quantity,
 			stock_code: data.stock_code,

@@ -26,9 +26,11 @@ class RoleBlock extends Component {
 	fetchRoles = async () => {
 		try {
 			const rs = await request(`${API_URI}${rolesAPI}`, 'GET', true);
+			console.log(rs);
 			this.props.loadRoles(rs);
 			this.setState({ loading: false });
 		} catch (error) {
+			console.log(error);
 			this.setState({ loading: false });
 			notifyError(error.message || 'could not fetch roles');
 		}

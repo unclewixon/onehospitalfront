@@ -202,7 +202,9 @@ const Specialization = props => {
 										onSubmit={
 											edit ? onEditSpecialization : onAddSpecialization
 										}>
-										<h5 className="element-box-header">Add New</h5>
+										<h5 className="element-box-header">
+											{edit ? 'Edit Specialization' : 'Add New'}
+										</h5>
 										<div className="form-group">
 											<label className="lighter">Name</label>
 											<div className="input-group mb-2 mr-sm-2 mb-sm-0">

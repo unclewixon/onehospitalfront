@@ -190,7 +190,9 @@ const ServiceCategoryList = props => {
 			<div className="col-lg-4 col-xxl-3">
 				<div className="pipeline white lined-warning">
 					<form onSubmit={edit ? onEditServiceCategory : onAddServiceCat}>
-						<h6 className="form-header">New category</h6>
+						<h6 className="form-header">
+							{edit ? 'Edit Category' : 'New category'}
+						</h6>
 						<div className="form-group">
 							<input
 								className="form-control"
