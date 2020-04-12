@@ -120,7 +120,7 @@ const ServiceCategoryList = props => {
 	const fetchServiceCategories = async () => {
 		setDataLoaded(false);
 		try {
-			const rs = await request(`${API_URI}/rooms/categories`, 'GET', true);
+			const rs = await request(`${API_URI}/services/categories`, 'GET', true);
 			props.get_all_service_categories(rs);
 			setDataLoaded(true);
 		} catch (error) {
