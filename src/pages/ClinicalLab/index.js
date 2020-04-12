@@ -35,14 +35,6 @@ class Clinical extends Component {
 										Dashboard
 									</Link>
 									<Link
-										to={`/lab/recent-request`}
-										className={`mr-2 btn btn-primary btn-sm  ${
-											page === '/recent-request' ? 'btn-outline-primary' : ''
-										}`}>
-										{' '}
-										Recent Request
-									</Link>
-									<Link
 										to={`/lab/filled-request`}
 										className={`mr-2 btn btn-primary btn-sm ${
 											page === '/filled-request' ? 'btn-outline-primary' : ''

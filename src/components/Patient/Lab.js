@@ -9,6 +9,7 @@ import { getRequestByType } from './../../actions/patient';
 import Modal from 'react-bootstrap/Modal';
 import moment from 'moment';
 import Select from 'react-select';
+import ModalClinicalLab from './../Modals/ModalClinicalLab';
 
 const Lab = props => {
 	const [loaded, setLoaded] = useState(false);
@@ -59,59 +60,12 @@ const Lab = props => {
 							</div>
 						</div>
 						{activeRequest ? (
-							<Modal
-								show={showModal}
-								size="lg"
-								aria-labelledby="contained-modal-title-vcenter"
-								centered
-								onHide={onModalClick}>
-								<Modal.Header closeButton>
-									<Modal.Title id="contained-modal-title-vcenter">
-										{`${patient.surname.toUpperCase()} ${patient.other_names.toUpperCase()}`}
-									</Modal.Title>
-								</Modal.Header>
-								<Modal.Body>
-									<div className="row">
-										<div className="form-group col-lg-6">
-											<h5>Request Note</h5>
-											<div>
-												<p className="justify">
-													{activeRequest.requestBody.requestNote}
-												</p>
-											</div>
-										</div>
-										<div className="col-lg-3">
-											<h5>Tests</h5>
-											{activeRequest.requestBody &&
-											activeRequest.requestBody.test
-												? activeRequest.requestBody.test.map((test, index) => {
-														return (
-															<div key={index}>
-																<p>{test.name}</p>
-															</div>
-														);
-												  })
-												: null}
-										</div>
-										<div className="col-lg-3">
-											<h5>Groups</h5>
-											{activeRequest.requestBody &&
-											activeRequest.requestBody.combination
-												? activeRequest.requestBody.combination.map(
-														(combo, index) => {
-															return (
-																<div key={index}>
-																	<p>{combo.name}</p>
-																</div>
-															);
-														}
-												  )
-												: null}
-										</div>
-									</div>
-								</Modal.Body>
-							</Modal>
-						) : null}
+								<ModalClinicalLab
+									activeRequest={activeRequest}
+									showModal={showModal}
+									onModalClick={onModalClick}
+								/>
+							) : null}
 
 						{dataLoaded ? (
 							<div colSpan="4" className="text-center">
@@ -138,6 +92,7 @@ const Lab = props => {
 										<tbody>
 											{props.Requests && props.Requests.length
 												? props.Requests.map((request, index) => {
+													console.log(request)
 														return (
 															<tr
 																className=""
@@ -157,9 +112,9 @@ const Lab = props => {
 																	</span>
 																</td>
 																<td>
-																	{`${patient.surname.toUpperCase()} ${patient.other_names.toUpperCase()}`}
+																	{`${request.created_by.toUpperCase()}`}
 																</td>
-																<td>{request.requestBody.referredSpeciment}</td>
+																<td>{`${request.requestBody.refferredSpecimen}`}</td>
 																<td className="text-center">
 																	{request.status === 1 ? (
 																		<div>
