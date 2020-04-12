@@ -37,7 +37,7 @@ const FetalHeartRate = ({ vitals }) => {
 				.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1))
 				.forEach((item, index) => {
 					const date = moment(item.createdAt).format('DD-MM-YY');
-					const res = { name: date, FHE: item.reading.fetal_heart_rate };
+					const res = { name: date, item: item.reading.fetal_heart_rate };
 					data = [...data, res];
 				});
 
@@ -61,7 +61,13 @@ const FetalHeartRate = ({ vitals }) => {
 						height={300}
 						data={data}
 						margin={{ top: 5, right: 20, bottom: 5, left: 30 }}>
-						<Line type="monotone" dataKey="FHE" stroke="#8884d8" />
+						<Line
+							type="monotone"
+							dataKey="item"
+							unit={unit}
+							name={info.title}
+							stroke="#8884d8"
+						/>
 						<CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
 						<XAxis dataKey="name" />
 						<YAxis

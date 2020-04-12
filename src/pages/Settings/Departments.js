@@ -9,7 +9,7 @@ import { request, confirmAction } from '../../services/utilities';
 import { API_URI } from '../../services/constants';
 import {
 	create_department,
-	get_all_department,
+	loadDepartments,
 	get_all_staff,
 	update_department,
 	delete_department,
@@ -128,7 +128,7 @@ const Departments = props => {
 		setDataLoaded(false);
 		try {
 			const rs = await request(`${API_URI}/departments`, 'GET', true);
-			props.get_all_department(rs);
+			props.loadDepartments(rs);
 			setDataLoaded(true);
 		} catch (error) {
 			setDataLoaded(true);
@@ -198,12 +198,6 @@ const Departments = props => {
 															return (
 																<tr key={i}>
 																	<td className="nowrap">
-																		<span
-																			className={
-																				department.isActive
-																					? 'status-pill smaller green'
-																					: 'status-pill smaller red'
-																			}></span>
 																		<span>{department.name}</span>
 																	</td>
 																	<td>
@@ -349,7 +343,7 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
 	create_department,
-	get_all_department,
+	loadDepartments,
 	get_all_staff,
 	update_department,
 	delete_department,

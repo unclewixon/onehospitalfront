@@ -19,9 +19,7 @@ const NoMatch = lazy(() => import('./pages/NoMatch'));
 const FrontDesk = lazy(() => import('./pages/FrontDesk/index'));
 const InPatient = lazy(() => import('./pages/InPatient'));
 const PatientProfile = lazy(() => import('./pages/PatientProfile'));
-const Pharmacy = lazy(() => import('./pages/Inventory/Pharmacy'));
-const Pharmacy2 = lazy(() => import('./pages/Pharmacy'));
-const Vitals = lazy(() => import('./pages/Vitals'));
+const Pharmacy = lazy(() => import('./pages/Pharmacy'));
 const Staff = lazy(() => import('./pages/HR/index'));
 const Inventory = lazy(() => import('./pages/Inventory/index'));
 const Settings = lazy(() => import('./pages/Settings'));
@@ -83,12 +81,10 @@ class App extends Component {
 												<Route path="/front-desk" component={FrontDesk} />
 												<Route path="/in-patient" component={InPatient} />
 												<Route path="/pharmacy" component={Pharmacy} />
-												<Route path="/pharmacy2" component={Pharmacy2} />
 												<Route path="/radiology" component={Radiology} />
 												<Route path="/antennatal" component={Antennatal} />
 												<Route path="/ivf" component={IVF} />
 												<Route path="/nicu" component={Nicu} />
-												<Route path="/vitals" component={Vitals} />
 												<Route path="/hr" component={Staff} />
 												<Route path="/inventory" component={Inventory} />
 												<Route path="/settings" component={Settings} />

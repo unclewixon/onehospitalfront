@@ -3,17 +3,17 @@ import { connect } from 'react-redux';
 
 import AppraisalItem from '../../components/AppraisalItem';
 import { request } from '../../services/utilities';
-import { API_URI, staffAPI } from '../../services/constants';
+import { API_URI, appraisalAPI } from '../../services/constants';
 import { loadAppraisals } from '../../actions/hr';
 
 class Appraisal extends Component {
 	componentDidMount() {
 		this.fetchApprasails();
 	}
-	
+
 	fetchApprasails = async () => {
 		try {
-			const rs = await request(`${API_URI}${staffAPI}`, 'GET', true);
+			const rs = await request(`${API_URI}${appraisalAPI}`, 'GET', true);
 			this.props.loadAppraisals(rs);
 		} catch (error) {
 			console.log(error);
@@ -44,15 +44,11 @@ class Appraisal extends Component {
 												</tr>
 											</thead>
 											<tbody>
-												{appraisals.map((item, i) => {
-													return (
-														<AppraisalItem
-															key={i}
-															item={item}
-															approved={1}
-														/>
-													)
-												})}
+												{/* {appraisals.map((item, i) => {
+													return ( */}
+												<AppraisalItem key={1} item={null} approved={1} />
+												{/* ) */}
+												{/* })} */}
 											</tbody>
 										</table>
 									</div>
@@ -69,7 +65,7 @@ class Appraisal extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		appraisals: state.hr.appraisals,
-	}
+	};
 };
 
 export default connect(mapStateToProps, { loadAppraisals })(Appraisal);

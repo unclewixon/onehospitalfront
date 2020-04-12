@@ -21,6 +21,7 @@ export const inventoryUploadAPI = '/inventory/stocks/bulk-upload';
 export const inventorySubCatAPI = '/inventory/sub-categories';
 export const rolesAPI = '/settings/roles';
 export const staffAPI = '/hr/staffs';
+export const appraisalAPI = '/hr/appraisal';
 export const leaveMgtAPI = '/hr/leave-management';
 export const rosterAPI = '/hr/housekeeping';
 export const searchAPI = '/patient/find';

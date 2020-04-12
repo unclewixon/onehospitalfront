@@ -101,7 +101,7 @@ export const create_department = payload => {
 	};
 };
 
-export const get_all_department = payload => {
+export const loadDepartments = payload => {
 	return {
 		type: GET_ALL_DEPARTMENTS,
 		payload,
@@ -337,7 +337,7 @@ export const add_specialziation = payload => {
 	};
 };
 
-export const get_all_specializations = payload => {
+export const loadSpecializations = payload => {
 	return {
 		type: GET_ALL_SPECIALIZATIONS,
 		payload,
@@ -543,7 +543,7 @@ export const getAllDepartments = () => {
 			axios
 				.get(`${API_URI}/departments`)
 				.then(response => {
-					dispatch(get_all_department(response.data));
+					dispatch(loadDepartments(response.data));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -1150,7 +1150,7 @@ export const getAllSpecialization = data => {
 			axios
 				.get(`${API_URI}/specializations`)
 				.then(response => {
-					dispatch(get_all_specializations(response.data));
+					dispatch(loadSpecializations(response.data));
 					return resolve({ success: true });
 				})
 				.catch(error => {
