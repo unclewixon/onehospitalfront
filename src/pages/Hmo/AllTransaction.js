@@ -347,6 +347,7 @@ export class AllTransaction extends Component {
 										<tr>
 											<th className="text-center">Date</th>
 											<th className="text-center">Hmo name</th>
+											<th className="text-center">Patient name</th>
 											<th className="text-center">Transaction Type</th>
 											<th className="text-center">Amount(&#x20A6;)</th>
 											<th className="text-center">Status</th>
@@ -371,6 +372,10 @@ export class AllTransaction extends Component {
 														<td className="text-center">
 															{moment(request.createdAt).format('DD-MM-YYYY')}
 														</td>
+														<td className="text-center">
+															{request.hmo_name ? request.hmo_name : 'No hmo'}
+														</td>
+
 														<td className="text-center">
 															{request.patient_name}
 														</td>

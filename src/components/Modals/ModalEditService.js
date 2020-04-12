@@ -79,7 +79,7 @@ class ModalEditService extends Component {
 	componentDidMount() {
 		let { data } = this.props.edit_service;
 		let { name, tariff, gracePeriod, noOfVisits, note } = data;
-		let { category_id } = data.category.id;
+		let category_id = data.category.id;
 		let sub_category_id = data.subCategory ? data.subCategory.id : null;
 		const { ServiceCategories } = this.props;
 		let { id, category, subCategory } = data;
@@ -185,7 +185,7 @@ class ModalEditService extends Component {
 										placeholder="Name"
 										type="text"
 										name="name"
-										value={name}
+										defaultValue={name}
 										onChange={this.handleInputChange}
 									/>
 								</div>
@@ -195,7 +195,7 @@ class ModalEditService extends Component {
 										placeholder=" Tariff"
 										type="text"
 										name="tariff"
-										value={tariff}
+										defaultValue={tariff}
 										onChange={this.handleInputChange}
 									/>
 								</div>
@@ -205,7 +205,7 @@ class ModalEditService extends Component {
 										placeholder="Grace Period (1 week)"
 										type="text"
 										name="gracePeriod"
-										value={gracePeriod}
+										defaultValue={gracePeriod}
 										onChange={this.handleInputChange}
 									/>
 								</div>
@@ -215,7 +215,7 @@ class ModalEditService extends Component {
 										placeholder=" No of Visits (2)"
 										type="text"
 										name="noOfVisits"
-										value={noOfVisits}
+										defaultValue={noOfVisits}
 										onChange={this.handleInputChange}
 									/>
 								</div>
@@ -225,7 +225,7 @@ class ModalEditService extends Component {
 										placeholder="Note"
 										type="text"
 										name="note"
-										value={note}
+										defaultValue={note}
 										onChange={this.handleInputChange}
 									/>
 								</div>

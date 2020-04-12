@@ -108,21 +108,15 @@ export const request = async (url, method, authed = false, data) => {
 	// prettier-ignore
 	const user = await (new SSRStorage()).getItem(TOKEN_COOKIE);
 
-	if (method === 'DELETE') {
-		const response = await fetch(url, {
-			method: method,
-			headers: authed ? headers(user) : { ...defaultHeaders },
-			body: JSON.stringify(data),
-		});
-		const result = await checkStatus(response);
-		return { success: true };
-	}
 	const response = await fetch(url, {
 		method: method,
 		headers: authed ? headers(user) : { ...defaultHeaders },
 		body: JSON.stringify(data),
 	});
 	const result = await checkStatus(response);
+	if (method === 'DELETE') {
+		return { success: true };
+	}
 	return parseJSON(result);
 };
 

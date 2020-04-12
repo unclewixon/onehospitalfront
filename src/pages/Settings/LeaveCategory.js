@@ -147,11 +147,11 @@ const LeaveCategory = props => {
 						<div className="col-lg-8">
 							<div className="row">
 								{!dataLoaded ? (
-									<tr>
-										<td colSpan="4" className="text-center">
+									<div>
+										<span colSpan="4" className="text-center">
 											<img alt="searching" src={searchingGIF} />
-										</td>
-									</tr>
+										</span>
+									</div>
 								) : (
 									<>
 										{props.leaveCategories.map((leaveCategory, i) => {
@@ -199,7 +199,9 @@ const LeaveCategory = props => {
 								<div className="element-box">
 									<form
 										onSubmit={edit ? onEditLeaveCategory : onAddLeaveCategory}>
-										<h5 className="element-box-header">Add New</h5>
+										<h5 className="element-box-header">
+											{edit ? 'Edit Leave' : 'Add New'}
+										</h5>
 										<div className="form-group">
 											<label className="lighter">Type of leave</label>
 											<div className="input-group mb-2 mr-sm-2 mb-sm-0">

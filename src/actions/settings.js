@@ -1454,7 +1454,8 @@ export const getAllService = data => {
 export const updateService = data => {
 	let service_category_id = data.service_category_id
 		? data.service_category_id
-		: data.Category.id;
+		: data.category_id;
+
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios

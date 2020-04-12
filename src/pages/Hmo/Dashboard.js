@@ -120,6 +120,7 @@ export class Dashboard extends Component {
 									<tr>
 										<th className="text-center">Date</th>
 										<th className="text-center">Hmo name</th>
+										<th className="text-center">Patient name</th>
 										<th className="text-center">Transaction Type</th>
 										<th className="text-center">Amount(&#x20A6;)</th>
 										<th className="text-center">Status</th>
@@ -132,7 +133,7 @@ export class Dashboard extends Component {
 								<tbody>
 									{loading ? (
 										<tr>
-											<td className="text-center">
+											<td colSpan="7" className="text-center">
 												<img alt="searching" src={searchingGIF} />
 											</td>
 										</tr>
@@ -143,6 +144,9 @@ export class Dashboard extends Component {
 												<tr>
 													<td className="text-center">
 														{moment(trans.createdAt).format('DD-MM-YYYY')}
+													</td>
+													<td className="text-center">
+														{request.hmo_name ? request.hmo_name : 'No hmo'}
 													</td>
 													<td className="text-center"> {trans.patient_name}</td>
 													<td className="text-center">
@@ -176,7 +180,7 @@ export class Dashboard extends Component {
 
 									{!loading && hmoTransactions.length < 1 ? (
 										<tr>
-											<td colSpan="6" className="text-center">
+											<td colSpan="7" className="text-center">
 												No transaction today
 											</td>
 										</tr>
