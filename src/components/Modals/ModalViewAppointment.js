@@ -169,8 +169,8 @@ class ModalViewAppointment extends Component {
 															<label>Whom to See</label>
 															<span className="form-control">
 																{
-																	view_appointment_detail.department.staff
-																		.first_name
+																	view_appointment_detail.department?.staff
+																		?.first_name
 																}
 															</span>
 														</div>

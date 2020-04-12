@@ -31,7 +31,6 @@ const Appointment = props => {
 	};
 
 	useEffect(() => {
-		console.log('ff');
 		getAppointments();
 	}, []);
 
