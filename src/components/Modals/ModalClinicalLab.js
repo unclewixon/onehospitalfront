@@ -11,7 +11,6 @@ const ModalClinicalLab = ({
 	activeRequest,
 }) => {
 	const [Loading, setLoading] = useState(false);
-
 	return (
 		<Modal
 			show={showModal}
@@ -61,6 +60,57 @@ const ModalClinicalLab = ({
 					</div>
 					{activeRequest &&
 						activeRequest.requestBody &&
+						activeRequest.requestBody.groups &&
+						activeRequest.requestBody.groups.map(grp => (
+							<div>
+								<div>
+									<div className="ml-4">
+										<p>
+											<span>Group Name: </span>
+											{grp.name}
+										</p>
+									</div>
+									{grp.parameters && grp.parameters.length ? (
+										<div>
+											<div className="ml-4">
+												<p>
+													<span>Parameters: </span>
+												</p>
+											</div>
+											<div className="ml-2 p-4 bg-white border-2">
+												<Table className="table bordered">
+													<thead>
+														<tr>
+															<th>Param Name</th>
+															<th>Range</th>
+															<th>Result</th>
+														</tr>
+													</thead>
+													<tbody>
+														{grp.parameters.map(param => (
+															<tr>
+																<td>{param.name}</td>
+																<td>{param.range}</td>
+																<td>
+																	<input
+																		type="text"
+																		name="groupParameterResult"
+																		id={param.id}
+																		onChange
+																	/>
+																</td>
+															</tr>
+														))}
+													</tbody>
+												</Table>
+											</div>
+										</div>
+									) : null}
+								</div>
+							</div>
+						))}
+					{activeRequest &&
+						activeRequest.requestBody &&
 						activeRequest.requestBody.group &&
 						activeRequest.requestBody.group.map(grp => (
 							<div>
@@ -71,7 +121,7 @@ const ModalClinicalLab = ({
 											{grp.name}
 										</p>
 									</div>
-									{grp.tests &&
+									{/* {grp.tests &&
 										grp.tests.map(test => (
 											<div className="ml-2 p-4 bg-white border-2">
 												<p>{test.name}</p>
@@ -103,7 +153,7 @@ const ModalClinicalLab = ({
 													</tbody>
 												</Table>
 											</div>
-										))}
+										))} */}
 									{grp.parameters && grp.parameters.length ? (
 										<div>
 											<div className="ml-4">
@@ -124,13 +174,12 @@ const ModalClinicalLab = ({
 														{grp.parameters.map(param => (
 															<tr>
 																<td>{param.name}</td>
-																<td>{param.referredRange}</td>
+																<td>{param.range}</td>
 																<td>
 																	<input
 																		type="text"
 																		name="groupParameterResult"
 																		id={param.id}
-																		value=""
 																		onChange
 																	/>
 																</td>
@@ -151,42 +200,19 @@ const ModalClinicalLab = ({
 					</div>
 					{activeRequest &&
 						activeRequest.requestBody &&
-						activeRequest.requestBody.test &&
-						activeRequest.requestBody.test.map(tst => (
+						activeRequest.requestBody.tests &&
+						activeRequest.requestBody.tests.map(tst => (
 							<div>
 								<div className="ml-4">
-									<p>Test Name: </p>
+									<p>
+										<span>Test Name: </span>
+										{tst.testName}
+									</p>
 								</div>
-								{
-									<Table className="table bordered">
-										<thead>
-											<tr>
-												<th>Test Name</th>
-												<th>Range</th>
-												<th>Result</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>{tst.name}</td>
-												<td>{tst.referredRange}</td>
-												<td>
-													<input
-														type="text"
-														name="testResult"
-														value=""
-														onChange
-													/>
-												</td>
-											</tr>
-											))}
-										</tbody>
-									</Table>
-								}
 								<div className="ml-4">
 									<p>Parameters: </p>
 								</div>
-								{tst.parameters && tst.parameters.length ? (
+								{tst.paramenters && tst.paramenters.length ? (
 									<div className="ml-2 p-4 bg-white border-2">
 										<Table className="table bordered">
 											<thead>
@@ -197,17 +223,62 @@ const ModalClinicalLab = ({
 												</tr>
 											</thead>
 											<tbody>
-												{tst.parameters &&
-													tst.parameters.map(param => (
+												{tst.paramenters &&
+													tst.paramenters.map(param => (
 														<tr>
 															<td>{param.name}</td>
-															<td>{param.referredRange}</td>
+															<td>{param.range}</td>
 															<td>
 																<input
 																	type="text"
 																	name="parameterResult"
 																	id={param.id}
-																	value=""
+																	onChange
+																/>
+															</td>
+														</tr>
+													))}
+											</tbody>
+										</Table>
+									</div>
+								) : null}
+							</div>
+						))}
+					{activeRequest &&
+						activeRequest.requestBody &&
+						activeRequest.requestBody.test &&
+						activeRequest.requestBody.test.map(tst => (
+							<div>
+								<div className="ml-4">
+									<p>
+										<span>Test Name: </span>
+										{tst.testName}
+									</p>
+								</div>
+								<div className="ml-4">
+									<p>Parameters: </p>
+								</div>
+								{tst.paramenters && tst.paramenters.length ? (
+									<div className="ml-2 p-4 bg-white border-2">
+										<Table className="table bordered">
+											<thead>
+												<tr>
+													<th>Param Name</th>
+													<th>Range</th>
+													<th>Result</th>
+												</tr>
+											</thead>
+											<tbody>
+												{tst.paramenters &&
+													tst.paramenters.map(param => (
+														<tr>
+															<td>{param.name}</td>
+															<td>{param.range}</td>
+															<td>
+																<input
+																	type="text"
+																	name="parameterResult"
+																	id={param.id}
 																	onChange
 																/>
 															</td>

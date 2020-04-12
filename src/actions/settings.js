@@ -153,21 +153,21 @@ export const delete_room = payload => {
 	};
 };
 
-const add_room_category = payload => {
+export const add_room_category = payload => {
 	return {
 		type: ADD_ROOM_CATEGORY,
 		payload,
 	};
 };
 
-const get_all_room_category = payload => {
+export const get_all_room_category = payload => {
 	return {
 		type: GET_ALL_ROOM_CATEGORIES,
 		payload,
 	};
 };
 
-const update_room_category = (payload, previousData) => {
+export const update_room_category = (payload, previousData) => {
 	return {
 		type: UPDATE_ROOM_CATEGORY,
 		payload,
@@ -175,7 +175,7 @@ const update_room_category = (payload, previousData) => {
 	};
 };
 
-const delete_room_category = payload => {
+export const delete_room_category = payload => {
 	return {
 		type: DELETE_ROOM_CATEGORY,
 		payload,

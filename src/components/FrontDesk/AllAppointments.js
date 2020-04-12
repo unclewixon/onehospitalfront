@@ -5,7 +5,11 @@ import { request } from '../../services/utilities';
 import { API_URI, transactionsAPI } from '../../services/constants';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { applyVoucher, approveTransaction } from '../../actions/general';
+import {
+	applyVoucher,
+	approveTransaction,
+	viewAppointmentDetail,
+} from '../../actions/general';
 import { deleteTransaction, loadTransaction } from '../../actions/transaction';
 import DatePicker from 'antd/lib/date-picker';
 import searchingGIF from '../../assets/images/searching.gif';
@@ -16,6 +20,7 @@ const paymentStatus = [
 	{ value: 0, label: 'processing' },
 	{ value: 1, label: 'done' },
 ];
+
 export class AllAppointments extends Component {
 	state = {
 		filtering: false,
@@ -53,6 +58,25 @@ export class AllAppointments extends Component {
 		}
 	};
 
+	ViewAppointmentDetail = async appointment => {
+		console.log(appointment.q_appointment_id);
+		try {
+			this.setState({ loading: true });
+			const rs = await request(
+				`${API_URI}/front-desk/appointments/view/` +
+					appointment.q_appointment_id,
+				'GET',
+				true
+			);
+			console.log(rs);
+			this.setState({ loading: false });
+			this.props.viewAppointmentDetail(rs);
+		} catch (error) {
+			console.log(error);
+			this.setState({ loading: false });
+		}
+	};
+
 	doFilter = e => {
 		e.preventDefault();
 		this.setState({ filtering: true });
@@ -75,6 +99,7 @@ export class AllAppointments extends Component {
 			endDate: date[1],
 		});
 	};
+
 	render() {
 		const { filtering, loading } = this.state;
 		const transactions = this.props.reviewTransaction;
@@ -117,6 +142,7 @@ export class AllAppointments extends Component {
 											<th className="text-center">Patient Name</th>
 											<th className="text-center">Department</th>
 											<th className="text-center">Status</th>
+											<th className="text-center">Actions</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -145,7 +171,18 @@ export class AllAppointments extends Component {
 															{transaction.q_department_id}
 														</td>
 														<td className="text-center">
-															{transaction.q_status}
+															{transaction.q_status === 1
+																? 'Attend'
+																: 'Did Not Attend'}
+														</td>
+														<td>
+															<a
+																href="#"
+																onClick={() =>
+																	this.ViewAppointmentDetail(transaction)
+																}>
+																<i className="os-icon os-icon-folder"></i>
+															</a>
 														</td>
 													</tr>
 												);
@@ -176,6 +213,7 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps, {
 	applyVoucher,
 	approveTransaction,
+	viewAppointmentDetail,
 	loadTransaction,
 	deleteTransaction,
 })(AllAppointments);

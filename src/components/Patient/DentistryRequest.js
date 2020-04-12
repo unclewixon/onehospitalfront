@@ -133,7 +133,7 @@ const DentistryRequest = props => {
 					<div className="form-block w-100">
 						<form onSubmit={handleSubmit(onSubmit)}>
 							<div className="row">
-								<div className="form-group col-sm-6">
+								<div className="form-group col-sm-12">
 									<label>Request Type</label>
 
 									<input

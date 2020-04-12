@@ -1,16 +1,17 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { confirmAction } from '../services/utilities';
+import { request, confirmAction } from '../services/utilities';
+import { API_URI } from '../services/constants';
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 
 import {
-	addRoomCategory,
-	getAllRoomCategories,
-	updateRoomCategory,
-	deleteRoomCategory,
+	add_room_category,
+	get_all_room_category,
+	update_room_category,
+	delete_room_category,
 } from '../actions/settings';
 
 const RoomCategory = props => {
@@ -24,7 +25,7 @@ const RoomCategory = props => {
 	const [{ name, price, discount }, setState] = useState(initialState);
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
-	const [data, getDataToEdit] = useState(null);
+	const [payload, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
@@ -33,40 +34,59 @@ const RoomCategory = props => {
 		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onAddRoom = e => {
+	const onAddRoom = async e => {
 		setLoading(true);
 		e.preventDefault();
-		props
-			.addRoomCategory({ name, price, discount })
-			.then(response => {
-				setLoading(false);
-				setState({ ...initialState });
-				notifySuccess('Room Category created');
-			})
-			.catch(error => {
-				setLoading(false);
-				setState({ ...initialState });
-				notifyError('Error creating room category');
-			});
+		let data = {
+			name,
+			price,
+			discount,
+		};
+		try {
+			const rs = await request(
+				`${API_URI}/rooms/categories`,
+				'POST',
+				true,
+				data
+			);
+			props.add_room_category(rs);
+			setLoading(false);
+			setState({ ...initialState });
+			notifySuccess('Room Category created');
+		} catch (error) {
+			setLoading(false);
+			setState({ ...initialState });
+			notifyError(error || 'Error creating room category');
+		}
 	};
 
-	const onEditRoomCategory = e => {
+	const onEditRoomCategory = async e => {
 		setLoading(true);
 		e.preventDefault();
-		props
-			.updateRoomCategory({ id: data.id, name, price, discount }, data)
-			.then(response => {
-				setState({ ...initialState });
-				setSubmitButton({ create: true, edit: false });
-				setLoading(false);
-				notifySuccess('Room Category updated');
-			})
-			.catch(error => {
-				setState({ ...initialState });
-				setSubmitButton({ create: true, edit: false });
-				setLoading(false);
-				notifyError('Error updating room category');
-			});
+
+		let data = {
+			name,
+			price,
+			discount,
+		};
+		try {
+			const rs = await request(
+				`${API_URI}/rooms/categories/${payload.id}/update`,
+				'PATCH',
+				true,
+				data
+			);
+			props.update_room_category(rs, payload);
+			setState({ ...initialState });
+			setSubmitButton({ create: true, edit: false });
+			setLoading(false);
+			notifySuccess('Room Category updated');
+		} catch (error) {
+			setState({ ...initialState });
+			setSubmitButton({ create: true, edit: false });
+			setLoading(false);
+			notifyError('Error updating room category');
+		}
 	};
 
 	const onClickEdit = data => {
@@ -86,34 +106,37 @@ const RoomCategory = props => {
 		setState({ ...initialState });
 	};
 
-	const onDeleteRoomCategory = data => {
-		props
-			.deleteRoomCategory(data)
-			.then(response => {
-				notifySuccess('Room Category deleted');
-			})
-			.catch(error => {
-				notifyError('Error deleting room category');
-			});
+	const onDeleteRoomCategory = async data => {
+		try {
+			await request(`${API_URI}/rooms/categories/${data.id}`, 'DELETE', true);
+			props.delete_room_category(data);
+			setLoading(false);
+			notifySuccess('Room Category deleted');
+		} catch (error) {
+			setLoading(false);
+			notifyError('Error deleting room category');
+		}
 	};
 
 	const confirmDelete = data => {
 		confirmAction(onDeleteRoomCategory, data);
 	};
 
-	useEffect(() => {
-		if (!loaded) {
-			props
-				.getAllRoomCategories()
-				.then(response => {
-					setDataLoaded(true);
-				})
-				.catch(e => {
-					notifyError(e.message || 'could not fetch room categories');
-				});
+	const fetchRoomCategory = async () => {
+		setDataLoaded(false);
+		try {
+			const rs = await request(`${API_URI}/rooms/categories`, 'GET', true);
+			props.get_all_room_category(rs);
+			setDataLoaded(true);
+		} catch (error) {
+			setDataLoaded(true);
+			notifyError(error.message || 'could not room categories!');
 		}
-		setLoaded(true);
-	}, [loaded, props]);
+	};
+
+	useEffect(() => {
+		fetchRoomCategory();
+	}, []);
 
 	return (
 		<div className="row">
@@ -256,8 +279,8 @@ const mapStateToProps = state => {
 };
 
 export default connect(mapStateToProps, {
-	addRoomCategory,
-	getAllRoomCategories,
-	updateRoomCategory,
-	deleteRoomCategory,
+	add_room_category,
+	get_all_room_category,
+	update_room_category,
+	delete_room_category,
 })(RoomCategory);

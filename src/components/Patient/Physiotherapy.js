@@ -153,7 +153,7 @@ class Physiotherapy extends Component {
 										<tbody>
 											{loaded ? (
 												<tr>
-													<td colSpan="4" className="text-center">
+													<td colSpan="6" className="text-center">
 														<img alt="searching" src={searchingGIF} />
 													</td>
 												</tr>
