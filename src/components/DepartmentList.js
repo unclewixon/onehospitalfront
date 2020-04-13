@@ -21,14 +21,6 @@ class DepartmentList extends Component {
 
 	fetchDepartments = async () => {
 		this.setState({ loading: true });
-		try {
-			const rs = await request(`${API_URI}/departments`, 'GET', true);
-			this.props.get_all_department(rs);
-			this.setState({ loading: false });
-		} catch (error) {
-			this.setState({ loading: false });
-			notifyError(error.message || 'could not fetch departments!');
-		}
 	};
 
 	onDeleteDepartment = data => {

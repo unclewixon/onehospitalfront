@@ -115,7 +115,7 @@ export const request = async (url, method, authed = false, data) => {
 	});
 	const result = await checkStatus(response);
 	if (method === 'DELETE') {
-		return { success: true };
+		return { result };
 	}
 	return parseJSON(result);
 };
