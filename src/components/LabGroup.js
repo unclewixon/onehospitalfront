@@ -6,6 +6,7 @@ import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import { confirmAlert } from 'react-confirm-alert';
+import intersectionBy from 'lodash.intersectionby';
 import LabParameterPicker from './LabParameterPicker';
 
 import {
@@ -73,6 +74,16 @@ const LabGroup = props => {
 		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
+	const labTestOptions = props && props.LabTests ? props.LabTests.map(tests => {
+		return { value: tests.id, label: tests.name, id: tests.id };
+	}) : [];
+
+	const lab_test = labTests
+		? intersectionBy(props.LabTests, labTests, 'id')
+		: [];
+
+		console.log(lab_test)
+
 	const onAddLabGroup = e => {
 		setLoading(true);
 		e.preventDefault();
@@ -87,7 +98,7 @@ const LabGroup = props => {
 				parameters: params,
 				testType,
 				description,
-				labTests,
+				lab_test,
 			})
 			.then(response => {
 				setState({ ...initialState });
@@ -100,6 +111,7 @@ const LabGroup = props => {
 			.catch(error => {
 				setParameter({});
 				setParamsUI([]);
+				setLoading(false);
 				setLabTests(null);
 				notifyError('Error creating lab group');
 			});
@@ -204,10 +216,6 @@ const LabGroup = props => {
 		}
 		setLoaded(true);
 	}, [loaded, props]);
-
-	const labTestOptions = props.LabTests.map(tests => {
-		return { value: tests.name, label: tests.name, id: tests.id };
-	});
 
 	const addParameterUI = () => {
 		let paramUI = [...paramsUI, LabParameterPicker];
