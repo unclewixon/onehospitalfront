@@ -215,6 +215,7 @@ export const renderMultiselect = ({
 	data,
 	valueField,
 	textField,
+	placeholder,
 	label,
 }) => (
 	<Multiselect
@@ -222,6 +223,7 @@ export const renderMultiselect = ({
 		onBlur={() => input.onBlur()}
 		value={input.value || []} // requires value to be an array
 		data={data}
+		placeholder={placeholder}
 		valueField={valueField}
 		textField={textField}
 		label={label}
@@ -274,13 +276,13 @@ export const confirmAction = (action, payload, alertText, alertHead) => {
 					<p>{alertText ? alertText : 'You want to delete this remove'}</p>
 					<div>
 						<button
-							className="btn btn-primary"
+							className="btn btn-danger"
 							style={{ margin: 10 }}
 							onClick={onClose}>
 							No
 						</button>
 						<button
-							className="btn btn-danger"
+							className="btn btn-primary"
 							style={{ margin: 10 }}
 							onClick={onclick}>
 							Yes
