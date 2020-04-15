@@ -14,7 +14,7 @@ const PharmRecentRequest = lazy(() =>
 const PharmAllRequest = lazy(() => import('../components/PharmAllRequest'));
 const PharmFillRequest = lazy(() => import('../components/PharmFillRequest'));
 const PharmNewRequest = lazy(() => import('../components/PharmNewRequest'));
-export class Pharmacy2 extends Component {
+export class Pharmacy extends Component {
 	render() {
 		const { match, location } = this.props;
 		const page = location.pathname.split('/').pop();
@@ -99,4 +99,4 @@ export class Pharmacy2 extends Component {
 	}
 }
 
-export default withRouter(Pharmacy2);
+export default withRouter(Pharmacy);

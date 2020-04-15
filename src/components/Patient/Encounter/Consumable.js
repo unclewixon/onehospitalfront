@@ -95,11 +95,10 @@ class Consumable extends Component {
 										/>
 									</div>
 								</div>
-								<div className="col-sm-1" style={{position: 'relative'}}>
+								<div className="col-sm-1" style={{ position: 'relative' }}>
 									<a
 										className="text-danger delete-icon"
-										onClick={this.removeItem(item.id)}
-										>
+										onClick={this.removeItem(item.id)}>
 										<i className="os-icon os-icon-cancel-circle" />
 									</a>
 								</div>

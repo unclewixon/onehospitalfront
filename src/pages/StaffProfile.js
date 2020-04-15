@@ -14,6 +14,9 @@ const EditStaff = lazy(() => import('../components/StaffBlock/EditStaff'));
 const Billing = lazy(() => import('../components/StaffBlock/Billing'));
 const DutyRooster = lazy(() => import('../components/StaffBlock/DutyRooster'));
 const ExcuseDuty = lazy(() => import('../components/StaffBlock/ExcuseDuty'));
+const CreateAppraisal = lazy(() =>
+	import('../components/StaffBlock/CreateAppraisal')
+);
 const LeaveRequest = lazy(() =>
 	import('../components/StaffBlock/LeaveRequest')
 );
@@ -42,6 +45,8 @@ const Page = ({ location }) => {
 			return <Appraisal />;
 		case 'create-leave':
 			return <CreateLeave />;
+		case 'create-appraisal':
+			return <CreateAppraisal />;
 		case 'create-excuse':
 			return <CreateExcuseDuty />;
 
@@ -59,7 +64,6 @@ class StaffProfile extends Component {
 	componentDidMount() {
 		const { location } = this.props;
 		if (!location.hash) {
-			console.log(location.pathname);
 			this.props.history.push(`${location.pathname}#dashboard`);
 		}
 	}

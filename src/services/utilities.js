@@ -7,6 +7,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import JwtDecode from 'jwt-decode';
 import Multiselect from 'react-widgets/lib/Multiselect';
 import DatePicker from 'react-datepicker';
+import moment from 'moment';
 
 import SSRStorage from './storage';
 import { API_URI, patientAPI, TOKEN_COOKIE } from './constants';
@@ -97,8 +98,9 @@ export const requestPatch = async (url, authed = false, data) => {
 	axios.defaults.headers.post['Accept'] = 'application/json';
 	if (authed) {
 		console.log('f');
-		const token = await new SSRStorage().getItem(TOKEN_COOKIE);
-		axios.defaults.headers.common['Authorization'] = token;
+		// prettier-ignore
+		const user = await (new SSRStorage()).getItem(TOKEN_COOKIE);
+		axios.defaults.headers.common['Authorization'] = user.token;
 	}
 	const result = await axios.patch(url, data);
 	return parseJSON(result);
@@ -114,8 +116,9 @@ export const request = async (url, method, authed = false, data) => {
 		body: JSON.stringify(data),
 	});
 	const result = await checkStatus(response);
+	//this is going to affect other API implementations where delete is used and an actual result was expected to be returned and used. Lets comment it out for now.
 	if (method === 'DELETE') {
-		return { success: true };
+		//return { success: true };
 	}
 	return parseJSON(result);
 };
@@ -408,7 +411,56 @@ export const getUser = async () => {
 
 export const redirectToPage = (role, history) => {
 	console.log(role);
-	history.push('/settings/roles');
+	let uri = '';
+	switch (role.slug) {
+		case 'front-desk':
+			uri = '/front-desk';
+			break;
+		case 'hr':
+			uri = '/hr/staffs';
+			break;
+		case 'inventory':
+			uri = '/inventory/categories';
+			break;
+		case 'cafeteria':
+			uri = '/cafeteria';
+			break;
+		case 'admin':
+			uri = '/settings/roles';
+			break;
+		case 'hmo':
+			uri = '/hmo/dashboard';
+			break;
+		case 'billing':
+			uri = '/billing-paypoint';
+			break;
+		case 'lab':
+			uri = '/lab';
+			break;
+		case 'radiology':
+			uri = '/radiology';
+			break;
+		case 'nurse':
+			uri = '/in-patient';
+			break;
+		case 'doctor':
+			uri = '/doctor';
+			break;
+		case 'pharmacy':
+			uri = '/pharmacy';
+			break;
+		case 'ivf':
+			uri = '/ivf';
+			break;
+		default:
+			break;
+	}
+
+	if (uri !== '') {
+		history.push(uri);
+	} else {
+		history.push('/?not-authenticated');
+	}
 };
 
 export const fullname = user => `${user.first_name} ${user.last_name}`;
@@ -416,7 +468,31 @@ export const fullname = user => `${user.first_name} ${user.last_name}`;
 export const formatNumber = n =>
 	parseFloat(n).toLocaleString(undefined, { maximumFractionDigits: 2 });
 
+export const getPeriod = () => {
+	const qtr = moment().format('Qo');
+	const start = moment()
+		.startOf('quarter')
+		.format('MMM');
+	const end = moment()
+		.endOf('quarter')
+		.format('MMM');
+
+	return `${qtr} Quarter [${start} - ${end}]`;
+};
+
+export const errorMessage = error => {
+	return (
+		error && (
+			<div
+				className="alert alert-danger"
+				dangerouslySetInnerHTML={{
+					__html: `<strong>Error!</strong> ${error}`,
+				}}
+			/>
+		)
+	);
+};
+
 export const findByID = (array, id) => {
-	console.log(array, id);
 	return array.find(item => item.id === id);
 };
