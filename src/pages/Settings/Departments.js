@@ -75,7 +75,6 @@ const Departments = props => {
 	const onEditDept = async e => {
 		setLoading(true);
 		e.preventDefault();
-
 		let data = {
 			name: name,
 			id: payload.id,
@@ -108,11 +107,12 @@ const Departments = props => {
 			...prevState,
 			name: data.name,
 			id: data.id,
-			headOfDept: data.staff ? data.staff.id : null,
+			headOfDept: data.hod_id ? data.hod_id : null,
 			hod: data.hod_name ? `${data.hod_name}` : null,
 			description: data.description,
 		}));
 		setDataToEdit(data);
+		console.log(data);
 	};
 
 	const cancelEditButton = () => {
@@ -152,6 +152,11 @@ const Departments = props => {
 		fetchDepartment();
 		fetchAllStaff();
 	}, []);
+
+	let defaultValue = {
+		label: hod,
+		value: headOfDept,
+	};
 
 	return (
 		<div className="content-i">
@@ -256,8 +261,8 @@ const Departments = props => {
 												className="form-control"
 												name="headOfDept"
 												onChange={handleInputChange}
+												defaultValue={defaultValue}
 												value={headOfDept}>
-												{hod && <option>{hod}</option>}
 												{!hod && <option value=""></option>}
 												{props.StaffList.map((hod, i) => {
 													return (

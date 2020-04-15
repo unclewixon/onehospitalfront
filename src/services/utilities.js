@@ -118,7 +118,7 @@ export const request = async (url, method, authed = false, data) => {
 	const result = await checkStatus(response);
 	//this is going to affect other API implementations where delete is used and an actual result was expected to be returned and used. Lets comment it out for now.
 	if (method === 'DELETE') {
-		//return { success: true };
+		return { result };
 	}
 	return parseJSON(result);
 };
