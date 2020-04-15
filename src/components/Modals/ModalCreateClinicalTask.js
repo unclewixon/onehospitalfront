@@ -53,8 +53,10 @@ export class ModalCreateClinicalTask extends Component {
 	render() {
 		const { location } = this.props;
 		const hash = location.hash.substr(1).split('#');
-		const type = hash.length > 1 ? hash[1].split('%20').join(' ') : '';
+		const type =
+			hash.length > 1 ? hash[1].split('%20').join(' ') : 'Blood Pressure';
 
+		console.log(type);
 		return (
 			<div
 				className="onboarding-modal modal fade animated show"

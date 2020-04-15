@@ -7,14 +7,17 @@ import DatePicker from 'react-datepicker';
 
 import { renderTextInput, renderSelect } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
+import { loadVitals, updateVitals } from '../../actions/patient';
+import moment from 'moment';
+import { reset } from 'redux-form';
+import { notifySuccess } from '../../services/notify';
 
-const religions = [
-	{ label: 'Atheist', value: 'Atheist' },
-	{ label: 'Buddhism', value: 'Buddhism' },
-	{ label: 'Christianity', value: 'Christianity' },
-	{ label: 'Hinduism', value: 'Hinduism' },
-	{ label: 'Islam', value: 'Islam' },
+const intervals = [
+	{ id: 'Daily', name: 'Daily' },
+	{ id: 'Weekly', name: 'Weekly' },
+	{ id: 'Monthly', name: 'Monthly' },
 ];
+
 class VitalForm extends Component {
 	state = {
 		submitting: false,
@@ -22,18 +25,40 @@ class VitalForm extends Component {
 	};
 
 	onChange = date => this.setState({ start_time: date });
-
 	setDate = (date, type) => {
 		this.setState({ [type]: date });
 	};
+
+	SubmitVitals = async data => {
+		const { start_time } = this.state;
+		const { type, vitals } = this.props;
+		//console.log(start_time, type, data);
+
+		vitals.forEach(function(value, i) {
+			if (value.task === type) {
+				vitals.splice(i, 1);
+			}
+		});
+		let vitalsNew = {
+			task: type,
+			interval: data.every,
+			intervalType: data.interval,
+			taskCount: data.task_count,
+			startTime: moment(start_time).format('DD-MM-YY'),
+		};
+		let vitalToSave = [...vitals, vitalsNew];
+
+		this.props.loadVitals(vitalToSave);
+		this.props.dispatch(reset('create_vitals'));
+		notifySuccess('Vitals for ' + type + ' Created');
+	};
+
 	render() {
 		const { submitting, start_time } = this.state;
-		const { type } = this.props;
-		console.log(type);
-
+		const { type, handleSubmit } = this.props;
 		return (
 			<div>
-				<form>
+				<form onSubmit={handleSubmit(this.SubmitVitals)}>
 					<div className="row">
 						{type === 'Others' ? (
 							<div className="col-sm-12">
@@ -62,7 +87,7 @@ class VitalForm extends Component {
 								component={renderSelect}
 								label="Interval"
 								placeholder="Select interval"
-								data={religions}
+								data={intervals}
 							/>
 						</div>
 					</div>
@@ -114,6 +139,13 @@ class VitalForm extends Component {
 }
 
 VitalForm = reduxForm({
-	form: 'create_staff',
+	form: 'create_vitals',
 })(VitalForm);
-export default connect(null, null)(VitalForm);
+
+const mapStateToProps = (state, ownProps) => {
+	return {
+		vitals: state.patient.vitals,
+	};
+};
+
+export default connect(mapStateToProps, { loadVitals })(VitalForm);
