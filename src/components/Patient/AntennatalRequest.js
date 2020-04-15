@@ -44,7 +44,7 @@ class AntennatalRequest extends Component {
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
-					<h6 className="element-header">Antennal Request</h6>
+					<h6 className="element-header">Antennal Assessment</h6>
 					<div className="element-box">
 						{page === 1 && <GeneralAssessment onSubmit={this.nextPage} />}
 						{page === 2 && (

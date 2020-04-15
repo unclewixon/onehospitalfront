@@ -38,7 +38,6 @@ class RoleBlock extends Component {
 
 	editRole = (role, action) => () => {
 		this.setState({ roleID: null, edit: false }, () => {
-			console.log(this.state.roleID);
 			this.setState({ roleID: role ? role.id : role, edit: action });
 			this.setState({ previousRole: role });
 		});
@@ -52,6 +51,7 @@ class RoleBlock extends Component {
 				'DELETE',
 				true
 			);
+			this.setState({ edit: false, previousRole: null });
 			this.props.delete_role(role);
 			notifySuccess('Role deleted');
 		} catch (error) {
