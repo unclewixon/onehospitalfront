@@ -492,3 +492,7 @@ export const errorMessage = error => {
 		)
 	);
 };
+
+export const findByID = (array, id) => {
+	return array.find(item => item.id === id);
+};

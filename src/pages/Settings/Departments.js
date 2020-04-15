@@ -144,7 +144,7 @@ const Departments = props => {
 			setDataLoaded(true);
 		} catch (error) {
 			setDataLoaded(true);
-			notifyError(error.message || 'could not fetch staff list!');
+			notifyError(error.message || 'could not departments!');
 		}
 	};
 

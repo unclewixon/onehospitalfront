@@ -259,7 +259,7 @@ const Imaging = props => {
 			})
 		) : (
 			<tr>
-				<td colSpan="4" className="text-center">
+				<td colSpan="6" className="text-center">
 					No Imaging request
 				</td>
 			</tr>
@@ -319,7 +319,7 @@ const Imaging = props => {
 									<tbody>
 										{loading ? (
 											<tr>
-												<td colSpan="4" className="text-center">
+												<td colSpan="6" className="text-center">
 													<img alt="searching" src={searchingGIF} />
 												</td>
 											</tr>

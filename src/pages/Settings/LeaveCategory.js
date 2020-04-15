@@ -120,7 +120,7 @@ const LeaveCategory = props => {
 			setDataLoaded(true);
 		} catch (error) {
 			setDataLoaded(true);
-			notifyError(error.message || 'could not fetch consulting rooms!');
+			notifyError(error.message || 'could not fetch leave categories!');
 		}
 	};
 

@@ -56,7 +56,7 @@ const ImagingRequest = props => {
 	}, [props, loaded]);
 
 	const onSubmit = async values => {
-		console.log(values);
+		// console.log(values);
 		const { service } = props;
 		if (
 			values.service_request === undefined ||
@@ -86,7 +86,7 @@ const ImagingRequest = props => {
 			theRequest.patient_id = props.patient.id;
 			//theRequest.primary_diagnosis = selectedOption.icd10Code;
 			theRequest.requestBody = requestData;
-			console.log(theRequest);
+			// console.log(theRequest);
 			const rs = await request(
 				`${API_URI}${patientAPI}/save-request`,
 				'POST',
@@ -134,7 +134,7 @@ const ImagingRequest = props => {
 					<div className="form-block w-100">
 						<form onSubmit={handleSubmit(onSubmit)}>
 							<div className="row">
-								<div className="form-group col-sm-6">
+								<div className="form-group col-sm-12">
 									<label>Request Type</label>
 
 									<input
