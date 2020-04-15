@@ -144,10 +144,10 @@ export class Dashboard extends Component {
 						},
 						status: value.status,
 						patientName:
-							(value.patient.surname ? value.patient.surname : '') +
+							(value.patient?.surname ? value.patient?.surname : '') +
 							' ' +
-							(value.patient.other_names ? value.patient.other_names : ''),
-						fileNumber: value.patient.fileNumber,
+							(value.patient?.other_names ? value.patient?.other_names : ''),
+						fileNumber: value.patient?.fileNumber,
 						patient: value.patient,
 					});
 				});

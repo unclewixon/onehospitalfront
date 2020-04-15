@@ -38,9 +38,9 @@ const validate = values => {
 };
 
 const healthState = [
+	{ id: 'Stable', name: 'Stable' },
 	{ id: 'Critical', name: 'Critical' },
-	{ id: 'Mild', name: 'Mild' },
-	{ id: 'Normal', name: 'Normal' },
+	{ id: 'Intermediate', name: 'Intermediate' },
 ];
 
 const location = [
@@ -139,13 +139,13 @@ class PatientAdmission extends Component {
 
 		let formData = {
 			healthState: data.health_state,
-			riskToFall: data.risk,
+			riskToFall: data.risk === true,
 			room_id: data.ward,
 			reason: data.reason,
 			pcg: data.primary_care_giver,
 			tasks: vitals,
 			discharge_date: moment(discharged_date).format('DD-MM-YY'),
-			careGivers: StaffID,
+			care_givers: StaffID,
 		};
 
 		console.log(formData);
