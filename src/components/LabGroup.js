@@ -82,8 +82,6 @@ const LabGroup = props => {
 		? intersectionBy(props.LabTests, labTests, 'id')
 		: [];
 
-		console.log(lab_test)
-
 	const onAddLabGroup = e => {
 		setLoading(true);
 		e.preventDefault();
@@ -129,7 +127,7 @@ const LabGroup = props => {
 					category,
 					parameters,
 					testType,
-					labTests,
+					lab_test,
 					description,
 				},
 				data

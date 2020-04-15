@@ -824,7 +824,7 @@ export const deleteLabTest = data => {
 					data.category && data.category.id ? data.category.id : '',
 				parameters: updatedStructure,
 			};
-			request(`${API_URI}/lab-tests/${data.id}`, "DELETE", true, newStructure)
+			request(`${API_URI}/lab-tests/${data.id}`, "DELETE", true)
 				.then(response => {
 					dispatch(delete_lab_test(data));
 					return resolve({ success: true });
@@ -883,7 +883,7 @@ export const updateLabGroup = data => {
 				lab_category_id: data.category,
 				price: data.price,
 				test_type: data.testType,
-				sub_tests: data.labTests,
+				sub_tests: data.lab_test,
 				parameters: data.parameters,
 				description: data.description,
 			})
@@ -1039,8 +1039,7 @@ export const updateLabTestParameter = data => {
 export const deleteLabTestParameters = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.delete(`${API_URI}/lab-tests/parameters/${data.id}`)
+			request(`${API_URI}/lab-tests/parameters/${data.id}`, 'DELETE', true)
 				.then(response => {
 					dispatch(delete_lab_test_parameter(data));
 					return resolve({ success: true });
