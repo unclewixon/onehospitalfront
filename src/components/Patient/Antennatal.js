@@ -12,7 +12,7 @@ const Antennatal = ({ location }) => {
 						to={`${location.pathname}#antennal-request`}
 						className="btn btn-primary">
 						<i className="os-icon os-icon-plus"></i>
-						New Antennatal Request
+						New Antennatal Assessment
 					</Link>
 				</div>
 				<h6 className="element-header">Antennatal</h6>

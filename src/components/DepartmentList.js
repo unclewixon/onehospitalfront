@@ -6,8 +6,8 @@ import { notifySuccess, notifyError } from '../services/notify';
 import { request, confirmAction } from '../services/utilities';
 import { API_URI } from '../services/constants';
 import {
-	get_all_department,
-	delete_department,
+	loadDepartments,
+	deleteDepartment,
 	getAllDepartments,
 } from '../actions/settings';
 
@@ -21,6 +21,14 @@ class DepartmentList extends Component {
 
 	fetchDepartments = async () => {
 		this.setState({ loading: true });
+		try {
+			const rs = await request(`${API_URI}/departments`, 'GET', true);
+			this.props.loadDepartments(rs);
+			this.setState({ loading: false });
+		} catch (error) {
+			this.setState({ loading: false });
+			notifyError(error.message || 'could not fetch departments!');
+		}
 	};
 
 	onDeleteDepartment = data => {
@@ -111,4 +119,5 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps, {
 	getAllDepartments,
 	deleteDepartment,
+	loadDepartments,
 })(DepartmentList);

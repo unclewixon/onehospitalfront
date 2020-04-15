@@ -26,7 +26,6 @@ class RoleBlock extends Component {
 	fetchRoles = async () => {
 		try {
 			const rs = await request(`${API_URI}${rolesAPI}`, 'GET', true);
-			console.log(rs);
 			this.props.loadRoles(rs);
 			this.setState({ loading: false });
 		} catch (error) {
@@ -38,7 +37,6 @@ class RoleBlock extends Component {
 
 	editRole = (role, action) => () => {
 		this.setState({ roleID: null, edit: false }, () => {
-			console.log(this.state.roleID);
 			this.setState({ roleID: role ? role.id : role, edit: action });
 			this.setState({ previousRole: role });
 		});
@@ -52,6 +50,7 @@ class RoleBlock extends Component {
 				'DELETE',
 				true
 			);
+			this.setState({ edit: false, previousRole: null });
 			this.props.delete_role(role);
 			notifySuccess('Role deleted');
 		} catch (error) {

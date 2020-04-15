@@ -8,7 +8,7 @@ import { request, confirmAction } from '../../services/utilities';
 import { API_URI } from '../../services/constants';
 import {
 	add_specialziation,
-	get_all_specializations,
+	loadSpecializations,
 	update_specialization,
 	delete_specialization,
 } from '../../actions/settings';
@@ -119,7 +119,7 @@ const Specialization = props => {
 		setDataLoaded(false);
 		try {
 			const rs = await request(`${API_URI}/specializations`, 'GET', true);
-			props.get_all_specializations(rs);
+			props.loadSpecializations(rs);
 			setDataLoaded(true);
 		} catch (error) {
 			setDataLoaded(true);
@@ -278,7 +278,7 @@ const mapStateToProps = state => {
 };
 export default connect(mapStateToProps, {
 	add_specialziation,
-	get_all_specializations,
+	loadSpecializations,
 	update_specialization,
 	delete_specialization,
 })(Specialization);

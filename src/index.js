@@ -27,6 +27,7 @@ import {
 	rolesAPI,
 	utilityAPI,
 	USER_RECORD,
+	TOKEN_COOKIE,
 } from './services/constants';
 import {
 	initMode,
@@ -36,7 +37,7 @@ import {
 } from './actions/user';
 import SSRStorage from './services/storage';
 import { defaultHeaders, getUser, redirectToPage } from './services/utilities';
-import { getAllDepartments, getAllSpecialization } from './actions/settings';
+import { loadDepartments, loadSpecializations } from './actions/settings';
 import { loadInvCategories, loadInvSubCategories } from './actions/inventory';
 import { togglePreloading } from './actions/general';
 import { loadRoles } from './actions/role';
@@ -54,74 +55,92 @@ const initSettings = async () => {
 	store.dispatch(initFullscreen(fullscreen));
 };
 
-const axiosFetch = url => axios.get(url, { headers: defaultHeaders });
+const axiosFetch = (url, jwt) =>
+	axios.get(url, {
+		headers: !jwt ? defaultHeaders : { ...defaultHeaders, Authorization: jwt },
+	});
 
 const initData = async () => {
 	await initSettings();
 
 	try {
-		let [
-			rs_depts,
-			rs_invcategories,
-			rs_invsubcategories,
-			rs_roles,
-			rs_banks,
-			rs_countries,
-			rs_specializations,
-		] = await Promise.all([
-			axiosFetch(`${API_URI}${departmentAPI}`),
-			axiosFetch(`${API_URI}${inventoryCatAPI}`),
-			axiosFetch(`${API_URI}${inventorySubCatAPI}`),
-			axiosFetch(`${API_URI}${rolesAPI}`),
+		let [rs_banks, rs_countries] = await Promise.all([
 			axiosFetch(`${API_URI}${utilityAPI}/banks`),
 			axiosFetch(`${API_URI}${utilityAPI}/countries`),
-			axiosFetch(`${API_URI}/specializations`),
 		]);
 
-		if (rs_depts && rs_depts.data) {
-			store.dispatch(getAllDepartments(rs_depts.data));
-		}
-		if (rs_invcategories && rs_invcategories.data) {
-			store.dispatch(loadInvCategories(rs_invcategories.data));
-		}
-		if (rs_invsubcategories && rs_invsubcategories.data) {
-			store.dispatch(loadInvSubCategories(rs_invsubcategories.data));
-		}
-		if (rs_roles && rs_roles.data) {
-			store.dispatch(loadRoles(rs_roles.data));
-		}
 		if (rs_banks && rs_banks.data) {
 			store.dispatch(loadBanks(rs_banks.data));
 		}
 		if (rs_countries && rs_countries.data) {
 			store.dispatch(loadCountries(rs_countries.data));
 		}
-		if (rs_specializations && rs_specializations.data) {
-			store.dispatch(getAllSpecialization(rs_specializations.data));
-		}
 	} catch (e) {
-		console.log(e);
+		console.log(e.response);
 	}
 
 	const user = await getUser();
 	if (user) {
-		store.dispatch(loginUser(user));
-		store.dispatch(togglePreloading(false));
-		redirectToPage(user.role, history);
+		console.log(user);
+		try {
+			const jwt = `Bearer ${user.token}`;
+			let [
+				rs_depts,
+				rs_invcategories,
+				rs_invsubcategories,
+				rs_roles,
+				rs_specializations,
+			] = await Promise.all([
+				axiosFetch(`${API_URI}${departmentAPI}`, jwt),
+				axiosFetch(`${API_URI}${inventoryCatAPI}`, jwt),
+				axiosFetch(`${API_URI}${inventorySubCatAPI}`, jwt),
+				axiosFetch(`${API_URI}${rolesAPI}`, jwt),
+				axiosFetch(`${API_URI}/specializations`, jwt),
+			]);
 
-		setTimeout(async () => {
-			const user_record = await storage.getItem(USER_RECORD);
-			if (user_record) {
-				store.dispatch(toggleProfile(true, user_record));
+			if (rs_depts && rs_depts.data) {
+				store.dispatch(loadDepartments(rs_depts.data));
 			}
-		}, 200);
+			if (rs_invcategories && rs_invcategories.data) {
+				store.dispatch(loadInvCategories(rs_invcategories.data));
+			}
+			if (rs_invsubcategories && rs_invsubcategories.data) {
+				store.dispatch(loadInvSubCategories(rs_invsubcategories.data));
+			}
+			if (rs_roles && rs_roles.data) {
+				store.dispatch(loadRoles(rs_roles.data));
+			}
+			if (rs_specializations && rs_specializations.data) {
+				store.dispatch(loadSpecializations(rs_specializations.data));
+			}
+
+			store.dispatch(loginUser(user));
+			store.dispatch(togglePreloading(false));
+			redirectToPage(user.role, history);
+
+			setTimeout(async () => {
+				const user_record = await storage.getItem(USER_RECORD);
+				if (user_record) {
+					store.dispatch(toggleProfile(true, user_record));
+				}
+			}, 200);
+		} catch (e) {
+			storage.removeItem(TOKEN_COOKIE);
+			store.dispatch(togglePreloading(false));
+			history.push('/?not-authenticated');
+		}
 	} else {
 		store.dispatch(togglePreloading(false));
 		history.push('/?not-authenticated');
 	}
 };
 
-initData();
+if (history.location.pathname !== '/') {
+	initData();
+} else {
+	initSettings();
+	store.dispatch(togglePreloading(false));
+}
 
 ReactDOM.render(
 	<Provider store={store}>
