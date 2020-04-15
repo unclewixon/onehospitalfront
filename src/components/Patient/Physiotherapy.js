@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import { request } from '../../services/utilities';
 import { API_URI, patientAPI } from '../../services/constants';
-import { getPhysiotherapies, Allergy } from '../../actions/patient';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import Tooltip from 'antd/lib/tooltip';
@@ -180,5 +179,5 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default withRouter(
-	connect(mapStateToProps, { getPhysiotherapies })(Physiotherapy)
+	connect(mapStateToProps, { })(Physiotherapy)
 );

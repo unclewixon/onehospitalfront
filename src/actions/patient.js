@@ -289,6 +289,12 @@ export const getRequestByType = (patientId, type) => {
 							payload: response,
 						});
 					}
+					if (type === 'physiotherapy') {
+						dispatch({
+							type: GET_PHYSIOTHERAPIES,
+							payload: response,
+						});
+					}
 					return resolve({ success: true });
 				})
 				.catch(error => {
