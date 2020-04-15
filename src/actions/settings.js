@@ -101,7 +101,7 @@ export const create_department = payload => {
 	};
 };
 
-export const get_all_department = payload => {
+export const loadDepartments = payload => {
 	return {
 		type: GET_ALL_DEPARTMENTS,
 		payload,
@@ -337,7 +337,7 @@ export const add_specialziation = payload => {
 	};
 };
 
-export const get_all_specializations = payload => {
+export const loadSpecializations = payload => {
 	return {
 		type: GET_ALL_SPECIALIZATIONS,
 		payload,
@@ -543,7 +543,7 @@ export const getAllDepartments = () => {
 			axios
 				.get(`${API_URI}/departments`)
 				.then(response => {
-					dispatch(get_all_department(response.data));
+					dispatch(loadDepartments(response.data));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -783,14 +783,14 @@ export const getAllLabTests = () => {
 export const updateLabTest = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			request(`${API_URI}/lab-tests/${data.id}/update`, "PATCH", true, {
-					name: data.name,
-					lab_category_id: data.category,
-					price: data.price,
-					test_type: data.testType,
-					parameters: data.parameters,
-					description: data.description,
-				})
+			request(`${API_URI}/lab-tests/${data.id}/update`, 'PATCH', true, {
+				name: data.name,
+				lab_category_id: data.category,
+				price: data.price,
+				test_type: data.testType,
+				parameters: data.parameters,
+				description: data.description,
+			})
 				.then(response => {
 					dispatch(update_lab_test(response.data, data));
 					return resolve({ success: true });
@@ -824,7 +824,7 @@ export const deleteLabTest = data => {
 					data.category && data.category.id ? data.category.id : '',
 				parameters: updatedStructure,
 			};
-			request(`${API_URI}/lab-tests/${data.id}`, "DELETE", true)
+			request(`${API_URI}/lab-tests/${data.id}`, 'DELETE', true)
 				.then(response => {
 					dispatch(delete_lab_test(data));
 					return resolve({ success: true });
@@ -1147,7 +1147,7 @@ export const getAllSpecialization = data => {
 			axios
 				.get(`${API_URI}/specializations`)
 				.then(response => {
-					dispatch(get_all_specializations(response.data));
+					dispatch(loadSpecializations(response.data));
 					return resolve({ success: true });
 				})
 				.catch(error => {

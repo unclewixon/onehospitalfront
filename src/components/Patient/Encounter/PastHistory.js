@@ -110,8 +110,7 @@ class PastHistory extends Component {
 								<div className="col-sm-1" style={{ position: 'relative' }}>
 									<a
 										className="text-danger delete-icon"
-										onClick={this.removeHistory(hist.id)}
-										>
+										onClick={this.removeHistory(hist.id)}>
 										<i className="os-icon os-icon-cancel-circle" />
 									</a>
 								</div>

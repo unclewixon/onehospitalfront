@@ -2,14 +2,52 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
+import { connect } from 'react-redux';
+
+import { request } from '../../services/utilities';
+import { API_URI, appraisalAPI } from '../../services/constants';
+
 export class Appraisal extends Component {
+	state = {
+		list: [],
+	};
+
+	componentDidMount() {
+		this.fetchAppraisals();
+	}
+
+	fetchAppraisals = async () => {
+		try {
+			const { staff } = this.props;
+			console.log(staff);
+			const rs = await request(
+				`${API_URI}${appraisalAPI}/staff-assessment/${staff.id}`,
+				'GET',
+				true
+			);
+			console.log(rs);
+			this.setState({ list: rs });
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	render() {
 		const { location } = this.props;
+		const { list } = this.state;
 
 		return (
 			<div className="row">
 				<div className="col-sm-12">
 					<div className="element-wrapper">
+						<div className="element-actions">
+							<Link
+								className="btn btn-primary btn-sm text-white"
+								to={`${location.pathname}#create-appraisal`}>
+								<i className="os-icon os-icon-ui-22" />
+								<span>Create Appraisal</span>
+							</Link>
+						</div>
 						<h6 className="element-header mt-3">Appraisal</h6>
 						<div className="element-box">
 							<div className="table-responsive">
@@ -42,69 +80,43 @@ export class Appraisal extends Component {
 										</tr>
 									</thead>
 									<tbody>
-										<tr>
-											<td className="flex text-center">
-												<a className="item-title text-color">Sick Leave</a>
-											</td>
-											<td className="flex text-center">
-												<a className="item-title text-color">03-26-2013</a>
-											</td>
-											<td className="flex text-center">
-												<a className="item-title text-color">4-2-2013</a>
-											</td>
+										{list.map((appraisal, i) => {
+											return (
+												<tr key={i}>
+													<td className="flex text-center">
+														<a className="item-title text-color">Sick Leave</a>
+													</td>
+													<td className="flex text-center">
+														<a className="item-title text-color">03-26-2013</a>
+													</td>
+													<td className="flex text-center">
+														<a className="item-title text-color">4-2-2013</a>
+													</td>
 
-											<td className="text-center row-actions">
-												<Tooltip title="Self">
-													<a className="secondary">
-														<i className="os-icon os-icon-folder-plus" />
-													</a>
-												</Tooltip>
-												<Tooltip title="Line Manager">
-													<a className="secondary">
-														<i className="os-icon os-icon-edit-32" />
-													</a>
-												</Tooltip>
-												<Tooltip title="View Staff">
-													<Link
-														className="secondary"
-														to={`${location.pathname}#staff-detail`}>
-														<i className="os-icon os-icon-folder-plus" />
-													</Link>
-												</Tooltip>
-											</td>
-										</tr>
+													<td className="text-center row-actions">
+														<Tooltip title="Self">
+															<a className="secondary">
+																<i className="os-icon os-icon-folder-plus" />
+															</a>
+														</Tooltip>
+														<Tooltip title="Line Manager">
+															<a className="secondary">
+																<i className="os-icon os-icon-edit-32" />
+															</a>
+														</Tooltip>
+														<Tooltip title="View Staff">
+															<Link
+																className="secondary"
+																to={`${location.pathname}#staff-detail`}>
+																<i className="os-icon os-icon-folder-plus" />
+															</Link>
+														</Tooltip>
+													</td>
+												</tr>
+											);
+										})}
 									</tbody>
 								</table>
-
-								<div className="controls-below-table">
-									<div className="table-records-info">
-										Showing records 1 - 5
-									</div>
-									<div className="table-records-pages">
-										<ul>
-											<li>
-												<a href="#">Previous</a>
-											</li>
-											<li>
-												<a className="current" href="#">
-													1
-												</a>
-											</li>
-											<li>
-												<a href="#">2</a>
-											</li>
-											<li>
-												<a href="#">3</a>
-											</li>
-											<li>
-												<a href="#">4</a>
-											</li>
-											<li>
-												<a href="#">Next</a>
-											</li>
-										</ul>
-									</div>
-								</div>
 							</div>
 						</div>
 					</div>
@@ -114,4 +126,10 @@ export class Appraisal extends Component {
 	}
 }
 
-export default withRouter(Appraisal);
+const mapStateToProps = (state, ownProps) => {
+	return {
+		staff: state.user.staff,
+	};
+};
+
+export default withRouter(connect(mapStateToProps)(Appraisal));

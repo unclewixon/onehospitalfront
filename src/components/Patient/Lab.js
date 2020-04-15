@@ -145,7 +145,7 @@ const Lab = props => {
 																data-id="20"
 																key={index}>
 																<td>
-						`											<span className="text-bold"></span>
+																	` <span className="text-bold"></span>
 																</td>
 																<td>
 																	<span>

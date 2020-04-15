@@ -21,7 +21,6 @@ import { closeModals } from '../../../actions/general';
 import ProfileBlock from '../../ProfileBlock';
 
 const OpenEncounter = props => {
-
 	const [state, setState] = useState({
 		eIndex: 0,
 		content: '',
@@ -63,7 +62,7 @@ const OpenEncounter = props => {
 				});
 			},
 		});
-	})
+	});
 
 	const open = i => () => {
 		setState({ ...state, eIndex: i });
@@ -85,7 +84,7 @@ const OpenEncounter = props => {
 		const { eIndex } = state;
 		const i = eIndex - 1;
 		if (i >= 0) {
-			setState({...state, eIndex: i});
+			setState({ ...state, eIndex: i });
 		}
 
 		setTimeout(() => {
@@ -108,7 +107,6 @@ const OpenEncounter = props => {
 	const { eIndex, dropdown } = state;
 	const current = encounters[eIndex];
 
-	
 	return (
 		<div
 			className="onboarding-modal modal fade animated show top-modal"
@@ -144,24 +142,88 @@ const OpenEncounter = props => {
 									{/* <h6 className="onboarding-title">{current}</h6> */}
 									{
 										{
-											10: <Consumable index={eIndex} next={next} previous={previous} />,
-											9: <PlanForm index={eIndex} next={next} previous={previous} />,
-											8: <Investigations index={eIndex} next={next} previous={previous} />,
-											7: <Diagnosis index={eIndex} next={next} previous={previous} />,
-											6: <PhysicalExamSummary index={eIndex} next={next} previous={previous} />,
-											5: <PhysicalExam index={eIndex} next={next} previous={previous} />,
-											4: <Allergies index={eIndex} next={next} previous={previous} />,
-											3: <PastHistory index={eIndex} next={next} previous={previous} />,
-											2: <HxForm index={eIndex} next={next} previous={previous} />,
-											1: <ReviewOfSystem index={eIndex} next={next} previous={previous} />,
-											0: <Complaints index={eIndex} next={next} previous={previous} />
+											10: (
+												<Consumable
+													index={eIndex}
+													next={next}
+													previous={previous}
+												/>
+											),
+											9: (
+												<PlanForm
+													index={eIndex}
+													next={next}
+													previous={previous}
+												/>
+											),
+											8: (
+												<Investigations
+													index={eIndex}
+													next={next}
+													previous={previous}
+												/>
+											),
+											7: (
+												<Diagnosis
+													index={eIndex}
+													next={next}
+													previous={previous}
+												/>
+											),
+											6: (
+												<PhysicalExamSummary
+													index={eIndex}
+													next={next}
+													previous={previous}
+												/>
+											),
+											5: (
+												<PhysicalExam
+													index={eIndex}
+													next={next}
+													previous={previous}
+												/>
+											),
+											4: (
+												<Allergies
+													index={eIndex}
+													next={next}
+													previous={previous}
+												/>
+											),
+											3: (
+												<PastHistory
+													index={eIndex}
+													next={next}
+													previous={previous}
+												/>
+											),
+											2: (
+												<HxForm
+													index={eIndex}
+													next={next}
+													previous={previous}
+												/>
+											),
+											1: (
+												<ReviewOfSystem
+													index={eIndex}
+													next={next}
+													previous={previous}
+												/>
+											),
+											0: (
+												<Complaints
+													index={eIndex}
+													next={next}
+													previous={previous}
+												/>
+											),
 										}[eIndex]
 									}
 									<div className="row mt-5">
 										<div className="col-sm-12 d-flex ant-row-flex-space-between">
-											<button
-												className="btn btn-primary"
-												onClick={previous}>
+											<button className="btn btn-primary" onClick={previous}>
 												Previous
 											</button>
 											<button className="btn btn-primary" onClick={next}>
@@ -169,7 +231,6 @@ const OpenEncounter = props => {
 											</button>
 										</div>
 									</div>
-									
 								</div>
 							</div>
 						</div>
@@ -178,7 +239,7 @@ const OpenEncounter = props => {
 			</div>
 		</div>
 	);
-}
+};
 
 const mapStateToProps = (state, ownProps) => {
 	return {

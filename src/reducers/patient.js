@@ -54,15 +54,15 @@ const INITIAL_STATE = {
 		diagnosis: [],
 		investigations: {
 			clinicalLab: {},
-			imagingRequests: {}
+			imagingRequests: {},
 		},
 		plan: {
 			treatmentPlan: 'Treatment Plan:',
 			pharmacyRequests: {},
 			nextAppointment: {},
-			procedureRequest: {}
-		}
-	}
+			procedureRequest: {},
+		},
+	},
 };
 
 const patient = (state = INITIAL_STATE, action) => {

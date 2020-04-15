@@ -10,8 +10,8 @@ const Complaints = props => {
 	useEffect(() => {
 		return () => {
 			console.log(complaint);
-		}
-	})
+		};
+	});
 	return (
 		<div className="form-block encounter">
 			<div className="row">
@@ -51,7 +51,7 @@ const Complaints = props => {
 			</div>
 		</div>
 	);
-}
+};
 
 const mapStateToProps = state => {
 	return {
@@ -59,4 +59,4 @@ const mapStateToProps = state => {
 	};
 };
 
-export default connect(mapStateToProps, { })(Complaints);
+export default connect(mapStateToProps, {})(Complaints);

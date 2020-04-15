@@ -9,6 +9,7 @@ import {
 	renderTextInput,
 	request,
 	renderSelect,
+	errorMessage,
 } from '../../services/utilities';
 import { API_URI, staffAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
@@ -16,7 +17,7 @@ import waiting from '../../assets/images/waiting.gif';
 import { addStaff } from '../../actions/hr';
 import { closeModals } from '../../actions/general';
 
-const validate = (values) => {
+const validate = values => {
 	const errors = {};
 	if (!values.username) {
 		errors.username = 'enter username';
@@ -119,7 +120,7 @@ class ModalCreateStaff extends Component {
 		document.body.classList.remove('modal-open');
 	}
 
-	doCreateStaff = async (data) => {
+	doCreateStaff = async data => {
 		const {
 			date_of_birth,
 			next_of_kin_dob,
@@ -164,10 +165,10 @@ class ModalCreateStaff extends Component {
 		this.setState({ [type]: date });
 	};
 
-	onSelectCountry = (e) => {
+	onSelectCountry = e => {
 		const { countries } = this.props;
 		const countryId = e.target.value;
-		const country = countries.find((c) => c.id === parseInt(countryId, 10));
+		const country = countries.find(c => c.id === parseInt(countryId, 10));
 		if (country) {
 			this.setState({ states: country.states });
 		} else {
@@ -192,7 +193,7 @@ class ModalCreateStaff extends Component {
 			employment_start_date,
 			states,
 		} = this.state;
-		const _countries = countries.map((c) => ({ id: c.id, name: c.name }));
+		const _countries = countries.map(c => ({ id: c.id, name: c.name }));
 		const sortedCountries = orderBy(_countries, ['name'], ['asc']);
 		const genders = [
 			{ id: 'Female', name: 'Female' },
@@ -233,14 +234,7 @@ class ModalCreateStaff extends Component {
 							<div className="onboarding-text">create new staff profile</div>
 							<div className="form-block">
 								<form onSubmit={handleSubmit(this.doCreateStaff)}>
-									{error && (
-										<div
-											className="alert alert-danger"
-											dangerouslySetInnerHTML={{
-												__html: `<strong>Error!</strong> ${error}`,
-											}}
-										/>
-									)}
+									{errorMessage(error)}
 									<div className="row">
 										<div className="col-sm-4">
 											<Field
@@ -322,7 +316,7 @@ class ModalCreateStaff extends Component {
 												<div className="custom-date-input">
 													<DatePicker
 														selected={date_of_birth}
-														onChange={(date) =>
+														onChange={date =>
 															this.setDate(date, 'date_of_birth')
 														}
 														peekNextMonth
@@ -506,7 +500,7 @@ class ModalCreateStaff extends Component {
 												<div className="custom-date-input">
 													<DatePicker
 														selected={employment_start_date}
-														onChange={(date) =>
+														onChange={date =>
 															this.setDate(date, 'employment_start_date')
 														}
 														peekNextMonth
@@ -603,7 +597,7 @@ class ModalCreateStaff extends Component {
 												<div className="custom-date-input">
 													<DatePicker
 														selected={next_of_kin_dob}
-														onChange={(date) =>
+														onChange={date =>
 															this.setDate(date, 'next_of_kin_dob')
 														}
 														peekNextMonth

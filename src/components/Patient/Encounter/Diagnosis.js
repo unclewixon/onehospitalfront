@@ -109,7 +109,9 @@ class Diagnosis extends Component {
 													/>
 												</div>
 											</div>
-											<div className="col-md-1" style={{ position: 'relative' }}>
+											<div
+												className="col-md-1"
+												style={{ position: 'relative' }}>
 												<a
 													className="text-danger delete-icon"
 													onClick={this.removeDiagnosis(dia.id)}>
