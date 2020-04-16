@@ -38,10 +38,10 @@ const UploadImagingData = ({ uploading, doUpload, hide }) => {
 			<div className="modal-centered">
 				<div className="modal-content text-center">
 					<button onClick={hide} className="close" type="button">
-						<span class="os-icon os-icon-close"></span>
+						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div className="onboarding-content with-gradient">
-						<h4 class="onboarding-title">Upload Imaging</h4>
+						<h4 className="onboarding-title">Upload Imaging</h4>
 
 						<form
 							className="form-block w-100"
@@ -231,6 +231,14 @@ export class Dashboard extends Component {
 		}
 	};
 
+	getRequests = arr => {
+		let rer = [];
+		arr.forEach(val => {
+			rer = [...rer, val.service_name];
+		});
+		return rer.join(', ');
+	};
+
 	togglePopover = req => {
 		this.setState({ patient: req.patient, upload_visible: true });
 		console.log(this.state.patient);
@@ -307,7 +315,6 @@ export class Dashboard extends Component {
 									<thead>
 										<tr>
 											<th className="text-center">Request Date</th>
-											<th className="text-center">Patiend ID</th>
 											<th className="text-center">Patient Name</th>
 											<th className="text-center">Request</th>
 											<th>
@@ -325,48 +332,43 @@ export class Dashboard extends Component {
 											</tr>
 										) : (
 											radiology &&
-											this.convertToIndividualRequest(radiology).map(
-												request => {
-													return (
-														<tr data-index="0" data-id="20">
-															<td className="text-center">
-																{moment(request.createdAt).format('DD-MM-YYYY')}
-															</td>
-															<td className="text-center">
-																{request.fileNumber}
-															</td>
-															<td className="text-center">
-																{request.patientName}
-															</td>
-															<td className="text-center">
-																{request.requestBody.specialization}
-															</td>
+											radiology.map((request, key) => {
+												return (
+													<tr data-index="0" data-id="20" key={key}>
+														<td className="text-center">
+															{moment(request.createdAt).format('DD-MM-YYYY')}
+														</td>
+														<td className="text-center">
+															{request.patient_name}
+														</td>
+														<td className="text-center">
+															{this.getRequests(request.requestBody)}
+														</td>
 
-															<td className="text-right row-actions">
-																<Tooltip title="Receive Request">
-																	<a className="secondary">
-																		<i className="os-icon os-icon-folder-plus" />
-																	</a>
-																</Tooltip>
-																<Tooltip title="Upload image">
-																	<a
-																		onClick={() => {
-																			this.togglePopover(request);
-																		}}>
-																		<i className="os-icon os-icon-upload-cloud" />
-																	</a>
-																</Tooltip>
+														<td className="text-right row-actions">
+															<Tooltip title="Receive Request">
+																<a className="secondary">
+																	<i className="os-icon os-icon-folder-plus" />
+																</a>
+															</Tooltip>
+															<Tooltip title="Upload image">
+																<a
+																	onClick={() => {
+																		this.togglePopover(request);
+																	}}>
+																	<i className="os-icon os-icon-upload-cloud" />
+																</a>
+															</Tooltip>
 
-																<Tooltip title="Delete Request">
-																	<a className="danger">
-																		<i className="os-icon os-icon-ui-15" />
-																	</a>
-																</Tooltip>
-															</td>
-														</tr>
-													);
-												}
-											)
+															<Tooltip title="Delete Request">
+																<a className="danger">
+																	<i className="os-icon os-icon-ui-15" />
+																</a>
+															</Tooltip>
+														</td>
+													</tr>
+												);
+											})
 										)}
 									</tbody>
 								</table>
