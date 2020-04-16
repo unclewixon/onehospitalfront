@@ -10,6 +10,7 @@ const ModalClinicalLab = ({
 	patient,
 	activeRequest,
 }) => {
+
 	const [Loading, setLoading] = useState(false);
 	return (
 		<Modal
@@ -17,67 +18,125 @@ const ModalClinicalLab = ({
 			size="lg"
 			aria-labelledby="contained-modal-title-vcenter"
 			centered
-			onHide={onModalClick}>
+			onHide={onModalClick}
+		>
+
 			<Modal.Header closeButton>
-				<Modal.Title id="contained-modal-title-vcenter">
-					Enter Lab Result
-				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-				<div className="p-4 bg-light border-2">
-					<div className="row">
-						<div className="col-sm-6">
-							<p>
-								<span>Patient Name: </span>
-								{activeRequest.patient_name ? activeRequest.patient_name : ''}
-							</p>
-						</div>
-						<div className="col-sm-6">
-							<p>
-								<span>Patient ID: </span>
-								{'No yet available'}
-							</p>
-						</div>
-					</div>
-					<div className="row">
-						<div className="col-sm-6">
-							<p>
-								<span>Specimen: </span>
-								{activeRequest.requestBody.refferredSpecimen}
-							</p>
-						</div>
-						<div className="col-sm-6">
-							<p>
-								<span>Request Date: </span>
-								{moment(activeRequest.createdAt).format('DD/MM/YYYY hh:mm')}
-							</p>
-						</div>
-					</div>
-				</div>
-				<div className="mt-4 p-4 bg-light border-2">
-					<div>
-						<h6>GROUPS</h6>
-					</div>
-					{activeRequest &&
-						activeRequest.requestBody &&
-						activeRequest.requestBody.groups &&
-						activeRequest.requestBody.groups.map(grp => (
-							<div>
-								<div>
-									<div className="ml-4">
-										<p>
-											<span>Group Name: </span>
-											{grp.name}
-										</p>
+
+				<div className="onboarding-content with-gradient text-center">
+					<div className="modal-body">
+						<div className="row">
+							<div className="col-sm-4">
+								<div className="user-profile compact">
+									<div
+										className="up-head-w"
+										style={{
+											backgroundImage: require('../../assets/images/profile_bg1.jpg'),
+										}}>
+										<div className="up-main-info">
+											<h2 className="up-header">
+												{activeRequest.patient_name ? activeRequest.patient_name : ''}
+											</h2>
+										</div>
 									</div>
-									{grp.parameters && grp.parameters.length ? (
-										<div>
-											<div className="ml-4">
-												<p>
-													<span>Parameters: </span>
-												</p>
+
+									<div className="up-contents">
+										<div className="m-b">
+											<div className="row m-b">
+												<div className="col-sm-12 b-b">
+													<div className="el-tablo centered padded-v">
+														<div className="value">
+															{moment(activeRequest.createdAt).format('DD/MM/YYYY')}
+														</div>
+														<div className="label">Request Date</div>
+													</div>
+												</div>
 											</div>
+
+											<div className="padded">
+												<div className="os-progress-bar primary">
+													<div className="col-sm-12 b-b">
+														<div className="el-tablo centered padded-v">
+															<div className="label">Patient ID</div>
+															<div className="value">
+																{}
+															</div>
+														</div>
+													</div>
+												</div>
+
+												<div className="os-progress-bar primary">
+													<div className="col-sm-12 b-b">
+														<div className="el-tablo centered padded-v">
+															<div className="label">Request Specimen</div>
+															<div className="value">
+																{activeRequest.requestBody.refferredSpecimen}
+															</div>
+														</div>
+													</div>
+												</div>
+												<div className="os-progress-bar primary">
+													<div className="col-sm-12 b-b">
+														<div className="el-tablo centered padded-v">
+															<div className="label"></div>
+															<div className="value">
+																<p>
+
+																</p>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div className="col-sm-8">
+								<div className="element-wrapper">
+									<form id="formValidate" novalidate="true"></form>
+									<div className="element-info">
+										<div className="element-info-with-icon">
+											<div className="element-info-icon">
+												<div className="os-icon os-icon-pen"></div>
+											</div>
+											<div className="element-info-text">
+												<h5 className="element-inner-header">
+													Enter Lab Result
+														</h5>
+												{/*appointment_date*/}
+												{/*department.name*/}
+												{/*consultingRoom.name*/}
+												{/*specialization.name*/}
+												{/*department.staff.first_name*/}
+											</div>
+										</div>
+									</div>
+
+									<div className="">
+										<div className="row">
+											<div className="col-sm">
+												<div className="form-group">
+													<label>Groups</label>
+													<span className="form-control">
+														{activeRequest &&
+															activeRequest.requestBody &&
+															activeRequest.requestBody.groups &&
+															activeRequest.requestBody.groups.map(grp => (
+																<div>
+																	<div>
+																		<div className="ml-4">
+																			<p>
+																				<span>Group Name: </span>
+																				{grp.name}
+																			</p>
+																		</div>
+																		{/* {grp.tests &&
+										grp.tests.map(test => (
 											<div className="ml-2 p-4 bg-white border-2">
+												<p >{test.name}</p>
 												<Table className="table bordered">
 													<thead>
 														<tr>
@@ -87,41 +146,83 @@ const ModalClinicalLab = ({
 														</tr>
 													</thead>
 													<tbody>
-														{grp.parameters.map(param => (
-															<tr>
-																<td>{param.name}</td>
-																<td>{param.range}</td>
-																<td>
-																	<input
-																		type="text"
-																		name="groupParameterResult"
-																		id={param.id}
-																		onChange
-																	/>
-																</td>
-															</tr>
-														))}
+														{
+															test.parameters && test.parameters.map(param => (
+																<tr>
+																	<td>
+																		{param.name}
+																	</td>
+																	<td>
+																		{param.refferedRange}
+																	</td>
+																	<td>
+																		<input
+																			type="text"
+																			name="groupTestResult"
+																			id={param.id}
+																			value=""
+																			onChange
+																		/>
+																	</td>
+																</tr>
+															))
+														}
 													</tbody>
 												</Table>
 											</div>
-										</div>
-									) : null}
-								</div>
-							</div>
-						))}
-					{activeRequest &&
-						activeRequest.requestBody &&
-						activeRequest.requestBody.group &&
-						activeRequest.requestBody.group.map(grp => (
-							<div>
-								<div>
-									<div className="ml-4">
-										<p>
-											<span>Group Name: </span>
-											{grp.name}
-										</p>
-									</div>
-									{/* {grp.tests &&
+										))} */}
+																		{grp.parameters && grp.parameters.length ? (
+																			<div>
+																				<div className="ml-4">
+																					<p>
+																						<span>Parameters: </span>
+																					</p>
+																				</div>
+																				<div className="ml-2 p-4 bg-white border-2">
+																					<Table className="table bordered">
+																						<thead>
+																							<tr>
+																								<th>Param Name</th>
+																								<th>Range</th>
+																								<th>Result</th>
+																							</tr>
+																						</thead>
+																						<tbody>
+																							{grp.parameters.map(param => (
+																								<tr>
+																									<td>{param.name}</td>
+																									<td>{param.range}</td>
+																									<td>
+																										<input
+																											type="text"
+																											name="groupParameterResult"
+																											id={param.id}
+																											onChange
+																										/>
+																									</td>
+																								</tr>
+																							))}
+																						</tbody>
+																					</Table>
+																				</div>
+																			</div>
+																		) : null}
+																	</div>
+																</div>
+															))}
+														{activeRequest &&
+															activeRequest.requestBody &&
+															activeRequest.requestBody.group &&
+															activeRequest.requestBody.group.map(grp => (
+																<div>
+																	<div>
+																		<div className="ml-4">
+																			<p>
+																				<span>Group Name: </span>
+																				{grp.name}
+																			</p>
+																		</div>
+																		{/* {grp.tests &&
 										grp.tests.map(test => (
 											<div className="ml-2 p-4 bg-white border-2">
 												<p>{test.name}</p>
@@ -154,154 +255,184 @@ const ModalClinicalLab = ({
 												</Table>
 											</div>
 										))} */}
-									{grp.parameters && grp.parameters.length ? (
-										<div>
-											<div className="ml-4">
-												<p>
-													<span>Parameters: </span>
-												</p>
-											</div>
-											<div className="ml-2 p-4 bg-white border-2">
-												<Table className="table bordered">
-													<thead>
-														<tr>
-															<th>Param Name</th>
-															<th>Range</th>
-															<th>Result</th>
-														</tr>
-													</thead>
-													<tbody>
-														{grp.parameters.map(param => (
-															<tr>
-																<td>{param.name}</td>
-																<td>{param.range}</td>
-																<td>
-																	<input
-																		type="text"
-																		name="groupParameterResult"
-																		id={param.id}
-																		onChange
-																	/>
-																</td>
-															</tr>
-														))}
-													</tbody>
-												</Table>
+																		{grp.parameters && grp.parameters.length ? (
+																			<div>
+																				<div className="ml-4">
+																					<p>
+																						<span>Parameters: </span>
+																					</p>
+																				</div>
+																				<div className="ml-2 p-4 bg-white border-2">
+																					<Table className="table bordered">
+																						<thead>
+																							<tr>
+																								<th>Param Name</th>
+																								<th>Range</th>
+																								<th>Result</th>
+																							</tr>
+																						</thead>
+																						<tbody>
+																							{grp.parameters.map(param => (
+																								<tr>
+																									<td>{param.name}</td>
+																									<td>{param.range}</td>
+																									<td>
+																										<input
+																											type="text"
+																											name="groupParameterResult"
+																											id={param.id}
+																											onChange
+																										/>
+																									</td>
+																								</tr>
+																							))}
+																						</tbody>
+																					</Table>
+																				</div>
+																			</div>
+																		) : null}
+																	</div>
+																</div>
+															))}
+													</span>
+												</div>
 											</div>
 										</div>
-									) : null}
+
+										<div className="row">
+											<div className="col-sm">
+												<div className="form-group">
+													<label>Tests</label>
+													<span className="form-control">
+														{activeRequest &&
+															activeRequest.requestBody &&
+															activeRequest.requestBody.tests &&
+															activeRequest.requestBody.tests.map(tst => (
+																<div>
+																	<div className="ml-4">
+																		<p>
+																			<span>Test Name: </span>
+																			{tst.testName}
+																		</p>
+																	</div>
+																	<div className="ml-4">
+																		<p>Parameters: </p>
+																	</div>
+																	{tst.paramenters && tst.paramenters.length ? (
+																		<div className="ml-2 p-4 bg-white border-2">
+																			<Table className="table bordered">
+																				<thead>
+																					<tr>
+																						<th>Param Name</th>
+																						<th>Range</th>
+																						<th>Result</th>
+																					</tr>
+																				</thead>
+																				<tbody>
+																					{tst.paramenters &&
+																						tst.paramenters.map(param => (
+																							<tr>
+																								<td>{param.name}</td>
+																								<td>{param.range}</td>
+																								<td>
+																									<input
+																										type="text"
+																										name="parameterResult"
+																										id={param.id}
+																										onChange
+																									/>
+																								</td>
+																							</tr>
+																						))}
+																				</tbody>
+																			</Table>
+																		</div>
+																	) : null}
+																</div>
+															))}
+														{activeRequest &&
+															activeRequest.requestBody &&
+															activeRequest.requestBody.test &&
+															activeRequest.requestBody.test.map(tst => (
+																<div>
+																	<div className="ml-4">
+																		<p>
+																			<span>Test Name: </span>
+																			{tst.testName}
+																		</p>
+																	</div>
+																	<div className="ml-4">
+																		<p>Parameters: </p>
+																	</div>
+																	{tst.paramenters && tst.paramenters.length ? (
+																		<div className="ml-2 p-4 bg-white border-2">
+																			<Table className="table bordered">
+																				<thead>
+																					<tr>
+																						<th>Param Name</th>
+																						<th>Range</th>
+																						<th>Result</th>
+																					</tr>
+																				</thead>
+																				<tbody>
+																					{tst.paramenters &&
+																						tst.paramenters.map(param => (
+																							<tr>
+																								<td>{param.name}</td>
+																								<td>{param.range}</td>
+																								<td>
+																									<input
+																										type="text"
+																										name="parameterResult"
+																										id={param.id}
+																										onChange
+																									/>
+																								</td>
+																							</tr>
+																						))}
+																				</tbody>
+																			</Table>
+																		</div>
+																	) : null}
+																</div>
+															))}
+													</span>
+												</div>
+											</div>
+										</div>
+
+										<div className="row">
+											<div className="col-sm">
+												<div className="form-group">
+													<label>Request Note</label>
+													<span className="form-control">
+														{activeRequest.requestBody.requestNote}
+													</span>
+												</div>
+											</div>
+										</div>
+
+										<div className="row">
+											<div className="col-sm">
+												<div className="form-group">
+													<button
+														className={
+															Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
+														}>
+														{Loading ? (
+															<img src={waiting} alt="submitting" />
+														) : (
+																<span> Save</span>
+															)}
+													</button>
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
-						))}
-				</div>
-				<div className="mt-4 p-4 bg-light border-2">
-					<div>
-						<h6>TESTS</h6>
+						</div>
 					</div>
-					{activeRequest &&
-						activeRequest.requestBody &&
-						activeRequest.requestBody.tests &&
-						activeRequest.requestBody.tests.map(tst => (
-							<div>
-								<div className="ml-4">
-									<p>
-										<span>Test Name: </span>
-										{tst.testName}
-									</p>
-								</div>
-								<div className="ml-4">
-									<p>Parameters: </p>
-								</div>
-								{tst.paramenters && tst.paramenters.length ? (
-									<div className="ml-2 p-4 bg-white border-2">
-										<Table className="table bordered">
-											<thead>
-												<tr>
-													<th>Param Name</th>
-													<th>Range</th>
-													<th>Result</th>
-												</tr>
-											</thead>
-											<tbody>
-												{tst.paramenters &&
-													tst.paramenters.map(param => (
-														<tr>
-															<td>{param.name}</td>
-															<td>{param.range}</td>
-															<td>
-																<input
-																	type="text"
-																	name="parameterResult"
-																	id={param.id}
-																	onChange
-																/>
-															</td>
-														</tr>
-													))}
-											</tbody>
-										</Table>
-									</div>
-								) : null}
-							</div>
-						))}
-					{activeRequest &&
-						activeRequest.requestBody &&
-						activeRequest.requestBody.test &&
-						activeRequest.requestBody.test.map(tst => (
-							<div>
-								<div className="ml-4">
-									<p>
-										<span>Test Name: </span>
-										{tst.testName}
-									</p>
-								</div>
-								<div className="ml-4">
-									<p>Parameters: </p>
-								</div>
-								{tst.paramenters && tst.paramenters.length ? (
-									<div className="ml-2 p-4 bg-white border-2">
-										<Table className="table bordered">
-											<thead>
-												<tr>
-													<th>Param Name</th>
-													<th>Range</th>
-													<th>Result</th>
-												</tr>
-											</thead>
-											<tbody>
-												{tst.paramenters &&
-													tst.paramenters.map(param => (
-														<tr>
-															<td>{param.name}</td>
-															<td>{param.range}</td>
-															<td>
-																<input
-																	type="text"
-																	name="parameterResult"
-																	id={param.id}
-																	onChange
-																/>
-															</td>
-														</tr>
-													))}
-											</tbody>
-										</Table>
-									</div>
-								) : null}
-							</div>
-						))}
-				</div>
-				<div>
-					<button
-						className={
-							Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
-						}>
-						{Loading ? (
-							<img src={waiting} alt="submitting" />
-						) : (
-							<span> Save</span>
-						)}
-					</button>
 				</div>
 			</Modal.Body>
 		</Modal>

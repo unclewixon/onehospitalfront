@@ -19,7 +19,12 @@ const NoMatch = lazy(() => import('./pages/NoMatch'));
 const FrontDesk = lazy(() => import('./pages/FrontDesk/index'));
 const InPatient = lazy(() => import('./pages/InPatient'));
 const PatientProfile = lazy(() => import('./pages/PatientProfile'));
-const Pharmacy = lazy(() => import('./pages/Pharmacy'));
+const Pharmacy = lazy(() => import('./pages/Inventory/Pharmacy'));
+const Pharmacy2 = lazy(() => import('./pages/Pharmacy'));
+const Physiotherapy = lazy(() => import('./pages/Physiotherapy'));
+const Dentistry = lazy(() => import('./pages/Dentistry'));
+const Procedure = lazy(() => import('./pages/Procedure'));
+const Vitals = lazy(() => import('./pages/Vitals'));
 const Staff = lazy(() => import('./pages/HR/index'));
 const Inventory = lazy(() => import('./pages/Inventory/index'));
 const Settings = lazy(() => import('./pages/Settings'));
@@ -81,6 +86,13 @@ class App extends Component {
 												<Route path="/front-desk" component={FrontDesk} />
 												<Route path="/in-patient" component={InPatient} />
 												<Route path="/pharmacy" component={Pharmacy} />
+												<Route path="/pharmacy2" component={Pharmacy2} />
+												<Route
+													path="/physiotherapy"
+													component={Physiotherapy}
+												/>
+												<Route path="/dentistry" component={Dentistry} />
+												<Route path="/procedure" component={Procedure} />
 												<Route path="/radiology" component={Radiology} />
 												<Route path="/antennatal" component={Antennatal} />
 												<Route path="/ivf" component={IVF} />

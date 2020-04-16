@@ -40,6 +40,30 @@ const FrontDeskMenu = () => {
 				</Link>
 			</li>
 			<li>
+				<Link to="/physiotherapy">
+					<div className="icon-w">
+						<div className="os-icon os-icon-layers" />
+					</div>
+					<span>Physiotherapy</span>
+				</Link>
+			</li>
+			<li>
+				<Link to="/dentistry">
+					<div className="icon-w">
+						<div className="os-icon os-icon-layers" />
+					</div>
+					<span>Dentistry</span>
+				</Link>
+			</li>
+			<li>
+				<Link to="/procedure">
+					<div className="icon-w">
+						<div className="os-icon os-icon-layers" />
+					</div>
+					<span>Procedure</span>
+				</Link>
+			</li>
+			<li>
 				<Link to="/radiology">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers" />

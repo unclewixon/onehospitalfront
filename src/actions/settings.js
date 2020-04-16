@@ -783,15 +783,14 @@ export const getAllLabTests = () => {
 export const updateLabTest = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.patch(`${API_URI}/lab-tests/${data.id}/update`, {
-					name: data.name,
-					lab_category_id: data.category,
-					price: data.price,
-					test_type: data.testType,
-					parameters: data.parameters,
-					description: data.description,
-				})
+			request(`${API_URI}/lab-tests/${data.id}/update`, 'PATCH', true, {
+				name: data.name,
+				lab_category_id: data.category,
+				price: data.price,
+				test_type: data.testType,
+				parameters: data.parameters,
+				description: data.description,
+			})
 				.then(response => {
 					dispatch(update_lab_test(response.data, data));
 					return resolve({ success: true });
@@ -825,8 +824,7 @@ export const deleteLabTest = data => {
 					data.category && data.category.id ? data.category.id : '',
 				parameters: updatedStructure,
 			};
-			axios
-				.delete(`${API_URI}/lab-tests/${data.id}`, newStructure)
+			request(`${API_URI}/lab-tests/${data.id}`, 'DELETE', true)
 				.then(response => {
 					dispatch(delete_lab_test(data));
 					return resolve({ success: true });
@@ -846,7 +844,7 @@ export const addLabGroup = data => {
 				price: data.price,
 				lab_category_id: data.category,
 				test_type: data.testType,
-				sub_test: data.labTests,
+				sub_tests: data.lab_test,
 				parameters: data.parameters,
 				description: data.description,
 			})
@@ -880,12 +878,12 @@ export const getAllLabGroups = () => {
 export const updateLabGroup = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			request(`${API_URI}/lab-tests/${data.id}/update`, 'PUT', true, {
+			request(`${API_URI}/lab-tests/${data.id}/update`, 'PATCH', true, {
 				name: data.name,
 				lab_category_id: data.category,
 				price: data.price,
 				test_type: data.testType,
-				sub_test: data.labTests,
+				sub_tests: data.lab_test,
 				parameters: data.parameters,
 				description: data.description,
 			})
@@ -1041,8 +1039,7 @@ export const updateLabTestParameter = data => {
 export const deleteLabTestParameters = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			axios
-				.delete(`${API_URI}/lab-tests/parameters/${data.id}`)
+			request(`${API_URI}/lab-tests/parameters/${data.id}`, 'DELETE', true)
 				.then(response => {
 					dispatch(delete_lab_test_parameter(data));
 					return resolve({ success: true });

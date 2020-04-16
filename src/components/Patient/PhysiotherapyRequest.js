@@ -31,7 +31,6 @@ const PhysiotherapyRequest = props => {
 	const [parameters, setParameters] = useState([]);
 
 	const onSubmit = async values => {
-		console.log(values);
 		setSubmitting(true);
 		// socket.emit('saveAppointment', values);
 
@@ -93,8 +92,6 @@ const PhysiotherapyRequest = props => {
 			});
 
 		setServices(requestType);
-
-		// console.log(serviceList.map(service => service.category.id));
 	};
 	const handleParamInputChange = async (e, index) => {
 		const { name, value } = e.target;
@@ -107,7 +104,6 @@ const PhysiotherapyRequest = props => {
 		}
 
 		await setParameters(newParam);
-		console.log(newParam, parameters);
 	};
 
 	const addSpecializationUI = () => {
@@ -154,7 +150,6 @@ const PhysiotherapyRequest = props => {
 				});
 		}
 		setLoaded(true);
-		console.log(props.ServicesList);
 		setServiceList(props.ServicesList);
 	}, [props, loaded]);
 
@@ -171,7 +166,6 @@ const PhysiotherapyRequest = props => {
 				});
 		}
 		setLoaded(true);
-		console.log(props.ServiceCategories);
 		setServiceCenter(props.ServiceCategories);
 	}, [props, loaded]);
 
