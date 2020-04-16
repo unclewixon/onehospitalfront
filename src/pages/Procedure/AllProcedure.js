@@ -7,6 +7,7 @@ import { API_URI } from '../../services/constants';
 import { loadPatientProcedureData } from '../../actions/patient';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
+import waiting from '../../assets/images/waiting.gif';
 import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
@@ -20,7 +21,8 @@ class AllProcedure extends Component {
 		loaded: false,
 		patientId: "",
 		startDate: "",
-		endDate: ""
+		endDate: "",
+		filtering: false
 
 	};
 	componentDidMount() {
@@ -39,10 +41,10 @@ class AllProcedure extends Component {
 				true
 			);
 			this.props.loadPatientProcedureData(rs);;
-			return this.setState({ loaded: false });
+			return this.setState({ loaded: false, filtering: false });
 		} catch (error) {
 			notifyError('error fetching procedure requests');
-			this.setState({ loaded: false });
+			this.setState({ loaded: false, filtering: false });
 		}
 	};
 
@@ -103,12 +105,13 @@ class AllProcedure extends Component {
 			}) : []
 
 	filterEntries = () => {
+		this.setState({filtering: true})
 		this.fetchPhysio(this.state.patientId)
 	}
 
 
 	render() {
-		const { loaded } = this.state;
+		const { loaded, filtering } = this.state;
 
 		const filteredNames = this.props &&
 			this.props.patient_procedure &&
@@ -161,11 +164,11 @@ class AllProcedure extends Component {
 										>
 											<i className="os-icon os-icon-ui-37" />
 											<span>
-												{/* {filtering ? (
+												{filtering ? (
 													<img src={waiting} alt="submitting" />
 												) : (
 														'Filter'
-													)} */}
+													)}
 											</span>
 										</div>
 									</div>

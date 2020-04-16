@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { request } from '../../services/utilities';
-import { API_URI, patientAPI } from '../../services/constants';
+import { API_URI } from '../../services/constants';
 import Tooltip from 'antd/lib/tooltip';
 import { notifyError } from '../../services/notify';
 import { loadPatientProcedureData } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
+import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import _ from 'lodash';
 import DatePicker from 'antd/lib/date-picker';
@@ -16,8 +17,9 @@ class ProcedureDashboard extends Component {
 	state = {
 		loaded: false,
 		patientId: "",
-		startDate: "",
-		endDate: ""
+		startDate: moment(Date.now()).format('YYYY-MM-DD'),
+		endDate: moment(Date.now()).format('YYYY-MM-DD'),
+		filtering: false
 
 	};
 	componentDidMount() {
@@ -36,10 +38,10 @@ class ProcedureDashboard extends Component {
 				true
 			);
 			this.props.loadPatientProcedureData(rs);;
-			return this.setState({ loaded: false });
+			return this.setState({ loaded: false, filtering: false });
 		} catch (error) {
 			notifyError('error fetching procedure requests');
-			this.setState({ loaded: false });
+			this.setState({ loaded: false, filtering: false });
 		}
 	};
 
@@ -100,11 +102,12 @@ class ProcedureDashboard extends Component {
 			}) : []
 
 	filterEntries = () => {
+		this.setState({filtering: true})
 		this.fetchPhysio(this.state.patientId)
 	}
 
 	render() {
-		const { loaded } = this.state;
+		const { loaded, filtering } = this.state;
 
 		const filteredNames = this.props &&
 			this.props.patient_procedure &&
@@ -119,139 +122,109 @@ class ProcedureDashboard extends Component {
 		const filteredOptions = _.uniqBy(filteredNames, 'value')
 
 		return (
+
 			<div className="col-sm-12">
 				<div className="element-wrapper">
-					<h6 className="element-header">Lab</h6>
 					<div className="row">
-						<div className="col-sm-12">
-							<div className="element-content">
-								<div className="row">
-									<div className="col-sm-4 col-xxxl-4">
-										<a className="element-box el-tablo">
-											<div className="label">Pending Requests</div>
-											<div className="value">57</div>
-										</a>
-									</div>
-									<div className="col-sm-4 col-xxxl-4">
-										<a className="element-box el-tablo">
-											<div className="label">Pending Approval</div>
-											<div className="value text-center">457</div>
-										</a>
-									</div>
-									<div className="col-sm-4 col-xxxl-4">
-										<a className="element-box el-tablo">
-											<div className="label">Completed Requests</div>
-											<div className="value">125</div>
-										</a>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div className="col-sm-12">
-							<div className="element-wrapper">
-								<div className="row">
-									<div className="col-md-12">
-										{/* {this.state.activeRequest ? (
+						<div className="col-md-12">
+							{/* {this.state.activeRequest ? (
 									<ModalClinicalLab
 										activeRequest={this.state.activeRequest}
 										showModal={this.state.showModal}
 										onModalClick={this.onModalClick}
 									/>
 								) : null} */}
-										<h6 className="element-header">Filter by:</h6>
+							<h6 className="element-header">Filter by:</h6>
 
-										<form className="row">
-											<div className="form-group col-md-6">
-												<label>From - To</label>
-												<RangePicker onChange={e => this.dateChange(e)} />
-											</div>
-											<div className="form-group col-md-3">
-												<label className="mr-2 " htmlFor="id">
-													Patient
+							<form className="row">
+								<div className="form-group col-md-6">
+									<label>From - To</label>
+									<RangePicker onChange={e => this.dateChange(e)} />
+								</div>
+								<div className="form-group col-md-3">
+									<label className="mr-2 " htmlFor="id">
+										Patient
 												</label>
-												<Select
-													id="patientId"
-													isSearchable={true}
-													name="patientId"
-													options={filteredOptions}
-													onChange={e => this.setState({ patientId: e.value })}
-												/>
-											</div>
-											<div className="form-group col-md-3 mt-4">
-												<div
-													className="btn btn-sm btn-primary btn-upper text-white"
-													onClick={() => { this.filterEntries() }}
-												>
-													<i className="os-icon os-icon-ui-37" />
-													<span>
-														{/* {filtering ? (
+									<Select
+										id="patientId"
+										isSearchable={true}
+										name="patientId"
+										options={filteredOptions}
+										onChange={e => this.setState({ patientId: e.value })}
+									/>
+								</div>
+								<div className="form-group col-md-3 mt-4">
+									<div
+										className="btn btn-sm btn-primary btn-upper text-white"
+										onClick={() => { this.filterEntries() }}
+									>
+										<i className="os-icon os-icon-ui-37" />
+										<span>
+											{filtering ? (
 															<img src={waiting} alt="submitting" />
 															) : (
 																'Filter'
-															)} */}
-													</span>
-												</div>
-											</div>
-										</form>
+															)}
+										</span>
 									</div>
-									<div className="col-sm-12">
-										<div className="element-box">
-											<div className="table-responsive">
-												{
-													<table className="table table-striped">
-														<thead>
-															<tr>
-																<th>
-																	<div className="th-inner "></div>
-																	<div className="fht-cell"></div>
-																</th>
-																<th>
-																	<div className="th-inner sortable both">
-																		Request Date
+								</div>
+							</form>
+						</div>
+						<div className="col-sm-12">
+							<div className="element-box">
+								<div className="table-responsive">
+									{
+										<table className="table table-striped">
+											<thead>
+												<tr>
+													<th>
+														<div className="th-inner "></div>
+														<div className="fht-cell"></div>
+													</th>
+													<th>
+														<div className="th-inner sortable both">
+															Request Date
 															</div>
-																	<div className="fht-cell"></div>
-																</th>
-																<th>
-																	<div className="th-inner sortable both">
-																		Requested By
+														<div className="fht-cell"></div>
+													</th>
+													<th>
+														<div className="th-inner sortable both">
+															Requested By
 															</div>
-																	<div className="fht-cell"></div>
-																</th>
-																<th>
-																	<div className="th-inner sortable both">
-																		Request Specimen
+														<div className="fht-cell"></div>
+													</th>
+													<th>
+														<div className="th-inner sortable both">
+															Request Specimen
 															</div>
-																	<div className="fht-cell"></div>
-																</th>
-																<th>
-																	<div className="th-inner sortable both">
-																		Request Status
+														<div className="fht-cell"></div>
+													</th>
+													<th>
+														<div className="th-inner sortable both">
+															Request Status
 															</div>
-																	<div className="fht-cell"></div>
-																</th>
-																<th>
-																	<div className="th-inner "></div>
-																	<div className="fht-cell"></div>
-																</th>
-															</tr>
-														</thead>
+														<div className="fht-cell"></div>
+													</th>
+													<th>
+														<div className="th-inner "></div>
+														<div className="fht-cell"></div>
+													</th>
+												</tr>
+											</thead>
 
-														<tbody>
-															{loaded ? (
-																<tr>
-																	<td colSpan="6" className="text-center">
-																		<img alt="searching" src={searchingGIF} />
-																	</td>
-																</tr>
-															) : (
-																	<>{this.table()}</>
-																)}
-														</tbody>
-													</table>
-												}
-											</div>
-										</div>
-									</div>
+											<tbody>
+												{loaded ? (
+													<tr>
+														<td colSpan="6" className="text-center">
+															<img alt="searching" src={searchingGIF} />
+														</td>
+													</tr>
+												) : (
+														<>{this.table()}</>
+													)}
+											</tbody>
+										</table>
+									}
 								</div>
 							</div>
 						</div>

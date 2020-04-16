@@ -2,10 +2,8 @@
 import React, { Component, lazy, Suspense } from 'react';
 import { Switch, withRouter, Route, Link } from 'react-router-dom';
 import NoMatch from '../NoMatch';
-import Queue from '../../components/Queue';
 import Splash from '../../components/Splash';
 const NewProcedure = lazy(() => import('./NewProcedureRequest'));
-const RecentProcedure = lazy(() => import('./RecentProcedure'));
 const AllProcedure = lazy(() => import('./AllProcedure'));
 const ProcedureDashboard = lazy(() => import('./ProcedureDasboard'));
 
@@ -34,14 +32,6 @@ class Procedure extends Component {
 										Dashboard
 									</Link>
 									<Link
-										to={`/procedure/recent`}
-										className={`mr-2 btn btn-primary btn-sm ${
-											page === '/recent' ? 'btn-outline-primary' : ''
-										}`}>
-										{' '}
-										Recent Requests
-									</Link>
-									<Link
 										className={`mr-2 btn btn-primary btn-sm  ${
 											page === '/all-requests' ? 'btn-outline-primary' : ''
 										}`}
@@ -53,7 +43,7 @@ class Procedure extends Component {
 											page === '/new-request' ? 'btn-outline-primary' : ''
 										}`}
 										to="/procedure/new-request">
-										Procedure Request
+										New Procedure Request
 									</Link>
 								</div>
 
@@ -77,11 +67,6 @@ class Procedure extends Component {
 											/>
 											<Route
 												exact
-												path={`${match.url}/recent`}
-												component={RecentProcedure}
-											/>
-											<Route
-												exact
 												path={`${match.url}/new-request`}
 												component={NewProcedure}
 											/>
@@ -92,9 +77,6 @@ class Procedure extends Component {
 							</div>
 						</div>
 					</div>
-				</div>
-				<div className="content-panel compact">
-					<Queue />
 				</div>
 			</div>
 		);
