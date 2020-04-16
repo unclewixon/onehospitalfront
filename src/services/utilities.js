@@ -216,16 +216,26 @@ export const renderMultiselect = ({
 	valueField,
 	textField,
 	label,
+	meta: { touched, error },
 }) => (
-	<Multiselect
-		{...input}
-		onBlur={() => input.onBlur()}
-		value={input.value || []} // requires value to be an array
-		data={data}
-		valueField={valueField}
-		textField={textField}
-		label={label}
-	/>
+	<div>
+		<Multiselect
+			{...input}
+			onBlur={() => input.onBlur()}
+			value={input.value || []} // requires value to be an array
+			data={data}
+			valueField={valueField}
+			textField={textField}
+			label={label}
+		/>
+		{touched && error && (
+			<div className="help-block form-text with-errors form-control-feedback">
+				<ul className="list-unstyled">
+					<li>{error}</li>
+				</ul>
+			</div>
+		)}
+	</div>
 );
 
 export const renderDateTimePicker = ({

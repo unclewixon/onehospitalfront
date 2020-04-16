@@ -25,6 +25,7 @@ import {
 	GET_LAB_REQUESTS,
 	LOAD_CLINICAL_LAB,
 	LOAD_RADIOLOGY,
+	LOAD_ANTENNATAL,
 } from './types';
 import { request } from '../services/utilities';
 
@@ -181,6 +182,13 @@ export const add_pharmacy_request = data => {
 	return {
 		type: ADD_PHARMACY_REQUEST,
 		payload: data,
+	};
+};
+
+export const loadAntennatal = payload => {
+	return {
+		type: LOAD_ANTENNATAL,
+		payload,
 	};
 };
 

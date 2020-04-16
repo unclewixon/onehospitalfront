@@ -36,6 +36,7 @@ import {
 	TOGGLE_APPLY_VOUCHER,
 	TOGGLE_UPLOAD_HMO_TARIFF,
 	TOGGLE_APPROVE_HMO_TRANSACTION,
+	TOGGLE_ANTENATAL_DETAIL,
 } from './types';
 
 export const togglePreloading = status => {
@@ -306,6 +307,13 @@ export const toggleOpenEncounter = (status, id) => {
 	};
 };
 
+export const toggleAntenatalDetail = (status, id) => {
+	return {
+		type: TOGGLE_ANTENATAL_DETAIL,
+		payload: status,
+		id,
+	};
+};
 // close modals
 export const closeModals = () => {
 	return dispatch => {
@@ -343,6 +351,7 @@ export const closeModals = () => {
 		dispatch(toggleUploadHmoTariff(false));
 		dispatch(toggleEditService(false, null));
 		dispatch(toggleOpenEncounter(false, null));
+		dispatch(toggleAntenatalDetail(false, null));
 	};
 };
 
@@ -632,5 +641,13 @@ export const uploadRadiology = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleUploadRadiology(action));
+	};
+};
+
+export const viewAntenatalDetail = (action, id) => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleAntenatalDetail(action, id));
 	};
 };

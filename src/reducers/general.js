@@ -35,6 +35,7 @@ import {
 	TOGGLE_APPROVE_TRANSACTION,
 	TOGGLE_APPROVE_HMO_TRANSACTION,
 	TOGGLE_APPLY_VOUCHER,
+	TOGGLE_ANTENATAL_DETAIL,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -75,6 +76,8 @@ const INITIAL_STATE = {
 	edit_service: { status: false, data: null },
 	openEncounter: false,
 	encounterId: null,
+	antenatal_detail: false,
+	antenatal_id: null,
 };
 
 const general = (state = INITIAL_STATE, action) => {
@@ -164,6 +167,12 @@ const general = (state = INITIAL_STATE, action) => {
 
 		case TOGGLE_ADD_CAFETERIA_FILE:
 			return { ...state, add_cafeteria_file: action.payload };
+		case TOGGLE_ANTENATAL_DETAIL:
+			return {
+				...state,
+				antenatal_detail: action.payload,
+				antenatal_id: action.id,
+			};
 		default:
 			return state;
 	}
