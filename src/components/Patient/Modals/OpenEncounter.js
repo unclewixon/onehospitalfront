@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState, useRef } from 'react';
 import kebabCase from 'lodash.kebabcase';
 import ArrowKeysReact from 'arrow-keys-react';
 import ReactDOM from 'react-dom';
@@ -20,161 +20,215 @@ import { encounters } from '../../../services/constants';
 import { closeModals } from '../../../actions/general';
 import ProfileBlock from '../../ProfileBlock';
 
-const EncounterTabs = ({ index }) => {
-	switch (index) {
-		case 10:
-			return <Consumable />;
-		case 9:
-			return <PlanForm />;
-		case 8:
-			return <Investigations />;
-		case 7:
-			return <Diagnosis />;
-		case 6:
-			return <PhysicalExamSummary />;
-		case 5:
-			return <PhysicalExam />;
-		case 4:
-			return <Allergies />;
-		case 3:
-			return <PastHistory />;
-		case 2:
-			return <HxForm />;
-		case 1:
-			return <ReviewOfSystem />;
-		case 0:
-		default:
-			return <Complaints />;
-	}
-};
-
-class OpenEncounter extends Component {
-	state = {
+const OpenEncounter = props => {
+	const [state, setState] = useState({
 		eIndex: 0,
 		content: '',
 		dropdown: false,
-	};
+	});
 
-	componentDidMount() {
+	const theDiv = useRef();
+
+	useEffect(() => {
 		setTimeout(() => {
-			this.focusDiv();
+			focusDiv();
 		}, 200);
 
 		ArrowKeysReact.config({
 			left: () => {
-				this.setState({
+				setState({
+					...state,
 					content: 'left key detected.',
 				});
-				this.previous();
+				previous();
 			},
 			right: () => {
-				this.setState({
+				setState({
+					...state,
 					content: 'right key detected.',
 				});
-				this.next();
+				next();
 			},
 			up: () => {
-				this.setState({
+				setState({
+					...state,
 					content: 'up key detected.',
 				});
 			},
 			down: () => {
-				this.setState({
+				setState({
+					...state,
 					content: 'down key detected.',
 				});
 			},
 		});
-	}
+	});
 
-	open = i => () => {
-		this.setState({ eIndex: i });
+	const open = i => () => {
+		setState({ ...state, eIndex: i });
 	};
 
-	next = () => {
-		const { eIndex } = this.state;
+	const next = () => {
+		const { eIndex } = state;
 		const i = eIndex + 1;
 		if (i <= encounters.length - 1) {
-			this.setState({ eIndex: i });
+			setState({ ...state, eIndex: i });
 		}
 
 		setTimeout(() => {
-			this.focusDiv();
+			focusDiv();
 		}, 200);
 	};
 
-	previous = () => {
-		const { eIndex } = this.state;
+	const previous = () => {
+		const { eIndex } = state;
 		const i = eIndex - 1;
 		if (i >= 0) {
-			this.setState({ eIndex: i });
+			setState({ ...state, eIndex: i });
 		}
 
 		setTimeout(() => {
-			this.focusDiv();
+			focusDiv();
 		}, 200);
 	};
 
-	toggleDropdown = () => () => {
-		this.setState((prevState, props) => ({
+	const toggleDropdown = () => () => {
+		setState((prevState, props) => ({
 			dropdown: !prevState.dropdown,
 		}));
 	};
 
-	focusDiv() {
-		console.log('set focus');
-		ReactDOM.findDOMNode(this.refs.theDiv).focus();
+	function focusDiv() {
+		// console.log('set focus');
+		ReactDOM.findDOMNode(theDiv.current).focus();
 	}
 
-	render() {
-		const { patient } = this.props;
-		const { eIndex, dropdown } = this.state;
-		const current = encounters[eIndex];
+	const { patient } = props;
+	const { eIndex, dropdown } = state;
+	const current = encounters[eIndex];
 
-		return (
-			<div
-				className="onboarding-modal modal fade animated show top-modal"
-				role="dialog"
-				style={{ display: 'block' }}
-				tabIndex="1"
-				{...ArrowKeysReact.events}
-				ref="theDiv">
-				<div className="modal-dialog modal-lg modal-centered" role="document">
-					<div className="modal-content">
-						<button
-							aria-label="Close"
-							className="close"
-							type="button"
-							onClick={() => this.props.closeModals(false)}>
-							<span className="os-icon os-icon-close"></span>
-						</button>
-						<div className="layout-w flex-column">
-							<ProfileBlock
-								dropdown={dropdown}
-								patient={patient}
-								toggleDropdown={this.toggleDropdown}
-							/>
-							<EncounterMenu
-								profile={false}
-								encounters={encounters}
-								active={kebabCase(current)}
-								open={this.open}
-							/>
-							<div className="content-w">
-								<div className="content-i">
-									<div className="content-box">
-										{/* <h6 className="onboarding-title">{current}</h6> */}
-										<EncounterTabs index={eIndex} />
-										<div className="row mt-5">
-											<div className="col-sm-12 d-flex ant-row-flex-space-between">
-												<button
-													className="btn btn-primary"
-													onClick={this.previous}>
-													Previous
-												</button>
-												<button className="btn btn-primary" onClick={this.next}>
-													Next
-												</button>
-											</div>
+	return (
+		<div
+			className="onboarding-modal modal fade animated show top-modal"
+			role="dialog"
+			style={{ display: 'block' }}
+			tabIndex="1"
+			{...ArrowKeysReact.events}
+			ref={theDiv}>
+			<div className="modal-dialog modal-lg modal-centered" role="document">
+				<div className="modal-content">
+					<button
+						aria-label="Close"
+						className="close"
+						type="button"
+						onClick={() => props.closeModals(false)}>
+						<span className="os-icon os-icon-close"></span>
+					</button>
+					<div className="layout-w flex-column">
+						<ProfileBlock
+							dropdown={dropdown}
+							patient={patient}
+							toggleDropdown={toggleDropdown}
+						/>
+						<EncounterMenu
+							profile={false}
+							encounters={encounters}
+							active={kebabCase(current)}
+							open={open}
+						/>
+						<div className="content-w">
+							<div className="content-i">
+								<div className="content-box">
+									{/* <h6 className="onboarding-title">{current}</h6> */}
+									{
+										{
+											10: (
+												<Consumable
+													index={eIndex}
+													next={next}
+													previous={previous}
+												/>
+											),
+											9: (
+												<PlanForm
+													index={eIndex}
+													next={next}
+													previous={previous}
+												/>
+											),
+											8: (
+												<Investigations
+													index={eIndex}
+													next={next}
+													previous={previous}
+												/>
+											),
+											7: (
+												<Diagnosis
+													index={eIndex}
+													next={next}
+													previous={previous}
+												/>
+											),
+											6: (
+												<PhysicalExamSummary
+													index={eIndex}
+													next={next}
+													previous={previous}
+												/>
+											),
+											5: (
+												<PhysicalExam
+													index={eIndex}
+													next={next}
+													previous={previous}
+												/>
+											),
+											4: (
+												<Allergies
+													index={eIndex}
+													next={next}
+													previous={previous}
+												/>
+											),
+											3: (
+												<PastHistory
+													index={eIndex}
+													next={next}
+													previous={previous}
+												/>
+											),
+											2: (
+												<HxForm
+													index={eIndex}
+													next={next}
+													previous={previous}
+												/>
+											),
+											1: (
+												<ReviewOfSystem
+													index={eIndex}
+													next={next}
+													previous={previous}
+												/>
+											),
+											0: (
+												<Complaints
+													index={eIndex}
+													next={next}
+													previous={previous}
+												/>
+											),
+										}[eIndex]
+									}
+									<div className="row mt-5">
+										<div className="col-sm-12 d-flex ant-row-flex-space-between">
+											<button className="btn btn-primary" onClick={previous}>
+												Previous
+											</button>
+											<button className="btn btn-primary" onClick={next}>
+												Next
+											</button>
 										</div>
 									</div>
 								</div>
@@ -183,9 +237,9 @@ class OpenEncounter extends Component {
 					</div>
 				</div>
 			</div>
-		);
-	}
-}
+		</div>
+	);
+};
 
 const mapStateToProps = (state, ownProps) => {
 	return {

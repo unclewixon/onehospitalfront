@@ -9,7 +9,7 @@ import { request, confirmAction } from '../../services/utilities';
 import { API_URI } from '../../services/constants';
 import {
 	create_department,
-	get_all_department,
+	loadDepartments,
 	get_all_staff,
 	update_department,
 	delete_department,
@@ -75,7 +75,6 @@ const Departments = props => {
 	const onEditDept = async e => {
 		setLoading(true);
 		e.preventDefault();
-
 		let data = {
 			name: name,
 			id: payload.id,
@@ -108,11 +107,12 @@ const Departments = props => {
 			...prevState,
 			name: data.name,
 			id: data.id,
-			headOfDept: data.staff ? data.staff.id : null,
+			headOfDept: data.hod_id ? data.hod_id : null,
 			hod: data.hod_name ? `${data.hod_name}` : null,
 			description: data.description,
 		}));
 		setDataToEdit(data);
+		console.log(data);
 	};
 
 	const cancelEditButton = () => {
@@ -128,7 +128,7 @@ const Departments = props => {
 		setDataLoaded(false);
 		try {
 			const rs = await request(`${API_URI}/departments`, 'GET', true);
-			props.get_all_department(rs);
+			props.loadDepartments(rs);
 			setDataLoaded(true);
 		} catch (error) {
 			setDataLoaded(true);
@@ -152,6 +152,11 @@ const Departments = props => {
 		fetchDepartment();
 		fetchAllStaff();
 	}, []);
+
+	let defaultValue = {
+		label: hod,
+		value: headOfDept,
+	};
 
 	return (
 		<div className="content-i">
@@ -198,12 +203,6 @@ const Departments = props => {
 															return (
 																<tr key={i}>
 																	<td className="nowrap">
-																		<span
-																			className={
-																				department.isActive
-																					? 'status-pill smaller green'
-																					: 'status-pill smaller red'
-																			}></span>
 																		<span>{department.name}</span>
 																	</td>
 																	<td>
@@ -262,8 +261,8 @@ const Departments = props => {
 												className="form-control"
 												name="headOfDept"
 												onChange={handleInputChange}
+												defaultValue={defaultValue}
 												value={headOfDept}>
-												{hod && <option>{hod}</option>}
 												{!hod && <option value=""></option>}
 												{props.StaffList.map((hod, i) => {
 													return (
@@ -349,7 +348,7 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
 	create_department,
-	get_all_department,
+	loadDepartments,
 	get_all_staff,
 	update_department,
 	delete_department,

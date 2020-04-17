@@ -193,6 +193,7 @@ export const loadAntennatal = payload => {
 };
 
 export const createLabRequest = data => {
+	console.log(data);
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			let newGroup = data.lab_combo.map(grp => {
@@ -217,7 +218,7 @@ export const createLabRequest = data => {
 					parameters: grp.paramenters
 						? grp.paramenters.map(param => {
 								return {
-									name: param.parameter.name,
+									name: param.parameter_id,
 									range: param.referenceRange,
 									result: '',
 								};
@@ -293,6 +294,12 @@ export const getRequestByType = (patientId, type) => {
 					if (type === 'pharmacy') {
 						dispatch({
 							type: GET_PHARMACY_REQUESTS,
+							payload: response,
+						});
+					}
+					if (type === 'physiotherapy') {
+						dispatch({
+							type: GET_PHYSIOTHERAPIES,
 							payload: response,
 						});
 					}

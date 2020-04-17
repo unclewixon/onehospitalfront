@@ -191,7 +191,6 @@ const Dentistry = props => {
 };
 
 const mapStateToProps = state => {
-	console.log(state.patient.dentistryRequests);
 	return {
 		patient: state.user.patient,
 		dentistryRequests: state.patient.dentistryRequests,

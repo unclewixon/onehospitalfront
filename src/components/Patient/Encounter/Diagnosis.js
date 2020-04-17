@@ -109,11 +109,12 @@ class Diagnosis extends Component {
 													/>
 												</div>
 											</div>
-											<div className="col-md-1">
+											<div
+												className="col-md-1"
+												style={{ position: 'relative' }}>
 												<a
-													className="text-danger"
-													onClick={this.removeDiagnosis(dia.id)}
-													style={{ lineHeight: '37px' }}>
+													className="text-danger delete-icon"
+													onClick={this.removeDiagnosis(dia.id)}>
 													<i className="os-icon os-icon-cancel-circle" />
 												</a>
 											</div>

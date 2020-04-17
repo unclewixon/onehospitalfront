@@ -8,6 +8,8 @@ import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import { addHmo, getAllHmos, updateHmo, deleteHmo } from '../actions/hmo';
 import { API_URI, hmoAPI } from '../services/constants';
+import Tooltip from 'antd/lib/tooltip';
+import { request } from '../services/utilities';
 
 const HmoList = props => {
 	const initialState = {
@@ -94,6 +96,26 @@ const HmoList = props => {
 	const cancelEditButton = () => {
 		setSubmitButton({ add: true, edit: false });
 		setState({ ...initialState });
+	};
+
+	const processTransaction = async (action, hmo) => {
+		try {
+			let id = hmo.id;
+			setDataLoaded(false);
+			const rs = await request(
+				`${API_URI}/hmos/transactions/` + id + '/process?action=' + action,
+				'GET',
+				true
+			);
+			let act = action === 1 ? ' Approved' : ' Rejected';
+			let message = hmo.name + act;
+			notifySuccess(message);
+			setDataLoaded(true);
+		} catch (error) {
+			notifyError('There was an error');
+			console.log(error);
+			setDataLoaded(true);
+		}
 	};
 
 	const onDeleteHmo = data => {
@@ -197,9 +219,9 @@ const HmoList = props => {
 													</tr>
 												) : (
 													<>
-														{props.hmoList.map(hmo => {
+														{props.hmoList.map((hmo, id) => {
 															return (
-																<tr>
+																<tr key={id}>
 																	<td>
 																		<div className="user-with-avatar">
 																			<img
@@ -221,6 +243,25 @@ const HmoList = props => {
 																		<span>{hmo.email}</span>
 																	</td>
 																	<td className="row-actions">
+																		<Tooltip title="Approve">
+																			<a
+																				className="secondary"
+																				onClick={() =>
+																					processTransaction(1, hmo)
+																				}>
+																				<i className="os-icon os-icon-thumbs-up" />
+																			</a>
+																		</Tooltip>
+
+																		<Tooltip title="Reject">
+																			<a
+																				className="secondary"
+																				onClick={() =>
+																					processTransaction(2, hmo)
+																				}>
+																				<i className="os-icon os-icon-thumbs-down" />
+																			</a>
+																		</Tooltip>
 																		<a href="#">
 																			<i
 																				className="os-icon os-icon-grid-10"

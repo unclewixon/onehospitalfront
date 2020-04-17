@@ -2,11 +2,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
+import axios from 'axios';
 
 import logo from '../assets/images/logo-big.png';
 import waiting from '../assets/images/waiting.gif';
-import { request, redirectToPage } from '../services/utilities';
-import { API_URI } from '../services/constants';
+import { request, redirectToPage, defaultHeaders } from '../services/utilities';
+import {
+	API_URI,
+	departmentAPI,
+	inventoryCatAPI,
+	inventorySubCatAPI,
+	rolesAPI,
+} from '../services/constants';
 import { notifySuccess } from '../services/notify';
 import { loginUser } from '../actions/user';
 import SSRStorage from '../services/storage';
@@ -15,8 +22,16 @@ import {
 	MODE_COOKIE,
 	TOKEN_COOKIE,
 } from '../services/constants';
+import { loadRoles } from '../actions/role';
+import { loadDepartments, loadSpecializations } from '../actions/settings';
+import { loadInvCategories, loadInvSubCategories } from '../actions/inventory';
 
 const storage = new SSRStorage();
+
+const axiosFetch = (url, jwt) =>
+	axios.get(url, {
+		headers: !jwt ? defaultHeaders : { ...defaultHeaders, Authorization: jwt },
+	});
 
 const validate = values => {
 	const errors = {};
@@ -67,10 +82,49 @@ class Login extends Component {
 		this.setState({ submitting: true });
 		try {
 			const rs = await request(`${API_URI}/auth/login`, 'POST', true, data);
-			this.props.loginUser(rs);
-			storage.setItem(TOKEN_COOKIE, rs);
-			notifySuccess('login successful!');
-			redirectToPage(rs.role, this.props.history);
+			try {
+				const jwt = `Bearer ${rs.token}`;
+				let [
+					rs_depts,
+					rs_invcategories,
+					rs_invsubcategories,
+					rs_roles,
+					rs_specializations,
+				] = await Promise.all([
+					axiosFetch(`${API_URI}${departmentAPI}`, jwt),
+					axiosFetch(`${API_URI}${inventoryCatAPI}`, jwt),
+					axiosFetch(`${API_URI}${inventorySubCatAPI}`, jwt),
+					axiosFetch(`${API_URI}${rolesAPI}`, jwt),
+					axiosFetch(`${API_URI}/specializations`, jwt),
+				]);
+
+				if (rs_depts && rs_depts.data) {
+					this.props.loadDepartments(rs_depts.data);
+				}
+				if (rs_invcategories && rs_invcategories.data) {
+					this.props.loadInvCategories(rs_invcategories.data);
+				}
+				if (rs_invsubcategories && rs_invsubcategories.data) {
+					this.props.loadInvSubCategories(rs_invsubcategories.data);
+				}
+				if (rs_roles && rs_roles.data) {
+					this.props.loadRoles(rs_roles.data);
+				}
+				if (rs_specializations && rs_specializations.data) {
+					this.props.loadSpecializations(rs_specializations.data);
+				}
+
+				this.props.loginUser(rs);
+				storage.setItem(TOKEN_COOKIE, rs);
+
+				notifySuccess('login successful!');
+				redirectToPage(rs.role, this.props.history);
+			} catch (e) {
+				this.setState({ submitting: false });
+				throw new SubmissionError({
+					_error: 'could not login user',
+				});
+			}
 		} catch (e) {
 			this.setState({ submitting: false });
 			throw new SubmissionError({
@@ -142,4 +196,11 @@ Login = reduxForm({
 	validate,
 })(Login);
 
-export default connect(null, { loginUser })(Login);
+export default connect(null, {
+	loginUser,
+	loadDepartments,
+	loadInvCategories,
+	loadInvSubCategories,
+	loadRoles,
+	loadSpecializations,
+})(Login);

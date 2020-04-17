@@ -59,7 +59,13 @@ const LengthOfArm = ({ vitals }) => {
 						height={300}
 						data={data}
 						margin={{ top: 5, right: 20, bottom: 5, left: 30 }}>
-						<Line type="monotone" dataKey="item" stroke="#8884d8" />
+						<Line
+							type="monotone"
+							dataKey="item"
+							unit={unit}
+							name={info.title}
+							stroke="#8884d8"
+						/>
 						<CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
 						<XAxis dataKey="name" />
 						<YAxis

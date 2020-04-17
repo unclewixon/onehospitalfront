@@ -45,6 +45,26 @@ const INITIAL_STATE = {
 	pharmacyRequests: [],
 	allRequests: [],
 	antennatal: [],
+	encounterData: {
+		complaints: 'Presenting Complaints:',
+		reviewOfSystem: [],
+		patientHistory: [],
+		medicalHistory: [],
+		allergies: [],
+		physicalExamination: [],
+		physicalExaminationSummary: [],
+		diagnosis: [],
+		investigations: {
+			clinicalLab: {},
+			imagingRequests: {},
+		},
+		plan: {
+			treatmentPlan: 'Treatment Plan:',
+			pharmacyRequests: {},
+			nextAppointment: {},
+			procedureRequest: {},
+		},
+	},
 };
 
 const patient = (state = INITIAL_STATE, action) => {

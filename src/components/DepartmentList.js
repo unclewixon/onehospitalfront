@@ -6,8 +6,8 @@ import { notifySuccess, notifyError } from '../services/notify';
 import { request, confirmAction } from '../services/utilities';
 import { API_URI } from '../services/constants';
 import {
-	get_all_department,
-	delete_department,
+	loadDepartments,
+	deleteDepartment,
 	getAllDepartments,
 } from '../actions/settings';
 
@@ -23,7 +23,7 @@ class DepartmentList extends Component {
 		this.setState({ loading: true });
 		try {
 			const rs = await request(`${API_URI}/departments`, 'GET', true);
-			this.props.get_all_department(rs);
+			this.props.loadDepartments(rs);
 			this.setState({ loading: false });
 		} catch (error) {
 			this.setState({ loading: false });
@@ -119,4 +119,5 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps, {
 	getAllDepartments,
 	deleteDepartment,
+	loadDepartments,
 })(DepartmentList);
