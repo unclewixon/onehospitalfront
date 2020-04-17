@@ -7,7 +7,7 @@ import Splash from '../../components/Splash';
 
 const Antennatal = lazy(() => import('./Antennatal'));
 const Enrollment = lazy(() => import('./Enrollment'));
-
+const AllEnrollment = lazy(() => import('./AllEnrollment'));
 export class index extends Component {
 	render() {
 		const { match } = this.props;
@@ -23,15 +23,20 @@ export class index extends Component {
 									path={`${match.url}/enrol`}
 									component={Enrollment}
 								/>
+								<Route
+									exact
+									path={`${match.url}/all-enrol`}
+									component={AllEnrollment}
+								/>
 
 								<Route component={NoMatch} />
 							</Switch>
 						</Suspense>
 					</div>
 				</div>
-				<div className="content-panel compact">
+				{/* <div className="content-panel compact">
 					<Queue />
-				</div>
+				</div> */}
 			</div>
 		);
 	}

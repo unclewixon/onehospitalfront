@@ -16,29 +16,28 @@ import DatePicker from 'antd/lib/date-picker';
 import Select from 'react-select';
 const { RangePicker } = DatePicker;
 
-
 class AllPhysiotherapy extends Component {
 	state = {
 		loaded: false,
-		patientId: "",
-		startDate: "",
-		endDate: "",
+		patientId: '',
+		startDate: '',
+		endDate: '',
 		filtering: false,
 		showModal: false,
-		activeRequest: null
+		activeRequest: null,
 	};
 	componentDidMount() {
-		this.fetchPhysio()
+		this.fetchPhysio();
 	}
 
-	fetchPhysio = async (patientId) => {
+	fetchPhysio = async patientId => {
 		const { startDate, endDate } = this.state;
 		this.setState({ loaded: true });
 		try {
 			const rs = await request(
-				patientId ?
-					`${API_URI}/patient/${patientId}/request/physiotherapy?startDate=${startDate}&endDate=${endDate}` :
-					`${API_URI}/patient/requests/physiotherapy?startDate=${startDate}&endDate=${endDate}`,
+				patientId
+					? `${API_URI}/patient/${patientId}/request/physiotherapy?startDate=${startDate}&endDate=${endDate}`
+					: `${API_URI}/patient/requests/physiotherapy?startDate=${startDate}&endDate=${endDate}`,
 				'GET',
 				true
 			);
@@ -51,8 +50,8 @@ class AllPhysiotherapy extends Component {
 	};
 
 	onModalClick = () => {
-		this.setState({showModal: !this.state.showModal })
-	}
+		this.setState({ showModal: !this.state.showModal });
+	};
 
 	formRow = (data, i) => {
 		return (
@@ -60,40 +59,26 @@ class AllPhysiotherapy extends Component {
 				<td>
 					<span className="text-bold">{i + 1}</span>
 				</td>
+				<td>{moment(data.createdAt).format('DD-MM-YYYY')}</td>
+				<td>{data.patient_name}</td>
 				<td>
-					{moment(data.createdAt).format('DD-MM-YYYY')}
+					{data && data.requestBody && data.requestBody.length
+						? data.requestBody.map(body => body.specialization)
+						: ''}
 				</td>
 				<td>
-					{
-						data.patient_name
-					}
-				</td>
-				<td>
-					{
-						data &&
-							data.requestBody &&
-							data.requestBody.length ?
-							data.requestBody.map(body => body.specialization) :
-							""
-					}
-				</td>
-				<td>
-					{
-						data &&
-							data.requestBody &&
-							data.requestBody.length ?
-							data.requestBody.map(body => body.sessionCount) :
-							""
-					}
+					{data && data.requestBody && data.requestBody.length
+						? data.requestBody.map(body => body.sessionCount)
+						: ''}
 				</td>
 				<td className="row-actions text-right">
 					<Tooltip title="View Request">
-						<a href="#" onClick={
-							() => {
-								this.onModalClick()
-								this.setState({activeRequest: data})
-							}
-						}>
+						<a
+							href="#"
+							onClick={() => {
+								this.onModalClick();
+								this.setState({ activeRequest: data });
+							}}>
 							<i className="os-icon os-icon-documents-03" />
 						</a>
 					</Tooltip>
@@ -104,8 +89,8 @@ class AllPhysiotherapy extends Component {
 					</Tooltip>
 				</td>
 			</tr>
-		)
-	}
+		);
+	};
 
 	dateChange = e => {
 		let date = e.map(d => {
@@ -122,31 +107,31 @@ class AllPhysiotherapy extends Component {
 	table = () =>
 		this.props &&
 		this.props.physiotherapies &&
-		this.props.physiotherapies.length ?
-		this.props.physiotherapies.map((physio, i) => {
-			return (
-				this.formRow(physio, i)
-			)
-		}) : []
+		this.props.physiotherapies.length
+			? this.props.physiotherapies.map((physio, i) => {
+					return this.formRow(physio, i);
+			  })
+			: [];
 
-		filterEntries = () => {
-			this.setState({filtering: true})
-			this.fetchPhysio(this.state.patientId)
-		}
-
+	filterEntries = () => {
+		this.setState({ filtering: true });
+		this.fetchPhysio(this.state.patientId);
+	};
 
 	render() {
 		const { loaded, filtering } = this.state;
 
-		const filteredNames  = this.props &&
-		this.props.physiotherapies &&
-		this.props.physiotherapies.length ?
-		this.props.physiotherapies.map((patient) => {
-			return {
-				value: patient.patient_id,
-				label: patient.patient_name
-			}
-		}) : [];
+		const filteredNames =
+			this.props &&
+			this.props.physiotherapies &&
+			this.props.physiotherapies.length
+				? this.props.physiotherapies.map(patient => {
+						return {
+							value: patient.patient_id,
+							label: patient.patient_name,
+						};
+				  })
+				: [];
 
 		const filteredOptions = _.uniqBy(filteredNames, 'value');
 
@@ -155,9 +140,9 @@ class AllPhysiotherapy extends Component {
 				...provided,
 				minHeight: '24px !important',
 				height: '2rem',
-				width: '12rem'
-			})
-		}
+				width: '12rem',
+			}),
+		};
 
 		return (
 			<>
@@ -195,15 +180,16 @@ class AllPhysiotherapy extends Component {
 									<div className="form-group col-md-3 mt-4">
 										<div
 											className="btn btn-sm btn-primary btn-upper text-white"
-											onClick={() => { this.filterEntries() }}
-										>
+											onClick={() => {
+												this.filterEntries();
+											}}>
 											<i className="os-icon os-icon-ui-37" />
 											<span>
 												{filtering ? (
 													<img src={waiting} alt="submitting" />
 												) : (
-														'Filter'
-													)}
+													'Filter'
+												)}
 											</span>
 										</div>
 									</div>
@@ -224,25 +210,25 @@ class AllPhysiotherapy extends Component {
 														<th>
 															<div className="th-inner sortable both">
 																Request Date
-														</div>
+															</div>
 															<div className="fht-cell"></div>
 														</th>
 														<th>
 															<div className="th-inner sortable both">
 																Patient Name
-														</div>
+															</div>
 															<div className="fht-cell"></div>
 														</th>
 														<th>
 															<div className="th-inner sortable both">
 																Specialization
-														</div>
+															</div>
 															<div className="fht-cell"></div>
 														</th>
 														<th>
 															<div className="th-inner sortable both">
 																Session Count
-														</div>
+															</div>
 															<div className="fht-cell"></div>
 														</th>
 														<th>
@@ -260,8 +246,8 @@ class AllPhysiotherapy extends Component {
 															</td>
 														</tr>
 													) : (
-															<>{this.table()}</>
-														)}
+														<>{this.table()}</>
+													)}
 												</tbody>
 											</table>
 										}

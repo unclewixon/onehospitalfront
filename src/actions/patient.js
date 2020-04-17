@@ -25,6 +25,7 @@ import {
 	GET_LAB_REQUESTS,
 	LOAD_CLINICAL_LAB,
 	LOAD_RADIOLOGY,
+	LOAD_ANTENNATAL,
 } from './types';
 import { request } from '../services/utilities';
 
@@ -184,8 +185,15 @@ export const add_pharmacy_request = data => {
 	};
 };
 
+export const loadAntennatal = payload => {
+	return {
+		type: LOAD_ANTENNATAL,
+		payload,
+	};
+};
+
 export const createLabRequest = data => {
-	console.log(data)
+	console.log(data);
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			let newGroup = data.lab_combo.map(grp => {

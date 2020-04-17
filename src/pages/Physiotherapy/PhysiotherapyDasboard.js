@@ -17,24 +17,26 @@ const { RangePicker } = DatePicker;
 class PhysiotherapyDashboard extends Component {
 	state = {
 		loaded: false,
-		patientId: "",
-		startDate: moment(Date.now()).subtract(1, 'days').format('YYYY-MM-DD'),
+		patientId: '',
+		startDate: moment(Date.now())
+			.subtract(1, 'days')
+			.format('YYYY-MM-DD'),
 		endDate: moment(Date.now()).format('YYYY-MM-DD'),
 		filtering: false,
 		showModal: false,
-		activeRequest: null
+		activeRequest: null,
 	};
 	componentDidMount() {
 		this.fetchPhysio();
 	}
-	fetchPhysio = async (patientId) => {
+	fetchPhysio = async patientId => {
 		const { startDate, endDate } = this.state;
 		this.setState({ loaded: true });
 		try {
 			const rs = await request(
-				patientId ?
-					`${API_URI}/patient/${patientId}/request/physiotherapy?startDate=${startDate}&endDate=${endDate}` :
-					`${API_URI}/patient/requests/physiotherapy?startDate=${startDate}&endDate=${endDate}`,
+				patientId
+					? `${API_URI}/patient/${patientId}/request/physiotherapy?startDate=${startDate}&endDate=${endDate}`
+					: `${API_URI}/patient/requests/physiotherapy?startDate=${startDate}&endDate=${endDate}`,
 				'GET',
 				true
 			);
@@ -47,8 +49,8 @@ class PhysiotherapyDashboard extends Component {
 	};
 
 	onModalClick = () => {
-		this.setState({showModal: !this.state.showModal })
-	}
+		this.setState({ showModal: !this.state.showModal });
+	};
 
 	formRow = (data, i) => {
 		return (
@@ -56,40 +58,26 @@ class PhysiotherapyDashboard extends Component {
 				<td>
 					<span className="text-bold">{i + 1}</span>
 				</td>
+				<td>{moment(data.createdAt).format('DD-MM-YYYY')}</td>
+				<td>{data.patient_name}</td>
 				<td>
-					{moment(data.createdAt).format('DD-MM-YYYY')}
+					{data && data.requestBody && data.requestBody.length
+						? data.requestBody.map(body => body.specialization)
+						: ''}
 				</td>
 				<td>
-					{
-						data.patient_name
-					}
-				</td>
-				<td>
-					{
-						data &&
-							data.requestBody &&
-							data.requestBody.length ?
-							data.requestBody.map(body => body.specialization) :
-							""
-					}
-				</td>
-				<td>
-					{
-						data &&
-							data.requestBody &&
-							data.requestBody.length ?
-							data.requestBody.map(body => body.sessionCount) :
-							""
-					}
+					{data && data.requestBody && data.requestBody.length
+						? data.requestBody.map(body => body.sessionCount)
+						: ''}
 				</td>
 				<td className="row-actions text-right">
 					<Tooltip title="View Request">
-						<a href="#" onClick={
-							() => {
-								this.onModalClick()
-								this.setState({activeRequest: data})
-							}
-						}>
+						<a
+							href="#"
+							onClick={() => {
+								this.onModalClick();
+								this.setState({ activeRequest: data });
+							}}>
 							<i className="os-icon os-icon-documents-03" />
 						</a>
 					</Tooltip>
@@ -100,8 +88,8 @@ class PhysiotherapyDashboard extends Component {
 					</Tooltip>
 				</td>
 			</tr>
-		)
-	}
+		);
+	};
 
 	dateChange = e => {
 		let date = e.map(d => {
@@ -117,31 +105,32 @@ class PhysiotherapyDashboard extends Component {
 
 	table = () =>
 		this.props &&
-			this.props.physiotherapies &&
-			this.props.physiotherapies.length ?
-			this.props.physiotherapies.map((physio, i) => {
-				return (
-					this.formRow(physio, i)
-				)
-			}) : []
+		this.props.physiotherapies &&
+		this.props.physiotherapies.length
+			? this.props.physiotherapies.map((physio, i) => {
+					return this.formRow(physio, i);
+			  })
+			: [];
 
 	filterEntries = () => {
-		this.setState({filtering: true})
-		this.fetchPhysio(this.state.patientId)
-	}
+		this.setState({ filtering: true });
+		this.fetchPhysio(this.state.patientId);
+	};
 
 	render() {
 		const { loaded, filtering } = this.state;
 
-		const filteredNames = this.props &&
+		const filteredNames =
+			this.props &&
 			this.props.physiotherapies &&
-			this.props.physiotherapies.length ?
-			this.props.physiotherapies.map((patient) => {
-				return {
-					value: patient.patient_id,
-					label: patient.patient_name
-				}
-			}) : [];
+			this.props.physiotherapies.length
+				? this.props.physiotherapies.map(patient => {
+						return {
+							value: patient.patient_id,
+							label: patient.patient_name,
+						};
+				  })
+				: [];
 
 		const filteredOptions = _.uniqBy(filteredNames, 'value');
 
@@ -150,9 +139,9 @@ class PhysiotherapyDashboard extends Component {
 				...provided,
 				minHeight: '24px !important',
 				height: '2rem',
-				width: '12rem'
-			})
-		}
+				width: '12rem',
+			}),
+		};
 
 		return (
 			<div className="col-sm-12">
@@ -160,12 +149,12 @@ class PhysiotherapyDashboard extends Component {
 					<div className="row">
 						<div className="col-md-12">
 							{this.state.activeRequest ? (
-									<ModalPhysiotherapy
-										activeRequest={this.state.activeRequest}
-										showModal={this.state.showModal}
-										onModalClick={this.onModalClick}
-									/>
-								) : null}
+								<ModalPhysiotherapy
+									activeRequest={this.state.activeRequest}
+									showModal={this.state.showModal}
+									onModalClick={this.onModalClick}
+								/>
+							) : null}
 							<h6 className="element-header">Recent Appointments:</h6>
 
 							<form className="row">
@@ -176,7 +165,7 @@ class PhysiotherapyDashboard extends Component {
 								<div className="form-group col-md-3">
 									<label className="mr-2 " htmlFor="id">
 										Patient
-												</label>
+									</label>
 									<Select
 										styles={customStyle}
 										id="patientId"
@@ -189,15 +178,16 @@ class PhysiotherapyDashboard extends Component {
 								<div className="form-group col-md-3 mt-4">
 									<div
 										className="btn btn-sm btn-primary btn-upper text-white"
-										onClick={() => { this.filterEntries() }}
-									>
+										onClick={() => {
+											this.filterEntries();
+										}}>
 										<i className="os-icon os-icon-ui-37" />
 										<span>
 											{filtering ? (
-															<img src={waiting} alt="submitting" />
-															) : (
-																'Filter'
-															)}
+												<img src={waiting} alt="submitting" />
+											) : (
+												'Filter'
+											)}
 										</span>
 									</div>
 								</div>
@@ -209,55 +199,55 @@ class PhysiotherapyDashboard extends Component {
 								<div className="table-responsive">
 									{
 										<table className="table table-striped">
-												<thead>
-													<tr>
-														<th>
-															<div className="th-inner "></div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner sortable both">
-																Request Date
+											<thead>
+												<tr>
+													<th>
+														<div className="th-inner "></div>
+														<div className="fht-cell"></div>
+													</th>
+													<th>
+														<div className="th-inner sortable both">
+															Request Date
 														</div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner sortable both">
-																Patient Name
+														<div className="fht-cell"></div>
+													</th>
+													<th>
+														<div className="th-inner sortable both">
+															Patient Name
 														</div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner sortable both">
-																Specialization
+														<div className="fht-cell"></div>
+													</th>
+													<th>
+														<div className="th-inner sortable both">
+															Specialization
 														</div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner sortable both">
-																Session Count
+														<div className="fht-cell"></div>
+													</th>
+													<th>
+														<div className="th-inner sortable both">
+															Session Count
 														</div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner "></div>
-															<div className="fht-cell"></div>
-														</th>
-													</tr>
-												</thead>
+														<div className="fht-cell"></div>
+													</th>
+													<th>
+														<div className="th-inner "></div>
+														<div className="fht-cell"></div>
+													</th>
+												</tr>
+											</thead>
 
-												<tbody>
-													{loaded ? (
-														<tr>
-															<td colSpan="6" className="text-center">
-																<img alt="searching" src={searchingGIF} />
-															</td>
-														</tr>
-													) : (
-															<>{this.table()}</>
-														)}
-												</tbody>
-											</table>
+											<tbody>
+												{loaded ? (
+													<tr>
+														<td colSpan="6" className="text-center">
+															<img alt="searching" src={searchingGIF} />
+														</td>
+													</tr>
+												) : (
+													<>{this.table()}</>
+												)}
+											</tbody>
+										</table>
 									}
 								</div>
 							</div>
@@ -275,4 +265,6 @@ const mapStateToProps = state => {
 		physiotherapies: state.patient.physiotherapies,
 	};
 };
-export default connect(mapStateToProps, { getPhysiotherapies })(PhysiotherapyDashboard);
+export default connect(mapStateToProps, { getPhysiotherapies })(
+	PhysiotherapyDashboard
+);

@@ -12,38 +12,36 @@ import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
 import ModalProcedure from '../../components/Modals/ModalProcedure';
 import DatePicker from 'antd/lib/date-picker';
-import _ from 'lodash'
+import _ from 'lodash';
 import Select from 'react-select';
 const { RangePicker } = DatePicker;
-
 
 class AllProcedure extends Component {
 	state = {
 		loaded: false,
-		patientId: "",
-		startDate: "",
-		endDate: "",
+		patientId: '',
+		startDate: '',
+		endDate: '',
 		filtering: false,
 		showModal: false,
-		activeRequest: null
-
+		activeRequest: null,
 	};
 	componentDidMount() {
-		this.fetchPhysio()
+		this.fetchPhysio();
 	}
 
-	fetchPhysio = async (patientId) => {
+	fetchPhysio = async patientId => {
 		const { startDate, endDate } = this.state;
 		this.setState({ loaded: true });
 		try {
 			const rs = await request(
-				patientId ?
-					`${API_URI}/patient/${patientId}/request/procedure?startDate=${startDate}&endDate=${endDate}` :
-					`${API_URI}/patient/requests/procedure?startDate=${startDate}&endDate=${endDate}`,
+				patientId
+					? `${API_URI}/patient/${patientId}/request/procedure?startDate=${startDate}&endDate=${endDate}`
+					: `${API_URI}/patient/requests/procedure?startDate=${startDate}&endDate=${endDate}`,
 				'GET',
 				true
 			);
-			this.props.loadPatientProcedureData(rs);;
+			this.props.loadPatientProcedureData(rs);
 			return this.setState({ loaded: false, filtering: false });
 		} catch (error) {
 			notifyError('error fetching procedure requests');
@@ -60,30 +58,26 @@ class AllProcedure extends Component {
 	};
 
 	onModalClick = () => {
-		this.setState({showModal: !this.state.showModal})
-	}
+		this.setState({ showModal: !this.state.showModal });
+	};
 
 	formRow = (data, i) => {
 		return (
 			<tr key={i}>
 				<td>{i + 1}</td>
-				<td>
-					{data.patient_name}
-				</td>
-				<td>
-					{moment(data.createdAt).format('DD-MM-YY')}
-				</td>
+				<td>{data.patient_name}</td>
+				<td>{moment(data.createdAt).format('DD-MM-YY')}</td>
 				<td>{data.created_by}</td>
 				<td>{this.getRequests(data.requestBody)}</td>
 				<td></td>
 				<td className="row-actions text-right">
 					<Tooltip title="View Request">
-						<a href="#" onClick={
-							() => {
-								this.onModalClick()
-								this.setState({activeRequest: data})
-							}
-						}>
+						<a
+							href="#"
+							onClick={() => {
+								this.onModalClick();
+								this.setState({ activeRequest: data });
+							}}>
 							<i className="os-icon os-icon-documents-03" />
 						</a>
 					</Tooltip>
@@ -94,8 +88,8 @@ class AllProcedure extends Component {
 					</Tooltip>
 				</td>
 			</tr>
-		)
-	}
+		);
+	};
 
 	dateChange = e => {
 		let date = e.map(d => {
@@ -111,43 +105,43 @@ class AllProcedure extends Component {
 
 	table = () =>
 		this.props &&
-			this.props.patient_procedure &&
-			this.props.patient_procedure.length ?
-			this.props.patient_procedure.map((physio, i) => {
-				return (
-					this.formRow(physio, i)
-				)
-			}) : []
+		this.props.patient_procedure &&
+		this.props.patient_procedure.length
+			? this.props.patient_procedure.map((physio, i) => {
+					return this.formRow(physio, i);
+			  })
+			: [];
 
 	filterEntries = () => {
-		this.setState({filtering: true})
-		this.fetchPhysio(this.state.patientId)
-	}
-
+		this.setState({ filtering: true });
+		this.fetchPhysio(this.state.patientId);
+	};
 
 	render() {
 		const { loaded, filtering } = this.state;
 
-		const filteredNames = this.props &&
+		const filteredNames =
+			this.props &&
 			this.props.patient_procedure &&
-			this.props.patient_procedure.length ?
-			this.props.patient_procedure.map((patient) => {
-				return {
-					value: patient.patient_id,
-					label: patient.patient_name
-				}
-			}) : []
+			this.props.patient_procedure.length
+				? this.props.patient_procedure.map(patient => {
+						return {
+							value: patient.patient_id,
+							label: patient.patient_name,
+						};
+				  })
+				: [];
 
-		const filteredOptions = _.uniqBy(filteredNames, 'value')
+		const filteredOptions = _.uniqBy(filteredNames, 'value');
 
 		const customStyle = {
 			control: (provided, state) => ({
 				...provided,
 				minHeight: '24px !important',
 				height: '2rem',
-				width: '12rem'
-			})
-		}
+				width: '12rem',
+			}),
+		};
 
 		return (
 			<>
@@ -185,15 +179,16 @@ class AllProcedure extends Component {
 									<div className="form-group col-md-3 mt-4">
 										<div
 											className="btn btn-sm btn-primary btn-upper text-white"
-											onClick={() => { this.filterEntries() }}
-										>
+											onClick={() => {
+												this.filterEntries();
+											}}>
 											<i className="os-icon os-icon-ui-37" />
 											<span>
 												{filtering ? (
 													<img src={waiting} alt="submitting" />
 												) : (
-														'Filter'
-													)}
+													'Filter'
+												)}
 											</span>
 										</div>
 									</div>
@@ -214,31 +209,31 @@ class AllProcedure extends Component {
 														<th>
 															<div className="th-inner sortable both">
 																Patient Name
-														</div>
+															</div>
 															<div className="fht-cell"></div>
 														</th>
 														<th>
 															<div className="th-inner sortable both">
 																Request Date
-														</div>
+															</div>
 															<div className="fht-cell"></div>
 														</th>
 														<th>
 															<div className="th-inner sortable both">
 																Requested By
-														</div>
+															</div>
 															<div className="fht-cell"></div>
 														</th>
 														<th>
 															<div className="th-inner sortable both">
 																Request Specimen
-														</div>
+															</div>
 															<div className="fht-cell"></div>
 														</th>
 														<th>
 															<div className="th-inner sortable both">
 																Request Status
-														</div>
+															</div>
 															<div className="fht-cell"></div>
 														</th>
 														<th>
@@ -256,8 +251,8 @@ class AllProcedure extends Component {
 															</td>
 														</tr>
 													) : (
-															<>{this.table()}</>
-														)}
+														<>{this.table()}</>
+													)}
 												</tbody>
 											</table>
 										}

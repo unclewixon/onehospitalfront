@@ -32,6 +32,7 @@ import ModalCreateClinicalTask from './ModalCreateClinicalTask';
 import AddCafeteriaFile from './AddCafeteriaFile';
 import ModalUploadRadiology from './ModalUploadRadiology';
 import ModalApproveTransaction from './ModalApproveTransaction';
+import ModalAntenatalDetail from './ModalAntenatalDetail';
 
 const ModalDialogs = ({
 	create_staff,
@@ -65,6 +66,7 @@ const ModalDialogs = ({
 	create_clinical_task,
 	add_cafeteria_file,
 	upload_radiology,
+	antenatal_detail,
 }) => {
 	return (
 		<>
@@ -99,6 +101,7 @@ const ModalDialogs = ({
 			{openEncounter && <OpenEncounter />}
 			{add_cafeteria_file && <AddCafeteriaFile />}
 			{upload_radiology && <ModalUploadRadiology />}
+			{antenatal_detail && <ModalAntenatalDetail />}
 		</>
 	);
 };
@@ -136,6 +139,7 @@ const mapStateToProps = (state, ownProps) => {
 		create_clinical_task: state.general.create_clinical_task,
 		add_cafeteria_file: state.general.add_cafeteria_file,
 		upload_radiology: state.general.upload_radiology,
+		antenatal_detail: state.general.antenatal_detail,
 	};
 };
 

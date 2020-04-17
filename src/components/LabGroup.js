@@ -74,9 +74,12 @@ const LabGroup = props => {
 		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const labTestOptions = props && props.LabTests ? props.LabTests.map(tests => {
-		return { value: tests.id, label: tests.name, id: tests.id };
-	}) : [];
+	const labTestOptions =
+		props && props.LabTests
+			? props.LabTests.map(tests => {
+					return { value: tests.id, label: tests.name, id: tests.id };
+			  })
+			: [];
 
 	const lab_test = labTests
 		? intersectionBy(props.LabTests, labTests, 'id')

@@ -17,26 +17,27 @@ const { RangePicker } = DatePicker;
 class DentistryDashboard extends Component {
 	state = {
 		loaded: false,
-		patientId: "",
+		patientId: '',
 		filtering: false,
 		activeRequest: null,
 		showModal: false,
-		startDate: moment(Date.now()).subtract(1, 'days').format('YYYY-MM-DD'),
-		endDate: moment(Date.now()).format('YYYY-MM-DD')
-
+		startDate: moment(Date.now())
+			.subtract(1, 'days')
+			.format('YYYY-MM-DD'),
+		endDate: moment(Date.now()).format('YYYY-MM-DD'),
 	};
 	componentDidMount() {
-		this.fetchPhysio()
+		this.fetchPhysio();
 	}
 
-	fetchPhysio = async (patientId) => {
+	fetchPhysio = async patientId => {
 		const { startDate, endDate } = this.state;
 		this.setState({ loaded: true });
 		try {
 			const rs = await request(
-				patientId ?
-					`${API_URI}/patient/${patientId}/request/dentistry?startDate=${startDate}&endDate=${endDate}` :
-					`${API_URI}/patient/requests/dentistry?startDate=${startDate}&endDate=${endDate}`,
+				patientId
+					? `${API_URI}/patient/${patientId}/request/dentistry?startDate=${startDate}&endDate=${endDate}`
+					: `${API_URI}/patient/requests/dentistry?startDate=${startDate}&endDate=${endDate}`,
 				'GET',
 				true
 			);
@@ -86,7 +87,9 @@ class DentistryDashboard extends Component {
 					<span className="text-bold">{data.patient_name}</span>
 				</td>
 				<td>
-					<span className="text-bold">{this.getRequests(data.requestBody)}</span>
+					<span className="text-bold">
+						{this.getRequests(data.requestBody)}
+					</span>
 				</td>
 				<td>{this.calculateAmount(data.requestBody)}</td>
 				<td>{moment(data.createdAt).format('DD-MM-YYYY LT')}</td>
@@ -98,10 +101,11 @@ class DentistryDashboard extends Component {
 				</td>
 				<td className="row-actions text-right">
 					<Tooltip title="View Request">
-						<a onClick={() => {
-							this.onModalClick()
-							this.setState({activeRequest: data})
-						}}>
+						<a
+							onClick={() => {
+								this.onModalClick();
+								this.setState({ activeRequest: data });
+							}}>
 							<i className="os-icon os-icon-documents-03" />
 						</a>
 					</Tooltip>
@@ -112,8 +116,8 @@ class DentistryDashboard extends Component {
 					</Tooltip>
 				</td>
 			</tr>
-		)
-	}
+		);
+	};
 
 	dateChange = e => {
 		let date = e.map(d => {
@@ -129,42 +133,43 @@ class DentistryDashboard extends Component {
 
 	table = () =>
 		this.props &&
-			this.props.dentistryRequests &&
-			this.props.dentistryRequests.length ?
-			this.props.dentistryRequests.map((physio, i) => {
-				return (
-					this.formRow(physio, i)
-				)
-			}) : []
+		this.props.dentistryRequests &&
+		this.props.dentistryRequests.length
+			? this.props.dentistryRequests.map((physio, i) => {
+					return this.formRow(physio, i);
+			  })
+			: [];
 
 	filterEntries = () => {
-		this.setState({filtering: true})
-		this.fetchPhysio(this.state.patientId)
-	}
+		this.setState({ filtering: true });
+		this.fetchPhysio(this.state.patientId);
+	};
 
 	render() {
 		const { loaded, filtering } = this.state;
 
-		const filteredNames = this.props &&
+		const filteredNames =
+			this.props &&
 			this.props.dentistryRequests &&
-			this.props.dentistryRequests.length ?
-			this.props.dentistryRequests.map((patient) => {
-				return {
-					value: patient.patient_id,
-					label: patient.patient_name
-				}
-			}) : []
+			this.props.dentistryRequests.length
+				? this.props.dentistryRequests.map(patient => {
+						return {
+							value: patient.patient_id,
+							label: patient.patient_name,
+						};
+				  })
+				: [];
 
-		const filteredOptions = _.uniqBy(filteredNames, 'value')
+		const filteredOptions = _.uniqBy(filteredNames, 'value');
 
 		const customStyle = {
 			control: (provided, state) => ({
 				...provided,
 				minHeight: '24px !important',
 				height: '2rem',
-				width: '12rem'
-			})
-		}
+				width: '12rem',
+			}),
+		};
 
 		return (
 			<div className="col-sm-12">
@@ -172,12 +177,12 @@ class DentistryDashboard extends Component {
 					<div className="row">
 						<div className="col-md-12">
 							{this.state.activeRequest ? (
-									<ModalDentistry
-										activeRequest={this.state.activeRequest}
-										showModal={this.state.showModal}
-										onModalClick={this.onModalClick}
-									/>
-								) : null}
+								<ModalDentistry
+									activeRequest={this.state.activeRequest}
+									showModal={this.state.showModal}
+									onModalClick={this.onModalClick}
+								/>
+							) : null}
 							<h6 className="element-header">Recent Requests:</h6>
 
 							<form className="row">
@@ -188,7 +193,7 @@ class DentistryDashboard extends Component {
 								<div className="form-group col-md-3">
 									<label className="mr-2 " htmlFor="id">
 										Patient
-												</label>
+									</label>
 									<Select
 										styles={customStyle}
 										id="patientId"
@@ -201,15 +206,16 @@ class DentistryDashboard extends Component {
 								<div className="form-group col-md-3 mt-4">
 									<div
 										className="btn btn-sm btn-primary btn-upper text-white"
-										onClick={() => { this.filterEntries() }}
-									>
+										onClick={() => {
+											this.filterEntries();
+										}}>
 										<i className="os-icon os-icon-ui-37" />
 										<span>
 											{filtering ? (
-															<img src={waiting} alt="submitting" />
-															) : (
-																'Filter'
-															)}
+												<img src={waiting} alt="submitting" />
+											) : (
+												'Filter'
+											)}
 										</span>
 									</div>
 								</div>
@@ -229,31 +235,29 @@ class DentistryDashboard extends Component {
 													<th>
 														<div className="th-inner sortable both">
 															Patient Name
-															</div>
+														</div>
 														<div className="fht-cell"></div>
 													</th>
 													<th>
 														<div className="th-inner sortable both">
 															Specialization
-															</div>
+														</div>
 														<div className="fht-cell"></div>
 													</th>
 													<th>
-														<div className="th-inner sortable both">
-															Amount
-															</div>
+														<div className="th-inner sortable both">Amount</div>
 														<div className="fht-cell"></div>
 													</th>
 													<th>
 														<div className="th-inner sortable both">
 															Requested Date
-															</div>
+														</div>
 														<div className="fht-cell"></div>
 													</th>
 													<th>
 														<div className="th-inner sortable both">
 															Request Status
-															</div>
+														</div>
 														<div className="fht-cell"></div>
 													</th>
 													<th>
@@ -270,8 +274,8 @@ class DentistryDashboard extends Component {
 														</td>
 													</tr>
 												) : (
-														<>{this.table()}</>
-													)}
+													<>{this.table()}</>
+												)}
 											</tbody>
 										</table>
 									}
@@ -291,4 +295,6 @@ const mapStateToProps = state => {
 		dentistryRequests: state.patient.dentistryRequests,
 	};
 };
-export default connect(mapStateToProps, { loadDentistryRequests })(DentistryDashboard);
+export default connect(mapStateToProps, { loadDentistryRequests })(
+	DentistryDashboard
+);

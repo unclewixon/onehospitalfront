@@ -16,30 +16,28 @@ import ModalDentistry from '../../components/Modals/ModalDentistry';
 import Select from 'react-select';
 const { RangePicker } = DatePicker;
 
-
 class AllDentistry extends Component {
 	state = {
 		loaded: false,
-		patientId: "",
-		startDate: "",
-		endDate: "",
+		patientId: '',
+		startDate: '',
+		endDate: '',
 		filtering: false,
 		activeRequest: null,
-		showModal: false
-
+		showModal: false,
 	};
 	componentDidMount() {
-		this.fetchPhysio()
+		this.fetchPhysio();
 	}
 
-	fetchPhysio = async (patientId) => {
+	fetchPhysio = async patientId => {
 		const { startDate, endDate } = this.state;
 		this.setState({ loaded: true });
 		try {
 			const rs = await request(
-				patientId ?
-					`${API_URI}/patient/${patientId}/request/dentistry?startDate=${startDate}&endDate=${endDate}` :
-					`${API_URI}/patient/requests/dentistry?startDate=${startDate}&endDate=${endDate}`,
+				patientId
+					? `${API_URI}/patient/${patientId}/request/dentistry?startDate=${startDate}&endDate=${endDate}`
+					: `${API_URI}/patient/requests/dentistry?startDate=${startDate}&endDate=${endDate}`,
 				'GET',
 				true
 			);
@@ -83,7 +81,9 @@ class AllDentistry extends Component {
 					<span className="text-bold">{data.patient_name}</span>
 				</td>
 				<td>
-					<span className="text-bold">{this.getRequests(data.requestBody)}</span>
+					<span className="text-bold">
+						{this.getRequests(data.requestBody)}
+					</span>
 				</td>
 				<td>{this.calculateAmount(data.requestBody)}</td>
 				<td>{moment(data.createdAt).format('DD-MM-YYYY LT')}</td>
@@ -95,10 +95,11 @@ class AllDentistry extends Component {
 				</td>
 				<td className="row-actions text-right">
 					<Tooltip title="View Request">
-					<a onClick={() => {
-							this.onModalClick()
-							this.setState({activeRequest: data})
-						}}>
+						<a
+							onClick={() => {
+								this.onModalClick();
+								this.setState({ activeRequest: data });
+							}}>
 							<i className="os-icon os-icon-documents-03" />
 						</a>
 					</Tooltip>
@@ -109,8 +110,8 @@ class AllDentistry extends Component {
 					</Tooltip>
 				</td>
 			</tr>
-		)
-	}
+		);
+	};
 
 	onModalClick = () => {
 		this.setState({
@@ -132,43 +133,43 @@ class AllDentistry extends Component {
 
 	table = () =>
 		this.props &&
-			this.props.dentistryRequests &&
-			this.props.dentistryRequests.length ?
-			this.props.dentistryRequests.map((physio, i) => {
-				return (
-					this.formRow(physio, i)
-				)
-			}) : []
+		this.props.dentistryRequests &&
+		this.props.dentistryRequests.length
+			? this.props.dentistryRequests.map((physio, i) => {
+					return this.formRow(physio, i);
+			  })
+			: [];
 
 	filterEntries = () => {
-		this.setState({filtering: true})
-		this.fetchPhysio(this.state.patientId)
-	}
-
+		this.setState({ filtering: true });
+		this.fetchPhysio(this.state.patientId);
+	};
 
 	render() {
 		const { loaded, filtering } = this.state;
 
-	  const	filteredNames = this.props &&
-		this.props.dentistryRequests &&
-		this.props.dentistryRequests.length ?
-		this.props.dentistryRequests.map((patient) => {
-			return {
-				value: patient.patient_id,
-				label: patient.patient_name
-			}
-		}) : []
+		const filteredNames =
+			this.props &&
+			this.props.dentistryRequests &&
+			this.props.dentistryRequests.length
+				? this.props.dentistryRequests.map(patient => {
+						return {
+							value: patient.patient_id,
+							label: patient.patient_name,
+						};
+				  })
+				: [];
 
-		const filteredOptions = _.uniqBy(filteredNames, 'value')
+		const filteredOptions = _.uniqBy(filteredNames, 'value');
 
 		const customStyle = {
 			control: (provided, state) => ({
 				...provided,
 				minHeight: '24px !important',
 				height: '2rem',
-				width: '12rem'
-			})
-		}
+				width: '12rem',
+			}),
+		};
 
 		return (
 			<>
@@ -206,15 +207,16 @@ class AllDentistry extends Component {
 									<div className="form-group col-md-3 mt-4">
 										<div
 											className="btn btn-sm btn-primary btn-upper text-white"
-											onClick={() => { this.filterEntries() }}
-										>
+											onClick={() => {
+												this.filterEntries();
+											}}>
 											<i className="os-icon os-icon-ui-37" />
 											<span>
 												{filtering ? (
 													<img src={waiting} alt="submitting" />
 												) : (
-														'Filter'
-													)}
+													'Filter'
+												)}
 											</span>
 										</div>
 									</div>
@@ -235,31 +237,31 @@ class AllDentistry extends Component {
 														<th>
 															<div className="th-inner sortable both">
 																Patient Name
-														</div>
+															</div>
 															<div className="fht-cell"></div>
 														</th>
 														<th>
 															<div className="th-inner sortable both">
 																Specialization
-														</div>
+															</div>
 															<div className="fht-cell"></div>
 														</th>
 														<th>
 															<div className="th-inner sortable both">
 																Amount
-														</div>
+															</div>
 															<div className="fht-cell"></div>
 														</th>
 														<th>
 															<div className="th-inner sortable both">
 																Requested Date
-														</div>
+															</div>
 															<div className="fht-cell"></div>
 														</th>
 														<th>
 															<div className="th-inner sortable both">
 																Request Status
-														</div>
+															</div>
 															<div className="fht-cell"></div>
 														</th>
 														<th>
@@ -277,8 +279,8 @@ class AllDentistry extends Component {
 															</td>
 														</tr>
 													) : (
-															<>{this.table()}</>
-														)}
+														<>{this.table()}</>
+													)}
 												</tbody>
 											</table>
 										}
