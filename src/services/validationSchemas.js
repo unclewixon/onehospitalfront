@@ -44,3 +44,50 @@ export const validate = values => {
 	}
 	return errors;
 };
+
+export const validateAntennatal = values => {
+	const errors = {};
+	if (!values.bookingPeriod || values.bookingPeriod === '') {
+		errors.bookingPeriod = 'select booking period';
+	}
+	if (!values.requiredCare || values.requiredCare.length === 0) {
+		errors.requiredCare = 'select required care(s)';
+	}
+
+	if (!values.lmpSource || values.lmpSource === '') {
+		errors.lmpSource = 'enter lmp Source';
+	}
+
+	if (!values.phone) {
+		errors.phone = 'enter phone number';
+	}
+	if (!values.name || values.name === '') {
+		errors.name = 'enter father name';
+	}
+	if (!values.blood_group || values.blood_group === '') {
+		errors.blood_group = 'select blood group';
+	}
+	if (!values.obstericsHistory || values.obstericsHistory === '') {
+		errors.obstericsHistory = 'select obsterics History';
+	}
+
+	if (!values.gravida || values.gravida === '') {
+		errors.gravida = 'select gravida';
+	}
+	if (!values.para || values.para === '') {
+		errors.para = 'select para';
+	}
+	if (!values.alive || values.alive === '') {
+		errors.alive = 'select alibe';
+	}
+	if (!values.miscarriage || values.miscarriage === '') {
+		errors.miscarriage = 'select miscarriage';
+	}
+	if (!values.abortion || values.abortion === '') {
+		errors.abortion = 'select abortion';
+	}
+	if (!values.package || values.package === '') {
+		errors.package = 'select antennatal package';
+	}
+	return errors;
+};

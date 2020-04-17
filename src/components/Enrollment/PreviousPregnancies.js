@@ -5,16 +5,10 @@ import {
 	renderMultiselect,
 } from '../../services/utilities';
 import { Field, reduxForm } from 'redux-form';
+import { validateAntennatal } from '../../services/validationSchemas';
+import { previousPregnancies, gravida, para } from '../../services/constants';
 
-const fetal = [
-	{
-		value: 'daily',
-		label: 'daily',
-	},
-	{ value: 'weekend', label: 'weekend' },
-	{ value: 'monthly', label: 'monthly' },
-];
-const fetal2 = ['daily', 'weekend', 'monthly'];
+const validate = validateAntennatal;
 
 export class PreviousPregnancies extends Component {
 	render() {
@@ -41,7 +35,7 @@ export class PreviousPregnancies extends Component {
 									component={renderSelect}
 									label="Gravida"
 									placeholder="Select Gravida"
-									data={['Obsterics', 'Gynaecologist']}
+									data={gravida}
 								/>
 							</div>
 							<div className="col-sm-6">
@@ -51,7 +45,7 @@ export class PreviousPregnancies extends Component {
 									component={renderSelect}
 									label="Select Para"
 									placeholder="Select Para"
-									data={['Obsterics', 'Gynaecologist']}
+									data={para}
 								/>
 							</div>
 						</div>
@@ -64,7 +58,7 @@ export class PreviousPregnancies extends Component {
 									component={renderSelect}
 									label="Alive"
 									placeholder="Select Alive"
-									data={['Obsterics', 'Gynaecologist']}
+									data={previousPregnancies}
 								/>
 							</div>
 							<div className="col-sm-6">
@@ -74,7 +68,7 @@ export class PreviousPregnancies extends Component {
 									component={renderSelect}
 									label="Select Miscarriage"
 									placeholder="Select miscarriage"
-									data={['Obsterics', 'Gynaecologist']}
+									data={previousPregnancies}
 								/>
 							</div>
 						</div>
@@ -87,7 +81,7 @@ export class PreviousPregnancies extends Component {
 									component={renderSelect}
 									label="Abortion"
 									placeholder="Select Abortion"
-									data={['Obsterics', 'Gynaecologist']}
+									data={previousPregnancies}
 								/>
 							</div>
 						</div>
@@ -112,9 +106,10 @@ export class PreviousPregnancies extends Component {
 	}
 }
 PreviousPregnancies = reduxForm({
-	form: 'enrollment', //Form name is same
+	form: 'antennatal', //Form name is same
 	destroyOnUnmount: false,
 	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
+	validate,
 })(PreviousPregnancies);
 
 export default PreviousPregnancies;

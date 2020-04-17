@@ -10,7 +10,6 @@ const ModalClinicalLab = ({
 	patient,
 	activeRequest,
 }) => {
-
 	const [Loading, setLoading] = useState(false);
 	return (
 		<Modal
@@ -18,13 +17,9 @@ const ModalClinicalLab = ({
 			size="lg"
 			aria-labelledby="contained-modal-title-vcenter"
 			centered
-			onHide={onModalClick}
-		>
-
-			<Modal.Header closeButton>
-			</Modal.Header>
+			onHide={onModalClick}>
+			<Modal.Header closeButton></Modal.Header>
 			<Modal.Body>
-
 				<div className="onboarding-content with-gradient text-center">
 					<div className="modal-body">
 						<div className="row">
@@ -37,7 +32,9 @@ const ModalClinicalLab = ({
 										}}>
 										<div className="up-main-info">
 											<h2 className="up-header">
-												{activeRequest.patient_name ? activeRequest.patient_name : ''}
+												{activeRequest.patient_name
+													? activeRequest.patient_name
+													: ''}
 											</h2>
 										</div>
 									</div>
@@ -48,7 +45,9 @@ const ModalClinicalLab = ({
 												<div className="col-sm-12 b-b">
 													<div className="el-tablo centered padded-v">
 														<div className="value">
-															{moment(activeRequest.createdAt).format('DD/MM/YYYY')}
+															{moment(activeRequest.createdAt).format(
+																'DD/MM/YYYY'
+															)}
 														</div>
 														<div className="label">Request Date</div>
 													</div>
@@ -60,9 +59,7 @@ const ModalClinicalLab = ({
 													<div className="col-sm-12 b-b">
 														<div className="el-tablo centered padded-v">
 															<div className="label">Patient ID</div>
-															<div className="value">
-																{}
-															</div>
+															<div className="value">{}</div>
 														</div>
 													</div>
 												</div>
@@ -82,9 +79,7 @@ const ModalClinicalLab = ({
 														<div className="el-tablo centered padded-v">
 															<div className="label"></div>
 															<div className="value">
-																<p>
-
-																</p>
+																<p></p>
 															</div>
 														</div>
 													</div>
@@ -105,7 +100,7 @@ const ModalClinicalLab = ({
 											<div className="element-info-text">
 												<h5 className="element-inner-header">
 													Enter Lab Result
-														</h5>
+												</h5>
 												{/*appointment_date*/}
 												{/*department.name*/}
 												{/*consultingRoom.name*/}
@@ -417,13 +412,15 @@ const ModalClinicalLab = ({
 												<div className="form-group">
 													<button
 														className={
-															Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
+															Loading
+																? 'btn btn-primary disabled'
+																: 'btn btn-primary'
 														}>
 														{Loading ? (
 															<img src={waiting} alt="submitting" />
 														) : (
-																<span> Save</span>
-															)}
+															<span> Save</span>
+														)}
 													</button>
 												</div>
 											</div>

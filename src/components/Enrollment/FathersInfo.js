@@ -5,7 +5,7 @@ import {
 	renderMultiselect,
 } from '../../services/utilities';
 import { Field, reduxForm } from 'redux-form';
-
+import { validateAntennatal } from '../../services/validationSchemas';
 const fetal = [
 	{
 		value: 'daily',
@@ -15,6 +15,38 @@ const fetal = [
 	{ value: 'monthly', label: 'monthly' },
 ];
 const fetal2 = ['daily', 'weekend', 'monthly'];
+
+const bloodGroup = [
+	{
+		id: 'A+',
+		name: 'A+',
+	},
+	{
+		id: 'A-',
+		name: 'A-',
+	},
+	{
+		id: 'B+',
+		name: 'B+',
+	},
+	{
+		id: 'B-',
+		name: 'B-',
+	},
+	{
+		id: 'AB+',
+		name: 'AB+',
+	},
+	{
+		id: 'O+',
+		name: 'O+',
+	},
+	{
+		id: 'O-',
+		name: 'O-',
+	},
+];
+const validate = validateAntennatal;
 export class FathersInfo extends Component {
 	render() {
 		const { handleSubmit, previousPage, error, page } = this.props;
@@ -34,8 +66,8 @@ export class FathersInfo extends Component {
 						<div className="row">
 							<div className="col-sm-6">
 								<Field
-									id="father_name"
-									name="father_name"
+									id="name"
+									name="name"
 									component={renderTextInput}
 									label="Father's Name"
 									type="text"
@@ -61,7 +93,7 @@ export class FathersInfo extends Component {
 									component={renderSelect}
 									label="Select Blood Group"
 									placeholder="Select blood group"
-									data={['Obsterics', 'Gynaecologist']}
+									data={bloodGroup}
 								/>
 							</div>
 						</div>
@@ -87,8 +119,9 @@ export class FathersInfo extends Component {
 }
 
 FathersInfo = reduxForm({
-	form: 'enrollment', //Form name is same
+	form: 'antennatal', //Form name is same
 	destroyOnUnmount: false,
 	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
+	validate,
 })(FathersInfo);
 export default FathersInfo;

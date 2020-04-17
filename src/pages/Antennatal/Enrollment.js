@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import EnrollmentForm from '../../components/Enrollment/EnrollmentForm';
+
 export class Enrollment extends Component {
 	render() {
 		const { location } = this.props;
@@ -17,6 +18,13 @@ export class Enrollment extends Component {
 							}`}
 							to="/antennatal">
 							Dashboard
+						</Link>
+						<Link
+							className={`btn btn-primary ${
+								path === 'all-enrol' ? 'btn-outline-primary' : ''
+							}`}
+							to="/antennatal/all-enrol">
+							All Enrollment
 						</Link>
 						<Link
 							className={`btn btn-primary ${
