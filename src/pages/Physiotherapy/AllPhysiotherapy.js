@@ -138,6 +138,15 @@ class AllPhysiotherapy extends Component {
 
 		const filteredOptions = _.uniqBy(filteredNames, 'value');
 
+		const customStyle = {
+			control: (provided, state) => ({
+				...provided,
+				minHeight: '24px !important',
+				height: '2rem',
+				width: '12rem'
+			})
+		}
+
 		return (
 			<>
 				<div className="col-sm-12">
@@ -151,7 +160,7 @@ class AllPhysiotherapy extends Component {
 										onModalClick={this.onModalClick}
 									/>
 								) : null} */}
-								<h6 className="element-header">Filter by:</h6>
+								<h6 className="element-header">All Appointments:</h6>
 
 								<form className="row">
 									<div className="form-group col-md-6">
@@ -163,6 +172,7 @@ class AllPhysiotherapy extends Component {
 											Patient
 										</label>
 										<Select
+											styles={customStyle}
 											id="patientId"
 											isSearchable={true}
 											name="patientId"

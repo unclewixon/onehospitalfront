@@ -58,6 +58,9 @@ class ProcedureDashboard extends Component {
 			<tr key={i}>
 				<td>{i + 1}</td>
 				<td>
+					{data.patient_name}
+				</td>
+				<td>
 					{moment(data.createdAt).format('DD-MM-YY')}
 				</td>
 				<td>{data.created_by}</td>
@@ -117,9 +120,18 @@ class ProcedureDashboard extends Component {
 					value: patient.patient_id,
 					label: patient.patient_name
 				}
-			}) : []
+			}) : [];
 
-		const filteredOptions = _.uniqBy(filteredNames, 'value')
+		const filteredOptions = _.uniqBy(filteredNames, 'value');
+
+		const customStyle = {
+			control: (provided, state) => ({
+				...provided,
+				minHeight: '24px !important',
+				height: '2rem',
+				width: '12rem'
+			})
+		}
 
 		return (
 
@@ -134,7 +146,7 @@ class ProcedureDashboard extends Component {
 										onModalClick={this.onModalClick}
 									/>
 								) : null} */}
-							<h6 className="element-header">Filter by:</h6>
+							<h6 className="element-header">Recent Requests:</h6>
 
 							<form className="row">
 								<div className="form-group col-md-6">
@@ -146,6 +158,7 @@ class ProcedureDashboard extends Component {
 										Patient
 												</label>
 									<Select
+										styles={customStyle}
 										id="patientId"
 										isSearchable={true}
 										name="patientId"
@@ -179,6 +192,12 @@ class ProcedureDashboard extends Component {
 												<tr>
 													<th>
 														<div className="th-inner "></div>
+														<div className="fht-cell"></div>
+													</th>
+													<th>
+														<div className="th-inner sortable both">
+															Patient Name
+															</div>
 														<div className="fht-cell"></div>
 													</th>
 													<th>

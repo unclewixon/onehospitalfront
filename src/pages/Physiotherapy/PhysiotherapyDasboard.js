@@ -15,7 +15,7 @@ const { RangePicker } = DatePicker;
 
 class PhysiotherapyDashboard extends Component {
 	state = {
-		loading: false,
+		loaded: false,
 		patientId: "",
 		startDate: moment(Date.now()).format('YYYY-MM-DD'),
 		endDate: moment(Date.now()).format('YYYY-MM-DD'),
@@ -119,7 +119,7 @@ class PhysiotherapyDashboard extends Component {
 	}
 
 	render() {
-		const { loading, filtering } = this.state;
+		const { loaded, filtering } = this.state;
 
 		const filteredNames = this.props &&
 			this.props.physiotherapies &&
@@ -133,6 +133,14 @@ class PhysiotherapyDashboard extends Component {
 
 		const filteredOptions = _.uniqBy(filteredNames, 'value');
 
+		const customStyle = {
+			control: (provided, state) => ({
+				...provided,
+				minHeight: '24px !important',
+				height: '2rem',
+				width: '12rem'
+			})
+		}
 
 		return (
 			<div className="col-sm-12">
@@ -146,7 +154,7 @@ class PhysiotherapyDashboard extends Component {
 										onModalClick={this.onModalClick}
 									/>
 								) : null} */}
-							<h6 className="element-header">Filter by:</h6>
+							<h6 className="element-header">Recent Appointments:</h6>
 
 							<form className="row">
 								<div className="form-group col-md-6">
@@ -158,6 +166,7 @@ class PhysiotherapyDashboard extends Component {
 										Patient
 												</label>
 									<Select
+										styles={customStyle}
 										id="patientId"
 										isSearchable={true}
 										name="patientId"
@@ -188,55 +197,55 @@ class PhysiotherapyDashboard extends Component {
 								<div className="table-responsive">
 									{
 										<table className="table table-striped">
-											<thead>
-												<tr>
-													<th>
-														<div className="th-inner "></div>
-														<div className="fht-cell"></div>
-													</th>
-													<th>
-														<div className="th-inner sortable both">
-															Request Date
-														</div>
-														<div className="fht-cell"></div>
-													</th>
-													<th>
-														<div className="th-inner sortable both">
-															Specialization
-														</div>
-														<div className="fht-cell"></div>
-													</th>
-													<th>
-														<div className="th-inner sortable both">
-															Session Count
-														</div>
-														<div className="fht-cell"></div>
-													</th>
-													<th>
-														<div className="th-inner sortable both">
-															Request Status
-														</div>
-														<div className="fht-cell"></div>
-													</th>
-													<th>
-														<div className="th-inner "></div>
-														<div className="fht-cell"></div>
-													</th>
-												</tr>
-											</thead>
-
-											<tbody>
-												{loading ? (
+												<thead>
 													<tr>
-														<td colSpan="6" className="text-center">
-															<img alt="searching" src={searchingGIF} />
-														</td>
+														<th>
+															<div className="th-inner "></div>
+															<div className="fht-cell"></div>
+														</th>
+														<th>
+															<div className="th-inner sortable both">
+																Request Date
+														</div>
+															<div className="fht-cell"></div>
+														</th>
+														<th>
+															<div className="th-inner sortable both">
+																Patient Name
+														</div>
+															<div className="fht-cell"></div>
+														</th>
+														<th>
+															<div className="th-inner sortable both">
+																Specialization
+														</div>
+															<div className="fht-cell"></div>
+														</th>
+														<th>
+															<div className="th-inner sortable both">
+																Session Count
+														</div>
+															<div className="fht-cell"></div>
+														</th>
+														<th>
+															<div className="th-inner "></div>
+															<div className="fht-cell"></div>
+														</th>
 													</tr>
-												) : (
-														<>{this.table()}</>
-													)}
-											</tbody>
-										</table>
+												</thead>
+
+												<tbody>
+													{loaded ? (
+														<tr>
+															<td colSpan="6" className="text-center">
+																<img alt="searching" src={searchingGIF} />
+															</td>
+														</tr>
+													) : (
+															<>{this.table()}</>
+														)}
+												</tbody>
+											</table>
 									}
 								</div>
 							</div>

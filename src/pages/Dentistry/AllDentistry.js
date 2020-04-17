@@ -77,6 +77,9 @@ class AllDentistry extends Component {
 			<tr className="" data-index="0" data-id="20" key={i}>
 				<td>{i + 1}</td>
 				<td>
+					<span className="text-bold">{data.patient_name}</span>
+				</td>
+				<td>
 					<span className="text-bold">{this.getRequests(data.requestBody)}</span>
 				</td>
 				<td>{this.calculateAmount(data.requestBody)}</td>
@@ -146,6 +149,15 @@ class AllDentistry extends Component {
 
 		const filteredOptions = _.uniqBy(filteredNames, 'value')
 
+		const customStyle = {
+			control: (provided, state) => ({
+				...provided,
+				minHeight: '24px !important',
+				height: '2rem',
+				width: '12rem'
+			})
+		}
+
 		return (
 			<>
 				<div className="col-sm-12">
@@ -159,7 +171,7 @@ class AllDentistry extends Component {
 										onModalClick={this.onModalClick}
 									/>
 								) : null} */}
-								<h6 className="element-header">Filter by:</h6>
+								<h6 className="element-header">All Requests:</h6>
 
 								<form className="row">
 									<div className="form-group col-md-6">
@@ -171,6 +183,7 @@ class AllDentistry extends Component {
 											Patient
 										</label>
 										<Select
+											styles={customStyle}
 											id="patientId"
 											isSearchable={true}
 											name="patientId"
@@ -205,6 +218,12 @@ class AllDentistry extends Component {
 													<tr>
 														<th>
 															<div className="th-inner "></div>
+															<div className="fht-cell"></div>
+														</th>
+														<th>
+															<div className="th-inner sortable both">
+																Patient Name
+														</div>
 															<div className="fht-cell"></div>
 														</th>
 														<th>
