@@ -24,6 +24,7 @@ import { createClinicalTask } from '../../actions/general';
 import { useForm } from 'react-hook-form';
 import { notifySuccess } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
+import { setPatientRecord } from '../../actions/user';
 
 const validate = values => {
 	const errors = {};
@@ -159,6 +160,8 @@ class PatientAdmission extends Component {
 				formData
 			);
 			this.setState({ submitting: false });
+			patient.isAdmitted = true;
+			this.props.setPatientRecord(patient);
 			this.props.dispatch(reset('create_patient_admission'));
 			notifySuccess('Admission Started !');
 		} catch (e) {
@@ -363,6 +366,7 @@ const mapStateToProps = (state, ownProps) => {
 	};
 };
 
-export default connect(mapStateToProps, { createClinicalTask })(
-	PatientAdmission
-);
+export default connect(mapStateToProps, {
+	setPatientRecord,
+	createClinicalTask,
+})(PatientAdmission);
