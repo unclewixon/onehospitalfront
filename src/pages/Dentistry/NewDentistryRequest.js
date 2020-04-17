@@ -15,7 +15,6 @@ import { request } from '../../services/utilities';
 
 import {
 	get_all_services,
-	getAllRequestServices,
 	getAllServiceCategory,
 } from '../../actions/settings';
 
@@ -218,7 +217,9 @@ const NewDentistry = props => {
 										name="requestType"
 										value="Dentistry"
 										readOnly
-										ref={register}
+										ref={register({
+											required: true
+										})}
 									/>
 								</div>
 							</div>
@@ -230,7 +231,10 @@ const NewDentistry = props => {
 										name="service_center"
 										placeholder="Select Service Center"
 										options={servicesCategory}
-										ref={register({ name: 'service_center' })}
+										ref={register({ 
+											required: true,
+											name: 'service_center' 
+										})}
 										onChange={evt => handleChangeServiceCategory(evt)}
 										required
 									/>
@@ -249,7 +253,10 @@ const NewDentistry = props => {
 										placeholder="Select service to request from"
 										isMulti
 										options={services}
-										ref={register({ name: 'service_request' })}
+										ref={register({ 
+											required: true,
+											name: 'service_request' 
+										})}
 										onChange={evt => handleChangeProcedure(evt)}
 										required
 									/>

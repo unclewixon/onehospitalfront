@@ -11,7 +11,8 @@ import Tooltip from 'antd/lib/tooltip';
 import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
-import _ from 'lodash'
+import _ from 'lodash';
+import ModalDentistry from '../../components/Modals/ModalDentistry';
 import Select from 'react-select';
 const { RangePicker } = DatePicker;
 
@@ -22,7 +23,9 @@ class AllDentistry extends Component {
 		patientId: "",
 		startDate: "",
 		endDate: "",
-		filtering: false
+		filtering: false,
+		activeRequest: null,
+		showModal: false
 
 	};
 	componentDidMount() {
@@ -92,7 +95,10 @@ class AllDentistry extends Component {
 				</td>
 				<td className="row-actions text-right">
 					<Tooltip title="View Request">
-						<a>
+					<a onClick={() => {
+							this.onModalClick()
+							this.setState({activeRequest: data})
+						}}>
 							<i className="os-icon os-icon-documents-03" />
 						</a>
 					</Tooltip>
@@ -105,6 +111,12 @@ class AllDentistry extends Component {
 			</tr>
 		)
 	}
+
+	onModalClick = () => {
+		this.setState({
+			showModal: !this.state.showModal,
+		});
+	};
 
 	dateChange = e => {
 		let date = e.map(d => {
@@ -164,13 +176,13 @@ class AllDentistry extends Component {
 					<div className="element-wrapper">
 						<div className="row">
 							<div className="col-md-12">
-								{/* {this.state.activeRequest ? (
-									<ModalClinicalLab
+								{this.state.activeRequest ? (
+									<ModalDentistry
 										activeRequest={this.state.activeRequest}
 										showModal={this.state.showModal}
 										onModalClick={this.onModalClick}
 									/>
-								) : null} */}
+								) : null}
 								<h6 className="element-header">All Requests:</h6>
 
 								<form className="row">

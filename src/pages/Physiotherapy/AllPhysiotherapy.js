@@ -11,6 +11,7 @@ import Tooltip from 'antd/lib/tooltip';
 import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import _ from 'lodash';
+import ModalPhysiotherapy from '../../components/Modals/ModalPhysiotherapy';
 import DatePicker from 'antd/lib/date-picker';
 import Select from 'react-select';
 const { RangePicker } = DatePicker;
@@ -22,7 +23,9 @@ class AllPhysiotherapy extends Component {
 		patientId: "",
 		startDate: "",
 		endDate: "",
-		filtering: false
+		filtering: false,
+		showModal: false,
+		activeRequest: null
 	};
 	componentDidMount() {
 		this.fetchPhysio()
@@ -47,21 +50,25 @@ class AllPhysiotherapy extends Component {
 		}
 	};
 
+	onModalClick = () => {
+		this.setState({showModal: !this.state.showModal })
+	}
+
 	formRow = (data, i) => {
 		return (
 			<tr className="" data-index="0" key={i}>
-				<td className="text-center">
+				<td>
 					<span className="text-bold">{i + 1}</span>
 				</td>
-				<td className="text-center">
+				<td>
 					{moment(data.createdAt).format('DD-MM-YYYY')}
 				</td>
-				<td className="text-center">
+				<td>
 					{
 						data.patient_name
 					}
 				</td>
-				<td className="text-center">
+				<td>
 					{
 						data &&
 							data.requestBody &&
@@ -70,7 +77,7 @@ class AllPhysiotherapy extends Component {
 							""
 					}
 				</td>
-				<td className="text-center">
+				<td>
 					{
 						data &&
 							data.requestBody &&
@@ -81,7 +88,12 @@ class AllPhysiotherapy extends Component {
 				</td>
 				<td className="row-actions text-right">
 					<Tooltip title="View Request">
-						<a href="#">
+						<a href="#" onClick={
+							() => {
+								this.onModalClick()
+								this.setState({activeRequest: data})
+							}
+						}>
 							<i className="os-icon os-icon-documents-03" />
 						</a>
 					</Tooltip>
@@ -153,13 +165,13 @@ class AllPhysiotherapy extends Component {
 					<div className="element-wrapper">
 						<div className="row">
 							<div className="col-md-12">
-								{/* {this.state.activeRequest ? (
-									<ModalClinicalLab
+								{this.state.activeRequest ? (
+									<ModalPhysiotherapy
 										activeRequest={this.state.activeRequest}
 										showModal={this.state.showModal}
 										onModalClick={this.onModalClick}
 									/>
-								) : null} */}
+								) : null}
 								<h6 className="element-header">All Appointments:</h6>
 
 								<form className="row">

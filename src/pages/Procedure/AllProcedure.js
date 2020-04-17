@@ -10,6 +10,7 @@ import searchingGIF from '../../assets/images/searching.gif';
 import waiting from '../../assets/images/waiting.gif';
 import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
+import ModalProcedure from '../../components/Modals/ModalProcedure';
 import DatePicker from 'antd/lib/date-picker';
 import _ from 'lodash'
 import Select from 'react-select';
@@ -22,7 +23,9 @@ class AllProcedure extends Component {
 		patientId: "",
 		startDate: "",
 		endDate: "",
-		filtering: false
+		filtering: false,
+		showModal: false,
+		activeRequest: null
 
 	};
 	componentDidMount() {
@@ -56,6 +59,10 @@ class AllProcedure extends Component {
 		return rer.join(', ');
 	};
 
+	onModalClick = () => {
+		this.setState({showModal: !this.state.showModal})
+	}
+
 	formRow = (data, i) => {
 		return (
 			<tr key={i}>
@@ -71,7 +78,12 @@ class AllProcedure extends Component {
 				<td></td>
 				<td className="row-actions text-right">
 					<Tooltip title="View Request">
-						<a href="#">
+						<a href="#" onClick={
+							() => {
+								this.onModalClick()
+								this.setState({activeRequest: data})
+							}
+						}>
 							<i className="os-icon os-icon-documents-03" />
 						</a>
 					</Tooltip>
@@ -143,13 +155,13 @@ class AllProcedure extends Component {
 					<div className="element-wrapper">
 						<div className="row">
 							<div className="col-md-12">
-								{/* {this.state.activeRequest ? (
-									<ModalClinicalLab
+								{this.state.activeRequest ? (
+									<ModalProcedure
 										activeRequest={this.state.activeRequest}
 										showModal={this.state.showModal}
 										onModalClick={this.onModalClick}
 									/>
-								) : null} */}
+								) : null}
 								<h6 className="element-header">All Requests:</h6>
 
 								<form className="row">

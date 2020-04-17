@@ -9,6 +9,7 @@ import searchingGIF from '../../assets/images/searching.gif';
 import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import _ from 'lodash';
+import ModalProcedure from '../../components/Modals/ModalProcedure';
 import DatePicker from 'antd/lib/date-picker';
 import Select from 'react-select';
 const { RangePicker } = DatePicker;
@@ -17,9 +18,11 @@ class ProcedureDashboard extends Component {
 	state = {
 		loaded: false,
 		patientId: "",
-		startDate: moment(Date.now()).format('YYYY-MM-DD'),
+		startDate: moment(Date.now()).subtract(1, 'days').format('YYYY-MM-DD'),
 		endDate: moment(Date.now()).format('YYYY-MM-DD'),
-		filtering: false
+		filtering: false,
+		showModal: false,
+		activeRequest: null
 
 	};
 	componentDidMount() {
@@ -53,6 +56,10 @@ class ProcedureDashboard extends Component {
 		return rer.join(', ');
 	};
 
+	onModalClick = () => {
+		this.setState({showModal: !this.state.showModal})
+	}
+
 	formRow = (data, i) => {
 		return (
 			<tr key={i}>
@@ -68,7 +75,12 @@ class ProcedureDashboard extends Component {
 				<td></td>
 				<td className="row-actions text-right">
 					<Tooltip title="View Request">
-						<a href="#">
+					<a href="#" onClick={
+							() => {
+								this.onModalClick()
+								this.setState({activeRequest: data})
+							}
+						}>
 							<i className="os-icon os-icon-documents-03" />
 						</a>
 					</Tooltip>
@@ -139,13 +151,13 @@ class ProcedureDashboard extends Component {
 				<div className="element-wrapper">
 					<div className="row">
 						<div className="col-md-12">
-							{/* {this.state.activeRequest ? (
-									<ModalClinicalLab
+							{this.state.activeRequest ? (
+									<ModalProcedure
 										activeRequest={this.state.activeRequest}
 										showModal={this.state.showModal}
 										onModalClick={this.onModalClick}
 									/>
-								) : null} */}
+								) : null}
 							<h6 className="element-header">Recent Requests:</h6>
 
 							<form className="row">

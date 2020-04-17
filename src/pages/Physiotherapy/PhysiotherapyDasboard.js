@@ -10,6 +10,7 @@ import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import _ from 'lodash';
 import DatePicker from 'antd/lib/date-picker';
+import ModalPhysiotherapy from '../../components/Modals/ModalPhysiotherapy';
 import Select from 'react-select';
 const { RangePicker } = DatePicker;
 
@@ -17,9 +18,11 @@ class PhysiotherapyDashboard extends Component {
 	state = {
 		loaded: false,
 		patientId: "",
-		startDate: moment(Date.now()).format('YYYY-MM-DD'),
+		startDate: moment(Date.now()).subtract(1, 'days').format('YYYY-MM-DD'),
 		endDate: moment(Date.now()).format('YYYY-MM-DD'),
-		filtering: false
+		filtering: false,
+		showModal: false,
+		activeRequest: null
 	};
 	componentDidMount() {
 		this.fetchPhysio();
@@ -43,21 +46,25 @@ class PhysiotherapyDashboard extends Component {
 		}
 	};
 
+	onModalClick = () => {
+		this.setState({showModal: !this.state.showModal })
+	}
+
 	formRow = (data, i) => {
 		return (
 			<tr className="" data-index="0" key={i}>
-				<td className="text-center">
+				<td>
 					<span className="text-bold">{i + 1}</span>
 				</td>
-				<td className="text-center">
+				<td>
 					{moment(data.createdAt).format('DD-MM-YYYY')}
 				</td>
-				<td className="text-center">
+				<td>
 					{
 						data.patient_name
 					}
 				</td>
-				<td className="text-center">
+				<td>
 					{
 						data &&
 							data.requestBody &&
@@ -66,7 +73,7 @@ class PhysiotherapyDashboard extends Component {
 							""
 					}
 				</td>
-				<td className="text-center">
+				<td>
 					{
 						data &&
 							data.requestBody &&
@@ -77,7 +84,12 @@ class PhysiotherapyDashboard extends Component {
 				</td>
 				<td className="row-actions text-right">
 					<Tooltip title="View Request">
-						<a href="#">
+						<a href="#" onClick={
+							() => {
+								this.onModalClick()
+								this.setState({activeRequest: data})
+							}
+						}>
 							<i className="os-icon os-icon-documents-03" />
 						</a>
 					</Tooltip>
@@ -147,13 +159,13 @@ class PhysiotherapyDashboard extends Component {
 				<div className="element-wrapper">
 					<div className="row">
 						<div className="col-md-12">
-							{/* {this.state.activeRequest ? (
-									<ModalClinicalLab
+							{this.state.activeRequest ? (
+									<ModalPhysiotherapy
 										activeRequest={this.state.activeRequest}
 										showModal={this.state.showModal}
 										onModalClick={this.onModalClick}
 									/>
-								) : null} */}
+								) : null}
 							<h6 className="element-header">Recent Appointments:</h6>
 
 							<form className="row">
