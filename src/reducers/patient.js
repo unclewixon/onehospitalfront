@@ -24,6 +24,7 @@ import {
 	LOAD_CLINICAL_LAB,
 	LOAD_RADIOLOGY,
     UPDATE_COMPLAINT_DATA,
+	LOAD_ANTENNATAL,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -44,6 +45,7 @@ const INITIAL_STATE = {
 	labRequests: [],
 	pharmacyRequests: [],
 	allRequests: [],
+	antennatal: [],
 	encounterData: {
 		complaints: 'Presenting Complaints:',
 		reviewOfSystem: [],
@@ -144,6 +146,8 @@ const patient = (state = INITIAL_STATE, action) => {
 					complaints: action.payload
 				} 
 			};
+		case LOAD_ANTENNATAL:
+			return { ...state, antennatal: [...action.payload] };
 		default:
 			return state;
 	}

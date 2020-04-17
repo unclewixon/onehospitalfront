@@ -10,35 +10,33 @@ import searchingGIF from '../../assets/images/searching.gif';
 import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
-import _ from 'lodash'
+import _ from 'lodash';
 import Select from 'react-select';
 const { RangePicker } = DatePicker;
-
 
 class RecentProcedure extends Component {
 	state = {
 		loaded: false,
-		patientId: "",
-		startDate: "",
-		endDate: ""
-
+		patientId: '',
+		startDate: '',
+		endDate: '',
 	};
 	componentDidMount() {
-		this.fetchPhysio()
+		this.fetchPhysio();
 	}
 
-	fetchPhysio = async (patientId) => {
+	fetchPhysio = async patientId => {
 		const { startDate, endDate } = this.state;
 		this.setState({ loaded: true });
 		try {
 			const rs = await request(
-				patientId ?
-					`${API_URI}/patient/${patientId}/request/procedure?startDate=${startDate}&endDate=${endDate}` :
-					`${API_URI}/patient/requests/procedure?startDate=${startDate}&endDate=${endDate}`,
+				patientId
+					? `${API_URI}/patient/${patientId}/request/procedure?startDate=${startDate}&endDate=${endDate}`
+					: `${API_URI}/patient/requests/procedure?startDate=${startDate}&endDate=${endDate}`,
 				'GET',
 				true
 			);
-			this.props.loadPatientProcedureData(rs);;
+			this.props.loadPatientProcedureData(rs);
 			return this.setState({ loaded: false });
 		} catch (error) {
 			notifyError('error fetching procedure requests');
@@ -58,9 +56,7 @@ class RecentProcedure extends Component {
 		return (
 			<tr key={i}>
 				<td>{i + 1}</td>
-				<td>
-					{moment(data.createdAt).format('DD-MM-YY')}
-				</td>
+				<td>{moment(data.createdAt).format('DD-MM-YY')}</td>
 				<td>{data.created_by}</td>
 				<td>{this.getRequests(data.requestBody)}</td>
 				<td></td>
@@ -77,8 +73,8 @@ class RecentProcedure extends Component {
 					</Tooltip>
 				</td>
 			</tr>
-		)
-	}
+		);
+	};
 
 	dateChange = e => {
 		let date = e.map(d => {
@@ -94,33 +90,33 @@ class RecentProcedure extends Component {
 
 	table = () =>
 		this.props &&
-			this.props.patient_procedure &&
-			this.props.patient_procedure.length ?
-			this.props.patient_procedure.map((physio, i) => {
-				return (
-					this.formRow(physio, i)
-				)
-			}) : []
+		this.props.patient_procedure &&
+		this.props.patient_procedure.length
+			? this.props.patient_procedure.map((physio, i) => {
+					return this.formRow(physio, i);
+			  })
+			: [];
 
 	filterEntries = () => {
-		this.fetchPhysio(this.state.patientId)
-	}
-
+		this.fetchPhysio(this.state.patientId);
+	};
 
 	render() {
 		const { loaded } = this.state;
 
-		const filteredNames = this.props &&
+		const filteredNames =
+			this.props &&
 			this.props.patient_procedure &&
-			this.props.patient_procedure.length ?
-			this.props.patient_procedure.map((patient) => {
-				return {
-					value: patient.patient_id,
-					label: patient.patient_name
-				}
-			}) : []
+			this.props.patient_procedure.length
+				? this.props.patient_procedure.map(patient => {
+						return {
+							value: patient.patient_id,
+							label: patient.patient_name,
+						};
+				  })
+				: [];
 
-		const filteredOptions = _.uniqBy(filteredNames, 'value')
+		const filteredOptions = _.uniqBy(filteredNames, 'value');
 
 		return (
 			<>
@@ -157,8 +153,9 @@ class RecentProcedure extends Component {
 									<div className="form-group col-md-3 mt-4">
 										<div
 											className="btn btn-sm btn-primary btn-upper text-white"
-											onClick={() => { this.filterEntries() }}
-										>
+											onClick={() => {
+												this.filterEntries();
+											}}>
 											<i className="os-icon os-icon-ui-37" />
 											<span>
 												{/* {filtering ? (
@@ -186,25 +183,25 @@ class RecentProcedure extends Component {
 														<th>
 															<div className="th-inner sortable both">
 																Request Date
-														</div>
+															</div>
 															<div className="fht-cell"></div>
 														</th>
 														<th>
 															<div className="th-inner sortable both">
 																Requested By
-														</div>
+															</div>
 															<div className="fht-cell"></div>
 														</th>
 														<th>
 															<div className="th-inner sortable both">
 																Request Specimen
-														</div>
+															</div>
 															<div className="fht-cell"></div>
 														</th>
 														<th>
 															<div className="th-inner sortable both">
 																Request Status
-														</div>
+															</div>
 															<div className="fht-cell"></div>
 														</th>
 														<th>
@@ -222,8 +219,8 @@ class RecentProcedure extends Component {
 															</td>
 														</tr>
 													) : (
-															<>{this.table()}</>
-														)}
+														<>{this.table()}</>
+													)}
 												</tbody>
 											</table>
 										}

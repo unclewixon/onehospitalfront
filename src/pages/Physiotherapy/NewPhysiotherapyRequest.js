@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PhysiotherapyRequest from '../../components/Patient/PhysiotherapyRequest'
+import PhysiotherapyRequest from '../../components/Patient/PhysiotherapyRequest';
 import { withRouter } from 'react-router-dom';
 export class NewPhysiotherapy extends Component {
 	render() {

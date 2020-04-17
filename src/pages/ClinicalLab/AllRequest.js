@@ -38,10 +38,10 @@ class AllRequest extends Component {
 
 	componentDidMount() {
 		this.fetchClinicalLab(() => {
-			this.setState({ loading: false, filtering: false })
-		})
+			this.setState({ loading: false, filtering: false });
+		});
 	}
-	fetchClinicalLab = async (cb) => {
+	fetchClinicalLab = async cb => {
 		const { startDate, endDate, status } = this.state;
 		try {
 			this.setState({ loading: true });
@@ -52,12 +52,11 @@ class AllRequest extends Component {
 			);
 
 			this.props.loadClinicalLab(rs);
-			cb()
-				;
+			cb();
 		} catch (error) {
 			console.log(error);
 			notifyError('Error fetching all lab request');
-			cb()
+			cb();
 		}
 	};
 
@@ -163,8 +162,8 @@ class AllRequest extends Component {
 												{filtering ? (
 													<img src={waiting} alt="submitting" />
 												) : (
-														'Filter'
-													)}
+													'Filter'
+												)}
 											</span>
 										</div>
 									</div>
@@ -174,67 +173,65 @@ class AllRequest extends Component {
 							<div className="col-sm-12">
 								<div className="element-box">
 									<div className="table-responsive">
-										{
-											loading ? (
-												<tr>
-													<td colSpan="4" className="text-center">
-														<img alt="searching" src={searchingGIF} />
-													</td>
-												</tr>
-											) : (
-													<table className="table table-striped">
-														<thead>
-															<tr>
-																<th>
-																	<div className="th-inner "></div>
-																	<div className="fht-cell"></div>
-																</th>
-																<th>
-																	<div className="th-inner sortable both">
-																		Request Date
-														</div>
-																	<div className="fht-cell"></div>
-																</th>
-																<th>
-																	<div className="th-inner sortable both">
-																		Patiend ID
-														</div>
-																	<div className="fht-cell"></div>
-																</th>
-																<th>
-																	<div className="th-inner sortable both">
-																		Patient Name
-														</div>
-																	<div className="fht-cell"></div>
-																</th>
-																<th>
-																	<div className="th-inner sortable both">
-																		Request By
-														</div>
-																	<div className="fht-cell"></div>
-																</th>
-																<th>
-																	<div className="th-inner "></div>
-																	<div className="fht-cell"></div>
-																</th>
-															</tr>
-														</thead>
+										{loading ? (
+											<tr>
+												<td colSpan="4" className="text-center">
+													<img alt="searching" src={searchingGIF} />
+												</td>
+											</tr>
+										) : (
+											<table className="table table-striped">
+												<thead>
+													<tr>
+														<th>
+															<div className="th-inner "></div>
+															<div className="fht-cell"></div>
+														</th>
+														<th>
+															<div className="th-inner sortable both">
+																Request Date
+															</div>
+															<div className="fht-cell"></div>
+														</th>
+														<th>
+															<div className="th-inner sortable both">
+																Patiend ID
+															</div>
+															<div className="fht-cell"></div>
+														</th>
+														<th>
+															<div className="th-inner sortable both">
+																Patient Name
+															</div>
+															<div className="fht-cell"></div>
+														</th>
+														<th>
+															<div className="th-inner sortable both">
+																Request By
+															</div>
+															<div className="fht-cell"></div>
+														</th>
+														<th>
+															<div className="th-inner "></div>
+															<div className="fht-cell"></div>
+														</th>
+													</tr>
+												</thead>
 
-														<tbody>
-															{clinicalLab &&
-																clinicalLab.reverse().map(lab => {
-																	return (
-																		<ClinicalLabItem
-																			key={lab.id}
-																			lab={lab}
-																			modalClick={LAB => this.modalFunction(LAB)}
-																		/>
-																	);
-																})}
-														</tbody>
-													</table>
-												)
-										}
+												<tbody>
+													{clinicalLab &&
+														clinicalLab.reverse().map(lab => {
+															return (
+																<ClinicalLabItem
+																	key={lab.id}
+																	lab={lab}
+																	modalClick={LAB => this.modalFunction(LAB)}
+																/>
+															);
+														})}
+												</tbody>
+											</table>
+										)}
 										{!_.isEmpty(clinicalLab) ? null : (
 											<div className="text-center">No clinical Lab request</div>
 										)}

@@ -15,21 +15,21 @@ const { RangePicker } = DatePicker;
 class PhysiotherapyDashboard extends Component {
 	state = {
 		loading: false,
-		patientId: "",
-		startDate: "",
-		endDate: ""
+		patientId: '',
+		startDate: '',
+		endDate: '',
 	};
 	componentDidMount() {
 		this.fetchPhysio();
 	}
-	fetchPhysio = async (patientId) => {
+	fetchPhysio = async patientId => {
 		const { startDate, endDate } = this.state;
 		this.setState({ loaded: true });
 		try {
 			const rs = await request(
-				patientId ?
-					`${API_URI}/patient/${patientId}/request/physiotherapy?startDate=${startDate}&endDate=${endDate}` :
-					`${API_URI}/patient/requests/physiotherapy?startDate=${startDate}&endDate=${endDate}`,
+				patientId
+					? `${API_URI}/patient/${patientId}/request/physiotherapy?startDate=${startDate}&endDate=${endDate}`
+					: `${API_URI}/patient/requests/physiotherapy?startDate=${startDate}&endDate=${endDate}`,
 				'GET',
 				true
 			);
@@ -50,28 +50,16 @@ class PhysiotherapyDashboard extends Component {
 				<td className="text-center">
 					{moment(data.createdAt).format('DD-MM-YYYY')}
 				</td>
+				<td className="text-center">{data.patient_name}</td>
 				<td className="text-center">
-					{
-						data.patient_name
-					}
+					{data && data.requestBody && data.requestBody.length
+						? data.requestBody.map(body => body.specialization)
+						: ''}
 				</td>
 				<td className="text-center">
-					{
-						data &&
-							data.requestBody &&
-							data.requestBody.length ?
-							data.requestBody.map(body => body.specialization) :
-							""
-					}
-				</td>
-				<td className="text-center">
-					{
-						data &&
-							data.requestBody &&
-							data.requestBody.length ?
-							data.requestBody.map(body => body.sessionCount) :
-							""
-					}
+					{data && data.requestBody && data.requestBody.length
+						? data.requestBody.map(body => body.sessionCount)
+						: ''}
 				</td>
 				<td className="row-actions text-right">
 					<Tooltip title="View Request">
@@ -86,8 +74,8 @@ class PhysiotherapyDashboard extends Component {
 					</Tooltip>
 				</td>
 			</tr>
-		)
-	}
+		);
+	};
 
 	dateChange = e => {
 		let date = e.map(d => {
@@ -104,32 +92,32 @@ class PhysiotherapyDashboard extends Component {
 	table = () =>
 		this.props &&
 		this.props.physiotherapies &&
-		this.props.physiotherapies.length ?
-		this.props.physiotherapies.map((physio, i) => {
-			return (
-				this.formRow(physio, i)
-			)
-		}) : []
+		this.props.physiotherapies.length
+			? this.props.physiotherapies.map((physio, i) => {
+					return this.formRow(physio, i);
+			  })
+			: [];
 
 	filterEntries = () => {
-		this.fetchPhysio(this.state.patientId)
-	}
+		this.fetchPhysio(this.state.patientId);
+	};
 
 	render() {
 		const { loading } = this.state;
-		
-		const filteredNames = this.props &&
-		this.props.physiotherapies &&
-		this.props.physiotherapies.length ?
-		this.props.physiotherapies.map((patient) => {
-			return {
-				value: patient.patient_id,
-				label: patient.patient_name
-			}
-		}) : [];
+
+		const filteredNames =
+			this.props &&
+			this.props.physiotherapies &&
+			this.props.physiotherapies.length
+				? this.props.physiotherapies.map(patient => {
+						return {
+							value: patient.patient_id,
+							label: patient.patient_name,
+						};
+				  })
+				: [];
 
 		const filteredOptions = _.uniqBy(filteredNames, 'value');
-
 
 		return (
 			<div className="col-sm-12">
@@ -193,8 +181,9 @@ class PhysiotherapyDashboard extends Component {
 											<div className="form-group col-md-3 mt-4">
 												<div
 													className="btn btn-sm btn-primary btn-upper text-white"
-													onClick={() => { this.filterEntries() }}
-												>
+													onClick={() => {
+														this.filterEntries();
+													}}>
 													<i className="os-icon os-icon-ui-37" />
 													<span>
 														{/* {filtering ? (
@@ -222,25 +211,25 @@ class PhysiotherapyDashboard extends Component {
 																<th>
 																	<div className="th-inner sortable both">
 																		Request Date
-														</div>
+																	</div>
 																	<div className="fht-cell"></div>
 																</th>
 																<th>
 																	<div className="th-inner sortable both">
 																		Specialization
-														</div>
+																	</div>
 																	<div className="fht-cell"></div>
 																</th>
 																<th>
 																	<div className="th-inner sortable both">
 																		Session Count
-														</div>
+																	</div>
 																	<div className="fht-cell"></div>
 																</th>
 																<th>
 																	<div className="th-inner sortable both">
 																		Request Status
-														</div>
+																	</div>
 																	<div className="fht-cell"></div>
 																</th>
 																<th>
@@ -258,8 +247,8 @@ class PhysiotherapyDashboard extends Component {
 																	</td>
 																</tr>
 															) : (
-																	<>{this.table()}</>
-																)}
+																<>{this.table()}</>
+															)}
 														</tbody>
 													</table>
 												}
@@ -282,4 +271,6 @@ const mapStateToProps = state => {
 		physiotherapies: state.patient.physiotherapies,
 	};
 };
-export default connect(mapStateToProps, { getPhysiotherapies })(PhysiotherapyDashboard);
+export default connect(mapStateToProps, { getPhysiotherapies })(
+	PhysiotherapyDashboard
+);

@@ -1,4 +1,5 @@
 import socketIOClient from 'socket.io-client';
+import _ from 'lodash';
 
 export const DEBUG = process.env.REACT_APP_DEBUG;
 export const APP_NAME = process.env.REACT_APP_NAME;
@@ -232,6 +233,198 @@ export const encounters = [
 	'Investigations',
 	'Plan',
 	'Consumable',
+];
+
+export const bookingPeriod = [
+	{
+		id: 'Routine',
+		name: 'Routine',
+	},
+	{
+		id: 'Complication',
+		name: 'Complication',
+	},
+];
+
+export const lmpSource = [
+	{
+		id: 'Patient',
+		name: 'Patient',
+	},
+	{
+		id: 'Scan',
+		name: 'Scan',
+	},
+];
+
+export const gravida = [
+	{
+		id: 'Primi Gravida (G1)',
+		name: 'Primi Gravida (G1)',
+	},
+	{
+		id: 'Second Gravida (G2)',
+		name: 'Second Gravida (G2)',
+	},
+
+	{
+		id: 'Third Gravida (G3)',
+		name: 'Third Gravida (G3)',
+	},
+
+	{
+		id: 'Fourth Gravida (G4)',
+		name: 'Fourth Gravida (G4)',
+	},
+	{
+		id: 'Fifth Gravida (G5)',
+		name: 'Fifth Gravida (G5)',
+	},
+
+	{
+		id: 'Sixth Gravida (G6)',
+		name: 'Sixth Gravida (G6)',
+	},
+
+	{
+		id: 'Seventh Gravida (G7)',
+		name: 'Seventh Gravida (G7)',
+	},
+
+	{
+		id: 'Ninth Gravida (G9)',
+		name: 'Ninth Gravida (G9)',
+	},
+	{
+		id: 'Tenth Gravida (10)',
+		name: 'Tenth Gravida (10)',
+	},
+	{
+		id: 'Eleventh Gravida (G11)',
+		name: 'Eleventh Gravida (G11)',
+	},
+	{
+		id: 'Twelveth Gravida (G12)',
+		name: 'Twelveth Gravida (G12)',
+	},
+];
+
+export const para = [
+	{
+		id: 'Zero (P1)',
+		name: 'Zero (P1)',
+	},
+	{
+		id: 'Primi Para (P2)',
+		name: 'Primi Para (P2)',
+	},
+	{
+		id: 'Second Para (P2)',
+		name: 'Second Para (P2)',
+	},
+
+	{
+		id: 'Third Para (G3)',
+		name: 'Third Para (G3)',
+	},
+
+	{
+		id: 'Fourth Para (G4)',
+		name: 'Fourth Para (G4)',
+	},
+	{
+		id: 'Fifth Para (G5)',
+		name: 'Fifth Para (G5)',
+	},
+
+	{
+		id: 'Sixth Para (G6)',
+		name: 'Sixth Para (G6)',
+	},
+
+	{
+		id: 'Seventh Para (G7)',
+		name: 'Seventh Para (G7)',
+	},
+
+	{
+		id: 'Ninth Para (G9)',
+		name: 'Ninth Para (G9)',
+	},
+	{
+		id: 'Tenth Para (10)',
+		name: 'Tenth Para (10)',
+	},
+	{
+		id: 'Eleventh Para (G11)',
+		name: 'Eleventh Para (G11)',
+	},
+];
+
+export const previousPregnancies = _.range(1, 12).map((_, i) => {
+	return {
+		id: i,
+		name: i,
+	};
+});
+
+export const antenatalPackages = [
+	{
+		id: 'ANC',
+		name: 'ANC',
+	},
+];
+
+export const obstericHistory = [
+	{
+		id: 'Family History',
+		name: 'Family History',
+	},
+	{
+		id: 'Social History',
+		name: 'Social History',
+	},
+	{
+		id: 'Gynae History',
+		name: 'Gynae History',
+	},
+	{
+		id: 'Obsteric History',
+		name: 'Obsteric History',
+	},
+	{
+		id: 'Sexual History',
+		name: 'Sexual History',
+	},
+	{
+		id: 'Gynae Pap-Mear History',
+		name: 'Gynae Pap-Mear History',
+	},
+	{
+		id: 'FGM',
+		name: 'FGM',
+	},
+	{
+		id: 'Past Ocular History',
+		name: 'Past Ocular History',
+	},
+	{
+		id: 'Antenatal General/Physical Examination',
+		name: 'Antenatal General/Physical Examination',
+	},
+	{
+		id: 'Antenatal Initial Assessment',
+		name: 'Antenatal Initial Assessment',
+	},
+
+	{
+		id: 'Antenatal Lab Observations',
+		name: 'Antenatal Lab Observations',
+	},
+	{
+		id: 'Antenatal Routine Assessments',
+		name: 'Antenatal Routine Assessments',
+	},
 ];
 
 export const reviewOfSystem = [
