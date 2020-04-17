@@ -1,17 +1,34 @@
 import React, { Component, useEffect, useState } from 'react';
 import SunEditor from 'suneditor-react';
 import { useForm } from 'react-hook-form';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
+import { UPDATE_COMPLAINT_DATA } from '../../../actions/types';
 
 const Complaints = props => {
-	const [complaint, setComplaint] = useState();
-	const { complaints } = props;
+	// const [complaint, setComplaint] = useState();
+	let { complaints } = props;
+	const dispatch = useDispatch();
 
-	useEffect(() => {
-		return () => {
-			console.log(complaint);
-		};
-	});
+	const handleChange = (e) => {
+		// console.log(e);
+		dispatch({
+			type: UPDATE_COMPLAINT_DATA,
+			payload: e,
+		});
+	}
+	const handleFocus = (e) => {
+		var temp_value = e.target.textContent
+		e.target.textContent = ''
+		e.target.textContent = temp_value
+	}
+	// useEffect(() => {
+	// 	return () => {
+	// 		dispatch({
+	// 			type: UPDATE_COMPLAINT_DATA,
+	// 			payload: complaint,
+	// 		})
+	// 	};
+	// });
 	return (
 		<div className="form-block encounter">
 			<div className="row">
@@ -22,7 +39,7 @@ const Complaints = props => {
 							width="100%"
 							placeholder="Please type here..."
 							setContents={complaints}
-							autoFocus={false}
+							autoFocus={true}
 							enableToolbar={true}
 							setOptions={{
 								height: 300,
@@ -42,8 +59,9 @@ const Complaints = props => {
 									],
 								],
 							}}
+							onFocus={handleFocus}
 							onChange={evt => {
-								setComplaint(String(evt));
+								handleChange(String(evt));
 							}}
 						/>
 					</div>

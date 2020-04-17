@@ -23,6 +23,7 @@ import {
 	GET_ALL_REQUESTS,
 	LOAD_CLINICAL_LAB,
 	LOAD_RADIOLOGY,
+    UPDATE_COMPLAINT_DATA,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -135,6 +136,14 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, pharmacyRequests: action.payload };
 		case GET_ALL_REQUESTS:
 			return { ...state, allRequests: action.payload };
+		case UPDATE_COMPLAINT_DATA:
+			return {
+				...state, 
+				encounterData: {
+					...state.encounterData,
+					complaints: action.payload
+				} 
+			};
 		default:
 			return state;
 	}
