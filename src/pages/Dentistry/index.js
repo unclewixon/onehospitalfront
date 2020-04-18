@@ -5,7 +5,6 @@ import NoMatch from '../NoMatch';
 import Queue from '../../components/Queue';
 import Splash from '../../components/Splash';
 const NewDentistry = lazy(() => import('./NewDentistryRequest'));
-const RecentDentistry = lazy(() => import('./RecentDentistry'));
 const AllDentistry = lazy(() => import('./AllDentistry'));
 const DentistryDashboard = lazy(() => import('./DentistryDasboard'));
 
@@ -13,7 +12,7 @@ class Dentistry extends Component {
 	state = {};
 
 	handleEdit = () => {
-		alert('I am toSee Details this guy');
+		alert('I am to See Details this guy');
 	};
 	render() {
 		const { match, location } = this.props;
@@ -34,26 +33,18 @@ class Dentistry extends Component {
 										Dashboard
 									</Link>
 									<Link
-										to={`/dentistry/recent`}
-										className={`mr-2 btn btn-primary btn-sm ${
-											page === '/recent' ? 'btn-outline-primary' : ''
-										}`}>
-										{' '}
-										Recent Requests
-									</Link>
-									<Link
 										className={`mr-2 btn btn-primary btn-sm  ${
 											page === '/all-requests' ? 'btn-outline-primary' : ''
 										}`}
 										to="/dentistry/all-requests">
-										All Dentistry Requests
+										All Requests
 									</Link>
 									<Link
 										className={`mr-2 btn btn-primary btn-sm  ${
 											page === '/new-request' ? 'btn-outline-primary' : ''
 										}`}
 										to="/dentistry/new-request">
-										Dentistry Request
+										New Dentistry Request
 									</Link>
 								</div>
 
@@ -77,11 +68,6 @@ class Dentistry extends Component {
 											/>
 											<Route
 												exact
-												path={`${match.url}/recent`}
-												component={RecentDentistry}
-											/>
-											<Route
-												exact
 												path={`${match.url}/new-request`}
 												component={NewDentistry}
 											/>
@@ -92,9 +78,6 @@ class Dentistry extends Component {
 							</div>
 						</div>
 					</div>
-				</div>
-				<div className="content-panel compact">
-					<Queue />
 				</div>
 			</div>
 		);

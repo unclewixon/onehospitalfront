@@ -24,7 +24,6 @@ const Pharmacy2 = lazy(() => import('./pages/Pharmacy'));
 const Physiotherapy = lazy(() => import('./pages/Physiotherapy'));
 const Dentistry = lazy(() => import('./pages/Dentistry'));
 const Procedure = lazy(() => import('./pages/Procedure'));
-const Vitals = lazy(() => import('./pages/Vitals'));
 const Staff = lazy(() => import('./pages/HR/index'));
 const Inventory = lazy(() => import('./pages/Inventory/index'));
 const Settings = lazy(() => import('./pages/Settings'));

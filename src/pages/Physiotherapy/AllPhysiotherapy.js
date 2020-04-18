@@ -8,8 +8,10 @@ import { getPhysiotherapies } from '../../actions/patient';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import Tooltip from 'antd/lib/tooltip';
+import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import _ from 'lodash';
+import ModalPhysiotherapy from '../../components/Modals/ModalPhysiotherapy';
 import DatePicker from 'antd/lib/date-picker';
 import Select from 'react-select';
 const { RangePicker } = DatePicker;
@@ -20,6 +22,9 @@ class AllPhysiotherapy extends Component {
 		patientId: '',
 		startDate: '',
 		endDate: '',
+		filtering: false,
+		showModal: false,
+		activeRequest: null,
 	};
 	componentDidMount() {
 		this.fetchPhysio();
@@ -37,36 +42,43 @@ class AllPhysiotherapy extends Component {
 				true
 			);
 			this.props.getPhysiotherapies(rs);
-			return this.setState({ loaded: false });
+			return this.setState({ loaded: false, filtering: false });
 		} catch (error) {
 			notifyError('error fetching physiotherapy requests');
-			this.setState({ loaded: false });
+			this.setState({ loaded: false, filtering: false });
 		}
+	};
+
+	onModalClick = () => {
+		this.setState({ showModal: !this.state.showModal });
 	};
 
 	formRow = (data, i) => {
 		return (
 			<tr className="" data-index="0" key={i}>
-				<td className="text-center">
+				<td>
 					<span className="text-bold">{i + 1}</span>
 				</td>
-				<td className="text-center">
-					{moment(data.createdAt).format('DD-MM-YYYY')}
-				</td>
-				<td className="text-center">{data.patient_name}</td>
-				<td className="text-center">
+				<td>{moment(data.createdAt).format('DD-MM-YYYY')}</td>
+				<td>{data.patient_name}</td>
+				<td>
 					{data && data.requestBody && data.requestBody.length
 						? data.requestBody.map(body => body.specialization)
 						: ''}
 				</td>
-				<td className="text-center">
+				<td>
 					{data && data.requestBody && data.requestBody.length
 						? data.requestBody.map(body => body.sessionCount)
 						: ''}
 				</td>
 				<td className="row-actions text-right">
 					<Tooltip title="View Request">
-						<a href="#">
+						<a
+							href="#"
+							onClick={() => {
+								this.onModalClick();
+								this.setState({ activeRequest: data });
+							}}>
 							<i className="os-icon os-icon-documents-03" />
 						</a>
 					</Tooltip>
@@ -102,11 +114,12 @@ class AllPhysiotherapy extends Component {
 			: [];
 
 	filterEntries = () => {
+		this.setState({ filtering: true });
 		this.fetchPhysio(this.state.patientId);
 	};
 
 	render() {
-		const { loaded } = this.state;
+		const { loaded, filtering } = this.state;
 
 		const filteredNames =
 			this.props &&
@@ -122,20 +135,29 @@ class AllPhysiotherapy extends Component {
 
 		const filteredOptions = _.uniqBy(filteredNames, 'value');
 
+		const customStyle = {
+			control: (provided, state) => ({
+				...provided,
+				minHeight: '24px !important',
+				height: '2rem',
+				width: '12rem',
+			}),
+		};
+
 		return (
 			<>
 				<div className="col-sm-12">
 					<div className="element-wrapper">
 						<div className="row">
 							<div className="col-md-12">
-								{/* {this.state.activeRequest ? (
-									<ModalClinicalLab
+								{this.state.activeRequest ? (
+									<ModalPhysiotherapy
 										activeRequest={this.state.activeRequest}
 										showModal={this.state.showModal}
 										onModalClick={this.onModalClick}
 									/>
-								) : null} */}
-								<h6 className="element-header">Filter by:</h6>
+								) : null}
+								<h6 className="element-header">All Appointments:</h6>
 
 								<form className="row">
 									<div className="form-group col-md-6">
@@ -147,6 +169,7 @@ class AllPhysiotherapy extends Component {
 											Patient
 										</label>
 										<Select
+											styles={customStyle}
 											id="patientId"
 											isSearchable={true}
 											name="patientId"
@@ -162,11 +185,11 @@ class AllPhysiotherapy extends Component {
 											}}>
 											<i className="os-icon os-icon-ui-37" />
 											<span>
-												{/* {filtering ? (
+												{filtering ? (
 													<img src={waiting} alt="submitting" />
 												) : (
-														'Filter'
-													)} */}
+													'Filter'
+												)}
 											</span>
 										</div>
 									</div>
