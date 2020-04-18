@@ -6,11 +6,11 @@ import { connect } from 'react-redux';
 const ReviewOfSystem = props => {
 	const [selected, setSelected] = useState();
 
-	const {encounterData} = props;
-	
-	const handleChange = (e) => {
+	const { encounterData } = props;
+
+	const handleChange = e => {
 		setSelected(e);
-	}
+	};
 
 	return (
 		<div className="form-block encounter">
@@ -50,7 +50,7 @@ const ReviewOfSystem = props => {
 			)}
 		</div>
 	);
-}
+};
 
 const mapStateToProps = state => {
 	return {
