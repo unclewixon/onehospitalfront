@@ -13,6 +13,7 @@ import {
 	getAllLabTests,
 	getAllLabGroups,
 	getAllLabTestCategories,
+	getAllLabTestParameters,
 } from '../../actions/settings';
 import { createLabRequest } from '../../actions/patient';
 const serviceCenter = [
@@ -78,13 +79,67 @@ const LabRequest = props => {
 			  )
 			: [];
 
-	const lab_test = labTests
-		? intersectionBy(props.LabTests, labTests, 'id')
-		: [];
+			const structuredTest = () => {
+				const parameterObj = {}
+				const parVals = props && props.LabParameters && props.LabParameters.length
+				? props.LabParameters.map(par => {
+					parameterObj[par.id] = par;
+				}) : []
+		
+				const testObj = {}
+				const testVals = props && props.LabTests && props.LabTests.length
+				? props.LabTests.map(test => {
+					testObj[test.id] = test;
+				}) : []
+		
+				const lab_test = labTests && labTests.length ? labTests.map(test => {
+					const fullParams = testObj[test.value].parameters.map(par => {
+						const newParamObj = {
+							parameter_type: "parameter",
+							referenceRange: par.referenceRange,
+							...parameterObj[par.parameter_id]
+						}
+						return newParamObj;
+					})
+					const fullTest = {
+						...testObj[test.value],
+						parameters: fullParams
+					}
+					return fullTest;
+				}) : []
+				return lab_test
+			}
 
-	const lab_combo = labCombos
-		? intersectionBy(props.LabGroups, labCombos, 'id')
-		: [];
+	const structuredGroup = () => {
+		const parameterObj = {}
+				const parVals = props && props.LabParameters && props.LabParameters.length
+				? props.LabParameters.map(par => {
+					parameterObj[par.id] = par;
+				}) : []
+
+				const groupObj = {}
+				const groupVals = props && props.LabGroups && props.LabGroups.length
+				? props.LabGroups.map(group=> {
+					groupObj[group.id] = group;
+				}) : []
+
+				const lab_combo = labCombos && labCombos.length ? labCombos.map(combo => {
+					const fullParams = groupObj[combo.value].parameters.map(par => {
+						const newParamObj = {
+							parameter_type: "parameter",
+							referenceRange: par.referenceRange,
+							...parameterObj[par.parameter_id]
+						}
+						return newParamObj
+					})
+					const fullGroup = {
+						...groupObj[combo.value],
+						parameters: fullParams
+					}
+					return fullGroup
+				}) : []
+				return lab_combo
+	}
 
 	const onSubmit = ({
 		service_center,
@@ -98,6 +153,9 @@ const LabRequest = props => {
 			return;
 		}
 		setSubmitting(true);
+
+		const lab_test = structuredTest()
+		const lab_combo = structuredGroup()
 		props
 			.createLabRequest({
 				service_center,
@@ -155,11 +213,12 @@ const LabRequest = props => {
 	};
 
 	useEffect(() => {
-		const { getAllLabGroups, getAllLabTests, getAllLabTestCategories } = props;
+		const { getAllLabGroups, getAllLabTests, getAllLabTestCategories, getAllLabTestParameters } = props;
 		if (!loaded) {
 			getAllLabGroups();
 			getAllLabTests();
 			getAllLabTestCategories();
+			getAllLabTestParameters();
 		}
 		setLoaded(true);
 	}, [loaded, props]);
@@ -340,6 +399,7 @@ const mapStateToProps = state => {
 		LabTests: state.settings.lab_tests,
 		LabGroups: state.settings.lab_groups,
 		patient: state.user.patient,
+		LabParameters: state.settings.lab_parameters,
 	};
 };
 
@@ -348,6 +408,7 @@ export default withRouter(
 		createLabRequest,
 		getAllLabGroups,
 		getAllLabTests,
+		getAllLabTestParameters,
 		getAllLabTestCategories,
 	})(LabRequest)
 );

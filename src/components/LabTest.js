@@ -42,8 +42,15 @@ const LabTest = props => {
 	const handleParamInputChange = (e, index) => {
 		const { name, value } = e.target;
 		let newParam = { ...parameters };
+		let paramObj = {};
+		props.LabParameters.map(param => {
+			paramObj[value] = {
+				parameter_id : param.id,
+				parameter_name: param.name
+			}
+		})
 		if (name === 'parameter') {
-			newParam[index] = { parameter_id: value };
+			newParam[index] = { ...paramObj[value] };
 		} else if (name === 'referenceRange') {
 			newParam[index] = { ...newParam[index], referenceRange: value };
 		}
@@ -192,8 +199,6 @@ const LabTest = props => {
 				});
 			props.getAllLabTestCategories();
 			props.getAllLabTestParameters();
-
-			console.log(props.LabParameters);
 		}
 		setLoaded(true);
 	}, [loaded, props]);

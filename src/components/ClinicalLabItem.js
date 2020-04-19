@@ -42,7 +42,7 @@ export class ClinicalLabItem extends Component {
 						</a>
 					</td>
 					<td className="flex">
-						<a className="item-title text-color">{'No yet available'}</a>
+						<a className="item-title text-color">{lab.patient_id ? lab.patient_id : ''}</a>
 					</td>
 					<td className="flex">
 						<p className="item-title text-color">
