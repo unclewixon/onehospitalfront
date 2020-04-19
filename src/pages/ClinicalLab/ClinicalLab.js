@@ -6,38 +6,103 @@ import { request } from '../../services/utilities';
 import { API_URI, patientAPI } from '../../services/constants';
 import { loadClinicalLab } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
+import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import _ from 'lodash';
+import DatePicker from 'antd/lib/date-picker';
+import ModalClinicalLab from '../../components/Modals/ModalClinicalLab';
+import Select from 'react-select';
+const { RangePicker } = DatePicker;
 
 class ClinicalLab extends Component {
 	state = {
 		loading: false,
+		showModal: false,
+		filtering: false,
+		activeRequest: null,
+		startDate: moment(Date.now())
+			.subtract(1, 'days')
+			.format('YYYY-MM-DD'),
+		endDate: moment(Date.now()).format('YYYY-MM-DD'),
 	};
 	componentDidMount() {
 		this.fetchClinicalLab();
 	}
 
-	fetchClinicalLab = async () => {
+	fetchClinicalLab = async patientId => {
+		const { startDate, endDate } = this.state;
 		try {
 			this.setState({ ...this.state, loading: true });
-
 			let today = moment().format('YYYY-MM-DD');
 			const rs = await request(
-				`${API_URI}${patientAPI}/requests/lab?startDate=${today}=&endDate=${today}`,
+				patientId
+					? `${API_URI}${patientAPI}/${patientId}/request/lab?startDate=${startDate}=&endDate=${endDate}`
+					: `${API_URI}${patientAPI}/requests/lab?startDate=${startDate}=&endDate=${endDate}`,
 				'GET',
 				true
 			);
 			this.props.loadClinicalLab(rs);
-			this.setState({ ...this.state, loading: false });
+			return this.setState({ ...this.state, loading: false });
 		} catch (error) {
-			console.log(error);
 			this.setState({ ...this.state, loading: false });
 		}
 	};
+
+	onModalClick = () => {
+		this.setState({
+			showModal: !this.state.showModal,
+		});
+	};
+
+	dateChange = e => {
+		let date = e.map(d => {
+			return moment(d._d).format('YYYY-MM-DD');
+		});
+
+		this.setState({
+			...this.state,
+			startDate: date[0],
+			endDate: date[1],
+		});
+	};
+
+	filterEntries = () => {
+		this.setState({ filtering: true });
+		this.fetchClinicalLab(this.state.patientId);
+	};
+
+	modalFunction = lab => {
+		this.onModalClick();
+		this.setState({ activeRequest: lab });
+	};
+
 	render() {
 		const { location, clinicalLab } = this.props;
-		const { loading } = this.state;
+		const { loading, filtering } = this.state;
 		const page = location.pathname.split('/').pop();
+
+		const filteredNames =
+			this.props &&
+				this.props.clinicalLab &&
+				this.props.clinicalLab.length
+				? this.props.clinicalLab.map(patient => {
+					return {
+						value: patient.patient_id,
+						label: patient.patient_name,
+					};
+				})
+				: [];
+
+		const filteredOptions = _.uniqBy(filteredNames, 'value');
+
+		const customStyle = {
+			control: (provided, state) => ({
+				...provided,
+				minHeight: '24px !important',
+				height: '2rem',
+				width: '12rem',
+			}),
+		};
 
 		return (
 			<div className="col-sm-12">
@@ -47,6 +112,13 @@ class ClinicalLab extends Component {
 						<div className="col-sm-12">
 							<div className="element-content">
 								<div className="row">
+									{this.state.activeRequest ? (
+										<ModalClinicalLab
+											activeRequest={this.state.activeRequest}
+											showModal={this.state.showModal}
+											onModalClick={this.onModalClick}
+										/>
+									) : null}
 									<div className="col-sm-4 col-xxxl-4">
 										<a className="element-box el-tablo">
 											<div className="label">Pending Requests</div>
@@ -70,7 +142,42 @@ class ClinicalLab extends Component {
 						</div>
 						<div className="col-sm-12">
 							<div className="element-wrapper">
-								<h6 className="element-header">Incomplete</h6>
+								<h6 className="element-header">Recent Requests</h6>
+								<form className="row">
+									<div className="form-group col-md-6">
+										<label>From - To</label>
+										<RangePicker onChange={e => this.dateChange(e)} />
+									</div>
+									<div className="form-group col-md-3">
+										<label className="mr-2 " htmlFor="id">
+											Patient
+									</label>
+										<Select
+											styles={customStyle}
+											id="patientId"
+											isSearchable={true}
+											name="patientId"
+											options={filteredOptions}
+											onChange={e => this.setState({ patientId: e.value })}
+										/>
+									</div>
+									<div className="form-group col-md-3 mt-4">
+										<div
+											className="btn btn-sm btn-primary btn-upper text-white"
+											onClick={() => {
+												this.filterEntries();
+											}}>
+											<i className="os-icon os-icon-ui-37" />
+											<span>
+												{filtering ? (
+													<img src={waiting} alt="submitting" />
+												) : (
+														'Filter'
+													)}
+											</span>
+										</div>
+									</div>
+								</form>
 								<div className="element-box">
 									<div className="table table-responsive">
 										<table
@@ -112,23 +219,27 @@ class ClinicalLab extends Component {
 													</th>
 												</tr>
 											</thead>
-											<tbody>
-												{loading ? (
-													<tr>
-														<td colSpan="4" className="text-center">
-															<img alt="searching" src={searchingGIF} />
-														</td>
-													</tr>
-												) : null}
-												{clinicalLab &&
-													clinicalLab.map(lab => {
-														return <ClinicalLabItem key={lab.id} lab={lab} />;
-													})}
-											</tbody>
+
+											{loading ? (
+												<tr>
+													<td colSpan="4" className="text-center">
+														<img alt="searching" src={searchingGIF} />
+													</td>
+												</tr>
+											) : (
+													<tbody>
+														{clinicalLab &&
+															clinicalLab.map(lab => {
+																return <ClinicalLabItem
+																	key={lab.id}
+																	lab={lab}
+																	modalClick={LAB => this.modalFunction(LAB)}
+																/>;
+															})
+														}
+													</tbody>
+												)}
 										</table>
-										{!_.isEmpty(clinicalLab) ? null : (
-											<div className="text-center">No clinical Lab request</div>
-										)}
 									</div>
 								</div>
 							</div>
