@@ -8,8 +8,7 @@ const ModalProcedure = ({
 	patient,
 	activeRequest,
 }) => {
-  
-  const calculateAmount = arr => {
+	const calculateAmount = arr => {
 		let sum = 0;
 		arr.forEach(val => {
 			let amt = val.amount;
@@ -23,21 +22,17 @@ const ModalProcedure = ({
 			}
 		});
 		return sum;
-  };
-  
+	};
+
 	return (
 		<Modal
 			show={showModal}
 			size="lg"
 			aria-labelledby="contained-modal-title-vcenter"
 			centered
-			onHide={onModalClick}
-		>
-
-			<Modal.Header closeButton>
-			</Modal.Header>
+			onHide={onModalClick}>
+			<Modal.Header closeButton></Modal.Header>
 			<Modal.Body>
-
 				<div className="onboarding-content with-gradient text-center">
 					<div className="modal-body">
 						<div className="row">
@@ -50,7 +45,9 @@ const ModalProcedure = ({
 										}}>
 										<div className="up-main-info">
 											<h2 className="up-header">
-												{activeRequest.patient_name ? activeRequest.patient_name : ''}
+												{activeRequest.patient_name
+													? activeRequest.patient_name
+													: ''}
 											</h2>
 										</div>
 									</div>
@@ -61,7 +58,9 @@ const ModalProcedure = ({
 												<div className="col-sm-12 b-b">
 													<div className="el-tablo centered padded-v">
 														<div className="value">
-															{moment(activeRequest.createdAt).format('DD/MM/YYYY')}
+															{moment(activeRequest.createdAt).format(
+																'DD/MM/YYYY'
+															)}
 														</div>
 														<div className="label">Request Date</div>
 													</div>
@@ -79,7 +78,6 @@ const ModalProcedure = ({
 														</div>
 													</div>
 												</div>
-
 											</div>
 										</div>
 									</div>
@@ -96,7 +94,7 @@ const ModalProcedure = ({
 											<div className="element-info-text">
 												<h5 className="element-inner-header">
 													Dentistry Request
-														</h5>
+												</h5>
 												{/*appointment_date*/}
 												{/*department.name*/}
 												{/*consultingRoom.name*/}
@@ -112,14 +110,12 @@ const ModalProcedure = ({
 												<div className="form-group">
 													<label>Service Name</label>
 													<span className="form-control">
-                            {activeRequest.requestBody && 
-                            activeRequest.requestBody.length ? 
-                            activeRequest.requestBody.map((spec, i) => (
-                            <div key={i}>
-                              {spec.service_name}
-                            </div>
-                            )) : []
-                            }	
+														{activeRequest.requestBody &&
+														activeRequest.requestBody.length
+															? activeRequest.requestBody.map((spec, i) => (
+																	<div key={i}>{spec.service_name}</div>
+															  ))
+															: []}
 													</span>
 												</div>
 											</div>
@@ -138,17 +134,13 @@ const ModalProcedure = ({
 
 										<div className="row">
 											<div className="col-sm">
-												<div className="form-group">
-													
-												</div>
+												<div className="form-group"></div>
 											</div>
 										</div>
 
 										<div className="row">
 											<div className="col-sm">
-												<div className="form-group">
-													
-												</div>
+												<div className="form-group"></div>
 											</div>
 										</div>
 									</div>

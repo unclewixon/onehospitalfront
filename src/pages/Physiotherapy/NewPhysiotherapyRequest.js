@@ -4,7 +4,12 @@ import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import { useHistory, withRouter } from 'react-router-dom';
 import waiting from '../../assets/images/waiting.gif';
-import { API_URI, socket, patientAPI, searchAPI } from '../../services/constants';
+import {
+	API_URI,
+	socket,
+	patientAPI,
+	searchAPI,
+} from '../../services/constants';
 import { request, formatNumber } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
@@ -32,7 +37,6 @@ const NewPhysiotherapy = props => {
 	const [searching, setSearching] = useState(false);
 	const [patients, setPatients] = useState([]);
 	const [query, setQuery] = useState('');
-
 
 	const handlePatientChange = e => {
 		setQuery(e.target.value);
@@ -67,7 +71,6 @@ const NewPhysiotherapy = props => {
 		document.getElementById('patient').value = name;
 		setPatients([]);
 	};
-
 
 	const onSubmit = async values => {
 		setSubmitting(true);
@@ -214,49 +217,49 @@ const NewPhysiotherapy = props => {
 					<div className="form-block w-100">
 						<form onSubmit={handleSubmit(onSubmit)}>
 							<div className="row">
-							<div className="form-group col-sm-12">
-										<label>Patient Id</label>
+								<div className="form-group col-sm-12">
+									<label>Patient Id</label>
 
-										<input
-											className="form-control"
-											placeholder="Search for patient"
-											type="text"
-											name="patient_id"
-											defaultValue=""
-											id="patient"
-											ref={register({ name: 'patient_id' })}
-											onChange={handlePatientChange}
-											autoComplete="off"
-											required
-										/>
-										{searching && (
-											<div className="searching text-center">
-												<img alt="searching" src={searchingGIF} />
-											</div>
-										)}
+									<input
+										className="form-control"
+										placeholder="Search for patient"
+										type="text"
+										name="patient_id"
+										defaultValue=""
+										id="patient"
+										ref={register({ name: 'patient_id' })}
+										onChange={handlePatientChange}
+										autoComplete="off"
+										required
+									/>
+									{searching && (
+										<div className="searching text-center">
+											<img alt="searching" src={searchingGIF} />
+										</div>
+									)}
 
-										{patients &&
-											patients.map(pat => {
-												return (
-													<div
-														style={{ display: 'flex' }}
-														key={pat.id}
-														className="element-box">
-														<a
-															onClick={() => patientSet(pat)}
-															className="ssg-item cursor">
-															{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
-															<div
-																className="item-name"
-																dangerouslySetInnerHTML={{
-																	__html: `${pat.surname} ${pat.other_names}`,
-																}}
-															/>
-														</a>
-													</div>
-												);
-											})}
-									</div>
+									{patients &&
+										patients.map(pat => {
+											return (
+												<div
+													style={{ display: 'flex' }}
+													key={pat.id}
+													className="element-box">
+													<a
+														onClick={() => patientSet(pat)}
+														className="ssg-item cursor">
+														{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
+														<div
+															className="item-name"
+															dangerouslySetInnerHTML={{
+																__html: `${pat.surname} ${pat.other_names}`,
+															}}
+														/>
+													</a>
+												</div>
+											);
+										})}
+								</div>
 								<div className="form-group col-sm-12">
 									<label>Request Type</label>
 
@@ -268,7 +271,7 @@ const NewPhysiotherapy = props => {
 										value="physiotherapy"
 										readOnly
 										ref={register({
-											required: true
+											required: true,
 										})}
 									/>
 								</div>
@@ -278,9 +281,9 @@ const NewPhysiotherapy = props => {
 										name="service_center"
 										placeholder="Select Service Center"
 										options={filterServiceCenter()}
-										ref={register({ 
+										ref={register({
 											required: true,
-											name: 'service_center' 
+											name: 'service_center',
 										})}
 										onChange={evt => {
 											if (evt === null) {

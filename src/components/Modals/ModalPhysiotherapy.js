@@ -8,8 +8,7 @@ const ModalPhysiotherapy = ({
 	patient,
 	activeRequest,
 }) => {
-  
-  const calculateAmount = arr => {
+	const calculateAmount = arr => {
 		let sum = 0;
 		arr.forEach(val => {
 			let amt = val.amount;
@@ -23,21 +22,17 @@ const ModalPhysiotherapy = ({
 			}
 		});
 		return sum;
-  };
-  
+	};
+
 	return (
 		<Modal
 			show={showModal}
 			size="lg"
 			aria-labelledby="contained-modal-title-vcenter"
 			centered
-			onHide={onModalClick}
-		>
-
-			<Modal.Header closeButton>
-			</Modal.Header>
+			onHide={onModalClick}>
+			<Modal.Header closeButton></Modal.Header>
 			<Modal.Body>
-
 				<div className="onboarding-content with-gradient text-center">
 					<div className="modal-body">
 						<div className="row">
@@ -50,7 +45,9 @@ const ModalPhysiotherapy = ({
 										}}>
 										<div className="up-main-info">
 											<h2 className="up-header">
-												{activeRequest.patient_name ? activeRequest.patient_name : ''}
+												{activeRequest.patient_name
+													? activeRequest.patient_name
+													: ''}
 											</h2>
 										</div>
 									</div>
@@ -61,7 +58,9 @@ const ModalPhysiotherapy = ({
 												<div className="col-sm-12 b-b">
 													<div className="el-tablo centered padded-v">
 														<div className="value">
-															{moment(activeRequest.createdAt).format('DD/MM/YYYY')}
+															{moment(activeRequest.createdAt).format(
+																'DD/MM/YYYY'
+															)}
 														</div>
 														<div className="label">Request Date</div>
 													</div>
@@ -74,20 +73,17 @@ const ModalPhysiotherapy = ({
 														<div className="el-tablo centered padded-v">
 															<div className="label">Session Count</div>
 															<div className="value">
-																{
-                                  activeRequest &&
-                                  activeRequest.requestBody &&
-                                  activeRequest.requestBody.length ?
-                                  activeRequest.requestBody.map(body => body.sessionCount) :
-                                  ""
-                                }
+																{activeRequest &&
+																activeRequest.requestBody &&
+																activeRequest.requestBody.length
+																	? activeRequest.requestBody.map(
+																			body => body.sessionCount
+																	  )
+																	: ''}
 															</div>
 														</div>
 													</div>
 												</div>
-
-												
-												
 											</div>
 										</div>
 									</div>
@@ -104,7 +100,7 @@ const ModalPhysiotherapy = ({
 											<div className="element-info-text">
 												<h5 className="element-inner-header">
 													Physiotherapy Appointment
-														</h5>
+												</h5>
 												{/*appointment_date*/}
 												{/*department.name*/}
 												{/*consultingRoom.name*/}
@@ -120,14 +116,12 @@ const ModalPhysiotherapy = ({
 												<div className="form-group">
 													<label>Specialization</label>
 													<span className="form-control">
-                            {activeRequest.requestBody && 
-                            activeRequest.requestBody.length ? 
-                            activeRequest.requestBody.map((spec, i) => (
-                            <div key={i}>
-                              {spec.specialization}
-                            </div>
-                            )) : []
-                            }	
+														{activeRequest.requestBody &&
+														activeRequest.requestBody.length
+															? activeRequest.requestBody.map((spec, i) => (
+																	<div key={i}>{spec.specialization}</div>
+															  ))
+															: []}
 													</span>
 												</div>
 											</div>
@@ -146,17 +140,13 @@ const ModalPhysiotherapy = ({
 
 										<div className="row">
 											<div className="col-sm">
-												<div className="form-group">
-													
-												</div>
+												<div className="form-group"></div>
 											</div>
 										</div>
 
 										<div className="row">
 											<div className="col-sm">
-												<div className="form-group">
-													
-												</div>
+												<div className="form-group"></div>
 											</div>
 										</div>
 									</div>

@@ -6,7 +6,7 @@ import {
 	diagnosisAPI,
 	patientAPI,
 	serviceAPI,
-	searchAPI
+	searchAPI,
 } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request } from '../../services/utilities';
@@ -26,7 +26,7 @@ import { compose } from 'redux';
 
 const NewProcedure = props => {
 	const { register, handleSubmit, setValue, triggerValidation } = useForm({
-		mode: "onBlur"
+		mode: 'onBlur',
 	});
 	const [submitting, setSubmitting] = useState(false);
 	const [servicesCategory, setServicesCategory] = useState([]);
@@ -75,7 +75,7 @@ const NewProcedure = props => {
 		if (!loaded) {
 			props
 				.getAllServiceCategory()
-				.then(response => { })
+				.then(response => {})
 				.catch(e => {
 					notifyError(e.message || 'could not fetch service categories');
 				});
@@ -166,10 +166,10 @@ const NewProcedure = props => {
 					_error: e.message || 'could not save Procedure Request',
 				});
 			}
-			return
+			return;
 		} else {
 			setSubmitting(false);
-			notifyError('Procedure Required')
+			notifyError('Procedure Required');
 		}
 	};
 
@@ -192,158 +192,163 @@ const NewProcedure = props => {
 						<img alt="searching" src={searchingGIF} />
 					</div>
 				) : (
-						<>
-							<div className="element-box">
-								<div className="form-block w-100">
-									<form onSubmit={handleSubmit(onSubmit)}>
-										<div className="row">
-											<div className="form-group col-sm-12">
-												<label>Patient Id</label>
+					<>
+						<div className="element-box">
+							<div className="form-block w-100">
+								<form onSubmit={handleSubmit(onSubmit)}>
+									<div className="row">
+										<div className="form-group col-sm-12">
+											<label>Patient Id</label>
 
+											<input
+												className="form-control"
+												placeholder="Search for patient"
+												type="text"
+												name="patient_id"
+												defaultValue=""
+												id="patient"
+												ref={register({ name: 'patient_id' })}
+												onChange={handlePatientChange}
+												autoComplete="off"
+												required
+											/>
+											{searching && (
+												<div className="searching text-center">
+													<img alt="searching" src={searchingGIF} />
+												</div>
+											)}
+
+											{patients &&
+												patients.map(pat => {
+													return (
+														<div
+															style={{ display: 'flex' }}
+															key={pat.id}
+															className="element-box">
+															<a
+																onClick={() => patientSet(pat)}
+																className="ssg-item cursor">
+																{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
+																<div
+																	className="item-name"
+																	dangerouslySetInnerHTML={{
+																		__html: `${pat.surname} ${pat.other_names}`,
+																	}}
+																/>
+															</a>
+														</div>
+													);
+												})}
+										</div>
+										<div className="form-group col-sm-6">
+											<label>Service Center</label>
+											<Select
+												name="service_center"
+												placeholder="Select Service Center"
+												options={servicesCategory}
+												ref={register({
+													required: true,
+													name: 'service_center',
+												})}
+												onChange={evt => handleChangeServiceCategory(evt)}
+												required
+											/>
+										</div>
+										<div className="form-group col-sm-6">
+											<label>Procedure</label>
+											<Select
+												name="procedure"
+												placeholder="Select procedure"
+												isMulti
+												options={services}
+												ref={register({
+													required: true,
+													name: 'procedure',
+												})}
+												onChange={evt => handleChangeProcedure(evt)}
+												required
+											/>
+										</div>
+									</div>
+
+									<div className="row">
+										<div className="form-group col-sm-12">
+											<label>Primary Diagnosis</label>
+											<AsyncSelect
+												required
+												cacheOptions
+												value={selectedOption}
+												getOptionValue={getOptionValues}
+												getOptionLabel={getOptionLabels}
+												defaultOptions
+												loadOptions={getOptions}
+												onChange={handleChangeOptions}
+												placeholder="primary diagnosis"
+											/>
+										</div>
+									</div>
+
+									<div className="row">
+										<div className="form-group col-sm-12">
+											<label>Request Note</label>
+											<textarea
+												required
+												className="form-control"
+												name="request_note"
+												rows="3"
+												placeholder="Enter request note"
+												ref={register}></textarea>
+										</div>
+									</div>
+
+									<div className="row">
+										<div className="form-group col-sm-3">
+											<div className="d-flex">
 												<input
 													className="form-control"
-													placeholder="Search for patient"
-													type="text"
-													name="patient_id"
-													defaultValue=""
-													id="patient"
-													ref={register({ name: 'patient_id' })}
-													onChange={handlePatientChange}
-													autoComplete="off"
-													required
+													placeholder="Bill number"
+													type="radio"
+													name="bill"
+													ref={register}
 												/>
-												{searching && (
-													<div className="searching text-center">
-														<img alt="searching" src={searchingGIF} />
-													</div>
-												)}
-
-												{patients &&
-													patients.map(pat => {
-														return (
-															<div
-																style={{ display: 'flex' }}
-																key={pat.id}
-																className="element-box">
-																<a
-																	onClick={() => patientSet(pat)}
-																	className="ssg-item cursor">
-																	{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
-																	<div
-																		className="item-name"
-																		dangerouslySetInnerHTML={{
-																			__html: `${pat.surname} ${pat.other_names}`,
-																		}}
-																	/>
-																</a>
-															</div>
-														);
-													})}
-											</div>
-											<div className="form-group col-sm-6">
-												<label>Service Center</label>
-												<Select
-													name="service_center"
-													placeholder="Select Service Center"
-													options={servicesCategory}
-													ref={register({
-														required: true,
-														name: 'service_center'
-													})}
-													onChange={evt => handleChangeServiceCategory(evt)}
-													required
-												/>
-											</div>
-											<div className="form-group col-sm-6">
-												<label>Procedure</label>
-												<Select
-													name="procedure"
-													placeholder="Select procedure"
-													isMulti
-													options={services}
-													ref={register({
-														required: true,
-														name: 'procedure'
-													})}
-													onChange={evt => handleChangeProcedure(evt)}
-													required
-												/>
+												<label className="mx-1">Bill now</label>
 											</div>
 										</div>
-
-										<div className="row">
-											<div className="form-group col-sm-12">
-												<label>Primary Diagnosis</label>
-												<AsyncSelect
-													required
-													cacheOptions
-													value={selectedOption}
-													getOptionValue={getOptionValues}
-													getOptionLabel={getOptionLabels}
-													defaultOptions
-													loadOptions={getOptions}
-													onChange={handleChangeOptions}
-													placeholder="primary diagnosis"
-												/>
-											</div>
-										</div>
-
-										<div className="row">
-											<div className="form-group col-sm-12">
-												<label>Request Note</label>
-												<textarea
-													required
+										<div className="form-group col-sm-3">
+											<div className="d-flex">
+												<input
 													className="form-control"
-													name="request_note"
-													rows="3"
-													placeholder="Enter request note"
-													ref={register}></textarea>
+													placeholder="bill later"
+													type="radio"
+													name="bill"
+													ref={register}
+												/>
+												<label className="mx-1">Bill later </label>
 											</div>
 										</div>
+									</div>
 
-										<div className="row">
-											<div className="form-group col-sm-3">
-												<div className="d-flex">
-													<input
-														className="form-control"
-														placeholder="Bill number"
-														type="radio"
-														name="bill"
-														ref={register}
-													/>
-													<label className="mx-1">Bill now</label>
-												</div>
-											</div>
-											<div className="form-group col-sm-3">
-												<div className="d-flex">
-													<input
-														className="form-control"
-														placeholder="bill later"
-														type="radio"
-														name="bill"
-														ref={register}
-													/>
-													<label className="mx-1">Bill later </label>
-												</div>
-											</div>
+									<div>
+										<div className="col-sm-12 text-right">
+											<button
+												className="btn btn-primary"
+												disabled={submitting}
+												onClick={() => {
+													triggerValidation('procedure');
+												}}>
+												{submitting ? (
+													<img src={waiting} alt="submitting" />
+												) : (
+													'Create Procedure Request'
+												)}
+											</button>
 										</div>
-
-										<div>
-											<div className="col-sm-12 text-right">
-												<button className="btn btn-primary" disabled={submitting} onClick={() => { triggerValidation("procedure"); }}>
-													{submitting ? (
-														<img src={waiting} alt="submitting" />
-													) : (
-															'Create Procedure Request'
-														)}
-												</button>
-											</div>
-										</div>
-									</form>
-								</div>
+									</div>
+								</form>
 							</div>
-						</>
-					)}
+						</div>
+					</>
+				)}
 			</div>
 		</div>
 	);

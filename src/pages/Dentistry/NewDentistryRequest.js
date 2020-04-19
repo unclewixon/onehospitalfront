@@ -164,49 +164,49 @@ const NewDentistry = props => {
 					<div className="form-block w-100">
 						<form onSubmit={handleSubmit(onSubmit)}>
 							<div className="row">
-									<div className="form-group col-sm-12">
-										<label>Patient Id</label>
+								<div className="form-group col-sm-12">
+									<label>Patient Id</label>
 
-										<input
-											className="form-control"
-											placeholder="Search for patient"
-											type="text"
-											name="patient_id"
-											defaultValue=""
-											id="patient"
-											ref={register({ name: 'patient_id' })}
-											onChange={handlePatientChange}
-											autoComplete="off"
-											required
-										/>
-										{searching && (
-											<div className="searching text-center">
-												<img alt="searching" src={searchingGIF} />
-											</div>
-										)}
+									<input
+										className="form-control"
+										placeholder="Search for patient"
+										type="text"
+										name="patient_id"
+										defaultValue=""
+										id="patient"
+										ref={register({ name: 'patient_id' })}
+										onChange={handlePatientChange}
+										autoComplete="off"
+										required
+									/>
+									{searching && (
+										<div className="searching text-center">
+											<img alt="searching" src={searchingGIF} />
+										</div>
+									)}
 
-										{patients &&
-											patients.map(pat => {
-												return (
-													<div
-														style={{ display: 'flex' }}
-														key={pat.id}
-														className="element-box">
-														<a
-															onClick={() => patientSet(pat)}
-															className="ssg-item cursor">
-															{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
-															<div
-																className="item-name"
-																dangerouslySetInnerHTML={{
-																	__html: `${pat.surname} ${pat.other_names}`,
-																}}
-															/>
-														</a>
-													</div>
-												);
-											})}
-									</div>
+									{patients &&
+										patients.map(pat => {
+											return (
+												<div
+													style={{ display: 'flex' }}
+													key={pat.id}
+													className="element-box">
+													<a
+														onClick={() => patientSet(pat)}
+														className="ssg-item cursor">
+														{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
+														<div
+															className="item-name"
+															dangerouslySetInnerHTML={{
+																__html: `${pat.surname} ${pat.other_names}`,
+															}}
+														/>
+													</a>
+												</div>
+											);
+										})}
+								</div>
 								<div className="form-group col-sm-12">
 									<label>Request Type</label>
 
@@ -218,7 +218,7 @@ const NewDentistry = props => {
 										value="Dentistry"
 										readOnly
 										ref={register({
-											required: true
+											required: true,
 										})}
 									/>
 								</div>
@@ -231,9 +231,9 @@ const NewDentistry = props => {
 										name="service_center"
 										placeholder="Select Service Center"
 										options={servicesCategory}
-										ref={register({ 
+										ref={register({
 											required: true,
-											name: 'service_center' 
+											name: 'service_center',
 										})}
 										onChange={evt => handleChangeServiceCategory(evt)}
 										required
@@ -253,9 +253,9 @@ const NewDentistry = props => {
 										placeholder="Select service to request from"
 										isMulti
 										options={services}
-										ref={register({ 
+										ref={register({
 											required: true,
-											name: 'service_request' 
+											name: 'service_request',
 										})}
 										onChange={evt => handleChangeProcedure(evt)}
 										required
