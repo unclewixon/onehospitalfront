@@ -42,7 +42,8 @@ const LabGroup = props => {
 	const [labTests, setLabTests] = useState(null);
 	const [parameters, setParameter] = useState({});
 	const [paramsUI, setParamsUI] = useState([]);
-
+	const [subTestArray, setSubTestArray] = useState([])
+	
 	const handleParamInputChange = (e, index) => {
 		const { name, value } = e.target;
 		let newParam = { ...parameters };
@@ -129,7 +130,6 @@ const LabGroup = props => {
 			: [];
 		
 		const lab_test = structuredTest();
-		debugger
 		props
 			.addLabGroup({
 				name,
@@ -205,8 +205,17 @@ const LabGroup = props => {
 		let newParameter = {};
 		let newParameterUI = [];
 
+
+	const subTestObj = {}
 	const newTests = data.subTests && data.subTests.length 
-			? data.subTests.map(test => test) : null
+	? data.subTests.map(test => {
+				subTestObj[test.id] = {
+					value: test.id, 
+					label: test.name, 
+					id: test.id
+				}
+				return subTestObj[test.id];
+			}) : null;
 
 		const testParams = Object.values(data.parameters).length
 			? Object.values(data.parameters).map(param => param)
@@ -226,6 +235,7 @@ const LabGroup = props => {
 			setParameter(paramValues);
 		}
 		setParamsUI(newParameterUI);
+		setSubTestArray([...newTests])
 		setLabTests(newTests)
 	};
 
@@ -272,6 +282,13 @@ const LabGroup = props => {
 		setParamsUI(paramUI);
 	};
 
+	const cutomStyles = {
+		multiValueLabel : (provided, state) => ({
+			...provided,
+			minWidth: "2rem"
+		})
+	}
+
 	return (
 		<div className="row">
 			<div className="col-lg-7">
@@ -284,7 +301,6 @@ const LabGroup = props => {
 						) : (
 								<>
 									{props.LabGroups.map((LabGroup, i) => {
-										console.log(LabGroup)
 										return (
 											<div className="col-lg-4 col-xxl-3" key={i}>
 												<div className="pt-3">
@@ -387,8 +403,10 @@ const LabGroup = props => {
 						</div>
 						<div>
 							<Select
+								styles={cutomStyles}
 								className="form-control"
 								isMulti
+								set-va
 								onChange={handleMultipleLabTestsInput}
 								options={labTestOptions}
 								value={labTests}

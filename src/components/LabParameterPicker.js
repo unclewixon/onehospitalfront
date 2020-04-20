@@ -7,7 +7,6 @@ const LabParameterPicker = ({
 	index,
 	removeParams,
 }) => {
-	console.log(parameters)
 	return (
 	<div className="pt-3">
 		<div className="pipeline-item">
