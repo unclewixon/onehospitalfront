@@ -70,7 +70,6 @@ const Opthalmology = props => {
 								{data.requestBody.specialization}
 							</span>
 						</td>
-						<td>{data.requestBody.amount}</td>
 						<td>{moment(data.createdAt).format('DD-MM-YYYY LT')}</td>
 
 						<td className="text-center">
@@ -135,7 +134,6 @@ const Opthalmology = props => {
 										<tr>
 											<th>S/N</th>
 											<th>Specialization</th>
-											<th>Amount (&#x20A6;)</th>
 											<th>Requested Date</th>
 											<th className="text-center">Request Status</th>
 											<th className="text-right" />
