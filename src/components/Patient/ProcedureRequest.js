@@ -7,19 +7,13 @@ import {
 	diagnosisAPI,
 	patientAPI,
 	serviceAPI,
-	socket,
-	transactionsAPI,
 } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request } from '../../services/utilities';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { connect } from 'react-redux';
-import { closeModals } from '../../actions/general';
-import { loadPatientProcedureData, nextStep } from '../../actions/patient';
-import { getAllHmos } from '../../actions/hmo';
 import AsyncSelect from 'react-select/async';
-import debounce from 'lodash.debounce';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 import {
 	get_all_diagnosis,
@@ -80,7 +74,6 @@ const ProcedureRequest = props => {
 			'GET',
 			true
 		);
-		console.log(res);
 		return res;
 	};
 
@@ -100,6 +93,11 @@ const ProcedureRequest = props => {
 
 	const onSubmit = async values => {
 		setSubmitting(true);
+		if(!values.service_center || !values.procedure){
+			notifyError('Service center and Procedure are required')
+			setSubmitting(false);
+			return
+		}
 		let requestData = [];
 		let theRequest = {};
 		values.procedure.forEach(value => {

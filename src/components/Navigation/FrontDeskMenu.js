@@ -32,7 +32,7 @@ const FrontDeskMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/pharmacy">
+				<Link to="/pharmacy2">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers" />
 					</div>
