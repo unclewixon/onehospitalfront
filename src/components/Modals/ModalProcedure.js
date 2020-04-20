@@ -26,6 +26,7 @@ const ModalProcedure = ({
 
 	return (
 		<Modal
+			className="onboarding-modal"
 			show={showModal}
 			size="lg"
 			aria-labelledby="contained-modal-title-vcenter"
@@ -111,10 +112,10 @@ const ModalProcedure = ({
 													<label>Service Name</label>
 													<span className="form-control">
 														{activeRequest.requestBody &&
-														activeRequest.requestBody.length
+															activeRequest.requestBody.length
 															? activeRequest.requestBody.map((spec, i) => (
-																	<div key={i}>{spec.service_name}</div>
-															  ))
+																<div key={i}>{spec.service_name}</div>
+															))
 															: []}
 													</span>
 												</div>

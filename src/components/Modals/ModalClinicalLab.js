@@ -3,6 +3,7 @@ import Modal from 'react-bootstrap/Modal';
 import moment from 'moment';
 import { Table } from 'react-bootstrap';
 import waiting from '../../assets/images/waiting.gif';
+import { useForm } from 'react-hook-form';
 
 const ModalClinicalLab = ({
 	showModal,
@@ -11,8 +12,21 @@ const ModalClinicalLab = ({
 	activeRequest,
 }) => {
 	const [Loading, setLoading] = useState(false);
+	const { register, handleSubmit, setValue } = useForm({
+		defaultValues: {
+			parameterResult: "",
+			groupParameterResult: "",
+			groupTestResult: ""
+		},
+		mode: "onBlur"
+	})
+
+	const onSaveClick = values => {
+		debugger
+	}
 	return (
 		<Modal
+			className="onboarding-modal"
 			show={showModal}
 			size="lg"
 			aria-labelledby="contained-modal-title-vcenter"
@@ -101,323 +115,324 @@ const ModalClinicalLab = ({
 											</div>
 										</div>
 									</div>
-
-									<div className="">
-										<div className="row">
-											<div className="col-sm">
-												<div className="form-group">
-													<label>Groups</label>
-													<span className="form-control">
-														{activeRequest &&
-															activeRequest.requestBody &&
-															activeRequest.requestBody.groups &&
-															activeRequest.requestBody.groups.map(grp => (
-																<div>
-																	<div>
-																		<div className="ml-4">
-																			<p>
-																				<span>Group Name: </span>
-																				{grp.name}
-																			</p>
-																		</div>
-																		{grp.tests &&
-																			grp.tests.map(test => (
-																				<div className="ml-2 p-4 bg-white border-2">
-																					<p >{test.testName}</p>
-																					<Table className="table bordered">
-																						<thead>
-																							<tr>
-																								<th>Param Name</th>
-																								<th>Range</th>
-																								<th>Result</th>
-																							</tr>
-																						</thead>
-																						<tbody>
-																							{
-																								test.paramenters && test.paramenters.map(param => (
-																									<tr>
-																										<td>
-																											{param.name}
-																										</td>
-																										<td>
-																											{param.range}
-																										</td>
-																										<td>
-																											<input
-																												type="text"
-																												name="groupTestResult"
-																												id={param.name}
-																												value=""
-																												onChange
-																											/>
-																										</td>
-																									</tr>
-																								))
-																							}
-																						</tbody>
-																					</Table>
-																				</div>
-																			))}
-																		{grp.parameters && grp.parameters.length ? (
-																			<div>
-																				<div className="ml-4">
-																					<p>
-																						<span>Parameters: </span>
-																					</p>
-																				</div>
-																				<div className="ml-2 p-4 bg-white border-2">
-																					<Table className="table bordered">
-																						<thead>
-																							<tr>
-																								<th>Param Name</th>
-																								<th>Range</th>
-																								<th>Result</th>
-																							</tr>
-																						</thead>
-																						<tbody>
-																							{grp.parameters.map(param => (
-																								<tr>
-																									<td>{param.name}</td>
-																									<td>{param.range}</td>
-																									<td>
-																										<input
-																											type="text"
-																											name="groupParameterResult"
-																											id={param.id}
-																											onChange
-																										/>
-																									</td>
-																								</tr>
-																							))}
-																						</tbody>
-																					</Table>
-																				</div>
+									<form onSubmit={handleSubmit(onSaveClick)}>
+										<div className="">
+											<div className="row">
+												<div className="col-sm">
+													<div className="form-group">
+														<label>Groups</label>
+														<span className="form-control">
+															{activeRequest &&
+																activeRequest.requestBody &&
+																activeRequest.requestBody.groups &&
+																activeRequest.requestBody.groups.map((grp, i) => (
+																	<div key={i}>
+																		<div>
+																			<div className="ml-4">
+																				<p>
+																					<span>Group Name: </span>
+																					{grp.name}
+																				</p>
 																			</div>
-																		) : null}
-																	</div>
-																</div>
-															))}
-														{activeRequest &&
-															activeRequest.requestBody &&
-															activeRequest.requestBody.group &&
-															activeRequest.requestBody.group.map(grp => (
-																<div>
-																	<div>
-																		<div className="ml-4">
-																			<p>
-																				<span>Group Name: </span>
-																				{grp.name}
-																			</p>
-																		</div>
-																		{grp.tests &&
-																			grp.tests.map(test => (
-																				<div className="ml-2 p-4 bg-white border-2">
-																					<p>{test.testName}</p>
-																					<Table className="table bordered">
-																						<thead>
-																							<tr>
-																								<th>Param Name</th>
-																								<th>Range</th>
-																								<th>Result</th>
-																							</tr>
-																						</thead>
-																						<tbody>
-																							{test.paramenters &&
-																								test.paramenters.map(param => (
-																									<tr>
+																			{grp.tests &&
+																				grp.tests.map(test => (
+																					<div className="ml-2 p-4 bg-white border-2">
+																						<p >{test.testName}</p>
+																						<Table className="table bordered">
+																							<thead>
+																								<tr>
+																									<th>Param Name</th>
+																									<th>Range</th>
+																									<th>Result</th>
+																								</tr>
+																							</thead>
+																							<tbody>
+																								{
+																									test.paramenters && test.paramenters.map((param, i) => (
+																										<tr key={i}>
+																											<td>
+																												{param.name}
+																											</td>
+																											<td>
+																												{param.range}
+																											</td>
+																											<td>
+																												<input
+																													type="text"
+																													name="groupTestResult"
+																													id="groupTestResult"
+																													ref={register({ required: true })}
+																													onChange={e => setValue("groupTestResult", e.target.value)}
+																												/>
+																											</td>
+																										</tr>
+																									))
+																								}
+																							</tbody>
+																						</Table>
+																					</div>
+																				))}
+																			{grp.parameters && grp.parameters.length ? (
+																				<div>
+																					<div className="ml-4">
+																						<p>
+																							<span>Parameters: </span>
+																						</p>
+																					</div>
+																					<div className="ml-2 p-4 bg-white border-2">
+																						<Table className="table bordered">
+																							<thead>
+																								<tr>
+																									<th>Param Name</th>
+																									<th>Range</th>
+																									<th>Result</th>
+																								</tr>
+																							</thead>
+																							<tbody>
+																								{grp.parameters.map((param, i) => (
+																									<tr key={i}>
 																										<td>{param.name}</td>
 																										<td>{param.range}</td>
 																										<td>
 																											<input
 																												type="text"
-																												name="groupTestResult"
-																												id={param.id}
-																												value=""
-																												onChange
+																												name="groupParameterResult"
+																												ref={register({ required: true })}
+																												onChange={e => setValue("groupParameterResult", e.target.value)}
 																											/>
 																										</td>
 																									</tr>
 																								))}
-																						</tbody>
-																					</Table>
+																							</tbody>
+																						</Table>
+																					</div>
 																				</div>
-																			))}
-																		{grp.parameters && grp.parameters.length ? (
-																			<div>
-																				<div className="ml-4">
-																					<p>
-																						<span>Parameters: </span>
-																					</p>
-																				</div>
-																				<div className="ml-2 p-4 bg-white border-2">
-																					<Table className="table bordered">
-																						<thead>
-																							<tr>
-																								<th>Param Name</th>
-																								<th>Range</th>
-																								<th>Result</th>
-																							</tr>
-																						</thead>
-																						<tbody>
-																							{grp.parameters.map(param => (
+																			) : null}
+																		</div>
+																	</div>
+																))}
+															{activeRequest &&
+																activeRequest.requestBody &&
+																activeRequest.requestBody.group &&
+																activeRequest.requestBody.group.map((grp, i) => (
+																	<div key={i}>
+																		<div>
+																			<div className="ml-4">
+																				<p>
+																					<span>Group Name: </span>
+																					{grp.name}
+																				</p>
+																			</div>
+																			{grp.tests &&
+																				grp.tests.map(test => (
+																					<div className="ml-2 p-4 bg-white border-2">
+																						<p>{test.testName}</p>
+																						<Table className="table bordered">
+																							<thead>
 																								<tr>
+																									<th>Param Name</th>
+																									<th>Range</th>
+																									<th>Result</th>
+																								</tr>
+																							</thead>
+																							<tbody>
+																								{test.paramenters &&
+																									test.paramenters.map((param, i) => (
+																										<tr key={i}>
+																											<td>{param.name}</td>
+																											<td>{param.range}</td>
+																											<td>
+																												<input
+																													type="text"
+																													name="groupTestResult"
+																													id="groupTestResult"
+																													ref={register({ required: true })}
+																													onChange={e => setValue("groupTestResult", e.target.value)}
+																												/>
+																											</td>
+																										</tr>
+																									))}
+																							</tbody>
+																						</Table>
+																					</div>
+																				))}
+																			{grp.parameters && grp.parameters.length ? (
+																				<div>
+																					<div className="ml-4">
+																						<p>
+																							<span>Parameters: </span>
+																						</p>
+																					</div>
+																					<div className="ml-2 p-4 bg-white border-2">
+																						<Table className="table bordered">
+																							<thead>
+																								<tr>
+																									<th>Param Name</th>
+																									<th>Range</th>
+																									<th>Result</th>
+																								</tr>
+																							</thead>
+																							<tbody>
+																								{grp.parameters.map((param, i) => (
+																									<tr key={i}>
+																										<td>{param.name}</td>
+																										<td>{param.range}</td>
+																										<td>
+																											<input
+																												type="text"
+																												name="groupParameterResult"
+																												ref={register({ required: true })}
+																												onChange={e => setValue("groupParameterResult", e.target.value)}
+																											/>
+																										</td>
+																									</tr>
+																								))}
+																							</tbody>
+																						</Table>
+																					</div>
+																				</div>
+																			) : null}
+																		</div>
+																	</div>
+																))}
+														</span>
+													</div>
+												</div>
+											</div>
+
+											<div className="row">
+												<div className="col-sm">
+													<div className="form-group">
+														<label>Tests</label>
+														<span className="form-control">
+															{activeRequest &&
+																activeRequest.requestBody &&
+																activeRequest.requestBody.tests &&
+																activeRequest.requestBody.tests.map((tst, i) => (
+																	<div key={i}>
+																		<div className="ml-4">
+																			<p>
+																				<span>Test Name: </span>
+																				{tst.testName}
+																			</p>
+																		</div>
+																		<div className="ml-4">
+																			<p>Parameters: </p>
+																		</div>
+																		{tst.paramenters && tst.paramenters.length ? (
+																			<div className="ml-2 p-4 bg-white border-2">
+																				<Table className="table bordered">
+																					<thead>
+																						<tr>
+																							<th>Param Name</th>
+																							<th>Range</th>
+																							<th>Result</th>
+																						</tr>
+																					</thead>
+																					<tbody>
+																						{tst.paramenters &&
+																							tst.paramenters.map((param, i) => (
+																								<tr key={i}>
 																									<td>{param.name}</td>
 																									<td>{param.range}</td>
 																									<td>
 																										<input
 																											type="text"
-																											name="groupParameterResult"
-																											id={param.id}
-																											onChange
+																											name="parameterResult"
+																											ref={register({ required: true })}
+																											onChange={e => setValue("parameterResult", e.target.value)}
 																										/>
 																									</td>
 																								</tr>
 																							))}
-																						</tbody>
-																					</Table>
-																				</div>
+																					</tbody>
+																				</Table>
 																			</div>
 																		) : null}
 																	</div>
-																</div>
-															))}
-													</span>
-												</div>
-											</div>
-										</div>
-
-										<div className="row">
-											<div className="col-sm">
-												<div className="form-group">
-													<label>Tests</label>
-													<span className="form-control">
-														{activeRequest &&
-															activeRequest.requestBody &&
-															activeRequest.requestBody.tests &&
-															activeRequest.requestBody.tests.map(tst => (
-																<div>
-																	<div className="ml-4">
-																		<p>
-																			<span>Test Name: </span>
-																			{tst.testName}
-																		</p>
-																	</div>
-																	<div className="ml-4">
-																		<p>Parameters: </p>
-																	</div>
-																	{tst.paramenters && tst.paramenters.length ? (
-																		<div className="ml-2 p-4 bg-white border-2">
-																			<Table className="table bordered">
-																				<thead>
-																					<tr>
-																						<th>Param Name</th>
-																						<th>Range</th>
-																						<th>Result</th>
-																					</tr>
-																				</thead>
-																				<tbody>
-																					{tst.paramenters &&
-																						tst.paramenters.map(param => (
-																							<tr>
-																								<td>{param.name}</td>
-																								<td>{param.range}</td>
-																								<td>
-																									<input
-																										type="text"
-																										name="parameterResult"
-																										id={param.id}
-																										onChange
-																									/>
-																								</td>
-																							</tr>
-																						))}
-																				</tbody>
-																			</Table>
+																))}
+															{activeRequest &&
+																activeRequest.requestBody &&
+																activeRequest.requestBody.test &&
+																activeRequest.requestBody.test.map((tst, i) => (
+																	<div key={i}>
+																		<div className="ml-4">
+																			<p>
+																				<span>Test Name: </span>
+																				{tst.testName}
+																			</p>
 																		</div>
-																	) : null}
-																</div>
-															))}
-														{activeRequest &&
-															activeRequest.requestBody &&
-															activeRequest.requestBody.test &&
-															activeRequest.requestBody.test.map(tst => (
-																<div>
-																	<div className="ml-4">
-																		<p>
-																			<span>Test Name: </span>
-																			{tst.testName}
-																		</p>
-																	</div>
-																	<div className="ml-4">
-																		<p>Parameters: </p>
-																	</div>
-																	{tst.paramenters && tst.paramenters.length ? (
-																		<div className="ml-2 p-4 bg-white border-2">
-																			<Table className="table bordered">
-																				<thead>
-																					<tr>
-																						<th>Param Name</th>
-																						<th>Range</th>
-																						<th>Result</th>
-																					</tr>
-																				</thead>
-																				<tbody>
-																					{tst.paramenters &&
-																						tst.paramenters.map(param => (
-																							<tr>
-																								<td>{param.name}</td>
-																								<td>{param.range}</td>
-																								<td>
-																									<input
-																										type="text"
-																										name="parameterResult"
-																										id={param.id}
-																										onChange
-																									/>
-																								</td>
-																							</tr>
-																						))}
-																				</tbody>
-																			</Table>
+																		<div className="ml-4">
+																			<p>Parameters: </p>
 																		</div>
-																	) : null}
-																</div>
-															))}
-													</span>
+																		{tst.paramenters && tst.paramenters.length ? (
+																			<div className="ml-2 p-4 bg-white border-2">
+																				<Table className="table bordered">
+																					<thead>
+																						<tr>
+																							<th>Param Name</th>
+																							<th>Range</th>
+																							<th>Result</th>
+																						</tr>
+																					</thead>
+																					<tbody>
+																						{tst.paramenters &&
+																							tst.paramenters.map((param, i) => (
+																								<tr key={i}>
+																									<td>{param.name}</td>
+																									<td>{param.range}</td>
+																									<td>
+																										<input
+																											type="text"
+																											name="parameterResult"
+																											ref={register({ required: true })}
+																											onChange={e => setValue("parameterResult", e.target.value)}
+																										/>
+																									</td>
+																								</tr>
+																							))}
+																					</tbody>
+																				</Table>
+																			</div>
+																		) : null}
+																	</div>
+																))}
+														</span>
+													</div>
 												</div>
 											</div>
-										</div>
 
-										<div className="row">
-											<div className="col-sm">
-												<div className="form-group">
-													<label>Request Note</label>
-													<span className="form-control">
-														{activeRequest.requestBody.requestNote}
-													</span>
+											<div className="row">
+												<div className="col-sm">
+													<div className="form-group">
+														<label>Request Note</label>
+														<span className="form-control">
+															{activeRequest.requestBody.requestNote}
+														</span>
+													</div>
 												</div>
 											</div>
-										</div>
 
-										<div className="row">
-											<div className="col-sm">
-												<div className="form-group">
-													<button
-														className={
-															Loading
-																? 'btn btn-primary disabled'
-																: 'btn btn-primary'
-														}>
-														{Loading ? (
-															<img src={waiting} alt="submitting" />
-														) : (
-																<span> Save</span>
-															)}
-													</button>
+											<div className="row">
+												<div className="col-sm">
+													<div className="form-group">
+														<button
+															className={
+																Loading
+																	? 'btn btn-primary disabled'
+																	: 'btn btn-primary'
+															}>
+															{Loading ? (
+																<img src={waiting} alt="submitting" />
+															) : (
+																	<span> Save</span>
+																)}
+														</button>
+													</div>
 												</div>
 											</div>
 										</div>
-									</div>
+									</form>
 								</div>
 							</div>
 						</div>

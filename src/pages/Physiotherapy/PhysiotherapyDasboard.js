@@ -61,14 +61,7 @@ class PhysiotherapyDashboard extends Component {
 				<td>{moment(data.createdAt).format('DD-MM-YYYY')}</td>
 				<td>{data.patient_name}</td>
 				<td>
-					{data && data.requestBody && data.requestBody.length
-						? data.requestBody.map(body => body.specialization)
-						: ''}
-				</td>
-				<td>
-					{data && data.requestBody && data.requestBody.length
-						? data.requestBody.map(body => body.sessionCount)
-						: ''}
+					{data && data.created_by ? data.created_by	: ''}
 				</td>
 				<td className="row-actions text-right">
 					<Tooltip title="View Request">
@@ -219,13 +212,7 @@ class PhysiotherapyDashboard extends Component {
 													</th>
 													<th>
 														<div className="th-inner sortable both">
-															Specialization
-														</div>
-														<div className="fht-cell"></div>
-													</th>
-													<th>
-														<div className="th-inner sortable both">
-															Session Count
+															Requested by
 														</div>
 														<div className="fht-cell"></div>
 													</th>

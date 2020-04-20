@@ -221,11 +221,13 @@ class ClinicalLab extends Component {
 											</thead>
 
 											{loading ? (
-												<tr>
-													<td colSpan="4" className="text-center">
-														<img alt="searching" src={searchingGIF} />
-													</td>
-												</tr>
+												<tbody>
+													<tr>
+														<td colSpan="4" className="text-center">
+															<img alt="searching" src={searchingGIF} />
+														</td>
+													</tr>
+												</tbody>
 											) : (
 													<tbody>
 														{clinicalLab &&

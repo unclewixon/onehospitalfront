@@ -162,8 +162,8 @@ class AllRequest extends Component {
 												{filtering ? (
 													<img src={waiting} alt="submitting" />
 												) : (
-													'Filter'
-												)}
+														'Filter'
+													)}
 											</span>
 										</div>
 									</div>
@@ -174,64 +174,66 @@ class AllRequest extends Component {
 								<div className="element-box">
 									<div className="table-responsive">
 										{loading ? (
-											<tr>
-												<td colSpan="4" className="text-center">
-													<img alt="searching" src={searchingGIF} />
-												</td>
-											</tr>
+											<tbody>
+												<tr>
+													<td colSpan="4" className="text-center">
+														<img alt="searching" src={searchingGIF} />
+													</td>
+												</tr>
+											</tbody>
 										) : (
-											<table className="table table-striped">
-												<thead>
-													<tr>
-														<th>
-															<div className="th-inner "></div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner sortable both">
-																Request Date
+												<table className="table table-striped">
+													<thead>
+														<tr>
+															<th>
+																<div className="th-inner "></div>
+																<div className="fht-cell"></div>
+															</th>
+															<th>
+																<div className="th-inner sortable both">
+																	Request Date
 															</div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner sortable both">
-																Patiend ID
+																<div className="fht-cell"></div>
+															</th>
+															<th>
+																<div className="th-inner sortable both">
+																	Patiend ID
 															</div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner sortable both">
-																Patient Name
+																<div className="fht-cell"></div>
+															</th>
+															<th>
+																<div className="th-inner sortable both">
+																	Patient Name
 															</div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner sortable both">
-																Request By
+																<div className="fht-cell"></div>
+															</th>
+															<th>
+																<div className="th-inner sortable both">
+																	Request By
 															</div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner "></div>
-															<div className="fht-cell"></div>
-														</th>
-													</tr>
-												</thead>
+																<div className="fht-cell"></div>
+															</th>
+															<th>
+																<div className="th-inner "></div>
+																<div className="fht-cell"></div>
+															</th>
+														</tr>
+													</thead>
 
-												<tbody>
-													{clinicalLab &&
-														clinicalLab.reverse().map(lab => {
-															return (
-																<ClinicalLabItem
-																	key={lab.id}
-																	lab={lab}
-																	modalClick={LAB => this.modalFunction(LAB)}
-																/>
-															);
-														})}
-												</tbody>
-											</table>
-										)}
+													<tbody>
+														{clinicalLab &&
+															clinicalLab.reverse().map(lab => {
+																return (
+																	<ClinicalLabItem
+																		key={lab.id}
+																		lab={lab}
+																		modalClick={LAB => this.modalFunction(LAB)}
+																	/>
+																);
+															})}
+													</tbody>
+												</table>
+											)}
 										{!_.isEmpty(clinicalLab) ? null : (
 											<div className="text-center">No clinical Lab request</div>
 										)}
