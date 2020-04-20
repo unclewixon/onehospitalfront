@@ -6,7 +6,8 @@ const LabParameterPicker = ({
 	handleParamInputChange,
 	index,
 	removeParams,
-}) => (
+}) => {
+	return (
 	<div className="pt-3">
 		<div className="pipeline-item">
 			<div className="pi-controls">
@@ -63,5 +64,5 @@ const LabParameterPicker = ({
 		</div>
 	</div>
 );
-
+}
 export default LabParameterPicker;

@@ -42,7 +42,8 @@ const LabGroup = props => {
 	const [labTests, setLabTests] = useState(null);
 	const [parameters, setParameter] = useState({});
 	const [paramsUI, setParamsUI] = useState([]);
-
+	const [subTestArray, setSubTestArray] = useState([])
+	
 	const handleParamInputChange = (e, index) => {
 		const { name, value } = e.target;
 		let newParam = { ...parameters };
@@ -54,7 +55,7 @@ const LabGroup = props => {
 			}
 		})
 		if (name === 'parameter') {
-			newParam[index] = { ...paramObj[value] };
+			newParam[index] = { parameter_id : value };
 		} else if (name === 'referenceRange') {
 			newParam[index] = { ...newParam[index], referenceRange: value };
 		}
@@ -100,10 +101,9 @@ const LabGroup = props => {
 		const testVals = props && props.LabTests && props.LabTests.length
 		? props.LabTests.map(test => {
 			testObj[test.id] = test;
-		}) : []
-
+		}) : [];
 		const lab_test = labTests && labTests.length ? labTests.map(test => {
-			const fullParams = testObj[test.value].parameters.map(par => {
+			const fullParams = testObj[test.id].parameters.map(par => {
 				const {name, ...rest} = parameterObj[par.parameter_id];
 				const newParamObj = {
 					...rest,
@@ -130,7 +130,6 @@ const LabGroup = props => {
 			: [];
 		
 		const lab_test = structuredTest();
-		debugger
 		props
 			.addLabGroup({
 				name,
@@ -192,6 +191,8 @@ const LabGroup = props => {
 
 	const onClickEdit = data => {
 		setSubmitButton({ edit: true, create: false });
+
+		getDataToEdit(data);
 		setState(prevState => ({
 			...prevState,
 			name: data.name,
@@ -199,26 +200,43 @@ const LabGroup = props => {
 			id: data.id,
 			testType: data.test_type ? `${data.test_type}` : null,
 			category: data.category ? data.category.id : '',
-			labTests: data.lab_tests ? data.lab_tests : null,
 			description: data.description ? data.description : '',
 		}));
 		let newParameter = {};
 		let newParameterUI = [];
-		if (Array.isArray(data.parameters)) {
-			data.parameters.map((param, i) => {
+
+
+	const subTestObj = {}
+	const newTests = data.subTests && data.subTests.length 
+	? data.subTests.map(test => {
+				subTestObj[test.id] = {
+					value: test.id, 
+					label: test.name, 
+					id: test.id
+				}
+				return subTestObj[test.id];
+			}) : null;
+
+		const testParams = Object.values(data.parameters).length
+			? Object.values(data.parameters).map(param => param)
+			: [];
+
+		if (Array.isArray(testParams)) {
+			const paramValues = testParams.map((param, i) => {
 				let newParamDetails = {
 					parameter_id:
-						param.parameter && param.parameter.id ? param.parameter.id : '',
+						param.parameter_id && param.parameter_id ? param.parameter_id : '',
 					referenceRange: param.referenceRange ? param.referenceRange : '',
 				};
 				newParameter[i] = newParamDetails;
 				newParameterUI.push(LabParameterPicker);
-				return param;
+				return newParameter[i];
 			});
+			setParameter(paramValues);
 		}
-		setParameter(newParameter);
 		setParamsUI(newParameterUI);
-		getDataToEdit(data);
+		setSubTestArray([...newTests])
+		setLabTests(newTests)
 	};
 
 	const cancelEditButton = () => {
@@ -263,6 +281,13 @@ const LabGroup = props => {
 		let paramUI = [...paramsUI, LabParameterPicker];
 		setParamsUI(paramUI);
 	};
+
+	const cutomStyles = {
+		multiValueLabel : (provided, state) => ({
+			...provided,
+			minWidth: "2rem"
+		})
+	}
 
 	return (
 		<div className="row">
@@ -378,8 +403,10 @@ const LabGroup = props => {
 						</div>
 						<div>
 							<Select
+								styles={cutomStyles}
 								className="form-control"
 								isMulti
+								set-va
 								onChange={handleMultipleLabTestsInput}
 								options={labTestOptions}
 								value={labTests}
