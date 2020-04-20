@@ -161,8 +161,8 @@ class ModalViewAppointment extends Component {
 														<td class="font-weight-bold">Whom to See</td>
 														<td>
 															{
-																view_appointment_detail.department.staff
-																	.first_name
+																view_appointment_detail.department?.staff
+																	?.first_name
 															}
 														</td>
 													</tr>

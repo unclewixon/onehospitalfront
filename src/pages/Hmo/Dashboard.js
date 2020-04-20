@@ -7,10 +7,12 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadHmoTransaction } from '../../actions/hmo';
+import HmoTable from '../../components/HMO/HmoTable';
 
 export class Dashboard extends Component {
 	state = {
 		filtering: false,
+		dataLoaded: false,
 		loading: false,
 		id: null,
 
@@ -31,10 +33,6 @@ export class Dashboard extends Component {
 
 		try {
 			this.setState({ loading: true });
-
-			console.log(
-				`${API_URI}${hmoAPI}${transactionsAPI}?startDate=${startDate}&endDate=${endDate}&patient_id=&status=${status}&page=1&limit=10`
-			);
 			const rs = await request(
 				`${API_URI}${hmoAPI}${transactionsAPI}?startDate=${startDate}&endDate=${endDate}&patient_id=&status=${status}&page=1&limit=10`,
 				'GET',
@@ -53,8 +51,6 @@ export class Dashboard extends Component {
 	render() {
 		const { loading } = this.state;
 		const { hmoTransactions } = this.props;
-		console.log(hmoTransactions);
-		const hmoReversed = hmoTransactions.reverse();
 		return (
 			<>
 				<div className="col-sm-12 col-xxl-12">
@@ -121,6 +117,7 @@ export class Dashboard extends Component {
 										<th className="text-center">Date</th>
 										<th className="text-center">Hmo name</th>
 										<th className="text-center">Patient name</th>
+										<th className="text-center">Description</th>
 										<th className="text-center">Transaction Type</th>
 										<th className="text-center">Amount(&#x20A6;)</th>
 										<th className="text-center">Status</th>
@@ -130,62 +127,8 @@ export class Dashboard extends Component {
 										</th>
 									</tr>
 								</thead>
-								<tbody>
-									{loading ? (
-										<tr>
-											<td colSpan="7" className="text-center">
-												<img alt="searching" src={searchingGIF} />
-											</td>
-										</tr>
-									) : (
-										hmoReversed &&
-										hmoReversed.map(trans => {
-											return (
-												<tr>
-													<td className="text-center">
-														{moment(trans.createdAt).format('DD-MM-YYYY')}
-													</td>
-													<td className="text-center">
-														{request.hmo_name ? request.hmo_name : 'No hmo'}
-													</td>
-													<td className="text-center"> {trans.patient_name}</td>
-													<td className="text-center">
-														{trans.transaction_type}
-													</td>
-													<td className="text-center">{trans.amount}</td>
-													<td className="text-center">
-														{trans.hmo_approval_status === 0 ? (
-															<>
-																<span className="status-pill smaller yellow"></span>
-																<span>Pending</span>
-															</>
-														) : (
-															<>
-																<span className="status-pill smaller green"></span>
-																<span>Approved</span>
-															</>
-														)}
-													</td>
-													<td>
-														<Tooltip title="Change status">
-															<a className="secondary">
-																<i className="os-icon os-icon-folder-plus" />
-															</a>
-														</Tooltip>
-													</td>
-												</tr>
-											);
-										})
-									)}
 
-									{!loading && hmoTransactions.length < 1 ? (
-										<tr>
-											<td colSpan="7" className="text-center">
-												No transaction today
-											</td>
-										</tr>
-									) : null}
-								</tbody>
+								<HmoTable loading={loading} hmoTransactions={hmoTransactions} />
 							</table>
 						</div>
 					</div>

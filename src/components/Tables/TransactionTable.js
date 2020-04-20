@@ -53,21 +53,27 @@ const TransactionTable = props => {
 					return (
 						<tr key={index}>
 							<td className="text-center" hidden={today}>
-								{moment(transaction.q_createdAt).format('YYYY/MM/DD')}
+								{moment(transaction.createdAt).format('YYYY/MM/DD')}
 							</td>
 							<td className="">
 								{`${transaction.patient?.surname} ${transaction.patient?.other_names}`}
 							</td>
-							<td className="">{transaction.department?.name}</td>
+							<td className="">
+								{transaction.department?.name
+									? transaction.department?.name
+									: 'No Department'}
+							</td>
 							<td className="">
 								{transaction.service?.name
 									? transaction.service.name
 									: 'No service yet'}
 							</td>
-							<td className="">{transaction.q_amount}</td>
 							<td className="">
-								{transaction.q_payment_type
-									? transaction.q_payment_type
+								{transaction.amount ? transaction.amount : 0}
+							</td>
+							<td className="">
+								{transaction.payment_type
+									? transaction.payment_type
 									: 'Not specified'}
 							</td>
 							<td className="text-center row-actions">

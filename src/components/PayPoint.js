@@ -28,35 +28,33 @@ class PayPoint extends Component {
 					{
 						type: 'Daily Total',
 						id: 'daily-total',
-						total: rs.dailyTotal.dailyTotal ? rs.dailyTotal.dailyTotal : 0,
+						total: rs.dailyTotal.amount ? rs.dailyTotal.amount : 0,
 					},
 					{
 						type: 'total-unpaid',
 						id: 'unpaidTotal',
-						total: rs.unpaidTotal.dailyTotal ? rs.unpaidTotal.dailyTotal : 0,
+						total: rs.unpaidTotal.amount ? rs.unpaidTotal.amount : 0,
 					},
 
 					{
 						type: 'Total Cash',
 						id: 'total-cash',
-						total: rs.totalCash.dailyTotal ? rs.totalCash.dailyTotal : 0,
+						total: rs.totalCash.amount ? rs.totalCash.amount : 0,
 					},
 					{
 						type: 'Total POS',
 						id: 'total-pos',
-						total: rs.totalPOS.dailyTotal ? rs.totalPOS.dailyTotal : 0,
+						total: rs.totalPOS.amount ? rs.totalPOS.amount : 0,
 					},
 					{
 						type: 'Total Cheque',
 						id: 'total-cheque',
-						total: rs.totalCheque.dailyTotal ? rs.totalCheque.dailyTotal : 0,
+						total: rs.totalCheque.amount ? rs.totalCheque.amount : 0,
 					},
 					{
 						type: 'Total Outstanding',
 						id: 'total-outstanding',
-						total: rs.totalOutstanding.dailyTotal
-							? rs.totalOutstanding.dailyTotal
-							: 0,
+						total: rs.totalOutstanding.amount ? rs.totalOutstanding.amount : 0,
 					},
 				],
 			});

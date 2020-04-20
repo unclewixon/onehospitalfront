@@ -168,7 +168,9 @@ export class AllAppointments extends Component {
 															{transaction.q_patientName}
 														</td>
 														<td className="text-center">
-															{transaction.q_department_id}
+															{transaction.q_department_id
+																? transaction.q_department_id
+																: 'No Department'}
 														</td>
 														<td className="text-center">
 															{transaction.q_status === 1
