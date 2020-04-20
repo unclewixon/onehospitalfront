@@ -26,6 +26,7 @@ import {
 	LOAD_CLINICAL_LAB,
 	LOAD_RADIOLOGY,
 	LOAD_ANTENNATAL,
+	LOAD_IMMUNIZATION,
 } from './types';
 import { request } from '../services/utilities';
 
@@ -192,6 +193,13 @@ export const loadAntennatal = payload => {
 	};
 };
 
+export const loadImmunization = payload => {
+	return {
+		type: LOAD_IMMUNIZATION,
+		payload,
+	};
+};
+
 export const createLabRequest = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
@@ -204,13 +212,20 @@ export const createLabRequest = data => {
 						? grp.subTests.map(test => {
 								return {
 									testName: test.name ? test.name : '',
-									paramenters: test.parameters.length ? test.parameters.map(param => {
-										return {
-											name: param.parameter && param.parameter.name ? param.parameter.name : '',
-											range: param.referenceRange ? param.referenceRange : '',
-											result: '',
-										};
-									}) : [],
+									paramenters: test.parameters.length
+										? test.parameters.map(param => {
+												return {
+													name:
+														param.parameter && param.parameter.name
+															? param.parameter.name
+															: '',
+													range: param.referenceRange
+														? param.referenceRange
+														: '',
+													result: '',
+												};
+										  })
+										: [],
 								};
 						  })
 						: [],
@@ -236,8 +251,7 @@ export const createLabRequest = data => {
 								test.parameters &&
 								test.parameters.map(param => {
 									return {
-										name:
-											param && param.name ? param.name : '',
+										name: param && param.name ? param.name : '',
 										range:
 											param && param.referenceRange ? param.referenceRange : '',
 										result: '',
