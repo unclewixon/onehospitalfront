@@ -792,7 +792,7 @@ export const updateLabTest = data => {
 				description: data.description,
 			})
 				.then(response => {
-					dispatch(update_lab_test(response.data, data));
+					dispatch(update_lab_test(response, data));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -888,7 +888,7 @@ export const updateLabGroup = data => {
 				description: data.description,
 			})
 				.then(response => {
-					dispatch(update_lab_group(response));
+					dispatch(update_lab_group(response, data));
 					return resolve({ success: true });
 				})
 				.catch(error => {
