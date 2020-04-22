@@ -244,7 +244,9 @@ export class InsuranceBills extends Component {
 															{`${transaction.patient_name}`}
 														</td>
 														<td className="text-center">
-															{transaction.hmo_name}
+															{transaction.hmo_name
+																? transaction.hmo_name
+																: 'No Hmo'}
 														</td>
 														<td className="text-center">
 															{transaction.service?.name
@@ -252,7 +254,7 @@ export class InsuranceBills extends Component {
 																: 'No service yet'}
 														</td>
 														<td className="text-center">
-															{transaction.amount}
+															{transaction.amount ? transaction.amount : 0}
 														</td>
 														<td className="text-center">
 															{transaction.payment_type

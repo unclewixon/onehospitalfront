@@ -19,6 +19,7 @@ import searchingGIF from '../../assets/images/searching.gif';
 import { loadRadiology } from '../../actions/patient';
 import _ from 'lodash';
 import { loadHmoTransaction } from '../../actions/hmo';
+import HmoTable from '../../components/HMO/HmoTable';
 const { RangePicker } = DatePicker;
 
 const status = [
@@ -348,6 +349,7 @@ export class AllTransaction extends Component {
 											<th className="text-center">Date</th>
 											<th className="text-center">Hmo name</th>
 											<th className="text-center">Patient name</th>
+											<th className="text-center">Description</th>
 											<th className="text-center">Transaction Type</th>
 											<th className="text-center">Amount(&#x20A6;)</th>
 											<th className="text-center">Status</th>
@@ -357,70 +359,10 @@ export class AllTransaction extends Component {
 											</th>
 										</tr>
 									</thead>
-									<tbody>
-										{loading ? (
-											<tr>
-												<td className="text-center" colSpan="6">
-													<img alt="searching" src={searchingGIF} />
-												</td>
-											</tr>
-										) : (
-											hmoReversed &&
-											hmoReversed.map((request, i) => {
-												return (
-													<tr data-index="0" key={i}>
-														<td className="text-center">
-															{moment(request.createdAt).format('DD-MM-YYYY')}
-														</td>
-														<td className="text-center">
-															{request.hmo_name ? request.hmo_name : 'No hmo'}
-														</td>
-
-														<td className="text-center">
-															{request.patient_name}
-														</td>
-														<td className="text-center">
-															{request.transaction_type}
-														</td>
-
-														<td className="text-center">{request.amount}</td>
-														<td className="text-center">
-															{request.hmo_approval_status === 0 ? (
-																<>
-																	<span className="status-pill smaller yellow"></span>
-																	<span>Pending</span>
-																</>
-															) : (
-																<>
-																	<span className="status-pill smaller green"></span>
-																	<span>Approved</span>
-																</>
-															)}
-														</td>
-														<td className="text-right row-actions">
-															<Tooltip title="Approve status">
-																<a className="secondary">
-																	<i className="os-icon os-icon-edit-32" />
-																</a>
-															</Tooltip>
-															<Tooltip title="Delete Request">
-																<a className="danger">
-																	<i className="os-icon os-icon-ui-15" />
-																</a>
-															</Tooltip>
-														</td>
-													</tr>
-												);
-											})
-										)}
-										{!loading && hmoTransactions.length < 1 ? (
-											<tr>
-												<td className="text-center" colSpan="6">
-													No transaction
-												</td>
-											</tr>
-										) : null}
-									</tbody>
+									<HmoTable
+										loading={loading}
+										hmoTransactions={hmoTransactions}
+									/>
 								</table>
 							</div>
 						</div>
