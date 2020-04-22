@@ -75,12 +75,14 @@ class App extends Component {
 									<div className="layout-w">
 										{/* user role determines main menu */}
 										<MainMenu
-											role={profile.role.slug}
+											role={profile.role ? profile.role.slug : 'admin'}
 											theme_mode={theme_mode}
 										/>
 										<div className="content-w">
 											{/* user role determines topbar menu */}
-											<TopBar role={profile.role.slug} />
+											<TopBar
+												role={profile.role ? profile.role.slug : 'admin'}
+											/>
 											<Switch>
 												<Route path="/doctor" component={Doctor} />
 												<Route path="/front-desk" component={FrontDesk} />

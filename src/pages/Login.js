@@ -113,7 +113,7 @@ class Login extends Component {
 				if (rs_specializations && rs_specializations.data) {
 					this.props.loadSpecializations(rs_specializations.data);
 				}
-
+				console.log(rs);
 				this.props.loginUser(rs);
 				storage.setItem(TOKEN_COOKIE, rs);
 
