@@ -161,7 +161,7 @@ class ClinicalLab extends Component {
 											onChange={e => this.setState({ patientId: e.value })}
 										/>
 									</div>
-									<div className="form-group col-md-3 mt-4">
+									<div className="form-group col-md-3 mt-4" >
 										<div
 											className="btn btn-sm btn-primary btn-upper text-white"
 											onClick={() => {
@@ -191,13 +191,13 @@ class ClinicalLab extends Component {
 													</th>
 													<th>
 														<div className="th-inner sortable both">
-															Request Date
+															S/N
 														</div>
 														<div className="fht-cell"></div>
 													</th>
 													<th>
 														<div className="th-inner sortable both">
-															Patiend ID
+															Request Date
 														</div>
 														<div className="fht-cell"></div>
 													</th>
@@ -231,11 +231,12 @@ class ClinicalLab extends Component {
 											) : (
 													<tbody>
 														{clinicalLab &&
-															clinicalLab.map(lab => {
+															clinicalLab.map((lab, index) => {
 																return <ClinicalLabItem
 																	key={lab.id}
 																	lab={lab}
-																	modalClick={LAB => this.modalFunction(LAB)}
+																	index={index}
+																	modalClick={LAB => this.modalFunction(LAB, index)}
 																/>;
 															})
 														}

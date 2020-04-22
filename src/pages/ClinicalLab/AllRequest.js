@@ -191,13 +191,13 @@ class AllRequest extends Component {
 															</th>
 															<th>
 																<div className="th-inner sortable both">
-																	Request Date
+																	S/N
 															</div>
 																<div className="fht-cell"></div>
 															</th>
 															<th>
 																<div className="th-inner sortable both">
-																	Patiend ID
+																	Request Date
 															</div>
 																<div className="fht-cell"></div>
 															</th>
@@ -222,11 +222,12 @@ class AllRequest extends Component {
 
 													<tbody>
 														{clinicalLab &&
-															clinicalLab.reverse().map(lab => {
+															clinicalLab.reverse().map((lab, index) => {
 																return (
 																	<ClinicalLabItem
 																		key={lab.id}
 																		lab={lab}
+																		index={index}
 																		modalClick={LAB => this.modalFunction(LAB)}
 																	/>
 																);

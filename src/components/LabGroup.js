@@ -242,6 +242,8 @@ const LabGroup = props => {
 	const cancelEditButton = () => {
 		setSubmitButton({ ...initialState });
 		setState({ ...initialState });
+		setParamsUI([])
+		setLabTests([])
 	};
 
 	const onDeleteLabGroup = data => {
@@ -395,6 +397,7 @@ const LabGroup = props => {
 												parameters={parameters}
 												removeParams={removeParam}
 												handleParamInputChange={handleParamInputChange}
+												key={i}
 											/>
 										);
 									}

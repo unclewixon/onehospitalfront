@@ -21,7 +21,10 @@ export class RecentRequest extends Component {
 		loading: false,
 		activeRequest: null,
 		showModal: false,
-		filteredPatient: null,
+		startDate: moment(Date.now())
+			.subtract(1, 'days')
+			.format('YYYY-MM-DD'),
+		endDate: moment(Date.now()).format('YYYY-MM-DD'),
 	};
 
 	onModalClick = () => {
@@ -33,9 +36,10 @@ export class RecentRequest extends Component {
 	};
 
 	componentDidMount() {
+		const { startDate, endDate } = this.state
 		const { getRequestByType } = this.props;
 		this.setState({ loading: true });
-		getRequestByType(null, 'pharmacy')
+		getRequestByType(null, 'pharmacy', startDate, endDate)
 			.then(response => {
 				this.setState({ loading: false });
 			})
@@ -72,7 +76,17 @@ export class RecentRequest extends Component {
 								/>
 							</div>
 							<div className="form-group mr-2">
-								<RangePicker />
+								<RangePicker
+									onChange={e => {
+										const date = e.map(date => {
+											return moment(date._d).format('YYYY-MM-DD');
+										});
+										this.setState({
+											startDate: date[0],
+											endDate: date[1]
+										})
+									}}
+								/>
 							</div>
 							<div className="form-group mr-2">
 								<a
@@ -82,8 +96,8 @@ export class RecentRequest extends Component {
 										{filtering ? (
 											<img src={waiting} alt="submitting" />
 										) : (
-											<i className="os-icon os-icon-ui-37" />
-										)}
+												<i className="os-icon os-icon-ui-37" />
+											)}
 									</span>
 								</a>
 							</div>
@@ -107,82 +121,55 @@ export class RecentRequest extends Component {
 								<tbody>
 									{Requests && Requests.length
 										? Requests.map((request, index) => {
-												return (
-													<tr
-														className=""
-														data-index="0"
-														data-id="20"
-														key={index}>
-														<td>
-															<span>
-																{moment(request.createdAt).format('DD/MM/YYYY')}
-															</span>
-														</td>
-														<td></td>
-														<td>{`${'Dr. DooLittle'.toUpperCase()}`}</td>
-														<td className="nowrap">
-															{request.status === 1 ? (
-																<div>
-																	<span className="status-pill smaller green"></span>
-																	<span>Approved</span>
-																</div>
-															) : (
+											return (
+												<tr
+													className=""
+													data-index="0"
+													data-id="20"
+													key={index}>
+													<td>
+														<span>
+															{moment(request.createdAt).format('DD-MM-YYYY')}
+														</span>
+													</td>
+													<td></td>
+													<td>{request.created_by ? request.created_by : ""}</td>
+													<td className="nowrap">
+														{request.status === 1 ? (
+															<div>
+																<span className="status-pill smaller green"></span>
+																<span>Approved</span>
+															</div>
+														) : (
 																<div>
 																	<span className="status-pill smaller yellow"></span>
 																	<span>Pending</span>
 																</div>
 															)}
-														</td>
-														<td className="row-actions text-right">
-															<Tooltip title="View Request">
-																<a
-																	className="secondary"
-																	onClick={() => {
-																		this.setState({ activeRequest: request });
-																		this.onModalClick();
-																	}}>
-																	<i className="os-icon os-icon-file" />
-																</a>
-															</Tooltip>
-															<Tooltip title="Print Request">
-																<a className="ml-2" href="#">
-																	<i className="icon-feather-printer" />
-																</a>
-															</Tooltip>
-														</td>
-													</tr>
-												);
-										  })
+													</td>
+													<td className="row-actions text-right">
+														<Tooltip title="View Request">
+															<a
+																className="secondary"
+																onClick={() => {
+																	this.setState({ activeRequest: request });
+																	this.onModalClick();
+																}}>
+																<i className="os-icon os-icon-file" />
+															</a>
+														</Tooltip>
+														<Tooltip title="Print Request">
+															<a className="ml-2" href="#">
+																<i className="icon-feather-printer" />
+															</a>
+														</Tooltip>
+													</td>
+												</tr>
+											);
+										})
 										: null}
 								</tbody>
 							</table>
-						</div>
-						<div className="controls-below-table">
-							<div className="table-records-info">Showing records 1 - 5</div>
-							<div className="table-records-pages">
-								<ul>
-									<li>
-										<a href="#">Previous</a>
-									</li>
-									<li>
-										<a className="current" href="#">
-											1
-										</a>
-									</li>
-									<li>
-										<a href="#">2</a>
-									</li>
-									<li>
-										<a href="#">3</a>
-									</li>
-									<li>
-										<a href="#">4</a>
-									</li>
-									<li>
-										<a href="#">Next</a>
-									</li>
-								</ul>
-							</div>
 						</div>
 					</div>
 				</div>

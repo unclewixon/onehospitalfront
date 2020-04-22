@@ -171,6 +171,7 @@ const LabTest = props => {
 	const cancelEditButton = () => {
 		setSubmitButton({ ...initialState });
 		setState({ ...initialState });
+		setParamsUI([])
 	};
 
 	const onDeleteLabTest = data => {

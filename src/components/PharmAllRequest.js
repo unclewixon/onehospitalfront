@@ -10,6 +10,7 @@ import { notifyError } from '../services/notify';
 import Modal from 'react-bootstrap/Modal';
 import Select from 'react-select';
 import { Link } from 'react-router-dom';
+import PharmNewRequestViewModal from './PharmNewRequestViewModal';
 
 const { RangePicker } = DatePicker;
 const departments = [
@@ -23,7 +24,8 @@ export class PharmAllRequest extends Component {
 		loading: false,
 		activeRequest: null,
 		showModal: false,
-		dateRange: [],
+		startDate: "",
+		endDate: ""
 	};
 
 	onModalClick = () => {
@@ -35,9 +37,10 @@ export class PharmAllRequest extends Component {
 	// };
 
 	componentDidMount() {
+		const {startDate, endDate} = this.state
 		const { getRequestByType } = this.props;
 		this.setState({ loading: true });
-		getRequestByType(null, 'pharmacy')
+		getRequestByType(null, 'pharmacy', startDate, endDate)
 			.then(response => {
 				this.setState({ loading: false });
 			})
@@ -80,14 +83,15 @@ export class PharmAllRequest extends Component {
 							</div>
 							<div className="form-group mr-2">
 								<RangePicker
-									value={this.state.dateRange}
-									onChange={e =>
-										e.map(date => {
-											const range = moment(date).format('DD/MM/YYYY hh:mm');
-											console.log(range);
-											return range;
+									onChange={e => {
+										const date = e.map(date => {
+											return moment(date._d).format('YYYY-MM-DD');
+										});
+										this.setState({
+											startDate: date[0],
+											endDate: date[1]
 										})
-									}
+									}}
 								/>
 							</div>
 							<div className="form-group mr-2">
@@ -132,11 +136,11 @@ export class PharmAllRequest extends Component {
 														key={index}>
 														<td>
 															<span>
-																{moment(request.createdAt).format('DD/MM/YYYY')}
+																{moment(request.createdAt).format('DD-MM-YYYY')}
 															</span>
 														</td>
 														<td></td>
-														<td>{`${'Dr. DooLittle'.toUpperCase()}`}</td>
+														<td>{request.created_by ? request.created_by : ""}`}</td>
 														<td className="nowrap">
 															{request.status === 1 ? (
 																<div>
@@ -173,33 +177,6 @@ export class PharmAllRequest extends Component {
 										: null}
 								</tbody>
 							</table>
-						</div>
-						<div className="controls-below-table">
-							<div className="table-records-info">Showing records 1 - 5</div>
-							<div className="table-records-pages">
-								<ul>
-									<li>
-										<a href="#">Previous</a>
-									</li>
-									<li>
-										<a className="current" href="#">
-											1
-										</a>
-									</li>
-									<li>
-										<a href="#">2</a>
-									</li>
-									<li>
-										<a href="#">3</a>
-									</li>
-									<li>
-										<a href="#">4</a>
-									</li>
-									<li>
-										<a href="#">Next</a>
-									</li>
-								</ul>
-							</div>
 						</div>
 					</div>
 				</div>

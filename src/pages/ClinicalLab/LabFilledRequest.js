@@ -49,6 +49,10 @@ class LabRecentRequest extends Component {
 		}
 	};
 
+	filterValues = () => {
+		
+	}
+
 	doFilter = e => {
 		e.preventDefault();
 		this.setState({ filtering: true });
@@ -152,13 +156,13 @@ class LabRecentRequest extends Component {
 													</th>
 													<th>
 														<div className="th-inner sortable both">
-															Request Date
+															S/N
 														</div>
 														<div className="fht-cell"></div>
 													</th>
 													<th>
 														<div className="th-inner sortable both">
-															Patiend ID
+															Request Date
 														</div>
 														<div className="fht-cell"></div>
 													</th>
@@ -190,8 +194,8 @@ class LabRecentRequest extends Component {
 													</tr>
 												) : null}
 												{clinicalLab &&
-													clinicalLab.reverse().map(lab => {
-														return <ClinicalLabItem key={lab.id} lab={lab} />;
+													clinicalLab.reverse().map((lab, index) => {
+														return <ClinicalLabItem key={lab.id} lab={lab} index={index} />;
 													})}
 											</tbody>
 										</table>

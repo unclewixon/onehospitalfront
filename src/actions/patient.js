@@ -208,7 +208,7 @@ export const createLabRequest = data => {
 										return {
 											name: param.parameter && param.parameter.name ? param.parameter.name : '',
 											range: param.referenceRange ? param.referenceRange : '',
-											result: '',
+											result: param.result ? param.result : '',
 										};
 									}) : [],
 								};
@@ -219,7 +219,7 @@ export const createLabRequest = data => {
 								return {
 									name: param.name ? param.name : '',
 									range: param.referenceRange ? param.referenceRange : '',
-									result: '',
+									result: param.result ? param.result : '',
 								};
 						  })
 						: [],
@@ -240,7 +240,7 @@ export const createLabRequest = data => {
 											param && param.name ? param.name : '',
 										range:
 											param && param.referenceRange ? param.referenceRange : '',
-										result: '',
+										result: param.result ? param.result : '',
 									};
 								}),
 						};
@@ -271,13 +271,13 @@ export const createLabRequest = data => {
 	};
 };
 
-export const getRequestByType = (patientId, type) => {
+export const getRequestByType = (patientId, type, start, end) => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			request(
 				patientId
-					? `${API_URI}/patient/${patientId}/request/${type}?startDate=&endDate=`
-					: `${API_URI}/patient/requests/${type}?startDate=&endDate=`,
+					? `${API_URI}/patient/${patientId}/request/${type}?startDate=${start}&endDate=${end}`
+					: `${API_URI}/patient/requests/${type}?startDate=${start}&endDate=${end}`,
 				'GET',
 				true
 			)
