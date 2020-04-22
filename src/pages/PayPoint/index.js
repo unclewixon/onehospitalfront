@@ -21,8 +21,7 @@ export class index extends Component {
 						<div className="row">
 							<div className="col-sm-12">
 								<div className="element-wrapper">
-									<h6 className="element-header">Pay Point</h6>
-									<div className="row mt-2 mb-4">
+									<div className="element-actions">
 										<Link
 											to={`${match.path}/`}
 											className={`mx-2 btn btn-primary btn-sm  ${
@@ -66,6 +65,7 @@ export class index extends Component {
 											New Transaction
 										</Link>
 									</div>
+									<h6 className="element-header">Pay Point</h6>
 
 									<div className="row">
 										<div className="col-sm-12">
