@@ -167,7 +167,7 @@ const AppointmentFormModal = props => {
 	}, [socket]);
 
 	const onSubmit = async values => {
-		// console.log(values);
+		console.log(values);
 		setSubmitting(true);
 		socket.emit('saveAppointment', values);
 	};

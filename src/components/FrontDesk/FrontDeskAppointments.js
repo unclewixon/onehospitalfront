@@ -19,7 +19,7 @@ const Appointment = props => {
 				const appointment = res.appointment;
 				const today = moment().format('YYYY-MM-DD');
 				if (appointment.appointment_date === today) {
-					setAppointments(appointments => [...appointments, appointment]);
+					setAppointments([...appointments, appointment]);
 				}
 			}
 		});
@@ -42,6 +42,7 @@ const Appointment = props => {
 				'GET',
 				true
 			);
+			console.log(res);
 			setAppointments(res);
 			setLoading(false);
 		} catch (e) {
