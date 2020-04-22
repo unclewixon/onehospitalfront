@@ -23,8 +23,7 @@ class Dentistry extends Component {
 					<div className="row">
 						<div className="col-sm-12">
 							<div className="element-wrapper">
-								<h6 className="element-header">Dentistry</h6>
-								<div className="row mt-2 mb-4">
+								<div className="element-actions">
 									<Link
 										className={`mr-2 btn btn-primary btn-sm  ${
 											page === '/' ? 'btn-outline-primary' : ''
@@ -47,33 +46,38 @@ class Dentistry extends Component {
 										New Dentistry Request
 									</Link>
 								</div>
+								<h6 className="element-header">Dentistry</h6>
 
 								<div className="row">
-									<Suspense fallback={<Splash />}>
-										<Switch>
-											<Route
-												exact
-												path={`${match.url}/`}
-												component={DentistryDashboard}
-											/>
-											{/* <Route
+									<div className="col-md-12">
+										<div className="element-box">
+											<Suspense fallback={<Splash />}>
+												<Switch>
+													<Route
+														exact
+														path={`${match.url}/`}
+														component={DentistryDashboard}
+													/>
+													{/* <Route
 												exact
 												path={`${match.url}/`}
 												component={NewPhysiotherapy}
 											/> */}
-											<Route
-												exact
-												path={`${match.url}/all-requests`}
-												component={AllDentistry}
-											/>
-											<Route
-												exact
-												path={`${match.url}/new-request`}
-												component={NewDentistry}
-											/>
-											<Route component={NoMatch} />
-										</Switch>
-									</Suspense>
+													<Route
+														exact
+														path={`${match.url}/all-requests`}
+														component={AllDentistry}
+													/>
+													<Route
+														exact
+														path={`${match.url}/new-request`}
+														component={NewDentistry}
+													/>
+													<Route component={NoMatch} />
+												</Switch>
+											</Suspense>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>

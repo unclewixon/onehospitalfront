@@ -24,30 +24,40 @@ class InvSubCategoryItem extends Component {
 
 	disableCategory = () => {
 		const { item } = this.props;
-		console.log(item);
+
+		this.props.delete(item);
 	};
 
 	render() {
 		const { item, editSubCategory, serial } = this.props;
-		console.log(item)
+		console.log(item);
 		return (
 			<tr>
 				<td>{serial}</td>
 				<td>{item.name}</td>
 				<td>{item.category.name}</td>
 				<td className="text-center">
-					<div className={`status-pill ${item.isActive ? 'green' : 'red'}`}/>
+					<div className={`status-pill ${item.isActive ? 'green' : 'red'}`} />
 				</td>
 				<td className="text-right row-actions">
-					<a  onClick={editSubCategory(item, true)} className="secondary" title="Edit Inventory Category">
+					<a
+						onClick={editSubCategory(item, true)}
+						className="secondary"
+						title="Edit Inventory Category">
 						<i className="os-icon os-icon-edit-32" />
 					</a>
 					{item.isActive ? (
-						<a  onClick={this.disableCategory} className="danger" title="Disable Category">
+						<a
+							onClick={this.disableCategory}
+							className="danger"
+							title="Disable Category">
 							<i className="os-icon os-icon-x-circle" />
 						</a>
 					) : (
-						<a  onClick={this.enableCategory} className="success" title="Enable Category">
+						<a
+							onClick={this.enableCategory}
+							className="success"
+							title="Enable Category">
 							<i className="os-icon os-icon-check-circle" />
 						</a>
 					)}

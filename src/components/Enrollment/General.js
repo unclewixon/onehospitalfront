@@ -57,8 +57,6 @@ export class General extends Component {
 	};
 	patient = React.createRef();
 
-	sat;
-
 	handlePatientChange = e => {
 		this.setState({ query: e.target.value });
 		this.searchPatient();
