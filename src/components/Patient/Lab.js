@@ -16,6 +16,12 @@ const Lab = props => {
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
+	const [{ startDate, endDate }, setDate] = useState({
+		startDate: moment(Date.now())
+			.subtract(1, 'days')
+			.format('YYYY-MM-DD'),
+		endDate: moment(Date.now()).format('YYYY-MM-DD')
+	})
 
 	const { location, patient } = props;
 
@@ -28,7 +34,7 @@ const Lab = props => {
 		const patient_id = patient && patient.id ? patient.id : '';
 		if (!loaded) {
 			setDataLoaded(true);
-			getRequestByType(patient_id, 'lab')
+			getRequestByType(patient_id, 'lab', startDate, endDate)
 				.then(response => {
 					setDataLoaded(false);
 				})
@@ -60,38 +66,38 @@ const Lab = props => {
 							</div>
 						</div>
 						{activeRequest ? (
-							<ModalClinicalLab 
+							<ModalClinicalLab
 								activeRequest={activeRequest}
 								showModal={showModal}
 								onModalClick={onModalClick}
 							/>
-							) : null}
+						) : null}
 
 						{dataLoaded ? (
 							<div colSpan="4" className="text-center">
 								<img alt="searching" src={searchingGIF} />
 							</div>
 						) : (
-							<div
-								className="fixed-table-container"
-								style={{ paddingBottom: '0px' }}>
-								<div className="fixed-table-body">
-									<table
-										id="table"
-										className="table table-theme v-middle table-hover">
-										<thead>
-											<tr>
-												<th>ID</th>
-												<th>Request Date</th>
-												<th>Requested By</th>
-												<th>Request Specimen</th>
-												<th className="text-center">Request Status</th>
-												<th className="text-right" />
-											</tr>
-										</thead>
-										<tbody>
-											{props.Requests && props.Requests.length
-												? props.Requests.map((request, index) => {
+								<div
+									className="fixed-table-container"
+									style={{ paddingBottom: '0px' }}>
+									<div className="fixed-table-body">
+										<table
+											id="table"
+											className="table table-theme v-middle table-hover">
+											<thead>
+												<tr>
+													<th>ID</th>
+													<th>Request Date</th>
+													<th>Requested By</th>
+													<th>Request Specimen</th>
+													<th className="text-center">Request Status</th>
+													<th className="text-right" />
+												</tr>
+											</thead>
+											<tbody>
+												{props.Requests && props.Requests.length
+													? props.Requests.map((request, index) => {
 														return (
 															<tr
 																className=""
@@ -99,7 +105,7 @@ const Lab = props => {
 																data-id="20"
 																key={index}>
 																<td>
-																	` <span className="text-bold"></span>
+																	<span className="text-bold">{index + 1}</span>
 																</td>
 																<td>
 																	<span>
@@ -111,7 +117,7 @@ const Lab = props => {
 																<td>
 																	{`${patient.surname.toUpperCase()} ${patient.other_names.toUpperCase()}`}
 																</td>
-																<td>{request.requestBody.referredSpeciment}</td>
+																<td>{request.requestBody.refferredSpecimen}</td>
 																<td className="text-center">
 																	{request.status === 1 ? (
 																		<div>
@@ -119,11 +125,11 @@ const Lab = props => {
 																			<span>Approved</span>
 																		</div>
 																	) : (
-																		<div>
-																			<span className="status-pill smaller yellow"></span>
-																			<span>Pending</span>
-																		</div>
-																	)}
+																			<div>
+																				<span className="status-pill smaller yellow"></span>
+																				<span>Pending</span>
+																			</div>
+																		)}
 																</td>
 																<td className="row-actions text-right">
 																	<Tooltip title="View Request">
@@ -144,13 +150,13 @@ const Lab = props => {
 																</td>
 															</tr>
 														);
-												  })
-												: null}
-										</tbody>
-									</table>
+													})
+													: null}
+											</tbody>
+										</table>
+									</div>
 								</div>
-							</div>
-						)}
+							)}
 					</div>
 				</div>
 			</div>

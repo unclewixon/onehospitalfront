@@ -11,6 +11,7 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadClinicalLab } from '../../actions/patient';
 import _ from 'lodash';
+import LengthOfArm from './../../components/Vitals/LengthOfArm';
 const { RangePicker } = DatePicker;
 
 const status = [
@@ -49,9 +50,11 @@ class LabRecentRequest extends Component {
 		}
 	};
 
-	filterValues = () => {
-		
-	}
+	// filterValues = this.props && this.props.clinicalLab && this.props.clinicalLab.length 
+	// 	? this.props.clinicalLab.filter(labs => {
+	// 		labs.groups && labs.groups.length ?
+	// 		lab.groups.map
+	// 	}) : []
 
 	doFilter = e => {
 		e.preventDefault();
