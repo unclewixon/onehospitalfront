@@ -3,8 +3,8 @@ import Modal from 'react-bootstrap/Modal';
 import moment from 'moment';
 import { Table } from 'react-bootstrap';
 import waiting from '../../assets/images/waiting.gif';
-import {request} from '../../services/utilities';
-import {API_URI} from '../../services/constants';
+import { request } from '../../services/utilities';
+import { API_URI } from '../../services/constants';
 import { notifySuccess, notifyError } from './../../services/notify';
 
 const ModalClinicalLab = ({
@@ -18,7 +18,7 @@ const ModalClinicalLab = ({
 	const [groupTestParam, setGroupTestParam] = useState({})
 	const [paramResult, setParamResult] = useState({})
 
-	const saveLabRequest = async (data, cb)  => {
+	const saveLabRequest = async (data, cb) => {
 		try {
 			const rs = await request(`${API_URI}/patient/save-request`, 'POST', true, data)
 			cb()
@@ -70,9 +70,9 @@ const ModalClinicalLab = ({
 			}) : []
 		let testParamObj = {}
 		let newTestParamObj = Object.values(paramResult).length
-		? Object.values(paramResult).map((val, i) => {
-			testParamObj[i] = { ...val }
-		}) : []
+			? Object.values(paramResult).map((val, i) => {
+				testParamObj[i] = { ...val }
+			}) : []
 
 		let fullGroup = {};
 		let newParams = {};
@@ -99,13 +99,13 @@ const ModalClinicalLab = ({
 					}) : [];
 
 				const fullParamsArray = group.parameters && group.parameters.length
-				? group.parameters.map((params, i) => {
-					fullParas[i] = {
-						...params,
-						result: newParamObj[i].result
-					}
-					return fullParas[i];
-				}) : []
+					? group.parameters.map((params, i) => {
+						fullParas[i] = {
+							...params,
+							result: newParamObj[i].result
+						}
+						return fullParas[i];
+					}) : []
 				fullGroup[i] = {
 					...group,
 					tests: fullTests,
@@ -114,39 +114,39 @@ const ModalClinicalLab = ({
 				return fullGroup[i]
 			}) : []
 
-			const tests = activeRequest && activeRequest.requestBody
+		const tests = activeRequest && activeRequest.requestBody
 			&& activeRequest.requestBody.tests
 			? activeRequest.requestBody.tests.map((test, index) => {
-						const fullParams = test.paramenters && test.paramenters.length ?
-						test.paramenters.map((params, ind) => {
-							newParams[ind] = {
-								...params,
-								result: testParamObj[ind].result
-							}
-							return newParams[ind]
-						}) : []
-						fullTestsObj[index] = {
-							...test,
-							paramenters: fullParams
+				const fullParams = test.paramenters && test.paramenters.length ?
+					test.paramenters.map((params, ind) => {
+						newParams[ind] = {
+							...params,
+							result: testParamObj[ind].result
 						}
-						return fullTestsObj[index]
+						return newParams[ind]
+					}) : []
+				fullTestsObj[index] = {
+					...test,
+					paramenters: fullParams
+				}
+				return fullTestsObj[index]
 			}) : []
 
-			let newRequestObj = {
-				requestType: activeRequest.requestType,
-				patient_id: activeRequest.patient_id,
-				requestBody: {
-					specialization: '',
-					sessionCount: '',
-					groups: groups,
-					tests: tests,
-					refferredSpecimen: activeRequest.requestBody.refferredSpecimen,
-					requestNote: activeRequest.requestBody.requestNote,
-				},
-			};
+		let newRequestObj = {
+			requestType: activeRequest.requestType,
+			patient_id: activeRequest.patient_id,
+			requestBody: {
+				specialization: '',
+				sessionCount: '',
+				groups: groups,
+				tests: tests,
+				refferredSpecimen: activeRequest.requestBody.refferredSpecimen,
+				requestNote: activeRequest.requestBody.requestNote,
+			},
+		};
 
-			saveLabRequest(newRequestObj, () => setLoading(false))
-			
+		saveLabRequest(newRequestObj, () => setLoading(false))
+
 	}
 
 
@@ -213,7 +213,7 @@ const ModalClinicalLab = ({
 															</td>
 														</tr>
 														<tr>
-															<td className="text-centered">
+															<td>
 																Request Note
 															</td>
 														</tr>
@@ -289,12 +289,16 @@ const ModalClinicalLab = ({
 																													{param.range}
 																												</td>
 																												<td>
-																													<input
-																														type="text"
-																														name="groupTestResult"
-																														value={groupTestResult && groupTestResult[i] && groupTestResult[i].result ? groupTestResult[i].result : ''}
-																														onChange={(e) => handleInputResultChange(e, i)}
-																													/>
+																													{
+																														param.result === "" ? (
+																															<input
+																																type="text"
+																																name="groupTestResult"
+																																value={groupTestResult && groupTestResult[i] && groupTestResult[i].result ? groupTestResult[i].result : ''}
+																																onChange={(e) => handleInputResultChange(e, i)}
+																															/>
+																														) : (<span>{param.result}</span>)
+																													}
 																												</td>
 																											</tr>
 																										))
@@ -325,12 +329,16 @@ const ModalClinicalLab = ({
 																											<td>{param.name}</td>
 																											<td>{param.range}</td>
 																											<td>
-																												<input
-																													type="text"
-																													name="groupTestParam"
-																													value={groupTestParam && groupTestParam[i] && groupTestParam[i].result ? groupTestParam[i].result : ''}
-																													onChange={(e) => handleInputResultChange(e, i)}
-																												/>
+																												{
+																													param.result === "" ? (
+																														<input
+																															type="text"
+																															name="groupTestResult"
+																															value={groupTestResult && groupTestResult[i] && groupTestResult[i].result ? groupTestResult[i].result : ''}
+																															onChange={(e) => handleInputResultChange(e, i)}
+																														/>
+																													) : (<span>{param.result}</span>)
+																												}
 																											</td>
 																										</tr>
 																									))}
@@ -373,12 +381,16 @@ const ModalClinicalLab = ({
 																												<td>{param.name}</td>
 																												<td>{param.range}</td>
 																												<td>
-																													<input
-																														type="text"
-																														name="groupTestResult"
-																														value={groupTestResult && groupTestResult[i] && groupTestResult[i].result ? groupTestResult[i].result : ''}
-																														onChange={(e) => handleInputResultChange(e, i)}
-																													/>
+																													{
+																														param.result === "" ? (
+																															<input
+																																type="text"
+																																name="groupTestResult"
+																																value={groupTestResult && groupTestResult[i] && groupTestResult[i].result ? groupTestResult[i].result : ''}
+																																onChange={(e) => handleInputResultChange(e, i)}
+																															/>
+																														) : (<span>{param.result}</span>)
+																													}
 																												</td>
 																											</tr>
 																										))}
@@ -408,12 +420,16 @@ const ModalClinicalLab = ({
 																											<td>{param.name}</td>
 																											<td>{param.range}</td>
 																											<td>
-																												<input
-																													type="text"
-																													name="groupTestParam"
-																													value={groupTestParam && groupTestParam[i] && groupTestParam[i].result ? groupTestParam[i].result : ''}
-																													onChange={(e) => handleInputResultChange(e, i)}
-																												/>
+																												{
+																													param.result === "" ? (
+																														<input
+																															type="text"
+																															name="groupTestResult"
+																															value={groupTestResult && groupTestResult[i] && groupTestResult[i].result ? groupTestResult[i].result : ''}
+																															onChange={(e) => handleInputResultChange(e, i)}
+																														/>
+																													) : (<span>{param.result}</span>)
+																												}
 																											</td>
 																										</tr>
 																									))}
@@ -470,12 +486,16 @@ const ModalClinicalLab = ({
 																											<td>{param.name}</td>
 																											<td>{param.range}</td>
 																											<td>
-																												<input
-																													type="text"
-																													name="paramResult"
-																													value={paramResult && paramResult[i] && paramResult[i].result ? paramResult[i].result : ''}
-																													onChange={(e) => handleInputResultChange(e, i)}
-																												/>
+																												{
+																													param.result === "" ? (
+																														<input
+																															type="text"
+																															name="groupTestResult"
+																															value={groupTestResult && groupTestResult[i] && groupTestResult[i].result ? groupTestResult[i].result : ''}
+																															onChange={(e) => handleInputResultChange(e, i)}
+																														/>
+																													) : (<span>{param.result}</span>)
+																												}
 																											</td>
 																										</tr>
 																									))}
@@ -516,12 +536,16 @@ const ModalClinicalLab = ({
 																											<td>{param.name}</td>
 																											<td>{param.range}</td>
 																											<td>
-																												<input
-																													type="text"
-																													name="paramResult"
-																													value={paramResult && paramResult[i] && paramResult[i].result ? paramResult[i].result : ''}
-																													onChange={e => handleInputResultChange(e, i)}
-																												/>
+																												{
+																													param.result === "" ? (
+																														<input
+																															type="text"
+																															name="groupTestResult"
+																															value={groupTestResult && groupTestResult[i] && groupTestResult[i].result ? groupTestResult[i].result : ''}
+																															onChange={(e) => handleInputResultChange(e, i)}
+																														/>
+																													) : (<span>{param.result}</span>)
+																												}
 																											</td>
 																										</tr>
 																									))}
