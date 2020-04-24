@@ -21,7 +21,6 @@ class Allergies extends Component {
 	componentDidMount() {
 		this.fetchAllergies();
 	}
-
 	fetchAllergies = async () => {
 		this.setState({ loaded: true });
 		const { patient } = this.props;
@@ -45,7 +44,7 @@ class Allergies extends Component {
 				'DELETE',
 				true
 			);
-			this.props.delete_allergy(rs);
+			this.props.delete_allergy(data);
 			notifySuccess('Allergy deleted');
 		} catch (error) {
 			notifyError('Could not delete allergy');
@@ -129,7 +128,7 @@ class Allergies extends Component {
 																			<i
 																				className="os-icon os-icon-ui-49"
 																				onClick={() =>
-																					this.props.setAllergy(item)
+																					this.props.Allergy(item)
 																				}></i>
 																		</Link>
 																		<Tooltip title="Delete">
