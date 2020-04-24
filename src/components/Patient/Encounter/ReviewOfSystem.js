@@ -5,12 +5,16 @@ import { connect } from 'react-redux';
 
 const ReviewOfSystem = props => {
 	const [selected, setSelected] = useState();
-
-	const { encounterData } = props;
-
-	const handleChange = e => {
+	const [selecteOptions, setSelectedOptions] = useState([]);
+	const {storedData} = props;
+	
+	const handleChange = (e) => {
 		setSelected(e);
 	};
+
+	const handleSelection = (e) => {
+		console.log(e.target.value);
+	}
 
 	return (
 		<div className="form-block encounter">
@@ -39,6 +43,11 @@ const ReviewOfSystem = props => {
 											type="checkbox"
 											className="form-control"
 											value={option}
+											onChange={evt => 
+												{
+													handleSelection(evt)
+												}
+											}
 										/>
 										{option}
 									</label>
@@ -54,7 +63,7 @@ const ReviewOfSystem = props => {
 
 const mapStateToProps = state => {
 	return {
-		encounterData: state.patient.encounterData,
+		storedData: state.patient.encounterData.reviewOfSystem,
 	};
 };
 
