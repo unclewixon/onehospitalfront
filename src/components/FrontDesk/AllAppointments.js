@@ -14,6 +14,7 @@ import { deleteTransaction, loadTransaction } from '../../actions/transaction';
 import DatePicker from 'antd/lib/date-picker';
 import searchingGIF from '../../assets/images/searching.gif';
 import Tooltip from 'antd/lib/tooltip';
+import FrontDeskTable from './FrontDeskTable';
 
 const { RangePicker } = DatePicker;
 const paymentStatus = [
@@ -137,64 +138,16 @@ export class AllAppointments extends Component {
 								<table className="table table-striped">
 									<thead>
 										<tr>
-											<th className="text-center">DATE</th>
-											<th className="text-center">Queue Number</th>
-											<th className="text-center">Patient Name</th>
-											<th className="text-center">Department</th>
-											<th className="text-center">Status</th>
+											<th>Patient</th>
+											<th>Whom to see</th>
+											<th className="text-left">Status</th>
 											<th className="text-center">Actions</th>
 										</tr>
 									</thead>
-									<tbody>
-										{loading ? (
-											<tr>
-												<td colSpan="6" className="text-center">
-													<img alt="searching" src={searchingGIF} />
-												</td>
-											</tr>
-										) : transactions.length > 0 ? (
-											transactions.map(transaction => {
-												return (
-													<tr key={transaction.q_id}>
-														<td className="text-center">
-															{moment(transaction.q_createdAt).format(
-																'YYYY/MM/DD'
-															)}
-														</td>
-														<td className="text-center">
-															{transaction.q_queueNumber}
-														</td>
-														<td className="text-center">
-															{transaction.q_patientName}
-														</td>
-														<td className="text-center">
-															{transaction.q_department_id
-																? transaction.q_department_id
-																: 'No Department'}
-														</td>
-														<td className="text-center">
-															{transaction.q_status === 1
-																? 'Attend'
-																: 'Did Not Attend'}
-														</td>
-														<td>
-															<a
-																href="#"
-																onClick={() =>
-																	this.ViewAppointmentDetail(transaction)
-																}>
-																<i className="os-icon os-icon-folder"></i>
-															</a>
-														</td>
-													</tr>
-												);
-											})
-										) : (
-											<tr colSpan="6" className="text-center">
-												<td>No appointment</td>
-											</tr>
-										)}
-									</tbody>
+									<FrontDeskTable
+										appointments={transactions}
+										loading={loading}
+									/>
 								</table>
 							</div>
 						</div>
