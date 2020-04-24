@@ -10,7 +10,7 @@ const ReviewOfSystem = props => {
 	
 	const handleChange = (e) => {
 		setSelected(e);
-	}
+	};
 
 	const handleSelection = (e) => {
 		console.log(e.target.value);
@@ -59,7 +59,7 @@ const ReviewOfSystem = props => {
 			)}
 		</div>
 	);
-}
+};
 
 const mapStateToProps = state => {
 	return {

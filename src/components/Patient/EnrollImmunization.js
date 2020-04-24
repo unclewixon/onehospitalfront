@@ -67,7 +67,7 @@ class EnrollImmunization extends Component {
 		return (
 			<div className="col-sm-12">
 				<CreateImmunization />
-				<div className="element-wrapper">
+				{/* <div className="element-wrapper">
 					<h6 className="element-header">List</h6>
 					<div className="element-box">
 						<div className="table-responsive">
@@ -100,7 +100,7 @@ class EnrollImmunization extends Component {
 							</table>
 						</div>
 					</div>
-				</div>
+				</div> */}
 			</div>
 		);
 	}

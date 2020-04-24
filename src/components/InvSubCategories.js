@@ -7,6 +7,7 @@ import { request } from '../services/utilities';
 import { API_URI, inventorySubCatAPI } from '../services/constants';
 import { loadInvSubCategories } from '../actions/inventory';
 import InvSubCategoryItem from './InvSubCategoryItem';
+import { confirmAction } from '../services/utilities';
 
 class InvSubCategories extends Component {
 	state = {
@@ -17,7 +18,7 @@ class InvSubCategories extends Component {
 	componentDidMount() {
 		this.fetchSubCategories();
 	}
-	
+
 	fetchSubCategories = async () => {
 		try {
 			const rs = await request(`${API_URI}${inventorySubCatAPI}`, 'GET', true);
@@ -28,7 +29,28 @@ class InvSubCategories extends Component {
 	};
 
 	editSubCategory = (subcategory, action) => () => {
-		this.setState({ subCategoryID: subcategory ? subcategory.id : subcategory, edit: action });
+		this.setState({
+			subCategoryID: subcategory ? subcategory.id : subcategory,
+			edit: action,
+		});
+	};
+
+	onDeleteInvSubCategory = data => {
+		// props
+		// 	.deleteCafeteriaInvCategory(data)
+		// 	.then(data => {
+		// 		setLoading(false);
+		// 		notifySuccess(' Cafeteria inventory  category deleted');
+		// 	})
+		// 	.catch(error => {
+		// 		setLoading(false);
+		// 		notifyError('Error deleting cafeteria inventory category ');
+		// 	});
+		console.log(data);
+	};
+
+	confirmDelete = data => {
+		confirmAction(this.onDeleteInvSubCategory, data);
 	};
 
 	render() {
@@ -40,7 +62,7 @@ class InvSubCategories extends Component {
 					<div className="element-wrapper">
 						<div className="element-box">
 							<h5 className="form-header">Sub Categories</h5>
-							<div className="form-desc"/>
+							<div className="form-desc" />
 							<div className="table-responsive">
 								<table className="table table-striped">
 									<thead>
@@ -60,8 +82,9 @@ class InvSubCategories extends Component {
 													serial={i + 1}
 													item={category}
 													editSubCategory={this.editSubCategory}
+													delete={this.confirmDelete}
 												/>
-											)
+											);
 										})}
 									</tbody>
 								</table>
@@ -87,7 +110,9 @@ class InvSubCategories extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		sub_categories: state.inventory.sub_categories,
-	}
+	};
 };
 
-export default connect(mapStateToProps, { loadInvSubCategories })(InvSubCategories);
+export default connect(mapStateToProps, { loadInvSubCategories })(
+	InvSubCategories
+);

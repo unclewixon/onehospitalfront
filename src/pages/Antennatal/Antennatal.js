@@ -157,43 +157,45 @@ export class Antennatal extends Component {
 							</div>
 						</div>
 
-						<div className="element-box">
-							<div className="table table-responsive">
-								<table id="table" className="table">
-									<thead>
-										<tr className="text-bold">
-											<td className="text-center">Date</td>
-											<td className="text-center">Patient Name</td>
+						<div className="col-md-12">
+							<div className="element-box">
+								<div className="table table-responsive">
+									<table id="table" className="table">
+										<thead>
+											<tr className="text-bold">
+												<td className="text-center">Date</td>
+												<td className="text-center">Patient Name</td>
 
-											<td className="text-center">LMP</td>
-											<td className="text-center">EOD</td>
-											<td className="text-center">Booking Period</td>
-											<td className="text-center">LMP Source</td>
-											<td className="text-center">Package</td>
-											<td className="text-center">Required Care</td>
+												<td className="text-center">LMP</td>
+												<td className="text-center">EOD</td>
+												<td className="text-center">Booking Period</td>
+												<td className="text-center">LMP Source</td>
+												<td className="text-center">Package</td>
+												<td className="text-center">Required Care</td>
 
-											<td className="text-center">Actions</td>
-										</tr>
-									</thead>
-									<tbody>
-										{loading ? (
-											<tr>
-												<td colSpan="9" className="text-center">
-													<img alt="searching" src={searchingGIF} />
-												</td>
+												<td className="text-center">Actions</td>
 											</tr>
-										) : !_.isEmpty(this.props.antennatal) ? (
-											this.tableBody()
-										) : (
-											<tr>
-												{' '}
-												<td colSpan="9" className="text-center">
-													No antenatal enrolment
-												</td>
-											</tr>
-										)}
-									</tbody>
-								</table>
+										</thead>
+										<tbody>
+											{loading ? (
+												<tr>
+													<td colSpan="9" className="text-center">
+														<img alt="searching" src={searchingGIF} />
+													</td>
+												</tr>
+											) : !_.isEmpty(this.props.antennatal) ? (
+												this.tableBody()
+											) : (
+												<tr>
+													{' '}
+													<td colSpan="9" className="text-center">
+														No antenatal enrolment
+													</td>
+												</tr>
+											)}
+										</tbody>
+									</table>
+								</div>
 							</div>
 						</div>
 					</div>

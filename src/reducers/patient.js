@@ -23,8 +23,9 @@ import {
 	GET_ALL_REQUESTS,
 	LOAD_CLINICAL_LAB,
 	LOAD_RADIOLOGY,
-    UPDATE_COMPLAINT_DATA,
+	UPDATE_COMPLAINT_DATA,
 	LOAD_ANTENNATAL,
+	LOAD_IMMUNIZATION,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -66,6 +67,7 @@ const INITIAL_STATE = {
 			procedureRequest: {},
 		},
 	},
+	immunization: [],
 };
 
 const patient = (state = INITIAL_STATE, action) => {
@@ -140,14 +142,16 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, allRequests: action.payload };
 		case UPDATE_COMPLAINT_DATA:
 			return {
-				...state, 
+				...state,
 				encounterData: {
 					...state.encounterData,
-					complaints: action.payload
-				} 
+					complaints: action.payload,
+				},
 			};
 		case LOAD_ANTENNATAL:
 			return { ...state, antennatal: [...action.payload] };
+		case LOAD_IMMUNIZATION:
+			return { ...state, immunization: [...action.payload] };
 		default:
 			return state;
 	}

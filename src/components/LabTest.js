@@ -42,8 +42,15 @@ const LabTest = props => {
 	const handleParamInputChange = (e, index) => {
 		const { name, value } = e.target;
 		let newParam = { ...parameters };
+		let paramObj = {};
+		props.LabParameters.map(param => {
+			paramObj[value] = {
+				parameter_id : param.id,
+				parameter_name: param.name
+			}
+		})
 		if (name === 'parameter') {
-			newParam[index] = { parameter_id: value };
+			newParam[index] = { 	parameter_id : value };
 		} else if (name === 'referenceRange') {
 			newParam[index] = { ...newParam[index], referenceRange: value };
 		}
@@ -99,9 +106,6 @@ const LabTest = props => {
 	const onEditLabTest = e => {
 		setLoading(true);
 		e.preventDefault();
-		let params = Object.values(parameters).length
-			? Object.values(parameters).map(param => param)
-			: [];
 		props
 			.updateLabTest(
 				{
@@ -109,7 +113,7 @@ const LabTest = props => {
 					name,
 					price,
 					category,
-					parameters: params,
+					parameters,
 					testType,
 					description,
 				},
@@ -131,6 +135,7 @@ const LabTest = props => {
 
 	const onClickEdit = data => {
 		setSubmitButton({ edit: true, create: false });
+		getDataToEdit(data);
 		setState(prevState => ({
 			...prevState,
 			name: data.name,
@@ -140,23 +145,27 @@ const LabTest = props => {
 			category: data.category ? data.category.id : '',
 			description: data.description ? data.description : '',
 		}));
+
+		const newParams = Object.values(data.parameters).length
+			? Object.values(data.parameters).map(param => param)
+			: [];
+
 		let newParameter = {};
 		let newParameterUI = [];
-		if (Array.isArray(data.parameters)) {
-			data.parameters.map((param, i) => {
+		if (Array.isArray(newParams)) {
+			const paramValues = newParams.map((param, i) => {
 				let newParamDetails = {
 					parameter_id:
-						param.parameter && param.parameter.id ? param.parameter.id : '',
+						param.parameter_id && param.parameter_id ? param.parameter_id : '',
 					referenceRange: param.referenceRange ? param.referenceRange : '',
 				};
 				newParameter[i] = newParamDetails;
 				newParameterUI.push(LabParameterPicker);
-				return param;
+				return newParameter[i];
 			});
+			setParameter(paramValues);
 		}
-		setParameter(newParameter);
 		setParamsUI(newParameterUI);
-		getDataToEdit(data);
 	};
 
 	const cancelEditButton = () => {
@@ -192,8 +201,6 @@ const LabTest = props => {
 				});
 			props.getAllLabTestCategories();
 			props.getAllLabTestParameters();
-
-			console.log(props.LabParameters);
 		}
 		setLoaded(true);
 	}, [loaded, props]);
@@ -202,7 +209,6 @@ const LabTest = props => {
 		let paramUI = [...paramsUI, LabParameterPicker];
 		setParamsUI(paramUI);
 	};
-
 	return (
 		<div className="row">
 			<div className="col-lg-7">
@@ -303,7 +309,7 @@ const LabTest = props => {
 						</div>
 
 						<div className="form-group">
-							{paramsUI &&
+								{paramsUI &&
 								paramsUI.map((ParamPicker, i) => {
 									if (ParamPicker) {
 										return (

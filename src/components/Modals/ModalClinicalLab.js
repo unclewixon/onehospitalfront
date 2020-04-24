@@ -55,14 +55,6 @@ const ModalClinicalLab = ({
 											</div>
 
 											<div className="padded">
-												<div className="os-progress-bar primary">
-													<div className="col-sm-12 b-b">
-														<div className="el-tablo centered padded-v">
-															<div className="label">Patient ID</div>
-															<div className="value">{}</div>
-														</div>
-													</div>
-												</div>
 
 												<div className="os-progress-bar primary">
 													<div className="col-sm-12 b-b">
@@ -128,44 +120,44 @@ const ModalClinicalLab = ({
 																				{grp.name}
 																			</p>
 																		</div>
-																		{/* {grp.tests &&
-										grp.tests.map(test => (
-											<div className="ml-2 p-4 bg-white border-2">
-												<p >{test.name}</p>
-												<Table className="table bordered">
-													<thead>
-														<tr>
-															<th>Param Name</th>
-															<th>Range</th>
-															<th>Result</th>
-														</tr>
-													</thead>
-													<tbody>
-														{
-															test.parameters && test.parameters.map(param => (
-																<tr>
-																	<td>
-																		{param.name}
-																	</td>
-																	<td>
-																		{param.refferedRange}
-																	</td>
-																	<td>
-																		<input
-																			type="text"
-																			name="groupTestResult"
-																			id={param.id}
-																			value=""
-																			onChange
-																		/>
-																	</td>
-																</tr>
-															))
-														}
-													</tbody>
-												</Table>
-											</div>
-										))} */}
+																		{grp.tests &&
+																			grp.tests.map(test => (
+																				<div className="ml-2 p-4 bg-white border-2">
+																					<p >{test.testName}</p>
+																					<Table className="table bordered">
+																						<thead>
+																							<tr>
+																								<th>Param Name</th>
+																								<th>Range</th>
+																								<th>Result</th>
+																							</tr>
+																						</thead>
+																						<tbody>
+																							{
+																								test.paramenters && test.paramenters.map(param => (
+																									<tr>
+																										<td>
+																											{param.name}
+																										</td>
+																										<td>
+																											{param.range}
+																										</td>
+																										<td>
+																											<input
+																												type="text"
+																												name="groupTestResult"
+																												id={param.name}
+																												value=""
+																												onChange
+																											/>
+																										</td>
+																									</tr>
+																								))
+																							}
+																						</tbody>
+																					</Table>
+																				</div>
+																			))}
 																		{grp.parameters && grp.parameters.length ? (
 																			<div>
 																				<div className="ml-4">
@@ -217,39 +209,39 @@ const ModalClinicalLab = ({
 																				{grp.name}
 																			</p>
 																		</div>
-																		{/* {grp.tests &&
-										grp.tests.map(test => (
-											<div className="ml-2 p-4 bg-white border-2">
-												<p>{test.name}</p>
-												<Table className="table bordered">
-													<thead>
-														<tr>
-															<th>Param Name</th>
-															<th>Range</th>
-															<th>Result</th>
-														</tr>
-													</thead>
-													<tbody>
-														{test.parameters &&
-															test.parameters.map(param => (
-																<tr>
-																	<td>{param.name}</td>
-																	<td>{param.refferedRange}</td>
-																	<td>
-																		<input
-																			type="text"
-																			name="groupTestResult"
-																			id={param.id}
-																			value=""
-																			onChange
-																		/>
-																	</td>
-																</tr>
-															))}
-													</tbody>
-												</Table>
-											</div>
-										))} */}
+																		{grp.tests &&
+																			grp.tests.map(test => (
+																				<div className="ml-2 p-4 bg-white border-2">
+																					<p>{test.testName}</p>
+																					<Table className="table bordered">
+																						<thead>
+																							<tr>
+																								<th>Param Name</th>
+																								<th>Range</th>
+																								<th>Result</th>
+																							</tr>
+																						</thead>
+																						<tbody>
+																							{test.paramenters &&
+																								test.paramenters.map(param => (
+																									<tr>
+																										<td>{param.name}</td>
+																										<td>{param.range}</td>
+																										<td>
+																											<input
+																												type="text"
+																												name="groupTestResult"
+																												id={param.id}
+																												value=""
+																												onChange
+																											/>
+																										</td>
+																									</tr>
+																								))}
+																						</tbody>
+																					</Table>
+																				</div>
+																			))}
 																		{grp.parameters && grp.parameters.length ? (
 																			<div>
 																				<div className="ml-4">
@@ -419,8 +411,8 @@ const ModalClinicalLab = ({
 														{Loading ? (
 															<img src={waiting} alt="submitting" />
 														) : (
-															<span> Save</span>
-														)}
+																<span> Save</span>
+															)}
 													</button>
 												</div>
 											</div>

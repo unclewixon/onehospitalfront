@@ -39,8 +39,9 @@ export class PayPointTable extends Component {
 				true
 			);
 			console.log(rs);
-			const res = rs.sort((a, b) => a.q_createdAt.localeCompare(b.q_createdAt));
-			this.props.loadTodayTransaction(res.reverse());
+			//const res = rs.sort((a, b) => a.q_createdAt.localeCompare(b.q_createdAt));
+
+			this.props.loadTodayTransaction(rs.reverse());
 			this.setState({ loading: false });
 		} catch (error) {
 			console.log(error);

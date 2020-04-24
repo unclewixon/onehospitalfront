@@ -7,8 +7,10 @@ import { API_URI } from '../../services/constants';
 import { loadPatientProcedureData } from '../../actions/patient';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
+import waiting from '../../assets/images/waiting.gif';
 import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
+import ModalProcedure from '../../components/Modals/ModalProcedure';
 import DatePicker from 'antd/lib/date-picker';
 import _ from 'lodash';
 import Select from 'react-select';
@@ -20,6 +22,9 @@ class AllProcedure extends Component {
 		patientId: '',
 		startDate: '',
 		endDate: '',
+		filtering: false,
+		showModal: false,
+		activeRequest: null,
 	};
 	componentDidMount() {
 		this.fetchPhysio();
@@ -37,10 +42,10 @@ class AllProcedure extends Component {
 				true
 			);
 			this.props.loadPatientProcedureData(rs);
-			return this.setState({ loaded: false });
+			return this.setState({ loaded: false, filtering: false });
 		} catch (error) {
 			notifyError('error fetching procedure requests');
-			this.setState({ loaded: false });
+			this.setState({ loaded: false, filtering: false });
 		}
 	};
 
@@ -52,17 +57,27 @@ class AllProcedure extends Component {
 		return rer.join(', ');
 	};
 
+	onModalClick = () => {
+		this.setState({ showModal: !this.state.showModal });
+	};
+
 	formRow = (data, i) => {
 		return (
 			<tr key={i}>
 				<td>{i + 1}</td>
+				<td>{data.patient_name}</td>
 				<td>{moment(data.createdAt).format('DD-MM-YY')}</td>
 				<td>{data.created_by}</td>
 				<td>{this.getRequests(data.requestBody)}</td>
 				<td></td>
 				<td className="row-actions text-right">
 					<Tooltip title="View Request">
-						<a href="#">
+						<a
+							href="#"
+							onClick={() => {
+								this.onModalClick();
+								this.setState({ activeRequest: data });
+							}}>
 							<i className="os-icon os-icon-documents-03" />
 						</a>
 					</Tooltip>
@@ -98,11 +113,12 @@ class AllProcedure extends Component {
 			: [];
 
 	filterEntries = () => {
+		this.setState({ filtering: true });
 		this.fetchPhysio(this.state.patientId);
 	};
 
 	render() {
-		const { loaded } = this.state;
+		const { loaded, filtering } = this.state;
 
 		const filteredNames =
 			this.props &&
@@ -118,20 +134,29 @@ class AllProcedure extends Component {
 
 		const filteredOptions = _.uniqBy(filteredNames, 'value');
 
+		const customStyle = {
+			control: (provided, state) => ({
+				...provided,
+				minHeight: '24px !important',
+				height: '2rem',
+				width: '12rem',
+			}),
+		};
+
 		return (
 			<>
 				<div className="col-sm-12">
 					<div className="element-wrapper">
 						<div className="row">
 							<div className="col-md-12">
-								{/* {this.state.activeRequest ? (
-									<ModalClinicalLab
+								{this.state.activeRequest ? (
+									<ModalProcedure
 										activeRequest={this.state.activeRequest}
 										showModal={this.state.showModal}
 										onModalClick={this.onModalClick}
 									/>
-								) : null} */}
-								<h6 className="element-header">Filter by:</h6>
+								) : null}
+								<h6 className="element-header">All Requests:</h6>
 
 								<form className="row">
 									<div className="form-group col-md-6">
@@ -143,6 +168,7 @@ class AllProcedure extends Component {
 											Patient
 										</label>
 										<Select
+											styles={customStyle}
 											id="patientId"
 											isSearchable={true}
 											name="patientId"
@@ -158,11 +184,11 @@ class AllProcedure extends Component {
 											}}>
 											<i className="os-icon os-icon-ui-37" />
 											<span>
-												{/* {filtering ? (
+												{filtering ? (
 													<img src={waiting} alt="submitting" />
 												) : (
-														'Filter'
-													)} */}
+													'Filter'
+												)}
 											</span>
 										</div>
 									</div>
@@ -178,6 +204,12 @@ class AllProcedure extends Component {
 													<tr>
 														<th>
 															<div className="th-inner "></div>
+															<div className="fht-cell"></div>
+														</th>
+														<th>
+															<div className="th-inner sortable both">
+																Patient Name
+															</div>
 															<div className="fht-cell"></div>
 														</th>
 														<th>

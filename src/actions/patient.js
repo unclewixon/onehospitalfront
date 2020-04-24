@@ -26,6 +26,7 @@ import {
 	LOAD_CLINICAL_LAB,
 	LOAD_RADIOLOGY,
 	LOAD_ANTENNATAL,
+	LOAD_IMMUNIZATION,
 } from './types';
 import { request } from '../services/utilities';
 
@@ -192,34 +193,47 @@ export const loadAntennatal = payload => {
 	};
 };
 
+export const loadImmunization = payload => {
+	return {
+		type: LOAD_IMMUNIZATION,
+		payload,
+	};
+};
+
 export const createLabRequest = data => {
-	console.log(data);
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			let newGroup = data.lab_combo.map(grp => {
 				return {
-					name: grp.name,
-					amount: grp.price,
-					service_id: grp.id,
-					tests: grp.tests
-						? grp.tests.map(test => {
+					name: grp.name ? grp.name : '',
+					amount: grp.price ? grp.price : '',
+					service_id: grp.id ? grp.id : '',
+					tests: grp.subTests
+						? grp.subTests.map(test => {
 								return {
-									testName: test.name,
-									paramenters: test.paramenters.map(param => {
-										return {
-											name: param.parameter.name,
-											range: param.referenceRange,
-											result: '',
-										};
-									}),
+									testName: test.name ? test.name : '',
+									paramenters: test.parameters.length
+										? test.parameters.map(param => {
+												return {
+													name:
+														param.parameter && param.parameter.name
+															? param.parameter.name
+															: '',
+													range: param.referenceRange
+														? param.referenceRange
+														: '',
+													result: '',
+												};
+										  })
+										: [],
 								};
 						  })
 						: [],
-					parameters: grp.paramenters
-						? grp.paramenters.map(param => {
+					parameters: grp.parameters
+						? grp.parameters.map(param => {
 								return {
-									name: param.parameter_id,
-									range: param.referenceRange,
+									name: param.name ? param.name : '',
+									range: param.referenceRange ? param.referenceRange : '',
 									result: '',
 								};
 						  })
@@ -237,10 +251,7 @@ export const createLabRequest = data => {
 								test.parameters &&
 								test.parameters.map(param => {
 									return {
-										name:
-											param && param.parameter && param.parameter.name
-												? param.parameter.name
-												: '',
+										name: param && param.name ? param.name : '',
 										range:
 											param && param.referenceRange ? param.referenceRange : '',
 										result: '',

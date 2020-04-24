@@ -103,6 +103,14 @@ const FrontDeskMenu = () => {
 					<span>Labour Mgt</span>
 				</Link>
 			</li>
+			<li>
+				<Link to="/immunization">
+					<div className="icon-w">
+						<div className="os-icon os-icon-layers" />
+					</div>
+					<span>Immunization</span>
+				</Link>
+			</li>
 		</>
 	);
 };

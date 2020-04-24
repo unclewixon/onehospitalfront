@@ -8,9 +8,11 @@ import { loadDentistryRequests } from '../../actions/patient';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import Tooltip from 'antd/lib/tooltip';
+import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
 import _ from 'lodash';
+import ModalDentistry from '../../components/Modals/ModalDentistry';
 import Select from 'react-select';
 const { RangePicker } = DatePicker;
 
@@ -20,6 +22,9 @@ class AllDentistry extends Component {
 		patientId: '',
 		startDate: '',
 		endDate: '',
+		filtering: false,
+		activeRequest: null,
+		showModal: false,
 	};
 	componentDidMount() {
 		this.fetchPhysio();
@@ -37,10 +42,10 @@ class AllDentistry extends Component {
 				true
 			);
 			this.props.loadDentistryRequests(rs);
-			return this.setState({ loaded: false });
+			return this.setState({ loaded: false, filtering: false });
 		} catch (error) {
 			notifyError('error fetching dentistry requests');
-			this.setState({ loaded: false });
+			this.setState({ loaded: false, filtering: false });
 		}
 	};
 
@@ -73,6 +78,9 @@ class AllDentistry extends Component {
 			<tr className="" data-index="0" data-id="20" key={i}>
 				<td>{i + 1}</td>
 				<td>
+					<span className="text-bold">{data.patient_name}</span>
+				</td>
+				<td>
 					<span className="text-bold">
 						{this.getRequests(data.requestBody)}
 					</span>
@@ -87,7 +95,11 @@ class AllDentistry extends Component {
 				</td>
 				<td className="row-actions text-right">
 					<Tooltip title="View Request">
-						<a>
+						<a
+							onClick={() => {
+								this.onModalClick();
+								this.setState({ activeRequest: data });
+							}}>
 							<i className="os-icon os-icon-documents-03" />
 						</a>
 					</Tooltip>
@@ -99,6 +111,12 @@ class AllDentistry extends Component {
 				</td>
 			</tr>
 		);
+	};
+
+	onModalClick = () => {
+		this.setState({
+			showModal: !this.state.showModal,
+		});
 	};
 
 	dateChange = e => {
@@ -123,11 +141,12 @@ class AllDentistry extends Component {
 			: [];
 
 	filterEntries = () => {
+		this.setState({ filtering: true });
 		this.fetchPhysio(this.state.patientId);
 	};
 
 	render() {
-		const { loaded } = this.state;
+		const { loaded, filtering } = this.state;
 
 		const filteredNames =
 			this.props &&
@@ -143,20 +162,29 @@ class AllDentistry extends Component {
 
 		const filteredOptions = _.uniqBy(filteredNames, 'value');
 
+		const customStyle = {
+			control: (provided, state) => ({
+				...provided,
+				minHeight: '24px !important',
+				height: '2rem',
+				width: '12rem',
+			}),
+		};
+
 		return (
 			<>
 				<div className="col-sm-12">
 					<div className="element-wrapper">
 						<div className="row">
 							<div className="col-md-12">
-								{/* {this.state.activeRequest ? (
-									<ModalClinicalLab
+								{this.state.activeRequest ? (
+									<ModalDentistry
 										activeRequest={this.state.activeRequest}
 										showModal={this.state.showModal}
 										onModalClick={this.onModalClick}
 									/>
-								) : null} */}
-								<h6 className="element-header">Filter by:</h6>
+								) : null}
+								<h6 className="element-header">All Requests:</h6>
 
 								<form className="row">
 									<div className="form-group col-md-6">
@@ -168,6 +196,7 @@ class AllDentistry extends Component {
 											Patient
 										</label>
 										<Select
+											styles={customStyle}
 											id="patientId"
 											isSearchable={true}
 											name="patientId"
@@ -183,11 +212,11 @@ class AllDentistry extends Component {
 											}}>
 											<i className="os-icon os-icon-ui-37" />
 											<span>
-												{/* {filtering ? (
+												{filtering ? (
 													<img src={waiting} alt="submitting" />
 												) : (
-														'Filter'
-													)} */}
+													'Filter'
+												)}
 											</span>
 										</div>
 									</div>
@@ -203,6 +232,12 @@ class AllDentistry extends Component {
 													<tr>
 														<th>
 															<div className="th-inner "></div>
+															<div className="fht-cell"></div>
+														</th>
+														<th>
+															<div className="th-inner sortable both">
+																Patient Name
+															</div>
 															<div className="fht-cell"></div>
 														</th>
 														<th>

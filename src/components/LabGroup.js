@@ -8,6 +8,7 @@ import { notifySuccess, notifyError } from '../services/notify';
 import { confirmAlert } from 'react-confirm-alert';
 import intersectionBy from 'lodash.intersectionby';
 import LabParameterPicker from './LabParameterPicker';
+import _ from 'lodash';
 
 import {
 	addLabGroup,
@@ -41,12 +42,20 @@ const LabGroup = props => {
 	const [labTests, setLabTests] = useState(null);
 	const [parameters, setParameter] = useState({});
 	const [paramsUI, setParamsUI] = useState([]);
-
+	const [subTestArray, setSubTestArray] = useState([])
+	
 	const handleParamInputChange = (e, index) => {
 		const { name, value } = e.target;
 		let newParam = { ...parameters };
+		let paramObj = {};
+		props.LabParameters.map(param => {
+			paramObj[value] = {
+				parameter_id : param.id,
+				parameter_name: param.name
+			}
+		})
 		if (name === 'parameter') {
-			newParam[index] = { parameter_id: value };
+			newParam[index] = { parameter_id : value };
 		} else if (name === 'referenceRange') {
 			newParam[index] = { ...newParam[index], referenceRange: value };
 		}
@@ -77,20 +86,50 @@ const LabGroup = props => {
 	const labTestOptions =
 		props && props.LabTests
 			? props.LabTests.map(tests => {
-					return { value: tests.id, label: tests.name, id: tests.id };
-			  })
+				return { value: tests.id, label: tests.name, id: tests.id };
+			})
 			: [];
 
-	const lab_test = labTests
-		? intersectionBy(props.LabTests, labTests, 'id')
-		: [];
+	const structuredTest = () => {
+		const parameterObj = {}
+		const parVals = props && props.LabParameters && props.LabParameters.length
+		? props.LabParameters.map(par => {
+			parameterObj[par.id] = par;
+		}) : []
+
+		const testObj = {}
+		const testVals = props && props.LabTests && props.LabTests.length
+		? props.LabTests.map(test => {
+			testObj[test.id] = test;
+		}) : [];
+		const lab_test = labTests && labTests.length ? labTests.map(test => {
+			const fullParams = testObj[test.id].parameters.map(par => {
+				const {name, ...rest} = parameterObj[par.parameter_id];
+				const newParamObj = {
+					...rest,
+					parameter_type: "parameter",
+					referenceRange: par.referenceRange,
+					parameter: parameterObj[par.parameter_id]
+				}
+				return newParamObj;
+			})
+			const fullTest = {
+				...testObj[test.value],
+				parameters: fullParams
+			}
+			return fullTest;
+		}) : []
+		return lab_test
+	}
 
 	const onAddLabGroup = e => {
 		setLoading(true);
 		e.preventDefault();
-		let params = Object.values(parameters).length
+		const params = Object.values(parameters).length
 			? Object.values(parameters).map(param => param)
 			: [];
+		
+		const lab_test = structuredTest();
 		props
 			.addLabGroup({
 				name,
@@ -121,6 +160,7 @@ const LabGroup = props => {
 	const onEditLabGroup = e => {
 		setLoading(true);
 		e.preventDefault();
+		const lab_test = structuredTest();
 		props
 			.updateLabGroup(
 				{
@@ -151,6 +191,8 @@ const LabGroup = props => {
 
 	const onClickEdit = data => {
 		setSubmitButton({ edit: true, create: false });
+
+		getDataToEdit(data);
 		setState(prevState => ({
 			...prevState,
 			name: data.name,
@@ -158,26 +200,43 @@ const LabGroup = props => {
 			id: data.id,
 			testType: data.test_type ? `${data.test_type}` : null,
 			category: data.category ? data.category.id : '',
-			labTests: data.lab_tests ? data.lab_tests : null,
 			description: data.description ? data.description : '',
 		}));
 		let newParameter = {};
 		let newParameterUI = [];
-		if (Array.isArray(data.parameters)) {
-			data.parameters.map((param, i) => {
+
+
+	const subTestObj = {}
+	const newTests = data.subTests && data.subTests.length 
+	? data.subTests.map(test => {
+				subTestObj[test.id] = {
+					value: test.id, 
+					label: test.name, 
+					id: test.id
+				}
+				return subTestObj[test.id];
+			}) : null;
+
+		const testParams = Object.values(data.parameters).length
+			? Object.values(data.parameters).map(param => param)
+			: [];
+
+		if (Array.isArray(testParams)) {
+			const paramValues = testParams.map((param, i) => {
 				let newParamDetails = {
 					parameter_id:
-						param.parameter && param.parameter.id ? param.parameter.id : '',
+						param.parameter_id && param.parameter_id ? param.parameter_id : '',
 					referenceRange: param.referenceRange ? param.referenceRange : '',
 				};
 				newParameter[i] = newParamDetails;
 				newParameterUI.push(LabParameterPicker);
-				return param;
+				return newParameter[i];
 			});
+			setParameter(paramValues);
 		}
-		setParameter(newParameter);
 		setParamsUI(newParameterUI);
-		getDataToEdit(data);
+		setSubTestArray([...newTests])
+		setLabTests(newTests)
 	};
 
 	const cancelEditButton = () => {
@@ -223,6 +282,13 @@ const LabGroup = props => {
 		setParamsUI(paramUI);
 	};
 
+	const cutomStyles = {
+		multiValueLabel : (provided, state) => ({
+			...provided,
+			minWidth: "2rem"
+		})
+	}
+
 	return (
 		<div className="row">
 			<div className="col-lg-7">
@@ -233,37 +299,37 @@ const LabGroup = props => {
 								<img alt="searching" src={searchingGIF} />
 							</div>
 						) : (
-							<>
-								{props.LabGroups.map((LabGroup, i) => {
-									return (
-										<div className="col-lg-4 col-xxl-3" key={i}>
-											<div className="pt-3">
-												<div className="pipeline-item">
-													<div className="pi-controls">
-														<div className="pi-settings os-dropdown-trigger">
-															<i
-																className="os-icon os-icon-ui-49"
-																onClick={() => onClickEdit(LabGroup)}></i>
+								<>
+									{props.LabGroups.map((LabGroup, i) => {
+										return (
+											<div className="col-lg-4 col-xxl-3" key={i}>
+												<div className="pt-3">
+													<div className="pipeline-item">
+														<div className="pi-controls">
+															<div className="pi-settings os-dropdown-trigger">
+																<i
+																	className="os-icon os-icon-ui-49"
+																	onClick={() => onClickEdit(LabGroup)}></i>
+															</div>
+															<div className="pi-settings os-dropdown-trigger">
+																<i
+																	className="os-icon os-icon-ui-15"
+																	onClick={() => confirmDelete(LabGroup)}></i>
+															</div>
 														</div>
-														<div className="pi-settings os-dropdown-trigger">
-															<i
-																className="os-icon os-icon-ui-15"
-																onClick={() => confirmDelete(LabGroup)}></i>
-														</div>
-													</div>
-													<div className="pi-body">
-														<div className="pi-info">
-															<div className="h6 pi-name">{LabGroup.name}</div>
-															<div className="pi-sub">{LabGroup.name}</div>
+														<div className="pi-body">
+															<div className="pi-info">
+																<div className="h6 pi-name">{LabGroup.name}</div>
+																<div className="pi-sub">{LabGroup.name}</div>
+															</div>
 														</div>
 													</div>
 												</div>
 											</div>
-										</div>
-									);
-								})}
-							</>
-						)}
+										);
+									})}
+								</>
+							)}
 					</div>
 				</div>
 			</div>
@@ -337,8 +403,10 @@ const LabGroup = props => {
 						</div>
 						<div>
 							<Select
+								styles={cutomStyles}
 								className="form-control"
 								isMulti
+								set-va
 								onChange={handleMultipleLabTestsInput}
 								options={labTestOptions}
 								value={labTests}
@@ -365,8 +433,8 @@ const LabGroup = props => {
 									{Loading ? (
 										<img src={waiting} alt="submitting" />
 									) : (
-										<span> Create</span>
-									)}
+											<span> Create</span>
+										)}
 								</button>
 							)}
 							{edit && (
@@ -387,8 +455,8 @@ const LabGroup = props => {
 										{Loading ? (
 											<img src={waiting} alt="submitting" />
 										) : (
-											<span> Save</span>
-										)}
+												<span> Save</span>
+											)}
 									</button>
 								</>
 							)}

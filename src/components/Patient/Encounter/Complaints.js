@@ -9,18 +9,18 @@ const Complaints = props => {
 	let { complaints } = props;
 	const dispatch = useDispatch();
 
-	const handleChange = (e) => {
+	const handleChange = e => {
 		// console.log(e);
 		dispatch({
 			type: UPDATE_COMPLAINT_DATA,
 			payload: e,
 		});
-	}
-	const handleFocus = (e) => {
-		var temp_value = e.target.textContent
-		e.target.textContent = ''
-		e.target.textContent = temp_value
-	}
+	};
+	const handleFocus = e => {
+		var temp_value = e.target.textContent;
+		e.target.textContent = '';
+		e.target.textContent = temp_value;
+	};
 	// useEffect(() => {
 	// 	return () => {
 	// 		dispatch({

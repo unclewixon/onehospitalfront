@@ -5,7 +5,6 @@ import NoMatch from '../NoMatch';
 import Queue from '../../components/Queue';
 import Splash from '../../components/Splash';
 const NewPhysiotherapy = lazy(() => import('./NewPhysiotherapyRequest'));
-const RecentPhysiotherapy = lazy(() => import('./RecentPhysiotherapy'));
 const AllPhysiotherapy = lazy(() => import('./AllPhysiotherapy'));
 const PhysiotherapyDashboard = lazy(() => import('./PhysiotherapyDasboard'));
 
@@ -24,8 +23,7 @@ class Physiotherapy extends Component {
 					<div className="row">
 						<div className="col-sm-12">
 							<div className="element-wrapper">
-								<h6 className="element-header">Physiotherapy</h6>
-								<div className="row mt-2 mb-4">
+								<div className="element-actions">
 									<Link
 										className={`mr-2 btn btn-primary btn-sm  ${
 											page === '/' ? 'btn-outline-primary' : ''
@@ -34,67 +32,57 @@ class Physiotherapy extends Component {
 										Dashboard
 									</Link>
 									<Link
-										to={`/physiotherapy/recent`}
-										className={`mr-2 btn btn-primary btn-sm ${
-											page === '/recent' ? 'btn-outline-primary' : ''
-										}`}>
-										{' '}
-										Recent Appointments
-									</Link>
-									<Link
 										className={`mr-2 btn btn-primary btn-sm  ${
 											page === '/all-patients' ? 'btn-outline-primary' : ''
 										}`}
 										to="/physiotherapy/all-patients">
-										All Physio Patients
+										All Requests
 									</Link>
 									<Link
 										className={`mr-2 btn btn-primary btn-sm  ${
 											page === '/new-request' ? 'btn-outline-primary' : ''
 										}`}
 										to="/physiotherapy/new-request">
-										Physiotherapy Request
+										New Physiotherapy Request
 									</Link>
 								</div>
 
+								<h6 className="element-header">Physiotherapy</h6>
+
 								<div className="row">
-									<Suspense fallback={<Splash />}>
-										<Switch>
-											<Route
-												exact
-												path={`${match.url}/`}
-												component={PhysiotherapyDashboard}
-											/>
-											{/* <Route
+									<div className="col-md-12">
+										<div className="element-box">
+											<Suspense fallback={<Splash />}>
+												<Switch>
+													<Route
+														exact
+														path={`${match.url}/`}
+														component={PhysiotherapyDashboard}
+													/>
+													{/* <Route
 												exact
 												path={`${match.url}/`}
 												component={NewPhysiotherapy}
 											/> */}
-											<Route
-												exact
-												path={`${match.url}/all-patients`}
-												component={AllPhysiotherapy}
-											/>
-											<Route
-												exact
-												path={`${match.url}/recent`}
-												component={RecentPhysiotherapy}
-											/>
-											<Route
-												exact
-												path={`${match.url}/new-request`}
-												component={NewPhysiotherapy}
-											/>
-											<Route component={NoMatch} />
-										</Switch>
-									</Suspense>
+													<Route
+														exact
+														path={`${match.url}/all-patients`}
+														component={AllPhysiotherapy}
+													/>
+													<Route
+														exact
+														path={`${match.url}/new-request`}
+														component={NewPhysiotherapy}
+													/>
+													<Route component={NoMatch} />
+												</Switch>
+											</Suspense>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div className="content-panel compact">
-					<Queue />
 				</div>
 			</div>
 		);
