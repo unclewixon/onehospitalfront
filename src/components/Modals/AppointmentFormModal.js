@@ -12,6 +12,7 @@ import { API_URI, serviceAPI, socket } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import 'react-datepicker/dist/react-datepicker.css';
+import { addTransaction } from '../../actions/transaction';
 
 const AppointmentFormModal = props => {
 	const { register, handleSubmit, setValue, getValues } = useForm();
@@ -159,6 +160,7 @@ const AppointmentFormModal = props => {
 			setSubmitting(false);
 			if (res.success) {
 				notifySuccess('New appointment record has been saved!');
+				props.addTransaction(res.appointment);
 				props.closeModals(false);
 			} else {
 				notifyError(res.message || 'Could not save appointment record');
@@ -167,7 +169,6 @@ const AppointmentFormModal = props => {
 	}, [socket]);
 
 	const onSubmit = async values => {
-		console.log(values);
 		setSubmitting(true);
 		socket.emit('saveAppointment', values);
 	};
@@ -405,4 +406,6 @@ const AppointmentFormModal = props => {
 	);
 };
 
-export default connect(null, { closeModals })(AppointmentFormModal);
+export default connect(null, { closeModals, addTransaction })(
+	AppointmentFormModal
+);

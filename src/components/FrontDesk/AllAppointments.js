@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import waiting from '../../assets/images/waiting.gif';
 import TransactionTable from '../../components/Tables/TransactionTable';
 import { request } from '../../services/utilities';
-import { API_URI, transactionsAPI } from '../../services/constants';
+import { API_URI, socket, transactionsAPI } from '../../services/constants';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import {
@@ -49,32 +49,12 @@ export class AllAppointments extends Component {
 				'GET',
 				true
 			);
-			console.log(rs);
 			this.props.loadTransaction(
 				rs.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1))
 			);
 			this.setState({ loading: false, filtering: false });
 		} catch (error) {
 			console.log(error);
-		}
-	};
-
-	ViewAppointmentDetail = async appointment => {
-		console.log(appointment.q_appointment_id);
-		try {
-			this.setState({ loading: true });
-			const rs = await request(
-				`${API_URI}/front-desk/appointments/view/` +
-					appointment.q_appointment_id,
-				'GET',
-				true
-			);
-			console.log(rs);
-			this.setState({ loading: false });
-			this.props.viewAppointmentDetail(rs);
-		} catch (error) {
-			console.log(error);
-			this.setState({ loading: false });
 		}
 	};
 
@@ -133,22 +113,9 @@ export class AllAppointments extends Component {
 					</div>
 
 					<div className="col-sm-12">
-						<div className="element-box">
+						<div className="element-box-tp">
 							<div className="table-responsive">
-								<table className="table table-striped">
-									<thead>
-										<tr>
-											<th>Patient</th>
-											<th>Whom to see</th>
-											<th className="text-left">Status</th>
-											<th className="text-center">Actions</th>
-										</tr>
-									</thead>
-									<FrontDeskTable
-										appointments={transactions}
-										loading={loading}
-									/>
-								</table>
+								<FrontDeskTable appointments={transactions} loading={loading} />
 							</div>
 						</div>
 					</div>

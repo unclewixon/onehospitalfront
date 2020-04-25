@@ -10,6 +10,7 @@ import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
 import { API_URI } from '../../services/constants';
 import { notifyError, notifySuccess } from '../../services/notify';
+import { updateTransaction } from '../../actions/transaction';
 
 class HmoTable extends Component {
 	processTransaction = async (action, hmo) => {
@@ -21,8 +22,12 @@ class HmoTable extends Component {
 				'GET',
 				true
 			);
+
+			let status = rs.transaction.hmo_approval_status;
+			hmo.hmo_approval_status = status;
 			let act = action === 1 ? ' Approved' : ' Rejected';
 			let message = hmo.hmo_name + act;
+			this.props.updateTransaction(hmo);
 			notifySuccess(message);
 			this.setState({ loading: false });
 		} catch (error) {
@@ -116,11 +121,11 @@ class HmoTable extends Component {
 											<i className="os-icon os-icon-thumbs-down" />
 										</a>
 									</Tooltip>
-									<Tooltip title="Change status">
-										<a className="secondary">
-											<i className="os-icon os-icon-folder-plus" />
-										</a>
-									</Tooltip>
+									{/*<Tooltip title="Change status">*/}
+									{/*	<a className="secondary">*/}
+									{/*		<i className="os-icon os-icon-folder-plus" />*/}
+									{/*	</a>*/}
+									{/*</Tooltip>*/}
 								</td>
 							</tr>
 						);
@@ -139,4 +144,4 @@ class HmoTable extends Component {
 	}
 }
 
-export default connect(null, {})(HmoTable);
+export default connect(null, { updateTransaction })(HmoTable);

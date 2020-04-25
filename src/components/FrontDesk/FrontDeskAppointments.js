@@ -93,20 +93,10 @@ const Appointment = props => {
 									</div>
 									<div className="element-box-tp">
 										<div className="table-responsive">
-											<table className="table table-padded">
-												<thead>
-													<tr>
-														<th>Patient</th>
-														<th>Whom to see</th>
-														<th className="text-left">Status</th>
-														<th className="text-center">Actions</th>
-													</tr>
-												</thead>
-												<FrontDeskTable
-													appointments={appointments}
-													loading={loading}
-												/>
-											</table>
+											<FrontDeskTable
+												appointments={appointments}
+												loading={loading}
+											/>
 											<div className="controls-below-table">
 												<div className="table-records-info">
 													Showing records 1 - 5
@@ -147,4 +137,10 @@ const Appointment = props => {
 		</div>
 	);
 };
-export default connect(null, {})(Appointment);
+const mapStateToProps = state => {
+	return {
+		reviewTransaction: state.transaction.reviewTransaction,
+		//	hmoList: state.hmo.hmo_list,
+	};
+};
+export default connect(mapStateToProps, {})(Appointment);

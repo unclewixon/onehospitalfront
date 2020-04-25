@@ -109,7 +109,7 @@ export const requestPatch = async (url, authed = false, data) => {
 export const request = async (url, method, authed = false, data) => {
 	// prettier-ignore
 	const user = await (new SSRStorage()).getItem(TOKEN_COOKIE);
-
+	console.log(user);
 	const response = await fetch(url, {
 		method: method,
 		headers: authed ? headers(user) : { ...defaultHeaders },

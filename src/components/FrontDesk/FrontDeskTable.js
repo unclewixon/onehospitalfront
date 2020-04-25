@@ -31,54 +31,74 @@ class FrontDeskTable extends Component {
 		const { appointments, loading } = this.props;
 
 		return (
-			<tbody>
-				{loading ? (
+			<table className="table table-padded">
+				<thead>
 					<tr>
-						<td colSpan="4" className="text-center">
-							<img alt="searching" src={searchingGIF} />
-						</td>
+						<th>Patient</th>
+						<th>Whom to see</th>
+						<th>Consulting Room</th>
+						<th className="text-left">Status</th>
+						<th className="text-center">Actions</th>
 					</tr>
-				) : (
-					appointments &&
-					appointments.map((appointment, i) => (
-						<tr key={i}>
-							<td>
-								<span className="smaller lighter">
-									{appointment.patient.fileNumber}
-								</span>
-								<br />
-								<span>{`${appointment.patient.surname}, ${appointment.patient.other_names}`}</span>
-							</td>
-
-							<td className="cell-with-media">
-								<span>
-									{`${appointment.specialization.name} (${appointment.department.name})`}
-								</span>
-							</td>
-
-							<td className="nowrap">
-								{/* <span className="status-pill smaller green"></span> */}
-								<span>{appointment.status}</span>
-							</td>
-							<td className="row-actions">
-								<a
-									href="#"
-									onClick={() => this.ViewAppointmentDetail(appointment)}>
-									<i className="os-icon os-icon-folder"></i>
-								</a>
-								<a
-									href="#"
-									onClick={() => this.showProfile(appointment.patient)}>
-									<i className="os-icon os-icon-user"></i>
-								</a>
-								<a className="danger" href="#">
-									<i className="os-icon os-icon-ui-15"></i>
-								</a>
+				</thead>
+				<tbody>
+					{loading ? (
+						<tr>
+							<td colSpan="6" className="text-center">
+								<img alt="searching" src={searchingGIF} />
 							</td>
 						</tr>
-					))
-				)}
-			</tbody>
+					) : appointments.length > 0 ? (
+						appointments.map((appointment, i) => {
+							return (
+								<tr key={i}>
+									<td>
+										<span className="smaller lighter">
+											{appointment.patient?.fileNumber}
+										</span>
+										<br />
+										<span>{`${appointment.patient.surname} (${appointment.patient.other_names})`}</span>
+									</td>
+
+									<td className="cell-with-media">
+										<span>
+											{`${appointment.specialization?.name} (${appointment.department?.name})`}
+										</span>
+									</td>
+
+									<td className="cell-with-media">
+										<span>{appointment.consultingRoom?.name}</span>
+									</td>
+
+									<td className="nowrap">
+										{/* <span className="status-pill smaller green"></span> */}
+										<span>{appointment.status}</span>
+									</td>
+									<td className="row-actions">
+										<a
+											href="#"
+											onClick={() => this.ViewAppointmentDetail(appointment)}>
+											<i className="os-icon os-icon-folder"></i>
+										</a>
+										<a
+											href="#"
+											onClick={() => this.showProfile(appointment.patient)}>
+											<i className="os-icon os-icon-user"></i>
+										</a>
+										<a className="danger" href="#">
+											<i className="os-icon os-icon-ui-15"></i>
+										</a>
+									</td>
+								</tr>
+							);
+						})
+					) : (
+						<tr colSpan="4" className="text-center">
+							<td>No Appointments</td>
+						</tr>
+					)}
+				</tbody>
+			</table>
 		);
 	}
 }

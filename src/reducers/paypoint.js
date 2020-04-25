@@ -36,7 +36,7 @@ const paypoint = (state = INITIAL_STATE, action) => {
 		case CREATE_VOUCHER:
 			return {
 				...state,
-				voucher: [...state.voucher, reformatInput(action.payload)],
+				voucher: [...state.voucher, action.payload],
 			};
 		case UPDATE_VOUCHER:
 			let formatted = reformatInput(action.payload);
