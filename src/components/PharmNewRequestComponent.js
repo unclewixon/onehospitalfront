@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import Select from 'react-select';
 import { ReactComponent as PlusIcon } from '../assets/svg-icons/plus.svg';
 import waiting from '../assets/images/waiting.gif';
+// import searchingGIF from '../assets/images/searching.gif'
 // import { ReactComponent as MinusIcon } from '../assets/svg-icons/minus.svg';
 import { ReactComponent as EditIcon } from '../assets/svg-icons/edit.svg';
 import { ReactComponent as TrashIcon } from '../assets/svg-icons/trash.svg';
@@ -12,6 +13,9 @@ import { notifySuccess, notifyError } from './../services/notify';
 import PharmNewRequestViewModal from './PharmNewRequestViewModal';
 import { addPharmacyRequest } from '../actions/patient';
 import { connect } from 'react-redux';
+import { API_URI, diagnosisAPI } from '../services/constants';
+import { request } from '../services/utilities';
+import AsyncSelect from 'react-select/async';
 
 const dummyData = [
 	{ value: '', label: 'Select one', name: 'formulary' },
@@ -51,12 +55,11 @@ const defaultValues = {
 
 const PharmNewRequestComponent = ({
 	patient,
-	diagnosisList,
 	addPharmacyRequest,
 	allPatients,
 	patientsLoading,
-	diagnosisLoading,
-	ServiceCategories
+	ServiceCategories,
+
 }) => {
 	const [refillable, setRefillable] = useState(false);
 	const { register, handleSubmit, setValue, reset, watch } = useForm({
@@ -67,17 +70,34 @@ const PharmNewRequestComponent = ({
 	const [editing, setEditing] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
-	const [diagnosis, setDiagnosis] = useState('');
 	const [prescription, setPrescription] = useState(false);
 	const [chosenPatient, setChosenPatient] = useState(null);
 	const [serviceId, setServiceId] = useState('');
-	const [diagnosisSearch, setDiagnosisSearch] = useState('');
-	const [searching, setSearching] = useState(false)
-	const [diagList, setDiagList] = useState([])
+	const [selectedOption, setSelectedOption] = useState('')
+
 
 	const onRefillableClick = () => {
 		setRefillable(!refillable);
 	};
+	const getOptionValues = option => option.id;
+	const getOptionLabels = option => option.description;
+	const handleChangeOptions = selectedOption => {
+		setValue("diagnosis", selectedOption)
+		setSelectedOption(selectedOption);
+	};
+	const getOptions = async inputValue => {
+		if (!inputValue) {
+			return [];
+		}
+		let val = inputValue.toUpperCase()
+		const res = await request(
+			`${API_URI}${diagnosisAPI}/search?q=${val}`,
+			'GET',
+			true
+		);
+		return res;
+	};
+
 
 	const values = watch();
 
@@ -86,8 +106,7 @@ const PharmNewRequestComponent = ({
 	};
 
 	const onFormSubmit = (data, e) => {
-		const { diagnosis, ...rest } = data;
-		let newPharm = [...pharmRequest, rest];
+		let newPharm = [...pharmRequest, data];
 		setPharmRequest(newPharm);
 		setEditing(false);
 		reset(defaultValues);
@@ -124,7 +143,7 @@ const PharmNewRequestComponent = ({
 		addPharmacyRequest(
 			pharmRequest,
 			patient_id,
-			diagnosis,
+			// chosenDiag,
 			prescription,
 			serviceId,
 			message => {
@@ -154,16 +173,6 @@ const PharmNewRequestComponent = ({
 		onHandleSelectChange(e);
 		setServiceId(e.id)
 	};
-
-	const filteredDiagnosis = () => {
-		console.log(diagnosisSearch)
-		if(typeof diagnosisSearch === 'string' && diagnosisSearch.length > 3) {
-			return diagnosisList.filter(diag => diag.label.toLowerCase().includes(diagnosisSearch.toLowerCase()))
-		} else {
-			return []
-		}
-	}
-
 
 	return (
 		<div className="row" style={{ width: '100%' }}>
@@ -356,20 +365,23 @@ const PharmNewRequestComponent = ({
 								</div>
 							) : null}
 							<div className="row">
-								<h6>Diagnosis Data</h6>
 								<div className="form-group col-sm-12">
-									<Select
-										
-										isSearchable
-										placeholder="Enter ICDIO Code"
-										name="diagnosisSearch"
-										onChange={e => setDiagnosis(e.value)
-										}
-										options={diagnosisList}
-										value={{ label: diagnosis, value: diagnosis }}
-									/>
+									<h6>Diagnosis Data</h6>
+									<AsyncSelect
+												required
+												cacheOptions
+												value={selectedOption}
+												getOptionValue={getOptionValues}
+												getOptionLabel={getOptionLabels}
+												defaultOptions
+												name="diagnosis"
+												ref={register({name: "diagnosis", required: true})}
+												loadOptions={getOptions}
+												onChange={handleChangeOptions}
+												placeholder="Enter ICD10 Code"
+											/>
 								</div>
-							</div>
+							</div> 
 							<div>
 								<h6>Prescription from another facility</h6>
 							</div>
@@ -444,7 +456,7 @@ const PharmNewRequestComponent = ({
 													<td>{request.genericName}</td>
 													<td>{request.drugName}</td>
 													<td>{request.quantity}</td>
-													<td>{diagnosis ? diagnosis : ''}</td>
+													<td>{request.diagnosis.description}</td>
 													<td>
 														<ViewIcon
 															onClick={() => {
@@ -511,4 +523,9 @@ const PharmNewRequestComponent = ({
 	);
 };
 
-export default connect(null, { addPharmacyRequest })(PharmNewRequestComponent);
+// const mapStateToProps = ({ settings }) => ({
+// });
+
+export default connect(null, {
+	addPharmacyRequest,
+})(PharmNewRequestComponent);

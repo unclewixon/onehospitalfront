@@ -326,7 +326,6 @@ export const getRequestByType = (patientId, type, start, end) => {
 export const addPharmacyRequest = (
 	data,
 	id,
-	diagnosis,
 	prescription,
 	serviceId,
 	cb
@@ -353,7 +352,7 @@ export const addPharmacyRequest = (
 			request(`${API_URI}/patient/save-request`, 'POST', true, {
 				requestType: 'pharmacy',
 				requestBody: requestData,
-				diagnosis: diagnosis ? diagnosis : '',
+				diagnosis: data[0].diagnosis.id ? data[0].diagnosis.id : '',
 				prescription: prescription ? prescription : '',
 				patient_id: id ? id : '',
 			})
