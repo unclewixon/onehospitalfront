@@ -96,6 +96,7 @@ const Appointment = props => {
 											<FrontDeskTable
 												appointments={appointments}
 												loading={loading}
+												today={true}
 											/>
 											<div className="controls-below-table">
 												<div className="table-records-info">

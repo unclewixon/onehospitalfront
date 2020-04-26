@@ -11,8 +11,48 @@ import moment from 'moment';
 import { API_URI } from '../../services/constants';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { updateTransaction } from '../../actions/transaction';
+import Modal from 'antd/es/modal';
+import Button from 'antd/es/button';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 class HmoTable extends Component {
+	state = {
+		loading: false,
+		show: false,
+	};
+
+	confirm = (id, data) => {
+		let act = id === 1 ? ' Approve' : ' Reject';
+		confirmAlert({
+			customUI: ({ onClose }) => {
+				return (
+					<div className="custom-ui">
+						<h1>Are you sure?</h1>
+						<p>You want to {act} this ?</p>
+						<div style={{}}>
+							<button
+								className="btn btn-danger"
+								style={{ margin: 10 }}
+								onClick={onClose}>
+								No
+							</button>
+							<button
+								className="btn btn-primary"
+								style={{ margin: 10 }}
+								onClick={() => {
+									this.processTransaction(id, data);
+									onClose();
+								}}>
+								Yes, {act} it!
+							</button>
+						</div>
+					</div>
+				);
+			},
+		});
+	};
+
 	processTransaction = async (action, hmo) => {
 		try {
 			let id = hmo.id;
@@ -71,75 +111,77 @@ class HmoTable extends Component {
 		const { hmoTransactions, loading } = this.props;
 		const hmoReversed = hmoTransactions.reverse();
 		return (
-			<tbody>
-				{loading ? (
-					<tr>
-						<td colSpan="7" className="text-center">
-							<img alt="searching" src={searchingGIF} />
-						</td>
-					</tr>
-				) : (
-					hmoReversed &&
-					hmoReversed.map((trans, key) => {
-						return (
-							<tr key={key}>
-								<td className="text-center">
-									{moment(trans.createdAt).format('DD-MM-YYYY')}
-								</td>
-								<td className="text-center">
-									{trans.hmo_name ? trans.hmo_name : 'No hmo'}
-								</td>
-								<td className="text-center"> {trans.patient_name}</td>
-								<td className="text-center">
-									{' '}
-									{trans.description ? trans.description : 'No Description'}
-								</td>
-								<td className="text-center">
-									{trans.transaction_type
-										? trans.transaction_type
-										: 'No Transaction Type'}
-								</td>
-								<td className="text-center">
-									{trans.amount ? trans.amount : 0}
-								</td>
-								<td className="text-center">
-									{this.approvalStatus(trans.hmo_approval_status)}
-								</td>
-								<td className="row-actions">
-									<Tooltip title="Approve">
-										<a
-											className="secondary"
-											onClick={() => this.processTransaction(1, trans)}>
-											<i className="os-icon os-icon-thumbs-up" />
-										</a>
-									</Tooltip>
+			<>
+				<tbody>
+					{loading ? (
+						<tr>
+							<td colSpan="7" className="text-center">
+								<img alt="searching" src={searchingGIF} />
+							</td>
+						</tr>
+					) : (
+						hmoReversed &&
+						hmoReversed.map((trans, key) => {
+							return (
+								<tr key={key}>
+									<td className="text-center">
+										{moment(trans.createdAt).format('DD-MM-YYYY')}
+									</td>
+									<td className="text-center">
+										{trans.hmo_name ? trans.hmo_name : 'No hmo'}
+									</td>
+									<td className="text-center"> {trans.patient_name}</td>
+									<td className="text-center">
+										{' '}
+										{trans.description ? trans.description : 'No Description'}
+									</td>
+									<td className="text-center">
+										{trans.transaction_type
+											? trans.transaction_type
+											: 'No Transaction Type'}
+									</td>
+									<td className="text-center">
+										{trans.amount ? trans.amount : 0}
+									</td>
+									<td className="text-center">
+										{this.approvalStatus(trans.hmo_approval_status)}
+									</td>
+									<td className="row-actions">
+										<Tooltip title="Approve">
+											<a
+												className="secondary"
+												onClick={() => this.confirm(1, trans)}>
+												<i className="os-icon os-icon-thumbs-up" />
+											</a>
+										</Tooltip>
 
-									<Tooltip title="Reject">
-										<a
-											className="secondary"
-											onClick={() => this.processTransaction(2, trans)}>
-											<i className="os-icon os-icon-thumbs-down" />
-										</a>
-									</Tooltip>
-									{/*<Tooltip title="Change status">*/}
-									{/*	<a className="secondary">*/}
-									{/*		<i className="os-icon os-icon-folder-plus" />*/}
-									{/*	</a>*/}
-									{/*</Tooltip>*/}
-								</td>
-							</tr>
-						);
-					})
-				)}
+										<Tooltip title="Reject">
+											<a
+												className="secondary"
+												onClick={() => this.confirm(2, trans)}>
+												<i className="os-icon os-icon-thumbs-down" />
+											</a>
+										</Tooltip>
+										{/*<Tooltip title="Change status">*/}
+										{/*	<a className="secondary">*/}
+										{/*		<i className="os-icon os-icon-folder-plus" />*/}
+										{/*	</a>*/}
+										{/*</Tooltip>*/}
+									</td>
+								</tr>
+							);
+						})
+					)}
 
-				{!loading && hmoTransactions.length < 1 ? (
-					<tr>
-						<td colSpan="7" className="text-center">
-							No transactions
-						</td>
-					</tr>
-				) : null}
-			</tbody>
+					{!loading && hmoTransactions.length < 1 ? (
+						<tr>
+							<td colSpan="7" className="text-center">
+								No transactions
+							</td>
+						</tr>
+					) : null}
+				</tbody>
+			</>
 		);
 	}
 }

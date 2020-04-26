@@ -28,16 +28,17 @@ class FrontDeskTable extends Component {
 	};
 
 	render() {
-		const { appointments, loading } = this.props;
+		const { appointments, loading, today } = this.props;
 
 		return (
 			<table className="table table-padded">
 				<thead>
 					<tr>
+						<th hidden={today}>Date</th>
 						<th>Patient</th>
 						<th>Whom to see</th>
 						<th>Consulting Room</th>
-						<th className="text-left">Status</th>
+						<th>Status</th>
 						<th className="text-center">Actions</th>
 					</tr>
 				</thead>
@@ -52,6 +53,9 @@ class FrontDeskTable extends Component {
 						appointments.map((appointment, i) => {
 							return (
 								<tr key={i}>
+									<td className="nowrap" hidden={today}>
+										{moment(appointment.createdAt).format('DD-MM-YYYY')}
+									</td>
 									<td>
 										<span className="smaller lighter">
 											{appointment.patient?.fileNumber}
@@ -70,7 +74,7 @@ class FrontDeskTable extends Component {
 										<span>{appointment.consultingRoom?.name}</span>
 									</td>
 
-									<td className="nowrap">
+									<td>
 										{/* <span className="status-pill smaller green"></span> */}
 										<span>{appointment.status}</span>
 									</td>

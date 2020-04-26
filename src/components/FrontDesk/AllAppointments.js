@@ -115,7 +115,11 @@ export class AllAppointments extends Component {
 					<div className="col-sm-12">
 						<div className="element-box-tp">
 							<div className="table-responsive">
-								<FrontDeskTable appointments={transactions} loading={loading} />
+								<FrontDeskTable
+									appointments={transactions}
+									loading={loading}
+									today={false}
+								/>
 							</div>
 						</div>
 					</div>
