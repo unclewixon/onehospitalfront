@@ -34,7 +34,7 @@ const ModalDentistry = ({
 			onHide={onModalClick}>
 			<Modal.Header closeButton></Modal.Header>
 			<Modal.Body>
-				<div className="onboarding-content with-gradient text-center">
+			<div className="onboarding-content with-gradient text-center">
 					<div className="modal-body">
 						<div className="row">
 							<div className="col-sm-4">
@@ -42,43 +42,51 @@ const ModalDentistry = ({
 									<div
 										className="up-head-w"
 										style={{
-											backgroundImage: require('../../assets/images/profile_bg1.jpg'),
+											backgroundImage: require('../../assets/images/b3.jpeg'),
 										}}>
 										<div className="up-main-info">
-											<h2 className="up-header">
+											<h2
+												className="up-header"
+												style={{ color: '#334152' }}>
 												{activeRequest.patient_name
 													? activeRequest.patient_name
 													: ''}
 											</h2>
 										</div>
 									</div>
-
 									<div className="up-contents">
 										<div className="m-b">
-											<div className="row m-b">
-												<div className="col-sm-12 b-b">
-													<div className="el-tablo centered padded-v">
-														<div className="value">
-															{moment(activeRequest.createdAt).format(
-																'DD/MM/YYYY'
-															)}
-														</div>
-														<div className="label">Request Date</div>
-													</div>
-												</div>
-											</div>
-
-											<div className="padded">
-												<div className="os-progress-bar primary">
-													<div className="col-sm-12 b-b">
-														<div className="el-tablo centered padded-v">
-															<div className="label">Amount</div>
-															<div className="value">
-																{calculateAmount(activeRequest.requestBody)}
-															</div>
-														</div>
-													</div>
-												</div>
+											<div className="element-box-tp">
+												<table className="table table-clean">
+													<tbody>
+														<tr>
+															<td>
+																<div className="text-left">
+																	Request Date
+																		</div>
+															</td>
+															<td className="text-right">
+																<div className="value text-success">
+																	{moment(activeRequest.createdAt).format(
+																		'DD/MM/YYYY'
+																	)}
+																</div>
+															</td>
+														</tr>
+														<tr>
+															<td>
+																<div className="text-left">
+																	Amount
+																		</div>
+															</td>
+															<td className="text-right">
+																<div className="value text-success">
+																	{calculateAmount(activeRequest.requestBody)}
+																</div>
+															</td>
+														</tr>
+													</tbody>
+												</table>
 											</div>
 										</div>
 									</div>
@@ -90,61 +98,36 @@ const ModalDentistry = ({
 									<div className="element-info">
 										<div className="element-info-with-icon">
 											<div className="element-info-icon">
-												<div className="os-icon os-icon-pen"></div>
+												<div className="os-icon os-icon-wallet-loaded"></div>
 											</div>
 											<div className="element-info-text">
 												<h5 className="element-inner-header">
 													Dentistry Request
 												</h5>
-												{/*appointment_date*/}
-												{/*department.name*/}
-												{/*consultingRoom.name*/}
-												{/*specialization.name*/}
-												{/*department.staff.first_name*/}
 											</div>
 										</div>
 									</div>
-
-									<div className="">
-										<div className="row">
-											<div className="col-sm">
-												<div className="form-group">
-													<label>Service Name</label>
-													<span className="form-control">
-														{activeRequest.requestBody &&
+									<table className="table table-padded">
+										<tbody>
+											<tr>
+												<td class="font-weight-bold">
+													Service Name
+												</td>
+												<td>
+												{activeRequest.requestBody &&
 															activeRequest.requestBody.length
 															? activeRequest.requestBody.map((spec, i) => (
 																<div key={i}>{spec.service_name}</div>
 															))
 															: []}
-													</span>
-												</div>
-											</div>
-										</div>
-
-										<div className="row">
-											<div className="col-sm">
-												<div className="form-group">
-													<label>Created By</label>
-													<span className="form-control">
-														{activeRequest.created_by}
-													</span>
-												</div>
-											</div>
-										</div>
-
-										<div className="row">
-											<div className="col-sm">
-												<div className="form-group"></div>
-											</div>
-										</div>
-
-										<div className="row">
-											<div className="col-sm">
-												<div className="form-group"></div>
-											</div>
-										</div>
-									</div>
+												</td>
+											</tr>
+											<tr>
+												<td class="font-weight-bold">Created By</td>
+												<td>{activeRequest.created_by}</td>
+											</tr>
+										</tbody>
+									</table>
 								</div>
 							</div>
 						</div>

@@ -75,7 +75,7 @@ const ModalProcedure = ({
 											</div>
 											<div className="element-info-text">
 												<h5 className="element-inner-header">
-													Dentistry Request
+													Procedure Request
 												</h5>
 											</div>
 										</div>
