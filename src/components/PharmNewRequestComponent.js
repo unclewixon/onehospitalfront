@@ -85,47 +85,40 @@ const PharmNewRequestComponent = ({
 
 	const getServiceUnit = useCallback(async () => {
 		try {
-			const res = await request(
-			`${API_URI}/inventory/categories`,
-			'GET',
-			true
-		);
-		loadInvCategories(res)
+			const res = await request(`${API_URI}/inventory/categories`, 'GET',	true);
+			loadInvCategories(res)
 		} catch (error) {
 			notifyError("Error fetching Service Unit")
 		}
-
 	}, [loadInvCategories])
 
-
-	useEffect(() => {
-		getServiceUnit()
-	}, [getServiceUnit])
-
-	const serviceOptions = categories && categories.length 
-		? categories.map((cat) => {
-			return {
-				value: cat.id,
-				label: cat.name
-			}
-		}) : []
-
-	const getPharmacyItems = async (id) => {
+	const getPharmacyItems = useCallback(async (id) => {
 		try {
-			const res = await request(
-				`${API_URI}/inventory/stocks-by-category/${id}`,
-				'GET',
-				true
-			);
+			const res = await request(`${API_URI}/inventory/stocks-by-category/52b49109-028a-46c6-b5f3-1e88a48d333f`, 'GET', true);
 			loadInventories(res);
 		} catch (error) {
 			notifyError("Erroe fetching pharmacy items")
 		}
-	}
+	}, [loadInventories])
 
-	const handleServiceUnitChange = e => {
-		getPharmacyItems(e.value)
-	}
+	useEffect(() => {
+		getServiceUnit();
+		getPharmacyItems();
+	}, [getServiceUnit, getPharmacyItems])
+
+	// const serviceOptions = categories && categories.length
+	// 	? categories.map((cat) => {
+	// 		return {
+	// 			value: cat.id,
+	// 			label: cat.name
+	// 		}
+	// 	}) : []
+
+
+
+	// const handleServiceUnitChange = e => {
+	// 	getPharmacyItems(e.value)
+	// }
 
 	const genericNameOptions = inventories && inventories.length
 		? inventories.map((drug) => {
@@ -180,7 +173,6 @@ const PharmNewRequestComponent = ({
 		addPharmacyRequest(
 			pharmRequest,
 			patient_id,
-			// chosenDiag,
 			prescription,
 			serviceId,
 			message => {
@@ -250,9 +242,12 @@ const PharmNewRequestComponent = ({
 									<Select
 										ref={register({ name: 'serviceUnit', required: true })}
 										name="serviceUnit"
-										options={serviceOptions}
-										onChange={e => handleServiceUnitChange(e)}
+										options={[{ value: 'pharmacy', label: 'Pharmacy'}]}
 										required
+										value={{
+											value: 'pharmacy',
+											label: 'Pharmacy'
+										}}
 									/>
 								</div>
 								<div className="form-group col-sm-6">
@@ -263,6 +258,7 @@ const PharmNewRequestComponent = ({
 										ref={register({ name: 'formulary', required: true })}
 										onChange={e => setValue("formulary", e.value)}
 										options={genericNameOptions}
+
 									/>
 								</div>
 							</div>
@@ -394,20 +390,20 @@ const PharmNewRequestComponent = ({
 								<div className="form-group col-sm-12">
 									<h6>Diagnosis Data</h6>
 									<AsyncSelect
-												required
-												cacheOptions
-												value={selectedOption}
-												getOptionValue={getOptionValues}
-												getOptionLabel={getOptionLabels}
-												defaultOptions
-												name="diagnosis"
-												ref={register({name: "diagnosis", required: true})}
-												loadOptions={getOptions}
-												onChange={handleChangeOptions}
-												placeholder="Enter ICD10 Code"
-											/>
+										required
+										cacheOptions
+										value={selectedOption}
+										getOptionValue={getOptionValues}
+										getOptionLabel={getOptionLabels}
+										defaultOptions
+										name="diagnosis"
+										ref={register({ name: "diagnosis", required: true })}
+										loadOptions={getOptions}
+										onChange={handleChangeOptions}
+										placeholder="Enter ICD10 Code"
+									/>
 								</div>
-							</div> 
+							</div>
 							<div>
 								<h6>Prescription from another facility</h6>
 							</div>
