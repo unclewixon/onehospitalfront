@@ -192,9 +192,13 @@ const PatientDataUpload = props => {
 				let formData = new FormData();
 				formData.append('file', file);
 				formData.append('document_type', documentID);
-				const rs = await upload(
+				for (var key of formData.entries()) {
+					console.log(key[0] + ', ' + key[1]);
+				}
+				const rs = await request(
 					`${API_URI}${patientAPI}` + '/' + patient.id + '/upload-document',
 					'POST',
+					true,
 					formData
 				);
 				//props.addPatientUploadData(rs);
