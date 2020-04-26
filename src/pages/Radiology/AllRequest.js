@@ -78,7 +78,7 @@ class OpenRequest extends Component {
 			);
 			console.log(rs);
 			this.props.loadRadiology(rs);
-			console.log(rs);
+			console.log(rs, 'response');
 			this.setState({ loading: false, filtering: false });
 		} catch (error) {
 			console.log(error);
@@ -102,7 +102,9 @@ class OpenRequest extends Component {
 						requestBody: {
 							amount: val.amount,
 							service_id: val.service_id,
-							specialization: val.specialization,
+							specialization: val.specialization
+								? val.specialization
+								: val.service_name,
 						},
 						status: value.status,
 						patientName: value.patient_name,

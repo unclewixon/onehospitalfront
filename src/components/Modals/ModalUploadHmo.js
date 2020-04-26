@@ -16,6 +16,7 @@ class ModalUploadHmo extends Component {
 		this.setState({
 			file: e.target.files[0],
 		});
+		console.log(e.target.files[0]);
 	};
 
 	onUpload = e => {

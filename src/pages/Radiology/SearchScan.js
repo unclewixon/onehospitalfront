@@ -83,6 +83,7 @@ export class SearchScan extends Component {
 		let newData = [];
 		data.forEach(value => {
 			if (Array.isArray(value.requestBody)) {
+				console.log(value);
 				value.requestBody.forEach(val => {
 					newData.push({
 						id: value.id,
@@ -91,9 +92,11 @@ export class SearchScan extends Component {
 						updateAt: value.updateAt,
 						requestType: value.requestType,
 						requestBody: {
-							amount: val.amount,
+							amount: value.amount,
 							service_id: val.service_id,
-							specialization: val.specialization,
+							specialization: val.specialization
+								? val.specialization
+								: val.service_name,
 						},
 						status: value.status,
 						patientName: value.patient_name,
