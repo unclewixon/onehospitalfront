@@ -8,12 +8,21 @@ import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
+import { getPhysiotherapies } from './../../actions/patient';
+import ModalPhysiotherapy from '../../components/Modals/ModalPhysiotherapy';
+
 class Physiotherapy extends Component {
 	state = {
 		loaded: false,
+		showModal: false,
+		activeRequest: null
 	};
 	componentDidMount() {
 		this.fetchPhysio();
+	}
+
+	onModalClick = () => {
+		this.setState({ showModal: !this.state.showModal })
 	}
 
 	fetchPhysio = async () => {
@@ -25,8 +34,6 @@ class Physiotherapy extends Component {
 				'GET',
 				true
 			);
-
-			console.log(rs);
 			this.props.getPhysiotherapies(rs);
 
 			this.setState({ loaded: false });
@@ -65,8 +72,7 @@ class Physiotherapy extends Component {
 	};
 
 	table = () =>
-		this.props.physiotherapies &&
-		this.convertToIndividualRequest(this.props.physiotherapies).map(
+		this.props && this.props.physiotherapies.map(
 			(physio, i) => {
 				return (
 					<tr className="" data-index="0" key={i}>
@@ -76,9 +82,7 @@ class Physiotherapy extends Component {
 						<td className="text-center">
 							{moment(physio.createdAt).format('DD-MM-YYYY')}
 						</td>
-						<td className="text-center">{physio.requestBody.specialization}</td>
-						<td className="text-center">{physio.requestBody.sessionCount}</td>
-
+						<td className="text-center">{physio.created_by}</td>
 						<td className="text-center">
 							{physio.status === 0 ? (
 								<>
@@ -86,15 +90,20 @@ class Physiotherapy extends Component {
 									<span>Pending</span>
 								</>
 							) : (
-								<>
-									<span className="status-pill smaller green"></span>
-									<span>Approved</span>
-								</>
-							)}
+									<>
+										<span className="status-pill smaller green"></span>
+										<span>Approved</span>
+									</>
+								)}
 						</td>
 						<td className="row-actions text-right">
 							<Tooltip title="View Request">
-								<a href="#">
+								<a onClick={
+									() => {
+										this.onModalClick()
+										this.setState({ activeRequest: physio })
+									}
+								}>
 									<i className="os-icon os-icon-documents-03" />
 								</a>
 							</Tooltip>
@@ -112,7 +121,6 @@ class Physiotherapy extends Component {
 	render() {
 		const { location, physiotherapies } = this.props;
 		const { loaded } = this.state;
-		console.log(physiotherapies);
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
@@ -124,6 +132,13 @@ class Physiotherapy extends Component {
 							New Physiotherapy Request
 						</Link>
 					</div>
+					{this.state.activeRequest ? (
+						<ModalPhysiotherapy
+							activeRequest={this.state.activeRequest}
+							showModal={this.state.showModal}
+							onModalClick={this.onModalClick}
+						/>
+					) : null}
 					<h6 className="element-header">Physiotherapy Requests</h6>
 					<div className="element-box">
 						<div className="bootstrap-table">
@@ -143,8 +158,7 @@ class Physiotherapy extends Component {
 											<tr>
 												<th className="text-center">S/N</th>
 												<th className="text-center">Request Date</th>
-												<th className="text-center">Specialization</th>
-												<th className="text-center">Session Count</th>
+												<th className="text-center">Requested By</th>
 												<th className="text-center">Request Status</th>
 												<th className="text-right" />
 											</tr>
@@ -157,8 +171,8 @@ class Physiotherapy extends Component {
 													</td>
 												</tr>
 											) : (
-												<>{this.table()}</>
-											)}
+													<>{this.table()}</>
+												)}
 										</tbody>
 									</table>
 								</div>
@@ -178,4 +192,6 @@ const mapStateToProps = (state, ownProps) => {
 	};
 };
 
-export default withRouter(connect(mapStateToProps, {})(Physiotherapy));
+export default withRouter(connect(mapStateToProps, {
+	getPhysiotherapies
+})(Physiotherapy));

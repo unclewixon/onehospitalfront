@@ -35,14 +35,6 @@ export class Pharmacy extends Component {
 										Dashboard
 									</Link>
 									<Link
-										to={`${match.path}/filled-request`}
-										className={`mr-2 btn btn-primary btn-sm  ${
-											page === 'filled-request' ? 'btn-outline-primary' : ''
-										}`}>
-										{' '}
-										Filled Request
-									</Link>
-									<Link
 										to={`${match.path}/all-request`}
 										className={`mr-2 btn btn-primary btn-sm  ${
 											page === 'all-request' ? 'btn-outline-primary' : ''
@@ -70,10 +62,6 @@ export class Pharmacy extends Component {
 													component={PharmRecentRequest}
 												/>
 												<Route
-													path={`${match.url}/filled-request`}
-													component={PharmFillRequest}
-												/>
-												<Route
 													path={`${match.url}/all-request`}
 													component={PharmAllRequest}
 												/>
@@ -90,9 +78,6 @@ export class Pharmacy extends Component {
 							</div>
 						</div>
 					</div>
-				</div>
-				<div className="content-panel compact">
-					<Queue />
 				</div>
 			</div>
 		);

@@ -41,7 +41,20 @@ class ClinicalLab extends Component {
 				'GET',
 				true
 			);
-			this.props.loadClinicalLab(rs);
+
+			const filterResponse = () => {
+				const res = rs.map(lab => {
+					const filtered = lab.requestBody.groups.filter(group => {
+						const filt = group.parameters.some(param => param.result === '');
+						return filt;
+					});
+					return filtered && filtered.length ? lab : [];
+				});
+				return res && res.length ? res : null;
+			};
+			const newResp = filterResponse().filter(fil => fil.length !== 0);
+
+			this.props.loadClinicalLab(newResp);
 			return this.setState({ ...this.state, loading: false });
 		} catch (error) {
 			this.setState({ ...this.state, loading: false });
@@ -188,14 +201,12 @@ class ClinicalLab extends Component {
 														<div className="fht-cell"></div>
 													</th>
 													<th>
-														<div className="th-inner sortable both">
-															Request Date
-														</div>
+														<div className="th-inner sortable both">S/N</div>
 														<div className="fht-cell"></div>
 													</th>
 													<th>
 														<div className="th-inner sortable both">
-															Patiend ID
+															Request Date
 														</div>
 														<div className="fht-cell"></div>
 													</th>
@@ -219,20 +230,25 @@ class ClinicalLab extends Component {
 											</thead>
 
 											{loading ? (
-												<tr>
-													<td colSpan="4" className="text-center">
-														<img alt="searching" src={searchingGIF} />
-													</td>
-												</tr>
+												<tbody>
+													<tr>
+														<td colSpan="4" className="text-center">
+															<img alt="searching" src={searchingGIF} />
+														</td>
+													</tr>
+												</tbody>
 											) : (
 												<tbody>
 													{clinicalLab &&
-														clinicalLab.map(lab => {
+														clinicalLab.map((lab, index) => {
 															return (
 																<ClinicalLabItem
 																	key={lab.id}
 																	lab={lab}
-																	modalClick={LAB => this.modalFunction(LAB)}
+																	index={index}
+																	modalClick={LAB =>
+																		this.modalFunction(LAB, index)
+																	}
 																/>
 															);
 														})}

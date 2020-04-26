@@ -51,7 +51,19 @@ class AllRequest extends Component {
 				true
 			);
 
-			this.props.loadClinicalLab(rs);
+			const filterResponse = () => {
+				const res = rs.map(lab => {
+					const filtered = lab.requestBody.groups.filter(group => {
+						const filt = group.parameters.some(param => param.result === '');
+						return filt;
+					});
+					return filtered && filtered.length ? lab : [];
+				});
+				return res && res.length ? res : null;
+			};
+			const newResp = filterResponse().filter(fil => fil.length !== 0);
+
+			this.props.loadClinicalLab(newResp);
 			cb();
 		} catch (error) {
 			console.log(error);
@@ -174,11 +186,13 @@ class AllRequest extends Component {
 								<div className="element-box">
 									<div className="table-responsive">
 										{loading ? (
-											<tr>
-												<td colSpan="4" className="text-center">
-													<img alt="searching" src={searchingGIF} />
-												</td>
-											</tr>
+											<tbody>
+												<tr>
+													<td colSpan="4" className="text-center">
+														<img alt="searching" src={searchingGIF} />
+													</td>
+												</tr>
+											</tbody>
 										) : (
 											<table className="table table-striped">
 												<thead>
@@ -188,14 +202,12 @@ class AllRequest extends Component {
 															<div className="fht-cell"></div>
 														</th>
 														<th>
-															<div className="th-inner sortable both">
-																Request Date
-															</div>
+															<div className="th-inner sortable both">S/N</div>
 															<div className="fht-cell"></div>
 														</th>
 														<th>
 															<div className="th-inner sortable both">
-																Patiend ID
+																Request Date
 															</div>
 															<div className="fht-cell"></div>
 														</th>
@@ -220,11 +232,12 @@ class AllRequest extends Component {
 
 												<tbody>
 													{clinicalLab &&
-														clinicalLab.reverse().map(lab => {
+														clinicalLab.reverse().map((lab, index) => {
 															return (
 																<ClinicalLabItem
 																	key={lab.id}
 																	lab={lab}
+																	index={index}
 																	modalClick={LAB => this.modalFunction(LAB)}
 																/>
 															);

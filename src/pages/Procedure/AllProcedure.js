@@ -231,12 +231,6 @@ class AllProcedure extends Component {
 															<div className="fht-cell"></div>
 														</th>
 														<th>
-															<div className="th-inner sortable both">
-																Request Status
-															</div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
 															<div className="th-inner "></div>
 															<div className="fht-cell"></div>
 														</th>

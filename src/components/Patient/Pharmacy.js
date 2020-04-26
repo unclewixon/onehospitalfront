@@ -17,6 +17,12 @@ const Pharmacy = props => {
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
+	const [{ startDate, endDate }, setDate] = useState({
+		startDate: moment(Date.now())
+			.subtract(1, 'days')
+			.format('YYYY-MM-DD'),
+		endDate: moment(Date.now()).format('YYYY-MM-DD')
+	})
 
 	const onModalClick = () => {
 		setShowModal(!showModal);
@@ -27,7 +33,7 @@ const Pharmacy = props => {
 		const patient_id = patient && patient.id ? patient.id : '';
 		if (!loaded) {
 			setDataLoaded(true);
-			getRequestByType(patient_id, 'pharmacy')
+			getRequestByType(patient_id, 'pharmacy', startDate, endDate)
 				.then(response => {
 					setDataLoaded(false);
 				})

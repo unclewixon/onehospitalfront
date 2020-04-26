@@ -11,6 +11,7 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadClinicalLab } from '../../actions/patient';
 import _ from 'lodash';
+import ModalClinicalLab from '../../components/Modals/ModalClinicalLab';
 const { RangePicker } = DatePicker;
 
 const status = [
@@ -22,6 +23,8 @@ class LabRecentRequest extends Component {
 		filtering: false,
 		loading: false,
 		id: null,
+		showModal: false,
+		activeRequest: null,
 		startDate: '',
 		endDate: '',
 		status: '',
@@ -40,13 +43,34 @@ class LabRecentRequest extends Component {
 				true
 			);
 
-			this.props.loadClinicalLab(rs);
+			const filterResponse = () => {
+				const res = rs.map(lab => {
+					const filtered = lab.requestBody.groups.filter(group => {
+						const filt = group.parameters.some(param => param.result !== '');
+						return filt;
+					});
+					return filtered && filtered.length ? lab : [];
+				});
+				return res && res.length ? res : null;
+			};
+			const newResp = filterResponse().filter(fil => fil.length !== 0);
+
+			this.props.loadClinicalLab(newResp);
 			this.setState({ loading: false, filtering: false });
 		} catch (error) {
 			console.log(error);
 			notifyError('Error fetching all lab request');
 			this.setState({ loading: false, filtering: false });
 		}
+	};
+
+	onModalClick = () => {
+		this.setState({ showModal: !this.state.showModal });
+	};
+
+	modalFunction = lab => {
+		this.onModalClick();
+		this.setState({ activeRequest: lab });
 	};
 
 	doFilter = e => {
@@ -96,6 +120,13 @@ class LabRecentRequest extends Component {
 					<div className="element-wrapper">
 						<div className="row">
 							<div className="col-md-12">
+								{this.state.activeRequest ? (
+									<ModalClinicalLab
+										showModal={this.state.showModal}
+										activeRequest={this.state.activeRequest}
+										onModalClick={this.onModalClick}
+									/>
+								) : null}
 								<h6 className="element-header">Filter by:</h6>
 
 								<form className="row">
@@ -151,14 +182,12 @@ class LabRecentRequest extends Component {
 														<div className="fht-cell"></div>
 													</th>
 													<th>
-														<div className="th-inner sortable both">
-															Request Date
-														</div>
+														<div className="th-inner sortable both">S/N</div>
 														<div className="fht-cell"></div>
 													</th>
 													<th>
 														<div className="th-inner sortable both">
-															Patiend ID
+															Request Date
 														</div>
 														<div className="fht-cell"></div>
 													</th>
@@ -188,11 +217,19 @@ class LabRecentRequest extends Component {
 															<img alt="searching" src={searchingGIF} />
 														</td>
 													</tr>
-												) : null}
-												{clinicalLab &&
-													clinicalLab.reverse().map(lab => {
-														return <ClinicalLabItem key={lab.id} lab={lab} />;
-													})}
+												) : (
+													clinicalLab &&
+													clinicalLab.reverse().map((lab, index) => {
+														return (
+															<ClinicalLabItem
+																key={lab.id}
+																lab={lab}
+																index={index}
+																modalClick={LAB => this.modalFunction(LAB)}
+															/>
+														);
+													})
+												)}
 											</tbody>
 										</table>
 										{!_.isEmpty(clinicalLab) ? null : (

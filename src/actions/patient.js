@@ -238,7 +238,7 @@ export const createLabRequest = data => {
 													range: param.referenceRange
 														? param.referenceRange
 														: '',
-													result: '',
+													result: param.result ? param.result : '',
 												};
 										  })
 										: [],
@@ -250,7 +250,7 @@ export const createLabRequest = data => {
 								return {
 									name: param.name ? param.name : '',
 									range: param.referenceRange ? param.referenceRange : '',
-									result: '',
+									result: param.result ? param.result : '',
 								};
 						  })
 						: [],
@@ -270,7 +270,7 @@ export const createLabRequest = data => {
 										name: param && param.name ? param.name : '',
 										range:
 											param && param.referenceRange ? param.referenceRange : '',
-										result: '',
+										result: param.result ? param.result : '',
 									};
 								}),
 						};
@@ -301,13 +301,13 @@ export const createLabRequest = data => {
 	};
 };
 
-export const getRequestByType = (patientId, type) => {
+export const getRequestByType = (patientId, type, start, end) => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			request(
 				patientId
-					? `${API_URI}/patient/${patientId}/request/${type}?startDate=&endDate=`
-					: `${API_URI}/patient/requests/${type}?startDate=&endDate=`,
+					? `${API_URI}/patient/${patientId}/request/${type}?startDate=${start}&endDate=${end}`
+					: `${API_URI}/patient/requests/${type}?startDate=${start}&endDate=${end}`,
 				'GET',
 				true
 			)
@@ -339,14 +339,7 @@ export const getRequestByType = (patientId, type) => {
 	};
 };
 
-export const addPharmacyRequest = (
-	data,
-	id,
-	diagnosis,
-	prescription,
-	serviceId,
-	cb
-) => {
+export const addPharmacyRequest = (data, id, prescription, serviceId, cb) => {
 	return dispatch => {
 		const requestData = data
 			? data.map(request => ({
@@ -369,7 +362,7 @@ export const addPharmacyRequest = (
 			request(`${API_URI}/patient/save-request`, 'POST', true, {
 				requestType: 'pharmacy',
 				requestBody: requestData,
-				diagnosis: diagnosis ? diagnosis : '',
+				diagnosis: data[0].diagnosis.id ? data[0].diagnosis.id : '',
 				prescription: prescription ? prescription : '',
 				patient_id: id ? id : '',
 			})
