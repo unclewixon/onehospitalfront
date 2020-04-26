@@ -124,9 +124,11 @@ export const request = async (url, method, authed = false, data) => {
 };
 
 export const upload = async (url, method, body) => {
-	const response = await fetch(url, { method, headers, body });
+	const user = await new SSRStorage().getItem(TOKEN_COOKIE);
+	console.log(body);
+	const response = await fetch(url, { method, headers: headers(user), body });
 	const result = await checkStatus(response);
-	return parseJSON(result);
+	return result;
 };
 
 // prettier-ignore

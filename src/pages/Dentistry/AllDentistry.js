@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { request } from '../../services/utilities';
 import { API_URI } from '../../services/constants';
 import { loadDentistryRequests } from '../../actions/patient';
@@ -31,7 +31,6 @@ class AllDentistry extends Component {
 	}
 
 	fetchPhysio = async patientId => {
-		console.log(this.props, 'let props');
 		const { startDate, endDate } = this.state;
 		this.setState({ loaded: true });
 		try {
@@ -42,7 +41,6 @@ class AllDentistry extends Component {
 				'GET',
 				true
 			);
-			console.log(rs);
 			this.props.loadDentistryRequests(rs);
 			return this.setState({ loaded: false, filtering: false });
 		} catch (error) {
@@ -105,23 +103,11 @@ class AllDentistry extends Component {
 							<i className="os-icon os-icon-documents-03" />
 						</a>
 					</Tooltip>
-					<td className="row-actions text-right">
-						<Tooltip title="Update">
-							<Link
-								className=""
-								// to={`${location.pathname}#update-allergy`}
-								state={data}>
-								<i
-									className="os-icon os-icon-ui-49"
-									onClick={() => this.props.Allergy(data)}></i>
-							</Link>
-							<Tooltip title="Delete">
-								<i
-									className="os-icon os-icon-ui-15"
-									onClick={() => this.confirmDelete(data)}></i>
-							</Tooltip>
-						</Tooltip>
-					</td>
+					<Tooltip title="Print Request">
+						<a className="ml-2">
+							<i className="icon-feather-printer" />
+						</a>
+					</Tooltip>
 				</td>
 			</tr>
 		);

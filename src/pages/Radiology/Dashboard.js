@@ -16,10 +16,12 @@ import { uploadRadiology } from '../../actions/general';
 import _ from 'lodash';
 import { toggleProfile } from '../../actions/user';
 import Popover from 'antd/lib/popover';
+
 const UploadImagingData = ({ uploading, doUpload, hide }) => {
 	const [files, setFiles] = useState(null);
 	const [label, setLabel] = useState('');
 	let uploadAttachment;
+
 	const handleChange = e => {
 		setFiles(e.target.files);
 
@@ -131,6 +133,7 @@ export class Dashboard extends Component {
 		data.forEach(value => {
 			if (Array.isArray(value.requestBody)) {
 				value.requestBody.forEach(val => {
+					console.log(val, 'Stupid val');
 					newData.push({
 						id: value.id,
 						isActive: value.isActive,
@@ -140,7 +143,9 @@ export class Dashboard extends Component {
 						requestBody: {
 							amount: val.amount,
 							service_id: val.service_id,
-							specialization: val.specialization,
+							specialization: val.specialization
+								? val.specialization
+								: val.service_name,
 						},
 						status: value.status,
 						patientName:
@@ -172,7 +177,6 @@ export class Dashboard extends Component {
 		this.props.toggleProfile(true, info);
 	};
 	upload = req => {
-		console.log(req);
 		const info = { patient: req.patient, type: 'patient' };
 		this.props.toggleProfile(true, info);
 		this.props.uploadRadiology(true);
@@ -188,44 +192,40 @@ export class Dashboard extends Component {
 
 	onUpload = async (e, files) => {
 		e.preventDefault();
-		console.log(files);
+		console.log(files, 'files');
 		const { patient } = this.state;
-		console.log(patient);
 		if (!files) {
 			notifyError('You did not select any image file');
 			return;
 		}
 		this.setState({ uploading: true });
 
-		let fileData = [];
-		fileData.files = [...files];
+		// let fileData = [];
+		// fileData.files = [...files];
 
-		console.log(fileData);
+		// console.log(fileData.files[0], "file");
 		//files: [file1, file2, file3]
 		const file = files[0];
 		if (file) {
 			try {
 				let formData = new FormData();
-				formData.append('file', fileData);
+				formData.append('files', file);
 				formData.append('document_type', 'Imaging');
+				console.log(formData.getAll());
 				const rs = await upload(
-					`${API_URI}${patientAPI}` +
-						'/' +
-						patient.id +
-						'/upload-request-document',
+					`${API_URI}${patientAPI}/${patient.patient_id}/upload-request-document`,
 					'POST',
 					formData
 				);
 				notifySuccess(`Patient Imaging Data Uploaded`);
-				this.state({ uploading: false, upload_visible: false });
+				this.setState({ uploading: false, upload_visible: false });
 				console.log(rs);
 			} catch (error) {
 				console.log(error);
-				this.state({ uploading: false, upload_visible: false });
+				this.setState({ uploading: false, upload_visible: false });
 				// throw new SubmissionError({
 				// 	_error: e.message || 'could not upload data',
 				// });
-
 				notifyError(e.message || 'could not upload data');
 			}
 		}
@@ -234,14 +234,15 @@ export class Dashboard extends Component {
 	getRequests = arr => {
 		let rer = [];
 		arr.forEach(val => {
-			rer = [...rer, val.service_name];
+			console.log(val);
+			rer = [...rer, val.service_name ? val.service_name : val.specialization];
 		});
 		return rer.join(', ');
 	};
 
 	togglePopover = req => {
-		this.setState({ patient: req.patient, upload_visible: true });
-		console.log(this.state.patient);
+		this.setState({ patient: req });
+		this.setState({ upload_visible: true });
 	};
 	render() {
 		const {
