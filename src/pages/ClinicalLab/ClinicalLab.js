@@ -41,7 +41,20 @@ class ClinicalLab extends Component {
 				'GET',
 				true
 			);
-			this.props.loadClinicalLab(rs);
+
+			const filterResponse = () => {
+			  const res =	rs.map(lab => {
+					const filtered = lab.requestBody.groups.filter(group => {
+						const filt = group.parameters.some(param => param.result === "")
+						return filt
+					})
+				return filtered && filtered.length ? lab : []
+			})
+			return res && res.length ? res : null
+		}
+			const newResp = filterResponse().filter(fil => fil.length !== 0)
+
+			this.props.loadClinicalLab(newResp);
 			return this.setState({ ...this.state, loading: false });
 		} catch (error) {
 			this.setState({ ...this.state, loading: false });

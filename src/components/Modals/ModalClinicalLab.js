@@ -333,8 +333,8 @@ const ModalClinicalLab = ({
 																													param.result === "" ? (
 																														<input
 																															type="text"
-																															name="groupTestResult"
-																															value={groupTestResult && groupTestResult[i] && groupTestResult[i].result ? groupTestResult[i].result : ''}
+																															name="groupTestParam"
+																															value={groupTestParam && groupTestParam[i] && groupTestParam[i].result ? groupTestParam[i].result : ''}
 																															onChange={(e) => handleInputResultChange(e, i)}
 																														/>
 																													) : (<span>{param.result}</span>)
@@ -381,7 +381,7 @@ const ModalClinicalLab = ({
 																												<td>{param.name}</td>
 																												<td>{param.range}</td>
 																												<td>
-																													{
+																												{
 																														param.result === "" ? (
 																															<input
 																																type="text"
@@ -420,16 +420,16 @@ const ModalClinicalLab = ({
 																											<td>{param.name}</td>
 																											<td>{param.range}</td>
 																											<td>
-																												{
-																													param.result === "" ? (
-																														<input
-																															type="text"
-																															name="groupTestResult"
-																															value={groupTestResult && groupTestResult[i] && groupTestResult[i].result ? groupTestResult[i].result : ''}
-																															onChange={(e) => handleInputResultChange(e, i)}
-																														/>
-																													) : (<span>{param.result}</span>)
-																												}
+																											{
+																														param.result === "" ? (
+																															<input
+																																type="text"
+																																name="groupTestParam"
+																																value={groupTestParam && groupTestParam[i] && groupTestParam[i].result ? groupTestParam[i].result : ''}
+																																onChange={(e) => handleInputResultChange(e, i)}
+																															/>
+																														) : (<span>{param.result}</span>)
+																													}
 																											</td>
 																										</tr>
 																									))}
@@ -490,8 +490,8 @@ const ModalClinicalLab = ({
 																													param.result === "" ? (
 																														<input
 																															type="text"
-																															name="groupTestResult"
-																															value={groupTestResult && groupTestResult[i] && groupTestResult[i].result ? groupTestResult[i].result : ''}
+																															name="paramResult"
+																															value={paramResult && paramResult[i] && paramResult[i].result ? paramResult[i].result : ''}
 																															onChange={(e) => handleInputResultChange(e, i)}
 																														/>
 																													) : (<span>{param.result}</span>)
@@ -536,12 +536,12 @@ const ModalClinicalLab = ({
 																											<td>{param.name}</td>
 																											<td>{param.range}</td>
 																											<td>
-																												{
+																											{
 																													param.result === "" ? (
 																														<input
 																															type="text"
-																															name="groupTestResult"
-																															value={groupTestResult && groupTestResult[i] && groupTestResult[i].result ? groupTestResult[i].result : ''}
+																															name="paramResult"
+																															value={paramResult && paramResult[i] && paramResult[i].result ? paramResult[i].result : ''}
 																															onChange={(e) => handleInputResultChange(e, i)}
 																														/>
 																													) : (<span>{param.result}</span>)
