@@ -105,11 +105,8 @@ class OpenRequest extends Component {
 							specialization: val.specialization,
 						},
 						status: value.status,
-						patientName:
-							(value.patient.surname ? value.patient.surname : '') +
-							' ' +
-							(value.patient.other_names ? value.patient.other_names : ''),
-						fileNumber: value.patient.fileNumber,
+						patientName: value.patient_name,
+						fileNumber: value.fileNumber,
 					});
 				});
 			} else {
