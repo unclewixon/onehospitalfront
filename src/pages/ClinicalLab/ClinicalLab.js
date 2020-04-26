@@ -82,15 +82,13 @@ class ClinicalLab extends Component {
 		const page = location.pathname.split('/').pop();
 
 		const filteredNames =
-			this.props &&
-				this.props.clinicalLab &&
-				this.props.clinicalLab.length
+			this.props && this.props.clinicalLab && this.props.clinicalLab.length
 				? this.props.clinicalLab.map(patient => {
-					return {
-						value: patient.patient_id,
-						label: patient.patient_name,
-					};
-				})
+						return {
+							value: patient.patient_id,
+							label: patient.patient_name,
+						};
+				  })
 				: [];
 
 		const filteredOptions = _.uniqBy(filteredNames, 'value');
@@ -151,7 +149,7 @@ class ClinicalLab extends Component {
 									<div className="form-group col-md-3">
 										<label className="mr-2 " htmlFor="id">
 											Patient
-									</label>
+										</label>
 										<Select
 											styles={customStyle}
 											id="patientId"
@@ -163,7 +161,7 @@ class ClinicalLab extends Component {
 									</div>
 									<div className="form-group col-md-3 mt-4">
 										<div
-											className="btn btn-sm btn-primary btn-upper text-white"
+											className="btn btn-sm btn-primary btn-upper text-white filter-btn"
 											onClick={() => {
 												this.filterEntries();
 											}}>
@@ -172,8 +170,8 @@ class ClinicalLab extends Component {
 												{filtering ? (
 													<img src={waiting} alt="submitting" />
 												) : (
-														'Filter'
-													)}
+													'Filter'
+												)}
 											</span>
 										</div>
 									</div>
@@ -227,18 +225,19 @@ class ClinicalLab extends Component {
 													</td>
 												</tr>
 											) : (
-													<tbody>
-														{clinicalLab &&
-															clinicalLab.map(lab => {
-																return <ClinicalLabItem
+												<tbody>
+													{clinicalLab &&
+														clinicalLab.map(lab => {
+															return (
+																<ClinicalLabItem
 																	key={lab.id}
 																	lab={lab}
 																	modalClick={LAB => this.modalFunction(LAB)}
-																/>;
-															})
-														}
-													</tbody>
-												)}
+																/>
+															);
+														})}
+												</tbody>
+											)}
 										</table>
 									</div>
 								</div>
