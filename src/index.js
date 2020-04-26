@@ -116,7 +116,15 @@ const initData = async () => {
 
 			store.dispatch(loginUser(user));
 			store.dispatch(togglePreloading(false));
-			history.push(window.location.pathname);
+
+			let path =
+				window.location.protocol +
+				'//' +
+				window.location.hostname +
+				':' +
+				window.location.port;
+			let url = window.location.href.replace(path, '');
+			history.push(url);
 			//redirectToPage(user.role, history);
 
 			setTimeout(async () => {
