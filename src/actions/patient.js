@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { API_URI } from '../services/constants';
 import {
 	NEXT_STEP,
@@ -109,6 +108,7 @@ export const Allergy = data => {
 };
 
 export const delete_allergy = payload => {
+	console.log(payload);
 	return {
 		type: DELETE_ALLERGY,
 		payload,

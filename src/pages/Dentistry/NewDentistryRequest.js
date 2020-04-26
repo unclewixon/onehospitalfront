@@ -117,6 +117,7 @@ const NewDentistry = props => {
 			theRequest.request_note = values.request_note;
 			theRequest.patient_id = values.patient_id;
 			//theRequest.primary_diagnosis = selectedOption.icd10Code;
+			console.log(requestData);
 			theRequest.requestBody = requestData;
 			const rs = await request(
 				`${API_URI}${patientAPI}/save-request`,
@@ -124,9 +125,11 @@ const NewDentistry = props => {
 				true,
 				theRequest
 			);
+			console.log(rs);
 			notifySuccess('Dentistry request saved');
 			setSubmitting(false);
 		} catch (e) {
+			console.log(e, 'error from the server');
 			setSubmitting(false);
 			notifyError(e.message || 'could not save dentistry request');
 		}
@@ -145,7 +148,7 @@ const NewDentistry = props => {
 	const fetchServicesByCategory = async id => {
 		try {
 			const rs = await request(
-				`${API_URI}${serviceAPI}` + '/categories/' + id,
+				`${API_URI}${serviceAPI}/categories/${id}`,
 				'GET',
 				true
 			);
