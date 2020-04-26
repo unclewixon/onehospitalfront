@@ -116,7 +116,8 @@ const initData = async () => {
 
 			store.dispatch(loginUser(user));
 			store.dispatch(togglePreloading(false));
-			redirectToPage(user.role, history);
+			history.push(window.location.pathname);
+			//redirectToPage(user.role, history);
 
 			setTimeout(async () => {
 				const user_record = await storage.getItem(USER_RECORD);
@@ -125,7 +126,7 @@ const initData = async () => {
 				}
 			}, 200);
 		} catch (e) {
-			storage.removeItem(TOKEN_COOKIE);
+			//storage.removeItem(TOKEN_COOKIE);
 			store.dispatch(togglePreloading(false));
 			history.push('/?not-authenticated');
 		}
