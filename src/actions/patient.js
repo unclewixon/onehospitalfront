@@ -27,6 +27,8 @@ import {
 	LOAD_RADIOLOGY,
 	LOAD_ANTENNATAL,
 	LOAD_IMMUNIZATION,
+	ADD_IMMUNIZATION,
+	DELETE_IMMUNIZATION,
 } from './types';
 import { request } from '../services/utilities';
 
@@ -200,6 +202,20 @@ export const loadImmunization = payload => {
 	};
 };
 
+export const addImmunizationRequest = payload => {
+	return {
+		type: ADD_IMMUNIZATION,
+		payload,
+	};
+};
+
+export const deleteImmunizationRequest = payload => {
+	return {
+		type: DELETE_IMMUNIZATION,
+		payload,
+	};
+};
+
 export const createLabRequest = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
@@ -364,6 +380,41 @@ export const addPharmacyRequest = (
 				})
 				.catch(error => {
 					cb(null);
+					return reject({ success: false });
+				});
+		});
+	};
+};
+
+export const addImmunization = (data, cb) => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			console.log(data);
+			request(`${API_URI}/patient/immunizations`, 'POST', true, data)
+				.then(response => {
+					dispatch(addImmunizationRequest(response.data));
+					cb('success');
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					cb(null);
+					return reject({ success: false });
+				});
+		});
+	};
+};
+
+export const deleteImmunization = data => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			console.log(data);
+			request(`${API_URI}/patient/${data}/immunizations`, 'DELETE', true)
+				.then(response => {
+					dispatch(deleteImmunizationRequest(data));
+
+					return resolve({ success: true });
+				})
+				.catch(error => {
 					return reject({ success: false });
 				});
 		});

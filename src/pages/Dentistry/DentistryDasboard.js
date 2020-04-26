@@ -205,7 +205,7 @@ class DentistryDashboard extends Component {
 								</div>
 								<div className="form-group col-md-3 mt-4">
 									<div
-										className="btn btn-sm btn-primary btn-upper text-white"
+										className="btn btn-sm btn-primary btn-upper text-white filter-btn"
 										onClick={() => {
 											this.filterEntries();
 										}}>
