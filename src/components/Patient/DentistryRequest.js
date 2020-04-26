@@ -120,8 +120,7 @@ const DentistryRequest = props => {
 			);
 			props.get_all_services(rs);
 		} catch (error) {
-			console.log(error);
-			notifyError('error fetching imaging requests for the patient');
+			notifyError('error fetching dentistry requests for the patient');
 		}
 	};
 

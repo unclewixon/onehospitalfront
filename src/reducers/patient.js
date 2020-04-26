@@ -27,6 +27,7 @@ import {
 	LOAD_ANTENNATAL,
 	LOAD_IMMUNIZATION,
 } from '../actions/types';
+import actions from 'redux-form/lib/actions';
 
 const INITIAL_STATE = {
 	formStep: 1,
@@ -120,6 +121,7 @@ const patient = (state = INITIAL_STATE, action) => {
 				],
 			};
 		case DELETE_ALLERGY:
+			console.log(actions.payload);
 			return {
 				...state,
 				allergies: state.allergies.filter(

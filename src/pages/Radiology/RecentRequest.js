@@ -68,7 +68,9 @@ export class RecentRequest extends Component {
 						requestBody: {
 							amount: val.amount,
 							service_id: val.service_id,
-							specialization: val.specialization,
+							specialization: val.specialization
+								? val.specialization
+								: val.service_name,
 						},
 						status: value.status,
 						patientName:

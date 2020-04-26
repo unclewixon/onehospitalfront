@@ -129,6 +129,36 @@ export const loadDentistryRequests = data => {
 	};
 };
 
+export const add_dentisry = data => {
+	return {
+		type: SAVE_ALLERGIES,
+		payload: data,
+	};
+};
+
+export const update_dentistry = (data, previousData) => {
+	return {
+		type: UPDATE_ALLERGY,
+		payload: data,
+		previousData,
+	};
+};
+
+export const Dentistry = data => {
+	return {
+		type: ALLERGY,
+		payload: data,
+	};
+};
+
+export const delete_dentistry = payload => {
+	console.log(payload);
+	return {
+		type: DELETE_ALLERGY,
+		payload,
+	};
+};
+
 export const loadImagingRequests = data => {
 	return {
 		type: GET_IMAGING_REQUESTS,
