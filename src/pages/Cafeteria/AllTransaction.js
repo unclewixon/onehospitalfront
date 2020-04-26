@@ -296,7 +296,7 @@ export class AllTransaction extends Component {
 								</div>
 								<div className="form-group col-md-1 pr-0 mt-4">
 									<div
-										className="btn btn-sm btn-primary btn-upper text-white"
+										className="btn btn-sm btn-primary btn-upper text-white filter-btn"
 										onClick={this.doFilter}>
 										<i className="os-icon os-icon-ui-37" />
 										<span>

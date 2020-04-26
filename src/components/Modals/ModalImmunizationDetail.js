@@ -76,33 +76,40 @@ export class ModalImmunizationDetail extends Component {
 												</h2>
 											</div>
 										</div> */}
-										<div className="up-contents">
-											<div className="m-b">
-												<div className="element-box-tp">
-													<table className="table table-clean">
-														<tbody>
-															<tr>
-																<td>
-																	<div className="text-left">Patient Name</div>
-																</td>
-																<td className="text-right text-capitalize">
-																	<div className="value text-success">
-																		{immunize.patient_name}
-																	</div>
-																</td>
-															</tr>
-															<tr>
-																<td>
-																	<div className="text-left">File Number</div>
-																</td>
-																<td className="text-right">
-																	<div className="value text-success">
-																		{immunize.fileNumber}
-																	</div>
-																</td>
-															</tr>
-														</tbody>
-													</table>
+										<div className="up-contents mb-3">
+											<div className="m-b pt-3">
+												<div className="element-wrapper">
+													<div className="element-box-tp">
+														<h6 className="element-header text-left">
+															Patient
+														</h6>
+														<table className="table table-clean">
+															<tbody>
+																<tr>
+																	<td>
+																		<div className="text-left">
+																			Patient Name
+																		</div>
+																	</td>
+																	<td className="text-right text-capitalize">
+																		<div className="value text-success">
+																			{immunize.patient_name}
+																		</div>
+																	</td>
+																</tr>
+																<tr>
+																	<td>
+																		<div className="text-left">File Number</div>
+																	</td>
+																	<td className="text-right">
+																		<div className="value text-success">
+																			{immunize.fileNumber}
+																		</div>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
 												</div>
 											</div>
 										</div>

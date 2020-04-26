@@ -108,9 +108,6 @@ class OpenRequest extends Component {
 						},
 						status: value.status,
 						patientName: value.patient_name,
-						// 	(value.patient.surname ? value.patient.surname : '') +
-						// 	' ' +
-						// 	(value.patient.other_names ? value.patient.other_names : ''),
 						fileNumber: value.fileNumber,
 					});
 				});
