@@ -60,9 +60,7 @@ class PhysiotherapyDashboard extends Component {
 				</td>
 				<td>{moment(data.createdAt).format('DD-MM-YYYY')}</td>
 				<td>{data.patient_name}</td>
-				<td>
-					{data && data.created_by ? data.created_by	: ''}
-				</td>
+				<td>{data && data.created_by ? data.created_by : ''}</td>
 				<td className="row-actions text-right">
 					<Tooltip title="View Request">
 						<a
@@ -170,7 +168,7 @@ class PhysiotherapyDashboard extends Component {
 								</div>
 								<div className="form-group col-md-3 mt-4">
 									<div
-										className="btn btn-sm btn-primary btn-upper text-white"
+										className="btn btn-sm btn-primary btn-upper text-white filter-btn"
 										onClick={() => {
 											this.filterEntries();
 										}}>

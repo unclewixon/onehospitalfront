@@ -24,14 +24,17 @@ import { notifySuccess } from '../../services/notify';
 import { createVoucher, createVoucherData } from '../../actions/paypoint';
 
 const validate = values => {
+	//const {  apply_voucher } = this.props;
 	const errors = {};
-	if (
-		values.patient_id === null ||
-		values.patient_id === '' ||
-		!values.patient_id
-	) {
-		errors.patient_id = 'select patient';
-	}
+
+	// if (
+	// 	values.patient_id === null ||
+	// 	values.patient_id === '' ||
+	// 	!values.patient_id
+	// ) {
+	// 	errors.patient_id = 'select patient';
+	// }
+
 	if (!values.amount || values.amount === '') {
 		errors.amount = 'please specify your amount';
 	}
@@ -39,6 +42,7 @@ const validate = values => {
 		errors.duration = 'please specify a duration';
 	}
 
+	console.log(errors);
 	return errors;
 };
 
@@ -89,10 +93,26 @@ export class ModalCreateVoucher extends Component {
 		this.setState({ submitting: true });
 		const { items, apply_voucher, create_voucher } = this.props;
 		if (apply_voucher) {
-			data.transaction_id = create_voucher.q_id;
+			data.transaction_id = create_voucher.id;
+			data.patient_id = create_voucher.patient_id;
 		}
+		console.log(data, create_voucher);
 		try {
 			const rs = await request(`${API_URI}${vouchersAPI}`, 'POST', true, data);
+
+			let voucher = {
+				id: rs.voucher.q_id,
+				voucher_no: rs.voucher.q_voucher_no,
+				amount: rs.voucher.q_amount,
+				amount_used: null,
+				created_by: rs.voucher.q_createdBy,
+				patient_name: rs.voucher.surname + ' ' + rs.voucher.other_names,
+				patient_id: rs.voucher.q_patientId,
+			};
+			rs.voucher.patient_name =
+				rs.voucher.patient.surname + ' ' + rs.voucher.patient.other_names;
+			rs.voucher.patient_id = rs.voucher.patient.id;
+
 			this.props.createVoucherData(rs.voucher);
 			notifySuccess(
 				apply_voucher ? 'Voucher Applied!' : 'Voucher item created!'
@@ -100,6 +120,7 @@ export class ModalCreateVoucher extends Component {
 			this.setState({ submitting: false });
 			this.props.closeModals(true);
 		} catch (e) {
+			console.log(e);
 			this.setState({ submitting: false });
 			throw new SubmissionError({
 				_error:
@@ -166,6 +187,7 @@ export class ModalCreateVoucher extends Component {
 												name="patient_id"
 												component={renderSelect}
 												label="Patient"
+												required
 												type="text"
 												placeholder="Select Patient"
 												data={patientList}

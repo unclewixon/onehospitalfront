@@ -26,6 +26,8 @@ import {
 	UPDATE_COMPLAINT_DATA,
 	LOAD_ANTENNATAL,
 	LOAD_IMMUNIZATION,
+	ADD_IMMUNIZATION,
+	DELETE_IMMUNIZATION,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -152,6 +154,18 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, antennatal: [...action.payload] };
 		case LOAD_IMMUNIZATION:
 			return { ...state, immunization: [...action.payload] };
+		case ADD_IMMUNIZATION:
+			return {
+				...state,
+				immunization: [...state.immunization, action.payload],
+			};
+		case DELETE_IMMUNIZATION:
+			return {
+				...state,
+				immunization: state.immunization.filter(
+					deletedItem => deletedItem.id !== action.payload
+				),
+			};
 		default:
 			return state;
 	}

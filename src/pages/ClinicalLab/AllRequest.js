@@ -52,16 +52,16 @@ class AllRequest extends Component {
 			);
 
 			const filterResponse = () => {
-			  const res =	rs.map(lab => {
+				const res = rs.map(lab => {
 					const filtered = lab.requestBody.groups.filter(group => {
-						const filt = group.parameters.some(param => param.result === "")
-						return filt
-					})
-				return filtered && filtered.length ? lab : []
-			})
-			return res && res.length ? res : null
-		}
-			const newResp = filterResponse().filter(fil => fil.length !== 0)
+						const filt = group.parameters.some(param => param.result === '');
+						return filt;
+					});
+					return filtered && filtered.length ? lab : [];
+				});
+				return res && res.length ? res : null;
+			};
+			const newResp = filterResponse().filter(fil => fil.length !== 0);
 
 			this.props.loadClinicalLab(newResp);
 			cb();
@@ -167,15 +167,15 @@ class AllRequest extends Component {
 									</div>
 									<div className="form-group col-md-3 mt-4">
 										<div
-											className="btn btn-sm btn-primary btn-upper text-white"
+											className="btn btn-sm btn-primary btn-upper text-white filter-btn"
 											onClick={this.doFilter}>
 											<i className="os-icon os-icon-ui-37" />
 											<span>
 												{filtering ? (
 													<img src={waiting} alt="submitting" />
 												) : (
-														'Filter'
-													)}
+													'Filter'
+												)}
 											</span>
 										</div>
 									</div>
@@ -194,59 +194,57 @@ class AllRequest extends Component {
 												</tr>
 											</tbody>
 										) : (
-												<table className="table table-striped">
-													<thead>
-														<tr>
-															<th>
-																<div className="th-inner "></div>
-																<div className="fht-cell"></div>
-															</th>
-															<th>
-																<div className="th-inner sortable both">
-																	S/N
+											<table className="table table-striped">
+												<thead>
+													<tr>
+														<th>
+															<div className="th-inner "></div>
+															<div className="fht-cell"></div>
+														</th>
+														<th>
+															<div className="th-inner sortable both">S/N</div>
+															<div className="fht-cell"></div>
+														</th>
+														<th>
+															<div className="th-inner sortable both">
+																Request Date
 															</div>
-																<div className="fht-cell"></div>
-															</th>
-															<th>
-																<div className="th-inner sortable both">
-																	Request Date
+															<div className="fht-cell"></div>
+														</th>
+														<th>
+															<div className="th-inner sortable both">
+																Patient Name
 															</div>
-																<div className="fht-cell"></div>
-															</th>
-															<th>
-																<div className="th-inner sortable both">
-																	Patient Name
+															<div className="fht-cell"></div>
+														</th>
+														<th>
+															<div className="th-inner sortable both">
+																Request By
 															</div>
-																<div className="fht-cell"></div>
-															</th>
-															<th>
-																<div className="th-inner sortable both">
-																	Request By
-															</div>
-																<div className="fht-cell"></div>
-															</th>
-															<th>
-																<div className="th-inner "></div>
-																<div className="fht-cell"></div>
-															</th>
-														</tr>
-													</thead>
+															<div className="fht-cell"></div>
+														</th>
+														<th>
+															<div className="th-inner "></div>
+															<div className="fht-cell"></div>
+														</th>
+													</tr>
+												</thead>
 
-													<tbody>
-														{clinicalLab &&
-															clinicalLab.reverse().map((lab, index) => {
-																return (
-																	<ClinicalLabItem
-																		key={lab.id}
-																		lab={lab}
-																		index={index}
-																		modalClick={LAB => this.modalFunction(LAB)}
-																	/>
-																);
-															})}
-													</tbody>
-												</table>
-											)}
+												<tbody>
+													{clinicalLab &&
+														clinicalLab.reverse().map((lab, index) => {
+															return (
+																<ClinicalLabItem
+																	key={lab.id}
+																	lab={lab}
+																	index={index}
+																	modalClick={LAB => this.modalFunction(LAB)}
+																/>
+															);
+														})}
+												</tbody>
+											</table>
+										)}
 										{!_.isEmpty(clinicalLab) ? null : (
 											<div className="text-center">No clinical Lab request</div>
 										)}

@@ -31,8 +31,8 @@ class PayPoint extends Component {
 						total: rs.dailyTotal.amount ? rs.dailyTotal.amount : 0,
 					},
 					{
-						type: 'total-unpaid',
-						id: 'unpaidTotal',
+						type: 'Total Unpaid',
+						id: 'total-unpaid',
 						total: rs.unpaidTotal.amount ? rs.unpaidTotal.amount : 0,
 					},
 

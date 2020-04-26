@@ -33,6 +33,7 @@ import AddCafeteriaFile from './AddCafeteriaFile';
 import ModalUploadRadiology from './ModalUploadRadiology';
 import ModalApproveTransaction from './ModalApproveTransaction';
 import ModalAntenatalDetail from './ModalAntenatalDetail';
+import ModalImmunizationDetail from './ModalImmunizationDetail';
 
 const ModalDialogs = ({
 	create_staff,
@@ -67,6 +68,7 @@ const ModalDialogs = ({
 	add_cafeteria_file,
 	upload_radiology,
 	antenatal_detail,
+	immunization_detail,
 }) => {
 	return (
 		<>
@@ -102,6 +104,7 @@ const ModalDialogs = ({
 			{add_cafeteria_file && <AddCafeteriaFile />}
 			{upload_radiology && <ModalUploadRadiology />}
 			{antenatal_detail && <ModalAntenatalDetail />}
+			{immunization_detail && <ModalImmunizationDetail />}
 		</>
 	);
 };
@@ -140,6 +143,7 @@ const mapStateToProps = (state, ownProps) => {
 		add_cafeteria_file: state.general.add_cafeteria_file,
 		upload_radiology: state.general.upload_radiology,
 		antenatal_detail: state.general.antenatal_detail,
+		immunization_detail: state.general.immunization_detail,
 	};
 };
 

@@ -116,7 +116,6 @@ class Login extends Component {
 				console.log(rs);
 				this.props.loginUser(rs);
 				storage.setItem(TOKEN_COOKIE, rs);
-
 				notifySuccess('login successful!');
 				redirectToPage(rs.role, this.props.history);
 			} catch (e) {

@@ -143,22 +143,24 @@ class ModalViewAppointment extends Component {
 											<table className="table table-padded">
 												<tbody>
 													<tr>
-														<td class="font-weight-bold">Appointment Date</td>
+														<td className="font-weight-bold">
+															Appointment Date
+														</td>
 														<td>{view_appointment_detail.appointment_date}</td>
 													</tr>
 
 													<tr>
-														<td class="font-weight-bold">Department</td>
+														<td className="font-weight-bold">Department</td>
 														<td>{view_appointment_detail.department.name}</td>
 													</tr>
 													<tr>
-														<td class="font-weight-bold">Specialization</td>
+														<td className="font-weight-bold">Specialization</td>
 														<td>
 															{view_appointment_detail.specialization.name}
 														</td>
 													</tr>
 													<tr>
-														<td class="font-weight-bold">Whom to See</td>
+														<td className="font-weight-bold">Whom to See</td>
 														<td>
 															{
 																view_appointment_detail.department?.staff
@@ -167,7 +169,9 @@ class ModalViewAppointment extends Component {
 														</td>
 													</tr>
 													<tr>
-														<td class="font-weight-bold">Consultation Room</td>
+														<td className="font-weight-bold">
+															Consultation Room
+														</td>
 														<td>
 															{view_appointment_detail.consultingRoom.name}
 														</td>
