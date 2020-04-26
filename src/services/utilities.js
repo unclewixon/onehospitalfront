@@ -109,7 +109,7 @@ export const requestPatch = async (url, authed = false, data) => {
 export const request = async (url, method, authed = false, data) => {
 	// prettier-ignore
 	const user = await (new SSRStorage()).getItem(TOKEN_COOKIE);
-
+	console.log(user);
 	const response = await fetch(url, {
 		method: method,
 		headers: authed ? headers(user) : { ...defaultHeaders },
@@ -421,52 +421,56 @@ export const getUser = async () => {
 };
 
 export const redirectToPage = (role, history) => {
-	console.log(role);
 	let uri = '';
-	switch (role.slug) {
-		case 'front-desk':
-			uri = '/front-desk';
-			break;
-		case 'hr':
-			uri = '/hr/staffs';
-			break;
-		case 'inventory':
-			uri = '/inventory/categories';
-			break;
-		case 'cafeteria':
-			uri = '/cafeteria';
-			break;
-		case 'admin':
-			uri = '/settings/roles';
-			break;
-		case 'hmo':
-			uri = '/hmo/dashboard';
-			break;
-		case 'billing':
-			uri = '/billing-paypoint';
-			break;
-		case 'lab':
-			uri = '/lab';
-			break;
-		case 'radiology':
-			uri = '/radiology';
-			break;
-		case 'nurse':
-			uri = '/in-patient';
-			break;
-		case 'doctor':
-			uri = '/doctor';
-			break;
-		case 'pharmacy':
-			uri = '/pharmacy';
-			break;
-		case 'ivf':
-			uri = '/ivf';
-			break;
-		default:
-			break;
+	try {
+		switch (role.slug) {
+			case 'front-desk':
+				uri = '/front-desk';
+				break;
+			case 'hr':
+				uri = '/hr/staffs';
+				break;
+			case 'inventory':
+				uri = '/inventory/categories';
+				break;
+			case 'cafeteria':
+				uri = '/cafeteria';
+				break;
+			case 'admin':
+				uri = '/settings/roles';
+				break;
+			case 'hmo':
+				uri = '/hmo/dashboard';
+				break;
+			case 'billing':
+				uri = '/billing-paypoint';
+				break;
+			case 'lab':
+				uri = '/lab';
+				break;
+			case 'radiology':
+				uri = '/radiology';
+				break;
+			case 'nurse':
+				uri = '/in-patient';
+				break;
+			case 'doctor':
+				uri = '/doctor';
+				break;
+			case 'pharmacy':
+				uri = '/pharmacy';
+				break;
+			case 'ivf':
+				uri = '/ivf';
+				break;
+			default:
+				uri = '/front-desk';
+				break;
+		}
+	} catch (e) {
+		uri = '/front-desk';
 	}
-
+	console.log(uri);
 	if (uri !== '') {
 		history.push(uri);
 	} else {
