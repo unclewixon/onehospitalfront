@@ -68,6 +68,13 @@ export const defaultHeaders = {
 	'Content-Type': 'application/json',
 };
 
+export const defaultUploadHeaders = {
+	Accept: 'application/json',
+	'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH',
+	//'Content-Type': 'application/x-www-form-urlencoded',
+	'Content-Type': 'multipart/form-data',
+};
+
 // export const patchHeaders = {
 // 	Accept: 'application/json',
 // 	'Access-Control-Allow-Origin': '*',
@@ -124,6 +131,10 @@ export const request = async (url, method, authed = false, data) => {
 };
 
 export const upload = async (url, method, body) => {
+	// prettier-ignore
+	const user = await (new SSRStorage()).getItem(TOKEN_COOKIE);
+	const jwt = `Bearer ${user.token}`;
+	let headers = { Authorization: jwt };
 	const response = await fetch(url, { method, headers, body });
 	const result = await checkStatus(response);
 	return parseJSON(result);
