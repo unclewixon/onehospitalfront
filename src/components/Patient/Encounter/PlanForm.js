@@ -8,6 +8,10 @@ class PlanForm extends Component {
 		regimens: [],
 	};
 
+	componentDidMount() {
+		window.scrollTo(0, 0);
+	}
+
 	addRegimen = () => {
 		const { regimens } = this.state;
 		this.setState({
@@ -38,8 +42,15 @@ class PlanForm extends Component {
 
 	render() {
 		const { regimens } = this.state;
+		const { previous, next } = this.props;
+		var divStyle = {
+			//marginTop: '100em',
+			height: '1400px',
+			overflowY: 'scroll',
+		};
+
 		return (
-			<div className="form-block encounter">
+			<div className="form-block encounter" style={divStyle}>
 				<div className="row">
 					<div className="col-sm-12">
 						<div className="form-group">
@@ -260,6 +271,7 @@ class PlanForm extends Component {
 						</div>
 					</div>
 				</div>
+
 				<div className="row">
 					<div className="col-sm-6">
 						<div className="form-group">
@@ -387,6 +399,17 @@ class PlanForm extends Component {
 								</div>
 							</div>
 						</div>
+					</div>
+				</div>
+
+				<div className="row mt-5">
+					<div className="col-sm-12 d-flex ant-row-flex-space-between">
+						<button className="btn btn-primary" onClick={previous}>
+							Previous
+						</button>
+						<button className="btn btn-primary" onClick={next}>
+							Next
+						</button>
 					</div>
 				</div>
 			</div>
