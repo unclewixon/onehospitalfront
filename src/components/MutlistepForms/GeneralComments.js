@@ -51,7 +51,7 @@ class GeneralComments extends Component {
 	}
 }
 GeneralComments = reduxForm({
-	form: 'antennatal', //Form name is same
+	form: 'antennatalAssessment', //Form name is same
 	destroyOnUnmount: false,
 	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
 	validate,

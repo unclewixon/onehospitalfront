@@ -8,7 +8,6 @@ const ModalPhysiotherapy = ({
 	patient,
 	activeRequest,
 }) => {
-
 	return (
 		<Modal
 			className="onboarding-modal"
@@ -30,9 +29,7 @@ const ModalPhysiotherapy = ({
 											backgroundImage: require('../../assets/images/b3.jpeg'),
 										}}>
 										<div className="up-main-info">
-											<h2
-												className="up-header"
-												style={{ color: '#334152' }}>
+											<h2 className="up-header" style={{ color: '#334152' }}>
 												{activeRequest.patient_name
 													? activeRequest.patient_name
 													: ''}
@@ -47,9 +44,7 @@ const ModalPhysiotherapy = ({
 													<tbody>
 														<tr>
 															<td>
-																<div className="text-left">
-																	Request Date
-																		</div>
+																<div className="text-left">Request Date</div>
 															</td>
 															<td className="text-right">
 																<div className="value text-success">
@@ -85,30 +80,27 @@ const ModalPhysiotherapy = ({
 									<table className="table table-padded">
 										<thead>
 											<tr>
-												<th class="font-weight-bold">
-													Specialization
-												</th>
-												<th class="font-weight-bold">
-													Session Count
-												</th>
+												<th class="font-weight-bold">Specialization</th>
+												<th class="font-weight-bold">Session Count</th>
 											</tr>
 										</thead>
 										<tbody>
 											<tr>
-												<td>{activeRequest.requestBody &&
+												<td>
+													{activeRequest.requestBody &&
 													activeRequest.requestBody.length
-													? activeRequest.requestBody.map((spec, i) => (
-														<div key={i}>{spec.specialization}</div>
-													))
-													: []}
-													</td>
+														? activeRequest.requestBody.map((spec, i) => (
+																<div key={i}>{spec.specialization}</div>
+														  ))
+														: []}
+												</td>
 												<td>
 													{activeRequest &&
-														activeRequest.requestBody &&
-														activeRequest.requestBody.length
-														? activeRequest.requestBody.map(
-															(body, i) => (<div key={i}>{body.sessionCount}</div>)
-														)
+													activeRequest.requestBody &&
+													activeRequest.requestBody.length
+														? activeRequest.requestBody.map((body, i) => (
+																<div key={i}>{body.sessionCount}</div>
+														  ))
 														: ''}
 												</td>
 											</tr>

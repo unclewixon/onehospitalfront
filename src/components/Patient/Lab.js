@@ -20,8 +20,8 @@ const Lab = props => {
 		startDate: moment(Date.now())
 			.subtract(1, 'days')
 			.format('YYYY-MM-DD'),
-		endDate: moment(Date.now()).format('YYYY-MM-DD')
-	})
+		endDate: moment(Date.now()).format('YYYY-MM-DD'),
+	});
 
 	const { location, patient } = props;
 
@@ -78,26 +78,26 @@ const Lab = props => {
 								<img alt="searching" src={searchingGIF} />
 							</div>
 						) : (
-								<div
-									className="fixed-table-container"
-									style={{ paddingBottom: '0px' }}>
-									<div className="fixed-table-body">
-										<table
-											id="table"
-											className="table table-theme v-middle table-hover">
-											<thead>
-												<tr>
-													<th>ID</th>
-													<th>Request Date</th>
-													<th>Requested By</th>
-													<th>Request Specimen</th>
-													<th className="text-center">Request Status</th>
-													<th className="text-right" />
-												</tr>
-											</thead>
-											<tbody>
-												{props.Requests && props.Requests.length
-													? props.Requests.map((request, index) => {
+							<div
+								className="fixed-table-container"
+								style={{ paddingBottom: '0px' }}>
+								<div className="fixed-table-body">
+									<table
+										id="table"
+										className="table table-theme v-middle table-hover">
+										<thead>
+											<tr>
+												<th>ID</th>
+												<th>Request Date</th>
+												<th>Requested By</th>
+												<th>Request Specimen</th>
+												<th className="text-center">Request Status</th>
+												<th className="text-right" />
+											</tr>
+										</thead>
+										<tbody>
+											{props.Requests && props.Requests.length
+												? props.Requests.map((request, index) => {
 														return (
 															<tr
 																className=""
@@ -125,11 +125,11 @@ const Lab = props => {
 																			<span>Approved</span>
 																		</div>
 																	) : (
-																			<div>
-																				<span className="status-pill smaller yellow"></span>
-																				<span>Pending</span>
-																			</div>
-																		)}
+																		<div>
+																			<span className="status-pill smaller yellow"></span>
+																			<span>Pending</span>
+																		</div>
+																	)}
 																</td>
 																<td className="row-actions text-right">
 																	<Tooltip title="View Request">
@@ -150,13 +150,13 @@ const Lab = props => {
 																</td>
 															</tr>
 														);
-													})
-													: null}
-											</tbody>
-										</table>
-									</div>
+												  })
+												: null}
+										</tbody>
+									</table>
 								</div>
-							)}
+							</div>
+						)}
 					</div>
 				</div>
 			</div>

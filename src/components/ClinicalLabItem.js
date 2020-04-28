@@ -33,14 +33,14 @@ export class ClinicalLabItem extends Component {
 							className="row-expand-icon row-collapsed"></div>
 					</td>
 					<td>
-							<a className="item-title text-color">{index + 1}</a>
+						<a className="item-title text-color">{index + 1}</a>
 					</td>
-					<td className="flex"><span
-								className="w-32 avatar gd-warning"
-								style={{ boxShadow: 'none', justifyContent: 'start' }}>
-								{moment(lab.createdAt).format('DD-MM-YYYY')}
-							</span>
-						
+					<td className="flex">
+						<span
+							className="w-32 avatar gd-warning"
+							style={{ boxShadow: 'none', justifyContent: 'start' }}>
+							{moment(lab.createdAt).format('DD-MM-YYYY')}
+						</span>
 					</td>
 					<td className="flex">
 						<p className="item-title text-color">

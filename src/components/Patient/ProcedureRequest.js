@@ -69,12 +69,8 @@ const ProcedureRequest = props => {
 		if (!inputValue) {
 			return [];
 		}
-		let val = inputValue.toUpperCase()
-		const res = await request(
-			`${API_URI}${diagnosisAPI}${val}`,
-			'GET',
-			true
-		);
+		let val = inputValue.toUpperCase();
+		const res = await request(`${API_URI}${diagnosisAPI}${val}`, 'GET', true);
 		return res;
 	};
 
@@ -94,10 +90,10 @@ const ProcedureRequest = props => {
 
 	const onSubmit = async values => {
 		setSubmitting(true);
-		if(!values.service_center || !values.procedure){
-			notifyError('Service center and Procedure are required')
+		if (!values.service_center || !values.procedure) {
+			notifyError('Service center and Procedure are required');
 			setSubmitting(false);
-			return
+			return;
 		}
 		let requestData = [];
 		let theRequest = {};

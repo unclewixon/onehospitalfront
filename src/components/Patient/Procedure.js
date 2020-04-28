@@ -15,7 +15,7 @@ import ModalProcedure from '../Modals/ModalProcedure';
 const Procedure = props => {
 	const [loading, setLoading] = useState(false);
 	const [showModal, setShowModal] = useState(false);
-	const [activeRequest, setActiveRequest] = useState(null)
+	const [activeRequest, setActiveRequest] = useState(null);
 	let location = props.location;
 	let patient = props.patient;
 
@@ -32,8 +32,8 @@ const Procedure = props => {
 	};
 
 	const onModalClick = () => {
-		setShowModal(!showModal)
-	}
+		setShowModal(!showModal);
+	};
 
 	const loadProcedure = async () => {
 		try {
@@ -62,15 +62,15 @@ const Procedure = props => {
 						New Procedure Request
 					</Link>
 				</div>
-				{
-					activeRequest ? (
-						<ModalProcedure
-							showModal={showModal}
-							onModalClick={onModalClick}
-							activeRequest={activeRequest}
-						/>
-					) : []
-				}
+				{activeRequest ? (
+					<ModalProcedure
+						showModal={showModal}
+						onModalClick={onModalClick}
+						activeRequest={activeRequest}
+					/>
+				) : (
+					[]
+				)}
 				<h6 className="element-header">Procedure Requests</h6>
 				<div className="element-box">
 					<div className="bootstrap-table">
@@ -105,9 +105,9 @@ const Procedure = props => {
 											</tr>
 										</tbody>
 									) : (
-											<tbody >
-												{props.patient_procedure
-													? props.patient_procedure.map((req, i) => {
+										<tbody>
+											{props.patient_procedure
+												? props.patient_procedure.map((req, i) => {
 														return (
 															<tr key={i}>
 																<td>{i + 1}</td>
@@ -118,12 +118,11 @@ const Procedure = props => {
 																<td>{getRequests(req.requestBody)}</td>
 																<td className="row-actions text-right">
 																	<Tooltip title="View Request">
-																		<a onClick={
-																			() => {
-																				onModalClick()
-																				setActiveRequest(req)
-																			}
-																		}>
+																		<a
+																			onClick={() => {
+																				onModalClick();
+																				setActiveRequest(req);
+																			}}>
 																			<i className="os-icon os-icon-documents-03" />
 																		</a>
 																	</Tooltip>
@@ -135,11 +134,10 @@ const Procedure = props => {
 																</td>
 															</tr>
 														);
-													})
-													: null}
-											</tbody>
-										)}
-
+												  })
+												: null}
+										</tbody>
+									)}
 								</table>
 							</div>
 						</div>
