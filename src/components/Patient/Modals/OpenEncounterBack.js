@@ -65,12 +65,10 @@ const OpenEncounter = props => {
 	});
 
 	const open = i => () => {
-		console.log(i);
 		setState({ ...state, eIndex: i });
 	};
 
-	const next = async data => {
-		console.log(data);
+	const next = () => {
 		const { eIndex } = state;
 		const i = eIndex + 1;
 		if (i <= encounters.length - 1) {
@@ -116,9 +114,7 @@ const OpenEncounter = props => {
 			tabIndex="1"
 			{...ArrowKeysReact.events}
 			ref={theDiv}>
-			<div
-				className="modal-dialog modal-lg modal-centered-full"
-				role="document">
+			<div className="modal-dialog modal-lg modal-centered" role="document">
 				<div className="modal-content">
 					<button
 						aria-label="Close"
@@ -223,6 +219,16 @@ const OpenEncounter = props => {
 											),
 										}[eIndex]
 									}
+									<div className="row mt-5">
+										<div className="col-sm-12 d-flex ant-row-flex-space-between">
+											<button className="btn btn-primary" onClick={previous}>
+												Previous
+											</button>
+											<button className="btn btn-primary" onClick={next}>
+												Next
+											</button>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>

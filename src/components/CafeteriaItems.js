@@ -66,7 +66,7 @@ const CafeteriaItems = props => {
 	const onAddCafeteriaItem = e => {
 		e.preventDefault();
 		setLoading(true);
-		console.log({ name, price, category_id, description, discount_price });
+		//console.log({ name, price, category_id, description, discount_price });
 		item_code = `RC-${uuidv4().substring(0, 4)}`;
 		props
 			.addCafeteriaItem({
