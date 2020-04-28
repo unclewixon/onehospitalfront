@@ -4,7 +4,7 @@ import PatientForm from '../PatientForm';
 import PatientNOKForm from '../PatientNOKForm';
 import Popover from 'antd/lib/popover';
 import waiting from '../../assets/images/waiting.gif';
-import { request, upload } from '../../services/utilities';
+import { request, upload, uploadFile } from '../../services/utilities';
 import {
 	API_URI,
 	documentType,
@@ -195,10 +195,9 @@ const PatientDataUpload = props => {
 				for (var key of formData.entries()) {
 					console.log(key[0] + ', ' + key[1]);
 				}
-				const rs = await request(
+				const rs = await upload(
 					`${API_URI}${patientAPI}` + '/' + patient.id + '/upload-document',
 					'POST',
-					true,
 					formData
 				);
 				//props.addPatientUploadData(rs);

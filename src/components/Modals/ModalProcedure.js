@@ -8,7 +8,6 @@ const ModalProcedure = ({
 	patient,
 	activeRequest,
 }) => {
-
 	return (
 		<Modal
 			className="onboarding-modal"
@@ -30,9 +29,7 @@ const ModalProcedure = ({
 											backgroundImage: require('../../assets/images/b3.jpeg'),
 										}}>
 										<div className="up-main-info">
-											<h2
-												className="up-header"
-												style={{ color: '#334152' }}>
+											<h2 className="up-header" style={{ color: '#334152' }}>
 												{activeRequest.patient_name
 													? activeRequest.patient_name
 													: ''}
@@ -46,9 +43,7 @@ const ModalProcedure = ({
 													<tbody>
 														<tr>
 															<td>
-																<div className="text-left">
-																	Request Date
-																		</div>
+																<div className="text-left">Request Date</div>
 															</td>
 															<td className="text-right">
 																<div className="value text-success">
@@ -83,15 +78,13 @@ const ModalProcedure = ({
 									<table className="table table-padded">
 										<tbody>
 											<tr>
-												<td class="font-weight-bold">
-													Service Name
-												</td>
+												<td class="font-weight-bold">Service Name</td>
 												<td>
 													{activeRequest.requestBody &&
-														activeRequest.requestBody.length
+													activeRequest.requestBody.length
 														? activeRequest.requestBody.map((spec, i) => (
-															<div key={i}>{spec.service_name}</div>
-														))
+																<div key={i}>{spec.service_name}</div>
+														  ))
 														: []}
 												</td>
 											</tr>

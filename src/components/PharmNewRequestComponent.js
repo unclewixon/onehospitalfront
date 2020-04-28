@@ -33,8 +33,6 @@ const defaultValues = {
 	refillNote: '',
 };
 
-
-
 const PharmNewRequestComponent = ({
 	patient,
 	addPharmacyRequest,
@@ -43,8 +41,7 @@ const PharmNewRequestComponent = ({
 	loadInvCategories,
 	loadInventories,
 	categories,
-	inventories
-
+	inventories,
 }) => {
 	const [refillable, setRefillable] = useState(false);
 	const { register, handleSubmit, setValue, reset, watch } = useForm({
@@ -58,8 +55,7 @@ const PharmNewRequestComponent = ({
 	const [prescription, setPrescription] = useState(false);
 	const [chosenPatient, setChosenPatient] = useState(null);
 	const [serviceId, setServiceId] = useState('');
-	const [selectedOption, setSelectedOption] = useState('')
-
+	const [selectedOption, setSelectedOption] = useState('');
 
 	const onRefillableClick = () => {
 		setRefillable(!refillable);
@@ -67,14 +63,14 @@ const PharmNewRequestComponent = ({
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option => option.description;
 	const handleChangeOptions = selectedOption => {
-		setValue("diagnosis", selectedOption)
+		setValue('diagnosis', selectedOption);
 		setSelectedOption(selectedOption);
 	};
 	const getOptions = async inputValue => {
 		if (!inputValue) {
 			return [];
 		}
-		let val = inputValue.toUpperCase()
+		let val = inputValue.toUpperCase();
 		const res = await request(
 			`${API_URI}${diagnosisAPI}/search?q=${val}`,
 			'GET',
@@ -85,26 +81,33 @@ const PharmNewRequestComponent = ({
 
 	const getServiceUnit = useCallback(async () => {
 		try {
-			const res = await request(`${API_URI}/inventory/categories`, 'GET',	true);
-			loadInvCategories(res)
+			const res = await request(`${API_URI}/inventory/categories`, 'GET', true);
+			loadInvCategories(res);
 		} catch (error) {
-			notifyError("Error fetching Service Unit")
+			notifyError('Error fetching Service Unit');
 		}
-	}, [loadInvCategories])
+	}, [loadInvCategories]);
 
-	const getPharmacyItems = useCallback(async (id) => {
-		try {
-			const res = await request(`${API_URI}/inventory/stocks-by-category/52b49109-028a-46c6-b5f3-1e88a48d333f`, 'GET', true);
-			loadInventories(res);
-		} catch (error) {
-			notifyError("Erroe fetching pharmacy items")
-		}
-	}, [loadInventories])
+	const getPharmacyItems = useCallback(
+		async id => {
+			try {
+				const res = await request(
+					`${API_URI}/inventory/stocks-by-category/52b49109-028a-46c6-b5f3-1e88a48d333f`,
+					'GET',
+					true
+				);
+				loadInventories(res);
+			} catch (error) {
+				notifyError('Erroe fetching pharmacy items');
+			}
+		},
+		[loadInventories]
+	);
 
 	useEffect(() => {
 		getServiceUnit();
 		getPharmacyItems();
-	}, [getServiceUnit, getPharmacyItems])
+	}, [getServiceUnit, getPharmacyItems]);
 
 	// const serviceOptions = categories && categories.length
 	// 	? categories.map((cat) => {
@@ -114,20 +117,19 @@ const PharmNewRequestComponent = ({
 	// 		}
 	// 	}) : []
 
-
-
 	// const handleServiceUnitChange = e => {
 	// 	getPharmacyItems(e.value)
 	// }
 
-	const genericNameOptions = inventories && inventories.length
-		? inventories.map((drug) => {
-			return {
-				value: drug.name,
-				label: drug.name
-			}
-		}) : []
-
+	const genericNameOptions =
+		inventories && inventories.length
+			? inventories.map(drug => {
+					return {
+						value: drug.name,
+						label: drug.name,
+					};
+			  })
+			: [];
 
 	const values = watch();
 
@@ -199,8 +201,8 @@ const PharmNewRequestComponent = ({
 	};
 
 	const onDrugSelection = e => {
-		setValue("drugName", e.value)
-		setServiceId(e.id)
+		setValue('drugName', e.value);
+		setServiceId(e.id);
 	};
 
 	return (
@@ -242,11 +244,11 @@ const PharmNewRequestComponent = ({
 									<Select
 										ref={register({ name: 'serviceUnit', required: true })}
 										name="serviceUnit"
-										options={[{ value: 'pharmacy', label: 'Pharmacy'}]}
+										options={[{ value: 'pharmacy', label: 'Pharmacy' }]}
 										required
 										value={{
 											value: 'pharmacy',
-											label: 'Pharmacy'
+											label: 'Pharmacy',
 										}}
 									/>
 								</div>
@@ -256,9 +258,8 @@ const PharmNewRequestComponent = ({
 										placeholder="Choose a formulary"
 										name="formulary"
 										ref={register({ name: 'formulary', required: true })}
-										onChange={e => setValue("formulary", e.value)}
+										onChange={e => setValue('formulary', e.value)}
 										options={genericNameOptions}
-
 									/>
 								</div>
 							</div>
@@ -269,7 +270,7 @@ const PharmNewRequestComponent = ({
 										placeholder="Choose a drug generic name"
 										name="genericName"
 										ref={register({ name: 'genericName', required: true })}
-										onChange={e => setValue("genericName", e.value)}
+										onChange={e => setValue('genericName', e.value)}
 										options={genericNameOptions}
 										required
 									/>
@@ -397,7 +398,7 @@ const PharmNewRequestComponent = ({
 										getOptionLabel={getOptionLabels}
 										defaultOptions
 										name="diagnosis"
-										ref={register({ name: "diagnosis", required: true })}
+										ref={register({ name: 'diagnosis', required: true })}
 										loadOptions={getOptions}
 										onChange={handleChangeOptions}
 										placeholder="Enter ICD10 Code"
@@ -448,10 +449,10 @@ const PharmNewRequestComponent = ({
 										</button>
 									</div>
 								) : (
-										<button onClick={handleSubmit} className="btn btn-primary">
-											Done
-										</button>
-									)}
+									<button onClick={handleSubmit} className="btn btn-primary">
+										Done
+									</button>
+								)}
 
 								{/* <div className="form-group col-sm-3">
 							<MinusIcon style={{ width: '1.5rem', height: '1.5rem', cursor: 'pointer' }} />
@@ -473,52 +474,52 @@ const PharmNewRequestComponent = ({
 								<tbody>
 									{pharmRequest
 										? pharmRequest.map((request, index) => {
-											return (
-												<tr key={index}>
-													<td>{request.genericName}</td>
-													<td>{request.drugName}</td>
-													<td>{request.quantity}</td>
-													<td>{request.diagnosis.description}</td>
-													<td>
-														<ViewIcon
-															onClick={() => {
-																setActiveRequest(request);
-																onModalClick();
-															}}
-															style={{
-																width: '1rem',
-																height: '1rem',
-																cursor: 'pointer',
-															}}
-														/>{' '}
-														{'  '}
-														<EditIcon
-															onClick={() => {
-																if (editing) {
-																	return;
-																} else {
-																	startEdit(request, index);
-																}
-															}}
-															style={{
-																width: '1rem',
-																height: '1rem',
-																cursor: 'pointer',
-															}}
-														/>{' '}
-														{'  '}
-														<TrashIcon
-															onClick={() => onTrash(index)}
-															style={{
-																width: '1rem',
-																height: '1rem',
-																cursor: 'pointer',
-															}}
-														/>
-													</td>
-												</tr>
-											);
-										})
+												return (
+													<tr key={index}>
+														<td>{request.genericName}</td>
+														<td>{request.drugName}</td>
+														<td>{request.quantity}</td>
+														<td>{request.diagnosis.description}</td>
+														<td>
+															<ViewIcon
+																onClick={() => {
+																	setActiveRequest(request);
+																	onModalClick();
+																}}
+																style={{
+																	width: '1rem',
+																	height: '1rem',
+																	cursor: 'pointer',
+																}}
+															/>{' '}
+															{'  '}
+															<EditIcon
+																onClick={() => {
+																	if (editing) {
+																		return;
+																	} else {
+																		startEdit(request, index);
+																	}
+																}}
+																style={{
+																	width: '1rem',
+																	height: '1rem',
+																	cursor: 'pointer',
+																}}
+															/>{' '}
+															{'  '}
+															<TrashIcon
+																onClick={() => onTrash(index)}
+																style={{
+																	width: '1rem',
+																	height: '1rem',
+																	cursor: 'pointer',
+																}}
+															/>
+														</td>
+													</tr>
+												);
+										  })
 										: []}
 								</tbody>
 							</Table>
@@ -534,8 +535,8 @@ const PharmNewRequestComponent = ({
 								{submitting ? (
 									<img src={waiting} alt="submitting" />
 								) : (
-										<span> Save</span>
-									)}
+									<span> Save</span>
+								)}
 							</button>
 						</div>
 					</div>
@@ -547,7 +548,7 @@ const PharmNewRequestComponent = ({
 
 const mapStateToProps = ({ inventory }) => ({
 	categories: inventory.categories,
-	inventories: inventory.inventories
+	inventories: inventory.inventories,
 });
 
 export default connect(mapStateToProps, {

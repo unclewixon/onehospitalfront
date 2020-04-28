@@ -21,8 +21,8 @@ const Pharmacy = props => {
 		startDate: moment(Date.now())
 			.subtract(1, 'days')
 			.format('YYYY-MM-DD'),
-		endDate: moment(Date.now()).format('YYYY-MM-DD')
-	})
+		endDate: moment(Date.now()).format('YYYY-MM-DD'),
+	});
 
 	const onModalClick = () => {
 		setShowModal(!showModal);

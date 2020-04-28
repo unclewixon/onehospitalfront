@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PharmNewRequestComponent from './PharmNewRequestComponent';
-import {
-	getAllServiceCategory, 
-	get_all_services 
-} from '../actions/settings';
+import { getAllServiceCategory, get_all_services } from '../actions/settings';
 import { connect } from 'react-redux';
 import { API_URI, serviceAPI } from '../services/constants';
 import { request } from '../services/utilities';
@@ -17,9 +14,9 @@ const PharmNewRequest = props => {
 	const [services, setServices] = useState('');
 
 	useEffect(() => {
-		const {  getAllServiceCategory } = props;
-		if(!loaded) {
-			getAllServiceCategory()
+		const { getAllServiceCategory } = props;
+		if (!loaded) {
+			getAllServiceCategory();
 		}
 		let data = [];
 		let services = [];
@@ -36,8 +33,6 @@ const PharmNewRequest = props => {
 		setLoaded(true);
 	}, [props, loaded]);
 
-
-
 	useEffect(() => {
 		const getPatients = async () => {
 			setPatientsLoading(true);
@@ -51,7 +46,6 @@ const PharmNewRequest = props => {
 		};
 		getPatients();
 	}, []);
-
 
 	return (
 		<PharmNewRequestComponent
@@ -70,5 +64,5 @@ const mapStateToProps = ({ user, settings }) => ({
 
 export default connect(mapStateToProps, {
 	get_all_services,
-	getAllServiceCategory
- })(PharmNewRequest);
+	getAllServiceCategory,
+})(PharmNewRequest);

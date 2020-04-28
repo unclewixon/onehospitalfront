@@ -34,7 +34,7 @@ const ModalDentistry = ({
 			onHide={onModalClick}>
 			<Modal.Header closeButton></Modal.Header>
 			<Modal.Body>
-			<div className="onboarding-content with-gradient text-center">
+				<div className="onboarding-content with-gradient text-center">
 					<div className="modal-body">
 						<div className="row">
 							<div className="col-sm-4">
@@ -45,9 +45,7 @@ const ModalDentistry = ({
 											backgroundImage: require('../../assets/images/b3.jpeg'),
 										}}>
 										<div className="up-main-info">
-											<h2
-												className="up-header"
-												style={{ color: '#334152' }}>
+											<h2 className="up-header" style={{ color: '#334152' }}>
 												{activeRequest.patient_name
 													? activeRequest.patient_name
 													: ''}
@@ -61,9 +59,7 @@ const ModalDentistry = ({
 													<tbody>
 														<tr>
 															<td>
-																<div className="text-left">
-																	Request Date
-																		</div>
+																<div className="text-left">Request Date</div>
 															</td>
 															<td className="text-right">
 																<div className="value text-success">
@@ -75,9 +71,7 @@ const ModalDentistry = ({
 														</tr>
 														<tr>
 															<td>
-																<div className="text-left">
-																	Amount
-																		</div>
+																<div className="text-left">Amount</div>
 															</td>
 															<td className="text-right">
 																<div className="value text-success">
@@ -110,16 +104,14 @@ const ModalDentistry = ({
 									<table className="table table-padded">
 										<tbody>
 											<tr>
-												<td class="font-weight-bold">
-													Service Name
-												</td>
+												<td class="font-weight-bold">Service Name</td>
 												<td>
-												{activeRequest.requestBody &&
-															activeRequest.requestBody.length
-															? activeRequest.requestBody.map((spec, i) => (
+													{activeRequest.requestBody &&
+													activeRequest.requestBody.length
+														? activeRequest.requestBody.map((spec, i) => (
 																<div key={i}>{spec.service_name}</div>
-															))
-															: []}
+														  ))
+														: []}
 												</td>
 											</tr>
 											<tr>

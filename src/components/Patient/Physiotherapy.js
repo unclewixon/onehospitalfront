@@ -15,15 +15,15 @@ class Physiotherapy extends Component {
 	state = {
 		loaded: false,
 		showModal: false,
-		activeRequest: null
+		activeRequest: null,
 	};
 	componentDidMount() {
 		this.fetchPhysio();
 	}
 
 	onModalClick = () => {
-		this.setState({ showModal: !this.state.showModal })
-	}
+		this.setState({ showModal: !this.state.showModal });
+	};
 
 	fetchPhysio = async () => {
 		this.setState({ loaded: true });
@@ -72,51 +72,49 @@ class Physiotherapy extends Component {
 	};
 
 	table = () =>
-		this.props && this.props.physiotherapies.map(
-			(physio, i) => {
-				return (
-					<tr className="" data-index="0" key={i}>
-						<td className="text-center">
-							<span className="text-bold">{i + 1}</span>
-						</td>
-						<td className="text-center">
-							{moment(physio.createdAt).format('DD-MM-YYYY')}
-						</td>
-						<td className="text-center">{physio.created_by}</td>
-						<td className="text-center">
-							{physio.status === 0 ? (
-								<>
-									<span className="status-pill smaller yellow"></span>
-									<span>Pending</span>
-								</>
-							) : (
-									<>
-										<span className="status-pill smaller green"></span>
-										<span>Approved</span>
-									</>
-								)}
-						</td>
-						<td className="row-actions text-right">
-							<Tooltip title="View Request">
-								<a onClick={
-									() => {
-										this.onModalClick()
-										this.setState({ activeRequest: physio })
-									}
-								}>
-									<i className="os-icon os-icon-documents-03" />
-								</a>
-							</Tooltip>
-							<Tooltip title="Print Request">
-								<a className="ml-2" href="#">
-									<i className="icon-feather-printer" />
-								</a>
-							</Tooltip>
-						</td>
-					</tr>
-				);
-			}
-		);
+		this.props &&
+		this.props.physiotherapies.map((physio, i) => {
+			return (
+				<tr className="" data-index="0" key={i}>
+					<td className="text-center">
+						<span className="text-bold">{i + 1}</span>
+					</td>
+					<td className="text-center">
+						{moment(physio.createdAt).format('DD-MM-YYYY')}
+					</td>
+					<td className="text-center">{physio.created_by}</td>
+					<td className="text-center">
+						{physio.status === 0 ? (
+							<>
+								<span className="status-pill smaller yellow"></span>
+								<span>Pending</span>
+							</>
+						) : (
+							<>
+								<span className="status-pill smaller green"></span>
+								<span>Approved</span>
+							</>
+						)}
+					</td>
+					<td className="row-actions text-right">
+						<Tooltip title="View Request">
+							<a
+								onClick={() => {
+									this.onModalClick();
+									this.setState({ activeRequest: physio });
+								}}>
+								<i className="os-icon os-icon-documents-03" />
+							</a>
+						</Tooltip>
+						<Tooltip title="Print Request">
+							<a className="ml-2" href="#">
+								<i className="icon-feather-printer" />
+							</a>
+						</Tooltip>
+					</td>
+				</tr>
+			);
+		});
 
 	render() {
 		const { location, physiotherapies } = this.props;
@@ -171,8 +169,8 @@ class Physiotherapy extends Component {
 													</td>
 												</tr>
 											) : (
-													<>{this.table()}</>
-												)}
+												<>{this.table()}</>
+											)}
 										</tbody>
 									</table>
 								</div>
@@ -192,6 +190,8 @@ const mapStateToProps = (state, ownProps) => {
 	};
 };
 
-export default withRouter(connect(mapStateToProps, {
-	getPhysiotherapies
-})(Physiotherapy));
+export default withRouter(
+	connect(mapStateToProps, {
+		getPhysiotherapies,
+	})(Physiotherapy)
+);
