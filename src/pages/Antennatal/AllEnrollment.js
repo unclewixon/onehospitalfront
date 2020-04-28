@@ -45,7 +45,7 @@ export class AllEnrollment extends Component {
 			this.setState({ loading: false, filtering: false });
 		} catch (error) {
 			console.log(error);
-			notifyError('Error fetching today hmos transactions request');
+			notifyError('Error fetching antenatal enrolment requests');
 			this.setState({ loading: false, filtering: false });
 		}
 	};
@@ -165,7 +165,7 @@ export class AllEnrollment extends Component {
 
 										<div className="form-group col-md-1 pr-0 mt-4">
 											<div
-												className="btn btn-sm btn-primary btn-upper text-white"
+												className="btn btn-sm btn-primary btn-upper text-white filter-btn"
 												onClick={this.doFilter}>
 												<i className="os-icon os-icon-ui-37" />
 												<span>

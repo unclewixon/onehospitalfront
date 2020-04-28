@@ -41,7 +41,20 @@ class ClinicalLab extends Component {
 				'GET',
 				true
 			);
-			this.props.loadClinicalLab(rs);
+
+			const filterResponse = () => {
+				const res = rs.map(lab => {
+					const filtered = lab.requestBody.groups.filter(group => {
+						const filt = group.parameters.some(param => param.result === '');
+						return filt;
+					});
+					return filtered && filtered.length ? lab : [];
+				});
+				return res && res.length ? res : null;
+			};
+			const newResp = filterResponse().filter(fil => fil.length !== 0);
+
+			this.props.loadClinicalLab(newResp);
 			return this.setState({ ...this.state, loading: false });
 		} catch (error) {
 			this.setState({ ...this.state, loading: false });
@@ -82,15 +95,13 @@ class ClinicalLab extends Component {
 		const page = location.pathname.split('/').pop();
 
 		const filteredNames =
-			this.props &&
-				this.props.clinicalLab &&
-				this.props.clinicalLab.length
+			this.props && this.props.clinicalLab && this.props.clinicalLab.length
 				? this.props.clinicalLab.map(patient => {
-					return {
-						value: patient.patient_id,
-						label: patient.patient_name,
-					};
-				})
+						return {
+							value: patient.patient_id,
+							label: patient.patient_name,
+						};
+				  })
 				: [];
 
 		const filteredOptions = _.uniqBy(filteredNames, 'value');
@@ -151,7 +162,7 @@ class ClinicalLab extends Component {
 									<div className="form-group col-md-3">
 										<label className="mr-2 " htmlFor="id">
 											Patient
-									</label>
+										</label>
 										<Select
 											styles={customStyle}
 											id="patientId"
@@ -163,7 +174,7 @@ class ClinicalLab extends Component {
 									</div>
 									<div className="form-group col-md-3 mt-4">
 										<div
-											className="btn btn-sm btn-primary btn-upper text-white"
+											className="btn btn-sm btn-primary btn-upper text-white filter-btn"
 											onClick={() => {
 												this.filterEntries();
 											}}>
@@ -172,8 +183,8 @@ class ClinicalLab extends Component {
 												{filtering ? (
 													<img src={waiting} alt="submitting" />
 												) : (
-														'Filter'
-													)}
+													'Filter'
+												)}
 											</span>
 										</div>
 									</div>
@@ -190,14 +201,12 @@ class ClinicalLab extends Component {
 														<div className="fht-cell"></div>
 													</th>
 													<th>
-														<div className="th-inner sortable both">
-															Request Date
-														</div>
+														<div className="th-inner sortable both">S/N</div>
 														<div className="fht-cell"></div>
 													</th>
 													<th>
 														<div className="th-inner sortable both">
-															Patiend ID
+															Request Date
 														</div>
 														<div className="fht-cell"></div>
 													</th>
@@ -221,24 +230,30 @@ class ClinicalLab extends Component {
 											</thead>
 
 											{loading ? (
-												<tr>
-													<td colSpan="4" className="text-center">
-														<img alt="searching" src={searchingGIF} />
-													</td>
-												</tr>
+												<tbody>
+													<tr>
+														<td colSpan="4" className="text-center">
+															<img alt="searching" src={searchingGIF} />
+														</td>
+													</tr>
+												</tbody>
 											) : (
-													<tbody>
-														{clinicalLab &&
-															clinicalLab.map(lab => {
-																return <ClinicalLabItem
+												<tbody>
+													{clinicalLab &&
+														clinicalLab.map((lab, index) => {
+															return (
+																<ClinicalLabItem
 																	key={lab.id}
 																	lab={lab}
-																	modalClick={LAB => this.modalFunction(LAB)}
-																/>;
-															})
-														}
-													</tbody>
-												)}
+																	index={index}
+																	modalClick={LAB =>
+																		this.modalFunction(LAB, index)
+																	}
+																/>
+															);
+														})}
+												</tbody>
+											)}
 										</table>
 									</div>
 								</div>

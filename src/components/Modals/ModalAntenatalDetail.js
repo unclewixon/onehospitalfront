@@ -33,10 +33,11 @@ class ModalAntenatalDetail extends Component {
 
 	loopHistory = obj => {
 		return Object.entries(obj).map((item, i) => {
+			let item0 = item[0].replace(/([A-Z])/g, ' $1');
 			return (
 				<div className="element-box">
 					<h6 className="element-header text-left text-capitalize">
-						{item[0].replace(/([A-Z])/g, ' $1')}
+						{!item0.includes('_') ? item0 : item0.split('_').join('.')}
 					</h6>
 
 					<table className="table">

@@ -94,9 +94,9 @@ class Clinical extends Component {
 						</div>
 					</div>
 				</div>
-				<div className="content-panel compact">
+				{/* <div className="content-panel compact">
 					<Queue />
-				</div>
+				</div> */}
 			</div>
 		);
 	}

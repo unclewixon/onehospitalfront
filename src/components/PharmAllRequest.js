@@ -7,15 +7,11 @@ import DatePicker from 'antd/lib/date-picker';
 import { getRequestByType } from '../actions/patient';
 import { connect } from 'react-redux';
 import { notifyError } from '../services/notify';
-import Modal from 'react-bootstrap/Modal';
 import Select from 'react-select';
-import { Link } from 'react-router-dom';
+import _ from 'lodash';
+import PharmNewRequestViewModal from './PharmNewRequestViewModal';
 
 const { RangePicker } = DatePicker;
-const departments = [
-	{ id: 'ejejekek', name: 'angel' },
-	{ id: 'sislkas', name: 'kafta' },
-];
 
 export class PharmAllRequest extends Component {
 	state = {
@@ -23,21 +19,27 @@ export class PharmAllRequest extends Component {
 		loading: false,
 		activeRequest: null,
 		showModal: false,
-		dateRange: [],
+		startDate: '',
+		endDate: '',
+		patientId: '',
 	};
 
 	onModalClick = () => {
 		this.setState(prevState => ({ showModal: !prevState.showModal }));
 	};
 
-	// change = e => {
-	// 	console.log(e.target.value);
-	// };
+	filterEntries = () => {
+		const { getRequestByType } = this.props;
+		const { startDate, endDate, patientId } = this.state;
+		this.setState({ filtering: true });
+		getRequestByType(patientId, 'pharmacy', startDate, endDate);
+	};
 
 	componentDidMount() {
+		const { startDate, endDate } = this.state;
 		const { getRequestByType } = this.props;
 		this.setState({ loading: true });
-		getRequestByType(null, 'pharmacy')
+		getRequestByType(null, 'pharmacy', startDate, endDate)
 			.then(response => {
 				this.setState({ loading: false });
 			})
@@ -50,61 +52,85 @@ export class PharmAllRequest extends Component {
 	render() {
 		const { filtering } = this.state;
 		const { Requests } = this.props;
+
+		const filteredNames =
+			this.props && this.props.Requests && this.props.Requests.length
+				? this.props.Requests.map(patient => {
+						return {
+							value: patient.patient_id,
+							label: patient.patient_name,
+						};
+				  })
+				: [];
+
+		const filteredOptions = _.uniqBy(filteredNames, 'value');
+
+		const customStyle = {
+			control: (provided, state) => ({
+				...provided,
+				minHeight: '24px !important',
+				height: '2rem',
+				width: '12rem',
+			}),
+		};
+
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
-					<h6 className="element-header">All Request</h6>
-					<div className="row my-4">
-						<form action="" className="form-inline pl-3">
-							<div className="form-group">
-								<label className="mr-2">Filter by: </label>
-							</div>
-							<div className="form-group mr-2">
-								<label className="mr-2 " htmlFor="id">
-									ID
-								</label>
-								<select
-									style={{ height: '32px' }}
-									id="department"
-									className="form-control"
-									name="id"
-									onChange={e => this.change(e)}>
-									{departments.map((dept, i) => {
-										return (
-											<option key={i} value={dept.id}>
-												{dept.name}
-											</option>
-										);
-									})}
-								</select>
-							</div>
-							<div className="form-group mr-2">
-								<RangePicker
-									value={this.state.dateRange}
-									onChange={e =>
-										e.map(date => {
-											const range = moment(date).format('DD/MM/YYYY hh:mm');
-											console.log(range);
-											return range;
-										})
-									}
+					<div className="row">
+						<div className="col-md-12">
+							{this.state.activeRequest ? (
+								<PharmNewRequestViewModal
+									showModal={this.state.showModal}
+									onModalClick={this.onModalClick}
+									activeRequest={this.state.activeRequest}
 								/>
-							</div>
-							<div className="form-group mr-2">
-								<a
-									className="btn btn-sm btn-primary btn-upper text-white"
-									onClick={this.doFilter}>
-									<i className="os-icon os-icon-ui-37" />
-									<span>
-										{filtering ? (
-											<img src={waiting} alt="submitting" />
-										) : (
-											'Filter'
-										)}
-									</span>
-								</a>
-							</div>
-						</form>
+							) : null}
+							<h6 className="element-header">All Requests</h6>
+							<form className="row">
+								<div className="form-group col-md-6">
+									<label>From - To</label>
+									<RangePicker
+										onChange={e => {
+											const date = e.map(date => {
+												return moment(date._d).format('YYYY-MM-DD');
+											});
+											this.setState({
+												startDate: date[0],
+												endDate: date[1],
+											});
+										}}
+									/>
+								</div>
+								<div className="form-group col-md-3">
+									<label className="mr-2 " htmlFor="patient">
+										Patient
+									</label>
+									<Select
+										id="patient"
+										name="patient"
+										onChange={e => this.setState({ patientId: e.value })}
+										options={filteredOptions}
+										isSearchable={true}
+										styles={customStyle}
+									/>
+								</div>
+								<div className="form-group col-md-3 mt-4">
+									<a
+										className="btn btn-sm btn-primary btn-upper text-white"
+										onClick={() => this.filterEntries()}>
+										<i className="os-icon os-icon-ui-37" />
+										<span>
+											{filtering ? (
+												<img src={waiting} alt="submitting" />
+											) : (
+												'Filter'
+											)}
+										</span>
+									</a>
+								</div>
+							</form>
+						</div>
 					</div>
 
 					<div className="element-box">
@@ -115,7 +141,7 @@ export class PharmAllRequest extends Component {
 								<thead>
 									<tr>
 										<th> Date</th>
-										<th> File No</th>
+										<th> Patient Name</th>
 										<th> Request From</th>
 										<th> Request Status</th>
 										<th> Action</th>
@@ -132,11 +158,15 @@ export class PharmAllRequest extends Component {
 														key={index}>
 														<td>
 															<span>
-																{moment(request.createdAt).format('DD/MM/YYYY')}
+																{moment(request.createdAt).format('DD-MM-YYYY')}
 															</span>
 														</td>
-														<td></td>
-														<td>{`${'Dr. DooLittle'.toUpperCase()}`}</td>
+														<td>
+															{request.patient_name ? request.patient_name : ''}
+														</td>
+														<td>
+															{request.created_by ? request.created_by : ''}
+														</td>
 														<td className="nowrap">
 															{request.status === 1 ? (
 																<div>
@@ -173,33 +203,6 @@ export class PharmAllRequest extends Component {
 										: null}
 								</tbody>
 							</table>
-						</div>
-						<div className="controls-below-table">
-							<div className="table-records-info">Showing records 1 - 5</div>
-							<div className="table-records-pages">
-								<ul>
-									<li>
-										<a href="#">Previous</a>
-									</li>
-									<li>
-										<a className="current" href="#">
-											1
-										</a>
-									</li>
-									<li>
-										<a href="#">2</a>
-									</li>
-									<li>
-										<a href="#">3</a>
-									</li>
-									<li>
-										<a href="#">4</a>
-									</li>
-									<li>
-										<a href="#">Next</a>
-									</li>
-								</ul>
-							</div>
 						</div>
 					</div>
 				</div>

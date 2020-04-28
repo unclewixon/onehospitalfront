@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { API_URI } from '../services/constants';
 import {
 	NEXT_STEP,
@@ -27,6 +26,8 @@ import {
 	LOAD_RADIOLOGY,
 	LOAD_ANTENNATAL,
 	LOAD_IMMUNIZATION,
+	ADD_IMMUNIZATION,
+	DELETE_IMMUNIZATION,
 } from './types';
 import { request } from '../services/utilities';
 
@@ -109,6 +110,7 @@ export const Allergy = data => {
 };
 
 export const delete_allergy = payload => {
+	console.log(payload);
 	return {
 		type: DELETE_ALLERGY,
 		payload,
@@ -126,6 +128,36 @@ export const loadDentistryRequests = data => {
 	return {
 		type: GET_DENTISTRY_REQUESTS,
 		payload: data,
+	};
+};
+
+export const add_dentisry = data => {
+	return {
+		type: SAVE_ALLERGIES,
+		payload: data,
+	};
+};
+
+export const update_dentistry = (data, previousData) => {
+	return {
+		type: UPDATE_ALLERGY,
+		payload: data,
+		previousData,
+	};
+};
+
+export const Dentistry = data => {
+	return {
+		type: ALLERGY,
+		payload: data,
+	};
+};
+
+export const delete_dentistry = payload => {
+	console.log(payload);
+	return {
+		type: DELETE_ALLERGY,
+		payload,
 	};
 };
 
@@ -200,6 +232,20 @@ export const loadImmunization = payload => {
 	};
 };
 
+export const addImmunizationRequest = payload => {
+	return {
+		type: ADD_IMMUNIZATION,
+		payload,
+	};
+};
+
+export const deleteImmunizationRequest = payload => {
+	return {
+		type: DELETE_IMMUNIZATION,
+		payload,
+	};
+};
+
 export const createLabRequest = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
@@ -222,7 +268,7 @@ export const createLabRequest = data => {
 													range: param.referenceRange
 														? param.referenceRange
 														: '',
-													result: '',
+													result: param.result ? param.result : '',
 												};
 										  })
 										: [],
@@ -234,7 +280,7 @@ export const createLabRequest = data => {
 								return {
 									name: param.name ? param.name : '',
 									range: param.referenceRange ? param.referenceRange : '',
-									result: '',
+									result: param.result ? param.result : '',
 								};
 						  })
 						: [],
@@ -254,7 +300,7 @@ export const createLabRequest = data => {
 										name: param && param.name ? param.name : '',
 										range:
 											param && param.referenceRange ? param.referenceRange : '',
-										result: '',
+										result: param.result ? param.result : '',
 									};
 								}),
 						};
@@ -285,13 +331,13 @@ export const createLabRequest = data => {
 	};
 };
 
-export const getRequestByType = (patientId, type) => {
+export const getRequestByType = (patientId, type, start, end) => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			request(
 				patientId
-					? `${API_URI}/patient/${patientId}/request/${type}?startDate=&endDate=`
-					: `${API_URI}/patient/requests/${type}?startDate=&endDate=`,
+					? `${API_URI}/patient/${patientId}/request/${type}?startDate=${start}&endDate=${end}`
+					: `${API_URI}/patient/requests/${type}?startDate=${start}&endDate=${end}`,
 				'GET',
 				true
 			)
@@ -323,14 +369,7 @@ export const getRequestByType = (patientId, type) => {
 	};
 };
 
-export const addPharmacyRequest = (
-	data,
-	id,
-	diagnosis,
-	prescription,
-	serviceId,
-	cb
-) => {
+export const addPharmacyRequest = (data, id, prescription, serviceId, cb) => {
 	return dispatch => {
 		const requestData = data
 			? data.map(request => ({
@@ -353,7 +392,7 @@ export const addPharmacyRequest = (
 			request(`${API_URI}/patient/save-request`, 'POST', true, {
 				requestType: 'pharmacy',
 				requestBody: requestData,
-				diagnosis: diagnosis ? diagnosis : '',
+				diagnosis: data[0].diagnosis.id ? data[0].diagnosis.id : '',
 				prescription: prescription ? prescription : '',
 				patient_id: id ? id : '',
 			})
@@ -364,6 +403,41 @@ export const addPharmacyRequest = (
 				})
 				.catch(error => {
 					cb(null);
+					return reject({ success: false });
+				});
+		});
+	};
+};
+
+export const addImmunization = (data, cb) => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			console.log(data);
+			request(`${API_URI}/patient/immunizations`, 'POST', true, data)
+				.then(response => {
+					dispatch(addImmunizationRequest(response.data));
+					cb('success');
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					cb(null);
+					return reject({ success: false });
+				});
+		});
+	};
+};
+
+export const deleteImmunization = data => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			console.log(data);
+			request(`${API_URI}/patient/${data}/immunizations`, 'DELETE', true)
+				.then(response => {
+					dispatch(deleteImmunizationRequest(data));
+
+					return resolve({ success: true });
+				})
+				.catch(error => {
 					return reject({ success: false });
 				});
 		});

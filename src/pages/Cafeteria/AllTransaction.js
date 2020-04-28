@@ -2,12 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import {
-	API_URI,
-	hmoAPI,
-	transactionsAPI,
-	searchAPI,
-} from '../../services/constants';
+import { API_URI, transactionsAPI, searchAPI } from '../../services/constants';
 import Tooltip from 'antd/lib/tooltip';
 import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
@@ -35,11 +30,12 @@ export class AllTransaction extends Component {
 		startDate: '',
 		endDate: '',
 		status: '',
+		paymentType: '',
 		searching: '',
 		searchHmo: false,
 		hmos: [],
 		query: '',
-		patient_id: '',
+		paymentType: '',
 		patients: [],
 		hmoQuery: '',
 		hmo_id: '',
@@ -48,16 +44,16 @@ export class AllTransaction extends Component {
 	hmo = React.createRef();
 
 	componentDidMount() {
-		this.fetchHmoTransaction();
+		this.fetchCafeteriaTransaction();
 	}
 
-	fetchHmoTransaction = async () => {
-		const { status, startDate, endDate, patient_id, hmo_id } = this.state;
-
+	fetchCafeteriaTransaction = async () => {
+		const { status, startDate, endDate, paymentType } = this.state;
+		console.log(`${API_URI}`);
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}${hmoAPI}${transactionsAPI}?startDate=${startDate}&endDate=${endDate}&patient_id=${patient_id}&status=${status}&page=1&limit=10&hmo_id=${hmo_id}`,
+				`${API_URI}${transactionsAPI}/list?patient_id=&startDate=${startDate}&endDate=${endDate}&status=&transaction_type=cafeteria&payment_type&page=2&limit=2`,
 				'GET',
 				true
 			);
@@ -72,7 +68,7 @@ export class AllTransaction extends Component {
 			});
 		} catch (error) {
 			console.log(error);
-			notifyError('Error fetching today hmos transactions request');
+			notifyError('Error fetching today cafeteria transactions request');
 			this.setState({ loading: false, filtering: false, patient_id: '' });
 		}
 	};
@@ -86,7 +82,7 @@ export class AllTransaction extends Component {
 		// 	this.setState({ ...this.state, patient_id: '' });
 		// 	console.log(this.state.patient_id);
 		// }
-		this.fetchHmoTransaction();
+		this.fetchCafeteriaTransaction();
 	};
 
 	change = e => {
@@ -167,7 +163,7 @@ export class AllTransaction extends Component {
 			}
 		}
 	};
-	handlePatientChange = e => {
+	handleInputChange = e => {
 		const { name, value } = e.target;
 
 		if (name === 'patient') {
@@ -207,6 +203,90 @@ export class AllTransaction extends Component {
 					<div className="element-wrapper">
 						<div className="col-md-12 px-0">
 							<form className="row">
+								<div className="form-group col-sm-2.5 pr-0">
+									<label>Name</label>
+
+									<input
+										className="form-control"
+										placeholder="Search for name"
+										type="text"
+										name="patient"
+										defaultValue=""
+										ref={this.patient}
+										id="patient"
+										onChange={this.handlePatientChange}
+										autoComplete="off"
+										required
+										style={{ height: '32px' }}
+									/>
+									{searching && (
+										<div className="searching text-center">
+											<img alt="searching" src={searchingGIF} />
+										</div>
+									)}
+
+									{patients &&
+										patients.map(pat => {
+											return (
+												<div
+													style={{ display: 'flex' }}
+													key={pat.id}
+													className="element-box">
+													<a
+														onClick={() => this.patientSet(pat, 'patient')}
+														className="ssg-item cursor">
+														<div
+															className="item-name"
+															dangerouslySetInnerHTML={{
+																__html: `${pat.surname} ${pat.other_names}`,
+															}}
+														/>
+													</a>
+												</div>
+											);
+										})}
+								</div>
+								<div className="form-group col-md-3 pr-0">
+									<label>Payment type</label>
+
+									<input
+										className="form-control"
+										placeholder="Search for payment type"
+										type="text"
+										name="patient"
+										defaultValue=""
+										onChange={this.handlePatientChange}
+										autoComplete="off"
+										required
+										style={{ height: '32px' }}
+									/>
+									{searching && (
+										<div className="searching text-center">
+											<img alt="searching" src={searchingGIF} />
+										</div>
+									)}
+
+									{patients &&
+										patients.map(pat => {
+											return (
+												<div
+													style={{ display: 'flex' }}
+													key={pat.id}
+													className="element-box">
+													<a
+														onClick={() => this.patientSet(pat, 'patient')}
+														className="ssg-item cursor">
+														<div
+															className="item-name"
+															dangerouslySetInnerHTML={{
+																__html: `${pat.surname} ${pat.other_names}`,
+															}}
+														/>
+													</a>
+												</div>
+											);
+										})}
+								</div>
 								<div className="form-group col-md-3 pr-0">
 									<label>From - To</label>
 									<RangePicker
@@ -216,7 +296,7 @@ export class AllTransaction extends Component {
 								</div>
 								<div className="form-group col-md-1 pr-0 mt-4">
 									<div
-										className="btn btn-sm btn-primary btn-upper text-white"
+										className="btn btn-sm btn-primary btn-upper text-white filter-btn"
 										onClick={this.doFilter}>
 										<i className="os-icon os-icon-ui-37" />
 										<span>
@@ -238,11 +318,11 @@ export class AllTransaction extends Component {
 									<thead>
 										<tr>
 											<th className="text-center">Date</th>
-											<th className="text-center">Item</th>
-											<th className="text-center">Patient name</th>
-											<th className="text-center">Transaction Type</th>
+											<th className="text-center">Name</th>
+											<th className="text-center">Payment Type</th>
 											<th className="text-center">Amount(&#x20A6;)</th>
 											<th className="text-center">Status</th>
+
 											<th>
 												<div className="th-inner "></div>
 												<div className="fht-cell"></div>
@@ -265,30 +345,13 @@ export class AllTransaction extends Component {
 															{moment(request.createdAt).format('DD-MM-YYYY')}
 														</td>
 														<td className="text-center">
-															{request.hmo_name ? request.hmo_name : 'No hmo'}
-														</td>
-
-														<td className="text-center">
-															{request.patient_name}
+															{request.name ? request.name : 'No name'}
 														</td>
 														<td className="text-center">
-															{request.transaction_type}
+															{request.payment_type}
 														</td>
-
 														<td className="text-center">{request.amount}</td>
-														<td className="text-center">
-															{request.hmo_approval_status === 0 ? (
-																<>
-																	<span className="status-pill smaller yellow"></span>
-																	<span>Pending</span>
-																</>
-															) : (
-																<>
-																	<span className="status-pill smaller green"></span>
-																	<span>Approved</span>
-																</>
-															)}
-														</td>
+														<td className="text-center">{request.status}</td>
 														<td className="text-right row-actions">
 															<Tooltip title="Approve status">
 																<a className="secondary">

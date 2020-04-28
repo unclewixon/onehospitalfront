@@ -14,7 +14,7 @@ export class ClinicalLabItem extends Component {
 	};
 	render() {
 		const { collapse } = this.state;
-		const { lab, modalClick } = this.props;
+		const { lab, modalClick, index } = this.props;
 		return (
 			<>
 				<tr
@@ -33,16 +33,14 @@ export class ClinicalLabItem extends Component {
 							className="row-expand-icon row-collapsed"></div>
 					</td>
 					<td>
-						<a>
-							<span
-								className="w-32 avatar gd-warning"
-								style={{ boxShadow: 'none', justifyContent: 'start' }}>
-								{moment(lab.createdAt).format('DD-MM-YYYY')}
-							</span>
-						</a>
+						<a className="item-title text-color">{index + 1}</a>
 					</td>
 					<td className="flex">
-						<a className="item-title text-color">{lab.patient_id ? lab.patient_id : ''}</a>
+						<span
+							className="w-32 avatar gd-warning"
+							style={{ boxShadow: 'none', justifyContent: 'start' }}>
+							{moment(lab.createdAt).format('DD-MM-YYYY')}
+						</span>
 					</td>
 					<td className="flex">
 						<p className="item-title text-color">

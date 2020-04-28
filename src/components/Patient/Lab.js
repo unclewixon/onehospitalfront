@@ -16,6 +16,12 @@ const Lab = props => {
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
+	const [{ startDate, endDate }, setDate] = useState({
+		startDate: moment(Date.now())
+			.subtract(1, 'days')
+			.format('YYYY-MM-DD'),
+		endDate: moment(Date.now()).format('YYYY-MM-DD'),
+	});
 
 	const { location, patient } = props;
 
@@ -28,7 +34,7 @@ const Lab = props => {
 		const patient_id = patient && patient.id ? patient.id : '';
 		if (!loaded) {
 			setDataLoaded(true);
-			getRequestByType(patient_id, 'lab')
+			getRequestByType(patient_id, 'lab', startDate, endDate)
 				.then(response => {
 					setDataLoaded(false);
 				})
@@ -60,12 +66,12 @@ const Lab = props => {
 							</div>
 						</div>
 						{activeRequest ? (
-							<ModalClinicalLab 
+							<ModalClinicalLab
 								activeRequest={activeRequest}
 								showModal={showModal}
 								onModalClick={onModalClick}
 							/>
-							) : null}
+						) : null}
 
 						{dataLoaded ? (
 							<div colSpan="4" className="text-center">
@@ -99,7 +105,7 @@ const Lab = props => {
 																data-id="20"
 																key={index}>
 																<td>
-																	` <span className="text-bold"></span>
+																	<span className="text-bold">{index + 1}</span>
 																</td>
 																<td>
 																	<span>
@@ -111,7 +117,7 @@ const Lab = props => {
 																<td>
 																	{`${patient.surname.toUpperCase()} ${patient.other_names.toUpperCase()}`}
 																</td>
-																<td>{request.requestBody.referredSpeciment}</td>
+																<td>{request.requestBody.refferredSpecimen}</td>
 																<td className="text-center">
 																	{request.status === 1 ? (
 																		<div>

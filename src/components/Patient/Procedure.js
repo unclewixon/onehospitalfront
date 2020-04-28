@@ -4,21 +4,18 @@ import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
 import { request } from '../../services/utilities';
 import { API_URI, patientAPI } from '../../services/constants';
-import { notifyError, notifySuccess } from '../../services/notify';
-import { SubmissionError } from 'redux-form';
+import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { connect } from 'react-redux';
-import {
-	get_all_diagnosis,
-	get_all_services,
-	getAllServiceCategory,
-} from '../../actions/settings';
 import { loadPatientProcedureData } from '../../actions/patient';
 import { compose } from 'redux';
 import moment from 'moment';
+import ModalProcedure from '../Modals/ModalProcedure';
 
 const Procedure = props => {
 	const [loading, setLoading] = useState(false);
+	const [showModal, setShowModal] = useState(false);
+	const [activeRequest, setActiveRequest] = useState(null);
 	let location = props.location;
 	let patient = props.patient;
 
@@ -34,6 +31,10 @@ const Procedure = props => {
 		return rer.join(', ');
 	};
 
+	const onModalClick = () => {
+		setShowModal(!showModal);
+	};
+
 	const loadProcedure = async () => {
 		try {
 			setLoading(true);
@@ -43,11 +44,9 @@ const Procedure = props => {
 				true
 			);
 			props.loadPatientProcedureData(rs);
-			console.log(rs);
 			setLoading(false);
 		} catch (e) {
 			setLoading(false);
-			console.log(e);
 			notifyError(e.message || 'could not fetch procedure');
 		}
 	};
@@ -63,6 +62,15 @@ const Procedure = props => {
 						New Procedure Request
 					</Link>
 				</div>
+				{activeRequest ? (
+					<ModalProcedure
+						showModal={showModal}
+						onModalClick={onModalClick}
+						activeRequest={activeRequest}
+					/>
+				) : (
+					[]
+				)}
 				<h6 className="element-header">Procedure Requests</h6>
 				<div className="element-box">
 					<div className="bootstrap-table">
@@ -84,48 +92,52 @@ const Procedure = props => {
 											<th>Request Date</th>
 											<th>Requested By</th>
 											<th>Request Specimen</th>
-											<th className="text-center">Request Status</th>
 											<th className="text-right" />
 										</tr>
 									</thead>
-									<tbody>
-										{loading ? (
+
+									{loading ? (
+										<tbody>
 											<tr>
 												<td colSpan="6" className="text-center">
 													<img alt="searching" src={searchingGIF} />
 												</td>
 											</tr>
-										) : (
-											<>
-												{props.patient_procedure
-													? props.patient_procedure.map((req, i) => {
-															return (
-																<tr key={i}>
-																	<td>{i + 1}</td>
-																	<td>
-																		{moment(req.createdAt).format('DD-MM-YY')}
-																	</td>
-																	<td>{req.createdBy}</td>
-																	<td>{getRequests(req.requestBody)}</td>
-																	<td className="row-actions text-right">
-																		<Tooltip title="View Request">
-																			<a href="#">
-																				<i className="os-icon os-icon-documents-03" />
-																			</a>
-																		</Tooltip>
-																		<Tooltip title="Print Request">
-																			<a className="ml-2" href="#">
-																				<i className="icon-feather-printer" />
-																			</a>
-																		</Tooltip>
-																	</td>
-																</tr>
-															);
-													  })
-													: ''}
-											</>
-										)}
-									</tbody>
+										</tbody>
+									) : (
+										<tbody>
+											{props.patient_procedure
+												? props.patient_procedure.map((req, i) => {
+														return (
+															<tr key={i}>
+																<td>{i + 1}</td>
+																<td>
+																	{moment(req.createdAt).format('DD-MM-YY')}
+																</td>
+																<td>{req.created_by}</td>
+																<td>{getRequests(req.requestBody)}</td>
+																<td className="row-actions text-right">
+																	<Tooltip title="View Request">
+																		<a
+																			onClick={() => {
+																				onModalClick();
+																				setActiveRequest(req);
+																			}}>
+																			<i className="os-icon os-icon-documents-03" />
+																		</a>
+																	</Tooltip>
+																	<Tooltip title="Print Request">
+																		<a className="ml-2" href="#">
+																			<i className="icon-feather-printer" />
+																		</a>
+																	</Tooltip>
+																</td>
+															</tr>
+														);
+												  })
+												: null}
+										</tbody>
+									)}
 								</table>
 							</div>
 						</div>
@@ -137,7 +149,6 @@ const Procedure = props => {
 };
 
 const mapStateToProps = (state, ownProps) => {
-	console.log(state.user.patient);
 	return {
 		patient: state.user.patient,
 		patient_procedure: state.patient.patient_procedure,

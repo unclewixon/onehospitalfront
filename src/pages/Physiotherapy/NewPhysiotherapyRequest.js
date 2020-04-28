@@ -24,7 +24,6 @@ const NewPhysiotherapy = props => {
 	let history = useHistory();
 	const { register, handleSubmit, setValue } = useForm();
 	const [submitting, setSubmitting] = useState(false);
-
 	const [loaded, setLoaded] = useState(false);
 	const [Loading, setLoading] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
@@ -95,6 +94,8 @@ const NewPhysiotherapy = props => {
 				true,
 				data
 			);
+
+			history.push('/physiotherapy');
 			notifySuccess('physiotherapy request saved');
 			setSubmitting(false);
 		} catch (e) {
@@ -152,13 +153,6 @@ const NewPhysiotherapy = props => {
 	};
 
 	const removeParam = async index => {
-		// const newParametersUI = paramsUI.map((ui, i) => {
-		// 	if (i === index) {
-		// 		return null;
-		// 	}
-		// 	return ui;
-		// });
-
 		let newParametersUI = paramsUI.filter((cur, i) => {
 			if (i !== index) {
 				return cur;
@@ -170,10 +164,6 @@ const NewPhysiotherapy = props => {
 				return cur;
 			}
 		});
-		// let newParametersUI = [...paramsUI];
-		// let newParam = [...parameters];
-		// newParametersUI.splice(index, 1);
-		// newParam.splice(index, 1);
 		await setParameters(newParam);
 		await setParamsUI(newParametersUI);
 	};
@@ -248,7 +238,6 @@ const NewPhysiotherapy = props => {
 													<a
 														onClick={() => patientSet(pat)}
 														className="ssg-item cursor">
-														{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
 														<div
 															className="item-name"
 															dangerouslySetInnerHTML={{
@@ -270,9 +259,7 @@ const NewPhysiotherapy = props => {
 										name="requestType"
 										value="physiotherapy"
 										readOnly
-										ref={register({
-											required: true,
-										})}
+										ref={register}
 									/>
 								</div>
 								<div className="form-group col-sm-11">
@@ -281,10 +268,7 @@ const NewPhysiotherapy = props => {
 										name="service_center"
 										placeholder="Select Service Center"
 										options={filterServiceCenter()}
-										ref={register({
-											required: true,
-											name: 'service_center',
-										})}
+										ref={register({ name: 'service_center' })}
 										onChange={evt => {
 											if (evt === null) {
 												setValue('service_center', null);

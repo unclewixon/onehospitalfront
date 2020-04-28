@@ -83,6 +83,7 @@ export class SearchScan extends Component {
 		let newData = [];
 		data.forEach(value => {
 			if (Array.isArray(value.requestBody)) {
+				console.log(value);
 				value.requestBody.forEach(val => {
 					newData.push({
 						id: value.id,
@@ -91,16 +92,15 @@ export class SearchScan extends Component {
 						updateAt: value.updateAt,
 						requestType: value.requestType,
 						requestBody: {
-							amount: val.amount,
+							amount: value.amount,
 							service_id: val.service_id,
-							specialization: val.specialization,
+							specialization: val.specialization
+								? val.specialization
+								: val.service_name,
 						},
 						status: value.status,
-						patientName:
-							(value.patient.surname ? value.patient.surname : '') +
-							' ' +
-							(value.patient.other_names ? value.patient.other_names : ''),
-						fileNumber: value.patient.fileNumber,
+						patientName: value.patient_name,
+						fileNumber: value.fileNumber,
 					});
 				});
 			} else {
@@ -149,7 +149,7 @@ export class SearchScan extends Component {
 								</div>
 								<div className="form-group col-md-3 mt-4">
 									<div
-										className="btn btn-sm btn-primary btn-upper text-white"
+										className="btn btn-sm btn-primary btn-upper text-white filter-btn"
 										onClick={this.doFilter}>
 										<i className="os-icon os-icon-ui-37" />
 										<span>

@@ -12,6 +12,8 @@ import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { request } from '../../services/utilities';
+import { add_allergies } from '../../actions/patient';
+import { useHistory } from 'react-router-dom';
 
 import {
 	get_all_services,
@@ -19,6 +21,8 @@ import {
 } from '../../actions/settings';
 
 const NewDentistry = props => {
+	let history = useHistory();
+
 	const { register, handleSubmit, setValue } = useForm();
 	const [submitting, setSubmitting] = useState(false);
 	const [loaded, setLoaded] = useState(false);
@@ -124,9 +128,11 @@ const NewDentistry = props => {
 				true,
 				theRequest
 			);
+			history.push('settings/roles#dentistry');
 			notifySuccess('Dentistry request saved');
 			setSubmitting(false);
 		} catch (e) {
+			console.log(e, 'error from the server');
 			setSubmitting(false);
 			notifyError(e.message || 'could not save dentistry request');
 		}
@@ -145,7 +151,7 @@ const NewDentistry = props => {
 	const fetchServicesByCategory = async id => {
 		try {
 			const rs = await request(
-				`${API_URI}${serviceAPI}` + '/categories/' + id,
+				`${API_URI}${serviceAPI}/categories/${id}`,
 				'GET',
 				true
 			);

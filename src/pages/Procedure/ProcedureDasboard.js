@@ -177,7 +177,7 @@ class ProcedureDashboard extends Component {
 								</div>
 								<div className="form-group col-md-3 mt-4">
 									<div
-										className="btn btn-sm btn-primary btn-upper text-white"
+										className="btn btn-sm btn-primary btn-upper text-white filter-btn"
 										onClick={() => {
 											this.filterEntries();
 										}}>
@@ -225,12 +225,6 @@ class ProcedureDashboard extends Component {
 													<th>
 														<div className="th-inner sortable both">
 															Request Specimen
-														</div>
-														<div className="fht-cell"></div>
-													</th>
-													<th>
-														<div className="th-inner sortable both">
-															Request Status
 														</div>
 														<div className="fht-cell"></div>
 													</th>

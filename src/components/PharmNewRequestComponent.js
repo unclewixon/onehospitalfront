@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import Select from 'react-select';
 import { ReactComponent as PlusIcon } from '../assets/svg-icons/plus.svg';
 import waiting from '../assets/images/waiting.gif';
+// import searchingGIF from '../assets/images/searching.gif'
 // import { ReactComponent as MinusIcon } from '../assets/svg-icons/minus.svg';
 import { ReactComponent as EditIcon } from '../assets/svg-icons/edit.svg';
 import { ReactComponent as TrashIcon } from '../assets/svg-icons/trash.svg';
@@ -12,33 +13,11 @@ import { notifySuccess, notifyError } from './../services/notify';
 import PharmNewRequestViewModal from './PharmNewRequestViewModal';
 import { addPharmacyRequest } from '../actions/patient';
 import { connect } from 'react-redux';
-
-const dummyData = [
-	{ value: '', label: 'Select one', name: 'formulary' },
-	{ value: '12', label: 'Line', name: 'formulary' },
-	{ value: '13', label: 'Line2', name: 'formulary' },
-	{ value: '14', label: 'Line3', name: 'formulary' },
-];
-const dummyData1 = [
-	{ value: '', label: 'Select one', name: 'serviceUnit' },
-	{ value: '12', label: 'Line44', name: 'serviceUnit' },
-	{ value: '13', label: 'Line55', name: 'serviceUnit' },
-	{ value: '14', label: 'Line66', name: 'serviceUnit' },
-];
-
-const dummyData2 = [
-	{ value: '', label: 'Select one', name: 'genericName' },
-	{ value: '12', label: 'Line777', name: 'genericName' },
-	{ value: '13', label: 'Line888', name: 'genericName' },
-	{ value: '14', label: 'Line999', name: 'genericName' },
-];
-
-const dummyData3 = [
-	{ value: '', label: 'Select one', name: 'drugName', id: 'drug-id' },
-	{ value: '12', label: 'Line0000', name: 'drugName', id: 'drug-id' },
-	{ value: '13', label: 'Line1111', name: 'drugName', id: 'drug-id' },
-	{ value: '14', label: 'Line0101', name: 'drugName', id: 'drug-id' },
-];
+import { API_URI, diagnosisAPI } from '../services/constants';
+import { request } from '../services/utilities';
+import AsyncSelect from 'react-select/async';
+import { loadInvCategories, loadInventories } from './../actions/inventory';
+import { Label } from 'recharts';
 
 const defaultValues = {
 	serviceUnit: '',
@@ -56,11 +35,13 @@ const defaultValues = {
 
 const PharmNewRequestComponent = ({
 	patient,
-	diagnosisList,
 	addPharmacyRequest,
 	allPatients,
 	patientsLoading,
-	diagnosisLoading,
+	loadInvCategories,
+	loadInventories,
+	categories,
+	inventories,
 }) => {
 	const [refillable, setRefillable] = useState(false);
 	const { register, handleSubmit, setValue, reset, watch } = useForm({
@@ -71,14 +52,84 @@ const PharmNewRequestComponent = ({
 	const [editing, setEditing] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
-	const [diagnosis, setDiagnosis] = useState('');
 	const [prescription, setPrescription] = useState(false);
 	const [chosenPatient, setChosenPatient] = useState(null);
 	const [serviceId, setServiceId] = useState('');
+	const [selectedOption, setSelectedOption] = useState('');
 
 	const onRefillableClick = () => {
 		setRefillable(!refillable);
 	};
+	const getOptionValues = option => option.id;
+	const getOptionLabels = option => option.description;
+	const handleChangeOptions = selectedOption => {
+		setValue('diagnosis', selectedOption);
+		setSelectedOption(selectedOption);
+	};
+	const getOptions = async inputValue => {
+		if (!inputValue) {
+			return [];
+		}
+		let val = inputValue.toUpperCase();
+		const res = await request(
+			`${API_URI}${diagnosisAPI}/search?q=${val}`,
+			'GET',
+			true
+		);
+		return res;
+	};
+
+	const getServiceUnit = useCallback(async () => {
+		try {
+			const res = await request(`${API_URI}/inventory/categories`, 'GET', true);
+			loadInvCategories(res);
+		} catch (error) {
+			notifyError('Error fetching Service Unit');
+		}
+	}, [loadInvCategories]);
+
+	const getPharmacyItems = useCallback(
+		async id => {
+			try {
+				const res = await request(
+					`${API_URI}/inventory/stocks-by-category/52b49109-028a-46c6-b5f3-1e88a48d333f`,
+					'GET',
+					true
+				);
+				loadInventories(res);
+			} catch (error) {
+				notifyError('Erroe fetching pharmacy items');
+			}
+		},
+		[loadInventories]
+	);
+
+	useEffect(() => {
+		getServiceUnit();
+		getPharmacyItems();
+	}, [getServiceUnit, getPharmacyItems]);
+
+	// const serviceOptions = categories && categories.length
+	// 	? categories.map((cat) => {
+	// 		return {
+	// 			value: cat.id,
+	// 			label: cat.name
+	// 		}
+	// 	}) : []
+
+	// const handleServiceUnitChange = e => {
+	// 	getPharmacyItems(e.value)
+	// }
+
+	const genericNameOptions =
+		inventories && inventories.length
+			? inventories.map(drug => {
+					return {
+						value: drug.name,
+						label: drug.name,
+					};
+			  })
+			: [];
 
 	const values = watch();
 
@@ -87,8 +138,7 @@ const PharmNewRequestComponent = ({
 	};
 
 	const onFormSubmit = (data, e) => {
-		const { diagnosis, ...rest } = data;
-		let newPharm = [...pharmRequest, rest];
+		let newPharm = [...pharmRequest, data];
 		setPharmRequest(newPharm);
 		setEditing(false);
 		reset(defaultValues);
@@ -125,7 +175,6 @@ const PharmNewRequestComponent = ({
 		addPharmacyRequest(
 			pharmRequest,
 			patient_id,
-			diagnosis,
 			prescription,
 			serviceId,
 			message => {
@@ -152,7 +201,7 @@ const PharmNewRequestComponent = ({
 	};
 
 	const onDrugSelection = e => {
-		onHandleSelectChange(e);
+		setValue('drugName', e.value);
 		setServiceId(e.id);
 	};
 
@@ -193,14 +242,13 @@ const PharmNewRequestComponent = ({
 								<div className="form-group col-sm-6">
 									<label>Service Unit</label>
 									<Select
-										placeholder="Choose a Service Unit"
 										ref={register({ name: 'serviceUnit', required: true })}
 										name="serviceUnit"
-										options={dummyData1}
-										onChange={onHandleSelectChange}
+										options={[{ value: 'pharmacy', label: 'Pharmacy' }]}
+										required
 										value={{
-											label: values.serviceUnit,
-											value: values.serviceUnit,
+											value: 'pharmacy',
+											label: 'Pharmacy',
 										}}
 									/>
 								</div>
@@ -210,12 +258,8 @@ const PharmNewRequestComponent = ({
 										placeholder="Choose a formulary"
 										name="formulary"
 										ref={register({ name: 'formulary', required: true })}
-										onChange={onHandleSelectChange}
-										options={dummyData}
-										value={{
-											label: values.formulary,
-											value: values.formulary,
-										}}
+										onChange={e => setValue('formulary', e.value)}
+										options={genericNameOptions}
 									/>
 								</div>
 							</div>
@@ -226,12 +270,9 @@ const PharmNewRequestComponent = ({
 										placeholder="Choose a drug generic name"
 										name="genericName"
 										ref={register({ name: 'genericName', required: true })}
-										onChange={onHandleSelectChange}
-										options={dummyData2}
-										value={{
-											label: values.genericName,
-											value: values.genericName,
-										}}
+										onChange={e => setValue('genericName', e.value)}
+										options={genericNameOptions}
+										required
 									/>
 								</div>
 							</div>
@@ -242,12 +283,8 @@ const PharmNewRequestComponent = ({
 										placeholder="Choose a drug name"
 										ref={register({ name: 'drugName', required: true })}
 										name="drugName"
-										options={dummyData3}
+										options={genericNameOptions}
 										onChange={e => onDrugSelection(e)}
-										value={{
-											label: values.drugName,
-											value: values.drugName,
-										}}
 									/>
 								</div>
 								<div className="form-group col-sm-6">
@@ -350,21 +387,21 @@ const PharmNewRequestComponent = ({
 									</div>
 								</div>
 							) : null}
-							<div>
-								<h6>Diagnosis Data</h6>
-							</div>
 							<div className="row">
 								<div className="form-group col-sm-12">
-									<Select
-										isClearable
-										isSearchable
-										isLoading={diagnosisLoading}
-										placeholder="Enter ICDIO Code"
-										onChange={e => {
-											setDiagnosis(e.value);
-										}}
-										options={diagnosisList}
-										value={{ label: diagnosis, value: diagnosis }}
+									<h6>Diagnosis Data</h6>
+									<AsyncSelect
+										required
+										cacheOptions
+										value={selectedOption}
+										getOptionValue={getOptionValues}
+										getOptionLabel={getOptionLabels}
+										defaultOptions
+										name="diagnosis"
+										ref={register({ name: 'diagnosis', required: true })}
+										loadOptions={getOptions}
+										onChange={handleChangeOptions}
+										placeholder="Enter ICD10 Code"
 									/>
 								</div>
 							</div>
@@ -442,7 +479,7 @@ const PharmNewRequestComponent = ({
 														<td>{request.genericName}</td>
 														<td>{request.drugName}</td>
 														<td>{request.quantity}</td>
-														<td>{diagnosis ? diagnosis : ''}</td>
+														<td>{request.diagnosis.description}</td>
 														<td>
 															<ViewIcon
 																onClick={() => {
@@ -509,4 +546,13 @@ const PharmNewRequestComponent = ({
 	);
 };
 
-export default connect(null, { addPharmacyRequest })(PharmNewRequestComponent);
+const mapStateToProps = ({ inventory }) => ({
+	categories: inventory.categories,
+	inventories: inventory.inventories,
+});
+
+export default connect(mapStateToProps, {
+	addPharmacyRequest,
+	loadInvCategories,
+	loadInventories,
+})(PharmNewRequestComponent);

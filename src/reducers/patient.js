@@ -26,7 +26,10 @@ import {
 	UPDATE_COMPLAINT_DATA,
 	LOAD_ANTENNATAL,
 	LOAD_IMMUNIZATION,
+	ADD_IMMUNIZATION,
+	DELETE_IMMUNIZATION,
 } from '../actions/types';
+import actions from 'redux-form/lib/actions';
 
 const INITIAL_STATE = {
 	formStep: 1,
@@ -120,6 +123,7 @@ const patient = (state = INITIAL_STATE, action) => {
 				],
 			};
 		case DELETE_ALLERGY:
+			console.log(actions.payload);
 			return {
 				...state,
 				allergies: state.allergies.filter(
@@ -152,6 +156,18 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, antennatal: [...action.payload] };
 		case LOAD_IMMUNIZATION:
 			return { ...state, immunization: [...action.payload] };
+		case ADD_IMMUNIZATION:
+			return {
+				...state,
+				immunization: [...state.immunization, action.payload],
+			};
+		case DELETE_IMMUNIZATION:
+			return {
+				...state,
+				immunization: state.immunization.filter(
+					deletedItem => deletedItem.id !== action.payload
+				),
+			};
 		default:
 			return state;
 	}

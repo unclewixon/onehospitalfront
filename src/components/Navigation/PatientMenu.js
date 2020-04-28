@@ -115,6 +115,14 @@ const PatientMenu = ({ location }) => {
 						<span>Procedure</span>
 					</Link>
 				</li>
+				<li>
+					<Link to={`${location.pathname}#immunization`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout" />
+						</div>
+						<span>Immunization</span>
+					</Link>
+				</li>
 				<li className="sub-header">
 					<span>Reports</span>
 				</li>
