@@ -7,13 +7,45 @@ import {
 } from '../../services/utilities';
 import { Field, reduxForm } from 'redux-form';
 
-const fetal = [
+const relToBrim = [
 	{
-		value: 'daily',
-		label: 'daily',
+		id: '0/5',
+		name: '0/5',
 	},
-	{ value: 'weekend', label: 'weekend' },
-	{ value: 'monthly', label: 'monthly' },
+	{
+		id: '1/5',
+		name: '1/5',
+	},
+	{ id: '2/5', name: '2/5' },
+	{ id: '3/5', name: '3/5' },
+	{ id: '4/5', name: '4/5' },
+	{ id: '5/5', name: '5/5' },
+];
+
+const position = [
+	{
+		id: 'Cephalic',
+		name: 'Cephalic',
+	},
+	{
+		id: 'Breech',
+		name: 'Breech',
+	},
+];
+
+const fetalLie = [
+	{
+		id: 'Longitudinal',
+		name: 'Longitudinal',
+	},
+	{
+		id: 'Oblique',
+		name: 'Oblique',
+	},
+	{
+		id: 'Transaverse',
+		name: 'Transaverse',
+	},
 ];
 class GeneralAssessment extends Component {
 	render() {
@@ -34,8 +66,8 @@ class GeneralAssessment extends Component {
 						<div className="row">
 							<div className="col-sm-6">
 								<Field
-									id="heart_of_fundus"
-									name="heart_of_fundus"
+									id="heightOfFunds"
+									name="heightOfFunds"
 									component={renderTextInput}
 									label="Height of Fundus (cm)"
 									type="text"
@@ -44,8 +76,8 @@ class GeneralAssessment extends Component {
 							</div>
 							<div className="col-sm-6">
 								<Field
-									id="fetal_heart_rate"
-									name="fetal_heart_rate"
+									id="fetalHeartRate"
+									name="fetalHeartRate"
 									component={renderTextInput}
 									label="Fetal Heart Rate"
 									type="text"
@@ -57,33 +89,33 @@ class GeneralAssessment extends Component {
 						<div className="row">
 							<div className="col-sm-4">
 								<Field
-									id="presentation_position_fetals"
-									name="presentation_position_fetals"
+									id="positionOfFetus"
+									name="positionOfFetus"
 									component={renderSelect}
 									label="Presentation and Position of Fetals"
 									placeholder="Select Presentation and Position of Fetals"
-									data={fetal}
+									data={position}
 								/>
 							</div>
 							<div className="col-sm-4">
 								<Field
-									id="fetal_lie"
-									name="fetal_lie"
+									id="fetalLie"
+									name="fetalLie"
 									component={renderSelect}
 									label="Fetal Lie"
 									placeholder="Select fetal lie"
-									data={fetal}
+									data={fetalLie}
 								/>
 							</div>
 
 							<div className="col-sm-4">
 								<Field
-									id="relationship_to_brim"
-									name="relationship_to_brim"
+									id="relationshipToBrim"
+									name="relationshipToBrim"
 									component={renderSelect}
 									label="Relationship to Brim"
 									placeholder="Select Relationship to Brim"
-									data={fetal}
+									data={relToBrim}
 								/>
 							</div>
 						</div>
@@ -103,7 +135,7 @@ class GeneralAssessment extends Component {
 }
 
 GeneralAssessment = reduxForm({
-	form: 'antennatal', //Form name is same
+	form: 'antennatalAssessment', //Form name is same
 	destroyOnUnmount: false,
 	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
 	validate,
