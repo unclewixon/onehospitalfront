@@ -78,21 +78,30 @@ export class Partograph extends PureComponent {
 					<LineChart width={900} height={300} data={data}>
 						<CartesianGrid strokeDasharray="3 3" />
 						<XAxis dataKey="name">
-							<Label value="Labour Time" offset={0} position="insideBottom" />
+							<Label
+								value="Labour Time"
+								offset={-10}
+								position="insideBottom"
+								margin={{ top: 30 }}
+							/>
 						</XAxis>
 						<YAxis
-							dataKey="Fetal heart rate"
+							dataKey="Fetal Heart Rate"
 							label={{
-								value: 'Fetal heart rate',
+								value: 'Fetal Heart Rate',
 								angle: -90,
 								position: 'insideLeft',
 							}}
 						/>
 						<Tooltip />
-						<Legend margin={{ bottom: 20 }} />
+						<Legend
+							wrapperStyle={{
+								bottom: '-10px',
+							}}
+						/>
 						<Line
 							type="monotone"
-							dataKey="Fetal heart rate
+							dataKey="Fetal Heart Rate
 						"
 							stroke="#8884d8"
 							activeDot={{ r: 8 }}
@@ -101,12 +110,12 @@ export class Partograph extends PureComponent {
 					</LineChart>
 				</div>
 
-				<div className="col-md-12 mt-3">
-					<h6 className="text-center">Cervic dilation</h6>
+				<div className="col-md-12 mt-4">
+					<h6 className="text-center">CervicoGraph</h6>
 					<LineChart width={900} height={300} data={data}>
 						<CartesianGrid strokeDasharray="3 3" />
 						<XAxis dataKey="name">
-							<Label value="Labour Time" offset={0} position="insideBottom" />
+							<Label value="Labour Time" offset={-10} position="insideBottom" />
 						</XAxis>
 						<YAxis
 							dataKey="Cervic dilation"
@@ -117,70 +126,84 @@ export class Partograph extends PureComponent {
 							}}
 						/>
 						<Tooltip />
-						<Legend margin={{ bottom: 20 }} />
-						<Line
-							type="monotone"
-							dataKey="systolic"
-							stroke="red"
-							activeDot={{ r: 8 }}
-							name="systolic"
+						<Legend
+							wrapperStyle={{
+								bottom: '-10px',
+							}}
+							payload={[
+								{
+									id: 'alert',
+									value: 'Alert',
+									type: 'triangle',
+									color: '#8884d8',
+								},
+								{
+									id: 'action',
+									value: 'Action',
+									type: 'line',
+									color: '#82ca9d',
+								},
+								{
+									id: 'cervical dilation',
+									value: 'Cervical Dilation',
+									type: 'star',
+									color: '#8884d8',
+								},
+								{
+									id: 'fetal head station',
+									value: 'Fetal Head Station',
+									type: 'circle',
+									color: 'black',
+								},
+							]}
 						/>
-						<Line
-							name="Diastolic"
-							type="monotone"
-							dataKey="Diastolic"
-							stroke="teal"
-						/>
-						<Line
-							name="tristylic"
-							type="monotone"
-							dataKey="tristylic"
-							stroke="blue"
-						/>
-
-						<Scatter name="red" dataKey="red" fill="red" />
 					</LineChart>
 				</div>
 
-				<div className="col-md-12 mt-3">
-					<h6 className="text-center">Contraction</h6>
+				<div className="col-md-12 mt-4">
+					<h6 className="text-center">Contractions</h6>
 					<LineChart width={900} height={300} data={data}>
 						<CartesianGrid strokeDasharray="3 3" />
 						<XAxis dataKey="name">
-							<Label value="Labour Time" offset={0} position="insideBottom" />
+							<Label value="Labour Time" offset={-10} position="insideBottom" />
 						</XAxis>
 						<YAxis
-							dataKey="Contraction"
+							dataKey="Contractions"
 							label={{
-								value: 'Contraction',
+								value: 'Contractions',
 								angle: -90,
 								position: 'insideLeft',
 							}}
 						/>
 						<Tooltip />
-						<Legend margin={{ bottom: 20 }} />
-						<Line
-							type="monotone"
-							dataKey="systolic"
-							stroke="#8884d8"
-							activeDot={{ r: 8 }}
-							name="systolic"
-						/>
-						<Line
-							name="Diastolic"
-							type="monotone"
-							dataKey="Diastolic"
-							stroke="#ff7300"
+						<Legend
+							wrapperStyle={{
+								bottom: '-10px',
+							}}
+							payload={[
+								{
+									id: 'rateOfContraction',
+									value: 'Rate of Contractions',
+									type: 'triange',
+									color: 'purple',
+								},
+								{
+									id: 'durationOfContraction',
+									value: 'Duration of Contractions',
+									type: 'circle',
+									color: 'red',
+								},
+							]}
 						/>
 					</LineChart>
 				</div>
 
-				<div className="col-md-12 mt-3">
+				<div className="col-md-12 mt-4">
 					<h6 className="text-center">Blood Pressure</h6>
 					<LineChart width={900} height={300} data={data}>
 						<CartesianGrid strokeDasharray="3 3" />
 						<XAxis dataKey="name">
-							<Label value="Labour Time" offset={0} position="insideBottom" />
+							<Label value="Labour Time" offset={-10} position="insideBottom" />
 						</XAxis>
 						<YAxis
 							dataKey="Blood Pressure"
@@ -191,28 +214,33 @@ export class Partograph extends PureComponent {
 							}}
 						/>
 						<Tooltip />
-						<Legend margin={{ bottom: 20 }} />
-						<Line
-							type="monotone"
-							dataKey="systolic"
-							stroke="#8884d8"
-							activeDot={{ r: 8 }}
-							name="systolic"
-						/>
-						<Line
-							name="Diastolic"
-							type="monotone"
-							dataKey="Diastolic"
-							stroke="#82ca9d"
+						<Legend
+							wrapperStyle={{
+								bottom: '-10px',
+							}}
+							payload={[
+								{
+									id: 'systolic',
+									value: 'Systolic',
+									type: 'triangle',
+									color: 'purple',
+								},
+								{
+									id: 'diastolic',
+									value: 'Diastolic',
+									type: 'circle',
+									color: 'red',
+								},
+							]}
 						/>
 					</LineChart>
 				</div>
-				<div className="col-md-12 mt-3">
+				<div className="col-md-12 mt-4">
 					<h6 className="text-center">Pulse</h6>
 					<LineChart width={900} height={300} data={data}>
 						<CartesianGrid strokeDasharray="3 3" />
 						<XAxis dataKey="name">
-							<Label value="Labour Time" offset={0} position="insideBottom" />
+							<Label value="Labour Time" offset={-10} position="insideBottom" />
 						</XAxis>
 						<YAxis
 							dataKey="Pulse"
@@ -223,7 +251,11 @@ export class Partograph extends PureComponent {
 							}}
 						/>
 						<Tooltip />
-						<Legend margin={{ bottom: 20 }} />
+						<Legend
+							wrapperStyle={{
+								bottom: '-10px',
+							}}
+						/>
 						<Line
 							type="monotone"
 							dataKey="Pulse"
@@ -233,12 +265,12 @@ export class Partograph extends PureComponent {
 					</LineChart>
 				</div>
 
-				<div className="col-md-12 mt-3">
+				<div className="col-md-12 mt-4">
 					<h6 className="text-center">Temperature</h6>
 					<LineChart width={900} height={300} data={data}>
 						<CartesianGrid strokeDasharray="3 3" />
 						<XAxis dataKey="name">
-							<Label value="Labour Time" offset={0} position="insideBottom" />
+							<Label value="Labour Time" offset={-10} position="insideBottom" />
 						</XAxis>
 						<YAxis
 							dataKey="Temperature"
@@ -249,7 +281,11 @@ export class Partograph extends PureComponent {
 							}}
 						/>
 						<Tooltip />
-						<Legend margin={{ bottom: 20 }} />
+						<Legend
+							wrapperStyle={{
+								bottom: '-10px',
+							}}
+						/>
 						<Line
 							type="monotone"
 							dataKey="Temperature"
@@ -259,12 +295,12 @@ export class Partograph extends PureComponent {
 					</LineChart>
 				</div>
 
-				<div className="col-md-12 mt-3">
+				<div className="col-md-12 mt-4">
 					<h6 className="text-center">Respiration Rate</h6>
 					<LineChart width={900} height={300} data={data}>
 						<CartesianGrid strokeDasharray="3 3" />
 						<XAxis dataKey="name">
-							<Label value="Labour Time" offset={0} position="insideBottom" />
+							<Label value="Labour Time" offset={-10} position="insideBottom" />
 						</XAxis>
 						<YAxis
 							dataKey="Respiration rate"
@@ -275,10 +311,14 @@ export class Partograph extends PureComponent {
 							}}
 						/>
 						<Tooltip />
-						<Legend margin={{ bottom: 20 }} />
+						<Legend
+							wrapperStyle={{
+								bottom: '-10px',
+							}}
+						/>
 						<Line
 							type="monotone"
-							dataKey="respiration rate"
+							dataKey="Respiration rate"
 							stroke="#8884d8"
 							margin={{ top: 20 }}
 							activeDot={{ r: 8 }}
@@ -286,26 +326,30 @@ export class Partograph extends PureComponent {
 					</LineChart>
 				</div>
 
-				<div className="col-md-12 mt-3">
+				<div className="col-md-12 mt-4">
 					<h6 className="text-center">Blood Glucose</h6>
 					<LineChart width={900} height={300} data={data}>
 						<CartesianGrid strokeDasharray="3 3" />
 						<XAxis dataKey="name">
-							<Label value="Labour Time" offset={0} position="insideBottom" />
+							<Label value="Labour Time" offset={-10} position="insideBottom" />
 						</XAxis>
 						<YAxis
-							dataKey="Blood Glucose"
+							dataKey="Glucose (mg/dL)"
 							label={{
-								value: 'Blood Glucose',
+								value: 'Glucose (mg/dL)',
 								angle: -90,
 								position: 'insideLeft',
 							}}
 						/>
 						<Tooltip />
-						<Legend margin={{ bottom: 20 }} />
+						<Legend
+							wrapperStyle={{
+								bottom: '-10px',
+							}}
+						/>
 						<Line
 							type="monotone"
-							dataKey="Blood glucose"
+							dataKey="Glucose (mg/dL)"
 							stroke="#8884d8"
 							margin={{ top: 20 }}
 							activeDot={{ r: 8 }}
