@@ -86,9 +86,9 @@ export class Partograph extends PureComponent {
 							/>
 						</XAxis>
 						<YAxis
-							dataKey="Fetal heart rate"
+							dataKey="Fetal Heart Rate"
 							label={{
-								value: 'Fetal heart rate',
+								value: 'Fetal Heart Rate',
 								angle: -90,
 								position: 'insideLeft',
 							}}
@@ -101,7 +101,7 @@ export class Partograph extends PureComponent {
 						/>
 						<Line
 							type="monotone"
-							dataKey="Fetal heart rate
+							dataKey="Fetal Heart Rate
 						"
 							stroke="#8884d8"
 							activeDot={{ r: 8 }}
@@ -161,7 +161,7 @@ export class Partograph extends PureComponent {
 				</div>
 
 				<div className="col-md-12 mt-4">
-					<h6 className="text-center">Contraction</h6>
+					<h6 className="text-center">Contractions</h6>
 					<LineChart width={900} height={300} data={data}>
 						<CartesianGrid strokeDasharray="3 3" />
 						<XAxis dataKey="name">
