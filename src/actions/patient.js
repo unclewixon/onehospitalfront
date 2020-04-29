@@ -29,6 +29,7 @@ import {
 	LOAD_IMMUNIZATION,
 	ADD_IMMUNIZATION,
 	DELETE_IMMUNIZATION,
+	LOAD_ANTENATAL_ASSESSMENT,
 } from './types';
 import { request } from '../services/utilities';
 
@@ -212,6 +213,13 @@ export const addImmunizationRequest = payload => {
 export const deleteImmunizationRequest = payload => {
 	return {
 		type: DELETE_IMMUNIZATION,
+		payload,
+	};
+};
+
+export const loadAntenatalAssessment = payload => {
+	return {
+		type: LOAD_ANTENATAL_ASSESSMENT,
 		payload,
 	};
 };
@@ -412,6 +420,21 @@ export const deleteImmunization = data => {
 				.then(response => {
 					dispatch(deleteImmunizationRequest(data));
 
+					return resolve({ success: true });
+				})
+				.catch(error => {
+					return reject({ success: false });
+				});
+		});
+	};
+};
+
+export const antenatalAssessment = () => {
+	return dispatch => {
+		return new Promise((resolve, reject) => {
+			request(`${API_URI}/patient/immunizations`, 'GET', true)
+				.then(response => {
+					dispatch(loadAntenatalAssessment(response.data));
 					return resolve({ success: true });
 				})
 				.catch(error => {
