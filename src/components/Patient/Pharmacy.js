@@ -10,6 +10,7 @@ import Modal from 'react-bootstrap/Modal';
 import moment from 'moment';
 import Select from 'react-select';
 import { ReactComponent as ViewIcon } from '../../assets/svg-icons/view.svg';
+import PharmNewRequestViewModal from './../PharmNewRequestViewModal';
 
 const Pharmacy = props => {
 	const { location, Requests, patient } = props;
@@ -65,19 +66,11 @@ const Pharmacy = props => {
 							</div>
 						</div>
 						{activeRequest ? (
-							<Modal
-								show={showModal}
-								size="lg"
-								aria-labelledby="contained-modal-title-vcenter"
-								centered
-								onHide={onModalClick}>
-								<Modal.Header closeButton>
-									<Modal.Title id="contained-modal-title-vcenter">
-										{`${patient.surname.toUpperCase()} ${patient.other_names.toUpperCase()}`}
-									</Modal.Title>
-								</Modal.Header>
-								<Modal.Body></Modal.Body>
-							</Modal>
+							<PharmNewRequestViewModal 
+								activeRequest={activeRequest}
+								showModal={showModal}
+								onModalClick={onModalClick}
+							/>
 						) : null}
 
 						{dataLoaded ? (
@@ -96,7 +89,7 @@ const Pharmacy = props => {
 											<tr>
 												<th>Request Date</th>
 												<th>Request Type</th>
-												<th>Diagnosis</th>
+												<th>Requested By</th>
 												<th className="text-center">Request Status</th>
 												<th className="text-right" />
 											</tr>
@@ -117,8 +110,8 @@ const Pharmacy = props => {
 																</td>
 																<td>{request.requestType}</td>
 																<td>
-																	{request && request.diagnosis
-																		? request.diagnosis
+																	{request && request.created_by
+																		? request.created_by
 																		: ''}
 																</td>
 																<td className="text-center">
