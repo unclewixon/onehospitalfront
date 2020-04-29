@@ -34,70 +34,12 @@ const ProcedureRequest = props => {
 	const [loaded, setLoaded] = useState(false);
 	const [selectedOption, setSelectedOption] = useState('');
 
-	useEffect(() => {
-		if (!loaded) {
-			props
-				.getAllServiceCategory()
-				.then(response => {})
-				.catch(e => {
-					notifyError(e.message || 'could not fetch service categories');
-				});
-		}
-		let data = [];
-		let services = [];
-		props.ServiceCategories.forEach((item, index) => {
-			const res = { label: item.name, value: item.id };
-			data = [...data, res];
-		});
-		props.service.forEach((item, index) => {
-			const res = { label: item.name, value: item.id };
-			services = [...services, res];
-		});
-		setServicesCategory(data);
-		setServices(services);
-		setLoaded(true);
-	}, [props, loaded]);
-
-	const getOptionValues = option => option.id;
-
-	const getOptionLabels = option => option.description;
-
-	const handleChangeOptions = selectedOption => {
-		setSelectedOption(selectedOption);
-	};
-	const getOptions = async inputValue => {
-		if (!inputValue) {
-			return [];
-		}
-		let val = inputValue.toUpperCase()
-		const res = await request(
-			`${API_URI}${diagnosisAPI}${val}`,
-			'GET',
-			true
-		);
-		return res;
-	};
-
-	const fetchServicesByCategory = async id => {
-		try {
-			const rs = await request(
-				`${API_URI}${serviceAPI}` + '/categories/' + id,
-				'GET',
-				true
-			);
-			props.get_all_services(rs);
-		} catch (error) {
-			console.log(error);
-			notifyError('error fetching imaging requests for the patient');
-		}
-	};
-
 	const onSubmit = async values => {
 		setSubmitting(true);
-		if(!values.service_center || !values.procedure){
-			notifyError('Service center and Procedure are required')
+		if (!values.service_center || !values.procedure) {
+			notifyError('Service center and Procedure are required');
 			setSubmitting(false);
-			return
+			return;
 		}
 		let requestData = [];
 		let theRequest = {};
@@ -137,6 +79,63 @@ const ProcedureRequest = props => {
 		}
 	};
 
+	useEffect(() => {
+		if (!loaded) {
+			props
+				.getAllServiceCategory()
+				.then(response => {})
+				.catch(e => {
+					notifyError(e.message || 'could not fetch service categories');
+				});
+		}
+		let data = [];
+		let services = [];
+		props.ServiceCategories.forEach((item, index) => {
+			const res = { label: item.name, value: item.id };
+			data = [...data, res];
+		});
+		props.service.forEach((item, index) => {
+			const res = { label: item.name, value: item.id };
+			services = [...services, res];
+		});
+		setServicesCategory(data);
+		setServices(services);
+		setLoaded(true);
+	}, [props, loaded]);
+
+	const getOptionValues = option => option.id;
+
+	const getOptionLabels = option => option.description;
+
+	const handleChangeOptions = selectedOption => {
+		setSelectedOption(selectedOption);
+	};
+	const getOptions = async inputValue => {
+		if (!inputValue) {
+			return [];
+		}
+		let val = inputValue.toUpperCase();
+		const res = await request(
+			`${API_URI}${diagnosisAPI}` + 'search?q=' + val,
+			'GET',
+			true
+		);
+		return res;
+	};
+
+	const fetchServicesByCategory = async id => {
+		try {
+			const rs = await request(
+				`${API_URI}${serviceAPI}` + '/categories/' + id,
+				'GET',
+				true
+			);
+			props.get_all_services(rs);
+		} catch (error) {
+			console.log(error);
+			notifyError('error fetching imaging requests for the patient');
+		}
+	};
 	const handleChangeServiceCategory = evt => {
 		let value = String(evt.value);
 		fetchServicesByCategory(value);

@@ -1,9 +1,40 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
+import { renderSelect, request } from '../../../services/utilities';
+import {
+	API_URI,
+	diagnosisAPI,
+	diagnosisType,
+} from '../../../services/constants';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import Select from 'antd/es/select';
+import { Field, reduxForm } from 'redux-form';
 
 class Diagnosis extends Component {
 	state = {
 		diagnoses: [],
+		selectedOption: '',
+	};
+
+	getOptionValues = option => option.id;
+
+	getOptionLabels = option => option.description;
+
+	handleChangeOptions = selectedOption => {
+		this.setState({ selectedOption });
+	};
+
+	getOptions = async inputValue => {
+		if (!inputValue) {
+			return [];
+		}
+		let val = inputValue.toUpperCase();
+		const res = await request(
+			`${API_URI}${diagnosisAPI}` + 'search?q=' + val,
+			'GET',
+			true
+		);
+		return res;
 	};
 
 	addDiagnosis = () => {
@@ -35,7 +66,7 @@ class Diagnosis extends Component {
 	};
 
 	render() {
-		const { diagnoses } = this.state;
+		const { diagnoses, selectedOption } = this.state;
 		const { previous, next } = this.props;
 		return (
 			<div className="form-block encounter">
@@ -50,7 +81,7 @@ class Diagnosis extends Component {
 					</div>
 				</div>
 				<div className="row">
-					<div className="col-md-6">
+					<div className="col-md-12">
 						{diagnoses.map((dia, i) => {
 							return (
 								dia.deleted === 0 && (
@@ -85,24 +116,35 @@ class Diagnosis extends Component {
 										<div className="row">
 											<div className="col-md-5">
 												<div className="form-group">
-													<select
-														placeholder="-- Select diagnosis name or ICD-10/ICPC-2 --"
-														className="form-control">
-														<option value=""></option>
-													</select>
+													<AsyncSelect
+														required
+														cacheOptions
+														value={selectedOption}
+														getOptionValue={this.getOptionValues}
+														getOptionLabel={this.getOptionLabels}
+														defaultOptions
+														loadOptions={this.getOptions}
+														onChange={this.handleChangeOptions}
+														placeholder="Enter the diagnosis name or ICD-10/ICPC-2 code"
+													/>
 												</div>
 											</div>
 											<div className="col-md-3">
 												<div className="form-group">
-													<select
-														placeholder="-- Select --"
-														className="form-control">
-														<option value=""></option>
-													</select>
+													<Field
+														id="type"
+														name="type"
+														className="form-control"
+														component={renderSelect}
+														label="Select Type"
+														placeholder="Select Type"
+														data={diagnosisType}
+													/>
 												</div>
 											</div>
-											<div className="col-md-3">
+											<div className="col-md-2">
 												<div className="form-group">
+													New Allergy
 													<input
 														type="text"
 														placeholder="Comment"
@@ -148,5 +190,9 @@ class Diagnosis extends Component {
 		);
 	}
 }
+
+Diagnosis = reduxForm({
+	form: 'create_diagnosis',
+})(Diagnosis);
 
 export default Diagnosis;

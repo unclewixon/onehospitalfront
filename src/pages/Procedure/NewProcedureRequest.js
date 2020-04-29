@@ -106,9 +106,9 @@ const NewProcedure = props => {
 		if (!inputValue) {
 			return [];
 		}
-		let val = inputValue.toUpperCase()
+		let val = inputValue.toUpperCase();
 		const res = await request(
-			`${API_URI}${diagnosisAPI}${val}`,
+			`${API_URI}${diagnosisAPI}` + 'search?q=' + val,
 			'GET',
 			true
 		);
