@@ -126,32 +126,32 @@ const PharmNewRequestComponent = ({
 	const drugValues =
 		inventories && inventories.length
 			? inventories.map(drug => {
-					drugObj[drug.generic_name] = {
-						value: drug.name,
-						label: drug.name,
-						...drug,
-					};
-			  })
+				drugObj[drug.generic_name] = {
+					value: drug.name,
+					label: drug.name,
+					...drug,
+				};
+			})
 			: [];
 
 	const genericNameOptions =
 		inventories && inventories.length
 			? inventories
-					.filter(drug => drug.generic_name !== null)
-					.map(drug => {
-						return {
-							value: drug && drug.generic_name ? drug.generic_name : 'nil',
-							label: drug && drug.generic_name ? drug.generic_name : 'nil',
-						};
-					})
+				.filter(drug => drug.generic_name !== null)
+				.map(drug => {
+					return {
+						value: drug && drug.generic_name ? drug.generic_name : 'nil',
+						label: drug && drug.generic_name ? drug.generic_name : 'nil',
+					};
+				})
 			: [];
 	const filteredGenericNameOptions = _.uniqBy(genericNameOptions, 'value');
 
 	const drugNameOptions =
 		genericNameOptions && genericNameOptions.length
 			? genericNameOptions
-					.filter(drug => drug.value === genName)
-					.map(drug => drugObj[drug.value])
+				.filter(drug => drug.value === genName)
+				.map(drug => drugObj[drug.value])
 			: [];
 
 	const values = watch();
@@ -281,8 +281,17 @@ const PharmNewRequestComponent = ({
 										placeholder="Choose a formulary"
 										name="formulary"
 										ref={register({ name: 'formulary', required: true })}
+										value={{
+											value: 'pharmacy',
+											label: 'Pharmacy'
+										}}
 										onChange={e => setValue('formulary', e.value)}
-										options={genericNameOptions}
+										options={[
+											{
+												value: 'pharmacy',
+												label: 'Pharmacy'
+											}
+										]}
 									/>
 								</div>
 							</div>
@@ -475,10 +484,10 @@ const PharmNewRequestComponent = ({
 										</button>
 									</div>
 								) : (
-									<button onClick={handleSubmit} className="btn btn-primary">
-										Done
-									</button>
-								)}
+										<button onClick={handleSubmit} className="btn btn-primary">
+											Done
+										</button>
+									)}
 
 								{/* <div className="form-group col-sm-3">
 							<MinusIcon style={{ width: '1.5rem', height: '1.5rem', cursor: 'pointer' }} />
@@ -500,52 +509,52 @@ const PharmNewRequestComponent = ({
 								<tbody>
 									{pharmRequest
 										? pharmRequest.map((request, index) => {
-												return (
-													<tr key={index}>
-														<td>{request.genericName}</td>
-														<td>{request.drugName}</td>
-														<td>{request.quantity}</td>
-														<td>{request.diagnosis.description}</td>
-														<td>
-															<ViewIcon
-																onClick={() => {
-																	setActiveRequest(request);
-																	onModalClick();
-																}}
-																style={{
-																	width: '1rem',
-																	height: '1rem',
-																	cursor: 'pointer',
-																}}
-															/>{' '}
-															{'  '}
-															<EditIcon
-																onClick={() => {
-																	if (editing) {
-																		return;
-																	} else {
-																		startEdit(request, index);
-																	}
-																}}
-																style={{
-																	width: '1rem',
-																	height: '1rem',
-																	cursor: 'pointer',
-																}}
-															/>{' '}
-															{'  '}
-															<TrashIcon
-																onClick={() => onTrash(index)}
-																style={{
-																	width: '1rem',
-																	height: '1rem',
-																	cursor: 'pointer',
-																}}
-															/>
-														</td>
-													</tr>
-												);
-										  })
+											return (
+												<tr key={index}>
+													<td>{request.genericName}</td>
+													<td>{request.drugName}</td>
+													<td>{request.quantity}</td>
+													<td>{request.diagnosis.description}</td>
+													<td>
+														<ViewIcon
+															onClick={() => {
+																setActiveRequest(request);
+																onModalClick();
+															}}
+															style={{
+																width: '1rem',
+																height: '1rem',
+																cursor: 'pointer',
+															}}
+														/>{' '}
+														{'  '}
+														<EditIcon
+															onClick={() => {
+																if (editing) {
+																	return;
+																} else {
+																	startEdit(request, index);
+																}
+															}}
+															style={{
+																width: '1rem',
+																height: '1rem',
+																cursor: 'pointer',
+															}}
+														/>{' '}
+														{'  '}
+														<TrashIcon
+															onClick={() => onTrash(index)}
+															style={{
+																width: '1rem',
+																height: '1rem',
+																cursor: 'pointer',
+															}}
+														/>
+													</td>
+												</tr>
+											);
+										})
 										: []}
 								</tbody>
 							</Table>
@@ -561,8 +570,8 @@ const PharmNewRequestComponent = ({
 								{submitting ? (
 									<img src={waiting} alt="submitting" />
 								) : (
-									<span> Save</span>
-								)}
+										<span> Save</span>
+									)}
 							</button>
 						</div>
 					</div>
