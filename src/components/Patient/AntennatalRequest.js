@@ -17,7 +17,7 @@ class AntennatalRequest extends Component {
 		page: 1,
 		submit: false,
 		apointmentDate: '',
-		pharmacyRequest: '',
+		pharmacyRequest: [],
 	};
 
 	nextPage = async data => {
@@ -28,6 +28,27 @@ class AntennatalRequest extends Component {
 			// 		submitting: !prevState.submitting,
 			// 	};
 			// });
+			const groups = this.props.LabGroups.filter(el =>
+				data.groups.includes(el.name)
+			).map(el => {
+				return {
+					specialization: el.name,
+					service_id: el.id,
+				};
+			});
+
+			console.log(data.tests, data.groups);
+			const tests = this.props.LabTests.filter(el =>
+				data.tests.includes(el.name)
+			).map(el => {
+				return {
+					specialization: el.name,
+					service_id: el.id,
+				};
+			});
+
+			console.log(tests, groups);
+
 			const newAntenatal = {
 				heightOfFunds: data.heightOfFunds || '',
 				fetalHeartRate: data.fetalHeartRate || '',
@@ -37,17 +58,34 @@ class AntennatalRequest extends Component {
 				relationshipToBrim: data.relationshipToBrim || '',
 				comment: data.comment || '',
 				labRequest: {
-					groups: data.groups || [],
-					tests: data.tests || [],
-					preferredSpecimen: data.preferredSpecimen || '',
-					laboratory: data.laboratory || '',
+					requestBody: [
+						{
+							groups,
+							tests,
+							preferredSpecimen: data.preferredSpecimen || '',
+							laboratory: data.laboratory || '',
+						},
+					],
 				},
 				imagingRequest: {
-					serviceCenter: data.serviceCenter || '',
-					scansToRequest: data.scansToRequest || [],
 					requestNote: data.requestNote || '',
+					requestBody: data.scansToRequest.map(el => {
+						return {
+							specialization: el,
+							service_id: data.serviceCenter || '',
+						};
+					}),
 				},
-				pharmacyRequest: this.state.pharmacyRequest,
+				pharmacyRequest: [
+					{
+						requestBody: this.state.pharmacyRequest.map(el => {
+							return {
+								...el,
+								service_id: el.drugName,
+							};
+						}),
+					},
+				],
 				nextAppointment: {
 					apointmentDate:
 						moment(this.state.apointmentDate).format('L') +
@@ -55,6 +93,10 @@ class AntennatalRequest extends Component {
 						moment(this.state.apointmentDate).format('LT'),
 				},
 			};
+
+			console.log(newAntenatal);
+
+			console.dir(JSON.stringify(newAntenatal));
 
 			console.log(newAntenatal);
 
@@ -174,6 +216,8 @@ class AntennatalRequest extends Component {
 const mapStateToProps = state => {
 	return {
 		patient: state.user.patient,
+		LabTests: state.settings.lab_tests,
+		LabGroups: state.settings.lab_groups,
 	};
 };
 

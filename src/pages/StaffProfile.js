@@ -24,6 +24,9 @@ const Appraisal = lazy(() => import('../components/StaffBlock/Appraisal'));
 const StaffDetail = lazy(() => import('../components/StaffBlock/StaffDetail'));
 const CreateLeave = lazy(() => import('../components/CreateLeave'));
 const CreateExcuseDuty = lazy(() => import('../components/CreateExcuseDuty'));
+const LineAppraisal = lazy(() =>
+	import('../components/StaffBlock/LineAppraisal')
+);
 const storage = new SSRStorage();
 
 const Page = ({ location }) => {
@@ -49,6 +52,12 @@ const Page = ({ location }) => {
 			return <CreateAppraisal />;
 		case 'create-excuse':
 			return <CreateExcuseDuty />;
+		case 'self-appraisal':
+			return <CreateAppraisal />;
+		case 'line-appraisal':
+			return <LineAppraisal />;
+		case 'staff-appraisal':
+			return <CreateAppraisal />;
 
 		default:
 			return <Dashboard />;
