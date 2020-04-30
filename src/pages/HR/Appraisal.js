@@ -214,13 +214,19 @@ class Appraisal extends Component {
 													<th>Start Date</th>
 													<th>End Date</th>
 													<th className="text-center">Status</th>
-													<th className="text-right">Actions</th>
+													<th className="text-center">Actions</th>
 												</tr>
 											</thead>
 											<tbody>
 												{performancePeriods &&
 													performancePeriods.map((el, i) => {
-														return <AppraisalItem item={el} key={i} />;
+														return (
+															<AppraisalItem
+																item={el}
+																key={i + 1}
+																index={i + 1}
+															/>
+														);
 													})}
 											</tbody>
 										</table>

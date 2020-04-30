@@ -87,6 +87,8 @@ const ImagingRequest = props => {
 			//theRequest.primary_diagnosis = selectedOption.icd10Code;
 			theRequest.requestBody = requestData;
 			// console.log(theRequest);
+
+			console.log(theRequest);
 			const rs = await request(
 				`${API_URI}${patientAPI}/save-request`,
 				'POST',

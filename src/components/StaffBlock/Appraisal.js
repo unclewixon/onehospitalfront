@@ -41,8 +41,8 @@ export class Appraisal extends Component {
 
 	render() {
 		const { location, departments, staff } = this.props;
-		const deptId = staff.details.department.id;
-		const department = departments.find(d => d.id === deptId);
+		// const deptId = staff.details.department.id;
+		// const department = departments.find(d => d.id === deptId);
 		const { list } = this.state;
 
 		return (
@@ -124,7 +124,7 @@ export class Appraisal extends Component {
 															</Link>
 														</Tooltip>
 
-														{department.hod_id === staff.id ? (
+														{/* {department.hod_id === staff.id ? (
 															<Tooltip title="Staff Appraisal">
 																<Link
 																	className="secondary"
@@ -132,7 +132,15 @@ export class Appraisal extends Component {
 																	<i className="os-icon os-icon-folder-plus" />
 																</Link>
 															</Tooltip>
-														) : null}
+														) : null} */}
+
+														<Tooltip title="Staff Appraisal">
+															<Link
+																className="secondary"
+																to={`${location.pathname}#staff-detail`}>
+																<i className="os-icon os-icon-folder-plus" />
+															</Link>
+														</Tooltip>
 													</td>
 												</tr>
 											);
