@@ -1,9 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import { request } from '../../../services/utilities';
+import { API_URI, diagnosisAPI } from '../../../services/constants';
+import DatePicker from 'react-datepicker';
 
 class PastHistory extends Component {
 	state = {
 		histories: [],
+		selectedOption: '',
+		start_time: new Date(),
 	};
 
 	addHistory = () => {
@@ -11,6 +17,32 @@ class PastHistory extends Component {
 		this.setState({
 			histories: [...histories, { id: histories.length, deleted: 0 }],
 		});
+	};
+
+	getOptionValues = option => option.id;
+
+	getOptionLabels = option => option.description;
+
+	handleChangeOptions = selectedOption => {
+		this.setState({ selectedOption });
+	};
+
+	getOptions = async inputValue => {
+		if (!inputValue) {
+			return [];
+		}
+		let val = inputValue.toUpperCase();
+		const res = await request(
+			`${API_URI}${diagnosisAPI}` + 'search?q=' + val,
+			'GET',
+			true
+		);
+		return res;
+	};
+
+	onChange = date => this.setState({ start_time: date });
+	setDate = (date, type) => {
+		this.setState({ [type]: date });
 	};
 
 	updateHistories = (id, type, value) => {
@@ -35,10 +67,13 @@ class PastHistory extends Component {
 	};
 
 	render() {
-		const { histories } = this.state;
+		const divStyle = {
+			height: '500px',
+		};
+		const { histories, selectedOption, start_time } = this.state;
 		const { previous, next } = this.props;
 		return (
-			<div className="form-block encounter">
+			<div className="form-block encounter" style={divStyle}>
 				<div className="row">
 					<div className="col-md-12">
 						<a
@@ -80,26 +115,39 @@ class PastHistory extends Component {
 					return (
 						hist.deleted === 0 && (
 							<div className="row" key={i}>
-								<div className="col-sm-4">
+								<div className="col-sm-6">
 									<div className="form-group">
 										<label>Diagnosis</label>
-										<select
+										<AsyncSelect
+											required
+											cacheOptions
+											value={selectedOption}
+											getOptionValue={this.getOptionValues}
+											getOptionLabel={this.getOptionLabels}
+											defaultOptions
+											loadOptions={this.getOptions}
+											onChange={this.handleChangeOptions}
 											placeholder="Enter the diagnosis name or ICD-10/ICPC-2 code"
-											className="form-control">
-											<option value=""></option>
-										</select>
+										/>
 									</div>
 								</div>
 								<div className="col-sm-2">
 									<div className="form-group">
 										<label>Date Diagnosed</label>
-										<input
-											placeholder="Date Diagnosed"
-											className="form-control"
+										<DatePicker
+											selected={start_time}
+											onChange={date => this.setDate(date, 'start_time')}
+											peekNextMonth
+											showMonthDropdown
+											showYearDropdown
+											dropdownMode="select"
+											dateFormat="dd-MMM-yyyy"
+											className="single-daterange form-control"
+											placeholderText="Date Diagnosed"
 										/>
 									</div>
 								</div>
-								<div className="col-sm-5">
+								<div className="col-sm-4">
 									<div className="form-group">
 										<label>Comment</label>
 										<input

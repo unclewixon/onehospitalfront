@@ -35,7 +35,7 @@ export const transactionsAPI = '/transactions';
 export const vouchersAPI = '/vouchers';
 export const serviceAPI = '/services';
 export const settingsAPI = '/settings/';
-export const diagnosisAPI = '/settings/diagnosis';
+export const diagnosisAPI = '/settings/diagnosis/';
 
 export const months = [
 	'January',
@@ -50,6 +50,43 @@ export const months = [
 	'October',
 	'November',
 	'December',
+];
+export const severity = [
+	{
+		value: 'mild',
+		label: 'mild',
+	},
+	{ value: 'moderate', label: 'moderate' },
+	{ value: 'severe', label: 'severe' },
+	{ value: 'intolerance', label: 'intolerance' },
+];
+export const serviceCenter = [
+	{
+		value: 'lab',
+		label: 'LAB',
+	},
+];
+export const planServiceCenter = [
+	{
+		value: 'Pharmacy',
+		label: 'Pharmacy',
+	},
+];
+export const diagnosisType = [
+	{
+		id: 'Queried',
+		name: 'Queried',
+	},
+	{ id: 'Differential', name: 'Differential' },
+	{ id: 'Suspected', name: 'Suspected' },
+	{ id: 'Confirmed', name: 'Confirmed' },
+];
+
+export const allergyCategories = [
+	{ value: 'Drug', label: 'Drug' },
+	{ value: 'Food', label: 'Food' },
+	{ value: 'Environment', label: 'Environment' },
+	{ value: 'other', label: 'other' },
 ];
 
 export const relationships = [

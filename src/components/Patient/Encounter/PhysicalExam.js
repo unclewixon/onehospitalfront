@@ -10,12 +10,15 @@ class PhysicalExam extends Component {
 	handleChange(e) {
 		this.setState({ selected: e });
 	}
+
 	render() {
 		const { selected } = this.state;
 		const { previous, next } = this.props;
-
+		const divStyle = {
+			height: '500px',
+		};
 		return (
-			<div className="form-block encounter">
+			<div className="form-block encounter" style={divStyle}>
 				<div className="row">
 					<div className="col-sm-12">
 						<div className="form-group">

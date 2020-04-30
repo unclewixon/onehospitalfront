@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import intersectionBy from 'lodash.intersectionby';
-import { API_URI, searchAPI } from '../../services/constants';
+import { API_URI, searchAPI, serviceCenter } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
@@ -16,12 +16,7 @@ import {
 	getAllLabTestParameters,
 } from '../../actions/settings';
 import { createLabRequest } from '../../actions/patient';
-const serviceCenter = [
-	{
-		value: 'lab',
-		label: 'LAB',
-	},
-];
+
 const LabRequest = props => {
 	// const page = location.pathname.split('/').pop();
 	const { register, handleSubmit, setValue } = useForm({
@@ -79,67 +74,81 @@ const LabRequest = props => {
 			  )
 			: [];
 
-			const structuredTest = () => {
-				const parameterObj = {}
-				const parVals = props && props.LabParameters && props.LabParameters.length
+	const structuredTest = () => {
+		const parameterObj = {};
+		const parVals =
+			props && props.LabParameters && props.LabParameters.length
 				? props.LabParameters.map(par => {
-					parameterObj[par.id] = par;
-				}) : []
-		
-				const testObj = {}
-				const testVals = props && props.LabTests && props.LabTests.length
+						parameterObj[par.id] = par;
+				  })
+				: [];
+
+		const testObj = {};
+		const testVals =
+			props && props.LabTests && props.LabTests.length
 				? props.LabTests.map(test => {
-					testObj[test.id] = test;
-				}) : []
-		
-				const lab_test = labTests && labTests.length ? labTests.map(test => {
-					const fullParams = testObj[test.value].parameters.map(par => {
-						const newParamObj = {
-							parameter_type: "parameter",
-							referenceRange: par.referenceRange,
-							...parameterObj[par.parameter_id]
-						}
-						return newParamObj;
-					})
-					const fullTest = {
-						...testObj[test.value],
-						parameters: fullParams
-					}
-					return fullTest;
-				}) : []
-				return lab_test
-			}
+						testObj[test.id] = test;
+				  })
+				: [];
+
+		const lab_test =
+			labTests && labTests.length
+				? labTests.map(test => {
+						const fullParams = testObj[test.value].parameters.map(par => {
+							const newParamObj = {
+								parameter_type: 'parameter',
+								referenceRange: par.referenceRange,
+								...parameterObj[par.parameter_id],
+							};
+							return newParamObj;
+						});
+						const fullTest = {
+							...testObj[test.value],
+							parameters: fullParams,
+						};
+						return fullTest;
+				  })
+				: [];
+		return lab_test;
+	};
 
 	const structuredGroup = () => {
-		const parameterObj = {}
-				const parVals = props && props.LabParameters && props.LabParameters.length
+		const parameterObj = {};
+		const parVals =
+			props && props.LabParameters && props.LabParameters.length
 				? props.LabParameters.map(par => {
-					parameterObj[par.id] = par;
-				}) : []
+						parameterObj[par.id] = par;
+				  })
+				: [];
 
-				const groupObj = {}
-				const groupVals = props && props.LabGroups && props.LabGroups.length
-				? props.LabGroups.map(group=> {
-					groupObj[group.id] = group;
-				}) : []
+		const groupObj = {};
+		const groupVals =
+			props && props.LabGroups && props.LabGroups.length
+				? props.LabGroups.map(group => {
+						groupObj[group.id] = group;
+				  })
+				: [];
 
-				const lab_combo = labCombos && labCombos.length ? labCombos.map(combo => {
-					const fullParams = groupObj[combo.value].parameters.map(par => {
-						const newParamObj = {
-							parameter_type: "parameter",
-							referenceRange: par.referenceRange,
-							...parameterObj[par.parameter_id]
-						}
-						return newParamObj
-					})
-					const fullGroup = {
-						...groupObj[combo.value],
-						parameters: fullParams
-					}
-					return fullGroup
-				}) : []
-				return lab_combo
-	}
+		const lab_combo =
+			labCombos && labCombos.length
+				? labCombos.map(combo => {
+						const fullParams = groupObj[combo.value].parameters.map(par => {
+							const newParamObj = {
+								parameter_type: 'parameter',
+								referenceRange: par.referenceRange,
+								...parameterObj[par.parameter_id],
+							};
+							return newParamObj;
+						});
+						const fullGroup = {
+							...groupObj[combo.value],
+							parameters: fullParams,
+						};
+						return fullGroup;
+				  })
+				: [];
+		return lab_combo;
+	};
 
 	const onSubmit = ({
 		service_center,
@@ -154,8 +163,8 @@ const LabRequest = props => {
 		}
 		setSubmitting(true);
 
-		const lab_test = structuredTest()
-		const lab_combo = structuredGroup()
+		const lab_test = structuredTest();
+		const lab_combo = structuredGroup();
 		props
 			.createLabRequest({
 				service_center,
@@ -213,7 +222,12 @@ const LabRequest = props => {
 	};
 
 	useEffect(() => {
-		const { getAllLabGroups, getAllLabTests, getAllLabTestCategories, getAllLabTestParameters } = props;
+		const {
+			getAllLabGroups,
+			getAllLabTests,
+			getAllLabTestCategories,
+			getAllLabTestParameters,
+		} = props;
 		if (!loaded) {
 			getAllLabGroups();
 			getAllLabTests();

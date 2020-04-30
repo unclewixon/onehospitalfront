@@ -17,8 +17,11 @@ const ReviewOfSystem = props => {
 		console.log(e.target.value);
 	};
 
+	const divStyle = {
+		height: '500px',
+	};
 	return (
-		<div className="form-block encounter">
+		<div className="form-block encounter" style={divStyle}>
 			<form onSubmit={handleSubmit(next)}>
 				<div className="row">
 					<div className="col-sm-12">

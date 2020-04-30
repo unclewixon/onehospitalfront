@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import { renderSelect } from '../../../services/utilities';
+import { obstericHistory } from '../../../services/constants';
+import { Field, reduxForm } from 'redux-form';
+import { ObstericsHistory } from '../../Enrollment/ObstericsHistory';
 
 class HxForm extends Component {
 	render() {
@@ -8,11 +12,15 @@ class HxForm extends Component {
 				<div className="row">
 					<div className="col-sm-12">
 						<div className="form-group">
-							<select
-								placeholder="-- Select a history category --"
-								className="form-control">
-								<option value=""></option>
-							</select>
+							<Field
+								id="obstericsHistory"
+								required
+								name="obstericsHistory"
+								component={renderSelect}
+								label="Select Previous Obsteric History"
+								placeholder="Select Previous Obsteric History"
+								data={obstericHistory}
+							/>
 						</div>
 					</div>
 				</div>
@@ -31,5 +39,11 @@ class HxForm extends Component {
 		);
 	}
 }
+
+HxForm = reduxForm({
+	form: 'antennatal', //Form name is same
+	destroyOnUnmount: false,
+	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount,
+})(HxForm);
 
 export default HxForm;
