@@ -18,6 +18,7 @@ import { request } from '../services/utilities';
 import AsyncSelect from 'react-select/async';
 import { loadInvCategories, loadInventories } from './../actions/inventory';
 import { Label } from 'recharts';
+import _ from 'lodash';
 
 const defaultValues = {
 	serviceUnit: '',
@@ -56,6 +57,7 @@ const PharmNewRequestComponent = ({
 	const [chosenPatient, setChosenPatient] = useState(null);
 	const [serviceId, setServiceId] = useState('');
 	const [selectedOption, setSelectedOption] = useState('');
+	const [genName, setGenName] = useState('');
 
 	const onRefillableClick = () => {
 		setRefillable(!refillable);
@@ -120,15 +122,36 @@ const PharmNewRequestComponent = ({
 	// const handleServiceUnitChange = e => {
 	// 	getPharmacyItems(e.value)
 	// }
+	let drugObj = {};
+	const drugValues =
+		inventories && inventories.length
+			? inventories.map(drug => {
+					drugObj[drug.generic_name] = {
+						value: drug.name,
+						label: drug.name,
+						...drug,
+					};
+			  })
+			: [];
 
 	const genericNameOptions =
 		inventories && inventories.length
-			? inventories.map(drug => {
-					return {
-						value: drug.name,
-						label: drug.name,
-					};
-			  })
+			? inventories
+					.filter(drug => drug.generic_name !== null)
+					.map(drug => {
+						return {
+							value: drug && drug.generic_name ? drug.generic_name : 'nil',
+							label: drug && drug.generic_name ? drug.generic_name : 'nil',
+						};
+					})
+			: [];
+	const filteredGenericNameOptions = _.uniqBy(genericNameOptions, 'value');
+
+	const drugNameOptions =
+		genericNameOptions && genericNameOptions.length
+			? genericNameOptions
+					.filter(drug => drug.value === genName)
+					.map(drug => drugObj[drug.value])
 			: [];
 
 	const values = watch();
@@ -270,8 +293,11 @@ const PharmNewRequestComponent = ({
 										placeholder="Choose a drug generic name"
 										name="genericName"
 										ref={register({ name: 'genericName', required: true })}
-										onChange={e => setValue('genericName', e.value)}
-										options={genericNameOptions}
+										onChange={e => {
+											setValue('genericName', e.value);
+											setGenName(e.value);
+										}}
+										options={filteredGenericNameOptions}
 										required
 									/>
 								</div>
@@ -283,7 +309,7 @@ const PharmNewRequestComponent = ({
 										placeholder="Choose a drug name"
 										ref={register({ name: 'drugName', required: true })}
 										name="drugName"
-										options={genericNameOptions}
+										options={drugNameOptions}
 										onChange={e => onDrugSelection(e)}
 									/>
 								</div>

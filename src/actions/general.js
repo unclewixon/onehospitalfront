@@ -38,6 +38,7 @@ import {
 	TOGGLE_APPROVE_HMO_TRANSACTION,
 	TOGGLE_ANTENATAL_DETAIL,
 	TOGGLE_IMMUNIZATION_DETAIL,
+	TOGGLE_ANTENATAL_ASSESSMENT_DETAIL,
 } from './types';
 
 export const togglePreloading = status => {
@@ -322,6 +323,14 @@ export const toggleImmunizationDetail = (status, data) => {
 		data,
 	};
 };
+
+export const toggleAntenatalAssessmentDetail = (status, data) => {
+	return {
+		type: TOGGLE_ANTENATAL_ASSESSMENT_DETAIL,
+		payload: status,
+		data,
+	};
+};
 // close modals
 export const closeModals = () => {
 	return dispatch => {
@@ -361,6 +370,7 @@ export const closeModals = () => {
 		dispatch(toggleOpenEncounter(false, null));
 		dispatch(toggleAntenatalDetail(false, null));
 		dispatch(toggleImmunizationDetail(false, null));
+		dispatch(toggleAntenatalAssessmentDetail(false, null));
 	};
 };
 
@@ -662,6 +672,14 @@ export const viewAntenatalDetail = (action, id) => {
 };
 
 export const viewImmunizationDetail = (action, data) => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleImmunizationDetail(action, data));
+	};
+};
+
+export const antenatalAssessmentDetail = (action, data) => {
 	return dispatch => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));

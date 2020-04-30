@@ -22,6 +22,7 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import BootstrapTable from 'react-bootstrap-table-next';
 import Tooltip from 'antd/lib/tooltip';
 import InventoryTable from '../../components/Inventory/InventoryTable';
+import axios from 'axios';
 
 const DownloadInventory = ({ onHide, downloading, doDownload }) => {
 	return (
@@ -125,7 +126,7 @@ const UploadInventory = ({ onHide, uploading, doUpload, categories }) => {
 													uploadAttachment.click();
 												}}>
 												<i className="os-icon os-icon-ui-51" />
-												<span>Select File</span>
+												<span>{files ? files[0].name : 'Select File'}</span>
 											</a>
 										</div>
 									</div>
@@ -183,13 +184,10 @@ class InventoryList extends Component {
 				let formData = new FormData();
 				formData.append('file', file);
 				formData.append('category_id', category_id);
-
-				const rs = await upload(
+				const rs = await axios.post(
 					`${API_URI}${inventoryUploadAPI}`,
-					'POST',
 					formData
 				);
-
 				const cat = categories.find(d => d.id === category_id);
 				this.fetchInventories();
 				notifySuccess(`Inventory uploaded for ${cat ? cat.name : ''} Category`);

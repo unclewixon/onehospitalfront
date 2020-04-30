@@ -209,10 +209,7 @@ const dummyData = [
 	{ value: '14', label: 'Line3', name: 'formulary' },
 ];
 const dummyData1 = [
-	{ value: '', label: 'Select one', name: 'serviceUnit' },
-	{ value: '12', label: 'Line44', name: 'serviceUnit' },
-	{ value: '13', label: 'Line55', name: 'serviceUnit' },
-	{ value: '14', label: 'Line66', name: 'serviceUnit' },
+	{ value: 'Pharmacy', label: 'Pharmacy', name: 'serviceUnit' },
 ];
 
 const dummyData2 = [
@@ -227,6 +224,21 @@ const dummyData3 = [
 	{ value: '12', label: 'Line0000', name: 'drugName', id: 'drug-id' },
 	{ value: '13', label: 'Line1111', name: 'drugName', id: 'drug-id' },
 	{ value: '14', label: 'Line0101', name: 'drugName', id: 'drug-id' },
+];
+
+const frequencyType = [
+	{ value: '', label: 'Select one', name: 'frequencyType' },
+	{ value: 'daily', label: 'Daily', name: 'frequencyType' },
+	{
+		value: 'weekly',
+		label: 'Weekly',
+		name: 'frequencyType',
+	},
+	{
+		value: 'monthly',
+		label: 'Monthly',
+		name: 'frequencyType',
+	},
 ];
 
 const defaultValues = {
@@ -318,10 +330,7 @@ const Prescription = ({
 						name="serviceUnit"
 						options={dummyData1}
 						onChange={onHandleSelectChange}
-						value={{
-							label: values.serviceUnit,
-							value: values.serviceUnit,
-						}}
+						value={{ value: 'Pharmacy', label: 'Pharmacy' }}
 					/>
 				</div>
 				<div className="form-group col-sm-6">
@@ -432,20 +441,7 @@ const Prescription = ({
 								placeholder="Frequency type"
 								ref={register({ name: 'frequencyType', required: true })}
 								name="frequencyType"
-								options={[
-									{ value: '', label: 'Select one', name: 'frequencyType' },
-									{ value: 'daily', label: 'Daily', name: 'frequencyType' },
-									{
-										value: 'weekly',
-										label: 'Weekly',
-										name: 'frequencyType',
-									},
-									{
-										value: 'monthly',
-										label: 'Monthly',
-										name: 'frequencyType',
-									},
-								]}
+								options={frequencyType}
 								onChange={onHandleSelectChange}
 								value={{
 									label: values.frequencyType,
@@ -597,11 +593,7 @@ const Prescription = ({
 					<button
 						className="btn btn-primary"
 						type="button"
-						onClick={handleSubmit(() => {
-							pharmacyRequest.length
-								? onSubmit()
-								: notifyError('Please Prescribe a drug');
-						})}>
+						onClick={handleSubmit(onSubmit)}>
 						Next
 					</button>
 				</div>

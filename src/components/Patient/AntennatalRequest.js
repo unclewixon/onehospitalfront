@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
+import { reduxForm } from 'redux-form';
 import { API_URI, patientAPI } from '../../services/constants';
 import { request } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
@@ -97,12 +98,9 @@ class AntennatalRequest extends Component {
 			console.log(newAntenatal);
 
 			console.dir(JSON.stringify(newAntenatal));
-
-			console.log(newAntenatal);
-
 			try {
 				const rs = await request(
-					`${API_URI}${patientAPI}/antenatals/visits`,
+					`${API_URI}${patientAPI}/antenatal/visits`,
 					'POST',
 					true,
 					newAntenatal
@@ -212,6 +210,11 @@ class AntennatalRequest extends Component {
 // AntennatalRequest.propTypes = {
 // 	onSubmit: PropTypes.func.isRequired,
 // };
+AntennatalRequest = reduxForm({
+	form: 'antennatalAssessment', //Form name is same
+	destroyOnUnmount: false,
+	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
+})(AntennatalRequest);
 
 const mapStateToProps = state => {
 	return {

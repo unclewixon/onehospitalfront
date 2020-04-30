@@ -26,7 +26,7 @@ class GeneralComments extends Component {
 									component={renderTextArea}
 									label="Comment"
 									type="text"
-									placeholder="Enter height of fundus"
+									placeholder="Enter comment"
 								/>
 							</div>
 						</div>

@@ -87,7 +87,7 @@ class GeneralAssessment extends Component {
 						</div>
 
 						<div className="row">
-							<div className="col-sm-4">
+							<div className="col-sm-6">
 								<Field
 									id="positionOfFetus"
 									name="positionOfFetus"
@@ -97,7 +97,7 @@ class GeneralAssessment extends Component {
 									data={position}
 								/>
 							</div>
-							<div className="col-sm-4">
+							<div className="col-sm-6">
 								<Field
 									id="fetalLie"
 									name="fetalLie"
@@ -107,8 +107,10 @@ class GeneralAssessment extends Component {
 									data={fetalLie}
 								/>
 							</div>
+						</div>
 
-							<div className="col-sm-4">
+						<div className="row">
+							<div className="col-sm-12">
 								<Field
 									id="relationshipToBrim"
 									name="relationshipToBrim"
