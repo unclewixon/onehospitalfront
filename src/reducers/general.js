@@ -37,6 +37,7 @@ import {
 	TOGGLE_APPLY_VOUCHER,
 	TOGGLE_ANTENATAL_DETAIL,
 	TOGGLE_IMMUNIZATION_DETAIL,
+	TOGGLE_ANTENATAL_ASSESSMENT_DETAIL,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -81,6 +82,8 @@ const INITIAL_STATE = {
 	antenatal_id: null,
 	immunization_detail: false,
 	immunization: null,
+	antenatal_assessment_detail: false,
+	antenatal_visit: null,
 };
 
 const general = (state = INITIAL_STATE, action) => {
@@ -183,6 +186,13 @@ const general = (state = INITIAL_STATE, action) => {
 				immunization_detail: action.payload,
 				immunization: action.data,
 			};
+		case TOGGLE_ANTENATAL_ASSESSMENT_DETAIL:
+			return {
+				...state,
+				antenatal_assessment_detail: action.payload,
+				antenatal_visit: action.data,
+			};
+
 		default:
 			return state;
 	}

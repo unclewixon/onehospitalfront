@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
+import { reduxForm } from 'redux-form';
 import { API_URI, patientAPI } from '../../services/constants';
 import { request } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
@@ -37,17 +38,46 @@ class AntennatalRequest extends Component {
 				relationshipToBrim: data.relationshipToBrim || '',
 				comment: data.comment || '',
 				labRequest: {
-					groups: data.groups || [],
-					tests: data.tests || [],
-					preferredSpecimen: data.preferredSpecimen || '',
-					laboratory: data.laboratory || '',
+					requestBody: [
+						{
+							groups: [
+								{
+									specialization: '',
+									service_id: '',
+									groups: data.groups || [],
+								},
+							],
+							tests: [
+								{
+									specialization: '',
+									service_id: '',
+									tests: data.tests || [],
+								},
+							],
+							preferredSpecimen: data.preferredSpecimen || '',
+							laboratory: data.laboratory || '',
+						},
+					],
 				},
 				imagingRequest: {
-					serviceCenter: data.serviceCenter || '',
-					scansToRequest: data.scansToRequest || [],
 					requestNote: data.requestNote || '',
+					requestBody: data.scansToRequest.map(el => {
+						return {
+							specialization: el,
+							service_id: data.serviceCenter || '',
+						};
+					}),
 				},
-				pharmacyRequest: this.state.pharmacyRequest,
+				pharmacyRequest: [
+					{
+						requestBody: this.state.pharmacyRequest.map(el => {
+							return {
+								...el,
+								service_id: el.drugName,
+							};
+						}),
+					},
+				],
 				nextAppointment: {
 					apointmentDate:
 						moment(this.state.apointmentDate).format('L') +
@@ -58,9 +88,11 @@ class AntennatalRequest extends Component {
 
 			console.log(newAntenatal);
 
+			console.dir(JSON.stringify(newAntenatal));
+
 			try {
 				const rs = await request(
-					`${API_URI}${patientAPI}/antenatals/visits`,
+					`${API_URI}${patientAPI}/antenatal/visits`,
 					'POST',
 					true,
 					newAntenatal
@@ -170,6 +202,11 @@ class AntennatalRequest extends Component {
 // AntennatalRequest.propTypes = {
 // 	onSubmit: PropTypes.func.isRequired,
 // };
+AntennatalRequest = reduxForm({
+	form: 'antennatalAssessment', //Form name is same
+	destroyOnUnmount: false,
+	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
+})(AntennatalRequest);
 
 const mapStateToProps = state => {
 	return {
