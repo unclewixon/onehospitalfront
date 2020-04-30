@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { validate } from '../../services/validationSchemas';
 import {
 	renderTextInput,
@@ -6,7 +7,23 @@ import {
 	renderMultiselect,
 	renderTextArea,
 } from '../../services/utilities';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, formValueSelector, change } from 'redux-form';
+import {
+	API_URI,
+	socket,
+	patientAPI,
+	serviceAPI,
+} from '../../services/constants';
+import waiting from '../../assets/images/waiting.gif';
+import { notifySuccess, notifyError } from '../../services/notify';
+
+import { request } from '../../services/utilities';
+
+import {
+	get_all_services,
+	getAllService,
+	getAllServiceCategory,
+} from '../../actions/settings';
 
 const fetal = [
 	{
@@ -16,10 +33,80 @@ const fetal = [
 	{ value: 'weekend', label: 'weekend' },
 	{ value: 'monthly', label: 'monthly' },
 ];
-const fetal2 = ['daily', 'weekend', 'monthly'];
+
+const position = [
+	{
+		id: 'Cephalic',
+		name: 'Cephalic',
+	},
+	{
+		id: 'Breech',
+		name: 'Breech',
+	},
+];
+
+const selector = formValueSelector('antennatalAssessment');
 class RadiologicalInvestigation extends Component {
+	state = {
+		services: [],
+		serviceCenter: [],
+		allServices: [],
+		value: undefined,
+	};
+	componentDidMount() {
+		this.fetchServiceCenter();
+	}
+
+	fetchServiceCenter = () => {
+		let data = [];
+		console.log(this.props.ServiceCategories);
+		if (this.props.ServiceCategories.length === 0) {
+			Promise.all([
+				this.props.getAllServiceCategory(),
+				this.props.getAllService(),
+			])
+				.then(response => {
+					data = this.filterServiceCategory();
+					this.setState({
+						serviceCenter: data,
+						allServices: this.props.service,
+					});
+				})
+				.catch(e => {
+					notifyError(
+						e.message || 'could not fetch service categories and services'
+					);
+				});
+		} else {
+			data = this.filterServiceCategory();
+			this.setState({ serviceCenter: data });
+		}
+	};
+
+	filterServiceCategory = () => {
+		let data = [];
+		this.props.ServiceCategories.forEach((item, index) => {
+			const res = { name: item.name, id: item.id };
+			data = [...data, res];
+		});
+		return data;
+	};
+
+	filterServices = id => {
+		const data = this.state.allServices
+			.filter(el => id === el.category.id)
+			.map(el => el.name);
+
+		console.log(data);
+		return data;
+	};
 	render() {
-		const { handleSubmit, previousPage, error, page } = this.props;
+		const { handleSubmit, previousPage, error, page, value } = this.props;
+		const { serviceCenter, services } = this.state;
+		// if (value !== this.state.value) {
+		// 	this.props.dispatch(change('antennatalAssessment', 'scansToRequest', []));
+		// }
+
 		return (
 			<>
 				<h6 className="element-header">
@@ -38,21 +125,21 @@ class RadiologicalInvestigation extends Component {
 						<div className="row">
 							<div className="col-sm-6">
 								<Field
-									id="service_center"
-									name="service_center"
+									id="serviceCenter"
+									name="serviceCenter"
 									component={renderSelect}
 									label="Select Service Center"
 									placeholder="Select Service Center"
-									data={fetal}
+									data={serviceCenter}
 								/>
 							</div>
 							<div className="col-sm-6">
-								<label>Scans to request</label>
+								<label>Scan to request</label>
 								<Field
-									name="scans_to_request"
+									name="scansToRequest"
 									component={renderMultiselect}
 									defaultValue={[]}
-									data={['Guitar', 'Cycling', 'Hiking']}
+									data={value ? this.filterServices(value) : []}
 								/>
 							</div>
 						</div>
@@ -89,10 +176,23 @@ class RadiologicalInvestigation extends Component {
 	}
 }
 RadiologicalInvestigation = reduxForm({
-	form: 'antennatal', //Form name is same
+	form: 'antennatalAssessment', //Form name is same
 	destroyOnUnmount: false,
 	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
 	validate,
 })(RadiologicalInvestigation);
 
-export default RadiologicalInvestigation;
+const mapStateToProps = state => {
+	return {
+		service: state.settings.services,
+		ServiceCategories: state.settings.service_categories,
+		value: selector(state, 'serviceCenter'),
+	};
+};
+
+export default connect(mapStateToProps, {
+	get_all_services,
+	getAllService,
+
+	getAllServiceCategory,
+})(RadiologicalInvestigation);

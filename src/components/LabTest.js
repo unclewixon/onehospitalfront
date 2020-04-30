@@ -45,12 +45,12 @@ const LabTest = props => {
 		let paramObj = {};
 		props.LabParameters.map(param => {
 			paramObj[value] = {
-				parameter_id : param.id,
-				parameter_name: param.name
-			}
-		})
+				parameter_id: param.id,
+				parameter_name: param.name,
+			};
+		});
 		if (name === 'parameter') {
-			newParam[index] = { 	parameter_id : value };
+			newParam[index] = { parameter_id: value };
 		} else if (name === 'referenceRange') {
 			newParam[index] = { ...newParam[index], referenceRange: value };
 		}
@@ -171,7 +171,7 @@ const LabTest = props => {
 	const cancelEditButton = () => {
 		setSubmitButton({ ...initialState });
 		setState({ ...initialState });
-		setParamsUI([])
+		setParamsUI([]);
 	};
 
 	const onDeleteLabTest = data => {
@@ -310,7 +310,7 @@ const LabTest = props => {
 						</div>
 
 						<div className="form-group">
-								{paramsUI &&
+							{paramsUI &&
 								paramsUI.map((ParamPicker, i) => {
 									if (ParamPicker) {
 										return (

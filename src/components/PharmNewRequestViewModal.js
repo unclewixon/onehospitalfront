@@ -8,7 +8,6 @@ const PharmNewRequestViewModal = ({
 	patient,
 	activeRequest,
 }) => {
-
 	return (
 		<Modal
 			className="onboarding-modal"
@@ -30,9 +29,7 @@ const PharmNewRequestViewModal = ({
 											backgroundImage: require('../assets/images/b3.jpeg'),
 										}}>
 										<div className="up-main-info">
-											<h2
-												className="up-header"
-												style={{ color: '#334152' }}>
+											<h2 className="up-header" style={{ color: '#334152' }}>
 												{activeRequest.patient_name
 													? activeRequest.patient_name
 													: ''}
@@ -46,9 +43,7 @@ const PharmNewRequestViewModal = ({
 													<tbody>
 														<tr>
 															<td>
-																<div className="text-left">
-																	Request Date
-																		</div>
+																<div className="text-left">Request Date</div>
 															</td>
 															<td className="text-right">
 																<div className="value text-success">
@@ -60,9 +55,7 @@ const PharmNewRequestViewModal = ({
 														</tr>
 														<tr>
 															<td>
-																<div className="text-left">
-																	Created By
-																		</div>
+																<div className="text-left">Created By</div>
 															</td>
 															<td className="text-right">
 																<div className="value text-success">
@@ -72,9 +65,7 @@ const PharmNewRequestViewModal = ({
 														</tr>
 														<tr>
 															<td>
-																<div className="text-left">
-																	Request Type
-																		</div>
+																<div className="text-left">Request Type</div>
 															</td>
 															<td className="text-right">
 																<div className="value text-success">
@@ -104,56 +95,78 @@ const PharmNewRequestViewModal = ({
 											</div>
 										</div>
 									</div>
-										{
-											activeRequest.requestBody
-												&& activeRequest.requestBody.length
-												? activeRequest.requestBody.map((req, index) => (
-													<div key={index} className="border border-primary rounded-sm p-3">
-														<div>
-															<table className="table ">
-																<thead>
-																	<tr>
-																		<th class="font-weight-bold">Drug Generic Name</th>
-																		<th class="font-weight-bold">Drug Name</th>
-																		<th class="font-weight-bold">Forumalary</th>
-																		<th class="font-weight-bold">Dosage</th>
-																	</tr>
-																</thead>
-																<tbody >
-																	<tr>
-																		<td>{req.drug_generic_name}</td>
-																		<td>{req.drug_name}</td>
-																		<td>{req.forumalary}</td>
-																		<td>{req.dose_quantity}</td>
-																	</tr>
-																</tbody>
-															</table>
-														</div>
-														<div>
-															<table className="table table-paded">
-																<thead>
-																	<tr>
-																		<th class="font-weight-bold">Number of Refills</th>
-																		<th class="font-weight-bold">Duration</th>
-																		<th class="font-weight-bold">Frequency Type</th>
-																		<th class="font-weight-bold">EG</th>
-																		<th class="font-weight-bold">Refill Note</th>
-																	</tr>
-																</thead>
-																<tbody>
-																	<tr>
-																		<td>{req.refillable ? req.number_of_refills : ''}</td>
-																		<td>{req.refillable ? req.refillable.duration : ''}</td>
-																		<td>{req.refillable ? req.refillable.frequency_type : ''}</td>
-																		<td>{req.refillable ? req.refillable.eg : ''}</td>
-																		<td>{req.refillable ? req.refillable.note : ''}</td>
-																	</tr>
-																</tbody>
-															</table>
-														</div>
+									{activeRequest.requestBody && activeRequest.requestBody.length
+										? activeRequest.requestBody.map((req, index) => (
+												<div
+													key={index}
+													className="border border-primary rounded-sm p-3">
+													<div>
+														<table className="table ">
+															<thead>
+																<tr>
+																	<th class="font-weight-bold">
+																		Drug Generic Name
+																	</th>
+																	<th class="font-weight-bold">Drug Name</th>
+																	<th class="font-weight-bold">Forumalary</th>
+																	<th class="font-weight-bold">Dosage</th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr>
+																	<td>{req.drug_generic_name}</td>
+																	<td>{req.drug_name}</td>
+																	<td>{req.forumalary}</td>
+																	<td>{req.dose_quantity}</td>
+																</tr>
+															</tbody>
+														</table>
 													</div>
-												)) : []
-										}
+													<div>
+														<table className="table table-paded">
+															<thead>
+																<tr>
+																	<th class="font-weight-bold">
+																		Number of Refills
+																	</th>
+																	<th class="font-weight-bold">Duration</th>
+																	<th class="font-weight-bold">
+																		Frequency Type
+																	</th>
+																	<th class="font-weight-bold">EG</th>
+																	<th class="font-weight-bold">Refill Note</th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr>
+																	<td>
+																		{req.refillable
+																			? req.number_of_refills
+																			: ''}
+																	</td>
+																	<td>
+																		{req.refillable
+																			? req.refillable.duration
+																			: ''}
+																	</td>
+																	<td>
+																		{req.refillable
+																			? req.refillable.frequency_type
+																			: ''}
+																	</td>
+																	<td>
+																		{req.refillable ? req.refillable.eg : ''}
+																	</td>
+																	<td>
+																		{req.refillable ? req.refillable.note : ''}
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+												</div>
+										  ))
+										: []}
 								</div>
 							</div>
 						</div>
@@ -163,6 +176,5 @@ const PharmNewRequestViewModal = ({
 		</Modal>
 	);
 };
-
 
 export default PharmNewRequestViewModal;

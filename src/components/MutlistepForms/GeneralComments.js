@@ -26,7 +26,7 @@ class GeneralComments extends Component {
 									component={renderTextArea}
 									label="Comment"
 									type="text"
-									placeholder="Enter height of fundus"
+									placeholder="Enter comment"
 								/>
 							</div>
 						</div>
@@ -51,7 +51,7 @@ class GeneralComments extends Component {
 	}
 }
 GeneralComments = reduxForm({
-	form: 'antennatal', //Form name is same
+	form: 'antennatalAssessment', //Form name is same
 	destroyOnUnmount: false,
 	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
 	validate,

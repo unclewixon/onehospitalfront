@@ -4,7 +4,12 @@ import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import { useHistory, withRouter } from 'react-router-dom';
 import waiting from '../../assets/images/waiting.gif';
-import { API_URI, socket, patientAPI, searchAPI } from '../../services/constants';
+import {
+	API_URI,
+	socket,
+	patientAPI,
+	searchAPI,
+} from '../../services/constants';
 import { request, formatNumber } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
@@ -148,7 +153,6 @@ const NewPhysiotherapy = props => {
 	};
 
 	const removeParam = async index => {
-
 		let newParametersUI = paramsUI.filter((cur, i) => {
 			if (i !== index) {
 				return cur;
@@ -203,7 +207,7 @@ const NewPhysiotherapy = props => {
 					<div className="form-block w-100">
 						<form onSubmit={handleSubmit(onSubmit)}>
 							<div className="row">
-							<div className="form-group col-sm-12">
+								<div className="form-group col-sm-12">
 									<label>Patient Id</label>
 
 									<input

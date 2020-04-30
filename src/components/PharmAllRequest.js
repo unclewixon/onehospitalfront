@@ -19,9 +19,9 @@ export class PharmAllRequest extends Component {
 		loading: false,
 		activeRequest: null,
 		showModal: false,
-		startDate: "",
-		endDate: "",
-		patientId: ""
+		startDate: '',
+		endDate: '',
+		patientId: '',
 	};
 
 	onModalClick = () => {
@@ -32,12 +32,11 @@ export class PharmAllRequest extends Component {
 		const { getRequestByType } = this.props;
 		const { startDate, endDate, patientId } = this.state;
 		this.setState({ filtering: true });
-		getRequestByType(patientId, 'pharmacy', startDate, endDate)
-
+		getRequestByType(patientId, 'pharmacy', startDate, endDate);
 	};
 
 	componentDidMount() {
-		const { startDate, endDate } = this.state
+		const { startDate, endDate } = this.state;
 		const { getRequestByType } = this.props;
 		this.setState({ loading: true });
 		getRequestByType(null, 'pharmacy', startDate, endDate)
@@ -55,15 +54,13 @@ export class PharmAllRequest extends Component {
 		const { Requests } = this.props;
 
 		const filteredNames =
-			this.props &&
-				this.props.Requests &&
-				this.props.Requests.length
+			this.props && this.props.Requests && this.props.Requests.length
 				? this.props.Requests.map(patient => {
-					return {
-						value: patient.patient_id,
-						label: patient.patient_name,
-					};
-				})
+						return {
+							value: patient.patient_id,
+							label: patient.patient_name,
+						};
+				  })
 				: [];
 
 		const filteredOptions = _.uniqBy(filteredNames, 'value');
@@ -100,15 +97,15 @@ export class PharmAllRequest extends Component {
 											});
 											this.setState({
 												startDate: date[0],
-												endDate: date[1]
-											})
+												endDate: date[1],
+											});
 										}}
 									/>
 								</div>
 								<div className="form-group col-md-3">
 									<label className="mr-2 " htmlFor="patient">
 										Patient
-								</label>
+									</label>
 									<Select
 										id="patient"
 										name="patient"
@@ -127,8 +124,8 @@ export class PharmAllRequest extends Component {
 											{filtering ? (
 												<img src={waiting} alt="submitting" />
 											) : (
-													'Filter'
-												)}
+												'Filter'
+											)}
 										</span>
 									</a>
 								</div>
@@ -153,52 +150,56 @@ export class PharmAllRequest extends Component {
 								<tbody>
 									{Requests && Requests.length
 										? Requests.map((request, index) => {
-											return (
-												<tr
-													className=""
-													data-index="0"
-													data-id="20"
-													key={index}>
-													<td>
-														<span>
-															{moment(request.createdAt).format('DD-MM-YYYY')}
-														</span>
-													</td>
-													<td>{request.patient_name ? request.patient_name : ""}</td>
-													<td>{request.created_by ? request.created_by : ""}</td>
-													<td className="nowrap">
-														{request.status === 1 ? (
-															<div>
-																<span className="status-pill smaller green"></span>
-																<span>Approved</span>
-															</div>
-														) : (
+												return (
+													<tr
+														className=""
+														data-index="0"
+														data-id="20"
+														key={index}>
+														<td>
+															<span>
+																{moment(request.createdAt).format('DD-MM-YYYY')}
+															</span>
+														</td>
+														<td>
+															{request.patient_name ? request.patient_name : ''}
+														</td>
+														<td>
+															{request.created_by ? request.created_by : ''}
+														</td>
+														<td className="nowrap">
+															{request.status === 1 ? (
+																<div>
+																	<span className="status-pill smaller green"></span>
+																	<span>Approved</span>
+																</div>
+															) : (
 																<div>
 																	<span className="status-pill smaller yellow"></span>
 																	<span>Pending</span>
 																</div>
 															)}
-													</td>
-													<td className="row-actions text-right">
-														<Tooltip title="View Request">
-															<a
-																className="secondary"
-																onClick={() => {
-																	this.setState({ activeRequest: request });
-																	this.onModalClick();
-																}}>
-																<i className="os-icon os-icon-file" />
-															</a>
-														</Tooltip>
-														<Tooltip title="Print Request">
-															<a className="ml-2" href="#">
-																<i className="icon-feather-printer" />
-															</a>
-														</Tooltip>
-													</td>
-												</tr>
-											);
-										})
+														</td>
+														<td className="row-actions text-right">
+															<Tooltip title="View Request">
+																<a
+																	className="secondary"
+																	onClick={() => {
+																		this.setState({ activeRequest: request });
+																		this.onModalClick();
+																	}}>
+																	<i className="os-icon os-icon-file" />
+																</a>
+															</Tooltip>
+															<Tooltip title="Print Request">
+																<a className="ml-2" href="#">
+																	<i className="icon-feather-printer" />
+																</a>
+															</Tooltip>
+														</td>
+													</tr>
+												);
+										  })
 										: null}
 								</tbody>
 							</table>
