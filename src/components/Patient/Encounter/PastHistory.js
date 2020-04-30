@@ -1,33 +1,54 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
-import { request } from '../../../services/utilities';
+import { renderTextInput, request } from '../../../services/utilities';
 import { API_URI, diagnosisAPI } from '../../../services/constants';
 import DatePicker from 'react-datepicker';
+import { connect, useDispatch } from 'react-redux';
+import { loadEncounterData } from '../../../actions/patient';
+import { useForm } from 'react-hook-form';
+import { Field } from 'redux-form';
 
-class PastHistory extends Component {
-	state = {
-		histories: [],
-		selectedOption: '',
-		start_time: new Date(),
+let PastHistory = props => {
+	const [histories, setHistories] = useState([]);
+	const [selectedOption, setSelectedOption] = useState('');
+	const [selectedMultipleOption, setSelectedMultipleOption] = useState([]);
+	const [start_time, setStart_time] = useState(new Date());
+	const [multiDate, setMultiDate] = useState([]);
+	const [multiComment, setMultiComment] = useState([]);
+	const [form, updateForm] = useState([]);
+	const { register, handleSubmit } = useForm();
+	const dispatch = useDispatch();
+	const { encounterData, previous, next } = props;
+
+	const addHistory = () => {
+		setHistories([...histories, { id: histories.length, deleted: 0 }]);
 	};
 
-	addHistory = () => {
-		const { histories } = this.state;
-		this.setState({
-			histories: [...histories, { id: histories.length, deleted: 0 }],
-		});
+	const getOptionValues = option => option.id;
+
+	const getOptionLabels = option => option.description;
+
+	const handleChangeComment = (selected, i) => {
+		multiComment[i] = selected.target.value;
+		setMultiComment(multiComment);
 	};
 
-	getOptionValues = option => option.id;
-
-	getOptionLabels = option => option.description;
-
-	handleChangeOptions = selectedOption => {
-		this.setState({ selectedOption });
+	const handleChangeOptions = (selected, i) => {
+		setSelectedOption(selected);
+		selectedMultipleOption[i] = selected;
+		setSelectedMultipleOption(selectedMultipleOption);
 	};
 
-	getOptions = async inputValue => {
+	const setDate = (date, i) => {
+		multiDate[i] = date;
+		setStart_time(date);
+		setMultiDate(multiDate);
+		//console.log(date, type);
+		//this.setState({ [type]: date });
+	};
+
+	const getOptions = async inputValue => {
 		if (!inputValue) {
 			return [];
 		}
@@ -40,13 +61,9 @@ class PastHistory extends Component {
 		return res;
 	};
 
-	onChange = date => this.setState({ start_time: date });
-	setDate = (date, type) => {
-		this.setState({ [type]: date });
-	};
+	const onChange = date => setStart_time(date);
 
-	updateHistories = (id, type, value) => {
-		const { histories } = this.state;
+	const updateHistories = (id, type, value) => {
 		const history = histories.find(d => d.id === id);
 		if (history) {
 			const idx = histories.findIndex(d => d.id === id);
@@ -61,24 +78,40 @@ class PastHistory extends Component {
 		return [];
 	};
 
-	removeHistory = id => () => {
-		const histories = this.updateHistories(id, 'deleted', 1);
-		this.setState({ histories: [...histories] });
+	const removeHistory = id => () => {
+		const histories = updateHistories(id, 'deleted', 1);
+		selectedMultipleOption.splice(id, 1);
+		setHistories([...histories]);
 	};
 
-	render() {
-		const divStyle = {
-			height: '500px',
-		};
-		const { histories, selectedOption, start_time } = this.state;
-		const { previous, next } = this.props;
-		return (
-			<div className="form-block encounter" style={divStyle}>
+	const onSubmit = async values => {
+		//medicalHistory
+		let medicalToSave = [];
+		selectedMultipleOption.forEach(function(value, i) {
+			let _ToSave = [];
+			_ToSave['diagnosis'] = value.description;
+			_ToSave['date'] = multiDate[i];
+			_ToSave['comment'] = multiComment[i];
+			//medicalToSave = [_ToSave, ...medicalToSave];
+			medicalToSave.splice(i, 0, _ToSave);
+		});
+
+		encounterData.medicalHistory = medicalToSave;
+		props.loadEncounterData(encounterData);
+		dispatch(props.next);
+	};
+	const divStyle = {
+		height: '500px',
+	};
+
+	return (
+		<div className="form-block encounter" style={divStyle}>
+			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className="row">
 					<div className="col-md-12">
 						<a
 							className="btn btn-success btn-sm text-white"
-							onClick={this.addHistory}>
+							onClick={addHistory}>
 							<i className="os-icon os-icon-plus-circle" />
 							<span>add</span>
 						</a>
@@ -121,12 +154,12 @@ class PastHistory extends Component {
 										<AsyncSelect
 											required
 											cacheOptions
-											value={selectedOption}
-											getOptionValue={this.getOptionValues}
-											getOptionLabel={this.getOptionLabels}
+											value={selectedMultipleOption[hist.id]}
+											getOptionValue={getOptionValues}
+											getOptionLabel={getOptionLabels}
 											defaultOptions
-											loadOptions={this.getOptions}
-											onChange={this.handleChangeOptions}
+											loadOptions={getOptions}
+											onChange={evt => handleChangeOptions(evt, hist.id)}
 											placeholder="Enter the diagnosis name or ICD-10/ICPC-2 code"
 										/>
 									</div>
@@ -135,8 +168,8 @@ class PastHistory extends Component {
 									<div className="form-group">
 										<label>Date Diagnosed</label>
 										<DatePicker
-											selected={start_time}
-											onChange={date => this.setDate(date, 'start_time')}
+											selected={multiDate[hist.id]}
+											onChange={date => setDate(date, hist.id)}
 											peekNextMonth
 											showMonthDropdown
 											showYearDropdown
@@ -152,6 +185,8 @@ class PastHistory extends Component {
 										<label>Comment</label>
 										<input
 											placeholder="Comment on the past medical history"
+											//value={multiComment[i]}
+											onChange={evt => handleChangeComment(evt, hist.id)}
 											className="form-control"
 										/>
 									</div>
@@ -159,7 +194,7 @@ class PastHistory extends Component {
 								<div className="col-sm-1" style={{ position: 'relative' }}>
 									<a
 										className="text-danger delete-icon"
-										onClick={this.removeHistory(hist.id)}>
+										onClick={removeHistory(hist.id)}>
 										<i className="os-icon os-icon-cancel-circle" />
 									</a>
 								</div>
@@ -173,14 +208,19 @@ class PastHistory extends Component {
 						<button className="btn btn-primary" onClick={previous}>
 							Previous
 						</button>
-						<button className="btn btn-primary" onClick={next}>
+						<button className="btn btn-primary" type="submit">
 							Next
 						</button>
 					</div>
 				</div>
-			</div>
-		);
-	}
-}
+			</form>
+		</div>
+	);
+};
 
-export default PastHistory;
+const mapStateToProps = state => {
+	return {
+		encounterData: state.patient.encounterData,
+	};
+};
+export default connect(mapStateToProps, { loadEncounterData })(PastHistory);

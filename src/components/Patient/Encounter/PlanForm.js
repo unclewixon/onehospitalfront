@@ -21,6 +21,7 @@ import {
 import { notifyError } from '../../../services/notify';
 import { request } from '../../../services/utilities';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import _ from 'lodash';
 
 const PlanForm = props => {
 	const [loaded, setLoaded] = useState(false);
@@ -28,8 +29,20 @@ const PlanForm = props => {
 	const [services, setServices] = useState('');
 	const [regimens, setRegimens] = useState([]);
 	const [serviceId, setServiceId] = useState('');
+	const [genName, setGenName] = useState('');
 	const [servicesCategory, setServicesCategory] = useState([]);
-	const { previous, next, inventories } = props;
+	const {
+		previous,
+		next,
+		patient,
+		addPharmacyRequest,
+		allPatients,
+		patientsLoading,
+		loadInvCategories,
+		loadInventories,
+		categories,
+		inventories,
+	} = props;
 	const { register, handleSubmit, setValue } = useForm({
 		defaultValues: {
 			service_center: 'Pharmacy',
@@ -38,7 +51,7 @@ const PlanForm = props => {
 	const getServiceUnit = useCallback(async () => {
 		try {
 			const res = await request(`${API_URI}/inventory/categories`, 'GET', true);
-			props.loadInvCategories(res);
+			loadInvCategories(res);
 		} catch (error) {
 			notifyError('Error fetching Service Unit');
 		}
@@ -52,9 +65,9 @@ const PlanForm = props => {
 					'GET',
 					true
 				);
-				props.loadInventories(res);
+				loadInventories(res);
 			} catch (error) {
-				notifyError('Error fetching pharmacy items');
+				notifyError('Erroe fetching pharmacy items');
 			}
 		},
 		[loadInventories]
@@ -64,6 +77,28 @@ const PlanForm = props => {
 		getServiceUnit();
 		getPharmacyItems();
 	}, [getServiceUnit, getPharmacyItems]);
+
+	const genericNameOptions =
+		inventories && inventories.length
+			? inventories
+					.filter(drug => drug.generic_name !== null)
+					.map(drug => {
+						return {
+							value: drug && drug.generic_name ? drug.generic_name : 'nil',
+							label: drug && drug.generic_name ? drug.generic_name : 'nil',
+						};
+					})
+			: [];
+	const filteredGenericNameOptions = _.uniqBy(genericNameOptions, 'value');
+
+	let drugObj = {};
+
+	const drugNameOptions =
+		genericNameOptions && genericNameOptions.length
+			? genericNameOptions.filter(drug => drug.value === genName)
+			: //.map(drug => drugObj[drug.value])
+			  [];
+
 	useEffect(() => {
 		if (!loaded) {
 			props
@@ -139,15 +174,7 @@ const PlanForm = props => {
 		setValue('drugName', e.value);
 		setServiceId(e.id);
 	};
-	const genericNameOptions =
-		inventories && inventories.length
-			? inventories.map(drug => {
-					return {
-						value: drug.name,
-						label: drug.name,
-					};
-			  })
-			: [];
+
 	const addRegimen = () => {
 		setRegimens([...regimens, { id: regimens.length, deleted: 0 }]);
 	};
@@ -263,8 +290,11 @@ const PlanForm = props => {
 											placeholder="Choose a drug generic name"
 											name="genericName"
 											ref={register({ name: 'genericName', required: true })}
-											onChange={e => setValue('genericName', e.value)}
-											options={genericNameOptions}
+											onChange={e => {
+												setValue('genericName', e.value);
+												setGenName(e.value);
+											}}
+											options={filteredGenericNameOptions}
 											required
 										/>
 									</div>
@@ -276,7 +306,7 @@ const PlanForm = props => {
 											placeholder="Choose a drug name"
 											ref={register({ name: 'drugName', required: true })}
 											name="drugName"
-											options={genericNameOptions}
+											options={drugNameOptions}
 											onChange={e => onDrugSelection(e)}
 										/>
 									</div>
