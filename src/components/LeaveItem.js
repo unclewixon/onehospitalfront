@@ -1,119 +1,78 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-
+import Tooltip from 'antd/lib/tooltip';
 import { showHistory } from '../actions/general';
 
-class LeaveItem extends Component {
-	state = {
-		collapsed: true,
-	};
 
-	doLeaveHistory = e => {
-		e.preventDefault();
-		console.log('leave history');
-		this.props.showHistory(true);
-	};
+const LeaveItem = ({
+	leave,
+	index,
+	showHistory,
+	modalClick,
+	rejectRequest
+}) => {
 
-	toggle = e => {
-		e.preventDefault();
-		this.setState({ collapsed: !this.state.collapsed });
-	};
-
-	doApproveLeave = e => {
-		e.preventDefault();
-		console.log('approve leave');
-	};
-
-	doDeclineLeave = e => {
-		e.preventDefault();
-		console.log('decline leave');
-	};
-
-	render() {
-		const { onLeave, hasRequest } = this.props;
-		const { collapsed } = this.state;
-		return (
-			<>
-				<tr>
-					<td>
-						{hasRequest && (
-							<div role="button" tabIndex="0" className={`row-expand-icon ${collapsed ? 'row-collapsed' : 'row-expanded'}`} onClick={this.toggle}/>
-						)}
-					</td>
-					<td>John Mayers</td>
-					<td>Doctor</td>
-					<td>OPD</td>
-					<td>{onLeave ? 'Maternity Leave' : '-'}</td>
-					<td className="text-center">{onLeave ? '20 Oct, 2020' : '-'}</td>
-					<td className="text-center">{onLeave ? '20 Nov, 2020' : '-'}</td>
-					<td className="text-center">
-						{onLeave ? (
-							<span className="badge badge-danger-inverted">on leave</span>
-						) : '-'}
-					</td>
-					<td className="text-right row-actions">
-						{hasRequest && (
-							<a  onClick={this.toggle} className="secondary" title="Approve Leave">
-								<i className="os-icon os-icon-check-circle" />
-							</a>
-						)}
-						<a  onClick={this.doLeaveHistory} className="danger" title="Leave History">
-							<i className="os-icon os-icon-basic-2-259-calendar" />
-						</a>
-					</td>
-				</tr>
-				{!collapsed && (
-					<tr className="expanded-row leave-box">
-						<td/>
-						<td colSpan="8">
-							<div className="element-wrapper">
-								<div className="element-actions">
-									<a  className="btn btn-success btn-sm mr-2" onClick={this.doApproveLeave}>
-										<i className="os-icon os-icon-check-circle" />
-										<span>Approve Leave</span>
-									</a>
-									<a  className="btn btn-secondary btn-sm" onClick={this.doDeclineLeave}>
-										<i className="os-icon os-icon-x-circle" />
-										<span>Decline</span>
-									</a>
-								</div>
-								<h6 className="element-header">Leave Application</h6>
-								<div className="element-box">
-									<div className="table-responsive">
-										<table className="table table-striped table-sm">
-											<tbody>
-												<tr>
-													<th>Type of Leave</th>
-													<td>Sick Leave</td>
-												</tr>
-												<tr>
-													<th>Doctor's Name</th>
-													<td>Dr Onu</td>
-												</tr>
-												<tr>
-													<th>Summary</th>
-													<td>Staff is not feeling well</td>
-												</tr>
-												<tr>
-													<th>Leave Duration</th>
-													<td>12 Jul, 2020 - 12 Aug, 2020 [30 Days]</td>
-												</tr>
-												<tr>
-													<th>Date</th>
-													<td>12 Jul, 2020</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
-								</div>
+	return (
+		<>
+			<tr>
+				<td>{index + 1}</td>
+				<td>{leave.staff ? leave.staff : ""}</td>
+				<td>
+					{leave.category && leave.category.name ? leave.category.name : ""}
+				</td>
+				<td>
+					{leave.start_date ? leave.start_date : ""}
+				</td>
+				<td>
+					{leave.end_date ? leave.end_date : ""}
+				</td>
+				<td>
+					{leave.status === 1 ? (
+						<div>
+							<span className="status-pill smaller green"></span>
+							<span>Approved</span>
+						</div>
+					) : (
+							<div>
+								<span className="status-pill smaller yellow"></span>
+								<span>Pending</span>
 							</div>
-						</td>
-					</tr>
-				)}
-			</>
-		);
-	}
+						)
+					}
+				</td>
+				<td>
+					<Tooltip title="View Request">
+						<a
+							className="mt-4"
+							onClick={() => {
+								if (typeof modalClick === 'function') {
+									modalClick(leave);
+								}
+							}}>
+							<i className="os-icon os-icon-file" />
+						</a>
+					</Tooltip>
+					<Tooltip title="Approve Leave">
+						<a
+							className="mt-4"
+							onClick
+						>
+							<i className="os-icon os-icon-thumbs-up" />
+						</a>
+					</Tooltip>
+					<Tooltip title="Reject Leave">
+						<a
+							className="mt-4"
+							onClick={() => rejectRequest(leave)}
+						>
+							<i className="os-icon os-icon-trash" />
+						</a>
+					</Tooltip>
+				</td>
+			</tr>
+		</>
+	);
 }
 
 export default connect(null, { showHistory })(LeaveItem);

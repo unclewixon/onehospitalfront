@@ -1,24 +1,55 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import ModalLeaveRequest from '../../components/Modals/ModalLeaveRequest';
 import LeaveItem from '../../components/LeaveItem';
 import { loadStaffLeave } from '../../actions/hr';
 import { request } from '../../services/utilities';
 import { API_URI, leaveMgtAPI } from '../../services/constants';
+import { notifySuccess, notifyError } from '../../services/notify';
+import searchingGIF from '../../assets/images/searching.gif';
 
 class LeaveMgt extends Component {
+
+	state = {
+		searching: false,
+		activeRequest: null,
+		showModal: false,
+		searching: false
+	};
+
+	onModalClick = () => {
+		this.setState({showModal: !this.state.showModal})
+	}
 	componentDidMount() {
 		this.fetchStaffLeave();
 	}
-	
+
+	modalFunction = data => {
+		this.onModalClick();
+		this.setState({ activeRequest: data });
+	}
+
 	fetchStaffLeave = async () => {
+		this.setState({searching: true})
 		try {
 			const rs = await request(`${API_URI}${leaveMgtAPI}`, 'GET', true);
+			this.setState({searching: false})
 			this.props.loadStaffLeave(rs);
 		} catch (error) {
+			this.setState({searching: false})
 			console.log(error);
 		}
 	};
+
+	rejectLeaveRequests = async (data) => {
+		try {
+			const res = await request(`${API_URI}/hr/leave-management/${data.id}`, 'DELETE', true);
+			notifySuccess('Successful removed leave applications')
+			this.fetchStaffLeave()
+		} catch (error) {
+			notifyError('Could not remove leave applications')
+		}
+	}
 
 	render() {
 		const { staff_leave } = this.props;
@@ -52,20 +83,27 @@ class LeaveMgt extends Component {
 									</form>
 								</div>
 								<h6 className="element-header">Leave Management</h6>
+								{
+									this.state.activeRequest ? (
+										<ModalLeaveRequest
+											showModal={this.state.showModal}
+											activeRequest={this.state.activeRequest}
+											onModalClick={this.onModalClick}
+										/>
+									) : null
+								}
 								<div className="element-box">
 									<div className="table-responsive">
 										<table className="table table-striped">
 											<thead>
 												<tr>
-													<th/>
+													<th></th>
 													<th>Name</th>
-													<th>Profession</th>
-													<th>Department</th>
 													<th>Type</th>
-													<th className="text-center">Date To leave</th>
-													<th className="text-center">Date To Return</th>
-													<th className="text-center">Status</th>
-													<th className="text-right">Actions</th>
+													<th>Date To leave</th>
+													<th>Date To Return</th>
+													<th>Status</th>
+													<th>Actions</th>
 												</tr>
 											</thead>
 											<tbody>
@@ -76,6 +114,13 @@ class LeaveMgt extends Component {
 															onLeave={true}
 															hasRequest={false}
 															leave={leave}
+															modalClick={Data =>
+																this.modalFunction(Data, i)
+															}
+															index={i}
+															rejectRequest={Data => 
+																this.rejectLeaveRequests(Data)
+															}
 														/>
 													)
 												})}
