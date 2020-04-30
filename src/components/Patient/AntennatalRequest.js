@@ -29,8 +29,12 @@ class AntennatalRequest extends Component {
 			// 		submitting: !prevState.submitting,
 			// 	};
 			// });
+			console.log(data.tests, data.groups, data.scansToRequest);
+			let grps = data.groups ? data.groups : [];
+			let tsts = data.tests ? data.tests : [];
+			let scan = data.scansToRequest ? data.scansToRequest : [];
 			const groups = this.props.LabGroups.filter(el =>
-				data.groups.includes(el.name)
+				grps.includes(el.name)
 			).map(el => {
 				return {
 					specialization: el.name,
@@ -38,17 +42,14 @@ class AntennatalRequest extends Component {
 				};
 			});
 
-			console.log(data.tests, data.groups);
 			const tests = this.props.LabTests.filter(el =>
-				data.tests.includes(el.name)
+				tsts.includes(el.name)
 			).map(el => {
 				return {
 					specialization: el.name,
 					service_id: el.id,
 				};
 			});
-
-			console.log(tests, groups);
 
 			const newAntenatal = {
 				heightOfFunds: data.heightOfFunds || '',
@@ -70,7 +71,7 @@ class AntennatalRequest extends Component {
 				},
 				imagingRequest: {
 					requestNote: data.requestNote || '',
-					requestBody: data.scansToRequest.map(el => {
+					requestBody: scan.map(el => {
 						return {
 							specialization: el,
 							service_id: data.serviceCenter || '',
@@ -79,12 +80,7 @@ class AntennatalRequest extends Component {
 				},
 				pharmacyRequest: [
 					{
-						requestBody: this.state.pharmacyRequest.map(el => {
-							return {
-								...el,
-								service_id: el.drugName,
-							};
-						}),
+						requestBody: this.state.pharmacyRequest,
 					},
 				],
 				nextAppointment: {

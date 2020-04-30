@@ -79,7 +79,7 @@ class RadiologicalInvestigation extends Component {
 				});
 		} else {
 			data = this.filterServiceCategory();
-			this.setState({ serviceCenter: data });
+			this.setState({ serviceCenter: data, allServices: this.props.service });
 		}
 	};
 

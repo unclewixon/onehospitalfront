@@ -139,6 +139,7 @@ export class ModalImmunizationDetail extends Component {
 														<th className="text-center">No of refill</th>
 														<th className="text-center">Frequency</th>
 														<th className="text-center">Duration</th>
+														<th className="text-center">EG</th>
 														<th className="text-center">Note</th>
 													</tr>
 												</thead>
@@ -149,14 +150,16 @@ export class ModalImmunizationDetail extends Component {
 																<tr key={index}>
 																	<td className="text-center">{index + 1}</td>
 																	<td className="text-center">
-																		{request.genericName}
+																		{request.genericName
+																			? request.genericName
+																			: ''}
 																	</td>
 																	<td className="text-center">
-																		{request.drugName}
+																		{request.drugName ? request.drugName : '-'}
 																	</td>
 																	<td className="text-center">
 																		{' '}
-																		{request.quantity}
+																		{request.quantity ? request.quantity : '-'}
 																	</td>
 																	<td className="text-center">
 																		{' '}
@@ -167,6 +170,10 @@ export class ModalImmunizationDetail extends Component {
 																		{request.frequency
 																			? request.frequency
 																			: '-'}
+																	</td>
+																	<td className="text-center">
+																		{' '}
+																		{request.eg ? request.eg : '-'}
 																	</td>
 																	<td className="text-center">
 																		{' '}
