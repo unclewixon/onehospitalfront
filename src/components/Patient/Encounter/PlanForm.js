@@ -8,9 +8,9 @@ import {
 	planServiceCenter,
 	serviceAPI,
 } from '../../../services/constants';
-import { useForm } from 'react-hook-form';
+import { Controller, ErrorMessage, useForm } from 'react-hook-form';
 import Select from 'react-select';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { addPharmacyRequest } from '../../../actions/patient';
 import { loadInvCategories, loadInventories } from '../../../actions/inventory';
 import {
@@ -31,6 +31,7 @@ const PlanForm = props => {
 	const [serviceId, setServiceId] = useState('');
 	const [genName, setGenName] = useState('');
 	const [servicesCategory, setServicesCategory] = useState([]);
+	const dispatch = useDispatch();
 	const {
 		previous,
 		next,
@@ -43,7 +44,7 @@ const PlanForm = props => {
 		categories,
 		inventories,
 	} = props;
-	const { register, handleSubmit, setValue } = useForm({
+	const { register, handleSubmit, setValue, control, errors } = useForm({
 		defaultValues: {
 			service_center: 'Pharmacy',
 		},
@@ -205,396 +206,469 @@ const PlanForm = props => {
 		overflowY: 'scroll',
 	};
 
+	const onSubmit = async values => {
+		console.log(values);
+	};
+
 	return (
-		<div className="form-block encounter">
-			<div className="row">
-				<div className="col-sm-12">
-					<div className="form-group">
-						<label>Plan:</label>
-						<SunEditor
-							width="100%"
-							placeholder="Please type here..."
-							setContents="Treatment Plan:"
-							autoFocus={false}
-							enableToolbar={true}
-							setOptions={{
-								height: 300,
-								buttonList: [
-									[
-										'bold',
-										'underline',
-										'italic',
-										'strike',
-										'subscript',
-										'superscript',
-										'list',
-										'align',
-										'font',
-										'fontSize',
-										'image',
-									],
-								],
-							}}
-						/>
-					</div>
-				</div>
-			</div>
-			<div className="row">
-				<div className="col-sm-6">
-					<div className="form-group">
-						<label>Business Unit/Service Center</label>
-						<Select
-							name="service_center"
-							placeholder="Select Service Center"
-							options={planServiceCenter}
-							value={{ label: 'Pharmacy', value: 'Pharmacy' }}
-							ref={register({ name: 'service_center' })}
-							onChange={evt => {
-								setValue('service_center', String(evt.value));
-							}}
-							required
-						/>
-					</div>
-				</div>
-				<div className="col-sm-6">
-					<div className="form-group">
-						<label>Formulary</label>
-						<Select
-							placeholder="Choose a formulary"
-							name="formulary"
-							ref={register({ name: 'formulary', required: true })}
-							onChange={e => setValue('formulary', e.value)}
-							options={genericNameOptions}
-						/>
-					</div>
-				</div>
-			</div>
-			<h5 className="mt-4">Add Medication</h5>
-			<div className="row mt-4">
-				<div className="col-md-12">
-					<a className="btn btn-success btn-sm text-white" onClick={addRegimen}>
-						<i className="os-icon os-icon-plus-circle" />
-						<span>add</span>
-					</a>
-				</div>
-			</div>
-			{regimens.map((drug, i) => {
-				return (
-					drug.deleted === 0 && (
-						<div className="mt-4" key={i}>
-							<div className="row">
-								<div className="col-sm-6">
-									<div className="form-group">
-										<label>Drug Generic Name</label>
-										<Select
-											placeholder="Choose a drug generic name"
-											name="genericName"
-											ref={register({ name: 'genericName', required: true })}
-											onChange={e => {
-												setValue('genericName', e.value);
-												setGenName(e.value);
-											}}
-											options={filteredGenericNameOptions}
-											required
-										/>
-									</div>
-								</div>
-								<div className="col-sm-6">
-									<div className="form-group">
-										<label>Drug Name</label>
-										<Select
-											placeholder="Choose a drug name"
-											ref={register({ name: 'drugName', required: true })}
-											name="drugName"
-											options={drugNameOptions}
-											onChange={e => onDrugSelection(e)}
-										/>
-									</div>
-								</div>
-							</div>
-							<div className="row">
-								<div className="col-sm-6">
-									<div className="row">
-										<div className="col-sm-5">
-											<div className="form-group">
-												<label>Frequency</label>
-												<input
-													type="number"
-													placeholder="eg. 3"
-													className="form-control"
-												/>
-											</div>
-										</div>
-										<div className="col-sm-4">
-											<div className="form-group">
-												<label>Frequency Type</label>
-												<select
-													placeholder="-- Select frequency type --"
-													className="form-control">
-													<option value=""></option>
-												</select>
-											</div>
-										</div>
-										<div className="col-sm-3">
-											<div className="form-group">
-												<label>Dose</label>
-												<input
-													type="number"
-													className="form-control"
-													placeholder="Dose Quantity"
-													ref={register({ required: true })}
-													name="quantity"
-													onChange={onHandleInputChange}
-												/>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div className="col-sm-5">
-									<div className="row">
-										<div className="col-sm-4">
-											<div className="form-group">
-												<label>Duration</label>
-												<input
-													type="number"
-													placeholder="(value in days) eg. 7"
-													className="form-control"
-												/>
-											</div>
-										</div>
-										<div className="col-sm-8">
-											<div className="form-group">
-												<label>Note</label>
-												<input
-													type="number"
-													placeholder="Regimen line instruction"
-													className="form-control"
-												/>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div className="col-sm-1" style={{ position: 'relative' }}>
-									<a
-										className="text-danger delete-icon"
-										onClick={removeRegimen(drug.id)}>
-										<i className="os-icon os-icon-cancel-circle" />
-									</a>
-								</div>
-							</div>
-							<div className="row">
-								<div className="col-sm-12">
-									<div className="form-group">
-										<label>
-											<input
-												type="checkbox"
-												name="refillable"
-												className="form-control"
-											/>{' '}
-											Refilable?
-										</label>
-									</div>
-								</div>
-							</div>
+		<form onSubmit={handleSubmit(onSubmit)}>
+			<div className="form-block encounter">
+				<div className="row">
+					<div className="col-sm-12">
+						<div className="form-group">
+							<label>Plan:</label>
+							<Controller
+								as={
+									<SunEditor
+										width="100%"
+										placeholder="Please type here..."
+										setContents="Treatment Plan:"
+										autoFocus={false}
+										enableToolbar={true}
+										setOptions={{
+											height: 300,
+											buttonList: [
+												[
+													'bold',
+													'underline',
+													'italic',
+													'strike',
+													'subscript',
+													'superscript',
+													'list',
+													'align',
+													'font',
+													'fontSize',
+													'image',
+												],
+											],
+										}}
+									/>
+								}
+								control={control}
+								rules={{ required: true }}
+								onChange={([selected]) => {
+									return selected;
+								}}
+								name="treatmentPlan"
+							/>
 						</div>
-					)
-				);
-			})}
-			<div className="row">
-				<div className="col-sm-12">
-					<div className="form-group">
-						<label>Regimen Note</label>
-						<textarea
-							placeholder="Enter regimen note"
-							className="form-control"
-							cols="3"></textarea>
 					</div>
 				</div>
-			</div>
-			<h5 className="mt-4">Add Appointment (Schedule Next Appointment)</h5>
-			<div className="row">
-				<div className="col-sm-6">
-					<div className="form-group">
-						<label>Appontment Date</label>
-						<input
-							type="text"
-							placeholder="Select Start Date"
-							className="form-control"
-						/>
+				<div className="row">
+					<div className="col-sm-6">
+						<div className="form-group">
+							<label>Business Unit/Service Center</label>
+							<Controller
+								as={
+									<Select
+										options={planServiceCenter}
+										placeholder="Select Service Center"
+									/>
+								}
+								control={control}
+								rules={{ required: true }}
+								onChange={([selected]) => {
+									return selected;
+								}}
+								name="service_center"
+								defaultValue={{ label: 'Pharmacy', value: 'Pharmacy' }}
+							/>
+							<ErrorMessage
+								errors={errors}
+								name="service_center"
+								message="This is required"
+								as={<span className="alert alert-danger" />}
+							/>
+						</div>
+					</div>
+					<div className="col-sm-6">
+						<div className="form-group">
+							<label>Formulary</label>
+							<Controller
+								as={
+									<Select
+										options={genericNameOptions}
+										placeholder="Choose a formulary"
+									/>
+								}
+								control={control}
+								rules={{ required: true }}
+								onChange={([selected]) => {
+									return selected;
+								}}
+								name="formulary"
+							/>
+							<ErrorMessage
+								errors={errors}
+								name="formulary"
+								message="This is required"
+								as={<span className="alert alert-danger" />}
+							/>
+						</div>
 					</div>
 				</div>
-				<div className="col-sm-3">
-					<div className="form-group">
-						<label>Duration</label>
-						<input type="number" placeholder="eg. 5" className="form-control" />
+				<h5 className="mt-4">Add Medication</h5>
+				<div className="row mt-4">
+					<div className="col-md-12">
+						<a
+							className="btn btn-success btn-sm text-white"
+							onClick={addRegimen}>
+							<i className="os-icon os-icon-plus-circle" />
+							<span>add</span>
+						</a>
 					</div>
 				</div>
-				<div className="col-sm-3">
-					<div className="form-group">
-						<label>(Minutes/Hour/Days/etc)</label>
-						<select
-							placeholder="-- Select an option here --"
-							className="form-control">
-							<option value=""></option>
-						</select>
+				{regimens.map((drug, i) => {
+					return (
+						drug.deleted === 0 && (
+							<div className="mt-4" key={i}>
+								<div className="row">
+									<div className="col-sm-6">
+										<div className="form-group">
+											<label>Drug Generic Name</label>
+											<Controller
+												as={
+													<Select
+														options={filteredGenericNameOptions}
+														placeholder="Choose a drug generic name"
+													/>
+												}
+												control={control}
+												rules={{ required: true }}
+												onChange={([selected]) => {
+													setGenName(selected.value);
+													return selected;
+												}}
+												name={`regimens[${drug.id}]['genericName']`}
+											/>
+											<ErrorMessage
+												errors={errors}
+												name={`regimens[${drug.id}]['genericName']`}
+												message="This is required"
+												as={<span className="alert alert-danger" />}
+											/>
+										</div>
+									</div>
+									<div className="col-sm-6">
+										<div className="form-group">
+											<label>Drug Name</label>
+											<Controller
+												as={
+													<Select
+														options={drugNameOptions}
+														placeholder="Choose a drug name"
+													/>
+												}
+												control={control}
+												rules={{ required: true }}
+												onChange={([selected]) => {
+													return selected;
+												}}
+												name={`regimens[${drug.id}]['drugName']`}
+											/>
+											<ErrorMessage
+												errors={errors}
+												name={`regimens[${drug.id}]['drugName']`}
+												message="This is required"
+												as={<span className="alert alert-danger" />}
+											/>
+										</div>
+									</div>
+								</div>
+								<div className="row">
+									<div className="col-sm-6">
+										<div className="row">
+											<div className="col-sm-5">
+												<div className="form-group">
+													<label>Frequency</label>
+													<input
+														ref={register}
+														name={`regimens[${drug.id}]['frequency']`}
+														type="number"
+														placeholder="eg. 3"
+														className="form-control"
+													/>
+												</div>
+											</div>
+											<div className="col-sm-4">
+												<div className="form-group">
+													<label>Frequency Type</label>
+													<select
+														placeholder="-- Select frequency type --"
+														className="form-control">
+														<option value=""></option>
+													</select>
+												</div>
+											</div>
+											<div className="col-sm-3">
+												<div className="form-group">
+													<label>Dose</label>
+													<input
+														type="number"
+														className="form-control"
+														placeholder="Dose Quantity"
+														ref={register}
+														name={`regimens[${drug.id}]['quantity']`}
+													/>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div className="col-sm-5">
+										<div className="row">
+											<div className="col-sm-4">
+												<div className="form-group">
+													<label>Duration</label>
+													<input
+														type="number"
+														placeholder="(value in days) eg. 7"
+														className="form-control"
+														ref={register}
+														name={`regimens[${drug.id}]['duration']`}
+													/>
+												</div>
+											</div>
+											<div className="col-sm-8">
+												<div className="form-group">
+													<label>Note</label>
+													<input
+														type="number"
+														placeholder="Regimen line instruction"
+														className="form-control"
+														ref={register}
+														name={`regimens[${drug.id}]['note']`}
+													/>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div className="col-sm-1" style={{ position: 'relative' }}>
+										<a
+											className="text-danger delete-icon"
+											onClick={removeRegimen(drug.id)}>
+											<i className="os-icon os-icon-cancel-circle" />
+										</a>
+									</div>
+								</div>
+								<div className="row">
+									<div className="col-sm-12">
+										<div className="form-group">
+											<label>
+												<input
+													type="checkbox"
+													name="refillable"
+													className="form-control"
+												/>{' '}
+												Refilable?
+											</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						)
+					);
+				})}
+				<div className="row">
+					<div className="col-sm-12">
+						<div className="form-group">
+							<label>Regimen Note</label>
+							<textarea
+								placeholder="Enter regimen note"
+								className="form-control"
+								cols="3"></textarea>
+						</div>
 					</div>
 				</div>
-			</div>
+				<h5 className="mt-4">Add Appointment (Schedule Next Appointment)</h5>
+				<div className="row">
+					<div className="col-sm-6">
+						<div className="form-group">
+							<label>Appontment Date</label>
+							<input
+								type="text"
+								placeholder="Select Start Date"
+								className="form-control"
+							/>
+						</div>
+					</div>
+					<div className="col-sm-3">
+						<div className="form-group">
+							<label>Duration</label>
+							<input
+								type="number"
+								placeholder="eg. 5"
+								className="form-control"
+							/>
+						</div>
+					</div>
+					<div className="col-sm-3">
+						<div className="form-group">
+							<label>(Minutes/Hour/Days/etc)</label>
+							<select
+								placeholder="-- Select an option here --"
+								className="form-control">
+								<option value=""></option>
+							</select>
+						</div>
+					</div>
+				</div>
 
-			<div className="row">
-				<div className="col-sm-6">
-					<div className="form-group">
-						<label>Select Location</label>
-						<select
-							placeholder="-- Select location --"
-							className="form-control">
-							<option value=""></option>
-						</select>
-					</div>
-				</div>
-				<div className="col-sm-6">
-					<div className="form-group">
-						<label>Select Clinic</label>
-						<select
-							placeholder="-- Select appointment clinic --"
-							className="form-control">
-							<option value=""></option>
-						</select>
-					</div>
-				</div>
-			</div>
-			<div className="row">
-				<div className="col-sm-12">
-					<div className="form-group">
-						<label>Description/Reason</label>
-						<textarea
-							placeholder="Enter description"
-							className="form-control"
-							cols="3"></textarea>
-					</div>
-				</div>
-			</div>
-			<h5 className="mt-4">Add New Procedure</h5>
-			<div className="row">
-				<div className="col-sm-12">
-					<div className="form-group">
-						<label>Business Unit/Service Center</label>
-						<Select
-							name="service_center"
-							placeholder="Select Service Center"
-							options={servicesCategory}
-							ref={register({ name: 'service_center' })}
-							onChange={evt => handleChangeServiceCategory(evt)}
-							required
-						/>
-					</div>
-				</div>
-			</div>
-			<div className="row">
-				<div className="col-sm-6">
-					<div className="form-group">
-						<label>Procedure</label>
-						<Select
-							name="procedure"
-							placeholder="Select procedure"
-							isMulti
-							options={services}
-							ref={register({ name: 'procedure' })}
-							onChange={evt => handleChangeProcedure(evt)}
-							required
-						/>
-					</div>
-				</div>
-				<div className="col-sm-6">
-					<div className="form-group">
-						<label>Primary Diagnoses</label>
-						<AsyncSelect
-							required
-							cacheOptions
-							value={selectedOption}
-							getOptionValue={getOptionValues}
-							getOptionLabel={getOptionLabels}
-							defaultOptions
-							loadOptions={getOptions}
-							onChange={handleChangeOptions}
-							placeholder="primary diagnosis"
-						/>
-					</div>
-				</div>
-			</div>
-			<div className="row">
-				<div className="col-sm-12">
-					<div className="form-group">
-						<label>Request Note</label>
-						<textarea
-							placeholder="Enter note"
-							className="form-control"
-							cols="3"></textarea>
-					</div>
-				</div>
-			</div>
-			<div className="row">
-				<div className="col-sm-6">
-					<div className="row">
-						<div className="col-sm-6">
-							<div className="form-group">
-								<label>
-									<input type="checkbox" className="form-control" /> Requires
-									Anesthesiologist
-								</label>
-							</div>
+				<div className="row">
+					<div className="col-sm-6">
+						<div className="form-group">
+							<label>Select Location</label>
+							<select
+								placeholder="-- Select location --"
+								className="form-control">
+								<option value=""></option>
+							</select>
 						</div>
-						<div className="col-sm-6">
-							<div className="form-group">
-								<label>
-									<input type="checkbox" className="form-control" /> Requires
-									Surgeon
-								</label>
-							</div>
+					</div>
+					<div className="col-sm-6">
+						<div className="form-group">
+							<label>Select Clinic</label>
+							<select
+								placeholder="-- Select appointment clinic --"
+								className="form-control">
+								<option value=""></option>
+							</select>
 						</div>
 					</div>
 				</div>
-				<div className="col-sm-6">
-					<div className="row">
-						<div className="col-sm-6">
-							<div className="form-group">
-								<label>
-									<input type="radio" className="form-control" /> Bill Now
-								</label>
+				<div className="row">
+					<div className="col-sm-12">
+						<div className="form-group">
+							<label>Description/Reason</label>
+							<textarea
+								placeholder="Enter description"
+								className="form-control"
+								cols="3"></textarea>
+						</div>
+					</div>
+				</div>
+				<h5 className="mt-4">Add New Procedure</h5>
+				<div className="row">
+					<div className="col-sm-12">
+						<div className="form-group">
+							<label>Business Unit/Service Center</label>
+							<Select
+								name="service_center"
+								placeholder="Select Service Center"
+								options={servicesCategory}
+								ref={register({ name: 'service_center' })}
+								onChange={evt => handleChangeServiceCategory(evt)}
+								required
+							/>
+						</div>
+					</div>
+				</div>
+				<div className="row">
+					<div className="col-sm-6">
+						<div className="form-group">
+							<label>Procedure</label>
+							<Select
+								name="procedure"
+								placeholder="Select procedure"
+								isMulti
+								options={services}
+								ref={register({ name: 'procedure' })}
+								onChange={evt => handleChangeProcedure(evt)}
+								required
+							/>
+						</div>
+					</div>
+					<div className="col-sm-6">
+						<div className="form-group">
+							<label>Primary Diagnoses</label>
+							<AsyncSelect
+								required
+								cacheOptions
+								value={selectedOption}
+								getOptionValue={getOptionValues}
+								getOptionLabel={getOptionLabels}
+								defaultOptions
+								loadOptions={getOptions}
+								onChange={handleChangeOptions}
+								placeholder="primary diagnosis"
+							/>
+						</div>
+					</div>
+				</div>
+				<div className="row">
+					<div className="col-sm-12">
+						<div className="form-group">
+							<label>Request Note</label>
+							<textarea
+								placeholder="Enter note"
+								className="form-control"
+								cols="3"></textarea>
+						</div>
+					</div>
+				</div>
+				<div className="row">
+					<div className="col-sm-6">
+						<div className="row">
+							<div className="col-sm-6">
+								<div className="form-group">
+									<label>
+										<input type="checkbox" className="form-control" /> Requires
+										Anesthesiologist
+									</label>
+								</div>
+							</div>
+							<div className="col-sm-6">
+								<div className="form-group">
+									<label>
+										<input type="checkbox" className="form-control" /> Requires
+										Surgeon
+									</label>
+								</div>
 							</div>
 						</div>
-						<div className="col-sm-6">
-							<div className="form-group">
-								<label>
-									<input type="radio" className="form-control" /> Bill Later
-								</label>
+					</div>
+					<div className="col-sm-6">
+						<div className="row">
+							<div className="col-sm-6">
+								<div className="form-group">
+									<label>
+										<input type="radio" className="form-control" /> Bill Now
+									</label>
+								</div>
+							</div>
+							<div className="col-sm-6">
+								<div className="form-group">
+									<label>
+										<input type="radio" className="form-control" /> Bill Later
+									</label>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 
-			<div className="row mt-5">
-				<div className="col-sm-12 d-flex ant-row-flex-space-between">
-					<button className="btn btn-primary" onClick={previous}>
-						Previous
-					</button>
-					<button className="btn btn-primary" onClick={next}>
-						Next
-					</button>
+				<div className="row mt-5">
+					<div className="col-sm-12 d-flex ant-row-flex-space-between">
+						<button className="btn btn-primary" onClick={previous}>
+							Previous
+						</button>
+						<button className="btn btn-primary" type="submit">
+							Next
+						</button>
+					</div>
 				</div>
 			</div>
-		</div>
+		</form>
 	);
 };
 
 const mapStateToProps = (state, ownProps) => {
-	console.log(state.inventory.inventories);
 	return {
 		categories: state.inventory.categories,
 		inventories: state.inventory.inventories,
 		service: state.settings.services,
 		ServiceCategories: state.settings.service_categories,
+		encounterData: state.patient.encounterData,
 	};
 };
 
