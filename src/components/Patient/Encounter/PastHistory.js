@@ -26,9 +26,7 @@ let PastHistory = props => {
 	};
 
 	const getOptionValues = option => option.id;
-
 	const getOptionLabels = option => option.description;
-
 	const handleChangeComment = (selected, i) => {
 		multiComment[i] = selected.target.value;
 		setMultiComment(multiComment);

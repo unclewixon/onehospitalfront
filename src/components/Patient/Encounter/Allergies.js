@@ -5,7 +5,12 @@ import { reduxForm } from 'redux-form';
 import HxForm from './HxForm';
 import { useForm } from 'react-hook-form';
 import { connect, useDispatch } from 'react-redux';
-import { add_allergies, fetch_Allergies } from '../../../actions/patient';
+import {
+	add_allergies,
+	fetch_Allergies,
+	loadEncounterData,
+} from '../../../actions/patient';
+import { v4 as uuidv4 } from 'uuid';
 import {
 	allergyCategories,
 	API_URI,
@@ -31,8 +36,7 @@ const Allergies = props => {
 	const dispatch = useDispatch();
 	let { previous, next, allergiesProp, patient, encounterData } = props;
 	const addAllergy = () => {
-		setAllergies([...allergies, { id: allergies.length, deleted: 0 }]);
-		console.log(allergies.length);
+		setAllergies([...allergies, { id: uuidv4() }]);
 	};
 
 	const updateAllergies = (id, type, value) => {
@@ -51,7 +55,11 @@ const Allergies = props => {
 	};
 
 	const removeAllergy = id => () => {
-		const allergies = updateAllergies(id, 'deleted', 1);
+		allergies.map((value, i) => {
+			if (value.id === id) {
+				allergies.splice(i, 1);
+			}
+		});
 		category.splice(id, 1);
 		setAllergies([...allergies]);
 	};
@@ -66,14 +74,15 @@ const Allergies = props => {
 				true
 			);
 			rs.map((value, i) => {
-				setAllergies([...allergies, { id: allergies.length, deleted: 0 }]);
-				category[allergies.length] = {
+				const theID = uuidv4();
+				setAllergies([...allergies, { id: theID }]);
+				category[theID] = {
 					value: value.category,
 					label: value.category,
 				};
-				allergyField[allergies.length] = value.allergy;
-				reaction[allergies.length] = value.reaction;
-				severityField[allergies.length] = {
+				allergyField[theID] = value.allergy;
+				reaction[theID] = value.reaction;
+				severityField[theID] = {
 					value: value.severity,
 					label: value.severity,
 				};
@@ -82,6 +91,7 @@ const Allergies = props => {
 				setReaction(reaction);
 				setSeverity(severityField);
 			});
+
 			//props.fetch_Allergies(rs);
 			//console.log(rs)
 			setLoaded(false);
@@ -100,21 +110,20 @@ const Allergies = props => {
 		}
 	};
 	const onSubmit = async values => {
-		console.log(values);
 		let allergiesToSave = [];
-		console.log(severityField, category);
-		category.map((value, i) => {
+
+		for (let val in category) {
 			let _ToSave = [];
-			_ToSave['category'] = value.label;
-			_ToSave['allergen'] = allergyField[i];
-			_ToSave['reaction'] = reaction[i];
-			_ToSave['severity'] = severityField[i].label;
-			allergiesToSave.splice(i, 0, _ToSave);
-		});
-		console.log(allergiesToSave);
+			_ToSave['category'] = category[val].label;
+			_ToSave['allergen'] = allergyField[val];
+			_ToSave['reaction'] = reaction[val];
+			_ToSave['severity'] = severityField[val].label;
+			allergiesToSave = [...allergiesToSave, _ToSave];
+		}
+
 		encounterData.allergies = allergiesToSave;
 		props.loadEncounterData(encounterData);
-		//dispatch(props.next);
+		dispatch(props.next);
 	};
 
 	const divStyle = {
@@ -146,97 +155,95 @@ const Allergies = props => {
 							<div className="col-sm-6">
 								{allergies.map((allergy, i) => {
 									return (
-										allergy.deleted === 0 && (
-											<div className="mt-4" key={i}>
-												<div className="row">
-													<div className="col-md-12">
-														<a
-															className="text-danger"
-															onClick={removeAllergy(allergy.id)}
-															style={{ lineHeight: '78px' }}>
-															<i className="os-icon os-icon-cancel-circle" />{' '}
-															remove allergen
-														</a>
-													</div>
+										<div className="mt-4" key={i}>
+											<div className="row">
+												<div className="col-md-12">
+													<a
+														className="text-danger"
+														onClick={removeAllergy(allergy.id)}
+														style={{ lineHeight: '78px' }}>
+														<i className="os-icon os-icon-cancel-circle" />{' '}
+														remove allergen
+													</a>
 												</div>
-												<div className="row">
-													<div className="col-md-12">
-														<div className="form-group">
-															<label>Category</label>
-															<Select
-																name="category"
-																placeholder="Select Allergy Category"
-																options={allergyCategories}
-																ref={register({ name: 'category' })}
-																value={category[allergy.id]}
-																onChange={evt => {
-																	category[allergy.id] = evt;
-																	setCategory(category);
-																}}
-																required
-															/>
-														</div>
-													</div>
-												</div>
-												<div className="row">
-													<div className="col-md-12">
-														<div className="form-group">
-															<label>Allergen</label>
-															<input
-																className="form-control"
-																placeholder="Allergy"
-																type="text"
-																name="allergy"
-																value={allergyField[allergy.id]}
-																onChange={evt => {
-																	allergyField[allergy.id] = evt.target.value;
-																	setAllergy(allergyField);
-																}}
-																ref={register}
-															/>
-														</div>
-													</div>
-												</div>
-												<div className="row">
-													<div className="col-md-12">
-														<div className="form-group">
-															<label>Reaction</label>
-															<input
-																type="text"
-																ref={register}
-																name="reaction"
-																value={reaction[allergy.id]}
-																onChange={evt => {
-																	reaction[allergy.id] = evt.target.value;
-																	setReaction(reaction);
-																}}
-																placeholder="Reaction"
-																className="form-control"
-															/>
-														</div>
-													</div>
-												</div>
-												<div className="row">
-													<div className="col-md-12">
-														<div className="form-group">
-															<label>Severity</label>
-															<Select
-																name="severity"
-																value={severityField[allergy.id]}
-																placeholder="Select severity"
-																options={severity}
-																ref={register({ name: 'severity' })}
-																onChange={evt => {
-																	severityField[allergy.id] = evt;
-																	setSeverity(severityField);
-																}}
-																required
-															/>
-														</div>
+											</div>
+											<div className="row">
+												<div className="col-md-12">
+													<div className="form-group">
+														<label>Category</label>
+														<Select
+															name="category"
+															placeholder="Select Allergy Category"
+															options={allergyCategories}
+															ref={register({ name: 'category' })}
+															value={category[allergy.id]}
+															onChange={evt => {
+																category[allergy.id] = evt;
+																setCategory(category);
+															}}
+															required
+														/>
 													</div>
 												</div>
 											</div>
-										)
+											<div className="row">
+												<div className="col-md-12">
+													<div className="form-group">
+														<label>Allergen</label>
+														<input
+															className="form-control"
+															placeholder="Allergy"
+															type="text"
+															name="allergy"
+															value={allergyField[allergy.id]}
+															onChange={evt => {
+																allergyField[allergy.id] = evt.target.value;
+																setAllergy(allergyField);
+															}}
+															ref={register}
+														/>
+													</div>
+												</div>
+											</div>
+											<div className="row">
+												<div className="col-md-12">
+													<div className="form-group">
+														<label>Reaction</label>
+														<input
+															type="text"
+															ref={register}
+															name="reaction"
+															value={reaction[allergy.id]}
+															onChange={evt => {
+																reaction[allergy.id] = evt.target.value;
+																setReaction(reaction);
+															}}
+															placeholder="Reaction"
+															className="form-control"
+														/>
+													</div>
+												</div>
+											</div>
+											<div className="row">
+												<div className="col-md-12">
+													<div className="form-group">
+														<label>Severity</label>
+														<Select
+															name="severity"
+															value={severityField[allergy.id]}
+															placeholder="Select severity"
+															options={severity}
+															ref={register({ name: 'severity' })}
+															onChange={evt => {
+																severityField[allergy.id] = evt;
+																setSeverity(severityField);
+															}}
+															required
+														/>
+													</div>
+												</div>
+											</div>
+										</div>
 									);
 								})}
 							</div>
@@ -282,4 +289,6 @@ const mapStateToProps = (state, ownProps) => {
 		encounterData: state.patient.encounterData,
 	};
 };
-export default connect(mapStateToProps, { fetch_Allergies })(Allergies);
+export default connect(mapStateToProps, { fetch_Allergies, loadEncounterData })(
+	Allergies
+);

@@ -133,160 +133,165 @@ const Investigations = props => {
 		setLoaded(true);
 	}, [loaded, props]);
 
+	const onSubmit = async values => {
+		console.log(values);
+	};
 	return (
-		<div className="form-block encounter">
-			<h5>Lab Requests</h5>
-			<div className="row">
-				<div className="col-sm-6">
-					<div className="form-group">
-						<label>Business Unit/Service Center</label>
+		<form onSubmit={handleSubmit(onSubmit)}>
+			<div className="form-block encounter">
+				<h5>Lab Requests</h5>
+				<div className="row">
+					<div className="col-sm-6">
+						<div className="form-group">
+							<label>Business Unit/Service Center</label>
+							<Select
+								name="service_center"
+								placeholder="Select Service Center"
+								options={serviceCenter}
+								value={{ label: 'LAB', value: 'lab' }}
+								ref={register({ name: 'service_center' })}
+								onChange={evt => {
+									setValue('service_center', String(evt.value));
+								}}
+								required
+							/>
+						</div>
+					</div>
+					<div className="form-group col-sm-6">
+						<label>Lab Categories</label>
 						<Select
-							name="service_center"
-							placeholder="Select Service Center"
-							options={serviceCenter}
-							value={{ label: 'LAB', value: 'lab' }}
-							ref={register({ name: 'service_center' })}
-							onChange={evt => {
-								setValue('service_center', String(evt.value));
-							}}
+							name="lab_categories"
+							placeholder="Select Lab Categories"
+							ref={register({ name: 'lab_categories' })}
+							options={labCatsOptions}
+							onChange={onCategoryChange}
 							required
 						/>
 					</div>
 				</div>
-				<div className="form-group col-sm-6">
-					<label>Lab Categories</label>
-					<Select
-						name="lab_categories"
-						placeholder="Select Lab Categories"
-						ref={register({ name: 'lab_categories' })}
-						options={labCatsOptions}
-						onChange={onCategoryChange}
-						required
-					/>
-				</div>
-			</div>
-			<div className="row">
-				<div className="col-sm-6">
-					<div className="form-group">
-						<label>Lab Combos</label>
-						<Select
-							name="lab_combos"
-							placeholder="Select Lab Combination"
-							isMulti
-							options={labGroupOptions}
-							ref={register({ name: 'lab_combos' })}
-							value={labCombos}
-							onChange={val => handleMultipleSelectInput('lab_combos', val)}
-							required
-						/>
+				<div className="row">
+					<div className="col-sm-6">
+						<div className="form-group">
+							<label>Lab Combos</label>
+							<Select
+								name="lab_combos"
+								placeholder="Select Lab Combination"
+								isMulti
+								options={labGroupOptions}
+								ref={register({ name: 'lab_combos' })}
+								value={labCombos}
+								onChange={val => handleMultipleSelectInput('lab_combos', val)}
+								required
+							/>
+						</div>
+					</div>
+					<div className="col-sm-6">
+						<div className="form-group">
+							<label>Lab Tests To Request</label>
+							<Select
+								name="lab_tests_torequest"
+								placeholder="Select lab tests to request"
+								isMulti
+								options={labTestOptions}
+								ref={register({ name: 'lab_test_torequest' })}
+								value={labTests}
+								onChange={val =>
+									handleMultipleSelectInput('lab_tests_torequest', val)
+								}
+								required
+							/>
+						</div>
 					</div>
 				</div>
-				<div className="col-sm-6">
-					<div className="form-group">
-						<label>Lab Tests To Request</label>
-						<Select
-							name="lab_tests_torequest"
-							placeholder="Select lab tests to request"
-							isMulti
-							options={labTestOptions}
-							ref={register({ name: 'lab_test_torequest' })}
-							value={labTests}
-							onChange={val =>
-								handleMultipleSelectInput('lab_tests_torequest', val)
-							}
-							required
-						/>
+				<div className="row">
+					<div className="col-sm-12">
+						<div className="form-group">
+							<label>
+								<input type="checkbox" className="form-control" /> Please tick
+								if urgent
+							</label>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div className="row">
-				<div className="col-sm-12">
-					<div className="form-group">
-						<label>
-							<input type="checkbox" className="form-control" /> Please tick if
-							urgent
-						</label>
+				<div className="row">
+					<div className="col-sm-12">
+						<div className="form-group">
+							<label>Preferred Specimen(s)</label>
+							<input type="text" className="form-control" />
+						</div>
 					</div>
 				</div>
-			</div>
-			<div className="row">
-				<div className="col-sm-12">
-					<div className="form-group">
-						<label>Preferred Specimen(s)</label>
-						<input type="text" className="form-control" />
+				<div className="row">
+					<div className="col-sm-12">
+						<div className="form-group">
+							<label>Lab Request Note</label>
+							<textarea className="form-control" cols="4"></textarea>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div className="row">
-				<div className="col-sm-12">
-					<div className="form-group">
-						<label>Lab Request Note</label>
-						<textarea className="form-control" cols="4"></textarea>
+				<h5 className="mt-4">Radiological Investigation</h5>
+				<div className="row">
+					<div className="col-sm-12">
+						<div className="form-group">
+							<label>Business Unit/Service Center</label>
+							<Select
+								name="service_center"
+								placeholder="Select Service Center"
+								options={servicesCategory}
+								ref={register({ name: 'service_center' })}
+								onChange={evt => handleChangeServiceCategory(evt)}
+								required
+							/>
+						</div>
 					</div>
 				</div>
-			</div>
-			<h5 className="mt-4">Radiological Investigation</h5>
-			<div className="row">
-				<div className="col-sm-12">
-					<div className="form-group">
-						<label>Business Unit/Service Center</label>
-						<Select
-							name="service_center"
-							placeholder="Select Service Center"
-							options={servicesCategory}
-							ref={register({ name: 'service_center' })}
-							onChange={evt => handleChangeServiceCategory(evt)}
-							required
-						/>
+				<div className="row">
+					<div className="col-sm-12">
+						<div className="form-group">
+							<label>Scans To Request</label>
+							<Select
+								name="service_request"
+								placeholder="Select service to request from"
+								isMulti
+								options={services}
+								ref={register({ name: 'service_request' })}
+								onChange={evt => handleChangeProcedure(evt)}
+								required
+							/>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div className="row">
-				<div className="col-sm-12">
-					<div className="form-group">
-						<label>Scans To Request</label>
-						<Select
-							name="service_request"
-							placeholder="Select service to request from"
-							isMulti
-							options={services}
-							ref={register({ name: 'service_request' })}
-							onChange={evt => handleChangeProcedure(evt)}
-							required
-						/>
+				<div className="row">
+					<div className="col-sm-12">
+						<div className="form-group">
+							<label>
+								<input type="checkbox" className="form-control" /> Please tick
+								if urgent
+							</label>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div className="row">
-				<div className="col-sm-12">
-					<div className="form-group">
-						<label>
-							<input type="checkbox" className="form-control" /> Please tick if
-							urgent
-						</label>
+				<div className="row">
+					<div className="col-sm-12">
+						<div className="form-group">
+							<label>Request Note/Reason</label>
+							<textarea className="form-control" cols="4"></textarea>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div className="row">
-				<div className="col-sm-12">
-					<div className="form-group">
-						<label>Request Note/Reason</label>
-						<textarea className="form-control" cols="4"></textarea>
-					</div>
-				</div>
-			</div>
 
-			<div className="row mt-5">
-				<div className="col-sm-12 d-flex ant-row-flex-space-between">
-					<button className="btn btn-primary" onClick={previous}>
-						Previous
-					</button>
-					<button className="btn btn-primary" onClick={next}>
-						Next
-					</button>
+				<div className="row mt-5">
+					<div className="col-sm-12 d-flex ant-row-flex-space-between">
+						<button className="btn btn-primary" onClick={previous}>
+							Previous
+						</button>
+						<button className="btn btn-primary" type="submit">
+							Next
+						</button>
+					</div>
 				</div>
 			</div>
-		</div>
+		</form>
 	);
 };
 const mapStateToProps = state => {
