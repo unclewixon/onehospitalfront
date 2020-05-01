@@ -34,50 +34,50 @@ const ProcedureRequest = props => {
 	const [loaded, setLoaded] = useState(false);
 	const [selectedOption, setSelectedOption] = useState('');
 
-	const onSubmit = async values => {
-		setSubmitting(true);
-		if (!values.service_center || !values.procedure) {
-			notifyError('Service center and Procedure are required');
-			setSubmitting(false);
-			return;
-		}
-		let requestData = [];
-		let theRequest = {};
-		values.procedure.forEach(value => {
-			requestData = [
-				...requestData,
-				{
-					service_id: value.value,
-					service_name: value.label,
-				},
-			];
-		});
-		theRequest.requestType = 'procedure';
-		theRequest.bill_now = values.bill === 'on' ? 'true' : 'false';
-		theRequest.request_note = values.request_note;
-		theRequest.patient_id = props.patient.id;
-		theRequest.primary_diagnosis = selectedOption.icd10Code;
-		theRequest.requestBody = requestData;
+	// const onSubmit = async values => {
+	// 	setSubmitting(true);
+	// 	if (!values.service_center || !values.procedure) {
+	// 		notifyError('Service center and Procedure are required');
+	// 		setSubmitting(false);
+	// 		return;
+	// 	}
+	// 	let requestData = [];
+	// 	let theRequest = {};
+	// 	values.procedure.forEach(value => {
+	// 		requestData = [
+	// 			...requestData,
+	// 			{
+	// 				service_id: value.value,
+	// 				service_name: value.label,
+	// 			},
+	// 		];
+	// 	});
+	// 	theRequest.requestType = 'procedure';
+	// 	theRequest.bill_now = values.bill === 'on' ? 'true' : 'false';
+	// 	theRequest.request_note = values.request_note;
+	// 	theRequest.patient_id = props.patient.id;
+	// 	theRequest.primary_diagnosis = selectedOption.icd10Code;
+	// 	theRequest.requestBody = requestData;
 
-		try {
-			const rs = await request(
-				`${API_URI}${patientAPI}/save-request`,
-				'POST',
-				true,
-				theRequest
-			);
+	// 	try {
+	// 		const rs = await request(
+	// 			`${API_URI}${patientAPI}/save-request`,
+	// 			'POST',
+	// 			true,
+	// 			theRequest
+	// 		);
 
-			setSubmitting(false);
-			notifySuccess('Procedure Request Saved');
-			props.history.push('/settings/roles#procedure');
-			// return  <Redirect  to="/settings/roles#procedure" />
-		} catch (e) {
-			setSubmitting(false);
-			throw new SubmissionError({
-				_error: e.message || 'could not save Procedure Request',
-			});
-		}
-	};
+	// 		setSubmitting(false);
+	// 		notifySuccess('Procedure Request Saved');
+	// 		props.history.push('/settings/roles#procedure');
+	// 		// return  <Redirect  to="/settings/roles#procedure" />
+	// 	} catch (e) {
+	// 		setSubmitting(false);
+	// 		throw new SubmissionError({
+	// 			_error: e.message || 'could not save Procedure Request',
+	// 		});
+	// 	}
+	// };
 
 	useEffect(() => {
 		if (!loaded) {
