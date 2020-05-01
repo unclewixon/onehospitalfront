@@ -22,6 +22,7 @@ import { notifyError } from '../../../services/notify';
 import { request } from '../../../services/utilities';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import _ from 'lodash';
+import DatePicker from 'react-datepicker';
 
 const PlanForm = props => {
 	const [loaded, setLoaded] = useState(false);
@@ -30,18 +31,18 @@ const PlanForm = props => {
 	const [regimens, setRegimens] = useState([]);
 	const [serviceId, setServiceId] = useState('');
 	const [genName, setGenName] = useState('');
+	const [start_time, setTime] = useState(new Date());
 	const [servicesCategory, setServicesCategory] = useState([]);
 	const dispatch = useDispatch();
+
+	const onChangeDate = date => setTime(date);
 	const {
 		previous,
 		next,
+		encounterData,
 		patient,
-		addPharmacyRequest,
-		allPatients,
-		patientsLoading,
 		loadInvCategories,
 		loadInventories,
-		categories,
 		inventories,
 	} = props;
 	const { register, handleSubmit, setValue, control, errors } = useForm({
@@ -206,8 +207,69 @@ const PlanForm = props => {
 		overflowY: 'scroll',
 	};
 
-	const onSubmit = async values => {
-		console.log(values);
+	const onSubmit = async data => {
+		console.log(data);
+
+		let regiments = data.regimens;
+		const requestData = regiments
+			? regiments.map(request => ({
+					forumalary: request.formulary,
+					drug_generic_name: request.genericName,
+					drug_name: request.drugName.value,
+					dose_quantity: request.quantity,
+					service_id: request.drugName.label,
+					refillable: {
+						number_of_refills: request && request.refills ? request.refills : 0,
+						eg: request && request.eg ? request.eg : 0,
+						frequency_type:
+							request && request.frequency ? request.frequency : '',
+						duration: request && request.duration ? request.duration : 0,
+						note: request && request.refillNote ? request.refillNote : '',
+					},
+			  }))
+			: [];
+		let pharmacyRequestsObj = {
+			requestType: 'pharmacy',
+			requestBody: requestData,
+			diagnosis: data.pharm_diagnosis,
+			prescription: '',
+			patient_id: patient.id,
+		};
+
+		let appointmentObj = {
+			appointment_date: data.appointment_date,
+			appointment_duration: data.appointment_duration,
+			appointment_desc: data.appointment_desc,
+		};
+
+		let requestDataProc = [];
+		let theRequest = {};
+		data.proc_procedure.forEach(value => {
+			requestDataProc = [
+				...requestDataProc,
+				{
+					service_id: value.value,
+					service_name: value.label,
+				},
+			];
+		});
+		theRequest.requestType = data.proc_service_center.label.toLowerCase();
+		theRequest.bill_now = data.proc_bill_now === 'on' ? 'true' : 'false';
+		theRequest.request_note = data.proc_note;
+		theRequest.patient_id = patient.id;
+		theRequest.primary_diagnosis = data.proc_diagnosis.description;
+		theRequest.requestBody = requestDataProc;
+
+		let res = {
+			treatmentPlan: data.treatmentPlan,
+			pharmacyRequests: pharmacyRequestsObj,
+			nextAppointment: appointmentObj,
+			procedureRequest: theRequest,
+		};
+
+		encounterData.plan = res;
+		props.loadEncounterData(encounterData);
+		dispatch(props.next);
 	};
 
 	return (
@@ -284,24 +346,30 @@ const PlanForm = props => {
 					</div>
 					<div className="col-sm-6">
 						<div className="form-group">
-							<label>Formulary</label>
+							<label>Diagnosis Data</label>
 							<Controller
 								as={
-									<Select
-										options={genericNameOptions}
-										placeholder="Choose a formulary"
+									<AsyncSelect
+										cacheOptions
+										value={selectedOption}
+										getOptionValue={getOptionValues}
+										getOptionLabel={getOptionLabels}
+										defaultOptions
+										loadOptions={getOptions}
+										placeholder="primary diagnosis"
 									/>
 								}
 								control={control}
 								rules={{ required: true }}
 								onChange={([selected]) => {
+									handleChangeOptions(selected);
 									return selected;
 								}}
-								name="formulary"
+								name="pharm_diagnosis"
 							/>
 							<ErrorMessage
 								errors={errors}
-								name="formulary"
+								name="service_center"
 								message="This is required"
 								as={<span className="alert alert-danger" />}
 							/>
@@ -324,6 +392,31 @@ const PlanForm = props => {
 						drug.deleted === 0 && (
 							<div className="mt-4" key={i}>
 								<div className="row">
+									<div className="col-sm-6">
+										<div className="form-group">
+											<label>Formulary</label>
+											<Controller
+												as={
+													<Select
+														options={genericNameOptions}
+														placeholder="Choose a formulary"
+													/>
+												}
+												control={control}
+												rules={{ required: true }}
+												onChange={([selected]) => {
+													return selected;
+												}}
+												name={`regimens[${drug.id}]['formulary']`}
+											/>
+											<ErrorMessage
+												errors={errors}
+												name={`regimens[${drug.id}]['formulary']`}
+												message="This is required"
+												as={<span className="alert alert-danger" />}
+											/>
+										</div>
+									</div>
 									<div className="col-sm-6">
 										<div className="form-group">
 											<label>Drug Generic Name</label>
@@ -433,11 +526,11 @@ const PlanForm = props => {
 												<div className="form-group">
 													<label>Note</label>
 													<input
-														type="number"
+														type="text"
 														placeholder="Regimen line instruction"
 														className="form-control"
 														ref={register}
-														name={`regimens[${drug.id}]['note']`}
+														name={`regimens[${drug.id}]['refillNote']`}
 													/>
 												</div>
 											</div>
@@ -457,7 +550,8 @@ const PlanForm = props => {
 											<label>
 												<input
 													type="checkbox"
-													name="refillable"
+													ref={register}
+													name={`regimens[${drug.id}]['refills']`}
 													className="form-control"
 												/>{' '}
 												Refilable?
@@ -475,6 +569,8 @@ const PlanForm = props => {
 							<label>Regimen Note</label>
 							<textarea
 								placeholder="Enter regimen note"
+								name="pharm_note"
+								ref={register}
 								className="form-control"
 								cols="3"></textarea>
 						</div>
@@ -485,10 +581,32 @@ const PlanForm = props => {
 					<div className="col-sm-6">
 						<div className="form-group">
 							<label>Appontment Date</label>
-							<input
-								type="text"
-								placeholder="Select Start Date"
-								className="form-control"
+							<Controller
+								as={
+									<DatePicker
+										selected={start_time}
+										peekNextMonth
+										showMonthDropdown
+										showYearDropdown
+										dropdownMode="select"
+										dateFormat="dd-MMM-yyyy"
+										className="single-daterange form-control"
+										placeholderText="Select Date"
+									/>
+								}
+								control={control}
+								rules={{ required: true }}
+								onChange={([selected]) => {
+									setTime(selected);
+									return selected;
+								}}
+								name="appointment_date"
+							/>
+							<ErrorMessage
+								errors={errors}
+								name="appointment_date"
+								message="This is required"
+								as={<span className="alert alert-danger" />}
 							/>
 						</div>
 					</div>
@@ -497,6 +615,8 @@ const PlanForm = props => {
 							<label>Duration</label>
 							<input
 								type="number"
+								name="appointment_duration"
+								ref={register}
 								placeholder="eg. 5"
 								className="form-control"
 							/>
@@ -542,6 +662,8 @@ const PlanForm = props => {
 							<label>Description/Reason</label>
 							<textarea
 								placeholder="Enter description"
+								name="appointment_desc"
+								ref={register}
 								className="form-control"
 								cols="3"></textarea>
 						</div>
@@ -552,13 +674,26 @@ const PlanForm = props => {
 					<div className="col-sm-12">
 						<div className="form-group">
 							<label>Business Unit/Service Center</label>
-							<Select
-								name="service_center"
-								placeholder="Select Service Center"
-								options={servicesCategory}
-								ref={register({ name: 'service_center' })}
-								onChange={evt => handleChangeServiceCategory(evt)}
-								required
+							<Controller
+								as={
+									<Select
+										placeholder="Select Service Center"
+										options={servicesCategory}
+									/>
+								}
+								control={control}
+								rules={{ required: true }}
+								onChange={([selected]) => {
+									handleChangeServiceCategory(selected);
+									return selected;
+								}}
+								name="proc_service_center"
+							/>
+							<ErrorMessage
+								errors={errors}
+								name="proc_service_center"
+								message="This is required"
+								as={<span className="alert alert-danger" />}
 							/>
 						</div>
 					</div>
@@ -567,30 +702,59 @@ const PlanForm = props => {
 					<div className="col-sm-6">
 						<div className="form-group">
 							<label>Procedure</label>
-							<Select
-								name="procedure"
-								placeholder="Select procedure"
-								isMulti
-								options={services}
-								ref={register({ name: 'procedure' })}
-								onChange={evt => handleChangeProcedure(evt)}
-								required
+							<Controller
+								as={
+									<Select
+										placeholder="Select procedure"
+										isMulti
+										options={services}
+									/>
+								}
+								control={control}
+								rules={{ required: true }}
+								onChange={([selected]) => {
+									handleChangeProcedure(selected);
+									return selected;
+								}}
+								name="proc_procedure"
+							/>
+							<ErrorMessage
+								errors={errors}
+								name="proc_procedure"
+								message="This is required"
+								as={<span className="alert alert-danger" />}
 							/>
 						</div>
 					</div>
 					<div className="col-sm-6">
 						<div className="form-group">
 							<label>Primary Diagnoses</label>
-							<AsyncSelect
-								required
-								cacheOptions
-								value={selectedOption}
-								getOptionValue={getOptionValues}
-								getOptionLabel={getOptionLabels}
-								defaultOptions
-								loadOptions={getOptions}
-								onChange={handleChangeOptions}
-								placeholder="primary diagnosis"
+
+							<Controller
+								as={
+									<AsyncSelect
+										cacheOptions
+										value={selectedOption}
+										getOptionValue={getOptionValues}
+										getOptionLabel={getOptionLabels}
+										defaultOptions
+										loadOptions={getOptions}
+										placeholder="primary diagnosis"
+									/>
+								}
+								control={control}
+								rules={{ required: true }}
+								onChange={([selected]) => {
+									handleChangeOptions(selected);
+									return selected;
+								}}
+								name="proc_diagnosis"
+							/>
+							<ErrorMessage
+								errors={errors}
+								name="proc_diagnosis"
+								message="This is required"
+								as={<span className="alert alert-danger" />}
 							/>
 						</div>
 					</div>
@@ -601,6 +765,8 @@ const PlanForm = props => {
 							<label>Request Note</label>
 							<textarea
 								placeholder="Enter note"
+								name="proc_note"
+								ref={register}
 								className="form-control"
 								cols="3"></textarea>
 						</div>
@@ -632,7 +798,13 @@ const PlanForm = props => {
 							<div className="col-sm-6">
 								<div className="form-group">
 									<label>
-										<input type="radio" className="form-control" /> Bill Now
+										<input
+											type="radio"
+											className="form-control"
+											name="proc_bill_now"
+											ref={register}
+										/>{' '}
+										Bill Now
 									</label>
 								</div>
 							</div>
@@ -665,6 +837,7 @@ const PlanForm = props => {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		categories: state.inventory.categories,
+		patient: state.user.patient,
 		inventories: state.inventory.inventories,
 		service: state.settings.services,
 		ServiceCategories: state.settings.service_categories,

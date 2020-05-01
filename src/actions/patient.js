@@ -404,6 +404,7 @@ export const addPharmacyRequest = (data, id, prescription, serviceId, cb) => {
 					},
 			  }))
 			: [];
+
 		return new Promise((resolve, reject) => {
 			request(`${API_URI}/patient/save-request`, 'POST', true, {
 				requestType: 'pharmacy',
