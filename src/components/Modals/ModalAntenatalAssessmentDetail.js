@@ -61,7 +61,7 @@ export class ModalAntenatalAssessmentDetail extends Component {
 	};
 
 	render() {
-		const { antenatal_visit } = this.props;
+		const { antenatal_visit, patient } = this.props;
 		let ant = antenatal_visit;
 		let next = JSON.parse(ant.nextAppointment).apointmentDate;
 		return (
@@ -107,21 +107,23 @@ export class ModalAntenatalAssessmentDetail extends Component {
 																			Patient Name
 																		</div>
 																	</td>
-																	{/* <td className="text-right text-capitalize">
-																<div className="value text-success">
-																	{immunize.patient_name}
-																</div>
-															</td> */}
+																	<td className="text-right text-capitalize">
+																		<div className="value text-success">
+																			{patient.surname +
+																				' ' +
+																				patient.other_names}
+																		</div>
+																	</td>
 																</tr>
 																<tr>
 																	<td>
 																		<div className="text-left">File Number</div>
 																	</td>
-																	{/* <td className="text-right">
-																<div className="value text-success">
-																	{immunize.fileNumber}
-																</div>
-															</td> */}
+																	<td className="text-right">
+																		<div className="value text-success">
+																			{patient.fileNumber}
+																		</div>
+																	</td>
 																</tr>
 															</tbody>
 														</table>
@@ -343,6 +345,7 @@ export class ModalAntenatalAssessmentDetail extends Component {
 const mapStateToProps = state => {
 	return {
 		antenatal_visit: state.general.antenatal_visit,
+		patient: state.user.patient,
 	};
 };
 
