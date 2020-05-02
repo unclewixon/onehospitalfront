@@ -1,8 +1,19 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import Tooltip from 'antd/lib/tooltip';
 import { viewAppraisal } from '../actions/general';
+
+const status = value => {
+	switch (value) {
+		case 1:
+			return <span className="badge badge-success-inverted">approved</span>;
+		case 2:
+			return <span className="badge badge-danger-inverted">pending</span>;
+		default:
+			return <span className="badge badge-warning-inverted">closing</span>;
+	}
+};
 
 class AppraisalItem extends Component {
 	doViewAppraisal = e => {
@@ -12,25 +23,40 @@ class AppraisalItem extends Component {
 	};
 
 	render() {
-		const { approved } = this.props;
+		const { approved, item, index } = this.props;
+		console.log(index);
 		return (
 			<tr>
-				<td>1</td>
-				<td>Mr Akachi</td>
-				<td>Nursing</td>
-				<td>Mrs GoGo</td>
-				<td>1st Quarter 2020 [Jan - Mar]</td>
-				<td className="text-center">
-					{approved === 1 ? (
-						<span className="badge badge-success-inverted">approved</span>
-					) : (
-						<span className="badge badge-danger-inverted">pending</span>
-					)}
-				</td>
+				<td>{index}</td>
+				<td>{item.performancePeriod}</td>
+				<td>{item.startDate}</td>
+				<td>{item.endDate}</td>
+
+				<td className="text-center">{status(item.status)}</td>
 				<td className="text-right row-actions">
-					<a onClick={this.doViewAppraisal} className="secondary" title="View Appraisal">
-						<i className="os-icon os-icon-eye" />
-					</a>
+					<Tooltip title="edit">
+						<a className="">
+							<i className="os-icon os-icon-edit-32"></i>
+						</a>
+					</Tooltip>
+
+					<Tooltip title="open">
+						<a className="">
+							<i className="os-icon os-icon-ui-15" />
+						</a>
+					</Tooltip>
+
+					<Tooltip title="view">
+						<a className="">
+							<i className="os-icon os-icon-documents-03"></i>
+						</a>
+					</Tooltip>
+
+					<Tooltip title="close">
+						<a className="danger">
+							<i className="os-icon os-icon-ui-15" />
+						</a>
+					</Tooltip>
 				</td>
 			</tr>
 		);

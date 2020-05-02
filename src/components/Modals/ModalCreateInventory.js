@@ -8,7 +8,6 @@ import {
 	request,
 	renderTextInputGroup,
 	renderSelect,
-	renderSelectWithChange,
 } from '../../services/utilities';
 import { API_URI, inventoryAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';

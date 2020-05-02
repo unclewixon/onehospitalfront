@@ -412,8 +412,8 @@ const mapStateToProps = state => {
 		LabCategories: state.settings.lab_categories,
 		LabTests: state.settings.lab_tests,
 		LabGroups: state.settings.lab_groups,
-		patient: state.user.patient,
 		LabParameters: state.settings.lab_parameters,
+		patient: state.user.patient,
 	};
 };
 

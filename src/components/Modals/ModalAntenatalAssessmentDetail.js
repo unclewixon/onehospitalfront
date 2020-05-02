@@ -1,7 +1,21 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { closeModals } from '../../actions/general';
+import moment from 'moment';
 
+const fields = [
+	'createdAt',
+	'heightOfFunds',
+	'fetalHeartRate',
+	'positionOfFetus',
+	'fetalLie',
+	'relationshipToBrim',
+	'comment',
+	'lab_request',
+	'radiology_request',
+	'pharmacy_request',
+	'nextAppointment',
+];
 export class ModalAntenatalAssessmentDetail extends Component {
 	componentDidMount() {
 		document.body.classList.add('modal-open');
@@ -47,9 +61,9 @@ export class ModalAntenatalAssessmentDetail extends Component {
 	};
 
 	render() {
-		const ant = antennatal.find(el => el.id === antenatal_id);
-		const fathersInfo = JSON.parse(ant.fathersInfo);
-		const previousPregnancy = JSON.parse(ant.previousPregnancy);
+		const { antenatal_visit, patient } = this.props;
+		let ant = antenatal_visit;
+		let next = JSON.parse(ant.nextAppointment).apointmentDate;
 		return (
 			<div
 				className="onboarding-modal modal fade animated show"
@@ -70,30 +84,57 @@ export class ModalAntenatalAssessmentDetail extends Component {
 								<div className="element-info-with-icon">
 									<div className="element-info-text">
 										<h5 className="element-inner-header">
-											Antenatal Enrolment Detail
+											Antenatal Assessment Detail
 										</h5>
 									</div>
 								</div>
 							</div>
 							<div className="row">
-								<div className="col-sm-4">
+								<div className="col-sm-12">
 									<div className="user-profile compact">
-										<div
-											className="up-head-w"
-											style={{
-												backgroundImage: require('../../assets/images/b3.jpeg'),
-											}}>
-											<div className="up-main-info">
-												<h2
-													className="up-header text-capitalize"
-													style={{ color: '#334152' }}>
-													{ant.surname} {ant.other_names}
-												</h2>
+										<div className="up-contents mb-3">
+											<div className="m-b pt-3">
+												<div className="element-wrapper">
+													<div className="element-box-tp">
+														<h6 className="element-header text-left">
+															Patient
+														</h6>
+														<table className="table table-clean">
+															<tbody>
+																<tr>
+																	<td>
+																		<div className="text-left">
+																			Patient Name
+																		</div>
+																	</td>
+																	<td className="text-right text-capitalize">
+																		<div className="value text-success">
+																			{patient.surname +
+																				' ' +
+																				patient.other_names}
+																		</div>
+																	</td>
+																</tr>
+																<tr>
+																	<td>
+																		<div className="text-left">File Number</div>
+																	</td>
+																	<td className="text-right">
+																		<div className="value text-success">
+																			{patient.fileNumber}
+																		</div>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
-								<div className="col-sm-8">
+
+								<div className="col-sm-12">
 									<div className="element-wrapper">
 										<div className="element-box">
 											<h6 className="element-header text-left">General</h6>
@@ -101,7 +142,7 @@ export class ModalAntenatalAssessmentDetail extends Component {
 												<tbody>
 													<tr>
 														<td className="font-weight-bold text-left">
-															Enrolment Date
+															Assessment Date
 														</td>
 														<td className="text-right">
 															{moment(ant.createdAt).format('DD-MM-YYYY')}
@@ -109,69 +150,189 @@ export class ModalAntenatalAssessmentDetail extends Component {
 													</tr>
 
 													<tr>
-														<td className="font-weight-bold text-left">LMP</td>
-														<td className="text-right">{ant.l_m_p}</td>
-													</tr>
-													<tr>
-														<td className="font-weight-bold text-left">EOD</td>
-														<td className="text-right">{ant.e_o_d}</td>
-													</tr>
-													<tr>
 														<td className="font-weight-bold text-left">
-															Booking Period
+															Height of Funds
 														</td>
-														<td className="text-right">{ant.bookingPeriod}</td>
-													</tr>
-													<tr>
-														<td className="font-weight-bold text-left">
-															LMP SOURCE
+														<td className="text-right">
+															{ant.heightOfFunds ? ant.heightOfFunds : ''}
 														</td>
-														<td className="text-right">{ant.lmpSource}</td>
 													</tr>
 													<tr>
 														<td className="font-weight-bold text-left">
-															Enrolment Package
+															FetalHeartRate
+														</td>
+														<td className="text-right">
+															{ant.fetalHeartRate ? ant.fetalHeartRate : ''}
+														</td>
+													</tr>
+													<tr>
+														<td className="font-weight-bold text-left">
+															Position Of Fetus
+														</td>
+														<td className="text-right">
+															{ant.positionOfFetus
+																? ant.positionOfFetus
+																: ' - '}
+														</td>
+													</tr>
+													<tr>
+														<td className="font-weight-bold text-left">
+															Fetal Lie
+														</td>
+														<td className="text-right">
+															{ant.fetalLie ? ant.fetalLie : '-'}
+														</td>
+													</tr>
+													<tr>
+														<td className="font-weight-bold text-left">
+															Relationship to brim
 														</td>
 														<td className="text-right">
 															{' '}
-															{ant.enrollmentPackage}
+															{ant.relationshipToBrim
+																? ant.relationshipToBrim
+																: '-'}
 														</td>
 													</tr>
 													<tr>
 														<td className="font-weight-bold text-left">
-															Required Care
+															Next Appointment Date
 														</td>
 														<td className="text-right">
-															{' '}
-															{Array.isArray(ant.requiredCare)
-																? ant.requiredCare.join(',')
-																: ant.requiredCare}
+															{moment(next).format('DD-MM-YYYY') +
+																' ' +
+																moment(next).format('HH:mm')}
 														</td>
 													</tr>
+													{ant.radiologyRequest.requestBody.length !== 0 ? (
+														<tr>
+															<td className="font-weight-bold text-left">
+																Radiology Request
+															</td>
+															<td className="text-right">
+																{ant.radiologyRequest.requestBody
+																	.map(el => el.specialization)
+																	.join(',')}
+															</td>
+														</tr>
+													) : null}
+													{ant.labRequest.requestBody.tests.length !== 0 ? (
+														<tr>
+															<td className="font-weight-bold text-left">
+																Lab tests request
+															</td>
+															<td className="text-right">
+																{ant.labRequest.requestBody.tests
+																	.map(el => el.specialization)
+																	.join(',')}
+															</td>
+														</tr>
+													) : null}
+													{ant.labRequest.requestBody.groups.length !== 0 ? (
+														<tr>
+															<td className="font-weight-bold text-left">
+																Lab groups request
+															</td>
+															<td className="text-right">
+																{ant.labRequest.requestBody.groups
+																	.map(el => el.specialization)
+																	.join(',')}
+															</td>
+														</tr>
+													) : null}
 												</tbody>
 											</table>
 										</div>
-
-										<div className="element-box">
-											<h6 className="element-header text-left">Father Info</h6>
-
-											<table className="table">
-												<tbody>{this.loopObject(fathersInfo)}</tbody>
-											</table>
-										</div>
-										<div className="element-box">
-											<h6 className="element-header text-left">
-												Previous Pregnancy
-											</h6>
-
-											<table className="table">
-												<tbody>{this.loopObject(previousPregnancy)}</tbody>
-											</table>
-										</div>
-
-										{this.loopHistory(ant.obstericsHistory)}
 									</div>
 								</div>
+
+								{ant.pharmacyRequest.requestBody.length !== 0 ? (
+									<div className="col-md-12">
+										<div className="element-wrapper">
+											<div className="element-box">
+												<h6 className="element-header text-left">
+													Prescription
+												</h6>
+
+												<table className="table">
+													<thead>
+														<tr>
+															<th className="text-center">Generic Name</th>
+															<th className="text-center">Drug Name</th>
+															<th className="text-center">Quantity</th>
+															<th className="text-center">No of refill</th>
+															<th className="text-center">Frequency</th>
+															<th className="text-center">Duration</th>
+															<th className="text-center">EG</th>
+															<th className="text-center">Note</th>
+														</tr>
+													</thead>
+													<tbody>
+														{ant.pharmacyRequest.requestBody ? (
+															ant.pharmacyRequest.requestBody.map(
+																(request, index) => {
+																	return (
+																		<tr key={index}>
+																			<td className="text-center">
+																				{request.genericName
+																					? request.genericName
+																					: ''}
+																			</td>
+																			<td className="text-center">
+																				{request.drugName
+																					? request.drugName
+																					: '-'}
+																			</td>
+																			<td className="text-center">
+																				{' '}
+																				{request.quantity
+																					? request.quantity
+																					: '-'}
+																			</td>
+																			<td className="text-center">
+																				{' '}
+																				{request.refills
+																					? request.refills
+																					: '-'}
+																			</td>
+																			<td className="text-center">
+																				{' '}
+																				{request.frequency
+																					? request.frequency
+																					: '-'}
+																			</td>
+																			<td className="text-center">
+																				{' '}
+																				{request.eg ? request.eg : '-'}
+																			</td>
+																			<td className="text-center">
+																				{' '}
+																				{request.duration
+																					? request.duration
+																					: '-'}
+																			</td>
+																			<td className="text-left">
+																				{' '}
+																				{request.refillNote
+																					? request.refillNote
+																					: '-'}
+																			</td>
+																		</tr>
+																	);
+																}
+															)
+														) : (
+															<tr>
+																{' '}
+																<td colSpan="8">No prescription</td>
+															</tr>
+														)}
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								) : null}
 							</div>
 						</div>
 					</div>
@@ -184,10 +345,10 @@ export class ModalAntenatalAssessmentDetail extends Component {
 const mapStateToProps = state => {
 	return {
 		antenatal_visit: state.general.antenatal_visit,
+		patient: state.user.patient,
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	closeModals
-)(ModalAntenatalAssessmentDetail);
+export default connect(mapStateToProps, { closeModals })(
+	ModalAntenatalAssessmentDetail
+);

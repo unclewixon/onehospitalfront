@@ -34,6 +34,7 @@ import ModalUploadRadiology from './ModalUploadRadiology';
 import ModalApproveTransaction from './ModalApproveTransaction';
 import ModalAntenatalDetail from './ModalAntenatalDetail';
 import ModalImmunizationDetail from './ModalImmunizationDetail';
+import ModalAntenatalAssessmentDetail from './ModalAntenatalAssessmentDetail';
 
 const ModalDialogs = ({
 	create_staff,
@@ -69,6 +70,7 @@ const ModalDialogs = ({
 	upload_radiology,
 	antenatal_detail,
 	immunization_detail,
+	antenatal_assessment_detail,
 }) => {
 	return (
 		<>
@@ -105,6 +107,7 @@ const ModalDialogs = ({
 			{upload_radiology && <ModalUploadRadiology />}
 			{antenatal_detail && <ModalAntenatalDetail />}
 			{immunization_detail && <ModalImmunizationDetail />}
+			{antenatal_assessment_detail && <ModalAntenatalAssessmentDetail />}
 		</>
 	);
 };
@@ -144,6 +147,7 @@ const mapStateToProps = (state, ownProps) => {
 		upload_radiology: state.general.upload_radiology,
 		antenatal_detail: state.general.antenatal_detail,
 		immunization_detail: state.general.immunization_detail,
+		antenatal_assessment_detail: state.general.antenatal_assessment_detail,
 	};
 };
 

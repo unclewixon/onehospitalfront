@@ -18,17 +18,42 @@ class AntennatalRequest extends Component {
 		page: 1,
 		submit: false,
 		apointmentDate: '',
-		pharmacyRequest: '',
+		pharmacyRequest: [],
 	};
 
 	nextPage = async data => {
 		if (this.state.page === 6) {
-			// this.setState(prevState => {
-			// 	return {
-			// 		...prevState,
-			// 		submitting: !prevState.submitting,
-			// 	};
-			// });
+			let scan = data.scansToRequest ? data.scansToRequest : [];
+			let scans = [];
+			if (scan.length !== 0) {
+				scans = this.props.service
+					.filter(el => el.category.id === data.serviceCenter)
+					.filter(el => scan.includes(el.name))
+					.map(el => ({ specialization: el.name, service_id: el.id }));
+			}
+
+			console.log(data.tests, data.groups, scans);
+			let grps = data.groups ? data.groups : [];
+			let tsts = data.tests ? data.tests : [];
+
+			const groups = this.props.LabGroups.filter(el =>
+				grps.includes(el.name)
+			).map(el => {
+				return {
+					specialization: el.name,
+					service_id: el.id,
+				};
+			});
+
+			const tests = this.props.LabTests.filter(el =>
+				tsts.includes(el.name)
+			).map(el => {
+				return {
+					specialization: el.name,
+					service_id: el.id,
+				};
+			});
+
 			const newAntenatal = {
 				heightOfFunds: data.heightOfFunds || '',
 				fetalHeartRate: data.fetalHeartRate || '',
@@ -38,46 +63,21 @@ class AntennatalRequest extends Component {
 				relationshipToBrim: data.relationshipToBrim || '',
 				comment: data.comment || '',
 				labRequest: {
-					requestBody: [
-						{
-							groups: [
-								{
-									specialization: '',
-									service_id: '',
-									groups: data.groups || [],
-								},
-							],
-							tests: [
-								{
-									specialization: '',
-									service_id: '',
-									tests: data.tests || [],
-								},
-							],
-							preferredSpecimen: data.preferredSpecimen || '',
-							laboratory: data.laboratory || '',
-						},
-					],
+					requestBody: {
+						groups,
+						tests,
+						preferredSpecimen: data.preferredSpecimen || '',
+						laboratory: data.laboratory || '',
+					},
 				},
 				imagingRequest: {
 					requestNote: data.requestNote || '',
-					requestBody: data.scansToRequest.map(el => {
-						return {
-							specialization: el,
-							service_id: data.serviceCenter || '',
-						};
-					}),
+					requestBody: scans,
 				},
-				pharmacyRequest: [
-					{
-						requestBody: this.state.pharmacyRequest.map(el => {
-							return {
-								...el,
-								service_id: el.drugName,
-							};
-						}),
-					},
-				],
+				pharmacyRequest: {
+					requestBody: this.state.pharmacyRequest,
+				},
+
 				nextAppointment: {
 					apointmentDate:
 						moment(this.state.apointmentDate).format('L') +
@@ -89,7 +89,6 @@ class AntennatalRequest extends Component {
 			console.log(newAntenatal);
 
 			console.dir(JSON.stringify(newAntenatal));
-
 			try {
 				const rs = await request(
 					`${API_URI}${patientAPI}/antenatal/visits`,
@@ -211,6 +210,10 @@ AntennatalRequest = reduxForm({
 const mapStateToProps = state => {
 	return {
 		patient: state.user.patient,
+		LabTests: state.settings.lab_tests,
+		LabGroups: state.settings.lab_groups,
+		ServiceCategories: state.settings.service_categories,
+		service: state.settings.services,
 	};
 };
 

@@ -1,39 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import Select from 'react-select';
-
+import { connect } from 'react-redux';
 import { ReactComponent as PlusIcon } from '../../assets/svg-icons/plus.svg';
 
 import { ReactComponent as EditIcon } from '../../assets/svg-icons/edit.svg';
 import { ReactComponent as TrashIcon } from '../../assets/svg-icons/trash.svg';
 import { ReactComponent as ViewIcon } from '../../assets/svg-icons/view.svg';
+import { loadInvCategories, loadInventories } from '../../actions/inventory';
+import { notifySuccess, notifyError } from '../../services/notify';
+import { API_URI, diagnosisAPI } from '../../services/constants';
+import { request } from '../../services/utilities';
 import { Table } from 'react-bootstrap';
-const dummyData = [
-	{ value: '', label: 'Select one', name: 'formulary' },
-	{ value: '12', label: 'Line', name: 'formulary' },
-	{ value: '13', label: 'Line2', name: 'formulary' },
-	{ value: '14', label: 'Line3', name: 'formulary' },
-];
-const dummyData1 = [
-	{ value: '', label: 'Select one', name: 'serviceUnit' },
-	{ value: '12', label: 'Line44', name: 'serviceUnit' },
-	{ value: '13', label: 'Line55', name: 'serviceUnit' },
-	{ value: '14', label: 'Line66', name: 'serviceUnit' },
-];
-
-const dummyData2 = [
-	{ value: '', label: 'Select one', name: 'genericName' },
-	{ value: '12', label: 'Line777', name: 'genericName' },
-	{ value: '13', label: 'Line888', name: 'genericName' },
-	{ value: '14', label: 'Line999', name: 'genericName' },
-];
-
-const dummyData3 = [
-	{ value: '', label: 'Select one', name: 'drugName', id: 'drug-id' },
-	{ value: '12', label: 'Line0000', name: 'drugName', id: 'drug-id' },
-	{ value: '13', label: 'Line1111', name: 'drugName', id: 'drug-id' },
-	{ value: '14', label: 'Line0101', name: 'drugName', id: 'drug-id' },
-];
+import _ from 'lodash';
 
 const defaultValues = {
 	genericName: '',
@@ -43,9 +22,15 @@ const defaultValues = {
 	frequency: '',
 	duration: '',
 	refillNote: '',
+	eg: '',
 };
 
-const ImmunizationPrescription = ({ setPrescription }) => {
+const ImmunizationPrescription = ({
+	setPrescription,
+	loadInvCategories,
+	loadInventories,
+	inventories,
+}) => {
 	const [refillable, setRefillable] = useState(false);
 	const { register, handleSubmit, setValue, reset, watch } = useForm({
 		defaultValues,
@@ -54,7 +39,7 @@ const ImmunizationPrescription = ({ setPrescription }) => {
 	const [serviceId, setServiceId] = useState('');
 	const [pharmRequest, setPharmRequest] = useState([]);
 	const [activeRequest, setActiveRequest] = useState(null);
-
+	const [genName, setGenName] = useState('');
 	const onRefillableClick = () => {
 		setRefillable(!refillable);
 	};
@@ -71,10 +56,11 @@ const ImmunizationPrescription = ({ setPrescription }) => {
 		const { name, value } = e.target;
 		setValue(name, value);
 	};
-
 	const onDrugSelection = e => {
-		onHandleSelectChange(e);
-		setServiceId(e.id);
+		setValue('drugName', e.label);
+		// setServiceId(e.value);
+		console.log(e.value);
+		setServiceId(e.value);
 	};
 	const onTrash = index => {
 		const newPharm = pharmRequest.filter((pharm, i) => index !== i);
@@ -104,6 +90,68 @@ const ImmunizationPrescription = ({ setPrescription }) => {
 		reset(defaultValues);
 	};
 
+	let drugObj = {};
+	const drugValues =
+		inventories && inventories.length
+			? inventories.map(drug => {
+					drugObj[drug.generic_name] = {
+						value: drug.id,
+						label: drug.name,
+						...drug,
+					};
+			  })
+			: [];
+
+	const genericNameOptions =
+		inventories && inventories.length
+			? inventories
+					.filter(drug => drug.generic_name !== null)
+					.map(drug => {
+						return {
+							value: drug && drug.id ? drug.id : 'nil',
+							label: drug && drug.generic_name ? drug.generic_name : 'nil',
+						};
+					})
+			: [];
+	const filteredGenericNameOptions = _.uniqBy(genericNameOptions, 'value');
+
+	const drugNameOptions =
+		genericNameOptions && genericNameOptions.length
+			? genericNameOptions
+					.filter(drug => drug.value === genName)
+					.map(drug => drugObj[drug.label])
+			: [];
+
+	const getServiceUnit = useCallback(async () => {
+		try {
+			const res = await request(`${API_URI}/inventory/categories`, 'GET', true);
+			loadInvCategories(res);
+		} catch (error) {
+			notifyError('Error fetching Service Unit');
+		}
+	}, [loadInvCategories]);
+
+	const getPharmacyItems = useCallback(
+		async id => {
+			try {
+				const res = await request(
+					`${API_URI}/inventory/stocks-by-category/52b49109-028a-46c6-b5f3-1e88a48d333f`,
+					'GET',
+					true
+				);
+				loadInventories(res);
+			} catch (error) {
+				notifyError('Erroe fetching pharmacy items');
+			}
+		},
+		[loadInventories]
+	);
+
+	useEffect(() => {
+		getServiceUnit();
+		getPharmacyItems();
+	}, [getServiceUnit, getPharmacyItems]);
+
 	return (
 		<div className="form-block w-100 px-2">
 			<div className="row">
@@ -113,12 +161,11 @@ const ImmunizationPrescription = ({ setPrescription }) => {
 						placeholder="Choose a drug generic name"
 						name="genericName"
 						ref={register({ name: 'genericName', required: true })}
-						onChange={onHandleSelectChange}
-						options={dummyData2}
-						value={{
-							label: values.genericName,
-							value: values.genericName,
+						onChange={e => {
+							setValue('genericName', e.label);
+							setGenName(e.value);
 						}}
+						options={filteredGenericNameOptions}
 						required
 					/>
 				</div>
@@ -130,12 +177,8 @@ const ImmunizationPrescription = ({ setPrescription }) => {
 						placeholder="Choose a drug name"
 						ref={register({ name: 'drugName', required: true })}
 						name="drugName"
-						options={dummyData3}
+						options={drugNameOptions}
 						onChange={e => onDrugSelection(e)}
-						value={{
-							label: values.drugName,
-							value: values.drugName,
-						}}
 					/>
 				</div>
 				<div className="form-group col-sm-6">
@@ -225,15 +268,29 @@ const ImmunizationPrescription = ({ setPrescription }) => {
 							/>
 						</div>
 						<div className="form-group col-sm-6">
-							<label>Refill Note</label>
+							<label>EG</label>
 							<input
-								type="text"
+								type="number"
 								className="form-control"
-								placeholder="Note"
+								placeholder="EG"
 								ref={register}
-								name="refillNote"
+								name="eg"
 								onChange={onHandleInputChange}
+								min="0"
 							/>
+						</div>
+						<div className="row">
+							<div className="form-group col-sm-12">
+								<label>Refill Note</label>
+								<input
+									type="text"
+									className="form-control"
+									placeholder="Note"
+									ref={register}
+									name="refillNote"
+									onChange={onHandleInputChange}
+								/>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -343,4 +400,11 @@ const ImmunizationPrescription = ({ setPrescription }) => {
 	);
 };
 
-export default ImmunizationPrescription;
+const mapStateToProps = ({ inventory }) => ({
+	categories: inventory.categories,
+	inventories: inventory.inventories,
+});
+export default connect(mapStateToProps, {
+	loadInvCategories,
+	loadInventories,
+})(ImmunizationPrescription);
