@@ -29,6 +29,7 @@ import {
 	ADD_IMMUNIZATION,
 	DELETE_IMMUNIZATION,
 	LOAD_ANTENATAL_ASSESSMENT,
+	LOAD_ENCOUNTERS,
 } from './types';
 import { request } from '../services/utilities';
 
@@ -187,6 +188,13 @@ export const loadVitals = data => {
 export const updateVitals = data => {
 	return {
 		type: UPDATE_VITALS,
+		payload: data,
+	};
+};
+
+export const loadEncounterData = data => {
+	return {
+		type: LOAD_ENCOUNTERS,
 		payload: data,
 	};
 };
@@ -396,6 +404,7 @@ export const addPharmacyRequest = (data, id, prescription, serviceId, cb) => {
 					},
 			  }))
 			: [];
+
 		return new Promise((resolve, reject) => {
 			request(`${API_URI}/patient/save-request`, 'POST', true, {
 				requestType: 'pharmacy',
