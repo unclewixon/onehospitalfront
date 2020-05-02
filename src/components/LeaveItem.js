@@ -10,7 +10,9 @@ const LeaveItem = ({
 	index,
 	showHistory,
 	modalClick,
-	rejectRequest
+	rejectRequest,
+	approveRequest,
+	deleteRequest
 }) => {
 
 	return (
@@ -32,6 +34,11 @@ const LeaveItem = ({
 						<div>
 							<span className="status-pill smaller green"></span>
 							<span>Approved</span>
+						</div>
+					) : leave.status === 2 ? (
+						<div>
+							<span className="status-pill smaller red"></span>
+							<span>Rejected</span>
 						</div>
 					) : (
 							<div>
@@ -56,7 +63,7 @@ const LeaveItem = ({
 					<Tooltip title="Approve Leave">
 						<a
 							className="mt-4"
-							onClick
+							onClick={() => approveRequest(leave)}
 						>
 							<i className="os-icon os-icon-thumbs-up" />
 						</a>
@@ -65,6 +72,14 @@ const LeaveItem = ({
 						<a
 							className="mt-4"
 							onClick={() => rejectRequest(leave)}
+						>
+							<i className="os-icon os-icon-thumbs-down" />
+						</a>
+					</Tooltip>
+					<Tooltip title="Delete Leave">
+						<a
+							className="mt-4"
+							onClick={() => deleteRequest(leave)}
 						>
 							<i className="os-icon os-icon-trash" />
 						</a>
