@@ -16,7 +16,7 @@ import { connect } from 'react-redux';
 import { API_URI, diagnosisAPI } from '../services/constants';
 import { request } from '../services/utilities';
 import AsyncSelect from 'react-select/async';
-import { loadInvCategories, loadInventories } from './../actions/inventory';
+import { loadInvCategories, loadInventories } from '../actions/inventory';
 import { Label } from 'recharts';
 import _ from 'lodash';
 

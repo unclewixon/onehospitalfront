@@ -683,6 +683,6 @@ export const antenatalAssessmentDetail = (action, data) => {
 	return dispatch => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
-		dispatch(toggleImmunizationDetail(action, data));
+		dispatch(toggleAntenatalAssessmentDetail(action, data));
 	};
 };
