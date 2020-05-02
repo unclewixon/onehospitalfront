@@ -70,7 +70,11 @@ const ProcedureRequest = props => {
 			return [];
 		}
 		let val = inputValue.toUpperCase();
-		const res = await request(`${API_URI}${diagnosisAPI}${val}`, 'GET', true);
+		const res = await request(
+			`${API_URI}${diagnosisAPI}` + 'search?q=' + val,
+			'GET',
+			true
+		);
 		return res;
 	};
 

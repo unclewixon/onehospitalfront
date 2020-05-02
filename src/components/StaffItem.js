@@ -1,13 +1,82 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 
 import { editStaff } from '../actions/general';
+import waiting from '../assets/images/waiting.gif';
+import { notifySuccess, notifyError } from '../services/notify';
+import { API_URI, socket, patientAPI } from '../services/constants';
+import { request, upload } from '../services/utilities';
+const UploadPerformanceData = ({ uploading, doUpload, hide }) => {
+	const [files, setFiles] = useState(null);
+	const [label, setLabel] = useState('');
+
+	const handleChange = e => {
+		setFiles(e.target.files[0]);
+		console.log(e.target.files[0]);
+		setLabel(e.target.files[0].name);
+	};
+	return (
+		<div
+			className="onboarding-modal fade animated show"
+			role="dialog"
+			style={{ width: '400px' }}>
+			<div className="modal-centered">
+				<div className="modal-content text-center">
+					<button onClick={hide} className="close" type="button">
+						<span className="os-icon os-icon-close"></span>
+					</button>
+					<div className="onboarding-content with-gradient">
+						<h4 className="onboarding-title">Upload Performance Indicators</h4>
+
+						<form
+							className="form-block w-100"
+							onSubmit={e => doUpload(e, files)}>
+							<div className="row my-3">
+								<div className="custom-file col-12">
+									{/* {label ? <textarea>{label}</textarea> : null} */}
+									<input
+										type="file"
+										className="custom-file-input"
+										name="file"
+										accept=".csv"
+										onChange={handleChange}
+									/>
+									<label className="custom-file-label">
+										{label.substring(0, 40) || 'Choose File(s)'}
+									</label>
+								</div>
+							</div>
+
+							<div className="row">
+								<div className="col-sm-12 text-right pr-0">
+									<button
+										className="btn btn-primary"
+										disabled={uploading}
+										type="submit">
+										{uploading ? (
+											<img src={waiting} alt="submitting" />
+										) : (
+											'upload'
+										)}
+									</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+};
 
 class StaffItem extends Component {
 	state = {
 		collapsed: true,
+		staff: null,
+		form_visible: false,
+		uploading: false,
 	};
 
 	toggle = () => {
@@ -30,9 +99,58 @@ class StaffItem extends Component {
 		console.log('disable staff');
 	};
 
+	togglePopover = req => {
+		this.setState({ staff: req, form_visible: true });
+	};
+	hide = () => {
+		this.setState({ form_visible: false });
+	};
+	// upload = req => {
+	// 	console.log(req);
+	// 	const info = { patient: req.patient, type: 'patient' };
+	// 	this.props.toggleProfile(true, info);
+	// 	this.props.uploadRadiology(true);
+	// };
+	onUpload = async (e, files) => {
+		e.preventDefault();
+		console.log(files);
+		if (!files) {
+			notifyError('You did not select any image file');
+			return;
+		}
+		this.setState({ uploading: true });
+
+		if (files) {
+			try {
+				let formData = new FormData();
+				formData.append('file', files);
+				formData.append('document_type', 'Performance Indicators');
+				// const rs = await upload(
+				// 	`${API_URI}${patientAPI}` +
+				// 		'/' +
+				// 		patient.id +
+				// 		'/upload-request-document',
+				// 	'POST',
+				// 	formData
+				// );
+				console.log(this.state.staff);
+				notifySuccess(`Performance indicator Uploaded`);
+				this.setState({ uploading: false, form_visible: false });
+				// console.log(rs);
+			} catch (error) {
+				console.log(error);
+				this.setState({ uploading: false, form_visible: false });
+				// throw new SubmissionError({
+				// 	_error: e.message || 'could not upload data',
+				// });
+
+				notifyError(e.message || 'could not upload data');
+			}
+		}
+	};
 	render() {
 		const { staff } = this.props;
-		const { collapsed } = this.state;
+		const { collapsed, form_visible, uploading } = this.state;
 		return (
 			<>
 				<tr>
@@ -67,6 +185,26 @@ class StaffItem extends Component {
 						{/* <a onClick={this.doEditStaff} className="secondary" title="Edit Staff">
 							<i className="os-icon os-icon-edit-32" />
 						</a> */}
+						<div
+							hidden={!form_visible}
+							className="element-actions"
+							style={{ position: 'absolute', right: '40px' }}>
+							<UploadPerformanceData
+								uploading={uploading}
+								doUpload={this.onUpload}
+								hide={this.hide}
+								onBackClick={this.onBackClick}
+							/>
+						</div>
+						<Tooltip title="Upload image">
+							<a
+								onClick={() => {
+									this.togglePopover(staff);
+								}}>
+								<i className="os-icon os-icon-upload-cloud" />
+							</a>
+						</Tooltip>
+
 						{staff.isActive ? (
 							<a
 								onClick={this.doDisable}

@@ -25,26 +25,6 @@ import {
 	getAllServiceCategory,
 } from '../../actions/settings';
 
-const fetal = [
-	{
-		value: 'daily',
-		label: 'daily',
-	},
-	{ value: 'weekend', label: 'weekend' },
-	{ value: 'monthly', label: 'monthly' },
-];
-
-const position = [
-	{
-		id: 'Cephalic',
-		name: 'Cephalic',
-	},
-	{
-		id: 'Breech',
-		name: 'Breech',
-	},
-];
-
 const selector = formValueSelector('antennatalAssessment');
 class RadiologicalInvestigation extends Component {
 	state = {
@@ -79,7 +59,7 @@ class RadiologicalInvestigation extends Component {
 				});
 		} else {
 			data = this.filterServiceCategory();
-			this.setState({ serviceCenter: data });
+			this.setState({ serviceCenter: data, allServices: this.props.service });
 		}
 	};
 
@@ -95,7 +75,13 @@ class RadiologicalInvestigation extends Component {
 	filterServices = id => {
 		const data = this.state.allServices
 			.filter(el => id === el.category.id)
-			.map(el => el.name);
+			.map(el => {
+				console.log({
+					name: el.name,
+					id: el.id,
+				});
+				return el.name;
+			});
 
 		console.log(data);
 		return data;

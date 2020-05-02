@@ -5,14 +5,14 @@ import { connect } from 'react-redux';
 import StaffItem from '../../components/StaffItem';
 import { createStaff } from '../../actions/general';
 import { request } from '../../services/utilities';
-import { API_URI, staffAPI } from '../../services/constants';
+import { API_URI, staffAPI, hmoAPI } from '../../services/constants';
 import { loadStaff } from '../../actions/hr';
 
 class StaffList extends Component {
 	componentDidMount() {
 		this.fetchStaffs();
 	}
-	
+
 	fetchStaffs = async () => {
 		try {
 			const rs = await request(`${API_URI}${staffAPI}`, 'GET', true);
@@ -31,8 +31,17 @@ class StaffList extends Component {
 						<div className="col-sm-12">
 							<div className="element-wrapper">
 								<div className="element-actions">
-									<a className="btn btn-primary btn-sm text-white" onClick={() => this.props.createStaff(true)}>
-										<i className="os-icon os-icon-ui-22"/>
+									<a
+										className="btn btn-success btn-sm"
+										href={`${API_URI}${hmoAPI}/download-sample`}
+										download>
+										<i className="os-icon os-icon-ui-22"></i>
+										<span>Download Sample</span>
+									</a>
+									<a
+										className="btn btn-primary btn-sm text-white"
+										onClick={() => this.props.createStaff(true)}>
+										<i className="os-icon os-icon-ui-22" />
 										<span>Create New Staff</span>
 									</a>
 								</div>
@@ -55,12 +64,7 @@ class StaffList extends Component {
 											</thead>
 											<tbody>
 												{staffs.map((staff, i) => {
-													return (
-														<StaffItem
-															key={i}
-															staff={staff}
-														/>
-													)
+													return <StaffItem key={i} staff={staff} />;
 												})}
 											</tbody>
 										</table>
@@ -78,7 +82,7 @@ class StaffList extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		staffs: state.hr.staffs,
-	}
+	};
 };
 
 export default connect(mapStateToProps, { createStaff, loadStaff })(StaffList);

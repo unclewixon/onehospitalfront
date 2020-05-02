@@ -9,7 +9,14 @@ import { API_URI, appraisalAPI } from '../../services/constants';
 
 export class Appraisal extends Component {
 	state = {
-		list: [],
+		list: [
+			{
+				performancePeriod: '1st Quarter 2020 (JAN-MAR)',
+				startDate: '2020-03-20',
+				endDate: '2020-03-31',
+				status: 0,
+			},
+		],
 	};
 
 	componentDidMount() {
@@ -33,7 +40,9 @@ export class Appraisal extends Component {
 	};
 
 	render() {
-		const { location } = this.props;
+		const { location, departments, staff } = this.props;
+		// const deptId = staff.details.department.id;
+		// const department = departments.find(d => d.id === deptId);
 		const { list } = this.state;
 
 		return (
@@ -84,27 +93,48 @@ export class Appraisal extends Component {
 											return (
 												<tr key={i}>
 													<td className="flex text-center">
-														<a className="item-title text-color">Sick Leave</a>
+														<a className="item-title text-color">
+															{appraisal.performancePeriod}
+														</a>
 													</td>
 													<td className="flex text-center">
-														<a className="item-title text-color">03-26-2013</a>
+														<a className="item-title text-color">
+															{appraisal.startDate}
+														</a>
 													</td>
 													<td className="flex text-center">
-														<a className="item-title text-color">4-2-2013</a>
+														<a className="item-title text-color">
+															{appraisal.endDate}
+														</a>
 													</td>
 
 													<td className="text-center row-actions">
-														<Tooltip title="Self">
-															<a className="secondary">
+														<Tooltip title="Self Appraisal">
+															<Link
+																className="secondary"
+																to={`${location.pathname}#self-appraisal`}>
 																<i className="os-icon os-icon-folder-plus" />
-															</a>
+															</Link>
 														</Tooltip>
 														<Tooltip title="Line Manager">
-															<a className="secondary">
+															<Link
+																className="secondary"
+																to={`${location.pathname}#line-appraisal`}>
 																<i className="os-icon os-icon-edit-32" />
-															</a>
+															</Link>
 														</Tooltip>
-														<Tooltip title="View Staff">
+
+														{/* {department.hod_id === staff.id ? (
+															<Tooltip title="Staff Appraisal">
+																<Link
+																	className="secondary"
+																	to={`${location.pathname}#staff-detail`}>
+																	<i className="os-icon os-icon-folder-plus" />
+																</Link>
+															</Tooltip>
+														) : null} */}
+
+														<Tooltip title="Staff Appraisal">
 															<Link
 																className="secondary"
 																to={`${location.pathname}#staff-detail`}>
@@ -129,6 +159,7 @@ export class Appraisal extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		staff: state.user.staff,
+		departments: state.settings.departments,
 	};
 };
 

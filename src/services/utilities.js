@@ -317,36 +317,42 @@ export const confirmAction = (action, payload, alertText, alertHead) => {
 	});
 };
 
-export const renderSelectWithChange = ({
+export const renderSelectWithDefault = ({
 	input,
 	label,
-	onChangeSubmitAction,
 	placeholder,
 	id,
+	defaultVal,
 	data,
+
 	meta: { touched, error },
-}) => (
-	<div
-		className={`form-group ${touched &&
-			(error ? 'has-error has-danger' : '')}`}>
-		<label htmlFor={id}>{label}</label>
-		<select {...input} className="form-control" onChange={onChangeSubmitAction}>
-			<option value="">{placeholder}</option>
-			{data.map((d, i) => (
-				<option key={i} value={d.id}>
-					{d.name}
-				</option>
-			))}
-		</select>
-		{touched && error && (
-			<div className="help-block form-text with-errors form-control-feedback">
-				<ul className="list-unstyled">
-					<li>{error}</li>
-				</ul>
-			</div>
-		)}
-	</div>
-);
+}) => {
+	return (
+		<div
+			className={`form-group ${touched &&
+				(error ? 'has-error has-danger' : '')}`}>
+			<label htmlFor={id}>{label}</label>
+			<select {...input} className="form-control">
+				<option value="">{placeholder}</option>
+				{data.map((d, i) => {
+					let def = d.id === defaultVal;
+					return (
+						<option key={i} value={d.id} defaultChecked={def}>
+							{d.name}
+						</option>
+					);
+				})}
+			</select>
+			{touched && error && (
+				<div className="help-block form-text with-errors form-control-feedback">
+					<ul className="list-unstyled">
+						<li>{error}</li>
+					</ul>
+				</div>
+			)}
+		</div>
+	);
+};
 
 export const renderSelect = ({
 	input,

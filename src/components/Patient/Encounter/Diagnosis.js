@@ -1,30 +1,36 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component } from 'react';
-import { renderSelect, request } from '../../../services/utilities';
+import React, { Component, useState } from 'react';
 import {
+	renderSelect,
+	renderSelectWithDefault,
+	request,
+} from '../../../services/utilities';
+import {
+	allergyCategories,
 	API_URI,
 	diagnosisAPI,
 	diagnosisType,
 } from '../../../services/constants';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
-import Select from 'antd/es/select';
+import Select from 'react-select';
 import { Field, reduxForm } from 'redux-form';
+import { connect, useDispatch } from 'react-redux';
+import { loadEncounterData } from '../../../actions/patient';
+import { useForm } from 'react-hook-form';
 
-class Diagnosis extends Component {
-	state = {
-		diagnoses: [],
-		selectedOption: '',
-	};
+let Diagnosis = props => {
+	const [selectedMultipleOption, setSelectedMultipleOption] = useState([]);
+	const [type, setType] = useState([]);
+	const { register, handleSubmit, setValue } = useForm();
+	const [comment, setComment] = useState([]);
+	const [diagnoses, setDiagnoses] = useState([]);
+	const { previous, next, encounterData } = props;
+	const dispatch = useDispatch();
 
-	getOptionValues = option => option.id;
+	const getOptionValues = option => option.id;
+	const getOptionLabels = option => option.description;
 
-	getOptionLabels = option => option.description;
-
-	handleChangeOptions = selectedOption => {
-		this.setState({ selectedOption });
-	};
-
-	getOptions = async inputValue => {
+	const getOptions = async inputValue => {
 		if (!inputValue) {
 			return [];
 		}
@@ -37,15 +43,11 @@ class Diagnosis extends Component {
 		return res;
 	};
 
-	addDiagnosis = () => {
-		const { diagnoses } = this.state;
-		this.setState({
-			diagnoses: [...diagnoses, { id: diagnoses.length, deleted: 0 }],
-		});
+	const addDiagnosis = () => {
+		setDiagnoses([...diagnoses, { id: diagnoses.length, deleted: 0 }]);
 	};
 
-	updateDiagnoses = (id, type, value) => {
-		const { diagnoses } = this.state;
+	const updateDiagnoses = (id, type, value) => {
 		const diagnosis = diagnoses.find(d => d.id === id);
 		if (diagnosis) {
 			const idx = diagnoses.findIndex(d => d.id === id);
@@ -60,21 +62,35 @@ class Diagnosis extends Component {
 		return [];
 	};
 
-	removeDiagnosis = id => () => {
-		const diagnoses = this.updateDiagnoses(id, 'deleted', 1);
-		this.setState({ diagnoses: [...diagnoses] });
+	const removeDiagnosis = id => () => {
+		const diagnoses = updateDiagnoses(id, 'deleted', 1);
+		selectedMultipleOption.splice(id, 1);
+		setDiagnoses([...diagnoses]);
 	};
 
-	render() {
-		const { diagnoses, selectedOption } = this.state;
-		const { previous, next } = this.props;
-		return (
+	const onSubmit = async values => {
+		let diagnosisToSave = [];
+		selectedMultipleOption.forEach(function(value, i) {
+			let _ToSave = [];
+			_ToSave['diagnosis'] = value.description;
+			_ToSave['type'] = type[i].value;
+			_ToSave['comment'] = comment[i];
+			diagnosisToSave = [_ToSave, ...diagnosisToSave];
+		});
+		console.log(diagnosisToSave);
+		encounterData.diagnosis = diagnosisToSave;
+		props.loadEncounterData(encounterData);
+		dispatch(props.next);
+	};
+
+	return (
+		<form onSubmit={handleSubmit(onSubmit)}>
 			<div className="form-block encounter">
 				<div className="row">
 					<div className="col-md-12">
 						<a
 							className="btn btn-success btn-sm text-white"
-							onClick={this.addDiagnosis}>
+							onClick={addDiagnosis}>
 							<i className="os-icon os-icon-plus-circle" />
 							<span>add diagnosis</span>
 						</a>
@@ -119,35 +135,47 @@ class Diagnosis extends Component {
 													<AsyncSelect
 														required
 														cacheOptions
-														value={selectedOption}
-														getOptionValue={this.getOptionValues}
-														getOptionLabel={this.getOptionLabels}
+														value={selectedMultipleOption[dia.id]}
+														getOptionValue={getOptionValues}
+														getOptionLabel={getOptionLabels}
 														defaultOptions
-														loadOptions={this.getOptions}
-														onChange={this.handleChangeOptions}
+														loadOptions={getOptions}
+														onChange={evt => {
+															selectedMultipleOption[dia.id] = evt;
+															setSelectedMultipleOption(selectedMultipleOption);
+														}}
 														placeholder="Enter the diagnosis name or ICD-10/ICPC-2 code"
 													/>
 												</div>
 											</div>
 											<div className="col-md-3">
 												<div className="form-group">
-													<Field
+													<Select
 														id="type"
 														name="type"
-														className="form-control"
-														component={renderSelect}
-														label="Select Type"
 														placeholder="Select Type"
-														data={diagnosisType}
+														options={diagnosisType}
+														ref={register({ name: 'type' })}
+														value={type[dia.id]}
+														onChange={evt => {
+															type[dia.id] = evt;
+															setType(type);
+														}}
+														required
 													/>
 												</div>
 											</div>
 											<div className="col-md-2">
 												<div className="form-group">
-													New Allergy
+													Comment
 													<input
 														type="text"
 														placeholder="Comment"
+														value={comment[dia.id]}
+														onChange={evt => {
+															comment[dia.id] = evt.target.value;
+															setComment(comment);
+														}}
 														className="form-control"
 													/>
 												</div>
@@ -157,7 +185,7 @@ class Diagnosis extends Component {
 												style={{ position: 'relative' }}>
 												<a
 													className="text-danger delete-icon"
-													onClick={this.removeDiagnosis(dia.id)}>
+													onClick={removeDiagnosis(dia.id)}>
 													<i className="os-icon os-icon-cancel-circle" />
 												</a>
 											</div>
@@ -181,18 +209,24 @@ class Diagnosis extends Component {
 						<button className="btn btn-primary" onClick={previous}>
 							Previous
 						</button>
-						<button className="btn btn-primary" onClick={next}>
+						<button className="btn btn-primary" type="submit">
 							Next
 						</button>
 					</div>
 				</div>
 			</div>
-		);
-	}
-}
+		</form>
+	);
+};
 
 Diagnosis = reduxForm({
 	form: 'create_diagnosis',
 })(Diagnosis);
 
-export default Diagnosis;
+const mapStateToProps = state => {
+	return {
+		encounterData: state.patient.encounterData,
+	};
+};
+
+export default connect(mapStateToProps, { loadEncounterData })(Diagnosis);

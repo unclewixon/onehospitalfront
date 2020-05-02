@@ -1,14 +1,30 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { renderSelect } from '../../../services/utilities';
 import { obstericHistory } from '../../../services/constants';
 import { Field, reduxForm } from 'redux-form';
 import { ObstericsHistory } from '../../Enrollment/ObstericsHistory';
+import { connect, useDispatch } from 'react-redux';
+import { loadEncounterData } from '../../../actions/patient';
+import { useForm } from 'react-hook-form';
 
-class HxForm extends Component {
-	render() {
-		const { previous, next } = this.props;
-		return (
-			<div className="form-block encounter">
+let HxForm = props => {
+	const [patientHistory, setPatientHistory] = useState('');
+	const { register, handleSubmit } = useForm();
+	const dispatch = useDispatch();
+	const { encounterData, previous, next } = props;
+
+	const handleSelection = e => {
+		setPatientHistory(e.target.value);
+	};
+	const onSubmit = async values => {
+		encounterData.patientHistory = [patientHistory];
+		props.loadEncounterData(encounterData);
+		dispatch(props.next);
+	};
+
+	return (
+		<div className="form-block encounter">
+			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className="row">
 					<div className="col-sm-12">
 						<div className="form-group">
@@ -19,6 +35,9 @@ class HxForm extends Component {
 								component={renderSelect}
 								label="Select Previous Obsteric History"
 								placeholder="Select Previous Obsteric History"
+								onChange={evt => {
+									handleSelection(evt);
+								}}
 								data={obstericHistory}
 							/>
 						</div>
@@ -27,23 +46,29 @@ class HxForm extends Component {
 
 				<div className="row mt-5">
 					<div className="col-sm-12 d-flex ant-row-flex-space-between">
-						<button className="btn btn-primary" onClick={previous}>
+						<button
+							type="button"
+							className="btn btn-primary"
+							onClick={previous}>
 							Previous
 						</button>
-						<button className="btn btn-primary" onClick={next}>
+						<button className="btn btn-primary" type="submit">
 							Next
 						</button>
 					</div>
 				</div>
-			</div>
-		);
-	}
-}
+			</form>
+		</div>
+	);
+};
 
 HxForm = reduxForm({
-	form: 'antennatal', //Form name is same
-	destroyOnUnmount: false,
-	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount,
+	form: 'create_hx',
 })(HxForm);
 
-export default HxForm;
+const mapStateToProps = state => {
+	return {
+		encounterData: state.patient.encounterData,
+	};
+};
+export default connect(mapStateToProps, { loadEncounterData })(HxForm);

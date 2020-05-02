@@ -74,12 +74,12 @@ export const planServiceCenter = [
 ];
 export const diagnosisType = [
 	{
-		id: 'Queried',
-		name: 'Queried',
+		value: 'Queried',
+		label: 'Queried',
 	},
-	{ id: 'Differential', name: 'Differential' },
-	{ id: 'Suspected', name: 'Suspected' },
-	{ id: 'Confirmed', name: 'Confirmed' },
+	{ value: 'Differential', label: 'Differential' },
+	{ value: 'Suspected', label: 'Suspected' },
+	{ value: 'Confirmed', label: 'Confirmed' },
 ];
 
 export const allergyCategories = [

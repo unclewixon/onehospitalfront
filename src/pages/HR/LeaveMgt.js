@@ -7,6 +7,7 @@ import { request } from '../../services/utilities';
 import { API_URI, leaveMgtAPI } from '../../services/constants';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
+import { confirmAction } from '../../services/utilities';
 
 class LeaveMgt extends Component {
 
@@ -43,12 +44,61 @@ class LeaveMgt extends Component {
 
 	rejectLeaveRequests = async (data) => {
 		try {
+			const res = await request(`${API_URI}/hr/leave-management/${data.id}/reject`, 'GET', true);
+			console.log(res)
+			notifySuccess('Successful rejecting leave applications')
+			this.fetchStaffLeave()
+		} catch (error) {
+			notifyError('Could not rejecting leave applications')
+		}
+	}
+
+	confirmReject = data => {
+		confirmAction(
+			this.rejectLeaveRequests, 
+			data,
+			"in rejecting leave?",
+			"Proceed?"
+		 )
+	}
+
+	approveLeaveRequests = async (data) => {
+		try {
+			const res = await request(`${API_URI}/hr/leave-management/${data.id}/approve`, 'GET', true);
+			console.log(res)
+			notifySuccess('Successful approving leave applications')
+			this.fetchStaffLeave()
+		} catch (error) {
+			notifyError('Could not approve leave applications')
+		}
+	}
+
+	confirmApprove = data => {
+		confirmAction(
+			this.approveLeaveRequests, 
+			data,
+			"continue in approving this leave application?",
+			"Are you sure?"
+		 )
+	}
+
+	deleteLeaveRequests = async (data) => {
+		try {
 			const res = await request(`${API_URI}/hr/leave-management/${data.id}`, 'DELETE', true);
 			notifySuccess('Successful removed leave applications')
 			this.fetchStaffLeave()
 		} catch (error) {
 			notifyError('Could not remove leave applications')
 		}
+	}
+
+	confirmDelete = data => {
+		confirmAction(
+			this.deleteLeaveRequests, 
+			data,
+			"in deleting this leave application?",
+			"Do you want to continue"
+		 )
 	}
 
 	render() {
@@ -119,7 +169,13 @@ class LeaveMgt extends Component {
 															}
 															index={i}
 															rejectRequest={Data => 
-																this.rejectLeaveRequests(Data)
+																this.confirmReject(Data)
+															}
+															approveRequest={Data => 
+																this.confirmApprove(Data)
+															}
+															deleteRequest={Data => 
+																this.confirmDelete(Data)
 															}
 														/>
 													)

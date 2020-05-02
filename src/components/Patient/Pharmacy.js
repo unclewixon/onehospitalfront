@@ -66,7 +66,7 @@ const Pharmacy = props => {
 							</div>
 						</div>
 						{activeRequest ? (
-							<PharmNewRequestViewModal 
+							<PharmNewRequestViewModal
 								activeRequest={activeRequest}
 								showModal={showModal}
 								onModalClick={onModalClick}

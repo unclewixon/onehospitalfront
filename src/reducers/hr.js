@@ -7,6 +7,8 @@ import {
 	ADD_STAFF,
 	LOAD_UNPAID_PAYROLL,
 	LOAD_PAYROLL_HISTORY,
+	ADD_PERFORMANCE_PERIOD,
+	LOAD_PERFORMANCE_PERIOD,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -17,6 +19,7 @@ const INITIAL_STATE = {
 	payrolls: [],
 	unpaid_payrolls: [],
 	history_payrolls: [],
+	performancePeriods: [],
 };
 
 const user = (state = INITIAL_STATE, action) => {
@@ -37,6 +40,13 @@ const user = (state = INITIAL_STATE, action) => {
 			return { ...state, unpaid_payrolls: action.payload };
 		case LOAD_PAYROLL_HISTORY:
 			return { ...state, history_payrolls: action.payload };
+		case LOAD_PERFORMANCE_PERIOD:
+			return { ...state, performancePeriods: action.payload };
+		case ADD_PERFORMANCE_PERIOD:
+			return {
+				...state,
+				performancePeriods: [...state.performancePeriods, action.payload],
+			};
 		default:
 			return state;
 	}
