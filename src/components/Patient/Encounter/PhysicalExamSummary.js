@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react';
 import SunEditor from 'suneditor-react';
 import { connect, useDispatch } from 'react-redux';
-import { loadEncounterData } from '../../../actions/patient';
+import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
 import { useForm } from 'react-hook-form';
 
 const PhysicalExamSummary = props => {
@@ -90,9 +90,11 @@ const PhysicalExamSummary = props => {
 const mapStateToProps = state => {
 	return {
 		encounterData: state.patient.encounterData,
+		encounterForm: state.patient.encounterForm,
 	};
 };
 
-export default connect(mapStateToProps, { loadEncounterData })(
-	PhysicalExamSummary
-);
+export default connect(mapStateToProps, {
+	loadEncounterData,
+	loadEncounterForm,
+})(PhysicalExamSummary);

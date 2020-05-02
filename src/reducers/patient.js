@@ -29,6 +29,7 @@ import {
 	ADD_IMMUNIZATION,
 	DELETE_IMMUNIZATION,
 	LOAD_ANTENATAL_ASSESSMENT,
+	ENCOUNTER_FORM,
 } from '../actions/types';
 import actions from 'redux-form/lib/actions';
 
@@ -51,6 +52,7 @@ const INITIAL_STATE = {
 	pharmacyRequests: [],
 	allRequests: [],
 	antennatal: [],
+	encounterForm: {},
 	encounterData: {
 		complaints: 'Presenting Complaints:',
 		reviewOfSystem: [],
@@ -106,6 +108,8 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, allergy: action.payload };
 		case LOAD_ENCOUNTERS:
 			return { ...state, encounters: [action.payload] };
+		case ENCOUNTER_FORM:
+			return { ...state, encounterForm: action.payload };
 		case UPDATE_COMPLAINT_DATA:
 			return {
 				...state,

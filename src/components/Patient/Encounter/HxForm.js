@@ -1,44 +1,111 @@
 import React, { Component, useState } from 'react';
 import { renderSelect } from '../../../services/utilities';
-import { obstericHistory } from '../../../services/constants';
 import { Field, reduxForm } from 'redux-form';
-import { ObstericsHistory } from '../../Enrollment/ObstericsHistory';
 import { connect, useDispatch } from 'react-redux';
-import { loadEncounterData } from '../../../actions/patient';
-import { useForm } from 'react-hook-form';
+import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
+import { Controller, ErrorMessage, useForm } from 'react-hook-form';
+import Select from 'react-select';
 
-let HxForm = props => {
+const obstericHistory = [
+	{
+		value: 'Family History',
+		label: 'Family History',
+	},
+	{
+		value: 'Social History',
+		label: 'Social History',
+	},
+	{
+		value: 'Gynae History',
+		label: 'Gynae History',
+	},
+	{
+		value: 'Obsteric History',
+		label: 'Obsteric History',
+	},
+	{
+		value: 'Sexual History',
+		label: 'Sexual History',
+	},
+	{
+		value: 'Gynae Pap-Mear History',
+		label: 'Gynae Pap-Mear History',
+	},
+	{
+		value: 'FGM',
+		label: 'FGM',
+	},
+	{
+		value: 'Past Ocular History',
+		label: 'Past Ocular History',
+	},
+	{
+		value: 'Antenatal General/Physical Examination',
+		label: 'Antenatal General/Physical Examination',
+	},
+	{
+		value: 'Antenatal Initial Assessment',
+		label: 'Antenatal Initial Assessment',
+	},
+
+	{
+		value: 'Antenatal Lab Observations',
+		label: 'Antenatal Lab Observations',
+	},
+	{
+		value: 'Antenatal Routine Assessments',
+		label: 'Antenatal Routine Assessments',
+	},
+];
+const HxForm = props => {
 	const [patientHistory, setPatientHistory] = useState('');
-	const { register, handleSubmit } = useForm();
-	const dispatch = useDispatch();
-	const { encounterData, previous, next } = props;
+	const { encounterData, previous, next, encounterForm } = props;
 
-	const handleSelection = e => {
-		setPatientHistory(e.target.value);
+	const defaultValues = {
+		obstericsHistory: encounterForm.patientHistory?.obstericsHistory,
 	};
+	const { register, handleSubmit, control, errors } = useForm({
+		defaultValues,
+	});
+
+	const dispatch = useDispatch();
 	const onSubmit = async values => {
+		encounterForm.patientHistory = values;
+		props.loadEncounterForm(encounterForm);
 		encounterData.patientHistory = [patientHistory];
 		props.loadEncounterData(encounterData);
 		dispatch(props.next);
 	};
+	const divStyle = {
+		height: '500px',
+	};
 
 	return (
-		<div className="form-block encounter">
+		<div className="form-block encounter" style={divStyle}>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className="row">
 					<div className="col-sm-12">
 						<div className="form-group">
-							<Field
-								id="obstericsHistory"
-								required
-								name="obstericsHistory"
-								component={renderSelect}
-								label="Select Previous Obsteric History"
-								placeholder="Select Previous Obsteric History"
-								onChange={evt => {
-									handleSelection(evt);
+							<label> Select Previous Obsteric History </label>
+							<Controller
+								as={
+									<Select
+										options={obstericHistory}
+										placeholder="Select Previous Obsteric History"
+									/>
+								}
+								control={control}
+								rules={{ required: true }}
+								onChange={([selected]) => {
+									return selected;
 								}}
-								data={obstericHistory}
+								name="obstericsHistory"
+							/>
+							<ErrorMessage
+								errors={errors}
+								name="obstericsHistory"
+								message="This is required"
+								as={<span className="alert alert-danger" />}
 							/>
 						</div>
 					</div>
@@ -62,13 +129,13 @@ let HxForm = props => {
 	);
 };
 
-HxForm = reduxForm({
-	form: 'create_hx',
-})(HxForm);
-
 const mapStateToProps = state => {
 	return {
 		encounterData: state.patient.encounterData,
+		encounterForm: state.patient.encounterForm,
 	};
 };
-export default connect(mapStateToProps, { loadEncounterData })(HxForm);
+export default connect(mapStateToProps, {
+	loadEncounterData,
+	loadEncounterForm,
+})(HxForm);

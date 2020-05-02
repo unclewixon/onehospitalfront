@@ -30,6 +30,7 @@ import {
 	DELETE_IMMUNIZATION,
 	LOAD_ANTENATAL_ASSESSMENT,
 	LOAD_ENCOUNTERS,
+	ENCOUNTER_FORM,
 } from './types';
 import { request } from '../services/utilities';
 
@@ -188,6 +189,13 @@ export const loadVitals = data => {
 export const updateVitals = data => {
 	return {
 		type: UPDATE_VITALS,
+		payload: data,
+	};
+};
+
+export const loadEncounterForm = data => {
+	return {
+		type: ENCOUNTER_FORM,
 		payload: data,
 	};
 };

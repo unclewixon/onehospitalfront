@@ -3,7 +3,7 @@ import { physicalExamination } from '../../../services/constants';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import { connect, useDispatch } from 'react-redux';
-import { loadEncounterData } from '../../../actions/patient';
+import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
 
 const PhysicalExam = props => {
 	const [selected, setSelected] = useState();
@@ -97,7 +97,11 @@ const PhysicalExam = props => {
 const mapStateToProps = state => {
 	return {
 		encounterData: state.patient.encounterData,
+		encounterForm: state.patient.encounterForm,
 	};
 };
 
-export default connect(mapStateToProps, { loadEncounterData })(PhysicalExam);
+export default connect(mapStateToProps, {
+	loadEncounterData,
+	loadEncounterForm,
+})(PhysicalExam);

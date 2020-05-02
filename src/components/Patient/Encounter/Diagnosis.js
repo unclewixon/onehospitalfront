@@ -15,7 +15,7 @@ import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import Select from 'react-select';
 import { Field, reduxForm } from 'redux-form';
 import { connect, useDispatch } from 'react-redux';
-import { loadEncounterData } from '../../../actions/patient';
+import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
 import { useForm } from 'react-hook-form';
 
 let Diagnosis = props => {
@@ -226,7 +226,11 @@ Diagnosis = reduxForm({
 const mapStateToProps = state => {
 	return {
 		encounterData: state.patient.encounterData,
+		encounterForm: state.patient.encounterForm,
 	};
 };
 
-export default connect(mapStateToProps, { loadEncounterData })(Diagnosis);
+export default connect(mapStateToProps, {
+	loadEncounterData,
+	loadEncounterForm,
+})(Diagnosis);

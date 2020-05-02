@@ -10,7 +10,11 @@ import {
 import { connect, useDispatch } from 'react-redux';
 import { uploadHmo, uploadHmoTariff } from '../../../actions/general';
 import { fetchHmoTariff, getAllHmos } from '../../../actions/hmo';
-import { createLabRequest } from '../../../actions/patient';
+import {
+	createLabRequest,
+	loadEncounterData,
+	loadEncounterForm,
+} from '../../../actions/patient';
 import {
 	get_all_services,
 	getAllLabGroups,
@@ -583,9 +587,12 @@ const mapStateToProps = state => {
 		service: state.settings.services,
 		ServiceCategories: state.settings.service_categories,
 		encounterData: state.patient.encounterData,
+		encounterForm: state.patient.encounterForm,
 	};
 };
 export default connect(mapStateToProps, {
+	loadEncounterData,
+	loadEncounterForm,
 	get_all_services,
 	getAllServiceCategory,
 	createLabRequest,
