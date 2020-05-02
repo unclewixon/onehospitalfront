@@ -6,11 +6,12 @@ import { UPDATE_COMPLAINT_DATA } from '../../../actions/types';
 import { reduxForm } from 'redux-form';
 import EnrollmentPackages from '../../Enrollment/EnrollmentPackages';
 import { socket } from '../../../services/constants';
+import { loadEncounterData } from '../../../actions/patient';
 
 const Complaints = props => {
 	const { register, handleSubmit, setValue, getValues } = useForm();
 	const [complaint, setComplaint] = useState('');
-	let { complaints, previous, next } = props;
+	let { encounterData, previous, next } = props;
 	const dispatch = useDispatch();
 
 	const handleChange = e => {
@@ -23,10 +24,9 @@ const Complaints = props => {
 	};
 
 	const onSubmit = async values => {
-		dispatch({
-			type: UPDATE_COMPLAINT_DATA,
-			payload: complaint,
-		});
+		console.log(encounterData);
+		encounterData.complaints = complaint;
+		props.loadEncounterData(encounterData);
 		dispatch(props.next);
 	};
 	return (
@@ -39,7 +39,7 @@ const Complaints = props => {
 							<SunEditor
 								width="100%"
 								placeholder="Please type here..."
-								setContents={complaints}
+								setContents={encounterData.complaints}
 								name="complaint_data"
 								ref={register}
 								autoFocus={true}
@@ -88,8 +88,8 @@ const Complaints = props => {
 
 const mapStateToProps = state => {
 	return {
-		complaints: state.patient.encounterData.complaints,
+		encounterData: state.patient.encounterData,
 	};
 };
 
-export default connect(mapStateToProps, {})(Complaints);
+export default connect(mapStateToProps, { loadEncounterData })(Complaints);
