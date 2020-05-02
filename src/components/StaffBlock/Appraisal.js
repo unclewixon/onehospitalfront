@@ -6,45 +6,53 @@ import { connect } from 'react-redux';
 
 import { request } from '../../services/utilities';
 import { API_URI, appraisalAPI } from '../../services/constants';
-
+import { loadPerformancePeriod, setPerformancePeriod } from '../../actions/hr';
 export class Appraisal extends Component {
-	state = {
-		list: [
-			{
-				performancePeriod: '1st Quarter 2020 (JAN-MAR)',
-				startDate: '2020-03-20',
-				endDate: '2020-03-31',
-				status: 0,
-			},
-		],
-	};
+	state = {};
 
 	componentDidMount() {
-		this.fetchAppraisals();
+		if (this.props.performancePeriods.length === 0) {
+			this.fetchAppraisals();
+		}
+
+		this.props.setPerformancePeriod({});
 	}
 
 	fetchAppraisals = async () => {
 		try {
-			const { staff } = this.props;
-			console.log(staff);
+			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}${appraisalAPI}/staff-assessment/${staff.id}`,
+				`${API_URI}${appraisalAPI}/list-periods`,
 				'GET',
 				true
 			);
-			console.log(rs);
-			this.setState({ list: rs });
+			this.props.loadPerformancePeriod(rs);
+
+			this.setState({ loading: false });
 		} catch (error) {
 			console.log(error);
+			this.setState({ loading: false });
 		}
 	};
 
+	createAppraisal = (item, type) => {
+		const { location, history, setPerformancePeriod } = this.props;
+		//set performance period
+
+		setPerformancePeriod(item);
+		//got to create apparaisal
+		history.push(
+			type === 'self'
+				? `${location.pathname}#create-appraisal`
+				: `${location.pathname}#line-appraisal`
+		);
+	};
 	render() {
 		const { location, departments, staff } = this.props;
 		// const deptId = staff.details.department.id;
 		// const department = departments.find(d => d.id === deptId);
-		const { list } = this.state;
-
+		const { performancePeriods } = this.props;
+		const rev = performancePeriods.slice().reverse();
 		return (
 			<div className="row">
 				<div className="col-sm-12">
@@ -89,7 +97,7 @@ export class Appraisal extends Component {
 										</tr>
 									</thead>
 									<tbody>
-										{list.map((appraisal, i) => {
+										{rev.map((appraisal, i) => {
 											return (
 												<tr key={i}>
 													<td className="flex text-center">
@@ -110,18 +118,22 @@ export class Appraisal extends Component {
 
 													<td className="text-center row-actions">
 														<Tooltip title="Self Appraisal">
-															<Link
+															<a
 																className="secondary"
-																to={`${location.pathname}#self-appraisal`}>
+																onClick={() => {
+																	this.createAppraisal(appraisal, 'self');
+																}}>
 																<i className="os-icon os-icon-folder-plus" />
-															</Link>
+															</a>
 														</Tooltip>
 														<Tooltip title="Line Manager">
-															<Link
+															<a
 																className="secondary"
-																to={`${location.pathname}#line-appraisal`}>
+																onClick={() => {
+																	this.createAppraisal(appraisal, 'line');
+																}}>
 																<i className="os-icon os-icon-edit-32" />
-															</Link>
+															</a>
 														</Tooltip>
 
 														{/* {department.hod_id === staff.id ? (
@@ -160,7 +172,13 @@ const mapStateToProps = (state, ownProps) => {
 	return {
 		staff: state.user.staff,
 		departments: state.settings.departments,
+		performancePeriods: state.hr.performancePeriods,
 	};
 };
 
-export default withRouter(connect(mapStateToProps)(Appraisal));
+export default withRouter(
+	connect(mapStateToProps, {
+		loadPerformancePeriod,
+		setPerformancePeriod,
+	})(Appraisal)
+);

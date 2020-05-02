@@ -21,6 +21,7 @@ import {
 import { API_URI, appraisalAPI } from '../../services/constants';
 import { notifySuccess, notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
+// import { loadPerformancePeriod, setPerformancePeriod } from '../../actions/hr';
 
 const validate = values => {
 	const errors = {};
@@ -196,7 +197,7 @@ class CreateAppraisal extends Component {
 	};
 
 	render() {
-		const { location, staff, error, handleSubmit } = this.props;
+		const { location, staff, error, handleSubmit, period } = this.props;
 		const { submitting } = this.state;
 
 		return (
@@ -229,7 +230,8 @@ class CreateAppraisal extends Component {
 											<tr>
 												<th className="text-left">Management Period</th>
 												<td className="text-right text-uppercase">
-													{getPeriod()}
+													{/* {getPeriod()} */}
+													{period.performancePeriod}
 												</td>
 											</tr>
 										</tbody>
@@ -398,6 +400,7 @@ const mapStateToProps = (state, ownProps) => {
 		work_attitude: parseInt(_workAttitude, 10),
 		other_factor: parseInt(_otherFactor, 10),
 		departments: state.settings.departments,
+		period: state.hr.performancePeriod,
 	};
 };
 
