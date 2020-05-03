@@ -10,6 +10,7 @@ import { API_URI, patientAPI } from '../../services/constants';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadAntenatalAssessment } from '../../actions/patient';
 import { antenatalAssessmentDetail } from '../../actions/general';
+import moment from 'moment';
 
 class Antennatal extends Component {
 	state = {
@@ -71,11 +72,11 @@ class Antennatal extends Component {
 										<thead>
 											<tr>
 												<th className="text-center">Request Date</th>
-												<th className="text-center">Height of Fundus</th>
-												<th className="text-center">Fetal heart rate</th>
+												<th className="text-center">Height of Fundus(cm)</th>
+												<th className="text-center">Fetal heart rate(cm)</th>
 												<th className="text-center">Position of Fetal</th>
 												<th className="text-center">Relationship to Brim</th>
-												<th className="text-center">Presentation</th>
+												<th className="text-center">Fetal lie</th>
 												<th className="text-center">Actions</th>
 											</tr>
 										</thead>
@@ -92,13 +93,31 @@ class Antennatal extends Component {
 														antenatal.map((item, i) => {
 															return (
 																<tr className="" data-index="0" data-id="20">
-																	<td className="text-center"></td>
-																	<td className="text-center"></td>
-																	<td className="text-center"></td>
-																	<td className="text-center"></td>
-																	<td className="text-center"></td>
-																	<td className="text-center"></td>
-																	<td className="text-center"></td>
+																	<td className="text-center">
+																		{moment(item.createdAt).format(
+																			'DD-MM-YYYY'
+																		)}
+																	</td>
+																	<td className="text-center">
+																		{item.heightOfFunds}
+																	</td>
+																	<td className="text-center">
+																		{item.fetalHeartRate}
+																	</td>
+																	<td className="text-center">
+																		{item.positionOfFetus
+																			? item.positionOfFetus
+																			: '-'}
+																	</td>
+																	<td className="text-center">
+																		{item.relationshipToBrim
+																			? item.relationshipToBrim
+																			: '-'}
+																	</td>
+																	<td className="text-center">
+																		{' '}
+																		{item.fetalLie ? item.fetalLie : '-'}
+																	</td>
 																	<td className="row-actions text-right">
 																		<Tooltip title="View Request">
 																			<a

@@ -126,7 +126,7 @@ const UploadInventory = ({ onHide, uploading, doUpload, categories }) => {
 													uploadAttachment.click();
 												}}>
 												<i className="os-icon os-icon-ui-51" />
-												<span>{ files ? files[0].name : "Select File"}</span>
+												<span>{files ? files[0].name : 'Select File'}</span>
 											</a>
 										</div>
 									</div>
@@ -184,7 +184,10 @@ class InventoryList extends Component {
 				let formData = new FormData();
 				formData.append('file', file);
 				formData.append('category_id', category_id);
-				const rs = await axios.post(`${API_URI}${inventoryUploadAPI}`, formData)
+				const rs = await axios.post(
+					`${API_URI}${inventoryUploadAPI}`,
+					formData
+				);
 				const cat = categories.find(d => d.id === category_id);
 				this.fetchInventories();
 				notifySuccess(`Inventory uploaded for ${cat ? cat.name : ''} Category`);

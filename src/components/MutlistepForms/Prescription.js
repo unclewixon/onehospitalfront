@@ -1,229 +1,21 @@
-// import React, { Component } from 'react';
-// import { validate } from '../../services/validationSchemas';
-// import {
-// 	renderTextInput,
-// 	renderSelect,
-// 	renderTextArea,
-// } from '../../services/utilities';
-// import { Field, reduxForm } from 'redux-form';
-
-// const fetal = [
-// 	{
-// 		id: 'Phma',
-// 		label: 'daily',
-// 	},
-// ];
-// class Prescription extends Component {
-// 	render() {
-// 		const { handleSubmit, previousPage, error, page } = this.props;
-// 		return (
-// 			<>
-// 				<h6 className="element-header">Step {page}. Prescription</h6>
-// 				<div className="form-block">
-// 					<form onSubmit={handleSubmit}>
-// 						{error && (
-// 							<div
-// 								className="alert alert-danger"
-// 								dangerouslySetInnerHTML={{
-// 									__html: `<strong>Error!</strong> ${error}`,
-// 								}}
-// 							/>
-// 						)}
-// 						<div className="row">
-// 							<div className="col-sm-6">
-// 								<Field
-// 									id="serviceUnit"
-// 									name="serviceUnit"
-// 									value="Pharmacy"
-// 									component={renderTextInput}
-// 									label="Select Service Unit"
-// 									placeholder="Select Service Unit"
-// 									data={fetal}
-// 									readOnly
-// 								/>
-// 							</div>
-// 							<div className="col-sm-6">
-// 								<Field
-// 									id="formulary"
-// 									name="formulary"
-// 									component={renderSelect}
-// 									label="Select Formulary"
-// 									placeholder="Select Formulary"
-// 									data={fetal}
-// 								/>
-// 							</div>
-// 						</div>
-
-// 						<div className="row">
-// 							<div className="col-sm-6">
-// 								<Field
-// 									id="drug_generic_name"
-// 									name="drug_generic_name"
-// 									component={renderSelect}
-// 									label="Select Drug generic name"
-// 									placeholder="Select drug generic name"
-// 									data={fetal}
-// 								/>
-// 							</div>
-
-// 							<div className="col-sm-6">
-// 								<Field
-// 									id="drug_name"
-// 									name="drug_name"
-// 									component={renderSelect}
-// 									label="Select Drug name"
-// 									placeholder="Select drug name"
-// 									data={fetal}
-// 								/>
-// 							</div>
-// 						</div>
-
-// 						<div className="row">
-// 							<div className="col-sm-6">
-// 								<Field
-// 									id="frequency"
-// 									name="frequency"
-// 									component={renderTextInput}
-// 									label="Specify Frequency"
-// 									placeholder="specify frequency"
-// 									data={fetal}
-// 								/>
-// 							</div>
-
-// 							<div className="col-sm-6">
-// 								<Field
-// 									id="frequency_type"
-// 									name="frequency_type"
-// 									component={renderSelect}
-// 									label="Select frequency type"
-// 									placeholder="Select frequency type"
-// 									data={fetal}
-// 								/>
-// 							</div>
-// 						</div>
-
-// 						<div className="row">
-// 							<div className="col-sm-6">
-// 								<Field
-// 									id="dose"
-// 									name="dose"
-// 									component={renderTextInput}
-// 									label="Specify Dose"
-// 									placeholder="specify dose"
-// 									data={fetal}
-// 								/>
-// 							</div>
-
-// 							<div className="col-sm-6">
-// 								<Field
-// 									id="duration"
-// 									name="duration"
-// 									component={renderTextInput}
-// 									label="Specify Duration"
-// 									placeholder="specify duration"
-// 									data={fetal}
-// 								/>
-// 							</div>
-// 						</div>
-// 						<div className="row">
-// 							<div className="col-sm-12">
-// 								<Field
-// 									id="note"
-// 									name="note"
-// 									component={renderTextArea}
-// 									label="Specify note"
-// 									placeholder="specify note"
-// 									data={fetal}
-// 								/>
-// 							</div>
-// 						</div>
-
-// 						<div className="row">
-// 							<div className="d-flex col-sm-12">
-// 								<Field
-// 									id="refillable"
-// 									name="refillable"
-// 									component={renderTextInput}
-// 									type="checkbox"
-// 								/>
-// 								<label className="ml-2" style={{ marginTop: '-2px' }}>
-// 									Refillable
-// 								</label>
-// 							</div>
-// 						</div>
-
-// 						<div className="row">
-// 							<div className="col-sm-12">
-// 								<Field
-// 									id="regimen_note"
-// 									name="regimen_note"
-// 									component={renderTextArea}
-// 									label="Write regimen note"
-// 									placeholder="write regimen note"
-// 									data={fetal}
-// 								/>
-// 							</div>
-// 						</div>
-
-// 						<div className="row">
-// 							<div className="col-sm-12 text-right">
-// 								<button
-// 									className="btn btn-primary"
-// 									type="button"
-// 									onClick={previousPage}>
-// 									Previous
-// 								</button>
-// 								<button className="btn btn-primary" type="submit">
-// 									Next
-// 								</button>
-// 							</div>
-// 						</div>
-// 					</form>
-// 				</div>
-// 			</>
-// 		);
-// 	}
-// }
-// Prescription = reduxForm({
-// 	form: 'antennatalAssessment', //Form name is same
-// 	destroyOnUnmount: false,
-// 	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
-// 	validate,
-// })(Prescription);
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import Select from 'react-select';
-
+import { connect } from 'react-redux';
 import { ReactComponent as PlusIcon } from '../../assets/svg-icons/plus.svg';
 
 import { ReactComponent as EditIcon } from '../../assets/svg-icons/edit.svg';
 import { ReactComponent as TrashIcon } from '../../assets/svg-icons/trash.svg';
 import { ReactComponent as ViewIcon } from '../../assets/svg-icons/view.svg';
 import { Table } from 'react-bootstrap';
+import { loadInvCategories, loadInventories } from '../../actions/inventory';
 import { notifySuccess, notifyError } from '../../services/notify';
-const dummyData = [
-	{ value: '', label: 'Select one', name: 'formulary' },
-	{ value: '12', label: 'Line', name: 'formulary' },
-	{ value: '13', label: 'Line2', name: 'formulary' },
-	{ value: '14', label: 'Line3', name: 'formulary' },
-];
+import { API_URI, diagnosisAPI } from '../../services/constants';
+import { request } from '../../services/utilities';
+import _ from 'lodash';
+
 const dummyData1 = [
 	{ value: 'Pharmacy', label: 'Pharmacy', name: 'serviceUnit' },
-];
-
-const dummyData2 = [
-	{ value: '', label: 'Select one', name: 'genericName' },
-	{ value: '12', label: 'Line777', name: 'genericName' },
-	{ value: '13', label: 'Line888', name: 'genericName' },
-	{ value: '14', label: 'Line999', name: 'genericName' },
-];
-
-const dummyData3 = [
-	{ value: '', label: 'Select one', name: 'drugName', id: 'drug-id' },
-	{ value: '12', label: 'Line0000', name: 'drugName', id: 'drug-id' },
-	{ value: '13', label: 'Line1111', name: 'drugName', id: 'drug-id' },
-	{ value: '14', label: 'Line0101', name: 'drugName', id: 'drug-id' },
 ];
 
 const frequencyType = [
@@ -249,8 +41,10 @@ const defaultValues = {
 	refills: '',
 	frequency: '',
 	frequencyType: '',
+	eg: '',
 	duration: '',
 	refillNote: '',
+	serviceUnit: 'Pharmacy',
 };
 
 const Prescription = ({
@@ -258,7 +52,11 @@ const Prescription = ({
 	onSubmit,
 	pharmacyRequest,
 	previousPage,
+	loadInvCategories,
+	loadInventories,
 	page,
+	categories,
+	inventories,
 }) => {
 	const [refillable, setRefillable] = useState(false);
 	const { register, handleSubmit, setValue, reset, watch } = useForm({
@@ -268,6 +66,7 @@ const Prescription = ({
 	const [serviceId, setServiceId] = useState('');
 	const [pharmRequest, setPharmRequest] = useState(pharmacyRequest);
 	const [activeRequest, setActiveRequest] = useState(null);
+	const [genName, setGenName] = useState('');
 
 	const onRefillableClick = () => {
 		setRefillable(!refillable);
@@ -286,9 +85,16 @@ const Prescription = ({
 		setValue(name, value);
 	};
 
+	// const onDrugSelection = e => {
+	// 	onHandleSelectChange(e);
+	// 	setServiceId(e.id);
+	// };
+
 	const onDrugSelection = e => {
-		onHandleSelectChange(e);
-		setServiceId(e.id);
+		setValue('drugName', e.label);
+		// setServiceId(e.value);
+		console.log(e.value);
+		setServiceId(e.value);
 	};
 	const onTrash = index => {
 		const newPharm = pharmRequest.filter((pharm, i) => index !== i);
@@ -308,8 +114,11 @@ const Prescription = ({
 	const onFormSubmit = (data, e) => {
 		e.preventDefault();
 		const { diagnosis, ...rest } = data;
-
-		let newPharm = [...pharmRequest, rest];
+		let req = {
+			service_id: serviceId,
+			...rest,
+		};
+		let newPharm = [...pharmRequest, req];
 		console.log(data);
 
 		setPharmRequest(newPharm);
@@ -317,6 +126,68 @@ const Prescription = ({
 		setEditing(false);
 		reset(defaultValues);
 	};
+
+	let drugObj = {};
+	const drugValues =
+		inventories && inventories.length
+			? inventories.map(drug => {
+					drugObj[drug.generic_name] = {
+						value: drug.id,
+						label: drug.name,
+						...drug,
+					};
+			  })
+			: [];
+
+	const genericNameOptions =
+		inventories && inventories.length
+			? inventories
+					.filter(drug => drug.generic_name !== null)
+					.map(drug => {
+						return {
+							value: drug && drug.id ? drug.id : 'nil',
+							label: drug && drug.generic_name ? drug.generic_name : 'nil',
+						};
+					})
+			: [];
+	const filteredGenericNameOptions = _.uniqBy(genericNameOptions, 'value');
+
+	const drugNameOptions =
+		genericNameOptions && genericNameOptions.length
+			? genericNameOptions
+					.filter(drug => drug.value === genName)
+					.map(drug => drugObj[drug.label])
+			: [];
+
+	const getServiceUnit = useCallback(async () => {
+		try {
+			const res = await request(`${API_URI}/inventory/categories`, 'GET', true);
+			loadInvCategories(res);
+		} catch (error) {
+			notifyError('Error fetching Service Unit');
+		}
+	}, [loadInvCategories]);
+
+	const getPharmacyItems = useCallback(
+		async id => {
+			try {
+				const res = await request(
+					`${API_URI}/inventory/stocks-by-category/52b49109-028a-46c6-b5f3-1e88a48d333f`,
+					'GET',
+					true
+				);
+				loadInventories(res);
+			} catch (error) {
+				notifyError('Erroe fetching pharmacy items');
+			}
+		},
+		[loadInventories]
+	);
+
+	useEffect(() => {
+		getServiceUnit();
+		getPharmacyItems();
+	}, [getServiceUnit, getPharmacyItems]);
 
 	return (
 		<div className="form-block w-100 px-2">
@@ -339,12 +210,8 @@ const Prescription = ({
 						placeholder="Choose a formulary"
 						name="formulary"
 						ref={register({ name: 'formulary', required: true })}
-						onChange={onHandleSelectChange}
-						options={dummyData}
-						value={{
-							label: values.formulary,
-							value: values.formulary,
-						}}
+						onChange={e => setValue('formulary', e.label)}
+						options={genericNameOptions}
 					/>
 				</div>
 			</div>
@@ -355,12 +222,12 @@ const Prescription = ({
 						placeholder="Choose a drug generic name"
 						name="genericName"
 						ref={register({ name: 'genericName', required: true })}
-						onChange={onHandleSelectChange}
-						options={dummyData2}
-						value={{
-							label: values.genericName,
-							value: values.genericName,
+						onChange={e => {
+							setValue('genericName', e.label);
+							console.log(e.value);
+							setGenName(e.value);
 						}}
+						options={filteredGenericNameOptions}
 						required
 					/>
 				</div>
@@ -372,12 +239,8 @@ const Prescription = ({
 						placeholder="Choose a drug name"
 						ref={register({ name: 'drugName', required: true })}
 						name="drugName"
-						options={dummyData3}
+						options={drugNameOptions}
 						onChange={e => onDrugSelection(e)}
-						value={{
-							label: values.drugName,
-							value: values.drugName,
-						}}
 					/>
 				</div>
 				<div className="form-group col-sm-6">
@@ -423,6 +286,20 @@ const Prescription = ({
 							/>
 						</div>
 						<div className="form-group col-sm-6">
+							<label>EG</label>
+							<input
+								type="number"
+								className="form-control"
+								placeholder="EG"
+								ref={register}
+								name="eg"
+								onChange={onHandleInputChange}
+								min="0"
+							/>
+						</div>
+					</div>
+					<div className="row">
+						<div className="form-group col-sm-6">
 							<label>Frequency</label>
 							<input
 								type="text"
@@ -433,8 +310,6 @@ const Prescription = ({
 								onChange={onHandleInputChange}
 							/>
 						</div>
-					</div>
-					<div className="row">
 						<div className="form-group col-sm-6">
 							<label>Frequency Type</label>
 							<Select
@@ -450,6 +325,9 @@ const Prescription = ({
 								required
 							/>
 						</div>
+					</div>
+
+					<div className="row">
 						<div className="form-group col-sm-6">
 							<label>Duration</label>
 							<input
@@ -463,10 +341,7 @@ const Prescription = ({
 								onChange={onHandleInputChange}
 							/>
 						</div>
-					</div>
-
-					<div className="row">
-						<div className="form-group col-sm-12">
+						<div className="form-group col-sm-6">
 							<label>Refill Note</label>
 							<input
 								type="text"
@@ -602,4 +477,12 @@ const Prescription = ({
 	);
 };
 
-export default Prescription;
+const mapStateToProps = ({ inventory }) => ({
+	categories: inventory.categories,
+	inventories: inventory.inventories,
+});
+
+export default connect(mapStateToProps, {
+	loadInvCategories,
+	loadInventories,
+})(Prescription);

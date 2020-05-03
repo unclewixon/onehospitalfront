@@ -1,20 +1,39 @@
 import React, { Component, useState } from 'react';
 import { reviewOfSystem } from '../../../services/constants';
 import Select from 'react-select';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
+import { loadEncounterData } from '../../../actions/patient';
 
 const ReviewOfSystem = props => {
 	const [selected, setSelected] = useState();
+	const [selectedOption, setSelectedOption] = useState([]);
 	const { register, handleSubmit } = useForm();
-	const { storedData, previous, next } = props;
+	const { encounterData, previous, next } = props;
+	const dispatch = useDispatch();
 
 	const handleChange = e => {
 		setSelected(e);
 	};
 
 	const handleSelection = e => {
-		console.log(e.target.value);
+		console.log(e.target.checked);
+		selectedOption.forEach(function(value, i) {
+			if (value === e.target.value) {
+				selectedOption.splice(i, 1);
+			}
+		});
+		if (e.target.checked) {
+			setSelectedOption([...selectedOption, e.target.value]);
+		}
+
+		console.log(e);
+	};
+
+	const onSubmit = async values => {
+		encounterData.reviewOfSystem = selectedOption;
+		props.loadEncounterData(encounterData);
+		dispatch(props.next);
 	};
 
 	const divStyle = {
@@ -22,7 +41,7 @@ const ReviewOfSystem = props => {
 	};
 	return (
 		<div className="form-block encounter" style={divStyle}>
-			<form onSubmit={handleSubmit(next)}>
+			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className="row">
 					<div className="col-sm-12">
 						<div className="form-group">
@@ -79,8 +98,8 @@ const ReviewOfSystem = props => {
 
 const mapStateToProps = state => {
 	return {
-		storedData: state.patient.encounterData.reviewOfSystem,
+		encounterData: state.patient.encounterData,
 	};
 };
 
-export default connect(mapStateToProps, {})(ReviewOfSystem);
+export default connect(mapStateToProps, { loadEncounterData })(ReviewOfSystem);
