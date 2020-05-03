@@ -40,30 +40,38 @@ const Allergies = props => {
 	} = props;
 
 	let [data, setData] = useState([]);
+	const defaultValues = {
+		allForm: encounterForm.allergies?.allForm || [],
+	};
+	console.log(defaultValues.allForm);
+	const {
+		register,
+		handleSubmit,
+		setValue,
+		getValues,
+		control,
+		errors,
+		watch,
+	} = useForm({
+		defaultValues,
+	});
+
+	useEffect(() => {
+		if (defaultValues?.allForm?.length > 0) {
+			defaultValues.allForm.map((item, index) => {
+				data = [...data, { id: index }];
+			});
+			setData(data);
+		}
+	}, [defaultValues?.allForm]);
+
 	const append = () => {
 		setData([...data, { id: data.length }]);
 	};
 	const remove = index => {
 		setData([...data.slice(0, index), ...data.slice(index + 1)]);
 	};
-	const defaultValues = {
-		category: encounterForm.allergies?.category,
-		allergy: encounterForm.allergies?.allergy,
-		reaction: encounterForm.allergies?.reaction,
-		severity: encounterForm.allergies?.severity,
-	};
 
-	const { register, handleSubmit, setValue, control, errors } = useForm({
-		defaultValues,
-	});
-	useEffect(() => {
-		if (defaultValues?.category?.length > 0) {
-			defaultValues.category.map((item, index) => {
-				data = [...data, { id: index }];
-			});
-			setData(data);
-		}
-	}, []);
 	const fetchAllergies = async () => {
 		setLoaded(true);
 		setQueried(true);
@@ -73,29 +81,28 @@ const Allergies = props => {
 				'GET',
 				true
 			);
-			rs.map((value, i) => {
-				const theID = data.length;
-				setData([...data, { id: theID }]);
-				console.log(encounterForm);
 
-				let allergiesForm = [];
-				allergiesForm.allergy = [];
-				allergiesForm.allergy.splice(theID, 0, value.allergy);
-				allergiesForm.reaction = [];
-				allergiesForm.reaction.splice(theID, 0, value.reaction);
-				allergiesForm.category = [];
-				allergiesForm.category.splice(theID, 0, {
-					value: value.category,
-					label: value.category,
-				});
-				allergiesForm.severity = [];
-				allergiesForm.severity.splice(theID, 0, {
-					value: value.severity,
-					label: value.severity,
-				});
-				console.log(allergiesForm.severity);
-				setValue('severity', allergiesForm.severity);
+			let newForm = getValues({ nest: true })['allForm'] || [];
+			rs.map((value, i) => {
+				data = [...data, { id: data.length }];
+				newForm = [
+					...newForm,
+					{
+						category: {
+							value: value.category,
+							label: value.category,
+						},
+						severity: {
+							value: value.severity,
+							label: value.severity,
+						},
+						allergy: value.allergy,
+						reaction: value.reaction,
+					},
+				];
 			});
+			setData(data);
+			setValue('allForm', newForm);
 			setLoaded(false);
 		} catch (error) {
 			console.log(error);
@@ -110,27 +117,12 @@ const Allergies = props => {
 		}
 	};
 	const onSubmit = async values => {
-		let category = values.category;
-		let allergyField = values.allergy;
-		let reaction = values.reaction;
-		let severityField = values.severity;
-
-		let allergiesToSave = [];
-		category.forEach(function(value, i) {
-			let _ToSave = [];
-			_ToSave['category'] = value.label;
-			_ToSave['allergen'] = allergyField[i];
-			_ToSave['reaction'] = reaction[i];
-			_ToSave['severity'] = severityField[i].label;
-			allergiesToSave = [...allergiesToSave, _ToSave];
-		});
-
-		console.log(allergiesToSave, values);
+		console.log(values);
 		encounterForm.allergies = values;
 		props.loadEncounterForm(encounterForm);
-		encounterData.allergies = allergiesToSave;
+		encounterData.allergies = values.allForm;
 		props.loadEncounterData(encounterData);
-		//dispatch(props.next);
+		dispatch(props.next);
 	};
 
 	const divStyle = {
@@ -162,14 +154,14 @@ const Allergies = props => {
 					<>
 						<div className="row">
 							<div className="col-sm-6">
-								{data.map((allergy, i) => {
+								{data.map((form, index) => {
 									return (
-										<div className="mt-4" key={i}>
+										<div className="mt-4" key={index}>
 											<div className="row">
 												<div className="col-md-12">
 													<a
 														className="text-danger"
-														onClick={() => remove(allergy.id)}
+														onClick={() => remove(form.id)}
 														style={{ lineHeight: '78px' }}>
 														<i className="os-icon os-icon-cancel-circle" />{' '}
 														remove allergen
@@ -196,11 +188,11 @@ const Allergies = props => {
 															onChange={([selected]) => {
 																return selected;
 															}}
-															name={`category[${allergy.id}]`}
+															name={`allForm[${form.id}].category`}
 														/>
 														<ErrorMessage
 															errors={errors}
-															name={`category[${allergy.id}]`}
+															name={`allForm[${form.id}].category`}
 															message="This is required"
 															as={<span className="alert alert-danger" />}
 														/>
@@ -216,12 +208,7 @@ const Allergies = props => {
 															placeholder="Allergy"
 															type="text"
 															ref={register}
-															name={`allergy[${allergy.id}]`}
-															// value={allergyField[allergy.id]}
-															// onChange={evt => {
-															// 	allergyField[allergy.id] = evt.target.value;
-															// 	setAllergy(allergyField);
-															// }}
+															name={`allForm[${form.id}].allergy`}
 														/>
 													</div>
 												</div>
@@ -233,12 +220,7 @@ const Allergies = props => {
 														<input
 															type="text"
 															ref={register}
-															name={`reaction[${allergy.id}]`}
-															//value={reaction[allergy.id]}
-															// onChange={evt => {
-															// 	reaction[allergy.id] = evt.target.value;
-															// 	setReaction(reaction);
-															// }}
+															name={`allForm[${form.id}].reaction`}
 															placeholder="Reaction"
 															className="form-control"
 														/>
@@ -255,10 +237,6 @@ const Allergies = props => {
 																<Select
 																	placeholder="Select severity"
 																	options={severity}
-																	// onChange={evt => {
-																	// 	severityField[allergy.id] = evt;
-																	// 	setSeverity(severityField);
-																	// }}
 																/>
 															}
 															control={control}
@@ -266,11 +244,11 @@ const Allergies = props => {
 															onChange={([selected]) => {
 																return selected;
 															}}
-															name={`severity[${allergy.id}]`}
+															name={`allForm[${form.id}].severity`}
 														/>
 														<ErrorMessage
 															errors={errors}
-															name={`severity[${allergy.id}]`}
+															name={`allForm[${form.id}].severity`}
 															message="This is required"
 															as={<span className="alert alert-danger" />}
 														/>

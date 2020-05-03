@@ -1,40 +1,45 @@
-import React, { Component, useState } from 'react';
-import { physicalExamination } from '../../../services/constants';
+import React, { Component, useEffect, useState } from 'react';
+import {
+	physicalExamination,
+	reviewOfSystem,
+} from '../../../services/constants';
 import Select from 'react-select';
-import { useForm } from 'react-hook-form';
+import { Controller, ErrorMessage, useForm } from 'react-hook-form';
 import { connect, useDispatch } from 'react-redux';
 import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
 
 const PhysicalExam = props => {
 	const [selected, setSelected] = useState();
-	const { encounterData, previous, next } = props;
+	const { encounterData, previous, next, encounterForm } = props;
 	const dispatch = useDispatch();
-	const [selectedOption, setSelectedOption] = useState([]);
-	const { register, handleSubmit } = useForm();
+	const defaultValues = {
+		physicalExam: encounterForm.physicalExamination?.physicalExam,
+		selectedPhysicalExam:
+			encounterForm.physicalExamination?.selectedPhysicalExam,
+	};
+	const { register, handleSubmit, control, errors } = useForm({
+		defaultValues,
+	});
 
 	const handleChange = e => {
 		setSelected(e);
 	};
-	const handleSelection = e => {
-		console.log(e.target.checked);
-		selectedOption.forEach(function(value, i) {
-			if (value === e.target.value) {
-				selectedOption.splice(i, 1);
-			}
-		});
-		if (e.target.checked) {
-			setSelectedOption([...selectedOption, e.target.value]);
-		}
 
-		console.log(e);
-	};
+	useEffect(() => {
+		setSelected(encounterForm.physicalExamination?.physicalExam);
+	}, []);
+
 	const divStyle = {
 		height: '500px',
 	};
 
 	const onSubmit = async values => {
-		console.log(selectedOption);
-		encounterData.physicalExamination = selectedOption;
+		console.log(values);
+
+		encounterForm.physicalExamination = values;
+		props.loadEncounterForm(encounterForm);
+
+		encounterData.physicalExamination = values.selectedPhysicalExam;
 		props.loadEncounterData(encounterData);
 		dispatch(props.next);
 	};
@@ -45,12 +50,22 @@ const PhysicalExam = props => {
 				<div className="row">
 					<div className="col-sm-12">
 						<div className="form-group">
-							<Select
-								name="ethnicity"
-								options={physicalExamination}
-								onChange={evt => {
-									handleChange(evt);
+							<Controller
+								as={<Select options={physicalExamination} />}
+								control={control}
+								rules={{ required: true }}
+								onChange={([selected]) => {
+									handleChange(selected);
+									return selected;
 								}}
+								name="physicalExam"
+								//defaultValue=""
+							/>
+							<ErrorMessage
+								errors={errors}
+								name="physicalExam"
+								message="This is required"
+								as={<span className="alert alert-danger" />}
 							/>
 						</div>
 					</div>
@@ -67,9 +82,8 @@ const PhysicalExam = props => {
 												type="checkbox"
 												className="form-control"
 												value={option}
-												onChange={evt => {
-													handleSelection(evt);
-												}}
+												name="selectedPhysicalExam"
+												ref={register}
 											/>
 											{option}
 										</label>

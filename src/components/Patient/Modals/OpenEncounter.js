@@ -144,41 +144,41 @@ const OpenEncounter = props => {
 								<div className="content-box">
 									{
 										{
-											10: (
+											9: (
 												<Consumable
 													index={eIndex}
 													next={next}
 													previous={previous}
 												/>
 											),
-											9: (
+											8: (
 												<PlanForm
 													index={eIndex}
 													next={next}
 													previous={previous}
 												/>
 											),
-											8: (
+											7: (
 												<Investigations
 													index={eIndex}
 													next={next}
 													previous={previous}
 												/>
 											),
-											7: (
+											6: (
 												<Diagnosis
 													index={eIndex}
 													next={next}
 													previous={previous}
 												/>
 											),
-											6: (
-												<PhysicalExamSummary
-													index={eIndex}
-													next={next}
-													previous={previous}
-												/>
-											),
+											// 6: (
+											// 	<PhysicalExamSummary
+											// 		index={eIndex}
+											// 		next={next}
+											// 		previous={previous}
+											// 	/>
+											// ),
 											5: (
 												<PhysicalExam
 													index={eIndex}

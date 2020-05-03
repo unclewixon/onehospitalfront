@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component, useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import {
 	renderSelect,
 	renderSelectWithDefault,
@@ -16,16 +16,33 @@ import Select from 'react-select';
 import { Field, reduxForm } from 'redux-form';
 import { connect, useDispatch } from 'react-redux';
 import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
-import { useForm } from 'react-hook-form';
+import { Controller, ErrorMessage, useForm } from 'react-hook-form';
 
 let Diagnosis = props => {
-	const [selectedMultipleOption, setSelectedMultipleOption] = useState([]);
-	const [type, setType] = useState([]);
-	const { register, handleSubmit, setValue } = useForm();
-	const [comment, setComment] = useState([]);
-	const [diagnoses, setDiagnoses] = useState([]);
-	const { previous, next, encounterData } = props;
+	const { previous, next, encounterData, encounterForm } = props;
 	const dispatch = useDispatch();
+	const defaultValues = {
+		diagnosis: encounterForm.diagnosis?.diagnosis,
+	};
+	const { register, handleSubmit, setValue, control, errors } = useForm({
+		defaultValues,
+	});
+	let [data, setData] = useState([]);
+	const append = () => {
+		setData([...data, { id: data.length }]);
+	};
+	const remove = index => {
+		setData([...data.slice(0, index), ...data.slice(index + 1)]);
+	};
+
+	useEffect(() => {
+		if (defaultValues?.diagnosis?.length > 0) {
+			defaultValues.diagnosis.map((item, index) => {
+				data = [...data, { id: index }];
+			});
+			setData(data);
+		}
+	}, []);
 
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option => option.description;
@@ -43,42 +60,11 @@ let Diagnosis = props => {
 		return res;
 	};
 
-	const addDiagnosis = () => {
-		setDiagnoses([...diagnoses, { id: diagnoses.length, deleted: 0 }]);
-	};
-
-	const updateDiagnoses = (id, type, value) => {
-		const diagnosis = diagnoses.find(d => d.id === id);
-		if (diagnosis) {
-			const idx = diagnoses.findIndex(d => d.id === id);
-			const _diagnoses = [
-				...diagnoses.slice(0, idx),
-				{ ...diagnosis, [type]: value },
-				...diagnoses.slice(idx + 1),
-			];
-
-			return _diagnoses;
-		}
-		return [];
-	};
-
-	const removeDiagnosis = id => () => {
-		const diagnoses = updateDiagnoses(id, 'deleted', 1);
-		selectedMultipleOption.splice(id, 1);
-		setDiagnoses([...diagnoses]);
-	};
-
 	const onSubmit = async values => {
-		let diagnosisToSave = [];
-		selectedMultipleOption.forEach(function(value, i) {
-			let _ToSave = [];
-			_ToSave['diagnosis'] = value.description;
-			_ToSave['type'] = type[i].value;
-			_ToSave['comment'] = comment[i];
-			diagnosisToSave = [_ToSave, ...diagnosisToSave];
-		});
-		console.log(diagnosisToSave);
-		encounterData.diagnosis = diagnosisToSave;
+		encounterForm.diagnosis = values;
+		props.loadEncounterForm(encounterForm);
+
+		encounterData.diagnosis = values.diagnosis;
 		props.loadEncounterData(encounterData);
 		dispatch(props.next);
 	};
@@ -90,7 +76,9 @@ let Diagnosis = props => {
 					<div className="col-md-12">
 						<a
 							className="btn btn-success btn-sm text-white"
-							onClick={addDiagnosis}>
+							onClick={() => {
+								append();
+							}}>
 							<i className="os-icon os-icon-plus-circle" />
 							<span>add diagnosis</span>
 						</a>
@@ -98,104 +86,116 @@ let Diagnosis = props => {
 				</div>
 				<div className="row">
 					<div className="col-md-12">
-						{diagnoses.map((dia, i) => {
+						{data.map((dia, i) => {
 							return (
-								dia.deleted === 0 && (
-									<div className="mt-4" key={i}>
-										<div className="row mt-1">
-											<div className="col-md-6">
-												<label>Diagnosis Data</label>
-											</div>
-											<div className="col-md-6">
-												<div className="form-group clearfix diagnosis-type">
-													<div className="float-right ml-2">
-														<input
-															type="radio"
-															name="icd10"
-															value="icpc2"
-															className="form-control"
-														/>
-														<label>ICPC-2</label>
-													</div>
-													<div className="float-right">
-														<input
-															type="radio"
-															name="icd10"
-															value="icd10"
-															className="form-control"
-														/>
-														<label>ICD-10</label>
-													</div>
-												</div>
-											</div>
+								<div className="mt-4" key={i}>
+									<div className="row mt-1">
+										<div className="col-md-6">
+											<label>Diagnosis Data</label>
 										</div>
-										<div className="row">
-											<div className="col-md-5">
-												<div className="form-group">
-													<AsyncSelect
-														required
-														cacheOptions
-														value={selectedMultipleOption[dia.id]}
-														getOptionValue={getOptionValues}
-														getOptionLabel={getOptionLabels}
-														defaultOptions
-														loadOptions={getOptions}
-														onChange={evt => {
-															selectedMultipleOption[dia.id] = evt;
-															setSelectedMultipleOption(selectedMultipleOption);
-														}}
-														placeholder="Enter the diagnosis name or ICD-10/ICPC-2 code"
-													/>
-												</div>
-											</div>
-											<div className="col-md-3">
-												<div className="form-group">
-													<Select
-														id="type"
-														name="type"
-														placeholder="Select Type"
-														options={diagnosisType}
-														ref={register({ name: 'type' })}
-														value={type[dia.id]}
-														onChange={evt => {
-															type[dia.id] = evt;
-															setType(type);
-														}}
-														required
-													/>
-												</div>
-											</div>
-											<div className="col-md-2">
-												<div className="form-group">
-													Comment
+										<div className="col-md-6">
+											<div className="form-group clearfix diagnosis-type">
+												<div className="float-right ml-2">
 													<input
-														type="text"
-														placeholder="Comment"
-														value={comment[dia.id]}
-														onChange={evt => {
-															comment[dia.id] = evt.target.value;
-															setComment(comment);
-														}}
+														type="radio"
+														name={`diagnosis[${dia.id}].icd10`}
+														ref={register}
+														value="icpc2"
 														className="form-control"
 													/>
+													<label>ICPC-2</label>
 												</div>
-											</div>
-											<div
-												className="col-md-1"
-												style={{ position: 'relative' }}>
-												<a
-													className="text-danger delete-icon"
-													onClick={removeDiagnosis(dia.id)}>
-													<i className="os-icon os-icon-cancel-circle" />
-												</a>
+												<div className="float-right">
+													<input
+														type="radio"
+														name={`diagnosis[${dia.id}].icd10`}
+														ref={register}
+														value="icd10"
+														className="form-control"
+													/>
+													<label>ICD-10</label>
+												</div>
 											</div>
 										</div>
 									</div>
-								)
+									<div className="row">
+										<div className="col-md-5">
+											<div className="form-group">
+												<Controller
+													as={
+														<AsyncSelect
+															cacheOptions
+															getOptionValue={getOptionValues}
+															getOptionLabel={getOptionLabels}
+															defaultOptions
+															loadOptions={getOptions}
+															placeholder="Enter the diagnosis name or ICD-10/ICPC-2 code"
+														/>
+													}
+													control={control}
+													rules={{ required: true }}
+													onChange={([selected]) => {
+														return selected;
+													}}
+													name={`diagnosis[${dia.id}].diagnosis`}
+												/>
+												<ErrorMessage
+													errors={errors}
+													name={`diagnosis[${dia.id}].diagnosis`}
+													message="This is required"
+													as={<span className="alert alert-danger" />}
+												/>
+											</div>
+										</div>
+										<div className="col-md-3">
+											<div className="form-group">
+												<Controller
+													as={
+														<Select
+															placeholder="Select Type"
+															options={diagnosisType}
+														/>
+													}
+													control={control}
+													rules={{ required: true }}
+													onChange={([selected]) => {
+														return selected;
+													}}
+													name={`diagnosis[${dia.id}].type`}
+												/>
+												<ErrorMessage
+													errors={errors}
+													name={`diagnosis[${dia.id}].type`}
+													message="This is required"
+													as={<span className="alert alert-danger" />}
+												/>
+											</div>
+										</div>
+										<div className="col-md-2">
+											<div className="form-group">
+												Comment
+												<input
+													type="text"
+													placeholder="Comment"
+													name={`diagnosis[${dia.id}].comment`}
+													ref={register}
+													className="form-control"
+												/>
+											</div>
+										</div>
+										<div className="col-md-1" style={{ position: 'relative' }}>
+											<a
+												className="text-danger delete-icon"
+												onClick={() => remove(dia.id)}>
+												<i className="os-icon os-icon-cancel-circle" />
+											</a>
+										</div>
+									</div>
+								</div>
 							);
 						})}
 					</div>
-					{diagnoses.length > 0 && (
+					{data.length > 0 && (
 						<div className="col-sm-6">
 							<div className="form-group">
 								{/* <label>Existing Diagnoses</label> */}
