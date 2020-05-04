@@ -10,7 +10,11 @@ import {
 import { connect, useDispatch } from 'react-redux';
 import { uploadHmo, uploadHmoTariff } from '../../../actions/general';
 import { fetchHmoTariff, getAllHmos } from '../../../actions/hmo';
-import { createLabRequest } from '../../../actions/patient';
+import {
+	createLabRequest,
+	loadEncounterData,
+	loadEncounterForm,
+} from '../../../actions/patient';
 import {
 	get_all_services,
 	getAllLabGroups,
@@ -23,7 +27,7 @@ import { notifyError } from '../../../services/notify';
 import { request } from '../../../services/utilities';
 
 const Investigations = props => {
-	const { previous, next, patient, encounterData } = props;
+	const { previous, next, patient, encounterData, encounterForm } = props;
 	const [labCombos, setLabCombos] = useState(null);
 	const [labTests, setLabTests] = useState(null);
 	const [category, setCategory] = useState('');
@@ -31,10 +35,14 @@ const Investigations = props => {
 	const [services, setServices] = useState([]);
 	const [servicesCategory, setServicesCategory] = useState([]);
 	const dispatch = useDispatch();
+
+	const defaultValues = {
+		...(encounterForm.investigations || []),
+	};
+
+	console.log(defaultValues);
 	const { register, handleSubmit, setValue, control, errors } = useForm({
-		defaultValues: {
-			service_center: 'lab',
-		},
+		defaultValues,
 	});
 	const handleChangeServiceCategory = evt => {
 		let value = String(evt.value);
@@ -211,6 +219,9 @@ const Investigations = props => {
 	}, [loaded, props]);
 
 	const onSubmit = async data => {
+		encounterForm.investigations = data;
+		props.loadEncounterForm(encounterForm);
+
 		const lab_test = structuredTest();
 		const lab_combo = structuredGroup();
 
@@ -301,6 +312,7 @@ const Investigations = props => {
 		encounterData.investigations.labRequest = labRequestObj;
 		encounterData.investigations.imagingRequest = theRequest;
 		props.loadEncounterData(encounterData);
+
 		dispatch(props.next);
 
 		console.log(labRequestObj, theRequest);
@@ -583,9 +595,12 @@ const mapStateToProps = state => {
 		service: state.settings.services,
 		ServiceCategories: state.settings.service_categories,
 		encounterData: state.patient.encounterData,
+		encounterForm: state.patient.encounterForm,
 	};
 };
 export default connect(mapStateToProps, {
+	loadEncounterData,
+	loadEncounterForm,
 	get_all_services,
 	getAllServiceCategory,
 	createLabRequest,

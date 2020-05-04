@@ -1,14 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component, useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import Select from 'react-select';
 import { reduxForm } from 'redux-form';
 import HxForm from './HxForm';
-import { useForm } from 'react-hook-form';
+import { Controller, ErrorMessage, useForm } from 'react-hook-form';
 import { connect, useDispatch } from 'react-redux';
 import {
 	add_allergies,
 	fetch_Allergies,
 	loadEncounterData,
+	loadEncounterForm,
 } from '../../../actions/patient';
 import { v4 as uuidv4 } from 'uuid';
 import {
@@ -22,46 +23,53 @@ import { notifyError } from '../../../services/notify';
 import searchingGIF from '../../../assets/images/searching.gif';
 import Tooltip from 'antd/lib/tooltip';
 import { Link } from 'react-router-dom';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 const Allergies = props => {
-	const [allergies, setAllergies] = useState([]);
-	const [allergyData, setAllergyData] = useState([]);
 	const [loaded, setLoaded] = useState(false);
 	const [queried, setQueried] = useState(false);
-	const [category, setCategory] = useState([]);
-	const [reaction, setReaction] = useState([]);
-	const [severityField, setSeverity] = useState([]);
-	const [allergyField, setAllergy] = useState([]);
-	const { register, handleSubmit, setValue } = useForm();
+
 	const dispatch = useDispatch();
-	let { previous, next, allergiesProp, patient, encounterData } = props;
-	const addAllergy = () => {
-		setAllergies([...allergies, { id: uuidv4() }]);
+	let {
+		previous,
+		next,
+		allergiesProp,
+		patient,
+		encounterData,
+		encounterForm,
+	} = props;
+
+	let [data, setData] = useState([]);
+	const defaultValues = {
+		allForm: encounterForm.allergies?.allForm || [],
 	};
+	console.log(defaultValues.allForm);
+	const {
+		register,
+		handleSubmit,
+		setValue,
+		getValues,
+		control,
+		errors,
+		watch,
+	} = useForm({
+		defaultValues,
+	});
 
-	const updateAllergies = (id, type, value) => {
-		const allergy = allergies.find(d => d.id === id);
-		if (allergy) {
-			const idx = allergies.findIndex(d => d.id === id);
-			const _allergies = [
-				...allergies.slice(0, idx),
-				{ ...allergy, [type]: value },
-				...allergies.slice(idx + 1),
-			];
-
-			return _allergies;
+	useEffect(() => {
+		if (defaultValues?.allForm?.length > 0) {
+			defaultValues.allForm.map((item, index) => {
+				data = [...data, { id: index }];
+			});
+			setData(data);
 		}
-		return [];
-	};
+	}, [defaultValues?.allForm]);
 
-	const removeAllergy = id => () => {
-		allergies.map((value, i) => {
-			if (value.id === id) {
-				allergies.splice(i, 1);
-			}
-		});
-		category.splice(id, 1);
-		setAllergies([...allergies]);
+	const append = () => {
+		setData([...data, { id: data.length }]);
+	};
+	const remove = index => {
+		setData([...data.slice(0, index), ...data.slice(index + 1)]);
 	};
 
 	const fetchAllergies = async () => {
@@ -73,29 +81,31 @@ const Allergies = props => {
 				'GET',
 				true
 			);
-			rs.map((value, i) => {
-				const theID = uuidv4();
-				setAllergies([...allergies, { id: theID }]);
-				category[theID] = {
-					value: value.category,
-					label: value.category,
-				};
-				allergyField[theID] = value.allergy;
-				reaction[theID] = value.reaction;
-				severityField[theID] = {
-					value: value.severity,
-					label: value.severity,
-				};
-				setCategory(category);
-				setAllergy(allergyField);
-				setReaction(reaction);
-				setSeverity(severityField);
-			});
 
-			//props.fetch_Allergies(rs);
-			//console.log(rs)
+			let newForm = getValues({ nest: true })['allForm'] || [];
+			rs.map((value, i) => {
+				data = [...data, { id: data.length }];
+				newForm = [
+					...newForm,
+					{
+						category: {
+							value: value.category,
+							label: value.category,
+						},
+						severity: {
+							value: value.severity,
+							label: value.severity,
+						},
+						allergy: value.allergy,
+						reaction: value.reaction,
+					},
+				];
+			});
+			setData(data);
+			setValue('allForm', newForm);
 			setLoaded(false);
 		} catch (error) {
+			console.log(error);
 			setLoaded(false);
 			notifyError('Could not fetch allergies for the patient');
 		}
@@ -103,25 +113,14 @@ const Allergies = props => {
 
 	const handleChecked = async e => {
 		if (e.target.checked && !queried) {
-			fetchAllergies().then(res => {
-				console.log(allergyData);
-				console.log(allergiesProp);
-			});
+			fetchAllergies().then(res => {});
 		}
 	};
 	const onSubmit = async values => {
-		let allergiesToSave = [];
-
-		for (let val in category) {
-			let _ToSave = [];
-			_ToSave['category'] = category[val].label;
-			_ToSave['allergen'] = allergyField[val];
-			_ToSave['reaction'] = reaction[val];
-			_ToSave['severity'] = severityField[val].label;
-			allergiesToSave = [...allergiesToSave, _ToSave];
-		}
-
-		encounterData.allergies = allergiesToSave;
+		console.log(values);
+		encounterForm.allergies = values;
+		props.loadEncounterForm(encounterForm);
+		encounterData.allergies = values.allForm;
 		props.loadEncounterData(encounterData);
 		dispatch(props.next);
 	};
@@ -138,7 +137,9 @@ const Allergies = props => {
 					<div className="col-md-12">
 						<a
 							className="btn btn-success btn-sm text-white"
-							onClick={addAllergy}>
+							onClick={() => {
+								append();
+							}}>
 							<i className="os-icon os-icon-plus-circle" />
 							<span>add allergen</span>
 						</a>
@@ -153,14 +154,14 @@ const Allergies = props => {
 					<>
 						<div className="row">
 							<div className="col-sm-6">
-								{allergies.map((allergy, i) => {
+								{data.map((form, index) => {
 									return (
-										<div className="mt-4" key={i}>
+										<div className="mt-4" key={index}>
 											<div className="row">
 												<div className="col-md-12">
 													<a
 														className="text-danger"
-														onClick={removeAllergy(allergy.id)}
+														onClick={() => remove(form.id)}
 														style={{ lineHeight: '78px' }}>
 														<i className="os-icon os-icon-cancel-circle" />{' '}
 														remove allergen
@@ -171,17 +172,29 @@ const Allergies = props => {
 												<div className="col-md-12">
 													<div className="form-group">
 														<label>Category</label>
-														<Select
-															name="category"
-															placeholder="Select Allergy Category"
-															options={allergyCategories}
-															ref={register({ name: 'category' })}
-															value={category[allergy.id]}
-															onChange={evt => {
-																category[allergy.id] = evt;
-																setCategory(category);
+														<Controller
+															as={
+																<Select
+																	placeholder="Select Allergy Category"
+																	options={allergyCategories}
+																	// onChange={evt => {
+																	// 	category[allergy.id] = evt;
+																	// 	setCategory(category);
+																	// }}
+																/>
+															}
+															control={control}
+															rules={{ required: true }}
+															onChange={([selected]) => {
+																return selected;
 															}}
-															required
+															name={`allForm[${form.id}].category`}
+														/>
+														<ErrorMessage
+															errors={errors}
+															name={`allForm[${form.id}].category`}
+															message="This is required"
+															as={<span className="alert alert-danger" />}
 														/>
 													</div>
 												</div>
@@ -194,13 +207,8 @@ const Allergies = props => {
 															className="form-control"
 															placeholder="Allergy"
 															type="text"
-															name="allergy"
-															value={allergyField[allergy.id]}
-															onChange={evt => {
-																allergyField[allergy.id] = evt.target.value;
-																setAllergy(allergyField);
-															}}
 															ref={register}
+															name={`allForm[${form.id}].allergy`}
 														/>
 													</div>
 												</div>
@@ -212,12 +220,7 @@ const Allergies = props => {
 														<input
 															type="text"
 															ref={register}
-															name="reaction"
-															value={reaction[allergy.id]}
-															onChange={evt => {
-																reaction[allergy.id] = evt.target.value;
-																setReaction(reaction);
-															}}
+															name={`allForm[${form.id}].reaction`}
 															placeholder="Reaction"
 															className="form-control"
 														/>
@@ -228,17 +231,26 @@ const Allergies = props => {
 												<div className="col-md-12">
 													<div className="form-group">
 														<label>Severity</label>
-														<Select
-															name="severity"
-															value={severityField[allergy.id]}
-															placeholder="Select severity"
-															options={severity}
-															ref={register({ name: 'severity' })}
-															onChange={evt => {
-																severityField[allergy.id] = evt;
-																setSeverity(severityField);
+
+														<Controller
+															as={
+																<Select
+																	placeholder="Select severity"
+																	options={severity}
+																/>
+															}
+															control={control}
+															rules={{ required: true }}
+															onChange={([selected]) => {
+																return selected;
 															}}
-															required
+															name={`allForm[${form.id}].severity`}
+														/>
+														<ErrorMessage
+															errors={errors}
+															name={`allForm[${form.id}].severity`}
+															message="This is required"
+															as={<span className="alert alert-danger" />}
 														/>
 													</div>
 												</div>
@@ -247,22 +259,20 @@ const Allergies = props => {
 									);
 								})}
 							</div>
-							{allergies.length > 0 && (
-								<div className="col-sm-6">
-									<div className="form-group">
-										<label>
-											Existing Allergies{' '}
-											<input
-												type="checkbox"
-												className="form-control"
-												onChange={evt => {
-													handleChecked(evt);
-												}}
-											/>
-										</label>
-									</div>
+							<div className="col-sm-6">
+								<div className="form-group">
+									<label>
+										Existing Allergies{' '}
+										<input
+											type="checkbox"
+											className="form-control"
+											onChange={evt => {
+												handleChecked(evt);
+											}}
+										/>
+									</label>
 								</div>
-							)}
+							</div>
 						</div>
 					</>
 				)}
@@ -287,8 +297,11 @@ const mapStateToProps = (state, ownProps) => {
 		patient: state.user.patient,
 		allergiesProp: state.patient.allergies,
 		encounterData: state.patient.encounterData,
+		encounterForm: state.patient.encounterForm,
 	};
 };
-export default connect(mapStateToProps, { fetch_Allergies, loadEncounterData })(
-	Allergies
-);
+export default connect(mapStateToProps, {
+	fetch_Allergies,
+	loadEncounterData,
+	loadEncounterForm,
+})(Allergies);

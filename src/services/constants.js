@@ -265,7 +265,7 @@ export const encounters = [
 	'Past Medical History',
 	'Allergies',
 	'Physical Examination',
-	'Physical Examination Summary',
+	//'Physical Examination Summary',
 	'Diagnosis',
 	'Investigations',
 	'Plan',
