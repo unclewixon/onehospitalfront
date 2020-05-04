@@ -23,8 +23,8 @@ class AppraisalItem extends Component {
 	};
 
 	render() {
-		const { approved, item, index } = this.props;
-		console.log(index);
+		const { approved, item, index, edit } = this.props;
+		console.log(item);
 		return (
 			<tr>
 				<td>{index}</td>
@@ -35,14 +35,18 @@ class AppraisalItem extends Component {
 				<td className="text-center">{status(item.status)}</td>
 				<td className="text-right row-actions">
 					<Tooltip title="edit">
-						<a className="">
+						<a
+							className=""
+							onClick={() => {
+								edit(item);
+							}}>
 							<i className="os-icon os-icon-edit-32"></i>
 						</a>
 					</Tooltip>
 
 					<Tooltip title="open">
 						<a className="">
-							<i className="os-icon os-icon-ui-15" />
+							<i className="os-icon os-icon-folder"></i>
 						</a>
 					</Tooltip>
 

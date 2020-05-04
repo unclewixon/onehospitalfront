@@ -13,14 +13,20 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import { loadPerformancePeriod, addPerformancePeriod } from '../../actions/hr';
 const { RangePicker } = DatePicker;
 
-const initialDate = {
-	startDate: '',
-	endDate: '',
-};
-const PerformanceIndicatorForm = ({ uploading, doUpload, hide, clear }) => {
-	const [period, setPeriod] = useState('');
+const initialDate = item => ({
+	startDate: item ? item.startDate : '',
+	endDate: item ? item.endDate : '',
+});
+const PerformanceIndicatorForm = ({
+	uploading,
+	doUpload,
+	hide,
+	clear,
+	item,
+}) => {
+	const [period, setPeriod] = useState(item ? item.performancePeriod : '');
 
-	const [date, setDate] = useState(initialDate);
+	const [date, setDate] = useState(initialDate(item));
 
 	const handleChange = e => {
 		setPeriod(e.target.value);
@@ -70,6 +76,7 @@ const PerformanceIndicatorForm = ({ uploading, doUpload, hide, clear }) => {
 										className="form-control"
 										name="performancePeriod"
 										onChange={handleChange}
+										defaultValue={item ? item.performancePeriod : ''}
 										required
 									/>
 								</div>
@@ -78,7 +85,17 @@ const PerformanceIndicatorForm = ({ uploading, doUpload, hide, clear }) => {
 									{/* {label ? <textarea>{label}</textarea> : null} */}
 									<label>Start Date - End Date</label>
 
-									<RangePicker onChange={e => dateChange(e)} />
+									<RangePicker
+										defaultPickerValue={
+											item
+												? [
+														moment(item.startDate, 'YYYY-MM-DD'),
+														moment(item.endDate, 'YYYY-MM-DD'),
+												  ]
+												: null
+										}
+										onChange={e => dateChange(e)}
+									/>
 								</div>
 							</div>
 
@@ -90,6 +107,8 @@ const PerformanceIndicatorForm = ({ uploading, doUpload, hide, clear }) => {
 										type="submit">
 										{uploading ? (
 											<img src={waiting} alt="submitting" />
+										) : item ? (
+											'Edit'
 										) : (
 											'Save'
 										)}
@@ -115,6 +134,8 @@ class Appraisal extends Component {
 				status: 0,
 			},
 		],
+		loading: true,
+		editItem: null,
 	};
 	componentDidMount() {
 		this.fetchApprasails();
@@ -122,10 +143,18 @@ class Appraisal extends Component {
 
 	fetchApprasails = async () => {
 		try {
-			const rs = await request(`${API_URI}${appraisalAPI}`, 'GET', true);
-			this.props.loadAppraisals(rs);
+			this.setState({ loading: true });
+			const rs = await request(
+				`${API_URI}${appraisalAPI}/list-periods`,
+				'GET',
+				true
+			);
+			this.props.loadPerformancePeriod(rs);
+
+			this.setState({ loading: false });
 		} catch (error) {
 			console.log(error);
+			this.setState({ loading: false });
 		}
 	};
 
@@ -143,25 +172,26 @@ class Appraisal extends Component {
 		this.setState({ uploading: true });
 		try {
 			//load it into database and add it to the store
-			const rs = await request(
-				`${API_URI}${appraisalAPI}/save-period`,
-				'POST',
-				true,
-				payload
-			);
-			console.log(rs);
+			if (!this.state.editItem) {
+				const rs = await request(
+					`${API_URI}${appraisalAPI}/save-period`,
+					'POST',
+					true,
+					payload
+				);
+			} else {
+				console.log('i am to edit here');
+				//connect to edit api
+				//edit in the store
+			}
 
-			//clear
-			//close form
-			this.setState({ form_visible: false, uploading: false });
+			this.setState({ form_visible: false, uploading: false, editItem: null });
 			// document.getElementById('performanceForm').reset();
 		} catch (e) {
 			console.log(e);
 			notifyError('Error creating performance period');
 			this.setState({ uploading: false });
 		}
-
-		//add to the loc
 	};
 
 	doClear = () => {};
@@ -171,12 +201,20 @@ class Appraisal extends Component {
 	};
 
 	hide = () => {
-		this.setState({ form_visible: false });
+		this.setState({ form_visible: false, editItem: null });
+	};
+
+	editPerformancePeriod = item => {
+		this.performanceIndicatorForm();
+		this.setState({ editItem: item });
 	};
 
 	render() {
 		// const { performancePeriods } = this.props;
-		const { form_visible, uploading, performancePeriods } = this.state;
+		const { form_visible, uploading, loading, editItem } = this.state;
+		const { performancePeriods } = this.props;
+		const rev = [...performancePeriods].reverse();
+
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -193,6 +231,7 @@ class Appraisal extends Component {
 											doUpload={this.onUpload}
 											hide={this.hide}
 											onBackClick={this.onBackClick}
+											item={editItem}
 										/>
 									</div>
 
@@ -219,12 +258,13 @@ class Appraisal extends Component {
 											</thead>
 											<tbody>
 												{performancePeriods &&
-													performancePeriods.map((el, i) => {
+													rev.map((el, i) => {
 														return (
 															<AppraisalItem
 																item={el}
 																key={i + 1}
 																index={i + 1}
+																edit={this.editPerformancePeriod}
 															/>
 														);
 													})}

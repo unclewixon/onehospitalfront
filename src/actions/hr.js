@@ -9,6 +9,7 @@ import {
 	LOAD_PAYROLL_HISTORY,
 	ADD_PERFORMANCE_PERIOD,
 	LOAD_PERFORMANCE_PERIOD,
+	SET_PERFORMANCE_PERIOD,
 } from './types';
 
 export const loadStaff = data => {
@@ -77,6 +78,13 @@ export const loadPerformancePeriod = data => {
 export const addPerformancePeriod = data => {
 	return {
 		type: ADD_PERFORMANCE_PERIOD,
+		payload: data,
+	};
+};
+
+export const setPerformancePeriod = data => {
+	return {
+		type: SET_PERFORMANCE_PERIOD,
 		payload: data,
 	};
 };

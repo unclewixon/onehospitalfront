@@ -39,6 +39,7 @@ import {
 	TOGGLE_ANTENATAL_DETAIL,
 	TOGGLE_IMMUNIZATION_DETAIL,
 	TOGGLE_ANTENATAL_ASSESSMENT_DETAIL,
+	TOGGLE_LINE_APPRAISAL,
 } from './types';
 
 export const togglePreloading = status => {
@@ -331,6 +332,13 @@ export const toggleAntenatalAssessmentDetail = (status, data) => {
 		data,
 	};
 };
+
+export const toggleLineAppraisal = status => {
+	return {
+		type: TOGGLE_LINE_APPRAISAL,
+		payload: status,
+	};
+};
 // close modals
 export const closeModals = () => {
 	return dispatch => {
@@ -371,6 +379,7 @@ export const closeModals = () => {
 		dispatch(toggleAntenatalDetail(false, null));
 		dispatch(toggleImmunizationDetail(false, null));
 		dispatch(toggleAntenatalAssessmentDetail(false, null));
+		dispatch(toggleLineAppraisal(false));
 	};
 };
 
@@ -684,5 +693,13 @@ export const antenatalAssessmentDetail = (action, data) => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleAntenatalAssessmentDetail(action, data));
+	};
+};
+
+export const lineAppraisal = (action, data) => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleLineAppraisal(action));
 	};
 };
