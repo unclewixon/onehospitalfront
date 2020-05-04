@@ -2,7 +2,7 @@ import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import moment from 'moment';
 
-const ModalLeaveRequest = ({
+const ModalExcuseDuty = ({
 	showModal,
 	onModalClick,
 	staff,
@@ -39,6 +39,16 @@ const ModalLeaveRequest = ({
 											<div className="element-box-tp">
 												<table className="table table-clean">
 													<tbody>
+                          <tr>
+															<td>
+																<div className="text-left">Job Title</div>
+															</td>
+															<td className="text-right">
+																<div className="value text-success">
+                                { activeRequest && activeRequest.staff ? activeRequest.staff.job_title : ''} 
+																</div>
+															</td>
+														</tr>
 														<tr>
 															<td>
 																<div className="text-left">Start Date</div>
@@ -80,25 +90,13 @@ const ModalLeaveRequest = ({
 											</div>
 											<div className="element-info-text">
 												<h5 className="element-inner-header">
-													Staff Leave Request
+													Staff Excuse Duty
 												</h5>
 											</div>
 										</div>
 									</div>
 									<table className="table table-padded">
 										<tbody>
-											<tr>
-												<td class="font-weight-bold">Leave Category</td>
-												<td>
-													{activeRequest && activeRequest.category && activeRequest.category.name }
-												</td>
-											</tr>
-											<tr>
-												<td class="font-weight-bold">Leave Duration</td>
-												<td>
-													{activeRequest && activeRequest.category && activeRequest.category.duration }
-												</td>
-											</tr>
 											<tr>
 												<td class="font-weight-bold">Leave Reason</td>
 												<td>{activeRequest.application}</td>
@@ -115,4 +113,4 @@ const ModalLeaveRequest = ({
 	);
 };
 
-export default ModalLeaveRequest;
+export default ModalExcuseDuty;

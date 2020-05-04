@@ -5,7 +5,7 @@ import Tooltip from 'antd/lib/tooltip';
 import { showHistory } from '../actions/general';
 
 
-const LeaveItem = ({
+const ExcuseItem = ({
 	leave,
 	index,
 	showHistory,
@@ -21,7 +21,7 @@ const LeaveItem = ({
 				<td>{index + 1}</td>
 				<td>{leave.staff ? leave.staff.first_name + ` ` + leave.staff.last_name + ` `  + leave.staff.other_names : ""}</td>
 				<td>
-					{leave.category && leave.category.name ? leave.category.name : ""}
+					{leave.leaveType ? leave.leaveType : ""}
 				</td>
 				<td>
 					{leave.start_date ? leave.start_date : ""}
@@ -90,4 +90,4 @@ const LeaveItem = ({
 	);
 }
 
-export default connect(null, { showHistory })(LeaveItem);
+export default connect(null, { showHistory })(ExcuseItem);
