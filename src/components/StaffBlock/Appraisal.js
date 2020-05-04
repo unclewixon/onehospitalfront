@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { request } from '../../services/utilities';
 import { API_URI, appraisalAPI } from '../../services/constants';
 import { loadPerformancePeriod, setPerformancePeriod } from '../../actions/hr';
+import { lineAppraisal } from '../../actions/general';
 export class Appraisal extends Component {
 	state = {};
 
@@ -41,11 +42,11 @@ export class Appraisal extends Component {
 
 		setPerformancePeriod(item);
 		//got to create apparaisal
-		history.push(
-			type === 'self'
-				? `${location.pathname}#create-appraisal`
-				: `${location.pathname}#line-appraisal`
-		);
+		if (type == 'self') {
+			history.push(`${location.pathname}#create-appraisal`);
+		} else {
+			this.props.lineAppraisal(true);
+		}
 	};
 	render() {
 		const { location, departments, staff } = this.props;
@@ -180,5 +181,6 @@ export default withRouter(
 	connect(mapStateToProps, {
 		loadPerformancePeriod,
 		setPerformancePeriod,
+		lineAppraisal,
 	})(Appraisal)
 );
