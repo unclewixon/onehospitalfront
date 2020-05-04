@@ -39,8 +39,6 @@ const Investigations = props => {
 	const defaultValues = {
 		...(encounterForm.investigations || []),
 	};
-
-	console.log(defaultValues);
 	const { register, handleSubmit, setValue, control, errors } = useForm({
 		defaultValues,
 	});
