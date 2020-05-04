@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import ModalLeaveRequest from '../../components/Modals/ModalLeaveRequest';
-import LeaveItem from '../../components/LeaveItem';
+import ExcuseItem from '../../components/ExcuseItem';
 import { loadStaffLeave } from '../../actions/hr';
 import { request } from '../../services/utilities';
 import { API_URI, leaveMgtAPI } from '../../services/constants';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { confirmAction } from '../../services/utilities';
+import ModalExcuseDuty from '../../components/Modals/ModalExcuseDuty';
 
-class LeaveMgt extends Component {
+class ExcuseDuty extends Component {
 
 	state = {
 		searching: false,
@@ -33,10 +33,9 @@ class LeaveMgt extends Component {
 	fetchStaffLeave = async () => {
 		this.setState({searching: true})
 		try {
-			const rs = await request(`${API_URI}${leaveMgtAPI}`, 'GET', true);
+			const rs = await request(`${API_URI}${leaveMgtAPI}/excuse-duty`, 'GET', true);
 			this.setState({searching: false})
-			const filteredRes = rs && rs.length ? rs.filter(leave => leave.leaveType !== "excuse_duty") : []
-			this.props.loadStaffLeave(filteredRes);
+			this.props.loadStaffLeave(rs);
 		} catch (error) {
 			this.setState({searching: false})
 			console.log(error);
@@ -47,10 +46,10 @@ class LeaveMgt extends Component {
 		try {
 			const res = await request(`${API_URI}/hr/leave-management/${data.id}/reject`, 'GET', true);
 			console.log(res)
-			notifySuccess('Successful rejecting leave applications')
+			notifySuccess('Successful rejecting excuse')
 			this.fetchStaffLeave()
 		} catch (error) {
-			notifyError('Could not rejecting leave applications')
+			notifyError('Could not reject excuse')
 		}
 	}
 
@@ -58,7 +57,7 @@ class LeaveMgt extends Component {
 		confirmAction(
 			this.rejectLeaveRequests, 
 			data,
-			"in rejecting leave?",
+			"in rejecting excuse?",
 			"Proceed?"
 		 )
 	}
@@ -67,10 +66,10 @@ class LeaveMgt extends Component {
 		try {
 			const res = await request(`${API_URI}/hr/leave-management/${data.id}/approve`, 'GET', true);
 			console.log(res)
-			notifySuccess('Successful approving leave applications')
+			notifySuccess('Successful approving excuse duty')
 			this.fetchStaffLeave()
 		} catch (error) {
-			notifyError('Could not approve leave applications')
+			notifyError('Could not approve excuse duty')
 		}
 	}
 
@@ -78,7 +77,7 @@ class LeaveMgt extends Component {
 		confirmAction(
 			this.approveLeaveRequests, 
 			data,
-			"continue in approving this leave application?",
+			"continue in approving this excuse?",
 			"Are you sure?"
 		 )
 	}
@@ -86,10 +85,10 @@ class LeaveMgt extends Component {
 	deleteLeaveRequests = async (data) => {
 		try {
 			const res = await request(`${API_URI}/hr/leave-management/${data.id}`, 'DELETE', true);
-			notifySuccess('Successful removed leave applications')
+			notifySuccess('Successfully removed excuse')
 			this.fetchStaffLeave()
 		} catch (error) {
-			notifyError('Could not remove leave applications')
+			notifyError('Could not remove excuse')
 		}
 	}
 
@@ -97,7 +96,7 @@ class LeaveMgt extends Component {
 		confirmAction(
 			this.deleteLeaveRequests, 
 			data,
-			"in deleting this leave application?",
+			"in deleting this excuse?",
 			"Do you want to continue"
 		 )
 	}
@@ -136,7 +135,7 @@ class LeaveMgt extends Component {
 								<h6 className="element-header">Leave Management</h6>
 								{
 									this.state.activeRequest ? (
-										<ModalLeaveRequest
+										<ModalExcuseDuty
 											showModal={this.state.showModal}
 											activeRequest={this.state.activeRequest}
 											onModalClick={this.onModalClick}
@@ -160,7 +159,7 @@ class LeaveMgt extends Component {
 											<tbody>
 												{staff_leave.map((leave, i) => {
 													return (
-														<LeaveItem
+														<ExcuseItem
 															key={i}
 															onLeave={true}
 															hasRequest={false}
@@ -200,4 +199,4 @@ const mapStateToProps = (state, ownProps) => {
 	}
 };
 
-export default connect(mapStateToProps, { loadStaffLeave })(LeaveMgt);
+export default connect(mapStateToProps, { loadStaffLeave })(ExcuseDuty);

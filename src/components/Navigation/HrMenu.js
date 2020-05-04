@@ -32,6 +32,14 @@ const HrMenu = () => {
 				</Link>
 			</li>
 			<li>
+				<Link to="/hr/excuse">
+					<div className="icon-w">
+						<div className="os-icon os-icon-layers"/>
+					</div>
+					<span>Excuse Duty</span>
+				</Link>
+			</li>
+			<li>
 				<Link to="/hr/leave-mgt">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers"/>

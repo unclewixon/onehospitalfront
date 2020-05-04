@@ -27,7 +27,8 @@ const LeaveRequest = ({
 		setSearching(true)
 		try {
 			const res = await request(`${API_URI}/hr/leave-management`, 'GET', true);
-			loadStaffLeave(res);
+			const filteredRes = res && res.length ? res.filter(leave => leave.leaveType !== "excuse_duty") : []
+			loadStaffLeave(filteredRes);
 			setSearching(false)
 			notifySuccess('Successful fetching leave applications')
 		} catch (error) {
