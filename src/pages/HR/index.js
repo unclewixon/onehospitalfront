@@ -6,6 +6,7 @@ import Payroll from './Payroll';
 import LeaveMgt from './LeaveMgt';
 import Roster from './Roster';
 import Appraisal from './Appraisal';
+import ExcuseDuty from './ExcuseDuty'
 import NoMatch from '../NoMatch';
 
 const Staff = ({ match }) => {
@@ -14,6 +15,7 @@ const Staff = ({ match }) => {
 			<Route path={`${match.url}/staffs`} component={StaffList} />
 			<Route path={`${match.url}/payroll`} component={Payroll} />
 			<Route path={`${match.url}/leave-mgt`} component={LeaveMgt} />
+			<Route path={`${match.url}/excuse`} component={ExcuseDuty} />
 			<Route path={`${match.url}/roster`} component={Roster} />
 			<Route path={`${match.url}/appraisal`} component={Appraisal} />
 			<Route component={NoMatch} />

@@ -11,7 +11,11 @@ import {
 import { Controller, ErrorMessage, useForm } from 'react-hook-form';
 import Select from 'react-select';
 import { connect, useDispatch } from 'react-redux';
-import { addPharmacyRequest } from '../../../actions/patient';
+import {
+	addPharmacyRequest,
+	loadEncounterData,
+	loadEncounterForm,
+} from '../../../actions/patient';
 import { loadInvCategories, loadInventories } from '../../../actions/inventory';
 import {
 	get_all_diagnosis,
@@ -842,10 +846,13 @@ const mapStateToProps = (state, ownProps) => {
 		service: state.settings.services,
 		ServiceCategories: state.settings.service_categories,
 		encounterData: state.patient.encounterData,
+		encounterForm: state.patient.encounterForm,
 	};
 };
 
 export default connect(mapStateToProps, {
+	loadEncounterData,
+	loadEncounterForm,
 	get_all_services,
 	get_all_diagnosis,
 	getAllServiceCategory,

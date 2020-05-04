@@ -1,49 +1,76 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component, useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import { renderTextInput, request } from '../../../services/utilities';
 import { API_URI, diagnosisAPI } from '../../../services/constants';
 import DatePicker from 'react-datepicker';
 import { connect, useDispatch } from 'react-redux';
-import { loadEncounterData } from '../../../actions/patient';
-import { useForm } from 'react-hook-form';
+import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
+import { Controller, ErrorMessage, useForm } from 'react-hook-form';
 import { Field } from 'redux-form';
+import { v4 as uuidv4 } from 'uuid';
 
 let PastHistory = props => {
-	const [histories, setHistories] = useState([]);
-	const [selectedOption, setSelectedOption] = useState('');
-	const [selectedMultipleOption, setSelectedMultipleOption] = useState([]);
 	const [start_time, setStart_time] = useState(new Date());
 	const [multiDate, setMultiDate] = useState([]);
-	const [multiComment, setMultiComment] = useState([]);
-	const [form, updateForm] = useState([]);
-	const { register, handleSubmit } = useForm();
-	const dispatch = useDispatch();
-	const { encounterData, previous, next } = props;
+	let [data, setData] = useState([]);
 
-	const addHistory = () => {
-		setHistories([...histories, { id: histories.length, deleted: 0 }]);
+	const append = () => {
+		setData([...data, { id: data.length }]);
 	};
+	const remove = index => {
+		setData([...data.slice(0, index), ...data.slice(index + 1)]);
+	};
+
+	const { encounterData, previous, next, encounterForm } = props;
+	const defaultValues = {
+		comment: encounterForm.medicalHistory?.comment,
+		diagnosis: encounterForm.medicalHistory?.diagnosis,
+		date: encounterForm.medicalHistory?.date,
+		icd10: encounterForm.medicalHistory?.icd10,
+	};
+	const { register, handleSubmit, control, errors } = useForm({
+		defaultValues,
+	});
+	const dispatch = useDispatch();
+
+	const onSubmit = async data => {
+		let medicalToSave = [];
+		let multiDate = data.date;
+		let multiComment = data.comment;
+		data.diagnosis.forEach(function(value, i) {
+			let _ToSave = [];
+			_ToSave['diagnosis'] = value.description;
+			_ToSave['date'] = multiDate[i];
+			_ToSave['comment'] = multiComment[i];
+			medicalToSave = [_ToSave, ...medicalToSave];
+		});
+
+		encounterData.medicalHistory = medicalToSave;
+		encounterForm.medicalHistory = data;
+		props.loadEncounterForm(encounterForm);
+		props.loadEncounterData(encounterData);
+		dispatch(props.next);
+	};
+
+	useEffect(() => {
+		if (defaultValues?.diagnosis?.length > 0) {
+			defaultValues.diagnosis.map((item, index) => {
+				multiDate[index] = defaultValues.date[index];
+				setMultiDate(multiDate);
+				data = [...data, { id: index }];
+			});
+			setData(data);
+		}
+	}, []);
+	console.log(data);
 
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option => option.description;
-	const handleChangeComment = (selected, i) => {
-		multiComment[i] = selected.target.value;
-		setMultiComment(multiComment);
-	};
-
-	const handleChangeOptions = (selected, i) => {
-		setSelectedOption(selected);
-		selectedMultipleOption[i] = selected;
-		setSelectedMultipleOption(selectedMultipleOption);
-	};
-
 	const setDate = (date, i) => {
 		multiDate[i] = date;
 		setStart_time(date);
 		setMultiDate(multiDate);
-		//console.log(date, type);
-		//this.setState({ [type]: date });
 	};
 
 	const getOptions = async inputValue => {
@@ -59,45 +86,6 @@ let PastHistory = props => {
 		return res;
 	};
 
-	const onChange = date => setStart_time(date);
-
-	const updateHistories = (id, type, value) => {
-		const history = histories.find(d => d.id === id);
-		if (history) {
-			const idx = histories.findIndex(d => d.id === id);
-			const _histories = [
-				...histories.slice(0, idx),
-				{ ...history, [type]: value },
-				...histories.slice(idx + 1),
-			];
-
-			return _histories;
-		}
-		return [];
-	};
-
-	const removeHistory = id => () => {
-		const histories = updateHistories(id, 'deleted', 1);
-		selectedMultipleOption.splice(id, 1);
-		setHistories([...histories]);
-	};
-
-	const onSubmit = async values => {
-		//medicalHistory
-		let medicalToSave = [];
-		selectedMultipleOption.forEach(function(value, i) {
-			let _ToSave = [];
-			_ToSave['diagnosis'] = value.description;
-			_ToSave['date'] = multiDate[i];
-			_ToSave['comment'] = multiComment[i];
-			//medicalToSave = [_ToSave, ...medicalToSave];
-			medicalToSave.splice(i, 0, _ToSave);
-		});
-
-		encounterData.medicalHistory = medicalToSave;
-		props.loadEncounterData(encounterData);
-		dispatch(props.next);
-	};
 	const divStyle = {
 		height: '500px',
 	};
@@ -109,7 +97,9 @@ let PastHistory = props => {
 					<div className="col-md-12">
 						<a
 							className="btn btn-success btn-sm text-white"
-							onClick={addHistory}>
+							onClick={() => {
+								append();
+							}}>
 							<i className="os-icon os-icon-plus-circle" />
 							<span>add</span>
 						</a>
@@ -125,6 +115,7 @@ let PastHistory = props => {
 								<input
 									type="radio"
 									name="icd10"
+									ref={register}
 									value="icpc2"
 									className="form-control"
 								/>
@@ -134,6 +125,7 @@ let PastHistory = props => {
 								<input
 									type="radio"
 									name="icd10"
+									ref={register}
 									value="icd10"
 									className="form-control"
 								/>
@@ -142,62 +134,91 @@ let PastHistory = props => {
 						</div>
 					</div>
 				</div>
-				{histories.map((hist, i) => {
+				{data.map((hist, i) => {
 					return (
-						hist.deleted === 0 && (
-							<div className="row" key={i}>
-								<div className="col-sm-6">
-									<div className="form-group">
-										<label>Diagnosis</label>
-										<AsyncSelect
-											required
-											cacheOptions
-											value={selectedMultipleOption[hist.id]}
-											getOptionValue={getOptionValues}
-											getOptionLabel={getOptionLabels}
-											defaultOptions
-											loadOptions={getOptions}
-											onChange={evt => handleChangeOptions(evt, hist.id)}
-											placeholder="Enter the diagnosis name or ICD-10/ICPC-2 code"
-										/>
-									</div>
-								</div>
-								<div className="col-sm-2">
-									<div className="form-group">
-										<label>Date Diagnosed</label>
-										<DatePicker
-											selected={multiDate[hist.id]}
-											onChange={date => setDate(date, hist.id)}
-											peekNextMonth
-											showMonthDropdown
-											showYearDropdown
-											dropdownMode="select"
-											dateFormat="dd-MMM-yyyy"
-											className="single-daterange form-control"
-											placeholderText="Date Diagnosed"
-										/>
-									</div>
-								</div>
-								<div className="col-sm-4">
-									<div className="form-group">
-										<label>Comment</label>
-										<input
-											placeholder="Comment on the past medical history"
-											//value={multiComment[i]}
-											onChange={evt => handleChangeComment(evt, hist.id)}
-											className="form-control"
-										/>
-									</div>
-								</div>
-								<div className="col-sm-1" style={{ position: 'relative' }}>
-									<a
-										className="text-danger delete-icon"
-										onClick={removeHistory(hist.id)}>
-										<i className="os-icon os-icon-cancel-circle" />
-									</a>
+						<div className="row" key={i}>
+							<div className="col-sm-6">
+								<div className="form-group">
+									<label>Diagnosis</label>
+									<Controller
+										as={
+											<AsyncSelect
+												required
+												cacheOptions
+												getOptionValue={getOptionValues}
+												getOptionLabel={getOptionLabels}
+												defaultOptions
+												loadOptions={getOptions}
+												placeholder="Enter the diagnosis name or ICD-10/ICPC-2 code"
+											/>
+										}
+										control={control}
+										rules={{ required: true }}
+										onChange={([selected]) => {
+											return selected;
+										}}
+										name={`diagnosis[${hist.id}]`}
+									/>
+									<ErrorMessage
+										errors={errors}
+										name={`diagnosis[${hist.id}]`}
+										message="This is required"
+										as={<span className="alert alert-danger" />}
+									/>
 								</div>
 							</div>
-						)
+							<div className="col-sm-2">
+								<div className="form-group">
+									<label>Date Diagnosed</label>
+
+									<Controller
+										as={
+											<DatePicker
+												selected={multiDate[hist.id]}
+												peekNextMonth
+												showMonthDropdown
+												showYearDropdown
+												dropdownMode="select"
+												dateFormat="dd-MMM-yyyy"
+												className="single-daterange form-control"
+												placeholderText="Date Diagnosed"
+											/>
+										}
+										control={control}
+										rules={{ required: true }}
+										onChange={([selected]) => {
+											setDate(selected, hist.id);
+											return selected;
+										}}
+										name={`date[${hist.id}]`}
+									/>
+									<ErrorMessage
+										errors={errors}
+										name={`date[${hist.id}]`}
+										message="This is required"
+										as={<span className="alert alert-danger" />}
+									/>
+								</div>
+							</div>
+							<div className="col-sm-4">
+								<div className="form-group">
+									<label>Comment</label>
+									<input
+										placeholder="Comment on the past medical history"
+										ref={register}
+										name={`comment[${hist.id}]`}
+										className="form-control"
+									/>
+								</div>
+							</div>
+							<div className="col-sm-1" style={{ position: 'relative' }}>
+								<a
+									className="text-danger delete-icon"
+									onClick={() => remove(hist.id)}>
+									<i className="os-icon os-icon-cancel-circle" />
+								</a>
+							</div>
+						</div>
 					);
 				})}
 
@@ -219,6 +240,10 @@ let PastHistory = props => {
 const mapStateToProps = state => {
 	return {
 		encounterData: state.patient.encounterData,
+		encounterForm: state.patient.encounterForm,
 	};
 };
-export default connect(mapStateToProps, { loadEncounterData })(PastHistory);
+export default connect(mapStateToProps, {
+	loadEncounterData,
+	loadEncounterForm,
+})(PastHistory);

@@ -1,6 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import SunEditor from 'suneditor-react';
+import { connect } from 'react-redux';
+import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
+import {
+	get_all_diagnosis,
+	get_all_services,
+	getAllServiceCategory,
+} from '../../../actions/settings';
+import { loadInvCategories, loadInventories } from '../../../actions/inventory';
 
 class Consumable extends Component {
 	state = {
@@ -165,4 +173,14 @@ class Consumable extends Component {
 	}
 }
 
-export default Consumable;
+const mapStateToProps = (state, ownProps) => {
+	return {
+		encounterData: state.patient.encounterData,
+		encounterForm: state.patient.encounterForm,
+	};
+};
+
+export default connect(mapStateToProps, {
+	loadEncounterData,
+	loadEncounterForm,
+})(Consumable);
