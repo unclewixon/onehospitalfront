@@ -229,20 +229,22 @@ const PlanForm = props => {
 
 		let requestDataProc = [];
 		let theRequest = {};
-		data.proc_procedure.forEach(value => {
-			requestDataProc = [
-				...requestDataProc,
-				{
-					service_id: value.value,
-					service_name: value.label,
-				},
-			];
-		});
-		theRequest.requestType = data.proc_service_center.label.toLowerCase();
+		if (data.proc_procedure?.length > 0) {
+			data.proc_procedure.forEach(value => {
+				requestDataProc = [
+					...requestDataProc,
+					{
+						service_id: value.value,
+						service_name: value.label,
+					},
+				];
+			});
+		}
+		theRequest.requestType = data.proc_service_center?.label?.toLowerCase();
 		theRequest.bill_now = data.proc_bill_now === 'on' ? 'true' : 'false';
 		theRequest.request_note = data.proc_note;
 		theRequest.patient_id = patient.id;
-		theRequest.primary_diagnosis = data.proc_diagnosis.description;
+		theRequest.primary_diagnosis = data.proc_diagnosis?.description;
 		theRequest.requestBody = requestDataProc;
 
 		let res = {
@@ -293,7 +295,7 @@ const PlanForm = props => {
 									/>
 								}
 								control={control}
-								rules={{ required: true }}
+								//rules={{ required: true }}
 								onChange={([selected]) => {
 									return selected;
 								}}
@@ -314,7 +316,7 @@ const PlanForm = props => {
 									/>
 								}
 								control={control}
-								rules={{ required: true }}
+								//rules={{ required: true }}
 								onChange={([selected]) => {
 									return selected;
 								}}
@@ -345,7 +347,7 @@ const PlanForm = props => {
 									/>
 								}
 								control={control}
-								rules={{ required: true }}
+								//rules={{ required: true }}
 								onChange={([selected]) => {
 									handleChangeOptions(selected);
 									return selected;
@@ -389,7 +391,7 @@ const PlanForm = props => {
 												/>
 											}
 											control={control}
-											rules={{ required: true }}
+											//rules={{ required: true }}
 											onChange={([selected]) => {
 												return selected;
 											}}
@@ -414,7 +416,7 @@ const PlanForm = props => {
 												/>
 											}
 											control={control}
-											rules={{ required: true }}
+											//rules={{ required: true }}
 											onChange={([selected]) => {
 												setGenName(selected.value);
 												return selected;
@@ -440,7 +442,7 @@ const PlanForm = props => {
 												/>
 											}
 											control={control}
-											rules={{ required: true }}
+											//rules={{ required: true }}
 											onChange={([selected]) => {
 												return selected;
 											}}
@@ -580,7 +582,7 @@ const PlanForm = props => {
 									/>
 								}
 								control={control}
-								rules={{ required: true }}
+								//rules={{ required: true }}
 								onChange={([selected]) => {
 									setTime(selected);
 									return selected;
@@ -667,7 +669,7 @@ const PlanForm = props => {
 									/>
 								}
 								control={control}
-								rules={{ required: true }}
+								//rules={{ required: true }}
 								onChange={([selected]) => {
 									handleChangeServiceCategory(selected);
 									return selected;
@@ -696,7 +698,7 @@ const PlanForm = props => {
 									/>
 								}
 								control={control}
-								rules={{ required: true }}
+								//rules={{ required: true }}
 								onChange={([selected]) => {
 									handleChangeProcedure(selected);
 									return selected;
@@ -728,7 +730,7 @@ const PlanForm = props => {
 									/>
 								}
 								control={control}
-								rules={{ required: true }}
+								//rules={{ required: true }}
 								onChange={([selected]) => {
 									handleChangeOptions(selected);
 									return selected;

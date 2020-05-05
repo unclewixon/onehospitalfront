@@ -47,19 +47,13 @@ const ReviewOfSystem = props => {
 							<Controller
 								as={<Select options={reviewOfSystem} />}
 								control={control}
-								rules={{ required: true }}
+								//rules={{ required: true }}
 								onChange={([selected]) => {
 									handleChange(selected);
 									return selected;
 								}}
 								name="system"
 								//defaultValue=""
-							/>
-							<ErrorMessage
-								errors={errors}
-								name="system"
-								message="This is required"
-								as={<span className="alert alert-danger" />}
 							/>
 						</div>
 					</div>

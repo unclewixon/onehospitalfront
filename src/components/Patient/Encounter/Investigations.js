@@ -294,16 +294,19 @@ const Investigations = props => {
 
 		let imagingRequestObj = [];
 		let theRequest = {};
-		data.rad_service_request.forEach(value => {
-			imagingRequestObj = [
-				...imagingRequestObj,
-				{
-					service_id: value.value,
-					service_name: value.label,
-				},
-			];
-		});
-		theRequest.requestType = data.rad_service_center.label.toLowerCase();
+		if (data.rad_service_request?.length > 0) {
+			data.rad_service_request.forEach(value => {
+				imagingRequestObj = [
+					...imagingRequestObj,
+					{
+						service_id: value.value,
+						service_name: value.label,
+					},
+				];
+			});
+		}
+
+		theRequest.requestType = data.rad_service_center?.label?.toLowerCase();
 		theRequest.request_note = data.lab_req_note;
 		theRequest.patient_id = patient.id;
 		theRequest.requestBody = imagingRequestObj;
@@ -312,8 +315,6 @@ const Investigations = props => {
 		props.loadEncounterData(encounterData);
 
 		dispatch(props.next);
-
-		console.log(labRequestObj, theRequest);
 	};
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
@@ -332,7 +333,7 @@ const Investigations = props => {
 									/>
 								}
 								control={control}
-								rules={{ required: true }}
+								//rules={{ required: true }}
 								onChange={([selected]) => {
 									// Place your logic here
 									return selected;
@@ -352,7 +353,7 @@ const Investigations = props => {
 								/>
 							}
 							control={control}
-							rules={{ required: true }}
+							//rules={{ required: true }}
 							onChange={([selected]) => {
 								// Place your logic here
 								console.log(selected);
@@ -382,7 +383,7 @@ const Investigations = props => {
 									/>
 								}
 								control={control}
-								rules={{ required: true }}
+								//rules={{ required: true }}
 								onChange={([selected]) => {
 									handleMultipleSelectInput('lab_combos', selected);
 									return selected;
@@ -409,7 +410,7 @@ const Investigations = props => {
 									/>
 								}
 								control={control}
-								rules={{ required: true }}
+								//rules={{ required: true }}
 								onChange={([selected]) => {
 									handleMultipleSelectInput('lab_tests_torequest', selected);
 									return selected;
@@ -490,7 +491,7 @@ const Investigations = props => {
 									/>
 								}
 								control={control}
-								rules={{ required: true }}
+								//rules={{ required: true }}
 								onChange={([selected]) => {
 									handleChangeServiceCategory(selected);
 									return selected;
@@ -519,7 +520,7 @@ const Investigations = props => {
 									/>
 								}
 								control={control}
-								rules={{ required: true }}
+								//rules={{ required: true }}
 								onChange={([selected]) => {
 									handleChangeProcedure(selected);
 									return selected;
