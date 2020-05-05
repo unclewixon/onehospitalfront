@@ -21,7 +21,7 @@ import {
 import { API_URI, appraisalAPI } from '../../services/constants';
 import { notifySuccess, notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
-// import { loadPerformancePeriod, setPerformancePeriod } from '../../actions/hr';
+import { setPerformancePeriod } from '../../actions/hr';
 
 const validate = values => {
 	const errors = {};
@@ -188,31 +188,50 @@ class CreateAppraisal extends Component {
 	// 	}
 	// };
 
+	lineManager = data => async () => {
+		try {
+			console.log(data);
+		} catch (e) {}
+	};
+
 	confirmSave = data => {
 		confirmAction(
-			this.doCreateAppraisal(data),
+			this.props.isStaffAppraisal
+				? this.lineManager(data)
+				: this.doCreateAppraisal(data),
 			null,
 			'You will not be able to edit after submitting appraisal '
 		);
 	};
 
 	render() {
-		const { location, staff, error, handleSubmit, period } = this.props;
+		const {
+			location,
+			staff,
+			error,
+			handleSubmit,
+			period,
+			isStaffAppraisal,
+		} = this.props;
 		const { submitting } = this.state;
 
 		return (
 			<div className="row my-4">
 				<div className="col-sm-12">
 					<div className="element-wrapper">
-						<div className="element-actions">
-							<Link
-								className="btn btn-primary btn-sm text-white"
-								to={`${location.pathname}#appraisal`}>
-								<i className="os-icon os-icon-ui-22" />
-								<span>go back</span>
-							</Link>
-						</div>
-						<h6 className="element-header">Create Appraisal</h6>
+						{!isStaffAppraisal ? (
+							<>
+								<div className="element-actions">
+									<Link
+										className="btn btn-primary btn-sm text-white"
+										to={`${location.pathname}#appraisal`}>
+										<i className="os-icon os-icon-ui-22" />
+										<span>go back</span>
+									</Link>
+								</div>
+								<h6 className="element-header">Create Appraisal</h6>
+							</>
+						) : null}
 						<div className="element-box">
 							<form onSubmit={handleSubmit(this.confirmSave)}>
 								{errorMessage(error)}
@@ -224,7 +243,7 @@ class CreateAppraisal extends Component {
 												<td className="text-right">
 													{staff.details.department
 														? staff.details.department.name
-														: ''}
+														: 'Medical Doctor'}
 												</td>
 											</tr>
 											<tr>
@@ -245,7 +264,12 @@ class CreateAppraisal extends Component {
 												<th>Objective</th>
 												<th>KPIs (Assessment Criteria)</th>
 												<th>Weight</th>
-												<th>Self Assessment</th>
+												{isStaffAppraisal ? <th>Staff Assessment </th> : null}
+												<th>
+													{!isStaffAppraisal
+														? 'SelfAssessment'
+														: 'Your assessment of Staff'}
+												</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -258,6 +282,7 @@ class CreateAppraisal extends Component {
 													sudden
 												</td>
 												<td rowSpan="5">70%</td>
+												{isStaffAppraisal ? <td rowSpan="5">65%</td> : null}
 												<td rowSpan="5">
 													<Field
 														name="performance"
@@ -291,6 +316,7 @@ class CreateAppraisal extends Component {
 													regularly
 												</td>
 												<td rowSpan="2">20%</td>
+												{isStaffAppraisal ? <td rowSpan="2">15%</td> : null}
 												<td rowSpan="2">
 													<Field
 														name="work_attitude"
@@ -312,6 +338,7 @@ class CreateAppraisal extends Component {
 												<td>Attendance</td>
 												<td>Achieve 95% monthly attendance at work</td>
 												<td>10%</td>
+												{isStaffAppraisal ? <td>9%</td> : null}
 												<td>
 													<Field
 														name="other_factor"
@@ -326,7 +353,10 @@ class CreateAppraisal extends Component {
 												<td />
 												<td />
 												<td />
+
 												<td>100%</td>
+												{isStaffAppraisal ? <td>89%</td> : null}
+
 												<td>
 													<Field
 														name="sum_total"
@@ -344,29 +374,52 @@ class CreateAppraisal extends Component {
 									<legend>
 										<span className="text-secondary">Employee's Comment</span>
 									</legend>
-									<div className="form-group">
-										<Field
-											name="employeeComment"
-											component={renderTextArea}
-											type="text"
-											placeholder="Write your comment here"
-										/>
-									</div>
-									<div className="form-buttons-w">
-										<div className="text-right mt-3">
-											<button
-												className="btn btn-primary"
-												disabled={submitting}
-												type="submit">
-												{submitting ? (
-													<img src={waiting} alt="submitting" />
-												) : (
-													'Save'
-												)}
-											</button>
+									{!isStaffAppraisal ? (
+										<div className="form-group">
+											<Field
+												name="employeeComment"
+												component={renderTextArea}
+												type="text"
+												placeholder="Write your comment here"
+											/>
 										</div>
-									</div>
+									) : (
+										'I did everything in my capacity to make sure all patients are very happy'
+									)}
 								</fieldset>
+
+								{isStaffAppraisal ? (
+									<fieldset className="form-group">
+										<legend>
+											<span className="text-secondary">
+												Line Manager's Comment
+											</span>
+										</legend>
+
+										<div className="form-group">
+											<Field
+												name="lineComment"
+												component={renderTextArea}
+												type="text"
+												placeholder="Write your comment here"
+											/>
+										</div>
+									</fieldset>
+								) : null}
+								<div className="form-buttons-w">
+									<div className="text-right mt-3">
+										<button
+											className="btn btn-primary"
+											disabled={submitting}
+											type="submit">
+											{submitting ? (
+												<img src={waiting} alt="submitting" />
+											) : (
+												'Save'
+											)}
+										</button>
+									</div>
+								</div>
 							</form>
 						</div>
 					</div>
@@ -405,5 +458,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default withRouter(
-	connect(mapStateToProps, { change, reset })(CreateAppraisal)
+	connect(mapStateToProps, { change, reset, setPerformancePeriod })(
+		CreateAppraisal
+	)
 );
