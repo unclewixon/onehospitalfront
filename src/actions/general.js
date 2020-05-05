@@ -40,6 +40,7 @@ import {
 	TOGGLE_IMMUNIZATION_DETAIL,
 	TOGGLE_ANTENATAL_ASSESSMENT_DETAIL,
 	TOGGLE_LINE_APPRAISAL,
+	TOGGLE_STAFF_APPRAISAL,
 } from './types';
 
 export const togglePreloading = status => {
@@ -339,6 +340,14 @@ export const toggleLineAppraisal = status => {
 		payload: status,
 	};
 };
+
+export const toggleStaffAppraisal = (status, data) => {
+	return {
+		type: TOGGLE_STAFF_APPRAISAL,
+		payload: status,
+		data,
+	};
+};
 // close modals
 export const closeModals = () => {
 	return dispatch => {
@@ -380,6 +389,7 @@ export const closeModals = () => {
 		dispatch(toggleImmunizationDetail(false, null));
 		dispatch(toggleAntenatalAssessmentDetail(false, null));
 		dispatch(toggleLineAppraisal(false));
+		dispatch(toggleStaffAppraisal(false, null));
 	};
 };
 
@@ -701,5 +711,13 @@ export const lineAppraisal = (action, data) => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleLineAppraisal(action));
+	};
+};
+
+export const loadStaffAppraisal = (action, data) => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleStaffAppraisal(action, data));
 	};
 };
