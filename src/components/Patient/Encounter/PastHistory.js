@@ -24,29 +24,17 @@ let PastHistory = props => {
 
 	const { encounterData, previous, next, encounterForm } = props;
 	const defaultValues = {
-		comment: encounterForm.medicalHistory?.comment,
-		diagnosis: encounterForm.medicalHistory?.diagnosis,
-		date: encounterForm.medicalHistory?.date,
-		icd10: encounterForm.medicalHistory?.icd10,
+		...(encounterForm.medicalHistory || []),
 	};
+
 	const { register, handleSubmit, control, errors } = useForm({
 		defaultValues,
 	});
 	const dispatch = useDispatch();
 
 	const onSubmit = async data => {
-		let medicalToSave = [];
-		let multiDate = data.date;
-		let multiComment = data.comment;
-		data.diagnosis.forEach(function(value, i) {
-			let _ToSave = [];
-			_ToSave['diagnosis'] = value.description;
-			_ToSave['date'] = multiDate[i];
-			_ToSave['comment'] = multiComment[i];
-			medicalToSave = [_ToSave, ...medicalToSave];
-		});
-
-		encounterData.medicalHistory = medicalToSave;
+		console.log(data);
+		encounterData.medicalHistory = data.pastHistory;
 		encounterForm.medicalHistory = data;
 		props.loadEncounterForm(encounterForm);
 		props.loadEncounterData(encounterData);
@@ -54,9 +42,9 @@ let PastHistory = props => {
 	};
 
 	useEffect(() => {
-		if (defaultValues?.diagnosis?.length > 0) {
-			defaultValues.diagnosis.map((item, index) => {
-				multiDate[index] = defaultValues.date[index];
+		if (defaultValues.pastHistory?.length > 0) {
+			defaultValues.pastHistory.map((item, index) => {
+				multiDate[index] = item.date;
 				setMultiDate(multiDate);
 				data = [...data, { id: index }];
 			});
@@ -157,11 +145,11 @@ let PastHistory = props => {
 										onChange={([selected]) => {
 											return selected;
 										}}
-										name={`diagnosis[${hist.id}]`}
+										name={`pastHistory[${hist.id}].diagnosis`}
 									/>
 									<ErrorMessage
 										errors={errors}
-										name={`diagnosis[${hist.id}]`}
+										name={`pastHistory[${hist.id}].diagnosis`}
 										message="This is required"
 										as={<span className="alert alert-danger" />}
 									/>
@@ -190,11 +178,11 @@ let PastHistory = props => {
 											setDate(selected, hist.id);
 											return selected;
 										}}
-										name={`date[${hist.id}]`}
+										name={`pastHistory[${hist.id}].date`}
 									/>
 									<ErrorMessage
 										errors={errors}
-										name={`date[${hist.id}]`}
+										name={`pastHistory[${hist.id}].date`}
 										message="This is required"
 										as={<span className="alert alert-danger" />}
 									/>
@@ -206,7 +194,7 @@ let PastHistory = props => {
 									<input
 										placeholder="Comment on the past medical history"
 										ref={register}
-										name={`comment[${hist.id}]`}
+										name={`pastHistory[${hist.id}].comment`}
 										className="form-control"
 									/>
 								</div>
