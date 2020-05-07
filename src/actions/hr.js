@@ -10,6 +10,9 @@ import {
 	UPDATE_STAFF,
 	EDIT_STAFF_PAYLOAD,
 	LOAD_STAFF_TRANSACTION,
+	ADD_PERFORMANCE_PERIOD,
+	LOAD_PERFORMANCE_PERIOD,
+	SET_PERFORMANCE_PERIOD,
 } from './types';
 
 export const loadStaff = data => {
@@ -80,5 +83,25 @@ export const loadStaffTransaction = payload => {
 	return {
 		type: LOAD_STAFF_TRANSACTION,
 		payload,
+	};
+};
+
+export const loadPerformancePeriod = data => {
+	return {
+		type: LOAD_PERFORMANCE_PERIOD,
+		payload: data,
+	};
+};
+export const addPerformancePeriod = data => {
+	return {
+		type: ADD_PERFORMANCE_PERIOD,
+		payload: data,
+	};
+};
+
+export const setPerformancePeriod = data => {
+	return {
+		type: SET_PERFORMANCE_PERIOD,
+		payload: data,
 	};
 };

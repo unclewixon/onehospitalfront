@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { closeModals } from '../../actions/general';
 import DatePicker from 'react-datepicker';
-import { updateStaff } from '../../actions/user';
+// import { updateStaff } from '../../actions/user';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import Select from 'react-select';
@@ -150,7 +150,7 @@ function EditStaff(props) {
 				true,
 				values
 			);
-			props.updateStaff(rs);
+			// props.updateStaff(rs);
 			setSubmitting(false);
 			notifySuccess('profile updated');
 		} catch (e) {
@@ -618,6 +618,6 @@ const mapStateToProps = (state, ownProps) => {
 	};
 };
 
-export default connect(mapStateToProps, { closeModals, updateStaff })(
-	EditStaff
-);
+//@TODO: please add updateStaff as parameter to connect reoslving updateStaff action
+
+export default connect(mapStateToProps, { closeModals })(EditStaff);

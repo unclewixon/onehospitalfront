@@ -11,28 +11,38 @@ import {
 } from 'redux-form';
 import $ from 'jquery';
 
-import { getPeriod, errorMessage, request } from '../../services/utilities';
+import {
+	getPeriod,
+	errorMessage,
+	request,
+	renderTextArea,
+	confirmAction,
+} from '../../services/utilities';
 import { API_URI, appraisalAPI } from '../../services/constants';
-import { notifySuccess } from '../../services/notify';
+import { notifySuccess, notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
+import { setPerformancePeriod } from '../../actions/hr';
 
 const validate = values => {
 	const errors = {};
 	if (
 		!values.performance ||
-		(values.performance && parseInt(values.performance, 10) > 70)
+		(values.performance && parseInt(values.performance, 10) > 70) ||
+		(values.performance && parseInt(values.performance, 10) < 0)
 	) {
 		errors.performance = 'error';
 	}
 	if (
 		!values.work_attitude ||
-		(values.work_attitude && parseInt(values.work_attitude, 10) > 20)
+		(values.work_attitude && parseInt(values.work_attitude, 10) > 20) ||
+		(values.work_attitude && parseInt(values.work_attitude, 10) < 0)
 	) {
 		errors.work_attitude = 'error';
 	}
 	if (
 		!values.other_factor ||
-		(values.other_factor && parseInt(values.other_factor, 10) > 10)
+		(values.other_factor && parseInt(values.other_factor, 10) > 10) ||
+		(values.other_factor && parseInt(values.other_factor, 10) < 0)
 	) {
 		errors.other_factor = 'error';
 	}
@@ -92,16 +102,17 @@ class CreateAppraisal extends Component {
 		}
 	};
 
-	doCreateAppraisal = async data => {
+	doCreateAppraisal = data => async () => {
 		this.setState({ submitting: true });
 		const { staff, location, departments } = this.props;
-		const deptId = 'ffc8d174-306d-4dbc-9e5f-e940bd9e9d7c'; //staff.details.department.id;
+		const deptId = staff.details.department.id;
 		const department = departments.find(d => d.id === deptId);
 		if (department) {
 			const details = {
 				staffId: staff.id,
 				lineManagerId: department.hod_id,
 				departmentId: staff.details.department.id,
+				employeeComment: data.employeeComment,
 				indicators: [
 					{
 						keyFocus: 'Job Performance/Competence',
@@ -131,6 +142,8 @@ class CreateAppraisal extends Component {
 				],
 			};
 
+			console.log(details);
+
 			try {
 				await request(`${API_URI}${appraisalAPI}/new`, 'POST', true, details);
 				this.setState({ submitting: false });
@@ -140,6 +153,7 @@ class CreateAppraisal extends Component {
 			} catch (e) {
 				console.log(e);
 				this.setState({ submitting: false });
+				console.log(e);
 				setTimeout(function() {
 					$('.slide-pane__content').scrollTop(0);
 				}, 500);
@@ -157,25 +171,69 @@ class CreateAppraisal extends Component {
 		}
 	};
 
+	// DeleteRole = role => async () => {
+	// 	this.setState({ roleID: role.id });
+	// 	try {
+	// 		const rs = await request(
+	// 			`${API_URI}/settings/roles/${role.id}`,
+	// 			'DELETE',
+	// 			true
+	// 		);
+	// 		this.setState({ edit: false, previousRole: null });
+	// 		this.props.delete_role(role);
+	// 		notifySuccess('Role deleted');
+	// 	} catch (error) {
+	// 		console.log(error);
+	// 		notifyError('Error deleting role');
+	// 	}
+	// };
+
+	lineManager = data => async () => {
+		try {
+			console.log(data);
+		} catch (e) {}
+	};
+
+	confirmSave = data => {
+		confirmAction(
+			this.props.isStaffAppraisal
+				? this.lineManager(data)
+				: this.doCreateAppraisal(data),
+			null,
+			'You will not be able to edit after submitting appraisal '
+		);
+	};
+
 	render() {
-		const { location, staff, error, handleSubmit } = this.props;
+		const {
+			location,
+			staff,
+			error,
+			handleSubmit,
+			period,
+			isStaffAppraisal,
+		} = this.props;
 		const { submitting } = this.state;
 
 		return (
 			<div className="row my-4">
 				<div className="col-sm-12">
 					<div className="element-wrapper">
-						<div className="element-actions">
-							<Link
-								className="btn btn-primary btn-sm text-white"
-								to={`${location.pathname}#appraisal`}>
-								<i className="os-icon os-icon-ui-22" />
-								<span>go back</span>
-							</Link>
-						</div>
-						<h6 className="element-header">Create Appraisal</h6>
+						{!isStaffAppraisal ? (
+							<>
+								<div className="element-actions">
+									<Link
+										className="btn btn-primary btn-sm text-white"
+										to={`${location.pathname}#appraisal`}>
+										<i className="os-icon os-icon-ui-22" />
+										<span>go back</span>
+									</Link>
+								</div>
+								<h6 className="element-header">Create Appraisal</h6>
+							</>
+						) : null}
 						<div className="element-box">
-							<form onSubmit={handleSubmit(this.doCreateAppraisal)}>
+							<form onSubmit={handleSubmit(this.confirmSave)}>
 								{errorMessage(error)}
 								<div className="table-responsive col-md-12">
 									<table className="table table-striped">
@@ -183,13 +241,16 @@ class CreateAppraisal extends Component {
 											<tr>
 												<th className="text-left">Department</th>
 												<td className="text-right">
-													{staff.details.department.name}
+													{staff.details.department
+														? staff.details.department.name
+														: 'Medical Doctor'}
 												</td>
 											</tr>
 											<tr>
 												<th className="text-left">Management Period</th>
 												<td className="text-right text-uppercase">
-													{getPeriod()}
+													{/* {getPeriod()} */}
+													{period.performancePeriod}
 												</td>
 											</tr>
 										</tbody>
@@ -203,7 +264,12 @@ class CreateAppraisal extends Component {
 												<th>Objective</th>
 												<th>KPIs (Assessment Criteria)</th>
 												<th>Weight</th>
-												<th>Self Assessment</th>
+												{isStaffAppraisal ? <th>Staff Assessment </th> : null}
+												<th>
+													{!isStaffAppraisal
+														? 'SelfAssessment'
+														: 'Your assessment of Staff'}
+												</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -216,6 +282,7 @@ class CreateAppraisal extends Component {
 													sudden
 												</td>
 												<td rowSpan="5">70%</td>
+												{isStaffAppraisal ? <td rowSpan="5">65%</td> : null}
 												<td rowSpan="5">
 													<Field
 														name="performance"
@@ -249,6 +316,7 @@ class CreateAppraisal extends Component {
 													regularly
 												</td>
 												<td rowSpan="2">20%</td>
+												{isStaffAppraisal ? <td rowSpan="2">15%</td> : null}
 												<td rowSpan="2">
 													<Field
 														name="work_attitude"
@@ -270,6 +338,7 @@ class CreateAppraisal extends Component {
 												<td>Attendance</td>
 												<td>Achieve 95% monthly attendance at work</td>
 												<td>10%</td>
+												{isStaffAppraisal ? <td>9%</td> : null}
 												<td>
 													<Field
 														name="other_factor"
@@ -284,7 +353,10 @@ class CreateAppraisal extends Component {
 												<td />
 												<td />
 												<td />
+
 												<td>100%</td>
+												{isStaffAppraisal ? <td>89%</td> : null}
+
 												<td>
 													<Field
 														name="sum_total"
@@ -299,21 +371,55 @@ class CreateAppraisal extends Component {
 									</table>
 								</div>
 								<fieldset className="form-group">
-									<div className="form-buttons-w">
-										<div className="text-right mt-3">
-											<button
-												className="btn btn-primary"
-												disabled={submitting}
-												type="submit">
-												{submitting ? (
-													<img src={waiting} alt="submitting" />
-												) : (
-													'Save'
-												)}
-											</button>
+									<legend>
+										<span className="text-secondary">Employee's Comment</span>
+									</legend>
+									{!isStaffAppraisal ? (
+										<div className="form-group">
+											<Field
+												name="employeeComment"
+												component={renderTextArea}
+												type="text"
+												placeholder="Write your comment here"
+											/>
 										</div>
-									</div>
+									) : (
+										'I did everything in my capacity to make sure all patients are very happy'
+									)}
 								</fieldset>
+
+								{isStaffAppraisal ? (
+									<fieldset className="form-group">
+										<legend>
+											<span className="text-secondary">
+												Line Manager's Comment
+											</span>
+										</legend>
+
+										<div className="form-group">
+											<Field
+												name="lineComment"
+												component={renderTextArea}
+												type="text"
+												placeholder="Write your comment here"
+											/>
+										</div>
+									</fieldset>
+								) : null}
+								<div className="form-buttons-w">
+									<div className="text-right mt-3">
+										<button
+											className="btn btn-primary"
+											disabled={submitting}
+											type="submit">
+											{submitting ? (
+												<img src={waiting} alt="submitting" />
+											) : (
+												'Save'
+											)}
+										</button>
+									</div>
+								</div>
 							</form>
 						</div>
 					</div>
@@ -347,9 +453,12 @@ const mapStateToProps = (state, ownProps) => {
 		work_attitude: parseInt(_workAttitude, 10),
 		other_factor: parseInt(_otherFactor, 10),
 		departments: state.settings.departments,
+		period: state.hr.performancePeriod,
 	};
 };
 
 export default withRouter(
-	connect(mapStateToProps, { change, reset })(CreateAppraisal)
+	connect(mapStateToProps, { change, reset, setPerformancePeriod })(
+		CreateAppraisal
+	)
 );
