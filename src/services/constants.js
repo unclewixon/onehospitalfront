@@ -930,3 +930,11 @@ export const patientHx = [
 		],
 	},
 ];
+
+export const religions = [
+	{ id: 'Atheist', name: 'Atheist' },
+	{ id: 'Buddhism', name: 'Buddhism' },
+	{ id: 'Christianity', name: 'Christianity' },
+	{ id: 'Hinduism', name: 'Hinduism' },
+	{ id: 'Islam', name: 'Islam' },
+];
