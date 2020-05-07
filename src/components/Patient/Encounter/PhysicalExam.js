@@ -53,7 +53,7 @@ const PhysicalExam = props => {
 							<Controller
 								as={<Select options={physicalExamination} />}
 								control={control}
-								rules={{ required: true }}
+								//rules={{ required: true }}
 								onChange={([selected]) => {
 									handleChange(selected);
 									return selected;
