@@ -7,9 +7,9 @@ import {
 	ADD_STAFF,
 	LOAD_UNPAID_PAYROLL,
 	LOAD_PAYROLL_HISTORY,
-	ADD_PERFORMANCE_PERIOD,
-	LOAD_PERFORMANCE_PERIOD,
-	SET_PERFORMANCE_PERIOD,
+	UPDATE_STAFF,
+	EDIT_STAFF_PAYLOAD,
+	LOAD_STAFF_TRANSACTION,
 } from './types';
 
 export const loadStaff = data => {
@@ -22,6 +22,13 @@ export const loadStaff = data => {
 export const addStaff = data => {
 	return {
 		type: ADD_STAFF,
+		payload: data,
+	};
+};
+
+export const edited_staff_payload = data => {
+	return {
+		type: EDIT_STAFF_PAYLOAD,
 		payload: data,
 	};
 };
@@ -69,22 +76,9 @@ export const loadPayrollHistory = data => {
 	};
 };
 
-export const loadPerformancePeriod = data => {
+export const loadStaffTransaction = payload => {
 	return {
-		type: LOAD_PERFORMANCE_PERIOD,
-		payload: data,
-	};
-};
-export const addPerformancePeriod = data => {
-	return {
-		type: ADD_PERFORMANCE_PERIOD,
-		payload: data,
-	};
-};
-
-export const setPerformancePeriod = data => {
-	return {
-		type: SET_PERFORMANCE_PERIOD,
-		payload: data,
+		type: LOAD_STAFF_TRANSACTION,
+		payload,
 	};
 };

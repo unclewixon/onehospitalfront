@@ -6,56 +6,36 @@ import { connect } from 'react-redux';
 
 import { request } from '../../services/utilities';
 import { API_URI, appraisalAPI } from '../../services/constants';
-import { loadPerformancePeriod, setPerformancePeriod } from '../../actions/hr';
-import { lineAppraisal } from '../../actions/general';
+
 export class Appraisal extends Component {
-	state = {};
+	state = {
+		list: [],
+	};
 
 	componentDidMount() {
-		if (this.props.performancePeriods.length === 0) {
-			this.fetchAppraisals();
-		}
-
-		this.props.setPerformancePeriod({});
+		this.fetchAppraisals();
 	}
 
 	fetchAppraisals = async () => {
 		try {
-			this.setState({ loading: true });
+			const { staff } = this.props;
+			console.log(staff);
 			const rs = await request(
-				`${API_URI}${appraisalAPI}/list-periods`,
+				`${API_URI}${appraisalAPI}/staff-assessment/${staff.id}`,
 				'GET',
 				true
 			);
-			this.props.loadPerformancePeriod(rs);
-
-			this.setState({ loading: false });
+			console.log(rs);
+			this.setState({ list: rs });
 		} catch (error) {
 			console.log(error);
-			this.setState({ loading: false });
 		}
 	};
 
-	createAppraisal = (item, type) => {
-		const { location, history, setPerformancePeriod } = this.props;
-		//set performance period
-
-		setPerformancePeriod(item);
-		//got to create apparaisal
-		if (type === 'self') {
-			history.push(`${location.pathname}#create-appraisal`);
-		} else if (type === 'staff') {
-			history.push(`${location.pathname}#staff-appraisal`);
-		} else {
-			this.props.lineAppraisal(true);
-		}
-	};
 	render() {
-		const { location, departments, staff } = this.props;
-		// const deptId = staff.details.department.id;
-		// const department = departments.find(d => d.id === deptId);
-		const { performancePeriods } = this.props;
-		const rev = performancePeriods.slice().reverse();
+		const { location } = this.props;
+		const { list } = this.state;
+
 		return (
 			<div className="row">
 				<div className="col-sm-12">
@@ -100,63 +80,36 @@ export class Appraisal extends Component {
 										</tr>
 									</thead>
 									<tbody>
-										{rev.map((appraisal, i) => {
+										{list.map((appraisal, i) => {
 											return (
 												<tr key={i}>
 													<td className="flex text-center">
-														<a className="item-title text-color">
-															{appraisal.performancePeriod}
-														</a>
+														<a className="item-title text-color">Sick Leave</a>
 													</td>
 													<td className="flex text-center">
-														<a className="item-title text-color">
-															{appraisal.startDate}
-														</a>
+														<a className="item-title text-color">03-26-2013</a>
 													</td>
 													<td className="flex text-center">
-														<a className="item-title text-color">
-															{appraisal.endDate}
-														</a>
+														<a className="item-title text-color">4-2-2013</a>
 													</td>
 
 													<td className="text-center row-actions">
-														<Tooltip title="Self Appraisal">
-															<a
-																className="secondary"
-																onClick={() => {
-																	this.createAppraisal(appraisal, 'self');
-																}}>
+														<Tooltip title="Self">
+															<a className="secondary">
 																<i className="os-icon os-icon-folder-plus" />
 															</a>
 														</Tooltip>
 														<Tooltip title="Line Manager">
-															<a
-																className="secondary"
-																onClick={() => {
-																	this.createAppraisal(appraisal, 'line');
-																}}>
+															<a className="secondary">
 																<i className="os-icon os-icon-edit-32" />
 															</a>
 														</Tooltip>
-
-														{/* {department.hod_id === staff.id ? (
-															<Tooltip title="Staff Appraisal">
-																<Link
-																	className="secondary"
-																	to={`${location.pathname}#staff-detail`}>
-																	<i className="os-icon os-icon-folder-plus" />
-																</Link>
-															</Tooltip>
-														) : null} */}
-
-														<Tooltip title="Staff Appraisal">
-															<a
+														<Tooltip title="View Staff">
+															<Link
 																className="secondary"
-																onClick={() => {
-																	this.createAppraisal(appraisal, 'staff');
-																}}>
+																to={`${location.pathname}#staff-detail`}>
 																<i className="os-icon os-icon-folder-plus" />
-															</a>
+															</Link>
 														</Tooltip>
 													</td>
 												</tr>
@@ -176,15 +129,7 @@ export class Appraisal extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		staff: state.user.staff,
-		departments: state.settings.departments,
-		performancePeriods: state.hr.performancePeriods,
 	};
 };
 
-export default withRouter(
-	connect(mapStateToProps, {
-		loadPerformancePeriod,
-		setPerformancePeriod,
-		lineAppraisal,
-	})(Appraisal)
-);
+export default withRouter(connect(mapStateToProps)(Appraisal));
