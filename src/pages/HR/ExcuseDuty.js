@@ -131,9 +131,7 @@ class ExcuseDuty extends Component {
 									<form className="form-inline justify-content-sm-end">
 										<label>Doctor:</label>
 										<select className="form-control form-control-sm rounded mr-4">
-											<option value="Pending">All</option>
-											<option value="Active">Sick Leave</option>
-											<option value="Active">Maternity Leave</option>
+											<option value="Pending">Choose Doctor</option>
 										</select>
 										<label>Status:</label>
 										<select
