@@ -5,9 +5,11 @@ import LeaveItem from '../../components/LeaveItem';
 import { loadStaffLeave } from '../../actions/hr';
 import { request } from '../../services/utilities';
 import { API_URI, leaveMgtAPI } from '../../services/constants';
+import { get_all_leave_category } from '../../actions/settings';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { confirmAction } from '../../services/utilities';
+import DatePicker from 'react-datepicker';
 
 class LeaveMgt extends Component {
 
@@ -15,14 +17,25 @@ class LeaveMgt extends Component {
 		searching: false,
 		activeRequest: null,
 		showModal: false,
-		searching: false
+		LeaveList: []
 	};
 
 	onModalClick = () => {
-		this.setState({showModal: !this.state.showModal})
+		this.setState({ showModal: !this.state.showModal })
 	}
+
+	fetchLeaveCategory = async () => {
+		try {
+			const rs = await request(`${API_URI}/leave-category`, 'GET', true);
+			this.props.get_all_leave_category(rs);
+		} catch (error) {
+			notifyError('could not fetch leave categories!');
+		}
+	}
+
 	componentDidMount() {
 		this.fetchStaffLeave();
+		this.fetchLeaveCategory();
 	}
 
 	modalFunction = data => {
@@ -31,14 +44,15 @@ class LeaveMgt extends Component {
 	}
 
 	fetchStaffLeave = async () => {
-		this.setState({searching: true})
+		this.setState({ searching: true })
 		try {
 			const rs = await request(`${API_URI}${leaveMgtAPI}`, 'GET', true);
-			this.setState({searching: false})
+			this.setState({ searching: false })
 			const filteredRes = rs && rs.length ? rs.filter(leave => leave.leaveType !== "excuse_duty") : []
 			this.props.loadStaffLeave(filteredRes);
+			this.setState({LeaveList: filteredRes})
 		} catch (error) {
-			this.setState({searching: false})
+			this.setState({ searching: false })
 			console.log(error);
 		}
 	};
@@ -56,11 +70,11 @@ class LeaveMgt extends Component {
 
 	confirmReject = data => {
 		confirmAction(
-			this.rejectLeaveRequests, 
+			this.rejectLeaveRequests,
 			data,
 			"in rejecting leave?",
 			"Proceed?"
-		 )
+		)
 	}
 
 	approveLeaveRequests = async (data) => {
@@ -76,11 +90,11 @@ class LeaveMgt extends Component {
 
 	confirmApprove = data => {
 		confirmAction(
-			this.approveLeaveRequests, 
+			this.approveLeaveRequests,
 			data,
 			"continue in approving this leave application?",
 			"Are you sure?"
-		 )
+		)
 	}
 
 	deleteLeaveRequests = async (data) => {
@@ -95,15 +109,32 @@ class LeaveMgt extends Component {
 
 	confirmDelete = data => {
 		confirmAction(
-			this.deleteLeaveRequests, 
+			this.deleteLeaveRequests,
 			data,
 			"in deleting this leave application?",
 			"Do you want to continue"
-		 )
+		)
 	}
 
 	render() {
-		const { staff_leave } = this.props;
+		const { staff_leave, leave_categories } = this.props;
+
+		const filterByCategory = (id) => {
+			if(id === "none") {
+				return this.setState({ LeaveList: staff_leave })
+			}
+			const list = staff_leave.filter(leave => leave.category.id === id)
+			this.setState({ LeaveList: list })
+		}
+
+		const filterByStatus = (status) => {
+			if(status === "none") {
+				return this.setState({ LeaveList: staff_leave })
+			}
+			const list = staff_leave.filter(leave => leave.status === parseInt(status))
+			this.setState({ LeaveList: list })
+		}
+
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -112,24 +143,33 @@ class LeaveMgt extends Component {
 							<div className="element-wrapper">
 								<div className="element-actions">
 									<form className="form-inline justify-content-sm-end">
-										<label>Department:</label>
-										<select className="form-control form-control-sm rounded mr-4">
-											<option value="Pending">All</option>
-											<option value="Pending">Nursing</option>
-											<option value="Active">Gynae</option>
-											<option value="Cancelled">OPD</option>
-										</select>
 										<label>Category:</label>
-										<select className="form-control form-control-sm rounded mr-4">
-											<option value="Pending">All</option>
-											<option value="Active">Sick Leave</option>
-											<option value="Active">Maternity Leave</option>
+										<select
+											className="form-control form-control-sm rounded mr-4"
+											onChange={(e) => filterByCategory(e.target.value)}
+										>
+											<option value="none">Select Category</option>
+											{
+												leave_categories.map((cats, index) => {
+													return (
+														<option
+															key={index}
+															value={cats.id}
+														>
+															{cats.name}
+														</option>)
+												})
+											}
 										</select>
 										<label>Status:</label>
-										<select className="form-control form-control-sm rounded">
-											<option value="Pending">All</option>
-											<option value="Pending">On Leave</option>
-											<option value="Active">Not On Leave</option>
+										<select
+											className="form-control form-control-sm rounded"
+											onChange={(e) => filterByStatus(e.target.value)}
+										>
+											<option value="none">Select Status</option>
+											<option value={0}>Pending</option>
+											<option value={1}>Approved</option>
+											<option value={2}>Rejected</option>
 										</select>
 									</form>
 								</div>
@@ -158,7 +198,7 @@ class LeaveMgt extends Component {
 												</tr>
 											</thead>
 											<tbody>
-												{staff_leave.map((leave, i) => {
+												{this.state.LeaveList.map((leave, i) => {
 													return (
 														<LeaveItem
 															key={i}
@@ -169,13 +209,13 @@ class LeaveMgt extends Component {
 																this.modalFunction(Data, i)
 															}
 															index={i}
-															rejectRequest={Data => 
+															rejectRequest={Data =>
 																this.confirmReject(Data)
 															}
-															approveRequest={Data => 
+															approveRequest={Data =>
 																this.confirmApprove(Data)
 															}
-															deleteRequest={Data => 
+															deleteRequest={Data =>
 																this.confirmDelete(Data)
 															}
 														/>
@@ -197,7 +237,11 @@ class LeaveMgt extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		staff_leave: state.hr.staff_leave,
+		leave_categories: state.settings.leave_categories
 	}
 };
 
-export default connect(mapStateToProps, { loadStaffLeave })(LeaveMgt);
+export default connect(mapStateToProps, {
+	loadStaffLeave,
+	get_all_leave_category
+})(LeaveMgt);
