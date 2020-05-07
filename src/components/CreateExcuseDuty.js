@@ -84,7 +84,7 @@ const CreateExcuseDuty = ({
 			true
 		);
 		const filteredRes = res && res.length ? res.filter(staff => staff.job_title === "Doctor") : []
-		return filteredRes;
+		return res;
 	};
 
 

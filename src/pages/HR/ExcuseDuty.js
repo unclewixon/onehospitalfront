@@ -15,7 +15,7 @@ class ExcuseDuty extends Component {
 		searching: false,
 		activeRequest: null,
 		showModal: false,
-		searching: false
+		ExcuseList: []
 	};
 
 	onModalClick = () => {
@@ -36,6 +36,7 @@ class ExcuseDuty extends Component {
 			const rs = await request(`${API_URI}${leaveMgtAPI}/excuse-duty`, 'GET', true);
 			this.setState({searching: false})
 			this.props.loadStaffLeave(rs);
+			this.setState({ExcuseList: rs})
 		} catch (error) {
 			this.setState({searching: false})
 			console.log(error);
@@ -103,6 +104,23 @@ class ExcuseDuty extends Component {
 
 	render() {
 		const { staff_leave } = this.props;
+
+		const filterByCategory = (id) => {
+			if(id === "none") {
+				return this.setState({ LeaveList: staff_leave })
+			}
+			const list = staff_leave.filter(leave => leave.category.id === id)
+			this.setState({ LeaveList: list })
+		}
+
+		const filterByStatus = (status) => {
+			if(status === "none") {
+				return this.setState({ ExcuseList: staff_leave })
+			}
+			const list = staff_leave.filter(leave => leave.status === parseInt(status))
+			this.setState({ ExcuseList: list })
+		}
+
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -111,24 +129,19 @@ class ExcuseDuty extends Component {
 							<div className="element-wrapper">
 								<div className="element-actions">
 									<form className="form-inline justify-content-sm-end">
-										<label>Department:</label>
+										<label>Doctor:</label>
 										<select className="form-control form-control-sm rounded mr-4">
-											<option value="Pending">All</option>
-											<option value="Pending">Nursing</option>
-											<option value="Active">Gynae</option>
-											<option value="Cancelled">OPD</option>
-										</select>
-										<label>Category:</label>
-										<select className="form-control form-control-sm rounded mr-4">
-											<option value="Pending">All</option>
-											<option value="Active">Sick Leave</option>
-											<option value="Active">Maternity Leave</option>
+											<option value="Pending">Choose Doctor</option>
 										</select>
 										<label>Status:</label>
-										<select className="form-control form-control-sm rounded">
-											<option value="Pending">All</option>
-											<option value="Pending">On Leave</option>
-											<option value="Active">Not On Leave</option>
+										<select
+											className="form-control form-control-sm rounded"
+											onChange={(e) => filterByStatus(e.target.value)}
+										>
+											<option value="none">Select Status</option>
+											<option value={0}>Pending</option>
+											<option value={1}>Approved</option>
+											<option value={2}>Rejected</option>
 										</select>
 									</form>
 								</div>
@@ -157,7 +170,7 @@ class ExcuseDuty extends Component {
 												</tr>
 											</thead>
 											<tbody>
-												{staff_leave.map((leave, i) => {
+												{this.state.ExcuseList.map((leave, i) => {
 													return (
 														<ExcuseItem
 															key={i}

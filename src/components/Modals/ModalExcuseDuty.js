@@ -98,7 +98,7 @@ const ModalExcuseDuty = ({
 									<table className="table table-padded">
 										<tbody>
 											<tr>
-												<td class="font-weight-bold">Leave Reason</td>
+												<td class="font-weight-bold">Diagnosis</td>
 												<td>{activeRequest.application}</td>
 											</tr>
 										</tbody>
