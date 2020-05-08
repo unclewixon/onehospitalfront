@@ -29,6 +29,9 @@ import {
 	ADD_IMMUNIZATION,
 	DELETE_IMMUNIZATION,
 	LOAD_ANTENATAL_ASSESSMENT,
+	LOAD_LABOUR,
+	LOAD_LABOUR_DETAIL,
+	CLEAR_LABOUR_DETAIL,
 } from '../actions/types';
 import actions from 'redux-form/lib/actions';
 
@@ -73,6 +76,8 @@ const INITIAL_STATE = {
 	},
 	immunization: [],
 	antenatalAssessment: [],
+	enrolments: [],
+	labourDetail: {},
 };
 
 const patient = (state = INITIAL_STATE, action) => {
@@ -175,6 +180,21 @@ const patient = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				antenatalAssessment: action.payload,
+			};
+		case LOAD_LABOUR:
+			return {
+				...state,
+				enrolments: action.payload,
+			};
+		case LOAD_LABOUR_DETAIL:
+			return {
+				...state,
+				labourDetail: action.payload,
+			};
+		case CLEAR_LABOUR_DETAIL:
+			return {
+				...state,
+				labourDetail: {},
 			};
 		default:
 			return state;

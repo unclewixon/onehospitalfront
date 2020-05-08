@@ -6,43 +6,143 @@ import {
 	renderTextInput,
 	request,
 	renderSelect,
+	renderMultiselect,
 } from '../../services/utilities';
-import TimePicker from 'antd/lib/time-picker';
-import DatePicker from 'antd/lib/date-picker';
+import {
+	API_URI,
+	patientAPI,
+	searchAPI,
+	labourAPI,
+} from '../../services/constants';
+import DatePicker from 'react-datepicker';
+import { TimePicker } from 'antd';
 import waiting from '../../assets/images/waiting.gif';
 import { closeModals } from '../../actions/general';
-
+import {
+	caput,
+	moulding,
+	descent,
+	cervicalPosition,
+} from '../../services/constants';
+import { notifySuccess, notifyError } from '../../services/notify';
+import { getAllLabTests, getAllLabGroups } from '../../actions/settings';
 const validate = values => {
 	const errors = {};
-	if (!values.cervical_length) {
-		errors.cervical_length = 'enter cervical_length';
-	} else if (!/^\d+(\.\d{1,2})?$/i.test(values.cervical_length)) {
-		errors.cervical_length = 'Please enter a valid number';
+	if (!values.cervicalLength) {
+		errors.cervicalLength = 'enter cervical length';
+	} else if (!/^\d+(\.\d{1,2})?$/i.test(values.cervicalLength)) {
+		errors.cervicalLength = 'Please enter a valid number';
 	}
-	if (!values.cervical_effacement) {
-		errors.cervical_effacement = 'enter cervical_effacement';
-	} else if (!/^\d+(\.\d{1,2})?$/i.test(values.cervical_effacement)) {
-		errors.cervical_effacement = 'Please enter a valid number';
+	if (!values.cervicalEffacement) {
+		errors.cervicalEffacement = 'enter cervical effacement';
+	} else if (!/^\d+(\.\d{1,2})?$/i.test(values.cervicalEffacement)) {
+		errors.cervicalEffacement = 'Please enter a valid number';
+	}
+	if (!values.membranes) {
+		errors.membranes = 'select a membrane type';
+	}
+	if (!values.cervicalPosition || values.cervicalPosition === '') {
+		errors.cervicalPosition = 'select a cervical position';
 	}
 
 	return errors;
 };
+const otherMeasurement = [
+	'difficult_breathing',
+	'shock',
+	'vaginal_bleeding',
+	'convulsion_or_unconsciousness',
+	'prospined_cord',
+	'fetal_distress',
+];
 class ModalCreateLabMeasurement extends Component {
 	state = {
 		submitting: false,
 		exam_date: null,
 		exam_time: null,
+		examDate: '',
+		tests: [],
 	};
 	componentDidMount() {
 		document.body.classList.add('modal-open');
+		if (this.props.LabTests.length === 0) {
+			this.props
+				.getAllLabTests()
+				.then(response => {
+					this.filterTests(this.props.LabTests);
+				})
+				.catch(e => {
+					notifyError(
+						e.message || 'could not fetch service categories and services'
+					);
+				});
+		} else {
+			this.filterTests(this.props.LabTests);
+		}
 	}
 
 	componentWillUnmount() {
 		document.body.classList.remove('modal-open');
 	}
+
+	filterTests = tsts => {
+		const tests = tsts.map(el => el.name);
+		this.setState({ tests });
+	};
+
+	onChange = (time, timeString) => {
+		console.log(time, timeString);
+	};
+
+	setDate = async (date, type) => {
+		await this.setState({ [type]: date });
+	};
+
+	createMeasurement = async data => {
+		let newData = {
+			measurements: [],
+		};
+
+		Object.entries(data).map(el => {
+			if (otherMeasurement.includes(el[0])) {
+				newData['measurements'].push(el[0].split('_').join(' '));
+			} else {
+				newData[el[0]] = el[1];
+			}
+		});
+
+		newData['dateOfMeasurement'] = moment(this.state.examDate).format(
+			'DD/MM/YYYY'
+		);
+		newData['timeOfMeasurement'] = moment(this.state.examDate).format('LT');
+		newData['examiner_id'] = this.props.staff.profile.details.id;
+
+		console.log(this.props.staff.profile.details.id, newData);
+		try {
+			const { labourDetail } = this.props;
+			newData = { ...newData, ...labourDetail };
+			this.setState({ submitting: true });
+			const rs = await request(
+				`${API_URI}/labour-management/measurement/${labourDetail.id}/save`,
+				'POST',
+				true,
+				newData
+			);
+			console.log(rs);
+			notifySuccess('succesfully submitted');
+			this.props.closeModals(false);
+		} catch (e) {
+			this.setState({ submitting: false });
+			notifyError(
+				e.message || 'Submission of labour measurement form not successful'
+			);
+		}
+	};
+
 	render() {
-		const { submitting, exam_time, exam_date } = this.state;
+		const { submitting, exam_time, exam_date, examDate, tests } = this.state;
 		const { error, handleSubmit } = this.props;
+		const { first_name, last_name } = this.props.staff.profile.details;
 		return (
 			<div
 				className="onboarding-modal modal fade animated show"
@@ -79,7 +179,7 @@ class ModalCreateLabMeasurement extends Component {
 								</p>
 							</div>
 							<div className="form-block">
-								<form>
+								<form onSubmit={handleSubmit(this.createMeasurement)}>
 									{error && (
 										<div
 											className="alert alert-danger"
@@ -98,7 +198,7 @@ class ModalCreateLabMeasurement extends Component {
 												<div className="d-flex">
 													<div className="mx-2">
 														<Field
-															name="labour"
+															name="isFalseLabour"
 															component="input"
 															type="radio"
 															value="true"
@@ -109,7 +209,7 @@ class ModalCreateLabMeasurement extends Component {
 
 													<div className="mx-2">
 														<Field
-															name="labour"
+															name="isFalseLabour"
 															component="input"
 															type="radio"
 															value="false"
@@ -172,7 +272,15 @@ class ModalCreateLabMeasurement extends Component {
 
 										<div className="col-sm-12">
 											<div className="form-group">
-												<label>Position of fetus</label>
+												{/* <label>Position of fetus</label> */}
+												<Field
+													id="positionOfFetus"
+													name="positionOfFetus"
+													component={renderSelect}
+													label="Position of Fetals"
+													placeholder="Select Position of Fetals"
+													data={cervicalPosition}
+												/>
 											</div>
 										</div>
 
@@ -182,7 +290,7 @@ class ModalCreateLabMeasurement extends Component {
 												<div className="d-flex">
 													<div className="mx-2">
 														<Field
-															name="fetal_lie"
+															name="fetalLies"
 															component="input"
 															type="radio"
 															value="longitudinal"
@@ -192,7 +300,7 @@ class ModalCreateLabMeasurement extends Component {
 
 													<div className="mx-2">
 														<Field
-															name="presentation"
+															name="fetalLies"
 															component="input"
 															type="radio"
 															value="oblique"
@@ -201,7 +309,7 @@ class ModalCreateLabMeasurement extends Component {
 													</div>
 													<div className="mx-2">
 														<Field
-															name="presentation"
+															name="fetalLies"
 															component="input"
 															type="radio"
 															value="transverse"
@@ -224,7 +332,7 @@ class ModalCreateLabMeasurement extends Component {
 												component={renderSelect}
 												label="Descent"
 												placeholder="Select Department"
-												data={['old', 'young']}
+												data={descent}
 											/>
 										</div>
 										<p>** if buttocks felt, inform the Doctor</p>
@@ -232,8 +340,8 @@ class ModalCreateLabMeasurement extends Component {
 									<div className="row">
 										<div className="col-sm-4">
 											<Field
-												id="cervical_length"
-												name="cervical_length"
+												id="cervicalLength"
+												name="cervicalLength"
 												component={renderTextInput}
 												label="Cervical Length (cm)"
 												type="text"
@@ -242,8 +350,8 @@ class ModalCreateLabMeasurement extends Component {
 										</div>
 										<div className="col-sm-4">
 											<Field
-												id="cervical_effacement"
-												name="cervical_effacement"
+												id="cervicalEffacement"
+												name="cervicalEffacement"
 												component={renderTextInput}
 												label="Cervical effacement (%)"
 												type="text"
@@ -253,12 +361,12 @@ class ModalCreateLabMeasurement extends Component {
 
 										<div className="col-sm-4">
 											<Field
-												id="cervical_position"
-												name="cervical_position"
+												id="cervicalPosition"
+												name="cervicalPosition"
 												component={renderSelect}
 												label="Cervical position"
 												placeholder="Enter cervical position"
-												data={['kia', 'we']}
+												data={moulding}
 											/>
 										</div>
 									</div>
@@ -327,7 +435,7 @@ class ModalCreateLabMeasurement extends Component {
 												component={renderSelect}
 												label="Moulding"
 												placeholder="select moulding"
-												data={['kia', 'we']}
+												data={moulding}
 											/>
 										</div>
 
@@ -338,7 +446,7 @@ class ModalCreateLabMeasurement extends Component {
 												component={renderSelect}
 												label="Caput"
 												placeholder="select caput"
-												data={['kia', 'we']}
+												data={caput}
 											/>
 										</div>
 									</div>
@@ -352,7 +460,7 @@ class ModalCreateLabMeasurement extends Component {
 												<div className="d-flex">
 													<div className="mx-2">
 														<Field
-															name="passed_urine"
+															name="hasPassedUrine"
 															component="input"
 															type="radio"
 															value="yes"
@@ -362,7 +470,7 @@ class ModalCreateLabMeasurement extends Component {
 
 													<div className="mx-2">
 														<Field
-															name="passed_urine"
+															name="hasPassedUrine"
 															component="input"
 															type="radio"
 															value="no"
@@ -381,7 +489,7 @@ class ModalCreateLabMeasurement extends Component {
 												<div className="d-flex">
 													<div className="mx-2">
 														<Field
-															name="cyatacin"
+															name="administeredCyatacin"
 															component="input"
 															type="radio"
 															value="yes"
@@ -391,7 +499,7 @@ class ModalCreateLabMeasurement extends Component {
 
 													<div className="mx-2">
 														<Field
-															name="cyatacin"
+															name="administeredCyatacin"
 															component="input"
 															type="radio"
 															value="no"
@@ -411,7 +519,7 @@ class ModalCreateLabMeasurement extends Component {
 												<div className="d-flex">
 													<div className="mx-2">
 														<Field
-															name="other_drug"
+															name="administeredDrugs"
 															component="input"
 															type="radio"
 															value="yes"
@@ -421,7 +529,7 @@ class ModalCreateLabMeasurement extends Component {
 
 													<div className="mx-2">
 														<Field
-															name="other_drug"
+															name="administeredDrugs"
 															component="input"
 															type="radio"
 															value="no"
@@ -432,16 +540,18 @@ class ModalCreateLabMeasurement extends Component {
 											</div>
 										</div>
 										<div className="col-sm-12">
+											<label className="mx-1">Lab Tests</label>
 											<Field
-												id="lab_tests"
-												name="lab_tests"
-												component={renderTextInput}
+												id="labTests"
+												name="labTests"
+												component={renderMultiselect}
 												label="Lab Tests"
 												placeholder="What lab tests were done ?"
+												data={tests}
 											/>
 										</div>
 									</div>
-									<div className="row">
+									<div className="row mt-2">
 										<h3>Other Measurements</h3>
 
 										<div className="col-md-12 p-0">
@@ -451,6 +561,7 @@ class ModalCreateLabMeasurement extends Component {
 														name="difficult_breathing"
 														component="input"
 														type="checkbox"
+														value="Difficult Breathing"
 													/>
 													<label className="mx-1">Difficult Breathing</label>
 												</div>
@@ -460,6 +571,7 @@ class ModalCreateLabMeasurement extends Component {
 														name="shock"
 														component="input"
 														type="checkbox"
+														value="Shock"
 													/>
 													<label className="mx-1">Shock</label>
 												</div>
@@ -469,6 +581,7 @@ class ModalCreateLabMeasurement extends Component {
 														name="vaginal_bleeding"
 														component="input"
 														type="checkbox"
+														value="Vaginal bleeding"
 													/>
 													<label className="mx-1">Vaginal bleeding</label>
 												</div>
@@ -476,9 +589,10 @@ class ModalCreateLabMeasurement extends Component {
 											<div className="col-md-12 d-flex">
 												<div className="col-sm-4 pl-0">
 													<Field
-														name="convulsion"
+														name="convulsion_or_unconsciousness"
 														component="input"
 														type="checkbox"
+														value="Convulsion or Unconsciousness"
 													/>
 													<label className="mx-1">
 														Convulsion or Unconsciousness
@@ -487,9 +601,10 @@ class ModalCreateLabMeasurement extends Component {
 
 												<div className="col-sm-4 pl-0">
 													<Field
-														name="prosipned_cord"
+														name="prospined_cord"
 														component="input"
 														type="checkbox"
+														value="Prospined cord"
 													/>
 													<label className="mx-1">Prosipned cord</label>
 												</div>
@@ -499,6 +614,7 @@ class ModalCreateLabMeasurement extends Component {
 														name="fetal_distress"
 														component="input"
 														type="checkbox"
+														value="Fetal distress"
 													/>
 													<label className="mx-1">Fetal distress</label>
 												</div>
@@ -510,14 +626,16 @@ class ModalCreateLabMeasurement extends Component {
 												name="examiner_name"
 												component={renderTextInput}
 												label="Examiner's  Name"
-												placeholder="Examiner's name?"
+												placeholder={first_name + ' ' + last_name}
+												readOnly
 											/>
 										</div>
-										<div className="col-sm-12 d-flex">
+										{/* <div className="col-sm-12 d-flex">
 											<div className="col-md-6 pl-0">
 												<TimePicker
 													use12Hours
-													defaultValue={moment('13:30:56', 'HH:mm:ss')}
+													defaultOpenValue={moment('00:00:00', 'HH:mm:ss')}
+													onChange={() => this.onChange()}
 												/>
 											</div>
 
@@ -525,6 +643,28 @@ class ModalCreateLabMeasurement extends Component {
 												<DatePicker
 													defaultValue={moment('2015-01-01', 'mm/dd/yyyy')}
 												/>
+											</div>
+										</div> */}
+										<div className="col-sm-12">
+											<div className="form-group">
+												<label> Time and Date of measurement</label>
+												<div className="custom-date-input">
+													<DatePicker
+														selected={examDate}
+														onChange={date => this.setDate(date, 'examDate')}
+														peekNextMonth
+														showMonthDropdown
+														showYearDropdown
+														dropdownMode="select"
+														className="single-daterange form-control"
+														placeholderText="Select date and time"
+														timeInputLabel="Time:"
+														dateFormat="MM/dd/yyyy h:mm aa"
+														showTimeInput
+														minDate={new Date()}
+														required
+													/>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -563,4 +703,15 @@ ModalCreateLabMeasurement = reduxForm({
 	form: 'labour_measurement',
 	validate,
 })(ModalCreateLabMeasurement);
-export default connect(null, { closeModals })(ModalCreateLabMeasurement);
+
+const mapStateToProps = state => {
+	return {
+		labourDetail: state.patient.labourDetail,
+		staff: state.user,
+		LabTests: state.settings.lab_tests,
+	};
+};
+
+export default connect(mapStateToProps, { closeModals, getAllLabTests })(
+	ModalCreateLabMeasurement
+);

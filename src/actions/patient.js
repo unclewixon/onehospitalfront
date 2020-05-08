@@ -29,6 +29,9 @@ import {
 	ADD_IMMUNIZATION,
 	DELETE_IMMUNIZATION,
 	LOAD_ANTENATAL_ASSESSMENT,
+	LOAD_LABOUR,
+	LOAD_LABOUR_DETAIL,
+	CLEAR_LABOUR_DETAIL,
 } from './types';
 import { request } from '../services/utilities';
 
@@ -251,6 +254,25 @@ export const loadAntenatalAssessment = payload => {
 	return {
 		type: LOAD_ANTENATAL_ASSESSMENT,
 		payload,
+	};
+};
+export const loadLabour = payload => {
+	return {
+		type: LOAD_LABOUR,
+		payload,
+	};
+};
+
+export const loadLabourDetails = payload => {
+	return {
+		type: LOAD_LABOUR_DETAIL,
+		payload,
+	};
+};
+
+export const clearLabourDetails = () => {
+	return {
+		type: CLEAR_LABOUR_DETAIL,
 	};
 };
 
