@@ -1,29 +1,40 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
+import Modal from 'react-bootstrap/Modal';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import DatePicker from 'react-datepicker';
-import waiting from '../assets/images/waiting.gif';
-import { get_all_leave_category } from '../actions/settings';
-import { notifySuccess, notifyError } from './../services/notify';
-import { API_URI } from '../services/constants';
-import { request } from '../services/utilities'
-import Select from 'react-select';
 import { useForm } from 'react-hook-form';
-import { withRouter } from 'react-router-dom';
+import Select from 'react-select';
+import DatePicker from 'react-datepicker';
+import waiting from '../../assets/images/waiting.gif';
+import { get_all_leave_category } from '../../actions/settings';
+import { notifySuccess, notifyError } from '../../services/notify';
+import { API_URI } from '../../services/constants';
+import { request } from '../../services/utilities'
 
-const CreateLeave = ({
-	get_all_leave_category,
+const ModalEditLeave = ({
+	showModal,
+	onModalClick,
+  staff,
+  get_all_leave_category,
 	leave_categories,
-	staff,
-	history
+  activeRequest,
+  onExitModal
 }) => {
-	const { register, handleSubmit, setValue } = useForm();
-	const [submitting, setSubmitting] = useState(false);
-	const [date, setDate] = useState(new Date());
-	const [leaveDate, setLeaveDate] = useState(new Date());
-	const [category, setCategory] = useState('');
-	const [endDate, setEndDate] = useState('')
+  const { register, handleSubmit, setValue, watch } = useForm({
+    defaultValues: {
+      leave_type: activeRequest.category.id,
+      reason: activeRequest.application,
+      endDate: activeRequest.endDate
+    },
 
+  });
+	const [submitting, setSubmitting] = useState(false);
+	const [date, setDate] = useState(new Date(activeRequest.start_date));
+	const [leaveDate, setLeaveDate] = useState(new Date(activeRequest.start_date));
+	const [category, setCategory] = useState(activeRequest.category);
+	const [endDate, setEndDate] = useState(new Date(activeRequest.end_date))
+
+  const values = watch()
 
 	const fetchLeaveCategory = useCallback(async () => {
 		try {
@@ -46,16 +57,16 @@ const CreateLeave = ({
 			label: leave.name
 		}
 		return leaveObj[leave.id]
-	})
+  })
 
 	const getEndDate = () => {
-		const catObj = category  ? leaveObj[category] : "";
+		const catObj = category && category.id  ? leaveObj[category.id] : leaveObj[category];
 		const duration = catObj && catObj.duration ? parseInt(catObj.duration) : 0;
 		const startDate = moment(date).format('YYYY-MM-DD');
-		const newDate = moment(date).add(duration, 'days').format('YYYY-MM-DD');
+    const newDate = moment(date).add(duration, 'days').format('YYYY-MM-DD');
 		setLeaveDate(startDate)
 		setEndDate(newDate)
-	}
+  }
 	
 	const onHandleSubmit = async (value) => {
 		setSubmitting(true)
@@ -67,22 +78,32 @@ const CreateLeave = ({
 			application: value.reason
 		}
 		try {
-			const rs = await request(`${API_URI}/hr/leave-management`, 'POST', true, newRequestData);
+			const rs = await request(`${API_URI}/hr/leave-management/${activeRequest.id}/update`, 'PATCH', true, newRequestData);
 			setSubmitting(false)
-			notifySuccess('Leave request added')
-			history.push('/front-desk#leave-request')
+      notifySuccess('Leave request added')
+      onModalClick()
 		} catch (error) {
 			setSubmitting(false)
 			notifyError('Could not add leave request');
 		}
-	}
+  }
+  
 
-		return (
-			<div className="row my-4">
-				<div className="col-sm-12">
-					<div className="element-wrapper">
-						<h6 className="element-header">Create Leave Request</h6>
-						<div className="element-box">
+	return (
+		<Modal
+			className="onboarding-modal"
+			show={showModal}
+			size="lg"
+			aria-labelledby="contained-modal-title-vcenter"
+			centered
+      onHide={onModalClick}
+      onExit={onExitModal}
+    >
+			<Modal.Header closeButton></Modal.Header>
+			<Modal.Body>
+				<div className="onboarding-content with-gradient text-center">
+					<div className="modal-body">
+          <div className="element-box">
 							<div className="form-block">
 								<form onSubmit={handleSubmit(onHandleSubmit)}>
 									<div className="row">
@@ -92,9 +113,12 @@ const CreateLeave = ({
 												id="leave_type"
 												name="leave_type"
 												ref={register}
-												placeholder="Select leave type"
+                        placeholder="Select leave type"
+                        defaultValue={{
+                          value: category.id,
+                          label: category.name
+                        }}
 												options={leaveOptions}
-												defaultValue={leaveOptions[0]}
 												onChange={e => {
 													setCategory(e.value);
 													getEndDate();
@@ -121,7 +145,7 @@ const CreateLeave = ({
 														dateFormat="dd-MMM-yyyy"
 														className="single-daterange form-control"
 														placeholderText="Select date of leave"
-														minDate={new Date()}
+														minDate={new Date(activeRequest.start_date)}
 													/>
 												</div>
 											</div>
@@ -132,14 +156,14 @@ const CreateLeave = ({
 												<label>End of leave date</label>
 												<div className="custom-date-input">
 													<DatePicker
-														value={endDate}
-														disabled
-														peekNextMonth
+                          disabled
+                            value={endDate}
+                            peekNextMonth
+                            name="endDate"
 														showMonthDropdown
-														ref={register}
+														ref={register({name: "endDate"})}
 														showYearDropdown
 														dropdownMode="select"
-														dateFormat="dd-MMM-yyyy"
 														className="single-daterange form-control"
 														placeholderText="Select date of leave"
 														minDate={new Date()}
@@ -155,7 +179,7 @@ const CreateLeave = ({
 												name="reason"
 												label="Leave Reason"
 												ref={register}
-												type="text"
+                        type="text"
 												style={{width: '100%', borderRadius: '7px', height: '80px'}}
 												onChange={ e => setValue('reason', e.target.value)}
 												placeholder="Enter your leave reason"
@@ -172,7 +196,7 @@ const CreateLeave = ({
 												{submitting ? (
 													<img src={waiting} alt="submitting" />
 												) : (
-													'Create leave request'
+													'Update leave request'
 												)}
 											</button>
 										</div>
@@ -182,9 +206,10 @@ const CreateLeave = ({
 						</div>
 					</div>
 				</div>
-			</div>
-		);
-}
+			</Modal.Body>
+		</Modal>
+	);
+};
 
 const mapStateToProps = (state) => {
 	return {
@@ -192,7 +217,6 @@ const mapStateToProps = (state) => {
 		staff: state.user.staff
 	};
 };
-export default withRouter(
-	connect(mapStateToProps, {
+export default connect(mapStateToProps, {
 	get_all_leave_category
-})(CreateLeave))
+})(ModalEditLeave)

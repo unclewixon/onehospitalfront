@@ -41,6 +41,16 @@ const ModalLeaveRequest = ({
 													<tbody>
 														<tr>
 															<td>
+																<div className="text-left">Job Title</div>
+															</td>
+															<td className="text-right">
+																<div className="value text-success">
+																	{activeRequest && activeRequest.staff ? activeRequest.staff.job_title : ''}
+																</div>
+															</td>
+														</tr>
+														<tr>
+															<td>
 																<div className="text-left">Start Date</div>
 															</td>
 															<td className="text-right">
@@ -51,7 +61,7 @@ const ModalLeaveRequest = ({
 																</div>
 															</td>
 														</tr>
-                            <tr>
+														<tr>
 															<td>
 																<div className="text-left">End Date</div>
 															</td>
@@ -90,13 +100,13 @@ const ModalLeaveRequest = ({
 											<tr>
 												<td class="font-weight-bold">Leave Category</td>
 												<td>
-													{activeRequest && activeRequest.category && activeRequest.category.name }
+													{activeRequest && activeRequest.category && activeRequest.category.name}
 												</td>
 											</tr>
 											<tr>
 												<td class="font-weight-bold">Leave Duration</td>
 												<td>
-													{activeRequest && activeRequest.category && activeRequest.category.duration }
+													{activeRequest && activeRequest.category && activeRequest.category.duration}  Days
 												</td>
 											</tr>
 											<tr>

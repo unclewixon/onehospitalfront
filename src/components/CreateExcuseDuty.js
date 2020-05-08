@@ -103,8 +103,8 @@ const CreateExcuseDuty = ({
 			staff_id: value && value.staff ? value.staff.id : '',
 			start_date: startDate ? startDate : '',
 			end_date: endDate ? endDate : '',
-			leave_category_id: value && value.diagnosis ? value.diagnosis.id : '',
-			application: value && value.diagnosis ? value.diagnosis.description : '',
+			leave_category_id: "248cd662-a260-46be-bc90-dbaeb1ba1f1c",
+			application: value ? value.reason : '',
 			appliedBy: value && value.consulting_doctor ? value.consulting_doctor.id : ''
 		}
 		try {
@@ -198,7 +198,7 @@ const CreateExcuseDuty = ({
 										minDate={new Date()}
 									/>
 								</div>
-								
+
 							</div>
 							<div className="col-sm-6">
 								<div className="form-group">
@@ -237,7 +237,20 @@ const CreateExcuseDuty = ({
 								/>
 							</div>
 						</div>
-
+						<div className="row">
+							<div className="col-sm-12 form-group">
+								<label>Doctor's Note</label>
+								<textarea
+									id="reason"
+									name="reason"
+									ref={register}
+									type="text"
+									style={{ width: '100%', borderRadius: '7px', height: '80px' }}
+									onChange={e => setValue('reason', e.target.value)}
+									placeholder="Enter doctor's note"
+								/>
+							</div>
+						</div>
 						<div className="row mt-2">
 							<div className="col-sm-12 text-right">
 								<button
@@ -269,4 +282,3 @@ export default withRouter(
 	connect(mapStateToProps, {
 
 	})(CreateExcuseDuty))
-
