@@ -149,31 +149,6 @@ const ImagingRequest = props => {
 										ref={register}
 									/>
 								</div>
-
-								{/*<div className="form-group col-sm-6">*/}
-								{/*	<label>*/}
-								{/*		Service to request{' '}*/}
-								{/*		{multi ? (*/}
-								{/*			<span className="mx-1 text-danger">* required </span>*/}
-								{/*		) : (*/}
-								{/*			''*/}
-								{/*		)}*/}
-								{/*	</label>*/}
-								{/*	<Select*/}
-								{/*		name="service_request"*/}
-								{/*		placeholder="Select service to request from"*/}
-								{/*		isMulti*/}
-								{/*		options={imagingServices}*/}
-								{/*		ref={register({ name: 'service_request' })}*/}
-								{/*		onChange={evt => {*/}
-								{/*			if (evt) {*/}
-								{/*				setMulti(false);*/}
-								{/*				setValue('service_request', evt);*/}
-								{/*			}*/}
-								{/*		}}*/}
-								{/*		required*/}
-								{/*	/>*/}
-								{/*</div>*/}
 							</div>
 
 							<div className="row">

@@ -1,40 +1,27 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import ModalLeaveRequest from '../../components/Modals/ModalLeaveRequest';
-import LeaveItem from '../../components/LeaveItem';
+import ExcuseItem from '../../components/ExcuseItem';
 import { loadStaffLeave } from '../../actions/hr';
 import { request } from '../../services/utilities';
 import { API_URI, leaveMgtAPI } from '../../services/constants';
-import { get_all_leave_category } from '../../actions/settings';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { confirmAction } from '../../services/utilities';
-import DatePicker from 'react-datepicker';
+import ModalExcuseDuty from '../../components/Modals/ModalExcuseDuty';
 
-class LeaveMgt extends Component {
+class ExcuseDuty extends Component {
 	state = {
 		searching: false,
 		activeRequest: null,
 		showModal: false,
-		LeaveList: [],
+		ExcuseList: [],
 	};
 
 	onModalClick = () => {
 		this.setState({ showModal: !this.state.showModal });
 	};
-
-	fetchLeaveCategory = async () => {
-		try {
-			const rs = await request(`${API_URI}/leave-category`, 'GET', true);
-			this.props.get_all_leave_category(rs);
-		} catch (error) {
-			notifyError('could not fetch leave categories!');
-		}
-	};
-
 	componentDidMount() {
 		this.fetchStaffLeave();
-		this.fetchLeaveCategory();
 	}
 
 	modalFunction = data => {
@@ -45,14 +32,14 @@ class LeaveMgt extends Component {
 	fetchStaffLeave = async () => {
 		this.setState({ searching: true });
 		try {
-			const rs = await request(`${API_URI}${leaveMgtAPI}`, 'GET', true);
+			const rs = await request(
+				`${API_URI}${leaveMgtAPI}/excuse-duty`,
+				'GET',
+				true
+			);
 			this.setState({ searching: false });
-			const filteredRes =
-				rs && rs.length
-					? rs.filter(leave => leave.leaveType !== 'excuse_duty')
-					: [];
-			this.props.loadStaffLeave(filteredRes);
-			this.setState({ LeaveList: filteredRes });
+			this.props.loadStaffLeave(rs);
+			this.setState({ ExcuseList: rs });
 		} catch (error) {
 			this.setState({ searching: false });
 			console.log(error);
@@ -67,10 +54,10 @@ class LeaveMgt extends Component {
 				true
 			);
 			console.log(res);
-			notifySuccess('Successful rejecting leave applications');
+			notifySuccess('Successful rejecting excuse');
 			this.fetchStaffLeave();
 		} catch (error) {
-			notifyError('Could not rejecting leave applications');
+			notifyError('Could not reject excuse');
 		}
 	};
 
@@ -78,7 +65,7 @@ class LeaveMgt extends Component {
 		confirmAction(
 			this.rejectLeaveRequests,
 			data,
-			'in rejecting leave?',
+			'in rejecting excuse?',
 			'Proceed?'
 		);
 	};
@@ -91,10 +78,10 @@ class LeaveMgt extends Component {
 				true
 			);
 			console.log(res);
-			notifySuccess('Successful approving leave applications');
+			notifySuccess('Successful approving excuse duty');
 			this.fetchStaffLeave();
 		} catch (error) {
-			notifyError('Could not approve leave applications');
+			notifyError('Could not approve excuse duty');
 		}
 	};
 
@@ -102,7 +89,7 @@ class LeaveMgt extends Component {
 		confirmAction(
 			this.approveLeaveRequests,
 			data,
-			'continue in approving this leave application?',
+			'continue in approving this excuse?',
 			'Are you sure?'
 		);
 	};
@@ -114,10 +101,10 @@ class LeaveMgt extends Component {
 				'DELETE',
 				true
 			);
-			notifySuccess('Successful removed leave applications');
+			notifySuccess('Successfully removed excuse');
 			this.fetchStaffLeave();
 		} catch (error) {
-			notifyError('Could not remove leave applications');
+			notifyError('Could not remove excuse');
 		}
 	};
 
@@ -125,13 +112,13 @@ class LeaveMgt extends Component {
 		confirmAction(
 			this.deleteLeaveRequests,
 			data,
-			'in deleting this leave application?',
+			'in deleting this excuse?',
 			'Do you want to continue'
 		);
 	};
 
 	render() {
-		const { staff_leave, leave_categories } = this.props;
+		const { staff_leave } = this.props;
 
 		const filterByCategory = id => {
 			if (id === 'none') {
@@ -143,12 +130,12 @@ class LeaveMgt extends Component {
 
 		const filterByStatus = status => {
 			if (status === 'none') {
-				return this.setState({ LeaveList: staff_leave });
+				return this.setState({ ExcuseList: staff_leave });
 			}
 			const list = staff_leave.filter(
 				leave => leave.status === parseInt(status)
 			);
-			this.setState({ LeaveList: list });
+			this.setState({ ExcuseList: list });
 		};
 
 		return (
@@ -159,18 +146,9 @@ class LeaveMgt extends Component {
 							<div className="element-wrapper">
 								<div className="element-actions">
 									<form className="form-inline justify-content-sm-end">
-										<label>Category:</label>
-										<select
-											className="form-control form-control-sm rounded mr-4"
-											onChange={e => filterByCategory(e.target.value)}>
-											<option value="none">Select Category</option>
-											{leave_categories.map((cats, index) => {
-												return (
-													<option key={index} value={cats.id}>
-														{cats.name}
-													</option>
-												);
-											})}
+										<label>Doctor:</label>
+										<select className="form-control form-control-sm rounded mr-4">
+											<option value="Pending">Choose Doctor</option>
 										</select>
 										<label>Status:</label>
 										<select
@@ -185,7 +163,7 @@ class LeaveMgt extends Component {
 								</div>
 								<h6 className="element-header">Leave Management</h6>
 								{this.state.activeRequest ? (
-									<ModalLeaveRequest
+									<ModalExcuseDuty
 										showModal={this.state.showModal}
 										activeRequest={this.state.activeRequest}
 										onModalClick={this.onModalClick}
@@ -206,9 +184,9 @@ class LeaveMgt extends Component {
 												</tr>
 											</thead>
 											<tbody>
-												{this.state.LeaveList.map((leave, i) => {
+												{this.state.ExcuseList.map((leave, i) => {
 													return (
-														<LeaveItem
+														<ExcuseItem
 															key={i}
 															onLeave={true}
 															hasRequest={false}
@@ -237,11 +215,7 @@ class LeaveMgt extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		staff_leave: state.hr.staff_leave,
-		leave_categories: state.settings.leave_categories,
 	};
 };
 
-export default connect(mapStateToProps, {
-	loadStaffLeave,
-	get_all_leave_category,
-})(LeaveMgt);
+export default connect(mapStateToProps, { loadStaffLeave })(ExcuseDuty);

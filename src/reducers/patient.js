@@ -32,6 +32,7 @@ import {
 	LOAD_LABOUR,
 	LOAD_LABOUR_DETAIL,
 	CLEAR_LABOUR_DETAIL,
+	ENCOUNTER_FORM,
 } from '../actions/types';
 import actions from 'redux-form/lib/actions';
 
@@ -54,6 +55,7 @@ const INITIAL_STATE = {
 	pharmacyRequests: [],
 	allRequests: [],
 	antennatal: [],
+	encounterForm: {},
 	encounterData: {
 		complaints: 'Presenting Complaints:',
 		reviewOfSystem: [],
@@ -61,11 +63,11 @@ const INITIAL_STATE = {
 		medicalHistory: [],
 		allergies: [],
 		physicalExamination: [],
-		physicalExaminationSummary: [],
+		//physicalExaminationSummary: [],
 		diagnosis: [],
 		investigations: {
-			clinicalLab: {},
-			imagingRequests: {},
+			labRequest: {},
+			imagingRequest: {},
 		},
 		plan: {
 			treatmentPlan: 'Treatment Plan:',
@@ -110,7 +112,17 @@ const patient = (state = INITIAL_STATE, action) => {
 		case ALLERGY:
 			return { ...state, allergy: action.payload };
 		case LOAD_ENCOUNTERS:
-			return { ...state, encounters: [...action.payload] };
+			return { ...state, encounters: [action.payload] };
+		case ENCOUNTER_FORM:
+			return { ...state, encounterForm: action.payload };
+		case UPDATE_COMPLAINT_DATA:
+			return {
+				...state,
+				encounterData: {
+					...state.encounterData,
+					complaints: action.payload,
+				},
+			};
 		case GET_PHYSIOTHERAPIES:
 			return { ...state, physiotherapies: action.payload };
 		case GET_DENTISTRY_REQUESTS:
@@ -151,14 +163,7 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, pharmacyRequests: action.payload };
 		case GET_ALL_REQUESTS:
 			return { ...state, allRequests: action.payload };
-		case UPDATE_COMPLAINT_DATA:
-			return {
-				...state,
-				encounterData: {
-					...state.encounterData,
-					complaints: action.payload,
-				},
-			};
+
 		case LOAD_ANTENNATAL:
 			return { ...state, antennatal: [...action.payload] };
 		case LOAD_IMMUNIZATION:

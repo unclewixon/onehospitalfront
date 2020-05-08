@@ -1,49 +1,91 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import { renderTextInput, request } from '../../../services/utilities';
+import { API_URI, diagnosisAPI } from '../../../services/constants';
+import DatePicker from 'react-datepicker';
+import { connect, useDispatch } from 'react-redux';
+import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
+import { Controller, ErrorMessage, useForm } from 'react-hook-form';
+import { Field } from 'redux-form';
+import { v4 as uuidv4 } from 'uuid';
 
-class PastHistory extends Component {
-	state = {
-		histories: [],
+let PastHistory = props => {
+	const [start_time, setStart_time] = useState(new Date());
+	const [multiDate, setMultiDate] = useState([]);
+	let [data, setData] = useState([]);
+
+	const append = () => {
+		setData([...data, { id: data.length }]);
+	};
+	const remove = index => {
+		setData([...data.slice(0, index), ...data.slice(index + 1)]);
 	};
 
-	addHistory = () => {
-		const { histories } = this.state;
-		this.setState({
-			histories: [...histories, { id: histories.length, deleted: 0 }],
-		});
+	const { encounterData, previous, next, encounterForm } = props;
+	const defaultValues = {
+		...(encounterForm.medicalHistory || []),
 	};
 
-	updateHistories = (id, type, value) => {
-		const { histories } = this.state;
-		const history = histories.find(d => d.id === id);
-		if (history) {
-			const idx = histories.findIndex(d => d.id === id);
-			const _histories = [
-				...histories.slice(0, idx),
-				{ ...history, [type]: value },
-				...histories.slice(idx + 1),
-			];
+	const { register, handleSubmit, control, errors } = useForm({
+		defaultValues,
+	});
+	const dispatch = useDispatch();
 
-			return _histories;
+	const onSubmit = async data => {
+		encounterData.medicalHistory = data.pastHistory || [];
+		encounterForm.medicalHistory = data;
+		props.loadEncounterForm(encounterForm);
+		props.loadEncounterData(encounterData);
+		dispatch(props.next);
+	};
+
+	useEffect(() => {
+		if (defaultValues.pastHistory?.length > 0) {
+			defaultValues.pastHistory.map((item, index) => {
+				multiDate[index] = item.date;
+				setMultiDate(multiDate);
+				data = [...data, { id: index }];
+			});
+			setData(data);
 		}
-		return [];
+	}, []);
+
+	const getOptionValues = option => option.id;
+	const getOptionLabels = option => option.description;
+	const setDate = (date, i) => {
+		multiDate[i] = date;
+		setStart_time(date);
+		setMultiDate(multiDate);
 	};
 
-	removeHistory = id => () => {
-		const histories = this.updateHistories(id, 'deleted', 1);
-		this.setState({ histories: [...histories] });
+	const getOptions = async inputValue => {
+		if (!inputValue) {
+			return [];
+		}
+		let val = inputValue.toUpperCase();
+		const res = await request(
+			`${API_URI}${diagnosisAPI}` + 'search?q=' + val,
+			'GET',
+			true
+		);
+		return res;
 	};
 
-	render() {
-		const { histories } = this.state;
-		const { previous, next } = this.props;
-		return (
-			<div className="form-block encounter">
+	const divStyle = {
+		height: '500px',
+	};
+
+	return (
+		<div className="form-block encounter" style={divStyle}>
+			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className="row">
 					<div className="col-md-12">
 						<a
 							className="btn btn-success btn-sm text-white"
-							onClick={this.addHistory}>
+							onClick={() => {
+								append();
+							}}>
 							<i className="os-icon os-icon-plus-circle" />
 							<span>add</span>
 						</a>
@@ -59,6 +101,7 @@ class PastHistory extends Component {
 								<input
 									type="radio"
 									name="icd10"
+									ref={register}
 									value="icpc2"
 									className="form-control"
 								/>
@@ -68,6 +111,7 @@ class PastHistory extends Component {
 								<input
 									type="radio"
 									name="icd10"
+									ref={register}
 									value="icd10"
 									className="form-control"
 								/>
@@ -76,47 +120,91 @@ class PastHistory extends Component {
 						</div>
 					</div>
 				</div>
-				{histories.map((hist, i) => {
+				{data.map((hist, i) => {
 					return (
-						hist.deleted === 0 && (
-							<div className="row" key={i}>
-								<div className="col-sm-4">
-									<div className="form-group">
-										<label>Diagnosis</label>
-										<select
-											placeholder="Enter the diagnosis name or ICD-10/ICPC-2 code"
-											className="form-control">
-											<option value=""></option>
-										</select>
-									</div>
-								</div>
-								<div className="col-sm-2">
-									<div className="form-group">
-										<label>Date Diagnosed</label>
-										<input
-											placeholder="Date Diagnosed"
-											className="form-control"
-										/>
-									</div>
-								</div>
-								<div className="col-sm-5">
-									<div className="form-group">
-										<label>Comment</label>
-										<input
-											placeholder="Comment on the past medical history"
-											className="form-control"
-										/>
-									</div>
-								</div>
-								<div className="col-sm-1" style={{ position: 'relative' }}>
-									<a
-										className="text-danger delete-icon"
-										onClick={this.removeHistory(hist.id)}>
-										<i className="os-icon os-icon-cancel-circle" />
-									</a>
+						<div className="row" key={i}>
+							<div className="col-sm-6">
+								<div className="form-group">
+									<label>Diagnosis</label>
+									<Controller
+										as={
+											<AsyncSelect
+												required
+												cacheOptions
+												getOptionValue={getOptionValues}
+												getOptionLabel={getOptionLabels}
+												defaultOptions
+												loadOptions={getOptions}
+												placeholder="Enter the diagnosis name or ICD-10/ICPC-2 code"
+											/>
+										}
+										control={control}
+										rules={{ required: true }}
+										onChange={([selected]) => {
+											return selected;
+										}}
+										name={`pastHistory[${hist.id}].diagnosis`}
+									/>
+									<ErrorMessage
+										errors={errors}
+										name={`pastHistory[${hist.id}].diagnosis`}
+										message="This is required"
+										as={<span className="alert alert-danger" />}
+									/>
 								</div>
 							</div>
-						)
+							<div className="col-sm-2">
+								<div className="form-group">
+									<label>Date Diagnosed</label>
+
+									<Controller
+										as={
+											<DatePicker
+												selected={multiDate[hist.id]}
+												peekNextMonth
+												showMonthDropdown
+												showYearDropdown
+												dropdownMode="select"
+												dateFormat="dd-MMM-yyyy"
+												className="single-daterange form-control"
+												placeholderText="Date Diagnosed"
+											/>
+										}
+										control={control}
+										rules={{ required: true }}
+										onChange={([selected]) => {
+											setDate(selected, hist.id);
+											return selected;
+										}}
+										name={`pastHistory[${hist.id}].date`}
+									/>
+									<ErrorMessage
+										errors={errors}
+										name={`pastHistory[${hist.id}].date`}
+										message="This is required"
+										as={<span className="alert alert-danger" />}
+									/>
+								</div>
+							</div>
+							<div className="col-sm-4">
+								<div className="form-group">
+									<label>Comment</label>
+									<input
+										placeholder="Comment on the past medical history"
+										ref={register}
+										name={`pastHistory[${hist.id}].comment`}
+										className="form-control"
+									/>
+								</div>
+							</div>
+							<div className="col-sm-1" style={{ position: 'relative' }}>
+								<a
+									className="text-danger delete-icon"
+									onClick={() => remove(hist.id)}>
+									<i className="os-icon os-icon-cancel-circle" />
+								</a>
+							</div>
+						</div>
 					);
 				})}
 
@@ -125,14 +213,23 @@ class PastHistory extends Component {
 						<button className="btn btn-primary" onClick={previous}>
 							Previous
 						</button>
-						<button className="btn btn-primary" onClick={next}>
+						<button className="btn btn-primary" type="submit">
 							Next
 						</button>
 					</div>
 				</div>
-			</div>
-		);
-	}
-}
+			</form>
+		</div>
+	);
+};
 
-export default PastHistory;
+const mapStateToProps = state => {
+	return {
+		encounterData: state.patient.encounterData,
+		encounterForm: state.patient.encounterForm,
+	};
+};
+export default connect(mapStateToProps, {
+	loadEncounterData,
+	loadEncounterForm,
+})(PastHistory);

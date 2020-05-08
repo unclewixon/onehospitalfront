@@ -74,7 +74,7 @@ const PharmNewRequestComponent = ({
 		}
 		let val = inputValue.toUpperCase();
 		const res = await request(
-			`${API_URI}${diagnosisAPI}/search?q=${val}`,
+			`${API_URI}${diagnosisAPI}search?q=${val}`,
 			'GET',
 			true
 		);
@@ -281,8 +281,17 @@ const PharmNewRequestComponent = ({
 										placeholder="Choose a formulary"
 										name="formulary"
 										ref={register({ name: 'formulary', required: true })}
+										value={{
+											value: 'pharmacy',
+											label: 'Pharmacy',
+										}}
 										onChange={e => setValue('formulary', e.value)}
-										options={genericNameOptions}
+										options={[
+											{
+												value: 'pharmacy',
+												label: 'Pharmacy',
+											},
+										]}
 									/>
 								</div>
 							</div>

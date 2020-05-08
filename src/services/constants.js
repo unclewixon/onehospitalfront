@@ -19,6 +19,7 @@ export const stocksAPI = '/stocks';
 export const inventoryCatAPI = '/inventory/categories';
 export const inventoryDownloadAPI = '/inventory/download';
 export const inventoryUploadAPI = '/inventory/stocks/bulk-upload';
+export const stockByCategoryAPI = '/inventory/stocks-by-category-name';
 export const inventorySubCatAPI = '/inventory/sub-categories';
 export const rolesAPI = '/settings/roles';
 export const staffAPI = '/hr/staffs';
@@ -37,6 +38,7 @@ export const serviceAPI = '/services';
 export const settingsAPI = '/settings/';
 export const diagnosisAPI = '/settings/diagnosis';
 export const labourAPI = '/labour-management/enrollment';
+export const consultationAPI = '/consultation/';
 
 export const months = [
 	'January',
@@ -51,6 +53,43 @@ export const months = [
 	'October',
 	'November',
 	'December',
+];
+export const severity = [
+	{
+		value: 'mild',
+		label: 'mild',
+	},
+	{ value: 'moderate', label: 'moderate' },
+	{ value: 'severe', label: 'severe' },
+	{ value: 'intolerance', label: 'intolerance' },
+];
+export const serviceCenter = [
+	{
+		value: 'lab',
+		label: 'LAB',
+	},
+];
+export const planServiceCenter = [
+	{
+		value: 'Pharmacy',
+		label: 'Pharmacy',
+	},
+];
+export const diagnosisType = [
+	{
+		value: 'Queried',
+		label: 'Queried',
+	},
+	{ value: 'Differential', label: 'Differential' },
+	{ value: 'Suspected', label: 'Suspected' },
+	{ value: 'Confirmed', label: 'Confirmed' },
+];
+
+export const allergyCategories = [
+	{ value: 'Drug', label: 'Drug' },
+	{ value: 'Food', label: 'Food' },
+	{ value: 'Environment', label: 'Environment' },
+	{ value: 'other', label: 'other' },
 ];
 
 export const relationships = [
@@ -229,7 +268,7 @@ export const encounters = [
 	'Past Medical History',
 	'Allergies',
 	'Physical Examination',
-	'Physical Examination Summary',
+	//'Physical Examination Summary',
 	'Diagnosis',
 	'Investigations',
 	'Plan',
@@ -1004,4 +1043,11 @@ export const descent = [
 		id: '0: None of head palpable',
 		name: '0: None of head palpable',
 	},
+];
+export const religions = [
+	{ id: 'Atheist', name: 'Atheist' },
+	{ id: 'Buddhism', name: 'Buddhism' },
+	{ id: 'Christianity', name: 'Christianity' },
+	{ id: 'Hinduism', name: 'Hinduism' },
+	{ id: 'Islam', name: 'Islam' },
 ];

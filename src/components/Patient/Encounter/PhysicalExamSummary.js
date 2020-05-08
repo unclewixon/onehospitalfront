@@ -1,10 +1,24 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import SunEditor from 'suneditor-react';
+import { connect, useDispatch } from 'react-redux';
+import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
+import { useForm } from 'react-hook-form';
 
-class PhysicalExamSummary extends Component {
-	render() {
-		const { previous, next } = this.props;
-		return (
+const PhysicalExamSummary = props => {
+	const { register, handleSubmit, setValue, getValues } = useForm();
+	let { encounterData, previous, next } = props;
+	const [summary, setSummary] = useState('');
+	const dispatch = useDispatch();
+	const handleChange = e => {
+		setSummary(e);
+	};
+	const onSubmit = async values => {
+		encounterData.physicalExaminationSummary = [summary];
+		props.loadEncounterData(encounterData);
+		dispatch(props.next);
+	};
+	return (
+		<form onSubmit={handleSubmit(onSubmit)}>
 			<div className="form-block encounter">
 				<div className="row">
 					<div className="col-sm-12">
@@ -25,7 +39,10 @@ class PhysicalExamSummary extends Component {
 							<SunEditor
 								width="100%"
 								placeholder="Please type here..."
-								autoFocus={false}
+								//setContents={summary}
+								name="summary"
+								ref={register}
+								autoFocus={true}
 								enableToolbar={true}
 								setOptions={{
 									height: 300,
@@ -45,6 +62,10 @@ class PhysicalExamSummary extends Component {
 										],
 									],
 								}}
+								//onFocus={handleFocus}
+								onChange={evt => {
+									handleChange(String(evt));
+								}}
 							/>
 						</div>
 					</div>
@@ -55,14 +76,24 @@ class PhysicalExamSummary extends Component {
 						<button className="btn btn-primary" onClick={previous}>
 							Previous
 						</button>
-						<button className="btn btn-primary" onClick={next}>
+						<button className="btn btn-primary" type="submit">
 							Next
 						</button>
 					</div>
 				</div>
 			</div>
-		);
-	}
-}
+		</form>
+	);
+};
 
-export default PhysicalExamSummary;
+const mapStateToProps = state => {
+	return {
+		encounterData: state.patient.encounterData,
+		encounterForm: state.patient.encounterForm,
+	};
+};
+
+export default connect(mapStateToProps, {
+	loadEncounterData,
+	loadEncounterForm,
+})(PhysicalExamSummary);

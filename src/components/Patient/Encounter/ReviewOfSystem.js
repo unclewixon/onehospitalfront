@@ -1,35 +1,59 @@
-import React, { Component, useState } from 'react';
-import { reviewOfSystem } from '../../../services/constants';
+import React, { Component, useEffect, useState } from 'react';
+import { planServiceCenter, reviewOfSystem } from '../../../services/constants';
 import Select from 'react-select';
-import { connect } from 'react-redux';
-import { useForm } from 'react-hook-form';
+import { connect, useDispatch } from 'react-redux';
+import { Controller, ErrorMessage, useForm } from 'react-hook-form';
+import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
 
 const ReviewOfSystem = props => {
 	const [selected, setSelected] = useState();
-	const { register, handleSubmit } = useForm();
-	const { storedData, previous, next } = props;
+	const { encounterData, previous, next, encounterForm } = props;
+	const [selectedOption, setSelectedOption] = useState([]);
+	const defaultValues = {
+		system: encounterForm.reviewOfSystem?.system,
+		selectedSystem: encounterForm.reviewOfSystem?.selectedSystem,
+	};
+	const { register, handleSubmit, control, errors } = useForm({
+		defaultValues,
+	});
+
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		setSelected(encounterForm.reviewOfSystem?.system);
+	}, []);
 
 	const handleChange = e => {
 		setSelected(e);
 	};
 
-	const handleSelection = e => {
-		console.log(e.target.value);
+	const onSubmit = async values => {
+		encounterData.reviewOfSystem = values.selectedSystem || [];
+		encounterForm.reviewOfSystem = values;
+		props.loadEncounterForm(encounterForm);
+		props.loadEncounterData(encounterData);
+		dispatch(props.next);
 	};
 
+	const divStyle = {
+		height: '500px',
+	};
 	return (
-		<div className="form-block encounter">
-			<form onSubmit={handleSubmit(next)}>
+		<div className="form-block encounter" style={divStyle}>
+			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className="row">
 					<div className="col-sm-12">
 						<div className="form-group">
-							<Select
-								name="system"
-								ref={register({ name: 'system' })}
-								options={reviewOfSystem}
-								onChange={evt => {
-									handleChange(evt);
+							<Controller
+								as={<Select options={reviewOfSystem} />}
+								control={control}
+								//rules={{ required: true }}
+								onChange={([selected]) => {
+									handleChange(selected);
+									return selected;
 								}}
+								name="system"
+								//defaultValue=""
 							/>
 						</div>
 					</div>
@@ -41,15 +65,13 @@ const ReviewOfSystem = props => {
 								<label>{selected.label}</label>
 								{selected.children.map((option, i) => (
 									<div key={i}>
-										<label>
+										<label key={i}>
 											<input
 												type="checkbox"
+												name="selectedSystem"
 												className="form-control"
-												ref={register({ name: 'selectedSystem' })}
+												ref={register}
 												value={option}
-												onChange={evt => {
-													handleSelection(evt);
-												}}
 											/>
 											{option}
 										</label>
@@ -76,8 +98,12 @@ const ReviewOfSystem = props => {
 
 const mapStateToProps = state => {
 	return {
-		storedData: state.patient.encounterData.reviewOfSystem,
+		encounterData: state.patient.encounterData,
+		encounterForm: state.patient.encounterForm,
 	};
 };
 
-export default connect(mapStateToProps, {})(ReviewOfSystem);
+export default connect(mapStateToProps, {
+	loadEncounterData,
+	loadEncounterForm,
+})(ReviewOfSystem);

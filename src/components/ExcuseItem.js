@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 import { showHistory } from '../actions/general';
 
-const LeaveItem = ({
+const ExcuseItem = ({
 	leave,
 	index,
 	showHistory,
@@ -26,9 +26,7 @@ const LeaveItem = ({
 						  leave.staff.other_names
 						: ''}
 				</td>
-				<td>
-					{leave.category && leave.category.name ? leave.category.name : ''}
-				</td>
+				<td>{leave.leaveType ? leave.leaveType : ''}</td>
 				<td>{leave.start_date ? leave.start_date : ''}</td>
 				<td>{leave.end_date ? leave.end_date : ''}</td>
 				<td>
@@ -82,4 +80,4 @@ const LeaveItem = ({
 	);
 };
 
-export default connect(null, { showHistory })(LeaveItem);
+export default connect(null, { showHistory })(ExcuseItem);
