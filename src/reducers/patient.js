@@ -60,11 +60,11 @@ const INITIAL_STATE = {
 		medicalHistory: [],
 		allergies: [],
 		physicalExamination: [],
-		physicalExaminationSummary: [],
+		//physicalExaminationSummary: [],
 		diagnosis: [],
 		investigations: {
-			clinicalLab: {},
-			imagingRequests: {},
+			labRequest: {},
+			imagingRequest: {},
 		},
 		plan: {
 			treatmentPlan: 'Treatment Plan:',

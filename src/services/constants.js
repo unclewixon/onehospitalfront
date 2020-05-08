@@ -19,6 +19,7 @@ export const stocksAPI = '/stocks';
 export const inventoryCatAPI = '/inventory/categories';
 export const inventoryDownloadAPI = '/inventory/download';
 export const inventoryUploadAPI = '/inventory/stocks/bulk-upload';
+export const stockByCategoryAPI = '/inventory/stocks-by-category-name';
 export const inventorySubCatAPI = '/inventory/sub-categories';
 export const rolesAPI = '/settings/roles';
 export const staffAPI = '/hr/staffs';
@@ -35,6 +36,7 @@ export const transactionsAPI = '/transactions';
 export const vouchersAPI = '/vouchers';
 export const serviceAPI = '/services';
 export const settingsAPI = '/settings/';
+export const consultationAPI = '/consultation/';
 export const diagnosisAPI = '/settings/diagnosis/';
 
 export const months = [

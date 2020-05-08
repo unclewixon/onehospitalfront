@@ -56,7 +56,6 @@ const Investigations = props => {
 			);
 			props.get_all_services(rs);
 		} catch (error) {
-			console.log(error);
 			notifyError('error fetching imaging requests for the patient');
 		}
 	};
@@ -310,10 +309,10 @@ const Investigations = props => {
 		theRequest.request_note = data.lab_req_note;
 		theRequest.patient_id = patient.id;
 		theRequest.requestBody = imagingRequestObj;
-		encounterData.investigations.labRequest = labRequestObj;
-		encounterData.investigations.imagingRequest = theRequest;
-		props.loadEncounterData(encounterData);
 
+		encounterData.investigations.labRequest = labRequestObj || [];
+		encounterData.investigations.imagingRequest = theRequest || [];
+		props.loadEncounterData(encounterData);
 		dispatch(props.next);
 	};
 	return (
@@ -356,7 +355,6 @@ const Investigations = props => {
 							//rules={{ required: true }}
 							onChange={([selected]) => {
 								// Place your logic here
-								console.log(selected);
 								onCategoryChange(selected.value);
 								return selected;
 							}}

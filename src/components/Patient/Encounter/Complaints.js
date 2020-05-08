@@ -24,7 +24,6 @@ const Complaints = props => {
 	};
 
 	const onSubmit = async values => {
-		console.log(encounterData);
 		encounterData.complaints = complaint;
 		props.loadEncounterData(encounterData);
 		dispatch(props.next);
