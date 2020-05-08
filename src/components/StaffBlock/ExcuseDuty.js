@@ -9,6 +9,9 @@ import searchingGIF from '../../assets/images/searching.gif';
 import { API_URI } from '../../services/constants';
 import Tooltip from 'antd/lib/tooltip';
 import ModalExcuseDuty from '../Modals/ModalExcuseDuty';
+import ModalEditExcuse from '../Modals/ModalEditExcuse';
+import { confirmAction } from '../../services/utilities';
+
 
 const ExcuseDuty = ({
 	loadStaffLeave,
@@ -19,9 +22,17 @@ const ExcuseDuty = ({
 	const [searching, setSearching] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
 	const [showModal, setShowModal] = useState(false);
+	const [showEdit, setShowEdit] = useState(false)
 
 	const onModalClick = () => {
 		setShowModal(!showModal)
+	}
+	const onEditClick = () => {
+		setShowEdit(!showEdit)
+	}
+
+	const onExitModal = () => {
+		setActiveRequest(null)
 	}
 	const getLeaveRequests = useCallback(async () => {
 		setSearching(true)
@@ -40,6 +51,24 @@ const ExcuseDuty = ({
 		getLeaveRequests()
 	}, [getLeaveRequests])
 
+	const deleteLeaveRequests = async (data) => {
+		try {
+			const res = await request(`${API_URI}/hr/leave-management/${data.id}`, 'DELETE', true);
+			notifySuccess('Successful removed leave applications')
+			getLeaveRequests()
+		} catch (error) {
+			notifyError('Could not remove leave applications')
+		}
+	}
+
+	const confirmDelete = data => {
+		confirmAction(
+			deleteLeaveRequests,
+			data,
+			"in deleting this leave application?",
+			"Do you want to continue"
+		)
+	}
 
 	return (
 		<div className="row my-4">
@@ -63,6 +92,17 @@ const ExcuseDuty = ({
 							onModalClick={onModalClick}
 						/>
 							) : null
+					}
+					{
+						activeRequest ? (
+							<ModalEditExcuse
+								showModal={showEdit}
+								activeRequest={activeRequest}
+								staff={staff}
+								onModalClick={onEditClick}
+								onExitModal={onExitModal}
+							/>
+						) : null
 					}
 					<div className="element-box">
 						<div className="table-responsive">
@@ -139,9 +179,36 @@ const ExcuseDuty = ({
 																			onModalClick();
 																			setActiveRequest(leave);
 																		}}>
-																		<i className="os-icon os-icon-documents-03" />
+																		<i className="os-icon os-icon-folder" />
 																	</a>
 																</Tooltip>
+																{
+																	leave.status === 0 ? (
+																			<Tooltip title="Edit Leave">
+																				<a
+																					style={{ height: '2rem', width: '2rem' }}
+																					onClick={() => {
+																						onEditClick();
+																						setActiveRequest(leave);
+																					}}>
+																					<i className="os-icon os-icon-documents-03" />
+																				</a>
+																			</Tooltip>
+																	) : null
+																}
+																{
+																		leave.status === 0 ? (
+																			<Tooltip title="Cancel">
+																				<a
+																					style={{ height: '2rem', width: '2rem' }}
+																					onClick={() => {
+																						confirmDelete(leave);
+																					}}>
+																					<i className="os-icon os-icon-trash" />
+																				</a>
+																			</Tooltip>
+																	) : null
+																}
 															</td>
 														</tr>
 													)
