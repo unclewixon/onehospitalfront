@@ -64,7 +64,7 @@ let Diagnosis = props => {
 		encounterForm.diagnosis = values;
 		props.loadEncounterForm(encounterForm);
 
-		encounterData.diagnosis = values.diagnosis;
+		encounterData.diagnosis = values.diagnosis || [];
 		props.loadEncounterData(encounterData);
 		dispatch(props.next);
 	};

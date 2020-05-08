@@ -234,7 +234,9 @@ const OpenEncounter = props => {
 };
 
 const mapStateToProps = (state, ownProps) => {
+	console.log(state.patient.encounterData);
 	return {
+		encounterData: state.patient.encounterData,
 		patient: state.user.patient,
 	};
 };

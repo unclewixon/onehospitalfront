@@ -60,7 +60,6 @@ let Consumable = props => {
 			setStock(rs);
 			setLoading(false);
 		} catch (e) {
-			console.log(e);
 			setLoading(false);
 			throw new SubmissionError({
 				_error: e.message || 'could not load data',
@@ -76,10 +75,11 @@ let Consumable = props => {
 		setData([...data.slice(0, index), ...data.slice(index + 1)]);
 	};
 	const onSubmit = async data => {
-		encounterData.consumable = data;
+		encounterData.consumable = data || [];
 		encounterData.consumable.instruction = summary;
-		console.log(encounterData);
 		props.loadEncounterData(encounterData);
+
+		console.log(encounterData);
 		// dispatch(props.next);
 		setLoading(true);
 		const { patient } = props;
@@ -87,6 +87,7 @@ let Consumable = props => {
 			const rs = await request(
 				`${API_URI}${consultationAPI}${patient.id}/save`,
 				'POST',
+				true,
 				encounterData
 			);
 
@@ -95,7 +96,6 @@ let Consumable = props => {
 			notifySuccess('Consultation created successfully');
 			setLoading(false);
 		} catch (error) {
-			console.log(error);
 			notifyError('Consultation failed');
 			setLoading(false);
 		}

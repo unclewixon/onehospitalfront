@@ -34,12 +34,10 @@ const PhysicalExam = props => {
 	};
 
 	const onSubmit = async values => {
-		console.log(values);
-
 		encounterForm.physicalExamination = values;
 		props.loadEncounterForm(encounterForm);
 
-		encounterData.physicalExamination = values.selectedPhysicalExam;
+		encounterData.physicalExamination = values.selectedPhysicalExam || [];
 		props.loadEncounterData(encounterData);
 		dispatch(props.next);
 	};
