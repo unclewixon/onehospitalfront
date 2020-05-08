@@ -17,7 +17,7 @@ const ModalEditExcuse = ({
   activeRequest,
   onExitModal
 }) => {
- 
+
   const [submitting, setSubmitting] = useState(false);
   const [searching, setSearching] = useState(false);
   const [selectedOption, setSelectedOption] = useState('');
@@ -26,13 +26,19 @@ const ModalEditExcuse = ({
   const [duration, setDuration] = useState(1)
   const [date, setDate] = useState(new Date(activeRequest.start_date))
   const [startDate, setStartDate] = useState('')
-  const [endDate, setEndDate] = useState('')
+  const [endDate, setEndDate] = useState(new Date(activeRequest.end_date))
 
-  
- const { handleSubmit, register, setValue } = useForm({
+  const dayDifference = (end, start) => {
+    let a = moment(end)
+    let b = moment(start)
+    const val = a.diff(b, "days")
+    return val
+  }
+
+  const { handleSubmit, register, setValue } = useForm({
     defaultValues: {
       staff: activeRequest.staff.id,
-      exempted_days: "",
+      exempted_days: dayDifference(endDate, date),
       diagnosis: "",
       consulting_doctor: activeRequest.appliedBy.id,
       reason: activeRequest.application
