@@ -10,7 +10,7 @@ import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
 import { notifySuccess, notifyError } from '../../services/notify';
-import { loadPerformancePeriod, addPerformancePeriod } from '../../actions/hr';
+import { loadPerformancePeriod } from '../../actions/hr';
 const { RangePicker } = DatePicker;
 
 const initialDate = item => ({
@@ -289,5 +289,4 @@ const mapStateToProps = (state, ownProps) => {
 
 export default connect(mapStateToProps, {
 	loadPerformancePeriod,
-	addPerformancePeriod,
 })(Appraisal);

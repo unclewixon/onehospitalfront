@@ -7,6 +7,9 @@ import {
 	ADD_STAFF,
 	LOAD_UNPAID_PAYROLL,
 	LOAD_PAYROLL_HISTORY,
+	UPDATE_STAFF,
+	EDIT_STAFF_PAYLOAD,
+	LOAD_STAFF_TRANSACTION,
 	ADD_PERFORMANCE_PERIOD,
 	LOAD_PERFORMANCE_PERIOD,
 	SET_PERFORMANCE_PERIOD,
@@ -22,6 +25,13 @@ export const loadStaff = data => {
 export const addStaff = data => {
 	return {
 		type: ADD_STAFF,
+		payload: data,
+	};
+};
+
+export const edited_staff_payload = data => {
+	return {
+		type: EDIT_STAFF_PAYLOAD,
 		payload: data,
 	};
 };
@@ -66,6 +76,13 @@ export const loadPayrollHistory = data => {
 	return {
 		type: LOAD_PAYROLL_HISTORY,
 		payload: data,
+	};
+};
+
+export const loadStaffTransaction = payload => {
+	return {
+		type: LOAD_STAFF_TRANSACTION,
+		payload,
 	};
 };
 

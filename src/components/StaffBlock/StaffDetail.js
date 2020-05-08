@@ -2,28 +2,9 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
-import { connect } from 'react-redux';
-import { request } from '../../services/utilities';
-import { API_URI, staffAPI, hmoAPI } from '../../services/constants';
-import { loadStaff } from '../../actions/hr';
 class StaffDetail extends Component {
-	componentDidMount() {
-		if (this.props.staffs.length === 0) {
-			this.fetchStaffs();
-		}
-	}
-
-	fetchStaffs = async () => {
-		try {
-			const rs = await request(`${API_URI}${staffAPI}`, 'GET', true);
-			this.props.loadStaff(rs);
-		} catch (error) {
-			console.log(error);
-		}
-	};
 	render() {
 		const { location } = this.props;
-		const { staffs, departments } = this.props;
 		return (
 			<div className="row">
 				<div className="col-sm-12">
@@ -95,15 +76,4 @@ class StaffDetail extends Component {
 	}
 }
 
-const mapStateToProps = ({ settings, hr }) => {
-	return {
-		departments: settings.departments,
-		staffs: hr.staffs,
-	};
-};
-
-export default withRouter(
-	connect(mapStateToProps, {
-		loadStaff,
-	})(StaffDetail)
-);
+export default withRouter(StaffDetail);
