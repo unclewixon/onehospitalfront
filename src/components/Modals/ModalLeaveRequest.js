@@ -30,7 +30,9 @@ const ModalLeaveRequest = ({
 										}}>
 										<div className="up-main-info">
 											<h2 className="up-header" style={{ color: '#334152' }}>
-												{activeRequest && activeRequest.staff ? `${activeRequest.staff.first_name} ${activeRequest.staff.last_name} ${activeRequest.staff.other_names}` : ''}
+												{activeRequest && activeRequest.staff
+													? `${activeRequest.staff.first_name} ${activeRequest.staff.last_name} ${activeRequest.staff.other_names}`
+													: ''}
 											</h2>
 										</div>
 									</div>
@@ -45,7 +47,9 @@ const ModalLeaveRequest = ({
 															</td>
 															<td className="text-right">
 																<div className="value text-success">
-																	{activeRequest && activeRequest.staff ? activeRequest.staff.job_title : ''}
+																	{activeRequest && activeRequest.staff
+																		? activeRequest.staff.job_title
+																		: ''}
 																</div>
 															</td>
 														</tr>
@@ -100,13 +104,18 @@ const ModalLeaveRequest = ({
 											<tr>
 												<td class="font-weight-bold">Leave Category</td>
 												<td>
-													{activeRequest && activeRequest.category && activeRequest.category.name}
+													{activeRequest &&
+														activeRequest.category &&
+														activeRequest.category.name}
 												</td>
 											</tr>
 											<tr>
 												<td class="font-weight-bold">Leave Duration</td>
 												<td>
-													{activeRequest && activeRequest.category && activeRequest.category.duration}  Days
+													{activeRequest &&
+														activeRequest.category &&
+														activeRequest.category.duration}{' '}
+													Days
 												</td>
 											</tr>
 											<tr>

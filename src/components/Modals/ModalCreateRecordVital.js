@@ -2,10 +2,73 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 
-import { renderTextInput } from '../../services/utilities';
+import { renderTextInput, request } from '../../services/utilities';
 
-import waiting from '../../assets/images/waiting.gif';
 import { closeModals } from '../../actions/general';
+import { API_URI } from '../../services/constants';
+import waiting from '../../assets/images/waiting.gif';
+import { notifySuccess, notifyError } from '../../services/notify';
+
+const validate = values => {
+	const errors = {};
+	if (!values.bloodPressure) {
+		errors.bloodPressure = 'enter blood pressure';
+	} else if (!/^\d+(\.\d{1,2})?$/i.test(values.bloodPressure)) {
+		errors.bloodPressure = 'Please enter a valid number';
+	}
+	if (!values.bloodSugarLevel) {
+		errors.bloodSugarLevel = 'enter blood sugar level';
+	} else if (!/^\d+(\.\d{1,2})?$/i.test(values.bloodSugarLevel)) {
+		errors.bloodSugarLevel = 'Please enter a valid number';
+	}
+	if (!values.cervicalDialation) {
+		errors.cervicalDialation = 'enter cervical dialation';
+	} else if (!/^\d+(\.\d{1,2})?$/i.test(values.cervicalDialation)) {
+		errors.cervicalDialation = 'Please enter a valid number';
+	}
+	if (!values.currentPulse) {
+		errors.currentPulse = 'enter current pulse';
+	} else if (!/^\d+(\.\d{1,2})?$/i.test(values.currentPulse)) {
+		errors.currentPulse = 'Please enter a valid number';
+	}
+	if (!values.currentTemperature) {
+		errors.currentTemperature = 'enter current temperature';
+	} else if (!/^\d+(\.\d{1,2})?$/i.test(values.currentTemperature)) {
+		errors.currentTemperature = 'Please enter a valid number';
+	}
+	if (!values.durationOfContractions) {
+		errors.durationOfContractions = 'enter duration of pulse';
+	} else if (!/^\d+(\.\d{1,2})?$/i.test(values.durationOfContractions)) {
+		errors.durationOfContractions = 'Please enter a valid number';
+	}
+	if (!values.fetalHeartRate) {
+		errors.fetalHeartRate = 'enter fetal heart rate';
+	} else if (!/^\d+(\.\d{1,2})?$/i.test(values.fetalHeartRate)) {
+		errors.fetalHeartRate = 'Please enter a valid number';
+	}
+	if (!values.respirationRate) {
+		errors.respirationRate = 'enter respiration rate';
+	} else if (!/^\d+(\.\d{1,2})?$/i.test(values.respirationRate)) {
+		errors.respirationRate = 'Please enter a valid number';
+	}
+	if (!values.numberOfContractions) {
+		errors.numberOfContractions = 'enter numbe of contractions';
+	} else if (!/^\d+(\.\d{1,2})?$/i.test(values.numberOfContractions)) {
+		errors.numberOfContractions = 'Please enter a valid number';
+	}
+	if (!values.nextAction) {
+		errors.nextAction = 'select a next action type';
+	}
+	if (!values.isMotherAlive || values.isMotherAlive === '') {
+		errors.isMotherAlive = 'select if mother is alive';
+	}
+
+	if (!values.fetalHeadDescent || values.fetalHeadDescent === '') {
+		errors.fetalHeadDescent = 'select a fetal head descent';
+	}
+
+	return errors;
+};
 export class ModalCreateRecordVital extends Component {
 	state = {
 		submitting: false,
@@ -17,6 +80,26 @@ export class ModalCreateRecordVital extends Component {
 	componentWillUnmount() {
 		document.body.classList.remove('modal-open');
 	}
+	createRecord = async data => {
+		try {
+			const { labourDetail } = this.props;
+
+			this.setState({ submitting: true });
+			const rs = await request(
+				`${API_URI}/labour-management/vital/${labourDetail.id}/save`,
+				'POST',
+				true,
+				data
+			);
+			console.log(rs);
+			notifySuccess('vital record succesfully submitted');
+
+			this.props.closeModals(false);
+		} catch (e) {
+			this.setState({ submitting: false });
+			notifyError(e.message || 'Submission of vital not successful');
+		}
+	};
 	render() {
 		const { submitting } = this.state;
 		const { error, handleSubmit } = this.props;
@@ -42,7 +125,7 @@ export class ModalCreateRecordVital extends Component {
 							</div>
 
 							<div className="form-block">
-								<form>
+								<form onSubmit={handleSubmit(this.createRecord)}>
 									{error && (
 										<div
 											className="alert alert-danger"
@@ -55,8 +138,8 @@ export class ModalCreateRecordVital extends Component {
 									<div className="row">
 										<div className="col-sm-6 pl-0">
 											<Field
-												id="fetal_heart_rate"
-												name="fetal_heart_rate"
+												id="fetalHeartRate"
+												name="fetalHeartRate"
 												component={renderTextInput}
 												label="Fetal heart rate"
 												type="text"
@@ -66,8 +149,8 @@ export class ModalCreateRecordVital extends Component {
 
 										<div className="col-sm-6 pl-0">
 											<Field
-												id="cervical_dilation"
-												name="cervical_dilation"
+												id="cervicalDialation"
+												name="cervicalDialation"
 												component={renderTextInput}
 												label="Cervical dilation"
 												placeholder="What is the current crevical dilation (cms) ?"
@@ -81,7 +164,7 @@ export class ModalCreateRecordVital extends Component {
 										<div className="col-md-12 pl-0 d-flex">
 											<div className="col-sm-1">
 												<Field
-													name="fetal_head"
+													name="fetalHeadDescent"
 													component={'input'}
 													type="radio"
 													value="-3"
@@ -91,7 +174,7 @@ export class ModalCreateRecordVital extends Component {
 
 											<div className="col-sm-1">
 												<Field
-													name="fetal_head"
+													name="fetalHeadDescent"
 													component="input"
 													type="radio"
 													value="-2"
@@ -101,7 +184,7 @@ export class ModalCreateRecordVital extends Component {
 
 											<div className="col-sm-1">
 												<Field
-													name="fetal_head"
+													name="fetalHeadDescent"
 													component="input"
 													type="radio"
 													value="-1"
@@ -111,16 +194,7 @@ export class ModalCreateRecordVital extends Component {
 
 											<div className="col-sm-1">
 												<Field
-													name="fetal_head"
-													component="input"
-													type="radio"
-													value="-1"
-												/>
-												<label className="mx-1">-1</label>
-											</div>
-											<div className="col-sm-1">
-												<Field
-													name="fetal_head"
+													name="fetalHeadDescent"
 													component="input"
 													type="radio"
 													value="0"
@@ -130,7 +204,7 @@ export class ModalCreateRecordVital extends Component {
 
 											<div className="col-sm-1">
 												<Field
-													name="fetal_head"
+													name="fetalHeadDescent"
 													component="input"
 													type="radio"
 													value="1"
@@ -140,7 +214,7 @@ export class ModalCreateRecordVital extends Component {
 
 											<div className="col-sm-1">
 												<Field
-													name="fetal_head"
+													name="fetalHeadDescent"
 													component="input"
 													type="radio"
 													value="2"
@@ -150,7 +224,7 @@ export class ModalCreateRecordVital extends Component {
 
 											<div className="col-sm-1">
 												<Field
-													name="fetal_head"
+													name="fetalHeadDescent"
 													component="input"
 													type="radio"
 													value="3"
@@ -166,7 +240,7 @@ export class ModalCreateRecordVital extends Component {
 										<div className="col-md-12 d-flex">
 											<div className="col-sm-4 pl-0">
 												<Field
-													name="mother_alive"
+													name="isMotherAlive"
 													component="input"
 													type="radio"
 													value="yes"
@@ -175,7 +249,7 @@ export class ModalCreateRecordVital extends Component {
 											</div>
 											<div className="col-sm-4 pl-0">
 												<Field
-													name="mother_alive"
+													name="isMotherAlive"
 													component="input"
 													type="radio"
 													value="no"
@@ -188,8 +262,8 @@ export class ModalCreateRecordVital extends Component {
 									<div className="row mt-2">
 										<div className="col-sm-6 pl-0">
 											<Field
-												id="number_of_contraction"
-												name="number_of_contraction"
+												id="numberOfContractions"
+												name="numberOfContractions"
 												component={renderTextInput}
 												label="What is the number of contractions per 10 minutes ?"
 												type="text"
@@ -198,8 +272,8 @@ export class ModalCreateRecordVital extends Component {
 										</div>
 										<div className="col-sm-6 pl-0">
 											<Field
-												id="duration_of_contraction"
-												name="duration_of_contraction"
+												id="durationOfContractions"
+												name="durationOfContractions"
 												component={renderTextInput}
 												label="What is the duration of contractions(seconds) ?"
 												type="text"
@@ -211,8 +285,8 @@ export class ModalCreateRecordVital extends Component {
 									<div className="row mt-2">
 										<div className="col-sm-6 pl-0">
 											<Field
-												id="blood_pressure"
-												name="blood_pressure"
+												id="bloodPressure"
+												name="bloodPressure"
 												component={renderTextInput}
 												label="Blood Pressure ?"
 												type="text"
@@ -221,8 +295,8 @@ export class ModalCreateRecordVital extends Component {
 										</div>
 										<div className="col-sm-6 pl-0">
 											<Field
-												id="current_pulse"
-												name="current_pulse"
+												id="currentPulse"
+												name="currentPulse"
 												component={renderTextInput}
 												label="What is current pulse ?"
 												type="text"
@@ -233,8 +307,8 @@ export class ModalCreateRecordVital extends Component {
 									<div className="row mt-2">
 										<div className="col-sm-6 pl-0">
 											<Field
-												id="current_temperature"
-												name="current_temperature"
+												id="currentTemperature"
+												name="currentTemperature"
 												component={renderTextInput}
 												label="What is current temperature (&#8451;) ?"
 												type="text"
@@ -243,8 +317,8 @@ export class ModalCreateRecordVital extends Component {
 										</div>
 										<div className="col-sm-6 pl-0">
 											<Field
-												id="sugar_level"
-												name="sugar_level"
+												id="bloodSugarLevel"
+												name="bloodSugarLevel"
 												component={renderTextInput}
 												label="What is the blood sugar level (mg/dl)?"
 												type="text"
@@ -255,8 +329,8 @@ export class ModalCreateRecordVital extends Component {
 									<div className="row mt-2">
 										<div className="col-sm-12 pl-0">
 											<Field
-												id="respiraion_rate"
-												name="respiraion_rate"
+												id="respirationRate"
+												name="respirationRate"
 												component={renderTextInput}
 												label="What is the current respiration rate per minute?"
 												type="text"
@@ -271,7 +345,7 @@ export class ModalCreateRecordVital extends Component {
 										<div className="col-md-12 d-flex">
 											<div className="col-sm-6 pl-0">
 												<Field
-													name="decision"
+													name="nextAction"
 													component="input"
 													type="radio"
 													value="Flag this patient for increased monitoring. Continue exam "
@@ -283,7 +357,7 @@ export class ModalCreateRecordVital extends Component {
 											</div>
 											<div className="col-sm-6 pl-0">
 												<Field
-													name="decision"
+													name="nextAction"
 													component="input"
 													type="radio"
 													value="stop exam"
@@ -326,5 +400,15 @@ export class ModalCreateRecordVital extends Component {
 
 ModalCreateRecordVital = reduxForm({
 	form: 'record_vital',
+	validate,
 })(ModalCreateRecordVital);
-export default connect(null, { closeModals })(ModalCreateRecordVital);
+
+const mapStateToProps = state => {
+	return {
+		labourDetail: state.patient.labourDetail,
+	};
+};
+
+export default connect(mapStateToProps, { closeModals })(
+	ModalCreateRecordVital
+);

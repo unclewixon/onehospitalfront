@@ -2,7 +2,7 @@
 import React, { Component, Suspense, lazy } from 'react';
 import { connect } from 'react-redux';
 // import { viewPayPoint } from '../actions/general';
-
+import moment from 'moment';
 import Splash from '../../components/Splash';
 import {
 	createLabourMeasurement,
@@ -10,6 +10,9 @@ import {
 	createRecordDelivery,
 	createRecordVital,
 } from '../../actions/general';
+import { calculateAge } from '../../services/utilities';
+import { isEmpty } from 'lodash';
+import { clearLabourDetails } from '../../actions/patient';
 const Measurement = lazy(() => import('./Measurement'));
 const Partograph = lazy(() => import('./Partograph'));
 const RiskAssessment = lazy(() => import('./RiskAssessment'));
@@ -19,6 +22,11 @@ export class LabDetail extends Component {
 		tab: 'measurement',
 		newForm: false,
 	};
+	componentDidMount() {
+		if (Object.entries(this.props.labourDetail).length === 0) {
+			this.props.history.push('/labour-mgt');
+		}
+	}
 
 	setTab = value => {
 		this.setState({ tab: value, newForm: false });
@@ -50,28 +58,44 @@ export class LabDetail extends Component {
 	const;
 	render() {
 		const { tab } = this.state;
+		const { params, labourDetail } = this.props;
+		console.log(labourDetail);
 		return (
 			<div className="row">
 				<div className="col-md-12">
 					<div className="element-content">
 						<div className="element-box">
 							<h6 className="element-header">
-								Thelma Abubakar Kayode (35 years old)
+								{labourDetail.patient_name} (
+								{!isEmpty(this.props.labourDetail)
+									? calculateAge(labourDetail.date_of_birth)
+									: ''}
+								years old)
 							</h6>
 							<table className="labmgt">
 								<tbody>
 									<tr>
 										<td className="labmgtTd">
-											<div className="labmgtKey">28TH JANUARY 2020</div>
-											<div className="labmgtValue">ADMITTED:</div>
+											<div className="labmgtKey">
+												{moment(labourDetail.createdAt).format('DD/MM/YYYY')}
+											</div>
+											<div className="labmgtValue">
+												ADMITTED ('DD/MM/YYYY'):
+											</div>
 										</td>
 										<td className="labmgtTd">
-											<div className="labmgtKey">11TH APRIL 2025</div>
+											<div className="labmgtKey">
+												{moment(labourDetail.lmp).format('DD/MM/YYYY')}
+											</div>
 											<div className="labmgtValue">LMP</div>
 										</td>
 
 										<td className="labmgtTd">
-											<div className="labmgtKey">24TH JULY 2089</div>
+											<div className="labmgtKey">
+												{moment(labourDetail.lmp)
+													.add(9, 'M')
+													.format('DD/MM/YYYY')}
+											</div>
 											<div className="labmgtValue">EDD</div>
 										</td>
 										<td className="labmgtTd">
@@ -81,7 +105,9 @@ export class LabDetail extends Component {
 									</tr>
 									<tr>
 										<td className="labmgtTd">
-											<div className="labmgtKey">SINGLE</div>
+											<div className="labmgtKey">
+												{labourDetail.presentPregnancy}
+											</div>
 											<div className="labmgtValue">PRESENT PREGNANCY</div>
 										</td>
 										<td className="labmgtTd">
@@ -89,11 +115,13 @@ export class LabDetail extends Component {
 											<div className="labmgtValue">GRAVIDA</div>
 										</td>
 										<td className="labmgtTd">
-											<div className="labmgtKey">0</div>
+											<div className="labmgtKey">{labourDetail.parity}</div>
 											<div className="labmgtValue">PARITY</div>
 										</td>
 										<td className="labmgtTd">
-											<div className="labmgtKey">1/0</div>
+											<div className="labmgtKey">
+												{labourDetail.alive}/{labourDetail.miscarriage}
+											</div>
 											<div className="labmgtValue">ALIVE/MISCARRIAGES</div>
 										</td>
 									</tr>
@@ -107,8 +135,12 @@ export class LabDetail extends Component {
 											<div className="labmgtValue">NEXT EXAMINATION</div>
 										</td>
 										<td className="labmgtTd">
-											<div className="labmgtKey">0</div>
-											<div className="labmgtValue">PARITY</div>
+											<div className="labmgtKey"></div>
+											<div className="labmgtValue"></div>
+										</td>
+										<td className="labmgtTd">
+											<div className="labmgtKey"></div>
+											<div className="labmgtValue"></div>
 										</td>
 									</tr>
 								</tbody>
@@ -189,9 +221,16 @@ export class LabDetail extends Component {
 	}
 }
 
-export default connect(null, {
+const mapStateToProps = state => {
+	return {
+		labourDetail: state.patient.labourDetail,
+	};
+};
+
+export default connect(mapStateToProps, {
 	createLabourMeasurement,
 	createRiskAssessment,
 	createRecordDelivery,
 	createRecordVital,
+	clearLabourDetails,
 })(LabDetail);

@@ -208,6 +208,7 @@ const general = (state = INITIAL_STATE, action) => {
 				staff: action.data,
 				staff_appraisal: action.payload,
 			};
+
 		default:
 			return state;
 	}

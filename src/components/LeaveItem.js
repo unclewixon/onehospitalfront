@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 import { showHistory } from '../actions/general';
 
-
 const LeaveItem = ({
 	leave,
 	index,
@@ -12,23 +11,26 @@ const LeaveItem = ({
 	modalClick,
 	rejectRequest,
 	approveRequest,
-	deleteRequest
+	deleteRequest,
 }) => {
-
 	return (
 		<>
 			<tr>
 				<td>{index + 1}</td>
-				<td>{leave.staff ? leave.staff.first_name + ` ` + leave.staff.last_name + ` `  + leave.staff.other_names : ""}</td>
 				<td>
-					{leave.category && leave.category.name ? leave.category.name : ""}
+					{leave.staff
+						? leave.staff.first_name +
+						  ` ` +
+						  leave.staff.last_name +
+						  ` ` +
+						  leave.staff.other_names
+						: ''}
 				</td>
 				<td>
-					{leave.start_date ? leave.start_date : ""}
+					{leave.category && leave.category.name ? leave.category.name : ''}
 				</td>
-				<td>
-					{leave.end_date ? leave.end_date : ""}
-				</td>
+				<td>{leave.start_date ? leave.start_date : ''}</td>
+				<td>{leave.end_date ? leave.end_date : ''}</td>
 				<td>
 					{leave.status === 1 ? (
 						<div>
@@ -41,12 +43,11 @@ const LeaveItem = ({
 							<span>Rejected</span>
 						</div>
 					) : (
-							<div>
-								<span className="status-pill smaller yellow"></span>
-								<span>Pending</span>
-							</div>
-						)
-					}
+						<div>
+							<span className="status-pill smaller yellow"></span>
+							<span>Pending</span>
+						</div>
+					)}
 				</td>
 				<td>
 					<Tooltip title="View Request">
@@ -61,26 +62,17 @@ const LeaveItem = ({
 						</a>
 					</Tooltip>
 					<Tooltip title="Approve Leave">
-						<a
-							className="mt-4"
-							onClick={() => approveRequest(leave)}
-						>
+						<a className="mt-4" onClick={() => approveRequest(leave)}>
 							<i className="os-icon os-icon-thumbs-up" />
 						</a>
 					</Tooltip>
 					<Tooltip title="Reject Leave">
-						<a
-							className="mt-4"
-							onClick={() => rejectRequest(leave)}
-						>
+						<a className="mt-4" onClick={() => rejectRequest(leave)}>
 							<i className="os-icon os-icon-thumbs-down" />
 						</a>
 					</Tooltip>
 					<Tooltip title="Delete Leave">
-						<a
-							className="mt-4"
-							onClick={() => deleteRequest(leave)}
-						>
+						<a className="mt-4" onClick={() => deleteRequest(leave)}>
 							<i className="os-icon os-icon-trash" />
 						</a>
 					</Tooltip>
@@ -88,6 +80,6 @@ const LeaveItem = ({
 			</tr>
 		</>
 	);
-}
+};
 
 export default connect(null, { showHistory })(LeaveItem);

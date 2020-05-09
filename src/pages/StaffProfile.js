@@ -157,7 +157,9 @@ class StaffProfile extends Component {
 											</div>
 										</div>
 									</div>
-									<div className="support-ticket-info" style={{position: 'relative'}}>
+									<div
+										className="support-ticket-info"
+										style={{ position: 'relative' }}>
 										<div className="customer">
 											<div className="avatar" style={{ boxShadow: 'none' }}>
 												<img alt="" src={avatar1} />
