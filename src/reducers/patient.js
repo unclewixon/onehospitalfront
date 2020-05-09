@@ -33,6 +33,9 @@ import {
 	LOAD_LABOUR_DETAIL,
 	CLEAR_LABOUR_DETAIL,
 	ENCOUNTER_FORM,
+	LOAD_PARTOGRAPH,
+	LOAD_RISK,
+	LOAD_DELIVERY_RECORD,
 } from '../actions/types';
 import actions from 'redux-form/lib/actions';
 
@@ -80,6 +83,9 @@ const INITIAL_STATE = {
 	antenatalAssessment: [],
 	enrolments: [],
 	labourDetail: {},
+	partographies: [],
+	riskAssessment: [],
+	deliveryRecord: [],
 };
 
 const patient = (state = INITIAL_STATE, action) => {
@@ -200,6 +206,21 @@ const patient = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				labourDetail: {},
+			};
+		case LOAD_PARTOGRAPH:
+			return {
+				...state,
+				partographies: action.payload,
+			};
+		case LOAD_RISK:
+			return {
+				...state,
+				riskAssessment: action.payload,
+			};
+		case LOAD_DELIVERY_RECORD:
+			return {
+				...state,
+				deliveryRecord: action.payload,
 			};
 		default:
 			return state;

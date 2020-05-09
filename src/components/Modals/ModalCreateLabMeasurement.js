@@ -55,6 +55,17 @@ const otherMeasurement = [
 	'prospined_cord',
 	'fetal_distress',
 ];
+
+const position = [
+	{
+		id: 'Cephalic',
+		name: 'Cephalic',
+	},
+	{
+		id: 'Breech',
+		name: 'Breech',
+	},
+];
 class ModalCreateLabMeasurement extends Component {
 	state = {
 		submitting: false,
@@ -118,10 +129,12 @@ class ModalCreateLabMeasurement extends Component {
 		newData['examiner_id'] = this.props.staff.profile.details.id;
 
 		console.log(this.props.staff.profile.details.id, newData);
+		const { labourDetail } = this.props;
+		newData = { ...newData, ...labourDetail };
+		console.dir(newData);
 		try {
-			const { labourDetail } = this.props;
-			newData = { ...newData, ...labourDetail };
 			this.setState({ submitting: true });
+
 			const rs = await request(
 				`${API_URI}/labour-management/measurement/${labourDetail.id}/save`,
 				'POST',
@@ -279,7 +292,7 @@ class ModalCreateLabMeasurement extends Component {
 													component={renderSelect}
 													label="Position of Fetals"
 													placeholder="Select Position of Fetals"
-													data={cervicalPosition}
+													data={position}
 												/>
 											</div>
 										</div>
@@ -366,7 +379,7 @@ class ModalCreateLabMeasurement extends Component {
 												component={renderSelect}
 												label="Cervical position"
 												placeholder="Enter cervical position"
-												data={moulding}
+												data={cervicalPosition}
 											/>
 										</div>
 									</div>
