@@ -37,7 +37,7 @@ import ModalImmunizationDetail from './ModalImmunizationDetail';
 import ModalAntenatalAssessmentDetail from './ModalAntenatalAssessmentDetail';
 import ModalLineAppraisal from './ModalLineAppraisal';
 import ModalStaffAppraisal from './ModalStaffAppraisal';
-
+import ModalLabourMeasurementDetail from './ModalLabourMeasurementDetail';
 const ModalDialogs = ({
 	create_staff,
 	edit_staff,
@@ -75,6 +75,7 @@ const ModalDialogs = ({
 	antenatal_assessment_detail,
 	line_appraisal,
 	staff_appraisal,
+	view_labour_measurement,
 }) => {
 	return (
 		<>
@@ -114,6 +115,7 @@ const ModalDialogs = ({
 			{antenatal_assessment_detail && <ModalAntenatalAssessmentDetail />}
 			{line_appraisal && <ModalLineAppraisal />}
 			{staff_appraisal && <ModalStaffAppraisal />}
+			{view_labour_measurement && <ModalLabourMeasurementDetail />}
 		</>
 	);
 };
@@ -156,6 +158,7 @@ const mapStateToProps = (state, ownProps) => {
 		antenatal_assessment_detail: state.general.antenatal_assessment_detail,
 		line_appraisal: state.general.line_appraisal,
 		staff_appraisal: state.general.staff_appraisal,
+		view_labour_measurement: state.general.view_labour_measurement,
 	};
 };
 

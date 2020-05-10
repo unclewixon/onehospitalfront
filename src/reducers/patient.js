@@ -36,6 +36,7 @@ import {
 	LOAD_PARTOGRAPH,
 	LOAD_RISK,
 	LOAD_DELIVERY_RECORD,
+	LOAD_LABOUR_MEASUREMENT,
 } from '../actions/types';
 import actions from 'redux-form/lib/actions';
 
@@ -86,6 +87,7 @@ const INITIAL_STATE = {
 	partographies: [],
 	riskAssessment: [],
 	deliveryRecord: [],
+	labourMeasurement: [],
 };
 
 const patient = (state = INITIAL_STATE, action) => {
@@ -221,6 +223,11 @@ const patient = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				deliveryRecord: action.payload,
+			};
+		case LOAD_LABOUR_MEASUREMENT:
+			return {
+				...state,
+				labourMeasurement: action.payload,
 			};
 		default:
 			return state;

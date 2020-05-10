@@ -37,6 +37,7 @@ import {
 	LOAD_PARTOGRAPH,
 	LOAD_RISK,
 	LOAD_DELIVERY_RECORD,
+	LOAD_LABOUR_MEASUREMENT,
 } from './types';
 import { request } from '../services/utilities';
 
@@ -311,6 +312,13 @@ export const loadRiskAssessment = payload => {
 export const loadDeliveryRecord = payload => {
 	return {
 		type: LOAD_DELIVERY_RECORD,
+		payload,
+	};
+};
+
+export const loadLabourMeasurement = payload => {
+	return {
+		type: LOAD_LABOUR_MEASUREMENT,
 		payload,
 	};
 };
