@@ -34,6 +34,7 @@ import {
 } from 'redux-form';
 import searchingGIF from '../../../assets/images/searching.gif';
 import { notifyError, notifySuccess } from '../../../services/notify';
+import { closeModals } from '../../../actions/general';
 
 const selector = formValueSelector('consumableForm');
 let Consumable = props => {
@@ -96,6 +97,7 @@ let Consumable = props => {
 			notifySuccess('Consultation created successfully');
 			setLoading(false);
 		} catch (error) {
+			console.log(error);
 			notifyError('Consultation failed');
 			setLoading(false);
 		}
@@ -257,5 +259,6 @@ const mapStateToProps = (state, ownProps) => {
 
 export default connect(mapStateToProps, {
 	loadEncounterData,
+	closeModals,
 	loadEncounterForm,
 })(Consumable);
