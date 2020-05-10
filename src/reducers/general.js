@@ -39,6 +39,7 @@ import {
 	TOGGLE_IMMUNIZATION_DETAIL,
 	TOGGLE_ANTENATAL_ASSESSMENT_DETAIL,
 	TOGGLE_LINE_APPRAISAL,
+	TOGGLE_STAFF_APPRAISAL,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -86,6 +87,8 @@ const INITIAL_STATE = {
 	antenatal_assessment_detail: false,
 	antenatal_visit: null,
 	line_appraisal: false,
+	staff_appraisal: false,
+	staff: null,
 };
 
 const general = (state = INITIAL_STATE, action) => {
@@ -199,6 +202,13 @@ const general = (state = INITIAL_STATE, action) => {
 				...state,
 				line_appraisal: action.payload,
 			};
+		case TOGGLE_STAFF_APPRAISAL:
+			return {
+				...state,
+				staff: action.data,
+				staff_appraisal: action.payload,
+			};
+
 		default:
 			return state;
 	}

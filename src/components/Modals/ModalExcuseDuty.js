@@ -2,12 +2,7 @@ import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import moment from 'moment';
 
-const ModalExcuseDuty = ({
-	showModal,
-	onModalClick,
-	staff,
-	activeRequest,
-}) => {
+const ModalExcuseDuty = ({ showModal, onModalClick, staff, activeRequest }) => {
 	return (
 		<Modal
 			className="onboarding-modal"
@@ -30,7 +25,9 @@ const ModalExcuseDuty = ({
 										}}>
 										<div className="up-main-info">
 											<h2 className="up-header" style={{ color: '#334152' }}>
-												{activeRequest && activeRequest.staff ? `${activeRequest.staff.first_name} ${activeRequest.staff.last_name} ${activeRequest.staff.other_names}` : ''}
+												{activeRequest && activeRequest.staff
+													? `${activeRequest.staff.first_name} ${activeRequest.staff.last_name} ${activeRequest.staff.other_names}`
+													: ''}
 											</h2>
 										</div>
 									</div>
@@ -39,13 +36,15 @@ const ModalExcuseDuty = ({
 											<div className="element-box-tp">
 												<table className="table table-clean">
 													<tbody>
-                          <tr>
+														<tr>
 															<td>
 																<div className="text-left">Job Title</div>
 															</td>
 															<td className="text-right">
 																<div className="value text-success">
-                                { activeRequest && activeRequest.staff ? activeRequest.staff.job_title : ''} 
+																	{activeRequest && activeRequest.staff
+																		? activeRequest.staff.job_title
+																		: ''}
 																</div>
 															</td>
 														</tr>
@@ -61,7 +60,7 @@ const ModalExcuseDuty = ({
 																</div>
 															</td>
 														</tr>
-                            <tr>
+														<tr>
 															<td>
 																<div className="text-left">End Date</div>
 															</td>
@@ -98,7 +97,19 @@ const ModalExcuseDuty = ({
 									<table className="table table-padded">
 										<tbody>
 											<tr>
-												<td class="font-weight-bold">Leave Reason</td>
+												<td class="font-weight-bold">Consulting Doctor</td>
+												<td>
+													{activeRequest && activeRequest.appliedBy
+														? `${activeRequest.appliedBy.first_name} ${activeRequest.appliedBy.last_name} ${activeRequest.appliedBy.other_names}`
+														: ''}
+												</td>
+											</tr>
+											<tr>
+												<td class="font-weight-bold">Diagnosis</td>
+												<td></td>
+											</tr>
+											<tr>
+												<td class="font-weight-bold">Doctor's Note</td>
 												<td>{activeRequest.application}</td>
 											</tr>
 										</tbody>

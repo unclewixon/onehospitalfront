@@ -36,8 +36,9 @@ export const transactionsAPI = '/transactions';
 export const vouchersAPI = '/vouchers';
 export const serviceAPI = '/services';
 export const settingsAPI = '/settings/';
+export const diagnosisAPI = '/settings/diagnosis';
+export const labourAPI = '/labour-management/enrollment';
 export const consultationAPI = '/consultation/';
-export const diagnosisAPI = '/settings/diagnosis/';
 
 export const months = [
 	'January',
@@ -931,4 +932,122 @@ export const patientHx = [
 			{ name: 'oedema', label: 'Oedema' },
 		],
 	},
+];
+
+export const bloodGroup = [
+	{
+		id: 'A+',
+		name: 'A+',
+	},
+	{
+		id: 'A-',
+		name: 'A-',
+	},
+	{
+		id: 'B+',
+		name: 'B+',
+	},
+	{
+		id: 'B-',
+		name: 'B-',
+	},
+	{
+		id: 'AB+',
+		name: 'AB+',
+	},
+	{
+		id: 'O+',
+		name: 'O+',
+	},
+	{
+		id: 'O-',
+		name: 'O-',
+	},
+];
+
+export const caput = [
+	{
+		id: '0: No capot',
+		name: '0: No capot',
+	},
+	{
+		id: '+: Small capot',
+		name: '+: Small capot',
+	},
+	{
+		id: '++: Moderate',
+		name: '++: Moderate',
+	},
+	{
+		id: '+++: Large Capot',
+		name: '+++: Large Capot',
+	},
+];
+
+export const moulding = [
+	{
+		id: '0: no moulding',
+		name: '0: no moulding',
+	},
+	{
+		id: '+: Suture are apposed',
+		name: '+: Suture are apposed',
+	},
+	{
+		id: '++: Sutures overlapped but reducible',
+		name: '++: Sutures overlapped but reducible',
+	},
+	{
+		id: '+++: Sutures overlapped and not reducible',
+		name: '+++: Sutures overlapped and not reducible',
+	},
+];
+
+export const cervicalPosition = [
+	{
+		id: 'Anterior',
+		name: 'Anterior',
+	},
+	{
+		id: 'Posterior',
+		name: 'Posterior',
+	},
+	{
+		id: 'Midline',
+		name: 'Midline',
+	},
+];
+
+export const descent = [
+	{
+		id: '5: Completely above',
+		name: '5: Completely above',
+	},
+	{
+		id: '4: Sinciput high, occiput easily felt',
+		name: '4: Sinciput high, occiput easily felt',
+	},
+	{
+		id: '3: Sinciput easily felt, occiput felt',
+		name: '3: Sinciput easily felt, occiput felt',
+	},
+	{
+		id: '2: Sinciput felt, Occiput just felt',
+		name: '2: Sinciput felt, Occiput just felt',
+	},
+	{
+		id: '1: Sinciput felt, occiput not felt',
+		name: '1: Sinciput felt, occiput not felt',
+	},
+	{
+		id: '0: None of head palpable',
+		name: '0: None of head palpable',
+	},
+];
+export const religions = [
+	{ id: 'Atheist', name: 'Atheist' },
+	{ id: 'Buddhism', name: 'Buddhism' },
+	{ id: 'Christianity', name: 'Christianity' },
+	{ id: 'Hinduism', name: 'Hinduism' },
+	{ id: 'Islam', name: 'Islam' },
 ];

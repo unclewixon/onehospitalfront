@@ -6,7 +6,18 @@ import Tooltip from 'antd/lib/tooltip';
 import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
-
+import { isEmpty } from 'lodash';
+import {
+	API_URI,
+	patientAPI,
+	searchAPI,
+	labourAPI,
+} from '../../services/constants';
+import { request, getAge, calculateAge } from '../../services/utilities';
+import { notifySuccess, notifyError } from '../../services/notify';
+import { loadLabour, loadLabourDetails } from '../../actions/patient';
+import searchingGIF from '../../assets/images/searching.gif';
+import { clearLabourDetails } from '../../actions/patient';
 const { RangePicker } = DatePicker;
 const departments = [
 	{ id: 'ejejekek', name: 'angel' },
@@ -16,18 +27,74 @@ class Dashboard extends Component {
 	state = {
 		filtering: false,
 		id: null,
+		startDate: '',
+		endDate: '',
+		loading: false,
+		page: '',
+	};
+
+	componentDidMount() {
+		this.props.clearLabourDetails();
+		this.fetchAllEnrolment();
+	}
+
+	fetchAllEnrolment = async () => {
+		// let startDate = moment()
+		// 	.subtract(1, 'd')
+		// 	.format('YYYY-MM-DD');
+		// let endDate = moment().format('YYYY-MM-DD');
+		const { filtering, loading, startDate, endDate, page } = this.state;
+		try {
+			this.setState({ loading: true });
+			console.log(
+				`${API_URI}${labourAPI}s/?startDate=${startDate}&endDate=${endDate}&page=${page}`
+			);
+			const rs = await request(
+				`${API_URI}${labourAPI}s/?startDate=${startDate}&endDate=${endDate}&page=${page}`,
+				'GET',
+				true
+			);
+			this.props.loadLabour(rs);
+			console.log(rs);
+			this.setState({ loading: false, filtering: false });
+		} catch (error) {
+			console.log(error);
+			notifyError('Error fetching labour management enrolment requests');
+			this.setState({ loading: false, filtering: false });
+		}
 	};
 
 	doFilter = e => {
 		e.preventDefault();
 		this.setState({ filtering: true });
+		this.fetchAllEnrolment();
+	};
+
+	dateChange = e => {
+		let date = e.map(d => {
+			return moment(d._d).format('YYYY-MM-DD');
+		});
+		this.setState({
+			...this.state,
+			startDate: date[0] ? date[0] : '',
+			endDate: date[1] ? date[1] : '',
+		});
 	};
 
 	change = e => {
 		this.setState({ [e.target.name]: e.target.value });
 	};
+
+	detail = item => {
+		//load data into store
+		console.log(item);
+		this.props.loadLabourDetails(item);
+		this.props.history.push(`/labour-mgt/detail/${item.id}`);
+	};
 	render() {
-		const { filtering } = this.state;
+		const { filtering, loading } = this.state;
+		const { enrolments } = this.props;
+		const reverse = [...enrolments].reverse();
 		return (
 			<div className="row">
 				<div className="col-md-12">
@@ -61,13 +128,13 @@ class Dashboard extends Component {
 					</div>
 				</div>
 				<div className="col-md-12">
-					<h6 className="element-header">Recently Enrolled</h6>
+					<h6 className="element-header">Enrolled</h6>
 					<div className="row my-4">
 						<form action="" className="form-inline pl-3">
 							<div className="form-group">
 								<label className="mr-2">Filter by: </label>
 							</div>
-							<div className="form-group mr-2">
+							{/* <div className="form-group mr-2">
 								<label className="mr-2 " htmlFor="id">
 									ID
 								</label>
@@ -85,9 +152,9 @@ class Dashboard extends Component {
 										);
 									})}
 								</select>
-							</div>
+							</div> */}
 							<div className="form-group mr-2">
-								<RangePicker />
+								<RangePicker onChange={e => this.dateChange(e)} />
 							</div>
 							<div className="form-group mr-2">
 								<a
@@ -121,88 +188,41 @@ class Dashboard extends Component {
 									</tr>
 								</thead>
 								<tbody>
-									<tr data-index="0" data-id="20">
-										<td>
-											<a>
-												<span
-													className="w-32 avatar gd-warning"
-													style={{ boxShadow: 'none' }}>
-													IN32456789
-												</span>
-											</a>
-										</td>
-										<td className="flex">
-											<a className="item-title text-color">old soldier</a>
-										</td>
-										<td className="flex">
-											<a className="item-title text-color">24</a>
-										</td>
-										<td className="flex">
-											<a className="item-title text-color">21/31/2008</a>
-										</td>
-										<td className="text-right row-actions">
-											<Tooltip title="view detail">
-												<Link to="/labour-mgt/detail" className="secondary">
-													<i className="os-icon os-icon-folder-plus" />
-												</Link>
-											</Tooltip>
-										</td>
-									</tr>
-									<tr data-index="0" data-id="20">
-										<td>
-											<a>
-												<span
-													className="w-32 avatar gd-warning"
-													style={{ boxShadow: 'none' }}>
-													IN32456789
-												</span>
-											</a>
-										</td>
-										<td className="flex">
-											<a className="item-title text-color">old soldier</a>
-										</td>
-										<td className="flex">
-											<a className="item-title text-color">24</a>
-										</td>
-										<td className="flex">
-											<a className="item-title text-color">21/31/2008</a>
-										</td>
-										<td className="text-right row-actions">
-											<Tooltip title="view detail">
-												<Link to="/labour-mgt/detail" className="secondary">
-													<i className="os-icon os-icon-folder-plus" />
-												</Link>
-											</Tooltip>
-										</td>
-									</tr>
+									{loading ? (
+										<tr>
+											<td colSpan="8" className="text-center">
+												<img alt="searching" src={searchingGIF} />
+											</td>
+										</tr>
+									) : !isEmpty(reverse) ? (
+										reverse.map((el, i) => {
+											return (
+												<tr key={i + 1}>
+													<td>{el.fileNumber}</td>
 
-									<tr data-index="0" data-id="20">
-										<td>
-											<a>
-												<span
-													className="w-32 avatar gd-warning"
-													style={{ boxShadow: 'none' }}>
-													IN32456789
-												</span>
-											</a>
-										</td>
-										<td className="flex">
-											<a className="item-title text-color">old soldier</a>
-										</td>
-										<td className="flex">
-											<a className="item-title text-color">24</a>
-										</td>
-										<td className="flex">
-											<a className="item-title text-color">21/31/2008</a>
-										</td>
-										<td className="text-right row-actions">
-											<Tooltip title="view detail">
-												<Link to="/labour-mgt/detail" className="secondary">
-													<i className="os-icon os-icon-folder-plus" />
-												</Link>
-											</Tooltip>
-										</td>
-									</tr>
+													<td>{el.patient_name}</td>
+
+													<td>{calculateAge(el.date_of_birth)}</td>
+													<td>{moment(el.createdAt).format('DD-MM-YYYY')}</td>
+													<td className="text-right row-actions">
+														<Tooltip title="view detail">
+															<a
+																onClick={() => this.detail(el)}
+																className="secondary">
+																<i className="os-icon os-icon-folder-plus" />
+															</a>
+														</Tooltip>
+													</td>
+												</tr>
+											);
+										})
+									) : (
+										<tr>
+											<td colSpan="5" className="text-center">
+												No Labour Enrolment
+											</td>
+										</tr>
+									)}
 								</tbody>
 							</table>
 						</div>
@@ -213,4 +233,14 @@ class Dashboard extends Component {
 	}
 }
 
-export default connect(null, null)(Dashboard);
+const mapStateToProps = state => {
+	return {
+		enrolments: state.patient.enrolments,
+	};
+};
+
+export default connect(mapStateToProps, {
+	loadLabour,
+	loadLabourDetails,
+	clearLabourDetails,
+})(Dashboard);

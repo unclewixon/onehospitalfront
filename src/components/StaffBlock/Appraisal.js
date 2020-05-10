@@ -42,8 +42,10 @@ export class Appraisal extends Component {
 
 		setPerformancePeriod(item);
 		//got to create apparaisal
-		if (type == 'self') {
+		if (type === 'self') {
 			history.push(`${location.pathname}#create-appraisal`);
+		} else if (type === 'staff') {
+			history.push(`${location.pathname}#staff-appraisal`);
 		} else {
 			this.props.lineAppraisal(true);
 		}
@@ -148,11 +150,13 @@ export class Appraisal extends Component {
 														) : null} */}
 
 														<Tooltip title="Staff Appraisal">
-															<Link
+															<a
 																className="secondary"
-																to={`${location.pathname}#staff-detail`}>
+																onClick={() => {
+																	this.createAppraisal(appraisal, 'staff');
+																}}>
 																<i className="os-icon os-icon-folder-plus" />
-															</Link>
+															</a>
 														</Tooltip>
 													</td>
 												</tr>

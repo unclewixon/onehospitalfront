@@ -7,6 +7,7 @@ import Queue from '../../components/Queue';
 
 const Dashboard = lazy(() => import('./Dashboard'));
 const LabDetail = lazy(() => import('./LabDetail'));
+const EnrolLab = lazy(() => import('./EnrolLab'));
 class index extends Component {
 	render() {
 		const { match, location } = this.props;
@@ -28,6 +29,14 @@ class index extends Component {
 											{' '}
 											Dashboard
 										</Link>
+										<Link
+											to={`${match.path}/enrol-labour`}
+											className={`mx-2 btn btn-primary btn-sm  ${
+												page === 'enrol-labour' ? 'btn-outline-primary' : ''
+											}`}>
+											{' '}
+											Enrol
+										</Link>
 									</div>
 									<h6 className="element-header">Labour Management</h6>
 									<div className="row">
@@ -40,8 +49,12 @@ class index extends Component {
 														component={Dashboard}
 													/>
 													<Route
-														path={`${match.url}/detail`}
+														path={`${match.url}/detail/:id`}
 														component={LabDetail}
+													/>
+													<Route
+														path={`${match.url}/enrol-labour`}
+														component={EnrolLab}
 													/>
 
 													<Route component={NoMatch} />

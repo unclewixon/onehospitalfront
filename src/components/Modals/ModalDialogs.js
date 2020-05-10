@@ -36,6 +36,7 @@ import ModalAntenatalDetail from './ModalAntenatalDetail';
 import ModalImmunizationDetail from './ModalImmunizationDetail';
 import ModalAntenatalAssessmentDetail from './ModalAntenatalAssessmentDetail';
 import ModalLineAppraisal from './ModalLineAppraisal';
+import ModalStaffAppraisal from './ModalStaffAppraisal';
 
 const ModalDialogs = ({
 	create_staff,
@@ -73,6 +74,7 @@ const ModalDialogs = ({
 	immunization_detail,
 	antenatal_assessment_detail,
 	line_appraisal,
+	staff_appraisal,
 }) => {
 	return (
 		<>
@@ -111,6 +113,7 @@ const ModalDialogs = ({
 			{immunization_detail && <ModalImmunizationDetail />}
 			{antenatal_assessment_detail && <ModalAntenatalAssessmentDetail />}
 			{line_appraisal && <ModalLineAppraisal />}
+			{staff_appraisal && <ModalStaffAppraisal />}
 		</>
 	);
 };
@@ -152,6 +155,7 @@ const mapStateToProps = (state, ownProps) => {
 		immunization_detail: state.general.immunization_detail,
 		antenatal_assessment_detail: state.general.antenatal_assessment_detail,
 		line_appraisal: state.general.line_appraisal,
+		staff_appraisal: state.general.staff_appraisal,
 	};
 };
 
