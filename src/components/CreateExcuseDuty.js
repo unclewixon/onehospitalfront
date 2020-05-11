@@ -105,7 +105,8 @@ const CreateExcuseDuty = ({
 			end_date: endDate ? endDate : '',
 			leave_category_id: "248cd662-a260-46be-bc90-dbaeb1ba1f1c",
 			application: value ? value.reason : '',
-			appliedBy: value && value.consulting_doctor ? value.consulting_doctor.id : ''
+			appliedBy: value && value.consulting_doctor ? value.consulting_doctor.id : '',
+			diagnosis_id: value && value.diagnosis ? value.diagnosis : ''
 		}
 		try {
 			const rs = await request(`${API_URI}/hr/leave-management`, 'POST', true, newRequestData);

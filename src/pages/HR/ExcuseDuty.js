@@ -129,10 +129,6 @@ class ExcuseDuty extends Component {
 							<div className="element-wrapper">
 								<div className="element-actions">
 									<form className="form-inline justify-content-sm-end">
-										<label>Doctor:</label>
-										<select className="form-control form-control-sm rounded mr-4">
-											<option value="Pending">Choose Doctor</option>
-										</select>
 										<label>Status:</label>
 										<select
 											className="form-control form-control-sm rounded"

@@ -43,19 +43,21 @@ class LabRecentRequest extends Component {
 				true
 			);
 
-			const filterResponse = () => {
-				const res = rs.map(lab => {
-					const filtered = lab.requestBody.groups.filter(group => {
-						const filt = group.parameters.some(param => param.result !== '');
-						return filt;
-					});
-					return filtered && filtered.length ? lab : [];
-				});
-				return res && res.length ? res : null;
-			};
-			const newResp = filterResponse().filter(fil => fil.length !== 0);
+			console.log(rs)
 
-			this.props.loadClinicalLab(newResp);
+			// const filterResponse = () => {
+			// 	const res = rs.map(lab => {
+			// 		const filtered = lab.requestBody.groups.filter(group => {
+			// 			const filt = group.parameters.some(param => param.result !== '');
+			// 			return filt;
+			// 		});
+			// 		return filtered && filtered.length ? lab : [];
+			// 	});
+			// 	return res && res.length ? res : null;
+			// };
+			// const newResp = filterResponse().filter(fil => fil.length !== 0);
+
+			this.props.loadClinicalLab(rs);
 			this.setState({ loading: false, filtering: false });
 		} catch (error) {
 			console.log(error);
