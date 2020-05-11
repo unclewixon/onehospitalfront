@@ -28,7 +28,7 @@ const ReviewOfSystem = props => {
 	};
 
 	const onSubmit = async values => {
-		encounterData.reviewOfSystem = values.selectedSystem;
+		encounterData.reviewOfSystem = values.selectedSystem || [];
 		encounterForm.reviewOfSystem = values;
 		props.loadEncounterForm(encounterForm);
 		props.loadEncounterData(encounterData);

@@ -2,11 +2,16 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 
-import { renderTextInput, renderTextArea } from '../../services/utilities';
+import {
+	renderTextInput,
+	renderTextArea,
+	request,
+} from '../../services/utilities';
 import { Checkbox } from 'antd';
-
-import waiting from '../../assets/images/waiting.gif';
 import { closeModals } from '../../actions/general';
+import { API_URI } from '../../services/constants';
+import waiting from '../../assets/images/waiting.gif';
+import { notifySuccess, notifyError } from '../../services/notify';
 
 const plainOptions = [
 	'Pre-eclampsia',
@@ -29,7 +34,7 @@ const plainOptions = [
 export class ModalCreateRiskAssessment extends Component {
 	state = {
 		submitting: false,
-		previous_experince: [],
+		previousPregnancyExperience: [],
 	};
 	componentDidMount() {
 		document.body.classList.add('modal-open');
@@ -39,12 +44,39 @@ export class ModalCreateRiskAssessment extends Component {
 		document.body.classList.remove('modal-open');
 	}
 
-	onChange(checkedValues) {
+	onChange = checkedValues => {
 		console.log('checked = ', checkedValues);
-	}
+		this.setState({ previousPregnancyExperience: checkedValues });
+	};
+
+	createRisk = async data => {
+		try {
+			const { labourDetail } = this.props;
+			const { previousPregnancyExperience } = this.state;
+			const newData = { ...data, previousPregnancyExperience };
+			this.setState({ submitting: true });
+			console.log(labourDetail.id, newData);
+			const rs = await request(
+				`${API_URI}/labour-management/risk-assessment/${labourDetail.id}/save`,
+				'POST',
+				true,
+				newData
+			);
+
+			console.log(rs);
+			notifySuccess('vital record succesfully submitted');
+
+			this.props.closeModals(false);
+		} catch (e) {
+			this.setState({ submitting: false });
+			console.log(e);
+			notifyError(e.message || 'Submission of vital not successful');
+		}
+		// this.setState({ submitting: false });
+	};
 	render() {
-		const { submitting, previous_experince } = this.state;
-		const { error, reset } = this.props;
+		const { submitting, previousPregnancyExperience } = this.state;
+		const { error, reset, handleSubmit } = this.props;
 		return (
 			<div
 				className="onboarding-modal modal fade animated show"
@@ -63,7 +95,7 @@ export class ModalCreateRiskAssessment extends Component {
 							<h4 className="onboarding-title">Create Risk Assessment</h4>
 
 							<div className="form-block">
-								<form>
+								<form onSubmit={handleSubmit(this.createRisk)}>
 									{error && (
 										<div
 											className="alert alert-danger"
@@ -114,7 +146,7 @@ export class ModalCreateRiskAssessment extends Component {
 										<div className="row">
 											<div className=" col-sm-4">
 												<Field
-													name="previous_pregnancy"
+													name="previousPregnancyOutcome"
 													component={'input'}
 													type="radio"
 													value="Normal delivery"
@@ -124,7 +156,7 @@ export class ModalCreateRiskAssessment extends Component {
 
 											<div className="col-sm-4">
 												<Field
-													name="previous_pregnancy"
+													name="previousPregnancyOutcome"
 													component="input"
 													type="radio"
 													value="Assisted delivery"
@@ -133,7 +165,7 @@ export class ModalCreateRiskAssessment extends Component {
 											</div>
 											<div className="col-sm-4">
 												<Field
-													name="previous_pregnancy"
+													name="previousPregnancyOutcome"
 													component="input"
 													type="radio"
 													value="cesarean"
@@ -142,7 +174,7 @@ export class ModalCreateRiskAssessment extends Component {
 											</div>
 											<div className="col-sm-4">
 												<Field
-													name="previous_pregnancy"
+													name="previousPregnancyOutcome"
 													component="input"
 													type="radio"
 													value="still birth"
@@ -152,7 +184,7 @@ export class ModalCreateRiskAssessment extends Component {
 
 											<div className="col-sm-4">
 												<Field
-													name="previous_pregnancy"
+													name="previousPregnancyOutcome"
 													component="input"
 													type="radio"
 													value="miscarriage"
@@ -162,7 +194,7 @@ export class ModalCreateRiskAssessment extends Component {
 
 											<div className="col-sm-4">
 												<Field
-													name="previous_pregnancy"
+													name="previousPregnancyOutcome"
 													component="input"
 													type="radio"
 													value="Spontaneous Abortion"
@@ -182,7 +214,6 @@ export class ModalCreateRiskAssessment extends Component {
 
 												<Checkbox.Group
 													options={plainOptions}
-													defaultValue={previous_experince}
 													onChange={this.onChange}
 												/>
 											</div>
@@ -236,4 +267,11 @@ ModalCreateRiskAssessment = reduxForm({
 	form: 'risk_assessment',
 })(ModalCreateRiskAssessment);
 
-export default connect(null, { closeModals })(ModalCreateRiskAssessment);
+const mapStateToProps = state => {
+	return {
+		labourDetail: state.patient.labourDetail,
+	};
+};
+export default connect(mapStateToProps, { closeModals })(
+	ModalCreateRiskAssessment
+);

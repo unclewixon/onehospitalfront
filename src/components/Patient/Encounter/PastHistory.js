@@ -33,8 +33,7 @@ let PastHistory = props => {
 	const dispatch = useDispatch();
 
 	const onSubmit = async data => {
-		console.log(data);
-		encounterData.medicalHistory = data.pastHistory;
+		encounterData.medicalHistory = data.pastHistory || [];
 		encounterForm.medicalHistory = data;
 		props.loadEncounterForm(encounterForm);
 		props.loadEncounterData(encounterData);
@@ -51,7 +50,6 @@ let PastHistory = props => {
 			setData(data);
 		}
 	}, []);
-	console.log(data);
 
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option => option.description;

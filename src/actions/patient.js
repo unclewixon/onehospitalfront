@@ -29,8 +29,14 @@ import {
 	ADD_IMMUNIZATION,
 	DELETE_IMMUNIZATION,
 	LOAD_ANTENATAL_ASSESSMENT,
+	LOAD_LABOUR,
+	LOAD_LABOUR_DETAIL,
+	CLEAR_LABOUR_DETAIL,
 	LOAD_ENCOUNTERS,
 	ENCOUNTER_FORM,
+	LOAD_PARTOGRAPH,
+	LOAD_RISK,
+	LOAD_DELIVERY_RECORD,
 } from './types';
 import { request } from '../services/utilities';
 
@@ -269,7 +275,45 @@ export const loadAntenatalAssessment = payload => {
 		payload,
 	};
 };
+export const loadLabour = payload => {
+	return {
+		type: LOAD_LABOUR,
+		payload,
+	};
+};
 
+export const loadLabourDetails = payload => {
+	return {
+		type: LOAD_LABOUR_DETAIL,
+		payload,
+	};
+};
+
+export const clearLabourDetails = () => {
+	return {
+		type: CLEAR_LABOUR_DETAIL,
+	};
+};
+
+export const loadPartograph = payload => {
+	return {
+		type: LOAD_PARTOGRAPH,
+		payload,
+	};
+};
+
+export const loadRiskAssessment = payload => {
+	return {
+		type: LOAD_RISK,
+		payload,
+	};
+};
+export const loadDeliveryRecord = payload => {
+	return {
+		type: LOAD_DELIVERY_RECORD,
+		payload,
+	};
+};
 export const createLabRequest = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
@@ -483,3 +527,18 @@ export const antenatalAssessment = () => {
 		});
 	};
 };
+
+// export const getPartograph = id => {
+// 	return dispatch => {
+// 		return new Promise((resolve, reject) => {
+// 			request(`${API_URI}/labour-management/${id}/vitals`, 'GET', true)
+// 				.then(response => {
+// 					dispatch(loadPartograph(response));
+// 					return resolve({ success: true });
+// 				})
+// 				.catch(error => {
+// 					return reject({ success: false });
+// 				});
+// 		});
+// 	};
+// };

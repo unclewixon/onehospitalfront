@@ -10,17 +10,16 @@ import { confirmAction } from '../../services/utilities';
 import ModalExcuseDuty from '../../components/Modals/ModalExcuseDuty';
 
 class ExcuseDuty extends Component {
-
 	state = {
 		searching: false,
 		activeRequest: null,
 		showModal: false,
-		ExcuseList: []
+		ExcuseList: [],
 	};
 
 	onModalClick = () => {
-		this.setState({showModal: !this.state.showModal})
-	}
+		this.setState({ showModal: !this.state.showModal });
+	};
 	componentDidMount() {
 		this.fetchStaffLeave();
 	}
@@ -28,98 +27,116 @@ class ExcuseDuty extends Component {
 	modalFunction = data => {
 		this.onModalClick();
 		this.setState({ activeRequest: data });
-	}
+	};
 
 	fetchStaffLeave = async () => {
-		this.setState({searching: true})
+		this.setState({ searching: true });
 		try {
-			const rs = await request(`${API_URI}${leaveMgtAPI}/excuse-duty`, 'GET', true);
-			this.setState({searching: false})
+			const rs = await request(
+				`${API_URI}${leaveMgtAPI}/excuse-duty`,
+				'GET',
+				true
+			);
+			this.setState({ searching: false });
 			this.props.loadStaffLeave(rs);
-			this.setState({ExcuseList: rs})
+			this.setState({ ExcuseList: rs });
 		} catch (error) {
-			this.setState({searching: false})
+			this.setState({ searching: false });
 			console.log(error);
 		}
 	};
 
-	rejectLeaveRequests = async (data) => {
+	rejectLeaveRequests = async data => {
 		try {
-			const res = await request(`${API_URI}/hr/leave-management/${data.id}/reject`, 'GET', true);
-			console.log(res)
-			notifySuccess('Successful rejecting excuse')
-			this.fetchStaffLeave()
+			const res = await request(
+				`${API_URI}/hr/leave-management/${data.id}/reject`,
+				'GET',
+				true
+			);
+			console.log(res);
+			notifySuccess('Successful rejecting excuse');
+			this.fetchStaffLeave();
 		} catch (error) {
-			notifyError('Could not reject excuse')
+			notifyError('Could not reject excuse');
 		}
-	}
+	};
 
 	confirmReject = data => {
 		confirmAction(
-			this.rejectLeaveRequests, 
+			this.rejectLeaveRequests,
 			data,
-			"in rejecting excuse?",
-			"Proceed?"
-		 )
-	}
+			'in rejecting excuse?',
+			'Proceed?'
+		);
+	};
 
-	approveLeaveRequests = async (data) => {
+	approveLeaveRequests = async data => {
 		try {
-			const res = await request(`${API_URI}/hr/leave-management/${data.id}/approve`, 'GET', true);
-			console.log(res)
-			notifySuccess('Successful approving excuse duty')
-			this.fetchStaffLeave()
+			const res = await request(
+				`${API_URI}/hr/leave-management/${data.id}/approve`,
+				'GET',
+				true
+			);
+			console.log(res);
+			notifySuccess('Successful approving excuse duty');
+			this.fetchStaffLeave();
 		} catch (error) {
-			notifyError('Could not approve excuse duty')
+			notifyError('Could not approve excuse duty');
 		}
-	}
+	};
 
 	confirmApprove = data => {
 		confirmAction(
-			this.approveLeaveRequests, 
+			this.approveLeaveRequests,
 			data,
-			"continue in approving this excuse?",
-			"Are you sure?"
-		 )
-	}
+			'continue in approving this excuse?',
+			'Are you sure?'
+		);
+	};
 
-	deleteLeaveRequests = async (data) => {
+	deleteLeaveRequests = async data => {
 		try {
-			const res = await request(`${API_URI}/hr/leave-management/${data.id}`, 'DELETE', true);
-			notifySuccess('Successfully removed excuse')
-			this.fetchStaffLeave()
+			const res = await request(
+				`${API_URI}/hr/leave-management/${data.id}`,
+				'DELETE',
+				true
+			);
+			notifySuccess('Successfully removed excuse');
+			this.fetchStaffLeave();
 		} catch (error) {
-			notifyError('Could not remove excuse')
+			notifyError('Could not remove excuse');
 		}
-	}
+	};
 
 	confirmDelete = data => {
 		confirmAction(
-			this.deleteLeaveRequests, 
+			this.deleteLeaveRequests,
 			data,
-			"in deleting this excuse?",
-			"Do you want to continue"
-		 )
-	}
+			'in deleting this excuse?',
+			'Do you want to continue'
+		);
+	};
 
 	render() {
 		const { staff_leave } = this.props;
 
-		const filterByCategory = (id) => {
-			if(id === "none") {
-				return this.setState({ LeaveList: staff_leave })
+		const filterByCategory = id => {
+			if (id === 'none') {
+				return this.setState({ LeaveList: staff_leave });
 			}
-			const list = staff_leave.filter(leave => leave.category.id === id)
-			this.setState({ LeaveList: list })
-		}
+			const list = staff_leave.filter(leave => leave.category.id === id);
+			this.setState({ LeaveList: list });
+		};
 
-		const filterByStatus = (status) => {
-			if(status === "none") {
-				return this.setState({ ExcuseList: staff_leave })
+		const filterByStatus = status => {
+			if (status === 'none') {
+				return this.setState({ ExcuseList: staff_leave });
 			}
-			const list = staff_leave.filter(leave => leave.status === parseInt(status))
-			this.setState({ ExcuseList: list })
-		}
+			const list = staff_leave.filter(
+				leave => leave.status === parseInt(status)
+			);
+			this.setState({ ExcuseList: list });
+		};
 
 		return (
 			<div className="content-i">
@@ -132,8 +149,7 @@ class ExcuseDuty extends Component {
 										<label>Status:</label>
 										<select
 											className="form-control form-control-sm rounded"
-											onChange={(e) => filterByStatus(e.target.value)}
-										>
+											onChange={e => filterByStatus(e.target.value)}>
 											<option value="none">Select Status</option>
 											<option value={0}>Pending</option>
 											<option value={1}>Approved</option>
@@ -142,15 +158,13 @@ class ExcuseDuty extends Component {
 									</form>
 								</div>
 								<h6 className="element-header">Leave Management</h6>
-								{
-									this.state.activeRequest ? (
-										<ModalExcuseDuty
-											showModal={this.state.showModal}
-											activeRequest={this.state.activeRequest}
-											onModalClick={this.onModalClick}
-										/>
-									) : null
-								}
+								{this.state.activeRequest ? (
+									<ModalExcuseDuty
+										showModal={this.state.showModal}
+										activeRequest={this.state.activeRequest}
+										onModalClick={this.onModalClick}
+									/>
+								) : null}
 								<div className="element-box">
 									<div className="table-responsive">
 										<table className="table table-striped">
@@ -173,21 +187,13 @@ class ExcuseDuty extends Component {
 															onLeave={true}
 															hasRequest={false}
 															leave={leave}
-															modalClick={Data =>
-																this.modalFunction(Data, i)
-															}
+															modalClick={Data => this.modalFunction(Data, i)}
 															index={i}
-															rejectRequest={Data => 
-																this.confirmReject(Data)
-															}
-															approveRequest={Data => 
-																this.confirmApprove(Data)
-															}
-															deleteRequest={Data => 
-																this.confirmDelete(Data)
-															}
+															rejectRequest={Data => this.confirmReject(Data)}
+															approveRequest={Data => this.confirmApprove(Data)}
+															deleteRequest={Data => this.confirmDelete(Data)}
 														/>
-													)
+													);
 												})}
 											</tbody>
 										</table>
@@ -205,7 +211,7 @@ class ExcuseDuty extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		staff_leave: state.hr.staff_leave,
-	}
+	};
 };
 
 export default connect(mapStateToProps, { loadStaffLeave })(ExcuseDuty);

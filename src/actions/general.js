@@ -348,6 +348,7 @@ export const toggleStaffAppraisal = (status, data) => {
 		data,
 	};
 };
+
 // close modals
 export const closeModals = () => {
 	return dispatch => {

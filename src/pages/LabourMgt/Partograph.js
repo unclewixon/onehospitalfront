@@ -1,4 +1,5 @@
 import React, { Component, PureComponent } from 'react';
+import { connect } from 'react-redux';
 import {
 	LineChart,
 	Line,
@@ -11,7 +12,10 @@ import {
 	Scatter,
 	ResponsiveContainer,
 } from 'recharts';
-
+import { getPartograph, loadPartograph } from '../../actions/patient';
+import { notifySuccess, notifyError } from '../../services/notify';
+import { request } from '../../services/utilities';
+import { API_URI, searchAPI } from '../../services/constants';
 const data = [
 	{
 		name: '0',
@@ -69,8 +73,107 @@ const data = [
 	},
 ];
 
+const partographParameter = [
+	'fetalHeartRate',
+	'cervicalDialation',
+	'fetalHeadDescent',
+	'numberOfContractions',
+	'durationOfContractions',
+	'bloodPressure',
+	'currentPulse',
+	'currentTemperature',
+	'bloodSugarLevel',
+	'respirationRate',
+];
+
 export class Partograph extends PureComponent {
+	state = {
+		fetalHeartRate: [],
+		cervicalDialation: [],
+		fetalHeadDescent: [],
+		numberOfContractions: [],
+		durationOfContractions: [],
+		rateOfContractions: [],
+		bloodPressure: [],
+		currentPulse: [],
+		currentTemperature: [],
+		bloodSugarLevel: [],
+		respirationRate: [],
+	};
+
+	componentDidMount() {
+		this.fetchPartograph();
+	}
+
+	fetchPartograph = async () => {
+		const { labourDetail } = this.props;
+
+		try {
+			const rs = await request(
+				`${API_URI}/labour-management/${labourDetail.id}/vitals`,
+				'GET',
+				true
+			);
+			loadPartograph(rs);
+			const { partographies } = this.props;
+			console.log(rs);
+			let {
+				fetalHeartRate,
+				cervicalDialation,
+				fetalHeadDescent,
+				numberOfContractions,
+				durationOfContractions,
+				rateOfContractions,
+				bloodPressure,
+				currentPulse,
+				currentTemperature,
+				bloodSugarLevel,
+				respirationRate,
+			} = this.state;
+			//split each into it graph
+			rs.forEach(el => {
+				fetalHeartRate = fetalHeartRate.push(+el['fetalHeartRate']);
+				cervicalDialation = cervicalDialation.push(+el['cervicalDialation']);
+				numberOfContractions = numberOfContractions.push(
+					+el['numberOfContractions']
+				);
+				fetalHeadDescent = fetalHeadDescent.push(+el['fetalHeadDescent']);
+				durationOfContractions = durationOfContractions.push(
+					+el['durationOfContractions']
+				);
+				rateOfContractions = rateOfContractions.push(
+					Number(el['numberOfContractions']) /
+						Number(+el['durationOfContractions'])
+				);
+				currentPulse = currentPulse.push(+el['currentPulse']);
+				bloodPressure = bloodPressure.push(+el['bloodPressure']);
+				currentTemperature = currentTemperature.push(+el['currentTemperature']);
+
+				bloodSugarLevel = bloodSugarLevel.push(+el['bloodSugarLevel']);
+				respirationRate = respirationRate.push(+el['respirationRate']);
+			});
+
+			this.setState({
+				fetalHeartRate,
+				cervicalDialation,
+				fetalHeadDescent,
+				numberOfContractions,
+				durationOfContractions,
+				rateOfContractions,
+				bloodPressure,
+				currentPulse,
+				currentTemperature,
+				bloodSugarLevel,
+				respirationRate,
+			});
+		} catch (e) {
+			console.log(e);
+			this.setState({ loading: false });
+		}
+	};
+
 	render() {
+		console.log(this.state);
 		return (
 			<>
 				<div className="col-md-12 mt-3">
@@ -361,4 +464,10 @@ export class Partograph extends PureComponent {
 	}
 }
 
-export default Partograph;
+const mapStateToProps = state => {
+	return {
+		partographies: state.patient.partographies,
+		labourDetail: state.patient.labourDetail,
+	};
+};
+export default connect(mapStateToProps, { loadPartograph })(Partograph);

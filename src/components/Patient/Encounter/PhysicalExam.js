@@ -34,12 +34,10 @@ const PhysicalExam = props => {
 	};
 
 	const onSubmit = async values => {
-		console.log(values);
-
 		encounterForm.physicalExamination = values;
 		props.loadEncounterForm(encounterForm);
 
-		encounterData.physicalExamination = values.selectedPhysicalExam;
+		encounterData.physicalExamination = values.selectedPhysicalExam || [];
 		props.loadEncounterData(encounterData);
 		dispatch(props.next);
 	};
@@ -53,7 +51,7 @@ const PhysicalExam = props => {
 							<Controller
 								as={<Select options={physicalExamination} />}
 								control={control}
-								rules={{ required: true }}
+								//rules={{ required: true }}
 								onChange={([selected]) => {
 									handleChange(selected);
 									return selected;

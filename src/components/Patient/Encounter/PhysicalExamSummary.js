@@ -13,7 +13,6 @@ const PhysicalExamSummary = props => {
 		setSummary(e);
 	};
 	const onSubmit = async values => {
-		console.log(summary);
 		encounterData.physicalExaminationSummary = [summary];
 		props.loadEncounterData(encounterData);
 		dispatch(props.next);

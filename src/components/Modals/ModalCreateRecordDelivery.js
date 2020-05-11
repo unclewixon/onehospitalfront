@@ -2,15 +2,35 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import moment from 'moment';
-import { renderTextInput } from '../../services/utilities';
-import TimePicker from 'antd/lib/time-picker';
-import DatePicker from 'antd/lib/date-picker';
+import { renderTextInput, request } from '../../services/utilities';
+import DatePicker from 'react-datepicker';
 import waiting from '../../assets/images/waiting.gif';
 import { closeModals } from '../../actions/general';
+import {
+	API_URI,
+	patientAPI,
+	searchAPI,
+	labourAPI,
+} from '../../services/constants';
+
+import { caput, moulding } from '../../services/constants';
+import { notifySuccess, notifyError } from '../../services/notify';
+import searchingGIF from '../../assets/images/searching.gif';
+import { ConsoleWriter } from 'istanbul-lib-report';
 export class ModalCreateRecordDelivery extends Component {
 	state = {
 		submitting: false,
+		examDate: '',
+		id: null,
+		startDate: '',
+		endDate: '',
+		staffs: [],
+		staff_id: '',
+		staff_name: '',
+		searching: false,
+		query: '',
 	};
+	staff = React.createRef();
 	componentDidMount() {
 		document.body.classList.add('modal-open');
 	}
@@ -18,9 +38,86 @@ export class ModalCreateRecordDelivery extends Component {
 	componentWillUnmount() {
 		document.body.classList.remove('modal-open');
 	}
+
+	createDelivery = async data => {
+		let newData = { ...data };
+		newData['dateOfBirth'] = moment(this.state.examDate).format('DD/MM/YYYY');
+		newData['timeOfBirth'] = moment(this.state.examDate).format('LT');
+		newData['pediatrician_id'] = this.state.staff_id;
+		console.log(newData);
+
+		try {
+			const { labourDetail } = this.props;
+
+			this.setState({ submitting: true });
+			const rs = await request(
+				`${API_URI}/labour-management/delivery-record/${labourDetail.id}/save`,
+				'POST',
+				true,
+				newData
+			);
+			console.log(rs);
+			notifySuccess('succesfully submitted');
+
+			this.props.closeModals(false);
+		} catch (e) {
+			this.setState({ submitting: false });
+			notifyError(
+				e.message || 'Submission of labour measurement form not successful'
+			);
+		}
+	};
+
+	setDate = async (date, type) => {
+		await this.setState({ [type]: date });
+	};
+
+	patientSet = pat => {
+		// setValue('patient_id', pat.id);
+		console.log(pat);
+		let first = pat.first_name ? pat.first_name : '';
+		let last = pat.last_name ? pat.last_name : '';
+		let name = first + ' ' + last;
+
+		this.setPatient(pat.id, name);
+		// document.getElementById('patient').value = name;
+
+		this.staff.current.value = name;
+		this.setState({ staffs: [], query: '' });
+	};
+
+	setPatient = (value, name) => {
+		this.setState({ ...this.state, staff_id: value, staff_name: name });
+		console.log(this.state.staff_id, value);
+	};
+
+	handlePatientChange = e => {
+		this.setState({ query: e.target.value });
+		this.searchPatient();
+		console.log(this.state.query, this.state.searching);
+	};
+
+	searchPatient = async () => {
+		if (this.state.query.length > 2) {
+			try {
+				this.setState({ searching: true });
+
+				const rs = await request(
+					`${API_URI}/hr/staffs/find?q=${this.state.query}`,
+					'GET',
+					true
+				);
+				console.log(rs);
+				this.setState({ staffs: rs, searching: false });
+			} catch (e) {
+				notifyError(e.message || 'Error Occurred');
+			}
+		}
+	};
 	render() {
-		const { submitting } = this.state;
+		const { submitting, examDate, searching, staffs, staff_name } = this.state;
 		const { error, handleSubmit } = this.props;
+		console.log(staffs, searching);
 		return (
 			<div
 				className="onboarding-modal modal fade animated show"
@@ -38,7 +135,7 @@ export class ModalCreateRecordDelivery extends Component {
 						<div className="onboarding-content with-gradient">
 							<h4 className="onboarding-title">Create Record Delivery</h4>
 							<div className="form-block">
-								<form>
+								<form onSubmit={handleSubmit(this.createDelivery)}>
 									{error && (
 										<div
 											className="alert alert-danger"
@@ -53,7 +150,7 @@ export class ModalCreateRecordDelivery extends Component {
 										<div className="col-md-12 d-flex">
 											<div className="col-sm-6">
 												<Field
-													name="delivery_type"
+													name="deliveryType"
 													component="input"
 													type="radio"
 													value="mormal delivery"
@@ -65,7 +162,7 @@ export class ModalCreateRecordDelivery extends Component {
 
 											<div className="col-sm-6">
 												<Field
-													name="delivery_type"
+													name="deliveryType"
 													component="input"
 													type="radio"
 													value="epistomy"
@@ -78,7 +175,7 @@ export class ModalCreateRecordDelivery extends Component {
 										<div className="col-md-12 mt-1 d-flex">
 											<div className="col-sm-6">
 												<Field
-													name="delivery_type"
+													name="deliveryType"
 													component="input"
 													type="radio"
 													value="malpresentation"
@@ -89,7 +186,7 @@ export class ModalCreateRecordDelivery extends Component {
 											</div>
 											<div className="col-sm-6">
 												<Field
-													name="delivery_type"
+													name="deliveryType"
 													component="input"
 													type="radio"
 													value="cesarean"
@@ -101,7 +198,7 @@ export class ModalCreateRecordDelivery extends Component {
 										<div className="col-md-12 mt-1 d-flex">
 											<div className="col-sm-6">
 												<Field
-													name="delivery_type"
+													name="deliveryType"
 													component="input"
 													type="radio"
 													value="assisted delivery "
@@ -120,7 +217,7 @@ export class ModalCreateRecordDelivery extends Component {
 										<div className="col-md-12 d-flex">
 											<div className="col-sm-4">
 												<Field
-													name="mother_alive"
+													name="isMotherAlive"
 													component="input"
 													type="radio"
 													value="yes"
@@ -129,7 +226,7 @@ export class ModalCreateRecordDelivery extends Component {
 											</div>
 											<div className="col-sm-4">
 												<Field
-													name="mother_alive"
+													name="isMotherAlive"
 													component="input"
 													type="radio"
 													value="no"
@@ -145,7 +242,7 @@ export class ModalCreateRecordDelivery extends Component {
 										<div className="col-md-12 d-flex">
 											<div className="col-sm-4">
 												<Field
-													name="baby_alive"
+													name="isBabyAlive"
 													component="input"
 													type="radio"
 													value="yes"
@@ -154,7 +251,7 @@ export class ModalCreateRecordDelivery extends Component {
 											</div>
 											<div className="col-sm-4">
 												<Field
-													name="baby_alive"
+													name="isBabyAlive"
 													component="input"
 													type="radio"
 													value="no"
@@ -169,7 +266,7 @@ export class ModalCreateRecordDelivery extends Component {
 										<div className="col-md-12 d-flex">
 											<div className="col-sm-4">
 												<Field
-													name="oxytocin"
+													name="administeredOxytocin"
 													component="input"
 													type="radio"
 													value="yes"
@@ -178,7 +275,7 @@ export class ModalCreateRecordDelivery extends Component {
 											</div>
 											<div className="col-sm-4">
 												<Field
-													name="oxytocin"
+													name="administeredOxytocin"
 													component="input"
 													type="radio"
 													value="no"
@@ -194,7 +291,7 @@ export class ModalCreateRecordDelivery extends Component {
 										<div className="col-md-12 d-flex">
 											<div className="col-sm-4">
 												<Field
-													name="successful_placenta"
+													name="placentaComplete"
 													component="input"
 													type="radio"
 													value="yes"
@@ -203,7 +300,7 @@ export class ModalCreateRecordDelivery extends Component {
 											</div>
 											<div className="col-sm-4">
 												<Field
-													name="successful_placenta"
+													name="placentaComplete"
 													component="input"
 													type="radio"
 													value="no"
@@ -218,7 +315,7 @@ export class ModalCreateRecordDelivery extends Component {
 										<div className="col-md-12 d-flex">
 											<div className="col-sm-4">
 												<Field
-													name="normal_bleeding"
+													name="bleeading"
 													component="input"
 													type="radio"
 													value="yes"
@@ -227,7 +324,7 @@ export class ModalCreateRecordDelivery extends Component {
 											</div>
 											<div className="col-sm-4">
 												<Field
-													name="normal_bleeding"
+													name="bleeading"
 													component="input"
 													type="radio"
 													value="no"
@@ -238,21 +335,27 @@ export class ModalCreateRecordDelivery extends Component {
 									</div>
 
 									<div className="row">
-										<div className="col-md-6 pl-0">
-											<label>Time of birth</label>
-											<br />
-											<TimePicker
-												use12Hours
-												defaultValue={moment('13:30:56', 'HH:mm:ss')}
-											/>
-										</div>
-
-										<div className="col-md-6 pl-0">
-											<label>Date of birth</label>
-											<br />
-											<DatePicker
-												defaultValue={moment('2015-01-01', 'mm/dd/yyyy')}
-											/>
+										<div className="col-sm-12">
+											<div className="form-group">
+												<label> Time and Date of Birth</label>
+												<div className="custom-date-input">
+													<DatePicker
+														selected={examDate}
+														onChange={date => this.setDate(date, 'examDate')}
+														peekNextMonth
+														showMonthDropdown
+														showYearDropdown
+														dropdownMode="select"
+														className="single-daterange form-control"
+														placeholderText="Select date and time"
+														timeInputLabel="Time:"
+														dateFormat="MM/dd/yyyy h:mm aa"
+														showTimeInput
+														minDate={new Date()}
+														required
+													/>
+												</div>
+											</div>
 										</div>
 									</div>
 
@@ -262,7 +365,7 @@ export class ModalCreateRecordDelivery extends Component {
 										<div className="col-md-12 d-flex">
 											<div className="col-sm-4">
 												<Field
-													name="baby_cried"
+													name="babyCried"
 													component="input"
 													type="radio"
 													value="yes"
@@ -271,7 +374,7 @@ export class ModalCreateRecordDelivery extends Component {
 											</div>
 											<div className="col-sm-4">
 												<Field
-													name="baby_cried"
+													name="babyCried"
 													component="input"
 													type="radio"
 													value="no"
@@ -287,7 +390,7 @@ export class ModalCreateRecordDelivery extends Component {
 										<div className="col-md-12 d-flex">
 											<div className="col-sm-4">
 												<Field
-													name="sex"
+													name="sexOfBaby"
 													component="input"
 													type="radio"
 													value="female"
@@ -296,7 +399,7 @@ export class ModalCreateRecordDelivery extends Component {
 											</div>
 											<div className="col-sm-4">
 												<Field
-													name="sex"
+													name="sexOfBaby"
 													component="input"
 													type="radio"
 													value="male"
@@ -305,7 +408,7 @@ export class ModalCreateRecordDelivery extends Component {
 											</div>
 											<div className="col-sm-4">
 												<Field
-													name="sex"
+													name="sexOfBaby"
 													component="input"
 													type="radio"
 													value="other"
@@ -318,8 +421,8 @@ export class ModalCreateRecordDelivery extends Component {
 									<div className="row">
 										<div className="col-sm-6 pl-0">
 											<Field
-												id="apgar_score"
-												name="apgar_score"
+												id="apgarScore"
+												name="apgarScore"
 												component={renderTextInput}
 												label="APGAR Score"
 												type="text"
@@ -344,7 +447,7 @@ export class ModalCreateRecordDelivery extends Component {
 										<div className="col-md-12 d-flex">
 											<div className="col-sm-4">
 												<Field
-													name="vitamin_k"
+													name="administeredVitaminK"
 													component="input"
 													type="radio"
 													value="yes"
@@ -353,7 +456,7 @@ export class ModalCreateRecordDelivery extends Component {
 											</div>
 											<div className="col-sm-4">
 												<Field
-													name="vitamin_k"
+													name="administeredVitaminK"
 													component="input"
 													type="radio"
 													value="no"
@@ -369,7 +472,7 @@ export class ModalCreateRecordDelivery extends Component {
 										<div className="col-md-12 d-flex">
 											<div className="col-sm-4">
 												<Field
-													name="rh_negative"
+													name="negativeRH"
 													component="input"
 													type="radio"
 													value="yes"
@@ -378,7 +481,7 @@ export class ModalCreateRecordDelivery extends Component {
 											</div>
 											<div className="col-sm-4">
 												<Field
-													name="rh_negative"
+													name="negativeRH"
 													component="input"
 													type="radio"
 													value="no"
@@ -391,8 +494,8 @@ export class ModalCreateRecordDelivery extends Component {
 									<div className="row">
 										<div className="col-sm-12 pl-0">
 											<Field
-												id="drug_adminstered"
-												name="drug_adminstered"
+												id="drugsAdministered"
+												name="drugsAdministered"
 												component={renderTextInput}
 												label="Drug"
 												placeholder="If drugs were adminstered to the baby then mention"
@@ -406,7 +509,7 @@ export class ModalCreateRecordDelivery extends Component {
 										<div className="col-md-12 d-flex">
 											<div className="col-sm-4">
 												<Field
-													name="baby_transfered"
+													name="transferredTo"
 													component="input"
 													type="radio"
 													value="transfer out"
@@ -415,7 +518,7 @@ export class ModalCreateRecordDelivery extends Component {
 											</div>
 											<div className="col-sm-4">
 												<Field
-													name="baby_transfered"
+													name="transferredTo"
 													component="input"
 													type="radio"
 													value="nicu"
@@ -426,7 +529,52 @@ export class ModalCreateRecordDelivery extends Component {
 									</div>
 
 									<div className="row">
-										<div className="col-sm-12 pl-0">
+										<div className="form-group col-sm-12">
+											<label>Pediatrician's name</label>
+
+											<input
+												className="form-control"
+												placeholder="Search for pediatrician's name and select"
+												type="text"
+												name="staff_id"
+												defaultValue=""
+												id="staff"
+												ref={this.staff}
+												onChange={this.handlePatientChange}
+												autoComplete="off"
+												required
+											/>
+											{searching && (
+												<div className="searching text-center">
+													<img alt="searching" src={searchingGIF} />
+												</div>
+											)}
+
+											{staffs &&
+												staffs.map(pat => {
+													return (
+														<div
+															style={{ display: 'flex' }}
+															key={pat.id}
+															className="element-box">
+															<a
+																onClick={() => this.patientSet(pat)}
+																className="ssg-item cursor">
+																{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
+																<div
+																	className="item-name"
+																	dangerouslySetInnerHTML={{
+																		__html: `${pat.first_name} ${pat.last_name}`,
+																	}}
+																/>
+															</a>
+														</div>
+													);
+												})}
+										</div>
+									</div>
+									<div className="row">
+										{/* <div className="col-sm-12 pl-0">
 											<Field
 												id="pediatrician_name"
 												name="pediatrician_name"
@@ -434,7 +582,7 @@ export class ModalCreateRecordDelivery extends Component {
 												label="Pediatrician's name"
 												placeholder="Enter pediatrician's name"
 											/>
-										</div>
+										</div> */}
 
 										<div className="col-sm-12 pl-0">
 											<Field
@@ -480,4 +628,11 @@ export class ModalCreateRecordDelivery extends Component {
 ModalCreateRecordDelivery = reduxForm({
 	form: 'record_delivery',
 })(ModalCreateRecordDelivery);
-export default connect(null, { closeModals })(ModalCreateRecordDelivery);
+const mapStateToProps = state => {
+	return {
+		labourDetail: state.patient.labourDetail,
+	};
+};
+export default connect(mapStateToProps, { closeModals })(
+	ModalCreateRecordDelivery
+);

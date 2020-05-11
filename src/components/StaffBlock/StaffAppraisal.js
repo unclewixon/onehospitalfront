@@ -119,11 +119,7 @@ export class StaffAppraisal extends Component {
 																{el.job_title}
 															</a>
 														</td>
-														<td className="flex text-center">
-															<a className="item-title text-color">
-																{el.job_title}
-															</a>
-														</td>
+
 														<td className="flex text-center">
 															<a className="item-title text-color">
 																{el.phone_number}

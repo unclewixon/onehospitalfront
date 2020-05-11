@@ -43,7 +43,6 @@ const Allergies = props => {
 	const defaultValues = {
 		allForm: encounterForm.allergies?.allForm || [],
 	};
-	console.log(defaultValues.allForm);
 	const {
 		register,
 		handleSubmit,
@@ -105,7 +104,6 @@ const Allergies = props => {
 			setValue('allForm', newForm);
 			setLoaded(false);
 		} catch (error) {
-			console.log(error);
 			setLoaded(false);
 			notifyError('Could not fetch allergies for the patient');
 		}
@@ -117,10 +115,23 @@ const Allergies = props => {
 		}
 	};
 	const onSubmit = async values => {
-		console.log(values);
 		encounterForm.allergies = values;
 		props.loadEncounterForm(encounterForm);
-		encounterData.allergies = values.allForm;
+
+		let form = values.allForm;
+		let reformatPersons = [];
+		if (form.length > 0) {
+			reformatPersons = form.map((value, index, array) => {
+				return {
+					category: value.category.value,
+					severity: value.severity.value,
+					allergy: value.allergy,
+					reaction: value.reaction,
+				};
+			});
+		}
+
+		encounterData.allergies = reformatPersons;
 		props.loadEncounterData(encounterData);
 		dispatch(props.next);
 	};

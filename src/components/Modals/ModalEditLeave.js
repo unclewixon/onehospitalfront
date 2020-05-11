@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -9,32 +9,33 @@ import waiting from '../../assets/images/waiting.gif';
 import { get_all_leave_category } from '../../actions/settings';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { API_URI } from '../../services/constants';
-import { request } from '../../services/utilities'
+import { request } from '../../services/utilities';
 
 const ModalEditLeave = ({
 	showModal,
 	onModalClick,
-  staff,
-  get_all_leave_category,
+	staff,
+	get_all_leave_category,
 	leave_categories,
-  activeRequest,
-  onExitModal
+	activeRequest,
+	onExitModal,
 }) => {
-  const { register, handleSubmit, setValue, watch } = useForm({
-    defaultValues: {
-      leave_type: activeRequest.category.id,
-      reason: activeRequest.application,
-      endDate: activeRequest.endDate
-    },
-
-  });
+	const { register, handleSubmit, setValue, watch } = useForm({
+		defaultValues: {
+			leave_type: activeRequest.category.id,
+			reason: activeRequest.application,
+			endDate: activeRequest.endDate,
+		},
+	});
 	const [submitting, setSubmitting] = useState(false);
 	const [date, setDate] = useState(new Date(activeRequest.start_date));
-	const [leaveDate, setLeaveDate] = useState(new Date(activeRequest.start_date));
+	const [leaveDate, setLeaveDate] = useState(
+		new Date(activeRequest.start_date)
+	);
 	const [category, setCategory] = useState(activeRequest.category);
-	const [endDate, setEndDate] = useState(new Date(activeRequest.end_date))
+	const [endDate, setEndDate] = useState(new Date(activeRequest.end_date));
 
-  const values = watch()
+	const values = watch();
 
 	const fetchLeaveCategory = useCallback(async () => {
 		try {
@@ -43,51 +44,60 @@ const ModalEditLeave = ({
 		} catch (error) {
 			notifyError('could not fetch leave categories!');
 		}
-	}, [get_all_leave_category])
+	}, [get_all_leave_category]);
 
 	useEffect(() => {
-		fetchLeaveCategory()
-	}, [fetchLeaveCategory])
+		fetchLeaveCategory();
+	}, [fetchLeaveCategory]);
 
-	let leaveObj = {}
-	const leaveOptions = leave_categories && leave_categories.map((leave) => {
-		leaveObj[leave.id] = {
-			...leave,
-			value: leave.id,
-			label: leave.name
-		}
-		return leaveObj[leave.id]
-  })
+	let leaveObj = {};
+	const leaveOptions =
+		leave_categories &&
+		leave_categories.map(leave => {
+			leaveObj[leave.id] = {
+				...leave,
+				value: leave.id,
+				label: leave.name,
+			};
+			return leaveObj[leave.id];
+		});
 
 	const getEndDate = () => {
-		const catObj = category && category.id  ? leaveObj[category.id] : leaveObj[category];
+		const catObj =
+			category && category.id ? leaveObj[category.id] : leaveObj[category];
 		const duration = catObj && catObj.duration ? parseInt(catObj.duration) : 0;
 		const startDate = moment(date).format('YYYY-MM-DD');
-    const newDate = moment(date).add(duration, 'days').format('YYYY-MM-DD');
-		setLeaveDate(startDate)
-		setEndDate(newDate)
-  }
-	
-	const onHandleSubmit = async (value) => {
-		setSubmitting(true)
+		const newDate = moment(date)
+			.add(duration, 'days')
+			.format('YYYY-MM-DD');
+		setLeaveDate(startDate);
+		setEndDate(newDate);
+	};
+
+	const onHandleSubmit = async value => {
+		setSubmitting(true);
 		const newRequestData = {
 			staff_id: staff && staff.details ? staff.details.id : '',
 			start_date: leaveDate ? leaveDate : '',
 			end_date: endDate ? endDate : '',
-			leave_category_id: category ? category: '',
-			application: value.reason
-		}
+			leave_category_id: category ? category : '',
+			application: value.reason,
+		};
 		try {
-			const rs = await request(`${API_URI}/hr/leave-management/${activeRequest.id}/update`, 'PATCH', true, newRequestData);
-			setSubmitting(false)
-      notifySuccess('Leave request added')
-      onModalClick()
+			const rs = await request(
+				`${API_URI}/hr/leave-management/${activeRequest.id}/update`,
+				'PATCH',
+				true,
+				newRequestData
+			);
+			setSubmitting(false);
+			notifySuccess('Leave request added');
+			onModalClick();
 		} catch (error) {
-			setSubmitting(false)
+			setSubmitting(false);
 			notifyError('Could not add leave request');
 		}
-  }
-  
+	};
 
 	return (
 		<Modal
@@ -96,14 +106,13 @@ const ModalEditLeave = ({
 			size="lg"
 			aria-labelledby="contained-modal-title-vcenter"
 			centered
-      onHide={onModalClick}
-      onExit={onExitModal}
-    >
+			onHide={onModalClick}
+			onExit={onExitModal}>
 			<Modal.Header closeButton></Modal.Header>
 			<Modal.Body>
 				<div className="onboarding-content with-gradient text-center">
 					<div className="modal-body">
-          <div className="element-box">
+						<div className="element-box">
 							<div className="form-block">
 								<form onSubmit={handleSubmit(onHandleSubmit)}>
 									<div className="row">
@@ -113,11 +122,11 @@ const ModalEditLeave = ({
 												id="leave_type"
 												name="leave_type"
 												ref={register}
-                        placeholder="Select leave type"
-                        defaultValue={{
-                          value: category.id,
-                          label: category.name
-                        }}
+												placeholder="Select leave type"
+												defaultValue={{
+													value: category.id,
+													label: category.name,
+												}}
 												options={leaveOptions}
 												onChange={e => {
 													setCategory(e.value);
@@ -156,12 +165,12 @@ const ModalEditLeave = ({
 												<label>End of leave date</label>
 												<div className="custom-date-input">
 													<DatePicker
-                          disabled
-                            value={endDate}
-                            peekNextMonth
-                            name="endDate"
+														disabled
+														value={endDate}
+														peekNextMonth
+														name="endDate"
 														showMonthDropdown
-														ref={register({name: "endDate"})}
+														ref={register({ name: 'endDate' })}
 														showYearDropdown
 														dropdownMode="select"
 														className="single-daterange form-control"
@@ -179,9 +188,13 @@ const ModalEditLeave = ({
 												name="reason"
 												label="Leave Reason"
 												ref={register}
-                        type="text"
-												style={{width: '100%', borderRadius: '7px', height: '80px'}}
-												onChange={ e => setValue('reason', e.target.value)}
+												type="text"
+												style={{
+													width: '100%',
+													borderRadius: '7px',
+													height: '80px',
+												}}
+												onChange={e => setValue('reason', e.target.value)}
 												placeholder="Enter your leave reason"
 											/>
 										</div>
@@ -211,12 +224,12 @@ const ModalEditLeave = ({
 	);
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
 	return {
 		leave_categories: state.settings.leave_categories,
-		staff: state.user.staff
+		staff: state.user.staff,
 	};
 };
 export default connect(mapStateToProps, {
-	get_all_leave_category
-})(ModalEditLeave)
+	get_all_leave_category,
+})(ModalEditLeave);

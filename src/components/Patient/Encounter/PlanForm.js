@@ -61,7 +61,6 @@ const PlanForm = props => {
 		defaultValues,
 	});
 	useEffect(() => {
-		console.log(encounterForm.plan?.regimens);
 		if (encounterForm.plan?.regimens?.length > 0) {
 			encounterForm.plan.regimens.map((item, index) => {
 				data = [...data, { id: index }];
@@ -249,9 +248,9 @@ const PlanForm = props => {
 
 		let res = {
 			treatmentPlan: data.treatmentPlan,
-			pharmacyRequests: pharmacyRequestsObj,
+			pharmacyRequests: pharmacyRequestsObj || [],
 			nextAppointment: appointmentObj,
-			procedureRequest: theRequest,
+			procedureRequest: theRequest || [],
 		};
 
 		encounterData.plan = res;

@@ -10,22 +10,17 @@ import { withRouter } from 'react-router-dom';
 import AsyncSelect from 'react-select/async';
 import DatePicker from 'react-datepicker';
 
-
-const CreateExcuseDuty = ({
-	history
-}) => {
-	const { handleSubmit, register, setValue } = useForm()
+const CreateExcuseDuty = ({ history }) => {
+	const { handleSubmit, register, setValue } = useForm();
 	const [submitting, setSubmitting] = useState(false);
 	const [searching, setSearching] = useState(false);
 	const [selectedOption, setSelectedOption] = useState('');
 	const [selectedStaff, setSelectedStaff] = useState('');
-	const [selectedDoctor, setSelectedDoctor] = useState('')
-	const [duration, setDuration] = useState(1)
-	const [date, setDate] = useState(new Date())
-	const [startDate, setStartDate] = useState('')
-	const [endDate, setEndDate] = useState('')
-
-
+	const [selectedDoctor, setSelectedDoctor] = useState('');
+	const [duration, setDuration] = useState(1);
+	const [date, setDate] = useState(new Date());
+	const [startDate, setStartDate] = useState('');
+	const [endDate, setEndDate] = useState('');
 
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option => option.description;
@@ -48,7 +43,7 @@ const CreateExcuseDuty = ({
 
 	const getStaffValues = option => option.id;
 	const getStaffLabels = option => {
-		return `${option.first_name} ${option.last_name} ${option.other_names}`
+		return `${option.first_name} ${option.last_name} ${option.other_names}`;
 	};
 	const handleStaffOptions = selectedStaff => {
 		setValue('staff', selectedStaff);
@@ -68,12 +63,12 @@ const CreateExcuseDuty = ({
 
 	const getDoctorValues = option => option.id;
 	const getDoctorLabels = option => {
-		return `${option.first_name} ${option.last_name} ${option.other_names}`
+		return `${option.first_name} ${option.last_name} ${option.other_names}`;
 	};
 	const handleDoctorOptions = selectedDoctor => {
 		setValue('consulting_doctor', selectedDoctor);
 		setSelectedDoctor(selectedDoctor);
-	}
+	};
 	const getDoctors = async inputValue => {
 		if (!inputValue) {
 			return [];
@@ -83,41 +78,50 @@ const CreateExcuseDuty = ({
 			'GET',
 			true
 		);
-		const filteredRes = res && res.length ? res.filter(staff => staff.job_title === "Doctor") : []
+		const filteredRes =
+			res && res.length
+				? res.filter(staff => staff.job_title === 'Doctor')
+				: [];
 		return res;
 	};
-
-
 
 	const getEndDate = () => {
 		const newStartDate = moment(date).format('YYYY-MM-DD');
 		const newDuration = duration ? duration : 1;
-		const newDate = moment(startDate).add(newDuration, 'days').format('YYYY-MM-DD');
-		setStartDate(newStartDate)
-		setEndDate(newDate)
-	}
+		const newDate = moment(startDate)
+			.add(newDuration, 'days')
+			.format('YYYY-MM-DD');
+		setStartDate(newStartDate);
+		setEndDate(newDate);
+	};
 
-	const onHandleSubmit = async (value) => {
-		setSubmitting(true)
+	const onHandleSubmit = async value => {
+		setSubmitting(true);
 		const newRequestData = {
 			staff_id: value && value.staff ? value.staff.id : '',
 			start_date: startDate ? startDate : '',
 			end_date: endDate ? endDate : '',
-			leave_category_id: "248cd662-a260-46be-bc90-dbaeb1ba1f1c",
+			leave_category_id: '248cd662-a260-46be-bc90-dbaeb1ba1f1c',
 			application: value ? value.reason : '',
-			appliedBy: value && value.consulting_doctor ? value.consulting_doctor.id : '',
-			diagnosis_id: value && value.diagnosis ? value.diagnosis : ''
-		}
+			appliedBy:
+				value && value.consulting_doctor ? value.consulting_doctor.id : '',
+			diagnosis_id: value && value.diagnosis ? value.diagnosis : '',
+		};
 		try {
-			const rs = await request(`${API_URI}/hr/leave-management`, 'POST', true, newRequestData);
-			setSubmitting(false)
-			notifySuccess('Leave request added')
-			history.push('/front-desk#excuse-duty')
+			const rs = await request(
+				`${API_URI}/hr/leave-management`,
+				'POST',
+				true,
+				newRequestData
+			);
+			setSubmitting(false);
+			notifySuccess('Leave request added');
+			history.push('/front-desk#excuse-duty');
 		} catch (error) {
-			setSubmitting(false)
+			setSubmitting(false);
 			notifyError('Could not add excuse duty');
 		}
-	}
+	};
 
 	return (
 		<div className="element-wrapper my-4">
@@ -199,7 +203,6 @@ const CreateExcuseDuty = ({
 										minDate={new Date()}
 									/>
 								</div>
-
 							</div>
 							<div className="col-sm-6">
 								<div className="form-group">
@@ -258,11 +261,7 @@ const CreateExcuseDuty = ({
 									className="btn btn-primary"
 									disabled={submitting}
 									type="submit">
-									{submitting ? (
-										<img src={waiting} alt="submitting" />
-									) : (
-											'Save'
-										)}
+									{submitting ? <img src={waiting} alt="submitting" /> : 'Save'}
 								</button>
 							</div>
 						</div>
@@ -271,15 +270,12 @@ const CreateExcuseDuty = ({
 			</div>
 		</div>
 	);
-}
+};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
 	return {
-		staff: state.user.staff
+		staff: state.user.staff,
 	};
 };
 
-export default withRouter(
-	connect(mapStateToProps, {
-
-	})(CreateExcuseDuty))
+export default withRouter(connect(mapStateToProps, {})(CreateExcuseDuty));

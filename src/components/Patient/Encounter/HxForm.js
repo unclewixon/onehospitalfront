@@ -190,7 +190,8 @@ class HxForm extends Component {
 			},
 		};
 		const { encounterData, next } = this.props;
-		encounterData.patientHistory = obstericsHistory;
+		encounterData.patientHistory = obstericsHistory || [];
+		//encounterData.patientHistory =  [];
 		this.props.loadEncounterData(encounterData);
 		this.props.dispatch(next);
 	};
