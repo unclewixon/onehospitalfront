@@ -40,6 +40,7 @@ import {
 	TOGGLE_ANTENATAL_ASSESSMENT_DETAIL,
 	TOGGLE_LINE_APPRAISAL,
 	TOGGLE_STAFF_APPRAISAL,
+	TOGGLE_LABOUR_MEASURMENT_DETAIL,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -89,6 +90,8 @@ const INITIAL_STATE = {
 	line_appraisal: false,
 	staff_appraisal: false,
 	staff: null,
+	labourMeasurementDetail: null,
+	view_labour_measurement: false,
 };
 
 const general = (state = INITIAL_STATE, action) => {
@@ -208,7 +211,12 @@ const general = (state = INITIAL_STATE, action) => {
 				staff: action.data,
 				staff_appraisal: action.payload,
 			};
-
+		case TOGGLE_LABOUR_MEASURMENT_DETAIL:
+			return {
+				...state,
+				labourMeasurementDetail: action.data,
+				view_labour_measurement: action.payload,
+			};
 		default:
 			return state;
 	}

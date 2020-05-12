@@ -13,8 +13,10 @@ const validate = values => {
 	const errors = {};
 	if (!values.bloodPressure) {
 		errors.bloodPressure = 'enter blood pressure';
-	} else if (!/^\d+(\.\d{1,2})?$/i.test(values.bloodPressure)) {
-		errors.bloodPressure = 'Please enter a valid number';
+	} else if (
+		!/^\d+(\.\d{1,2})?\/\d+(\.\d{1,2})?$/i.test(values.bloodPressure)
+	) {
+		errors.bloodPressure = 'Please enter a proper format like 110/70';
 	}
 	if (!values.bloodSugarLevel) {
 		errors.bloodSugarLevel = 'enter blood sugar level';
@@ -290,7 +292,7 @@ export class ModalCreateRecordVital extends Component {
 												component={renderTextInput}
 												label="Blood Pressure ?"
 												type="text"
-												placeholder="Enter blood pressure"
+												placeholder="systolic/diastolic"
 											/>
 										</div>
 										<div className="col-sm-6 pl-0">

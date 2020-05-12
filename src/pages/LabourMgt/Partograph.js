@@ -9,67 +9,58 @@ import {
 	Tooltip,
 	Legend,
 	Label,
-	Scatter,
-	ResponsiveContainer,
 } from 'recharts';
 import { getPartograph, loadPartograph } from '../../actions/patient';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
 import { API_URI, searchAPI } from '../../services/constants';
+import searchingGIF from '../../assets/images/searching.gif';
+import moment from 'moment';
 const data = [
 	{
 		name: '0',
 
 		pv: 2400,
-		amt: 2400,
 	},
 	{
 		name: '2',
 
 		pv: 1398,
-		amt: 2210,
 	},
 	{
 		name: '4',
 
 		pv: 9800,
-		amt: 2290,
 	},
 	{
 		name: '6',
 
 		pv: 3908,
-		amt: 2000,
 	},
 	{
 		name: '8',
 
 		pv: 4800,
-		amt: 2181,
 	},
 	{
 		name: '10',
 
 		pv: 3800,
-		amt: 2500,
 	},
 	{
 		name: '12',
 
 		pv: 4300,
-		amt: 2100,
 	},
 	{
 		name: '14',
 
 		pv: 4300,
-		amt: 2100,
 	},
 	{
 		name: '16',
 
 		pv: 4300,
-		amt: 2100,
 	},
 ];
 
@@ -99,6 +90,7 @@ export class Partograph extends PureComponent {
 		currentTemperature: [],
 		bloodSugarLevel: [],
 		respirationRate: [],
+		loading: false,
 	};
 
 	componentDidMount() {
@@ -109,15 +101,16 @@ export class Partograph extends PureComponent {
 		const { labourDetail } = this.props;
 
 		try {
+			this.setState({ loading: true });
 			const rs = await request(
 				`${API_URI}/labour-management/${labourDetail.id}/vitals`,
 				'GET',
 				true
 			);
 			loadPartograph(rs);
-			const { partographies } = this.props;
+
 			console.log(rs);
-			let {
+			var {
 				fetalHeartRate,
 				cervicalDialation,
 				fetalHeadDescent,
@@ -130,41 +123,70 @@ export class Partograph extends PureComponent {
 				bloodSugarLevel,
 				respirationRate,
 			} = this.state;
+
+			//get lmp to calculate number of days
+			let lmp = moment(labourDetail.lmp);
+
 			//split each into it graph
 			rs.forEach(el => {
-				fetalHeartRate = fetalHeartRate.push(+el['fetalHeartRate']);
-				cervicalDialation = cervicalDialation.push(+el['cervicalDialation']);
-				numberOfContractions = numberOfContractions.push(
-					+el['numberOfContractions']
-				);
-				fetalHeadDescent = fetalHeadDescent.push(+el['fetalHeadDescent']);
-				durationOfContractions = durationOfContractions.push(
-					+el['durationOfContractions']
-				);
-				rateOfContractions = rateOfContractions.push(
-					Number(el['numberOfContractions']) /
-						Number(+el['durationOfContractions'])
-				);
-				currentPulse = currentPulse.push(+el['currentPulse']);
-				bloodPressure = bloodPressure.push(+el['bloodPressure']);
-				currentTemperature = currentTemperature.push(+el['currentTemperature']);
+				let measurementDate = moment(el.createdAt);
 
-				bloodSugarLevel = bloodSugarLevel.push(+el['bloodSugarLevel']);
-				respirationRate = respirationRate.push(+el['respirationRate']);
+				let wks = measurementDate.diff(lmp, 'week');
+				fetalHeartRate.push({
+					name: wks.toString(),
+					'Fetal Heart Rate': +el['fetalHeartRate'],
+				});
+				cervicalDialation.push({
+					name: wks,
+					'Cervical Dilation': +el['cervicalDialation'],
+					'Fetal Head Station':
+						+el['fetalHeadDescent'] < 0 ? 0 : +el['fetalHeadDescent'],
+				});
+
+				durationOfContractions.push({
+					name: wks,
+					'Duration of Contractions': +el['durationOfContractions'],
+					'Rate of Contractions':
+						Number(el['numberOfContractions']) /
+						Number(+el['durationOfContractions']).toFixed(2),
+				});
+				currentPulse.push({ name: wks, Pulse: +el['currentPulse'] });
+				let pressure = el['bloodPressure'].split('/');
+				bloodPressure.push({
+					name: wks,
+					Systolic: pressure.length === 1 ? 110 : +pressure[0],
+					Diastolic: pressure.length === 1 ? 70 : +pressure[1],
+				});
+				currentTemperature.push({
+					name: wks,
+					Temperature: +el['currentTemperature'],
+				});
+
+				bloodSugarLevel.push({
+					name: wks,
+					'Glucose (mg/dL)': +el['bloodSugarLevel'],
+				});
+				respirationRate.push({
+					name: wks,
+					'Respiration rate': +el['respirationRate'],
+				});
 			});
 
-			this.setState({
-				fetalHeartRate,
-				cervicalDialation,
-				fetalHeadDescent,
-				numberOfContractions,
-				durationOfContractions,
-				rateOfContractions,
-				bloodPressure,
-				currentPulse,
-				currentTemperature,
-				bloodSugarLevel,
-				respirationRate,
+			this.setState(prevProps => {
+				return {
+					fetalHeartRate,
+					cervicalDialation,
+					fetalHeadDescent,
+					numberOfContractions,
+					durationOfContractions,
+					rateOfContractions,
+					bloodPressure,
+					currentPulse,
+					currentTemperature,
+					bloodSugarLevel,
+					respirationRate,
+					loading: false,
+				};
 			});
 		} catch (e) {
 			console.log(e);
@@ -173,13 +195,31 @@ export class Partograph extends PureComponent {
 	};
 
 	render() {
-		console.log(this.state);
-		return (
-			<>
+		let {
+			fetalHeartRate,
+			cervicalDialation,
+			fetalHeadDescent,
+			durationOfContractions,
+			bloodPressure,
+			currentPulse,
+			currentTemperature,
+			bloodSugarLevel,
+			respirationRate,
+			loading,
+		} = this.state;
+		console.log(fetalHeartRate);
+
+		return loading ? (
+			<div className="text-center">
+				{' '}
+				<img alt="searching" src={searchingGIF} />
+			</div>
+		) : (
+			<div>
 				<div className="col-md-12 mt-3">
 					<h6 className="text-center">Fetal Heart Rate</h6>
-					<LineChart width={900} height={300} data={data}>
-						<CartesianGrid strokeDasharray="3 3" />
+					<LineChart width={900} height={300} data={fetalHeartRate}>
+						<CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
 						<XAxis dataKey="name">
 							<Label
 								value="Labour Time"
@@ -188,42 +228,28 @@ export class Partograph extends PureComponent {
 								margin={{ top: 30 }}
 							/>
 						</XAxis>
-						<YAxis
-							dataKey="Fetal Heart Rate"
-							label={{
-								value: 'Fetal Heart Rate',
-								angle: -90,
-								position: 'insideLeft',
-							}}
-						/>
+						<YAxis />
 						<Tooltip />
 						<Legend
 							wrapperStyle={{
 								bottom: '-10px',
 							}}
 						/>
-						<Line
-							type="monotone"
-							dataKey="Fetal Heart Rate
-						"
-							stroke="#8884d8"
-							activeDot={{ r: 8 }}
-							margin={{ top: 20 }}
-						/>
+						<Line type="monotone" dataKey="Fetal Heart Rate" stroke="#8884d8" />
 					</LineChart>
 				</div>
 
 				<div className="col-md-12 mt-4">
 					<h6 className="text-center">CervicoGraph</h6>
-					<LineChart width={900} height={300} data={data}>
+					<LineChart width={900} height={300} data={cervicalDialation}>
 						<CartesianGrid strokeDasharray="3 3" />
 						<XAxis dataKey="name">
 							<Label value="Labour Time" offset={-10} position="insideBottom" />
 						</XAxis>
 						<YAxis
-							dataKey="Cervic dilation"
+							dataKey="Cervical Dilation"
 							label={{
-								value: 'Cervic dilation',
+								value: 'Cervical dilation',
 								angle: -90,
 								position: 'insideLeft',
 							}}
@@ -247,33 +273,44 @@ export class Partograph extends PureComponent {
 									color: '#82ca9d',
 								},
 								{
-									id: 'cervical dilation',
+									id: 'Cervical Dilation',
 									value: 'Cervical Dilation',
 									type: 'star',
 									color: '#8884d8',
 								},
 								{
-									id: 'fetal head station',
+									id: 'Fetal Head Station',
 									value: 'Fetal Head Station',
 									type: 'circle',
 									color: 'black',
 								},
 							]}
 						/>
+
+						<Line
+							type="monotone"
+							dataKey="Cervical Dilation"
+							stroke="#8884d8"
+						/>
+						<Line
+							type="monotone"
+							dataKey="Fetal Head Station"
+							stroke="#8884d8"
+						/>
 					</LineChart>
 				</div>
 
 				<div className="col-md-12 mt-4">
 					<h6 className="text-center">Contractions</h6>
-					<LineChart width={900} height={300} data={data}>
+					<LineChart width={900} height={600} data={durationOfContractions}>
 						<CartesianGrid strokeDasharray="3 3" />
 						<XAxis dataKey="name">
 							<Label value="Labour Time" offset={-10} position="insideBottom" />
 						</XAxis>
 						<YAxis
-							dataKey="Contractions"
+							dataKey="Duration of Contractions"
 							label={{
-								value: 'Contractions',
+								value: 'Duration of Contractions',
 								angle: -90,
 								position: 'insideLeft',
 							}}
@@ -285,33 +322,43 @@ export class Partograph extends PureComponent {
 							}}
 							payload={[
 								{
-									id: 'rateOfContraction',
+									id: 'Rate of Contractions',
 									value: 'Rate of Contractions',
 									type: 'triange',
 									color: 'purple',
 								},
 								{
-									id: 'durationOfContraction',
+									id: 'Duration of Contractions',
 									value: 'Duration of Contractions',
 									type: 'circle',
 									color: 'red',
 								},
 							]}
 						/>
+						<Line
+							type="monotone"
+							dataKey="Rate of Contractions"
+							stroke="#8884d8"
+						/>
+						<Line
+							type="monotone"
+							dataKey="Duration of Contractions"
+							stroke="#8884d8"
+						/>
 					</LineChart>
 				</div>
 
 				<div className="col-md-12 mt-4">
 					<h6 className="text-center">Blood Pressure</h6>
-					<LineChart width={900} height={300} data={data}>
+					<LineChart width={900} height={600} data={bloodPressure}>
 						<CartesianGrid strokeDasharray="3 3" />
 						<XAxis dataKey="name">
 							<Label value="Labour Time" offset={-10} position="insideBottom" />
 						</XAxis>
 						<YAxis
-							dataKey="Blood Pressure"
+							dataKey="Systolic"
 							label={{
-								value: 'Blood Pressure',
+								value: 'Systolic',
 								angle: -90,
 								position: 'insideLeft',
 							}}
@@ -323,24 +370,26 @@ export class Partograph extends PureComponent {
 							}}
 							payload={[
 								{
-									id: 'systolic',
+									id: 'Systolic',
 									value: 'Systolic',
 									type: 'triangle',
 									color: 'purple',
 								},
 								{
-									id: 'diastolic',
+									id: 'Diastolic',
 									value: 'Diastolic',
 									type: 'circle',
 									color: 'red',
 								},
 							]}
 						/>
+						<Line type="triangle" dataKey="Systolic" stroke="#8884d8" />
+						<Line type="circle'" dataKey="Diastolic" stroke="#8884d8" />
 					</LineChart>
 				</div>
 				<div className="col-md-12 mt-4">
 					<h6 className="text-center">Pulse</h6>
-					<LineChart width={900} height={300} data={data}>
+					<LineChart width={900} height={300} data={currentPulse}>
 						<CartesianGrid strokeDasharray="3 3" />
 						<XAxis dataKey="name">
 							<Label value="Labour Time" offset={-10} position="insideBottom" />
@@ -370,7 +419,7 @@ export class Partograph extends PureComponent {
 
 				<div className="col-md-12 mt-4">
 					<h6 className="text-center">Temperature</h6>
-					<LineChart width={900} height={300} data={data}>
+					<LineChart width={900} height={300} data={currentTemperature}>
 						<CartesianGrid strokeDasharray="3 3" />
 						<XAxis dataKey="name">
 							<Label value="Labour Time" offset={-10} position="insideBottom" />
@@ -400,7 +449,7 @@ export class Partograph extends PureComponent {
 
 				<div className="col-md-12 mt-4">
 					<h6 className="text-center">Respiration Rate</h6>
-					<LineChart width={900} height={300} data={data}>
+					<LineChart width={900} height={300} data={respirationRate}>
 						<CartesianGrid strokeDasharray="3 3" />
 						<XAxis dataKey="name">
 							<Label value="Labour Time" offset={-10} position="insideBottom" />
@@ -431,7 +480,7 @@ export class Partograph extends PureComponent {
 
 				<div className="col-md-12 mt-4">
 					<h6 className="text-center">Blood Glucose</h6>
-					<LineChart width={900} height={300} data={data}>
+					<LineChart width={900} height={300} data={bloodSugarLevel}>
 						<CartesianGrid strokeDasharray="3 3" />
 						<XAxis dataKey="name">
 							<Label value="Labour Time" offset={-10} position="insideBottom" />
@@ -459,7 +508,7 @@ export class Partograph extends PureComponent {
 						/>
 					</LineChart>
 				</div>
-			</>
+			</div>
 		);
 	}
 }

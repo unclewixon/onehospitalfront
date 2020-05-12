@@ -41,6 +41,7 @@ import {
 	TOGGLE_ANTENATAL_ASSESSMENT_DETAIL,
 	TOGGLE_LINE_APPRAISAL,
 	TOGGLE_STAFF_APPRAISAL,
+	TOGGLE_LABOUR_MEASURMENT_DETAIL,
 } from './types';
 
 export const togglePreloading = status => {
@@ -349,6 +350,14 @@ export const toggleStaffAppraisal = (status, data) => {
 	};
 };
 
+export const toggleLabourMeasurementDetail = (action, data) => {
+	return {
+		type: TOGGLE_LABOUR_MEASURMENT_DETAIL,
+		payload: action,
+		data,
+	};
+};
+
 // close modals
 export const closeModals = () => {
 	return dispatch => {
@@ -391,6 +400,7 @@ export const closeModals = () => {
 		dispatch(toggleAntenatalAssessmentDetail(false, null));
 		dispatch(toggleLineAppraisal(false));
 		dispatch(toggleStaffAppraisal(false, null));
+		dispatch(toggleLabourMeasurementDetail(false, null));
 	};
 };
 
@@ -720,5 +730,13 @@ export const loadStaffAppraisal = (action, data) => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleStaffAppraisal(action, data));
+	};
+};
+
+export const labourMeasurementDetail = (action, data) => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleLabourMeasurementDetail(action, data));
 	};
 };
