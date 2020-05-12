@@ -13,7 +13,6 @@ import DatePicker from 'react-datepicker';
 const CreateExcuseDuty = ({ history }) => {
 	const { handleSubmit, register, setValue } = useForm();
 	const [submitting, setSubmitting] = useState(false);
-	const [searching, setSearching] = useState(false);
 	const [selectedOption, setSelectedOption] = useState('');
 	const [selectedStaff, setSelectedStaff] = useState('');
 	const [selectedDoctor, setSelectedDoctor] = useState('');
@@ -105,6 +104,7 @@ const CreateExcuseDuty = ({ history }) => {
 			application: value ? value.reason : '',
 			appliedBy:
 				value && value.consulting_doctor ? value.consulting_doctor.id : '',
+			diagnosis_id: value && value.diagnosis ? value.diagnosis : '',
 		};
 		try {
 			const rs = await request(

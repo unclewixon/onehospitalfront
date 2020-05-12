@@ -26,7 +26,7 @@ const ExcuseItem = ({
 						  leave.staff.other_names
 						: ''}
 				</td>
-				<td>{leave.leaveType ? leave.leaveType : ''}</td>
+				<td>{leave.category ? leave.category.name : ''}</td>
 				<td>{leave.start_date ? leave.start_date : ''}</td>
 				<td>{leave.end_date ? leave.end_date : ''}</td>
 				<td>

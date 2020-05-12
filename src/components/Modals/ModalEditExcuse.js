@@ -16,9 +16,9 @@ const ModalEditExcuse = ({
 	onModalClick,
 	activeRequest,
 	onExitModal,
+	history,
 }) => {
 	const [submitting, setSubmitting] = useState(false);
-	const [searching, setSearching] = useState(false);
 	const [selectedOption, setSelectedOption] = useState('');
 	const [selectedStaff, setSelectedStaff] = useState({
 		...activeRequest.staff,
@@ -130,42 +130,23 @@ const ModalEditExcuse = ({
 			application: value ? value.reason : '',
 			appliedBy:
 				value && value.consulting_doctor ? value.consulting_doctor.id : '',
+			diagnosis_id: value && value.diagnosis ? value.diagnosis : '',
 		};
 		try {
 			const rs = await request(
-				`${API_URI}/hr/leave-management`,
-				'POST',
+				`${API_URI}/hr/leave-management/${activeRequest.id}/update`,
+				'PATCH',
 				true,
 				newRequestData
 			);
 			setSubmitting(false);
 			notifySuccess('Leave request added');
-			// history.push('/front-desk#excuse-duty')
+			history.push('/front-desk#excuse-duty');
 		} catch (error) {
 			setSubmitting(false);
 			notifyError('Could not add excuse duty');
 		}
 	};
-
-	// const onHandleSubmit = async (value) => {
-	//   setSubmitting(true)
-	//   const newRequestData = {
-	//     staff_id: staff && staff.details ? staff.details.id : '',
-	//     start_date: leaveDate ? leaveDate : '',
-	//     end_date: endDate ? endDate : '',
-	//     leave_category_id: category ? category : '',
-	//     application: value.reason
-	//   }
-	//   try {
-	//     const rs = await request(`${API_URI}/hr/leave-management/${activeRequest.id}/update`, 'PATCH', true, newRequestData);
-	//     setSubmitting(false)
-	//     notifySuccess('Leave request added')
-	//     onModalClick()
-	//   } catch (error) {
-	//     setSubmitting(false)
-	//     notifyError('Could not add leave request');
-	//   }
-	// }
 
 	return (
 		<Modal
@@ -272,6 +253,16 @@ const ModalEditExcuse = ({
 													getOptionValue={getOptionValues}
 													getOptionLabel={getOptionLabels}
 													defaultOptions
+													defaultValue={{
+														value: activeRequest.diagnosis
+															? activeRequest.diagnosis.id
+															: '',
+														label: `${
+															activeRequest.diagnosis
+																? activeRequest.diagnosis.description
+																: ''
+														}`,
+													}}
 													name="diagnosis"
 													ref={register({ name: 'diagnosis', required: true })}
 													loadOptions={getOptions}
@@ -291,6 +282,10 @@ const ModalEditExcuse = ({
 												getOptionValue={getDoctorValues}
 												getOptionLabel={getDoctorLabels}
 												defaultOptions
+												defaultValue={{
+													value: activeRequest.appliedBy.id,
+													label: `${activeRequest.appliedBy.first_name} ${activeRequest.appliedBy.last_name} ${activeRequest.appliedBy.other_names}`,
+												}}
 												name="consulting_doctor"
 												ref={register({
 													name: 'consulting_doctor',

@@ -106,7 +106,11 @@ const ModalExcuseDuty = ({ showModal, onModalClick, staff, activeRequest }) => {
 											</tr>
 											<tr>
 												<td class="font-weight-bold">Diagnosis</td>
-												<td></td>
+												<td>
+													{activeRequest.diagnosis
+														? activeRequest.diagnosis.description
+														: ''}
+												</td>
 											</tr>
 											<tr>
 												<td class="font-weight-bold">Doctor's Note</td>
