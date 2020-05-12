@@ -118,7 +118,7 @@ const Allergies = props => {
 		encounterForm.allergies = values;
 		props.loadEncounterForm(encounterForm);
 
-		let form = values.allForm;
+		let form = values.allForm || [];
 		let reformatPersons = [];
 		if (form.length > 0) {
 			reformatPersons = form.map((value, index, array) => {
