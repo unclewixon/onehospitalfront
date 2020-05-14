@@ -13,6 +13,7 @@ import moment from 'moment';
 const WifeLab = lazy(() => import('./WifeLab'));
 const HusbandLab = lazy(() => import('./HusbandLab'));
 const FathersInfo = lazy(() => import('./FathersInfo'));
+
 //const ObstericsHistory = lazy(() => import('./ObstericsHistory'));
 
 class EnrollmentForm extends Component {
@@ -60,9 +61,10 @@ class EnrollmentForm extends Component {
 		return (
 			<div className="element-box">
 				<Suspense fallback={<Splash />}>
-					{page === 1 && <HusbandLab onSubmit={this.nextPage} page={page} />}
+					{page === 1 && <WifeLab onSubmit={this.nextPage} page={page} />}
+
 					{page === 2 && (
-						<FathersInfo
+						<HusbandLab
 							onSubmit={this.nextPage}
 							previousPage={this.previousPage}
 							page={page}
