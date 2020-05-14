@@ -108,7 +108,7 @@ export class Measurement extends Component {
 									<tr>
 										{' '}
 										<td colSpan="9" className="text-center">
-											No risk assessment yet
+											No measurment yet
 										</td>
 									</tr>
 								)}
@@ -131,7 +131,6 @@ const mapStateToProps = state => {
 		partographies: state.patient.partographies,
 		labourDetail: state.patient.labourDetail,
 		labourMeasurement: state.patient.labourMeasurement,
-		riskAssessment: state.patient.riskAssessment,
 	};
 };
 
