@@ -64,6 +64,10 @@ const EnrollAntenatalPatient = lazy(() =>
 	import('../components/Patient/EnrollAntenatalPatient')
 );
 
+const EnrollIVFPatient = lazy(() =>
+	import('../components/Patient/EnrollIVFPatient')
+);
+
 const PatientAdmission = lazy(() =>
 	import('../components/Patient/PatientAdmission')
 );
@@ -123,6 +127,8 @@ const Page = ({ location }) => {
 			return <PatientAdmission />;
 		case 'edit-profile':
 			return <EditPatient />;
+		case 'enroll-ivf':
+			return <EnrollIVFPatient />;
 		case 'enroll-antenatal':
 			return <EnrollAntenatalPatient />;
 		case 'upload-document':
