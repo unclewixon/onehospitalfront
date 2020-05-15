@@ -61,18 +61,18 @@ class EnrollmentForm extends Component {
 		return (
 			<div className="element-box">
 				<Suspense fallback={<Splash />}>
-					{page === 3 && (
-						<AssesmentInfo
+					{page === 1 && <WifeLab onSubmit={this.nextPage} page={page} />}
+
+					{page === 2 && (
+						<HusbandLab
 							onSubmit={this.nextPage}
 							previousPage={this.previousPage}
 							page={page}
 						/>
 					)}
 
-					{page === 1 && <WifeLab onSubmit={this.nextPage} page={page} />}
-
-					{page === 2 && (
-						<HusbandLab
+					{page === 3 && (
+						<AssesmentInfo
 							onSubmit={this.nextPage}
 							previousPage={this.previousPage}
 							page={page}
