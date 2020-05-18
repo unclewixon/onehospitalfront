@@ -5,6 +5,7 @@ import Splash from '../../components/Splash';
 
 const Reports = lazy(() => import('./Reports'));
 const Journal = lazy(() => import('./Journal'));
+const AccountSetup = lazy(() => import('./AccountSetup'));
 export class index extends Component {
 	render() {
 		const { match } = this.props;
@@ -23,6 +24,7 @@ export class index extends Component {
 							path={`${match.url}/journal-entry`}
 							component={Journal}
 						/>
+						<Route path={`${match.url}/setup`} component={AccountSetup} />
 						<Route path={`${match.url}/`} component={Reports} />
 						<Route component={NoMatch} />
 					</Switch>
