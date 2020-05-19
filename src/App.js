@@ -62,6 +62,7 @@ class App extends Component {
 			theme_mode,
 			profile,
 		} = this.props;
+		console.log(profile, 'profile');
 		return preloading ? (
 			<Splash />
 		) : (

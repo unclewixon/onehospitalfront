@@ -88,11 +88,11 @@ class MainMenu extends Component {
 				</div> */}
 				<h1 className="menu-page-header">Page Header</h1>
 				<ul className="main-menu">
-					{(role === 'front-desk' || role === 'admin') && <FrontDeskMenu />}
-					{(role === 'hr' || role === 'admin') && <HrMenu />}
-					{(role === 'inventory' || role === 'admin') && <InventoryMenu />}
-					{(role === 'cafeteria' || role === 'admin') && <CafeteriaMenu />}
-					{(role === 'hmo' || role === 'admin') && <HMOMenu />}
+					{role === 'front-desk' && <FrontDeskMenu />}
+					{role === 'hr' && <HrMenu />}
+					{role === 'inventory' && <InventoryMenu />}
+					{role === 'cafeteria' && <CafeteriaMenu />}
+					{role === 'hmo' && <HMOMenu />}
 					{role === 'admin' && <SettingsMenu />}
 				</ul>
 			</div>
