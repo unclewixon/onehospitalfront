@@ -41,6 +41,8 @@ import {
 	TOGGLE_LINE_APPRAISAL,
 	TOGGLE_STAFF_APPRAISAL,
 	TOGGLE_LABOUR_MEASURMENT_DETAIL,
+	TOGGLE_ADD_ACCOUNT,
+	TOGGLE_EDIT_ACCOUNT,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -92,6 +94,9 @@ const INITIAL_STATE = {
 	staff: null,
 	labourMeasurementDetail: null,
 	view_labour_measurement: false,
+	create_account: false,
+	accountChart: null,
+	edit_account: false,
 };
 
 const general = (state = INITIAL_STATE, action) => {
@@ -216,6 +221,18 @@ const general = (state = INITIAL_STATE, action) => {
 				...state,
 				labourMeasurementDetail: action.data,
 				view_labour_measurement: action.payload,
+			};
+
+		case TOGGLE_ADD_ACCOUNT:
+			return {
+				...state,
+				create_account: action.payload,
+			};
+		case TOGGLE_EDIT_ACCOUNT:
+			return {
+				...state,
+				edit_account: action.payload,
+				accountChart: action.data,
 			};
 		default:
 			return state;

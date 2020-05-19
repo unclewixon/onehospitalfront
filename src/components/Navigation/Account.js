@@ -22,6 +22,14 @@ const Account = () => {
 					<span>Journal Entry</span>
 				</Link>
 			</li>
+			<li>
+				<Link to="/account/setup/coa/category">
+					<div className="icon-w">
+						<div className="os-icon os-icon-layers" />
+					</div>
+					<span>Set up</span>
+				</Link>
+			</li>
 		</>
 	);
 };
