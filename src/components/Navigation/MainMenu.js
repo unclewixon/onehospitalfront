@@ -14,6 +14,7 @@ import HMOMenu from './HMOMenu';
 import DoctorMenu from './DoctorMenu';
 import CafeteriaMenu from './CafeteriaMenu';
 import { fullname } from '../../services/utilities';
+import Account from './Account';
 
 class MainMenu extends Component {
 	componentDidMount() {
@@ -89,12 +90,13 @@ class MainMenu extends Component {
 				</div> */}
 				<h1 className="menu-page-header">Page Header</h1>
 				<ul className="main-menu">
-					{role === 'front-desk' && <FrontDeskMenu />}
-					{role === 'hr' && <HrMenu />}
-					{role === 'doctor' && <DoctorMenu />}
-					{role === 'inventory' && <InventoryMenu />}
-					{role === 'cafeteria' && <CafeteriaMenu />}
-					{role === 'hmo' && <HMOMenu />}
+					{(role === 'front-desk' || role === 'admin') && <FrontDeskMenu />}
+					{(role === 'hr' || role === 'admin') && <HrMenu />}
+					{role === 'doctor' || (role === 'admin' && <DoctorMenu />)}
+					{(role === 'inventory' || role === 'admin') && <InventoryMenu />}
+					{(role === 'cafeteria' || role === 'admin') && <CafeteriaMenu />}
+					{(role === 'hmo' || role === 'admin') && <HMOMenu />}
+					{(role === 'account' || role === 'admin') && <Account />}
 					{role === 'admin' && <SettingsMenu />}
 				</ul>
 			</div>

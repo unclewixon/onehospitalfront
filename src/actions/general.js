@@ -42,6 +42,8 @@ import {
 	TOGGLE_LINE_APPRAISAL,
 	TOGGLE_STAFF_APPRAISAL,
 	TOGGLE_LABOUR_MEASURMENT_DETAIL,
+	TOGGLE_ADD_ACCOUNT,
+	TOGGLE_EDIT_ACCOUNT,
 } from './types';
 
 export const togglePreloading = status => {
@@ -358,6 +360,21 @@ export const toggleLabourMeasurementDetail = (action, data) => {
 	};
 };
 
+export const toggleCreateAccount = status => {
+	return {
+		type: TOGGLE_ADD_ACCOUNT,
+		payload: status,
+	};
+};
+
+export const toggleEditAccount = (action, data) => {
+	return {
+		type: TOGGLE_EDIT_ACCOUNT,
+		payload: action,
+		data,
+	};
+};
+
 // close modals
 export const closeModals = () => {
 	return dispatch => {
@@ -401,6 +418,8 @@ export const closeModals = () => {
 		dispatch(toggleLineAppraisal(false));
 		dispatch(toggleStaffAppraisal(false, null));
 		dispatch(toggleLabourMeasurementDetail(false, null));
+		dispatch(toggleCreateAccount(false));
+		dispatch(toggleEditAccount(false, null));
 	};
 };
 
@@ -738,5 +757,21 @@ export const labourMeasurementDetail = (action, data) => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleLabourMeasurementDetail(action, data));
+	};
+};
+
+export const createAccount = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleCreateAccount(action));
+	};
+};
+
+export const editAccount = (action, data) => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleEditAccount(action, data));
 	};
 };

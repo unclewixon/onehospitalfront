@@ -964,6 +964,24 @@ export const bloodGroup = [
 		name: 'O-',
 	},
 ];
+export const genotype = [
+	{
+		id: 'AA',
+		name: 'AA',
+	},
+	{
+		id: 'AS',
+		name: 'AS',
+	},
+	{
+		id: 'AC',
+		name: 'AC',
+	},
+	{
+		id: 'SS',
+		name: 'SS',
+	},
+];
 
 export const caput = [
 	{
