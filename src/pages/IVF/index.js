@@ -7,6 +7,7 @@ import Splash from '../../components/Splash';
 
 const IVF = lazy(() => import('./IVF'));
 const Enrollment = lazy(() => import('./Enrollment'));
+const RegulationChart = lazy(() => import('./RegulationChart'));
 const AllEnrollment = lazy(() => import('./AllEnrollment'));
 export class index extends Component {
 	render() {
@@ -27,6 +28,11 @@ export class index extends Component {
 									exact
 									path={`${match.url}/all-enrol`}
 									component={AllEnrollment}
+								/>
+								<Route
+									exact
+									path={`${match.url}/reg-chart`}
+									component={RegulationChart}
 								/>
 
 								<Route component={NoMatch} />

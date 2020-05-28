@@ -2,8 +2,9 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import EnrollmentForm from '../../components/IVF/EnrollmentForm';
+import IVFRegulationChart from '../../components/IVF/IVFRegulationChart';
 
-export class Enrollment extends Component {
+export class RegulationChart extends Component {
 	render() {
 		const { location } = this.props;
 		const path = location.pathname.split('/').pop();
@@ -38,7 +39,7 @@ export class Enrollment extends Component {
 					<div className="row">
 						<div className="col-md-12">
 							<div className="element-content">
-								<EnrollmentForm />
+								<IVFRegulationChart />
 							</div>
 						</div>
 					</div>
@@ -48,4 +49,4 @@ export class Enrollment extends Component {
 	}
 }
 
-export default withRouter(Enrollment);
+export default withRouter(RegulationChart);
