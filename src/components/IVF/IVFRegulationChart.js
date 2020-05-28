@@ -18,6 +18,7 @@ import { Field, reduxForm } from 'redux-form';
 import moment from 'moment';
 import Tooltip from 'antd/lib/tooltip';
 import IVFRegulationTable from './IVFRegulationTable';
+import Select from 'react-select';
 
 export const agents = [
 	{
@@ -33,24 +34,59 @@ export const agents = [
 		name: 'Luprodex',
 	},
 ];
+
 class IVFRegulationChart extends Component {
 	state = {
 		page: 1,
+		patientList: [],
 		submitting: false,
 		loading: false,
-		patient_id: '',
-		patient_name: '',
-		lmpHx: '',
-		dom: '',
-		gest_date: '',
-		dob: '',
-		lmp: '',
+		chosenPatient: null,
 	};
 
 	handleSubmit = async data => {};
 
+	componentDidMount() {
+		this.loadPatients();
+	}
+
+	loadPatients = async () => {
+		try {
+			this.setState({ loading: true });
+			console.log(`${API_URI}${patientAPI}/list`);
+			const rs = await request(`${API_URI}${patientAPI}/list`, 'GET', true);
+
+			let patientList = [];
+			rs.map((value, i) => {
+				patientList = [
+					...patientList,
+					{
+						//value: value.id,
+						id: value.id,
+						name: value.other_names + ' ' + value.surname,
+					},
+				];
+			});
+			this.setState({ patientList });
+			this.setState({ loading: false });
+		} catch (error) {
+			console.log(error);
+			this.setState({ loading: false });
+		}
+	};
+
+	setChosenPatient = data => {
+		this.setState({ chosenPatient: data });
+	};
+
 	render() {
-		const { page, submitting, loading } = this.state;
+		const {
+			page,
+			submitting,
+			loading,
+			chosenPatient,
+			patientList,
+		} = this.state;
 		const { error } = this.props;
 		return (
 			<div className="element-box">
@@ -72,9 +108,10 @@ class IVFRegulationChart extends Component {
 									<Field
 										id="name"
 										name="name"
-										component={renderTextInput}
+										component={renderSelect}
 										label="Name"
 										placeholder="Name"
+										data={patientList}
 									/>
 								</div>
 

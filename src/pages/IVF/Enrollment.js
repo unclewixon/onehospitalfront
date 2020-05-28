@@ -28,6 +28,13 @@ export class Enrollment extends Component {
 						</Link>
 						<Link
 							className={`btn btn-primary ${
+								path === 'hcg-admin' ? 'btn-outline-primary' : ''
+							}`}
+							to="/ivf/hcg-admin">
+							HCG Administration
+						</Link>
+						<Link
+							className={`btn btn-primary ${
 								path === 'enrol' ? 'btn-outline-primary' : ''
 							}`}
 							to="/ivf/enrol">

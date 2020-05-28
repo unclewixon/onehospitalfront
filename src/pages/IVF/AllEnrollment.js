@@ -133,10 +133,17 @@ export class AllEnrollment extends Component {
 						</Link>
 						<Link
 							className={`btn btn-primary ${
-								path === 'reg-chart	' ? 'btn-outline-primary' : ''
+								path === 'reg-chart' ? 'btn-outline-primary' : ''
 							}`}
 							to="/ivf/reg-chart">
 							Down Regulation Chart
+						</Link>
+						<Link
+							className={`btn btn-primary ${
+								path === 'hcg-admin' ? 'btn-outline-primary' : ''
+							}`}
+							to="/ivf/hcg-admin">
+							HCG Administration
 						</Link>
 						<Link
 							className={`btn btn-primary ${

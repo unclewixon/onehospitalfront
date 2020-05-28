@@ -21,6 +21,8 @@ import Tooltip from 'antd/lib/tooltip';
 class IVFRegulationTable extends Component {
 	state = {
 		products: [],
+		patientList: [],
+		allPatients: [],
 		loading: false,
 	};
 

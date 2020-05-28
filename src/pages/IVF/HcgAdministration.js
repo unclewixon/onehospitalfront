@@ -2,9 +2,9 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import EnrollmentForm from '../../components/IVF/EnrollmentForm';
-import IVFRegulationChart from '../../components/IVF/IVFRegulationChart';
+import IVFHcgAdmin from '../../components/IVF/IVFHcgAdmin';
 
-export class RegulationChart extends Component {
+export class HcgAdministration extends Component {
 	render() {
 		const { location } = this.props;
 		const path = location.pathname.split('/').pop();
@@ -27,6 +27,7 @@ export class RegulationChart extends Component {
 							to="/ivf/reg-chart">
 							Down Regulation Chart
 						</Link>
+
 						<Link
 							className={`btn btn-primary ${
 								path === 'hcg-admin' ? 'btn-outline-primary' : ''
@@ -47,7 +48,7 @@ export class RegulationChart extends Component {
 					<div className="row">
 						<div className="col-md-12">
 							<div className="element-content">
-								<IVFRegulationChart />
+								<IVFHcgAdmin />
 							</div>
 						</div>
 					</div>
@@ -57,4 +58,4 @@ export class RegulationChart extends Component {
 	}
 }
 
-export default withRouter(RegulationChart);
+export default withRouter(HcgAdministration);
