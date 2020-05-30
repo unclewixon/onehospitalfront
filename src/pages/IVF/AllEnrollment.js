@@ -75,7 +75,7 @@ export class AllEnrollment extends Component {
 	tableBody = () => {
 		return this.props.antennatal.map((el, i) => {
 			return (
-				<tr>
+				<tr key={i}>
 					<td className="text-center">
 						{moment(el.createdAt).format('DD-MM-YYYY')}
 					</td>
@@ -128,21 +128,28 @@ export class AllEnrollment extends Component {
 							className={`btn btn-primary ${
 								path === '' ? 'btn-outline-primary' : ''
 							}`}
-							to="/antennatal">
+							to="/ivf">
 							Dashboard
 						</Link>
 						<Link
 							className={`btn btn-primary ${
-								path === 'all-enrol' ? 'btn-outline-primary' : ''
+								path === 'reg-chart' ? 'btn-outline-primary' : ''
 							}`}
-							to="/antennatal/all-enrol">
-							All Enrollment
+							to="/ivf/reg-chart">
+							Down Regulation Chart
+						</Link>
+						<Link
+							className={`btn btn-primary ${
+								path === 'hcg-admin' ? 'btn-outline-primary' : ''
+							}`}
+							to="/ivf/hcg-admin">
+							HCG Administration
 						</Link>
 						<Link
 							className={`btn btn-primary ${
 								path === 'enrol' ? 'btn-outline-primary' : ''
 							}`}
-							to="/antennatal/enrol">
+							to="/ivf/enrol">
 							New Enrollment
 						</Link>
 					</div>
@@ -209,7 +216,6 @@ export class AllEnrollment extends Component {
 													this.tableBody()
 												) : (
 													<tr>
-														{' '}
 														<td colSpan="9" className="text-center">
 															No antenatal enrolment
 														</td>

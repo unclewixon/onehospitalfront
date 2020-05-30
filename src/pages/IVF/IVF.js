@@ -37,13 +37,21 @@ export class IVF extends Component {
 							to="/ivf">
 							Dashboard
 						</Link>
-						{/*<Link*/}
-						{/*	className={`btn btn-primary ${*/}
-						{/*		page === 'all-enrol' ? 'btn-outline-primary' : ''*/}
-						{/*	}`}*/}
-						{/*	to="/ivf/all-enrol">*/}
-						{/*	All Enrollment*/}
-						{/*</Link>*/}
+						<Link
+							className={`btn btn-primary ${
+								page === 'reg-chart' ? 'btn-outline-primary' : ''
+							}`}
+							to="/ivf/reg-chart">
+							Down Regulation Chart
+						</Link>
+						<Link
+							className={`btn btn-primary ${
+								page === 'hcg-admin' ? 'btn-outline-primary' : ''
+							}`}
+							to="/ivf/hcg-admin">
+							HCG Administration
+						</Link>
+
 						<Link
 							className={`btn btn-primary ${
 								page === 'enrol' ? 'btn-outline-primary' : ''
