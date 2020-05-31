@@ -129,10 +129,12 @@ class App extends Component {
 								)}
 							</>
 						) : (
-							<Switch>
-								<Route exact path="/" component={Login} />
-								<Route component={NoMatch} />
-							</Switch>
+							<div className="loginPage">
+								<Switch>
+									<Route exact path="/" component={Login} />
+									<Route component={NoMatch} />
+								</Switch>
+							</div>
 						)}
 					</ScrollToTop>
 				</Suspense>
