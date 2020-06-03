@@ -25,6 +25,9 @@ const Appointment = props => {
 				}
 			}
 		});
+		socket.on('new-appointment', res => {
+			console.log(res);
+		});
 	}, [appointments]);
 
 	useEffect(() => {
@@ -39,7 +42,6 @@ const Appointment = props => {
 				'GET',
 				true
 			);
-			console.log(res);
 			setAppointments(res);
 			setLoading(false);
 		} catch (e) {

@@ -157,7 +157,7 @@ class ExcuseDuty extends Component {
 										</select>
 									</form>
 								</div>
-								<h6 className="element-header">Leave Management</h6>
+								<h6 className="element-header">Excuse Duty Management</h6>
 								{this.state.activeRequest ? (
 									<ModalExcuseDuty
 										showModal={this.state.showModal}
