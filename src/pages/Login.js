@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
 import axios from 'axios';
-
-import logo from '../assets/images/logo-big.png';
+import { CSSTransition } from 'react-transition-group';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import waiting from '../assets/images/waiting.gif';
 import { request, redirectToPage, defaultHeaders } from '../services/utilities';
 import {
@@ -25,6 +25,7 @@ import {
 import { loadRoles } from '../actions/role';
 import { loadDepartments, loadSpecializations } from '../actions/settings';
 import { loadInvCategories, loadInvSubCategories } from '../actions/inventory';
+import { from } from 'rxjs';
 
 const storage = new SSRStorage();
 
@@ -63,10 +64,13 @@ const renderTextInput = ({input, label, type, id, placeholder, icon, meta: { tou
 class Login extends Component {
 	state = {
 		submitting: false,
+		loaded: false,
+		rememberMe: false,
 	};
 
 	componentDidMount() {
-		window.document.body.className = 'auth-wrapper';
+		window.document.body.className = 'auth-wrapper loginPage';
+		this.setState({ loaded: true });
 	}
 
 	async componentWillUnmount() {
@@ -132,60 +136,135 @@ class Login extends Component {
 		}
 	};
 
+	ToggleRememberMe = () => {
+		this.setState({
+			rememberMe: !this.state.rememberMe,
+		});
+	};
+
 	render() {
-		const { submitting } = this.state;
+		const { submitting, rememberMe, loaded } = this.state;
 		const { error, handleSubmit } = this.props;
 		return (
-			<div className="all-wrapper menu-side with-pattern">
-				<div className="auth-box-w">
-					<div className="logo-w">
-						<a>
-							<img alt="" src={logo} />
-						</a>
-					</div>
-					<h4 className="auth-header">Login Form</h4>
-					<form onSubmit={handleSubmit(this.doLogin)}>
-						{error && (
-							<div
-								className="alert alert-danger"
-								dangerouslySetInnerHTML={{
-									__html: `<strong>Error!</strong> ${error}`,
-								}}
-							/>
-						)}
-						<Field
-							id="username"
-							name="username"
-							component={renderTextInput}
-							label="Username"
-							type="text"
-							placeholder="Enter your username"
-							icon="os-icon-user-male-circle"
-						/>
-						<Field
-							id="password"
-							name="password"
-							component={renderTextInput}
-							label="Password"
-							type="password"
-							placeholder="Enter your password"
-							icon="os-icon-fingerprint"
-						/>
-						<div className="buttons-w">
-							<button
-								className="btn btn-primary"
-								disabled={submitting}
-								type="submit">
-								{submitting ? (
-									<img src={waiting} alt="submitting" />
-								) : (
-									'Log me in'
-								)}
-							</button>
+			// <div style={{ width: '100%', height: '100%' }}>
+			<section className="fxt-template-animation fxt-template-layout9 has-animation">
+				<div className="">
+					<div className="row align-items-center justify-content-center">
+						<div className="col-lg-2">
+							<div className="fxt-header">
+								<a href="login.html" className="fxt-logo">
+									<img
+										src={require('../assets/images/logo.svg')}
+										alt="Logo"
+										style={{ height: '20%', width: '100%' }}
+									/>
+								</a>
+							</div>
 						</div>
-					</form>
+						<div className="col-lg-6">
+							<div className="fxt-content">
+								<h2>Login into your account</h2>
+								<div className="fxt-form">
+									<form onSubmit={handleSubmit(this.doLogin)}>
+										{error && (
+											<div
+												className="alert alert-danger"
+												dangerouslySetInnerHTML={{
+													__html: `<strong>Error!</strong> ${error}`,
+												}}
+											/>
+										)}
+										<div className="form-group">
+											<CSSTransition
+												in={loaded}
+												timeout={100}
+												classNames="input-animation-1">
+												<Field
+													id="username"
+													name="username"
+													component={renderTextInput}
+													type="text"
+													placeholder="Enter your username"
+												/>
+											</CSSTransition>
+										</div>
+										<div className="">
+											<CSSTransition
+												in={loaded}
+												timeout={200}
+												classNames="input-animation-2">
+												{/* <div className="password"> */}
+												<Field
+													name="password"
+													component={renderTextInput}
+													type="password"
+													placeholder="Enter your password"
+													className="passwordInput"
+												/>
+												{/* <FaEye /> */}
+												{/* <FaEyeSlash /> */}
+												{/* </div> */}
+											</CSSTransition>
+										</div>
+										<div className="form-group">
+											<CSSTransition
+												in={loaded}
+												timeout={300}
+												classNames="input-animation-3">
+												<div className="fxt-checkbox-area">
+													<div className="checkbox">
+														<input
+															className="checkbox1"
+															type="checkbox"
+															checked={rememberMe}
+															onChange={this.ToggleRememberMe}
+														/>
+														<label for="checkbox1">Keep me logged in</label>
+													</div>
+													<a
+														href="forgot-password-9.html"
+														className="switcher-text">
+														Forgot Password
+													</a>
+												</div>
+											</CSSTransition>
+										</div>
+										<div className="form-group">
+											<CSSTransition
+												in={loaded}
+												timeout={400}
+												classNames="input-animation-4">
+												<button
+													type="submit"
+													className="fxt-btn-fill"
+													disabled={submitting}
+													type="submit">
+													{submitting ? (
+														<img src={waiting} alt="submitting" />
+													) : (
+														'Log me in'
+													)}
+												</button>
+											</CSSTransition>
+										</div>
+									</form>
+								</div>
+								{/* <div className="fxt-footer">
+										<div className="fxt-transformY-50 fxt-transition-delay-9">
+											<p>
+												Don't have an account?
+												<a href="register-9.html" className="switcher-text2">
+													Register
+												</a>
+											</p>
+										</div>
+									</div> */}
+							</div>
+						</div>
+					</div>
 				</div>
-			</div>
+			</section>
+			// </div>
 		);
 	}
 }
