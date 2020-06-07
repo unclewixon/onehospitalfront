@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { API_URI, socket } from '../services/constants';
 import { notifyError } from '../services/notify';
 import { request } from '../services/utilities';
+import axios from 'axios';
 
 const Queue = (props) => {
 	const [queues, setQueues] = useState([]);
@@ -16,6 +17,7 @@ const Queue = (props) => {
 		socket.on('appointmentSaved', (res) => {
 			if(res.success && res.queue){
 				const queue = res.queue;
+				axios.get(`${process.env.REACT_APP_VOICE_RSS_API}Queue number ${queue.queueNumber}, ${queue.patientName}`)
 				setQueues(queues => [...queues, queue]);
 			}
 		})
