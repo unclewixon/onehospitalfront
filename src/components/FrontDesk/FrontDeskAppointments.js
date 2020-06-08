@@ -4,7 +4,7 @@ import { request } from '../../services/utilities';
 import { viewAppointmentDetail } from '../../actions/general.js';
 import { API_URI, socket } from '../../services/constants';
 import searchingGIF from '../../assets/images/searching.gif';
-import { notifyError } from '../../services/notify';
+import { notifyError, notifyInfo } from '../../services/notify';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { toggleProfile } from '../../actions/user';
@@ -25,6 +25,11 @@ const Appointment = props => {
 				}
 			}
 		});
+		socket.on('new-appointment', res => {
+			if (res.success && res.appointment) {
+				notifyInfo(`New appointment with ${res.appointment.patient} on ${moment(res.appointment.appointment_date).format('YYYY-MM-DD, hh:mm a')}`)
+			};
+		});
 	}, [appointments]);
 
 	useEffect(() => {
@@ -39,7 +44,6 @@ const Appointment = props => {
 				'GET',
 				true
 			);
-			console.log(res);
 			setAppointments(res);
 			setLoading(false);
 		} catch (e) {
