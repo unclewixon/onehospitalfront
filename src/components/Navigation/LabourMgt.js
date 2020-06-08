@@ -1,14 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
-const FrontDeskMenu = () => {
+const LabourMgt = () => {
 	return (
 		<>
 			<li className="sub-header">
-				<span>FRONTDESK</span>
+				<span>Labour Management</span>
 			</li>
+
 			<li>
-				<Link to="/front-desk">
+				<Link to="/labour-mgt">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers" />
 					</div>
@@ -19,4 +19,4 @@ const FrontDeskMenu = () => {
 	);
 };
 
-export default FrontDeskMenu;
+export default LabourMgt;

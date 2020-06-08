@@ -31,12 +31,12 @@ class Payroll extends Component {
 		filtering: false,
 	};
 
-	doPreparePayroll = (e) => {
+	doPreparePayroll = e => {
 		e.preventDefault();
 		this.props.preparePayroll(true);
 	};
 
-	onNavigatePage = (pageNumber) => {
+	onNavigatePage = pageNumber => {
 		console.log(pageNumber);
 	};
 
@@ -65,7 +65,7 @@ class Payroll extends Component {
 				true,
 				data
 			);
-			const payrolls = rs.filter((p) => p.status === 1);
+			const payrolls = rs.filter(p => p.status === 1);
 			this.props.loadPayroll([...payrolls]);
 			this.setState({ filtering: false });
 		} catch (error) {
@@ -78,7 +78,7 @@ class Payroll extends Component {
 		this.setState({ [type]: target.value });
 	};
 
-	doFilter = (e) => {
+	doFilter = e => {
 		e.preventDefault();
 		this.setState({ filtering: true });
 		const { year, month, department_id } = this.state;
@@ -90,7 +90,7 @@ class Payroll extends Component {
 		const { payrolls, departments } = this.props;
 		const { department_id, filtering, year, month } = this.state;
 		const y = parseInt(moment().format('YYYY'), 10) + 1;
-		const years = [...Array(y - 2000).keys()].map((x) => y - ++x);
+		const years = [...Array(y - 2000).keys()].map(x => y - ++x);
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -118,7 +118,7 @@ class Payroll extends Component {
 													<select
 														id="department"
 														className="form-control-sm"
-														onChange={(e) => this.onChange(e, 'department_id')}
+														onChange={e => this.onChange(e, 'department_id')}
 														value={department_id}>
 														{departments.map((dept, i) => {
 															return (
@@ -133,7 +133,7 @@ class Payroll extends Component {
 													<label className="mr-2">Month</label>
 													<select
 														className="form-control-sm"
-														onChange={(e) => this.onChange(e, 'month')}
+														onChange={e => this.onChange(e, 'month')}
 														value={month}>
 														{months.map((month, i) => {
 															return (
@@ -148,7 +148,7 @@ class Payroll extends Component {
 													<label className="mr-2">Year</label>
 													<select
 														className="form-control-sm"
-														onChange={(e) => this.onChange(e, 'year')}
+														onChange={e => this.onChange(e, 'year')}
 														value={year}>
 														{years.map((year, i) => {
 															return (
@@ -187,6 +187,7 @@ class Payroll extends Component {
 													<th>Name</th>
 													<th>Total Allowance</th>
 													<th>Total Deduction</th>
+													<th>Total Paid</th>
 													<th>Department</th>
 													<th>Month</th>
 													<th>Year</th>
@@ -208,7 +209,7 @@ class Payroll extends Component {
 											current={1}
 											pageSize={pageSize}
 											total={0}
-											showTotal={(total) => `Total ${total} staffs`}
+											showTotal={total => `Total ${total} staffs`}
 											itemRender={itemRender}
 											onChange={this.onNavigatePage}
 										/>
