@@ -328,7 +328,13 @@ const ModalClinicalLab = ({
 																																		/>
 																																	) : (
 																																		<span>
-																																			{param.result}
+																																			{
+																																			typeof param.result === 'object' ? 
+																																			Object.entries(param.result).reduce((acc, [key, value]) => {
+																																				return value
+																																			}, '') :
+																																			param.result
+																																		}
 																																		</span>
 																																	)}
 																															</td>
@@ -375,7 +381,13 @@ const ModalClinicalLab = ({
 																																		/>
 																																	) : (
 																																		<span>
-																																			{param.result}
+																																			{
+																																			typeof param.result === 'object' ? 
+																																			Object.entries(param.result).reduce((acc, [key, value]) => {
+																																				return value
+																																			}, '') :
+																																			param.result
+																																		}
 																																		</span>
 																																	)}
 																															</td>
@@ -561,7 +573,13 @@ const ModalClinicalLab = ({
 																																	/>
 																																) : (
 																																	<span>
-																																		{param.result}
+																																		{
+																																			typeof param.result === 'object' ? 
+																																			Object.entries(param.result).reduce((acc, [key, value]) => {
+																																				return value
+																																			}, '') :
+																																			param.result
+																																		}
 																																	</span>
 																																)}
 																														</td>
