@@ -13,8 +13,20 @@ import FrontDeskMenu from './FrontDeskMenu';
 import HMOMenu from './HMOMenu';
 import DoctorMenu from './DoctorMenu';
 import CafeteriaMenu from './CafeteriaMenu';
+import ClinicalLabMenu from './ClinicalLabMenu';
 import { fullname } from '../../services/utilities';
 import Account from './Account';
+import PayPointMenu from './PayPointMenu';
+import PharmacyMenu from './PharmacyMenu';
+import RadiologyMenu from './RadiologyMenu';
+import DenstistryMenu from './DenstistryMenu';
+import PhysiotherapyMenu from './PhysiotherapyMenu';
+import IvfMenu from './IvfMenu';
+import NicuMenu from './NicuMenu';
+import AntenatalMenu from './AntenatalMenu';
+import ProcedureMenu from './ProcedureMenu';
+import LabourMgt from './LabourMgt';
+import ImmunizationMenu from './ImmunizationMenu';
 
 class MainMenu extends Component {
 	componentDidMount() {
@@ -91,8 +103,25 @@ class MainMenu extends Component {
 				<h1 className="menu-page-header">Page Header</h1>
 				<ul className="main-menu">
 					{(role === 'front-desk' || role === 'admin') && <FrontDeskMenu />}
-					{(role === 'hr' || role === 'admin') && <HrMenu />}
+					{(role === 'clinical-lab' || role === 'admin') && <ClinicalLabMenu />}
+					{(role === 'pay-point' || role === 'admin') && <PayPointMenu />}
+					{(role === 'pharmacy' || role === 'admin') && <PharmacyMenu />}
+					{(role === 'radiology' || role === 'admin') && <RadiologyMenu />}
+					{(role === 'dentistry' || role === 'admin') && <DenstistryMenu />}
+					{(role === 'physiotherapy' || role === 'admin') && (
+						<PhysiotherapyMenu />
+					)}
+					{(role === 'ivf' || role === 'admin') && <IvfMenu />}
+					{(role === 'nicu' || role === 'admin') && <NicuMenu />}
+					{(role === 'antenatal' || role === 'admin') && <AntenatalMenu />}
+					{(role === 'procedure' || role === 'admin') && <ProcedureMenu />}
+					{(role === 'labour-mgt' || role === 'admin') && <LabourMgt />}
+					{(role === 'immunization' || role === 'admin') && (
+						<ImmunizationMenu />
+					)}
 					{role === 'doctor' || (role === 'admin' && <DoctorMenu />)}
+					{(role === 'hr' || role === 'admin') && <HrMenu />}
+
 					{(role === 'inventory' || role === 'admin') && <InventoryMenu />}
 					{(role === 'cafeteria' || role === 'admin') && <CafeteriaMenu />}
 					{(role === 'hmo' || role === 'admin') && <HMOMenu />}

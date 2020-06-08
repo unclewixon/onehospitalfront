@@ -4,7 +4,11 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 
 import { formatCurrency } from '../services/utilities';
-import { viewPayrollHistory, viewCurrentPayroll, viewEditPayroll } from '../actions/general';
+import {
+	viewPayrollHistory,
+	viewCurrentPayroll,
+	viewEditPayroll,
+} from '../actions/general';
 
 class PayrollItem extends Component {
 	doViewPayroll = e => {
@@ -13,13 +17,13 @@ class PayrollItem extends Component {
 		const staff = { emp_code: item.emp_code, name: item.staff_name };
 		this.props.viewPayrollHistory(true, staff);
 	};
-	
+
 	doViewCurrentPayroll = e => {
 		e.preventDefault();
 		const { modal, item } = this.props;
 		this.props.viewCurrentPayroll(true, modal, item.id);
 	};
-	
+
 	doEditPayroll = e => {
 		e.preventDefault();
 		const { item } = this.props;
@@ -28,7 +32,7 @@ class PayrollItem extends Component {
 
 	onCheckbox = ({ target }) => {
 		this.props.setChecked(target.checked, target.name);
-	}
+	};
 
 	render() {
 		const { item, modal, is_new, index, isChecked } = this.props;
@@ -49,22 +53,32 @@ class PayrollItem extends Component {
 				{!modal && <td>{item.staff_name}</td>}
 				<td>{formatCurrency(item.total_allowance)}</td>
 				<td>{formatCurrency(item.total_deduction)}</td>
+				<td>{formatCurrency(item.total_allowance - item.total_deduction)}</td>
 				{!modal && <td>{item.department}</td>}
 				{!is_new && <td>{date.format('MMMM')}</td>}
 				{!is_new && <td>{date.format('YYYY')}</td>}
 				{!is_new && <td>{moment(item.createdAt).format('D MMM, YYYY')}</td>}
 				<td className="text-right row-actions">
 					{is_new ? (
-						<a  onClick={this.doEditPayroll} className="primary" title="View Current Payslip">
+						<a
+							onClick={this.doEditPayroll}
+							className="primary"
+							title="View Current Payslip">
 							<i className="os-icon os-icon-edit-1" />
 						</a>
 					) : (
-						<a  onClick={this.doViewCurrentPayroll} className="primary" title="View Current Payslip">
+						<a
+							onClick={this.doViewCurrentPayroll}
+							className="primary"
+							title="View Current Payslip">
 							<i className="os-icon os-icon-credit-card" />
 						</a>
 					)}
 					{!modal && !is_new && (
-						<a  onClick={this.doViewPayroll} className="secondary" title="View Payment History">
+						<a
+							onClick={this.doViewPayroll}
+							className="secondary"
+							title="View Payment History">
 							<i className="os-icon os-icon-ui-83" />
 						</a>
 					)}
@@ -74,4 +88,8 @@ class PayrollItem extends Component {
 	}
 }
 
-export default connect(null, { viewPayrollHistory, viewCurrentPayroll, viewEditPayroll })(PayrollItem);
+export default connect(null, {
+	viewPayrollHistory,
+	viewCurrentPayroll,
+	viewEditPayroll,
+})(PayrollItem);

@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import Tooltip from 'antd/lib/tooltip';
-import { hmoAPI, transactionsAPI, API_URI, socket } from '../../services/constants';
+import {
+	hmoAPI,
+	transactionsAPI,
+	API_URI,
+	socket,
+} from '../../services/constants';
 import { notifySuccess, notifyError, notifyInfo } from '../../services/notify';
 import { request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
@@ -23,13 +28,13 @@ export class Dashboard extends Component {
 		this.fetchHmoTransaction();
 		socket.on('new-hmo-appointment', res => {
 			if (res.success && res.appointment) {
-				notifyInfo(`New HMO appointment with ${res.appointment.patient}`)
-			};
+				notifyInfo(`New HMO appointment with ${res.appointment.patient}`);
+			}
 		});
 		socket.on('new-hmo-appointment', res => {
 			if (res.success && res.appointment) {
-				notifyInfo(`New HMO appointment with ${res.appointment.patient}`)
-			};
+				notifyInfo(`New HMO appointment with ${res.appointment.patient}`);
+			}
 		});
 	}
 

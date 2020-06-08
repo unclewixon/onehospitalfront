@@ -27,8 +27,12 @@ const Appointment = props => {
 		});
 		socket.on('new-appointment', res => {
 			if (res.success && res.appointment) {
-				notifyInfo(`New appointment with ${res.appointment.patient} on ${moment(res.appointment.appointment_date).format('YYYY-MM-DD, hh:mm a')}`)
-			};
+				notifyInfo(
+					`New appointment with ${res.appointment.patient} on ${moment(
+						res.appointment.appointment_date
+					).format('YYYY-MM-DD, hh:mm a')}`
+				);
+			}
 		});
 	}, [appointments]);
 
