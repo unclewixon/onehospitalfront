@@ -150,9 +150,9 @@ class Login extends Component {
 			<section className="fxt-template-animation fxt-template-layout9 has-animation">
 				<div className="">
 					<div className="row align-items-center justify-content-center">
-						<div className="col-lg-2">
+						<div className="col-lg-4">
 							<div className="fxt-header">
-								<a href="login.html" className="fxt-logo">
+								<a className="fxt-logo">
 									<img
 										src={require('../assets/images/logo.svg')}
 										alt="Logo"

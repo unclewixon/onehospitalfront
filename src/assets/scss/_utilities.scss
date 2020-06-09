@@ -220,3 +220,29 @@ div.react-confirm-alert-overlay {
 .btn.filter-btn {
 	line-height: 1.69;
 }
+
+.loginPage {
+	background-image: url('../images/bg9-l.jpg');
+	height: 100vh;
+	width: 100vw;
+	overflow: hidden;
+	background-size: cover;
+	margin: -10px 0 0 -10px;
+}
+
+.fxt-template-animation {
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.fxt-content,
+.fxt-content h2,
+.fxt-content a {
+	color: #fff;
+}
+
+.fxt-btn-fill {
+	color: #3e4b5b;
+}

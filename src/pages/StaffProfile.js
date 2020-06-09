@@ -88,7 +88,8 @@ class StaffProfile extends Component {
 	}
 
 	render() {
-		const { location } = this.props;
+		const { location, staff } = this.props;
+		console.log(staff);
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -114,7 +115,11 @@ class StaffProfile extends Component {
 														className="author with-avatar"
 														to={`${location.pathname}#dashboard`}>
 														<img alt="" src={avatar1} />
-														<span>Stella Marris Etubi</span>
+														<span>
+															{staff.details.first_name +
+																' ' +
+																staff.details.last_name}
+														</span>
 													</Link>
 													<div
 														className="actions"
@@ -160,11 +165,15 @@ class StaffProfile extends Component {
 									<div
 										className="support-ticket-info"
 										style={{ position: 'relative' }}>
-										<div className="customer">
+										<div className="customer text-capitalize">
 											<div className="avatar" style={{ boxShadow: 'none' }}>
 												<img alt="" src={avatar1} />
 											</div>
-											<h4 className="customer-name">John Mayers</h4>
+											<h4 className="customer-name">
+												{staff.details.first_name +
+													' ' +
+													staff.details.last_name}
+											</h4>
 											<div className="customer-tickets">
 												Clinical Laboratory
 											</div>
