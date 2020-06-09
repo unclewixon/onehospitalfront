@@ -5,7 +5,7 @@ const DoctorMenu = () => {
 	return (
 		<>
 			<li className="sub-header">
-				<span>Doctor</span>
+				<span>DOCTOR</span>
 			</li>
 			<li>
 				<Link to="/doctor">
