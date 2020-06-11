@@ -221,9 +221,7 @@ class Login extends Component {
 														/>
 														<label for="checkbox1">Keep me logged in</label>
 													</div>
-													<a
-														href="forgot-password-9.html"
-														className="switcher-text">
+													<a href="#" className="switcher-text">
 														Forgot Password
 													</a>
 												</div>
