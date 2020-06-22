@@ -150,9 +150,9 @@ class Login extends Component {
 			<section className="fxt-template-animation fxt-template-layout9 has-animation">
 				<div className="">
 					<div className="row align-items-center justify-content-center">
-						<div className="col-lg-2">
+						<div className="col-lg-4">
 							<div className="fxt-header">
-								<a href="login.html" className="fxt-logo">
+								<a className="fxt-logo">
 									<img
 										src={require('../assets/images/logo.svg')}
 										alt="Logo"
@@ -221,9 +221,7 @@ class Login extends Component {
 														/>
 														<label for="checkbox1">Keep me logged in</label>
 													</div>
-													<a
-														href="forgot-password-9.html"
-														className="switcher-text">
+													<a href="#" className="switcher-text">
 														Forgot Password
 													</a>
 												</div>

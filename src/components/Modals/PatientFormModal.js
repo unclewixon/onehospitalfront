@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { closeModals } from '../../actions/general';
 import PatientForm from '../PatientForm';
 import PatientNOKForm from '../PatientNOKForm';
+import moment from 'moment';
 
 class PatientFormModal extends Component {
-	
 	componentDidMount() {
 		document.body.classList.add('modal-open');
 	}
@@ -23,8 +23,7 @@ class PatientFormModal extends Component {
 			<div
 				className="onboarding-modal modal fade animated show"
 				role="dialog"
-				style={{ display: 'block' }}
-			>
+				style={{ display: 'block' }}>
 				<div className="modal-dialog modal-lg" role="document">
 					<div className="modal-content text-center">
 						<div className="modal-header faded smaller">
@@ -36,21 +35,20 @@ class PatientFormModal extends Component {
 									src={require('../../assets/images/avatar1.jpg')}
 								/>
 								<span>Date: </span>
-								<strong>Sep 12th, 2017</strong>
+								<strong>{moment().format('ll')}</strong>
 							</div>
 							<button
 								aria-label="Close"
 								className="close"
 								data-dismiss="modal"
 								type="button"
-								onClick={() => this.props.closeModals(false)}
-							>
+								onClick={() => this.props.closeModals(false)}>
 								<span aria-hidden="true"> ×</span>
 							</button>
 						</div>
 						{this.props.currentStep === 1 ? (
 							<PatientForm />
-						):(
+						) : (
 							<PatientNOKForm />
 						)}
 					</div>
@@ -62,7 +60,7 @@ class PatientFormModal extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		currentStep: state.patient.formStep,
-	}
+	};
 };
 
 export default connect(mapStateToProps, { closeModals })(PatientFormModal);
