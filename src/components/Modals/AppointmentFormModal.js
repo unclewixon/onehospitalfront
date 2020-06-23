@@ -155,22 +155,34 @@ const AppointmentFormModal = props => {
 		setValue('appointment_date', new Date());
 	}, []);
 
-	useEffect(() => {
-		socket.on('appointmentSaved', res => {
-			setSubmitting(false);
-			if (res.success) {
-				notifySuccess('New appointment record has been saved!');
-				props.addTransaction(res.appointment);
-				props.closeModals(false);
-			} else {
-				notifyError(res.message || 'Could not save appointment record');
-			}
-		});
-	}, [socket]);
+	// useEffect(() => {
+	// 	socket.on('appointmentSaved', res => {
+	// 		setSubmitting(false);
+	// 		if (res.success) {
+	// 			notifySuccess('New appointment record has been saved!');
+	// 			props.addTransaction(res.appointment);
+	// 			props.closeModals(false);
+	// 		} else {
+	// 			notifyError(res.message || 'Could not save appointment record');
+	// 		}
+	// 	});
+	// }, [socket]);
 
 	const onSubmit = async values => {
 		setSubmitting(true);
-		socket.emit('saveAppointment', values);
+		const rs = await request(
+			`${API_URI}/front-desk/appointments/new`,
+			'POST',
+			values
+		);
+		setSubmitting(false);
+		if (rs.success) {
+			notifySuccess('New appointment record has been saved!');
+			props.addTransaction(rs.appointment);
+			props.closeModals(false);
+		} else {
+			notifyError(rs.message || 'Could not save appointment record');
+		}
 	};
 
 	return (

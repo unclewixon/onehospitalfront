@@ -61,16 +61,16 @@ export const loadHmoTransaction = payload => {
 };
 
 export const addHmo = data => {
-	console.log(data);
+	// console.log(data);
 	return dispatch => {
 		return axios
 			.post(`${API_URI}${hmoAPI}`, data)
 			.then(response => {
-				console.log(response);
+				// console.log(response);
 				return dispatch(add_hmo(response.data));
 			})
 			.catch(error => {
-				console.log(error);
+				// console.log(error);
 				return error;
 			});
 	};

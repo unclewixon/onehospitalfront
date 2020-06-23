@@ -593,7 +593,7 @@ export const viewEditPayroll = (action, isModal, id) => {
 
 //paypoint
 export const viewPayPoint = (action, id) => {
-	console.log(id);
+	// console.log(id);
 	return dispatch => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));

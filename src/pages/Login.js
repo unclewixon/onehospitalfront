@@ -21,10 +21,13 @@ import {
 	FULLSCREEN_COOKIE,
 	MODE_COOKIE,
 	TOKEN_COOKIE,
+	utilityAPI,
 } from '../services/constants';
 import { loadRoles } from '../actions/role';
 import { loadDepartments, loadSpecializations } from '../actions/settings';
 import { loadInvCategories, loadInvSubCategories } from '../actions/inventory';
+import { loadBanks, loadCountries } from '../actions/utility';
+
 import { from } from 'rxjs';
 
 const storage = new SSRStorage();
@@ -94,12 +97,16 @@ class Login extends Component {
 					rs_invsubcategories,
 					rs_roles,
 					rs_specializations,
+					rs_banks,
+					rs_countries,
 				] = await Promise.all([
 					axiosFetch(`${API_URI}${departmentAPI}`, jwt),
 					axiosFetch(`${API_URI}${inventoryCatAPI}`, jwt),
 					axiosFetch(`${API_URI}${inventorySubCatAPI}`, jwt),
 					axiosFetch(`${API_URI}${rolesAPI}`, jwt),
 					axiosFetch(`${API_URI}/specializations`, jwt),
+					axiosFetch(`${API_URI}${utilityAPI}/banks`),
+					axiosFetch(`${API_URI}${utilityAPI}/countries`),
 				]);
 
 				if (rs_depts && rs_depts.data) {
@@ -117,7 +124,13 @@ class Login extends Component {
 				if (rs_specializations && rs_specializations.data) {
 					this.props.loadSpecializations(rs_specializations.data);
 				}
-				console.log(rs);
+				if (rs_banks && rs_banks.data) {
+					this.props.loadBanks(rs_banks.data);
+				}
+				if (rs_countries && rs_countries.data) {
+					this.props.loadCountries(rs_countries.data);
+				}
+				// console.log(rs);
 				this.props.loginUser(rs);
 				storage.setItem(TOKEN_COOKIE, rs);
 				notifySuccess('login successful!');
@@ -219,7 +232,7 @@ class Login extends Component {
 															checked={rememberMe}
 															onChange={this.ToggleRememberMe}
 														/>
-														<label for="checkbox1">Keep me logged in</label>
+														<label htmlFor="checkbox1">Keep me logged in</label>
 													</div>
 													<a href="#" className="switcher-text">
 														Forgot Password
@@ -279,4 +292,6 @@ export default connect(null, {
 	loadInvSubCategories,
 	loadRoles,
 	loadSpecializations,
+	loadBanks,
+	loadCountries,
 })(Login);

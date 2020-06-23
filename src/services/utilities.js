@@ -104,7 +104,7 @@ export const requestPatch = async (url, authed = false, data) => {
 	axios.defaults.headers.post['Content-Type'] = 'application/json';
 	axios.defaults.headers.post['Accept'] = 'application/json';
 	if (authed) {
-		console.log('f');
+		// console.log('f');
 		// prettier-ignore
 		const user = await (new SSRStorage()).getItem(TOKEN_COOKIE);
 		axios.defaults.headers.common['Authorization'] = user.token;
@@ -116,7 +116,7 @@ export const requestPatch = async (url, authed = false, data) => {
 export const request = async (url, method, authed = false, data) => {
 	// prettier-ignore
 	const user = await (new SSRStorage()).getItem(TOKEN_COOKIE);
-	console.log(user);
+	// console.log(user);
 	const response = await fetch(url, {
 		method: method,
 		headers: authed ? headers(user) : { ...defaultHeaders },
@@ -487,7 +487,7 @@ export const redirectToPage = (role, history) => {
 	} catch (e) {
 		uri = '/front-desk';
 	}
-	console.log(uri);
+	// console.log(uri);
 	if (uri !== '') {
 		history.push(uri);
 	} else {
@@ -533,7 +533,7 @@ export const calculateAge = dob => {
 	let test = /^(0[1-9]|1[0-2])\/(0[1-9]|1\d|2\d|3[01])\/(19|20)\d{2}$/;
 	//check if date is dd/mm/yyyy:if yes turn to mm/dd/yyyy
 	if (!test.test(dob)) {
-		console.log(dob);
+		// console.log(dob);
 		let arr = dob.split('/');
 
 		let newDate = [arr[1], arr[0], arr[2]];
