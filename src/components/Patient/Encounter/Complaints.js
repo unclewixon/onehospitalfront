@@ -11,7 +11,7 @@ import { loadEncounterData } from '../../../actions/patient';
 const Complaints = props => {
 	const { register, handleSubmit, setValue, getValues } = useForm();
 	const [complaint, setComplaint] = useState('');
-	let { encounterData, previous, next } = props;
+	let { encounterData, previous, next, encounterId } = props;
 	const dispatch = useDispatch();
 
 	const handleChange = e => {
@@ -88,6 +88,7 @@ const Complaints = props => {
 const mapStateToProps = state => {
 	return {
 		encounterData: state.patient.encounterData,
+		encounterId: state.general.encounterId,
 	};
 };
 

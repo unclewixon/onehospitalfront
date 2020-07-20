@@ -38,7 +38,7 @@ import { closeModals } from '../../../actions/general';
 
 const selector = formValueSelector('consumableForm');
 let Consumable = props => {
-	const { previous, next, encounterData, encounterForm } = props;
+	const { previous, next, encounterData, encounterForm, encounterId } = props;
 	const dispatch = useDispatch();
 	let [data, setData] = useState([]);
 	let [loading, setLoading] = useState(false);
@@ -78,6 +78,8 @@ let Consumable = props => {
 	const onSubmit = async data => {
 		encounterData.consumable = data || [];
 		encounterData.consumable.instruction = summary;
+		encounterData.appointment_id = encounterId;
+
 		props.loadEncounterData(encounterData);
 
 		console.log(encounterData);
@@ -251,6 +253,7 @@ Consumable = reduxForm({
 const mapStateToProps = (state, ownProps) => {
 	return {
 		encounterData: state.patient.encounterData,
+		encounterId: state.general.encounterId,
 		encounterForm: state.patient.encounterForm,
 		patient: state.user.patient,
 		value: selector(state, 'consumable'),
