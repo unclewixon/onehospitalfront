@@ -14,9 +14,9 @@ const Queue = props => {
 	}, []);
 
 	useEffect(() => {
-		socket.on('appointmentSaved', res => {
-			if (res.success && res.queue) {
-				const queue = res.queue;
+		socket.on('new-queue', queue => {
+			console.log('new queue', queue);
+			if (queue) {
 				axios.get(
 					`${process.env.REACT_APP_VOICE_RSS_API}Queue number ${queue.queueNumber}, ${queue.patientName}`
 				);

@@ -173,6 +173,7 @@ const AppointmentFormModal = props => {
 		const rs = await request(
 			`${API_URI}/front-desk/appointments/new`,
 			'POST',
+			true,
 			values
 		);
 		setSubmitting(false);

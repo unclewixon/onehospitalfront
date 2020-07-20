@@ -16,22 +16,14 @@ const Appointment = props => {
 	const [appointments, setAppointments] = useState([]);
 
 	useEffect(() => {
-		socket.on('appointmentSaved', res => {
+		socket.on('new-appointment', res => {
+			console.log('new appointment message');
 			if (res.success) {
 				const appointment = res.appointment;
 				const today = moment().format('YYYY-MM-DD');
 				if (appointment.appointment_date === today) {
 					setAppointments([...appointments, appointment]);
 				}
-			}
-		});
-		socket.on('new-appointment', res => {
-			if (res.success && res.appointment) {
-				notifyInfo(
-					`New appointment with ${res.appointment.patient} on ${moment(
-						res.appointment.appointment_date
-					).format('YYYY-MM-DD, hh:mm a')}`
-				);
 			}
 		});
 	}, [appointments]);
