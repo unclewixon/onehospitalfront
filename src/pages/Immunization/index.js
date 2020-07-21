@@ -2,6 +2,7 @@ import React, { Component, Suspense, lazy } from 'react';
 import { Switch, Route, withRouter, Link } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
+import Queue from '../../components/Queue';
 
 const Dashboard = lazy(() => import('./Dashboard'));
 const AllImmunization = lazy(() => import('./AllImmunization'));
@@ -76,6 +77,9 @@ export class index extends Component {
 								</div>
 							</div>
 						</div>
+					</div>
+					<div className="content-panel compact">
+						<Queue />
 					</div>
 				</div>
 			</>

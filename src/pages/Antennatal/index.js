@@ -34,9 +34,9 @@ export class index extends Component {
 						</Suspense>
 					</div>
 				</div>
-				{/* <div className="content-panel compact">
+				<div className="content-panel compact">
 					<Queue />
-				</div> */}
+				</div>
 			</div>
 		);
 	}

@@ -3,6 +3,7 @@ import React, { Component, lazy, Suspense } from 'react';
 import { Switch, withRouter, Route, Link } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
+import Queue from '../../components/Queue';
 const NewProcedure = lazy(() => import('./NewProcedureRequest'));
 const AllProcedure = lazy(() => import('./AllProcedure'));
 const ProcedureDashboard = lazy(() => import('./ProcedureDasboard'));
@@ -77,6 +78,9 @@ class Procedure extends Component {
 							</div>
 						</div>
 					</div>
+				</div>
+				<div className="content-panel compact">
+					<Queue />
 				</div>
 			</div>
 		);

@@ -19,7 +19,7 @@ const ModalClinicalLab = ({
 	const saveLabRequest = async (data, cb) => {
 		try {
 			const rs = await request(
-				`${API_URI}/patient/save-request`,
+				`${API_URI}/patient/fill-request`,
 				'POST',
 				true,
 				data
@@ -32,147 +32,22 @@ const ModalClinicalLab = ({
 		}
 	};
 
+	const handleInputChange = e => {
+		const { name, value } = e.target;
+		setValue(name, value);
+	};
+
 	const onSaveClick = values => {
 		setLoading(true);
-		let groupTestResult = {};
-		let groupTestParam = {};
-		let paramResult = {};
-		const flattenObject = obj => {
-			const flattened = {};
-
-			Object.keys(obj).forEach(key => {
-				if (typeof obj[key] === 'object' && obj[key] !== null) {
-					Object.assign(flattened, flattenObject(obj[key]));
-				} else {
-					flattened[key] = obj[key];
-				}
-			});
-
-			const filtered = Object.keys(flattened)
-				.filter(key => key.includes('-group'))
-				.reduce((obj, key) => {
-					obj[key] = flattened[key];
-					groupTestResult = obj;
-					return obj;
-				}, {});
-
-			const filtered2 = Object.keys(flattened)
-				.filter(key => key.includes('-test'))
-				.reduce((obj, key) => {
-					obj[key] = flattened[key];
-					groupTestParam = obj;
-					return obj;
-				}, {});
-
-			const filtered3 = Object.keys(flattened)
-				.filter(key => key.includes('-param'))
-				.reduce((obj, key) => {
-					obj[key] = flattened[key];
-					paramResult = obj;
-					return obj;
-				}, {});
-			return { filtered, filtered2, filtered3 };
-		};
-
-		flattenObject(values);
-		let resultObj = [];
-		let resultVals = Object.values(groupTestResult).length
-			? Object.values(groupTestResult).map((val, i) => {
-					resultObj = Object.values(val);
-			  })
-			: [];
-		let newParamObj = [];
-		let groupParamVals = Object.values(groupTestParam).length
-			? Object.values(groupTestParam).map((val, i) => {
-					newParamObj = Object.values(val);
-			  })
-			: [];
-		let testParamObj = [];
-		let newTestParamObj = Object.values(paramResult).length
-			? Object.values(paramResult).map((val, i) => {
-					testParamObj = Object.values(val);
-			  })
-			: [];
-
-		let fullGroup = {};
-		let newParams = {};
-		let fullTestsObj = {};
-		let fullParas = {};
-		const groups =
-			activeRequest &&
-			activeRequest.requestBody &&
-			activeRequest.requestBody.groups
-				? activeRequest.requestBody.groups.map((group, i) => {
-						const fullTests =
-							group.tests && group.tests.length
-								? group.tests.map((tests, ind) => {
-										const fullParams = tests.paramenters.map(
-											(params, index) => {
-												newParams[index] = {
-													...params,
-													result: resultObj[index],
-												};
-												return newParams[index];
-											}
-										);
-										fullTestsObj[ind] = {
-											...tests,
-											paramenters: fullParams,
-										};
-										return fullTestsObj[ind];
-								  })
-								: [];
-
-						const fullParamsArray =
-							group.parameters && group.parameters.length
-								? group.parameters.map((params, i) => {
-										fullParas[i] = {
-											...params,
-											result: newParamObj[i],
-										};
-										return fullParas[i];
-								  })
-								: [];
-						fullGroup[i] = {
-							...group,
-							tests: fullTests,
-							parameters: fullParamsArray,
-						};
-						return fullGroup[i];
-				  })
-				: [];
-
-		const tests =
-			activeRequest &&
-			activeRequest.requestBody &&
-			activeRequest.requestBody.tests
-				? activeRequest.requestBody.tests.map((test, index) => {
-						const fullParams =
-							test.paramenters && test.paramenters.length
-								? test.paramenters.map((params, ind) => {
-										newParams[ind] = {
-											...params,
-											result: testParamObj[ind],
-										};
-										return newParams[ind];
-								  })
-								: [];
-						fullTestsObj[index] = {
-							...test,
-							paramenters: fullParams,
-						};
-						return fullTestsObj[index];
-				  })
-				: [];
+		console.log(values);
 
 		let newRequestObj = {
-			requestType: activeRequest.requestType,
-			patient_id: activeRequest.patient_id,
+			request_id: activeRequest.id,
 			requestBody: {
 				specialization: '',
 				sessionCount: '',
-				groups: groups,
-				tests: tests,
+				// groups: groups,
+				// tests: tests,
 				refferredSpecimen: activeRequest.requestBody.refferredSpecimen,
 				requestNote: activeRequest.requestBody.requestNote,
 			},
@@ -319,37 +194,18 @@ const ModalClinicalLab = ({
 																															{param.result ===
 																															'' ? (
 																																<input
-																																	type="text"
-																																	name={`${gInex}.${grp.name}.${tInex}.${test.testName}.${pInex}.${param.name}-group-${test.testName}`}
-																																	ref={register}
-																																	onChange={e =>
-																																		setValue(
-																																			`${gInex}.${grp.name}.${tInex}.${test.testName}.${pInex}.${param.name}-group-${test.testName}`,
-																																			e.target
-																																				.value
-																																		)
+																																	name={`gtp${gInex}${tInex}${pInex}`}
+																																	ref={register(
+																																		{
+																																			required: true,
+																																		}
+																																	)}
+																																	onChange={
+																																		handleInputChange
 																																	}
 																																/>
 																															) : (
-																																<span>
-																																	{typeof param.result ===
-																																	'object'
-																																		? Object.entries(
-																																				param.result
-																																		  ).reduce(
-																																				(
-																																					acc,
-																																					[
-																																						key,
-																																						value,
-																																					]
-																																				) => {
-																																					return value;
-																																				},
-																																				''
-																																		  )
-																																		: param.result}
-																																</span>
+																																param.result
 																															)}
 																														</td>
 																													</tr>
@@ -386,37 +242,16 @@ const ModalClinicalLab = ({
 																														{param.result ===
 																														'' ? (
 																															<input
-																																type="text"
-																																name={`${gInex}.${grp.name}.${pInex}.${param.name}-param-${grp.name}`}
-																																ref={register}
-																																onChange={e =>
-																																	setValue(
-																																		`${gInex}.${grp.name}.${pInex}.${param.name}-param-${grp.name}`,
-																																		e.target
-																																			.value
-																																	)
+																																name={`gp${gInex}${pInex}`}
+																																ref={register({
+																																	required: true,
+																																})}
+																																onChange={
+																																	handleInputChange
 																																}
 																															/>
 																														) : (
-																															<span>
-																																{typeof param.result ===
-																																'object'
-																																	? Object.entries(
-																																			param.result
-																																	  ).reduce(
-																																			(
-																																				acc,
-																																				[
-																																					key,
-																																					value,
-																																				]
-																																			) => {
-																																				return value;
-																																			},
-																																			''
-																																	  )
-																																	: param.result}
-																															</span>
+																															param.result
 																														)}
 																													</td>
 																												</tr>
@@ -471,21 +306,18 @@ const ModalClinicalLab = ({
 																															{param.result ===
 																															'' ? (
 																																<input
-																																	type="text"
-																																	name={`${gInex}.${grp.name}.${tInex}.${test.testName}.${pInex}.${param.name}-group-${test.testName}`}
-																																	ref={register}
-																																	onChange={e =>
-																																		setValue(
-																																			`${gInex}.${grp.name}.${tInex}.${test.testName}.${pInex}.${param.name}-group-${test.testName}`,
-																																			e.target
-																																				.value
-																																		)
+																																	name={`gtp${gInex}${tInex}${pInex}`}
+																																	ref={register(
+																																		{
+																																			required: true,
+																																		}
+																																	)}
+																																	onChange={
+																																		handleInputChange
 																																	}
 																																/>
 																															) : (
-																																<span>
-																																	{param.result}
-																																</span>
+																																param.result
 																															)}
 																														</td>
 																													</tr>
@@ -522,21 +354,16 @@ const ModalClinicalLab = ({
 																														{param.result ===
 																														'' ? (
 																															<input
-																																type="text"
-																																name={`${gInex}.${grp.name}.${pInex}.${param.name}-param-${grp.name}`}
-																																ref={register}
-																																onChange={e =>
-																																	setValue(
-																																		`${gInex}.${grp.name}.${pInex}.${param.name}-param-${grp.name}`,
-																																		e.target
-																																			.value
-																																	)
+																																name={`gp${gInex}${pInex}`}
+																																ref={register({
+																																	required: true,
+																																})}
+																																onChange={
+																																	handleInputChange
 																																}
 																															/>
 																														) : (
-																															<span>
-																																{param.result}
-																															</span>
+																															param.result
 																														)}
 																													</td>
 																												</tr>
@@ -600,36 +427,16 @@ const ModalClinicalLab = ({
 																													{param.result ===
 																													'' ? (
 																														<input
-																															type="text"
-																															name={`${tInex}.${tst.testName}.${pInex}.${param.name}-test-${tst.testName}`}
-																															ref={register}
-																															onChange={e =>
-																																setValue(
-																																	`${tInex}.${tst.testName}.${pInex}.${param.name}-test-${tst.testName}`,
-																																	e.target.value
-																																)
+																															name={`tp${tInex}${pInex}`}
+																															ref={register({
+																																required: true,
+																															})}
+																															onChange={
+																																handleInputChange
 																															}
 																														/>
 																													) : (
-																														<span>
-																															{typeof param.result ===
-																															'object'
-																																? Object.entries(
-																																		param.result
-																																  ).reduce(
-																																		(
-																																			acc,
-																																			[
-																																				key,
-																																				value,
-																																			]
-																																		) => {
-																																			return value;
-																																		},
-																																		''
-																																  )
-																																: param.result}
-																														</span>
+																														param.result
 																													)}
 																												</td>
 																											</tr>
@@ -679,20 +486,16 @@ const ModalClinicalLab = ({
 																													{param.result ===
 																													'' ? (
 																														<input
-																															type="text"
-																															name={`${tInex}.${tst.testName}.${pInex}.${param.name}-test`}
-																															ref={register}
-																															onChange={e =>
-																																setValue(
-																																	`${tInex}.${tst.testName}.${pInex}.${param.name}-test`,
-																																	e.target.value
-																																)
+																															name={`tp${tInex}${pInex}`}
+																															ref={register({
+																																required: true,
+																															})}
+																															onChange={
+																																handleInputChange
 																															}
 																														/>
 																													) : (
-																														<span>
-																															{param.result}
-																														</span>
+																														param.result
 																													)}
 																												</td>
 																											</tr>

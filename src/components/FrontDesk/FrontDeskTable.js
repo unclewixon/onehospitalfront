@@ -18,7 +18,6 @@ import { toggleProfile } from '../../actions/user';
 
 class FrontDeskTable extends Component {
 	ViewAppointmentDetail = appointment => {
-		console.log(appointment);
 		this.props.viewAppointmentDetail(appointment);
 	};
 

@@ -84,6 +84,9 @@ class Physiotherapy extends Component {
 						</div>
 					</div>
 				</div>
+				<div className="content-panel compact">
+					<Queue />
+				</div>
 			</div>
 		);
 	}
