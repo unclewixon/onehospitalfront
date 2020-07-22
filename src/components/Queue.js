@@ -5,9 +5,12 @@ import { API_URI, socket } from '../services/constants';
 import { notifyError } from '../services/notify';
 import { request } from '../services/utilities';
 import axios from 'axios';
+import QueueOverlay from './QueueOverlay';
 
-const Queue = props => {
+const Queue = ({ department }) => {
 	const [queues, setQueues] = useState([]);
+	const [showQueue, setShowQueue] = useState(false);
+	const [activeRequest, setActiveRequest] = useState(null);
 
 	useEffect(() => {
 		getQueueList();
@@ -20,7 +23,7 @@ const Queue = props => {
 				axios.get(
 					`${process.env.REACT_APP_VOICE_RSS_API}Queue number ${queue.queueNumber}, ${queue.patientName}`
 				);
-				setQueues(queues => [...queues, queue]);
+				getQueueList();
 			}
 		});
 	}, [queues]);
@@ -38,25 +41,66 @@ const Queue = props => {
 		}
 	}
 
+	const handleQueueClick = data => {
+		setShowQueue(true);
+		setActiveRequest(data);
+	};
+
+	const handleClose = () => {
+		setShowQueue(false);
+	};
+
 	return (
 		<div className="element-wrapper compact pt-3">
 			<h6 className="element-header">Queue</h6>
 			<div className="element-box-tp">
 				<div className="todo-list">
-					{queues &&
-						queues.map((queue, i) => (
-							<Link className="todo-item" to="/dashboard/patient/123" key={i}>
-								<div className="ti-info">
-									<div className="ti-header">{queue.patientName}</div>
-									<div className="ti-sub-header">
-										Queue No: {queue.queueNumber}
+					{activeRequest ? (
+						<QueueOverlay
+							isOpen={showQueue}
+							handleClose={() => handleClose()}
+							data={activeRequest}
+						/>
+					) : null}
+					{department === 'all'
+						? queues &&
+						  queues.map((queue, i) => (
+								<div
+									className="todo-item"
+									onClick={() => handleQueueClick(queue)}
+									key={i}>
+									<div className="ti-info">
+										<div className="ti-header">{queue.patientName}</div>
+										<div className="ti-sub-header">
+											Queue No: {queue.queueNumber}
+										</div>
+									</div>
+									<div className="ti-icon">
+										<i className="os-icon os-icon-arrow-right7" />
 									</div>
 								</div>
-								<div className="ti-icon">
-									<i className="os-icon os-icon-arrow-right7" />
-								</div>
-							</Link>
-						))}
+						  ))
+						: queues &&
+						  queues
+								.filter(
+									queue => queue?.appointment?.department?.name === department
+								)
+								.map((queue, i) => (
+									<div
+										className="todo-item"
+										onClick={() => handleQueueClick(queue)}
+										key={i}>
+										<div className="ti-info">
+											<div className="ti-header">{queue.patientName}</div>
+											<div className="ti-sub-header">
+												Queue No: {queue.queueNumber}
+											</div>
+										</div>
+										<div className="ti-icon">
+											<i className="os-icon os-icon-arrow-right7" />
+										</div>
+									</div>
+								))}
 				</div>
 			</div>
 		</div>
