@@ -3,7 +3,7 @@ import { Switch, Route, withRouter, Link } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
 import Queue from '../../components/Queue';
-
+import { connect } from 'react-redux';
 const Dashboard = lazy(() => import('./Dashboard'));
 const AllImmunization = lazy(() => import('./AllImmunization'));
 const CreateImmunization = lazy(() =>
@@ -11,8 +11,9 @@ const CreateImmunization = lazy(() =>
 );
 export class index extends Component {
 	render() {
-		const { match, location } = this.props;
+		const { match, location, staff } = this.props;
 		const page = location.pathname.split('/').pop();
+		const department = staff?.profile?.details?.department?.name;
 		return (
 			<>
 				<div className="content-i">
@@ -79,7 +80,7 @@ export class index extends Component {
 						</div>
 					</div>
 					<div className="content-panel compact">
-						<Queue />
+						<Queue department={department} />
 					</div>
 				</div>
 			</>
@@ -87,4 +88,10 @@ export class index extends Component {
 	}
 }
 
-export default withRouter(index);
+const mapStatetoProps = state => {
+	return {
+		staff: state.user.staff,
+	};
+};
+
+export default withRouter(connect(mapStatetoProps)(index));

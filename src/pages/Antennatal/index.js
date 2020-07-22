@@ -11,7 +11,7 @@ const AllEnrollment = lazy(() => import('./AllEnrollment'));
 export class index extends Component {
 	render() {
 		const { match, staff } = this.props;
-		const department = staff?.details?.department?.name;
+		const department = staff?.profile?.details?.department?.name;
 		return (
 			<div className="content-i">
 				<div className="content-box">
