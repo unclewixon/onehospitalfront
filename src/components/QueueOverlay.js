@@ -33,9 +33,18 @@ const QueueOverlay = ({ isOpen, handleClose, data }) => {
 											<div className="support-ticket-content-header">
 												<h4 className="ticket-header">Appointment Details</h4>
 											</div>
-
 											<div className="onboarding-content with-gradient">
 												<div className="modal-body">
+													<div className="element-wrapper">
+														<div className="element-actions">
+															<button
+																className="btn btn-success btn-sm"
+																onClick>
+																<i className="os-icon os-icon-ui-22"></i>
+																<span>New Request</span>
+															</button>
+														</div>
+													</div>
 													<div className="row">
 														<div className="col-sm-4">
 															<div className="user-profile compact">
@@ -138,11 +147,6 @@ const QueueOverlay = ({ isOpen, handleClose, data }) => {
 																			<h5 className="element-inner-header">
 																				Appointment Detail
 																			</h5>
-																			{/*appointment_date*/}
-																			{/*department.name*/}
-																			{/*consultingRoom.name*/}
-																			{/*specialization.name*/}
-																			{/*department.staff.first_name*/}
 																		</div>
 																	</div>
 																</div>
@@ -236,24 +240,6 @@ const QueueOverlay = ({ isOpen, handleClose, data }) => {
 												</div>
 											</div>
 										</div>
-										{/* <div
-										className="support-ticket-info"
-										style={{ position: 'relative' }}>
-										<div className="customer text-capitalize">
-											<div className="avatar" style={{ boxShadow: 'none' }}>
-												<img alt="" src="" />
-											</div>
-											<h4 className="customer-name">
-												{}
-											</h4>
-											<div className="customer-tickets">
-												Patient Details
-											</div>
-										</div>
-
-										<h5 className="info-header">A few Colleagues</h5>
-										<div>profile data list</div>
-									</div> */}
 									</div>
 								</div>
 							</div>

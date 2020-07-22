@@ -26,6 +26,10 @@ const AllAppointments = lazy(() =>
 	import('../../components/FrontDesk/AllAppointments')
 );
 
+const AllPatients = lazy(() =>
+	import('../../components/FrontDesk/AllPatients')
+);
+
 const FrontDesk = props => {
 	const [ShowDashboard, setDashboard] = useState(true);
 	const [ShowAppointment, setAppointment] = useState(false);
@@ -103,6 +107,14 @@ const FrontDesk = props => {
 									{' '}
 									New appointment
 								</Link>
+								<Link
+									to={`${match.path}/all-patients`}
+									className={`mr-2 btn btn-primary btn-sm  ${
+										page === 'all-request' ? 'btn-outline-primary' : ''
+									}`}>
+									{' '}
+									All Patients
+								</Link>
 							</div>
 
 							<div className="row">
@@ -118,7 +130,10 @@ const FrontDesk = props => {
 												path={`${match.url}/all-appointments`}
 												component={AllAppointments}
 											/>
-
+											<Route
+												path={`${match.url}/all-patients`}
+												component={AllPatients}
+											/>
 											<Route component={NoMatch} />
 										</Switch>
 									</Suspense>
