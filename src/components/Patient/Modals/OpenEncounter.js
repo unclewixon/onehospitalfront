@@ -237,6 +237,7 @@ const mapStateToProps = (state, ownProps) => {
 	console.log(state.patient.encounterData);
 	return {
 		encounterData: state.patient.encounterData,
+		encounterId: state.general.encounterId,
 		patient: state.user.patient,
 	};
 };
