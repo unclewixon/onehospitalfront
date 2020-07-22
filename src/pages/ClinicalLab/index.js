@@ -4,6 +4,8 @@ import { Switch, withRouter, Route, Link } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Queue from '../../components/Queue';
 import Splash from '../../components/Splash';
+import { connect } from 'react-redux';
+
 const NewLab = lazy(() => import('./NewLab'));
 const ClinicalLab = lazy(() => import('./ClinicalLab'));
 const AllRequest = lazy(() => import('./AllRequest'));
@@ -17,8 +19,11 @@ class Clinical extends Component {
 		alert('I am toSee Details this guy');
 	};
 	render() {
-		const { match, location } = this.props;
+		const { match, location, staff } = this.props;
 		const page = location.pathname.split('/').pop();
+
+		const department = staff?.details?.department?.name;
+
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -95,11 +100,17 @@ class Clinical extends Component {
 					</div>
 				</div>
 				<div className="content-panel compact">
-					<Queue />
+					<Queue department={department} />
 				</div>
 			</div>
 		);
 	}
 }
 
-export default withRouter(Clinical);
+const mapStatetoProps = state => {
+	return {
+		staff: state.user.staff,
+	};
+};
+
+export default withRouter(connect(mapStatetoProps)(Clinical));

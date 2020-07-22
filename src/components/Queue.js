@@ -7,7 +7,7 @@ import { request } from '../services/utilities';
 import axios from 'axios';
 import QueueOverlay from './QueueOverlay';
 
-const Queue = props => {
+const Queue = ({ department }) => {
 	const [queues, setQueues] = useState([]);
 	const [showQueue, setShowQueue] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
@@ -62,23 +62,45 @@ const Queue = props => {
 							data={activeRequest}
 						/>
 					) : null}
-					{queues &&
-						queues.map((queue, i) => (
-							<div
-								className="todo-item"
-								onClick={() => handleQueueClick(queue)}
-								key={i}>
-								<div className="ti-info">
-									<div className="ti-header">{queue.patientName}</div>
-									<div className="ti-sub-header">
-										Queue No: {queue.queueNumber}
+					{department === 'all'
+						? queues &&
+						  queues.map((queue, i) => (
+								<div
+									className="todo-item"
+									onClick={() => handleQueueClick(queue)}
+									key={i}>
+									<div className="ti-info">
+										<div className="ti-header">{queue.patientName}</div>
+										<div className="ti-sub-header">
+											Queue No: {queue.queueNumber}
+										</div>
+									</div>
+									<div className="ti-icon">
+										<i className="os-icon os-icon-arrow-right7" />
 									</div>
 								</div>
-								<div className="ti-icon">
-									<i className="os-icon os-icon-arrow-right7" />
-								</div>
-							</div>
-						))}
+						  ))
+						: queues &&
+						  queues
+								.filter(
+									queue => queue?.appointment?.department?.name === department
+								)
+								.map((queue, i) => (
+									<div
+										className="todo-item"
+										onClick={() => handleQueueClick(queue)}
+										key={i}>
+										<div className="ti-info">
+											<div className="ti-header">{queue.patientName}</div>
+											<div className="ti-sub-header">
+												Queue No: {queue.queueNumber}
+											</div>
+										</div>
+										<div className="ti-icon">
+											<i className="os-icon os-icon-arrow-right7" />
+										</div>
+									</div>
+								))}
 				</div>
 			</div>
 		</div>

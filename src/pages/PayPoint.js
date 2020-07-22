@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PayPoint from '../components/PayPoint';
 import PayPointTable from '../components/PayPointTable';
 import Queue from '../components/Queue';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 class PayPointPage extends Component {
 	render() {
 		return (
@@ -21,7 +23,7 @@ class PayPointPage extends Component {
 						</div>
 					</div>
 					<div className="content-panel compact">
-						<Queue />
+						<Queue department={department} />
 					</div>
 				</div>
 			</>
@@ -29,4 +31,10 @@ class PayPointPage extends Component {
 	}
 }
 
-export default PayPointPage;
+const mapStatetoProps = ({ user }) => {
+	return {
+		staff: user.staff,
+	};
+};
+
+export default withRouter(connect(mapStatetoProps)(PayPointPage));

@@ -176,25 +176,58 @@ const QueueOverlay = ({ isOpen, handleClose, data }) => {
 																				}
 																			</td>
 																		</tr>
-																		<tr>
-																			<td className="font-weight-bold">
-																				Whom to See
-																			</td>
-																			<td>
-																				{data?.appointment?.department?.staff}
-																			</td>
-																		</tr>
-																		<tr>
-																			<td className="font-weight-bold">
-																				Consultation Room
-																			</td>
-																			<td>
-																				{
-																					data?.appointment?.consultingRoom
-																						?.name
-																				}
-																			</td>
-																		</tr>
+																		{data?.appointment?.department?.staff ? (
+																			<tr>
+																				<td className="font-weight-bold">
+																					Whom to See
+																				</td>
+																				<td>
+																					{data?.appointment?.department?.staff}
+																				</td>
+																			</tr>
+																		) : null}
+																		{data?.appointment?.consultingRoom?.name ? (
+																			<tr>
+																				<td className="font-weight-bold">
+																					Consultation Room
+																				</td>
+																				<td>
+																					{
+																						data?.appointment?.consultingRoom
+																							?.name
+																					}
+																				</td>
+																			</tr>
+																		) : null}
+
+																		{data?.appointment?.referredBy ? (
+																			<tr>
+																				<td className="font-weight-bold">
+																					Referred By
+																				</td>
+																				<td>{data?.appointment?.referredBy}</td>
+																			</tr>
+																		) : null}
+																		{data?.appointment?.referralCompany ? (
+																			<tr>
+																				<td className="font-weight-bold">
+																					Referral Company
+																				</td>
+																				<td>
+																					{data?.appointment?.referralCompany}
+																				</td>
+																			</tr>
+																		) : null}
+																		{data?.appointment?.description ? (
+																			<tr>
+																				<td className="font-weight-bold">
+																					Description
+																				</td>
+																				<td>
+																					{data?.appointment?.description}
+																				</td>
+																			</tr>
+																		) : null}
 																	</tbody>
 																</table>
 															</div>

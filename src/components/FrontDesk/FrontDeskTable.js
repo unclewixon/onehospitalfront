@@ -56,26 +56,35 @@ class FrontDeskTable extends Component {
 										{moment(appointment.createdAt).format('DD-MM-YYYY')}
 									</td>
 									<td>
-										<span className="smaller lighter">
+										<span
+											className="smaller lighter"
+											style={{ fontSize: '0.7rem' }}>
 											{appointment.patient?.fileNumber}
 										</span>
 										<br />
-										<span>{`${appointment.patient.surname} (${appointment.patient.other_names})`}</span>
+										<span
+											style={{
+												fontSize: '0.7rem',
+											}}>{`${appointment.patient.surname} ${appointment.patient.other_names}`}</span>
 									</td>
 
 									<td className="cell-with-media">
-										<span>
-											{`${appointment.specialization?.name} (${appointment.department?.name})`}
+										<span style={{ fontSize: '0.7rem' }}>
+											{`${appointment.specialization?.name}`}
 										</span>
 									</td>
 
 									<td className="cell-with-media">
-										<span>{appointment.consultingRoom?.name}</span>
+										<span style={{ fontSize: '0.7rem' }}>
+											{appointment.consultingRoom?.name}
+										</span>
 									</td>
 
 									<td>
 										{/* <span className="status-pill smaller green"></span> */}
-										<span>{appointment.status}</span>
+										<span style={{ fontSize: '0.7rem' }}>
+											{appointment.status}
+										</span>
 									</td>
 									<td className="row-actions">
 										<a

@@ -70,6 +70,16 @@ const ServicesList = props => {
 			<div className="todo-app-w">
 				<div className="todo-content">
 					<div className="all-tasks-w">
+						<div className="element-wrapper">
+							<div className="element-actions">
+								<button
+									className="btn btn-success btn-sm"
+									onClick={onUploadService}>
+									<i className="os-icon os-icon-ui-22"></i>
+									<span>Upload Services</span>
+								</button>
+							</div>
+						</div>
 						{!dataLoaded ? (
 							<div className="text-center">
 								<img alt="searching" src={searchingGIF} />

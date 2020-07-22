@@ -129,7 +129,7 @@ const FrontDesk = props => {
 				</div>
 			</div>
 			<div className="content-panel compact">
-				<Queue />
+				<Queue department="all" />
 			</div>
 		</div>
 	);

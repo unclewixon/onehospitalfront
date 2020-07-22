@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component, lazy, Suspense } from 'react';
 import { Switch, withRouter, Link, Route } from 'react-router-dom';
-
+import { connect } from 'react-redux';
 import NoMatch from '../NoMatch';
 import Queue from '../../components/Queue';
 import Splash from '../../components/Splash';
@@ -17,10 +17,11 @@ const Dashboard = lazy(() => import('./Dashboard'));
 
 class index extends Component {
 	render() {
-		const { location, match } = this.props;
+		const { location, match, staff } = this.props;
 		const page = location.pathname.split('/').pop();
 
-		console.log(match.path);
+		const department = staff?.details?.department?.name;
+
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -130,11 +131,17 @@ class index extends Component {
 					</div>
 				</div>
 				<div className="content-panel compact">
-					<Queue />
+					<Queue department={department} />
 				</div>
 			</div>
 		);
 	}
 }
 
-export default withRouter(index);
+const mapStatetoProps = state => {
+	return {
+		staff: state.user.staff,
+	};
+};
+
+export default withRouter(connect(mapStatetoProps)(index));

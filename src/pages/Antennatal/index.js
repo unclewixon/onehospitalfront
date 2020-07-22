@@ -1,5 +1,5 @@
 import React, { Component, lazy, Suspense } from 'react';
-
+import { connect } from 'react-redux';
 import { Switch, Link, withRouter, Route } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Queue from '../../components/Queue';
@@ -10,7 +10,8 @@ const Enrollment = lazy(() => import('./Enrollment'));
 const AllEnrollment = lazy(() => import('./AllEnrollment'));
 export class index extends Component {
 	render() {
-		const { match } = this.props;
+		const { match, staff } = this.props;
+		const department = staff?.details?.department?.name;
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -35,11 +36,17 @@ export class index extends Component {
 					</div>
 				</div>
 				<div className="content-panel compact">
-					<Queue />
+					<Queue department={department} />
 				</div>
 			</div>
 		);
 	}
 }
 
-export default withRouter(index);
+const mapStatetoProps = state => {
+	return {
+		staff: state.user.staff,
+	};
+};
+
+export default withRouter(connect(mapStatetoProps)(index));

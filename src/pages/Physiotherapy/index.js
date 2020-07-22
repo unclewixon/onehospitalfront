@@ -4,6 +4,8 @@ import { Switch, withRouter, Route, Link } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Queue from '../../components/Queue';
 import Splash from '../../components/Splash';
+import { connect } from 'react-redux';
+
 const NewPhysiotherapy = lazy(() => import('./NewPhysiotherapyRequest'));
 const AllPhysiotherapy = lazy(() => import('./AllPhysiotherapy'));
 const PhysiotherapyDashboard = lazy(() => import('./PhysiotherapyDasboard'));
@@ -15,8 +17,10 @@ class Physiotherapy extends Component {
 		alert('I am toSee Details this guy');
 	};
 	render() {
-		const { match, location } = this.props;
+		const { match, location, staff } = this.props;
 		const page = location.pathname.split('/').pop();
+
+		const department = staff?.details?.department?.name;
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -85,11 +89,17 @@ class Physiotherapy extends Component {
 					</div>
 				</div>
 				<div className="content-panel compact">
-					<Queue />
+					<Queue department={department} />
 				</div>
 			</div>
 		);
 	}
 }
 
-export default withRouter(Physiotherapy);
+const mapStatetoProps = state => {
+	return {
+		staff: state.user.staff,
+	};
+};
+
+export default withRouter(connect(mapStatetoProps)(Physiotherapy));

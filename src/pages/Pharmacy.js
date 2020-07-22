@@ -3,6 +3,7 @@ import React, { Component, Suspense, lazy } from 'react';
 import { Switch, Route, withRouter, Link } from 'react-router-dom';
 import Queue from '../components/Queue';
 import SaleSummary from '../components/SaleSummary';
+import { connect } from 'react-redux';
 
 import NoMatch from './NoMatch';
 import Splash from '../components/Splash';
@@ -16,8 +17,9 @@ const PharmFillRequest = lazy(() => import('../components/PharmFillRequest'));
 const PharmNewRequest = lazy(() => import('../components/PharmNewRequest'));
 export class Pharmacy extends Component {
 	render() {
-		const { match, location } = this.props;
+		const { match, location, staff } = this.props;
 		const page = location.pathname.split('/').pop();
+		const department = staff?.details?.department?.name;
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -80,11 +82,17 @@ export class Pharmacy extends Component {
 					</div>
 				</div>
 				<div className="content-panel compact">
-					<Queue />
+					<Queue department={department} />
 				</div>
 			</div>
 		);
 	}
 }
 
-export default withRouter(Pharmacy);
+const mapStatetoProps = state => {
+	return {
+		staff: state.user,
+	};
+};
+
+export default withRouter(connect(mapStatetoProps)(Pharmacy));

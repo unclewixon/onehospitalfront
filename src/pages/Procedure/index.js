@@ -4,6 +4,8 @@ import { Switch, withRouter, Route, Link } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
 import Queue from '../../components/Queue';
+import { connect } from 'react-redux';
+
 const NewProcedure = lazy(() => import('./NewProcedureRequest'));
 const AllProcedure = lazy(() => import('./AllProcedure'));
 const ProcedureDashboard = lazy(() => import('./ProcedureDasboard'));
@@ -15,8 +17,11 @@ class Procedure extends Component {
 		alert('I am toSee Details this guy');
 	};
 	render() {
-		const { match, location } = this.props;
+		const { match, location, staff } = this.props;
 		const page = location.pathname.split('/').pop();
+
+		const department = staff?.details?.department?.name;
+
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -80,11 +85,17 @@ class Procedure extends Component {
 					</div>
 				</div>
 				<div className="content-panel compact">
-					<Queue />
+					<Queue department={department} />
 				</div>
 			</div>
 		);
 	}
 }
 
-export default withRouter(Procedure);
+const mapStatetoProps = state => {
+	return {
+		staff: state.user.staff,
+	};
+};
+
+export default withRouter(connect(mapStatetoProps)(Procedure));
