@@ -26,7 +26,9 @@ const ModalPatientDetails = ({ showModal, onModalClick, activeRequest }) => {
 										<div className="up-main-info">
 											<h2
 												className="up-header"
-												style={{ color: '#334152' }}></h2>
+												style={{
+													color: '#334152',
+												}}>{`${activeRequest?.surname} ${activeRequest?.other_names}`}</h2>
 										</div>
 									</div>
 									<div className="up-contents">
@@ -36,18 +38,31 @@ const ModalPatientDetails = ({ showModal, onModalClick, activeRequest }) => {
 													<tbody>
 														<tr>
 															<td>
-																<div className="text-left"></div>
+																<div className="text-left">File Number</div>
 															</td>
 															<td className="text-right">
+																{activeRequest?.fileNumber}
 																<div className="value text-success"></div>
 															</td>
 														</tr>
 														<tr>
 															<td>
-																<div className="text-left"></div>
+																<div className="text-left">Phone</div>
 															</td>
 															<td className="text-right">
-																<div className="value text-success"></div>
+																<div className="value text-success">
+																	{activeRequest?.phoneNumber}
+																</div>
+															</td>
+														</tr>
+														<tr>
+															<td>
+																<div className="text-left">Adress</div>
+															</td>
+															<td className="text-right">
+																<div className="value text-success">
+																	{activeRequest?.address}
+																</div>
 															</td>
 														</tr>
 													</tbody>
@@ -75,12 +90,28 @@ const ModalPatientDetails = ({ showModal, onModalClick, activeRequest }) => {
 									<table className="table table-padded">
 										<tbody>
 											<tr>
-												<td class="font-weight-bold"></td>
-												<td></td>
+												<td class="font-weight-bold">Insurance Status</td>
+												<td>{activeRequest?.insurranceStatus}</td>
 											</tr>
 											<tr>
-												<td class="font-weight-bold"></td>
-												<td></td>
+												<td class="font-weight-bold">Number of Visits</td>
+												<td>{activeRequest?.noOfVisits}</td>
+											</tr>
+											<tr>
+												<td class="font-weight-bold">Ethnicity</td>
+												<td>{activeRequest?.ethnicity}</td>
+											</tr>
+											<tr>
+												<td class="font-weight-bold">Gender</td>
+												<td>{activeRequest?.gender}</td>
+											</tr>
+											<tr>
+												<td class="font-weight-bold">Occupation</td>
+												<td>{activeRequest?.occupation}</td>
+											</tr>
+											<tr>
+												<td class="font-weight-bold">Date of Birth</td>
+												<td>{activeRequest?.date_of_birth}</td>
 											</tr>
 										</tbody>
 									</table>

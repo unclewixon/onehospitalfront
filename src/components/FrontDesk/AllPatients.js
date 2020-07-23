@@ -83,7 +83,7 @@ const AllPatients = ({ allPatients }) => {
 						<a
 							onClick={() => {
 								onModalClick();
-								setActiveRequest({ activeRequest: data });
+								setActiveRequest(data);
 							}}>
 							<i className="os-icon os-icon-documents-03" />
 						</a>
