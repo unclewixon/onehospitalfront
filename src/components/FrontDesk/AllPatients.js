@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { request } from '../../services/utilities';
 import { API_URI } from '../../services/constants';
-import { loadDentistryRequests } from '../../actions/patient';
+import { loadAllPatients } from '../../actions/patient';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import Tooltip from 'antd/lib/tooltip';
+import { connect, useDispatch } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
 import _ from 'lodash';
-import ModalDentistry from '../../components/Modals/ModalDentistry';
+import ModalPatientDetails from '../../components/Modals/ModalPatientDetails';
 import Select from 'react-select';
 const { RangePicker } = DatePicker;
 
@@ -22,11 +24,13 @@ const customStyle = {
 	}),
 };
 
-export default function AllPatients() {
+const AllPatients = ({ allPatients }) => {
+	const dispatch = useDispatch();
 	const [loaded, setLoaded] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
 	const [showModal, setShowModal] = useState(false);
 	const [filtering, setFiltering] = useState(false);
+	const [patientName, setPatientName] = useState('');
 
 	const onModalClick = () => {
 		setShowModal(!showModal);
@@ -38,26 +42,48 @@ export default function AllPatients() {
 		});
 	};
 
-	const filterEntries = () => {
-		this.setState({ filtering: true });
-		this.fetchPhysio(this.state.patientId);
+	const fetchPatients = async name => {
+		setLoaded(true);
+		try {
+			const rs = await request(
+				name
+					? `${API_URI}/patient/find?query=${name}`
+					: `${API_URI}/patient/list`,
+				'GET',
+				true
+			);
+			dispatch(loadAllPatients(rs));
+			return setLoaded(false);
+		} catch (error) {
+			notifyError('error fetching patients');
+			setLoaded(false);
+		}
 	};
+
+	const filterEntries = () => {
+		setFiltering(true);
+		fetchPatients();
+	};
+
+	useEffect(() => {
+		fetchPatients();
+	}, []);
 
 	const formRow = (data, i) => {
 		return (
 			<tr className="" data-index="0" data-id="20" key={i}>
 				<td>{i + 1}</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
+				<td>{`${data?.surname} ${data?.other_names}`}</td>
+				<td>{data?.fileNumber}</td>
+				<td>{data?.email}</td>
+				<td>{data?.phoneNumber}</td>
+				<td>{data?.address}</td>
 				<td className="row-actions text-right">
 					<Tooltip title="View Request">
 						<a
 							onClick={() => {
 								onModalClick();
-								setActiveRequest({ activeRequest: data });
+								setActiveRequest(data);
 							}}>
 							<i className="os-icon os-icon-documents-03" />
 						</a>
@@ -72,12 +98,12 @@ export default function AllPatients() {
 		);
 	};
 
-	const table = () => [];
-	// patientsRequest?.length
-	// 	? patientsRequest.map((patient, i) => {
-	// 			return formRow(patient, i);
-	// 	  })
-	// 	: [];
+	const table = () =>
+		allPatients
+			? allPatients.map((patient, i) => {
+					return formRow(patient, i);
+			  })
+			: [];
 
 	return (
 		<div>
@@ -86,13 +112,13 @@ export default function AllPatients() {
 					<div className="row">
 						<div className="col-md-12">
 							{activeRequest ? (
-								<ModalDentistry
+								<ModalPatientDetails
 									activeRequest={activeRequest}
 									showModal={showModal}
 									onModalClick={onModalClick}
 								/>
 							) : null}
-							<h6 className="element-header">All Requests:</h6>
+							<h6 className="element-header">All Patients:</h6>
 
 							<form className="row">
 								<div className="form-group col-md-6">
@@ -109,7 +135,7 @@ export default function AllPatients() {
 										isSearchable={true}
 										name="patientId"
 										// options={filteredOptions}
-										// onChange={e => setPatient({ patientId: e.value })}
+										// onChange={e => setPatientName(e.target.value)}
 									/>
 								</div>
 								<div className="form-group col-md-3 mt-4">
@@ -154,13 +180,13 @@ export default function AllPatients() {
 														<div className="fht-cell"></div>
 													</th>
 													<th>
-														<div className="th-inner sortable both">
-															Phone Number
-														</div>
+														<div className="th-inner sortable both">Email</div>
 														<div className="fht-cell"></div>
 													</th>
 													<th>
-														<div className="th-inner sortable both">Email</div>
+														<div className="th-inner sortable both">
+															Phone Number
+														</div>
 														<div className="fht-cell"></div>
 													</th>
 													<th>
@@ -197,4 +223,13 @@ export default function AllPatients() {
 			</div>
 		</div>
 	);
-}
+};
+
+const mapStateToProps = state => {
+	return {
+		// patient: state.user.patient,
+		allPatients: state.patient.allPatients,
+	};
+};
+
+export default withRouter(connect(mapStateToProps)(AllPatients));
