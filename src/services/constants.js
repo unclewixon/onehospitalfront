@@ -39,6 +39,7 @@ export const settingsAPI = '/settings/';
 export const diagnosisAPI = '/settings/diagnosis';
 export const labourAPI = '/labour-management/enrollment';
 export const consultationAPI = '/consultation/';
+export const IVFEnroll = '/ivf/enroll/';
 
 export const months = [
 	'January',

@@ -38,6 +38,7 @@ import {
 	LOAD_RISK,
 	LOAD_DELIVERY_RECORD,
 	LOAD_LABOUR_MEASUREMENT,
+	PATIENT_IVF,
 } from './types';
 import { request } from '../services/utilities';
 
@@ -203,6 +204,13 @@ export const updateVitals = data => {
 export const loadEncounterForm = data => {
 	return {
 		type: ENCOUNTER_FORM,
+		payload: data,
+	};
+};
+
+export const loadPatientIVFForm = data => {
+	return {
+		type: PATIENT_IVF,
 		payload: data,
 	};
 };
