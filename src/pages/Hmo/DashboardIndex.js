@@ -3,12 +3,15 @@ import React, { Component, Suspense, lazy } from 'react';
 import { Switch, Route, withRouter, Link } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
+import Queue from '../../components/Queue';
+import { connect } from 'react-redux';
 const AllTransaction = lazy(() => import('./AllTransaction'));
 const Dashboard = lazy(() => import('./Dashboard'));
 export class DashboardIndex extends Component {
 	render() {
-		const { match, location } = this.props;
+		const { match, location, staff } = this.props;
 		const page = location.pathname.split('/').pop();
+		const department = staff?.profile?.details?.department?.name;
 		return (
 			<>
 				<div className="content-i">
@@ -61,13 +64,19 @@ export class DashboardIndex extends Component {
 							</div>
 						</div>
 					</div>
-					{/*<div className="content-panel compact">*/}
-					{/*	<Queue />*/}
-					{/*</div>*/}
+					<div className="content-panel compact">
+						<Queue />
+					</div>
 				</div>
 			</>
 		);
 	}
 }
 
-export default withRouter(DashboardIndex);
+const mapStatetoProps = state => {
+	return {
+		staff: state.user.staff,
+	};
+};
+
+export default withRouter(connect(mapStatetoProps)(DashboardIndex));

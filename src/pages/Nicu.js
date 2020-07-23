@@ -2,8 +2,13 @@
 import React, { Component } from 'react';
 import Queue from '../components/Queue';
 import Tooltip from 'antd/lib/tooltip';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 class Nicu extends Component {
 	render() {
+		const { staff } = this.props;
+		const department = staff?.details?.department?.name;
+
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -272,11 +277,17 @@ class Nicu extends Component {
 					</div>
 				</div>
 				<div className="content-panel compact">
-					<Queue />
+					<Queue department={department} />
 				</div>
 			</div>
 		);
 	}
 }
 
-export default Nicu;
+const mapStatetoProps = ({ user }) => {
+	return {
+		staff: user.staff,
+	};
+};
+
+export default withRouter(connect(mapStatetoProps)(Nicu));

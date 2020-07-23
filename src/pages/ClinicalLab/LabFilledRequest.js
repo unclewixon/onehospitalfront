@@ -11,7 +11,7 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadClinicalLab } from '../../actions/patient';
 import _ from 'lodash';
-import ModalClinicalLab from '../../components/Modals/ModalClinicalLab';
+import ModalClinicalLabFilled from './../../components/Modals/ModalClinicalLabFilled';
 const { RangePicker } = DatePicker;
 
 const status = [
@@ -38,25 +38,10 @@ class LabRecentRequest extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}${patientAPI}/requests/lab?startDate=${startDate}&endDate=${endDate}&status=${status}`,
+				`${API_URI}${patientAPI}/requests/lab?startDate=${startDate}&endDate=${endDate}&status=${status}&filled=true`,
 				'GET',
 				true
 			);
-
-			console.log(rs)
-
-			// const filterResponse = () => {
-			// 	const res = rs.map(lab => {
-			// 		const filtered = lab.requestBody.groups.filter(group => {
-			// 			const filt = group.parameters.some(param => param.result !== '');
-			// 			return filt;
-			// 		});
-			// 		return filtered && filtered.length ? lab : [];
-			// 	});
-			// 	return res && res.length ? res : null;
-			// };
-			// const newResp = filterResponse().filter(fil => fil.length !== 0);
-
 			this.props.loadClinicalLab(rs);
 			this.setState({ loading: false, filtering: false });
 		} catch (error) {
@@ -123,7 +108,7 @@ class LabRecentRequest extends Component {
 						<div className="row">
 							<div className="col-md-12">
 								{this.state.activeRequest ? (
-									<ModalClinicalLab
+									<ModalClinicalLabFilled
 										showModal={this.state.showModal}
 										activeRequest={this.state.activeRequest}
 										onModalClick={this.onModalClick}

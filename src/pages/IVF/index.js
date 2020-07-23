@@ -4,7 +4,7 @@ import { Switch, Link, withRouter, Route } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Queue from '../../components/Queue';
 import Splash from '../../components/Splash';
-
+import { connect } from 'react-redux';
 const IVF = lazy(() => import('./IVF'));
 const Enrollment = lazy(() => import('./Enrollment'));
 const RegulationChart = lazy(() => import('./RegulationChart'));
@@ -12,7 +12,9 @@ const HcgAdministration = lazy(() => import('./HcgAdministration'));
 const AllEnrollment = lazy(() => import('./AllEnrollment'));
 export class index extends Component {
 	render() {
-		const { match } = this.props;
+		const { match, staff } = this.props;
+
+		const department = staff?.profile?.details?.department?.name;
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -47,12 +49,18 @@ export class index extends Component {
 						</Suspense>
 					</div>
 				</div>
-				{/* <div className="content-panel compact">
-					<Queue />
-				</div> */}
+				<div className="content-panel compact">
+					<Queue department={department} />
+				</div>
 			</div>
 		);
 	}
 }
 
-export default withRouter(index);
+const mapStatetoProps = state => {
+	return {
+		staff: state.user.staff,
+	};
+};
+
+export default withRouter(connect(mapStatetoProps)(IVF));

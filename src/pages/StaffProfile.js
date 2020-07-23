@@ -89,7 +89,6 @@ class StaffProfile extends Component {
 
 	render() {
 		const { location, staff } = this.props;
-		console.log(staff);
 		return (
 			<div className="content-i">
 				<div className="content-box">

@@ -6,51 +6,15 @@ import waiting from '../../assets/images/waiting.gif';
 import { request } from '../../services/utilities';
 import { API_URI } from '../../services/constants';
 import { notifySuccess, notifyError } from './../../services/notify';
+import { useForm } from 'react-hook-form';
 
-const ModalClinicalLab = ({
+const ModalClinicalLabFilled = ({
 	showModal,
 	onModalClick,
 	patient,
 	activeRequest,
 }) => {
 	const [Loading, setLoading] = useState(false);
-
-	const saveLabRequest = async (data, cb) => {
-		try {
-			const rs = await request(
-				`${API_URI}/patient/fill-request`,
-				'POST',
-				true,
-				data
-			);
-			cb();
-			notifySuccess('Saved Lab Request');
-		} catch (error) {
-			cb();
-			notifyError('Could not save request');
-		}
-	};
-
-	const updateGroupTestResult = (e, p, t, g) => {
-		activeRequest.requestBody.groups[g].tests[t].paramenters[p].result =
-			e.target.value;
-	};
-
-	const updateGroupParamResult = (e, p, g) => {
-		activeRequest.requestBody.groups[g].parameters[p].result = e.target.value;
-	};
-
-	const updateTestResult = (e, p, t) => {
-		activeRequest.requestBody.tests[t].paramenters[p].result = e.target.value;
-	};
-
-	const onSaveClick = values => {
-		let newRequestObj = {
-			request_id: activeRequest.id,
-			requestBody: activeRequest.requestBody,
-		};
-		saveLabRequest(newRequestObj, () => setLoading(false));
-	};
 
 	return (
 		<Modal
@@ -142,7 +106,6 @@ const ModalClinicalLab = ({
 											</div>
 										</div>
 									</div>
-
 									<div className="">
 										<div className="row">
 											<div className="col-sm">
@@ -184,24 +147,7 @@ const ModalClinicalLab = ({
 																													<td>{param.name}</td>
 																													<td>{param.range}</td>
 																													<td>
-																														{param.result ===
-																														'' ? (
-																															<form>
-																																<input
-																																	name={`gtp${gInex}`}
-																																	onChange={e =>
-																																		updateGroupTestResult(
-																																			e,
-																																			pInex,
-																																			tInex,
-																																			gInex
-																																		)
-																																	}
-																																/>
-																															</form>
-																														) : (
-																															param.result
-																														)}
+																														{param.result}
 																													</td>
 																												</tr>
 																											)
@@ -233,25 +179,7 @@ const ModalClinicalLab = ({
 																											<tr key={pInex}>
 																												<td>{param.name}</td>
 																												<td>{param.range}</td>
-																												<td>
-																													{param.result ===
-																													'' ? (
-																														<form>
-																															<input
-																																name={`gp${gInex}${pInex}`}
-																																onChange={e =>
-																																	updateGroupParamResult(
-																																		e,
-																																		pInex,
-																																		gInex
-																																	)
-																																}
-																															/>
-																														</form>
-																													) : (
-																														param.result
-																													)}
-																												</td>
+																												<td>{param.result}</td>
 																											</tr>
 																										)
 																									)}
@@ -297,17 +225,7 @@ const ModalClinicalLab = ({
 																													<td>{param.name}</td>
 																													<td>{param.range}</td>
 																													<td>
-																														{param.result ===
-																														'' ? (
-																															<form>
-																																<input
-																																	name={`gtp${gInex}${tInex}${pInex}`}
-																																	onChange
-																																/>
-																															</form>
-																														) : (
-																															param.result
-																														)}
+																														{param.result}
 																													</td>
 																												</tr>
 																											)
@@ -339,18 +257,7 @@ const ModalClinicalLab = ({
 																											<tr key={pInex}>
 																												<td>{param.name}</td>
 																												<td>{param.range}</td>
-																												<td>
-																													{param.result ===
-																													'' ? (
-																														<form>
-																															<input
-																																name={`gp${gInex}${pInex}`}
-																															/>
-																														</form>
-																													) : (
-																														param.result
-																													)}
-																												</td>
+																												<td>{param.result}</td>
 																											</tr>
 																										)
 																									)}
@@ -408,24 +315,7 @@ const ModalClinicalLab = ({
 																										<tr key={pInex}>
 																											<td>{param.name}</td>
 																											<td>{param.range}</td>
-																											<td>
-																												{param.result === '' ? (
-																													<form>
-																														<input
-																															name={`tp${tInex}${pInex}`}
-																															onChange={e =>
-																																updateTestResult(
-																																	e,
-																																	pInex,
-																																	tInex
-																																)
-																															}
-																														/>
-																													</form>
-																												) : (
-																													param.result
-																												)}
-																											</td>
+																											<td>{param.result}</td>
 																										</tr>
 																									)
 																								)}
@@ -469,17 +359,7 @@ const ModalClinicalLab = ({
 																										<tr key={pInex}>
 																											<td>{param.name}</td>
 																											<td>{param.range}</td>
-																											<td>
-																												{param.result === '' ? (
-																													<form>
-																														<input
-																															name={`tp${tInex}${pInex}`}
-																														/>
-																													</form>
-																												) : (
-																													param.result
-																												)}
-																											</td>
+																											<td>{param.result}</td>
 																										</tr>
 																									)
 																								)}
@@ -503,8 +383,7 @@ const ModalClinicalLab = ({
 															Loading
 																? 'btn btn-primary disabled'
 																: 'btn btn-primary'
-														}
-														onClick={onSaveClick}>
+														}>
 														{Loading ? (
 															<img src={waiting} alt="submitting" />
 														) : (
@@ -524,4 +403,4 @@ const ModalClinicalLab = ({
 		</Modal>
 	);
 };
-export default ModalClinicalLab;
+export default ModalClinicalLabFilled;

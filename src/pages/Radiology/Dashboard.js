@@ -234,7 +234,6 @@ export class Dashboard extends Component {
 	getRequests = arr => {
 		let rer = [];
 		arr.forEach(val => {
-			console.log(val);
 			rer = [...rer, val.service_name ? val.service_name : val.specialization];
 		});
 		return rer.join(', ');
