@@ -74,7 +74,7 @@ const PharmNewRequestComponent = ({
 		}
 		let val = inputValue.toUpperCase();
 		const res = await request(
-			`${API_URI}${diagnosisAPI}search?q=${val}`,
+			`${API_URI}${diagnosisAPI}/search?q=${val}`,
 			'GET',
 			true
 		);
@@ -94,13 +94,13 @@ const PharmNewRequestComponent = ({
 		async id => {
 			try {
 				const res = await request(
-					`${API_URI}/inventory/stocks-by-category/52b49109-028a-46c6-b5f3-1e88a48d333f`,
+					`${API_URI}/inventory/stocks-by-category/${id}`,
 					'GET',
 					true
 				);
 				loadInventories(res);
 			} catch (error) {
-				notifyError('Erroe fetching pharmacy items');
+				notifyError('Error fetching pharmacy items');
 			}
 		},
 		[loadInventories]
@@ -108,16 +108,21 @@ const PharmNewRequestComponent = ({
 
 	useEffect(() => {
 		getServiceUnit();
-		getPharmacyItems();
+		if (categories.length) {
+			const selectCat = categories.filter(cat => cat.name === 'Pharmacy');
+			getPharmacyItems(selectCat[0].id);
+		}
 	}, [getServiceUnit, getPharmacyItems]);
 
-	// const serviceOptions = categories && categories.length
-	// 	? categories.map((cat) => {
-	// 		return {
-	// 			value: cat.id,
-	// 			label: cat.name
-	// 		}
-	// 	}) : []
+	const serviceOptions =
+		categories && categories.length
+			? categories.map(cat => {
+					return {
+						value: cat.id,
+						label: cat.name,
+					};
+			  })
+			: [];
 
 	// const handleServiceUnitChange = e => {
 	// 	getPharmacyItems(e.value)
@@ -140,8 +145,8 @@ const PharmNewRequestComponent = ({
 					.filter(drug => drug.generic_name !== null)
 					.map(drug => {
 						return {
-							value: drug && drug.generic_name ? drug.generic_name : 'nil',
-							label: drug && drug.generic_name ? drug.generic_name : 'nil',
+							value: drug && drug.name ? drug.name : 'nil',
+							label: drug && drug.name ? drug.name : 'nil',
 						};
 					})
 			: [];
@@ -267,9 +272,10 @@ const PharmNewRequestComponent = ({
 									<Select
 										ref={register({ name: 'serviceUnit', required: true })}
 										name="serviceUnit"
-										options={[{ value: 'pharmacy', label: 'Pharmacy' }]}
 										required
-										value={{
+										options={serviceOptions}
+										isDisabled
+										defaultValue={{
 											value: 'pharmacy',
 											label: 'Pharmacy',
 										}}
