@@ -62,14 +62,13 @@ class MainMenu extends Component {
 	}
 
 	render() {
-		const { role, theme_mode, profile } = this.props;
+		const { role, theme_mode, menu_mode, profile } = this.props;
+
 		return (
 			<div
 				className={`menu-w color-scheme-dark ${
 					theme_mode ? '' : 'color-style-bright'
-				} menu-position-side menu-side-left menu-layout-full sub-menu-style-over sub-menu-color-bright selected-menu-color-light menu-activated-on-hover menu-has-selected-link ${
-					role !== 'admins' ? '' : 'menu-layout-compact'
-				}`}
+				} menu-position-side menu-side-left sub-menu-style-over sub-menu-color-bright selected-menu-color-light menu-activated-on-hover menu-has-selected-link ${menu_mode}`}
 				ref="menu_activated_on_hover">
 				<div className="logo-w">
 					<a className="logo">
@@ -104,7 +103,7 @@ class MainMenu extends Component {
 				<ul className="main-menu">
 					{(role === 'front-desk' || role === 'admin') && <FrontDeskMenu />}
 					{(role === 'clinical-lab' || role === 'admin') && <ClinicalLabMenu />}
-					{(role === 'pay-point' || role === 'admin') && <PayPointMenu />}
+					{(role === 'accountant' || role === 'admin') && <PayPointMenu />}
 					{(role === 'pharmacy' || role === 'admin') && <PharmacyMenu />}
 					{(role === 'radiology' || role === 'admin') && <RadiologyMenu />}
 					{(role === 'dentistry' || role === 'admin') && <DenstistryMenu />}

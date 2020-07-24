@@ -54,6 +54,7 @@ export const TOGGLE_EDIT_ACCOUNT = 'TOGGLE_EDIT_ACCOUNT';
 export const SET_PROFILE = 'SET_PROFILE';
 export const SIGN_OUT = 'SIGN_OUT';
 export const TOGGLE_MODE = 'TOGGLE_MODE';
+export const TOGGLE_MENU = 'TOGGLE_MENU';
 export const TOGGLE_FULLSCREEN = 'TOGGLE_FULLSCREEN';
 export const INIT_MODE = 'INIT_MODE';
 export const INIT_FULLSCREEN = 'INIT_FULLSCREEN';
