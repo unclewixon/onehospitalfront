@@ -50,6 +50,7 @@ class FrontDeskTable extends Component {
 						</tr>
 					) : appointments.length > 0 ? (
 						appointments.map((appointment, i) => {
+							console.log(appointment);
 							return (
 								<tr key={i}>
 									<td className="nowrap" hidden={today}>

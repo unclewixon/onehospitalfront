@@ -62,7 +62,7 @@ const Queue = ({ department }) => {
 							data={activeRequest}
 						/>
 					) : null}
-					{department === 'all'
+					{department === 'all' || department === 'admin'
 						? queues &&
 						  queues.map((queue, i) => (
 								<div
