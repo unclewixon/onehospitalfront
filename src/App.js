@@ -10,7 +10,11 @@ import ModalDialogs from './components/Modals/ModalDialogs';
 import Splash from './components/Splash';
 import SlidingPane from './components/SlidingPane';
 import SSRStorage from './services/storage';
-import { FULLSCREEN_COOKIE, MODE_COOKIE } from './services/constants';
+import {
+	FULLSCREEN_COOKIE,
+	MENU_COOKE,
+	MODE_COOKIE,
+} from './services/constants';
 import { toggleProfile } from './actions/user';
 
 const Login = lazy(() => import('./pages/Login'));
@@ -47,6 +51,7 @@ class App extends Component {
 	async componentDidMount() {
 		const fullscreen = await storage.getItem(FULLSCREEN_COOKIE);
 		const theme_mode = await storage.getItem(MODE_COOKIE);
+		const storedMenu = await storage.getItem(MENU_COOKE);
 
 		window.document.body.className = `menu-position-side menu-side-left ${
 			fullscreen ? 'full-screen' : ''
@@ -61,6 +66,7 @@ class App extends Component {
 			isStaffOpen,
 			isPatientOpen,
 			theme_mode,
+			menu_mode,
 			profile,
 		} = this.props;
 		// console.log(profile, 'profile');
@@ -79,6 +85,7 @@ class App extends Component {
 										<MainMenu
 											role={profile.role ? profile.role.slug : 'admin'}
 											theme_mode={theme_mode}
+											menu_mode={menu_mode}
 										/>
 										<div className="content-w">
 											{/* user role determines topbar menu */}
@@ -152,6 +159,7 @@ const mapStateToProps = state => {
 		isStaffOpen: state.user?.isStaffOpen,
 		isPatientOpen: state.user?.isPatientOpen,
 		theme_mode: state.user?.theme_mode,
+		menu_mode: state.user?.menu_mode,
 		fullscreen: state.user?.fullscreen,
 	};
 };

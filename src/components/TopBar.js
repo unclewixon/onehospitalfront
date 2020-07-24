@@ -8,7 +8,12 @@ import capitalize from 'lodash.capitalize';
 
 import avatar1 from '../assets/images/avatar1.jpg';
 import topimg from '../assets/images/company5.png';
-import { toggleProfile, toggleMode, toggleFullscreen } from '../actions/user';
+import {
+	toggleProfile,
+	toggleMode,
+	toggleMenu,
+	toggleFullscreen,
+} from '../actions/user';
 import SearchPatient from './SearchPatient';
 import { fullname } from '../services/utilities';
 
@@ -38,6 +43,10 @@ class TopBar extends Component {
 		this.props.toggleMode();
 	};
 
+	doToggleMenu = () => {
+		this.props.toggleMenu();
+	};
+
 	doToggleFullscreen = () => {
 		this.props.toggleFullscreen();
 	};
@@ -64,6 +73,12 @@ class TopBar extends Component {
 				{title && title !== '' && (
 					<div className="fancy-selector-w">
 						<div className="fancy-selector-current">
+							<div
+								className="top-icon shadowless text-white pr-0"
+								style={{ cursor: 'pointer' }}
+								onClick={this.doToggleMenu}>
+								<i className="os-icon os-icon-hamburger-menu-1" />
+							</div>
 							<div className="fs-img shadowless pr-0">
 								<img alt="" src={topimg} />
 							</div>
@@ -173,7 +188,10 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default withRouter(
-	connect(mapStateToProps, { toggleProfile, toggleMode, toggleFullscreen })(
-		TopBar
-	)
+	connect(mapStateToProps, {
+		toggleProfile,
+		toggleMode,
+		toggleMenu,
+		toggleFullscreen,
+	})(TopBar)
 );
