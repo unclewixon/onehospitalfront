@@ -31,6 +31,14 @@ export class index extends Component {
 											Dashboard
 										</Link>
 										<Link
+											to={`${match.path}/queue`}
+											className={`mx-2 btn btn-primary btn-sm  ${
+												page === '' ? 'btn-outline-primary' : ''
+											}`}>
+											{' '}
+											View Queue
+										</Link>
+										<Link
 											to={`${match.path}/insurance-bills`}
 											className={`mr-2 btn btn-primary btn-sm  ${
 												page === 'insurance-bills' ? 'btn-outline-primary' : ''
@@ -76,6 +84,11 @@ export class index extends Component {
 															exact
 															path={`${match.url}/`}
 															component={Dashboard}
+														/>
+														<Route
+															exact
+															path={`${match.url}/queue`}
+															component={Queue}
 														/>
 														<Route
 															path={`${match.url}/insurance-bills`}

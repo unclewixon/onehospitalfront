@@ -13,6 +13,8 @@ import DatePicker from 'antd/lib/date-picker';
 import _ from 'lodash';
 import ModalPatientDetails from '../../components/Modals/ModalPatientDetails';
 import Select from 'react-select';
+import { toggleProfile } from '../../actions/user';
+
 const { RangePicker } = DatePicker;
 
 const customStyle = {
@@ -40,6 +42,11 @@ const AllPatients = ({ allPatients }) => {
 		let date = e.map(d => {
 			return moment(d._d).format('YYYY-MM-DD');
 		});
+	};
+
+	const showProfile = patient => {
+		const info = { patient, type: 'patient' };
+		dispatch(toggleProfile(true, info));
 	};
 
 	const fetchPatients = async name => {
@@ -80,11 +87,7 @@ const AllPatients = ({ allPatients }) => {
 				<td>{data?.address}</td>
 				<td className="row-actions text-right">
 					<Tooltip title="View Request">
-						<a
-							onClick={() => {
-								onModalClick();
-								setActiveRequest(data);
-							}}>
+						<a onClick={() => showProfile(data)}>
 							<i className="os-icon os-icon-documents-03" />
 						</a>
 					</Tooltip>

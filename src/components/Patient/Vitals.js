@@ -1,11 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { lazy, useEffect, useState } from 'react';
+import React, { lazy, useEffect, useState, useRef } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-
+import { Overlay, Popover, Button, ListGroup } from 'react-bootstrap';
 import { API_URI, patientAPI, vitalItems } from '../../services/constants';
 import { request } from '../../services/utilities';
 import { loadVitals } from '../../actions/patient';
 import { connect } from 'react-redux';
+import { getAllDepartments } from './../../actions/settings';
 
 const BMI = lazy(() => import('../Vitals/BMI'));
 const BloodPressure = lazy(() => import('../Vitals/BloodPressure'));
@@ -81,9 +82,19 @@ const Page = ({ type }) => {
 };
 
 const Vitals = props => {
-	const { type, location, patient } = props;
+	const { type, location, patient, departments } = props;
 
 	const [loaded, setLoaded] = useState(false);
+	const [show, setShow] = useState(false);
+	const [target, setTarget] = useState(null);
+
+	console.log(departments);
+	const ref = useRef(null);
+
+	const handleButtonClick = event => {
+		setShow(!show);
+		setTarget(event.target);
+	};
 
 	useEffect(() => {
 		async function doLoadVitals() {
@@ -126,6 +137,36 @@ const Vitals = props => {
 				<div className="element-box">
 					<Page type={type} />
 				</div>
+				<div className="element-wrapper">
+					<div className="element-actions" ref={ref}>
+						<Overlay
+							show={show}
+							target={target}
+							placement="top"
+							container={ref.current}>
+							<Popover id="vitals-send" style={{ width: '10rem' }}>
+								<ListGroup>
+									{departments && departments.length
+										? departments.map((dept, index) => {
+												const name = dept.name;
+												return (
+													<ListGroup.Item as="div" action key={index}>
+														{name.toUpperCase()}
+													</ListGroup.Item>
+												);
+										  })
+										: []}
+								</ListGroup>
+							</Popover>
+						</Overlay>
+						<Button
+							className="btn btn-primary btn-sm"
+							onClick={handleButtonClick}>
+							<i className="os-icon os-icon-mail-18"></i>
+							<span>Send To</span>
+						</Button>
+					</div>
+				</div>
 			</div>
 		</div>
 	);
@@ -133,6 +174,9 @@ const Vitals = props => {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		patient: state.user.patient,
+		departments: state.settings.departments,
 	};
 };
-export default connect(mapStateToProps, { loadVitals })(withRouter(Vitals));
+export default connect(mapStateToProps, { loadVitals, getAllDepartments })(
+	withRouter(Vitals)
+);

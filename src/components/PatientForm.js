@@ -207,7 +207,7 @@ function PatientForm(props) {
 									<input
 										className="form-control"
 										placeholder="04/12/1978"
-										type="text"
+										type="date"
 										defaultValue={patientData.date_of_birth || ''}
 										name="date_of_birth"
 										ref={register}
