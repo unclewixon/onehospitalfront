@@ -14,7 +14,7 @@ export class index extends Component {
 	render() {
 		const { match, staff } = this.props;
 
-		const department = staff?.profile?.details?.department?.name;
+		const department = staff?.details?.department?.name;
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -59,7 +59,7 @@ export class index extends Component {
 
 const mapStatetoProps = state => {
 	return {
-		staff: state.user.staff,
+		staff: state.user.profile,
 	};
 };
 

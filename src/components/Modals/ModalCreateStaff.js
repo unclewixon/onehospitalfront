@@ -103,6 +103,500 @@ const validate = values => {
 	return errors;
 };
 
+class StepOne extends Component {
+	state = {
+		submitting: false,
+	};
+
+	render() {
+		const {
+			departments,
+			religions,
+			genders,
+			roles,
+			error,
+			currentStep,
+			sortedCountries,
+			nextStep,
+			states,
+			date_of_birth,
+			setDate,
+			onSelectCountry,
+		} = this.props;
+
+		const { submitting } = this.state;
+
+		if (currentStep !== 1) {
+			return null;
+		}
+
+		return (
+			<div>
+				{errorMessage(error)}
+				<div className="row">
+					<div className="col-sm-4">
+						<Field
+							id="username"
+							name="username"
+							component={renderTextInput}
+							label="Username"
+							type="text"
+							placeholder="Enter username"
+						/>
+					</div>
+					<div className="col-sm-4">
+						<Field
+							id="password"
+							name="password"
+							component={renderTextInput}
+							label="Password"
+							type="password"
+							placeholder="Enter password"
+						/>
+					</div>
+					<div className="col-sm-4">
+						<Field
+							id="role_id"
+							name="role_id"
+							component={renderSelect}
+							label="Role"
+							placeholder="Select Role"
+							data={roles}
+						/>
+					</div>
+				</div>
+				<div className="row">
+					<div className="col-sm-4">
+						<Field
+							id="first_name"
+							name="first_name"
+							component={renderTextInput}
+							label="First Name"
+							type="text"
+							placeholder="Enter first name"
+						/>
+					</div>
+					<div className="col-sm-4">
+						<Field
+							id="last_name"
+							name="last_name"
+							component={renderTextInput}
+							label="Last Name"
+							type="text"
+							placeholder="Enter last name"
+						/>
+					</div>
+					<div className="col-sm-4">
+						<Field
+							id="other_names"
+							name="other_names"
+							component={renderTextInput}
+							label="Other Names"
+							type="text"
+							placeholder="Enter other names"
+						/>
+					</div>
+				</div>
+				<div className="row">
+					<div className="col-sm-4">
+						<Field
+							id="department_id"
+							name="department_id"
+							component={renderSelect}
+							label="Department"
+							placeholder="Select Department"
+							data={departments}
+						/>
+					</div>
+					<div className="col-sm-4">
+						<div className="form-group">
+							<label>Date of Birth</label>
+							<div className="custom-date-input">
+								<DatePicker
+									selected={date_of_birth}
+									onChange={date => setDate(date, 'date_of_birth')}
+									peekNextMonth
+									showMonthDropdown
+									showYearDropdown
+									dropdownMode="select"
+									dateFormat="dd-MMM-yyyy"
+									className="single-daterange form-control"
+									placeholderText="Select date of birth"
+									maxDate={new Date()}
+								/>
+							</div>
+						</div>
+					</div>
+					<div className="col-sm-4">
+						<Field
+							id="religion"
+							name="religion"
+							component={renderSelect}
+							label="Religion"
+							placeholder="Select Religion"
+							data={religions}
+						/>
+					</div>
+				</div>
+				<div className="row">
+					<div className="col-sm-4">
+						<Field
+							id="email"
+							name="email"
+							component={renderTextInput}
+							label="Email address"
+							type="email"
+							placeholder="Enter email address"
+						/>
+					</div>
+					<div className="col-sm-4">
+						<Field
+							id="phone_number"
+							name="phone_number"
+							component={renderTextInput}
+							label="Phone number"
+							type="text"
+							placeholder="Enter phone number"
+						/>
+					</div>
+					<div className="col-sm-4">
+						<Field
+							id="gender"
+							name="gender"
+							component={renderSelect}
+							label="Gender"
+							placeholder="Select Gender"
+							data={genders}
+						/>
+					</div>
+				</div>
+				<div className="row">
+					<div className="col-sm-4">
+						<Field
+							id="nationality"
+							name="nationality"
+							component={renderSelect}
+							label="Nationality"
+							placeholder="Select Nationality"
+							data={sortedCountries}
+							onChange={onSelectCountry}
+						/>
+					</div>
+					<div className="col-sm-4">
+						<Field
+							id="state_of_origin"
+							name="state_of_origin"
+							component={renderSelect}
+							label="State of Origin"
+							placeholder="Select State of Origin"
+							data={states}
+						/>
+					</div>
+					<div className="col-sm-4">
+						<Field
+							id="lga"
+							name="lga"
+							component={renderTextInput}
+							label="LGA"
+							type="text"
+							placeholder="Enter LGA"
+						/>
+					</div>
+				</div>
+				<div className="row">
+					<div className="col-sm-12">
+						<Field
+							id="address"
+							name="address"
+							component={renderTextInput}
+							label="Contact Address"
+							type="text"
+							placeholder="Enter contact address"
+						/>
+					</div>
+				</div>
+				<div className="row">
+					<div className="col-sm-12 text-right">
+						<button
+							className="btn btn-primary"
+							disabled={submitting}
+							onClick={nextStep}>
+							{submitting ? <img src={waiting} alt="submitting" /> : 'Next'}
+						</button>
+					</div>
+				</div>
+			</div>
+		);
+	}
+}
+
+class StepTwo extends Component {
+	state = {
+		submitting: false,
+		next_of_kin_dob: null,
+		employment_start_date: null,
+		states: [],
+	};
+
+	setDate = (date, type) => {
+		this.setState({ [type]: date });
+	};
+
+	render() {
+		const {
+			contracts,
+			banks,
+			specializations,
+			marital_status,
+			error,
+			currentStep,
+			prevStep,
+			next_of_kin_dob,
+			employment_start_date,
+			setDate,
+		} = this.props;
+
+		const { submitting } = this.state;
+
+		if (currentStep !== 2) {
+			return null;
+		}
+
+		return (
+			<div>
+				{errorMessage(error)}
+				<div className="row">
+					<div className="col-sm-4">
+						<Field
+							id="job_title"
+							name="job_title"
+							component={renderTextInput}
+							label="Profession"
+							type="text"
+							placeholder="Enter job title"
+						/>
+					</div>
+					<div className="col-sm-4">
+						<Field
+							id="specialization_id"
+							name="specialization_id"
+							component={renderSelect}
+							label="Specialization"
+							placeholder="Select Specialization"
+							data={specializations}
+						/>
+					</div>
+					<div className="col-sm-4">
+						<Field
+							id="pension_mngr"
+							name="pension_mngr"
+							component={renderTextInput}
+							label="Pension Manager"
+							type="number"
+							placeholder="Enter pension manager"
+						/>
+					</div>
+				</div>
+				<div className="row">
+					<div className="col-sm-4">
+						<Field
+							id="marital_status"
+							name="marital_status"
+							component={renderSelect}
+							label="Marital Status"
+							placeholder="Select Marital Status"
+							data={marital_status}
+						/>
+					</div>
+					<div className="col-sm-4">
+						<Field
+							id="number_of_children"
+							name="number_of_children"
+							component={renderTextInput}
+							label="Number of Children"
+							type="number"
+							placeholder="Enter number of children"
+						/>
+					</div>
+				</div>
+				<div className="row">
+					<div className="col-sm-4">
+						<Field
+							id="bank_name"
+							name="bank_name"
+							component={renderSelect}
+							label="Bank"
+							placeholder="Select Bank"
+							data={banks}
+						/>
+					</div>
+					<div className="col-sm-4">
+						<Field
+							id="account_number"
+							name="account_number"
+							component={renderTextInput}
+							label="Account Number"
+							type="text"
+							placeholder="Enter account number"
+						/>
+					</div>
+					<div className="col-sm-4">
+						<div className="form-group">
+							<label>Employment start date</label>
+							<div className="custom-date-input">
+								<DatePicker
+									selected={employment_start_date}
+									onChange={date => setDate(date, 'employment_start_date')}
+									peekNextMonth
+									showMonthDropdown
+									showYearDropdown
+									dropdownMode="select"
+									dateFormat="dd-MMM-yyyy"
+									className="single-daterange form-control"
+									placeholderText="Select date of employment"
+									maxDate={new Date()}
+								/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div className="row">
+					<div className="col-sm-4">
+						<Field
+							id="contract_type"
+							name="contract_type"
+							component={renderSelect}
+							label="Contract Type"
+							placeholder="Select type of contract"
+							data={contracts}
+						/>
+					</div>
+					<div className="col-sm-4">
+						<Field
+							id="monthly_salary"
+							name="monthly_salary"
+							component={renderTextInput}
+							label="Gross salary (Monthly)"
+							type="number"
+							placeholder="Enter gross salary (monthly)"
+						/>
+					</div>
+					<div className="col-sm-4">
+						<Field
+							id="annual_salary"
+							name="annual_salary"
+							component={renderTextInput}
+							label="Gross salary (Annual)"
+							type="number"
+							placeholder="Enter gross salary (annual)"
+						/>
+					</div>
+				</div>
+				<div className="row">
+					<div className="col-sm-4">
+						<Field
+							id="next_of_kin"
+							name="next_of_kin"
+							component={renderTextInput}
+							label="Next of Kin name"
+							type="text"
+							placeholder="Enter nok name"
+						/>
+					</div>
+					<div className="col-sm-4">
+						<Field
+							id="next_of_kin_relationship"
+							name="next_of_kin_relationship"
+							component={renderTextInput}
+							label="Next of Kin relationship"
+							type="text"
+							placeholder="Enter nok relationship"
+						/>
+					</div>
+					<div className="col-sm-4">
+						<Field
+							id="next_of_kin_contact_no"
+							name="next_of_kin_contact_no"
+							component={renderTextInput}
+							label="Next of Kin phone number"
+							type="text"
+							placeholder="Enter nok phone number"
+						/>
+					</div>
+				</div>
+				<div className="row">
+					<div className="col-sm-8">
+						<Field
+							id="next_of_kin_address"
+							name="next_of_kin_address"
+							component={renderTextInput}
+							label="Next of Kin address"
+							type="text"
+							placeholder="Enter nok address"
+						/>
+					</div>
+					<div className="col-sm-4">
+						<div className="form-group">
+							<label>Next of Kin Date of Birth</label>
+							<div className="custom-date-input">
+								<DatePicker
+									selected={next_of_kin_dob}
+									onChange={date => setDate(date, 'next_of_kin_dob')}
+									peekNextMonth
+									showMonthDropdown
+									showYearDropdown
+									dropdownMode="select"
+									dateFormat="dd-MMM-yyyy"
+									className="single-daterange form-control"
+									placeholderText="Select nok date of birth"
+									maxDate={new Date()}
+								/>
+							</div>
+						</div>
+					</div>
+				</div>
+				{/* <div className="row">
+										<div className="col-sm-4">
+											<div className="form-group">
+												<label htmlFor="is_consultant">Is Consultant?</label>
+												<input className="form-control ml-2" type="checkbox" value="1"/>
+											</div>
+										</div>
+									</div> */}
+				<div className="row">
+					{currentStep > 1 ? (
+						<div className="col-sm-6 text-left">
+							<button
+								className="btn btn-primary"
+								disabled={submitting}
+								onClick={prevStep}>
+								{submitting ? (
+									<img src={waiting} alt="submitting" />
+								) : (
+									'Previous'
+								)}
+							</button>
+						</div>
+					) : null}
+
+					<div className="col-sm-6 text-right">
+						<button
+							className="btn btn-primary"
+							disabled={submitting}
+							type="submit">
+							{submitting ? (
+								<img src={waiting} alt="submitting" />
+							) : (
+								'Create Profile'
+							)}
+						</button>
+					</div>
+				</div>
+			</div>
+		);
+	}
+}
+
 class ModalCreateStaff extends Component {
 	state = {
 		submitting: false,
@@ -110,6 +604,7 @@ class ModalCreateStaff extends Component {
 		next_of_kin_dob: null,
 		employment_start_date: null,
 		states: [],
+		currentStep: 1,
 	};
 
 	componentDidMount() {
@@ -153,6 +648,7 @@ class ModalCreateStaff extends Component {
 			});
 			this.props.reset('create_staff');
 			notifySuccess('new staff created!');
+			this.props.closeModals(false);
 		} catch (e) {
 			this.setState({ submitting: false });
 			throw new SubmissionError({
@@ -176,6 +672,23 @@ class ModalCreateStaff extends Component {
 		}
 	};
 
+	nextStep = () => {
+		let currentStep = this.state.currentStep;
+		currentStep = currentStep > 1 ? 2 : currentStep + 1;
+		this.setState({
+			currentStep: currentStep,
+		});
+	};
+
+	prevStep = () => {
+		let currentStep = this.state.currentStep;
+		// If the current step is 2 or 3, then subtract one on "previous" button click
+		currentStep = currentStep < 2 ? 1 : currentStep - 1;
+		this.setState({
+			currentStep: currentStep,
+		});
+	};
+
 	render() {
 		const {
 			error,
@@ -187,11 +700,10 @@ class ModalCreateStaff extends Component {
 			specializations,
 		} = this.props;
 		const {
-			submitting,
+			currentStep,
 			date_of_birth,
 			next_of_kin_dob,
 			employment_start_date,
-			states,
 		} = this.state;
 		const _countries = countries.map(c => ({ id: c.id, name: c.name }));
 		const sortedCountries = orderBy(_countries, ['name'], ['asc']);
@@ -234,407 +746,34 @@ class ModalCreateStaff extends Component {
 							<div className="onboarding-text">create new staff profile</div>
 							<div className="form-block">
 								<form onSubmit={handleSubmit(this.doCreateStaff)}>
-									{errorMessage(error)}
-									<div className="row">
-										<div className="col-sm-4">
-											<Field
-												id="username"
-												name="username"
-												component={renderTextInput}
-												label="Username"
-												type="text"
-												placeholder="Enter username"
-											/>
-										</div>
-										<div className="col-sm-4">
-											<Field
-												id="password"
-												name="password"
-												component={renderTextInput}
-												label="Password"
-												type="password"
-												placeholder="Enter password"
-											/>
-										</div>
-										<div className="col-sm-4">
-											<Field
-												id="role_id"
-												name="role_id"
-												component={renderSelect}
-												label="Role"
-												placeholder="Select Role"
-												data={roles}
-											/>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-sm-4">
-											<Field
-												id="first_name"
-												name="first_name"
-												component={renderTextInput}
-												label="First Name"
-												type="text"
-												placeholder="Enter first name"
-											/>
-										</div>
-										<div className="col-sm-4">
-											<Field
-												id="last_name"
-												name="last_name"
-												component={renderTextInput}
-												label="Last Name"
-												type="text"
-												placeholder="Enter last name"
-											/>
-										</div>
-										<div className="col-sm-4">
-											<Field
-												id="other_names"
-												name="other_names"
-												component={renderTextInput}
-												label="Other Names"
-												type="text"
-												placeholder="Enter other names"
-											/>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-sm-4">
-											<Field
-												id="department_id"
-												name="department_id"
-												component={renderSelect}
-												label="Department"
-												placeholder="Select Department"
-												data={departments}
-											/>
-										</div>
-										<div className="col-sm-4">
-											<div className="form-group">
-												<label>Date of Birth</label>
-												<div className="custom-date-input">
-													<DatePicker
-														selected={date_of_birth}
-														onChange={date =>
-															this.setDate(date, 'date_of_birth')
-														}
-														peekNextMonth
-														showMonthDropdown
-														showYearDropdown
-														dropdownMode="select"
-														dateFormat="dd-MMM-yyyy"
-														className="single-daterange form-control"
-														placeholderText="Select date of birth"
-														maxDate={new Date()}
-													/>
-												</div>
-											</div>
-										</div>
-										<div className="col-sm-4">
-											<Field
-												id="religion"
-												name="religion"
-												component={renderSelect}
-												label="Religion"
-												placeholder="Select Religion"
-												data={religions}
-											/>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-sm-4">
-											<Field
-												id="email"
-												name="email"
-												component={renderTextInput}
-												label="Email address"
-												type="email"
-												placeholder="Enter email address"
-											/>
-										</div>
-										<div className="col-sm-4">
-											<Field
-												id="phone_number"
-												name="phone_number"
-												component={renderTextInput}
-												label="Phone number"
-												type="text"
-												placeholder="Enter phone number"
-											/>
-										</div>
-										<div className="col-sm-4">
-											<Field
-												id="gender"
-												name="gender"
-												component={renderSelect}
-												label="Gender"
-												placeholder="Select Gender"
-												data={genders}
-											/>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-sm-4">
-											<Field
-												id="nationality"
-												name="nationality"
-												component={renderSelect}
-												label="Nationality"
-												placeholder="Select Nationality"
-												data={sortedCountries}
-												onChange={this.onSelectCountry}
-											/>
-										</div>
-										<div className="col-sm-4">
-											<Field
-												id="state_of_origin"
-												name="state_of_origin"
-												component={renderSelect}
-												label="State of Origin"
-												placeholder="Select State of Origin"
-												data={states}
-											/>
-										</div>
-										<div className="col-sm-4">
-											<Field
-												id="lga"
-												name="lga"
-												component={renderTextInput}
-												label="LGA"
-												type="text"
-												placeholder="Enter LGA"
-											/>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-sm-12">
-											<Field
-												id="address"
-												name="address"
-												component={renderTextInput}
-												label="Contact Address"
-												type="text"
-												placeholder="Enter contact address"
-											/>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-sm-4">
-											<Field
-												id="job_title"
-												name="job_title"
-												component={renderTextInput}
-												label="Profession"
-												type="text"
-												placeholder="Enter job title"
-											/>
-										</div>
-										<div className="col-sm-4">
-											<Field
-												id="specialization_id"
-												name="specialization_id"
-												component={renderSelect}
-												label="Specialization"
-												placeholder="Select Specialization"
-												data={specializations}
-											/>
-										</div>
-										<div className="col-sm-4">
-											<Field
-												id="pension_mngr"
-												name="pension_mngr"
-												component={renderTextInput}
-												label="Pension Manager"
-												type="number"
-												placeholder="Enter pension manager"
-											/>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-sm-4">
-											<Field
-												id="marital_status"
-												name="marital_status"
-												component={renderSelect}
-												label="Marital Status"
-												placeholder="Select Marital Status"
-												data={marital_status}
-											/>
-										</div>
-										<div className="col-sm-4">
-											<Field
-												id="number_of_children"
-												name="number_of_children"
-												component={renderTextInput}
-												label="Number of Children"
-												type="number"
-												placeholder="Enter number of children"
-											/>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-sm-4">
-											<Field
-												id="bank_name"
-												name="bank_name"
-												component={renderSelect}
-												label="Bank"
-												placeholder="Select Bank"
-												data={banks}
-											/>
-										</div>
-										<div className="col-sm-4">
-											<Field
-												id="account_number"
-												name="account_number"
-												component={renderTextInput}
-												label="Account Number"
-												type="text"
-												placeholder="Enter account number"
-											/>
-										</div>
-										<div className="col-sm-4">
-											<div className="form-group">
-												<label>Employment start date</label>
-												<div className="custom-date-input">
-													<DatePicker
-														selected={employment_start_date}
-														onChange={date =>
-															this.setDate(date, 'employment_start_date')
-														}
-														peekNextMonth
-														showMonthDropdown
-														showYearDropdown
-														dropdownMode="select"
-														dateFormat="dd-MMM-yyyy"
-														className="single-daterange form-control"
-														placeholderText="Select date of employment"
-														maxDate={new Date()}
-													/>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-sm-4">
-											<Field
-												id="contract_type"
-												name="contract_type"
-												component={renderSelect}
-												label="Contract Type"
-												placeholder="Select type of contract"
-												data={contracts}
-											/>
-										</div>
-										<div className="col-sm-4">
-											<Field
-												id="monthly_salary"
-												name="monthly_salary"
-												component={renderTextInput}
-												label="Gross salary (Monthly)"
-												type="number"
-												placeholder="Enter gross salary (monthly)"
-											/>
-										</div>
-										<div className="col-sm-4">
-											<Field
-												id="annual_salary"
-												name="annual_salary"
-												component={renderTextInput}
-												label="Gross salary (Annual)"
-												type="number"
-												placeholder="Enter gross salary (annual)"
-											/>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-sm-4">
-											<Field
-												id="next_of_kin"
-												name="next_of_kin"
-												component={renderTextInput}
-												label="Next of Kin name"
-												type="text"
-												placeholder="Enter nok name"
-											/>
-										</div>
-										<div className="col-sm-4">
-											<Field
-												id="next_of_kin_relationship"
-												name="next_of_kin_relationship"
-												component={renderTextInput}
-												label="Next of Kin relationship"
-												type="text"
-												placeholder="Enter nok relationship"
-											/>
-										</div>
-										<div className="col-sm-4">
-											<Field
-												id="next_of_kin_contact_no"
-												name="next_of_kin_contact_no"
-												component={renderTextInput}
-												label="Next of Kin phone number"
-												type="text"
-												placeholder="Enter nok phone number"
-											/>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-sm-8">
-											<Field
-												id="next_of_kin_address"
-												name="next_of_kin_address"
-												component={renderTextInput}
-												label="Next of Kin address"
-												type="text"
-												placeholder="Enter nok address"
-											/>
-										</div>
-										<div className="col-sm-4">
-											<div className="form-group">
-												<label>Next of Kin Date of Birth</label>
-												<div className="custom-date-input">
-													<DatePicker
-														selected={next_of_kin_dob}
-														onChange={date =>
-															this.setDate(date, 'next_of_kin_dob')
-														}
-														peekNextMonth
-														showMonthDropdown
-														showYearDropdown
-														dropdownMode="select"
-														dateFormat="dd-MMM-yyyy"
-														className="single-daterange form-control"
-														placeholderText="Select nok date of birth"
-														maxDate={new Date()}
-													/>
-												</div>
-											</div>
-										</div>
-									</div>
-									{/* <div className="row">
-										<div className="col-sm-4">
-											<div className="form-group">
-												<label htmlFor="is_consultant">Is Consultant?</label>
-												<input className="form-control ml-2" type="checkbox" value="1"/>
-											</div>
-										</div>
-									</div> */}
-									<div className="row">
-										<div className="col-sm-12 text-right">
-											<button
-												className="btn btn-primary"
-												disabled={submitting}
-												type="submit">
-												{submitting ? (
-													<img src={waiting} alt="submitting" />
-												) : (
-													'Create Profile'
-												)}
-											</button>
-										</div>
-									</div>
+									<StepOne
+										departments={departments}
+										roles={roles}
+										religions={religions}
+										genders={genders}
+										handleSubmit={handleSubmit}
+										error={error}
+										currentStep={currentStep}
+										nextStep={this.nextStep}
+										date_of_birth={date_of_birth}
+										setDate={this.setDate}
+										states={this.state.states}
+										onSelectCountry={this.onSelectCountry}
+										sortedCountries={sortedCountries}
+									/>
+									<StepTwo
+										contracts={contracts}
+										banks={banks}
+										specializations={specializations}
+										marital_status={marital_status}
+										handleSubmit={handleSubmit}
+										error={error}
+										currentStep={currentStep}
+										prevStep={this.prevStep}
+										next_of_kin_dob={next_of_kin_dob}
+										employment_start_date={employment_start_date}
+										setDate={this.setDate}
+									/>
 								</form>
 							</div>
 						</div>

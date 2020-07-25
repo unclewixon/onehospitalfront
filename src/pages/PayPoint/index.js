@@ -3,7 +3,7 @@ import React, { Component, Suspense, lazy } from 'react';
 import { Switch, Route, withRouter, Link } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
-import Queue from '../../components/Queue';
+import PaypointQueue from './PaypointQueue';
 const NewTransaction = lazy(() => import('./NewTransaction'));
 const InsuranceBills = lazy(() => import('./InsuranceBills'));
 const Dashboard = lazy(() => import('./Dashboard'));
@@ -88,7 +88,7 @@ export class index extends Component {
 														<Route
 															exact
 															path={`${match.url}/queue`}
-															component={Queue}
+															component={PaypointQueue}
 														/>
 														<Route
 															path={`${match.url}/insurance-bills`}

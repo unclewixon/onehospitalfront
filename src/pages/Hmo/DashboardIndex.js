@@ -11,7 +11,7 @@ export class DashboardIndex extends Component {
 	render() {
 		const { match, location, staff } = this.props;
 		const page = location.pathname.split('/').pop();
-		const department = staff?.profile?.details?.department?.name;
+		const department = staff?.details?.department?.name;
 		return (
 			<>
 				<div className="content-i">
@@ -65,7 +65,7 @@ export class DashboardIndex extends Component {
 						</div>
 					</div>
 					<div className="content-panel compact">
-						<Queue />
+						<Queue department={department} />
 					</div>
 				</div>
 			</>
@@ -75,7 +75,7 @@ export class DashboardIndex extends Component {
 
 const mapStatetoProps = state => {
 	return {
-		staff: state.user.staff,
+		staff: state.user.profile,
 	};
 };
 

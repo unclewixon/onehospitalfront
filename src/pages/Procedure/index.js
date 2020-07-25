@@ -20,7 +20,7 @@ class Procedure extends Component {
 		const { match, location, staff } = this.props;
 		const page = location.pathname.split('/').pop();
 
-		const department = staff?.profile?.details?.department?.name;
+		const department = staff?.details?.department?.name;
 
 		return (
 			<div className="content-i">
@@ -94,7 +94,7 @@ class Procedure extends Component {
 
 const mapStatetoProps = state => {
 	return {
-		staff: state.user.staff,
+		staff: state.user.profile,
 	};
 };
 
