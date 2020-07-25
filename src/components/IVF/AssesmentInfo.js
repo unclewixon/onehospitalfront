@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component, useEffect, useState } from 'react';
+import { connect, useDispatch } from 'react-redux';
 import {
 	renderTextInput,
 	renderSelect,
@@ -8,24 +8,10 @@ import {
 } from '../../services/utilities';
 import { Field, reduxForm, change as changeFieldValue } from 'redux-form';
 import { withRouter } from 'react-router-dom';
-import searchingGIF from '../../assets/images/searching.gif';
-import { request } from '../../services/utilities';
-import { notifySuccess, notifyError } from '../../services/notify';
-import {
-	API_URI,
-	searchAPI,
-	staffAPI,
-	lmpSource,
-	bookingPeriod,
-	genotype,
-	bloodGroup,
-} from '../../services/constants';
-import DatePicker from 'react-datepicker';
-
-import moment from 'moment';
 
 import { loadStaff } from '../../actions/hr';
 import { validateAntennatal } from '../../services/validationSchemas';
+import { loadPatientIVFForm } from '../../actions/patient';
 
 const validate = validateAntennatal;
 export const prognosis = [
@@ -69,101 +55,99 @@ export const treatmentPlan = [
 		name: 'Short Protocol',
 	},
 ];
-export class AssesmentInfo extends Component {
-	state = {
-		searching: false,
-		patients: [],
-		query: '',
-		staffs: [],
+
+let AssesmentInfo = props => {
+	const dispatch = useDispatch();
+	const { page, name, error, ivf, previousPage, onSubmit } = props;
+
+	useEffect(() => {}, []);
+
+	const onSubmitForm = async data => {
+		let res = { ...ivf, ...data };
+		props.loadPatientIVFForm(res);
+		dispatch(props.onSubmit);
 	};
 
-	componentDidMount() {}
-	patient = React.createRef();
-	render() {
-		const { handleSubmit, error, page, name, previousPage } = this.props;
-		const { searching, patients } = this.state;
+	const patient = React.createRef();
+	return (
+		<>
+			<h6 className="element-header">Step {page}. Assessment/Plan</h6>
+			<div className="form-block">
+				<form onSubmit={props.handleSubmit(onSubmitForm)}>
+					{error && (
+						<div
+							className="alert alert-danger"
+							dangerouslySetInnerHTML={{
+								__html: `<strong>Error!</strong> ${error}`,
+							}}
+						/>
+					)}
 
-		console.log(name);
-		return (
-			<>
-				<h6 className="element-header">Step {page}. Assessment/Plan</h6>
-				<div className="form-block">
-					<form onSubmit={handleSubmit}>
-						{error && (
-							<div
-								className="alert alert-danger"
-								dangerouslySetInnerHTML={{
-									__html: `<strong>Error!</strong> ${error}`,
-								}}
+					<div className="row">
+						<div className="col-sm-6">
+							<Field
+								id="prognosis"
+								name="prognosis"
+								component={renderSelect}
+								label="Prognosis"
+								placeholder="Prognosis"
+								data={prognosis}
 							/>
-						)}
-
-						<div className="row">
-							<div className="col-sm-6">
-								<Field
-									id="prognosis"
-									name="prognosis"
-									component={renderSelect}
-									label="Prognosis"
-									placeholder="Prognosis"
-									data={prognosis}
-								/>
-							</div>
-
-							<div className="col-sm-6">
-								<Field
-									id="treatment_plan"
-									name="treatment_plan"
-									component={renderSelect}
-									label="Treatment Plan"
-									placeholder="Treatment Plan"
-									data={treatmentPlan}
-								/>
-							</div>
 						</div>
 
-						<div className="row">
-							<div className="col-sm-6">
-								<Field
-									id="indication"
-									name="indication"
-									component={renderSelect}
-									label="Indication"
-									placeholder="Indication"
-									data={indication}
-								/>
-							</div>
+						<div className="col-sm-6">
+							<Field
+								id="treatment_plan"
+								name="treatmentPlan"
+								component={renderSelect}
+								label="Treatment Plan"
+								placeholder="Treatment Plan"
+								data={treatmentPlan}
+							/>
+						</div>
+					</div>
 
-							<div className="col-sm-6">
-								<Field
-									id="comments"
-									name="comments"
-									component={renderTextArea}
-									label="Comments"
-									placeholder="Comments"
-								/>
-							</div>
+					<div className="row">
+						<div className="col-sm-6">
+							<Field
+								id="indication"
+								name="indication"
+								component={renderSelect}
+								label="Indication"
+								placeholder="Indication"
+								data={indication}
+							/>
 						</div>
 
-						<div className="row">
-							<div className="col-sm-12 text-right">
-								<button
-									className="btn btn-primary"
-									type="button"
-									onClick={previousPage}>
-									Previous
-								</button>
-								<button className="btn btn-primary" type="submit">
-									Next
-								</button>
-							</div>
+						<div className="col-sm-6">
+							<Field
+								id="comments"
+								name="assessmentComments"
+								component={renderTextArea}
+								label="Comments"
+								placeholder="Comments"
+							/>
 						</div>
-					</form>
-				</div>
-			</>
-		);
-	}
-}
+					</div>
+
+					<div className="row">
+						<div className="col-sm-12 text-right">
+							<button
+								className="btn btn-primary"
+								type="button"
+								onClick={previousPage}>
+								Previous
+							</button>
+							<button className="btn btn-primary" type="submit">
+								Next
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</>
+	);
+};
 
 AssesmentInfo = reduxForm({
 	form: 'AssesmentInfo', //Form name is same
@@ -175,10 +159,11 @@ AssesmentInfo = reduxForm({
 const mapStateToProps = state => {
 	return {
 		patient: state.user.patient,
+		ivf: state.patient.ivf,
 		staffs: state.hr.staffs,
 	};
 };
 
 export default withRouter(
-	connect(mapStateToProps, { loadStaff })(AssesmentInfo)
+	connect(mapStateToProps, { loadStaff, loadPatientIVFForm })(AssesmentInfo)
 );
