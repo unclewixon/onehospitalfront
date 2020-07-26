@@ -6,7 +6,7 @@ import { API_URI, patientAPI, vitalItems } from '../../services/constants';
 import { request } from '../../services/utilities';
 import { loadVitals } from '../../actions/patient';
 import { connect } from 'react-redux';
-import waiting from '../../assets/images/waiting.gif';
+import waiting from '../../assets/images/searching.gif';
 import { getAllDepartments } from './../../actions/settings';
 
 const BMI = lazy(() => import('../Vitals/BMI'));
