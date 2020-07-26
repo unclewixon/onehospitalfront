@@ -286,7 +286,7 @@ class Nicu extends Component {
 
 const mapStatetoProps = ({ user }) => {
 	return {
-		staff: user.staff,
+		staff: user.profile,
 	};
 };
 
