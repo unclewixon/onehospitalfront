@@ -39,6 +39,7 @@ import {
 	LOAD_DELIVERY_RECORD,
 	LOAD_LABOUR_MEASUREMENT,
 	PATIENT_IVF,
+	PATIENT_REGULATION_TABLE,
 } from './types';
 import { request } from '../services/utilities';
 
@@ -211,6 +212,13 @@ export const loadEncounterForm = data => {
 export const loadPatientIVFForm = data => {
 	return {
 		type: PATIENT_IVF,
+		payload: data,
+	};
+};
+
+export const loadPatientRegulationTable = data => {
+	return {
+		type: PATIENT_REGULATION_TABLE,
 		payload: data,
 	};
 };

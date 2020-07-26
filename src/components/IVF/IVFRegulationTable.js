@@ -17,11 +17,13 @@ import { Type } from 'react-bootstrap-table2-editor';
 import { Field, reduxForm } from 'redux-form';
 import moment from 'moment';
 import Tooltip from 'antd/lib/tooltip';
+import { loadPatientRegulationTable } from '../../actions/patient';
 
 class IVFRegulationTable extends Component {
 	state = {
 		products: [],
 		patientList: [],
+		regulationTable: [],
 		allPatients: [],
 		loading: false,
 	};
@@ -55,11 +57,10 @@ class IVFRegulationTable extends Component {
 	};
 
 	render() {
-		const afterSaveCell = (oldValue, newValue) => {
-			console.log('--after save cell--');
-			console.log('New Value was apply as');
-			console.log(newValue);
-			console.log(`and the type is ${typeof newValue}`);
+		let { products, loading } = this.state;
+		let { regulationTable } = this.props;
+		const afterSaveCell = (oldValue, newValue, row, column) => {
+			this.props.loadPatientRegulationTable(products);
 		};
 
 		const columns = [
@@ -133,7 +134,7 @@ class IVFRegulationTable extends Component {
 				},
 			},
 		];
-		const { products, loading } = this.state;
+
 		return (
 			<>
 				<button type="button" className="btn btn-primary" onClick={this.addRow}>
@@ -159,7 +160,10 @@ class IVFRegulationTable extends Component {
 const mapStateToProps = state => {
 	return {
 		patient: state.user.patient,
+		regulationTable: state.patient.regulationTable,
 	};
 };
 
-export default withRouter(connect(mapStateToProps, null)(IVFRegulationTable));
+export default withRouter(
+	connect(mapStateToProps, { loadPatientRegulationTable })(IVFRegulationTable)
+);

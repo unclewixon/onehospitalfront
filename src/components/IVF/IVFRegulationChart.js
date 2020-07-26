@@ -1,6 +1,11 @@
 import React, { Component, lazy, Suspense } from 'react';
 import Splash from '../../components/Splash';
-import { API_URI, patientAPI } from '../../services/constants';
+import {
+	API_URI,
+	IVFHCGAdmin,
+	IVFHCGDown,
+	patientAPI,
+} from '../../services/constants';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
@@ -19,6 +24,11 @@ import moment from 'moment';
 import Tooltip from 'antd/lib/tooltip';
 import IVFRegulationTable from './IVFRegulationTable';
 import Select from 'react-select';
+import { loadStaff } from '../../actions/hr';
+import {
+	loadPatientIVFForm,
+	loadPatientRegulationTable,
+} from '../../actions/patient';
 
 export const agents = [
 	{
@@ -44,7 +54,46 @@ class IVFRegulationChart extends Component {
 		chosenPatient: null,
 	};
 
-	handleSubmit = async data => {};
+	onSubmitForm = async data => {
+		const { regulationTable, history } = this.props;
+		console.log(data);
+		console.log(regulationTable);
+		let hcgDown = [];
+		regulationTable.map((value, index, array) => {
+			let rec = {
+				date: value.date,
+				day: value.day,
+				dose: value.dose,
+				otherTreatment: value.other_treatment,
+				comment: value.comment,
+			};
+			hcgDown = [...hcgDown, rec];
+		});
+
+		let dataToSave = {
+			ivf_enrollment_id: data.name,
+			agent: data.agents,
+			cycle: data.cycle,
+			charts: hcgDown,
+		};
+
+		try {
+			const rs = await request(
+				`${API_URI}${IVFHCGDown}`,
+				'POST',
+				true,
+				dataToSave
+			);
+			//props.closeModals(true);
+			notifySuccess('Down Regulation Chart created successfully');
+			history.push('/ivf/reg-chart');
+			this.setState({ loading: false });
+		} catch (error) {
+			console.log(error);
+			notifyError('Down Regulation Chart creation failed');
+			this.setState({ loading: false });
+		}
+	};
 
 	componentDidMount() {
 		this.loadPatients();
@@ -87,13 +136,13 @@ class IVFRegulationChart extends Component {
 			chosenPatient,
 			patientList,
 		} = this.state;
-		const { error } = this.props;
+		const { error, handleSubmit } = this.props;
 		return (
 			<div className="element-box">
 				<>
 					<h6 className="element-header">Down Regulation Chart</h6>
 					<div className="form-block">
-						<form onSubmit={this.handleSubmit}>
+						<form onSubmit={handleSubmit(this.onSubmitForm)}>
 							{error && (
 								<div
 									className="alert alert-danger"
@@ -201,14 +250,17 @@ class IVFRegulationChart extends Component {
 }
 
 IVFRegulationChart = reduxForm({
-	form: 'antennatal', //Form name is same
+	form: 'IVFRegulationChart', //Form name is same
 	destroyOnUnmount: false,
 	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
 })(IVFRegulationChart);
 const mapStateToProps = state => {
 	return {
 		patient: state.user.patient,
+		regulationTable: state.patient.regulationTable,
 	};
 };
 
-export default withRouter(connect(mapStateToProps, null)(IVFRegulationChart));
+export default withRouter(
+	connect(mapStateToProps, { loadPatientRegulationTable })(IVFRegulationChart)
+);

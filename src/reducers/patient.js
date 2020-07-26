@@ -38,6 +38,7 @@ import {
 	LOAD_DELIVERY_RECORD,
 	LOAD_LABOUR_MEASUREMENT,
 	PATIENT_IVF,
+	PATIENT_REGULATION_TABLE,
 } from '../actions/types';
 import actions from 'redux-form/lib/actions';
 
@@ -127,6 +128,8 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, encounterForm: action.payload };
 		case PATIENT_IVF:
 			return { ...state, ivf: action.payload };
+		case PATIENT_REGULATION_TABLE:
+			return { ...state, regulationTable: action.payload };
 		case UPDATE_COMPLAINT_DATA:
 			return {
 				...state,
