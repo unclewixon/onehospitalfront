@@ -35,10 +35,10 @@ import {
 	ENCOUNTER_FORM,
 	LOAD_PARTOGRAPH,
 	LOAD_RISK,
+	PATIENT_REGULATION_TABLE,
 	LOAD_DELIVERY_RECORD,
 	LOAD_LABOUR_MEASUREMENT,
 	PATIENT_IVF,
-	PATIENT_REGULATION_TABLE,
 } from '../actions/types';
 import actions from 'redux-form/lib/actions';
 
