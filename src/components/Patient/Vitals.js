@@ -6,6 +6,7 @@ import { API_URI, patientAPI, vitalItems } from '../../services/constants';
 import { request } from '../../services/utilities';
 import { loadVitals } from '../../actions/patient';
 import { connect } from 'react-redux';
+import waiting from '../../assets/images/waiting.gif';
 import { getAllDepartments } from './../../actions/settings';
 
 const BMI = lazy(() => import('../Vitals/BMI'));
@@ -87,8 +88,8 @@ const Vitals = props => {
 	const [loaded, setLoaded] = useState(false);
 	const [show, setShow] = useState(false);
 	const [target, setTarget] = useState(null);
+	const [loading, setLoading] = useState(false);
 
-	console.log(departments);
 	const ref = useRef(null);
 
 	const handleButtonClick = event => {
@@ -117,6 +118,25 @@ const Vitals = props => {
 		return res;
 	}
 
+	const addToQueue = async deptId => {
+		setLoading(true);
+		const data = {
+			patient_id: patient?.id,
+			department_id: deptId?.id,
+		};
+
+		const res = await request(
+			`${API_URI}/front-desk/queue-system/add`,
+			'POST',
+			true,
+			data
+		);
+
+		if (res) {
+			setLoading(false);
+		}
+	};
+
 	return (
 		<div className="col-md-12">
 			<div className="element-wrapper">
@@ -144,19 +164,37 @@ const Vitals = props => {
 							target={target}
 							placement="top"
 							container={ref.current}>
-							<Popover id="vitals-send" style={{ width: '10rem' }}>
-								<ListGroup>
-									{departments && departments.length
-										? departments.map((dept, index) => {
-												const name = dept.name;
-												return (
-													<ListGroup.Item as="div" action key={index}>
+							<Popover
+								title="Select Department"
+								id="vitals-send"
+								style={{ width: '10rem' }}>
+								{loading ? (
+									<img src={waiting} alt="submitting" />
+								) : departments && departments.length ? (
+									departments.map((dept, index) => {
+										const name = dept.name;
+										return (
+											<div action key={index}>
+												{
+													<button
+														style={{
+															border: 'none',
+															background: '#fff',
+															width: '100%',
+															textAlign: 'center',
+															paddingTop: '1rem',
+															paddingBottom: '1rem',
+														}}
+														onClick={() => addToQueue(dept)}>
 														{name.toUpperCase()}
-													</ListGroup.Item>
-												);
-										  })
-										: []}
-								</ListGroup>
+													</button>
+												}
+											</div>
+										);
+									})
+								) : (
+									[]
+								)}
 							</Popover>
 						</Overlay>
 						<Button
