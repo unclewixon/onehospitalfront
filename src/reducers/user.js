@@ -1,6 +1,7 @@
 import {
 	SET_PROFILE,
 	TOGGLE_MODE,
+	TOGGLE_MENU,
 	TOGGLE_FULLSCREEN,
 	INIT_MODE,
 	INIT_FULLSCREEN,
@@ -11,6 +12,7 @@ import {
 import SSRStorage from '../services/storage';
 import {
 	FULLSCREEN_COOKIE,
+	MENU_COOKE,
 	MODE_COOKIE,
 	USER_RECORD,
 } from '../services/constants';
@@ -27,6 +29,7 @@ const INITIAL_STATE = {
 	staff: null,
 	isStaffOpen: false,
 	isPatientOpen: false,
+	menu_mode: 'menu-layout-full',
 };
 
 const user = (state = INITIAL_STATE, action) => {
@@ -58,6 +61,13 @@ const user = (state = INITIAL_STATE, action) => {
 				fullscreen ? 'full-screen' : ''
 			} with-content-panel ${state.theme_mode ? 'color-scheme-dark' : ''}`;
 			return { ...state, fullscreen };
+		case TOGGLE_MENU:
+			const menu_mode =
+				state.menu_mode === 'menu-layout-full'
+					? 'menu-layout-mini'
+					: 'menu-layout-full';
+			storage.setItem(MENU_COOKE, menu_mode);
+			return { ...state, menu_mode };
 		case INIT_MODE:
 			storage.setItem(MODE_COOKIE, action.payload);
 			return { ...state, theme_mode: action.payload };

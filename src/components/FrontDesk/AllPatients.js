@@ -158,7 +158,7 @@ const AllPatients = ({ allPatients }) => {
 							</form>
 						</div>
 						<div className="col-sm-12">
-							<div className="element-box">
+							<div className="element-box px-0">
 								<div className="table-responsive">
 									{
 										<table className="table table-striped">

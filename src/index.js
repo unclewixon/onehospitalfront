@@ -118,13 +118,9 @@ const initData = async () => {
 			store.dispatch(loginUser(user));
 			store.dispatch(togglePreloading(false));
 
-			let path =
-				window.location.protocol +
-				'//' +
-				window.location.hostname +
-				':' +
-				window.location.port;
-			let url = window.location.href.replace(path, '');
+			const search = history.location.search.replace('?', '');
+			const qm = search === '' ? '' : '?';
+			const url = `${history.location.pathname}${qm}${search}`;
 			history.push(url);
 			//redirectToPage(user.role, history);
 

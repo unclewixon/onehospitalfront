@@ -2,6 +2,7 @@ import {
 	SET_PROFILE,
 	SIGN_OUT,
 	TOGGLE_MODE,
+	TOGGLE_MENU,
 	TOGGLE_FULLSCREEN,
 	INIT_MODE,
 	INIT_FULLSCREEN,
@@ -34,6 +35,12 @@ export const toggleProfile = (status, info) => {
 export const toggleMode = () => {
 	return {
 		type: TOGGLE_MODE,
+	};
+};
+
+export const toggleMenu = () => {
+	return {
+		type: TOGGLE_MENU,
 	};
 };
 

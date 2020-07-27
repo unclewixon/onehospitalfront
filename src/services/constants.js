@@ -9,6 +9,7 @@ export const API_URI = `${BASE_API}`;
 export const TOKEN_COOKIE = 'EMR:TOKEN_COOKIE';
 export const MODE_COOKIE = 'EMR:MODE_COOKIE';
 export const FULLSCREEN_COOKIE = 'EMR:FULLSCREEN_COOKIE';
+export const MENU_COOKE = 'EMR:MENU_COOKIE';
 export const USER_RECORD = 'EMR:USER_RECORD';
 export const socket = socketIOClient(API_URI, { transports: ['websocket'] });
 
@@ -39,6 +40,7 @@ export const settingsAPI = '/settings/';
 export const diagnosisAPI = '/settings/diagnosis';
 export const labourAPI = '/labour-management/enrollment';
 export const consultationAPI = '/consultation/';
+export const IVFEnroll = '/ivf/enroll/';
 
 export const months = [
 	'January',

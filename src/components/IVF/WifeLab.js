@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component, useEffect, useState } from 'react';
+import { connect, useDispatch } from 'react-redux';
 import {
 	renderTextInput,
 	renderSelect,
@@ -25,281 +25,284 @@ import moment from 'moment';
 
 import { loadStaff } from '../../actions/hr';
 import { validateAntennatal } from '../../services/validationSchemas';
+import { useForm } from 'react-hook-form';
+import { loadPatientIVFForm } from '../../actions/patient';
 
 const validate = validateAntennatal;
-export class WifeLab extends Component {
-	state = {
-		searching: false,
-		patients: [],
-		query: '',
-		staffs: [],
-	};
+let WifeLab = props => {
+	const { page, name, error, ivf, onSubmit } = props;
+	const dispatch = useDispatch();
+	let [searching, setSearching] = useState(false);
+	let [patients, setPatients] = useState([]);
+	let [selectedPatient, setSelectedPatient] = useState([]);
+	let [staffs, setStaffs] = useState([]);
+	let [query, setQuery] = useState('');
 
-	componentDidMount() {
-		this.fetchStaffs();
-	}
+	useEffect(() => {
+		fetchStaffs();
+	}, []);
 
-	fetchStaffs = async () => {
-		if (this.props.staffs.length < 1) {
+	const fetchStaffs = async () => {
+		if (props.staffs.length < 1) {
 			try {
 				const rs = await request(`${API_URI}${staffAPI}`, 'GET', true);
-				this.props.loadStaff(rs);
+				props.loadStaff(rs);
 			} catch (error) {
 				console.log(error);
 			}
 		}
 
-		let staffs = this.props.staffs.map(
-			el => el.first_name + ' ' + el.last_name
-		);
-
-		this.setState({ staffs });
+		let staffs = props.staffs.map(el => el.first_name + ' ' + el.last_name);
+		setStaffs(staffs);
 	};
-	patient = React.createRef();
+	const patient = React.createRef();
 
-	handlePatientChange = e => {
-		this.setState({ query: e.target.value });
-		this.searchPatient();
+	const handlePatientChange = e => {
+		setQuery(e.target.value);
+		searchPatient();
 	};
 
-	searchPatient = async () => {
-		if (this.state.query.length > 2) {
+	const searchPatient = async () => {
+		if (query.length > 2) {
 			try {
-				this.setState({ searching: true });
+				setSearching(true);
 				const rs = await request(
-					`${API_URI}${searchAPI}?q=${this.state.query}`,
+					`${API_URI}${searchAPI}?q=${query}`,
 					'GET',
 					true
 				);
-
-				this.setState({ patients: rs, searching: false });
+				setSearching(false);
+				setPatients(rs);
 			} catch (e) {
 				notifyError('Error Occurred');
-				this.setState({});
 			}
 		}
 	};
 
-	patientSet = pat => {
+	const onSubmitForm = async data => {
+		ivf.wifeLabDetails = data;
+		ivf.wife_id = selectedPatient.label;
+		ivf.wifeLabDetails.name = selectedPatient.value;
+		props.loadPatientIVFForm(ivf);
+		dispatch(props.onSubmit);
+	};
+
+	const patientSet = pat => {
 		// setValue('patient_id', pat.id);
 
+		console.log(pat);
 		let name =
 			(pat.surname ? pat.surname : '') +
 			' ' +
 			(pat.other_names ? pat.other_names : '');
+
+		let res = { label: pat.id, value: name };
+		setSelectedPatient(res);
 		//this.props.setPatient(pat.id, name);
 		// document.getElementById('patient').value = name;
-
-		this.patient.current.value = name;
-		this.setState({ patients: [] });
+		patient.current.value = name;
+		setPatients([]);
 	};
-	render() {
-		const { handleSubmit, error, page, name } = this.props;
-		const { searching, patients } = this.state;
+	return (
+		<>
+			<h6 className="element-header">Step {page}. Wife's Lab Details</h6>
+			<div className="form-block">
+				<form onSubmit={props.handleSubmit(onSubmitForm)}>
+					{error && (
+						<div
+							className="alert alert-danger"
+							dangerouslySetInnerHTML={{
+								__html: `<strong>Error!</strong> ${error}`,
+							}}
+						/>
+					)}
 
-		console.log(name);
-		return (
-			<>
-				<h6 className="element-header">Step {page}. Wife's Lab Details</h6>
-				<div className="form-block">
-					<form onSubmit={handleSubmit}>
-						{error && (
-							<div
-								className="alert alert-danger"
-								dangerouslySetInnerHTML={{
-									__html: `<strong>Error!</strong> ${error}`,
-								}}
+					{props.location.hash ? null : (
+						<div className="row">
+							<div className="form-group col-sm-12">
+								<div>{selectedPatient.value}</div>
+								<input
+									className="form-control"
+									placeholder="Search for patient"
+									type="text"
+									name="patient_id"
+									ref={patient}
+									defaultValue={ivf?.wifeLabDetails?.name}
+									id="patient"
+									onChange={handlePatientChange}
+									autoComplete="off"
+									required
+								/>
+
+								{searching && (
+									<div className="searching text-center">
+										<img alt="searching" src={searchingGIF} />
+									</div>
+								)}
+
+								{patients &&
+									patients.map(pat => {
+										return (
+											<div
+												style={{ display: 'flex' }}
+												key={pat.id}
+												className="element-box">
+												<a
+													onClick={() => patientSet(pat)}
+													className="ssg-item cursor">
+													{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
+													<div
+														className="item-name"
+														dangerouslySetInnerHTML={{
+															__html: `${pat.surname} ${pat.other_names}`,
+														}}
+													/>
+												</a>
+											</div>
+										);
+									})}
+							</div>
+						</div>
+					)}
+
+					<h5>Hormonals</h5>
+					<br />
+
+					<div className="row">
+						<div className="col-sm-3">
+							<Field
+								id="fsh"
+								name="hormonals.fsh"
+								component={renderTextInput}
+								label="FSH"
+								placeholder="FSH"
 							/>
-						)}
-
-						{this.props.location.hash ? null : (
-							<div className="row">
-								<div className="form-group col-sm-12">
-									<label>Patient</label>
-
-									<input
-										className="form-control"
-										placeholder="Search for patient"
-										type="text"
-										name="patient_id"
-										ref={this.patient}
-										defaultValue={name}
-										id="patient"
-										onChange={this.handlePatientChange}
-										autoComplete="off"
-										required
-									/>
-
-									{searching && (
-										<div className="searching text-center">
-											<img alt="searching" src={searchingGIF} />
-										</div>
-									)}
-
-									{patients &&
-										patients.map(pat => {
-											return (
-												<div
-													style={{ display: 'flex' }}
-													key={pat.id}
-													className="element-box">
-													<a
-														onClick={() => this.patientSet(pat)}
-														className="ssg-item cursor">
-														{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
-														<div
-															className="item-name"
-															dangerouslySetInnerHTML={{
-																__html: `${pat.surname} ${pat.other_names}`,
-															}}
-														/>
-													</a>
-												</div>
-											);
-										})}
-								</div>
-							</div>
-						)}
-
-						<h5>Hormonals</h5>
-						<br />
-
-						<div className="row">
-							<div className="col-sm-3">
-								<Field
-									id="fsh"
-									name="fsh"
-									component={renderTextInput}
-									label="FSH"
-									placeholder="FSH"
-								/>
-							</div>
-
-							<div className="col-sm-3">
-								<Field
-									id="lh"
-									name="lh"
-									component={renderTextInput}
-									label="LH"
-									placeholder="LH"
-								/>
-							</div>
-
-							<div className="col-sm-3">
-								<Field
-									id="prol"
-									name="prol"
-									component={renderTextInput}
-									label="PROL"
-									placeholder="PROL"
-								/>
-							</div>
-
-							<div className="col-sm-3">
-								<Field
-									id="amh"
-									name="amh"
-									component={renderTextInput}
-									label="AMH"
-									placeholder="AMH"
-								/>
-							</div>
 						</div>
 
-						<h5>Serology</h5>
-						<br />
-
-						<div className="row">
-							<div className="col-sm-3">
-								<Field
-									id="hiv"
-									name="hiv"
-									component={renderTextInput}
-									label="HIV"
-									placeholder="HIV"
-								/>
-							</div>
-
-							<div className="col-sm-3">
-								<Field
-									id="hep_b"
-									name="hep_b"
-									component={renderTextInput}
-									label="HEP-B"
-									placeholder="HEP-B"
-								/>
-							</div>
-
-							<div className="col-sm-3">
-								<Field
-									id="hep_c"
-									name="hep_c"
-									component={renderTextInput}
-									label="HEP-C"
-									placeholder="HEP-C"
-								/>
-							</div>
-
-							<div className="col-sm-3">
-								<Field
-									id="vdrl"
-									name="vdrl"
-									component={renderTextInput}
-									label="VDRL"
-									placeholder="VDRL"
-								/>
-							</div>
+						<div className="col-sm-3">
+							<Field
+								id="lh"
+								name="hormonals.lh"
+								component={renderTextInput}
+								label="LH"
+								placeholder="LH"
+							/>
 						</div>
 
-						<div className="row">
-							<div className="col-sm-3">
-								<Field
-									id="chlamyda"
-									name="chlamyda"
-									component={renderTextInput}
-									label="CHLAMYDA"
-									placeholder="CHLAMYDA"
-								/>
-							</div>
+						<div className="col-sm-3">
+							<Field
+								id="prol"
+								name="hormonals.prol"
+								component={renderTextInput}
+								label="PROL"
+								placeholder="PROL"
+							/>
 						</div>
 
-						<div className="row">
-							<div className="col-sm-6">
-								<Field
-									id="genotype"
-									name="genotype"
-									component={renderSelect}
-									label="Genotype"
-									placeholder="Select genotype"
-									data={genotype}
-								/>
-							</div>
+						<div className="col-sm-3">
+							<Field
+								id="amh"
+								name="hormonals.amh"
+								component={renderTextInput}
+								label="AMH"
+								placeholder="AMH"
+							/>
+						</div>
+					</div>
 
-							<div className="col-sm-6">
-								<Field
-									id="bloodGroup"
-									name="bloodGroup"
-									component={renderSelect}
-									label="Blood Group"
-									placeholder="Select Blood Group"
-									data={bloodGroup}
-								/>
-							</div>
+					<h5>Serology</h5>
+					<br />
+
+					<div className="row">
+						<div className="col-sm-3">
+							<Field
+								id="hiv"
+								name="serology.hiv"
+								component={renderTextInput}
+								label="HIV"
+								placeholder="HIV"
+							/>
 						</div>
 
-						<div className="row">
-							<div className="col-sm-12 text-right">
-								<button className="btn btn-primary" type="submit">
-									Next
-								</button>
-							</div>
+						<div className="col-sm-3">
+							<Field
+								id="hep_b"
+								name="serology.hepb"
+								component={renderTextInput}
+								label="HEP-B"
+								placeholder="HEP-B"
+							/>
 						</div>
-					</form>
-				</div>
-			</>
-		);
-	}
-}
+
+						<div className="col-sm-3">
+							<Field
+								id="hep_c"
+								name="serology.hepc"
+								component={renderTextInput}
+								label="HEP-C"
+								placeholder="HEP-C"
+							/>
+						</div>
+
+						<div className="col-sm-3">
+							<Field
+								id="vdrl"
+								name="serology.vdrl"
+								component={renderTextInput}
+								label="VDRL"
+								placeholder="VDRL"
+							/>
+						</div>
+					</div>
+
+					<div className="row">
+						<div className="col-sm-3">
+							<Field
+								id="chlamyda"
+								name="chlamyda"
+								component={renderTextInput}
+								label="CHLAMYDA"
+								placeholder="CHLAMYDA"
+							/>
+						</div>
+					</div>
+
+					<div className="row">
+						<div className="col-sm-6">
+							<Field
+								id="genotype"
+								name="genotype"
+								component={renderSelect}
+								label="Genotype"
+								placeholder="Select genotype"
+								data={genotype}
+							/>
+						</div>
+
+						<div className="col-sm-6">
+							<Field
+								id="bloodGroup"
+								name="bloodGroup"
+								component={renderSelect}
+								label="Blood Group"
+								placeholder="Select Blood Group"
+								data={bloodGroup}
+							/>
+						</div>
+					</div>
+
+					<div className="row">
+						<div className="col-sm-12 text-right">
+							<button className="btn btn-primary" type="submit">
+								Next
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</>
+	);
+};
 
 WifeLab = reduxForm({
 	form: 'WifeLab', //Form name is same
@@ -311,8 +314,11 @@ WifeLab = reduxForm({
 const mapStateToProps = state => {
 	return {
 		patient: state.user.patient,
+		ivf: state.patient.ivf,
 		staffs: state.hr.staffs,
 	};
 };
 
-export default withRouter(connect(mapStateToProps, { loadStaff })(WifeLab));
+export default withRouter(
+	connect(mapStateToProps, { loadStaff, loadPatientIVFForm })(WifeLab)
+);
