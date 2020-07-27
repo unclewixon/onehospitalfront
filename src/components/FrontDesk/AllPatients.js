@@ -82,9 +82,7 @@ const AllPatients = ({ allPatients }) => {
 				<td>{i + 1}</td>
 				<td>{`${data?.surname} ${data?.other_names}`}</td>
 				<td>{data?.fileNumber}</td>
-				<td>{data?.email}</td>
 				<td>{data?.phoneNumber}</td>
-				<td>{data?.address}</td>
 				<td className="row-actions text-right">
 					<Tooltip title="View Request">
 						<a onClick={() => showProfile(data)}>
@@ -183,18 +181,8 @@ const AllPatients = ({ allPatients }) => {
 														<div className="fht-cell"></div>
 													</th>
 													<th>
-														<div className="th-inner sortable both">Email</div>
-														<div className="fht-cell"></div>
-													</th>
-													<th>
 														<div className="th-inner sortable both">
 															Phone Number
-														</div>
-														<div className="fht-cell"></div>
-													</th>
-													<th>
-														<div className="th-inner sortable both">
-															Contact Address
 														</div>
 														<div className="fht-cell"></div>
 													</th>
