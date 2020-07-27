@@ -45,7 +45,7 @@ class index extends Component {
 										All Request
 									</Link>
 
-									<Link
+									{/* <Link
 										className={`btn btn-primary btn-sm my-1 ${
 											page === 'scheduled-request' ? 'btn-outline-primary' : ''
 										}`}
@@ -65,7 +65,7 @@ class index extends Component {
 										}`}
 										to={`${match.path}/awaiting-list`}>
 										Awaiting List
-									</Link>
+									</Link> */}
 									<Link
 										className={`btn btn-primary btn-sm my-1 ${
 											page === 'search-scan' ? 'btn-outline-primary' : ''

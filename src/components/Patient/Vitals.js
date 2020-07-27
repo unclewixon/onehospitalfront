@@ -8,6 +8,7 @@ import { loadVitals } from '../../actions/patient';
 import { connect } from 'react-redux';
 import waiting from '../../assets/images/searching.gif';
 import { getAllDepartments } from './../../actions/settings';
+import { notifySuccess, notifyError } from './../../services/notify';
 
 const BMI = lazy(() => import('../Vitals/BMI'));
 const BloodPressure = lazy(() => import('../Vitals/BloodPressure'));
@@ -118,23 +119,26 @@ const Vitals = props => {
 		return res;
 	}
 
-	const addToQueue = async deptId => {
+	const addToQueue = async dept => {
 		setLoading(true);
 		const data = {
 			patient_id: patient?.id,
-			department_id: deptId?.id,
+			department_id: dept?.id,
 		};
-
 		const res = await request(
 			`${API_URI}/front-desk/queue-system/add`,
 			'POST',
 			true,
 			data
 		);
-
 		if (res) {
+			notifySuccess(`Successfully added queue to ${dept.name} `);
 			setLoading(false);
+			return;
 		}
+		notifyError(`Could not add to ${dept.name} queue`);
+		setLoading(false);
+		return;
 	};
 
 	return (
@@ -164,12 +168,14 @@ const Vitals = props => {
 							target={target}
 							placement="top"
 							container={ref.current}>
-							<Popover
-								title="Select Department"
-								id="vitals-send"
-								style={{ width: '10rem' }}>
+							<Popover id="vitals-send" style={{ width: '10rem' }}>
+								<Popover.Title>Select Department</Popover.Title>
 								{loading ? (
-									<img src={waiting} alt="submitting" />
+									<img
+										src={waiting}
+										alt="submitting"
+										style={{ textAlign: 'center' }}
+									/>
 								) : departments && departments.length ? (
 									departments.map((dept, index) => {
 										const name = dept.name;
@@ -182,8 +188,8 @@ const Vitals = props => {
 															background: '#fff',
 															width: '100%',
 															textAlign: 'center',
-															paddingTop: '1rem',
-															paddingBottom: '1rem',
+															paddingTop: '0.5rem',
+															paddingBottom: '0.5rem',
 														}}
 														onClick={() => addToQueue(dept)}>
 														{name.toUpperCase()}
