@@ -41,6 +41,8 @@ export const diagnosisAPI = '/settings/diagnosis';
 export const labourAPI = '/labour-management/enrollment';
 export const consultationAPI = '/consultation/';
 export const IVFEnroll = '/ivf/enroll/';
+export const IVFHCGAdmin = '/ivf/save/hcg-administration';
+export const IVFHCGDown = '/ivf/save/down-regulation';
 
 export const months = [
 	'January',

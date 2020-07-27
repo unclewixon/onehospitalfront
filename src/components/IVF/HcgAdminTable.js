@@ -1,6 +1,11 @@
 import React, { Component, lazy, Suspense } from 'react';
 import Splash from '../../components/Splash';
-import { API_URI, patientAPI } from '../../services/constants';
+import {
+	API_URI,
+	IVFEnroll,
+	IVFHCGAdmin,
+	patientAPI,
+} from '../../services/constants';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
@@ -19,6 +24,7 @@ import moment from 'moment';
 import Tooltip from 'antd/lib/tooltip';
 import searchingGIF from '../../assets/images/searching.gif';
 import inventory from '../../reducers/inventory';
+import { useHistory } from 'react-router-dom';
 
 class HcgAdminTable extends Component {
 	state = {
@@ -85,6 +91,47 @@ class HcgAdminTable extends Component {
 		};
 		hcgRecord.push(row);
 		this.setState({ hcgRecord });
+	};
+
+	onSubmitForm = async data => {
+		let { hcgRecord, allPatients } = this.state;
+		let { history } = this.props;
+		let hcgAdmin = [];
+		hcgRecord.map((value, index, array) => {
+			const patient = allPatients.find(
+				c => c.other_names + ' ' + c.surname === value.name_of_patient
+			);
+			let rec = {
+				ivf_enrollment_id: value.id,
+				patient_id: patient.id,
+				timeOfEntry: value.time,
+				timeOfAdmin: value.time_of_admin,
+				typeOfDosage: value.dosage_hcg,
+				typeOfHcg: value.dosage_hcg,
+				routeOfAdmin: value.admin_route,
+				nurse_id: value.nurse,
+				remarks: value.remarks,
+				id: value.id,
+			};
+			hcgAdmin = [...hcgAdmin, rec];
+		});
+
+		try {
+			const rs = await request(
+				`${API_URI}${IVFHCGAdmin}`,
+				'POST',
+				true,
+				hcgAdmin
+			);
+			//props.closeModals(true);
+			notifySuccess('HCG Administration created successfully');
+			history.push('/ivf/hcg-admin');
+			this.setState({ loading: false });
+		} catch (error) {
+			console.log(error);
+			notifyError('HCG Administration creation failed');
+			this.setState({ loading: false });
+		}
 	};
 
 	render() {
@@ -222,22 +269,44 @@ class HcgAdminTable extends Component {
 						<img alt="searching" src={searchingGIF} />
 					</div>
 				) : (
-					<BootstrapTable
-						keyField="id"
-						bordered={false}
-						data={hcgRecord}
-						columns={columns}
-						cellEdit={cellEditFactory({
-							mode: 'click',
-							blurToSave: true,
-							afterSaveCell,
-						})}
-					/>
+					<>
+						<form onSubmit={this.props.handleSubmit(this.onSubmitForm)}>
+							<BootstrapTable
+								keyField="id"
+								bordered={false}
+								data={hcgRecord}
+								columns={columns}
+								cellEdit={cellEditFactory({
+									mode: 'click',
+									blurToSave: true,
+									afterSaveCell,
+								})}
+							/>
+
+							<div className="row">
+								<div className="col-sm-12 text-right">
+									<button className="btn btn-secondary" type="button">
+										Cancel
+									</button>
+
+									<button className="btn btn-primary" type="submit">
+										Proceed
+									</button>
+								</div>
+							</div>
+						</form>
+					</>
 				)}
 			</>
 		);
 	}
 }
+
+HcgAdminTable = reduxForm({
+	form: 'HcgAdminTable', //Form name is same
+	destroyOnUnmount: false,
+	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
+})(HcgAdminTable);
 
 const mapStateToProps = state => {
 	return {
