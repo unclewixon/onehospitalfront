@@ -92,7 +92,6 @@ const NewDentistry = props => {
 	}, [props, loaded]);
 
 	const onSubmit = async values => {
-		console.log(values);
 		const { service } = props;
 		if (
 			values.service_request === undefined ||
@@ -128,11 +127,10 @@ const NewDentistry = props => {
 				true,
 				theRequest
 			);
-			history.push('settings/roles#dentistry');
+			history.push('dentistry/all-requests');
 			notifySuccess('Dentistry request saved');
 			setSubmitting(false);
 		} catch (e) {
-			console.log(e, 'error from the server');
 			setSubmitting(false);
 			notifyError(e.message || 'could not save dentistry request');
 		}

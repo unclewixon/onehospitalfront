@@ -114,6 +114,7 @@ const UploadInventory = ({ onHide, uploading, doUpload, categories }) => {
 													e.target.value = null;
 												}}
 												type="file"
+												accept=".csv"
 												ref={el => {
 													uploadAttachment = el;
 												}}
@@ -132,7 +133,7 @@ const UploadInventory = ({ onHide, uploading, doUpload, categories }) => {
 									</div>
 								</div>
 								<div className="row">
-									<div className="col-sm-12 text-right">
+									<div className="col-sm-6 text-left">
 										<button
 											className="btn btn-primary"
 											disabled={uploading}
@@ -143,6 +144,9 @@ const UploadInventory = ({ onHide, uploading, doUpload, categories }) => {
 												'upload'
 											)}
 										</button>
+									</div>
+									<div className="col-sm-6 text-right">
+										<p>only .csv files</p>
 									</div>
 								</div>
 							</form>
