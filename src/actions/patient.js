@@ -34,6 +34,7 @@ import {
 	CLEAR_LABOUR_DETAIL,
 	LOAD_ENCOUNTERS,
 	ENCOUNTER_FORM,
+	PATIENT_REGULATION_TABLE,
 	LOAD_PARTOGRAPH,
 	LOAD_RISK,
 	LOAD_DELIVERY_RECORD,
@@ -219,6 +220,13 @@ export const loadEncounterForm = data => {
 export const loadPatientIVFForm = data => {
 	return {
 		type: PATIENT_IVF,
+		payload: data,
+	};
+};
+
+export const loadPatientRegulationTable = data => {
+	return {
+		type: PATIENT_REGULATION_TABLE,
 		payload: data,
 	};
 };

@@ -35,6 +35,7 @@ import {
 	ENCOUNTER_FORM,
 	LOAD_PARTOGRAPH,
 	LOAD_RISK,
+	PATIENT_REGULATION_TABLE,
 	LOAD_DELIVERY_RECORD,
 	LOAD_LABOUR_MEASUREMENT,
 	PATIENT_IVF,
@@ -129,6 +130,8 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, encounterForm: action.payload };
 		case PATIENT_IVF:
 			return { ...state, ivf: action.payload };
+		case PATIENT_REGULATION_TABLE:
+			return { ...state, regulationTable: action.payload };
 		case UPDATE_COMPLAINT_DATA:
 			return {
 				...state,
