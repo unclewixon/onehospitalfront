@@ -76,7 +76,9 @@ class AllRequest extends Component {
 		e.preventDefault();
 		this.setState({ filtering: true });
 
-		this.fetchClinicalLab();
+		this.fetchClinicalLab(() =>
+			this.setState({ filtering: false, loading: false })
+		);
 	};
 
 	change = e => {
