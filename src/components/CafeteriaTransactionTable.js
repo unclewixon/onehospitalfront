@@ -199,7 +199,8 @@ const CafeteriaTransactionTable = props => {
 										props.submitting
 											? 'btn btn-primary py-2 my-0 ml-2 disabled'
 											: 'btn btn-primary py-2 my-0 ml-2'
-									}>
+									}
+									onClick={e => handleSubmit(e)}>
 									{props.submitting ? (
 										<img src={waiting} alt="submitting" />
 									) : (
