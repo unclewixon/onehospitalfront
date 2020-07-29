@@ -63,4 +63,4 @@ const mapStatetoProps = state => {
 	};
 };
 
-export default withRouter(connect(mapStatetoProps)(IVF));
+export default withRouter(connect(mapStatetoProps)(index));

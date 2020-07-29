@@ -32,9 +32,9 @@ let IVFHcgAdmin = props => {
 	};
 
 	return (
-		<div className="element-box">
+		<div className="element-box p-0">
 			<>
-				<h6 className="element-header">HCG ADMINISTRATION CHART</h6>
+				<h6 className="element-header p-2">HCG ADMINISTRATION CHART</h6>
 				<div className="form-block">
 					{loading ? (
 						<div className="form-block encounter">
@@ -42,17 +42,17 @@ let IVFHcgAdmin = props => {
 						</div>
 					) : (
 						<>
-							<div className="row">
+							{/* <div className="row">
 								<div className="col-sm-12">
 									<div className="element-wrapper">
-										<div className="element-box">
-											<div className="table table-responsive">
-												<HcgAdminTable />
-											</div>
-										</div>
+										<div className="element-box"> */}
+							<div className="table table-responsive">
+								<HcgAdminTable />
+							</div>
+							{/*</div>
 									</div>
 								</div>
-							</div>
+							</div> */}
 						</>
 					)}
 				</div>

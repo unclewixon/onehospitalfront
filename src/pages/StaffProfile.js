@@ -27,7 +27,6 @@ const CreateExcuseDuty = lazy(() => import('../components/CreateExcuseDuty'));
 const LineAppraisal = lazy(() =>
 	import('../components/StaffBlock/LineAppraisal')
 );
-
 const StaffAppraisal = lazy(() =>
 	import('../components/StaffBlock/StaffAppraisal')
 );

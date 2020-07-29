@@ -47,9 +47,7 @@ export class HcgAdministration extends Component {
 					<h6 className="element-header">Enrollment</h6>
 					<div className="row">
 						<div className="col-md-12">
-							<div className="element-content">
-								<IVFHcgAdmin />
-							</div>
+							<IVFHcgAdmin />
 						</div>
 					</div>
 				</div>
