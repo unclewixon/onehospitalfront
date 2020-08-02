@@ -2,7 +2,6 @@ import React, { Component, lazy, Suspense } from 'react';
 
 import { Switch, Link, withRouter, Route } from 'react-router-dom';
 import NoMatch from '../NoMatch';
-import Queue from '../../components/Queue';
 import Splash from '../../components/Splash';
 import { connect } from 'react-redux';
 const IVF = lazy(() => import('./IVF'));
@@ -63,4 +62,4 @@ const mapStatetoProps = state => {
 	};
 };
 
-export default withRouter(index);
+export default withRouter(connect(mapStatetoProps)(index));

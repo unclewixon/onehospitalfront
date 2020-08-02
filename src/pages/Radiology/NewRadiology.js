@@ -37,8 +37,6 @@ const NewRadiology = props => {
 	const [patients, setPatients] = useState([]);
 
 	const onSubmit = async values => {
-		console.log(values);
-
 		if (
 			values.service_request === undefined ||
 			values.service_request.length === 0
@@ -60,8 +58,6 @@ const NewRadiology = props => {
 				};
 			}),
 		};
-
-		console.log(data);
 		try {
 			const rs = await request(
 				`${API_URI}${patientAPI}/save-request`,
@@ -70,7 +66,7 @@ const NewRadiology = props => {
 				data
 			);
 
-			history.push('/radiology/recent-request');
+			history.push('/radiology/all-request');
 			notifySuccess('New radiology request saved');
 			setSubmitting(false);
 		} catch (e) {
@@ -140,7 +136,6 @@ const NewRadiology = props => {
 				});
 		}
 		setLoaded(true);
-		console.log(props.ServicesList);
 		setServiceList(props.ServicesList);
 		filterRequest();
 		console.log(services);

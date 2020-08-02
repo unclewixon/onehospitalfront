@@ -145,8 +145,8 @@ const PharmNewRequestComponent = ({
 					.filter(drug => drug.generic_name !== null)
 					.map(drug => {
 						return {
-							value: drug && drug.name ? drug.name : 'nil',
-							label: drug && drug.name ? drug.name : 'nil',
+							value: drug && drug.generic_name ? drug.generic_name : 'nil',
+							label: drug && drug.generic_name ? drug.generic_name : 'nil',
 						};
 					})
 			: [];

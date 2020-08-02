@@ -53,6 +53,7 @@ class PhysiotherapyDashboard extends Component {
 	};
 
 	formRow = (data, i) => {
+		console.log(data);
 		return (
 			<tr className="" data-index="0" key={i}>
 				<td>

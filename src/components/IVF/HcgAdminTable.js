@@ -260,7 +260,10 @@ class HcgAdminTable extends Component {
 
 		return (
 			<>
-				<button type="button" className="btn btn-primary" onClick={this.addRow}>
+				<button
+					type="button"
+					className="btn btn-primary ml-2"
+					onClick={this.addRow}>
 					Add
 				</button>
 
@@ -283,13 +286,13 @@ class HcgAdminTable extends Component {
 								})}
 							/>
 
-							<div className="row">
+							<div className="row mt-4 pb-2">
 								<div className="col-sm-12 text-right">
 									<button className="btn btn-secondary" type="button">
 										Cancel
 									</button>
 
-									<button className="btn btn-primary" type="submit">
+									<button className="btn btn-primary mr-4" type="submit">
 										Proceed
 									</button>
 								</div>

@@ -74,6 +74,7 @@ class AllDentistry extends Component {
 	};
 
 	formRow = (data, i) => {
+		console.log(data);
 		return (
 			<tr className="" data-index="0" data-id="20" key={i}>
 				<td>{i + 1}</td>
@@ -85,14 +86,14 @@ class AllDentistry extends Component {
 						{this.getRequests(data.requestBody)}
 					</span>
 				</td>
-				<td>{this.calculateAmount(data.requestBody)}</td>
-				<td>{moment(data.createdAt).format('DD-MM-YYYY LT')}</td>
+				{/* <td>{this.calculateAmount(data.requestBody)}</td> */}
+				{/* <td>{moment(data.createdAt).format('DD-MM-YYYY LT')}</td> */}
 
-				<td className="text-center">
+				{/* <td className="text-center">
 					<span className="badge badge-secondary">
 						{data.status === 0 ? 'pending' : 'completed'}
 					</span>
-				</td>
+				</td> */}
 				<td className="row-actions text-right">
 					<Tooltip title="View Request">
 						<a
@@ -242,28 +243,28 @@ class AllDentistry extends Component {
 														</th>
 														<th>
 															<div className="th-inner sortable both">
-																Specialization
+																Service
 															</div>
 															<div className="fht-cell"></div>
 														</th>
-														<th>
+														{/* <th>
 															<div className="th-inner sortable both">
 																Amount
 															</div>
 															<div className="fht-cell"></div>
-														</th>
-														<th>
+														</th> */}
+														{/* <th>
 															<div className="th-inner sortable both">
 																Requested Date
 															</div>
 															<div className="fht-cell"></div>
-														</th>
-														<th>
+														</th> */}
+														{/* <th>
 															<div className="th-inner sortable both">
 																Request Status
 															</div>
 															<div className="fht-cell"></div>
-														</th>
+														</th> */}
 														<th>
 															<div className="th-inner "></div>
 															<div className="fht-cell"></div>

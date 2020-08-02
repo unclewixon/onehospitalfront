@@ -53,7 +53,7 @@ export class AllTransaction extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}${transactionsAPI}/list?patient_id=&startDate=${startDate}&endDate=${endDate}&status=&transaction_type=cafeteria&payment_type&page=2&limit=2`,
+				`${API_URI}${transactionsAPI}/list?patient_id=&startDate=${startDate}&endDate=${endDate}&status=&transaction_type=cafeteria&payment_type&page=1&limit=2`,
 				'GET',
 				true
 			);

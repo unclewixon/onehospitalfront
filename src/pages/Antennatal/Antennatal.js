@@ -33,10 +33,6 @@ export class Antennatal extends Component {
 
 		try {
 			this.setState({ loading: true });
-
-			console.log(
-				`${API_URI}${patientAPI}/antenatal/list?startDate=${startDate}&endDate=${endDate}`
-			);
 			const rs = await request(
 				`${API_URI}${patientAPI}/antenatal/list?startDate=${startDate}&endDate=${endDate}`,
 				'GET',
@@ -44,10 +40,8 @@ export class Antennatal extends Component {
 			);
 
 			this.props.loadAntennatal(rs);
-			console.log(rs);
 			this.setState({ loading: false });
 		} catch (error) {
-			console.log(error);
 			notifyError('Error fetching today Antennatal enroll request');
 			this.setState({ loading: false });
 		}
