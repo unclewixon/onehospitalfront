@@ -14,7 +14,7 @@ export class index extends Component {
 	render() {
 		const { match, staff } = this.props;
 
-		const department = staff?.details?.department?.name;
+		// const department = staff?.details?.department?.name;
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -49,9 +49,9 @@ export class index extends Component {
 						</Suspense>
 					</div>
 				</div>
-				<div className="content-panel compact">
-					<Queue department={department} />
-				</div>
+				{/*<div className="content-panel compact">*/}
+				{/*	<Queue department={department} />*/}
+				{/*</div>*/}
 			</div>
 		);
 	}
@@ -63,4 +63,4 @@ const mapStatetoProps = state => {
 	};
 };
 
-export default withRouter(connect(mapStatetoProps)(IVF));
+export default withRouter(index);
