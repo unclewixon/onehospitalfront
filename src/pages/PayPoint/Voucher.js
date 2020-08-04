@@ -36,7 +36,7 @@ export class Voucher extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}${vouchersAPI}/list?patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}`,
+				`${API_URI}/${vouchersAPI}/list?patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}`,
 				'GET',
 				true
 			);

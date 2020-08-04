@@ -38,7 +38,7 @@ class LabRecentRequest extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}${patientAPI}/requests/lab?startDate=${startDate}&endDate=${endDate}&status=${status}&filled=true`,
+				`${patientAPI}/requests/lab?startDate=${startDate}&endDate=${endDate}&status=${status}&filled=true`,
 				'GET',
 				true
 			);

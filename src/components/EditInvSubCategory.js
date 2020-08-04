@@ -25,7 +25,12 @@ class EditInvSubCategory extends Component {
 		const { subCategoryID } = this.props;
 		this.setState({ submitting: true });
 		try {
-			const rs = await request(`${API_URI}${inventorySubCatAPI}/${subCategoryID}/update`, 'PATCH', true, data);
+			const rs = await request(
+				`${inventorySubCatAPI}/${subCategoryID}/update`,
+				'PATCH',
+				true,
+				data
+			);
 			this.props.updateInvSubCategory(rs);
 			notifySuccess('sub category saved!');
 			this.setState({ submitting: false });
@@ -33,7 +38,9 @@ class EditInvSubCategory extends Component {
 			this.props.editSubCategory(null, false);
 		} catch (e) {
 			this.setState({ submitting: false });
-			throw new SubmissionError({ _error: e.message || 'could not edit sub category' });
+			throw new SubmissionError({
+				_error: e.message || 'could not edit sub category',
+			});
 		}
 	};
 
@@ -46,7 +53,12 @@ class EditInvSubCategory extends Component {
 					<form onSubmit={handleSubmit(this.doEditSubCategory)}>
 						<h6 className="form-header">Edit Sub Category</h6>
 						{error && (
-							<div className="alert alert-danger" dangerouslySetInnerHTML={{ __html: `<strong>Error!</strong> ${error}` }}/>
+							<div
+								className="alert alert-danger"
+								dangerouslySetInnerHTML={{
+									__html: `<strong>Error!</strong> ${error}`,
+								}}
+							/>
 						)}
 						<div className="row">
 							<div className="col-sm-12">
@@ -72,10 +84,18 @@ class EditInvSubCategory extends Component {
 						</div>
 						<div className="row">
 							<div className="col-sm-12 text-right">
-								<button className="btn btn-primary" disabled={submitting} type="submit">
+								<button
+									className="btn btn-primary"
+									disabled={submitting}
+									type="submit">
 									{submitting ? <img src={waiting} alt="submitting" /> : 'save'}
 								</button>
-								<button className="btn btn-secondary ml-3" type="button" onClick={editSubCategory(null, false)}>Cancel</button>
+								<button
+									className="btn btn-secondary ml-3"
+									type="button"
+									onClick={editSubCategory(null, false)}>
+									Cancel
+								</button>
 							</div>
 						</div>
 					</form>
@@ -92,7 +112,9 @@ EditInvSubCategory = reduxForm({
 
 const mapStateToProps = (state, ownProps) => {
 	const sub_categories = state.inventory.sub_categories;
-	const sub_category = sub_categories.find(c => c.id === ownProps.subCategoryID);
+	const sub_category = sub_categories.find(
+		c => c.id === ownProps.subCategoryID
+	);
 	return {
 		initialValues: {
 			name: sub_category ? sub_category.name : '',
@@ -102,4 +124,6 @@ const mapStateToProps = (state, ownProps) => {
 	};
 };
 
-export default connect(mapStateToProps, { reset, updateInvSubCategory })(EditInvSubCategory);
+export default connect(mapStateToProps, { reset, updateInvSubCategory })(
+	EditInvSubCategory
+);

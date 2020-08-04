@@ -65,7 +65,7 @@ let PastHistory = props => {
 		}
 		let val = inputValue.toUpperCase();
 		const res = await request(
-			`${API_URI}${diagnosisAPI}` + 'search?q=' + val,
+			`${diagnosisAPI}` + 'search?q=' + val,
 			'GET',
 			true
 		);

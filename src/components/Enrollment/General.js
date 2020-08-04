@@ -42,7 +42,7 @@ export class General extends Component {
 	fetchStaffs = async () => {
 		if (this.props.staffs.length < 1) {
 			try {
-				const rs = await request(`${API_URI}${staffAPI}`, 'GET', true);
+				const rs = await request(`${staffAPI}`, 'GET', true);
 				this.props.loadStaff(rs);
 			} catch (error) {
 				console.log(error);
@@ -67,7 +67,7 @@ export class General extends Component {
 			try {
 				this.setState({ searching: true });
 				const rs = await request(
-					`${API_URI}${searchAPI}?q=${this.state.query}`,
+					`${searchAPI}?q=${this.state.query}`,
 					'GET',
 					true
 				);

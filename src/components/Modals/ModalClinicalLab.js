@@ -17,12 +17,7 @@ const ModalClinicalLab = ({
 
 	const saveLabRequest = async (data, cb) => {
 		try {
-			const rs = await request(
-				`${API_URI}/patient/fill-request`,
-				'POST',
-				true,
-				data
-			);
+			const rs = await request(`patient/fill-request`, 'POST', true, data);
 			cb();
 			notifySuccess('Saved Lab Request');
 		} catch (error) {

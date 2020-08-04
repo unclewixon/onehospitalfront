@@ -182,12 +182,13 @@
 */
 
 .menu-w {
-  position: relative;
+  position: fixed;
   background-color: #fff;
   box-shadow: $element-box-shadow;
   flex: 0 0 $menu-side-width;
   border-right: 0px solid rgba(0,0,0,0.05);
-
+  height: 100vh;
+  overflow-y: scroll;
   .menu-page-header {
     display: none;
   }

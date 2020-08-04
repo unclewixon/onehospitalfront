@@ -103,12 +103,7 @@ class CreateImmunization extends Component {
 		};
 
 		try {
-			const rs = await request(
-				`${API_URI}/patient/immunizations`,
-				'POST',
-				true,
-				values
-			);
+			const rs = await request(`patient/immunizations`, 'POST', true, values);
 			console.log(rs);
 			addImmunizationRequest(rs.immunization);
 			this.setState({ submitting: false });
@@ -158,7 +153,7 @@ class CreateImmunization extends Component {
 				if (name === 'patient_id') {
 					this.setState({ searching: true });
 					const rs = await request(
-						`${API_URI}${searchAPI}?q=${this.state.query}`,
+						`${searchAPI}?q=${this.state.query}`,
 						'GET',
 						true
 					);
@@ -167,7 +162,7 @@ class CreateImmunization extends Component {
 					this.setState({ searchingStaff: true });
 
 					const rs = await request(
-						`${API_URI}/hr/staffs/find?q=${this.state.query}`,
+						`hr/staffs/find?q=${this.state.query}`,
 						'GET',
 						true
 					);

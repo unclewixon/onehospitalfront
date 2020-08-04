@@ -28,7 +28,7 @@ export class StaffAppraisal extends Component {
 	fetchStaffs = async () => {
 		try {
 			this.setState({ loading: true });
-			const rs = await request(`${API_URI}${staffAPI}`, 'GET', true);
+			const rs = await request(`${staffAPI}`, 'GET', true);
 			this.props.loadStaff(rs);
 			this.setState({ loading: false });
 		} catch (error) {

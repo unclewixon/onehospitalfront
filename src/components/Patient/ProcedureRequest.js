@@ -71,7 +71,7 @@ const ProcedureRequest = props => {
 		}
 		let val = inputValue.toUpperCase();
 		const res = await request(
-			`${API_URI}${diagnosisAPI}` + 'search?q=' + val,
+			`${diagnosisAPI}/` + 'search?q=' + val,
 			'GET',
 			true
 		);
@@ -81,13 +81,13 @@ const ProcedureRequest = props => {
 	const fetchServicesByCategory = async id => {
 		try {
 			const rs = await request(
-				`${API_URI}${serviceAPI}` + '/categories/' + id,
+				`${serviceAPI}` + '/categories/' + id,
 				'GET',
 				true
 			);
 			props.get_all_services(rs);
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 			notifyError('error fetching imaging requests for the patient');
 		}
 	};
@@ -119,7 +119,7 @@ const ProcedureRequest = props => {
 
 		try {
 			const rs = await request(
-				`${API_URI}${patientAPI}/save-request`,
+				`${patientAPI}/save-request`,
 				'POST',
 				true,
 				theRequest

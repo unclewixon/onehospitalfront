@@ -48,7 +48,7 @@ const PhysiotherapyRequest = props => {
 
 		try {
 			const rs = await request(
-				`${API_URI}${patientAPI}/save-request`,
+				`${patientAPI}/save-request`,
 				'POST',
 				true,
 				data

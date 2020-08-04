@@ -76,7 +76,7 @@ const Allergies = props => {
 		setQueried(true);
 		try {
 			const rs = await request(
-				`${API_URI}${patientAPI}/${patient.id}/allergies`,
+				`${API_URI}/${patientAPI}/${patient.id}/allergies`,
 				'GET',
 				true
 			);

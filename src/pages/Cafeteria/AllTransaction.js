@@ -30,7 +30,6 @@ export class AllTransaction extends Component {
 		startDate: '',
 		endDate: '',
 		status: '',
-		paymentType: '',
 		searching: '',
 		searchHmo: false,
 		hmos: [],
@@ -53,7 +52,7 @@ export class AllTransaction extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}${transactionsAPI}/list?patient_id=&startDate=${startDate}&endDate=${endDate}&status=&transaction_type=cafeteria&payment_type&page=1&limit=2`,
+				`${API_URI}/${transactionsAPI}/list?patient_id=&startDate=${startDate}&endDate=${endDate}&status=&transaction_type=cafeteria&payment_type&page=1&limit=2`,
 				'GET',
 				true
 			);
@@ -123,7 +122,7 @@ export class AllTransaction extends Component {
 			try {
 				this.setState({ ...this.state, searching: true });
 				const rs = await request(
-					`${API_URI}${searchAPI}?q=${this.state.query}`,
+					`${API_URI}/${searchAPI}?q=${this.state.query}`,
 					'GET',
 					true
 				);

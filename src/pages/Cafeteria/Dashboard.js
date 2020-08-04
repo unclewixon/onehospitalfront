@@ -81,7 +81,7 @@ const CafeteriaDashboard = () => {
 				try {
 					setSearching(true);
 					const rs = await request(
-						`${API_URI}${searchAPI}?q=${query}`,
+						`${API_URI}/${searchAPI}?q=${query}`,
 						'GET',
 						true
 					);
@@ -96,7 +96,7 @@ const CafeteriaDashboard = () => {
 				try {
 					setSearching(true);
 					const rs = await request(
-						`${API_URI}${staffAPI}/find?q=${query}`,
+						`${API_URI}/${staffAPI}/find?q=${query}`,
 						'GET',
 						true
 					);

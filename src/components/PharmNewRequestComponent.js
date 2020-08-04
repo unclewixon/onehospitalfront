@@ -83,7 +83,7 @@ const PharmNewRequestComponent = ({
 
 	const getServiceUnit = useCallback(async () => {
 		try {
-			const res = await request(`${API_URI}/inventory/categories`, 'GET', true);
+			const res = await request(`inventory/categories`, 'GET', true);
 			loadInvCategories(res);
 		} catch (error) {
 			notifyError('Error fetching Service Unit');

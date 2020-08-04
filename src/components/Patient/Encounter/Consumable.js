@@ -54,7 +54,7 @@ let Consumable = props => {
 		try {
 			setLoading(true);
 			const rs = await request(
-				`${API_URI}${stockByCategoryAPI}` + '/Consumable',
+				`${stockByCategoryAPI}` + '/Consumable',
 				'GET',
 				true
 			);
@@ -88,7 +88,7 @@ let Consumable = props => {
 		const { patient } = props;
 		try {
 			const rs = await request(
-				`${API_URI}${consultationAPI}${patient.id}/save`,
+				`${consultationAPI}${patient.id}/save`,
 				'POST',
 				true,
 				encounterData

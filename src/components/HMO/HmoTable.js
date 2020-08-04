@@ -58,7 +58,7 @@ class HmoTable extends Component {
 			let id = hmo.id;
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}/hmos/transactions/` + id + '/process?action=' + action,
+				`hmos/transactions/` + id + '/process?action=' + action,
 				'GET',
 				true
 			);

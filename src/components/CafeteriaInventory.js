@@ -152,9 +152,7 @@ const CafeteriaInventory = props => {
 	const doFilter = async () => {
 		setFiltering(true);
 		try {
-			const rs = await request(
-				`${API_URI}/cafeteria/inventories-by-category/${category}`
-			);
+			const rs = await request(`cafeteria/inventories-by-category/${category}`);
 			console.log(rs);
 			let cat = props.cafeteriaInvCategory.find(el => el.id === category);
 			console.log(cat);

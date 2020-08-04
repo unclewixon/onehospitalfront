@@ -2,7 +2,6 @@ import React, { Component, lazy, Suspense } from 'react';
 
 import { Switch, Link, withRouter, Route } from 'react-router-dom';
 import NoMatch from '../NoMatch';
-import Queue from '../../components/Queue';
 import Splash from '../../components/Splash';
 import { connect } from 'react-redux';
 const IVF = lazy(() => import('./IVF'));
@@ -14,7 +13,7 @@ export class index extends Component {
 	render() {
 		const { match, staff } = this.props;
 
-		const department = staff?.details?.department?.name;
+		// const department = staff?.details?.department?.name;
 		return (
 			<div className="content-i">
 				<div className="content-box">
@@ -49,9 +48,9 @@ export class index extends Component {
 						</Suspense>
 					</div>
 				</div>
-				<div className="content-panel compact">
-					<Queue department={department} />
-				</div>
+				{/*<div className="content-panel compact">*/}
+				{/*	<Queue department={department} />*/}
+				{/*</div>*/}
 			</div>
 		);
 	}

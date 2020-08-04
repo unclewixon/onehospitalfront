@@ -29,12 +29,12 @@ export class PatientImmunization extends Component {
 		const { patient } = this.props;
 		try {
 			this.setState({ loading: true });
-			console.log(
-				`${API_URI}/patient/immunizations?startDate=${startDate}&endDate=${endDate}&patient_id=`
-			);
+			// console.log(
+			// 	`${API_URI}/patient/immunizations?startDate=${startDate}&endDate=${endDate}&patient_id=`
+			// );
 
 			const rs = await request(
-				`${API_URI}/patient/${patient.id}/immunizations?startDate=${startDate}&endDate=${endDate}`,
+				`patient/${patient.id}/immunizations?startDate=${startDate}&endDate=${endDate}`,
 				'GET',
 				true
 			);

@@ -110,7 +110,11 @@ const general = (state = INITIAL_STATE, action) => {
 		case TOGGLE_MODAL:
 			return { ...state, is_modal_open: action.payload };
 		case TOGGLE_CREATE_STAFF:
-			return { ...state, create_staff: action.payload };
+			return {
+				...state,
+				create_staff: action.payload.status,
+				staff: action.payload.staff,
+			};
 		case TOGGLE_EDIT_STAFF:
 			return { ...state, edit_staff: action.payload };
 		case TOGGLE_SHOW_HISTORY:

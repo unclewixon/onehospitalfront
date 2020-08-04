@@ -145,7 +145,7 @@ class CreateAppraisal extends Component {
 			console.log(details);
 
 			try {
-				await request(`${API_URI}${appraisalAPI}/new`, 'POST', true, details);
+				await request(`${appraisalAPI}/new`, 'POST', true, details);
 				this.setState({ submitting: false });
 				this.props.reset('create_appraisal');
 				notifySuccess('appraisal created!');

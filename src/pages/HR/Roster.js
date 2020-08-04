@@ -35,7 +35,7 @@ const DownloadRoster = ({ onHide, downloading, doDownload, departments }) => {
 					</button>
 					<div className="onboarding-content with-gradient">
 						<div className="form-block">
-							<form onSubmit={(e) => doDownload(e, period, department)}>
+							<form onSubmit={e => doDownload(e, period, department)}>
 								<div className="row">
 									<div className="col-sm-12">
 										<div className="form-group">
@@ -43,7 +43,7 @@ const DownloadRoster = ({ onHide, downloading, doDownload, departments }) => {
 											<div className="custom-date-input">
 												<DatePicker
 													selected={period}
-													onChange={(date) => setPeriod(date)}
+													onChange={date => setPeriod(date)}
 													peekNextMonth
 													dateFormat="MMM-yyyy"
 													className="single-daterange form-control"
@@ -58,7 +58,7 @@ const DownloadRoster = ({ onHide, downloading, doDownload, departments }) => {
 											<select
 												id="department"
 												className="form-control"
-												onChange={(e) => setDepartment(e.target.value)}>
+												onChange={e => setDepartment(e.target.value)}>
 												<option>Select Department</option>
 												{departments.map((dept, i) => {
 													return (
@@ -116,7 +116,7 @@ const UploadRoster = ({ onHide, uploading, doUpload, departments }) => {
 					</button>
 					<div className="onboarding-content with-gradient">
 						<div className="form-block">
-							<form onSubmit={(e) => doUpload(e, files, period, department)}>
+							<form onSubmit={e => doUpload(e, files, period, department)}>
 								<div className="row">
 									<div className="col-sm-12">
 										<div className="form-group">
@@ -124,7 +124,7 @@ const UploadRoster = ({ onHide, uploading, doUpload, departments }) => {
 											<div className="custom-date-input">
 												<DatePicker
 													selected={period}
-													onChange={(date) => setPeriod(date)}
+													onChange={date => setPeriod(date)}
 													peekNextMonth
 													dateFormat="MMM-yyyy"
 													className="single-daterange form-control"
@@ -139,7 +139,7 @@ const UploadRoster = ({ onHide, uploading, doUpload, departments }) => {
 											<select
 												id="department"
 												className="form-control"
-												onChange={(e) => setDepartment(e.target.value)}>
+												onChange={e => setDepartment(e.target.value)}>
 												<option>Select Department</option>
 												{departments.map((dept, i) => {
 													return (
@@ -155,14 +155,14 @@ const UploadRoster = ({ onHide, uploading, doUpload, departments }) => {
 										<div className="form-group">
 											<input
 												className="d-none"
-												onClick={(e) => {
+												onClick={e => {
 													e.target.value = null;
 												}}
 												type="file"
-												ref={(el) => {
+												ref={el => {
 													uploadAttachment = el;
 												}}
-												onChange={(e) => setFile(e.target.files)}
+												onChange={e => setFile(e.target.files)}
 											/>
 											<label htmlFor="department">File</label>
 											<a
@@ -243,9 +243,9 @@ class Roster extends Component {
 				period: moment(period).format('YYYY-MM'),
 			};
 			const qs = Object.keys(data)
-				.map((k) => k + '=' + data[k])
+				.map(k => k + '=' + data[k])
 				.join('&');
-			const url = `${API_URI}${rosterAPI}/download-roaster?${qs}`;
+			const url = `${API_URI}/${rosterAPI}/download-roaster?${qs}`;
 			setTimeout(() => {
 				window.open(url, '_blank').focus();
 				this.setState({ downloading: false, download_visible: false });
@@ -257,23 +257,18 @@ class Roster extends Component {
 		return false;
 	};
 
-	onDownloadVisibleChange = (visible) => {
+	onDownloadVisibleChange = visible => {
 		this.setState({ download_visible: visible });
 	};
 
-	handleUploadVisibleChange = (visible) => {
+	handleUploadVisibleChange = visible => {
 		this.setState({ upload_visible: visible });
 	};
 
 	fetchRoster = async (period, department_id) => {
 		try {
 			const data = { period, department_id };
-			const rs = await request(
-				`${API_URI}${rosterAPI}/list-roaster`,
-				'POST',
-				true,
-				data
-			);
+			const rs = await request(`${rosterAPI}/list-roaster`, 'POST', true, data);
 			const rosters = parseRoster(rs);
 			this.props.loadRoster(rosters);
 			this.setState({ filtering: false });
@@ -284,7 +279,7 @@ class Roster extends Component {
 		}
 	};
 
-	doFilter = (e) => {
+	doFilter = e => {
 		e.preventDefault();
 		this.setState({ filtering: true });
 		const { period, department_id } = this.state;
@@ -304,13 +299,13 @@ class Roster extends Component {
 				formData.append('department_id', department_id);
 
 				const rs = await upload(
-					`${API_URI}${rosterAPI}/upload-roaster`,
+					`${rosterAPI}/upload-roaster`,
 					'POST',
 					formData
 				);
 				const rosters = parseRoster(rs);
 				this.props.loadRoster(rosters);
-				const dept = departments.find((d) => d.id === department_id);
+				const dept = departments.find(d => d.id === department_id);
 				notifySuccess(
 					`roster uploaded for ${dept ? dept.name : ''} department`
 				);
@@ -324,11 +319,11 @@ class Roster extends Component {
 		}
 	};
 
-	onChange = (e) => {
+	onChange = e => {
 		this.setState({ department_id: e.target.value });
 	};
 
-	handleDateClick = (arg) => {
+	handleDateClick = arg => {
 		console.log(arg);
 	};
 
@@ -440,7 +435,7 @@ class Roster extends Component {
 										plugins={[dayGridPlugin, interactionPlugin]}
 										events={duty_rosters}
 										dateClick={this.handleDateClick}
-										eventClick={(info) => console.log(info)}
+										eventClick={info => console.log(info)}
 										showNonCurrentDates={false}
 									/>
 								</div>

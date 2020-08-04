@@ -144,11 +144,7 @@ class Appraisal extends Component {
 	fetchApprasails = async () => {
 		try {
 			this.setState({ loading: true });
-			const rs = await request(
-				`${API_URI}${appraisalAPI}/list-periods`,
-				'GET',
-				true
-			);
+			const rs = await request(`${appraisalAPI}/list-periods`, 'GET', true);
 			this.props.loadPerformancePeriod(rs);
 
 			this.setState({ loading: false });
@@ -174,7 +170,7 @@ class Appraisal extends Component {
 			//load it into database and add it to the store
 			if (!this.state.editItem) {
 				const rs = await request(
-					`${API_URI}${appraisalAPI}/save-period`,
+					`${appraisalAPI}/save-period`,
 					'POST',
 					true,
 					payload

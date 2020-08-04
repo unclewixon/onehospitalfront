@@ -28,7 +28,8 @@ import { loadDepartments, loadSpecializations } from '../actions/settings';
 import { loadInvCategories, loadInvSubCategories } from '../actions/inventory';
 import { loadBanks, loadCountries } from '../actions/utility';
 
-import { from } from 'rxjs';
+import ability from '../services/ability';
+import { AbilityBuilder } from '@casl/ability';
 
 const storage = new SSRStorage();
 
@@ -88,7 +89,7 @@ class Login extends Component {
 	doLogin = async data => {
 		this.setState({ submitting: true });
 		try {
-			const rs = await request(`${API_URI}/auth/login`, 'POST', true, data);
+			const rs = await request(`auth/login`, 'POST', true, data);
 			try {
 				const jwt = `Bearer ${rs.token}`;
 				let [
@@ -100,13 +101,13 @@ class Login extends Component {
 					rs_banks,
 					rs_countries,
 				] = await Promise.all([
-					axiosFetch(`${API_URI}${departmentAPI}`, jwt),
-					axiosFetch(`${API_URI}${inventoryCatAPI}`, jwt),
-					axiosFetch(`${API_URI}${inventorySubCatAPI}`, jwt),
-					axiosFetch(`${API_URI}${rolesAPI}`, jwt),
+					axiosFetch(`${API_URI}/${departmentAPI}`, jwt),
+					axiosFetch(`${API_URI}/${inventoryCatAPI}`, jwt),
+					axiosFetch(`${API_URI}/${inventorySubCatAPI}`, jwt),
+					axiosFetch(`${API_URI}/${rolesAPI}`, jwt),
 					axiosFetch(`${API_URI}/specializations`, jwt),
-					axiosFetch(`${API_URI}${utilityAPI}/banks`),
-					axiosFetch(`${API_URI}${utilityAPI}/countries`),
+					axiosFetch(`${API_URI}/${utilityAPI}/banks`),
+					axiosFetch(`${API_URI}/${utilityAPI}/countries`),
 				]);
 
 				if (rs_depts && rs_depts.data) {
@@ -133,15 +134,25 @@ class Login extends Component {
 				// console.log(rs);
 				this.props.loginUser(rs);
 				storage.setItem(TOKEN_COOKIE, rs);
+				storage.setItem('permissions', JSON.stringify(rs.permissions));
+
+				const { can, rules } = new AbilityBuilder();
+
+				can(rs.permissions, 'all');
+
+				ability.update(rules);
+
 				notifySuccess('login successful!');
 				redirectToPage(rs.role, this.props.history);
 			} catch (e) {
+				console.log(e);
 				this.setState({ submitting: false });
 				throw new SubmissionError({
 					_error: 'could not login user',
 				});
 			}
 		} catch (e) {
+			// console.log(e)
 			this.setState({ submitting: false });
 			throw new SubmissionError({
 				_error: e.message || 'could not login user',

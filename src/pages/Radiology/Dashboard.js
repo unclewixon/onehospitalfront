@@ -108,11 +108,11 @@ export class Dashboard extends Component {
 
 		try {
 			this.setState({ loading: true });
-			console.log(
-				`${API_URI}${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}&status=${status}`
-			);
+			// console.log(
+			// 	`${API_URI}/${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}&status=${status}`
+			// );
 			const rs = await request(
-				`${API_URI}${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`,
+				`${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`,
 				'GET',
 				true
 			);
@@ -213,7 +213,7 @@ export class Dashboard extends Component {
 				formData.append('document_type', 'Imaging');
 				console.log(formData.getAll());
 				const rs = await upload(
-					`${API_URI}${patientAPI}/${patient.patient_id}/upload-request-document`,
+					`${patientAPI}/${patient.patient_id}/upload-request-document`,
 					'POST',
 					formData
 				);

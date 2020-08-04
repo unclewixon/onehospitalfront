@@ -199,7 +199,7 @@ class PatientProfile extends Component {
 				{patient ? (
 					<Fragment>
 						<PatientMenu />
-						<div className="content-w">
+						<div className="content-w content-w-l-18">
 							<div className="content-i">
 								<div className="content-box">
 									<div className="row">

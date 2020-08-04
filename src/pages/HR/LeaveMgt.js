@@ -25,7 +25,7 @@ class LeaveMgt extends Component {
 
 	fetchLeaveCategory = async () => {
 		try {
-			const rs = await request(`${API_URI}/leave-category`, 'GET', true);
+			const rs = await request(`leave-category`, 'GET', true);
 			this.props.get_all_leave_category(rs);
 		} catch (error) {
 			notifyError('could not fetch leave categories!');
@@ -45,7 +45,7 @@ class LeaveMgt extends Component {
 	fetchStaffLeave = async () => {
 		this.setState({ searching: true });
 		try {
-			const rs = await request(`${API_URI}${leaveMgtAPI}`, 'GET', true);
+			const rs = await request(`${leaveMgtAPI}`, 'GET', true);
 			this.setState({ searching: false });
 			const filteredRes =
 				rs && rs.length
@@ -62,7 +62,7 @@ class LeaveMgt extends Component {
 	rejectLeaveRequests = async data => {
 		try {
 			const res = await request(
-				`${API_URI}/hr/leave-management/${data.id}/reject`,
+				`hr/leave-management/${data.id}/reject`,
 				'GET',
 				true
 			);
@@ -86,7 +86,7 @@ class LeaveMgt extends Component {
 	approveLeaveRequests = async data => {
 		try {
 			const res = await request(
-				`${API_URI}/hr/leave-management/${data.id}/approve`,
+				`hr/leave-management/${data.id}/approve`,
 				'GET',
 				true
 			);
@@ -110,7 +110,7 @@ class LeaveMgt extends Component {
 	deleteLeaveRequests = async data => {
 		try {
 			const res = await request(
-				`${API_URI}/hr/leave-management/${data.id}`,
+				`hr/leave-management/${data.id}`,
 				'DELETE',
 				true
 			);

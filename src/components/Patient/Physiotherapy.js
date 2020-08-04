@@ -30,7 +30,7 @@ class Physiotherapy extends Component {
 		const { patient } = this.props;
 		try {
 			const rs = await request(
-				`${API_URI}${patientAPI}/${patient.id}/request/physiotherapy?startDate=&endDate=`,
+				`${API_URI}/${patientAPI}/${patient.id}/request/physiotherapy?startDate=&endDate=`,
 				'GET',
 				true
 			);

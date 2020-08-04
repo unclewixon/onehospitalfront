@@ -86,7 +86,7 @@ class ModalEditPayroll extends Component {
 		try {
 			console.log(JSON.stringify(data));
 			const rs = await request(
-				`${API_URI}${payrollAPI}/update-payslip`,
+				`${API_URI}/${payrollAPI}/update-payslip`,
 				'PATCH',
 				true,
 				data

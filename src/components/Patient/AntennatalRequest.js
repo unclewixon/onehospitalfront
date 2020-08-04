@@ -91,7 +91,7 @@ class AntennatalRequest extends Component {
 			console.dir(JSON.stringify(newAntenatal));
 			try {
 				const rs = await request(
-					`${API_URI}${patientAPI}/antenatal/visits`,
+					`${patientAPI}/antenatal/visits`,
 					'POST',
 					true,
 					newAntenatal

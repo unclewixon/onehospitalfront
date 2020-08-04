@@ -39,7 +39,7 @@ const Procedure = props => {
 		try {
 			setLoading(true);
 			const rs = await request(
-				`${API_URI}${patientAPI}/` + patient.id + '/request/procedure',
+				`${API_URI}/${patientAPI}/` + patient.id + '/request/procedure',
 				'GET',
 				true
 			);

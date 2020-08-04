@@ -67,12 +67,7 @@ export class ModalCreateVoucher extends Component {
 	fetchPatient = async data => {
 		try {
 			let patientList = [];
-			const rs = await request(
-				`${API_URI}${patientAPI}/list`,
-				'GET',
-				true,
-				data
-			);
+			const rs = await request(`${patientAPI}/list`, 'GET', true, data);
 			rs.forEach(function(value) {
 				patientList = [
 					...patientList,
@@ -98,7 +93,7 @@ export class ModalCreateVoucher extends Component {
 		}
 		console.log(data, create_voucher);
 		try {
-			const rs = await request(`${API_URI}${vouchersAPI}`, 'POST', true, data);
+			const rs = await request(`${vouchersAPI}`, 'POST', true, data);
 
 			let voucher = {
 				id: rs.voucher.q_id,

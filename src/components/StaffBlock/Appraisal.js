@@ -23,7 +23,7 @@ export class Appraisal extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}${appraisalAPI}/list-periods`,
+				`${API_URI}/${appraisalAPI}/list-periods`,
 				'GET',
 				true
 			);

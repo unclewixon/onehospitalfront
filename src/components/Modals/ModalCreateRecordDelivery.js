@@ -51,7 +51,7 @@ export class ModalCreateRecordDelivery extends Component {
 
 			this.setState({ submitting: true });
 			const rs = await request(
-				`${API_URI}/labour-management/delivery-record/${labourDetail.id}/save`,
+				`labour-management/delivery-record/${labourDetail.id}/save`,
 				'POST',
 				true,
 				newData
@@ -103,7 +103,7 @@ export class ModalCreateRecordDelivery extends Component {
 				this.setState({ searching: true });
 
 				const rs = await request(
-					`${API_URI}/hr/staffs/find?q=${this.state.query}`,
+					`hr/staffs/find?q=${this.state.query}`,
 					'GET',
 					true
 				);

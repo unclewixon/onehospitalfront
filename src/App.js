@@ -2,7 +2,7 @@ import React, { Component, Suspense, lazy } from 'react';
 import { Switch, Route, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
-
+import { SWRConfig } from 'swr';
 import ScrollToTop from './containers/ScrollToTop';
 import TopBar from './components/TopBar';
 import MainMenu from './components/Navigation/MainMenu';
@@ -16,6 +16,9 @@ import {
 	MODE_COOKIE,
 } from './services/constants';
 import { toggleProfile } from './actions/user';
+import { request } from './services/utilities';
+import ability from './services/ability';
+import { AbilityContext } from './components/common/Can';
 
 const Login = lazy(() => import('./pages/Login'));
 const Doctor = lazy(() => import('./pages/HR/Doctor'));
@@ -78,7 +81,7 @@ class App extends Component {
 				<Suspense fallback={<Splash />}>
 					<ScrollToTop>
 						{loggedIn ? (
-							<>
+							<AbilityContext.Provider value={ability}>
 								<div className="all-wrapper with-side-panel solid-bg-all">
 									<div className="layout-w">
 										{/* user role determines main menu */}
@@ -87,40 +90,57 @@ class App extends Component {
 											theme_mode={theme_mode}
 											menu_mode={menu_mode}
 										/>
-										<div className="content-w">
+										<div className="content-w content-w-l-18" id="main-content">
 											{/* user role determines topbar menu */}
 											<TopBar
 												role={profile.role ? profile.role.slug : 'admin'}
 											/>
-											<Switch>
-												<Route path="/doctor" component={Doctor} />
-												<Route path="/front-desk" component={FrontDesk} />
-												<Route path="/in-patient" component={InPatient} />
-												<Route path="/pharmacy" component={Pharmacy} />
-												<Route path="/pharmacy2" component={Pharmacy2} />
-												<Route
-													path="/physiotherapy"
-													component={Physiotherapy}
-												/>
-												<Route path="/dentistry" component={Dentistry} />
-												<Route path="/procedure" component={Procedure} />
-												<Route path="/radiology" component={Radiology} />
-												<Route path="/antennatal" component={Antennatal} />
-												<Route path="/ivf" component={IVF} />
-												<Route path="/nicu" component={Nicu} />
-												<Route path="/hr" component={Staff} />
-												<Route path="/inventory" component={Inventory} />
-												<Route path="/settings" component={Settings} />
-												<Route path="/hmo" component={Hmo} />
-												<Route path="/lab" component={ClinicalLab} />
-												<Route path="/labour-mgt" component={LabMgt} />
-												<Route path="/cafeteria" component={Cafeteria} />
-												<Route path="/immunization" component={Immunization} />
-												<Route path="/billing-paypoint" component={PayPoint} />
-												<Route path="/account" component={Account} />
-												<Route path="/logout" component={Logout} />
-												<Route component={NoMatch} />
-											</Switch>
+											<SWRConfig
+												value={{
+													fetcher: url =>
+														request(url, 'get', true).then(res => res),
+													refreshInterval: 15 * 60 * 1000,
+													shouldRetryOnError: false,
+													revalidateOnFocus: false,
+													errorRetryInterval: 0,
+													errorRetryCount: 2,
+												}}>
+												<Switch>
+													<Route path="/doctor" component={Doctor} />
+													<Route path="/front-desk" component={FrontDesk} />
+													<Route path="/in-patient" component={InPatient} />
+													<Route path="/pharmacy" component={Pharmacy} />
+													<Route path="/pharmacy2" component={Pharmacy2} />
+													<Route
+														path="/physiotherapy"
+														component={Physiotherapy}
+													/>
+													<Route path="/dentistry" component={Dentistry} />
+													<Route path="/procedure" component={Procedure} />
+													<Route path="/radiology" component={Radiology} />
+													<Route path="/antennatal" component={Antennatal} />
+													<Route path="/ivf" component={IVF} />
+													<Route path="/nicu" component={Nicu} />
+													<Route path="/hr" component={Staff} />
+													<Route path="/inventory" component={Inventory} />
+													<Route path="/settings" component={Settings} />
+													<Route path="/hmo" component={Hmo} />
+													<Route path="/lab" component={ClinicalLab} />
+													<Route path="/labour-mgt" component={LabMgt} />
+													<Route path="/cafeteria" component={Cafeteria} />
+													<Route
+														path="/immunization"
+														component={Immunization}
+													/>
+													<Route
+														path="/billing-paypoint"
+														component={PayPoint}
+													/>
+													<Route path="/account" component={Account} />
+													<Route path="/logout" component={Logout} />
+													<Route component={NoMatch} />
+												</Switch>
+											</SWRConfig>
 										</div>
 									</div>
 									<SlidingPane isOpen={isStaffOpen}>
@@ -134,7 +154,7 @@ class App extends Component {
 								{is_modal_open && (
 									<div className={`modal-backdrop fade show`} />
 								)}
-							</>
+							</AbilityContext.Provider>
 						) : (
 							<div className="loginPage">
 								<Switch>

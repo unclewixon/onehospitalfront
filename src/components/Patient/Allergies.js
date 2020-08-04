@@ -26,7 +26,7 @@ class Allergies extends Component {
 		const { patient } = this.props;
 		try {
 			const rs = await request(
-				`${API_URI}${patientAPI}/${patient.id}/allergies`,
+				`${patientAPI}/${patient.id}/allergies`,
 				'GET',
 				true
 			);
@@ -40,7 +40,7 @@ class Allergies extends Component {
 	deleteAllergy = async data => {
 		try {
 			const rs = await request(
-				`${API_URI}${patientAPI}/${data.id}/delete-allergy`,
+				`${patientAPI}/${data.id}/delete-allergy`,
 				'DELETE',
 				true
 			);

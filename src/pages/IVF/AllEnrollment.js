@@ -31,11 +31,11 @@ export class AllEnrollment extends Component {
 		const { startDate, endDate } = this.state;
 		try {
 			this.setState({ loading: true });
-			console.log(
-				`${API_URI}${patientAPI}/antenatal/list?startDate=${startDate}&endDate=${endDate}`
-			);
+			// console.log(
+			// 	`${API_URI}/${patientAPI}/antenatal/list?startDate=${startDate}&endDate=${endDate}`
+			// );
 			const rs = await request(
-				`${API_URI}${patientAPI}/antenatal/list?startDate=${startDate}&endDate=${endDate}`,
+				`${patientAPI}/antenatal/list?startDate=${startDate}&endDate=${endDate}`,
 				'GET',
 				true
 			);

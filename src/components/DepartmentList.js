@@ -22,7 +22,7 @@ class DepartmentList extends Component {
 	fetchDepartments = async () => {
 		this.setState({ loading: true });
 		try {
-			const rs = await request(`${API_URI}/departments`, 'GET', true);
+			const rs = await request(`/departments`, 'GET', true);
 			this.props.loadDepartments(rs);
 			this.setState({ loading: false });
 		} catch (error) {

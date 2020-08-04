@@ -63,7 +63,7 @@ class ModalApproveTransaction extends Component {
 		this.setState({ submitting: true });
 		try {
 			const rs = await request(
-				`${API_URI}${transactionsAPI}/` + id + '/process',
+				`${transactionsAPI}/` + id + '/process',
 				'PATCH',
 				true,
 				data
@@ -103,7 +103,7 @@ class ModalApproveTransaction extends Component {
 		try {
 			//this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}${vouchersAPI}/list` + '?patient_id=' + data.patient_id,
+				`${vouchersAPI}/list` + '?patient_id=' + data.patient_id,
 				'GET',
 				true
 			);

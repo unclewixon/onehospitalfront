@@ -18,11 +18,7 @@ class PayPoint extends Component {
 		try {
 			let today = moment().format('YYYY-MM-DD');
 			console.log(today);
-			const rs = await request(
-				`${API_URI}${transactionsAPI}/dashboard`,
-				'GET',
-				true
-			);
+			const rs = await request(`${transactionsAPI}/dashboard`, 'GET', true);
 			this.setState({
 				payPoints: [
 					{

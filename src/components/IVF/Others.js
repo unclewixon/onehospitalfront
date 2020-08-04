@@ -71,7 +71,7 @@ let Others = props => {
 		props.loadPatientIVFForm(res);
 
 		try {
-			const rs = await request(`${API_URI}${IVFEnroll}`, 'POST', true, res);
+			const rs = await request(`${IVFEnroll}`, 'POST', true, res);
 			//props.closeModals(true);
 			notifySuccess('IVF created successfully');
 			history.push('/ivf');

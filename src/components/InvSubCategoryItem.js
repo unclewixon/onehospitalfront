@@ -13,7 +13,7 @@ class InvSubCategoryItem extends Component {
 		console.log(item);
 		// const { item } = this.props;
 		// try {
-		// 	const rs = await request(`${API_URI}${inventoryAPI}/categories`, 'POST', true, data);
+		// 	const rs = await request(`${inventoryAPI}/categories`, 'POST', true, data);
 		// 	this.props.updateCategory(rs);
 		// 	notifySuccess('category enabled!');
 		// } catch (e) {

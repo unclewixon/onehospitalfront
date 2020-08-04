@@ -82,7 +82,7 @@ class PatientAdmission extends Component {
 	fetchRooms = async data => {
 		try {
 			this.setState({ loading: true });
-			const rs = await request(`${API_URI}` + '/rooms', 'GET', true);
+			const rs = await request('rooms', 'GET', true);
 
 			console.log(rs);
 
@@ -107,7 +107,7 @@ class PatientAdmission extends Component {
 	fetchStaffs = async data => {
 		try {
 			this.setState({ loading: true });
-			const rs = await request(`${API_URI}${staffAPI}`, 'GET', true);
+			const rs = await request(`${staffAPI}`, 'GET', true);
 
 			let staffs = [];
 			let staffsMultiple = [];
@@ -154,7 +154,7 @@ class PatientAdmission extends Component {
 		this.setState({ submitting: true });
 		try {
 			const rs = await request(
-				`${API_URI}${patientAPI}/admissions/` + patient.id + '/save',
+				`${patientAPI}/admissions/` + patient.id + '/save',
 				'POST',
 				true,
 				formData

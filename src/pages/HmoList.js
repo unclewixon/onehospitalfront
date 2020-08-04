@@ -103,7 +103,7 @@ const HmoList = props => {
 			let id = hmo.id;
 			setDataLoaded(false);
 			const rs = await request(
-				`${API_URI}/hmos/transactions/` + id + '/process?action=' + action,
+				`hmos/transactions/` + id + '/process?action=' + action,
 				'GET',
 				true
 			);
@@ -188,7 +188,7 @@ const HmoList = props => {
 						</a>
 						<a
 							className="btn btn-primary btn-sm"
-							href={`${API_URI}${hmoAPI}/download-sample`}
+							href={`${API_URI}/${hmoAPI}/download-sample`}
 							download>
 							<i className="os-icon os-icon-ui-22"></i>
 							<span>Download Sample</span>

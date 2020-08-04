@@ -27,7 +27,7 @@ class EditRole extends Component {
 		try {
 			const { roleID, previousRole } = this.props;
 			const rs = await request(
-				`${API_URI}${rolesAPI}/${roleID}/update`,
+				`${rolesAPI}/${roleID}/update`,
 				'PATCH',
 				true,
 				data

@@ -29,7 +29,6 @@ export class Billing extends Component {
 		startDate: '',
 		endDate: '',
 		status: '',
-		paymentType: '',
 		searching: '',
 		searchStaffBilling: false,
 		hmos: [],
@@ -52,7 +51,7 @@ export class Billing extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}${transactionsAPI}/list?staff_id=${this.props.staff.details.id}&startDate=${startDate}&endDate=${endDate}&status=&transaction_type=cafeteria&payment_type&page=2&limit=2`,
+				`${API_URI}/${transactionsAPI}/list?staff_id=${this.props.staff.details.id}&startDate=${startDate}&endDate=${endDate}&status=&transaction_type=cafeteria&payment_type&page=2&limit=2`,
 				'GET',
 				true
 			);
@@ -122,7 +121,7 @@ export class Billing extends Component {
 			try {
 				this.setState({ ...this.state, searching: true });
 				const rs = await request(
-					`${API_URI}${searchAPI}?q=${this.state.query}`,
+					`${API_URI}/${searchAPI}?q=${this.state.query}`,
 					'GET',
 					true
 				);

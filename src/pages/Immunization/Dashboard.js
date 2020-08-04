@@ -28,12 +28,12 @@ export class Dashboard extends Component {
 		let endDate = moment().format('YYYY-MM-DD');
 		try {
 			this.setState({ loading: true });
-			console.log(
-				`${API_URI}/patient/immunizations?startDate=${startDate}&endDate=${endDate}&patient_id=`
-			);
+			// console.log(
+			// 	`${API_URI}/patient/immunizations?startDate=${startDate}&endDate=${endDate}&patient_id=`
+			// );
 
 			const rs = await request(
-				`${API_URI}/patient/immunizations?startDate=${startDate}&endDate=${endDate}&patient_id=`,
+				`patient/immunizations?startDate=${startDate}&endDate=${endDate}&patient_id=`,
 				'GET',
 				true
 			);

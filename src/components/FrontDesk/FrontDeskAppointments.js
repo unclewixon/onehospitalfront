@@ -35,11 +35,7 @@ const Appointment = props => {
 	async function getAppointments() {
 		try {
 			setLoading(true);
-			const res = await request(
-				`${API_URI}/front-desk/appointments/today`,
-				'GET',
-				true
-			);
+			const res = await request(`front-desk/appointments/today`, 'GET', true);
 			setAppointments(res);
 			setLoading(false);
 		} catch (e) {

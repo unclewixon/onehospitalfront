@@ -49,7 +49,7 @@ export class Dashboard extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}${hmoAPI}${transactionsAPI}?startDate=${startDate}&endDate=${endDate}&patient_id=&status=${status}&page=1&limit=10`,
+				`${hmoAPI}${transactionsAPI}?startDate=${startDate}&endDate=${endDate}&patient_id=&status=${status}&page=1&limit=10`,
 				'GET',
 				true
 			);

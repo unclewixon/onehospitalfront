@@ -58,7 +58,7 @@ export class AllTransaction extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}${hmoAPI}${transactionsAPI}?startDate=${startDate}&endDate=${endDate}&patient_id=${patient_id}&status=${status}&page=1&limit=10&hmo_id=${hmo_id}`,
+				`${hmoAPI}${transactionsAPI}?startDate=${startDate}&endDate=${endDate}&patient_id=${patient_id}&status=${status}&page=1&limit=10&hmo_id=${hmo_id}`,
 				'GET',
 				true
 			);
@@ -128,7 +128,7 @@ export class AllTransaction extends Component {
 			try {
 				this.setState({ ...this.state, searching: true });
 				const rs = await request(
-					`${API_URI}${searchAPI}?q=${this.state.query}`,
+					`${searchAPI}?q=${this.state.query}`,
 					'GET',
 					true
 				);
@@ -151,7 +151,7 @@ export class AllTransaction extends Component {
 			try {
 				this.setState({ ...this.state, searchHmo: true });
 				const rs = await request(
-					`${API_URI}/hmos?name=${this.state.hmoQuery}`,
+					`hmos?name=${this.state.hmoQuery}`,
 					'GET',
 					true
 				);

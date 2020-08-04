@@ -70,7 +70,7 @@ const HmoBulkUpload = props => {
 						</a>
 						<a
 							className="btn btn-primary btn-sm"
-							href={`${API_URI}${hmoAPI}/download-tariff-sample?downloadType=services`}
+							href={`${API_URI}/${hmoAPI}/download-tariff-sample?downloadType=services`}
 							download>
 							<i className="os-icon os-icon-ui-22"></i>
 							<span>Download Sample</span>

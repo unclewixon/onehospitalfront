@@ -36,7 +36,7 @@ class Permission extends Component {
 	fetchPermissions = async () => {
 		this.setState({ loading: true });
 		try {
-			const rs = await request(`${API_URI}/settings/permissions`, 'GET', true);
+			const rs = await request(`settings/permissions`, 'GET', true);
 			this.props.get_all_permissions(rs);
 			this.setState({ loading: false });
 		} catch (error) {
@@ -53,17 +53,12 @@ class Permission extends Component {
 			name,
 		};
 		try {
-			const rs = await request(
-				`${API_URI}/settings/permissions`,
-				'POST',
-				true,
-				data
-			);
+			const rs = await request(`settings/permissions`, 'POST', true, data);
 			this.props.add_permission(rs);
 			this.setState({ loading: false, name: '' });
 		} catch (error) {
 			this.setState({ loading: false });
-			notifyError(error.message || 'An error occured creating permission');
+			notifyError(error.message || 'An error occurred creating permission');
 		}
 	};
 
@@ -86,7 +81,7 @@ class Permission extends Component {
 		};
 		try {
 			const rs = await request(
-				`${API_URI}/settings/permissions/${id}/update`,
+				`settings/permissions/${id}/update`,
 				'PATCH',
 				true,
 				data
@@ -108,7 +103,7 @@ class Permission extends Component {
 	DeletePermission = async data => {
 		try {
 			const rs = await request(
-				`${API_URI}/settings/permissions/${data.id}`,
+				`settings/permissions/${data.id}`,
 				'DELETE',
 				true,
 				data
@@ -134,7 +129,7 @@ class Permission extends Component {
 			<div className="row">
 				<div className="col-lg-8">
 					<div className="element-wrapper">
-						<div className="element-box">
+						<div className="element-box p-0">
 							<div className="table-responsive">
 								<table className="table table-striped">
 									<thead>
@@ -189,7 +184,7 @@ class Permission extends Component {
 				<div className="col-lg-4 col-xxl-3">
 					<div className="pipeline white lined-warning">
 						<form onSubmit={edit ? this.onEditPermission : this.AddPermission}>
-							<h6 className="form-header">Grant Permission</h6>
+							<h6 className="form-header">Permission Form</h6>
 							<div className="form-group">
 								<input
 									className="form-control"

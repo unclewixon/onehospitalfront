@@ -31,8 +31,8 @@ class RecentProcedure extends Component {
 		try {
 			const rs = await request(
 				patientId
-					? `${API_URI}/patient/${patientId}/request/procedure?startDate=${startDate}&endDate=${endDate}`
-					: `${API_URI}/patient/requests/procedure?startDate=${startDate}&endDate=${endDate}`,
+					? `patient/${patientId}/request/procedure?startDate=${startDate}&endDate=${endDate}`
+					: `patient/requests/procedure?startDate=${startDate}&endDate=${endDate}`,
 				'GET',
 				true
 			);

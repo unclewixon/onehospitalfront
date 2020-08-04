@@ -31,8 +31,8 @@ class RecentPhysiotherapy extends Component {
 		try {
 			const rs = await request(
 				patientId
-					? `${API_URI}/patient/${patientId}/request/physiotherapy?startDate=${startDate}&endDate=${endDate}`
-					: `${API_URI}/patient/requests/physiotherapy?startDate=${startDate}&endDate=${endDate}`,
+					? `patient/${patientId}/request/physiotherapy?startDate=${startDate}&endDate=${endDate}`
+					: `patient/requests/physiotherapy?startDate=${startDate}&endDate=${endDate}`,
 				'GET',
 				true
 			);

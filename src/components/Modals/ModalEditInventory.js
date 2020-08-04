@@ -54,7 +54,7 @@ class ModalEditInventory extends Component {
 
 		try {
 			const rs = await request(
-				`${API_URI}${inventoryAPI}/${invID}/update`,
+				`${inventoryAPI}/${invID}/update`,
 				'PATCH',
 				true,
 				dataWithQuantity

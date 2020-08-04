@@ -43,12 +43,7 @@ const RoomCategory = props => {
 			discount,
 		};
 		try {
-			const rs = await request(
-				`${API_URI}/rooms/categories`,
-				'POST',
-				true,
-				data
-			);
+			const rs = await request(`rooms/categories`, 'POST', true, data);
 			props.add_room_category(rs);
 			setLoading(false);
 			setState({ ...initialState });
@@ -71,7 +66,7 @@ const RoomCategory = props => {
 		};
 		try {
 			const rs = await request(
-				`${API_URI}/rooms/categories/${payload.id}/update`,
+				`rooms/categories/${payload.id}/update`,
 				'PATCH',
 				true,
 				data
@@ -108,7 +103,7 @@ const RoomCategory = props => {
 
 	const onDeleteRoomCategory = async data => {
 		try {
-			await request(`${API_URI}/rooms/categories/${data.id}`, 'DELETE', true);
+			await request(`rooms/categories/${data.id}`, 'DELETE', true);
 			props.delete_room_category(data);
 			setLoading(false);
 			notifySuccess('Room Category deleted');
@@ -125,7 +120,7 @@ const RoomCategory = props => {
 	const fetchRoomCategory = async () => {
 		setDataLoaded(false);
 		try {
-			const rs = await request(`${API_URI}/rooms/categories`, 'GET', true);
+			const rs = await request(`rooms/categories`, 'GET', true);
 			props.get_all_room_category(rs);
 			setDataLoaded(true);
 		} catch (error) {

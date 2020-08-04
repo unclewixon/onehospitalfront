@@ -29,7 +29,7 @@ class Antennatal extends Component {
 
 		try {
 			const rs = await request(
-				`${API_URI}/patient/antenatal/visits?patient_id=${patient.id}&startDate=&endDate=&page=&limit=`,
+				`patient/antenatal/visits?patient_id=${patient.id}&startDate=&endDate=&page=&limit=`,
 				'GET',
 				true
 			);

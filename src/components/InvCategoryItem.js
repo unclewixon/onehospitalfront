@@ -13,7 +13,7 @@ class InvCategoryItem extends Component {
 		console.log(item);
 		// const { item } = this.props;
 		// try {
-		// 	const rs = await request(`${API_URI}${inventoryAPI}/categories`, 'POST', true, data);
+		// 	const rs = await request(`${inventoryAPI}/categories`, 'POST', true, data);
 		// 	this.props.updateCategory(rs);
 		// 	notifySuccess('category enabled!');
 		// } catch (e) {
@@ -34,18 +34,27 @@ class InvCategoryItem extends Component {
 				<td>{serial}</td>
 				<td>{item.name}</td>
 				<td className="text-center">
-					<div className={`status-pill ${item.isActive ? 'green' : 'red'}`}/>
+					<div className={`status-pill ${item.isActive ? 'green' : 'red'}`} />
 				</td>
 				<td className="text-right row-actions">
-					<a  onClick={editCategory(item, true)} className="secondary" title="Edit Inventory Category">
+					<a
+						onClick={editCategory(item, true)}
+						className="secondary"
+						title="Edit Inventory Category">
 						<i className="os-icon os-icon-edit-32" />
 					</a>
 					{item.isActive ? (
-						<a  onClick={this.disableCategory} className="danger" title="Disable Category">
+						<a
+							onClick={this.disableCategory}
+							className="danger"
+							title="Disable Category">
 							<i className="os-icon os-icon-x-circle" />
 						</a>
 					) : (
-						<a  onClick={this.enableCategory} className="success" title="Enable Category">
+						<a
+							onClick={this.enableCategory}
+							className="success"
+							title="Enable Category">
 							<i className="os-icon os-icon-check-circle" />
 						</a>
 					)}

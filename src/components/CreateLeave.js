@@ -26,7 +26,7 @@ const CreateLeave = ({
 
 	const fetchLeaveCategory = useCallback(async () => {
 		try {
-			const rs = await request(`${API_URI}/leave-category`, 'GET', true);
+			const rs = await request(`/leave-category`, 'GET', true);
 			get_all_leave_category(rs);
 		} catch (error) {
 			notifyError('could not fetch leave categories!');
@@ -71,7 +71,7 @@ const CreateLeave = ({
 		};
 		try {
 			const rs = await request(
-				`${API_URI}/hr/leave-management`,
+				`hr/leave-management`,
 				'POST',
 				true,
 				newRequestData

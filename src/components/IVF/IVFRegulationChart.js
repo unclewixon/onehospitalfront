@@ -78,12 +78,7 @@ class IVFRegulationChart extends Component {
 		};
 
 		try {
-			const rs = await request(
-				`${API_URI}${IVFHCGDown}`,
-				'POST',
-				true,
-				dataToSave
-			);
+			const rs = await request(`${IVFHCGDown}`, 'POST', true, dataToSave);
 			//props.closeModals(true);
 			notifySuccess('Down Regulation Chart created successfully');
 			history.push('/ivf/reg-chart');
@@ -102,8 +97,8 @@ class IVFRegulationChart extends Component {
 	loadPatients = async () => {
 		try {
 			this.setState({ loading: true });
-			console.log(`${API_URI}${patientAPI}/list`);
-			const rs = await request(`${API_URI}${patientAPI}/list`, 'GET', true);
+			// console.log(`${API_URI}${patientAPI}/list`);
+			const rs = await request(`${patientAPI}/list`, 'GET', true);
 
 			let patientList = [];
 			rs.map((value, i) => {

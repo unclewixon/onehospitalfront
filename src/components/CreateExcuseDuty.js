@@ -33,7 +33,7 @@ const CreateExcuseDuty = ({ history }) => {
 		}
 		let val = inputValue.toUpperCase();
 		const res = await request(
-			`${API_URI}${diagnosisAPI}search?q=${val}`,
+			`${API_URI}/${diagnosisAPI}search?q=${val}`,
 			'GET',
 			true
 		);

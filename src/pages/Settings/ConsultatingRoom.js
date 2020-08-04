@@ -123,7 +123,7 @@ const ConsultatingRoom = props => {
 	const fetchConsultatingRoom = async () => {
 		setDataLoaded(false);
 		try {
-			const rs = await request(`${API_URI}/consulting-rooms`, 'GET', true);
+			const rs = await request(`consulting-rooms`, 'GET', true);
 			props.get_all_consultating_rooms(rs);
 			setDataLoaded(true);
 		} catch (error) {

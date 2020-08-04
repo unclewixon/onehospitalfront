@@ -41,8 +41,8 @@ class HcgAdminTable extends Component {
 	loadPatients = async () => {
 		try {
 			this.setState({ loading: true });
-			console.log(`${API_URI}${patientAPI}/list`);
-			const rs = await request(`${API_URI}${patientAPI}/list`, 'GET', true);
+			// console.log(`${API_URI}/patientAPI}/list`);
+			const rs = await request(`${patientAPI}/list`, 'GET', true);
 
 			let patientList = [];
 			rs.map((value, i) => {
@@ -117,12 +117,7 @@ class HcgAdminTable extends Component {
 		});
 
 		try {
-			const rs = await request(
-				`${API_URI}${IVFHCGAdmin}`,
-				'POST',
-				true,
-				hcgAdmin
-			);
+			const rs = await request(`IVFHCGAdmin}`, 'POST', true, hcgAdmin);
 			//props.closeModals(true);
 			notifySuccess('HCG Administration created successfully');
 			history.push('/ivf/hcg-admin');

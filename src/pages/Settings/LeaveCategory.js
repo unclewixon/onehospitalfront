@@ -5,7 +5,6 @@ import waiting from '../../assets/images/waiting.gif';
 import searchingGIF from '../../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request, confirmAction } from '../../services/utilities';
-import { API_URI } from '../../services/constants';
 import {
 	add_leave_category,
 	get_all_leave_category,
@@ -41,7 +40,7 @@ const LeaveCategory = props => {
 			duration,
 		};
 		try {
-			const rs = await request(`${API_URI}/leave-category`, 'POST', true, data);
+			const rs = await request(`leave-category`, 'POST', true, data);
 			props.add_leave_category(rs);
 			setLoading(false);
 			setState({ ...initialState });
@@ -62,7 +61,7 @@ const LeaveCategory = props => {
 		};
 		try {
 			const rs = await request(
-				`${API_URI}/leave-category/${payload.id}/update`,
+				`leave-category/${payload.id}/update`,
 				'PATCH',
 				true,
 				data
@@ -93,7 +92,7 @@ const LeaveCategory = props => {
 
 	const onDeleteLeaveCategory = async data => {
 		try {
-			await request(`${API_URI}/leave-category/${data.id}`, 'DELETE', true);
+			await request(`leave-category/${data.id}`, 'DELETE', true);
 			props.delete_leave_category(data);
 			setLoading(false);
 			notifySuccess('Leave Category deleted');
@@ -115,7 +114,7 @@ const LeaveCategory = props => {
 	const fetchLeaveCategory = async () => {
 		setDataLoaded(false);
 		try {
-			const rs = await request(`${API_URI}/leave-category`, 'GET', true);
+			const rs = await request(`leave-category`, 'GET', true);
 			props.get_all_leave_category(rs);
 			setDataLoaded(true);
 		} catch (error) {
