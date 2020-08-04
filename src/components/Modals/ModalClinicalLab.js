@@ -106,7 +106,10 @@ const ModalClinicalLab = ({
 															</td>
 														</tr>
 														<tr>
-															<td>Request Note</td>
+															<td>
+																<div className="text-left">Request Note</div>
+															</td>
+															<td></td>
 														</tr>
 														<tr>
 															<td className="text-justify">

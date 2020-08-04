@@ -7,6 +7,7 @@ import inPatientImg from '../../assets/images/in-patient.png';
 import 'react-datepicker/dist/react-datepicker.css';
 import Image from 'react-bootstrap/Image';
 import InPatientAppointmentForm from '../Forms/InPatientAppointmentForm';
+import OutPatientAppointmentForm from '../Forms/OutPatientAppointmentForm';
 
 const AppointmentFormModal = props => {
 	const [currentView, setCurrentView] = useState('select-appointment');
@@ -45,6 +46,7 @@ const AppointmentFormModal = props => {
 						{
 							'select-appointment': <SelectAppointment setView={changeView} />,
 							'consultation-form': <InPatientAppointmentForm />,
+							'outpatient-form': <OutPatientAppointmentForm />,
 						}[currentView]
 					}
 				</div>
@@ -75,7 +77,7 @@ function SelectAppointment({ setView }) {
 				<div className="col-sm-12">
 					<a
 						className="element-box el-tablo"
-						onClick={() => setView('opd-form')}>
+						onClick={() => setView('outpatient-form')}>
 						<div className="p-4">
 							<Image src={inPatientImg} width={60} />
 						</div>
