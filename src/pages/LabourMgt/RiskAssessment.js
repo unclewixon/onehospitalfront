@@ -28,7 +28,7 @@ export class RiskAssessment extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}/labour-management/${labourDetail.id}/risk-assessment`,
+				`labour-management/${labourDetail.id}/risk-assessment`,
 				'GET',
 				true
 			);

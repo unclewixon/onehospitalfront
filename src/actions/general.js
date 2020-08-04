@@ -68,10 +68,10 @@ export const toggleModal = status => {
 };
 
 //Hr Modals
-export const toggleCreateStaff = status => {
+export const toggleCreateStaff = payload => {
 	return {
 		type: TOGGLE_CREATE_STAFF,
-		payload: status,
+		payload,
 	};
 };
 
@@ -379,7 +379,7 @@ export const toggleEditAccount = (action, data) => {
 export const closeModals = () => {
 	return dispatch => {
 		dispatch(toggleModal(false));
-		dispatch(toggleCreateStaff(false));
+		dispatch(toggleCreateStaff({ status: false, staff: null }));
 		dispatch(toggleShowHistory(false));
 		dispatch(toggleAddTask(false));
 		dispatch(toggleEditStaff(false));
@@ -523,7 +523,7 @@ export const updateQuantity = action => {
 	};
 };
 
-//frontdesk modals
+// frontdesk modals
 export const registerNewPatient = action => {
 	return dispatch => {
 		dispatch(closeModals());

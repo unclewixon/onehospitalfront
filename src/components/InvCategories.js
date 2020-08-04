@@ -17,10 +17,10 @@ class InvCategories extends Component {
 	componentDidMount() {
 		this.fetchCategories();
 	}
-	
+
 	fetchCategories = async () => {
 		try {
-			const rs = await request(`${API_URI}${inventoryCatAPI}`, 'GET', true);
+			const rs = await request(`${inventoryCatAPI}`, 'GET', true);
 			this.props.loadInvCategories(rs);
 		} catch (error) {
 			console.log(error);
@@ -29,7 +29,10 @@ class InvCategories extends Component {
 
 	editCategory = (category, action) => () => {
 		this.setState({ categoryID: null, edit: false }, () => {
-			this.setState({ categoryID: category ? category.id : category, edit: action });
+			this.setState({
+				categoryID: category ? category.id : category,
+				edit: action,
+			});
 		});
 	};
 
@@ -42,7 +45,7 @@ class InvCategories extends Component {
 					<div className="element-wrapper">
 						<div className="element-box">
 							<h5 className="form-header">Categories</h5>
-							<div className="form-desc"/>
+							<div className="form-desc" />
 							<div className="table-responsive">
 								<table className="table table-striped">
 									<thead>
@@ -62,7 +65,7 @@ class InvCategories extends Component {
 													item={category}
 													editCategory={this.editCategory}
 												/>
-											)
+											);
 										})}
 									</tbody>
 								</table>
@@ -88,7 +91,7 @@ class InvCategories extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		categories: state.inventory.categories,
-	}
+	};
 };
 
 export default connect(mapStateToProps, { loadInvCategories })(InvCategories);

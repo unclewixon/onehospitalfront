@@ -77,7 +77,7 @@ class ModalCreateAccount extends Component {
 	createInventory = async data => {
 		// this.setState({ submitting: true });
 		// try {
-		// 	const rs = await request(`${API_URI}${inventoryAPI}`, 'POST', true, data);
+		// 	const rs = await request(`${inventoryAPI}`, 'POST', true, data);
 		// 	this.props.addInventory(rs);
 		// 	this.props.reset('create_inventory');
 		// 	notifySuccess('inventory item created!');

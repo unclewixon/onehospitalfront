@@ -134,12 +134,13 @@ const PatientDataUpload = props => {
 		try {
 			setLoading(true);
 			// const rs = await request(
-			// 	`${API_URI}${patientAPI}` + '/download/' + data.document_name,
+			// 	`${API_URI}/patientAPI}` + '/download/' + data.document_name,
 			// 	'GET',
 			// 	true
 			// );
 			//
-			const url = `${API_URI}${patientAPI}` + '/download/' + data.document_name;
+			const url =
+				`${API_URI}/${patientAPI}` + '/download/' + data.document_name;
 			setTimeout(() => {
 				window.open(url, '_blank').focus();
 				setLoading(false);
@@ -160,7 +161,7 @@ const PatientDataUpload = props => {
 			setLoading(true);
 			let patient = props.patient;
 			const rs = await request(
-				`${API_URI}${patientAPI}` + '/' + patient.id + '/documents',
+				`${patientAPI}` + '/' + patient.id + '/documents',
 				'GET',
 				true
 			);
@@ -196,7 +197,7 @@ const PatientDataUpload = props => {
 					console.log(key[0] + ', ' + key[1]);
 				}
 				const rs = await upload(
-					`${API_URI}${patientAPI}` + '/' + patient.id + '/upload-document',
+					`${API_URI}/${patientAPI}` + '/' + patient.id + '/upload-document',
 					'POST',
 					formData
 				);

@@ -112,7 +112,7 @@ const Vitals = props => {
 
 	async function getData(patient) {
 		const res = await request(
-			`${API_URI}${patientAPI}/${patient.id}/vitals`,
+			`${patientAPI}/${patient.id}/vitals`,
 			'GET',
 			true
 		);
@@ -126,7 +126,7 @@ const Vitals = props => {
 			department_id: dept?.id,
 		};
 		const res = await request(
-			`${API_URI}/front-desk/queue-system/add`,
+			`front-desk/queue-system/add`,
 			'POST',
 			true,
 			data

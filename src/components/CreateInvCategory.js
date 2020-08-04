@@ -11,9 +11,9 @@ import { addInvCategory } from '../actions/inventory';
 const validate = values => {
 	const errors = {};
 	if (!values.name) {
-        errors.name = 'enter category';
-    }
-    return errors;
+		errors.name = 'enter category';
+	}
+	return errors;
 };
 
 class CreateInvCategory extends Component {
@@ -24,14 +24,16 @@ class CreateInvCategory extends Component {
 	createCategory = async data => {
 		this.setState({ submitting: true });
 		try {
-			const rs = await request(`${API_URI}${inventoryCatAPI}`, 'POST', true, data);
+			const rs = await request(`${inventoryCatAPI}`, 'POST', true, data);
 			this.props.addInvCategory(rs);
 			this.setState({ submitting: false });
 			this.props.reset('create_category');
 			notifySuccess('category created!');
 		} catch (e) {
 			this.setState({ submitting: false });
-			throw new SubmissionError({ _error: e.message || 'could not create category' });
+			throw new SubmissionError({
+				_error: e.message || 'could not create category',
+			});
 		}
 	};
 
@@ -43,7 +45,14 @@ class CreateInvCategory extends Component {
 				<div className="element-box pipeline white lined-warning">
 					<form onSubmit={handleSubmit(this.createCategory)}>
 						<h6 className="form-header">Create Category</h6>
-						{error && <div className="alert alert-danger" dangerouslySetInnerHTML={{__html: `<strong>Error!</strong> ${error}`}}/>}
+						{error && (
+							<div
+								className="alert alert-danger"
+								dangerouslySetInnerHTML={{
+									__html: `<strong>Error!</strong> ${error}`,
+								}}
+							/>
+						)}
 						<div className="row">
 							<div className="col-sm-12">
 								<Field
@@ -58,7 +67,12 @@ class CreateInvCategory extends Component {
 						</div>
 						<div className="row">
 							<div className="col-sm-12 text-right">
-								<button className="btn btn-primary" disabled={submitting} type="submit">{submitting ? <img src={waiting} alt="submitting"/> : 'save'}</button>
+								<button
+									className="btn btn-primary"
+									disabled={submitting}
+									type="submit">
+									{submitting ? <img src={waiting} alt="submitting" /> : 'save'}
+								</button>
 							</div>
 						</div>
 					</form>

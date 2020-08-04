@@ -21,7 +21,7 @@ class InvSubCategories extends Component {
 
 	fetchSubCategories = async () => {
 		try {
-			const rs = await request(`${API_URI}${inventorySubCatAPI}`, 'GET', true);
+			const rs = await request(`${inventorySubCatAPI}`, 'GET', true);
 			this.props.loadInvSubCategories(rs);
 		} catch (error) {
 			console.log(error);

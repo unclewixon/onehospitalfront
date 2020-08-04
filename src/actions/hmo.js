@@ -64,7 +64,7 @@ export const addHmo = data => {
 	// console.log(data);
 	return dispatch => {
 		return axios
-			.post(`${API_URI}${hmoAPI}`, data)
+			.post(`${API_URI}/${hmoAPI}`, data)
 			.then(response => {
 				// console.log(response);
 				return dispatch(add_hmo(response.data));
@@ -79,7 +79,7 @@ export const addHmo = data => {
 export const getAllHmos = data => {
 	return async dispatch => {
 		try {
-			const rs = await request(`${API_URI}${hmoAPI}`, 'GET', true);
+			const rs = await request(`${hmoAPI}`, 'GET', true);
 			console.log(rs, 'get All hmo');
 			dispatch(fetch_all_hmos_data(rs));
 			return { success: true };
@@ -93,7 +93,7 @@ export const fetchHmoTariff = data => {
 	console.log(data);
 	return dispatch => {
 		return axios
-			.get(`${API_URI}${hmoAPI}/${data}/tariff?listType=services`, {})
+			.get(`${API_URI}/${hmoAPI}/${data}/tariff?listType=services`, {})
 			.then(response => {
 				console.log(response.data, 'Hmo tariff');
 				return dispatch(fetch_hmo_tariff(response.data));
@@ -108,7 +108,7 @@ export const updateHmo = (EditedData, previousData) => {
 	console.log(previousData.id, EditedData);
 	return dispatch => {
 		return axios
-			.patch(`${API_URI}${hmoAPI}/${previousData.id}/update`, EditedData)
+			.patch(`${API_URI}/${hmoAPI}/${previousData.id}/update`, EditedData)
 			.then(response => {
 				return dispatch(update_hmo(response.data, previousData));
 			})
@@ -122,7 +122,7 @@ export const uploadHmo = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
-				.post(`${API_URI}${hmoAPI}/upload`, data, {
+				.post(`${API_URI}/${hmoAPI}/upload`, data, {
 					onUploadProgress: progress => {
 						const { loaded, total } = progress;
 						dispatch(upload_hmo_progress(Math.round((loaded / total) * 100)));
@@ -143,7 +143,7 @@ export const uploadHmoTariff = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
-				.post(`${API_URI}${hmoAPI}/upload-tariff`, data, {
+				.post(`${API_URI}/${hmoAPI}/upload-tariff`, data, {
 					onUploadProgress: progress => {
 						const { loaded, total } = progress;
 						dispatch(upload_hmo_progress(Math.round((loaded / total) * 100)));
@@ -162,7 +162,7 @@ export const uploadHmoTariff = data => {
 export const deleteHmo = data => {
 	return dispatch => {
 		return axios
-			.delete(`${API_URI}${hmoAPI}/${data.id}`)
+			.delete(`${API_URI}/${hmoAPI}/${data.id}`)
 			.then(response => {
 				console.log(response.data);
 				return dispatch(delete_hmo(data));

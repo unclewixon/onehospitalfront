@@ -25,7 +25,12 @@ class EditInvCategory extends Component {
 		const { categoryID } = this.props;
 		this.setState({ submitting: true });
 		try {
-			const rs = await request(`${API_URI}${inventoryCatAPI}/${categoryID}/update`, 'PATCH', true, data);
+			const rs = await request(
+				`${inventoryCatAPI}/${categoryID}/update`,
+				'PATCH',
+				true,
+				data
+			);
 			this.props.updateInvCategory(rs);
 			notifySuccess('category saved!');
 			this.setState({ submitting: false });
@@ -33,7 +38,9 @@ class EditInvCategory extends Component {
 			this.props.editCategory(null, false);
 		} catch (e) {
 			this.setState({ submitting: false });
-			throw new SubmissionError({ _error: e.message || 'could not edit category' });
+			throw new SubmissionError({
+				_error: e.message || 'could not edit category',
+			});
 		}
 	};
 
@@ -46,7 +53,12 @@ class EditInvCategory extends Component {
 					<form onSubmit={handleSubmit(this.editCategory)}>
 						<h6 className="form-header">Edit Category</h6>
 						{error && (
-							<div className="alert alert-danger" dangerouslySetInnerHTML={{ __html: `<strong>Error!</strong> ${error}` }}/>
+							<div
+								className="alert alert-danger"
+								dangerouslySetInnerHTML={{
+									__html: `<strong>Error!</strong> ${error}`,
+								}}
+							/>
 						)}
 						<div className="row">
 							<div className="col-sm-12">
@@ -62,10 +74,18 @@ class EditInvCategory extends Component {
 						</div>
 						<div className="row">
 							<div className="col-sm-12 text-right">
-								<button className="btn btn-primary" disabled={submitting} type="submit">
+								<button
+									className="btn btn-primary"
+									disabled={submitting}
+									type="submit">
 									{submitting ? <img src={waiting} alt="submitting" /> : 'save'}
 								</button>
-								<button className="btn btn-secondary ml-3" type="button" onClick={editCategory(null, false)}>Cancel</button>
+								<button
+									className="btn btn-secondary ml-3"
+									type="button"
+									onClick={editCategory(null, false)}>
+									Cancel
+								</button>
 							</div>
 						</div>
 					</form>
@@ -90,4 +110,6 @@ const mapStateToProps = (state, ownProps) => {
 	};
 };
 
-export default connect(mapStateToProps, { reset, updateInvCategory })(EditInvCategory);
+export default connect(mapStateToProps, { reset, updateInvCategory })(
+	EditInvCategory
+);

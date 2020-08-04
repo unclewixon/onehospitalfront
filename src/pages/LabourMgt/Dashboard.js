@@ -46,11 +46,11 @@ class Dashboard extends Component {
 		const { filtering, loading, startDate, endDate, page } = this.state;
 		try {
 			this.setState({ loading: true });
-			console.log(
-				`${API_URI}${labourAPI}s/?startDate=${startDate}&endDate=${endDate}&page=${page}`
-			);
+			// console.log(
+			// 	`${API_URI}/${labourAPI}s/?startDate=${startDate}&endDate=${endDate}&page=${page}`
+			// );
 			const rs = await request(
-				`${API_URI}${labourAPI}s/?startDate=${startDate}&endDate=${endDate}&page=${page}`,
+				`${labourAPI}s/?startDate=${startDate}&endDate=${endDate}&page=${page}`,
 				'GET',
 				true
 			);

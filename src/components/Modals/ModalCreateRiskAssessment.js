@@ -57,7 +57,7 @@ export class ModalCreateRiskAssessment extends Component {
 			this.setState({ submitting: true });
 			console.log(labourDetail.id, newData);
 			const rs = await request(
-				`${API_URI}/labour-management/risk-assessment/${labourDetail.id}/save`,
+				`labour-management/risk-assessment/${labourDetail.id}/save`,
 				'POST',
 				true,
 				newData

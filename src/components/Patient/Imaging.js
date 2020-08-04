@@ -96,7 +96,7 @@ const Imaging = props => {
 		const { patient } = props;
 		try {
 			const rs = await request(
-				`${API_URI}/patient/${patient.id}/request/imaging?startDate=&endDate=`,
+				`patient/${patient.id}/request/imaging?startDate=&endDate=`,
 				'GET',
 				true
 			);
@@ -148,10 +148,7 @@ const Imaging = props => {
 				formData.append('file', fileData);
 				formData.append('document_type', 'Imaging');
 				const rs = await upload(
-					`${API_URI}${patientAPI}` +
-						'/' +
-						patient.id +
-						'/upload-request-document',
+					`${patientAPI}` + '/' + patient.id + '/upload-request-document',
 					'POST',
 					formData
 				);

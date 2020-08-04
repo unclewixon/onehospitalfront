@@ -36,11 +36,11 @@ export class SearchScan extends Component {
 
 		try {
 			this.setState({ loading: true });
-			console.log(
-				`${API_URI}${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`
-			);
+			// console.log(
+			// 	`${API_URI}/${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`
+			// );
 			const rs = await request(
-				`${API_URI}${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`,
+				`${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`,
 				'GET',
 				true
 			);

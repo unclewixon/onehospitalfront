@@ -47,7 +47,7 @@ const NewProcedure = props => {
 			try {
 				setSearching(true);
 				const rs = await request(
-					`${API_URI}${searchAPI}?q=${query}`,
+					`${API_URI}/${searchAPI}?q=${query}`,
 					'GET',
 					true
 				);
@@ -108,7 +108,7 @@ const NewProcedure = props => {
 		}
 		let val = inputValue.toUpperCase();
 		const res = await request(
-			`${API_URI}${diagnosisAPI}` + 'search?q=' + val,
+			`${API_URI}/${diagnosisAPI}` + 'search?q=' + val,
 			'GET',
 			true
 		);
@@ -118,7 +118,7 @@ const NewProcedure = props => {
 	const fetchServicesByCategory = async id => {
 		try {
 			const rs = await request(
-				`${API_URI}${serviceAPI}` + '/categories/' + id,
+				`${API_URI}/${serviceAPI}` + '/categories/' + id,
 				'GET',
 				true
 			);
@@ -151,7 +151,7 @@ const NewProcedure = props => {
 			theRequest.requestBody = requestData;
 			try {
 				const rs = await request(
-					`${API_URI}${patientAPI}/save-request`,
+					`${API_URI}/${patientAPI}/save-request`,
 					'POST',
 					true,
 					theRequest

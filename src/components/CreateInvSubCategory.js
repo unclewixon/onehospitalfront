@@ -11,9 +11,9 @@ import { addInvSubCategory } from '../actions/inventory';
 const validate = values => {
 	const errors = {};
 	if (!values.name) {
-        errors.name = 'enter sub category';
-    }
-    return errors;
+		errors.name = 'enter sub category';
+	}
+	return errors;
 };
 
 class CreateInvSubCategory extends Component {
@@ -24,14 +24,16 @@ class CreateInvSubCategory extends Component {
 	createCategory = async data => {
 		this.setState({ submitting: true });
 		try {
-			const rs = await request(`${API_URI}${inventorySubCatAPI}`, 'POST', true, data);
+			const rs = await request(`${inventorySubCatAPI}`, 'POST', true, data);
 			this.props.addInvSubCategory(rs);
 			this.setState({ submitting: false });
 			this.props.reset('create_sub_category');
 			notifySuccess('sub category created!');
 		} catch (e) {
 			this.setState({ submitting: false });
-			throw new SubmissionError({ _error: e.message || 'could not create sub category' });
+			throw new SubmissionError({
+				_error: e.message || 'could not create sub category',
+			});
 		}
 	};
 
@@ -43,7 +45,14 @@ class CreateInvSubCategory extends Component {
 				<div className="element-box pipeline white lined-warning">
 					<form onSubmit={handleSubmit(this.createCategory)}>
 						<h6 className="form-header">Create Sub Category</h6>
-						{error && <div className="alert alert-danger" dangerouslySetInnerHTML={{__html: `<strong>Error!</strong> ${error}`}}/>}
+						{error && (
+							<div
+								className="alert alert-danger"
+								dangerouslySetInnerHTML={{
+									__html: `<strong>Error!</strong> ${error}`,
+								}}
+							/>
+						)}
 						<div className="row">
 							<div className="col-sm-12">
 								<Field
@@ -68,7 +77,12 @@ class CreateInvSubCategory extends Component {
 						</div>
 						<div className="row">
 							<div className="col-sm-12 text-right">
-								<button className="btn btn-primary" disabled={submitting} type="submit">{submitting ? <img src={waiting} alt="submitting"/> : 'save'}</button>
+								<button
+									className="btn btn-primary"
+									disabled={submitting}
+									type="submit">
+									{submitting ? <img src={waiting} alt="submitting" /> : 'save'}
+								</button>
 							</div>
 						</div>
 					</form>
@@ -86,7 +100,9 @@ CreateInvSubCategory = reduxForm({
 const mapStateToProps = (state, ownProps) => {
 	return {
 		categories: state.inventory.categories,
-	}
+	};
 };
 
-export default connect(mapStateToProps, { reset, addInvSubCategory })(CreateInvSubCategory);
+export default connect(mapStateToProps, { reset, addInvSubCategory })(
+	CreateInvSubCategory
+);

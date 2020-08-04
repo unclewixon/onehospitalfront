@@ -145,7 +145,7 @@ function EditStaff(props) {
 		setSubmitting(true);
 		try {
 			const rs = await request(
-				`${API_URI}${staffAPI}/${staff.details.id}/update`,
+				`${API_URI}/${staffAPI}/${staff.details.id}/update`,
 				'PATCH',
 				true,
 				values

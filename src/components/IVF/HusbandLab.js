@@ -45,7 +45,7 @@ let HusbandLab = props => {
 	const fetchStaffs = async () => {
 		if (props.staffs.length < 1) {
 			try {
-				const rs = await request(`${API_URI}${staffAPI}`, 'GET', true);
+				const rs = await request(`${staffAPI}`, 'GET', true);
 				props.loadStaff(rs);
 			} catch (error) {
 				console.log(error);

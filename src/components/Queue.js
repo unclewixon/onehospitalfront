@@ -31,7 +31,7 @@ const Queue = ({ department }) => {
 	async function getQueueList() {
 		try {
 			const res = await request(
-				`${API_URI}/front-desk/queue-system/get-lists`,
+				`front-desk/queue-system/get-lists`,
 				'GET',
 				true
 			);

@@ -15,7 +15,7 @@ class StaffList extends Component {
 
 	fetchStaffs = async () => {
 		try {
-			const rs = await request(`${API_URI}${staffAPI}`, 'GET', true);
+			const rs = await request(`${staffAPI}`, 'GET', true);
 			this.props.loadStaff(rs);
 		} catch (error) {
 			console.log(error);
@@ -33,20 +33,22 @@ class StaffList extends Component {
 								<div className="element-actions">
 									<a
 										className="btn btn-success btn-sm"
-										href={`${API_URI}${hmoAPI}/download-sample`}
+										href={`${API_URI}/${hmoAPI}/download-sample`}
 										download>
 										<i className="os-icon os-icon-ui-22"></i>
 										<span>Download Sample</span>
 									</a>
 									<a
 										className="btn btn-primary btn-sm text-white"
-										onClick={() => this.props.createStaff(true)}>
+										onClick={() =>
+											this.props.createStaff({ status: true, staff: null })
+										}>
 										<i className="os-icon os-icon-ui-22" />
 										<span>Create New Staff</span>
 									</a>
 								</div>
 								<h6 className="element-header">Staff List</h6>
-								<div className="element-box">
+								<div className="element-box p-0">
 									<div className="table-responsive">
 										<table className="table table-striped">
 											<thead>
@@ -54,8 +56,7 @@ class StaffList extends Component {
 													<th></th>
 													<th>Staff ID</th>
 													<th>Name</th>
-													<th>Username</th>
-													<th>Job Title</th>
+													<th>Role</th>
 													<th>Phone</th>
 													<th>Department</th>
 													<th className="text-center">Status</th>

@@ -88,7 +88,7 @@ export class ModalCreateRecordVital extends Component {
 
 			this.setState({ submitting: true });
 			const rs = await request(
-				`${API_URI}/labour-management/vital/${labourDetail.id}/save`,
+				`labour-management/vital/${labourDetail.id}/save`,
 				'POST',
 				true,
 				data

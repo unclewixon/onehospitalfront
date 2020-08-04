@@ -118,7 +118,7 @@ function PatientNOKForm(props) {
 		if (!register_new_patient) {
 			try {
 				const res = await request(
-					`${API_URI}/patient/` + patient.id + '/update',
+					`patient/` + patient.id + '/update',
 					'PATCH',
 					true,
 					data
@@ -139,12 +139,7 @@ function PatientNOKForm(props) {
 			}
 		} else {
 			try {
-				const res = await request(
-					`${API_URI}/patient/save`,
-					'POST',
-					true,
-					data
-				);
+				const res = await request(`patient/save`, 'POST', true, data);
 				setSubmitting(false);
 				if (res.success) {
 					notifySuccess('New patient record was created!');

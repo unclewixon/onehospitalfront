@@ -34,7 +34,7 @@ export class Antennatal extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}${patientAPI}/antenatal/list?startDate=${startDate}&endDate=${endDate}`,
+				`patientAPI}/antenatal/list?startDate=${startDate}&endDate=${endDate}`,
 				'GET',
 				true
 			);

@@ -25,7 +25,7 @@ export class Measurement extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}/labour-management/${labourDetail.id}/measurement`,
+				`labour-management/${labourDetail.id}/measurement`,
 				'GET',
 				true
 			);

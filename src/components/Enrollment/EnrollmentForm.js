@@ -32,7 +32,7 @@ class EnrollmentForm extends Component {
 
 		try {
 			const rs = await request(
-				`${API_URI}${patientAPI}/antenatal/save`,
+				`${patientAPI}/antenatal/save`,
 				'POST',
 				true,
 				data

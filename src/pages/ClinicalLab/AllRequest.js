@@ -46,7 +46,7 @@ class AllRequest extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}${patientAPI}/requests/lab?startDate=${startDate}&endDate=${endDate}&status=${status}`,
+				`patientAPI}/requests/lab?startDate=${startDate}&endDate=${endDate}&status=${status}`,
 				'GET',
 				true
 			);

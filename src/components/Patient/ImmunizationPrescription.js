@@ -124,7 +124,7 @@ const ImmunizationPrescription = ({
 
 	const getServiceUnit = useCallback(async () => {
 		try {
-			const res = await request(`${API_URI}/inventory/categories`, 'GET', true);
+			const res = await request(`inventory/categories`, 'GET', true);
 			loadInvCategories(res);
 		} catch (error) {
 			notifyError('Error fetching Service Unit');
@@ -135,7 +135,7 @@ const ImmunizationPrescription = ({
 		async id => {
 			try {
 				const res = await request(
-					`${API_URI}/inventory/stocks-by-category/52b49109-028a-46c6-b5f3-1e88a48d333f`,
+					`inventory/stocks-by-category/52b49109-028a-46c6-b5f3-1e88a48d333f`,
 					'GET',
 					true
 				);

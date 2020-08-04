@@ -30,11 +30,7 @@ class Encounters extends Component {
 	fetchTransaction = async () => {
 		try {
 			this.setState({ loading: true });
-			const rs = await request(
-				`${API_URI}/front-desk/appointments/today`,
-				'GET',
-				true
-			);
+			const rs = await request(`front-desk/appointments/today`, 'GET', true);
 
 			const { patient } = this.props;
 			const appointments = rs
@@ -62,7 +58,7 @@ class Encounters extends Component {
 	getViewStatus = async appointment => {
 		try {
 			const rs = await request(
-				`${API_URI}/consultation/appointment/` + appointment.id,
+				`consultation/appointment/` + appointment.id,
 				'GET',
 				true
 			);

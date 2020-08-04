@@ -60,7 +60,7 @@ class Payroll extends Component {
 		try {
 			const data = { period, department_id };
 			const rs = await request(
-				`${API_URI}${payrollAPI}/list-payroll`,
+				`${payrollAPI}/list-payroll`,
 				'POST',
 				true,
 				data

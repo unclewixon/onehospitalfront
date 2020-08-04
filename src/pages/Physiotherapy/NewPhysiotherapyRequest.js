@@ -46,11 +46,7 @@ const NewPhysiotherapy = props => {
 		if (query.length > 2) {
 			try {
 				setSearching(true);
-				const rs = await request(
-					`${API_URI}${searchAPI}?q=${query}`,
-					'GET',
-					true
-				);
+				const rs = await request(`${searchAPI}?q=${query}`, 'GET', true);
 
 				setPatients(rs);
 				setSearching(false);
@@ -89,7 +85,7 @@ const NewPhysiotherapy = props => {
 
 		try {
 			const rs = await request(
-				`${API_URI}${patientAPI}/save-request`,
+				`${patientAPI}/save-request`,
 				'POST',
 				true,
 				data

@@ -70,7 +70,7 @@ const PlanForm = props => {
 	}, []);
 	const getServiceUnit = useCallback(async () => {
 		try {
-			const res = await request(`${API_URI}/inventory/categories`, 'GET', true);
+			const res = await request(`inventory/categories`, 'GET', true);
 			loadInvCategories(res);
 		} catch (error) {
 			notifyError('Error fetching Service Unit');
@@ -156,7 +156,7 @@ const PlanForm = props => {
 		}
 		let val = inputValue.toUpperCase();
 		const res = await request(
-			`${API_URI}${diagnosisAPI}` + 'search?q=' + val,
+			`${API_URI}/${diagnosisAPI}` + 'search?q=' + val,
 			'GET',
 			true
 		);
@@ -166,7 +166,7 @@ const PlanForm = props => {
 	const fetchServicesByCategory = async id => {
 		try {
 			const rs = await request(
-				`${API_URI}${serviceAPI}` + '/categories/' + id,
+				`${API_URI}/${serviceAPI}` + '/categories/' + id,
 				'GET',
 				true
 			);

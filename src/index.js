@@ -66,8 +66,8 @@ const initData = async () => {
 
 	try {
 		let [rs_banks, rs_countries] = await Promise.all([
-			axiosFetch(`${API_URI}${utilityAPI}/banks`),
-			axiosFetch(`${API_URI}${utilityAPI}/countries`),
+			axiosFetch(`${API_URI}/${utilityAPI}/banks`),
+			axiosFetch(`${API_URI}/${utilityAPI}/countries`),
 		]);
 
 		if (rs_banks && rs_banks.data) {
@@ -92,10 +92,10 @@ const initData = async () => {
 				rs_roles,
 				rs_specializations,
 			] = await Promise.all([
-				axiosFetch(`${API_URI}${departmentAPI}`, jwt),
-				axiosFetch(`${API_URI}${inventoryCatAPI}`, jwt),
-				axiosFetch(`${API_URI}${inventorySubCatAPI}`, jwt),
-				axiosFetch(`${API_URI}${rolesAPI}`, jwt),
+				axiosFetch(`${API_URI}/${departmentAPI}`, jwt),
+				axiosFetch(`${API_URI}/${inventoryCatAPI}`, jwt),
+				axiosFetch(`${API_URI}/${inventorySubCatAPI}`, jwt),
+				axiosFetch(`${API_URI}/${rolesAPI}`, jwt),
 				axiosFetch(`${API_URI}/specializations`, jwt),
 			]);
 

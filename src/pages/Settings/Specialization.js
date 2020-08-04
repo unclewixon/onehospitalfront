@@ -96,7 +96,7 @@ const Specialization = props => {
 
 	const onDeleteSpecialization = async data => {
 		try {
-			await request(`${API_URI}/specializations/${data.id}`, 'DELETE', true);
+			await request(`specializations/${data.id}`, 'DELETE', true);
 			props.delete_specialization(data);
 			setLoading(false);
 			notifySuccess('Specialization deleted');
@@ -118,7 +118,7 @@ const Specialization = props => {
 	const fetchSpecialization = async () => {
 		setDataLoaded(false);
 		try {
-			const rs = await request(`${API_URI}/specializations`, 'GET', true);
+			const rs = await request(`specializations`, 'GET', true);
 			props.loadSpecializations(rs);
 			setDataLoaded(true);
 		} catch (error) {

@@ -25,7 +25,7 @@ export class DutyRooster extends Component {
 		try {
 			const data = { period, department_id };
 			const rs = await request(
-				`${API_URI}${rosterAPI}/list-roaster`,
+				`${API_URI}/${rosterAPI}/list-roaster`,
 				'POST',
 				true,
 				data

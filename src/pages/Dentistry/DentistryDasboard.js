@@ -36,8 +36,8 @@ class DentistryDashboard extends Component {
 		try {
 			const rs = await request(
 				patientId
-					? `${API_URI}/patient/${patientId}/request/dentistry?startDate=${startDate}&endDate=${endDate}`
-					: `${API_URI}/patient/requests/dentistry?startDate=${startDate}&endDate=${endDate}`,
+					? `patient/${patientId}/request/dentistry?startDate=${startDate}&endDate=${endDate}`
+					: `patient/requests/dentistry?startDate=${startDate}&endDate=${endDate}`,
 				'GET',
 				true
 			);

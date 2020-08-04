@@ -157,9 +157,7 @@ const CafeteriaItems = props => {
 	const doFilter = async () => {
 		setFiltering(true);
 		try {
-			const rs = await request(
-				`${API_URI}/cafeteria/items-by-category/${category}`
-			);
+			const rs = await request(`cafeteria/items-by-category/${category}`);
 			console.log(rs);
 			let filterItems = rs.map(el => {
 				return {

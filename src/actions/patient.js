@@ -419,7 +419,7 @@ export const createLabRequest = data => {
 					requestNote: data.request_note,
 				},
 			};
-			request(`${API_URI}/patient/save-request`, 'POST', true, newRequestObj)
+			request(`patient/save-request`, 'POST', true, newRequestObj)
 				.then(response => {
 					dispatch(create_lab_request(response));
 					return resolve({ success: true });
@@ -490,7 +490,7 @@ export const addPharmacyRequest = (data, id, prescription, serviceId, cb) => {
 			: [];
 
 		return new Promise((resolve, reject) => {
-			request(`${API_URI}/patient/save-request`, 'POST', true, {
+			request(`patient/save-request`, 'POST', true, {
 				requestType: 'pharmacy',
 				requestBody: requestData,
 				diagnosis: data[0].diagnosis.id ? data[0].diagnosis.id : '',
@@ -514,7 +514,7 @@ export const addImmunization = (data, cb) => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			console.log(data);
-			request(`${API_URI}/patient/immunizations`, 'POST', true, data)
+			request(`patient/immunizations`, 'POST', true, data)
 				.then(response => {
 					dispatch(addImmunizationRequest(response.data));
 					cb('success');
@@ -531,8 +531,8 @@ export const addImmunization = (data, cb) => {
 export const deleteImmunization = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			console.log(data);
-			request(`${API_URI}/patient/${data}/immunizations`, 'DELETE', true)
+			// console.log(data);
+			request(`patient/${data}/immunizations`, 'DELETE', true)
 				.then(response => {
 					dispatch(deleteImmunizationRequest(data));
 
@@ -548,7 +548,7 @@ export const deleteImmunization = data => {
 export const antenatalAssessment = () => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			request(`${API_URI}/patient/immunizations`, 'GET', true)
+			request(`patient/immunizations`, 'GET', true)
 				.then(response => {
 					dispatch(loadAntenatalAssessment(response.data));
 					return resolve({ success: true });
@@ -563,7 +563,7 @@ export const antenatalAssessment = () => {
 // export const getPartograph = id => {
 // 	return dispatch => {
 // 		return new Promise((resolve, reject) => {
-// 			request(`${API_URI}/labour-management/${id}/vitals`, 'GET', true)
+// 			request(`labour-management/${id}/vitals`, 'GET', true)
 // 				.then(response => {
 // 					dispatch(loadPartograph(response));
 // 					return resolve({ success: true });

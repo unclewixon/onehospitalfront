@@ -48,7 +48,7 @@ const Departments = props => {
 			description,
 		};
 		try {
-			const rs = await request(`${API_URI}/departments`, 'POST', true, data);
+			const rs = await request(`departments`, 'POST', true, data);
 			props.create_department(rs);
 			setLoading(false);
 			setState({ ...initialState });
@@ -62,7 +62,7 @@ const Departments = props => {
 
 	const onDeleteDepartment = async data => {
 		try {
-			await request(`${API_URI}/departments/${data.id}`, 'DELETE', true, data);
+			await request(`departments/${data.id}`, 'DELETE', true, data);
 			props.delete_department(data);
 			notifySuccess('Head of department deleted');
 		} catch (error) {
@@ -127,7 +127,7 @@ const Departments = props => {
 	const fetchDepartment = async () => {
 		setDataLoaded(false);
 		try {
-			const rs = await request(`${API_URI}/departments`, 'GET', true);
+			const rs = await request(`$departments`, 'GET', true);
 			props.loadDepartments(rs);
 			setDataLoaded(true);
 		} catch (error) {
@@ -139,7 +139,7 @@ const Departments = props => {
 	const fetchAllStaff = async () => {
 		setDataLoaded(false);
 		try {
-			const rs = await request(`${API_URI}/hr/staffs`, 'GET', true);
+			const rs = await request(`hr/staffs`, 'GET', true);
 			props.get_all_staff(rs);
 			setDataLoaded(true);
 		} catch (error) {

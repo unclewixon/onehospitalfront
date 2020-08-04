@@ -13,36 +13,36 @@ export const MENU_COOKE = 'EMR:MENU_COOKIE';
 export const USER_RECORD = 'EMR:USER_RECORD';
 export const socket = socketIOClient(API_URI, { transports: ['websocket'] });
 
-export const hmoAPI = '/hmos';
-export const inventoryAPI = '/inventory/stocks';
-export const inventoryUpdateQuantityAPI = '/inventory/stocks/update-quantity';
-export const stocksAPI = '/stocks';
-export const inventoryCatAPI = '/inventory/categories';
-export const inventoryDownloadAPI = '/inventory/download';
-export const inventoryUploadAPI = '/inventory/stocks/bulk-upload';
-export const stockByCategoryAPI = '/inventory/stocks-by-category-name';
-export const inventorySubCatAPI = '/inventory/sub-categories';
-export const rolesAPI = '/settings/roles';
-export const staffAPI = '/hr/staffs';
-export const appraisalAPI = '/hr/appraisal';
-export const leaveMgtAPI = '/hr/leave-management';
-export const rosterAPI = '/hr/housekeeping';
-export const searchAPI = '/patient/find';
-export const vitalsAPI = '/patient/save-vitals';
-export const departmentAPI = '/departments';
-export const utilityAPI = '/utility';
-export const payrollAPI = '/hr/payroll';
-export const patientAPI = '/patient';
-export const transactionsAPI = '/transactions';
-export const vouchersAPI = '/vouchers';
-export const serviceAPI = '/services';
-export const settingsAPI = '/settings/';
-export const diagnosisAPI = '/settings/diagnosis';
-export const labourAPI = '/labour-management/enrollment';
-export const consultationAPI = '/consultation/';
-export const IVFEnroll = '/ivf/enroll/';
-export const IVFHCGAdmin = '/ivf/save/hcg-administration';
-export const IVFHCGDown = '/ivf/save/down-regulation';
+export const hmoAPI = 'hmos';
+export const inventoryAPI = 'inventory/stocks';
+export const inventoryUpdateQuantityAPI = 'inventory/stocks/update-quantity';
+export const stocksAPI = 'stocks';
+export const inventoryCatAPI = 'inventory/categories';
+export const inventoryDownloadAPI = 'inventory/download';
+export const inventoryUploadAPI = 'inventory/stocks/bulk-upload';
+export const stockByCategoryAPI = 'inventory/stocks-by-category-name';
+export const inventorySubCatAPI = 'inventory/sub-categories';
+export const rolesAPI = 'settings/roles';
+export const staffAPI = 'hr/staffs';
+export const appraisalAPI = 'hr/appraisal';
+export const leaveMgtAPI = 'hr/leave-management';
+export const rosterAPI = 'hr/housekeeping';
+export const searchAPI = 'patient/find';
+export const vitalsAPI = 'patient/save-vitals';
+export const departmentAPI = 'departments';
+export const utilityAPI = 'utility';
+export const payrollAPI = 'hr/payroll';
+export const patientAPI = 'patient';
+export const transactionsAPI = 'transactions';
+export const vouchersAPI = 'vouchers';
+export const serviceAPI = 'services';
+export const settingsAPI = 'settings/';
+export const diagnosisAPI = 'settings/diagnosis';
+export const labourAPI = 'labour-management/enrollment';
+export const consultationAPI = 'consultation/';
+export const IVFEnroll = 'ivf/enroll/';
+export const IVFHCGAdmin = 'ivf/save/hcg-administration';
+export const IVFHCGDown = 'ivf/save/down-regulation';
 
 export const months = [
 	'January',
@@ -1067,9 +1067,14 @@ export const descent = [
 	},
 ];
 export const religions = [
-	{ id: 'Atheist', name: 'Atheist' },
-	{ id: 'Buddhism', name: 'Buddhism' },
-	{ id: 'Christianity', name: 'Christianity' },
-	{ id: 'Hinduism', name: 'Hinduism' },
-	{ id: 'Islam', name: 'Islam' },
+	{ value: 'Atheist', label: 'Atheist' },
+	{ value: 'Buddhism', label: 'Buddhism' },
+	{ value: 'Christianity', label: 'Christianity' },
+	{ value: 'Hinduism', label: 'Hinduism' },
+	{ value: 'Islam', label: 'Islam' },
+];
+
+export const contracts = [
+	{ value: 'Full time', label: 'Full time' },
+	{ value: 'Part time', label: 'Part time' },
 ];

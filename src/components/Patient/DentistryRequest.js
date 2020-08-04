@@ -87,7 +87,7 @@ const DentistryRequest = props => {
 			//theRequest.primary_diagnosis = selectedOption.icd10Code;
 			theRequest.requestBody = requestData;
 			const rs = await request(
-				`${API_URI}${patientAPI}/save-request`,
+				`${patientAPI}/save-request`,
 				'POST',
 				true,
 				theRequest
@@ -114,7 +114,7 @@ const DentistryRequest = props => {
 	const fetchServicesByCategory = async id => {
 		try {
 			const rs = await request(
-				`${API_URI}${serviceAPI}` + '/categories/' + id,
+				`${serviceAPI}` + '/categories/' + id,
 				'GET',
 				true
 			);

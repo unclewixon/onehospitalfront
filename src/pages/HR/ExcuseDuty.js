@@ -32,11 +32,7 @@ class ExcuseDuty extends Component {
 	fetchStaffLeave = async () => {
 		this.setState({ searching: true });
 		try {
-			const rs = await request(
-				`${API_URI}${leaveMgtAPI}/excuse-duty`,
-				'GET',
-				true
-			);
+			const rs = await request(`${leaveMgtAPI}/excuse-duty`, 'GET', true);
 			this.setState({ searching: false });
 			this.props.loadStaffLeave(rs);
 			this.setState({ ExcuseList: rs });
@@ -49,7 +45,7 @@ class ExcuseDuty extends Component {
 	rejectLeaveRequests = async data => {
 		try {
 			const res = await request(
-				`${API_URI}/hr/leave-management/${data.id}/reject`,
+				`hr/leave-management/${data.id}/reject`,
 				'GET',
 				true
 			);
@@ -73,7 +69,7 @@ class ExcuseDuty extends Component {
 	approveLeaveRequests = async data => {
 		try {
 			const res = await request(
-				`${API_URI}/hr/leave-management/${data.id}/approve`,
+				`hr/leave-management/${data.id}/approve`,
 				'GET',
 				true
 			);
@@ -97,7 +93,7 @@ class ExcuseDuty extends Component {
 	deleteLeaveRequests = async data => {
 		try {
 			const res = await request(
-				`${API_URI}/hr/leave-management/${data.id}`,
+				`hr/leave-management/${data.id}`,
 				'DELETE',
 				true
 			);

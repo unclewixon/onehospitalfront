@@ -108,108 +108,85 @@ const AllPatients = ({ allPatients }) => {
 
 	return (
 		<div>
-			<div className="col-sm-12">
-				<div className="element-wrapper">
-					<div className="row">
-						<div className="col-md-12">
-							{activeRequest ? (
-								<ModalPatientDetails
-									activeRequest={activeRequest}
-									showModal={showModal}
-									onModalClick={onModalClick}
-								/>
-							) : null}
-							<h6 className="element-header">All Patients:</h6>
-
-							<form className="row">
-								<div className="form-group col-md-6">
-									<label>From - To</label>
-									<RangePicker onChange={e => dateChange(e)} />
-								</div>
-								<div className="form-group col-md-3">
-									<label className="mr-2 " htmlFor="id">
-										Patient
-									</label>
-									<Select
-										styles={customStyle}
-										id="patientId"
-										isSearchable={true}
-										name="patientId"
-										// options={filteredOptions}
-										// onChange={e => setPatientName(e.target.value)}
-									/>
-								</div>
-								<div className="form-group col-md-3 mt-4">
-									<div
-										className="btn btn-sm btn-primary btn-upper text-white filter-btn"
-										onClick={() => {
-											filterEntries();
-										}}>
-										<i className="os-icon os-icon-ui-37" />
-										<span>
-											{filtering ? (
-												<img src={waiting} alt="submitting" />
-											) : (
-												'Filter'
-											)}
-										</span>
-									</div>
-								</div>
-							</form>
-						</div>
-						<div className="col-sm-12">
-							<div className="element-box px-0">
-								<div className="table-responsive">
-									{
-										<table className="table table-striped">
-											<thead>
-												<tr>
-													<th>
-														<div className="th-inner "></div>
-														<div className="fht-cell"></div>
-													</th>
-													<th>
-														<div className="th-inner sortable both">
-															Patient Name
-														</div>
-														<div className="fht-cell"></div>
-													</th>
-													<th>
-														<div className="th-inner sortable both">
-															File Number
-														</div>
-														<div className="fht-cell"></div>
-													</th>
-													<th>
-														<div className="th-inner sortable both">
-															Phone Number
-														</div>
-														<div className="fht-cell"></div>
-													</th>
-													<th>
-														<div className="th-inner "></div>
-														<div className="fht-cell"></div>
-													</th>
-												</tr>
-											</thead>
-
-											<tbody>
-												{loaded ? (
-													<tr>
-														<td colSpan="6" className="text-center">
-															<img alt="searching" src={searchingGIF} />
-														</td>
-													</tr>
-												) : (
-													<>{table()}</>
-												)}
-											</tbody>
-										</table>
-									}
-								</div>
-							</div>
-						</div>
+			{activeRequest ? (
+				<ModalPatientDetails
+					activeRequest={activeRequest}
+					showModal={showModal}
+					onModalClick={onModalClick}
+				/>
+			) : null}
+			<form className="row">
+				<div className="form-group col-md-6">
+					<label>From - To</label>
+					<RangePicker onChange={e => dateChange(e)} />
+				</div>
+				<div className="form-group col-md-4">
+					<label className="mr-2 " htmlFor="id">
+						Patient
+					</label>
+					<Select
+						styles={customStyle}
+						id="patientId"
+						isSearchable={true}
+						name="patientId"
+						// options={filteredOptions}
+						// onChange={e => setPatientName(e.target.value)}
+					/>
+				</div>
+				<div className="form-group col-md-2 mt-4">
+					<div
+						className="btn btn-sm btn-primary btn-upper text-white filter-btn"
+						onClick={() => {
+							filterEntries();
+						}}>
+						<i className="os-icon os-icon-ui-37" />
+						<span>
+							{filtering ? <img src={waiting} alt="submitting" /> : 'Filter'}
+						</span>
 					</div>
+				</div>
+			</form>
+			<div className="element-box px-0">
+				<div className="table-responsive">
+					{
+						<table className="table table-striped">
+							<thead>
+								<tr>
+									<th>
+										<div className="th-inner "></div>
+										<div className="fht-cell"></div>
+									</th>
+									<th>
+										<div className="th-inner sortable both">Patient Name</div>
+										<div className="fht-cell"></div>
+									</th>
+									<th>
+										<div className="th-inner sortable both">File Number</div>
+										<div className="fht-cell"></div>
+									</th>
+									<th>
+										<div className="th-inner sortable both">Phone Number</div>
+										<div className="fht-cell"></div>
+									</th>
+									<th>
+										<div className="th-inner "></div>
+										<div className="fht-cell"></div>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								{loaded ? (
+									<tr>
+										<td colSpan="6" className="text-center">
+											<img alt="searching" src={searchingGIF} />
+										</td>
+									</tr>
+								) : (
+									<>{table()}</>
+								)}
+							</tbody>
+						</table>
+					}
 				</div>
 			</div>
 		</div>

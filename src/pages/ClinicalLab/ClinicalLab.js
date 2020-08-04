@@ -36,8 +36,8 @@ class ClinicalLab extends Component {
 			let today = moment().format('YYYY-MM-DD');
 			const rs = await request(
 				patientId
-					? `${API_URI}${patientAPI}/${patientId}/request/lab?startDate=${startDate}=&endDate=${endDate}`
-					: `${API_URI}${patientAPI}/requests/lab?startDate=${startDate}=&endDate=${endDate}`,
+					? `${patientAPI}/${patientId}/request/lab?startDate=${startDate}=&endDate=${endDate}`
+					: `${patientAPI}/requests/lab?startDate=${startDate}=&endDate=${endDate}`,
 				'GET',
 				true
 			);

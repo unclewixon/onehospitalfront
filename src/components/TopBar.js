@@ -6,7 +6,7 @@ import upperCase from 'lodash.uppercase';
 import startCase from 'lodash.startcase';
 import capitalize from 'lodash.capitalize';
 
-import avatar1 from '../assets/images/avatar1.jpg';
+import avatar1 from '../assets/images/placeholder.jpg';
 import topimg from '../assets/images/company5.png';
 import {
 	toggleProfile,

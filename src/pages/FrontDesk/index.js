@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { lazy, Suspense, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import {
 	registerNewPatient,
@@ -19,6 +19,7 @@ import NoMatch from '../NoMatch';
 
 import Splash from '../../components/Splash';
 import { Switch, Route, withRouter, Link } from 'react-router-dom';
+import startCase from 'lodash.startcase';
 const Appointments = lazy(() =>
 	import('../../components/FrontDesk/FrontDeskAppointments')
 );
@@ -31,29 +32,9 @@ const AllPatients = lazy(() =>
 );
 
 const FrontDesk = props => {
-	const [ShowDashboard, setDashboard] = useState(true);
-	const [ShowAppointment, setAppointment] = useState(false);
-	const [ShowIncoming, setIncoming] = useState(false);
+	const [title, setTitle] = useState('Dashboard');
 	const { match, location } = props;
 	const page = location.pathname.split('/').pop();
-
-	const onDashboard = () => {
-		setDashboard(true);
-		setAppointment(false);
-		setIncoming(false);
-	};
-
-	const onAppointment = () => {
-		setAppointment(true);
-		setDashboard(false);
-		setIncoming(false);
-	};
-
-	const onIncoming = () => {
-		setIncoming(true);
-		setDashboard(false);
-		setAppointment(false);
-	};
 
 	const RegisterNewPatient = e => {
 		e.preventDefault();
@@ -65,30 +46,21 @@ const FrontDesk = props => {
 		props.createNewAppointment(true);
 	};
 
+	useEffect(() => {
+		if (page === 'front-desk') {
+			setTitle('Dashboard');
+		} else {
+			setTitle(startCase(page));
+		}
+	}, [page]);
+
 	return (
 		<div className="content-i">
 			<div className="content-box">
 				<div className="row">
 					<div className="col-sm-12">
 						<div className="element-wrapper">
-							<h6 className="element-header">Dashboard</h6>
-							<div className="row mt-2 mb-4">
-								<Link
-									to={`${match.path}/`}
-									className={`mx-2 btn btn-primary btn-sm  ${
-										page === '' ? 'btn-outline-primary' : ''
-									}`}>
-									{' '}
-									Dashboard
-								</Link>
-								<Link
-									to={`${match.path}/all-appointments`}
-									className={`mr-2 btn btn-primary btn-sm  ${
-										page === 'recent-request' ? 'btn-outline-primary' : ''
-									}`}>
-									{' '}
-									All appointments
-								</Link>
+							<div className="element-actions">
 								<Link
 									to="#"
 									onClick={RegisterNewPatient}
@@ -107,17 +79,10 @@ const FrontDesk = props => {
 									{' '}
 									New appointment
 								</Link>
-								<Link
-									to={`${match.path}/all-patients`}
-									className={`mr-2 btn btn-primary btn-sm  ${
-										page === 'all-request' ? 'btn-outline-primary' : ''
-									}`}>
-									{' '}
-									All Patients
-								</Link>
 							</div>
+							<h6 className="element-header">{startCase(title)}</h6>
 
-							<div className="row">
+							<div className="element-content row">
 								<div className="col-sm-12">
 									<Suspense fallback={<Splash />}>
 										<Switch>

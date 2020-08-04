@@ -4,9 +4,8 @@ import capitalize from 'lodash.capitalize';
 import $ from 'jquery';
 import { connect } from 'react-redux';
 
-import avatar1 from '../../assets/images/avatar1.jpg';
+import avatar1 from '../../assets/images/placeholder.jpg';
 import HrMenu from './HrMenu';
-// import DoctorMenu from './DoctorMenu';
 import InventoryMenu from './InventoryMenu';
 import SettingsMenu from './SettingsMenu';
 import FrontDeskMenu from './FrontDeskMenu';
@@ -27,36 +26,29 @@ import AntenatalMenu from './AntenatalMenu';
 import ProcedureMenu from './ProcedureMenu';
 import LabourMgt from './LabourMgt';
 import ImmunizationMenu from './ImmunizationMenu';
+import AdminMenu from './AdminMenu';
 
 class MainMenu extends Component {
 	componentDidMount() {
-		var menu_timer;
-		$(this.refs.menu_activated_on_hover).on(
-			'mouseenter',
+		$(this.refs.menu_activated_on_click).on(
+			'click',
 			'ul.main-menu > li.has-sub-menu',
 			function() {
 				var $elem = $(this);
-				clearTimeout(menu_timer);
-				$elem
-					.closest('ul')
-					.addClass('has-active')
-					.find('> li')
-					.removeClass('active');
-				$elem.addClass('active');
-			}
-		);
-
-		$(this.refs.menu_activated_on_hover).on(
-			'mouseleave',
-			'ul.main-menu > li.has-sub-menu',
-			function() {
-				var $elem = $(this);
-				menu_timer = setTimeout(function() {
+				console.log($elem.closest('ul').hasClass('has-active'));
+				if ($elem.closest('ul').hasClass('has-active')) {
 					$elem
 						.removeClass('active')
 						.closest('ul')
 						.removeClass('has-active');
-				}, 30);
+				} else {
+					$elem
+						.closest('ul')
+						.addClass('has-active')
+						.find('> li')
+						.removeClass('active');
+					$elem.addClass('active');
+				}
 			}
 		);
 	}
@@ -68,8 +60,8 @@ class MainMenu extends Component {
 			<div
 				className={`menu-w color-scheme-dark ${
 					theme_mode ? '' : 'color-style-bright'
-				} menu-position-side menu-side-left sub-menu-style-over sub-menu-color-bright selected-menu-color-light menu-activated-on-hover menu-has-selected-link ${menu_mode}`}
-				ref="menu_activated_on_hover">
+				} menu-position-side menu-side-left sub-menu-color-bright selected-menu-color-light sub-menu-style-inside sub-menu-color-light menu-has-selected-link ${menu_mode}`}
+				ref="menu_activated_on_click">
 				<div className="logo-w">
 					<a className="logo">
 						<div className="logo-element" />

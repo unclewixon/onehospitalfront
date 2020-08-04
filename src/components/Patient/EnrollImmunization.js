@@ -28,7 +28,7 @@ class EnrollImmunization extends Component {
 
 	fetchRoles = async () => {
 		try {
-			const rs = await request(`${API_URI}${rolesAPI}`, 'GET', true);
+			const rs = await request(`${rolesAPI}`, 'GET', true);
 			this.props.loadRoles(rs);
 			this.setState({ loading: false });
 		} catch (error) {

@@ -50,7 +50,7 @@ const Investigations = props => {
 	const fetchServicesByCategory = async id => {
 		try {
 			const rs = await request(
-				`${API_URI}${serviceAPI}` + '/categories/' + id,
+				`${API_URI}/serviceAPI}` + '/categories/' + id,
 				'GET',
 				true
 			);

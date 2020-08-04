@@ -3,11 +3,13 @@ import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 
-import { editStaff } from '../actions/general';
+import { createStaff } from '../actions/general';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
-import { API_URI, socket, patientAPI } from '../services/constants';
-import { request, upload } from '../services/utilities';
+import { upload } from '../services/utilities';
+import { Image } from 'react-bootstrap';
+import placeholder from '../assets/images/placeholder.jpg';
+
 const UploadPerformanceData = ({ uploading, doUpload, hide }) => {
 	const [files, setFiles] = useState(null);
 	const [label, setLabel] = useState('');
@@ -83,10 +85,8 @@ class StaffItem extends Component {
 		this.setState({ collapsed: !this.state.collapsed });
 	};
 
-	doEditStaff = e => {
-		e.preventDefault();
-		console.log('edit staff');
-		this.props.editStaff(true);
+	doEditStaff = staff => {
+		this.props.createStaff({ status: true, staff });
 	};
 
 	doEnable = e => {
@@ -126,7 +126,7 @@ class StaffItem extends Component {
 				formData.append('file', files);
 				formData.append('document_type', 'Performance Indicators');
 				// const rs = await upload(
-				// 	`${API_URI}${patientAPI}` +
+				// 	`${API_URI}/patientAPI}` +
 				// 		'/' +
 				// 		patient.id +
 				// 		'/upload-request-document',
@@ -154,22 +154,25 @@ class StaffItem extends Component {
 		return (
 			<>
 				<tr>
-					<td>
-						<div
-							role="button"
-							tabIndex="0"
-							className={`row-expand-icon ${
-								collapsed ? 'row-collapsed' : 'row-expanded'
-							}`}
-							onClick={this.toggle}
-						/>
+					<td onClick={this.toggle} className="user-avatar-w">
+						<div className="user-avatar">
+							{staff.profile_pic ? (
+								<Image alt="" src={staff.profile_pic} width={50} />
+							) : (
+								<Image alt="" src={placeholder} width={50} />
+							)}
+						</div>
 					</td>
-					<td>{staff.emp_code}</td>
-					<td>{`${staff.first_name} ${staff.last_name}`}</td>
-					<td>{staff.user.username}</td>
-					<td>{staff.job_title}</td>
-					<td>{staff.phone_number}</td>
-					<td>{staff.department ? staff.department.name : ''}</td>
+					<td onClick={this.toggle}>{staff.emp_code}</td>
+					<td
+						onClick={
+							this.toggle
+						}>{`${staff.first_name} ${staff.last_name} (${staff.user.username})`}</td>
+					<td onClick={this.toggle}>{staff.user.role.name}</td>
+					<td onClick={this.toggle}>{staff.phone_number}</td>
+					<td onClick={this.toggle}>
+						{staff.department ? staff.department.name : ''}
+					</td>
 					<td className="text-center">
 						{staff.isActive ? (
 							<Tooltip title="Enabled">
@@ -196,7 +199,15 @@ class StaffItem extends Component {
 								onBackClick={this.onBackClick}
 							/>
 						</div>
-						<Tooltip title="Upload image">
+						<Tooltip title="Edit Staff">
+							<a
+								onClick={() => {
+									this.doEditStaff(staff);
+								}}>
+								<i className="os-icon os-icon-edit-1" />
+							</a>
+						</Tooltip>
+						<Tooltip title="Upload Appraisal">
 							<a
 								onClick={() => {
 									this.togglePopover(staff);
@@ -252,4 +263,4 @@ class StaffItem extends Component {
 	}
 }
 
-export default connect(null, { editStaff })(StaffItem);
+export default connect(null, { createStaff })(StaffItem);

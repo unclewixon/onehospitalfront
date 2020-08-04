@@ -42,11 +42,7 @@ const NewDentistry = props => {
 		if (query.length > 2) {
 			try {
 				setSearching(true);
-				const rs = await request(
-					`${API_URI}${searchAPI}?q=${query}`,
-					'GET',
-					true
-				);
+				const rs = await request(`searchAPI}?q=${query}`, 'GET', true);
 
 				setPatients(rs);
 				setSearching(false);
@@ -122,7 +118,7 @@ const NewDentistry = props => {
 			//theRequest.primary_diagnosis = selectedOption.icd10Code;
 			theRequest.requestBody = requestData;
 			const rs = await request(
-				`${API_URI}${patientAPI}/save-request`,
+				`patientAPI}/save-request`,
 				'POST',
 				true,
 				theRequest
@@ -148,11 +144,7 @@ const NewDentistry = props => {
 
 	const fetchServicesByCategory = async id => {
 		try {
-			const rs = await request(
-				`${API_URI}${serviceAPI}/categories/${id}`,
-				'GET',
-				true
-			);
+			const rs = await request(`serviceAPI}/categories/${id}`, 'GET', true);
 			props.get_all_services(rs);
 		} catch (error) {
 			console.log(error);

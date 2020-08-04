@@ -5,10 +5,11 @@ import { connect } from 'react-redux';
 import { request, confirmAction } from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
 import searchingGIF from '../assets/images/searching.gif';
-import { API_URI, rolesAPI } from '../services/constants';
-import { loadRoles, delete_role } from '../actions/role';
+import { rolesAPI } from '../services/constants';
+import { loadRoles, delete_role, togglePermissionModal } from '../actions/role';
 import CreateRole from './CreateRole';
 import EditRole from './EditRole';
+import RolePermissionModal from './Modals/RolePermissionModal';
 
 class RoleBlock extends Component {
 	state = {
@@ -16,6 +17,7 @@ class RoleBlock extends Component {
 		roleID: null,
 		previousRole: null,
 		loading: false,
+		role: null,
 	};
 
 	componentDidMount() {
@@ -25,11 +27,11 @@ class RoleBlock extends Component {
 
 	fetchRoles = async () => {
 		try {
-			const rs = await request(`${API_URI}${rolesAPI}`, 'GET', true);
+			const rs = await request(`${rolesAPI}`, 'GET', true);
 			this.props.loadRoles(rs);
 			this.setState({ loading: false });
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 			this.setState({ loading: false });
 			notifyError(error.message || 'could not fetch roles');
 		}
@@ -45,11 +47,7 @@ class RoleBlock extends Component {
 	DeleteRole = role => async () => {
 		this.setState({ roleID: role.id });
 		try {
-			const rs = await request(
-				`${API_URI}/settings/roles/${role.id}`,
-				'DELETE',
-				true
-			);
+			const rs = await request(`settings/roles/${role.id}`, 'DELETE', true);
 			this.setState({ edit: false, previousRole: null });
 			this.props.delete_role(role);
 			notifySuccess('Role deleted');
@@ -63,14 +61,19 @@ class RoleBlock extends Component {
 		confirmAction(this.DeleteRole(role), null);
 	};
 
+	openPermissionModal = role => {
+		this.setState({ role });
+		this.props.togglePermissionModal(true);
+	};
+
 	render() {
-		const { roles } = this.props;
-		const { edit, roleID, previousRole, loading } = this.state;
+		const { roles, permission_modal } = this.props;
+		const { edit, roleID, previousRole, loading, role } = this.state;
 		return (
 			<div className="row">
 				<div className="col-lg-8">
 					<div className="element-wrapper">
-						<div className="element-box">
+						<div className="element-box p-0">
 							<div className="table-responsive">
 								<table className="table table-striped">
 									<thead>
@@ -104,6 +107,12 @@ class RoleBlock extends Component {
 																	<i className="os-icon os-icon-edit-32" />
 																</a>
 																<a
+																	onClick={() => this.openPermissionModal(role)}
+																	className="secondary"
+																	title="Permission Modal">
+																	<i className="icon-feather-lock" />
+																</a>
+																<a
 																	className="danger"
 																	onClick={() => this.confirmDelete(role)}>
 																	<i className="os-icon os-icon-ui-15"></i>
@@ -131,6 +140,7 @@ class RoleBlock extends Component {
 						<CreateRole />
 					)}
 				</div>
+				{permission_modal && <RolePermissionModal role={role} />}
 			</div>
 		);
 	}
@@ -139,7 +149,12 @@ class RoleBlock extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		roles: state.role.roles,
+		permission_modal: state.role.permission_modal,
 	};
 };
 
-export default connect(mapStateToProps, { loadRoles, delete_role })(RoleBlock);
+export default connect(mapStateToProps, {
+	loadRoles,
+	delete_role,
+	togglePermissionModal,
+})(RoleBlock);

@@ -46,7 +46,7 @@ export class Recorddelivery extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}/labour-management/${labourDetail.id}/delivery-record`,
+				`labour-management/${labourDetail.id}/delivery-record`,
 				'GET',
 				true
 			);

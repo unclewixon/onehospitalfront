@@ -5,7 +5,7 @@ const ClinicalLabMenu = () => {
 	return (
 		<>
 			<li className="sub-header">
-				<span>Clinical Lab</span>
+				<span>Lab & Radiology</span>
 			</li>
 			<li>
 				<Link to="/lab">

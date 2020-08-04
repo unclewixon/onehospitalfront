@@ -90,7 +90,7 @@ const ImagingRequest = props => {
 
 			console.log(theRequest);
 			const rs = await request(
-				`${API_URI}${patientAPI}/save-request`,
+				`${API_URI}/${patientAPI}/save-request`,
 				'POST',
 				true,
 				theRequest
@@ -117,7 +117,7 @@ const ImagingRequest = props => {
 	const fetchServicesByCategory = async id => {
 		try {
 			const rs = await request(
-				`${API_URI}${serviceAPI}` + '/categories/' + id,
+				`${API_URI}/${serviceAPI}` + '/categories/' + id,
 				'GET',
 				true
 			);

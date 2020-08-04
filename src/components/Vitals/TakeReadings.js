@@ -26,7 +26,7 @@ class TakeReadings extends Component {
 				reading: data,
 				patient_id: patient.id,
 			};
-			const rs = await request(`${API_URI}${vitalsAPI}`, 'POST', true, toSave);
+			const rs = await request(`${vitalsAPI}`, 'POST', true, toSave);
 			this.props.updateVitals(rs.readings);
 		} catch (e) {}
 	};
@@ -52,7 +52,7 @@ class TakeReadings extends Component {
 				reading: _data,
 				patient_id: patient.id,
 			};
-			const rs = await request(`${API_URI}${vitalsAPI}`, 'POST', true, toSave);
+			const rs = await request(`${vitalsAPI}`, 'POST', true, toSave);
 			this.props.updateVitals(rs.readings);
 
 			if (info.type === 'bmi' || info.type === 'bsa') {

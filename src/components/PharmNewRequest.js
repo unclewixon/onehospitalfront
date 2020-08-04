@@ -36,7 +36,7 @@ const PharmNewRequest = props => {
 	useEffect(() => {
 		const getPatients = async () => {
 			setPatientsLoading(true);
-			const rs = await request(`${API_URI}/patient/list`, 'GET', true);
+			const rs = await request(`patient/list`, 'GET', true);
 			const res = rs.map(patient => ({
 				value: patient.id,
 				label: patient.surname + ', ' + patient.other_names,

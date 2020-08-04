@@ -52,12 +52,7 @@ const CreateNewTransaction = props => {
 
 		console.log(data);
 		try {
-			const rs = await request(
-				`${API_URI}${transactionsAPI}`,
-				'POST',
-				true,
-				data
-			);
+			const rs = await request(`${transactionsAPI}`, 'POST', true, data);
 			console.log(props.location, history);
 			history.push('/billing-paypoint');
 			notifySuccess('New payment request saved');
@@ -70,7 +65,7 @@ const CreateNewTransaction = props => {
 	};
 
 	async function getPatients() {
-		const rs = await request(`${API_URI}/patient/list`, 'GET', true);
+		const rs = await request(`patient/list`, 'GET', true);
 		const res = rs.map(patient => ({
 			value: patient.id,
 			label: patient.surname + ', ' + patient.other_names,
@@ -79,7 +74,7 @@ const CreateNewTransaction = props => {
 	}
 
 	async function getDepartments() {
-		const rs = await request(`${API_URI}/departments`, 'GET', true);
+		const rs = await request(`departments`, 'GET', true);
 		const res = rs.map(department => ({
 			value: department.id,
 			label: department.name,
@@ -140,7 +135,7 @@ const CreateNewTransaction = props => {
 	const fetchServicesByCategory = async id => {
 		try {
 			const rs = await request(
-				`${API_URI}${serviceAPI}` + '/categories/' + id,
+				`${serviceAPI}` + '/categories/' + id,
 				'GET',
 				true
 			);

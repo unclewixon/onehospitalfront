@@ -48,10 +48,10 @@ class OpenRequest extends Component {
 		try {
 			this.setState({ loading: true });
 			console.log(
-				`${API_URI}${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}&status=${status}`
+				`${API_URI}/${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}&status=${status}`
 			);
 			const rs = await request(
-				`${API_URI}${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`,
+				`${API_URI}/${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`,
 				'GET',
 				true
 			);
@@ -72,7 +72,7 @@ class OpenRequest extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}${patientAPI}/${patient_id}/request/imaging?startDate=${startDate}&endDate=${endDate}&status=${status}`,
+				`${API_URI}/${patientAPI}/${patient_id}/request/imaging?startDate=${startDate}&endDate=${endDate}&status=${status}`,
 				'GET',
 				true
 			);
@@ -161,7 +161,7 @@ class OpenRequest extends Component {
 			try {
 				this.setState({ ...this.state, searching: true });
 				const rs = await request(
-					`${API_URI}${searchAPI}?q=${this.state.query}`,
+					`${API_URI}/${searchAPI}?q=${this.state.query}`,
 					'GET',
 					true
 				);

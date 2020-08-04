@@ -103,7 +103,7 @@ export class Partograph extends PureComponent {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}/labour-management/${labourDetail.id}/vitals`,
+				`labour-management/${labourDetail.id}/vitals`,
 				'GET',
 				true
 			);

@@ -24,7 +24,7 @@ class CreateRole extends Component {
 	doCreateRole = async data => {
 		this.setState({ submitting: true });
 		try {
-			const rs = await request(`${API_URI}${rolesAPI}`, 'POST', true, data);
+			const rs = await request(`${rolesAPI}`, 'POST', true, data);
 			this.props.addRole(rs);
 			console.log(rs);
 			this.setState({ submitting: false });

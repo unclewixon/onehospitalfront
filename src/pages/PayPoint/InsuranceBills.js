@@ -79,7 +79,7 @@ export class InsuranceBills extends Component {
 	};
 
 	getPatients = async () => {
-		const rs = await request(`${API_URI}/patient/list`, 'GET', true);
+		const rs = await request(`patient/list`, 'GET', true);
 		const res = rs.map(patient => ({
 			value: patient.id,
 			label: patient.surname + ', ' + patient.other_names,
@@ -89,7 +89,7 @@ export class InsuranceBills extends Component {
 	};
 
 	getHmos = async () => {
-		const rs = await request(`${API_URI}/hmos`, 'GET', true);
+		const rs = await request(`hmos`, 'GET', true);
 		const res = rs.map(hmo => ({
 			value: hmo.id,
 			label: hmo.name,

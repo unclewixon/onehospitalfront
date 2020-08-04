@@ -1,4 +1,10 @@
-import { LOAD_ROLES, NEW_ROLE, UPDATE_ROLE, DELETE_ROLE } from './types';
+import {
+	LOAD_ROLES,
+	NEW_ROLE,
+	UPDATE_ROLE,
+	DELETE_ROLE,
+	TOGGLE_PERMISSION_MODAL,
+} from './types';
 import { API_URI } from '../services/constants';
 import axios from 'axios';
 export const loadRoles = roles => {
@@ -40,5 +46,12 @@ export const deleteRole = data => {
 			.catch(error => {
 				console.log(error);
 			});
+	};
+};
+
+export const togglePermissionModal = status => {
+	return {
+		type: TOGGLE_PERMISSION_MODAL,
+		payload: status,
 	};
 };

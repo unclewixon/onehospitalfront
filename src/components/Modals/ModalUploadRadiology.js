@@ -41,7 +41,7 @@ const ModalUploadRadiology = props => {
 				formData.append('files', file);
 
 				const rs = await upload(
-					`${API_URI}${patientAPI}/${patientId}/upload-request-document`,
+					`${API_URI}/patientAPI}/${patientId}/upload-request-document`,
 					'POST',
 					formData
 				);
@@ -71,11 +71,7 @@ const ModalUploadRadiology = props => {
 		if (query.length > 2) {
 			try {
 				setSearching(true);
-				const rs = await request(
-					`${API_URI}${searchAPI}?q=${query}`,
-					'GET',
-					true
-				);
+				const rs = await request(`${searchAPI}?q=${query}`, 'GET', true);
 
 				setPatients(rs);
 				setSearching(false);

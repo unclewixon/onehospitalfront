@@ -16,7 +16,7 @@ const Opthalmology = props => {
 		const { patient } = props;
 		try {
 			const rs = await request(
-				`${API_URI}/patient/${patient.id}/request/opthalmology?startDate=&endDate=`,
+				`patient/${patient.id}/request/opthalmology?startDate=&endDate=`,
 				'GET',
 				true
 			);

@@ -48,7 +48,7 @@ export const deleteTransaction = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			axios
-				.delete(`${API_URI}${transactionsAPI}/${data.q_id}`)
+				.delete(`${API_URI}/${transactionsAPI}/${data.q_id}`)
 				.then(response => {
 					dispatch(delete_transaction(data));
 					return resolve({ success: true });

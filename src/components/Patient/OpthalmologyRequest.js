@@ -54,7 +54,7 @@ const OpthalmologyRequest = props => {
 			};
 
 			const rs = await request(
-				`${API_URI}${patientAPI}/save-request`,
+				`${patientAPI}/save-request`,
 				'POST',
 				true,
 				data
@@ -86,11 +86,7 @@ const OpthalmologyRequest = props => {
 
 	const fetchServicesByCategory = async id => {
 		try {
-			const rs = await request(
-				`${API_URI}${serviceAPI}/categories/${id}`,
-				'GET',
-				true
-			);
+			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
 			props.get_all_services(rs);
 		} catch (error) {
 			console.log(error);

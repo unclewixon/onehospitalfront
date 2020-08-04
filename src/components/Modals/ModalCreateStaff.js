@@ -1,817 +1,763 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Field, reduxForm, SubmissionError, reset } from 'redux-form';
+import axios from 'axios';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import orderBy from 'lodash.orderby';
+import { Formik } from 'formik';
+import placeholder from '../../assets/images/placeholder.jpg';
 
 import {
-	renderTextInput,
-	request,
-	renderSelect,
-	errorMessage,
-} from '../../services/utilities';
-import { API_URI, staffAPI } from '../../services/constants';
-import { notifySuccess } from '../../services/notify';
-import waiting from '../../assets/images/waiting.gif';
+	API_URI,
+	contracts,
+	gender,
+	maritalStatus,
+	religions,
+	staffAPI,
+	TOKEN_COOKIE,
+} from '../../services/constants';
+import { notifyError, notifySuccess } from '../../services/notify';
 import { addStaff } from '../../actions/hr';
 import { closeModals } from '../../actions/general';
+import { object, string, number } from 'yup';
+import { Button, Field, Select } from '../common';
+import { Form, Image } from 'react-bootstrap';
+import SSRStorage from '../../services/storage';
 
-const validate = values => {
-	const errors = {};
-	if (!values.username) {
-		errors.username = 'enter username';
-	}
-	if (!values.password) {
-		errors.password = 'enter password';
-	}
-	if (!values.role_id || values.role_id === '') {
-		errors.role_id = 'select role';
-	}
-	if (!values.first_name) {
-		errors.first_name = 'enter first name';
-	}
-	if (!values.last_name) {
-		errors.last_name = 'enter last name';
-	}
-	if (!values.department_id || values.department_id === '') {
-		errors.department_id = 'select department';
-	}
-	if (!values.religion || values.religion === '') {
-		errors.religion = 'select religion';
-	}
-	if (!values.email) {
-		errors.email = 'enter email address';
-	}
-	if (!values.phone_number) {
-		errors.phone_number = 'enter phone number';
-	}
-	if (!values.gender || values.gender === '') {
-		errors.gender = 'select gender';
-	}
-	if (!values.nationality || values.nationality === '') {
-		errors.nationality = 'select nationality';
-	}
-	if (!values.state_of_origin || values.state_of_origin === '') {
-		errors.state_of_origin = 'select state of origin';
-	}
-	if (!values.lga) {
-		errors.lga = 'enter local government area';
-	}
-	if (!values.address) {
-		errors.address = 'enter address';
-	}
-	if (!values.job_title) {
-		errors.job_title = 'enter job title';
-	}
-	if (!values.marital_status || values.marital_status === '') {
-		errors.marital_status = 'select marital status';
-	}
-	if (!values.number_of_children) {
-		errors.number_of_children = 'enter number of children';
-	}
-	if (!values.bank_name || values.bank_name === '') {
-		errors.bank_name = 'select bank';
-	}
-	if (!values.account_number) {
-		errors.account_number = 'enter account number';
-	}
-	if (!values.contract_type || values.contract_type === '') {
-		errors.contract_type = 'select type of contract';
-	}
-	if (!values.monthly_salary) {
-		errors.monthly_salary = 'enter monthly salary';
-	}
-	if (!values.annual_salary) {
-		errors.annual_salary = 'enter annual salary';
-	}
-	if (!values.next_of_kin) {
-		errors.next_of_kin = 'enter next of kin name';
-	}
-	if (!values.next_of_kin_relationship) {
-		errors.next_of_kin_relationship = 'enter next of kin relationship';
-	}
-	if (!values.next_of_kin_contact_no) {
-		errors.next_of_kin_contact_no = 'enter next of kin phone number';
-	}
-	if (!values.next_of_kin_address) {
-		errors.next_of_kin_address = 'enter next of kin address';
-	}
-	if (!values.specialization_id) {
-		errors.specialization_id = 'select your specialization';
-	}
-	return errors;
-};
+export const StepOneSchema = object({
+	username: string().required('Username is required'),
+	first_name: string().required('Please enter user first name'),
+	last_name: string().required('Please enter user last name'),
+	gender: string().required('Please enter user last name'),
+	role_id: string().required('Role is required'),
+	department_id: string().required('Department is required'),
+	// date_of_birth: string().required("Date of birth is required"),
+	address: string().required('Address is required'),
+	nationality: number()
+		.typeError('Country is required')
+		.required('Country is required'),
+	state_of_origin: number()
+		.typeError('State is required')
+		.required('State is required'),
+	phone_number: string().test(
+		'required',
+		'Phone number is required',
+		value => !!value
+	),
+	email: string()
+		.email()
+		.required('Email address is required'),
+});
+export const StepTwoSchema = object({
+	job_title: string().required('Job title is required'),
+	marital_status: string().required('Marital status is required'),
+	bank_name: string().required('Bank name is required'),
+	account_number: string().required('Enter an account number'),
+	employment_start_date: string().required('This field is required'),
+	contract_type: string().required('This field is required'),
+	monthly_salary: string().required('This field is required'),
+	annual_salary: string().required('This field is required'),
+	next_of_kin: string().required('This field is required'),
+	next_of_kin_contact_no: string().required('This field is required'),
+});
 
-class StepOne extends Component {
-	state = {
-		submitting: false,
+function ModalCreateStaff({
+	countries,
+	departments,
+	roles,
+	banks,
+	specializations,
+	addStaff,
+	closeModals,
+	staff,
+}) {
+	const [section, setSection] = useState('step-one');
+	const [form, setForm] = useState(staff);
+
+	const _countries = countries.map(c => ({ value: c.id, label: c.name }));
+	const sortedCountries = orderBy(_countries, ['label'], ['asc']);
+
+	useEffect(() => {
+		document.body.classList.add('modal-open');
+		return () => {
+			document.body.classList.remove('modal-open');
+		};
+	});
+
+	const stepOne = () => {
+		setSection('step-one');
 	};
 
-	render() {
-		const {
-			departments,
-			religions,
-			genders,
-			roles,
-			error,
-			currentStep,
-			sortedCountries,
-			nextStep,
-			states,
-			date_of_birth,
-			setDate,
-			onSelectCountry,
-		} = this.props;
-
-		const { submitting } = this.state;
-
-		if (currentStep !== 1) {
-			return null;
-		}
-
-		return (
-			<div>
-				{errorMessage(error)}
-				<div className="row">
-					<div className="col-sm-4">
-						<Field
-							id="username"
-							name="username"
-							component={renderTextInput}
-							label="Username"
-							type="text"
-							placeholder="Enter username"
-						/>
-					</div>
-					<div className="col-sm-4">
-						<Field
-							id="password"
-							name="password"
-							component={renderTextInput}
-							label="Password"
-							type="password"
-							placeholder="Enter password"
-						/>
-					</div>
-					<div className="col-sm-4">
-						<Field
-							id="role_id"
-							name="role_id"
-							component={renderSelect}
-							label="Role"
-							placeholder="Select Role"
-							data={roles}
-						/>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-sm-4">
-						<Field
-							id="first_name"
-							name="first_name"
-							component={renderTextInput}
-							label="First Name"
-							type="text"
-							placeholder="Enter first name"
-						/>
-					</div>
-					<div className="col-sm-4">
-						<Field
-							id="last_name"
-							name="last_name"
-							component={renderTextInput}
-							label="Last Name"
-							type="text"
-							placeholder="Enter last name"
-						/>
-					</div>
-					<div className="col-sm-4">
-						<Field
-							id="other_names"
-							name="other_names"
-							component={renderTextInput}
-							label="Other Names"
-							type="text"
-							placeholder="Enter other names"
-						/>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-sm-4">
-						<Field
-							id="department_id"
-							name="department_id"
-							component={renderSelect}
-							label="Department"
-							placeholder="Select Department"
-							data={departments}
-						/>
-					</div>
-					<div className="col-sm-4">
-						<div className="form-group">
-							<label>Date of Birth</label>
-							<div className="custom-date-input">
-								<DatePicker
-									selected={date_of_birth}
-									onChange={date => setDate(date, 'date_of_birth')}
-									peekNextMonth
-									showMonthDropdown
-									showYearDropdown
-									dropdownMode="select"
-									dateFormat="dd-MMM-yyyy"
-									className="single-daterange form-control"
-									placeholderText="Select date of birth"
-									maxDate={new Date()}
+	return (
+		<div
+			className="onboarding-modal modal fade animated show"
+			role="dialog"
+			style={{ display: 'block' }}>
+			<div className="modal-dialog modal-lg modal-centered" role="document">
+				<div className="modal-content">
+					<button
+						aria-label="Close"
+						className="close"
+						type="button"
+						onClick={() => closeModals(false)}>
+						<span className="os-icon os-icon-close"></span>
+					</button>
+					<div className="onboarding-content with-gradient">
+						<h4 className="onboarding-title">Create New Staff</h4>
+						<div className="form-block">
+							{section === 'step-one' ? (
+								<Formik
+									validateOnMount
+									validationSchema={StepOneSchema}
+									enableReinitialize
+									initialValues={{
+										username: form?.user?.username || '',
+										password: '',
+										role_id: form?.user?.role?.id || '',
+										department_id: form?.department?.id || '',
+										first_name: form?.first_name || '',
+										last_name: form?.last_name || '',
+										other_names: form?.other_names || '',
+										date_of_birth: moment(form?.date_of_birth).toDate() || '',
+										gender: form?.gender || '',
+										religion: form?.religion || '',
+										nationality: form?.nationality || '',
+										state_of_origin: form?.state_of_origin || '',
+										lga: form?.lga || '',
+										email: form?.email || '',
+										phone_number: form?.phone_number || '',
+										address: form?.address || '',
+										profile_pic: '',
+									}}
+									children={props => (
+										<StepOne
+											{...props}
+											roles={roles}
+											departments={departments}
+											sortedCountries={sortedCountries}
+											genders={gender}
+											religions={religions}
+											countries={countries}
+										/>
+									)}
+									onSubmit={(params, { setSubmitting }) => {
+										// console.log(form);
+										setSubmitting(false);
+										setForm({ ...form, ...params });
+										setSection('step-two');
+									}}
 								/>
-							</div>
+							) : (
+								<Formik
+									validateOnMount
+									validationSchema={StepTwoSchema}
+									enableReinitialize
+									initialValues={{
+										job_title: form?.job_title || '',
+										specialization_id: form?.specialization_id || '',
+										pension_mngr: form?.pension_mngr || '',
+										marital_status: form?.marital_status || '',
+										bank_name: form?.bank_name || '',
+										number_of_children: form?.number_of_children || '',
+										account_number: form?.account_number || '',
+										employment_start_date:
+											moment(form?.employment_start_date).toDate() || '',
+										contract_type: form?.contract_type || '',
+										monthly_salary: form?.monthly_salary || '',
+										annual_salary: form?.annual_salary || '',
+										next_of_kin: form?.next_of_kin || '',
+										next_of_kin_relationship:
+											form?.next_of_kin_relationship || '',
+										next_of_kin_dob:
+											moment(form?.next_of_kin_dob).toDate() || '',
+										next_of_kin_address: form?.next_of_kin_address || '',
+										next_of_kin_contact_no: form?.next_of_kin_contact_no || '',
+									}}
+									children={props => (
+										<StepTwo
+											{...props}
+											specializations={specializations}
+											banks={banks}
+											maritalStatus={maritalStatus}
+											contracts={contracts}
+											setSection={stepOne}
+										/>
+									)}
+									onSubmit={async (params, { setSubmitting }) => {
+										setForm({ ...form, ...params });
+										console.log(form);
+										const formData = new FormData();
+
+										for (const key in form) {
+											if (key === 'date_of_birth') {
+												formData.append(
+													key,
+													moment(form.date_of_birth).format('YYYY-MM-DD')
+												);
+											} else if (key === 'next_of_kin_dob') {
+												formData.append(
+													key,
+													moment(form.next_of_kin_dob).format('YYYY-MM-DD')
+												);
+											} else if (key === 'employment_start_date') {
+												formData.append(
+													key,
+													moment(form.employment_start_date).format(
+														'YYYY-MM-DD'
+													)
+												);
+											} else {
+												formData.append(key, form[key]);
+											}
+										}
+										const user = await new SSRStorage().getItem(TOKEN_COOKIE);
+										const jwt = `Bearer ${user.token}`;
+										let headers = { Authorization: jwt };
+										if (staff) {
+											axios
+												.patch(
+													`${API_URI}/hr/staffs/${staff.id}/update`,
+													formData,
+													{ headers }
+												)
+												.then(res => {
+													setSubmitting(false);
+													if (res.data?.success) {
+														// addStaff(res.data?.staff);
+														notifySuccess('Staff details has been saved');
+														closeModals(false);
+													} else {
+														notifyError(
+															res.data?.message ||
+																'could not save staff details'
+														);
+													}
+												})
+												.catch(e => {
+													setSubmitting(false);
+													notifyError(
+														e.message || 'could not save staff details'
+													);
+												});
+										} else {
+											axios
+												.post(`${API_URI}/${staffAPI}`, formData, { headers })
+												.then(res => {
+													setSubmitting(false);
+													if (res.data?.success) {
+														addStaff(res.data?.staff);
+														notifySuccess('Staff details has been saved');
+														closeModals(false);
+													} else {
+														notifyError(
+															res.data?.message ||
+																'could not save staff details'
+														);
+													}
+												})
+												.catch(e => {
+													setSubmitting(false);
+													notifyError(
+														e.message || 'could not save staff details'
+													);
+												});
+										}
+									}}
+								/>
+							)}
 						</div>
-					</div>
-					<div className="col-sm-4">
-						<Field
-							id="religion"
-							name="religion"
-							component={renderSelect}
-							label="Religion"
-							placeholder="Select Religion"
-							data={religions}
-						/>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-sm-4">
-						<Field
-							id="email"
-							name="email"
-							component={renderTextInput}
-							label="Email address"
-							type="email"
-							placeholder="Enter email address"
-						/>
-					</div>
-					<div className="col-sm-4">
-						<Field
-							id="phone_number"
-							name="phone_number"
-							component={renderTextInput}
-							label="Phone number"
-							type="text"
-							placeholder="Enter phone number"
-						/>
-					</div>
-					<div className="col-sm-4">
-						<Field
-							id="gender"
-							name="gender"
-							component={renderSelect}
-							label="Gender"
-							placeholder="Select Gender"
-							data={genders}
-						/>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-sm-4">
-						<Field
-							id="nationality"
-							name="nationality"
-							component={renderSelect}
-							label="Nationality"
-							placeholder="Select Nationality"
-							data={sortedCountries}
-							onChange={onSelectCountry}
-						/>
-					</div>
-					<div className="col-sm-4">
-						<Field
-							id="state_of_origin"
-							name="state_of_origin"
-							component={renderSelect}
-							label="State of Origin"
-							placeholder="Select State of Origin"
-							data={states}
-						/>
-					</div>
-					<div className="col-sm-4">
-						<Field
-							id="lga"
-							name="lga"
-							component={renderTextInput}
-							label="LGA"
-							type="text"
-							placeholder="Enter LGA"
-						/>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-sm-12">
-						<Field
-							id="address"
-							name="address"
-							component={renderTextInput}
-							label="Contact Address"
-							type="text"
-							placeholder="Enter contact address"
-						/>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-sm-12 text-right">
-						<button
-							className="btn btn-primary"
-							disabled={submitting}
-							onClick={nextStep}>
-							{submitting ? <img src={waiting} alt="submitting" /> : 'Next'}
-						</button>
 					</div>
 				</div>
 			</div>
-		);
-	}
+		</div>
+	);
 }
 
-class StepTwo extends Component {
-	state = {
-		submitting: false,
-		next_of_kin_dob: null,
-		employment_start_date: null,
-		states: [],
-	};
+function StepOne({
+	setFieldValue,
+	handleSubmit,
+	isSubmitting,
+	isValid,
+	values,
+	roles,
+	sortedCountries,
+	departments,
+	genders,
+	religions,
+	countries,
+}) {
+	const {
+		username,
+		password,
+		first_name,
+		last_name,
+		other_names,
+		role_id,
+		department_id,
+		date_of_birth,
+		gender,
+		religion,
+		nationality,
+		address,
+		email,
+		phone_number,
+		state_of_origin,
+		lga,
+		profile_pic,
+	} = values;
+	const [states, setStates] = useState([]);
+	// const [image, setImage] = useState(null);
 
-	setDate = (date, type) => {
-		this.setState({ [type]: date });
-	};
-
-	render() {
-		const {
-			contracts,
-			banks,
-			specializations,
-			marital_status,
-			error,
-			currentStep,
-			prevStep,
-			next_of_kin_dob,
-			employment_start_date,
-			setDate,
-		} = this.props;
-
-		const { submitting } = this.state;
-
-		if (currentStep !== 2) {
-			return null;
+	useEffect(() => {
+		if (nationality) {
+			const country = countries.find(c => c.id === parseInt(nationality, 10));
+			if (country) {
+				setStates(country.states.map(s => ({ value: s.id, label: s.name })));
+			}
 		}
-
-		return (
-			<div>
-				{errorMessage(error)}
-				<div className="row">
-					<div className="col-sm-4">
-						<Field
-							id="job_title"
-							name="job_title"
-							component={renderTextInput}
-							label="Profession"
-							type="text"
-							placeholder="Enter job title"
-						/>
-					</div>
-					<div className="col-sm-4">
-						<Field
-							id="specialization_id"
-							name="specialization_id"
-							component={renderSelect}
-							label="Specialization"
-							placeholder="Select Specialization"
-							data={specializations}
-						/>
-					</div>
-					<div className="col-sm-4">
-						<Field
-							id="pension_mngr"
-							name="pension_mngr"
-							component={renderTextInput}
-							label="Pension Manager"
-							type="number"
-							placeholder="Enter pension manager"
-						/>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-sm-4">
-						<Field
-							id="marital_status"
-							name="marital_status"
-							component={renderSelect}
-							label="Marital Status"
-							placeholder="Select Marital Status"
-							data={marital_status}
-						/>
-					</div>
-					<div className="col-sm-4">
-						<Field
-							id="number_of_children"
-							name="number_of_children"
-							component={renderTextInput}
-							label="Number of Children"
-							type="number"
-							placeholder="Enter number of children"
-						/>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-sm-4">
-						<Field
-							id="bank_name"
-							name="bank_name"
-							component={renderSelect}
-							label="Bank"
-							placeholder="Select Bank"
-							data={banks}
-						/>
-					</div>
-					<div className="col-sm-4">
-						<Field
-							id="account_number"
-							name="account_number"
-							component={renderTextInput}
-							label="Account Number"
-							type="text"
-							placeholder="Enter account number"
-						/>
-					</div>
-					<div className="col-sm-4">
-						<div className="form-group">
-							<label>Employment start date</label>
-							<div className="custom-date-input">
-								<DatePicker
-									selected={employment_start_date}
-									onChange={date => setDate(date, 'employment_start_date')}
-									peekNextMonth
-									showMonthDropdown
-									showYearDropdown
-									dropdownMode="select"
-									dateFormat="dd-MMM-yyyy"
-									className="single-daterange form-control"
-									placeholderText="Select date of employment"
-									maxDate={new Date()}
-								/>
-							</div>
+	}, [nationality, countries]);
+	return (
+		<Form>
+			<div className="row">
+				<div className="col-sm-3 profile-tile" style={{ borderBottom: 'none' }}>
+					<a className="profile-tile-box" style={{ width: '155px' }}>
+						<div className="pt-avatar-w">
+							{profile_pic ? (
+								<Image src={URL.createObjectURL(profile_pic)} fluid />
+							) : (
+								<Image alt="" src={placeholder} />
+							)}
 						</div>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-sm-4">
-						<Field
-							id="contract_type"
-							name="contract_type"
-							component={renderSelect}
-							label="Contract Type"
-							placeholder="Select type of contract"
-							data={contracts}
-						/>
-					</div>
-					<div className="col-sm-4">
-						<Field
-							id="monthly_salary"
-							name="monthly_salary"
-							component={renderTextInput}
-							label="Gross salary (Monthly)"
-							type="number"
-							placeholder="Enter gross salary (monthly)"
-						/>
-					</div>
-					<div className="col-sm-4">
-						<Field
-							id="annual_salary"
-							name="annual_salary"
-							component={renderTextInput}
-							label="Gross salary (Annual)"
-							type="number"
-							placeholder="Enter gross salary (annual)"
-						/>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-sm-4">
-						<Field
-							id="next_of_kin"
-							name="next_of_kin"
-							component={renderTextInput}
-							label="Next of Kin name"
-							type="text"
-							placeholder="Enter nok name"
-						/>
-					</div>
-					<div className="col-sm-4">
-						<Field
-							id="next_of_kin_relationship"
-							name="next_of_kin_relationship"
-							component={renderTextInput}
-							label="Next of Kin relationship"
-							type="text"
-							placeholder="Enter nok relationship"
-						/>
-					</div>
-					<div className="col-sm-4">
-						<Field
-							id="next_of_kin_contact_no"
-							name="next_of_kin_contact_no"
-							component={renderTextInput}
-							label="Next of Kin phone number"
-							type="text"
-							placeholder="Enter nok phone number"
-						/>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-sm-8">
-						<Field
-							id="next_of_kin_address"
-							name="next_of_kin_address"
-							component={renderTextInput}
-							label="Next of Kin address"
-							type="text"
-							placeholder="Enter nok address"
-						/>
-					</div>
-					<div className="col-sm-4">
-						<div className="form-group">
-							<label>Next of Kin Date of Birth</label>
-							<div className="custom-date-input">
-								<DatePicker
-									selected={next_of_kin_dob}
-									onChange={date => setDate(date, 'next_of_kin_dob')}
-									peekNextMonth
-									showMonthDropdown
-									showYearDropdown
-									dropdownMode="select"
-									dateFormat="dd-MMM-yyyy"
-									className="single-daterange form-control"
-									placeholderText="Select nok date of birth"
-									maxDate={new Date()}
-								/>
-							</div>
-						</div>
-					</div>
-				</div>
-				{/* <div className="row">
-										<div className="col-sm-4">
-											<div className="form-group">
-												<label htmlFor="is_consultant">Is Consultant?</label>
-												<input className="form-control ml-2" type="checkbox" value="1"/>
-											</div>
-										</div>
-									</div> */}
-				<div className="row">
-					{currentStep > 1 ? (
-						<div className="col-sm-6 text-left">
+						<div className="pt-user-name">
 							<button
-								className="btn btn-primary"
-								disabled={submitting}
-								onClick={prevStep}>
-								{submitting ? (
-									<img src={waiting} alt="submitting" />
-								) : (
-									'Previous'
-								)}
+								type="button"
+								onClick={() => document.querySelector('#profile_pic').click()}
+								className="btn btn-info">
+								Choose Image
 							</button>
 						</div>
-					) : null}
-
-					<div className="col-sm-6 text-right">
-						<button
-							className="btn btn-primary"
-							disabled={submitting}
-							type="submit">
-							{submitting ? (
-								<img src={waiting} alt="submitting" />
-							) : (
-								'Create Profile'
-							)}
-						</button>
-					</div>
+					</a>
+					<input
+						type="file"
+						accept="image/*"
+						id="profile_pic"
+						className="d-none"
+						onChange={e =>
+							setFieldValue('profile_pic', e.currentTarget.files[0])
+						}
+					/>
 				</div>
-			</div>
-		);
-	}
-}
-
-class ModalCreateStaff extends Component {
-	state = {
-		submitting: false,
-		date_of_birth: null,
-		next_of_kin_dob: null,
-		employment_start_date: null,
-		states: [],
-		currentStep: 1,
-	};
-
-	componentDidMount() {
-		document.body.classList.add('modal-open');
-	}
-
-	componentWillUnmount() {
-		document.body.classList.remove('modal-open');
-	}
-
-	doCreateStaff = async data => {
-		const {
-			date_of_birth,
-			next_of_kin_dob,
-			employment_start_date,
-		} = this.state;
-		if (!date_of_birth) {
-			throw new SubmissionError({ _error: 'select date of birth' });
-		}
-		if (!employment_start_date) {
-			throw new SubmissionError({ _error: 'select date of employment' });
-		}
-		if (!next_of_kin_dob) {
-			throw new SubmissionError({ _error: 'select nok date of birth' });
-		}
-		let staff = {
-			...data,
-			date_of_birth: moment(date_of_birth).format('YYYY-MM-DD'),
-			next_of_kin_dob: moment(next_of_kin_dob).format('YYYY-MM-DD'),
-			employment_start_date: moment(employment_start_date).format('YYYY-MM-DD'),
-		};
-		this.setState({ submitting: true });
-		try {
-			const rs = await request(`${API_URI}${staffAPI}`, 'POST', true, staff);
-			this.props.addStaff(rs);
-			this.setState({
-				submitting: false,
-				next_of_kin_dob: null,
-				date_of_birth: null,
-				employment_start_date: null,
-			});
-			this.props.reset('create_staff');
-			notifySuccess('new staff created!');
-			this.props.closeModals(false);
-		} catch (e) {
-			this.setState({ submitting: false });
-			throw new SubmissionError({
-				_error: e.message || 'could not create staff',
-			});
-		}
-	};
-
-	setDate = (date, type) => {
-		this.setState({ [type]: date });
-	};
-
-	onSelectCountry = e => {
-		const { countries } = this.props;
-		const countryId = e.target.value;
-		const country = countries.find(c => c.id === parseInt(countryId, 10));
-		if (country) {
-			this.setState({ states: country.states });
-		} else {
-			this.setState({ states: [] });
-		}
-	};
-
-	nextStep = () => {
-		let currentStep = this.state.currentStep;
-		currentStep = currentStep > 1 ? 2 : currentStep + 1;
-		this.setState({
-			currentStep: currentStep,
-		});
-	};
-
-	prevStep = () => {
-		let currentStep = this.state.currentStep;
-		// If the current step is 2 or 3, then subtract one on "previous" button click
-		currentStep = currentStep < 2 ? 1 : currentStep - 1;
-		this.setState({
-			currentStep: currentStep,
-		});
-	};
-
-	render() {
-		const {
-			error,
-			handleSubmit,
-			roles,
-			departments,
-			banks,
-			countries,
-			specializations,
-		} = this.props;
-		const {
-			currentStep,
-			date_of_birth,
-			next_of_kin_dob,
-			employment_start_date,
-		} = this.state;
-		const _countries = countries.map(c => ({ id: c.id, name: c.name }));
-		const sortedCountries = orderBy(_countries, ['name'], ['asc']);
-		const genders = [
-			{ id: 'Female', name: 'Female' },
-			{ id: 'Male', name: 'Male' },
-		];
-		const marital_status = [
-			{ id: 'Married', name: 'Married' },
-			{ id: 'Single', name: 'Single' },
-		];
-		const contracts = [
-			{ id: 'Full time', name: 'Full time' },
-			{ id: 'Part time', name: 'Part time' },
-		];
-		const religions = [
-			{ id: 'Atheist', name: 'Atheist' },
-			{ id: 'Buddhism', name: 'Buddhism' },
-			{ id: 'Christianity', name: 'Christianity' },
-			{ id: 'Hinduism', name: 'Hinduism' },
-			{ id: 'Islam', name: 'Islam' },
-		];
-
-		return (
-			<div
-				className="onboarding-modal modal fade animated show"
-				role="dialog"
-				style={{ display: 'block' }}>
-				<div className="modal-dialog modal-lg modal-centered" role="document">
-					<div className="modal-content text-center">
-						<button
-							aria-label="Close"
-							className="close"
-							type="button"
-							onClick={() => this.props.closeModals(false)}>
-							<span className="os-icon os-icon-close"></span>
-						</button>
-						<div className="onboarding-content with-gradient">
-							<h4 className="onboarding-title">Create New Staff</h4>
-							<div className="onboarding-text">create new staff profile</div>
-							<div className="form-block">
-								<form onSubmit={handleSubmit(this.doCreateStaff)}>
-									<StepOne
-										departments={departments}
-										roles={roles}
-										religions={religions}
-										genders={genders}
-										handleSubmit={handleSubmit}
-										error={error}
-										currentStep={currentStep}
-										nextStep={this.nextStep}
-										date_of_birth={date_of_birth}
-										setDate={this.setDate}
-										states={this.state.states}
-										onSelectCountry={this.onSelectCountry}
-										sortedCountries={sortedCountries}
-									/>
-									<StepTwo
-										contracts={contracts}
-										banks={banks}
-										specializations={specializations}
-										marital_status={marital_status}
-										handleSubmit={handleSubmit}
-										error={error}
-										currentStep={currentStep}
-										prevStep={this.prevStep}
-										next_of_kin_dob={next_of_kin_dob}
-										employment_start_date={employment_start_date}
-										setDate={this.setDate}
-									/>
-								</form>
-							</div>
+				<div className="col-sm-9">
+					<div className="row">
+						<div className="col-sm-6">
+							<Field
+								name="username"
+								label={{ value: 'User Name' }}
+								value={username}
+							/>
+						</div>
+						<div className="col-sm-6">
+							<Field
+								name="password"
+								value={password}
+								label={{ value: 'Password' }}
+							/>
+						</div>
+					</div>
+					<div className="row">
+						<div className="col-sm-6">
+							<label>User Role</label>
+							<Select
+								name="role_id"
+								value={role_id}
+								options={
+									(roles &&
+										roles.map(role => ({
+											value: role.id,
+											label: role.name,
+										}))) ||
+									[]
+								}
+								onChange={({ value }) => setFieldValue('role_id', value)}
+							/>
+						</div>
+						<div className="col-sm-6">
+							<label>Department</label>
+							<Select
+								name="department_id"
+								value={department_id}
+								options={
+									(departments &&
+										departments.map(item => ({
+											value: item.id,
+											label: item.name,
+										}))) ||
+									[]
+								}
+								onChange={({ value }) => setFieldValue('department_id', value)}
+							/>
 						</div>
 					</div>
 				</div>
 			</div>
-		);
-	}
+			<div className="row">
+				<div className="col-sm-4">
+					<Field
+						name="first_name"
+						value={first_name}
+						label={{ value: 'First name' }}
+					/>
+				</div>
+				<div className="col-sm-4">
+					<Field
+						value={last_name}
+						name="last_name"
+						label={{ value: 'Last name' }}
+					/>
+				</div>
+				<div className="col-sm-4">
+					<Field
+						name="other_names"
+						value={other_names}
+						label={{ value: 'Other name' }}
+					/>
+				</div>
+			</div>
+			<div className="row">
+				<div className="col-sm-4">
+					<div className="form-group">
+						<label>Date of Birth</label>
+						<div className="custom-date-input">
+							<DatePicker
+								selected={date_of_birth}
+								onChange={date => setFieldValue('date_of_birth', date)}
+								peekNextMonth
+								showMonthDropdown
+								showYearDropdown
+								dropdownMode="select"
+								dateFormat="yyyy-MM-dd"
+								className="single-daterange form-control"
+								placeholderText="Select date of birth"
+								maxDate={new Date()}
+								name="date_of_birth"
+							/>
+						</div>
+					</div>
+				</div>
+				<div className="col-sm-4">
+					<label>Gender</label>
+					<Select
+						name="gender"
+						value={gender}
+						placeholder="Select Gender"
+						options={genders || []}
+						onChange={({ value }) => setFieldValue('gender', value)}
+					/>
+				</div>
+				<div className="col-sm-4">
+					<label>Religion</label>
+					<Select
+						name="religion"
+						label="Religion"
+						value={religion}
+						placeholder="Select Religion"
+						options={religions || []}
+						onChange={({ value }) => setFieldValue('religion', value)}
+					/>
+				</div>
+			</div>
+			<div className="row">
+				<div className="col-sm-4">
+					<label>Nationality</label>
+					<Select
+						name="nationality"
+						value={nationality}
+						options={sortedCountries || []}
+						onChange={({ value }) => setFieldValue('nationality', value)}
+					/>
+				</div>
+				<div className="col-sm-4">
+					<label>State of Origin</label>
+					<Select
+						name="state_of_origin"
+						value={state_of_origin}
+						options={states}
+						onChange={({ value }) => setFieldValue('state_of_origin', value)}
+					/>
+				</div>
+				<div className="col-sm-4">
+					<Field name="lga" value={lga} label={{ value: 'LGA' }} />
+				</div>
+			</div>
+			<div className="row">
+				<div className="col-sm-4">
+					<Field name="email" label={{ value: 'Email' }} value={email} />
+				</div>
+				<div className="col-sm-4">
+					<Field
+						name="phone_number"
+						value={phone_number}
+						label={{ value: 'Phone Number' }}
+					/>
+				</div>
+				<div className="col-sm-4">
+					<Field name="address" value={address} label={{ value: 'Address' }} />
+				</div>
+			</div>
+			<div className="row">
+				<div className="col-sm-12 text-right">
+					<button
+						className="btn btn-primary"
+						onClick={handleSubmit}
+						type="submit">
+						Next
+					</button>
+				</div>
+			</div>
+		</Form>
+	);
 }
 
-ModalCreateStaff = reduxForm({
-	form: 'create_staff',
-	validate,
-})(ModalCreateStaff);
+function StepTwo({
+	setFieldValue,
+	handleSubmit,
+	isSubmitting,
+	isValid,
+	values,
+	specializations,
+	maritalStatus,
+	banks,
+	contracts,
+	setSection,
+}) {
+	const {
+		job_title,
+		specialization_id,
+		pension_mngr,
+		marital_status,
+		bank_name,
+		number_of_children,
+		account_number,
+		employment_start_date,
+		contract_type,
+		monthly_salary,
+		annual_salary,
+		next_of_kin,
+		next_of_kin_relationship,
+		next_of_kin_dob,
+		next_of_kin_address,
+		next_of_kin_contact_no,
+	} = values;
+	return (
+		<div>
+			<div className="row">
+				<div className="col-sm-4">
+					<Field
+						name="job_title"
+						value={job_title}
+						label={{ value: 'Job Title' }}
+					/>
+				</div>
+				<div className="col-sm-4">
+					<label>Specialization</label>
+					<Select
+						name="specialization_id"
+						placeholder="Select Specialization"
+						value={specialization_id}
+						options={
+							(specializations &&
+								specializations.map(specialization => ({
+									value: specialization.id,
+									label: specialization.name,
+								}))) ||
+							[]
+						}
+						onChange={({ value }) => setFieldValue('specialization_id', value)}
+					/>
+				</div>
+				<div className="col-sm-4">
+					<label>Contract Type</label>
+					<Select
+						value={contract_type}
+						name="contract_type"
+						label="Contract"
+						options={contracts || []}
+						onChange={({ value }) => setFieldValue('contract_type', value)}
+					/>
+				</div>
+			</div>
+			<div className="row">
+				<div className="col-sm-4">
+					<label>Bank</label>
+					<Select
+						name="bank_name"
+						placeholder="Select Bank"
+						options={
+							(banks &&
+								banks.map(bank => ({
+									value: bank.name,
+									label: bank.name,
+								}))) ||
+							[]
+						}
+						onChange={({ value }) => setFieldValue('bank_name', value)}
+						value={bank_name}
+					/>
+				</div>
+				<div className="col-sm-4">
+					<Field
+						name="account_number"
+						value={account_number}
+						label={{ value: 'Account Number' }}
+					/>
+				</div>
+				<div className="col-sm-4">
+					<Field
+						name="pension_mngr"
+						value={pension_mngr}
+						label={{ value: 'Pension Manager' }}
+					/>
+				</div>
+			</div>
+			<div className="row">
+				<div className="col-sm-4">
+					<div className="form-group">
+						<label>Employment start date</label>
+						<div className="custom-date-input">
+							<DatePicker
+								selected={employment_start_date}
+								peekNextMonth
+								showMonthDropdown
+								showYearDropdown
+								dropdownMode="select"
+								dateFormat="yyyy-MM-dd"
+								className="single-daterange form-control"
+								placeholderText="Select date of employment"
+								maxDate={new Date()}
+								onChange={date => setFieldValue('employment_start_date', date)}
+							/>
+						</div>
+					</div>
+				</div>
+				<div className="col-sm-4">
+					<Field
+						name="monthly_salary"
+						value={monthly_salary}
+						label={{ value: 'Gross Salary (Monthly)' }}
+					/>
+				</div>
+				<div className="col-sm-4">
+					<Field
+						name="annual_salary"
+						value={annual_salary}
+						label={{ value: 'Gross Salary (Annually)' }}
+					/>
+				</div>
+			</div>
+			<div className="row">
+				<div className="col-sm-4">
+					<label>Marital Status</label>
+					<Select
+						name="marital_status"
+						label="Marital Status"
+						options={maritalStatus || []}
+						onChange={({ value }) => setFieldValue('marital_status', value)}
+						value={marital_status}
+					/>
+				</div>
+				<div className="col-sm-4">
+					<Field
+						name="number_of_children"
+						type="number"
+						value={number_of_children}
+						label={{ value: 'Number of Children' }}
+					/>
+				</div>
+			</div>
+			<div className="row">
+				<div className="col-sm-4">
+					<Field
+						name="next_of_kin"
+						value={next_of_kin}
+						label={{ value: 'Next of kin name' }}
+					/>
+				</div>
+				<div className="col-sm-4">
+					<Field
+						name="next_of_kin_relationship"
+						value={next_of_kin_relationship}
+						label={{ value: 'Next of kin relationship' }}
+					/>
+				</div>
+				<div className="col-sm-4">
+					<Field
+						name="next_of_kin_contact_no"
+						value={next_of_kin_contact_no}
+						label={{ value: 'Next of Kin Phone Number' }}
+					/>
+				</div>
+			</div>
+			<div className="row">
+				<div className="col-sm-8">
+					<Field
+						name="next_of_kin_address"
+						value={next_of_kin_address}
+						label={{ value: 'Next of Kin address' }}
+					/>
+				</div>
+				<div className="col-sm-4">
+					<div className="form-group">
+						<label>Next of Kin Date of Birth</label>
+						<div className="custom-date-input">
+							<DatePicker
+								selected={next_of_kin_dob}
+								peekNextMonth
+								showMonthDropdown
+								showYearDropdown
+								dropdownMode="select"
+								dateFormat="yyyy-MM-dd"
+								className="single-daterange form-control"
+								placeholderText="Select nok date of birth"
+								maxDate={new Date()}
+								onChange={date => setFieldValue('next_of_kin_dob', date)}
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div className="row">
+				<div className="col-sm-6 text-left">
+					<button onClick={setSection} className="btn btn-secondary">
+						Previous
+					</button>
+				</div>
+				<div className="col-sm-6 text-right">
+					<Button
+						className="btn-primary"
+						isSubmitting={isSubmitting}
+						onClick={handleSubmit}
+						isValid={isValid}
+						value="Create"
+						type="submit"
+					/>
+				</div>
+			</div>
+		</div>
+	);
+}
 
 const mapStateToProps = (state, ownProps) => {
 	return {
-		initialValues: {
-			role_id: '',
-			department_id: '',
-			religion: '',
-			gender: 'Male',
-			nationality: '',
-			state_of_origin: '',
-			marital_status: '',
-			bank_name: '',
-			contract_type: '',
-			monthly_salary: 0,
-			annual_salary: 0,
-		},
 		roles: state.role.roles,
 		departments: state.settings.departments,
 		countries: state.utility.countries,
 		banks: state.utility.banks,
 		specializations: state.settings.specializations,
+		staff: state.general.staff,
 	};
 };
 
-export default connect(mapStateToProps, { reset, closeModals, addStaff })(
+export default connect(mapStateToProps, { closeModals, addStaff })(
 	ModalCreateStaff
 );

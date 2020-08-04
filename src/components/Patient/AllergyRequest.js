@@ -31,7 +31,7 @@ const AllergyRequest = props => {
 		setSubmitting(true);
 		try {
 			const rs = await request(
-				`${API_URI}${patientAPI}/save-allergies`,
+				`${patientAPI}/save-allergies`,
 				'POST',
 				true,
 				data

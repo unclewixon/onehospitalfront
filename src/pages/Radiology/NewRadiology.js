@@ -60,7 +60,7 @@ const NewRadiology = props => {
 		};
 		try {
 			const rs = await request(
-				`${API_URI}${patientAPI}/save-request`,
+				`${API_URI}/${patientAPI}/save-request`,
 				'POST',
 				true,
 				data
@@ -85,7 +85,7 @@ const NewRadiology = props => {
 			try {
 				setSearching(true);
 				const rs = await request(
-					`${API_URI}${searchAPI}?q=${query}`,
+					`${API_URI}/${searchAPI}?q=${query}`,
 					'GET',
 					true
 				);

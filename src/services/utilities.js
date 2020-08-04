@@ -31,11 +31,7 @@ export function encodeValue(val) {
 }
 
 export async function getData2(patient, title) {
-	const res = await request(
-		`${API_URI}${patientAPI}/${patient.id}/vitals`,
-		'GET',
-		true
-	);
+	const res = await request(`${patientAPI}/${patient.id}/vitals`, 'GET', true);
 	return res.find(c => c.readingType === title);
 }
 
@@ -117,7 +113,7 @@ export const request = async (url, method, authed = false, data) => {
 	// prettier-ignore
 	const user = await (new SSRStorage()).getItem(TOKEN_COOKIE);
 	// console.log(user);
-	const response = await fetch(url, {
+	const response = await fetch(API_URI + '/' + url, {
 		method: method,
 		headers: authed ? headers(user) : { ...defaultHeaders },
 		body: JSON.stringify(data),

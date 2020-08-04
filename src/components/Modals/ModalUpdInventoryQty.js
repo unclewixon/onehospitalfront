@@ -37,7 +37,7 @@ class ModalUpdInventoryQty extends Component {
 		this.setState({ submitting: true });
 		try {
 			const rs = await request(
-				`${API_URI}${inventoryUpdateQuantityAPI}`,
+				`${inventoryUpdateQuantityAPI}`,
 				'PATCH',
 				true,
 				data

@@ -189,7 +189,7 @@ class InventoryList extends Component {
 				formData.append('file', file);
 				formData.append('category_id', category_id);
 				const rs = await axios.post(
-					`${API_URI}${inventoryUploadAPI}`,
+					`${API_URI}/${inventoryUploadAPI}`,
 					formData
 				);
 				const cat = categories.find(d => d.id === category_id);
@@ -208,7 +208,7 @@ class InventoryList extends Component {
 		e.preventDefault();
 		this.setState({ downloading: true });
 		try {
-			const url = `${API_URI}${inventoryDownloadAPI}`;
+			const url = `${API_URI}/${inventoryDownloadAPI}`;
 			setTimeout(() => {
 				window.open(url, '_blank').focus();
 				this.setState({ downloading: false, download_visible: false });
@@ -230,7 +230,7 @@ class InventoryList extends Component {
 
 	fetchInventories = async () => {
 		try {
-			const rs = await request(`${API_URI}${inventoryAPI}`, 'GET', true);
+			const rs = await request(`${inventoryAPI}`, 'GET', true);
 			this.props.loadInventories(rs);
 		} catch (error) {
 			console.log(error);
