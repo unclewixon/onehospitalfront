@@ -46,6 +46,7 @@ const LabMgt = lazy(() => import('./pages/LabourMgt/index'));
 const Cafeteria = lazy(() => import('./pages/Cafeteria/index'));
 const Immunization = lazy(() => import('./pages/Immunization/index'));
 const Account = lazy(() => import('./pages/Account/index'));
+const MyAccount = lazy(() => import('./pages/MyAccount/index'));
 const Logout = lazy(() => import('./pages/Logout'));
 
 const storage = new SSRStorage();
@@ -138,6 +139,7 @@ class App extends Component {
 													/>
 													<Route path="/account" component={Account} />
 													<Route path="/logout" component={Logout} />
+													<Route path="/my-account" component={MyAccount} />
 													<Route component={NoMatch} />
 												</Switch>
 											</SWRConfig>

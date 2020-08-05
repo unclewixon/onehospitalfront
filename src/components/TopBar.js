@@ -160,10 +160,10 @@ class TopBar extends Component {
 								</div>
 								<ul>
 									<li>
-										<a onClick={this.openProfile}>
+										<Link to="/my-account">
 											<i className="os-icon os-icon-user-male-circle2" />
 											<span>Profile Details</span>
-										</a>
+										</Link>
 									</li>
 									<li>
 										<Link to="/logout">
