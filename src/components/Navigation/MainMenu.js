@@ -55,7 +55,6 @@ class MainMenu extends Component {
 
 	render() {
 		const { role, theme_mode, menu_mode, profile } = this.props;
-
 		return (
 			<div
 				className={`menu-w color-scheme-dark ${
@@ -71,7 +70,14 @@ class MainMenu extends Component {
 				<div className="logged-user-w avatar-inline">
 					<div className="logged-user-i">
 						<div className="avatar-w">
-							<img alt="" src={avatar1} />
+							<img
+								alt=""
+								src={
+									profile.details.profile_pic
+										? profile.details.profile_pic
+										: avatar1
+								}
+							/>
 						</div>
 						<div className="logged-user-info-w">
 							<div className="logged-user-name">
@@ -110,7 +116,7 @@ class MainMenu extends Component {
 					{(role === 'immunization' || role === 'admin') && (
 						<ImmunizationMenu />
 					)}
-					{role === 'doctor' || (role === 'admin' && <DoctorMenu />)}
+					{(role === 'doctor' || role === 'admin') && <DoctorMenu />}
 					{(role === 'hr' || role === 'admin') && <HrMenu />}
 
 					{(role === 'inventory' || role === 'admin') && <InventoryMenu />}

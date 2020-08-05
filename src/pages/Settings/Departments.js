@@ -83,7 +83,7 @@ const Departments = props => {
 		};
 		try {
 			const rs = await request(
-				`${API_URI}/departments/${data.id}/update`,
+				`departments/${data.id}/update`,
 				'PATCH',
 				true,
 				data
@@ -127,7 +127,7 @@ const Departments = props => {
 	const fetchDepartment = async () => {
 		setDataLoaded(false);
 		try {
-			const rs = await request(`$departments`, 'GET', true);
+			const rs = await request(`departments`, 'GET', true);
 			props.loadDepartments(rs);
 			setDataLoaded(true);
 		} catch (error) {
