@@ -35,6 +35,14 @@ const FrontDeskMenu = () => {
 				<span>MY ACCOUNT</span>
 			</li>
 			<li>
+				<Link to="/front-desk/profile">
+					<div className="icon-w">
+						<div className="os-icon os-icon-newspaper" />
+					</div>
+					<span>Payslips</span>
+				</Link>
+			</li>
+			<li>
 				<Link to="/front-desk/all-patients">
 					<div className="icon-w">
 						<div className="os-icon os-icon-newspaper" />

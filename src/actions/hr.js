@@ -14,6 +14,8 @@ import {
 	LOAD_PERFORMANCE_PERIOD,
 	SET_PERFORMANCE_PERIOD,
 } from './types';
+import { request } from './../services/utilities';
+import { notifySuccess, notifyError } from './../services/notify';
 
 export const loadStaff = data => {
 	return {
@@ -104,4 +106,22 @@ export const setPerformancePeriod = data => {
 		type: SET_PERFORMANCE_PERIOD,
 		payload: data,
 	};
+};
+
+export const updateStaff = (data, id, cb) => async dispatch => {
+	try {
+		const res = await request(`hr/staffs/${id}/update`, 'PATCH', true, data);
+		if (res) {
+			dispatch({
+				type: UPDATE_STAFF,
+				payload: res.data,
+			});
+			cb();
+			notifySuccess('Updated Staff Successfully');
+			return;
+		}
+	} catch (error) {
+		cb();
+		notifyError('Could not update staff');
+	}
 };

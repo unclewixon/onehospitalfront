@@ -2,11 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Queue from './../../components/Queue';
+import PaypointQueueTable from './../../components/Tables/PaypointQueueTable';
 
 const PaypointQueue = ({ staff }) => {
 	const department = staff?.details?.department?.name;
 
-	return <Queue department={department} />;
+	return <PaypointQueueTable />;
 };
 
 const mapStatetoProps = state => {
