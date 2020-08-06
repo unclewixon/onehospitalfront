@@ -168,10 +168,10 @@ class StaffItem extends Component {
 						onClick={
 							this.toggle
 						}>{`${staff.first_name} ${staff.last_name} (${staff.user.username})`}</td>
-					<td onClick={this.toggle}>{staff.user.role.name}</td>
-					<td onClick={this.toggle}>{staff.phone_number}</td>
+					<td onClick={this.toggle}>{staff?.user?.role?.name}</td>
+					<td onClick={this.toggle}>{staff?.phone_number}</td>
 					<td onClick={this.toggle}>
-						{staff.department ? staff.department.name : ''}
+						{staff.department ? staff.department?.name : ''}
 					</td>
 					<td className="text-center">
 						{staff.isActive ? (
