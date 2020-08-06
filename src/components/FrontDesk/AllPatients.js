@@ -53,9 +53,7 @@ const AllPatients = ({ allPatients }) => {
 		setLoaded(true);
 		try {
 			const rs = await request(
-				name
-					? `${API_URI}/patient/find?query=${name}`
-					: `${API_URI}/patient/list`,
+				name ? `patient/find?query=${name}` : `patient/list`,
 				'GET',
 				true
 			);

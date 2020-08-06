@@ -1,16 +1,31 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import searchingGif from '../../assets/images/searching.gif';
+import { Tooltip } from 'antd';
+import InvoiceModal from '../Modals/InvoiceModal';
 
 const PaypointQueueTable = () => {
 	const [loading, setLoading] = useState(true);
+	const [showModal, setShowModal] = useState(false);
+	const [activeRequest, setActiveRequest] = useState(null);
 
 	useEffect(() => {
 		setLoading(false);
 	});
 
+	const onModalClick = () => {
+		setShowModal(!showModal);
+	};
+
 	return (
 		<>
+			{activeRequest ? (
+				<InvoiceModal
+					showModal={showModal}
+					onModalClick={onModalClick}
+					activeRequest={activeRequest}
+				/>
+			) : null}
 			<table className="table table-light-border">
 				<thead>
 					<tr>
@@ -39,7 +54,22 @@ const PaypointQueueTable = () => {
 									data-original-title=""
 									title=""></div>
 							</td>
-							<td class="text-right">$354</td>
+							<td class="text-right">
+								<Tooltip title="View Invoice/Receipt">
+									<a
+										onClick={() => {
+											onModalClick();
+											setActiveRequest(true);
+										}}>
+										<i class="os-icon os-icon-newspaper"></i>
+									</a>
+								</Tooltip>
+								<Tooltip title="Print Details">
+									<a onClick>
+										<i class="os-icon os-icon-printer"></i>
+									</a>
+								</Tooltip>
+							</td>
 						</tr>
 					</tbody>
 				)}
