@@ -2,7 +2,7 @@ import React from 'react';
 import { ReactComponent as CurveBg } from '../../../assets/svg-icons/curve.svg';
 import bgImage from '../../../assets/images/a6.jpeg';
 
-const AccountDetails = () => {
+const AccountDetails = ({ staff, onEdit, buttonText, onView }) => {
 	return (
 		<div className="col-sm-5">
 			<div className="user-profile compact">
@@ -18,8 +18,10 @@ const AccountDetails = () => {
 						</a>
 					</div>
 					<div className="up-main-info">
-						<h2 className="up-header">John Mayers</h2>
-						<h6 className="up-sub-header">Product Designer at Facebook</h6>
+						<h2 className="up-header">
+							{`${staff?.details?.first_name} ${staff?.details?.last_name}`}
+						</h2>
+						<h6 className="up-sub-header">{`${staff?.details?.job_title}`}</h6>
 					</div>
 					<CurveBg />
 				</div>
@@ -27,17 +29,26 @@ const AccountDetails = () => {
 					<div className="row">
 						<div className="col-sm-6">
 							<div className="value-pair">
-								<div className="label">Status:</div>
-								<div className="value badge badge-pill badge-success">
-									Online
-								</div>
+								<div className="label">Role:</div>
+								<div className="value badge ">{`${staff?.role?.name}`}</div>
 							</div>
 						</div>
 						<div className="col-sm-6 text-right">
-							<a className="btn btn-primary btn-sm" href="#">
-								<i className="os-icon os-icon-link-3"></i>
-								<span>Add to Friends</span>
-							</a>
+							{buttonText === 'VIEW PROFILE' ? (
+								<button
+									className="btn btn-primary btn-sm"
+									onClick={() => onView()}>
+									<i className="os-icon os-icon-window-content"></i>
+									<span>{buttonText}</span>
+								</button>
+							) : (
+								<button
+									className="btn btn-primary btn-sm"
+									onClick={() => onEdit()}>
+									<i className="os-icon os-icon-edit-1"></i>
+									<span>{buttonText}</span>
+								</button>
+							)}
 						</div>
 					</div>
 				</div>
@@ -47,13 +58,13 @@ const AccountDetails = () => {
 							<div className="col-sm-6 b-r b-b">
 								<div className="el-tablo centered padded-v">
 									<div className="value">25</div>
-									<div className="label">Products Sold</div>
+									<div className="label">Years Spent</div>
 								</div>
 							</div>
 							<div className="col-sm-6 b-b">
 								<div className="el-tablo centered padded-v">
 									<div className="value">315</div>
-									<div className="label">Friends</div>
+									<div className="label">Age</div>
 								</div>
 							</div>
 						</div>
@@ -61,56 +72,56 @@ const AccountDetails = () => {
 							<div className="os-progress-bar primary">
 								<div className="bar-labels">
 									<div className="bar-label-left">
-										<span>Profile Completion</span>
-										<span className="positive">+10</span>
+										<span>Username</span>
+										{/* <span className="negative">-12</span> */}
 									</div>
 									<div className="bar-label-right">
-										<span className="info">72/100</span>
+										<span className="info">{`${staff?.username}`}</span>
 									</div>
 								</div>
-								<div className="bar-level-1" style={{ width: '100%' }}>
-									<div className="bar-level-2" style={{ width: '80%' }}>
-										<div className="bar-level-3" style={{ width: '30%' }}></div>
-									</div>
-								</div>
-							</div>
-							<div className="os-progress-bar primary">
-								<div className="bar-labels">
-									<div className="bar-label-left">
-										<span>Status Unlocked</span>
-										<span className="positive">+5</span>
-									</div>
-									<div className="bar-label-right">
-										<span className="info">45/100</span>
-									</div>
-								</div>
-								<div className="bar-level-1" style={{ width: '100%' }}>
-									<div className="bar-level-2" style={{ width: '30%' }}>
-										<div className="bar-level-3" style={{ width: '10%' }}></div>
-									</div>
-								</div>
-							</div>
-							<div className="os-progress-bar primary">
-								<div className="bar-labels">
-									<div className="bar-label-left">
-										<span>Followers</span>
-										<span className="negative">-12</span>
-									</div>
-									<div className="bar-label-right">
-										<span className="info">74/100</span>
-									</div>
-								</div>
-								<div className="bar-level-1" style={{ width: '100%' }}>
+								{/* <div className="bar-level-1" style={{ width: '100%' }}>
 									<div className="bar-level-2" style={{ width: '80%' }}>
 										<div className="bar-level-3" style={{ width: '60%' }}></div>
 									</div>
+								</div> */}
+							</div>
+							<div className="os-progress-bar primary">
+								<div className="bar-labels">
+									<div className="bar-label-left">
+										<span>Email</span>
+										{/* <span className="positive">+10</span> */}
+									</div>
+									<div className="bar-label-right">
+										<span className="info">{`${staff?.details?.email}`}</span>
+									</div>
 								</div>
+								{/* <div className="bar-level-1" style={{ width: '100%' }}>
+									<div className="bar-level-2" style={{ width: '80%' }}>
+										<div className="bar-level-3" style={{ width: '30%' }}></div>
+									</div>
+								</div> */}
+							</div>
+							<div className="os-progress-bar primary">
+								<div className="bar-labels">
+									<div className="bar-label-left">
+										<span>Phone Number</span>
+										{/* <span className="positive">+5</span> */}
+									</div>
+									<div className="bar-label-right">
+										<span className="info">{`${staff?.details?.phone_number}`}</span>
+									</div>
+								</div>
+								{/* <div className="bar-level-1" style={{ width: '100%' }}>
+									<div className="bar-level-2" style={{ width: '30%' }}>
+										<div className="bar-level-3" style={{ width: '10%' }}></div>
+									</div>
+								</div> */}
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div className="element-wrapper">
+			{/* <div className="element-wrapper">
 				<div className="element-box">
 					<h6 className="element-header">User Activity</h6>
 					<div className="timed-activities compact">
@@ -173,7 +184,7 @@ const AccountDetails = () => {
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> */}
 		</div>
 	);
 };
