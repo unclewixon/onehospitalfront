@@ -456,7 +456,7 @@ export const redirectToPage = (role, history) => {
 				uri = '/hmo/dashboard';
 				break;
 			case 'billing':
-				uri = '/billing-paypoint';
+				uri = '/paypoint';
 				break;
 			case 'lab':
 				uri = '/lab';

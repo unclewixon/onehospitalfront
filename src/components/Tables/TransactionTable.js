@@ -105,8 +105,8 @@ const TransactionTable = props => {
 					);
 				})
 			) : (
-				<tr colSpan="6" className="text-center">
-					<td>No transaction</td>
+				<tr className="text-center">
+					<td colSpan="7">No transaction</td>
 				</tr>
 			)}
 		</tbody>

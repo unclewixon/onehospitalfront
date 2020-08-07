@@ -4,15 +4,53 @@ import { Link } from 'react-router-dom';
 const PayPointMenu = () => {
 	return (
 		<>
-			<li className="sub-header">
-				<span>Pay Point</span>
+			<li>
+				<Link to="/paypoint">
+					<div className="icon-w">
+						<div className="icon-feather-home" />
+					</div>
+					<span>Home</span>
+				</Link>
 			</li>
 			<li>
-				<Link to="/billing-paypoint">
+				<Link to="/paypoint/new-transaction">
 					<div className="icon-w">
-						<div className="os-icon os-icon-layers" />
+						<div className="icon-feather-plus-square" />
 					</div>
-					<span>Dashboard</span>
+					<span>New Transaction</span>
+				</Link>
+			</li>
+
+			<li>
+				<Link to="/paypoint/upcoming-bills">
+					<div className="icon-w">
+						<div className="icon-feather-file-text" />
+					</div>
+					<span>Upcoming Bills</span>
+				</Link>
+			</li>
+			<li>
+				<Link to="/paypoint/transaction-history">
+					<div className="icon-w">
+						<div className="os-icon os-icon-agenda-1" />
+					</div>
+					<span>Transaction History</span>
+				</Link>
+			</li>
+			<li>
+				<Link to="/paypoint/insurance-bills">
+					<div className="icon-w">
+						<div className="os-icon os-icon-ui-55" />
+					</div>
+					<span>Insurance Bills</span>
+				</Link>
+			</li>
+			<li>
+				<Link to="/paypoint/vouchers">
+					<div className="icon-w">
+						<div className="os-icon os-icon-newspaper" />
+					</div>
+					<span>Vouchers</span>
 				</Link>
 			</li>
 		</>

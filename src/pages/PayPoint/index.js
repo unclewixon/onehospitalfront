@@ -21,59 +21,7 @@ export class index extends Component {
 						<div className="row">
 							<div className="col-sm-12">
 								<div className="element-wrapper">
-									<div className="element-actions">
-										<Link
-											to={`${match.path}/`}
-											className={`mx-2 btn btn-primary btn-sm  ${
-												page === '' ? 'btn-outline-primary' : ''
-											}`}>
-											{' '}
-											Dashboard
-										</Link>
-										<Link
-											to={`${match.path}/queue`}
-											className={`mx-2 btn btn-primary btn-sm  ${
-												page === '' ? 'btn-outline-primary' : ''
-											}`}>
-											{' '}
-											View Queue
-										</Link>
-										<Link
-											to={`${match.path}/insurance-bills`}
-											className={`mr-2 btn btn-primary btn-sm  ${
-												page === 'insurance-bills' ? 'btn-outline-primary' : ''
-											}`}>
-											{' '}
-											Insurance
-										</Link>
-										<Link
-											to={`${match.path}/review-transaction`}
-											className={`mr-2 btn btn-primary btn-sm  ${
-												page === 'review-transaction'
-													? 'btn-outline-primary'
-													: ''
-											}`}>
-											{' '}
-											Review Transaction
-										</Link>
-										<Link
-											to={`${match.path}/paypoint-voucher`}
-											className={`mr-2 btn btn-primary btn-sm  ${
-												page === 'paypoint-voucher' ? 'btn-outline-primary' : ''
-											}`}>
-											{' '}
-											Paypoint Voucher
-										</Link>
-										<Link
-											to={`${match.path}/new-transaction`}
-											className={`mr-2 btn btn-primary btn-sm ${
-												page === 'new-transaction' ? 'btn-outline-primary' : ''
-											}`}>
-											{' '}
-											New Transaction
-										</Link>
-									</div>
-									<h6 className="element-header">Pay Point</h6>
+									{/*<h6 className="element-header">Pay Point</h6>*/}
 
 									<div className="row">
 										<div className="col-sm-12">
@@ -87,7 +35,7 @@ export class index extends Component {
 														/>
 														<Route
 															exact
-															path={`${match.url}/queue`}
+															path={`${match.url}/upcoming-bills`}
 															component={PaypointQueue}
 														/>
 														<Route
@@ -95,11 +43,11 @@ export class index extends Component {
 															component={InsuranceBills}
 														/>
 														<Route
-															path={`${match.url}/review-transaction`}
+															path={`${match.url}/transaction-history`}
 															component={ReviewTransaction}
 														/>
 														<Route
-															path={`${match.url}/paypoint-voucher`}
+															path={`${match.url}/vouchers`}
 															component={Voucher}
 														/>
 

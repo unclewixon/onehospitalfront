@@ -34,7 +34,7 @@ export class PayPointTable extends Component {
 			let today = moment().format('YYYY-MM-DD');
 			console.log(today);
 			const rs = await request(
-				`transactionsAPI}/list?patient_id=&startDate=${today}&endDate=${today}&transaction_type=billing&status=`,
+				`${transactionsAPI}/list?patient_id=&startDate=${today}&endDate=${today}&transaction_type=billing&status=`,
 				'GET',
 				true
 			);

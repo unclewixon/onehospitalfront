@@ -27,6 +27,7 @@ import ProcedureMenu from './ProcedureMenu';
 import LabourMgt from './LabourMgt';
 import ImmunizationMenu from './ImmunizationMenu';
 import AdminMenu from './AdminMenu';
+import MyAccount from './MyAccount';
 
 class MainMenu extends Component {
 	componentDidMount() {
@@ -99,6 +100,9 @@ class MainMenu extends Component {
 				</div> */}
 				<h1 className="menu-page-header">Page Header</h1>
 				<ul className="main-menu">
+					<li className="sub-header">
+						<span>NAVIGATION</span>
+					</li>
 					{(role === 'front-desk' || role === 'admin') && <FrontDeskMenu />}
 					{(role === 'clinical-lab' || role === 'admin') && <ClinicalLabMenu />}
 					{(role === 'accountant' || role === 'admin') && <PayPointMenu />}
@@ -124,6 +128,7 @@ class MainMenu extends Component {
 					{(role === 'hmo' || role === 'admin') && <HMOMenu />}
 					{(role === 'account' || role === 'admin') && <Account />}
 					{role === 'admin' && <SettingsMenu />}
+					<MyAccount />
 				</ul>
 			</div>
 		);

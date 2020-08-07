@@ -5,9 +5,6 @@ import MyAccount from './MyAccount';
 const FrontDeskMenu = () => {
 	return (
 		<>
-			<li className="sub-header">
-				<span>MY TASKS</span>
-			</li>
 			<li>
 				<Link to="/front-desk">
 					<div className="icon-w">
@@ -32,7 +29,6 @@ const FrontDeskMenu = () => {
 					<span>Patients</span>
 				</Link>
 			</li>
-			<MyAccount />
 		</>
 	);
 };

@@ -133,10 +133,7 @@ class App extends Component {
 														path="/immunization"
 														component={Immunization}
 													/>
-													<Route
-														path="/billing-paypoint"
-														component={PayPoint}
-													/>
+													<Route path="/paypoint" component={PayPoint} />
 													<Route path="/account" component={Account} />
 													<Route path="/logout" component={Logout} />
 													<Route path="/my-account" component={MyAccount} />

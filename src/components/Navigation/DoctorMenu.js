@@ -5,9 +5,6 @@ import MyAccount from './MyAccount';
 const DoctorMenu = () => {
 	return (
 		<>
-			<li className="sub-header">
-				<span>DOCTOR</span>
-			</li>
 			<li>
 				<Link to="/doctor">
 					<div className="icon-w">
@@ -32,7 +29,6 @@ const DoctorMenu = () => {
 					<span>Patients</span>
 				</Link>
 			</li>
-			<MyAccount />
 		</>
 	);
 };
