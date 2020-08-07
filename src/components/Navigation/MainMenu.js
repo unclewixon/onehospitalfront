@@ -75,7 +75,7 @@ class MainMenu extends Component {
 						</div>
 						<div className="logged-user-info-w">
 							<div className="logged-user-name">
-								{fullname(profile.details)}
+								{fullname(profile?.details)}
 							</div>
 							<div className="logged-user-role">{capitalize(role)}</div>
 						</div>

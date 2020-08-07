@@ -1,4 +1,5 @@
 import React from 'react';
+import circleLogo from '../../assets/images/logo-big.png';
 
 const Invoice = () => {
 	return (
@@ -6,20 +7,23 @@ const Invoice = () => {
 			style={{
 				maxWidth: 600,
 				margin: '0px auto',
-				boxShadow: '0px 20px 50px rgba(0,0,0,0.05)',
+				// boxShadow: '0px 20px 50px rgba(0,0,0,0.05)',
 			}}>
 			<table style={{ width: '100%' }}>
 				<tbody>
 					<tr>
 						<td>
-							<img alt src="img/logo.png" style={{ width: 70, padding: 20 }} />
+							<img
+								alt
+								src={`url(${circleLogo})`}
+								style={{ width: 70, padding: 20 }}
+							/>
 						</td>
 					</tr>
 				</tbody>
 			</table>
-			<div style={{ padding: '60px 70px' }}>
-				<h2 style={{ marginTop: 0 }}>Thanks for your order, John!</h2>
-				<table style={{ marginTop: 30, width: '100%' }}>
+			<div style={{ padding: '0px 70px 30px 70px' }}>
+				<table style={{ width: '100%' }}>
 					<tbody>
 						<tr>
 							<td style={{ paddingRight: 30 }}>
@@ -32,17 +36,19 @@ const Invoice = () => {
 										color: '#B8B8B8',
 										marginBottom: 5,
 									}}>
-									Receipt #84733
+									Patient Name:
 								</div>
 								<div
 									style={{
 										fontSize: 12,
 										color: '#111',
 										fontWeight: 'bold',
-										marginBottom: 20,
+										maxWidth: '100px',
 									}}>
-									Jan 12th, 2018
+									Madam Abdullah Starfish
 								</div>
+							</td>
+							<td style={{ maxWidth: 150, textAlign: 'right' }}>
 								<div
 									style={{
 										textTransform: 'uppercase',
@@ -52,26 +58,16 @@ const Invoice = () => {
 										color: '#B8B8B8',
 										marginBottom: 5,
 									}}>
-									Shipping To:
+									File Number:
 								</div>
 								<div
-									style={{ fontSize: 12, color: '#111', fontWeight: 'bold' }}>
-									1073 Madison Ave, suite 373
-									<br />
-									New York, NY 10002
-								</div>
-							</td>
-							<td style={{ maxWidth: 150 }}>
-								<div style={{ padding: 20, fontSize: 12 }}>
-									<h4 style={{ margin: '0px 0px 10px' }}>Changed your mind?</h4>
-									<div style={{ color: '#aaa' }}>
-										You can request a cancellation within 24 hours by{' '}
-										<a
-											href="#"
-											style={{ textDecoration: 'underline', color: '#4B72FA' }}>
-											clicking here
-										</a>
-									</div>
+									style={{
+										fontSize: 12,
+										color: '#111',
+										fontWeight: 'bold',
+										marginBottom: 20,
+									}}>
+									DEDA-102030
 								</div>
 							</td>
 						</tr>
@@ -249,7 +245,7 @@ const Invoice = () => {
 						</tr>
 					</tbody>
 				</table>
-				<div
+				{/* <div
 					style={{
 						color: '#636363',
 						fontSize: 14,
@@ -260,7 +256,7 @@ const Invoice = () => {
 					Thank you again for shopping at with us. We appreciate your business
 					and look forward to serving you in the near future.
 				</div>
-				<h4 style={{ marginBottom: 10 }}>Need Help?</h4>
+				<h4 style={{ marginBottom: 10 }}>Need Help?</h4> */}
 				<div style={{ color: '#A5A5A5', fontSize: 12 }}>
 					<p>
 						If you have any questions you can simply reply to this email or find
