@@ -27,6 +27,7 @@ import ProcedureMenu from './ProcedureMenu';
 import LabourMgt from './LabourMgt';
 import ImmunizationMenu from './ImmunizationMenu';
 import AdminMenu from './AdminMenu';
+import MyAccount from './MyAccount';
 
 class MainMenu extends Component {
 	componentDidMount() {
@@ -55,7 +56,6 @@ class MainMenu extends Component {
 
 	render() {
 		const { role, theme_mode, menu_mode, profile } = this.props;
-
 		return (
 			<div
 				className={`menu-w color-scheme-dark ${
@@ -71,7 +71,14 @@ class MainMenu extends Component {
 				<div className="logged-user-w avatar-inline">
 					<div className="logged-user-i">
 						<div className="avatar-w">
-							<img alt="" src={avatar1} />
+							<img
+								alt=""
+								src={
+									profile.details.profile_pic
+										? profile.details.profile_pic
+										: avatar1
+								}
+							/>
 						</div>
 						<div className="logged-user-info-w">
 							<div className="logged-user-name">
@@ -93,6 +100,9 @@ class MainMenu extends Component {
 				</div> */}
 				<h1 className="menu-page-header">Page Header</h1>
 				<ul className="main-menu">
+					<li className="sub-header">
+						<span>NAVIGATION</span>
+					</li>
 					{(role === 'front-desk' || role === 'admin') && <FrontDeskMenu />}
 					{(role === 'clinical-lab' || role === 'admin') && <ClinicalLabMenu />}
 					{(role === 'accountant' || role === 'admin') && <PayPointMenu />}
@@ -110,7 +120,7 @@ class MainMenu extends Component {
 					{(role === 'immunization' || role === 'admin') && (
 						<ImmunizationMenu />
 					)}
-					{role === 'doctor' || (role === 'admin' && <DoctorMenu />)}
+					{(role === 'doctor' || role === 'admin') && <DoctorMenu />}
 					{(role === 'hr' || role === 'admin') && <HrMenu />}
 
 					{(role === 'inventory' || role === 'admin') && <InventoryMenu />}
@@ -118,6 +128,7 @@ class MainMenu extends Component {
 					{(role === 'hmo' || role === 'admin') && <HMOMenu />}
 					{(role === 'account' || role === 'admin') && <Account />}
 					{role === 'admin' && <SettingsMenu />}
+					<MyAccount />
 				</ul>
 			</div>
 		);

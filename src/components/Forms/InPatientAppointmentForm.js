@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import waiting from '../../assets/images/waiting.gif';
 import { useForm } from 'react-hook-form';
 import moment from 'moment';
-import { formatNumber, request } from '../../services/utilities';
+import { formatNumber, fullname, request } from '../../services/utilities';
 import { serviceAPI } from '../../services/constants';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { connect } from 'react-redux';
@@ -13,17 +13,15 @@ import { addTransaction } from '../../actions/transaction';
 
 function InPatientAppointmentForm(props) {
 	const { register, handleSubmit, setValue, getValues } = useForm();
-	const [departments, setDepartments] = useState();
+	const [doctorsList, setDoctorsList] = useState();
 	const [rooms, setRooms] = useState();
-	const [specializations, setSpecializations] = useState();
+	const [doctors, setDoctors] = useState();
 	const [validationMessage, setValidationMessage] = useState();
 	const [patients, setPatients] = useState();
 	const [appointmentDate, setAppointmentDate] = useState(new Date());
 	const [submitting, setSubmitting] = useState(false);
 	const [services, setServices] = useState([]);
 	const [servicesCategory, setServicesCategory] = useState([]);
-
-	const today = moment().format('YYYY-MM-DD');
 
 	async function getPatients() {
 		const rs = await request(`patient/list`, 'GET', true);
@@ -61,24 +59,6 @@ function InPatientAppointmentForm(props) {
 		setServicesCategory(res);
 	}
 
-	async function getConsultationServices() {
-		const rs = await request(`services/consultations`, 'GET', true);
-		const res = rs.map(service => ({
-			value: service,
-			label: service.name + ' N' + formatNumber(service.tariff),
-		}));
-		setServices(res);
-	}
-
-	async function getDepartments() {
-		const rs = await request(`departments`, 'GET', true);
-		const res = rs.map(department => ({
-			value: department.id,
-			label: department.name,
-		}));
-		setDepartments(res);
-	}
-
 	async function getConsultingRooms() {
 		const rs = await request(`consulting-rooms`, 'GET', true);
 		const res = rs.map(room => ({
@@ -88,13 +68,14 @@ function InPatientAppointmentForm(props) {
 		setRooms(res);
 	}
 
-	async function getSpecializations() {
-		const rs = await request(`specializations`, 'GET', true);
-		const res = rs.map(spec => ({
-			value: spec.id,
-			label: spec.name,
+	async function getActiveDoctors() {
+		const rs = await request(`utility/active-doctors`, 'GET', true);
+		setDoctorsList(rs);
+		const res = rs.map(item => ({
+			value: item.id,
+			label: fullname(item) + ' (Room ' + item.room.name + ')',
 		}));
-		setSpecializations(res);
+		setDoctors(res);
 	}
 
 	async function validateAppointment(patient_id, service_id) {
@@ -121,19 +102,6 @@ function InPatientAppointmentForm(props) {
 		}
 	};
 
-	// useEffect(() => {
-	// 	socket.on('appointmentSaved', res => {
-	// 		setSubmitting(false);
-	// 		if (res.success) {
-	// 			notifySuccess('New appointment record has been saved!');
-	// 			props.addTransaction(res.appointment);
-	// 			props.closeModals(false);
-	// 		} else {
-	// 			notifyError(res.message || 'Could not save appointment record');
-	// 		}
-	// 	});
-	// }, [socket]);
-
 	const onSubmit = async values => {
 		setSubmitting(true);
 		const rs = await request(
@@ -152,29 +120,21 @@ function InPatientAppointmentForm(props) {
 		}
 	};
 
-	useEffect(() => {
-		getPatients();
+	const init = useCallback(async () => {
+		await Promise.all([
+			getPatients(),
+			getConsultationServicesCategory(),
+			getActiveDoctors(),
+			getConsultingRooms(),
+			// getSpecializations()
+		]);
 	}, []);
 
 	useEffect(() => {
-		getDepartments();
-	}, []);
-
-	useEffect(() => {
-		getConsultationServicesCategory();
-	}, []);
-
-	useEffect(() => {
-		getSpecializations();
-	}, []);
-
-	useEffect(() => {
-		getConsultingRooms();
-	}, []);
-
-	useEffect(() => {
+		init();
 		setValue('appointment_date', new Date());
-	}, []);
+	}, [init]);
+
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<div className="modal-body">
@@ -200,37 +160,22 @@ function InPatientAppointmentForm(props) {
 						ref={register}></textarea>
 				</div>
 				<div className="row">
-					<div className="col-sm-6">
-						<div className="form-group">
-							<label> Department</label>
-							<Select
-								id="department"
-								placeholder="Select Department"
-								options={departments}
-								ref={register({ name: 'department_id' })}
-								onChange={evt => {
-									if (evt == null) {
-										setValue('department_id', null);
-									} else {
-										setValue('department_id', String(evt.value));
-									}
-								}}
-							/>
-						</div>
-					</div>
-					<div className="col-sm-6">
+					<div className="col-sm-12">
 						<div className="form-group">
 							<label>Whom To See?</label>
 							<Select
-								id="gender"
+								id="doctor_id"
 								placeholder="Select Whom to see"
-								options={specializations}
-								ref={register({ name: 'specialization_id' })}
+								options={doctors}
+								ref={register({ name: 'doctor_id' })}
 								onChange={evt => {
 									if (evt == null) {
-										setValue('specialization_id', null);
+										setValue('doctor_id', null);
 									} else {
-										setValue('specialization_id', String(evt.value));
+										// const doctor = doctorsList.find(item => item.id === evt.value);
+										console.log(evt.value);
+										// setValue('consulting_room_id', doctor.room.id);
+										setValue('doctor_id', evt.value);
 									}
 								}}
 							/>
@@ -305,7 +250,8 @@ function InPatientAppointmentForm(props) {
 						<div className="form-group">
 							<label>Consulting Room</label>
 							<Select
-								id="gender"
+								isDisabled={true}
+								id="consulting_room_id"
 								placeholder="Select"
 								options={rooms}
 								ref={register({ name: 'consulting_room_id' })}

@@ -6,9 +6,10 @@ import Tooltip from 'antd/lib/tooltip';
 import { createStaff } from '../actions/general';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
-import { upload } from '../services/utilities';
+import { fullname, upload } from '../services/utilities';
 import { Image } from 'react-bootstrap';
 import placeholder from '../assets/images/placeholder.jpg';
+import capitalize from 'lodash.capitalize';
 
 const UploadPerformanceData = ({ uploading, doUpload, hide }) => {
 	const [files, setFiles] = useState(null);
@@ -164,10 +165,9 @@ class StaffItem extends Component {
 						</div>
 					</td>
 					<td onClick={this.toggle}>{staff.emp_code}</td>
-					<td
-						onClick={
-							this.toggle
-						}>{`${staff.first_name} ${staff.last_name} (${staff.user.username})`}</td>
+					<td onClick={this.toggle}>{`${capitalize(fullname(staff))} (${
+						staff.user.username
+					})`}</td>
 					<td onClick={this.toggle}>{staff?.user?.role?.name}</td>
 					<td onClick={this.toggle}>{staff?.phone_number}</td>
 					<td onClick={this.toggle}>

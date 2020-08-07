@@ -47,7 +47,7 @@ export class InsuranceBills extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}/hmos/transactions?patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}&hmo_id=${hmo_id}`,
+				`hmos/transactions?patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}&hmo_id=${hmo_id}`,
 				'GET',
 				true
 			);
@@ -210,89 +210,85 @@ export class InsuranceBills extends Component {
 					</div>
 
 					<div className="col-sm-12">
-						<div className="element-box">
-							<div className="table-responsive">
-								<table className="table table-striped">
-									<thead>
+						<div className="table-responsive">
+							<table className="table table-striped">
+								<thead>
+									<tr>
+										<th className="text-center">DATE</th>
+										<th className="text-center">PATIENT NAME</th>
+										<th className="text-center">HMO</th>
+										<th className="text-center">SERVICE</th>
+										<th className="text-center">AMOUNT (&#x20A6;)</th>
+										<th className="text-center">PAYMENT TYPE</th>
+										<th className="text-center">ACTIONS</th>
+									</tr>
+								</thead>
+								<tbody>
+									{loading ? (
 										<tr>
-											<th className="text-center">DATE</th>
-											<th className="text-center">PATIENT NAME</th>
-											<th className="text-center">HMO</th>
-											<th className="text-center">SERVICE</th>
-											<th className="text-center">AMOUNT (&#x20A6;)</th>
-											<th className="text-center">PAYMENT TYPE</th>
-											<th className="text-center">ACTIONS</th>
+											<td colSpan="6" className="text-center">
+												<img alt="searching" src={searchingGIF} />
+											</td>
 										</tr>
-									</thead>
-									<tbody>
-										{loading ? (
-											<tr>
-												<td colSpan="6" className="text-center">
-													<img alt="searching" src={searchingGIF} />
-												</td>
-											</tr>
-										) : transactions.length > 0 ? (
-											transactions.map((transaction, index) => {
-												return (
-													<tr key={index}>
-														<td className="text-center">
-															{moment(transaction.q_createdAt).format(
-																'YYYY/MM/DD'
-															)}
-														</td>
-														<td className="text-center">
-															{`${transaction.patient_name}`}
-														</td>
-														<td className="text-center">
-															{transaction.hmo_name
-																? transaction.hmo_name
-																: 'No Hmo'}
-														</td>
-														<td className="text-center">
-															{transaction.service?.name
-																? transaction.service.name
-																: 'No service yet'}
-														</td>
-														<td className="text-center">
-															{transaction.amount ? transaction.amount : 0}
-														</td>
-														<td className="text-center">
-															{transaction.payment_type
-																? transaction.payment_type
-																: 'Not specified'}
-														</td>
-														<td className="text-center row-actions">
-															<Tooltip title="Approve Transactions">
-																<a
-																	className="secondary"
-																	onClick={() =>
-																		this.doApproveTransaction(transaction)
-																	}>
-																	<i className="os-icon os-icon-folder-plus" />
-																</a>
-															</Tooltip>
+									) : transactions.length > 0 ? (
+										transactions.map((transaction, index) => {
+											return (
+												<tr key={index}>
+													<td className="text-center">
+														{moment(transaction.q_createdAt).format(
+															'YYYY/MM/DD'
+														)}
+													</td>
+													<td className="text-center">
+														{`${transaction.patient_name}`}
+													</td>
+													<td className="text-center">
+														{transaction.hmo_name
+															? transaction.hmo_name
+															: 'No Hmo'}
+													</td>
+													<td className="text-center">
+														{transaction.service?.name
+															? transaction.service.name
+															: 'No service yet'}
+													</td>
+													<td className="text-center">
+														{transaction.amount ? transaction.amount : 0}
+													</td>
+													<td className="text-center">
+														{transaction.payment_type
+															? transaction.payment_type
+															: 'Not specified'}
+													</td>
+													<td className="text-center row-actions">
+														<Tooltip title="Approve Transactions">
+															<a
+																className="secondary"
+																onClick={() =>
+																	this.doApproveTransaction(transaction)
+																}>
+																<i className="os-icon os-icon-folder-plus" />
+															</a>
+														</Tooltip>
 
-															<Tooltip title="Delete Transactions">
-																<a
-																	className="text-danger"
-																	onClick={() =>
-																		this.confirmDelete(transaction)
-																	}>
-																	<i className="os-icon os-icon-ui-15"></i>
-																</a>
-															</Tooltip>
-														</td>
-													</tr>
-												);
-											})
-										) : (
-											<tr colSpan="6" className="text-center">
-												<td>No transaction</td>
-											</tr>
-										)}
-									</tbody>
-								</table>
-							</div>
+														<Tooltip title="Delete Transactions">
+															<a
+																className="text-danger"
+																onClick={() => this.confirmDelete(transaction)}>
+																<i className="os-icon os-icon-ui-15"></i>
+															</a>
+														</Tooltip>
+													</td>
+												</tr>
+											);
+										})
+									) : (
+										<tr className="text-center">
+											<td colSpan="7">No transaction</td>
+										</tr>
+									)}
+								</tbody>
+							</table>
 						</div>
 					</div>
 				</div>

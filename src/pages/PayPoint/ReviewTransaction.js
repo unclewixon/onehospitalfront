@@ -1,26 +1,19 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { API_URI, socket, transactionsAPI } from '../../services/constants';
-import Tooltip from 'antd/lib/tooltip';
 import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
-import { request, formatNumber, confirmAction } from '../../services/utilities';
+import { request, confirmAction } from '../../services/utilities';
 
 import { notifySuccess, notifyError } from '../../services/notify';
-import searchingGIF from '../../assets/images/searching.gif';
 
 import { loadTransaction, deleteTransaction } from '../../actions/transaction';
 import { applyVoucher, approveTransaction } from '../../actions/general';
 import TransactionTable from '../../components/Tables/TransactionTable';
 
 const { RangePicker } = DatePicker;
-const departments = [
-	{ id: 'ejejekek', name: 'angel' },
-	{ id: 'sislkas', name: 'kafta' },
-];
 
 const paymentStatus = [
 	{ value: 0, label: 'processing' },
@@ -49,7 +42,7 @@ class ReviewTransaction extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}/${transactionsAPI}/list?patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}&transaction_type=billing`,
+				`${transactionsAPI}/list?patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}&transaction_type=billing`,
 				'GET',
 				true
 			);
@@ -69,6 +62,7 @@ class ReviewTransaction extends Component {
 
 		this.setState({ patients: res });
 	};
+
 	doFilter = e => {
 		e.preventDefault();
 		this.setState({ filtering: true });
@@ -184,27 +178,25 @@ class ReviewTransaction extends Component {
 					</div>
 
 					<div className="col-sm-12">
-						<div className="element-box">
-							<div className="table-responsive">
-								<table className="table table-striped">
-									<thead>
-										<tr>
-											<th>DATE</th>
-											<th className="">PATIENT NAME</th>
-											<th className="">DEPARTMENT</th>
-											<th className="">SERVICE</th>
-											<th className="">AMOUNT (&#x20A6;)</th>
-											<th className="">PAYMENT TYPE</th>
-											<th className="">ACTIONS</th>
-										</tr>
-									</thead>
-									<TransactionTable
-										transactions={transactions}
-										loading={loading}
-										today={false}
-									/>
-								</table>
-							</div>
+						<div className="table-responsive">
+							<table className="table table-striped">
+								<thead>
+									<tr>
+										<th>DATE</th>
+										<th className="">PATIENT NAME</th>
+										<th className="">DEPARTMENT</th>
+										<th className="">SERVICE</th>
+										<th className="">AMOUNT (&#x20A6;)</th>
+										<th className="">PAYMENT TYPE</th>
+										<th className="">ACTIONS</th>
+									</tr>
+								</thead>
+								<TransactionTable
+									transactions={transactions}
+									loading={loading}
+									today={false}
+								/>
+							</table>
 						</div>
 					</div>
 				</div>

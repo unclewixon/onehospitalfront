@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
 import axios from 'axios';
 import { CSSTransition } from 'react-transition-group';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { setGlobal } from 'reactn';
 import waiting from '../assets/images/waiting.gif';
 import { request, redirectToPage, defaultHeaders } from '../services/utilities';
 import {
@@ -30,6 +30,7 @@ import { loadBanks, loadCountries } from '../actions/utility';
 
 import ability from '../services/ability';
 import { AbilityBuilder } from '@casl/ability';
+import { useEffect } from 'reactn';
 
 const storage = new SSRStorage();
 
@@ -65,29 +66,31 @@ const renderTextInput = ({input, label, type, id, placeholder, icon, meta: { tou
 	</div>
 );
 
-class Login extends Component {
-	state = {
+function Login(props) {
+	const [state, setState] = useState({
 		submitting: false,
 		loaded: false,
 		rememberMe: false,
-	};
+	});
 
-	componentDidMount() {
+	useEffect(() => {
 		window.document.body.className = 'auth-wrapper loginPage';
-		this.setState({ loaded: true });
-	}
+		setState({ ...state, loaded: true });
+		setGlobal({
+			room: '',
+		});
+		return async () => {
+			const fullscreen = await storage.getItem(FULLSCREEN_COOKIE);
+			const theme_mode = await storage.getItem(MODE_COOKIE);
 
-	async componentWillUnmount() {
-		const fullscreen = await storage.getItem(FULLSCREEN_COOKIE);
-		const theme_mode = await storage.getItem(MODE_COOKIE);
+			window.document.body.className = `menu-position-side menu-side-left ${
+				fullscreen ? 'full-screen' : ''
+			} with-content-panel ${theme_mode ? 'color-scheme-dark' : ''}`;
+		};
+	}, [setState, setGlobal]);
 
-		window.document.body.className = `menu-position-side menu-side-left ${
-			fullscreen ? 'full-screen' : ''
-		} with-content-panel ${theme_mode ? 'color-scheme-dark' : ''}`;
-	}
-
-	doLogin = async data => {
-		this.setState({ submitting: true });
+	const doLogin = async data => {
+		setState({ ...state, submitting: true });
 		try {
 			const rs = await request(`auth/login`, 'POST', true, data);
 			try {
@@ -111,28 +114,28 @@ class Login extends Component {
 				]);
 
 				if (rs_depts && rs_depts.data) {
-					this.props.loadDepartments(rs_depts.data);
+					props.loadDepartments(rs_depts.data);
 				}
 				if (rs_invcategories && rs_invcategories.data) {
-					this.props.loadInvCategories(rs_invcategories.data);
+					props.loadInvCategories(rs_invcategories.data);
 				}
 				if (rs_invsubcategories && rs_invsubcategories.data) {
-					this.props.loadInvSubCategories(rs_invsubcategories.data);
+					props.loadInvSubCategories(rs_invsubcategories.data);
 				}
 				if (rs_roles && rs_roles.data) {
-					this.props.loadRoles(rs_roles.data);
+					props.loadRoles(rs_roles.data);
 				}
 				if (rs_specializations && rs_specializations.data) {
-					this.props.loadSpecializations(rs_specializations.data);
+					props.loadSpecializations(rs_specializations.data);
 				}
 				if (rs_banks && rs_banks.data) {
-					this.props.loadBanks(rs_banks.data);
+					props.loadBanks(rs_banks.data);
 				}
 				if (rs_countries && rs_countries.data) {
-					this.props.loadCountries(rs_countries.data);
+					props.loadCountries(rs_countries.data);
 				}
 				// console.log(rs);
-				this.props.loginUser(rs);
+				props.loginUser(rs);
 				storage.setItem(TOKEN_COOKIE, rs);
 				storage.setItem('permissions', JSON.stringify(rs.permissions));
 
@@ -143,152 +146,138 @@ class Login extends Component {
 				ability.update(rules);
 
 				notifySuccess('login successful!');
-				redirectToPage(rs.role, this.props.history);
+				redirectToPage(rs.role, props.history);
 			} catch (e) {
 				console.log(e);
-				this.setState({ submitting: false });
+				setState({ ...state, submitting: false });
 				throw new SubmissionError({
 					_error: 'could not login user',
 				});
 			}
 		} catch (e) {
 			// console.log(e)
-			this.setState({ submitting: false });
+			setState({ ...state, submitting: false });
 			throw new SubmissionError({
 				_error: e.message || 'could not login user',
 			});
 		}
 	};
 
-	ToggleRememberMe = () => {
-		this.setState({
-			rememberMe: !this.state.rememberMe,
-		});
+	const ToggleRememberMe = () => {
+		setState({ ...state, rememberMe: !this.state.rememberMe });
 	};
 
-	render() {
-		const { submitting, rememberMe, loaded } = this.state;
-		const { error, handleSubmit } = this.props;
-		return (
-			// <div style={{ width: '100%', height: '100%' }}>
-			<section className="fxt-template-animation fxt-template-layout9 has-animation">
-				<div className="">
-					<div className="row align-items-center justify-content-center">
-						<div className="col-lg-4">
-							<div className="fxt-header">
-								<a className="fxt-logo">
-									<img
-										src={require('../assets/images/logo.svg')}
-										alt="Logo"
-										style={{ height: '20%', width: '100%' }}
-									/>
-								</a>
-							</div>
+	const { submitting, rememberMe, loaded } = state;
+	const { error, handleSubmit } = props;
+
+	return (
+		// <div style={{ width: '100%', height: '100%' }}>
+		<section className="fxt-template-animation fxt-template-layout9 has-animation">
+			<div className="">
+				<div className="row align-items-center justify-content-center">
+					<div className="col-lg-4">
+						<div className="fxt-header">
+							<a className="fxt-logo">
+								<img
+									src={require('../assets/images/logo.svg')}
+									alt="Logo"
+									style={{ height: '20%', width: '100%' }}
+								/>
+							</a>
 						</div>
-						<div className="col-lg-6">
-							<div className="fxt-content">
-								<h2>Login into your account</h2>
-								<div className="fxt-form">
-									<form onSubmit={handleSubmit(this.doLogin)}>
-										{error && (
-											<div
-												className="alert alert-danger"
-												dangerouslySetInnerHTML={{
-													__html: `<strong>Error!</strong> ${error}`,
-												}}
+					</div>
+					<div className="col-lg-6">
+						<div className="fxt-content">
+							<h2>Login into your account</h2>
+							<div className="fxt-form">
+								<form onSubmit={handleSubmit(doLogin)}>
+									{error && (
+										<div
+											className="alert alert-danger"
+											dangerouslySetInnerHTML={{
+												__html: `<strong>Error!</strong> ${error}`,
+											}}
+										/>
+									)}
+									<div className="form-group">
+										<CSSTransition
+											in={loaded}
+											timeout={100}
+											classNames="input-animation-1">
+											<Field
+												id="username"
+												name="username"
+												component={renderTextInput}
+												type="text"
+												placeholder="Enter your username"
 											/>
-										)}
-										<div className="form-group">
-											<CSSTransition
-												in={loaded}
-												timeout={100}
-												classNames="input-animation-1">
-												<Field
-													id="username"
-													name="username"
-													component={renderTextInput}
-													type="text"
-													placeholder="Enter your username"
-												/>
-											</CSSTransition>
-										</div>
-										<div className="">
-											<CSSTransition
-												in={loaded}
-												timeout={200}
-												classNames="input-animation-2">
-												{/* <div className="password"> */}
-												<Field
-													name="password"
-													component={renderTextInput}
-													type="password"
-													placeholder="Enter your password"
-													className="passwordInput"
-												/>
-												{/* <FaEye /> */}
-												{/* <FaEyeSlash /> */}
-												{/* </div> */}
-											</CSSTransition>
-										</div>
-										<div className="form-group">
-											<CSSTransition
-												in={loaded}
-												timeout={300}
-												classNames="input-animation-3">
-												<div className="fxt-checkbox-area">
-													<div className="checkbox">
-														<input
-															className="checkbox1"
-															type="checkbox"
-															checked={rememberMe}
-															onChange={this.ToggleRememberMe}
-														/>
-														<label htmlFor="checkbox1">Keep me logged in</label>
-													</div>
-													<a href="#" className="switcher-text">
-														Forgot Password
-													</a>
+										</CSSTransition>
+									</div>
+									<div className="">
+										<CSSTransition
+											in={loaded}
+											timeout={200}
+											classNames="input-animation-2">
+											{/* <div className="password"> */}
+											<Field
+												name="password"
+												component={renderTextInput}
+												type="password"
+												placeholder="Enter your password"
+												className="passwordInput"
+											/>
+											{/* <FaEye /> */}
+											{/* <FaEyeSlash /> */}
+											{/* </div> */}
+										</CSSTransition>
+									</div>
+									<div className="form-group">
+										<CSSTransition
+											in={loaded}
+											timeout={300}
+											classNames="input-animation-3">
+											<div className="fxt-checkbox-area">
+												<div className="checkbox">
+													<input
+														className="checkbox1"
+														type="checkbox"
+														checked={rememberMe}
+														onChange={ToggleRememberMe}
+													/>
+													<label htmlFor="checkbox1">Keep me logged in</label>
 												</div>
-											</CSSTransition>
-										</div>
-										<div className="form-group">
-											<CSSTransition
-												in={loaded}
-												timeout={400}
-												classNames="input-animation-4">
-												<button
-													type="submit"
-													className="fxt-btn-fill"
-													disabled={submitting}
-													type="submit">
-													{submitting ? (
-														<img src={waiting} alt="submitting" />
-													) : (
-														'Log me in'
-													)}
-												</button>
-											</CSSTransition>
-										</div>
-									</form>
-								</div>
-								{/* <div className="fxt-footer">
-										<div className="fxt-transformY-50 fxt-transition-delay-9">
-											<p>
-												Don't have an account?
-												<a href="register-9.html" className="switcher-text2">
-													Register
+												<a href="#" className="switcher-text">
+													Forgot Password
 												</a>
-											</p>
-										</div>
-									</div> */}
+											</div>
+										</CSSTransition>
+									</div>
+									<div className="form-group">
+										<CSSTransition
+											in={loaded}
+											timeout={400}
+											classNames="input-animation-4">
+											<button
+												className="fxt-btn-fill"
+												disabled={submitting}
+												type="submit">
+												{submitting ? (
+													<img src={waiting} alt="submitting" />
+												) : (
+													'Log me in'
+												)}
+											</button>
+										</CSSTransition>
+									</div>
+								</form>
 							</div>
 						</div>
 					</div>
 				</div>
-			</section>
-			// </div>
-		);
-	}
+			</div>
+		</section>
+		// </div>
+	);
 }
 
 Login = reduxForm({

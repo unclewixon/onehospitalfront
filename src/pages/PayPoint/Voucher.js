@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Tooltip from 'antd/lib/tooltip';
@@ -7,16 +7,12 @@ import Tooltip from 'antd/lib/tooltip';
 import { createVoucher } from '../../actions/general';
 import VoucherTable from '../../components/VoucherTable';
 import { request } from '../../services/utilities';
-import { API_URI, patientAPI, vouchersAPI } from '../../services/constants';
+import { API_URI, vouchersAPI } from '../../services/constants';
 import { loadVoucher } from '../../actions/paypoint';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
 import { compose } from 'redux';
-import {
-	get_all_diagnosis,
-	get_all_services,
-	getAllServiceCategory,
-} from '../../actions/settings';
+
 export class Voucher extends Component {
 	state = {
 		loading: false,
@@ -36,7 +32,7 @@ export class Voucher extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}/${vouchersAPI}/list?patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}`,
+				`${vouchersAPI}/list?patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}`,
 				'GET',
 				true
 			);

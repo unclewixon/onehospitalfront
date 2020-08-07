@@ -127,7 +127,8 @@ function ModalCreateStaff({
 										email: form?.email || '',
 										phone_number: form?.phone_number || '',
 										address: form?.address || '',
-										profile_pic: '',
+										profile_pic: form?.profile_pic,
+										avatar: '',
 									}}
 									children={props => (
 										<StepOne
@@ -304,9 +305,10 @@ function StepOne({
 		state_of_origin,
 		lga,
 		profile_pic,
+		avatar,
 	} = values;
 	const [states, setStates] = useState([]);
-	// const [image, setImage] = useState(null);
+	const [image, setImage] = useState(null);
 
 	useEffect(() => {
 		if (nationality) {
@@ -322,10 +324,10 @@ function StepOne({
 				<div className="col-sm-3 profile-tile" style={{ borderBottom: 'none' }}>
 					<a className="profile-tile-box" style={{ width: '155px' }}>
 						<div className="pt-avatar-w">
-							{profile_pic ? (
-								<Image src={URL.createObjectURL(profile_pic)} fluid />
+							{image ? (
+								<Image src={URL.createObjectURL(image)} fluid />
 							) : (
-								<Image alt="" src={placeholder} />
+								<Image alt="" src={profile_pic ? profile_pic : placeholder} />
 							)}
 						</div>
 						<div className="pt-user-name">
@@ -342,9 +344,10 @@ function StepOne({
 						accept="image/*"
 						id="profile_pic"
 						className="d-none"
-						onChange={e =>
-							setFieldValue('profile_pic', e.currentTarget.files[0])
-						}
+						onChange={e => {
+							setImage(e.currentTarget.files[0]);
+							setFieldValue('avatar', e.currentTarget.files[0]);
+						}}
 					/>
 				</div>
 				<div className="col-sm-9">
@@ -738,7 +741,7 @@ function StepTwo({
 						isSubmitting={isSubmitting}
 						onClick={handleSubmit}
 						isValid={isValid}
-						value="Create"
+						value="Save"
 						type="submit"
 					/>
 				</div>

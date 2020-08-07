@@ -39,19 +39,14 @@ const ConsultatingRoom = props => {
 			name,
 		};
 		try {
-			const rs = await request(
-				`${API_URI}/consulting-rooms`,
-				'POST',
-				true,
-				data
-			);
+			const rs = await request(`consulting-rooms`, 'POST', true, data);
 			props.add_consultating_room(rs);
 			setLoading(false);
 			setState({ ...initialState });
-			notifySuccess('Consultating room added');
+			notifySuccess('Consulting room added');
 		} catch (error) {
 			setLoading(false);
-			notifyError('Error creating consultating room');
+			notifyError('Error creating consulting room');
 		}
 	};
 
@@ -65,7 +60,7 @@ const ConsultatingRoom = props => {
 
 		try {
 			const rs = await request(
-				`${API_URI}/consulting-rooms/${data.id}/update`,
+				`consulting-rooms/${data.id}/update`,
 				'PATCH',
 				true,
 				data
@@ -74,12 +69,12 @@ const ConsultatingRoom = props => {
 			setState({ ...initialState });
 			setSubmitButton({ save: true, edit: false });
 			setLoading(false);
-			notifySuccess('Consultating room updated');
+			notifySuccess('Consulting room updated');
 		} catch (error) {
 			setState({ ...initialState });
 			setSubmitButton({ save: true, edit: false });
 			setLoading(false);
-			notifyError('Error editing consultating rooms');
+			notifyError('Error editing consulting rooms');
 		}
 	};
 
@@ -97,17 +92,17 @@ const ConsultatingRoom = props => {
 	const onDeleteConsultatingRoom = async data => {
 		try {
 			const rs = await request(
-				`${API_URI}/consulting-rooms/${data.id}`,
+				`consulting-rooms/${data.id}`,
 				'DELETE',
 				true,
 				data
 			);
 			props.delete_consultating_room(data);
-			notifySuccess('Consultating room deleted');
+			notifySuccess('Consulting room deleted');
 		} catch (error) {
 			setLoading(false);
 			setState({ ...initialState });
-			notifyError('Error deleting consultating room');
+			notifyError('Error deleting consulting room');
 		}
 	};
 
@@ -147,7 +142,7 @@ const ConsultatingRoom = props => {
 										aria-expanded="true"
 										className="nav-link active"
 										data-toggle="tab">
-										Consultating Room
+										Consulting Rooms
 									</a>
 								</li>
 							</ul>
@@ -163,7 +158,7 @@ const ConsultatingRoom = props => {
 									</div>
 								) : (
 									<>
-										{props.ConsultatingRooms.map((ConsultatingRoom, i) => {
+										{props.ConsultatingRooms.map((room, i) => {
 											return (
 												<div className="col-lg-4 col-xxl-3" key={i}>
 													<div className="pt-3">
@@ -172,23 +167,17 @@ const ConsultatingRoom = props => {
 																<div className="pi-settings os-dropdown-trigger">
 																	<i
 																		className="os-icon os-icon-ui-49"
-																		onClick={() =>
-																			onClickEdit(ConsultatingRoom)
-																		}></i>
+																		onClick={() => onClickEdit(room)}></i>
 																</div>
 																<div className="pi-settings os-dropdown-trigger">
 																	<i
 																		className="os-icon os-icon-ui-15"
-																		onClick={() =>
-																			confirmDelete(ConsultatingRoom)
-																		}></i>
+																		onClick={() => confirmDelete(room)}></i>
 																</div>
 															</div>
 															<div className="pi-body">
 																<div className="pi-info">
-																	<div className="h6 pi-name">
-																		{ConsultatingRoom.name}
-																	</div>
+																	<div className="h6 pi-name">{room.name}</div>
 																</div>
 															</div>
 														</div>
