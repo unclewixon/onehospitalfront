@@ -6,21 +6,13 @@ const NurseMenu = () => {
 			<li>
 				<Link to="/nurse">
 					<div className="icon-w">
-						<div className="os-icon os-icon-layers" />
+						<div className="icon-feather-home" />
 					</div>
 					<span>Home</span>
 				</Link>
 			</li>
 			<li>
-				<Link to="/ivf">
-					<div className="icon-w">
-						<div className="icon-feather-user-plus" />
-					</div>
-					<span>New Admission</span>
-				</Link>
-			</li>
-			<li>
-				<Link to="/ivf">
+				<Link to="/in-patients">
 					<div className="icon-w">
 						<div className="icon-feather-folder-plus" />
 					</div>

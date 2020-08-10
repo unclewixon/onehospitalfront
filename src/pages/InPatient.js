@@ -1,65 +1,141 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
+import searchingGIF from '../assets/images/searching.gif';
+import useSWR from 'swr/esm/use-swr';
+import Tooltip from 'antd/lib/tooltip';
+import { toggleProfile } from '../actions/user';
+import { useDispatch } from 'react-redux';
+import { calculateAge, fullname } from '../services/utilities';
+import { socket } from '../services/constants';
 
-// import avatar1 from '../assets/images/avatar1.jpg';
-// import avatar2 from '../assets/images/avatar2.jpg';
-// import avatar3 from '../assets/images/avatar3.jpg';
-// import avatar4 from '../assets/images/avatar4.jpg';
-// import usFlag from '../assets/images/flags-icons/us.png';
-// import caFlag from '../assets/images/flags-icons/ca.png';
-// import ukFlag from '../assets/images/flags-icons/uk.png';
-import Queue from '../components/Queue';
+const InPatient = () => {
+	const [loading, setLoading] = useState(true);
+	const [queues, setQueues] = useState([]);
+	const dispatch = useDispatch();
 
-class InPatient extends Component {
-	render() {
-		return (
-			<div className="content-i">
-				<div className="content-box">
-					<div className="row">
-						<div className="col-sm-12">
-							<div className="element-wrapper">
-								<div className="element-actions">
-									<form className="form-inline justify-content-sm-end">
-										<select className="form-control form-control-sm rounded">
-											<option value="Pending">Today</option>
-											<option value="Active">Last Week</option>
-											<option value="Cancelled">Last 30 Days</option>
-										</select>
-									</form>
-								</div>
-								<h6 className="element-header">Doctor Info</h6>
-								<div className="element-content">
-									<div className="row">
-										<div className="col-sm-4 col-xxxl-3">
-											<a className="element-box el-tablo" href="#">
-												<div className="label">Appointments Seen</div>
-												<div className="value">57</div>
-												<div className="trending">
-													<span>Patients</span>
-												</div>
-											</a>
-										</div>
-										<div className="col-sm-4 col-xxxl-3">
-											<a className="element-box el-tablo" href="#">
-												<div className="label">Appointments Left</div>
-												<div className="value">47</div>
-												<div className="trending">
-													<span>Patients</span>
-												</div>
-											</a>
-										</div>
-									</div>
+	const { data, error } = useSWR('front-desk/queue-system/get-lists');
+
+	useEffect(() => {
+		if (data) {
+			setLoading(false);
+			setQueues(data);
+		}
+	}, [data]);
+
+	useEffect(() => {
+		socket.on('new-queue', data => {
+			if (data.queue) {
+				const queue = data.queue;
+				setQueues(queues => [...queues, queue]);
+			}
+		});
+	}, [setQueues]);
+
+	const showProfile = patient => {
+		const info = { patient, type: 'patient' };
+		dispatch(toggleProfile(true, info));
+	};
+
+	return (
+		<div className="content-i">
+			<div className="content-box">
+				<div className="row">
+					<div className="col-sm-12">
+						<div className="element-wrapper">
+							<h6 className="element-header">
+								List of patients in queue for vitals
+							</h6>
+							<div className="element-content">
+								<div className="table-responsive">
+									{
+										<table className="table table-striped">
+											<thead>
+												<tr>
+													<th>
+														<div className="th-inner sortable both">
+															Patient
+														</div>
+													</th>
+													<th>
+														<div className="th-inner sortable both">
+															Whom To See
+														</div>
+													</th>
+													<th>
+														<div className="th-inner sortable both">
+															Gender/Age
+														</div>
+													</th>
+													<th>
+														<div className="th-inner sortable both">
+															Service
+														</div>
+													</th>
+													<th>
+														<div className="th-inner "></div>
+													</th>
+												</tr>
+											</thead>
+											<tbody>
+												{loading ? (
+													<tr>
+														<td colSpan="7" className="text-center">
+															<img alt="searching" src={searchingGIF} />
+														</td>
+													</tr>
+												) : (
+													<Fragment>
+														{queues ? (
+															queues
+																.filter(queue => queue.queueType === 'vitals')
+																.map((queue, key) => (
+																	<tr key={key}>
+																		<td>{`${queue.patientName}`}</td>
+																		<td>
+																			{fullname(queue.appointment.whomToSee)}
+																		</td>
+																		<td>{`${
+																			queue.appointment.patient.gender
+																		} ${calculateAge(
+																			queue.appointment.patient.date_of_birth
+																		)} yrs`}</td>
+																		<td>
+																			{queue.appointment.serviceType.name}
+																		</td>
+																		<td>
+																			<Tooltip title="View Profile">
+																				<a
+																					onClick={() =>
+																						showProfile(
+																							queue.appointment.patient
+																						)
+																					}>
+																					<i className="os-icon os-icon-user" />
+																				</a>
+																			</Tooltip>
+																		</td>
+																	</tr>
+																))
+														) : (
+															<tr>
+																<td colSpan="7" className="text-center">
+																	No result found
+																</td>
+															</tr>
+														)}
+													</Fragment>
+												)}
+											</tbody>
+										</table>
+									}
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div className="content-panel compact">
-					<Queue />
-				</div>
 			</div>
-		);
-	}
-}
+		</div>
+	);
+};
 
 export default InPatient;

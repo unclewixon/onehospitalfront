@@ -41,6 +41,7 @@ class ModalApproveTransaction extends Component {
 
 	componentDidMount() {
 		const { approve_hmo_transaction } = this.props;
+		console.log(this.props);
 		if (approve_hmo_transaction) {
 			this.setState({ amountClass: 'col-sm-12' });
 		}
