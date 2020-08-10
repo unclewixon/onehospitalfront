@@ -3,7 +3,8 @@ import { useState, useEffect, useRef } from 'react';
 import searchingGif from '../../assets/images/searching.gif';
 import { Tooltip } from 'antd';
 import InvoiceModal from '../Modals/InvoiceModal';
-import { Overlay, Popover, Button, ListGroup } from 'react-bootstrap';
+import { Overlay, Popover } from 'react-bootstrap';
+import ReactDOM from 'react-dom';
 
 const PaypointQueueTable = () => {
 	const [loading, setLoading] = useState(true);
@@ -11,6 +12,12 @@ const PaypointQueueTable = () => {
 	const [activeRequest, setActiveRequest] = useState(null);
 	const [show, setShow] = useState(false);
 	const [target, setTarget] = useState(null);
+
+	const newWindow = document.createElement('div');
+
+	const onReceiptClick = () => {
+		return ReactDOM.createPortal();
+	};
 
 	const ref = useRef(null);
 

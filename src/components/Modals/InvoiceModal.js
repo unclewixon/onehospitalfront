@@ -15,9 +15,7 @@ const InvoiceModal = ({ showModal, onModalClick, activeRequest }) => {
 			dialogClassName="reciept"
 			onHide={onModalClick}>
 			<Modal.Header closeButton> </Modal.Header>
-			<Modal.Body>
-				<Receipt />
-			</Modal.Body>
+			<Modal.Body></Modal.Body>
 		</Modal>
 	);
 };
