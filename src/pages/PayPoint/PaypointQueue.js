@@ -1,13 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import useSWR from 'swr';
 import TransactionTable from '../../components/Tables/TransactionTable';
 import { socket } from '../../services/constants';
 import { request } from '../../services/utilities';
+import { Popover, Overlay } from 'react-bootstrap';
 
 const PaypointQueue = ({ staff }) => {
 	const [transactions, setTransactions] = useState([]);
+	const [show, setShow] = useState(false);
+	const [target, setTarget] = useState(null);
+	const ref = useRef(null);
 
 	const init = useCallback(() => {
 		request('transactions/list/pending', 'GET', true)
@@ -38,8 +42,49 @@ const PaypointQueue = ({ staff }) => {
 		this.props.applyVoucher(item);
 	};
 
+	const handlePrintClick = event => {
+		console.log(event);
+		setShow(!show);
+		setTarget(event.target);
+	};
+
 	return (
 		<div className="table-responsive">
+			<Overlay
+				show={show}
+				target={target}
+				placement="left"
+				container={ref.current}>
+				<Popover id="print" style={{ width: '10rem' }}>
+					<Popover.Title>Print</Popover.Title>
+					<div action>
+						<button
+							style={{
+								border: 'none',
+								background: '#fff',
+								width: '100%',
+								textAlign: 'center',
+								paddingTop: '0.5rem',
+								paddingBottom: '0.5rem',
+							}}>
+							INVOICE
+						</button>
+					</div>
+					<div action>
+						<button
+							style={{
+								border: 'none',
+								background: '#fff',
+								width: '100%',
+								textAlign: 'center',
+								paddingTop: '0.5rem',
+								paddingBottom: '0.5rem',
+							}}>
+							RECEIPT
+						</button>
+					</div>
+				</Popover>
+			</Overlay>
 			<table className="table table-striped">
 				<thead>
 					<tr>
@@ -59,6 +104,8 @@ const PaypointQueue = ({ staff }) => {
 						today={true}
 						approveTransaction={doApproveTransaction}
 						doApplyVoucher={doApplyVoucher}
+						handlePrint={handlePrintClick}
+						show={true}
 					/>
 				)}
 			</table>

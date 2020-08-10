@@ -41,12 +41,20 @@ import {
 	LOAD_LABOUR_MEASUREMENT,
 	PATIENT_IVF,
 	LOAD_ALL_PATIENTS,
+	ADD_NEW_PATIENT,
 } from './types';
 import { request } from '../services/utilities';
 
 export const loadPatients = data => {
 	return {
 		type: LOAD_PATIENTS,
+		payload: data,
+	};
+};
+
+export const addNewPatient = data => {
+	return {
+		type: ADD_NEW_PATIENT,
 		payload: data,
 	};
 };

@@ -12,7 +12,9 @@ import {
 	insuranceStatus,
 } from '../services/constants';
 import { getAllHmos } from '../actions/hmo';
+import DatePicker from 'react-datepicker';
 import moment from 'moment';
+import '../assets/css/date-picker.css';
 
 function PatientForm(props) {
 	const formData = props.formData;
@@ -54,7 +56,7 @@ function PatientForm(props) {
 			hmo: formData.hmo || '',
 		};
 		setFormTitle('New patient registration');
-		setPatientData(formValues);
+		setPatientData({ ...formValues });
 		if (!register_new_patient) {
 			setFormTitle('Edit patient data');
 			formValues = {
@@ -108,13 +110,13 @@ function PatientForm(props) {
 		}
 	}, [formTitle]);
 
-	const { register, handleSubmit, errors, setValue } = useForm({
+	const { register, handleSubmit, errors, setValue, watch } = useForm({
 		validationSchema: patientSchema,
 		defaultValues: patientData,
 	});
+	const values = watch();
 
 	const onSubmit = values => {
-		console.log(values);
 		props.nextStep(values);
 	};
 
@@ -204,13 +206,19 @@ function PatientForm(props) {
 							<div className="col-sm">
 								<div className="form-group">
 									<label>Date of birth</label>
-									<input
-										className="form-control"
-										placeholder="04/12/1978"
-										type="date"
-										defaultValue={patientData.date_of_birth || ''}
+									<DatePicker
+										selected={values?.date_of_birth}
+										onChange={date => setValue('date_of_birth', date)}
+										peekNextMonth
+										showMonthDropdown
+										ref={register({ name: 'date_of_birth' })}
+										showYearDropdown
+										dropdownMode="select"
+										dateFormat="yyyy-MM-dd"
+										className="single-daterange form-control"
+										placeholderText="Select date of birth"
+										maxDate={new Date()}
 										name="date_of_birth"
-										ref={register}
 									/>
 									<small className="text-danger">
 										{errors.date_of_birth && errors.date_of_birth.message}

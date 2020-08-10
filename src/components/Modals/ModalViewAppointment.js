@@ -94,8 +94,8 @@ class ModalViewAppointment extends Component {
 																	<td className="text-right">
 																		<div className="value text-success">
 																			{
-																				view_appointment_detail.patient
-																					.insurranceStatus
+																				view_appointment_detail?.patient
+																					?.insurranceStatus
 																			}
 																		</div>
 																	</td>
@@ -108,8 +108,8 @@ class ModalViewAppointment extends Component {
 																	<td className="text-right">
 																		<div className="value text-success">
 																			{
-																				view_appointment_detail.patient
-																					.fileNumber
+																				view_appointment_detail?.patient
+																					?.fileNumber
 																			}
 																		</div>
 																	</td>
@@ -146,26 +146,23 @@ class ModalViewAppointment extends Component {
 														<td className="font-weight-bold">
 															Appointment Date
 														</td>
-														<td>{view_appointment_detail.appointment_date}</td>
+														<td>{view_appointment_detail?.appointment_date}</td>
 													</tr>
 
 													<tr>
 														<td className="font-weight-bold">Department</td>
-														<td>{view_appointment_detail.department.name}</td>
+														<td>{view_appointment_detail?.department?.name}</td>
 													</tr>
 													<tr>
 														<td className="font-weight-bold">Specialization</td>
 														<td>
-															{view_appointment_detail.specialization.name}
+															{view_appointment_detail?.specialization?.name}
 														</td>
 													</tr>
 													<tr>
 														<td className="font-weight-bold">Whom to See</td>
 														<td>
-															{
-																view_appointment_detail.department?.staff
-																	?.first_name
-															}
+															{`${view_appointment_detail.whomToSee?.first_name} ${view_appointment_detail.whomToSee?.last_name} ${view_appointment_detail.whomToSee?.other_names}`}
 														</td>
 													</tr>
 													<tr>
@@ -173,7 +170,7 @@ class ModalViewAppointment extends Component {
 															Consultation Room
 														</td>
 														<td>
-															{view_appointment_detail.consultingRoom.name}
+															{view_appointment_detail?.consultingRoom?.name}
 														</td>
 													</tr>
 												</tbody>

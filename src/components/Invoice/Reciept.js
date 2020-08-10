@@ -6,9 +6,9 @@ const Reciept = () => {
 			style={{
 				maxWidth: 215,
 				margin: '0px auto',
-				boxShadow: '0px 20px 50px rgba(0,0,0,0.05)',
+				// boxShadow: '0px 20px 50px rgba(0,0,0,0.05)',
 			}}>
-			<table style={{ width: '100%', borderSpacing: 'none' }}>
+			{/* <table style={{ width: '100%', borderSpacing: 'none' }}>
 				<tbody>
 					<tr>
 						<td style={{ textAlign: 'center' }}>
@@ -16,13 +16,13 @@ const Reciept = () => {
 						</td>
 					</tr>
 				</tbody>
-			</table>
+			</table> */}
 			<div
 				style={{
 					padding: '10px 15px',
 					borderTop: '1px solid rgba(0,0,0,0.05)',
 				}}>
-				<h4 style={{ margin: 0, textAlign: 'center' }}>DEDA HOSPITAL</h4>
+				<h5 style={{ margin: 0, textAlign: 'center' }}>DEDA HOSPITAL</h5>
 				<div
 					style={{
 						color: '#636363',
@@ -48,7 +48,7 @@ const Reciept = () => {
 					</div>
 					<table style={{ borderCollapse: 'collapse', width: '100%' }}>
 						<tbody>
-							<tr style={{ lineHeight: 10 }}>
+							<tr style={{ lineHeight: '10px' }}>
 								<td
 									style={{
 										padding: 0,
@@ -70,7 +70,7 @@ const Reciept = () => {
 									</span>
 								</td>
 							</tr>
-							<tr style={{ lineHeight: 10 }}>
+							<tr style={{ lineHeight: '10px' }}>
 								<td style={{ color: '#111', width: '100%' }}>
 									<span
 										style={{
@@ -86,7 +86,7 @@ const Reciept = () => {
 									</span>
 								</td>
 							</tr>
-							<tr style={{ lineHeight: 10 }}>
+							<tr style={{ lineHeight: '10px' }}>
 								<td style={{ color: '#111', width: '100%', padding: 0 }}>
 									<span
 										style={{
@@ -102,7 +102,7 @@ const Reciept = () => {
 									</span>
 								</td>
 							</tr>
-							<tr style={{ lineHeight: 10 }}>
+							<tr style={{ lineHeight: '10px' }}>
 								<td style={{ color: '#111', width: '100%' }}>
 									<span
 										style={{
@@ -116,7 +116,7 @@ const Reciept = () => {
 									<span style={{ fontSize: 8, fontWeight: 'bold' }}>9000</span>
 								</td>
 							</tr>
-							<tr style={{ lineHeight: 10 }}>
+							<tr style={{ lineHeight: '10px' }}>
 								<td style={{ color: '#111', width: '100%' }}>
 									<span
 										style={{
@@ -130,7 +130,7 @@ const Reciept = () => {
 									<span style={{ fontSize: 8, fontWeight: 'bold' }}>POS</span>
 								</td>
 							</tr>
-							<tr style={{ lineHeight: 10 }}>
+							<tr style={{ lineHeight: '10px' }}>
 								<td style={{ color: '#111', width: '100%' }}>
 									<span
 										style={{
@@ -144,7 +144,7 @@ const Reciept = () => {
 									<span style={{ fontSize: 8, fontWeight: 'bold' }}>0.00</span>
 								</td>
 							</tr>
-							<tr style={{ lineHeight: 10 }}>
+							<tr style={{ lineHeight: '10px' }}>
 								<td
 									style={{
 										color: '#111',
