@@ -1,17 +1,27 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import searchingGif from '../../assets/images/searching.gif';
 import { Tooltip } from 'antd';
 import InvoiceModal from '../Modals/InvoiceModal';
+import { Overlay, Popover, Button, ListGroup } from 'react-bootstrap';
 
 const PaypointQueueTable = () => {
 	const [loading, setLoading] = useState(true);
 	const [showModal, setShowModal] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
+	const [show, setShow] = useState(false);
+	const [target, setTarget] = useState(null);
+
+	const ref = useRef(null);
 
 	useEffect(() => {
 		setLoading(false);
 	});
+
+	const handlePrintClick = event => {
+		setShow(!show);
+		setTarget(event.target);
+	};
 
 	const onModalClick = () => {
 		setShowModal(!showModal);
@@ -26,6 +36,41 @@ const PaypointQueueTable = () => {
 					activeRequest={activeRequest}
 				/>
 			) : null}
+			<Overlay
+				show={show}
+				target={target}
+				placement="left"
+				container={ref.current}>
+				<Popover id="print" style={{ width: '10rem' }}>
+					<Popover.Title>Print</Popover.Title>
+					<div action>
+						<button
+							style={{
+								border: 'none',
+								background: '#fff',
+								width: '100%',
+								textAlign: 'center',
+								paddingTop: '0.5rem',
+								paddingBottom: '0.5rem',
+							}}>
+							INVOICE
+						</button>
+					</div>
+					<div action>
+						<button
+							style={{
+								border: 'none',
+								background: '#fff',
+								width: '100%',
+								textAlign: 'center',
+								paddingTop: '0.5rem',
+								paddingBottom: '0.5rem',
+							}}>
+							RECEIPT
+						</button>
+					</div>
+				</Popover>
+			</Overlay>
 			<table className="table table-light-border">
 				<thead>
 					<tr>
@@ -64,8 +109,9 @@ const PaypointQueueTable = () => {
 										<i class="os-icon os-icon-newspaper"></i>
 									</a>
 								</Tooltip>
+
 								<Tooltip title="Print Details">
-									<a onClick>
+									<a onClick={handlePrintClick}>
 										<i class="os-icon os-icon-printer"></i>
 									</a>
 								</Tooltip>

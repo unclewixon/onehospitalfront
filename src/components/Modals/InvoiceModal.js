@@ -12,11 +12,11 @@ const InvoiceModal = ({ showModal, onModalClick, activeRequest }) => {
 			// size="lg"
 			aria-labelledby="contained-modal-title-vcenter"
 			centered
-			// dialogClassName="reciept"
+			dialogClassName="reciept"
 			onHide={onModalClick}>
 			<Modal.Header closeButton> </Modal.Header>
 			<Modal.Body>
-				<Invoice />
+				<Receipt />
 			</Modal.Body>
 		</Modal>
 	);
