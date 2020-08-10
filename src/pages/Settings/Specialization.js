@@ -40,12 +40,7 @@ const Specialization = props => {
 			name,
 		};
 		try {
-			const rs = await request(
-				`${API_URI}/specializations`,
-				'POST',
-				true,
-				data
-			);
+			const rs = await request(`specializations`, 'POST', true, data);
 			props.add_specialziation(rs);
 			setLoading(false);
 			setState({ ...initialState });

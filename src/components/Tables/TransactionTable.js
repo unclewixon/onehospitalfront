@@ -17,16 +17,24 @@ import { notifyError, notifySuccess } from '../../services/notify';
 import { CartesianGrid, Legend, Line, LineChart, XAxis, YAxis } from 'recharts';
 import Reading from '../Patient/Reading';
 
-const TransactionTable = props => {
+const TransactionTable = ({
+	approveTransaction,
+	applyVoucher,
+	deleteTransaction,
+	handlePrint,
+	transactions,
+	loading,
+	today,
+	show = false,
+}) => {
 	const doApproveTransaction = item => {
-		props.approveTransaction(item);
+		approveTransaction(item);
 	};
 	const doApplyVoucher = item => {
-		props.applyVoucher(item);
+		applyVoucher(item);
 	};
 	const onDeleteTransaction = data => {
-		props
-			.deleteTransaction(data)
+		deleteTransaction(data)
 			.then(response => {
 				notifySuccess('Transaction deleted');
 			})
@@ -39,7 +47,6 @@ const TransactionTable = props => {
 		confirmAction(onDeleteTransaction, data);
 	};
 
-	const { transactions, loading, today } = props;
 	return (
 		<tbody>
 			{loading ? (
@@ -100,6 +107,14 @@ const TransactionTable = props => {
 										<i className="os-icon os-icon-ui-15"></i>
 									</a>
 								</Tooltip>
+
+								{show ? (
+									<Tooltip title="Print">
+										<a className="text-danger" onClick={e => handlePrint(e)}>
+											<i className="os-icon os-icon-printer"></i>
+										</a>
+									</Tooltip>
+								) : null}
 							</td>
 						</tr>
 					);

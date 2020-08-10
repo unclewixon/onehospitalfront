@@ -40,6 +40,7 @@ import {
 	LOAD_LABOUR_MEASUREMENT,
 	PATIENT_IVF,
 	LOAD_ALL_PATIENTS,
+	ADD_NEW_PATIENT,
 } from '../actions/types';
 import actions from 'redux-form/lib/actions';
 
@@ -242,6 +243,11 @@ const patient = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				allPatients: action.payload,
+			};
+		case ADD_NEW_PATIENT:
+			return {
+				...state,
+				// allPatients: state.allPatients.push(action.payload)
 			};
 		default:
 			return state;
