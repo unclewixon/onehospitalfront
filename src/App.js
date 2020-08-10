@@ -109,7 +109,7 @@ class App extends Component {
 												<Switch>
 													<Route path="/doctor" component={Doctor} />
 													<Route path="/front-desk" component={FrontDesk} />
-													<Route path="/in-patient" component={InPatient} />
+													<Route path="/nurse" component={InPatient} />
 													<Route path="/pharmacy" component={Pharmacy} />
 													<Route path="/pharmacy2" component={Pharmacy2} />
 													<Route
@@ -119,7 +119,7 @@ class App extends Component {
 													<Route path="/dentistry" component={Dentistry} />
 													<Route path="/procedure" component={Procedure} />
 													<Route path="/radiology" component={Radiology} />
-													<Route path="/antennatal" component={Antennatal} />
+													<Route path="/antenatal" component={Antennatal} />
 													<Route path="/ivf" component={IVF} />
 													<Route path="/nicu" component={Nicu} />
 													<Route path="/hr" component={Staff} />

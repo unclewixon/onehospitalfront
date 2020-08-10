@@ -20,14 +20,8 @@ import PharmacyMenu from './PharmacyMenu';
 import RadiologyMenu from './RadiologyMenu';
 import DenstistryMenu from './DenstistryMenu';
 import PhysiotherapyMenu from './PhysiotherapyMenu';
-import IvfMenu from './IvfMenu';
-import NicuMenu from './NicuMenu';
-import AntenatalMenu from './AntenatalMenu';
-import ProcedureMenu from './ProcedureMenu';
-import LabourMgt from './LabourMgt';
-import ImmunizationMenu from './ImmunizationMenu';
-import AdminMenu from './AdminMenu';
 import MyAccount from './MyAccount';
+import NurseMenu from './NurseMenu';
 
 class MainMenu extends Component {
 	componentDidMount() {
@@ -112,14 +106,7 @@ class MainMenu extends Component {
 					{(role === 'physiotherapy' || role === 'admin') && (
 						<PhysiotherapyMenu />
 					)}
-					{(role === 'ivf' || role === 'admin') && <IvfMenu />}
-					{(role === 'nicu' || role === 'admin') && <NicuMenu />}
-					{(role === 'antenatal' || role === 'admin') && <AntenatalMenu />}
-					{(role === 'procedure' || role === 'admin') && <ProcedureMenu />}
-					{(role === 'labour-mgt' || role === 'admin') && <LabourMgt />}
-					{(role === 'immunization' || role === 'admin') && (
-						<ImmunizationMenu />
-					)}
+					{(role === 'nurse' || role === 'admin') && <NurseMenu />}
 					{(role === 'doctor' || role === 'admin') && <DoctorMenu />}
 					{(role === 'hr' || role === 'admin') && <HrMenu />}
 

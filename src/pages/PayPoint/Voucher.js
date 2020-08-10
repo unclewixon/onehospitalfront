@@ -59,7 +59,7 @@ export class Voucher extends Component {
 								</button>
 							</div>
 							<h6 className="element-header">Voucher</h6>
-							<div className="element-box">
+							<div className="element-box-content">
 								<div className="table table-responsive">
 									<table className="table table-striped">
 										<thead>

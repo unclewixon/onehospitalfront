@@ -195,6 +195,8 @@ class ReviewTransaction extends Component {
 									transactions={transactions}
 									loading={loading}
 									today={false}
+									approveTransaction={this.doApproveTransaction}
+									doApplyVoucher={this.doApplyVoucher}
 								/>
 							</table>
 						</div>

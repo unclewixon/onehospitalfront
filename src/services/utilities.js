@@ -465,7 +465,7 @@ export const redirectToPage = (role, history) => {
 				uri = '/radiology';
 				break;
 			case 'nurse':
-				uri = '/in-patient';
+				uri = '/nurse';
 				break;
 			case 'doctor':
 				uri = '/doctor';
