@@ -64,12 +64,12 @@ const TransactionTable = props => {
 									: 'No Department'}
 							</td>
 							<td className="">
-								{transaction.service?.name
-									? transaction.service.name
+								{transaction.serviceType?.name
+									? transaction.serviceType.name
 									: 'No service yet'}
 							</td>
 							<td className="">
-								{transaction.amount ? transaction.amount : 0}
+								{transaction.amount ? formatNumber(transaction.amount) : 0}
 							</td>
 							<td className="">
 								{transaction.payment_type

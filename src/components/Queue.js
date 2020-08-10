@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { API_URI, socket } from '../services/constants';
+import React, { useState, useEffect } from 'react';
+import { socket } from '../services/constants';
 import { notifyError } from '../services/notify';
 import { request } from '../services/utilities';
 import axios from 'axios';
@@ -17,13 +16,13 @@ const Queue = ({ department }) => {
 	}, []);
 
 	useEffect(() => {
-		socket.on('new-queue', queue => {
-			console.log('new queue', queue);
-			if (queue) {
+		socket.on('new-queue', data => {
+			console.log('new queue', data);
+			if (data) {
 				axios.get(
-					`${process.env.REACT_APP_VOICE_RSS_API}Queue number ${queue.queueNumber}, ${queue.patientName}`
+					`${process.env.REACT_APP_VOICE_RSS_API}Queue number ${data.queue.queueNumber}, ${data.queue.patientName}`
 				);
-				getQueueList();
+				queues.push(data.queue);
 			}
 		});
 	}, [queues]);

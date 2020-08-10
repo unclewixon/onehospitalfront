@@ -26,7 +26,7 @@ const PayPointMenu = () => {
 					<div className="icon-w">
 						<div className="icon-feather-file-text" />
 					</div>
-					<span>Upcoming Bills</span>
+					<span>Pending Bills</span>
 				</Link>
 			</li>
 			<li>

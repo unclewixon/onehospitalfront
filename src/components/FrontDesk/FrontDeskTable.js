@@ -8,7 +8,7 @@ import {
 	updateQuantity,
 	viewAppointmentDetail,
 } from '../../actions/general';
-import { formatCurrency, request } from '../../services/utilities';
+import { formatCurrency, fullname, request } from '../../services/utilities';
 import BootstrapTable from 'react-bootstrap-table-next';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
@@ -36,7 +36,7 @@ class FrontDeskTable extends Component {
 						<th hidden={today}>Date</th>
 						<th>Patient</th>
 						<th>Whom to see</th>
-						<th>Consulting Room</th>
+						<th>C.R</th>
 						<th>Status</th>
 						<th className="text-center">Actions</th>
 					</tr>
@@ -70,7 +70,7 @@ class FrontDeskTable extends Component {
 
 									<td className="cell-with-media">
 										<span style={{ fontSize: '0.7rem' }}>
-											{`${appointment.specialization?.name}`}
+											{`${fullname(appointment?.whomToSee)}`}
 										</span>
 									</td>
 
@@ -105,8 +105,8 @@ class FrontDeskTable extends Component {
 							);
 						})
 					) : (
-						<tr colSpan="4" className="text-center">
-							<td>No Appointments</td>
+						<tr className="text-center">
+							<td colSpan="4">No Appointments</td>
 						</tr>
 					)}
 				</tbody>

@@ -3,7 +3,6 @@ import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import waiting from '../../assets/images/waiting.gif';
 import { useForm } from 'react-hook-form';
-import moment from 'moment';
 import { formatNumber, fullname, request } from '../../services/utilities';
 import { serviceAPI } from '../../services/constants';
 import { notifyError, notifySuccess } from '../../services/notify';
@@ -84,6 +83,10 @@ function InPatientAppointmentForm(props) {
 			'GET',
 			true
 		);
+		if (rs.amount > 0) {
+			register({ name: 'amount' });
+			setValue('amount', rs.amount);
+		}
 		setValidationMessage(`The patient is to pay N${formatNumber(rs.amount)}`);
 	}
 
@@ -172,9 +175,11 @@ function InPatientAppointmentForm(props) {
 									if (evt == null) {
 										setValue('doctor_id', null);
 									} else {
-										// const doctor = doctorsList.find(item => item.id === evt.value);
-										console.log(evt.value);
-										// setValue('consulting_room_id', doctor.room.id);
+										const doctor = doctorsList.find(
+											item => item.id === evt.value
+										);
+										// console.log(doctorl);
+										setValue('consulting_room_id', doctor?.room?.id);
 										setValue('doctor_id', evt.value);
 									}
 								}}

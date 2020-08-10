@@ -3,6 +3,9 @@ import { useState, useEffect } from 'react';
 import searchingGif from '../../assets/images/searching.gif';
 import { Tooltip } from 'antd';
 import InvoiceModal from '../Modals/InvoiceModal';
+import useSWR from 'swr';
+import { socket } from '../../services/constants';
+import axios from 'axios';
 
 const PaypointQueueTable = () => {
 	const [loading, setLoading] = useState(true);
@@ -32,8 +35,8 @@ const PaypointQueueTable = () => {
 						<th>Customer Name</th>
 						<th>Orders</th>
 						<th>Location</th>
-						<th class="text-center">Status</th>
-						<th class="text-right">Action</th>
+						<th className="text-center">Status</th>
+						<th className="text-right">Action</th>
 					</tr>
 				</thead>
 				{loading ? (
