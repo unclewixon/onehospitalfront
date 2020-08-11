@@ -90,7 +90,9 @@ const ModalDialogs = ({
 			{show_history && <ModalLeaveHistory />}
 			{create_inventory && <ModalCreateInventory />}
 			{edit_inventory && <ModalEditInventory />}
-			{approve_transaction && <ModalApproveTransaction />}
+			{approve_transaction && (
+				<ModalApproveTransaction approveTransaction={approve_transaction} />
+			)}
 			{update_inventory_qty && <ModalUpdInventoryQty />}
 			{view_appraisal && <ModalViewAppraisal />}
 			{view_payroll_history && <ModalPayrollHistory />}

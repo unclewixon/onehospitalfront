@@ -1,25 +1,38 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import useSWR from 'swr';
 import TransactionTable from '../../components/Tables/TransactionTable';
 import { socket } from '../../services/constants';
 import { request } from '../../services/utilities';
 import { Popover, Overlay } from 'react-bootstrap';
+import Reciept from './../../components/Invoice/Reciept';
+import Invoice from './../../components/Invoice/Invoice';
+import { getAllPendingTransactions } from './../../actions/paypoint';
+import PrintPortal from './PrintPortal';
 
 const PaypointQueue = ({ staff }) => {
-	const [transactions, setTransactions] = useState([]);
+	// const [transactions, setTransactions] = useState([]);
 	const [show, setShow] = useState(false);
 	const [target, setTarget] = useState(null);
+	const [activeData, setActiveData] = useState(null);
+	const [showReciept, setShowReciept] = useState(false);
+	const [showInvoice, setShowInvoice] = useState(false);
 	const ref = useRef(null);
+	const dispatch = useDispatch();
+	const transactions = useSelector(
+		({ paypoint }) => paypoint.pendingTransactions
+	);
+
+	console.log(transactions);
 
 	const init = useCallback(() => {
 		request('transactions/list/pending', 'GET', true)
 			.then(res => {
-				setTransactions(res);
+				dispatch(getAllPendingTransactions(res));
 			})
 			.catch(err => {});
-	}, [setTransactions]);
+	}, [dispatch]);
 
 	useEffect(() => {
 		// fetch transactions
@@ -29,10 +42,10 @@ const PaypointQueue = ({ staff }) => {
 			if (data.payment) {
 				console.log('new queue', data);
 				const transaction = data.payment;
-				setTransactions(transactions => [...transactions, transaction]);
+				dispatch(getAllPendingTransactions(transaction));
 			}
 		});
-	}, [init, setTransactions]);
+	}, [init, dispatch]);
 
 	const doApproveTransaction = item => {
 		this.props.approveTransaction(item);
@@ -42,14 +55,26 @@ const PaypointQueue = ({ staff }) => {
 		this.props.applyVoucher(item);
 	};
 
-	const handlePrintClick = event => {
-		console.log(event);
+	const handlePrintClick = (event, data) => {
 		setShow(!show);
 		setTarget(event.target);
+		setActiveData(data);
 	};
 
+	const onPrintReceipt = () => {
+		setShowReciept(!showReciept);
+	};
+
+	const onPrintInvoice = () => {
+		setShowInvoice(!showInvoice);
+	};
 	return (
 		<div className="table-responsive">
+			{activeData && (showReciept || showInvoice) && (
+				<PrintPortal>
+					<Reciept />
+				</PrintPortal>
+			)}
 			<Overlay
 				show={show}
 				target={target}
@@ -59,6 +84,7 @@ const PaypointQueue = ({ staff }) => {
 					<Popover.Title>Print</Popover.Title>
 					<div action>
 						<button
+							onClick={onPrintInvoice}
 							style={{
 								border: 'none',
 								background: '#fff',
@@ -72,6 +98,7 @@ const PaypointQueue = ({ staff }) => {
 					</div>
 					<div action>
 						<button
+							onClick={onPrintReceipt}
 							style={{
 								border: 'none',
 								background: '#fff',
@@ -90,9 +117,9 @@ const PaypointQueue = ({ staff }) => {
 					<tr>
 						<th hidden={true}>DATE</th>
 						<th className="">PATIENT NAME</th>
-						<th className="">DEPARTMENT</th>
 						<th className="">SERVICE</th>
-						<th className="">AMOUNT (&#x20A6;)</th>
+						<th className="">AMOUNT PAID (&#x20A6;)</th>
+						<th className="">BALANCE</th>
 						<th className="">PAYMENT TYPE</th>
 						<th className="">ACTIONS</th>
 					</tr>

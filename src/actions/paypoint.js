@@ -3,6 +3,7 @@ import {
 	DELETE_VOUCHER,
 	LOAD_VOUCHER,
 	UPDATE_VOUCHER,
+	GET_ALL_PENDING_TRANSACTIONS,
 } from './types';
 
 export const createVoucherData = data => {
@@ -29,6 +30,13 @@ export const updateVoucher = data => {
 export const deleteVoucher = data => {
 	return {
 		type: DELETE_VOUCHER,
+		payload: data,
+	};
+};
+
+export const getAllPendingTransactions = data => {
+	return {
+		type: GET_ALL_PENDING_TRANSACTIONS,
 		payload: data,
 	};
 };

@@ -21,7 +21,7 @@ import { notifySuccess } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
 import { updateInventory } from '../../actions/inventory';
 import moment from 'moment';
-import { loadVoucher } from '../../actions/paypoint';
+import { loadVoucher, getAllPendingTransactions } from '../../actions/paypoint';
 
 const validate = values => {
 	const errors = {};
@@ -52,26 +52,31 @@ class ModalApproveTransaction extends Component {
 	}
 
 	approveTransaction = async data => {
-		const { items, approve_hmo_transaction } = this.props;
-		let id = items.q_id;
+		const { items, approve_hmo_transaction, pendingTransactions } = this.props;
+		let id = items.id;
+		let newTransactions;
 		if (approve_hmo_transaction) {
 			data.payment_type = 'Hmo';
 			id = items.id;
 		}
-		console.log(data);
-		console.log(items);
 		this.setState({ submitting: true });
 		try {
 			const rs = await request(
-				`${transactionsAPI}/` + id + '/process',
+				`transactions/${id}/process`,
 				'PATCH',
 				true,
 				data
 			);
 			this.setState({ submitting: false });
-			this.props.reset('approve_transaction');
-			notifySuccess('Transaction Approved!');
-			this.props.closeModals(true);
+			if (rs.success) {
+				this.props.reset('approve_transaction');
+				notifySuccess('Transaction Approved!');
+				this.props.closeModals(true);
+				newTransactions = pendingTransactions.filter(trans => {
+					return trans.id !== rs.transaction.id;
+				});
+				this.props.getAllPendingTransactions(newTransactions);
+			}
 		} catch (e) {
 			this.setState({ submitting: false });
 			throw new SubmissionError({
@@ -131,7 +136,12 @@ class ModalApproveTransaction extends Component {
 	}
 
 	render() {
-		const { error, handleSubmit, approve_hmo_transaction } = this.props;
+		const {
+			error,
+			handleSubmit,
+			approve_hmo_transaction,
+			approveTransaction,
+		} = this.props;
 		const { submitting, hidden, voucherList, amountClass } = this.state;
 		return (
 			<div
@@ -179,9 +189,11 @@ class ModalApproveTransaction extends Component {
 													id="amount_paid"
 													name="amount_paid"
 													component={renderTextInput}
-													label="Amount"
+													// defaultValue={`NGN ${approveTransaction.amount}`}
 													type="text"
+													label="Amount"
 													placeholder="Enter Amount"
+													className="form-control"
 												/>
 											</div>
 										</div>
@@ -223,6 +235,7 @@ class ModalApproveTransaction extends Component {
 												component={renderTextArea}
 												label="Note"
 												type="text"
+												defaultValue={approveTransaction.amount}
 												placeholder="Enter Note"
 											/>
 										</div>
@@ -262,14 +275,18 @@ const mapStateToProps = (state, ownProps) => {
 	const items = state.general.approve_transaction;
 	return {
 		initialValues: {
-			amount_paid: items.q_amount,
+			// amount_paid: items.q_amount,
+			amount_paid: state.general.approve_transaction.amount,
 		},
 		voucher: state.paypoint.voucher,
 		approve_hmo_transaction: state.general.approve_hmo_transaction,
 		items,
+		pendingTransactions: state.paypoint.pendingTransactions,
 	};
 };
 
-export default connect(mapStateToProps, { closeModals, loadVoucher })(
-	ModalApproveTransaction
-);
+export default connect(mapStateToProps, {
+	closeModals,
+	loadVoucher,
+	getAllPendingTransactions,
+})(ModalApproveTransaction);

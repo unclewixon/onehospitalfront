@@ -6,10 +6,12 @@ import {
 	LOAD_VOUCHER,
 	UPDATE_aVoucher,
 	UPDATE_VOUCHER,
+	GET_ALL_PENDING_TRANSACTIONS,
 } from '../actions/types';
 
 const INITIAL_STATE = {
 	voucher: [],
+	pendingTransactions: [],
 };
 
 const reformatInput = payload => {
@@ -54,6 +56,11 @@ const paypoint = (state = INITIAL_STATE, action) => {
 				};
 			}
 			return state;
+		case GET_ALL_PENDING_TRANSACTIONS:
+			return {
+				...state,
+				pendingTransactions: action.payload,
+			};
 		default:
 			return state;
 	}

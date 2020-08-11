@@ -184,9 +184,9 @@ class ReviewTransaction extends Component {
 									<tr>
 										<th>DATE</th>
 										<th className="">PATIENT NAME</th>
-										<th className="">DEPARTMENT</th>
 										<th className="">SERVICE</th>
 										<th className="">AMOUNT (&#x20A6;)</th>
+										<th className="">BALANCE</th>
 										<th className="">PAYMENT TYPE</th>
 										<th className="">ACTIONS</th>
 									</tr>
