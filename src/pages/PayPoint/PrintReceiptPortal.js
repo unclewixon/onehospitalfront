@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
+import {
+	showInvoiceToPrint,
+	showReceiptToPrint,
+} from './../../actions/paypoint';
 
-class PrintPortal extends React.PureComponent {
+class PrintReceiptPortal extends React.PureComponent {
 	constructor(props) {
 		super(props);
 		// STEP 1: create a container <div>
@@ -16,17 +21,27 @@ class PrintPortal extends React.PureComponent {
 
 	componentDidMount() {
 		// STEP 3: open a new browser window and store a reference to it
-		this.externalWindow = window.open('', '', 'width=230,height=400');
+		this.externalWindow = window.open('', '', 'fullscreen=yes');
 
 		// STEP 4: append the container <div> (that has props.children appended to it) to the body of the new window
 		this.externalWindow.document.body.appendChild(this.containerEl);
+		this.externalWindow.window.print();
 	}
 
 	componentWillUnmount() {
 		// STEP 5: This will fire when this.state.showWindowPortal in the parent component becomes false
 		// So we tidy up by closing the window
 		this.externalWindow.close();
+		this.props.showReceiptToPrint(false);
+		this.props.showInvoiceToPrint(false);
 	}
 }
 
-export default PrintPortal;
+const mapStatetoProps = state => {
+	return;
+};
+
+export default connect(mapStatetoProps, {
+	showReceiptToPrint,
+	showInvoiceToPrint,
+})(PrintReceiptPortal);

@@ -1,6 +1,7 @@
 import React from 'react';
+import moment from 'moment';
 
-const Reciept = () => {
+const Reciept = ({ data }) => {
 	return (
 		<div
 			style={{
@@ -44,7 +45,7 @@ const Reciept = () => {
 							letterSpacing: 1,
 							textAlign: 'center',
 						}}>
-						RECEIPT: #00000094159
+						RECEIPT:
 					</div>
 					<table style={{ borderCollapse: 'collapse', width: '100%' }}>
 						<tbody>
@@ -66,7 +67,7 @@ const Reciept = () => {
 										TRANSACTION DATE:{' '}
 									</span>
 									<span style={{ fontSize: 8, fontWeight: 'bold' }}>
-										09/07/2020
+										{moment(data?.createdAt).format('DD/MM/YY')}
 									</span>
 								</td>
 							</tr>
@@ -82,23 +83,7 @@ const Reciept = () => {
 										RECEIVED FROM:{' '}
 									</span>
 									<span style={{ fontSize: 8, fontWeight: 'bold' }}>
-										IKEME KACHIKWU (00000000124)
-									</span>
-								</td>
-							</tr>
-							<tr style={{ lineHeight: '10px' }}>
-								<td style={{ color: '#111', width: '100%', padding: 0 }}>
-									<span
-										style={{
-											color: '#B8B8B8',
-											fontSize: 8,
-											fontWeight: 'bold',
-											marginBottom: 3,
-										}}>
-										AMOUNT IN WORDS (NGN):{' '}
-									</span>
-									<span style={{ fontSize: 8, fontWeight: 'bold' }}>
-										Nine Thousand
+										{`${data?.patient?.surname} ${data?.patient?.other_names} (${data?.patient?.fileNumber})`.toUpperCase()}
 									</span>
 								</td>
 							</tr>
@@ -113,7 +98,25 @@ const Reciept = () => {
 										}}>
 										AMOUNT (NGN):
 									</span>
-									<span style={{ fontSize: 8, fontWeight: 'bold' }}>9000</span>
+									<span style={{ fontSize: 8, fontWeight: 'bold' }}>
+										{data?.amount}
+									</span>
+								</td>
+							</tr>
+							<tr style={{ lineHeight: '10px' }}>
+								<td style={{ color: '#111', width: '100%' }}>
+									<span
+										style={{
+											color: '#B8B8B8',
+											fontSize: 8,
+											fontWeight: 'bold',
+											marginBottom: 3,
+										}}>
+										AMOUNT PAID(NGN):
+									</span>
+									<span style={{ fontSize: 8, fontWeight: 'bold' }}>
+										{`${data?.amount_paid}`.toUpperCase()}
+									</span>
 								</td>
 							</tr>
 							<tr style={{ lineHeight: '10px' }}>
@@ -127,7 +130,9 @@ const Reciept = () => {
 										}}>
 										PAYMENT TYPE:
 									</span>
-									<span style={{ fontSize: 8, fontWeight: 'bold' }}>POS</span>
+									<span style={{ fontSize: 8, fontWeight: 'bold' }}>
+										{`${data?.payment_type}`.toUpperCase()}
+									</span>
 								</td>
 							</tr>
 							<tr style={{ lineHeight: '10px' }}>
@@ -139,9 +144,11 @@ const Reciept = () => {
 											fontWeight: 'bold',
 											marginBottom: 3,
 										}}>
-										OUTSTANDING BLANCE (NGN):{' '}
+										OUTSTANDING BALANCE (NGN):{' '}
 									</span>
-									<span style={{ fontSize: 8, fontWeight: 'bold' }}>0.00</span>
+									<span style={{ fontSize: 8, fontWeight: 'bold' }}>
+										{data?.balance ? data?.balance : '0.00'}
+									</span>
 								</td>
 							</tr>
 							<tr style={{ lineHeight: '10px' }}>
@@ -160,9 +167,7 @@ const Reciept = () => {
 										}}>
 										CASHIER:{' '}
 									</span>
-									<span style={{ fontSize: 8, fontWeight: 'bold' }}>
-										Kashet Selis
-									</span>
+									<span style={{ fontSize: 8, fontWeight: 'bold' }}></span>
 								</td>
 							</tr>
 						</tbody>

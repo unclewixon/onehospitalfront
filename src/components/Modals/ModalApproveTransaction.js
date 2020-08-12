@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { closeModals } from '../../actions/general';
@@ -6,22 +6,19 @@ import {
 	renderSelect,
 	renderTextArea,
 	renderTextInput,
-	renderTextInputGroup,
 	request,
 } from '../../services/utilities';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
-import {
-	API_URI,
-	inventoryAPI,
-	transactionPaymentType,
-	transactionsAPI,
-	vouchersAPI,
-} from '../../services/constants';
+import { transactionPaymentType, vouchersAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
-import { updateInventory } from '../../actions/inventory';
-import moment from 'moment';
-import { loadVoucher, getAllPendingTransactions } from '../../actions/paypoint';
+import {
+	loadVoucher,
+	getAllPendingTransactions,
+	getTransactionData,
+	showInvoiceToPrint,
+	showReceiptToPrint,
+} from '../../actions/paypoint';
 
 const validate = values => {
 	const errors = {};
@@ -37,6 +34,7 @@ class ModalApproveTransaction extends Component {
 		hidden: true,
 		amountClass: 'col-sm-6',
 		voucherList: [],
+		activeData: null,
 	};
 
 	componentDidMount() {
@@ -67,7 +65,7 @@ class ModalApproveTransaction extends Component {
 				true,
 				data
 			);
-			this.setState({ submitting: false });
+
 			if (rs.success) {
 				this.props.reset('approve_transaction');
 				notifySuccess('Transaction Approved!');
@@ -76,6 +74,8 @@ class ModalApproveTransaction extends Component {
 					return trans.id !== rs.transaction.id;
 				});
 				this.props.getAllPendingTransactions(newTransactions);
+				this.setState({ submitting: false });
+				this.props.getTransactionData(rs.transaction);
 			}
 		} catch (e) {
 			this.setState({ submitting: false });
@@ -106,14 +106,12 @@ class ModalApproveTransaction extends Component {
 
 	fetchVoucher = async data => {
 		try {
-			//this.setState({ loading: true });
 			const rs = await request(
 				`${vouchersAPI}/list` + '?patient_id=' + data.patient_id,
 				'GET',
 				true
 			);
 			this.props.loadVoucher(rs);
-			//this.setState({ loading: false });
 		} catch (error) {
 			console.log(error);
 		}
@@ -282,6 +280,9 @@ const mapStateToProps = (state, ownProps) => {
 		approve_hmo_transaction: state.general.approve_hmo_transaction,
 		items,
 		pendingTransactions: state.paypoint.pendingTransactions,
+		showReceipt: state.paypoint.showReceipt,
+		showInvoice: state.paypoint.showInvoice,
+		activeData: state.paypoint.transactionData,
 	};
 };
 
@@ -289,4 +290,7 @@ export default connect(mapStateToProps, {
 	closeModals,
 	loadVoucher,
 	getAllPendingTransactions,
+	getTransactionData,
+	showReceiptToPrint,
+	showInvoiceToPrint,
 })(ModalApproveTransaction);

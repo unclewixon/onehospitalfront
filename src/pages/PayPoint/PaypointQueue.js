@@ -8,23 +8,26 @@ import { request } from '../../services/utilities';
 import { Popover, Overlay } from 'react-bootstrap';
 import Reciept from './../../components/Invoice/Reciept';
 import Invoice from './../../components/Invoice/Invoice';
-import { getAllPendingTransactions } from './../../actions/paypoint';
-import PrintPortal from './PrintPortal';
+import {
+	getAllPendingTransactions,
+	getTransactionData,
+	showInvoiceToPrint,
+	showReceiptToPrint,
+} from './../../actions/paypoint';
+import PrintReceiptPortal from './PrintReceiptPortal';
 
 const PaypointQueue = ({ staff }) => {
-	// const [transactions, setTransactions] = useState([]);
 	const [show, setShow] = useState(false);
 	const [target, setTarget] = useState(null);
-	const [activeData, setActiveData] = useState(null);
-	const [showReciept, setShowReciept] = useState(false);
-	const [showInvoice, setShowInvoice] = useState(false);
+
 	const ref = useRef(null);
 	const dispatch = useDispatch();
 	const transactions = useSelector(
 		({ paypoint }) => paypoint.pendingTransactions
 	);
-
-	console.log(transactions);
+	const activeData = useSelector(({ paypoint }) => paypoint.transactionData);
+	const showInvoice = useSelector(({ paypoint }) => paypoint.showInvoice);
+	const showReceipt = useSelector(({ paypoint }) => paypoint.showReceipt);
 
 	const init = useCallback(() => {
 		request('transactions/list/pending', 'GET', true)
@@ -40,7 +43,6 @@ const PaypointQueue = ({ staff }) => {
 		// listen for new transactions
 		socket.on('new-queue', data => {
 			if (data.payment) {
-				console.log('new queue', data);
 				const transaction = data.payment;
 				dispatch(getAllPendingTransactions(transaction));
 			}
@@ -58,22 +60,26 @@ const PaypointQueue = ({ staff }) => {
 	const handlePrintClick = (event, data) => {
 		setShow(!show);
 		setTarget(event.target);
-		setActiveData(data);
 	};
 
 	const onPrintReceipt = () => {
-		setShowReciept(!showReciept);
+		dispatch(showReceiptToPrint(!showReceipt));
 	};
 
 	const onPrintInvoice = () => {
-		setShowInvoice(!showInvoice);
+		dispatch(showInvoiceToPrint(!showInvoice));
 	};
 	return (
 		<div className="table-responsive">
-			{activeData && (showReciept || showInvoice) && (
-				<PrintPortal>
-					<Reciept />
-				</PrintPortal>
+			{activeData && showReceipt && (
+				<PrintReceiptPortal>
+					<Reciept data={activeData} />
+				</PrintReceiptPortal>
+			)}
+			{activeData && showInvoice && (
+				<PrintReceiptPortal>
+					<Invoice data={activeData} />
+				</PrintReceiptPortal>
 			)}
 			<Overlay
 				show={show}
@@ -132,7 +138,6 @@ const PaypointQueue = ({ staff }) => {
 						approveTransaction={doApproveTransaction}
 						doApplyVoucher={doApplyVoucher}
 						handlePrint={handlePrintClick}
-						show={true}
 					/>
 				)}
 			</table>

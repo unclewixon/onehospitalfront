@@ -19,9 +19,7 @@ const Queue = ({ department }) => {
 		socket.on('new-queue', data => {
 			console.log('new queue', data);
 			if (data) {
-				axios.get(
-					`${process.env.REACT_APP_VOICE_RSS_API}Queue number ${data.queue.queueNumber}, ${data.queue.patientName}`
-				);
+				axios.get(`${process.env.REACT_APP_VOICE_RSS_API}Queue number`);
 				queues.push(data.queue);
 			}
 		});
