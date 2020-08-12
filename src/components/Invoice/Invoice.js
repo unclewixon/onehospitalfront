@@ -1,7 +1,7 @@
 import React from 'react';
 import circleLogo from '../../assets/images/logo-big.png';
 
-const Invoice = () => {
+const Invoice = ({ data }) => {
 	return (
 		<div
 			style={{
@@ -45,7 +45,7 @@ const Invoice = () => {
 										fontWeight: 'bold',
 										maxWidth: '100px',
 									}}>
-									Madam Abdullah Starfish
+									{`${data?.patient?.surname} ${data?.patient?.other_names}`}
 								</div>
 							</td>
 							<td style={{ maxWidth: 150, textAlign: 'right' }}>
@@ -67,7 +67,7 @@ const Invoice = () => {
 										fontWeight: 'bold',
 										marginBottom: 20,
 									}}>
-									DEDA-102030
+									{data?.patient?.fileNumber}
 								</div>
 							</td>
 						</tr>
@@ -106,11 +106,11 @@ const Invoice = () => {
 								}}>
 								<div
 									style={{ color: '#111', fontSize: 14, fontWeight: 'bold' }}>
-									Web development starter kit
+									{data?.serviceType?.name}
 								</div>
-								<div style={{ color: '#B8B8B8', fontSize: 12 }}>
+								{/* <div style={{ color: '#B8B8B8', fontSize: 12 }}>
 									Extended license included
-								</div>
+								</div> */}
 							</td>
 							<td
 								style={{
@@ -121,10 +121,10 @@ const Invoice = () => {
 									color: '#111',
 									borderBottom: '1px solid rgba(0,0,0,0.05)',
 								}}>
-								$75.99
+								{data.amount}
 							</td>
 						</tr>
-						<tr>
+						{/* <tr>
 							<td style={{ padding: '15px 0px' }}>
 								<div
 									style={{ color: '#111', fontSize: 14, fontWeight: 'bold' }}>
@@ -144,7 +144,7 @@ const Invoice = () => {
 								}}>
 								$112.45
 							</td>
-						</tr>
+						</tr> */}
 					</tbody>
 				</table>
 				<table
@@ -188,11 +188,11 @@ const Invoice = () => {
 								$12.83
 							</td>
 						</tr>
-						<tr>
+						{/* <tr>
 							<td
 								style={{ color: '#B8B8B8', fontSize: 12, padding: '5px 0px' }}>
 								Shipping
-							</td>
+					</td>
 							<td
 								style={{
 									color: '#111',
@@ -202,8 +202,8 @@ const Invoice = () => {
 									fontSize: 12,
 								}}>
 								$0.00
-							</td>
-						</tr>
+					</td>
+						</tr> */}
 						<tr>
 							<td
 								style={{ color: '#B8B8B8', fontSize: 12, padding: '5px 0px' }}>
@@ -217,7 +217,7 @@ const Invoice = () => {
 									padding: '5px 0px 5px 40px',
 									fontSize: 12,
 								}}>
-								- $14.99
+								{}
 							</td>
 						</tr>
 						<tr>

@@ -16,6 +16,7 @@ import { applyVoucher, approveTransaction } from '../../actions/general';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { CartesianGrid, Legend, Line, LineChart, XAxis, YAxis } from 'recharts';
 import Reading from '../Patient/Reading';
+import truncate from 'lodash.truncate';
 
 const TransactionTable = ({
 	approveTransaction,
@@ -66,17 +67,35 @@ const TransactionTable = ({
 								{`${transaction.patient?.surname} ${transaction.patient?.other_names}`}
 							</td>
 							<td className="">
-								{transaction.department?.name
-									? transaction.department?.name
-									: 'No Department'}
-							</td>
-							<td className="">
-								{transaction.serviceType?.name
-									? transaction.serviceType.name
-									: 'No service yet'}
+								{transaction.serviceType ? (
+									<Tooltip title={transaction.serviceType.name} trigger="hover">
+										{transaction.serviceType?.name
+											? truncate(transaction.serviceType.name, {
+													length: 20,
+													omission: '...',
+											  })
+											: 'No service yet'}
+									</Tooltip>
+								) : transaction.service ? (
+									<Tooltip
+										title={transaction.service.name}
+										trigger="hover"
+										mouseEnterDelay={0.1}>
+										{transaction.service?.name
+											? truncate(transaction.service.name, {
+													length: 20,
+													omission: '...',
+											  })
+											: 'No service yet'}
+									</Tooltip>
+								) : null}
 							</td>
 							<td className="">
 								{transaction.amount ? formatNumber(transaction.amount) : 0}
+							</td>
+
+							<td className="">
+								{transaction?.balance ? transaction.balance : '0'}
 							</td>
 							<td className="">
 								{transaction.payment_type
@@ -110,7 +129,9 @@ const TransactionTable = ({
 
 								{show ? (
 									<Tooltip title="Print">
-										<a className="text-danger" onClick={e => handlePrint(e)}>
+										<a
+											className="text-danger"
+											onClick={e => handlePrint(e, transaction)}>
 											<i className="os-icon os-icon-printer"></i>
 										</a>
 									</Tooltip>

@@ -38,7 +38,7 @@ class ReviewTransaction extends Component {
 
 	fetchTransaction = async () => {
 		const { patient_id, startDate, endDate, status } = this.state;
-		console.log(patient_id, startDate, endDate, status);
+		let allTransactions;
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
@@ -46,7 +46,8 @@ class ReviewTransaction extends Component {
 				'GET',
 				true
 			);
-			this.props.loadTransaction(rs);
+			allTransactions = rs.filter(trans => trans.status === 1);
+			this.props.loadTransaction(allTransactions);
 			this.setState({ loading: false, filtering: false });
 		} catch (error) {
 			console.log(error);
@@ -184,9 +185,9 @@ class ReviewTransaction extends Component {
 									<tr>
 										<th>DATE</th>
 										<th className="">PATIENT NAME</th>
-										<th className="">DEPARTMENT</th>
 										<th className="">SERVICE</th>
 										<th className="">AMOUNT (&#x20A6;)</th>
+										<th className="">BALANCE</th>
 										<th className="">PAYMENT TYPE</th>
 										<th className="">ACTIONS</th>
 									</tr>
