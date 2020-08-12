@@ -51,7 +51,6 @@ const CreateNewTransaction = props => {
 		};
 		try {
 			const rs = await request(`${transactionsAPI}`, 'POST', true, data);
-			debugger;
 			history.push('/paypoint');
 			notifySuccess('New payment request saved');
 			setSubmitting(false);
