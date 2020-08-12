@@ -37,6 +37,7 @@
 		"lodash.split": "^4.4.2",
 		"lodash.startcase": "^4.4.0",
 		"lodash.template": "^4.5.0",
+		"lodash.truncate": "^4.4.2",
 		"lodash.uppercase": "^4.3.0",
 		"moment": "^2.26.0",
 		"node-sass": "^4.13.0",

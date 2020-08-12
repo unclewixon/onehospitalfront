@@ -13,8 +13,6 @@ import {
 } from '../services/constants';
 import { getAllHmos } from '../actions/hmo';
 import DatePicker from 'react-datepicker';
-import moment from 'moment';
-import '../assets/css/date-picker.css';
 
 function PatientForm(props) {
 	const formData = props.formData;
@@ -206,20 +204,22 @@ function PatientForm(props) {
 							<div className="col-sm">
 								<div className="form-group">
 									<label>Date of birth</label>
-									<DatePicker
-										selected={values?.date_of_birth}
-										onChange={date => setValue('date_of_birth', date)}
-										peekNextMonth
-										showMonthDropdown
-										ref={register({ name: 'date_of_birth' })}
-										showYearDropdown
-										dropdownMode="select"
-										dateFormat="yyyy-MM-dd"
-										className="single-daterange form-control"
-										placeholderText="Select date of birth"
-										maxDate={new Date()}
-										name="date_of_birth"
-									/>
+									<div className="custom-date-input">
+										<DatePicker
+											selected={values?.date_of_birth}
+											onChange={date => setValue('date_of_birth', date)}
+											peekNextMonth
+											showMonthDropdown
+											ref={register({ name: 'date_of_birth' })}
+											showYearDropdown
+											dropdownMode="select"
+											dateFormat="yyyy-MM-dd"
+											className="single-daterange form-control"
+											placeholderText="Select date of birth"
+											maxDate={new Date()}
+											name="date_of_birth"
+										/>
+									</div>
 									<small className="text-danger">
 										{errors.date_of_birth && errors.date_of_birth.message}
 									</small>
