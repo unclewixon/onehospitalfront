@@ -48,7 +48,7 @@ class FrontDeskTable extends Component {
 								<img alt="searching" src={searchingGIF} />
 							</td>
 						</tr>
-					) : appointments.length > 0 ? (
+					) : appointments && appointments.length ? (
 						appointments.map((appointment, i) => {
 							return (
 								<tr key={i}>

@@ -18,7 +18,7 @@ const DoctorMenu = () => {
 					<div className="icon-w">
 						<div className="os-icon os-icon-calendar-time" />
 					</div>
-					<span>Appointments</span>
+					<span>Appointment History</span>
 				</Link>
 			</li>
 			<li>

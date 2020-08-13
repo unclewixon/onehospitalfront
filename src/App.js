@@ -19,9 +19,10 @@ import { toggleProfile } from './actions/user';
 import { request } from './services/utilities';
 import ability from './services/ability';
 import { AbilityContext } from './components/common/Can';
+import DoctorHome from './pages/Doctor/Home';
+import DoctorAppointments from './pages/Doctor/DoctorAppointments';
 
 const Login = lazy(() => import('./pages/Login'));
-const Doctor = lazy(() => import('./pages/HR/Doctor'));
 const NoMatch = lazy(() => import('./pages/NoMatch'));
 const FrontDesk = lazy(() => import('./pages/FrontDesk/index'));
 const InPatient = lazy(() => import('./pages/InPatient'));
@@ -107,7 +108,11 @@ class App extends Component {
 													errorRetryCount: 2,
 												}}>
 												<Switch>
-													<Route path="/doctor" component={Doctor} />
+													<Route
+														path="/doctor/appointments"
+														component={DoctorAppointments}
+													/>
+													<Route path="/doctor" component={DoctorHome} />
 													<Route path="/front-desk" component={FrontDesk} />
 													<Route path="/nurse" component={InPatient} />
 													<Route path="/pharmacy" component={Pharmacy} />

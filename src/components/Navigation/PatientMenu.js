@@ -29,9 +29,6 @@ const PatientMenu = ({ location }) => {
 						<span>Allergies</span>
 					</Link>
 				</li>
-				<li className="sub-header">
-					<span>Encounters</span>
-				</li>
 				<li>
 					<Link to={`${location.pathname}#encounters`}>
 						<div className="icon-w">
@@ -41,19 +38,47 @@ const PatientMenu = ({ location }) => {
 					</Link>
 				</li>
 				<li>
-					<Link to={`${location.pathname}#visit-entry`}>
-						<div className="icon-w">
-							<div className="os-icon os-icon-layout" />
-						</div>
-						<span>New Vist Entry</span>
-					</Link>
-				</li>
-				<li>
 					<Link to={`${location.pathname}#anc-visit-entry`}>
 						<div className="icon-w">
 							<div className="os-icon os-icon-layout" />
 						</div>
 						<span>Antenatal</span>
+					</Link>
+				</li>
+				<li className="sub-header">
+					<span>Enrollments</span>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#start-admission`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-plus-circle" />
+						</div>
+
+						<span>Start Admission</span>
+					</Link>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#enroll-antenatal`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-plus-circle" />
+						</div>
+						<span>Antenatal</span>
+					</Link>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#enroll-immunization`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-plus-circle" />
+						</div>
+						<span>Immunization</span>
+					</Link>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#enroll-ivf`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-plus-circle" />
+						</div>
+						<span>IVF</span>
 					</Link>
 				</li>
 				<li className="sub-header">

@@ -1,7 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 
-import { formatNumber, confirmAction } from '../../services/utilities';
+import {
+	formatNumber,
+	confirmAction,
+	trimText,
+} from '../../services/utilities';
 
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
@@ -10,7 +14,6 @@ import { deleteTransaction } from '../../actions/transaction';
 import Tooltip from 'antd/lib/tooltip';
 import { applyVoucher, approveTransaction } from '../../actions/general';
 import { notifyError, notifySuccess } from '../../services/notify';
-import truncate from 'lodash.truncate';
 
 const TransactionTable = ({
 	approveTransaction,
@@ -64,10 +67,7 @@ const TransactionTable = ({
 								{transaction.serviceType ? (
 									<Tooltip title={transaction.serviceType.name} trigger="hover">
 										{transaction.serviceType?.name
-											? truncate(transaction.serviceType.name, {
-													length: 20,
-													omission: '...',
-											  })
+											? trimText(transaction.serviceType.name, 20)
 											: 'No service yet'}
 									</Tooltip>
 								) : transaction.service ? (
@@ -76,10 +76,7 @@ const TransactionTable = ({
 										trigger="hover"
 										mouseEnterDelay={0.1}>
 										{transaction.service?.name
-											? truncate(transaction.service.name, {
-													length: 20,
-													omission: '...',
-											  })
+											? trimText(transaction.service.name, 20)
 											: 'No service yet'}
 									</Tooltip>
 								) : null}
@@ -117,7 +114,7 @@ const TransactionTable = ({
 									<a
 										className="text-danger"
 										onClick={() => confirmDelete(transaction)}>
-										<i className="os-icon os-icon-ui-15"></i>
+										<i className="os-icon os-icon-ui-15" />
 									</a>
 								</Tooltip>
 
@@ -126,7 +123,7 @@ const TransactionTable = ({
 										<a
 											className="text-danger"
 											onClick={e => handlePrint(e, transaction)}>
-											<i className="os-icon os-icon-printer"></i>
+											<i className="os-icon os-icon-printer" />
 										</a>
 									</Tooltip>
 								) : null}
