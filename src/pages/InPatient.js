@@ -7,6 +7,7 @@ import { toggleProfile } from '../actions/user';
 import { useDispatch } from 'react-redux';
 import { calculateAge, fullname } from '../services/utilities';
 import { socket } from '../services/constants';
+import truncate from 'lodash.truncate';
 
 const InPatient = () => {
 	const [loading, setLoading] = useState(true);
@@ -100,7 +101,13 @@ const InPatient = () => {
 																			queue.appointment.patient.date_of_birth
 																		)} yrs`}</td>
 																		<td>
-																			{queue.appointment.serviceType.name}
+																			{truncate(
+																				queue.appointment.serviceType.name,
+																				{
+																					length: 50,
+																					omission: '...',
+																				}
+																			)}
 																		</td>
 																		<td>
 																			<Tooltip title="View Profile">

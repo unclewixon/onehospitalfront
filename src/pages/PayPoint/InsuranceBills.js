@@ -124,7 +124,7 @@ export class InsuranceBills extends Component {
 		return (
 			<>
 				<div className="row">
-					<div className="col-md-12">
+					<div className="col-md-12 p-4">
 						<h6 className="element-header">Filter by:</h6>
 
 						<form className="row">

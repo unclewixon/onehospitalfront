@@ -144,7 +144,7 @@ const CreateNewTransaction = props => {
 	};
 
 	return (
-		<div className="form-block w-100">
+		<div className="form-block w-100 p-4">
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className="row">
 					<div className="form-group col-sm-6">

@@ -91,13 +91,6 @@ const Vitals = props => {
 	const [target, setTarget] = useState(null);
 	const [loading, setLoading] = useState(false);
 
-	const ref = useRef(null);
-
-	const handleButtonClick = event => {
-		setShow(!show);
-		setTarget(event.target);
-	};
-
 	useEffect(() => {
 		async function doLoadVitals() {
 			const rs = await getData(patient);
@@ -119,12 +112,9 @@ const Vitals = props => {
 		return res;
 	}
 
-	const addToQueue = async dept => {
+	const sendToDoctor = async () => {
 		setLoading(true);
-		const data = {
-			patient_id: patient?.id,
-			department_id: dept?.id,
-		};
+		const data = { patient_id: patient?.id };
 		const res = await request(
 			`front-desk/queue-system/add`,
 			'POST',
@@ -132,11 +122,11 @@ const Vitals = props => {
 			data
 		);
 		if (res) {
-			notifySuccess(`Successfully added queue to ${dept.name} `);
+			notifySuccess(`Patient has been queued to see the doctor `);
 			setLoading(false);
 			return;
 		}
-		notifyError(`Could not add to ${dept.name} queue`);
+		notifyError(`Could not add patient queue`);
 		setLoading(false);
 		return;
 	};
@@ -162,52 +152,10 @@ const Vitals = props => {
 					<Page type={type} />
 				</div>
 				<div className="element-wrapper">
-					<div className="element-actions" ref={ref}>
-						<Overlay
-							show={show}
-							target={target}
-							placement="top"
-							container={ref.current}>
-							<Popover id="vitals-send" style={{ width: '10rem' }}>
-								<Popover.Title>Select Department</Popover.Title>
-								{loading ? (
-									<img
-										src={waiting}
-										alt="submitting"
-										style={{ textAlign: 'center' }}
-									/>
-								) : departments && departments.length ? (
-									departments.map((dept, index) => {
-										const name = dept.name;
-										return (
-											<div action key={index}>
-												{
-													<button
-														style={{
-															border: 'none',
-															background: '#fff',
-															width: '100%',
-															textAlign: 'center',
-															paddingTop: '0.5rem',
-															paddingBottom: '0.5rem',
-														}}
-														onClick={() => addToQueue(dept)}>
-														{name.toUpperCase()}
-													</button>
-												}
-											</div>
-										);
-									})
-								) : (
-									[]
-								)}
-							</Popover>
-						</Overlay>
-						<Button
-							className="btn btn-primary btn-sm"
-							onClick={handleButtonClick}>
+					<div className="element-actions">
+						<Button className="btn btn-primary btn-sm" onClick={sendToDoctor}>
 							<i className="os-icon os-icon-mail-18"></i>
-							<span>Send To</span>
+							<span>Send To Doctor</span>
 						</Button>
 					</div>
 				</div>

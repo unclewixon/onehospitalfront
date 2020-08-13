@@ -48,81 +48,75 @@ export class Voucher extends Component {
 		const page = location.pathname.split('/').pop();
 		return (
 			<>
-				<div className="row">
-					<div className="col-sm-12">
-						<div className="element-wrapper">
-							<div className="element-actions">
-								<button
-									className="btn btn-primary"
-									onClick={() => this.props.createVoucher(true)}>
-									New Voucher
-								</button>
-							</div>
-							<h6 className="element-header">Voucher</h6>
-							<div className="element-box-content">
-								<div className="table table-responsive">
-									<table className="table table-striped">
-										<thead>
-											<tr>
-												<th className="text-center">Patient</th>
-												<th className="text-center">Voucher Number</th>
-												<th className="text-center">Amount (₦)</th>
-												<th className="text-center">Date Created</th>
-												<th className="text-center">Actions</th>
-											</tr>
-										</thead>
-										<tbody>
-											{loading ? (
-												<tr>
-													<td colSpan="5" className="text-center">
-														<img alt="searching" src={searchingGIF} />
+				<div className="element-wrapper">
+					<div className="element-actions p-3">
+						<button
+							className="btn btn-primary"
+							onClick={() => this.props.createVoucher(true)}>
+							New Voucher
+						</button>
+					</div>
+					<h6 className="element-header p-3">Voucher</h6>
+					<div className="element-box-content">
+						<div className="table table-responsive">
+							<table className="table table-striped">
+								<thead>
+									<tr>
+										<th className="text-center">Patient</th>
+										<th className="text-center">Voucher Number</th>
+										<th className="text-center">Amount (₦)</th>
+										<th className="text-center">Date Created</th>
+										<th className="text-center">Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									{loading ? (
+										<tr>
+											<td colSpan="5" className="text-center">
+												<img alt="searching" src={searchingGIF} />
+											</td>
+										</tr>
+									) : voucher.length > 0 ? (
+										voucher.map((voucher, i) => {
+											return (
+												<tr key={i}>
+													<td className="text-center">
+														{voucher.patient_name}
+													</td>
+													<td className="text-center">{voucher.voucher_no}</td>
+													<td className="text-center">{voucher.amount}</td>
+													<td className="text-center">
+														{moment(voucher.q_createdAt).format('DD-MM-YY')}
+													</td>
+													<td className="text-center row-actions">
+														<Tooltip title="Receive Request">
+															<a className="secondary">
+																<i className="os-icon os-icon-folder-plus" />
+															</a>
+														</Tooltip>
+														<Tooltip title="Edit Request">
+															<a className="secondary">
+																<i className="os-icon os-icon-edit-32" />
+															</a>
+														</Tooltip>
+														<Tooltip title="Delete Request">
+															<a className="danger">
+																<i className="os-icon os-icon-ui-15" />
+															</a>
+														</Tooltip>
 													</td>
 												</tr>
-											) : voucher.length > 0 ? (
-												voucher.map((voucher, i) => {
-													return (
-														<tr key={i}>
-															<td className="text-center">
-																{voucher.patient_name}
-															</td>
-															<td className="text-center">
-																{voucher.voucher_no}
-															</td>
-															<td className="text-center">{voucher.amount}</td>
-															<td className="text-center">
-																{moment(voucher.q_createdAt).format('DD-MM-YY')}
-															</td>
-															<td className="text-center row-actions">
-																<Tooltip title="Receive Request">
-																	<a className="secondary">
-																		<i className="os-icon os-icon-folder-plus" />
-																	</a>
-																</Tooltip>
-																<Tooltip title="Edit Request">
-																	<a className="secondary">
-																		<i className="os-icon os-icon-edit-32" />
-																	</a>
-																</Tooltip>
-																<Tooltip title="Delete Request">
-																	<a className="danger">
-																		<i className="os-icon os-icon-ui-15" />
-																	</a>
-																</Tooltip>
-															</td>
-														</tr>
-													);
-												})
-											) : (
-												<tr className="text-center">
-													<td colSpan="5">No voucher for today yet</td>
-												</tr>
-											)}
-										</tbody>
-									</table>
+											);
+										})
+									) : (
+										<tr className="text-center">
+											<td colSpan="5">No voucher for today yet</td>
+										</tr>
+									)}
+								</tbody>
+							</table>
 
-									{/*<VoucherTable data={voucher} />*/}
-								</div>
-							</div>
+							{/*<VoucherTable data={voucher} />*/}
 						</div>
 					</div>
 				</div>

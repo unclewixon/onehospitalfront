@@ -1,21 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component, useEffect, useState } from 'react';
+import React from 'react';
 
-import { API_URI, socket, transactionsAPI } from '../../services/constants';
-import { request, formatNumber, confirmAction } from '../../services/utilities';
+import { formatNumber, confirmAction } from '../../services/utilities';
 
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import {
-	loadTodayTransaction,
-	deleteTransaction,
-} from '../../actions/transaction';
+import { deleteTransaction } from '../../actions/transaction';
 import Tooltip from 'antd/lib/tooltip';
 import { applyVoucher, approveTransaction } from '../../actions/general';
 import { notifyError, notifySuccess } from '../../services/notify';
-import { CartesianGrid, Legend, Line, LineChart, XAxis, YAxis } from 'recharts';
-import Reading from '../Patient/Reading';
 import truncate from 'lodash.truncate';
 
 const TransactionTable = ({
