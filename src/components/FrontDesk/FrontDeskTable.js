@@ -1,19 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Tooltip from 'antd/lib/tooltip';
-
-import {
-	editInventory,
-	updateQuantity,
-	viewAppointmentDetail,
-} from '../../actions/general';
-import { formatCurrency, fullname, request } from '../../services/utilities';
-import BootstrapTable from 'react-bootstrap-table-next';
+import { viewAppointmentDetail } from '../../actions/general';
+import { fullname, request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
-import { API_URI } from '../../services/constants';
-import { notifyError, notifySuccess } from '../../services/notify';
 import { toggleProfile } from '../../actions/user';
 
 class FrontDeskTable extends Component {

@@ -19,8 +19,8 @@ const AppointmentTable = ({
 		toggleProfile(true, info);
 	};
 
-	const doOpenEncounter = appointment => {
-		openEncounter(true, appointment.id);
+	const doOpenEncounter = (appointmentId, patient) => {
+		openEncounter(true, { appointmentId, patient });
 	};
 
 	return (
@@ -82,7 +82,9 @@ const AppointmentTable = ({
 									<Tooltip title="Start Consultation">
 										<a
 											href="javascript:;"
-											onClick={() => doOpenEncounter(appointment)}>
+											onClick={() =>
+												doOpenEncounter(appointment.id, appointment?.patient)
+											}>
 											<i className="os-icon os-icon-edit-1" />
 										</a>
 									</Tooltip>

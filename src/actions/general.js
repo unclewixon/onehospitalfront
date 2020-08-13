@@ -306,11 +306,11 @@ export const toggleEditService = (status, data) => {
 };
 
 // patient
-export const toggleOpenEncounter = (status, id) => {
+export const toggleOpenEncounter = (status, payload) => {
 	return {
 		type: TOGGLE_OPEN_ENCOUNTER,
-		payload: status,
-		id,
+		payload,
+		status,
 	};
 };
 
@@ -672,11 +672,11 @@ export const createRecordVital = action => {
 	};
 };
 
-export const openEncounter = (action, id) => {
+export const openEncounter = (action, payload) => {
 	return dispatch => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
-		dispatch(toggleOpenEncounter(action, id));
+		dispatch(toggleOpenEncounter(action, payload));
 	};
 };
 

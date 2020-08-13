@@ -82,7 +82,7 @@ const INITIAL_STATE = {
 	create_clinical_task: false,
 	edit_service: { status: false, data: null },
 	openEncounter: false,
-	encounterId: null,
+	encounterInfo: { appointmentId: null, patient: null },
 	antenatal_detail: false,
 	antenatal_id: null,
 	immunization_detail: false,
@@ -184,8 +184,8 @@ const general = (state = INITIAL_STATE, action) => {
 		case TOGGLE_OPEN_ENCOUNTER:
 			return {
 				...state,
-				openEncounter: action.payload,
-				encounterId: action.id,
+				openEncounter: action.status,
+				encounterInfo: action.payload,
 			};
 
 		case TOGGLE_ADD_CAFETERIA_FILE:

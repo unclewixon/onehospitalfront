@@ -104,7 +104,7 @@ const OpenEncounter = props => {
 		ReactDOM.findDOMNode(theDiv.current).focus();
 	}
 
-	const { patient } = props;
+	const { patient } = props.encounterInfo;
 	const { eIndex, dropdown } = state;
 	const current = encounters[eIndex];
 
@@ -234,11 +234,9 @@ const OpenEncounter = props => {
 };
 
 const mapStateToProps = (state, ownProps) => {
-	console.log(state.patient.encounterData);
 	return {
 		encounterData: state.patient.encounterData,
-		encounterId: state.general.encounterId,
-		patient: state.user.patient,
+		encounterInfo: state.general.encounterInfo,
 	};
 };
 
