@@ -6,7 +6,7 @@ import moment from 'moment';
 import background from '../assets/images/b3.jpeg';
 import profilepix from '../assets/images/a6.jpeg';
 
-import { confirmAction } from '../services/utilities';
+// import { confirmAction } from '../services/utilities';
 
 const ProfileBlock = ({
 	location,
@@ -14,19 +14,19 @@ const ProfileBlock = ({
 
 	profile,
 }) => {
-	const [dropdown, setDropdown] = useState(false);
+	// const [dropdown, setDropdown] = useState(false);
 	const history = useHistory();
 
-	const toggleDropdown = () => {
-		setDropdown(!dropdown);
-	};
+	// const toggleDropdown = () => {
+	// 	setDropdown(!dropdown);
+	// };
 
 	const goToStartAdmission = () => {
 		history.push(`${location.pathname}#start-admission`);
 	};
-	const confirmStartAdmission = () => {
-		confirmAction(goToStartAdmission, '', 'You want to start admission');
-	};
+	// const confirmStartAdmission = () => {
+	// 	confirmAction(goToStartAdmission, '', 'You want to start admission');
+	// };
 	return (
 		<div
 			className="card-header bg-dark bg-img p-0 no-border"
@@ -44,19 +44,19 @@ const ProfileBlock = ({
 								</span>
 							</Link>
 							<div className="mx-3" style={{ width: '100%' }}>
-								<h5 className="mt-2">{`${patient.surname} ${patient.other_names}`}</h5>
+								<h5 className="mt-2">{`${patient?.surname} ${patient?.other_names}`}</h5>
 								<div className="row">
 									<div className="col-md-6">
 										<div className="text-fade text-sm">
 											<span className="m-r">
-												<strong>Sex:</strong> {patient.gender}
+												<strong>Sex:</strong> {patient?.gender}
 											</span>
 										</div>
 										<div className="text-fade text-sm">
 											<span className="m-r">
-												<strong>Date of Birth:</strong> {patient.date_of_birth}{' '}
+												<strong>Date of Birth:</strong> {patient?.date_of_birth}{' '}
 												(
-												{moment(patient.date_of_birth, 'DD/MM/YYYY')
+												{moment(patient?.date_of_birth, 'DD/MM/YYYY')
 													.month(0)
 													.from(moment().month(0), true)}
 												)
@@ -67,7 +67,7 @@ const ProfileBlock = ({
 										<div className="text-fade text-sm">
 											<span className="m-r">
 												<strong>Insurance Status:</strong>{' '}
-												{patient.insurranceStatus}
+												{patient?.insurranceStatus}
 											</span>
 										</div>
 									</div>
@@ -75,7 +75,26 @@ const ProfileBlock = ({
 							</div>
 						</div>
 					</div>
-					{profile && (
+					<div className="align-items-center d-flex p-4">
+						<div className="m-2">
+							<Link
+								className="btn btn-primary btn-sm"
+								to={`${location.pathname}#edit-profile`}>
+								<i className="os-icon os-icon-edit"></i>
+								<span className=" ml-2">Edit Profile</span>
+							</Link>
+						</div>
+						<div className="m-2">
+							<Link
+								className="btn btn-success btn-sm"
+								to={`${location.pathname}#upload-document`}>
+								<i className="os-icon os-icon-documents-03"></i>
+								<span className="ml-2">Upload Document</span>
+							</Link>
+						</div>
+					</div>
+
+					{/* {profile && (
 						<div className="align-items-center d-flex p-4">
 							<div className="toolbar">
 								<a
@@ -109,6 +128,7 @@ const ProfileBlock = ({
 											style={{ color: '#fff' }}></circle>
 									</svg>
 								</a>
+								
 								<div
 									className="dropdown-menu dropdown-menu-right bg-black"
 									role="menu"
@@ -121,14 +141,8 @@ const ProfileBlock = ({
 										display: dropdown ? 'block' : 'none',
 									}}
 									onClick={() => toggleDropdown()}>
-									<Link
-										className="dropdown-item "
-										to={`${location.pathname}#edit-profile`}
-										onClick={() => toggleDropdown()}>
-										<i className="os-icon os-icon-edit"></i>
-										<span className=" ml-2">Edit Profile</span>
-									</Link>
-									<a
+									
+									 <a
 										className="dropdown-item"
 										onClick={() => confirmStartAdmission()}>
 										<i className="os-icon os-icon-plus-circle"></i>
@@ -154,18 +168,12 @@ const ProfileBlock = ({
 										onClick={() => toggleDropdown()}>
 										<i className="os-icon os-icon-plus-circle"></i>
 										<span className="ml-2">Enroll IVF</span>
-									</Link>
-									<Link
-										className="dropdown-item"
-										to={`${location.pathname}#upload-document`}
-										onClick={() => toggleDropdown}>
-										<i className="os-icon os-icon-documents-03"></i>
-										<span className="ml-2">Upload Document</span>
-									</Link>
+									</Link> 
+									
 								</div>
 							</div>
 						</div>
-					)}
+					)} */}
 				</div>
 			</div>
 		</div>

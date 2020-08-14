@@ -39,9 +39,9 @@ export class Appraisal extends Component {
 		setPerformancePeriod(item);
 		//got to create apparaisal
 		if (type === 'self') {
-			history.push(`${location.pathname}#create-appraisal`);
+			history.push(`${location.pathname}/create-appraisal`);
 		} else if (type === 'staff') {
-			history.push(`${location.pathname}#staff-appraisal`);
+			history.push(`${location.pathname}/staff-appraisal`);
 		} else {
 			this.props.lineAppraisal(true);
 		}
@@ -59,7 +59,7 @@ export class Appraisal extends Component {
 						<div className="element-actions">
 							<Link
 								className="btn btn-primary btn-sm text-white"
-								to={`${location.pathname}#create-appraisal`}>
+								to={`${location.pathname}/create-appraisal`}>
 								<i className="os-icon os-icon-ui-22" />
 								<span>Create Appraisal</span>
 							</Link>

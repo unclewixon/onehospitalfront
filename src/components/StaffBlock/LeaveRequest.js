@@ -6,7 +6,6 @@ import { request } from '../../services/utilities';
 import { loadStaffLeave } from '../../actions/hr';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
-
 import Tooltip from 'antd/lib/tooltip';
 import ModalLeaveRequest from './../Modals/ModalLeaveRequest';
 import ModalEditLeave from '../Modals/ModalEditLeave';
@@ -79,7 +78,7 @@ const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 					<div className="element-actions">
 						<Link
 							className="btn btn-primary btn-sm text-white"
-							to={`${location.pathname}#create-leave`}>
+							to={`${location.pathname}/create-leave`}>
 							<i className="os-icon os-icon-ui-22" />
 							<span>Apply for leave</span>
 						</Link>
@@ -137,7 +136,7 @@ const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 								<tbody>
 									{searching ? (
 										<tr>
-											<td>
+											<td colSpan="6">
 												<img src={searchingGIF} alt="searching" />
 											</td>
 										</tr>
@@ -205,9 +204,11 @@ const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 											);
 										})
 									) : (
-										<div>
-											<p>'There are no available leave applications'</p>
-										</div>
+										<tr>
+											<td colSpan="6">
+												'There are no available leave applications'
+											</td>
+										</tr>
 									)}
 								</tbody>
 							</table>

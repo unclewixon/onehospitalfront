@@ -3,10 +3,11 @@ import { useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { updateStaff } from '../../../actions/hr';
+import waitingGif from '../../../assets/images/waiting.gif';
 
 const EditProfile = ({ staff }) => {
 	const countries = useSelector(({ utility }) => utility.countries);
-	const { register, handleSubmit, errors, watch, setValue } = useForm({
+	const { register, handleSubmit, watch, setValue } = useForm({
 		defaultValues: {
 			first_name: staff?.details?.first_name,
 			last_name: staff?.details?.last_name,
@@ -341,8 +342,11 @@ const EditProfile = ({ staff }) => {
 							</div>
 						</fieldset>
 						<button class="btn btn-primary" type="submit">
-							{' '}
-							Update{' '}
+							{submitting ? (
+								<img src={`url(${waitingGif})`} alt="waiting" />
+							) : (
+								'Update'
+							)}
 						</button>
 					</form>
 				</div>
