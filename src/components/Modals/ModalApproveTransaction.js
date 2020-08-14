@@ -241,7 +241,10 @@ class ModalApproveTransaction extends Component {
 									</div>
 
 									<div className="form-buttons-w text-right">
-										<button className="btn btn-secondary ml-3" type="button">
+										<button
+											className="btn btn-secondary ml-3"
+											type="button"
+											onClick={() => this.props.closeModals(false)}>
 											Cancel
 										</button>
 										<button
