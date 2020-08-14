@@ -1,30 +1,18 @@
-import React, { Component, lazy, Suspense } from 'react';
-import Splash from '../../components/Splash';
-import {
-	API_URI,
-	IVFEnroll,
-	IVFHCGAdmin,
-	patientAPI,
-} from '../../services/constants';
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React, { Component } from 'react';
+import { patientAPI } from '../../services/constants';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import {
-	renderSelect,
-	renderTextArea,
-	renderTextInput,
-	request,
-} from '../../services/utilities';
+import { request } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import cellEditFactory from 'react-bootstrap-table2-editor';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { Type } from 'react-bootstrap-table2-editor';
-import { Field, reduxForm } from 'redux-form';
-import moment from 'moment';
+import { reduxForm } from 'redux-form';
+
 import Tooltip from 'antd/lib/tooltip';
 import searchingGIF from '../../assets/images/searching.gif';
-import inventory from '../../reducers/inventory';
-import { useHistory } from 'react-router-dom';
 
 class HcgAdminTable extends Component {
 	state = {
@@ -41,7 +29,7 @@ class HcgAdminTable extends Component {
 	loadPatients = async () => {
 		try {
 			this.setState({ loading: true });
-			// console.log(`${API_URI}/patientAPI}/list`);
+			// console.log(`patientAPI}/list`);
 			const rs = await request(`${patientAPI}/list`, 'GET', true);
 
 			let patientList = [];
@@ -117,7 +105,7 @@ class HcgAdminTable extends Component {
 		});
 
 		try {
-			const rs = await request(`IVFHCGAdmin}`, 'POST', true, hcgAdmin);
+			await request('IVFHCGAdmin', 'POST', true, hcgAdmin);
 			//props.closeModals(true);
 			notifySuccess('HCG Administration created successfully');
 			history.push('/ivf/hcg-admin');

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError, reset } from 'redux-form';
 
 import { renderTextInput, request } from '../services/utilities';
-import { API_URI, rolesAPI } from '../services/constants';
+import { rolesAPI } from '../services/constants';
 import { notifySuccess } from '../services/notify';
 import waiting from '../assets/images/waiting.gif';
 import { updateRole } from '../actions/role';

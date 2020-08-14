@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import CreateInvCategory from '../components/CreateInvCategory';
 import EditInvCategory from '../components/EditInvCategory';
 import { request } from '../services/utilities';
-import { API_URI, inventoryCatAPI } from '../services/constants';
+import { inventoryCatAPI } from '../services/constants';
 import { loadInvCategories } from '../actions/inventory';
 import InvCategoryItem from './InvCategoryItem';
 

@@ -6,7 +6,7 @@ import Tooltip from 'antd/lib/tooltip';
 import { createStaff } from '../actions/general';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
-import { fullname, upload } from '../services/utilities';
+import { fullname } from '../services/utilities';
 import { Image } from 'react-bootstrap';
 import placeholder from '../assets/images/placeholder.jpg';
 import capitalize from 'lodash.capitalize';
@@ -127,7 +127,7 @@ class StaffItem extends Component {
 				formData.append('file', files);
 				formData.append('document_type', 'Performance Indicators');
 				// const rs = await upload(
-				// 	`${API_URI}/patientAPI}` +
+				// 	`patientAPI}` +
 				// 		'/' +
 				// 		patient.id +
 				// 		'/upload-request-document',

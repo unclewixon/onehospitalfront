@@ -8,7 +8,7 @@ import {
 	delete_service_category,
 } from '../actions/settings';
 import { confirmAction, request } from '../services/utilities';
-import { API_URI } from '../services/constants';
+
 import { notifySuccess, notifyError } from '../services/notify';
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
@@ -39,12 +39,7 @@ const ServiceCategoryList = props => {
 			name,
 		};
 		try {
-			const rs = await request(
-				`${API_URI}/services/categories`,
-				'POST',
-				true,
-				data
-			);
+			const rs = await request(`services/categories`, 'POST', true, data);
 			props.add_service_category(rs);
 			setLoading(false);
 			setState({ ...initialState });
@@ -64,7 +59,7 @@ const ServiceCategoryList = props => {
 		};
 		try {
 			const rs = await request(
-				`${API_URI}/services/categories/${payload.id}/update`,
+				`services/categories/${payload.id}/update`,
 				'PATCH',
 				true,
 				data
@@ -99,11 +94,7 @@ const ServiceCategoryList = props => {
 
 	const onDeleteServiceCategory = async data => {
 		try {
-			await request(
-				`${API_URI}/services/categories/${data.id}`,
-				'DELETE',
-				true
-			);
+			await request(`services/categories/${data.id}`, 'DELETE', true);
 			props.delete_service_category(data);
 			setLoading(false);
 			notifySuccess('Service category deleted');

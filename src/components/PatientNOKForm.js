@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form';
 import { patientNOKSchema } from '../services/validationSchemas';
 import Select from 'react-select';
 import {
-	API_URI,
 	ethnicities,
 	gender,
 	maritalStatus,

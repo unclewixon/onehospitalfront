@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { uploadHmoTariff, uploadHmo } from '../actions/general';
 import { notifyError } from '../services/notify';
-import { API_URI, hmoAPI } from '../services/constants';
+import { hmoAPI } from '../services/constants';
 import searchingGIF from '../assets/images/searching.gif';
 import { getAllHmos, fetchHmoTariff } from '../actions/hmo';
 

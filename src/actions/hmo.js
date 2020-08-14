@@ -79,7 +79,7 @@ export const addHmo = data => {
 export const getAllHmos = data => {
 	return async dispatch => {
 		try {
-			const rs = await request(`${hmoAPI}`, 'GET', true);
+			const rs = await request(hmoAPI, 'GET', true);
 			console.log(rs, 'get All hmo');
 			dispatch(fetch_all_hmos_data(rs));
 			return { success: true };

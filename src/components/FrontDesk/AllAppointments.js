@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
-import waiting from '../../assets/images/waiting.gif';
-import TransactionTable from '../../components/Tables/TransactionTable';
-import { request } from '../../services/utilities';
-import { API_URI, socket, transactionsAPI } from '../../services/constants';
 import moment from 'moment';
+import DatePicker from 'antd/lib/date-picker';
 import { connect } from 'react-redux';
+
+import waiting from '../../assets/images/waiting.gif';
+import { request } from '../../services/utilities';
 import {
 	applyVoucher,
 	approveTransaction,
 	viewAppointmentDetail,
 } from '../../actions/general';
 import { deleteTransaction, loadTransaction } from '../../actions/transaction';
-import DatePicker from 'antd/lib/date-picker';
 import FrontDeskTable from './FrontDeskTable';
 
 const { RangePicker } = DatePicker;

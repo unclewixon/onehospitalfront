@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { request, confirmAction } from '../services/utilities';
-import { API_URI } from '../services/constants';
+
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';

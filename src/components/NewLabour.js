@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import {
-	API_URI,
 	patientAPI,
 	searchAPI,
 	bloodGroup,

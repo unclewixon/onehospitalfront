@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import PayPointItem from './PayPointItem';
 import moment from 'moment';
 import { request } from '../services/utilities';
-import { API_URI, transactionsAPI } from '../services/constants';
+import { transactionsAPI } from '../services/constants';
 
 class PayPoint extends Component {
 	state = {

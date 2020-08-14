@@ -1,11 +1,12 @@
-import React, { Component, useState, useEffect } from 'react';
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React, { useState, useEffect } from 'react';
 
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
-import { confirmAction, request } from '../services/utilities';
+import { confirmAction } from '../services/utilities';
 import {
 	getAllCafeteriaInvCategory,
 	addCafeteriaInventory,
@@ -14,7 +15,7 @@ import {
 	deleteCafeteriaInventory,
 } from '../actions/inventory';
 import { createAccount, editAccount } from '../actions/general';
-import { API_URI } from '../services/constants';
+
 const ManageAccount = props => {
 	const initialState = {
 		name: '',
@@ -32,14 +33,14 @@ const ManageAccount = props => {
 		{ name, status, category, category_id, code, subCategory, subCategory_id },
 		setState,
 	] = useState(initialState);
-	const [Loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
-	const [data, getDataToEdit] = useState(null);
+	// const [data, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [filtering, setFiltering] = useState(false);
 	const [items, setItems] = useState([]);
-	const [catName, setCatName] = useState('');
+	// const [catName, setCatName] = useState('');
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -49,56 +50,56 @@ const ManageAccount = props => {
 		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onAddCafeteriaInventory = e => {
-		e.preventDefault();
-		setLoading(true);
+	// const onAddCafeteriaInventory = e => {
+	// 	e.preventDefault();
+	// 	setLoading(true);
 
-		// props
-		// 	.addCafeteriaInventory({
-		// 		name,
-		// 		cost_price,
-		// 		category_id,
-		// 		description,
-		// 		quantity,
-		// 		stock_code,
-		// 	})
-		// 	.then(response => {
-		// 		setLoading(false);
-		// 		setState({ ...initialState });
-		// 		notifySuccess('Cafeteria inventory added');
-		// 	})
-		// 	.catch(error => {
-		// 		setLoading(false);
-		// 		notifyError('Error creating cafeteria inventory');
-		// 	});
-	};
+	// 	// props
+	// 	// 	.addCafeteriaInventory({
+	// 	// 		name,
+	// 	// 		cost_price,
+	// 	// 		category_id,
+	// 	// 		description,
+	// 	// 		quantity,
+	// 	// 		stock_code,
+	// 	// 	})
+	// 	// 	.then(response => {
+	// 	// 		setLoading(false);
+	// 	// 		setState({ ...initialState });
+	// 	// 		notifySuccess('Cafeteria inventory added');
+	// 	// 	})
+	// 	// 	.catch(error => {
+	// 	// 		setLoading(false);
+	// 	// 		notifyError('Error creating cafeteria inventory');
+	// 	// 	});
+	// };
 
-	const onEditCafeteriaInventory = e => {
-		setLoading(true);
-		e.preventDefault();
-		// props
-		// 	.updateCafeteriaInventory({
-		// 		id: data.id,
-		// 		name,
-		// 		cost_price,
-		// 		quantity,
-		// 		description,
-		// 		category_id,
-		// 		stock_code,
-		// 	})
-		// 	.then(response => {
-		// 		setState({ ...initialState });
-		// 		setSubmitButton({ save: true, edit: false });
-		// 		setLoading(false);
-		// 		notifySuccess(' Cafeteria inventory updated');
-		// 	})
-		// 	.catch(error => {
-		// 		setState({ ...initialState });
-		// 		setSubmitButton({ save: true, edit: false });
-		// 		setLoading(false);
-		// 		notifyError('Error editing cafeteria inventory');
-		// 	});
-	};
+	// const onEditCafeteriaInventory = e => {
+	// 	setLoading(true);
+	// 	e.preventDefault();
+	// 	// props
+	// 	// 	.updateCafeteriaInventory({
+	// 	// 		id: data.id,
+	// 	// 		name,
+	// 	// 		cost_price,
+	// 	// 		quantity,
+	// 	// 		description,
+	// 	// 		category_id,
+	// 	// 		stock_code,
+	// 	// 	})
+	// 	// 	.then(response => {
+	// 	// 		setState({ ...initialState });
+	// 	// 		setSubmitButton({ save: true, edit: false });
+	// 	// 		setLoading(false);
+	// 	// 		notifySuccess(' Cafeteria inventory updated');
+	// 	// 	})
+	// 	// 	.catch(error => {
+	// 	// 		setState({ ...initialState });
+	// 	// 		setSubmitButton({ save: true, edit: false });
+	// 	// 		setLoading(false);
+	// 	// 		notifyError('Error editing cafeteria inventory');
+	// 	// 	});
+	// };
 
 	const onClickEdit = data => {
 		// setSubmitButton({ edit: true, save: false });
@@ -135,15 +136,16 @@ const ManageAccount = props => {
 		confirmAction(onDeleteCafeteriaInventory, data);
 	};
 
-	const cancelEditButton = () => {
-		setSubmitButton({ save: true, edit: false });
-		setState({ ...initialState });
-	};
+	// const cancelEditButton = () => {
+	// 	setSubmitButton({ save: true, edit: false });
+	// 	setState({ ...initialState });
+	// };
+
 	const doFilter = async () => {
 		// setFiltering(true);
 		// try {
 		// 	const rs = await request(
-		// 		`${API_URI}/cafeteria/inventories-by-category/${category}`
+		// 		`cafeteria/inventories-by-category/${category}`
 		// 	);
 		// 	console.log(rs);
 		// 	let cat = props.cafeteriaInvCategory.find(el => el.id === category);
@@ -530,7 +532,7 @@ const ManageAccount = props => {
 																	? 'btn btn-primary disabled'
 																	: 'btn btn-primary'
 															}>
-															{Loading ? (
+															{loading ? (
 																<img src={waiting} alt="submitting" />
 															) : (
 																<span> edit</span>

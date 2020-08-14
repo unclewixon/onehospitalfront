@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import { request, confirmAction } from '../services/utilities';
-import { API_URI } from '../services/constants';
 import {
 	loadDepartments,
 	deleteDepartment,

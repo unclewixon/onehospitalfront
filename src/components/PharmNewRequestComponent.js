@@ -13,11 +13,11 @@ import { notifySuccess, notifyError } from './../services/notify';
 import PharmNewRequestViewModal from './PharmNewRequestViewModal';
 import { addPharmacyRequest } from '../actions/patient';
 import { connect } from 'react-redux';
-import { API_URI, diagnosisAPI } from '../services/constants';
+import { diagnosisAPI } from '../services/constants';
 import { request } from '../services/utilities';
 import AsyncSelect from 'react-select/async';
 import { loadInvCategories, loadInventories } from '../actions/inventory';
-import { Label } from 'recharts';
+
 import _ from 'lodash';
 
 const defaultValues = {
@@ -73,11 +73,7 @@ const PharmNewRequestComponent = ({
 			return [];
 		}
 		let val = inputValue.toUpperCase();
-		const res = await request(
-			`${API_URI}${diagnosisAPI}/search?q=${val}`,
-			'GET',
-			true
-		);
+		const res = await request(`${diagnosisAPI}/search?q=${val}`, 'GET', true);
 		return res;
 	};
 
@@ -94,7 +90,7 @@ const PharmNewRequestComponent = ({
 		async id => {
 			try {
 				const res = await request(
-					`${API_URI}/inventory/stocks-by-category/${id}`,
+					`inventory/stocks-by-category/${id}`,
 					'GET',
 					true
 				);
@@ -112,7 +108,7 @@ const PharmNewRequestComponent = ({
 			const selectCat = categories.filter(cat => cat.name === 'Pharmacy');
 			getPharmacyItems(selectCat[0].id);
 		}
-	}, [getServiceUnit, getPharmacyItems]);
+	}, []);
 
 	const serviceOptions =
 		categories && categories.length

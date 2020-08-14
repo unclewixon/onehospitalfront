@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 
-import { API_URI, socket, transactionsAPI } from '../services/constants';
+import { socket, transactionsAPI } from '../services/constants';
 import { request, formatNumber, confirmAction } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';

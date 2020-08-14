@@ -4,7 +4,6 @@ import { useHistory, withRouter } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import {
-	API_URI,
 	socket,
 	transactionsAPI,
 	paymentType,

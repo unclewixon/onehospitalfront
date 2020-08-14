@@ -8,7 +8,7 @@ import size from 'lodash.size';
 
 import searchingGIF from '../assets/images/searching.gif';
 import { request } from '../services/utilities';
-import { API_URI, searchAPI } from '../services/constants';
+import { searchAPI } from '../services/constants';
 import { toggleProfile } from '../actions/user';
 
 // const compiled = template('<span><%= emrid %></span>');

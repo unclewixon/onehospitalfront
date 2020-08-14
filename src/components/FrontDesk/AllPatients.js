@@ -1,6 +1,7 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import { request } from '../../services/utilities';
-import { API_URI } from '../../services/constants';
+
 import { loadAllPatients } from '../../actions/patient';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
@@ -8,9 +9,8 @@ import Tooltip from 'antd/lib/tooltip';
 import { connect, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import waiting from '../../assets/images/waiting.gif';
-import moment from 'moment';
+
 import DatePicker from 'antd/lib/date-picker';
-import _ from 'lodash';
 import ModalPatientDetails from '../../components/Modals/ModalPatientDetails';
 import Select from 'react-select';
 import { toggleProfile } from '../../actions/user';
@@ -32,16 +32,16 @@ const AllPatients = ({ allPatients }) => {
 	const [activeRequest, setActiveRequest] = useState(null);
 	const [showModal, setShowModal] = useState(false);
 	const [filtering, setFiltering] = useState(false);
-	const [patientName, setPatientName] = useState('');
+	// const [patientName, setPatientName] = useState('');
 
 	const onModalClick = () => {
 		setShowModal(!showModal);
 	};
 
 	const dateChange = e => {
-		let date = e.map(d => {
-			return moment(d._d).format('YYYY-MM-DD');
-		});
+		// let date = e.map(d => {
+		// 	return moment(d._d).format('YYYY-MM-DD');
+		// });
 	};
 
 	const showProfile = patient => {

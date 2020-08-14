@@ -1,4 +1,3 @@
-import { API_URI } from '../services/constants';
 import {
 	NEXT_STEP,
 	PREV_STEP,
@@ -444,8 +443,8 @@ export const getRequestByType = (patientId, type, start, end) => {
 		return new Promise((resolve, reject) => {
 			request(
 				patientId
-					? `${API_URI}/patient/${patientId}/request/${type}?startDate=${start}&endDate=${end}`
-					: `${API_URI}/patient/requests/${type}?startDate=${start}&endDate=${end}`,
+					? `patient/${patientId}/request/${type}?startDate=${start}&endDate=${end}`
+					: `patient/requests/${type}?startDate=${start}&endDate=${end}`,
 				'GET',
 				true
 			)

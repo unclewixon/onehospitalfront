@@ -17,7 +17,6 @@ import {
 } from '../actions/inventory';
 import { addCafeteriaFile } from '../actions/general';
 
-import { API_URI } from '../services/constants';
 const CafeteriaInventory = props => {
 	const initialState = {
 		name: '',

@@ -1,14 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
-import { request } from '../../services/utilities';
-import { viewAppointmentDetail } from '../../actions/general.js';
-import { API_URI, socket } from '../../services/constants';
-import searchingGIF from '../../assets/images/searching.gif';
-import { notifyError, notifyInfo } from '../../services/notify';
-import moment from 'moment';
 import { connect } from 'react-redux';
-import { toggleProfile } from '../../actions/user';
-import FrontDesk from '../../pages/FrontDesk';
+
+import { request } from '../../services/utilities';
+import { socket } from '../../services/constants';
+import { notifyError } from '../../services/notify';
+import moment from 'moment';
 import FrontDeskTable from './FrontDeskTable';
 
 const Appointment = props => {

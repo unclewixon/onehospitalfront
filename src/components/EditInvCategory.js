@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError, reset } from 'redux-form';
 
 import { renderTextInput, request } from '../services/utilities';
-import { API_URI, inventoryCatAPI } from '../services/constants';
+import { inventoryCatAPI } from '../services/constants';
 import { notifySuccess } from '../services/notify';
 import waiting from '../assets/images/waiting.gif';
 import { updateInvCategory } from '../actions/inventory';

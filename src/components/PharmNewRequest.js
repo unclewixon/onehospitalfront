@@ -2,16 +2,15 @@ import React, { useEffect, useState } from 'react';
 import PharmNewRequestComponent from './PharmNewRequestComponent';
 import { getAllServiceCategory, get_all_services } from '../actions/settings';
 import { connect } from 'react-redux';
-import { API_URI, serviceAPI } from '../services/constants';
+
 import { request } from '../services/utilities';
-import { notifyError } from './../services/notify';
 
 const PharmNewRequest = props => {
 	const [allPatients, setAllPatients] = useState([]);
 	const [patientsLoading, setPatientsLoading] = useState(false);
 	const [loaded, setLoaded] = useState(false);
 	const [servicesCategory, setServicesCategory] = useState([]);
-	const [services, setServices] = useState('');
+	// const [services, setServices] = useState('');
 
 	useEffect(() => {
 		const { getAllServiceCategory } = props;
@@ -29,7 +28,7 @@ const PharmNewRequest = props => {
 			services = [...services, res];
 		});
 		setServicesCategory(data);
-		setServices(services);
+		// setServices(services);
 		setLoaded(true);
 	}, [props, loaded]);
 

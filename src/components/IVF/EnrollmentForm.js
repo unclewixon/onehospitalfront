@@ -1,14 +1,9 @@
 import React, { Component, lazy, Suspense } from 'react';
-import Splash from '../../components/Splash';
-import { API_URI, patientAPI } from '../../services/constants';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-
-import { request } from '../../services/utilities';
-import { notifySuccess, notifyError } from '../../services/notify';
-
 import { reduxForm } from 'redux-form';
-import moment from 'moment';
+
+import Splash from '../../components/Splash';
 
 const WifeLab = lazy(() => import('./WifeLab'));
 const HusbandLab = lazy(() => import('./HusbandLab'));
@@ -57,7 +52,7 @@ class EnrollmentForm extends Component {
 	};
 
 	render() {
-		const { page, submitting } = this.state;
+		const { page } = this.state;
 		return (
 			<div className="element-box">
 				<Suspense fallback={<Splash />}>

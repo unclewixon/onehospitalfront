@@ -11,7 +11,6 @@ import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import { request, confirmAction } from '../services/utilities';
-import { API_URI } from '../services/constants';
 
 class Permission extends Component {
 	state = {
@@ -102,12 +101,7 @@ class Permission extends Component {
 
 	DeletePermission = async data => {
 		try {
-			const rs = await request(
-				`settings/permissions/${data.id}`,
-				'DELETE',
-				true,
-				data
-			);
+			await request(`settings/permissions/${data.id}`, 'DELETE', true, data);
 			this.props.delete_permission(data);
 			this.setState({ name: '', create: true, edit: false, loading: false });
 			notifySuccess('permission deleted!');
@@ -123,7 +117,7 @@ class Permission extends Component {
 	};
 
 	render() {
-		let { name, edit, create, loading, loaded } = this.state;
+		let { name, edit, create, loading } = this.state;
 		let { Permissions } = this.props;
 		return (
 			<div className="row">

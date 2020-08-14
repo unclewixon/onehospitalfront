@@ -18,7 +18,6 @@ import {
 } from '../actions/inventory';
 import { addCafeteriaFile } from '../actions/general';
 import { v4 as uuidv4 } from 'uuid';
-import { API_URI } from '../services/constants';
 
 const CafeteriaItems = props => {
 	const initialState = {

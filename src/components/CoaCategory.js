@@ -14,7 +14,6 @@ import {
 	deleteCafeteriaInventory,
 } from '../actions/inventory';
 
-import { API_URI } from '../services/constants';
 const CoaCategory = props => {
 	const initialState = {
 		name: '',
@@ -134,7 +133,7 @@ const CoaCategory = props => {
 		// setFiltering(true);
 		// try {
 		// 	const rs = await request(
-		// 		`${API_URI}/cafeteria/inventories-by-category/${category}`
+		// 		`cafeteria/inventories-by-category/${category}`
 		// 	);
 		// 	console.log(rs);
 		// 	let cat = props.cafeteriaInvCategory.find(el => el.id === category);
