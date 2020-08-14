@@ -9,7 +9,7 @@ import {
 	renderTextInputGroup,
 	renderSelect,
 } from '../../services/utilities';
-import { API_URI, inventoryAPI } from '../../services/constants';
+import { inventoryAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
 import { addInventory } from '../../actions/inventory';

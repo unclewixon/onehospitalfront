@@ -3,12 +3,7 @@ import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
-import {
-	API_URI,
-	socket,
-	patientAPI,
-	serviceAPI,
-} from '../../services/constants';
+import { socket, patientAPI, serviceAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 

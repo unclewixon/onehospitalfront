@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import AppraisalItem from '../../components/AppraisalItem';
 import { request } from '../../services/utilities';
-import { API_URI, appraisalAPI } from '../../services/constants';
+import { appraisalAPI } from '../../services/constants';
 import { loadAppraisals } from '../../actions/hr';
 import Popover from 'antd/lib/popover';
 import waiting from '../../assets/images/waiting.gif';

@@ -1,20 +1,12 @@
-import React, { Component, lazy, Suspense } from 'react';
-import Splash from '../../components/Splash';
-import { patientAPI } from '../../services/constants';
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import {
-	renderSelect,
-	renderTextArea,
-	renderTextInput,
-	request,
-} from '../../services/utilities';
-import { notifySuccess, notifyError } from '../../services/notify';
+
 import cellEditFactory from 'react-bootstrap-table2-editor';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { Type } from 'react-bootstrap-table2-editor';
-import { Field, reduxForm } from 'redux-form';
 import moment from 'moment';
 import Tooltip from 'antd/lib/tooltip';
 import { loadPatientRegulationTable } from '../../actions/patient';
@@ -31,6 +23,7 @@ class IVFRegulationTable extends Component {
 	deleteRow = (cellContent, row) => {
 		console.log(row);
 		const { products } = this.state;
+		// eslint-disable-next-line array-callback-return
 		products.map((value, i) => {
 			if (value.id === row.id) {
 				products.splice(i, 1);
@@ -57,8 +50,8 @@ class IVFRegulationTable extends Component {
 	};
 
 	render() {
-		let { products, loading } = this.state;
-		let { regulationTable } = this.props;
+		let { products } = this.state;
+		// let { regulationTable } = this.props;
 		const afterSaveCell = (oldValue, newValue, row, column) => {
 			this.props.loadPatientRegulationTable(products);
 		};

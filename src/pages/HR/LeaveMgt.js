@@ -4,7 +4,7 @@ import ModalLeaveRequest from '../../components/Modals/ModalLeaveRequest';
 import LeaveItem from '../../components/LeaveItem';
 import { loadStaffLeave } from '../../actions/hr';
 import { request } from '../../services/utilities';
-import { API_URI, leaveMgtAPI } from '../../services/constants';
+import { leaveMgtAPI } from '../../services/constants';
 import { get_all_leave_category } from '../../actions/settings';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';

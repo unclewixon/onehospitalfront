@@ -1,15 +1,10 @@
 /* eslint-disable no-multi-str */
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { useForm, Controller, ErrorMessage } from 'react-hook-form';
-import {
-	API_URI,
-	serviceAPI,
-	serviceCenter,
-} from '../../../services/constants';
+import { serviceAPI, serviceCenter } from '../../../services/constants';
 import { connect, useDispatch } from 'react-redux';
-import { uploadHmo, uploadHmoTariff } from '../../../actions/general';
-import { fetchHmoTariff, getAllHmos } from '../../../actions/hmo';
+
 import {
 	createLabRequest,
 	loadEncounterData,
@@ -27,7 +22,7 @@ import { notifyError } from '../../../services/notify';
 import { request } from '../../../services/utilities';
 
 const Investigations = props => {
-	const { previous, next, patient, encounterData, encounterForm } = props;
+	const { previous, patient, encounterData, encounterForm } = props;
 	const [labCombos, setLabCombos] = useState(null);
 	const [labTests, setLabTests] = useState(null);
 	const [category, setCategory] = useState('');
@@ -49,11 +44,7 @@ const Investigations = props => {
 	};
 	const fetchServicesByCategory = async id => {
 		try {
-			const rs = await request(
-				`${API_URI}/serviceAPI}` + '/categories/' + id,
-				'GET',
-				true
-			);
+			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
 			props.get_all_services(rs);
 		} catch (error) {
 			notifyError('error fetching imaging requests for the patient');

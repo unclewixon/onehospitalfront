@@ -1,33 +1,21 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from 'react';
-import PatientForm from '../PatientForm';
-import PatientNOKForm from '../PatientNOKForm';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
+import Tooltip from 'antd/lib/tooltip';
 import Popover from 'antd/lib/popover';
-import waiting from '../../assets/images/waiting.gif';
-import { request, upload, uploadFile } from '../../services/utilities';
-import {
-	API_URI,
-	documentType,
-	inventoryDownloadAPI,
-	inventoryUploadAPI,
-	patientAPI,
-} from '../../services/constants';
-import { notifyError, notifySuccess } from '../../services/notify';
 import { connect } from 'react-redux';
 import { SubmissionError } from 'redux-form';
+
+import waiting from '../../assets/images/waiting.gif';
+import { request, upload } from '../../services/utilities';
+import { API_URI, documentType, patientAPI } from '../../services/constants';
+import { notifyError, notifySuccess } from '../../services/notify';
 import {
 	addPatientUploadData,
 	loadPatientUploadData,
 } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
-import { Link, withRouter } from 'react-router-dom';
-import { compose } from 'redux';
-import {
-	get_all_diagnosis,
-	get_all_services,
-	getAllServiceCategory,
-} from '../../actions/settings';
-import Tooltip from 'antd/lib/tooltip';
 
 const UploadPatientData = ({ onHide, uploading, doUpload, documentType }) => {
 	const [theDocumentType, setDocumentType] = useState('');
@@ -134,13 +122,12 @@ const PatientDataUpload = props => {
 		try {
 			setLoading(true);
 			// const rs = await request(
-			// 	`${API_URI}/patientAPI}` + '/download/' + data.document_name,
+			// 	`${patientAPI}/download/${data.document_name}`,
 			// 	'GET',
 			// 	true
 			// );
 			//
-			const url =
-				`${API_URI}/${patientAPI}` + '/download/' + data.document_name;
+			const url = `${API_URI}/${patientAPI}/download/${data.document_name}`;
 			setTimeout(() => {
 				window.open(url, '_blank').focus();
 				setLoading(false);
@@ -156,12 +143,13 @@ const PatientDataUpload = props => {
 	useEffect(() => {
 		listDocuments();
 	}, []);
+
 	const listDocuments = async () => {
 		try {
 			setLoading(true);
 			let patient = props.patient;
 			const rs = await request(
-				`${patientAPI}` + '/' + patient.id + '/documents',
+				`${patientAPI}/${patient.id}/documents`,
 				'GET',
 				true
 			);
@@ -176,13 +164,14 @@ const PatientDataUpload = props => {
 		}
 	};
 
-	const reload = () => {
-		const current = props.location.pathname;
-		this.props.history.replace(`/reload`);
-		setTimeout(() => {
-			this.props.history.replace(current);
-		});
-	};
+	// const reload = () => {
+	// 	const current = props.location.pathname;
+	// 	this.props.history.replace(`/reload`);
+	// 	setTimeout(() => {
+	// 		this.props.history.replace(current);
+	// 	});
+	// };
+
 	const onUpload = async (e, files, documentID) => {
 		let patient = props.patient;
 		e.preventDefault();
@@ -196,8 +185,8 @@ const PatientDataUpload = props => {
 				for (var key of formData.entries()) {
 					console.log(key[0] + ', ' + key[1]);
 				}
-				const rs = await upload(
-					`${API_URI}/${patientAPI}` + '/' + patient.id + '/upload-document',
+				await upload(
+					`${API_URI}/${patientAPI}/${patient.id}/upload-document`,
 					'POST',
 					formData
 				);

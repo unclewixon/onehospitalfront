@@ -8,7 +8,7 @@ import {
 	request,
 } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
-import { API_URI, vitalsAPI } from '../../services/constants';
+import { vitalsAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
 import { updateVitals } from '../../actions/patient';
 

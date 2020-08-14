@@ -7,6 +7,7 @@ import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
 import { request, confirmAction } from '../../services/utilities';
+import { patientAPI } from '../../services/constants';
 import ClinicalLabItem from '../../components/ClinicalLabItem';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
@@ -47,7 +48,7 @@ class AllRequest extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`patientAPI}/requests/lab?startDate=${startDate}&endDate=${endDate}&status=${status}`,
+				`${patientAPI}/requests/lab?startDate=${startDate}&endDate=${endDate}&status=${status}`,
 				'GET',
 				true
 			);

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Select from 'react-select';
 import { connect } from 'react-redux';
-import { useForm } from 'react-hook-form';
+
 import { request } from '../../services/utilities';
-import { API_URI, patientAPI } from '../../services/constants';
+import { patientAPI } from '../../services/constants';
 import { update_allergy } from '../../actions/patient';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
@@ -52,7 +52,7 @@ const UpdateAllergy = props => {
 		setSubmitting(true);
 		try {
 			const rs = await request(
-				`${API_URI}${patientAPI}/${Allergy.id}/update-allergy`,
+				`${patientAPI}/${Allergy.id}/update-allergy`,
 				'PATCH',
 				true,
 				data

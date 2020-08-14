@@ -3,9 +3,7 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 
 import { renderTextInput, request } from '../../services/utilities';
-
 import { closeModals } from '../../actions/general';
-import { API_URI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 

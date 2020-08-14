@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import ClinicalLabItem from '../../components/ClinicalLabItem';
 import { request } from '../../services/utilities';
-import { API_URI, patientAPI } from '../../services/constants';
+import { patientAPI } from '../../services/constants';
 import { loadClinicalLab } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
 import waiting from '../../assets/images/waiting.gif';

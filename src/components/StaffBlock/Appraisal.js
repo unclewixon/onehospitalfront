@@ -5,7 +5,7 @@ import Tooltip from 'antd/lib/tooltip';
 import { connect } from 'react-redux';
 
 import { request } from '../../services/utilities';
-import { API_URI, appraisalAPI } from '../../services/constants';
+import { appraisalAPI } from '../../services/constants';
 import { loadPerformancePeriod, setPerformancePeriod } from '../../actions/hr';
 import { lineAppraisal } from '../../actions/general';
 export class Appraisal extends Component {
@@ -22,11 +22,7 @@ export class Appraisal extends Component {
 	fetchAppraisals = async () => {
 		try {
 			this.setState({ loading: true });
-			const rs = await request(
-				`${API_URI}/${appraisalAPI}/list-periods`,
-				'GET',
-				true
-			);
+			const rs = await request(`${appraisalAPI}/list-periods`, 'GET', true);
 			this.props.loadPerformancePeriod(rs);
 
 			this.setState({ loading: false });
@@ -51,7 +47,7 @@ export class Appraisal extends Component {
 		}
 	};
 	render() {
-		const { location, departments, staff } = this.props;
+		const { location } = this.props;
 		// const deptId = staff.details.department.id;
 		// const department = departments.find(d => d.id === deptId);
 		const { performancePeriods } = this.props;

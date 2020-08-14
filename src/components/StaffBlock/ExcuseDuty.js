@@ -6,7 +6,7 @@ import { request } from '../../services/utilities';
 import { loadStaffLeave } from '../../actions/hr';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
-import { API_URI } from '../../services/constants';
+
 import Tooltip from 'antd/lib/tooltip';
 import ModalExcuseDuty from '../Modals/ModalExcuseDuty';
 import ModalEditExcuse from '../Modals/ModalEditExcuse';
@@ -31,11 +31,7 @@ const ExcuseDuty = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 	const getLeaveRequests = useCallback(async () => {
 		setSearching(true);
 		try {
-			const res = await request(
-				`${API_URI}/hr/leave-management/excuse-duty`,
-				'GET',
-				true
-			);
+			const res = await request(`hr/leave-management/excuse-duty`, 'GET', true);
 			loadStaffLeave(res);
 			setSearching(false);
 			notifySuccess('Successful fetching excuse duties');
@@ -51,11 +47,7 @@ const ExcuseDuty = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 
 	const deleteLeaveRequests = async data => {
 		try {
-			const res = await request(
-				`${API_URI}/hr/leave-management/${data.id}`,
-				'DELETE',
-				true
-			);
+			await request(`hr/leave-management/${data.id}`, 'DELETE', true);
 			notifySuccess('Successful removed leave applications');
 			getLeaveRequests();
 		} catch (error) {

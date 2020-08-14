@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import { request } from '../../services/utilities';
-import { API_URI, patientAPI } from '../../services/constants';
+import { patientAPI } from '../../services/constants';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import Tooltip from 'antd/lib/tooltip';
@@ -30,7 +30,7 @@ class Physiotherapy extends Component {
 		const { patient } = this.props;
 		try {
 			const rs = await request(
-				`${API_URI}/${patientAPI}/${patient.id}/request/physiotherapy?startDate=&endDate=`,
+				`${patientAPI}/${patient.id}/request/physiotherapy?startDate=&endDate=`,
 				'GET',
 				true
 			);
@@ -117,7 +117,7 @@ class Physiotherapy extends Component {
 		});
 
 	render() {
-		const { location, physiotherapies } = this.props;
+		const { location } = this.props;
 		const { loaded } = this.state;
 		return (
 			<div className="col-sm-12">

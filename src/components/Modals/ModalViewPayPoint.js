@@ -7,7 +7,7 @@ import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
 import Tooltip from 'antd/lib/tooltip';
 import { request } from '../../services/utilities';
-import { API_URI, transactionsAPI } from '../../services/constants';
+import { transactionsAPI } from '../../services/constants';
 
 class ModalViewPayPoint extends Component {
 	state = {

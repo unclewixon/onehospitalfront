@@ -1,12 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useCallback, useState, Suspense } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import { request } from '../../services/utilities';
 import { loadStaffLeave } from '../../actions/hr';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
-import { API_URI } from '../../services/constants';
+
 import Tooltip from 'antd/lib/tooltip';
 import ModalLeaveRequest from './../Modals/ModalLeaveRequest';
 import ModalEditLeave from '../Modals/ModalEditLeave';
@@ -52,7 +52,7 @@ const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 	const deleteLeaveRequests = async data => {
 		try {
 			const res = await request(
-				`${API_URI}/hr/leave-management/${data.id}`,
+				`hr/leave-management/${data.id}`,
 				'DELETE',
 				true
 			);

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
-import { API_URI, socket, patientAPI } from '../../services/constants';
+import { patientAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 
@@ -16,14 +16,15 @@ import {
 	getAllRequestServices,
 	getAllServiceCategory,
 } from '../../actions/settings';
+
 const OpthalmologyRequest = props => {
 	let history = useHistory();
 	const { register, handleSubmit, setValue } = useForm();
 	const [submitting, setSubmitting] = useState(false);
 	const [loaded, setLoaded] = useState(false);
-	const [Loading, setLoading] = useState(false);
-	const [data, getDataToEdit] = useState(null);
-	const [dataLoaded, setDataLoaded] = useState(false);
+	// const [Loading, setLoading] = useState(false);
+	// const [data, getDataToEdit] = useState(null);
+	// const [dataLoaded, setDataLoaded] = useState(false);
 	const [opthalServices, setOpthalServices] = useState([]);
 	const [multi, setMulti] = useState(false);
 
@@ -53,12 +54,7 @@ const OpthalmologyRequest = props => {
 				referredBy: values.referredBy,
 			};
 
-			const rs = await request(
-				`${patientAPI}/save-request`,
-				'POST',
-				true,
-				data
-			);
+			await request(`${patientAPI}/save-request`, 'POST', true, data);
 
 			history.push('settings/roles#opthalmology');
 			notifySuccess('Opthalmology request saved');

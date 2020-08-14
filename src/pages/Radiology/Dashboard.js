@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import Tooltip from 'antd/lib/tooltip';
 
-import { patientAPI } from '../../services/constants';
+import { API_URI, patientAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request, upload } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
@@ -16,6 +16,7 @@ import { toggleProfile } from '../../actions/user';
 const UploadImagingData = ({ uploading, doUpload, hide }) => {
 	const [files, setFiles] = useState(null);
 	const [label, setLabel] = useState('');
+
 	// let uploadAttachment;
 
 	const handleChange = e => {
@@ -172,6 +173,7 @@ export class Dashboard extends Component {
 		const info = { patient, type: 'patient' };
 		this.props.toggleProfile(true, info);
 	};
+
 	upload = req => {
 		const info = { patient: req.patient, type: 'patient' };
 		this.props.toggleProfile(true, info);
@@ -209,7 +211,7 @@ export class Dashboard extends Component {
 				formData.append('document_type', 'Imaging');
 				console.log(formData.getAll());
 				const rs = await upload(
-					`${patientAPI}/${patient.patient_id}/upload-request-document`,
+					`${API_URI}/${patientAPI}/${patient.patient_id}/upload-request-document`,
 					'POST',
 					formData
 				);

@@ -11,6 +11,7 @@ import moment from 'moment';
 import { loadAntennatal } from '../../actions/patient';
 import { viewAntenatalDetail } from '../../actions/general';
 import isEmpty from 'lodash.isempty';
+import { patientAPI } from '../../services/constants';
 
 export class Antennatal extends Component {
 	state = {
@@ -33,7 +34,7 @@ export class Antennatal extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`patientAPI}/antenatal/list?startDate=${startDate}&endDate=${endDate}`,
+				`${patientAPI}/antenatal/list?startDate=${startDate}&endDate=${endDate}`,
 				'GET',
 				true
 			);

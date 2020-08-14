@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { closeModals } from '../../actions/general';
 import { request } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
-import { API_URI, payrollAPI } from '../../services/constants';
+import { payrollAPI } from '../../services/constants';
 import PayrollItem from '../PayrollItem';
 import { loadPayrollHistory } from '../../actions/hr';
 

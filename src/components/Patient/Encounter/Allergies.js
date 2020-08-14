@@ -1,43 +1,30 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
-import { reduxForm } from 'redux-form';
-import HxForm from './HxForm';
+
 import { Controller, ErrorMessage, useForm } from 'react-hook-form';
 import { connect, useDispatch } from 'react-redux';
 import {
-	add_allergies,
 	fetch_Allergies,
 	loadEncounterData,
 	loadEncounterForm,
 } from '../../../actions/patient';
-import { v4 as uuidv4 } from 'uuid';
+
 import {
 	allergyCategories,
-	API_URI,
 	patientAPI,
 	severity,
 } from '../../../services/constants';
 import { request } from '../../../services/utilities';
 import { notifyError } from '../../../services/notify';
 import searchingGIF from '../../../assets/images/searching.gif';
-import Tooltip from 'antd/lib/tooltip';
-import { Link } from 'react-router-dom';
-import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 const Allergies = props => {
 	const [loaded, setLoaded] = useState(false);
 	const [queried, setQueried] = useState(false);
 
 	const dispatch = useDispatch();
-	let {
-		previous,
-		next,
-		allergiesProp,
-		patient,
-		encounterData,
-		encounterForm,
-	} = props;
+	let { previous, patient, encounterData, encounterForm } = props;
 
 	let [data, setData] = useState([]);
 	const defaultValues = {
@@ -50,14 +37,16 @@ const Allergies = props => {
 		getValues,
 		control,
 		errors,
-		watch,
+		// watch,
 	} = useForm({
 		defaultValues,
 	});
 
 	useEffect(() => {
 		if (defaultValues?.allForm?.length > 0) {
+			// eslint-disable-next-line array-callback-return
 			defaultValues.allForm.map((item, index) => {
+				// eslint-disable-next-line react-hooks/exhaustive-deps
 				data = [...data, { id: index }];
 			});
 			setData(data);
@@ -76,12 +65,13 @@ const Allergies = props => {
 		setQueried(true);
 		try {
 			const rs = await request(
-				`${API_URI}/${patientAPI}/${patient.id}/allergies`,
+				`${patientAPI}/${patient.id}/allergies`,
 				'GET',
 				true
 			);
 
 			let newForm = getValues({ nest: true })['allForm'] || [];
+			// eslint-disable-next-line array-callback-return
 			rs.map((value, i) => {
 				data = [...data, { id: data.length }];
 				newForm = [

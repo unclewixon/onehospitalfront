@@ -1,9 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component, Suspense, lazy } from 'react';
-import { Switch, Route, withRouter, Link } from 'react-router-dom';
+import { Switch, Route, withRouter } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
 import PaypointQueue from './PaypointQueue';
+
 const NewTransaction = lazy(() => import('./NewTransaction'));
 const InsuranceBills = lazy(() => import('./InsuranceBills'));
 const Dashboard = lazy(() => import('./Dashboard'));
@@ -12,8 +13,7 @@ const Voucher = lazy(() => import('./Voucher'));
 
 export class index extends Component {
 	render() {
-		const { match, location } = this.props;
-		const page = location.pathname.split('/').pop();
+		const { match } = this.props;
 		return (
 			<>
 				<div className="content-i">

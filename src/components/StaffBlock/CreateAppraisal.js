@@ -12,14 +12,13 @@ import {
 import $ from 'jquery';
 
 import {
-	getPeriod,
 	errorMessage,
 	request,
 	renderTextArea,
 	confirmAction,
 } from '../../services/utilities';
-import { API_URI, appraisalAPI } from '../../services/constants';
-import { notifySuccess, notifyError } from '../../services/notify';
+import { appraisalAPI } from '../../services/constants';
+import { notifySuccess } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
 import { setPerformancePeriod } from '../../actions/hr';
 
@@ -175,7 +174,7 @@ class CreateAppraisal extends Component {
 	// 	this.setState({ roleID: role.id });
 	// 	try {
 	// 		const rs = await request(
-	// 			`${API_URI}/settings/roles/${role.id}`,
+	// 			`settings/roles/${role.id}`,
 	// 			'DELETE',
 	// 			true
 	// 		);

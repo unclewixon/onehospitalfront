@@ -11,7 +11,7 @@ import {
 	createRecordVital,
 } from '../../actions/general';
 import { calculateAge } from '../../services/utilities';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash.isempty';
 import { clearLabourDetails } from '../../actions/patient';
 const Measurement = lazy(() => import('./Measurement'));
 const Partograph = lazy(() => import('./Partograph'));

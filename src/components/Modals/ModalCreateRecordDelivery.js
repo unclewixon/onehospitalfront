@@ -6,12 +6,7 @@ import { renderTextInput, request } from '../../services/utilities';
 import DatePicker from 'react-datepicker';
 import waiting from '../../assets/images/waiting.gif';
 import { closeModals } from '../../actions/general';
-import {
-	API_URI,
-	patientAPI,
-	searchAPI,
-	labourAPI,
-} from '../../services/constants';
+import { patientAPI, searchAPI, labourAPI } from '../../services/constants';
 
 import { caput, moulding } from '../../services/constants';
 import { notifySuccess, notifyError } from '../../services/notify';

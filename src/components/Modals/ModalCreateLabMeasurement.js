@@ -8,12 +8,7 @@ import {
 	renderSelect,
 	renderMultiselect,
 } from '../../services/utilities';
-import {
-	API_URI,
-	patientAPI,
-	searchAPI,
-	labourAPI,
-} from '../../services/constants';
+import { patientAPI, searchAPI, labourAPI } from '../../services/constants';
 import DatePicker from 'react-datepicker';
 import { TimePicker } from 'antd';
 import waiting from '../../assets/images/waiting.gif';
@@ -136,7 +131,7 @@ class ModalCreateLabMeasurement extends Component {
 			this.setState({ submitting: true });
 
 			const rs = await request(
-				`${API_URI}/labour-management/measurement/${labourDetail.id}/save`,
+				`labour-management/measurement/${labourDetail.id}/save`,
 				'POST',
 				true,
 				newData

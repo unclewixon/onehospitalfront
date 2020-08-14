@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 // import DatePicker from 'antd/lib/date-picker';
 
-import { API_URI, transactionsAPI, searchAPI } from '../../services/constants';
+import { transactionsAPI, searchAPI } from '../../services/constants';
 import moment from 'moment';
 import { request } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
@@ -45,11 +45,10 @@ export class Billing extends Component {
 
 	fetchCafeteriaTransaction = async () => {
 		const { startDate, endDate } = this.state;
-		console.log(`${API_URI}`);
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}/${transactionsAPI}/list?staff_id=${this.props.staff.details.id}&startDate=${startDate}&endDate=${endDate}&status=&transaction_type=cafeteria&payment_type&page=2&limit=2`,
+				`${transactionsAPI}/list?staff_id=${this.props.staff.details.id}&startDate=${startDate}&endDate=${endDate}&status=&transaction_type=cafeteria&payment_type&page=2&limit=2`,
 				'GET',
 				true
 			);
@@ -119,7 +118,7 @@ export class Billing extends Component {
 			try {
 				this.setState({ ...this.state, searching: true });
 				const rs = await request(
-					`${API_URI}/${searchAPI}?q=${this.state.query}`,
+					`${searchAPI}?q=${this.state.query}`,
 					'GET',
 					true
 				);
@@ -142,7 +141,7 @@ export class Billing extends Component {
 	// 		try {
 	// 			this.setState({ ...this.state, searchStaffBilling: true });
 	// 			const rs = await request(
-	// 				`${API_URI}/hmos?name=${this.state.hmoQuery}`,
+	// 				`hmos?name=${this.state.hmoQuery}`,
 	// 				'GET',
 	// 				true
 	// 			);

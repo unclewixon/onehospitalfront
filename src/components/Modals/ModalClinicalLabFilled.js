@@ -4,7 +4,7 @@ import moment from 'moment';
 import { Table } from 'react-bootstrap';
 import waiting from '../../assets/images/waiting.gif';
 import { request } from '../../services/utilities';
-import { API_URI } from '../../services/constants';
+
 import { notifySuccess, notifyError } from './../../services/notify';
 import { useForm } from 'react-hook-form';
 

@@ -8,12 +8,7 @@ import {
 	renderTextArea,
 } from '../../services/utilities';
 import { Field, reduxForm, formValueSelector, change } from 'redux-form';
-import {
-	API_URI,
-	socket,
-	patientAPI,
-	serviceAPI,
-} from '../../services/constants';
+import { socket, patientAPI, serviceAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 

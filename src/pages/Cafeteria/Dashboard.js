@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
-import { API_URI, staffAPI, searchAPI } from '../../services/constants';
+import { staffAPI, searchAPI } from '../../services/constants';
 import { request } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import CafeteriaCustomerDetail from '../../components/CafeteriaCustomerDetail';
@@ -105,11 +105,7 @@ const CafeteriaDashboard = () => {
 		if (size(query) >= 2) {
 			try {
 				setItemSearching(true);
-				const rs = await request(
-					`${API_URI}/cafeteria/items/?q=${query}`,
-					'GET',
-					true
-				);
+				const rs = await request(`cafeteria/items/?q=${query}`, 'GET', true);
 				setItems(rs);
 				setItemSearching(false);
 			} catch (e) {
@@ -181,7 +177,7 @@ const CafeteriaDashboard = () => {
 
 		try {
 			setSubmitting(true);
-			await request(`${API_URI}/cafeteria/sales`, 'POST', true, data);
+			await request(`cafeteria/sales`, 'POST', true, data);
 			notifySuccess('Transaction successful');
 			setSubmitting(false);
 		} catch (e) {

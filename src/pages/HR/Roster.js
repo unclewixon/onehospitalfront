@@ -299,7 +299,7 @@ class Roster extends Component {
 				formData.append('department_id', department_id);
 
 				const rs = await upload(
-					`${rosterAPI}/upload-roaster`,
+					`${API_URI}/${rosterAPI}/upload-roaster`,
 					'POST',
 					formData
 				);

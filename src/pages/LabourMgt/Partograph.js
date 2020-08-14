@@ -1,4 +1,4 @@
-import React, { Component, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import {
 	LineChart,
@@ -10,72 +10,72 @@ import {
 	Legend,
 	Label,
 } from 'recharts';
-import { getPartograph, loadPartograph } from '../../actions/patient';
-import { notifySuccess, notifyError } from '../../services/notify';
+import { loadPartograph } from '../../actions/patient';
+
 import { request } from '../../services/utilities';
-import { API_URI, searchAPI } from '../../services/constants';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
-const data = [
-	{
-		name: '0',
 
-		pv: 2400,
-	},
-	{
-		name: '2',
+// const data = [
+// 	{
+// 		name: '0',
 
-		pv: 1398,
-	},
-	{
-		name: '4',
+// 		pv: 2400,
+// 	},
+// 	{
+// 		name: '2',
 
-		pv: 9800,
-	},
-	{
-		name: '6',
+// 		pv: 1398,
+// 	},
+// 	{
+// 		name: '4',
 
-		pv: 3908,
-	},
-	{
-		name: '8',
+// 		pv: 9800,
+// 	},
+// 	{
+// 		name: '6',
 
-		pv: 4800,
-	},
-	{
-		name: '10',
+// 		pv: 3908,
+// 	},
+// 	{
+// 		name: '8',
 
-		pv: 3800,
-	},
-	{
-		name: '12',
+// 		pv: 4800,
+// 	},
+// 	{
+// 		name: '10',
 
-		pv: 4300,
-	},
-	{
-		name: '14',
+// 		pv: 3800,
+// 	},
+// 	{
+// 		name: '12',
 
-		pv: 4300,
-	},
-	{
-		name: '16',
+// 		pv: 4300,
+// 	},
+// 	{
+// 		name: '14',
 
-		pv: 4300,
-	},
-];
+// 		pv: 4300,
+// 	},
+// 	{
+// 		name: '16',
 
-const partographParameter = [
-	'fetalHeartRate',
-	'cervicalDialation',
-	'fetalHeadDescent',
-	'numberOfContractions',
-	'durationOfContractions',
-	'bloodPressure',
-	'currentPulse',
-	'currentTemperature',
-	'bloodSugarLevel',
-	'respirationRate',
-];
+// 		pv: 4300,
+// 	},
+// ];
+
+// const partographParameter = [
+// 	'fetalHeartRate',
+// 	'cervicalDialation',
+// 	'fetalHeadDescent',
+// 	'numberOfContractions',
+// 	'durationOfContractions',
+// 	'bloodPressure',
+// 	'currentPulse',
+// 	'currentTemperature',
+// 	'bloodSugarLevel',
+// 	'respirationRate',
+// ];
 
 export class Partograph extends PureComponent {
 	state = {
@@ -198,7 +198,7 @@ export class Partograph extends PureComponent {
 		let {
 			fetalHeartRate,
 			cervicalDialation,
-			fetalHeadDescent,
+			// fetalHeadDescent,
 			durationOfContractions,
 			bloodPressure,
 			currentPulse,

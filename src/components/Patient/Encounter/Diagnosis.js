@@ -1,30 +1,21 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component, useEffect, useState } from 'react';
-import {
-	renderSelect,
-	renderSelectWithDefault,
-	request,
-} from '../../../services/utilities';
-import {
-	allergyCategories,
-	API_URI,
-	diagnosisAPI,
-	diagnosisType,
-} from '../../../services/constants';
+import React, { useEffect, useState } from 'react';
+import { request } from '../../../services/utilities';
+import { diagnosisAPI, diagnosisType } from '../../../services/constants';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import Select from 'react-select';
-import { Field, reduxForm } from 'redux-form';
+import { reduxForm } from 'redux-form';
 import { connect, useDispatch } from 'react-redux';
 import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
 import { Controller, ErrorMessage, useForm } from 'react-hook-form';
 
 let Diagnosis = props => {
-	const { previous, next, encounterData, encounterForm } = props;
+	const { previous, encounterData, encounterForm } = props;
 	const dispatch = useDispatch();
 	const defaultValues = {
 		diagnosis: encounterForm.diagnosis?.diagnosis,
 	};
-	const { register, handleSubmit, setValue, control, errors } = useForm({
+	const { register, handleSubmit, control, errors } = useForm({
 		defaultValues,
 	});
 	let [data, setData] = useState([]);
@@ -37,7 +28,9 @@ let Diagnosis = props => {
 
 	useEffect(() => {
 		if (defaultValues?.diagnosis?.length > 0) {
+			// eslint-disable-next-line array-callback-return
 			defaultValues.diagnosis.map((item, index) => {
+				// eslint-disable-next-line react-hooks/exhaustive-deps
 				data = [...data, { id: index }];
 			});
 			setData(data);
@@ -52,11 +45,7 @@ let Diagnosis = props => {
 			return [];
 		}
 		let val = inputValue.toUpperCase();
-		const res = await request(
-			`${diagnosisAPI}` + 'search?q=' + val,
-			'GET',
-			true
-		);
+		const res = await request(`${diagnosisAPI}/search?q=${val}`, 'GET', true);
 		return res;
 	};
 

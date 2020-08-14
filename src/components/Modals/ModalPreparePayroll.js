@@ -7,7 +7,7 @@ import padLeft from 'pad-left';
 
 import { closeModals } from '../../actions/general';
 import PayrollItem from '../PayrollItem';
-import { API_URI, payrollAPI, months } from '../../services/constants';
+import { payrollAPI, months } from '../../services/constants';
 import { request } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { loadUnpaidPayroll } from '../../actions/hr';

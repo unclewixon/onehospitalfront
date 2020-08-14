@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+
 import waiting from '../../assets/images/waiting.gif';
 import { closeModals } from '../../actions/general';
 import { notifyError, notifySuccess } from '../../services/notify';
-
 import { upload } from '../../services/utilities';
+import { API_URI } from '../../services/constants';
 
 const AddCafeteriaFile = props => {
 	const [submitting, setSubmitting] = useState(false);
@@ -31,7 +32,11 @@ const AddCafeteriaFile = props => {
 				let formData = new FormData();
 				formData.append('file', file);
 
-				await upload(`cafeteria/items/bulk-upload`, 'POST', formData);
+				await upload(
+					`${API_URI}/cafeteria/items/bulk-upload`,
+					'POST',
+					formData
+				);
 
 				console.log(props.location);
 				history.push('/cafeteria/items');

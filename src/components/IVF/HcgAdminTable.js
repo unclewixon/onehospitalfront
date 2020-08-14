@@ -29,10 +29,11 @@ class HcgAdminTable extends Component {
 	loadPatients = async () => {
 		try {
 			this.setState({ loading: true });
-			// console.log(`patientAPI}/list`);
+			// console.log(`${patientAPI}/list`);
 			const rs = await request(`${patientAPI}/list`, 'GET', true);
 
 			let patientList = [];
+			// eslint-disable-next-line array-callback-return
 			rs.map((value, i) => {
 				patientList = [
 					...patientList,
@@ -55,6 +56,7 @@ class HcgAdminTable extends Component {
 
 	deleteRow = (cellContent, row) => {
 		const { hcgRecord } = this.state;
+		// eslint-disable-next-line array-callback-return
 		hcgRecord.map((value, i) => {
 			if (value.id === row.id) {
 				hcgRecord.splice(i, 1);
@@ -85,6 +87,7 @@ class HcgAdminTable extends Component {
 		let { hcgRecord, allPatients } = this.state;
 		let { history } = this.props;
 		let hcgAdmin = [];
+		// eslint-disable-next-line array-callback-return
 		hcgRecord.map((value, index, array) => {
 			const patient = allPatients.find(
 				c => c.other_names + ' ' + c.surname === value.name_of_patient
@@ -125,6 +128,7 @@ class HcgAdminTable extends Component {
 				c => c.other_names + ' ' + c.surname === row.name_of_patient
 			);
 			let theFIle = result.fileNumber;
+			// eslint-disable-next-line array-callback-return
 			hcgRecord.map((value, index, array) => {
 				let datas = { ...value };
 				if (value.name_of_patient === row.name_of_patient) {

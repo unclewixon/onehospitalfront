@@ -1,28 +1,26 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
-import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
-import { isEmpty } from 'lodash';
-import {
-	API_URI,
-	patientAPI,
-	searchAPI,
-	labourAPI,
-} from '../../services/constants';
-import { request, getAge, calculateAge } from '../../services/utilities';
-import { notifySuccess, notifyError } from '../../services/notify';
+import isEmpty from 'lodash.isempty';
+
+import waiting from '../../assets/images/waiting.gif';
+import { labourAPI } from '../../services/constants';
+import { request, calculateAge } from '../../services/utilities';
+import { notifyError } from '../../services/notify';
 import { loadLabour, loadLabourDetails } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
 import { clearLabourDetails } from '../../actions/patient';
+
 const { RangePicker } = DatePicker;
-const departments = [
-	{ id: 'ejejekek', name: 'angel' },
-	{ id: 'sislkas', name: 'kafta' },
-];
+
+// const departments = [
+// 	{ id: 'ejejekek', name: 'angel' },
+// 	{ id: 'sislkas', name: 'kafta' },
+// ];
+
 class Dashboard extends Component {
 	state = {
 		filtering: false,
@@ -43,11 +41,11 @@ class Dashboard extends Component {
 		// 	.subtract(1, 'd')
 		// 	.format('YYYY-MM-DD');
 		// let endDate = moment().format('YYYY-MM-DD');
-		const { filtering, loading, startDate, endDate, page } = this.state;
+		const { startDate, endDate, page } = this.state;
 		try {
 			this.setState({ loading: true });
 			// console.log(
-			// 	`${API_URI}/${labourAPI}s/?startDate=${startDate}&endDate=${endDate}&page=${page}`
+			// 	`${labourAPI}s/?startDate=${startDate}&endDate=${endDate}&page=${page}`
 			// );
 			const rs = await request(
 				`${labourAPI}s/?startDate=${startDate}&endDate=${endDate}&page=${page}`,

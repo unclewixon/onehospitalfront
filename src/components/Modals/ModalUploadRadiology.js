@@ -1,10 +1,11 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import waiting from '../../assets/images/waiting.gif';
 import { closeModals } from '../../actions/general';
 import { notifyError, notifySuccess } from '../../services/notify';
-import { API_URI, patientAPI, searchAPI } from '../../services/constants';
+import { API_URI, searchAPI, patientAPI } from '../../services/constants';
 import { upload } from '../../services/utilities';
 import { request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
@@ -12,7 +13,7 @@ const ModalUploadRadiology = props => {
 	const [submitting, setSubmitting] = useState(false);
 	const [file, setFile] = useState(false);
 	const [label, setLabel] = useState('');
-	const [uploading, setUploading] = useState(false);
+	// const [uploading, setUploading] = useState(false);
 	const [query, setQuery] = useState('');
 	const [searching, setSearching] = useState(false);
 	const [patients, setPatients] = useState([]);
@@ -40,8 +41,8 @@ const ModalUploadRadiology = props => {
 				formData.append('document_type', patientId);
 				formData.append('files', file);
 
-				const rs = await upload(
-					`${API_URI}/patientAPI}/${patientId}/upload-request-document`,
+				await upload(
+					`${API_URI}/${patientAPI}/${patientId}/upload-request-document`,
 					'POST',
 					formData
 				);
@@ -96,6 +97,7 @@ const ModalUploadRadiology = props => {
 	useEffect(() => {
 		setPatientId(props.patient.id);
 	}, []);
+
 	return (
 		<div
 			className="onboarding-modal modal fade animated show"

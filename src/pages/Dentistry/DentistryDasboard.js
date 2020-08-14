@@ -1,8 +1,9 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { request } from '../../services/utilities';
-import { API_URI } from '../../services/constants';
 import Tooltip from 'antd/lib/tooltip';
+
+import { request } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { loadDentistryRequests } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
@@ -12,6 +13,7 @@ import uniqBy from 'lodash.uniqby';
 import DatePicker from 'antd/lib/date-picker';
 import ModalDentistry from '../../components/Modals/ModalDentistry';
 import Select from 'react-select';
+
 const { RangePicker } = DatePicker;
 
 class DentistryDashboard extends Component {

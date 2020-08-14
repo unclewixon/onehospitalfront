@@ -17,7 +17,7 @@ import {
 	renderTextInput,
 	renderMultiselect,
 } from '../../services/utilities';
-import { API_URI, searchAPI } from '../../services/constants';
+import { searchAPI } from '../../services/constants';
 import { request } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import moment from 'moment';

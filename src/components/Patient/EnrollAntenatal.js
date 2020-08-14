@@ -7,7 +7,7 @@ import {
 	renderTextInput,
 	renderMultiselect,
 } from '../../services/utilities';
-import { API_URI, socket } from '../../services/constants';
+import { socket } from '../../services/constants';
 import moment from 'moment';
 
 import DatePicker from 'react-datepicker';

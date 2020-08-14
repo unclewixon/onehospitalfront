@@ -1,31 +1,25 @@
-import React, { Component, useState } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import DatePicker from 'react-datepicker';
+import { Field, reduxForm } from 'redux-form';
+import { withRouter, useHistory } from 'react-router-dom';
+
 import {
 	renderTextInput,
 	renderSelect,
-	renderMultiselect,
 	renderTextArea,
 	request,
 } from '../../services/utilities';
-import { Field, reduxForm, change as changeFieldValue } from 'redux-form';
-import { withRouter } from 'react-router-dom';
-
-import DatePicker from 'react-datepicker';
-
-import moment from 'moment';
-
 import { loadStaff } from '../../actions/hr';
 import { validateAntennatal } from '../../services/validationSchemas';
-import { indication } from './AssesmentInfo';
 import { loadPatientIVFForm } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
-import Select from 'react-select';
-import SunEditor from 'suneditor-react';
-import { consultationAPI, IVFEnroll } from '../../services/constants';
+import { IVFEnroll } from '../../services/constants';
 import { notifyError, notifySuccess } from '../../services/notify';
-import { useHistory } from 'react-router-dom';
+
 const validate = validateAntennatal;
-export const pregResult = [
+
+const pregResult = [
 	{
 		id: 'Positive',
 		name: 'Positive',
@@ -41,20 +35,21 @@ export const pregResult = [
 ];
 
 let Others = props => {
-	const dispatch = useDispatch();
-	const { page, name, error, ivf, previousPage, onSubmit } = props;
+	const { page, error, ivf, previousPage } = props;
+
 	let [loading, setLoading] = useState(false);
 	let [commencementDate, setCommencementDate] = useState('');
 	let [stimulationDate, setStimulationDate] = useState('');
 	let [embryoTransDate, setEmbryoTransDate] = useState('');
 	let [pregTestDate, setPregTestDate] = useState('');
 	let [oocytePickupDate, setOocytePickupDate] = useState('');
+
 	let history = useHistory();
 
-	const setDate = async (date, type) => {
-		await this.setState({ [type]: date });
-	};
-	const patient = React.createRef();
+	// const setDate = async (date, type) => {
+	// 	await this.setState({ [type]: date });
+	// };
+	// const patient = React.createRef();
 
 	const onSubmitForm = async data => {
 		console.log(stimulationDate);
@@ -71,7 +66,7 @@ let Others = props => {
 		props.loadPatientIVFForm(res);
 
 		try {
-			const rs = await request(`${IVFEnroll}`, 'POST', true, res);
+			await request(`${IVFEnroll}`, 'POST', true, res);
 			//props.closeModals(true);
 			notifySuccess('IVF created successfully');
 			history.push('/ivf');

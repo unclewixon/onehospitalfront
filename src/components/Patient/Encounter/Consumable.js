@@ -1,30 +1,19 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SunEditor from 'suneditor-react';
-import { connect, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
-import {
-	get_all_diagnosis,
-	get_all_services,
-	getAllServiceCategory,
-} from '../../../actions/settings';
-import { loadInvCategories, loadInventories } from '../../../actions/inventory';
 import Select from 'react-select';
 import {
-	API_URI,
 	consultationAPI,
-	obstericHistory,
-	patientAPI,
-	planServiceCenter,
 	stockByCategoryAPI,
 } from '../../../services/constants';
-import { Controller, useForm } from 'react-hook-form';
+
 import {
 	renderSelect,
 	renderTextArea,
 	renderTextInput,
 	request,
-	upload,
 } from '../../../services/utilities';
 import {
 	Field,
@@ -38,8 +27,8 @@ import { closeModals } from '../../../actions/general';
 
 const selector = formValueSelector('consumableForm');
 let Consumable = props => {
-	const { previous, next, encounterData, encounterForm, encounterId } = props;
-	const dispatch = useDispatch();
+	const { previous, encounterData, encounterId } = props;
+
 	let [data, setData] = useState([]);
 	let [loading, setLoading] = useState(false);
 	const [summary, setSummary] = useState('');
@@ -53,11 +42,7 @@ let Consumable = props => {
 	const listConsumable = async () => {
 		try {
 			setLoading(true);
-			const rs = await request(
-				`${stockByCategoryAPI}` + '/Consumable',
-				'GET',
-				true
-			);
+			const rs = await request(`${stockByCategoryAPI}/Consumable`, 'GET', true);
 			setStock(rs);
 			setLoading(false);
 		} catch (e) {
@@ -87,7 +72,7 @@ let Consumable = props => {
 		setLoading(true);
 		const { patient } = props;
 		try {
-			const rs = await request(
+			await request(
 				`${consultationAPI}${patient.id}/save`,
 				'POST',
 				true,
@@ -232,8 +217,8 @@ let Consumable = props => {
 								<button className="btn btn-primary" onClick={previous}>
 									Previous
 								</button>
-								<button className="btn btn-primary" onClick={next}>
-									Next
+								<button className="btn btn-primary" type="submit">
+									Finish
 								</button>
 							</div>
 						</div>

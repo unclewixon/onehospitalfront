@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { API_URI } from '../../services/constants';
+import { patientAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
@@ -41,7 +41,7 @@ class LabFilledRequest extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}/patientAPI}/requests/lab?startDate=${startDate}&endDate=${endDate}&status=${status}`,
+				`${patientAPI}/requests/lab?startDate=${startDate}&endDate=${endDate}&status=${status}`,
 				'GET',
 				true
 			);

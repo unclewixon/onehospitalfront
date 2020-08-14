@@ -1,26 +1,25 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
 
-import { API_URI, transactionsAPI, searchAPI } from '../../services/constants';
+import { transactionsAPI, searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import DatePicker from 'antd/lib/date-picker';
 import { request } from '../../services/utilities';
-import ClinicalLabItem from '../../components/ClinicalLabItem';
-import { notifySuccess, notifyError } from '../../services/notify';
+
+import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
-import { loadRadiology } from '../../actions/patient';
 import { loadHmoTransaction } from '../../actions/hmo';
+
 const { RangePicker } = DatePicker;
 
-const status = [
-	{ value: 0, label: 'Open' },
-	{ value: 1, label: 'Closed' },
-	{ value: 2, label: 'Approved' },
-];
+// const status = [
+// 	{ value: 0, label: 'Open' },
+// 	{ value: 1, label: 'Closed' },
+// 	{ value: 2, label: 'Approved' },
+// ];
 
 export class AllTransaction extends Component {
 	state = {
@@ -47,12 +46,11 @@ export class AllTransaction extends Component {
 	}
 
 	fetchCafeteriaTransaction = async () => {
-		const { status, startDate, endDate, paymentType } = this.state;
-		console.log(`${API_URI}`);
+		const { startDate, endDate } = this.state;
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}/${transactionsAPI}/list?patient_id=&startDate=${startDate}&endDate=${endDate}&status=&transaction_type=cafeteria&payment_type&page=1&limit=2`,
+				`${transactionsAPI}/list?patient_id=&startDate=${startDate}&endDate=${endDate}&status=&transaction_type=cafeteria&payment_type&page=1&limit=2`,
 				'GET',
 				true
 			);
@@ -122,7 +120,7 @@ export class AllTransaction extends Component {
 			try {
 				this.setState({ ...this.state, searching: true });
 				const rs = await request(
-					`${API_URI}/${searchAPI}?q=${this.state.query}`,
+					`${searchAPI}?q=${this.state.query}`,
 					'GET',
 					true
 				);
@@ -145,7 +143,7 @@ export class AllTransaction extends Component {
 			try {
 				this.setState({ ...this.state, searchHmo: true });
 				const rs = await request(
-					`${API_URI}/hmos?name=${this.state.hmoQuery}`,
+					`hmos?name=${this.state.hmoQuery}`,
 					'GET',
 					true
 				);
@@ -189,10 +187,10 @@ export class AllTransaction extends Component {
 			filtering,
 			loading,
 			searching,
-			hmos,
+			// hmos,
 			patients,
-			searchHmo,
-			query,
+			// searchHmo,
+			// query,
 		} = this.state;
 		const { hmoTransactions } = this.props;
 		const hmoReversed = hmoTransactions.reverse();

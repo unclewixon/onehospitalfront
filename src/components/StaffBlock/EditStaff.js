@@ -8,10 +8,10 @@ import Select from 'react-select';
 import { request } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
-import { API_URI, staffAPI } from '../../services/constants';
+import { staffAPI } from '../../services/constants';
 import { gender, maritalStatus, religions } from '../../services/constants';
 import moment from 'moment';
-import orderBy from 'lodash.orderby';
+// import orderBy from 'lodash.orderby';
 
 function EditStaff(props) {
 	const formData = props.formData;
@@ -28,11 +28,11 @@ function EditStaff(props) {
 	// const [nationality, setNationalityValue] = useState('');
 	const [submitting, setSubmitting] = useState(false);
 
-	const _countries = props.countries.map(c => ({
-		value: c.name,
-		label: c.name,
-	}));
-	const sortedCountries = orderBy(_countries, ['value'], ['asc']);
+	// const _countries = props.countries.map(c => ({
+	// 	value: c.name,
+	// 	label: c.name,
+	// }));
+	// const sortedCountries = orderBy(_countries, ['value'], ['asc']);
 
 	const banks = props.banks.map(bank => {
 		return { value: bank.name, label: bank.name };
@@ -134,6 +134,7 @@ function EditStaff(props) {
 			);
 			setStaffData(formValues);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [formTitle]);
 
 	const { register, handleSubmit, errors, setValue } = useForm({
@@ -144,8 +145,8 @@ function EditStaff(props) {
 	const onSubmit = async values => {
 		setSubmitting(true);
 		try {
-			const rs = await request(
-				`${API_URI}/${staffAPI}/${staff.details.id}/update`,
+			await request(
+				`${staffAPI}/${staff.details.id}/update`,
 				'PATCH',
 				true,
 				values

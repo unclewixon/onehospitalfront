@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { loadRoster } from '../../actions/hr';
 import moment from 'moment';
-import { API_URI, rosterAPI } from '../../services/constants';
-import { request, upload, parseRoster } from '../../services/utilities';
-import { notifyError } from '../../services/notify';
-import { notifySuccess } from '../../services/notify';
+
+import { loadRoster } from '../../actions/hr';
+import { rosterAPI } from '../../services/constants';
+import { request, parseRoster } from '../../services/utilities';
+
 export class DutyRooster extends Component {
 	componentDidMount() {
 		const { departments } = this.props;
@@ -24,12 +24,7 @@ export class DutyRooster extends Component {
 	fetchRoster = async (period, department_id) => {
 		try {
 			const data = { period, department_id };
-			const rs = await request(
-				`${API_URI}/${rosterAPI}/list-roaster`,
-				'POST',
-				true,
-				data
-			);
+			const rs = await request(`${rosterAPI}/list-roaster`, 'POST', true, data);
 			const rosters = parseRoster(rs);
 			this.props.loadRoster(rosters);
 			this.setState({ filtering: false });
@@ -39,11 +34,13 @@ export class DutyRooster extends Component {
 			this.setState({ filtering: false });
 		}
 	};
+
 	handleDateClick = arg => {
 		console.log(arg);
 	};
+
 	render() {
-		const { duty_rosters, departments } = this.props;
+		const { duty_rosters } = this.props;
 		return (
 			<div className="row">
 				<div className="col-sm-12">

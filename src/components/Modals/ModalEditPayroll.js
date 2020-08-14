@@ -5,7 +5,7 @@ import moment from 'moment';
 
 import { closeEditPayRoll } from '../../actions/general';
 import { formatCurrency, request } from '../../services/utilities';
-import { API_URI, payrollAPI } from '../../services/constants';
+import { payrollAPI } from '../../services/constants';
 import { notifySuccess, notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
 
@@ -86,7 +86,7 @@ class ModalEditPayroll extends Component {
 		try {
 			console.log(JSON.stringify(data));
 			const rs = await request(
-				`${API_URI}/${payrollAPI}/update-payslip`,
+				`${payrollAPI}/update-payslip`,
 				'PATCH',
 				true,
 				data

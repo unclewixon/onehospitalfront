@@ -1,13 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
+import { Field, reduxForm } from 'redux-form';
+import { withRouter } from 'react-router-dom';
+
 import {
 	renderTextInput,
 	renderSelect,
 	renderTextArea,
 } from '../../services/utilities';
-import { Field, reduxForm } from 'redux-form';
-import { withRouter } from 'react-router-dom';
 import searchingGIF from '../../assets/images/searching.gif';
 import { request } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
@@ -17,10 +18,6 @@ import {
 	genotype,
 	bloodGroup,
 } from '../../services/constants';
-import DatePicker from 'react-datepicker';
-
-import moment from 'moment';
-
 import { loadStaff } from '../../actions/hr';
 import { validateAntennatal } from '../../services/validationSchemas';
 import { loadPatientIVFForm } from '../../actions/patient';
@@ -49,7 +46,7 @@ let HusbandLab = props => {
 			}
 		}
 
-		let staffs = props.staffs.map(el => el.first_name + ' ' + el.last_name);
+		// let staffs = props.staffs.map(el => el.first_name + ' ' + el.last_name);
 		// setStaffs(staffs);
 	};
 	const patient = React.createRef();

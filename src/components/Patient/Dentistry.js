@@ -6,7 +6,7 @@ import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
 import { loadDentistryRequests } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
-import { API_URI, patientAPI } from '../../services/constants';
+import { patientAPI } from '../../services/constants';
 import { request } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 
@@ -19,7 +19,7 @@ const Dentistry = props => {
 		const { patient } = props;
 		try {
 			const rs = await request(
-				`${API_URI}/patient/${patient.id}/request/dentistry?startDate=&endDate=`,
+				`patient/${patient.id}/request/dentistry?startDate=&endDate=`,
 				'GET',
 				true
 			);

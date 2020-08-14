@@ -6,9 +6,6 @@ import { withRouter } from 'react-router-dom';
 
 import { openEncounter } from '../../actions/general';
 import { request } from '../../services/utilities';
-import { API_URI } from '../../services/constants';
-import waiting from '../../assets/images/waiting.gif';
-import FrontDeskTable from '../FrontDesk/FrontDeskTable';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
 
@@ -86,7 +83,7 @@ class Encounters extends Component {
 	};
 
 	render() {
-		const { appointments, loading, canView } = this.state;
+		const { appointments, loading } = this.state;
 		return (
 			<>
 				<div className="row">

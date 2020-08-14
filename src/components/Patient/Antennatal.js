@@ -6,7 +6,7 @@ import Tooltip from 'antd/lib/tooltip';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
 import { confirmAction } from '../../services/utilities';
-import { API_URI, patientAPI } from '../../services/constants';
+import { patientAPI } from '../../services/constants';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadAntenatalAssessment } from '../../actions/patient';
 import { antenatalAssessmentDetail } from '../../actions/general';

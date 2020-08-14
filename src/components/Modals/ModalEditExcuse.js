@@ -7,7 +7,7 @@ import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
-import { API_URI, diagnosisAPI } from '../../services/constants';
+import { diagnosisAPI } from '../../services/constants';
 import { request } from '../../services/utilities';
 import AsyncSelect from 'react-select/async';
 
@@ -58,11 +58,7 @@ const ModalEditExcuse = ({
 			return [];
 		}
 		let val = inputValue.toUpperCase();
-		const res = await request(
-			`${API_URI}/${diagnosisAPI}search?q=${val}`,
-			'GET',
-			true
-		);
+		const res = await request(`${diagnosisAPI}search?q=${val}`, 'GET', true);
 		return res;
 	};
 
@@ -78,11 +74,7 @@ const ModalEditExcuse = ({
 		if (!inputValue) {
 			return [];
 		}
-		const res = await request(
-			`${API_URI}/hr/staffs/find?q=${inputValue}`,
-			'GET',
-			true
-		);
+		const res = await request(`hr/staffs/find?q=${inputValue}`, 'GET', true);
 		return res;
 	};
 
@@ -98,11 +90,7 @@ const ModalEditExcuse = ({
 		if (!inputValue) {
 			return [];
 		}
-		const res = await request(
-			`${API_URI}/hr/staffs/find?q=${inputValue}`,
-			'GET',
-			true
-		);
+		const res = await request(`hr/staffs/find?q=${inputValue}`, 'GET', true);
 		const filteredRes =
 			res && res.length
 				? res.filter(staff => staff.job_title === 'Doctor')
@@ -134,7 +122,7 @@ const ModalEditExcuse = ({
 		};
 		try {
 			const rs = await request(
-				`${API_URI}/hr/leave-management/${activeRequest.id}/update`,
+				`hr/leave-management/${activeRequest.id}/update`,
 				'PATCH',
 				true,
 				newRequestData

@@ -2,12 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
-import {
-	API_URI,
-	diagnosisAPI,
-	patientAPI,
-	serviceAPI,
-} from '../../services/constants';
+import { diagnosisAPI, patientAPI, serviceAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request } from '../../services/utilities';
 import { notifyError, notifySuccess } from '../../services/notify';

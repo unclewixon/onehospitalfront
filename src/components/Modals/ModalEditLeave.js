@@ -8,7 +8,7 @@ import DatePicker from 'react-datepicker';
 import waiting from '../../assets/images/waiting.gif';
 import { get_all_leave_category } from '../../actions/settings';
 import { notifySuccess, notifyError } from '../../services/notify';
-import { API_URI } from '../../services/constants';
+
 import { request } from '../../services/utilities';
 
 const ModalEditLeave = ({
@@ -85,7 +85,7 @@ const ModalEditLeave = ({
 		};
 		try {
 			const rs = await request(
-				`${API_URI}/hr/leave-management/${activeRequest.id}/update`,
+				`hr/leave-management/${activeRequest.id}/update`,
 				'PATCH',
 				true,
 				newRequestData

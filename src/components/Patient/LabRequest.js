@@ -1,10 +1,11 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
-import intersectionBy from 'lodash.intersectionby';
-import { API_URI, searchAPI, serviceCenter } from '../../services/constants';
+
+import { searchAPI, serviceCenter } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';

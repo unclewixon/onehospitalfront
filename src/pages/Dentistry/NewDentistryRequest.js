@@ -1,20 +1,15 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
-import {
-	API_URI,
-	searchAPI,
-	patientAPI,
-	serviceAPI,
-} from '../../services/constants';
+import { useHistory } from 'react-router-dom';
+
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { request } from '../../services/utilities';
-import { add_allergies } from '../../actions/patient';
-import { useHistory } from 'react-router-dom';
-
+import { patientAPI } from '../../services/constants';
 import {
 	get_all_services,
 	getAllServiceCategory,
@@ -88,7 +83,7 @@ const NewDentistry = props => {
 	}, [props, loaded]);
 
 	const onSubmit = async values => {
-		const { service } = props;
+		// const { service } = props;
 		if (
 			values.service_request === undefined ||
 			values.service_request.length === 0
@@ -117,12 +112,7 @@ const NewDentistry = props => {
 			theRequest.patient_id = values.patient_id;
 			//theRequest.primary_diagnosis = selectedOption.icd10Code;
 			theRequest.requestBody = requestData;
-			const rs = await request(
-				`patientAPI}/save-request`,
-				'POST',
-				true,
-				theRequest
-			);
+			await request(`${patientAPI}/save-request`, 'POST', true, theRequest);
 			history.push('dentistry/all-requests');
 			notifySuccess('Dentistry request saved');
 			setSubmitting(false);

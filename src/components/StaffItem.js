@@ -127,10 +127,7 @@ class StaffItem extends Component {
 				formData.append('file', files);
 				formData.append('document_type', 'Performance Indicators');
 				// const rs = await upload(
-				// 	`patientAPI}` +
-				// 		'/' +
-				// 		patient.id +
-				// 		'/upload-request-document',
+				// 	`${API_URI}/${patientAPI}/${patient.id}/upload-request-document`,
 				// 	'POST',
 				// 	formData
 				// );

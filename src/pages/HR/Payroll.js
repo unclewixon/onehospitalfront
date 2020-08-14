@@ -9,7 +9,7 @@ import PayrollItem from '../../components/PayrollItem';
 import { preparePayroll } from '../../actions/general';
 import { loadPayroll } from '../../actions/hr';
 import { request } from '../../services/utilities';
-import { API_URI, payrollAPI, months } from '../../services/constants';
+import { payrollAPI, months } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 
 const itemRender = (current, type, originalElement) => {

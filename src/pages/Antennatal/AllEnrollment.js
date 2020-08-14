@@ -13,6 +13,7 @@ import waiting from '../../assets/images/waiting.gif';
 import { loadAntennatal } from '../../actions/patient';
 import { viewAntenatalDetail } from '../../actions/general';
 import isEmpty from 'lodash.isempty';
+import { patientAPI } from '../../services/constants';
 
 const { RangePicker } = DatePicker;
 export class AllEnrollment extends Component {
@@ -33,10 +34,10 @@ export class AllEnrollment extends Component {
 		try {
 			this.setState({ loading: true });
 			// console.log(
-			// 	`${API_URI}/patientAPI}/antenatal/list?startDate=${startDate}&endDate=${endDate}`
+			// 	`${patientAPI}/antenatal/list?startDate=${startDate}&endDate=${endDate}`
 			// );
 			const rs = await request(
-				`patientAPI}/antenatal/list?startDate=${startDate}&endDate=${endDate}`,
+				`${patientAPI}/antenatal/list?startDate=${startDate}&endDate=${endDate}`,
 				'GET',
 				true
 			);

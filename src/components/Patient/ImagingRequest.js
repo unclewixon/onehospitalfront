@@ -3,12 +3,7 @@ import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
-import {
-	API_URI,
-	socket,
-	patientAPI,
-	serviceAPI,
-} from '../../services/constants';
+import { patientAPI, serviceAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 
@@ -16,7 +11,6 @@ import { request } from '../../services/utilities';
 
 import {
 	get_all_services,
-	getAllService,
 	getAllServiceCategory,
 } from '../../actions/settings';
 
@@ -25,8 +19,8 @@ const ImagingRequest = props => {
 	const { register, handleSubmit, setValue } = useForm();
 	const [submitting, setSubmitting] = useState(false);
 	const [loaded, setLoaded] = useState(false);
-	const [dataLoaded, setDataLoaded] = useState(false);
-	const [imagingServices, setImagingServices] = useState([]);
+	// const [dataLoaded, setDataLoaded] = useState(false);
+	// const [imagingServices, setImagingServices] = useState([]);
 	const [multi, setMulti] = useState(false);
 	const [services, setServices] = useState([]);
 	const [servicesCategory, setServicesCategory] = useState([]);
@@ -57,7 +51,7 @@ const ImagingRequest = props => {
 
 	const onSubmit = async values => {
 		// console.log(values);
-		const { service } = props;
+		// const { service } = props;
 		if (
 			values.service_request === undefined ||
 			values.service_request.length === 0
@@ -89,12 +83,7 @@ const ImagingRequest = props => {
 			// console.log(theRequest);
 
 			console.log(theRequest);
-			const rs = await request(
-				`${API_URI}/${patientAPI}/save-request`,
-				'POST',
-				true,
-				theRequest
-			);
+			await request(`${patientAPI}/save-request`, 'POST', true, theRequest);
 			history.push('settings/roles#imaging');
 			notifySuccess('Imaging request saved');
 			setSubmitting(false);
@@ -116,11 +105,7 @@ const ImagingRequest = props => {
 
 	const fetchServicesByCategory = async id => {
 		try {
-			const rs = await request(
-				`${API_URI}/${serviceAPI}` + '/categories/' + id,
-				'GET',
-				true
-			);
+			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
 			props.get_all_services(rs);
 		} catch (error) {
 			console.log(error);

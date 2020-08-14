@@ -2,7 +2,7 @@
 import React, { Component, useEffect, useState } from 'react';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import { renderTextInput, request } from '../../../services/utilities';
-import { API_URI, diagnosisAPI } from '../../../services/constants';
+import { diagnosisAPI } from '../../../services/constants';
 import DatePicker from 'react-datepicker';
 import { connect, useDispatch } from 'react-redux';
 import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';

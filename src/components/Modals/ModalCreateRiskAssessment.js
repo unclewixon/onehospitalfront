@@ -9,7 +9,6 @@ import {
 } from '../../services/utilities';
 import { Checkbox } from 'antd';
 import { closeModals } from '../../actions/general';
-import { API_URI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 

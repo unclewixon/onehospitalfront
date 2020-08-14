@@ -1,31 +1,19 @@
-import React, { Component, lazy, Suspense } from 'react';
-import Splash from '../../components/Splash';
-import { IVFHCGAdmin, IVFHCGDown, patientAPI } from '../../services/constants';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { Field, reduxForm } from 'redux-form';
 
+import { IVFHCGDown, patientAPI } from '../../services/constants';
 import {
 	renderSelect,
-	renderTextArea,
 	renderTextInput,
 	request,
 } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
-import cellEditFactory from 'react-bootstrap-table2-editor';
-import BootstrapTable from 'react-bootstrap-table-next';
-
-import { Field, reduxForm } from 'redux-form';
-import moment from 'moment';
-import Tooltip from 'antd/lib/tooltip';
 import IVFRegulationTable from './IVFRegulationTable';
-import Select from 'react-select';
-import { loadStaff } from '../../actions/hr';
-import {
-	loadPatientIVFForm,
-	loadPatientRegulationTable,
-} from '../../actions/patient';
+import { loadPatientRegulationTable } from '../../actions/patient';
 
-export const agents = [
+const agents = [
 	{
 		id: 'Buserelin',
 		name: 'Buserelin',
@@ -54,6 +42,7 @@ class IVFRegulationChart extends Component {
 		console.log(data);
 		console.log(regulationTable);
 		let hcgDown = [];
+		// eslint-disable-next-line array-callback-return
 		regulationTable.map((value, index, array) => {
 			let rec = {
 				date: value.date,
@@ -73,7 +62,7 @@ class IVFRegulationChart extends Component {
 		};
 
 		try {
-			const rs = await request(`${IVFHCGDown}`, 'POST', true, dataToSave);
+			await request(`${IVFHCGDown}`, 'POST', true, dataToSave);
 			//props.closeModals(true);
 			notifySuccess('Down Regulation Chart created successfully');
 			history.push('/ivf/reg-chart');
@@ -96,6 +85,7 @@ class IVFRegulationChart extends Component {
 			const rs = await request(`${patientAPI}/list`, 'GET', true);
 
 			let patientList = [];
+			// eslint-disable-next-line array-callback-return
 			rs.map((value, i) => {
 				patientList = [
 					...patientList,
@@ -120,10 +110,10 @@ class IVFRegulationChart extends Component {
 
 	render() {
 		const {
-			page,
-			submitting,
-			loading,
-			chosenPatient,
+			// page,
+			// submitting,
+			// loading,
+			// chosenPatient,
 			patientList,
 		} = this.state;
 		const { error, handleSubmit } = this.props;

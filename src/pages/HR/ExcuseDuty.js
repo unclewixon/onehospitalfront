@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import ExcuseItem from '../../components/ExcuseItem';
 import { loadStaffLeave } from '../../actions/hr';
 import { request } from '../../services/utilities';
-import { API_URI, leaveMgtAPI } from '../../services/constants';
+import { leaveMgtAPI } from '../../services/constants';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { confirmAction } from '../../services/utilities';

@@ -8,20 +8,13 @@ import {
 	renderMultiselect,
 	request,
 } from '../../services/utilities';
-import {
-	API_URI,
-	patientAPI,
-	socket,
-	staffAPI,
-	transactionsAPI,
-	vouchersAPI,
-} from '../../services/constants';
+import { patientAPI, staffAPI } from '../../services/constants';
 import moment from 'moment';
 
 import DatePicker from 'react-datepicker';
 import waiting from '../../assets/images/waiting.gif';
 import { createClinicalTask } from '../../actions/general';
-import { useForm } from 'react-hook-form';
+
 import { notifySuccess } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { setPatientRecord } from '../../actions/user';
@@ -49,10 +42,10 @@ const location = [
 	{ id: 'Other', name: 'Other' },
 ];
 
-const ward = [
-	{ id: 'Exclusive Suite', name: 'Exclusive Suite' },
-	{ id: 'Normal', name: 'Normal' },
-];
+// const ward = [
+// 	{ id: 'Exclusive Suite', name: 'Exclusive Suite' },
+// 	{ id: 'Normal', name: 'Normal' },
+// ];
 
 class PatientAdmission extends Component {
 	state = {
@@ -153,8 +146,8 @@ class PatientAdmission extends Component {
 
 		this.setState({ submitting: true });
 		try {
-			const rs = await request(
-				`${patientAPI}/admissions/` + patient.id + '/save',
+			await request(
+				`${patientAPI}/admissions/${patient.id}/save`,
 				'POST',
 				true,
 				formData
@@ -173,7 +166,7 @@ class PatientAdmission extends Component {
 	};
 
 	render() {
-		const { error, handleSubmit, leave_categories, vitalSign } = this.props;
+		const { error, handleSubmit } = this.props;
 		const {
 			submitting,
 			discharged_date,

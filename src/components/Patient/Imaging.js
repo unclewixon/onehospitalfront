@@ -6,10 +6,10 @@ import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
 import { loadImagingRequests } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
-import { API_URI, documentType, patientAPI } from '../../services/constants';
+import { API_URI, patientAPI } from '../../services/constants';
 import { request, upload } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
-import Popover from 'antd/lib/popover';
+// import Popover from 'antd/lib/popover';
 import waiting from '../../assets/images/waiting.gif';
 import { SubmissionError } from 'redux-form';
 
@@ -20,12 +20,14 @@ const Imaging = props => {
 	const [upload_visible, setUploadVisible] = useState(false);
 	const [uploading, setUploading] = useState(false);
 	const [hidden, setHidden] = useState(false);
-	const [selectedRequest, setRequest] = useState(false);
+	// const [selectedRequest, setRequest] = useState(false);
 
 	const UploadImagingData = ({ uploading, doUpload, hide }) => {
 		const [files, setFiles] = useState(null);
 		const [label, setLabel] = useState('');
-		let uploadAttachment;
+
+		// let uploadAttachment;
+
 		const handleChange = e => {
 			setFiles(e.target.files);
 
@@ -110,17 +112,18 @@ const Imaging = props => {
 		}
 	};
 
-	const handleUpload = (evt, data) => {
-		setRequest(data);
-		setHidden(true);
-	};
-	const onBackClick = () => {
-		setHidden(false);
-	};
+	// const handleUpload = (evt, data) => {
+	// 	setRequest(data);
+	// 	setHidden(true);
+	// };
 
-	const handleUploadVisibleChange = visible => {
-		setUploadVisible(visible);
-	};
+	// const onBackClick = () => {
+	// 	setHidden(false);
+	// };
+
+	// const handleUploadVisibleChange = visible => {
+	// 	setUploadVisible(visible);
+	// };
 
 	const hide = () => {
 		setUploadVisible(false);
@@ -148,7 +151,7 @@ const Imaging = props => {
 				formData.append('file', fileData);
 				formData.append('document_type', 'Imaging');
 				const rs = await upload(
-					`${patientAPI}` + '/' + patient.id + '/upload-request-document',
+					`${API_URI}/${patientAPI}/${patient.id}/upload-request-document`,
 					'POST',
 					formData
 				);
@@ -166,36 +169,36 @@ const Imaging = props => {
 		}
 	};
 
-	const convertToIndividualRequest = data => {
-		let newData = [];
-		data.forEach(value => {
-			if (Array.isArray(value.requestBody)) {
-				value.requestBody.forEach(val => {
-					newData.push({
-						id: value.id,
-						isActive: value.isActive,
-						createdAt: value.createdAt,
-						updateAt: value.updateAt,
-						requestType: value.requestType,
-						requestBody: {
-							amount: val.amount,
-							service_id: val.service_id,
-							specialization: val.specialization,
-						},
-						status: value.status,
-					});
-				});
-			} else {
-				newData.push(value);
-			}
-		});
+	// const convertToIndividualRequest = data => {
+	// 	let newData = [];
+	// 	data.forEach(value => {
+	// 		if (Array.isArray(value.requestBody)) {
+	// 			value.requestBody.forEach(val => {
+	// 				newData.push({
+	// 					id: value.id,
+	// 					isActive: value.isActive,
+	// 					createdAt: value.createdAt,
+	// 					updateAt: value.updateAt,
+	// 					requestType: value.requestType,
+	// 					requestBody: {
+	// 						amount: val.amount,
+	// 						service_id: val.service_id,
+	// 						specialization: val.specialization,
+	// 					},
+	// 					status: value.status,
+	// 				});
+	// 			});
+	// 		} else {
+	// 			newData.push(value);
+	// 		}
+	// 	});
 
-		return newData;
-	};
+	// 	return newData;
+	// };
 
-	const togglePopover = () => {
-		setUploadVisible(true);
-	};
+	// const togglePopover = () => {
+	// 	setUploadVisible(true);
+	// };
 
 	const getRequests = arr => {
 		let rer = [];

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
 import { request } from '../../services/utilities';
-import { API_URI, patientAPI } from '../../services/constants';
+import { patientAPI } from '../../services/constants';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { connect } from 'react-redux';
@@ -39,7 +39,7 @@ const Procedure = props => {
 		try {
 			setLoading(true);
 			const rs = await request(
-				`${API_URI}/${patientAPI}/` + patient.id + '/request/procedure',
+				`${patientAPI}/${patient.id}/request/procedure`,
 				'GET',
 				true
 			);

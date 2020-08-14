@@ -50,7 +50,6 @@ import {
 	UPLOAD_SERVICE,
 	GET_ALL_SERIVCES,
 	UPDATE_SERVICE,
-	DOWNLOAD_SERVICE,
 	DELETE_SERVICE,
 	UPDATE_DIAGNOSIS,
 	GET_ALL_DIAGNOSISES,
@@ -816,14 +815,16 @@ export const deleteLabTest = data => {
 					updatedStructure.push(newParams);
 				});
 			}
-			let newStructure = {
-				name: data.name,
-				price: data.price,
-				test_type: 'single',
-				lab_category_id:
-					data.category && data.category.id ? data.category.id : '',
-				parameters: updatedStructure,
-			};
+
+			// let newStructure = {
+			// 	name: data.name,
+			// 	price: data.price,
+			// 	test_type: 'single',
+			// 	lab_category_id:
+			// 		data.category && data.category.id ? data.category.id : '',
+			// 	parameters: updatedStructure,
+			// };
+
 			request(`lab-tests/${data.id}`, 'DELETE', true)
 				.then(response => {
 					dispatch(delete_lab_test(data));

@@ -1,40 +1,31 @@
-import React, { Component, useEffect, useState } from 'react';
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React, { useEffect, useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import {
-	renderTextInput,
-	renderSelect,
-	renderMultiselect,
-} from '../../services/utilities';
-import { Field, reduxForm, change as changeFieldValue } from 'redux-form';
+import { Field, reduxForm } from 'redux-form';
 import { withRouter } from 'react-router-dom';
+
+import { renderTextInput, renderSelect } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import { request } from '../../services/utilities';
-import { notifySuccess, notifyError } from '../../services/notify';
+import { notifyError } from '../../services/notify';
 import {
 	searchAPI,
 	staffAPI,
-	lmpSource,
-	bookingPeriod,
 	genotype,
 	bloodGroup,
 } from '../../services/constants';
-import DatePicker from 'react-datepicker';
-
-import moment from 'moment';
-
 import { loadStaff } from '../../actions/hr';
 import { validateAntennatal } from '../../services/validationSchemas';
-import { useForm } from 'react-hook-form';
 import { loadPatientIVFForm } from '../../actions/patient';
 
 const validate = validateAntennatal;
 let WifeLab = props => {
-	const { page, name, error, ivf, onSubmit } = props;
+	const { page, error, ivf } = props;
 	const dispatch = useDispatch();
 	let [searching, setSearching] = useState(false);
 	let [patients, setPatients] = useState([]);
 	let [selectedPatient, setSelectedPatient] = useState([]);
-	let [staffs, setStaffs] = useState([]);
+	// let [staffs, setStaffs] = useState([]);
 	let [query, setQuery] = useState('');
 
 	useEffect(() => {
@@ -51,8 +42,8 @@ let WifeLab = props => {
 			}
 		}
 
-		let staffs = props.staffs.map(el => el.first_name + ' ' + el.last_name);
-		setStaffs(staffs);
+		// let staffs = props.staffs.map(el => el.first_name + ' ' + el.last_name);
+		// setStaffs(staffs);
 	};
 	const patient = React.createRef();
 

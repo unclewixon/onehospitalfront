@@ -6,9 +6,10 @@ import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
 import { loadOpthalmologyRequests } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
-import { API_URI, patientAPI } from '../../services/constants';
+
 import { request } from '../../services/utilities';
-import { notifySuccess, notifyError } from '../../services/notify';
+import { notifyError } from '../../services/notify';
+
 const Opthalmology = props => {
 	const [loading, setLoading] = useState(false);
 	const fetchImaging = async () => {
@@ -104,6 +105,7 @@ const Opthalmology = props => {
 	useEffect(() => {
 		fetchImaging();
 	}, []);
+
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">

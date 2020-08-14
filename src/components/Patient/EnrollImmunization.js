@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { request, confirmAction } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
-import { API_URI, rolesAPI } from '../../services/constants';
+import { rolesAPI } from '../../services/constants';
 import { loadRoles, deleteRole } from '../../actions/role';
 import CreateRole from './../CreateRole';
 import EditRole from './../EditRole';

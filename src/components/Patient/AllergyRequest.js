@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { request } from '../../services/utilities';
 import {
 	allergyCategories,
-	API_URI,
 	patientAPI,
 	severity,
 } from '../../services/constants';

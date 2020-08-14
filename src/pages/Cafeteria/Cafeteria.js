@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import {
-	API_URI,
 	socket,
 	staffAPI,
 	searchAPI,

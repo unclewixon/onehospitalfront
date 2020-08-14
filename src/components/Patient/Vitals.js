@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { lazy, useEffect, useState, useRef } from 'react';
+import React, { lazy, useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { Overlay, Popover, Button, ListGroup } from 'react-bootstrap';
-import { API_URI, patientAPI, vitalItems } from '../../services/constants';
+import { Button } from 'react-bootstrap';
+import { patientAPI, vitalItems } from '../../services/constants';
 import { request } from '../../services/utilities';
 import { loadVitals } from '../../actions/patient';
 import { connect } from 'react-redux';
@@ -84,11 +84,11 @@ const Page = ({ type }) => {
 };
 
 const Vitals = props => {
-	const { type, location, patient, departments } = props;
+	const { type, location, patient } = props;
 
 	const [loaded, setLoaded] = useState(false);
-	const [show, setShow] = useState(false);
-	const [target, setTarget] = useState(null);
+	// const [show, setShow] = useState(false);
+	// const [target, setTarget] = useState(null);
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
@@ -153,9 +153,18 @@ const Vitals = props => {
 				</div>
 				<div className="element-wrapper">
 					<div className="element-actions">
-						<Button className="btn btn-primary btn-sm" onClick={sendToDoctor}>
-							<i className="os-icon os-icon-mail-18"></i>
-							<span>Send To Doctor</span>
+						<Button
+							className="btn btn-primary btn-sm"
+							disabled={loading}
+							onClick={sendToDoctor}>
+							{loading ? (
+								<img src={waiting} alt="" />
+							) : (
+								<>
+									<i className="os-icon os-icon-mail-18"></i>
+									<span>Send To Doctor</span>
+								</>
+							)}
 						</Button>
 					</div>
 				</div>

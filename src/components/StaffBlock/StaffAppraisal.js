@@ -1,14 +1,17 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import isEmpty from 'lodash.isempty';
+
 import { request } from '../../services/utilities';
-import { API_URI, staffAPI, hmoAPI } from '../../services/constants';
+import { staffAPI } from '../../services/constants';
 import { loadStaff } from '../../actions/hr';
 import Tooltip from 'antd/lib/tooltip';
 import { setPerformancePeriod } from '../../actions/hr';
 import { loadStaffAppraisal } from '../../actions/general';
-import { isEmpty } from 'lodash';
-export class StaffAppraisal extends Component {
+
+class StaffAppraisal extends Component {
 	state = {
 		loading: false,
 	};
@@ -42,7 +45,7 @@ export class StaffAppraisal extends Component {
 		this.props.loadStaffAppraisal(true, staff);
 	};
 	render() {
-		const { staffs, departments } = this.props;
+		const { staffs } = this.props;
 		const { loading } = this.state;
 		return (
 			<div className="row">
