@@ -3,16 +3,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 
-import { editInventory, updateQuantity } from '../../actions/general';
-import { formatCurrency, request } from '../../services/utilities';
-import BootstrapTable from 'react-bootstrap-table-next';
+import { request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
-import { API_URI } from '../../services/constants';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { updateTransaction } from '../../actions/transaction';
-import Modal from 'antd/es/modal';
-import Button from 'antd/es/button';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
@@ -104,6 +99,8 @@ class HmoTable extends Component {
 					</>
 				);
 			}
+			default:
+				break;
 		}
 	};
 

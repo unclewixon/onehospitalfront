@@ -33,11 +33,7 @@ function InPatientAppointmentForm(props) {
 
 	const fetchServicesByCategory = async id => {
 		try {
-			const rs = await request(
-				`${serviceAPI}` + '/categories/' + id,
-				'GET',
-				true
-			);
+			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
 			const res = rs.map(service => ({
 				value: service,
 				label: service.name + ' N' + formatNumber(service.tariff),
@@ -224,7 +220,9 @@ function InPatientAppointmentForm(props) {
 								}}
 							/>
 							{validationMessage && (
-								<div className="help-text text-danger">{validationMessage}</div>
+								<div className="help-text text-info invert">
+									{validationMessage}
+								</div>
 							)}
 						</div>
 					</div>

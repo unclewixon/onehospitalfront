@@ -1,30 +1,27 @@
-import React, { Component } from 'react';
-import {
-	renderTextInput,
-	renderSelect,
-	renderTextArea,
-} from '../../services/utilities';
+import React from 'react';
+import { renderTextInput, renderTextArea } from '../../services/utilities';
 
 import { Field } from 'redux-form';
 
-const fgmType = [
-	{
-		id: 'Type I',
-		name: 'Type I',
-	},
-	{
-		id: 'Type II',
-		name: 'Type II',
-	},
-	{
-		id: 'Type III',
-		name: 'Type III',
-	},
-	{
-		id: 'Type IV',
-		name: 'Type IV',
-	},
-];
+// const fgmType = [
+// 	{
+// 		id: 'Type I',
+// 		name: 'Type I',
+// 	},
+// 	{
+// 		id: 'Type II',
+// 		name: 'Type II',
+// 	},
+// 	{
+// 		id: 'Type III',
+// 		name: 'Type III',
+// 	},
+// 	{
+// 		id: 'Type IV',
+// 		name: 'Type IV',
+// 	},
+// ];
+
 export const PastOcular = () => {
 	return (
 		<>

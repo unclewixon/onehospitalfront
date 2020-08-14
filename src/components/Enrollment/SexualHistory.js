@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { renderSelect, renderTextInput } from '../../services/utilities';
 
 import { Field } from 'redux-form';
@@ -31,8 +31,9 @@ const sat = [
 		name: 'not sure',
 	},
 ];
+
 export const SexualHistory = props => {
-	const { dob, setBirth } = props;
+	// const { dob, setBirth } = props;
 	return (
 		<>
 			<div className="col-sm-6">

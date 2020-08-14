@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
@@ -5,13 +6,12 @@ import {
 	renderSelect,
 	renderMultiselect,
 } from '../../services/utilities';
-import { Field, reduxForm, change as changeFieldValue } from 'redux-form';
+import { Field, reduxForm } from 'redux-form';
 import { withRouter } from 'react-router-dom';
 import searchingGIF from '../../assets/images/searching.gif';
 import { request } from '../../services/utilities';
-import { notifySuccess, notifyError } from '../../services/notify';
+import { notifyError } from '../../services/notify';
 import {
-	API_URI,
 	searchAPI,
 	staffAPI,
 	lmpSource,
@@ -25,7 +25,7 @@ import { loadStaff } from '../../actions/hr';
 import { validateAntennatal } from '../../services/validationSchemas';
 
 const validate = validateAntennatal;
-export class General extends Component {
+class General extends Component {
 	state = {
 		searching: false,
 		patients: [],

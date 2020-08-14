@@ -1,11 +1,8 @@
-import React, { Component } from 'react';
-import {
-	renderSelect,
-	renderTextInput,
-	renderTextArea,
-} from '../../services/utilities';
+import React from 'react';
 import DatePicker from 'react-datepicker';
-import { Field, reduxForm } from 'redux-form';
+import { Field } from 'redux-form';
+
+import { renderTextInput, renderTextArea } from '../../services/utilities';
 
 export const RoutineAssessment = props => {
 	const { gest_date, setGest } = props;

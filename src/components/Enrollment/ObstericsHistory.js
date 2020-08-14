@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { renderSelect, renderTextInput } from '../../services/utilities';
+import { renderSelect } from '../../services/utilities';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
 import { validateAntennatal } from '../../services/validationSchemas';
 import { FamilyHistory } from './FamilyHistory';
@@ -73,8 +73,8 @@ export class ObstericsHistory extends Component {
 			error,
 			page,
 			value,
-			setLmpHx,
-			lmpHx,
+			//setLmpHx,
+			//lmpHx,
 		} = this.props;
 		return (
 			<>

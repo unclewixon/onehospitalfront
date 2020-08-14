@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
-import { renderSelect, renderTextInput } from '../../services/utilities';
-import { Field, reduxForm } from 'redux-form';
+import React from 'react';
+
+import { renderTextInput } from '../../services/utilities';
+import { Field } from 'redux-form';
 import DatePicker from 'react-datepicker';
+
 export const InitialAssessment = props => {
 	const { dom, setDom } = props;
 	return (

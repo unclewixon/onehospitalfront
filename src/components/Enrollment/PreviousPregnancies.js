@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
-import {
-	renderTextInput,
-	renderSelect,
-	renderMultiselect,
-} from '../../services/utilities';
+import { renderSelect } from '../../services/utilities';
 import { Field, reduxForm } from 'redux-form';
 import { validateAntennatal } from '../../services/validationSchemas';
 import { previousPregnancies, gravida, para } from '../../services/constants';

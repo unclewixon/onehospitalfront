@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
 	renderSelect,
 	renderTextInput,
 	renderTextArea,
 } from '../../services/utilities';
 import DatePicker from 'react-datepicker';
-import { Field, reduxForm } from 'redux-form';
+import { Field } from 'redux-form';
 
 const sex = [
 	{

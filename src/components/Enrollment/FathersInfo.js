@@ -1,20 +1,16 @@
 import React, { Component } from 'react';
-import {
-	renderTextInput,
-	renderSelect,
-	renderMultiselect,
-} from '../../services/utilities';
+import { renderTextInput, renderSelect } from '../../services/utilities';
 import { Field, reduxForm } from 'redux-form';
 import { validateAntennatal } from '../../services/validationSchemas';
-const fetal = [
-	{
-		value: 'daily',
-		label: 'daily',
-	},
-	{ value: 'weekend', label: 'weekend' },
-	{ value: 'monthly', label: 'monthly' },
-];
-const fetal2 = ['daily', 'weekend', 'monthly'];
+// const fetal = [
+// 	{
+// 		value: 'daily',
+// 		label: 'daily',
+// 	},
+// 	{ value: 'weekend', label: 'weekend' },
+// 	{ value: 'monthly', label: 'monthly' },
+// ];
+// const fetal2 = ['daily', 'weekend', 'monthly'];
 
 const bloodGroup = [
 	{

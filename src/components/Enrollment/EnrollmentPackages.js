@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { renderSelect, renderMultiselect } from '../../services/utilities';
+import { renderSelect } from '../../services/utilities';
 
 import waiting from '../../assets/images/waiting.gif';
 import { Field, reduxForm } from 'redux-form';
@@ -8,6 +8,7 @@ import { validateAntennatal } from '../../services/validationSchemas';
 import { antenatalPackages } from '../../services/constants';
 
 const validate = validateAntennatal;
+
 class EnrollmentPackages extends Component {
 	state = {
 		submitting: false,

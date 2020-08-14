@@ -1,6 +1,6 @@
 import React, { Component, lazy, Suspense } from 'react';
 import Splash from '../../components/Splash';
-import { API_URI, patientAPI } from '../../services/constants';
+import { patientAPI } from '../../services/constants';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
@@ -53,7 +53,6 @@ class EnrollmentForm extends Component {
 				location.hash ? `${location.pathname}#dashboard` : '/antennatal'
 			);
 		} catch (e) {
-			const { reset } = this.props;
 			this.setState({ submitting: false });
 			notifyError(e.message || 'Submission of antennatal form not successful');
 		}

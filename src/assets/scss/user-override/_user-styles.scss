@@ -78,6 +78,7 @@ button {
 .top-menu {
 	margin-bottom: 0 !important;
 	width: 100%;
+	position: relative !important;
 	.modal-content {
 		border-radius: 6px;
 		overflow-x: hidden;
@@ -96,6 +97,7 @@ button {
 		border-left: 1px solid #f2f4f8 !important;
 		border-right: 1px solid #f2f4f8 !important;
 		border-top: 1px solid #f2f4f8 !important;
+		border-bottom: 1px solid #f2f4f8 !important;
 
 		a {
 			flex-direction: column;
@@ -463,4 +465,18 @@ button {
 }
 .content-w-l-8 {
 	margin-left: 8%;
+}
+.text-info {
+	&.invert {
+		margin-top: 4px;
+		background-color: #d1ecf1 !important;
+		border-top: 2px #bee5eb solid;
+		border-bottom: 2px #bee5eb solid;
+		color: #0c5460 !important;
+		padding: 0.15rem 1.25rem;
+		font-size: 0.85rem;
+	}
+}
+.encounter-menu {
+	display: flex;
 }

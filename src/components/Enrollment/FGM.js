@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { renderTextInput, renderSelect } from '../../services/utilities';
 
 import { Field } from 'redux-form';
@@ -21,6 +21,7 @@ const fgmType = [
 		name: 'Type IV',
 	},
 ];
+
 export const FGM = () => {
 	return (
 		<>

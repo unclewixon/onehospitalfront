@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
-import { renderSelect, renderTextInput } from '../../services/utilities';
-import { Field, reduxForm } from 'redux-form';
+import React from 'react';
+import { Field } from 'redux-form';
+
+import { renderTextInput } from '../../services/utilities';
+
 export const FamilyHistory = () => {
 	return (
 		<>

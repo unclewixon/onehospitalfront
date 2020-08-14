@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState, useRef } from 'react';
+import React, { Component } from 'react';
 import kebabCase from 'lodash.kebabcase';
 import ArrowKeysReact from 'arrow-keys-react';
 import ReactDOM from 'react-dom';
@@ -10,7 +10,7 @@ import Consumable from '../Encounter/Consumable';
 import PlanForm from '../Encounter/PlanForm';
 import Investigations from '../Encounter/Investigations';
 import Diagnosis from '../Encounter/Diagnosis';
-import PhysicalExamSummary from '../Encounter/PhysicalExamSummary';
+// import PhysicalExamSummary from '../Encounter/PhysicalExamSummary';
 import PhysicalExam from '../Encounter/PhysicalExam';
 import Allergies from '../Encounter/Allergies';
 import PastHistory from '../Encounter/PastHistory';
@@ -20,223 +20,167 @@ import { encounters } from '../../../services/constants';
 import { closeModals } from '../../../actions/general';
 import ProfileBlock from '../../ProfileBlock';
 
-const OpenEncounter = props => {
-	const [state, setState] = useState({
+const EncounterTabs = ({ index, previous, next }) => {
+	switch (index) {
+		case 9:
+			return <Consumable previous={previous} />;
+		case 8:
+			return <PlanForm next={next} previous={previous} />;
+		case 7:
+			return <Investigations next={next} previous={previous} />;
+		case 6:
+			return <Diagnosis next={next} previous={previous} />;
+		// case 6:
+		// return <PhysicalExamSummary next={next} previous={previous} />;
+		case 5:
+			return <PhysicalExam next={next} previous={previous} />;
+		case 4:
+			return <Allergies next={next} previous={previous} />;
+		case 3:
+			return <PastHistory next={next} previous={previous} />;
+		case 2:
+			return <HxForm next={next} previous={previous} />;
+		case 1:
+			return <ReviewOfSystem next={next} previous={previous} />;
+		case 0:
+		default:
+			return <Complaints next={next} />;
+	}
+};
+
+class OpenEncounter extends Component {
+	state = {
 		eIndex: 0,
 		content: '',
 		dropdown: false,
-	});
+	};
 
-	const theDiv = useRef();
-
-	useEffect(() => {
+	componentDidMount() {
 		setTimeout(() => {
-			focusDiv();
+			this.focusDiv();
 		}, 200);
 
 		ArrowKeysReact.config({
 			left: () => {
-				setState({
-					...state,
+				this.setState({
 					content: 'left key detected.',
 				});
-				previous();
+				this.previous();
 			},
 			right: () => {
-				setState({
-					...state,
+				this.setState({
 					content: 'right key detected.',
 				});
-				next();
+				this.next();
 			},
 			up: () => {
-				setState({
-					...state,
+				this.setState({
 					content: 'up key detected.',
 				});
 			},
 			down: () => {
-				setState({
-					...state,
+				this.setState({
 					content: 'down key detected.',
 				});
 			},
 		});
-	});
+	}
 
-	const open = i => () => {
-		console.log(i);
-		setState({ ...state, eIndex: i });
+	open = i => () => {
+		this.setState({ eIndex: i });
 	};
 
-	const next = async data => {
-		console.log(data);
-		const { eIndex } = state;
+	next = () => {
+		const { eIndex } = this.state;
 		const i = eIndex + 1;
 		if (i <= encounters.length - 1) {
-			setState({ ...state, eIndex: i });
+			this.setState({ eIndex: i });
 		}
 
 		setTimeout(() => {
-			focusDiv();
+			this.focusDiv();
 		}, 200);
 	};
 
-	const previous = () => {
-		const { eIndex } = state;
+	previous = () => {
+		const { eIndex } = this.state;
 		const i = eIndex - 1;
 		if (i >= 0) {
-			setState({ ...state, eIndex: i });
+			this.setState({ eIndex: i });
 		}
 
 		setTimeout(() => {
-			focusDiv();
+			this.focusDiv();
 		}, 200);
 	};
 
-	const toggleDropdown = () => () => {
-		setState((prevState, props) => ({
+	toggleDropdown = () => () => {
+		this.setState((prevState, props) => ({
 			dropdown: !prevState.dropdown,
 		}));
 	};
 
-	function focusDiv() {
-		ReactDOM.findDOMNode(theDiv.current).focus();
+	focusDiv() {
+		console.log('set focus');
+		ReactDOM.findDOMNode(this.refs.theDiv).focus();
 	}
 
-	const { patient } = props.encounterInfo;
-	const { eIndex, dropdown } = state;
-	const current = encounters[eIndex];
+	render() {
+		const { patient } = this.props;
+		const { eIndex, dropdown } = this.state;
+		const current = encounters[eIndex];
 
-	return (
-		<div
-			className="onboarding-modal modal fade animated show top-modal"
-			role="dialog"
-			style={{ display: 'block' }}
-			tabIndex="1"
-			{...ArrowKeysReact.events}
-			ref={theDiv}>
+		return (
 			<div
-				className="modal-dialog modal-lg modal-centered-full"
-				role="document">
-				<div className="modal-content">
-					<button
-						aria-label="Close"
-						className="close"
-						type="button"
-						onClick={() => props.closeModals(false)}>
-						<span className="os-icon os-icon-close"></span>
-					</button>
-					<div className="layout-w flex-column">
-						<ProfileBlock
-							dropdown={dropdown}
-							patient={patient}
-							toggleDropdown={toggleDropdown}
-						/>
-						<EncounterMenu
-							profile={false}
-							encounters={encounters}
-							active={kebabCase(current)}
-							open={open}
-						/>
-						<div className="content-w">
-							<div className="content-i">
-								<div className="content-box">
-									{
-										{
-											9: (
-												<Consumable
-													index={eIndex}
-													next={next}
-													previous={previous}
-												/>
-											),
-											8: (
-												<PlanForm
-													index={eIndex}
-													next={next}
-													previous={previous}
-												/>
-											),
-											7: (
-												<Investigations
-													index={eIndex}
-													next={next}
-													previous={previous}
-												/>
-											),
-											6: (
-												<Diagnosis
-													index={eIndex}
-													next={next}
-													previous={previous}
-												/>
-											),
-											// 6: (
-											// 	<PhysicalExamSummary
-											// 		index={eIndex}
-											// 		next={next}
-											// 		previous={previous}
-											// 	/>
-											// ),
-											5: (
-												<PhysicalExam
-													index={eIndex}
-													next={next}
-													previous={previous}
-												/>
-											),
-											4: (
-												<Allergies
-													index={eIndex}
-													next={next}
-													previous={previous}
-												/>
-											),
-											3: (
-												<PastHistory
-													index={eIndex}
-													next={next}
-													previous={previous}
-												/>
-											),
-											2: (
-												<HxForm
-													index={eIndex}
-													next={next}
-													previous={previous}
-												/>
-											),
-											1: (
-												<ReviewOfSystem
-													index={eIndex}
-													next={next}
-													previous={previous}
-												/>
-											),
-											0: (
-												<Complaints
-													index={eIndex}
-													next={next}
-													previous={previous}
-												/>
-											),
-										}[eIndex]
-									}
+				className="onboarding-modal modal fade animated show top-modal"
+				role="dialog"
+				style={{ display: 'block' }}
+				tabIndex="1"
+				{...ArrowKeysReact.events}
+				ref="theDiv">
+				<div className="modal-dialog modal-lg modal-centered" role="document">
+					<div className="modal-content">
+						<button
+							aria-label="Close"
+							className="close"
+							type="button"
+							onClick={() => this.props.closeModals(false)}>
+							<span className="os-icon os-icon-close"></span>
+						</button>
+						<div className="layout-w flex-column">
+							<ProfileBlock
+								dropdown={dropdown}
+								patient={patient}
+								toggleDropdown={this.toggleDropdown}
+							/>
+							<EncounterMenu
+								profile={false}
+								encounters={encounters}
+								active={kebabCase(current)}
+								open={this.open}
+							/>
+							<div className="content-w">
+								<div className="content-i">
+									<div className="content-box">
+										<EncounterTabs
+											index={eIndex}
+											next={this.next}
+											previous={this.previous}
+										/>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	);
-};
+		);
+	}
+}
 
 const mapStateToProps = (state, ownProps) => {
 	return {
-		encounterData: state.patient.encounterData,
-		encounterInfo: state.general.encounterInfo,
+		patient: state.user.patient,
 	};
 };
 

@@ -1,9 +1,5 @@
-import React, { Component } from 'react';
-import {
-	renderTextInput,
-	renderSelect,
-	renderTextArea,
-} from '../../services/utilities';
+import React from 'react';
+import { renderTextInput, renderTextArea } from '../../services/utilities';
 
 import { Field } from 'redux-form';
 
