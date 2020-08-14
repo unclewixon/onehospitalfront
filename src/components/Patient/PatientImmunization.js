@@ -2,15 +2,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
+import isEmpty from 'lodash.isempty';
+import Tooltip from 'antd/lib/tooltip';
+
 import { request, confirmAction } from '../../services/utilities';
-import { API_URI, patientAPI } from '../../services/constants';
 import { notifyError, notifySuccess } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
-import Tooltip from 'antd/lib/tooltip';
-import moment from 'moment';
 import { loadImmunization, deleteImmunization } from '../../actions/patient';
 import { viewImmunizationDetail } from '../../actions/general';
-import _ from 'lodash';
 
 export class PatientImmunization extends Component {
 	state = {
@@ -30,7 +29,7 @@ export class PatientImmunization extends Component {
 		try {
 			this.setState({ loading: true });
 			// console.log(
-			// 	`${API_URI}/patient/immunizations?startDate=${startDate}&endDate=${endDate}&patient_id=`
+			// 	`patient/immunizations?startDate=${startDate}&endDate=${endDate}&patient_id=`
 			// );
 
 			const rs = await request(
@@ -63,7 +62,7 @@ export class PatientImmunization extends Component {
 		confirmAction(this.deleteImmunization(id), null);
 	};
 	render() {
-		const { location, immunization } = this.props;
+		const { location } = this.props;
 		const { loading, requests } = this.state;
 		return (
 			<div className="col-sm-12">
@@ -107,7 +106,7 @@ export class PatientImmunization extends Component {
 														<img alt="searching" src={searchingGIF} />
 													</td>
 												</tr>
-											) : !_.isEmpty(requests) ? (
+											) : !isEmpty(requests) ? (
 												requests.map((immun, i) => {
 													return (
 														<tr key={i + 1}>

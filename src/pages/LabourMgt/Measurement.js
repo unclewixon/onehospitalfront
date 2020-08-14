@@ -1,16 +1,14 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
 import Tooltip from 'antd/lib/tooltip';
-import { API_URI, searchAPI } from '../../services/constants';
-import { notifySuccess, notifyError } from '../../services/notify';
-import { request, confirmAction } from '../../services/utilities';
+
+import { notifyError } from '../../services/notify';
+import { request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadLabourMeasurement } from '../../actions/patient';
 import { labourMeasurementDetail } from '../../actions/general';
-import _ from 'lodash';
-import DatePicker from 'antd/lib/date-picker';
-import waiting from '../../assets/images/waiting.gif';
+import isEmpty from 'lodash.isempty';
 
 export class Measurement extends Component {
 	state = { loading: false, measurements: [], submitting: false };
@@ -64,7 +62,7 @@ export class Measurement extends Component {
 											<img alt="searching" src={searchingGIF} />
 										</td>
 									</tr>
-								) : !_.isEmpty(measurement) ? (
+								) : !isEmpty(measurement) ? (
 									measurement.map((el, i) => {
 										return (
 											<tr key={i + 1}>

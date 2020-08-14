@@ -3,12 +3,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import Tooltip from 'antd/lib/tooltip';
-import { API_URI, searchAPI } from '../../services/constants';
+import isEmpty from 'lodash.isempty';
+
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request, confirmAction } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadImmunization, deleteImmunization } from '../../actions/patient';
-import _ from 'lodash';
 import DatePicker from 'antd/lib/date-picker';
 import waiting from '../../assets/images/waiting.gif';
 
@@ -145,7 +145,6 @@ export class AllImmunization extends Component {
 			filtering,
 			loading,
 			searching,
-			patient_id,
 			patient_name,
 			patients,
 		} = this.state;
@@ -266,7 +265,7 @@ export class AllImmunization extends Component {
 																<img alt="searching" src={searchingGIF} />
 															</td>
 														</tr>
-													) : !_.isEmpty(this.props.immunization) ? (
+													) : !isEmpty(this.props.immunization) ? (
 														immunization.map((immun, i) => {
 															return (
 																<tr key={i + 1}>

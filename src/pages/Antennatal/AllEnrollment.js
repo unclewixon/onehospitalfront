@@ -1,9 +1,10 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
 import { connect } from 'react-redux';
-import { patientAPI, transactionsAPI, API_URI } from '../../services/constants';
-import { notifySuccess, notifyError } from '../../services/notify';
+
+import { notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
@@ -11,7 +12,7 @@ import DatePicker from 'antd/lib/date-picker';
 import waiting from '../../assets/images/waiting.gif';
 import { loadAntennatal } from '../../actions/patient';
 import { viewAntenatalDetail } from '../../actions/general';
-import _ from 'lodash';
+import isEmpty from 'lodash.isempty';
 
 const { RangePicker } = DatePicker;
 export class AllEnrollment extends Component {
@@ -205,7 +206,7 @@ export class AllEnrollment extends Component {
 															<img alt="searching" src={searchingGIF} />
 														</td>
 													</tr>
-												) : !_.isEmpty(this.props.antennatal) ? (
+												) : !isEmpty(this.props.antennatal) ? (
 													this.tableBody()
 												) : (
 													<tr>

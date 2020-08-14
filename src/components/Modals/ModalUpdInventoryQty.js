@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { closeModals } from '../../actions/general';
-import { request, requestPatch } from '../../services/utilities';
-import { API_URI, inventoryUpdateQuantityAPI } from '../../services/constants';
+import { request } from '../../services/utilities';
+import { inventoryUpdateQuantityAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
 import { SubmissionError } from 'redux-form';
 import waiting from '../../assets/images/waiting.gif';
@@ -36,12 +36,7 @@ class ModalUpdInventoryQty extends Component {
 		};
 		this.setState({ submitting: true });
 		try {
-			const rs = await request(
-				`${inventoryUpdateQuantityAPI}`,
-				'PATCH',
-				true,
-				data
-			);
+			const rs = await request(inventoryUpdateQuantityAPI, 'PATCH', true, data);
 			this.props.updateInventory(rs);
 			notifySuccess('Quantity Updated');
 			this.props.closeModals(true);

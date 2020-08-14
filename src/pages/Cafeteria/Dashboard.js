@@ -1,26 +1,21 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
-import {
-	API_URI,
-	socket,
-	staffAPI,
-	searchAPI,
-	patientAPI,
-} from '../../services/constants';
+import { API_URI, staffAPI, searchAPI } from '../../services/constants';
 import { request } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import CafeteriaCustomerDetail from '../../components/CafeteriaCustomerDetail';
 import CafeteriaTransactionTable from '../../components/CafeteriaTransactionTable';
 import size from 'lodash.size';
 import searchingGIF from '../../assets/images/searching.gif';
-import _ from 'lodash';
+import isEmpty from 'lodash.isempty';
 
 const CafeteriaDashboard = () => {
 	const [patients, setPatients] = useState([]);
 	const [customer, setCustomer] = useState('');
-	const [activePage, togglePage] = useState('Dashboard');
-	const [special, setSpecial] = useState([]);
-	const [loaded, setLoaded] = useState(null);
-	const [dataLoaded, setDataLoaded] = useState(false);
+	// const [activePage, togglePage] = useState('Dashboard');
+	// const [special, setSpecial] = useState([]);
+	// const [loaded, setLoaded] = useState(null);
+	// const [dataLoaded, setDataLoaded] = useState(false);
 	const [items, setItems] = useState([]);
 	const [staffs, setStaffs] = useState([]);
 	const [selectedCustomer, setSelectedCustomer] = useState({});
@@ -39,10 +34,10 @@ const CafeteriaDashboard = () => {
 		setCustomer(e.target.value);
 		switch (e.target.value) {
 			case 'patient':
-				setSpecial(patients);
+				// setSpecial(patients);
 				return;
 			case 'staff':
-				setSpecial(staffs);
+				// setSpecial(staffs);
 				return;
 			default:
 				setSelectedCustomer({});
@@ -80,11 +75,7 @@ const CafeteriaDashboard = () => {
 			if (customer === 'patient') {
 				try {
 					setSearching(true);
-					const rs = await request(
-						`${API_URI}/${searchAPI}?q=${query}`,
-						'GET',
-						true
-					);
+					const rs = await request(`${searchAPI}?q=${query}`, 'GET', true);
 
 					setPatients(rs);
 					setSearching(false);
@@ -95,11 +86,7 @@ const CafeteriaDashboard = () => {
 			} else if (customer === 'staff') {
 				try {
 					setSearching(true);
-					const rs = await request(
-						`${API_URI}/${staffAPI}/find?q=${query}`,
-						'GET',
-						true
-					);
+					const rs = await request(`${staffAPI}/find?q=${query}`, 'GET', true);
 					setStaffs(rs);
 					setSearching(false);
 				} catch (e) {
@@ -135,8 +122,8 @@ const CafeteriaDashboard = () => {
 		e.preventDefault();
 		console.log(item);
 
-		if (!_.isEmpty(item.item) && item.quantity > 0) {
-			if (_.isEmpty(order.find(el => el.item.q_id === item.item.q_id))) {
+		if (!isEmpty(item.item) && item.quantity > 0) {
+			if (isEmpty(order.find(el => el.item.q_id === item.item.q_id))) {
 				setOrder([...order, item]);
 			}
 		}
@@ -194,12 +181,7 @@ const CafeteriaDashboard = () => {
 
 		try {
 			setSubmitting(true);
-			const rs = await request(
-				`${API_URI}/cafeteria/sales`,
-				'POST',
-				true,
-				data
-			);
+			await request(`${API_URI}/cafeteria/sales`, 'POST', true, data);
 			notifySuccess('Transaction successful');
 			setSubmitting(false);
 		} catch (e) {
@@ -337,7 +319,7 @@ const CafeteriaDashboard = () => {
 														})}
 												</div>
 											</div>
-											<h6 className="element-header"></h6>
+											{/* <h6 className="element-header"></h6> */}
 										</form>
 									)}
 									<form onSubmit={addItem} id="item">

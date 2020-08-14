@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { viewAppointmentDetail } from '../../actions/general';
-import { fullname, request } from '../../services/utilities';
+import { fullname } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
 import { toggleProfile } from '../../actions/user';

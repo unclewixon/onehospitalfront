@@ -1,16 +1,12 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
-import { useHistory, withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import waiting from '../../assets/images/waiting.gif';
-import {
-	API_URI,
-	socket,
-	patientAPI,
-	searchAPI,
-} from '../../services/constants';
-import { request, formatNumber } from '../../services/utilities';
+import { patientAPI, searchAPI } from '../../services/constants';
+import { request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import {
@@ -25,12 +21,12 @@ const NewPhysiotherapy = props => {
 	const { register, handleSubmit, setValue } = useForm();
 	const [submitting, setSubmitting] = useState(false);
 	const [loaded, setLoaded] = useState(false);
-	const [Loading, setLoading] = useState(false);
-	const [dataLoaded, setDataLoaded] = useState(false);
+	// const [Loading, setLoading] = useState(false);
+	// const [dataLoaded, setDataLoaded] = useState(false);
 	const [serviceCenter, setServiceCenter] = useState([]);
 	const [serviceList, setServiceList] = useState([]);
 	const [services, setServices] = useState([]);
-	const [multiple, setMultiple] = useState([]);
+	// const [multiple, setMultiple] = useState([]);
 	const [paramsUI, setParamsUI] = useState([]);
 	const [parameters, setParameters] = useState([]);
 	const [searching, setSearching] = useState(false);
@@ -84,12 +80,7 @@ const NewPhysiotherapy = props => {
 		}
 
 		try {
-			const rs = await request(
-				`${patientAPI}/save-request`,
-				'POST',
-				true,
-				data
-			);
+			await request(`${patientAPI}/save-request`, 'POST', true, data);
 
 			history.push('/physiotherapy');
 			notifySuccess('physiotherapy request saved');
@@ -101,7 +92,7 @@ const NewPhysiotherapy = props => {
 	};
 
 	const changeMulti = evt => {
-		setMultiple(evt);
+		// setMultiple(evt);
 		setValue('service_request', evt);
 	};
 
@@ -130,7 +121,7 @@ const NewPhysiotherapy = props => {
 
 		setServices(requestType);
 	};
-	const handleParamInputChange = async (e, index) => {
+	const handleParamInputChange = (e, index) => {
 		const { name, value } = e.target;
 
 		let newParam = [...parameters];
@@ -140,7 +131,7 @@ const NewPhysiotherapy = props => {
 			newParam[index] = { ...newParam[index], sessionCount: value };
 		}
 
-		await setParameters(newParam);
+		setParameters(newParam);
 	};
 
 	const addSpecializationUI = () => {
@@ -148,51 +139,50 @@ const NewPhysiotherapy = props => {
 		setParamsUI(paramUI);
 	};
 
-	const removeParam = async index => {
+	const removeParam = index => {
+		// eslint-disable-next-line array-callback-return
 		let newParametersUI = paramsUI.filter((cur, i) => {
 			if (i !== index) {
 				return cur;
 			}
 		});
-		await setParamsUI([]);
+		setParamsUI([]);
+
+		// eslint-disable-next-line array-callback-return
 		let newParam = parameters.filter((cur, i) => {
 			if (i !== index) {
 				return cur;
 			}
 		});
-		await setParameters(newParam);
-		await setParamsUI(newParametersUI);
+
+		setParameters(newParam);
+		setParamsUI(newParametersUI);
 	};
 
 	useEffect(() => {
 		if (!loaded) {
 			props
 				.getAllService()
-				.then(response => {
-					setDataLoaded(true);
-				})
+				.then(response => {})
 				.catch(e => {
 					notifyError(e.message || 'could not fetch services list');
 				});
+			setLoaded(true);
+			setServiceList(props.ServicesList);
 		}
-		setLoaded(true);
-		setServiceList(props.ServicesList);
 	}, [props, loaded]);
 
 	useEffect(() => {
 		if (!loaded) {
 			props
 				.getAllServiceCategory()
-				.then(response => {
-					setDataLoaded(true);
-				})
+				.then(response => {})
 				.catch(e => {
-					setDataLoaded(true);
 					notifyError(e.message || 'could not fetch service categories');
 				});
+			setLoaded(true);
+			setServiceCenter(props.ServiceCategories);
 		}
-		setLoaded(true);
-		setServiceCenter(props.ServiceCategories);
 	}, [props, loaded]);
 
 	return (

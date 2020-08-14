@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { API_URI, patientAPI } from '../../services/constants';
+
+import { API_URI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
@@ -11,7 +11,8 @@ import ClinicalLabItem from '../../components/ClinicalLabItem';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadClinicalLab } from '../../actions/patient';
-import _ from 'lodash';
+import isEmpty from 'lodash.isempty';
+
 const { RangePicker } = DatePicker;
 // const departments = [
 //     { id: 'ejejekek', name: 'angel' },
@@ -93,9 +94,8 @@ class LabFilledRequest extends Component {
 
 	render() {
 		const { filtering, loading } = this.state;
-		const { location, clinicalLab } = this.props;
+		const { clinicalLab } = this.props;
 
-		const page = location.pathname.split('/').pop();
 		return (
 			<>
 				<div className="col-sm-12">
@@ -201,7 +201,7 @@ class LabFilledRequest extends Component {
 													})}
 											</tbody>
 										</table>
-										{!_.isEmpty(clinicalLab) ? null : (
+										{!isEmpty(clinicalLab) ? null : (
 											<div className="text-center">No clinical Lab request</div>
 										)}
 									</div>

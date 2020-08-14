@@ -2,15 +2,16 @@
 import React, { Component } from 'react';
 import Tooltip from 'antd/lib/tooltip';
 import { connect } from 'react-redux';
-import { Switch, Link, withRouter, Route } from 'react-router-dom';
-import { patientAPI, transactionsAPI, API_URI } from '../../services/constants';
-import { notifySuccess, notifyError } from '../../services/notify';
+import { Link, withRouter } from 'react-router-dom';
+
+import { notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
 import { loadAntennatal } from '../../actions/patient';
 import { viewAntenatalDetail } from '../../actions/general';
-import _ from 'lodash';
+import isEmpty from 'lodash.isempty';
+
 export class Antennatal extends Component {
 	state = {
 		filtering: false,
@@ -24,8 +25,6 @@ export class Antennatal extends Component {
 	}
 
 	fetchAntennatal = async () => {
-		const { status } = this.state;
-
 		let startDate = moment()
 			.subtract(1, 'd')
 			.format('YYYY-MM-DD');
@@ -95,7 +94,7 @@ export class Antennatal extends Component {
 		});
 	};
 	render() {
-		const { filtering, loading } = this.state;
+		const { loading } = this.state;
 		const { location } = this.props;
 		const page = location.pathname.split('/').pop();
 		return (
@@ -177,7 +176,7 @@ export class Antennatal extends Component {
 														<img alt="searching" src={searchingGIF} />
 													</td>
 												</tr>
-											) : !_.isEmpty(this.props.antennatal) ? (
+											) : !isEmpty(this.props.antennatal) ? (
 												this.tableBody()
 											) : (
 												<tr>

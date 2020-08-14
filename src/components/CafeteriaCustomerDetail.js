@@ -1,6 +1,8 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import avatar1 from '../assets/images/avatar1.jpg';
-import _ from 'lodash';
+import isEmpty from 'lodash.isempty';
+
 const CafeteriaCustomerDetail = props => {
 	const [customer, setCustomer] = useState({});
 	const [orderBy, setOrderBy] = useState('');
@@ -11,7 +13,7 @@ const CafeteriaCustomerDetail = props => {
 	}, [props]);
 	return (
 		<div>
-			{!_.isEmpty(customer) ? (
+			{!isEmpty(customer) ? (
 				<>
 					<h6 className="element-header">Customer Detail</h6>
 					<div className="profile-tile">
@@ -20,12 +22,12 @@ const CafeteriaCustomerDetail = props => {
 								<img src={avatar1} alt="staff profile" />
 							</div>
 							{/* <div className="pt-user-name">
-					{_.isEmpty(customer) ? 'Walk in Customer' : customerName()}
+					{isEmpty(customer) ? 'Walk in Customer' : customerName()}
 				</div> */}
 						</a>
 						<div className="profile-tile-meta">
-							{/* !_.isEmpty(customer) && !_.isNil(customer.department)  */}
-							{orderBy === 'staff' && !_.isEmpty(customer) ? (
+							{/* !isEmpty(customer) && !_.isNil(customer.department)  */}
+							{orderBy === 'staff' && !isEmpty(customer) ? (
 								<ul>
 									<li>
 										Staff ID:
@@ -51,7 +53,7 @@ const CafeteriaCustomerDetail = props => {
 								</ul>
 							) : null}
 
-							{orderBy === 'patient' && !_.isEmpty(customer) ? (
+							{orderBy === 'patient' && !isEmpty(customer) ? (
 								<ul>
 									<li>
 										PatientID:

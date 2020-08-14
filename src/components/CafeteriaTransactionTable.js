@@ -1,16 +1,20 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
+import isEmpty from 'lodash.isempty';
+
 import waiting from '../assets/images/waiting.gif';
-import _ from 'lodash';
+
 const paymentType = [
 	{ value: 'POS', label: 'POS' },
 	{ value: 'Cash', label: 'Cash' },
 	{ value: 'Transfer', label: 'Transfer' },
 ];
+
 const CafeteriaTransactionTable = props => {
 	const [orders, setOrders] = useState([]);
-	const [subTotal, setSubTotal] = useState(0);
+	// const [subTotal, setSubTotal] = useState(0);
 	const [amountPaid, setAmountPaid] = useState(0);
-	const [balance, setBalance] = useState(0);
+	// const [balance, setBalance] = useState(0);
 	const [type, setType] = useState('');
 
 	const calSubTotal = () => {
@@ -35,7 +39,7 @@ const CafeteriaTransactionTable = props => {
 	};
 	const handleSubmit = async e => {
 		e.preventDefault();
-		if (type && !_.isEmpty(orders)) {
+		if (type && !isEmpty(orders)) {
 			let summary = {
 				type,
 				amount: amountPaid,

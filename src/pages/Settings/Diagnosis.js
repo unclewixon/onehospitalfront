@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { uploadDiagnosis } from '../../actions/general';
-import { notifySuccess, notifyError } from '../../services/notify';
+import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import {
 	getAllDiagnosises,

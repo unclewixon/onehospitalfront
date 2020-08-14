@@ -3,15 +3,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import Tooltip from 'antd/lib/tooltip';
-import { API_URI } from '../../services/constants';
+import isEmpty from 'lodash.isempty';
+
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request, confirmAction } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadImmunization, deleteImmunization } from '../../actions/patient';
 import { viewImmunizationDetail } from '../../actions/general';
-import { ReactComponent as ViewIcon } from '../../assets/svg-icons/view.svg';
-import _ from 'lodash';
-export class Dashboard extends Component {
+
+class Dashboard extends Component {
 	state = {
 		filtering: false,
 		loading: false,
@@ -93,7 +93,7 @@ export class Dashboard extends Component {
 												<img alt="searching" src={searchingGIF} />
 											</td>
 										</tr>
-									) : !_.isEmpty(this.props.immunization) ? (
+									) : !isEmpty(this.props.immunization) ? (
 										immunization.map((immun, i) => {
 											return (
 												<tr key={i + 1}>

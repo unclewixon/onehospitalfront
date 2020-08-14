@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { API_URI, patientAPI } from '../../services/constants';
+import { patientAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
@@ -10,14 +10,16 @@ import ClinicalLabItem from '../../components/ClinicalLabItem';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadClinicalLab } from '../../actions/patient';
-import _ from 'lodash';
+import isEmpty from 'lodash.isempty';
 import ModalClinicalLabFilled from './../../components/Modals/ModalClinicalLabFilled';
+
 const { RangePicker } = DatePicker;
 
 const status = [
 	{ value: 0, label: 'processing' },
 	{ value: 1, label: 'done' },
 ];
+
 class LabRecentRequest extends Component {
 	state = {
 		filtering: false,
@@ -219,7 +221,7 @@ class LabRecentRequest extends Component {
 												)}
 											</tbody>
 										</table>
-										{!_.isEmpty(clinicalLab) ? null : (
+										{!isEmpty(clinicalLab) ? null : (
 											<div className="text-center">No clinical Lab request</div>
 										)}
 									</div>

@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import Tooltip from 'antd/lib/tooltip';
-import { API_URI, searchAPI } from '../../services/constants';
-import { notifySuccess, notifyError } from '../../services/notify';
-import { request, confirmAction } from '../../services/utilities';
+import isEmpty from 'lodash.isempty';
+
+import { notifyError } from '../../services/notify';
+import { request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadRiskAssessment } from '../../actions/patient';
-import _ from 'lodash';
-import DatePicker from 'antd/lib/date-picker';
-import waiting from '../../assets/images/waiting.gif';
 
 export class RiskAssessment extends Component {
 	state = {
@@ -68,7 +65,7 @@ export class RiskAssessment extends Component {
 										<img alt="searching" src={searchingGIF} />
 									</td>
 								</tr>
-							) : !_.isEmpty(risk) ? (
+							) : !isEmpty(risk) ? (
 								risk.map((el, i) => {
 									return (
 										<tr key={i + 1}>
