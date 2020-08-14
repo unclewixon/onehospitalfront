@@ -1,19 +1,10 @@
 import React, { Component } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import {
-	Field,
-	reduxForm,
-	SubmissionError,
-	reset,
-	change,
-	formValueSelector,
-} from 'redux-form';
+import { Field, reduxForm } from 'redux-form';
 
 import {
-	getPeriod,
 	errorMessage,
-	request,
 	renderTextArea,
 	confirmAction,
 	renderTextInput,
@@ -136,7 +127,7 @@ export class LineAppraisal extends Component {
 		);
 	};
 	render() {
-		const { location, staff, error, handleSubmit, period, values } = this.props;
+		const { location, error, handleSubmit, period, values } = this.props;
 		const { submitting } = this.state;
 		console.log(values);
 		return (
@@ -294,7 +285,7 @@ LineAppraisal = reduxForm({
 	validate,
 })(LineAppraisal);
 
-const selector = formValueSelector('line_appraisal');
+// const selector = formValueSelector('line_appraisal');
 const mapStateToProps = state => {
 	// const arr = Array(20)
 	// 	.fill(1)

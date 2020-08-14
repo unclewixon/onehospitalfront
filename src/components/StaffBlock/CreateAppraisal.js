@@ -25,9 +25,9 @@ import { setPerformancePeriod } from '../../actions/hr';
 const validate = values => {
 	const errors = {};
 	if (
-		!values.performance ||
-		(values.performance && parseInt(values.performance, 10) > 70) ||
-		(values.performance && parseInt(values.performance, 10) < 0)
+		!values?.performance ||
+		(values?.performance && parseInt(values.performance, 10) > 70) ||
+		(values?.performance && parseInt(values.performance, 10) < 0)
 	) {
 		errors.performance = 'error';
 	}
@@ -104,14 +104,14 @@ class CreateAppraisal extends Component {
 	doCreateAppraisal = data => async () => {
 		this.setState({ submitting: true });
 		const { staff, location, departments } = this.props;
-		const deptId = staff.details.department.id;
-		const department = departments.find(d => d.id === deptId);
+		const deptId = staff?.details?.department?.id;
+		const department = departments?.find(d => d?.id === deptId);
 		if (department) {
 			const details = {
-				staffId: staff.id,
-				lineManagerId: department.hod_id,
-				departmentId: staff.details.department.id,
-				employeeComment: data.employeeComment,
+				staffId: staff?.id,
+				lineManagerId: department?.hod_id,
+				departmentId: staff.details?.department.id,
+				employeeComment: data?.employeeComment,
 				indicators: [
 					{
 						keyFocus: 'Job Performance/Competence',
@@ -195,7 +195,7 @@ class CreateAppraisal extends Component {
 
 	confirmSave = data => {
 		confirmAction(
-			this.props.isStaffAppraisal
+			this?.props?.isStaffAppraisal
 				? this.lineManager(data)
 				: this.doCreateAppraisal(data),
 			null,
@@ -223,7 +223,7 @@ class CreateAppraisal extends Component {
 								<div className="element-actions">
 									<Link
 										className="btn btn-primary btn-sm text-white"
-										to={`${location.pathname}#appraisal`}>
+										to={`/my-account/appraisal`}>
 										<i className="os-icon os-icon-ui-22" />
 										<span>go back</span>
 									</Link>
@@ -240,16 +240,14 @@ class CreateAppraisal extends Component {
 											<tr>
 												<th className="text-left">Department</th>
 												<td className="text-right">
-													{staff.details.department
-														? staff.details.department.name
-														: 'Medical Doctor'}
+													{staff?.details?.department?.name}
 												</td>
 											</tr>
 											<tr>
 												<th className="text-left">Management Period</th>
 												<td className="text-right text-uppercase">
 													{/* {getPeriod()} */}
-													{period.performancePeriod}
+													{period?.performancePeriod}
 												</td>
 											</tr>
 										</tbody>

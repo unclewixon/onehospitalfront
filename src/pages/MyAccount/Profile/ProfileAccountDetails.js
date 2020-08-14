@@ -3,12 +3,13 @@ import { ReactComponent as CurveBg } from '../../../assets/svg-icons/curve.svg';
 import bgImage from '../../../assets/images/a6.jpeg';
 
 const AccountDetails = ({ staff, onEdit, buttonText, onView }) => {
+	console.log(staff);
 	return (
 		<div className="col-sm-5">
 			<div className="user-profile compact">
 				<div
 					className="up-head-w"
-					style={{ backgroundImage: `url(${bgImage})` }}>
+					style={{ backgroundImage: `url(${staff?.details?.profile_pic})` }}>
 					<div className="up-social">
 						<a href="#">
 							<i className="os-icon os-icon-twitter"></i>
