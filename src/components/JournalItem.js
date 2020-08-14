@@ -1,11 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
-import { viewAppraisal } from '../actions/general';
-export class JournalItem extends Component {
+
+class JournalItem extends Component {
 	render() {
-		const { approved, item, index, edit } = this.props;
+		const { item, edit } = this.props;
 		return (
 			<tr>
 				<td>{item.createdAt}</td>

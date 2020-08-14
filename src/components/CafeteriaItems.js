@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 
 import { connect } from 'react-redux';
@@ -41,7 +41,7 @@ const CafeteriaItems = props => {
 			description,
 			category_id,
 			category,
-			item,
+			// item,
 			item_code,
 		},
 		setState,

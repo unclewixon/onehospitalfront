@@ -1,10 +1,10 @@
 import React, { Component, lazy, Suspense } from 'react';
-import { Switch, Link, withRouter, Route } from 'react-router-dom';
+import { Switch, withRouter, Route } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
 
 const Cafeteria = lazy(() => import('./Cafeteria'));
-const Inventory = lazy(() => import('./Inventory'));
+// const Inventory = lazy(() => import('./Inventory'));
 const CafeteriaItems = lazy(() => import('../../components/CafeteriaItems'));
 const CafeteriaCategory = lazy(() =>
 	import('../../components/CafeteriaCategory')
@@ -15,7 +15,8 @@ const CafeteriaInvCategory = lazy(() =>
 const CafeteriaInventory = lazy(() =>
 	import('../../components/CafeteriaInventory')
 );
-export class index extends Component {
+
+class index extends Component {
 	render() {
 		const { match } = this.props;
 		return (

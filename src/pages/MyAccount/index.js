@@ -1,15 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component, lazy, Suspense } from 'react';
-import { Switch, withRouter, Route, Link } from 'react-router-dom';
+import React, { lazy, Suspense } from 'react';
+import { Switch, withRouter, Route } from 'react-router-dom';
+import { connect } from 'react-redux';
+
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
-import { connect } from 'react-redux';
 
 const AccountProfile = lazy(() => import('./Profile/index'));
 
 const MyAccount = ({ match, staff }) => {
-	const department = staff?.details?.department?.name;
-
 	return (
 		<div className="content-i">
 			<div className="content-box">

@@ -1,11 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect, Component } from 'react';
+import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
-import { notifySuccess, notifyError } from '../../services/notify';
+import { notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
-import { confirmAction } from '../../services/utilities';
+
 import { patientAPI } from '../../services/constants';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadAntenatalAssessment } from '../../actions/patient';
@@ -29,7 +29,7 @@ class Antennatal extends Component {
 
 		try {
 			const rs = await request(
-				`patient/antenatal/visits?patient_id=${patient.id}&startDate=&endDate=&page=&limit=`,
+				`${patientAPI}/antenatal/visits?patient_id=${patient.id}&startDate=&endDate=&page=&limit=`,
 				'GET',
 				true
 			);

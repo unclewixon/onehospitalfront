@@ -1,6 +1,6 @@
 import React, { Component, lazy, Suspense } from 'react';
 import { connect } from 'react-redux';
-import { Switch, Link, withRouter, Route } from 'react-router-dom';
+import { Switch, withRouter, Route } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Queue from '../../components/Queue';
 import Splash from '../../components/Splash';
@@ -8,10 +8,12 @@ import Splash from '../../components/Splash';
 const Antennatal = lazy(() => import('./Antennatal'));
 const Enrollment = lazy(() => import('./Enrollment'));
 const AllEnrollment = lazy(() => import('./AllEnrollment'));
-export class index extends Component {
+
+class index extends Component {
 	render() {
 		const { match, staff } = this.props;
 		const department = staff?.details?.department?.name;
+
 		return (
 			<div className="content-i">
 				<div className="content-box">

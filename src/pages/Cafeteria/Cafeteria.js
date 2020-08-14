@@ -1,27 +1,9 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import {
-	socket,
-	staffAPI,
-	searchAPI,
-	patientAPI,
-} from '../../services/constants';
-import { request } from '../../services/utilities';
-import Dashboard from './Dashboard';
-import { notifySuccess, notifyError } from '../../services/notify';
-// import CafeteriaCustomerDetail from '../../components/CafeteriaCustomerDetail';
-// import CafeteriaTransactionTable from '../../components/CafeteriaTransactionTable';
-import { loadStaff } from '../../actions/hr';
-import { loadPatients } from '../../actions/patient';
-import { getAllCafeteriaItem } from '../../actions/inventory';
+import React, { useState } from 'react';
 
-import size from 'lodash.size';
-
-import searchingGIF from '../../assets/images/searching.gif';
 import CafeteriaDashboard from './Dashboard';
 import AllTransactions from './AllTransaction';
-const Cafeteria = props => {
+
+const Cafeteria = () => {
 	const [activePage, togglePage] = useState('Dashboard');
 
 	return (
@@ -51,15 +33,4 @@ const Cafeteria = props => {
 	);
 };
 
-const mapStateToProps = state => {
-	return {
-		staffs: state.hr.staffs,
-		patients: state.patient.patients,
-		cafeteriaItems: state.inventory.cafeteriaItems,
-	};
-};
-export default connect(mapStateToProps, {
-	loadStaff,
-	loadPatients,
-	getAllCafeteriaItem,
-})(Cafeteria);
+export default Cafeteria;
