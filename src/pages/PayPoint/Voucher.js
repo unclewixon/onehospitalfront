@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -5,9 +6,8 @@ import { connect } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 
 import { createVoucher } from '../../actions/general';
-import VoucherTable from '../../components/VoucherTable';
 import { request } from '../../services/utilities';
-import { API_URI, vouchersAPI } from '../../services/constants';
+import { vouchersAPI } from '../../services/constants';
 import { loadVoucher } from '../../actions/paypoint';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
@@ -44,8 +44,7 @@ export class Voucher extends Component {
 	};
 	render() {
 		const { loading } = this.state;
-		const { match, location, voucher } = this.props;
-		const page = location.pathname.split('/').pop();
+		const { voucher } = this.props;
 		return (
 			<>
 				<div className="element-wrapper">

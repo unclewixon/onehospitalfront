@@ -2,16 +2,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { request } from '../../services/utilities';
-import { API_URI } from '../../services/constants';
-import { loadPatientProcedureData } from '../../actions/patient';
-import { notifyError } from '../../services/notify';
-import searchingGIF from '../../assets/images/searching.gif';
 import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
-import _ from 'lodash';
 import Select from 'react-select';
+import uniqBy from 'lodash.uniqby';
+
+import { request } from '../../services/utilities';
+import { loadPatientProcedureData } from '../../actions/patient';
+import { notifyError } from '../../services/notify';
+import searchingGIF from '../../assets/images/searching.gif';
+
 const { RangePicker } = DatePicker;
 
 class RecentProcedure extends Component {
@@ -116,7 +117,7 @@ class RecentProcedure extends Component {
 				  })
 				: [];
 
-		const filteredOptions = _.uniqBy(filteredNames, 'value');
+		const filteredOptions = uniqBy(filteredNames, 'value');
 
 		return (
 			<>

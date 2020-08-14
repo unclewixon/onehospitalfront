@@ -1,11 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
+import axios from 'axios';
 
-import InventoryItem from '../../components/InventoryItem';
 import { createInventory } from '../../actions/general';
-
-import { request, upload } from '../../services/utilities';
+import { request } from '../../services/utilities';
 import {
 	API_URI,
 	inventoryAPI,
@@ -14,15 +13,11 @@ import {
 } from '../../services/constants';
 import { loadInventories } from '../../actions/inventory';
 import Popover from 'antd/lib/popover';
-import DatePicker from 'react-datepicker';
 import waiting from '../../assets/images/waiting.gif';
 import { notifyError, notifySuccess } from '../../services/notify';
-import moment from 'moment';
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-import BootstrapTable from 'react-bootstrap-table-next';
-import Tooltip from 'antd/lib/tooltip';
 import InventoryTable from '../../components/Inventory/InventoryTable';
-import axios from 'axios';
+
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
 const DownloadInventory = ({ onHide, downloading, doDownload }) => {
 	return (
@@ -188,10 +183,7 @@ class InventoryList extends Component {
 				let formData = new FormData();
 				formData.append('file', file);
 				formData.append('category_id', category_id);
-				const rs = await axios.post(
-					`${API_URI}/${inventoryUploadAPI}`,
-					formData
-				);
+				await axios.post(`${API_URI}/${inventoryUploadAPI}`, formData);
 				const cat = categories.find(d => d.id === category_id);
 				this.fetchInventories();
 				notifySuccess(`Inventory uploaded for ${cat ? cat.name : ''} Category`);

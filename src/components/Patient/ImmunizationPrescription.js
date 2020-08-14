@@ -2,17 +2,15 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import Select from 'react-select';
 import { connect } from 'react-redux';
-import { ReactComponent as PlusIcon } from '../../assets/svg-icons/plus.svg';
+import uniqBy from 'lodash.uniqby';
 
+import { ReactComponent as PlusIcon } from '../../assets/svg-icons/plus.svg';
 import { ReactComponent as EditIcon } from '../../assets/svg-icons/edit.svg';
 import { ReactComponent as TrashIcon } from '../../assets/svg-icons/trash.svg';
-import { ReactComponent as ViewIcon } from '../../assets/svg-icons/view.svg';
 import { loadInvCategories, loadInventories } from '../../actions/inventory';
-import { notifySuccess, notifyError } from '../../services/notify';
-import { API_URI, diagnosisAPI } from '../../services/constants';
+import { notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
 import { Table } from 'react-bootstrap';
-import _ from 'lodash';
 
 const defaultValues = {
 	genericName: '',
@@ -36,9 +34,9 @@ const ImmunizationPrescription = ({
 		defaultValues,
 	});
 	const [editing, setEditing] = useState(false);
-	const [serviceId, setServiceId] = useState('');
+	// const [serviceId, setServiceId] = useState('');
 	const [pharmRequest, setPharmRequest] = useState([]);
-	const [activeRequest, setActiveRequest] = useState(null);
+	// const [activeRequest, setActiveRequest] = useState(null);
 	const [genName, setGenName] = useState('');
 	const onRefillableClick = () => {
 		setRefillable(!refillable);
@@ -60,7 +58,7 @@ const ImmunizationPrescription = ({
 		setValue('drugName', e.label);
 		// setServiceId(e.value);
 		console.log(e.value);
-		setServiceId(e.value);
+		// setServiceId(e.value);
 	};
 	const onTrash = index => {
 		const newPharm = pharmRequest.filter((pharm, i) => index !== i);
@@ -70,6 +68,7 @@ const ImmunizationPrescription = ({
 	};
 	const startEdit = (request, index) => {
 		onTrash(index);
+		// eslint-disable-next-line array-callback-return
 		Object.entries(request).map(req => {
 			const [key, value] = req;
 			setValue(key, value);
@@ -91,9 +90,11 @@ const ImmunizationPrescription = ({
 	};
 
 	let drugObj = {};
+	// eslint-disable-next-line no-unused-vars
 	const drugValues =
 		inventories && inventories.length
-			? inventories.map(drug => {
+			? // eslint-disable-next-line array-callback-return
+			  inventories.map(drug => {
 					drugObj[drug.generic_name] = {
 						value: drug.id,
 						label: drug.name,
@@ -113,7 +114,7 @@ const ImmunizationPrescription = ({
 						};
 					})
 			: [];
-	const filteredGenericNameOptions = _.uniqBy(genericNameOptions, 'value');
+	const filteredGenericNameOptions = uniqBy(genericNameOptions, 'value');
 
 	const drugNameOptions =
 		genericNameOptions && genericNameOptions.length

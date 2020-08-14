@@ -1,23 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-
-import { socket, transactionsAPI } from '../services/constants';
-import { request, formatNumber, confirmAction } from '../services/utilities';
-import waiting from '../assets/images/waiting.gif';
-import { notifySuccess, notifyError } from '../services/notify';
-import searchingGIF from '../assets/images/searching.gif';
 import moment from 'moment';
 import { connect } from 'react-redux';
+
+import { transactionsAPI } from '../services/constants';
+import { request } from '../services/utilities';
 import {
 	loadTodayTransaction,
 	deleteTransaction,
 } from '../actions/transaction';
-import Tooltip from 'antd/lib/tooltip';
-import {
-	applyVoucher,
-	approveTransaction,
-	createVoucher,
-} from '../actions/general';
+import { applyVoucher, approveTransaction } from '../actions/general';
 import TransactionTable from './Tables/TransactionTable';
 
 export class PayPointTable extends Component {

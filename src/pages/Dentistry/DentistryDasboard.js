@@ -8,7 +8,7 @@ import { loadDentistryRequests } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
 import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
-import _ from 'lodash';
+import uniqBy from 'lodash.uniqby';
 import DatePicker from 'antd/lib/date-picker';
 import ModalDentistry from '../../components/Modals/ModalDentistry';
 import Select from 'react-select';
@@ -160,7 +160,7 @@ class DentistryDashboard extends Component {
 				  })
 				: [];
 
-		const filteredOptions = _.uniqBy(filteredNames, 'value');
+		const filteredOptions = uniqBy(filteredNames, 'value');
 
 		const customStyle = {
 			control: (provided, state) => ({

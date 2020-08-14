@@ -2,24 +2,25 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
+import DatePicker from 'antd/lib/date-picker';
+import Tooltip from 'antd/lib/tooltip';
+
 import {
 	API_URI,
 	hmoAPI,
 	transactionsAPI,
 	searchAPI,
 } from '../../services/constants';
-import Tooltip from 'antd/lib/tooltip';
 import waiting from '../../assets/images/waiting.gif';
-import moment from 'moment';
-import DatePicker from 'antd/lib/date-picker';
 import { request } from '../../services/utilities';
 import ClinicalLabItem from '../../components/ClinicalLabItem';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadRadiology } from '../../actions/patient';
-import _ from 'lodash';
 import { loadHmoTransaction } from '../../actions/hmo';
 import HmoTable from '../../components/HMO/HmoTable';
+
 const { RangePicker } = DatePicker;
 
 const status = [

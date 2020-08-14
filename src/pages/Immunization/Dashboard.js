@@ -29,7 +29,7 @@ class Dashboard extends Component {
 		try {
 			this.setState({ loading: true });
 			// console.log(
-			// 	`${API_URI}/patient/immunizations?startDate=${startDate}&endDate=${endDate}&patient_id=`
+			// 	`patient/immunizations?startDate=${startDate}&endDate=${endDate}&patient_id=`
 			// );
 
 			const rs = await request(

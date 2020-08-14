@@ -38,7 +38,7 @@ export class AllImmunization extends Component {
 		try {
 			this.setState({ loading: true });
 			// console.log(
-			// 	`${API_URI}/patient/immunizations?startDate=${startDate}&endDate=${endDate}&patient_id=`
+			// 	`patient/immunizations?startDate=${startDate}&endDate=${endDate}&patient_id=`
 			// );
 
 			const rs = await request(
@@ -109,7 +109,7 @@ export class AllImmunization extends Component {
 				} else {
 					// this.setState({ searchingStaff: true });
 					// const rs = await request(
-					// 	`${API_URI}/hr/staffs/find?q=${this.state.query}`,
+					// 	`hr/staffs/find?q=${this.state.query}`,
 					// 	'GET',
 					// 	true
 					// );

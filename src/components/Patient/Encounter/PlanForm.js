@@ -1,9 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable no-multi-str */
-import React, { Component, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import SunEditor from 'suneditor-react';
+import uniqBy from 'lodash.uniqby';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import DatePicker from 'react-datepicker';
+
 import {
-	API_URI,
 	diagnosisAPI,
 	planServiceCenter,
 	serviceAPI,
@@ -11,11 +13,7 @@ import {
 import { Controller, ErrorMessage, useForm } from 'react-hook-form';
 import Select from 'react-select';
 import { connect, useDispatch } from 'react-redux';
-import {
-	addPharmacyRequest,
-	loadEncounterData,
-	loadEncounterForm,
-} from '../../../actions/patient';
+import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
 import { loadInvCategories, loadInventories } from '../../../actions/inventory';
 import {
 	get_all_diagnosis,
@@ -24,14 +22,10 @@ import {
 } from '../../../actions/settings';
 import { notifyError } from '../../../services/notify';
 import { request } from '../../../services/utilities';
-import AsyncSelect from 'react-select/async/dist/react-select.esm';
-import _ from 'lodash';
-import DatePicker from 'react-datepicker';
 
 const PlanForm = props => {
 	const {
 		previous,
-		next,
 		encounterData,
 		patient,
 		loadInvCategories,
@@ -62,7 +56,9 @@ const PlanForm = props => {
 	});
 	useEffect(() => {
 		if (encounterForm.plan?.regimens?.length > 0) {
+			// eslint-disable-next-line array-callback-return
 			encounterForm.plan.regimens.map((item, index) => {
+				// eslint-disable-next-line react-hooks/exhaustive-deps
 				data = [...data, { id: index }];
 			});
 			setData(data);
@@ -81,7 +77,7 @@ const PlanForm = props => {
 		async id => {
 			try {
 				const res = await request(
-					`${API_URI}/inventory/stocks-by-category/52b49109-028a-46c6-b5f3-1e88a48d333f`,
+					`inventory/stocks-by-category/52b49109-028a-46c6-b5f3-1e88a48d333f`,
 					'GET',
 					true
 				);
@@ -109,9 +105,9 @@ const PlanForm = props => {
 						};
 					})
 			: [];
-	const filteredGenericNameOptions = _.uniqBy(genericNameOptions, 'value');
+	const filteredGenericNameOptions = uniqBy(genericNameOptions, 'value');
 
-	let drugObj = {};
+	// let drugObj = {};
 
 	const drugNameOptions =
 		genericNameOptions && genericNameOptions.length
@@ -155,21 +151,13 @@ const PlanForm = props => {
 			return [];
 		}
 		let val = inputValue.toUpperCase();
-		const res = await request(
-			`${API_URI}/${diagnosisAPI}` + 'search?q=' + val,
-			'GET',
-			true
-		);
+		const res = await request(`${diagnosisAPI}/search?q=${val}`, 'GET', true);
 		return res;
 	};
 
 	const fetchServicesByCategory = async id => {
 		try {
-			const rs = await request(
-				`${API_URI}/${serviceAPI}` + '/categories/' + id,
-				'GET',
-				true
-			);
+			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
 			props.get_all_services(rs);
 		} catch (error) {
 			notifyError('error fetching imaging requests for the patient');
@@ -185,11 +173,11 @@ const PlanForm = props => {
 		setValue('procedure', evt);
 	};
 
-	const divStyle = {
-		//marginTop: '100em',
-		height: '1400px',
-		overflowY: 'scroll',
-	};
+	// const divStyle = {
+	// 	//marginTop: '100em',
+	// 	height: '1400px',
+	// 	overflowY: 'scroll',
+	// };
 
 	const onSubmit = async data => {
 		encounterForm.plan = data;

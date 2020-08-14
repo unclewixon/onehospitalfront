@@ -9,7 +9,7 @@ import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
-import _ from 'lodash';
+import uniqBy from 'lodash.uniqby';
 import DatePicker from 'antd/lib/date-picker';
 import Select from 'react-select';
 const { RangePicker } = DatePicker;
@@ -141,7 +141,7 @@ class RecentDentistry extends Component {
 				  })
 				: [];
 
-		const filteredOptions = _.uniqBy(filteredNames, 'value');
+		const filteredOptions = uniqBy(filteredNames, 'value');
 
 		return (
 			<>

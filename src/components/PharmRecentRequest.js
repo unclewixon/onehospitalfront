@@ -1,6 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import Tooltip from 'antd/lib/tooltip';
+import uniqBy from 'lodash.uniqby';
+
 import waiting from '../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
@@ -8,7 +10,6 @@ import { getRequestByType } from '../actions/patient';
 import { connect } from 'react-redux';
 import { notifyError } from '../services/notify';
 import Select from 'react-select';
-import _ from 'lodash';
 import PharmNewRequestViewModal from './PharmNewRequestViewModal';
 
 const { RangePicker } = DatePicker;
@@ -65,7 +66,7 @@ export class RecentRequest extends Component {
 				  })
 				: [];
 
-		const filteredOptions = _.uniqBy(filteredNames, 'value');
+		const filteredOptions = uniqBy(filteredNames, 'value');
 
 		const customStyle = {
 			control: (provided, state) => ({

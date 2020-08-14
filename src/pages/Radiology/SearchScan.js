@@ -1,25 +1,25 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { API_URI, socket, patientAPI } from '../../services/constants';
 import Tooltip from 'antd/lib/tooltip';
-import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
+
+import { patientAPI } from '../../services/constants';
+import waiting from '../../assets/images/waiting.gif';
 import DatePicker from 'antd/lib/date-picker';
-import { request, formatNumber, confirmAction } from '../../services/utilities';
-import ClinicalLabItem from '../../components/ClinicalLabItem';
-import { notifySuccess, notifyError } from '../../services/notify';
+import { request } from '../../services/utilities';
+import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadRadiology } from '../../actions/patient';
-import _ from 'lodash';
+
 const { RangePicker } = DatePicker;
 
 const status = [
 	{ value: 0, label: 'processing' },
 	{ value: 1, label: 'done' },
 ];
-export class SearchScan extends Component {
+
+class SearchScan extends Component {
 	state = {
 		filtering: false,
 		loading: false,
@@ -32,12 +32,12 @@ export class SearchScan extends Component {
 		this.fetchRadiology();
 	}
 	fetchRadiology = async () => {
-		const { startDate, endDate, status } = this.state;
+		const { startDate, endDate } = this.state;
 
 		try {
 			this.setState({ loading: true });
 			// console.log(
-			// 	`${API_URI}/${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`
+			// 	`${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`
 			// );
 			const rs = await request(
 				`${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`,
@@ -113,9 +113,8 @@ export class SearchScan extends Component {
 
 	render() {
 		const { filtering, loading } = this.state;
-		const { location, radiology } = this.props;
+		const { radiology } = this.props;
 
-		const page = location.pathname.split('/').pop();
 		return (
 			<div className="row">
 				<div className="col-sm-12">

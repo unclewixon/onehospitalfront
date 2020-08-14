@@ -18,7 +18,7 @@ import { request } from '../services/utilities';
 import AsyncSelect from 'react-select/async';
 import { loadInvCategories, loadInventories } from '../actions/inventory';
 
-import _ from 'lodash';
+import uniqBy from 'lodash.uniqby';
 
 const defaultValues = {
 	serviceUnit: '',
@@ -108,7 +108,7 @@ const PharmNewRequestComponent = ({
 			const selectCat = categories.filter(cat => cat.name === 'Pharmacy');
 			getPharmacyItems(selectCat[0].id);
 		}
-	}, []);
+	}, [categories, getPharmacyItems, getServiceUnit]);
 
 	const serviceOptions =
 		categories && categories.length
@@ -124,9 +124,11 @@ const PharmNewRequestComponent = ({
 	// 	getPharmacyItems(e.value)
 	// }
 	let drugObj = {};
+	// eslint-disable-next-line no-unused-vars
 	const drugValues =
 		inventories && inventories.length
-			? inventories.map(drug => {
+			? // eslint-disable-next-line array-callback-return
+			  inventories.map(drug => {
 					drugObj[drug.generic_name] = {
 						value: drug.name,
 						label: drug.name,
@@ -146,7 +148,7 @@ const PharmNewRequestComponent = ({
 						};
 					})
 			: [];
-	const filteredGenericNameOptions = _.uniqBy(genericNameOptions, 'value');
+	const filteredGenericNameOptions = uniqBy(genericNameOptions, 'value');
 
 	const drugNameOptions =
 		genericNameOptions && genericNameOptions.length
@@ -175,6 +177,7 @@ const PharmNewRequestComponent = ({
 
 	const startEdit = (request, index) => {
 		onTrash(index);
+		// eslint-disable-next-line array-callback-return
 		Object.entries(request).map(req => {
 			const [key, value] = req;
 			setValue(key, value);

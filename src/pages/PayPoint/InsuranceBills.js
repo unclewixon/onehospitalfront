@@ -1,26 +1,24 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-import waiting from '../../assets/images/waiting.gif';
-import TransactionTable from '../../components/Tables/TransactionTable';
-import { confirmAction, request } from '../../services/utilities';
-import { API_URI, transactionsAPI } from '../../services/constants';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import {
-	applyVoucher,
-	approveHmoTransaction,
-	approveTransaction,
-} from '../../actions/general';
-import { deleteTransaction, loadTransaction } from '../../actions/transaction';
 import DatePicker from 'antd/lib/date-picker';
-import searchingGIF from '../../assets/images/searching.gif';
 import Tooltip from 'antd/lib/tooltip';
+
+import waiting from '../../assets/images/waiting.gif';
+import { confirmAction, request } from '../../services/utilities';
+import { applyVoucher, approveHmoTransaction } from '../../actions/general';
+import { deleteTransaction, loadTransaction } from '../../actions/transaction';
+import searchingGIF from '../../assets/images/searching.gif';
 import { notifyError, notifySuccess } from '../../services/notify';
 
 const { RangePicker } = DatePicker;
+
 const paymentStatus = [
 	{ value: 0, label: 'processing' },
 	{ value: 1, label: 'done' },
 ];
+
 export class InsuranceBills extends Component {
 	state = {
 		filtering: false,

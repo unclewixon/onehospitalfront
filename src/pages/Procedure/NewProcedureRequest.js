@@ -1,8 +1,8 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import {
-	API_URI,
 	diagnosisAPI,
 	patientAPI,
 	serviceAPI,
@@ -46,11 +46,7 @@ const NewProcedure = props => {
 		if (query.length > 2) {
 			try {
 				setSearching(true);
-				const rs = await request(
-					`${API_URI}/${searchAPI}?q=${query}`,
-					'GET',
-					true
-				);
+				const rs = await request(`${searchAPI}?q=${query}`, 'GET', true);
 
 				setPatients(rs);
 				setSearching(false);
@@ -107,21 +103,13 @@ const NewProcedure = props => {
 			return [];
 		}
 		let val = inputValue.toUpperCase();
-		const res = await request(
-			`${API_URI}/${diagnosisAPI}` + 'search?q=' + val,
-			'GET',
-			true
-		);
+		const res = await request(`${diagnosisAPI}/search?q=${val}`, 'GET', true);
 		return res;
 	};
 
 	const fetchServicesByCategory = async id => {
 		try {
-			const rs = await request(
-				`${API_URI}/${serviceAPI}` + '/categories/' + id,
-				'GET',
-				true
-			);
+			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
 			props.get_all_services(rs);
 		} catch (error) {
 			console.log(error);
@@ -150,12 +138,7 @@ const NewProcedure = props => {
 			theRequest.primary_diagnosis = selectedOption.icd10Code;
 			theRequest.requestBody = requestData;
 			try {
-				const rs = await request(
-					`${API_URI}/${patientAPI}/save-request`,
-					'POST',
-					true,
-					theRequest
-				);
+				await request(`${patientAPI}/save-request`, 'POST', true, theRequest);
 				setSubmitting(false);
 				notifySuccess('Procedure Request Saved');
 				props.history.push('/settings/roles#procedure');

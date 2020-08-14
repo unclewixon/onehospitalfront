@@ -33,7 +33,7 @@ const ManageAccount = props => {
 		{ name, status, category, category_id, code, subCategory, subCategory_id },
 		setState,
 	] = useState(initialState);
-	const [loading, setLoading] = useState(false);
+	// const [loading, setLoading] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	// const [data, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(null);
@@ -123,11 +123,9 @@ const ManageAccount = props => {
 		props
 			.deleteCafeteriaInventory(data)
 			.then(data => {
-				setLoading(false);
 				notifySuccess(' Cafeteria inventory deleted');
 			})
 			.catch(error => {
-				setLoading(false);
 				notifyError('Error deleting cafeteria inventory');
 			});
 	};
@@ -142,7 +140,7 @@ const ManageAccount = props => {
 	// };
 
 	const doFilter = async () => {
-		// setFiltering(true);
+		setFiltering(true);
 		// try {
 		// 	const rs = await request(
 		// 		`cafeteria/inventories-by-category/${category}`
@@ -157,7 +155,7 @@ const ManageAccount = props => {
 		// 	notifyError('Filtering not successful');
 		// 	setFiltering(false);
 		// }
-		// setFiltering(false);
+		setFiltering(false);
 	};
 
 	const addAccountChart = () => {

@@ -1,13 +1,10 @@
-import React, { Component, lazy, Suspense, useState } from 'react';
-import Splash from '../../components/Splash';
-import { API_URI, patientAPI } from '../../services/constants';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-import { Field, reduxForm } from 'redux-form';
+import { reduxForm } from 'redux-form';
 import HcgAdminTable from './HcgAdminTable';
 import searchingGIF from '../../assets/images/searching.gif';
-import { useHistory } from 'react-router-dom';
 
 export const agents = [
 	{
@@ -25,11 +22,8 @@ export const agents = [
 ];
 
 let IVFHcgAdmin = props => {
+	// eslint-disable-next-line no-unused-vars
 	let [loading, setLoading] = useState(false);
-	let history = useHistory();
-	const onSubmitForm = async data => {
-		console.log(data);
-	};
 
 	return (
 		<div className="element-box p-0">

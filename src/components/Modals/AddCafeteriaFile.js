@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import waiting from '../../assets/images/waiting.gif';
 import { closeModals } from '../../actions/general';
 import { notifyError, notifySuccess } from '../../services/notify';
-import { API_URI } from '../../services/constants';
+
 import { upload } from '../../services/utilities';
+
 const AddCafeteriaFile = props => {
 	const [submitting, setSubmitting] = useState(false);
 	const [file, setFile] = useState(false);
 	const [label, setLabel] = useState('');
-	const [uploading, setUploading] = useState(false);
+	// const [uploading, setUploading] = useState(false);
+
 	let history = useHistory();
 
 	const handleChange = e => {
@@ -29,11 +31,7 @@ const AddCafeteriaFile = props => {
 				let formData = new FormData();
 				formData.append('file', file);
 
-				const rs = await upload(
-					`${API_URI}/cafeteria/items/bulk-upload`,
-					'POST',
-					formData
-				);
+				await upload(`cafeteria/items/bulk-upload`, 'POST', formData);
 
 				console.log(props.location);
 				history.push('/cafeteria/items');

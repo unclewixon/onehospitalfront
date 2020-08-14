@@ -1,23 +1,17 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import {
-	API_URI,
-	socket,
-	searchAPI,
-	patientAPI,
-} from '../../services/constants';
-import Tooltip from 'antd/lib/tooltip';
-import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
-import { request, formatNumber, confirmAction } from '../../services/utilities';
-import ClinicalLabItem from '../../components/ClinicalLabItem';
-import { notifySuccess, notifyError } from '../../services/notify';
+
+import { searchAPI, patientAPI } from '../../services/constants';
+import Tooltip from 'antd/lib/tooltip';
+import waiting from '../../assets/images/waiting.gif';
+import { request } from '../../services/utilities';
+import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadRadiology } from '../../actions/patient';
-import _ from 'lodash';
+
 const { RangePicker } = DatePicker;
 
 const status = [
@@ -48,10 +42,10 @@ class OpenRequest extends Component {
 		try {
 			this.setState({ loading: true });
 			console.log(
-				`${API_URI}/${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}&status=${status}`
+				`${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}&status=${status}`
 			);
 			const rs = await request(
-				`${API_URI}/${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`,
+				`${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`,
 				'GET',
 				true
 			);
@@ -72,7 +66,7 @@ class OpenRequest extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${API_URI}/${patientAPI}/${patient_id}/request/imaging?startDate=${startDate}&endDate=${endDate}&status=${status}`,
+				`${patientAPI}/${patient_id}/request/imaging?startDate=${startDate}&endDate=${endDate}&status=${status}`,
 				'GET',
 				true
 			);
@@ -161,7 +155,7 @@ class OpenRequest extends Component {
 			try {
 				this.setState({ ...this.state, searching: true });
 				const rs = await request(
-					`${API_URI}/${searchAPI}?q=${this.state.query}`,
+					`${searchAPI}?q=${this.state.query}`,
 					'GET',
 					true
 				);
@@ -187,7 +181,7 @@ class OpenRequest extends Component {
 	};
 	render() {
 		const { filtering, loading, searching, patients } = this.state;
-		const { location, radiology } = this.props;
+		const { radiology } = this.props;
 		return (
 			<div className="row">
 				<div className="col-sm-12">

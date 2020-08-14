@@ -1,24 +1,23 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { API_URI, socket, patientAPI } from '../../services/constants';
 import Tooltip from 'antd/lib/tooltip';
-import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
-import DatePicker from 'antd/lib/date-picker';
-import { request, formatNumber, confirmAction } from '../../services/utilities';
-import ClinicalLabItem from '../../components/ClinicalLabItem';
-import { notifySuccess, notifyError } from '../../services/notify';
+// import DatePicker from 'antd/lib/date-picker';
+
+import { patientAPI } from '../../services/constants';
+import { request } from '../../services/utilities';
+import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadRadiology } from '../../actions/patient';
-import _ from 'lodash';
-const { RangePicker } = DatePicker;
 
-const status = [
-	{ value: 0, label: 'processing' },
-	{ value: 1, label: 'done' },
-];
+// const { RangePicker } = DatePicker;
+
+// const status = [
+// 	{ value: 0, label: 'processing' },
+// 	{ value: 1, label: 'done' },
+// ];
+
 export class RecentRequest extends Component {
 	state = {
 		loading: false,
@@ -35,10 +34,10 @@ export class RecentRequest extends Component {
 		try {
 			this.setState({ loading: true });
 			console.log(
-				`${API_URI}/${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`
+				`${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`
 			);
 			const rs = await request(
-				`${API_URI}/${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`,
+				`${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`,
 				'GET',
 				true
 			);

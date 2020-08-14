@@ -11,7 +11,7 @@ import Tooltip from 'antd/lib/tooltip';
 import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
-import _ from 'lodash';
+import uniqBy from 'lodash.uniqby';
 import ModalDentistry from '../../components/Modals/ModalDentistry';
 import Select from 'react-select';
 const { RangePicker } = DatePicker;
@@ -161,7 +161,7 @@ class AllDentistry extends Component {
 				  })
 				: [];
 
-		const filteredOptions = _.uniqBy(filteredNames, 'value');
+		const filteredOptions = uniqBy(filteredNames, 'value');
 
 		const customStyle = {
 			control: (provided, state) => ({

@@ -9,7 +9,7 @@ import {
 	request,
 } from '../../services/utilities';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
-import { API_URI, inventoryAPI } from '../../services/constants';
+import { inventoryAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
 import { updateInventory } from '../../actions/inventory';

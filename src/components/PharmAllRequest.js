@@ -8,7 +8,7 @@ import { getRequestByType } from '../actions/patient';
 import { connect } from 'react-redux';
 import { notifyError } from '../services/notify';
 import Select from 'react-select';
-import _ from 'lodash';
+import uniqBy from 'lodash.uniqby';
 import PharmNewRequestViewModal from './PharmNewRequestViewModal';
 
 const { RangePicker } = DatePicker;
@@ -63,7 +63,7 @@ export class PharmAllRequest extends Component {
 				  })
 				: [];
 
-		const filteredOptions = _.uniqBy(filteredNames, 'value');
+		const filteredOptions = uniqBy(filteredNames, 'value');
 
 		const customStyle = {
 			control: (provided, state) => ({

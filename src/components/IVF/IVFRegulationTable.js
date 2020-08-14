@@ -1,6 +1,6 @@
 import React, { Component, lazy, Suspense } from 'react';
 import Splash from '../../components/Splash';
-import { API_URI, patientAPI } from '../../services/constants';
+import { patientAPI } from '../../services/constants';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';

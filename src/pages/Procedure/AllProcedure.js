@@ -2,18 +2,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import DatePicker from 'antd/lib/date-picker';
+import Tooltip from 'antd/lib/tooltip';
+import moment from 'moment';
+import Select from 'react-select';
+import uniqBy from 'lodash.uniqby';
+
 import { request } from '../../services/utilities';
-import { API_URI } from '../../services/constants';
 import { loadPatientProcedureData } from '../../actions/patient';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import waiting from '../../assets/images/waiting.gif';
-import Tooltip from 'antd/lib/tooltip';
-import moment from 'moment';
 import ModalProcedure from '../../components/Modals/ModalProcedure';
-import DatePicker from 'antd/lib/date-picker';
-import _ from 'lodash';
-import Select from 'react-select';
+
 const { RangePicker } = DatePicker;
 
 class AllProcedure extends Component {
@@ -132,7 +133,7 @@ class AllProcedure extends Component {
 				  })
 				: [];
 
-		const filteredOptions = _.uniqBy(filteredNames, 'value');
+		const filteredOptions = uniqBy(filteredNames, 'value');
 
 		const customStyle = {
 			control: (provided, state) => ({

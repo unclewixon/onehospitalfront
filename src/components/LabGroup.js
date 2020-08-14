@@ -5,10 +5,7 @@ import { confirmAction } from './../services/utilities';
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
-import { confirmAlert } from 'react-confirm-alert';
-import intersectionBy from 'lodash.intersectionby';
 import LabParameterPicker from './LabParameterPicker';
-import _ from 'lodash';
 
 import {
 	addLabGroup,
@@ -42,12 +39,13 @@ const LabGroup = props => {
 	const [labTests, setLabTests] = useState(null);
 	const [parameters, setParameter] = useState({});
 	const [paramsUI, setParamsUI] = useState([]);
-	const [subTestArray, setSubTestArray] = useState([]);
+	// const [subTestArray, setSubTestArray] = useState([]);
 
 	const handleParamInputChange = (e, index) => {
 		const { name, value } = e.target;
 		let newParam = { ...parameters };
 		let paramObj = {};
+		// eslint-disable-next-line array-callback-return
 		props.LabParameters.map(param => {
 			paramObj[value] = {
 				parameter_id: param.id,
@@ -92,17 +90,21 @@ const LabGroup = props => {
 
 	const structuredTest = () => {
 		const parameterObj = {};
+		// eslint-disable-next-line no-unused-vars
 		const parVals =
 			props && props.LabParameters && props.LabParameters.length
-				? props.LabParameters.map(par => {
+				? // eslint-disable-next-line array-callback-return
+				  props.LabParameters.map(par => {
 						parameterObj[par.id] = par;
 				  })
 				: [];
 
 		const testObj = {};
+		// eslint-disable-next-line no-unused-vars
 		const testVals =
 			props && props.LabTests && props.LabTests.length
-				? props.LabTests.map(test => {
+				? // eslint-disable-next-line array-callback-return
+				  props.LabTests.map(test => {
 						testObj[test.id] = test;
 				  })
 				: [];
@@ -243,7 +245,7 @@ const LabGroup = props => {
 			setParameter(paramValues);
 		}
 		setParamsUI(newParameterUI);
-		setSubTestArray([...newTests]);
+		// setSubTestArray([...newTests]);
 		setLabTests(newTests);
 	};
 

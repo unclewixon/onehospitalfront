@@ -1,16 +1,19 @@
 import React, { Component, useState, useEffect } from 'react';
-import JournalItem from '../../components/JournalItem';
-import Popover from 'antd/lib/popover';
-import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
-import _ from 'lodash';
+import Popover from 'antd/lib/popover';
+
+import JournalItem from '../../components/JournalItem';
+import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
+
 const { RangePicker } = DatePicker;
+
 const initialDate = item => ({
 	startDate: item ? item.startDate : '',
 	endDate: item ? item.endDate : '',
 });
+
 const Entry = ({ uploading, doUpload, hide, clear, item }) => {
 	const [value, setValue] = useState(false);
 	const [data, setData] = useState({

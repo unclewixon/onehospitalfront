@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
@@ -305,7 +306,7 @@ function StepOne({
 		state_of_origin,
 		lga,
 		profile_pic,
-		avatar,
+		// avatar,
 	} = values;
 	const [states, setStates] = useState([]);
 	const [image, setImage] = useState(null);

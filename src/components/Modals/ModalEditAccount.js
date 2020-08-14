@@ -2,15 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { closeModals } from '../../actions/general';
-import {
-	renderSelect,
-	renderTextInput,
-	renderTextInputGroup,
-	request,
-} from '../../services/utilities';
-import { Field, reduxForm, SubmissionError } from 'redux-form';
-import { API_URI, inventoryAPI } from '../../services/constants';
-import { notifySuccess } from '../../services/notify';
+import { renderSelect, renderTextInput } from '../../services/utilities';
+import { Field, reduxForm } from 'redux-form';
 import waiting from '../../assets/images/waiting.gif';
 import { updateInventory } from '../../actions/inventory';
 
@@ -82,7 +75,7 @@ class ModalEditAccount extends Component {
 		// };
 		// try {
 		// 	const rs = await request(
-		// 		`${API_URI}${inventoryAPI}/${invID}/update`,
+		// 		`${inventoryAPI}/${invID}/update`,
 		// 		'PATCH',
 		// 		true,
 		// 		dataWithQuantity

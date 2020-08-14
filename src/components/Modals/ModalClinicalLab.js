@@ -4,7 +4,7 @@ import moment from 'moment';
 import { Table } from 'react-bootstrap';
 import waiting from '../../assets/images/waiting.gif';
 import { request } from '../../services/utilities';
-import { API_URI } from '../../services/constants';
+
 import { notifySuccess, notifyError } from './../../services/notify';
 
 const ModalClinicalLab = ({
@@ -17,7 +17,7 @@ const ModalClinicalLab = ({
 
 	const saveLabRequest = async (data, cb) => {
 		try {
-			const rs = await request(`patient/fill-request`, 'POST', true, data);
+			await request(`patient/fill-request`, 'POST', true, data);
 			cb();
 			notifySuccess('Saved Lab Request');
 		} catch (error) {

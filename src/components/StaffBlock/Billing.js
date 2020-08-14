@@ -1,25 +1,23 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { API_URI, transactionsAPI, searchAPI } from '../../services/constants';
 import Tooltip from 'antd/lib/tooltip';
-import waiting from '../../assets/images/waiting.gif';
-import moment from 'moment';
-import DatePicker from 'antd/lib/date-picker';
-import { request } from '../../services/utilities';
-import { notifySuccess, notifyError } from '../../services/notify';
-import searchingGIF from '../../assets/images/searching.gif';
-import { loadRadiology } from '../../actions/patient';
-import _ from 'lodash';
-import { loadStaffTransaction } from '../../actions/hr';
-const { RangePicker } = DatePicker;
+// import DatePicker from 'antd/lib/date-picker';
 
-const status = [
-	{ value: 0, label: 'Open' },
-	{ value: 1, label: 'Closed' },
-	{ value: 2, label: 'Approved' },
-];
+import { API_URI, transactionsAPI, searchAPI } from '../../services/constants';
+import moment from 'moment';
+import { request } from '../../services/utilities';
+import { notifyError } from '../../services/notify';
+import searchingGIF from '../../assets/images/searching.gif';
+import { loadStaffTransaction } from '../../actions/hr';
+
+// const { RangePicker } = DatePicker;
+
+// const status = [
+// 	{ value: 0, label: 'Open' },
+// 	{ value: 1, label: 'Closed' },
+// 	{ value: 2, label: 'Approved' },
+// ];
 
 export class Billing extends Component {
 	state = {
@@ -46,7 +44,7 @@ export class Billing extends Component {
 	}
 
 	fetchCafeteriaTransaction = async () => {
-		const { status, startDate, endDate, paymentType } = this.state;
+		const { startDate, endDate } = this.state;
 		console.log(`${API_URI}`);
 		try {
 			this.setState({ loading: true });
@@ -185,13 +183,13 @@ export class Billing extends Component {
 
 	render() {
 		const {
-			filtering,
+			// 	filtering,
 			loading,
-			searching,
-			hmos,
-			staffBilling,
-			searchStaffBilling,
-			query,
+			// 	searching,
+			// 	hmos,
+			// 	staffBilling,
+			// 	searchStaffBilling,
+			// 	query,
 		} = this.state;
 		const { hmoTransactions } = this.props;
 		const hmoReversed = hmoTransactions.reverse();

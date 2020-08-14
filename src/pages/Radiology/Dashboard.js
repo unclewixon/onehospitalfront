@@ -1,26 +1,22 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { API_URI, socket, patientAPI } from '../../services/constants';
-import Tooltip from 'antd/lib/tooltip';
-import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
-import DatePicker from 'antd/lib/date-picker';
+import Tooltip from 'antd/lib/tooltip';
+
+import { patientAPI } from '../../services/constants';
+import waiting from '../../assets/images/waiting.gif';
 import { request, upload } from '../../services/utilities';
-import ClinicalLabItem from '../../components/ClinicalLabItem';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadRadiology } from '../../actions/patient';
 import { uploadRadiology } from '../../actions/general';
-import _ from 'lodash';
 import { toggleProfile } from '../../actions/user';
-import Popover from 'antd/lib/popover';
 
 const UploadImagingData = ({ uploading, doUpload, hide }) => {
 	const [files, setFiles] = useState(null);
 	const [label, setLabel] = useState('');
-	let uploadAttachment;
+	// let uploadAttachment;
 
 	const handleChange = e => {
 		setFiles(e.target.files);
@@ -104,12 +100,12 @@ export class Dashboard extends Component {
 		this.fetchRadiology();
 	}
 	fetchRadiology = async () => {
-		const { startDate, endDate, status } = this.state;
+		const { startDate, endDate } = this.state;
 
 		try {
 			this.setState({ loading: true });
 			// console.log(
-			// 	`${API_URI}/${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}&status=${status}`
+			// 	`${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}&status=${status}`
 			// );
 			const rs = await request(
 				`${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`,
@@ -245,13 +241,13 @@ export class Dashboard extends Component {
 	};
 	render() {
 		const {
-			filtering,
+			// filtering,
 			loading,
 			uploading,
 			upload_visible,
-			patient,
+			// patient,
 		} = this.state;
-		const { location, radiology } = this.props;
+		const { radiology } = this.props;
 		return (
 			<div className="row">
 				<div className="col-md-12">

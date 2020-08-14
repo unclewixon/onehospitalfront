@@ -11,7 +11,6 @@ import searchingGIF from '../../assets/images/searching.gif';
 import { request } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import {
-	API_URI,
 	searchAPI,
 	staffAPI,
 	lmpSource,
@@ -66,11 +65,7 @@ let WifeLab = props => {
 		if (query.length > 2) {
 			try {
 				setSearching(true);
-				const rs = await request(
-					`${API_URI}${searchAPI}?q=${query}`,
-					'GET',
-					true
-				);
+				const rs = await request(`${searchAPI}?q=${query}`, 'GET', true);
 				setSearching(false);
 				setPatients(rs);
 			} catch (e) {

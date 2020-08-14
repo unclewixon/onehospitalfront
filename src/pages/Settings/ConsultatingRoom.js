@@ -5,7 +5,7 @@ import waiting from '../../assets/images/waiting.gif';
 import searchingGIF from '../../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request, confirmAction } from '../../services/utilities';
-import { API_URI } from '../../services/constants';
+
 import {
 	add_consultating_room,
 	get_all_consultating_rooms,
@@ -24,7 +24,7 @@ const ConsultatingRoom = props => {
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	const [payload, getDataToEdit] = useState(null);
-	const [loaded, setLoaded] = useState(null);
+	// const [loaded, setLoaded] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const handleInputChange = e => {
@@ -91,12 +91,7 @@ const ConsultatingRoom = props => {
 
 	const onDeleteConsultatingRoom = async data => {
 		try {
-			const rs = await request(
-				`consulting-rooms/${data.id}`,
-				'DELETE',
-				true,
-				data
-			);
+			await request(`consulting-rooms/${data.id}`, 'DELETE', true, data);
 			props.delete_consultating_room(data);
 			notifySuccess('Consulting room deleted');
 		} catch (error) {
@@ -130,6 +125,7 @@ const ConsultatingRoom = props => {
 	useEffect(() => {
 		fetchConsultatingRoom();
 	}, []);
+
 	return (
 		<div className="content-i">
 			<div className="content-box">

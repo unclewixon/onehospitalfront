@@ -95,6 +95,7 @@ function PatientNOKForm(props) {
 			handleChange('nok_gender', formValues.nok_gender, setGenderValue, gender);
 			setPatientData(formValues);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [formTitle]);
 
 	const { register, handleSubmit, errors, setValue } = useForm({
@@ -345,7 +346,6 @@ function PatientNOKForm(props) {
 										placeholder="Email"
 										ref={register}
 										defaultValue={patientData.nok_email || ''}
-										placeholder="example@email.com"
 										type="text"
 									/>
 								</div>

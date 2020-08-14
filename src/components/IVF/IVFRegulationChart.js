@@ -1,11 +1,6 @@
 import React, { Component, lazy, Suspense } from 'react';
 import Splash from '../../components/Splash';
-import {
-	API_URI,
-	IVFHCGAdmin,
-	IVFHCGDown,
-	patientAPI,
-} from '../../services/constants';
+import { IVFHCGAdmin, IVFHCGDown, patientAPI } from '../../services/constants';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
@@ -97,7 +92,7 @@ class IVFRegulationChart extends Component {
 	loadPatients = async () => {
 		try {
 			this.setState({ loading: true });
-			// console.log(`${API_URI}${patientAPI}/list`);
+			// console.log(`${patientAPI}/list`);
 			const rs = await request(`${patientAPI}/list`, 'GET', true);
 
 			let patientList = [];

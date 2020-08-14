@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Field, reduxForm, SubmissionError, reset } from 'redux-form';
+import { Field, reduxForm, SubmissionError } from 'redux-form';
 import {
-	parseRoster,
 	renderSelect,
-	renderTextArea,
 	renderTextInput,
 	request,
 } from '../../services/utilities';
@@ -13,15 +11,9 @@ import DatePicker from 'react-datepicker';
 
 import waiting from '../../assets/images/waiting.gif';
 import { closeModals } from '../../actions/general';
-import {
-	API_URI,
-	inventoryAPI,
-	patientAPI,
-	rosterAPI,
-	vouchersAPI,
-} from '../../services/constants';
+import { patientAPI, vouchersAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
-import { createVoucher, createVoucherData } from '../../actions/paypoint';
+import { createVoucherData } from '../../actions/paypoint';
 
 const validate = values => {
 	//const {  apply_voucher } = this.props;
@@ -86,7 +78,7 @@ export class ModalCreateVoucher extends Component {
 
 	createVoucher = async data => {
 		this.setState({ submitting: true });
-		const { items, apply_voucher, create_voucher } = this.props;
+		const { apply_voucher, create_voucher } = this.props;
 		if (apply_voucher) {
 			data.transaction_id = create_voucher.id;
 			data.patient_id = create_voucher.patient_id;
@@ -95,15 +87,16 @@ export class ModalCreateVoucher extends Component {
 		try {
 			const rs = await request(`${vouchersAPI}`, 'POST', true, data);
 
-			let voucher = {
-				id: rs.voucher.q_id,
-				voucher_no: rs.voucher.q_voucher_no,
-				amount: rs.voucher.q_amount,
-				amount_used: null,
-				created_by: rs.voucher.q_createdBy,
-				patient_name: rs.voucher.surname + ' ' + rs.voucher.other_names,
-				patient_id: rs.voucher.q_patientId,
-			};
+			// let voucher = {
+			// 	id: rs.voucher.q_id,
+			// 	voucher_no: rs.voucher.q_voucher_no,
+			// 	amount: rs.voucher.q_amount,
+			// 	amount_used: null,
+			// 	created_by: rs.voucher.q_createdBy,
+			// 	patient_name: rs.voucher.surname + ' ' + rs.voucher.other_names,
+			// 	patient_id: rs.voucher.q_patientId,
+			// };
+
 			rs.voucher.patient_name =
 				rs.voucher.patient.surname + ' ' + rs.voucher.patient.other_names;
 			rs.voucher.patient_id = rs.voucher.patient.id;

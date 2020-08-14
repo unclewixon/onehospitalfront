@@ -1,14 +1,15 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import uniqBy from 'lodash.uniqby';
+
 import { request } from '../../services/utilities';
-import { API_URI } from '../../services/constants';
 import Tooltip from 'antd/lib/tooltip';
 import { notifyError } from '../../services/notify';
 import { getPhysiotherapies } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
 import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
-import _ from 'lodash';
 import DatePicker from 'antd/lib/date-picker';
 import ModalPhysiotherapy from '../../components/Modals/ModalPhysiotherapy';
 import Select from 'react-select';
@@ -124,7 +125,7 @@ class PhysiotherapyDashboard extends Component {
 				  })
 				: [];
 
-		const filteredOptions = _.uniqBy(filteredNames, 'value');
+		const filteredOptions = uniqBy(filteredNames, 'value');
 
 		const customStyle = {
 			control: (provided, state) => ({

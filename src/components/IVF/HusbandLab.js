@@ -1,22 +1,19 @@
-import React, { Component, useEffect, useState } from 'react';
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React, { useEffect, useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import {
 	renderTextInput,
 	renderSelect,
-	renderMultiselect,
 	renderTextArea,
 } from '../../services/utilities';
-import { Field, reduxForm, change as changeFieldValue } from 'redux-form';
+import { Field, reduxForm } from 'redux-form';
 import { withRouter } from 'react-router-dom';
 import searchingGIF from '../../assets/images/searching.gif';
 import { request } from '../../services/utilities';
-import { notifySuccess, notifyError } from '../../services/notify';
+import { notifyError } from '../../services/notify';
 import {
-	API_URI,
 	searchAPI,
 	staffAPI,
-	lmpSource,
-	bookingPeriod,
 	genotype,
 	bloodGroup,
 } from '../../services/constants';
@@ -31,11 +28,11 @@ import { loadPatientIVFForm } from '../../actions/patient';
 const validate = validateAntennatal;
 let HusbandLab = props => {
 	const dispatch = useDispatch();
-	const { page, name, error, ivf, previousPage, onSubmit } = props;
+	const { page, error, ivf, previousPage } = props;
 	let [searching, setSearching] = useState(false);
 	let [patients, setPatients] = useState([]);
 	let [selectedPatient, setSelectedPatient] = useState([]);
-	let [staffs, setStaffs] = useState([]);
+	// let [staffs, setStaffs] = useState([]);
 	let [query, setQuery] = useState('');
 
 	useEffect(() => {
@@ -53,7 +50,7 @@ let HusbandLab = props => {
 		}
 
 		let staffs = props.staffs.map(el => el.first_name + ' ' + el.last_name);
-		setStaffs(staffs);
+		// setStaffs(staffs);
 	};
 	const patient = React.createRef();
 
@@ -66,11 +63,7 @@ let HusbandLab = props => {
 		if (query.length > 2) {
 			try {
 				setSearching(true);
-				const rs = await request(
-					`${API_URI}${searchAPI}?q=${query}`,
-					'GET',
-					true
-				);
+				const rs = await request(`${searchAPI}?q=${query}`, 'GET', true);
 				setSearching(false);
 				setPatients(rs);
 			} catch (e) {

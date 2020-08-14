@@ -1,17 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-import Tooltip from 'antd/lib/tooltip';
+
 import { connect } from 'react-redux';
-import { Switch, Link, withRouter, Route } from 'react-router-dom';
-import { patientAPI, transactionsAPI, API_URI } from '../../services/constants';
-import { notifySuccess, notifyError } from '../../services/notify';
-import { request } from '../../services/utilities';
-import searchingGIF from '../../assets/images/searching.gif';
-import moment from 'moment';
+import { Link, withRouter } from 'react-router-dom';
 import { loadAntennatal } from '../../actions/patient';
 import { viewAntenatalDetail } from '../../actions/general';
-import _ from 'lodash';
-export class IVF extends Component {
+
+class IVF extends Component {
 	state = {
 		filtering: false,
 		loading: false,
@@ -22,7 +17,6 @@ export class IVF extends Component {
 	componentDidMount() {}
 
 	render() {
-		const { filtering, loading } = this.state;
 		const { location } = this.props;
 		const page = location.pathname.split('/').pop();
 		return (

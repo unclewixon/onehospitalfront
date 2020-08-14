@@ -1,12 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { confirmAlert } from 'react-confirm-alert';
+
 import waiting from '../../assets/images/waiting.gif';
 import searchingGIF from '../../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request, confirmAction } from '../../services/utilities';
-import { API_URI } from '../../services/constants';
+
 import {
 	create_department,
 	loadDepartments,
@@ -31,7 +31,7 @@ const Departments = props => {
 	);
 	const [Loading, setLoading] = useState(false);
 	const [payload, setDataToEdit] = useState(null);
-	const [loaded, setLoaded] = useState(false);
+	// const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	const handleInputChange = e => {

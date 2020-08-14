@@ -16,7 +16,7 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import { loadStaff } from '../../actions/hr';
 import { loadPatients } from '../../actions/patient';
 import { getAllCafeteriaItem } from '../../actions/inventory';
-import _ from 'lodash';
+
 import size from 'lodash.size';
 
 import searchingGIF from '../../assets/images/searching.gif';

@@ -21,7 +21,7 @@ import { loadPatientIVFForm } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
 import Select from 'react-select';
 import SunEditor from 'suneditor-react';
-import { API_URI, consultationAPI, IVFEnroll } from '../../services/constants';
+import { consultationAPI, IVFEnroll } from '../../services/constants';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { useHistory } from 'react-router-dom';
 const validate = validateAntennatal;

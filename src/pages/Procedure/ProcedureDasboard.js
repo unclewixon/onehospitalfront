@@ -1,17 +1,19 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { request } from '../../services/utilities';
-import { API_URI } from '../../services/constants';
+import moment from 'moment';
+import uniqBy from 'lodash.uniqby';
+import DatePicker from 'antd/lib/date-picker';
+import Select from 'react-select';
 import Tooltip from 'antd/lib/tooltip';
+
 import { notifyError } from '../../services/notify';
 import { loadPatientProcedureData } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
 import waiting from '../../assets/images/waiting.gif';
-import moment from 'moment';
-import _ from 'lodash';
 import ModalProcedure from '../../components/Modals/ModalProcedure';
-import DatePicker from 'antd/lib/date-picker';
-import Select from 'react-select';
+
 const { RangePicker } = DatePicker;
 
 class ProcedureDashboard extends Component {
@@ -132,7 +134,7 @@ class ProcedureDashboard extends Component {
 				  })
 				: [];
 
-		const filteredOptions = _.uniqBy(filteredNames, 'value');
+		const filteredOptions = uniqBy(filteredNames, 'value');
 
 		const customStyle = {
 			control: (provided, state) => ({

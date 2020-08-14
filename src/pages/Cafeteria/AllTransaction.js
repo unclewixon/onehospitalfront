@@ -2,17 +2,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { API_URI, transactionsAPI, searchAPI } from '../../services/constants';
 import Tooltip from 'antd/lib/tooltip';
-import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
+
+import { API_URI, transactionsAPI, searchAPI } from '../../services/constants';
+import waiting from '../../assets/images/waiting.gif';
 import DatePicker from 'antd/lib/date-picker';
 import { request } from '../../services/utilities';
 import ClinicalLabItem from '../../components/ClinicalLabItem';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadRadiology } from '../../actions/patient';
-import _ from 'lodash';
 import { loadHmoTransaction } from '../../actions/hmo';
 const { RangePicker } = DatePicker;
 

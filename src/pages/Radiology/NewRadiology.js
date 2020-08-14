@@ -4,33 +4,25 @@ import { connect } from 'react-redux';
 import { useHistory, withRouter } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
-import {
-	API_URI,
-	socket,
-	patientAPI,
-	searchAPI,
-} from '../../services/constants';
+import { patientAPI, searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
 import { getAllService } from '../../actions/settings';
-
 import searchingGIF from '../../assets/images/searching.gif';
-import _ from 'lodash';
-import size from 'lodash.size';
 
 const NewRadiology = props => {
 	let history = useHistory();
 	const { register, handleSubmit, setValue } = useForm();
 	const [submitting, setSubmitting] = useState(false);
 	const [loaded, setLoaded] = useState(false);
-	const [Loading, setLoading] = useState(false);
-	const [data, getDataToEdit] = useState(null);
-	const [dataLoaded, setDataLoaded] = useState(false);
-	const [imagingServices, setImagingServices] = useState([]);
+	// const [loading, setLoading] = useState(false);
+	// const [data, getDataToEdit] = useState(null);
+	// const [dataLoaded, setDataLoaded] = useState(false);
+	// const [imagingServices, setImagingServices] = useState([]);
 	const [multi, setMulti] = useState(false);
-	const [serviceList, setServiceList] = useState([]);
-	const [multiple, setMultiple] = useState([]);
+	// const [serviceList, setServiceList] = useState([]);
+	// const [multiple, setMultiple] = useState([]);
 	const [services, setServices] = useState([]);
 	const [query, setQuery] = useState('');
 	const [searching, setSearching] = useState(false);
@@ -59,12 +51,7 @@ const NewRadiology = props => {
 			}),
 		};
 		try {
-			const rs = await request(
-				`${API_URI}/${patientAPI}/save-request`,
-				'POST',
-				true,
-				data
-			);
+			await request(`${patientAPI}/save-request`, 'POST', true, data);
 
 			history.push('/radiology/all-request');
 			notifySuccess('New radiology request saved');
@@ -84,11 +71,7 @@ const NewRadiology = props => {
 		if (query.length > 2) {
 			try {
 				setSearching(true);
-				const rs = await request(
-					`${API_URI}/${searchAPI}?q=${query}`,
-					'GET',
-					true
-				);
+				const rs = await request(`${searchAPI}?q=${query}`, 'GET', true);
 
 				setPatients(rs);
 				setSearching(false);
@@ -128,17 +111,16 @@ const NewRadiology = props => {
 		if (!loaded) {
 			props
 				.getAllService()
-				.then(response => {
-					setDataLoaded(true);
-				})
+				.then(response => {})
 				.catch(e => {
 					notifyError(e.message || 'could not fetch services list');
 				});
+			setLoaded(true);
+			// setServiceList(props.ServicesList);
+			filterRequest();
+			console.log(services);
 		}
-		setLoaded(true);
-		setServiceList(props.ServicesList);
-		filterRequest();
-		console.log(services);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props, loaded]);
 
 	return (

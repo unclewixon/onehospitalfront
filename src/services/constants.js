@@ -1,5 +1,5 @@
 import socketIOClient from 'socket.io-client';
-import _ from 'lodash';
+import range from 'lodash.range';
 
 export const DEBUG = process.env.REACT_APP_DEBUG;
 export const APP_NAME = process.env.REACT_APP_NAME;
@@ -11,7 +11,9 @@ export const MODE_COOKIE = 'EMR:MODE_COOKIE';
 export const FULLSCREEN_COOKIE = 'EMR:FULLSCREEN_COOKIE';
 export const MENU_COOKE = 'EMR:MENU_COOKIE';
 export const USER_RECORD = 'EMR:USER_RECORD';
-export const socket = socketIOClient(API_URI, { transports: ['websocket'] });
+export const socket = socketIOClient(API_URI, {
+	transports: ['websocket', 'polling'],
+});
 
 export const hmoAPI = 'hmos';
 export const inventoryAPI = 'inventory/stocks';
@@ -405,7 +407,7 @@ export const para = [
 	},
 ];
 
-export const previousPregnancies = _.range(1, 12).map((_, i) => {
+export const previousPregnancies = range(1, 12).map((_, i) => {
 	return {
 		id: i,
 		name: i,
