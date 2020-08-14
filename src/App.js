@@ -25,7 +25,7 @@ import DoctorAppointments from './pages/Doctor/DoctorAppointments';
 const Login = lazy(() => import('./pages/Login'));
 const NoMatch = lazy(() => import('./pages/NoMatch'));
 const FrontDesk = lazy(() => import('./pages/FrontDesk/index'));
-const InPatient = lazy(() => import('./pages/InPatient'));
+const Nurse = lazy(() => import('./pages/Nurse/index'));
 const PatientProfile = lazy(() => import('./pages/PatientProfile'));
 const Pharmacy = lazy(() => import('./pages/Inventory/Pharmacy'));
 const Pharmacy2 = lazy(() => import('./pages/Pharmacy'));
@@ -114,7 +114,7 @@ class App extends Component {
 													/>
 													<Route path="/doctor" component={DoctorHome} />
 													<Route path="/front-desk" component={FrontDesk} />
-													<Route path="/nurse" component={InPatient} />
+													<Route path="/nurse" component={Nurse} />
 													<Route path="/pharmacy" component={Pharmacy} />
 													<Route path="/pharmacy2" component={Pharmacy2} />
 													<Route
