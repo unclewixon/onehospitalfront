@@ -1,12 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Fragment, useEffect, useState } from 'react';
-import searchingGIF from '../assets/images/searching.gif';
+import searchingGIF from '../../assets/images/searching.gif';
 import useSWR from 'swr/esm/use-swr';
 import Tooltip from 'antd/lib/tooltip';
-import { toggleProfile } from '../actions/user';
+import { toggleProfile } from '../../actions/user';
 import { useDispatch } from 'react-redux';
-import { calculateAge, fullname } from '../services/utilities';
-import { socket } from '../services/constants';
+import { calculateAge, fullname } from '../../services/utilities';
+import { socket } from '../../services/constants';
 import truncate from 'lodash.truncate';
 
 const InPatient = () => {
@@ -54,13 +54,11 @@ const InPatient = () => {
 												<tr>
 													<th>
 														<div className="th-inner sortable both">
-															Patient
+															Patient Name
 														</div>
 													</th>
 													<th>
-														<div className="th-inner sortable both">
-															Whom To See
-														</div>
+														<div className="th-inner sortable both">Room</div>
 													</th>
 													<th>
 														<div className="th-inner sortable both">
@@ -68,12 +66,7 @@ const InPatient = () => {
 														</div>
 													</th>
 													<th>
-														<div className="th-inner sortable both">
-															Service
-														</div>
-													</th>
-													<th>
-														<div className="th-inner "></div>
+														<div className="th-inner sortable both">Action</div>
 													</th>
 												</tr>
 											</thead>
@@ -141,6 +134,7 @@ const InPatient = () => {
 					</div>
 				</div>
 			</div>
+			<div className="content-panel"></div>
 		</div>
 	);
 };

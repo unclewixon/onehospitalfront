@@ -158,9 +158,10 @@ const PatientDataUpload = props => {
 		} catch (e) {
 			console.log(e);
 			setLoading(false);
-			throw new SubmissionError({
-				_error: e.message || 'could not load data',
-			});
+			notifyError(e.message);
+			// throw new SubmissionError({
+			// 	_error: e.message || 'could not load data',
+			// });
 		}
 	};
 

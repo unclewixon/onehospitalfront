@@ -68,7 +68,7 @@ export class DutyRooster extends Component {
 	}
 }
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = state => {
 	return {
 		duty_rosters: state.hr.duty_rosters,
 		departments: state.settings.departments,

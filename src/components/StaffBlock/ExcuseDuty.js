@@ -6,7 +6,6 @@ import { request } from '../../services/utilities';
 import { loadStaffLeave } from '../../actions/hr';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
-
 import Tooltip from 'antd/lib/tooltip';
 import ModalExcuseDuty from '../Modals/ModalExcuseDuty';
 import ModalEditExcuse from '../Modals/ModalEditExcuse';

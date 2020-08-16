@@ -17,7 +17,7 @@ const MyAccount = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/my-account/duty-roaster">
+				<Link to="/my-account/duty-roster">
 					<div className="icon-w">
 						<div className="os-icon icon-feather-calendar" />
 					</div>
@@ -25,7 +25,7 @@ const MyAccount = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/my/appraisal">
+				<Link to="/my-account/appraisal">
 					<div className="icon-w">
 						<div className="os-icon os-icon-bar-chart-stats-up" />
 					</div>
@@ -42,7 +42,7 @@ const MyAccount = () => {
 			</li>
 			<Can I="excuse-duty" on="all">
 				<li>
-					<Link to="/excuse-duty">
+					<Link to="/my-account/excuse-duty">
 						<div className="icon-w">
 							<div className="os-icon os-icon-agenda-1" />
 						</div>
