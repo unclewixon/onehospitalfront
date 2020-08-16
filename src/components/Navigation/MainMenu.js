@@ -98,7 +98,9 @@ class MainMenu extends Component {
 						<span>NAVIGATION</span>
 					</li>
 					{(role === 'front-desk' || role === 'admin') && <FrontDeskMenu />}
-					{(role === 'clinical-lab' || role === 'admin') && <ClinicalLabMenu />}
+					{(role === 'lab-attendant' || role === 'admin') && (
+						<ClinicalLabMenu />
+					)}
 					{(role === 'accountant' || role === 'admin') && <PayPointMenu />}
 					{(role === 'pharmacy' || role === 'admin') && <PharmacyMenu />}
 					{(role === 'radiology' || role === 'admin') && <RadiologyMenu />}

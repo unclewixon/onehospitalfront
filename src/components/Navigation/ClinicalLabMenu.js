@@ -4,15 +4,36 @@ import { Link } from 'react-router-dom';
 const ClinicalLabMenu = () => {
 	return (
 		<>
-			<li className="sub-header">
-				<span>Lab & Radiology</span>
-			</li>
 			<li>
 				<Link to="/lab">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers" />
 					</div>
-					<span>Dashboard</span>
+					<span>Home</span>
+				</Link>
+			</li>
+			<li>
+				<Link to="/lab/new">
+					<div className="icon-w">
+						<div className="os-icon os-icon-plus-circle" />
+					</div>
+					<span>New Lab Request</span>
+				</Link>
+			</li>
+			<li>
+				<Link to="/lab/all-request">
+					<div className="icon-w">
+						<div className="os-icon os-icon-file-text" />
+					</div>
+					<span>All Requests</span>
+				</Link>
+			</li>
+			<li>
+				<Link to="/lab/pending-requests">
+					<div className="icon-w">
+						<div className="os-icon os-icon-file-text" />
+					</div>
+					<span>Pending Requests</span>
 				</Link>
 			</li>
 		</>

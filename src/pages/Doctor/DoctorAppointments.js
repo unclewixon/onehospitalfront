@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import DatePicker from 'antd/lib/date-picker';
 import { withRouter } from 'react-router-dom';
 import AppointmentTable from '../../components/Doctor/AppointmentTable';
+import { socket } from '../../services/constants';
 
 const { RangePicker } = DatePicker;
 
@@ -40,6 +41,11 @@ const DoctorAppointments = ({ profile }) => {
 
 	useEffect(() => {
 		init();
+		socket.on('appointment-update', data => {
+			if (data.action === 1) {
+				init();
+			}
+		});
 	}, [init]);
 
 	const doFilter = e => {

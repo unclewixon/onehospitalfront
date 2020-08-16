@@ -40,7 +40,7 @@ class Clinical extends Component {
 										Dashboard
 									</Link>
 									<Link
-										to={`/lab/filled-request`}
+										to={`/lab/pending-requests`}
 										className={`mr-2 btn btn-primary btn-sm ${
 											page === '/filled-request' ? 'btn-outline-primary' : ''
 										}`}>
@@ -51,14 +51,14 @@ class Clinical extends Component {
 										className={`mr-2 btn btn-primary btn-sm  ${
 											page === '/all-request' ? 'btn-outline-primary' : ''
 										}`}
-										to="/lab/all-request">
+										to="/lab/all-requests">
 										All Request
 									</Link>
 									<Link
 										className={`mr-2 btn btn-primary btn-sm  ${
 											page === '/lab-request' ? 'btn-outline-primary' : ''
 										}`}
-										to="/lab/lab-request">
+										to="/lab/new">
 										New Lab Request
 									</Link>
 								</div>

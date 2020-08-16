@@ -7,7 +7,7 @@ import SelectRoomModal from '../../components/Modals/SelectRoomModal';
 import { socket } from '../../services/constants';
 import moment from 'moment';
 import { request } from '../../services/utilities';
-import { notifyError } from '../../services/notify';
+import { notifyError, notifySuccess } from '../../services/notify';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { viewAppointmentDetail } from '../../actions/general';
@@ -32,6 +32,11 @@ function DoctorHome({ profile }) {
 				if (appointment.appointment_date === today) {
 					setAppointments([...appointments, appointment]);
 				}
+			}
+		});
+		socket.on('appointment-update', data => {
+			if (data.action === 1) {
+				getAppointments();
 			}
 		});
 	}, [appointments]);

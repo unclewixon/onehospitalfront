@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import searchingGIF from '../../assets/images/searching.gif';
-import { formatDateStr, trimText } from '../../services/utilities';
+import {
+	confirmAction,
+	formatDateStr,
+	request,
+	trimText,
+} from '../../services/utilities';
 import { connect } from 'react-redux';
 import { openEncounter, viewAppointmentDetail } from '../../actions/general';
 import { toggleProfile } from '../../actions/user';
 import Tooltip from 'antd/lib/tooltip';
+import Button from '../common/Button';
+import { notifyError, notifySuccess } from '../../services/notify';
+import { Badge } from '../common';
 
 const AppointmentTable = ({
 	appointments,
@@ -14,6 +22,8 @@ const AppointmentTable = ({
 	toggleProfile,
 	openEncounter,
 }) => {
+	const [updating, setUpdating] = useState(false);
+
 	const showProfile = patient => {
 		const info = { patient, type: 'patient' };
 		toggleProfile(true, info);
@@ -23,6 +33,35 @@ const AppointmentTable = ({
 		openEncounter(true, { appointmentId, patient });
 	};
 
+	const updateStatus = ({ index, id, action }) => {
+		setUpdating(true);
+		request('front-desk/appointments/accept-decline', 'PATCH', true, {
+			appointmentId: id,
+			action,
+		})
+			.then(res => {
+				setUpdating(false);
+				if (res.success) {
+					notifySuccess('Front desk has been notified');
+				}
+			})
+			.catch(e => {
+				setUpdating(false);
+				notifyError(
+					'Something went wrong. Unable to update appointment status'
+				);
+			});
+	};
+
+	const confirm = data => {
+		confirmAction(
+			updateStatus,
+			data,
+			'You are about to accept an appointment',
+			'Please confirm!'
+		);
+	};
+
 	return (
 		<table className="table table-padded">
 			<thead>
@@ -30,7 +69,7 @@ const AppointmentTable = ({
 					<th hidden={today}>Date</th>
 					<th>Patient</th>
 					<th>Description</th>
-					<th>Status</th>
+					<th>Accepted?</th>
 					<th className="text-center">Actions</th>
 				</tr>
 			</thead>
@@ -59,9 +98,34 @@ const AppointmentTable = ({
 								</td>
 								<td>
 									{/* <span className="status-pill smaller green"></span> */}
-									<span style={{ fontSize: '0.7rem' }}>
-										{appointment.status}
-									</span>
+									{
+										{
+											0: (
+												<Button
+													isSubmitting={updating}
+													isValid={!updating}
+													onClick={() =>
+														confirm({ index: i, id: appointment.id, action: 1 })
+													}
+													className="btn btn-sm btn-success"
+													value="Accept"
+												/>
+											),
+											1: (
+												<Button
+													onClick={() =>
+														doOpenEncounter(
+															appointment.id,
+															appointment?.patient
+														)
+													}
+													className="btn btn-sm btn-info"
+													value="Start Encounter"
+												/>
+											),
+											2: <Badge variant="error">No </Badge>,
+										}[appointment.doctorStatus]
+									}
 								</td>
 								<td className="row-actions">
 									<Tooltip title="View Appointment Details">
@@ -78,17 +142,6 @@ const AppointmentTable = ({
 											<i className="os-icon os-icon-user" />
 										</a>
 									</Tooltip>
-									{/*{appointment.status === 'With Doctor' &&*/}
-									<Tooltip title="Start Consultation">
-										<a
-											href="javascript:;"
-											onClick={() =>
-												doOpenEncounter(appointment.id, appointment?.patient)
-											}>
-											<i className="os-icon os-icon-edit-1" />
-										</a>
-									</Tooltip>
-									{/*}*/}
 								</td>
 							</tr>
 						);

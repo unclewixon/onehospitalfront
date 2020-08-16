@@ -126,7 +126,7 @@ class OpenEncounter extends Component {
 	}
 
 	render() {
-		const { patient } = this.props;
+		const { patient } = this.props.encounterInfo;
 		const { eIndex, dropdown } = this.state;
 		const current = encounters[eIndex];
 
@@ -180,7 +180,8 @@ class OpenEncounter extends Component {
 
 const mapStateToProps = (state, ownProps) => {
 	return {
-		patient: state.user.patient,
+		// patient: state.user.patient,
+		encounterInfo: state.general.encounterInfo,
 	};
 };
 

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import {
 	registerNewPatient,
 	createNewAppointment,
+	viewAppointmentDetail,
 } from '../../actions/general';
 
 import Queue from '../../components/Queue';
@@ -20,6 +21,8 @@ import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
 import { Switch, Route, withRouter, Link } from 'react-router-dom';
 import startCase from 'lodash.startcase';
+import { socket } from '../../services/constants';
+import { notifyError, notifySuccess } from '../../services/notify';
 const Appointments = lazy(() =>
 	import('../../components/FrontDesk/FrontDeskAppointments')
 );
@@ -52,7 +55,20 @@ const FrontDesk = props => {
 		} else {
 			setTitle(startCase(page));
 		}
+		socket.on('appointment-update', data => {
+			if (data.action === 1) {
+				notifySuccess('Doctor has accepted to see patient');
+			} else {
+				notifyError('Doctor has declined to see patient');
+			}
+			// open appointment modal
+			ViewAppointmentDetail(data.appointment);
+		});
 	}, [page]);
+
+	const ViewAppointmentDetail = appointment => {
+		props.viewAppointmentDetail(appointment);
+	};
 
 	return (
 		<div className="content-i">
@@ -117,5 +133,9 @@ const FrontDesk = props => {
 
 export default compose(
 	withRouter,
-	connect(null, { registerNewPatient, createNewAppointment })
+	connect(null, {
+		registerNewPatient,
+		createNewAppointment,
+		viewAppointmentDetail,
+	})
 )(FrontDesk);

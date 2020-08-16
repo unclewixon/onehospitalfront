@@ -20,14 +20,6 @@ const DoctorMenu = () => {
 					<span>Appointment History</span>
 				</Link>
 			</li>
-			<li>
-				<Link to="/front-desk/all-patients">
-					<div className="icon-w">
-						<div className="os-icon os-icon-cv-2" />
-					</div>
-					<span>Patients</span>
-				</Link>
-			</li>
 		</>
 	);
 };
