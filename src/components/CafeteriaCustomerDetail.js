@@ -1,16 +1,22 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
+
 import avatar1 from '../assets/images/avatar1.jpg';
 import isEmpty from 'lodash.isempty';
 
 const CafeteriaCustomerDetail = props => {
 	const [customer, setCustomer] = useState({});
 	const [orderBy, setOrderBy] = useState('');
+	const [loaded, setLoaded] = useState(null);
 
 	useEffect(() => {
-		setCustomer(props.customer);
-		setOrderBy(props.orderBy);
-	}, [props]);
+		if (!loaded) {
+			setCustomer(props.customer);
+			setOrderBy(props.orderBy);
+			setLoaded(true);
+		}
+	}, [props, loaded]);
+
 	return (
 		<div>
 			{!isEmpty(customer) ? (
@@ -38,8 +44,9 @@ const CafeteriaCustomerDetail = props => {
 									<li>
 										Staff Name:
 										<strong>
-											{customer.first_name ? customer.first_name : ''} {'  '}
-											{customer.last_name ? customer.last_name : ''}
+											{`${customer.first_name ? customer.first_name : ''} ${
+												customer.last_name ? customer.last_name : ''
+											}`}
 										</strong>
 									</li>
 									<li>
@@ -64,9 +71,9 @@ const CafeteriaCustomerDetail = props => {
 									<li>
 										Patient Name:
 										<strong>
-											{customer.other_names ? customer.other_names : ''}
-											{'  '}
-											{customer.surname ? customer.surname : ''}
+											{`${customer.other_names ? customer.other_names : ''} ${
+												customer.surname ? customer.surname : ''
+											}`}
 										</strong>
 									</li>
 									<li>

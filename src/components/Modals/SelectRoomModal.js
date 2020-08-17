@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useGlobal } from 'reactn';
+import React, { useEffect } from 'reactn';
 import { connect } from 'react-redux';
 import 'react-datepicker/dist/react-datepicker.css';
 import useSWR from 'swr';

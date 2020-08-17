@@ -1,27 +1,32 @@
-import React, { Component, useEffect, useState } from 'react';
-import { planServiceCenter, reviewOfSystem } from '../../../services/constants';
+import React, { useEffect, useState } from 'react';
+import { reviewOfSystem } from '../../../services/constants';
 import Select from 'react-select';
 import { connect, useDispatch } from 'react-redux';
-import { Controller, ErrorMessage, useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
 
 const ReviewOfSystem = props => {
 	const [selected, setSelected] = useState();
-	const { encounterData, previous, next, encounterForm } = props;
-	const [selectedOption, setSelectedOption] = useState([]);
+	const [loaded, setLoaded] = useState(false);
+	const { encounterData, previous, encounterForm } = props;
+	// const [selectedOption, setSelectedOption] = useState([]);
 	const defaultValues = {
 		system: encounterForm.reviewOfSystem?.system,
 		selectedSystem: encounterForm.reviewOfSystem?.selectedSystem,
 	};
-	const { register, handleSubmit, control, errors } = useForm({
+	const { register, handleSubmit, control } = useForm({
 		defaultValues,
 	});
 
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		setSelected(encounterForm.reviewOfSystem?.system);
-	}, []);
+		if (!loaded) {
+			setSelected(encounterForm.reviewOfSystem?.system);
+			setLoaded(true);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [loaded]);
 
 	const handleChange = e => {
 		setSelected(e);

@@ -1,12 +1,12 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import SunEditor from 'suneditor-react';
 import { connect, useDispatch } from 'react-redux';
 import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
 import { useForm } from 'react-hook-form';
 
 const PhysicalExamSummary = props => {
-	const { register, handleSubmit, setValue, getValues } = useForm();
-	let { encounterData, previous, next } = props;
+	const { register, handleSubmit } = useForm();
+	let { encounterData, previous } = props;
 	const [summary, setSummary] = useState('');
 	const dispatch = useDispatch();
 	const handleChange = e => {

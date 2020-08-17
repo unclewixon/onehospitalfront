@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+
 import waiting from '../../assets/images/waiting.gif';
 import { closeModals } from '../../actions/general';
 import { notifyError, notifySuccess } from '../../services/notify';
@@ -9,6 +10,7 @@ import { API_URI, searchAPI, patientAPI } from '../../services/constants';
 import { upload } from '../../services/utilities';
 import { request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
+
 const ModalUploadRadiology = props => {
 	const [submitting, setSubmitting] = useState(false);
 	const [file, setFile] = useState(false);
@@ -16,8 +18,10 @@ const ModalUploadRadiology = props => {
 	// const [uploading, setUploading] = useState(false);
 	const [query, setQuery] = useState('');
 	const [searching, setSearching] = useState(false);
+	const [loaded, setLoaded] = useState(false);
 	const [patients, setPatients] = useState([]);
 	const [patientId, setPatientId] = useState('');
+
 	let history = useHistory();
 
 	const handleChange = e => {
@@ -95,8 +99,12 @@ const ModalUploadRadiology = props => {
 	};
 
 	useEffect(() => {
-		setPatientId(props.patient.id);
-	}, []);
+		if (!loaded) {
+			setPatientId(props.patient.id);
+			setLoaded(true);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [loaded]);
 
 	return (
 		<div

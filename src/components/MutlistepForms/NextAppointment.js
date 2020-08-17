@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { validate } from '../../services/validationSchemas';
-import { Field, reduxForm } from 'redux-form';
+import { reduxForm } from 'redux-form';
 import waiting from '../../assets/images/waiting.gif';
 
 import DatePicker from 'react-datepicker';

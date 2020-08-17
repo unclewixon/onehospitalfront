@@ -14,7 +14,7 @@ import waiting from '../../assets/images/waiting.gif';
 
 import { viewImmunizationDetail } from '../../actions/general';
 const { RangePicker } = DatePicker;
-export class AllImmunization extends Component {
+class AllImmunization extends Component {
 	state = {
 		filtering: false,
 		loading: false,

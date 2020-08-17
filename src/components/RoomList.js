@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { request, confirmAction, findByID } from '../services/utilities';
+import { request, confirmAction } from '../services/utilities';
 
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
@@ -26,7 +26,6 @@ const RoomList = props => {
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
 	const [payload, getDataToEdit] = useState(null);
-	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -123,8 +122,8 @@ const RoomList = props => {
 	};
 
 	const fetchRooms = async () => {
-		setDataLoaded(false);
 		try {
+			setDataLoaded(false);
 			const rs = await request(`rooms`, 'GET', true);
 			props.get_all_room(rs);
 			setDataLoaded(true);
@@ -136,6 +135,7 @@ const RoomList = props => {
 
 	useEffect(() => {
 		fetchRooms();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (
@@ -242,9 +242,7 @@ const RoomList = props => {
 								className="form-control"
 								name="status"
 								value={status}
-								defaultValue={status}
 								onChange={handleInputChange}>
-								{/* {status && <option value={status}>{status}</option>} */}
 								<option value="Occupied">Occupied</option>
 								<option value="Not occupied">Not Occupied</option>
 							</select>

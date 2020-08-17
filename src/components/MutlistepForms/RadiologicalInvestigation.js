@@ -2,17 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { validate } from '../../services/validationSchemas';
 import {
-	renderTextInput,
 	renderSelect,
 	renderMultiselect,
 	renderTextArea,
 } from '../../services/utilities';
-import { Field, reduxForm, formValueSelector, change } from 'redux-form';
-import { socket, patientAPI, serviceAPI } from '../../services/constants';
-import waiting from '../../assets/images/waiting.gif';
-import { notifySuccess, notifyError } from '../../services/notify';
+import { Field, reduxForm, formValueSelector } from 'redux-form';
 
-import { request } from '../../services/utilities';
+import { notifyError } from '../../services/notify';
 
 import {
 	get_all_services,
@@ -83,7 +79,7 @@ class RadiologicalInvestigation extends Component {
 	};
 	render() {
 		const { handleSubmit, previousPage, error, page, value } = this.props;
-		const { serviceCenter, services } = this.state;
+		const { serviceCenter } = this.state;
 		// if (value !== this.state.value) {
 		// 	this.props.dispatch(change('antennatalAssessment', 'scansToRequest', []));
 		// }

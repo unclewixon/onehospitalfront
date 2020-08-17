@@ -37,7 +37,7 @@ import {
 	loginUser,
 } from './actions/user';
 import SSRStorage from './services/storage';
-import { defaultHeaders, getUser, redirectToPage } from './services/utilities';
+import { defaultHeaders, getUser } from './services/utilities';
 import { loadDepartments, loadSpecializations } from './actions/settings';
 import { loadInvCategories, loadInvSubCategories } from './actions/inventory';
 import { togglePreloading } from './actions/general';
@@ -122,7 +122,6 @@ const initData = async () => {
 			const qm = search === '' ? '' : '?';
 			const url = `${history.location.pathname}${qm}${search}`;
 			history.push(url);
-			//redirectToPage(user.role, history);
 
 			setTimeout(async () => {
 				const user_record = await storage.getItem(USER_RECORD);
@@ -132,7 +131,7 @@ const initData = async () => {
 			}, 200);
 		} catch (e) {
 			console.log(e);
-			//storage.removeItem(TOKEN_COOKIE);
+			storage.removeItem(TOKEN_COOKIE);
 			store.dispatch(togglePreloading(false));
 			history.push('/?not-authenticated');
 		}

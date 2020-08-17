@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import avatar1 from '../../assets/images/avatar1.jpg';
@@ -94,7 +95,7 @@ export class Inventory extends Component {
 																</select>
 															</div>
 														</div>
-														<h6 className="element-header"></h6>
+														{/* <h6 className="element-header"></h6> */}
 													</form>
 													<form>
 														<div className="row">

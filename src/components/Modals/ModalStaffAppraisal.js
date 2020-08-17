@@ -1,25 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
-import {
-	Field,
-	reduxForm,
-	SubmissionError,
-	reset,
-	change,
-	formValueSelector,
-} from 'redux-form';
-
-import {
-	getPeriod,
-	errorMessage,
-	request,
-	renderTextArea,
-	confirmAction,
-	renderTextInput,
-} from '../../services/utilities';
-import waiting from '../../assets/images/waiting.gif';
 import { closeModals } from '../../actions/general';
 import CreateAppraisal from '../StaffBlock/CreateAppraisal';
 // const validate = values => {
@@ -43,8 +25,7 @@ export class ModalStaffAppraisal extends Component {
 		document.body.classList.remove('modal-open');
 	}
 	render() {
-		const { location, staff, error, handleSubmit, period, values } = this.props;
-		const { submitting } = this.state;
+		const { period } = this.props;
 		return (
 			<div
 				className="onboarding-modal modal fade animated show"

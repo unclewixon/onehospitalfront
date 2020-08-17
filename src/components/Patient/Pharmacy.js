@@ -3,21 +3,20 @@ import React, { useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
 import { connect } from 'react-redux';
+import moment from 'moment';
+
 import { getRequestByType } from '../../actions/patient';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
-import Modal from 'react-bootstrap/Modal';
-import moment from 'moment';
-import Select from 'react-select';
 import { ReactComponent as ViewIcon } from '../../assets/svg-icons/view.svg';
 import PharmNewRequestViewModal from './../PharmNewRequestViewModal';
 
 const Pharmacy = props => {
-	const { location, Requests, patient } = props;
-	const [loaded, setLoaded] = useState(false);
+	const { location, Requests } = props;
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
+	// eslint-disable-next-line no-unused-vars
 	const [{ startDate, endDate }, setDate] = useState({
 		startDate: moment(Date.now())
 			.subtract(1, 'days')
@@ -32,10 +31,9 @@ const Pharmacy = props => {
 	useEffect(() => {
 		const { getRequestByType, patient } = props;
 		const patient_id = patient && patient.id ? patient.id : '';
-		if (!loaded) {
-			setDataLoaded(true);
+		if (!dataLoaded) {
 			getRequestByType(patient_id, 'pharmacy', startDate, endDate)
-				.then(response => {
+				.then(_ => {
 					setDataLoaded(false);
 				})
 				.catch(e => {
@@ -43,8 +41,7 @@ const Pharmacy = props => {
 					notifyError('could not fetch pharmacy requests');
 				});
 		}
-		setLoaded(true);
-	}, [loaded, props]);
+	}, [dataLoaded, endDate, props, startDate]);
 
 	return (
 		<div className="col-sm-12">
