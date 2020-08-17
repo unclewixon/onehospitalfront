@@ -118,7 +118,7 @@ class ClinicalLab extends Component {
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
-					<h6 className="element-header">Lab</h6>
+					<h6 className="element-header">Clinical Lab</h6>
 					<div className="row">
 						<div className="col-sm-12">
 							<div className="element-content">

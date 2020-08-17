@@ -141,7 +141,9 @@ class AllRequest extends Component {
 										onModalClick={this.onModalClick}
 									/>
 								) : null}
-								<h6 className="element-header">Filter by:</h6>
+								<h6 className="element-header">
+									Clinical Lab Request History:
+								</h6>
 
 								<form className="row">
 									<div className="form-group col-md-6">
@@ -186,7 +188,7 @@ class AllRequest extends Component {
 							</div>
 
 							<div className="col-sm-12">
-								<div className="element-box">
+								<div className="element-box p-0">
 									<div className="table-responsive">
 										{loading ? (
 											<tbody>
