@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Select from 'react-select';
 import waiting from '../../assets/images/waiting.gif';
 import { useForm } from 'react-hook-form';
 import { request } from '../../services/utilities';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { useDispatch } from 'react-redux';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { closeModals } from '../../actions/general';
 import DatePicker from 'react-datepicker';
 import { addNewPatient } from '../../actions/patient';

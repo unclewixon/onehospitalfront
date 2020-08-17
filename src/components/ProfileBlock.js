@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState } from 'react';
-import { Link, withRouter, useHistory } from 'react-router-dom';
+import React from 'react';
+import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
 
 import background from '../assets/images/b3.jpeg';
@@ -15,15 +15,15 @@ const ProfileBlock = ({
 	profile,
 }) => {
 	// const [dropdown, setDropdown] = useState(false);
-	const history = useHistory();
+	// const history = useHistory();
 
 	// const toggleDropdown = () => {
 	// 	setDropdown(!dropdown);
 	// };
 
-	const goToStartAdmission = () => {
-		history.push(`${location.pathname}#start-admission`);
-	};
+	// const goToStartAdmission = () => {
+	// 	history.push(`${location.pathname}#start-admission`);
+	// };
 	// const confirmStartAdmission = () => {
 	// 	confirmAction(goToStartAdmission, '', 'You want to start admission');
 	// };

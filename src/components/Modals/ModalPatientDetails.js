@@ -1,6 +1,5 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal';
-import moment from 'moment';
 
 const ModalPatientDetails = ({ showModal, onModalClick, activeRequest }) => {
 	return (

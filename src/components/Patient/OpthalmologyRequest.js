@@ -99,9 +99,10 @@ const OpthalmologyRequest = props => {
 		if (!loaded) {
 			getAllRequestServices();
 			getAllServiceCategory();
+			opthalmologyValue();
+
+			setLoaded(true);
 		}
-		setLoaded(true);
-		opthalmologyValue();
 	}, [props, loaded, opthalmologyValue]);
 
 	const serviceCats =
@@ -139,7 +140,6 @@ const OpthalmologyRequest = props => {
 							<div className="row">
 								<div className="form-group col-sm-6">
 									<label>Service Category</label>
-									{}
 									<Select
 										name="service_request"
 										placeholder="Select category"

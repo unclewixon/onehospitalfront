@@ -39,11 +39,7 @@ class Allergies extends Component {
 	};
 	deleteAllergy = async data => {
 		try {
-			const rs = await request(
-				`${patientAPI}/${data.id}/delete-allergy`,
-				'DELETE',
-				true
-			);
+			await request(`${patientAPI}/${data.id}/delete-allergy`, 'DELETE', true);
 			this.props.delete_allergy(data);
 			notifySuccess('Allergy deleted');
 		} catch (error) {

@@ -24,7 +24,6 @@ const LeaveCategory = props => {
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	const [payload, getDataToEdit] = useState(null);
-	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const handleInputChange = e => {
@@ -112,7 +111,6 @@ const LeaveCategory = props => {
 	};
 
 	const fetchLeaveCategory = async () => {
-		setDataLoaded(false);
 		try {
 			const rs = await request(`leave-category`, 'GET', true);
 			props.get_all_leave_category(rs);
@@ -125,6 +123,7 @@ const LeaveCategory = props => {
 
 	useEffect(() => {
 		fetchLeaveCategory();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (

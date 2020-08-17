@@ -11,7 +11,7 @@ import HashRoute from '../components/HashRoute';
 import Splash from '../components/Splash';
 import ProfileBlock from '../components/ProfileBlock';
 import { confirmAction } from '../services/utilities';
-import EnrollAntenatal from '../components/Patient/EnrollAntenatal';
+// import EnrollAntenatal from '../components/Patient/EnrollAntenatal';
 import PatientDataUpload from '../components/Patient/PatientDataUpload';
 const EnrollImmunization = lazy(() =>
 	import('../components/Patient/EnrollImmunization')

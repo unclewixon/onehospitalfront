@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 
 import { connect } from 'react-redux';
@@ -15,7 +15,7 @@ import {
 	updateCafeteriaInventory,
 	deleteCafeteriaInventory,
 } from '../actions/inventory';
-import { addCafeteriaFile } from '../actions/general';
+// import { addCafeteriaFile } from '../actions/general';
 
 const CafeteriaInventory = props => {
 	const initialState = {
@@ -39,7 +39,7 @@ const CafeteriaInventory = props => {
 			description,
 			category_id,
 			category,
-			item,
+			// item,
 			stock_code,
 		},
 		setState,
@@ -47,7 +47,6 @@ const CafeteriaInventory = props => {
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
-	const [loaded, setLoaded] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [filtering, setFiltering] = useState(false);
 	const [items, setItems] = useState([]);
@@ -155,8 +154,8 @@ const CafeteriaInventory = props => {
 			console.log(rs);
 			let cat = props.cafeteriaInvCategory.find(el => el.id === category);
 			console.log(cat);
-			await setCatName(cat.name);
-			await setItems(rs);
+			setCatName(cat.name);
+			setItems(rs);
 
 			setFiltering(false);
 		} catch (e) {
@@ -167,38 +166,27 @@ const CafeteriaInventory = props => {
 	};
 
 	useEffect(() => {
-		if (!loaded) {
+		if (!dataLoaded) {
 			props
 				.getAllCafeteriaInvCategory()
-				.then(response => {
-					setDataLoaded(true);
-				})
+				.then(_ => {})
 				.catch(e => {
-					setDataLoaded(true);
 					notifyError(
 						e.message || 'could not fetch cafeteria inventory category'
 					);
 				});
-		}
-		setLoaded(true);
-		// console.log(props.cafeteriaInventory);
-	}, [edit, loaded, props, save]);
 
-	useEffect(() => {
-		if (!loaded) {
 			props
 				.getAllCafeteriaInventory()
-				.then(response => {
-					setDataLoaded(true);
-				})
+				.then(_ => {})
 				.catch(e => {
-					setDataLoaded(true);
 					notifyError(e.message || 'could not fetch cafeteria inventory');
 				});
+
+			setDataLoaded(true);
+			setItems(props.cafeteriaInventory);
 		}
-		setLoaded(true);
-		setItems(props.cafeteriaInventory);
-	}, [edit, loaded, props, save]);
+	}, [dataLoaded, props]);
 
 	return (
 		<div className="content-i">
@@ -304,42 +292,39 @@ const CafeteriaInventory = props => {
 													</tr>
 												) : (
 													<>
-														{items &&
-															items.map(item => {
-																return (
-																	<tr key={item.stock_code}>
-																		<th className="text-center">
-																			{item.stock_code}
-																		</th>
-																		<th className="text-center">
-																			{item.category
-																				? item.category.name
-																				: catName}
-																		</th>
-																		<th className="text-center">{item.name}</th>
-																		<th className="text-center">
-																			{item.cost_price}
-																		</th>
-																		<th className="text-center">
-																			{item.quantity}
-																		</th>
-																		<th className="text-right">
-																			<a className="pi-settings os-dropdown-trigger">
-																				<i
-																					className="os-icon os-icon-ui-49"
-																					onClick={() => onClickEdit(item)}></i>
-																			</a>
-																			<a className="pi-settings os-dropdown-trigger text-danger">
-																				<i
-																					className="os-icon os-icon-ui-15"
-																					onClick={() =>
-																						confirmDelete(item)
-																					}></i>
-																			</a>
-																		</th>
-																	</tr>
-																);
-															})}
+														{items.map(item => {
+															return (
+																<tr key={item.stock_code}>
+																	<th className="text-center">
+																		{item.stock_code}
+																	</th>
+																	<th className="text-center">
+																		{item.category
+																			? item.category.name
+																			: catName}
+																	</th>
+																	<th className="text-center">{item.name}</th>
+																	<th className="text-center">
+																		{item.cost_price}
+																	</th>
+																	<th className="text-center">
+																		{item.quantity}
+																	</th>
+																	<th className="text-right">
+																		<a className="pi-settings os-dropdown-trigger">
+																			<i
+																				className="os-icon os-icon-ui-49"
+																				onClick={() => onClickEdit(item)}></i>
+																		</a>
+																		<a className="pi-settings os-dropdown-trigger text-danger">
+																			<i
+																				className="os-icon os-icon-ui-15"
+																				onClick={() => confirmDelete(item)}></i>
+																		</a>
+																	</th>
+																</tr>
+															);
+														})}
 													</>
 												)}
 											</tbody>

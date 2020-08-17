@@ -34,7 +34,6 @@ const LabGroup = props => {
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
-	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [labTests, setLabTests] = useState(null);
 	const [parameters, setParameter] = useState({});
@@ -272,7 +271,7 @@ const LabGroup = props => {
 	};
 
 	useEffect(() => {
-		if (!loaded) {
+		if (!dataLoaded) {
 			props
 				.getAllLabGroups()
 				.then(response => {
@@ -282,12 +281,12 @@ const LabGroup = props => {
 					setDataLoaded(true);
 					notifyError(e.message || 'could not fetch lab groups');
 				});
+
 			props.getAllLabTests();
 			props.getAllLabTestCategories();
 			props.getAllLabTestParameters();
 		}
-		setLoaded(true);
-	}, [loaded, props]);
+	}, [dataLoaded, props]);
 
 	const addParameterUI = () => {
 		let paramUI = [...paramsUI, LabParameterPicker];

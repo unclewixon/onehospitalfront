@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import { validate } from '../../services/validationSchemas';
-import {
-	renderTextInput,
-	request,
-	renderSelect,
-} from '../../services/utilities';
+import { renderTextInput, renderSelect } from '../../services/utilities';
 import { Field, reduxForm } from 'redux-form';
 
 const relToBrim = [

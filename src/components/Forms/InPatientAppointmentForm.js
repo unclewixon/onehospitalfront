@@ -12,6 +12,7 @@ import { addTransaction } from '../../actions/transaction';
 
 function InPatientAppointmentForm(props) {
 	const { register, handleSubmit, setValue, getValues } = useForm();
+
 	const [doctorsList, setDoctorsList] = useState();
 	const [rooms, setRooms] = useState();
 	const [doctors, setDoctors] = useState();
@@ -131,7 +132,6 @@ function InPatientAppointmentForm(props) {
 
 	useEffect(() => {
 		init();
-		setValue('appointment_date', new Date());
 	}, [init]);
 
 	return (

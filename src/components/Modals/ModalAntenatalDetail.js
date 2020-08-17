@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 import { closeModals } from '../../actions/general';
-import moment from 'moment';
-import { reviewOfSystem } from './../../services/constants';
-import { routerMiddleware } from 'react-router-redux';
 
 class GeneralView extends Component {
 	render() {

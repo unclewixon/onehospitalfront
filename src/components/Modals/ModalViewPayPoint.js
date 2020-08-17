@@ -5,9 +5,7 @@ import { connect } from 'react-redux';
 import { closeModals } from '../../actions/general';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
-import Tooltip from 'antd/lib/tooltip';
 import { request } from '../../services/utilities';
-import { transactionsAPI } from '../../services/constants';
 
 class ModalViewPayPoint extends Component {
 	state = {
@@ -16,7 +14,6 @@ class ModalViewPayPoint extends Component {
 	};
 
 	componentDidMount() {
-		const { view_paypoint } = this.props;
 		this.fetchTransactionList();
 		document.body.classList.add('modal-open');
 	}

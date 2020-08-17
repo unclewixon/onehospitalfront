@@ -59,9 +59,6 @@ import {
 	GET_ALL_REQUEST_SERVICES,
 	UPDATE_REQUEST_SERVICE,
 	DELETE_REQUEST_SERVICE,
-	GET_DENTISTRY_REQUESTS,
-	GET_IMAGING_REQUESTS,
-	GET_OPTHALMOLOGY_REQUESTS,
 	ADD_LAB_GROUP,
 	UPDATE_LAB_GROUP,
 	DELETE_LAB_GROUP,
@@ -806,6 +803,7 @@ export const deleteLabTest = data => {
 		return new Promise((resolve, reject) => {
 			let updatedStructure = [];
 			if (Array.isArray(data.parameters)) {
+				// eslint-disable-next-line array-callback-return
 				data.parameters.map((param, i) => {
 					let newParams = {
 						parameter_id:
@@ -825,7 +823,7 @@ export const deleteLabTest = data => {
 			// 	parameters: updatedStructure,
 			// };
 
-			request(`lab-tests/${data.id}`, 'DELETE', true)
+			return request(`lab-tests/${data.id}`, 'DELETE', true)
 				.then(response => {
 					dispatch(delete_lab_test(data));
 					return resolve({ success: true });

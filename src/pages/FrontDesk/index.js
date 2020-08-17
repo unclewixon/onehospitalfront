@@ -8,14 +8,7 @@ import {
 } from '../../actions/general';
 
 import Queue from '../../components/Queue';
-import Dashboard from '../../components/FrontDesk/FrontDeskDashboard';
-//import Appointments from '../../components/FrontDesk/FrontDeskAppointments';
-import Incoming from '../../components/FrontDesk/Incoming';
 import { compose } from 'redux';
-import {
-	addPatientUploadData,
-	loadPatientUploadData,
-} from '../../actions/patient';
 import NoMatch from '../NoMatch';
 
 import Splash from '../../components/Splash';
@@ -23,9 +16,11 @@ import { Switch, Route, withRouter, Link } from 'react-router-dom';
 import startCase from 'lodash.startcase';
 import { socket } from '../../services/constants';
 import { notifyError, notifySuccess } from '../../services/notify';
+
 const Appointments = lazy(() =>
 	import('../../components/FrontDesk/FrontDeskAppointments')
 );
+
 const AllAppointments = lazy(() =>
 	import('../../components/FrontDesk/AllAppointments')
 );
@@ -36,7 +31,10 @@ const AllPatients = lazy(() =>
 
 const FrontDesk = props => {
 	const [title, setTitle] = useState('Dashboard');
+	const [listenning, setListenning] = useState(false);
+
 	const { match, location } = props;
+
 	const page = location.pathname.split('/').pop();
 
 	const RegisterNewPatient = e => {
@@ -50,25 +48,27 @@ const FrontDesk = props => {
 	};
 
 	useEffect(() => {
-		if (page === 'front-desk') {
-			setTitle('Dashboard');
-		} else {
-			setTitle(startCase(page));
-		}
-		socket.on('appointment-update', data => {
-			if (data.action === 1) {
-				notifySuccess('Doctor has accepted to see patient');
-			} else {
-				notifyError('Doctor has declined to see patient');
-			}
-			// open appointment modal
-			ViewAppointmentDetail(data.appointment);
-		});
-	}, [page]);
+		if (!listenning) {
+			setListenning(true);
 
-	const ViewAppointmentDetail = appointment => {
-		props.viewAppointmentDetail(appointment);
-	};
+			if (page === 'front-desk') {
+				setTitle('Dashboard');
+			} else {
+				setTitle(startCase(page));
+			}
+
+			socket.on('appointment-update', data => {
+				if (data.action === 1) {
+					notifySuccess('Doctor has accepted to see patient');
+				} else {
+					notifyError('Doctor has declined to see patient');
+				}
+
+				// open appointment modal
+				props.viewAppointmentDetail(data.appointment);
+			});
+		}
+	}, [listenning, page, props]);
 
 	return (
 		<div className="content-i">

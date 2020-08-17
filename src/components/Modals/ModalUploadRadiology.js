@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+
 import waiting from '../../assets/images/waiting.gif';
 import { closeModals } from '../../actions/general';
 import { notifyError, notifySuccess } from '../../services/notify';
@@ -9,6 +10,7 @@ import { API_URI, searchAPI, patientAPI } from '../../services/constants';
 import { upload } from '../../services/utilities';
 import { request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
+
 const ModalUploadRadiology = props => {
 	const [submitting, setSubmitting] = useState(false);
 	const [file, setFile] = useState(false);
@@ -17,7 +19,8 @@ const ModalUploadRadiology = props => {
 	const [query, setQuery] = useState('');
 	const [searching, setSearching] = useState(false);
 	const [patients, setPatients] = useState([]);
-	const [patientId, setPatientId] = useState('');
+	const [patientId, setPatientId] = useState(null);
+
 	let history = useHistory();
 
 	const handleChange = e => {
@@ -95,8 +98,10 @@ const ModalUploadRadiology = props => {
 	};
 
 	useEffect(() => {
-		setPatientId(props.patient.id);
-	}, []);
+		if (!patientId) {
+			setPatientId(props.patient.id);
+		}
+	}, [patientId, props.patient.id]);
 
 	return (
 		<div

@@ -66,20 +66,21 @@ const NewDentistry = props => {
 				.catch(e => {
 					notifyError(e.message || 'could not fetch service categories');
 				});
+
+			let data = [];
+			let services = [];
+			props.ServiceCategories.forEach((item, index) => {
+				const res = { label: item.name, value: item.id };
+				data = [...data, res];
+			});
+			props.service.forEach((item, index) => {
+				const res = { label: item.name, value: item.id };
+				services = [...services, res];
+			});
+			setServicesCategory(data);
+			setServices(services);
+			setLoaded(true);
 		}
-		let data = [];
-		let services = [];
-		props.ServiceCategories.forEach((item, index) => {
-			const res = { label: item.name, value: item.id };
-			data = [...data, res];
-		});
-		props.service.forEach((item, index) => {
-			const res = { label: item.name, value: item.id };
-			services = [...services, res];
-		});
-		setServicesCategory(data);
-		setServices(services);
-		setLoaded(true);
 	}, [props, loaded]);
 
 	const onSubmit = async values => {

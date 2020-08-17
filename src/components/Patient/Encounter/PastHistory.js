@@ -1,16 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
-import { renderTextInput, request } from '../../../services/utilities';
+import { request } from '../../../services/utilities';
 import { diagnosisAPI } from '../../../services/constants';
 import DatePicker from 'react-datepicker';
 import { connect, useDispatch } from 'react-redux';
 import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
 import { Controller, ErrorMessage, useForm } from 'react-hook-form';
-import { Field } from 'redux-form';
-import { v4 as uuidv4 } from 'uuid';
 
 let PastHistory = props => {
+	// eslint-disable-next-line no-unused-vars
 	const [start_time, setStart_time] = useState(new Date());
 	const [multiDate, setMultiDate] = useState([]);
 	let [data, setData] = useState([]);
@@ -22,7 +21,7 @@ let PastHistory = props => {
 		setData([...data.slice(0, index), ...data.slice(index + 1)]);
 	};
 
-	const { encounterData, previous, next, encounterForm } = props;
+	const { encounterData, previous, encounterForm } = props;
 	const defaultValues = {
 		...(encounterForm.medicalHistory || []),
 	};
@@ -42,11 +41,14 @@ let PastHistory = props => {
 
 	useEffect(() => {
 		if (defaultValues.pastHistory?.length > 0) {
+			// eslint-disable-next-line array-callback-return
 			defaultValues.pastHistory.map((item, index) => {
 				multiDate[index] = item.date;
 				setMultiDate(multiDate);
+				// eslint-disable-next-line react-hooks/exhaustive-deps
 				data = [...data, { id: index }];
 			});
+
 			setData(data);
 		}
 	}, []);
@@ -64,11 +66,7 @@ let PastHistory = props => {
 			return [];
 		}
 		let val = inputValue.toUpperCase();
-		const res = await request(
-			`${diagnosisAPI}` + 'search?q=' + val,
-			'GET',
-			true
-		);
+		const res = await request(`${diagnosisAPI}/search?q=${val}`, 'GET', true);
 		return res;
 	};
 

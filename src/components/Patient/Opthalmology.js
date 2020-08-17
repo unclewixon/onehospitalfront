@@ -11,24 +11,7 @@ import { request } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 
 const Opthalmology = props => {
-	const [loading, setLoading] = useState(false);
-	const fetchImaging = async () => {
-		setLoading(true);
-		const { patient } = props;
-		try {
-			const rs = await request(
-				`patient/${patient.id}/request/opthalmology?startDate=&endDate=`,
-				'GET',
-				true
-			);
-
-			props.loadOpthalmologyRequests(rs);
-			setLoading(false);
-		} catch (error) {
-			setLoading(false);
-			notifyError('error fetching imaging requests for the patient');
-		}
-	};
+	const [loading, setLoading] = useState(true);
 
 	const convertToIndividualRequest = data => {
 		console.log(data);
@@ -103,8 +86,27 @@ const Opthalmology = props => {
 	};
 
 	useEffect(() => {
-		fetchImaging();
-	}, []);
+		const fetchImaging = async () => {
+			try {
+				const { patient } = props;
+				const rs = await request(
+					`patient/${patient.id}/request/opthalmology?startDate=&endDate=`,
+					'GET',
+					true
+				);
+
+				props.loadOpthalmologyRequests(rs);
+				setLoading(false);
+			} catch (error) {
+				setLoading(false);
+				notifyError('error fetching imaging requests for the patient');
+			}
+		};
+
+		if (loading) {
+			fetchImaging();
+		}
+	}, [loading, props]);
 
 	return (
 		<div className="col-sm-12">

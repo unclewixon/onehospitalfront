@@ -7,8 +7,8 @@ import {
 	updateDiagnosis,
 	deleteDiagnosis,
 } from '../../actions/settings';
-import { confirmAction } from '../../services/utilities';
-import { notifySuccess, notifyError } from '../../services/notify';
+
+import { notifySuccess } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
 
 class ModalUploadDiagnosis extends Component {

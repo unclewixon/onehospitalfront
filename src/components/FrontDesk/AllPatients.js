@@ -1,18 +1,17 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from 'react';
-import { request } from '../../services/utilities';
-
-import { loadAllPatients } from '../../actions/patient';
-import { notifyError } from '../../services/notify';
-import searchingGIF from '../../assets/images/searching.gif';
+import React, { useState, useEffect, useCallback } from 'react';
+import DatePicker from 'antd/lib/date-picker';
+import Select from 'react-select';
 import Tooltip from 'antd/lib/tooltip';
 import { connect, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import waiting from '../../assets/images/waiting.gif';
 
-import DatePicker from 'antd/lib/date-picker';
+import { request } from '../../services/utilities';
+import { loadAllPatients } from '../../actions/patient';
+import { notifyError } from '../../services/notify';
+import searchingGIF from '../../assets/images/searching.gif';
+import waiting from '../../assets/images/waiting.gif';
 import ModalPatientDetails from '../../components/Modals/ModalPatientDetails';
-import Select from 'react-select';
 import { toggleProfile } from '../../actions/user';
 
 const { RangePicker } = DatePicker;
@@ -29,7 +28,8 @@ const customStyle = {
 const AllPatients = ({ allPatients }) => {
 	const dispatch = useDispatch();
 	const [loaded, setLoaded] = useState(false);
-	const [activeRequest, setActiveRequest] = useState(null);
+	const activeRequest = null;
+	// const [activeRequest, setActiveRequest] = useState(null);
 	const [showModal, setShowModal] = useState(false);
 	const [filtering, setFiltering] = useState(false);
 	// const [patientName, setPatientName] = useState('');
@@ -49,21 +49,20 @@ const AllPatients = ({ allPatients }) => {
 		dispatch(toggleProfile(true, info));
 	};
 
-	const fetchPatients = async name => {
-		setLoaded(true);
-		try {
-			const rs = await request(
-				name ? `patient/find?query=${name}` : `patient/list`,
-				'GET',
-				true
-			);
-			dispatch(loadAllPatients(rs));
-			return setLoaded(false);
-		} catch (error) {
-			notifyError('error fetching patients');
-			setLoaded(false);
-		}
-	};
+	const fetchPatients = useCallback(
+		async name => {
+			try {
+				const url = name ? `patient/find?query=${name}` : `patient/list`;
+				const rs = await request(url, 'GET', true);
+				dispatch(loadAllPatients(rs));
+				setLoaded(false);
+			} catch (error) {
+				notifyError('error fetching patients');
+				setLoaded(false);
+			}
+		},
+		[dispatch]
+	);
 
 	const filterEntries = () => {
 		setFiltering(true);
@@ -72,7 +71,7 @@ const AllPatients = ({ allPatients }) => {
 
 	useEffect(() => {
 		fetchPatients();
-	}, []);
+	}, [fetchPatients]);
 
 	const formRow = (data, i) => {
 		return (

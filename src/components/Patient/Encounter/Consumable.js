@@ -30,7 +30,7 @@ let Consumable = props => {
 	const { previous, encounterData, encounterId } = props;
 
 	let [data, setData] = useState([]);
-	let [loading, setLoading] = useState(false);
+	let [loading, setLoading] = useState(true);
 	const [summary, setSummary] = useState('');
 	let [stocks, setStock] = useState(false);
 	const append = () => {
@@ -39,9 +39,9 @@ let Consumable = props => {
 	const handleChange = e => {
 		setSummary(e);
 	};
+
 	const listConsumable = async () => {
 		try {
-			setLoading(true);
 			const rs = await request(`${stockByCategoryAPI}/Consumable`, 'GET', true);
 			setStock(rs);
 			setLoading(false);

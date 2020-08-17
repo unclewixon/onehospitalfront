@@ -1,8 +1,5 @@
-import React, { Component, useEffect, useState } from 'react';
-import {
-	physicalExamination,
-	reviewOfSystem,
-} from '../../../services/constants';
+import React, { useEffect, useState } from 'react';
+import { physicalExamination } from '../../../services/constants';
 import Select from 'react-select';
 import { Controller, ErrorMessage, useForm } from 'react-hook-form';
 import { connect, useDispatch } from 'react-redux';
@@ -10,7 +7,7 @@ import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
 
 const PhysicalExam = props => {
 	const [selected, setSelected] = useState();
-	const { encounterData, previous, next, encounterForm } = props;
+	const { encounterData, previous, encounterForm } = props;
 	const dispatch = useDispatch();
 	const defaultValues = {
 		physicalExam: encounterForm.physicalExamination?.physicalExam,
@@ -27,7 +24,7 @@ const PhysicalExam = props => {
 
 	useEffect(() => {
 		setSelected(encounterForm.physicalExamination?.physicalExam);
-	}, []);
+	}, [encounterForm.physicalExamination]);
 
 	const divStyle = {
 		height: '500px',

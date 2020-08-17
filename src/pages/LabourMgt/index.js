@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { Switch, Route, withRouter, Link } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
-import Queue from '../../components/Queue';
 
 const Dashboard = lazy(() => import('./Dashboard'));
 const LabDetail = lazy(() => import('./LabDetail'));
 const EnrolLab = lazy(() => import('./EnrolLab'));
+
 class index extends Component {
 	render() {
 		const { match, location } = this.props;

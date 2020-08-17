@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
-import BootstrapTable from 'react-bootstrap-table-next';
+
 import accounting from 'accounting';
 import waiting from '../../assets/images/waiting.gif';
+
 const { RangePicker } = DatePicker;
+
 export class IncomeStatement extends Component {
 	state = {
 		filtering: false,
@@ -92,7 +94,7 @@ export class IncomeStatement extends Component {
 		// this.fetchCafeteriaTransaction();
 	};
 	render() {
-		const { filtering, selectedAccount, statements } = this.state;
+		const { filtering } = this.state;
 		return (
 			<div className="row">
 				<div className="col-sm-12">

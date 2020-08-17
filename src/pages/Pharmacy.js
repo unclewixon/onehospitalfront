@@ -2,20 +2,21 @@
 import React, { Component, Suspense, lazy } from 'react';
 import { Switch, Route, withRouter, Link } from 'react-router-dom';
 import Queue from '../components/Queue';
-import SaleSummary from '../components/SaleSummary';
+// import SaleSummary from '../components/SaleSummary';
 import { connect } from 'react-redux';
 
 import NoMatch from './NoMatch';
 import Splash from '../components/Splash';
 
-const Overall = lazy(() => import('../components/Overall'));
+// const Overall = lazy(() => import('../components/Overall'));
 const PharmRecentRequest = lazy(() =>
 	import('../components/PharmRecentRequest')
 );
 const PharmAllRequest = lazy(() => import('../components/PharmAllRequest'));
-const PharmFillRequest = lazy(() => import('../components/PharmFillRequest'));
+// const PharmFillRequest = lazy(() => import('../components/PharmFillRequest'));
 const PharmNewRequest = lazy(() => import('../components/PharmNewRequest'));
-export class Pharmacy extends Component {
+
+class Pharmacy extends Component {
 	render() {
 		const { match, location, staff } = this.props;
 		const page = location.pathname.split('/').pop();

@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+
 import { uploadDiagnosis } from '../../actions/general';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
@@ -11,11 +12,10 @@ import {
 } from '../../actions/settings';
 
 const Diagnosis = props => {
-	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
 	useEffect(() => {
-		if (!loaded) {
+		if (!dataLoaded) {
 			props
 				.getAllDiagnosises()
 				.then(response => {
@@ -26,8 +26,8 @@ const Diagnosis = props => {
 					notifyError(e.message || 'could not fetch diagnosis');
 				});
 		}
-		setLoaded(true);
-	}, [props, loaded]);
+	}, [props, dataLoaded]);
+
 	return (
 		<div className="content-i">
 			<div className="content-box">

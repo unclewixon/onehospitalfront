@@ -1,28 +1,25 @@
 import React, { useState, useEffect } from 'react';
-
+import { connect } from 'react-redux';
+import AsyncSelect from 'react-select/async';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
+
 import { diagnosisAPI, patientAPI, serviceAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request } from '../../services/utilities';
 import { notifyError, notifySuccess } from '../../services/notify';
-import { connect } from 'react-redux';
-import AsyncSelect from 'react-select/async';
-import { withRouter } from 'react-router-dom';
-
 import {
 	get_all_diagnosis,
 	get_all_services,
 	getAllServiceCategory,
 } from '../../actions/settings';
 import searchingGIF from '../../assets/images/searching.gif';
-import moment from 'moment';
-import { SubmissionError } from 'redux-form';
-import Redirect from 'react-router-dom/es/Redirect';
-import { compose } from 'redux';
 
 const ProcedureRequest = props => {
 	const { register, handleSubmit, setValue } = useForm();
+
 	const [submitting, setSubmitting] = useState(false);
 	const [servicesCategory, setServicesCategory] = useState([]);
 	const [services, setServices] = useState('');
@@ -37,20 +34,21 @@ const ProcedureRequest = props => {
 				.catch(e => {
 					notifyError(e.message || 'could not fetch service categories');
 				});
+
+			let data = [];
+			let services = [];
+			props.ServiceCategories.forEach((item, index) => {
+				const res = { label: item.name, value: item.id };
+				data = [...data, res];
+			});
+			props.service.forEach((item, index) => {
+				const res = { label: item.name, value: item.id };
+				services = [...services, res];
+			});
+			setServicesCategory(data);
+			setServices(services);
+			setLoaded(true);
 		}
-		let data = [];
-		let services = [];
-		props.ServiceCategories.forEach((item, index) => {
-			const res = { label: item.name, value: item.id };
-			data = [...data, res];
-		});
-		props.service.forEach((item, index) => {
-			const res = { label: item.name, value: item.id };
-			services = [...services, res];
-		});
-		setServicesCategory(data);
-		setServices(services);
-		setLoaded(true);
 	}, [props, loaded]);
 
 	const getOptionValues = option => option.id;
@@ -65,21 +63,13 @@ const ProcedureRequest = props => {
 			return [];
 		}
 		let val = inputValue.toUpperCase();
-		const res = await request(
-			`${diagnosisAPI}/` + 'search?q=' + val,
-			'GET',
-			true
-		);
+		const res = await request(`${diagnosisAPI}/search?q=${val}`, 'GET', true);
 		return res;
 	};
 
 	const fetchServicesByCategory = async id => {
 		try {
-			const rs = await request(
-				`${serviceAPI}` + '/categories/' + id,
-				'GET',
-				true
-			);
+			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
 			props.get_all_services(rs);
 		} catch (error) {
 			// console.log(error);
@@ -113,12 +103,7 @@ const ProcedureRequest = props => {
 		theRequest.requestBody = requestData;
 
 		try {
-			const rs = await request(
-				`${patientAPI}/save-request`,
-				'POST',
-				true,
-				theRequest
-			);
+			await request(`${patientAPI}/save-request`, 'POST', true, theRequest);
 
 			setSubmitting(false);
 			notifySuccess('Procedure Request Saved');
@@ -126,9 +111,8 @@ const ProcedureRequest = props => {
 			// return  <Redirect  to="/settings/roles#procedure" />
 		} catch (e) {
 			setSubmitting(false);
-			throw new SubmissionError({
-				_error: e.message || 'could not save Procedure Request',
-			});
+			const message = e.message || 'could not save Procedure Request';
+			notifyError(message);
 		}
 	};
 

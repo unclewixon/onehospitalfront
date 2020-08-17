@@ -1,12 +1,7 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import {
-	renderTextInput,
-	renderSelect,
-	renderMultiselect,
-	renderTextArea,
-} from '../../services/utilities';
-import { Field, reduxForm, change as changeFieldValue } from 'redux-form';
+import { renderSelect, renderTextArea } from '../../services/utilities';
+import { Field, reduxForm } from 'redux-form';
 import { withRouter } from 'react-router-dom';
 
 import { loadStaff } from '../../actions/hr';
@@ -58,7 +53,7 @@ export const treatmentPlan = [
 
 let AssesmentInfo = props => {
 	const dispatch = useDispatch();
-	const { page, name, error, ivf, previousPage, onSubmit } = props;
+	const { page, error, ivf, previousPage } = props;
 
 	useEffect(() => {}, []);
 
@@ -68,7 +63,8 @@ let AssesmentInfo = props => {
 		dispatch(props.onSubmit);
 	};
 
-	const patient = React.createRef();
+	// const patient = React.createRef();
+
 	return (
 		<>
 			<h6 className="element-header">Step {page}. Assessment/Plan</h6>

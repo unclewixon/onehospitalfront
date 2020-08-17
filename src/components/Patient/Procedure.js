@@ -13,15 +13,33 @@ import moment from 'moment';
 import ModalProcedure from '../Modals/ModalProcedure';
 
 const Procedure = props => {
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const [showModal, setShowModal] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
+
 	let location = props.location;
 	let patient = props.patient;
 
 	useEffect(() => {
-		loadProcedure();
-	}, []);
+		const loadProcedure = async () => {
+			try {
+				const rs = await request(
+					`${patientAPI}/${patient.id}/request/procedure`,
+					'GET',
+					true
+				);
+				props.loadPatientProcedureData(rs);
+				setLoading(false);
+			} catch (e) {
+				setLoading(false);
+				notifyError(e.message || 'could not fetch procedure');
+			}
+		};
+
+		if (loading) {
+			loadProcedure();
+		}
+	}, [patient.id, props, loading]);
 
 	const getRequests = arr => {
 		let rer = [];
@@ -33,22 +51,6 @@ const Procedure = props => {
 
 	const onModalClick = () => {
 		setShowModal(!showModal);
-	};
-
-	const loadProcedure = async () => {
-		try {
-			setLoading(true);
-			const rs = await request(
-				`${patientAPI}/${patient.id}/request/procedure`,
-				'GET',
-				true
-			);
-			props.loadPatientProcedureData(rs);
-			setLoading(false);
-		} catch (e) {
-			setLoading(false);
-			notifyError(e.message || 'could not fetch procedure');
-		}
 	};
 
 	return (

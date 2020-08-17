@@ -51,7 +51,7 @@ const Allergies = props => {
 			});
 			setData(data);
 		}
-	}, [defaultValues?.allForm]);
+	}, [defaultValues]);
 
 	const append = () => {
 		setData([...data, { id: data.length }]);

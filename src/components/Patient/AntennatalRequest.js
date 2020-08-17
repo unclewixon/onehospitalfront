@@ -142,8 +142,8 @@ class AntennatalRequest extends Component {
 	};
 
 	render() {
-		const { page, submit, apointmentDate } = this.state;
-		const { submitting } = this.props;
+		const { page, apointmentDate } = this.state;
+		// const { submitting } = this.props;
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">

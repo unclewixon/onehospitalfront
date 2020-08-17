@@ -54,6 +54,7 @@ const PlanForm = props => {
 	const { register, handleSubmit, setValue, control, errors } = useForm({
 		defaultValues,
 	});
+
 	useEffect(() => {
 		if (encounterForm.plan?.regimens?.length > 0) {
 			// eslint-disable-next-line array-callback-return
@@ -64,6 +65,7 @@ const PlanForm = props => {
 			setData(data);
 		}
 	}, []);
+
 	const getServiceUnit = useCallback(async () => {
 		try {
 			const res = await request(`inventory/categories`, 'GET', true);
@@ -123,20 +125,21 @@ const PlanForm = props => {
 				.catch(e => {
 					notifyError(e.message || 'could not fetch service categories');
 				});
+
+			let data = [];
+			let services = [];
+			props.ServiceCategories.forEach((item, index) => {
+				const res = { label: item.name, value: item.id };
+				data = [...data, res];
+			});
+			props.service.forEach((item, index) => {
+				const res = { label: item.name, value: item.id };
+				services = [...services, res];
+			});
+			setServicesCategory(data);
+			setServices(services);
+			setLoaded(true);
 		}
-		let data = [];
-		let services = [];
-		props.ServiceCategories.forEach((item, index) => {
-			const res = { label: item.name, value: item.id };
-			data = [...data, res];
-		});
-		props.service.forEach((item, index) => {
-			const res = { label: item.name, value: item.id };
-			services = [...services, res];
-		});
-		setServicesCategory(data);
-		setServices(services);
-		setLoaded(true);
 	}, [props, loaded]);
 
 	const getOptionValues = option => option.id;

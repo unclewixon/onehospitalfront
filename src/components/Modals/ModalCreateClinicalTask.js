@@ -1,12 +1,7 @@
-import React, { Component, lazy } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
-import { Field, reduxForm } from 'redux-form';
 
-import { renderTextInput, renderTextArea } from '../../services/utilities';
-import { Checkbox } from 'antd';
-
-import waiting from '../../assets/images/waiting.gif';
 import { closeModals } from '../../actions/general';
 import { vitalItems } from '../../services/constants';
 import VitalForm from '../Patient/VitalForm';

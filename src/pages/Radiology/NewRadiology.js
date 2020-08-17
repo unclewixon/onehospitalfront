@@ -15,10 +15,10 @@ const NewRadiology = props => {
 	let history = useHistory();
 	const { register, handleSubmit, setValue } = useForm();
 	const [submitting, setSubmitting] = useState(false);
-	const [loaded, setLoaded] = useState(false);
+	// const [loaded, setLoaded] = useState(false);
 	// const [loading, setLoading] = useState(false);
 	// const [data, getDataToEdit] = useState(null);
-	// const [dataLoaded, setDataLoaded] = useState(false);
+	const [dataLoaded, setDataLoaded] = useState(false);
 	// const [imagingServices, setImagingServices] = useState([]);
 	const [multi, setMulti] = useState(false);
 	// const [serviceList, setServiceList] = useState([]);
@@ -107,21 +107,25 @@ const NewRadiology = props => {
 
 		// console.log(serviceList.map(service => service.category.id));
 	};
+
 	useEffect(() => {
-		if (!loaded) {
+		if (!dataLoaded) {
 			props
 				.getAllService()
-				.then(response => {})
+				.then(response => {
+					setDataLoaded(true);
+				})
 				.catch(e => {
+					setDataLoaded(true);
 					notifyError(e.message || 'could not fetch services list');
 				});
-			setLoaded(true);
+
 			// setServiceList(props.ServicesList);
 			filterRequest();
 			console.log(services);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props, loaded]);
+	}, [props, dataLoaded]);
 
 	return (
 		<div className="row">

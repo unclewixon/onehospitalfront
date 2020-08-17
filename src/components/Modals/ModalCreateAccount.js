@@ -1,16 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Field, reduxForm, SubmissionError, reset } from 'redux-form';
+import { Field, reduxForm, reset } from 'redux-form';
 
 import { closeModals } from '../../actions/general';
-import {
-	renderTextInput,
-	request,
-	renderTextInputGroup,
-	renderSelect,
-} from '../../services/utilities';
-import { inventoryAPI } from '../../services/constants';
-import { notifySuccess } from '../../services/notify';
+import { renderTextInput, renderSelect } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { addInventory } from '../../actions/inventory';
 

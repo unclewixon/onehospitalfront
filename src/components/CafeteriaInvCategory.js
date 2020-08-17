@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -24,7 +24,6 @@ const CafeteriaInvCategory = props => {
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
-	const [loaded, setLoaded] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const handleInputChange = e => {
@@ -101,7 +100,7 @@ const CafeteriaInvCategory = props => {
 	};
 
 	useEffect(() => {
-		if (!loaded) {
+		if (!dataLoaded) {
 			props
 				.getAllCafeteriaInvCategory()
 				.then(response => {
@@ -114,8 +113,7 @@ const CafeteriaInvCategory = props => {
 					);
 				});
 		}
-		setLoaded(true);
-	}, [edit, loaded, props, save]);
+	}, [dataLoaded, props]);
 
 	return (
 		<div className="content-i">

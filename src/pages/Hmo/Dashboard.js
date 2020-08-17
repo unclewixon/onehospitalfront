@@ -1,11 +1,11 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import Tooltip from 'antd/lib/tooltip';
+
 import { hmoAPI, transactionsAPI, socket } from '../../services/constants';
-import { notifySuccess, notifyError, notifyInfo } from '../../services/notify';
+import { notifyError, notifyInfo } from '../../services/notify';
 import { request } from '../../services/utilities';
-import searchingGIF from '../../assets/images/searching.gif';
 import { loadHmoTransaction } from '../../actions/hmo';
 import HmoTable from '../../components/HMO/HmoTable';
 

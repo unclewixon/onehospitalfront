@@ -1,16 +1,10 @@
-/* eslint-disable no-script-url */
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { request, confirmAction } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
-import searchingGIF from '../../assets/images/searching.gif';
 import { rolesAPI } from '../../services/constants';
 import { loadRoles, deleteRole } from '../../actions/role';
-import CreateRole from './../CreateRole';
-import EditRole from './../EditRole';
-import PatientForm from '../PatientForm';
-import PatientNOKForm from '../PatientNOKForm';
 import CreateImmunization from './CreateImmunization';
 
 class EnrollImmunization extends Component {
@@ -62,8 +56,6 @@ class EnrollImmunization extends Component {
 	};
 
 	render() {
-		const { roles } = this.props;
-		const { edit, roleID, previousRole, loading } = this.state;
 		return (
 			<div className="col-sm-12">
 				<CreateImmunization />

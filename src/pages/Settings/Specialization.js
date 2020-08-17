@@ -24,7 +24,6 @@ const Specialization = props => {
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	const [payload, getDataToEdit] = useState(null);
-	// const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const handleInputChange = e => {
@@ -111,7 +110,6 @@ const Specialization = props => {
 	};
 
 	const fetchSpecialization = async () => {
-		setDataLoaded(false);
 		try {
 			const rs = await request(`specializations`, 'GET', true);
 			props.loadSpecializations(rs);
@@ -124,6 +122,7 @@ const Specialization = props => {
 
 	useEffect(() => {
 		fetchSpecialization();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (

@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import EnrollmentForm from '../../components/IVF/EnrollmentForm';
+
 import IVFHcgAdmin from '../../components/IVF/IVFHcgAdmin';
 
-export class HcgAdministration extends Component {
+class HcgAdministration extends Component {
 	render() {
 		const { location } = this.props;
 		const path = location.pathname.split('/').pop();

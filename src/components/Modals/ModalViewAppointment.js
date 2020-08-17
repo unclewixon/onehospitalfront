@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { closeModals } from '../../actions/general';
-import Select from 'react-select';
-import { paymentTypeExtra } from '../../services/constants';
 
 class ModalViewAppointment extends Component {
 	componentDidMount() {

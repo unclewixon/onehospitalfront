@@ -66,7 +66,7 @@ const renderTextInput = ({input, label, type, id, placeholder, icon, meta: { tou
 	</div>
 );
 
-function Login(props) {
+let Login = props => {
 	const [state, setState] = useState({
 		submitting: false,
 		loaded: false,
@@ -74,20 +74,23 @@ function Login(props) {
 	});
 
 	useEffect(() => {
-		window.document.body.className = 'auth-wrapper loginPage';
-		setState({ ...state, loaded: true });
-		setGlobal({
-			room: '',
-		});
-		return async () => {
-			const fullscreen = await storage.getItem(FULLSCREEN_COOKIE);
-			const theme_mode = await storage.getItem(MODE_COOKIE);
+		if (!state.loaded) {
+			window.document.body.className = 'auth-wrapper loginPage';
+			setState({ ...state, loaded: true });
+			setGlobal({
+				room: '',
+			});
 
-			window.document.body.className = `menu-position-side menu-side-left ${
-				fullscreen ? 'full-screen' : ''
-			} with-content-panel ${theme_mode ? 'color-scheme-dark' : ''}`;
-		};
-	}, [setState, setGlobal]);
+			return async () => {
+				const fullscreen = await storage.getItem(FULLSCREEN_COOKIE);
+				const theme_mode = await storage.getItem(MODE_COOKIE);
+
+				window.document.body.className = `menu-position-side menu-side-left ${
+					fullscreen ? 'full-screen' : ''
+				} with-content-panel ${theme_mode ? 'color-scheme-dark' : ''}`;
+			};
+		}
+	}, [state]);
 
 	const doLogin = async data => {
 		setState({ ...state, submitting: true });
@@ -278,7 +281,7 @@ function Login(props) {
 		</section>
 		// </div>
 	);
-}
+};
 
 Login = reduxForm({
 	form: 'login_user',

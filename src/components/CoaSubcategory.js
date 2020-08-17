@@ -1,11 +1,12 @@
-import React, { Component, useState, useEffect } from 'react';
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React, { useState, useEffect } from 'react';
 
 import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
-import { confirmAction, request } from '../services/utilities';
+import { confirmAction } from '../services/utilities';
 import {
 	getAllCafeteriaInvCategory,
 	addCafeteriaInventory,
@@ -30,12 +31,12 @@ const CoaSubcategory = props => {
 	);
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
-	const [data, getDataToEdit] = useState(null);
-	const [loaded, setLoaded] = useState(null);
+	// const [data, getDataToEdit] = useState(null);
+	// const [loaded, setLoaded] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
-	const [filtering, setFiltering] = useState(false);
+	// const [filtering, setFiltering] = useState(false);
 	const [items, setItems] = useState([]);
-	const [catName, setCatName] = useState('');
+	// const [catName, setCatName] = useState('');
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -132,58 +133,51 @@ const CoaSubcategory = props => {
 		setSubmitButton({ save: true, edit: false });
 		setState({ ...initialState });
 	};
-	const doFilter = async () => {
-		// setFiltering(true);
-		// try {
-		// 	const rs = await request(
-		// 		`cafeteria/inventories-by-category/${category}`
-		// 	);
-		// 	console.log(rs);
-		// 	let cat = props.cafeteriaInvCategory.find(el => el.id === category);
-		// 	console.log(cat);
-		// 	await setCatName(cat.name);
-		// 	await setItems(rs);
-		// 	setFiltering(false);
-		// } catch (e) {
-		// 	notifyError('Filtering not successful');
-		// 	setFiltering(false);
-		// }
-		// setFiltering(false);
-	};
+
+	// const doFilter = async () => {
+	// 	setFiltering(true);
+	// 	try {
+	// 		const rs = await request(
+	// 			`cafeteria/inventories-by-category/${category}`
+	// 		);
+	// 		console.log(rs);
+	// 		let cat = props.cafeteriaInvCategory.find(el => el.id === category);
+	// 		console.log(cat);
+	// 		await setCatName(cat.name);
+	// 		await setItems(rs);
+	// 		setFiltering(false);
+	// 	} catch (e) {
+	// 		notifyError('Filtering not successful');
+	// 		setFiltering(false);
+	// 	}
+	// 	setFiltering(false);
+	// };
 
 	useEffect(() => {
-		if (!loaded) {
+		if (!dataLoaded) {
 			props
 				.getAllCafeteriaInvCategory()
-				.then(response => {
-					setDataLoaded(true);
-				})
+				.then(response => {})
 				.catch(e => {
-					setDataLoaded(true);
 					notifyError(
 						e.message || 'could not fetch cafeteria inventory category'
 					);
 				});
-		}
-		setLoaded(true);
-		// console.log(props.cafeteriaInventory);
-	}, [edit, loaded, props, save]);
 
-	useEffect(() => {
-		if (!loaded) {
 			props
 				.getAllCafeteriaInventory()
-				.then(response => {
-					setDataLoaded(true);
-				})
+				.then(response => {})
 				.catch(e => {
-					setDataLoaded(true);
 					notifyError(e.message || 'could not fetch cafeteria inventory');
 				});
+
+			setDataLoaded(true);
+			setItems(props.cafeteriaInventory);
+
+			setDataLoaded(true);
 		}
-		setLoaded(true);
-		setItems(props.cafeteriaInventory);
-	}, [edit, loaded, props, save]);
+	}, [props, dataLoaded]);
+
 	return (
 		<div className="content-i">
 			<div className="content-box p-0">

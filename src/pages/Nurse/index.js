@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component, lazy, Suspense } from 'react';
-import { Switch, withRouter, Route, Link } from 'react-router-dom';
+import { Switch, withRouter, Route } from 'react-router-dom';
 import NoMatch from '../NoMatch';
-import Queue from '../../components/Queue';
+
 import Splash from '../../components/Splash';
 import { connect } from 'react-redux';
 
@@ -16,8 +16,7 @@ class Nurse extends Component {
 		alert('I am toSee Details this guy');
 	};
 	render() {
-		const { match, staff } = this.props;
-		const department = staff?.details?.department?.name;
+		const { match } = this.props;
 
 		return (
 			<div className="row p-4">

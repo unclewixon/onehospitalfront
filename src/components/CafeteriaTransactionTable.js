@@ -12,6 +12,7 @@ const paymentType = [
 
 const CafeteriaTransactionTable = props => {
 	const [orders, setOrders] = useState([]);
+	const [loaded, setLoaded] = useState(false);
 	// const [subTotal, setSubTotal] = useState(0);
 	const [amountPaid, setAmountPaid] = useState(0);
 	// const [balance, setBalance] = useState(0);
@@ -51,8 +52,12 @@ const CafeteriaTransactionTable = props => {
 	};
 
 	useEffect(() => {
-		setOrders(props.orders);
-	}, [props.orders]);
+		if (!loaded) {
+			setOrders(props.orders);
+			setLoaded(true);
+		}
+	}, [loaded, props.orders]);
+
 	return (
 		<div className="element-box">
 			<div className="project-box">

@@ -1,6 +1,7 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
+
 import { ReactComponent as CurveBg } from '../../../assets/svg-icons/curve.svg';
-import bgImage from '../../../assets/images/a6.jpeg';
 
 const AccountDetails = ({ staff, onEdit, buttonText, onView }) => {
 	console.log(staff);

@@ -28,16 +28,7 @@ function PatientForm(props) {
 	const [loaded, setLoaded] = useState(false);
 	const [isHmo, setIsHmo] = useState(false);
 	const [hmos, setHmos] = useState([]);
-	const getAllHmos = () => {
-		let hmos = props.hmoList.map(hmo => {
-			return {
-				value: hmo.id,
-				label: hmo.name,
-			};
-		});
 
-		setHmos(hmos);
-	};
 	useEffect(() => {
 		let formValues = {
 			surname: formData.surname || '',
@@ -106,6 +97,7 @@ function PatientForm(props) {
 			handleChange('ethnicity', formValues.ethnicity, setEthValue, ethnicities);
 			setPatientData(formValues);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [formTitle]);
 
 	const { register, handleSubmit, errors, setValue, watch } = useForm({
@@ -142,10 +134,20 @@ function PatientForm(props) {
 	useEffect(() => {
 		if (!loaded) {
 			props.getAllHmos();
+
+			let hmos = props.hmoList.map(hmo => {
+				return {
+					value: hmo.id,
+					label: hmo.name,
+				};
+			});
+
+			setHmos(hmos);
+
+			setLoaded(true);
 		}
-		getAllHmos();
-		setLoaded(true);
 	}, [loaded, props]);
+
 	return (
 		<Fragment>
 			<h5 className="form-header">{formTitle}</h5>

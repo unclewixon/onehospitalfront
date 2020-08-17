@@ -34,13 +34,15 @@ const HmoBulkUpload = props => {
 		if (!loaded) {
 			props
 				.getAllHmos()
-				.then(response => {})
+				.then(response => {
+					setLoaded(true);
+				})
 				.catch(e => {
+					setLoaded(true);
 					console.log(e);
 					notifyError(e.message || 'could not fetch lab tests');
 				});
 		}
-		setLoaded(true);
 	}, [loaded, props]);
 
 	props

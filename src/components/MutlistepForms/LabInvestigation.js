@@ -7,7 +7,7 @@ import {
 	renderMultiselect,
 } from '../../services/utilities';
 import { Field, reduxForm } from 'redux-form';
-import { notifySuccess, notifyError } from '../../services/notify';
+import { notifyError } from '../../services/notify';
 import { getAllLabTests, getAllLabGroups } from '../../actions/settings';
 
 const fetal = [{ id: 'Lab', name: 'Lab' }];

@@ -16,7 +16,7 @@ import { SubmissionError } from 'redux-form';
 import { uploadRadiology } from '../../actions/general';
 
 const Imaging = props => {
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const [upload_visible, setUploadVisible] = useState(false);
 	const [uploading, setUploading] = useState(false);
 	const [hidden, setHidden] = useState(false);
@@ -91,25 +91,6 @@ const Imaging = props => {
 				</div>
 			</div>
 		);
-	};
-
-	const fetchImaging = async () => {
-		setLoading(true);
-		const { patient } = props;
-		try {
-			const rs = await request(
-				`patient/${patient.id}/request/imaging?startDate=&endDate=`,
-				'GET',
-				true
-			);
-			console.log(rs);
-			props.loadImagingRequests(rs);
-			setLoading(false);
-		} catch (error) {
-			console.log(error);
-			setLoading(false);
-			notifyError('error fetching imaging requests for the patient');
-		}
 	};
 
 	// const handleUpload = (evt, data) => {
@@ -267,8 +248,28 @@ const Imaging = props => {
 	};
 
 	useEffect(() => {
-		fetchImaging();
-	}, []);
+		const fetchImaging = async () => {
+			try {
+				const { patient } = props;
+				const rs = await request(
+					`patient/${patient.id}/request/imaging?startDate=&endDate=`,
+					'GET',
+					true
+				);
+				console.log(rs);
+				props.loadImagingRequests(rs);
+				setLoading(false);
+			} catch (error) {
+				console.log(error);
+				setLoading(false);
+				notifyError('error fetching imaging requests for the patient');
+			}
+		};
+
+		if (loading) {
+			fetchImaging();
+		}
+	}, [props, loading]);
 
 	return (
 		<div className="col-sm-12">

@@ -1,7 +1,7 @@
-/* eslint-disable no-script-url */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { request, confirmAction } from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
 import searchingGIF from '../assets/images/searching.gif';
@@ -47,7 +47,7 @@ class RoleBlock extends Component {
 	DeleteRole = role => async () => {
 		this.setState({ roleID: role.id });
 		try {
-			const rs = await request(`settings/roles/${role.id}`, 'DELETE', true);
+			await request(`settings/roles/${role.id}`, 'DELETE', true);
 			this.setState({ edit: false, previousRole: null });
 			this.props.delete_role(role);
 			notifySuccess('Role deleted');

@@ -1,10 +1,9 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import { renderSelect } from '../../../services/utilities';
 import { Field, formValueSelector, reduxForm } from 'redux-form';
-import { connect, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
-import { Controller, ErrorMessage, useForm } from 'react-hook-form';
-import Select from 'react-select';
+
 import { FamilyHistory } from '../../Enrollment/FamilyHistory';
 import { SocialHistory } from '../../Enrollment/SocialHistory';
 import GynaeHistory from '../../Enrollment/GynaeHistory';
@@ -18,7 +17,6 @@ import { InitialAssessment } from '../../Enrollment/InitialAssessment';
 import { LabObservation } from '../../Enrollment/LabObservation';
 import { RoutineAssessment } from '../../Enrollment/RoutineAssessment';
 import { obstericHistory } from '../../../services/constants';
-import { ObstericsHistory } from '../../Enrollment/ObstericsHistory';
 import { validateAntennatal } from '../../../services/validationSchemas';
 import moment from 'moment';
 
@@ -40,7 +38,7 @@ class HxForm extends Component {
 		await this.setState({ [type]: date });
 	};
 	obstHistory = value => {
-		let { lmpHx, dom, gest_date, dob, lmp } = this.state;
+		let { lmpHx, dom, gest_date, dob } = this.state;
 		switch (value) {
 			case 'Family History':
 				return <FamilyHistory />;

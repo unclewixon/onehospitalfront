@@ -20,10 +20,9 @@ const ServiceCategoryList = props => {
 		create: true,
 	};
 	const [{ name }, setState] = useState(initialState);
-	const [Loading, setLoading] = useState(false);
+	const [working, setWorking] = useState(false);
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
 	const [payload, getDataToEdit] = useState(null);
-	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const handleInputChange = e => {
@@ -32,7 +31,7 @@ const ServiceCategoryList = props => {
 	};
 
 	const onAddServiceCat = async e => {
-		setLoading(true);
+		setWorking(true);
 		e.preventDefault();
 
 		let data = {
@@ -41,18 +40,18 @@ const ServiceCategoryList = props => {
 		try {
 			const rs = await request(`services/categories`, 'POST', true, data);
 			props.add_service_category(rs);
-			setLoading(false);
+			setWorking(false);
 			setState({ ...initialState });
 			notifySuccess('Service category created');
 		} catch (error) {
-			setLoading(false);
+			setWorking(false);
 			setState({ ...initialState });
 			notifyError('Error creating service category');
 		}
 	};
 
 	const onEditServiceCategory = async e => {
-		setLoading(true);
+		setWorking(true);
 		e.preventDefault();
 		let data = {
 			name,
@@ -67,12 +66,12 @@ const ServiceCategoryList = props => {
 			props.update_service_category(rs, payload);
 			setState({ ...initialState });
 			setSubmitButton({ create: true, edit: false });
-			setLoading(false);
+			setWorking(false);
 			notifySuccess('Service Category updated');
 		} catch (error) {
 			setState({ ...initialState });
 			setSubmitButton({ create: true, edit: false });
-			setLoading(false);
+			setWorking(false);
 			notifyError('Error updating service category!');
 		}
 	};
@@ -96,10 +95,10 @@ const ServiceCategoryList = props => {
 		try {
 			await request(`services/categories/${data.id}`, 'DELETE', true);
 			props.delete_service_category(data);
-			setLoading(false);
+			setWorking(false);
 			notifySuccess('Service category deleted');
 		} catch (error) {
-			setLoading(false);
+			setWorking(false);
 			notifyError('Error deleting service category!');
 		}
 	};
@@ -108,21 +107,22 @@ const ServiceCategoryList = props => {
 		confirmAction(onDeleteServiceCategory, data);
 	};
 
-	const fetchServiceCategories = async () => {
-		setDataLoaded(false);
-		try {
-			const rs = await request(`services/categories`, 'GET', true);
-			props.get_all_service_categories(rs);
-			setDataLoaded(true);
-		} catch (error) {
-			setDataLoaded(true);
-			notifyError(error.message || 'could not fetch services categories!');
-		}
-	};
-
 	useEffect(() => {
-		fetchServiceCategories();
-	}, []);
+		const fetchServiceCategories = async () => {
+			try {
+				const rs = await request(`services/categories`, 'GET', true);
+				props.get_all_service_categories(rs);
+				setDataLoaded(true);
+			} catch (error) {
+				setDataLoaded(true);
+				notifyError(error.message || 'could not fetch services categories!');
+			}
+		};
+
+		if (!dataLoaded) {
+			fetchServiceCategories();
+		}
+	}, [dataLoaded, props]);
 
 	return (
 		<div className="row">
@@ -199,9 +199,9 @@ const ServiceCategoryList = props => {
 							{create && (
 								<button
 									className={
-										Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
+										working ? 'btn btn-primary disabled' : 'btn btn-primary'
 									}>
-									{Loading ? (
+									{working ? (
 										<img src={waiting} alt="submitting" />
 									) : (
 										<span> create</span>
@@ -212,16 +212,16 @@ const ServiceCategoryList = props => {
 								<>
 									<button
 										className={
-											Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
+											working ? 'btn btn-primary disabled' : 'btn btn-primary'
 										}
 										onClick={cancelEditButton}>
-										<span>{Loading ? 'cancel' : 'cancel'}</span>
+										<span>{working ? 'cancel' : 'cancel'}</span>
 									</button>
 									<button
 										className={
-											Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
+											working ? 'btn btn-primary disabled' : 'btn btn-primary'
 										}>
-										{Loading ? (
+										{working ? (
 											<img src={waiting} alt="submitting" />
 										) : (
 											<span> edit</span>

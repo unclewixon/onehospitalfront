@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import { uploadServiceModal, editService } from '../actions/general';
@@ -10,13 +10,11 @@ import {
 } from '../actions/settings';
 import { confirmAction } from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
-import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 
 const ServicesList = props => {
 	const [moreDetailConsultation, setMoreDetailConsultation] = useState('');
 	const [ServicesList, setServiceList] = useState([]);
-	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const onMoreDetailConsultation = category => {
@@ -51,20 +49,32 @@ const ServicesList = props => {
 	};
 
 	useEffect(() => {
-		if (!loaded) {
+		const onMoreDetailConsultation = category => {
+			setMoreDetailConsultation(category);
+			if (category) {
+				setServiceList(
+					props.ServicesList.filter(service => {
+						return service.category.name === category;
+					})
+				);
+			}
+		};
+
+		if (!dataLoaded) {
 			props
 				.getAllService()
 				.then(response => {
 					setDataLoaded(true);
 				})
 				.catch(e => {
+					setDataLoaded(true);
 					notifyError(e.message || 'could not fetch services list');
 				});
-		}
-		setLoaded(true);
 
-		onMoreDetailConsultation(moreDetailConsultation);
-	}, [props, loaded]);
+			onMoreDetailConsultation(moreDetailConsultation);
+		}
+	}, [props, dataLoaded, moreDetailConsultation]);
+
 	return (
 		<div className="pipelines-w">
 			<div className="element-wrapper">
