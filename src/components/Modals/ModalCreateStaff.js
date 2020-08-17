@@ -319,6 +319,7 @@ function StepOne({
 			}
 		}
 	}, [nationality, countries]);
+
 	return (
 		<Form>
 			<div className="row">

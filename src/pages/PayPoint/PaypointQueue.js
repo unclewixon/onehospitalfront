@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import useSWR from 'swr';
+
 import TransactionTable from '../../components/Tables/TransactionTable';
 import { socket } from '../../services/constants';
 import { request } from '../../services/utilities';
@@ -10,7 +10,6 @@ import Reciept from './../../components/Invoice/Reciept';
 import Invoice from './../../components/Invoice/Invoice';
 import {
 	getAllPendingTransactions,
-	getTransactionData,
 	showInvoiceToPrint,
 	showReceiptToPrint,
 } from './../../actions/paypoint';
@@ -19,9 +18,12 @@ import PrintReceiptPortal from './PrintReceiptPortal';
 const PaypointQueue = ({ staff }) => {
 	const [show, setShow] = useState(false);
 	const [target, setTarget] = useState(null);
+	const [listenning, setListenning] = useState(false);
 
 	const ref = useRef(null);
+
 	const dispatch = useDispatch();
+
 	const transactions = useSelector(
 		({ paypoint }) => paypoint.pendingTransactions
 	);
@@ -29,25 +31,30 @@ const PaypointQueue = ({ staff }) => {
 	const showInvoice = useSelector(({ paypoint }) => paypoint.showInvoice);
 	const showReceipt = useSelector(({ paypoint }) => paypoint.showReceipt);
 
-	const init = useCallback(() => {
-		request('transactions/list/pending', 'GET', true)
-			.then(res => {
-				dispatch(getAllPendingTransactions(res));
-			})
-			.catch(err => {});
-	}, [dispatch]);
-
 	useEffect(() => {
-		// fetch transactions
-		init();
-		// listen for new transactions
-		socket.on('new-queue', data => {
-			if (data.payment) {
-				const transaction = data.payment;
-				dispatch(getAllPendingTransactions(transaction));
-			}
-		});
-	}, [init, dispatch]);
+		if (!listenning) {
+			const init = async () => {
+				return request('transactions/list/pending', 'GET', true)
+					.then(res => {
+						dispatch(getAllPendingTransactions(res));
+					})
+					.catch(err => {});
+			};
+
+			// fetch transactions
+			init();
+
+			// listen for new transactions
+			setListenning(true);
+
+			socket.on('new-queue', data => {
+				if (data.payment) {
+					const transaction = data.payment;
+					dispatch(getAllPendingTransactions(transaction));
+				}
+			});
+		}
+	}, [dispatch, listenning]);
 
 	const doApproveTransaction = item => {
 		this.props.approveTransaction(item);
@@ -69,6 +76,7 @@ const PaypointQueue = ({ staff }) => {
 	const onPrintInvoice = () => {
 		dispatch(showInvoiceToPrint(!showInvoice));
 	};
+
 	return (
 		<div className="table-responsive">
 			{activeData && showReceipt && (

@@ -48,6 +48,7 @@ let PastHistory = props => {
 				// eslint-disable-next-line react-hooks/exhaustive-deps
 				data = [...data, { id: index }];
 			});
+
 			setData(data);
 		}
 	}, []);

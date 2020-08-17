@@ -10,11 +10,7 @@ import ModalDialogs from './components/Modals/ModalDialogs';
 import Splash from './components/Splash';
 import SlidingPane from './components/SlidingPane';
 import SSRStorage from './services/storage';
-import {
-	FULLSCREEN_COOKIE,
-	MENU_COOKE,
-	MODE_COOKIE,
-} from './services/constants';
+import { FULLSCREEN_COOKIE, MODE_COOKIE } from './services/constants';
 import { toggleProfile } from './actions/user';
 import { request } from './services/utilities';
 import ability from './services/ability';
@@ -56,7 +52,7 @@ class App extends Component {
 	async componentDidMount() {
 		const fullscreen = await storage.getItem(FULLSCREEN_COOKIE);
 		const theme_mode = await storage.getItem(MODE_COOKIE);
-		const storedMenu = await storage.getItem(MENU_COOKE);
+		// const storedMenu = await storage.getItem(MENU_COOKE);
 
 		window.document.body.className = `menu-position-side menu-side-left ${
 			fullscreen ? 'full-screen' : ''

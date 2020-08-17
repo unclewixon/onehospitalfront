@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
+
 class StaffDetail extends Component {
 	render() {
-		const { location } = this.props;
 		return (
 			<div className="row">
 				<div className="col-sm-12">

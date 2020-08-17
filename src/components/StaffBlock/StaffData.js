@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Switch, withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+
 const StaffData = ({ staff }) => {
 	return (
 		<div className="m-b">

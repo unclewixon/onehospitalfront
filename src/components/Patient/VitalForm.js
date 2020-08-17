@@ -7,7 +7,7 @@ import DatePicker from 'react-datepicker';
 
 import { renderTextInput, renderSelect } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
-import { loadVitals, updateVitals } from '../../actions/patient';
+import { loadVitals } from '../../actions/patient';
 import moment from 'moment';
 import { reset } from 'redux-form';
 import { notifySuccess } from '../../services/notify';

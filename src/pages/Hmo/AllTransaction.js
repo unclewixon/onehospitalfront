@@ -1,18 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
-import Tooltip from 'antd/lib/tooltip';
 
 import { hmoAPI, transactionsAPI, searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request } from '../../services/utilities';
-import ClinicalLabItem from '../../components/ClinicalLabItem';
-import { notifySuccess, notifyError } from '../../services/notify';
+import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
-import { loadRadiology } from '../../actions/patient';
 import { loadHmoTransaction } from '../../actions/hmo';
 import HmoTable from '../../components/HMO/HmoTable';
 
@@ -194,10 +190,11 @@ export class AllTransaction extends Component {
 			hmos,
 			patients,
 			searchHmo,
-			query,
+			// query,
 		} = this.state;
 		const { hmoTransactions } = this.props;
-		const hmoReversed = hmoTransactions.reverse();
+		// const hmoReversed = hmoTransactions.reverse();
+
 		return (
 			<div className="row">
 				<div className="col-sm-12">

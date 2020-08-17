@@ -3,9 +3,8 @@ import { Switch, Route } from 'react-router-dom';
 
 import HmoList from './HmoList';
 import HmoBulkUpload from '../components/HmoBulkUpload';
-import NoMatch from './NoMatch';
-import AllTransaction from './Hmo/AllTransaction';
 import DashboardIndex from './Hmo/DashboardIndex';
+import NoMatch from './NoMatch';
 
 const Hmo = ({ match }) => {
 	return (

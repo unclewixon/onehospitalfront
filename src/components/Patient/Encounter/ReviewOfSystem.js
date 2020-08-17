@@ -25,8 +25,7 @@ const ReviewOfSystem = props => {
 			setSelected(encounterForm.reviewOfSystem?.system);
 			setLoaded(true);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [loaded]);
+	}, [encounterForm.reviewOfSystem, loaded]);
 
 	const handleChange = e => {
 		setSelected(e);

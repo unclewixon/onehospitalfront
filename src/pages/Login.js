@@ -80,6 +80,7 @@ let Login = props => {
 			setGlobal({
 				room: '',
 			});
+
 			return async () => {
 				const fullscreen = await storage.getItem(FULLSCREEN_COOKIE);
 				const theme_mode = await storage.getItem(MODE_COOKIE);

@@ -121,22 +121,22 @@ const RoomList = props => {
 		confirmAction(onDeleteRoom, data);
 	};
 
-	const fetchRooms = async () => {
-		try {
-			setDataLoaded(false);
-			const rs = await request(`rooms`, 'GET', true);
-			props.get_all_room(rs);
-			setDataLoaded(true);
-		} catch (error) {
-			setDataLoaded(true);
-			notifyError(error.message || 'could not fetch rooms!');
-		}
-	};
-
 	useEffect(() => {
-		fetchRooms();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+		const fetchRooms = async () => {
+			try {
+				const rs = await request(`rooms`, 'GET', true);
+				props.get_all_room(rs);
+				setDataLoaded(true);
+			} catch (error) {
+				setDataLoaded(true);
+				notifyError(error.message || 'could not fetch rooms!');
+			}
+		};
+
+		if (!dataLoaded) {
+			fetchRooms();
+		}
+	}, [dataLoaded, props]);
 
 	return (
 		<div className="row">

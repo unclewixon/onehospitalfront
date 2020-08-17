@@ -104,7 +104,7 @@ const PharmNewRequestComponent = ({
 
 	useEffect(() => {
 		getServiceUnit();
-		if (categories.length) {
+		if (categories.length > 0) {
 			const selectCat = categories.filter(cat => cat.name === 'Pharmacy');
 			getPharmacyItems(selectCat[0].id);
 		}

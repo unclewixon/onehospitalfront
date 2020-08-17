@@ -204,14 +204,7 @@ class CreateAppraisal extends Component {
 	};
 
 	render() {
-		const {
-			location,
-			staff,
-			error,
-			handleSubmit,
-			period,
-			isStaffAppraisal,
-		} = this.props;
+		const { staff, error, handleSubmit, period, isStaffAppraisal } = this.props;
 		const { submitting } = this.state;
 
 		return (

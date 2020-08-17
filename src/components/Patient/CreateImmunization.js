@@ -1,30 +1,19 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import {
-	Field,
-	reduxForm,
-	SubmissionError,
-	reset,
-	formValueSelector,
-} from 'redux-form';
+import { Field, reduxForm, formValueSelector } from 'redux-form';
 
 import ImmunizationPrescription from './ImmunizationPrescription';
-import {
-	renderSelect,
-	renderTextArea,
-	renderTextInput,
-	renderMultiselect,
-} from '../../services/utilities';
+import { renderSelect, renderTextInput } from '../../services/utilities';
 import { searchAPI } from '../../services/constants';
 import { request } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
-import moment from 'moment';
 import searchingGIF from '../../assets/images/searching.gif';
 import DatePicker from 'react-datepicker';
 import waiting from '../../assets/images/waiting.gif';
 import { addImmunization, addImmunizationRequest } from '../../actions/patient';
+
 const validate = values => {
 	const errors = {};
 
@@ -205,7 +194,7 @@ class CreateImmunization extends Component {
 	};
 
 	render() {
-		const { error, handleSubmit, value } = this.props;
+		const { handleSubmit, value } = this.props;
 		const {
 			submitting,
 			searching,

@@ -107,7 +107,7 @@ const UploadPatientData = ({ onHide, uploading, doUpload, documentType }) => {
 };
 
 const PatientDataUpload = props => {
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const [uploading, setUploading] = useState(false);
 	const [upload_visible, setUploadVisible] = useState(false);
 	const hide = () => {
@@ -141,29 +141,30 @@ const PatientDataUpload = props => {
 	};
 
 	useEffect(() => {
-		listDocuments();
-	}, []);
+		const listDocuments = async () => {
+			try {
+				let patient = props.patient;
+				const rs = await request(
+					`${patientAPI}/${patient.id}/documents`,
+					'GET',
+					true
+				);
+				props.loadPatientUploadData(rs);
+				setLoading(false);
+			} catch (e) {
+				console.log(e);
+				setLoading(false);
+				notifyError(e.message);
+				// throw new SubmissionError({
+				// 	_error: e.message || 'could not load data',
+				// });
+			}
+		};
 
-	const listDocuments = async () => {
-		try {
-			setLoading(true);
-			let patient = props.patient;
-			const rs = await request(
-				`${patientAPI}/${patient.id}/documents`,
-				'GET',
-				true
-			);
-			props.loadPatientUploadData(rs);
-			setLoading(false);
-		} catch (e) {
-			console.log(e);
-			setLoading(false);
-			notifyError(e.message);
-			// throw new SubmissionError({
-			// 	_error: e.message || 'could not load data',
-			// });
+		if (loading) {
+			listDocuments();
 		}
-	};
+	}, [loading, props]);
 
 	// const reload = () => {
 	// 	const current = props.location.pathname;

@@ -26,7 +26,6 @@ const RoomCategory = props => {
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
 	const [payload, getDataToEdit] = useState(null);
-	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const handleInputChange = e => {
@@ -117,21 +116,22 @@ const RoomCategory = props => {
 		confirmAction(onDeleteRoomCategory, data);
 	};
 
-	const fetchRoomCategory = async () => {
-		setDataLoaded(false);
-		try {
-			const rs = await request(`rooms/categories`, 'GET', true);
-			props.get_all_room_category(rs);
-			setDataLoaded(true);
-		} catch (error) {
-			setDataLoaded(true);
-			notifyError(error.message || 'could not room categories!');
-		}
-	};
-
 	useEffect(() => {
-		fetchRoomCategory();
-	}, []);
+		const fetchRoomCategory = async () => {
+			try {
+				const rs = await request(`rooms/categories`, 'GET', true);
+				props.get_all_room_category(rs);
+				setDataLoaded(true);
+			} catch (error) {
+				setDataLoaded(true);
+				notifyError(error.message || 'could not room categories!');
+			}
+		};
+
+		if (!dataLoaded) {
+			fetchRoomCategory();
+		}
+	}, [dataLoaded, props]);
 
 	return (
 		<div className="row">

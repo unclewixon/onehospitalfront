@@ -3,40 +3,33 @@ import { connect } from 'react-redux';
 import { useHistory, withRouter } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
+
 import {
-	socket,
 	transactionsAPI,
-	paymentType,
 	paymentTypeExtra,
 	serviceAPI,
 } from '../services/constants';
-import { request, formatNumber } from '../services/utilities';
+import { request } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import {
 	get_all_services,
 	getAllRequestServices,
-	getAllService,
 	getAllServiceCategory,
 } from '../actions/settings';
 
 const CreateNewTransaction = props => {
 	let history = useHistory();
-	const { register, handleSubmit, setValue, setError, errors } = useForm();
+	const { register, handleSubmit, setValue, errors } = useForm();
 	const [submitting, setSubmitting] = useState(false);
 	const [loaded, setLoaded] = useState(false);
-	const [Loading, setLoading] = useState(false);
-	const [data, getDataToEdit] = useState(null);
-	const [dataLoaded, setDataLoaded] = useState(false);
-	const [serviceCenter, setServiceCenter] = useState([]);
 	const [patients, setPatients] = useState();
 	const [departments, setDepartments] = useState();
-	const [multi, setMulti] = useState(false);
-	const [serviceList, setServiceList] = useState([]);
+	const multi = false;
+	// const [multi, setMulti] = useState(false);
 	const [services, setServices] = useState([]);
 	const [servicesCategory, setServicesCategory] = useState([]);
 	const [amount, setAmount] = useState(0);
-	const [multiple, setMultiple] = useState([]);
 
 	const onSubmit = async values => {
 		setSubmitting(true);
@@ -49,7 +42,7 @@ const CreateNewTransaction = props => {
 			payment_type: values.payment_type,
 		};
 		try {
-			const rs = await request(`${transactionsAPI}`, 'POST', true, data);
+			await request(`${transactionsAPI}`, 'POST', true, data);
 			history.push('/paypoint');
 			notifySuccess('New payment request saved');
 			setSubmitting(false);
@@ -66,6 +59,7 @@ const CreateNewTransaction = props => {
 			value: patient.id,
 			label: patient.surname + ', ' + patient.other_names,
 		}));
+
 		setPatients(res);
 	}
 
@@ -75,6 +69,7 @@ const CreateNewTransaction = props => {
 			value: department.id,
 			label: department.name,
 		}));
+
 		setDepartments(res);
 	}
 
@@ -94,20 +89,21 @@ const CreateNewTransaction = props => {
 				.catch(e => {
 					notifyError(e.message || 'could not fetch service categories');
 				});
+
+			let data = [];
+			let services = [];
+			props.ServiceCategories.forEach((item, index) => {
+				const res = { label: item.name, value: item.id };
+				data = [...data, res];
+			});
+			props.service.forEach((item, index) => {
+				const res = { label: item.name, value: item.id };
+				services = [...services, res];
+			});
+			setServicesCategory(data);
+			setServices(services);
+			setLoaded(true);
 		}
-		let data = [];
-		let services = [];
-		props.ServiceCategories.forEach((item, index) => {
-			const res = { label: item.name, value: item.id };
-			data = [...data, res];
-		});
-		props.service.forEach((item, index) => {
-			const res = { label: item.name, value: item.id };
-			services = [...services, res];
-		});
-		setServicesCategory(data);
-		setServices(services);
-		setLoaded(true);
 	}, [props, loaded]);
 
 	const handleChangeServiceCategory = evt => {
@@ -130,11 +126,7 @@ const CreateNewTransaction = props => {
 
 	const fetchServicesByCategory = async id => {
 		try {
-			const rs = await request(
-				`${serviceAPI}` + '/categories/' + id,
-				'GET',
-				true
-			);
+			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
 			props.get_all_services(rs);
 		} catch (error) {
 			console.log(error);

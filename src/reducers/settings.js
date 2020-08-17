@@ -44,14 +44,11 @@ import {
 	GET_ALL_SERVICE_CATEGORIES,
 	DELETE_SERVICE_CATEGORY,
 	UPDATE_SERVICE_CATEGORY,
-	UPLOAD_SERVICE,
 	GET_ALL_SERIVCES,
 	UPDATE_SERVICE,
-	DELETE_SERVICE,
 	UPDATE_DIAGNOSIS,
 	GET_ALL_DIAGNOSISES,
 	DELETE_DIAGNOSIS,
-	UPLOAD_DIAGNOSIS,
 	ADD_REQUEST_SERVICE,
 	GET_ALL_REQUEST_SERVICES,
 	UPDATE_REQUEST_SERVICE,
@@ -398,13 +395,6 @@ const settings = (state = INITIAL_STATE, action) => {
 					),
 					action.payload,
 				],
-			};
-		case DELETE_DIAGNOSIS:
-			return {
-				...state,
-				diagnosis: state.diagnosis.filter(
-					deletedItem => deletedItem.id !== action.payload.id
-				),
 			};
 		case ADD_REQUEST_SERVICE:
 			return {

@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 
 import { editInventory, updateQuantity } from '../../actions/general';
-import { formatCurrency } from '../../services/utilities';
 import BootstrapTable from 'react-bootstrap-table-next';
+
 function numberingFormatter(cell, row, rowIndex, formatExtraData) {
 	return rowIndex + 1;
 }

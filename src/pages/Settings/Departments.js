@@ -33,6 +33,7 @@ const Departments = props => {
 	const [payload, setDataToEdit] = useState(null);
 	// const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
+	const [staffLoaded, setStaffLoaded] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -125,7 +126,6 @@ const Departments = props => {
 	};
 
 	const fetchDepartment = async () => {
-		setDataLoaded(false);
 		try {
 			const rs = await request(`departments`, 'GET', true);
 			props.loadDepartments(rs);
@@ -137,13 +137,12 @@ const Departments = props => {
 	};
 
 	const fetchAllStaff = async () => {
-		setDataLoaded(false);
 		try {
 			const rs = await request(`hr/staffs`, 'GET', true);
 			props.get_all_staff(rs);
-			setDataLoaded(true);
+			setStaffLoaded(true);
 		} catch (error) {
-			setDataLoaded(true);
+			setStaffLoaded(true);
 			notifyError(error.message || 'could not departments!');
 		}
 	};
@@ -151,6 +150,7 @@ const Departments = props => {
 	useEffect(() => {
 		fetchDepartment();
 		fetchAllStaff();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	let defaultValue = {
@@ -191,7 +191,7 @@ const Departments = props => {
 												</tr>
 											</thead>
 											<tbody>
-												{!dataLoaded ? (
+												{!dataLoaded || !staffLoaded ? (
 													<tr>
 														<td colSpan="4" className="text-center">
 															<img alt="searching" src={searchingGIF} />

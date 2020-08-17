@@ -9,37 +9,43 @@ import moment from 'moment';
 import FrontDeskTable from './FrontDeskTable';
 
 const Appointment = props => {
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const [appointments, setAppointments] = useState([]);
+	const [listenning, setListenning] = useState(false);
 
 	useEffect(() => {
-		socket.on('new-appointment', res => {
-			console.log('new appointment message');
-			if (res.success) {
-				const appointment = res.appointment;
-				const today = moment().format('YYYY-MM-DD');
-				if (appointment.appointment_date === today) {
-					setAppointments([...appointments, appointment]);
+		if (!listenning) {
+			setListenning(true);
+
+			socket.on('new-appointment', res => {
+				console.log('new appointment message');
+				if (res.success) {
+					const appointment = res.appointment;
+					const today = moment().format('YYYY-MM-DD');
+					if (appointment.appointment_date === today) {
+						setAppointments([...appointments, appointment]);
+					}
 				}
-			}
-		});
-	}, [appointments]);
+			});
+		}
+	}, [appointments, listenning]);
 
 	useEffect(() => {
-		getAppointments();
-	}, []);
-
-	async function getAppointments() {
-		try {
-			setLoading(true);
-			const res = await request(`front-desk/appointments/today`, 'GET', true);
-			setAppointments(res);
-			setLoading(false);
-		} catch (e) {
-			setLoading(false);
-			notifyError(e.message || 'could not fetch appointments');
+		async function getAppointments() {
+			try {
+				const res = await request(`front-desk/appointments/today`, 'GET', true);
+				setAppointments(res);
+				setLoading(false);
+			} catch (e) {
+				setLoading(false);
+				notifyError(e.message || 'could not fetch appointments');
+			}
 		}
-	}
+
+		if (loading) {
+			getAppointments();
+		}
+	}, [loading]);
 
 	const changeDate = e => {
 		console.log(e.target.value);

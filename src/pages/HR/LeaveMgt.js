@@ -7,9 +7,8 @@ import { request } from '../../services/utilities';
 import { leaveMgtAPI } from '../../services/constants';
 import { get_all_leave_category } from '../../actions/settings';
 import { notifySuccess, notifyError } from '../../services/notify';
-import searchingGIF from '../../assets/images/searching.gif';
+
 import { confirmAction } from '../../services/utilities';
-import DatePicker from 'react-datepicker';
 
 class LeaveMgt extends Component {
 	state = {
@@ -109,11 +108,7 @@ class LeaveMgt extends Component {
 
 	deleteLeaveRequests = async data => {
 		try {
-			const res = await request(
-				`hr/leave-management/${data.id}`,
-				'DELETE',
-				true
-			);
+			await request(`hr/leave-management/${data.id}`, 'DELETE', true);
 			notifySuccess('Successful removed leave applications');
 			this.fetchStaffLeave();
 		} catch (error) {

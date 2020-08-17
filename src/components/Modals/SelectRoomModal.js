@@ -1,11 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect } from 'reactn';
 import { connect } from 'react-redux';
-import 'react-datepicker/dist/react-datepicker.css';
 import useSWR from 'swr';
+
 import { request } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import SSRStorage from '../../services/storage';
+
+import 'react-datepicker/dist/react-datepicker.css';
+
 const storage = new SSRStorage();
 
 const SelectRoomModal = props => {

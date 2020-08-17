@@ -34,7 +34,6 @@ const LabTest = props => {
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
-	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [parameters, setParameter] = useState({});
 	const [paramsUI, setParamsUI] = useState([]);
@@ -43,6 +42,7 @@ const LabTest = props => {
 		const { name, value } = e.target;
 		let newParam = { ...parameters };
 		let paramObj = {};
+		// eslint-disable-next-line array-callback-return
 		props.LabParameters.map(param => {
 			paramObj[value] = {
 				parameter_id: param.id,
@@ -190,7 +190,7 @@ const LabTest = props => {
 	};
 
 	useEffect(() => {
-		if (!loaded) {
+		if (!dataLoaded) {
 			props
 				.getAllLabTests()
 				.then(response => {
@@ -200,11 +200,11 @@ const LabTest = props => {
 					setDataLoaded(true);
 					notifyError(e.message || 'could not fetch lab tests');
 				});
+
 			props.getAllLabTestCategories();
 			props.getAllLabTestParameters();
 		}
-		setLoaded(true);
-	}, [loaded, props]);
+	}, [dataLoaded, props]);
 
 	const addParameterUI = () => {
 		let paramUI = [...paramsUI, LabParameterPicker];

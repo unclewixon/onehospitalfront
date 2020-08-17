@@ -2,6 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
+
 import { updateStaff } from '../../../actions/hr';
 import waitingGif from '../../../assets/images/waiting.gif';
 
@@ -47,7 +48,7 @@ const EditProfile = ({ staff }) => {
 	};
 
 	useEffect(() => {
-		if (nationality) {
+		if (nationality && states.length === 0) {
 			const country = countries.find(c => c.id === parseInt(nationality, 10));
 			if (country) {
 				setStates(
@@ -59,7 +60,7 @@ const EditProfile = ({ staff }) => {
 				);
 			}
 		}
-	}, [nationality, countries]);
+	}, [nationality, countries, states]);
 
 	const onFormSubmit = vals => {
 		setSubmitting(true);

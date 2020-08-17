@@ -1,20 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
+import { Field, reduxForm } from 'redux-form';
 import {
-	Field,
-	reduxForm,
-	SubmissionError,
-	reset,
-	change,
-	formValueSelector,
-} from 'redux-form';
-
-import {
-	getPeriod,
 	errorMessage,
-	request,
 	renderTextArea,
 	confirmAction,
 	renderTextInput,
@@ -71,6 +61,7 @@ const leader = {
 const validate = values => {
 	const errors = {};
 
+	// eslint-disable-next-line array-callback-return
 	Object.keys(admin).map(el => {
 		if (
 			!values[el] ||
@@ -81,6 +72,7 @@ const validate = values => {
 		}
 	});
 
+	// eslint-disable-next-line array-callback-return
 	Object.keys(leader).map(el => {
 		if (
 			!values[el] ||
@@ -91,6 +83,7 @@ const validate = values => {
 		}
 	});
 
+	// eslint-disable-next-line array-callback-return
 	Object.keys(work).map(el => {
 		if (
 			!values[el] ||
@@ -108,7 +101,7 @@ const validate = values => {
 	return errors;
 };
 
-export class ModalLineAppraisal extends Component {
+class ModalLineAppraisal extends Component {
 	state = {
 		submitting: false,
 	};
@@ -138,7 +131,7 @@ export class ModalLineAppraisal extends Component {
 		);
 	};
 	render() {
-		const { location, staff, error, handleSubmit, period, values } = this.props;
+		const { error, handleSubmit, period } = this.props;
 		const { submitting } = this.state;
 		return (
 			<div

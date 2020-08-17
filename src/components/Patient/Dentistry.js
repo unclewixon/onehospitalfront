@@ -4,35 +4,14 @@ import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
+
 import { loadDentistryRequests } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
-import { patientAPI } from '../../services/constants';
 import { request } from '../../services/utilities';
-import { notifySuccess, notifyError } from '../../services/notify';
+import { notifyError } from '../../services/notify';
 
 const Dentistry = props => {
-	const [loading, setLoading] = useState(false);
-
-	// const [dataLoaded, setDataLoaded] = useState(false);
-	const fetchDentistry = async () => {
-		setLoading(true);
-		const { patient } = props;
-		try {
-			const rs = await request(
-				`patient/${patient.id}/request/dentistry?startDate=&endDate=`,
-				'GET',
-				true
-			);
-
-			console.log(rs);
-			props.loadDentistryRequests(rs);
-			setLoading(false);
-		} catch (error) {
-			console.log(error);
-			setLoading(false);
-			notifyError('error fetching dentistry requests for the patient');
-		}
-	};
+	const [loading, setLoading] = useState(true);
 
 	const convertToIndividualRequest = data => {
 		console.log(data);
@@ -91,6 +70,8 @@ const Dentistry = props => {
 
 	const tableBody = () => {
 		let requests = convertToIndividualRequest(props.dentistryRequests);
+		console.log(requests);
+
 		return props.dentistryRequests?.length > 0 ? (
 			props.dentistryRequests.map((data, i) => {
 				return (
@@ -131,8 +112,30 @@ const Dentistry = props => {
 		);
 	};
 	useEffect(() => {
-		fetchDentistry();
-	}, []);
+		const fetchDentistry = async () => {
+			try {
+				const { patient } = props;
+				const rs = await request(
+					`patient/${patient.id}/request/dentistry?startDate=&endDate=`,
+					'GET',
+					true
+				);
+
+				console.log(rs);
+				props.loadDentistryRequests(rs);
+				setLoading(false);
+			} catch (error) {
+				console.log(error);
+				setLoading(false);
+				notifyError('error fetching dentistry requests for the patient');
+			}
+		};
+
+		if (loading) {
+			fetchDentistry();
+		}
+	}, [props, loading]);
+
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">

@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { useForm } from 'react-hook-form';
-import Select from 'react-select';
 import DatePicker from 'react-datepicker';
+import AsyncSelect from 'react-select/async';
+
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { diagnosisAPI } from '../../services/constants';
 import { request } from '../../services/utilities';
-import AsyncSelect from 'react-select/async';
 
 const ModalEditExcuse = ({
 	showModal,
@@ -91,6 +91,7 @@ const ModalEditExcuse = ({
 			return [];
 		}
 		const res = await request(`hr/staffs/find?q=${inputValue}`, 'GET', true);
+		// eslint-disable-next-line no-unused-vars
 		const filteredRes =
 			res && res.length
 				? res.filter(staff => staff.job_title === 'Doctor')
@@ -120,8 +121,9 @@ const ModalEditExcuse = ({
 				value && value.consulting_doctor ? value.consulting_doctor.id : '',
 			diagnosis_id: value && value.diagnosis ? value.diagnosis : '',
 		};
+
 		try {
-			const rs = await request(
+			await request(
 				`hr/leave-management/${activeRequest.id}/update`,
 				'PATCH',
 				true,

@@ -18,9 +18,8 @@ const ModalUploadRadiology = props => {
 	// const [uploading, setUploading] = useState(false);
 	const [query, setQuery] = useState('');
 	const [searching, setSearching] = useState(false);
-	const [loaded, setLoaded] = useState(false);
 	const [patients, setPatients] = useState([]);
-	const [patientId, setPatientId] = useState('');
+	const [patientId, setPatientId] = useState(null);
 
 	let history = useHistory();
 
@@ -99,12 +98,10 @@ const ModalUploadRadiology = props => {
 	};
 
 	useEffect(() => {
-		if (!loaded) {
+		if (!patientId) {
 			setPatientId(props.patient.id);
-			setLoaded(true);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [loaded]);
+	}, [patientId, props.patient.id]);
 
 	return (
 		<div

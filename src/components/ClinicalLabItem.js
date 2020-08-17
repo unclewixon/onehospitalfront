@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
-import { Label } from 'recharts';
-export class ClinicalLabItem extends Component {
+
+class ClinicalLabItem extends Component {
 	state = {
 		collapse: true,
 	};

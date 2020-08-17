@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import moment from 'moment';
 import { Table } from 'react-bootstrap';
-import waiting from '../../assets/images/waiting.gif';
-import { request } from '../../services/utilities';
 
-import { notifySuccess, notifyError } from './../../services/notify';
-import { useForm } from 'react-hook-form';
+import waiting from '../../assets/images/waiting.gif';
 
 const ModalClinicalLabFilled = ({
 	showModal,
@@ -14,7 +11,7 @@ const ModalClinicalLabFilled = ({
 	patient,
 	activeRequest,
 }) => {
-	const [Loading, setLoading] = useState(false);
+	const loading = false;
 
 	return (
 		<Modal
@@ -382,11 +379,11 @@ const ModalClinicalLabFilled = ({
 												<div className="form-group">
 													<button
 														className={
-															Loading
+															loading
 																? 'btn btn-primary disabled'
 																: 'btn btn-primary'
 														}>
-														{Loading ? (
+														{loading ? (
 															<img src={waiting} alt="submitting" />
 														) : (
 															<span> Save</span>
