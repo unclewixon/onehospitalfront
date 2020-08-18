@@ -23,9 +23,9 @@ export default class SSRStorage {
 		return value;
 	}
 
-	getItem(key) {
+	async getItem(key) {
 		// Cookies
-		let value = this.getCookie(key);
+		let value = await this.getCookie(key);
 
 		try {
 			// Local Storage
