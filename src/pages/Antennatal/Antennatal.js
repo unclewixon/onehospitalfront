@@ -106,21 +106,21 @@ export class Antennatal extends Component {
 							className={`btn btn-primary ${
 								page === '' ? 'btn-outline-primary' : ''
 							}`}
-							to="/antennatal">
+							to="/antenatal">
 							Dashboard
 						</Link>
 						<Link
 							className={`btn btn-primary ${
 								page === 'all-enrol' ? 'btn-outline-primary' : ''
 							}`}
-							to="/antennatal/all-enrol">
+							to="/antenatal/all-enrol">
 							All Enrollment
 						</Link>
 						<Link
 							className={`btn btn-primary ${
 								page === 'enrol' ? 'btn-outline-primary' : ''
 							}`}
-							to="/antennatal/enrol">
+							to="/antenatal/enrol">
 							New Enrollment
 						</Link>
 					</div>

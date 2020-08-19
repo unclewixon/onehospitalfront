@@ -2,7 +2,7 @@ import React, { Component, Suspense, lazy } from 'react';
 import { Switch, Route, withRouter, Link } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
-import Queue from '../../components/Queue';
+// import Queue from '../../components/Queue';
 import { connect } from 'react-redux';
 const Dashboard = lazy(() => import('./Dashboard'));
 const AllImmunization = lazy(() => import('./AllImmunization'));
@@ -11,9 +11,9 @@ const CreateImmunization = lazy(() =>
 );
 export class index extends Component {
 	render() {
-		const { match, location, staff } = this.props;
+		const { match, location } = this.props;
 		const page = location.pathname.split('/').pop();
-		const department = staff?.details?.department?.name;
+		// const department = staff?.details?.department?.name;
 		return (
 			<>
 				<div className="content-i">
@@ -79,9 +79,9 @@ export class index extends Component {
 							</div>
 						</div>
 					</div>
-					<div className="content-panel compact">
+					{/* <div className="content-panel compact">
 						<Queue department={department} />
-					</div>
+					</div> */}
 				</div>
 			</>
 		);

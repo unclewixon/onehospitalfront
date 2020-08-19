@@ -50,7 +50,7 @@ class EnrollmentForm extends Component {
 
 			// this.props.addStaff(rs);
 			history.push(
-				location.hash ? `${location.pathname}#dashboard` : '/antennatal'
+				location.hash ? `${location.pathname}#dashboard` : '/antenatal'
 			);
 		} catch (e) {
 			this.setState({ submitting: false });

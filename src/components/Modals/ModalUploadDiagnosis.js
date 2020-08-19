@@ -15,6 +15,7 @@ class ModalUploadDiagnosis extends Component {
 	state = {
 		file: null,
 		Loading: false,
+		diagnosisType: '',
 	};
 
 	handleInputChange = e => {
@@ -23,11 +24,18 @@ class ModalUploadDiagnosis extends Component {
 		});
 	};
 
+	handleSelect = e => {
+		this.setState({
+			diagnosisType: e.target.value,
+		});
+	};
+
 	onUpload = e => {
 		this.setState({ Loading: true });
 		e.preventDefault();
 		const data = new FormData();
 		data.append('file', this.state.file);
+		data.append('diagnosisType', this.state.diagnosisType);
 		this.props
 			.uploadDiagnosis(data)
 			.then(response => {
@@ -76,6 +84,18 @@ class ModalUploadDiagnosis extends Component {
 										name="file"
 										onChange={this.handleInputChange}
 									/>
+								</div>
+								<div className="form-group">
+									<select
+										className="form-control"
+										placeholder="Category Name"
+										name="diagnosisType"
+										onChange={this.handleSelect}
+										required>
+										<option>Choose Diagnosis Type</option>
+										<option value="10">ICD-10</option>
+										<option value="2">ICPC-2</option>
+									</select>
 								</div>
 								<div className="form-buttons-w">
 									<button
