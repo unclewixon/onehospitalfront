@@ -75,7 +75,7 @@ function OutPatientAppointmentForm(props) {
 					</div>
 				</div>
 				<div className="row">
-					<div className="col-sm-6">
+					<div className="col-sm-12">
 						<div className="form-group">
 							<label>Email</label>
 							<input
@@ -91,6 +91,8 @@ function OutPatientAppointmentForm(props) {
 							/>
 						</div>
 					</div>
+				</div>
+				<div className="row">
 					<div className="col-sm-6">
 						<div className="form-group">
 							<label>Phone</label>
@@ -107,8 +109,6 @@ function OutPatientAppointmentForm(props) {
 							/>
 						</div>
 					</div>
-				</div>
-				<div className="row">
 					<div className="col-sm-6">
 						<div className="form-group">
 							<label>Gender</label>
@@ -139,6 +139,8 @@ function OutPatientAppointmentForm(props) {
 							/>
 						</div>
 					</div>
+				</div>
+				<div className="row">
 					<div className="col-sm-6">
 						<div className="form-group">
 							<label>Date of Birth</label>
@@ -155,6 +157,36 @@ function OutPatientAppointmentForm(props) {
 								placeholderText="Select date of birth"
 								maxDate={new Date()}
 								name="date_of_birth"
+							/>
+						</div>
+					</div>
+					<div className="col-sm-6">
+						<div className="form-group">
+							<label>OPD Type</label>
+							<Select
+								id="opdType"
+								placeholder="Select"
+								options={[
+									{
+										label: 'Immunization',
+										value: 'Immunization',
+									},
+									{
+										label: 'Laboratory',
+										value: 'Laboratory',
+									},
+								]}
+								ref={register({
+									name: 'opdType',
+									required: true,
+								})}
+								onChange={evt => {
+									if (evt == null) {
+										setValue('opdType', null);
+									} else {
+										setValue('opdType', String(evt.value));
+									}
+								}}
 							/>
 						</div>
 					</div>

@@ -2,7 +2,7 @@
 import React, { Component, lazy, Suspense } from 'react';
 import { Switch, withRouter, Route, Link } from 'react-router-dom';
 import NoMatch from '../NoMatch';
-import Queue from '../../components/Queue';
+// import Queue from '../../components/Queue';
 import Splash from '../../components/Splash';
 import { connect } from 'react-redux';
 

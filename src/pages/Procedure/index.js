@@ -3,7 +3,7 @@ import React, { Component, lazy, Suspense } from 'react';
 import { Switch, withRouter, Route, Link } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
-import Queue from '../../components/Queue';
+// import Queue from '../../components/Queue';
 import { connect } from 'react-redux';
 
 const NewProcedure = lazy(() => import('./NewProcedureRequest'));

@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component, lazy, Suspense } from 'react';
-import { Switch, withRouter, Route, Link } from 'react-router-dom';
+import { Switch, withRouter, Route } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Queue from '../../components/Queue';
 import Splash from '../../components/Splash';
@@ -19,8 +19,7 @@ class Clinical extends Component {
 		alert('I am toSee Details this guy');
 	};
 	render() {
-		const { match, location, staff } = this.props;
-		const page = location.pathname.split('/').pop();
+		const { match, staff } = this.props;
 
 		const department = staff?.details?.department?.name;
 
