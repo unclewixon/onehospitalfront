@@ -140,26 +140,22 @@ const PhysiotherapyRequest = props => {
 		if (!loaded) {
 			props
 				.getAllService()
-				.then(response => {})
+				.then(_ => {})
 				.catch(e => {
 					notifyError(e.message || 'could not fetch services list');
 				});
-			setLoaded(true);
-			setServiceList(props.ServicesList);
-		}
-	}, [props, loaded]);
 
-	useEffect(() => {
-		if (!loaded) {
 			props
 				.getAllServiceCategory()
-				.then(response => {})
+				.then(_ => {})
 				.catch(e => {
 					notifyError(e.message || 'could not fetch service categories');
 				});
 
-			setLoaded(true);
+			setServiceList(props.ServicesList);
 			setServiceCenter(props.ServiceCategories);
+
+			setLoaded(true);
 		}
 	}, [props, loaded]);
 

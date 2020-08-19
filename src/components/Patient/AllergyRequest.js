@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Select from 'react-select';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
@@ -15,7 +15,9 @@ import { useHistory } from 'react-router-dom';
 
 const AllergyRequest = props => {
 	let history = useHistory();
+
 	const { register, handleSubmit, setValue } = useForm();
+
 	const [submitting, setSubmitting] = useState(false);
 
 	const onSubmit = async values => {
@@ -44,6 +46,7 @@ const AllergyRequest = props => {
 			notifyError(e.message || 'could not save allergies');
 		}
 	};
+
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">

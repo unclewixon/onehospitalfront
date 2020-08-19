@@ -1,38 +1,40 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
-import BootstrapTable from 'react-bootstrap-table-next';
 import accounting from 'accounting';
+
 import waiting from '../../assets/images/waiting.gif';
+
 const { RangePicker } = DatePicker;
 
-const columns = [
-	{
-		dataField: 'date',
-		text: 'Date',
-	},
-	{
-		dataField: 'ref',
-		text: 'Ref (#)',
-	},
-	{
-		dataField: 'description',
-		text: 'Description',
-	},
-	{
-		dataField: 'debit',
-		text: 'Debit',
-	},
-	{
-		dataField: 'credit',
-		text: 'Credit',
-	},
-	{
-		dataField: 'balance',
-		text: 'Balance',
-	},
-];
-export class LedgerStatement extends Component {
+// const columns = [
+// 	{
+// 		dataField: 'date',
+// 		text: 'Date',
+// 	},
+// 	{
+// 		dataField: 'ref',
+// 		text: 'Ref (#)',
+// 	},
+// 	{
+// 		dataField: 'description',
+// 		text: 'Description',
+// 	},
+// 	{
+// 		dataField: 'debit',
+// 		text: 'Debit',
+// 	},
+// 	{
+// 		dataField: 'credit',
+// 		text: 'Credit',
+// 	},
+// 	{
+// 		dataField: 'balance',
+// 		text: 'Balance',
+// 	},
+// ];
+
+class LedgerStatement extends Component {
 	state = {
 		filtering: false,
 		selectedAccount: '',

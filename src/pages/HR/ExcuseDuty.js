@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import ExcuseItem from '../../components/ExcuseItem';
 import { loadStaffLeave } from '../../actions/hr';
 import { request } from '../../services/utilities';
 import { leaveMgtAPI } from '../../services/constants';
 import { notifySuccess, notifyError } from '../../services/notify';
-import searchingGIF from '../../assets/images/searching.gif';
 import { confirmAction } from '../../services/utilities';
 import ModalExcuseDuty from '../../components/Modals/ModalExcuseDuty';
 
@@ -92,11 +92,7 @@ class ExcuseDuty extends Component {
 
 	deleteLeaveRequests = async data => {
 		try {
-			const res = await request(
-				`hr/leave-management/${data.id}`,
-				'DELETE',
-				true
-			);
+			await request(`hr/leave-management/${data.id}`, 'DELETE', true);
 			notifySuccess('Successfully removed excuse');
 			this.fetchStaffLeave();
 		} catch (error) {
@@ -116,13 +112,13 @@ class ExcuseDuty extends Component {
 	render() {
 		const { staff_leave } = this.props;
 
-		const filterByCategory = id => {
-			if (id === 'none') {
-				return this.setState({ LeaveList: staff_leave });
-			}
-			const list = staff_leave.filter(leave => leave.category.id === id);
-			this.setState({ LeaveList: list });
-		};
+		// const filterByCategory = id => {
+		// 	if (id === 'none') {
+		// 		return this.setState({ LeaveList: staff_leave });
+		// 	}
+		// 	const list = staff_leave.filter(leave => leave.category.id === id);
+		// 	this.setState({ LeaveList: list });
+		// };
 
 		const filterByStatus = status => {
 			if (status === 'none') {

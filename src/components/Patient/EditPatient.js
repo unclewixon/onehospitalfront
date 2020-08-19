@@ -1,34 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Field, reduxForm, SubmissionError, reset } from 'redux-form';
-import {
-	renderSelect,
-	renderTextArea,
-	renderTextInput,
-	renderMultiselect,
-} from '../../services/utilities';
-import { socket } from '../../services/constants';
-import moment from 'moment';
 
-import DatePicker from 'react-datepicker';
-import waiting from '../../assets/images/waiting.gif';
 import { createClinicalTask } from '../../actions/general';
 import PatientForm from '../PatientForm';
 import PatientNOKForm from '../PatientNOKForm';
-import Popover from 'antd/lib/popover';
-
-const validate = values => {
-	const errors = {};
-
-	if (!values.leave_type || values.leave_type === '') {
-		errors.leave_type = 'select leave type';
-	}
-	if (!values.reason || values.reason === '') {
-		errors.reason = 'please specify you reason';
-	}
-
-	return errors;
-};
 
 class EditPatient extends Component {
 	state = {

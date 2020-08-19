@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Field, reduxForm, SubmissionError, reset } from 'redux-form';
+import { Field, reduxForm } from 'redux-form';
 import moment from 'moment';
+
 import {
 	renderTextInput,
 	request,
 	renderSelect,
 	renderMultiselect,
 } from '../../services/utilities';
-import { patientAPI, searchAPI, labourAPI } from '../../services/constants';
 import DatePicker from 'react-datepicker';
-import { TimePicker } from 'antd';
 import waiting from '../../assets/images/waiting.gif';
 import { closeModals } from '../../actions/general';
 import {
@@ -20,7 +19,8 @@ import {
 	cervicalPosition,
 } from '../../services/constants';
 import { notifySuccess, notifyError } from '../../services/notify';
-import { getAllLabTests, getAllLabGroups } from '../../actions/settings';
+import { getAllLabTests } from '../../actions/settings';
+
 const validate = values => {
 	const errors = {};
 	if (!values.cervicalLength) {
@@ -109,6 +109,7 @@ class ModalCreateLabMeasurement extends Component {
 			measurements: [],
 		};
 
+		// eslint-disable-next-line array-callback-return
 		Object.entries(data).map(el => {
 			if (otherMeasurement.includes(el[0])) {
 				newData['measurements'].push(el[0].split('_').join(' '));
@@ -148,7 +149,7 @@ class ModalCreateLabMeasurement extends Component {
 	};
 
 	render() {
-		const { submitting, exam_time, exam_date, examDate, tests } = this.state;
+		const { submitting, examDate, tests } = this.state;
 		const { error, handleSubmit } = this.props;
 		const { first_name, last_name } = this.props.staff.profile.details;
 		return (

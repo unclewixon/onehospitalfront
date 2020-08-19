@@ -1,10 +1,9 @@
-/* eslint-disable no-multi-str */
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { useForm, Controller, ErrorMessage } from 'react-hook-form';
-import { serviceAPI, serviceCenter } from '../../../services/constants';
 import { connect, useDispatch } from 'react-redux';
 
+import { serviceAPI, serviceCenter } from '../../../services/constants';
 import {
 	createLabRequest,
 	loadEncounterData,
@@ -29,14 +28,17 @@ const Investigations = props => {
 	const [loaded, setLoaded] = useState(false);
 	const [services, setServices] = useState([]);
 	const [servicesCategory, setServicesCategory] = useState([]);
+
 	const dispatch = useDispatch();
 
 	const defaultValues = {
 		...(encounterForm.investigations || []),
 	};
+
 	const { register, handleSubmit, setValue, control, errors } = useForm({
 		defaultValues,
 	});
+
 	const handleChangeServiceCategory = evt => {
 		let value = String(evt.value);
 		fetchServicesByCategory(value);
@@ -76,6 +78,7 @@ const Investigations = props => {
 			setLabTests(selected);
 		}
 	};
+
 	const handleChangeProcedure = evt => {
 		setValue('service_request', evt);
 	};
@@ -93,17 +96,21 @@ const Investigations = props => {
 
 	const structuredTest = () => {
 		const parameterObj = {};
+		// eslint-disable-next-line no-unused-vars
 		const parVals =
 			props && props.LabParameters && props.LabParameters.length
-				? props.LabParameters.map(par => {
+				? // eslint-disable-next-line array-callback-return
+				  props.LabParameters.map(par => {
 						parameterObj[par.id] = par;
 				  })
 				: [];
 
 		const testObj = {};
+		// eslint-disable-next-line no-unused-vars
 		const testVals =
 			props && props.LabTests && props.LabTests.length
-				? props.LabTests.map(test => {
+				? // eslint-disable-next-line array-callback-return
+				  props.LabTests.map(test => {
 						testObj[test.id] = test;
 				  })
 				: [];
@@ -131,17 +138,21 @@ const Investigations = props => {
 
 	const structuredGroup = () => {
 		const parameterObj = {};
+		// eslint-disable-next-line no-unused-vars
 		const parVals =
 			props && props.LabParameters && props.LabParameters.length
-				? props.LabParameters.map(par => {
+				? // eslint-disable-next-line array-callback-return
+				  props.LabParameters.map(par => {
 						parameterObj[par.id] = par;
 				  })
 				: [];
 
 		const groupObj = {};
+		// eslint-disable-next-line no-unused-vars
 		const groupVals =
 			props && props.LabGroups && props.LabGroups.length
-				? props.LabGroups.map(group => {
+				? // eslint-disable-next-line array-callback-return
+				  props.LabGroups.map(group => {
 						groupObj[group.id] = group;
 				  })
 				: [];
@@ -175,36 +186,34 @@ const Investigations = props => {
 				.catch(e => {
 					notifyError(e.message || 'could not fetch service categories');
 				});
-		}
-		let data = [];
-		let services = [];
-		props.ServiceCategories.forEach((item, index) => {
-			const res = { label: item.name, value: item.id };
-			data = [...data, res];
-		});
-		props.service.forEach((item, index) => {
-			const res = { label: item.name, value: item.id };
-			services = [...services, res];
-		});
-		setServicesCategory(data);
-		setServices(services);
-		setLoaded(true);
-	}, [props, loaded]);
-	useEffect(() => {
-		const {
-			getAllLabGroups,
-			getAllLabTests,
-			getAllLabTestCategories,
-			getAllLabTestParameters,
-		} = props;
-		if (!loaded) {
+			let data = [];
+			let services = [];
+			props.ServiceCategories.forEach((item, index) => {
+				const res = { label: item.name, value: item.id };
+				data = [...data, res];
+			});
+			props.service.forEach((item, index) => {
+				const res = { label: item.name, value: item.id };
+				services = [...services, res];
+			});
+			setServicesCategory(data);
+			setServices(services);
+
+			const {
+				getAllLabGroups,
+				getAllLabTests,
+				getAllLabTestCategories,
+				getAllLabTestParameters,
+			} = props;
+
 			getAllLabGroups();
 			getAllLabTests();
 			getAllLabTestCategories();
 			getAllLabTestParameters();
+
+			setLoaded(true);
 		}
-		setLoaded(true);
-	}, [loaded, props]);
+	}, [props, loaded]);
 
 	const onSubmit = async data => {
 		encounterForm.investigations = data;

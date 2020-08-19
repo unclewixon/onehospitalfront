@@ -9,21 +9,29 @@ import QueueOverlay from './QueueOverlay';
 const Queue = ({ department }) => {
 	const [queues, setQueues] = useState([]);
 	const [showQueue, setShowQueue] = useState(false);
+	const [listenning, setListenning] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
 
 	useEffect(() => {
 		getQueueList();
 	}, []);
 
+	const setQueueList = item => [...queues, item];
+
 	useEffect(() => {
-		socket.on('new-queue', data => {
-			console.log('new queue', data);
-			if (data) {
-				axios.get(`${process.env.REACT_APP_VOICE_RSS_API}Queue number`);
-				queues.push(data.queue);
-			}
-		});
-	}, [queues]);
+		if (!listenning) {
+			setListenning(true);
+
+			socket.on('new-queue', data => {
+				console.log('new queue', data);
+				if (data) {
+					axios.get(`${process.env.REACT_APP_VOICE_RSS_API}Queue number`);
+					setQueueList(data.queue);
+				}
+			});
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [listenning]);
 
 	async function getQueueList() {
 		try {

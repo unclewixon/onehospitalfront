@@ -3,15 +3,13 @@ import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
-import { socket, patientAPI, serviceAPI } from '../../services/constants';
+
+import { patientAPI, serviceAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
-
 import { request } from '../../services/utilities';
-
 import {
 	get_all_services,
-	getAllRequestServices,
 	getAllServiceCategory,
 } from '../../actions/settings';
 
@@ -20,8 +18,8 @@ const DentistryRequest = props => {
 	const { register, handleSubmit, setValue } = useForm();
 	const [submitting, setSubmitting] = useState(false);
 	const [loaded, setLoaded] = useState(false);
-	const [dataLoaded, setDataLoaded] = useState(false);
-	const [dentistryServices, setDentistryServices] = useState([]);
+	// const [dataLoaded, setDataLoaded] = useState(false);
+	// const [dentistryServices, setDentistryServices] = useState([]);
 	const [multi, setMulti] = useState(false);
 	const [servicesCategory, setServicesCategory] = useState([]);
 	const [services, setServices] = useState('');
@@ -34,25 +32,26 @@ const DentistryRequest = props => {
 				.catch(e => {
 					notifyError(e.message || 'could not fetch service categories');
 				});
+
+			let data = [];
+			let services = [];
+			props.ServiceCategories.forEach((item, index) => {
+				const res = { label: item.name, value: item.id };
+				data = [...data, res];
+			});
+			props.service.forEach((item, index) => {
+				const res = { label: item.name, value: item.id };
+				services = [...services, res];
+			});
+			setServicesCategory(data);
+			setServices(services);
+			setLoaded(true);
 		}
-		let data = [];
-		let services = [];
-		props.ServiceCategories.forEach((item, index) => {
-			const res = { label: item.name, value: item.id };
-			data = [...data, res];
-		});
-		props.service.forEach((item, index) => {
-			const res = { label: item.name, value: item.id };
-			services = [...services, res];
-		});
-		setServicesCategory(data);
-		setServices(services);
-		setLoaded(true);
 	}, [props, loaded]);
 
 	const onSubmit = async values => {
 		console.log(values);
-		const { service } = props;
+		// const { service } = props;
 		if (
 			values.service_request === undefined ||
 			values.service_request.length === 0
@@ -81,12 +80,7 @@ const DentistryRequest = props => {
 			theRequest.patient_id = props.patient.id;
 			//theRequest.primary_diagnosis = selectedOption.icd10Code;
 			theRequest.requestBody = requestData;
-			const rs = await request(
-				`${patientAPI}/save-request`,
-				'POST',
-				true,
-				theRequest
-			);
+			await request(`${patientAPI}/save-request`, 'POST', true, theRequest);
 			history.push('settings/roles#dentistry');
 			notifySuccess('Dentistry request saved');
 			setSubmitting(false);
@@ -108,11 +102,7 @@ const DentistryRequest = props => {
 
 	const fetchServicesByCategory = async id => {
 		try {
-			const rs = await request(
-				`${serviceAPI}` + '/categories/' + id,
-				'GET',
-				true
-			);
+			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
 			props.get_all_services(rs);
 		} catch (error) {
 			notifyError('error fetching dentistry requests for the patient');

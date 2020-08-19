@@ -50,11 +50,7 @@ const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 
 	const deleteLeaveRequests = async data => {
 		try {
-			const res = await request(
-				`hr/leave-management/${data.id}`,
-				'DELETE',
-				true
-			);
+			await request(`hr/leave-management/${data.id}`, 'DELETE', true);
 			notifySuccess('Successful removed leave applications');
 			getLeaveRequests();
 		} catch (error) {

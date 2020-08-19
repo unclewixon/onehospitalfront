@@ -1,22 +1,22 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import AppraisalItem from '../../components/AppraisalItem';
 import { request } from '../../services/utilities';
 import { appraisalAPI } from '../../services/constants';
-import { loadAppraisals } from '../../actions/hr';
-import Popover from 'antd/lib/popover';
+
 import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
-import { notifySuccess, notifyError } from '../../services/notify';
+import { notifyError } from '../../services/notify';
 import { loadPerformancePeriod } from '../../actions/hr';
+
 const { RangePicker } = DatePicker;
 
 const initialDate = item => ({
 	startDate: item ? item.startDate : '',
 	endDate: item ? item.endDate : '',
 });
+
 const PerformanceIndicatorForm = ({
 	uploading,
 	doUpload,
@@ -122,6 +122,7 @@ const PerformanceIndicatorForm = ({
 		</div>
 	);
 };
+
 class Appraisal extends Component {
 	state = {
 		form_visible: false,
@@ -137,6 +138,7 @@ class Appraisal extends Component {
 		loading: true,
 		editItem: null,
 	};
+
 	componentDidMount() {
 		this.fetchApprasails();
 	}
@@ -169,12 +171,7 @@ class Appraisal extends Component {
 		try {
 			//load it into database and add it to the store
 			if (!this.state.editItem) {
-				const rs = await request(
-					`${appraisalAPI}/save-period`,
-					'POST',
-					true,
-					payload
-				);
+				await request(`${appraisalAPI}/save-period`, 'POST', true, payload);
 			} else {
 				console.log('i am to edit here');
 				//connect to edit api
@@ -207,7 +204,7 @@ class Appraisal extends Component {
 
 	render() {
 		// const { performancePeriods } = this.props;
-		const { form_visible, uploading, loading, editItem } = this.state;
+		const { form_visible, uploading, editItem } = this.state;
 		const { performancePeriods } = this.props;
 		const rev = [...performancePeriods].reverse();
 

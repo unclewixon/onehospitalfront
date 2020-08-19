@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import circleLogo from '../../assets/images/logo-big.png';
 
@@ -14,7 +15,7 @@ const Invoice = ({ data }) => {
 					<tr>
 						<td>
 							<img
-								alt
+								alt=""
 								src={`url(${circleLogo})`}
 								style={{ width: 70, padding: 20 }}
 							/>
@@ -261,9 +262,7 @@ const Invoice = ({ data }) => {
 					<p>
 						If you have any questions you can simply reply to this email or find
 						our contact information below. Also contact us at{' '}
-						<a
-							href="#"
-							style={{ textDecoration: 'underline', color: '#4B72FA' }}>
+						<a style={{ textDecoration: 'underline', color: '#4B72FA' }}>
 							test@example.com
 						</a>
 					</p>

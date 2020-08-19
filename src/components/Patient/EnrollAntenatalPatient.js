@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
 
-import GeneralAssessment from '../MutlistepForms/GeneralAssessment';
-import GeneralComments from '../MutlistepForms/GeneralComments';
-import LabInvestigation from '../MutlistepForms/LabInvestigation';
-import RadiologicalInvestigation from '../MutlistepForms/RadiologicalInvestigation';
-import Prescription from '../MutlistepForms/Prescription';
-import NextAppointment from '../MutlistepForms/NextAppointment';
 import EnrollmentForm from '../Enrollment/EnrollmentForm';
+
 class EnrollAntenatalPatient extends Component {
 	state = {
 		page: 1,
@@ -40,8 +35,6 @@ class EnrollAntenatalPatient extends Component {
 		});
 	};
 	render() {
-		const { page, submitting } = this.state;
-
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">

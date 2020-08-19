@@ -21,12 +21,9 @@ const NewPhysiotherapy = props => {
 	const { register, handleSubmit, setValue } = useForm();
 	const [submitting, setSubmitting] = useState(false);
 	const [loaded, setLoaded] = useState(false);
-	// const [Loading, setLoading] = useState(false);
-	// const [dataLoaded, setDataLoaded] = useState(false);
 	const [serviceCenter, setServiceCenter] = useState([]);
 	const [serviceList, setServiceList] = useState([]);
 	const [services, setServices] = useState([]);
-	// const [multiple, setMultiple] = useState([]);
 	const [paramsUI, setParamsUI] = useState([]);
 	const [parameters, setParameters] = useState([]);
 	const [searching, setSearching] = useState(false);
@@ -167,20 +164,17 @@ const NewPhysiotherapy = props => {
 				.catch(e => {
 					notifyError(e.message || 'could not fetch services list');
 				});
-			setLoaded(true);
-			setServiceList(props.ServicesList);
-		}
-	}, [props, loaded]);
 
-	useEffect(() => {
-		if (!loaded) {
 			props
 				.getAllServiceCategory()
 				.then(response => {})
 				.catch(e => {
 					notifyError(e.message || 'could not fetch service categories');
 				});
+
 			setLoaded(true);
+
+			setServiceList(props.ServicesList);
 			setServiceCenter(props.ServiceCategories);
 		}
 	}, [props, loaded]);

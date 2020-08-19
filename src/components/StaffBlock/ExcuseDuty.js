@@ -2,11 +2,12 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
+import Tooltip from 'antd/lib/tooltip';
+
 import { request } from '../../services/utilities';
 import { loadStaffLeave } from '../../actions/hr';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
-import Tooltip from 'antd/lib/tooltip';
 import ModalExcuseDuty from '../Modals/ModalExcuseDuty';
 import ModalEditExcuse from '../Modals/ModalEditExcuse';
 import { confirmAction } from '../../services/utilities';

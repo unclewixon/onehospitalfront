@@ -46,6 +46,7 @@ const Weight = ({ vitals }) => {
 					_reading: lastReading.reading.weight,
 				});
 			}
+
 			setData(data);
 		} catch (e) {}
 	}, [vitals]);

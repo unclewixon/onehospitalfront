@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { closeModals } from '../../actions/general';
-import moment from 'moment';
+
 export class ModalLabourMeasurementDetail extends Component {
 	componentDidMount() {
 		document.body.classList.add('modal-open');
@@ -10,6 +10,7 @@ export class ModalLabourMeasurementDetail extends Component {
 	componentWillUnmount() {
 		document.body.classList.remove('modal-open');
 	}
+
 	render() {
 		const { labourDetail, labour } = this.props;
 

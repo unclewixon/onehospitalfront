@@ -111,7 +111,6 @@ const ConsultatingRoom = props => {
 	};
 
 	const fetchConsultatingRoom = async () => {
-		setDataLoaded(false);
 		try {
 			const rs = await request(`consulting-rooms`, 'GET', true);
 			props.get_all_consultating_rooms(rs);
@@ -124,6 +123,7 @@ const ConsultatingRoom = props => {
 
 	useEffect(() => {
 		fetchConsultatingRoom();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (

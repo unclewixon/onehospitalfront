@@ -1,18 +1,17 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import moment from 'moment';
-import { renderTextInput, request } from '../../services/utilities';
 import DatePicker from 'react-datepicker';
+
+import { renderTextInput, request } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { closeModals } from '../../actions/general';
-import { patientAPI, searchAPI, labourAPI } from '../../services/constants';
-
-import { caput, moulding } from '../../services/constants';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
-import { ConsoleWriter } from 'istanbul-lib-report';
-export class ModalCreateRecordDelivery extends Component {
+
+class ModalCreateRecordDelivery extends Component {
 	state = {
 		submitting: false,
 		examDate: '',
@@ -110,7 +109,7 @@ export class ModalCreateRecordDelivery extends Component {
 		}
 	};
 	render() {
-		const { submitting, examDate, searching, staffs, staff_name } = this.state;
+		const { submitting, examDate, searching, staffs } = this.state;
 		const { error, handleSubmit } = this.props;
 		console.log(staffs, searching);
 		return (

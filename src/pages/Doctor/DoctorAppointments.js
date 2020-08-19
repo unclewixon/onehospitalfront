@@ -20,33 +20,34 @@ const DoctorAppointments = ({ profile }) => {
 		status: '',
 	});
 	const [appointments, setAppointments] = useState([]);
+	const [listenning, setListenning] = useState(false);
 
 	const init = useCallback(async () => {
-		setState({ ...state, loading: true });
-		request(
-			`front-desk/appointments?startDate=${state.startDate}&endDate=${state.endDate}`,
-			'GET',
-			true
-		)
-			.then(res => {
-				setState({ ...state, loading: false, filtering: false });
-				setAppointments(
-					res.filter(appointment => appointment.whomToSee.id === staff.id)
-				);
-			})
-			.catch(error => {
-				console.log(error);
-			});
-	}, []);
+		try {
+			setState({ ...state, loading: true });
+			const url = `front-desk/appointments?startDate=${state.startDate}&endDate=${state.endDate}`;
+			const res = await request(url, 'GET', true);
+			setState({ ...state, loading: false, filtering: false });
+			setAppointments(
+				res.filter(appointment => appointment.whomToSee.id === staff.id)
+			);
+		} catch (error) {
+			console.log(error);
+		}
+	}, [staff.id, state]);
 
 	useEffect(() => {
-		init();
-		socket.on('appointment-update', data => {
-			if (data.action === 1) {
-				init();
-			}
-		});
-	}, [init]);
+		if (!listenning) {
+			setListenning(true);
+			init();
+
+			socket.on('appointment-update', data => {
+				if (data.action === 1) {
+					init();
+				}
+			});
+		}
+	}, [init, listenning]);
 
 	const doFilter = e => {
 		e.preventDefault();
@@ -54,10 +55,10 @@ const DoctorAppointments = ({ profile }) => {
 		init();
 	};
 
-	const change = e => {
-		//console.log(e.target.value)
-		setState({ ...state, [e.target.name]: e.target.value });
-	};
+	// const change = e => {
+	// 	//console.log(e.target.value)
+	// 	setState({ ...state, [e.target.name]: e.target.value });
+	// };
 
 	const dateChange = e => {
 		let date = e.map(d => {

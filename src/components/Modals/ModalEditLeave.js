@@ -36,6 +36,7 @@ const ModalEditLeave = ({
 	const [endDate, setEndDate] = useState(new Date(activeRequest.end_date));
 
 	const values = watch();
+	console.log(values);
 
 	const fetchLeaveCategory = useCallback(async () => {
 		try {
@@ -84,7 +85,7 @@ const ModalEditLeave = ({
 			application: value.reason,
 		};
 		try {
-			const rs = await request(
+			await request(
 				`hr/leave-management/${activeRequest.id}/update`,
 				'PATCH',
 				true,

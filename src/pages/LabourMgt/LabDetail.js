@@ -17,7 +17,8 @@ const Measurement = lazy(() => import('./Measurement'));
 const Partograph = lazy(() => import('./Partograph'));
 const RiskAssessment = lazy(() => import('./RiskAssessment'));
 const Recorddelivery = lazy(() => import('./Recorddelivery'));
-export class LabDetail extends Component {
+
+class LabDetail extends Component {
 	state = {
 		tab: 'measurement',
 		newForm: false,
@@ -59,6 +60,7 @@ export class LabDetail extends Component {
 	render() {
 		const { tab } = this.state;
 		const { params, labourDetail } = this.props;
+		console.log(params);
 		console.log(labourDetail);
 		return (
 			<div className="row">

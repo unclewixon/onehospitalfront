@@ -22,7 +22,6 @@ const LabCategory = props => {
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
-	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const handleInputChange = e => {
@@ -96,7 +95,7 @@ const LabCategory = props => {
 	};
 
 	useEffect(() => {
-		if (!loaded) {
+		if (!dataLoaded) {
 			props
 				.getAllLabTestCategories()
 				.then(response => {
@@ -107,8 +106,7 @@ const LabCategory = props => {
 					notifyError(e.message || 'could not fetch lab categories');
 				});
 		}
-		setLoaded(true);
-	}, [props, loaded]);
+	}, [props, dataLoaded]);
 
 	return (
 		<div className="row">

@@ -1,14 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { uploadHmo } from '../actions/general';
 import { confirmAlert } from 'react-confirm-alert';
+import Tooltip from 'antd/lib/tooltip';
+
+import { uploadHmo } from '../actions/general';
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import { addHmo, getAllHmos, updateHmo, deleteHmo } from '../actions/hmo';
 import { API_URI, hmoAPI } from '../services/constants';
-import Tooltip from 'antd/lib/tooltip';
 import { request } from '../services/utilities';
 
 const HmoList = props => {
@@ -27,7 +28,6 @@ const HmoList = props => {
 	const [{ edit, add }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
 	const [logo, setLogo] = useState(null);
-	const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [adding, setAdding] = useState(false);
 
@@ -102,8 +102,8 @@ const HmoList = props => {
 		try {
 			let id = hmo.id;
 			setDataLoaded(false);
-			const rs = await request(
-				`hmos/transactions/` + id + '/process?action=' + action,
+			await request(
+				`hmos/transactions/${id}/process?action=${action}`,
 				'GET',
 				true
 			);
@@ -161,7 +161,7 @@ const HmoList = props => {
 	};
 
 	useEffect(() => {
-		if (!loaded) {
+		if (!dataLoaded) {
 			props
 				.getAllHmos()
 				.then(response => {
@@ -172,8 +172,8 @@ const HmoList = props => {
 					notifyError(e.message || 'could not fetch lab tests');
 				});
 		}
-		setLoaded(true);
-	}, [loaded, props]);
+	}, [dataLoaded, props]);
+
 	return (
 		<div className="content-i">
 			<div className="content-box">

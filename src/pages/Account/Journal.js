@@ -1,18 +1,13 @@
 import React, { Component, useState, useEffect } from 'react';
-import moment from 'moment';
-import DatePicker from 'antd/lib/date-picker';
-import Popover from 'antd/lib/popover';
 
 import JournalItem from '../../components/JournalItem';
 import waiting from '../../assets/images/waiting.gif';
-import { notifySuccess, notifyError } from '../../services/notify';
+import { notifyError } from '../../services/notify';
 
-const { RangePicker } = DatePicker;
-
-const initialDate = item => ({
-	startDate: item ? item.startDate : '',
-	endDate: item ? item.endDate : '',
-});
+// const initialDate = item => ({
+// 	startDate: item ? item.startDate : '',
+// 	endDate: item ? item.endDate : '',
+// });
 
 const Entry = ({ uploading, doUpload, hide, clear, item }) => {
 	const [value, setValue] = useState(false);
@@ -44,18 +39,19 @@ const Entry = ({ uploading, doUpload, hide, clear, item }) => {
 		});
 	};
 
-	const dataSet = item => {
-		console.log('i got here');
-		setData(item);
-		setValue(true);
-		console.log(data, value);
-	};
-
 	useEffect(() => {
+		const dataSet = item => {
+			console.log('i got here');
+			setData(item);
+			setValue(true);
+			console.log(data, value);
+		};
+
 		if (Object.keys(item).length > 0) {
 			dataSet(item);
 		}
-	}, [item]);
+	}, [data, item, value]);
+
 	return (
 		<div
 			className="onboarding-modal fade animated show"
@@ -347,7 +343,7 @@ export class Journal extends Component {
 		this.setState({ editItem: item });
 	};
 	render() {
-		const { form_visible, uploading, loading, editItem, rev } = this.state;
+		const { form_visible, uploading, editItem, rev } = this.state;
 		return (
 			<div className="content-i">
 				<div className="content-box">

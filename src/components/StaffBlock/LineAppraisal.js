@@ -60,6 +60,7 @@ const leader = {
 const validate = values => {
 	const errors = {};
 
+	// eslint-disable-next-line array-callback-return
 	Object.keys(admin).map(el => {
 		if (
 			!values[el] ||
@@ -70,6 +71,7 @@ const validate = values => {
 		}
 	});
 
+	// eslint-disable-next-line array-callback-return
 	Object.keys(leader).map(el => {
 		if (
 			!values[el] ||
@@ -80,6 +82,7 @@ const validate = values => {
 		}
 	});
 
+	// eslint-disable-next-line array-callback-return
 	Object.keys(work).map(el => {
 		if (
 			!values[el] ||

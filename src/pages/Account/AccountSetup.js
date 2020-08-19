@@ -2,11 +2,10 @@
 import React, { useState } from 'react';
 import { Switch, Route, Link, withRouter } from 'react-router-dom';
 
-import IncomeStatement from './IncomeStatement';
-import NoMatch from '../NoMatch';
 import CoaCategory from '../../components/CoaCategory';
 import CoaSubcategory from '../../components/CoaSubcategory';
 import ManageAccount from '../../components/ManageAccount';
+
 const AccountSetup = ({ match, location }) => {
 	const [toggle, setToggle] = useState(false);
 	const page = location.pathname.split('/').pop();

@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import waiting from '../assets/images/waiting.gif';
 import moment from 'moment';
-import { notifySuccess, notifyError } from './../services/notify';
-import { diagnosisAPI } from '../services/constants';
-import { request } from '../services/utilities';
 import { useForm } from 'react-hook-form';
 import { withRouter } from 'react-router-dom';
 import AsyncSelect from 'react-select/async';
 import DatePicker from 'react-datepicker';
+
+import waiting from '../assets/images/waiting.gif';
+import { notifySuccess, notifyError } from './../services/notify';
+import { diagnosisAPI } from '../services/constants';
+import { request } from '../services/utilities';
 
 const CreateExcuseDuty = ({ history }) => {
 	const { handleSubmit, register, setValue } = useForm();
@@ -65,6 +66,7 @@ const CreateExcuseDuty = ({ history }) => {
 			return [];
 		}
 		const res = await request(`hr/staffs/find?q=${inputValue}`, 'GET', true);
+		// eslint-disable-next-line no-unused-vars
 		const filteredRes =
 			res && res.length
 				? res.filter(staff => staff.job_title === 'Doctor')
@@ -95,12 +97,7 @@ const CreateExcuseDuty = ({ history }) => {
 			diagnosis_id: value && value.diagnosis ? value.diagnosis : '',
 		};
 		try {
-			const rs = await request(
-				`hr/leave-management`,
-				'POST',
-				true,
-				newRequestData
-			);
+			await request(`hr/leave-management`, 'POST', true, newRequestData);
 			setSubmitting(false);
 			notifySuccess('Leave request added');
 			history.push('/front-desk#excuse-duty');

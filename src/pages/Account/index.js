@@ -1,5 +1,5 @@
 import React, { Component, lazy, Suspense } from 'react';
-import { Switch, Link, withRouter, Route } from 'react-router-dom';
+import { Switch, withRouter, Route } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
 

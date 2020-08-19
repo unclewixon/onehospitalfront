@@ -23,7 +23,7 @@ class AppraisalItem extends Component {
 	};
 
 	render() {
-		const { approved, item, index, edit } = this.props;
+		const { item, index, edit } = this.props;
 		console.log(item);
 		return (
 			<tr>

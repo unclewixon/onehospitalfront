@@ -1,16 +1,17 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import useSWR from 'swr';
+
 import { togglePermissionModal } from '../../actions/role';
 import { request } from '../../services/utilities';
 import { notifyError, notifySuccess } from '../../services/notify';
-import { SubmissionError } from 'redux-form';
 import waiting from '../../assets/images/waiting.gif';
 
 const RolePermissionModal = props => {
 	const role = props.role;
-	const { data, error } = useSWR('settings/permissions');
+
+	const { data } = useSWR('settings/permissions');
 	const [selected, setSelected] = useState([]);
 	const [loading, setLoading] = useState(false);
 
@@ -20,9 +21,10 @@ const RolePermissionModal = props => {
 			for (const permission of role?.permissions) {
 				newSelected.push(permission.id);
 			}
+
+			setSelected(newSelected);
 		}
-		setSelected(newSelected);
-	}, [setSelected, role]);
+	}, [role]);
 
 	function handleSubmit(event) {
 		event.preventDefault();

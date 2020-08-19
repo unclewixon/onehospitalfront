@@ -29,22 +29,23 @@ let WifeLab = props => {
 	let [query, setQuery] = useState('');
 
 	useEffect(() => {
-		fetchStaffs();
-	}, []);
-
-	const fetchStaffs = async () => {
-		if (props.staffs.length < 1) {
-			try {
-				const rs = await request(`${staffAPI}`, 'GET', true);
-				props.loadStaff(rs);
-			} catch (error) {
-				console.log(error);
+		const fetchStaffs = async () => {
+			if (props.staffs.length < 1) {
+				try {
+					const rs = await request(`${staffAPI}`, 'GET', true);
+					props.loadStaff(rs);
+				} catch (error) {
+					console.log(error);
+				}
 			}
-		}
 
-		// let staffs = props.staffs.map(el => el.first_name + ' ' + el.last_name);
-		// setStaffs(staffs);
-	};
+			// let staffs = props.staffs.map(el => el.first_name + ' ' + el.last_name);
+			// setStaffs(staffs);
+		};
+
+		fetchStaffs();
+	}, [props]);
+
 	const patient = React.createRef();
 
 	const handlePatientChange = e => {

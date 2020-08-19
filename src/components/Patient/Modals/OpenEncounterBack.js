@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import kebabCase from 'lodash.kebabcase';
 import ArrowKeysReact from 'arrow-keys-react';
 import ReactDOM from 'react-dom';
@@ -20,7 +20,7 @@ import { encounters } from '../../../services/constants';
 import { closeModals } from '../../../actions/general';
 import ProfileBlock from '../../ProfileBlock';
 
-const OpenEncounter = props => {
+const OpenEncounterBack = props => {
 	const [state, setState] = useState({
 		eIndex: 0,
 		content: '',
@@ -245,4 +245,4 @@ const mapStateToProps = (state, ownProps) => {
 	};
 };
 
-export default connect(mapStateToProps, { closeModals })(OpenEncounter);
+export default connect(mapStateToProps, { closeModals })(OpenEncounterBack);

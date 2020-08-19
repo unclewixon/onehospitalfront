@@ -132,6 +132,7 @@ const ImmunizationPrescription = ({
 		}
 	}, [loadInvCategories]);
 
+	// TODO: change the category id
 	const getPharmacyItems = useCallback(
 		async id => {
 			try {

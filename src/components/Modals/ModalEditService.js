@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { closeModals } from '../../actions/general';
 import { updateService } from '../../actions/settings';
-import { confirmAction } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
 
@@ -48,8 +48,8 @@ class ModalEditService extends Component {
 			tariff,
 			category_id,
 			sub_cateogry_id,
-			subCategory,
-			category,
+			// subCategory,
+			// category,
 			id,
 			noOfVisits,
 			gracePeriod,

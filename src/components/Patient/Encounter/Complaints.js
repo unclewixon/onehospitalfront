@@ -1,33 +1,32 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import SunEditor from 'suneditor-react';
 import { useForm } from 'react-hook-form';
 import { connect, useDispatch } from 'react-redux';
-import { UPDATE_COMPLAINT_DATA } from '../../../actions/types';
-import { reduxForm } from 'redux-form';
-import EnrollmentPackages from '../../Enrollment/EnrollmentPackages';
-import { socket } from '../../../services/constants';
+
 import { loadEncounterData } from '../../../actions/patient';
 
 const Complaints = props => {
-	const { register, handleSubmit, setValue, getValues } = useForm();
+	const { register, handleSubmit } = useForm();
 	const [complaint, setComplaint] = useState('');
-	let { encounterData, previous, next, encounterId } = props;
+	let { encounterData } = props;
 	const dispatch = useDispatch();
 
 	const handleChange = e => {
 		setComplaint(e);
 	};
-	const handleFocus = e => {
-		var temp_value = e.target.textContent;
-		e.target.textContent = '';
-		e.target.textContent = temp_value;
-	};
+
+	// const handleFocus = e => {
+	// 	var temp_value = e.target.textContent;
+	// 	e.target.textContent = '';
+	// 	e.target.textContent = temp_value;
+	// };
 
 	const onSubmit = async values => {
 		encounterData.complaints = complaint;
 		props.loadEncounterData(encounterData);
 		dispatch(props.next);
 	};
+
 	return (
 		<div className="form-block encounter">
 			<form onSubmit={handleSubmit(onSubmit)}>
@@ -72,7 +71,7 @@ const Complaints = props => {
 
 				<div className="row mt-5">
 					<div className="col-sm-12 d-flex ant-row-flex-space-between">
-						<button className="btn btn-primary" onClick={previous}>
+						<button className="btn btn-primary" disabled>
 							Previous
 						</button>
 						<button className="btn btn-primary" type="submit">

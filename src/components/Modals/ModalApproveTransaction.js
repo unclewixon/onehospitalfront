@@ -108,7 +108,7 @@ class ModalApproveTransaction extends Component {
 	fetchVoucher = async data => {
 		try {
 			const rs = await request(
-				`${vouchersAPI}/list` + '?patient_id=' + data.patient_id,
+				`${vouchersAPI}/list?patient_id=${data.patient_id}`,
 				'GET',
 				true
 			);

@@ -1,22 +1,24 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { closeModals } from '../../actions/general';
 import moment from 'moment';
 
-const fields = [
-	'createdAt',
-	'heightOfFunds',
-	'fetalHeartRate',
-	'positionOfFetus',
-	'fetalLie',
-	'relationshipToBrim',
-	'comment',
-	'lab_request',
-	'radiology_request',
-	'pharmacy_request',
-	'nextAppointment',
-];
-export class ModalAntenatalAssessmentDetail extends Component {
+import { closeModals } from '../../actions/general';
+
+// const fields = [
+// 	'createdAt',
+// 	'heightOfFunds',
+// 	'fetalHeartRate',
+// 	'positionOfFetus',
+// 	'fetalLie',
+// 	'relationshipToBrim',
+// 	'comment',
+// 	'lab_request',
+// 	'radiology_request',
+// 	'pharmacy_request',
+// 	'nextAppointment',
+// ];
+
+class ModalAntenatalAssessmentDetail extends Component {
 	componentDidMount() {
 		document.body.classList.add('modal-open');
 	}

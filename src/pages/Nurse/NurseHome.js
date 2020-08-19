@@ -12,16 +12,17 @@ import truncate from 'lodash.truncate';
 const NurseHome = () => {
 	const [loading, setLoading] = useState(true);
 	const [queues, setQueues] = useState([]);
+
 	const dispatch = useDispatch();
 
-	const { data, error } = useSWR('front-desk/queue-system/get-lists');
+	const { data } = useSWR('front-desk/queue-system/get-lists');
 
 	useEffect(() => {
-		if (data) {
-			setLoading(false);
+		if (data && loading) {
 			setQueues(data);
+			setLoading(false);
 		}
-	}, [data]);
+	}, [data, loading]);
 
 	useEffect(() => {
 		socket.on('new-queue', data => {
@@ -30,7 +31,7 @@ const NurseHome = () => {
 				setQueues(queues => [...queues, queue]);
 			}
 		});
-	}, [setQueues]);
+	}, []);
 
 	const showProfile = patient => {
 		const info = { patient, type: 'patient' };

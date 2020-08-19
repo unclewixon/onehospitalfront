@@ -7,7 +7,7 @@ import { request } from '../services/utilities';
 
 const PharmNewRequest = props => {
 	const [allPatients, setAllPatients] = useState([]);
-	const [patientsLoading, setPatientsLoading] = useState(false);
+	const [patientsLoading, setPatientsLoading] = useState(true);
 	const [loaded, setLoaded] = useState(false);
 	const [servicesCategory, setServicesCategory] = useState([]);
 	// const [services, setServices] = useState('');
@@ -16,25 +16,24 @@ const PharmNewRequest = props => {
 		const { getAllServiceCategory } = props;
 		if (!loaded) {
 			getAllServiceCategory();
+			let data = [];
+			let services = [];
+			props.ServiceCategories.forEach((item, index) => {
+				const res = { label: item.name, value: item.id };
+				data = [...data, res];
+			});
+			props.service.forEach((item, index) => {
+				const res = { label: item.name, value: item.id };
+				services = [...services, res];
+			});
+			setServicesCategory(data);
+			// setServices(services);
+			setLoaded(true);
 		}
-		let data = [];
-		let services = [];
-		props.ServiceCategories.forEach((item, index) => {
-			const res = { label: item.name, value: item.id };
-			data = [...data, res];
-		});
-		props.service.forEach((item, index) => {
-			const res = { label: item.name, value: item.id };
-			services = [...services, res];
-		});
-		setServicesCategory(data);
-		// setServices(services);
-		setLoaded(true);
 	}, [props, loaded]);
 
 	useEffect(() => {
 		const getPatients = async () => {
-			setPatientsLoading(true);
 			const rs = await request(`patient/list`, 'GET', true);
 			const res = rs.map(patient => ({
 				value: patient.id,
@@ -43,8 +42,11 @@ const PharmNewRequest = props => {
 			setAllPatients(res);
 			setPatientsLoading(false);
 		};
-		getPatients();
-	}, []);
+
+		if (patientsLoading) {
+			getPatients();
+		}
+	}, [patientsLoading]);
 
 	return (
 		<PharmNewRequestComponent

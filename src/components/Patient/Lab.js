@@ -6,16 +6,14 @@ import { connect } from 'react-redux';
 import searchingGIF from '../../assets/images/searching.gif';
 import { notifyError } from '../../services/notify';
 import { getRequestByType } from './../../actions/patient';
-import Modal from 'react-bootstrap/Modal';
 import moment from 'moment';
-import Select from 'react-select';
 import ModalClinicalLab from './../Modals/ModalClinicalLab';
 
 const Lab = props => {
-	const [loaded, setLoaded] = useState(false);
-	const [dataLoaded, setDataLoaded] = useState(false);
+	const [dataLoaded, setDataLoaded] = useState(true);
 	const [showModal, setShowModal] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
+	// eslint-disable-next-line no-unused-vars
 	const [{ startDate, endDate }, setDate] = useState({
 		startDate: moment(Date.now())
 			.subtract(1, 'days')
@@ -32,8 +30,7 @@ const Lab = props => {
 	useEffect(() => {
 		const { patient, getRequestByType } = props;
 		const patient_id = patient && patient.id ? patient.id : '';
-		if (!loaded) {
-			setDataLoaded(true);
+		if (!dataLoaded) {
 			getRequestByType(patient_id, 'lab', startDate, endDate)
 				.then(response => {
 					setDataLoaded(false);
@@ -43,8 +40,7 @@ const Lab = props => {
 					notifyError(e.message || 'could not fetch lab request');
 				});
 		}
-		setLoaded(true);
-	}, [loaded, props]);
+	}, [endDate, dataLoaded, props, startDate]);
 
 	return (
 		<div className="col-sm-12">

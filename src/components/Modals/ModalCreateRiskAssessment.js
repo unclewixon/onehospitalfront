@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
+import { Checkbox } from 'antd';
 
 import {
 	renderTextInput,
 	renderTextArea,
 	request,
 } from '../../services/utilities';
-import { Checkbox } from 'antd';
 import { closeModals } from '../../actions/general';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
@@ -30,7 +30,8 @@ const plainOptions = [
 	'Prolonged labour > 24 hours',
 	'Uterine size < period of gestation',
 ];
-export class ModalCreateRiskAssessment extends Component {
+
+class ModalCreateRiskAssessment extends Component {
 	state = {
 		submitting: false,
 		previousPregnancyExperience: [],
@@ -71,11 +72,10 @@ export class ModalCreateRiskAssessment extends Component {
 			console.log(e);
 			notifyError(e.message || 'Submission of vital not successful');
 		}
-		// this.setState({ submitting: false });
 	};
 	render() {
-		const { submitting, previousPregnancyExperience } = this.state;
-		const { error, reset, handleSubmit } = this.props;
+		const { submitting } = this.state;
+		const { error, handleSubmit } = this.props;
 		return (
 			<div
 				className="onboarding-modal modal fade animated show"

@@ -1,15 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'reactn';
-
 import { useCallback, useEffect } from 'react';
+import moment from 'moment';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+
 import SSRStorage from '../../services/storage';
 import SelectRoomModal from '../../components/Modals/SelectRoomModal';
 import { socket } from '../../services/constants';
-import moment from 'moment';
 import { request } from '../../services/utilities';
-import { notifyError, notifySuccess } from '../../services/notify';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { notifyError } from '../../services/notify';
 import { viewAppointmentDetail } from '../../actions/general';
 import { toggleProfile } from '../../actions/user';
 import AppointmentTable from '../../components/Doctor/AppointmentTable';
@@ -22,43 +22,9 @@ function DoctorHome({ profile }) {
 	const [loading, setLoading] = useState(true);
 	const [activeRoom, setActiveRoom] = useState(null);
 	const [appointments, setAppointments] = useState([]);
+	const [listenning, setListenning] = useState(false);
 
-	useEffect(() => {
-		socket.on('new-appointment', res => {
-			console.log('new appointment message');
-			if (res.success) {
-				const appointment = res.appointment;
-				const today = moment().format('YYYY-MM-DD');
-				if (appointment.appointment_date === today) {
-					setAppointments([...appointments, appointment]);
-				}
-			}
-		});
-		socket.on('appointment-update', data => {
-			if (data.action === 1) {
-				getAppointments();
-			}
-		});
-	}, [appointments]);
-
-	const initModal = useCallback(async () => {
-		const room = await storage.getItem('ACTIVE:ROOM');
-		if (!room) {
-			setShowModal(true);
-		} else {
-			setActiveRoom(room);
-		}
-	}, [setShowModal]);
-
-	useEffect(() => {
-		initModal();
-	}, [initModal]);
-
-	useEffect(() => {
-		getAppointments();
-	}, []);
-
-	async function getAppointments() {
+	const getAppointments = useCallback(async () => {
 		try {
 			setLoading(true);
 			const res = await request(`front-desk/appointments/today`, 'GET', true);
@@ -70,7 +36,49 @@ function DoctorHome({ profile }) {
 			setLoading(false);
 			notifyError(e.message || 'could not fetch appointments');
 		}
-	}
+	}, [staff.id]);
+
+	useEffect(() => {
+		if (!listenning) {
+			setListenning(true);
+
+			socket.on('new-appointment', res => {
+				console.log('new appointment message');
+				if (res.success) {
+					const appointment = res.appointment;
+					const today = moment().format('YYYY-MM-DD');
+					if (appointment.appointment_date === today) {
+						setAppointments([...appointments, appointment]);
+					}
+				}
+			});
+
+			socket.on('appointment-update', data => {
+				if (data.action === 1) {
+					getAppointments();
+				}
+			});
+		}
+	}, [appointments, getAppointments, listenning]);
+
+	const initModal = useCallback(async () => {
+		const room = await storage.getItem('ACTIVE:ROOM');
+		if (!room) {
+			setShowModal(true);
+		} else {
+			setActiveRoom(room);
+		}
+	}, []);
+
+	useEffect(() => {
+		initModal();
+	}, [initModal]);
+
+	useEffect(() => {
+		if (loading) {
+			getAppointments();
+		}
+	}, [getAppointments, loading]);
 
 	const closeModal = room => {
 		setShowModal(false);
@@ -78,6 +86,7 @@ function DoctorHome({ profile }) {
 			setActiveRoom(room);
 		}
 	};
+
 	return (
 		<div className="content-i">
 			<div className="content-box">

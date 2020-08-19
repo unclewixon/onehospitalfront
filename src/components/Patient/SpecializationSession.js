@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-{
-	/* onChange={e => handleParamInputChange(e, index)} */
-}
 const SpeciliazationSession = ({
 	parameters,
 	parameterArray,
@@ -10,20 +7,17 @@ const SpeciliazationSession = ({
 	index,
 	removeParams,
 }) => {
-	const [specialization, setSpecialization] = useState('');
-	const [count, setCount] = useState(0);
+	// const [specialization, setSpecialization] = useState('');
+	// const [count, setCount] = useState(0);
 
-	const handleChange = e => {
-		if (e.target.name === 'specialization') {
-			setSpecialization(e.target.value);
-		} else {
-			setCount(e.target.value);
-		}
-	};
+	// const handleChange = e => {
+	// 	if (e.target.name === 'specialization') {
+	// 		setSpecialization(e.target.value);
+	// 	} else {
+	// 		setCount(e.target.value);
+	// 	}
+	// };
 
-	useEffect(() => {
-		console.log(parameters);
-	}, [parameters]);
 	return (
 		<div className="w-100 my-2 px-2">
 			<div className="pipeline-item">
@@ -75,13 +69,6 @@ const SpeciliazationSession = ({
 							}
 							min="0"
 							onChange={e => handleParamInputChange(e, index)}
-							defaultValue={
-								parameters &&
-								parameters[index] &&
-								parameters[index].sessionCount
-									? parameters[index].sessionCount
-									: 0
-							}
 						/>
 					</div>
 				</div>

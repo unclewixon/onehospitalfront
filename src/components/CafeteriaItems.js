@@ -49,7 +49,6 @@ const CafeteriaItems = props => {
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
-	const [loaded, setLoaded] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [filtering, setFiltering] = useState(false);
 	const [items, setItems] = useState([]);
@@ -187,37 +186,27 @@ const CafeteriaItems = props => {
 	};
 
 	useEffect(() => {
-		if (!loaded) {
+		if (!dataLoaded) {
 			props
 				.getAllCafeteriaCategory()
-				.then(response => {
-					setDataLoaded(true);
-				})
+				.then(_ => {})
 				.catch(e => {
-					setDataLoaded(true);
 					notifyError(e.message || 'could not fetch cafeterian category');
 				});
-		}
-		setLoaded(true);
-		console.log(props.cafeteriaCategory);
-	}, [edit, loaded, props, save]);
 
-	useEffect(() => {
-		if (!loaded) {
 			props
 				.getAllCafeteriaItem()
-				.then(response => {
-					setDataLoaded(true);
-				})
+				.then(_ => {})
 				.catch(e => {
-					setDataLoaded(true);
 					notifyError(e.message || 'could not fetch cafeterian category');
 				});
+
+			setDataLoaded(true);
+
+			setItems(props.cafeteriaItems);
+			console.log(props.cafeteriaItems);
 		}
-		setLoaded(true);
-		setItems(props.cafeteriaItems);
-		console.log(props.cafeteriaItems);
-	}, [edit, loaded, props, save]);
+	}, [dataLoaded, props]);
 
 	return (
 		<div className="content-i">

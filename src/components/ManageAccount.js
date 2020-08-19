@@ -29,18 +29,13 @@ const ManageAccount = props => {
 		id: '',
 		code: '',
 	};
-	const [
-		{ name, status, category, category_id, code, subCategory, subCategory_id },
-		setState,
-	] = useState(initialState);
-	// const [loading, setLoading] = useState(false);
+	// { name, status, category, category_id, code, subCategory, subCategory_id },
+	const [, setState] = useState(initialState);
+	// eslint-disable-next-line no-unused-vars
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
-	// const [data, getDataToEdit] = useState(null);
-	const [loaded, setLoaded] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [filtering, setFiltering] = useState(false);
 	const [items, setItems] = useState([]);
-	// const [catName, setCatName] = useState('');
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -163,38 +158,29 @@ const ManageAccount = props => {
 	};
 
 	useEffect(() => {
-		if (!loaded) {
+		if (!dataLoaded) {
 			props
 				.getAllCafeteriaInvCategory()
-				.then(response => {
-					setDataLoaded(true);
-				})
+				.then(response => {})
 				.catch(e => {
-					setDataLoaded(true);
 					notifyError(
 						e.message || 'could not fetch cafeteria inventory category'
 					);
 				});
-		}
-		setLoaded(true);
-		// console.log(props.cafeteriaInventory);
-	}, [edit, loaded, props, save]);
 
-	useEffect(() => {
-		if (!loaded) {
 			props
 				.getAllCafeteriaInventory()
-				.then(response => {
-					setDataLoaded(true);
-				})
+				.then(response => {})
 				.catch(e => {
-					setDataLoaded(true);
 					notifyError(e.message || 'could not fetch cafeteria inventory');
 				});
+
+			setDataLoaded(true);
+			// console.log(props.cafeteriaInventory);
+			setItems(props.cafeteriaInventory);
 		}
-		setLoaded(true);
-		setItems(props.cafeteriaInventory);
-	}, [edit, loaded, props, save]);
+	}, [dataLoaded, props]);
+
 	return (
 		<div className="content-i">
 			<div className="content-box p-0">

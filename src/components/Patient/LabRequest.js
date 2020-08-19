@@ -19,7 +19,6 @@ import {
 import { createLabRequest } from '../../actions/patient';
 
 const LabRequest = props => {
-	// const page = location.pathname.split('/').pop();
 	const { register, handleSubmit, setValue } = useForm({
 		defaultValues: {
 			service_center: 'lab',
@@ -77,17 +76,21 @@ const LabRequest = props => {
 
 	const structuredTest = () => {
 		const parameterObj = {};
+		// eslint-disable-next-line no-unused-vars
 		const parVals =
 			props && props.LabParameters && props.LabParameters.length
-				? props.LabParameters.map(par => {
+				? // eslint-disable-next-line array-callback-return
+				  props.LabParameters.map(par => {
 						parameterObj[par.id] = par;
 				  })
 				: [];
 
 		const testObj = {};
+		// eslint-disable-next-line no-unused-vars
 		const testVals =
 			props && props.LabTests && props.LabTests.length
-				? props.LabTests.map(test => {
+				? // eslint-disable-next-line array-callback-return
+				  props.LabTests.map(test => {
 						testObj[test.id] = test;
 				  })
 				: [];
@@ -115,17 +118,21 @@ const LabRequest = props => {
 
 	const structuredGroup = () => {
 		const parameterObj = {};
+		// eslint-disable-next-line no-unused-vars
 		const parVals =
 			props && props.LabParameters && props.LabParameters.length
-				? props.LabParameters.map(par => {
+				? // eslint-disable-next-line array-callback-return
+				  props.LabParameters.map(par => {
 						parameterObj[par.id] = par;
 				  })
 				: [];
 
 		const groupObj = {};
+		// eslint-disable-next-line no-unused-vars
 		const groupVals =
 			props && props.LabGroups && props.LabGroups.length
-				? props.LabGroups.map(group => {
+				? // eslint-disable-next-line array-callback-return
+				  props.LabGroups.map(group => {
 						groupObj[group.id] = group;
 				  })
 				: [];
@@ -230,8 +237,9 @@ const LabRequest = props => {
 			getAllLabTests();
 			getAllLabTestCategories();
 			getAllLabTestParameters();
+
+			setLoaded(true);
 		}
-		setLoaded(true);
 	}, [loaded, props]);
 
 	return (

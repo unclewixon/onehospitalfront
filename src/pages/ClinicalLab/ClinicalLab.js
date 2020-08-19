@@ -1,6 +1,7 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+
 import ClinicalLabItem from '../../components/ClinicalLabItem';
 import { request } from '../../services/utilities';
 import { patientAPI } from '../../services/constants';
@@ -34,6 +35,7 @@ class ClinicalLab extends Component {
 		try {
 			this.setState({ ...this.state, loading: true });
 			let today = moment().format('YYYY-MM-DD');
+			console.log(today);
 			const rs = await request(
 				patientId
 					? `${patientAPI}/${patientId}/request/lab?startDate=${startDate}=&endDate=${endDate}`
@@ -90,9 +92,8 @@ class ClinicalLab extends Component {
 	};
 
 	render() {
-		const { location, clinicalLab } = this.props;
+		const { clinicalLab } = this.props;
 		const { loading, filtering } = this.state;
-		const page = location.pathname.split('/').pop();
 
 		const filteredNames =
 			this.props && this.props.clinicalLab && this.props.clinicalLab.length
@@ -118,7 +119,7 @@ class ClinicalLab extends Component {
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
-					<h6 className="element-header">Lab</h6>
+					<h6 className="element-header">Clinical Lab</h6>
 					<div className="row">
 						<div className="col-sm-12">
 							<div className="element-content">
