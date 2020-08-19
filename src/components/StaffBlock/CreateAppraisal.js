@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import {
 	Field,
 	reduxForm,
-	SubmissionError,
+	// SubmissionError,
 	reset,
 	change,
 	formValueSelector,
@@ -18,7 +18,7 @@ import {
 	confirmAction,
 } from '../../services/utilities';
 import { appraisalAPI } from '../../services/constants';
-import { notifySuccess } from '../../services/notify';
+import { notifySuccess, notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
 import { setPerformancePeriod } from '../../actions/hr';
 
@@ -156,36 +156,16 @@ class CreateAppraisal extends Component {
 				setTimeout(function() {
 					$('.slide-pane__content').scrollTop(0);
 				}, 500);
-				throw new SubmissionError({
-					_error: 'could not create appraisal',
-				});
+				notifyError('could not create appraisal');
 			}
 		} else {
 			setTimeout(function() {
 				$('.slide-pane__content').scrollTop(0);
 			}, 500);
-			throw new SubmissionError({
-				_error: 'invalid department',
-			});
+			notifyError('invalid department');
+			this.setState({ submitting: false });
 		}
 	};
-
-	// DeleteRole = role => async () => {
-	// 	this.setState({ roleID: role.id });
-	// 	try {
-	// 		const rs = await request(
-	// 			`settings/roles/${role.id}`,
-	// 			'DELETE',
-	// 			true
-	// 		);
-	// 		this.setState({ edit: false, previousRole: null });
-	// 		this.props.delete_role(role);
-	// 		notifySuccess('Role deleted');
-	// 	} catch (error) {
-	// 		console.log(error);
-	// 		notifyError('Error deleting role');
-	// 	}
-	// };
 
 	lineManager = data => async () => {
 		try {
@@ -438,7 +418,7 @@ const mapStateToProps = (state, ownProps) => {
 			other_factor: 0,
 			sum_total: 0,
 		},
-		staff: state.user.staff,
+		staff: state.user.profile,
 		performance: parseInt(_performance, 10),
 		work_attitude: parseInt(_workAttitude, 10),
 		other_factor: parseInt(_otherFactor, 10),
