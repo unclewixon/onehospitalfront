@@ -23,14 +23,14 @@ export class Enrollment extends Component {
 							className={`btn btn-primary ${
 								path === 'all-enrol' ? 'btn-outline-primary' : ''
 							}`}
-							to="/antennatal/all-enrol">
+							to="/antenatal/all-enrol">
 							All Enrollment
 						</Link>
 						<Link
 							className={`btn btn-primary ${
 								path === 'enrol' ? 'btn-outline-primary' : ''
 							}`}
-							to="/antennatal/enrol">
+							to="/antenatal/enrol">
 							New Enrollment
 						</Link>
 					</div>

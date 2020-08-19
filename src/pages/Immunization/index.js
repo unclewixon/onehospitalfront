@@ -11,9 +11,9 @@ const CreateImmunization = lazy(() =>
 );
 export class index extends Component {
 	render() {
-		const { match, location, staff } = this.props;
+		const { match, location } = this.props;
 		const page = location.pathname.split('/').pop();
-		const department = staff?.details?.department?.name;
+		// const department = staff?.details?.department?.name;
 		return (
 			<>
 				<div className="content-i">
@@ -79,9 +79,9 @@ export class index extends Component {
 							</div>
 						</div>
 					</div>
-					<div className="content-panel compact">
+					{/* <div className="content-panel compact">
 						<Queue department={department} />
-					</div>
+					</div> */}
 				</div>
 			</>
 		);

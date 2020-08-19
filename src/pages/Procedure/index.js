@@ -17,10 +17,10 @@ class Procedure extends Component {
 		alert('I am toSee Details this guy');
 	};
 	render() {
-		const { match, location, staff } = this.props;
+		const { match, location } = this.props;
 		const page = location.pathname.split('/').pop();
 
-		const department = staff?.details?.department?.name;
+		// const department = staff?.details?.department?.name;
 
 		return (
 			<div className="content-i">
@@ -28,7 +28,7 @@ class Procedure extends Component {
 					<div className="row">
 						<div className="col-sm-12">
 							<div className="element-wrapper">
-								<h6 className="element-header">Dentistry</h6>
+								<h6 className="element-header">Procedure</h6>
 								<div className="row mt-2 mb-4">
 									<Link
 										className={`mr-2 btn btn-primary btn-sm  ${
@@ -84,9 +84,9 @@ class Procedure extends Component {
 						</div>
 					</div>
 				</div>
-				<div className="content-panel compact">
+				{/* <div className="content-panel compact">
 					<Queue department={department} />
-				</div>
+				</div> */}
 			</div>
 		);
 	}

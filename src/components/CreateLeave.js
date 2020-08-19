@@ -201,7 +201,7 @@ const CreateLeave = ({
 const mapStateToProps = state => {
 	return {
 		leave_categories: state.settings.leave_categories,
-		staff: state.user.staff,
+		staff: state.user.profile,
 	};
 };
 export default withRouter(
