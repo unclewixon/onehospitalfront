@@ -2,32 +2,33 @@
 import React, { useEffect, useState } from 'react';
 import SunEditor from 'suneditor-react';
 import { connect } from 'react-redux';
-import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
 import Select from 'react-select';
-import {
-	consultationAPI,
-	stockByCategoryAPI,
-} from '../../../services/constants';
-
-import {
-	renderSelect,
-	renderTextArea,
-	renderTextInput,
-	request,
-} from '../../../services/utilities';
 import {
 	Field,
 	formValueSelector,
 	reduxForm,
 	SubmissionError,
 } from 'redux-form';
+import { useDispatch } from 'react-redux';
+
+import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
+import {
+	consultationAPI,
+	stockByCategoryAPI,
+} from '../../../services/constants';
+import {
+	renderSelect,
+	renderTextArea,
+	renderTextInput,
+	request,
+} from '../../../services/utilities';
 import searchingGIF from '../../../assets/images/searching.gif';
 import { notifyError, notifySuccess } from '../../../services/notify';
 import { closeModals } from '../../../actions/general';
 
 const selector = formValueSelector('consumableForm');
 let Consumable = props => {
-	const { previous, encounterData, encounterId } = props;
+	const { previous, encounterData } = props;
 
 	let [data, setData] = useState([]);
 	let [loading, setLoading] = useState(true);
@@ -40,9 +41,12 @@ let Consumable = props => {
 		setSummary(e);
 	};
 
+	const dispatch = useDispatch();
+
 	const listConsumable = async () => {
 		try {
-			const rs = await request(`${stockByCategoryAPI}/Consumable`, 'GET', true);
+			const url = `${stockByCategoryAPI}/Consumable`;
+			const rs = await request(url, 'GET', true);
 			setStock(rs);
 			setLoading(false);
 		} catch (e) {
@@ -60,27 +64,27 @@ let Consumable = props => {
 	const remove = index => {
 		setData([...data.slice(0, index), ...data.slice(index + 1)]);
 	};
+
 	const onSubmit = async data => {
+		const { patient, appointmentId } = props.encounterInfo;
+
 		encounterData.consumable = data || [];
 		encounterData.consumable.instruction = summary;
-		encounterData.appointment_id = encounterId;
+		encounterData.appointment_id = appointmentId;
 
 		props.loadEncounterData(encounterData);
 
 		console.log(encounterData);
+		console.log(JSON.stringify(encounterData));
 		// dispatch(props.next);
 		setLoading(true);
-		const { patient } = props;
-		try {
-			await request(
-				`${consultationAPI}${patient.id}/save`,
-				'POST',
-				true,
-				encounterData
-			);
 
-			//history.push('/cafeteria/items');
-			props.closeModals(true);
+		try {
+			const url = `${consultationAPI}${patient.id}/save`;
+			const rs = await request(url, 'POST', true, encounterData);
+			console.log(rs);
+			// dispatch(updateAppointment(data.appointment));
+			dispatch(closeModals());
 			notifySuccess('Consultation created successfully');
 			setLoading(false);
 		} catch (error) {
@@ -89,6 +93,7 @@ let Consumable = props => {
 			setLoading(false);
 		}
 	};
+
 	return (
 		<form onSubmit={props.handleSubmit(onSubmit)}>
 			{loading ? (
@@ -238,9 +243,8 @@ Consumable = reduxForm({
 const mapStateToProps = (state, ownProps) => {
 	return {
 		encounterData: state.patient.encounterData,
-		encounterId: state.general.encounterId,
 		encounterForm: state.patient.encounterForm,
-		patient: state.user.patient,
+		encounterInfo: state.general.encounterInfo,
 		value: selector(state, 'consumable'),
 	};
 };

@@ -49,6 +49,7 @@ export const StepOneSchema = object({
 		.email()
 		.required('Email address is required'),
 });
+
 export const StepTwoSchema = object({
 	job_title: string().required('Job title is required'),
 	marital_status: string().required('Marital status is required'),
@@ -61,6 +62,8 @@ export const StepTwoSchema = object({
 	next_of_kin: string().required('This field is required'),
 	next_of_kin_contact_no: string().required('This field is required'),
 });
+
+const storage = new SSRStorage();
 
 function ModalCreateStaff({
 	countries,
@@ -212,7 +215,7 @@ function ModalCreateStaff({
 												formData.append(key, form[key]);
 											}
 										}
-										const user = await new SSRStorage().getItem(TOKEN_COOKIE);
+										const user = await storage.getItem(TOKEN_COOKIE);
 										const jwt = `Bearer ${user.token}`;
 										let headers = { Authorization: jwt };
 										if (staff) {

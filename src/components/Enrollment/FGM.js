@@ -1,7 +1,7 @@
 import React from 'react';
-import { renderTextInput, renderSelect } from '../../services/utilities';
-
 import { Field } from 'redux-form';
+
+import { renderTextInput, renderSelect } from '../../services/utilities';
 
 const fgmType = [
 	{

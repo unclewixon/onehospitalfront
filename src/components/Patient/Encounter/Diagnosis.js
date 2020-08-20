@@ -45,7 +45,11 @@ let Diagnosis = props => {
 			return [];
 		}
 		let val = inputValue.toUpperCase();
-		const res = await request(`${diagnosisAPI}/search?q=${val}`, 'GET', true);
+		const res = await request(
+			`${diagnosisAPI}/search?q=${val}&diagnosisType=10`,
+			'GET',
+			true
+		);
 		return res;
 	};
 
@@ -82,7 +86,7 @@ let Diagnosis = props => {
 										<div className="col-md-6">
 											<label>Diagnosis Data</label>
 										</div>
-										<div className="col-md-6">
+										<div className="col-md-5">
 											<div className="form-group clearfix diagnosis-type">
 												<div className="float-right ml-2">
 													<input

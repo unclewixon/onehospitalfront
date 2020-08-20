@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 import { closeModals } from '../../actions/general';
 
@@ -65,10 +66,10 @@ class ModalViewAppointment extends Component {
 																	</td>
 																	<td className="text-right">
 																		<div className="value text-success">
-																			{
+																			{moment(
 																				view_appointment_detail.patient
 																					.date_of_birth
-																			}
+																			).format('D-MMM-YYYY')}
 																		</div>
 																	</td>
 																</tr>

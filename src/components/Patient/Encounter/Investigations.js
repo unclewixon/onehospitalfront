@@ -21,7 +21,8 @@ import { notifyError } from '../../../services/notify';
 import { request } from '../../../services/utilities';
 
 const Investigations = props => {
-	const { previous, patient, encounterData, encounterForm } = props;
+	const { previous, encounterData, encounterForm } = props;
+
 	const [labCombos, setLabCombos] = useState(null);
 	const [labTests, setLabTests] = useState(null);
 	const [category, setCategory] = useState('');
@@ -216,6 +217,8 @@ const Investigations = props => {
 	}, [props, loaded]);
 
 	const onSubmit = async data => {
+		const { patient } = props.encounterInfo;
+
 		encounterForm.investigations = data;
 		props.loadEncounterForm(encounterForm);
 
@@ -587,12 +590,12 @@ const mapStateToProps = state => {
 		LabCategories: state.settings.lab_categories,
 		LabTests: state.settings.lab_tests,
 		LabGroups: state.settings.lab_groups,
-		patient: state.user.patient,
 		LabParameters: state.settings.lab_parameters,
 		service: state.settings.services,
 		ServiceCategories: state.settings.service_categories,
 		encounterData: state.patient.encounterData,
 		encounterForm: state.patient.encounterForm,
+		encounterInfo: state.general.encounterInfo,
 	};
 };
 export default connect(mapStateToProps, {

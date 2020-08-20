@@ -13,7 +13,7 @@ import { toggleProfile } from '../../actions/user';
 import Tooltip from 'antd/lib/tooltip';
 import Button from '../common/Button';
 import { notifyError, notifySuccess } from '../../services/notify';
-import { Badge } from '../common';
+// import { Badge } from '../common';
 
 const AppointmentTable = ({
 	appointments,
@@ -23,7 +23,7 @@ const AppointmentTable = ({
 	toggleProfile,
 	openEncounter,
 }) => {
-	const [updating, setUpdating] = useState(false);
+	const [updating, setUpdating] = useState(null);
 
 	const showProfile = patient => {
 		const info = { patient, type: 'patient' };
@@ -34,24 +34,20 @@ const AppointmentTable = ({
 		openEncounter(true, { appointmentId, patient });
 	};
 
-	const updateStatus = ({ index, id, action }) => {
-		setUpdating(true);
-		request('front-desk/appointments/accept-decline', 'PATCH', true, {
-			appointmentId: id,
-			action,
-		})
-			.then(res => {
-				setUpdating(false);
-				if (res.success) {
-					notifySuccess('Front desk has been notified');
-				}
-			})
-			.catch(e => {
-				setUpdating(false);
-				notifyError(
-					'Something went wrong. Unable to update appointment status'
-				);
-			});
+	const updateStatus = async ({ id, action }) => {
+		try {
+			setUpdating(id);
+			const data = { appointmentId: id, action };
+			const url = 'front-desk/appointments/accept-decline';
+			const res = await request(url, 'PATCH', true, data);
+			setUpdating(null);
+			if (res.success) {
+				notifySuccess('Front desk has been notified');
+			}
+		} catch (e) {
+			setUpdating(null);
+			notifyError('Something went wrong. Unable to update appointment status');
+		}
 	};
 
 	const confirm = data => {
@@ -81,12 +77,13 @@ const AppointmentTable = ({
 							<img alt="searching" src={searchingGIF} />
 						</td>
 					</tr>
-				) : appointments && appointments.length ? (
+				) : appointments && appointments.length > 0 ? (
 					appointments.map((appointment, i) => {
+						console.log(appointment);
 						return (
 							<tr key={i}>
 								<td className="nowrap" hidden={today}>
-									{formatDateStr(appointment.createdAt, 'DD-MM-YYYY')}
+									{formatDateStr(appointment.createdAt, 'DD-MMM-YYYY')}
 								</td>
 								<td>
 									{`${appointment?.patient?.surname} ${appointment?.patient?.other_names}`}
@@ -98,35 +95,25 @@ const AppointmentTable = ({
 									</span>
 								</td>
 								<td>
-									{/* <span className="status-pill smaller green"></span> */}
-									{
-										{
-											0: (
-												<Button
-													isSubmitting={updating}
-													isValid={!updating}
-													onClick={() =>
-														confirm({ index: i, id: appointment.id, action: 1 })
-													}
-													className="btn btn-sm btn-success"
-													value="Accept"
-												/>
-											),
-											1: (
-												<Button
-													onClick={() =>
-														doOpenEncounter(
-															appointment.id,
-															appointment?.patient
-														)
-													}
-													className="btn btn-sm btn-info"
-													value="Start Encounter"
-												/>
-											),
-											2: <Badge variant="error">No </Badge>,
-										}[appointment.doctorStatus]
-									}
+									{appointment.doctorStatus === 0 ? (
+										<Button
+											isSubmitting={updating && updating === appointment.id}
+											isValid={!updating}
+											onClick={() => confirm({ id: appointment.id, action: 1 })}
+											className="btn btn-sm btn-success"
+											value="Accept"
+										/>
+									) : (
+										!appointment.encounter && (
+											<Button
+												onClick={() =>
+													doOpenEncounter(appointment.id, appointment?.patient)
+												}
+												className="btn btn-sm btn-info"
+												value="Start Encounter"
+											/>
+										)
+									)}
 								</td>
 								<td className="row-actions">
 									<Tooltip title="View Appointment Details">

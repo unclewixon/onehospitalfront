@@ -1,6 +1,7 @@
 import React from 'react';
-import { renderSelect, renderTextInput } from '../../services/utilities';
 import { Field } from 'redux-form';
+
+import { renderSelect, renderTextInput } from '../../services/utilities';
 
 const maritalStatus = [
 	{
@@ -26,7 +27,7 @@ export const SocialHistory = () => {
 					data={maritalStatus}
 				/>
 			</div>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="occupation"
 					name="occupation"
@@ -37,7 +38,7 @@ export const SocialHistory = () => {
 				/>
 			</div>
 
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="homeEnvironment"
 					name="homeEnvironment"
@@ -47,7 +48,7 @@ export const SocialHistory = () => {
 					placeholder="Enter home environment"
 				/>
 			</div>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="dailyRoutine"
 					name="dailyRoutine"
@@ -57,7 +58,7 @@ export const SocialHistory = () => {
 					placeholder="Enter daily routine"
 				/>
 			</div>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="dietaryPattern"
 					name="dietaryPattern"
@@ -68,7 +69,7 @@ export const SocialHistory = () => {
 				/>
 			</div>
 
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="exercisePattern"
 					name="exercisePattern"
@@ -79,7 +80,7 @@ export const SocialHistory = () => {
 				/>
 			</div>
 
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="sleepPattern"
 					name="sleepPattern"
@@ -90,7 +91,7 @@ export const SocialHistory = () => {
 				/>
 			</div>
 
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="coffeConsumption"
 					name="coffeConsumption"
@@ -101,7 +102,7 @@ export const SocialHistory = () => {
 				/>
 			</div>
 
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="tobaccoUse"
 					name="tobaccoUse"
@@ -112,7 +113,7 @@ export const SocialHistory = () => {
 				/>
 			</div>
 
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="alcoholUse"
 					name="alcoholUse"
@@ -122,7 +123,7 @@ export const SocialHistory = () => {
 					placeholder="Enter alcohol use"
 				/>
 			</div>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="drugUse"
 					name="drugUse"

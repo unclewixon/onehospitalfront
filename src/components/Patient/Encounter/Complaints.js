@@ -87,7 +87,6 @@ const Complaints = props => {
 const mapStateToProps = state => {
 	return {
 		encounterData: state.patient.encounterData,
-		encounterId: state.general.encounterId,
 	};
 };
 

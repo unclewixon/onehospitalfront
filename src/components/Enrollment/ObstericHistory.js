@@ -1,11 +1,12 @@
 import React from 'react';
+import DatePicker from 'react-datepicker';
+import { Field } from 'redux-form';
+
 import {
 	renderSelect,
 	renderTextInput,
 	renderTextArea,
 } from '../../services/utilities';
-import DatePicker from 'react-datepicker';
-import { Field } from 'redux-form';
 
 const sex = [
 	{
@@ -17,6 +18,7 @@ const sex = [
 		name: 'female',
 	},
 ];
+
 export const ObstericHistory = props => {
 	const { dob, setDate } = props;
 	return (

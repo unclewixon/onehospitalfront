@@ -27,7 +27,6 @@ const PlanForm = props => {
 	const {
 		previous,
 		encounterData,
-		patient,
 		loadInvCategories,
 		loadInventories,
 		inventories,
@@ -184,6 +183,8 @@ const PlanForm = props => {
 
 	const onSubmit = async data => {
 		encounterForm.plan = data;
+		const { patient } = props.encounterInfo;
+
 		props.loadEncounterForm(encounterForm);
 		let regiments = data.regimens;
 		const requestData = regiments
@@ -830,12 +831,12 @@ const PlanForm = props => {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		categories: state.inventory.categories,
-		patient: state.user.patient,
 		inventories: state.inventory.inventories,
 		service: state.settings.services,
 		ServiceCategories: state.settings.service_categories,
 		encounterData: state.patient.encounterData,
 		encounterForm: state.patient.encounterForm,
+		encounterInfo: state.general.encounterInfo,
 	};
 };
 

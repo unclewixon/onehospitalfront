@@ -1,14 +1,14 @@
 import React from 'react';
-
-import { renderTextInput } from '../../services/utilities';
 import { Field } from 'redux-form';
 import DatePicker from 'react-datepicker';
+
+import { renderTextInput } from '../../services/utilities';
 
 export const InitialAssessment = props => {
 	const { dom, setDom } = props;
 	return (
 		<>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="initialMenarche"
 					name="initialMenarche"
@@ -18,7 +18,7 @@ export const InitialAssessment = props => {
 					placeholder="Enter menarche"
 				/>
 			</div>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="initialMenstralCycle"
 					name="initialMenstralCycle"
@@ -29,7 +29,7 @@ export const InitialAssessment = props => {
 				/>
 			</div>
 
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<div className="form-group">
 					<label>Date of movement</label>
 					<div className="custom-date-input">
@@ -48,7 +48,7 @@ export const InitialAssessment = props => {
 					</div>
 				</div>
 			</div>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="w_r"
 					name="w_r"
@@ -59,7 +59,7 @@ export const InitialAssessment = props => {
 				/>
 			</div>
 
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="initHeight"
 					name="initHeight"
@@ -69,7 +69,7 @@ export const InitialAssessment = props => {
 					placeholder="Enter height"
 				/>
 			</div>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="initWeight"
 					name="initWeight"
@@ -80,7 +80,7 @@ export const InitialAssessment = props => {
 				/>
 			</div>
 
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="height_of_fundus"
 					name="height_of_fundus"
@@ -91,7 +91,7 @@ export const InitialAssessment = props => {
 				/>
 			</div>
 
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="engaged"
 					name="engaged"

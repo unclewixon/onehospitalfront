@@ -54,6 +54,7 @@ const checkStatus = async response => {
 		const err = JSON.parse(message);
 		throw Object.freeze({ message: err.message || err.error });
 	}
+
 	return response;
 };
 
@@ -288,6 +289,7 @@ export const confirmAction = (action, payload, alertText, alertHead) => {
 				action(payload);
 				onClose();
 			};
+
 			return (
 				<div className="custom-ui text-center">
 					<h1 className="">{alertHead ? alertHead : 'Are you sure?'}</h1>
@@ -547,13 +549,17 @@ export const calculateAge = dob => {
 	return Math.abs(age_dt.getUTCFullYear() - 1970);
 };
 
-// export const getAge = dateString => {
-// 	let today = new Date();
-// 	let birthDate = new Date(dateString);
-// 	let age = today.getFullYear() - birthDate.getFullYear();
-// 	let m = today.getMonth() - birthDate.getMonth();
-// 	if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-// 		age--;
-// 	}
-// 	return age;
-// };
+export const getAge = dob => {
+	if (!dob) return 0;
+
+	const date = moment(dob);
+
+	const years = moment().diff(date, 'years', false);
+	const days = moment().diff(date.add(years, 'years'), 'days', false);
+
+	if (years === 0) {
+		return `${days} days`;
+	}
+
+	return `${years}years ${days}days`;
+};

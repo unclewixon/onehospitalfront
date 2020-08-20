@@ -1,12 +1,12 @@
 import React from 'react';
-import { renderTextInput, renderTextArea } from '../../services/utilities';
-
 import { Field } from 'redux-form';
+
+import { renderTextInput, renderTextArea } from '../../services/utilities';
 
 export const PhysicalExam = () => {
 	return (
 		<>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="codema"
 					name="codema"
@@ -16,7 +16,7 @@ export const PhysicalExam = () => {
 					placeholder="Enter codema"
 				/>
 			</div>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="breast"
 					name="breast"
@@ -26,7 +26,7 @@ export const PhysicalExam = () => {
 					placeholder="Enter breast"
 				/>
 			</div>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="goitre"
 					name="goitre"
@@ -36,7 +36,7 @@ export const PhysicalExam = () => {
 					placeholder="Enter Goitre"
 				/>
 			</div>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="teeth"
 					name="teeth"
@@ -47,7 +47,7 @@ export const PhysicalExam = () => {
 				/>
 			</div>
 
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="nutrition"
 					name="nutrition"
@@ -57,7 +57,7 @@ export const PhysicalExam = () => {
 					placeholder="Nutrition"
 				/>
 			</div>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="anemia"
 					name="anemia"
@@ -68,7 +68,7 @@ export const PhysicalExam = () => {
 				/>
 			</div>
 
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="cvs"
 					name="cvs"
@@ -78,7 +78,7 @@ export const PhysicalExam = () => {
 					placeholder="Enter CVS"
 				/>
 			</div>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="physicalExamComment"
 					name="physicalExamComment"

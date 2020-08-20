@@ -127,6 +127,7 @@ class OpenEncounter extends Component {
 
 	render() {
 		const { patient } = this.props.encounterInfo;
+
 		const { eIndex, dropdown } = this.state;
 		const current = encounters[eIndex];
 
@@ -144,7 +145,7 @@ class OpenEncounter extends Component {
 							aria-label="Close"
 							className="close"
 							type="button"
-							onClick={() => this.props.closeModals(false)}>
+							onClick={() => this.props.closeModals()}>
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="layout-w flex-column">
@@ -152,6 +153,7 @@ class OpenEncounter extends Component {
 								dropdown={dropdown}
 								patient={patient}
 								toggleDropdown={this.toggleDropdown}
+								noEdits={true}
 							/>
 							<EncounterMenu
 								profile={false}
@@ -180,7 +182,6 @@ class OpenEncounter extends Component {
 
 const mapStateToProps = (state, ownProps) => {
 	return {
-		// patient: state.user.patient,
 		encounterInfo: state.general.encounterInfo,
 	};
 };

@@ -1,113 +1,108 @@
 import React, { useEffect, useState } from 'react';
-import { reviewOfSystem } from '../../../services/constants';
 import Select from 'react-select';
-import { connect, useDispatch } from 'react-redux';
-import { Controller, useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { reviewOfSystem } from '../../../services/constants';
 import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
 
-const ReviewOfSystem = props => {
-	const [selected, setSelected] = useState();
+const ReviewOfSystem = ({ next, previous }) => {
+	const [system, setSystem] = useState(null);
 	const [loaded, setLoaded] = useState(false);
-	const { encounterData, previous, encounterForm } = props;
-	// const [selectedOption, setSelectedOption] = useState([]);
-	const defaultValues = {
-		system: encounterForm.reviewOfSystem?.system,
-		selectedSystem: encounterForm.reviewOfSystem?.selectedSystem,
-	};
-	const { register, handleSubmit, control } = useForm({
-		defaultValues,
-	});
+	const [options, setOptions] = useState([]);
+
+	const encounterData = useSelector(state => state.patient.encounterData);
+	const encounterForm = useSelector(state => state.patient.encounterForm);
 
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (!loaded) {
-			setSelected(encounterForm.reviewOfSystem?.system);
+			setSystem(encounterForm?.reviewOfSystem?.system);
+			setOptions(encounterData?.reviewOfSystem);
 			setLoaded(true);
 		}
-	}, [encounterForm.reviewOfSystem, loaded]);
+	}, [encounterData, encounterForm, loaded]);
 
-	const handleChange = e => {
-		setSelected(e);
+	const handleChange = e => setSystem(e);
+
+	const onChecked = e => {
+		const value = e.target.value;
+		const selected = options.find(o => o === value);
+		if (selected) {
+			const filtered = options.filter(o => o !== value);
+			setOptions(filtered);
+		} else {
+			setOptions([...options, value]);
+		}
 	};
 
-	const onSubmit = async values => {
-		encounterData.reviewOfSystem = values.selectedSystem || [];
-		encounterForm.reviewOfSystem = values;
-		props.loadEncounterForm(encounterForm);
-		props.loadEncounterData(encounterData);
-		dispatch(props.next);
+	const onSubmit = () => {
+		encounterData.reviewOfSystem = options || [];
+		encounterForm.reviewOfSystem = { system };
+		dispatch(loadEncounterForm(encounterForm));
+		dispatch(loadEncounterData(encounterData));
+		next();
 	};
 
 	const divStyle = {
-		height: '500px',
+		minHeight: '180px',
 	};
+
 	return (
-		<div className="form-block encounter" style={divStyle}>
-			<form onSubmit={handleSubmit(onSubmit)}>
+		<div className="form-block encounter">
+			<div style={divStyle}>
 				<div className="row">
 					<div className="col-sm-12">
 						<div className="form-group">
-							<Controller
-								as={<Select options={reviewOfSystem} />}
-								control={control}
-								//rules={{ required: true }}
-								onChange={([selected]) => {
-									handleChange(selected);
-									return selected;
-								}}
-								name="system"
-								//defaultValue=""
+							<Select
+								options={reviewOfSystem}
+								defaultValue={system}
+								onChange={e => handleChange(e)}
+								value={system}
 							/>
 						</div>
 					</div>
 				</div>
-				{selected && (
+				{system && (
 					<div className="row">
 						<div className="col-sm-12">
 							<div className="form-group">
-								<label>{selected.label}</label>
-								{selected.children.map((option, i) => (
-									<div key={i}>
-										<label key={i}>
-											<input
-												type="checkbox"
-												name="selectedSystem"
-												className="form-control"
-												ref={register}
-												value={option}
-											/>
-											{option}
-										</label>
-									</div>
-								))}
+								<label>{system.label}</label>
+								{system.children.map((option, i) => {
+									const selected = options.find(o => o === option);
+									return (
+										<div key={i}>
+											<label>
+												<input
+													type="checkbox"
+													name="selectedSystem"
+													className="form-control"
+													value={option}
+													checked={!!selected}
+													onChange={e => onChecked(e)}
+												/>
+												{option}
+											</label>
+										</div>
+									);
+								})}
 							</div>
 						</div>
 					</div>
 				)}
-				<div className="row mt-5">
-					<div className="col-sm-12 d-flex ant-row-flex-space-between">
-						<button className="btn btn-primary" onClick={previous}>
-							Previous
-						</button>
-						<button className="btn btn-primary" type="submit">
-							Next
-						</button>
-					</div>
+			</div>
+			<div className="row mt-5">
+				<div className="col-sm-12 d-flex ant-row-flex-space-between">
+					<button className="btn btn-primary" onClick={() => previous()}>
+						Previous
+					</button>
+					<button className="btn btn-primary" onClick={() => onSubmit()}>
+						Next
+					</button>
 				</div>
-			</form>
+			</div>
 		</div>
 	);
 };
 
-const mapStateToProps = state => {
-	return {
-		encounterData: state.patient.encounterData,
-		encounterForm: state.patient.encounterForm,
-	};
-};
-
-export default connect(mapStateToProps, {
-	loadEncounterData,
-	loadEncounterForm,
-})(ReviewOfSystem);
+export default ReviewOfSystem;

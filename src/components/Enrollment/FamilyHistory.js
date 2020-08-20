@@ -6,7 +6,7 @@ import { renderTextInput } from '../../services/utilities';
 export const FamilyHistory = () => {
 	return (
 		<>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="childHealthHistory"
 					name="childHealthHistory"
@@ -17,7 +17,7 @@ export const FamilyHistory = () => {
 				/>
 			</div>
 
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="adultHealthHistory"
 					name="adultHealthHistory"
@@ -27,7 +27,7 @@ export const FamilyHistory = () => {
 					placeholder="Enter Child  health history"
 				/>
 			</div>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="hereditaryDisease"
 					name="hereditaryDisease"
@@ -37,7 +37,7 @@ export const FamilyHistory = () => {
 					placeholder="Enter Hereditary Disease"
 				/>
 			</div>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="motherHealthStatus"
 					name="motherHealthStatus"
@@ -48,7 +48,7 @@ export const FamilyHistory = () => {
 				/>
 			</div>
 
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="motherAgeOfDeath"
 					name="motherAgeOfDeath"
@@ -58,7 +58,7 @@ export const FamilyHistory = () => {
 					placeholder="Enter Mother's age of death"
 				/>
 			</div>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="motherCauseOfDeath"
 					name="motherCauseOfDeath"
@@ -69,7 +69,7 @@ export const FamilyHistory = () => {
 				/>
 			</div>
 
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="fatherHealthStatus"
 					name="fatherHealthStatus"
@@ -80,7 +80,7 @@ export const FamilyHistory = () => {
 				/>
 			</div>
 
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="fatherAgeOfDeath"
 					name="fatherAgeOfDeath"
@@ -90,7 +90,7 @@ export const FamilyHistory = () => {
 					placeholder="Enter father's age of death"
 				/>
 			</div>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="fatherCauseOfDeath"
 					name="fatherCauseOfDeath"
@@ -101,7 +101,7 @@ export const FamilyHistory = () => {
 				/>
 			</div>
 
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="siblingHealthStatus"
 					name="siblingHealthStatus"
@@ -112,7 +112,7 @@ export const FamilyHistory = () => {
 				/>
 			</div>
 
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="siblingAgeOfDeath"
 					name="siblingAgeOfDeath"
@@ -122,7 +122,7 @@ export const FamilyHistory = () => {
 					placeholder="Enter sibling(s) age of death"
 				/>
 			</div>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="siblingCauseOfDeath"
 					name="siblingCauseOfDeath"

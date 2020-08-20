@@ -24,7 +24,8 @@ const Allergies = props => {
 	const [queried, setQueried] = useState(false);
 
 	const dispatch = useDispatch();
-	let { previous, patient, encounterData, encounterForm } = props;
+
+	let { previous, encounterData, encounterForm } = props;
 
 	let [data, setData] = useState([]);
 	const defaultValues = {
@@ -61,6 +62,8 @@ const Allergies = props => {
 	};
 
 	const fetchAllergies = async () => {
+		const { patient } = props.encounterInfo;
+
 		setLoaded(true);
 		setQueried(true);
 		try {
@@ -295,10 +298,10 @@ const Allergies = props => {
 
 const mapStateToProps = (state, ownProps) => {
 	return {
-		patient: state.user.patient,
 		allergiesProp: state.patient.allergies,
 		encounterData: state.patient.encounterData,
 		encounterForm: state.patient.encounterForm,
+		encounterInfo: state.general.encounterInfo,
 	};
 };
 export default connect(mapStateToProps, {

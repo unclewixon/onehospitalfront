@@ -15,9 +15,10 @@ class Encounters extends Component {
 		loading: false,
 		canView: false,
 	};
-	doOpenEncounter = appointment => {
+
+	doOpenEncounter = (appointment, patient) => {
 		console.log(appointment);
-		this.props.openEncounter(true, appointment.id);
+		this.props.openEncounter(true, { appointmentId: appointment.id, patient });
 	};
 
 	componentDidMount() {
@@ -55,7 +56,7 @@ class Encounters extends Component {
 	getViewStatus = async appointment => {
 		try {
 			const rs = await request(
-				`consultation/appointment/` + appointment.id,
+				`consultation/appointment/${appointment.id}`,
 				'GET',
 				true
 			);
@@ -110,6 +111,7 @@ class Encounters extends Component {
 											</tr>
 										) : appointments.length > 0 ? (
 											appointments.map((appointment, i) => {
+												console.log(appointment.patient);
 												return (
 													<tr key={i}>
 														<td className="nowrap">
@@ -144,13 +146,17 @@ class Encounters extends Component {
 																id="dropdown-basic-button"
 																title="Action"
 																size="sm">
-																<Dropdown.Item
-																	disabled={appointment.stat}
-																	onClick={() =>
-																		this.doOpenEncounter(appointment)
-																	}>
-																	Chart
-																</Dropdown.Item>
+																{!appointment.stat && (
+																	<Dropdown.Item
+																		onClick={() =>
+																			this.doOpenEncounter(
+																				appointment,
+																				appointment.patient
+																			)
+																		}>
+																		Chart
+																	</Dropdown.Item>
+																)}
 																<Dropdown.Item
 																	onClick={this.doOpenPreEncounter}>
 																	Pre-Encounter
@@ -170,8 +176,8 @@ class Encounters extends Component {
 												);
 											})
 										) : (
-											<tr colSpan="4" className="text-center">
-												<td>No Appointments</td>
+											<tr className="text-center">
+												<td colSpan="6">No Appointments</td>
 											</tr>
 										)}
 									</tbody>

@@ -1,7 +1,7 @@
 import React from 'react';
-import { renderSelect, renderTextInput } from '../../services/utilities';
-
 import { Field } from 'redux-form';
+
+import { renderSelect, renderTextInput } from '../../services/utilities';
 
 const sex = [
 	{
@@ -13,6 +13,7 @@ const sex = [
 		name: 'no',
 	},
 ];
+
 const sat = [
 	{
 		id: 'yes',
@@ -33,10 +34,9 @@ const sat = [
 ];
 
 export const SexualHistory = props => {
-	// const { dob, setBirth } = props;
 	return (
 		<>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="coitarche"
 					name="coitarche"
@@ -46,7 +46,7 @@ export const SexualHistory = props => {
 					placeholder="Enter coitarche"
 				/>
 			</div>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="noOfPartners"
 					name="noOfPartners"
@@ -57,7 +57,7 @@ export const SexualHistory = props => {
 				/>
 			</div>
 
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="methodOfSex"
 					name="methodOfSex"
@@ -67,7 +67,7 @@ export const SexualHistory = props => {
 					placeholder="Enter method of sex"
 				/>
 			</div>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="currentPartnerHealth"
 					name="currentPartnerHealth"
@@ -77,7 +77,7 @@ export const SexualHistory = props => {
 					placeholder="Current partner health"
 				/>
 			</div>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="dyspareunia"
 					name="dyspareunia"
@@ -88,7 +88,7 @@ export const SexualHistory = props => {
 					data={sex}
 				/>
 			</div>
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="satisfaction"
 					name="satisfaction"
@@ -100,7 +100,7 @@ export const SexualHistory = props => {
 				/>
 			</div>
 
-			<div className="col-sm-6">
+			<div className="col-sm-4">
 				<Field
 					id="historyOfAbuse"
 					name="historyOfAbuse"

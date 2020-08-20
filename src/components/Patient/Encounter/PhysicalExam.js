@@ -1,66 +1,64 @@
 import React, { useEffect, useState } from 'react';
-import { physicalExamination } from '../../../services/constants';
 import Select from 'react-select';
-import { Controller, ErrorMessage, useForm } from 'react-hook-form';
-import { connect, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { physicalExamination } from '../../../services/constants';
 import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
 
-const PhysicalExam = props => {
-	const [selected, setSelected] = useState();
-	const { encounterData, previous, encounterForm } = props;
-	const dispatch = useDispatch();
-	const defaultValues = {
-		physicalExam: encounterForm.physicalExamination?.physicalExam,
-		selectedPhysicalExam:
-			encounterForm.physicalExamination?.selectedPhysicalExam,
-	};
-	const { register, handleSubmit, control, errors } = useForm({
-		defaultValues,
-	});
+const PhysicalExam = ({ next, previous }) => {
+	const [selected, setSelected] = useState(null);
+	const [loaded, setLoaded] = useState(false);
+	const [options, setOptions] = useState([]);
 
-	const handleChange = e => {
-		setSelected(e);
-	};
+	const encounterData = useSelector(state => state.patient.encounterData);
+	const encounterForm = useSelector(state => state.patient.encounterForm);
+
+	const dispatch = useDispatch();
+
+	const handleChange = e => setSelected(e);
 
 	useEffect(() => {
-		setSelected(encounterForm.physicalExamination?.physicalExam);
-	}, [encounterForm.physicalExamination]);
+		if (!loaded) {
+			setSelected(encounterForm?.physicalExamination?.physicalExam);
+			setOptions(encounterData?.physicalExamination);
+			setLoaded(true);
+		}
+	}, [encounterData, encounterForm, loaded]);
 
-	const divStyle = {
-		height: '500px',
+	const onChecked = e => {
+		const value = e.target.value;
+		const selected = options.find(o => o === value);
+		if (selected) {
+			const filtered = options.filter(o => o !== value);
+			setOptions(filtered);
+		} else {
+			setOptions([...options, value]);
+		}
 	};
 
-	const onSubmit = async values => {
-		encounterForm.physicalExamination = values;
-		props.loadEncounterForm(encounterForm);
+	const onSubmit = () => {
+		encounterData.physicalExamination = options || [];
+		encounterForm.physicalExamination = { physicalExam: selected };
+		dispatch(loadEncounterForm(encounterForm));
+		dispatch(loadEncounterData(encounterData));
+		next();
+	};
 
-		encounterData.physicalExamination = values.selectedPhysicalExam || [];
-		props.loadEncounterData(encounterData);
-		dispatch(props.next);
+	const divStyle = {
+		minHeight: '180px',
 	};
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)}>
-			<div className="form-block encounter" style={divStyle}>
+		<div className="form-block encounter" style={divStyle}>
+			<div style={divStyle}>
 				<div className="row">
 					<div className="col-sm-12">
 						<div className="form-group">
-							<Controller
-								as={<Select options={physicalExamination} />}
-								control={control}
-								//rules={{ required: true }}
-								onChange={([selected]) => {
-									handleChange(selected);
-									return selected;
-								}}
-								name="physicalExam"
-								//defaultValue=""
-							/>
-							<ErrorMessage
-								errors={errors}
-								name="physicalExam"
-								message="This is required"
-								as={<span className="alert alert-danger" />}
+							<Select
+								options={physicalExamination}
+								defaultValue={selected}
+								onChange={e => handleChange(e)}
+								value={selected}
 							/>
 						</div>
 					</div>
@@ -70,47 +68,41 @@ const PhysicalExam = props => {
 						<div className="col-sm-12">
 							<div className="form-group">
 								<label>{selected.label}</label>
-								{selected.children.map((option, i) => (
-									<div key={i}>
-										<label>
-											<input
-												type="checkbox"
-												className="form-control"
-												value={option}
-												name="selectedPhysicalExam"
-												ref={register}
-											/>
-											{option}
-										</label>
-									</div>
-								))}
+								{selected.children.map((option, i) => {
+									const selected = options.find(o => o === option);
+									return (
+										<div key={i}>
+											<label>
+												<input
+													type="checkbox"
+													name="selectedPhysicalExam"
+													className="form-control"
+													value={option}
+													checked={!!selected}
+													onChange={e => onChecked(e)}
+												/>
+												{option}
+											</label>
+										</div>
+									);
+								})}
 							</div>
 						</div>
 					</div>
 				)}
-
-				<div className="row mt-5">
-					<div className="col-sm-12 d-flex ant-row-flex-space-between">
-						<button className="btn btn-primary" onClick={previous}>
-							Previous
-						</button>
-						<button className="btn btn-primary" type="submit">
-							Next
-						</button>
-					</div>
+			</div>
+			<div className="row mt-5">
+				<div className="col-sm-12 d-flex ant-row-flex-space-between">
+					<button className="btn btn-primary" onClick={() => previous()}>
+						Previous
+					</button>
+					<button className="btn btn-primary" onClick={() => onSubmit()}>
+						Next
+					</button>
 				</div>
 			</div>
-		</form>
+		</div>
 	);
 };
-const mapStateToProps = state => {
-	return {
-		encounterData: state.patient.encounterData,
-		encounterForm: state.patient.encounterForm,
-	};
-};
 
-export default connect(mapStateToProps, {
-	loadEncounterData,
-	loadEncounterForm,
-})(PhysicalExam);
+export default PhysicalExam;

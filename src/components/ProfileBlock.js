@@ -6,14 +6,9 @@ import moment from 'moment';
 import background from '../assets/images/b3.jpeg';
 import profilepix from '../assets/images/a6.jpeg';
 
-// import { confirmAction } from '../services/utilities';
+import { getAge } from '../services/utilities';
 
-const ProfileBlock = ({
-	location,
-	patient,
-
-	profile,
-}) => {
+const ProfileBlock = ({ location, patient, noEdits, profile }) => {
 	// const [dropdown, setDropdown] = useState(false);
 	// const history = useHistory();
 
@@ -27,6 +22,8 @@ const ProfileBlock = ({
 	// const confirmStartAdmission = () => {
 	// 	confirmAction(goToStartAdmission, '', 'You want to start admission');
 	// };
+
+	console.log(patient?.date_of_birth);
 	return (
 		<div
 			className="card-header bg-dark bg-img p-0 no-border"
@@ -54,12 +51,10 @@ const ProfileBlock = ({
 										</div>
 										<div className="text-fade text-sm">
 											<span className="m-r">
-												<strong>Date of Birth:</strong> {patient?.date_of_birth}{' '}
-												(
-												{moment(patient?.date_of_birth, 'DD/MM/YYYY')
-													.month(0)
-													.from(moment().month(0), true)}
-												)
+												<strong>Date of Birth: </strong>
+												{`${moment(patient?.date_of_birth).format(
+													'D-MMM-YYYY'
+												)} (${getAge(patient?.date_of_birth)})`}
 											</span>
 										</div>
 									</div>
@@ -76,22 +71,26 @@ const ProfileBlock = ({
 						</div>
 					</div>
 					<div className="align-items-center d-flex p-4">
-						<div className="m-2">
-							<Link
-								className="btn btn-primary btn-sm"
-								to={`${location.pathname}#edit-profile`}>
-								<i className="os-icon os-icon-edit"></i>
-								<span className=" ml-2">Edit Profile</span>
-							</Link>
-						</div>
-						<div className="m-2">
-							<Link
-								className="btn btn-success btn-sm"
-								to={`${location.pathname}#upload-document`}>
-								<i className="os-icon os-icon-documents-03"></i>
-								<span className="ml-2">Upload Document</span>
-							</Link>
-						</div>
+						{!noEdits && (
+							<div className="m-2">
+								<Link
+									className="btn btn-primary btn-sm"
+									to={`${location.pathname}#edit-profile`}>
+									<i className="os-icon os-icon-edit"></i>
+									<span className=" ml-2">Edit Profile</span>
+								</Link>
+							</div>
+						)}
+						{!noEdits && (
+							<div className="m-2">
+								<Link
+									className="btn btn-success btn-sm"
+									to={`${location.pathname}#upload-document`}>
+									<i className="os-icon os-icon-documents-03"></i>
+									<span className="ml-2">Upload Document</span>
+								</Link>
+							</div>
+						)}
 					</div>
 
 					{/* {profile && (

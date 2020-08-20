@@ -1,7 +1,7 @@
 import React from 'react';
-import { renderTextInput, renderTextArea } from '../../services/utilities';
-
 import { Field } from 'redux-form';
+
+import { renderTextInput, renderTextArea } from '../../services/utilities';
 
 export const LabObservation = () => {
 	return (

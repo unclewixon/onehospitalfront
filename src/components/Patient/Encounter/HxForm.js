@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { renderSelect } from '../../../services/utilities';
 import { Field, formValueSelector, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
-import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
+import moment from 'moment';
 
+import { renderSelect } from '../../../services/utilities';
+import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
 import { FamilyHistory } from '../../Enrollment/FamilyHistory';
 import { SocialHistory } from '../../Enrollment/SocialHistory';
 import GynaeHistory from '../../Enrollment/GynaeHistory';
@@ -17,11 +18,8 @@ import { InitialAssessment } from '../../Enrollment/InitialAssessment';
 import { LabObservation } from '../../Enrollment/LabObservation';
 import { RoutineAssessment } from '../../Enrollment/RoutineAssessment';
 import { obstericHistory } from '../../../services/constants';
-import { validateAntennatal } from '../../../services/validationSchemas';
-import moment from 'moment';
 
-const selector = formValueSelector('antennatal');
-const validate = validateAntennatal;
+const selector = formValueSelector('hx-form');
 
 class HxForm extends Component {
 	state = {
@@ -32,11 +30,10 @@ class HxForm extends Component {
 		lmp: '',
 	};
 
-	//const { encounterData, previous, next, encounterForm, handleSubmit, error, value } = this.props;
-
-	setDate = async (date, type) => {
-		await this.setState({ [type]: date });
+	setDate = (date, type) => {
+		this.setState({ [type]: date });
 	};
+
 	obstHistory = value => {
 		let { lmpHx, dom, gest_date, dob } = this.state;
 		switch (value) {
@@ -223,7 +220,9 @@ class HxForm extends Component {
 							</div>
 						</div>
 
-						<div className="row">{this.obstHistory(value)}</div>
+						<div className="row" style={{ minHeight: '180px' }}>
+							{this.obstHistory(value)}
+						</div>
 
 						<div className="row mt-5">
 							<div className="col-sm-12 d-flex ant-row-flex-space-between">
@@ -246,16 +245,14 @@ class HxForm extends Component {
 }
 
 HxForm = reduxForm({
-	form: 'antennatal', //Form name is same
+	form: 'hx-form', //Form name is same
 	destroyOnUnmount: false,
 	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
-	validate,
 })(HxForm);
 
 const mapStateToProps = state => {
 	return {
 		encounterData: state.patient.encounterData,
-		encounterForm: state.patient.encounterForm,
 		value: selector(state, 'obstericsHistory'),
 	};
 };
