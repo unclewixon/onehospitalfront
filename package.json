@@ -7,8 +7,9 @@
 		"scss": "node-sass src/assets/scss/main.scss src/assets/css/main.css --source-map true",
 		"scss:watch": "yarn scss && node-sass src/assets/scss/main.scss src/assets/css/main.css -rw --source-map true",
 		"scss:build": "node-sass -r --output-style compressed src/assets/scss/main.scss -o src/assets/css",
-		"build": "yarn scss:build && react-scripts build",
+		"build": "yarn clean && yarn scss:build && react-scripts build",
 		"test": "react-scripts test",
+		"clean": "sudo rm -rf build",
 		"eject": "react-scripts eject"
 	},
 	"dependencies": {
