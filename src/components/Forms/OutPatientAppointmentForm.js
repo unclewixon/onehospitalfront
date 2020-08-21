@@ -169,11 +169,11 @@ function OutPatientAppointmentForm(props) {
 								options={[
 									{
 										label: 'Immunization',
-										value: 'Immunization',
+										value: 'immunization',
 									},
 									{
 										label: 'Laboratory',
-										value: 'Laboratory',
+										value: 'laboratory',
 									},
 								]}
 								ref={register({

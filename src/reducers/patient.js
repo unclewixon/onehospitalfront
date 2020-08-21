@@ -41,6 +41,8 @@ import {
 	PATIENT_IVF,
 	LOAD_ALL_PATIENTS,
 	ADD_NEW_PATIENT,
+	GET_ALL_OPD_LAB_APPOINTMENTS,
+	GET_ALL_OPD_IMMUNIZATION_APPOINTMENTS,
 } from '../actions/types';
 import actions from 'redux-form/lib/actions';
 
@@ -58,6 +60,8 @@ const INITIAL_STATE = {
 	vitals: [],
 	patients: [],
 	clinicalLab: [],
+	opdLabAppointments: [],
+	opdImmunizationAppointments: [],
 	radiology: [],
 	labRequests: [],
 	pharmacyRequests: [],
@@ -243,6 +247,16 @@ const patient = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				allPatients: action.payload,
+			};
+		case GET_ALL_OPD_LAB_APPOINTMENTS:
+			return {
+				...state,
+				opdLabAppointments: action.payload,
+			};
+		case GET_ALL_OPD_IMMUNIZATION_APPOINTMENTS:
+			return {
+				...state,
+				opdImmunizationAppointments: action.payload,
 			};
 		case ADD_NEW_PATIENT:
 			return {

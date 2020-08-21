@@ -15,6 +15,14 @@ const PharmacyMenu = () => {
 					<span>Dashboard</span>
 				</Link>
 			</li>
+			<li>
+				<Link to="/pharmacy2/opd-patients">
+					<div className="icon-w">
+						<div className="os-icon os-icon-layers" />
+					</div>
+					<span>Immunization</span>
+				</Link>
+			</li>
 		</>
 	);
 };
