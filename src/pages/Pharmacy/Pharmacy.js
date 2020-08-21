@@ -1,20 +1,21 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component, Suspense, lazy } from 'react';
 import { Switch, Route, withRouter, Link } from 'react-router-dom';
-import Queue from '../components/Queue';
+import Queue from '../../components/Queue';
 // import SaleSummary from '../components/SaleSummary';
 import { connect } from 'react-redux';
 
-import NoMatch from './NoMatch';
-import Splash from '../components/Splash';
+import NoMatch from '../NoMatch';
+import Splash from '../../components/Splash';
 
 // const Overall = lazy(() => import('../components/Overall'));
 const PharmRecentRequest = lazy(() =>
-	import('../components/PharmRecentRequest')
+	import('../../components/PharmRecentRequest')
 );
-const PharmAllRequest = lazy(() => import('../components/PharmAllRequest'));
+const PharmAllRequest = lazy(() => import('../../components/PharmAllRequest'));
 // const PharmFillRequest = lazy(() => import('../components/PharmFillRequest'));
-const PharmNewRequest = lazy(() => import('../components/PharmNewRequest'));
+const PharmNewRequest = lazy(() => import('../../components/PharmNewRequest'));
+const OPDPatients = lazy(() => import('./OPDPatients'));
 
 class Pharmacy extends Component {
 	render() {
@@ -71,6 +72,10 @@ class Pharmacy extends Component {
 												<Route
 													path={`${match.url}/new-request`}
 													component={PharmNewRequest}
+												/>
+												<Route
+													path={`${match.url}/opd-patients`}
+													component={OPDPatients}
 												/>
 
 												<Route component={NoMatch} />

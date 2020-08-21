@@ -36,6 +36,14 @@ const ClinicalLabMenu = () => {
 					<span>Pending Requests</span>
 				</Link>
 			</li>
+			<li>
+				<Link to="/lab/opd-patients">
+					<div className="icon-w">
+						<div className="os-icon os-icon-file-text" />
+					</div>
+					<span>OPD Patients</span>
+				</Link>
+			</li>
 		</>
 	);
 };

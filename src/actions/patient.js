@@ -41,12 +41,28 @@ import {
 	PATIENT_IVF,
 	LOAD_ALL_PATIENTS,
 	ADD_NEW_PATIENT,
+	GET_ALL_OPD_LAB_APPOINTMENTS,
+	GET_ALL_OPD_IMMUNIZATION_APPOINTMENTS,
 } from './types';
 import { request } from '../services/utilities';
 
 export const loadPatients = data => {
 	return {
 		type: LOAD_PATIENTS,
+		payload: data,
+	};
+};
+
+export const loadOPDLabAppointments = data => {
+	return {
+		type: GET_ALL_OPD_LAB_APPOINTMENTS,
+		payload: data,
+	};
+};
+
+export const loadOPDImmunizationAppointments = data => {
+	return {
+		type: GET_ALL_OPD_IMMUNIZATION_APPOINTMENTS,
 		payload: data,
 	};
 };

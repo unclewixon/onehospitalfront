@@ -11,6 +11,7 @@ const ClinicalLab = lazy(() => import('./ClinicalLab'));
 const AllRequest = lazy(() => import('./AllRequest'));
 const LabRecentRequest = lazy(() => import('./LabRecentRequest'));
 const LabFilledRequest = lazy(() => import('./LabFilledRequest'));
+const OPDPatientsLabRequest = lazy(() => import('./OPDPatients'));
 
 class Clinical extends Component {
 	state = {};
@@ -56,6 +57,11 @@ class Clinical extends Component {
 												exact
 												path={`${match.url}/filled-request`}
 												component={LabFilledRequest}
+											/>
+											<Route
+												exact
+												path={`${match.url}/opd-patients`}
+												component={OPDPatientsLabRequest}
 											/>
 											<Route component={NoMatch} />
 										</Switch>
