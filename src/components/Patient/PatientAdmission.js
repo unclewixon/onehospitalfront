@@ -5,7 +5,6 @@ import {
 	renderSelect,
 	renderTextArea,
 	renderTextInput,
-	renderMultiselect,
 	request,
 } from '../../services/utilities';
 import { patientAPI, staffAPI } from '../../services/constants';
@@ -37,10 +36,10 @@ const healthState = [
 	{ id: 'Intermediate', name: 'Intermediate' },
 ];
 
-const location = [
-	{ id: 'Deda Hospital', name: 'Deda Hospital' },
-	{ id: 'Other', name: 'Other' },
-];
+// const location = [
+// 	{ id: 'Deda Hospital', name: 'Deda Hospital' },
+// 	{ id: 'Other', name: 'Other' },
+// ];
 
 // const ward = [
 // 	{ id: 'Exclusive Suite', name: 'Exclusive Suite' },
@@ -123,23 +122,23 @@ class PatientAdmission extends Component {
 
 	admitPatient = async data => {
 		const { vitals, patient } = this.props;
-		const { discharged_date, staffs } = this.state;
-		let StaffID = [];
+		const { discharged_date } = this.state;
+		// let StaffID = [];
 
-		data.care_givers.forEach(function(value) {
-			let s = staffs.find(p => p.name === value);
-			StaffID.push(s.id);
-		});
+		// data.care_givers.forEach(function(value) {
+		// 	let s = staffs.find(p => p.name === value);
+		// 	StaffID.push(s.id);
+		// });
 
 		let formData = {
 			healthState: data.health_state,
 			riskToFall: data.risk === true,
-			room_id: data.ward,
+			// room_id: data.ward,
 			reason: data.reason,
-			pcg: data.primary_care_giver,
+			// pcg: data.primary_care_giver,
 			tasks: vitals,
 			discharge_date: moment(discharged_date).format('DD-MM-YY'),
-			care_givers: StaffID,
+			// care_givers: StaffID,
 		};
 
 		console.log(formData);
@@ -167,14 +166,7 @@ class PatientAdmission extends Component {
 
 	render() {
 		const { error, handleSubmit } = this.props;
-		const {
-			submitting,
-			discharged_date,
-			loading,
-			staffs,
-			staffsMultiple,
-			rooms,
-		} = this.state;
+		const { submitting, discharged_date, loading } = this.state;
 		return (
 			<>
 				{loading ? (
@@ -231,7 +223,7 @@ class PatientAdmission extends Component {
 										</div>
 
 										<div className="row">
-											<div className="col-sm-6">
+											{/* <div className="col-sm-6">
 												<Field
 													id="location"
 													name="location"
@@ -240,8 +232,8 @@ class PatientAdmission extends Component {
 													placeholder="Select Location"
 													data={location}
 												/>
-											</div>
-											<div className="col-sm-6">
+											</div> */}
+											{/* <div className="col-sm-6">
 												<Field
 													id="ward"
 													name="ward"
@@ -250,7 +242,7 @@ class PatientAdmission extends Component {
 													placeholder="Select ward admitted to"
 													data={rooms}
 												/>
-											</div>
+											</div> */}
 										</div>
 
 										<div className="row">
@@ -287,7 +279,7 @@ class PatientAdmission extends Component {
 											</div>
 										</div>
 
-										<div className="row my-2">
+										{/* <div className="row my-2">
 											<div className="col-sm-12">
 												<button
 													className="btn btn-link text-left"
@@ -297,9 +289,9 @@ class PatientAdmission extends Component {
 													Create a Clinical task ?
 												</button>
 											</div>
-										</div>
+										</div> */}
 
-										<div className="row">
+										{/* <div className="row">
 											<div className="col-sm-6">
 												<label>Care Givers</label>
 												<Field
@@ -319,7 +311,7 @@ class PatientAdmission extends Component {
 													data={staffs}
 												/>
 											</div>
-										</div>
+										</div> */}
 
 										<div>
 											<div className="col-sm-12 text-right">
