@@ -7,7 +7,7 @@ import Splash from '../../components/Splash';
 import { connect } from 'react-redux';
 
 const NurseHome = lazy(() => import('./NurseHome'));
-const InPatient = lazy(() => import('./InPatient'));
+const InPatientCare = lazy(() => import('./InPatientCare'));
 
 class Nurse extends Component {
 	state = {};
@@ -28,8 +28,8 @@ class Nurse extends Component {
 									<Route exact path={`${match.url}`} component={NurseHome} />
 									<Route
 										exact
-										path={`${match.url}/in-patients`}
-										component={InPatient}
+										path={`${match.url}/in-patients/care`}
+										component={InPatientCare}
 									/>
 									<Route component={NoMatch} />
 								</Switch>
