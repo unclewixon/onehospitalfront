@@ -85,9 +85,6 @@ class DepartmentList extends Component {
 														<a href="#">
 															<i className="os-icon os-icon-ui-49"></i>
 														</a>
-														<a href="#">
-															<i className="os-icon os-icon-grid-10"></i>
-														</a>
 														<a
 															className="danger"
 															onClick={() =>

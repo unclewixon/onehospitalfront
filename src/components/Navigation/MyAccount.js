@@ -40,7 +40,7 @@ const MyAccount = () => {
 					<span>Leave Request</span>
 				</Link>
 			</li>
-			<Can I="excuse-duty" on="all">
+			<Can I="excuse-duty" this="all">
 				<li>
 					<Link to="/my-account/excuse-duty">
 						<div className="icon-w">

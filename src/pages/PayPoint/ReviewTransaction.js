@@ -196,6 +196,8 @@ class ReviewTransaction extends Component {
 									transactions={transactions}
 									loading={loading}
 									today={false}
+									showPrint={true}
+									showActionBtns={false}
 									approveTransaction={this.doApproveTransaction}
 									doApplyVoucher={this.doApplyVoucher}
 								/>

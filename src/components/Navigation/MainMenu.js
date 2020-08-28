@@ -22,6 +22,7 @@ import DenstistryMenu from './DenstistryMenu';
 import PhysiotherapyMenu from './PhysiotherapyMenu';
 import MyAccount from './MyAccount';
 import NurseMenu from './NurseMenu';
+import AdminMenu from './AdminMenu';
 
 class MainMenu extends Component {
 	componentDidMount() {
@@ -97,26 +98,22 @@ class MainMenu extends Component {
 					<li className="sub-header">
 						<span>NAVIGATION</span>
 					</li>
-					{(role === 'front-desk' || role === 'admin') && <FrontDeskMenu />}
-					{(role === 'lab-attendant' || role === 'admin') && (
-						<ClinicalLabMenu />
-					)}
-					{(role === 'accountant' || role === 'admin') && <PayPointMenu />}
-					{(role === 'pharmacy' || role === 'admin') && <PharmacyMenu />}
-					{(role === 'radiology' || role === 'admin') && <RadiologyMenu />}
-					{(role === 'dentistry' || role === 'admin') && <DenstistryMenu />}
-					{(role === 'physiotherapy' || role === 'admin') && (
-						<PhysiotherapyMenu />
-					)}
-					{(role === 'nurse' || role === 'admin') && <NurseMenu />}
-					{(role === 'doctor' || role === 'admin') && <DoctorMenu />}
-					{(role === 'hr' || role === 'admin') && <HrMenu />}
+					{role === 'front-desk' && <FrontDeskMenu />}
+					{role === 'lab-attendant' && <ClinicalLabMenu />}
+					{role === 'accountant' && <PayPointMenu />}
+					{role === 'pharmacy' && <PharmacyMenu />}
+					{role === 'radiology' && <RadiologyMenu />}
+					{role === 'dentistry' && <DenstistryMenu />}
+					{role === 'physiotherapy' && <PhysiotherapyMenu />}
+					{role === 'nurse' && <NurseMenu />}
+					{role === 'doctor' && <DoctorMenu />}
+					{role === 'hr' && <HrMenu />}
 
-					{(role === 'inventory' || role === 'admin') && <InventoryMenu />}
-					{(role === 'cafeteria' || role === 'admin') && <CafeteriaMenu />}
-					{(role === 'hmo' || role === 'admin') && <HMOMenu />}
-					{(role === 'account' || role === 'admin') && <Account />}
-					{role === 'admin' && <SettingsMenu />}
+					{role === 'inventory' && <InventoryMenu />}
+					{role === 'cafeteria' && <CafeteriaMenu />}
+					{role === 'hmo' && <HMOMenu />}
+					{role === 'account' && <Account />}
+					{role === 'admin' && <AdminMenu />}
 					<MyAccount />
 				</ul>
 			</div>

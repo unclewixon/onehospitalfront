@@ -1,63 +1,83 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-
+import capitalize from 'lodash.capitalize';
 import { uploadHmoTariff, uploadHmo } from '../actions/general';
 import { notifyError } from '../services/notify';
 import { API_URI, hmoAPI } from '../services/constants';
 import searchingGIF from '../assets/images/searching.gif';
 import { getAllHmos, fetchHmoTariff } from '../actions/hmo';
+import { formatNumber } from '../services/utilities';
 
 const HmoBulkUpload = props => {
 	const initialState = {
 		selectedHmo: null,
 	};
+	const urlParam = new URLSearchParams(props.location.search);
+	const selected = urlParam.get('selected');
 
 	const [{ selectedHmo }, setState] = useState(initialState);
-	const [loaded, setLoaded] = useState(false);
-	const [dataLoaded, setDataLoaded] = useState(false);
+	const [loading, setLoading] = useState(true);
+	const [services, setServices] = useState([]);
+	const [filtered, setFiltered] = useState([]);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
 		setState({ [name]: value });
-		props
-			.fetchHmoTariff(value)
-			.then(response => {
-				setDataLoaded(true);
-			})
-			.catch(error => {
-				setDataLoaded(true);
-			});
+		setLoading(true);
+		getTariffs(value);
 	};
 
 	useEffect(() => {
-		if (!loaded) {
-			props
-				.getAllHmos()
-				.then(response => {
-					setLoaded(true);
-				})
-				.catch(e => {
-					setLoaded(true);
-					console.log(e);
-					notifyError(e.message || 'could not fetch lab tests');
-				});
+		if (selected) {
+			setState({ selectedHmo: selected });
+			getTariffs(selected);
+		} else {
+			setLoading(false);
 		}
-	}, [loaded, props]);
+	}, [selected]);
 
-	props
-		.fetchHmoTariff(selectedHmo)
-		.then(response => {
-			setDataLoaded(true);
-		})
-		.catch(error => {
-			console.log(error);
-			setDataLoaded(true);
-		});
+	useEffect(() => {
+		props
+			.getAllHmos()
+			.then(response => {})
+			.catch(e => {
+				console.log(e);
+				notifyError(e.message || 'could not fetch lab tests');
+			});
+	}, []);
+
+	const getTariffs = selected => {
+		props
+			.fetchHmoTariff(selected)
+			.then(response => {
+				setServices(response);
+				setFiltered(response);
+				setLoading(false);
+			})
+			.catch(error => {
+				console.log(error);
+				setLoading(false);
+			});
+	};
 
 	const hmos = props.hmoList.map(hmo => {
-		return { label: hmo.name, value: hmo.id };
+		return { label: capitalize(hmo.name), value: hmo.id };
 	});
+
+	const doFilter = e => {
+		const value = e.target.value;
+		if (value.length > 3) {
+			setFiltered(
+				services.filter(item =>
+					item.name.toLowerCase().includes(value.toLowerCase())
+				)
+			);
+		}
+		if (value.length === 0) {
+			setFiltered(services);
+		}
+	};
 	return (
 		<div className="content-i">
 			<div className="content-box">
@@ -87,16 +107,31 @@ const HmoBulkUpload = props => {
 									<div className="element-box-tp">
 										<div className="controls-above-table">
 											<div className="row">
-												<div className="col-sm-12">
+												<div className="col-sm-4">
+													<form className="form-inline justify-content-sm-start">
+														<input
+															type="text"
+															style={{ width: '100%' }}
+															onChange={doFilter}
+															placeholder="Search by service Name"
+															className="form-control form-control-sm full-width rounded"
+														/>
+													</form>
+												</div>
+												<div className="col-sm-4"></div>
+												<div className="col-sm-4">
 													<form className="form-inline justify-content-sm-end">
+														<label className="mr-2">Select HMO</label>
 														<select
 															className="form-control form-control-sm rounded bright"
 															name="selectedHmo"
 															value={selectedHmo}
 															onChange={handleInputChange}>
-															{hmos.map(hmo => {
+															{hmos.map((hmo, i) => {
 																return (
-																	<option value={hmo.value}>{hmo.label}</option>
+																	<option key={i} value={hmo.value}>
+																		{hmo.label}
+																	</option>
 																);
 															})}
 														</select>
@@ -110,22 +145,22 @@ const HmoBulkUpload = props => {
 													<tr>
 														<th>Code</th>
 														<th>Service</th>
-														<th className="text-center">rate</th>
-														<th>percentage</th>
-														{/* <th>Discount</th> */}
+														<th>rate</th>
+														<th>Coverage</th>
+														<th>Discount</th>
 														<th>Actions</th>
 													</tr>
 												</thead>
 												<tbody>
-													{!dataLoaded ? (
+													{loading ? (
 														<tr>
-															<td colSpan="5" className="text-center">
+															<td colSpan="6" className="text-center">
 																<img alt="searching" src={searchingGIF} />
 															</td>
 														</tr>
 													) : (
 														<>
-															{props.hmoTariff.map((hmo, i) => {
+															{filtered.map((hmo, i) => {
 																return (
 																	<tr key={i}>
 																		<td>
@@ -134,16 +169,21 @@ const HmoBulkUpload = props => {
 																			</div>
 																		</td>
 																		<td>
-																			<div className="smaller lighter">
-																				{hmo.service.name}
-																			</div>
+																			<div className="smaller">{hmo.name}</div>
 																		</td>
 																		<td>
-																			<span>{hmo.rate}</span>
+																			<span>{formatNumber(hmo.rate)}</span>
 																		</td>
 
 																		<td className="nowrap">
-																			<span>{hmo.percentage}</span>
+																			<span>{hmo.percentage}%</span>
+																		</td>
+																		<td className="nowrap">
+																			<span>
+																				{hmo.discount
+																					? formatNumber(hmo.discount)
+																					: 0}
+																			</span>
 																		</td>
 																		<td className="row-actions">
 																			<a href="#">
@@ -163,6 +203,14 @@ const HmoBulkUpload = props => {
 																	</tr>
 																);
 															})}
+
+															{!loading && filtered.length < 1 ? (
+																<tr>
+																	<td colSpan="7" className="text-center">
+																		No Tariff has been uploaded
+																	</td>
+																</tr>
+															) : null}
 														</>
 													)}
 												</tbody>
@@ -185,7 +233,6 @@ const HmoBulkUpload = props => {
 const mapStateToProps = state => {
 	return {
 		hmoList: state.hmo.hmo_list,
-		hmoTariff: state.hmo.hmo_tariff,
 	};
 };
 

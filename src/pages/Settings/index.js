@@ -81,11 +81,7 @@ const Settings = ({ match, location }) => {
 					<li className={page === 'services-category' ? 'active' : ''}>
 						<Link to="/settings/services-category">
 							<i className="os-icon os-icon-layers" />
-							<span>
-								Services
-								<br />
-								Categories
-							</span>
+							<span>Services</span>
 						</Link>
 					</li>
 					<li className={page === 'specializations' ? 'active' : ''}>

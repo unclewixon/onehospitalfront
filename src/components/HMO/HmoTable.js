@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 
-import { request } from '../../services/utilities';
+import { formatNumber, request, trimText } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
 import { notifyError, notifySuccess } from '../../services/notify';
@@ -15,6 +15,7 @@ class HmoTable extends Component {
 	state = {
 		loading: false,
 		show: false,
+		approvalCode: '',
 	};
 
 	confirm = (id, data) => {
@@ -25,6 +26,15 @@ class HmoTable extends Component {
 					<div className="custom-ui">
 						<h1>Are you sure?</h1>
 						<p>You want to {act} this ?</p>
+						{id === 1 && (
+							<div className="form-group">
+								<input
+									className="form-control form-control-sm"
+									placeholder="Enter Approval Code"
+									onChange={e => this.setReferralCode(e)}
+								/>
+							</div>
+						)}
 						<div style={{}}>
 							<button
 								className="btn btn-danger"
@@ -48,15 +58,25 @@ class HmoTable extends Component {
 		});
 	};
 
+	setReferralCode = e => {
+		this.setState({ approvalCode: e.target.value });
+	};
+
 	processTransaction = async (action, hmo) => {
 		try {
 			let id = hmo.id;
 			this.setState({ loading: true });
-			const rs = await request(
-				`hmos/transactions/` + id + '/process?action=' + action,
-				'GET',
-				true
-			);
+			const { approvalCode } = this.state;
+
+			if (action === 1 && approvalCode.length === 0) {
+				notifyError('Please enter an approval code');
+				return;
+			}
+			const rs = await request(`hmos/transactions/process`, 'POST', true, {
+				id,
+				action,
+				approvalCode,
+			});
 
 			let status = rs.transaction.hmo_approval_status;
 			hmo.hmo_approval_status = status;
@@ -124,21 +144,22 @@ class HmoTable extends Component {
 									<td className="text-center">
 										{moment(trans.createdAt).format('DD-MM-YYYY')}
 									</td>
-									<td className="text-center">
+									<td className="text-center text-capitalize">
 										{trans.hmo_name ? trans.hmo_name : 'No hmo'}
 									</td>
-									<td className="text-center"> {trans.patient_name}</td>
+									<td className="text-center text-capitalize">
+										{' '}
+										{trans.patient_name}
+									</td>
 									<td className="text-center">
 										{' '}
-										{trans.description ? trans.description : 'No Description'}
+										{trans.description
+											? trimText(trans.description, 50)
+											: 'No Description'}
 									</td>
+
 									<td className="text-center">
-										{trans.transaction_type
-											? trans.transaction_type
-											: 'No Transaction Type'}
-									</td>
-									<td className="text-center">
-										{trans.amount ? trans.amount : 0}
+										{trans.amount ? formatNumber(trans.amount) : 0}
 									</td>
 									<td className="text-center">
 										{this.approvalStatus(trans.hmo_approval_status)}

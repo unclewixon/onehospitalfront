@@ -4,15 +4,12 @@ import { Link } from 'react-router-dom';
 const HMOMenu = () => {
 	return (
 		<>
-			<li className="sub-header">
-				<span>HMO Mgt</span>
-			</li>
 			<li>
 				<Link to="/hmo/dashboard">
 					<div className="icon-w">
-						<div className="os-icon os-icon-layers" />
+						<div className="os-icon os-icon-agenda-1" />
 					</div>
-					<span>Dashboard</span>
+					<span>Transactions</span>
 				</Link>
 			</li>
 			<li>
@@ -24,11 +21,11 @@ const HMOMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/hmo/bulk-upload">
+				<Link to="/hmo/tariffs">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers" />
 					</div>
-					<span>Upload HMO</span>
+					<span>HMO Tariffs</span>
 				</Link>
 			</li>
 		</>

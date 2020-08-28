@@ -215,17 +215,13 @@ const Departments = props => {
 																		<a href="#">
 																			<i
 																				className="os-icon os-icon-ui-49"
-																				onClick={() =>
-																					onClickEdit(department)
-																				}></i>
-																		</a>
-																		<a href="#">
-																			<i className="os-icon os-icon-grid-10"></i>
+																				onClick={() => onClickEdit(department)}
+																			/>
 																		</a>
 																		<a
 																			className="danger"
 																			onClick={() => DeleteDept(department)}>
-																			<i className="os-icon os-icon-ui-15"></i>
+																			<i className="os-icon os-icon-ui-15" />
 																		</a>
 																	</td>
 																</tr>

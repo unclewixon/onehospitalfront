@@ -3,9 +3,6 @@ import { Link } from 'react-router-dom';
 const Account = () => {
 	return (
 		<>
-			<li className="sub-header">
-				<span>ACCOUNTS</span>
-			</li>
 			<li>
 				<Link to="/account/reports/trial-balance">
 					<div className="icon-w">

@@ -4,9 +4,6 @@ import { Link } from 'react-router-dom';
 const CafeteriaMenu = () => {
 	return (
 		<>
-			<li className="sub-header">
-				<span>Cafeteria</span>
-			</li>
 			<li>
 				<Link to="/cafeteria">
 					<div className="icon-w">

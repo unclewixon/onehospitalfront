@@ -44,7 +44,7 @@ export class Dashboard extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
-				`${hmoAPI}${transactionsAPI}?startDate=${startDate}&endDate=${endDate}&patient_id=&status=${status}&page=1&limit=10`,
+				`${hmoAPI}/${transactionsAPI}?startDate=${startDate}&endDate=${endDate}&patient_id=&status=${status}&page=1&limit=10`,
 				'GET',
 				true
 			);
@@ -58,90 +58,34 @@ export class Dashboard extends Component {
 			this.setState({ loading: false });
 		}
 	};
+
 	render() {
 		const { loading } = this.state;
 		const { hmoTransactions } = this.props;
 		return (
 			<>
-				<div className="col-sm-12 col-xxl-12">
-					<div className="element-content">
-						<div className="row">
-							<div className="col-sm-4 col-xxxl-4">
-								<a className="element-box el-tablo">
-									<div className="label ">DAILY TOTAL (&#8358;)</div>
-									<div className="value ">
-										<span>0</span>
+				<h6 className="element-header py-2 px-2">
+					Today's Transactions ({moment().format('YYYY-MM-DD')})
+				</h6>
 
-										<div className="balance-link">
-											<button className="btn btn-link btn-underlined">
-												<span>View Statement</span>
-												<i className="os-icon os-icon-arrow-right4"></i>
-											</button>
-										</div>
-									</div>
-								</a>
-							</div>
-							<div className="col-sm-4 col-xxxl-4">
-								<a className="element-box el-tablo">
-									<div className="label ">TOTAL UNPAID (&#8358;)</div>
-									<div className="value ">
-										<span>0</span>
-
-										<div className="balance-link">
-											<button className="btn btn-link btn-underlined">
-												<span>View Statement</span>
-												<i className="os-icon os-icon-arrow-right4"></i>
-											</button>
-										</div>
-									</div>
-								</a>
-							</div>
-							<div className="col-sm-4 col-xxxl-4">
-								<a className="element-box el-tablo">
-									<div className="label "> TOTAL CASH (&#8358;)</div>
-									<div className="value ">
-										<span>0</span>
-
-										<div className="balance-link">
-											<button className="btn btn-link btn-underlined">
-												<span>View Statement</span>
-												<i className="os-icon os-icon-arrow-right4"></i>
-											</button>
-										</div>
-									</div>
-								</a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div className="col-sm-12">
-					<div className="element-box">
-						<h6 className="element-header">
-							Today's Transactions ({moment().format('YYYY-MM-DD')})
-						</h6>
-
-						<div className="table-responsive">
-							<table className="table table-striped">
-								<thead>
-									<tr>
-										<th className="text-center">Date</th>
-										<th className="text-center">Hmo name</th>
-										<th className="text-center">Patient name</th>
-										<th className="text-center">Description</th>
-										<th className="text-center">Transaction Type</th>
-										<th className="text-center">Amount(&#x20A6;)</th>
-										<th className="text-center">Status</th>
-										<th>
-											<div className="th-inner "></div>
-											<div className="fht-cell"></div>
-										</th>
-									</tr>
-								</thead>
-
-								<HmoTable loading={loading} hmoTransactions={hmoTransactions} />
-							</table>
-						</div>
-					</div>
+				<div className="table-responsive">
+					<table className="table table-striped">
+						<thead>
+							<tr>
+								<th className="text-center">Date</th>
+								<th className="text-center">Hmo name</th>
+								<th className="text-center">Patient name</th>
+								<th className="text-center">Description</th>
+								<th className="text-center">Amount(&#x20A6;)</th>
+								<th className="text-center">Status</th>
+								<th>
+									<div className="th-inner "></div>
+									<div className="fht-cell"></div>
+								</th>
+							</tr>
+						</thead>
+						<HmoTable loading={loading} hmoTransactions={hmoTransactions} />
+					</table>
 				</div>
 			</>
 		);

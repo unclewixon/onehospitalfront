@@ -135,7 +135,7 @@ const PaypointQueue = ({ staff }) => {
 						<th className="">AMOUNT PAID (&#x20A6;)</th>
 						<th className="">BALANCE</th>
 						<th className="">PAYMENT TYPE</th>
-						<th className="">ACTIONS</th>
+						<th className="text-center">ACTIONS</th>
 					</tr>
 				</thead>
 				{transactions && (
@@ -143,6 +143,7 @@ const PaypointQueue = ({ staff }) => {
 						transactions={transactions}
 						loading={false}
 						today={true}
+						showActionBtns={true}
 						approveTransaction={doApproveTransaction}
 						doApplyVoucher={doApplyVoucher}
 						handlePrint={handlePrintClick}

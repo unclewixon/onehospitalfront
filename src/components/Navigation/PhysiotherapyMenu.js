@@ -3,10 +3,6 @@ import { Link } from 'react-router-dom';
 const PhysiotherapyMenu = () => {
 	return (
 		<>
-			<li className="sub-header">
-				<span>Physiotherapy</span>
-			</li>
-
 			<li>
 				<Link to="/physiotherapy">
 					<div className="icon-w">

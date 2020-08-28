@@ -128,7 +128,7 @@ const ServiceCategoryList = props => {
 		<div className="row">
 			<div className="col-lg-8">
 				<div className="element-wrapper">
-					<div className="element-box">
+					<div className="element-box p-0">
 						<div className="table-responsive">
 							<table className="table table-striped">
 								<thead>
@@ -157,9 +157,6 @@ const ServiceCategoryList = props => {
 														<td className="row-actions text-right">
 															<a onClick={() => onClickEdit(category)}>
 																<i className="os-icon os-icon-ui-49"></i>
-															</a>
-															<a href="#">
-																<i className="os-icon os-icon-grid-10"></i>
 															</a>
 															<a
 																className="danger"

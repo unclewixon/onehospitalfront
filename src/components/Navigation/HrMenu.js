@@ -4,9 +4,6 @@ import { Link } from 'react-router-dom';
 const HrMenu = () => {
 	return (
 		<>
-			<li className="sub-header">
-				<span>HR & Payroll</span>
-			</li>
 			<li>
 				<Link to="/hr/staffs">
 					<div className="icon-w">

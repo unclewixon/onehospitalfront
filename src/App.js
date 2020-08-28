@@ -17,6 +17,7 @@ import ability from './services/ability';
 import { AbilityContext } from './components/common/Can';
 import DoctorHome from './pages/Doctor/Home';
 import DoctorAppointments from './pages/Doctor/DoctorAppointments';
+import { AbilityBuilder } from '@casl/ability';
 
 const Login = lazy(() => import('./pages/Login'));
 const NoMatch = lazy(() => import('./pages/NoMatch'));
@@ -32,7 +33,7 @@ const Staff = lazy(() => import('./pages/HR/index'));
 const Inventory = lazy(() => import('./pages/Inventory/index'));
 const Settings = lazy(() => import('./pages/Settings'));
 const StaffProfile = lazy(() => import('./pages/StaffProfile'));
-const Hmo = lazy(() => import('./pages/Hmo'));
+const Hmo = lazy(() => import('./pages/Hmo/Index'));
 const ClinicalLab = lazy(() => import('./pages/ClinicalLab'));
 const PayPoint = lazy(() => import('./pages/PayPoint/index'));
 const Radiology = lazy(() => import('./pages/Radiology/index'));
@@ -52,7 +53,14 @@ class App extends Component {
 	async componentDidMount() {
 		const fullscreen = await storage.getItem(FULLSCREEN_COOKIE);
 		const theme_mode = await storage.getItem(MODE_COOKIE);
-		// const storedMenu = await storage.getItem(MENU_COOKE);
+		// get user permissions
+		const permissions = await storage.getItem('permissions');
+		// casal/ability
+		const { can, rules } = new AbilityBuilder();
+		// set user permissions
+		can(permissions, 'all');
+		// update user permission
+		ability.update(rules);
 
 		window.document.body.className = `menu-position-side menu-side-left ${
 			fullscreen ? 'full-screen' : ''

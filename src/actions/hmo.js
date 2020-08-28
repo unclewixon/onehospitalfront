@@ -80,7 +80,6 @@ export const getAllHmos = data => {
 	return async dispatch => {
 		try {
 			const rs = await request(hmoAPI, 'GET', true);
-			console.log(rs, 'get All hmo');
 			dispatch(fetch_all_hmos_data(rs));
 			return { success: true };
 		} catch (e) {
@@ -95,8 +94,8 @@ export const fetchHmoTariff = data => {
 		return axios
 			.get(`${API_URI}/${hmoAPI}/${data}/tariff?listType=services`, {})
 			.then(response => {
-				console.log(response.data, 'Hmo tariff');
-				return dispatch(fetch_hmo_tariff(response.data));
+				// console.log(response.data, 'Hmo tariff');
+				return response.data;
 			})
 			.catch(error => {
 				return error;

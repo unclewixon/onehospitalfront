@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react';
+import React, { Fragment } from 'react';
 
 import {
 	formatNumber,
@@ -14,6 +14,7 @@ import { deleteTransaction } from '../../actions/transaction';
 import Tooltip from 'antd/lib/tooltip';
 import { applyVoucher, approveTransaction } from '../../actions/general';
 import { notifyError, notifySuccess } from '../../services/notify';
+import { Can } from '../common/Can';
 
 const TransactionTable = ({
 	approveTransaction,
@@ -23,7 +24,8 @@ const TransactionTable = ({
 	transactions,
 	loading,
 	today,
-	show = false,
+	showPrint = false,
+	showActionBtns,
 }) => {
 	const doApproveTransaction = item => {
 		approveTransaction(item);
@@ -57,7 +59,7 @@ const TransactionTable = ({
 				transactions.map((transaction, index) => {
 					return (
 						<tr key={index}>
-							<td className="text-center" hidden={today}>
+							<td className="" hidden={today}>
 								{moment(transaction.createdAt).format('YYYY/MM/DD')}
 							</td>
 							<td className="">
@@ -67,7 +69,7 @@ const TransactionTable = ({
 								{transaction.serviceType ? (
 									<Tooltip title={transaction.serviceType.name} trigger="hover">
 										{transaction.serviceType?.name
-											? trimText(transaction.serviceType.name, 20)
+											? transaction.serviceType.name
 											: 'No service yet'}
 									</Tooltip>
 								) : transaction.service ? (
@@ -76,16 +78,16 @@ const TransactionTable = ({
 										trigger="hover"
 										mouseEnterDelay={0.1}>
 										{transaction.service?.name
-											? trimText(transaction.service.name, 20)
+											? trimText(transaction.service.name, 50)
 											: 'No service yet'}
 									</Tooltip>
 								) : null}
 							</td>
-							<td className="">
+							<td className="text-right">
 								{transaction.amount ? formatNumber(transaction.amount) : 0}
 							</td>
 
-							<td className="">
+							<td className="text-right">
 								{transaction?.balance ? transaction.balance : '0'}
 							</td>
 							<td className="">
@@ -94,31 +96,39 @@ const TransactionTable = ({
 									: 'Not specified'}
 							</td>
 							<td className="text-center row-actions">
-								<Tooltip title="Apply Voucher">
-									<a
-										className="secondary"
-										onClick={() => doApplyVoucher(transaction)}>
-										<i className="os-icon os-icon-thumbs-up" />
-									</a>
-								</Tooltip>
+								{showActionBtns && (
+									<Fragment>
+										{transaction.payment_type !== 'HMO' && (
+											<Fragment>
+												<Tooltip title="Approve Transactions">
+													<a
+														className="secondary"
+														onClick={() => doApproveTransaction(transaction)}>
+														<i className="os-icon os-icon-thumbs-up" />
+													</a>
+												</Tooltip>
 
-								<Tooltip title="Approve Transactions">
-									<a
-										className="secondary"
-										onClick={() => doApproveTransaction(transaction)}>
-										<i className="os-icon os-icon-folder-plus" />
-									</a>
-								</Tooltip>
-
-								<Tooltip title="Delete Transactions">
-									<a
-										className="text-danger"
-										onClick={() => confirmDelete(transaction)}>
-										<i className="os-icon os-icon-ui-15" />
-									</a>
-								</Tooltip>
-
-								{show ? (
+												<Tooltip title="Apply Voucher">
+													<a
+														className="secondary"
+														onClick={() => doApplyVoucher(transaction)}>
+														<i className="os-icon os-icon-folder-plus" />
+													</a>
+												</Tooltip>
+											</Fragment>
+										)}
+										<Can I="delete-transaction" on="all">
+											<Tooltip title="Delete Transactions">
+												<a
+													className="text-danger"
+													onClick={() => confirmDelete(transaction)}>
+													<i className="os-icon os-icon-ui-15" />
+												</a>
+											</Tooltip>
+										</Can>
+									</Fragment>
+								)}
+								{showPrint ? (
 									<Tooltip title="Print">
 										<a
 											className="text-danger"

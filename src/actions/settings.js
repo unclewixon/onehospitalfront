@@ -1438,28 +1438,23 @@ export const getAllService = data => {
 };
 
 export const updateService = data => {
-	let service_category_id = data.service_category_id
-		? data.service_category_id
-		: data.category_id;
-
 	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.patch(`${API_URI}/services/${data.id}/update`, {
-					name: data.name,
-					tariff: data.tariff,
-					gracePeriod: data.gracePeriod,
-					noOfVisits: data.noOfVisits,
-					category_id: service_category_id,
-					note: data.note,
-				})
+		return new Promise(async (resolve, reject) => {
+			let resp;
+			if (data.id) {
+				resp = axios.patch(`${API_URI}/services/${data?.id}/update`, data);
+			} else {
+				resp = axios.post(`${API_URI}/services`, data);
+			}
+
+			resp
 				.then(response => {
-					console.log(response);
+					// console.log(response);
 					dispatch(update_service(response.data, data));
 					return resolve({ success: true });
 				})
 				.catch(error => {
-					console.log(error);
+					// console.log(error);
 					return reject({ success: false });
 				});
 		});

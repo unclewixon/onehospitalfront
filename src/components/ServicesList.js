@@ -8,7 +8,7 @@ import {
 	updateService,
 	deleteService,
 } from '../actions/settings';
-import { confirmAction } from '../services/utilities';
+import { confirmAction, formatNumber } from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
 import searchingGIF from '../assets/images/searching.gif';
 
@@ -86,7 +86,7 @@ const ServicesList = props => {
 				</div>
 			</div>
 			<div className="todo-app-w">
-				<div className="todo-content">
+				<div className="todo-content p-0">
 					<div className="all-tasks-w">
 						{!dataLoaded ? (
 							<div className="text-center">
@@ -98,17 +98,18 @@ const ServicesList = props => {
 									return (
 										<div className="task-section" key={index + 1}>
 											<div className="tasks-header-w">
-												<a
-													className="tasks-header-toggler"
-													onClick={() =>
-														onMoreDetailConsultation(category.name)
-													}>
-													<i className="os-icon os-icon-ui-23"></i>
-												</a>
-												{moreDetailConsultation === category.name && (
+												{moreDetailConsultation === category.name ? (
 													<a
 														className="tasks-header-toggler"
 														onClick={() => onMoreDetailConsultation()}>
+														<i className="os-icon os-icon-ui-22"></i>
+													</a>
+												) : (
+													<a
+														className="tasks-header-toggler"
+														onClick={() =>
+															onMoreDetailConsultation(category.name)
+														}>
 														<i className="os-icon os-icon-ui-23"></i>
 													</a>
 												)}
@@ -117,7 +118,7 @@ const ServicesList = props => {
 													className="add-task-btn"
 													data-target="#taskModal"
 													data-toggle="modal"
-													onClick={onUploadService}>
+													onClick={() => props.editService(true, { category })}>
 													<i className="os-icon os-icon-ui-22"></i>
 													<span>Add service</span>
 												</a>
@@ -128,7 +129,7 @@ const ServicesList = props => {
 														<thead>
 															<tr>
 																<th>Name</th>
-
+																<th>Tariff</th>
 																<th className="text-right">Action</th>
 															</tr>
 														</thead>
@@ -137,6 +138,7 @@ const ServicesList = props => {
 																return (
 																	<tr key={index + 1}>
 																		<td>{service.name}</td>
+																		<td>{formatNumber(service.tariff)}</td>
 
 																		<td className="row-actions text-right">
 																			<a>
@@ -145,9 +147,6 @@ const ServicesList = props => {
 																					onClick={() =>
 																						props.editService(true, service)
 																					}></i>
-																			</a>
-																			<a>
-																				<i className="os-icon os-icon-grid-10"></i>
 																			</a>
 																			<a
 																				className="danger"

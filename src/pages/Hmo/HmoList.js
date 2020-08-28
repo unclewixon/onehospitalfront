@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import { confirmAlert } from 'react-confirm-alert';
 import Tooltip from 'antd/lib/tooltip';
 
-import { uploadHmo } from '../actions/general';
-import waiting from '../assets/images/waiting.gif';
-import searchingGIF from '../assets/images/searching.gif';
-import { notifySuccess, notifyError } from '../services/notify';
-import { addHmo, getAllHmos, updateHmo, deleteHmo } from '../actions/hmo';
-import { API_URI, hmoAPI } from '../services/constants';
-import { request } from '../services/utilities';
+import { uploadHmo } from '../../actions/general';
+import waiting from '../../assets/images/waiting.gif';
+import searchingGIF from '../../assets/images/searching.gif';
+import { notifyError } from '../../services/notify';
+import { addHmo, getAllHmos, updateHmo, deleteHmo } from '../../actions/hmo';
+import { API_URI, hmoAPI } from '../../services/constants';
+import capitalize from 'lodash.capitalize';
+import { Link } from 'react-router-dom';
 
 const HmoList = props => {
 	const initialState = {
@@ -34,10 +35,6 @@ const HmoList = props => {
 	const handleInputChange = e => {
 		const { name, value } = e.target;
 		setState(prevState => ({ ...prevState, [name]: value }));
-	};
-
-	const handleFileChange = e => {
-		setLogo(e.target.files[0]);
 	};
 
 	const onAddHmo = e => {
@@ -96,26 +93,6 @@ const HmoList = props => {
 	const cancelEditButton = () => {
 		setSubmitButton({ add: true, edit: false });
 		setState({ ...initialState });
-	};
-
-	const processTransaction = async (action, hmo) => {
-		try {
-			let id = hmo.id;
-			setDataLoaded(false);
-			await request(
-				`hmos/transactions/${id}/process?action=${action}`,
-				'GET',
-				true
-			);
-			let act = action === 1 ? ' Approved' : ' Rejected';
-			let message = hmo.name + act;
-			notifySuccess(message);
-			setDataLoaded(true);
-		} catch (error) {
-			notifyError('There was an error');
-			console.log(error);
-			setDataLoaded(true);
-		}
 	};
 
 	const onDeleteHmo = data => {
@@ -203,17 +180,16 @@ const HmoList = props => {
 										<table className="table table-padded">
 											<thead>
 												<tr>
-													<th>Logo</th>
 													<th>Name</th>
 													<th className="text-center">Phone</th>
 													<th>Email</th>
-													<th>Actions</th>
+													<th className="text-center">Actions</th>
 												</tr>
 											</thead>
 											<tbody>
 												{!dataLoaded ? (
 													<tr>
-														<td colSpan="5" className="text-center">
+														<td colSpan="4" className="text-center">
 															<img alt="searching" src={searchingGIF} />
 														</td>
 													</tr>
@@ -223,19 +199,9 @@ const HmoList = props => {
 															return (
 																<tr key={id}>
 																	<td>
-																		<div className="user-with-avatar">
-																			<img
-																				alt=""
-																				src={require('../assets/images/avatar1.jpg')}
-																			/>
-																		</div>
+																		<span>{capitalize(hmo.name)}</span>
 																	</td>
-																	<td>
-																		<div className="smaller lighter">
-																			{hmo.name}
-																		</div>
-																	</td>
-																	<td>
+																	<td className="text-center">
 																		<span>{hmo.phoneNumber}</span>
 																	</td>
 
@@ -243,38 +209,28 @@ const HmoList = props => {
 																		<span>{hmo.email}</span>
 																	</td>
 																	<td className="row-actions">
-																		<Tooltip title="Approve">
-																			<a
-																				className="secondary"
-																				onClick={() =>
-																					processTransaction(1, hmo)
-																				}>
-																				<i className="os-icon os-icon-thumbs-up" />
+																		<Tooltip title="Edit">
+																			<a href="#">
+																				<i
+																					className="os-icon os-icon-edit-1"
+																					onClick={() => onClickEdit(hmo)}></i>
 																			</a>
 																		</Tooltip>
-
-																		<Tooltip title="Reject">
-																			<a
-																				className="secondary"
-																				onClick={() =>
-																					processTransaction(2, hmo)
-																				}>
-																				<i className="os-icon os-icon-thumbs-down" />
+																		<Tooltip title="HMO Tariffs">
+																			<Link
+																				to={`/hmo/tariffs?selected=${hmo.id}`}>
+																				<i className="os-icon os-icon-documents-03"></i>
+																			</Link>
+																		</Tooltip>
+																		<Tooltip title="Delete">
+																			<a className="danger">
+																				<i
+																					className="os-icon os-icon-ui-15"
+																					onClick={() =>
+																						confirmDelete(hmo)
+																					}></i>
 																			</a>
 																		</Tooltip>
-																		<a href="#">
-																			<i
-																				className="os-icon os-icon-grid-10"
-																				onClick={() => onClickEdit(hmo)}></i>
-																		</a>
-																		<a href="#">
-																			<i className="os-icon os-icon-ui-44"></i>
-																		</a>
-																		<a className="danger">
-																			<i
-																				className="os-icon os-icon-ui-15"
-																				onClick={() => confirmDelete(hmo)}></i>
-																		</a>
 																	</td>
 																</tr>
 															);
@@ -334,7 +290,7 @@ const HmoList = props => {
 											value={address}
 										/>
 									</div>
-									<legend>
+									{/*<legend>
 										<span>Upload Logo</span>
 									</legend>
 									<div className="form-group">
@@ -348,7 +304,7 @@ const HmoList = props => {
 												onChange={handleFileChange}
 											/>
 										</div>
-									</div>
+									</div>*/}
 									<div className="form-buttons-w">
 										{add && (
 											<button
