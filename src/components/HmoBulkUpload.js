@@ -35,6 +35,7 @@ const HmoBulkUpload = props => {
 		} else {
 			setLoading(false);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selected]);
 
 	useEffect(() => {
@@ -45,6 +46,7 @@ const HmoBulkUpload = props => {
 				console.log(e);
 				notifyError(e.message || 'could not fetch lab tests');
 			});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const getTariffs = selected => {

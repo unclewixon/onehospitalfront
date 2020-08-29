@@ -189,7 +189,7 @@ let PastHistory = props => {
 									/>
 								</div>
 							</div>
-							<div className="col-sm-4">
+							<div className="col-sm-3">
 								<div className="form-group">
 									<label>Comment</label>
 									<input
@@ -203,6 +203,7 @@ let PastHistory = props => {
 							<div className="col-sm-1" style={{ position: 'relative' }}>
 								<a
 									className="text-danger delete-icon"
+									style={{ margin: '45px 0 0', display: 'block' }}
 									onClick={() => remove(hist.id)}>
 									<i className="os-icon os-icon-cancel-circle" />
 								</a>

@@ -129,6 +129,7 @@ const Departments = props => {
 		try {
 			const rs = await request(`departments`, 'GET', true);
 			props.loadDepartments(rs);
+			console.log(rs);
 			setDataLoaded(true);
 		} catch (error) {
 			setDataLoaded(true);

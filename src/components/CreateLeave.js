@@ -2,14 +2,14 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
-import waiting from '../assets/images/waiting.gif';
-import { get_all_leave_category } from '../actions/settings';
-import { notifySuccess, notifyError } from './../services/notify';
-
-import { request } from '../services/utilities';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import { withRouter } from 'react-router-dom';
+
+import waiting from '../assets/images/waiting.gif';
+import { get_all_leave_category } from '../actions/settings';
+import { notifySuccess, notifyError } from './../services/notify';
+import { request } from '../services/utilities';
 
 const CreateLeave = ({
 	get_all_leave_category,

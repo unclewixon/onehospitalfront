@@ -28,7 +28,7 @@ const HmoList = props => {
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, add }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
-	const [logo, setLogo] = useState(null);
+	// const [logo, setLogo] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [adding, setAdding] = useState(false);
 
@@ -44,7 +44,7 @@ const HmoList = props => {
 		data.append('email', email);
 		data.append('phoneNumber', phoneNumber);
 		data.append('address', address);
-		data.append('logo', logo);
+		// data.append('logo', logo);
 		setAdding(true);
 		props.addHmo(data).then(response => {
 			setState({ ...initialState });
@@ -60,7 +60,7 @@ const HmoList = props => {
 		EditedData.append('email', email);
 		EditedData.append('phoneNumber', phoneNumber);
 		EditedData.append('address', address);
-		EditedData.append('logo', logo);
+		// EditedData.append('logo', logo);
 		EditedData.append('id', data.id);
 		console.log(EditedData);
 		props

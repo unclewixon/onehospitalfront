@@ -563,3 +563,35 @@ export const getAge = dob => {
 
 	return `${years}years ${days}days`;
 };
+
+export const groupBy = function(xs, key) {
+	return xs.reduce(function(rv, x) {
+		(rv[x[key]] = rv[x[key]] || []).push(x);
+		return rv;
+	}, {});
+};
+
+export const checkVaccine = data => {
+	if (!data.date_administered) {
+		if (moment().isSame(data.date_due, 'day')) {
+			return 'yellow';
+		} else if (moment().isAfter(data.date_due)) {
+			return 'red';
+		} else if (moment().isBefore(data.date_due)) {
+			return 'grey';
+		}
+	}
+	return 'green';
+};
+
+export const vaccineNotDue = data => {
+	return !data.date_administered && moment().isBefore(data.date_due);
+};
+
+export const vaccineMissed = data => {
+	return (
+		!data.date_administered &&
+		!moment().isSame(data.date_due, 'day') &&
+		moment().isAfter(data.date_due)
+	);
+};

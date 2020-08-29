@@ -38,6 +38,14 @@ const PatientMenu = ({ location }) => {
 					</Link>
 				</li>
 				<li>
+					<Link to={`${location.pathname}#immunization-chart`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout" />
+						</div>
+						<span>Immunization Chart</span>
+					</Link>
+				</li>
+				<li>
 					<Link to={`${location.pathname}#anc-visit-entry`}>
 						<div className="icon-w">
 							<div className="os-icon os-icon-layout" />
@@ -63,14 +71,6 @@ const PatientMenu = ({ location }) => {
 							<div className="os-icon os-icon-plus-circle" />
 						</div>
 						<span>Antenatal</span>
-					</Link>
-				</li>
-				<li>
-					<Link to={`${location.pathname}#enroll-immunization`}>
-						<div className="icon-w">
-							<div className="os-icon os-icon-plus-circle" />
-						</div>
-						<span>Immunization</span>
 					</Link>
 				</li>
 				<li>
@@ -138,14 +138,6 @@ const PatientMenu = ({ location }) => {
 							<div className="os-icon os-icon-layout" />
 						</div>
 						<span>Procedure</span>
-					</Link>
-				</li>
-				<li>
-					<Link to={`${location.pathname}#immunization`}>
-						<div className="icon-w">
-							<div className="os-icon os-icon-layout" />
-						</div>
-						<span>Immunization</span>
 					</Link>
 				</li>
 				<li className="sub-header">

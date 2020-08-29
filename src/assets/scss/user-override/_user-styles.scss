@@ -378,7 +378,8 @@ button {
 
 .ant-popover {
 	&.download-roster,
-	&.upload-roster {
+	&.upload-roster,
+	&.view-vaccine {
 		.ant-popover-inner-content {
 			padding: 0;
 		}
