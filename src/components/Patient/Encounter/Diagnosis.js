@@ -112,8 +112,9 @@ let Diagnosis = props => {
 										</div>
 									</div>
 									<div className="row">
-										<div className="col-md-5">
+										<div className="col-md-6">
 											<div className="form-group">
+												<label>Enter Diagnosis</label>
 												<Controller
 													as={
 														<AsyncSelect
@@ -140,8 +141,9 @@ let Diagnosis = props => {
 												/>
 											</div>
 										</div>
-										<div className="col-md-3">
+										<div className="col-md-2">
 											<div className="form-group">
+												<label>Select Type</label>
 												<Controller
 													as={
 														<Select
@@ -164,9 +166,9 @@ let Diagnosis = props => {
 												/>
 											</div>
 										</div>
-										<div className="col-md-2">
+										<div className="col-md-3">
 											<div className="form-group">
-												Comment
+												<label>Comment</label>
 												<input
 													type="text"
 													placeholder="Comment"
@@ -179,6 +181,7 @@ let Diagnosis = props => {
 										<div className="col-md-1" style={{ position: 'relative' }}>
 											<a
 												className="text-danger delete-icon"
+												style={{ margin: '45px 0 0', display: 'block' }}
 												onClick={() => remove(dia.id)}>
 												<i className="os-icon os-icon-cancel-circle" />
 											</a>
@@ -189,10 +192,10 @@ let Diagnosis = props => {
 						})}
 					</div>
 					{data.length > 0 && (
-						<div className="col-sm-6">
-							<div className="form-group">
-								{/* <label>Existing Diagnoses</label> */}
-							</div>
+						<div>
+							{/* <div className="form-group">
+								<label>Existing Diagnoses</label>
+							</div> */}
 						</div>
 					)}
 				</div>
