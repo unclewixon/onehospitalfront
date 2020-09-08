@@ -149,7 +149,10 @@ function PatientNOKForm(props) {
 				}
 			} catch (e) {
 				setSubmitting(false);
-				notifyError(e.message || 'could not save patient record');
+				const _message = e.message
+					.map(m => Object.values(m.constraints).join(', '))
+					.join(', ');
+				notifyError(_message || 'could not save patient record');
 			}
 		}
 	};

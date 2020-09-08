@@ -13,12 +13,13 @@ import ProfileBlock from '../components/ProfileBlock';
 import { confirmAction } from '../services/utilities';
 // import EnrollAntenatal from '../components/Patient/EnrollAntenatal';
 import PatientDataUpload from '../components/Patient/PatientDataUpload';
-const EnrollImmunization = lazy(() =>
-	import('../components/Patient/EnrollImmunization')
-);
-const PatientImmunization = lazy(() =>
-	import('../components/Patient/PatientImmunization')
-);
+
+// const EnrollImmunization = lazy(() =>
+// 	import('../components/Patient/EnrollImmunization')
+// );
+// const PatientImmunization = lazy(() =>
+// 	import('../components/Patient/PatientImmunization')
+// );
 const Dashboard = lazy(() => import('../components/Patient/Dashboard'));
 const Lab = lazy(() => import('../components/Patient/Lab'));
 const Encounters = lazy(() => import('../components/Patient/Encounters'));
@@ -72,6 +73,9 @@ const PatientAdmission = lazy(() =>
 	import('../components/Patient/PatientAdmission')
 );
 const EditPatient = lazy(() => import('../components/Patient/EditPatient'));
+const ImmunizationChart = lazy(() =>
+	import('../components/Patient/ImmunizationChart')
+);
 
 const storage = new SSRStorage();
 
@@ -133,10 +137,8 @@ const Page = ({ location }) => {
 			return <EnrollAntenatalPatient />;
 		case 'upload-document':
 			return <PatientDataUpload />;
-		case 'enroll-immunization':
-			return <EnrollImmunization />;
-		case 'immunization':
-			return <PatientImmunization />;
+		case 'immunization-chart':
+			return <ImmunizationChart />;
 		default:
 			return <Dashboard />;
 	}

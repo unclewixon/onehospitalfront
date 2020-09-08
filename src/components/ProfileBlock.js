@@ -1,14 +1,18 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
 
 import background from '../assets/images/b3.jpeg';
 import profilepix from '../assets/images/a6.jpeg';
 
-import { getAge } from '../services/utilities';
+import { getAge, request } from '../services/utilities';
+import { patientAPI } from '../services/constants';
+import { notifySuccess, notifyError } from './../services/notify';
+import waiting from '../assets/images/waiting.gif';
 
-const ProfileBlock = ({ location, patient, noEdits, profile }) => {
+const ProfileBlock = ({ location, history, patient, noEdits, profile }) => {
+	const [submitting, setSubmitting] = useState(false);
 	// const [dropdown, setDropdown] = useState(false);
 	// const history = useHistory();
 
@@ -23,7 +27,33 @@ const ProfileBlock = ({ location, patient, noEdits, profile }) => {
 	// 	confirmAction(goToStartAdmission, '', 'You want to start admission');
 	// };
 
-	console.log(patient?.date_of_birth);
+	console.log(patient);
+
+	const enrollImmunization = async () => {
+		const result = window.confirm('Enroll into immunization?');
+		if (result) {
+			try {
+				setSubmitting(true);
+				const data = { patient_id: patient.id };
+				const url = `${patientAPI}/immunization/enroll`;
+				const rs = await request(url, 'POST', true, data);
+				if (rs.success) {
+					setSubmitting(false);
+					notifySuccess(
+						`you have enrolled ${patient.other_names} into immunization`
+					);
+					history.push(`${location.pathname}#immunization-chart`);
+				} else {
+					setSubmitting(false);
+					notifyError(rs.message);
+				}
+			} catch (error) {
+				setSubmitting(false);
+				notifyError(error.message || 'Could not add leave request');
+			}
+		}
+	};
+
 	return (
 		<div
 			className="card-header bg-dark bg-img p-0 no-border"
@@ -52,9 +82,9 @@ const ProfileBlock = ({ location, patient, noEdits, profile }) => {
 										<div className="text-fade text-sm">
 											<span className="m-r">
 												<strong>Date of Birth: </strong>
-												{`${moment(patient?.date_of_birth).format(
+												{`${moment(new Date(patient?.date_of_birth)).format(
 													'D-MMM-YYYY'
-												)} (${getAge(patient?.date_of_birth)})`}
+												)} (${getAge(new Date(patient?.date_of_birth))})`}
 											</span>
 										</div>
 									</div>
@@ -70,27 +100,52 @@ const ProfileBlock = ({ location, patient, noEdits, profile }) => {
 							</div>
 						</div>
 					</div>
-					<div className="align-items-center d-flex p-4">
-						{!noEdits && (
-							<div className="m-2">
-								<Link
-									className="btn btn-primary btn-sm"
-									to={`${location.pathname}#edit-profile`}>
-									<i className="os-icon os-icon-edit"></i>
-									<span className=" ml-2">Edit Profile</span>
-								</Link>
+					<div className="p-4">
+						<div className="row">
+							<div className="col-md-6 align-items-center d-flex">
+								{!noEdits && (
+									<div className="m-2">
+										<Link
+											className="btn btn-primary btn-sm"
+											to={`${location.pathname}#edit-profile`}>
+											<i className="os-icon os-icon-edit"></i>
+											<span className=" ml-2">Edit Profile</span>
+										</Link>
+									</div>
+								)}
+								{!noEdits && (
+									<div className="m-2">
+										<Link
+											className="btn btn-success btn-sm"
+											to={`${location.pathname}#upload-document`}>
+											<i className="os-icon os-icon-documents-03"></i>
+											<span className="ml-2">Upload Document</span>
+										</Link>
+									</div>
+								)}
 							</div>
-						)}
-						{!noEdits && (
-							<div className="m-2">
-								<Link
-									className="btn btn-success btn-sm"
-									to={`${location.pathname}#upload-document`}>
-									<i className="os-icon os-icon-documents-03"></i>
-									<span className="ml-2">Upload Document</span>
-								</Link>
+						</div>
+						<div className="row">
+							<div className="col-md-6 align-items-center d-flex">
+								{!noEdits && (
+									<div className="m-2">
+										<a
+											className="btn btn-primary btn-sm text-white"
+											onClick={() => enrollImmunization()}
+											disabled={submitting}>
+											<i className="os-icon os-icon-plus-circle" />
+											<span className="ml-2">
+												{submitting ? (
+													<img src={waiting} alt="submitting" />
+												) : (
+													'Enroll Immunization'
+												)}
+											</span>
+										</a>
+									</div>
+								)}
 							</div>
-						)}
+						</div>
 					</div>
 
 					{/* {profile && (

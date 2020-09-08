@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import avatar1 from '../../assets/images/placeholder.jpg';
 import HrMenu from './HrMenu';
 import InventoryMenu from './InventoryMenu';
-import SettingsMenu from './SettingsMenu';
+// import SettingsMenu from './SettingsMenu';
 import FrontDeskMenu from './FrontDeskMenu';
 import HMOMenu from './HMOMenu';
 import DoctorMenu from './DoctorMenu';

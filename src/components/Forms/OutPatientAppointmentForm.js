@@ -1,21 +1,24 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
-import waiting from '../../assets/images/waiting.gif';
 import { useForm } from 'react-hook-form';
-import { request } from '../../services/utilities';
-import { notifyError, notifySuccess } from '../../services/notify';
 import { useDispatch } from 'react-redux';
 import { connect } from 'react-redux';
-import { closeModals } from '../../actions/general';
 import DatePicker from 'react-datepicker';
+
+import waiting from '../../assets/images/waiting.gif';
+import { request } from '../../services/utilities';
+import { notifyError, notifySuccess } from '../../services/notify';
+import { closeModals } from '../../actions/general';
 import { addNewPatient } from '../../actions/patient';
 // import { addTransaction } from '../../actions/transaction';
 
 function OutPatientAppointmentForm(props) {
 	const { register, handleSubmit, setValue, watch } = useForm();
 	const [submitting, setSubmitting] = useState(false);
+
 	const values = watch();
 	const dispatch = useDispatch();
+
 	const handleInputChange = e => {
 		const { name, value } = e.target;
 		setValue(name, value);
