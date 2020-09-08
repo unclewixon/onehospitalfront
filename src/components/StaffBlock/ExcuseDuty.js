@@ -34,7 +34,6 @@ const ExcuseDuty = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 			const res = await request(`hr/leave-management/excuse-duty`, 'GET', true);
 			loadStaffLeave(res);
 			setSearching(false);
-			notifySuccess('Successful fetching excuse duties');
 		} catch (error) {
 			setSearching(false);
 			notifyError('Could not fetch excuse duties');
@@ -69,12 +68,12 @@ const ExcuseDuty = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 			<div className="col-sm-12">
 				<div className="element-wrapper">
 					<div className="element-actions">
-						<Link
+						<button
 							className="btn btn-primary btn-sm text-white"
-							to={`${location.pathname}#create-excuse`}>
+							to={`${location.pathname}/new`}>
 							<i className="os-icon os-icon-ui-22" />
 							<span>New Excuse Duty</span>
-						</Link>
+						</button>
 					</div>
 					<h6 className="element-header">Excuse Duty</h6>
 					{activeRequest ? (

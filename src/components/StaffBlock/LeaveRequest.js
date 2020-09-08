@@ -37,7 +37,6 @@ const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 					: [];
 			loadStaffLeave(filteredRes);
 			setSearching(false);
-			notifySuccess('Successful fetching leave applications');
 		} catch (error) {
 			setSearching(false);
 			notifyError('Could not fetch leave applications');
@@ -74,7 +73,7 @@ const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 					<div className="element-actions">
 						<Link
 							className="btn btn-primary btn-sm text-white"
-							to={`${location.pathname}/create-leave`}>
+							to={`${location.pathname}/new`}>
 							<i className="os-icon os-icon-ui-22" />
 							<span>Apply for leave</span>
 						</Link>

@@ -55,12 +55,17 @@ const MyAccount = ({ match, staff }) => {
 						/>
 						<Route
 							exact
+							path={`${match.url}/excuse-duty/new`}
+							component={CreateExcuseDuty}
+						/>
+						<Route
+							exact
 							path={`${match.url}/leave-request`}
 							component={LeaveRequest}
 						/>
 						<Route
 							exact
-							path={`${match.url}/leave-request/create-leave`}
+							path={`${match.url}/leave-request/new`}
 							component={CreateLeave}
 						/>
 						<Route
