@@ -19,14 +19,15 @@ class ClinicalLabItem extends Component {
 	doApproveResult = data => {
 		request(`patient/request/${data.id}/approve-result`, 'GET', true)
 			.then(res => {
-				if (res.data.success) {
+				if (res.success) {
 					notifySuccess('Result has been approved');
 					this.props.refresh();
 				} else {
-					notifyError(res.data.message);
+					notifyError(res.message);
 				}
 			})
 			.catch(error => {
+				console.log(error);
 				notifyError('Error approving result	');
 			});
 	};

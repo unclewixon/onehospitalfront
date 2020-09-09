@@ -75,7 +75,8 @@ class AllRequest extends Component {
 	};
 
 	doFilter = e => {
-		e.preventDefault();
+		if (e) e.preventDefault();
+
 		this.setState({ filtering: true });
 
 		this.fetchClinicalLab(() =>
@@ -250,7 +251,7 @@ class AllRequest extends Component {
 																	lab={lab}
 																	index={index}
 																	modalClick={LAB => this.modalFunction(LAB)}
-																	refresh={this.fetchClinicalLab()}
+																	refresh={e => this.doFilter(e)}
 																/>
 															);
 														})}
