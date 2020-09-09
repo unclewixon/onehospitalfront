@@ -229,6 +229,12 @@ class AllRequest extends Component {
 															<div className="fht-cell"></div>
 														</th>
 														<th>
+															<div className="th-inner sortable both">
+																Approval Status
+															</div>
+															<div className="fht-cell"></div>
+														</th>
+														<th>
 															<div className="th-inner "></div>
 															<div className="fht-cell"></div>
 														</th>
@@ -244,6 +250,7 @@ class AllRequest extends Component {
 																	lab={lab}
 																	index={index}
 																	modalClick={LAB => this.modalFunction(LAB)}
+																	refresh={this.fetchClinicalLab()}
 																/>
 															);
 														})}

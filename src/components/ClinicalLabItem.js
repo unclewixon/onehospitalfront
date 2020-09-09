@@ -2,6 +2,9 @@
 import React, { Component } from 'react';
 import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
+import { Can } from './common/Can';
+import { notifyError, notifySuccess } from '../services/notify';
+import { confirmAction, request } from '../services/utilities';
 
 class ClinicalLabItem extends Component {
 	state = {
@@ -12,6 +15,31 @@ class ClinicalLabItem extends Component {
 			collapse: !prevState.collapse,
 		}));
 	};
+
+	doApproveResult = data => {
+		request(`patient/request/${data.id}/approve-result`, 'GET', true)
+			.then(res => {
+				if (res.data.success) {
+					notifySuccess('Result has been approved');
+					this.props.refresh();
+				} else {
+					notifyError(res.data.message);
+				}
+			})
+			.catch(error => {
+				notifyError('Error approving result	');
+			});
+	};
+
+	confirmApproval = data => {
+		confirmAction(
+			this.doApproveResult,
+			data,
+			'You want to approve this result',
+			'Are you sure?'
+		);
+	};
+
 	render() {
 		const { collapse } = this.state;
 		const { lab, modalClick, index } = this.props;
@@ -52,6 +80,11 @@ class ClinicalLabItem extends Component {
 							{lab.created_by ? lab.created_by : 'No yet available'}
 						</a>
 					</td>
+					<td className="flex">
+						<a className="item-title text-color">
+							{lab.status === 0 ? 'Pending Approval' : 'Approved'}
+						</a>
+					</td>
 
 					<td className="text-right row-actions">
 						<Tooltip title="Fill Request">
@@ -65,6 +98,17 @@ class ClinicalLabItem extends Component {
 								<i className="os-icon os-icon-folder-plus" />
 							</a>
 						</Tooltip>
+						<Can I="approve-lab-result" on="all">
+							{lab.status === 0 && (
+								<Tooltip title="Approve Result">
+									<a
+										className="secondary"
+										onClick={() => this.confirmApproval(lab)}>
+										<i className="os-icon os-icon-thumbs-up" />
+									</a>
+								</Tooltip>
+							)}
+						</Can>
 					</td>
 				</tr>
 				{collapse ? null : (

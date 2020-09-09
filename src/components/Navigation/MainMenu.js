@@ -99,7 +99,10 @@ class MainMenu extends Component {
 						<span>NAVIGATION</span>
 					</li>
 					{role === 'front-desk' && <FrontDeskMenu />}
-					{role === 'lab-attendant' && <ClinicalLabMenu />}
+					{(role === 'lab-attendant' ||
+						role === 'lab-officer' ||
+						role === 'lab-supervisor' ||
+						role === 'lab-hod') && <ClinicalLabMenu />}
 					{role === 'accountant' && <PayPointMenu />}
 					{role === 'pharmacy' && <PharmacyMenu />}
 					{role === 'radiology' && <RadiologyMenu />}
@@ -108,7 +111,6 @@ class MainMenu extends Component {
 					{role === 'nurse' && <NurseMenu />}
 					{role === 'doctor' && <DoctorMenu />}
 					{role === 'hr' && <HrMenu />}
-
 					{role === 'inventory' && <InventoryMenu />}
 					{role === 'cafeteria' && <CafeteriaMenu />}
 					{role === 'hmo' && <HMOMenu />}
