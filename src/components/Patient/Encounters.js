@@ -17,7 +17,6 @@ class Encounters extends Component {
 	};
 
 	doOpenEncounter = (appointment, patient) => {
-		console.log(appointment);
 		this.props.openEncounter(true, { appointmentId: appointment.id, patient });
 	};
 

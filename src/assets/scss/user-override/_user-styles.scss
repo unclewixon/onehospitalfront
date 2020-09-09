@@ -481,3 +481,7 @@ button {
 .encounter-menu {
 	display: flex;
 }
+.encounter-box {
+	height: 500px;
+	overflow-y: scroll;
+}

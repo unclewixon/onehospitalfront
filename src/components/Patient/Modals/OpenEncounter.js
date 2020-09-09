@@ -163,7 +163,7 @@ class OpenEncounter extends Component {
 							/>
 							<div className="content-w">
 								<div className="content-i">
-									<div className="content-box">
+									<div className="content-box encounter-box">
 										<EncounterTabs
 											index={eIndex}
 											next={this.next}
