@@ -118,6 +118,7 @@ class App extends Component {
 													/>
 													<Route path="/doctor" component={DoctorHome} />
 													<Route path="/front-desk" component={FrontDesk} />
+
 													<Route path="/nurse" component={Nurse} />
 													<Route path="/pharmacy" component={Pharmacy} />
 													<Route path="/pharmacy2" component={Pharmacy2} />

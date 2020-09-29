@@ -29,6 +29,14 @@ const AllPatients = lazy(() =>
 	import('../../components/FrontDesk/AllPatients')
 );
 
+const AllInPatients = lazy(() =>
+	import('../../components/FrontDesk/AllInPatients')
+);
+
+const AllNotifications = lazy(() =>
+	import('../../components/FrontDesk/AllNotifications')
+);
+
 const FrontDesk = props => {
 	const [title, setTitle] = useState('Dashboard');
 	const [listenning, setListenning] = useState(false);
@@ -114,6 +122,14 @@ const FrontDesk = props => {
 											<Route
 												path={`${match.url}/all-patients`}
 												component={AllPatients}
+											/>
+											<Route
+												path={`${match.url}/all-in-patients`}
+												component={AllInPatients}
+											/>
+											<Route
+												path={`${match.url}/all-notifications`}
+												component={AllNotifications}
 											/>
 											<Route component={NoMatch} />
 										</Switch>
