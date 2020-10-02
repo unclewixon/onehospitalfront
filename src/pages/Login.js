@@ -31,6 +31,7 @@ import { loadBanks, loadCountries } from '../actions/utility';
 import ability from '../services/ability';
 import { AbilityBuilder } from '@casl/ability';
 import { useEffect } from 'reactn';
+import '../pages/login.css';
 
 const storage = new SSRStorage();
 
@@ -158,7 +159,7 @@ let Login = props => {
 				});
 			}
 		} catch (e) {
-			// console.log(e)
+			console.log(e);
 			setState({ ...state, submitting: false });
 			throw new SubmissionError({
 				_error: e.message || 'could not login user',
@@ -174,112 +175,103 @@ let Login = props => {
 	const { error, handleSubmit } = props;
 
 	return (
-		// <div style={{ width: '100%', height: '100%' }}>
-		<section className="fxt-template-animation fxt-template-layout9 has-animation">
-			<div className="">
-				<div className="row align-items-center justify-content-center">
-					<div className="col-lg-4">
-						<div className="fxt-header">
-							<a className="fxt-logo">
-								<img
-									src={require('../assets/images/logo.svg')}
-									alt="Logo"
-									style={{ height: '20%', width: '100%' }}
-								/>
-							</a>
-						</div>
+		<section className="fxt-animation template">
+			<div className="bg-overlay">
+				<div className="fxt-content">
+					<div
+						className="logo-header"
+						style={{ textAlign: 'center', marginBottom: '50px' }}>
+						<a href="#" className="fxt-logo">
+							<img src={require('../assets/images/logo.png')} alt="logo" />
+						</a>
 					</div>
-					<div className="col-lg-6">
-						<div className="fxt-content">
-							<h2>Login into your account</h2>
-							<div className="fxt-form">
-								<form onSubmit={handleSubmit(doLogin)}>
-									{error && (
-										<div
-											className="alert alert-danger"
-											dangerouslySetInnerHTML={{
-												__html: `<strong>Error!</strong> ${error}`,
-											}}
-										/>
-									)}
-									<div className="form-group">
-										<CSSTransition
-											in={loaded}
-											timeout={100}
-											classNames="input-animation-1">
-											<Field
-												id="username"
-												name="username"
-												component={renderTextInput}
-												type="text"
-												placeholder="Enter your username"
-											/>
-										</CSSTransition>
-									</div>
-									<div className="">
-										<CSSTransition
-											in={loaded}
-											timeout={200}
-											classNames="input-animation-2">
-											{/* <div className="password"> */}
-											<Field
-												name="password"
-												component={renderTextInput}
-												type="password"
-												placeholder="Enter your password"
-												className="passwordInput"
-											/>
-											{/* <FaEye /> */}
-											{/* <FaEyeSlash /> */}
-											{/* </div> */}
-										</CSSTransition>
-									</div>
-									<div className="form-group">
-										<CSSTransition
-											in={loaded}
-											timeout={300}
-											classNames="input-animation-3">
-											<div className="fxt-checkbox-area">
-												<div className="checkbox">
-													<input
-														className="checkbox1"
-														type="checkbox"
-														checked={rememberMe}
-														onChange={ToggleRememberMe}
-													/>
-													<label htmlFor="checkbox1">Keep me logged in</label>
-												</div>
-												<a href="#" className="switcher-text">
-													Forgot Password
-												</a>
-											</div>
-										</CSSTransition>
-									</div>
-									<div className="form-group">
-										<CSSTransition
-											in={loaded}
-											timeout={400}
-											classNames="input-animation-4">
-											<button
-												className="fxt-btn-fill"
-												disabled={submitting}
-												type="submit">
-												{submitting ? (
-													<img src={waiting} alt="submitting" />
-												) : (
-													'Log me in'
-												)}
-											</button>
-										</CSSTransition>
-									</div>
-								</form>
+					<div className="fxt-form">
+						<p>Login into your account</p>
+						<form onSubmit={handleSubmit(doLogin)}>
+							{error && (
+								<div
+									className="alert alert-danger"
+									dangerouslySetInnerHTML={{
+										__html: `<strong>Error!</strong> ${error}`,
+									}}
+								/>
+							)}
+
+							<div className="form-group">
+								<div className="form-group">
+									<Field
+										id="username"
+										name="username"
+										component={renderTextInput}
+										type="text"
+										placeholder="Enter your username"
+										className="form-control"
+									/>
+								</div>
 							</div>
+							<div className="">
+								<div className="fxt-transformY-50 fxt-transition-delay-2">
+									<Field
+										name="password"
+										component={renderTextInput}
+										type="password"
+										placeholder="Enter your password"
+										className="form-control"
+									/>
+									<i
+										toggle="#password"
+										className="fa fa-fw fa-eye toggle-password field-icon"
+									/>
+								</div>
+							</div>
+							<div className="form-group">
+								<div className="fxt-transformY-50 fxt-transition-delay-3">
+									<div className="fxt-checkbox-area">
+										<div className="checkbox">
+											<input
+												className="checkbox1"
+												type="checkbox"
+												checked={rememberMe}
+												onChange={ToggleRememberMe}
+											/>
+											<label htmlFor="checkbox1">Keep me logged in</label>
+										</div>
+										<a href="forgot-password-23.html" className="switcher-text">
+											Forgot Password
+										</a>
+									</div>
+								</div>
+							</div>
+							<div className="form-group">
+								<div className="fxt-transformY-50 fxt-transition-delay-9">
+									<button
+										className="fxt-btn-fill"
+										disabled={submitting}
+										type="submit">
+										{submitting ? (
+											<img src={waiting} alt="submitting" />
+										) : (
+											'Log me in'
+										)}
+									</button>
+								</div>
+							</div>
+						</form>
+					</div>
+
+					<div className="fxt-footer">
+						<div className>
+							<p>
+								Don't have an account?
+								<a href="register-23.html" className="switcher-text2">
+									Register
+								</a>
+							</p>
 						</div>
 					</div>
 				</div>
 			</div>
 		</section>
-		// </div>
 	);
 };
 

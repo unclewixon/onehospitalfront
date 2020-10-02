@@ -192,13 +192,15 @@ class AllRequest extends Component {
 								<div className="element-box p-0">
 									<div className="table-responsive">
 										{loading ? (
-											<tbody>
-												<tr>
-													<td colSpan="4" className="text-center">
-														<img alt="searching" src={searchingGIF} />
-													</td>
-												</tr>
-											</tbody>
+											<table>
+												<tbody>
+													<tr>
+														<td colSpan="4" className="text-center">
+															<img alt="searching" src={searchingGIF} />
+														</td>
+													</tr>
+												</tbody>
+											</table>
 										) : (
 											<table className="table table-striped">
 												<thead>
