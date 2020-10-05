@@ -8,14 +8,14 @@ export class Inventory extends Component {
 			<div className="content-i">
 				<div className="content-box">
 					<div className="element-wrapper compact pt-4">
-						<div className="element-actions">
+						{/* <div className="element-actions">
 							<Link
 								className="btn btn-primary btn-sm"
 								to="/cafeteria/inventory">
 								<i className="os-icon os-icon-ui-22"></i>
 								Items
 							</Link>
-						</div>
+						</div> */}
 
 						<div className="element-box-tp">
 							<h6 className="element-header">Item</h6>
@@ -24,24 +24,24 @@ export class Inventory extends Component {
 									<div className="padded-lg">
 										<div className="projects-list">
 											<div className="element-wrapper">
-												<div className="row">
-													<div className="col-sm-4 col-xxxl-3">
-														<a className="element-box el-tablo" href="#">
+												{/* <div className="row"> */}
+												{/* <div className="col-sm-4 col-xxxl-3"> */}
+												{/* <a className="element-box el-tablo" href="#">
 															<div className="label">Products Sold</div>
 															<div className="value">57</div>
 															<div className="trending trending-up-basic">
 																<span>12%</span>
 																<i className="os-icon os-icon-arrow-up2"></i>
 															</div>
-														</a>
-													</div>
-													<div className="col-sm-4 col-xxxl-3">
+														</a> */}
+												{/* </div> */}
+												{/* <div className="col-sm-4 col-xxxl-3">
 														<a className="element-box el-tablo" href="#">
 															<div className="label">Gross Profit</div>
 															<div className="value">$457</div>
 														</a>
-													</div>
-													<div className="col-sm-4 col-xxxl-3">
+													</div> */}
+												{/* <div className="col-sm-4 col-xxxl-3">
 														<a className="element-box el-tablo" href="#">
 															<div className="label">New Customers</div>
 															<div className="value">125</div>
@@ -50,17 +50,17 @@ export class Inventory extends Component {
 																<i className="os-icon os-icon-arrow-down"></i>
 															</div>
 														</a>
-													</div>
-													<div className="d-none d-xxxl-block col-xxxl-3">
+													</div> */}
+												{/* <div className="d-none d-xxxl-block col-xxxl-3">
 														<a className="element-box el-tablo" href="#">
 															<div className="label">Refunds Processed</div>
 															<div className="value">$294</div>
 														</a>
-													</div>
-												</div>
+													</div> */}
+												{/* </div> */}
 												<div className="element-box">
 													<form>
-														<h5 className="element-box-header">New Sale</h5>
+														{/* <h5 className="element-box-header">New Sale</h5> */}
 														<div className="row">
 															<div className="col-sm-12">
 																<div className="form-group">
@@ -217,6 +217,7 @@ export class Inventory extends Component {
 													</select>
 												</form>
 											</div>
+
 											<h6 className="element-header">Sales Calculator</h6>
 											<div className="profile-tile">
 												<a

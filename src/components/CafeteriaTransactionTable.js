@@ -59,20 +59,20 @@ const CafeteriaTransactionTable = props => {
 	}, [loaded, props.orders]);
 
 	return (
-		<div className="element-box">
+		<div className="content-panel compact" style={{ backgroundColor: '#fff' }}>
 			<div className="project-box">
 				<div className="project-info">
-					<h6 className="element-header">Sales Calculator</h6>
+					{/* <h6 className="element-header">Sales Calculator</h6> */}
 					<div className="element-box-tp">
 						<table className="table table-lightborder">
-							<thead>
+							{/* <thead>
 								<tr>
 									<th>Item</th>
 									<th>Quantity</th>
 									<th className="text-center">Price(&#x20A6;)</th>
 									<th>action</th>
 								</tr>
-							</thead>
+							</thead> */}
 							<tbody>
 								{orders &&
 									orders.map(order => {
@@ -186,28 +186,27 @@ const CafeteriaTransactionTable = props => {
 								</tr>
 							</tbody>
 						</table>
-						<form onSubmit={handleSubmit} className="form row">
-							<select
-								className="form-control col-md-8"
-								onChange={handleType}
-								required>
-								<option value="">Choose Payment type ...</option>
-								{paymentType &&
-									paymentType.map(type => {
-										return (
-											<option value={type.value} key={type.value}>
-												{type.label}
-											</option>
-										);
-									})}
-							</select>
+						<form onSubmit={handleSubmit} className="form-row">
+							<div className="col-md-8">
+								<select className="form-control" onChange={handleType} required>
+									<option value="">Choose Payment type ...</option>
+									{paymentType &&
+										paymentType.map(type => {
+											return (
+												<option value={type.value} key={type.value}>
+													{type.label}
+												</option>
+											);
+										})}
+								</select>
+							</div>
 
-							<div className="col-md-4 text-right">
+							<div className="col-md-2">
 								<button
 									className={
 										props.submitting
-											? 'btn btn-primary py-2 my-0 ml-2 disabled'
-											: 'btn btn-primary py-2 my-0 ml-2'
+											? 'btn btn-primary  disabled'
+											: 'btn btn-primary '
 									}
 									onClick={e => handleSubmit(e)}>
 									{props.submitting ? (
@@ -215,6 +214,11 @@ const CafeteriaTransactionTable = props => {
 									) : (
 										<span> save</span>
 									)}
+								</button>
+							</div>
+							<div className="col-md-2">
+								<button className="btn btn-primary btn-sm mx-3" type="submit">
+									<i className="os-icon os-icon-ui-22"></i>
 								</button>
 							</div>
 						</form>

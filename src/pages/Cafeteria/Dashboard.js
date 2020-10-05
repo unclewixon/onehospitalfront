@@ -8,6 +8,7 @@ import CafeteriaTransactionTable from '../../components/CafeteriaTransactionTabl
 import size from 'lodash.size';
 import searchingGIF from '../../assets/images/searching.gif';
 import isEmpty from 'lodash.isempty';
+import { connect } from 'react-redux';
 
 const CafeteriaDashboard = () => {
 	const [patients, setPatients] = useState([]);
@@ -201,226 +202,797 @@ const CafeteriaDashboard = () => {
 					<div className="padded-lg">
 						<div className="projects-list">
 							<div className="element-wrapper">
-								<div className="row">
-									<div className="col-sm-4 col-xxxl-3">
-										<a className="element-box el-tablo" href="#">
-											<div className="label">Products Sold</div>
-											<div className="value">57</div>
-										</a>
-									</div>
-									<div className="col-sm-4 col-xxxl-3">
-										<a className="element-box el-tablo">
-											<div className="label">Gross Profit(&#x20A6;)</div>
-											<div className="value">457</div>
-										</a>
-									</div>
-									<div className="col-sm-4 col-xxxl-3">
-										<a className="element-box el-tablo">
-											<div className="label">New Customers</div>
-											<div className="value">125</div>
-										</a>
-									</div>
-									<div className="d-none d-xxxl-block col-xxxl-3">
-										<a className="element-box el-tablo">
-											<div className="label">Refunds Processed (&#x20A6;)</div>
-											<div className="value">294</div>
-										</a>
-									</div>
-								</div>
-								<div className="element-box">
-									<form>
-										<h5 className="element-box-header">New Sale</h5>
-										<div className="row">
-											<div className="col-sm-12">
-												<div className="form-group">
-													<select
-														className="form-control"
-														name="customer"
-														onChange={changeCustomer}>
-														<option value="">Choose Customer ...</option>
-														<option value="staff">Staff</option>
-														<option value="patient">Patient</option>
-														<option value="walk-in">Walk-in</option>
-													</select>
-												</div>
-											</div>
-										</div>
-									</form>
-								</div>
-								<div className="element-box">
-									{['', 'walk-in'].includes(customer) ? null : (
-										<form onSubmit={searchCustomer}>
-											<div className="row">
-												<div className="col-sm-12">
-													{searching && (
-														<div className="searching text-center">
-															<img alt="searching" src={searchingGIF} />
-														</div>
-													)}
-
-													<input
-														className="form-control"
-														id="cust"
-														onChange={handleCustomerChange}
-														autoComplete="off"
-														placeholder={
-															customer === 'staff'
-																? ' Search Staff ...'
-																: 'Search Patient ...'
-														}
-													/>
-
-													{patients &&
-														patients.map(pat => {
-															return (
-																<div
-																	style={{ display: 'flex' }}
-																	key={pat.id}
-																	className="element-box">
-																	<a
-																		onClick={() => patientSet(pat)}
-																		className="ssg-item cursor">
-																		{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
-																		<div
-																			className="item-name"
-																			dangerouslySetInnerHTML={{
-																				__html: `${pat.surname} ${pat.other_names}`,
-																			}}
-																		/>
-																	</a>
-																</div>
-															);
-														})}
-
-													{staffs &&
-														staffs.map(pat => {
-															return (
-																<div
-																	style={{ display: 'flex' }}
-																	key={pat.id}
-																	className="element-box">
-																	<a
-																		onClick={() => patientSet(pat)}
-																		className="ssg-item cursor">
-																		{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
-																		<div
-																			className="item-name"
-																			dangerouslySetInnerHTML={{
-																				__html: `${pat.first_name} ${pat.last_name}`,
-																			}}
-																		/>
-																	</a>
-																</div>
-															);
-														})}
-												</div>
-											</div>
-											{/* <h6 className="element-header"></h6> */}
-										</form>
-									)}
-									<form onSubmit={addItem} id="item">
-										<div className="row">
-											<div className="col-sm-6">
-												{/* <select
-                                                className="form-control rounded"
-                                                name="item"
-                                                onChange={handleChange}
-                                                required>
-                                                <option value="">Choose item ...</option>
-                                                {items &&
-                                                    items.map(item => {
-                                                        return (
-                                                            <option value={item.id} key={item.id}>
-                                                                {item.name}
-                                                            </option>
-                                                        );
-                                                    })}
-                                            </select> */}
-
-												<input
-													className="form-control"
-													onChange={handleCustomerChange}
-													name="item"
-													id="product"
-													placeholder="Search Cafeteria Item"
-													type="text"
-													autoComplete="off"
-												/>
-											</div>
-											<div className="col-sm-5">
-												<input
-													className="form-control h-100 form-control-sm rounded bright"
-													placeholder="Quantity"
-													name="quantity"
-													type="number"
-													min="1"
-													defaultValue={1}
-													required
-													onChange={handleChange}
-												/>
-											</div>
-
-											<button className="btn btn-primary btn-sm" type="submit">
-												<i className="os-icon os-icon-ui-22"></i>
-											</button>
-											<div className="col-sm-12">
-												{itemSearching && (
-													<div className="searching text-center">
-														<img alt="searching" src={searchingGIF} />
+								<div className="inline-profile-tiles">
+									<div className="row">
+										<div className="col-md-12 col-sm-12">
+											<div className="profile-tile profile-tile-inlined">
+												<a className="profile-tile-box">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
 													</div>
-												)}
-
-												{items &&
-													items.map(item => {
-														return (
-															<div
-																style={{ display: 'flex' }}
-																key={item.q_id}
-																className="element-box">
-																<a
-																	onClick={() => itemSet(item)}
-																	className="ssg-item cursor">
-																	{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
-																	<div
-																		className="item-name"
-																		dangerouslySetInnerHTML={{
-																			__html: `${item.q_name}`,
-																		}}
-																	/>
-																</a>
-															</div>
-														);
-													})}
+													<div className="pt-user-name"></div>
+												</a>
 											</div>
 										</div>
-									</form>
+									</div>
+									<div className="row">
+										<div className="col-4 col-sm-3">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													data-container="body"
+													data-toggle="popover"
+													data-placement="top"
+													data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br />
+														Mailay
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar3.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Ben
+														<br /> Gossman
+													</div>
+												</a>
+											</div>
+										</div>
+									</div>
+
+									<div className="row">
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar3.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Ben
+														<br /> Gossman
+													</div>
+												</a>
+											</div>
+										</div>
+									</div>
+
+									<div className="row">
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar3.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Ben
+														<br /> Gossman
+													</div>
+												</a>
+											</div>
+										</div>
+									</div>
+									<div className="row">
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar3.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Ben
+														<br /> Gossman
+													</div>
+												</a>
+											</div>
+										</div>
+									</div>
+									<div className="row">
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar3.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Ben
+														<br /> Gossman
+													</div>
+												</a>
+											</div>
+										</div>
+									</div>
+									<div className="row">
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar3.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Ben
+														<br /> Gossman
+													</div>
+												</a>
+											</div>
+										</div>
+									</div>
+									<div className="row">
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar3.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Ben
+														<br /> Gossman
+													</div>
+												</a>
+											</div>
+										</div>
+									</div>
+									<div className="row">
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar3.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Ben
+														<br /> Gossman
+													</div>
+												</a>
+											</div>
+										</div>
+									</div>
+									<div className="row">
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar1.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Kelly
+														<br /> Neymayers
+													</div>
+												</a>
+											</div>
+										</div>
+										<div className="col-4 col-sm-3 col-xxl-2">
+											<div className="profile-tile profile-tile-inlined">
+												<a
+													className="profile-tile-box"
+													href="users_profile_small.html">
+													<div className="pt-avatar-w">
+														<img alt="" src="img/avatar3.jpg" />
+													</div>
+													<div className="pt-user-name">
+														Ben
+														<br /> Gossman
+													</div>
+												</a>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
+
 				<div className="col-lg-5 b-l-lg">
 					<div className="padded-lg">
 						<div className="element-wrapper">
-							{/* <div className="element-actions">
-                            <form className="form-inline justify-content-sm-end">
-                                <select className="form-control form-control-sm rounded">
-                                    <option value="Pending">Today</option>
-                                    <option value="Active">Last Week</option>
-                                    <option value="Cancelled">Last 30 Days</option>
-                                </select>
-                            </form>
-                        </div> */}
+							<div
+								className="content-panel compact"
+								style={{ backgroundColor: '#fff' }}>
+								<div className="content-panel-close">
+									<i className="os-icon os-icon-close"></i>
+								</div>
+								<div className="element-wrapper">
+									<div className="element-actions actions-only"></div>
 
-							<CafeteriaCustomerDetail
-								customer={selectedCustomer}
-								orderBy={customer}
-							/>
+									<h6 className="element-header">Quick Conversion</h6>
+									<div className="element-box-tp">
+										<form action="#">
+											<div className="row">
+												<div className="col-sm-12">
+													<div className="form-group">
+														<select
+															className="form-control"
+															name="customer"
+															onChange={changeCustomer}>
+															<option value="">Choose Customer ...</option>
+															<option value="staff">Staff</option>
+															<option value="patient">Patient</option>
+															<option value="walk-in">Walk-in</option>
+														</select>
+													</div>
+												</div>
+											</div>
+
+											<div>
+												{['', 'walk-in'].includes(customer) ? null : (
+													<form onSubmit={searchCustomer}>
+														<div className="row">
+															<div className="col-sm-12">
+																{searching && (
+																	<div className="searching text-center">
+																		<img alt="searching" src={searchingGIF} />
+																	</div>
+																)}
+
+																<input
+																	className="form-control"
+																	style={{ marginBottom: '20px' }}
+																	id="cust"
+																	onChange={handleCustomerChange}
+																	autoComplete="off"
+																	placeholder={
+																		customer === 'staff'
+																			? ' Search Staff ...'
+																			: 'Search Patient ...'
+																	}
+																/>
+
+																{patients &&
+																	patients.map(pat => {
+																		return (
+																			<div
+																				style={{ display: 'flex' }}
+																				key={pat.id}
+																				className="element-box">
+																				<a
+																					onClick={() => patientSet(pat)}
+																					className="ssg-item cursor">
+																					<div
+																						className="item-name"
+																						dangerouslySetInnerHTML={{
+																							__html: `${pat.surname} ${pat.other_names}`,
+																						}}
+																					/>
+																				</a>
+																			</div>
+																		);
+																	})}
+
+																{staffs &&
+																	staffs.map(pat => {
+																		return (
+																			<div
+																				style={{ display: 'flex' }}
+																				key={pat.id}
+																				className="element-box">
+																				<a
+																					onClick={() => patientSet(pat)}
+																					className="ssg-item cursor">
+																					<div
+																						className="item-name"
+																						dangerouslySetInnerHTML={{
+																							__html: `${pat.first_name} ${pat.last_name}`,
+																						}}
+																					/>
+																				</a>
+																			</div>
+																		);
+																	})}
+															</div>
+														</div>
+													</form>
+												)}
+												<form onSubmit={addItem} id="item">
+													<div className="row">
+														<div className="col-sm-12">
+															{itemSearching && (
+																<div className="searching text-center">
+																	<img alt="searching" src={searchingGIF} />
+																</div>
+															)}
+
+															{items &&
+																items.map(item => {
+																	return (
+																		<div
+																			style={{ display: 'flex' }}
+																			key={item.q_id}
+																			className="element-box">
+																			<a
+																				onClick={() => itemSet(item)}
+																				className="ssg-item cursor">
+																				<div
+																					className="item-name"
+																					dangerouslySetInnerHTML={{
+																						__html: `${item.q_name}`,
+																					}}
+																				/>
+																			</a>
+																		</div>
+																	);
+																})}
+														</div>
+													</div>
+												</form>
+											</div>
+										</form>
+									</div>
+								</div>
+								<div className="element-wrapper compact">
+									<div className="element-actions actions-only"></div>
+									{/* <h6 className="element-header" style={{ marginTop: '3rem' }}>
+										Order
+									</h6> */}
+									<div className="element-box-tp">
+										<table className="table table-compact smaller text-faded mb-0">
+											<thead>
+												<tr>
+													<th>Item</th>
+													<th>Quantity</th>
+													<th className="text-center">Price(&#x20A6;)</th>
+													<th>action</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>
+														<span>BTC</span>
+														<i className="os-icon os-icon-repeat icon-separator" />
+														<span>USD</span>
+													</td>
+													<td className="text-center">01.08</td>
+													<td className="text-right text-bright">$25.38</td>
+													<td className="text-right text-danger">-$1.23</td>
+												</tr>
+												<tr>
+													<td>
+														<span>RPX</span>
+														<i className="os-icon os-icon-repeat icon-separator" />
+														<span>ETH</span>
+													</td>
+													<td className="text-center">01.07</td>
+													<td className="text-right text-bright">$15.21</td>
+													<td className="text-right text-danger">-$1.13</td>
+												</tr>
+												<tr>
+													<td>
+														<span>LTC</span>
+														<i className="os-icon os-icon-repeat icon-separator"></i>
+														<span>BTC</span>
+													</td>
+													<td className="text-center">01.05</td>
+													<td className="text-right text-bright">$17.43</td>
+													<td className="text-right text-danger">-$2.14</td>
+												</tr>
+												<tr>
+													<td>
+														<span>PRX</span>
+														<i className="os-icon os-icon-repeat icon-separator"></i>
+														<span>LTC</span>
+													</td>
+													<td className="text-center">01.05</td>
+													<td className="text-right text-bright">$23.18</td>
+													<td className="text-right text-danger">-$3.17</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div className="element-wrapper compact"></div>
+							</div>
 							<CafeteriaTransactionTable
 								orders={order}
 								deleteItem={deleteItem}
 								saveSale={saveSale}
 								submitting={submitting}
+							/>
+
+							<CafeteriaCustomerDetail
+								customer={selectedCustomer}
+								orderBy={customer}
 							/>
 						</div>
 					</div>

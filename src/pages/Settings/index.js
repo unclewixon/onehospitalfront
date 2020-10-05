@@ -16,6 +16,7 @@ import ConsultatingRoom from './ConsultatingRoom';
 const Settings = ({ match, location }) => {
 	const [toggle, setToggle] = useState(false);
 	const page = location.pathname.split('/').pop();
+
 	return (
 		<div className={`settings-menu ${toggle ? 'compact-menu' : ''}`}>
 			<div className="ae-side-menu">

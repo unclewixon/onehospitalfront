@@ -49,86 +49,87 @@ TABLE OF CONTENTS
 @import '~@fullcalendar/daygrid/main.css';
 
 /* 1. Theme Variables */
-@import "theme-variables";
+@import 'theme-variables';
 /* 1a. User Override Variables */
-@import "user-override/user-variables";
+@import 'user-override/user-variables';
 /* 2. Theme Mixins */
-@import "theme-mixins";
+@import 'theme-mixins';
 /* 3. Bootstrap Override Styles */
 /* 3a. Override default includes of bootstrap */
-@import "bootstrap-override/bootstrap";
+@import 'bootstrap-override/bootstrap';
 /* 3b. Override bootstrap table styles */
-@import "bootstrap-override/tables";
+@import 'bootstrap-override/tables';
 /* 3c. Override bootstrap form styles */
-@import "bootstrap-override/forms";
+@import 'bootstrap-override/forms';
 /* 3d. Override bootstrap navigation styles */
-@import "bootstrap-override/nav";
+@import 'bootstrap-override/nav';
 /* 3e. Override bootstrap button styles */
-@import "bootstrap-override/buttons";
+@import 'bootstrap-override/buttons';
 /* 3f. Override bootstrap breadcrumbs styles */
-@import "bootstrap-override/breadcrumb";
+@import 'bootstrap-override/breadcrumb';
 /* 3g. Override bootstrap typography styles */
-@import "bootstrap-override/type";
+@import 'bootstrap-override/type';
 /* 3h. Override bootstrap modal styles */
-@import "bootstrap-override/modal";
+@import 'bootstrap-override/modal';
 /* 3h. Override bootstrap popover styles */
-@import "bootstrap-override/popover";
+@import 'bootstrap-override/popover';
 /* 3i. Override bootstrap alerts styles */
-@import "bootstrap-override/alert";
+@import 'bootstrap-override/alert';
 /* 3i. Override bootstrap badges styles */
-@import "bootstrap-override/badge";
+@import 'bootstrap-override/badge';
 /* 4. Overrides for various plugins that are included with this template */
-@import "plugin-overrides";
+@import 'plugin-overrides';
 /* 5. Handy Animations  */
-@import "animations";
+@import 'animations';
 /* 6. User Profile  */
-@import "user_profile";
+@import 'user_profile';
 /* 7. Layout styles */
-@import "layout";
+@import 'layout';
 /* 8. Menu styles */
-@import "menu";
+@import 'menu';
 /* 9. Styles for all element blocks */
-@import "elements";
+@import 'elements';
 /* 10. Helpful little styles */
-@import "utilities";
+@import 'utilities';
 /* 11. Icon Fonts */
-@import "osfont";
+@import 'osfont';
 /* 12. Chat */
-@import "chat";
+@import 'chat';
 /* 13. App - Email */
-@import "app_email";
+@import 'app_email';
 /* 14. App - Projects */
-@import "projects";
+@import 'projects';
 /* 15. App - Full Chat */
-@import "full_chat";
+@import 'full_chat';
 /* 16. Pricing Plans */
-@import "pricing_plans";
+@import 'pricing_plans';
 /* 17. Pipelines */
-@import "pipelines";
+@import 'pipelines';
 /* 18. Dropdowns */
-@import "os_dropdowns";
+@import 'os_dropdowns';
 /* 19. App - TODO */
-@import "todo";
+@import 'todo';
 /* 20. Fancy Selector */
-@import "fancy_selector";
+@import 'fancy_selector';
 /* 21. App - Rentals */
-@import "rentals";
+@import 'rentals';
 /* 22. App - Support */
-@import "support";
+@import 'support';
 /* 23. Onboarding */
-@import "onboarding";
+@import 'onboarding';
 /* 24. Top Bar styles */
-@import "top_bar";
+@import 'top_bar';
 /* 25. Search */
-@import "search";
+@import 'search';
 /* 26. Customizer */
-@import "customizer";
+@import 'customizer';
 /* ##. Dark Color Scheme */
-@import "scheme_dark";
+@import 'scheme_dark';
 /* ##. Responsive Styles */
-@import "responsive";
+@import 'responsive';
 /* ##. User Override Styles */
-@import "user-override/user-styles";
-@import "user-override/modal-slide";
-@import "user-override/patient";
-@import "date_picker";
+@import 'user-override/user-styles';
+@import 'user-override/modal-slide';
+@import 'user-override/patient';
+@import 'date_picker';
+@import 'user-override/custom';
