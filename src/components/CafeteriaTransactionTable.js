@@ -62,17 +62,8 @@ const CafeteriaTransactionTable = props => {
 		<div className="content-panel compact" style={{ backgroundColor: '#fff' }}>
 			<div className="project-box">
 				<div className="project-info">
-					{/* <h6 className="element-header">Sales Calculator</h6> */}
 					<div className="element-box-tp">
 						<table className="table table-lightborder">
-							{/* <thead>
-								<tr>
-									<th>Item</th>
-									<th>Quantity</th>
-									<th className="text-center">Price(&#x20A6;)</th>
-									<th>action</th>
-								</tr>
-							</thead> */}
 							<tbody>
 								{orders &&
 									orders.map(order => {

@@ -9,6 +9,7 @@ import size from 'lodash.size';
 import searchingGIF from '../../assets/images/searching.gif';
 import isEmpty from 'lodash.isempty';
 import { connect } from 'react-redux';
+import { useEffect } from 'react';
 
 const CafeteriaDashboard = () => {
 	const [patients, setPatients] = useState([]);
@@ -30,6 +31,68 @@ const CafeteriaDashboard = () => {
 	const [searching, setSearching] = useState(false);
 	const [itemSearching, setItemSearching] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
+	const [cart, setCart] = useState([]);
+	const [searchTerm, setSearchTerm] = useState('');
+	const [searchResults, setSearchResults] = useState([]);
+
+	useEffect(() => {
+		const results = teams.filter(team =>
+			team.title.toLowerCase().includes(searchTerm.toLowerCase())
+		);
+		console.log(results);
+		setSearchResults(results);
+	}, [searchTerm]);
+
+	const teams = [
+		{
+			id: 1,
+			title: 'Winter body',
+			desc:
+				'Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima, ex.',
+			price: 110,
+			// img: Item1,
+		},
+		{
+			id: 2,
+			title: 'Adidas',
+			desc:
+				'Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima, ex.',
+			price: 80,
+			// img: Item2,
+		},
+		{
+			id: 3,
+			title: 'Vans',
+			desc:
+				'Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima, ex.',
+			price: 120,
+			// img: Item3,
+		},
+		{
+			id: 4,
+			title: 'White',
+			desc:
+				'Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima, ex.',
+			price: 260,
+			// img: Item4,
+		},
+		{
+			id: 5,
+			title: 'Cropped-sho',
+			desc:
+				'Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima, ex.',
+			price: 160,
+			// img: Item5,
+		},
+		{
+			id: 6,
+			title: 'Blues',
+			desc:
+				'Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima, ex.',
+			price: 90,
+			// img: Item6,
+		},
+	];
 
 	const changeCustomer = e => {
 		setCustomer(e.target.value);
@@ -195,6 +258,10 @@ const CafeteriaDashboard = () => {
 		setQuery('');
 	};
 
+	const setHandleChange = event => {
+		setSearchTerm(event.target.value);
+	};
+
 	return (
 		<div className="element-box-tp">
 			<div className="row">
@@ -204,580 +271,38 @@ const CafeteriaDashboard = () => {
 							<div className="element-wrapper">
 								<div className="inline-profile-tiles">
 									<div className="row">
-										<div className="col-md-12 col-sm-12">
-											<div className="profile-tile profile-tile-inlined">
-												<a className="profile-tile-box">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name"></div>
-												</a>
+										<div className="input-group mb-3">
+											<input
+												type="text"
+												onChange={setHandleChange}
+												value={searchTerm}
+												className="form-control"
+												placeholder="search"
+												aria-label="Recipient's username"
+												aria-describedby="basic-addon2"
+											/>
+											<div className="input-group-append">
+												<span className="input-group-text" id="basic-addon2">
+													filter
+												</span>
 											</div>
 										</div>
 									</div>
 									<div className="row">
-										<div className="col-4 col-sm-3">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													data-container="body"
-													data-toggle="popover"
-													data-placement="top"
-													data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br />
-														Mailay
-													</div>
-												</a>
+										{searchResults.map((team, index) => (
+											<div
+												key={index}
+												onClick={() => setCart([...cart, team])}
+												className="col-3 col-sm-3">
+												<div className="profile-tile profile-tile-inlined">
+													<a className="profile-tile-box">
+														{team.desc}
+														<div className="pt-avatar-w">{team.price}</div>
+														<div className="pt-user-name">{team.title}</div>
+													</a>
+												</div>
 											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar3.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Ben
-														<br /> Gossman
-													</div>
-												</a>
-											</div>
-										</div>
-									</div>
-
-									<div className="row">
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar3.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Ben
-														<br /> Gossman
-													</div>
-												</a>
-											</div>
-										</div>
-									</div>
-
-									<div className="row">
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar3.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Ben
-														<br /> Gossman
-													</div>
-												</a>
-											</div>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar3.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Ben
-														<br /> Gossman
-													</div>
-												</a>
-											</div>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar3.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Ben
-														<br /> Gossman
-													</div>
-												</a>
-											</div>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar3.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Ben
-														<br /> Gossman
-													</div>
-												</a>
-											</div>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar3.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Ben
-														<br /> Gossman
-													</div>
-												</a>
-											</div>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar3.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Ben
-														<br /> Gossman
-													</div>
-												</a>
-											</div>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar1.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Kelly
-														<br /> Neymayers
-													</div>
-												</a>
-											</div>
-										</div>
-										<div className="col-4 col-sm-3 col-xxl-2">
-											<div className="profile-tile profile-tile-inlined">
-												<a
-													className="profile-tile-box"
-													href="users_profile_small.html">
-													<div className="pt-avatar-w">
-														<img alt="" src="img/avatar3.jpg" />
-													</div>
-													<div className="pt-user-name">
-														Ben
-														<br /> Gossman
-													</div>
-												</a>
-											</div>
-										</div>
+										))}
 									</div>
 								</div>
 							</div>
@@ -923,9 +448,7 @@ const CafeteriaDashboard = () => {
 								</div>
 								<div className="element-wrapper compact">
 									<div className="element-actions actions-only"></div>
-									{/* <h6 className="element-header" style={{ marginTop: '3rem' }}>
-										Order
-									</h6> */}
+
 									<div className="element-box-tp">
 										<table className="table table-compact smaller text-faded mb-0">
 											<thead>
@@ -937,46 +460,34 @@ const CafeteriaDashboard = () => {
 												</tr>
 											</thead>
 											<tbody>
-												<tr>
-													<td>
-														<span>BTC</span>
-														<i className="os-icon os-icon-repeat icon-separator" />
-														<span>USD</span>
-													</td>
-													<td className="text-center">01.08</td>
-													<td className="text-right text-bright">$25.38</td>
-													<td className="text-right text-danger">-$1.23</td>
-												</tr>
-												<tr>
-													<td>
-														<span>RPX</span>
-														<i className="os-icon os-icon-repeat icon-separator" />
-														<span>ETH</span>
-													</td>
-													<td className="text-center">01.07</td>
-													<td className="text-right text-bright">$15.21</td>
-													<td className="text-right text-danger">-$1.13</td>
-												</tr>
-												<tr>
-													<td>
-														<span>LTC</span>
-														<i className="os-icon os-icon-repeat icon-separator"></i>
-														<span>BTC</span>
-													</td>
-													<td className="text-center">01.05</td>
-													<td className="text-right text-bright">$17.43</td>
-													<td className="text-right text-danger">-$2.14</td>
-												</tr>
-												<tr>
-													<td>
-														<span>PRX</span>
-														<i className="os-icon os-icon-repeat icon-separator"></i>
-														<span>LTC</span>
-													</td>
-													<td className="text-center">01.05</td>
-													<td className="text-right text-bright">$23.18</td>
-													<td className="text-right text-danger">-$3.17</td>
-												</tr>
+												{cart && cart.length
+													? cart.map(item => {
+															return (
+																<tr>
+																	<td>
+																		<span></span>
+																		<i className="os-icon os-icon-repeat icon-separator" />
+																		<span>USD</span>
+																	</td>
+																	<td className="text-center">{item.title}</td>
+																	<td className="text-right text-bright">
+																		{item.price}
+																	</td>
+																	<td className="text-right text-danger">
+																		<button
+																			onClick={() => {
+																				const newVal = cart.filter(
+																					val => val.id !== item.id
+																				);
+																				setCart(newVal);
+																			}}>
+																			Clear
+																		</button>
+																	</td>
+																</tr>
+															);
+													  })
+													: null}
 											</tbody>
 										</table>
 									</div>
