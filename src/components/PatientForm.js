@@ -158,7 +158,9 @@ function PatientForm(props) {
 						<div className="row">
 							<div className="col-sm">
 								<div className="form-group">
-									<label>Surame</label>
+									<label>
+										Surame<span className="compulsory-field">*</span>
+									</label>
 									<input
 										className="form-control"
 										placeholder="Enter surname name"
@@ -174,7 +176,9 @@ function PatientForm(props) {
 							</div>
 							<div className="col-sm">
 								<div className="form-group">
-									<label>Other Names</label>
+									<label>
+										Other Names<span className="compulsory-field">*</span>
+									</label>
 									<input
 										className="form-control"
 										placeholder="Other Names"
@@ -190,7 +194,9 @@ function PatientForm(props) {
 							</div>
 							<div className="col-sm">
 								<div className="form-group">
-									<label>Email</label>
+									<label>
+										Email<span className="compulsory-field">*</span>
+									</label>
 									<input
 										className="form-control"
 										name="email"
@@ -199,13 +205,18 @@ function PatientForm(props) {
 										placeholder="example@email.com"
 										type="text"
 									/>
+									<small className="text-danger">
+										{errors.email && errors.email.message}
+									</small>
 								</div>
 							</div>
 						</div>
 						<div className="row">
 							<div className="col-sm">
 								<div className="form-group">
-									<label>Date of birth</label>
+									<label>
+										Date of birth<span className="compulsory-field">*</span>
+									</label>
 									<div className="custom-date-input">
 										<DatePicker
 											selected={values?.date_of_birth}
@@ -229,7 +240,9 @@ function PatientForm(props) {
 							</div>
 							<div className="col-sm">
 								<div className="form-group">
-									<label htmlFor="gender">Gender</label>
+									<label htmlFor="gender">
+										Gender<span className="compulsory-field">*</span>
+									</label>
 									<Select
 										id="gender"
 										ref={register({ name: 'gender' })}
@@ -248,7 +261,9 @@ function PatientForm(props) {
 							</div>
 							<div className="col-sm">
 								<div className="form-group">
-									<label htmlFor="maritalStatus">Marital Status</label>
+									<label htmlFor="maritalStatus">
+										Marital Status<span className="compulsory-field">*</span>
+									</label>
 									<Select
 										id="maritalStatus"
 										ref={register({ name: 'maritalStatus' })}
@@ -269,7 +284,9 @@ function PatientForm(props) {
 						<div className="row">
 							<div className="col-sm">
 								<div className="form-group">
-									<label>Insurance Status</label>
+									<label>
+										Insurance Status<span className="compulsory-field">*</span>
+									</label>
 									<Select
 										id="insurranceStatus"
 										ref={register({ name: 'insurranceStatus' })}
@@ -288,7 +305,9 @@ function PatientForm(props) {
 							</div>
 							<div className="col-sm">
 								<div className="form-group">
-									<label>Hmos</label>
+									<label>
+										Hmos<span className="compulsory-field">*</span>
+									</label>
 									<Select
 										id="hmoId"
 										ref={register({ name: 'hmoId' })}
@@ -310,7 +329,7 @@ function PatientForm(props) {
 									<label>Occupation</label>
 									<input
 										className="form-control"
-										placeholder=""
+										placeholder="Occupation"
 										type="text"
 										defaultValue={patientData.occupation || ''}
 										name="occupation"
@@ -322,19 +341,27 @@ function PatientForm(props) {
 						<div className="row">
 							<div className="col-sm">
 								<div className="form-group">
-									<label>Address</label>
+									<label>
+										Address<span className="compulsory-field">*</span>
+									</label>
 									<input
 										className="form-control"
+										placeholder="Address"
 										name="address"
 										defaultValue={patientData.address || ''}
 										ref={register}
 										type="text"
 									/>
+									<small className="text-danger">
+										{errors.address && errors.address.message}
+									</small>
 								</div>
 							</div>
 							<div className="col-sm">
 								<div className="form-group">
-									<label>Phone Number</label>
+									<label>
+										Phone Number<span className="compulsory-field">*</span>
+									</label>
 									<input
 										className="form-control"
 										name="phoneNumber"
@@ -342,6 +369,9 @@ function PatientForm(props) {
 										ref={register}
 										type="text"
 									/>
+									<small className="text-danger">
+										{errors.phoneNumber && errors.phoneNumber.message}
+									</small>
 								</div>
 							</div>
 							<div className="col-sm">

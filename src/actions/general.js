@@ -16,6 +16,7 @@ import {
 	TOGGLE_PREPARE_PAYROLL,
 	TOGGLE_EDIT_PAYROLL,
 	TOGGLE_REGISTER_NEW_PATIENT,
+	TOGGLE_ADD_NEW_OBSERVATION,
 	TOGGLE_CREATE_APPOINTMENT,
 	TOGGLE_VIEW_APPOINTMENT_DETAIL,
 	TOGGLE_VIEW_PAYPOINT,
@@ -375,6 +376,15 @@ export const toggleEditAccount = (action, data) => {
 	};
 };
 
+// nicu
+
+export const toggleAddNewObservation = status => {
+	return {
+		type: TOGGLE_ADD_NEW_OBSERVATION,
+		payload: status,
+	};
+};
+
 // close modals
 export const closeModals = () => {
 	return dispatch => {
@@ -394,6 +404,7 @@ export const closeModals = () => {
 		dispatch(togglePreparePayroll(false));
 		dispatch(toggleEditPayroll(false));
 		dispatch(toggleRegisterNewPatient(false));
+		dispatch(toggleAddNewObservation(false));
 		dispatch(toggleNewAppointment(false));
 		dispatch(toggleViewAppointDetail(false));
 		dispatch(toggleViewPayPoint(false));
@@ -773,5 +784,14 @@ export const editAccount = (action, data) => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleEditAccount(action, data));
+	};
+};
+
+// nurse
+export const addNewObservation = action => {
+	return dispatch => {
+		dispatch(closeModals());
+		dispatch(toggleModal(true));
+		dispatch(toggleAddNewObservation(action));
 	};
 };

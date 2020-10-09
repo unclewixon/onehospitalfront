@@ -39,7 +39,7 @@ const PayPoint = lazy(() => import('./pages/PayPoint/index'));
 const Radiology = lazy(() => import('./pages/Radiology/index'));
 const Antennatal = lazy(() => import('./pages/Antennatal/index'));
 const IVF = lazy(() => import('./pages/IVF'));
-const Nicu = lazy(() => import('./pages/Nicu'));
+const Nicu = lazy(() => import('./pages/Nicu/Nicu'));
 const LabMgt = lazy(() => import('./pages/LabourMgt/index'));
 const Cafeteria = lazy(() => import('./pages/Cafeteria/index'));
 const Immunization = lazy(() => import('./pages/Immunization/index'));
@@ -118,6 +118,7 @@ class App extends Component {
 													/>
 													<Route path="/doctor" component={DoctorHome} />
 													<Route path="/front-desk" component={FrontDesk} />
+
 													<Route path="/nurse" component={Nurse} />
 													<Route path="/pharmacy" component={Pharmacy} />
 													<Route path="/pharmacy2" component={Pharmacy2} />

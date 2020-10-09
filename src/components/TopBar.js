@@ -106,10 +106,11 @@ class TopBar extends Component {
 							onFocus={this.onFocus}
 						/>
 					</div>
-					{/* <div className="messages-notifications os-dropdown-trigger os-dropdown-position-left">
-						<i className="os-icon os-icon-mail-14"/>
+					<div className="messages-notifications os-dropdown-trigger os-dropdown-position-left">
+						{/* <i className="os-icon os-icon-mail-14" /> */}
+						<i className="icon-feather-bell" />
 						<div className="new-messages-count">12</div>
-					</div> */}
+					</div>
 					<div
 						className={`top-icon top-settings os-dropdown-trigger os-dropdown-position-left ${
 							hover_settings ? 'over' : ''

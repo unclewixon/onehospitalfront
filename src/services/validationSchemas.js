@@ -8,6 +8,16 @@ export const patientSchema = yup.object().shape({
 	date_of_birth: yup
 		.string()
 		.required("Please enter the patient's date of birth"),
+	email: yup.string().required("Please enter the patient's email address"),
+	maritalStatus: yup
+		.string()
+		.required("Please enter the patient's marital status"),
+	insurranceStatus: yup
+		.string()
+		.required("Please enter the patient's insurrance status"),
+	gender: yup.string().required("Please enter the patient's gender"),
+	address: yup.string().required("Please enter the patient's address"),
+	phoneNumber: yup.string().required("Please enter the patient's phone number"),
 });
 
 export const patientNOKSchema = yup.object().shape({

@@ -2,7 +2,7 @@
 import React, { Component, lazy, Suspense } from 'react';
 import { Switch, withRouter, Route } from 'react-router-dom';
 import NoMatch from '../NoMatch';
-import Queue from '../../components/Queue';
+// import Queue from '../../components/Queue';
 import Splash from '../../components/Splash';
 import { connect } from 'react-redux';
 
@@ -20,9 +20,9 @@ class Clinical extends Component {
 		alert('I am toSee Details this guy');
 	};
 	render() {
-		const { match, staff } = this.props;
+		const { match } = this.props;
 
-		const department = staff?.details?.department?.name;
+		// const department = staff?.details?.department?.name;
 
 		return (
 			<div className="content-i">

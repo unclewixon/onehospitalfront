@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal';
-import PatientPlaceholder from '../../assets/images/placeholder.jpg';
+// import PatientPlaceholder from '../../assets/images/placeholder.jpg';
 
 const ModalSelectBed = ({ showModal, onModalClick }) => {
 	return (
@@ -14,17 +14,17 @@ const ModalSelectBed = ({ showModal, onModalClick }) => {
 			<Modal.Header closeButton></Modal.Header>
 			<Modal.Body>
 				<div className="row">
-					<div className="col-sm-4 col-md-2">
+					{/* <div className="col-sm-4 col-md-2">
 						<img
 							alt=""
 							src={PatientPlaceholder}
 							style={{ width: '100%', height: '100%' }}
 						/>
-					</div>
-					<div className="col-sm-8">
+					</div> */}
+					{/* <div className="col-sm-8">
 						<h4 className="onboarding-title">FULLNAME</h4>
 						<div className="onboarding-text">WARD</div>
-					</div>
+					</div> */}
 				</div>
 				<div className="row">
 					<div className="col-sm-6">

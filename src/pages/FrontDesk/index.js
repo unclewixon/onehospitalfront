@@ -7,7 +7,7 @@ import {
 	viewAppointmentDetail,
 } from '../../actions/general';
 
-import Queue from '../../components/Queue';
+// import Queue from '../../components/Queue';
 import { compose } from 'redux';
 import NoMatch from '../NoMatch';
 
@@ -27,6 +27,14 @@ const AllAppointments = lazy(() =>
 
 const AllPatients = lazy(() =>
 	import('../../components/FrontDesk/AllPatients')
+);
+
+const AllInPatients = lazy(() =>
+	import('../../components/FrontDesk/AllInPatients')
+);
+
+const AllNotifications = lazy(() =>
+	import('../../components/FrontDesk/AllNotifications')
 );
 
 const FrontDesk = props => {
@@ -115,6 +123,14 @@ const FrontDesk = props => {
 												path={`${match.url}/all-patients`}
 												component={AllPatients}
 											/>
+											<Route
+												path={`${match.url}/all-in-patients`}
+												component={AllInPatients}
+											/>
+											<Route
+												path={`${match.url}/all-notifications`}
+												component={AllNotifications}
+											/>
 											<Route component={NoMatch} />
 										</Switch>
 									</Suspense>
@@ -124,9 +140,9 @@ const FrontDesk = props => {
 					</div>
 				</div>
 			</div>
-			<div className="content-panel compact">
+			{/* <div className="content-panel compact">
 				<Queue department="all" />
-			</div>
+			</div> */}
 		</div>
 	);
 };

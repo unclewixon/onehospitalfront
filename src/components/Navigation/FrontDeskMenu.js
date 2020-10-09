@@ -28,6 +28,22 @@ const FrontDeskMenu = () => {
 					<span>Patients</span>
 				</Link>
 			</li>
+			<li>
+				<Link to="/front-desk/all-in-patients">
+					<div className="icon-w">
+						<div className="icon-feather-folder-plus" />
+					</div>
+					<span>In Patients</span>
+				</Link>
+			</li>
+			<li>
+				<Link to="/front-desk/all-notifications">
+					<div className="icon-w">
+						<div className="icon-feather-bell" />
+					</div>
+					<span>Notifications</span>
+				</Link>
+			</li>
 		</>
 	);
 };
