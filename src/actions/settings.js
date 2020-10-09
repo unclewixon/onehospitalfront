@@ -104,11 +104,10 @@ export const loadDepartments = payload => {
 	};
 };
 
-export const update_department = (payload, previousData) => {
+export const updateDepartment = payload => {
 	return {
 		type: UPDATE_DEPARTMENT,
 		payload,
-		previousData,
 	};
 };
 
@@ -490,7 +489,7 @@ const upload_diagnosis = payload => {
 	};
 };
 
-export const get_all_diagnosis = payload => {
+export const getAllDiagnosis = payload => {
 	return {
 		type: GET_ALL_DIAGNOSISES,
 		payload,
@@ -528,45 +527,6 @@ export const createDepartment = data => {
 				})
 				.catch(error => {
 					reject({ success: false });
-				});
-		});
-	};
-};
-
-export const getAllDepartments = () => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.get(`${API_URI}/departments`)
-				.then(response => {
-					dispatch(loadDepartments(response.data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const updateDepartment = data => {
-	console.log(data);
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.patch(`${API_URI}/departments/${data.id}/update`, {
-					name: data.name,
-					hod_id: data.headOfDept,
-					description: data.description,
-				})
-				.then(response => {
-					console.log(response);
-					dispatch(update_department(response.data, data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					console.log(error);
-					return reject({ success: false });
 				});
 		});
 	};
@@ -1501,7 +1461,7 @@ export const getAllDiagnosises = (cb = () => {}) => {
 			axios
 				.get(`${API_URI}/settings/diagnosis`)
 				.then(response => {
-					dispatch(get_all_diagnosis(response.data));
+					dispatch(getAllDiagnosis(response.data));
 					return resolve({ success: true });
 				})
 				.catch(error => {

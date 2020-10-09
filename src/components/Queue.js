@@ -22,7 +22,7 @@ const Queue = ({ department }) => {
 		if (!listenning) {
 			setListenning(true);
 
-			socket.on('new-queue', data => {
+			socket.on('all-queues', data => {
 				console.log('new queue', data);
 				if (data) {
 					axios.get(`${process.env.REACT_APP_VOICE_RSS_API}Queue number`);
@@ -35,11 +35,8 @@ const Queue = ({ department }) => {
 
 	async function getQueueList() {
 		try {
-			const res = await request(
-				`front-desk/queue-system/get-lists`,
-				'GET',
-				true
-			);
+			const url = `front-desk/queue-system/get-lists`;
+			const res = await request(url, 'GET', true);
 			setQueues(res);
 		} catch (e) {
 			notifyError(e.message || 'could not fetch queue list');

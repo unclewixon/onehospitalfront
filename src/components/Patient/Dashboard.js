@@ -6,7 +6,6 @@ import PatientData from '../PatientData';
 
 const Dashboard = () => {
 	const patient = useSelector(state => state.user.patient);
-	console.log(patient);
 
 	return (
 		<>

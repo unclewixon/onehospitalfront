@@ -1,23 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Fragment, useEffect, useState } from 'react';
 import Select from 'react-select';
+// import { Link } from 'react-router-dom';
+// import Popover from 'antd/lib/popover';
+
 import searchingGIF from '../../assets/images/searching.gif';
 // import Tooltip from 'antd/lib/tooltip';
-import { Link } from 'react-router-dom';
-import ModalSelectBed from './../../components/Modals/ModalSelectBed';
-import AssignBed from './AssignBed';
-import Popover from 'antd/lib/popover';
+// import ModalSelectBed from './../../components/Modals/ModalSelectBed';
+// import AssignBed from './AssignBed';
 import AssignDropup from './AssignDropup';
-
-{
-	/* <Popover
-	title=""
-	overlayClassName="vitals"
-	content={<AssignBed showModal={showModal} onModalClick={onModalClick} />}
-	trigger="click"
-	onVisibleChange={status => onModalClick(status)}
-/>; */
-}
 
 const InPatientCare = () => {
 	const [loading, setLoading] = useState(true);

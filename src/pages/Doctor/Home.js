@@ -29,7 +29,11 @@ function DoctorHome({ profile }) {
 			setLoading(true);
 			const res = await request(`front-desk/appointments/today`, 'GET', true);
 			setAppointments(
-				res.filter(appointment => appointment.whomToSee.id === staff.id)
+				res.filter(
+					appointment =>
+						appointment.whomToSee.id === staff.id &&
+						appointment.transaction?.status === 1
+				)
 			);
 			setLoading(false);
 		} catch (e) {
@@ -42,10 +46,10 @@ function DoctorHome({ profile }) {
 		if (!listenning) {
 			setListenning(true);
 
-			socket.on('new-appointment', res => {
+			socket.on('consultation-queue', res => {
 				console.log('new appointment message');
 				if (res.success) {
-					const appointment = res.appointment;
+					const { appointment } = res.queue;
 					const today = moment().format('YYYY-MM-DD');
 					if (appointment.appointment_date === today) {
 						setAppointments([...appointments, appointment]);

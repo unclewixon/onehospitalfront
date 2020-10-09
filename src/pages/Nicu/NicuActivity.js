@@ -1,19 +1,13 @@
-import React, { lazy, useState } from 'react';
-import { Link } from 'react-router-dom';
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React from 'react';
 
-const Observation = lazy(() => import('../../components/Nicu/Observation'));
+// const Observation = lazy(() => import('../../components/Nicu/Observation'));
 
-const NicuActivity = props => {
-	const AddNewObservation = e => {
-		e.preventDefault();
-		props.addNewObservation(true);
-	};
+const NicuActivity = ({ addNewObservation }) => {
 	return (
 		<div className="nicuactivity">
 			<div>
-				<Link to="" onClick={AddNewObservation}>
-					Observation Chat
-				</Link>
+				<a onClick={() => addNewObservation(true)}>Observation Chat</a>
 			</div>
 			<div>Fluid Balance Chat</div>
 			<div>Drug Chat</div>

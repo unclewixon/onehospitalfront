@@ -10,7 +10,7 @@ import {
 	createRecordDelivery,
 	createRecordVital,
 } from '../../actions/general';
-import { calculateAge } from '../../services/utilities';
+import { getAge } from '../../services/utilities';
 import isEmpty from 'lodash.isempty';
 import { clearLabourDetails } from '../../actions/patient';
 const Measurement = lazy(() => import('./Measurement'));
@@ -70,7 +70,7 @@ class LabDetail extends Component {
 							<h6 className="element-header">
 								{labourDetail.patient_name} (
 								{!isEmpty(this.props.labourDetail)
-									? calculateAge(labourDetail.date_of_birth)
+									? getAge(labourDetail.date_of_birth)
 									: ''}
 								years old)
 							</h6>

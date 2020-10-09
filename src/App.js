@@ -24,8 +24,7 @@ const NoMatch = lazy(() => import('./pages/NoMatch'));
 const FrontDesk = lazy(() => import('./pages/FrontDesk/index'));
 const Nurse = lazy(() => import('./pages/Nurse/index'));
 const PatientProfile = lazy(() => import('./pages/PatientProfile'));
-const Pharmacy = lazy(() => import('./pages/Inventory/Pharmacy'));
-const Pharmacy2 = lazy(() => import('./pages/Pharmacy/Pharmacy'));
+const Pharmacy = lazy(() => import('./pages/Pharmacy/Index'));
 const Physiotherapy = lazy(() => import('./pages/Physiotherapy'));
 const Dentistry = lazy(() => import('./pages/Dentistry'));
 const Procedure = lazy(() => import('./pages/Procedure'));
@@ -42,7 +41,6 @@ const IVF = lazy(() => import('./pages/IVF'));
 const Nicu = lazy(() => import('./pages/Nicu/Nicu'));
 const LabMgt = lazy(() => import('./pages/LabourMgt/index'));
 const Cafeteria = lazy(() => import('./pages/Cafeteria/index'));
-const Immunization = lazy(() => import('./pages/Immunization/index'));
 const Account = lazy(() => import('./pages/Account/index'));
 const MyAccount = lazy(() => import('./pages/MyAccount/index'));
 const Logout = lazy(() => import('./pages/Logout'));
@@ -118,10 +116,8 @@ class App extends Component {
 													/>
 													<Route path="/doctor" component={DoctorHome} />
 													<Route path="/front-desk" component={FrontDesk} />
-
 													<Route path="/nurse" component={Nurse} />
 													<Route path="/pharmacy" component={Pharmacy} />
-													<Route path="/pharmacy2" component={Pharmacy2} />
 													<Route
 														path="/physiotherapy"
 														component={Physiotherapy}
@@ -139,13 +135,10 @@ class App extends Component {
 													<Route path="/lab" component={ClinicalLab} />
 													<Route path="/labour-mgt" component={LabMgt} />
 													<Route path="/cafeteria" component={Cafeteria} />
-													<Route
-														path="/immunization"
-														component={Immunization}
-													/>
 													<Route path="/paypoint" component={PayPoint} />
 													<Route path="/account" component={Account} />
 													<Route path="/logout" component={Logout} />
+													{/* remove path later */}
 													<Route path="/my-account" component={MyAccount} />
 													<Route component={NoMatch} />
 												</Switch>

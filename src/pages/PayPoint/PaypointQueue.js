@@ -47,7 +47,7 @@ const PaypointQueue = ({ staff }) => {
 			// listen for new transactions
 			setListenning(true);
 
-			socket.on('new-queue', data => {
+			socket.on('paypoint-queue', data => {
 				if (data.payment) {
 					const transaction = data.payment;
 					dispatch(getAllPendingTransactions(transaction));

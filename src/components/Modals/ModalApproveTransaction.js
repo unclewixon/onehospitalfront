@@ -60,23 +60,19 @@ class ModalApproveTransaction extends Component {
 		}
 		this.setState({ submitting: true });
 		try {
-			const rs = await request(
-				`transactions/${id}/process`,
-				'PATCH',
-				true,
-				data
-			);
+			const url = `transactions/${id}/process`;
+			const rs = await request(url, 'PATCH', true, data);
 
 			if (rs.success) {
 				this.props.reset('approve_transaction');
 				notifySuccess('Transaction Approved!');
-				this.props.closeModals(true);
 				newTransactions = pendingTransactions.filter(trans => {
 					return trans.id !== rs.transaction.id;
 				});
 				this.props.getAllPendingTransactions(newTransactions);
 				this.setState({ submitting: false });
 				this.props.getTransactionData(rs.transaction);
+				this.props.closeModals(true);
 			}
 		} catch (e) {
 			this.setState({ submitting: false });

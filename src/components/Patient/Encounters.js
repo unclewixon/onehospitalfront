@@ -54,11 +54,8 @@ class Encounters extends Component {
 
 	getViewStatus = async appointment => {
 		try {
-			const rs = await request(
-				`consultation/appointment/${appointment.id}`,
-				'GET',
-				true
-			);
+			const url = `consultation/appointment/${appointment.id}`;
+			const rs = await request(url, 'GET', true);
 			console.log(rs);
 			return !!rs;
 		} catch (error) {
@@ -110,7 +107,7 @@ class Encounters extends Component {
 											</tr>
 										) : appointments.length > 0 ? (
 											appointments.map((appointment, i) => {
-												console.log(appointment.patient);
+												console.log(appointment);
 												return (
 													<tr key={i}>
 														<td className="nowrap">
@@ -123,12 +120,12 @@ class Encounters extends Component {
 																{appointment.patient?.fileNumber}
 															</span>
 															<br />
-															<span>{`${appointment.patient.surname} (${appointment.patient.other_names})`}</span>
+															<span>{`${appointment.patient.surname} ${appointment.patient.other_names}`}</span>
 														</td>
 
 														<td className="cell-with-media">
 															<span>
-																{`${appointment.specialization?.name} (${appointment.department?.name})`}
+																{`${appointment.whomToSee?.last_name} ${appointment.whomToSee?.first_name}`}
 															</span>
 														</td>
 
@@ -137,39 +134,48 @@ class Encounters extends Component {
 														</td>
 
 														<td>
-															{/* <span className="status-pill smaller green"></span> */}
-															<span>{appointment.status}</span>
+															{appointment.stat ? (
+																<span className="badge badge-success">
+																	Consultation Completed
+																</span>
+															) : (
+																<span className="badge badge-warning">
+																	Pending Consultation
+																</span>
+															)}
 														</td>
 														<td className="row-actions">
-															<DropdownButton
-																id="dropdown-basic-button"
-																title="Action"
-																size="sm">
-																{!appointment.stat && (
+															{appointment.transaction?.status === 1 && (
+																<DropdownButton
+																	id="dropdown-basic-button"
+																	title="Action"
+																	size="sm">
+																	{!appointment.stat && (
+																		<Dropdown.Item
+																			onClick={() =>
+																				this.doOpenEncounter(
+																					appointment,
+																					appointment.patient
+																				)
+																			}>
+																			Chart
+																		</Dropdown.Item>
+																	)}
 																	<Dropdown.Item
-																		onClick={() =>
-																			this.doOpenEncounter(
-																				appointment,
-																				appointment.patient
-																			)
-																		}>
-																		Chart
+																		onClick={this.doOpenPreEncounter}>
+																		Pre-Encounter
 																	</Dropdown.Item>
-																)}
-																<Dropdown.Item
-																	onClick={this.doOpenPreEncounter}>
-																	Pre-Encounter
-																</Dropdown.Item>
-																<Dropdown.Item onClick={this.doViewEncounter}>
-																	View Details
-																</Dropdown.Item>
-																<Dropdown.Item onClick={this.doPrint}>
-																	Print
-																</Dropdown.Item>
-																<Dropdown.Item onClick={this.doCancel}>
-																	Cancel
-																</Dropdown.Item>
-															</DropdownButton>
+																	<Dropdown.Item onClick={this.doViewEncounter}>
+																		View Details
+																	</Dropdown.Item>
+																	<Dropdown.Item onClick={this.doPrint}>
+																		Print
+																	</Dropdown.Item>
+																	<Dropdown.Item onClick={this.doCancel}>
+																		Cancel
+																	</Dropdown.Item>
+																</DropdownButton>
+															)}
 														</td>
 													</tr>
 												);

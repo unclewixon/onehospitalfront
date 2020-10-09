@@ -10,17 +10,22 @@ import ViewVaccine from './Modals/ViewVaccine';
 
 const dates = [
 	'Birth',
-	'2 wks',
-	'4 wks',
 	'6 wks',
-	'8 wks',
 	'10 wks',
-	'12 wks',
 	'14 wks',
 	'16 wks',
+	'18 wks',
 	'6 months',
 	'9 months',
 	'12 months',
+	'13 months',
+	'18 months',
+	'2 years',
+	'5 years',
+	'9 years',
+	'9 years + 1',
+	'9 years + 6',
+	'10 years',
 ];
 
 const ImmunizationChart = () => {
@@ -53,57 +58,66 @@ const ImmunizationChart = () => {
 	return loading ? (
 		<div />
 	) : (
-		<div className="element-wrapper">
-			<h6>Immunization Chart</h6>
-			<div className="element-box">
-				<div className="table-responsive">
-					<table className="table table-bordered table-md table-v2 table-striped">
-						<thead>
-							<tr>
-								<th>Vaccine</th>
-								{dates.map((title, i) => {
-									return <th key={i}>{title}</th>;
+		<div className="col-md-12">
+			<div className="element-wrapper">
+				<h6>Immunization Chart</h6>
+				<div className="element-box">
+					<div className="table-responsive" style={{ overflowX: 'scroll' }}>
+						<table className="table table-bordered table-md table-v2 table-striped">
+							<thead>
+								<tr>
+									<th>Vaccine</th>
+									{dates.map((title, i) => {
+										return <th key={i}>{title}</th>;
+									})}
+								</tr>
+							</thead>
+							<tbody>
+								{records.map((items, i) => {
+									const item = items[0];
+									return (
+										<tr key={i}>
+											<td>
+												<small>{`${item.name_of_vaccine.toUpperCase()} (${
+													item.description
+												})`}</small>
+											</td>
+											{dates.map((date, i) => {
+												const data = items.find(i => i.period === date);
+												return data ? (
+													<td key={i}>
+														<Popover
+															content={
+																<ViewVaccine
+																	data={{ ...data, patient }}
+																	setRecords={setRecords}
+																/>
+															}
+															overlayClassName="view-vaccine"
+															trigger="hover"
+															visible={
+																visible &&
+																visible.id === data.id &&
+																visible.show
+															}
+															onVisibleChange={e =>
+																onHover({ show: e, id: data.id })
+															}>
+															<div className={`ibox ${checkVaccine(data)}`} />
+														</Popover>
+													</td>
+												) : (
+													<td className="text-center" key={i}>
+														x
+													</td>
+												);
+											})}
+										</tr>
+									);
 								})}
-							</tr>
-						</thead>
-						<tbody>
-							{records.map((items, i) => {
-								const item = items[0];
-								return (
-									<tr key={i}>
-										<td>
-											<small>{`${item.name_of_vaccine.toUpperCase()} (${
-												item.description
-											})`}</small>
-										</td>
-										{dates.map((date, i) => {
-											const data = items.find(i => i.period === date);
-											return data ? (
-												<td key={i}>
-													<Popover
-														content={<ViewVaccine data={data} />}
-														overlayClassName="view-vaccine"
-														trigger="hover"
-														visible={
-															visible && visible.id === data.id && visible.show
-														}
-														onVisibleChange={e =>
-															onHover({ show: e, id: data.id })
-														}>
-														<div className={`ibox ${checkVaccine(data)}`} />
-													</Popover>
-												</td>
-											) : (
-												<td className="text-center" key={i}>
-													x
-												</td>
-											);
-										})}
-									</tr>
-								);
-							})}
-						</tbody>
-					</table>
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 		</div>

@@ -2,33 +2,45 @@
 import React, { useState } from 'react';
 import moment from 'moment';
 
-import { vaccineNotDue, vaccineMissed } from '../../../services/utilities';
-import { request } from '../../../services/utilities';
+import {
+	request,
+	groupBy,
+	vaccineNotDue,
+	vaccineMissed,
+} from '../../../services/utilities';
+import { patientAPI } from '../../../services/constants';
 import { notifySuccess, notifyError } from '../../../services/notify';
 import waiting from '../../../assets/images/waiting.gif';
 
-const ViewVaccine = ({ data }) => {
+const ViewVaccine = ({ data, setRecords }) => {
 	const [submitting, setSubmitting] = useState(false);
 
-	const createAppointment = async id => {
+	const createAppointment = async date => {
 		try {
 			setSubmitting(true);
 			const patient = data.patient;
 			const values = {
-				opdType: 'immunization',
-				immunization_id: id,
+				requestType: 'immunization',
+				requestBody: { due_date: date },
 				patient_id: patient.id,
 			};
-			const rs = await request(`patient/opd`, 'POST', true, values);
-			setSubmitting(false);
+			const rs = await request('patient/save-request', 'POST', true, values);
 			if (rs.success) {
+				const url = `${patientAPI}/immunization/${patient.id}`;
+				const rs = await request(url, 'GET', true);
+				const list = groupBy(rs, 'slug');
+				setRecords(Object.values(list));
+				setSubmitting(false);
+
 				notifySuccess('Vaccination appointment created!');
 			} else {
+				setSubmitting(false);
 				notifyError(
 					rs.message || 'Could not save out patient appointment record'
 				);
 			}
 		} catch (e) {
+			console.log(e);
 			setSubmitting(false);
 			notifyError('Could not save out patient appointment record');
 		}
@@ -53,8 +65,15 @@ const ViewVaccine = ({ data }) => {
 											)}
 											{data.date_administered && (
 												<li>
-													<div className="alert alert-sucsess text-white">
+													<div className="alert alert-success text-white">
 														Vaccine Administered
+													</div>
+												</li>
+											)}
+											{data.appointment_date && (
+												<li>
+													<div className="alert alert-info text-white">
+														Pending Appointment
 													</div>
 												</li>
 											)}
@@ -87,11 +106,11 @@ const ViewVaccine = ({ data }) => {
 												<strong>{data.date_administered || '-'}</strong>
 											</li>
 										</ul>
-										{!vaccineNotDue(data) && (
+										{!vaccineNotDue(data) && !data.appointment_date && (
 											<div className="pt-btn">
 												<a
 													className="btn btn-success btn-sm text-white"
-													onClick={() => createAppointment(data.id)}
+													onClick={() => createAppointment(data.date_due)}
 													disabled={submitting}>
 													{submitting ? (
 														<img src={waiting} alt="submitting" />

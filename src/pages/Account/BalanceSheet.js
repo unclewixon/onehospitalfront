@@ -183,7 +183,7 @@ export class BalanceSheet extends Component {
 										<td className="text-center">{this.format(45000000)}</td>
 									</tr>
 									<tr>
-										<th colspan="4" scope="colgroup">
+										<th colSpan="4" scope="colgroup">
 											Non Current Assets
 										</th>
 									</tr>
@@ -277,10 +277,10 @@ export class BalanceSheet extends Component {
 										<td className="text-left text-bold" colSpan="2">
 											Assured Earning
 										</td>
-										<td className="text-center" contenteditable="true">
+										<td className="text-center" contentEditable="true">
 											{this.format(120000000)}
 										</td>
-										<td className="text-center" contenteditable="true">
+										<td className="text-center" contentEditable="true">
 											{this.format(126000000)}
 										</td>
 									</tr>

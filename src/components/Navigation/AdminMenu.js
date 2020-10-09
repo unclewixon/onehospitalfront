@@ -1,4 +1,5 @@
 import React from 'react';
+
 import ClinicalLabMenu from './ClinicalLabMenu';
 import PayPointMenu from './PayPointMenu';
 import PharmacyMenu from './PharmacyMenu';

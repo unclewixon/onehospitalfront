@@ -102,7 +102,7 @@ const ModalLeaveRequest = ({
 									<table className="table table-padded">
 										<tbody>
 											<tr>
-												<td class="font-weight-bold">Leave Category</td>
+												<td className="font-weight-bold">Leave Category</td>
 												<td>
 													{activeRequest &&
 														activeRequest.category &&
@@ -110,7 +110,7 @@ const ModalLeaveRequest = ({
 												</td>
 											</tr>
 											<tr>
-												<td class="font-weight-bold">Leave Duration</td>
+												<td className="font-weight-bold">Leave Duration</td>
 												<td>
 													{activeRequest &&
 														activeRequest.category &&
@@ -119,7 +119,7 @@ const ModalLeaveRequest = ({
 												</td>
 											</tr>
 											<tr>
-												<td class="font-weight-bold">Leave Reason</td>
+												<td className="font-weight-bold">Leave Reason</td>
 												<td>{activeRequest.application}</td>
 											</tr>
 										</tbody>

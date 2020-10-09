@@ -104,12 +104,8 @@ function InPatientAppointmentForm(props) {
 
 	const onSubmit = async values => {
 		setSubmitting(true);
-		const rs = await request(
-			`front-desk/appointments/new`,
-			'POST',
-			true,
-			values
-		);
+		const url = 'front-desk/appointments/new';
+		const rs = await request(url, 'POST', true, values);
 		setSubmitting(false);
 		if (rs.success) {
 			notifySuccess('New appointment record has been saved!');

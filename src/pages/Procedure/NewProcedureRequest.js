@@ -17,7 +17,7 @@ import { withRouter } from 'react-router-dom';
 import searchingGIF from '../../assets/images/searching.gif';
 
 import {
-	get_all_diagnosis,
+	getAllDiagnosis,
 	get_all_services,
 	getAllServiceCategory,
 } from '../../actions/settings';
@@ -350,7 +350,7 @@ export default compose(
 	withRouter,
 	connect(mapStateToProps, {
 		get_all_services,
-		get_all_diagnosis,
+		getAllDiagnosis,
 		getAllServiceCategory,
 	})
 )(NewProcedure);

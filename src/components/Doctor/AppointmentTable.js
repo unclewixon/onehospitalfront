@@ -66,7 +66,7 @@ const AppointmentTable = ({
 					<th hidden={today}>Date</th>
 					<th>Patient</th>
 					<th>Description</th>
-					<th>Accepted?</th>
+					<th>Accepted</th>
 					<th className="text-center">Actions</th>
 				</tr>
 			</thead>
@@ -77,7 +77,7 @@ const AppointmentTable = ({
 							<img alt="searching" src={searchingGIF} />
 						</td>
 					</tr>
-				) : appointments && appointments.length > 0 ? (
+				) : appointments.length > 0 ? (
 					appointments.map((appointment, i) => {
 						console.log(appointment);
 						return (

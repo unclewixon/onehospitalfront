@@ -3,19 +3,20 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
 
-import { transactionsAPI } from '../services/constants';
-import { request } from '../services/utilities';
+import { transactionsAPI } from '../../services/constants';
+import { request } from '../../services/utilities';
 import {
 	loadTodayTransaction,
 	deleteTransaction,
-} from '../actions/transaction';
-import { applyVoucher, approveTransaction } from '../actions/general';
-import TransactionTable from './Tables/TransactionTable';
+} from '../../actions/transaction';
+import { applyVoucher, approveTransaction } from '../../actions/general';
+import TransactionTable from '../../components/Tables/TransactionTable';
 
-export class PayPointTable extends Component {
+class PayPoint extends Component {
 	state = {
 		loading: false,
 	};
+
 	componentDidMount() {
 		this.fetchTransaction();
 	}
@@ -24,11 +25,10 @@ export class PayPointTable extends Component {
 		try {
 			this.setState({ loading: true });
 			let today = moment().format('YYYY-MM-DD');
-			console.log(today);
-			const url = `${transactionsAPI}/list?patient_id=&startDate=${today}&endDate=${today}&transaction_type=billing&status=`;
+
+			const url = `${transactionsAPI}/list?patient_id=&startDate=${today}&endDate=${today}&transaction_type=pharmacy&status=`;
 			const rs = await request(url, 'GET', true);
 			console.log(rs);
-			//const res = rs.sort((a, b) => a.q_createdAt.localeCompare(b.q_createdAt));
 
 			this.props.loadTodayTransaction(rs.reverse());
 			this.setState({ loading: false });
@@ -54,15 +54,17 @@ export class PayPointTable extends Component {
 									<th className="">PATIENT NAME</th>
 									<th className="">DEPARTMENT</th>
 									<th className="">SERVICE</th>
-									<th className="">AMOUNT (&#x20A6;)</th>
-									<th className="">PAYMENT TYPE (&#x20A6;)</th>
-									<th className="">ACTIONS</th>
+									<th className="text-center">AMOUNT (&#x20A6;)</th>
+									<th className="text-center">BALANCE (&#x20A6;)</th>
+									<th className="">PAYMENT TYPE</th>
+									<th className="text-center">ACTIONS</th>
 								</tr>
 							</thead>
 							<TransactionTable
 								transactions={transactions}
 								loading={loading}
 								today={true}
+								showActionBtns={true}
 							/>
 						</table>
 					</div>
@@ -83,4 +85,4 @@ export default connect(mapStateToProps, {
 	applyVoucher,
 	approveTransaction,
 	deleteTransaction,
-})(PayPointTable);
+})(PayPoint);

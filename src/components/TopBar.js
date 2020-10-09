@@ -160,6 +160,12 @@ class TopBar extends Component {
 									<i className="os-icon os-icon-wallet-loaded" />
 								</div>
 								<ul>
+									{/* <li>
+										<a onClick={this.openProfile}>
+											<i className="os-icon os-icon-user-male-circle2" />
+											<span>Slide Profile Details</span>
+										</a>
+									</li> */}
 									<li>
 										<Link to="/my-account">
 											<i className="os-icon os-icon-user-male-circle2" />
