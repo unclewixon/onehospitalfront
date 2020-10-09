@@ -7,7 +7,7 @@ import {
 	viewAppointmentDetail,
 } from '../../actions/general';
 
-import Queue from '../../components/Queue';
+// import Queue from '../../components/Queue';
 import { compose } from 'redux';
 import NoMatch from '../NoMatch';
 
@@ -140,9 +140,9 @@ const FrontDesk = props => {
 					</div>
 				</div>
 			</div>
-			<div className="content-panel compact">
+			{/* <div className="content-panel compact">
 				<Queue department="all" />
-			</div>
+			</div> */}
 		</div>
 	);
 };

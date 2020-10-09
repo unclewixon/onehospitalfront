@@ -39,7 +39,7 @@ const PayPoint = lazy(() => import('./pages/PayPoint/index'));
 const Radiology = lazy(() => import('./pages/Radiology/index'));
 const Antennatal = lazy(() => import('./pages/Antennatal/index'));
 const IVF = lazy(() => import('./pages/IVF'));
-const Nicu = lazy(() => import('./pages/Nicu'));
+const Nicu = lazy(() => import('./pages/Nicu/Nicu'));
 const LabMgt = lazy(() => import('./pages/LabourMgt/index'));
 const Cafeteria = lazy(() => import('./pages/Cafeteria/index'));
 const Immunization = lazy(() => import('./pages/Immunization/index'));
