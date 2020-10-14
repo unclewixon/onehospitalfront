@@ -1,0 +1,18 @@
+import {
+	ADD_CAFETERIA_ITEM,
+	GET_ALL_CAFETERIA_ITEMS,
+	DELETE_CAFETERIA_ITEM,
+	FILTER_CAFETERIA_ITEM,
+} from '../actions/types';
+
+export const loadCafeteria = items => {
+	return {
+		type: ADD_CAFETERIA_ITEM,
+		payload: items,
+	};
+};
+
+export const GET_ALL_CAFETERIA_ITEMS = 'GET_ALL_CAFETERIA_ITEMS';
+export const UPDATE_CAFETERIA_ITEM = 'UPDATE_CAFETERIA_ITEM';
+export const DELETE_CAFETERIA_ITEM = 'DELETE_CAFETERIA_ITEM';
+export const FILTER_CAFETERIA_ITEM = 'FILTER_CAFETERIA_ITEM';
