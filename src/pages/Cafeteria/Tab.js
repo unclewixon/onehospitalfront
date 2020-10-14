@@ -1,5 +1,6 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
-import { Link, Switch, Route } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Tab = ({ match, location }) => {
 	// const page = location.pathname.split('/').pop();
@@ -70,7 +71,7 @@ const Tab = ({ match, location }) => {
 								</li>
 
 								<li className="medium">
-									{/* <a href="#" title="Was featured"> */}
+									{/* <a title="Was featured"> */}
 									<span>
 										<Link to="/">Carbohydrate</Link>
 									</span>
@@ -79,7 +80,7 @@ const Tab = ({ match, location }) => {
 									{/* </a> */}
 								</li>
 								<li className="dark">
-									{/* <a href="#" title="Added a first recipe"> */}
+									{/* <a title="Added a first recipe"> */}
 									<span>
 										<Link to="/">Vitamins</Link>
 									</span>
@@ -89,7 +90,7 @@ const Tab = ({ match, location }) => {
 									{/* </a> */}
 								</li>
 								<li className="medium">
-									{/* <a href="#" title="Added 10-20 recipes"> */}
+									{/* <a title="Added 10-20 recipes"> */}
 									<span>
 										<Link to="/">Fats</Link>
 									</span>
@@ -125,7 +126,7 @@ const Tab = ({ match, location }) => {
 									</a>
 								</li>
 								<li className="medium">
-									<a href="#" title="Was featured">
+									<a title="Was featured">
 										<i className="icon icon-themeenergy_top-rankings" />
 										<span>Categories</span>
 									</a>
@@ -338,7 +339,7 @@ const Tab = ({ match, location }) => {
 					</div>
 					<div className="element-wrapper">
 						<div className="element-actions actions-only">
-							<a className="element-action element-action-fold" href="#">
+							<a className="element-action element-action-fold">
 								<i className="os-icon os-icon-minus-circle"></i>
 							</a>
 						</div>
@@ -412,7 +413,7 @@ const Tab = ({ match, location }) => {
 					</div>
 					<div className="element-wrapper compact">
 						<div className="element-actions actions-only">
-							<a className="element-action element-action-fold" href="#">
+							<a className="element-action element-action-fold">
 								<i className="os-icon os-icon-minus-circle"></i>
 							</a>
 						</div>
@@ -512,14 +513,14 @@ const Tab = ({ match, location }) => {
 									</tr>
 								</tbody>
 							</table>
-							<a className="centered-load-more-link smaller" href="#">
+							<a className="centered-load-more-link smaller">
 								<span>Load More Transactions</span>
 							</a>
 						</div>
 					</div>
 					<div className="element-wrapper compact">
 						<div className="element-actions actions-only">
-							<a className="element-action element-action-fold" href="#">
+							<a className="element-action element-action-fold">
 								<i className="os-icon os-icon-minus-circle"></i>
 							</a>
 						</div>

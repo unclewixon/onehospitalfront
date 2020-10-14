@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import moment from 'moment';
-import { Table } from 'react-bootstrap';
+
 import waiting from '../../assets/images/waiting.gif';
 import { request } from '../../services/utilities';
 import { notifySuccess, notifyError } from './../../services/notify';
-import './ModalClinicalLab.css';
 
 const ModalClinicalLab = ({
 	showModal,
@@ -31,13 +30,13 @@ const ModalClinicalLab = ({
 			e.target.value;
 	};
 
-	const updateGroupParamResult = (e, p, g) => {
-		activeRequest.requestBody.groups[g].parameters[p].result = e.target.value;
-	};
+	// const updateGroupParamResult = (e, p, g) => {
+	// 	activeRequest.requestBody.groups[g].parameters[p].result = e.target.value;
+	// };
 
-	const updateTestResult = (e, p, t) => {
-		activeRequest.requestBody.tests[t].paramenters[p].result = e.target.value;
-	};
+	// const updateTestResult = (e, p, t) => {
+	// 	activeRequest.requestBody.tests[t].paramenters[p].result = e.target.value;
+	// };
 
 	const onSaveClick = values => {
 		let newRequestObj = {

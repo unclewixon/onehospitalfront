@@ -3,8 +3,10 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
 import axios from 'axios';
-import { CSSTransition } from 'react-transition-group';
 import { setGlobal } from 'reactn';
+import { AbilityBuilder } from '@casl/ability';
+import { useEffect } from 'reactn';
+
 import waiting from '../assets/images/waiting.gif';
 import { request, redirectToPage, defaultHeaders } from '../services/utilities';
 import {
@@ -29,9 +31,6 @@ import { loadInvCategories, loadInvSubCategories } from '../actions/inventory';
 import { loadBanks, loadCountries } from '../actions/utility';
 
 import ability from '../services/ability';
-import { AbilityBuilder } from '@casl/ability';
-import { useEffect } from 'reactn';
-import '../pages/login.css';
 
 const storage = new SSRStorage();
 
@@ -57,13 +56,19 @@ const renderTextInput = ({input, label, type, id, placeholder, icon, meta: { tou
 		className={`form-group ${touched &&
 			(error ? 'has-error has-danger' : '')}`}>
 		<label htmlFor={id}>{label}</label>
-		<input
-			{...input}
-			type={type}
-			className="form-control"
-			placeholder={placeholder || label}
-		/>
-		<div className={`pre-icon os-icon ${icon}`} />
+		<div className="input-group">
+			<input
+				{...input}
+				type={type}
+				className="form-control"
+				placeholder={placeholder}
+			/>
+			<div className="input-group-prepend">
+				<div className="input-group-text">
+					<i className={`pre-icon os-icon ${icon}`} />
+				</div>
+			</div>
+		</div>
 	</div>
 );
 
@@ -71,7 +76,6 @@ let Login = props => {
 	const [state, setState] = useState({
 		submitting: false,
 		loaded: false,
-		rememberMe: false,
 	});
 
 	useEffect(() => {
@@ -167,27 +171,20 @@ let Login = props => {
 		}
 	};
 
-	const ToggleRememberMe = () => {
-		setState({ ...state, rememberMe: !this.state.rememberMe });
-	};
-
-	const { submitting, rememberMe, loaded } = state;
+	const { submitting } = state;
 	const { error, handleSubmit } = props;
 
 	return (
 		<section className="fxt-animation template">
 			<div className="bg-overlay">
 				<div className="fxt-content">
-					<div
-						className="logo-header"
-						style={{ textAlign: 'center', marginBottom: '50px' }}>
-						<a href="#" className="fxt-logo">
+					<div className="logo-header">
+						<a className="fxt-logo">
 							<img src={require('../assets/images/logo.png')} alt="logo" />
 						</a>
 					</div>
 					<div className="fxt-form">
-						<p>Login into your account</p>
-						<form onSubmit={handleSubmit(doLogin)}>
+						<form onSubmit={handleSubmit(doLogin)} autoComplete="off">
 							{error && (
 								<div
 									className="alert alert-danger"
@@ -196,53 +193,26 @@ let Login = props => {
 									}}
 								/>
 							)}
-
-							<div className="form-group">
-								<div className="form-group">
-									<Field
-										id="username"
-										name="username"
-										component={renderTextInput}
-										type="text"
-										placeholder="Enter your username"
-										className="form-control"
-									/>
-								</div>
-							</div>
-							<div className="">
-								<div className="fxt-transformY-50 fxt-transition-delay-2">
-									<Field
-										name="password"
-										component={renderTextInput}
-										type="password"
-										placeholder="Enter your password"
-										className="form-control"
-									/>
-									<i
-										toggle="#password"
-										className="fa fa-fw fa-eye toggle-password field-icon"
-									/>
-								</div>
-							</div>
-							<div className="form-group">
-								<div className="fxt-transformY-50 fxt-transition-delay-3">
-									<div className="fxt-checkbox-area">
-										<div className="checkbox">
-											<input
-												className="checkbox1"
-												type="checkbox"
-												checked={rememberMe}
-												onChange={ToggleRememberMe}
-											/>
-											<label htmlFor="checkbox1">Keep me logged in</label>
-										</div>
-										<a href="forgot-password-23.html" className="switcher-text">
-											Forgot Password
-										</a>
-									</div>
-								</div>
-							</div>
-							<div className="form-group">
+							<Field
+								id="username"
+								name="username"
+								component={renderTextInput}
+								type="text"
+								placeholder="Enter your username"
+								className="form-control"
+								icon="os-icon-user-male-circle"
+								label="Username"
+							/>
+							<Field
+								name="password"
+								component={renderTextInput}
+								type="password"
+								placeholder="Enter your password"
+								className="form-control"
+								icon="os-icon-fingerprint"
+								label="Password"
+							/>
+							<div className="form-group mt-2">
 								<div className="fxt-transformY-50 fxt-transition-delay-9">
 									<button
 										className="fxt-btn-fill"
@@ -257,17 +227,6 @@ let Login = props => {
 								</div>
 							</div>
 						</form>
-					</div>
-
-					<div className="fxt-footer">
-						<div className>
-							<p>
-								Don't have an account?
-								<a href="register-23.html" className="switcher-text2">
-									Register
-								</a>
-							</p>
-						</div>
 					</div>
 				</div>
 			</div>

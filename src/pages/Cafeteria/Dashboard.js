@@ -8,7 +8,6 @@ import CafeteriaTransactionTable from '../../components/CafeteriaTransactionTabl
 import size from 'lodash.size';
 import searchingGIF from '../../assets/images/searching.gif';
 import isEmpty from 'lodash.isempty';
-import { connect } from 'react-redux';
 import { useEffect } from 'react';
 
 const CafeteriaDashboard = () => {
@@ -34,14 +33,6 @@ const CafeteriaDashboard = () => {
 	const [cart, setCart] = useState([]);
 	const [searchTerm, setSearchTerm] = useState('');
 	const [searchResults, setSearchResults] = useState([]);
-
-	useEffect(() => {
-		const results = teams.filter(team =>
-			team.title.toLowerCase().includes(searchTerm.toLowerCase())
-		);
-		console.log(results);
-		setSearchResults(results);
-	}, [searchTerm]);
 
 	const teams = [
 		{
@@ -94,6 +85,14 @@ const CafeteriaDashboard = () => {
 		},
 	];
 
+	useEffect(() => {
+		const results = teams.filter(team =>
+			team.title.toLowerCase().includes(searchTerm.toLowerCase())
+		);
+		console.log(results);
+		setSearchResults(results);
+	}, [searchTerm, teams]);
+
 	const changeCustomer = e => {
 		setCustomer(e.target.value);
 		switch (e.target.value) {
@@ -118,13 +117,13 @@ const CafeteriaDashboard = () => {
 		searchCustomer();
 	};
 
-	const handleChange = e => {
-		let { name, value } = e.target;
-		if (name === 'item') {
-		}
+	// const handleChange = e => {
+	// 	let { name, value } = e.target;
+	// 	if (name === 'item') {
+	// 	}
 
-		setItem({ ...item, [name]: value });
-	};
+	// 	setItem({ ...item, [name]: value });
+	// };
 
 	const itemSet = product => {
 		// value = items.find(el => el.q_id === product);
