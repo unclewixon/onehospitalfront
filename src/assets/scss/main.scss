@@ -44,9 +44,9 @@ TABLE OF CONTENTS
 */
 
 // antd, fullcalendar
-@import "~antd/dist/antd.css";
-@import "~@fullcalendar/core/main.css";
-@import "~@fullcalendar/daygrid/main.css";
+@import '~antd/dist/antd.css';
+@import '~@fullcalendar/core/main.css';
+@import '~@fullcalendar/daygrid/main.css';
 
 /* 1. Theme Variables */
 @import "theme-variables";
@@ -132,5 +132,6 @@ TABLE OF CONTENTS
 @import "user-override/modal-slide";
 @import "user-override/patient";
 @import "date_picker";
+// @import 'custom_styles/nicuactivity';
 @import "user-override/custom";
 @import "user-override/login";
