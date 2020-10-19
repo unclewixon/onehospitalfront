@@ -381,7 +381,7 @@ class Roster extends Component {
 										</a>
 									</Popover>
 								</div>
-								<h6 className="element-header">Duty Roster</h6>
+								<h6 className="element-header"></h6>
 								<div className="control-header">
 									<div className="row align-items-center">
 										<div className="col-8">

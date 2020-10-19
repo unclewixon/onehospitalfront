@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 // import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError, reset } from 'redux-form';
 import Modal from 'react-bootstrap/Modal';
-
 import {
 	renderTextInput,
 	renderTextInputGroup,
 	request,
 } from '../../services/utilities';
+import Select from 'react-select';
 import waiting from '../../assets/images/waiting.gif';
 import { vitalsAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
@@ -15,6 +15,7 @@ import { notifySuccess } from '../../services/notify';
 class AssignBed extends Component {
 	state = {
 		submitting: false,
+		selected: '',
 	};
 
 	takeExtraReadings = async (data, title) => {
@@ -73,12 +74,23 @@ class AssignBed extends Component {
 		}
 	};
 
+	// set selected value
+	handleSelect(val) {
+		this.setState({ selected: val });
+	}
+
 	render() {
 		const { doHide, error, handleSubmit, info } = this.props;
 		const { submitting } = this.state;
-		const inputs = [
-			{ name: 'systolic', title: 'Name', weight: '' },
-			{ name: 'diastolic', title: 'Ward', weight: '' },
+		const selectFloor = [
+			{ value: 'chocolate', label: 'Chocolate' },
+			{ value: 'strawberry', label: 'Strawberry' },
+			{ value: 'vanilla', label: 'Vanilla' },
+		];
+		const selectSuite = [
+			{ value: 'chocolate', label: 'Chocolate' },
+			{ value: 'strawberry', label: 'Strawberry' },
+			{ value: 'vanilla', label: 'Vanilla' },
 		];
 
 		return (
@@ -104,27 +116,14 @@ class AssignBed extends Component {
 											}}
 										/>
 									)}
-									<div className="row">
+									<div className="row form-group">
 										<div className="col-sm-12">
-											{inputs.map((item, i) => {
-												return (
-													<Field
-														key={i}
-														id={item.name}
-														name={item.name}
-														component={
-															item.weight !== ''
-																? renderTextInputGroup
-																: renderTextInput
-														}
-														label={item.title}
-														type="text"
-														placeholder={`Enter ${item.title}`}
-														icon={item.weight}
-														append={item.weight !== ''}
-													/>
-												);
-											})}
+											<span>Floor</span>
+											<Select options={selectFloor} />
+										</div>
+										<div className="col-sm-12">
+											<span>Sult</span>
+											<Select options={selectSuite} />
 										</div>
 									</div>
 									<div className="row">

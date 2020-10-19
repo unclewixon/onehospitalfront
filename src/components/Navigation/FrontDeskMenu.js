@@ -29,7 +29,7 @@ const FrontDeskMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/front-desk/all-in-patients">
+				<Link to="/front-desk/in-patients">
 					<div className="icon-w">
 						<div className="icon-feather-folder-plus" />
 					</div>
@@ -37,7 +37,7 @@ const FrontDeskMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/front-desk/all-notifications">
+				<Link to="/front-desk/notifications">
 					<div className="icon-w">
 						<div className="icon-feather-bell" />
 					</div>

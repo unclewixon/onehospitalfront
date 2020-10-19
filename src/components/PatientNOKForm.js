@@ -15,6 +15,7 @@ import { request } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import { setPatientRecord } from '../actions/user';
+import DatePicker from 'react-datepicker';
 
 function PatientNOKForm(props) {
 	const formData = props.formData;
@@ -207,14 +208,30 @@ function PatientNOKForm(props) {
 							<div className="col-sm">
 								<div className="form-group">
 									<label>Date of birth</label>
-									<input
+									<div className="custom-date-input">
+										<DatePicker
+											selected={patientData?.nok_date_of_birth}
+											onChange={date => setValue('date_of_birth', date)}
+											peekNextMonth
+											showMonthDropdown
+											ref={register({ name: 'date_of_birth' })}
+											showYearDropdown
+											dropdownMode="select"
+											dateFormat="yyyy-MM-dd"
+											className="single-daterange form-control"
+											placeholderText="Select date of birth"
+											maxDate={new Date()}
+											name="date_of_birth"
+										/>
+									</div>
+									{/* <input
 										className="form-control"
 										placeholder="04/12/1978"
 										type="text"
 										defaultValue={patientData.nok_date_of_birth || ''}
 										name="nok_date_of_birth"
 										ref={register}
-									/>
+									/> */}
 									<small className="text-danger">
 										{errors.nok_date_of_birth &&
 											errors.nok_date_of_birth.message}
