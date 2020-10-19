@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useCallback } from 'react';
-import DatePicker from 'antd/lib/date-picker';
-import Select from 'react-select';
+// import DatePicker from 'antd/lib/date-picker';
+// import Select from 'react-select';
 import Tooltip from 'antd/lib/tooltip';
 import { connect, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -10,21 +10,21 @@ import { request } from '../../services/utilities';
 import { loadAllPatients } from '../../actions/patient';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
-import waiting from '../../assets/images/waiting.gif';
+// import waiting from '../../assets/images/waiting.gif';
 import ModalPatientDetails from '../../components/Modals/ModalPatientDetails';
 import { toggleProfile } from '../../actions/user';
 import moment from 'moment';
 
-const { RangePicker } = DatePicker;
+// const { RangePicker } = DatePicker;
 
-const customStyle = {
-	control: (provided, state) => ({
-		...provided,
-		minHeight: '24px !important',
-		height: '2rem',
-		width: '12rem',
-	}),
-};
+// const customStyle = {
+// 	control: (provided, state) => ({
+// 		...provided,
+// 		minHeight: '24px !important',
+// 		height: '2rem',
+// 		width: '12rem',
+// 	}),
+// };
 
 const AllInPatients = () => {
 	const dispatch = useDispatch();
@@ -33,6 +33,7 @@ const AllInPatients = () => {
 	const activeRequest = null;
 	// const [activeRequest, setActiveRequest] = useState(null);
 	const [showModal, setShowModal] = useState(false);
+	// const [filtering, setFiltering] = useState(false);
 	// const [patientName, setPatientName] = useState('');
 	const [searchValue, setSearchValue] = useState('');
 
@@ -51,7 +52,6 @@ const AllInPatients = () => {
 
 	const fetchPatients = useCallback(async () => {
 		try {
-			// const url = name ? `patient/find?query=${name}` : `patient/list`;
 			const url = `patient/admissions`;
 			const rs = await request(url, 'GET', true);
 			console.log(rs);
@@ -66,7 +66,7 @@ const AllInPatients = () => {
 
 	const searchEntries = e => {
 		e.preventDefault();
-		const url = `patient/admissions?patient_id=${searchValue}`;
+		const url = `patient/admissions?patient_name=${searchValue}`;
 		console.log(url);
 		request(url, 'GET', true)
 			.then(data => {

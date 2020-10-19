@@ -14,12 +14,6 @@ import { confirmAction } from '../services/utilities';
 // import EnrollAntenatal from '../components/Patient/EnrollAntenatal';
 import PatientDataUpload from '../components/Patient/PatientDataUpload';
 
-// const EnrollImmunization = lazy(() =>
-// 	import('../components/Patient/EnrollImmunization')
-// );
-// const PatientImmunization = lazy(() =>
-// 	import('../components/Patient/PatientImmunization')
-// );
 const Dashboard = lazy(() => import('../components/Patient/Dashboard'));
 const Lab = lazy(() => import('../components/Patient/Lab'));
 const Encounters = lazy(() => import('../components/Patient/Encounters'));
@@ -201,7 +195,9 @@ class PatientProfile extends Component {
 				{patient ? (
 					<Fragment>
 						<PatientMenu />
-						<div className="content-w content-w-l-18">
+						<div
+							className="content-w content-w-l-18"
+							style={{ width: 'calc(100% - 18%)', overflow: 'hidden' }}>
 							<div className="content-i">
 								<div className="content-box">
 									<div className="row">

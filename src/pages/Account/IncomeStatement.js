@@ -172,7 +172,7 @@ export class IncomeStatement extends Component {
 									</tr>
 
 									<tr>
-										<th colspan="4" scope="colgroup">
+										<th colSpan="4" scope="colgroup">
 											Cost of Service
 										</th>
 									</tr>
@@ -197,7 +197,7 @@ export class IncomeStatement extends Component {
 										<td className="text-center">{this.format(1500890)}</td>
 									</tr>
 									<tr>
-										<th colspan="4" scope="colgroup">
+										<th colSpan="4" scope="colgroup">
 											Operating Expenses
 										</th>
 									</tr>
@@ -224,10 +224,10 @@ export class IncomeStatement extends Component {
 										<td className="text-center text-bold">
 											Total Operating expenses
 										</td>
-										<td className="text-center" contenteditable="true">
+										<td className="text-center" contentEditable="true">
 											{this.format(531178.66)}
 										</td>
-										<td className="text-center" contenteditable="true">
+										<td className="text-center" contentEditable="true">
 											{this.format(68533.14)}
 										</td>
 									</tr>

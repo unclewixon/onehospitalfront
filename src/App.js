@@ -3,6 +3,7 @@ import { Switch, Route, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import { SWRConfig } from 'swr';
+
 import ScrollToTop from './containers/ScrollToTop';
 import TopBar from './components/TopBar';
 import MainMenu from './components/Navigation/MainMenu';
@@ -19,13 +20,13 @@ import DoctorHome from './pages/Doctor/Home';
 import DoctorAppointments from './pages/Doctor/DoctorAppointments';
 import { AbilityBuilder } from '@casl/ability';
 
-const Login = lazy(() => import('./pages/Login'));
-const NoMatch = lazy(() => import('./pages/NoMatch'));
+import Login from './pages/Login';
+import NoMatch from './pages/NoMatch';
+
 const FrontDesk = lazy(() => import('./pages/FrontDesk/index'));
 const Nurse = lazy(() => import('./pages/Nurse/index'));
 const PatientProfile = lazy(() => import('./pages/PatientProfile'));
-const Pharmacy = lazy(() => import('./pages/Inventory/Pharmacy'));
-const Pharmacy2 = lazy(() => import('./pages/Pharmacy/Pharmacy'));
+const Pharmacy = lazy(() => import('./pages/Pharmacy/Index'));
 const Physiotherapy = lazy(() => import('./pages/Physiotherapy'));
 const Dentistry = lazy(() => import('./pages/Dentistry'));
 const Procedure = lazy(() => import('./pages/Procedure'));
@@ -42,7 +43,6 @@ const IVF = lazy(() => import('./pages/IVF'));
 const Nicu = lazy(() => import('./pages/Nicu/Nicu'));
 const LabMgt = lazy(() => import('./pages/LabourMgt/index'));
 const Cafeteria = lazy(() => import('./pages/Cafeteria/index'));
-const Immunization = lazy(() => import('./pages/Immunization/index'));
 const Account = lazy(() => import('./pages/Account/index'));
 const MyAccount = lazy(() => import('./pages/MyAccount/index'));
 const Logout = lazy(() => import('./pages/Logout'));
@@ -84,33 +84,31 @@ class App extends Component {
 		) : (
 			<>
 				<ToastContainer autoClose={3500} />
-				<Suspense fallback={<Splash />}>
-					<ScrollToTop>
-						{loggedIn ? (
-							<AbilityContext.Provider value={ability}>
-								<div className="all-wrapper with-side-panel solid-bg-all">
-									<div className="layout-w">
-										{/* user role determines main menu */}
-										<MainMenu
-											role={profile.role ? profile.role.slug : 'admin'}
-											theme_mode={theme_mode}
-											menu_mode={menu_mode}
-										/>
-										<div className="content-w content-w-l-18" id="main-content">
-											{/* user role determines topbar menu */}
-											<TopBar
-												role={profile.role ? profile.role.slug : 'admin'}
-											/>
-											<SWRConfig
-												value={{
-													fetcher: url =>
-														request(url, 'get', true).then(res => res),
-													refreshInterval: 15 * 60 * 1000,
-													shouldRetryOnError: false,
-													revalidateOnFocus: false,
-													errorRetryInterval: 0,
-													errorRetryCount: 2,
-												}}>
+				<ScrollToTop>
+					{loggedIn ? (
+						<AbilityContext.Provider value={ability}>
+							<div className="all-wrapper with-side-panel solid-bg-all">
+								<div className="layout-w">
+									{/* user role determines main menu */}
+									<MainMenu
+										role={profile.role ? profile.role.slug : 'admin'}
+										theme_mode={theme_mode}
+										menu_mode={menu_mode}
+									/>
+									<div className="content-w content-w-l-18" id="main-content">
+										{/* user role determines topbar menu */}
+										<TopBar role={profile.role ? profile.role.slug : 'admin'} />
+										<SWRConfig
+											value={{
+												fetcher: url =>
+													request(url, 'get', true).then(res => res),
+												refreshInterval: 15 * 60 * 1000,
+												shouldRetryOnError: false,
+												revalidateOnFocus: false,
+												errorRetryInterval: 0,
+												errorRetryCount: 2,
+											}}>
+											<Suspense fallback={<Splash />}>
 												<Switch>
 													<Route
 														path="/doctor/appointments"
@@ -118,10 +116,8 @@ class App extends Component {
 													/>
 													<Route path="/doctor" component={DoctorHome} />
 													<Route path="/front-desk" component={FrontDesk} />
-
 													<Route path="/nurse" component={Nurse} />
 													<Route path="/pharmacy" component={Pharmacy} />
-													<Route path="/pharmacy2" component={Pharmacy2} />
 													<Route
 														path="/physiotherapy"
 														component={Physiotherapy}
@@ -139,41 +135,34 @@ class App extends Component {
 													<Route path="/lab" component={ClinicalLab} />
 													<Route path="/labour-mgt" component={LabMgt} />
 													<Route path="/cafeteria" component={Cafeteria} />
-													<Route
-														path="/immunization"
-														component={Immunization}
-													/>
 													<Route path="/paypoint" component={PayPoint} />
 													<Route path="/account" component={Account} />
 													<Route path="/logout" component={Logout} />
+													{/* remove path later */}
 													<Route path="/my-account" component={MyAccount} />
 													<Route component={NoMatch} />
 												</Switch>
-											</SWRConfig>
-										</div>
+											</Suspense>
+										</SWRConfig>
 									</div>
-									<SlidingPane isOpen={isStaffOpen}>
-										<StaffProfile />
-									</SlidingPane>
-									<SlidingPane isOpen={isPatientOpen}>
-										<PatientProfile />
-									</SlidingPane>
-									<ModalDialogs />
 								</div>
-								{is_modal_open && (
-									<div className={`modal-backdrop fade show`} />
-								)}
-							</AbilityContext.Provider>
-						) : (
-							<div className="loginPage">
-								<Switch>
-									<Route exact path="/" component={Login} />
-									<Route component={NoMatch} />
-								</Switch>
+								<SlidingPane isOpen={isStaffOpen}>
+									<StaffProfile />
+								</SlidingPane>
+								<SlidingPane isOpen={isPatientOpen}>
+									<PatientProfile />
+								</SlidingPane>
+								<ModalDialogs />
 							</div>
-						)}
-					</ScrollToTop>
-				</Suspense>
+							{is_modal_open && <div className={`modal-backdrop fade show`} />}
+						</AbilityContext.Provider>
+					) : (
+						<Switch>
+							<Route exact path="/" component={Login} />
+							<Route component={NoMatch} />
+						</Switch>
+					)}
+				</ScrollToTop>
 			</>
 		);
 	}

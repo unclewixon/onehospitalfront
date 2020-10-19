@@ -7,7 +7,6 @@ import { request } from '../../services/utilities';
 import { loadVitals } from '../../actions/patient';
 import { connect } from 'react-redux';
 import waiting from '../../assets/images/searching.gif';
-import { getAllDepartments } from './../../actions/settings';
 import { notifySuccess, notifyError } from './../../services/notify';
 
 const BMI = lazy(() => import('../Vitals/BMI'));
@@ -115,12 +114,8 @@ const Vitals = props => {
 	const sendToDoctor = async () => {
 		setLoading(true);
 		const data = { patient_id: patient?.id };
-		const res = await request(
-			`front-desk/queue-system/add`,
-			'POST',
-			true,
-			data
-		);
+		const url = `front-desk/queue-system/add`;
+		const res = await request(url, 'POST', true, data);
 		if (res) {
 			notifySuccess(`Patient has been queued to see the doctor `);
 			setLoading(false);
@@ -178,6 +173,4 @@ const mapStateToProps = (state, ownProps) => {
 		departments: state.settings.departments,
 	};
 };
-export default connect(mapStateToProps, { loadVitals, getAllDepartments })(
-	withRouter(Vitals)
-);
+export default connect(mapStateToProps, { loadVitals })(withRouter(Vitals));

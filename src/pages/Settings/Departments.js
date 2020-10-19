@@ -11,7 +11,7 @@ import {
 	create_department,
 	loadDepartments,
 	get_all_staff,
-	update_department,
+	updateDepartment,
 	delete_department,
 } from '../../actions/settings';
 
@@ -31,7 +31,6 @@ const Departments = props => {
 	);
 	const [Loading, setLoading] = useState(false);
 	const [payload, setDataToEdit] = useState(null);
-	// const [loaded, setLoaded] = useState(false);
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [staffLoaded, setStaffLoaded] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
@@ -83,13 +82,9 @@ const Departments = props => {
 			description,
 		};
 		try {
-			const rs = await request(
-				`departments/${data.id}/update`,
-				'PATCH',
-				true,
-				data
-			);
-			props.update_department(rs, payload);
+			const url = `departments/${data.id}/update`;
+			const rs = await request(url, 'PATCH', true, data);
+			props.updateDepartment(rs);
 			setState({ ...initialState });
 			setSubmitButton({ create: true, edit: false });
 			setLoading(false);
@@ -113,7 +108,6 @@ const Departments = props => {
 			description: data.description,
 		}));
 		setDataToEdit(data);
-		console.log(data);
 	};
 
 	const cancelEditButton = () => {
@@ -129,7 +123,6 @@ const Departments = props => {
 		try {
 			const rs = await request(`departments`, 'GET', true);
 			props.loadDepartments(rs);
-			console.log(rs);
 			setDataLoaded(true);
 		} catch (error) {
 			setDataLoaded(true);
@@ -153,11 +146,6 @@ const Departments = props => {
 		fetchAllStaff();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-
-	let defaultValue = {
-		label: hod,
-		value: headOfDept,
-	};
 
 	return (
 		<div className="content-i">
@@ -213,13 +201,14 @@ const Departments = props => {
 																		</span>
 																	</td>
 																	<td className="row-actions text-right">
-																		<a href="#">
+																		<a role="button">
 																			<i
 																				className="os-icon os-icon-ui-49"
 																				onClick={() => onClickEdit(department)}
 																			/>
 																		</a>
 																		<a
+																			role="button"
 																			className="danger"
 																			onClick={() => DeleteDept(department)}>
 																			<i className="os-icon os-icon-ui-15" />
@@ -258,10 +247,10 @@ const Departments = props => {
 												className="form-control"
 												name="headOfDept"
 												onChange={handleInputChange}
-												defaultValue={defaultValue}
-												value={headOfDept}>
+												placeholder="Select department"
+												value={headOfDept || ''}>
 												{!hod && <option value=""></option>}
-												{props.StaffList.map((hod, i) => {
+												{props.staffList.map((hod, i) => {
 													return (
 														<option value={hod.id} key={i}>
 															{hod.first_name} {hod.last_name}
@@ -278,7 +267,7 @@ const Departments = props => {
 													placeholder="Description"
 													type="text"
 													name="description"
-													value={description}
+													value={description || ''}
 													onChange={handleInputChange}
 												/>
 											</div>
@@ -339,7 +328,7 @@ const Departments = props => {
 const mapStateToProps = state => {
 	return {
 		departments: state.settings.departments,
-		StaffList: state.settings.staff_list,
+		staffList: state.settings.staff_list,
 	};
 };
 
@@ -347,6 +336,6 @@ export default connect(mapStateToProps, {
 	create_department,
 	loadDepartments,
 	get_all_staff,
-	update_department,
+	updateDepartment,
 	delete_department,
 })(Departments);

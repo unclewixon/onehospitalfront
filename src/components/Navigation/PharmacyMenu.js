@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+
 const PharmacyMenu = () => {
 	return (
 		<>
 			<li>
-				<Link to="/pharmacy2">
+				<Link to="/pharmacy">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers" />
 					</div>
@@ -12,11 +13,11 @@ const PharmacyMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/pharmacy2/opd-patients">
+				<Link to="/pharmacy/billing">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers" />
 					</div>
-					<span>Immunization</span>
+					<span>Pay Point</span>
 				</Link>
 			</li>
 		</>

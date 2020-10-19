@@ -1,10 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component, lazy, Suspense } from 'react';
 import { Switch, withRouter, Route } from 'react-router-dom';
+import { connect } from 'react-redux';
+
 import NoMatch from '../NoMatch';
 // import Queue from '../../components/Queue';
 import Splash from '../../components/Splash';
-import { connect } from 'react-redux';
 
 const NewLab = lazy(() => import('./NewLab'));
 const ClinicalLab = lazy(() => import('./ClinicalLab'));
@@ -19,9 +20,9 @@ class Clinical extends Component {
 	handleEdit = () => {
 		alert('I am toSee Details this guy');
 	};
+
 	render() {
 		const { match } = this.props;
-
 		// const department = staff?.details?.department?.name;
 
 		return (

@@ -1,47 +1,73 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import { getRequestByType } from '../../actions/patient';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
-import { ReactComponent as ViewIcon } from '../../assets/svg-icons/view.svg';
-import PharmNewRequestViewModal from './../PharmNewRequestViewModal';
+import ViewPrescription from '../Pharmacy/ViewPrescription';
+import { request } from '../../services/utilities';
+import { updateImmutable } from '../../services/utilities';
 
-const Pharmacy = props => {
-	const { location, Requests } = props;
-	const [dataLoaded, setDataLoaded] = useState(false);
+const Pharmacy = ({ location, patient }) => {
+	const [loaded, setLoaded] = useState(false);
+	const [allDrugs, setAllDrugs] = useState([]);
 	const [showModal, setShowModal] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
-	// eslint-disable-next-line no-unused-vars
-	const [{ startDate, endDate }, setDate] = useState({
-		startDate: moment(Date.now())
-			.subtract(1, 'days')
-			.format('YYYY-MM-DD'),
-		endDate: moment(Date.now()).format('YYYY-MM-DD'),
-	});
+	const [prescriptions, setPrescriptions] = useState([]);
+	const [filled, setFilled] = useState(false);
 
-	const onModalClick = () => {
-		setShowModal(!showModal);
+	const startDate = moment()
+		.subtract(1, 'days')
+		.format('YYYY-MM-DD');
+	const endDate = moment().format('YYYY-MM-DD');
+
+	const closeModal = () => {
+		document.body.classList.remove('modal-open');
+		setActiveRequest(null);
+		setShowModal(false);
+		setFilled(false);
 	};
 
-	useEffect(() => {
-		const { getRequestByType, patient } = props;
-		const patient_id = patient && patient.id ? patient.id : '';
-		if (!dataLoaded) {
-			getRequestByType(patient_id, 'pharmacy', startDate, endDate)
-				.then(_ => {
-					setDataLoaded(false);
-				})
-				.catch(e => {
-					setDataLoaded(false);
-					notifyError('could not fetch pharmacy requests');
-				});
+	const getServiceUnit = useCallback(async () => {
+		try {
+			const res = await request('inventory/categories', 'GET', true);
+
+			if (res && res.length > 0) {
+				const selectCat = res.find(cat => cat.name === 'Pharmacy');
+
+				const url = `inventory/stocks-by-category/${selectCat.id}`;
+				const rs = await request(url, 'GET', true);
+				setAllDrugs(rs);
+			}
+		} catch (error) {
+			notifyError('Error fetching Service Unit');
 		}
-	}, [dataLoaded, endDate, props, startDate]);
+	}, []);
+
+	useEffect(() => {
+		getServiceUnit();
+	}, [getServiceUnit]);
+
+	useEffect(() => {
+		const getPrescriptions = async () => {
+			const url = `patient/${patient.id}/request/pharmacy?startDate=${startDate}&endDate=${endDate}`;
+			const rs = await request(url, 'GET', true);
+			setPrescriptions(rs);
+			setLoaded(true);
+		};
+
+		if (!loaded) {
+			getPrescriptions();
+		}
+	}, [endDate, loaded, patient.id, startDate]);
+
+	const updatePrescriptions = update => {
+		const updatedDrugs = updateImmutable(prescriptions, update);
+		setPrescriptions(updatedDrugs);
+	};
 
 	return (
 		<div className="col-sm-12">
@@ -62,15 +88,7 @@ const Pharmacy = props => {
 								<div id="toolbar"></div>
 							</div>
 						</div>
-						{activeRequest ? (
-							<PharmNewRequestViewModal
-								activeRequest={activeRequest}
-								showModal={showModal}
-								onModalClick={onModalClick}
-							/>
-						) : null}
-
-						{dataLoaded ? (
+						{!loaded ? (
 							<div colSpan="5" className="text-center">
 								<img alt="searching" src={searchingGIF} />
 							</div>
@@ -85,69 +103,78 @@ const Pharmacy = props => {
 										<thead>
 											<tr>
 												<th>Request Date</th>
-												<th>Request Type</th>
 												<th>Requested By</th>
 												<th className="text-center">Request Status</th>
-												<th className="text-right" />
+												<th />
 											</tr>
 										</thead>
 										<tbody>
-											{Requests && Requests.length
-												? props.Requests.map((request, index) => {
-														return (
-															<tr
-																className=""
-																data-index="0"
-																data-id="20"
-																key={index}>
-																<td>
-																	{moment(request.createdAt).format(
-																		'DD-MM-YYYY : hh mm'
-																	)}
-																</td>
-																<td>{request.requestType}</td>
-																<td>
-																	{request && request.created_by
-																		? request.created_by
-																		: ''}
-																</td>
-																<td className="text-center">
-																	{request.status === 1 ? (
-																		<div>
-																			<span className="status-pill smaller green"></span>
-																			<span>Approved</span>
-																		</div>
-																	) : (
-																		<div>
-																			<span className="status-pill smaller yellow"></span>
-																			<span>Pending</span>
-																		</div>
-																	)}
-																</td>
-																<td className="row-actions text-right">
-																	<Tooltip title="View Request">
-																		<ViewIcon
-																			onClick={() => {
-																				setActiveRequest(request);
-																				onModalClick();
-																			}}
-																			style={{
-																				width: '1rem',
-																				height: '1rem',
-																				cursor: 'pointer',
-																			}}
-																		/>
-																	</Tooltip>
-																	<Tooltip title="Print Request">
-																		<a className="ml-2" href="#">
-																			<i className="icon-feather-printer" />
-																		</a>
-																	</Tooltip>
-																</td>
-															</tr>
-														);
-												  })
-												: null}
+											{prescriptions.map((request, index) => {
+												return (
+													<tr key={index}>
+														<td>
+															{moment(request.createdAt).format(
+																'DD-MM-YYYY : hh mm'
+															)}
+														</td>
+														<td>
+															{request.created_by ? request.created_by : ''}
+														</td>
+														<td className="text-center">
+															{request.status === 0 && request.isFilled && (
+																<span className="badge badge-info text-white">
+																	Awaiting Payment
+																</span>
+															)}
+															{request.status === 1 && (
+																<span className="badge badge-success">
+																	Completed
+																</span>
+															)}
+															{request.status === 0 && !request.isFilled && (
+																<span className="badge badge-warning">
+																	Pending
+																</span>
+															)}
+														</td>
+														<td className="row-actions text-right">
+															{request.isFilled && (
+																<Tooltip title="View Prescription">
+																	<a
+																		className="info"
+																		onClick={() => {
+																			document.body.classList.add('modal-open');
+																			setActiveRequest(request);
+																			setShowModal(true);
+																			setFilled(true);
+																		}}>
+																		<i className="os-icon os-icon-eye" />
+																	</a>
+																</Tooltip>
+															)}
+															{!request.isFilled && (
+																<Tooltip title="Fill Prescription">
+																	<a
+																		className="primary"
+																		onClick={() => {
+																			document.body.classList.add('modal-open');
+																			setActiveRequest(request);
+																			setShowModal(true);
+																			setFilled(false);
+																		}}>
+																		<i className="os-icon os-icon-check-square" />
+																	</a>
+																</Tooltip>
+															)}
+															<Tooltip title="Print Prescription">
+																<a className="ml-2">
+																	<i className="icon-feather-printer" />
+																</a>
+															</Tooltip>
+														</td>
+													</tr>
+												);
+											})}
 										</tbody>
 									</table>
 								</div>
@@ -156,15 +183,21 @@ const Pharmacy = props => {
 					</div>
 				</div>
 			</div>
+			{showModal && (
+				<ViewPrescription
+					closeModal={closeModal}
+					activeRequest={activeRequest}
+					drugs={allDrugs}
+					updatePrescriptions={updatePrescriptions}
+					filled={filled}
+				/>
+			)}
 		</div>
 	);
 };
 
-const mapStateToProps = ({ patient, user }) => ({
+const mapStateToProps = ({ user }) => ({
 	patient: user.patient,
-	Requests: patient.pharmacyRequests,
 });
 
-export default connect(mapStateToProps, { getRequestByType })(
-	withRouter(Pharmacy)
-);
+export default withRouter(connect(mapStateToProps)(Pharmacy));

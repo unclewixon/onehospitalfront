@@ -8,7 +8,7 @@ import isEmpty from 'lodash.isempty';
 
 import waiting from '../../assets/images/waiting.gif';
 import { labourAPI } from '../../services/constants';
-import { request, calculateAge } from '../../services/utilities';
+import { request, getAge } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { loadLabour, loadLabourDetails } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
@@ -200,7 +200,7 @@ class Dashboard extends Component {
 
 													<td>{el.patient_name}</td>
 
-													<td>{calculateAge(el.date_of_birth)}</td>
+													<td>{getAge(el.date_of_birth)}</td>
 													<td>{moment(el.createdAt).format('DD-MM-YYYY')}</td>
 													<td className="text-right row-actions">
 														<Tooltip title="view detail">

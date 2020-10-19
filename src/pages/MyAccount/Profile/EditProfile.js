@@ -342,7 +342,7 @@ const EditProfile = ({ staff }) => {
 									onChange={handleInputChange}></textarea>
 							</div>
 						</fieldset>
-						<button class="btn btn-primary" type="submit">
+						<button className="btn btn-primary" type="submit">
 							{submitting ? (
 								<img src={`url(${waitingGif})`} alt="waiting" />
 							) : (

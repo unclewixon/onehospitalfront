@@ -159,7 +159,7 @@ function PatientForm(props) {
 							<div className="col-sm">
 								<div className="form-group">
 									<label>
-										Surame<span className="compulsory-field">*</span>
+										Surname<span className="compulsory-field">*</span>
 									</label>
 									<input
 										className="form-control"
@@ -306,7 +306,7 @@ function PatientForm(props) {
 							<div className="col-sm">
 								<div className="form-group">
 									<label>
-										Hmos<span className="compulsory-field">*</span>
+										HMO<span className="compulsory-field">*</span>
 									</label>
 									<Select
 										id="hmoId"

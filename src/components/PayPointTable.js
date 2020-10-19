@@ -25,11 +25,8 @@ export class PayPointTable extends Component {
 			this.setState({ loading: true });
 			let today = moment().format('YYYY-MM-DD');
 			console.log(today);
-			const rs = await request(
-				`${transactionsAPI}/list?patient_id=&startDate=${today}&endDate=${today}&transaction_type=billing&status=`,
-				'GET',
-				true
-			);
+			const url = `${transactionsAPI}/list?patient_id=&startDate=${today}&endDate=${today}&transaction_type=billing&status=`;
+			const rs = await request(url, 'GET', true);
 			console.log(rs);
 			//const res = rs.sort((a, b) => a.q_createdAt.localeCompare(b.q_createdAt));
 

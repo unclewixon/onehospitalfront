@@ -80,8 +80,8 @@ const ModalPhysiotherapy = ({
 									<table className="table table-padded">
 										<thead>
 											<tr>
-												<th class="font-weight-bold">Specialization</th>
-												<th class="font-weight-bold">Session Count</th>
+												<th className="font-weight-bold">Specialization</th>
+												<th className="font-weight-bold">Session Count</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -106,7 +106,7 @@ const ModalPhysiotherapy = ({
 											</tr>
 
 											<tr>
-												<td class="font-weight-bold">Created By</td>
+												<td className="font-weight-bold">Created By</td>
 												<td>{activeRequest.created_by}</td>
 											</tr>
 										</tbody>

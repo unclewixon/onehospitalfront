@@ -18,15 +18,11 @@ import {
 	LOAD_PATIENT_PROCEDURE_DATA,
 	ADD_PATIENT_PROCEDURE_DATA,
 	LOAD_PATIENTS,
-	ADD_PHARMACY_REQUEST,
 	GET_PHARMACY_REQUESTS,
 	GET_LAB_REQUESTS,
 	LOAD_CLINICAL_LAB,
 	LOAD_RADIOLOGY,
 	LOAD_ANTENNATAL,
-	LOAD_IMMUNIZATION,
-	ADD_IMMUNIZATION,
-	DELETE_IMMUNIZATION,
 	LOAD_ANTENATAL_ASSESSMENT,
 	LOAD_LABOUR,
 	LOAD_LABOUR_DETAIL,
@@ -43,6 +39,7 @@ import {
 	ADD_NEW_PATIENT,
 	GET_ALL_OPD_LAB_APPOINTMENTS,
 	GET_ALL_OPD_IMMUNIZATION_APPOINTMENTS,
+	UPDATE_PATIENT,
 } from './types';
 import { request } from '../services/utilities';
 // import axios from 'axios';
@@ -73,6 +70,13 @@ export const loadOPDImmunizationAppointments = data => {
 export const addNewPatient = data => {
 	return {
 		type: ADD_NEW_PATIENT,
+		payload: data,
+	};
+};
+
+export const updatePatient = data => {
+	return {
+		type: UPDATE_PATIENT,
 		payload: data,
 	};
 };
@@ -285,37 +289,9 @@ export const loadRadiology = data => {
 	};
 };
 
-export const add_pharmacy_request = data => {
-	return {
-		type: ADD_PHARMACY_REQUEST,
-		payload: data,
-	};
-};
-
 export const loadAntennatal = payload => {
 	return {
 		type: LOAD_ANTENNATAL,
-		payload,
-	};
-};
-
-export const loadImmunization = payload => {
-	return {
-		type: LOAD_IMMUNIZATION,
-		payload,
-	};
-};
-
-export const addImmunizationRequest = payload => {
-	return {
-		type: ADD_IMMUNIZATION,
-		payload,
-	};
-};
-
-export const deleteImmunizationRequest = payload => {
-	return {
-		type: DELETE_IMMUNIZATION,
 		payload,
 	};
 };
@@ -445,7 +421,7 @@ export const createLabRequest = data => {
 					requestNote: data.request_note,
 				},
 			};
-			request(`patient/save-request`, 'POST', true, newRequestObj)
+			request('patient/save-request', 'POST', true, newRequestObj)
 				.then(response => {
 					dispatch(create_lab_request(response));
 					return resolve({ success: true });
@@ -486,82 +462,6 @@ export const getRequestByType = (patientId, type, start, end) => {
 							payload: response,
 						});
 					}
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const addPharmacyRequest = (data, id, prescription, serviceId, cb) => {
-	return dispatch => {
-		const requestData = data
-			? data.map(request => ({
-					forumalary: request.formulary,
-					drug_generic_name: request.genericName,
-					drug_name: request.drugName,
-					dose_quantity: request.quantity,
-					service_id: request.serviceId,
-					refillable: {
-						number_of_refills: request && request.refills ? request.refills : 0,
-						eg: request && request.eg ? request.eg : 0,
-						frequency_type:
-							request && request.frequency ? request.frequency : '',
-						duration: request && request.duration ? request.duration : 0,
-						note: request && request.refillNote ? request.refillNote : '',
-					},
-			  }))
-			: [];
-
-		return new Promise((resolve, reject) => {
-			request(`patient/save-request`, 'POST', true, {
-				requestType: 'pharmacy',
-				requestBody: requestData,
-				diagnosis: data[0].diagnosis.id ? data[0].diagnosis.id : '',
-				prescription: prescription ? prescription : '',
-				patient_id: id ? id : '',
-			})
-				.then(response => {
-					dispatch(add_pharmacy_request(response.data));
-					cb('success');
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					cb(null);
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const addImmunization = (data, cb) => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			console.log(data);
-			request(`patient/immunizations`, 'POST', true, data)
-				.then(response => {
-					dispatch(addImmunizationRequest(response.data));
-					cb('success');
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					cb(null);
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const deleteImmunization = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			// console.log(data);
-			request(`patient/${data}/immunizations`, 'DELETE', true)
-				.then(response => {
-					dispatch(deleteImmunizationRequest(data));
-
 					return resolve({ success: true });
 				})
 				.catch(error => {

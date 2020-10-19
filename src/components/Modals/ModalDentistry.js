@@ -104,7 +104,7 @@ const ModalDentistry = ({
 									<table className="table table-padded">
 										<tbody>
 											<tr>
-												<td class="font-weight-bold">Service Name</td>
+												<td className="font-weight-bold">Service Name</td>
 												<td>
 													{activeRequest.requestBody &&
 													activeRequest.requestBody.length
@@ -115,7 +115,7 @@ const ModalDentistry = ({
 												</td>
 											</tr>
 											<tr>
-												<td class="font-weight-bold">Created By</td>
+												<td className="font-weight-bold">Created By</td>
 												<td>{activeRequest.created_by}</td>
 											</tr>
 										</tbody>

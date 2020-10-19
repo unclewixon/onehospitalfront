@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
+import { useDispatch } from 'react-redux';
 
 import background from '../assets/images/b3.jpeg';
 import profilepix from '../assets/images/a6.jpeg';
@@ -10,11 +11,14 @@ import { getAge, request } from '../services/utilities';
 import { patientAPI } from '../services/constants';
 import { notifySuccess, notifyError } from './../services/notify';
 import waiting from '../assets/images/waiting.gif';
+import { updatePatient } from '../actions/patient';
 
 const ProfileBlock = ({ location, history, patient, noEdits, profile }) => {
 	const [submitting, setSubmitting] = useState(false);
 	// const [dropdown, setDropdown] = useState(false);
 	// const history = useHistory();
+
+	const dispatch = useDispatch();
 
 	// const toggleDropdown = () => {
 	// 	setDropdown(!dropdown);
@@ -26,8 +30,6 @@ const ProfileBlock = ({ location, history, patient, noEdits, profile }) => {
 	// const confirmStartAdmission = () => {
 	// 	confirmAction(goToStartAdmission, '', 'You want to start admission');
 	// };
-
-	console.log(patient);
 
 	const enrollImmunization = async () => {
 		const result = window.confirm('Enroll into immunization?');
@@ -42,6 +44,7 @@ const ProfileBlock = ({ location, history, patient, noEdits, profile }) => {
 					notifySuccess(
 						`you have enrolled ${patient.other_names} into immunization`
 					);
+					dispatch(updatePatient({ ...patient, immunization: rs.records }));
 					history.push(`${location.pathname}#immunization-chart`);
 				} else {
 					setSubmitting(false);
@@ -127,23 +130,25 @@ const ProfileBlock = ({ location, history, patient, noEdits, profile }) => {
 						</div>
 						<div className="row">
 							<div className="col-md-6 align-items-center d-flex">
-								{!noEdits && (
-									<div className="m-2">
-										<a
-											className="btn btn-primary btn-sm text-white"
-											onClick={() => enrollImmunization()}
-											disabled={submitting}>
-											<i className="os-icon os-icon-plus-circle" />
-											<span className="ml-2">
-												{submitting ? (
-													<img src={waiting} alt="submitting" />
-												) : (
-													'Enroll Immunization'
-												)}
-											</span>
-										</a>
-									</div>
-								)}
+								{!noEdits &&
+									(!patient.immunization ||
+										patient.immunization.length === 0) && (
+										<div className="m-2">
+											<a
+												className="btn btn-primary btn-sm text-white"
+												onClick={() => enrollImmunization()}
+												disabled={submitting}>
+												<i className="os-icon os-icon-plus-circle" />
+												<span className="ml-2">
+													{submitting ? (
+														<img src={waiting} alt="submitting" />
+													) : (
+														'Enroll Immunization'
+													)}
+												</span>
+											</a>
+										</div>
+									)}
 							</div>
 						</div>
 					</div>

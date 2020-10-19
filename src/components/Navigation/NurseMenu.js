@@ -52,14 +52,6 @@ const NurseMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/immunization">
-					<div className="icon-w">
-						<div className="os-icon os-icon-documents-17" />
-					</div>
-					<span>Immunizations</span>
-				</Link>
-			</li>
-			<li>
 				<Link to="/procedure">
 					<div className="icon-w">
 						<div className="os-icon os-icon-agenda-1" />

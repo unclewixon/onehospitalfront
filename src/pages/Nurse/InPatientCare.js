@@ -1,25 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Fragment, useEffect, useState, useCallback } from 'react';
-import Select from 'react-select';
+import React, { useEffect, useState, useCallback } from 'react';
 import searchingGIF from '../../assets/images/searching.gif';
-// import Tooltip from 'antd/lib/tooltip';
+import AssignDropup from './AssignDropup';
+import { notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
-import Popover from 'antd/lib/popover';
-import AssignDropup from './AssignDropup';
-import { notifyError } from '../../services/notify';
-
-{
-	/* <Popover
-	title=""
-	overlayClassName="vitals"
-	content={<AssignBed showModal={showModal} onModalClick={onModalClick} />}
-	trigger="click"
-	onVisibleChange={status => onModalClick(status)}
-/>; */
-}
 
 const InPatientCare = () => {
 	const dispatch = useDispatch();
@@ -31,6 +17,7 @@ const InPatientCare = () => {
 	const [visible, setVisible] = useState(true);
 	const [searchValue, setSearchValue] = useState('');
 
+	// handle input  change
 	const handleInputChange = e => {
 		setSearchValue(e.target.value);
 	};
@@ -48,12 +35,6 @@ const InPatientCare = () => {
 			setLoaded(false);
 		}
 	}, [dispatch]);
-
-	const filteredOptions = [
-		{ value: 'chocolate', label: 'Chocolate' },
-		{ value: 'strawberry', label: 'Strawberry' },
-		{ value: 'vanilla', label: 'Vanilla' },
-	];
 
 	useEffect(() => {
 		fetchAdmittedPatients();

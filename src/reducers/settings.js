@@ -58,6 +58,7 @@ import {
 	DELETE_LAB_GROUP,
 	GET_ALL_LAB_GROUPS,
 } from '../actions/types';
+import { updateImmutable } from '../services/utilities';
 
 const INITIAL_STATE = {
 	departments: [],
@@ -86,15 +87,8 @@ const settings = (state = INITIAL_STATE, action) => {
 		case GET_ALL_DEPARTMENTS:
 			return { ...state, departments: action.payload };
 		case UPDATE_DEPARTMENT:
-			return {
-				...state,
-				departments: [
-					...state.departments.filter(
-						deletedItem => deletedItem.id !== action.previousData.id
-					),
-					action.payload,
-				],
-			};
+			const depts = updateImmutable(state.departments, action.payload);
+			return { ...state, departments: [...depts] };
 		case DELETE_DEPARTMENT:
 			return {
 				...state,

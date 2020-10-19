@@ -3,7 +3,7 @@ import StaffData from './StaffData';
 export class Dashboard extends Component {
 	render() {
 		return (
-			<div class="row">
+			<div className="row">
 				<div className="col-sm-3">
 					<div className="user-profile compact">
 						<div className="up-contents">

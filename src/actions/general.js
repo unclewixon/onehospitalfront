@@ -38,7 +38,6 @@ import {
 	TOGGLE_UPLOAD_HMO_TARIFF,
 	TOGGLE_APPROVE_HMO_TRANSACTION,
 	TOGGLE_ANTENATAL_DETAIL,
-	TOGGLE_IMMUNIZATION_DETAIL,
 	TOGGLE_ANTENATAL_ASSESSMENT_DETAIL,
 	TOGGLE_LINE_APPRAISAL,
 	TOGGLE_STAFF_APPRAISAL,
@@ -322,13 +321,6 @@ export const toggleAntenatalDetail = (status, id) => {
 		id,
 	};
 };
-export const toggleImmunizationDetail = (status, data) => {
-	return {
-		type: TOGGLE_IMMUNIZATION_DETAIL,
-		payload: status,
-		data,
-	};
-};
 
 export const toggleAntenatalAssessmentDetail = (status, data) => {
 	return {
@@ -424,7 +416,6 @@ export const closeModals = () => {
 		dispatch(toggleEditService(false, null));
 		dispatch(toggleOpenEncounter(false, null));
 		dispatch(toggleAntenatalDetail(false, null));
-		dispatch(toggleImmunizationDetail(false, null));
 		dispatch(toggleAntenatalAssessmentDetail(false, null));
 		dispatch(toggleLineAppraisal(false));
 		dispatch(toggleStaffAppraisal(false, null));
@@ -728,14 +719,6 @@ export const viewAntenatalDetail = (action, id) => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleAntenatalDetail(action, id));
-	};
-};
-
-export const viewImmunizationDetail = (action, data) => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleImmunizationDetail(action, data));
 	};
 };
 

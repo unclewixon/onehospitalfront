@@ -67,7 +67,6 @@ export class Dashboard extends Component {
 				<h6 className="element-header py-2 px-2">
 					Today's Transactions ({moment().format('YYYY-MM-DD')})
 				</h6>
-
 				<div className="table-responsive">
 					<table className="table table-striped">
 						<thead>

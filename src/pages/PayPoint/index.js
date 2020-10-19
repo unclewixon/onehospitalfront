@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component, Suspense, lazy } from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Switch, Route, withRouter } from 'react-router-dom';
+
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
 import PaypointQueue from './PaypointQueue';
@@ -11,66 +12,58 @@ const Dashboard = lazy(() => import('./Dashboard'));
 const ReviewTransaction = lazy(() => import('./ReviewTransaction'));
 const Voucher = lazy(() => import('./Voucher'));
 
-export class index extends Component {
-	render() {
-		const { match } = this.props;
-		return (
-			<>
-				<div className="content-i">
-					<div className="content-box">
-						<div className="row">
-							<div className="col-sm-12">
-								<div className="element-wrapper">
-									{/*<h6 className="element-header">Pay Point</h6>*/}
-									<div className="row">
-										<div className="col-sm-12">
-											<div className="element-box p-0">
-												<Suspense fallback={<Splash />}>
-													<Switch>
-														<Route
-															exact
-															path={`${match.url}/`}
-															component={Dashboard}
-														/>
-														<Route
-															exact
-															path={`${match.url}/upcoming-bills`}
-															component={PaypointQueue}
-														/>
-														<Route
-															path={`${match.url}/insurance-bills`}
-															component={InsuranceBills}
-														/>
-														<Route
-															path={`${match.url}/transaction-history`}
-															component={ReviewTransaction}
-														/>
-														<Route
-															path={`${match.url}/vouchers`}
-															component={Voucher}
-														/>
+const index = ({ match }) => {
+	return (
+		<div className="content-i">
+			<div className="content-box">
+				<div className="row">
+					<div className="col-sm-12">
+						<div className="element-wrapper">
+							{/*<h6 className="element-header">Pay Point</h6>*/}
+							<div className="row">
+								<div className="col-sm-12">
+									<div className="element-box p-0">
+										<Suspense fallback={<Splash />}>
+											<Switch>
+												<Route
+													exact
+													path={`${match.url}`}
+													component={Dashboard}
+												/>
+												<Route
+													exact
+													path={`${match.url}/upcoming-bills`}
+													component={PaypointQueue}
+												/>
+												<Route
+													path={`${match.url}/insurance-bills`}
+													component={InsuranceBills}
+												/>
+												<Route
+													path={`${match.url}/transaction-history`}
+													component={ReviewTransaction}
+												/>
+												<Route
+													path={`${match.url}/vouchers`}
+													component={Voucher}
+												/>
 
-														<Route
-															path={`${match.url}/new-transaction`}
-															component={NewTransaction}
-														/>
-														<Route component={NoMatch} />
-													</Switch>
-												</Suspense>
-											</div>
-										</div>
+												<Route
+													path={`${match.url}/new-transaction`}
+													component={NewTransaction}
+												/>
+												<Route component={NoMatch} />
+											</Switch>
+										</Suspense>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-					{/*<div className="content-panel compact">*/}
-					{/*	<Queue />*/}
-					{/*</div>*/}
 				</div>
-			</>
-		);
-	}
-}
+			</div>
+		</div>
+	);
+};
 
 export default withRouter(index);

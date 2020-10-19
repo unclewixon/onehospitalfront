@@ -36,7 +36,6 @@ import {
 	TOGGLE_APPROVE_HMO_TRANSACTION,
 	TOGGLE_APPLY_VOUCHER,
 	TOGGLE_ANTENATAL_DETAIL,
-	TOGGLE_IMMUNIZATION_DETAIL,
 	TOGGLE_ANTENATAL_ASSESSMENT_DETAIL,
 	TOGGLE_LINE_APPRAISAL,
 	TOGGLE_STAFF_APPRAISAL,
@@ -85,8 +84,6 @@ const INITIAL_STATE = {
 	encounterInfo: { appointmentId: null, patient: null },
 	antenatal_detail: false,
 	antenatal_id: null,
-	immunization_detail: false,
-	immunization: null,
 	antenatal_assessment_detail: false,
 	antenatal_visit: null,
 	line_appraisal: false,
@@ -195,13 +192,6 @@ const general = (state = INITIAL_STATE, action) => {
 				...state,
 				antenatal_detail: action.payload,
 				antenatal_id: action.id,
-			};
-
-		case TOGGLE_IMMUNIZATION_DETAIL:
-			return {
-				...state,
-				immunization_detail: action.payload,
-				immunization: action.data,
 			};
 		case TOGGLE_ANTENATAL_ASSESSMENT_DETAIL:
 			return {

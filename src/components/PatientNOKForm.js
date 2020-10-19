@@ -15,6 +15,8 @@ import { request } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import { setPatientRecord } from '../actions/user';
+import { addNewPatient, updatePatient } from '../actions/patient';
+
 import DatePicker from 'react-datepicker';
 
 function PatientNOKForm(props) {
@@ -118,16 +120,14 @@ function PatientNOKForm(props) {
 		setSubmitting(true);
 		if (!register_new_patient) {
 			try {
-				const res = await request(
-					`patient/` + patient.id + '/update',
-					'PATCH',
-					true,
-					data
-				);
+				const url = `patient/${patient.id}/update`;
+				const res = await request(url, 'PATCH', true, data);
 				setSubmitting(false);
 				if (res.success) {
 					props.setPatientRecord(res.patient);
+					props.updatePatient(res?.patient);
 					notifySuccess(patient.other_names + ' record was updated!');
+					props.prevStep(1);
 					props.closeModals(false);
 				} else {
 					notifyError(res.message);
@@ -143,7 +143,9 @@ function PatientNOKForm(props) {
 				const res = await request(`patient/save`, 'POST', true, data);
 				setSubmitting(false);
 				if (res.success) {
+					props.addNewPatient(res?.patient);
 					notifySuccess('New patient record was created!');
+					props.prevStep(1);
 					props.closeModals(false);
 				} else {
 					notifyError(res.message);
@@ -401,4 +403,6 @@ export default connect(mapStateToProps, {
 	setPatientRecord,
 	prevStep,
 	closeModals,
+	addNewPatient,
+	updatePatient,
 })(PatientNOKForm);

@@ -1,22 +1,19 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
-import Queue from '../../components/Queue';
 import Tooltip from 'antd/lib/tooltip';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import NicuActivity from './NicuActivity';
 import Popover from 'antd/lib/popover';
 
-const Nicu = props => {
-	const [visible, setVisible] = useState(false);
-	const [showModal, setShowModal] = useState(false);
+import NicuActivity from './NicuActivity';
 
-	const { staff } = props;
-	const department = staff?.details?.department?.name;
+const Nicu = props => {
+	const [showModal, setShowModal] = useState(false);
 
 	const onModalClick = () => {
 		setShowModal(!showModal);
 	};
+
 	return (
 		<div className="content-i">
 			<div className="content-box">
@@ -123,7 +120,7 @@ const Nicu = props => {
 																			overlayClassName=""
 																			content={
 																				<NicuActivity
-																					onModalClick={onModalClick}
+																					onModalClick={() => onModalClick()}
 																					// doHide={() => setVisible(true)}
 																				/>
 																			}

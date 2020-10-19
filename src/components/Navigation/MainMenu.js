@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import avatar1 from '../../assets/images/placeholder.jpg';
 import HrMenu from './HrMenu';
 import InventoryMenu from './InventoryMenu';
-// import SettingsMenu from './SettingsMenu';
 import FrontDeskMenu from './FrontDeskMenu';
 import HMOMenu from './HMOMenu';
 import DoctorMenu from './DoctorMenu';
@@ -93,11 +92,7 @@ class MainMenu extends Component {
 						<div className="new-messages-count">4</div>
 					</div>
 				</div> */}
-				<h1 className="menu-page-header">Page Header</h1>
 				<ul className="main-menu">
-					<li className="sub-header">
-						<span>NAVIGATION</span>
-					</li>
 					{role === 'front-desk' && <FrontDeskMenu />}
 					{(role === 'lab-attendant' ||
 						role === 'lab-officer' ||

@@ -764,11 +764,6 @@ export const physicalExamination = [
 		],
 	},
 	{
-		label: 'Head',
-		value: 'Head',
-		children: ['Headache', 'Head Injury', 'Neck Pain'],
-	},
-	{
 		label: 'Musculoskeletal',
 		value: 'Musculoskeletal',
 		children: ['Normal range of motion', 'Joint swelling or errythema'],

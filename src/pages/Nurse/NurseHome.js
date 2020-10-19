@@ -1,13 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Fragment, useEffect, useState } from 'react';
-import searchingGIF from '../../assets/images/searching.gif';
+import React, { useEffect, useState } from 'react';
 import useSWR from 'swr/esm/use-swr';
 import Tooltip from 'antd/lib/tooltip';
-import { toggleProfile } from '../../actions/user';
 import { useDispatch } from 'react-redux';
-import { calculateAge, fullname } from '../../services/utilities';
-import { socket } from '../../services/constants';
 import truncate from 'lodash.truncate';
+
+import searchingGIF from '../../assets/images/searching.gif';
+import { toggleProfile } from '../../actions/user';
+import { getAge, fullname } from '../../services/utilities';
+import { socket } from '../../services/constants';
 
 const NurseHome = () => {
 	const [loading, setLoading] = useState(true);
@@ -25,7 +26,7 @@ const NurseHome = () => {
 	}, [data, loading]);
 
 	useEffect(() => {
-		socket.on('new-queue', data => {
+		socket.on('nursing-queue', data => {
 			if (data.queue) {
 				const queue = data.queue;
 				setQueues(queues => [...queues, queue]);
@@ -49,93 +50,89 @@ const NurseHome = () => {
 							</h6>
 							<div className="element-content">
 								<div className="table-responsive">
-									{
-										<table className="table table-striped">
-											<thead>
+									<table className="table table-striped">
+										<thead>
+											<tr>
+												<th>
+													<div className="th-inner sortable both">Patient</div>
+												</th>
+												<th>
+													<div className="th-inner sortable both">
+														Whom To See
+													</div>
+												</th>
+												<th>
+													<div className="th-inner sortable both">
+														Gender / Age
+													</div>
+												</th>
+												<th>
+													<div className="th-inner sortable both">Service</div>
+												</th>
+												<th>
+													<div className="th-inner sortable both">Date</div>
+												</th>
+												<th>
+													<div className="th-inner "></div>
+												</th>
+											</tr>
+										</thead>
+										<tbody>
+											{loading ? (
 												<tr>
-													<th>
-														<div className="th-inner sortable both">
-															Patient
-														</div>
-													</th>
-													<th>
-														<div className="th-inner sortable both">
-															Whom To See
-														</div>
-													</th>
-													<th>
-														<div className="th-inner sortable both">
-															Gender/Age
-														</div>
-													</th>
-													<th>
-														<div className="th-inner sortable both">
-															Service
-														</div>
-													</th>
-													<th>
-														<div className="th-inner "></div>
-													</th>
+													<td colSpan="7" className="text-center">
+														<img alt="searching" src={searchingGIF} />
+													</td>
 												</tr>
-											</thead>
-											<tbody>
-												{loading ? (
-													<tr>
-														<td colSpan="7" className="text-center">
-															<img alt="searching" src={searchingGIF} />
-														</td>
-													</tr>
-												) : (
-													<Fragment>
-														{queues ? (
-															queues
-																.filter(queue => queue.queueType === 'vitals')
-																.map((queue, key) => (
-																	<tr key={key}>
-																		<td>{`${queue.patientName}`}</td>
-																		<td>
-																			{fullname(queue.appointment.whomToSee)}
-																		</td>
-																		<td>{`${
-																			queue.appointment.patient.gender
-																		} ${calculateAge(
-																			queue.appointment.patient.date_of_birth
-																		)} yrs`}</td>
-																		<td>
-																			{truncate(
-																				queue.appointment.serviceType.name,
-																				{
-																					length: 50,
-																					omission: '...',
-																				}
-																			)}
-																		</td>
-																		<td>
-																			<Tooltip title="View Profile">
-																				<a
-																					onClick={() =>
-																						showProfile(
-																							queue.appointment.patient
-																						)
-																					}>
-																					<i className="os-icon os-icon-user" />
-																				</a>
-																			</Tooltip>
-																		</td>
-																	</tr>
-																))
-														) : (
-															<tr>
-																<td colSpan="7" className="text-center">
-																	No result found
-																</td>
-															</tr>
-														)}
-													</Fragment>
-												)}
-											</tbody>
-										</table>
-									}
+											) : (
+												<>
+													{queues ? (
+														queues
+															.filter(queue => queue.queueType === 'vitals')
+															.map((queue, key) => (
+																<tr key={key}>
+																	<td>{`${queue.patientName}`}</td>
+																	<td>
+																		{fullname(queue.appointment.whomToSee)}
+																	</td>
+																	<td>{`${
+																		queue.appointment.patient.gender
+																	} / ${getAge(
+																		queue.appointment.patient.date_of_birth
+																	)}`}</td>
+																	<td>
+																		{truncate(
+																			queue.appointment.serviceType.name,
+																			{
+																				length: 50,
+																				omission: '...',
+																			}
+																		)}
+																	</td>
+																	<td>{queue.createdAt}</td>
+																	<td>
+																		<Tooltip title="View Profile">
+																			<a
+																				onClick={() =>
+																					showProfile(queue.appointment.patient)
+																				}>
+																				<i className="os-icon os-icon-user" />
+																			</a>
+																		</Tooltip>
+																	</td>
+																</tr>
+															))
+													) : (
+														<tr>
+															<td colSpan="7" className="text-center">
+																No result found
+															</td>
+														</tr>
+													)}
+												</>
+											)}
+										</tbody>
+									</table>
 								</div>
 							</div>
 						</div>

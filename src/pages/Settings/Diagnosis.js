@@ -5,28 +5,45 @@ import { connect } from 'react-redux';
 import { uploadDiagnosis } from '../../actions/general';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
-import {
-	getAllDiagnosises,
-	updateDiagnosis,
-	deleteDiagnosis,
-} from '../../actions/settings';
+import { getAllDiagnosis } from '../../actions/settings';
+import { request } from '../../services/utilities';
 
 const Diagnosis = props => {
 	const [dataLoaded, setDataLoaded] = useState(false);
+	const [pageInfo, setPageInfo] = useState(null);
+	const [currentPage, setCurrentPage] = useState(0);
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		if (!dataLoaded) {
-			props
-				.getAllDiagnosises()
-				.then(response => {
-					setDataLoaded(true);
-				})
-				.catch(e => {
-					setDataLoaded(true);
-					notifyError(e.message || 'could not fetch diagnosis');
-				});
+			loadDiagnosis(1);
 		}
-	}, [props, dataLoaded]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [dataLoaded]);
+
+	const loadDiagnosis = async page => {
+		try {
+			if (page <= 0) {
+				return;
+			} else if (pageInfo && page > pageInfo.lastPage) {
+				return;
+			}
+
+			setLoading(true);
+			const url = 'settings/diagnosis';
+			const rs = await request(`${url}?page=${page}`);
+			const { data, ...info } = rs;
+			props.getAllDiagnosis(data);
+			setPageInfo(info);
+			setCurrentPage(page);
+			setDataLoaded(true);
+			setLoading(false);
+		} catch (e) {
+			setDataLoaded(true);
+			setLoading(false);
+			notifyError(e.message || 'could not load diagnoses');
+		}
+	};
 
 	return (
 		<div className="content-i">
@@ -81,11 +98,10 @@ const Diagnosis = props => {
 														<th>Procedure Code</th>
 														<th>ICD 10 Code</th>
 														<th className="text-center">Description</th>
-														<th>Actions</th>
 													</tr>
 												</thead>
 												<tbody>
-													{!dataLoaded ? (
+													{!dataLoaded || loading ? (
 														<tr>
 															<td colSpan="5" className="text-center">
 																<img alt="searching" src={searchingGIF} />
@@ -93,7 +109,7 @@ const Diagnosis = props => {
 														</tr>
 													) : (
 														<>
-															{props.Diagnosis.map((diagnosis, i) => {
+															{props.diagnosis.map((diagnosis, i) => {
 																return (
 																	<tr key={i}>
 																		<td>
@@ -109,17 +125,6 @@ const Diagnosis = props => {
 																		<td>
 																			<span>{diagnosis.description}</span>
 																		</td>
-																		<td className="row-actions">
-																			<a href="#">
-																				<i className="os-icon os-icon-grid-10"></i>
-																			</a>
-																			<a href="#">
-																				<i className="os-icon os-icon-ui-44"></i>
-																			</a>
-																			<a className="danger" href="#">
-																				<i className="os-icon os-icon-ui-15"></i>
-																			</a>
-																		</td>
 																	</tr>
 																);
 															})}
@@ -130,14 +135,17 @@ const Diagnosis = props => {
 										</div>
 										<div className="controls-below-table">
 											<div className="table-records-info">
-												Showing records 1 - 5
+												{`Showing records ${currentPage} - ${pageInfo?.lastPage ||
+													0}`}
 											</div>
 											<div className="table-records-pages">
 												<ul>
 													<li>
-														<a href="#">Previous</a>
+														<a onClick={() => loadDiagnosis(currentPage - 1)}>
+															Previous
+														</a>
 													</li>
-													<li>
+													{/* <li>
 														<a className="current" href="#">
 															1
 														</a>
@@ -150,17 +158,16 @@ const Diagnosis = props => {
 													</li>
 													<li>
 														<a href="#">4</a>
-													</li>
+													</li> */}
 													<li>
-														<a href="#">Next</a>
+														<a onClick={() => loadDiagnosis(currentPage + 1)}>
+															Next
+														</a>
 													</li>
 												</ul>
 											</div>
 										</div>
 									</div>
-								</div>
-								<div>
-									<div></div>
 								</div>
 							</div>
 						</div>
@@ -173,13 +180,11 @@ const Diagnosis = props => {
 
 const mapStateToProps = state => {
 	return {
-		Diagnosis: state.settings.diagnosis,
+		diagnosis: state.settings.diagnosis,
 	};
 };
 
 export default connect(mapStateToProps, {
 	uploadDiagnosis,
-	getAllDiagnosises,
-	updateDiagnosis,
-	deleteDiagnosis,
+	getAllDiagnosis,
 })(Diagnosis);

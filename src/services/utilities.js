@@ -136,6 +136,21 @@ export const upload = async (url, method, body) => {
 	return parseJSON(result);
 };
 
+export const updateImmutable = (list, payload) => {
+	const data = list.find(d => d.id === payload.id);
+	if (data) {
+		const index = list.findIndex(d => d.id === payload.id);
+
+		return [
+			...list.slice(0, index),
+			{ ...data, ...payload },
+			...list.slice(index + 1),
+		];
+	}
+
+	return list;
+};
+
 // prettier-ignore
 export const renderTextInput = ({ input, label, type, id, placeholder, readOnly = false, meta: { touched, error } }) => (
 	<div
@@ -532,27 +547,10 @@ export const findByID = (array, id) => {
 	return array.find(item => item.id === id);
 };
 
-export const calculateAge = dob => {
-	let test = /^(0[1-9]|1[0-2])\/(0[1-9]|1\d|2\d|3[01])\/(19|20)\d{2}$/;
-	//check if date is dd/mm/yyyy:if yes turn to mm/dd/yyyy
-	if (!test.test(dob)) {
-		// console.log(dob);
-		let arr = dob.split('/');
-
-		let newDate = [arr[1], arr[0], arr[2]];
-		dob = newDate.join('/');
-	}
-	let db = moment(dob).format('MM/DD/YYYY');
-	let diff_ms = Date.now() - new Date(db).getTime();
-	let age_dt = new Date(diff_ms);
-
-	return Math.abs(age_dt.getUTCFullYear() - 1970);
-};
-
 export const getAge = dob => {
 	if (!dob) return 0;
 
-	const date = moment(dob);
+	const date = moment(new Date(dob));
 
 	const years = moment().diff(date, 'years', false);
 	const days = moment().diff(date.add(years, 'years'), 'days', false);
@@ -561,7 +559,8 @@ export const getAge = dob => {
 		return `${days} days`;
 	}
 
-	return `${years}years ${days}days`;
+	// const months = moment().diff(date.add(years, 'years'), 'months', false);
+	return `${years}years`; // ${months}months
 };
 
 export const groupBy = function(xs, key) {
@@ -585,11 +584,16 @@ export const checkVaccine = data => {
 };
 
 export const vaccineNotDue = data => {
-	return !data.date_administered && moment().isBefore(data.date_due);
+	return (
+		!data.appointment_date &&
+		!data.date_administered &&
+		moment().isBefore(data.date_due)
+	);
 };
 
 export const vaccineMissed = data => {
 	return (
+		!data.appointment_date &&
 		!data.date_administered &&
 		!moment().isSame(data.date_due, 'day') &&
 		moment().isAfter(data.date_due)

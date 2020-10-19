@@ -25,9 +25,6 @@ import {
 	LOAD_RADIOLOGY,
 	UPDATE_COMPLAINT_DATA,
 	LOAD_ANTENNATAL,
-	LOAD_IMMUNIZATION,
-	ADD_IMMUNIZATION,
-	DELETE_IMMUNIZATION,
 	LOAD_ANTENATAL_ASSESSMENT,
 	LOAD_LABOUR,
 	LOAD_LABOUR_DETAIL,
@@ -43,8 +40,10 @@ import {
 	ADD_NEW_PATIENT,
 	GET_ALL_OPD_LAB_APPOINTMENTS,
 	GET_ALL_OPD_IMMUNIZATION_APPOINTMENTS,
+	UPDATE_PATIENT,
 } from '../actions/types';
 import actions from 'redux-form/lib/actions';
+import { updateImmutable } from '../services/utilities';
 
 const INITIAL_STATE = {
 	formStep: 1,
@@ -89,7 +88,6 @@ const INITIAL_STATE = {
 			procedureRequest: {},
 		},
 	},
-	immunization: [],
 	antenatalAssessment: [],
 	enrolments: [],
 	labourDetail: {},
@@ -188,21 +186,6 @@ const patient = (state = INITIAL_STATE, action) => {
 
 		case LOAD_ANTENNATAL:
 			return { ...state, antennatal: [...action.payload] };
-		case LOAD_IMMUNIZATION:
-			return { ...state, immunization: [...action.payload] };
-		case ADD_IMMUNIZATION:
-			return {
-				...state,
-				immunization: [...state.immunization, action.payload],
-			};
-		case DELETE_IMMUNIZATION:
-			return {
-				...state,
-				immunization: state.immunization.filter(
-					deletedItem => deletedItem.id !== action.payload
-				),
-			};
-
 		case LOAD_ANTENATAL_ASSESSMENT:
 			return {
 				...state,
@@ -261,8 +244,11 @@ const patient = (state = INITIAL_STATE, action) => {
 		case ADD_NEW_PATIENT:
 			return {
 				...state,
-				// allPatients: state.allPatients.push(action.payload)
+				allPatients: [action.payload, ...state.allPatients],
 			};
+		case UPDATE_PATIENT:
+			const patients = updateImmutable(state.allPatients, action.payload);
+			return { ...state, allPatients: [...patients] };
 		default:
 			return state;
 	}

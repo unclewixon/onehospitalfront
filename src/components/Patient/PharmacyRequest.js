@@ -1,42 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
-import PharmNewRequestComponent from '../PharmNewRequestComponent';
+import React from 'react';
 import { connect } from 'react-redux';
-import { getAllDiagnosises } from '../../actions/settings';
+
+import PrescriptionForm from '../Pharmacy/PrescriptionForm';
 
 const PharmacyRequest = props => {
-	const { patient, diagnosis } = props;
-	const [diagnosisLoading, setDiagnosisLoading] = useState(false);
+	const { patient } = props;
 
-	useEffect(() => {
-		const { getAllDiagnosises } = props;
-		setDiagnosisLoading(true);
-		getAllDiagnosises(() => {
-			setDiagnosisLoading(false);
-		});
-	}, []);
-
-	const diagnosisList = diagnosis
-		? diagnosis.map(diag => {
-				return {
-					label: diag.icd10Code,
-					value: diag.icd10Code,
-				};
-		  })
-		: [];
-
-	return (
-		<PharmNewRequestComponent
-			patient={patient}
-			diagnosisList={diagnosisList}
-			diagnosisLoading={diagnosisLoading}
-		/>
-	);
+	return <PrescriptionForm patient={patient} module="patient" />;
 };
 
-const mapStateToProps = ({ user, settings }) => ({
+const mapStateToProps = ({ user }) => ({
 	patient: user.patient,
-	diagnosis: settings.diagnosis,
 });
 
-export default connect(mapStateToProps, { getAllDiagnosises })(PharmacyRequest);
+export default connect(mapStateToProps)(PharmacyRequest);

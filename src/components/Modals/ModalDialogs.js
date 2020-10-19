@@ -33,7 +33,6 @@ import AddCafeteriaFile from './AddCafeteriaFile';
 import ModalUploadRadiology from './ModalUploadRadiology';
 import ModalApproveTransaction from './ModalApproveTransaction';
 import ModalAntenatalDetail from './ModalAntenatalDetail';
-import ModalImmunizationDetail from './ModalImmunizationDetail';
 import ModalAntenatalAssessmentDetail from './ModalAntenatalAssessmentDetail';
 import ModalLineAppraisal from './ModalLineAppraisal';
 import ModalStaffAppraisal from './ModalStaffAppraisal';
@@ -74,7 +73,6 @@ const ModalDialogs = ({
 	add_cafeteria_file,
 	upload_radiology,
 	antenatal_detail,
-	immunization_detail,
 	antenatal_assessment_detail,
 	line_appraisal,
 	staff_appraisal,
@@ -118,7 +116,6 @@ const ModalDialogs = ({
 			{add_cafeteria_file && <AddCafeteriaFile />}
 			{upload_radiology && <ModalUploadRadiology />}
 			{antenatal_detail && <ModalAntenatalDetail />}
-			{immunization_detail && <ModalImmunizationDetail />}
 			{antenatal_assessment_detail && <ModalAntenatalAssessmentDetail />}
 			{line_appraisal && <ModalLineAppraisal />}
 			{staff_appraisal && <ModalStaffAppraisal />}
@@ -163,7 +160,6 @@ const mapStateToProps = (state, ownProps) => {
 		add_cafeteria_file: state.general.add_cafeteria_file,
 		upload_radiology: state.general.upload_radiology,
 		antenatal_detail: state.general.antenatal_detail,
-		immunization_detail: state.general.immunization_detail,
 		antenatal_assessment_detail: state.general.antenatal_assessment_detail,
 		line_appraisal: state.general.line_appraisal,
 		staff_appraisal: state.general.staff_appraisal,

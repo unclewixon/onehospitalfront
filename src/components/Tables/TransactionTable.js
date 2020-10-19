@@ -2,9 +2,9 @@
 import React, { Fragment } from 'react';
 
 import {
-	formatNumber,
 	confirmAction,
 	trimText,
+	formatCurrency,
 } from '../../services/utilities';
 
 import searchingGIF from '../../assets/images/searching.gif';
@@ -47,6 +47,8 @@ const TransactionTable = ({
 		confirmAction(onDeleteTransaction, data);
 	};
 
+	console.log(transactions);
+
 	return (
 		<tbody>
 			{loading ? (
@@ -63,8 +65,9 @@ const TransactionTable = ({
 								{moment(transaction.createdAt).format('YYYY/MM/DD')}
 							</td>
 							<td className="">
-								{`${transaction.patient?.surname} ${transaction.patient?.other_names}`}
+								{`${transaction.patient?.other_names} ${transaction.patient?.surname}`}
 							</td>
+							<td>Pharmacy</td>
 							<td className="">
 								{transaction.serviceType ? (
 									<Tooltip title={transaction.serviceType.name} trigger="hover">
@@ -83,12 +86,12 @@ const TransactionTable = ({
 									</Tooltip>
 								) : null}
 							</td>
-							<td className="text-right">
-								{transaction.amount ? formatNumber(transaction.amount) : 0}
+							<td className="text-center">
+								{formatCurrency(transaction.amount ? transaction.amount : 0)}
 							</td>
 
-							<td className="text-right">
-								{transaction?.balance ? transaction.balance : '0'}
+							<td className="text-center">
+								{formatCurrency(transaction?.balance ? transaction.balance : 0)}
 							</td>
 							<td className="">
 								{transaction.payment_type

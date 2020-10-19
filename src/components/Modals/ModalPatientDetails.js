@@ -89,27 +89,27 @@ const ModalPatientDetails = ({ showModal, onModalClick, activeRequest }) => {
 									<table className="table table-padded">
 										<tbody>
 											<tr>
-												<td class="font-weight-bold">Insurance Status</td>
+												<td className="font-weight-bold">Insurance Status</td>
 												<td>{activeRequest?.insurranceStatus}</td>
 											</tr>
 											<tr>
-												<td class="font-weight-bold">Number of Visits</td>
+												<td className="font-weight-bold">Number of Visits</td>
 												<td>{activeRequest?.noOfVisits}</td>
 											</tr>
 											<tr>
-												<td class="font-weight-bold">Ethnicity</td>
+												<td className="font-weight-bold">Ethnicity</td>
 												<td>{activeRequest?.ethnicity}</td>
 											</tr>
 											<tr>
-												<td class="font-weight-bold">Gender</td>
+												<td className="font-weight-bold">Gender</td>
 												<td>{activeRequest?.gender}</td>
 											</tr>
 											<tr>
-												<td class="font-weight-bold">Occupation</td>
+												<td className="font-weight-bold">Occupation</td>
 												<td>{activeRequest?.occupation}</td>
 											</tr>
 											<tr>
-												<td class="font-weight-bold">Date of Birth</td>
+												<td className="font-weight-bold">Date of Birth</td>
 												<td>{activeRequest?.date_of_birth}</td>
 											</tr>
 										</tbody>

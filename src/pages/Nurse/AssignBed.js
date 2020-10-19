@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // import { connect } from 'react-redux';
-import { Field, reduxForm, SubmissionError, reset } from 'redux-form';
+import { Field, reduxForm, SubmissionError } from 'redux-form';
 import Modal from 'react-bootstrap/Modal';
 import {
 	renderTextInput,
@@ -80,7 +80,7 @@ class AssignBed extends Component {
 	}
 
 	render() {
-		const { doHide, error, handleSubmit, info } = this.props;
+		const { error, handleSubmit } = this.props;
 		const { submitting } = this.state;
 		const selectFloor = [
 			{ value: 'chocolate', label: 'Chocolate' },
