@@ -124,11 +124,11 @@ const FrontDesk = props => {
 												component={AllPatients}
 											/>
 											<Route
-												path={`${match.url}/all-in-patients`}
+												path={`${match.url}/in-patients`}
 												component={AllInPatients}
 											/>
 											<Route
-												path={`${match.url}/all-notifications`}
+												path={`${match.url}/notifications`}
 												component={AllNotifications}
 											/>
 											<Route component={NoMatch} />

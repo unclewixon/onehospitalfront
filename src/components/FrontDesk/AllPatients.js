@@ -1,47 +1,39 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useCallback } from 'react';
 import DatePicker from 'antd/lib/date-picker';
-import Select from 'react-select';
+// import Select from 'react-select';
 import Tooltip from 'antd/lib/tooltip';
 import { connect, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-
+// import axios from 'axios';
+import moment from 'moment';
 import { request } from '../../services/utilities';
-import { loadAllPatients } from '../../actions/patient';
+// import { loadAllPatients } from '../../actions/patient';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
-import waiting from '../../assets/images/waiting.gif';
+// import waiting from '../../assets/images/waiting.gif';
 import ModalPatientDetails from '../../components/Modals/ModalPatientDetails';
 import { toggleProfile } from '../../actions/user';
 
-const { RangePicker } = DatePicker;
+// const { RangePicker } = DatePicker;
 
-const customStyle = {
-	control: (provided, state) => ({
-		...provided,
-		minHeight: '24px !important',
-		height: '2rem',
-		width: '12rem',
-	}),
-};
-
-const AllPatients = ({ allPatients }) => {
+const AllPatients = () => {
 	const dispatch = useDispatch();
-	const [loaded, setLoaded] = useState(false);
 	const activeRequest = null;
+
+	const [loaded, setLoaded] = useState(false);
+	const [allPatients, setAllPatients] = useState(null);
 	// const [activeRequest, setActiveRequest] = useState(null);
 	const [showModal, setShowModal] = useState(false);
-	const [filtering, setFiltering] = useState(false);
-	// const [patientName, setPatientName] = useState('');
+	// const [filtering, setFiltering] = useState(false);
+	const [searchValue, setSearchValue] = useState('');
 
 	const onModalClick = () => {
 		setShowModal(!showModal);
 	};
 
-	const dateChange = e => {
-		// let date = e.map(d => {
-		// 	return moment(d._d).format('YYYY-MM-DD');
-		// });
+	const handleInputChange = e => {
+		setSearchValue(e.target.value);
 	};
 
 	const showProfile = patient => {
@@ -49,24 +41,35 @@ const AllPatients = ({ allPatients }) => {
 		dispatch(toggleProfile(true, info));
 	};
 
-	const fetchPatients = useCallback(
-		async name => {
-			try {
-				const url = name ? `patient/find?query=${name}` : `patient/list`;
-				const rs = await request(url, 'GET', true);
-				dispatch(loadAllPatients(rs));
-				setLoaded(false);
-			} catch (error) {
-				notifyError('error fetching patients');
-				setLoaded(false);
-			}
-		},
-		[dispatch]
-	);
+	const fetchPatients = useCallback(async () => {
+		try {
+			// const url = name ? `patient/find?query=${name}` : `patient/list`;
+			const url = `patient/list`;
+			const rs = await request(url, 'GET', true);
+			console.log(rs);
+			setAllPatients(rs);
+			// dispatch(loadAllPatients(rs));
+			setLoaded(false);
+		} catch (error) {
+			notifyError('error fetching patients');
+			setLoaded(false);
+		}
+	}, [dispatch]);
 
-	const filterEntries = () => {
-		setFiltering(true);
-		fetchPatients();
+	const searchEntries = e => {
+		e.preventDefault();
+		const url = `patient/find?q=${searchValue}`;
+		console.log(url);
+		request(url, 'GET', true)
+			.then(data => {
+				console.log(data);
+				setAllPatients(data);
+				// dispatch(loadAllPatients(data));
+			})
+			.catch(error => {
+				notifyError(`error fetching patients ${error}`);
+				setLoaded(false);
+			});
 	};
 
 	useEffect(() => {
@@ -80,6 +83,7 @@ const AllPatients = ({ allPatients }) => {
 				<td>{`${data?.surname} ${data?.other_names}`}</td>
 				<td>{data?.fileNumber}</td>
 				<td>{data?.phoneNumber}</td>
+				<td>{moment(data?.date_of_birth).format('DD/MM/YYYY')}</td>
 				<td className="row-actions text-right">
 					<Tooltip title="View Request">
 						<a onClick={() => showProfile(data)}>
@@ -112,38 +116,22 @@ const AllPatients = ({ allPatients }) => {
 					onModalClick={onModalClick}
 				/>
 			) : null}
-			<form className="row">
-				<div className="form-group col-md-6">
-					<label>From - To</label>
-					<RangePicker onChange={e => dateChange(e)} />
-				</div>
-				<div className="form-group col-md-4">
-					<label className="mr-2 " htmlFor="id">
-						Patient
-					</label>
-					<Select
-						styles={customStyle}
-						id="patientId"
-						isSearchable={true}
-						name="patientId"
-						// options={filteredOptions}
-						// onChange={e => setPatientName(e.target.value)}
-					/>
-				</div>
-				<div className="form-group col-md-2 mt-4">
-					<div
-						className="btn btn-sm btn-primary btn-upper text-white filter-btn"
-						onClick={() => {
-							filterEntries();
-						}}>
-						<i className="os-icon os-icon-ui-37" />
-						<span>
-							{filtering ? <img src={waiting} alt="submitting" /> : 'Filter'}
-						</span>
-					</div>
-				</div>
-			</form>
 			<div className="element-box px-0">
+				<form className="row search_form" onSubmit={searchEntries}>
+					<div className="form-group col-md-3 mt-4 text-right">
+						<div className="input-group mb-2 mr-sm-2 mb-sm-0">
+							<label className="search_label">Search: </label>{' '}
+							<input
+								className="form-control search_input"
+								placeholder=""
+								type="text"
+								name="search"
+								onChange={handleInputChange}
+								value={searchValue}
+							/>
+						</div>
+					</div>
+				</form>
 				<div className="table-responsive">
 					{
 						<table className="table table-striped">
@@ -163,6 +151,10 @@ const AllPatients = ({ allPatients }) => {
 									</th>
 									<th>
 										<div className="th-inner sortable both">Phone Number</div>
+										<div className="fht-cell"></div>
+									</th>
+									<th>
+										<div className="th-inner sortable both">Dat of Birth</div>
 										<div className="fht-cell"></div>
 									</th>
 									<th>

@@ -7,7 +7,7 @@ import axios from 'axios';
 import 'react-widgets/dist/css/react-widgets.css';
 import './assets/icon_fonts_assets/feather/style.css';
 import './assets/css/main.css';
-// import './assets/css/style.css';
+import './assets/css/custom_styles.css';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
