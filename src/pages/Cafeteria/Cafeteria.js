@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
+
 import CafeteriaDashboard from './Dashboard';
 import AllTransactions from './AllTransaction';
-import Tab from './Tab';
 
 const Cafeteria = () => {
 	const [activePage, togglePage] = useState('Dashboard');

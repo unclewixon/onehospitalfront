@@ -9,7 +9,7 @@ import {
 	request,
 } from '../../services/utilities';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
-import { inventoryAPI } from '../../services/constants';
+import { inventoryAPI, vendorAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
 import { updateInventory } from '../../actions/inventory';
@@ -29,14 +29,25 @@ class ModalEditInventory extends Component {
 	state = {
 		submitting: false,
 		sub_categories: [],
+		vendors: [],
 	};
 
 	componentDidMount() {
+		this.fetchVendors();
 		const { item, sub_categories } = this.props;
 		this.setState({ item: item });
 		this.setState({ sub_categories: sub_categories });
 		document.body.classList.add('modal-open');
 	}
+
+	fetchVendors = async () => {
+		try {
+			const rs = await request(`${vendorAPI}`, 'GET', true);
+			this.setState({ vendors: rs });
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	componentWillUnmount() {
 		document.body.classList.remove('modal-open');
@@ -83,7 +94,7 @@ class ModalEditInventory extends Component {
 
 	render() {
 		const { error, handleSubmit, categories } = this.props;
-		const { submitting, sub_categories } = this.state;
+		const { submitting, sub_categories, vendors } = this.state;
 		return (
 			<div
 				className="onboarding-modal modal fade animated show"
@@ -151,7 +162,6 @@ class ModalEditInventory extends Component {
 												/>
 											</div>
 										</div>
-
 										<div className="col-sm-6">
 											<div className="form-group">
 												<Field
@@ -165,7 +175,6 @@ class ModalEditInventory extends Component {
 											</div>
 										</div>
 									</div>
-
 									<div className="row">
 										<div className="col-sm-6">
 											<Field
@@ -191,6 +200,19 @@ class ModalEditInventory extends Component {
 												append={false}
 											/>
 										</div>
+									</div>
+									<div className="row">
+										<div className="col-sm-6">
+											<Field
+												id="vendor_id"
+												name="vendor_id"
+												component={renderSelect}
+												label="Vendor"
+												placeholder="Select Vendor"
+												data={vendors}
+											/>
+										</div>
+										<div className="col-sm-6" />
 									</div>
 
 									<div className="form-buttons-w">
@@ -225,14 +247,16 @@ ModalEditInventory = reduxForm({
 
 const mapStateToProps = (state, ownProps) => {
 	const items = state.general.edit_inventory;
+	console.log(items);
 	return {
 		initialValues: {
 			name: items.name,
 			description: items.description,
 			sales_price: items.sales_price,
 			cost_price: items.cost_price,
-			sub_category_id: items.subCategory.id,
-			category_id: items.category.id,
+			sub_category_id: items.subCategory?.id,
+			category_id: items.category?.id,
+			vendor_id: items.vendor?.id,
 		},
 		categories: state.inventory.categories,
 		sub_categories: state.inventory.sub_categories,

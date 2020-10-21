@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError, reset } from 'redux-form';
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
 
 import { closeModals } from '../../actions/general';
 import {
@@ -9,7 +11,7 @@ import {
 	renderTextInputGroup,
 	renderSelect,
 } from '../../services/utilities';
-import { inventoryAPI } from '../../services/constants';
+import { inventoryAPI, vendorAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
 import { addInventory } from '../../actions/inventory';
@@ -29,9 +31,12 @@ class ModalCreateInventory extends Component {
 	state = {
 		submitting: false,
 		sub_categories: [],
+		vendors: [],
+		expiry_date: null,
 	};
 
 	componentDidMount() {
+		this.fetchVendors();
 		const { sub_categories } = this.props;
 		this.setState({ sub_categories: sub_categories });
 		document.body.classList.add('modal-open');
@@ -41,10 +46,24 @@ class ModalCreateInventory extends Component {
 		document.body.classList.remove('modal-open');
 	}
 
-	createInventory = async data => {
-		this.setState({ submitting: true });
+	fetchVendors = async () => {
 		try {
-			const rs = await request(`${inventoryAPI}`, 'POST', true, data);
+			const rs = await request(`${vendorAPI}`, 'GET', true);
+			this.setState({ vendors: rs });
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	createInventory = async data => {
+		try {
+			const { expiry_date } = this.state;
+			this.setState({ submitting: true });
+			const datum = {
+				...data,
+				expiry_date: moment(expiry_date).format('YYYY-MM-DD'),
+			};
+			const rs = await request(`${inventoryAPI}`, 'POST', true, datum);
 			this.props.addInventory(rs);
 			this.props.reset('create_inventory');
 			notifySuccess('inventory item created!');
@@ -66,8 +85,10 @@ class ModalCreateInventory extends Component {
 		this.setState({ sub_categories: newSubCat });
 	};
 
+	onChangeDate = e => this.setState({ expiry_date: e });
+
 	render() {
-		const { submitting, sub_categories } = this.state;
+		const { submitting, sub_categories, vendors, expiry_date } = this.state;
 		const { error, handleSubmit, categories } = this.props;
 		return (
 			<div
@@ -179,6 +200,31 @@ class ModalCreateInventory extends Component {
 										</div>
 										<div className="col-sm-6">
 											<Field
+												id="vendor_id"
+												name="vendor_id"
+												component={renderSelect}
+												label="Vendor"
+												placeholder="Select Vendor"
+												data={vendors}
+											/>
+										</div>
+									</div>
+									<div className="row">
+										<div className="col-sm-6">
+											<div className="form-group">
+												<label htmlFor="expiry">Expiry Date</label>
+												<DatePicker
+													className="single-daterange form-control"
+													dateFormat="yyyy-MM-dd"
+													selected={expiry_date}
+													onChange={this.onChangeDate}
+													disabledKeyboardNavigation
+													placeholderText="Expiry Date"
+												/>
+											</div>
+										</div>
+										<div className="col-sm-6">
+											<Field
 												id="description"
 												name="description"
 												component={renderTextInput}
@@ -225,6 +271,7 @@ const mapStateToProps = (state, ownProps) => {
 			quantity: 0,
 			sales_price: 0,
 			cost_price: 0,
+			vendor_id: '',
 		},
 		categories: state.inventory.categories,
 		sub_categories: state.inventory.sub_categories,

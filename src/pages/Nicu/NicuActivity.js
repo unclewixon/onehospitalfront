@@ -1,8 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { lazy, useState } from 'react';
+import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+
 import ModalCreateObservation from '../../components/Modals/ModalCreateObservation';
 import ModalCreateDrugChat from '../../components/Modals/ModalCreateDrugChat';
 import ModalCreateFluidChat from '../../components/Modals/ModalCreateFluidChat';

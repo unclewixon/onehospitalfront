@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import numeral from 'numeral';
 import uppercase from 'lodash.uppercase';
@@ -598,4 +599,22 @@ export const vaccineMissed = data => {
 		!moment().isSame(data.date_due, 'day') &&
 		moment().isAfter(data.date_due)
 	);
+};
+
+export const hasExpired = date => {
+	if (date) {
+		return moment().isAfter(moment(date, 'YYYY-MM-DD'));
+	}
+
+	return false;
+};
+
+export const itemRender = (current, type, originalElement) => {
+	if (type === 'prev') {
+		return <a>Previous</a>;
+	}
+	if (type === 'next') {
+		return <a>Next</a>;
+	}
+	return originalElement;
 };

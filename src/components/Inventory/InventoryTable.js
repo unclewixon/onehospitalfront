@@ -2,18 +2,36 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
+import BootstrapTable from 'react-bootstrap-table-next';
+import moment from 'moment';
 
 import { editInventory, updateQuantity } from '../../actions/general';
-import BootstrapTable from 'react-bootstrap-table-next';
+import { formatCurrency, hasExpired } from '../../services/utilities';
+import ModalExpiryDate from '../Modals/ModalExpiryDate';
 
 function numberingFormatter(cell, row, rowIndex, formatExtraData) {
 	return rowIndex + 1;
 }
 
 class InventoryTable extends Component {
+	state = {
+		showExpiryModal: false,
+		inventory: null,
+	};
+
 	doEditInventory = item => {
 		console.log('edit inventory');
 		this.props.editInventory(item);
+	};
+
+	doEditExpiry = item => {
+		document.body.classList.add('modal-open');
+		this.setState({ showExpiryModal: true, inventory: item });
+	};
+
+	closeModal = () => {
+		document.body.classList.remove('modal-open');
+		this.setState({ showExpiryModal: false, inventory: null });
 	};
 
 	doUpdateQuantity = item => {
@@ -27,6 +45,9 @@ class InventoryTable extends Component {
 				dataField: 'index',
 				text: 'ID',
 				formatter: numberingFormatter,
+				headerStyle: (colum, colIndex) => {
+					return { width: '80px' };
+				},
 			},
 
 			{
@@ -35,26 +56,49 @@ class InventoryTable extends Component {
 				sort: true,
 			},
 			{
-				dataField: 'category.name',
+				dataField: 'category',
 				text: 'Category',
-				sort: true,
+				formatter: (cell, row, rowIndex, formatExtraData) => {
+					return (
+						<>
+							<span className="bold-label">{row.category.name}</span>
+							{row.subCategory && (
+								<>
+									<br />
+									<span>{row.subCategory.name}</span>
+								</>
+							)}
+						</>
+					);
+				},
 			},
 			{
-				dataField: 'subCategory.name',
-				text: 'Sub Category',
-				sort: true,
-			},
-			{
-				dataField: 'cost_price',
-				text: 'Cost Price',
-			},
-			{
-				dataField: 'sales_price',
+				dataField: 'selling_price',
 				text: 'Selling Price',
+				formatter: (cell, row, rowIndex, formatExtraData) => {
+					return formatCurrency(row.sales_price);
+				},
 			},
 			{
 				dataField: 'quantity',
 				text: 'Quantity',
+				headerStyle: (colum, colIndex) => {
+					return { width: '80px' };
+				},
+			},
+			{
+				dataField: 'expiry_date',
+				text: 'Expiry Date',
+				formatter: (cell, row, rowIndex, formatExtraData) => {
+					const expired = hasExpired(row.expiry_date);
+					return (
+						<Tooltip title={expired ? 'Expired' : ''}>
+							<span className={expired ? 'text-danger' : ''}>
+								{moment(row.expiry_date, 'YYYY-MM-DD').format('DD-MMM-YYYY')}
+							</span>
+						</Tooltip>
+					);
+				},
 			},
 			{
 				dataField: 'df1',
@@ -92,23 +136,27 @@ class InventoryTable extends Component {
 				dataField: 'df2',
 				isDummyField: true,
 				text: 'Actions',
-				classes: 'text-right row-actions',
+				classes: 'text-center row-actions',
 				formatter: (cellContent, row) => {
 					return (
 						<div>
 							<Tooltip title="Update Quantity">
 								<a
 									onClick={() => this.doUpdateQuantity(row)}
-									className="secondary">
-									<i className="os-icon os-icon-folder-plus" />
+									className="primary">
+									<i className="os-icon os-icon-grid-18" />
 								</a>
 							</Tooltip>
-
 							<Tooltip title="Edit Inventory Item">
 								<a
 									onClick={() => this.doEditInventory(row)}
 									className="secondary">
-									<i className="os-icon os-icon-edit-32" />
+									<i className="os-icon os-icon-ui-49" />
+								</a>
+							</Tooltip>
+							<Tooltip title="Update Expiry Date">
+								<a onClick={() => this.doEditExpiry(row)} className="primary">
+									<i className="os-icon os-icon-basic-2-259-calendar" />
 								</a>
 							</Tooltip>
 						</div>
@@ -117,13 +165,19 @@ class InventoryTable extends Component {
 			},
 		];
 		const { data } = this.props;
+		const { showExpiryModal, inventory } = this.state;
 		return (
-			<BootstrapTable
-				classes="table table-striped"
-				keyField="id"
-				data={data}
-				columns={columns}
-			/>
+			<>
+				<BootstrapTable
+					classes="table table-striped"
+					keyField="id"
+					data={data}
+					columns={columns}
+				/>
+				{showExpiryModal && (
+					<ModalExpiryDate closeModal={this.closeModal} inventory={inventory} />
+				)}
+			</>
 		);
 	}
 }

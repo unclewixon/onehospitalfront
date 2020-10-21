@@ -24,38 +24,56 @@ import NurseMenu from './NurseMenu';
 import AdminMenu from './AdminMenu';
 
 class MainMenu extends Component {
+	menu_ref = null;
+	menu_list = null;
+
+	state = {
+		menuHeight: 1,
+		clientHeight: 0,
+	};
+
 	componentDidMount() {
-		$(this.refs.menu_activated_on_click).on(
-			'click',
-			'ul.main-menu > li.has-sub-menu',
-			function() {
-				var $elem = $(this);
-				console.log($elem.closest('ul').hasClass('has-active'));
-				if ($elem.closest('ul').hasClass('has-active')) {
-					$elem
-						.removeClass('active')
-						.closest('ul')
-						.removeClass('has-active');
-				} else {
-					$elem
-						.closest('ul')
-						.addClass('has-active')
-						.find('> li')
-						.removeClass('active');
-					$elem.addClass('active');
-				}
+		$(this.menu_ref).on('click', 'ul.main-menu > li.has-sub-menu', function() {
+			var $elem = $(this);
+			console.log($elem.closest('ul').hasClass('has-active'));
+			if ($elem.closest('ul').hasClass('has-active')) {
+				$elem
+					.removeClass('active')
+					.closest('ul')
+					.removeClass('has-active');
+			} else {
+				$elem
+					.closest('ul')
+					.addClass('has-active')
+					.find('> li')
+					.removeClass('active');
+				$elem.addClass('active');
 			}
-		);
+		});
+
+		setTimeout(() => {
+			const menuListHeight = $(this.menu_list).outerHeight();
+			// console.log(menuListHeight);
+			this.setState({ menuHeight: menuListHeight + 54 + 90 });
+			const clientHeight = $(this.menu_ref).outerHeight();
+			// console.log(clientHeight);
+			this.setState({ clientHeight });
+		}, 3500);
 	}
 
 	render() {
-		const { role, theme_mode, menu_mode, profile } = this.props;
+		const { role, theme_mode, menu_mode, profile, menu_mini } = this.props;
+		const { menuHeight, clientHeight } = this.state;
 		return (
 			<div
 				className={`menu-w color-scheme-dark ${
 					theme_mode ? '' : 'color-style-bright'
 				} menu-position-side menu-side-left sub-menu-color-bright selected-menu-color-light sub-menu-style-inside sub-menu-color-light menu-has-selected-link ${menu_mode}`}
-				ref="menu_activated_on_click">
+				ref={ref => (this.menu_ref = ref)}
+				style={{
+					width: menu_mini ? '8%' : '18%',
+					overflowY: menuHeight > clientHeight ? 'scroll' : 'hidden',
+				}}>
 				<div className="logo-w">
 					<a className="logo">
 						<div className="logo-element" />
@@ -92,7 +110,7 @@ class MainMenu extends Component {
 						<div className="new-messages-count">4</div>
 					</div>
 				</div> */}
-				<ul className="main-menu">
+				<ul className="main-menu" ref={ref => (this.menu_list = ref)}>
 					{role === 'front-desk' && <FrontDeskMenu />}
 					{(role === 'lab-attendant' ||
 						role === 'lab-officer' ||
@@ -106,7 +124,9 @@ class MainMenu extends Component {
 					{role === 'nurse' && <NurseMenu />}
 					{role === 'doctor' && <DoctorMenu />}
 					{role === 'hr' && <HrMenu />}
-					{role === 'inventory' && <InventoryMenu />}
+					{(role === 'inventory' || role === 'pharmacy') && (
+						<InventoryMenu role={role} />
+					)}
 					{role === 'cafeteria' && <CafeteriaMenu />}
 					{role === 'hmo' && <HMOMenu />}
 					{role === 'account' && <Account />}
@@ -121,6 +141,7 @@ class MainMenu extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		profile: state.user.profile,
+		menu_mini: state.user.menu_mini,
 	};
 };
 

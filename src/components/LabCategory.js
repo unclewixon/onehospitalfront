@@ -115,11 +115,15 @@ const LabCategory = props => {
 					<div className="pipelines-w">
 						<div className="row">
 							{!dataLoaded ? (
-								<tr>
-									<td colSpan="4" className="text-center">
-										<img alt="searching" src={searchingGIF} />
-									</td>
-								</tr>
+								<table>
+									<tbody>
+										<tr>
+											<td colSpan="4" className="text-center">
+												<img alt="searching" src={searchingGIF} />
+											</td>
+										</tr>
+									</tbody>
+								</table>
 							) : (
 								<>
 									{props.LabCategories.map((LabCategory, i) => {

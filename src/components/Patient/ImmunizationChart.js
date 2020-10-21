@@ -61,7 +61,7 @@ const ImmunizationChart = () => {
 		<div className="col-md-12">
 			<div className="element-wrapper">
 				<h6>Immunization Chart</h6>
-				<div className="element-box">
+				<div className="element-box p-3 m-0">
 					<div className="table-responsive" style={{ overflowX: 'scroll' }}>
 						<table className="table table-bordered table-md table-v2 table-striped">
 							<thead>

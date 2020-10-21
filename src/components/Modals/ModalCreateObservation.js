@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { closeModals } from '../../actions/general';
-import PatientForm from '../PatientForm';
-import PatientNOKForm from '../PatientNOKForm';
+// import { connect } from 'react-redux';
+// import { closeModals } from '../../actions/general';
+// import PatientForm from '../PatientForm';
+// import PatientNOKForm from '../PatientNOKForm';
 import Observation from '../Nicu/Observation';
 import moment from 'moment';
 import Modal from 'react-bootstrap/Modal';

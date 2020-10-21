@@ -4,6 +4,7 @@ import Select from 'react-select';
 import { Table } from 'react-bootstrap';
 import AsyncSelect from 'react-select/async';
 import { withRouter } from 'react-router-dom';
+import { confirmAlert } from 'react-confirm-alert';
 
 import { ReactComponent as PlusIcon } from '../../assets/svg-icons/plus.svg';
 import waiting from '../../assets/images/waiting.gif';
@@ -11,7 +12,7 @@ import { ReactComponent as EditIcon } from '../../assets/svg-icons/edit.svg';
 import { ReactComponent as TrashIcon } from '../../assets/svg-icons/trash.svg';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { diagnosisAPI } from '../../services/constants';
-import { request, groupBy } from '../../services/utilities';
+import { request, groupBy, hasExpired } from '../../services/utilities';
 
 const defaultValues = {
 	genericName: '',
@@ -109,7 +110,7 @@ const PrescriptionForm = ({
 	const drugNameOptions = genericItem
 		? genericItem.drugs.map(drug => ({
 				value: drug.id,
-				label: drug.name,
+				label: `${drug.name} - ${drug.vendor?.name}`,
 		  }))
 		: [];
 
@@ -200,15 +201,37 @@ const PrescriptionForm = ({
 	};
 
 	const onDrugSelection = e => {
-		setValue('drugId', e.value);
 		const drug = inventories.find(drug => drug.id === e.value);
-		setSelectedDrug(drug);
+		const expired = hasExpired(drug.expiry_date);
+		if (expired) {
+			confirmAlert({
+				customUI: ({ onClose }) => {
+					return (
+						<div className="custom-ui text-center">
+							<h3 className="text-danger">Expiration</h3>
+							<p>{`${drug.name} has expired`}</p>
+							<div>
+								<button
+									className="btn btn-primary"
+									style={{ margin: 10 }}
+									onClick={onClose}>
+									Okay
+								</button>
+							</div>
+						</div>
+					);
+				},
+			});
+		} else {
+			setValue('drugId', e.value);
+			setSelectedDrug(drug);
+		}
 	};
 
 	return (
-		<div className="col-lg-12 form-block w-100 element-box">
+		<div className="form-block element-box">
 			<form onSubmit={handleSubmit(onFormSubmit)}>
-				{!patient ? (
+				{!patient && (
 					<div className="form-group mr-2">
 						<label className="mr-2 " htmlFor="patient">
 							Patient Name
@@ -232,7 +255,7 @@ const PrescriptionForm = ({
 							value={chosenPatient}
 						/>
 					</div>
-				) : null}
+				)}
 
 				<div className="row">
 					<div className="form-group col-sm-12">

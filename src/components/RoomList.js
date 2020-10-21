@@ -142,7 +142,7 @@ const RoomList = props => {
 		<div className="row">
 			<div className="col-lg-8">
 				<div className="element-wrapper">
-					<div className="element-box">
+					<div className="element-box m-0 p-3">
 						<div className="table-responsive">
 							<table className="table table-striped">
 								<thead>

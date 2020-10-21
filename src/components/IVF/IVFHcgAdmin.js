@@ -26,7 +26,7 @@ let IVFHcgAdmin = props => {
 	let [loading, setLoading] = useState(false);
 
 	return (
-		<div className="element-box p-0">
+		<div className="element-box p-0 m-0">
 			<>
 				<h6 className="element-header p-2">HCG ADMINISTRATION CHART</h6>
 				<div className="form-block">

@@ -42,7 +42,7 @@ class CreateInvCategory extends Component {
 		const { error, handleSubmit } = this.props;
 		return (
 			<div className="element-wrapper">
-				<div className="element-box pipeline white lined-warning">
+				<div className="element-box pipeline white lined-warning p-3 m-0">
 					<form onSubmit={handleSubmit(this.createCategory)}>
 						<h6 className="form-header">Create Category</h6>
 						{error && (

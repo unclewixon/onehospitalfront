@@ -123,7 +123,7 @@ class Permission extends Component {
 			<div className="row">
 				<div className="col-lg-8">
 					<div className="element-wrapper">
-						<div className="element-box p-0">
+						<div className="element-box p-0 m-0">
 							<div className="table-responsive">
 								<table className="table table-striped">
 									<thead>

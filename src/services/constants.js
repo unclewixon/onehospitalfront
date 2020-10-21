@@ -20,6 +20,7 @@ export const inventoryAPI = 'inventory/stocks';
 export const inventoryUpdateQuantityAPI = 'inventory/stocks/update-quantity';
 export const stocksAPI = 'stocks';
 export const inventoryCatAPI = 'inventory/categories';
+export const vendorAPI = 'inventory/vendors';
 export const inventoryDownloadAPI = 'inventory/download';
 export const inventoryUploadAPI = 'inventory/stocks/bulk-upload';
 export const stockByCategoryAPI = 'inventory/stocks-by-category-name';
@@ -1111,3 +1112,10 @@ export const contracts = [
 	{ value: 'Full time', label: 'Full time' },
 	{ value: 'Part time', label: 'Part time' },
 ];
+
+export const paginate = {
+	lastPage: 0,
+	itemsPerPage: 0,
+	totalPages: 0,
+	currentPage: 0,
+};

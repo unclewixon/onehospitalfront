@@ -4,12 +4,12 @@ import searchingGIF from '../../assets/images/searching.gif';
 import AssignDropup from './AssignDropup';
 import { notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
-import { useDispatch } from 'react-redux';
+// import { useDispatch } from 'react-redux';
 import moment from 'moment';
 
 const InPatientCare = () => {
-	const dispatch = useDispatch();
-	const [loaded, setLoaded] = useState(false);
+	// const dispatch = useDispatch();
+	// const [loaded, setLoaded] = useState(false);
 	const [admittedPatients, setAdmittedPatients] = useState(null);
 
 	const [loading, setLoading] = useState(true);
@@ -29,12 +29,12 @@ const InPatientCare = () => {
 			console.log(rs);
 			setAdmittedPatients(rs);
 			// dispatch(loadAllPatients(rs));
-			setLoaded(false);
+			// setLoaded(false);
 		} catch (error) {
 			notifyError('error fetching patients');
-			setLoaded(false);
+			// setLoaded(false);
 		}
-	}, [dispatch]);
+	}, []);
 
 	useEffect(() => {
 		fetchAdmittedPatients();

@@ -46,6 +46,8 @@ const ViewVaccine = ({ data, setRecords }) => {
 		}
 	};
 
+	console.log(data);
+
 	return (
 		<div className="onboarding-modal fade animated show" role="dialog">
 			<div className="modal-centered" role="document">
@@ -70,10 +72,10 @@ const ViewVaccine = ({ data, setRecords }) => {
 													</div>
 												</li>
 											)}
-											{data.appointment_date && (
+											{data.appointment_date && !data.date_administered && (
 												<li>
 													<div className="alert alert-info text-white">
-														Pending Appointment
+														Pending
 													</div>
 												</li>
 											)}
@@ -99,7 +101,7 @@ const ViewVaccine = ({ data, setRecords }) => {
 											</li>
 											<li>
 												Administered By:
-												<strong>{data.administeredBy || '-'}</strong>
+												<strong>{data.administered_by || '-'}</strong>
 											</li>
 											<li>
 												Administered On:

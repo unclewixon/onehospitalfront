@@ -381,7 +381,7 @@ class Roster extends Component {
 										</a>
 									</Popover>
 								</div>
-								<h6 className="element-header"></h6>
+								{/* <h6 className="element-header"></h6> */}
 								<div className="control-header">
 									<div className="row align-items-center">
 										<div className="col-8">
@@ -424,7 +424,7 @@ class Roster extends Component {
 										<div className="col-4 text-right" />
 									</div>
 								</div>
-								<div className="element-box">
+								<div className="element-box m-0 p-3">
 									<FullCalendar
 										header={{
 											left: 'title',

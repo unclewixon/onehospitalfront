@@ -236,7 +236,7 @@ class Appraisal extends Component {
 									</button>
 								</div>
 								<h6 className="element-header">Appraisals</h6>
-								<div className="element-box">
+								<div className="element-box m-0 p-3">
 									<div className="table-responsive">
 										<table className="table table-striped">
 											<thead>

@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useCallback } from 'react';
-import DatePicker from 'antd/lib/date-picker';
+// import DatePicker from 'antd/lib/date-picker';
 // import Select from 'react-select';
 import Tooltip from 'antd/lib/tooltip';
 import { connect, useDispatch } from 'react-redux';
@@ -54,7 +54,7 @@ const AllPatients = () => {
 			notifyError('error fetching patients');
 			setLoaded(false);
 		}
-	}, [dispatch]);
+	}, []);
 
 	const searchEntries = e => {
 		e.preventDefault();

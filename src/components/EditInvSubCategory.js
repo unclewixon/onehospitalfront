@@ -22,15 +22,11 @@ class EditInvSubCategory extends Component {
 	};
 
 	doEditSubCategory = async data => {
-		const { subCategoryID } = this.props;
-		this.setState({ submitting: true });
 		try {
-			const rs = await request(
-				`${inventorySubCatAPI}/${subCategoryID}/update`,
-				'PATCH',
-				true,
-				data
-			);
+			const { subCategoryID } = this.props;
+			this.setState({ submitting: true });
+			const url = `${inventorySubCatAPI}/${subCategoryID}/update`;
+			const rs = await request(url, 'PATCH', true, data);
 			this.props.updateInvSubCategory(rs);
 			notifySuccess('sub category saved!');
 			this.setState({ submitting: false });
@@ -49,7 +45,7 @@ class EditInvSubCategory extends Component {
 		const { error, handleSubmit, editSubCategory, categories } = this.props;
 		return (
 			<div className="element-wrapper">
-				<div className="element-box pipeline white lined-warning">
+				<div className="element-box pipeline white lined-warning p-3 m-0">
 					<form onSubmit={handleSubmit(this.doEditSubCategory)}>
 						<h6 className="form-header">Edit Sub Category</h6>
 						{error && (

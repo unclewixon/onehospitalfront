@@ -30,6 +30,7 @@ const INITIAL_STATE = {
 	isStaffOpen: false,
 	isPatientOpen: false,
 	menu_mode: 'menu-layout-compact',
+	menu_mini: false,
 };
 
 const user = (state = INITIAL_STATE, action) => {
@@ -63,18 +64,21 @@ const user = (state = INITIAL_STATE, action) => {
 			return { ...state, fullscreen };
 		case TOGGLE_MENU:
 			let menu_mode;
+			let menu_mini;
 			const contentW = document.getElementById('main-content');
 			if (state.menu_mode === 'menu-layout-compact') {
 				menu_mode = 'menu-layout-mini';
 				contentW.classList.remove('content-w-l-18');
 				contentW.classList.add('content-w-l-8');
+				menu_mini = true;
 			} else {
 				menu_mode = 'menu-layout-compact';
 				contentW.classList.remove('content-w-l-8');
 				contentW.classList.add('content-w-l-18');
+				menu_mini = false;
 			}
 			storage.setItem(MENU_COOKE, menu_mode);
-			return { ...state, menu_mode };
+			return { ...state, menu_mode, menu_mini };
 		case INIT_MODE:
 			storage.setItem(MODE_COOKIE, action.payload);
 			return { ...state, theme_mode: action.payload };

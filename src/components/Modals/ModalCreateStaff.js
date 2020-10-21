@@ -77,6 +77,7 @@ function ModalCreateStaff({
 }) {
 	const [section, setSection] = useState('step-one');
 	const [form, setForm] = useState(staff);
+	const [saving, setSaving] = useState(false);
 
 	const _countries = countries.map(c => ({ value: c.id, label: c.name }));
 	const sortedCountries = orderBy(_countries, ['label'], ['asc']);
@@ -145,9 +146,8 @@ function ModalCreateStaff({
 											countries={countries}
 										/>
 									)}
-									onSubmit={(params, { setSubmitting }) => {
+									onSubmit={params => {
 										// console.log(form);
-										setSubmitting(false);
 										setForm({ ...form, ...params });
 										setSection('step-two');
 									}}
@@ -186,9 +186,11 @@ function ModalCreateStaff({
 											maritalStatus={maritalStatus}
 											contracts={contracts}
 											setSection={stepOne}
+											isSubmitting={saving}
 										/>
 									)}
-									onSubmit={async (params, { setSubmitting }) => {
+									onSubmit={async params => {
+										setSaving(true);
 										setForm({ ...form, ...params });
 										console.log(form);
 										const formData = new FormData();
@@ -226,7 +228,7 @@ function ModalCreateStaff({
 													{ headers }
 												)
 												.then(res => {
-													setSubmitting(false);
+													setSaving(false);
 													if (res.data?.success) {
 														// addStaff(res.data?.staff);
 														notifySuccess('Staff details has been saved');
@@ -239,7 +241,7 @@ function ModalCreateStaff({
 													}
 												})
 												.catch(e => {
-													setSubmitting(false);
+													setSaving(false);
 													notifyError(
 														e.message || 'could not save staff details'
 													);
@@ -248,7 +250,7 @@ function ModalCreateStaff({
 											axios
 												.post(`${API_URI}/${staffAPI}`, formData, { headers })
 												.then(res => {
-													setSubmitting(false);
+													setSaving(false);
 													if (res.data?.success) {
 														addStaff(res.data?.staff);
 														notifySuccess('Staff details has been saved');
@@ -261,7 +263,7 @@ function ModalCreateStaff({
 													}
 												})
 												.catch(e => {
-													setSubmitting(false);
+													setSaving(false);
 													notifyError(
 														e.message || 'could not save staff details'
 													);
