@@ -90,12 +90,15 @@ let Login = props => {
 				const fullscreen = await storage.getItem(FULLSCREEN_COOKIE);
 				const theme_mode = await storage.getItem(MODE_COOKIE);
 
-				window.document.body.className = `menu-position-side menu-side-left ${
-					fullscreen ? 'full-screen' : ''
-				} with-content-panel ${theme_mode ? 'color-scheme-dark' : ''}`;
+				const { location } = props;
+
+				const isLogin = location.pathname === '/';
+				window.document.body.className = `menu-position-side menu-side-left${
+					fullscreen || isLogin ? ' full-screen' : ''
+				} with-content-panel${theme_mode ? ' color-scheme-dark' : ''}`;
 			};
 		}
-	}, [state]);
+	}, [props, state]);
 
 	const doLogin = async data => {
 		setState({ ...state, submitting: true });
@@ -154,6 +157,13 @@ let Login = props => {
 				ability.update(rules);
 
 				notifySuccess('login successful!');
+
+				const fullscreen = await storage.getItem(FULLSCREEN_COOKIE);
+				const theme_mode = await storage.getItem(MODE_COOKIE);
+
+				window.document.body.className = `menu-position-side menu-side-left${
+					fullscreen ? ' full-screen' : ''
+				} with-content-panel${theme_mode ? ' color-scheme-dark' : ''}`;
 				redirectToPage(rs.role, props.history);
 			} catch (e) {
 				console.log(e);

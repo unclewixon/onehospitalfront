@@ -51,16 +51,16 @@ const user = (state = INITIAL_STATE, action) => {
 		case TOGGLE_MODE:
 			storage.setItem(MODE_COOKIE, !state.theme_mode);
 			const theme_mode = !state.theme_mode;
-			window.document.body.className = `menu-position-side menu-side-left ${
-				state.fullscreen ? 'full-screen' : ''
-			} with-content-panel ${theme_mode ? 'color-scheme-dark' : ''}`;
+			window.document.body.className = `menu-position-side menu-side-left${
+				state.fullscreen ? ' full-screen' : ''
+			} with-content-panel${theme_mode ? ' color-scheme-dark' : ''}`;
 			return { ...state, theme_mode };
 		case TOGGLE_FULLSCREEN:
 			storage.setItem(FULLSCREEN_COOKIE, !state.fullscreen);
 			const fullscreen = !state.fullscreen;
-			window.document.body.className = `menu-position-side menu-side-left ${
-				fullscreen ? 'full-screen' : ''
-			} with-content-panel ${state.theme_mode ? 'color-scheme-dark' : ''}`;
+			window.document.body.className = `menu-position-side menu-side-left${
+				fullscreen ? ' full-screen' : ''
+			} with-content-panel${state.theme_mode ? ' color-scheme-dark' : ''}`;
 			return { ...state, fullscreen };
 		case TOGGLE_MENU:
 			let menu_mode;

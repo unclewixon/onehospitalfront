@@ -62,9 +62,12 @@ class App extends Component {
 		// update user permission
 		ability.update(rules);
 
-		window.document.body.className = `menu-position-side menu-side-left ${
-			fullscreen ? 'full-screen' : ''
-		} with-content-panel ${theme_mode ? 'color-scheme-dark' : ''}`;
+		const { location } = this.props;
+
+		const isLogin = location.pathname === '/';
+		window.document.body.className = `menu-position-side menu-side-left${
+			fullscreen || isLogin ? ' full-screen' : ''
+		} with-content-panel${theme_mode ? ' color-scheme-dark' : ''}`;
 	}
 
 	render() {
