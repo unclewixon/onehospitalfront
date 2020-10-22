@@ -99,12 +99,42 @@
 }
 
 .specimen {
-    font-size: 11px;
-    font-weight: bold;
-    color: #b8b8b8;
-    margin-bottom: 5px;
+	font-size: 11px;
+	font-weight: bold;
+	color: #b8b8b8;
+	margin-bottom: 5px;
 }
 .overflow-hidden {
 	width: 100%;
-    overflow: hidden;
+	overflow: hidden;
+}
+
+.nicuactivity {
+	padding: 10px;
+	cursor: pointer;
+	line-height: 20px;
+	font-size: 15px;
+	font-weight: 500;
+}
+.nicuactivity div:hover {
+	color: blue;
+}
+
+.search_form {
+	justify-content: flex-end;
+	z-index: 2;
+	margin: -0.2rem 2rem;
+}
+
+.search_label {
+	padding: 4px 4px;
+	font-size: 15px;
+	font-weight: 400;
+}
+
+.search_input {
+	min-height: 24px !important;
+	height: 30px;
+	/* height: 2rem; */
+	width: 15rem;
 }
