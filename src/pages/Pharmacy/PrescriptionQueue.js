@@ -91,7 +91,7 @@ class PrescriptionQueue extends Component {
 
 		return (
 			<>
-				<div className="element-box m-0 mb-4">
+				<div className="element-box p-3 m-0 mb-4">
 					<div className="table table-responsive">
 						<table
 							id="table"

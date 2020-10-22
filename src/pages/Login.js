@@ -164,6 +164,7 @@ let Login = props => {
 				window.document.body.className = `menu-position-side menu-side-left${
 					fullscreen ? ' full-screen' : ''
 				} with-content-panel${theme_mode ? ' color-scheme-dark' : ''}`;
+
 				redirectToPage(rs.role, props.history);
 			} catch (e) {
 				console.log(e);

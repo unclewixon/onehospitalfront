@@ -22,7 +22,7 @@ const index = ({ match }) => {
 							{/*<h6 className="element-header">Pay Point</h6>*/}
 							<div className="row">
 								<div className="col-sm-12">
-									<div className="element-box p-0 m-0">
+									<div className="element-box p-3 m-0">
 										<Suspense fallback={<Splash />}>
 											<Switch>
 												<Route

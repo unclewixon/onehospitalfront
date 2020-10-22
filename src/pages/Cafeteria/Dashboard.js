@@ -1,63 +1,45 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import size from 'lodash.size';
+import isEmpty from 'lodash.isempty';
+
 import { staffAPI, searchAPI } from '../../services/constants';
-import { request } from '../../services/utilities';
+import { request, formatCurrency } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import CafeteriaCustomerDetail from '../../components/CafeteriaCustomerDetail';
 import CafeteriaTransactionTable from '../../components/CafeteriaTransactionTable';
-import size from 'lodash.size';
 import searchingGIF from '../../assets/images/searching.gif';
-import isEmpty from 'lodash.isempty';
-import { useEffect } from 'react';
 
-const teams = [
+const allItems = [
 	{
 		id: 1,
-		title: 'Winter body',
-		desc:
-			'Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima, ex.',
+		item: 'Rice',
 		price: 110,
-		// img: Item1,
 	},
 	{
 		id: 2,
-		title: 'Adidas',
-		desc:
-			'Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima, ex.',
+		item: 'Chicken',
 		price: 80,
-		// img: Item2,
 	},
 	{
 		id: 3,
-		title: 'Vans',
-		desc:
-			'Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima, ex.',
+		item: 'Bottled Water (25cl)',
 		price: 120,
-		// img: Item3,
 	},
 	{
 		id: 4,
-		title: 'White',
-		desc:
-			'Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima, ex.',
+		item: 'Beans',
 		price: 260,
-		// img: Item4,
 	},
 	{
 		id: 5,
-		title: 'Cropped-sho',
-		desc:
-			'Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima, ex.',
+		item: 'Egusi Soup',
 		price: 160,
-		// img: Item5,
 	},
 	{
 		id: 6,
-		title: 'Blues',
-		desc:
-			'Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima, ex.',
+		item: 'Bitter Leaf',
 		price: 90,
-		// img: Item6,
 	},
 ];
 
@@ -66,9 +48,10 @@ const CafeteriaDashboard = () => {
 	const [customer, setCustomer] = useState('');
 	// const [activePage, togglePage] = useState('Dashboard');
 	// const [special, setSpecial] = useState([]);
-	// const [loaded, setLoaded] = useState(null);
+	const [loaded, setLoaded] = useState(false);
 	// const [dataLoaded, setDataLoaded] = useState(false);
 	const [items, setItems] = useState([]);
+	const [cafeteriaItems, setCafeteriaItems] = useState([]);
 	const [staffs, setStaffs] = useState([]);
 	const [selectedCustomer, setSelectedCustomer] = useState({});
 	const [order, setOrder] = useState([]);
@@ -86,12 +69,12 @@ const CafeteriaDashboard = () => {
 	const [searchResults, setSearchResults] = useState([]);
 
 	useEffect(() => {
-		const results = teams.filter(team =>
-			team.title.toLowerCase().includes(searchTerm.toLowerCase())
-		);
-		console.log(results);
-		setSearchResults(results);
-	}, [searchTerm, teams]);
+		if (!loaded) {
+			setCafeteriaItems(allItems);
+			setSearchResults(allItems);
+			setLoaded(true);
+		}
+	}, [loaded]);
 
 	const changeCustomer = e => {
 		setCustomer(e.target.value);
@@ -194,10 +177,10 @@ const CafeteriaDashboard = () => {
 		document.getElementById('item').reset();
 	};
 
-	const deleteItem = async id => {
+	const deleteItem = id => {
 		let newOrder = order.filter(el => el.item.q_id !== id);
 
-		await setOrder(newOrder);
+		setOrder(newOrder);
 	};
 
 	const patientSet = pat => {
@@ -258,7 +241,14 @@ const CafeteriaDashboard = () => {
 	};
 
 	const setHandleChange = event => {
-		setSearchTerm(event.target.value);
+		const text = event.target.value;
+		setSearchTerm(text);
+
+		const results = cafeteriaItems.filter(data =>
+			data.item.toLowerCase().includes(text.toLowerCase())
+		);
+
+		setSearchResults(results);
 	};
 
 	return (
@@ -288,16 +278,17 @@ const CafeteriaDashboard = () => {
 										</div>
 									</div>
 									<div className="row">
-										{searchResults.map((team, index) => (
+										{searchResults.map((item, i) => (
 											<div
-												key={index}
-												onClick={() => setCart([...cart, team])}
+												key={i}
+												onClick={() => setCart([...cart, item])}
 												className="col-3 col-sm-3">
 												<div className="profile-tile profile-tile-inlined">
 													<a className="profile-tile-box">
-														{team.desc}
-														<div className="pt-avatar-w">{team.price}</div>
-														<div className="pt-user-name">{team.title}</div>
+														<div>{item.item}</div>
+														<div className="pt-avatar-w">
+															{formatCurrency(item.price)}
+														</div>
 													</a>
 												</div>
 											</div>
@@ -323,126 +314,119 @@ const CafeteriaDashboard = () => {
 
 									<h6 className="element-header">Quick Conversion</h6>
 									<div className="element-box-tp">
-										<form action="#">
-											<div className="row">
-												<div className="col-sm-12">
-													<div className="form-group">
-														<select
-															className="form-control"
-															name="customer"
-															onChange={changeCustomer}>
-															<option value="">Choose Customer ...</option>
-															<option value="staff">Staff</option>
-															<option value="patient">Patient</option>
-															<option value="walk-in">Walk-in</option>
-														</select>
-													</div>
+										<div className="row">
+											<div className="col-sm-12">
+												<div className="form-group">
+													<select
+														className="form-control"
+														name="customer"
+														onChange={changeCustomer}>
+														<option value="">Choose Customer ...</option>
+														<option value="staff">Staff</option>
+														<option value="patient">Patient</option>
+														<option value="walk-in">Walk-in</option>
+													</select>
 												</div>
 											</div>
+										</div>
 
-											<div>
-												{['', 'walk-in'].includes(customer) ? null : (
-													<form onSubmit={searchCustomer}>
-														<div className="row">
-															<div className="col-sm-12">
-																{searching && (
-																	<div className="searching text-center">
-																		<img alt="searching" src={searchingGIF} />
-																	</div>
-																)}
-
-																<input
-																	className="form-control"
-																	style={{ marginBottom: '20px' }}
-																	id="cust"
-																	onChange={handleCustomerChange}
-																	autoComplete="off"
-																	placeholder={
-																		customer === 'staff'
-																			? ' Search Staff ...'
-																			: 'Search Patient ...'
-																	}
-																/>
-
-																{patients &&
-																	patients.map(pat => {
-																		return (
-																			<div
-																				style={{ display: 'flex' }}
-																				key={pat.id}
-																				className="element-box">
-																				<a
-																					onClick={() => patientSet(pat)}
-																					className="ssg-item cursor">
-																					<div
-																						className="item-name"
-																						dangerouslySetInnerHTML={{
-																							__html: `${pat.surname} ${pat.other_names}`,
-																						}}
-																					/>
-																				</a>
-																			</div>
-																		);
-																	})}
-
-																{staffs &&
-																	staffs.map(pat => {
-																		return (
-																			<div
-																				style={{ display: 'flex' }}
-																				key={pat.id}
-																				className="element-box">
-																				<a
-																					onClick={() => patientSet(pat)}
-																					className="ssg-item cursor">
-																					<div
-																						className="item-name"
-																						dangerouslySetInnerHTML={{
-																							__html: `${pat.first_name} ${pat.last_name}`,
-																						}}
-																					/>
-																				</a>
-																			</div>
-																		);
-																	})}
-															</div>
-														</div>
-													</form>
-												)}
-												<form onSubmit={addItem} id="item">
+										<div>
+											{['', 'walk-in'].includes(customer) ? null : (
+												<form onSubmit={searchCustomer}>
 													<div className="row">
 														<div className="col-sm-12">
-															{itemSearching && (
+															{searching && (
 																<div className="searching text-center">
 																	<img alt="searching" src={searchingGIF} />
 																</div>
 															)}
+															<input
+																className="form-control"
+																style={{ marginBottom: '20px' }}
+																id="cust"
+																onChange={handleCustomerChange}
+																autoComplete="off"
+																placeholder={
+																	customer === 'staff'
+																		? ' Search Staff ...'
+																		: 'Search Patient ...'
+																}
+															/>
+															{patients.map((pat, i) => {
+																return (
+																	<div
+																		style={{ display: 'flex' }}
+																		key={i}
+																		className="element-box">
+																		<a
+																			onClick={() => patientSet(pat)}
+																			className="ssg-item cursor">
+																			<div
+																				className="item-name"
+																				dangerouslySetInnerHTML={{
+																					__html: `${pat.surname} ${pat.other_names}`,
+																				}}
+																			/>
+																		</a>
+																	</div>
+																);
+															})}
 
-															{items &&
-																items.map(item => {
-																	return (
-																		<div
-																			style={{ display: 'flex' }}
-																			key={item.q_id}
-																			className="element-box">
-																			<a
-																				onClick={() => itemSet(item)}
-																				className="ssg-item cursor">
-																				<div
-																					className="item-name"
-																					dangerouslySetInnerHTML={{
-																						__html: `${item.q_name}`,
-																					}}
-																				/>
-																			</a>
-																		</div>
-																	);
-																})}
+															{staffs.map((pat, i) => {
+																return (
+																	<div
+																		style={{ display: 'flex' }}
+																		key={i}
+																		className="element-box">
+																		<a
+																			onClick={() => patientSet(pat)}
+																			className="ssg-item cursor">
+																			<div
+																				className="item-name"
+																				dangerouslySetInnerHTML={{
+																					__html: `${pat.first_name} ${pat.last_name}`,
+																				}}
+																			/>
+																		</a>
+																	</div>
+																);
+															})}
 														</div>
 													</div>
 												</form>
-											</div>
-										</form>
+											)}
+											<form onSubmit={addItem} id="item">
+												<div className="row">
+													<div className="col-sm-12">
+														{itemSearching && (
+															<div className="searching text-center">
+																<img alt="searching" src={searchingGIF} />
+															</div>
+														)}
+
+														{items.map((item, i) => {
+															return (
+																<div
+																	style={{ display: 'flex' }}
+																	key={i}
+																	className="element-box">
+																	<a
+																		onClick={() => itemSet(item)}
+																		className="ssg-item cursor">
+																		<div
+																			className="item-name"
+																			dangerouslySetInnerHTML={{
+																				__html: `${item.q_name}`,
+																			}}
+																		/>
+																	</a>
+																</div>
+															);
+														})}
+													</div>
+												</div>
+											</form>
+										</div>
 									</div>
 								</div>
 								<div className="element-wrapper compact">
@@ -459,34 +443,32 @@ const CafeteriaDashboard = () => {
 												</tr>
 											</thead>
 											<tbody>
-												{cart && cart.length
-													? cart.map(item => {
-															return (
-																<tr>
-																	<td>
-																		<span></span>
-																		<i className="os-icon os-icon-repeat icon-separator" />
-																		<span>USD</span>
-																	</td>
-																	<td className="text-center">{item.title}</td>
-																	<td className="text-right text-bright">
-																		{item.price}
-																	</td>
-																	<td className="text-right text-danger">
-																		<button
-																			onClick={() => {
-																				const newVal = cart.filter(
-																					val => val.id !== item.id
-																				);
-																				setCart(newVal);
-																			}}>
-																			Clear
-																		</button>
-																	</td>
-																</tr>
-															);
-													  })
-													: null}
+												{cart.map((item, i) => {
+													return (
+														<tr key={i}>
+															<td>
+																<span></span>
+																<i className="os-icon os-icon-repeat icon-separator" />
+																<span>USD</span>
+															</td>
+															<td className="text-center">{item.title}</td>
+															<td className="text-right text-bright">
+																{item.price}
+															</td>
+															<td className="text-right text-danger">
+																<button
+																	onClick={() => {
+																		const newVal = cart.filter(
+																			val => val.id !== item.id
+																		);
+																		setCart(newVal);
+																	}}>
+																	Clear
+																</button>
+															</td>
+														</tr>
+													);
+												})}
 											</tbody>
 										</table>
 									</div>

@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import isEmpty from 'lodash.isempty';
 
-import waiting from '../assets/images/waiting.gif';
+// import waiting from '../assets/images/waiting.gif';
+// import { CartesianAxis } from 'recharts';
 
 const paymentType = [
 	{ value: 'POS', label: 'POS' },
@@ -11,6 +12,7 @@ const paymentType = [
 ];
 
 const CafeteriaTransactionTable = props => {
+	// const [toggle, setToggle] = useState(false);
 	const [orders, setOrders] = useState([]);
 	const [loaded, setLoaded] = useState(false);
 	// const [subTotal, setSubTotal] = useState(0);
@@ -66,9 +68,9 @@ const CafeteriaTransactionTable = props => {
 						<table className="table table-lightborder">
 							<tbody>
 								{orders &&
-									orders.map(order => {
+									orders.map((order, i) => {
 										return (
-											<tr key={order.item.q_id}>
+											<tr key={i}>
 												<td className="nowrap">{order.item.q_name}</td>
 
 												<td className="text-center">{order.quantity}</td>
@@ -182,9 +184,9 @@ const CafeteriaTransactionTable = props => {
 								<select className="form-control" onChange={handleType} required>
 									<option value="">Choose Payment type ...</option>
 									{paymentType &&
-										paymentType.map(type => {
+										paymentType.map((type, i) => {
 											return (
-												<option value={type.value} key={type.value}>
+												<option value={type.value} key={i}>
 													{type.label}
 												</option>
 											);
@@ -192,7 +194,7 @@ const CafeteriaTransactionTable = props => {
 								</select>
 							</div>
 
-							<div className="col-md-2">
+							{/* <div className="col-md-2">
 								<button
 									className={
 										props.submitting
@@ -206,6 +208,57 @@ const CafeteriaTransactionTable = props => {
 										<span> save</span>
 									)}
 								</button>
+							</div> */}
+							<div className="col-md-2">
+								<div>
+									<button
+										onClick={() => {}}
+										type="button"
+										className="btn btn-primary">
+										Save
+									</button>
+
+									<div
+										className="modal fade"
+										id="exampleModalCenter"
+										tabIndex={-1}
+										role="dialog"
+										aria-labelledby="exampleModalCenterTitle"
+										aria-hidden="true">
+										<div
+											className="modal-dialog modal-dialog-centered"
+											role="document">
+											<div className="modal-content">
+												<div className="modal-header">
+													<h5
+														className="modal-title"
+														id="exampleModalLongTitle">
+														Orders
+													</h5>
+													<button
+														type="button"
+														className="close"
+														data-dismiss="modal"
+														aria-label="Close">
+														<span aria-hidden="true">×</span>
+													</button>
+												</div>
+												<div className="modal-body"></div>
+												<div className="modal-footer">
+													<button
+														type="button"
+														className="btn btn-secondary"
+														data-dismiss="modal">
+														Close
+													</button>
+													<button type="button" className="btn btn-primary">
+														Save changes
+													</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
 							<div className="col-md-2">
 								<button className="btn btn-primary btn-sm mx-3" type="submit">

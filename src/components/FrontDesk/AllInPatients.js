@@ -2,8 +2,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 // import DatePicker from 'antd/lib/date-picker';
 // import Select from 'react-select';
-import Tooltip from 'antd/lib/tooltip';
-import { connect, useDispatch } from 'react-redux';
+// import Tooltip from 'antd/lib/tooltip';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import { request } from '../../services/utilities';
@@ -27,7 +27,6 @@ import moment from 'moment';
 // };
 
 const AllInPatients = () => {
-	const dispatch = useDispatch();
 	const [loaded, setLoaded] = useState(false);
 	const [admittedPatients, setAdmittedPatients] = useState(null);
 	const activeRequest = null;
@@ -66,7 +65,7 @@ const AllInPatients = () => {
 
 	const searchEntries = e => {
 		e.preventDefault();
-		const url = `patient/admissions?fine=${searchValue}`;
+		const url = `patient/admissions?q=${searchValue}`;
 		console.log(url);
 		request(url, 'GET', true)
 			.then(data => {

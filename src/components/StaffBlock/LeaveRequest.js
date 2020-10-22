@@ -97,7 +97,7 @@ const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 							onExitModal={onExitModal}
 						/>
 					) : null}
-					<div className="element-box m-0 p-2">
+					<div className="element-box m-0 p-3">
 						<div className="table-responsive">
 							<table className="table table-striped">
 								<thead>

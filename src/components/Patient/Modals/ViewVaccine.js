@@ -46,8 +46,6 @@ const ViewVaccine = ({ data, setRecords }) => {
 		}
 	};
 
-	console.log(data);
-
 	return (
 		<div className="onboarding-modal fade animated show" role="dialog">
 			<div className="modal-centered" role="document">
