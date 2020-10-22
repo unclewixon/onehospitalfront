@@ -66,7 +66,7 @@ const AllInPatients = () => {
 
 	const searchEntries = e => {
 		e.preventDefault();
-		const url = `patient/admissions?patient_name=${searchValue}`;
+		const url = `patient/admissions?fine=${searchValue}`;
 		console.log(url);
 		request(url, 'GET', true)
 			.then(data => {

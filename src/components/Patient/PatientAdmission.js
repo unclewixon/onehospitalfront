@@ -219,6 +219,28 @@ class PatientAdmission extends Component {
 														Risk to Fall ?
 													</label>
 												</div>
+												<div
+													className="d-flex "
+													style={{
+														position: 'relative',
+														top: '25%',
+														marginLeft: '20px',
+													}}>
+													<div>
+														<Field
+															name="nicu"
+															id="nicu"
+															component={renderTextInput}
+															type="checkbox"
+														/>
+													</div>
+													<label
+														htmlFor="nicu"
+														className="ml-1"
+														style={{ marginTop: '-2px' }}>
+														Admit to NICU
+													</label>
+												</div>
 											</div>
 										</div>
 
