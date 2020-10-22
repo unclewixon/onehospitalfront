@@ -26,6 +26,7 @@ class FrontDeskTable extends Component {
 					<tr>
 						<th hidden={today}>Date</th>
 						<th>Patient</th>
+						<th>File Number</th>
 						<th>Whom to see</th>
 						<th>C.R</th>
 						<th>Status</th>
@@ -46,19 +47,18 @@ class FrontDeskTable extends Component {
 									<td className="nowrap" hidden={today}>
 										{moment(appointment.createdAt).format('DD-MM-YYYY')}
 									</td>
-									<td>
-										<span
-											className="smaller lighter"
-											style={{ fontSize: '0.7rem' }}>
-											{appointment.patient?.fileNumber}
-										</span>
-										<br />
+									<td className="cell-with-media">
 										<span
 											style={{
 												fontSize: '0.7rem',
 											}}>{`${appointment.patient.surname} ${appointment.patient.other_names}`}</span>
 									</td>
 
+									<td className="cell-with-media">
+										<span style={{ fontSize: '0.7rem' }}>
+											{appointment.patient?.fileNumber}
+										</span>
+									</td>
 									<td className="cell-with-media">
 										<span style={{ fontSize: '0.7rem' }}>
 											{`${fullname(appointment?.whomToSee)}`}
