@@ -12,7 +12,7 @@ import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 // import waiting from '../../assets/images/waiting.gif';
 import ModalPatientDetails from '../../components/Modals/ModalPatientDetails';
-import { toggleProfile } from '../../actions/user';
+// import { toggleProfile } from '../../actions/user';
 import moment from 'moment';
 
 // const { RangePicker } = DatePicker;
@@ -45,10 +45,10 @@ const AllInPatients = () => {
 		setSearchValue(e.target.value);
 	};
 
-	const showProfile = patient => {
-		const info = { patient, type: 'patient' };
-		dispatch(toggleProfile(true, info));
-	};
+	// const showProfile = patient => {
+	// 	const info = { patient, type: 'patient' };
+	// 	dispatch(toggleProfile(true, info));
+	// };
 
 	const fetchPatients = useCallback(async () => {
 		try {
@@ -91,15 +91,16 @@ const AllInPatients = () => {
 				<td>{`${data?.patient_name} `}</td>
 				<td>{}</td>
 				<td>{}</td>
+				<td>{}</td>
 				<td>{moment(data?.admission_date).format('DD/MM/YYYY')}</td>
 				<td>{data?.admitted_by}</td>
-				<td className="row-actions text-right">
+				{/* <td className="row-actions text-right">
 					<Tooltip title="View Request">
 						<a onClick={() => showProfile(data)}>
 							<i className="os-icon os-icon-documents-03" />
 						</a>
 					</Tooltip>
-				</td>
+				</td> */}
 			</tr>
 		);
 	};
@@ -158,9 +159,11 @@ const AllInPatients = () => {
 										<div className="fht-cell"></div>
 									</th>
 									<th>
-										<div className="th-inner sortable both">
-											Date of Admission
-										</div>
+										<div className="th-inner sortable both">Suite</div>
+										<div className="fht-cell"></div>
+									</th>
+									<th>
+										<div className="th-inner sortable both">Admission Date</div>
 										<div className="fht-cell"></div>
 									</th>
 									<th>
