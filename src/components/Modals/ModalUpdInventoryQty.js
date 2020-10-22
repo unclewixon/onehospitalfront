@@ -30,12 +30,12 @@ class ModalUpdInventoryQty extends Component {
 
 	editInventoryQuantity = async e => {
 		e.preventDefault();
-		let data = {
-			id: this.state.item.id,
-			quantity: this.state.quantity,
-		};
-		this.setState({ submitting: true });
 		try {
+			let data = {
+				id: this.state.item.id,
+				quantity: this.state.quantity,
+			};
+			this.setState({ submitting: true });
 			const rs = await request(inventoryUpdateQuantityAPI, 'PATCH', true, data);
 			this.props.updateInventory(rs);
 			notifySuccess('Quantity Updated');

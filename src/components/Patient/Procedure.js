@@ -23,11 +23,8 @@ const Procedure = props => {
 	useEffect(() => {
 		const loadProcedure = async () => {
 			try {
-				const rs = await request(
-					`${patientAPI}/${patient.id}/request/procedure`,
-					'GET',
-					true
-				);
+				const url = `${patientAPI}/${patient.id}/request/procedure`;
+				const rs = await request(url, 'GET', true);
 				props.loadPatientProcedureData(rs);
 				setLoading(false);
 			} catch (e) {
@@ -74,7 +71,7 @@ const Procedure = props => {
 					[]
 				)}
 				<h6 className="element-header">Procedure Requests</h6>
-				<div className="element-box">
+				<div className="element-box m-0 p-3">
 					<div className="bootstrap-table">
 						<div className="fixed-table-toolbar">
 							<div className="bs-bars float-left">

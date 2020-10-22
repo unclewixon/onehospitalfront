@@ -37,7 +37,7 @@ class DashboardIndex extends Component {
 							</Link>
 						</div>
 
-						<div className="element-box p-0">
+						<div className="element-box p-0 m-0">
 							<Suspense fallback={<Splash />}>
 								<Switch>
 									<Route exact path={`${match.url}/`} component={Dashboard} />

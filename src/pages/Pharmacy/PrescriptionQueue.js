@@ -2,15 +2,11 @@
 import React, { Component } from 'react';
 import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
-import DatePicker from 'antd/lib/date-picker';
 
-import waiting from '../../assets/images/waiting.gif';
 import { notifyError } from '../../services/notify';
 import ViewPrescription from '../../components/Pharmacy/ViewPrescription';
 import { request } from '../../services/utilities';
 import { updateImmutable } from '../../services/utilities';
-
-const { RangePicker } = DatePicker;
 
 class PrescriptionQueue extends Component {
 	state = {
@@ -86,7 +82,6 @@ class PrescriptionQueue extends Component {
 
 	render() {
 		const {
-			filtering,
 			showModal,
 			activeRequest,
 			drugs,
@@ -94,58 +89,9 @@ class PrescriptionQueue extends Component {
 			filled,
 		} = this.state;
 
-		const customStyle = {
-			minHeight: '24px !important',
-			height: '2rem',
-		};
-
 		return (
 			<>
-				<div className="element-box">
-					<form className="row">
-						<div className="form-group col-md-6">
-							<label>From - To</label>
-							<RangePicker
-								onChange={e => {
-									const date = e.map(date => {
-										return moment(date._d).format('YYYY-MM-DD');
-									});
-									this.setState({
-										startDate: date[0],
-										endDate: date[1],
-									});
-								}}
-							/>
-						</div>
-						<div className="form-group col-md-3">
-							<label className="mr-2 " htmlFor="patient">
-								Request
-							</label>
-							<select className="form-control" style={{ ...customStyle }}>
-								<option value="">All</option>
-								<option value="open">Open</option>
-								<option value="filled">Filled</option>
-								<option value="completed">Completed</option>
-							</select>
-						</div>
-						<div className="form-group col-md-3 mt-4">
-							<a
-								className="btn btn-sm btn-primary btn-upper text-white"
-								onClick={() => this.filterEntries()}>
-								<i className="os-icon os-icon-ui-37" />
-								<span>
-									{filtering ? (
-										<img src={waiting} alt="submitting" />
-									) : (
-										'Filter'
-									)}
-								</span>
-							</a>
-						</div>
-					</form>
-				</div>
-
-				<div className="element-box">
+				<div className="element-box m-0 mb-4">
 					<div className="table table-responsive">
 						<table
 							id="table"
@@ -175,7 +121,7 @@ class PrescriptionQueue extends Component {
 											</td>
 											<td>{request.created_by ? request.created_by : ''}</td>
 											<td className="nowrap">
-												{request.status === 0 && request.isFilled && (
+												{request.payment_status === 0 && request.isFilled && (
 													<span className="badge badge-info text-white">
 														Awaiting Payment
 													</span>
@@ -183,6 +129,12 @@ class PrescriptionQueue extends Component {
 												{request.status === 1 && (
 													<span className="badge badge-success">Completed</span>
 												)}
+												{request.payment_status === 1 &&
+													request.status === 0 && (
+														<span className="badge badge-secondary">
+															Awaiting Dispense
+														</span>
+													)}
 												{request.status === 0 && !request.isFilled && (
 													<span className="badge badge-warning">Pending</span>
 												)}

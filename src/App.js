@@ -88,27 +88,29 @@ class App extends Component {
 					{loggedIn ? (
 						<AbilityContext.Provider value={ability}>
 							<div className="all-wrapper with-side-panel solid-bg-all">
-								<div className="layout-w">
-									{/* user role determines main menu */}
-									<MainMenu
-										role={profile.role ? profile.role.slug : 'admin'}
-										theme_mode={theme_mode}
-										menu_mode={menu_mode}
-									/>
-									<div className="content-w content-w-l-18" id="main-content">
-										{/* user role determines topbar menu */}
-										<TopBar role={profile.role ? profile.role.slug : 'admin'} />
-										<SWRConfig
-											value={{
-												fetcher: url =>
-													request(url, 'get', true).then(res => res),
-												refreshInterval: 15 * 60 * 1000,
-												shouldRetryOnError: false,
-												revalidateOnFocus: false,
-												errorRetryInterval: 0,
-												errorRetryCount: 2,
-											}}>
-											<Suspense fallback={<Splash />}>
+								<Suspense fallback={<Splash />}>
+									<div className="layout-w">
+										{/* user role determines main menu */}
+										<MainMenu
+											role={profile.role ? profile.role.slug : 'admin'}
+											theme_mode={theme_mode}
+											menu_mode={menu_mode}
+										/>
+										<div className="content-w content-w-l-18" id="main-content">
+											{/* user role determines topbar menu */}
+											<TopBar
+												role={profile.role ? profile.role.slug : 'admin'}
+											/>
+											<SWRConfig
+												value={{
+													fetcher: url =>
+														request(url, 'get', true).then(res => res),
+													refreshInterval: 15 * 60 * 1000,
+													shouldRetryOnError: false,
+													revalidateOnFocus: false,
+													errorRetryInterval: 0,
+													errorRetryCount: 2,
+												}}>
 												<Switch>
 													<Route
 														path="/doctor/appointments"
@@ -142,17 +144,17 @@ class App extends Component {
 													<Route path="/my-account" component={MyAccount} />
 													<Route component={NoMatch} />
 												</Switch>
-											</Suspense>
-										</SWRConfig>
+											</SWRConfig>
+										</div>
 									</div>
-								</div>
-								<SlidingPane isOpen={isStaffOpen}>
-									<StaffProfile />
-								</SlidingPane>
-								<SlidingPane isOpen={isPatientOpen}>
-									<PatientProfile />
-								</SlidingPane>
-								<ModalDialogs />
+									<SlidingPane isOpen={isStaffOpen}>
+										<StaffProfile />
+									</SlidingPane>
+									<SlidingPane isOpen={isPatientOpen}>
+										<PatientProfile />
+									</SlidingPane>
+									<ModalDialogs />
+								</Suspense>
 							</div>
 							{is_modal_open && <div className={`modal-backdrop fade show`} />}
 						</AbilityContext.Provider>

@@ -60,7 +60,7 @@ class InvSubCategories extends Component {
 			<div className="row">
 				<div className="col-lg-7">
 					<div className="element-wrapper">
-						<div className="element-box">
+						<div className="element-box m-0 p-3">
 							<h5 className="form-header">Sub Categories</h5>
 							<div className="form-desc" />
 							<div className="table-responsive">
@@ -86,6 +86,11 @@ class InvSubCategories extends Component {
 												/>
 											);
 										})}
+										{sub_categories.length === 0 && (
+											<tr>
+												<td colSpan="5">No sub categories</td>
+											</tr>
+										)}
 									</tbody>
 								</table>
 							</div>

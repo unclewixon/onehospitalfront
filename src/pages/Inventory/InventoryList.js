@@ -2,14 +2,17 @@
 import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import Pagination from 'antd/lib/pagination';
 
 import { createInventory } from '../../actions/general';
-import { request } from '../../services/utilities';
+import { request, itemRender } from '../../services/utilities';
 import {
 	API_URI,
 	inventoryAPI,
 	inventoryDownloadAPI,
 	inventoryUploadAPI,
+	vendorAPI,
+	paginate,
 } from '../../services/constants';
 import { loadInventories } from '../../actions/inventory';
 import Popover from 'antd/lib/popover';
@@ -60,8 +63,15 @@ const DownloadInventory = ({ onHide, downloading, doDownload }) => {
 	);
 };
 
-const UploadInventory = ({ onHide, uploading, doUpload, categories }) => {
+const UploadInventory = ({
+	onHide,
+	uploading,
+	doUpload,
+	categories,
+	vendors,
+}) => {
 	const [category, setCategory] = useState('');
+	const [vendor, setVendor] = useState('');
 	const [files, setFile] = useState(null);
 	let uploadAttachment;
 
@@ -81,7 +91,7 @@ const UploadInventory = ({ onHide, uploading, doUpload, categories }) => {
 					</button>
 					<div className="onboarding-content with-gradient">
 						<div className="form-block">
-							<form onSubmit={e => doUpload(e, files, category)}>
+							<form onSubmit={e => doUpload(e, files, category, vendor)}>
 								<div className="row">
 									<div className="col-sm-12">
 										<div className="form-group">
@@ -103,6 +113,24 @@ const UploadInventory = ({ onHide, uploading, doUpload, categories }) => {
 									</div>
 									<div className="col-sm-12">
 										<div className="form-group">
+											<label htmlFor="vendor">Vendor</label>
+											<select
+												id="vendor"
+												className="form-control"
+												onChange={e => setVendor(e.target.value)}>
+												<option>Select vendor</option>
+												{vendors.map((vendor, i) => {
+													return (
+														<option key={i} value={vendor.id}>
+															{vendor.name}
+														</option>
+													);
+												})}
+											</select>
+										</div>
+									</div>
+									<div className="col-sm-12">
+										<div className="form-group">
 											<input
 												className="d-none"
 												onClick={e => {
@@ -115,9 +143,9 @@ const UploadInventory = ({ onHide, uploading, doUpload, categories }) => {
 												}}
 												onChange={e => setFile(e.target.files)}
 											/>
-											<label htmlFor="department">File</label>
+											<label htmlFor="department">Inventory File</label>
 											<a
-												className="btn btn-outline-secondary ml-4"
+												className="btn btn-outline-secondary overflow-hidden ml-3"
 												onClick={() => {
 													uploadAttachment.click();
 												}}>
@@ -163,29 +191,42 @@ class InventoryList extends Component {
 		category_id: '',
 		period: null,
 		filtering: false,
+		vendors: [],
+		meta: paginate,
 	};
 
 	componentDidMount() {
 		this.fetchInventories();
+		this.fetchVendors();
 	}
+
+	fetchVendors = async () => {
+		try {
+			const rs = await request(`${vendorAPI}`, 'GET', true);
+			this.setState({ vendors: rs });
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	hide = () => {
 		this.setState({ upload_visible: false, download_visible: false });
 	};
 
-	onUpload = async (e, files, category_id) => {
+	onUpload = async (e, files, category_id, vendor) => {
 		e.preventDefault();
-		const { categories } = this.props;
 		const file = files[0];
 		if (file) {
-			this.setState({ uploading: true });
 			try {
+				const { categories } = this.props;
+				this.setState({ uploading: true });
 				let formData = new FormData();
 				formData.append('file', file);
 				formData.append('category_id', category_id);
+				formData.append('vendor_id', vendor);
 				await axios.post(`${API_URI}/${inventoryUploadAPI}`, formData);
+				await this.fetchInventories();
 				const cat = categories.find(d => d.id === category_id);
-				this.fetchInventories();
 				notifySuccess(`Inventory uploaded for ${cat ? cat.name : ''} Category`);
 				this.setState({ uploading: false, category_id });
 				this.setState({ upload_visible: false });
@@ -220,13 +261,31 @@ class InventoryList extends Component {
 		this.setState({ upload_visible: visible });
 	};
 
-	fetchInventories = async () => {
+	fetchInventories = async page => {
 		try {
-			const rs = await request(`${inventoryAPI}`, 'GET', true);
-			this.props.loadInventories(rs);
+			const { profile, categories } = this.props;
+			let roleQy = '';
+			if (profile.role.slug === 'pharmacy') {
+				const category = categories.find(d => d.name === 'Pharmacy');
+				roleQy = category ? `&q=${category.id}` : '';
+			}
+			const p = page || 1;
+			const rs = await request(
+				`${inventoryAPI}?page=${p}&limit=20${roleQy}`,
+				'GET',
+				true
+			);
+			const { result, ...meta } = rs;
+			this.props.loadInventories(result);
+			this.setState({ meta });
 		} catch (error) {
 			console.log(error);
 		}
+	};
+
+	onNavigatePage = pageNumber => {
+		this.fetchInventories(pageNumber);
+		window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
 
 	render() {
@@ -236,6 +295,8 @@ class InventoryList extends Component {
 			download_visible,
 			downloading,
 			uploading,
+			vendors,
+			meta,
 		} = this.state;
 		return (
 			<div className="content-i">
@@ -275,6 +336,7 @@ class InventoryList extends Component {
 												uploading={uploading}
 												doUpload={this.onUpload}
 												categories={categories}
+												vendors={vendors}
 											/>
 										}
 										overlayClassName="upload-roster"
@@ -287,10 +349,20 @@ class InventoryList extends Component {
 										</a>
 									</Popover>
 								</div>
-								<h6 className="form-header">Inventory List</h6>
-								<div className="element-box">
+								<h6 className="element-header">Inventory List</h6>
+								<div className="element-box m-0 mb-4">
 									<div className="table-responsive">
 										<InventoryTable data={inventories} />
+									</div>
+									<div className="pagination pagination-center mt-4">
+										<Pagination
+											current={parseInt(meta.currentPage, 10)}
+											pageSize={parseInt(meta.itemsPerPage, 10)}
+											total={parseInt(meta.totalPages, 10)}
+											showTotal={total => `Total ${total} stocks`}
+											itemRender={itemRender}
+											onChange={this.onNavigatePage}
+										/>
 									</div>
 								</div>
 							</div>
@@ -306,6 +378,7 @@ const mapStateToProps = (state, ownProps) => {
 	return {
 		inventories: state.inventory.inventories,
 		categories: state.inventory.categories,
+		profile: state.user.profile,
 	};
 };
 

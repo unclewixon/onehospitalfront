@@ -3,55 +3,48 @@ import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError, reset } from 'redux-form';
 
 import { renderTextInput, request } from '../services/utilities';
-import { inventoryCatAPI } from '../services/constants';
+import { vendorAPI } from '../services/constants';
 import { notifySuccess } from '../services/notify';
 import waiting from '../assets/images/waiting.gif';
-import { updateInvCategory } from '../actions/inventory';
 
 const validate = values => {
 	const errors = {};
 	if (!values.name) {
-		errors.name = 'enter category';
+		errors.name = 'enter vendor';
 	}
 	return errors;
 };
 
-class EditInvCategory extends Component {
+class CreateVendor extends Component {
 	state = {
 		submitting: false,
 	};
 
-	editCategory = async data => {
-		const { categoryID } = this.props;
-		this.setState({ submitting: true });
+	create = async data => {
 		try {
-			const rs = await request(
-				`${inventoryCatAPI}/${categoryID}/update`,
-				'PATCH',
-				true,
-				data
-			);
-			this.props.updateInvCategory(rs);
-			notifySuccess('category saved!');
+			const { addVendor } = this.props;
+			this.setState({ submitting: true });
+			const rs = await request(`${vendorAPI}`, 'POST', true, data);
+			addVendor(rs);
+			this.props.reset('create_vendor');
 			this.setState({ submitting: false });
-			this.props.reset('edit_category');
-			this.props.editCategory(null, false);
+			notifySuccess('vendor created!');
 		} catch (e) {
 			this.setState({ submitting: false });
 			throw new SubmissionError({
-				_error: e.message || 'could not edit category',
+				_error: e.message || 'could not create vendor',
 			});
 		}
 	};
 
 	render() {
 		const { submitting } = this.state;
-		const { error, handleSubmit, editCategory } = this.props;
+		const { error, handleSubmit } = this.props;
 		return (
 			<div className="element-wrapper">
 				<div className="element-box pipeline white lined-warning p-3 m-0">
-					<form onSubmit={handleSubmit(this.editCategory)}>
-						<h6 className="form-header">Edit Category</h6>
+					<form onSubmit={handleSubmit(this.create)}>
+						<h6 className="form-header">Create Vendor</h6>
 						{error && (
 							<div
 								className="alert alert-danger"
@@ -80,12 +73,6 @@ class EditInvCategory extends Component {
 									type="submit">
 									{submitting ? <img src={waiting} alt="submitting" /> : 'save'}
 								</button>
-								<button
-									className="btn btn-secondary ml-3"
-									type="button"
-									onClick={editCategory(null, false)}>
-									Cancel
-								</button>
 							</div>
 						</div>
 					</form>
@@ -95,21 +82,9 @@ class EditInvCategory extends Component {
 	}
 }
 
-EditInvCategory = reduxForm({
-	form: 'edit_category',
+CreateVendor = reduxForm({
+	form: 'create_vendor',
 	validate,
-})(EditInvCategory);
+})(CreateVendor);
 
-const mapStateToProps = (state, ownProps) => {
-	const categories = state.inventory.categories;
-	const category = categories.find(c => c.id === ownProps.categoryID);
-	return {
-		initialValues: {
-			name: category ? category.name : '',
-		},
-	};
-};
-
-export default connect(mapStateToProps, { reset, updateInvCategory })(
-	EditInvCategory
-);
+export default connect(null, { reset })(CreateVendor);

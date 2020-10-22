@@ -1,6 +1,4 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-import moment from 'moment';
 import { connect } from 'react-redux';
 
 import { transactionsAPI } from '../../services/constants';
@@ -24,9 +22,7 @@ class PayPoint extends Component {
 	fetchTransaction = async () => {
 		try {
 			this.setState({ loading: true });
-			let today = moment().format('YYYY-MM-DD');
-
-			const url = `${transactionsAPI}/list?patient_id=&startDate=${today}&endDate=${today}&transaction_type=pharmacy&status=`;
+			const url = `${transactionsAPI}/list?patient_id=&startDate=&endDate=&transaction_type=pharmacy&status=`;
 			const rs = await request(url, 'GET', true);
 			console.log(rs);
 
@@ -42,11 +38,7 @@ class PayPoint extends Component {
 		const transactions = this.props.todayTransaction;
 		return (
 			<div className="col-sm-12">
-				<div className="element-box">
-					<h6 className="element-header">
-						Today's Transactions ({moment().format('YYYY-MM-DD')})
-					</h6>
-
+				<div className="element-box m-0 p-3">
 					<div className="table-responsive">
 						<table className="table table-striped">
 							<thead>

@@ -81,11 +81,6 @@
 		vertical-align: sub;
 	}
 }
-ul > li {
-	list-style: none;
-	position: relative;
-	padding: 0 0 10px 15px;
-}
 
 .gold .light a {
 	background: #a64dff;
@@ -108,4 +103,8 @@ ul > li {
     font-weight: bold;
     color: #b8b8b8;
     margin-bottom: 5px;
+}
+.overflow-hidden {
+	width: 100%;
+    overflow: hidden;
 }

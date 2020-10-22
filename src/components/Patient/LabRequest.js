@@ -246,7 +246,7 @@ const LabRequest = props => {
 		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<h6 className="element-header">New Lab Request</h6>
-				<div className="element-box">
+				<div className="element-box m-0 p-3">
 					<div className="form-block w-100">
 						<form onSubmit={handleSubmit(onSubmit)}>
 							{props.location.hash ? null : (

@@ -143,7 +143,7 @@ const Vitals = props => {
 					</div>
 				</div>
 				<h6 className="element-header text-center">{type}</h6>
-				<div className="element-box">
+				<div className="element-box p-3 m-0">
 					<Page type={type} />
 				</div>
 				<div className="element-wrapper">

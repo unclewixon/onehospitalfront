@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 // import { connect } from 'react-redux';
-import { Field, reduxForm, SubmissionError } from 'redux-form';
+import { reduxForm, SubmissionError } from 'redux-form';
 import Modal from 'react-bootstrap/Modal';
-import {
-	renderTextInput,
-	renderTextInputGroup,
-	request,
-} from '../../services/utilities';
+import { request } from '../../services/utilities';
 import Select from 'react-select';
 import waiting from '../../assets/images/waiting.gif';
 import { vitalsAPI } from '../../services/constants';

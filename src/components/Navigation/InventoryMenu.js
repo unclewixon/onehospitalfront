@@ -1,17 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const InventoryMenu = () => {
+const InventoryMenu = ({ role }) => {
 	return (
 		<>
-			<li>
-				<Link to="/inventory/categories">
-					<div className="icon-w">
-						<div className="os-icon os-icon-layers" />
-					</div>
-					<span>Categories</span>
-				</Link>
-			</li>
+			{role !== 'pharmacy' && (
+				<li>
+					<Link to="/inventory/categories">
+						<div className="icon-w">
+							<div className="os-icon os-icon-layers" />
+						</div>
+						<span>Categories</span>
+					</Link>
+				</li>
+			)}
 			<li>
 				<Link to="/inventory/list">
 					<div className="icon-w">

@@ -66,8 +66,15 @@ const ViewPrescription = ({
 		setSumTotal(total);
 	};
 
-	const deleteItem = (id, drug_id) => {
-		console.log(id, drug_id);
+	const deleteItem = id => {
+		const drug = prescriptions.find(p => p.id === parseInt(id, 10));
+		if (drug.vaccine) {
+			notifyError('you cannot remove a vaccine prescription');
+			return;
+		}
+
+		const drugsRem = prescriptions.filter(p => p.id !== id);
+		setPrescriptions(drugsRem);
 	};
 
 	const deletePrescription = () => {
@@ -76,6 +83,11 @@ const ViewPrescription = ({
 	};
 
 	const setDrug = (drug, id) => {
+		if (!drug) {
+			notifyError('select drug first');
+			return;
+		}
+
 		const update = {
 			id,
 			drug_generic_name: drug.generic_name,
@@ -105,6 +117,16 @@ const ViewPrescription = ({
 
 	const doFill = async () => {
 		try {
+			const emptyItem = prescriptions.find(
+				p => !p.quantity || (p.quantity && p.quantity === '')
+			);
+			if (emptyItem) {
+				notifyError(
+					'please fill all presciptions or remove the request item you do not need to fill!'
+				);
+				return;
+			}
+
 			setSubmitting(true);
 			const url = `patient/fill-request/${activeRequest.id}`;
 			const rs = await request(url, 'POST', true, {
@@ -124,6 +146,26 @@ const ViewPrescription = ({
 		} catch (e) {
 			setSubmitting(false);
 			notifyError(e.message || 'Error, could not fill prescription');
+		}
+	};
+
+	const dispense = async () => {
+		try {
+			setSubmitting(true);
+			const url = `patient/request/${activeRequest.id}/approve-result`;
+			const rs = await request(url, 'GET', true);
+
+			setSubmitting(false);
+			if (rs.success) {
+				updatePrescriptions(rs.data);
+				notifySuccess('pharmacy prescription dispensed');
+				closeModal();
+			} else {
+				notifyError(rs.message);
+			}
+		} catch (e) {
+			setSubmitting(false);
+			notifyError(e.message || 'Error, could not dispense prescription');
 		}
 	};
 
@@ -182,9 +224,9 @@ const ViewPrescription = ({
 																</span>
 															</div>
 															<div>
-																{item.drug_generic_name ? (
-																	`${item.drug_generic_name} ${item.frequency} x ${item.frequencyType}${when}`
-																) : (
+																{item.drug_generic_name &&
+																	`${item.drug_generic_name} ${item.frequency} x ${item.frequencyType}${when}`}
+																{item.vaccine && !filled && (
 																	<Popover
 																		content={
 																			<SelectDrug
@@ -197,15 +239,20 @@ const ViewPrescription = ({
 																		trigger="click"
 																		visible={visible && visible === item.id}
 																		onVisibleChange={() => setVisible(item.id)}>
-																		<a>
-																			<i className="os-icon os-icon-ui-49" />{' '}
-																			Select Vaccine Drug
-																		</a>
+																		<Tooltip title="Select/Change Vaccine Drug">
+																			<a className="link-primary">
+																				<i className="os-icon os-icon-ui-49" />
+																			</a>
+																		</Tooltip>
 																	</Popover>
 																)}
 															</div>
 														</td>
-														<td>{item.filled_by || 'Open'}</td>
+														<td>
+															{item.filled_by && filled
+																? item.filled_by
+																: 'Open'}
+														</td>
 														<td>{item.drug_name || '-'}</td>
 														<td>{formatCurrency(item.drug_cost || 0.0)}</td>
 														<td>
@@ -225,10 +272,8 @@ const ViewPrescription = ({
 																<Tooltip title="Delete Drug">
 																	<a
 																		className="danger"
-																		onClick={() =>
-																			deleteItem(activeRequest?.id, item.id)
-																		}>
-																		<i className="os-icon os-icon-ui-15"></i>
+																		onClick={() => deleteItem(item.id)}>
+																		<i className="os-icon os-icon-ui-15" />
 																	</a>
 																</Tooltip>
 															</td>
@@ -274,11 +319,19 @@ const ViewPrescription = ({
 											<span>Print</span>
 										</button>
 									)}
-									{filled && (
-										<button onClick={() => {}} className="btn btn-primary ml-2">
-											<span>Dispense Prescription</span>
-										</button>
-									)}
+									{filled &&
+										activeRequest.payment_status === 1 &&
+										activeRequest.status === 0 && (
+											<button
+												onClick={() => dispense()}
+												className="btn btn-primary ml-2">
+												{submitting ? (
+													<img src={waiting} alt="submitting" />
+												) : (
+													<span>Dispense Prescription</span>
+												)}
+											</button>
+										)}
 								</div>
 							</div>
 						</div>

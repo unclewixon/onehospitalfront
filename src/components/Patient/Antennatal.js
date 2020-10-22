@@ -55,7 +55,7 @@ class Antennatal extends Component {
 						</Link>
 					</div>
 					<h6 className="element-header">Antennatal Assessment</h6>
-					<div className="element-box">
+					<div className="element-box p-3 m-0">
 						<div className="bootstrap-table">
 							<div className="fixed-table-toolbar">
 								<div className="bs-bars float-left">

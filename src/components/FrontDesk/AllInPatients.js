@@ -7,7 +7,7 @@ import { connect, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import { request } from '../../services/utilities';
-import { loadAllPatients } from '../../actions/patient';
+// import { loadAllPatients } from '../../actions/patient';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 // import waiting from '../../assets/images/waiting.gif';
@@ -62,7 +62,7 @@ const AllInPatients = () => {
 			notifyError('error fetching patients');
 			setLoaded(false);
 		}
-	}, [dispatch]);
+	}, []);
 
 	const searchEntries = e => {
 		e.preventDefault();

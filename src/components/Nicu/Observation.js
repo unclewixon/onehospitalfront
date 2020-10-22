@@ -16,7 +16,7 @@ import DatePicker from 'react-datepicker';
 
 function Observation(props) {
 	const formData = props.formData;
-	const patient = props.patient;
+	// const patient = props.patient;
 	const register_new_patient = props.register_new_patient;
 	const [formTitle, setFormTitle] = useState('');
 	const [patientData, setPatientData] = useState({});

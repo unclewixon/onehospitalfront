@@ -19,10 +19,8 @@ const Pharmacy = ({ location, patient }) => {
 	const [prescriptions, setPrescriptions] = useState([]);
 	const [filled, setFilled] = useState(false);
 
-	const startDate = moment()
-		.subtract(1, 'days')
-		.format('YYYY-MM-DD');
-	const endDate = moment().format('YYYY-MM-DD');
+	const startDate = '';
+	const endDate = '';
 
 	const closeModal = () => {
 		document.body.classList.remove('modal-open');
@@ -81,7 +79,7 @@ const Pharmacy = ({ location, patient }) => {
 					</Link>
 				</div>
 				<h6 className="element-header">Pharmacy Requests</h6>
-				<div className="element-box">
+				<div className="element-box p-3 m-0">
 					<div className="bootstrap-table">
 						<div className="fixed-table-toolbar">
 							<div className="bs-bars float-left">

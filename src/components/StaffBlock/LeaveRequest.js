@@ -10,6 +10,7 @@ import Tooltip from 'antd/lib/tooltip';
 import ModalLeaveRequest from './../Modals/ModalLeaveRequest';
 import ModalEditLeave from '../Modals/ModalEditLeave';
 import { confirmAction } from '../../services/utilities';
+import Pagination from '../Pagination';
 
 const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 	const [searching, setSearching] = useState(false);
@@ -96,7 +97,7 @@ const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 							onExitModal={onExitModal}
 						/>
 					) : null}
-					<div className="element-box">
+					<div className="element-box m-0 p-2">
 						<div className="table-responsive">
 							<table className="table table-striped">
 								<thead>
@@ -207,34 +208,7 @@ const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 									)}
 								</tbody>
 							</table>
-
-							<div className="controls-below-table">
-								<div className="table-records-info">Showing records 1 - 5</div>
-								<div className="table-records-pages">
-									<ul>
-										<li>
-											<a href="#">Previous</a>
-										</li>
-										<li>
-											<a className="current" href="#">
-												1
-											</a>
-										</li>
-										<li>
-											<a href="#">2</a>
-										</li>
-										<li>
-											<a href="#">3</a>
-										</li>
-										<li>
-											<a href="#">4</a>
-										</li>
-										<li>
-											<a href="#">Next</a>
-										</li>
-									</ul>
-								</div>
-							</div>
+							<Pagination gotoPage={() => {}} currentPage={1} lastPage={12} />
 						</div>
 					</div>
 				</div>
