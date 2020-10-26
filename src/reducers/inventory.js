@@ -33,9 +33,9 @@ const INITIAL_STATE = {
 	item: [],
 	categories: [],
 	sub_categories: [],
-	cafeteriaCategory: [],
 	cafeteriaItems: [],
 	filteredCafeteriaItems: [],
+	cafeteriaCategory: [],
 	cafeteriaInvCategory: [],
 	cafeteriaInventory: [],
 };

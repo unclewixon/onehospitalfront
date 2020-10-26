@@ -1,9 +1,6 @@
 import React from 'react';
 import Popover from 'antd/lib/popover';
-// import moment from 'moment';
 import AssignBed from './AssignBed';
-
-// import TakeReadings from '../Vitals/TakeReadings';
 
 const AssignDropup = ({ onModalClick, visible, setVisible }) => {
 	return (
@@ -21,9 +18,7 @@ const AssignDropup = ({ onModalClick, visible, setVisible }) => {
 							/>
 						}
 						trigger="click"
-						visible={visible}
-						// onVisibleChange={status => setVisible(status)}
-					></Popover>
+						visible={visible}></Popover>
 				</div>
 			</div>
 		</div>

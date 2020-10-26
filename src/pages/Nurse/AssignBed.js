@@ -93,15 +93,13 @@ class AssignBed extends Component {
 			<div className="onboarding-modal fade animated show">
 				<div className="modal-centered">
 					<div className="modal-content text-center">
-						<button className="close" type="button">
-							<Modal.Header
-								closeButton
-								onClick={this.props.onModalClick}></Modal.Header>
-
-							{/* <span className="os-icon os-icon-close" /> */}
-						</button>
 						<div className="onboarding-content with-gradient">
-							<h4 className="onboarding-title">{`Assign Bed`}</h4>
+							<Modal.Header
+								className="center-header"
+								closeButton
+								onClick={this.props.onModalClick}>
+								<h4 className="onboarding-title">{`Assign Bed`}</h4>
+							</Modal.Header>
 							<div className="form-block">
 								<form onSubmit={handleSubmit(this.takeReading)}>
 									{error && (
