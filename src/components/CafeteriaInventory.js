@@ -12,7 +12,7 @@ import {
 	addCafeteriaInventory,
 	updateCafeteriaInventory,
 	deleteCafeteriaInventory,
-} from '../actions/cafeteria';
+} from '../actions/Cafeteria';
 import { getAllCafeteriaInvCategory } from '../actions/inventory';
 
 // import { addCafeteriaFile } from '../actions/general';
@@ -45,7 +45,7 @@ const CafeteriaInventory = props => {
 		},
 		setState,
 	] = useState(initialState);
-	const [Loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
@@ -76,23 +76,13 @@ const CafeteriaInventory = props => {
 	};
 
 	useEffect(() => {
-		getAllCafeteriaItems();
-		//eslint-disable-next-line
-	}, []);
-
-	useEffect(() => {
 		console.log(props.cafeteriaInventory);
 		//eslint-disable-next-line
 	}, []);
 
 	const clearForm = () => {
 		setState({
-			name: '',
-			cost_price: 0,
-			quantity: 0,
-			description: '',
-			category_id: '',
-			stock_code: '',
+			...initialState,
 		});
 	};
 
@@ -208,6 +198,13 @@ const CafeteriaInventory = props => {
 		}
 		setFiltering(false);
 	};
+
+	useEffect(() => {
+		if (!dataLoaded) {
+			getAllCafeteriaItems();
+			setDataLoaded(true);
+		}
+	}, [dataLoaded, props]);
 
 	// useEffect(() => {
 	// 	if (!dataLoaded) {
@@ -336,43 +333,56 @@ const CafeteriaInventory = props => {
 													</tr>
 												) : (
 													<>
-														{items.map(item => {
-															return (
-																<tr key={item.stock_code}>
-																	<th className="text-center">
-																		{item.stock_code}
-																	</th>
-																	<th className="text-center">
-																		{item.category
-																			? item.category.name
-																			: catName}
-																	</th>
-																	<th className="text-center">{item.name}</th>
-																	<th className="text-center">
-																		{item.cost_price}
-																	</th>
-																	<th className="text-center">
-																		{item.quantity}
-																	</th>
-																	<th className="text-right">
-																		<a className="pi-settings os-dropdown-trigger">
-																			<i
-																				className="os-icon os-icon-ui-49"
-																				onClick={() => onClickEdit(item)}></i>
-																		</a>
-																		<a className="pi-settings os-dropdown-trigger text-danger">
-																			<i
-																				className="os-icon os-icon-ui-15"
-																				onClick={() => confirmDelete(item)}></i>
-																		</a>
-																	</th>
-																</tr>
-															);
-														})}
+														{items && items.length
+															? items.map(item => {
+																	return (
+																		<tr key={item.stock_code}>
+																			<th className="text-center">
+																				{item.stock_code}
+																			</th>
+																			<th className="text-center">
+																				{item.category
+																					? item.category.name
+																					: catName}
+																			</th>
+																			<th className="text-center">
+																				{item.name}
+																			</th>
+																			<th className="text-center">
+																				{item.cost_price}
+																			</th>
+																			<th className="text-center">
+																				{item.quantity}
+																			</th>
+																			<th className="text-right">
+																				<a className="pi-settings os-dropdown-trigger">
+																					<i
+																						className="os-icon os-icon-ui-49"
+																						onClick={() =>
+																							onClickEdit(item)
+																						}></i>
+																				</a>
+																				<a className="pi-settings os-dropdown-trigger text-danger">
+																					<i
+																						className="os-icon os-icon-ui-15"
+																						onClick={() =>
+																							confirmDelete(item)
+																						}></i>
+																				</a>
+																			</th>
+																		</tr>
+																	);
+															  })
+															: null}
 													</>
 												)}
 											</tbody>
 										</table>
+										{!items?.length ? (
+											<div className="text-center">
+												No inventory added, Check back later!
+											</div>
+										) : null}
 									</div>
 								</div>
 							</div>
@@ -471,11 +481,11 @@ const CafeteriaInventory = props => {
 													<>
 														<button
 															className={
-																Loading
+																loading
 																	? 'btn btn-primary disabled'
 																	: 'btn btn-primary'
 															}>
-															{Loading ? (
+															{loading ? (
 																<img src={waiting} alt="submitting" />
 															) : (
 																<span> save</span>
@@ -487,20 +497,20 @@ const CafeteriaInventory = props => {
 													<>
 														<button
 															className={
-																Loading
+																loading
 																	? 'btn btn-secondary ml-3 disabled'
 																	: 'btn btn-secondary ml-3'
 															}
 															onClick={cancelEditButton}>
-															<span>{Loading ? 'cancel' : 'cancel'}</span>
+															<span>{loading ? 'cancel' : 'cancel'}</span>
 														</button>
 														<button
 															className={
-																Loading
+																loading
 																	? 'btn btn-primary disabled'
 																	: 'btn btn-primary'
 															}>
-															{Loading ? (
+															{loading ? (
 																<img src={waiting} alt="submitting" />
 															) : (
 																<span> edit</span>

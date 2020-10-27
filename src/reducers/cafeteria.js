@@ -14,40 +14,7 @@ const initState = {
 	cafeteriaItemCategory: [],
 	cafeteriaInvCategory: [],
 	cafeteriaInventory: [],
-	cafeteriaItems: [
-		{
-			item_code: '4tfdsrg',
-			name: 'smart',
-			price: 20,
-			category: 'food',
-			discount_price: 5,
-			description: 'bought 5 piece',
-		},
-		{
-			item_code: '4tfdsrg',
-			name: 'smart',
-			price: 20,
-			category: 'food',
-			discount_price: 5,
-			description: 'bought 5 piece',
-		},
-		{
-			item_code: '4tfdsrg',
-			name: 'smart',
-			price: 20,
-			category: 'food',
-			discount_price: 5,
-			description: 'bought 5 piece',
-		},
-		{
-			item_code: '4tfdsrg',
-			name: 'smart',
-			price: 20,
-			category: 'food',
-			discount_price: 5,
-			description: 'bought 5 piece',
-		},
-	],
+	cafeteriaItems: [],
 };
 
 const cafeteria = (state = initState, action) => {

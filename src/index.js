@@ -76,12 +76,12 @@ const initData = async () => {
 			store.dispatch(loadCountries(rs_countries.data));
 		}
 	} catch (e) {
-		console.log(e.response);
+		e.preventDefault();
+		// console.log(e.response);
 	}
 
 	const user = await getUser();
 	if (user) {
-		// console.log(user);
 		try {
 			const jwt = `Bearer ${user.token}`;
 			let [
@@ -129,7 +129,7 @@ const initData = async () => {
 				}
 			}, 200);
 		} catch (e) {
-			console.log(e);
+			// console.log(e);
 			storage.removeItem(TOKEN_COOKIE);
 			store.dispatch(togglePreloading(false));
 			history.push('/?not-authenticated');

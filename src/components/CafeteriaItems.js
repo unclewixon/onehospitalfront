@@ -12,7 +12,7 @@ import {
 	addCafeteriaItem,
 	updateCafeteriaItem,
 	deleteCafeteriaItem,
-} from '../actions/cafeteria';
+} from '../actions/Cafeteria';
 import { addCafeteriaFile } from '../actions/general';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -343,11 +343,14 @@ const CafeteriaItems = props => {
 															);
 														})}
 													</>
-												) : (
-													<span className="text-center">No user added</span>
-												)}
+												) : null}
 											</tbody>
 										</table>
+										{!props.cafeteriaItems.length ? (
+											<div className="text-center">
+												No item added, Check back later!
+											</div>
+										) : null}
 									</div>
 								</div>
 							</div>
