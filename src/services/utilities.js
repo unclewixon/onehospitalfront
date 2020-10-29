@@ -120,10 +120,6 @@ export const request = async (url, method, authed = false, data) => {
 		body: JSON.stringify(data),
 	});
 	const result = await checkStatus(response);
-	//this is going to affect other API implementations where delete is used and an actual result was expected to be returned and used. Lets comment it out for now.
-	if (method === 'DELETE') {
-		return { result };
-	}
 	return parseJSON(result);
 };
 
@@ -476,6 +472,10 @@ export const redirectToPage = (role, history) => {
 				uri = '/paypoint';
 				break;
 			case 'lab':
+			case 'lab-attendant':
+			case 'lab-officer':
+			case 'lab-supervisor':
+			case 'lab-hod':
 				uri = '/lab';
 				break;
 			case 'radiology':
@@ -500,7 +500,7 @@ export const redirectToPage = (role, history) => {
 	} catch (e) {
 		uri = '/front-desk';
 	}
-	// console.log(uri);
+
 	if (uri !== '') {
 		history.push(uri);
 	} else {

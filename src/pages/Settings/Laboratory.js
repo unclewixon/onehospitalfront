@@ -2,42 +2,50 @@
 import React, { useState } from 'react';
 
 import LabTest from '../../components/LabTest';
-import LabParameter from '../../components/LabParameter';
+import LabSpecimen from '../../components/LabSpecimen';
 import LabCategory from '../../components/LabCategory';
 import LabGroup from '../../components/LabGroup';
+import LabTestForm from '../../components/Modals/LabTestForm';
 
 const Laboratory = () => {
-	const [ShowLabTest, setLabTest] = useState(true);
-	const [ShowLabParameter, SetLabParameter] = useState(false);
-	const [ShowLabCategory, SetLabCategory] = useState(false);
-	const [ShowLabGroup, SetLabGroup] = useState(false);
+	const [labCategoryTab, setLabCategoryTab] = useState(true);
+	const [labTestTab, setLabTestTab] = useState(false);
+	const [labGroupTab, setLabGroupTab] = useState(false);
+	const [labSpecimenTab, setLabSpecimenTab] = useState(false);
+	const [toggleForm, setToggleForm] = useState(false);
+	const [labTest, setLabTest] = useState(null);
 
 	const onLabTest = () => {
-		setLabTest(true);
-		SetLabParameter(false);
-		SetLabCategory(false);
-		SetLabGroup(false);
+		setLabTestTab(true);
+		setLabSpecimenTab(false);
+		setLabCategoryTab(false);
+		setLabGroupTab(false);
 	};
 
 	const onLabParameter = () => {
-		setLabTest(false);
-		SetLabParameter(true);
-		SetLabCategory(false);
-		SetLabGroup(false);
+		setLabTestTab(false);
+		setLabSpecimenTab(true);
+		setLabCategoryTab(false);
+		setLabGroupTab(false);
 	};
 
 	const onLabCategory = () => {
-		setLabTest(false);
-		SetLabParameter(false);
-		SetLabCategory(true);
-		SetLabGroup(false);
+		setLabTestTab(false);
+		setLabSpecimenTab(false);
+		setLabCategoryTab(true);
+		setLabGroupTab(false);
 	};
 
 	const onLabGroup = () => {
-		setLabTest(false);
-		SetLabParameter(false);
-		SetLabCategory(false);
-		SetLabGroup(true);
+		setLabTestTab(false);
+		setLabSpecimenTab(false);
+		setLabCategoryTab(false);
+		setLabGroupTab(true);
+	};
+
+	const doToggleForm = (status, data) => {
+		setToggleForm(status);
+		setLabTest(data);
 	};
 
 	return (
@@ -47,13 +55,13 @@ const Laboratory = () => {
 					<div className="col-sm-12">
 						<div className="element-wrapper">
 							<div className="os-tabs-w mx-1">
-								<div className="os-tabs-controls">
+								<div className="os-tabs-controls os-tabs-complex">
 									<ul className="nav nav-tabs upper">
 										<li className="nav-item">
 											<a
 												aria-expanded="true"
 												className={
-													ShowLabCategory ? 'nav-link active' : 'nav-link'
+													labCategoryTab ? 'nav-link active' : 'nav-link'
 												}
 												data-toggle="tab"
 												onClick={onLabCategory}>
@@ -63,18 +71,7 @@ const Laboratory = () => {
 										<li className="nav-item">
 											<a
 												aria-expanded="false"
-												className={
-													ShowLabParameter ? 'nav-link active' : 'nav-link'
-												}
-												data-toggle="tab"
-												onClick={onLabParameter}>
-												Parameters
-											</a>
-										</li>
-										<li className="nav-item">
-											<a
-												aria-expanded="false"
-												className={ShowLabTest ? 'nav-link active' : 'nav-link'}
+												className={labTestTab ? 'nav-link active' : 'nav-link'}
 												data-toggle="tab"
 												onClick={onLabTest}>
 												Tests
@@ -83,25 +80,49 @@ const Laboratory = () => {
 										<li className="nav-item">
 											<a
 												aria-expanded="false"
-												className={
-													ShowLabGroup ? 'nav-link active' : 'nav-link'
-												}
+												className={labGroupTab ? 'nav-link active' : 'nav-link'}
 												data-toggle="tab"
 												onClick={onLabGroup}>
 												Groups
 											</a>
 										</li>
+										<li className="nav-item">
+											<a
+												aria-expanded="false"
+												className={
+													labSpecimenTab ? 'nav-link active' : 'nav-link'
+												}
+												data-toggle="tab"
+												onClick={onLabParameter}>
+												Specimen
+											</a>
+										</li>
+										{labTestTab && (
+											<li className="nav-item nav-actions d-sm-block">
+												<a
+													className="btn btn-primary btn-sm text-white"
+													onClick={() => doToggleForm(true, null)}>
+													<i className="os-icon os-icon-plus-circle"></i>
+													<span>Add Test</span>
+												</a>
+											</li>
+										)}
 									</ul>
 								</div>
 							</div>
-							{ShowLabCategory === true && <LabCategory />}
-							{ShowLabParameter === true && <LabParameter />}
-							{ShowLabTest === true && <LabTest />}
-							{ShowLabGroup === true && <LabGroup />}
+							{labCategoryTab === true && <LabCategory />}
+							{labSpecimenTab === true && <LabSpecimen />}
+							{labTestTab === true && <LabTest doToggleForm={doToggleForm} />}
+							{labGroupTab === true && <LabGroup />}
 						</div>
 					</div>
 				</div>
 			</div>
+			<LabTestForm
+				showHide={toggleForm}
+				doToggleForm={doToggleForm}
+				labTest={labTest}
+			/>
 		</div>
 	);
 };

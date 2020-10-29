@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import { withRouter, Link } from 'react-router-dom';
-
 import { connect, useDispatch } from 'react-redux';
+import { v4 as uuidv4 } from 'uuid';
+
 import waiting from '../assets/images/waiting.gif';
-import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import { confirmAction, request } from '../services/utilities';
 import {
@@ -12,9 +12,8 @@ import {
 	addCafeteriaItem,
 	updateCafeteriaItem,
 	deleteCafeteriaItem,
-} from '../actions/Cafeteria';
+} from '../actions/cafeteria';
 import { addCafeteriaFile } from '../actions/general';
-import { v4 as uuidv4 } from 'uuid';
 
 const CafeteriaItems = props => {
 	let dispatch = useDispatch();
@@ -48,7 +47,7 @@ const CafeteriaItems = props => {
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
 	const [filtering, setFiltering] = useState(false);
-	const [items, setItems] = useState([]);
+	// const [items, setItems] = useState([]);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -60,7 +59,7 @@ const CafeteriaItems = props => {
 
 	const getAllCafeteriaItems = async () => {
 		try {
-			const url = `cafeteria/items`;
+			const url = 'cafeteria/items';
 			const rs = await request(url, 'GET', true);
 			console.log(rs);
 			dispatch(props.getAllCafeteriaItem(rs));
@@ -182,35 +181,35 @@ const CafeteriaItems = props => {
 
 	const doFilter = async () => {
 		setFiltering(true);
-		try {
-			const rs = await request(`cafeteria/items-by-category/${category}`);
-			console.log(rs);
-			let filterItems = rs.map(el => {
-				return {
-					q_categoryId: category,
-					q_createdAt: el.createdAt,
-					q_createdBy: el.createdBy,
-					q_description: el.description,
-					q_discount_price: el.discount_price,
-					q_id: el.id,
-					q_isActive: el.isActive,
-					q_item_code: el.item_code,
-					q_lastChangedBy: null,
-					q_name: el.name,
-					q_price: el.price,
-					q_updateAt: el.updateAt,
-				};
-			});
+		// try {
+		// 	const rs = await request(`cafeteria/items-by-category/${category}`);
+		// 	console.log(rs);
+		// 	let filterItems = rs.map(el => {
+		// 		return {
+		// 			q_categoryId: category,
+		// 			q_createdAt: el.createdAt,
+		// 			q_createdBy: el.createdBy,
+		// 			q_description: el.description,
+		// 			q_discount_price: el.discount_price,
+		// 			q_id: el.id,
+		// 			q_isActive: el.isActive,
+		// 			q_item_code: el.item_code,
+		// 			q_lastChangedBy: null,
+		// 			q_name: el.name,
+		// 			q_price: el.price,
+		// 			q_updateAt: el.updateAt,
+		// 		};
+		// 	});
 
-			console.log(rs, filterItems);
-			await setItems(filterItems);
+		// 	console.log(rs, filterItems);
+		// 	setItems(filterItems);
 
-			setFiltering(false);
-		} catch (e) {
-			console.log(e);
-			notifyError('Filtering not successful');
-			setFiltering(false);
-		}
+		// 	setFiltering(false);
+		// } catch (e) {
+		// 	console.log(e);
+		// 	notifyError('Filtering not successful');
+		// 	setFiltering(false);
+		// }
 	};
 
 	useEffect(() => {
@@ -313,37 +312,33 @@ const CafeteriaItems = props => {
 												</tr>
 											</thead>
 											<tbody>
-												{props.cafeteriaItems && props.cafeteriaItems.length ? (
-													<>
-														{props.cafeteriaItems.map(item => {
-															return (
-																<tr key={item.q_item_code || item.item_code}>
-																	<th className="text-center">
-																		{item.q_item_code || item.item_code}
-																	</th>
-																	<th className="text-center">
-																		{item.q_name || item.name}
-																	</th>
-																	<th className="text-center">
-																		{item.q_price || item.price}
-																	</th>
-																	<th className="text-right">
-																		<a className="pi-settings os-dropdown-trigger">
-																			<i
-																				className="os-icon os-icon-ui-49"
-																				onClick={() => onClickEdit(item)}></i>
-																		</a>
-																		<a className="pi-settings os-dropdown-trigger text-danger">
-																			<i
-																				className="os-icon os-icon-ui-15"
-																				onClick={() => confirmDelete(item)}></i>
-																		</a>
-																	</th>
-																</tr>
-															);
-														})}
-													</>
-												) : null}
+												{props.cafeteriaItems.map(item => {
+													return (
+														<tr key={item.q_item_code || item.item_code}>
+															<th className="text-center">
+																{item.q_item_code || item.item_code}
+															</th>
+															<th className="text-center">
+																{item.q_name || item.name}
+															</th>
+															<th className="text-center">
+																{item.q_price || item.price}
+															</th>
+															<th className="text-right">
+																<a className="pi-settings os-dropdown-trigger">
+																	<i
+																		className="os-icon os-icon-ui-49"
+																		onClick={() => onClickEdit(item)}></i>
+																</a>
+																<a className="pi-settings os-dropdown-trigger text-danger">
+																	<i
+																		className="os-icon os-icon-ui-15"
+																		onClick={() => confirmDelete(item)}></i>
+																</a>
+															</th>
+														</tr>
+													);
+												})}
 											</tbody>
 										</table>
 										{!props.cafeteriaItems.length ? (

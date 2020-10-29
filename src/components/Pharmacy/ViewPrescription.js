@@ -320,7 +320,8 @@ const ViewPrescription = ({
 										</button>
 									)}
 									{filled &&
-										activeRequest.payment_status === 1 &&
+										activeRequest.transaction &&
+										activeRequest.transaction.status === 1 &&
 										activeRequest.status === 0 && (
 											<button
 												onClick={() => dispense()}

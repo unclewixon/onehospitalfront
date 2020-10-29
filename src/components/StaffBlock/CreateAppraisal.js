@@ -191,7 +191,7 @@ class CreateAppraisal extends Component {
 			<div className="row my-4">
 				<div className="col-sm-12">
 					<div className="element-wrapper">
-						{!isStaffAppraisal ? (
+						{!isStaffAppraisal && (
 							<>
 								<div className="element-actions">
 									<Link
@@ -203,11 +203,11 @@ class CreateAppraisal extends Component {
 								</div>
 								<h6 className="element-header">Create Appraisal</h6>
 							</>
-						) : null}
-						<div className="element-box">
+						)}
+						<div className="element-box m-0 p-3">
 							<form onSubmit={handleSubmit(this.confirmSave)}>
 								{errorMessage(error)}
-								<div className="table-responsive col-md-12">
+								<div className="table-responsive">
 									<table className="table table-striped">
 										<tbody>
 											<tr>

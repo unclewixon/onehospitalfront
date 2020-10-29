@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux';
 import { reducer as formReducer } from 'redux-form';
 
+import reduxBlock from './redux-block';
 import user from './user';
 import general from './general';
 import settings from './settings';
@@ -19,6 +20,7 @@ import cafeteria from './cafeteria';
 const reducers = combineReducers({
 	form: formReducer,
 	routing: routerReducer,
+	reduxBlock,
 	user,
 	general,
 	paypoint,

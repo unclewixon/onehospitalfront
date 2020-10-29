@@ -11,7 +11,7 @@ import { request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import {
-	getAllLabTests,
+	fetchLabTests,
 	getAllLabGroups,
 	getAllLabTestCategories,
 	getAllLabTestParameters,
@@ -228,13 +228,13 @@ const LabRequest = props => {
 	useEffect(() => {
 		const {
 			getAllLabGroups,
-			getAllLabTests,
+			fetchLabTests,
 			getAllLabTestCategories,
 			getAllLabTestParameters,
 		} = props;
 		if (!loaded) {
 			getAllLabGroups();
-			getAllLabTests();
+			fetchLabTests();
 			getAllLabTestCategories();
 			getAllLabTestParameters();
 
@@ -243,170 +243,163 @@ const LabRequest = props => {
 	}, [loaded, props]);
 
 	return (
-		<div className="col-sm-12">
-			<div className="element-wrapper">
-				<h6 className="element-header">New Lab Request</h6>
-				<div className="element-box m-0 p-3">
-					<div className="form-block w-100">
-						<form onSubmit={handleSubmit(onSubmit)}>
-							{props.location.hash ? null : (
-								<div className="row">
-									<div className="form-group col-sm-12">
-										<label>Patient Id</label>
+		<div className="element-box m-0 p-3">
+			<div className="form-block w-100">
+				<form onSubmit={handleSubmit(onSubmit)}>
+					{props.location.hash ? null : (
+						<div className="row">
+							<div className="form-group col-sm-12">
+								<label>Patient Id</label>
 
-										<input
-											className="form-control"
-											placeholder="Search for patient"
-											type="text"
-											name="patient_id"
-											defaultValue=""
-											id="patient"
-											ref={register({ name: 'patient_id' })}
-											onChange={handlePatientChange}
-											autoComplete="off"
-											required
-										/>
-										{searching && (
-											<div className="searching text-center">
-												<img alt="searching" src={searchingGIF} />
-											</div>
-										)}
-
-										{patients &&
-											patients.map(pat => {
-												return (
-													<div
-														style={{ display: 'flex' }}
-														key={pat.id}
-														className="element-box">
-														<a
-															onClick={() => patientSet(pat)}
-															className="ssg-item cursor">
-															{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
-															<div
-																className="item-name"
-																dangerouslySetInnerHTML={{
-																	__html: `${pat.surname} ${pat.other_names}`,
-																}}
-															/>
-														</a>
-													</div>
-												);
-											})}
+								<input
+									className="form-control"
+									placeholder="Search for patient"
+									type="text"
+									name="patient_id"
+									defaultValue=""
+									id="patient"
+									ref={register({ name: 'patient_id' })}
+									onChange={handlePatientChange}
+									autoComplete="off"
+									required
+								/>
+								{searching && (
+									<div className="searching text-center">
+										<img alt="searching" src={searchingGIF} />
 									</div>
-								</div>
-							)}
-							<div className="row">
-								<div className="form-group col-sm-6">
-									<label>Service Center</label>
-									<Select
-										name="service_center"
-										placeholder="Select Service Center"
-										options={serviceCenter}
-										value={{ label: 'LAB', value: 'lab' }}
-										ref={register({ name: 'service_center' })}
-										onChange={evt => {
-											setValue('service_center', String(evt.value));
-										}}
-										required
-									/>
-								</div>
-								<div className="form-group col-sm-6">
-									<label>Lab Categories</label>
-									<Select
-										name="lab_categories"
-										placeholder="Select Lab Categories"
-										ref={register({ name: 'lab_categories' })}
-										options={labCatsOptions}
-										onChange={onCategoryChange}
-										required
-									/>
-								</div>
-							</div>
-							<div className="row">
-								<div className="form-group col-sm-6">
-									<label>Lab Combination</label>
-									<Select
-										name="lab_combos"
-										placeholder="Select Lab Combination"
-										isMulti
-										options={labGroupOptions}
-										ref={register({ name: 'lab_combos' })}
-										value={labCombos}
-										onChange={val =>
-											handleMultipleSelectInput('lab_combos', val)
-										}
-										required
-									/>
-								</div>
-								<div className="form-group col-sm-6">
-									<label>Lab Tests to request</label>
-									<Select
-										name="lab_tests_torequest"
-										placeholder="Select lab tests to request"
-										isMulti
-										options={labTestOptions}
-										ref={register({ name: 'lab_test_torequest' })}
-										value={labTests}
-										onChange={val =>
-											handleMultipleSelectInput('lab_tests_torequest', val)
-										}
-										required
-									/>
-								</div>
-							</div>
+								)}
 
-							<div className="row">
-								<div className="form-group col-sm-6">
-									<label>Referred Specimen</label>
-									<textarea
-										required
-										className="form-control"
-										name="referred_specimen"
-										rows="3"
-										placeholder="Enter referred specimen"
-										ref={register}></textarea>
-								</div>
-								<div className="form-group col-sm-6">
-									<label>Request Note</label>
-									<textarea
-										required
-										className="form-control"
-										name="request_note"
-										rows="3"
-										placeholder="Enter request note"
-										ref={register}></textarea>
-								</div>
+								{patients &&
+									patients.map(pat => {
+										return (
+											<div
+												style={{ display: 'flex' }}
+												key={pat.id}
+												className="element-box">
+												<a
+													onClick={() => patientSet(pat)}
+													className="ssg-item cursor">
+													{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
+													<div
+														className="item-name"
+														dangerouslySetInnerHTML={{
+															__html: `${pat.surname} ${pat.other_names}`,
+														}}
+													/>
+												</a>
+											</div>
+										);
+									})}
 							</div>
-
-							<div className="row">
-								<div className="form-check col-sm-6">
-									<label className="form-check-label">
-										<input
-											className="form-check-input mt-0"
-											name="urgent"
-											type="checkbox"
-											checked={urgent}
-											onChange={e => setUrgent(!urgent)}
-											ref={register}
-										/>{' '}
-										Please check if urgent
-									</label>
-								</div>
-
-								<div className="col-sm-6 text-right">
-									<button className="btn btn-primary" disabled={submitting}>
-										{submitting ? (
-											<img src={waiting} alt="submitting" />
-										) : (
-											'Create Lab Request'
-										)}
-									</button>
-								</div>
-							</div>
-						</form>
+						</div>
+					)}
+					<div className="row">
+						<div className="form-group col-sm-6">
+							<label>Service Center</label>
+							<Select
+								name="service_center"
+								placeholder="Select Service Center"
+								options={serviceCenter}
+								value={{ label: 'LAB', value: 'lab' }}
+								ref={register({ name: 'service_center' })}
+								onChange={evt => {
+									setValue('service_center', String(evt.value));
+								}}
+								required
+							/>
+						</div>
+						<div className="form-group col-sm-6">
+							<label>Lab Categories</label>
+							<Select
+								name="lab_categories"
+								placeholder="Select Lab Categories"
+								ref={register({ name: 'lab_categories' })}
+								options={labCatsOptions}
+								onChange={onCategoryChange}
+								required
+							/>
+						</div>
 					</div>
-				</div>
+					<div className="row">
+						<div className="form-group col-sm-6">
+							<label>Lab Combination</label>
+							<Select
+								name="lab_combos"
+								placeholder="Select Lab Combination"
+								isMulti
+								options={labGroupOptions}
+								ref={register({ name: 'lab_combos' })}
+								value={labCombos}
+								onChange={val => handleMultipleSelectInput('lab_combos', val)}
+								required
+							/>
+						</div>
+						<div className="form-group col-sm-6">
+							<label>Lab Tests to request</label>
+							<Select
+								name="lab_tests_torequest"
+								placeholder="Select lab tests to request"
+								isMulti
+								options={labTestOptions}
+								ref={register({ name: 'lab_test_torequest' })}
+								value={labTests}
+								onChange={val =>
+									handleMultipleSelectInput('lab_tests_torequest', val)
+								}
+								required
+							/>
+						</div>
+					</div>
+
+					<div className="row">
+						<div className="form-group col-sm-6">
+							<label>Referred Specimen</label>
+							<textarea
+								required
+								className="form-control"
+								name="referred_specimen"
+								rows="3"
+								placeholder="Enter referred specimen"
+								ref={register}></textarea>
+						</div>
+						<div className="form-group col-sm-6">
+							<label>Request Note</label>
+							<textarea
+								required
+								className="form-control"
+								name="request_note"
+								rows="3"
+								placeholder="Enter request note"
+								ref={register}></textarea>
+						</div>
+					</div>
+
+					<div className="row">
+						<div className="form-check col-sm-6">
+							<label className="form-check-label">
+								<input
+									className="form-check-input mt-0"
+									name="urgent"
+									type="checkbox"
+									checked={urgent}
+									onChange={e => setUrgent(!urgent)}
+									ref={register}
+								/>{' '}
+								Please check if urgent
+							</label>
+						</div>
+
+						<div className="col-sm-6 text-right">
+							<button className="btn btn-primary" disabled={submitting}>
+								{submitting ? (
+									<img src={waiting} alt="submitting" />
+								) : (
+									'Create Lab Request'
+								)}
+							</button>
+						</div>
+					</div>
+				</form>
 			</div>
 		</div>
 	);
@@ -414,10 +407,6 @@ const LabRequest = props => {
 
 const mapStateToProps = state => {
 	return {
-		LabCategories: state.settings.lab_categories,
-		LabTests: state.settings.lab_tests,
-		LabGroups: state.settings.lab_groups,
-		LabParameters: state.settings.lab_parameters,
 		patient: state.user.patient,
 	};
 };
@@ -426,7 +415,7 @@ export default withRouter(
 	connect(mapStateToProps, {
 		createLabRequest,
 		getAllLabGroups,
-		getAllLabTests,
+		fetchLabTests,
 		getAllLabTestParameters,
 		getAllLabTestCategories,
 	})(LabRequest)

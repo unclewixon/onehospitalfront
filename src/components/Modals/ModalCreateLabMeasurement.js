@@ -19,7 +19,7 @@ import {
 	cervicalPosition,
 } from '../../services/constants';
 import { notifySuccess, notifyError } from '../../services/notify';
-import { getAllLabTests } from '../../actions/settings';
+import { fetchLabTests } from '../../actions/settings';
 
 const validate = values => {
 	const errors = {};
@@ -73,7 +73,7 @@ class ModalCreateLabMeasurement extends Component {
 		document.body.classList.add('modal-open');
 		if (this.props.LabTests.length === 0) {
 			this.props
-				.getAllLabTests()
+				.fetchLabTests()
 				.then(response => {
 					this.filterTests(this.props.LabTests);
 				})
@@ -721,6 +721,6 @@ const mapStateToProps = state => {
 	};
 };
 
-export default connect(mapStateToProps, { closeModals, getAllLabTests })(
+export default connect(mapStateToProps, { closeModals, fetchLabTests })(
 	ModalCreateLabMeasurement
 );

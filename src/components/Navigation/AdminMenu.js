@@ -16,7 +16,7 @@ import Account from './Account';
 import SettingsMenu from './SettingsMenu';
 import FrontDeskMenu from './FrontDeskMenu';
 
-const AdminMenu = () => {
+const AdminMenu = ({ role }) => {
 	return (
 		<>
 			<li className="sub-header">
@@ -75,10 +75,7 @@ const AdminMenu = () => {
 				<span>ACCOUNTING & REPORT</span>
 			</li>
 			<Account />
-			<li className="sub-header">
-				<span>CONFIGURATIONS</span>
-			</li>
-			<SettingsMenu />
+			<SettingsMenu role={role} />
 		</>
 	);
 };

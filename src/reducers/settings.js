@@ -138,7 +138,7 @@ const settings = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				room_categories: state.room_categories.filter(
-					deletedItem => deletedItem.id !== action.payload.id
+					item => item.id !== action.payload.id
 				),
 			};
 		case ADD_LAB_TEST:
@@ -149,15 +149,8 @@ const settings = (state = INITIAL_STATE, action) => {
 		case GET_ALL_LAB_TESTS:
 			return { ...state, lab_tests: action.payload };
 		case UPDATE_LAB_TEST:
-			return {
-				...state,
-				lab_tests: [
-					...state.lab_tests.filter(
-						deletedItem => deletedItem.id !== action.previousData.id
-					),
-					action.payload,
-				],
-			};
+			const lab_tests = updateImmutable(state.lab_tests, action.payload);
+			return { ...state, lab_tests: [...lab_tests] };
 		case DELETE_LAB_TEST:
 			return {
 				...state,
@@ -186,7 +179,7 @@ const settings = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				lab_groups: state.lab_groups.filter(
-					deletedItem => deletedItem.id !== action.payload.id
+					item => item.id !== action.payload.id
 				),
 			};
 		case ADD_LAB_TEST_CATEGORY:
@@ -197,20 +190,13 @@ const settings = (state = INITIAL_STATE, action) => {
 		case GET_ALL_LAB_TEST_CATEGORIES:
 			return { ...state, lab_categories: action.payload };
 		case UPDATE_LAB_TEST_CATEGORY:
-			return {
-				...state,
-				lab_categories: [
-					...state.lab_categories.filter(
-						deletedItem => deletedItem.id !== action.previousData.id
-					),
-					action.payload,
-				],
-			};
+			const categories = updateImmutable(state.lab_categories, action.payload);
+			return { ...state, lab_categories: [...categories] };
 		case DELETE_LAB_TEST_CATEGORY:
 			return {
 				...state,
 				lab_categories: state.lab_categories.filter(
-					deletedItem => deletedItem.id !== action.payload.id
+					item => item.id !== action.payload.id
 				),
 			};
 		case ADD_LAB_TEST_PARAMETER:

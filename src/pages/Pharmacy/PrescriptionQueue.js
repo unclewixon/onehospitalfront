@@ -121,15 +121,18 @@ class PrescriptionQueue extends Component {
 											</td>
 											<td>{request.created_by ? request.created_by : ''}</td>
 											<td className="nowrap">
-												{request.payment_status === 0 && request.isFilled && (
-													<span className="badge badge-info text-white">
-														Awaiting Payment
-													</span>
-												)}
+												{request.transaction &&
+													request.transaction.status === 0 &&
+													request.isFilled && (
+														<span className="badge badge-info text-white">
+															Awaiting Payment
+														</span>
+													)}
 												{request.status === 1 && (
 													<span className="badge badge-success">Completed</span>
 												)}
-												{request.payment_status === 1 &&
+												{request.transaction &&
+													request.transaction.status === 1 &&
 													request.status === 0 && (
 														<span className="badge badge-secondary">
 															Awaiting Dispense

@@ -1,89 +1,100 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component, lazy, Suspense } from 'react';
-import { Switch, withRouter, Route } from 'react-router-dom';
-import { connect } from 'react-redux';
+import React, { lazy, Suspense } from 'react';
+import { Switch, Route, Link } from 'react-router-dom';
 
 import NoMatch from '../NoMatch';
-// import Queue from '../../components/Queue';
 import Splash from '../../components/Splash';
 
-const NewLab = lazy(() => import('./NewLab'));
-const ClinicalLab = lazy(() => import('./ClinicalLab'));
+const LabQueue = lazy(() => import('./LabQueue'));
+const LabRequest = lazy(() => import('../../components/Patient/LabRequest'));
 const AllRequest = lazy(() => import('./AllRequest'));
-const LabRecentRequest = lazy(() => import('./LabRecentRequest'));
-const LabFilledRequest = lazy(() => import('./LabFilledRequest'));
-const OPDPatientsLabRequest = lazy(() => import('./OPDPatients'));
 
-class Clinical extends Component {
-	state = {};
+const index = ({ match, location }) => {
+	const page = location.pathname.split('/').pop();
 
-	handleEdit = () => {
-		alert('I am toSee Details this guy');
-	};
+	let pageTitle = 'Lab Queue';
+	if (page === 'all-request') {
+		pageTitle = 'Lab Requests';
+	} else if (page === 'new-request') {
+		pageTitle = 'New Lab Request';
+	}
 
-	render() {
-		const { match } = this.props;
-		// const department = staff?.details?.department?.name;
-
-		return (
-			<div className="content-i">
-				<div className="content-box">
-					<div className="row">
-						<div className="col-sm-12">
-							<div className="element-wrapper">
-								<div className="row">
-									<Suspense fallback={<Splash />}>
-										<Switch>
-											<Route
-												exact
-												path={`${match.url}/`}
-												component={ClinicalLab}
-											/>
-											<Route
-												exact
-												path={`${match.url}/new`}
-												component={NewLab}
-											/>
-											<Route
-												exact
-												path={`${match.url}/all-request`}
-												component={AllRequest}
-											/>
-											<Route
-												exact
-												path={`${match.url}/recent-request`}
-												component={LabRecentRequest}
-											/>
-											<Route
-												exact
-												path={`${match.url}/filled-request`}
-												component={LabFilledRequest}
-											/>
-											<Route
-												exact
-												path={`${match.url}/opd-patients`}
-												component={OPDPatientsLabRequest}
-											/>
-											<Route component={NoMatch} />
-										</Switch>
-									</Suspense>
-								</div>
+	return (
+		<div className="content-i">
+			<div className="content-box">
+				<div className="row">
+					<div className="col-sm-12">
+						<div className="element-wrapper">
+							<div className="element-actions">
+								<Link
+									to={`${match.path}`}
+									className={`mx-2 btn btn-primary btn-sm  ${
+										page === 'lab' ? 'btn-outline-primary' : ''
+									}`}>
+									Lab Queue
+								</Link>
+								<Link
+									to={`${match.path}/all-request`}
+									className={`mr-2 btn btn-primary btn-sm  ${
+										page === 'all-request' ? 'btn-outline-primary' : ''
+									}`}>
+									Lab Requests
+								</Link>
+								<Link
+									to={`${match.path}/new-request`}
+									className={`mr-2 btn btn-primary btn-sm  ${
+										page === 'new-request' ? 'btn-outline-primary' : ''
+									}`}>
+									New Lab Request
+								</Link>
 							</div>
+							<h6 className="element-header">{pageTitle}</h6>
+							{page === 'lab' && (
+								<div className="element-content">
+									<div className="row">
+										<div className="col-sm-4 col-xxxl-4">
+											<a className="element-box el-tablo">
+												<div className="label">Pending Requests</div>
+												<div className="value">57</div>
+											</a>
+										</div>
+										<div className="col-sm-4 col-xxxl-4">
+											<a className="element-box el-tablo">
+												<div className="label">Pending Approval</div>
+												<div className="value text-center">457</div>
+											</a>
+										</div>
+										<div className="col-sm-4 col-xxxl-4">
+											<a className="element-box el-tablo">
+												<div className="label">Completed Requests</div>
+												<div className="value">125</div>
+											</a>
+										</div>
+									</div>
+								</div>
+							)}
+							<Suspense fallback={<Splash />}>
+								<Switch>
+									<Route exact path={`${match.url}`} component={LabQueue} />
+									<Route
+										exact
+										path={`${match.url}/new-request`}
+										component={LabRequest}
+									/>
+									<Route
+										exact
+										path={`${match.url}/all-request`}
+										component={AllRequest}
+									/>
+									<Route component={NoMatch} />
+								</Switch>
+							</Suspense>
 						</div>
 					</div>
 				</div>
-				{/*<div className="content-panel compact">
-					<Queue department={department} />
-				</div>*/}
 			</div>
-		);
-	}
-}
-
-const mapStatetoProps = state => {
-	return {
-		staff: state.user.profile,
-	};
+		</div>
+	);
 };
 
-export default withRouter(connect(mapStatetoProps)(Clinical));
+export default index;

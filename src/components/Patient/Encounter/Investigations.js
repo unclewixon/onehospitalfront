@@ -14,7 +14,7 @@ import {
 	getAllLabGroups,
 	getAllLabTestCategories,
 	getAllLabTestParameters,
-	getAllLabTests,
+	fetchLabTests,
 	getAllServiceCategory,
 } from '../../../actions/settings';
 import { notifyError } from '../../../services/notify';
@@ -202,13 +202,13 @@ const Investigations = props => {
 
 			const {
 				getAllLabGroups,
-				getAllLabTests,
+				fetchLabTests,
 				getAllLabTestCategories,
 				getAllLabTestParameters,
 			} = props;
 
 			getAllLabGroups();
-			getAllLabTests();
+			fetchLabTests();
 			getAllLabTestCategories();
 			getAllLabTestParameters();
 
@@ -587,7 +587,6 @@ const Investigations = props => {
 };
 const mapStateToProps = state => {
 	return {
-		LabCategories: state.settings.lab_categories,
 		LabTests: state.settings.lab_tests,
 		LabGroups: state.settings.lab_groups,
 		LabParameters: state.settings.lab_parameters,
@@ -605,7 +604,7 @@ export default connect(mapStateToProps, {
 	getAllServiceCategory,
 	createLabRequest,
 	getAllLabGroups,
-	getAllLabTests,
+	fetchLabTests,
 	getAllLabTestParameters,
 	getAllLabTestCategories,
 })(Investigations);

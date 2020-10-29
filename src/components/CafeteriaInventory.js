@@ -12,7 +12,7 @@ import {
 	addCafeteriaInventory,
 	updateCafeteriaInventory,
 	deleteCafeteriaInventory,
-} from '../actions/Cafeteria';
+} from '../actions/cafeteria';
 import { getAllCafeteriaInvCategory } from '../actions/inventory';
 
 // import { addCafeteriaFile } from '../actions/general';
@@ -182,7 +182,6 @@ const CafeteriaInventory = props => {
 	const doFilter = async () => {
 		setFiltering(true);
 		try {
-			// const url = `cafeteria/inventories-by-category/${category}`;
 			const url = `cafeteria/inventory/categories/${category}`;
 			const rs = await request(url, 'GET', true);
 			console.log(rs);
@@ -204,6 +203,7 @@ const CafeteriaInventory = props => {
 			getAllCafeteriaItems();
 			setDataLoaded(true);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [dataLoaded, props]);
 
 	// useEffect(() => {

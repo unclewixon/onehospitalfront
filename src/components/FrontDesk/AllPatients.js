@@ -49,10 +49,10 @@ const AllPatients = () => {
 			console.log(rs);
 			setAllPatients(rs);
 			// dispatch(loadAllPatients(rs));
-			setLoaded(false);
+			setLoaded(true);
 		} catch (error) {
 			notifyError('error fetching patients');
-			setLoaded(false);
+			setLoaded(true);
 		}
 	}, []);
 
@@ -76,46 +76,8 @@ const AllPatients = () => {
 		fetchPatients();
 	}, [fetchPatients]);
 
-	const formRow = (data, i) => {
-		return (
-			<tr className="" data-index="0" data-id="20" key={i}>
-				<td>{i + 1}</td>
-				<td>{`${data?.surname} ${data?.other_names}`}</td>
-				<td>{data?.fileNumber}</td>
-				<td>{data?.phoneNumber}</td>
-				<td>{moment(data?.date_of_birth).format('DD/MM/YYYY')}</td>
-				<td className="row-actions text-right">
-					<Tooltip title="View Request">
-						<a onClick={() => showProfile(data)}>
-							<i className="os-icon os-icon-documents-03" />
-						</a>
-					</Tooltip>
-					<Tooltip title="Print Request">
-						<a className="ml-2">
-							<i className="icon-feather-printer" />
-						</a>
-					</Tooltip>
-				</td>
-			</tr>
-		);
-	};
-
-	const table = () =>
-		allPatients
-			? allPatients.map((patient, i) => {
-					return formRow(patient, i);
-			  })
-			: [];
-
 	return (
 		<div>
-			{activeRequest ? (
-				<ModalPatientDetails
-					activeRequest={activeRequest}
-					showModal={showModal}
-					onModalClick={onModalClick}
-				/>
-			) : null}
 			<div className="element-box px-0">
 				<form className="row search_form" onSubmit={searchEntries}>
 					<div className="form-group col-md-3 mt-4 text-right">
@@ -133,51 +95,80 @@ const AllPatients = () => {
 					</div>
 				</form>
 				<div className="table-responsive">
-					{
-						<table className="table table-striped">
-							<thead>
+					<table className="table table-striped">
+						<thead>
+							<tr>
+								<th>
+									<div className="th-inner "></div>
+									<div className="fht-cell"></div>
+								</th>
+								<th>
+									<div className="th-inner sortable both">Patient Name</div>
+									<div className="fht-cell"></div>
+								</th>
+								<th>
+									<div className="th-inner sortable both">File Number</div>
+									<div className="fht-cell"></div>
+								</th>
+								<th>
+									<div className="th-inner sortable both">Phone Number</div>
+									<div className="fht-cell"></div>
+								</th>
+								<th>
+									<div className="th-inner sortable both">Dat of Birth</div>
+									<div className="fht-cell"></div>
+								</th>
+								<th>
+									<div className="th-inner "></div>
+									<div className="fht-cell"></div>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							{!loaded ? (
 								<tr>
-									<th>
-										<div className="th-inner "></div>
-										<div className="fht-cell"></div>
-									</th>
-									<th>
-										<div className="th-inner sortable both">Patient Name</div>
-										<div className="fht-cell"></div>
-									</th>
-									<th>
-										<div className="th-inner sortable both">File Number</div>
-										<div className="fht-cell"></div>
-									</th>
-									<th>
-										<div className="th-inner sortable both">Phone Number</div>
-										<div className="fht-cell"></div>
-									</th>
-									<th>
-										<div className="th-inner sortable both">Dat of Birth</div>
-										<div className="fht-cell"></div>
-									</th>
-									<th>
-										<div className="th-inner "></div>
-										<div className="fht-cell"></div>
-									</th>
+									<td colSpan="6" className="text-center">
+										<img alt="searching" src={searchingGIF} />
+									</td>
 								</tr>
-							</thead>
-							<tbody>
-								{loaded ? (
-									<tr>
-										<td colSpan="6" className="text-center">
-											<img alt="searching" src={searchingGIF} />
-										</td>
-									</tr>
-								) : (
-									<>{table()}</>
-								)}
-							</tbody>
-						</table>
-					}
+							) : (
+								allPatients.map((data, i) => {
+									return (
+										<tr className="" key={i}>
+											<td>{i + 1}</td>
+											<td>{`${data?.surname} ${data?.other_names}`}</td>
+											<td>{data?.fileNumber}</td>
+											<td>{data?.phoneNumber}</td>
+											<td>
+												{moment(data?.date_of_birth).format('DD/MM/YYYY')}
+											</td>
+											<td className="row-actions text-right">
+												<Tooltip title="View Request">
+													<a onClick={() => showProfile(data)}>
+														<i className="os-icon os-icon-documents-03" />
+													</a>
+												</Tooltip>
+												<Tooltip title="Print Request">
+													<a className="ml-2">
+														<i className="icon-feather-printer" />
+													</a>
+												</Tooltip>
+											</td>
+										</tr>
+									);
+								})
+							)}
+						</tbody>
+					</table>
 				</div>
 			</div>
+			{activeRequest && (
+				<ModalPatientDetails
+					activeRequest={activeRequest}
+					showModal={showModal}
+					onModalClick={onModalClick}
+				/>
+			)}
 		</div>
 	);
 };

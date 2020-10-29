@@ -46,7 +46,7 @@ export class DutyRooster extends Component {
 				<div className="col-sm-12">
 					<div className="element-wrapper">
 						<h6 className="element-header">Duty Rooster</h6>
-						<div className="element-box">
+						<div className="element-box m-0 p-3">
 							<FullCalendar
 								header={{
 									left: 'title',

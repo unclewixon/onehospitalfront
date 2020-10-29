@@ -201,6 +201,13 @@ class Payroll extends Component {
 														<PayrollItem key={i} index={i + 1} item={item} />
 													);
 												})}
+												{payrolls.length === 0 && (
+													<tr>
+														<td colSpan="10" className="text-center">
+															No payslips found!
+														</td>
+													</tr>
+												)}
 											</tbody>
 										</table>
 									</div>

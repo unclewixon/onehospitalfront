@@ -10,6 +10,7 @@ class ClinicalLabItem extends Component {
 	state = {
 		collapse: true,
 	};
+
 	toggleCollapse = () => {
 		this.setState(prevState => ({
 			collapse: !prevState.collapse,
@@ -89,13 +90,7 @@ class ClinicalLabItem extends Component {
 
 					<td className="text-right row-actions">
 						<Tooltip title="Fill Request">
-							<a
-								className="secondary"
-								onClick={() => {
-									if (typeof modalClick === 'function') {
-										modalClick(lab);
-									}
-								}}>
+							<a className="secondary" onClick={() => modalClick(lab)}>
 								<i className="os-icon os-icon-folder-plus" />
 							</a>
 						</Tooltip>

@@ -1,22 +1,58 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import ServiceCategoryList from '../../components/ServiceCategoryList';
 import ServicesList from '../../components/ServicesList';
+import { request } from '../../services/utilities';
+import { getAllServiceCategories } from '../../actions/settings';
+import { notifyError } from '../../services/notify';
 
 const ServicesCategory = () => {
-	const [ShowServiceCategoryList, setServiceCategoryList] = useState(true);
-	const [ShowServicesList, SetServicesList] = useState(false);
+	const [showServiceCategoryList, setServiceCategoryList] = useState(true);
+	const [showServicesList, setServicesList] = useState(false);
+	const [loaded, setLoaded] = useState(false);
+
+	const profile = useSelector(state => state.user.profile);
+	const role = profile.role ? profile.role.slug : 'admin';
+
+	const dispatch = useDispatch();
 
 	const onServiceCategoryList = () => {
 		setServiceCategoryList(true);
-		SetServicesList(false);
+		setServicesList(false);
 	};
 
 	const onServicesList = () => {
 		setServiceCategoryList(false);
-		SetServicesList(true);
+		setServicesList(true);
 	};
+
+	useEffect(() => {
+		const fetchServiceCategories = async () => {
+			try {
+				const rs = await request(`services/categories`, 'GET', true);
+				dispatch(getAllServiceCategories(rs));
+			} catch (error) {
+				notifyError(error.message || 'could not fetch services categories!');
+			}
+		};
+
+		if (!loaded) {
+			fetchServiceCategories();
+
+			if (
+				role === 'lab-attendant' ||
+				role === 'lab-officer' ||
+				role === 'lab-supervisor' ||
+				role === 'lab-hod'
+			) {
+				setServiceCategoryList(false);
+				setServicesList(true);
+			}
+			setLoaded(true);
+		}
+	}, [dispatch, loaded, role]);
 
 	return (
 		<div className="content-i">
@@ -27,26 +63,22 @@ const ServicesCategory = () => {
 							<div className="os-tabs-w mx-1">
 								<div className="os-tabs-controls">
 									<ul className="nav nav-tabs upper">
+										{role === 'admin' && (
+											<li className="nav-item">
+												<a
+													className={`nav-link${
+														showServiceCategoryList ? ' active' : ''
+													}`}
+													onClick={onServiceCategoryList}>
+													CATEGORIES
+												</a>
+											</li>
+										)}
 										<li className="nav-item">
 											<a
-												aria-expanded="true"
-												className={
-													ShowServiceCategoryList
-														? 'nav-link active'
-														: 'nav-link'
-												}
-												data-toggle="tab"
-												onClick={onServiceCategoryList}>
-												CATEGORIES
-											</a>
-										</li>
-										<li className="nav-item">
-											<a
-												aria-expanded="false"
-												className={
-													ShowServicesList ? 'nav-link active' : 'nav-link'
-												}
-												data-toggle="tab"
+												className={`nav-link${
+													showServicesList ? ' active' : ''
+												}`}
 												onClick={onServicesList}>
 												SERVICES
 											</a>
@@ -54,8 +86,8 @@ const ServicesCategory = () => {
 									</ul>
 								</div>
 							</div>
-							{ShowServiceCategoryList === true && <ServiceCategoryList />}
-							{ShowServicesList === true && <ServicesList />}
+							{showServiceCategoryList && loaded && <ServiceCategoryList />}
+							{showServicesList && loaded && <ServicesList role={role} />}
 						</div>
 					</div>
 				</div>

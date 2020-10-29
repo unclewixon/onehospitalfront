@@ -16,15 +16,8 @@ import ModalClinicalLab from './../../components/Modals/ModalClinicalLab';
 
 const { RangePicker } = DatePicker;
 
-// const departments = [
-//     { id: 'ejejekek', name: 'angel' },
-//     { id: 'sislkas', name: 'kafta' },
-// ];
+const status = [{ label: 'All' }, { label: 'Filled' }, { label: 'Completed' }];
 
-const status = [
-	{ value: 0, label: 'processing' },
-	{ value: 1, label: 'done' },
-];
 class AllRequest extends Component {
 	state = {
 		filtering: false,
@@ -47,6 +40,7 @@ class AllRequest extends Component {
 		const { startDate, endDate, status } = this.state;
 		try {
 			this.setState({ loading: true });
+			// `${patientAPI}/requests/lab?startDate=${startDate}&endDate=${endDate}&status=${status}&filled=true`,
 			const rs = await request(
 				`${patientAPI}/requests/lab?startDate=${startDate}&endDate=${endDate}&status=${status}`,
 				'GET',
@@ -116,159 +110,136 @@ class AllRequest extends Component {
 				notifyError('Error deleting  transaction ');
 			});
 	};
+
 	confirmDelete = data => {
 		confirmAction(this.onDeleteTransaction, data);
 	};
 
-	modalFunction = lab => {
-		this.onModalClick();
-		this.setState({ activeRequest: lab });
-	};
-
 	render() {
-		const { filtering, loading } = this.state;
+		const { filtering, loading, activeRequest, showModal } = this.state;
 		const { clinicalLab } = this.props;
 
 		return (
 			<>
-				<div className="col-sm-12">
-					<div className="element-wrapper">
-						<div className="row">
-							<div className="col-md-12">
-								{this.state.activeRequest ? (
-									<ModalClinicalLab
-										activeRequest={this.state.activeRequest}
-										showModal={this.state.showModal}
-										onModalClick={this.onModalClick}
-									/>
-								) : null}
-								<h6 className="element-header">
-									Clinical Lab Request History:
-								</h6>
-
-								<form className="row">
-									<div className="form-group col-md-6">
-										<label>From - To</label>
-										<RangePicker onChange={e => this.dateChange(e)} />
-									</div>
-									<div className="form-group col-md-3">
-										<label className="mr-2 " htmlFor="id">
-											Status
-										</label>
-										<select
-											style={{ height: '32px' }}
-											id="status"
-											className="form-control"
-											name="status"
-											onChange={e => this.change(e)}>
-											<option value="">Choose status</option>
-											{status.map((status, i) => {
-												return (
-													<option key={i} value={status.value}>
-														{status.label}
-													</option>
-												);
-											})}
-										</select>
-									</div>
-									<div className="form-group col-md-3 mt-4">
-										<div
-											className="btn btn-sm btn-primary btn-upper text-white filter-btn"
-											onClick={this.doFilter}>
-											<i className="os-icon os-icon-ui-37" />
-											<span>
-												{filtering ? (
-													<img src={waiting} alt="submitting" />
-												) : (
-													'Filter'
-												)}
-											</span>
-										</div>
-									</div>
-								</form>
-							</div>
-
-							<div className="col-sm-12">
-								<div className="element-box p-0 m-0">
-									<div className="table-responsive">
-										{loading ? (
-											<table>
-												<tbody>
-													<tr>
-														<td colSpan="4" className="text-center">
-															<img alt="searching" src={searchingGIF} />
-														</td>
-													</tr>
-												</tbody>
-											</table>
-										) : (
-											<table className="table table-striped">
-												<thead>
-													<tr>
-														<th>
-															<div className="th-inner "></div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner sortable both">S/N</div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner sortable both">
-																Request Date
-															</div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner sortable both">
-																Patient Name
-															</div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner sortable both">
-																Request By
-															</div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner sortable both">
-																Approval Status
-															</div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner "></div>
-															<div className="fht-cell"></div>
-														</th>
-													</tr>
-												</thead>
-
-												<tbody>
-													{clinicalLab &&
-														clinicalLab.reverse().map((lab, index) => {
-															return (
-																<ClinicalLabItem
-																	key={lab.id}
-																	lab={lab}
-																	index={index}
-																	modalClick={LAB => this.modalFunction(LAB)}
-																	refresh={e => this.doFilter(e)}
-																/>
-															);
-														})}
-												</tbody>
-											</table>
-										)}
-										{!isEmpty(clinicalLab) ? null : (
-											<div className="text-center">No clinical Lab request</div>
-										)}
-									</div>
-								</div>
+				<div className="element-box m-0 mb-4 p-3">
+					<form className="row">
+						<div className="form-group col-md-6">
+							<label>From - To</label>
+							<RangePicker onChange={e => this.dateChange(e)} />
+						</div>
+						<div className="form-group col-md-3">
+							<label className="mr-2 " htmlFor="id">
+								Status
+							</label>
+							<select
+								style={{ height: '32px' }}
+								id="status"
+								className="form-control"
+								name="status"
+								onChange={e => this.change(e)}>
+								{status.map((status, i) => {
+									return (
+										<option key={i} value={status.label}>
+											{status.label}
+										</option>
+									);
+								})}
+							</select>
+						</div>
+						<div className="form-group col-md-3 mt-4">
+							<div
+								className="btn btn-sm btn-primary btn-upper text-white filter-btn"
+								onClick={this.doFilter}>
+								<i className="os-icon os-icon-ui-37" />
+								<span>
+									{filtering ? (
+										<img src={waiting} alt="submitting" />
+									) : (
+										'Filter'
+									)}
+								</span>
 							</div>
 						</div>
+					</form>
+				</div>
+				<div className="element-box p-3 m-0">
+					<div className="table-responsive">
+						{loading ? (
+							<table>
+								<tbody>
+									<tr>
+										<td className="text-center">
+											<img alt="searching" src={searchingGIF} />
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						) : (
+							<table className="table table-striped">
+								<thead>
+									<tr>
+										<th>
+											<div className="th-inner "></div>
+											<div className="fht-cell"></div>
+										</th>
+										<th>
+											<div className="th-inner sortable both">S/N</div>
+											<div className="fht-cell"></div>
+										</th>
+										<th>
+											<div className="th-inner sortable both">Request Date</div>
+											<div className="fht-cell"></div>
+										</th>
+										<th>
+											<div className="th-inner sortable both">Patient Name</div>
+											<div className="fht-cell"></div>
+										</th>
+										<th>
+											<div className="th-inner sortable both">Request By</div>
+											<div className="fht-cell"></div>
+										</th>
+										<th>
+											<div className="th-inner sortable both">
+												Approval Status
+											</div>
+											<div className="fht-cell"></div>
+										</th>
+										<th>
+											<div className="th-inner "></div>
+											<div className="fht-cell"></div>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									{clinicalLab.reverse().map((lab, index) => {
+										return (
+											<ClinicalLabItem
+												key={lab.id}
+												lab={lab}
+												index={index}
+												modalClick={data => {
+													this.onModalClick();
+													this.setState({ activeRequest: data });
+												}}
+												refresh={e => this.doFilter(e)}
+											/>
+										);
+									})}
+								</tbody>
+							</table>
+						)}
+						{!isEmpty(clinicalLab) ? null : (
+							<div className="text-center">No lab request found!</div>
+						)}
 					</div>
 				</div>
+				{activeRequest && (
+					<ModalClinicalLab
+						activeRequest={activeRequest}
+						showModal={showModal}
+						onModalClick={this.onModalClick}
+					/>
+				)}
 			</>
 		);
 	}

@@ -270,11 +270,8 @@ class InventoryList extends Component {
 				roleQy = category ? `&q=${category.id}` : '';
 			}
 			const p = page || 1;
-			const rs = await request(
-				`${inventoryAPI}?page=${p}&limit=20${roleQy}`,
-				'GET',
-				true
-			);
+			const url = `${inventoryAPI}?page=${p}&limit=20${roleQy}`;
+			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			this.props.loadInventories(result);
 			this.setState({ meta });

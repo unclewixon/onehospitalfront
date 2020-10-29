@@ -24,10 +24,12 @@ class ModalUploadService extends Component {
 	};
 
 	onUpload = e => {
-		this.setState({ Loading: true });
 		e.preventDefault();
+		const { staff } = this.props;
+		this.setState({ Loading: true });
 		const data = new FormData();
 		data.append('file', this.state.file);
+		data.append('username', staff.username);
 		this.props
 			.uploadService(data)
 			.then(response => {
@@ -101,7 +103,13 @@ class ModalUploadService extends Component {
 	}
 }
 
-export default connect(null, {
+const mapStateToProps = (state, ownProps) => {
+	return {
+		staff: state.user.profile,
+	};
+};
+
+export default connect(mapStateToProps, {
 	closeModals,
 	uploadService,
 	getAllService,

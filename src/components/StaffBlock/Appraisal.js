@@ -65,7 +65,7 @@ export class Appraisal extends Component {
 							</Link>
 						</div>
 						<h6 className="element-header mt-3">Appraisal</h6>
-						<div className="element-box">
+						<div className="element-box m-0 p-3">
 							<div className="table-responsive">
 								<table className="table table-striped">
 									<thead>

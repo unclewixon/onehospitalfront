@@ -12,16 +12,23 @@ import { confirmAction, formatNumber } from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
 import searchingGIF from '../assets/images/searching.gif';
 
-const ServicesList = props => {
+const ServicesList = ({
+	serviceList,
+	getAllService,
+	serviceCategories,
+	editService,
+	uploadServiceModal,
+	deleteService,
+}) => {
 	const [moreDetailConsultation, setMoreDetailConsultation] = useState('');
-	const [ServicesList, setServiceList] = useState([]);
+	const [services, setServices] = useState([]);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const onMoreDetailConsultation = category => {
 		setMoreDetailConsultation(category);
 		if (category) {
-			setServiceList(
-				props.ServicesList.filter(service => {
+			setServices(
+				serviceList.filter(service => {
 					return service.category.name === category;
 				})
 			);
@@ -29,8 +36,7 @@ const ServicesList = props => {
 	};
 
 	const onDeleteService = data => {
-		props
-			.deleteService(data)
+		deleteService(data)
 			.then(response => {
 				notifySuccess('Service deleted');
 			})
@@ -45,24 +51,12 @@ const ServicesList = props => {
 
 	const onUploadService = e => {
 		e.preventDefault();
-		props.uploadServiceModal(true);
+		uploadServiceModal(true);
 	};
 
 	useEffect(() => {
-		const onMoreDetailConsultation = category => {
-			setMoreDetailConsultation(category);
-			if (category) {
-				setServiceList(
-					props.ServicesList.filter(service => {
-						return service.category.name === category;
-					})
-				);
-			}
-		};
-
 		if (!dataLoaded) {
-			props
-				.getAllService()
+			getAllService()
 				.then(response => {
 					setDataLoaded(true);
 				})
@@ -70,10 +64,8 @@ const ServicesList = props => {
 					setDataLoaded(true);
 					notifyError(e.message || 'could not fetch services list');
 				});
-
-			onMoreDetailConsultation(moreDetailConsultation);
 		}
-	}, [props, dataLoaded, moreDetailConsultation]);
+	}, [dataLoaded, getAllService, serviceList]);
 
 	return (
 		<div className="pipelines-w">
@@ -94,7 +86,7 @@ const ServicesList = props => {
 							</div>
 						) : (
 							<>
-								{props.ServiceCategories.map((category, index) => {
+								{serviceCategories.map((category, index) => {
 									return (
 										<div className="task-section" key={index + 1}>
 											<div className="tasks-header-w">
@@ -102,7 +94,7 @@ const ServicesList = props => {
 													<a
 														className="tasks-header-toggler"
 														onClick={() => onMoreDetailConsultation()}>
-														<i className="os-icon os-icon-ui-22"></i>
+														<i className="os-icon os-icon-ui-23"></i>
 													</a>
 												) : (
 													<a
@@ -110,7 +102,7 @@ const ServicesList = props => {
 														onClick={() =>
 															onMoreDetailConsultation(category.name)
 														}>
-														<i className="os-icon os-icon-ui-23"></i>
+														<i className="os-icon os-icon-ui-22"></i>
 													</a>
 												)}
 												<h5 className="tasks-header">{category.name}</h5>
@@ -118,7 +110,7 @@ const ServicesList = props => {
 													className="add-task-btn"
 													data-target="#taskModal"
 													data-toggle="modal"
-													onClick={() => props.editService(true, { category })}>
+													onClick={() => editService(true, { category })}>
 													<i className="os-icon os-icon-ui-22"></i>
 													<span>Add service</span>
 												</a>
@@ -134,7 +126,7 @@ const ServicesList = props => {
 															</tr>
 														</thead>
 														<tbody>
-															{ServicesList.map((service, index) => {
+															{services.map((service, index) => {
 																return (
 																	<tr key={index + 1}>
 																		<td>{service.name}</td>
@@ -145,7 +137,7 @@ const ServicesList = props => {
 																				<i
 																					className="os-icon os-icon-ui-49"
 																					onClick={() =>
-																						props.editService(true, service)
+																						editService(true, service)
 																					}></i>
 																			</a>
 																			<a
@@ -164,6 +156,13 @@ const ServicesList = props => {
 										</div>
 									);
 								})}
+								{serviceCategories.length === 0 && (
+									<div
+										className="alert alert-info text-center"
+										style={{ width: '100%' }}>
+										No services uploaded!
+									</div>
+								)}
 							</>
 						)}
 					</div>
@@ -173,12 +172,13 @@ const ServicesList = props => {
 	);
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
 	return {
-		ServicesList: state.settings.services,
-		ServiceCategories: state.settings.service_categories,
+		serviceList: state.settings.services,
+		serviceCategories: state.settings.service_categories,
 	};
 };
+
 export default connect(mapStateToProps, {
 	uploadServiceModal,
 	editService,

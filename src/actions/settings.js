@@ -66,7 +66,6 @@ import {
 } from './types';
 
 //Request Service
-
 export const add_request_service = payload => {
 	return {
 		type: ADD_REQUEST_SERVICE,
@@ -178,29 +177,28 @@ export const delete_room_category = payload => {
 };
 
 //Lab
-const add_lab_test = payload => {
+export const addLabTest = payload => {
 	return {
 		type: ADD_LAB_TEST,
 		payload,
 	};
 };
 
-const get_all_lab_tests = payload => {
+export const getAllLabTests = payload => {
 	return {
 		type: GET_ALL_LAB_TESTS,
 		payload,
 	};
 };
 
-const update_lab_test = (payload, previousData) => {
+export const updateLabTest = payload => {
 	return {
 		type: UPDATE_LAB_TEST,
 		payload,
-		previousData,
 	};
 };
 
-const delete_lab_test = payload => {
+export const deleteLabTest = payload => {
 	return {
 		type: DELETE_LAB_TEST,
 		payload,
@@ -236,29 +234,28 @@ const delete_lab_group = payload => {
 	};
 };
 
-const add_lab_test_category = payload => {
+export const addLabCategory = payload => {
 	return {
 		type: ADD_LAB_TEST_CATEGORY,
 		payload,
 	};
 };
 
-const get_all_lab_test_categories = payload => {
+const getLabCategories = payload => {
 	return {
 		type: GET_ALL_LAB_TEST_CATEGORIES,
 		payload,
 	};
 };
 
-const update_lab_test_category = (payload, previousData) => {
+export const updateLabCategory = payload => {
 	return {
 		type: UPDATE_LAB_TEST_CATEGORY,
 		payload,
-		previousData,
 	};
 };
 
-const delete_lab_test_category = payload => {
+export const deleteLabCategory = payload => {
 	return {
 		type: DELETE_LAB_TEST_CATEGORY,
 		payload,
@@ -429,7 +426,7 @@ export const add_service_category = payload => {
 	};
 };
 
-export const get_all_service_categories = payload => {
+export const getAllServiceCategories = payload => {
 	return {
 		type: GET_ALL_SERVICE_CATEGORIES,
 		payload,
@@ -698,94 +695,12 @@ export const deleteRoomCategory = data => {
 };
 
 //Lab
-export const addLabTest = data => {
+export const fetchLabTests = () => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			request(`lab-tests`, 'POST', true, {
-				name: data.name,
-				price: data.price,
-				lab_category_id: data.category,
-				test_type: data.testType,
-				parameters: data.parameters,
-				description: data.description,
-			})
+			request('lab-tests', 'GET', true)
 				.then(response => {
-					dispatch(add_lab_test(response));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const getAllLabTests = () => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			request(`lab-tests`, 'GET', true)
-				.then(response => {
-					const res = response.filter(grp => grp.test_type === 'single');
-					dispatch(get_all_lab_tests(res));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const updateLabTest = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			request(`lab-tests/${data.id}/update`, 'PATCH', true, {
-				name: data.name,
-				lab_category_id: data.category,
-				price: data.price,
-				test_type: data.testType,
-				parameters: data.parameters,
-				description: data.description,
-			})
-				.then(response => {
-					dispatch(update_lab_test(response, data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const deleteLabTest = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			let updatedStructure = [];
-			if (Array.isArray(data.parameters)) {
-				// eslint-disable-next-line array-callback-return
-				data.parameters.map((param, i) => {
-					let newParams = {
-						parameter_id:
-							param.parameter && param.parameter.id ? param.parameter.id : '',
-						referenceRange: param.referenceRange,
-					};
-					updatedStructure.push(newParams);
-				});
-			}
-
-			// let newStructure = {
-			// 	name: data.name,
-			// 	price: data.price,
-			// 	test_type: 'single',
-			// 	lab_category_id:
-			// 		data.category && data.category.id ? data.category.id : '',
-			// 	parameters: updatedStructure,
-			// };
-
-			return request(`lab-tests/${data.id}`, 'DELETE', true)
-				.then(response => {
-					dispatch(delete_lab_test(data));
+					dispatch(getAllLabTests(response));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -872,61 +787,12 @@ export const deleteLabGroup = data => {
 	};
 };
 
-export const addLabTestCategory = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			request(`lab-tests/categories`, 'POST', true, {
-				name: data.name,
-			})
-				.then(response => {
-					dispatch(add_lab_test_category(response));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
 export const getAllLabTestCategories = () => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
 			request(`lab-tests/categories`, 'GET', true)
 				.then(response => {
-					dispatch(get_all_lab_test_categories(response));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const updateLabTestCategory = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			request(`lab-tests/categories/${data.id}/update`, 'PUT', true, {
-				name: data.name,
-			})
-				.then(response => {
-					dispatch(update_lab_test_category(response, data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const deleteLabTestCategory = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			request(`lab-tests/categories/${data.id}`, 'DELETE', true)
-				.then(response => {
-					dispatch(delete_lab_test_category(data));
+					dispatch(getLabCategories(response));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -1320,7 +1186,7 @@ export const getAllServiceCategory = data => {
 			axios
 				.get(`${API_URI}/services/categories`)
 				.then(response => {
-					dispatch(get_all_service_categories(response.data));
+					dispatch(getAllServiceCategories(response.data));
 					return resolve({ success: true });
 				})
 				.catch(error => {

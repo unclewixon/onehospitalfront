@@ -11,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import 'suneditor/dist/css/suneditor.min.css';
+import 'react-block-ui/style.css';
 
 import App from './App';
 import * as serviceWorker from './serviceWorker';

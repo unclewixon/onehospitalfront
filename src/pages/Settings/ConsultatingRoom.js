@@ -59,12 +59,8 @@ const ConsultatingRoom = props => {
 		};
 
 		try {
-			const rs = await request(
-				`consulting-rooms/${data.id}/update`,
-				'PATCH',
-				true,
-				data
-			);
+			const url = `consulting-rooms/${data.id}/update`;
+			const rs = await request(url, 'PATCH', true, data);
 			props.update_consultating_room(rs, payload);
 			setState({ ...initialState });
 			setSubmitButton({ save: true, edit: false });

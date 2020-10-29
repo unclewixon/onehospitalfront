@@ -1,17 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
+
 import {
 	add_service_category,
-	get_all_service_categories,
 	update_service_category,
 	delete_service_category,
 } from '../actions/settings';
 import { confirmAction, request } from '../services/utilities';
-
 import { notifySuccess, notifyError } from '../services/notify';
 import waiting from '../assets/images/waiting.gif';
-import searchingGIF from '../assets/images/searching.gif';
 
 const ServiceCategoryList = props => {
 	const initialState = {
@@ -23,7 +21,6 @@ const ServiceCategoryList = props => {
 	const [working, setWorking] = useState(false);
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
 	const [payload, getDataToEdit] = useState(null);
-	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -31,13 +28,11 @@ const ServiceCategoryList = props => {
 	};
 
 	const onAddServiceCat = async e => {
-		setWorking(true);
 		e.preventDefault();
 
-		let data = {
-			name,
-		};
 		try {
+			setWorking(true);
+			let data = { name };
 			const rs = await request(`services/categories`, 'POST', true, data);
 			props.add_service_category(rs);
 			setWorking(false);
@@ -51,18 +46,12 @@ const ServiceCategoryList = props => {
 	};
 
 	const onEditServiceCategory = async e => {
-		setWorking(true);
 		e.preventDefault();
-		let data = {
-			name,
-		};
 		try {
-			const rs = await request(
-				`services/categories/${payload.id}/update`,
-				'PATCH',
-				true,
-				data
-			);
+			setWorking(true);
+			let data = { name };
+			const url = `services/categories/${payload.id}/update`;
+			const rs = await request(url, 'PATCH', true, data);
 			props.update_service_category(rs, payload);
 			setState({ ...initialState });
 			setSubmitButton({ create: true, edit: false });
@@ -107,23 +96,6 @@ const ServiceCategoryList = props => {
 		confirmAction(onDeleteServiceCategory, data);
 	};
 
-	useEffect(() => {
-		const fetchServiceCategories = async () => {
-			try {
-				const rs = await request(`services/categories`, 'GET', true);
-				props.get_all_service_categories(rs);
-				setDataLoaded(true);
-			} catch (error) {
-				setDataLoaded(true);
-				notifyError(error.message || 'could not fetch services categories!');
-			}
-		};
-
-		if (!dataLoaded) {
-			fetchServiceCategories();
-		}
-	}, [dataLoaded, props]);
-
 	return (
 		<div className="row">
 			<div className="col-lg-8">
@@ -139,35 +111,32 @@ const ServiceCategoryList = props => {
 									</tr>
 								</thead>
 								<tbody>
-									{!dataLoaded ? (
+									{props.serviceCategories.map((category, i) => {
+										return (
+											<tr key={i}>
+												<td>{i + 1}</td>
+												<td>
+													<div className="value">{category.name}</div>
+												</td>
+												<td className="row-actions text-right">
+													<a onClick={() => onClickEdit(category)}>
+														<i className="os-icon os-icon-ui-49"></i>
+													</a>
+													<a
+														className="danger"
+														onClick={() => confirmDelete(category)}>
+														<i className="os-icon os-icon-ui-15"></i>
+													</a>
+												</td>
+											</tr>
+										);
+									})}
+									{props.serviceCategories.length === 0 && (
 										<tr>
-											<td colSpan="4" className="text-center">
-												<img alt="searching" src={searchingGIF} />
+											<td className="text-center" colSpan="3">
+												No categories created!
 											</td>
 										</tr>
-									) : (
-										<>
-											{props.ServiceCategories.map((category, i) => {
-												return (
-													<tr key={i}>
-														<td>{i + 1}</td>
-														<td>
-															<div className="value">{category.name}</div>
-														</td>
-														<td className="row-actions text-right">
-															<a onClick={() => onClickEdit(category)}>
-																<i className="os-icon os-icon-ui-49"></i>
-															</a>
-															<a
-																className="danger"
-																onClick={() => confirmDelete(category)}>
-																<i className="os-icon os-icon-ui-15"></i>
-															</a>
-														</td>
-													</tr>
-												);
-											})}
-										</>
 									)}
 								</tbody>
 							</table>
@@ -236,13 +205,12 @@ const ServiceCategoryList = props => {
 
 const mapStateToProps = state => {
 	return {
-		ServiceCategories: state.settings.service_categories,
+		serviceCategories: state.settings.service_categories,
 	};
 };
 
 export default connect(mapStateToProps, {
 	add_service_category,
-	get_all_service_categories,
 	update_service_category,
 	delete_service_category,
 })(ServiceCategoryList);

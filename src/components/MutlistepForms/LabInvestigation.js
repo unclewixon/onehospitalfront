@@ -8,7 +8,7 @@ import {
 } from '../../services/utilities';
 import { Field, reduxForm } from 'redux-form';
 import { notifyError } from '../../services/notify';
-import { getAllLabTests, getAllLabGroups } from '../../actions/settings';
+import { fetchLabTests, getAllLabGroups } from '../../actions/settings';
 
 const fetal = [{ id: 'Lab', name: 'Lab' }];
 
@@ -20,7 +20,7 @@ class LabInvestigation extends Component {
 	componentDidMount() {
 		console.log(this.props.LabGroups, this.props.LabTests);
 		if (this.props.LabGroups.length === 0) {
-			Promise.all([this.props.getAllLabGroups(), this.props.getAllLabTests()])
+			Promise.all([this.props.getAllLabGroups(), this.props.fetchLabTests()])
 				.then(response => {
 					this.filterGroupsTests(this.props.LabGroups, this.props.LabTests);
 				})
@@ -131,5 +131,5 @@ const mapStateToProps = state => {
 };
 export default connect(mapStateToProps, {
 	getAllLabGroups,
-	getAllLabTests,
+	fetchLabTests,
 })(LabInvestigation);

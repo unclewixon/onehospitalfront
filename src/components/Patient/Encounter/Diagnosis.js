@@ -1,13 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from 'react';
-import { request } from '../../../services/utilities';
-import { diagnosisAPI, diagnosisType } from '../../../services/constants';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import Select from 'react-select';
 import { reduxForm } from 'redux-form';
 import { connect, useDispatch } from 'react-redux';
-import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
+
+import { request } from '../../../services/utilities';
 import { Controller, ErrorMessage, useForm } from 'react-hook-form';
+import { diagnosisAPI, diagnosisType } from '../../../services/constants';
+import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
 
 let Diagnosis = props => {
 	const { previous, encounterData, encounterForm } = props;
@@ -45,11 +46,8 @@ let Diagnosis = props => {
 			return [];
 		}
 		let val = inputValue.toUpperCase();
-		const res = await request(
-			`${diagnosisAPI}/search?q=${val}&diagnosisType=10`,
-			'GET',
-			true
-		);
+		const url = `${diagnosisAPI}/search?q=${val}&diagnosisType=10`;
+		const res = await request(url, 'GET', true);
 		return res;
 	};
 

@@ -1,25 +1,22 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { confirmAction, request, updateImmutable } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
+import { startBlock, stopBlock } from '../actions/redux-block';
 
-const LabGroup = () => {
-	const initialState = {
-		name: '',
-		price: '',
-		description: '',
-		edit: false,
-		create: true,
-	};
-	const [{ name, price, description }, setState] = useState(initialState);
+const LabSpecimen = () => {
+	const initialState = { name: '', edit: false, create: true };
+	const [{ name }, setState] = useState(initialState);
 	const [loaded, setLoaded] = useState(false);
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
-	const [group, setGroup] = useState(null);
-	const [groups, setGroups] = useState([]);
-	const [labTests, setLabTests] = useState([]);
+	const [specimen, setSpecimen] = useState(null);
+	const [specimens, setSpecimens] = useState([]);
 	const [submitting, setSubmitting] = useState(false);
+
+	const dispatch = useDispatch();
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -27,63 +24,59 @@ const LabGroup = () => {
 	};
 
 	useEffect(() => {
-		const fetchGroup = async () => {
+		const fetchSpecimen = async () => {
 			try {
-				const url = 'lab-tests/groups';
+				const url = 'lab-tests/specimens';
 				const rs = await request(url, 'GET', true);
-				setGroups([...rs]);
+				setSpecimens([...rs]);
 				setLoaded(true);
+				dispatch(stopBlock());
 			} catch (e) {
 				setSubmitting(false);
-				notifyError(e.message || 'could not fetch test groups');
+				notifyError(e.message || 'could not fetch lab specimens');
 				setLoaded(true);
+				dispatch(stopBlock());
 			}
 		};
 
 		if (!loaded) {
-			fetchGroup();
+			dispatch(startBlock());
+			fetchSpecimen();
 		}
-	}, [loaded]);
+	}, [dispatch, loaded]);
 
-	const onAddGroup = async e => {
+	const onAddSpecimen = async e => {
 		e.preventDefault();
 		try {
 			setSubmitting(true);
-			const data = { name, price, description, lab_tests: labTests };
-			const url = 'lab-tests/groups';
-			const rs = await request(url, 'POST', true, data);
-			setGroups([...groups, rs]);
+			const url = 'lab-tests/specimens';
+			const rs = await request(url, 'POST', true, { name });
+			setSpecimens([...specimens, rs]);
 			setState({ ...initialState });
 			setSubmitting(false);
-			notifySuccess('Lab group created!');
+			notifySuccess('Lab specimen created!');
 		} catch (error) {
 			setSubmitting(false);
-			notifyError('Error creating test group');
+			notifyError('Error creating lab specimen');
 		}
 	};
 
-	const onEditGroup = async e => {
+	const onEditSpecimen = async e => {
 		e.preventDefault();
 		try {
 			setSubmitting(true);
-			const data = {
-				id: group.id,
-				name,
-				price,
-				description,
-				lab_tests: labTests,
-			};
-			const url = `lab-tests/groups/${group.id}`;
+			const data = { id: specimen.id, name };
+			const url = `lab-tests/specimens/${specimen.id}`;
 			const rs = await request(url, 'PATCH', true, data);
-			const newGroups = updateImmutable(groups, rs);
-			setGroups([...newGroups]);
+			const newSpecimens = updateImmutable(specimens, rs);
+			setSpecimens([...newSpecimens]);
 			setState({ ...initialState });
 			setSubmitButton({ create: true, edit: false });
 			setSubmitting(false);
-			notifySuccess('Lab group updated!');
+			notifySuccess('Lab specimen updated!');
 		} catch (error) {
 			setSubmitting(false);
-			notifyError('Error updating test group');
+			notifyError('Error updating lab specimen');
 		}
 	};
 
@@ -92,32 +85,29 @@ const LabGroup = () => {
 		setState(prevState => ({
 			...prevState,
 			name: data.name,
-			price: data.price,
-			description: data.description,
 		}));
-		setLabTests(data.lab_tests);
-		setGroup(data);
+		setSpecimen(data);
 	};
 
 	const cancelEditButton = () => {
 		setSubmitButton({ ...initialState });
 		setState({ ...initialState });
-		setGroup(null);
+		setSpecimen(null);
 	};
 
-	const onDeleteGroup = async item => {
+	const onDeleteSpecimen = async item => {
 		try {
-			const url = `lab-tests/groups/${item.id}`;
+			const url = `lab-tests/specimens/${item.id}`;
 			const rs = await request(url, 'DELETE', true);
-			setGroups([...groups.filter(s => s.id !== rs.id)]);
-			notifySuccess('Lab group deleted');
+			setSpecimens([...specimens.filter(s => s.id !== rs.id)]);
+			notifySuccess('Lab specimen deleted');
 		} catch (error) {
-			notifyError('Error deleting lab group');
+			notifyError('Error deleting lab specimen');
 		}
 	};
 
 	const confirmDelete = data => {
-		confirmAction(onDeleteGroup, data);
+		confirmAction(onDeleteSpecimen, data);
 	};
 
 	return (
@@ -137,7 +127,7 @@ const LabGroup = () => {
 							</table>
 						) : (
 							<>
-								{groups.map((item, i) => {
+								{specimens.map((item, i) => {
 									return (
 										<div className="col-lg-4 col-xxl-3" key={i}>
 											<div className="pt-3">
@@ -164,11 +154,11 @@ const LabGroup = () => {
 										</div>
 									);
 								})}
-								{groups.length === 0 && (
+								{specimens.length === 0 && (
 									<div
 										className="alert alert-info text-center"
 										style={{ width: '100%' }}>
-										No test group found!
+										No lab specimen found!
 									</div>
 								)}
 							</>
@@ -178,8 +168,8 @@ const LabGroup = () => {
 			</div>
 			<div className="col-lg-4 col-xxl-3  d-xxl-block">
 				<div className="pipeline white lined-warning">
-					<form onSubmit={edit ? onEditGroup : onAddGroup}>
-						<h6 className="form-header">Create Group</h6>
+					<form onSubmit={edit ? onEditSpecimen : onAddSpecimen}>
+						<h6 className="form-header">Create Specimen</h6>
 						<div className="form-group mt-2">
 							<input
 								className="form-control"
@@ -188,27 +178,6 @@ const LabGroup = () => {
 								onChange={handleInputChange}
 								name="name"
 								value={name}
-							/>
-						</div>
-						<div className="form-group">
-							<input
-								className="form-control"
-								placeholder="Price"
-								type="text"
-								name="price"
-								onChange={handleInputChange}
-								value={price}
-							/>
-						</div>
-						<div className="form-group">
-							<textarea
-								className="form-control"
-								placeholder="Description"
-								type="textarea"
-								name="description"
-								onChange={handleInputChange}
-								value={description}
-								rows={4}
 							/>
 						</div>
 						<div className="form-buttons-w">
@@ -246,4 +215,4 @@ const LabGroup = () => {
 	);
 };
 
-export default LabGroup;
+export default LabSpecimen;

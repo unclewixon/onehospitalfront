@@ -22,6 +22,7 @@ import PhysiotherapyMenu from './PhysiotherapyMenu';
 import MyAccount from './MyAccount';
 import NurseMenu from './NurseMenu';
 import AdminMenu from './AdminMenu';
+import SettingsMenu from './SettingsMenu';
 
 class MainMenu extends Component {
 	menu_ref = null;
@@ -130,8 +131,13 @@ class MainMenu extends Component {
 					{role === 'cafeteria' && <CafeteriaMenu />}
 					{role === 'hmo' && <HMOMenu />}
 					{role === 'account' && <Account />}
-					{role === 'admin' && <AdminMenu />}
+					{role === 'admin' && <AdminMenu role={role} />}
 					<MyAccount />
+					{(role === 'lab-attendant' ||
+						role === 'lab-officer' ||
+						role === 'lab-supervisor' ||
+						role === 'lab-hod' ||
+						role === 'admin') && <SettingsMenu role={role} />}
 				</ul>
 			</div>
 		);

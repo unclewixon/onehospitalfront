@@ -1,4 +1,6 @@
 // general
+export const REQUEST_START = 'REQUEST_START';
+export const REQUEST_STOP = 'REQUEST_STOP';
 export const TOGGLE_PRELOADING = 'TOGGLE_PRELOADING';
 export const TOGGLE_IS_MODAL = 'TOGGLE_IS_MODAL';
 export const TOGGLE_MODAL = 'TOGGLE_MODAL';

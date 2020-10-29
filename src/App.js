@@ -3,6 +3,7 @@ import { Switch, Route, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import { SWRConfig } from 'swr';
+import ReduxBlockUi from 'react-block-ui/redux';
 
 import ScrollToTop from './containers/ScrollToTop';
 import TopBar from './components/TopBar';
@@ -35,7 +36,7 @@ const Inventory = lazy(() => import('./pages/Inventory/index'));
 const Settings = lazy(() => import('./pages/Settings'));
 const StaffProfile = lazy(() => import('./pages/StaffProfile'));
 const Hmo = lazy(() => import('./pages/Hmo/Index'));
-const ClinicalLab = lazy(() => import('./pages/ClinicalLab'));
+const ClinicalLab = lazy(() => import('./pages/ClinicalLab/Index'));
 const PayPoint = lazy(() => import('./pages/PayPoint/index'));
 const Radiology = lazy(() => import('./pages/Radiology/index'));
 const Antennatal = lazy(() => import('./pages/Antennatal/index'));
@@ -89,75 +90,79 @@ class App extends Component {
 				<ScrollToTop>
 					{loggedIn ? (
 						<AbilityContext.Provider value={ability}>
-							<div className="all-wrapper with-side-panel solid-bg-all">
-								<Suspense fallback={<Splash />}>
-									<div className="layout-w">
-										{/* user role determines main menu */}
-										<MainMenu
-											role={profile.role ? profile.role.slug : 'admin'}
-											theme_mode={theme_mode}
-											menu_mode={menu_mode}
-										/>
-										<div className="content-w content-w-l-18" id="main-content">
-											{/* user role determines topbar menu */}
-											<TopBar
+							<ReduxBlockUi block="REQUEST_START" unblock="REQUEST_STOP">
+								<div className="all-wrapper with-side-panel solid-bg-all">
+									<Suspense fallback={<Splash />}>
+										<div className="layout-w">
+											{/* user role determines main menu */}
+											<MainMenu
 												role={profile.role ? profile.role.slug : 'admin'}
+												theme_mode={theme_mode}
+												menu_mode={menu_mode}
 											/>
-											<SWRConfig
-												value={{
-													fetcher: url =>
-														request(url, 'get', true).then(res => res),
-													refreshInterval: 15 * 60 * 1000,
-													shouldRetryOnError: false,
-													revalidateOnFocus: false,
-													errorRetryInterval: 0,
-													errorRetryCount: 2,
-												}}>
-												<Switch>
-													<Route
-														path="/doctor/appointments"
-														component={DoctorAppointments}
-													/>
-													<Route path="/doctor" component={DoctorHome} />
-													<Route path="/front-desk" component={FrontDesk} />
-													<Route path="/nurse" component={Nurse} />
-													<Route path="/pharmacy" component={Pharmacy} />
-													<Route
-														path="/physiotherapy"
-														component={Physiotherapy}
-													/>
-													<Route path="/dentistry" component={Dentistry} />
-													<Route path="/procedure" component={Procedure} />
-													<Route path="/radiology" component={Radiology} />
-													<Route path="/antenatal" component={Antennatal} />
-													<Route path="/ivf" component={IVF} />
-													<Route path="/nicu" component={Nicu} />
-													<Route path="/hr" component={Staff} />
-													<Route path="/inventory" component={Inventory} />
-													<Route path="/settings" component={Settings} />
-													<Route path="/hmo" component={Hmo} />
-													<Route path="/lab" component={ClinicalLab} />
-													<Route path="/labour-mgt" component={LabMgt} />
-													<Route path="/cafeteria" component={Cafeteria} />
-													<Route path="/paypoint" component={PayPoint} />
-													<Route path="/account" component={Account} />
-													<Route path="/logout" component={Logout} />
-													{/* remove path later */}
-													<Route path="/my-account" component={MyAccount} />
-													<Route component={NoMatch} />
-												</Switch>
-											</SWRConfig>
+											<div
+												className="content-w content-w-l-18"
+												id="main-content">
+												{/* user role determines topbar menu */}
+												<TopBar
+													role={profile.role ? profile.role.slug : 'admin'}
+												/>
+												<SWRConfig
+													value={{
+														fetcher: url =>
+															request(url, 'get', true).then(res => res),
+														refreshInterval: 15 * 60 * 1000,
+														shouldRetryOnError: false,
+														revalidateOnFocus: false,
+														errorRetryInterval: 0,
+														errorRetryCount: 2,
+													}}>
+													<Switch>
+														<Route
+															path="/doctor/appointments"
+															component={DoctorAppointments}
+														/>
+														<Route path="/doctor" component={DoctorHome} />
+														<Route path="/front-desk" component={FrontDesk} />
+														<Route path="/nurse" component={Nurse} />
+														<Route path="/pharmacy" component={Pharmacy} />
+														<Route
+															path="/physiotherapy"
+															component={Physiotherapy}
+														/>
+														<Route path="/dentistry" component={Dentistry} />
+														<Route path="/procedure" component={Procedure} />
+														<Route path="/radiology" component={Radiology} />
+														<Route path="/antenatal" component={Antennatal} />
+														<Route path="/ivf" component={IVF} />
+														<Route path="/nicu" component={Nicu} />
+														<Route path="/hr" component={Staff} />
+														<Route path="/inventory" component={Inventory} />
+														<Route path="/settings" component={Settings} />
+														<Route path="/hmo" component={Hmo} />
+														<Route path="/lab" component={ClinicalLab} />
+														<Route path="/labour-mgt" component={LabMgt} />
+														<Route path="/cafeteria" component={Cafeteria} />
+														<Route path="/paypoint" component={PayPoint} />
+														<Route path="/account" component={Account} />
+														<Route path="/logout" component={Logout} />
+														{/* remove path later */}
+														<Route path="/my-account" component={MyAccount} />
+														<Route component={NoMatch} />
+													</Switch>
+												</SWRConfig>
+											</div>
 										</div>
-									</div>
-									<SlidingPane isOpen={isStaffOpen}>
-										<StaffProfile />
-									</SlidingPane>
-									<SlidingPane isOpen={isPatientOpen}>
-										<PatientProfile />
-									</SlidingPane>
-									<ModalDialogs />
-								</Suspense>
-							</div>
+										<SlidingPane isOpen={isStaffOpen}>
+											<StaffProfile />
+										</SlidingPane>
+										<SlidingPane isOpen={isPatientOpen}>
+											<PatientProfile />
+										</SlidingPane>
+										<ModalDialogs />
+									</Suspense>
+								</div>
+							</ReduxBlockUi>
 							{is_modal_open && <div className={`modal-backdrop fade show`} />}
 						</AbilityContext.Provider>
 					) : (

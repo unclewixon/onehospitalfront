@@ -2,15 +2,27 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
+import Tooltip from 'antd/lib/tooltip';
+import Pagination from 'antd/lib/pagination';
+
 import { request } from '../../services/utilities';
 import { loadStaffLeave } from '../../actions/hr';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
-import Tooltip from 'antd/lib/tooltip';
 import ModalLeaveRequest from './../Modals/ModalLeaveRequest';
 import ModalEditLeave from '../Modals/ModalEditLeave';
 import { confirmAction } from '../../services/utilities';
-import Pagination from '../Pagination';
+
+const itemRender = (current, type, originalElement) => {
+	if (type === 'prev') {
+		return <a>Previous</a>;
+	}
+	if (type === 'next') {
+		return <a>Next</a>;
+	}
+	return originalElement;
+};
+const pageSize = 10;
 
 const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 	const [searching, setSearching] = useState(false);
@@ -65,6 +77,10 @@ const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 			'in deleting this leave application?',
 			'Do you want to continue'
 		);
+	};
+
+	const onNavigatePage = page => {
+		console.log(page);
 	};
 
 	return (
@@ -208,7 +224,16 @@ const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 									)}
 								</tbody>
 							</table>
-							<Pagination gotoPage={() => {}} currentPage={1} lastPage={12} />
+							<div className="pagination pagination-center mt-4">
+								<Pagination
+									current={0}
+									pageSize={pageSize}
+									total={0}
+									showTotal={total => `Total ${total} requests`}
+									itemRender={itemRender}
+									onChange={current => onNavigatePage(current)}
+								/>
+							</div>
 						</div>
 					</div>
 				</div>

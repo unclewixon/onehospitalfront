@@ -13,7 +13,7 @@ const ClinicalLabMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/lab/new">
+				<Link to="/lab/new-request">
 					<div className="icon-w">
 						<div className="os-icon os-icon-plus-circle" />
 					</div>
@@ -26,22 +26,6 @@ const ClinicalLabMenu = () => {
 						<div className="os-icon os-icon-file-text" />
 					</div>
 					<span>All Requests</span>
-				</Link>
-			</li>
-			<li>
-				<Link to="/lab/pending-requests">
-					<div className="icon-w">
-						<div className="os-icon os-icon-file-text" />
-					</div>
-					<span>Pending Requests</span>
-				</Link>
-			</li>
-			<li>
-				<Link to="/lab/opd-patients">
-					<div className="icon-w">
-						<div className="os-icon os-icon-file-text" />
-					</div>
-					<span>OPD Patients</span>
 				</Link>
 			</li>
 		</>
