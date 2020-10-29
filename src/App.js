@@ -81,7 +81,6 @@ class App extends Component {
 			menu_mode,
 			profile,
 		} = this.props;
-		// console.log(profile, 'profile');
 		return preloading ? (
 			<Splash />
 		) : (

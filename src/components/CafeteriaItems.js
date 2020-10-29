@@ -2,24 +2,23 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import { confirmAction, request } from '../services/utilities';
-
 import {
-	getAllCafeteriaCategory,
-	addCafeteriaItem,
 	getAllCafeteriaItem,
+	addCafeteriaItem,
 	updateCafeteriaItem,
 	deleteCafeteriaItem,
-	filterCafeteriaItem,
-} from '../actions/inventory';
+} from '../actions/Cafeteria';
 import { addCafeteriaFile } from '../actions/general';
 import { v4 as uuidv4 } from 'uuid';
 
 const CafeteriaItems = props => {
+	let dispatch = useDispatch();
+
 	const initialState = {
 		name: '',
 		price: 0,
@@ -41,76 +40,103 @@ const CafeteriaItems = props => {
 			description,
 			category_id,
 			category,
-			// item,
 			item_code,
 		},
 		setState,
 	] = useState(initialState);
-	const [Loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
-	const [dataLoaded, setDataLoaded] = useState(false);
 	const [filtering, setFiltering] = useState(false);
 	const [items, setItems] = useState([]);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
-		if (name === 'category') {
-			setItems(props.cafeteriaItems);
-		}
+		// if (name === 'category') {
+		// 	setItems(props.cafeteriaItems);
+		// }
 		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onAddCafeteriaItem = e => {
-		e.preventDefault();
-		setLoading(true);
-		//console.log({ name, price, category_id, description, discount_price });
-		item_code = `RC-${uuidv4().substring(0, 4)}`;
-		props
-			.addCafeteriaItem({
-				name,
-				price,
-				category_id,
-				description,
-				discount_price,
-				item_code,
-			})
-			.then(response => {
-				setLoading(false);
-				setState({ ...initialState });
-				notifySuccess('Cafeteria item added');
-			})
-			.catch(error => {
-				setLoading(false);
-				notifyError('Error creating cafeteria item');
-			});
+	const getAllCafeteriaItems = async () => {
+		try {
+			const url = `cafeteria/items`;
+			const rs = await request(url, 'GET', true);
+			console.log(rs);
+			dispatch(props.getAllCafeteriaItem(rs));
+			setLoading(false);
+		} catch (error) {
+			dispatch(getAllCafeteriaItem(error));
+			notifyError('error fetching items');
+			setLoading(false);
+		}
 	};
 
-	const onEditCafeteriaItem = e => {
-		setLoading(true);
+	const onAddCafeteriaItem = async e => {
 		e.preventDefault();
-		props
-			.updateCafeteriaItem({
-				id: data.q_id,
-				name,
-				price,
-				discount_price,
-				description,
-				category_id,
-				item_code,
-			})
-			.then(response => {
-				setState({ ...initialState });
-				setSubmitButton({ save: true, edit: false });
-				setLoading(false);
-				notifySuccess(' Cafeteria item updated');
-			})
-			.catch(error => {
-				setState({ ...initialState });
-				setSubmitButton({ save: true, edit: false });
-				setLoading(false);
-				notifyError('Error editing cafeteria category');
-			});
+		setLoading(true);
+		item_code = `RC-${uuidv4().substring(0, 4)}`;
+		let formData = {
+			item_code,
+			name,
+			price,
+			category,
+			description,
+			discount_price,
+		};
+		try {
+			const url = `cafeteria/items`;
+			const rs = await request(url, 'POST', true, formData);
+			console.log(rs);
+			dispatch(props.addCafeteriaItem(rs));
+			notifySuccess('Cafeteria item added successfully');
+			clearForm();
+			setLoading(false);
+		} catch (error) {
+			notifyError('error fetching items');
+			clearForm();
+			setLoading(false);
+		}
+	};
+
+	const clearForm = () => {
+		setState({
+			item_code: '',
+			name: '',
+			price: 0,
+			category: '',
+			description: '',
+			discount_price: 0,
+		});
+	};
+
+	const onEditCafeteriaItem = async e => {
+		e.preventDefault();
+		setLoading(true);
+		let formData = {
+			id: data.q_id,
+			item_code,
+			name,
+			price,
+			category,
+			description,
+			discount_price,
+		};
+		try {
+			const url = `cafeteria/items/${data.id}`;
+			const rs = await request(url, 'PATCH', true, formData);
+			console.log(rs);
+			dispatch(props.updateCafeteriaItem(rs));
+			setSubmitButton({ save: true, edit: false });
+			clearForm();
+			setLoading(false);
+			notifySuccess(' Cafeteria item updated');
+		} catch (error) {
+			setSubmitButton({ save: true, edit: false });
+			clearForm();
+			setLoading(false);
+			notifyError('Error editing cafeteria category');
+		}
 	};
 
 	const onClickEdit = data => {
@@ -130,18 +156,19 @@ const CafeteriaItems = props => {
 		getDataToEdit(data);
 	};
 
-	const onDeleteCafeteriaItem = data => {
-		props
-			.deleteCafeteriaItem(data)
-			.then(data => {
-				setLoading(false);
-				notifySuccess(' Cafeteria item deleted');
-				console.log(props.cafeteriaItems);
-			})
-			.catch(error => {
-				setLoading(false);
-				notifyError('Error deleting cafeteria item ');
-			});
+	const onDeleteCafeteriaItem = async data => {
+		setLoading(true);
+		try {
+			const url = `cafeteria/items/${data.id}`;
+			const rs = await request(url, 'DELETE', true);
+			console.log(rs);
+			dispatch(props.deleteCafeteriaItem(rs));
+			setLoading(false);
+			notifySuccess(' Cafeteria item deleted');
+		} catch (error) {
+			setLoading(false);
+			notifyError('Error deleting cafeteria item ');
+		}
 	};
 
 	const confirmDelete = data => {
@@ -152,6 +179,7 @@ const CafeteriaItems = props => {
 		setSubmitButton({ save: true, edit: false });
 		setState({ ...initialState });
 	};
+
 	const doFilter = async () => {
 		setFiltering(true);
 		try {
@@ -186,27 +214,13 @@ const CafeteriaItems = props => {
 	};
 
 	useEffect(() => {
-		if (!dataLoaded) {
-			props
-				.getAllCafeteriaCategory()
-				.then(_ => {})
-				.catch(e => {
-					notifyError(e.message || 'could not fetch cafeterian category');
-				});
+		console.log(props.cafeteriaItems);
+	}, [props.cafeteriaItems]);
 
-			props
-				.getAllCafeteriaItem()
-				.then(_ => {})
-				.catch(e => {
-					notifyError(e.message || 'could not fetch cafeterian category');
-				});
-
-			setDataLoaded(true);
-
-			setItems(props.cafeteriaItems);
-			console.log(props.cafeteriaItems);
-		}
-	}, [dataLoaded, props]);
+	useEffect(() => {
+		getAllCafeteriaItems();
+		//eslint-disable-next-line
+	}, []);
 
 	return (
 		<div className="content-i">
@@ -224,7 +238,6 @@ const CafeteriaItems = props => {
 							Item
 						</Link>
 					</div>
-
 					<div className="element-box-tp">
 						<h6 className="element-header">Item</h6>
 						<div className="row">
@@ -300,51 +313,44 @@ const CafeteriaItems = props => {
 												</tr>
 											</thead>
 											<tbody>
-												{!dataLoaded ? (
-													<tr>
-														<td colSpan="4" className="text-center">
-															<img alt="searching" src={searchingGIF} />
-														</td>
-													</tr>
-												) : (
+												{props.cafeteriaItems && props.cafeteriaItems.length ? (
 													<>
-														{items &&
-															items.map(item => {
-																return (
-																	<tr key={item.q_item_code || item.item_code}>
-																		<th className="text-center">
-																			{item.q_item_code || item.item_code}
-																		</th>
-																		{/* <th className="text-center">
-																			{item.category.name}
-																		</th> */}
-																		<th className="text-center">
-																			{item.q_name || item.name}
-																		</th>
-																		<th className="text-center">
-																			{item.q_price || item.price}
-																		</th>
-																		<th className="text-right">
-																			<a className="pi-settings os-dropdown-trigger">
-																				<i
-																					className="os-icon os-icon-ui-49"
-																					onClick={() => onClickEdit(item)}></i>
-																			</a>
-																			<a className="pi-settings os-dropdown-trigger text-danger">
-																				<i
-																					className="os-icon os-icon-ui-15"
-																					onClick={() =>
-																						confirmDelete(item)
-																					}></i>
-																			</a>
-																		</th>
-																	</tr>
-																);
-															})}
+														{props.cafeteriaItems.map(item => {
+															return (
+																<tr key={item.q_item_code || item.item_code}>
+																	<th className="text-center">
+																		{item.q_item_code || item.item_code}
+																	</th>
+																	<th className="text-center">
+																		{item.q_name || item.name}
+																	</th>
+																	<th className="text-center">
+																		{item.q_price || item.price}
+																	</th>
+																	<th className="text-right">
+																		<a className="pi-settings os-dropdown-trigger">
+																			<i
+																				className="os-icon os-icon-ui-49"
+																				onClick={() => onClickEdit(item)}></i>
+																		</a>
+																		<a className="pi-settings os-dropdown-trigger text-danger">
+																			<i
+																				className="os-icon os-icon-ui-15"
+																				onClick={() => confirmDelete(item)}></i>
+																		</a>
+																	</th>
+																</tr>
+															);
+														})}
 													</>
-												)}
+												) : null}
 											</tbody>
 										</table>
+										{!props.cafeteriaItems.length ? (
+											<div className="text-center">
+												No item added, Check back later!
+											</div>
+										) : null}
 									</div>
 								</div>
 							</div>
@@ -353,6 +359,7 @@ const CafeteriaItems = props => {
 									<div className="element-box">
 										<form
 											onSubmit={
+												// onAddCafeteriaItem
 												edit ? onEditCafeteriaItem : onAddCafeteriaItem
 											}>
 											<h5 className="element-box-header">
@@ -437,16 +444,20 @@ const CafeteriaItems = props => {
 												</div>
 											</div>
 
+											{/* <div className="form-buttons-w text-right compact">
+												<button>{item_code ? 'Edit' : 'Save'}</button>
+											</div> */}
+
 											<div className="form-buttons-w text-right compact">
 												{save && (
 													<>
 														<button
 															className={
-																Loading
+																loading
 																	? 'btn btn-primary disabled'
 																	: 'btn btn-primary'
 															}>
-															{Loading ? (
+															{loading ? (
 																<img src={waiting} alt="submitting" />
 															) : (
 																<span> save</span>
@@ -466,20 +477,20 @@ const CafeteriaItems = props => {
 													<>
 														<button
 															className={
-																Loading
+																loading
 																	? 'btn btn-secondary ml-3 disabled'
 																	: 'btn btn-secondary ml-3'
 															}
 															onClick={cancelEditButton}>
-															<span>{Loading ? 'cancel' : 'cancel'}</span>
+															<span>{loading ? 'cancel' : 'cancel'}</span>
 														</button>
 														<button
 															className={
-																Loading
+																loading
 																	? 'btn btn-primary disabled'
 																	: 'btn btn-primary'
 															}>
-															{Loading ? (
+															{loading ? (
 																<img src={waiting} alt="submitting" />
 															) : (
 																<span> edit</span>
@@ -501,21 +512,22 @@ const CafeteriaItems = props => {
 };
 
 const mapStateToProps = state => {
+	console.log(state);
 	return {
-		cafeteriaCategory: state.inventory.cafeteriaCategory,
-		cafeteriaItems: state.inventory.cafeteriaItems,
-		filteredCafeteriaItems: state.inventory.filteredCafeteriaItems,
+		cafeteriaCategory: state.cafeteria.cafeteriaItemCategory,
+		cafeteriaItems: state.cafeteria.cafeteriaItems,
 	};
 };
 
+const mapDispatchToProps = dispatch => ({
+	getAllCafeteriaItem: itemData => dispatch(getAllCafeteriaItem(itemData)),
+	addCafeteriaItem: itemData => dispatch(addCafeteriaItem(itemData)),
+	updateCafeteriaItem: index => dispatch(updateCafeteriaItem(index)),
+	deleteCafeteriaItem: index => dispatch(deleteCafeteriaItem(index)),
+	addCafeteriaFile: () => dispatch(addCafeteriaFile()),
+});
+
+// export default withRouter(CafeteriaItems);
 export default withRouter(
-	connect(mapStateToProps, {
-		getAllCafeteriaCategory,
-		addCafeteriaItem,
-		getAllCafeteriaItem,
-		updateCafeteriaItem,
-		deleteCafeteriaItem,
-		filterCafeteriaItem,
-		addCafeteriaFile,
-	})(CafeteriaItems)
+	connect(mapStateToProps, mapDispatchToProps)(CafeteriaItems)
 );

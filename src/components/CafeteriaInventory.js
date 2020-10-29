@@ -2,22 +2,23 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import { confirmAction, request } from '../services/utilities';
-
 import {
-	getAllCafeteriaInvCategory,
-	addCafeteriaInventory,
 	getAllCafeteriaInventory,
+	addCafeteriaInventory,
 	updateCafeteriaInventory,
 	deleteCafeteriaInventory,
-} from '../actions/inventory';
+} from '../actions/Cafeteria';
+import { getAllCafeteriaInvCategory } from '../actions/inventory';
+
 // import { addCafeteriaFile } from '../actions/general';
 
 const CafeteriaInventory = props => {
+	const dispatch = useDispatch();
 	const initialState = {
 		name: '',
 		cost_price: 0,
@@ -44,7 +45,7 @@ const CafeteriaInventory = props => {
 		},
 		setState,
 	] = useState(initialState);
-	const [Loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
@@ -54,61 +55,89 @@ const CafeteriaInventory = props => {
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
-		if (name === 'category') {
-			setItems(props.cafeteriaInventory);
-		}
+		// if (name === 'category') {
+		// 	setItems(props.cafeteriaInventory);
+		// }
 		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onAddCafeteriaInventory = e => {
-		e.preventDefault();
-		setLoading(true);
-
-		props
-			.addCafeteriaInventory({
-				name,
-				cost_price,
-				category_id,
-				description,
-				quantity,
-				stock_code,
-			})
-			.then(response => {
-				setLoading(false);
-				setState({ ...initialState });
-				notifySuccess('Cafeteria inventory added');
-			})
-			.catch(error => {
-				setLoading(false);
-				notifyError('Error creating cafeteria inventory');
-			});
+	const getAllCafeteriaItems = async () => {
+		try {
+			const url = `cafeteria/inventories`;
+			const rs = await request(url, 'GET', true);
+			console.log(rs);
+			dispatch(props.getAllCafeteriaInventory(rs));
+			setLoading(false);
+		} catch (error) {
+			dispatch(getAllCafeteriaInventory(error));
+			notifyError('error fetching items');
+			setLoading(false);
+		}
 	};
 
-	const onEditCafeteriaInventory = e => {
+	useEffect(() => {
+		console.log(props.cafeteriaInventory);
+		//eslint-disable-next-line
+	}, []);
+
+	const clearForm = () => {
+		setState({
+			...initialState,
+		});
+	};
+
+	const onAddCafeteriaInventory = async e => {
+		e.preventDefault();
+		setLoading(true);
+		let formData = {
+			name,
+			cost_price,
+			category_id,
+			description,
+			quantity,
+			stock_code,
+		};
+		try {
+			const url = `cafeteria/inventories`;
+			const rs = await request(url, 'POST', true, formData);
+			console.log(rs);
+			dispatch(props.addCafeteriaInventory(rs));
+			notifySuccess('Cafeteria inventory added');
+			clearForm();
+			setLoading(false);
+		} catch (error) {
+			setLoading(false);
+			notifyError('Error creating cafeteria inventory');
+		}
+	};
+
+	const onEditCafeteriaInventory = async e => {
 		setLoading(true);
 		e.preventDefault();
-		props
-			.updateCafeteriaInventory({
-				id: data.id,
-				name,
-				cost_price,
-				quantity,
-				description,
-				category_id,
-				stock_code,
-			})
-			.then(response => {
-				setState({ ...initialState });
-				setSubmitButton({ save: true, edit: false });
-				setLoading(false);
-				notifySuccess(' Cafeteria inventory updated');
-			})
-			.catch(error => {
-				setState({ ...initialState });
-				setSubmitButton({ save: true, edit: false });
-				setLoading(false);
-				notifyError('Error editing cafeteria inventory');
-			});
+		let formData = {
+			id: data.id,
+			name,
+			cost_price,
+			quantity,
+			description,
+			category_id,
+			stock_code,
+		};
+		try {
+			const url = `cafeteria/inventories/${data.id}`;
+			const rs = await request(url, 'PATCH', true, formData);
+			console.log(rs);
+			dispatch(props.updateCafeteriaInventory(rs));
+			setSubmitButton({ save: true, edit: false });
+			clearForm();
+			setLoading(false);
+			notifySuccess('Cafeteria inventory updated');
+		} catch (error) {
+			clearForm();
+			setSubmitButton({ save: true, edit: false });
+			setLoading(false);
+			notifyError('Error editing cafeteria inventory');
+		}
 	};
 
 	const onClickEdit = data => {
@@ -126,17 +155,19 @@ const CafeteriaInventory = props => {
 		getDataToEdit(data);
 	};
 
-	const onDeleteCafeteriaInventory = data => {
-		props
-			.deleteCafeteriaInventory(data)
-			.then(data => {
-				setLoading(false);
-				notifySuccess(' Cafeteria inventory deleted');
-			})
-			.catch(error => {
-				setLoading(false);
-				notifyError('Error deleting cafeteria inventory');
-			});
+	const onDeleteCafeteriaInventory = async data => {
+		setLoading(true);
+		try {
+			const url = `cafeteria/inventories/${data.id}`;
+			const rs = await request(url, 'DELETE', true);
+			console.log(rs);
+			dispatch(props.deleteCafeteriaInventory(rs));
+			setLoading(false);
+			notifySuccess(' Cafeteria inventory deleted');
+		} catch (error) {
+			setLoading(false);
+			notifyError('Error deleting cafeteria inventory');
+		}
 	};
 
 	const confirmDelete = data => {
@@ -147,10 +178,13 @@ const CafeteriaInventory = props => {
 		setSubmitButton({ save: true, edit: false });
 		setState({ ...initialState });
 	};
+
 	const doFilter = async () => {
 		setFiltering(true);
 		try {
-			const rs = await request(`cafeteria/inventories-by-category/${category}`);
+			// const url = `cafeteria/inventories-by-category/${category}`;
+			const url = `cafeteria/inventory/categories/${category}`;
+			const rs = await request(url, 'GET', true);
 			console.log(rs);
 			let cat = props.cafeteriaInvCategory.find(el => el.id === category);
 			console.log(cat);
@@ -167,26 +201,33 @@ const CafeteriaInventory = props => {
 
 	useEffect(() => {
 		if (!dataLoaded) {
-			props
-				.getAllCafeteriaInvCategory()
-				.then(_ => {})
-				.catch(e => {
-					notifyError(
-						e.message || 'could not fetch cafeteria inventory category'
-					);
-				});
-
-			props
-				.getAllCafeteriaInventory()
-				.then(_ => {})
-				.catch(e => {
-					notifyError(e.message || 'could not fetch cafeteria inventory');
-				});
-
+			getAllCafeteriaItems();
 			setDataLoaded(true);
-			setItems(props.cafeteriaInventory);
 		}
 	}, [dataLoaded, props]);
+
+	// useEffect(() => {
+	// 	if (!dataLoaded) {
+	// 		props
+	// 			.getAllCafeteriaInvCategory()
+	// 			.then(_ => {})
+	// 			.catch(e => {
+	// 				notifyError(
+	// 					e.message || 'could not fetch cafeteria inventory category'
+	// 				);
+	// 			});
+
+	// 		props
+	// 			.getAllCafeteriaInventory()
+	// 			.then(_ => {})
+	// 			.catch(e => {
+	// 				notifyError(e.message || 'could not fetch cafeteria inventory');
+	// 			});
+
+	// 		setDataLoaded(true);
+	// 		setItems(props.cafeteriaInventory);
+	// 	}
+	// }, [dataLoaded, props]);
 
 	return (
 		<div className="content-i">
@@ -292,43 +333,56 @@ const CafeteriaInventory = props => {
 													</tr>
 												) : (
 													<>
-														{items.map(item => {
-															return (
-																<tr key={item.stock_code}>
-																	<th className="text-center">
-																		{item.stock_code}
-																	</th>
-																	<th className="text-center">
-																		{item.category
-																			? item.category.name
-																			: catName}
-																	</th>
-																	<th className="text-center">{item.name}</th>
-																	<th className="text-center">
-																		{item.cost_price}
-																	</th>
-																	<th className="text-center">
-																		{item.quantity}
-																	</th>
-																	<th className="text-right">
-																		<a className="pi-settings os-dropdown-trigger">
-																			<i
-																				className="os-icon os-icon-ui-49"
-																				onClick={() => onClickEdit(item)}></i>
-																		</a>
-																		<a className="pi-settings os-dropdown-trigger text-danger">
-																			<i
-																				className="os-icon os-icon-ui-15"
-																				onClick={() => confirmDelete(item)}></i>
-																		</a>
-																	</th>
-																</tr>
-															);
-														})}
+														{items && items.length
+															? items.map(item => {
+																	return (
+																		<tr key={item.stock_code}>
+																			<th className="text-center">
+																				{item.stock_code}
+																			</th>
+																			<th className="text-center">
+																				{item.category
+																					? item.category.name
+																					: catName}
+																			</th>
+																			<th className="text-center">
+																				{item.name}
+																			</th>
+																			<th className="text-center">
+																				{item.cost_price}
+																			</th>
+																			<th className="text-center">
+																				{item.quantity}
+																			</th>
+																			<th className="text-right">
+																				<a className="pi-settings os-dropdown-trigger">
+																					<i
+																						className="os-icon os-icon-ui-49"
+																						onClick={() =>
+																							onClickEdit(item)
+																						}></i>
+																				</a>
+																				<a className="pi-settings os-dropdown-trigger text-danger">
+																					<i
+																						className="os-icon os-icon-ui-15"
+																						onClick={() =>
+																							confirmDelete(item)
+																						}></i>
+																				</a>
+																			</th>
+																		</tr>
+																	);
+															  })
+															: null}
 													</>
 												)}
 											</tbody>
 										</table>
+										{!items?.length ? (
+											<div className="text-center">
+												No inventory added, Check back later!
+											</div>
+										) : null}
 									</div>
 								</div>
 							</div>
@@ -427,11 +481,11 @@ const CafeteriaInventory = props => {
 													<>
 														<button
 															className={
-																Loading
+																loading
 																	? 'btn btn-primary disabled'
 																	: 'btn btn-primary'
 															}>
-															{Loading ? (
+															{loading ? (
 																<img src={waiting} alt="submitting" />
 															) : (
 																<span> save</span>
@@ -443,20 +497,20 @@ const CafeteriaInventory = props => {
 													<>
 														<button
 															className={
-																Loading
+																loading
 																	? 'btn btn-secondary ml-3 disabled'
 																	: 'btn btn-secondary ml-3'
 															}
 															onClick={cancelEditButton}>
-															<span>{Loading ? 'cancel' : 'cancel'}</span>
+															<span>{loading ? 'cancel' : 'cancel'}</span>
 														</button>
 														<button
 															className={
-																Loading
+																loading
 																	? 'btn btn-primary disabled'
 																	: 'btn btn-primary'
 															}>
-															{Loading ? (
+															{loading ? (
 																<img src={waiting} alt="submitting" />
 															) : (
 																<span> edit</span>
@@ -479,8 +533,8 @@ const CafeteriaInventory = props => {
 
 const mapStateToProps = state => {
 	return {
-		cafeteriaInvCategory: state.inventory.cafeteriaInvCategory,
-		cafeteriaInventory: state.inventory.cafeteriaInventory,
+		cafeteriaInvCategory: state.cafeteria.cafeteriaInvCategory,
+		cafeteriaInventory: state.cafeteria.cafeteriaInventory,
 	};
 };
 export default withRouter(

@@ -65,8 +65,7 @@ const InPatientCare = () => {
 				<td>{data?.admitted_by}</td>
 				<td className="row-actions text-right">
 					<div style={{ color: '#fff' }}>
-						<a onClick={onModalClick} className="btn btn-success btn-sm">
-							{/* <span>Assign Bed</span> */}
+						<a onClick={onModalClick} className="btn btn-primary btn-sm">
 							<i className="icon-feather-check-square" />
 						</a>
 					</div>
