@@ -9,7 +9,7 @@ const LabQueue = lazy(() => import('./LabQueue'));
 const LabRequest = lazy(() => import('../../components/Patient/LabRequest'));
 const AllRequest = lazy(() => import('./AllRequest'));
 
-const Index = ({ match, location }) => {
+const ClinicalLab = ({ match, location }) => {
 	const page = location.pathname.split('/').pop();
 
 	let pageTitle = 'Lab Queue';
@@ -97,4 +97,4 @@ const Index = ({ match, location }) => {
 	);
 };
 
-export default Index;
+export default ClinicalLab;
