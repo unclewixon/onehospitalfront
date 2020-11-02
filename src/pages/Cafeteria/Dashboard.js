@@ -14,31 +14,37 @@ const allItems = [
 	{
 		id: 1,
 		item: 'Rice',
+		quantity: 1,
 		price: 110,
 	},
 	{
 		id: 2,
 		item: 'Chicken',
+		quantity: 1,
 		price: 80,
 	},
 	{
 		id: 3,
-		item: 'Bottled Water (25cl)',
+		item: 'Water (25cl)',
+		quantity: 1,
 		price: 120,
 	},
 	{
 		id: 4,
 		item: 'Beans',
+		quantity: 1,
 		price: 260,
 	},
 	{
 		id: 5,
 		item: 'Egusi Soup',
+		quantity: 1,
 		price: 160,
 	},
 	{
 		id: 6,
 		item: 'Bitter Leaf',
+		quantity: 1,
 		price: 90,
 	},
 ];
@@ -282,7 +288,7 @@ const CafeteriaDashboard = () => {
 											<div
 												key={i}
 												onClick={() => setCart([...cart, item])}
-												className="col-3 col-sm-3">
+												className="col-4 col-sm-4">
 												<div className="profile-tile profile-tile-inlined">
 													<a className="profile-tile-box">
 														<div>{item.item}</div>
@@ -437,33 +443,30 @@ const CafeteriaDashboard = () => {
 											<thead>
 												<tr>
 													<th>Item</th>
-													<th>Quantity</th>
+													<th>Qty</th>
 													<th className="text-center">Price(&#x20A6;)</th>
-													<th>action</th>
+													<th></th>
 												</tr>
 											</thead>
 											<tbody>
 												{cart.map((item, i) => {
 													return (
 														<tr key={i}>
-															<td>
-																<span></span>
-																<i className="os-icon os-icon-repeat icon-separator" />
-																<span>USD</span>
+															<td className="text-center">
+																<span>{item.item}</span>
 															</td>
-															<td className="text-center">{item.title}</td>
-															<td className="text-right text-bright">
-																{item.price}
-															</td>
-															<td className="text-right text-danger">
+															<td className="text-center">{item.quantity}</td>
+															<td className="text-center">{item.price}</td>
+															<td className="text-center">
 																<button
+																	className="btn btn-primary btn-sm mx-3"
 																	onClick={() => {
 																		const newVal = cart.filter(
 																			val => val.id !== item.id
 																		);
 																		setCart(newVal);
 																	}}>
-																	Clear
+																	<i className="os-icon os-icon-x-circle"></i>
 																</button>
 															</td>
 														</tr>
@@ -476,6 +479,7 @@ const CafeteriaDashboard = () => {
 								<div className="element-wrapper compact"></div>
 							</div>
 							<CafeteriaTransactionTable
+								cart={cart}
 								orders={order}
 								deleteItem={deleteItem}
 								saveSale={saveSale}

@@ -28,7 +28,6 @@ const NicuActivity = () => {
 				<ModalCreateObservation
 					showModal={showModal}
 					onModalClick={onModalClick}
-					// addANewObservation={addANewObservation}
 				/>
 			) : drugModal ? (
 				<ModalCreateDrugChat

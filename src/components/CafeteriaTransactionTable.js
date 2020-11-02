@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import isEmpty from 'lodash.isempty';
-
+import CafeteriaRecipt from './CafeteriaRecipt';
 // import waiting from '../assets/images/waiting.gif';
 // import { CartesianAxis } from 'recharts';
 
@@ -12,7 +12,7 @@ const paymentType = [
 ];
 
 const CafeteriaTransactionTable = props => {
-	// const [toggle, setToggle] = useState(false);
+	const [toggle, setToggle] = useState(false);
 	const [orders, setOrders] = useState([]);
 	const [loaded, setLoaded] = useState(false);
 	// const [subTotal, setSubTotal] = useState(0);
@@ -20,12 +20,22 @@ const CafeteriaTransactionTable = props => {
 	// const [balance, setBalance] = useState(0);
 	const [type, setType] = useState('');
 
+	// const calSubTotal = () => {
+	// 	return orders.reduce((total, order) => {
+	// 		return (
+	// 			total +
+	// 			(order.item.q_price - order.item.q_discount_price) * +order.quantity
+	// 		);
+	// 	}, 0);
+	// };
+	const onModalClick = () => {
+		setToggle(!toggle);
+	};
+	console.log(toggle);
+
 	const calSubTotal = () => {
-		return orders.reduce((total, order) => {
-			return (
-				total +
-				(order.item.q_price - order.item.q_discount_price) * +order.quantity
-			);
+		return props.cart.reduce((total, order) => {
+			return total + order.price;
 		}, 0);
 	};
 
@@ -179,10 +189,13 @@ const CafeteriaTransactionTable = props => {
 								</tr>
 							</tbody>
 						</table>
+						{toggle ? (
+							<CafeteriaRecipt toggle={toggle} onModalClick={onModalClick} />
+						) : null}
 						<form onSubmit={handleSubmit} className="form-row">
 							<div className="col-md-8">
 								<select className="form-control" onChange={handleType} required>
-									<option value="">Choose Payment type ...</option>
+									<option value="">Choose Payment type...</option>
 									{paymentType &&
 										paymentType.map((type, i) => {
 											return (
@@ -194,71 +207,10 @@ const CafeteriaTransactionTable = props => {
 								</select>
 							</div>
 
-							{/* <div className="col-md-2">
-								<button
-									className={
-										props.submitting
-											? 'btn btn-primary  disabled'
-											: 'btn btn-primary '
-									}
-									onClick={e => handleSubmit(e)}>
-									{props.submitting ? (
-										<img src={waiting} alt="submitting" />
-									) : (
-										<span> save</span>
-									)}
-								</button>
-							</div> */}
 							<div className="col-md-2">
-								<div>
-									<button
-										onClick={() => {}}
-										type="button"
-										className="btn btn-primary">
-										Save
-									</button>
-
-									<div
-										className="modal fade"
-										id="exampleModalCenter"
-										tabIndex={-1}
-										role="dialog"
-										aria-labelledby="exampleModalCenterTitle"
-										aria-hidden="true">
-										<div
-											className="modal-dialog modal-dialog-centered"
-											role="document">
-											<div className="modal-content">
-												<div className="modal-header">
-													<h5
-														className="modal-title"
-														id="exampleModalLongTitle">
-														Orders
-													</h5>
-													<button
-														type="button"
-														className="close"
-														data-dismiss="modal"
-														aria-label="Close">
-														<span aria-hidden="true">×</span>
-													</button>
-												</div>
-												<div className="modal-body"></div>
-												<div className="modal-footer">
-													<button
-														type="button"
-														className="btn btn-secondary"
-														data-dismiss="modal">
-														Close
-													</button>
-													<button type="button" className="btn btn-primary">
-														Save changes
-													</button>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
+								<button className="btn btn-primary" onClick={onModalClick}>
+									<span> save</span>
+								</button>
 							</div>
 							<div className="col-md-2">
 								<button className="btn btn-primary btn-sm mx-3" type="submit">

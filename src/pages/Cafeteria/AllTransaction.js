@@ -315,10 +315,12 @@ export class AllTransaction extends Component {
 									<thead>
 										<tr>
 											<th className="text-center">Date</th>
-											<th className="text-center">Name</th>
+											<th className="text-center">Client</th>
+											<th className="text-center">Item Sold</th>
 											<th className="text-center">Payment Type</th>
 											<th className="text-center">Amount(&#x20A6;)</th>
-											<th className="text-center">Status</th>
+											<th className="text-center">Paid</th>
+											<th className="text-center">Balance</th>
 
 											<th>
 												<div className="th-inner "></div>
