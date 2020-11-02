@@ -1,422 +1,282 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import { Table } from 'react-bootstrap';
 
-import { searchAPI, serviceCenter } from '../../services/constants';
+import { searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request } from '../../services/utilities';
-import searchingGIF from '../../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
-import {
-	fetchLabTests,
-	getAllLabGroups,
-	getAllLabTestCategories,
-	getAllLabTestParameters,
-} from '../../actions/settings';
-import { createLabRequest } from '../../actions/patient';
+import { ReactComponent as TrashIcon } from '../../assets/svg-icons/trash.svg';
+import { formatCurrency } from '../../services/utilities';
 
-const LabRequest = props => {
+const defaultValues = {
+	patient: '',
+	request_note: '',
+	urgent: false,
+};
+
+const LabRequest = ({ module, history, location }) => {
 	const { register, handleSubmit, setValue } = useForm({
-		defaultValues: {
-			service_center: 'lab',
-		},
+		defaultValues,
 	});
 	const [submitting, setSubmitting] = useState(false);
-	const [query, setQuery] = useState('');
-	const [searching, setSearching] = useState(false);
-	const [patients, setPatients] = useState([]);
 	const [loaded, setLoaded] = useState(false);
-	const [category, setCategory] = useState('');
-	const [labTests, setLabTests] = useState(null);
-	const [labCombos, setLabCombos] = useState(null);
+
+	const [categories, setCategories] = useState([]);
+	const [category, setCategory] = useState(null);
+
+	const [groups, setGroups] = useState([]);
+	const [group, setGroup] = useState(null);
+
+	const [labTest, setLabTest] = useState(null);
+	const [labTests, setLabTests] = useState([]);
+	const [tests, setTests] = useState([]);
+
 	const [urgent, setUrgent] = useState(false);
 
-	const handleMultipleSelectInput = (field, selected) => {
-		if (field === 'lab_combos') {
-			setLabCombos(selected);
-		}
-		if (field === 'lab_tests_torequest') {
-			setLabTests(selected);
-		}
-	};
-
-	const onCategoryChange = e => {
-		setCategory(e.value);
-	};
-
-	const labCatsOptions =
-		props && props.LabCategories
-			? props.LabCategories.map((cats, index) => {
-					return { value: cats.id, label: cats.name };
-			  })
-			: [];
-
-	const labGroupOptions =
-		props && props.LabGroups
-			? props.LabGroups.filter(groups =>
-					groups && groups.category && groups.category.id === category
-						? true
-						: false
-			  ).map((grp, index) => {
-					return { value: grp.id, label: grp.name, id: grp.id };
-			  })
-			: [];
-
-	const labTestOptions =
-		props && props.LabTests
-			? props.LabTests.filter(test => test.category.id === category).map(
-					(test, index) => {
-						return { value: test.id, label: test.name, id: test.id };
-					}
-			  )
-			: [];
-
-	const structuredTest = () => {
-		const parameterObj = {};
-		// eslint-disable-next-line no-unused-vars
-		const parVals =
-			props && props.LabParameters && props.LabParameters.length
-				? // eslint-disable-next-line array-callback-return
-				  props.LabParameters.map(par => {
-						parameterObj[par.id] = par;
-				  })
-				: [];
-
-		const testObj = {};
-		// eslint-disable-next-line no-unused-vars
-		const testVals =
-			props && props.LabTests && props.LabTests.length
-				? // eslint-disable-next-line array-callback-return
-				  props.LabTests.map(test => {
-						testObj[test.id] = test;
-				  })
-				: [];
-
-		const lab_test =
-			labTests && labTests.length
-				? labTests.map(test => {
-						const fullParams = testObj[test.value].parameters.map(par => {
-							const newParamObj = {
-								parameter_type: 'parameter',
-								referenceRange: par.referenceRange,
-								...parameterObj[par.parameter_id],
-							};
-							return newParamObj;
-						});
-						const fullTest = {
-							...testObj[test.value],
-							parameters: fullParams,
-						};
-						return fullTest;
-				  })
-				: [];
-		return lab_test;
-	};
-
-	const structuredGroup = () => {
-		const parameterObj = {};
-		// eslint-disable-next-line no-unused-vars
-		const parVals =
-			props && props.LabParameters && props.LabParameters.length
-				? // eslint-disable-next-line array-callback-return
-				  props.LabParameters.map(par => {
-						parameterObj[par.id] = par;
-				  })
-				: [];
-
-		const groupObj = {};
-		// eslint-disable-next-line no-unused-vars
-		const groupVals =
-			props && props.LabGroups && props.LabGroups.length
-				? // eslint-disable-next-line array-callback-return
-				  props.LabGroups.map(group => {
-						groupObj[group.id] = group;
-				  })
-				: [];
-
-		const lab_combo =
-			labCombos && labCombos.length
-				? labCombos.map(combo => {
-						const fullParams = groupObj[combo.value].parameters.map(par => {
-							const newParamObj = {
-								parameter_type: 'parameter',
-								referenceRange: par.referenceRange,
-								...parameterObj[par.parameter_id],
-							};
-							return newParamObj;
-						});
-						const fullGroup = {
-							...groupObj[combo.value],
-							parameters: fullParams,
-						};
-						return fullGroup;
-				  })
-				: [];
-		return lab_combo;
-	};
-
-	const onSubmit = ({
-		service_center,
-		referred_specimen,
-		request_note,
-		patient_id,
-	}) => {
-		const { patient } = props;
-		if (!category) {
-			notifyError('Please select a category');
-			return;
-		}
-		setSubmitting(true);
-
-		const lab_test = structuredTest();
-		const lab_combo = structuredGroup();
-		props
-			.createLabRequest({
-				service_center,
-				referred_specimen,
-				request_note,
-				lab_test,
-				lab_combo,
-				category,
-				urgent: urgent ? urgent : false,
-				patient_id: patient && patient.id ? patient.id : patient_id,
-			})
-			.then(response => {
-				setSubmitting(false);
-				notifySuccess('Lab request created');
-			})
-			.catch(error => {
-				console.log(error);
-				setSubmitting(false);
-				notifyError('Error creating lab request');
-			});
-	};
-
-	const handlePatientChange = e => {
-		setQuery(e.target.value);
-		searchPatient();
-	};
-
-	const searchPatient = async () => {
-		if (query.length > 2) {
-			try {
-				setSearching(true);
-				const rs = await request(`${searchAPI}?q=${query}`, 'GET', true);
-
-				setPatients(rs);
-				setSearching(false);
-			} catch (e) {
-				notifyError('Error Occurred');
-				setSearching(false);
-			}
-		}
-	};
-
-	const patientSet = pat => {
-		setValue('patient_id', pat.id);
-		let name =
-			(pat.surname ? pat.surname : '') +
-			' ' +
-			(pat.other_names ? pat.other_names : '');
-		document.getElementById('patient').value = name;
-		setPatients([]);
-	};
+	const currentPatient = useSelector(state => state.user.patient);
 
 	useEffect(() => {
-		const {
-			getAllLabGroups,
-			fetchLabTests,
-			getAllLabTestCategories,
-			getAllLabTestParameters,
-		} = props;
-		if (!loaded) {
-			getAllLabGroups();
-			fetchLabTests();
-			getAllLabTestCategories();
-			getAllLabTestParameters();
+		const getCategories = async () => {
+			try {
+				const url = 'lab-tests/categories?hasTest=1';
+				const rs = await request(url, 'GET', true);
+				setCategories(rs);
+			} catch (error) {}
+		};
 
+		const getGroups = async () => {
+			try {
+				const url = 'lab-tests/groups';
+				const rs = await request(url, 'GET', true);
+				setGroups(rs);
+			} catch (e) {
+				setLoaded(true);
+			}
+		};
+
+		if (!loaded) {
+			getCategories();
+			getGroups();
 			setLoaded(true);
 		}
-	}, [loaded, props]);
+	}, [loaded]);
+
+	const getOptionValues = option => option.id;
+	const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+
+	const getOptions = async q => {
+		if (!q || q.length < 3) {
+			return [];
+		}
+
+		const url = `${searchAPI}?q=${q}`;
+		const res = await request(url, 'GET', true);
+		return res;
+	};
+
+	const onTrash = index => {
+		const items = tests.filter((test, i) => index !== i);
+		setTests(items);
+	};
+
+	const onSubmit = async data => {
+		try {
+			if (!data.patient) {
+				notifyError('Please select a patient');
+				return;
+			}
+
+			if (tests.length === 0) {
+				notifyError('Please select a lab test');
+				return;
+			}
+
+			const datum = {
+				requestType: 'lab',
+				patient_id: data.patient.id,
+				requestBody: [...tests],
+				request_note: data.request_note,
+				urgent: data.urgent,
+			};
+
+			setSubmitting(true);
+			await request('patient/save-request', 'POST', true, datum);
+			setSubmitting(false);
+			notifySuccess('Lab request sent!');
+			if (module !== 'patient') {
+				history.push('/lab');
+			} else {
+				history.push(`${location.pathname}#lab`);
+			}
+		} catch (error) {
+			console.log(error);
+			setSubmitting(false);
+			notifyError('Error sending lab request');
+		}
+	};
 
 	return (
-		<div className="element-box m-0 p-3">
-			<div className="form-block w-100">
-				<form onSubmit={handleSubmit(onSubmit)}>
-					{props.location.hash ? null : (
+		<div className={module && module === 'patient' ? 'col-sm-12' : ''}>
+			<div className="element-box m-0 p-3">
+				<div className="form-block w-100">
+					<form onSubmit={handleSubmit(onSubmit)}>
+						{!currentPatient && (
+							<div className="row">
+								<div className="form-group col-sm-12">
+									<label htmlFor="patient">Patient Name</label>
+									<AsyncSelect
+										isClearable
+										getOptionValue={getOptionValues}
+										getOptionLabel={getOptionLabels}
+										defaultOptions
+										name="patient"
+										ref={register({ name: 'patient' })}
+										loadOptions={getOptions}
+										onChange={e => {
+											setValue('patient', e);
+										}}
+										placeholder="Search patients"
+									/>
+								</div>
+							</div>
+						)}
 						<div className="row">
 							<div className="form-group col-sm-12">
-								<label>Patient Id</label>
-
-								<input
-									className="form-control"
-									placeholder="Search for patient"
-									type="text"
-									name="patient_id"
-									defaultValue=""
-									id="patient"
-									ref={register({ name: 'patient_id' })}
-									onChange={handlePatientChange}
-									autoComplete="off"
-									required
+								<label>Lab Group</label>
+								<Select
+									name="lab_group"
+									placeholder="Select Lab Group"
+									options={groups}
+									value={group}
+									getOptionValue={option => option.id}
+									getOptionLabel={option => option.name}
+									onChange={e => {
+										setGroup(e);
+										setTests(e.lab_tests);
+									}}
 								/>
-								{searching && (
-									<div className="searching text-center">
-										<img alt="searching" src={searchingGIF} />
-									</div>
-								)}
-
-								{patients &&
-									patients.map(pat => {
-										return (
-											<div
-												style={{ display: 'flex' }}
-												key={pat.id}
-												className="element-box">
-												<a
-													onClick={() => patientSet(pat)}
-													className="ssg-item cursor">
-													{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
-													<div
-														className="item-name"
-														dangerouslySetInnerHTML={{
-															__html: `${pat.surname} ${pat.other_names}`,
-														}}
-													/>
-												</a>
-											</div>
-										);
-									})}
 							</div>
 						</div>
-					)}
-					<div className="row">
-						<div className="form-group col-sm-6">
-							<label>Service Center</label>
-							<Select
-								name="service_center"
-								placeholder="Select Service Center"
-								options={serviceCenter}
-								value={{ label: 'LAB', value: 'lab' }}
-								ref={register({ name: 'service_center' })}
-								onChange={evt => {
-									setValue('service_center', String(evt.value));
-								}}
-								required
-							/>
-						</div>
-						<div className="form-group col-sm-6">
-							<label>Lab Categories</label>
-							<Select
-								name="lab_categories"
-								placeholder="Select Lab Categories"
-								ref={register({ name: 'lab_categories' })}
-								options={labCatsOptions}
-								onChange={onCategoryChange}
-								required
-							/>
-						</div>
-					</div>
-					<div className="row">
-						<div className="form-group col-sm-6">
-							<label>Lab Combination</label>
-							<Select
-								name="lab_combos"
-								placeholder="Select Lab Combination"
-								isMulti
-								options={labGroupOptions}
-								ref={register({ name: 'lab_combos' })}
-								value={labCombos}
-								onChange={val => handleMultipleSelectInput('lab_combos', val)}
-								required
-							/>
-						</div>
-						<div className="form-group col-sm-6">
-							<label>Lab Tests to request</label>
-							<Select
-								name="lab_tests_torequest"
-								placeholder="Select lab tests to request"
-								isMulti
-								options={labTestOptions}
-								ref={register({ name: 'lab_test_torequest' })}
-								value={labTests}
-								onChange={val =>
-									handleMultipleSelectInput('lab_tests_torequest', val)
-								}
-								required
-							/>
-						</div>
-					</div>
-
-					<div className="row">
-						<div className="form-group col-sm-6">
-							<label>Referred Specimen</label>
-							<textarea
-								required
-								className="form-control"
-								name="referred_specimen"
-								rows="3"
-								placeholder="Enter referred specimen"
-								ref={register}></textarea>
-						</div>
-						<div className="form-group col-sm-6">
-							<label>Request Note</label>
-							<textarea
-								required
-								className="form-control"
-								name="request_note"
-								rows="3"
-								placeholder="Enter request note"
-								ref={register}></textarea>
-						</div>
-					</div>
-
-					<div className="row">
-						<div className="form-check col-sm-6">
-							<label className="form-check-label">
-								<input
-									className="form-check-input mt-0"
-									name="urgent"
-									type="checkbox"
-									checked={urgent}
-									onChange={e => setUrgent(!urgent)}
-									ref={register}
-								/>{' '}
-								Please check if urgent
-							</label>
+						<div className="row">
+							<div className="form-group col-sm-6">
+								<label>Lab Categories</label>
+								<Select
+									name="lab_category"
+									placeholder="Select Lab Category"
+									options={categories}
+									value={category}
+									getOptionValue={option => option.id}
+									getOptionLabel={option => option.name}
+									onChange={e => {
+										setCategory(e);
+										setLabTests(e.lab_tests);
+									}}
+								/>
+							</div>
+							<div className="form-group col-sm-6">
+								<label>Lab Test</label>
+								<Select
+									name="lab_tests"
+									placeholder="Select Lab Tests"
+									options={labTests}
+									value={labTest}
+									getOptionValue={option => option.id}
+									getOptionLabel={option => option.name}
+									onChange={e => {
+										setLabTest(e);
+										const { lab_tests, ...cat } = category;
+										const item = { ...e, category: cat };
+										setTests([...tests, item]);
+										setCategory('');
+										setLabTests([]);
+										setLabTest('');
+									}}
+								/>
+							</div>
 						</div>
 
-						<div className="col-sm-6 text-right">
-							<button className="btn btn-primary" disabled={submitting}>
-								{submitting ? (
-									<img src={waiting} alt="submitting" />
-								) : (
-									'Create Lab Request'
-								)}
-							</button>
+						<div className="row">
+							<Table>
+								<thead>
+									<tr>
+										<th>Category</th>
+										<th>Lab Test</th>
+										<th>Price</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									{tests.map((item, i) => {
+										return (
+											<tr key={i}>
+												<td>{item.category.name}</td>
+												<td>{item.name}</td>
+												<td>{formatCurrency(item.price)}</td>
+												<td>
+													<TrashIcon
+														onClick={() => onTrash(i)}
+														style={{
+															width: '1rem',
+															height: '1rem',
+															cursor: 'pointer',
+														}}
+													/>
+												</td>
+											</tr>
+										);
+									})}
+								</tbody>
+							</Table>
 						</div>
-					</div>
-				</form>
+
+						<div className="row mt-4">
+							<div className="form-group col-sm-12">
+								<label>Request Note</label>
+								<textarea
+									className="form-control"
+									name="request_note"
+									rows="3"
+									placeholder="Enter request note"
+									ref={register}></textarea>
+							</div>
+						</div>
+						<div className="row">
+							<div className="form-group col-sm-6">
+								<div className="form-check col-sm-12">
+									<label className="form-check-label">
+										<input
+											className="form-check-input mt-0"
+											name="urgent"
+											type="checkbox"
+											checked={urgent}
+											onChange={e => setUrgent(!urgent)}
+											ref={register}
+										/>
+										Please check if urgent
+									</label>
+								</div>
+							</div>
+							<div className="col-sm-6 text-right">
+								<button className="btn btn-primary" disabled={submitting}>
+									{submitting ? (
+										<img src={waiting} alt="submitting" />
+									) : (
+										'Send Request'
+									)}
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
 			</div>
 		</div>
 	);
 };
 
-const mapStateToProps = state => {
-	return {
-		patient: state.user.patient,
-	};
-};
-
-export default withRouter(
-	connect(mapStateToProps, {
-		createLabRequest,
-		getAllLabGroups,
-		fetchLabTests,
-		getAllLabTestParameters,
-		getAllLabTestCategories,
-	})(LabRequest)
-);
+export default withRouter(LabRequest);

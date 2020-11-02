@@ -51,26 +51,26 @@ const index = ({ match, location }) => {
 							<h6 className="element-header">{pageTitle}</h6>
 							{page === 'lab' && (
 								<div className="element-content">
-									<div className="row">
+									{/* <div className="row">
 										<div className="col-sm-4 col-xxxl-4">
 											<a className="element-box el-tablo">
 												<div className="label">Pending Requests</div>
-												<div className="value">57</div>
+												<div className="value">0</div>
 											</a>
 										</div>
 										<div className="col-sm-4 col-xxxl-4">
 											<a className="element-box el-tablo">
 												<div className="label">Pending Approval</div>
-												<div className="value text-center">457</div>
+												<div className="value text-center">0</div>
 											</a>
 										</div>
 										<div className="col-sm-4 col-xxxl-4">
 											<a className="element-box el-tablo">
 												<div className="label">Completed Requests</div>
-												<div className="value">125</div>
+												<div className="value">0</div>
 											</a>
 										</div>
-									</div>
+									</div> */}
 								</div>
 							)}
 							<Suspense fallback={<Splash />}>
