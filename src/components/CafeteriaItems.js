@@ -12,7 +12,7 @@ import {
 	addCafeteriaItem,
 	updateCafeteriaItem,
 	deleteCafeteriaItem,
-} from '../actions/cafeteria';
+} from '../actions/cafe';
 import { addCafeteriaFile } from '../actions/general';
 
 const CafeteriaItems = props => {
