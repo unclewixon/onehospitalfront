@@ -12,7 +12,8 @@ import {
 	addCafeteriaInventory,
 	updateCafeteriaInventory,
 	deleteCafeteriaInventory,
-} from '../actions/cafeteria';
+} from '../actions/Cafeteria';
+
 import { getAllCafeteriaInvCategory } from '../actions/inventory';
 
 // import { addCafeteriaFile } from '../actions/general';

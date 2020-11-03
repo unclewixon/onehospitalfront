@@ -7,12 +7,14 @@ import { v4 as uuidv4 } from 'uuid';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import { confirmAction, request } from '../services/utilities';
+
 import {
 	getAllCafeteriaItem,
 	addCafeteriaItem,
 	updateCafeteriaItem,
 	deleteCafeteriaItem,
-} from '../actions/cafeteria';
+} from '../actions/Cafeteria';
+
 import { addCafeteriaFile } from '../actions/general';
 
 const CafeteriaItems = props => {
