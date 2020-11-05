@@ -53,7 +53,7 @@ const CafeteriaDashboard = () => {
 	const [patients, setPatients] = useState([]);
 	const [customer, setCustomer] = useState('');
 	// const [activePage, togglePage] = useState('Dashboard');
-	// const [special, setSpecial] = useState([]);
+	const [special, setSpecial] = useState('');
 	const [loaded, setLoaded] = useState(false);
 	// const [dataLoaded, setDataLoaded] = useState(false);
 	const [items, setItems] = useState([]);
@@ -84,17 +84,6 @@ const CafeteriaDashboard = () => {
 
 	const changeCustomer = e => {
 		setCustomer(e.target.value);
-		switch (e.target.value) {
-			case 'patient':
-				// setSpecial(patients);
-				return;
-			case 'staff':
-				// setSpecial(staffs);
-				return;
-			default:
-				setSelectedCustomer({});
-				return;
-		}
 	};
 
 	const handleCustomerChange = e => {
@@ -103,7 +92,7 @@ const CafeteriaDashboard = () => {
 			searchItem();
 			return;
 		}
-		searchCustomer();
+		// searchCustomer();
 	};
 
 	// const handleChange = e => {
@@ -122,13 +111,13 @@ const CafeteriaDashboard = () => {
 		document.getElementById('product').value = product.q_name;
 	};
 
-	const searchCustomer = async () => {
+	const searchCustomer = async e => {
+		e.preventDefault();
 		if (size(query) > 2) {
 			if (customer === 'patient') {
 				try {
 					setSearching(true);
 					const rs = await request(`${searchAPI}?q=${query}`, 'GET', true);
-
 					setPatients(rs);
 					setSearching(false);
 				} catch (e) {
@@ -195,18 +184,16 @@ const CafeteriaDashboard = () => {
 		setStaffs([]);
 		let name;
 		if (customer === 'patient') {
-			name =
-				(pat.surname ? pat.surname : '') +
-				' ' +
-				(pat.other_names ? pat.other_names : '');
+			name = `${pat.surname ? pat.surname : ''} ${
+				pat.other_names ? pat.other_names : ''
+			}`;
 		} else {
-			name =
-				(pat.first_name ? pat.first_name : '') +
-				' ' +
-				(pat.last_name ? pat.last_name : '');
+			name = `${pat.first_name ? pat.first_name : ''} ${
+				pat.last_name ? pat.last_name : ''
+			}`;
 		}
-
 		document.getElementById('cust').value = name;
+		setSpecial(name);
 	};
 
 	const saveSale = async summary => {
@@ -245,7 +232,6 @@ const CafeteriaDashboard = () => {
 		setOrder([]);
 		setQuery('');
 	};
-
 	const setHandleChange = event => {
 		const text = event.target.value;
 		setSearchTerm(text);
@@ -326,7 +312,8 @@ const CafeteriaDashboard = () => {
 													<select
 														className="form-control"
 														name="customer"
-														onChange={changeCustomer}>
+														onChange={changeCustomer}
+														required>
 														<option value="">Choose Customer ...</option>
 														<option value="staff">Staff</option>
 														<option value="patient">Patient</option>
@@ -357,6 +344,7 @@ const CafeteriaDashboard = () => {
 																		? ' Search Staff ...'
 																		: 'Search Patient ...'
 																}
+																required
 															/>
 															{patients.map((pat, i) => {
 																return (
@@ -480,6 +468,8 @@ const CafeteriaDashboard = () => {
 							</div>
 							<CafeteriaTransactionTable
 								cart={cart}
+								customer={customer}
+								special={special}
 								orders={order}
 								deleteItem={deleteItem}
 								saveSale={saveSale}

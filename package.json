@@ -68,6 +68,7 @@
 		"react-spinners": "^0.9.0",
 		"react-spring": "^8.0.27",
 		"react-textarea-autosize": "^8.2.0",
+		"react-to-print": "^2.11.0",
 		"react-toastify": "^5.5.0",
 		"react-widgets": "^4.4.11",
 		"reactn": "^2.2.7",

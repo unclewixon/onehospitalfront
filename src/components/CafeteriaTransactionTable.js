@@ -2,14 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import isEmpty from 'lodash.isempty';
 import CafeteriaRecipt from './CafeteriaRecipt';
+import { paymentType } from '../services/constants';
 // import waiting from '../assets/images/waiting.gif';
 // import { CartesianAxis } from 'recharts';
-
-const paymentType = [
-	{ value: 'POS', label: 'POS' },
-	{ value: 'Cash', label: 'Cash' },
-	{ value: 'Transfer', label: 'Transfer' },
-];
 
 const CafeteriaTransactionTable = props => {
 	const [toggle, setToggle] = useState(false);
@@ -20,18 +15,9 @@ const CafeteriaTransactionTable = props => {
 	// const [balance, setBalance] = useState(0);
 	const [type, setType] = useState('');
 
-	// const calSubTotal = () => {
-	// 	return orders.reduce((total, order) => {
-	// 		return (
-	// 			total +
-	// 			(order.item.q_price - order.item.q_discount_price) * +order.quantity
-	// 		);
-	// 	}, 0);
-	// };
 	const onModalClick = () => {
 		setToggle(!toggle);
 	};
-	console.log(toggle);
 
 	const calSubTotal = () => {
 		return props.cart.reduce((total, order) => {
@@ -72,154 +58,130 @@ const CafeteriaTransactionTable = props => {
 
 	return (
 		<div className="content-panel compact" style={{ backgroundColor: '#fff' }}>
-			<div className="project-box">
-				<div className="project-info">
-					<div className="element-box-tp">
-						<table className="table table-lightborder">
-							<tbody>
-								{orders &&
-									orders.map((order, i) => {
-										return (
-											<tr key={i}>
-												<td className="nowrap">{order.item.q_name}</td>
-
-												<td className="text-center">{order.quantity}</td>
-												<td className="text-right">
-													{(order.item.q_price - order.item.q_discount_price) *
-														+order.quantity}
-												</td>
-												<td className="text-right">
-													<a className="pi-settings os-dropdown-trigger text-danger">
-														<i
-															className="os-icon os-icon-ui-15"
-															onClick={() =>
-																props.deleteItem(order.item.q_id)
-															}></i>
-													</a>
-												</td>
-											</tr>
-										);
-									})}
-							</tbody>
-						</table>
-						<table
-							style={{
-								marginLeft: 'auto',
-								marginTop: ' 15px',
-								borderTop: '3px solid #eee',
-								paddingtop: '20px',
-								marginBottom: '20px',
-							}}>
-							<tbody>
-								<tr>
-									<td
-										style={{
-											color: '#B8B8B8',
-											fontsize: '12px',
-											padding: '5px 0px',
-										}}>
-										Subtotal:
-									</td>
-									<td
-										style={{
-											color: '#111',
-											textAlign: 'right',
-											fontWeight: 'bold',
-											padding: '5px 0px 5px 40px',
-											fontSize: '12px',
-										}}>
-										{orders ? calSubTotal() : 0}
-									</td>
-								</tr>
-								<tr>
-									<td
-										style={{
-											color: '#B8B8B8',
-											fontsize: '12px',
-											padding: '5px 0px',
-										}}>
-										Amt. Paid:
-										<input
-											className="form-control ml-2 p-0"
-											name="amount"
-											type="number"
-											style={{
-												textAlign: 'right',
-												MozAppearance: 'textfield',
-												WebkitAappearance: 'none',
-												width: '100px',
-												display: 'inline-block',
-											}}
-											min="0"
-											value={amountPaid}
-											onChange={handleAmountChange}
-										/>{' '}
-									</td>
-									<td
-										style={{
-											color: '#047bf8',
-											textAlign: 'right',
-											fontWeight: 'bold',
-											padding: '5px 0px 5px 40px',
-											fontSize: '12px',
-										}}>
-										{amountPaid}
-									</td>
-								</tr>
-
-								<tr>
-									<td
-										style={{
-											color: '#B8B8B8',
-											fontsize: '12px',
-											padding: '5px 0px',
-										}}>
-										Balance
-									</td>
-									<td
-										style={{
-											color: ' #45BB4C',
-											textAlign: 'right',
-											fontWeight: 'bold',
-											padding: '5px 0px 5px 40px',
-											fontSize: '12px',
-										}}>
-										{calBalance()}
-									</td>
-								</tr>
-							</tbody>
-						</table>
-						{toggle ? (
-							<CafeteriaRecipt toggle={toggle} onModalClick={onModalClick} />
-						) : null}
-						<form onSubmit={handleSubmit} className="form-row">
-							<div className="col-md-8">
-								<select className="form-control" onChange={handleType} required>
-									<option value="">Choose Payment type...</option>
-									{paymentType &&
-										paymentType.map((type, i) => {
-											return (
-												<option value={type.value} key={i}>
-													{type.label}
-												</option>
-											);
-										})}
-								</select>
-							</div>
-
-							<div className="col-md-2">
-								<button className="btn btn-primary" onClick={onModalClick}>
-									<span> save</span>
-								</button>
-							</div>
-							<div className="col-md-2">
-								<button className="btn btn-primary btn-sm mx-3" type="submit">
-									<i className="os-icon os-icon-ui-22"></i>
-								</button>
-							</div>
-						</form>
+			<div className="element-box-tp">
+				<table
+					style={{
+						marginLeft: 'auto',
+						marginTop: ' 15px',
+						borderTop: '3px solid #eee',
+						paddingtop: '20px',
+						marginBottom: '20px',
+					}}>
+					<tbody>
+						<tr>
+							<td
+								style={{
+									color: '#B8B8B8',
+									fontsize: '12px',
+									padding: '5px 0px',
+								}}>
+								Subtotal:
+							</td>
+							<td
+								style={{
+									color: '#111',
+									textAlign: 'right',
+									fontWeight: 'bold',
+									padding: '5px 0px 5px 40px',
+									fontSize: '12px',
+								}}>
+								{orders ? calSubTotal() : 0}
+							</td>
+						</tr>
+						<tr>
+							<td
+								style={{
+									color: '#B8B8B8',
+									fontsize: '12px',
+									padding: '5px 0px',
+								}}>
+								Amt. Paid:
+								<input
+									className="form-control ml-2 p-0"
+									name="amount"
+									type="number"
+									style={{
+										textAlign: 'right',
+										MozAppearance: 'textfield',
+										WebkitAappearance: 'none',
+										width: '100px',
+										display: 'inline-block',
+									}}
+									min="0"
+									value={amountPaid}
+									onChange={handleAmountChange}
+								/>{' '}
+							</td>
+							<td
+								style={{
+									color: '#047bf8',
+									textAlign: 'right',
+									fontWeight: 'bold',
+									padding: '5px 0px 5px 40px',
+									fontSize: '12px',
+								}}>
+								{amountPaid}
+							</td>
+						</tr>
+						<tr>
+							<td
+								style={{
+									color: '#B8B8B8',
+									fontsize: '12px',
+									padding: '5px 0px',
+								}}>
+								Balance
+							</td>
+							<td
+								style={{
+									color: ' #45BB4C',
+									textAlign: 'right',
+									fontWeight: 'bold',
+									padding: '5px 0px 5px 40px',
+									fontSize: '12px',
+								}}>
+								{calBalance()}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				{toggle ? (
+					<CafeteriaRecipt
+						toggle={toggle}
+						onModalClick={onModalClick}
+						cart={props.cart}
+						type={type}
+						customer={props.customer}
+						special={props.special}
+						calBalance={calBalance}
+					/>
+				) : null}
+				<form onSubmit={handleSubmit} className="form-row">
+					<div className="col-md-8">
+						<select className="form-control" onChange={handleType} required>
+							<option value="">Payment type...</option>
+							{paymentType &&
+								paymentType.map((type, i) => {
+									return (
+										<option value={type.value} key={i}>
+											{type.label}
+										</option>
+									);
+								})}
+						</select>
 					</div>
-				</div>
+
+					<div className="col-md-2">
+						<button className="btn btn-primary" onClick={onModalClick}>
+							<span> save</span>
+						</button>
+					</div>
+					{/* <div className="col-md-2">
+						<button className="btn btn-primary btn-sm mx-3" type="submit">
+							<i className="os-icon os-icon-ui-22"></i>
+						</button>
+					</div> */}
+				</form>
 			</div>
 		</div>
 	);
