@@ -1,46 +1,68 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
-import { connect } from 'react-redux';
-import searchingGIF from '../../assets/images/searching.gif';
-import { notifyError } from '../../services/notify';
-import { getRequestByType } from './../../actions/patient';
+import { useSelector } from 'react-redux';
 import moment from 'moment';
-import ModalClinicalLab from './../Modals/ModalClinicalLab';
+
+import searchingGIF from '../../assets/images/searching.gif';
+import { Can } from '../common/Can';
+import { notifyError, notifySuccess } from '../../services/notify';
+import { confirmAction, request } from '../../services/utilities';
 
 const Lab = props => {
-	const [dataLoaded, setDataLoaded] = useState(true);
-	const [showModal, setShowModal] = useState(false);
-	const [activeRequest, setActiveRequest] = useState(null);
-	// eslint-disable-next-line no-unused-vars
-	const [{ startDate, endDate }, setDate] = useState({
-		startDate: moment(Date.now())
-			.subtract(1, 'days')
-			.format('YYYY-MM-DD'),
-		endDate: moment(Date.now()).format('YYYY-MM-DD'),
-	});
+	const [loaded, setLoaded] = useState(false);
+	const [labs, setLabs] = useState([]);
 
-	const { location, patient } = props;
+	const { location } = props;
 
-	const onModalClick = () => {
-		setShowModal(!showModal);
-	};
+	const startDate = '';
+	const endDate = '';
+
+	const patient = useSelector(state => state.user.patient);
+
+	const fetchLabs = useCallback(async () => {
+		try {
+			const url = `patient/${patient.id}/request/lab?startDate=${startDate}&endDate=${endDate}`;
+			const rs = await request(url, 'GET', true);
+			setLabs(rs);
+			setLoaded(true);
+		} catch (e) {
+			notifyError(e.message || 'could not fetch lab requests');
+			setLoaded(true);
+		}
+	}, [patient.id]);
 
 	useEffect(() => {
-		const { patient, getRequestByType } = props;
-		const patient_id = patient && patient.id ? patient.id : '';
-		if (!dataLoaded) {
-			getRequestByType(patient_id, 'lab', startDate, endDate)
-				.then(response => {
-					setDataLoaded(false);
-				})
-				.catch(e => {
-					setDataLoaded(false);
-					notifyError(e.message || 'could not fetch lab request');
-				});
+		if (!loaded) {
+			fetchLabs();
 		}
-	}, [endDate, dataLoaded, props, startDate]);
+	}, [fetchLabs, loaded]);
+
+	const approve = async data => {
+		try {
+			const url = `patient/request/${data.id}/approve-result`;
+			const res = await request(url, 'GET', true);
+			if (res.success) {
+				notifySuccess('Result has been approved');
+				this.props.refresh();
+			} else {
+				notifyError(res.message);
+			}
+		} catch (error) {
+			console.log(error);
+			notifyError('Error approving result	');
+		}
+	};
+
+	const confirmApproval = data => {
+		confirmAction(
+			approve,
+			data,
+			'You want to approve this result',
+			'Are you sure?'
+		);
+	};
 
 	return (
 		<div className="col-sm-12">
@@ -48,8 +70,8 @@ const Lab = props => {
 				<div className="element-actions">
 					<Link
 						to={`${location.pathname}#lab-request`}
-						className="btn btn-primary">
-						<i className="os-icon os-icon-plus"></i>
+						className="btn btn-primary btn-sm">
+						<i className="os-icon os-icon-plus" />
 						New Lab Request
 					</Link>
 				</div>
@@ -58,19 +80,11 @@ const Lab = props => {
 					<div className="bootstrap-table">
 						<div className="fixed-table-toolbar">
 							<div className="bs-bars float-left">
-								<div id="toolbar"></div>
+								<div id="toolbar" />
 							</div>
 						</div>
-						{activeRequest ? (
-							<ModalClinicalLab
-								activeRequest={activeRequest}
-								showModal={showModal}
-								onModalClick={onModalClick}
-							/>
-						) : null}
-
-						{dataLoaded ? (
-							<div colSpan="4" className="text-center">
+						{!loaded ? (
+							<div className="text-center">
 								<img alt="searching" src={searchingGIF} />
 							</div>
 						) : (
@@ -83,71 +97,63 @@ const Lab = props => {
 										className="table table-theme v-middle table-hover">
 										<thead>
 											<tr>
-												<th>ID</th>
 												<th>Request Date</th>
-												<th>Requested By</th>
-												<th>Request Specimen</th>
-												<th className="text-center">Request Status</th>
-												<th className="text-right" />
+												<th>Lab</th>
+												<th>By</th>
+												<th />
 											</tr>
 										</thead>
 										<tbody>
-											{props.Requests && props.Requests.length
-												? props.Requests.map((request, index) => {
-														return (
-															<tr
-																className=""
-																data-index="0"
-																data-id="20"
-																key={index}>
-																<td>
-																	<span className="text-bold">{index + 1}</span>
-																</td>
-																<td>
-																	<span>
-																		{moment(request.createdAt).format(
-																			'DD/MM/YYYY hh:mm'
+											{labs.map((lab, i) => {
+												return (
+													<>
+														{lab.requestBody.map((item, j) => {
+															return (
+																<tr key={j}>
+																	<td>
+																		<span>
+																			{moment(request.createdAt).format(
+																				'DD-MMM-YYYY h:mmA'
+																			)}
+																		</span>
+																	</td>
+																	<td>{item.name}</td>
+																	<td>{lab.created_by}</td>
+																	<td className="row-actions text-right">
+																		<Tooltip title="Take Specimen">
+																			<a
+																				className="secondary"
+																				onClick={() => {}}>
+																				<i className="os-icon os-icon-folder-plus" />
+																			</a>
+																		</Tooltip>
+																		<Tooltip title="Fill Result">
+																			<a
+																				className="secondary"
+																				onClick={() => {}}>
+																				<i className="os-icon os-icon-folder-plus" />
+																			</a>
+																		</Tooltip>
+																		{lab.status === 0 && (
+																			<Can I="approve-lab-result" on="all">
+																				<Tooltip title="Approve Result">
+																					<a
+																						className="secondary"
+																						onClick={() =>
+																							confirmApproval(lab)
+																						}>
+																						<i className="os-icon os-icon-thumbs-up" />
+																					</a>
+																				</Tooltip>
+																			</Can>
 																		)}
-																	</span>
-																</td>
-																<td>
-																	{`${patient.surname.toUpperCase()} ${patient.other_names.toUpperCase()}`}
-																</td>
-																<td>{request.requestBody.refferredSpecimen}</td>
-																<td className="text-center">
-																	{request.status === 1 ? (
-																		<div>
-																			<span className="status-pill smaller green"></span>
-																			<span>Approved</span>
-																		</div>
-																	) : (
-																		<div>
-																			<span className="status-pill smaller yellow"></span>
-																			<span>Pending</span>
-																		</div>
-																	)}
-																</td>
-																<td className="row-actions text-right">
-																	<Tooltip title="View Request">
-																		<a
-																			className="secondary"
-																			onClick={() => {
-																				setActiveRequest(request);
-																				onModalClick();
-																			}}>
-																			<i className="os-icon os-icon-file" />
-																		</a>
-																	</Tooltip>
-																	<Tooltip title="Print Request">
-																		<a className="ml-2" href="#">
-																			<i className="icon-feather-printer" />
-																		</a>
-																	</Tooltip>
-																</td>
-															</tr>
-														);
-												  })
-												: null}
+																	</td>
+																</tr>
+															);
+														})}
+													</>
+												);
+											})}
 										</tbody>
 									</table>
 								</div>
@@ -160,13 +166,4 @@ const Lab = props => {
 	);
 };
 
-const mapStateToProps = state => {
-	return {
-		patient: state.user.patient,
-		Requests: state.patient.labRequests,
-	};
-};
-
-export default connect(mapStateToProps, {
-	getRequestByType,
-})(withRouter(Lab));
+export default withRouter(Lab);

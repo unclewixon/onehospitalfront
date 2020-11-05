@@ -1,17 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import isEmpty from 'lodash.isempty';
-
-import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
+
+import waiting from '../../assets/images/waiting.gif';
 import { request, confirmAction } from '../../services/utilities';
 import { patientAPI } from '../../services/constants';
 import ClinicalLabItem from '../../components/ClinicalLabItem';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
-import { loadClinicalLab } from '../../actions/patient';
 import ModalClinicalLab from './../../components/Modals/ModalClinicalLab';
 
 const { RangePicker } = DatePicker;
@@ -29,53 +26,30 @@ class AllRequest extends Component {
 		showModal: false,
 		activeRequest: null,
 		loaded: false,
+		labs: [],
 	};
 
 	componentDidMount() {
-		this.fetchClinicalLab(() => {
-			this.setState({ loading: false, filtering: false });
-		});
+		this.fetchLabs();
 	}
-	fetchClinicalLab = async cb => {
+
+	fetchLabs = async () => {
 		const { startDate, endDate, status } = this.state;
 		try {
 			this.setState({ loading: true });
-			// `${patientAPI}/requests/lab?startDate=${startDate}&endDate=${endDate}&status=${status}&filled=true`,
-			const rs = await request(
-				`${patientAPI}/requests/lab?startDate=${startDate}&endDate=${endDate}&status=${status}`,
-				'GET',
-				true
-			);
-
-			// const filterResponse = () => {
-			// 	const res = rs.map(lab => {
-			// 		const filtered = lab.requestBody.groups.filter(group => {
-			// 			const filt = group.parameters.some(param => param.result === '');
-			// 			return filt;
-			// 		});
-			// 		return filtered && filtered.length ? lab : [];
-			// 	});
-			// 	return res && res.length ? res : null;
-			// };
-			// const newResp = filterResponse().filter(fil => fil.length !== 0);
-
-			this.props.loadClinicalLab(rs);
-			cb();
+			const url = `${patientAPI}/requests/lab?startDate=${startDate}&endDate=${endDate}&status=${status}`;
+			const rs = await request(url, 'GET', true);
+			this.setState({ labs: rs, loading: false, filtering: false });
 		} catch (error) {
 			console.log(error);
 			notifyError('Error fetching all lab request');
-			cb();
 		}
 	};
 
 	doFilter = e => {
 		if (e) e.preventDefault();
-
 		this.setState({ filtering: true });
-
-		this.fetchClinicalLab(() =>
-			this.setState({ filtering: false, loading: false })
-		);
+		this.fetchLabs();
 	};
 
 	change = e => {
@@ -116,8 +90,7 @@ class AllRequest extends Component {
 	};
 
 	render() {
-		const { filtering, loading, activeRequest, showModal } = this.state;
-		const { clinicalLab } = this.props;
+		const { filtering, loading, activeRequest, showModal, labs } = this.state;
 
 		return (
 			<>
@@ -179,39 +152,29 @@ class AllRequest extends Component {
 								<thead>
 									<tr>
 										<th>
-											<div className="th-inner "></div>
-											<div className="fht-cell"></div>
-										</th>
-										<th>
-											<div className="th-inner sortable both">S/N</div>
-											<div className="fht-cell"></div>
-										</th>
-										<th>
 											<div className="th-inner sortable both">Request Date</div>
 											<div className="fht-cell"></div>
 										</th>
 										<th>
-											<div className="th-inner sortable both">Patient Name</div>
+											<div className="th-inner sortable both">Lab</div>
 											<div className="fht-cell"></div>
 										</th>
 										<th>
-											<div className="th-inner sortable both">Request By</div>
+											<div className="th-inner sortable both">Patient</div>
 											<div className="fht-cell"></div>
 										</th>
 										<th>
-											<div className="th-inner sortable both">
-												Approval Status
-											</div>
+											<div className="th-inner sortable both">By</div>
 											<div className="fht-cell"></div>
 										</th>
 										<th>
-											<div className="th-inner "></div>
+											<div className="th-inner"></div>
 											<div className="fht-cell"></div>
 										</th>
 									</tr>
 								</thead>
 								<tbody>
-									{clinicalLab.reverse().map((lab, index) => {
+									{labs.reverse().map((lab, index) => {
 										return (
 											<ClinicalLabItem
 												key={lab.id}
@@ -228,7 +191,7 @@ class AllRequest extends Component {
 								</tbody>
 							</table>
 						)}
-						{!isEmpty(clinicalLab) ? null : (
+						{labs.length === 0 && (
 							<div className="text-center">No lab request found!</div>
 						)}
 					</div>
@@ -245,10 +208,4 @@ class AllRequest extends Component {
 	}
 }
 
-const mapStateToProps = state => {
-	return {
-		clinicalLab: state.patient.clinicalLab,
-	};
-};
-
-export default connect(mapStateToProps, { loadClinicalLab })(AllRequest);
+export default AllRequest;

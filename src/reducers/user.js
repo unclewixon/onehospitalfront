@@ -106,6 +106,8 @@ const user = (state = INITIAL_STATE, action) => {
 				isStaffOpen: false,
 				isPatientOpen: false,
 				userID: null,
+				patient: null,
+				staff: null,
 			};
 		default:
 			return state;
