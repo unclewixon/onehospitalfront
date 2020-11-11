@@ -13,7 +13,7 @@ import {
 	addCafeteriaItem,
 	updateCafeteriaItem,
 	deleteCafeteriaItem,
-} from '../actions/Cafeteria';
+} from '../actions/cafe';
 
 import { addCafeteriaFile } from '../actions/general';
 

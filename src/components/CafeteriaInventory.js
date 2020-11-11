@@ -12,7 +12,7 @@ import {
 	addCafeteriaInventory,
 	updateCafeteriaInventory,
 	deleteCafeteriaInventory,
-} from '../actions/Cafeteria';
+} from '../actions/cafe';
 
 import { getAllCafeteriaInvCategory } from '../actions/inventory';
 
