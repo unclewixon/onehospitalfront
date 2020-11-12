@@ -72,9 +72,9 @@ const Pharmacy = ({ location, patient }) => {
 			<div className="element-wrapper">
 				<div className="element-actions">
 					<Link
-						className="btn btn-primary"
+						className="btn btn-primary btn-sm"
 						to={`${location.pathname}#pharmacy-request`}>
-						<i className="os-icon os-icon-plus"></i>
+						<i className="os-icon os-icon-plus" />
 						New Pharmacy Request
 					</Link>
 				</div>
@@ -112,7 +112,7 @@ const Pharmacy = ({ location, patient }) => {
 													<tr key={index}>
 														<td>
 															{moment(request.createdAt).format(
-																'DD-MM-YYYY : hh mm'
+																'DD-MMM-YYYY : h:mmA'
 															)}
 														</td>
 														<td>

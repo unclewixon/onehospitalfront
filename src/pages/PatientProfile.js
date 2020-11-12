@@ -97,7 +97,7 @@ const Page = ({ location }) => {
 		case 'dentistry':
 			return <Dentistry />;
 		case 'lab-request':
-			return <LabRequest />;
+			return <LabRequest module="patient" />;
 		case 'pharmacy-request':
 			return <PharmacyRequest />;
 		case 'opthalmology-request':

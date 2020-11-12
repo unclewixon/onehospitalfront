@@ -18,8 +18,6 @@ import {
 	LOAD_PATIENT_PROCEDURE_DATA,
 	ADD_PATIENT_PROCEDURE_DATA,
 	LOAD_PATIENTS,
-	GET_PHARMACY_REQUESTS,
-	GET_LAB_REQUESTS,
 	LOAD_CLINICAL_LAB,
 	LOAD_RADIOLOGY,
 	LOAD_ANTENNATAL,
@@ -421,47 +419,10 @@ export const createLabRequest = data => {
 					requestNote: data.request_note,
 				},
 			};
+
 			request('patient/save-request', 'POST', true, newRequestObj)
 				.then(response => {
 					dispatch(create_lab_request(response));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const getRequestByType = (patientId, type, start, end) => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			request(
-				patientId
-					? `patient/${patientId}/request/${type}?startDate=${start}&endDate=${end}`
-					: `patient/requests/${type}?startDate=${start}&endDate=${end}`,
-				'GET',
-				true
-			)
-				.then(response => {
-					if (type === 'lab') {
-						dispatch({
-							type: GET_LAB_REQUESTS,
-							payload: response,
-						});
-					}
-					if (type === 'pharmacy') {
-						dispatch({
-							type: GET_PHARMACY_REQUESTS,
-							payload: response,
-						});
-					}
-					if (type === 'physiotherapy') {
-						dispatch({
-							type: GET_PHYSIOTHERAPIES,
-							payload: response,
-						});
-					}
 					return resolve({ success: true });
 				})
 				.catch(error => {

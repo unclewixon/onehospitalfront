@@ -14,7 +14,6 @@ import {
 	updateCafeteriaItem,
 	deleteCafeteriaItem,
 } from '../actions/cafe';
-
 import { addCafeteriaFile } from '../actions/general';
 
 const CafeteriaItems = props => {

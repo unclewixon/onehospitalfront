@@ -36,7 +36,7 @@ const PrescriptionForm = ({
 	location,
 }) => {
 	const [refillable, setRefillable] = useState(false);
-	const { register, handleSubmit, setValue, reset, getValues } = useForm({
+	const { register, handleSubmit, setValue, reset } = useForm({
 		defaultValues,
 	});
 	const [submitting, setSubmitting] = useState(false);
@@ -256,12 +256,10 @@ const PrescriptionForm = ({
 						/>
 					</div>
 				)}
-
 				<div className="row">
 					<div className="form-group col-sm-12">
 						<label>Drug Generic Name</label>
 						<Select
-							key={`unique_key__${getValues('genericName')}`}
 							placeholder="Choose a drug generic name"
 							name="genericName"
 							ref={register({ name: 'genericName', required: true })}
@@ -294,7 +292,6 @@ const PrescriptionForm = ({
 							</div>
 						)}
 						<Select
-							key={`unique_key__${getValues('drugId')}`}
 							placeholder="Choose a drug name"
 							ref={register({ name: 'drugId', required: true })}
 							name="drugId"
@@ -357,7 +354,6 @@ const PrescriptionForm = ({
 					<div className="form-group col-sm-6">
 						<label>Frequency Type</label>
 						<Select
-							key={`unique_key__${getValues('frequencyType')}`}
 							placeholder="Frequency type"
 							ref={register({ name: 'frequencyType', required: true })}
 							name="frequencyType"
@@ -431,7 +427,6 @@ const PrescriptionForm = ({
 						<h6>Diagnosis Data</h6>
 						<AsyncSelect
 							required
-							key={`unique_key__`}
 							getOptionValue={getOptionValues}
 							getOptionLabel={getOptionLabels}
 							defaultOptions
@@ -525,32 +520,34 @@ const PrescriptionForm = ({
 													.icd10Code || request.diagnosis.procedureCode})`
 											: '-'}
 									</td>
-									<td style={{ display: 'flex', width: '64px' }}>
-										<div>
-											<EditIcon
-												onClick={() => {
-													if (editing) {
-														return;
-													} else {
-														startEdit(request, index);
-													}
-												}}
-												style={{
-													width: '1rem',
-													height: '1rem',
-													cursor: 'pointer',
-												}}
-											/>
-										</div>
-										<div className="ml-2">
-											<TrashIcon
-												onClick={() => onTrash(index)}
-												style={{
-													width: '1rem',
-													height: '1rem',
-													cursor: 'pointer',
-												}}
-											/>
+									<td>
+										<div className="flex">
+											<div>
+												<EditIcon
+													onClick={() => {
+														if (editing) {
+															return;
+														} else {
+															startEdit(request, index);
+														}
+													}}
+													style={{
+														width: '1rem',
+														height: '1rem',
+														cursor: 'pointer',
+													}}
+												/>
+											</div>
+											<div className="ml-2">
+												<TrashIcon
+													onClick={() => onTrash(index)}
+													style={{
+														width: '1rem',
+														height: '1rem',
+														cursor: 'pointer',
+													}}
+												/>
+											</div>
 										</div>
 									</td>
 								</tr>

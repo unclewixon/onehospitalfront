@@ -38,11 +38,8 @@ class SearchPatient extends Component {
 		if (size(searchTerm) >= 3) {
 			try {
 				this.setState({ searching: true, error: false, hasSearched: true });
-				const patients = await request(
-					`${searchAPI}?q=${searchTerm}`,
-					'GET',
-					true
-				);
+				const url = `${searchAPI}?q=${searchTerm}`;
+				const patients = await request(url, 'GET', true);
 				this.setState({ searching: false, patients });
 			} catch (e) {
 				this.setState({ searching: false });

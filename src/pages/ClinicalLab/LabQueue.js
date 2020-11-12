@@ -1,11 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import moment from 'moment';
 
 import ClinicalLabItem from '../../components/ClinicalLabItem';
 import { request } from '../../services/utilities';
 import { patientAPI } from '../../services/constants';
-import { loadClinicalLab } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
 import ModalClinicalLab from '../../components/Modals/ModalClinicalLab';
 
@@ -15,9 +14,11 @@ class LabQueue extends Component {
 		showModal: false,
 		filtering: false,
 		activeRequest: null,
-		startDate: '',
+		labs: [],
+		startDate: moment().format('YYYY-MM-DD'),
 		endDate: '',
 	};
+
 	componentDidMount() {
 		this.fetchRequests();
 	}
@@ -26,22 +27,9 @@ class LabQueue extends Component {
 		try {
 			const { startDate, endDate } = this.state;
 			this.setState({ ...this.state, loading: true });
-
 			const url = `${patientAPI}/requests/lab?startDate=${startDate}&endDate=${endDate}`;
 			const rs = await request(url, 'GET', true);
-			const filterResponse = () => {
-				const res = rs.map(lab => {
-					const filtered = lab.requestBody.groups.filter(group => {
-						const filt = group.parameters.some(param => param.result === '');
-						return filt;
-					});
-					return filtered && filtered.length ? lab : [];
-				});
-				return res && res.length ? res : null;
-			};
-			const newResp = filterResponse().filter(fil => fil.length !== 0);
-			this.props.loadClinicalLab(newResp);
-			return this.setState({ ...this.state, loading: false });
+			this.setState({ ...this.state, loading: false, labs: rs });
 		} catch (error) {
 			this.setState({ ...this.state, loading: false });
 		}
@@ -54,9 +42,7 @@ class LabQueue extends Component {
 	};
 
 	render() {
-		const { clinicalLab } = this.props;
-		const { loading } = this.state;
-
+		const { loading, labs } = this.state;
 		return (
 			<>
 				<div className="element-box p-3 m-0 mt-3">
@@ -67,32 +53,27 @@ class LabQueue extends Component {
 							<thead>
 								<tr>
 									<th>
-										<div className="th-inner "></div>
-										<div className="fht-cell"></div>
-									</th>
-									<th>
-										<div className="th-inner sortable both">S/N</div>
-										<div className="fht-cell"></div>
-									</th>
-									<th>
 										<div className="th-inner sortable both">Request Date</div>
 										<div className="fht-cell"></div>
 									</th>
 									<th>
-										<div className="th-inner sortable both">Patient Name</div>
+										<div className="th-inner sortable both">Lab</div>
 										<div className="fht-cell"></div>
 									</th>
 									<th>
-										<div className="th-inner sortable both">Request By</div>
+										<div className="th-inner sortable both">Patient</div>
 										<div className="fht-cell"></div>
 									</th>
 									<th>
-										<div className="th-inner "></div>
+										<div className="th-inner sortable both">By</div>
+										<div className="fht-cell"></div>
+									</th>
+									<th>
+										<div className="th-inner"></div>
 										<div className="fht-cell"></div>
 									</th>
 								</tr>
 							</thead>
-
 							{loading ? (
 								<tbody>
 									<tr>
@@ -103,10 +84,10 @@ class LabQueue extends Component {
 								</tbody>
 							) : (
 								<tbody>
-									{clinicalLab.map((lab, index) => {
+									{labs.map((lab, index) => {
 										return (
 											<ClinicalLabItem
-												key={lab.id}
+												key={index}
 												lab={lab}
 												index={index}
 												modalClick={item => {
@@ -134,9 +115,4 @@ class LabQueue extends Component {
 	}
 }
 
-const mapStateToProps = state => {
-	return {
-		clinicalLab: state.patient.clinicalLab,
-	};
-};
-export default connect(mapStateToProps, { loadClinicalLab })(LabQueue);
+export default LabQueue;
