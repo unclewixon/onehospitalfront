@@ -18,13 +18,17 @@ const CafeteriaTransactionTable = props => {
 	const onModalClick = () => {
 		setToggle(!toggle);
 	};
-
 	const calSubTotal = () => {
-		return props.cart.reduce((total, order) => {
-			return total + order.price;
-		}, 0);
+		if (!props.cart.length) {
+			return 0;
+		} else {
+			return props.cart.reduce(
+				(total, order) => total + Number(order.sales_price),
+				0
+			);
+		}
 	};
-
+	console.log(calSubTotal());
 	const calBalance = () => {
 		return calSubTotal() - amountPaid;
 	};
@@ -51,6 +55,7 @@ const CafeteriaTransactionTable = props => {
 
 	useEffect(() => {
 		if (!loaded) {
+			console.log(props.cart);
 			setOrders(props.orders);
 			setLoaded(true);
 		}
@@ -85,7 +90,7 @@ const CafeteriaTransactionTable = props => {
 									padding: '5px 0px 5px 40px',
 									fontSize: '12px',
 								}}>
-								{orders ? calSubTotal() : 0}
+								{calSubTotal()}
 							</td>
 						</tr>
 						<tr>
@@ -153,6 +158,8 @@ const CafeteriaTransactionTable = props => {
 						type={type}
 						customer={props.customer}
 						special={props.special}
+						calSubTotal={calSubTotal}
+						amountPaid={amountPaid}
 						calBalance={calBalance}
 					/>
 				) : null}

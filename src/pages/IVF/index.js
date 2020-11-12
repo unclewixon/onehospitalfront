@@ -4,6 +4,7 @@ import { Switch, withRouter, Route } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
 import { connect } from 'react-redux';
+import PatientTreatMentSheet from './PatientTreatMentSheet';
 
 const IVF = lazy(() => import('./IVF'));
 const Enrollment = lazy(() => import('./Enrollment'));
@@ -44,6 +45,11 @@ export class index extends Component {
 									component={HcgAdministration}
 								/>
 
+								<Route
+									exact
+									path={`${match.url}/reg`}
+									component={PatientTreatMentSheet}
+								/>
 								<Route component={NoMatch} />
 							</Switch>
 						</Suspense>

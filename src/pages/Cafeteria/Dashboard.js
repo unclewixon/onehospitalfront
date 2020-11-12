@@ -16,45 +16,6 @@ import CafeteriaCustomerDetail from '../../components/CafeteriaCustomerDetail';
 import CafeteriaTransactionTable from '../../components/CafeteriaTransactionTable';
 import searchingGIF from '../../assets/images/searching.gif';
 
-// const allItems = [
-// 	{
-// 		id: 1,
-// 		item: 'Rice',
-// 		quantity: 1,
-// 		price: 110,
-// 	},
-// 	{
-// 		id: 2,
-// 		item: 'Chicken',
-// 		quantity: 1,
-// 		price: 80,
-// 	},
-// 	{
-// 		id: 3,
-// 		item: 'Water (25cl)',
-// 		quantity: 1,
-// 		price: 120,
-// 	},
-// 	{
-// 		id: 4,
-// 		item: 'Beans',
-// 		quantity: 1,
-// 		price: 260,
-// 	},
-// 	{
-// 		id: 5,
-// 		item: 'Egusi Soup',
-// 		quantity: 1,
-// 		price: 160,
-// 	},
-// 	{
-// 		id: 6,
-// 		item: 'Bitter Leaf',
-// 		quantity: 1,
-// 		price: 90,
-// 	},
-// ];
-
 const CafeteriaDashboard = () => {
 	const [patients, setPatients] = useState([]);
 	const [customer, setCustomer] = useState('');
@@ -306,9 +267,11 @@ const CafeteriaDashboard = () => {
 												className="col-4 col-sm-4">
 												<div className="profile-tile profile-tile-inlined">
 													<a className="profile-tile-box">
-														<div>{item.item}</div>
+														<div>
+															{item.quantity} {item.name}
+														</div>
 														<div className="pt-avatar-w">
-															{formatCurrency(item.price)}
+															{formatCurrency(item.sales_price)}
 														</div>
 													</a>
 												</div>
@@ -480,10 +443,12 @@ const CafeteriaDashboard = () => {
 													return (
 														<tr key={i}>
 															<td className="text-center">
-																<span>{item.item}</span>
+																<span>{item.name}</span>
 															</td>
 															<td className="text-center">{item.quantity}</td>
-															<td className="text-center">{item.price}</td>
+															<td className="text-center">
+																{item.sales_price}
+															</td>
 															<td className="text-center">
 																<button
 																	className="btn btn-primary btn-sm mx-3"

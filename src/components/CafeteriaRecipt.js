@@ -138,25 +138,32 @@ const CafeteriaRecipt = props => {
 								{props.cart && props.cart.length
 									? props.cart.map((item, i) => (
 											<tr key={i}>
-												<td>{item?.item}</td>
+												<td>{item?.name}</td>
 												<td className="text-center">{item?.quantity}</td>
-												<td className="text-center">{item?.price}</td>
+												<td className="text-center">{item?.sales_price}</td>
 											</tr>
 									  ))
 									: null}
 								<tr>
-									<td
-										style={{
-											padding: '5px 0px',
-										}}>
+									<td colSpan={2} className="text-bold">
 										Total
 									</td>
-									<td
-										style={{
-											textAlign: 'right',
-											padding: '5px 0px 5px 40px',
-										}}>
-										&#x20A6; 123
+									<td className="text-center text-bold">
+										{props.calSubTotal()}
+									</td>
+								</tr>
+								<tr>
+									<td colSpan={2} className="text-bold">
+										Amount Paid
+									</td>
+									<td className="text-center text-bold">{props.amountPaid}</td>
+								</tr>
+								<tr>
+									<td colSpan={2} className="text-bold">
+										Balance
+									</td>
+									<td className="text-center text-bold">
+										{props.calBalance()}
 									</td>
 								</tr>
 							</tbody>
@@ -166,37 +173,6 @@ const CafeteriaRecipt = props => {
 								No item added, Check back later!
 							</div>
 						) : null}
-						<div>
-							<table
-								style={{
-									marginLeft: 'auto',
-									marginTop: ' 15px',
-									borderTop: '3px solid #eee',
-									paddingtop: '20px',
-									marginBottom: '20px',
-									fontsize: '25px',
-									fontWeight: 'bold',
-								}}>
-								<tbody>
-									<tr>
-										<td
-											style={{
-												padding: '5px 0px',
-											}}>
-											Total
-										</td>
-										<td
-											style={{
-												textAlign: 'right',
-												padding: '5px 0px 5px 40px',
-											}}>
-											&#x20A6;
-											{props.calBalance()}
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
 						<div>
 							<p className="justify-center">
 								<strong>Thanks for your patronage!</strong>  Payment is expected
