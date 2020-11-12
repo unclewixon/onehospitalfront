@@ -2,52 +2,19 @@
 import React, { useState, useEffect } from 'react';
 import size from 'lodash.size';
 import isEmpty from 'lodash.isempty';
+import Pagination from 'antd/lib/pagination';
 
-import { staffAPI, searchAPI } from '../../services/constants';
-import { request, formatCurrency } from '../../services/utilities';
+import {
+	staffAPI,
+	searchAPI,
+	inventoryAPI,
+	paginate,
+} from '../../services/constants';
+import { request, formatCurrency, itemRender } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import CafeteriaCustomerDetail from '../../components/CafeteriaCustomerDetail';
 import CafeteriaTransactionTable from '../../components/CafeteriaTransactionTable';
 import searchingGIF from '../../assets/images/searching.gif';
-
-const allItems = [
-	{
-		id: 1,
-		item: 'Rice',
-		quantity: 1,
-		price: 110,
-	},
-	{
-		id: 2,
-		item: 'Chicken',
-		quantity: 1,
-		price: 80,
-	},
-	{
-		id: 3,
-		item: 'Water (25cl)',
-		quantity: 1,
-		price: 120,
-	},
-	{
-		id: 4,
-		item: 'Beans',
-		quantity: 1,
-		price: 260,
-	},
-	{
-		id: 5,
-		item: 'Egusi Soup',
-		quantity: 1,
-		price: 160,
-	},
-	{
-		id: 6,
-		item: 'Bitter Leaf',
-		quantity: 1,
-		price: 90,
-	},
-];
 
 const CafeteriaDashboard = () => {
 	const [patients, setPatients] = useState([]);
@@ -72,15 +39,33 @@ const CafeteriaDashboard = () => {
 	const [submitting, setSubmitting] = useState(false);
 	const [cart, setCart] = useState([]);
 	const [searchTerm, setSearchTerm] = useState('');
-	const [searchResults, setSearchResults] = useState([]);
+	// const [searchResults, setSearchResults] = useState([]);
+	const [paging, setPaging] = useState({
+		meta: paginate,
+	});
+
+	const fetchInventories = async page => {
+		try {
+			const p = page || 1;
+			const url = `${inventoryAPI}?page=${p}&limit=20&cafeteria`;
+			const rs = await request(url, 'GET', true);
+			console.log(rs);
+			const { result, ...meta } = rs;
+			setCafeteriaItems(result);
+			setPaging({ meta });
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	useEffect(() => {
 		if (!loaded) {
-			setCafeteriaItems(allItems);
-			setSearchResults(allItems);
+			fetchInventories();
+			// setCafeteriaItems(allItems);
+			// setSearchResults(cafeteriaItems);
 			setLoaded(true);
 		}
-	}, [loaded]);
+	}, [loaded, cafeteriaItems]);
 
 	const changeCustomer = e => {
 		setCustomer(e.target.value);
@@ -240,7 +225,12 @@ const CafeteriaDashboard = () => {
 			data.item.toLowerCase().includes(text.toLowerCase())
 		);
 
-		setSearchResults(results);
+		setCafeteriaItems(results);
+	};
+
+	const onNavigatePage = pageNumber => {
+		fetchInventories(pageNumber);
+		window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
 
 	return (
@@ -262,29 +252,41 @@ const CafeteriaDashboard = () => {
 												aria-label="Recipient's username"
 												aria-describedby="basic-addon2"
 											/>
-											<div className="input-group-append">
+											{/* <div className="input-group-append">
 												<span className="input-group-text" id="basic-addon2">
 													filter
 												</span>
-											</div>
+											</div> */}
 										</div>
 									</div>
 									<div className="row">
-										{searchResults.map((item, i) => (
+										{cafeteriaItems.map((item, i) => (
 											<div
 												key={i}
 												onClick={() => setCart([...cart, item])}
 												className="col-4 col-sm-4">
 												<div className="profile-tile profile-tile-inlined">
 													<a className="profile-tile-box">
-														<div>{item.item}</div>
+														<div>
+															{item.quantity} {item.name}
+														</div>
 														<div className="pt-avatar-w">
-															{formatCurrency(item.price)}
+															{formatCurrency(item.sales_price)}
 														</div>
 													</a>
 												</div>
 											</div>
 										))}
+									</div>
+									<div className="pagination pagination-center mt-4">
+										<Pagination
+											current={parseInt(paging.meta.currentPage, 10)}
+											pageSize={parseInt(paging.meta.itemsPerPage, 10)}
+											total={parseInt(paging.meta.totalPages, 10)}
+											showTotal={total => `Total ${total} stocks`}
+											itemRender={itemRender}
+											onChange={onNavigatePage}
+										/>
 									</div>
 								</div>
 							</div>
@@ -441,10 +443,12 @@ const CafeteriaDashboard = () => {
 													return (
 														<tr key={i}>
 															<td className="text-center">
-																<span>{item.item}</span>
+																<span>{item.name}</span>
 															</td>
 															<td className="text-center">{item.quantity}</td>
-															<td className="text-center">{item.price}</td>
+															<td className="text-center">
+																{item.sales_price}
+															</td>
 															<td className="text-center">
 																<button
 																	className="btn btn-primary btn-sm mx-3"

@@ -4,17 +4,6 @@ import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
 
 const Cafeteria = lazy(() => import('./Cafeteria'));
-// const Inventory = lazy(() => import('./Inventory'));
-const CafeteriaItems = lazy(() => import('../../components/CafeteriaItems'));
-const CafeteriaCategory = lazy(() =>
-	import('../../components/CafeteriaCategory')
-);
-const CafeteriaInvCategory = lazy(() =>
-	import('../../components/CafeteriaInvCategory')
-);
-const CafeteriaInventory = lazy(() =>
-	import('../../components/CafeteriaInventory')
-);
 
 class index extends Component {
 	render() {
@@ -24,26 +13,6 @@ class index extends Component {
 				<Suspense fallback={<Splash />}>
 					<Switch>
 						<Route exact path={`${match.url}/`} component={Cafeteria} />
-						<Route
-							exact
-							path={`${match.url}/items/category`}
-							component={CafeteriaCategory}
-						/>
-						<Route
-							exact
-							path={`${match.url}/items`}
-							component={CafeteriaItems}
-						/>
-						<Route
-							exact
-							path={`${match.url}/inventory/category`}
-							component={CafeteriaInvCategory}
-						/>
-						<Route
-							exact
-							path={`${match.url}/inventory`}
-							component={CafeteriaInventory}
-						/>
 						<Route component={NoMatch} />
 					</Switch>
 				</Suspense>

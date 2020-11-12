@@ -36,6 +36,9 @@ const AllInPatients = lazy(() =>
 const AllNotifications = lazy(() =>
 	import('../../components/FrontDesk/AllNotifications')
 );
+const InsuranceTrans = lazy(() =>
+	import('../../components/FrontDesk/InsuranceTrans')
+);
 
 const FrontDesk = props => {
 	const [title, setTitle] = useState('Dashboard');
@@ -130,6 +133,10 @@ const FrontDesk = props => {
 											<Route
 												path={`${match.url}/notifications`}
 												component={AllNotifications}
+											/>
+											<Route
+												path={`${match.url}/insurance-trans`}
+												component={InsuranceTrans}
 											/>
 											<Route component={NoMatch} />
 										</Switch>
