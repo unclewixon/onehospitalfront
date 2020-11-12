@@ -144,6 +144,21 @@ const CafeteriaRecipt = props => {
 											</tr>
 									  ))
 									: null}
+								<tr>
+									<td
+										style={{
+											padding: '5px 0px',
+										}}>
+										Total
+									</td>
+									<td
+										style={{
+											textAlign: 'right',
+											padding: '5px 0px 5px 40px',
+										}}>
+										&#x20A6; 123
+									</td>
+								</tr>
 							</tbody>
 						</table>
 						{!props.cart.length ? (

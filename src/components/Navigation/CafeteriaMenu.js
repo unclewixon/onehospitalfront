@@ -13,19 +13,11 @@ const CafeteriaMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/cafeteria/inventory">
+				<Link to="/inventory/list">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers" />
 					</div>
 					<span>Inventory</span>
-				</Link>
-			</li>
-			<li>
-				<Link to="/cafeteria/items/">
-					<div className="icon-w">
-						<div className="os-icon os-icon-layers" />
-					</div>
-					<span>Item</span>
 				</Link>
 			</li>
 		</>
