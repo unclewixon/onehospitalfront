@@ -1,20 +1,16 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Fragment } from 'react';
-
-import {
-	confirmAction,
-	trimText,
-	formatCurrency,
-} from '../../services/utilities';
-
-import searchingGIF from '../../assets/images/searching.gif';
+import React, { useState } from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { deleteTransaction } from '../../actions/transaction';
 import Tooltip from 'antd/lib/tooltip';
+
+import { confirmAction, formatCurrency } from '../../services/utilities';
+import searchingGIF from '../../assets/images/searching.gif';
+import { deleteTransaction } from '../../actions/transaction';
 import { applyVoucher, approveTransaction } from '../../actions/general';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { Can } from '../common/Can';
+import ModalServiceDetails from '../Modals/ModalServiceDetails';
 
 const TransactionTable = ({
 	approveTransaction,
@@ -23,10 +19,14 @@ const TransactionTable = ({
 	handlePrint,
 	transactions,
 	loading,
-	today,
+	queue,
 	showPrint = false,
 	showActionBtns,
+	columns,
 }) => {
+	const [showModal, setShowModal] = useState(false);
+	const [details, setDetails] = useState([]);
+
 	const doApproveTransaction = item => {
 		approveTransaction(item);
 	};
@@ -47,109 +47,134 @@ const TransactionTable = ({
 		confirmAction(onDeleteTransaction, data);
 	};
 
-	console.log(transactions);
+	const viewDetails = data => {
+		document.body.classList.add('modal-open');
+		setShowModal(true);
+		setDetails(data);
+	};
+
+	const closeModal = () => {
+		document.body.classList.remove('modal-open');
+		setShowModal(false);
+		setDetails(null);
+	};
 
 	return (
-		<tbody>
-			{loading ? (
-				<tr>
-					<td colSpan="6" className="text-center">
-						<img alt="searching" src={searchingGIF} />
-					</td>
-				</tr>
-			) : transactions.length > 0 ? (
-				transactions.map((transaction, index) => {
-					return (
-						<tr key={index}>
-							<td className="" hidden={today}>
-								{moment(transaction.createdAt).format('YYYY/MM/DD')}
-							</td>
-							<td className="">
-								{`${transaction.patient?.other_names} ${transaction.patient?.surname}`}
-							</td>
-							<td>Pharmacy</td>
-							<td className="">
-								{transaction.serviceType ? (
-									<Tooltip title={transaction.serviceType.name} trigger="hover">
-										{transaction.serviceType?.name
-											? transaction.serviceType.name
-											: 'No service yet'}
-									</Tooltip>
-								) : transaction.service ? (
-									<Tooltip
-										title={transaction.service.name}
-										trigger="hover"
-										mouseEnterDelay={0.1}>
-										{transaction.service?.name
-											? trimText(transaction.service.name, 50)
-											: 'No service yet'}
-									</Tooltip>
-								) : null}
-							</td>
-							<td className="text-center">
-								{formatCurrency(transaction.amount ? transaction.amount : 0)}
-							</td>
-
-							<td className="text-center">
-								{formatCurrency(transaction?.balance ? transaction.balance : 0)}
-							</td>
-							<td className="">
-								{transaction.payment_type
-									? transaction.payment_type
-									: 'Not specified'}
-							</td>
-							<td className="text-center row-actions">
-								{showActionBtns && (
-									<Fragment>
-										{transaction.payment_type !== 'HMO' && (
-											<Fragment>
-												<Tooltip title="Approve Transactions">
-													<a
-														className="secondary"
-														onClick={() => doApproveTransaction(transaction)}>
-														<i className="os-icon os-icon-thumbs-up" />
-													</a>
-												</Tooltip>
-
-												<Tooltip title="Apply Voucher">
-													<a
-														className="secondary"
-														onClick={() => doApplyVoucher(transaction)}>
-														<i className="os-icon os-icon-folder-plus" />
-													</a>
-												</Tooltip>
-											</Fragment>
-										)}
-										<Can I="delete-transaction" on="all">
-											<Tooltip title="Delete Transactions">
-												<a
-													className="text-danger"
-													onClick={() => confirmDelete(transaction)}>
-													<i className="os-icon os-icon-ui-15" />
-												</a>
-											</Tooltip>
-										</Can>
-									</Fragment>
-								)}
-								{showPrint ? (
-									<Tooltip title="Print">
-										<a
-											className="text-danger"
-											onClick={e => handlePrint(e, transaction)}>
-											<i className="os-icon os-icon-printer" />
-										</a>
-									</Tooltip>
-								) : null}
+		<>
+			<table className="table table-striped">
+				<thead>
+					<tr>
+						{!queue && <th>DATE</th>}
+						<th>PATIENT NAME</th>
+						<th>DEPARTMENT</th>
+						<th>SERVICE</th>
+						<th>AMOUNT (&#x20A6;)</th>
+						<th>PAYMENT TYPE (&#x20A6;)</th>
+						<th className="text-center">ACTIONS</th>
+					</tr>
+				</thead>
+				<tbody>
+					{loading && (
+						<tr>
+							<td colSpan={columns} className="text-center">
+								<img alt="searching" src={searchingGIF} />
 							</td>
 						</tr>
-					);
-				})
-			) : (
-				<tr className="text-center">
-					<td colSpan="7">No transaction</td>
-				</tr>
+					)}
+					{transactions.map((transaction, index) => {
+						return (
+							<tr key={index}>
+								<td hidden={queue}>
+									{moment(transaction.createdAt).format('DD-MM-YYYY H:mma')}
+								</td>
+								<td>
+									{`${transaction.patient?.other_names} ${transaction.patient?.surname}`}
+								</td>
+								<td className="flex">
+									<span className="text-capitalize">
+										{transaction.transaction_type}
+									</span>
+									<a
+										className="item-title text-primary text-underline ml-2"
+										onClick={() =>
+											viewDetails(transaction.transaction_details)
+										}>
+										details
+									</a>
+								</td>
+								<td>
+									{formatCurrency(transaction.amount ? transaction.amount : 0)}
+								</td>
+								<td>
+									{formatCurrency(
+										transaction?.balance ? transaction.balance : 0
+									)}
+								</td>
+								<td>
+									{transaction.payment_type
+										? transaction.payment_type
+										: 'Not specified'}
+								</td>
+								<td className="text-center row-actions">
+									{showActionBtns && transaction.status === 0 && (
+										<>
+											{transaction.payment_type !== 'HMO' && (
+												<>
+													<Tooltip title="Approve Transactions">
+														<a
+															className="secondary"
+															onClick={() => doApproveTransaction(transaction)}>
+															<i className="os-icon os-icon-thumbs-up" />
+														</a>
+													</Tooltip>
+
+													<Tooltip title="Apply Voucher">
+														<a
+															className="secondary"
+															onClick={() => doApplyVoucher(transaction)}>
+															<i className="os-icon os-icon-folder-plus" />
+														</a>
+													</Tooltip>
+												</>
+											)}
+											<Can I="delete-transaction" on="all">
+												<Tooltip title="Delete Transactions">
+													<a
+														className="text-danger"
+														onClick={() => confirmDelete(transaction)}>
+														<i className="os-icon os-icon-ui-15" />
+													</a>
+												</Tooltip>
+											</Can>
+										</>
+									)}
+									{showPrint ? (
+										<Tooltip title="Print">
+											<a
+												className="text-info"
+												onClick={e => handlePrint(e, transaction)}>
+												<i className="os-icon os-icon-printer" />
+											</a>
+										</Tooltip>
+									) : null}
+								</td>
+							</tr>
+						);
+					})}
+					{transactions.length === 0 && (
+						<tr className="text-center">
+							<td colSpan={queue ? 6 : 7}>No transactions</td>
+						</tr>
+					)}
+				</tbody>
+			</table>
+			{showModal && (
+				<ModalServiceDetails
+					details={details}
+					closeModal={() => closeModal()}
+				/>
 			)}
-		</tbody>
+		</>
 	);
 };
 

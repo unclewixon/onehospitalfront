@@ -1,3 +1,12 @@
+.h7 {
+	font-size: 0.85rem;
+}
+.h-auto {
+	min-height: auto !important;
+}
+.gp-block {
+	display: block !important;
+}
 .os-tabs-controls.os-tabs-complex .nav-item .nav-link {
 	padding: 8px 10px;
 }
@@ -148,6 +157,99 @@
 	display: block;
 }
 
+.invoice-POS {
+	box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
+	padding: 2mm;
+	margin: 0 auto;
+	width: 44mm;
+	background: #fff;
+
+	h1 {
+		font-size: 1.5em;
+		color: #222;
+	}
+	h2 {
+		font-size: 0.9em;
+	}
+	h3 {
+		font-size: 1.2em;
+		font-weight: 300;
+		line-height: 2em;
+	}
+	p {
+		font-size: 0.7em;
+		color: #666;
+		line-height: 1.2em;
+	}
+
+	#top,
+	#mid,
+	#bot {
+		/* Targets all id with 'col-' */
+		border-bottom: 1px solid #eee;
+	}
+
+	#top {
+		min-height: 100px;
+	}
+	#mid {
+		min-height: 80px;
+	}
+	#bot {
+		min-height: 50px;
+	}
+
+	#top .logo {
+		//float: left;
+		height: 60px;
+		width: 60px;
+		background: url(http://michaeltruong.ca/images/logo1.png) no-repeat;
+		background-size: 60px 60px;
+	}
+	.clientlogo {
+		float: left;
+		height: 60px;
+		width: 60px;
+		background: url(http://michaeltruong.ca/images/client.jpg) no-repeat;
+		background-size: 60px 60px;
+		border-radius: 50px;
+	}
+	.info {
+		display: block;
+		//float:left;
+		margin-left: 0;
+	}
+	.title {
+		float: right;
+	}
+	.title p {
+		text-align: right;
+	}
+	table {
+		width: 100%;
+		border-collapse: collapse;
+	}
+
+	.tabletitle {
+		//padding: 5px;
+		font-size: 0.5em;
+		background: #eee;
+	}
+	.service {
+		border-bottom: 1px solid #eee;
+	}
+	.item {
+		width: 24mm;
+	}
+	.itemtext {
+		font-size: 0.5em;
+	}
+
+	#legalcopy {
+		margin-top: 5mm;
+	}
+}
+
 .recirpt-address{
   text-align: center;
 }
@@ -189,4 +291,20 @@
 @page {
   size: auto;
   margin: 20mm;
+}
+
+tr {
+	&.urgent {
+		background-color: #d29fa9 !important;
+	}
+}
+
+.display-flex {
+	display: flex;
+}
+.text-underline {
+	text-decoration: underline !important;
+}
+.pipeline.white {
+	box-shadow: 0 2px 10px 0 rgba(16, 37, 133, 0.1);
 }

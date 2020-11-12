@@ -100,19 +100,13 @@ export class Dashboard extends Component {
 	componentDidMount() {
 		this.fetchRadiology();
 	}
-	fetchRadiology = async () => {
-		const { startDate, endDate } = this.state;
 
+	fetchRadiology = async () => {
 		try {
+			const { startDate, endDate } = this.state;
 			this.setState({ loading: true });
-			// console.log(
-			// 	`${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}&status=${status}`
-			// );
-			const rs = await request(
-				`${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`,
-				'GET',
-				true
-			);
+			const url = `${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`;
+			const rs = await request(url, 'GET', true);
 
 			this.props.loadRadiology(rs);
 			console.log(rs);

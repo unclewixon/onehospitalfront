@@ -85,12 +85,8 @@ class ModalEditPayroll extends Component {
 		this.setState({ saving: true });
 		try {
 			console.log(JSON.stringify(data));
-			const rs = await request(
-				`${payrollAPI}/update-payslip`,
-				'PATCH',
-				true,
-				data
-			);
+			const url = `${payrollAPI}/update-payslip`;
+			const rs = await request(url, 'PATCH', true, data);
 			console.log(rs);
 			// this.props.loadUnpaidPayroll(rs);
 			this.setState({ saving: false });
@@ -211,7 +207,7 @@ class ModalEditPayroll extends Component {
 																d.deleted === 0 && (
 																	<tr key={i}>
 																		<td className="text-left">
-																			<div className="form-group text-rightfloat-left pl-0 mb-0">
+																			<div className="form-group text-right float-left pl-0 mb-0">
 																				<input
 																					className="form-control"
 																					placeholder="Deduction"

@@ -16,6 +16,7 @@ class Physiotherapy extends Component {
 		loaded: false,
 		showModal: false,
 		activeRequest: null,
+		meta: null,
 	};
 	componentDidMount() {
 		this.fetchPhysio();
@@ -25,18 +26,16 @@ class Physiotherapy extends Component {
 		this.setState({ showModal: !this.state.showModal });
 	};
 
-	fetchPhysio = async () => {
-		this.setState({ loaded: true });
-		const { patient } = this.props;
+	fetchPhysio = async p => {
 		try {
-			const rs = await request(
-				`${patientAPI}/${patient.id}/request/physiotherapy?startDate=&endDate=`,
-				'GET',
-				true
-			);
-			this.props.getPhysiotherapies(rs);
-
-			this.setState({ loaded: false });
+			const page = p || 1;
+			this.setState({ loaded: true });
+			const { patient } = this.props;
+			const url = `${patientAPI}/${patient.id}/request/physiotherapy?startDate=&endDate=&limit=10&page=${page}`;
+			const rs = await request(url, 'GET', true);
+			const { result, ...meta } = rs;
+			this.props.getPhysiotherapies(result);
+			this.setState({ loaded: false, meta });
 		} catch (error) {
 			this.setState({ loaded: false });
 			notifyError('error fetching physiotherapy requests for the patient');

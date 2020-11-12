@@ -309,13 +309,13 @@ export const confirmAction = (action, payload, alertText, alertHead) => {
 					<div>
 						<button
 							className="btn btn-danger"
-							style={{ margin: 10 }}
+							style={{ margin: '10px' }}
 							onClick={onClose}>
 							No
 						</button>
 						<button
 							className="btn btn-primary"
-							style={{ margin: 10 }}
+							style={{ margin: '10px' }}
 							onClick={onclick}>
 							Yes
 						</button>

@@ -236,6 +236,7 @@ const PrescriptionForm = ({
 						<label className="mr-2 " htmlFor="patient">
 							Patient Name
 						</label>
+						{/* TODO: change to async select */}
 						<Select
 							id="patient"
 							name="patient"
@@ -521,7 +522,7 @@ const PrescriptionForm = ({
 											: '-'}
 									</td>
 									<td>
-										<div className="flex">
+										<div className="display-flex">
 											<div>
 												<EditIcon
 													onClick={() => {

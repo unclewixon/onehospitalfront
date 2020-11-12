@@ -2,18 +2,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { request } from '../../services/utilities';
 import uniqBy from 'lodash.uniqby';
+import Tooltip from 'antd/lib/tooltip';
+import moment from 'moment';
+import DatePicker from 'antd/lib/date-picker';
+import Select from 'react-select';
 
+import { request } from '../../services/utilities';
 import { getPhysiotherapies } from '../../actions/patient';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
-import Tooltip from 'antd/lib/tooltip';
 import waiting from '../../assets/images/waiting.gif';
-import moment from 'moment';
 import ModalPhysiotherapy from '../../components/Modals/ModalPhysiotherapy';
-import DatePicker from 'antd/lib/date-picker';
-import Select from 'react-select';
+
 const { RangePicker } = DatePicker;
 
 class AllPhysiotherapy extends Component {
@@ -25,24 +26,25 @@ class AllPhysiotherapy extends Component {
 		filtering: false,
 		showModal: false,
 		activeRequest: null,
+		meta: null,
 	};
+
 	componentDidMount() {
 		this.fetchPhysio();
 	}
 
-	fetchPhysio = async patientId => {
-		const { startDate, endDate } = this.state;
-		this.setState({ loaded: true });
+	fetchPhysio = async (patientId, p) => {
 		try {
-			const rs = await request(
-				patientId
-					? `patient/${patientId}/request/physiotherapy?startDate=${startDate}&endDate=${endDate}`
-					: `patient/requests/physiotherapy?startDate=${startDate}&endDate=${endDate}`,
-				'GET',
-				true
-			);
-			this.props.getPhysiotherapies(rs);
-			return this.setState({ loaded: false, filtering: false });
+			const page = p || 1;
+			const { startDate, endDate } = this.state;
+			this.setState({ loaded: true });
+			const url = patientId
+				? `patient/${patientId}/request/physiotherapy?startDate=${startDate}&endDate=${endDate}&limit=10&page=${page}`
+				: `patient/requests/physiotherapy?startDate=${startDate}&endDate=${endDate}&limit=10&page=${page}`;
+			const rs = await request(url, 'GET', true);
+			const { result, ...meta } = rs;
+			this.props.getPhysiotherapies(result);
+			this.setState({ loaded: false, filtering: false, meta });
 		} catch (error) {
 			notifyError('error fetching physiotherapy requests');
 			this.setState({ loaded: false, filtering: false });
@@ -51,36 +53,6 @@ class AllPhysiotherapy extends Component {
 
 	onModalClick = () => {
 		this.setState({ showModal: !this.state.showModal });
-	};
-
-	formRow = (data, i) => {
-		return (
-			<tr className="" data-index="0" key={i}>
-				<td>
-					<span className="text-bold">{i + 1}</span>
-				</td>
-				<td>{moment(data.createdAt).format('DD-MM-YYYY')}</td>
-				<td>{data.patient_name}</td>
-				<td>{data && data.created_by ? data.created_by : ''}</td>
-				<td className="row-actions text-right">
-					<Tooltip title="View Request">
-						<a
-							href="#"
-							onClick={() => {
-								this.onModalClick();
-								this.setState({ activeRequest: data });
-							}}>
-							<i className="os-icon os-icon-documents-03" />
-						</a>
-					</Tooltip>
-					<Tooltip title="Print Request">
-						<a className="ml-2" href="#">
-							<i className="icon-feather-printer" />
-						</a>
-					</Tooltip>
-				</td>
-			</tr>
-		);
 	};
 
 	dateChange = e => {
@@ -95,34 +67,21 @@ class AllPhysiotherapy extends Component {
 		});
 	};
 
-	table = () =>
-		this.props &&
-		this.props.physiotherapies &&
-		this.props.physiotherapies.length
-			? this.props.physiotherapies.map((physio, i) => {
-					return this.formRow(physio, i);
-			  })
-			: [];
-
 	filterEntries = () => {
 		this.setState({ filtering: true });
 		this.fetchPhysio(this.state.patientId);
 	};
 
 	render() {
-		const { loaded, filtering } = this.state;
+		const { loaded, filtering, showModal, activeRequest } = this.state;
+		const { physiotherapies } = this.props;
 
-		const filteredNames =
-			this.props &&
-			this.props.physiotherapies &&
-			this.props.physiotherapies.length
-				? this.props.physiotherapies.map(patient => {
-						return {
-							value: patient.patient_id,
-							label: patient.patient_name,
-						};
-				  })
-				: [];
+		const filteredNames = physiotherapies.map(patient => {
+			return {
+				value: patient.patient_id,
+				label: patient.patient_name,
+			};
+		});
 
 		const filteredOptions = uniqBy(filteredNames, 'value');
 
@@ -141,13 +100,6 @@ class AllPhysiotherapy extends Component {
 					<div className="element-wrapper">
 						<div className="row">
 							<div className="col-md-12">
-								{this.state.activeRequest ? (
-									<ModalPhysiotherapy
-										activeRequest={this.state.activeRequest}
-										showModal={this.state.showModal}
-										onModalClick={this.onModalClick}
-									/>
-								) : null}
 								<h6 className="element-header">All Appointments:</h6>
 
 								<form className="row">
@@ -190,58 +142,96 @@ class AllPhysiotherapy extends Component {
 							<div className="col-sm-12">
 								<div className="element-box">
 									<div className="table-responsive">
-										{
-											<table className="table table-striped">
-												<thead>
-													<tr>
-														<th>
-															<div className="th-inner "></div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner sortable both">
-																Request Date
-															</div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner sortable both">
-																Patient Name
-															</div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner sortable both">
-																Requested by
-															</div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner "></div>
-															<div className="fht-cell"></div>
-														</th>
-													</tr>
-												</thead>
+										<table className="table table-striped">
+											<thead>
+												<tr>
+													<th>
+														<div className="th-inner "></div>
+														<div className="fht-cell"></div>
+													</th>
+													<th>
+														<div className="th-inner sortable both">
+															Request Date
+														</div>
+														<div className="fht-cell"></div>
+													</th>
+													<th>
+														<div className="th-inner sortable both">
+															Patient Name
+														</div>
+														<div className="fht-cell"></div>
+													</th>
+													<th>
+														<div className="th-inner sortable both">
+															Requested by
+														</div>
+														<div className="fht-cell"></div>
+													</th>
+													<th>
+														<div className="th-inner "></div>
+														<div className="fht-cell"></div>
+													</th>
+												</tr>
+											</thead>
 
-												<tbody>
-													{loaded ? (
-														<tr>
-															<td colSpan="6" className="text-center">
-																<img alt="searching" src={searchingGIF} />
-															</td>
-														</tr>
-													) : (
-														<>{this.table()}</>
-													)}
-												</tbody>
-											</table>
-										}
+											<tbody>
+												{loaded ? (
+													<tr>
+														<td colSpan="6" className="text-center">
+															<img alt="searching" src={searchingGIF} />
+														</td>
+													</tr>
+												) : (
+													physiotherapies.map((physio, i) => {
+														return (
+															<tr key={i}>
+																<td>
+																	<span className="text-bold">{i + 1}</span>
+																</td>
+																<td>
+																	{moment(physio.createdAt).format(
+																		'DD-MM-YYYY'
+																	)}
+																</td>
+																<td>{physio.patient_name}</td>
+																<td>{physio.created_by || ''}</td>
+																<td className="row-actions text-right">
+																	<Tooltip title="View Request">
+																		<a
+																			onClick={() => {
+																				this.onModalClick();
+																				this.setState({
+																					activeRequest: physio,
+																				});
+																			}}>
+																			<i className="os-icon os-icon-documents-03" />
+																		</a>
+																	</Tooltip>
+																	<Tooltip title="Print Request">
+																		<a className="ml-2">
+																			<i className="icon-feather-printer" />
+																		</a>
+																	</Tooltip>
+																</td>
+															</tr>
+														);
+													})
+												)}
+											</tbody>
+										</table>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
+				{activeRequest && showModal && (
+					<ModalPhysiotherapy
+						activeRequest={this.state.activeRequest}
+						showModal={this.state.showModal}
+						onModalClick={this.onModalClick}
+					/>
+				)}
 			</>
 		);
 	}

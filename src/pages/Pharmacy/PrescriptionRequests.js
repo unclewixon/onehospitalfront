@@ -3,12 +3,12 @@ import React, { Component } from 'react';
 import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
+import Pagination from 'antd/lib/pagination';
 
 import waiting from '../../assets/images/waiting.gif';
 import { notifyError } from '../../services/notify';
 import ViewPrescription from '../../components/Pharmacy/ViewPrescription';
-import { request } from '../../services/utilities';
-import { updateImmutable } from '../../services/utilities';
+import { request, updateImmutable, itemRender } from '../../services/utilities';
 
 const { RangePicker } = DatePicker;
 
@@ -24,6 +24,7 @@ class PrescriptionRequests extends Component {
 		drugs: [],
 		prescriptions: [],
 		filled: false,
+		meta: null,
 	};
 
 	closeModal = () => {
@@ -57,12 +58,14 @@ class PrescriptionRequests extends Component {
 		this.loadPrescriptions(startDate, endDate);
 	}
 
-	loadPrescriptions = async (start, end) => {
+	loadPrescriptions = async (start, end, p) => {
 		try {
+			const page = p || 1;
 			this.setState({ loading: true });
-			const url = `patient/requests/pharmacy?startDate=${start}&endDate=${end}`;
+			const url = `patient/requests/pharmacy?startDate=${start}&endDate=${end}&limit=10&page=${page}`;
 			const rs = await request(url, 'GET', true);
-			this.setState({ loading: false, prescriptions: rs });
+			const { result, ...meta } = rs;
+			this.setState({ loading: false, prescriptions: result, meta });
 		} catch (e) {
 			this.setState({ loading: false });
 			notifyError('could not fetch prescription requests');
@@ -82,6 +85,11 @@ class PrescriptionRequests extends Component {
 		this.setState({ filtering: false });
 	};
 
+	onNavigatePage = nextPage => {
+		const { startDate, endDate } = this.state;
+		this.loadPrescriptions(startDate, endDate, nextPage);
+	};
+
 	render() {
 		const {
 			filtering,
@@ -90,6 +98,7 @@ class PrescriptionRequests extends Component {
 			drugs,
 			prescriptions,
 			filled,
+			meta,
 		} = this.state;
 
 		const customStyle = {
@@ -172,8 +181,7 @@ class PrescriptionRequests extends Component {
 											</td>
 											<td>{request.created_by ? request.created_by : ''}</td>
 											<td className="nowrap">
-												{request.transaction &&
-													request.transaction.status === 0 &&
+												{request.transaction_status === 0 &&
 													request.isFilled && (
 														<span className="badge badge-info text-white">
 															Awaiting Payment
@@ -182,8 +190,7 @@ class PrescriptionRequests extends Component {
 												{request.status === 1 && (
 													<span className="badge badge-success">Completed</span>
 												)}
-												{request.transaction &&
-													request.transaction.status === 1 &&
+												{request.transaction_status === 1 &&
 													request.status === 0 && (
 														<span className="badge badge-secondary">
 															Awaiting Dispense
@@ -238,6 +245,18 @@ class PrescriptionRequests extends Component {
 							</tbody>
 						</table>
 					</div>
+					{meta && (
+						<div className="pagination pagination-center mt-4">
+							<Pagination
+								current={parseInt(meta.currentPage, 10)}
+								pageSize={parseInt(meta.itemsPerPage, 10)}
+								total={parseInt(meta.totalPages, 10)}
+								showTotal={total => `Total ${total} prescriptions`}
+								itemRender={itemRender}
+								onChange={current => this.onNavigatePage(current)}
+							/>
+						</div>
+					)}
 				</div>
 				{showModal && (
 					<ViewPrescription

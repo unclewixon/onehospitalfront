@@ -2,46 +2,44 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import uniqBy from 'lodash.uniqby';
+import Tooltip from 'antd/lib/tooltip';
+import moment from 'moment';
+import DatePicker from 'antd/lib/date-picker';
+import Select from 'react-select';
 
 import { request } from '../../services/utilities';
-import Tooltip from 'antd/lib/tooltip';
 import { notifyError } from '../../services/notify';
 import { getPhysiotherapies } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
 import waiting from '../../assets/images/waiting.gif';
-import moment from 'moment';
-import DatePicker from 'antd/lib/date-picker';
 import ModalPhysiotherapy from '../../components/Modals/ModalPhysiotherapy';
-import Select from 'react-select';
+
 const { RangePicker } = DatePicker;
 
 class PhysiotherapyDashboard extends Component {
 	state = {
 		loaded: false,
 		patientId: '',
-		startDate: moment(Date.now())
-			.subtract(1, 'days')
-			.format('YYYY-MM-DD'),
-		endDate: moment(Date.now()).format('YYYY-MM-DD'),
+		startDate: '',
+		endDate: '',
 		filtering: false,
 		showModal: false,
 		activeRequest: null,
 	};
+
 	componentDidMount() {
 		this.fetchPhysio();
 	}
+
 	fetchPhysio = async patientId => {
-		const { startDate, endDate } = this.state;
-		this.setState({ loaded: true });
 		try {
-			const rs = await request(
-				patientId
-					? `patient/${patientId}/request/physiotherapy?startDate=${startDate}&endDate=${endDate}`
-					: `patient/requests/physiotherapy?startDate=${startDate}&endDate=${endDate}`,
-				'GET',
-				true
-			);
-			this.props.getPhysiotherapies(rs);
+			const { startDate, endDate } = this.state;
+			this.setState({ loaded: true });
+			const url = patientId
+				? `patient/${patientId}/request/physiotherapy?startDate=${startDate}&endDate=${endDate}`
+				: `patient/requests/physiotherapy?startDate=${startDate}&endDate=${endDate}`;
+			const rs = await request(url, 'GET', true);
+			this.props.getPhysiotherapies(rs.result);
 			return this.setState({ loaded: false });
 		} catch (error) {
 			notifyError('error fetching physiotherapy requests');

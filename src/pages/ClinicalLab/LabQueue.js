@@ -1,116 +1,68 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import moment from 'moment';
+import Pagination from 'antd/lib/pagination';
 
-import ClinicalLabItem from '../../components/ClinicalLabItem';
-import { request } from '../../services/utilities';
+import { request, itemRender } from '../../services/utilities';
 import { patientAPI } from '../../services/constants';
-import searchingGIF from '../../assets/images/searching.gif';
-import ModalClinicalLab from '../../components/Modals/ModalClinicalLab';
+import LabBlock from '../../components/LabBlock';
 
 class LabQueue extends Component {
 	state = {
 		loading: false,
-		showModal: false,
-		filtering: false,
-		activeRequest: null,
 		labs: [],
 		startDate: moment().format('YYYY-MM-DD'),
 		endDate: '',
+		meta: null,
 	};
 
 	componentDidMount() {
 		this.fetchRequests();
 	}
 
-	fetchRequests = async () => {
+	fetchRequests = async page => {
 		try {
 			const { startDate, endDate } = this.state;
 			this.setState({ ...this.state, loading: true });
-			const url = `${patientAPI}/requests/lab?startDate=${startDate}&endDate=${endDate}`;
+			const p = page || 1;
+			const url = `${patientAPI}/requests/lab?page=${p}&limit=10&startDate=${startDate}&endDate=${endDate}`;
 			const rs = await request(url, 'GET', true);
-			this.setState({ ...this.state, loading: false, labs: rs });
+			const { result, ...meta } = rs;
+			this.setState({ ...this.state, loading: false, labs: result, meta });
+			window.scrollTo({ top: 0, behavior: 'smooth' });
 		} catch (error) {
 			this.setState({ ...this.state, loading: false });
 		}
 	};
 
-	onModalClick = () => {
-		this.setState({
-			showModal: !this.state.showModal,
-		});
+	updateLab = labs => {
+		this.setState({ labs });
+	};
+
+	onNavigatePage = nextPage => {
+		this.fetchRequests(nextPage);
 	};
 
 	render() {
-		const { loading, labs } = this.state;
+		const { loading, labs, meta } = this.state;
 		return (
-			<>
-				<div className="element-box p-3 m-0 mt-3">
-					<div className="table table-responsive">
-						<table
-							id="table"
-							className="table table-theme v-middle table-hover">
-							<thead>
-								<tr>
-									<th>
-										<div className="th-inner sortable both">Request Date</div>
-										<div className="fht-cell"></div>
-									</th>
-									<th>
-										<div className="th-inner sortable both">Lab</div>
-										<div className="fht-cell"></div>
-									</th>
-									<th>
-										<div className="th-inner sortable both">Patient</div>
-										<div className="fht-cell"></div>
-									</th>
-									<th>
-										<div className="th-inner sortable both">By</div>
-										<div className="fht-cell"></div>
-									</th>
-									<th>
-										<div className="th-inner"></div>
-										<div className="fht-cell"></div>
-									</th>
-								</tr>
-							</thead>
-							{loading ? (
-								<tbody>
-									<tr>
-										<td colSpan="4" className="text-center">
-											<img alt="searching" src={searchingGIF} />
-										</td>
-									</tr>
-								</tbody>
-							) : (
-								<tbody>
-									{labs.map((lab, index) => {
-										return (
-											<ClinicalLabItem
-												key={index}
-												lab={lab}
-												index={index}
-												modalClick={item => {
-													this.onModalClick();
-													this.setState({ activeRequest: item });
-												}}
-												refresh={() => {}}
-											/>
-										);
-									})}
-								</tbody>
-							)}
-						</table>
-					</div>
+			<div className="element-box p-3 m-0 mt-3">
+				<div className="table table-responsive">
+					<LabBlock loading={loading} labs={labs} updateLab={this.updateLab} />
 				</div>
-				{this.state.activeRequest && (
-					<ModalClinicalLab
-						activeRequest={this.state.activeRequest}
-						showModal={this.state.showModal}
-						onModalClick={this.onModalClick}
-					/>
+				{meta && (
+					<div className="pagination pagination-center mt-4">
+						<Pagination
+							current={parseInt(meta.currentPage, 10)}
+							pageSize={parseInt(meta.itemsPerPage, 10)}
+							total={parseInt(meta.totalPages, 10)}
+							showTotal={total => `Total ${total} lab results`}
+							itemRender={itemRender}
+							onChange={current => this.onNavigatePage(current)}
+						/>
+					</div>
 				)}
-			</>
+			</div>
 		);
 	}
 }

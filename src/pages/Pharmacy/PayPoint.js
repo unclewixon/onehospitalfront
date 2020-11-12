@@ -40,25 +40,12 @@ class PayPoint extends Component {
 			<div className="col-sm-12">
 				<div className="element-box m-0 p-3">
 					<div className="table-responsive">
-						<table className="table table-striped">
-							<thead>
-								<tr>
-									<th className="">PATIENT NAME</th>
-									<th className="">DEPARTMENT</th>
-									<th className="">SERVICE</th>
-									<th className="text-center">AMOUNT (&#x20A6;)</th>
-									<th className="text-center">BALANCE (&#x20A6;)</th>
-									<th className="">PAYMENT TYPE</th>
-									<th className="text-center">ACTIONS</th>
-								</tr>
-							</thead>
-							<TransactionTable
-								transactions={transactions}
-								loading={loading}
-								today={true}
-								showActionBtns={true}
-							/>
-						</table>
+						<TransactionTable
+							transactions={transactions}
+							loading={loading}
+							queue={true}
+							showActionBtns={true}
+						/>
 					</div>
 				</div>
 			</div>

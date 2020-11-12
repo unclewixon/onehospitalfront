@@ -22,25 +22,19 @@ export class RecentRequest extends Component {
 	state = {
 		loading: false,
 	};
+
 	componentDidMount() {
 		this.fetchRadiology();
 	}
-	fetchRadiology = async () => {
-		let startDate = moment()
-			.subtract(1, 'd')
-			.format('YYYY-MM-DD');
-		let endDate = moment().format('YYYY-MM-DD');
 
+	fetchRadiology = async () => {
 		try {
+			const startDate = moment().format('YYYY-MM-DD');
+			const endDate = '';
+
 			this.setState({ loading: true });
-			console.log(
-				`${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`
-			);
-			const rs = await request(
-				`${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`,
-				'GET',
-				true
-			);
+			const url = `${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`;
+			const rs = await request(url, 'GET', true);
 
 			this.props.loadRadiology(rs);
 			console.log(rs);

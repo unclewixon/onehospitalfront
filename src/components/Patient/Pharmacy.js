@@ -4,12 +4,12 @@ import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import Pagination from 'antd/lib/pagination';
 
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import ViewPrescription from '../Pharmacy/ViewPrescription';
-import { request } from '../../services/utilities';
-import { updateImmutable } from '../../services/utilities';
+import { request, updateImmutable, itemRender } from '../../services/utilities';
 
 const Pharmacy = ({ location, patient }) => {
 	const [loaded, setLoaded] = useState(false);
@@ -18,6 +18,7 @@ const Pharmacy = ({ location, patient }) => {
 	const [activeRequest, setActiveRequest] = useState(null);
 	const [prescriptions, setPrescriptions] = useState([]);
 	const [filled, setFilled] = useState(false);
+	const [meta, setMeta] = useState(null);
 
 	const startDate = '';
 	const endDate = '';
@@ -51,9 +52,11 @@ const Pharmacy = ({ location, patient }) => {
 
 	useEffect(() => {
 		const getPrescriptions = async () => {
-			const url = `patient/${patient.id}/request/pharmacy?startDate=${startDate}&endDate=${endDate}`;
+			const url = `patient/${patient.id}/request/pharmacy?startDate=${startDate}&endDate=${endDate}&limit=10`;
 			const rs = await request(url, 'GET', true);
-			setPrescriptions(rs);
+			const { result, ...meta } = rs;
+			setPrescriptions(result);
+			setMeta(meta);
 			setLoaded(true);
 		};
 
@@ -65,6 +68,19 @@ const Pharmacy = ({ location, patient }) => {
 	const updatePrescriptions = update => {
 		const updatedDrugs = updateImmutable(prescriptions, update);
 		setPrescriptions(updatedDrugs);
+	};
+
+	const fetch = async page => {
+		const url = `patient/${patient.id}/request/pharmacy?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=10`;
+		const rs = await request(url, 'GET', true);
+		const { result, ...meta } = rs;
+		setPrescriptions(result);
+		setMeta(meta);
+		setLoaded(true);
+	};
+
+	const onNavigatePage = nextPage => {
+		fetch(nextPage);
 	};
 
 	return (
@@ -176,6 +192,18 @@ const Pharmacy = ({ location, patient }) => {
 										</tbody>
 									</table>
 								</div>
+								{meta && (
+									<div className="pagination pagination-center mt-4">
+										<Pagination
+											current={parseInt(meta.currentPage, 10)}
+											pageSize={parseInt(meta.itemsPerPage, 10)}
+											total={parseInt(meta.totalPages, 10)}
+											showTotal={total => `Total ${total} prescriptions`}
+											itemRender={itemRender}
+											onChange={current => onNavigatePage(current)}
+										/>
+									</div>
+								)}
 							</div>
 						)}
 					</div>

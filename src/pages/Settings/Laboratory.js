@@ -14,6 +14,7 @@ const Laboratory = () => {
 	const [labSpecimenTab, setLabSpecimenTab] = useState(false);
 	const [toggleForm, setToggleForm] = useState(false);
 	const [labTest, setLabTest] = useState(null);
+	const [refresh, setRefresh] = useState(false);
 
 	const onLabTest = () => {
 		setLabTestTab(true);
@@ -111,7 +112,9 @@ const Laboratory = () => {
 								</div>
 							</div>
 							{labCategoryTab === true && <LabCategory />}
-							{labSpecimenTab === true && <LabSpecimen />}
+							{labSpecimenTab === true && (
+								<LabSpecimen setRefresh={setRefresh} />
+							)}
 							{labTestTab === true && <LabTest doToggleForm={doToggleForm} />}
 							{labGroupTab === true && <LabGroup />}
 						</div>
@@ -122,6 +125,7 @@ const Laboratory = () => {
 				showHide={toggleForm}
 				doToggleForm={doToggleForm}
 				labTest={labTest}
+				refreshing={refresh}
 			/>
 		</div>
 	);

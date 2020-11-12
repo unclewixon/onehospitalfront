@@ -153,7 +153,7 @@ const ViewPrescription = ({
 		try {
 			setSubmitting(true);
 			const url = `patient/request/${activeRequest.id}/approve-result`;
-			const rs = await request(url, 'GET', true);
+			const rs = await request(url, 'PATCH', true);
 
 			setSubmitting(false);
 			if (rs.success) {
@@ -320,8 +320,8 @@ const ViewPrescription = ({
 										</button>
 									)}
 									{filled &&
-										activeRequest.transaction &&
-										activeRequest.transaction.status === 1 &&
+										activeRequest.transaction_status &&
+										activeRequest.transaction_status === 1 &&
 										activeRequest.status === 0 && (
 											<button
 												onClick={() => dispense()}

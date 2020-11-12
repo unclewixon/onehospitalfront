@@ -1,4 +1,7 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import Tooltip from 'antd/lib/tooltip';
 
 import { confirmAction, request, updateImmutable } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
@@ -8,7 +11,7 @@ import { notifySuccess, notifyError } from '../services/notify';
 const LabGroup = () => {
 	const initialState = {
 		name: '',
-		price: '',
+		labs: '',
 		description: '',
 		edit: false,
 		create: true,
@@ -49,11 +52,17 @@ const LabGroup = () => {
 		e.preventDefault();
 		try {
 			setSubmitting(true);
-			const data = { name, price, description, lab_tests: labTests };
+			const data = {
+				name,
+				price,
+				description,
+				lab_tests: labTests.map(l => ({ id: l.id, name: l.name })),
+			};
 			const url = 'lab-tests/groups';
 			const rs = await request(url, 'POST', true, data);
 			setGroups([...groups, rs]);
 			setState({ ...initialState });
+			setLabTests([]);
 			setSubmitting(false);
 			notifySuccess('Lab group created!');
 		} catch (error) {
@@ -78,6 +87,7 @@ const LabGroup = () => {
 			const newGroups = updateImmutable(groups, rs);
 			setGroups([...newGroups]);
 			setState({ ...initialState });
+			setLabTests([]);
 			setSubmitButton({ create: true, edit: false });
 			setSubmitting(false);
 			notifySuccess('Lab group updated!');
@@ -103,6 +113,7 @@ const LabGroup = () => {
 		setSubmitButton({ ...initialState });
 		setState({ ...initialState });
 		setGroup(null);
+		setLabTests([]);
 	};
 
 	const onDeleteGroup = async item => {
@@ -118,6 +129,16 @@ const LabGroup = () => {
 
 	const confirmDelete = data => {
 		confirmAction(onDeleteGroup, data);
+	};
+
+	const getOptions = async q => {
+		if (!q || q.length < 3) {
+			return [];
+		}
+
+		const url = `lab-tests?q=${q}`;
+		const res = await request(url, 'GET', true);
+		return res.result;
 	};
 
 	return (
@@ -139,24 +160,44 @@ const LabGroup = () => {
 							<>
 								{groups.map((item, i) => {
 									return (
-										<div className="col-lg-4 col-xxl-3" key={i}>
-											<div className="pt-3">
-												<div className="pipeline-item">
-													<div className="pi-controls">
-														<div className="pi-settings os-dropdown-trigger">
-															<i
-																className="os-icon os-icon-ui-49"
-																onClick={() => onClickEdit(item)}></i>
+										<div className="col-lg-6 mb-2" key={i}>
+											<div className="pipeline white p-1 mb-2">
+												<div className="pipeline-body">
+													<div className="pipeline-item">
+														<div className="pi-controls">
+															<div className="pi-settings os-dropdown-trigger">
+																<Tooltip title="Edit Test">
+																	<i
+																		className="os-icon os-icon-ui-49 mr-1"
+																		onClick={() => onClickEdit(item)}
+																	/>
+																</Tooltip>
+																<Tooltip title="Delete Test">
+																	<i
+																		className="os-icon os-icon-ui-15 text-danger"
+																		onClick={() => confirmDelete(item)}
+																	/>
+																</Tooltip>
+															</div>
 														</div>
-														<div className="pi-settings os-dropdown-trigger">
-															<i
-																className="os-icon os-icon-ui-15"
-																onClick={() => confirmDelete(item)}></i>
+														<div className="pi-body mt-2">
+															<div className="pi-info">
+																<div className="h6 pi-name h7">{item.name}</div>
+																<div className="pi-sub mt-2">
+																	{item.lab_tests &&
+																		item.lab_tests.map((s, i) => (
+																			<span key={i} className="gp-block">
+																				{`• ${s.name}`}
+																			</span>
+																		))}
+																</div>
+															</div>
 														</div>
-													</div>
-													<div className="pi-body">
-														<div className="pi-info">
-															<div className="h6 pi-name">{item.name}</div>
+														<div className="pi-foot">
+															<div className="tags" />
+															<a className="extra-info">
+																<span>{`${item.lab_tests.length} tests`}</span>
+															</a>
 														</div>
 													</div>
 												</div>
@@ -190,15 +231,23 @@ const LabGroup = () => {
 								value={name}
 							/>
 						</div>
-						<div className="form-group">
-							<input
-								className="form-control"
-								placeholder="Price"
-								type="text"
-								name="price"
-								onChange={handleInputChange}
-								value={price}
-							/>
+						<div className="row">
+							<div className="form-group col-sm-12">
+								<label htmlFor="labs">Select Lab Test</label>
+								<AsyncSelect
+									isMulti
+									isClearable
+									getOptionValue={option => option.id}
+									getOptionLabel={option => option.name}
+									value={labTests}
+									name="labs"
+									loadOptions={getOptions}
+									onChange={e => {
+										setLabTests(e);
+									}}
+									placeholder="Search lab test"
+								/>
+							</div>
 						</div>
 						<div className="form-group">
 							<textarea

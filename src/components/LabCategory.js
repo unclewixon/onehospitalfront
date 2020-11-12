@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
+import Tooltip from 'antd/lib/tooltip';
 
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
@@ -126,23 +127,31 @@ const LabCategory = props => {
 							<>
 								{props.categories.map((item, i) => {
 									return (
-										<div className="col-lg-4 col-xxl-3 mb-3" key={i + 1}>
-											<div className="pipeline-item">
-												<div className="pi-controls">
-													<div className="pi-settings os-dropdown-trigger">
-														<i
-															className="os-icon os-icon-ui-49"
-															onClick={() => onClickEdit(item)}></i>
-													</div>
-													<div className="pi-settings os-dropdown-trigger">
-														<i
-															className="os-icon os-icon-ui-15"
-															onClick={() => confirmDelete(item)}></i>
-													</div>
-												</div>
-												<div className="pi-body">
-													<div className="pi-info">
-														<div className="h6 pi-name mt-2">{item.name}</div>
+										<div className="col-lg-4 mb-2" key={i}>
+											<div className="pipeline white p-1 mb-2">
+												<div className="pipeline-body h-auto">
+													<div className="pipeline-item">
+														<div className="pi-controls">
+															<div className="pi-settings os-dropdown-trigger">
+																<Tooltip title="Edit Test">
+																	<i
+																		className="os-icon os-icon-ui-49 mr-1"
+																		onClick={() => onClickEdit(item)}
+																	/>
+																</Tooltip>
+																<Tooltip title="Delete Test">
+																	<i
+																		className="os-icon os-icon-ui-15 text-danger"
+																		onClick={() => confirmDelete(item)}
+																	/>
+																</Tooltip>
+															</div>
+														</div>
+														<div className="pi-body mt-2">
+															<div className="pi-info">
+																<div className="h6 pi-name h7">{item.name}</div>
+															</div>
+														</div>
 													</div>
 												</div>
 											</div>

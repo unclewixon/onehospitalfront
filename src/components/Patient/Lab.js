@@ -1,18 +1,18 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import Tooltip from 'antd/lib/tooltip';
 import { useSelector } from 'react-redux';
-import moment from 'moment';
+import Pagination from 'antd/lib/pagination';
 
 import searchingGIF from '../../assets/images/searching.gif';
-import { Can } from '../common/Can';
-import { notifyError, notifySuccess } from '../../services/notify';
-import { confirmAction, request } from '../../services/utilities';
+import { notifyError } from '../../services/notify';
+import { request, itemRender } from '../../services/utilities';
+import LabBlock from '../LabBlock';
 
 const Lab = props => {
 	const [loaded, setLoaded] = useState(false);
 	const [labs, setLabs] = useState([]);
+	const [meta, setMeta] = useState(null);
 
 	const { location } = props;
 
@@ -21,11 +21,29 @@ const Lab = props => {
 
 	const patient = useSelector(state => state.user.patient);
 
+	const fetch = async page => {
+		try {
+			const p = page || 1;
+			const url = `patient/${patient.id}/request/lab?page=${p}&limit=10&startDate=${startDate}&endDate=${endDate}`;
+			const rs = await request(url, 'GET', true);
+			const { result, ...meta } = rs;
+			setLabs(result);
+			setMeta(meta);
+			setLoaded(true);
+		} catch (e) {
+			notifyError(e.message || 'could not fetch lab requests');
+			setLoaded(true);
+		}
+	};
+
 	const fetchLabs = useCallback(async () => {
 		try {
-			const url = `patient/${patient.id}/request/lab?startDate=${startDate}&endDate=${endDate}`;
+			const p = 1;
+			const url = `patient/${patient.id}/request/lab?page=${p}&limit=10&startDate=${startDate}&endDate=${endDate}`;
 			const rs = await request(url, 'GET', true);
-			setLabs(rs);
+			const { result, ...meta } = rs;
+			setLabs(result);
+			setMeta(meta);
 			setLoaded(true);
 		} catch (e) {
 			notifyError(e.message || 'could not fetch lab requests');
@@ -39,29 +57,12 @@ const Lab = props => {
 		}
 	}, [fetchLabs, loaded]);
 
-	const approve = async data => {
-		try {
-			const url = `patient/request/${data.id}/approve-result`;
-			const res = await request(url, 'GET', true);
-			if (res.success) {
-				notifySuccess('Result has been approved');
-				this.props.refresh();
-			} else {
-				notifyError(res.message);
-			}
-		} catch (error) {
-			console.log(error);
-			notifyError('Error approving result	');
-		}
+	const updateLab = labs => {
+		setLabs(labs);
 	};
 
-	const confirmApproval = data => {
-		confirmAction(
-			approve,
-			data,
-			'You want to approve this result',
-			'Are you sure?'
-		);
+	const onNavigatePage = nextPage => {
+		fetch(nextPage);
 	};
 
 	return (
@@ -78,11 +79,6 @@ const Lab = props => {
 				<h6 className="element-header">Lab Requests</h6>
 				<div className="element-box">
 					<div className="bootstrap-table">
-						<div className="fixed-table-toolbar">
-							<div className="bs-bars float-left">
-								<div id="toolbar" />
-							</div>
-						</div>
 						{!loaded ? (
 							<div className="text-center">
 								<img alt="searching" src={searchingGIF} />
@@ -92,71 +88,25 @@ const Lab = props => {
 								className="fixed-table-container"
 								style={{ paddingBottom: '0px' }}>
 								<div className="fixed-table-body">
-									<table
-										id="table"
-										className="table table-theme v-middle table-hover">
-										<thead>
-											<tr>
-												<th>Request Date</th>
-												<th>Lab</th>
-												<th>By</th>
-												<th />
-											</tr>
-										</thead>
-										<tbody>
-											{labs.map((lab, i) => {
-												return (
-													<>
-														{lab.requestBody.map((item, j) => {
-															return (
-																<tr key={j}>
-																	<td>
-																		<span>
-																			{moment(request.createdAt).format(
-																				'DD-MMM-YYYY h:mmA'
-																			)}
-																		</span>
-																	</td>
-																	<td>{item.name}</td>
-																	<td>{lab.created_by}</td>
-																	<td className="row-actions text-right">
-																		<Tooltip title="Take Specimen">
-																			<a
-																				className="secondary"
-																				onClick={() => {}}>
-																				<i className="os-icon os-icon-folder-plus" />
-																			</a>
-																		</Tooltip>
-																		<Tooltip title="Fill Result">
-																			<a
-																				className="secondary"
-																				onClick={() => {}}>
-																				<i className="os-icon os-icon-folder-plus" />
-																			</a>
-																		</Tooltip>
-																		{lab.status === 0 && (
-																			<Can I="approve-lab-result" on="all">
-																				<Tooltip title="Approve Result">
-																					<a
-																						className="secondary"
-																						onClick={() =>
-																							confirmApproval(lab)
-																						}>
-																						<i className="os-icon os-icon-thumbs-up" />
-																					</a>
-																				</Tooltip>
-																			</Can>
-																		)}
-																	</td>
-																</tr>
-															);
-														})}
-													</>
-												);
-											})}
-										</tbody>
-									</table>
+									<LabBlock
+										loading={false}
+										labs={labs}
+										updateLab={updateLab}
+										patient={patient}
+									/>
 								</div>
+								{meta && (
+									<div className="pagination pagination-center mt-4">
+										<Pagination
+											current={parseInt(meta.currentPage, 10)}
+											pageSize={parseInt(meta.itemsPerPage, 10)}
+											total={parseInt(meta.totalPages, 10)}
+											showTotal={total => `Total ${total} lab results`}
+											itemRender={itemRender}
+											onChange={current => onNavigatePage(current)}
+										/>
+									</div>
+								)}
 							</div>
 						)}
 					</div>

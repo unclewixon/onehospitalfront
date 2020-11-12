@@ -126,30 +126,17 @@ const PaypointQueue = ({ staff }) => {
 					</div>
 				</Popover>
 			</Overlay>
-			<table className="table table-striped">
-				<thead>
-					<tr>
-						<th hidden={true}>DATE</th>
-						<th className="">PATIENT NAME</th>
-						<th className="">SERVICE</th>
-						<th className="">AMOUNT PAID (&#x20A6;)</th>
-						<th className="">BALANCE</th>
-						<th className="">PAYMENT TYPE</th>
-						<th className="text-center">ACTIONS</th>
-					</tr>
-				</thead>
-				{transactions && (
-					<TransactionTable
-						transactions={transactions}
-						loading={false}
-						today={true}
-						showActionBtns={true}
-						approveTransaction={doApproveTransaction}
-						doApplyVoucher={doApplyVoucher}
-						handlePrint={handlePrintClick}
-					/>
-				)}
-			</table>
+			{transactions && (
+				<TransactionTable
+					transactions={transactions}
+					loading={false}
+					queue={true}
+					showActionBtns={true}
+					approveTransaction={doApproveTransaction}
+					doApplyVoucher={doApplyVoucher}
+					handlePrint={handlePrintClick}
+				/>
+			)}
 		</div>
 	);
 };

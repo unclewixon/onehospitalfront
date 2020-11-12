@@ -1,13 +1,13 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { request } from '../../services/utilities';
 import moment from 'moment';
 import uniqBy from 'lodash.uniqby';
 import DatePicker from 'antd/lib/date-picker';
 import Select from 'react-select';
 import Tooltip from 'antd/lib/tooltip';
 
+import { request } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { loadPatientProcedureData } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
@@ -20,30 +20,26 @@ class ProcedureDashboard extends Component {
 	state = {
 		loaded: false,
 		patientId: '',
-		startDate: moment(Date.now())
-			.subtract(1, 'days')
-			.format('YYYY-MM-DD'),
-		endDate: moment(Date.now()).format('YYYY-MM-DD'),
+		startDate: '',
+		endDate: '',
 		filtering: false,
 		showModal: false,
 		activeRequest: null,
 	};
+
 	componentDidMount() {
 		this.fetchPhysio();
 	}
 
 	fetchPhysio = async patientId => {
-		const { startDate, endDate } = this.state;
-		this.setState({ loaded: true });
 		try {
-			const rs = await request(
-				patientId
-					? `patient/${patientId}/request/procedure?startDate=${startDate}&endDate=${endDate}`
-					: `patient/requests/procedure?startDate=${startDate}&endDate=${endDate}`,
-				'GET',
-				true
-			);
-			this.props.loadPatientProcedureData(rs);
+			const { startDate, endDate } = this.state;
+			this.setState({ loaded: true });
+			const url = patientId
+				? `patient/${patientId}/request/procedure?startDate=${startDate}&endDate=${endDate}`
+				: `patient/requests/procedure?startDate=${startDate}&endDate=${endDate}`;
+			const rs = await request(url, 'GET', true);
+			this.props.loadPatientProcedureData(rs.result);
 			return this.setState({ loaded: false, filtering: false });
 		} catch (error) {
 			notifyError('error fetching procedure requests');

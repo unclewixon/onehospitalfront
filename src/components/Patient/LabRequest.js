@@ -158,7 +158,7 @@ const LabRequest = ({ module, history, location }) => {
 									getOptionLabel={option => option.name}
 									onChange={e => {
 										setGroup(e);
-										setTests(e.lab_tests);
+										setTests(e.tests);
 									}}
 								/>
 							</div>
@@ -234,7 +234,6 @@ const LabRequest = ({ module, history, location }) => {
 								</tbody>
 							</Table>
 						</div>
-
 						<div className="row mt-4">
 							<div className="form-group col-sm-12">
 								<label>Request Note</label>

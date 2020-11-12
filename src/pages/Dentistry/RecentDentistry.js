@@ -2,41 +2,40 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { request } from '../../services/utilities';
-
-import { loadDentistryRequests } from '../../actions/patient';
-import { notifyError } from '../../services/notify';
-import searchingGIF from '../../assets/images/searching.gif';
 import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
 import uniqBy from 'lodash.uniqby';
 import DatePicker from 'antd/lib/date-picker';
 import Select from 'react-select';
+
+import { request } from '../../services/utilities';
+import { loadDentistryRequests } from '../../actions/patient';
+import { notifyError } from '../../services/notify';
+import searchingGIF from '../../assets/images/searching.gif';
+
 const { RangePicker } = DatePicker;
 
 class RecentDentistry extends Component {
 	state = {
 		loaded: false,
 		patientId: '',
-		startDate: '',
+		startDate: moment().format('YYYY-MM-DD'),
 		endDate: '',
 	};
+
 	componentDidMount() {
 		this.fetchPhysio();
 	}
 
 	fetchPhysio = async patientId => {
-		const { startDate, endDate } = this.state;
-		this.setState({ loaded: true });
 		try {
-			const rs = await request(
-				patientId
-					? `patient/${patientId}/request/dentistry?startDate=${startDate}&endDate=${endDate}`
-					: `patient/requests/dentistry?startDate=${startDate}&endDate=${endDate}`,
-				'GET',
-				true
-			);
-			this.props.loadDentistryRequests(rs);
+			const { startDate, endDate } = this.state;
+			this.setState({ loaded: true });
+			const url = patientId
+				? `patient/${patientId}/request/dentistry?startDate=${startDate}&endDate=${endDate}`
+				: `patient/requests/dentistry?startDate=${startDate}&endDate=${endDate}`;
+			const rs = await request(url, 'GET', true);
+			this.props.loadDentistryRequests(rs.result);
 			return this.setState({ loaded: false });
 		} catch (error) {
 			notifyError('error fetching dentistry requests');

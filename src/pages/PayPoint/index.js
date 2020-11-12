@@ -9,7 +9,7 @@ import PaypointQueue from './PaypointQueue';
 const NewTransaction = lazy(() => import('./NewTransaction'));
 const InsuranceBills = lazy(() => import('./InsuranceBills'));
 const Dashboard = lazy(() => import('./Dashboard'));
-const ReviewTransaction = lazy(() => import('./ReviewTransaction'));
+const TransactionHistory = lazy(() => import('./TransactionHistory'));
 const Voucher = lazy(() => import('./Voucher'));
 
 const index = ({ match }) => {
@@ -41,7 +41,7 @@ const index = ({ match }) => {
 												/>
 												<Route
 													path={`${match.url}/transaction-history`}
-													component={ReviewTransaction}
+													component={TransactionHistory}
 												/>
 												<Route
 													path={`${match.url}/vouchers`}

@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
+import DatePicker from 'antd/lib/date-picker';
 
 import { patientAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
-import DatePicker from 'antd/lib/date-picker';
 import { request } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
@@ -28,22 +28,17 @@ class SearchScan extends Component {
 		endDate: '',
 		status: '',
 	};
+
 	componentDidMount() {
 		this.fetchRadiology();
 	}
-	fetchRadiology = async () => {
-		const { startDate, endDate } = this.state;
 
+	fetchRadiology = async () => {
 		try {
+			const { startDate, endDate } = this.state;
 			this.setState({ loading: true });
-			// console.log(
-			// 	`${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`
-			// );
-			const rs = await request(
-				`${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`,
-				'GET',
-				true
-			);
+			const url = `${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`;
+			const rs = await request(url, 'GET', true);
 
 			this.props.loadRadiology(rs);
 			console.log(rs);

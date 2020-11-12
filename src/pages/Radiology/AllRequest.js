@@ -3,9 +3,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
+import Tooltip from 'antd/lib/tooltip';
 
 import { searchAPI, patientAPI } from '../../services/constants';
-import Tooltip from 'antd/lib/tooltip';
 import waiting from '../../assets/images/waiting.gif';
 import { request } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
@@ -19,6 +19,7 @@ const status = [
 	{ value: 1, label: 'Closed' },
 	{ value: 2, label: 'Approved' },
 ];
+
 class OpenRequest extends Component {
 	state = {
 		filtering: false,
@@ -36,22 +37,15 @@ class OpenRequest extends Component {
 	componentDidMount() {
 		this.fetchRadiology();
 	}
+
 	fetchRadiology = async () => {
-		const { startDate, endDate, status } = this.state;
-
 		try {
+			const { startDate, endDate, status } = this.state;
 			this.setState({ loading: true });
-			console.log(
-				`${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}&status=${status}`
-			);
-			const rs = await request(
-				`${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`,
-				'GET',
-				true
-			);
+			const url = `${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}&status=${status}`;
+			const rs = await request(url, 'GET', true);
 
-			this.props.loadRadiology(rs);
-			console.log(rs);
+			this.props.loadRadiology(rs.result);
 			this.setState({ loading: false, filtering: false });
 		} catch (error) {
 			console.log(error);

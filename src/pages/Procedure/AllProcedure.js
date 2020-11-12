@@ -27,22 +27,20 @@ class AllProcedure extends Component {
 		showModal: false,
 		activeRequest: null,
 	};
+
 	componentDidMount() {
 		this.fetchPhysio();
 	}
 
 	fetchPhysio = async patientId => {
-		const { startDate, endDate } = this.state;
-		this.setState({ loaded: true });
 		try {
-			const rs = await request(
-				patientId
-					? `patient/${patientId}/request/procedure?startDate=${startDate}&endDate=${endDate}`
-					: `patient/requests/procedure?startDate=${startDate}&endDate=${endDate}`,
-				'GET',
-				true
-			);
-			this.props.loadPatientProcedureData(rs);
+			const { startDate, endDate } = this.state;
+			this.setState({ loaded: true });
+			const url = patientId
+				? `patient/${patientId}/request/procedure?startDate=${startDate}&endDate=${endDate}`
+				: `patient/requests/procedure?startDate=${startDate}&endDate=${endDate}`;
+			const rs = await request(url, 'GET', true);
+			this.props.loadPatientProcedureData(rs.result);
 			return this.setState({ loaded: false, filtering: false });
 		} catch (error) {
 			notifyError('error fetching procedure requests');

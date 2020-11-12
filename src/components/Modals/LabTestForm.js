@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import Select from 'react-select';
 
 import waiting from '../../assets/images/waiting.gif';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { request } from '../../services/utilities';
 import { addLabTest, updateLabTest } from '../../actions/settings';
 
-const LabTestForm = ({ doToggleForm, showHide, labTest }) => {
+const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 	const initialState = {
 		name: '',
 		category: '',
@@ -14,19 +15,35 @@ const LabTestForm = ({ doToggleForm, showHide, labTest }) => {
 		description: '',
 		edit: false,
 		create: true,
+		specimens: '',
 	};
-	console.log(labTest);
-
 	const [{ name, category, price, description }, setState] = useState(
 		initialState
 	);
 	const [{ edit }, setSubmitButton] = useState(initialState);
 	const [parameters, setParameters] = useState([]);
+	const [loaded, setLoaded] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
+	const [labSpecimens, setLabSpecimens] = useState([]);
+	const [specimens, setSpecimens] = useState([]);
+	const [hasParameters, setHasParameters] = useState(false);
 
 	const dispatch = useDispatch();
 
 	const categories = useSelector(state => state.settings.lab_categories);
+
+	useEffect(() => {
+		const fetchSpecimens = async () => {
+			const url = 'lab-tests/specimens';
+			const rs = await request(url, 'GET', true);
+			setSpecimens([...rs.map(s => ({ value: s.id, label: s.name }))]);
+			setLoaded(true);
+		};
+
+		if (!loaded || refreshing) {
+			fetchSpecimens();
+		}
+	}, [loaded, refreshing]);
 
 	useEffect(() => {
 		if (showHide) {
@@ -38,8 +55,12 @@ const LabTestForm = ({ doToggleForm, showHide, labTest }) => {
 					description: labTest.description || '',
 				});
 				setParameters(labTest.parameters);
+				setLabSpecimens(labTest.specimens);
+				setHasParameters(labTest.hasParameters);
 				setSubmitButton({ create: false, edit: true });
 			} else {
+				setParameters([]);
+				setLabSpecimens([]);
 				setSubmitButton({ create: true, edit: false });
 			}
 		}
@@ -59,11 +80,16 @@ const LabTestForm = ({ doToggleForm, showHide, labTest }) => {
 				price,
 				lab_category_id: category,
 				parameters,
+				specimens: labSpecimens,
 				description,
+				hasParameters,
 			};
+			console.log(datum);
 			const rs = await request('lab-tests', 'POST', true, datum);
 			dispatch(addLabTest(rs));
 			setState({ ...initialState });
+			setLabSpecimens([]);
+			setParameters([]);
 			setSubmitting(false);
 			doToggleForm(false);
 			notifySuccess('Lab test created');
@@ -83,13 +109,17 @@ const LabTestForm = ({ doToggleForm, showHide, labTest }) => {
 				price,
 				lab_category_id: category,
 				parameters,
+				specimens: labSpecimens,
 				description,
+				hasParameters,
 			};
+			console.log(datum);
 			const url = `lab-tests/${labTest.id}/update`;
 			const rs = await request(url, 'PATCH', true, datum);
-			console.log(rs);
 			dispatch(updateLabTest(rs));
 			setState({ ...initialState });
+			setLabSpecimens([]);
+			setParameters([]);
 			setSubmitButton({ create: true, edit: false });
 			setSubmitting(false);
 			doToggleForm(false);
@@ -100,8 +130,6 @@ const LabTestForm = ({ doToggleForm, showHide, labTest }) => {
 			notifyError('Error updating lab test');
 		}
 	};
-
-	// const addParameter = () => {};
 
 	const cancelEditButton = () => {
 		setSubmitButton({ ...initialState });
@@ -116,7 +144,7 @@ const LabTestForm = ({ doToggleForm, showHide, labTest }) => {
 			}`}>
 			<form onSubmit={edit ? onEditLabTest : onAddLabTest}>
 				<h6 className="form-header">{edit ? 'Edit Test' : 'Create Test'}</h6>
-				<div className="form-group">
+				<div className="form-group mt-4">
 					<input
 						className="form-control"
 						placeholder="Test Name"
@@ -151,6 +179,37 @@ const LabTestForm = ({ doToggleForm, showHide, labTest }) => {
 							);
 						})}
 					</select>
+				</div>
+				<div className="row">
+					<div className="form-group col-sm-12">
+						<Select
+							isMulti
+							isClearable
+							name="specimen"
+							placeholder="Select specimen"
+							options={specimens}
+							value={labSpecimens}
+							onChange={e => {
+								setLabSpecimens(e);
+							}}
+						/>
+					</div>
+				</div>
+				<div className="row">
+					<div className="form-group col-sm-12">
+						<label>
+							<input
+								type="checkbox"
+								className="form-control"
+								name="has_parameters"
+								checked={hasParameters}
+								onChange={e => {
+									setHasParameters(e.target.checked);
+								}}
+							/>{' '}
+							has parameters?
+						</label>
+					</div>
 				</div>
 				<div className="form-group">
 					<textarea
