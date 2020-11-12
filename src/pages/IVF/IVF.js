@@ -53,6 +53,13 @@ class IVF extends Component {
 							to="/ivf/enrol">
 							New Enrollment
 						</Link>
+						<Link
+							className={`btn btn-primary ${
+								page === 'reg' ? 'btn-outline-primary' : ''
+							}`}
+							to="/ivf/reg">
+							PatientTreatMentSheet
+						</Link>
 					</div>
 					<h6 className="element-header">IVF Dashboard</h6>
 					<div className="row">
