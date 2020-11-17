@@ -1,31 +1,23 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useCallback } from 'react';
-// import DatePicker from 'antd/lib/date-picker';
-// import Select from 'react-select';
 import Tooltip from 'antd/lib/tooltip';
 import { connect, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-// import axios from 'axios';
 import moment from 'moment';
+
 import { request } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
-// import { loadAllPatients } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
-// import waiting from '../../assets/images/waiting.gif';
 import ModalPatientDetails from '../../components/Modals/ModalPatientDetails';
 import { toggleProfile } from '../../actions/user';
-
-// const { RangePicker } = DatePicker;
 
 const AllPatients = () => {
 	const dispatch = useDispatch();
 	const activeRequest = null;
 
 	const [loaded, setLoaded] = useState(false);
-	const [allPatients, setAllPatients] = useState(null);
-	// const [activeRequest, setActiveRequest] = useState(null);
+	const [allPatients, setAllPatients] = useState([]);
 	const [showModal, setShowModal] = useState(false);
-	// const [filtering, setFiltering] = useState(false);
 	const [searchValue, setSearchValue] = useState('');
 
 	const onModalClick = () => {
@@ -43,12 +35,9 @@ const AllPatients = () => {
 
 	const fetchPatients = useCallback(async () => {
 		try {
-			// const url = name ? `patient/find?query=${name}` : `patient/list`;
-			const url = `patient/list`;
+			const url = 'patient/list';
 			const rs = await request(url, 'GET', true);
-			console.log(rs);
 			setAllPatients(rs);
-			// dispatch(loadAllPatients(rs));
 			setLoaded(true);
 		} catch (error) {
 			notifyError('error fetching patients');

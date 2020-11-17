@@ -75,7 +75,7 @@ const ModalViewLabResult = ({ closeModal, labTest, labs, updateLab }) => {
 								<div className="col-sm-12">
 									{labTest ? (
 										<table className="table table-bordered table-sm table-v2 table-striped">
-											{labTest.hasParameter && (
+											{labTest.requestBody.hasParameters && (
 												<thead>
 													<tr>
 														<th>Parameter</th>
@@ -85,7 +85,7 @@ const ModalViewLabResult = ({ closeModal, labTest, labs, updateLab }) => {
 												</thead>
 											)}
 											<tbody>
-												{labTest.hasParameter ? (
+												{labTest.requestBody.hasParameters ? (
 													labTest.requestBody.parameters.map((param, i) => {
 														return (
 															<tr key={i}>
@@ -104,7 +104,10 @@ const ModalViewLabResult = ({ closeModal, labTest, labs, updateLab }) => {
 												{labTest.requestBody.note && (
 													<tr>
 														<th>Note</th>
-														<td colSpan={labTest.hasParameter ? 1 : 2}>
+														<td
+															colSpan={
+																labTest.requestBody.hasParameters ? 1 : 2
+															}>
 															{labTest.requestBody.note}
 														</td>
 													</tr>

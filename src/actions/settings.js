@@ -449,7 +449,7 @@ export const delete_service_category = payload => {
 };
 
 //Service
-const upload_service = payload => {
+export const uploadService = payload => {
 	return {
 		type: UPLOAD_SERVICE,
 		payload,
@@ -1221,23 +1221,6 @@ export const deleteServiceCategory = data => {
 				.delete(`${API_URI}/services/categories/${data.id}`)
 				.then(response => {
 					dispatch(delete_service_category(data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-//Service
-export const uploadService = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.post(`${API_URI}/services/upload-services`, data)
-				.then(response => {
-					dispatch(upload_service(response.data));
 					return resolve({ success: true });
 				})
 				.catch(error => {

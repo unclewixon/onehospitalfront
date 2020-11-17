@@ -2,14 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import capitalize from 'lodash.capitalize';
+
 import { uploadHmoTariff, uploadHmo } from '../actions/general';
 import { notifyError } from '../services/notify';
-import { API_URI, hmoAPI } from '../services/constants';
 import searchingGIF from '../assets/images/searching.gif';
 import { getAllHmos, fetchHmoTariff } from '../actions/hmo';
 import { formatNumber } from '../services/utilities';
 
-const HmoBulkUpload = props => {
+const Tarrifs = props => {
 	const initialState = {
 		selectedHmo: null,
 	};
@@ -91,13 +91,6 @@ const HmoBulkUpload = props => {
 							href="#">
 							<i className="os-icon os-icon-grid-10"></i>
 							<span>Upload HMO Services</span>
-						</a>
-						<a
-							className="btn btn-primary btn-sm"
-							href={`${API_URI}/${hmoAPI}/download-tariff-sample?downloadType=services`}
-							download>
-							<i className="os-icon os-icon-ui-22"></i>
-							<span>Download Sample</span>
 						</a>
 					</div>
 					<h6 className="element-header">HMO Services</h6>
@@ -206,22 +199,19 @@ const HmoBulkUpload = props => {
 																);
 															})}
 
-															{!loading && filtered.length < 1 ? (
+															{!loading && filtered.length < 1 && (
 																<tr>
 																	<td colSpan="7" className="text-center">
 																		No Tariff has been uploaded
 																	</td>
 																</tr>
-															) : null}
+															)}
 														</>
 													)}
 												</tbody>
 											</table>
 										</div>
 									</div>
-								</div>
-								<div>
-									<div></div>
 								</div>
 							</div>
 						</div>
@@ -243,4 +233,4 @@ export default connect(mapStateToProps, {
 	uploadHmo,
 	getAllHmos,
 	fetchHmoTariff,
-})(HmoBulkUpload);
+})(Tarrifs);

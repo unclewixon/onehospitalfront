@@ -1,20 +1,21 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import axios from 'axios';
+
 import { closeModals } from '../../actions/general';
 import {
-	uploadService,
 	getAllService,
 	updateService,
 	deleteService,
 } from '../../actions/settings';
-
 import { notifySuccess } from '../../services/notify';
+import { API_URI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 
 class ModalUploadService extends Component {
 	state = {
 		file: null,
-		Loading: false,
+		loading: false,
 	};
 
 	handleInputChange = e => {
@@ -23,23 +24,25 @@ class ModalUploadService extends Component {
 		});
 	};
 
-	onUpload = e => {
+	onUpload = async e => {
 		e.preventDefault();
-		const { staff } = this.props;
-		this.setState({ Loading: true });
-		const data = new FormData();
-		data.append('file', this.state.file);
-		data.append('username', staff.username);
-		this.props
-			.uploadService(data)
-			.then(response => {
-				this.setState({ Loading: false });
-				this.props.closeModals(false);
-				notifySuccess('Service file uploaded');
-			})
-			.catch(error => {
-				this.setState({ Loading: false });
-			});
+		try {
+			const { staff } = this.props;
+			this.setState({ loading: true });
+
+			const data = new FormData();
+			data.append('file', this.state.file);
+			data.append('username', staff.username);
+
+			const url = `${API_URI}/services/upload-services`;
+			const rs = await axios.post(url, data);
+			console.log(rs);
+			this.setState({ loading: false });
+			this.props.closeModals(false);
+			notifySuccess('Service file uploaded');
+		} catch (e) {
+			this.setState({ loading: false });
+		}
 	};
 
 	componentDidMount() {
@@ -51,7 +54,7 @@ class ModalUploadService extends Component {
 	}
 
 	render() {
-		const { Loading } = this.state;
+		const { loading } = this.state;
 		return (
 			<div
 				className="onboarding-modal modal fade animated show"
@@ -84,9 +87,9 @@ class ModalUploadService extends Component {
 									<div className="form-buttons-w">
 										<button
 											className={
-												Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
+												loading ? 'btn btn-primary disabled' : 'btn btn-primary'
 											}>
-											{Loading ? (
+											{loading ? (
 												<img src={waiting} alt="submitting" />
 											) : (
 												<span> Upload</span>
@@ -111,7 +114,6 @@ const mapStateToProps = (state, ownProps) => {
 
 export default connect(mapStateToProps, {
 	closeModals,
-	uploadService,
 	getAllService,
 	updateService,
 	deleteService,

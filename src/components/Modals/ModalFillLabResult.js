@@ -114,7 +114,7 @@ const ModalFillLabResult = ({ closeModal, labTest, labs, updateLab }) => {
 								<div className="col-sm-12">
 									<table className="table table-bordered table-sm table-v2 table-striped">
 										<tbody>
-											{labTest.hasParameter ? (
+											{labTest.requestBody.hasParameters ? (
 												parameters.map((param, i) => {
 													return (
 														<tr key={i}>

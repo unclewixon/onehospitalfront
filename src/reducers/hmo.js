@@ -39,6 +39,7 @@ const hmo = (state = INITIAL_STATE, action) => {
 		case UPLOAD_HMO:
 			return { ...state, hmo_upload_progress: action.payload };
 		case DELETE_HMO:
+			console.log(action.payload);
 			return {
 				...state,
 				hmo_list: state.hmo_list.filter(

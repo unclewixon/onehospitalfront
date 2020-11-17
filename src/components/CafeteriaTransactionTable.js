@@ -59,7 +59,7 @@ const CafeteriaTransactionTable = props => {
 			setOrders(props.orders);
 			setLoaded(true);
 		}
-	}, [loaded, props.orders]);
+	}, [loaded, props.cart, props.orders]);
 
 	return (
 		<div className="content-panel compact" style={{ backgroundColor: '#fff' }}>

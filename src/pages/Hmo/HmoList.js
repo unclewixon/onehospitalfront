@@ -9,7 +9,6 @@ import waiting from '../../assets/images/waiting.gif';
 import searchingGIF from '../../assets/images/searching.gif';
 import { notifyError } from '../../services/notify';
 import { addHmo, getAllHmos, updateHmo, deleteHmo } from '../../actions/hmo';
-import { API_URI, hmoAPI } from '../../services/constants';
 import capitalize from 'lodash.capitalize';
 import { Link } from 'react-router-dom';
 
@@ -25,7 +24,7 @@ const HmoList = props => {
 	const [{ name, email, phoneNumber, address }, setState] = useState(
 		initialState
 	);
-	const [Loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const [{ edit, add }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
 	// const [logo, setLogo] = useState(null);
@@ -39,12 +38,13 @@ const HmoList = props => {
 
 	const onAddHmo = e => {
 		e.preventDefault();
-		const data = new FormData();
-		data.append('name', name);
-		data.append('email', email);
-		data.append('phoneNumber', phoneNumber);
-		data.append('address', address);
-		// data.append('logo', logo);
+		const data = {
+			name,
+			email,
+			phoneNumber,
+			address,
+		};
+
 		setAdding(true);
 		props.addHmo(data).then(response => {
 			setState({ ...initialState });
@@ -55,16 +55,16 @@ const HmoList = props => {
 	const onEdiHmo = e => {
 		setLoading(true);
 		e.preventDefault();
-		const EditedData = new FormData();
-		EditedData.append('name', name);
-		EditedData.append('email', email);
-		EditedData.append('phoneNumber', phoneNumber);
-		EditedData.append('address', address);
-		// EditedData.append('logo', logo);
-		EditedData.append('id', data.id);
-		console.log(EditedData);
+		const editedData = {
+			id: data.id,
+			name,
+			email,
+			phoneNumber,
+			address,
+		};
+		console.log(editedData);
 		props
-			.updateHmo(EditedData, data)
+			.updateHmo(editedData, data)
 			.then(response => {
 				setState({ ...initialState });
 				setSubmitButton({ add: true, edit: false });
@@ -96,12 +96,9 @@ const HmoList = props => {
 	};
 
 	const onDeleteHmo = data => {
-		console.log(data);
 		props
 			.deleteHmo(data)
-			.then(data => {
-				console.log(data);
-			})
+			.then(data => {})
 			.catch(error => {
 				console.log(error);
 			});
@@ -155,22 +152,6 @@ const HmoList = props => {
 		<div className="content-i">
 			<div className="content-box">
 				<div className="element-wrapper">
-					<div className="element-actions">
-						<a
-							className="btn btn-success btn-sm"
-							onClick={() => props.uploadHmo(true)}
-							href="#">
-							<i className="os-icon os-icon-grid-10"></i>
-							<span>Upload HMOS</span>
-						</a>
-						<a
-							className="btn btn-primary btn-sm"
-							href={`${API_URI}/${hmoAPI}/download-sample`}
-							download>
-							<i className="os-icon os-icon-ui-22"></i>
-							<span>Download Sample</span>
-						</a>
-					</div>
 					<h6 className="element-header">Health Management Organization</h6>
 					<div className="row">
 						<div className="col-lg-8 col-xxl-8">
@@ -181,7 +162,7 @@ const HmoList = props => {
 											<thead>
 												<tr>
 													<th>Name</th>
-													<th className="text-center">Phone</th>
+													<th>Phone</th>
 													<th>Email</th>
 													<th className="text-center">Actions</th>
 												</tr>
@@ -194,56 +175,47 @@ const HmoList = props => {
 														</td>
 													</tr>
 												) : (
-													<>
-														{props.hmoList.map((hmo, id) => {
-															return (
-																<tr key={id}>
-																	<td>
-																		<span>{capitalize(hmo.name)}</span>
-																	</td>
-																	<td className="text-center">
-																		<span>{hmo.phoneNumber}</span>
-																	</td>
+													props.hmoList.map((hmo, i) => {
+														return (
+															<tr key={i}>
+																<td>
+																	<span>{capitalize(hmo.name || '')}</span>
+																</td>
+																<td>
+																	<span>{hmo.phoneNumber || '-'}</span>
+																</td>
 
-																	<td className="nowrap">
-																		<span>{hmo.email}</span>
-																	</td>
-																	<td className="row-actions">
-																		<Tooltip title="Edit">
-																			<a href="#">
-																				<i
-																					className="os-icon os-icon-edit-1"
-																					onClick={() => onClickEdit(hmo)}></i>
-																			</a>
-																		</Tooltip>
-																		<Tooltip title="HMO Tariffs">
-																			<Link
-																				to={`/hmo/tariffs?selected=${hmo.id}`}>
-																				<i className="os-icon os-icon-documents-03"></i>
-																			</Link>
-																		</Tooltip>
-																		<Tooltip title="Delete">
-																			<a className="danger">
-																				<i
-																					className="os-icon os-icon-ui-15"
-																					onClick={() =>
-																						confirmDelete(hmo)
-																					}></i>
-																			</a>
-																		</Tooltip>
-																	</td>
-																</tr>
-															);
-														})}
-													</>
+																<td className="nowrap">
+																	<span>{hmo.email || '-'}</span>
+																</td>
+																<td className="row-actions">
+																	<Tooltip title="Edit">
+																		<a onClick={() => onClickEdit(hmo)}>
+																			<i className="os-icon os-icon-edit-1" />
+																		</a>
+																	</Tooltip>
+																	<Tooltip title="HMO Tariffs">
+																		<Link
+																			to={`/hmo/tariffs?selected=${hmo.id}`}>
+																			<i className="os-icon os-icon-documents-03" />
+																		</Link>
+																	</Tooltip>
+																	<Tooltip title="Delete">
+																		<a
+																			className="danger"
+																			onClick={() => confirmDelete(hmo)}>
+																			<i className="os-icon os-icon-ui-15" />
+																		</a>
+																	</Tooltip>
+																</td>
+															</tr>
+														);
+													})
 												)}
 											</tbody>
 										</table>
 									</div>
 								</div>
-							</div>
-							<div>
-								<div></div>
 							</div>
 						</div>
 						<div className="col-lg-4 col-xxl-3  d-xxl-block">
@@ -256,7 +228,7 @@ const HmoList = props => {
 											placeholder="HMO Name"
 											type="text"
 											name="name"
-											value={name}
+											value={name || ''}
 											onChange={handleInputChange}
 										/>
 									</div>
@@ -267,7 +239,7 @@ const HmoList = props => {
 											type="email"
 											name="email"
 											onChange={handleInputChange}
-											value={email}
+											value={email || ''}
 										/>
 									</div>
 									<div className="form-group">
@@ -277,7 +249,7 @@ const HmoList = props => {
 											type="Phone"
 											name="phoneNumber"
 											onChange={handleInputChange}
-											value={phoneNumber}
+											value={phoneNumber || ''}
 										/>
 									</div>
 									<div className="form-group">
@@ -287,7 +259,7 @@ const HmoList = props => {
 											name="address"
 											type="text"
 											onChange={handleInputChange}
-											value={address}
+											value={address || ''}
 										/>
 									</div>
 									{/*<legend>
@@ -308,11 +280,9 @@ const HmoList = props => {
 									<div className="form-buttons-w">
 										{add && (
 											<button
-												className={
-													adding
-														? 'btn btn-primary disabled'
-														: 'btn btn-primary'
-												}>
+												className={`btn btn-primary ${
+													adding ? 'disabled' : ''
+												}`}>
 												<span>
 													{adding ? (
 														<img src={waiting} alt="submitting" />
@@ -325,22 +295,18 @@ const HmoList = props => {
 										{edit && (
 											<>
 												<button
-													className={
-														Loading
-															? 'btn btn-secondary disabled'
-															: 'btn btn-secondary'
-													}
+													className={`btn btn-secondary ${
+														loading ? 'disabled' : ''
+													}`}
 													onClick={cancelEditButton}>
-													<span>{Loading ? 'cancel' : 'cancel'}</span>
+													<span>cancel</span>
 												</button>
 												<button
-													className={
-														Loading
-															? 'btn btn-primary disabled'
-															: 'btn btn-primary'
-													}>
+													className={`btn btn-primary ${
+														loading ? 'disabled' : ''
+													}`}>
 													<span>
-														{Loading ? (
+														{loading ? (
 															<img src={waiting} alt="submitting" />
 														) : (
 															'edit'
