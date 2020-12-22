@@ -89,7 +89,7 @@ const ProfileBlock = ({ location, history, patient, noEdits }) => {
 									<div className="col-md-6">
 										<div className="text-fade text-sm">
 											<span className="m-r">
-												<strong>Insurance Status:</strong> {patient.hmo.name}
+												<strong>Insurance Status:</strong> {patient?.hmo.name}
 											</span>
 										</div>
 									</div>
@@ -123,6 +123,7 @@ const ProfileBlock = ({ location, history, patient, noEdits }) => {
 									</div>
 								)}
 								{!noEdits &&
+									patient &&
 									(!patient.immunization ||
 										patient.immunization.length === 0) && (
 										<div className="m-2 div-icon">
@@ -136,7 +137,7 @@ const ProfileBlock = ({ location, history, patient, noEdits }) => {
 											</Tooltip>
 										</div>
 									)}
-								{!noEdits && !patient.isAdmitted && (
+								{!noEdits && patient && !patient.isAdmitted && (
 									<div className="m-2 div-icon">
 										<Tooltip title="Admit Patient">
 											<a
