@@ -567,10 +567,10 @@ class PatientSheet extends Component {
 										<div className="row table table-striped table-bordered">
 											<div className="col-md-4 d-flex">
 												<div className="col-md-6">
-													<div class="form-check">
-														<label class="form-check-label">
+													<div className="form-check">
+														<label className="form-check-label">
 															<input
-																class="form-check-input"
+																className="form-check-input"
 																name="optionsRadios"
 																type="radio"
 																value="option1"
@@ -580,10 +580,10 @@ class PatientSheet extends Component {
 													</div>
 												</div>
 												<div className="col-md-6">
-													<div class="form-check">
-														<label class="form-check-label">
+													<div className="form-check">
+														<label className="form-check-label">
 															<input
-																class="form-check-input"
+																className="form-check-input"
 																name="optionsRadios"
 																type="radio"
 																value="option2"
@@ -596,13 +596,13 @@ class PatientSheet extends Component {
 
 											<div className="col-md-8 d-flex ">
 												<div className="col-md-3">
-													<div class="form-check">DONOR CODE:</div>
+													<div className="form-check">DONOR CODE:</div>
 												</div>
 												<div className="col-md-3">
-													<div class="form-check">
-														<label class="form-check-label">
+													<div className="form-check">
+														<label className="form-check-label">
 															<input
-																class="form-check-input"
+																className="form-check-input"
 																name="optionsRadios"
 																type="radio"
 																value="option2"
@@ -612,10 +612,10 @@ class PatientSheet extends Component {
 													</div>
 												</div>
 												<div className="col-md-3">
-													<div class="form-check">
-														<label class="form-check-label">
+													<div className="form-check">
+														<label className="form-check-label">
 															<input
-																class="form-check-input"
+																className="form-check-input"
 																name="optionsRadios"
 																type="radio"
 																value="option2"
@@ -625,10 +625,10 @@ class PatientSheet extends Component {
 													</div>
 												</div>
 												<div className="col-md-3">
-													<div class="form-check">
-														<label class="form-check-label">
+													<div className="form-check">
+														<label className="form-check-label">
 															<input
-																class="form-check-input"
+																className="form-check-input"
 																name="optionsRadios"
 																type="radio"
 																value="option2"
@@ -645,10 +645,10 @@ class PatientSheet extends Component {
 											<div className="row table table-striped table-bordered">
 												<div className="col-md-8 d-flex">
 													<div className="col-md-3">
-														<div class="form-check">
-															<label class="form-check-label">
+														<div className="form-check">
+															<label className="form-check-label">
 																<input
-																	class="form-check-input"
+																	className="form-check-input"
 																	name="optionsRadios"
 																	type="radio"
 																	value="option1"
@@ -658,10 +658,10 @@ class PatientSheet extends Component {
 														</div>
 													</div>
 													<div className="col-md-3">
-														<div class="form-check">
-															<label class="form-check-label">
+														<div className="form-check">
+															<label className="form-check-label">
 																<input
-																	class="form-check-input"
+																	className="form-check-input"
 																	name="optionsRadios"
 																	type="radio"
 																	value="option1"
@@ -671,10 +671,10 @@ class PatientSheet extends Component {
 														</div>
 													</div>
 													<div className="col-md-3">
-														<div class="form-check">
-															<label class="form-check-label">
+														<div className="form-check">
+															<label className="form-check-label">
 																<input
-																	class="form-check-input"
+																	className="form-check-input"
 																	name="optionsRadios"
 																	type="radio"
 																	value="option1"
@@ -684,10 +684,10 @@ class PatientSheet extends Component {
 														</div>
 													</div>
 													<div className="col-md-3">
-														<div class="form-check">
-															<label class="form-check-label">
+														<div className="form-check">
+															<label className="form-check-label">
 																<input
-																	class="form-check-input"
+																	className="form-check-input"
 																	name="optionsRadios"
 																	type="radio"
 																	value="option2"
@@ -701,16 +701,16 @@ class PatientSheet extends Component {
 												<div className="col-md-4 d-flex ">
 													<div className="col-md-4">
 														<div
-															class="form-check"
+															className="form-check"
 															style={{ marginLeft: '-30px' }}>
 															VISCOUSITY:
 														</div>
 													</div>
 													<div className="col-md-4">
-														<div class="form-check">
-															<label class="form-check-label">
+														<div className="form-check">
+															<label className="form-check-label">
 																<input
-																	class="form-check-input"
+																	className="form-check-input"
 																	name="optionsRadios"
 																	type="radio"
 																	value="option2"
@@ -720,10 +720,10 @@ class PatientSheet extends Component {
 														</div>
 													</div>
 													<div className="col-md-4">
-														<div class="form-check">
-															<label class="form-check-label">
+														<div className="form-check">
+															<label className="form-check-label">
 																<input
-																	class="form-check-input"
+																	className="form-check-input"
 																	name="optionsRadios"
 																	type="radio"
 																	value="option2"
@@ -748,7 +748,7 @@ class PatientSheet extends Component {
 																	for="">
 																	Password
 																</label>
-																<div class="col-sm-8">
+																<div className="col-sm-8">
 																	<input
 																		className="form-control"
 																		placeholder="Password"
@@ -764,7 +764,7 @@ class PatientSheet extends Component {
 																	for="">
 																	Password
 																</label>
-																<div class="col-sm-8">
+																<div className="col-sm-8">
 																	<input
 																		className="form-control"
 																		placeholder="Password"
@@ -780,7 +780,7 @@ class PatientSheet extends Component {
 																	for="">
 																	Password
 																</label>
-																<div class="col-sm-8">
+																<div className="col-sm-8">
 																	<input
 																		className="form-control"
 																		placeholder="Password"
@@ -1022,12 +1022,12 @@ class PatientSheet extends Component {
 													</div>
 												</div>
 											</div>
-											<div class="col-md-3">
-												<div class="col-md-6">
-													<div class="form-check">
-														<label class="form-check-label">
+											<div className="col-md-3">
+												<div className="col-md-6">
+													<div className="form-check">
+														<label className="form-check-label">
 															<input
-																class="form-check-input"
+																className="form-check-input"
 																name="optionsRadios"
 																type="radio"
 																value="option1"
@@ -1036,11 +1036,11 @@ class PatientSheet extends Component {
 														</label>
 													</div>
 												</div>
-												<div class="col-md-6">
-													<div class="form-check">
-														<label class="form-check-label">
+												<div className="col-md-6">
+													<div className="form-check">
+														<label className="form-check-label">
 															<input
-																class="form-check-input"
+																className="form-check-input"
 																name="optionsRadios"
 																type="radio"
 																value="option2"

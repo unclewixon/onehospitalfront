@@ -91,12 +91,7 @@ class ModalViewAppointment extends Component {
 																		</div>
 																	</td>
 																	<td className="text-right">
-																		<div className="value text-success">
-																			{
-																				view_appointment_detail?.patient
-																					?.insurranceStatus
-																			}
-																		</div>
+																		<div className="value text-success"></div>
 																	</td>
 																</tr>
 

@@ -15,8 +15,6 @@ import {
 	LOAD_VITALS,
 	UPDATE_VITALS,
 	CREATE_LAB_REQUEST,
-	LOAD_PATIENT_PROCEDURE_DATA,
-	ADD_PATIENT_PROCEDURE_DATA,
 	LOAD_PATIENTS,
 	LOAD_CLINICAL_LAB,
 	LOAD_RADIOLOGY,
@@ -33,11 +31,11 @@ import {
 	LOAD_DELIVERY_RECORD,
 	LOAD_LABOUR_MEASUREMENT,
 	PATIENT_IVF,
-	LOAD_ALL_PATIENTS,
 	ADD_NEW_PATIENT,
 	GET_ALL_OPD_LAB_APPOINTMENTS,
 	GET_ALL_OPD_IMMUNIZATION_APPOINTMENTS,
 	UPDATE_PATIENT,
+	READING_DONE,
 } from './types';
 import { request } from '../services/utilities';
 // import axios from 'axios';
@@ -47,6 +45,13 @@ import { request } from '../services/utilities';
 export const loadPatients = data => {
 	return {
 		type: LOAD_PATIENTS,
+		payload: data,
+	};
+};
+
+export const readingDone = data => {
+	return {
+		type: READING_DONE,
 		payload: data,
 	};
 };
@@ -79,13 +84,6 @@ export const updatePatient = data => {
 	};
 };
 
-export const loadAllPatients = data => {
-	return {
-		type: LOAD_ALL_PATIENTS,
-		payload: data,
-	};
-};
-
 export const nextStep = data => {
 	return {
 		type: NEXT_STEP,
@@ -96,20 +94,6 @@ export const nextStep = data => {
 export const prevStep = data => {
 	return {
 		type: PREV_STEP,
-		payload: data,
-	};
-};
-
-export const loadPatientProcedureData = data => {
-	return {
-		type: LOAD_PATIENT_PROCEDURE_DATA,
-		payload: data,
-	};
-};
-
-export const addPatientProcedureData = data => {
-	return {
-		type: ADD_PATIENT_PROCEDURE_DATA,
 		payload: data,
 	};
 };
@@ -344,91 +328,6 @@ export const loadLabourMeasurement = payload => {
 	return {
 		type: LOAD_LABOUR_MEASUREMENT,
 		payload,
-	};
-};
-export const createLabRequest = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			let newGroup = data.lab_combo.map(grp => {
-				return {
-					name: grp.name ? grp.name : '',
-					amount: grp.price ? grp.price : '',
-					service_id: grp.id ? grp.id : '',
-					tests: grp.subTests
-						? grp.subTests.map(test => {
-								return {
-									testName: test.name ? test.name : '',
-									paramenters: test.parameters.length
-										? test.parameters.map(param => {
-												return {
-													name:
-														param.parameter && param.parameter.name
-															? param.parameter.name
-															: '',
-													range: param.referenceRange
-														? param.referenceRange
-														: '',
-													result: param.result ? param.result : '',
-												};
-										  })
-										: [],
-								};
-						  })
-						: [],
-					parameters: grp.parameters
-						? grp.parameters.map(param => {
-								return {
-									name: param.name ? param.name : '',
-									range: param.referenceRange ? param.referenceRange : '',
-									result: param.result ? param.result : '',
-								};
-						  })
-						: [],
-				};
-			});
-
-			let newTest = data.lab_test
-				? data.lab_test.map(test => {
-						return {
-							testName: test && test.name ? test.name : '',
-							service_id: test && test.id ? test.id : '',
-							amount: test && test.price ? test.price : '',
-							paramenters:
-								test.parameters &&
-								test.parameters.map(param => {
-									return {
-										name: param && param.name ? param.name : '',
-										range:
-											param && param.referenceRange ? param.referenceRange : '',
-										result: param.result ? param.result : '',
-									};
-								}),
-						};
-				  })
-				: [];
-
-			let newRequestObj = {
-				requestType: data.service_center,
-				patient_id: data.patient_id,
-				requestBody: {
-					specialization: '',
-					sessionCount: '',
-					groups: newGroup,
-					tests: newTest,
-					refferredSpecimen: data.referred_specimen,
-					requestNote: data.request_note,
-				},
-			};
-
-			request('patient/save-request', 'POST', true, newRequestObj)
-				.then(response => {
-					dispatch(create_lab_request(response));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
 	};
 };
 

@@ -22,7 +22,7 @@ const info = {
 	inputs: [{ name: 'pcv', title: 'PCV', weight: '%' }],
 };
 
-const PCV = ({ vitals }) => {
+const PCV = ({ vitals, task }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(null);
 	const [data, setData] = useState([]);
@@ -82,6 +82,7 @@ const PCV = ({ vitals }) => {
 				info={info}
 				setVisible={setVisible}
 				unit={unit}
+				task={task}
 			/>
 		</div>
 	);

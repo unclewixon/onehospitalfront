@@ -22,7 +22,7 @@ const info = {
 	inputs: [{ name: 'dilation', title: 'Dilation', weight: 'cm' }],
 };
 
-const Dilation = ({ vitals }) => {
+const Dilation = ({ vitals, task }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(null);
 	const [data, setData] = useState([]);
@@ -86,6 +86,7 @@ const Dilation = ({ vitals }) => {
 				info={info}
 				setVisible={setVisible}
 				unit={unit}
+				task={task}
 			/>
 		</div>
 	);

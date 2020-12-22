@@ -22,7 +22,7 @@ const info = {
 	inputs: [{ name: 'pulse', title: 'Pulse', weight: 'beats/min' }],
 };
 
-const Pulse = ({ vitals }) => {
+const Pulse = ({ vitals, task }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(null);
 	const [data, setData] = useState([]);
@@ -82,6 +82,7 @@ const Pulse = ({ vitals }) => {
 				info={info}
 				setVisible={setVisible}
 				unit={unit}
+				task={task}
 			/>
 		</div>
 	);

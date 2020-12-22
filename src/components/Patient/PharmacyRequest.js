@@ -7,7 +7,13 @@ import PrescriptionForm from '../Pharmacy/PrescriptionForm';
 const PharmacyRequest = props => {
 	const { patient } = props;
 
-	return <PrescriptionForm patient={patient} module="patient" />;
+	return (
+		<div className="col-sm-12">
+			<div className="element-wrapper">
+				<PrescriptionForm patient={patient} module="patient" />
+			</div>
+		</div>
+	);
 };
 
 const mapStateToProps = ({ user }) => ({

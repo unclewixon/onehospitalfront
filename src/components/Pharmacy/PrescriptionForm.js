@@ -1,18 +1,20 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import Select from 'react-select';
 import { Table } from 'react-bootstrap';
 import AsyncSelect from 'react-select/async';
 import { withRouter } from 'react-router-dom';
 import { confirmAlert } from 'react-confirm-alert';
+import { useDispatch } from 'react-redux';
 
 import { ReactComponent as PlusIcon } from '../../assets/svg-icons/plus.svg';
 import waiting from '../../assets/images/waiting.gif';
 import { ReactComponent as EditIcon } from '../../assets/svg-icons/edit.svg';
 import { ReactComponent as TrashIcon } from '../../assets/svg-icons/trash.svg';
 import { notifySuccess, notifyError } from '../../services/notify';
-import { diagnosisAPI } from '../../services/constants';
+import { diagnosisAPI, searchAPI } from '../../services/constants';
 import { request, groupBy, hasExpired } from '../../services/utilities';
+import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const defaultValues = {
 	genericName: '',
@@ -27,14 +29,7 @@ const defaultValues = {
 	diagnosis: '',
 };
 
-const PrescriptionForm = ({
-	patient,
-	allPatients,
-	patientsLoading,
-	history,
-	module,
-	location,
-}) => {
+const PrescriptionForm = ({ patient, history, module, location }) => {
 	const [refillable, setRefillable] = useState(false);
 	const { register, handleSubmit, setValue, reset } = useForm({
 		defaultValues,
@@ -48,6 +43,9 @@ const PrescriptionForm = ({
 	const [genName, setGenName] = useState(null);
 	const [diagnosisType, setDiagnosisType] = useState('icd10');
 	const [selectedDrug, setSelectedDrug] = useState(null);
+	const [loading, setLoading] = useState(true);
+
+	const dispatch = useDispatch();
 
 	const onRefillableClick = () => {
 		setRefillable(!refillable);
@@ -66,24 +64,47 @@ const PrescriptionForm = ({
 		return res;
 	};
 
-	const getServiceUnit = useCallback(async () => {
+	const getPatients = async q => {
+		if (!q || q.length < 3) {
+			return [];
+		}
+
+		const url = `${searchAPI}?q=${q}`;
+		const res = await request(url, 'GET', true);
+		return res;
+	};
+
+	const getServiceUnit = async hmoId => {
 		try {
+			dispatch(startBlock());
 			const res = await request('inventory/categories', 'GET', true);
 			if (res && res.length > 0) {
 				const selectCat = res.find(cat => cat.name === 'Pharmacy');
 
-				const url = `inventory/stocks-by-category/${selectCat.id}`;
+				const url = `inventory/stocks-by-category/${selectCat.id}/${hmoId}`;
 				const rs = await request(url, 'GET', true);
 				setInventories(rs);
 			}
+			setLoading(false);
+			dispatch(stopBlock());
 		} catch (error) {
-			notifyError('Error fetching Service Unit');
+			console.log(error);
+			notifyError('Error fetching drugs');
+			setLoading(false);
+			dispatch(stopBlock());
 		}
-	}, []);
+	};
 
 	useEffect(() => {
-		getServiceUnit();
-	}, [getServiceUnit]);
+		const fetch = () => {
+			getServiceUnit(patient.hmo.id);
+		};
+
+		if (loading && patient) {
+			fetch();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [loading, patient]);
 
 	// group drugs by generic name
 	const drugValues = groupBy(
@@ -110,19 +131,20 @@ const PrescriptionForm = ({
 	const drugNameOptions = genericItem
 		? genericItem.drugs.map(drug => ({
 				value: drug.id,
-				label: `${drug.name} - ${drug.vendor?.name}`,
+				label: `${drug.name}${drug.vendor ? ` - ${drug.vendor.name}` : ''}`,
 		  }))
 		: [];
 
 	const onFormSubmit = (data, e) => {
 		const drug = inventories.find(drug => drug.id === data.drugId);
-		console.log(drug);
 		let newDrug = [
 			...drugsSelected,
 			{
 				...data,
 				drugName: drug?.name || '',
 				drugCost: drug?.sales_price || 0.0,
+				hmoId: drug.hmo.id,
+				hmoPrice: drug?.hmoPrice || 0.0,
 			},
 		];
 		setDrugsSelected(newDrug);
@@ -150,22 +172,31 @@ const PrescriptionForm = ({
 		try {
 			e.preventDefault();
 
-			setSubmitting(true);
-			let patient_id = '';
+			let patient_id;
 			if (chosenPatient) {
-				patient_id = chosenPatient.value;
+				patient_id = chosenPatient.id;
 			} else {
 				patient_id = patient && patient.id ? patient.id : '';
 			}
 			if (!patient_id) {
 				notifyError('No patient has been selected');
+				return;
 			}
+
+			if (drugsSelected.length === 0) {
+				notifyError('No drugs has been selected');
+				return;
+			}
+
+			setSubmitting(true);
 
 			const data = drugsSelected.map((request, i) => ({
 				id: i + 1,
 				drug_generic_name: request.genericName,
 				drug_name: request.drugName,
-				drug_cost: request.drugCost ? request.drugCost.replace(',', '') : 0.0,
+				drug_cost: request.drugCost,
+				drug_hmo_id: request.hmoId,
+				drug_hmo_cost: request.hmoPrice,
 				drug_id: request.drugId,
 				dose_quantity: request.quantity,
 				refills: request.refills,
@@ -236,15 +267,23 @@ const PrescriptionForm = ({
 						<label className="mr-2 " htmlFor="patient">
 							Patient Name
 						</label>
-						{/* TODO: change to async select */}
-						<Select
-							id="patient"
-							name="patient"
+						<AsyncSelect
 							isClearable
-							isLoading={patientsLoading}
-							isSearchable
+							getOptionValue={option => option.id}
+							getOptionLabel={option =>
+								`${option.other_names} ${option.surname}`
+							}
+							defaultOptions
+							name="patient"
+							loadOptions={getPatients}
 							onChange={val => {
-								setChosenPatient(val);
+								if (val) {
+									getServiceUnit(val.hmo.id);
+									setChosenPatient(val);
+								} else {
+									setChosenPatient(null);
+									setInventories([]);
+								}
 								setValue('genericName', '');
 								setGenName(null);
 
@@ -252,8 +291,7 @@ const PrescriptionForm = ({
 								setValue('drugId', '');
 								setSelectedDrug(null);
 							}}
-							options={allPatients}
-							value={chosenPatient}
+							placeholder="Search patients"
 						/>
 					</div>
 				)}

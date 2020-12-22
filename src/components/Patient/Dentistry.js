@@ -15,32 +15,32 @@ const Dentistry = props => {
 
 	const convertToIndividualRequest = data => {
 		console.log(data);
-		if (data) {
-			let newData = [];
-			data.forEach(value => {
-				if (Array.isArray(value.requestBody)) {
-					value.requestBody.forEach(val => {
-						newData.push({
-							id: value.id,
-							isActive: value.isActive,
-							createdAt: value.createdAt,
-							updateAt: value.updateAt,
-							requestType: value.requestType,
-							requestBody: {
-								amount: val.amount,
-								service_id: val.service_id,
-								specialization: val.specialization,
-							},
-							status: value.status,
-						});
-					});
-				} else {
-					newData.push(value);
-				}
-			});
+		// if (data) {
+		// 	let newData = [];
+		// 	data.forEach(value => {
+		// 		if (Array.isArray(value.requestBody)) {
+		// 			value.requestBody.forEach(val => {
+		// 				newData.push({
+		// 					id: value.id,
+		// 					isActive: value.isActive,
+		// 					createdAt: value.createdAt,
+		// 					updateAt: value.updateAt,
+		// 					requestType: value.requestType,
+		// 					requestBody: {
+		// 						amount: val.amount,
+		// 						service_id: val.service_id,
+		// 						specialization: val.specialization,
+		// 					},
+		// 					status: value.status,
+		// 				});
+		// 			});
+		// 		} else {
+		// 			newData.push(value);
+		// 		}
+		// 	});
 
-			return newData;
-		}
+		// 	return newData;
+		// }
 		return [];
 	};
 

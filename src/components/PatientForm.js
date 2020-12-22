@@ -1,33 +1,34 @@
 import React, { Fragment, useEffect, useState } from 'react';
+import { connect, useSelector } from 'react-redux';
+import { useForm } from 'react-hook-form';
+import Select from 'react-select';
+import DatePicker from 'react-datepicker';
+
 import { closeModals } from '../actions/general';
 import { nextStep } from '../actions/patient';
-import { connect } from 'react-redux';
-import { useForm } from 'react-hook-form';
 import { patientSchema } from '../services/validationSchemas';
-import Select from 'react-select';
-import {
-	ethnicities,
-	gender,
-	maritalStatus,
-	insuranceStatus,
-} from '../services/constants';
+import { ethnicities, gender, maritalStatus } from '../services/constants';
 import { getAllHmos } from '../actions/hmo';
-import DatePicker from 'react-datepicker';
 
 function PatientForm(props) {
 	const formData = props.formData;
 	const patient = props.patient;
 	const register_new_patient = props.register_new_patient;
+
 	const [formTitle, setFormTitle] = useState('');
 	const [patientData, setPatientData] = useState({});
 	const [genderValue, setGenderValue] = useState('');
-	const [insValue, setInsValue] = useState('');
 	const [hmoValue, setHmoValue] = useState('');
 	const [ethValue, setEthValue] = useState('');
 	const [maritalValue, setMaritalValue] = useState('');
-	const [loaded, setLoaded] = useState(false);
-	const [isHmo, setIsHmo] = useState(false);
-	const [hmos, setHmos] = useState([]);
+
+	const hmoList = useSelector(state => state.settings.hmos);
+	const hmos = hmoList.map(hmo => {
+		return {
+			value: hmo.id,
+			label: hmo.name,
+		};
+	});
 
 	useEffect(() => {
 		let formValues = {
@@ -41,7 +42,6 @@ function PatientForm(props) {
 			phoneNumber: formData.phoneNumber || '',
 			maritalStatus: formData.maritalStatus || '',
 			ethnicity: formData.ethnicity || '',
-			insurranceStatus: formData.insurranceStatus || '',
 			hmo: formData.hmo || '',
 		};
 		setFormTitle('New patient registration');
@@ -51,24 +51,20 @@ function PatientForm(props) {
 			formValues = {
 				surname: patient.surname,
 				other_names: patient.other_names || '',
-				date_of_birth: patient.date_of_birth || '',
+				date_of_birth: patient.date_of_birth
+					? new Date(patient.date_of_birth)
+					: '',
 				email: patient.email || '',
 				maritalStatus: patient.maritalStatus || '',
-				insurranceStatus: patient.insurranceStatus || '',
 				ethnicity: patient.ethnicity || '',
 				gender: patient.gender || '',
 				occupation: patient.occupation || '',
 				address: patient.address || '',
 				phoneNumber: patient.phoneNumber || '',
-				hmo: patient.hmo || '',
+				hmo: patient.hmo_id || '',
 			};
 			setGenderValue(
 				gender.filter(option => option.label === formValues.gender)
-			);
-			setInsValue(
-				insuranceStatus.filter(
-					option => option.label === formValues.insurranceStatus
-				)
 			);
 			setHmoValue(hmos.filter(option => option.label === formValues.hmo));
 			setEthValue(
@@ -86,12 +82,6 @@ function PatientForm(props) {
 				formValues.maritalStatus,
 				setMaritalValue,
 				maritalStatus
-			);
-			handleChange(
-				'insurranceStatus',
-				formValues.insurranceStatus,
-				setInsValue,
-				insuranceStatus
 			);
 			handleChange('hmoId', formValues.hmo, setHmoValue, hmos);
 			handleChange('ethnicity', formValues.ethnicity, setEthValue, ethnicities);
@@ -111,42 +101,16 @@ function PatientForm(props) {
 	};
 
 	const handleChange = (name, type, fn, lists = []) => {
-		let res = lists.find(p => p.value === type);
+		let res = lists.find(
+			p => p.value === type || p.value === parseInt(type, 10)
+		);
 		fn(res);
 		if (type == null) {
 			setValue(name, null);
 		} else {
-			if (name === 'insurranceStatus') {
-				if (type === 'HMO') {
-					setIsHmo(true);
-					setValue(name, type);
-				} else {
-					setIsHmo(false);
-					setValue(name, type);
-					setValue('hmoId', null);
-				}
-			} else {
-				setValue(name, type);
-			}
+			setValue(name, type);
 		}
 	};
-
-	useEffect(() => {
-		if (!loaded) {
-			props.getAllHmos();
-
-			let hmos = props.hmoList.map(hmo => {
-				return {
-					value: hmo.id,
-					label: hmo.name,
-				};
-			});
-
-			setHmos(hmos);
-
-			setLoaded(true);
-		}
-	}, [loaded, props]);
 
 	return (
 		<Fragment>
@@ -226,7 +190,7 @@ function PatientForm(props) {
 											ref={register({ name: 'date_of_birth' })}
 											showYearDropdown
 											dropdownMode="select"
-											dateFormat="yyyy-MM-dd"
+											dateFormat="dd-MM-yyyy"
 											className="single-daterange form-control"
 											placeholderText="Select date of birth"
 											maxDate={new Date()}
@@ -257,6 +221,11 @@ function PatientForm(props) {
 											);
 										}}
 									/>
+									{errors.gender && (
+										<small className="text-danger">
+											{errors.gender.message}
+										</small>
+									)}
 								</div>
 							</div>
 							<div className="col-sm">
@@ -278,31 +247,15 @@ function PatientForm(props) {
 											);
 										}}
 									/>
+									{errors.maritalStatus && (
+										<small className="text-danger">
+											{errors.maritalStatus.message}
+										</small>
+									)}
 								</div>
 							</div>
 						</div>
 						<div className="row">
-							<div className="col-sm">
-								<div className="form-group">
-									<label>
-										Insurance Status<span className="compulsory-field">*</span>
-									</label>
-									<Select
-										id="insurranceStatus"
-										ref={register({ name: 'insurranceStatus' })}
-										options={insuranceStatus}
-										value={insValue}
-										onChange={evt => {
-											handleChange(
-												'insurranceStatus',
-												String(evt.value),
-												setInsValue,
-												insuranceStatus
-											);
-										}}
-									/>
-								</div>
-							</div>
 							<div className="col-sm">
 								<div className="form-group">
 									<label>
@@ -311,7 +264,7 @@ function PatientForm(props) {
 									<Select
 										id="hmoId"
 										ref={register({ name: 'hmoId' })}
-										options={isHmo ? hmos : []}
+										options={hmos}
 										value={hmoValue}
 										onChange={evt => {
 											handleChange(
@@ -322,6 +275,11 @@ function PatientForm(props) {
 											);
 										}}
 									/>
+									{errors.hmoId && (
+										<small className="text-danger">
+											{errors.hmoId.message}
+										</small>
+									)}
 								</div>
 							</div>
 							<div className="col-sm">
@@ -401,11 +359,9 @@ function PatientForm(props) {
 							className="btn btn-default"
 							type="button"
 							onClick={() => props.closeModals(false)}>
-							{' '}
 							Cancel
 						</button>
 						<button className="btn btn-primary" type="submit">
-							{' '}
 							Next
 						</button>
 					</div>
@@ -420,7 +376,6 @@ const mapStateToProps = (state, ownProps) => {
 		formData: state.patient.formData,
 		patient: state.user.patient,
 		register_new_patient: state.general.register_new_patient,
-		hmoList: state.hmo.hmo_list,
 	};
 };
 

@@ -241,6 +241,32 @@ export const vitalItems = [
 	'Others',
 ];
 
+export const allVitalItems = [
+	{ name: 'Blood Pressure', unit: 'mmHg' },
+	{ name: 'BMI', unit: 'kg/m²' },
+	{ name: 'BSA', unit: 'kg/m²' },
+	{ name: 'Dilation', unit: 'cm' },
+	{ name: 'Fetal Heart Rate', unit: 'bps' },
+	{ name: 'Fundus Height', unit: 'cm' },
+	{ name: 'Glucose', unit: 'mg/dL' },
+	{ name: 'Head Circumference', unit: 'cm' },
+	{ name: 'Height', unit: 'm' },
+	{ name: 'Length of Arm', unit: 'cm' },
+	{ name: 'MUAC', unit: '' },
+	{ name: 'Mid-Arm Circumference', unit: 'cm' },
+	{ name: 'Pain Scale', unit: '' },
+	{ name: 'PCV', unit: '%' },
+	{ name: 'Protein', unit: '' },
+	{ name: 'Pulse', unit: 'beats/min' },
+	{ name: 'Respiration', unit: 'breaths/min' },
+	{ name: 'SpO2', unit: '%' },
+	{ name: 'Surface Area', unit: 'cm²' },
+	{ name: 'Temperature', unit: '°C' },
+	{ name: 'Urine', unit: '' },
+	{ name: 'Weight', unit: 'kg' },
+	{ name: 'Others', unit: '' },
+];
+
 export const requestTypes = [
 	{
 		value: 'Physiotherapy',

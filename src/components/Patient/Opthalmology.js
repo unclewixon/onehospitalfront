@@ -16,27 +16,27 @@ const Opthalmology = props => {
 	const convertToIndividualRequest = data => {
 		console.log(data);
 		let newData = [];
-		data.forEach(value => {
-			if (Array.isArray(value.requestBody)) {
-				value.requestBody.forEach(val => {
-					newData.push({
-						id: value.id,
-						isActive: value.isActive,
-						createdAt: value.createdAt,
-						updateAt: value.updateAt,
-						requestType: value.requestType,
-						requestBody: {
-							amount: val.amount,
-							service_id: val.service_id,
-							specialization: val.specialization,
-						},
-						status: value.status,
-					});
-				});
-			} else {
-				newData.push(value);
-			}
-		});
+		// data.forEach(value => {
+		// 	if (Array.isArray(value.requestBody)) {
+		// 		value.requestBody.forEach(val => {
+		// 			newData.push({
+		// 				id: value.id,
+		// 				isActive: value.isActive,
+		// 				createdAt: value.createdAt,
+		// 				updateAt: value.updateAt,
+		// 				requestType: value.requestType,
+		// 				requestBody: {
+		// 					amount: val.amount,
+		// 					service_id: val.service_id,
+		// 					specialization: val.specialization,
+		// 				},
+		// 				status: value.status,
+		// 			});
+		// 		});
+		// 	} else {
+		// 		newData.push(value);
+		// 	}
+		// });
 
 		return newData;
 	};
@@ -127,9 +127,7 @@ const Opthalmology = props => {
 								<div id="toolbar"></div>
 							</div>
 						</div>
-						<div
-							className="fixed-table-container"
-							style={{ paddingBottom: '0px' }}>
+						<div className="fixed-table-container pb-0">
 							<div className="fixed-table-body">
 								<table
 									id="table"

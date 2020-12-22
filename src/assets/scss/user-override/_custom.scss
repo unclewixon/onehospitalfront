@@ -250,47 +250,48 @@
 	}
 }
 
-.recirpt-address{
-  text-align: center;
+.reciept-address {
+	text-align: center;
 }
 
-.reciept-logo{
+.reciept-logo {
 	height: 60px;
 	width: 60px;
 	// background: url(http://michaeltruong.ca/images/logo1.png) no-repeat;
 	// background-size: 60px 60px;
 }
 
-.reciept-logo img{
+.reciept-logo img {
 	height: 60px;
 	width: 60px;
 }
 
 @media all {
-  .page-break {
-    display: none;
-  }
+	.page-break {
+		display: none;
+	}
 }
 
 @media print {
-  html, body {
-    height: initial !important;
-    overflow: initial !important;
-    -webkit-print-color-adjust: exact;
-  }
+	html,
+	body {
+		height: initial !important;
+		overflow: initial !important;
+		-webkit-print-color-adjust: exact;
+	}
 }
 
 @media print {
-  .page-break {
-    margin-top: 1rem;
-    display: block;
-    page-break-before: auto;
-  }
+	.page-break {
+		margin-top: 1rem;
+		display: block;
+		page-break-before: auto;
+	}
 }
 
 @page {
-  size: auto;
-  margin: 20mm;
+	size: auto;
+	margin: 20mm;
 }
 
 tr {
@@ -307,4 +308,70 @@ tr {
 }
 .pipeline.white {
 	box-shadow: 0 2px 10px 0 rgba(16, 37, 133, 0.1);
+}
+
+.div-icon {
+	.btn-icon {
+		display: block;
+		height: 28px;
+
+		img {
+			max-height: 100%;
+		}
+	}
+}
+
+.modal-open {
+	.modal {
+		&.show {
+			background-color: rgba(0, 0, 0, 0.35);
+		}
+	}
+}
+
+.flex-action {
+	display: flex;
+	align-items: center;
+}
+
+.floating-actions {
+	position: absolute;
+	right: 10px;
+	top: 105px;
+}
+
+.toggled {
+	background-color: #ececec !important;
+	border-color: #e6e6e6 !important;
+}
+
+.warning-task {
+	display: inline-block;
+	margin-right: 4px;
+	width: 18px;
+	img {
+		max-width: 100%;
+	}
+}
+
+.text-custom {
+	color: rgba(69, 76, 96, 0.8) !important;
+}
+
+.react-datepicker {
+    width: 328px;
+}
+
+.set-immediately {
+	text-align: right;
+    right: 0;
+    position: absolute;
+    top: 0;
+}
+
+.set-pharmacy {
+	text-align: right;
+    right: 0;
+    position: absolute;
+    top: 0;
 }

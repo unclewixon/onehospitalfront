@@ -10,7 +10,7 @@ import {
 import waiting from '../../assets/images/waiting.gif';
 import { vitalsAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
-import { updateVitals } from '../../actions/patient';
+import { updateVitals, readingDone } from '../../actions/patient';
 
 class TakeReadings extends Component {
 	state = {
@@ -18,13 +18,13 @@ class TakeReadings extends Component {
 	};
 
 	takeExtraReadings = async (data, title) => {
-		const { patient } = this.props;
+		const { patient, task } = this.props;
 
 		try {
 			let toSave = {
 				readingType: title,
 				reading: data,
-				patient_id: patient.id,
+				patient_id: patient ? patient.id : task.patient_id,
 			};
 			const rs = await request(`${vitalsAPI}`, 'POST', true, toSave);
 			this.props.updateVitals(rs.readings);
@@ -32,7 +32,7 @@ class TakeReadings extends Component {
 	};
 
 	takeReading = async data => {
-		const { patient, info } = this.props;
+		const { patient, info, task } = this.props;
 		const { title } = info;
 		this.setState({ submitting: true });
 		let _data = data;
@@ -50,22 +50,34 @@ class TakeReadings extends Component {
 			let toSave = {
 				readingType: title,
 				reading: _data,
-				patient_id: patient.id,
+				patient_id: patient ? patient.id : task.patient_id,
+				task_id: task ? task.id : '',
 			};
 			const rs = await request(`${vitalsAPI}`, 'POST', true, toSave);
-			this.props.updateVitals(rs.readings);
+			if (rs.success) {
+				this.props.updateVitals(rs.readings);
 
-			if (info.type === 'bmi' || info.type === 'bsa') {
-				// store individual readings for weight and height as well
-				await this.takeExtraReadings({ weight: data.weight }, 'Weight');
-				await this.takeExtraReadings({ height: data.height }, 'Height');
+				if (info.type === 'bmi' || info.type === 'bsa') {
+					// store individual readings for weight and height as well
+					await this.takeExtraReadings({ weight: data.weight }, 'Weight');
+					await this.takeExtraReadings({ height: data.height }, 'Height');
+				}
+
+				notifySuccess(`${title} updated!`);
+				this.props.reset('take-reading');
+				this.setState({ submitting: false });
+				if (task) {
+					this.props.readingDone(task.id);
+				}
+				this.props.doHide(true);
+			} else {
+				this.setState({ submitting: false });
+				throw new SubmissionError({
+					_error: rs.message,
+				});
 			}
-
-			notifySuccess(`${title} updated!`);
-			this.props.reset('take-reading');
-			this.setState({ submitting: false });
-			this.props.doHide(true);
 		} catch (e) {
+			console.log(e);
 			this.setState({ submitting: false });
 			throw new SubmissionError({
 				_error: e.message || `could not take reading for ${title}`,
@@ -155,4 +167,6 @@ const mapStateToProps = (state, ownProps) => {
 	};
 };
 
-export default connect(mapStateToProps, { reset, updateVitals })(TakeReadings);
+export default connect(mapStateToProps, { reset, updateVitals, readingDone })(
+	TakeReadings
+);

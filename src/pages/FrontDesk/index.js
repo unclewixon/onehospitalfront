@@ -94,7 +94,6 @@ const FrontDesk = props => {
 									className={`mr-2 btn btn-primary btn-sm  ${
 										page === 'filled-request' ? 'btn-outline-primary' : ''
 									}`}>
-									{' '}
 									Add new patient
 								</Link>
 								<Link
@@ -103,7 +102,6 @@ const FrontDesk = props => {
 									className={`mr-2 btn btn-primary btn-sm  ${
 										page === 'all-request' ? 'btn-outline-primary' : ''
 									}`}>
-									{' '}
 									New appointment
 								</Link>
 							</div>
@@ -147,9 +145,6 @@ const FrontDesk = props => {
 					</div>
 				</div>
 			</div>
-			{/* <div className="content-panel compact">
-				<Queue department="all" />
-			</div> */}
 		</div>
 	);
 };

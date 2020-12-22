@@ -4,11 +4,7 @@ import { useForm, Controller, ErrorMessage } from 'react-hook-form';
 import { connect, useDispatch } from 'react-redux';
 
 import { serviceAPI, serviceCenter } from '../../../services/constants';
-import {
-	createLabRequest,
-	loadEncounterData,
-	loadEncounterForm,
-} from '../../../actions/patient';
+import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
 import {
 	get_all_services,
 	getAllLabGroups,
@@ -602,7 +598,6 @@ export default connect(mapStateToProps, {
 	loadEncounterForm,
 	get_all_services,
 	getAllServiceCategory,
-	createLabRequest,
 	getAllLabGroups,
 	fetchLabTests,
 	getAllLabTestParameters,

@@ -1,10 +1,13 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { prevStep } from '../actions/patient';
-import { closeModals } from '../actions/general';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { patientNOKSchema } from '../services/validationSchemas';
 import Select from 'react-select';
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
+
+import { prevStep } from '../actions/patient';
+import { closeModals } from '../actions/general';
+import { patientNOKSchema } from '../services/validationSchemas';
 import {
 	ethnicities,
 	gender,
@@ -16,8 +19,6 @@ import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import { setPatientRecord } from '../actions/user';
 import { addNewPatient, updatePatient } from '../actions/patient';
-
-import DatePicker from 'react-datepicker';
 
 function PatientNOKForm(props) {
 	const formData = props.formData;
@@ -117,16 +118,22 @@ function PatientNOKForm(props) {
 	};
 	const onSubmit = async values => {
 		const data = { ...formData, ...values };
+		const datum = {
+			...data,
+			date_of_birth: data.date_of_birth
+				? moment(data.date_of_birth).format('YYYY-MM-DD')
+				: '',
+		};
 		setSubmitting(true);
 		if (!register_new_patient) {
 			try {
 				const url = `patient/${patient.id}/update`;
-				const res = await request(url, 'PATCH', true, data);
+				const res = await request(url, 'PATCH', true, datum);
 				setSubmitting(false);
 				if (res.success) {
 					props.setPatientRecord(res.patient);
-					props.updatePatient(res?.patient);
-					notifySuccess(patient.other_names + ' record was updated!');
+					props.updatePatient(res.patient);
+					notifySuccess(`${patient.other_names} record was updated!`);
 					props.prevStep(1);
 					props.closeModals(false);
 				} else {
@@ -135,16 +142,17 @@ function PatientNOKForm(props) {
 			} catch (e) {
 				setSubmitting(false);
 				notifyError(
-					e.message || 'could not update ' + patient.other_names + ' record'
+					e.message || `could not update ${patient.other_names} record`
 				);
 			}
 		} else {
 			try {
-				const res = await request(`patient/save`, 'POST', true, data);
+				const url = 'patient/save';
+				const res = await request(url, 'POST', true, datum);
 				setSubmitting(false);
 				if (res.success) {
-					props.addNewPatient(res?.patient);
-					notifySuccess('New patient record was created!');
+					props.addNewPatient(res.patient);
+					notifySuccess('New patient account created!');
 					props.prevStep(1);
 					props.closeModals(false);
 				} else {
@@ -213,31 +221,24 @@ function PatientNOKForm(props) {
 									<div className="custom-date-input">
 										<DatePicker
 											selected={patientData?.nok_date_of_birth}
-											onChange={date => setValue('date_of_birth', date)}
+											onChange={date => setValue('nok_date_of_birth', date)}
 											peekNextMonth
 											showMonthDropdown
-											ref={register({ name: 'date_of_birth' })}
+											ref={register({ name: 'nok_date_of_birth' })}
 											showYearDropdown
 											dropdownMode="select"
-											dateFormat="yyyy-MM-dd"
+											dateFormat="dd-MM-yyyy"
 											className="single-daterange form-control"
 											placeholderText="Select date of birth"
 											maxDate={new Date()}
-											name="date_of_birth"
+											name="nok_date_of_birth"
 										/>
 									</div>
-									{/* <input
-										className="form-control"
-										placeholder="04/12/1978"
-										type="text"
-										defaultValue={patientData.nok_date_of_birth || ''}
-										name="nok_date_of_birth"
-										ref={register}
-									/> */}
-									<small className="text-danger">
-										{errors.nok_date_of_birth &&
-											errors.nok_date_of_birth.message}
-									</small>
+									{errors.nok_date_of_birth && (
+										<small className="text-danger">
+											{errors.nok_date_of_birth.message}
+										</small>
+									)}
 								</div>
 							</div>
 							<div className="col-sm">
@@ -370,6 +371,11 @@ function PatientNOKForm(props) {
 										defaultValue={patientData.nok_email || ''}
 										type="text"
 									/>
+									{errors.nok_email && (
+										<small className="text-danger">
+											{errors.nok_email.message}
+										</small>
+									)}
 								</div>
 							</div>
 						</div>

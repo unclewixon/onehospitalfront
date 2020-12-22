@@ -1,33 +1,32 @@
 import React, { Fragment, useEffect, useState } from 'react';
+import { connect, useSelector } from 'react-redux';
+import { useForm } from 'react-hook-form';
+import Select from 'react-select';
+import DatePicker from 'react-datepicker';
+
 import { closeModals } from '../../actions/general';
 import { nextStep } from '../../actions/patient';
-import { connect } from 'react-redux';
-import { useForm } from 'react-hook-form';
 import { patientSchema } from '../../services/validationSchemas';
-import Select from 'react-select';
-import {
-	ethnicities,
-	gender,
-	maritalStatus,
-	insuranceStatus,
-} from '../../services/constants';
-import { getAllHmos } from '../../actions/hmo';
-import DatePicker from 'react-datepicker';
+import { ethnicities, gender, maritalStatus } from '../../services/constants';
 
 function Observation(props) {
 	const formData = props.formData;
-	// const patient = props.patient;
 	const register_new_patient = props.register_new_patient;
+
 	const [formTitle, setFormTitle] = useState('');
 	const [patientData, setPatientData] = useState({});
 	const [genderValue, setGenderValue] = useState('');
-	const [insValue, setInsValue] = useState('');
 	const [hmoValue, setHmoValue] = useState('');
 	const [ethValue, setEthValue] = useState('');
 	const [maritalValue, setMaritalValue] = useState('');
-	const [loaded, setLoaded] = useState(false);
-	const [isHmo, setIsHmo] = useState(false);
-	const [hmos, setHmos] = useState([]);
+
+	const hmoList = useSelector(state => state.settings.hmos);
+	const hmos = hmoList.map(hmo => {
+		return {
+			value: hmo.id,
+			label: hmo.name,
+		};
+	});
 
 	useEffect(() => {
 		let formValues = {
@@ -41,7 +40,6 @@ function Observation(props) {
 			phoneNumber: formData.phoneNumber || '',
 			maritalStatus: formData.maritalStatus || '',
 			ethnicity: formData.ethnicity || '',
-			insurranceStatus: formData.insurranceStatus || '',
 			hmo: formData.hmo || '',
 		};
 		setFormTitle('New patient registration');
@@ -54,7 +52,6 @@ function Observation(props) {
 			// 	date_of_birth: patient.date_of_birth || '',
 			// 	email: patient.email || '',
 			// 	maritalStatus: patient.maritalStatus || '',
-			// 	insurranceStatus: patient.insurranceStatus || '',
 			// 	ethnicity: patient.ethnicity || '',
 			// 	gender: patient.gender || '',
 			// 	occupation: patient.occupation || '',
@@ -64,11 +61,6 @@ function Observation(props) {
 			// };
 			setGenderValue(
 				gender.filter(option => option.label === formValues.gender)
-			);
-			setInsValue(
-				insuranceStatus.filter(
-					option => option.label === formValues.insurranceStatus
-				)
 			);
 			setHmoValue(hmos.filter(option => option.label === formValues.hmo));
 			setEthValue(
@@ -86,12 +78,6 @@ function Observation(props) {
 				formValues.maritalStatus,
 				setMaritalValue,
 				maritalStatus
-			);
-			handleChange(
-				'insurranceStatus',
-				formValues.insurranceStatus,
-				setInsValue,
-				insuranceStatus
 			);
 			handleChange('hmoId', formValues.hmo, setHmoValue, hmos);
 			handleChange('ethnicity', formValues.ethnicity, setEthValue, ethnicities);
@@ -111,42 +97,16 @@ function Observation(props) {
 	};
 
 	const handleChange = (name, type, fn, lists = []) => {
-		let res = lists.find(p => p.value === type);
+		let res = lists.find(
+			p => p.value === type || p.value === parseInt(type, 10)
+		);
 		fn(res);
 		if (type == null) {
 			setValue(name, null);
 		} else {
-			if (name === 'insurranceStatus') {
-				if (type === 'HMO') {
-					setIsHmo(true);
-					setValue(name, type);
-				} else {
-					setIsHmo(false);
-					setValue(name, type);
-					setValue('hmoId', null);
-				}
-			} else {
-				setValue(name, type);
-			}
+			setValue(name, type);
 		}
 	};
-
-	useEffect(() => {
-		if (!loaded) {
-			props.getAllHmos();
-
-			let hmos = props.hmoList.map(hmo => {
-				return {
-					value: hmo.id,
-					label: hmo.name,
-				};
-			});
-
-			setHmos(hmos);
-
-			setLoaded(true);
-		}
-	}, [loaded, props]);
 
 	return (
 		<Fragment>
@@ -226,7 +186,7 @@ function Observation(props) {
 											ref={register({ name: 'date_of_birth' })}
 											showYearDropdown
 											dropdownMode="select"
-											dateFormat="yyyy-MM-dd"
+											dateFormat="dd-MM-yyyy"
 											className="single-daterange form-control"
 											placeholderText="Select date of birth"
 											maxDate={new Date()}
@@ -285,33 +245,12 @@ function Observation(props) {
 							<div className="col-sm">
 								<div className="form-group">
 									<label>
-										Insurance Status<span className="compulsory-field">*</span>
-									</label>
-									<Select
-										id="insurranceStatus"
-										ref={register({ name: 'insurranceStatus' })}
-										options={insuranceStatus}
-										value={insValue}
-										onChange={evt => {
-											handleChange(
-												'insurranceStatus',
-												String(evt.value),
-												setInsValue,
-												insuranceStatus
-											);
-										}}
-									/>
-								</div>
-							</div>
-							<div className="col-sm">
-								<div className="form-group">
-									<label>
-										Hmos<span className="compulsory-field">*</span>
+										Hmos <span className="compulsory-field">*</span>
 									</label>
 									<Select
 										id="hmoId"
 										ref={register({ name: 'hmoId' })}
-										options={isHmo ? hmos : []}
+										options={hmos}
 										value={hmoValue}
 										onChange={evt => {
 											handleChange(
@@ -420,10 +359,7 @@ const mapStateToProps = (state, ownProps) => {
 		formData: state.patient.formData,
 		patient: state.user.patient,
 		register_new_patient: state.general.register_new_patient,
-		hmoList: state.hmo.hmo_list,
 	};
 };
 
-export default connect(mapStateToProps, { closeModals, nextStep, getAllHmos })(
-	Observation
-);
+export default connect(mapStateToProps, { closeModals, nextStep })(Observation);

@@ -86,8 +86,6 @@ const Vitals = props => {
 	const { type, location, patient } = props;
 
 	const [loaded, setLoaded] = useState(false);
-	// const [show, setShow] = useState(false);
-	// const [target, setTarget] = useState(null);
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
@@ -103,11 +101,8 @@ const Vitals = props => {
 	}, [loaded, patient, props]);
 
 	async function getData(patient) {
-		const res = await request(
-			`${patientAPI}/${patient.id}/vitals`,
-			'GET',
-			true
-		);
+		const url = `${patientAPI}/${patient.id}/vitals`;
+		const res = await request(url, 'GET', true);
 		return res;
 	}
 
@@ -142,26 +137,24 @@ const Vitals = props => {
 						))}
 					</div>
 				</div>
+				<div className="floating-actions">
+					<Button
+						className="btn btn-primary btn-sm"
+						disabled={loading}
+						onClick={sendToDoctor}>
+						{loading ? (
+							<img src={waiting} alt="" />
+						) : (
+							<>
+								<i className="os-icon os-icon-mail-18"></i>
+								<span>Send To Doctor</span>
+							</>
+						)}
+					</Button>
+				</div>
 				<h6 className="element-header text-center">{type}</h6>
 				<div className="element-box p-3 m-0">
 					<Page type={type} />
-				</div>
-				<div className="element-wrapper">
-					<div className="element-actions">
-						<Button
-							className="btn btn-primary btn-sm"
-							disabled={loading}
-							onClick={sendToDoctor}>
-							{loading ? (
-								<img src={waiting} alt="" />
-							) : (
-								<>
-									<i className="os-icon os-icon-mail-18"></i>
-									<span>Send To Doctor</span>
-								</>
-							)}
-						</Button>
-					</div>
 				</div>
 			</div>
 		</div>

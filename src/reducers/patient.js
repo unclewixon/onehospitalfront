@@ -15,8 +15,6 @@ import {
 	UPDATE_VITALS,
 	LOAD_PATIENT_UPLOAD_DATA,
 	ADD_PATIENT_UPLOAD_DATA,
-	LOAD_PATIENT_PROCEDURE_DATA,
-	ADD_PATIENT_PROCEDURE_DATA,
 	LOAD_PATIENTS,
 	GET_LAB_REQUESTS,
 	GET_PHARMACY_REQUESTS,
@@ -36,11 +34,11 @@ import {
 	LOAD_DELIVERY_RECORD,
 	LOAD_LABOUR_MEASUREMENT,
 	PATIENT_IVF,
-	LOAD_ALL_PATIENTS,
 	ADD_NEW_PATIENT,
 	GET_ALL_OPD_LAB_APPOINTMENTS,
 	GET_ALL_OPD_IMMUNIZATION_APPOINTMENTS,
 	UPDATE_PATIENT,
+	READING_DONE,
 } from '../actions/types';
 import actions from 'redux-form/lib/actions';
 import { updateImmutable } from '../services/utilities';
@@ -95,7 +93,7 @@ const INITIAL_STATE = {
 	riskAssessment: [],
 	deliveryRecord: [],
 	labourMeasurement: [],
-	allPatients: [],
+	reading_done: null,
 };
 
 const patient = (state = INITIAL_STATE, action) => {
@@ -111,16 +109,6 @@ const patient = (state = INITIAL_STATE, action) => {
 				...state,
 				patient_upload: [...state.patient_upload, action.payload],
 			};
-
-		case LOAD_PATIENT_PROCEDURE_DATA:
-			return { ...state, patient_procedure: action.payload };
-		case ADD_PATIENT_PROCEDURE_DATA:
-			return {
-				...state,
-				patient_procedure: [...state.patient_procedure, action.payload],
-			};
-		case LOAD_PATIENTS:
-			return { ...state, patients: action.payload };
 		case GET_ALLERGIES:
 			return { ...state, allergies: action.payload };
 		case SAVE_ALLERGIES:
@@ -226,11 +214,6 @@ const patient = (state = INITIAL_STATE, action) => {
 				...state,
 				labourMeasurement: action.payload,
 			};
-		case LOAD_ALL_PATIENTS:
-			return {
-				...state,
-				allPatients: action.payload,
-			};
 		case GET_ALL_OPD_LAB_APPOINTMENTS:
 			return {
 				...state,
@@ -241,14 +224,18 @@ const patient = (state = INITIAL_STATE, action) => {
 				...state,
 				opdImmunizationAppointments: action.payload,
 			};
+		case LOAD_PATIENTS:
+			return { ...state, patients: action.payload };
 		case ADD_NEW_PATIENT:
 			return {
 				...state,
-				allPatients: [action.payload, ...state.allPatients],
+				patients: [action.payload, ...state.patients],
 			};
 		case UPDATE_PATIENT:
-			const patients = updateImmutable(state.allPatients, action.payload);
-			return { ...state, allPatients: [...patients] };
+			const patients = updateImmutable(state.patients, action.payload);
+			return { ...state, patients };
+		case READING_DONE:
+			return { ...state, reading_done: action.payload };
 		default:
 			return state;
 	}

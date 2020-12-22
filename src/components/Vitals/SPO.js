@@ -22,7 +22,7 @@ const info = {
 	inputs: [{ name: 'spo', title: 'SpO2', weight: '%' }],
 };
 
-const SPO = ({ vitals }) => {
+const SPO = ({ vitals, task }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(null);
 	const [data, setData] = useState([]);
@@ -82,6 +82,7 @@ const SPO = ({ vitals }) => {
 				info={info}
 				setVisible={setVisible}
 				unit={unit}
+				task={task}
 			/>
 		</div>
 	);

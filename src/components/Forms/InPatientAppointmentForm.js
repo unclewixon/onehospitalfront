@@ -230,7 +230,7 @@ function InPatientAppointmentForm(props) {
 							<label> Appointment Date</label>
 							<div className="date-input">
 								<DatePicker
-									dateFormat="yyyy-MM-dd"
+									dateFormat="dd-MM-yyyy"
 									className="single-daterange form-control"
 									ref={register({
 										name: 'appointment_date',

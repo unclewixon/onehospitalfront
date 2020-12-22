@@ -57,6 +57,7 @@ import {
 	UPDATE_LAB_GROUP,
 	DELETE_LAB_GROUP,
 	GET_ALL_LAB_GROUPS,
+	LOAD_HMOS,
 } from '../actions/types';
 import { updateImmutable } from '../services/utilities';
 
@@ -78,6 +79,7 @@ const INITIAL_STATE = {
 	services: [],
 	diagnosis: [],
 	request_services: [],
+	hmos: [],
 };
 
 const settings = (state = INITIAL_STATE, action) => {
@@ -401,6 +403,8 @@ const settings = (state = INITIAL_STATE, action) => {
 					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};
+		case LOAD_HMOS:
+			return { ...state, hmos: action.payload };
 		default:
 			return state;
 	}

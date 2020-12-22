@@ -22,7 +22,7 @@ const info = {
 	inputs: [{ name: 'weight', title: 'Weight', weight: 'kg' }],
 };
 
-const Weight = ({ vitals }) => {
+const Weight = ({ vitals, task }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(null);
 	const [data, setData] = useState([]);

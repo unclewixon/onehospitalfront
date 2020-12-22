@@ -90,7 +90,7 @@ const ModalPatientDetails = ({ showModal, onModalClick, activeRequest }) => {
 										<tbody>
 											<tr>
 												<td className="font-weight-bold">Insurance Status</td>
-												<td>{activeRequest?.insurranceStatus}</td>
+												<td>{activeRequest.hmo.name}</td>
 											</tr>
 											<tr>
 												<td className="font-weight-bold">Number of Visits</td>

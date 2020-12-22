@@ -3,33 +3,24 @@ import React, { useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
+import Tooltip from 'antd/lib/tooltip';
 
 import background from '../assets/images/b3.jpeg';
 import profilepix from '../assets/images/a6.jpeg';
+import editIcon from '../assets/medical/edit.png';
+import admitIcon from '../assets/medical/admit.png';
+import immunizeIcon from '../assets/medical/immunize.png';
+import documentIcon from '../assets/medical/document.png';
 
 import { getAge, request } from '../services/utilities';
 import { patientAPI } from '../services/constants';
 import { notifySuccess, notifyError } from './../services/notify';
-import waiting from '../assets/images/waiting.gif';
 import { updatePatient } from '../actions/patient';
 
-const ProfileBlock = ({ location, history, patient, noEdits, profile }) => {
+const ProfileBlock = ({ location, history, patient, noEdits }) => {
 	const [submitting, setSubmitting] = useState(false);
-	// const [dropdown, setDropdown] = useState(false);
-	// const history = useHistory();
 
 	const dispatch = useDispatch();
-
-	// const toggleDropdown = () => {
-	// 	setDropdown(!dropdown);
-	// };
-
-	// const goToStartAdmission = () => {
-	// 	history.push(`${location.pathname}#start-admission`);
-	// };
-	// const confirmStartAdmission = () => {
-	// 	confirmAction(goToStartAdmission, '', 'You want to start admission');
-	// };
 
 	const enrollImmunization = async () => {
 		const result = window.confirm('Enroll into immunization?');
@@ -55,6 +46,10 @@ const ProfileBlock = ({ location, history, patient, noEdits, profile }) => {
 				notifyError(error.message || 'Could not add leave request');
 			}
 		}
+	};
+
+	const enrollAdmission = () => {
+		history.push(`${location.pathname}#start-admission`);
 	};
 
 	return (
@@ -94,8 +89,7 @@ const ProfileBlock = ({ location, history, patient, noEdits, profile }) => {
 									<div className="col-md-6">
 										<div className="text-fade text-sm">
 											<span className="m-r">
-												<strong>Insurance Status:</strong>{' '}
-												{patient?.insurranceStatus}
+												<strong>Insurance Status:</strong> {patient.hmo.name}
 											</span>
 										</div>
 									</div>
@@ -105,134 +99,58 @@ const ProfileBlock = ({ location, history, patient, noEdits, profile }) => {
 					</div>
 					<div className="p-4">
 						<div className="row">
-							<div className="col-md-6 align-items-center d-flex">
+							<div className="col-md-12 align-items-center d-flex">
 								{!noEdits && (
-									<div className="m-2">
-										<Link
-											className="btn btn-primary btn-sm"
-											to={`${location.pathname}#edit-profile`}>
-											<i className="os-icon os-icon-edit"></i>
-											<span className=" ml-2">Edit Profile</span>
-										</Link>
+									<div className="m-2 div-icon">
+										<Tooltip title="Edit Profile">
+											<Link
+												className="btn-icon"
+												to={`${location.pathname}#edit-profile`}>
+												<img src={editIcon} alt="" />
+											</Link>
+										</Tooltip>
 									</div>
 								)}
 								{!noEdits && (
-									<div className="m-2">
-										<Link
-											className="btn btn-success btn-sm"
-											to={`${location.pathname}#upload-document`}>
-											<i className="os-icon os-icon-documents-03"></i>
-											<span className="ml-2">Upload Document</span>
-										</Link>
+									<div className="m-2 div-icon">
+										<Tooltip title="Upload Document">
+											<Link
+												className="btn-icon"
+												to={`${location.pathname}#upload-document`}>
+												<img src={documentIcon} alt="" />
+											</Link>
+										</Tooltip>
 									</div>
 								)}
-							</div>
-						</div>
-						<div className="row">
-							<div className="col-md-6 align-items-center d-flex">
 								{!noEdits &&
 									(!patient.immunization ||
 										patient.immunization.length === 0) && (
-										<div className="m-2">
-											<a
-												className="btn btn-primary btn-sm text-white"
-												onClick={() => enrollImmunization()}
-												disabled={submitting}>
-												<i className="os-icon os-icon-plus-circle" />
-												<span className="ml-2">
-													{submitting ? (
-														<img src={waiting} alt="submitting" />
-													) : (
-														'Enroll Immunization'
-													)}
-												</span>
-											</a>
+										<div className="m-2 div-icon">
+											<Tooltip title="Enroll Immunization">
+												<a
+													className="btn-icon"
+													onClick={() => enrollImmunization()}
+													disabled={submitting}>
+													<img src={immunizeIcon} alt="" />
+												</a>
+											</Tooltip>
 										</div>
 									)}
+								{!noEdits && !patient.isAdmitted && (
+									<div className="m-2 div-icon">
+										<Tooltip title="Admit Patient">
+											<a
+												className="btn-icon"
+												onClick={() => enrollAdmission()}
+												disabled={submitting}>
+												<img src={admitIcon} alt="" />
+											</a>
+										</Tooltip>
+									</div>
+								)}
 							</div>
 						</div>
 					</div>
-
-					{/* {profile && (
-						<div className="align-items-center d-flex p-4">
-							<div className="toolbar">
-								<a
-									className="text-muted bg-dark-overlay btn-rounded btn btn-sm btn-icon"
-									onClick={() => toggleDropdown()}>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										width="12"
-										height="12"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										strokeWidth="2"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										className="feather feather-more-vertical text-fade">
-										<circle
-											cx="12"
-											cy="12"
-											r="2"
-											style={{ color: '#fff' }}></circle>
-										<circle
-											cx="12"
-											cy="5"
-											r="2"
-											style={{ color: '#fff' }}></circle>
-										<circle
-											cx="12"
-											cy="19"
-											r="2"
-											style={{ color: '#fff' }}></circle>
-									</svg>
-								</a>
-								
-								<div
-									className="dropdown-menu dropdown-menu-right bg-black"
-									role="menu"
-									style={{
-										position: 'absolute',
-										transform: 'translate3d(750px, 69px, 0px)',
-										top: '0px',
-										left: '0px',
-										willChange: 'transform',
-										display: dropdown ? 'block' : 'none',
-									}}
-									onClick={() => toggleDropdown()}>
-									
-									 <a
-										className="dropdown-item"
-										onClick={() => confirmStartAdmission()}>
-										<i className="os-icon os-icon-plus-circle"></i>
-										<span className="ml-2">Start Admission</span>
-									</a>
-									<Link
-										className="dropdown-item"
-										to={`${location.pathname}#enroll-antenatal`}
-										onClick={() => toggleDropdown()}>
-										<i className="os-icon os-icon-plus-circle"></i>
-										<span className="ml-2">Enroll Antenatal</span>
-									</Link>
-									<Link
-										className="dropdown-item "
-										to={`${location.pathname}#enroll-immunization`}
-										onClick={() => toggleDropdown()}>
-										<i className="os-icon os-icon-plus-circle"></i>
-										<span className="ml-2">Enroll Immunization</span>
-									</Link>
-									<Link
-										className="dropdown-item"
-										to={`${location.pathname}#enroll-ivf`}
-										onClick={() => toggleDropdown()}>
-										<i className="os-icon os-icon-plus-circle"></i>
-										<span className="ml-2">Enroll IVF</span>
-									</Link> 
-									
-								</div>
-							</div>
-						</div>
-					)} */}
 				</div>
 			</div>
 		</div>

@@ -20,6 +20,14 @@ const NurseMenu = () => {
 				</Link>
 			</li>
 			<li>
+				<Link to="/nurse/in-patients/tasks">
+					<div className="icon-w">
+						<div className="icon-feather-folder-plus" />
+					</div>
+					<span>Clinical Tasks</span>
+				</Link>
+			</li>
+			<li>
 				<Link to="/nicu">
 					<div className="icon-w">
 						<div className="os-icon os-icon-documents-03" />

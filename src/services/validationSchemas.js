@@ -12,12 +12,10 @@ export const patientSchema = yup.object().shape({
 	maritalStatus: yup
 		.string()
 		.required("Please enter the patient's marital status"),
-	insurranceStatus: yup
-		.string()
-		.required("Please enter the patient's insurrance status"),
 	gender: yup.string().required("Please enter the patient's gender"),
 	address: yup.string().required("Please enter the patient's address"),
 	phoneNumber: yup.string().required("Please enter the patient's phone number"),
+	hmoId: yup.string().required('Please select HMO'),
 });
 
 export const patientNOKSchema = yup.object().shape({
@@ -27,6 +25,7 @@ export const patientNOKSchema = yup.object().shape({
 	nok_other_names: yup
 		.string()
 		.required("Please enter the nex of kin's first name and other names"),
+	nok_email: yup.string().required("Please enter the patient's email address"),
 });
 
 export const validate = values => {

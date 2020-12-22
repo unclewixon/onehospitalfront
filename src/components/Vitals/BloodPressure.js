@@ -25,7 +25,7 @@ const info = {
 	],
 };
 
-const BloodPressure = ({ vitals }) => {
+const BloodPressure = ({ vitals, task }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(null);
 	const [data, setData] = useState([]);
@@ -100,6 +100,7 @@ const BloodPressure = ({ vitals }) => {
 				info={info}
 				setVisible={setVisible}
 				unit={unit}
+				task={task}
 			/>
 		</div>
 	);

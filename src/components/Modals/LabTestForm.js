@@ -16,8 +16,9 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 		edit: false,
 		create: true,
 		specimens: '',
+		hmo_id: '',
 	};
-	const [{ name, category, price, description }, setState] = useState(
+	const [{ name, category, price, description, hmo_id }, setState] = useState(
 		initialState
 	);
 	const [{ edit }, setSubmitButton] = useState(initialState);
@@ -31,6 +32,7 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 	const dispatch = useDispatch();
 
 	const categories = useSelector(state => state.settings.lab_categories);
+	const hmos = useSelector(state => state.settings.hmos);
 
 	useEffect(() => {
 		const fetchSpecimens = async () => {
@@ -53,6 +55,7 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 					category: labTest.category.id,
 					price: labTest.price,
 					description: labTest.description || '',
+					hmo_id: labTest.hmo ? labTest.hmo.id : '',
 				});
 				setParameters(labTest.parameters);
 				setLabSpecimens(labTest.specimens);
@@ -83,6 +86,7 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 				specimens: labSpecimens,
 				description,
 				hasParameters,
+				hmo_id,
 			};
 			console.log(datum);
 			const rs = await request('lab-tests', 'POST', true, datum);
@@ -112,6 +116,7 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 				specimens: labSpecimens,
 				description,
 				hasParameters,
+				hmo_id,
 			};
 			console.log(datum);
 			const url = `lab-tests/${labTest.id}/update`;
@@ -163,6 +168,22 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 						onChange={handleInputChange}
 						value={price}
 					/>
+				</div>
+				<div className="form-group">
+					<select
+						className="form-control"
+						name="hmo_id"
+						onChange={handleInputChange}
+						value={hmo_id}>
+						{!hmo_id && <option value={''}>Select HMO</option>};
+						{hmos.map((hmo, i) => {
+							return (
+								<option key={i} value={hmo.id}>
+									{hmo.name}
+								</option>
+							);
+						})}
+					</select>
 				</div>
 				<div className="form-group">
 					<select

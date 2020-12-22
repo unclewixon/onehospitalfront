@@ -11,9 +11,9 @@ import HashRoute from '../components/HashRoute';
 import Splash from '../components/Splash';
 import ProfileBlock from '../components/ProfileBlock';
 import { confirmAction } from '../services/utilities';
-// import EnrollAntenatal from '../components/Patient/EnrollAntenatal';
 import PatientDataUpload from '../components/Patient/PatientDataUpload';
 
+const ClinicalTasks = lazy(() => import('../components/Patient/ClinicalTasks'));
 const Dashboard = lazy(() => import('../components/Patient/Dashboard'));
 const Lab = lazy(() => import('../components/Patient/Lab'));
 const Encounters = lazy(() => import('../components/Patient/Encounters'));
@@ -86,6 +86,8 @@ const Page = ({ location }) => {
 			return <Vitals type={hash[1].split('%20').join(' ')} />;
 		case 'allergies':
 			return <Allergies />;
+		case 'clinical-tasks':
+			return <ClinicalTasks />;
 		case 'imaging':
 			return <Imaging />;
 		case 'opthalmology':
@@ -139,31 +141,16 @@ const Page = ({ location }) => {
 };
 
 class PatientProfile extends Component {
-	state = {
-		dropdown: false,
-	};
-
 	closeProfile = () => {
 		storage.removeItem(USER_RECORD);
 		this.props.toggleProfile(false);
-	};
-
-	toggleDropdown = () => () => {
-		this.setState((prevState, props) => ({
-			dropdown: !prevState.dropdown,
-		}));
-	};
-
-	startAdmission = () => {
-		const { location } = this.props;
-		this.props.history.push(`${location.pathname}#start-admission`);
 	};
 
 	confirmStartAdmission = () => {
 		confirmAction(
 			this.startAdmission,
 			null,
-			'Are you sure you want to place this patient on admission ?',
+			'Are you sure you want to place this patient on admission?',
 			'Confirm Admission'
 		);
 	};
@@ -182,7 +169,6 @@ class PatientProfile extends Component {
 
 	render() {
 		const { location, patient } = this.props;
-		const { dropdown } = this.state;
 		return (
 			<div className="layout-w">
 				<button
@@ -202,12 +188,7 @@ class PatientProfile extends Component {
 								<div className="content-box">
 									<div className="row">
 										<div className="col-sm-12 pb-4">
-											<ProfileBlock
-												profile={true}
-												dropdown={dropdown}
-												patient={patient}
-												toggleDropdown={this.toggleDropdown}
-											/>
+											<ProfileBlock profile={true} patient={patient} />
 										</div>
 										<Suspense fallback={<Splash />}>
 											<Switch>

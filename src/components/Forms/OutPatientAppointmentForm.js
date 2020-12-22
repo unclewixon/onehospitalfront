@@ -155,7 +155,7 @@ function OutPatientAppointmentForm(props) {
 								ref={register({ name: 'date_of_birth' })}
 								showYearDropdown
 								dropdownMode="select"
-								dateFormat="yyyy-MM-dd"
+								dateFormat="dd-MM-yyyy"
 								className="single-daterange form-control"
 								placeholderText="Select date of birth"
 								maxDate={new Date()}

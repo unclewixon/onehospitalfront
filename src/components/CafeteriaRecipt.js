@@ -29,7 +29,7 @@ const CafeteriaRecipt = props => {
 						</div>
 					</center>
 
-					<div className="recirpt-address">
+					<div className="reciept-address">
 						<p>
 							<strong>
 								Plot 1847, Cadastral Zone B07, Katampe Road, Abuja.

@@ -34,10 +34,12 @@ const ViewPrescription = ({
 		if (!loaded && activeRequest) {
 			setPrescriptions(activeRequest.requestBody);
 
-			const total = activeRequest.requestBody.reduce(
-				(total, item) => (total += parseFloat(item.drug_cost) * item.quantity),
-				0.0
-			);
+			const total = activeRequest.requestBody.reduce((total, item) => {
+				const amount =
+					item.drug_hmo_id === 1 ? item.drug_cost : item.drug_hmo_cost;
+
+				return (total += parseFloat(amount) * item.quantity);
+			}, 0.0);
 
 			setSumTotal(total);
 
@@ -59,8 +61,9 @@ const ViewPrescription = ({
 			if (quantity === '') {
 				return (total += 0);
 			}
-			return (total +=
-				parseFloat(item.drug_cost) * parseInt(item.quantity, 10));
+			const amount =
+				item.drug_hmo_id === 1 ? item.drug_cost : item.drug_hmo_cost;
+			return (total += parseFloat(amount) * parseInt(item.quantity, 10));
 		}, 0.0);
 
 		setSumTotal(total);
@@ -92,7 +95,9 @@ const ViewPrescription = ({
 			id,
 			drug_generic_name: drug.generic_name,
 			drug_name: drug.name,
-			drug_cost: drug.sales_price ? drug.sales_price.replace(',', '') : 0.0,
+			drug_cost: drug.sales_price,
+			drug_hmo_id: drug.hmo.id,
+			drug_hmo_cost: drug?.hmoPrice || 0.0,
 			drug_id: drug.id,
 			dose_quantity: 1,
 			refills: 0,
@@ -108,7 +113,8 @@ const ViewPrescription = ({
 
 		const total = updatedDrugs.reduce((total, item) => {
 			const cost = item.drug_cost && item.drug_cost !== '' ? item.drug_cost : 0;
-			const costItem = cost > 0 ? parseFloat(cost) * item.quantity : 0;
+			const amount = item.drug_hmo_id === 1 ? cost : item.drug_hmo_cost;
+			const costItem = amount > 0 ? parseFloat(amount) * item.quantity : 0;
 			return (total += costItem);
 		}, 0.0);
 
@@ -320,6 +326,7 @@ const ViewPrescription = ({
 										</button>
 									)}
 									{filled &&
+										activeRequest &&
 										activeRequest.transaction_status &&
 										activeRequest.transaction_status === 1 &&
 										activeRequest.status === 0 && (

@@ -22,7 +22,7 @@ const info = {
 	inputs: [{ name: 'muac', title: 'MUAC', weight: '' }],
 };
 
-const MUAC = ({ vitals }) => {
+const MUAC = ({ vitals, task }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(null);
 	const [data, setData] = useState([]);
@@ -80,6 +80,7 @@ const MUAC = ({ vitals }) => {
 				info={info}
 				setVisible={setVisible}
 				unit={unit}
+				task={task}
 			/>
 		</div>
 	);

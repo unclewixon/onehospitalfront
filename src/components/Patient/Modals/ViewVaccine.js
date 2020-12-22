@@ -99,7 +99,11 @@ const ViewVaccine = ({ data, setRecords }) => {
 											</li>
 											<li>
 												Administered By:
-												<strong>{data.administered_by || '-'}</strong>
+												<strong>
+													{data.administeredBy
+														? `${data.administeredBy.first_name} ${data.administeredBy.last_name}`
+														: '-'}
+												</strong>
 											</li>
 											<li>
 												Administered On:

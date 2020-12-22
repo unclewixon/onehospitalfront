@@ -24,7 +24,7 @@ const info = {
 	],
 };
 
-const FetalHeartRate = ({ vitals }) => {
+const FetalHeartRate = ({ vitals, task }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(null);
 	const [data, setData] = useState([]);
@@ -88,6 +88,7 @@ const FetalHeartRate = ({ vitals }) => {
 				info={info}
 				setVisible={setVisible}
 				unit={unit}
+				task={task}
 			/>
 		</div>
 	);

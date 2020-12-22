@@ -22,7 +22,7 @@ const info = {
 	inputs: [{ name: 'protein', title: 'Protein', weight: '' }],
 };
 
-const Protein = ({ vitals }) => {
+const Protein = ({ vitals, task }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(null);
 	const [data, setData] = useState([]);
@@ -80,6 +80,7 @@ const Protein = ({ vitals }) => {
 				info={info}
 				setVisible={setVisible}
 				unit={unit}
+				task={task}
 			/>
 		</div>
 	);

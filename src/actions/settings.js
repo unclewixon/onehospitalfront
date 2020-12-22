@@ -63,6 +63,7 @@ import {
 	UPDATE_LAB_GROUP,
 	DELETE_LAB_GROUP,
 	GET_ALL_LAB_GROUPS,
+	LOAD_HMOS,
 } from './types';
 
 //Request Service
@@ -1429,5 +1430,13 @@ export const deleteRequestService = data => {
 					return reject({ success: false });
 				});
 		});
+	};
+};
+
+// hmo
+export const loadHmo = payload => {
+	return {
+		type: LOAD_HMOS,
+		payload,
 	};
 };

@@ -22,7 +22,7 @@ const info = {
 	inputs: [{ name: 'fundus_height', title: 'Fundus Height', weight: 'cm' }],
 };
 
-const FundusHeight = ({ vitals }) => {
+const FundusHeight = ({ vitals, task }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(null);
 	const [data, setData] = useState([]);
@@ -86,6 +86,7 @@ const FundusHeight = ({ vitals }) => {
 				info={info}
 				setVisible={setVisible}
 				unit={unit}
+				task={task}
 			/>
 		</div>
 	);

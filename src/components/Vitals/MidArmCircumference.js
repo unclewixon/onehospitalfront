@@ -28,7 +28,7 @@ const info = {
 	],
 };
 
-const MidArmCircumference = ({ vitals }) => {
+const MidArmCircumference = ({ vitals, task }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(null);
 	const [data, setData] = useState([]);
@@ -91,6 +91,7 @@ const MidArmCircumference = ({ vitals }) => {
 				info={info}
 				setVisible={setVisible}
 				unit={unit}
+				task={task}
 			/>
 		</div>
 	);

@@ -445,7 +445,7 @@ function StepOne({
 								showMonthDropdown
 								showYearDropdown
 								dropdownMode="select"
-								dateFormat="yyyy-MM-dd"
+								dateFormat="dd-MM-yyyy"
 								className="single-daterange form-control"
 								placeholderText="Select date of birth"
 								maxDate={new Date()}
@@ -640,7 +640,7 @@ function StepTwo({
 								showMonthDropdown
 								showYearDropdown
 								dropdownMode="select"
-								dateFormat="yyyy-MM-dd"
+								dateFormat="dd-MM-yyyy"
 								className="single-daterange form-control"
 								placeholderText="Select date of employment"
 								maxDate={new Date()}
@@ -725,7 +725,7 @@ function StepTwo({
 								showMonthDropdown
 								showYearDropdown
 								dropdownMode="select"
-								dateFormat="yyyy-MM-dd"
+								dateFormat="dd-MM-yyyy"
 								className="single-daterange form-control"
 								placeholderText="Select nok date of birth"
 								maxDate={new Date()}

@@ -36,16 +36,6 @@ const healthState = [
 	{ id: 'Intermediate', name: 'Intermediate' },
 ];
 
-// const location = [
-// 	{ id: 'Deda Hospital', name: 'Deda Hospital' },
-// 	{ id: 'Other', name: 'Other' },
-// ];
-
-// const ward = [
-// 	{ id: 'Exclusive Suite', name: 'Exclusive Suite' },
-// 	{ id: 'Normal', name: 'Normal' },
-// ];
-
 class PatientAdmission extends Component {
 	state = {
 		submitting: false,
@@ -145,17 +135,14 @@ class PatientAdmission extends Component {
 
 		this.setState({ submitting: true });
 		try {
-			await request(
-				`${patientAPI}/admissions/${patient.id}/save`,
-				'POST',
-				true,
-				formData
-			);
+			const url = `${patientAPI}/admissions/${patient.id}/save`;
+			const rs = await request(url, 'POST', true, formData);
+			console.log(rs);
 			this.setState({ submitting: false });
 			patient.isAdmitted = true;
 			this.props.setPatientRecord(patient);
 			this.props.dispatch(reset('create_patient_admission'));
-			notifySuccess('Admission Started !');
+			notifySuccess('Admission Started!');
 		} catch (e) {
 			this.setState({ submitting: false });
 			throw new SubmissionError({

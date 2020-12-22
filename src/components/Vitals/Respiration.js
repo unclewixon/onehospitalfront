@@ -24,7 +24,7 @@ const info = {
 	],
 };
 
-const Respiration = ({ vitals }) => {
+const Respiration = ({ vitals, task }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(null);
 	const [data, setData] = useState([]);
@@ -88,6 +88,7 @@ const Respiration = ({ vitals }) => {
 				info={info}
 				setVisible={setVisible}
 				unit={unit}
+				task={task}
 			/>
 		</div>
 	);

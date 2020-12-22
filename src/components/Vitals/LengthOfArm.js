@@ -22,7 +22,7 @@ const info = {
 	inputs: [{ name: 'length_of_arm', title: 'Length of Arm', weight: 'cm' }],
 };
 
-const LengthOfArm = ({ vitals }) => {
+const LengthOfArm = ({ vitals, task }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(null);
 	const [data, setData] = useState([]);
@@ -86,6 +86,7 @@ const LengthOfArm = ({ vitals }) => {
 				info={info}
 				setVisible={setVisible}
 				unit={unit}
+				task={task}
 			/>
 		</div>
 	);

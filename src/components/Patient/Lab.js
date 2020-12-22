@@ -77,7 +77,7 @@ const Lab = props => {
 					</Link>
 				</div>
 				<h6 className="element-header">Lab Requests</h6>
-				<div className="element-box">
+				<div className="element-box p-3 m-0 mt-3">
 					<div className="bootstrap-table">
 						{!loaded ? (
 							<div className="text-center">

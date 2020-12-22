@@ -36,14 +36,14 @@ class PrescriptionRequests extends Component {
 		});
 	};
 
-	getServiceUnit = async () => {
+	getServiceUnit = async hmoId => {
 		try {
 			const res = await request('inventory/categories', 'GET', true);
 
 			if (res && res.length > 0) {
 				const selectCat = res.find(cat => cat.name === 'Pharmacy');
 
-				const url = `inventory/stocks-by-category/${selectCat.id}`;
+				const url = `inventory/stocks-by-category/${selectCat.id}/${hmoId}`;
 				const rs = await request(url, 'GET', true);
 				this.setState({ drugs: rs });
 			}
@@ -53,7 +53,6 @@ class PrescriptionRequests extends Component {
 	};
 
 	componentDidMount() {
-		this.getServiceUnit();
 		const { startDate, endDate } = this.state;
 		this.loadPrescriptions(startDate, endDate);
 	}
@@ -181,23 +180,23 @@ class PrescriptionRequests extends Component {
 											</td>
 											<td>{request.created_by ? request.created_by : ''}</td>
 											<td className="nowrap">
+												{request.status === 0 && !request.isFilled && (
+													<span className="badge badge-warning">Pending</span>
+												)}
 												{request.transaction_status === 0 &&
 													request.isFilled && (
 														<span className="badge badge-info text-white">
 															Awaiting Payment
 														</span>
 													)}
-												{request.status === 1 && (
-													<span className="badge badge-success">Completed</span>
-												)}
 												{request.transaction_status === 1 &&
 													request.status === 0 && (
 														<span className="badge badge-secondary">
 															Awaiting Dispense
 														</span>
 													)}
-												{request.status === 0 && !request.isFilled && (
-													<span className="badge badge-warning">Pending</span>
+												{request.status === 1 && (
+													<span className="badge badge-success">Completed</span>
 												)}
 											</td>
 											<td className="row-actions text-center">
@@ -221,7 +220,10 @@ class PrescriptionRequests extends Component {
 													<Tooltip title="Fill Prescription">
 														<a
 															className="primary"
-															onClick={() => {
+															onClick={async () => {
+																await this.getServiceUnit(
+																	request.patient_hmo_id
+																);
 																document.body.classList.add('modal-open');
 																this.setState({
 																	activeRequest: request,

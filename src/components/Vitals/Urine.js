@@ -22,7 +22,7 @@ const info = {
 	inputs: [{ name: 'urine', title: 'Urine', weight: '' }],
 };
 
-const Urine = ({ vitals }) => {
+const Urine = ({ vitals, task }) => {
 	const [visible, setVisible] = useState(false);
 	const [currentVitals, setCurrentVitals] = useState(null);
 	const [data, setData] = useState([]);
@@ -80,6 +80,7 @@ const Urine = ({ vitals }) => {
 				info={info}
 				setVisible={setVisible}
 				unit={unit}
+				task={task}
 			/>
 		</div>
 	);

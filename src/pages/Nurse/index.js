@@ -1,35 +1,31 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component, lazy, Suspense } from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Switch, withRouter, Route } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 
 import Splash from '../../components/Splash';
-import { connect } from 'react-redux';
 
 const NurseHome = lazy(() => import('./NurseHome'));
 const InPatientCare = lazy(() => import('./InPatientCare'));
+const ClinicalTasks = lazy(() => import('./ClinicalTasks'));
 
-class Nurse extends Component {
-	state = {};
-
-	handleEdit = () => {
-		alert('I am toSee Details this guy');
-	};
-	render() {
-		const { match } = this.props;
-
-		return (
-			<div className="row p-4">
-				<div className="col-sm-12">
-					<div className="element-wrapper">
-						<div className="row">
+const Nurse = ({ match }) => {
+	return (
+		<div className="content-i">
+			<div className="content-box">
+				<div className="row">
+					<div className="col-sm-12">
+						<div className="element-wrapper">
 							<Suspense fallback={<Splash />}>
 								<Switch>
 									<Route exact path={`${match.url}`} component={NurseHome} />
 									<Route
-										exact
 										path={`${match.url}/in-patients/care`}
 										component={InPatientCare}
+									/>
+									<Route
+										path={`${match.url}/in-patients/tasks`}
+										component={ClinicalTasks}
 									/>
 									<Route component={NoMatch} />
 								</Switch>
@@ -38,14 +34,8 @@ class Nurse extends Component {
 					</div>
 				</div>
 			</div>
-		);
-	}
-}
-
-const mapStatetoProps = state => {
-	return {
-		staff: state.user.profile,
-	};
+		</div>
+	);
 };
 
-export default withRouter(connect(mapStatetoProps)(Nurse));
+export default withRouter(Nurse);

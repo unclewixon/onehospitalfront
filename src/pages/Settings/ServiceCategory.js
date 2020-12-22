@@ -7,6 +7,7 @@ import ServicesList from '../../components/ServicesList';
 import { request } from '../../services/utilities';
 import { getAllServiceCategories } from '../../actions/settings';
 import { notifyError } from '../../services/notify';
+import { uploadServiceModal } from '../../actions/general';
 
 const ServicesCategory = () => {
 	const [showServiceCategoryList, setServiceCategoryList] = useState(true);
@@ -54,6 +55,10 @@ const ServicesCategory = () => {
 		}
 	}, [dispatch, loaded, role]);
 
+	const onUploadService = () => {
+		dispatch(uploadServiceModal(true));
+	};
+
 	return (
 		<div className="content-i">
 			<div className="content-box">
@@ -61,7 +66,7 @@ const ServicesCategory = () => {
 					<div className="col-sm-12">
 						<div className="element-wrapper">
 							<div className="os-tabs-w mx-1">
-								<div className="os-tabs-controls">
+								<div className="os-tabs-controls os-tabs-complex">
 									<ul className="nav nav-tabs upper">
 										{role === 'admin' && (
 											<li className="nav-item">
@@ -81,6 +86,14 @@ const ServicesCategory = () => {
 												}`}
 												onClick={onServicesList}>
 												SERVICES
+											</a>
+										</li>
+										<li className="nav-item nav-actions d-sm-block">
+											<a
+												className="btn btn-primary btn-sm text-white"
+												onClick={() => onUploadService()}>
+												<i className="os-icon os-icon-ui-22"></i>
+												<span>Upload Services</span>
 											</a>
 										</li>
 									</ul>

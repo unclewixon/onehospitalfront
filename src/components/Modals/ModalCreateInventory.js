@@ -215,7 +215,7 @@ class ModalCreateInventory extends Component {
 												<label htmlFor="expiry">Expiry Date</label>
 												<DatePicker
 													className="single-daterange form-control"
-													dateFormat="yyyy-MM-dd"
+													dateFormat="dd-MM-yyyy"
 													selected={expiry_date}
 													onChange={this.onChangeDate}
 													disabledKeyboardNavigation

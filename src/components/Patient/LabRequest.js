@@ -87,7 +87,7 @@ const LabRequest = ({ module, history, location }) => {
 
 	const onSubmit = async data => {
 		try {
-			if (!data.patient) {
+			if (!data.patient && !currentPatient) {
 				notifyError('Please select a patient');
 				return;
 			}
@@ -99,7 +99,7 @@ const LabRequest = ({ module, history, location }) => {
 
 			const datum = {
 				requestType: 'lab',
-				patient_id: data.patient.id,
+				patient_id: data.patient ? data.patient.id : currentPatient.id,
 				requestBody: [...tests],
 				request_note: data.request_note,
 				urgent: data.urgent,

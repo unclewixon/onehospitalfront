@@ -33,9 +33,7 @@ const RoomMgmt = () => {
 												className={
 													ShowRoomCategory ? 'nav-link active' : 'nav-link'
 												}
-												data-toggle="tab"
-												onClick={onRoomCategory}
-											>
+												onClick={onRoomCategory}>
 												CATEGORIES
 											</a>
 										</li>
@@ -45,9 +43,7 @@ const RoomMgmt = () => {
 												className={
 													ShowRoomList ? 'nav-link active' : 'nav-link'
 												}
-												data-toggle="tab"
-												onClick={onRoomList}
-											>
+												onClick={onRoomList}>
 												ROOM
 											</a>
 										</li>

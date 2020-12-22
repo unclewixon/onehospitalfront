@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
 import { connect } from 'react-redux';
@@ -30,25 +30,21 @@ const Pharmacy = ({ location, patient }) => {
 		setFilled(false);
 	};
 
-	const getServiceUnit = useCallback(async () => {
+	const getServiceUnit = async hmoId => {
 		try {
 			const res = await request('inventory/categories', 'GET', true);
 
 			if (res && res.length > 0) {
 				const selectCat = res.find(cat => cat.name === 'Pharmacy');
 
-				const url = `inventory/stocks-by-category/${selectCat.id}`;
+				const url = `inventory/stocks-by-category/${selectCat.id}/${hmoId}`;
 				const rs = await request(url, 'GET', true);
 				setAllDrugs(rs);
 			}
 		} catch (error) {
 			notifyError('Error fetching Service Unit');
 		}
-	}, []);
-
-	useEffect(() => {
-		getServiceUnit();
-	}, [getServiceUnit]);
+	};
 
 	useEffect(() => {
 		const getPrescriptions = async () => {
@@ -135,19 +131,27 @@ const Pharmacy = ({ location, patient }) => {
 															{request.created_by ? request.created_by : ''}
 														</td>
 														<td className="text-center">
-															{request.status === 0 && request.isFilled && (
-																<span className="badge badge-info text-white">
-																	Awaiting Payment
-																</span>
-															)}
-															{request.status === 1 && (
-																<span className="badge badge-success">
-																	Completed
-																</span>
-															)}
 															{request.status === 0 && !request.isFilled && (
 																<span className="badge badge-warning">
 																	Pending
+																</span>
+															)}
+															{request.transaction_status === 0 &&
+																request.status === 0 &&
+																request.isFilled && (
+																	<span className="badge badge-info text-white">
+																		Awaiting Payment
+																	</span>
+																)}
+															{request.transaction_status === 1 &&
+																request.status === 0 && (
+																	<span className="badge badge-secondary">
+																		Awaiting Dispense
+																	</span>
+																)}
+															{request.status === 1 && (
+																<span className="badge badge-success">
+																	Completed
 																</span>
 															)}
 														</td>
@@ -170,7 +174,10 @@ const Pharmacy = ({ location, patient }) => {
 																<Tooltip title="Fill Prescription">
 																	<a
 																		className="primary"
-																		onClick={() => {
+																		onClick={async () => {
+																			await getServiceUnit(
+																				request.patient_hmo_id
+																			);
 																			document.body.classList.add('modal-open');
 																			setActiveRequest(request);
 																			setShowModal(true);

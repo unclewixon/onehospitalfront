@@ -8,9 +8,11 @@ import {
 	updateService,
 	deleteService,
 } from '../../actions/settings';
-import { notifySuccess } from '../../services/notify';
+import { notifyError, notifySuccess } from '../../services/notify';
 import { API_URI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
+import { request } from '../../services/utilities';
+import { getAllServiceCategories } from '../../actions/settings';
 
 class ModalUploadService extends Component {
 	state = {
@@ -24,6 +26,16 @@ class ModalUploadService extends Component {
 		});
 	};
 
+	fetchServiceCategories = async () => {
+		try {
+			const rs = await request('services/categories', 'GET', true);
+			this.props.getAllServiceCategories(rs);
+			this.props.getAllService();
+		} catch (error) {
+			notifyError(error.message || 'could not fetch services categories!');
+		}
+	};
+
 	onUpload = async e => {
 		e.preventDefault();
 		try {
@@ -35,11 +47,11 @@ class ModalUploadService extends Component {
 			data.append('username', staff.username);
 
 			const url = `${API_URI}/services/upload-services`;
-			const rs = await axios.post(url, data);
-			console.log(rs);
+			await axios.post(url, data);
+			this.fetchServiceCategories();
 			this.setState({ loading: false });
 			this.props.closeModals(false);
-			notifySuccess('Service file uploaded');
+			notifySuccess('service file uploaded!');
 		} catch (e) {
 			this.setState({ loading: false });
 		}
@@ -71,11 +83,9 @@ class ModalUploadService extends Component {
 						</button>
 						<div className="onboarding-content with-gradient">
 							<h4 className="onboarding-title">Upload Service</h4>
-							<div className="onboarding-text">Upload Services</div>
 							<div className="pipeline white lined-warning">
-								<form onSubmit={this.onUpload}>
-									<h6 className="form-header">New category</h6>
-									<div className="form-group">
+								<form onSubmit={this.onUpload} className="display-flex">
+									<div className="form-group mb-0">
 										<input
 											className="form-control"
 											placeholder="Category Name"
@@ -84,11 +94,10 @@ class ModalUploadService extends Component {
 											onChange={this.handleInputChange}
 										/>
 									</div>
-									<div className="form-buttons-w">
+									<div className="ml-2">
 										<button
-											className={
-												loading ? 'btn btn-primary disabled' : 'btn btn-primary'
-											}>
+											className={`btn btn-primary ${loading ? 'disabled' : ''}`}
+											style={{ marginTop: '6px' }}>
 											{loading ? (
 												<img src={waiting} alt="submitting" />
 											) : (
@@ -117,4 +126,5 @@ export default connect(mapStateToProps, {
 	getAllService,
 	updateService,
 	deleteService,
+	getAllServiceCategories,
 })(ModalUploadService);

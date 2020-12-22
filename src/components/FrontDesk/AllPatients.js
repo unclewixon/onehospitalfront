@@ -1,88 +1,65 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useCallback } from 'react';
 import Tooltip from 'antd/lib/tooltip';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 
 import { request } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
-import ModalPatientDetails from '../../components/Modals/ModalPatientDetails';
 import { toggleProfile } from '../../actions/user';
+import { loadPatients } from '../../actions/patient';
 
 const AllPatients = () => {
-	const dispatch = useDispatch();
-	const activeRequest = null;
-
 	const [loaded, setLoaded] = useState(false);
-	const [allPatients, setAllPatients] = useState([]);
-	const [showModal, setShowModal] = useState(false);
-	const [searchValue, setSearchValue] = useState('');
+	// const [searchValue, setSearchValue] = useState('');
 
-	const onModalClick = () => {
-		setShowModal(!showModal);
-	};
+	const dispatch = useDispatch();
 
-	const handleInputChange = e => {
-		setSearchValue(e.target.value);
-	};
+	// const handleInputChange = e => {
+	// 	setSearchValue(e.target.value);
+	// };
 
 	const showProfile = patient => {
 		const info = { patient, type: 'patient' };
 		dispatch(toggleProfile(true, info));
 	};
 
+	const patients = useSelector(state => state.patient.patients);
+
 	const fetchPatients = useCallback(async () => {
 		try {
 			const url = 'patient/list';
 			const rs = await request(url, 'GET', true);
-			setAllPatients(rs);
+			dispatch(loadPatients(rs));
 			setLoaded(true);
 		} catch (error) {
 			notifyError('error fetching patients');
 			setLoaded(true);
 		}
-	}, []);
+	}, [dispatch]);
 
-	const searchEntries = e => {
-		e.preventDefault();
-		const url = `patient/find?q=${searchValue}`;
-		console.log(url);
-		request(url, 'GET', true)
-			.then(data => {
-				console.log(data);
-				setAllPatients(data);
-				// dispatch(loadAllPatients(data));
-			})
-			.catch(error => {
-				notifyError(`error fetching patients ${error}`);
-				setLoaded(false);
-			});
-	};
+	// const searchEntries = async e => {
+	// 	e.preventDefault();
+	// 	try {
+	// 		const url = `patient/find?q=${searchValue}`;
+	// 		const data = await request(url, 'GET', true);
+	// 		console.log(data);
+	// 		setAllPatients(data);
+	// 	} catch (error) {
+	// 		notifyError(`error fetching patients ${error}`);
+	// 		setLoaded(false);
+	// 	}
+	// };
 
 	useEffect(() => {
 		fetchPatients();
 	}, [fetchPatients]);
 
 	return (
-		<div>
+		<>
 			<div className="element-box px-0">
-				<form className="row search_form" onSubmit={searchEntries}>
-					<div className="form-group col-md-3 mt-4 text-right">
-						<div className="input-group mb-2 mr-sm-2 mb-sm-0">
-							<label className="search_label">Search: </label>{' '}
-							<input
-								className="form-control search_input"
-								placeholder=""
-								type="text"
-								name="search"
-								onChange={handleInputChange}
-								value={searchValue}
-							/>
-						</div>
-					</div>
-				</form>
 				<div className="table-responsive">
 					<table className="table table-striped">
 						<thead>
@@ -121,7 +98,7 @@ const AllPatients = () => {
 									</td>
 								</tr>
 							) : (
-								allPatients.map((data, i) => {
+								patients.map((data, i) => {
 									return (
 										<tr className="" key={i}>
 											<td>{i + 1}</td>
@@ -129,7 +106,7 @@ const AllPatients = () => {
 											<td>{data?.fileNumber}</td>
 											<td>{data?.phoneNumber}</td>
 											<td>
-												{moment(data?.date_of_birth).format('DD/MM/YYYY')}
+												{moment(data?.date_of_birth).format('DD-MMM-YYYY')}
 											</td>
 											<td className="row-actions text-right">
 												<Tooltip title="View Request">
@@ -151,22 +128,8 @@ const AllPatients = () => {
 					</table>
 				</div>
 			</div>
-			{activeRequest && (
-				<ModalPatientDetails
-					activeRequest={activeRequest}
-					showModal={showModal}
-					onModalClick={onModalClick}
-				/>
-			)}
-		</div>
+		</>
 	);
 };
 
-const mapStateToProps = state => {
-	return {
-		// patient: state.user.patient,
-		allPatients: state.patient.allPatients,
-	};
-};
-
-export default withRouter(connect(mapStateToProps)(AllPatients));
+export default withRouter(AllPatients);

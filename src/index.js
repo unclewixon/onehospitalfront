@@ -38,7 +38,11 @@ import {
 } from './actions/user';
 import SSRStorage from './services/storage';
 import { defaultHeaders, getUser } from './services/utilities';
-import { loadDepartments, loadSpecializations } from './actions/settings';
+import {
+	loadDepartments,
+	loadSpecializations,
+	loadHmo,
+} from './actions/settings';
 import { loadInvCategories, loadInvSubCategories } from './actions/inventory';
 import { togglePreloading } from './actions/general';
 import { loadRoles } from './actions/role';
@@ -91,12 +95,14 @@ const initData = async () => {
 				rs_invsubcategories,
 				rs_roles,
 				rs_specializations,
+				rs_hmos,
 			] = await Promise.all([
 				axiosFetch(`${API_URI}/${departmentAPI}`, jwt),
 				axiosFetch(`${API_URI}/${inventoryCatAPI}`, jwt),
 				axiosFetch(`${API_URI}/${inventorySubCatAPI}`, jwt),
 				axiosFetch(`${API_URI}/${rolesAPI}`, jwt),
 				axiosFetch(`${API_URI}/specializations`, jwt),
+				axiosFetch(`${API_URI}/hmos`, jwt),
 			]);
 
 			if (rs_depts && rs_depts.data) {
@@ -113,6 +119,9 @@ const initData = async () => {
 			}
 			if (rs_specializations && rs_specializations.data) {
 				store.dispatch(loadSpecializations(rs_specializations.data));
+			}
+			if (rs_hmos && rs_hmos.data) {
+				store.dispatch(loadHmo(rs_hmos.data));
 			}
 
 			store.dispatch(loginUser(user));

@@ -9,7 +9,6 @@ import Select from 'react-select';
 import uniqBy from 'lodash.uniqby';
 
 import { request } from '../../services/utilities';
-import { loadPatientProcedureData } from '../../actions/patient';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import waiting from '../../assets/images/waiting.gif';
@@ -26,6 +25,7 @@ class AllProcedure extends Component {
 		filtering: false,
 		showModal: false,
 		activeRequest: null,
+		procedures: [],
 	};
 
 	componentDidMount() {
@@ -40,8 +40,11 @@ class AllProcedure extends Component {
 				? `patient/${patientId}/request/procedure?startDate=${startDate}&endDate=${endDate}`
 				: `patient/requests/procedure?startDate=${startDate}&endDate=${endDate}`;
 			const rs = await request(url, 'GET', true);
-			this.props.loadPatientProcedureData(rs.result);
-			return this.setState({ loaded: false, filtering: false });
+			this.setState({
+				loaded: false,
+				filtering: false,
+				procedures: rs.result,
+			});
 		} catch (error) {
 			notifyError('error fetching procedure requests');
 			this.setState({ loaded: false, filtering: false });
@@ -60,36 +63,6 @@ class AllProcedure extends Component {
 		this.setState({ showModal: !this.state.showModal });
 	};
 
-	formRow = (data, i) => {
-		return (
-			<tr key={i}>
-				<td>{i + 1}</td>
-				<td>{data.patient_name}</td>
-				<td>{moment(data.createdAt).format('DD-MM-YY')}</td>
-				<td>{data.created_by}</td>
-				<td>{this.getRequests(data.requestBody)}</td>
-				<td></td>
-				<td className="row-actions text-right">
-					<Tooltip title="View Request">
-						<a
-							href="#"
-							onClick={() => {
-								this.onModalClick();
-								this.setState({ activeRequest: data });
-							}}>
-							<i className="os-icon os-icon-documents-03" />
-						</a>
-					</Tooltip>
-					<Tooltip title="Print Request">
-						<a className="ml-2" href="#">
-							<i className="icon-feather-printer" />
-						</a>
-					</Tooltip>
-				</td>
-			</tr>
-		);
-	};
-
 	dateChange = e => {
 		let date = e.map(d => {
 			return moment(d._d).format('YYYY-MM-DD');
@@ -102,34 +75,20 @@ class AllProcedure extends Component {
 		});
 	};
 
-	table = () =>
-		this.props &&
-		this.props.patient_procedure &&
-		this.props.patient_procedure.length
-			? this.props.patient_procedure.map((physio, i) => {
-					return this.formRow(physio, i);
-			  })
-			: [];
-
 	filterEntries = () => {
 		this.setState({ filtering: true });
 		this.fetchPhysio(this.state.patientId);
 	};
 
 	render() {
-		const { loaded, filtering } = this.state;
+		const { loaded, filtering, procedures } = this.state;
 
-		const filteredNames =
-			this.props &&
-			this.props.patient_procedure &&
-			this.props.patient_procedure.length
-				? this.props.patient_procedure.map(patient => {
-						return {
-							value: patient.patient_id,
-							label: patient.patient_name,
-						};
-				  })
-				: [];
+		const filteredNames = procedures.map(patient => {
+			return {
+				value: patient.patient_id,
+				label: patient.patient_name,
+			};
+		});
 
 		const filteredOptions = uniqBy(filteredNames, 'value');
 
@@ -197,58 +156,90 @@ class AllProcedure extends Component {
 							<div className="col-sm-12">
 								<div className="element-box">
 									<div className="table-responsive">
-										{
-											<table className="table table-striped">
-												<thead>
-													<tr>
-														<th>
-															<div className="th-inner "></div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner sortable both">
-																Patient Name
-															</div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner sortable both">
-																Request Date
-															</div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner sortable both">
-																Requested By
-															</div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner sortable both">
-																Request Specimen
-															</div>
-															<div className="fht-cell"></div>
-														</th>
-														<th>
-															<div className="th-inner "></div>
-															<div className="fht-cell"></div>
-														</th>
-													</tr>
-												</thead>
+										<table className="table table-striped">
+											<thead>
+												<tr>
+													<th>
+														<div className="th-inner "></div>
+														<div className="fht-cell"></div>
+													</th>
+													<th>
+														<div className="th-inner sortable both">
+															Patient Name
+														</div>
+														<div className="fht-cell"></div>
+													</th>
+													<th>
+														<div className="th-inner sortable both">
+															Request Date
+														</div>
+														<div className="fht-cell"></div>
+													</th>
+													<th>
+														<div className="th-inner sortable both">
+															Requested By
+														</div>
+														<div className="fht-cell"></div>
+													</th>
+													<th>
+														<div className="th-inner sortable both">
+															Request Specimen
+														</div>
+														<div className="fht-cell"></div>
+													</th>
+													<th>
+														<div className="th-inner "></div>
+														<div className="fht-cell"></div>
+													</th>
+												</tr>
+											</thead>
 
-												<tbody>
-													{loaded ? (
-														<tr>
-															<td colSpan="6" className="text-center">
-																<img alt="searching" src={searchingGIF} />
-															</td>
-														</tr>
-													) : (
-														<>{this.table()}</>
-													)}
-												</tbody>
-											</table>
-										}
+											<tbody>
+												{loaded ? (
+													<tr>
+														<td colSpan="6" className="text-center">
+															<img alt="searching" src={searchingGIF} />
+														</td>
+													</tr>
+												) : (
+													procedures.map((physio, i) => {
+														return (
+															<tr key={i}>
+																<td>{i + 1}</td>
+																<td>{physio.patient_name}</td>
+																<td>
+																	{moment(physio.createdAt).format(
+																		'DD-MMM-YYYY h:mm A'
+																	)}
+																</td>
+																<td>{physio.created_by}</td>
+																<td>{this.getRequests(physio.requestBody)}</td>
+																<td></td>
+																<td className="row-actions text-right">
+																	<Tooltip title="View Request">
+																		<a
+																			href="#"
+																			onClick={() => {
+																				this.onModalClick();
+																				this.setState({
+																					activeRequest: physio,
+																				});
+																			}}>
+																			<i className="os-icon os-icon-documents-03" />
+																		</a>
+																	</Tooltip>
+																	<Tooltip title="Print Request">
+																		<a className="ml-2" href="#">
+																			<i className="icon-feather-printer" />
+																		</a>
+																	</Tooltip>
+																</td>
+															</tr>
+														);
+													})
+												)}
+											</tbody>
+										</table>
 									</div>
 								</div>
 							</div>
@@ -263,10 +254,7 @@ class AllProcedure extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		patient: state.user.patient,
-		patient_procedure: state.patient.patient_procedure,
 	};
 };
 
-export default withRouter(
-	connect(mapStateToProps, { loadPatientProcedureData })(AllProcedure)
-);
+export default withRouter(connect(mapStateToProps)(AllProcedure));
