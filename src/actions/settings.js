@@ -30,10 +30,6 @@ import {
 	GET_ALL_SPECIALIZATIONS,
 	UPDATE_SPECIALIZATION,
 	DELETE_SPECIALIZATION,
-	ADD_CONSULTATING_ROOM,
-	UPDATE_CONSULTATING_ROOM,
-	DELETE_CONSULTATING_ROOM,
-	GET_ALL_CONSULTATING_ROOMS,
 	LOAD_STAFFS,
 	ADD_SERVICE_CATEGORY,
 	GET_ALL_SERVICE_CATEGORIES,
@@ -311,36 +307,6 @@ export const update_specialization = (payload, previousData) => {
 export const delete_specialization = payload => {
 	return {
 		type: DELETE_SPECIALIZATION,
-		payload,
-	};
-};
-
-//Consultating Room
-export const add_consultating_room = payload => {
-	return {
-		type: ADD_CONSULTATING_ROOM,
-		payload,
-	};
-};
-
-export const get_all_consultating_rooms = payload => {
-	return {
-		type: GET_ALL_CONSULTATING_ROOMS,
-		payload,
-	};
-};
-
-export const update_consultating_room = (payload, previousData) => {
-	return {
-		type: UPDATE_CONSULTATING_ROOM,
-		payload,
-		previousData,
-	};
-};
-
-export const delete_consultating_room = payload => {
-	return {
-		type: DELETE_CONSULTATING_ROOM,
 		payload,
 	};
 };
@@ -891,75 +857,6 @@ export const deleteSpecialization = data => {
 				.delete(`${API_URI}/specializations/${data.id}`)
 				.then(response => {
 					dispatch(delete_specialization(data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-//Consultating Room
-export const addConsultatingRoom = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.post(`${API_URI}/consulting-rooms`, {
-					name: data.name,
-				})
-				.then(response => {
-					dispatch(add_consultating_room(response.data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const getAllConsultatingRooms = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.get(`${API_URI}/consulting-rooms`)
-				.then(response => {
-					dispatch(get_all_consultating_rooms(response.data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const updateConsultatingRoom = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.patch(`${API_URI}/consulting-rooms/${data.id}/update`, {
-					name: data.name,
-				})
-				.then(response => {
-					dispatch(update_consultating_room(response.data, data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const deleteConsultatingRoom = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.delete(`${API_URI}/consulting-rooms/${data.id}`)
-				.then(response => {
-					dispatch(delete_consultating_room(data));
 					return resolve({ success: true });
 				})
 				.catch(error => {

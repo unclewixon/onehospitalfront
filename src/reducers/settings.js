@@ -27,10 +27,6 @@ import {
 	GET_ALL_SPECIALIZATIONS,
 	UPDATE_SPECIALIZATION,
 	DELETE_SPECIALIZATION,
-	ADD_CONSULTATING_ROOM,
-	UPDATE_CONSULTATING_ROOM,
-	DELETE_CONSULTATING_ROOM,
-	GET_ALL_CONSULTATING_ROOMS,
 	LOAD_STAFFS,
 	ADD_SERVICE_CATEGORY,
 	GET_ALL_SERVICE_CATEGORIES,
@@ -62,7 +58,6 @@ const INITIAL_STATE = {
 	lab_groups: [],
 	leave_categories: [],
 	specializations: [],
-	consultating_room: [],
 	staff_list: [],
 	roles: [],
 	service_categories: [],
@@ -246,30 +241,6 @@ const settings = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				specializations: state.specializations.filter(
-					deletedItem => deletedItem.id !== action.payload.id
-				),
-			};
-		case ADD_CONSULTATING_ROOM:
-			return {
-				...state,
-				consultating_room: [...state.consultating_room, action.payload],
-			};
-		case GET_ALL_CONSULTATING_ROOMS:
-			return { ...state, consultating_room: action.payload };
-		case UPDATE_CONSULTATING_ROOM:
-			return {
-				...state,
-				consultating_room: [
-					...state.consultating_room.filter(
-						deletedItem => deletedItem.id !== action.previousData.id
-					),
-					action.payload,
-				],
-			};
-		case DELETE_CONSULTATING_ROOM:
-			return {
-				...state,
-				consultating_room: state.consultating_room.filter(
 					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};

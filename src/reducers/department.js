@@ -1,7 +1,7 @@
 import { LOAD_DEPARTMENTS, UPDATE_DEPARTMENT } from '../actions/types';
 import { updateImmutable } from '../services/utilities';
 
-const role = (state = [], action) => {
+const department = (state = [], action) => {
 	switch (action.type) {
 		case LOAD_DEPARTMENTS:
 			return [...action.payload];
@@ -13,4 +13,4 @@ const role = (state = [], action) => {
 	}
 };
 
-export default role;
+export default department;
