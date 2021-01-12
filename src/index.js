@@ -38,11 +38,8 @@ import {
 } from './actions/user';
 import SSRStorage from './services/storage';
 import { defaultHeaders, getUser } from './services/utilities';
-import {
-	loadDepartments,
-	loadSpecializations,
-	loadHmo,
-} from './actions/settings';
+import { loadDepartments } from './actions/department';
+import { loadSpecializations, loadHmo } from './actions/settings';
 import { loadInvCategories, loadInvSubCategories } from './actions/inventory';
 import { togglePreloading } from './actions/general';
 import { loadRoles } from './actions/role';

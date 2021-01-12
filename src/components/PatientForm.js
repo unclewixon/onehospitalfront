@@ -29,6 +29,7 @@ function PatientForm(props) {
 			label: hmo.name,
 		};
 	});
+	console.log(hmos);
 
 	useEffect(() => {
 		let formValues = {

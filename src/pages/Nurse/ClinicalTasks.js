@@ -189,7 +189,7 @@ const ClinicalTasks = () => {
 								return (
 									<tr key={i}>
 										<td>{item.patient_name}</td>
-										<td>{item.admission ? item.admission.room.name : '-'}</td>
+										<td>{item.admission?.room?.name || '-'}</td>
 										<td>{item.title}</td>
 										<td>{item.tasksCompleted}</td>
 										<td>
