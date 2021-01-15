@@ -28,6 +28,7 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 	const [labSpecimens, setLabSpecimens] = useState([]);
 	const [specimens, setSpecimens] = useState([]);
 	const [hasParameters, setHasParameters] = useState(false);
+	const [enableHmo, setEnableHmo] = useState(false);
 
 	const dispatch = useDispatch();
 
@@ -50,6 +51,7 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 	useEffect(() => {
 		if (showHide) {
 			if (labTest) {
+				setEnableHmo(true);
 				setState({
 					name: labTest.name,
 					category: labTest.category.id,
@@ -173,6 +175,7 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 					<select
 						className="form-control"
 						name="hmo_id"
+						disabled={enableHmo}
 						onChange={handleInputChange}
 						value={hmo_id}>
 						{!hmo_id && <option value={''}>Select HMO</option>};

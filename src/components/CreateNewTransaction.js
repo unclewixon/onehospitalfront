@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React, { useRef, useState, useEffect } from 'react';
+import { connect, useSelector } from 'react-redux';
 import { useHistory, withRouter } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import { searchAPI } from '../services/constants';
+import { getAllHmos } from '../actions/hmo';
 
 import {
 	transactionsAPI,
@@ -26,42 +29,59 @@ const CreateNewTransaction = props => {
 	const [patients, setPatients] = useState();
 	const [departments, setDepartments] = useState();
 	const multi = false;
-	// const [multi, setMulti] = useState(false);
+	const [hmo, setHmo] = useState(false);
 	const [services, setServices] = useState([]);
 	const [servicesCategory, setServicesCategory] = useState([]);
 	const [amount, setAmount] = useState(0);
+
+	const didMountRef = useRef(false);
+
+	let hmoList = useSelector(state => state.settings.hmos);
+	let hmos = hmoList.map(hmo => {
+		return {
+			value: hmo.id,
+			label: hmo.name,
+		};
+	});
+
+	const getOptionValues = option => option.id;
+	const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+
+	const getOptions = async q => {
+		if (!q || q.length < 3) {
+			return [];
+		}
+
+		const url = `${searchAPI}?q=${q}`;
+		const res = await request(url, 'GET', true);
+		return res;
+	};
 
 	const onSubmit = async values => {
 		setSubmitting(true);
 		let data = {
 			patient_id: values.patient_id,
+			hmo_id: hmo,
 			department_id: values.revenue_category,
 			amount: values.amount,
-			serviceType: values.service_request.map(req => req.value),
+			serviceType: values.service_request?.map(req => req.value),
 			description: values.description,
 			payment_type: values.payment_type,
 		};
+
+		console.log('onSubmit(): ');
+		console.log(data);
+
 		try {
 			await request(`${transactionsAPI}`, 'POST', true, data);
 			history.push('/paypoint');
 			notifySuccess('New payment request saved');
 			setSubmitting(false);
 		} catch (e) {
-			console.log(e);
 			setSubmitting(false);
 			notifyError(e.message || 'could not save payment request');
 		}
 	};
-
-	async function getPatients() {
-		const rs = await request(`patient/list`, 'GET', true);
-		const res = rs.map(patient => ({
-			value: patient.id,
-			label: patient.surname + ', ' + patient.other_names,
-		}));
-
-		setPatients(res);
-	}
 
 	async function getDepartments() {
 		const rs = await request(`departments`, 'GET', true);
@@ -74,8 +94,21 @@ const CreateNewTransaction = props => {
 	}
 
 	useEffect(() => {
-		getPatients();
+		props.getAllHmos();
 	}, []);
+
+	useEffect(() => {
+		props.getAllHmos();
+
+		if (didMountRef.current) {
+			hmos = hmoList.map(hmo => {
+				return {
+					value: hmo.id,
+					label: hmo.name,
+				};
+			});
+		} else didMountRef.current = true;
+	}, [hmoList]);
 
 	useEffect(() => {
 		getDepartments();
@@ -112,6 +145,12 @@ const CreateNewTransaction = props => {
 		setValue('service_center', value);
 	};
 
+	const handleChangeHmo = evt => {
+		let value = String(evt.value);
+		setHmo(value);
+		setValue('hmo_id', value);
+	};
+
 	const handleChangeProcedure = evt => {
 		const { service } = props;
 
@@ -145,15 +184,19 @@ const CreateNewTransaction = props => {
 								{errors.patient_id && errors.patient_id.message}
 							</div>
 						</label>
-						<Select
-							id="patient"
-							placeholder="Select Patient"
-							options={patients}
-							rules={{ required: 'Please select an option' }}
+
+						<AsyncSelect
+							isClearable
+							getOptionValue={getOptionValues}
+							getOptionLabel={getOptionLabels}
+							defaultOptions
+							name="patient"
 							ref={register({ name: 'patient_id' })}
-							onChange={evt => {
-								setValue('patient_id', String(evt.value));
+							loadOptions={getOptions}
+							onChange={e => {
+								setValue('patient_id', e.id);
 							}}
+							placeholder="Search patients"
 						/>
 					</div>
 
@@ -185,21 +228,25 @@ const CreateNewTransaction = props => {
 
 				<div className="row">
 					<div className="form-group col-sm-6">
-						<label>
-							Service Center{' '}
-							{multi ? (
-								<span className="mx-1 text-danger">* required </span>
-							) : (
-								''
-							)}
-						</label>
-						<Select
-							name="service_center"
-							placeholder="Select Service Center"
-							options={servicesCategory}
-							ref={register({ name: 'service_center' })}
-							onChange={evt => handleChangeServiceCategory(evt)}
+						<label>Amount</label>
+
+						<input
+							className="form-control"
 							required
+							placeholder="Amount"
+							type="number"
+							name="amount"
+							min="0"
+							value={amount}
+							ref={register}
+							onChange={evt => {
+								if (evt === null) {
+									setValue('amount', null);
+								} else {
+									setAmount(evt.target.value);
+									setValue('amount', evt.target.value);
+								}
+							}}
 						/>
 					</div>
 					<div className="form-group col-sm-6">
@@ -277,28 +324,6 @@ const CreateNewTransaction = props => {
 
 				<div className="row">
 					<div className="form-group col-sm-6">
-						<label>Amount</label>
-
-						<input
-							className="form-control"
-							required
-							placeholder="Amount"
-							type="number"
-							name="amount"
-							value={amount}
-							min="0"
-							ref={register}
-							onChange={evt => {
-								if (evt === null) {
-									setValue('amount', null);
-								} else {
-									setAmount(evt);
-									setValue('amount', evt.value);
-								}
-							}}
-						/>
-					</div>
-					<div className="form-group col-sm-6">
 						<label>
 							Payment Type{' '}
 							{multi ? (
@@ -320,6 +345,17 @@ const CreateNewTransaction = props => {
 									setValue('payment_type', evt.value);
 								}
 							}}
+							required
+						/>
+					</div>
+					<div className="form-group col-sm-6">
+						<label>select HMO (If applicable)</label>
+						<Select
+							name="hmo_id:"
+							placeholder="Select HMO"
+							options={hmos}
+							ref={register({ name: 'hmo_id:' })}
+							onChange={evt => handleChangeHmo(evt)}
 							required
 						/>
 					</div>
@@ -363,6 +399,7 @@ export default withRouter(
 	connect(mapStateToProps, {
 		getAllRequestServices,
 		get_all_services,
+		getAllHmos,
 		getAllServiceCategory,
 	})(CreateNewTransaction)
 );

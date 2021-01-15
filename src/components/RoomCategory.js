@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { request, confirmAction } from '../services/utilities';
+import { useSelector, connect } from 'react-redux';
+import { request, confirmAction, formatCurrency } from '../services/utilities';
 
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
@@ -17,16 +17,19 @@ import {
 const RoomCategory = props => {
 	const initialState = {
 		name: '',
+		hmoId: '',
 		price: '',
 		discount: '',
 		edit: false,
 		create: true,
 	};
-	const [{ name, price, discount }, setState] = useState(initialState);
+	const [{ name, hmoId, price, discount }, setState] = useState(initialState);
 	const [Loading, setLoading] = useState(false);
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
 	const [payload, getDataToEdit] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
+
+	const hmos = useSelector(state => state.settings.hmos);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -38,6 +41,7 @@ const RoomCategory = props => {
 		e.preventDefault();
 		let data = {
 			name,
+			hmoId,
 			price,
 			discount,
 		};
@@ -61,6 +65,7 @@ const RoomCategory = props => {
 		let data = {
 			name,
 			price,
+			hmoId,
 			discount,
 		};
 		try {
@@ -91,6 +96,7 @@ const RoomCategory = props => {
 			discount: data.discount,
 			price: data.price,
 			id: data.id,
+			hmoId: data.hmo.id,
 		}));
 		getDataToEdit(data);
 	};
@@ -143,6 +149,7 @@ const RoomCategory = props => {
 								<thead>
 									<tr>
 										<th>Category Name</th>
+										<th>HMO</th>
 										<th>Price</th>
 										<th>Discount</th>
 										<th className="text-right">Action</th>
@@ -161,7 +168,8 @@ const RoomCategory = props => {
 												return (
 													<tr key={i}>
 														<td>{RoomCategory.name}</td>
-														<td>{RoomCategory.price}</td>
+														<td>{RoomCategory.hmo && RoomCategory.hmo.name}</td>
+														<td>{formatCurrency(RoomCategory.price)}</td>
 														<td>{RoomCategory.discount}</td>
 														<td className="row-actions text-right">
 															<a href="#">
@@ -169,9 +177,7 @@ const RoomCategory = props => {
 																	className="os-icon os-icon-ui-49"
 																	onClick={() => onClickEdit(RoomCategory)}></i>
 															</a>
-															<a href="#">
-																<i className="os-icon os-icon-grid-10"></i>
-															</a>
+
 															<a
 																className="danger"
 																onClick={() => confirmDelete(RoomCategory)}>
@@ -203,6 +209,28 @@ const RoomCategory = props => {
 								value={name}
 							/>
 						</div>
+
+						<div className="form-group">
+							<select
+								className="form-control"
+								name="hmoId"
+								placeholder="HMO"
+								value={hmoId}
+								onChange={handleInputChange}>
+								<option value="" disabled>
+									{' '}
+									Select HMO{' '}
+								</option>
+								{hmos.map((RoomCategory, i) => {
+									return (
+										<option value={RoomCategory.id} key={i}>
+											{RoomCategory.name}
+										</option>
+									);
+								})}
+							</select>
+						</div>
+
 						<div className="form-group">
 							<input
 								className="form-control"

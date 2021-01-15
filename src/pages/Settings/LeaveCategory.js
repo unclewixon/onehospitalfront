@@ -91,13 +91,15 @@ const LeaveCategory = props => {
 
 	const onDeleteLeaveCategory = async data => {
 		try {
-			await request(`leave-category/${data.id}`, 'DELETE', true);
-			props.delete_leave_category(data);
+			const res = await request(`leave-category/${data.id}`, 'DELETE', true);
+
+			setDataLoaded(false);
 			setLoading(false);
+			//props.delete_leave_category(data);
 			notifySuccess('Leave Category deleted');
 		} catch (error) {
 			setLoading(false);
-			notifyError('Error deleting Leave Category');
+			notifyError('Error !!! deleting Leave Category');
 		}
 	};
 
@@ -110,21 +112,24 @@ const LeaveCategory = props => {
 		setState({ ...initialState });
 	};
 
-	const fetchLeaveCategory = async () => {
-		try {
-			const rs = await request(`leave-category`, 'GET', true);
-			props.get_all_leave_category(rs);
-			setDataLoaded(true);
-		} catch (error) {
-			setDataLoaded(true);
-			notifyError(error.message || 'could not fetch leave categories!');
-		}
-	};
-
 	useEffect(() => {
-		fetchLeaveCategory();
+		const fetchLeaveCategory = async () => {
+			try {
+				const rs = await request(`leave-category`, 'GET', true);
+				props.get_all_leave_category(rs);
+				setDataLoaded(true);
+			} catch (error) {
+				setDataLoaded(true);
+				notifyError(error.message || 'could not fetch leave categories!');
+			}
+		};
+
+		if (!dataLoaded) {
+			fetchLeaveCategory();
+		}
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [dataLoaded, props]);
 
 	return (
 		<div className="content-i">
@@ -214,7 +219,9 @@ const LeaveCategory = props => {
 											</div>
 										</div>
 										<div className="form-group">
-											<label className="lighter">Leave duration</label>
+											<label className="lighter">
+												Leave duration (no of days)
+											</label>
 											<div className="input-group mb-2 mr-sm-2 mb-sm-0">
 												<input
 													className="form-control"

@@ -92,6 +92,7 @@ const Specialization = props => {
 		try {
 			await request(`specializations/${data.id}`, 'DELETE', true);
 			props.delete_specialization(data);
+			setDataLoaded(false);
 			setLoading(false);
 			notifySuccess('Specialization deleted');
 		} catch (error) {
@@ -121,9 +122,11 @@ const Specialization = props => {
 	};
 
 	useEffect(() => {
-		fetchSpecialization();
+		if (!dataLoaded) {
+			fetchSpecialization();
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [dataLoaded, props]);
 
 	return (
 		<div className="content-i">

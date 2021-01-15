@@ -14,6 +14,8 @@ import { closeModals } from '../../actions/general';
 import { patientAPI, vouchersAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
 import { createVoucherData } from '../../actions/paypoint';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import { searchAPI } from '../../services/constants';
 
 const validate = values => {
 	//const {  apply_voucher } = this.props;
@@ -36,6 +38,19 @@ const validate = values => {
 
 	console.log(errors);
 	return errors;
+};
+
+const getOptionValues = option => option.id;
+const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+
+const getOptions = async q => {
+	if (!q || q.length < 3) {
+		return [];
+	}
+
+	const url = `${searchAPI}?q=${q}`;
+	const res = await request(url, 'GET', true);
+	return res;
 };
 
 export class ModalCreateVoucher extends Component {
@@ -81,8 +96,9 @@ export class ModalCreateVoucher extends Component {
 		const { apply_voucher, create_voucher } = this.props;
 		if (apply_voucher) {
 			data.transaction_id = create_voucher.id;
-			data.patient_id = create_voucher.patient_id;
 		}
+		data.patient_id = this.state.patient_id;
+		data.start_date = this.state.voucher_date;
 		console.log(data, create_voucher);
 		try {
 			const rs = await request(`${vouchersAPI}`, 'POST', true, data);
@@ -121,6 +137,10 @@ export class ModalCreateVoucher extends Component {
 
 	setDate = (date, type) => {
 		this.setState({ [type]: date });
+	};
+
+	setPatient = val => {
+		this.setState({ patient_id: val });
 	};
 
 	render() {
@@ -170,15 +190,19 @@ export class ModalCreateVoucher extends Component {
 									</div>
 									<div className="row">
 										<div className="col-sm-6" hidden={apply_voucher}>
-											<Field
-												id="patient_id"
-												name="patient_id"
-												component={renderSelect}
-												label="Patient"
-												required
-												type="text"
-												placeholder="Select Patient"
-												data={patientList}
+											<label>Patient</label>
+
+											<AsyncSelect
+												isClearable
+												getOptionValue={getOptionValues}
+												getOptionLabel={getOptionLabels}
+												defaultOptions
+												name="patient"
+												loadOptions={getOptions}
+												onChange={e => {
+													this.setPatient(e.id);
+												}}
+												placeholder="Search patients"
 											/>
 										</div>
 

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useRef, Fragment, useEffect, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import Select from 'react-select';
@@ -22,13 +22,32 @@ function PatientForm(props) {
 	const [ethValue, setEthValue] = useState('');
 	const [maritalValue, setMaritalValue] = useState('');
 
-	const hmoList = useSelector(state => state.settings.hmos);
-	const hmos = hmoList.map(hmo => {
+	const didMountRef = useRef(false);
+
+	let hmoList = useSelector(state => state.settings.hmos);
+	let hmos = hmoList.map(hmo => {
 		return {
 			value: hmo.id,
 			label: hmo.name,
 		};
 	});
+
+	useEffect(() => {
+		props.getAllHmos();
+	}, []);
+
+	useEffect(() => {
+		props.getAllHmos();
+
+		if (didMountRef.current) {
+			hmos = hmoList.map(hmo => {
+				return {
+					value: hmo.id,
+					label: hmo.name,
+				};
+			});
+		} else didMountRef.current = true;
+	}, [hmoList]);
 
 	useEffect(() => {
 		let formValues = {
@@ -114,7 +133,18 @@ function PatientForm(props) {
 
 	return (
 		<Fragment>
-			<h5 className="form-header">{formTitle}</h5>
+			<div className="modal-header faded smaller">
+				<h5 className="form-header">{formTitle}</h5>
+				<button
+					aria-label="Close"
+					className="close"
+					data-dismiss="modal"
+					type="button"
+					onClick={() => props.closeModals(false)}>
+					<span aria-hidden="true"> ×</span>
+				</button>
+			</div>
+
 			<div className="form-desc"></div>
 			<div className="onboarding-content with-gradient">
 				<form onSubmit={handleSubmit(onSubmit)}>
@@ -175,6 +205,7 @@ function PatientForm(props) {
 								</div>
 							</div>
 						</div>
+
 						<div className="row">
 							<div className="col-sm">
 								<div className="form-group">
@@ -261,6 +292,7 @@ function PatientForm(props) {
 									<label>
 										HMO<span className="compulsory-field">*</span>
 									</label>
+
 									<Select
 										id="hmoId"
 										ref={register({ name: 'hmoId' })}
@@ -375,6 +407,7 @@ const mapStateToProps = (state, ownProps) => {
 	return {
 		formData: state.patient.formData,
 		patient: state.user.patient,
+		//hmoList: state.settings.hmos,
 		register_new_patient: state.general.register_new_patient,
 	};
 };

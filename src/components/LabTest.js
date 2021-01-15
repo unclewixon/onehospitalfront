@@ -56,6 +56,7 @@ const LabTest = props => {
 		try {
 			const rs = await request(`lab-tests/${data.id}`, 'DELETE', true);
 			dispatch(deleteLabTest(rs));
+			setLoaded(false);
 			notifySuccess('Lab test deleted');
 		} catch (error) {
 			notifyError('Error deleting lab test');

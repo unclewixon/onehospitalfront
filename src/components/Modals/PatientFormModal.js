@@ -26,30 +26,10 @@ class PatientFormModal extends Component {
 				style={{ display: 'block' }}>
 				<div className="modal-dialog modal-lg" role="document">
 					<div className="modal-content text-center">
-						<div className="modal-header faded smaller">
-							<div className="modal-title">
-								<span>Registrar:</span>
-								<img
-									alt=""
-									className="avatar"
-									src={require('../../assets/images/avatar1.jpg')}
-								/>
-								<span>Date: </span>
-								<strong>{moment().format('ll')}</strong>
-							</div>
-							<button
-								aria-label="Close"
-								className="close"
-								data-dismiss="modal"
-								type="button"
-								onClick={() => this.props.closeModals(false)}>
-								<span aria-hidden="true"> ×</span>
-							</button>
-						</div>
 						{this.props.currentStep === 1 ? (
-							<PatientForm />
+							<PatientForm closeModals={this.props.closeModals} />
 						) : (
-							<PatientNOKForm />
+							<PatientNOKForm closeModals={this.props.closeModals} />
 						)}
 					</div>
 				</div>

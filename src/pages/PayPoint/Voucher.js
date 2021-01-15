@@ -6,12 +6,17 @@ import { connect } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 
 import { createVoucher } from '../../actions/general';
-import { request } from '../../services/utilities';
+import {
+	request,
+	confirmAction,
+	formatCurrency,
+} from '../../services/utilities';
 import { vouchersAPI } from '../../services/constants';
 import { loadVoucher } from '../../actions/paypoint';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
 import { compose } from 'redux';
+import { notifySuccess, notifyError } from '../../services/notify';
 
 export class Voucher extends Component {
 	state = {
@@ -42,6 +47,31 @@ export class Voucher extends Component {
 			console.log(error);
 		}
 	};
+	displayExpiry = date => {
+		let result = new Date(moment(date));
+		result.setDate(result.getDate() + 5);
+		return moment(result).format('DD-MM-YYYY');
+	};
+
+	onDeleteRoom = async data => {
+		try {
+			this.setState({ loading: true });
+			await request(`vouchers/${data.id}`, 'DELETE', true);
+			const rs = this.props.voucher.filter(v => v.id !== data.id);
+			this.props.loadVoucher(rs);
+			this.setState({ loading: false });
+			notifySuccess('Voucher  deleted');
+		} catch (error) {
+			console.log(error);
+			this.setState({ loading: false });
+			notifyError(error.message || 'Error deleting voucher ');
+		}
+	};
+
+	confirmDelete = data => {
+		confirmAction(this.onDeleteRoom, data);
+	};
+
 	render() {
 		const { loading } = this.state;
 		const { voucher } = this.props;
@@ -65,6 +95,8 @@ export class Voucher extends Component {
 										<th className="text-center">Voucher Number</th>
 										<th className="text-center">Amount (₦)</th>
 										<th className="text-center">Date Created</th>
+										<th className="text-center">Start Date</th>
+										<th className="text-center">Expiry Date</th>
 										<th className="text-center">Actions</th>
 									</tr>
 								</thead>
@@ -83,23 +115,26 @@ export class Voucher extends Component {
 														{voucher.patient_name}
 													</td>
 													<td className="text-center">{voucher.voucher_no}</td>
-													<td className="text-center">{voucher.amount}</td>
 													<td className="text-center">
-														{moment(voucher.q_createdAt).format('DD-MM-YY')}
+														{formatCurrency(voucher.amount)}
 													</td>
+													<td className="text-center">
+														{moment(voucher.q_createdAt).format('DD-MM-YYYY')}
+													</td>
+
+													<td className="text-center">
+														{moment(voucher.start_date).format('DD-MM-YYYY')}
+													</td>
+
+													<td className="text-center">
+														{this.displayExpiry(voucher.q_createdAt)}
+													</td>
+
 													<td className="text-center row-actions">
-														<Tooltip title="Receive Request">
-															<a className="secondary">
-																<i className="os-icon os-icon-folder-plus" />
-															</a>
-														</Tooltip>
-														<Tooltip title="Edit Request">
-															<a className="secondary">
-																<i className="os-icon os-icon-edit-32" />
-															</a>
-														</Tooltip>
 														<Tooltip title="Delete Request">
-															<a className="danger">
+															<a
+																className="danger"
+																onClick={() => this.confirmDelete(voucher)}>
 																<i className="os-icon os-icon-ui-15" />
 															</a>
 														</Tooltip>
@@ -109,7 +144,7 @@ export class Voucher extends Component {
 										})
 									) : (
 										<tr className="text-center">
-											<td colSpan="5">No voucher for today yet</td>
+											<td colSpan="7">No voucher for today yet</td>
 										</tr>
 									)}
 								</tbody>

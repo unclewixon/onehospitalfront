@@ -83,6 +83,7 @@ const LabCategory = props => {
 			const url = `lab-tests/categories/${data.id}`;
 			const rs = await request(url, 'DELETE', true);
 			dispatch(deleteLabCategory(rs));
+			setDataLoaded(false);
 			notifySuccess('Lab Category deleted');
 		} catch (error) {
 			console.log(error);

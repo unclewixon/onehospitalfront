@@ -120,7 +120,7 @@ const LabGroup = () => {
 		try {
 			const url = `lab-tests/groups/${item.id}`;
 			const rs = await request(url, 'DELETE', true);
-			setGroups([...groups.filter(s => s.id !== rs.id)]);
+			setLoaded(false);
 			notifySuccess('Lab group deleted');
 		} catch (error) {
 			notifyError('Error deleting lab group');

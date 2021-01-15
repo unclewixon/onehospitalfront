@@ -6,10 +6,12 @@ import axios from 'axios';
 import { setGlobal } from 'reactn';
 import { AbilityBuilder } from '@casl/ability';
 import { useEffect } from 'reactn';
+import { fetch_all_hmos_data } from '../actions/hmo';
 
 import waiting from '../assets/images/waiting.gif';
 import { request, redirectToPage, defaultHeaders } from '../services/utilities';
 import {
+	hmoAPI,
 	API_URI,
 	departmentAPI,
 	inventoryCatAPI,
@@ -107,6 +109,7 @@ let Login = props => {
 			try {
 				const jwt = `Bearer ${rs.token}`;
 				let [
+					rs_hmos,
 					rs_depts,
 					rs_invcategories,
 					rs_invsubcategories,
@@ -115,6 +118,7 @@ let Login = props => {
 					rs_banks,
 					rs_countries,
 				] = await Promise.all([
+					axiosFetch(`${API_URI}/${hmoAPI}`, jwt),
 					axiosFetch(`${API_URI}/${departmentAPI}`, jwt),
 					axiosFetch(`${API_URI}/${inventoryCatAPI}`, jwt),
 					axiosFetch(`${API_URI}/${inventorySubCatAPI}`, jwt),
@@ -124,6 +128,9 @@ let Login = props => {
 					axiosFetch(`${API_URI}/${utilityAPI}/countries`),
 				]);
 
+				if (rs_hmos && rs_hmos.data) {
+					props.fetch_all_hmos_data(rs_hmos.data);
+				}
 				if (rs_depts && rs_depts.data) {
 					props.loadDepartments(rs_depts.data);
 				}
@@ -259,4 +266,5 @@ export default connect(null, {
 	loadSpecializations,
 	loadBanks,
 	loadCountries,
+	fetch_all_hmos_data,
 })(Login);
