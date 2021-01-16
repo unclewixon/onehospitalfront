@@ -133,6 +133,16 @@ export const upload = async (url, method, body) => {
 	return parseJSON(result);
 };
 
+export const uploadFile = async (url, body) => {
+	// prettier-ignore
+	const user = await (new SSRStorage()).getItem(TOKEN_COOKIE);
+	const jwt = `Bearer ${user.token}`;
+	let headers = { Authorization: jwt };
+	const response = axios.post(`${API_URI}/${url}`, body, { headers });
+	// const response = await fetch(url, { method, headers, body });
+	return response;
+};
+
 export const updateImmutable = (list, payload) => {
 	const data = list.find(d => d.id === payload.id);
 	if (data) {

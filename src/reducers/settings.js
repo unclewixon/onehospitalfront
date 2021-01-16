@@ -34,9 +34,6 @@ import {
 	UPDATE_SERVICE_CATEGORY,
 	GET_ALL_SERIVCES,
 	UPDATE_SERVICE,
-	UPDATE_DIAGNOSIS,
-	GET_ALL_DIAGNOSISES,
-	DELETE_DIAGNOSIS,
 	ADD_REQUEST_SERVICE,
 	GET_ALL_REQUEST_SERVICES,
 	UPDATE_REQUEST_SERVICE,
@@ -62,7 +59,6 @@ const INITIAL_STATE = {
 	roles: [],
 	service_categories: [],
 	services: [],
-	diagnosis: [],
 	request_services: [],
 	hmos: [],
 };
@@ -277,25 +273,6 @@ const settings = (state = INITIAL_STATE, action) => {
 				...state,
 				services: [
 					...state.services.filter(
-						deletedItem => deletedItem.id !== action.previousData.id
-					),
-					action.payload,
-				],
-			};
-		case DELETE_DIAGNOSIS:
-			return {
-				...state,
-				diagnosis: state.diagnosis.filter(
-					deletedItem => deletedItem.id !== action.payload.id
-				),
-			};
-		case GET_ALL_DIAGNOSISES:
-			return { ...state, diagnosis: action.payload };
-		case UPDATE_DIAGNOSIS:
-			return {
-				...state,
-				diagnosis: [
-					...state.diagnosis.filter(
 						deletedItem => deletedItem.id !== action.previousData.id
 					),
 					action.payload,

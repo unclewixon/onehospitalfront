@@ -25,7 +25,7 @@ const RoomMgmt = () => {
 					<div className="col-sm-12">
 						<div className="element-wrapper">
 							<div className="os-tabs-w mx-4">
-								<div className="os-tabs-controls">
+								<div className="os-tabs-controls os-tabs-complex">
 									<ul className="nav nav-tabs upper">
 										<li className="nav-item">
 											<a

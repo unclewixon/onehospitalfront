@@ -1,63 +1,46 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { closeModals } from '../../actions/general';
-import {
-	uploadDiagnosis,
-	getAllDiagnosises,
-	updateDiagnosis,
-	deleteDiagnosis,
-} from '../../actions/settings';
 
-import { notifySuccess } from '../../services/notify';
+import { diagnosisAPI } from '../../services/constants';
+import { notifySuccess, notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
+import { uploadFile } from '../../services/utilities';
 
 class ModalUploadDiagnosis extends Component {
 	state = {
 		file: null,
-		Loading: false,
+		submitting: false,
 		diagnosisType: '',
 	};
 
-	handleInputChange = e => {
-		this.setState({
-			file: e.target.files[0],
-		});
-	};
+	handleInputChange = e => this.setState({ file: e.target.files[0] });
 
-	handleSelect = e => {
-		this.setState({
-			diagnosisType: e.target.value,
-		});
-	};
+	handleSelect = e => this.setState({ diagnosisType: e.target.value });
 
-	onUpload = e => {
-		this.setState({ Loading: true });
+	onUpload = async e => {
 		e.preventDefault();
-		const data = new FormData();
-		data.append('file', this.state.file);
-		data.append('diagnosisType', this.state.diagnosisType);
-		this.props
-			.uploadDiagnosis(data)
-			.then(response => {
-				this.setState({ Loading: false });
-				this.props.closeModals(false);
+		try {
+			this.setState({ submitting: true });
+			const fd = new FormData();
+			fd.append('file', this.state.file);
+			fd.append('diagnosisType', this.state.diagnosisType);
+			const rs = await uploadFile(`${diagnosisAPI}/upload`, fd);
+			const { data } = rs;
+			if (data.success) {
+				this.setState({ submitting: false, file: null, diagnosisType: '' });
+				this.props.closeModal(true);
 				notifySuccess('Service file uploaded');
-			})
-			.catch(error => {
-				this.setState({ Loading: false });
-			});
+			} else {
+				this.setState({ submitting: false });
+				notifyError(data.message || 'Service file uploaded');
+			}
+		} catch (e) {
+			this.setState({ submitting: false });
+		}
 	};
-
-	componentDidMount() {
-		document.body.classList.add('modal-open');
-	}
-
-	componentWillUnmount() {
-		document.body.classList.remove('modal-open');
-	}
 
 	render() {
-		const { Loading } = this.state;
+		const { closeModal } = this.props;
+		const { submitting } = this.state;
 		return (
 			<div
 				className="onboarding-modal modal fade animated show"
@@ -69,7 +52,7 @@ class ModalUploadDiagnosis extends Component {
 							aria-label="Close"
 							className="close"
 							type="button"
-							onClick={() => this.props.closeModals(false)}>
+							onClick={() => closeModal(false)}>
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
@@ -79,7 +62,7 @@ class ModalUploadDiagnosis extends Component {
 								<div className="form-group">
 									<input
 										className="form-control"
-										placeholder="Category Name"
+										placeholder="Select File"
 										type="file"
 										name="file"
 										onChange={this.handleInputChange}
@@ -88,7 +71,7 @@ class ModalUploadDiagnosis extends Component {
 								<div className="form-group">
 									<select
 										className="form-control"
-										placeholder="Category Name"
+										placeholder="Type of Diagnosis"
 										name="diagnosisType"
 										onChange={this.handleSelect}
 										required>
@@ -98,11 +81,8 @@ class ModalUploadDiagnosis extends Component {
 									</select>
 								</div>
 								<div className="form-buttons-w">
-									<button
-										className={
-											Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
-										}>
-										{Loading ? (
+									<button className="btn btn-primary" disabled={submitting}>
+										{submitting ? (
 											<img src={waiting} alt="submitting" />
 										) : (
 											<span> Upload</span>
@@ -118,10 +98,4 @@ class ModalUploadDiagnosis extends Component {
 	}
 }
 
-export default connect(null, {
-	closeModals,
-	uploadDiagnosis,
-	getAllDiagnosises,
-	updateDiagnosis,
-	deleteDiagnosis,
-})(ModalUploadDiagnosis);
+export default ModalUploadDiagnosis;

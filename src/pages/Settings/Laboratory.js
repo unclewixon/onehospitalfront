@@ -61,10 +61,7 @@ const Laboratory = () => {
 										<li className="nav-item">
 											<a
 												aria-expanded="true"
-												className={
-													labCategoryTab ? 'nav-link active' : 'nav-link'
-												}
-												data-toggle="tab"
+												className={`nav-link ${labCategoryTab ? 'active' : ''}`}
 												onClick={onLabCategory}>
 												Categories
 											</a>
@@ -73,7 +70,6 @@ const Laboratory = () => {
 											<a
 												aria-expanded="false"
 												className={labTestTab ? 'nav-link active' : 'nav-link'}
-												data-toggle="tab"
 												onClick={onLabTest}>
 												Tests
 											</a>
@@ -82,7 +78,6 @@ const Laboratory = () => {
 											<a
 												aria-expanded="false"
 												className={labGroupTab ? 'nav-link active' : 'nav-link'}
-												data-toggle="tab"
 												onClick={onLabGroup}>
 												Groups
 											</a>
@@ -93,7 +88,6 @@ const Laboratory = () => {
 												className={
 													labSpecimenTab ? 'nav-link active' : 'nav-link'
 												}
-												data-toggle="tab"
 												onClick={onLabParameter}>
 												Specimen
 											</a>

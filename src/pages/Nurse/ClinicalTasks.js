@@ -12,6 +12,7 @@ import { readingDone } from '../../actions/patient';
 import warning from '../../assets/images/warning.png';
 import GiveMedication from '../../components/Modals/GiveMedication';
 import { startBlock, stopBlock } from '../../actions/redux-block';
+import { toggleProfile } from '../../actions/user';
 
 const ClinicalTasks = () => {
 	const [meta, setMeta] = useState(null);
@@ -43,7 +44,6 @@ const ClinicalTasks = () => {
 	useEffect(() => {
 		async function doLoadTasks() {
 			const rs = await getTasks();
-			console.log(rs);
 			const { result, ...paginate } = rs;
 			setMeta(paginate);
 			setTasks(result);
@@ -131,6 +131,13 @@ const ClinicalTasks = () => {
 		}
 	};
 
+	const showProfile = patient => {
+		if (patient) {
+			const info = { patient, type: 'patient' };
+			dispatch(toggleProfile(true, info));
+		}
+	};
+
 	return (
 		<>
 			<h6 className="element-header">Clinical Tasks</h6>
@@ -188,7 +195,11 @@ const ClinicalTasks = () => {
 								const vital = allVitalItems.find(v => v.name === item.task);
 								return (
 									<tr key={i}>
-										<td>{item.patient_name}</td>
+										<td>
+											<a onClick={() => showProfile(item.patient)}>
+												{item.patient_name}
+											</a>
+										</td>
 										<td>{item.admission?.room?.name || '-'}</td>
 										<td>{item.title}</td>
 										<td>{item.tasksCompleted}</td>

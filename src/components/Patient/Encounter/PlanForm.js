@@ -16,7 +16,6 @@ import { connect, useDispatch } from 'react-redux';
 import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
 import { loadInvCategories, loadInventories } from '../../../actions/inventory';
 import {
-	getAllDiagnosis,
 	get_all_services,
 	getAllServiceCategory,
 } from '../../../actions/settings';
@@ -844,7 +843,6 @@ export default connect(mapStateToProps, {
 	loadEncounterData,
 	loadEncounterForm,
 	get_all_services,
-	getAllDiagnosis,
 	getAllServiceCategory,
 	loadInvCategories,
 	loadInventories,

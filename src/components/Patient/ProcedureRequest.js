@@ -11,7 +11,6 @@ import waiting from '../../assets/images/waiting.gif';
 import { request } from '../../services/utilities';
 import { notifyError, notifySuccess } from '../../services/notify';
 import {
-	getAllDiagnosis,
 	get_all_services,
 	getAllServiceCategory,
 } from '../../actions/settings';
@@ -255,7 +254,6 @@ export default compose(
 	withRouter,
 	connect(mapStateToProps, {
 		get_all_services,
-		getAllDiagnosis,
 		getAllServiceCategory,
 	})
 )(ProcedureRequest);

@@ -39,10 +39,6 @@ import {
 	GET_ALL_SERIVCES,
 	UPDATE_SERVICE,
 	DELETE_SERVICE,
-	UPDATE_DIAGNOSIS,
-	GET_ALL_DIAGNOSISES,
-	DELETE_DIAGNOSIS,
-	UPLOAD_DIAGNOSIS,
 	ADD_REQUEST_SERVICE,
 	GET_ALL_REQUEST_SERVICES,
 	UPDATE_REQUEST_SERVICE,
@@ -374,36 +370,6 @@ const update_service = (payload, previousData) => {
 const delete_service = payload => {
 	return {
 		type: DELETE_SERVICE,
-		payload,
-	};
-};
-
-//Diagnosis
-const upload_diagnosis = payload => {
-	return {
-		type: UPDATE_DIAGNOSIS,
-		payload,
-	};
-};
-
-export const getAllDiagnosis = payload => {
-	return {
-		type: GET_ALL_DIAGNOSISES,
-		payload,
-	};
-};
-
-const update_diagnosis = (payload, previousData) => {
-	return {
-		type: UPLOAD_DIAGNOSIS,
-		payload,
-		previousData,
-	};
-};
-
-const delete_diagnosis = payload => {
-	return {
-		type: DELETE_DIAGNOSIS,
 		payload,
 	};
 };
@@ -1008,79 +974,6 @@ export const deleteService = data => {
 		});
 	};
 };
-
-//Diagnosis
-export const uploadDiagnosis = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.post(`${API_URI}/settings/diagnosis/upload`, data)
-				.then(response => {
-					dispatch(upload_diagnosis(response.data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const getAllDiagnosises = (cb = () => {}) => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.get(`${API_URI}/settings/diagnosis`)
-				.then(response => {
-					dispatch(getAllDiagnosis(response.data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				})
-				.finally(() => cb());
-		});
-	};
-};
-
-export const updateDiagnosis = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.patch(`${API_URI}/settings/diagnosis/${data.id}/update`, {
-					procedureCode: data.procedureCode,
-					icd10Code: data.icd10Code,
-					description: data.description,
-					codeStatus: data.codeStatus,
-				})
-				.then(response => {
-					dispatch(update_diagnosis(response.data, data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const deleteDiagnosis = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.delete(`${API_URI}/diagnosis/${data.id}`)
-				.then(response => {
-					dispatch(delete_diagnosis(data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-//Request service
 
 export const addRequestService = data => {
 	return dispatch => {

@@ -121,7 +121,7 @@ const ConsultationRoom = () => {
 			<div className="content-box">
 				<div className="element-wrapper">
 					<div className="os-tabs-w mx-1">
-						<div className="os-tabs-controls">
+						<div className="os-tabs-controls os-tabs-complex">
 							<ul className="nav nav-tabs upper">
 								<li className="nav-item">
 									<a

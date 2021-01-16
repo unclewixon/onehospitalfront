@@ -116,20 +116,16 @@ const Departments = () => {
 			<div className="content-box">
 				<div className="element-wrapper">
 					<div className="os-tabs-w mx-1">
-						<div className="os-tabs-controls">
+						<div className="os-tabs-controls os-tabs-complex">
 							<ul className="nav nav-tabs upper">
 								<li className="nav-item">
-									<a
-										aria-expanded="true"
-										className="nav-link active"
-										data-toggle="tab">
+									<a aria-expanded="true" className="nav-link active">
 										Deda Departments
 									</a>
 								</li>
 							</ul>
 						</div>
 					</div>
-
 					<div className="row">
 						<div className="col-lg-7">
 							<div className="element-wrapper">
@@ -140,7 +136,7 @@ const Departments = () => {
 										</div>
 									) : (
 										<div className="table-responsive">
-											<table className="table table-padded">
+											<table className="table table-striped">
 												<thead>
 													<tr>
 														<th>Department</th>
@@ -152,15 +148,11 @@ const Departments = () => {
 													{departments.map((department, i) => {
 														return (
 															<tr key={i}>
-																<td className="nowrap">
-																	<span>{department.name}</span>
-																</td>
+																<td className="nowrap">{department.name}</td>
 																<td>
-																	<span>
-																		{department.hod_name && department.hod_name}
-																	</span>
+																	{department.hod_name && department.hod_name}
 																</td>
-																<td className="row-actions text-right">
+																<td className="row-actions">
 																	<a role="button">
 																		<i
 																			className="os-icon os-icon-ui-49"

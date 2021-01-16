@@ -33,12 +33,9 @@ const Specialization = props => {
 
 	const onAddSpecialization = async e => {
 		e.preventDefault();
-		setLoading(true);
-
-		let data = {
-			name,
-		};
 		try {
+			setLoading(true);
+			const data = { name };
 			const rs = await request(`specializations`, 'POST', true, data);
 			props.add_specialziation(rs);
 			setLoading(false);
@@ -133,7 +130,7 @@ const Specialization = props => {
 			<div className="content-box">
 				<div className="element-wrapper">
 					<div className="os-tabs-w mx-1">
-						<div className="os-tabs-controls">
+						<div className="os-tabs-controls os-tabs-complex">
 							<ul className="nav nav-tabs upper">
 								<li className="nav-item">
 									<a
@@ -151,7 +148,7 @@ const Specialization = props => {
 						<div className="col-lg-8">
 							<div className="row">
 								{!dataLoaded ? (
-									<div colSpan="4" className="text-center">
+									<div className="text-center">
 										<img alt="searching" src={searchingGIF} />
 									</div>
 								) : (

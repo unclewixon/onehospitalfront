@@ -14,19 +14,31 @@ const Roles = () => {
 					<div className="col-sm-12">
 						<div className="element-wrapper">
 							<div className="os-tabs-w mx-1">
-								<div className="os-tabs-controls">
+								<div className="os-tabs-controls os-tabs-complex">
 									<ul className="nav nav-tabs upper">
 										<li className="nav-item">
-											<a className={tab === 'roles' ? 'nav-link active' : 'nav-link'}  onClick={() => setTab('roles')}>ROLES</a>
+											<a
+												className={
+													tab === 'roles' ? 'nav-link active' : 'nav-link'
+												}
+												onClick={() => setTab('roles')}>
+												ROLES
+											</a>
 										</li>
 										<li className="nav-item">
-											<a className={tab === 'permissions' ? 'nav-link active' : 'nav-link'} onClick={() => setTab('permissions')}>PERMISSIONS</a>
+											<a
+												className={
+													tab === 'permissions' ? 'nav-link active' : 'nav-link'
+												}
+												onClick={() => setTab('permissions')}>
+												PERMISSIONS
+											</a>
 										</li>
 									</ul>
 								</div>
 							</div>
 							{tab === 'roles' && <RoleBlock />}
-             		 		{tab === 'permissions' && <Permission />}
+							{tab === 'permissions' && <Permission />}
 						</div>
 					</div>
 				</div>

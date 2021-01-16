@@ -20,7 +20,6 @@ import {
 	TOGGLE_VIEW_PAYPOINT,
 	TOGGLE_CREATE_VOUCHER,
 	TOGGLE_UPLOAD_SERVICE,
-	TOGGLE_UPLOAD_DIAGNOSIS,
 	TOGGLE_UPLOAD_HMO,
 	TOGGLE_UPLOAD_HMO_TARIFF,
 	TOGGLE_EDIT_SERIVCE,
@@ -168,8 +167,6 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, create_clinical_task: action.payload };
 		case TOGGLE_UPLOAD_SERVICE:
 			return { ...state, upload_service: action.payload };
-		case TOGGLE_UPLOAD_DIAGNOSIS:
-			return { ...state, upload_diagnosis: action.payload };
 		case TOGGLE_UPLOAD_RADIOLOGY:
 			return { ...state, upload_radiology: action.payload };
 		case TOGGLE_UPLOAD_HMO:

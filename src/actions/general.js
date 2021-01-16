@@ -26,7 +26,6 @@ import {
 	TOGGLE_CREATE_RECORD_DELIVERY,
 	TOGGLE_CREATE_RECORD_VITAL,
 	TOGGLE_UPLOAD_SERVICE,
-	TOGGLE_UPLOAD_DIAGNOSIS,
 	TOGGLE_UPLOAD_HMO,
 	TOGGLE_EDIT_SERIVCE,
 	TOGGLE_CREATE_CLINICAL_TASK,
@@ -270,13 +269,6 @@ export const toggleUploadService = status => {
 	};
 };
 
-export const toggleUploadDiagnosis = status => {
-	return {
-		type: TOGGLE_UPLOAD_DIAGNOSIS,
-		payload: status,
-	};
-};
-
 export const toggleUploadRadiology = status => {
 	return {
 		type: TOGGLE_UPLOAD_RADIOLOGY,
@@ -409,7 +401,6 @@ export const closeModals = () => {
 		dispatch(toggleCreateRecordVital(false));
 		dispatch(toggleAddCafeteriaFile(false));
 		dispatch(toggleUploadService(false));
-		dispatch(toggleUploadDiagnosis(false));
 		dispatch(toggleUploadRadiology(false));
 		dispatch(toggleUploadHmo(false));
 		dispatch(toggleUploadHmoTariff(false));
@@ -608,14 +599,6 @@ export const uploadServiceModal = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleUploadService(action));
-	};
-};
-
-export const uploadDiagnosis = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleUploadDiagnosis(action));
 	};
 };
 
