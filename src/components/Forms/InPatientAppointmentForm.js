@@ -9,6 +9,8 @@ import { notifyError, notifySuccess } from '../../services/notify';
 import { connect } from 'react-redux';
 import { closeModals } from '../../actions/general';
 import { addTransaction } from '../../actions/transaction';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import { searchAPI } from '../../services/constants';
 
 function InPatientAppointmentForm(props) {
 	const { register, handleSubmit, setValue, getValues } = useForm();
@@ -102,6 +104,19 @@ function InPatientAppointmentForm(props) {
 		}
 	};
 
+	const getOptionValues = option => option.id;
+	const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+
+	const getOptions = async q => {
+		if (!q || q.length < 3) {
+			return [];
+		}
+
+		const url = `${searchAPI}?q=${q}`;
+		const res = await request(url, 'GET', true);
+		return res;
+	};
+
 	const onSubmit = async values => {
 		setSubmitting(true);
 		const url = 'front-desk/appointments/new';
@@ -135,14 +150,19 @@ function InPatientAppointmentForm(props) {
 			<div className="modal-body">
 				<div className="form-group">
 					<label>Patient</label>
-					<Select
-						id="patient"
-						placeholder="Select Patient"
-						options={patients}
+
+					<AsyncSelect
+						isClearable
+						getOptionValue={getOptionValues}
+						getOptionLabel={getOptionLabels}
+						defaultOptions
+						name="patient"
 						ref={register({ name: 'patient_id' })}
-						onChange={evt => {
-							setValue('patient_id', String(evt.value));
+						loadOptions={getOptions}
+						onChange={e => {
+							setValue('patient_id', e.id);
 						}}
+						placeholder="Search patients"
 					/>
 				</div>
 				<div className="form-group">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 
@@ -18,6 +18,8 @@ const LabSpecimen = ({ setRefresh }) => {
 	const [submitting, setSubmitting] = useState(false);
 
 	const dispatch = useDispatch();
+
+	const didMountRef = useRef(false);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -104,10 +106,13 @@ const LabSpecimen = ({ setRefresh }) => {
 			dispatch(startBlock());
 			const url = `lab-tests/specimens/${item.id}`;
 			const rs = await request(url, 'DELETE', true);
-			setRefresh(true);
-			setSpecimens([...specimens.filter(s => s.id !== rs.id)]);
+
+			const spes = specimens.filter(s => item.id !== rs.id);
+
+			setLoaded(false);
 			notifySuccess('Lab specimen deleted');
 			setRefresh(false);
+
 			dispatch(stopBlock());
 		} catch (error) {
 			notifyError('Error deleting lab specimen');

@@ -59,7 +59,7 @@ const AllPatients = () => {
 
 	return (
 		<>
-			<div className="element-box px-0">
+			<div className="element-box">
 				<div className="table-responsive">
 					<table className="table table-striped">
 						<thead>
@@ -73,7 +73,7 @@ const AllPatients = () => {
 									<div className="fht-cell"></div>
 								</th>
 								<th>
-									<div className="th-inner sortable both">File Number</div>
+									<div className="th-inner sortable both">Patient ID</div>
 									<div className="fht-cell"></div>
 								</th>
 								<th>
@@ -81,7 +81,11 @@ const AllPatients = () => {
 									<div className="fht-cell"></div>
 								</th>
 								<th>
-									<div className="th-inner sortable both">Dat of Birth</div>
+									<div className="th-inner sortable both">Date of Birth</div>
+									<div className="fht-cell"></div>
+								</th>
+								<th>
+									<div className="th-inner sortable both">HMO</div>
 									<div className="fht-cell"></div>
 								</th>
 								<th>
@@ -108,15 +112,11 @@ const AllPatients = () => {
 											<td>
 												{moment(data?.date_of_birth).format('DD-MMM-YYYY')}
 											</td>
+											<td>{data?.hmo?.name}</td>
 											<td className="row-actions text-right">
 												<Tooltip title="View Request">
 													<a onClick={() => showProfile(data)}>
 														<i className="os-icon os-icon-documents-03" />
-													</a>
-												</Tooltip>
-												<Tooltip title="Print Request">
-													<a className="ml-2">
-														<i className="icon-feather-printer" />
 													</a>
 												</Tooltip>
 											</td>

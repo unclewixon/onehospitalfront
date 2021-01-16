@@ -51,7 +51,10 @@ function PatientNOKForm(props) {
 			formValues = {
 				nok_surname: patient.nextOfKin?.surname || '',
 				nok_other_names: patient.nextOfKin?.other_names || '',
-				nok_date_of_birth: patient.nextOfKin?.date_of_birth || '',
+				//nok_date_of_birth: patient.nextOfKin?.nok_date_of_birth || '',
+				nok_date_of_birth: patient.nextOfKin?.nok_date_of_birth
+					? new Date(patient.nextOfKin.nok_date_of_birth)
+					: '',
 				nok_email: patient.nextOfKin?.email || '',
 				nok_gender: patient.nextOfKin?.gender || '',
 				nok_occupation: patient.nextOfKin?.occupation || '',
@@ -102,7 +105,7 @@ function PatientNOKForm(props) {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [formTitle]);
 
-	const { register, handleSubmit, errors, setValue } = useForm({
+	const { register, handleSubmit, errors, setValue, watch } = useForm({
 		validationSchema: patientNOKSchema,
 		defaultValues: patientData,
 	});
@@ -168,6 +171,7 @@ function PatientNOKForm(props) {
 		}
 	};
 
+	const values = watch();
 	register({ name: 'nok_gender' });
 	register({ name: 'nok_maritalStatus' });
 	register({ name: 'nok_ethnicity' });
@@ -175,7 +179,17 @@ function PatientNOKForm(props) {
 
 	return (
 		<Fragment>
-			<h6 className="form-header">{formTitle}</h6>
+			<div className="modal-header faded smaller">
+				<h5 className="form-header">{formTitle}</h5>
+				<button
+					aria-label="Close"
+					className="close"
+					data-dismiss="modal"
+					type="button"
+					onClick={() => props.closeModals(false)}>
+					<span aria-hidden="true"> ×</span>
+				</button>
+			</div>
 			<div className="form-desc"></div>
 			<div className="onboarding-content with-gradient">
 				<form onSubmit={handleSubmit(onSubmit)}>
@@ -220,7 +234,7 @@ function PatientNOKForm(props) {
 									<label>Date of birth</label>
 									<div className="custom-date-input">
 										<DatePicker
-											selected={patientData?.nok_date_of_birth}
+											selected={values?.nok_date_of_birth}
 											onChange={date => setValue('nok_date_of_birth', date)}
 											peekNextMonth
 											showMonthDropdown

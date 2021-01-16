@@ -120,7 +120,7 @@ const AllInPatients = () => {
 					onModalClick={onModalClick}
 				/>
 			) : null}
-			<div className="element-box px-0">
+			<div className="element-box">
 				<form className="row search_form" onSubmit={searchEntries}>
 					<div className="form-group col-md-3 mt-4 text-right">
 						<div className="input-group mb-2 mr-sm-2 mb-sm-0">
@@ -150,7 +150,7 @@ const AllInPatients = () => {
 										<div className="fht-cell"></div>
 									</th>
 									<th>
-										<div className="th-inner sortable both">File Number</div>
+										<div className="th-inner sortable both">Patient ID</div>
 										<div className="fht-cell"></div>
 									</th>
 									<th>

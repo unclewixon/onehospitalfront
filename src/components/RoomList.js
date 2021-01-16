@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { request, confirmAction } from '../services/utilities';
+import { connect, useSelector } from 'react-redux';
+import { request, confirmAction, formatCurrency } from '../services/utilities';
 
 import waiting from '../assets/images/waiting.gif';
 import searchingGIF from '../assets/images/searching.gif';
@@ -16,7 +16,7 @@ import {
 const RoomList = props => {
 	const initialState = {
 		name: '',
-		status: 'Occupied',
+		status: 'Not occupied',
 		floor: '',
 		category: props.RoomCategeries ? props.Room_Categories[0].id : '',
 		create: true,
@@ -27,6 +27,9 @@ const RoomList = props => {
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
 	const [payload, getDataToEdit] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
+
+	const role = useSelector(state => state.user.profile.role.slug);
+
 	const handleInputChange = e => {
 		const { name, value } = e.target;
 		setState(prevState => ({ ...prevState, [name]: value }));
@@ -149,6 +152,7 @@ const RoomList = props => {
 									<tr>
 										<th>Room Number</th>
 										<th>Floor</th>
+										<th>Category</th>
 										<th>Status</th>
 										<th className="text-right">Action</th>
 									</tr>
@@ -167,6 +171,7 @@ const RoomList = props => {
 													<tr key={index}>
 														<td>{Room.name}</td>
 														<td>{Room.floor}</td>
+														<td>{Room.category?.name}</td>
 														<td>{Room.status}</td>
 														<td className="row-actions text-right">
 															<a href="#">
@@ -174,14 +179,16 @@ const RoomList = props => {
 																	className="os-icon os-icon-ui-49"
 																	onClick={() => onClickEdit(Room)}></i>
 															</a>
-															<a href="#">
-																<i className="os-icon os-icon-grid-10"></i>
-															</a>
-															<a
-																className="danger"
-																onClick={() => confirmDelete(Room)}>
-																<i className="os-icon os-icon-ui-15"></i>
-															</a>
+
+															{role === 'admin' ? (
+																<a
+																	className="danger"
+																	onClick={() => confirmDelete(Room)}>
+																	<i className="os-icon os-icon-ui-15"></i>
+																</a>
+															) : (
+																''
+															)}
 														</td>
 													</tr>
 												);
@@ -212,12 +219,18 @@ const RoomList = props => {
 							<select
 								className="form-control"
 								name="category"
+								placeholder="Room Category"
 								value={category}
 								onChange={handleInputChange}>
 								{/* {category && (
 									<option value={category.id}>{category.name}</option>
 								)} */}
-								{!category && <option value=""></option>}
+								{!category && (
+									<option value="" disabled>
+										{' '}
+										Room Category{' '}
+									</option>
+								)}
 								{props.Room_Categories.map((RoomCategory, i) => {
 									return (
 										<option value={RoomCategory.id} key={i}>

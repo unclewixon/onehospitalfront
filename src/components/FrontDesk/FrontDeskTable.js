@@ -24,7 +24,7 @@ class FrontDeskTable extends Component {
 			<table className="table table-padded">
 				<thead>
 					<tr>
-						<th hidden={today}>Date</th>
+						<th>Date</th>
 						<th>Patient</th>
 						<th>File Number</th>
 						<th>Whom to see</th>
@@ -44,14 +44,14 @@ class FrontDeskTable extends Component {
 						appointments.map((appointment, i) => {
 							return (
 								<tr key={i}>
-									<td className="nowrap" hidden={today}>
+									<td className="nowrap">
 										{moment(appointment.createdAt).format('DD-MM-YYYY')}
 									</td>
 									<td className="cell-with-media">
 										<span
 											style={{
 												fontSize: '0.7rem',
-											}}>{`${appointment.patient.surname} ${appointment.patient.other_names}`}</span>
+											}}>{`${appointment.patient?.surname} ${appointment.patient?.other_names}`}</span>
 									</td>
 
 									<td className="cell-with-media">

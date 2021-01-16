@@ -30,3 +30,4 @@ template
 package-lock.json
 .env.production
 debug.log
+.vs

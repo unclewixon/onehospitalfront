@@ -63,7 +63,7 @@ const FrontDesk = props => {
 			setListenning(true);
 
 			if (page === 'front-desk') {
-				setTitle('Dashboard');
+				setTitle('Appointments');
 			} else {
 				setTitle(startCase(page));
 			}
