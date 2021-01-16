@@ -31,6 +31,7 @@ function PatientForm(props) {
 			label: hmo.name,
 		};
 	});
+	console.log(hmos);
 
 	useEffect(() => {
 		props.getAllHmos();

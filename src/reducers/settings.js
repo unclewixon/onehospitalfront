@@ -1,8 +1,4 @@
 import {
-	CREATE_DEPARTMENT,
-	GET_ALL_DEPARTMENTS,
-	UPDATE_DEPARTMENT,
-	DELETE_DEPARTMENT,
 	ADD_ROOM,
 	GET_ALL_ROOMS,
 	UPDATE_ROOM,
@@ -31,14 +27,6 @@ import {
 	GET_ALL_SPECIALIZATIONS,
 	UPDATE_SPECIALIZATION,
 	DELETE_SPECIALIZATION,
-	ADD_CONSULTATING_ROOM,
-	UPDATE_CONSULTATING_ROOM,
-	DELETE_CONSULTATING_ROOM,
-	GET_ALL_CONSULTATING_ROOMS,
-	ADD_PERMISSION,
-	GET_ALL_PERMISSIONS,
-	UPDATE_PERMISSION,
-	DELETE_PERMISSION,
 	LOAD_STAFFS,
 	ADD_SERVICE_CATEGORY,
 	GET_ALL_SERVICE_CATEGORIES,
@@ -62,7 +50,6 @@ import {
 import { updateImmutable } from '../services/utilities';
 
 const INITIAL_STATE = {
-	departments: [],
 	rooms: [],
 	room_categories: [],
 	lab_tests: [],
@@ -71,10 +58,8 @@ const INITIAL_STATE = {
 	lab_groups: [],
 	leave_categories: [],
 	specializations: [],
-	consultating_room: [],
 	staff_list: [],
 	roles: [],
-	permissions: [],
 	service_categories: [],
 	services: [],
 	diagnosis: [],
@@ -84,20 +69,6 @@ const INITIAL_STATE = {
 
 const settings = (state = INITIAL_STATE, action) => {
 	switch (action.type) {
-		case CREATE_DEPARTMENT:
-			return { ...state, departments: [...state.departments, action.payload] };
-		case GET_ALL_DEPARTMENTS:
-			return { ...state, departments: action.payload };
-		case UPDATE_DEPARTMENT:
-			const depts = updateImmutable(state.departments, action.payload);
-			return { ...state, departments: [...depts] };
-		case DELETE_DEPARTMENT:
-			return {
-				...state,
-				departments: state.departments.filter(
-					deletedItem => deletedItem.id !== action.payload.id
-				),
-			};
 		case ADD_ROOM:
 			return { ...state, rooms: [...state.rooms, action.payload] };
 		case GET_ALL_ROOMS:
@@ -273,56 +244,8 @@ const settings = (state = INITIAL_STATE, action) => {
 					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};
-		case ADD_CONSULTATING_ROOM:
-			return {
-				...state,
-				consultating_room: [...state.consultating_room, action.payload],
-			};
-		case GET_ALL_CONSULTATING_ROOMS:
-			return { ...state, consultating_room: action.payload };
-		case UPDATE_CONSULTATING_ROOM:
-			return {
-				...state,
-				consultating_room: [
-					...state.consultating_room.filter(
-						deletedItem => deletedItem.id !== action.previousData.id
-					),
-					action.payload,
-				],
-			};
-		case DELETE_CONSULTATING_ROOM:
-			return {
-				...state,
-				consultating_room: state.consultating_room.filter(
-					deletedItem => deletedItem.id !== action.payload.id
-				),
-			};
 		case LOAD_STAFFS:
 			return { ...state, staff_list: action.payload };
-		case ADD_PERMISSION:
-			return {
-				...state,
-				permissions: [...state.permissions, action.payload],
-			};
-		case GET_ALL_PERMISSIONS:
-			return { ...state, permissions: action.payload };
-		case UPDATE_PERMISSION:
-			return {
-				...state,
-				permissions: [
-					...state.permissions.filter(
-						deletedItem => deletedItem.id !== action.previousData.id
-					),
-					action.payload,
-				],
-			};
-		case DELETE_PERMISSION:
-			return {
-				...state,
-				permissions: state.permissions.filter(
-					deletedItem => deletedItem.id !== action.payload.id
-				),
-			};
 		case ADD_SERVICE_CATEGORY:
 			return {
 				...state,

@@ -2,33 +2,42 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { request, confirmAction } from '../services/utilities';
-import { notifySuccess, notifyError } from '../services/notify';
+import { request } from '../services/utilities';
+import { notifyError } from '../services/notify';
 import searchingGIF from '../assets/images/searching.gif';
 import { rolesAPI } from '../services/constants';
-import { loadRoles, delete_role, togglePermissionModal } from '../actions/role';
-import CreateRole from './CreateRole';
+import { loadRoles } from '../actions/role';
+import { loadPermissions } from '../actions/permission';
 import EditRole from './EditRole';
 import RolePermissionModal from './Modals/RolePermissionModal';
 
 class RoleBlock extends Component {
 	state = {
-		edit: false,
-		roleID: null,
-		previousRole: null,
 		loading: false,
 		role: null,
+		showModal: false,
 	};
 
 	componentDidMount() {
-		this.setState({ loading: true });
 		this.fetchRoles();
 	}
 
+	fetchPermissions = async () => {
+		try {
+			const rs = await request('settings/permissions', 'GET', true);
+			this.props.loadPermissions(rs);
+		} catch (error) {
+			this.setState({ loading: false });
+			notifyError(error.message || 'could not fetch permissions');
+		}
+	};
+
 	fetchRoles = async () => {
 		try {
+			this.setState({ loading: true });
 			const rs = await request(`${rolesAPI}`, 'GET', true);
 			this.props.loadRoles(rs);
+			this.fetchPermissions();
 			this.setState({ loading: false });
 		} catch (error) {
 			// console.log(error);
@@ -37,124 +46,99 @@ class RoleBlock extends Component {
 		}
 	};
 
-	editRole = (role, action) => () => {
-		this.setState({ roleID: null, edit: false }, () => {
-			this.setState({ roleID: role ? role.id : role, edit: action });
-			this.setState({ previousRole: role });
+	editRole = role => () => {
+		this.setState({ role: null }, () => {
+			this.setState({ role });
 		});
 	};
 
-	DeleteRole = role => async () => {
-		this.setState({ roleID: role.id });
-		try {
-			await request(`settings/roles/${role.id}`, 'DELETE', true);
-			this.setState({ edit: false, previousRole: null });
-			this.props.delete_role(role);
-			notifySuccess('Role deleted');
-		} catch (error) {
-			console.log(error);
-			notifyError('Error deleting role');
-		}
+	cancelEditRole = () => {
+		this.setState({ role: null });
 	};
 
-	confirmDelete = role => {
-		confirmAction(this.DeleteRole(role), null);
+	openPermissionModal = role => () => {
+		document.body.classList.add('modal-open');
+		this.setState({ role, showModal: true });
 	};
 
-	openPermissionModal = role => {
-		this.setState({ role });
-		this.props.togglePermissionModal(true);
+	closeModal = () => {
+		document.body.classList.remove('modal-open');
+		this.setState({ role: null, showModal: false });
 	};
 
 	render() {
-		const { roles, permission_modal } = this.props;
-		const { edit, roleID, previousRole, loading, role } = this.state;
+		const { roles } = this.props;
+		const { loading, role, showModal } = this.state;
 		return (
 			<div className="row">
 				<div className="col-lg-8">
 					<div className="element-wrapper">
 						<div className="element-box p-3 m-0">
-							<div className="table-responsive">
-								<table className="table table-striped">
-									<thead>
-										<tr>
-											<th>S/N</th>
-											<th>Name</th>
-											<th>Description</th>
-											<th className="text-right">Actions</th>
-										</tr>
-									</thead>
-									<tbody>
-										{loading ? (
+							{loading ? (
+								<div className="loading-block">
+									<img alt="searching" src={searchingGIF} />
+								</div>
+							) : (
+								<div className="table-responsive">
+									<table className="table table-striped">
+										<thead>
 											<tr>
-												<td colSpan="4" className="text-center">
-													<img alt="searching" src={searchingGIF} />
-												</td>
+												<th>S/N</th>
+												<th>Name</th>
+												<th>Description</th>
+												<th className="text-right">Actions</th>
 											</tr>
-										) : (
-											<>
-												{roles.map((role, i) => {
-													return (
-														<tr key={i}>
-															<td>{i + 1}</td>
-															<td>{role.name}</td>
-															<td>{role.description}</td>
-															<td className="row-actions text-right">
-																<a
-																	onClick={this.editRole(role, true)}
-																	className="secondary"
-																	title="Edit Role">
-																	<i className="os-icon os-icon-edit-32" />
-																</a>
-																<a
-																	onClick={() => this.openPermissionModal(role)}
-																	className="secondary"
-																	title="Permission Modal">
-																	<i className="icon-feather-lock" />
-																</a>
-																<a
-																	className="danger"
-																	onClick={() => this.confirmDelete(role)}>
-																	<i className="os-icon os-icon-ui-15"></i>
-																</a>
-															</td>
-														</tr>
-													);
-												})}
-											</>
-										)}
-									</tbody>
-								</table>
-							</div>
+										</thead>
+										<tbody>
+											{roles.map((role, i) => {
+												return (
+													<tr key={i}>
+														<td>{role.id}</td>
+														<td>{role.name}</td>
+														<td>{role.description}</td>
+														<td className="row-actions text-right">
+															<a
+																onClick={this.editRole(role)}
+																className="secondary"
+																title="Edit Role">
+																<i className="os-icon os-icon-edit-32" />
+															</a>
+															<a
+																onClick={this.openPermissionModal(role)}
+																className="secondary"
+																title="Permission Modal">
+																<i className="icon-feather-lock" />
+															</a>
+														</td>
+													</tr>
+												);
+											})}
+										</tbody>
+									</table>
+								</div>
+							)}
 						</div>
 					</div>
 				</div>
-				<div className="col-lg-4 col-xxl-3  d-xxl-block">
-					{edit ? (
-						<EditRole
-							roleID={roleID}
-							editRole={this.editRole}
-							previousRole={previousRole}
-						/>
-					) : (
-						<CreateRole />
-					)}
-				</div>
-				{permission_modal && <RolePermissionModal role={role} />}
+				{!showModal && role && (
+					<div className="col-lg-4 col-xxl-3  d-xxl-block">
+						<EditRole cancelEditRole={this.cancelEditRole} role={role} />
+					</div>
+				)}
+				{showModal && role && (
+					<RolePermissionModal role={role} closeModal={this.closeModal} />
+				)}
 			</div>
 		);
 	}
 }
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = state => {
 	return {
 		roles: state.role.roles,
-		permission_modal: state.role.permission_modal,
 	};
 };
 
-export default connect(mapStateToProps, {
-	loadRoles,
-	delete_role,
-	togglePermissionModal,
-})(RoleBlock);
+export default connect(mapStateToProps, { loadRoles, loadPermissions })(
+	RoleBlock
+);

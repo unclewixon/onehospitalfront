@@ -8,34 +8,22 @@ import { notifySuccess } from '../services/notify';
 import waiting from '../assets/images/waiting.gif';
 import { updateRole } from '../actions/role';
 
-const validate = values => {
-	const errors = {};
-	if (!values.name) {
-		errors.name = 'enter role';
-	}
-	return errors;
-};
-
 class EditRole extends Component {
 	state = {
 		submitting: false,
 	};
 
 	doEditRole = async data => {
-		console.log(data);
-		this.setState({ submitting: true });
 		try {
-			const { roleID, previousRole } = this.props;
-			const rs = await request(
-				`${rolesAPI}/${roleID}/update`,
-				'PATCH',
-				true,
-				data
-			);
-			this.props.updateRole(rs, previousRole);
+			this.setState({ submitting: true });
+			const { role } = this.props;
+			const url = `${rolesAPI}/${role.id}/update`;
+			const rs = await request(url, 'PATCH', true, data);
+			this.props.updateRole(rs);
 			this.setState({ submitting: false });
 			this.props.reset('edit_role');
 			notifySuccess('role updated!');
+			this.props.cancelEditRole(null);
 		} catch (e) {
 			this.setState({ submitting: false });
 			throw new SubmissionError({
@@ -46,7 +34,7 @@ class EditRole extends Component {
 
 	render() {
 		const { submitting } = this.state;
-		const { error, handleSubmit, editRole } = this.props;
+		const { error, handleSubmit, cancelEditRole } = this.props;
 		return (
 			<div className="pipeline white lined-warning">
 				<form onSubmit={handleSubmit(this.doEditRole)}>
@@ -66,6 +54,7 @@ class EditRole extends Component {
 						label="Name"
 						type="text"
 						placeholder="Enter name"
+						readOnly
 					/>
 					<Field
 						id="description"
@@ -79,7 +68,7 @@ class EditRole extends Component {
 						<button
 							className="btn btn-secondary ml-3"
 							type="button"
-							onClick={editRole(null, false)}>
+							onClick={() => cancelEditRole(null)}>
 							Cancel
 						</button>
 						<button
@@ -97,16 +86,13 @@ class EditRole extends Component {
 
 EditRole = reduxForm({
 	form: 'edit_role',
-	validate,
 })(EditRole);
 
 const mapStateToProps = (state, ownProps) => {
-	const roles = state.role.roles;
-	const role = roles.find(r => r.id === ownProps.roleID);
 	return {
 		initialValues: {
-			name: role ? role.name : '',
-			description: role ? role.description : '',
+			name: ownProps.role?.name || '',
+			description: ownProps.role?.description || '',
 		},
 	};
 };

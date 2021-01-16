@@ -1,30 +1,24 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useEffect, useCallback } from 'react';
+
 import waiting from '../../assets/images/waiting.gif';
 import searchingGIF from '../../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request, confirmAction } from '../../services/utilities';
+import { updateImmutable } from '../../services/utilities';
 
-import {
-	add_consultating_room,
-	get_all_consultating_rooms,
-	update_consultating_room,
-	delete_consultating_room,
-} from '../../actions/settings';
-
-const ConsultatingRoom = props => {
+const ConsultationRoom = () => {
 	const initialState = {
 		name: '',
 		save: true,
 		edit: false,
 		id: '',
 	};
+	const [consultingRooms, setConsultingRooms] = useState([]);
 	const [{ name }, setState] = useState(initialState);
-	const [Loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	const [payload, getDataToEdit] = useState(null);
-	// const [loaded, setLoaded] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const handleInputChange = e => {
@@ -32,15 +26,13 @@ const ConsultatingRoom = props => {
 		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onAddConsultatingRoom = async e => {
+	const onAddConsultingRoom = async e => {
 		e.preventDefault();
-		setLoading(true);
-		let data = {
-			name,
-		};
 		try {
-			const rs = await request(`consulting-rooms`, 'POST', true, data);
-			props.add_consultating_room(rs);
+			setLoading(true);
+			const data = { name };
+			const rs = await request('consulting-rooms', 'POST', true, data);
+			setConsultingRooms([...consultingRooms, rs]);
 			setLoading(false);
 			setState({ ...initialState });
 			notifySuccess('Consulting room added');
@@ -50,18 +42,15 @@ const ConsultatingRoom = props => {
 		}
 	};
 
-	const onEditConsultatingRoom = async e => {
-		setLoading(true);
+	const onEditConsultingRoom = async e => {
 		e.preventDefault();
-		let data = {
-			name,
-			id: payload.id,
-		};
-
 		try {
+			setLoading(true);
+			const data = { name, id: payload.id };
 			const url = `consulting-rooms/${data.id}/update`;
 			const rs = await request(url, 'PATCH', true, data);
-			props.update_consultating_room(rs, payload);
+			const rooms = updateImmutable(consultingRooms, rs);
+			setConsultingRooms([...rooms]);
 			setState({ ...initialState });
 			setSubmitButton({ save: true, edit: false });
 			setLoading(false);
@@ -85,12 +74,16 @@ const ConsultatingRoom = props => {
 		getDataToEdit(data);
 	};
 
-	const onDeleteConsultatingRoom = async data => {
+	const onDeleteConsultingRoom = async data => {
 		try {
-			await request(`consulting-rooms/${data.id}`, 'DELETE', true, data);
-			props.delete_consultating_room(data);
+			const url = `consulting-rooms/${data.id}`;
+			await request(url, 'DELETE', true);
 			notifySuccess('Consulting room deleted');
+			setConsultingRooms([
+				...consultingRooms.filter(r => r.id !== parseInt(data.id, 10)),
+			]);
 		} catch (error) {
+			console.log(error);
 			setLoading(false);
 			setState({ ...initialState });
 			notifyError('Error deleting consulting room');
@@ -98,7 +91,7 @@ const ConsultatingRoom = props => {
 	};
 
 	const confirmDelete = data => {
-		confirmAction(onDeleteConsultatingRoom, data);
+		confirmAction(onDeleteConsultingRoom, data);
 	};
 
 	const cancelEditButton = () => {
@@ -106,21 +99,22 @@ const ConsultatingRoom = props => {
 		setState({ ...initialState });
 	};
 
-	const fetchConsultatingRoom = async () => {
+	const fetchConsultingRoom = useCallback(async () => {
 		try {
 			const rs = await request(`consulting-rooms`, 'GET', true);
-			props.get_all_consultating_rooms(rs);
+			setConsultingRooms([...rs]);
 			setDataLoaded(true);
 		} catch (error) {
 			setDataLoaded(true);
 			notifyError(error.message || 'could not fetch consulting rooms!');
 		}
-	};
+	}, []);
 
 	useEffect(() => {
-		fetchConsultatingRoom();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+		if (!dataLoaded) {
+			fetchConsultingRoom();
+		}
+	}, [dataLoaded, fetchConsultingRoom]);
 
 	return (
 		<div className="content-i">
@@ -140,129 +134,109 @@ const ConsultatingRoom = props => {
 							</ul>
 						</div>
 					</div>
-
-					<div className="row">
-						<div className="col-lg-8">
-							<div className="row">
-								{!dataLoaded ? (
-									<div className="align-self-center">
-										<img alt="searching" src={searchingGIF} />
-									</div>
-								) : (
-									<>
-										{props.ConsultatingRooms.map((room, i) => {
-											return (
-												<div className="col-lg-4 col-xxl-3" key={i}>
-													<div className="pt-3">
-														<div className="pipeline-item">
-															<div className="pi-controls">
-																<div className="pi-settings os-dropdown-trigger">
-																	<i
-																		className="os-icon os-icon-ui-49"
-																		onClick={() => onClickEdit(room)}></i>
-																</div>
-																<div className="pi-settings os-dropdown-trigger">
-																	<i
-																		className="os-icon os-icon-ui-15"
-																		onClick={() => confirmDelete(room)}></i>
-																</div>
+					{!dataLoaded ? (
+						<div className="loading-block">
+							<img alt="searching" src={searchingGIF} />
+						</div>
+					) : (
+						<div className="row">
+							<div className="col-lg-8">
+								<div className="row">
+									{consultingRooms.map((room, i) => {
+										return (
+											<div className="col-lg-4 col-xxl-3" key={i}>
+												<div className="pt-3">
+													<div className="pipeline-item">
+														<div className="pi-controls">
+															<div className="pi-settings os-dropdown-trigger">
+																<i
+																	className="os-icon os-icon-ui-49"
+																	onClick={() => onClickEdit(room)}></i>
 															</div>
-															<div className="pi-body">
-																<div className="pi-info">
-																	<div className="h6 pi-name">{room.name}</div>
-																</div>
+															<div className="pi-settings os-dropdown-trigger">
+																<i
+																	className="os-icon os-icon-ui-15"
+																	onClick={() => confirmDelete(room)}></i>
+															</div>
+														</div>
+														<div className="pi-body">
+															<div className="pi-info">
+																<div className="h6 pi-name">{room.name}</div>
 															</div>
 														</div>
 													</div>
 												</div>
-											);
-										})}
-									</>
+											</div>
+										);
+									})}
+								</div>
+								{consultingRooms.length === 0 && (
+									<div
+										className="alert alert-info text-center"
+										style={{ width: '100%' }}>
+										No rooms
+									</div>
 								)}
 							</div>
-						</div>
-						<div className="col-lg-4 col-xxl-3  d-xxl-block">
-							<div className="element-wrapper">
-								<div className="element-box">
-									<form
-										onSubmit={
-											edit ? onEditConsultatingRoom : onAddConsultatingRoom
-										}>
-										<h5 className="element-box-header">Add New</h5>
-										<div className="form-group">
-											<label className="lighter">Name</label>
-											<div className="input-group mb-2 mr-sm-2 mb-sm-0">
-												<input
-													className="form-control"
-													placeholder="Consulting room name"
-													type="text"
-													name="name"
-													value={name}
-													onChange={handleInputChange}
-												/>
+							<div className="col-lg-4 col-xxl-3  d-xxl-block">
+								<div className="element-wrapper">
+									<div className="element-box">
+										<form
+											onSubmit={
+												edit ? onEditConsultingRoom : onAddConsultingRoom
+											}>
+											<h5 className="element-box-header">Add New</h5>
+											<div className="form-group">
+												<label className="lighter">Name</label>
+												<div className="input-group mb-2 mr-sm-2 mb-sm-0">
+													<input
+														className="form-control"
+														placeholder="Consulting room name"
+														type="text"
+														name="name"
+														value={name}
+														onChange={handleInputChange}
+													/>
+												</div>
 											</div>
-										</div>
 
-										<div className="form-buttons-w text-right compact">
-											{save && (
-												<button
-													className={
-														Loading
-															? 'btn btn-primary disabled'
-															: 'btn btn-primary'
-													}>
-													{Loading ? (
-														<img src={waiting} alt="submitting" />
-													) : (
-														<span> save</span>
-													)}
-												</button>
-											)}
-											{edit && (
-												<>
-													<button
-														className={
-															Loading
-																? 'btn btn-secondary ml-3 disabled'
-																: 'btn btn-secondary ml-3'
-														}
-														onClick={cancelEditButton}>
-														<span>{Loading ? 'cancel' : 'cancel'}</span>
-													</button>
-													<button
-														className={
-															Loading
-																? 'btn btn-primary disabled'
-																: 'btn btn-primary'
-														}>
-														{Loading ? (
+											<div className="form-buttons-w text-right compact">
+												{save && (
+													<button className="btn btn-primary">
+														{loading ? (
 															<img src={waiting} alt="submitting" />
 														) : (
-															<span> edit</span>
+															<span> save</span>
 														)}
 													</button>
-												</>
-											)}
-										</div>
-									</form>
+												)}
+												{edit && (
+													<>
+														<button
+															className="btn btn-primary"
+															onClick={cancelEditButton}>
+															<span>cancel</span>
+														</button>
+														<button className="btn btn-primary">
+															{loading ? (
+																<img src={waiting} alt="submitting" />
+															) : (
+																<span> edit</span>
+															)}
+														</button>
+													</>
+												)}
+											</div>
+										</form>
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
+					)}
 				</div>
 			</div>
 		</div>
 	);
 };
 
-const mapStateToProps = state => {
-	return {
-		ConsultatingRooms: state.settings.consultating_room,
-	};
-};
-export default connect(mapStateToProps, {
-	add_consultating_room,
-	get_all_consultating_rooms,
-	update_consultating_room,
-	delete_consultating_room,
-})(ConsultatingRoom);
+export default ConsultationRoom;

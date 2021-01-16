@@ -148,6 +148,10 @@ export const updateImmutable = (list, payload) => {
 	return list;
 };
 
+export const getPageList = (array, page_size, page_number) => {
+	return array.slice((page_number - 1) * page_size, page_number * page_size);
+};
+
 // prettier-ignore
 export const renderTextInput = ({ input, label, type, id, placeholder, readOnly = false, meta: { touched, error } }) => (
 	<div

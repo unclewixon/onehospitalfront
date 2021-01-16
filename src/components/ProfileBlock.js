@@ -89,7 +89,8 @@ const ProfileBlock = ({ location, history, patient, noEdits }) => {
 									<div className="col-md-6">
 										<div className="text-fade text-sm">
 											<span className="m-r">
-												<strong>Insurance Status:</strong> {patient?.hmo?.name}
+												<strong>Insurance Status:</strong>{' '}
+												{patient?.hmo?.name || '-'}
 											</span>
 										</div>
 									</div>

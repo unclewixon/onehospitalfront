@@ -16,6 +16,8 @@ import utility from './utility';
 import paypoint from './paypoint';
 import appointment from './appointment';
 import cafeteria from './cafeteria';
+import permission from './permission';
+import department from './department';
 
 const reducers = combineReducers({
 	form: formReducer,
@@ -34,6 +36,8 @@ const reducers = combineReducers({
 	transaction,
 	appointment,
 	cafeteria,
+	permission,
+	department,
 });
 
 export default reducers;

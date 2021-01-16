@@ -28,7 +28,8 @@ import {
 	utilityAPI,
 } from '../services/constants';
 import { loadRoles } from '../actions/role';
-import { loadDepartments, loadSpecializations } from '../actions/settings';
+import { loadDepartments } from '../actions/department';
+import { loadSpecializations } from '../actions/settings';
 import { loadInvCategories, loadInvSubCategories } from '../actions/inventory';
 import { loadBanks, loadCountries } from '../actions/utility';
 

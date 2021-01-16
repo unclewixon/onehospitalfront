@@ -2,10 +2,6 @@ import axios from 'axios';
 import { request } from '../services/utilities';
 import { API_URI } from '../services/constants';
 import {
-	CREATE_DEPARTMENT,
-	GET_ALL_DEPARTMENTS,
-	UPDATE_DEPARTMENT,
-	DELETE_DEPARTMENT,
 	ADD_ROOM,
 	GET_ALL_ROOMS,
 	UPDATE_ROOM,
@@ -34,15 +30,7 @@ import {
 	GET_ALL_SPECIALIZATIONS,
 	UPDATE_SPECIALIZATION,
 	DELETE_SPECIALIZATION,
-	ADD_CONSULTATING_ROOM,
-	UPDATE_CONSULTATING_ROOM,
-	DELETE_CONSULTATING_ROOM,
-	GET_ALL_CONSULTATING_ROOMS,
 	LOAD_STAFFS,
-	ADD_PERMISSION,
-	GET_ALL_PERMISSIONS,
-	UPDATE_PERMISSION,
-	DELETE_PERMISSION,
 	ADD_SERVICE_CATEGORY,
 	GET_ALL_SERVICE_CATEGORIES,
 	UPDATE_SERVICE_CATEGORY,
@@ -85,35 +73,6 @@ export const update_request_service = (payload, previousData) => {
 export const delete_request_service = payload => {
 	return {
 		type: DELETE_REQUEST_SERVICE,
-		payload,
-	};
-};
-
-//department
-export const create_department = payload => {
-	return {
-		type: CREATE_DEPARTMENT,
-		payload,
-	};
-};
-
-export const loadDepartments = payload => {
-	return {
-		type: GET_ALL_DEPARTMENTS,
-		payload,
-	};
-};
-
-export const updateDepartment = payload => {
-	return {
-		type: UPDATE_DEPARTMENT,
-		payload,
-	};
-};
-
-export const delete_department = payload => {
-	return {
-		type: DELETE_DEPARTMENT,
 		payload,
 	};
 };
@@ -352,69 +311,9 @@ export const delete_specialization = payload => {
 	};
 };
 
-//Consultating Room
-export const add_consultating_room = payload => {
-	return {
-		type: ADD_CONSULTATING_ROOM,
-		payload,
-	};
-};
-
-export const get_all_consultating_rooms = payload => {
-	return {
-		type: GET_ALL_CONSULTATING_ROOMS,
-		payload,
-	};
-};
-
-export const update_consultating_room = (payload, previousData) => {
-	return {
-		type: UPDATE_CONSULTATING_ROOM,
-		payload,
-		previousData,
-	};
-};
-
-export const delete_consultating_room = payload => {
-	return {
-		type: DELETE_CONSULTATING_ROOM,
-		payload,
-	};
-};
-
 export const get_all_staff = payload => {
 	return {
 		type: LOAD_STAFFS,
-		payload,
-	};
-};
-
-//Permission
-export const add_permission = payload => {
-	return {
-		type: ADD_PERMISSION,
-		payload,
-	};
-};
-
-export const get_all_permissions = payload => {
-	return {
-		type: GET_ALL_PERMISSIONS,
-		payload,
-	};
-};
-
-export const update_permission = (payload, previousData) => {
-	return {
-		type: UPDATE_PERMISSION,
-		payload,
-		previousData,
-	};
-};
-
-export const delete_permission = payload => {
-	return {
-		type: DELETE_PERMISSION,
 		payload,
 	};
 };
@@ -506,46 +405,6 @@ const delete_diagnosis = payload => {
 	return {
 		type: DELETE_DIAGNOSIS,
 		payload,
-	};
-};
-
-//department
-export const createDepartment = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.post(`${API_URI}/departments`, {
-					name: data.name,
-					hod_id: data.headOfDept,
-					description: data.description,
-				})
-				.then(response => {
-					dispatch(create_department(response.data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					reject({ success: false });
-				});
-		});
-	};
-};
-
-export const deleteDepartment = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.delete(`${API_URI}/departments/${data.id}`, {
-					name: data.name,
-					description: data.description,
-				})
-				.then(response => {
-					dispatch(delete_department(data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
 	};
 };
 
@@ -1007,75 +866,6 @@ export const deleteSpecialization = data => {
 	};
 };
 
-//Consultating Room
-export const addConsultatingRoom = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.post(`${API_URI}/consulting-rooms`, {
-					name: data.name,
-				})
-				.then(response => {
-					dispatch(add_consultating_room(response.data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const getAllConsultatingRooms = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.get(`${API_URI}/consulting-rooms`)
-				.then(response => {
-					dispatch(get_all_consultating_rooms(response.data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const updateConsultatingRoom = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.patch(`${API_URI}/consulting-rooms/${data.id}/update`, {
-					name: data.name,
-				})
-				.then(response => {
-					dispatch(update_consultating_room(response.data, data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const deleteConsultatingRoom = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.delete(`${API_URI}/consulting-rooms/${data.id}`)
-				.then(response => {
-					dispatch(delete_consultating_room(data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
 //GET ALL STAFF
 export const getAllStaff = data => {
 	return dispatch => {
@@ -1084,75 +874,6 @@ export const getAllStaff = data => {
 				.get(`${API_URI}/hr/staffs`)
 				.then(response => {
 					dispatch(get_all_staff(response.data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-//Permission
-export const addPermission = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.post(`${API_URI}/settings/permissions`, {
-					name: data.name,
-				})
-				.then(response => {
-					dispatch(add_permission(response.data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const getAllPermission = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.get(`${API_URI}/settings/permissions`)
-				.then(response => {
-					dispatch(get_all_permissions(response.data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const updatePermission = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.patch(`${API_URI}/settings/permissions/${data.id}/update`, {
-					name: data.name,
-				})
-				.then(response => {
-					dispatch(update_permission(response.data, data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const deletePermission = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.delete(`${API_URI}/settings/permissions/${data.id}`)
-				.then(response => {
-					dispatch(delete_permission(data));
 					return resolve({ success: true });
 				})
 				.catch(error => {

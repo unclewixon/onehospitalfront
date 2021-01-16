@@ -1,232 +1,92 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {
-	add_permission,
-	get_all_permissions,
-	update_permission,
-	delete_permission,
-} from '../actions/settings';
-import waiting from '../assets/images/waiting.gif';
+import Pagination from 'antd/lib/pagination';
+
 import searchingGIF from '../assets/images/searching.gif';
-import { notifySuccess, notifyError } from '../services/notify';
-import { request, confirmAction } from '../services/utilities';
+import { itemRender, getPageList } from '../services/utilities';
 
 class Permission extends Component {
 	state = {
-		name: '',
-		permissionID: null,
-		payload: null,
-		create: true,
-		edit: false,
 		loading: false,
-		loaded: false,
+		permissions: [],
+		meta: {
+			currentPage: 1,
+			itemsPerPage: 10,
+			totalPages: 0,
+		},
 	};
 
 	componentDidMount() {
-		this.fetchPermissions();
+		const { permissions } = this.props;
+		const { meta } = this.state;
+		this.setState({
+			permissions: getPageList(permissions, meta.itemsPerPage, 1),
+			meta: { ...meta, totalPages: permissions.length },
+		});
 	}
 
-	handleInputChange = e => {
-		const { name, value } = e.target;
-		this.setState({ [name]: value });
-	};
-
-	fetchPermissions = async () => {
-		this.setState({ loading: true });
-		try {
-			const rs = await request(`settings/permissions`, 'GET', true);
-			this.props.get_all_permissions(rs);
-			this.setState({ loading: false });
-		} catch (error) {
-			this.setState({ loading: false });
-			notifyError(error.message || 'could not fetch permissions');
-		}
-	};
-
-	AddPermission = async e => {
-		e.preventDefault();
-		this.setState({ loading: true });
-		const { name } = this.state;
-		const data = {
-			name,
-		};
-		try {
-			const rs = await request(`settings/permissions`, 'POST', true, data);
-			this.props.add_permission(rs);
-			this.setState({ loading: false, name: '' });
-		} catch (error) {
-			this.setState({ loading: false });
-			notifyError(error.message || 'An error occurred creating permission');
-		}
-	};
-
-	onClickEdit = data => {
+	onNavigatePage = page => {
+		const { permissions } = this.props;
+		const { meta } = this.state;
 		this.setState({
-			name: data.name,
-			id: data.id,
-			edit: true,
-			create: false,
-			payload: data,
+			loading: false,
+			permissions: getPageList(
+				permissions,
+				meta.itemsPerPage,
+				parseInt(page, 10)
+			),
+			meta: { ...meta, currentPage: page },
 		});
 	};
 
-	onEditPermission = async e => {
-		e.preventDefault();
-		this.setState({ loading: true });
-		let { name, id, payload } = this.state;
-		let data = {
-			name,
-		};
-		try {
-			const rs = await request(
-				`settings/permissions/${id}/update`,
-				'PATCH',
-				true,
-				data
-			);
-			this.props.update_permission(rs, payload);
-			this.setState({ name: '', create: true, edit: false, loading: false });
-			notifySuccess('permission updated!');
-		} catch (error) {
-			console.log(error);
-			this.setState({ name: '', create: true, edit: false, loading: false });
-			notifyError('An error occured editing permission');
-		}
-	};
-
-	cancelEditButton = () => {
-		this.setState({ create: true, edit: false, name: '', data: null });
-	};
-
-	DeletePermission = async data => {
-		try {
-			await request(`settings/permissions/${data.id}`, 'DELETE', true, data);
-			this.props.delete_permission(data);
-			this.setState({ name: '', create: true, edit: false, loading: false });
-			notifySuccess('permission deleted!');
-		} catch (error) {
-			this.setState({ name: '', create: true, edit: false, loading: false });
-			console.log(error);
-			notifyError('An error occured deleting permission');
-		}
-	};
-
-	confirmDelete = permission => {
-		confirmAction(this.DeletePermission, permission, null);
-	};
-
 	render() {
-		let { name, edit, create, loading } = this.state;
-		let { Permissions } = this.props;
+		const { meta, permissions, loading } = this.state;
 		return (
 			<div className="row">
-				<div className="col-lg-8">
+				<div className="col-lg-12">
 					<div className="element-wrapper">
 						<div className="element-box p-3 m-0">
 							<div className="table-responsive">
-								<table className="table table-striped">
-									<thead>
-										<tr>
-											<th>S/N</th>
-											<th>Name</th>
-											<th className="text-right">Actions</th>
-										</tr>
-									</thead>
-									<tbody>
-										{loading ? (
+								{loading ? (
+									<div className="loading-block">
+										<img alt="searching" src={searchingGIF} />
+									</div>
+								) : (
+									<table className="table table-striped">
+										<thead>
 											<tr>
-												<td colSpan="4" className="text-center">
-													<img alt="searching" src={searchingGIF} />
-												</td>
+												<th>S/N</th>
+												<th>Name</th>
 											</tr>
-										) : (
-											<>
-												{Permissions.map((permission, i) => {
-													return (
-														<tr key={i}>
-															<td>{i + 1}</td>
-															<td>
-																<div className="value">{permission.name}</div>
-															</td>
-															<td className="row-actions text-right">
-																<a onClick={() => this.onClickEdit(permission)}>
-																	<i className="os-icon os-icon-ui-49"></i>
-																</a>
-																<a href="#">
-																	<i className="os-icon os-icon-grid-10"></i>
-																</a>
-																<a
-																	className="danger"
-																	onClick={() =>
-																		this.confirmDelete(permission)
-																	}>
-																	<i className="os-icon os-icon-ui-15"></i>
-																</a>
-															</td>
-														</tr>
-													);
-												})}
-											</>
-										)}
-									</tbody>
-								</table>
+										</thead>
+										<tbody>
+											{permissions.map((item, i) => {
+												return (
+													<tr key={i}>
+														<td>{item.id}</td>
+														<td>
+															<div className="value">{item.name}</div>
+														</td>
+													</tr>
+												);
+											})}
+										</tbody>
+									</table>
+								)}
 							</div>
+							{meta && !loading && (
+								<div className="pagination pagination-center mt-4">
+									<Pagination
+										current={parseInt(meta.currentPage, 10)}
+										pageSize={parseInt(meta.itemsPerPage, 10)}
+										total={parseInt(meta.totalPages, 10)}
+										showTotal={total => `Total ${total} permissions`}
+										itemRender={itemRender}
+										onChange={current => this.onNavigatePage(current)}
+									/>
+								</div>
+							)}
 						</div>
-					</div>
-				</div>
-				<div className="col-lg-4 col-xxl-3">
-					<div className="pipeline white lined-warning">
-						<form onSubmit={edit ? this.onEditPermission : this.AddPermission}>
-							<h6 className="form-header">Permission Form</h6>
-							<div className="form-group">
-								<input
-									className="form-control"
-									placeholder="Name of Category"
-									type="text"
-									name="name"
-									value={name}
-									onChange={this.handleInputChange}
-								/>
-							</div>
-							<div className="form-buttons-w">
-								{create && (
-									<button
-										className={
-											loading ? 'btn btn-primary disabled' : 'btn btn-primary'
-										}>
-										{loading ? (
-											<img src={waiting} alt="submitting" />
-										) : (
-											<span> create</span>
-										)}
-									</button>
-								)}
-								{edit && (
-									<>
-										<button
-											className={
-												loading
-													? 'btn btn-secondary ml-3 disabled'
-													: 'btn btn-secondary ml-3'
-											}
-											onClick={this.cancelEditButton}>
-											<span>{loading ? 'cancel' : 'cancel'}</span>
-										</button>
-										<button
-											className={
-												loading ? 'btn btn-primary disabled' : 'btn btn-primary'
-											}>
-											{loading ? (
-												<img src={waiting} alt="submitting" />
-											) : (
-												<span> edit</span>
-											)}
-										</button>
-									</>
-								)}
-							</div>
-						</form>
 					</div>
 				</div>
 			</div>
@@ -236,13 +96,8 @@ class Permission extends Component {
 
 const mapStateToProps = (state, ownProps) => {
 	return {
-		Permissions: state.settings.permissions,
+		permissions: state.permission,
 	};
 };
 
-export default connect(mapStateToProps, {
-	add_permission,
-	get_all_permissions,
-	update_permission,
-	delete_permission,
-})(Permission);
+export default connect(mapStateToProps)(Permission);
