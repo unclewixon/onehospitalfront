@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-
+import { connect } from 'react-redux';
+import { notifySuccess, notifyError } from '../services/notify';
 import { request } from '../services/utilities';
 import { vendorAPI } from '../services/constants';
 import CreateVendor from '../components/CreateVendor';
@@ -36,6 +37,8 @@ class Vendors extends Component {
 		});
 	};
 
+	restEdit = () => this.setState({ edit: false });
+
 	addVendor = item => {
 		const { vendors } = this.state;
 		this.setState({ vendors: [...vendors, item] });
@@ -47,8 +50,21 @@ class Vendors extends Component {
 		this.setState({ vendors: [...updatedVendors] });
 	};
 
+	deleteVendor = async vendor => {
+		try {
+			await request(`${vendorAPI}/${vendor.id}`, 'DELETE', true);
+			const { vendors } = this.state;
+			const filtered = vendors.filter(v => v.id !== vendor.id);
+			this.setState({ vendors: filtered });
+			notifySuccess('Vendor  deleted');
+		} catch (error) {
+			notifyError(error.message || 'Error deleting vendor ');
+		}
+	};
+
 	render() {
 		const { edit, vendorID, vendors } = this.state;
+		const { role } = this.props;
 		return (
 			<div className="row">
 				<div className="col-lg-7">
@@ -72,12 +88,23 @@ class Vendors extends Component {
 													<td>{i + 1}</td>
 													<td>{vendor.name}</td>
 													<td className="text-center row-actions">
-														<a
-															onClick={this.editVendor(vendor, true)}
-															className="secondary"
-															title="Edit Vendor">
-															<i className="os-icon os-icon-edit-32" />
-														</a>
+														{role === 'admin' ? (
+															<>
+																<a
+																	onClick={this.editVendor(vendor, true)}
+																	className="secondary"
+																	title="Edit Vendor">
+																	<i className="os-icon os-icon-edit-32" />
+																</a>
+																<a
+																	className="danger"
+																	onClick={() => this.deleteVendor(vendor)}>
+																	<i className="os-icon os-icon-ui-15"></i>
+																</a>
+															</>
+														) : (
+															''
+														)}
 													</td>
 												</tr>
 											);
@@ -99,6 +126,7 @@ class Vendors extends Component {
 							vendorID={vendorID}
 							vendors={vendors}
 							editVendor={this.editVendor}
+							restEdit={this.restEdit}
 							updateVendor={item => this.updateVendor(item)}
 						/>
 					) : (
@@ -110,4 +138,10 @@ class Vendors extends Component {
 	}
 }
 
-export default Vendors;
+const mapStateToProps = state => {
+	return {
+		role: state.user.profile.role.slug,
+	};
+};
+
+export default connect(mapStateToProps)(Vendors);

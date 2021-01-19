@@ -31,6 +31,7 @@ class EditVendor extends Component {
 			this.setState({ submitting: false });
 			this.props.reset('edit_vendor');
 			this.props.editVendor(null, false);
+			this.props.restEdit();
 		} catch (e) {
 			this.setState({ submitting: false });
 			throw new SubmissionError({
@@ -78,7 +79,7 @@ class EditVendor extends Component {
 								<button
 									className="btn btn-secondary ml-3"
 									type="button"
-									onClick={editVendor(null, false)}>
+									onClick={this.props.editVendor(null, false)}>
 									Cancel
 								</button>
 							</div>

@@ -2,10 +2,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-// import { request } from '../services/utilities';
-// import {  inventoryAPI } from '../services/constants';
+import { request } from '../services/utilities';
+import { inventoryAPI } from '../services/constants';
 import { updateInvCategory } from '../actions/inventory';
-// import { notifySuccess, notifyError } from '../services/notify';
+import { notifySuccess, notifyError } from '../services/notify';
 
 class InvCategoryItem extends Component {
 	enableCategory = async () => {
@@ -22,13 +22,19 @@ class InvCategoryItem extends Component {
 		// }
 	};
 
-	disableCategory = () => {
+	disableCategory = async () => {
 		const { item } = this.props;
-		console.log(item);
+		try {
+			await request(`${inventoryAPI}/categories/${item.id}`, 'DELETE', true);
+			this.props.removeItem(item);
+			notifySuccess('inventory category  deleted');
+		} catch (error) {
+			notifyError(error.message || 'Error deleting inventory category ');
+		}
 	};
 
 	render() {
-		const { item, editCategory, serial } = this.props;
+		const { item, editCategory, serial, role } = this.props;
 		return (
 			<tr>
 				<td>{serial}</td>
@@ -37,27 +43,29 @@ class InvCategoryItem extends Component {
 					<div className={`status-pill ${item.isActive ? 'green' : 'red'}`} />
 				</td>
 				<td className="text-right row-actions">
-					<a
-						onClick={editCategory(item, true)}
-						className="secondary"
-						title="Edit Inventory Category">
-						<i className="os-icon os-icon-edit-32" />
-					</a>
-					{item.isActive ? (
+					<div hidden={role === 'admin' ? false : true}>
 						<a
-							onClick={this.disableCategory}
-							className="danger"
-							title="Disable Category">
-							<i className="os-icon os-icon-x-circle" />
+							onClick={editCategory(item, true)}
+							className="secondary"
+							title="Edit Inventory Category">
+							<i className="os-icon os-icon-edit-32" />
 						</a>
-					) : (
-						<a
-							onClick={this.enableCategory}
-							className="success"
-							title="Enable Category">
-							<i className="os-icon os-icon-check-circle" />
-						</a>
-					)}
+						{item.isActive ? (
+							<a
+								onClick={this.disableCategory}
+								className="danger"
+								title="Disable Category">
+								<i className="os-icon os-icon-x-circle" />
+							</a>
+						) : (
+							<a
+								onClick={this.enableCategory}
+								className="success"
+								title="Enable Category">
+								<i className="os-icon os-icon-check-circle" />
+							</a>
+						)}
+					</div>
 				</td>
 			</tr>
 		);

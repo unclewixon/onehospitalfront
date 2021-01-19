@@ -10,7 +10,7 @@ import {
 } from '../../services/utilities';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
 import { transactionPaymentType, vouchersAPI } from '../../services/constants';
-import { notifySuccess } from '../../services/notify';
+import { notifySuccess, notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
 import {
 	loadVoucher,
@@ -34,6 +34,7 @@ class ModalApproveTransaction extends Component {
 		hidden: true,
 		amountClass: 'col-sm-6',
 		voucherList: [],
+		voucherAmount: 0,
 		activeData: null,
 	};
 
@@ -86,19 +87,37 @@ class ModalApproveTransaction extends Component {
 		let newValue = event.target.value;
 		this.setState({ hidden: true });
 		if (newValue === 'Voucher') {
-			const { items } = this.props;
-			let data = { patient_id: items.q_patient_id };
-			this.fetchVoucher(data);
+			//const { items } = this.props;
+			//let data = { patient_id: items.q_patient_id };
+			//this.fetchVoucher(data);
 			this.setState({ hidden: false });
 		}
 		console.log(newValue);
 	};
 
-	handleChangeVoucher = event => {
+	handleChangeVoucher = async event => {
 		let newValue = event.target.value;
-		const { voucher } = this.props;
-		let selected = voucher.find(c => c.q_id === newValue);
-		this.props.dispatch(this.props.change('voucher_amount', selected.q_amount));
+		//const { voucher } = this.props;
+		//let selected = voucher.find(c => c.q_id === newValue);
+		//this.props.dispatch(this.props.change('voucher_amount', selected.q_amount));
+		const datum = { voucher_code: newValue };
+		try {
+			const url = 'voucher/search_code';
+			const res = await request(url, 'POST', true, datum);
+
+			if (res.success) {
+				this.setState({ voucherAmount: res.q_amount });
+				this.props.dispatch(this.props.change('voucher_amount', res.q_amount));
+				notifySuccess('voucher is active!');
+			} else {
+				notifyError(res.message);
+			}
+		} catch (e) {
+			const _message = e.message
+				.map(m => Object.values(m.constraints).join(', '))
+				.join(', ');
+			notifyError(_message || 'could not search voucher');
+		}
 	};
 
 	fetchVoucher = async data => {
@@ -187,6 +206,7 @@ class ModalApproveTransaction extends Component {
 													// defaultValue={`NGN ${approveTransaction.amount}`}
 													type="text"
 													label="Amount"
+													readOnly={true}
 													placeholder="Enter Amount"
 													className="form-control"
 												/>
@@ -200,11 +220,10 @@ class ModalApproveTransaction extends Component {
 												<Field
 													id="voucher_id"
 													name="voucher_id"
-													component={renderSelect}
+													component={renderTextInput}
 													onChange={this.handleChangeVoucher}
 													label="Voucher"
-													placeholder="Select Voucher"
-													data={voucherList}
+													placeholder="Enter Voucher Code"
 												/>
 											</div>
 										</div>
@@ -212,9 +231,11 @@ class ModalApproveTransaction extends Component {
 											<div className="form-group">
 												<Field
 													id="voucher_amount"
+													value={this.state.voucherAmount}
 													name="voucher_amount"
 													component={renderTextInput}
 													label="Voucher Amount"
+													readOnly={true}
 													type="text"
 													placeholder="Enter Amount"
 												/>

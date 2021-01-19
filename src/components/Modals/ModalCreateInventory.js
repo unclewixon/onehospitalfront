@@ -15,6 +15,7 @@ import { inventoryAPI, vendorAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
 import { addInventory } from '../../actions/inventory';
+import { getAllHmos } from '../../actions/hmo';
 
 const validate = values => {
 	const errors = {};
@@ -33,9 +34,11 @@ class ModalCreateInventory extends Component {
 		sub_categories: [],
 		vendors: [],
 		expiry_date: null,
+		hidden: true,
 	};
 
 	componentDidMount() {
+		this.props.getAllHmos();
 		this.fetchVendors();
 		const { sub_categories } = this.props;
 		this.setState({ sub_categories: sub_categories });
@@ -77,19 +80,32 @@ class ModalCreateInventory extends Component {
 	};
 
 	handleChange = event => {
-		const { sub_categories } = this.props;
+		this.setState({ hidden: true });
+		const { sub_categories, categories } = this.props;
 		let newValue = event.target.value;
-		let newSubCat = sub_categories.filter(service => {
-			return service.category.id === newValue;
-		});
+		let newCat = categories.filter(service => service.id == newValue);
+
+		let newSubCat = sub_categories.filter(
+			service => service.category.id == newValue
+		);
+
 		this.setState({ sub_categories: newSubCat });
+		if (newCat[0]?.name === 'Pharmacy') {
+			this.setState({ hidden: false });
+		}
 	};
 
 	onChangeDate = e => this.setState({ expiry_date: e });
 
 	render() {
-		const { submitting, sub_categories, vendors, expiry_date } = this.state;
-		const { error, handleSubmit, categories } = this.props;
+		const {
+			submitting,
+			sub_categories,
+			vendors,
+			expiry_date,
+			hidden,
+		} = this.state;
+		const { error, handleSubmit, categories, hmos } = this.props;
 		return (
 			<div
 				className="onboarding-modal modal fade animated show"
@@ -161,6 +177,34 @@ class ModalCreateInventory extends Component {
 											/>
 										</div>
 									</div>
+
+									<div className="row" hidden={hidden}>
+										<div className="col-sm-6">
+											<div className="form-group">
+												<Field
+													id="hmo_id"
+													name="hmo_id"
+													component={renderSelect}
+													label="HMO"
+													placeholder="Select HMO"
+													data={hmos}
+												/>
+											</div>
+										</div>
+										<div className="col-sm-6">
+											<div className="form-group">
+												<Field
+													id="hmo_amount"
+													name="hmo_amount"
+													component={renderTextInput}
+													label="HMO Amount"
+													type="text"
+													placeholder="Enter Amount"
+												/>
+											</div>
+										</div>
+									</div>
+
 									<div className="row">
 										<div className="col-sm-6">
 											<Field
@@ -275,9 +319,13 @@ const mapStateToProps = (state, ownProps) => {
 		},
 		categories: state.inventory.categories,
 		sub_categories: state.inventory.sub_categories,
+		hmos: state.settings.hmos,
 	};
 };
 
-export default connect(mapStateToProps, { closeModals, reset, addInventory })(
-	ModalCreateInventory
-);
+export default connect(mapStateToProps, {
+	closeModals,
+	reset,
+	addInventory,
+	getAllHmos,
+})(ModalCreateInventory);

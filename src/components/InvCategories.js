@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
 import CreateInvCategory from '../components/CreateInvCategory';
 import EditInvCategory from '../components/EditInvCategory';
 import { request } from '../services/utilities';
@@ -36,8 +35,14 @@ class InvCategories extends Component {
 		});
 	};
 
-	render() {
+	removeItem = item => {
 		const { categories } = this.props;
+		const rs = categories.filter(c => c.id !== item.id);
+		this.props.loadInvCategories(rs);
+	};
+
+	render() {
+		const { categories, role } = this.props;
 		const { edit, categoryID } = this.state;
 		return (
 			<div className="row">
@@ -61,9 +66,11 @@ class InvCategories extends Component {
 											return (
 												<InvCategoryItem
 													key={i}
+													role={role}
 													serial={i + 1}
 													item={category}
 													editCategory={this.editCategory}
+													removeItem={this.removeItem}
 												/>
 											);
 										})}
@@ -96,6 +103,7 @@ class InvCategories extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		categories: state.inventory.categories,
+		role: state.user.profile.role.slug,
 	};
 };
 

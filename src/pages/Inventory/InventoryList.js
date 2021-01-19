@@ -19,6 +19,7 @@ import Popover from 'antd/lib/popover';
 import waiting from '../../assets/images/waiting.gif';
 import { notifyError, notifySuccess } from '../../services/notify';
 import InventoryTable from '../../components/Inventory/InventoryTable';
+import { getAllHmos } from '../../actions/hmo';
 
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
@@ -69,9 +70,11 @@ const UploadInventory = ({
 	doUpload,
 	categories,
 	vendors,
+	hmos,
 }) => {
 	const [category, setCategory] = useState('');
 	const [vendor, setVendor] = useState('');
+	const [hmo, setHmo] = useState('');
 	const [files, setFile] = useState(null);
 	let uploadAttachment;
 
@@ -91,7 +94,7 @@ const UploadInventory = ({
 					</button>
 					<div className="onboarding-content with-gradient">
 						<div className="form-block">
-							<form onSubmit={e => doUpload(e, files, category, vendor)}>
+							<form onSubmit={e => doUpload(e, files, category, vendor, hmo)}>
 								<div className="row">
 									<div className="col-sm-12">
 										<div className="form-group">
@@ -129,6 +132,26 @@ const UploadInventory = ({
 											</select>
 										</div>
 									</div>
+
+									<div className="col-sm-12">
+										<div className="form-group">
+											<label htmlFor="hmo">HMO</label>
+											<select
+												id="hmo"
+												className="form-control"
+												onChange={e => setVendor(e.target.value)}>
+												<option>Select HMO</option>
+												{hmos?.map((hmo, i) => {
+													return (
+														<option key={i} value={hmo.id}>
+															{hmo.name}
+														</option>
+													);
+												})}
+											</select>
+										</div>
+									</div>
+
 									<div className="col-sm-12">
 										<div className="form-group">
 											<input
@@ -196,6 +219,7 @@ class InventoryList extends Component {
 	};
 
 	componentDidMount() {
+		this.props.getAllHmos();
 		this.fetchInventories();
 		this.fetchVendors();
 	}
@@ -213,7 +237,7 @@ class InventoryList extends Component {
 		this.setState({ upload_visible: false, download_visible: false });
 	};
 
-	onUpload = async (e, files, category_id, vendor) => {
+	onUpload = async (e, files, category_id, vendor, hmo) => {
 		e.preventDefault();
 		const file = files[0];
 		if (file) {
@@ -224,6 +248,7 @@ class InventoryList extends Component {
 				formData.append('file', file);
 				formData.append('category_id', category_id);
 				formData.append('vendor_id', vendor);
+				formData.append('hmo_id', hmo);
 				await axios.post(`${API_URI}/${inventoryUploadAPI}`, formData);
 				await this.fetchInventories();
 				const cat = categories.find(d => d.id === category_id);
@@ -261,15 +286,19 @@ class InventoryList extends Component {
 		this.setState({ upload_visible: visible });
 	};
 
-	fetchInventories = async page => {
+	fetchInventories = async (page, category_id) => {
+		console.log('fetchInventories params');
+		console.log(page);
+		console.log(category_id);
 		try {
 			const { profile, categories } = this.props;
 			let roleQy = '';
 			if (profile.role.slug === 'pharmacy') {
 				const category = categories.find(d => d.name === 'Pharmacy');
-				roleQy = category ? `&q=${category.id}` : '';
+				roleQy = category ? `&q=${category.id}` : `&q=${category_id}`;
 			}
 			const p = page || 1;
+			console.log(p);
 			const url = `${inventoryAPI}?page=${p}&limit=20${roleQy}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
@@ -280,13 +309,18 @@ class InventoryList extends Component {
 		}
 	};
 
+	changeQuery = async e => {
+		const category_id = e.target.value;
+		this.fetchInventories(null, category_id);
+	};
+
 	onNavigatePage = pageNumber => {
 		this.fetchInventories(pageNumber);
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
 
 	render() {
-		const { categories, inventories } = this.props;
+		const { categories, inventories, hmos } = this.props;
 		const {
 			upload_visible,
 			download_visible,
@@ -334,6 +368,7 @@ class InventoryList extends Component {
 												doUpload={this.onUpload}
 												categories={categories}
 												vendors={vendors}
+												hmos={hmos}
 											/>
 										}
 										overlayClassName="upload-roster"
@@ -348,6 +383,21 @@ class InventoryList extends Component {
 								</div>
 								<h6 className="element-header">Inventory List</h6>
 								<div className="element-box m-0 mb-4">
+									<div className="element-wrapper">
+										<div className="element-actions">
+											<form className="form-inline justify-content-sm-end">
+												<select
+													className="form-control form-control-sm"
+													onChange={e => this.changeQuery(e)}>
+													<option value="">Filter by Category</option>
+													{categories?.map(category => (
+														<option value={category.id}>{category.name}</option>
+													))}
+												</select>
+											</form>
+										</div>
+									</div>
+									<br />
 									<div className="table-responsive">
 										<InventoryTable data={inventories} />
 									</div>
@@ -376,9 +426,12 @@ const mapStateToProps = (state, ownProps) => {
 		inventories: state.inventory.inventories,
 		categories: state.inventory.categories,
 		profile: state.user.profile,
+		hmos: state.hmo.hmo_list,
 	};
 };
 
-export default connect(mapStateToProps, { createInventory, loadInventories })(
-	InventoryList
-);
+export default connect(mapStateToProps, {
+	createInventory,
+	loadInventories,
+	getAllHmos,
+})(InventoryList);
