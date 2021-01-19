@@ -47,7 +47,7 @@ const CafeteriaDashboard = () => {
 	const fetchInventories = async page => {
 		try {
 			const p = page || 1;
-			const url = `${inventoryAPI}?page=${p}&limit=20&cafeteria`;
+			const url = `${inventoryAPI}?page=${p}&limit=20&category=cafeteria`;
 			const rs = await request(url, 'GET', true);
 			console.log(rs);
 			const { result, ...meta } = rs;

@@ -219,7 +219,7 @@ export class ModalCreateVoucher extends Component {
 										</div>
 									</div>
 
-									<div className="row">
+									<div className="row" hidden={apply_voucher}>
 										<div className="col-sm-6">
 											<Field
 												id="duration"
