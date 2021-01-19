@@ -286,7 +286,10 @@ class InventoryList extends Component {
 		this.setState({ upload_visible: visible });
 	};
 
-	fetchInventories = async (page, category_id = null) => {
+	fetchInventories = async (page, category_id) => {
+		console.log('fetchInventories params');
+		console.log(page);
+		console.log(category_id);
 		try {
 			const { profile, categories } = this.props;
 			let roleQy = '';
@@ -295,6 +298,7 @@ class InventoryList extends Component {
 				roleQy = category ? `&q=${category.id}` : `&q=${category_id}`;
 			}
 			const p = page || 1;
+			console.log(p);
 			const url = `${inventoryAPI}?page=${p}&limit=20${roleQy}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
@@ -307,7 +311,7 @@ class InventoryList extends Component {
 
 	changeQuery = async e => {
 		const category_id = e.target.value;
-		this.fetchInventories(pageNumber, category_id);
+		this.fetchInventories(null, category_id);
 	};
 
 	onNavigatePage = pageNumber => {

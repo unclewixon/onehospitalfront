@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import size from 'lodash.size';
 import isEmpty from 'lodash.isempty';
 import Pagination from 'antd/lib/pagination';
+import { useSelector } from 'react-redux';
 
 import {
 	staffAPI,
@@ -43,11 +44,15 @@ const CafeteriaDashboard = () => {
 	const [paging, setPaging] = useState({
 		meta: paginate,
 	});
+	const categories = useSelector(state => state.inventory.categories);
 
 	const fetchInventories = async page => {
 		try {
+			let roleQy = '';
+			const category = categories.find(d => d.name === 'Cafeteria');
+			roleQy = category ? `&q=${category.id}` : '';
 			const p = page || 1;
-			const url = `${inventoryAPI}?page=${p}&limit=20&category=cafeteria`;
+			const url = `${inventoryAPI}?page=${p}&limit=20${roleQy}`;
 			const rs = await request(url, 'GET', true);
 			console.log(rs);
 			const { result, ...meta } = rs;
@@ -306,7 +311,7 @@ const CafeteriaDashboard = () => {
 								<div className="element-wrapper">
 									<div className="element-actions actions-only"></div>
 
-									<h6 className="element-header">Quick Conversion</h6>
+									<h6 className="element-header">Payment Calculator</h6>
 									<div className="element-box-tp">
 										<div className="row">
 											<div className="col-sm-12">
