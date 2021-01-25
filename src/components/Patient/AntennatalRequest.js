@@ -45,7 +45,7 @@ class AntennatalRequest extends Component {
 				};
 			});
 
-			const tests = this.props.LabTests.filter(el =>
+			const tests = this.props.LabTests?.filter(el =>
 				tsts.includes(el.name)
 			).map(el => {
 				return {

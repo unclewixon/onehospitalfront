@@ -45,7 +45,12 @@ class FrontDeskTable extends Component {
 							return (
 								<tr key={i}>
 									<td className="nowrap">
-										{moment(appointment.createdAt).format('DD-MM-YYYY')}
+										<span
+											style={{
+												fontSize: '0.7rem',
+											}}>
+											{moment(appointment.createdAt).format('DD-MM-YYYY')}
+										</span>
 									</td>
 									<td className="cell-with-media">
 										<span

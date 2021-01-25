@@ -4,7 +4,7 @@ import size from 'lodash.size';
 import isEmpty from 'lodash.isempty';
 import Pagination from 'antd/lib/pagination';
 import { useSelector } from 'react-redux';
-
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import {
 	staffAPI,
 	searchAPI,
@@ -46,7 +46,13 @@ const CafeteriaDashboard = () => {
 	});
 	const categories = useSelector(state => state.inventory.categories);
 
+	const clearCart = () => {
+		setCart([]);
+	};
+
 	const fetchInventories = async page => {
+		console.log('const fetchInventories = async page => {');
+		console.log(categories);
 		try {
 			let roleQy = '';
 			const category = categories.find(d => d.name === 'Cafeteria');
@@ -174,15 +180,15 @@ const CafeteriaDashboard = () => {
 		setStaffs([]);
 		let name;
 		if (customer === 'patient') {
-			name = `${pat.surname ? pat.surname : ''} ${
-				pat.other_names ? pat.other_names : ''
+			name = `${pat?.surname ? pat?.surname : ''} ${
+				pat?.other_names ? pat?.other_names : ''
 			}`;
 		} else {
-			name = `${pat.first_name ? pat.first_name : ''} ${
-				pat.last_name ? pat.last_name : ''
+			name = `${pat?.first_name ? pat?.first_name : ''} ${
+				pat?.last_name ? pat?.last_name : ''
 			}`;
 		}
-		document.getElementById('cust').value = name;
+		//document.getElementById('cust').value = name;
 		setSpecial(name);
 	};
 
@@ -202,7 +208,7 @@ const CafeteriaDashboard = () => {
 			}),
 		};
 
-		console.log(data);
+		//console.log(data);
 
 		try {
 			setSubmitting(true);
@@ -236,6 +242,33 @@ const CafeteriaDashboard = () => {
 	const onNavigatePage = pageNumber => {
 		fetchInventories(pageNumber);
 		window.scrollTo({ top: 0, behavior: 'smooth' });
+	};
+
+	const getOptionValues = option => option.id;
+	const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+
+	const getOptions = async q => {
+		if (!q || q.length < 3) {
+			return [];
+		}
+
+		const url = `${searchAPI}?q=${q}`;
+		const res = await request(url, 'GET', true);
+		return res;
+	};
+
+	const getOptionValuesStaff = option => option.id;
+	const getOptionLabelsStaff = option =>
+		`${option.other_names} ${option.surname}`;
+
+	const getOptionsStaff = async q => {
+		if (!q || q.length < 3) {
+			return [];
+		}
+
+		const url = `${searchAPI}?q=${q}`;
+		const res = await request(url, 'GET', true);
+		return res;
 	};
 
 	return (
@@ -335,63 +368,39 @@ const CafeteriaDashboard = () => {
 												<form onSubmit={searchCustomer}>
 													<div className="row">
 														<div className="col-sm-12">
-															{searching && (
-																<div className="searching text-center">
-																	<img alt="searching" src={searchingGIF} />
-																</div>
-															)}
-															<input
-																className="form-control"
-																style={{ marginBottom: '20px' }}
-																id="cust"
-																onChange={handleCustomerChange}
-																autoComplete="off"
-																placeholder={
-																	customer === 'staff'
-																		? ' Search Staff ...'
-																		: 'Search Patient ...'
-																}
-																required
-															/>
-															{patients.map((pat, i) => {
-																return (
-																	<div
-																		style={{ display: 'flex' }}
-																		key={i}
-																		className="element-box">
-																		<a
-																			onClick={() => patientSet(pat)}
-																			className="ssg-item cursor">
-																			<div
-																				className="item-name"
-																				dangerouslySetInnerHTML={{
-																					__html: `${pat.surname} ${pat.other_names}`,
-																				}}
-																			/>
-																		</a>
-																	</div>
-																);
-															})}
+															<div
+																className="form-group"
+																hidden={customer !== 'staff'}>
+																<label>Staff</label>
 
-															{staffs.map((pat, i) => {
-																return (
-																	<div
-																		style={{ display: 'flex' }}
-																		key={i}
-																		className="element-box">
-																		<a
-																			onClick={() => patientSet(pat)}
-																			className="ssg-item cursor">
-																			<div
-																				className="item-name"
-																				dangerouslySetInnerHTML={{
-																					__html: `${pat.first_name} ${pat.last_name}`,
-																				}}
-																			/>
-																		</a>
-																	</div>
-																);
-															})}
+																<AsyncSelect
+																	isClearable
+																	getOptionValue={getOptionValuesStaff}
+																	getOptionLabel={getOptionLabelsStaff}
+																	defaultOptions
+																	name="staff"
+																	loadOptions={getOptionsStaff}
+																	onChange={e => patientSet(e)}
+																	placeholder="Search staff"
+																/>
+															</div>
+
+															<div
+																className="form-group"
+																hidden={customer !== 'patient'}>
+																<label>Patient</label>
+
+																<AsyncSelect
+																	isClearable
+																	getOptionValue={getOptionValues}
+																	getOptionLabel={getOptionLabels}
+																	defaultOptions
+																	name="patient"
+																	loadOptions={getOptions}
+																	onChange={e => patientSet(e)}
+																	placeholder="Search patients"
+																/>
+															</div>
 														</div>
 													</div>
 												</form>
@@ -455,8 +464,11 @@ const CafeteriaDashboard = () => {
 																{item.sales_price}
 															</td>
 															<td className="text-center">
-																<button
-																	className="btn btn-primary btn-sm mx-3"
+																<a
+																	style={{
+																		fontWeight: 'bold',
+																		fontSize: '18px',
+																	}}
 																	onClick={() => {
 																		const newVal = cart.filter(
 																			val => val.id !== item.id
@@ -464,7 +476,7 @@ const CafeteriaDashboard = () => {
 																		setCart(newVal);
 																	}}>
 																	<i className="os-icon os-icon-x-circle"></i>
-																</button>
+																</a>
 															</td>
 														</tr>
 													);
@@ -477,6 +489,7 @@ const CafeteriaDashboard = () => {
 							</div>
 							<CafeteriaTransactionTable
 								cart={cart}
+								clearCart={clearCart}
 								customer={customer}
 								special={special}
 								orders={order}

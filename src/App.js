@@ -29,7 +29,6 @@ const Nurse = lazy(() => import('./pages/Nurse/index'));
 const PatientProfile = lazy(() => import('./pages/PatientProfile'));
 const Pharmacy = lazy(() => import('./pages/Pharmacy/Index'));
 const Physiotherapy = lazy(() => import('./pages/Physiotherapy'));
-const Dentistry = lazy(() => import('./pages/Dentistry'));
 const Procedure = lazy(() => import('./pages/Procedure'));
 const Staff = lazy(() => import('./pages/HR/index'));
 const Inventory = lazy(() => import('./pages/Inventory/index'));
@@ -130,7 +129,6 @@ class App extends Component {
 															path="/physiotherapy"
 															component={Physiotherapy}
 														/>
-														<Route path="/dentistry" component={Dentistry} />
 														<Route path="/procedure" component={Procedure} />
 														<Route path="/radiology" component={Radiology} />
 														<Route path="/antenatal" component={Antennatal} />

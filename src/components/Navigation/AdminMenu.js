@@ -4,7 +4,6 @@ import ClinicalLabMenu from './ClinicalLabMenu';
 import PayPointMenu from './PayPointMenu';
 import PharmacyMenu from './PharmacyMenu';
 import RadiologyMenu from './RadiologyMenu';
-import DenstistryMenu from './DenstistryMenu';
 import PhysiotherapyMenu from './PhysiotherapyMenu';
 import NurseMenu from './NurseMenu';
 import DoctorMenu from './DoctorMenu';
@@ -39,10 +38,7 @@ const AdminMenu = ({ role }) => {
 				<span>RADIOLOGY</span>
 			</li>
 			<RadiologyMenu />
-			<li className="sub-header">
-				<span>DENTISTRY</span>
-			</li>
-			<DenstistryMenu />
+
 			<li className="sub-header">
 				<span>PHYSIOTHERAPY</span>
 			</li>

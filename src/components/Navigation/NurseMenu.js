@@ -8,7 +8,7 @@ const NurseMenu = () => {
 					<div className="icon-w">
 						<div className="icon-feather-home" />
 					</div>
-					<span>Home</span>
+					<span>Vitals Queue</span>
 				</Link>
 			</li>
 			<li>

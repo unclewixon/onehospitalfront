@@ -98,7 +98,10 @@ const HmoList = props => {
 	const onDeleteHmo = data => {
 		props
 			.deleteHmo(data)
-			.then(data => {})
+			.then(data => {
+				console.log('after deleting here is what we got');
+				console.log(data);
+			})
 			.catch(error => {
 				console.log(error);
 			});

@@ -4,7 +4,7 @@ import Tooltip from 'antd/lib/tooltip';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 
-import { notifyError } from '../../services/notify';
+import { notifySuccess, notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
@@ -51,6 +51,21 @@ export class Antennatal extends Component {
 		this.props.viewAntenatalDetail(true, id);
 	};
 
+	deleteAntenatal = async (e, id) => {
+		e.preventDefault();
+		try {
+			const url = `antenatal/${id}`;
+			const rs = await request(url, 'DELETE', true);
+			const { antennatal } = this.props;
+			const newList = antennatal.filter(ant => ant.id !== id);
+			this.props.loadAntennatal(newList);
+			notifySuccess('Antennatal deleted');
+		} catch (error) {
+			console.log(error);
+			notifyError('Error deleting Antennatal');
+		}
+	};
+
 	tableBody = () => {
 		return this.props.antennatal.map((el, i) => {
 			return (
@@ -79,13 +94,17 @@ export class Antennatal extends Component {
 								<i className="os-icon os-icon-eye" />
 							</a>
 						</Tooltip>
-						<Tooltip title="Edit Request">
-							<a className="secondary">
-								<i className="os-icon os-icon-edit-32" />
-							</a>
-						</Tooltip>
 						<Tooltip title="Delete Request">
-							<a className="danger">
+							<a
+								className="danger"
+								onClick={e => {
+									if (
+										window.confirm(
+											'Are you sure you wish to delete this record?'
+										)
+									)
+										this.deleteAntenatal(e, el.id);
+								}}>
 								<i className="os-icon os-icon-ui-15" />
 							</a>
 						</Tooltip>

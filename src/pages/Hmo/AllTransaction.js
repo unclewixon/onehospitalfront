@@ -3,12 +3,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
-
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import { hmoAPI, transactionsAPI, searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
-import searchingGIF from '../../assets/images/searching.gif';
 import { loadHmoTransaction } from '../../actions/hmo';
 import HmoTable from '../../components/HMO/HmoTable';
 
@@ -20,6 +19,28 @@ const status = [
 	{ value: 2, label: 'Approved' },
 ];
 
+const getOptionValues = option => option.id;
+const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+const getOptions = async q => {
+	if (!q || q.length < 3) {
+		return [];
+	}
+	const url = `${searchAPI}?q=${q}`;
+	const res = await request(url, 'GET', true);
+	return res;
+};
+
+const getOptionValuesHMO = option => option.id;
+const getOptionLabelsHMO = option => `${option.other_names} ${option.surname}`;
+const getOptionsHMO = async q => {
+	if (!q || q.length < 3) {
+		return [];
+	}
+	const url = `${searchAPI}?q=${q}`;
+	const res = await request(url, 'GET', true);
+	return res;
+};
+
 export class AllTransaction extends Component {
 	state = {
 		filtering: false,
@@ -28,13 +49,7 @@ export class AllTransaction extends Component {
 		startDate: '',
 		endDate: '',
 		status: '',
-		searching: '',
-		searchHmo: false,
-		hmos: [],
-		query: '',
 		patient_id: '',
-		patients: [],
-		hmoQuery: '',
 		hmo_id: '',
 	};
 	patient = React.createRef();
@@ -103,63 +118,16 @@ export class AllTransaction extends Component {
 
 		if (type === 'patient') {
 			let name =
-				(pat.surname ? pat.surname : '') +
+				(pat?.surname ? pat?.surname : '') +
 				' ' +
-				(pat.other_names ? pat.other_names : '');
-			document.getElementById('patient').value = name;
+				(pat?.other_names ? pat?.other_names : '');
 			// setPatients([]);
-			this.setState({ ...this.state, patient_id: pat.id, patients: [] });
+			this.setState({ ...this.state, patient_id: pat?.id });
 		} else {
-			document.getElementById('hmo').value = pat.name;
-			this.setState({ ...this.state, hmo_id: pat.id, hmos: [] });
+			this.setState({ ...this.state, hmo_id: pat?.id });
 		}
 	};
 
-	searchPatient = async () => {
-		if (this.state.query.length > 2) {
-			try {
-				this.setState({ ...this.state, searching: true });
-				const rs = await request(
-					`${searchAPI}?q=${this.state.query}`,
-					'GET',
-					true
-				);
-
-				this.setState({
-					...this.state,
-					patients: rs,
-					searching: false,
-					query: '',
-				});
-			} catch (e) {
-				notifyError('Error Occurred');
-				this.setState({ ...this.state, searching: false });
-			}
-		}
-	};
-
-	searchHmo = async () => {
-		if (this.state.hmoQuery.length > 2) {
-			try {
-				this.setState({ ...this.state, searchHmo: true });
-				const rs = await request(
-					`hmos?name=${this.state.hmoQuery}`,
-					'GET',
-					true
-				);
-
-				this.setState({
-					...this.state,
-					hmos: rs,
-					searchHmo: false,
-					hmoQuery: '',
-				});
-			} catch (e) {
-				notifyError('Error searching hmo ');
-				this.setState({ ...this.state, searchHmo: false });
-			}
-		}
-	};
 	handlePatientChange = e => {
 		const { name, value } = e.target;
 
@@ -183,15 +151,7 @@ export class AllTransaction extends Component {
 	};
 
 	render() {
-		const {
-			filtering,
-			loading,
-			searching,
-			hmos,
-			patients,
-			searchHmo,
-			// query,
-		} = this.state;
+		const { filtering, loading } = this.state;
 		const { hmoTransactions } = this.props;
 		// const hmoReversed = hmoTransactions.reverse();
 
@@ -202,85 +162,37 @@ export class AllTransaction extends Component {
 					<div className="row">
 						<div className="form-group col-sm-6 pr-0">
 							<label>Patient</label>
-							<input
-								className="form-control"
-								placeholder="Search for patient name"
-								type="text"
+
+							<AsyncSelect
+								isClearable
+								getOptionValue={getOptionValues}
+								getOptionLabel={getOptionLabels}
+								defaultOptions
 								name="patient"
-								defaultValue=""
 								ref={this.patient}
-								id="patient"
-								onChange={this.handlePatientChange}
-								autoComplete="off"
-								required
-								style={{ height: '32px' }}
+								loadOptions={getOptions}
+								onChange={e => {
+									this.patientSet(e, 'patient');
+								}}
+								placeholder="Search for patient"
 							/>
-							{searching && (
-								<div className="searching text-center">
-									<img alt="searching" src={searchingGIF} />
-								</div>
-							)}
-							{patients &&
-								patients.map(pat => {
-									return (
-										<div
-											style={{ display: 'flex' }}
-											key={pat.id}
-											className="element-box">
-											<a
-												onClick={() => this.patientSet(pat, 'patient')}
-												className="ssg-item cursor">
-												<div
-													className="item-name"
-													dangerouslySetInnerHTML={{
-														__html: `${pat.surname} ${pat.other_names}`,
-													}}
-												/>
-											</a>
-										</div>
-									);
-								})}
 						</div>
 						<div className="form-group col-sm-6 pr-0">
 							<label>Hmo</label>
-							<input
-								className="form-control"
-								placeholder="Search for hmo name"
-								type="text"
+
+							<AsyncSelect
+								isClearable
+								getOptionValue={getOptionValuesHMO}
+								getOptionLabel={getOptionLabelsHMO}
+								defaultOptions
 								name="hmo"
-								defaultValue=""
-								id="hmo"
-								onChange={this.handlePatientChange}
 								ref={this.hmo}
-								autoComplete="off"
-								required
-								style={{ height: '32px' }}
+								loadOptions={getOptionsHMO}
+								onChange={e => {
+									this.patientSet(e, 'hmo');
+								}}
+								placeholder="Search for hmo name"
 							/>
-							{searchHmo && (
-								<div className="searching text-center">
-									<img alt="searching" src={searchingGIF} />
-								</div>
-							)}
-							{hmos &&
-								hmos.map(pat => {
-									return (
-										<div
-											style={{ display: 'flex' }}
-											key={pat.id}
-											className="element-box">
-											<a
-												onClick={() => this.patientSet(pat, 'hmo')}
-												className="ssg-item cursor">
-												<div
-													className="item-name"
-													dangerouslySetInnerHTML={{
-														__html: `${pat.name}`,
-													}}
-												/>
-											</a>
-										</div>
-									);
-								})}
 						</div>
 					</div>
 					<div className="row">

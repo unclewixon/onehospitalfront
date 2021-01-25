@@ -3,10 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { withRouter } from 'react-router-dom';
-
-import { renderTextInput, renderSelect } from '../../services/utilities';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import {
+	renderTextInput,
+	renderSelect,
+	request,
+} from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
-import { request } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import {
 	searchAPI,
@@ -90,6 +93,19 @@ let WifeLab = props => {
 		patient.current.value = name;
 		setPatients([]);
 	};
+
+	const getOptionValues = option => option.id;
+	const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+
+	const getOptions = async q => {
+		if (!q || q.length < 3) {
+			return [];
+		}
+
+		const url = `${searchAPI}?q=${q}`;
+		const res = await request(url, 'GET', true);
+		return res;
+	};
 	return (
 		<>
 			<h6 className="element-header">Step {page}. Wife's Lab Details</h6>
@@ -108,46 +124,20 @@ let WifeLab = props => {
 						<div className="row">
 							<div className="form-group col-sm-12">
 								<div>{selectedPatient.value}</div>
-								<input
-									className="form-control"
-									placeholder="Search for patient"
-									type="text"
+
+								<AsyncSelect
+									isClearable
+									getOptionValue={getOptionValues}
+									getOptionLabel={getOptionLabels}
+									defaultOptions
 									name="patient_id"
 									ref={patient}
-									defaultValue={ivf?.wifeLabDetails?.name}
-									id="patient"
-									onChange={handlePatientChange}
-									autoComplete="off"
-									required
+									loadOptions={getOptions}
+									onChange={e => {
+										patientSet(e);
+									}}
+									placeholder="Search patients"
 								/>
-
-								{searching && (
-									<div className="searching text-center">
-										<img alt="searching" src={searchingGIF} />
-									</div>
-								)}
-
-								{patients &&
-									patients.map(pat => {
-										return (
-											<div
-												style={{ display: 'flex' }}
-												key={pat.id}
-												className="element-box">
-												<a
-													onClick={() => patientSet(pat)}
-													className="ssg-item cursor">
-													{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
-													<div
-														className="item-name"
-														dangerouslySetInnerHTML={{
-															__html: `${pat.surname} ${pat.other_names}`,
-														}}
-													/>
-												</a>
-											</div>
-										);
-									})}
 							</div>
 						</div>
 					)}

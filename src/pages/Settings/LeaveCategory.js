@@ -184,7 +184,7 @@ const LeaveCategory = props => {
 																		{leaveCategory.name}
 																	</div>
 																	<div className="pi-sub">
-																		{leaveCategory.duration}
+																		{leaveCategory.duration} days
 																	</div>
 																</div>
 															</div>

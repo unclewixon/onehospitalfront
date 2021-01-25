@@ -21,21 +21,22 @@ const CafeteriaRecipt = props => {
 			<Modal.Body>
 				<div id="divToPrint" ref={receiptRef}>
 					<center className="reciept-header">
-						<div className="reciept-logo">
-							<img src="http://michaeltruong.ca/images/logo1.png" alt="logo" />
+						<div className="">
+							<img
+								width="30%"
+								height="20%"
+								src={require('../assets/images/logo.png')}
+								alt="logo"
+							/>
 						</div>
-						<div>
-							<h2>Deda Hospital</h2>
-						</div>
+						<div></div>
 					</center>
 
 					<div className="reciept-address">
-						<p>
-							<strong>
-								Plot 1847, Cadastral Zone B07, Katampe Road, Abuja.
-								dedahospital.com.ng <br /> 0818 422 7707, 0818 755 7344, 0808
-								233 7758
-							</strong>
+						<p style={{ fontSize: '9px' }}>
+							Plot 1847, Cadastral Zone B07, Katampe Road, Abuja.
+							dedahospital.com.ng <br /> 0818 422 7707, 0818 755 7344, 0808 233
+							7758
 						</p>
 					</div>
 

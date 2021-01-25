@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { withRouter } from 'react-router-dom';
-
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import {
 	renderTextInput,
 	renderSelect,
@@ -27,7 +27,6 @@ let HusbandLab = props => {
 	const dispatch = useDispatch();
 	const { page, error, ivf, previousPage } = props;
 	let [searching, setSearching] = useState(false);
-	let [patients, setPatients] = useState([]);
 	let [selectedPatient, setSelectedPatient] = useState([]);
 	// let [staffs, setStaffs] = useState([]);
 	let [query, setQuery] = useState('');
@@ -52,24 +51,6 @@ let HusbandLab = props => {
 
 	const patient = React.createRef();
 
-	const handlePatientChange = e => {
-		setQuery(e.target.value);
-		searchPatient();
-	};
-
-	const searchPatient = async () => {
-		if (query.length > 2) {
-			try {
-				setSearching(true);
-				const rs = await request(`${searchAPI}?q=${query}`, 'GET', true);
-				setSearching(false);
-				setPatients(rs);
-			} catch (e) {
-				notifyError('Error Occurred');
-			}
-		}
-	};
-
 	const patientSet = pat => {
 		// setValue('patient_id', pat.id);
 
@@ -84,7 +65,6 @@ let HusbandLab = props => {
 		//this.props.setPatient(pat.id, name);
 		// document.getElementById('patient').value = name;
 		patient.current.value = name;
-		setPatients([]);
 	};
 
 	const onSubmitForm = async data => {
@@ -94,6 +74,19 @@ let HusbandLab = props => {
 		ivf.husbandLabDetails.name = selectedPatient.value;
 		props.loadPatientIVFForm(ivf);
 		dispatch(props.onSubmit);
+	};
+
+	const getOptionValues = option => option.id;
+	const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+
+	const getOptions = async q => {
+		if (!q || q.length < 3) {
+			return [];
+		}
+
+		const url = `${searchAPI}?q=${q}`;
+		const res = await request(url, 'GET', true);
+		return res;
 	};
 
 	return (
@@ -114,46 +107,19 @@ let HusbandLab = props => {
 						<div className="form-group col-sm-12">
 							<label>Husband (Secondary Patient Patient)</label>
 
-							<input
-								className="form-control"
-								placeholder="Search for patient"
-								type="text"
+							<AsyncSelect
+								isClearable
+								getOptionValue={getOptionValues}
+								getOptionLabel={getOptionLabels}
+								defaultOptions
 								name="patient_id"
 								ref={patient}
-								defaultValue={ivf?.husbandLabDetails?.name}
-								id="patient"
-								onChange={handlePatientChange}
-								autoComplete="off"
-								required
+								loadOptions={getOptions}
+								onChange={e => {
+									patientSet(e);
+								}}
+								placeholder="Search patients"
 							/>
-
-							{searching && (
-								<div className="searching text-center">
-									<img alt="searching" src={searchingGIF} />
-								</div>
-							)}
-
-							{patients &&
-								patients.map(pat => {
-									return (
-										<div
-											style={{ display: 'flex' }}
-											key={pat.id}
-											className="element-box">
-											<a
-												onClick={() => patientSet(pat)}
-												className="ssg-item cursor">
-												{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
-												<div
-													className="item-name"
-													dangerouslySetInnerHTML={{
-														__html: `${pat.surname} ${pat.other_names}`,
-													}}
-												/>
-											</a>
-										</div>
-									);
-								})}
 						</div>
 					</div>
 

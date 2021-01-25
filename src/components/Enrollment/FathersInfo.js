@@ -48,7 +48,7 @@ export class FathersInfo extends Component {
 		const { handleSubmit, previousPage, error, page } = this.props;
 		return (
 			<>
-				<h6 className="element-header">Step {page}. FathersInfo</h6>
+				<h6 className="element-header">Step {page}. Father's Info</h6>
 				<div className="form-block">
 					<form onSubmit={handleSubmit}>
 						{error && (
