@@ -32,13 +32,6 @@ class StaffList extends Component {
 							<div className="element-wrapper">
 								<div className="element-actions">
 									<a
-										className="btn btn-success btn-sm"
-										href={`${API_URI}/${hmoAPI}/download-sample`}
-										download>
-										<i className="os-icon os-icon-ui-22"></i>
-										<span>Download Sample</span>
-									</a>
-									<a
 										className="btn btn-primary btn-sm text-white"
 										onClick={() =>
 											this.props.createStaff({ status: true, staff: null })

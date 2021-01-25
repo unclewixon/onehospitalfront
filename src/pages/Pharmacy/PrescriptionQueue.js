@@ -113,6 +113,8 @@ class PrescriptionQueue extends Component {
 							</thead>
 							<tbody>
 								{prescriptions.map((request, index) => {
+									console.log('prescriptions=======');
+									console.log(request);
 									return (
 										<tr className="" key={index}>
 											<td>

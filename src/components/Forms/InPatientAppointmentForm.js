@@ -144,7 +144,6 @@ function InPatientAppointmentForm(props) {
 	useEffect(() => {
 		init();
 	}, [init]);
-
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<div className="modal-body">

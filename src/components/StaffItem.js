@@ -2,7 +2,7 @@
 import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
-
+import { request } from '../services/utilities';
 import { createStaff } from '../actions/general';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
@@ -17,7 +17,6 @@ const UploadPerformanceData = ({ uploading, doUpload, hide }) => {
 
 	const handleChange = e => {
 		setFiles(e.target.files[0]);
-		console.log(e.target.files[0]);
 		setLabel(e.target.files[0].name);
 	};
 	return (
@@ -87,17 +86,34 @@ class StaffItem extends Component {
 	};
 
 	doEditStaff = staff => {
+		console.log('doEditStaff = staff ');
+		console.log(staff);
 		this.props.createStaff({ status: true, staff });
 	};
 
-	doEnable = e => {
+	doEnable = async (e, id) => {
 		e.preventDefault();
 		console.log('enable staff');
+		try {
+			const url = `staff/enable/${id}`;
+			const rs = await request(url, 'GET', true);
+			notifySuccess('Staff Enabled');
+		} catch (error) {
+			console.log(error);
+			notifyError('Error Enabling Staff');
+		}
 	};
 
-	doDisable = e => {
+	doDisable = async (e, id) => {
 		e.preventDefault();
-		console.log('disable staff');
+		try {
+			const url = `staff/disable/${id}`;
+			const rs = await request(url, 'GET', true);
+			notifySuccess('Staff Enabled');
+		} catch (error) {
+			console.log(error);
+			notifyError('Error Enabling Staff');
+		}
 	};
 
 	togglePopover = req => {
@@ -214,19 +230,23 @@ class StaffItem extends Component {
 						</Tooltip>
 
 						{staff.isActive ? (
-							<a
-								onClick={this.doDisable}
-								className="danger"
-								title="Disable Staff">
-								<i className="os-icon os-icon-x-circle" />
-							</a>
+							<Tooltip title="Disable Staff">
+								<a
+									onClick={this.doDisable}
+									className="danger"
+									title="Disable Staff">
+									<i className="os-icon os-icon-x-circle" />
+								</a>
+							</Tooltip>
 						) : (
-							<a
-								onClick={this.doEnable}
-								className="success"
-								title="Enable Staff">
-								<i className="os-icon os-icon-check-circle" />
-							</a>
+							<Tooltip title="Enable Staff">
+								<a
+									onClick={this.doEnable}
+									className="success"
+									title="Enable Staff">
+									<i className="os-icon os-icon-check-circle" />
+								</a>
+							</Tooltip>
 						)}
 					</td>
 				</tr>

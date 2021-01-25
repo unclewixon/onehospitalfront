@@ -25,7 +25,7 @@ export const patientNOKSchema = yup.object().shape({
 	nok_other_names: yup
 		.string()
 		.required("Please enter the nex of kin's first name and other names"),
-	nok_email: yup.string().required("Please enter the patient's email address"),
+	//nok_email: yup.string().required("Please enter the patient's email address"),
 });
 
 export const validate = values => {

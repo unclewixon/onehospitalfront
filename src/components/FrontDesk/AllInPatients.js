@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 // import DatePicker from 'antd/lib/date-picker';
 // import Select from 'react-select';
 // import Tooltip from 'antd/lib/tooltip';
-import { connect } from 'react-redux';
+import { useDispatch, connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import { request } from '../../services/utilities';
@@ -12,7 +12,7 @@ import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 // import waiting from '../../assets/images/waiting.gif';
 import ModalPatientDetails from '../../components/Modals/ModalPatientDetails';
-// import { toggleProfile } from '../../actions/user';
+import { toggleProfile } from '../../actions/user';
 import moment from 'moment';
 
 // const { RangePicker } = DatePicker;
@@ -35,6 +35,7 @@ const AllInPatients = () => {
 	// const [filtering, setFiltering] = useState(false);
 	// const [patientName, setPatientName] = useState('');
 	const [searchValue, setSearchValue] = useState('');
+	const dispatch = useDispatch();
 
 	const onModalClick = () => {
 		setShowModal(!showModal);
@@ -44,10 +45,10 @@ const AllInPatients = () => {
 		setSearchValue(e.target.value);
 	};
 
-	// const showProfile = patient => {
-	// 	const info = { patient, type: 'patient' };
-	// 	dispatch(toggleProfile(true, info));
-	// };
+	const showProfile = patient => {
+		const info = { patient, type: 'patient' };
+		dispatch(toggleProfile(true, info));
+	};
 
 	const fetchPatients = useCallback(async () => {
 		try {

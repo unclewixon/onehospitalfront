@@ -40,6 +40,15 @@ const CafeteriaTransactionTable = props => {
 	const handleType = e => {
 		setType(e.target.value);
 	};
+
+	const resetCounter = e => {
+		e.preventDefault();
+		console.log('resetCounter');
+		props.clearCart();
+		setAmountPaid(0);
+		setOrders([]);
+		setType('');
+	};
 	const handleSubmit = async e => {
 		e.preventDefault();
 		if (type && !isEmpty(orders)) {
@@ -164,7 +173,7 @@ const CafeteriaTransactionTable = props => {
 					/>
 				) : null}
 				<form onSubmit={handleSubmit} className="form-row">
-					<div className="col-md-8">
+					<div className="col-md-6">
 						<select className="form-control" onChange={handleType} required>
 							<option value="">Payment type...</option>
 							{paymentType &&
@@ -178,16 +187,19 @@ const CafeteriaTransactionTable = props => {
 						</select>
 					</div>
 
-					<div className="col-md-2">
-						<button className="btn btn-primary" onClick={onModalClick}>
-							<span> save</span>
+					<div className="col-md-3">
+						<button
+							className="btn btn-primary"
+							onClick={onModalClick}
+							disabled={type === '' ? true : false}>
+							<span> Process </span>
 						</button>
 					</div>
-					{/* <div className="col-md-2">
-						<button className="btn btn-primary btn-sm mx-3" type="submit">
-							<i className="os-icon os-icon-ui-22"></i>
+					<div className="col-md-3">
+						<button className="btn btn-warning" onClick={e => resetCounter(e)}>
+							<span> Reset</span>
 						</button>
-					</div> */}
+					</div>
 				</form>
 			</div>
 		</div>

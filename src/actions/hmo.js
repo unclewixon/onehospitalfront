@@ -99,11 +99,10 @@ export const fetchHmoTariff = data => {
 };
 
 export const updateHmo = (editedData, previousData) => {
-	console.log(previousData.id, editedData);
 	return async dispatch => {
 		const url = `${hmoAPI}/${previousData.id}/update`;
 		try {
-			const rs = await request(url, 'PATCH', editedData, true);
+			const rs = await request(url, 'PATCH', true, editedData);
 			return dispatch(update_hmo(rs, previousData));
 		} catch (error) {
 			return error;

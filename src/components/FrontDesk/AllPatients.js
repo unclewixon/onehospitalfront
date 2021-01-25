@@ -89,6 +89,10 @@ const AllPatients = () => {
 									<div className="fht-cell"></div>
 								</th>
 								<th>
+									<div className="th-inner sortable both">Balance</div>
+									<div className="fht-cell"></div>
+								</th>
+								<th>
 									<div className="th-inner "></div>
 									<div className="fht-cell"></div>
 								</th>
@@ -113,6 +117,7 @@ const AllPatients = () => {
 												{moment(data?.date_of_birth).format('DD-MMM-YYYY')}
 											</td>
 											<td>{data?.hmo?.name}</td>
+											<td></td>
 											<td className="row-actions text-right">
 												<Tooltip title="View Request">
 													<a onClick={() => showProfile(data)}>

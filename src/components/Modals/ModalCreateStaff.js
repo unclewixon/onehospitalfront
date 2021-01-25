@@ -1,13 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useDispatch, useSelector, connect } from 'react-redux';
+import { request, updateImmutable } from '../../services/utilities';
 import axios from 'axios';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import orderBy from 'lodash.orderby';
 import { Formik } from 'formik';
 import placeholder from '../../assets/images/placeholder.jpg';
-
+import { loadDepartments } from '../../actions/department';
 import {
 	API_URI,
 	contracts,
@@ -32,7 +33,7 @@ export const StepOneSchema = object({
 	gender: string().required('Please enter user last name'),
 	role_id: string().required('Role is required'),
 	department_id: string().required('Department is required'),
-	// date_of_birth: string().required("Date of birth is required"),
+	date_of_birth: string().required('Date of birth is required'),
 	address: string().required('Address is required'),
 	nationality: number()
 		.typeError('Country is required')
@@ -67,7 +68,6 @@ const storage = new SSRStorage();
 
 function ModalCreateStaff({
 	countries,
-	departments,
 	roles,
 	banks,
 	specializations,
@@ -79,8 +79,31 @@ function ModalCreateStaff({
 	const [form, setForm] = useState(staff);
 	const [saving, setSaving] = useState(false);
 
+	const [loading, setLoading] = useState(true);
+
+	const departments = useSelector(state => state.department);
+
+	const dispatch = useDispatch();
+
 	const _countries = countries.map(c => ({ value: c.id, label: c.name }));
 	const sortedCountries = orderBy(_countries, ['label'], ['asc']);
+
+	const fetchDepartment = useCallback(async () => {
+		try {
+			const rs = await request('departments', 'GET', true);
+			dispatch(loadDepartments(rs));
+			setLoading(false);
+		} catch (error) {
+			setLoading(false);
+			notifyError(error.message || 'could not fetch departments!');
+		}
+	}, [dispatch]);
+
+	useEffect(() => {
+		if (loading) {
+			fetchDepartment();
+		}
+	}, [fetchDepartment, loading]);
 
 	useEffect(() => {
 		document.body.classList.add('modal-open');
@@ -91,6 +114,18 @@ function ModalCreateStaff({
 
 	const stepOne = () => {
 		setSection('step-one');
+	};
+
+	const formatDateEntry = entry => {
+		if (form !== null) {
+			if (form[entry] !== null) {
+				return moment(form[entry]).toDate(); //;
+			} else {
+				return '';
+			}
+		} else {
+			return '';
+		}
 	};
 
 	return (
@@ -108,7 +143,9 @@ function ModalCreateStaff({
 						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div className="onboarding-content with-gradient">
-						<h4 className="onboarding-title">Create New Staff</h4>
+						<h4 className="onboarding-title">
+							{form !== null ? 'Edit Staff Form' : 'Create Staff Form'}
+						</h4>
 						<div className="form-block">
 							{section === 'step-one' ? (
 								<Formik
@@ -123,7 +160,7 @@ function ModalCreateStaff({
 										first_name: form?.first_name || '',
 										last_name: form?.last_name || '',
 										other_names: form?.other_names || '',
-										date_of_birth: moment(form?.date_of_birth).toDate() || '',
+										date_of_birth: formatDateEntry('date_of_birth'),
 										gender: form?.gender || '',
 										religion: form?.religion || '',
 										nationality: form?.nationality || '',
@@ -147,7 +184,8 @@ function ModalCreateStaff({
 										/>
 									)}
 									onSubmit={params => {
-										// console.log(form);
+										console.log('step-one 000');
+										console.log(form);
 										setForm({ ...form, ...params });
 										setSection('step-two');
 									}}
@@ -165,16 +203,16 @@ function ModalCreateStaff({
 										bank_name: form?.bank_name || '',
 										number_of_children: form?.number_of_children || '',
 										account_number: form?.account_number || '',
-										employment_start_date:
-											moment(form?.employment_start_date).toDate() || '',
+										employment_start_date: formatDateEntry(
+											'employment_start_date'
+										),
 										contract_type: form?.contract_type || '',
 										monthly_salary: form?.monthly_salary || '',
 										annual_salary: form?.annual_salary || '',
 										next_of_kin: form?.next_of_kin || '',
 										next_of_kin_relationship:
 											form?.next_of_kin_relationship || '',
-										next_of_kin_dob:
-											moment(form?.next_of_kin_dob).toDate() || '',
+										next_of_kin_dob: formatDateEntry('next_of_kin_dob'),
 										next_of_kin_address: form?.next_of_kin_address || '',
 										next_of_kin_contact_no: form?.next_of_kin_contact_no || '',
 									}}
@@ -192,6 +230,7 @@ function ModalCreateStaff({
 									onSubmit={async params => {
 										setSaving(true);
 										setForm({ ...form, ...params });
+										console.log('step-two 000');
 										console.log(form);
 										const formData = new FormData();
 
@@ -199,17 +238,17 @@ function ModalCreateStaff({
 											if (key === 'date_of_birth') {
 												formData.append(
 													key,
-													moment(form.date_of_birth).format('YYYY-MM-DD')
+													moment(form?.date_of_birth)?.format('YYYY-MM-DD')
 												);
 											} else if (key === 'next_of_kin_dob') {
 												formData.append(
 													key,
-													moment(form.next_of_kin_dob).format('YYYY-MM-DD')
+													moment(form?.next_of_kin_dob)?.format('YYYY-MM-DD')
 												);
 											} else if (key === 'employment_start_date') {
 												formData.append(
 													key,
-													moment(form.employment_start_date).format(
+													moment(form?.employment_start_date)?.format(
 														'YYYY-MM-DD'
 													)
 												);
@@ -230,7 +269,13 @@ function ModalCreateStaff({
 												.then(res => {
 													setSaving(false);
 													if (res.data?.success) {
-														// addStaff(res.data?.staff);
+														let updatedStaff = res.data?.staff;
+														let { staffs } = this.props;
+														let newArray = updateImmutable(
+															staffs,
+															updatedStaff
+														);
+														this.props.loadStaff(newArray);
 														notifySuccess('Staff details has been saved');
 														closeModals(false);
 													} else {
@@ -516,12 +561,14 @@ function StepOne({
 			</div>
 			<div className="row">
 				<div className="col-sm-12 text-right">
-					<button
-						className="btn btn-primary"
+					<Button
+						className="btn-primary"
+						isSubmitting={isSubmitting}
 						onClick={handleSubmit}
-						type="submit">
-						Next
-					</button>
+						isValid={isValid}
+						value="Next"
+						type="submit"
+					/>
 				</div>
 			</div>
 		</Form>
@@ -760,7 +807,6 @@ function StepTwo({
 const mapStateToProps = (state, ownProps) => {
 	return {
 		roles: state.role.roles,
-		departments: state.settings.departments,
 		countries: state.utility.countries,
 		banks: state.utility.banks,
 		specializations: state.settings.specializations,

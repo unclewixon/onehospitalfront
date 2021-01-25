@@ -90,7 +90,7 @@ class IVF extends Component {
 
 						<div className="col-md-12">
 							<div className="element-box">
-								<div className="table table-responsive"></div>
+								<div className="table table-responsive">Table Here</div>
 							</div>
 						</div>
 					</div>

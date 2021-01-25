@@ -18,17 +18,29 @@ import {
 	bookingPeriod,
 } from '../../services/constants';
 import DatePicker from 'react-datepicker';
-
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import moment from 'moment';
 
 import { loadStaff } from '../../actions/hr';
 import { validateAntennatal } from '../../services/validationSchemas';
 
+const getOptionValues = option => option.id;
+const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+
+const getOptions = async q => {
+	if (!q || q.length < 3) {
+		return [];
+	}
+
+	const url = `${searchAPI}?q=${q}`;
+	const res = await request(url, 'GET', true);
+	return res;
+};
+
 const validate = validateAntennatal;
 class General extends Component {
 	state = {
 		searching: false,
-		patients: [],
 		query: '',
 		staffs: [],
 	};
@@ -57,42 +69,19 @@ class General extends Component {
 	};
 	patient = React.createRef();
 
-	handlePatientChange = e => {
-		this.setState({ query: e.target.value });
-		this.searchPatient();
-	};
-
-	searchPatient = async () => {
-		if (this.state.query.length > 2) {
-			try {
-				this.setState({ searching: true });
-				const rs = await request(
-					`${searchAPI}?q=${this.state.query}`,
-					'GET',
-					true
-				);
-
-				this.setState({ patients: rs, searching: false });
-			} catch (e) {
-				notifyError('Error Occurred');
-				this.setState({});
-			}
-		}
-	};
-
 	patientSet = pat => {
 		// setValue('patient_id', pat.id);
 
 		let name =
-			(pat.surname ? pat.surname : '') +
+			(pat?.surname ? pat?.surname : '') +
 			' ' +
-			(pat.other_names ? pat.other_names : '');
+			(pat?.other_names ? pat?.other_names : '');
 		this.props.setPatient(pat.id, name);
 		// document.getElementById('patient').value = name;
 
 		this.patient.current.value = name;
-		this.setState({ patients: [] });
 	};
+
 	render() {
 		const { handleSubmit, error, page, name } = this.props;
 		const { searching, patients } = this.state;
@@ -117,46 +106,17 @@ class General extends Component {
 								<div className="form-group col-sm-12">
 									<label>Patient</label>
 
-									<input
-										className="form-control"
-										placeholder="Search for patient"
-										type="text"
-										name="patient_id"
+									<AsyncSelect
+										isClearable
+										getOptionValue={getOptionValues}
+										getOptionLabel={getOptionLabels}
+										defaultOptions
+										name="patient"
 										ref={this.patient}
-										defaultValue={name}
-										id="patient"
-										onChange={this.handlePatientChange}
-										autoComplete="off"
-										required
+										loadOptions={getOptions}
+										onChange={e => this.patientSet(e)}
+										placeholder="Search patients"
 									/>
-
-									{searching && (
-										<div className="searching text-center">
-											<img alt="searching" src={searchingGIF} />
-										</div>
-									)}
-
-									{patients &&
-										patients.map(pat => {
-											return (
-												<div
-													style={{ display: 'flex' }}
-													key={pat.id}
-													className="element-box">
-													<a
-														onClick={() => this.patientSet(pat)}
-														className="ssg-item cursor">
-														{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
-														<div
-															className="item-name"
-															dangerouslySetInnerHTML={{
-																__html: `${pat.surname} ${pat.other_names}`,
-															}}
-														/>
-													</a>
-												</div>
-											);
-										})}
 								</div>
 							</div>
 						)}

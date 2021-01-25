@@ -156,13 +156,6 @@ export const getPhysiotherapies = data => {
 	};
 };
 
-export const loadDentistryRequests = data => {
-	return {
-		type: GET_DENTISTRY_REQUESTS,
-		payload: data,
-	};
-};
-
 export const add_dentisry = data => {
 	return {
 		type: SAVE_ALLERGIES,

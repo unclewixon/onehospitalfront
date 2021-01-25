@@ -46,7 +46,13 @@ const InsuranceTrans = () => {
 							<span style={{ fontSize: '0.7rem' }}>50,000</span>
 						</td>
 						<td className="insurance-code" style={{ fontSize: '0.7rem' }}>
-							<input value={code} onChange={handleChange} />
+							<input
+								value={code}
+								type="number"
+								onChange={handleChange}
+								style={{ fontSize: '0.7rem', border: 'none' }}
+								placeHolder="enter code"
+							/>
 						</td>
 
 						<td className="row-actions">

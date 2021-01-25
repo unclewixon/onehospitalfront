@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import AppraisalItem from '../../components/AppraisalItem';
 import { request } from '../../services/utilities';
 import { appraisalAPI } from '../../services/constants';
-
+import { updateImmutable } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
@@ -61,7 +61,9 @@ const PerformanceIndicatorForm = ({
 						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div className="onboarding-content with-gradient">
-						<h4 className="onboarding-title">Create Performance Period</h4>
+						<h4 className="onboarding-title">
+							{item ? 'Edit Performance Period' : 'Create Performance Period'}
+						</h4>
 
 						<form
 							name="performanceForm"
@@ -171,11 +173,27 @@ class Appraisal extends Component {
 		try {
 			//load it into database and add it to the store
 			if (!this.state.editItem) {
-				await request(`${appraisalAPI}/save-period`, 'POST', true, payload);
+				let rs = await request(
+					`${appraisalAPI}/save-period`,
+					'POST',
+					true,
+					payload
+				);
+				const { performancePeriods } = this.props;
+				const newArray = [...performancePeriods];
+				newArray.push(rs);
+				this.props.loadPerformancePeriod(newArray);
 			} else {
 				console.log('i am to edit here');
-				//connect to edit api
-				//edit in the store
+				let rs = await request(
+					`${appraisalAPI}/${data.id}/update`,
+					'PATCH',
+					true,
+					payload
+				);
+				const { performancePeriods } = this.props;
+				const newArray = updateImmutable(performancePeriods, rs);
+				this.props.loadPerformancePeriod(newArray);
 			}
 
 			this.setState({ form_visible: false, uploading: false, editItem: null });

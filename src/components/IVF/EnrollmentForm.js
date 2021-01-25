@@ -2,13 +2,10 @@ import React, { Component, lazy, Suspense } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { reduxForm } from 'redux-form';
-
 import Splash from '../../components/Splash';
-
 const WifeLab = lazy(() => import('./WifeLab'));
 const HusbandLab = lazy(() => import('./HusbandLab'));
 const AssesmentInfo = lazy(() => import('./AssesmentInfo'));
-
 const Others = lazy(() => import('./Others'));
 
 class EnrollmentForm extends Component {

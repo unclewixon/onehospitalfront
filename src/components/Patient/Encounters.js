@@ -84,7 +84,7 @@ class Encounters extends Component {
 		return (
 			<div className="col-sm-12 col-xxl-6">
 				<div className="element-wrapper">
-					<h6 className="element-header">Clinical Tasks</h6>
+					<h6 className="element-header">Encounters</h6>
 					<div className="element-box p-3 m-0">
 						<div className="table-responsive">
 							<table className="table table-padded">
