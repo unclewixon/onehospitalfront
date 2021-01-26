@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { closeModals } from '../../actions/general';
-import { updateService } from '../../actions/settings';
 import { notifySuccess, notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
 
@@ -44,64 +42,61 @@ class ModalEditService extends Component {
 	};
 
 	updateService = e => {
-		e.preventDefault();
-		this.setState({ Loading: true });
-		let {
-			name,
-			tariff,
-			category_id,
-			sub_category_id,
-			id,
-			noOfVisits,
-			gracePeriod,
-			note,
-		} = this.state;
-
-		this.props
-			.updateService({
-				name,
-				tariff,
-				category_id,
-				sub_category_id,
-				id,
-				noOfVisits,
-				gracePeriod,
-				note,
-			})
-			.then(response => {
-				this.setState({ Loading: false });
-				notifySuccess('Service updated');
-				this.props.closeModals();
-			})
-			.catch(error => {
-				this.setState({ Loading: false });
-				notifyError('Error updating service');
-			});
+		// e.preventDefault();
+		// this.setState({ Loading: true });
+		// let {
+		// 	name,
+		// 	tariff,
+		// 	category_id,
+		// 	sub_category_id,
+		// 	id,
+		// 	noOfVisits,
+		// 	gracePeriod,
+		// 	note,
+		// } = this.state;
+		// this.props
+		// 	.updateService({
+		// 		name,
+		// 		tariff,
+		// 		category_id,
+		// 		sub_category_id,
+		// 		id,
+		// 		noOfVisits,
+		// 		gracePeriod,
+		// 		note,
+		// 	})
+		// 	.then(response => {
+		// 		this.setState({ Loading: false });
+		// 		notifySuccess('Service updated');
+		// 		this.props.closeModals();
+		// 	})
+		// 	.catch(error => {
+		// 		this.setState({ Loading: false });
+		// 		notifyError('Error updating service');
+		// 	});
 	};
+
 	componentDidMount() {
-		let { data } = this.props.edit_service;
-
-		let category_id = data.category.id;
-		const { ServiceCategories } = this.props;
-
-		const selectedCat = ServiceCategories.find(item => {
-			return item.id === category_id;
-		});
-
-		this.setState({
-			name: data?.name,
-			tariff: data?.tariff,
-			category_id: data?.category.id,
-			sub_category_id: data?.sub_category_id,
-			id: data?.id,
-			gracePeriod: data?.gracePeriod,
-			noOfVisits: data?.noOfVisits,
-			note: data?.note,
-			category: data?.category,
-			subCategory: data?.subCategory,
-			subCategories: selectedCat ? selectedCat.subCateogries : [],
-		});
-		document.body.classList.add('modal-open');
+		// let { data } = this.props.edit_service;
+		// let category_id = data.category.id;
+		// const { ServiceCategories } = this.props;
+		// const selectedCat = ServiceCategories.find(item => {
+		// 	return item.id === category_id;
+		// });
+		// this.setState({
+		// 	name: data?.name,
+		// 	tariff: data?.tariff,
+		// 	category_id: data?.category.id,
+		// 	sub_category_id: data?.sub_category_id,
+		// 	id: data?.id,
+		// 	gracePeriod: data?.gracePeriod,
+		// 	noOfVisits: data?.noOfVisits,
+		// 	note: data?.note,
+		// 	category: data?.category,
+		// 	subCategory: data?.subCategory,
+		// 	subCategories: selectedCat ? selectedCat.subCateogries : [],
+		// });
+		// document.body.classList.add('modal-open');
 	}
 
 	componentWillUnmount() {
@@ -262,12 +257,8 @@ class ModalEditService extends Component {
 
 const mapStateToProps = state => {
 	return {
-		edit_service: state.general.edit_service,
 		ServiceCategories: state.settings.service_categories,
 	};
 };
 
-export default connect(mapStateToProps, {
-	closeModals,
-	updateService,
-})(ModalEditService);
+export default connect(mapStateToProps)(ModalEditService);

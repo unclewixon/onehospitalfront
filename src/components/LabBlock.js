@@ -8,11 +8,11 @@ import { confirmAlert } from 'react-confirm-alert';
 import ModalFillLabResult from './Modals/ModalFillLabResult';
 import ModalViewLabResult from './Modals/ModalViewLabResult';
 import ModalViewLabNote from './Modals/ModalViewLabNote';
-import searchingGIF from '../assets/images/searching.gif';
 import { patientAPI } from '../services/constants';
 import { request, confirmAction, updateImmutable } from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
 import { startBlock, stopBlock } from '../actions/redux-block';
+import TableLoading from './TableLoading';
 
 class LabBlock extends Component {
 	state = {
@@ -159,7 +159,9 @@ class LabBlock extends Component {
 	render() {
 		const { loading, labs, patient, updateLab } = this.props;
 		const { labTest, showFLModal, showVLModal, showVNModal } = this.state;
-		return (
+		return loading ? (
+			<TableLoading />
+		) : (
 			<>
 				<table id="table" className="table table-theme v-middle table-hover">
 					<thead>
@@ -200,142 +202,131 @@ class LabBlock extends Component {
 							</th>
 						</tr>
 					</thead>
-					{loading ? (
-						<tbody>
-							<tr>
-								<td colSpan={patient ? '6' : '7'} className="text-center">
-									<img alt="searching" src={searchingGIF} />
-								</td>
-							</tr>
-						</tbody>
-					) : (
-						<tbody>
-							{labs.map((lab, i) => {
-								const grouped = labs.filter(l => l.code === lab.code);
-								return (
-									<tr key={i} className={lab.urgent ? 'urgent' : ''}>
-										<td className="flex">
-											<span
-												className="w-32 avatar gd-warning"
-												style={{
-													boxShadow: 'none',
-													justifyContent: 'start',
-												}}>
-												{moment(lab.createdAt).format('DD-MM-YYYY h:mmA')}
-											</span>
-										</td>
-										<td className="flex">
-											<p className="item-title text-color m-0">{lab.code}</p>
-										</td>
+					<tbody>
+						{labs.map((lab, i) => {
+							const grouped = labs.filter(l => l.code === lab.code);
+							return (
+								<tr key={i} className={lab.urgent ? 'urgent' : ''}>
+									<td className="flex">
+										<span
+											className="w-32 avatar gd-warning"
+											style={{
+												boxShadow: 'none',
+												justifyContent: 'start',
+											}}>
+											{moment(lab.createdAt).format('DD-MM-YYYY h:mmA')}
+										</span>
+									</td>
+									<td className="flex">
+										<p className="item-title text-color m-0">{lab.code}</p>
+									</td>
+									<td className="flex">
+										<p className="item-title text-color m-0">
+											{lab.requestBody.name}
+										</p>
+									</td>
+									{!patient && (
 										<td className="flex">
 											<p className="item-title text-color m-0">
-												{lab.requestBody.name}
+												{lab.patient_name}
 											</p>
 										</td>
-										{!patient && (
-											<td className="flex">
-												<p className="item-title text-color m-0">
-													{lab.patient_name}
-												</p>
-											</td>
+									)}
+									<td className="flex">
+										<a className="item-title text-color">{lab.created_by}</a>
+									</td>
+									<td className="flex">
+										{lab.requestNote ? (
+											<a
+												className="item-title text-primary"
+												onClick={() => this.viewNote(lab)}>
+												Note
+											</a>
+										) : (
+											'-'
 										)}
-										<td className="flex">
-											<a className="item-title text-color">{lab.created_by}</a>
-										</td>
-										<td className="flex">
-											{lab.requestNote ? (
+									</td>
+									<td className="flex">
+										{lab.requestBody.filled && lab.requestBody.filled === 1 ? (
+											lab.status === 1 ? (
 												<a
 													className="item-title text-primary"
-													onClick={() => this.viewNote(lab)}>
-													Note
+													onClick={() => this.viewResult(lab)}>
+													Result
 												</a>
 											) : (
-												'-'
+												'Pending Approval'
+											)
+										) : (
+											'-'
+										)}
+									</td>
+									<td className="text-right row-actions">
+										{!lab.requestBody.cancelled &&
+											lab.transaction_status === 1 && (
+												<>
+													{(!lab.requestBody.received ||
+														(lab.requestBody.received &&
+															lab.requestBody.received === 0)) && (
+														<Tooltip title="Receive Specimen">
+															<a
+																className="secondary"
+																onClick={() => this.receiveSpecimen(lab.id)}>
+																<i className="os-icon os-icon-check-circle" />
+															</a>
+														</Tooltip>
+													)}
+													{(!lab.requestBody.filled ||
+														(lab.requestBody.filled &&
+															lab.requestBody.filled === 0)) &&
+														lab.requestBody.received &&
+														lab.requestBody.received === 1 && (
+															<Tooltip title="Fill Result">
+																<a
+																	className="primary"
+																	onClick={() => this.fillResult(lab)}>
+																	<i className="os-icon os-icon-edit" />
+																</a>
+															</Tooltip>
+														)}
+													{lab.requestBody.filled === 1 && lab.status === 0 && (
+														<Tooltip title="Approve Lab Result">
+															<a
+																className="info"
+																onClick={() => this.viewResult(lab)}>
+																<i className="os-icon os-icon-thumbs-up" />
+															</a>
+														</Tooltip>
+													)}
+													{(!lab.requestBody.filled ||
+														(lab.requestBody.filled &&
+															lab.requestBody.filled === 0)) && (
+														<Tooltip title="Cancel Lab Test">
+															<a
+																className="danger"
+																onClick={() => this.cancelLab(lab.id)}>
+																<i className="os-icon os-icon-ui-15" />
+															</a>
+														</Tooltip>
+													)}
+													{lab.status === 1 && (
+														<Tooltip title="Print Lab Test">
+															<a
+																className="info"
+																onClick={() =>
+																	this.printResult(lab, grouped.length > 1)
+																}>
+																<i className="os-icon os-icon-printer" />
+															</a>
+														</Tooltip>
+													)}
+												</>
 											)}
-										</td>
-										<td className="flex">
-											{lab.requestBody.filled &&
-											lab.requestBody.filled === 1 ? (
-												lab.status === 1 ? (
-													<a
-														className="item-title text-primary"
-														onClick={() => this.viewResult(lab)}>
-														Result
-													</a>
-												) : (
-													'Pending Approval'
-												)
-											) : (
-												'-'
-											)}
-										</td>
-										<td className="text-right row-actions">
-											{!lab.requestBody.cancelled &&
-												lab.transaction_status === 1 && (
-													<>
-														{(!lab.requestBody.received ||
-															(lab.requestBody.received &&
-																lab.requestBody.received === 0)) && (
-															<Tooltip title="Receive Specimen">
-																<a
-																	className="secondary"
-																	onClick={() => this.receiveSpecimen(lab.id)}>
-																	<i className="os-icon os-icon-check-circle" />
-																</a>
-															</Tooltip>
-														)}
-														{(!lab.requestBody.filled ||
-															(lab.requestBody.filled &&
-																lab.requestBody.filled === 0)) &&
-															lab.requestBody.received &&
-															lab.requestBody.received === 1 && (
-																<Tooltip title="Fill Result">
-																	<a
-																		className="primary"
-																		onClick={() => this.fillResult(lab)}>
-																		<i className="os-icon os-icon-edit" />
-																	</a>
-																</Tooltip>
-															)}
-														{lab.requestBody.filled === 1 && lab.status === 0 && (
-															<Tooltip title="Approve Lab Result">
-																<a
-																	className="info"
-																	onClick={() => this.viewResult(lab)}>
-																	<i className="os-icon os-icon-thumbs-up" />
-																</a>
-															</Tooltip>
-														)}
-														{(!lab.requestBody.filled ||
-															(lab.requestBody.filled &&
-																lab.requestBody.filled === 0)) && (
-															<Tooltip title="Cancel Lab Test">
-																<a
-																	className="danger"
-																	onClick={() => this.cancelLab(lab.id)}>
-																	<i className="os-icon os-icon-ui-15" />
-																</a>
-															</Tooltip>
-														)}
-														{lab.status === 1 && (
-															<Tooltip title="Print Lab Test">
-																<a
-																	className="info"
-																	onClick={() =>
-																		this.printResult(lab, grouped.length > 1)
-																	}>
-																	<i className="os-icon os-icon-printer" />
-																</a>
-															</Tooltip>
-														)}
-													</>
-												)}
-										</td>
-									</tr>
-								);
-							})}
-						</tbody>
-					)}
+									</td>
+								</tr>
+							);
+						})}
+					</tbody>
 				</table>
 				{labTest && showFLModal && (
 					<ModalFillLabResult

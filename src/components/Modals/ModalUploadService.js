@@ -2,71 +2,51 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
 
-import { closeModals } from '../../actions/general';
-import {
-	getAllService,
-	updateService,
-	deleteService,
-} from '../../actions/settings';
-import { notifyError, notifySuccess } from '../../services/notify';
+import { notifySuccess, notifyError } from '../../services/notify';
 import { API_URI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
-import { request } from '../../services/utilities';
-import { getAllServiceCategories } from '../../actions/settings';
 
 class ModalUploadService extends Component {
 	state = {
 		file: null,
 		loading: false,
+		hmo: '',
 	};
 
-	handleInputChange = e => {
-		this.setState({
-			file: e.target.files[0],
-		});
-	};
-
-	fetchServiceCategories = async () => {
-		try {
-			const rs = await request('services/categories', 'GET', true);
-			this.props.getAllServiceCategories(rs);
-			this.props.getAllService();
-		} catch (error) {
-			notifyError(error.message || 'could not fetch services categories!');
-		}
-	};
+	handleInputChange = e => this.setState({ file: e.target.files[0] });
 
 	onUpload = async e => {
-		e.preventDefault();
 		try {
+			e.preventDefault();
 			const { staff } = this.props;
+			const { hmo, file } = this.state;
+
 			this.setState({ loading: true });
 
-			const data = new FormData();
-			data.append('file', this.state.file);
-			data.append('username', staff.username);
+			const form = new FormData();
+			form.append('file', file);
+			form.append('username', staff.username);
+			form.append('hmo_id', hmo);
 
 			const url = `${API_URI}/services/upload-services`;
-			await axios.post(url, data);
-			this.fetchServiceCategories();
-			this.setState({ loading: false });
-			this.props.closeModals(false);
-			notifySuccess('service file uploaded!');
+			const { data } = await axios.post(url, form);
+			if (data.success) {
+				this.setState({ loading: false });
+				this.props.closeModal();
+				notifySuccess('service file uploaded!');
+			} else {
+				this.setState({ loading: false });
+				notifyError(data.message);
+			}
 		} catch (e) {
 			this.setState({ loading: false });
+			notifyError(e.message || 'error uploading services');
 		}
 	};
 
-	componentDidMount() {
-		document.body.classList.add('modal-open');
-	}
-
-	componentWillUnmount() {
-		document.body.classList.remove('modal-open');
-	}
-
 	render() {
-		const { loading } = this.state;
+		const { loading, hmo } = this.state;
+		const { hmos, closeModal } = this.props;
 		return (
 			<div
 				className="onboarding-modal modal fade animated show"
@@ -78,32 +58,65 @@ class ModalUploadService extends Component {
 							aria-label="Close"
 							className="close"
 							type="button"
-							onClick={() => this.props.closeModals(false)}>
+							onClick={closeModal}>
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
 							<h4 className="onboarding-title">Upload Service</h4>
 							<div className="pipeline white lined-warning">
-								<form onSubmit={this.onUpload} className="display-flex">
-									<div className="form-group mb-0">
-										<input
-											className="form-control"
-											placeholder="Category Name"
-											type="file"
-											name="file"
-											onChange={this.handleInputChange}
-										/>
+								<form onSubmit={this.onUpload}>
+									<div className="row">
+										<div className="col-md-12">
+											<div className="form-group mb-0">
+												<input
+													className="form-control"
+													placeholder="Category Name"
+													type="file"
+													name="file"
+													onChange={this.handleInputChange}
+												/>
+											</div>
+										</div>
 									</div>
-									<div className="ml-2">
-										<button
-											className={`btn btn-primary ${loading ? 'disabled' : ''}`}
-											style={{ marginTop: '6px' }}>
-											{loading ? (
-												<img src={waiting} alt="submitting" />
-											) : (
-												<span> Upload</span>
-											)}
-										</button>
+									<div className="row mt-3">
+										<div className="col-md-12">
+											<div className="form-group">
+												<label>Select HMO</label>
+												<select
+													className="form-control bright"
+													name="hmo"
+													value={hmo}
+													onChange={e => {
+														this.setState({ hmo: e.target.value });
+													}}>
+													<option value="">Select HMO</option>
+													{hmos.map((hmo, i) => {
+														return (
+															<option key={i} value={hmo.id}>
+																{hmo.name}
+															</option>
+														);
+													})}
+												</select>
+											</div>
+										</div>
+									</div>
+									<div className="row mt-3">
+										<div className="col-md-12">
+											<div className="ml-2">
+												<button
+													className={`btn btn-primary ${
+														loading ? 'disabled' : ''
+													}`}
+													style={{ marginTop: '6px' }}>
+													{loading ? (
+														<img src={waiting} alt="submitting" />
+													) : (
+														<span> Upload</span>
+													)}
+												</button>
+											</div>
+										</div>
 									</div>
 								</form>
 							</div>
@@ -118,13 +131,8 @@ class ModalUploadService extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		staff: state.user.profile,
+		hmos: state.hmo.hmo_list,
 	};
 };
 
-export default connect(mapStateToProps, {
-	closeModals,
-	getAllService,
-	updateService,
-	deleteService,
-	getAllServiceCategories,
-})(ModalUploadService);
+export default connect(mapStateToProps)(ModalUploadService);

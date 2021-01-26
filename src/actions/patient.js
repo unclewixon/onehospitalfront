@@ -9,7 +9,6 @@ import {
 	ADD_PATIENT_UPLOAD_DATA,
 	DELETE_ALLERGY,
 	GET_PHYSIOTHERAPIES,
-	GET_DENTISTRY_REQUESTS,
 	GET_IMAGING_REQUESTS,
 	GET_OPTHALMOLOGY_REQUESTS,
 	LOAD_VITALS,
@@ -160,29 +159,6 @@ export const add_dentisry = data => {
 	return {
 		type: SAVE_ALLERGIES,
 		payload: data,
-	};
-};
-
-export const update_dentistry = (data, previousData) => {
-	return {
-		type: UPDATE_ALLERGY,
-		payload: data,
-		previousData,
-	};
-};
-
-export const Dentistry = data => {
-	return {
-		type: ALLERGY,
-		payload: data,
-	};
-};
-
-export const delete_dentistry = payload => {
-	console.log(payload);
-	return {
-		type: DELETE_ALLERGY,
-		payload,
 	};
 };
 

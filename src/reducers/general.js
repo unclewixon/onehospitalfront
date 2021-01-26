@@ -19,10 +19,8 @@ import {
 	TOGGLE_EDIT_PAYROLL,
 	TOGGLE_VIEW_PAYPOINT,
 	TOGGLE_CREATE_VOUCHER,
-	TOGGLE_UPLOAD_SERVICE,
 	TOGGLE_UPLOAD_HMO,
 	TOGGLE_UPLOAD_HMO_TARIFF,
-	TOGGLE_EDIT_SERIVCE,
 	TOGGLE_CREATE_LABOUR_MEASUREMENT,
 	TOGGLE_CREATE_RISK_ASSESSMENT,
 	TOGGLE_CREATE_RECORD_VITAL,
@@ -165,16 +163,12 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, apply_voucher: action.payload };
 		case TOGGLE_CREATE_CLINICAL_TASK:
 			return { ...state, create_clinical_task: action.payload };
-		case TOGGLE_UPLOAD_SERVICE:
-			return { ...state, upload_service: action.payload };
 		case TOGGLE_UPLOAD_RADIOLOGY:
 			return { ...state, upload_radiology: action.payload };
 		case TOGGLE_UPLOAD_HMO:
 			return { ...state, upload_hmo: action.payload };
 		case TOGGLE_UPLOAD_HMO_TARIFF:
 			return { ...state, upload_hmo_tariff: action.payload };
-		case TOGGLE_EDIT_SERIVCE:
-			return { ...state, edit_service: action.payload };
 		case TOGGLE_OPEN_ENCOUNTER:
 			return {
 				...state,

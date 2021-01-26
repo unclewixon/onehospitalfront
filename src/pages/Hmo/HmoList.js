@@ -98,10 +98,7 @@ const HmoList = props => {
 	const onDeleteHmo = data => {
 		props
 			.deleteHmo(data)
-			.then(data => {
-				console.log('after deleting here is what we got');
-				console.log(data);
-			})
+			.then(data => {})
 			.catch(error => {
 				console.log(error);
 			});
@@ -192,24 +189,28 @@ const HmoList = props => {
 																	<span>{hmo.email || '-'}</span>
 																</td>
 																<td className="row-actions">
-																	<Tooltip title="Edit">
-																		<a onClick={() => onClickEdit(hmo)}>
-																			<i className="os-icon os-icon-edit-1" />
-																		</a>
-																	</Tooltip>
-																	<Tooltip title="HMO Tariffs">
-																		<Link
-																			to={`/hmo/tariffs?selected=${hmo.id}`}>
-																			<i className="os-icon os-icon-documents-03" />
-																		</Link>
-																	</Tooltip>
-																	<Tooltip title="Delete">
-																		<a
-																			className="danger"
-																			onClick={() => confirmDelete(hmo)}>
-																			<i className="os-icon os-icon-ui-15" />
-																		</a>
-																	</Tooltip>
+																	{hmo.name !== 'Private' && (
+																		<>
+																			<Tooltip title="Edit">
+																				<a onClick={() => onClickEdit(hmo)}>
+																					<i className="os-icon os-icon-edit-1" />
+																				</a>
+																			</Tooltip>
+																			<Tooltip title="HMO Tariffs">
+																				<Link
+																					to={`/hmo/tariffs?selected=${hmo.id}`}>
+																					<i className="os-icon os-icon-documents-03" />
+																				</Link>
+																			</Tooltip>
+																			<Tooltip title="Delete">
+																				<a
+																					className="danger"
+																					onClick={() => confirmDelete(hmo)}>
+																					<i className="os-icon os-icon-ui-15" />
+																				</a>
+																			</Tooltip>
+																		</>
+																	)}
 																</td>
 															</tr>
 														);
@@ -265,21 +266,6 @@ const HmoList = props => {
 											value={address || ''}
 										/>
 									</div>
-									{/*<legend>
-										<span>Upload Logo</span>
-									</legend>
-									<div className="form-group">
-										<div className="form-group">
-											<input
-												type="file"
-												className="form-control"
-												placeholder="Upload Logo"
-												id="exampleFormControlFile1"
-												name="logo"
-												onChange={handleFileChange}
-											/>
-										</div>
-									</div>*/}
 									<div className="form-buttons-w">
 										{add && (
 											<button

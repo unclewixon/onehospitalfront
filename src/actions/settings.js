@@ -31,14 +31,6 @@ import {
 	UPDATE_SPECIALIZATION,
 	DELETE_SPECIALIZATION,
 	LOAD_STAFFS,
-	ADD_SERVICE_CATEGORY,
-	GET_ALL_SERVICE_CATEGORIES,
-	UPDATE_SERVICE_CATEGORY,
-	DELETE_SERVICE_CATEGORY,
-	UPLOAD_SERVICE,
-	GET_ALL_SERIVCES,
-	UPDATE_SERVICE,
-	DELETE_SERVICE,
 	ADD_REQUEST_SERVICE,
 	GET_ALL_REQUEST_SERVICES,
 	UPDATE_REQUEST_SERVICE,
@@ -47,7 +39,6 @@ import {
 	UPDATE_LAB_GROUP,
 	DELETE_LAB_GROUP,
 	GET_ALL_LAB_GROUPS,
-	LOAD_HMOS,
 } from './types';
 
 //Request Service
@@ -310,66 +301,6 @@ export const delete_specialization = payload => {
 export const get_all_staff = payload => {
 	return {
 		type: LOAD_STAFFS,
-		payload,
-	};
-};
-
-//Service Category
-export const add_service_category = payload => {
-	return {
-		type: ADD_SERVICE_CATEGORY,
-		payload,
-	};
-};
-
-export const getAllServiceCategories = payload => {
-	return {
-		type: GET_ALL_SERVICE_CATEGORIES,
-		payload,
-	};
-};
-
-export const update_service_category = (payload, previousData) => {
-	return {
-		type: UPDATE_SERVICE_CATEGORY,
-		payload,
-		previousData,
-	};
-};
-
-export const delete_service_category = payload => {
-	return {
-		type: DELETE_SERVICE_CATEGORY,
-		payload,
-	};
-};
-
-//Service
-export const uploadService = payload => {
-	return {
-		type: UPLOAD_SERVICE,
-		payload,
-	};
-};
-
-export const get_all_services = payload => {
-	return {
-		type: GET_ALL_SERIVCES,
-		payload,
-	};
-};
-
-const update_service = (payload, previousData) => {
-	return {
-		type: UPDATE_SERVICE,
-		payload,
-		previousData,
-	};
-};
-
-const delete_service = payload => {
-	return {
-		type: DELETE_SERVICE,
 		payload,
 	};
 };
@@ -849,132 +780,6 @@ export const getAllStaff = data => {
 	};
 };
 
-//Service Category
-export const addServiceCategory = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.post(`${API_URI}/services/categories`, {
-					name: data.name,
-				})
-				.then(response => {
-					dispatch(add_service_category(response.data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const getAllServiceCategory = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.get(`${API_URI}/services/categories`)
-				.then(response => {
-					dispatch(getAllServiceCategories(response.data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const updateServiceCategory = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.patch(`${API_URI}/services/categories/${data.id}/update`, {
-					name: data.name,
-				})
-				.then(response => {
-					dispatch(update_service_category(response.data, data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const deleteServiceCategory = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.delete(`${API_URI}/services/categories/${data.id}`)
-				.then(response => {
-					dispatch(delete_service_category(data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const getAllService = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.get(`${API_URI}/services`)
-				.then(response => {
-					dispatch(get_all_services(response.data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const updateService = data => {
-	return dispatch => {
-		return new Promise(async (resolve, reject) => {
-			let resp;
-			if (data.id) {
-				resp = axios.patch(`${API_URI}/services/${data?.id}/update`, data);
-			} else {
-				resp = axios.post(`${API_URI}/services`, data);
-			}
-
-			resp
-				.then(response => {
-					// console.log(response);
-					dispatch(update_service(response.data, data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					// console.log(error);
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const deleteService = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.delete(`${API_URI}/services/${data.id}`)
-				.then(response => {
-					console.log(response.data, 'here');
-					dispatch(delete_service(data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
 export const addRequestService = data => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
@@ -1044,13 +849,5 @@ export const deleteRequestService = data => {
 					return reject({ success: false });
 				});
 		});
-	};
-};
-
-// hmo
-export const loadHmo = payload => {
-	return {
-		type: LOAD_HMOS,
-		payload,
 	};
 };

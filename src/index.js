@@ -39,7 +39,8 @@ import {
 import SSRStorage from './services/storage';
 import { defaultHeaders, getUser } from './services/utilities';
 import { loadDepartments } from './actions/department';
-import { loadSpecializations, loadHmo } from './actions/settings';
+import { loadSpecializations } from './actions/settings';
+import { fetch_all_hmos_data } from './actions/hmo';
 import { loadInvCategories, loadInvSubCategories } from './actions/inventory';
 import { togglePreloading } from './actions/general';
 import { loadRoles } from './actions/role';
@@ -118,7 +119,7 @@ const initData = async () => {
 				store.dispatch(loadSpecializations(rs_specializations.data));
 			}
 			if (rs_hmos && rs_hmos.data) {
-				store.dispatch(loadHmo(rs_hmos.data));
+				store.dispatch(fetch_all_hmos_data(rs_hmos.data));
 			}
 
 			store.dispatch(loginUser(user));

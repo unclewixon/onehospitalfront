@@ -28,12 +28,6 @@ import {
 	UPDATE_SPECIALIZATION,
 	DELETE_SPECIALIZATION,
 	LOAD_STAFFS,
-	ADD_SERVICE_CATEGORY,
-	GET_ALL_SERVICE_CATEGORIES,
-	DELETE_SERVICE_CATEGORY,
-	UPDATE_SERVICE_CATEGORY,
-	GET_ALL_SERIVCES,
-	UPDATE_SERVICE,
 	ADD_REQUEST_SERVICE,
 	GET_ALL_REQUEST_SERVICES,
 	UPDATE_REQUEST_SERVICE,
@@ -42,7 +36,6 @@ import {
 	UPDATE_LAB_GROUP,
 	DELETE_LAB_GROUP,
 	GET_ALL_LAB_GROUPS,
-	LOAD_HMOS,
 } from '../actions/types';
 import { updateImmutable } from '../services/utilities';
 
@@ -57,10 +50,7 @@ const INITIAL_STATE = {
 	specializations: [],
 	staff_list: [],
 	roles: [],
-	service_categories: [],
-	services: [],
 	request_services: [],
-	hmos: [],
 };
 
 const settings = (state = INITIAL_STATE, action) => {
@@ -242,42 +232,6 @@ const settings = (state = INITIAL_STATE, action) => {
 			};
 		case LOAD_STAFFS:
 			return { ...state, staff_list: action.payload };
-		case ADD_SERVICE_CATEGORY:
-			return {
-				...state,
-				service_categories: [...state.service_categories, action.payload],
-			};
-		case GET_ALL_SERVICE_CATEGORIES:
-			return { ...state, service_categories: action.payload };
-		case UPDATE_SERVICE_CATEGORY:
-			return {
-				...state,
-				service_categories: [
-					...state.service_categories.filter(
-						deletedItem => deletedItem.id !== action.previousData.id
-					),
-					action.payload,
-				],
-			};
-		case DELETE_SERVICE_CATEGORY:
-			return {
-				...state,
-				service_categories: state.service_categories.filter(
-					deletedItem => deletedItem.id !== action.payload.id
-				),
-			};
-		case GET_ALL_SERIVCES:
-			return { ...state, services: action.payload };
-		case UPDATE_SERVICE:
-			return {
-				...state,
-				services: [
-					...state.services.filter(
-						deletedItem => deletedItem.id !== action.previousData.id
-					),
-					action.payload,
-				],
-			};
 		case ADD_REQUEST_SERVICE:
 			return {
 				...state,
@@ -303,8 +257,6 @@ const settings = (state = INITIAL_STATE, action) => {
 					deletedItem => deletedItem.id !== action.payload.id
 				),
 			};
-		case LOAD_HMOS:
-			return { ...state, hmos: action.payload };
 		default:
 			return state;
 	}

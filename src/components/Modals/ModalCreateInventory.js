@@ -83,10 +83,10 @@ class ModalCreateInventory extends Component {
 		this.setState({ hidden: true });
 		const { sub_categories, categories } = this.props;
 		let newValue = event.target.value;
-		let newCat = categories.filter(service => service.id == newValue);
+		let newCat = categories.filter(service => service.id === newValue);
 
 		let newSubCat = sub_categories.filter(
-			service => service.category.id == newValue
+			service => service.category.id === newValue
 		);
 
 		this.setState({ sub_categories: newSubCat });
@@ -319,7 +319,7 @@ const mapStateToProps = (state, ownProps) => {
 		},
 		categories: state.inventory.categories,
 		sub_categories: state.inventory.sub_categories,
-		hmos: state.settings.hmos,
+		hmos: state.hmo.hmo_list,
 	};
 };
 

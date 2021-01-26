@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import capitalize from 'lodash.capitalize';
 
-import { uploadHmoTariff, uploadHmo } from '../actions/general';
 import { notifyError } from '../services/notify';
 import searchingGIF from '../assets/images/searching.gif';
 import { getAllHmos, fetchHmoTariff } from '../actions/hmo';
@@ -84,15 +83,6 @@ const Tarrifs = props => {
 		<div className="content-i">
 			<div className="content-box">
 				<div className="element-wrapper">
-					<div className="element-actions">
-						<a
-							className="btn btn-success btn-sm"
-							onClick={() => props.uploadHmoTariff(true)}
-							href="#">
-							<i className="os-icon os-icon-grid-10"></i>
-							<span>Upload HMO Services</span>
-						</a>
-					</div>
 					<h6 className="element-header">HMO Services</h6>
 
 					<div className="pipelines-w">
@@ -229,8 +219,6 @@ const mapStateToProps = state => {
 };
 
 export default connect(mapStateToProps, {
-	uploadHmoTariff,
-	uploadHmo,
 	getAllHmos,
 	fetchHmoTariff,
 })(Tarrifs);

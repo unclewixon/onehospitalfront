@@ -1,11 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
-import { request, confirmAction, formatCurrency } from '../services/utilities';
 
+import { request, confirmAction, nth } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
-import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
+import TableLoading from './TableLoading';
 import {
 	add_room,
 	get_all_room,
@@ -28,7 +28,7 @@ const RoomList = props => {
 	const [payload, getDataToEdit] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
-	const role = useSelector(state => state.user.profile.role.slug);
+	const user = useSelector(state => state.user.profile);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -36,15 +36,10 @@ const RoomList = props => {
 	};
 
 	const onAddRoom = async e => {
-		e.preventDefault();
-		setLoading(true);
-		let data = {
-			name,
-			status,
-			floor,
-			room_category_id: category,
-		};
 		try {
+			e.preventDefault();
+			setLoading(true);
+			const data = { name, status, floor, room_category_id: category };
 			const rs = await request(`rooms`, 'POST', true, data);
 			props.add_room(rs);
 			setState({ ...initialState });
@@ -58,21 +53,12 @@ const RoomList = props => {
 	};
 
 	const onEditRoom = async e => {
-		setLoading(true);
-		e.preventDefault();
-		let data = {
-			name,
-			status,
-			floor,
-			room_category_id: category,
-		};
 		try {
-			const rs = await request(
-				`rooms/${payload.id}/update`,
-				'PATCH',
-				true,
-				data
-			);
+			e.preventDefault();
+			setLoading(true);
+			const data = { name, status, floor, room_category_id: category };
+			const url = `rooms/${payload.id}/update`;
+			const rs = await request(url, 'PATCH', true, data);
 			props.update_room(rs, payload);
 			setState({ ...initialState });
 			setSubmitButton({ create: true, edit: false });
@@ -101,7 +87,8 @@ const RoomList = props => {
 
 	const onDeleteRoom = async data => {
 		try {
-			await request(`rooms/${data.id}`, 'DELETE', true);
+			const url = `rooms/${data.id}`;
+			await request(url, 'DELETE', true, { username: user.username });
 			props.delete_room(data);
 			setLoading(false);
 			setState({ ...initialState });
@@ -146,58 +133,56 @@ const RoomList = props => {
 			<div className="col-lg-8">
 				<div className="element-wrapper">
 					<div className="element-box m-0 p-3">
-						<div className="table-responsive">
-							<table className="table table-striped">
-								<thead>
-									<tr>
-										<th>Room Number</th>
-										<th>Floor</th>
-										<th>Category</th>
-										<th>Status</th>
-										<th className="text-right">Action</th>
-									</tr>
-								</thead>
-								<tbody>
-									{!dataLoaded ? (
+						{!dataLoaded ? (
+							<TableLoading />
+						) : (
+							<div className="table-responsive">
+								<table className="table table-striped">
+									<thead>
 										<tr>
-											<td colSpan="4" className="text-center">
-												<img alt="searching" src={searchingGIF} />
-											</td>
+											<th>Room Number</th>
+											<th>Floor</th>
+											<th>Category</th>
+											<th>Status</th>
+											<th className="text-right">Action</th>
 										</tr>
-									) : (
-										<>
-											{props.Rooms.map((Room, index) => {
-												return (
-													<tr key={index}>
-														<td>{Room.name}</td>
-														<td>{Room.floor}</td>
-														<td>{Room.category?.name}</td>
-														<td>{Room.status}</td>
-														<td className="row-actions text-right">
-															<a href="#">
-																<i
-																	className="os-icon os-icon-ui-49"
-																	onClick={() => onClickEdit(Room)}></i>
+									</thead>
+									<tbody>
+										{props.Rooms.map((Room, index) => {
+											return (
+												<tr key={index}>
+													<td>{Room.name}</td>
+													<td>{nth(parseInt(Room.floor, 10))}</td>
+													<td>{Room.category?.name}</td>
+													<td>{Room.status}</td>
+													<td className="row-actions text-right">
+														<a href="#">
+															<i
+																className="os-icon os-icon-ui-49"
+																onClick={() => onClickEdit(Room)}></i>
+														</a>
+														{user.role.slug === 'admin' && (
+															<a
+																className="danger"
+																onClick={() => confirmDelete(Room)}>
+																<i className="os-icon os-icon-ui-15"></i>
 															</a>
-
-															{role === 'admin' ? (
-																<a
-																	className="danger"
-																	onClick={() => confirmDelete(Room)}>
-																	<i className="os-icon os-icon-ui-15"></i>
-																</a>
-															) : (
-																''
-															)}
-														</td>
-													</tr>
-												);
-											})}
-										</>
-									)}
-								</tbody>
-							</table>
-						</div>
+														)}
+													</td>
+												</tr>
+											);
+										})}
+										{props.Rooms.length === 0 && (
+											<tr>
+												<td colSpan="5" className="text-center">
+													No rooms found!
+												</td>
+											</tr>
+										)}
+									</tbody>
+								</table>
+							</div>
+						)}
 					</div>
 				</div>
 			</div>
@@ -222,15 +207,7 @@ const RoomList = props => {
 								placeholder="Room Category"
 								value={category}
 								onChange={handleInputChange}>
-								{/* {category && (
-									<option value={category.id}>{category.name}</option>
-								)} */}
-								{!category && (
-									<option value="" disabled>
-										{' '}
-										Room Category{' '}
-									</option>
-								)}
+								<option value="">Select Category</option>
 								{props.Room_Categories.map((RoomCategory, i) => {
 									return (
 										<option value={RoomCategory.id} key={i}>

@@ -2,6 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
+import { connect } from 'react-redux';
+import AsyncSelect from 'react-select/async';
+import { withRouter } from 'react-router-dom';
+import { SubmissionError } from 'redux-form';
+import { compose } from 'redux';
+
 import {
 	diagnosisAPI,
 	patientAPI,
@@ -11,17 +17,7 @@ import {
 import waiting from '../../assets/images/waiting.gif';
 import { request } from '../../services/utilities';
 import { notifyError, notifySuccess } from '../../services/notify';
-import { connect } from 'react-redux';
-import AsyncSelect from 'react-select/async';
-import { withRouter } from 'react-router-dom';
 import searchingGIF from '../../assets/images/searching.gif';
-
-import {
-	get_all_services,
-	getAllServiceCategory,
-} from '../../actions/settings';
-import { SubmissionError } from 'redux-form';
-import { compose } from 'redux';
 
 const NewProcedure = props => {
 	const { register, handleSubmit, setValue, triggerValidation } = useForm({
@@ -68,12 +64,12 @@ const NewProcedure = props => {
 
 	useEffect(() => {
 		if (!loaded) {
-			props
-				.getAllServiceCategory()
-				.then(_ => {})
-				.catch(e => {
-					notifyError(e.message || 'could not fetch service categories');
-				});
+			// props
+			// 	.getAllServiceCategory()
+			// 	.then(_ => {})
+			// 	.catch(e => {
+			// 		notifyError(e.message || 'could not fetch service categories');
+			// 	});
 
 			let data = [];
 			let services = [];
@@ -110,7 +106,6 @@ const NewProcedure = props => {
 	const fetchServicesByCategory = async id => {
 		try {
 			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
-			props.get_all_services(rs);
 		} catch (error) {
 			console.log(error);
 			notifyError('error fetching imaging requests for the patient');
@@ -345,10 +340,4 @@ const mapStateToProps = (state, ownProps) => {
 	};
 };
 
-export default compose(
-	withRouter,
-	connect(mapStateToProps, {
-		get_all_services,
-		getAllServiceCategory,
-	})
-)(NewProcedure);
+export default compose(withRouter, connect(mapStateToProps))(NewProcedure);

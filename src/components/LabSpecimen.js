@@ -1,12 +1,12 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 
 import { confirmAction, request, updateImmutable } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
-import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import { startBlock, stopBlock } from '../actions/redux-block';
+import TableLoading from './TableLoading';
 
 const LabSpecimen = ({ setRefresh }) => {
 	const initialState = { name: '', edit: false, create: true };
@@ -18,8 +18,6 @@ const LabSpecimen = ({ setRefresh }) => {
 	const [submitting, setSubmitting] = useState(false);
 
 	const dispatch = useDispatch();
-
-	const didMountRef = useRef(false);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -107,9 +105,11 @@ const LabSpecimen = ({ setRefresh }) => {
 			const url = `lab-tests/specimens/${item.id}`;
 			const rs = await request(url, 'DELETE', true);
 
-			const spes = specimens.filter(s => item.id !== rs.id);
+			const newSpecimens = specimens.filter(
+				s => item.id !== parseInt(rs.id, 10)
+			);
+			setSpecimens(newSpecimens);
 
-			setLoaded(false);
 			notifySuccess('Lab specimen deleted');
 			setRefresh(false);
 
@@ -130,15 +130,7 @@ const LabSpecimen = ({ setRefresh }) => {
 				<div className="pipelines-w">
 					<div className="row">
 						{!loaded ? (
-							<table>
-								<tbody>
-									<tr>
-										<td colSpan="4" className="text-center">
-											<img alt="searching" src={searchingGIF} />
-										</td>
-									</tr>
-								</tbody>
-							</table>
+							<TableLoading />
 						) : (
 							<>
 								{specimens.map((item, i) => {

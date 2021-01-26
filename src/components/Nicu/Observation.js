@@ -20,7 +20,7 @@ function Observation(props) {
 	const [ethValue, setEthValue] = useState('');
 	const [maritalValue, setMaritalValue] = useState('');
 
-	const hmoList = useSelector(state => state.settings.hmos);
+	const hmoList = useSelector(state => state.hmo.hmo_list);
 	const hmos = hmoList.map(hmo => {
 		return {
 			value: hmo.id,

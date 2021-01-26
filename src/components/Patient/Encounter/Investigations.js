@@ -6,12 +6,10 @@ import { connect, useDispatch } from 'react-redux';
 import { serviceAPI, serviceCenter } from '../../../services/constants';
 import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
 import {
-	get_all_services,
 	getAllLabGroups,
 	getAllLabTestCategories,
 	getAllLabTestParameters,
 	fetchLabTests,
-	getAllServiceCategory,
 } from '../../../actions/settings';
 import { notifyError } from '../../../services/notify';
 import { request } from '../../../services/utilities';
@@ -44,7 +42,6 @@ const Investigations = props => {
 	const fetchServicesByCategory = async id => {
 		try {
 			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
-			props.get_all_services(rs);
 		} catch (error) {
 			notifyError('error fetching imaging requests for the patient');
 		}
@@ -177,12 +174,6 @@ const Investigations = props => {
 
 	useEffect(() => {
 		if (!loaded) {
-			props
-				.getAllServiceCategory()
-				.then(response => {})
-				.catch(e => {
-					notifyError(e.message || 'could not fetch service categories');
-				});
 			let data = [];
 			let services = [];
 			props.ServiceCategories.forEach((item, index) => {
@@ -596,8 +587,6 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps, {
 	loadEncounterData,
 	loadEncounterForm,
-	get_all_services,
-	getAllServiceCategory,
 	getAllLabGroups,
 	fetchLabTests,
 	getAllLabTestParameters,

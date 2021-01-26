@@ -15,10 +15,6 @@ import Select from 'react-select';
 import { connect, useDispatch } from 'react-redux';
 import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
 import { loadInvCategories, loadInventories } from '../../../actions/inventory';
-import {
-	get_all_services,
-	getAllServiceCategory,
-} from '../../../actions/settings';
 import { notifyError } from '../../../services/notify';
 import { request } from '../../../services/utilities';
 
@@ -117,13 +113,6 @@ const PlanForm = props => {
 
 	useEffect(() => {
 		if (!loaded) {
-			props
-				.getAllServiceCategory()
-				.then(response => {})
-				.catch(e => {
-					notifyError(e.message || 'could not fetch service categories');
-				});
-
 			let data = [];
 			let services = [];
 			props.ServiceCategories.forEach((item, index) => {
@@ -159,7 +148,6 @@ const PlanForm = props => {
 	const fetchServicesByCategory = async id => {
 		try {
 			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
-			props.get_all_services(rs);
 		} catch (error) {
 			notifyError('error fetching imaging requests for the patient');
 		}
@@ -842,8 +830,6 @@ const mapStateToProps = (state, ownProps) => {
 export default connect(mapStateToProps, {
 	loadEncounterData,
 	loadEncounterForm,
-	get_all_services,
-	getAllServiceCategory,
 	loadInvCategories,
 	loadInventories,
 })(PlanForm);

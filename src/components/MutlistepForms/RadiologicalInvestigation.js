@@ -1,20 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Field, reduxForm, formValueSelector } from 'redux-form';
+
 import { validate } from '../../services/validationSchemas';
 import {
 	renderSelect,
 	renderMultiselect,
 	renderTextArea,
 } from '../../services/utilities';
-import { Field, reduxForm, formValueSelector } from 'redux-form';
-
 import { notifyError } from '../../services/notify';
-
-import {
-	get_all_services,
-	getAllService,
-	getAllServiceCategory,
-} from '../../actions/settings';
 
 const selector = formValueSelector('antennatalAssessment');
 class RadiologicalInvestigation extends Component {
@@ -32,10 +26,7 @@ class RadiologicalInvestigation extends Component {
 		let data = [];
 		console.log(this.props.ServiceCategories);
 		if (this.props.ServiceCategories.length === 0) {
-			Promise.all([
-				this.props.getAllServiceCategory(),
-				this.props.getAllService(),
-			])
+			Promise.all([this.props.getAllServiceCategory()])
 				.then(response => {
 					data = this.filterServiceCategory();
 					this.setState({
@@ -167,9 +158,4 @@ const mapStateToProps = state => {
 	};
 };
 
-export default connect(mapStateToProps, {
-	get_all_services,
-	getAllService,
-
-	getAllServiceCategory,
-})(RadiologicalInvestigation);
+export default connect(mapStateToProps)(RadiologicalInvestigation);

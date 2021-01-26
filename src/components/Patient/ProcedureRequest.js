@@ -10,10 +10,6 @@ import { diagnosisAPI, patientAPI, serviceAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request } from '../../services/utilities';
 import { notifyError, notifySuccess } from '../../services/notify';
-import {
-	get_all_services,
-	getAllServiceCategory,
-} from '../../actions/settings';
 import searchingGIF from '../../assets/images/searching.gif';
 
 const ProcedureRequest = props => {
@@ -27,12 +23,12 @@ const ProcedureRequest = props => {
 
 	useEffect(() => {
 		if (!loaded) {
-			props
-				.getAllServiceCategory()
-				.then(response => {})
-				.catch(e => {
-					notifyError(e.message || 'could not fetch service categories');
-				});
+			// props
+			// 	.getAllServiceCategory()
+			// 	.then(response => {})
+			// 	.catch(e => {
+			// 		notifyError(e.message || 'could not fetch service categories');
+			// 	});
 
 			let data = [];
 			let services = [];
@@ -69,7 +65,6 @@ const ProcedureRequest = props => {
 	const fetchServicesByCategory = async id => {
 		try {
 			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
-			props.get_all_services(rs);
 		} catch (error) {
 			// console.log(error);
 			notifyError('error fetching imaging requests for the patient');
@@ -250,10 +245,4 @@ const mapStateToProps = (state, ownProps) => {
 	};
 };
 
-export default compose(
-	withRouter,
-	connect(mapStateToProps, {
-		get_all_services,
-		getAllServiceCategory,
-	})
-)(ProcedureRequest);
+export default compose(withRouter, connect(mapStateToProps))(ProcedureRequest);

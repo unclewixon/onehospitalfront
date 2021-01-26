@@ -23,7 +23,10 @@ import {
 const validate = values => {
 	const errors = {};
 	if (!values.amount_paid) {
-		errors.amount_paid = 'enter Amount';
+		errors.amount_paid = 'enter amount';
+	}
+	if (!values.voucher_code && values.payment_type === 'Voucher') {
+		errors.voucher_code = 'enter voucher';
 	}
 	return errors;
 };
@@ -36,11 +39,11 @@ class ModalApproveTransaction extends Component {
 		voucherList: [],
 		voucherAmount: 0,
 		activeData: null,
+		voucherId: null,
 	};
 
 	componentDidMount() {
 		const { approve_hmo_transaction } = this.props;
-		console.log(this.props);
 		if (approve_hmo_transaction) {
 			this.setState({ amountClass: 'col-sm-12' });
 		}
@@ -52,17 +55,31 @@ class ModalApproveTransaction extends Component {
 	}
 
 	approveTransaction = async data => {
-		const { items, approve_hmo_transaction, pendingTransactions } = this.props;
-		let id = items.id;
-		let newTransactions;
-		if (approve_hmo_transaction) {
-			data.payment_type = 'Hmo';
-			id = items.id;
-		}
-		this.setState({ submitting: true });
 		try {
+			const { voucherId } = this.state;
+			const {
+				items,
+				approve_hmo_transaction,
+				pendingTransactions,
+			} = this.props;
+
+			let id = items.id;
+			let newTransactions;
+			if (approve_hmo_transaction) {
+				data.payment_type = 'Hmo';
+				id = items.id;
+			}
+
+			const { voucher_code, ...others } = data;
+			const datum = {
+				...others,
+				voucher_id: voucherId,
+				patient_id: items.patient.id,
+			};
+
+			this.setState({ submitting: true });
 			const url = `transactions/${id}/process`;
-			const rs = await request(url, 'PATCH', true, data);
+			const rs = await request(url, 'PATCH', true, datum);
 
 			if (rs.success) {
 				this.props.reset('approve_transaction');
@@ -74,6 +91,11 @@ class ModalApproveTransaction extends Component {
 				this.setState({ submitting: false });
 				this.props.getTransactionData(rs.transaction);
 				this.props.closeModals(true);
+			} else {
+				this.setState({ submitting: false });
+				throw new SubmissionError({
+					_error: rs.message,
+				});
 			}
 		} catch (e) {
 			this.setState({ submitting: false });
@@ -87,46 +109,35 @@ class ModalApproveTransaction extends Component {
 		let newValue = event.target.value;
 		this.setState({ hidden: true });
 		if (newValue === 'Voucher') {
-			//const { items } = this.props;
-			//let data = { patient_id: items.q_patient_id };
-			//this.fetchVoucher(data);
 			this.setState({ hidden: false });
 		}
 		console.log(newValue);
 	};
 
 	handleChangeVoucher = async event => {
-		let newValue = event.target.value;
-		//const { voucher } = this.props;
-		//let selected = voucher.find(c => c.q_id === newValue);
-		//this.props.dispatch(this.props.change('voucher_amount', selected.q_amount));
-		const datum = { voucher_code: newValue };
 		try {
-			const url = 'voucher/search_code';
-			const res = await request(url, 'POST', true, datum);
-
-			if (res.success) {
-				this.setState({ voucherAmount: res.q_amount });
-				this.props.dispatch(this.props.change('voucher_amount', res.q_amount));
-				notifySuccess('voucher is active!');
+			const url = `vouchers/${event.target.value}`;
+			const rs = await request(url, 'GET', true);
+			if (rs.success) {
+				this.setState({
+					voucherId: rs.voucher.id,
+					voucherAmount: rs.voucher.amount,
+				});
+				this.props.dispatch(
+					this.props.change('voucher_amount', rs.voucher.amount)
+				);
 			} else {
-				notifyError(res.message);
+				notifyError(rs.message);
 			}
 		} catch (e) {
-			const _message = e.message
-				.map(m => Object.values(m.constraints).join(', '))
-				.join(', ');
-			notifyError(_message || 'could not search voucher');
+			notifyError(e.message || 'could not find voucher');
 		}
 	};
 
 	fetchVoucher = async data => {
 		try {
-			const rs = await request(
-				`${vouchersAPI}/list?patient_id=${data.patient_id}`,
-				'GET',
-				true
-			);
+			const url = `${vouchersAPI}/list?patient_id=${data.patient_id}`;
+			const rs = await request(url, 'GET', true);
 			this.props.loadVoucher(rs);
 		} catch (error) {
 			console.log(error);
@@ -156,7 +167,7 @@ class ModalApproveTransaction extends Component {
 			approve_hmo_transaction,
 			approveTransaction,
 		} = this.props;
-		const { submitting, hidden, voucherList, amountClass } = this.state;
+		const { submitting, hidden, amountClass } = this.state;
 		return (
 			<div
 				className="onboarding-modal modal fade animated show"
@@ -218,8 +229,8 @@ class ModalApproveTransaction extends Component {
 										<div className="col-sm-6">
 											<div className="form-group">
 												<Field
-													id="voucher_id"
-													name="voucher_id"
+													id="voucher_code"
+													name="voucher_code"
 													component={renderTextInput}
 													onChange={this.handleChangeVoucher}
 													label="Voucher"

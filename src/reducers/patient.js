@@ -8,7 +8,6 @@ import {
 	UPDATE_ALLERGY,
 	DELETE_ALLERGY,
 	GET_PHYSIOTHERAPIES,
-	GET_DENTISTRY_REQUESTS,
 	GET_IMAGING_REQUESTS,
 	GET_OPTHALMOLOGY_REQUESTS,
 	LOAD_VITALS,
@@ -50,7 +49,6 @@ const INITIAL_STATE = {
 	allergies: [],
 	encounters: [],
 	physiotherapies: [],
-	dentistryRequests: [],
 	imagingRequests: [],
 	opthalmologyRequests: [],
 	patient_upload: [],
@@ -133,8 +131,6 @@ const patient = (state = INITIAL_STATE, action) => {
 			};
 		case GET_PHYSIOTHERAPIES:
 			return { ...state, physiotherapies: action.payload };
-		case GET_DENTISTRY_REQUESTS:
-			return { ...state, dentistryRequests: action.payload };
 		case GET_IMAGING_REQUESTS:
 			return { ...state, imagingRequests: action.payload };
 		case GET_OPTHALMOLOGY_REQUESTS:

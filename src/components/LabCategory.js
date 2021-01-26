@@ -3,7 +3,6 @@ import { connect, useDispatch } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 
 import waiting from '../assets/images/waiting.gif';
-import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import { confirmAction, request } from '../services/utilities';
 import {
@@ -12,6 +11,7 @@ import {
 	updateLabCategory,
 	deleteLabCategory,
 } from '../actions/settings';
+import TableLoading from './TableLoading';
 
 const LabCategory = props => {
 	const initialState = {
@@ -115,15 +115,7 @@ const LabCategory = props => {
 				<div className="pipelines-w">
 					<div className="row">
 						{!dataLoaded ? (
-							<table>
-								<tbody>
-									<tr>
-										<td colSpan="4" className="text-center">
-											<img alt="searching" src={searchingGIF} />
-										</td>
-									</tr>
-								</tbody>
-							</table>
+							<TableLoading />
 						) : (
 							<>
 								{props.categories.map((item, i) => {

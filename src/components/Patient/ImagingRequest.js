@@ -3,16 +3,11 @@ import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
+
 import { patientAPI, serviceAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
-
 import { request } from '../../services/utilities';
-
-import {
-	get_all_services,
-	getAllServiceCategory,
-} from '../../actions/settings';
 
 const ImagingRequest = props => {
 	let history = useHistory();
@@ -27,12 +22,12 @@ const ImagingRequest = props => {
 
 	useEffect(() => {
 		if (!loaded) {
-			props
-				.getAllServiceCategory()
-				.then(response => {})
-				.catch(e => {
-					notifyError(e.message || 'could not fetch service categories');
-				});
+			// props
+			// 	.getAllServiceCategory()
+			// 	.then(response => {})
+			// 	.catch(e => {
+			// 		notifyError(e.message || 'could not fetch service categories');
+			// 	});
 
 			let data = [];
 			let services = [];
@@ -107,7 +102,6 @@ const ImagingRequest = props => {
 	const fetchServicesByCategory = async id => {
 		try {
 			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
-			props.get_all_services(rs);
 		} catch (error) {
 			console.log(error);
 			notifyError('error fetching imaging requests for the patient');
@@ -209,7 +203,4 @@ const mapStateToProps = state => {
 		ServiceCategories: state.settings.service_categories,
 	};
 };
-export default connect(mapStateToProps, {
-	get_all_services,
-	getAllServiceCategory,
-})(ImagingRequest);
+export default connect(mapStateToProps)(ImagingRequest);

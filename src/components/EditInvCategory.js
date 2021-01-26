@@ -21,16 +21,12 @@ class EditInvCategory extends Component {
 		submitting: false,
 	};
 
-	editCategory = async data => {
-		const { categoryID } = this.props;
-		this.setState({ submitting: true });
+	doEditCategory = async data => {
 		try {
-			const rs = await request(
-				`${inventoryCatAPI}/${categoryID}/update`,
-				'PATCH',
-				true,
-				data
-			);
+			const { categoryID } = this.props;
+			this.setState({ submitting: true });
+			const url = `${inventoryCatAPI}/${categoryID}/update`;
+			const rs = await request(url, 'PATCH', true, data);
 			this.props.updateInvCategory(rs);
 			notifySuccess('category saved!');
 			this.setState({ submitting: false });
@@ -50,7 +46,7 @@ class EditInvCategory extends Component {
 		return (
 			<div className="element-wrapper">
 				<div className="element-box pipeline white lined-warning p-3 m-0">
-					<form onSubmit={handleSubmit(this.editCategory)}>
+					<form onSubmit={handleSubmit(this.doEditCategory)}>
 						<h6 className="form-header">Edit Category</h6>
 						{error && (
 							<div

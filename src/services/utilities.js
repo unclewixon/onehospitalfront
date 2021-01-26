@@ -1,3 +1,4 @@
+/* eslint-disable no-sparse-arrays */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import numeral from 'numeral';
@@ -631,4 +632,9 @@ export const itemRender = (current, type, originalElement) => {
 		return <a>Next</a>;
 	}
 	return originalElement;
+};
+
+export const nth = n => {
+	const _nth = [, 'st', 'nd', 'rd'][(n % 100 >> 3) ^ 1 && n % 10] || 'th';
+	return `${n}${_nth} Floor`;
 };

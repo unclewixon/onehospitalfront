@@ -9,11 +9,7 @@ import { patientAPI, searchAPI } from '../../services/constants';
 import { request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
-import {
-	getAllRequestServices,
-	getAllService,
-	getAllServiceCategory,
-} from '../../actions/settings';
+import { getAllRequestServices } from '../../actions/settings';
 import SpecializationSession from '../../components/Patient/SpecializationSession';
 
 const NewPhysiotherapy = props => {
@@ -158,19 +154,19 @@ const NewPhysiotherapy = props => {
 
 	useEffect(() => {
 		if (!loaded) {
-			props
-				.getAllService()
-				.then(response => {})
-				.catch(e => {
-					notifyError(e.message || 'could not fetch services list');
-				});
+			// props
+			// 	.getAllService()
+			// 	.then(response => {})
+			// 	.catch(e => {
+			// 		notifyError(e.message || 'could not fetch services list');
+			// 	});
 
-			props
-				.getAllServiceCategory()
-				.then(response => {})
-				.catch(e => {
-					notifyError(e.message || 'could not fetch service categories');
-				});
+			// props
+			// 	.getAllServiceCategory()
+			// 	.then(response => {})
+			// 	.catch(e => {
+			// 		notifyError(e.message || 'could not fetch service categories');
+			// 	});
 
 			setLoaded(true);
 
@@ -316,6 +312,4 @@ const mapStateToProps = state => {
 };
 export default connect(mapStateToProps, {
 	getAllRequestServices,
-	getAllService,
-	getAllServiceCategory,
 })(NewPhysiotherapy);

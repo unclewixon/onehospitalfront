@@ -1,16 +1,16 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 import Tooltip from 'antd/lib/tooltip';
-import debounce from 'lodash.debounce';
 
 import { confirmAction, itemRender, request } from '../services/utilities';
-import searchingGIF from '../assets/images/searching.gif';
 import { notifyError, notifySuccess } from '../services/notify';
 import { getAllLabTests, deleteLabTest } from '../actions/settings';
 import ModalLabParameters from '../components/Modals/ModalLabParameters';
 import { startBlock, stopBlock } from '../actions/redux-block';
+import TableLoading from './TableLoading';
+import useSearchInputState from '../services/search-hook';
 
 const LabTest = props => {
 	const [loaded, setLoaded] = useState(false);
@@ -21,7 +21,7 @@ const LabTest = props => {
 	const [keyword, setKeyword] = useState('');
 	const [toggled, setToggled] = useState([]);
 
-	const hmos = useSelector(state => state.settings.hmos);
+	const hmos = useSelector(state => state.hmo.hmo_list);
 
 	const dispatch = useDispatch();
 
@@ -36,7 +36,9 @@ const LabTest = props => {
 			setMeta(meta);
 			window.scrollTo({ top: 0, behavior: 'smooth' });
 			setLoaded(true);
+			dispatch(stopBlock());
 		} catch (e) {
+			dispatch(stopBlock());
 			notifyError(e.message || 'could not fetch lab tests');
 		}
 	};
@@ -54,11 +56,12 @@ const LabTest = props => {
 
 	const onDeleteLabTest = async data => {
 		try {
-			const rs = await request(`lab-tests/${data.id}`, 'DELETE', true);
-			dispatch(deleteLabTest(rs));
-			setLoaded(false);
+			dispatch(startBlock());
+			await request(`lab-tests/${data.id}`, 'DELETE', true);
+			await fetchTests(currentPage, keyword);
 			notifySuccess('Lab test deleted');
 		} catch (error) {
+			dispatch(stopBlock());
 			notifyError('Error deleting lab test');
 		}
 	};
@@ -84,19 +87,19 @@ const LabTest = props => {
 		setLabTest(null);
 	};
 
-	const search = useCallback(
-		debounce(async q => {
-			dispatch(startBlock());
-			await fetchTests(1, q);
-			dispatch(stopBlock());
-		}, 1000),
-		[]
-	);
+	const onSearchChange = item => {
+		setSearchValue(item);
+	};
 
-	useEffect(() => {
-		search(keyword);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [keyword]);
+	const [searchValue, setSearchValue] = useSearchInputState(() => {
+		doSearch(searchValue ?? '');
+	});
+
+	const doSearch = async q => {
+		dispatch(startBlock());
+		await fetchTests(1, q);
+		dispatch(stopBlock());
+	};
 
 	const doToggle = index => {
 		const found = toggled.find(t => t.id === index);
@@ -110,17 +113,15 @@ const LabTest = props => {
 	return (
 		<div className="row">
 			<div className="col-lg-12">
-				<div className="rentals-list-w">
+				<div className="rentals-list-w" style={{ flexDirection: 'column' }}>
 					{!loaded ? (
-						<div className="text-center">
-							<img alt="searching" src={searchingGIF} />
-						</div>
+						<TableLoading />
 					) : (
 						hmos.map((hmo, i) => {
 							const toggle = toggled.find(t => t.id === i);
 							return (
 								<div
-									className="filter-side"
+									className="filter-side mb-2"
 									style={{ flex: '0 0 100%' }}
 									key={i}>
 									<div className={`filter-w ${toggle ? '' : 'collapsed'}`}>
@@ -137,7 +138,10 @@ const LabTest = props => {
 														<input
 															placeholder="Search lab tests..."
 															value={keyword}
-															onChange={e => setKeyword(e.target.value)}
+															onChange={e => {
+																setKeyword(e.target.value);
+																onSearchChange(e.target.value);
+															}}
 														/>
 													</div>
 												</div>

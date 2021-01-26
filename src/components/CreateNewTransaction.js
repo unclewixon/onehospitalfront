@@ -15,11 +15,7 @@ import {
 import { request } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
-import {
-	get_all_services,
-	getAllRequestServices,
-	getAllServiceCategory,
-} from '../actions/settings';
+import { getAllRequestServices } from '../actions/settings';
 
 const CreateNewTransaction = props => {
 	let history = useHistory();
@@ -36,7 +32,7 @@ const CreateNewTransaction = props => {
 
 	const didMountRef = useRef(false);
 
-	let hmoList = useSelector(state => state.settings.hmos);
+	let hmoList = useSelector(state => state.hmo.hmo_list);
 	let hmos = hmoList.map(hmo => {
 		return {
 			value: hmo.id,
@@ -116,12 +112,12 @@ const CreateNewTransaction = props => {
 
 	useEffect(() => {
 		if (!loaded) {
-			props
-				.getAllServiceCategory()
-				.then(response => {})
-				.catch(e => {
-					notifyError(e.message || 'could not fetch service categories');
-				});
+			// props
+			// 	.getAllServiceCategory()
+			// 	.then(response => {})
+			// 	.catch(e => {
+			// 		notifyError(e.message || 'could not fetch service categories');
+			// 	});
 
 			let data = [];
 			let services = [];
@@ -166,7 +162,6 @@ const CreateNewTransaction = props => {
 	const fetchServicesByCategory = async id => {
 		try {
 			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
-			props.get_all_services(rs);
 		} catch (error) {
 			console.log(error);
 			notifyError('error fetching imaging requests for the patient');
@@ -398,8 +393,6 @@ const mapStateToProps = state => {
 export default withRouter(
 	connect(mapStateToProps, {
 		getAllRequestServices,
-		get_all_services,
 		getAllHmos,
-		getAllServiceCategory,
 	})(CreateNewTransaction)
 );

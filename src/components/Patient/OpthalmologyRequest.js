@@ -11,11 +11,7 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
 import { serviceAPI } from '../../services/constants';
 
-import {
-	get_all_services,
-	getAllRequestServices,
-	getAllServiceCategory,
-} from '../../actions/settings';
+import { getAllRequestServices } from '../../actions/settings';
 
 const OpthalmologyRequest = props => {
 	let history = useHistory();
@@ -95,10 +91,9 @@ const OpthalmologyRequest = props => {
 	};
 
 	useEffect(() => {
-		const { getAllRequestServices, getAllServiceCategory } = props;
+		const { getAllRequestServices } = props;
 		if (!loaded) {
 			getAllRequestServices();
-			getAllServiceCategory();
 			opthalmologyValue();
 
 			setLoaded(true);
@@ -216,7 +211,5 @@ const mapStateToProps = state => {
 };
 
 export default connect(mapStateToProps, {
-	get_all_services,
 	getAllRequestServices,
-	getAllServiceCategory,
 })(OpthalmologyRequest);

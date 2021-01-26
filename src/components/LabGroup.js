@@ -5,8 +5,8 @@ import Tooltip from 'antd/lib/tooltip';
 
 import { confirmAction, request, updateImmutable } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
-import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
+import TableLoading from './TableLoading';
 
 const LabGroup = () => {
 	const initialState = {
@@ -120,6 +120,8 @@ const LabGroup = () => {
 		try {
 			const url = `lab-tests/groups/${item.id}`;
 			const rs = await request(url, 'DELETE', true);
+			const newGroups = groups.filter(s => item.id !== parseInt(rs.id, 10));
+			setGroups(newGroups);
 			setLoaded(false);
 			notifySuccess('Lab group deleted');
 		} catch (error) {
@@ -147,15 +149,7 @@ const LabGroup = () => {
 				<div className="pipelines-w">
 					<div className="row">
 						{!loaded ? (
-							<table>
-								<tbody>
-									<tr>
-										<td colSpan="4" className="text-center">
-											<img alt="searching" src={searchingGIF} />
-										</td>
-									</tr>
-								</tbody>
-							</table>
+							<TableLoading />
 						) : (
 							<>
 								{groups.map((item, i) => {

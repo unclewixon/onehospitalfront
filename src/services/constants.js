@@ -273,10 +273,6 @@ export const requestTypes = [
 		label: 'Physiotherapy',
 	},
 	{
-		value: 'Dentistry',
-		label: 'Dentistry',
-	},
-	{
 		value: 'Opthalmology',
 		label: 'Opthalmology',
 	},

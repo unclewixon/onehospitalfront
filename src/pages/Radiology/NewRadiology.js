@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import { useHistory, withRouter } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
+
 import { patientAPI, searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
-import { getAllService } from '../../actions/settings';
 import searchingGIF from '../../assets/images/searching.gif';
 
 const NewRadiology = props => {
@@ -110,15 +110,15 @@ const NewRadiology = props => {
 
 	useEffect(() => {
 		if (!dataLoaded) {
-			props
-				.getAllService()
-				.then(response => {
-					setDataLoaded(true);
-				})
-				.catch(e => {
-					setDataLoaded(true);
-					notifyError(e.message || 'could not fetch services list');
-				});
+			// props
+			// 	.getAllService()
+			// 	.then(response => {
+			// 		setDataLoaded(true);
+			// 	})
+			// 	.catch(e => {
+			// 		setDataLoaded(true);
+			// 		notifyError(e.message || 'could not fetch services list');
+			// 	});
 
 			// setServiceList(props.ServicesList);
 			filterRequest();
@@ -259,8 +259,4 @@ const mapStateToProps = state => {
 	};
 };
 
-export default withRouter(
-	connect(mapStateToProps, {
-		getAllService,
-	})(NewRadiology)
-);
+export default withRouter(connect(mapStateToProps)(NewRadiology));

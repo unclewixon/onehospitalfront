@@ -1,17 +1,18 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import Pagination from 'antd/lib/pagination';
 
 import {
-	add_service_category,
-	update_service_category,
-	delete_service_category,
-} from '../actions/settings';
-import { confirmAction, request } from '../services/utilities';
+	confirmAction,
+	request,
+	updateImmutable,
+	itemRender,
+} from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
 import waiting from '../assets/images/waiting.gif';
+import TableLoading from './TableLoading';
 
-const ServiceCategoryList = props => {
+const ServiceCategoryList = ({ loaded, setLoaded }) => {
 	const initialState = {
 		name: '',
 		edit: false,
@@ -21,20 +22,43 @@ const ServiceCategoryList = props => {
 	const [working, setWorking] = useState(false);
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
 	const [payload, getDataToEdit] = useState(null);
+	const [categories, setCategories] = useState([]);
+	const [list, setList] = useState([]);
+	const [currentPage, setCurrentPage] = useState(1);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
 		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onAddServiceCat = async e => {
-		e.preventDefault();
+	useEffect(() => {
+		const fetchCategories = async () => {
+			try {
+				setCurrentPage(1);
+				const rs = await request('services/categories', 'GET', true);
+				setList([...rs]);
+				setCategories([...rs.slice(0, 10)]);
+				setLoaded(true);
+			} catch (error) {
+				notifyError(error.message || 'could not fetch services categories!');
+			}
+		};
 
+		if (!loaded) {
+			fetchCategories();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [loaded]);
+
+	const onAddServiceCat = async e => {
 		try {
+			e.preventDefault();
 			setWorking(true);
-			let data = { name };
-			const rs = await request(`services/categories`, 'POST', true, data);
-			props.add_service_category(rs);
+			const data = { name };
+			const rs = await request('services/categories', 'POST', true, data);
+			const lists = [...list, rs];
+			setList(lists);
+			setCategories([...lists.slice((currentPage - 1) * 10, currentPage * 10)]);
 			setWorking(false);
 			setState({ ...initialState });
 			notifySuccess('Service category created');
@@ -46,13 +70,17 @@ const ServiceCategoryList = props => {
 	};
 
 	const onEditServiceCategory = async e => {
-		e.preventDefault();
 		try {
+			e.preventDefault();
 			setWorking(true);
-			let data = { name };
+			const data = { name };
 			const url = `services/categories/${payload.id}/update`;
 			const rs = await request(url, 'PATCH', true, data);
-			props.update_service_category(rs, payload);
+			const newCategories = updateImmutable(list, rs);
+			setList(newCategories);
+			setCategories([
+				...newCategories.slice((currentPage - 1) * 10, currentPage * 10),
+			]);
 			setState({ ...initialState });
 			setSubmitButton({ create: true, edit: false });
 			setWorking(false);
@@ -82,8 +110,11 @@ const ServiceCategoryList = props => {
 
 	const onDeleteServiceCategory = async data => {
 		try {
-			await request(`services/categories/${data.id}`, 'DELETE', true);
-			props.delete_service_category(data);
+			const url = `services/categories/${data.id}`;
+			const rs = await request(url, 'DELETE', true);
+			const lists = [...list.filter(c => c.id !== parseInt(rs.id, 10))];
+			setList(lists);
+			setCategories([...lists.slice((currentPage - 1) * 10, currentPage * 10)]);
 			setWorking(false);
 			notifySuccess('Service category deleted');
 		} catch (error) {
@@ -92,8 +123,14 @@ const ServiceCategoryList = props => {
 		}
 	};
 
+	// eslint-disable-next-line no-unused-vars
 	const confirmDelete = data => {
 		confirmAction(onDeleteServiceCategory, data);
+	};
+
+	const onNavigatePage = page => {
+		setCurrentPage(parseInt(page, 10));
+		setCategories([...list.slice((page - 1) * 10, page * 10)]);
 	};
 
 	return (
@@ -101,46 +138,62 @@ const ServiceCategoryList = props => {
 			<div className="col-lg-8">
 				<div className="element-wrapper">
 					<div className="element-box p-3 m-0">
-						<div className="table-responsive">
-							<table className="table table-striped">
-								<thead>
-									<tr>
-										<th>S/N</th>
-										<th>Name</th>
-										<th className="text-right">Actions</th>
-									</tr>
-								</thead>
-								<tbody>
-									{props.serviceCategories.map((category, i) => {
-										return (
-											<tr key={i}>
-												<td>{i + 1}</td>
-												<td>
-													<div className="value">{category.name}</div>
-												</td>
-												<td className="row-actions text-right">
-													<a onClick={() => onClickEdit(category)}>
-														<i className="os-icon os-icon-ui-49"></i>
-													</a>
-													<a
-														className="danger"
-														onClick={() => confirmDelete(category)}>
-														<i className="os-icon os-icon-ui-15"></i>
-													</a>
+						{!loaded ? (
+							<TableLoading />
+						) : (
+							<div className="table-responsive">
+								<table className="table table-striped">
+									<thead>
+										<tr>
+											<th>S/N</th>
+											<th>Name</th>
+											<th className="text-right">Actions</th>
+										</tr>
+									</thead>
+									<tbody>
+										{categories.map((category, i) => {
+											return (
+												<tr key={i}>
+													<td>{category.id}</td>
+													<td>
+														<div className="value">{category.name}</div>
+													</td>
+													<td className="row-actions text-right">
+														<a onClick={() => onClickEdit(category)}>
+															<i className="os-icon os-icon-ui-49"></i>
+														</a>
+														{/* <a
+															className="danger"
+															onClick={() => confirmDelete(category)}>
+															<i className="os-icon os-icon-ui-15"></i>
+														</a> */}
+													</td>
+												</tr>
+											);
+										})}
+										{categories.length === 0 && (
+											<tr>
+												<td className="text-center" colSpan="3">
+													No categories created!
 												</td>
 											</tr>
-										);
-									})}
-									{props.serviceCategories.length === 0 && (
-										<tr>
-											<td className="text-center" colSpan="3">
-												No categories created!
-											</td>
-										</tr>
-									)}
-								</tbody>
-							</table>
-						</div>
+										)}
+									</tbody>
+								</table>
+								{list.length > 0 && (
+									<div className="pagination pagination-center mt-4">
+										<Pagination
+											current={currentPage}
+											pageSize={10}
+											total={list.length}
+											showTotal={total => `Total ${total} categories`}
+											itemRender={itemRender}
+											onChange={current => onNavigatePage(current)}
+										/>
+									</div>
+								)}
+							</div>
+						)}
 					</div>
 				</div>
 			</div>
@@ -203,14 +256,4 @@ const ServiceCategoryList = props => {
 	);
 };
 
-const mapStateToProps = state => {
-	return {
-		serviceCategories: state.settings.service_categories,
-	};
-};
-
-export default connect(mapStateToProps, {
-	add_service_category,
-	update_service_category,
-	delete_service_category,
-})(ServiceCategoryList);
+export default ServiceCategoryList;

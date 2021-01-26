@@ -25,16 +25,13 @@ import {
 	TOGGLE_CREATE_RISK_ASSESSMENT,
 	TOGGLE_CREATE_RECORD_DELIVERY,
 	TOGGLE_CREATE_RECORD_VITAL,
-	TOGGLE_UPLOAD_SERVICE,
 	TOGGLE_UPLOAD_HMO,
-	TOGGLE_EDIT_SERIVCE,
 	TOGGLE_CREATE_CLINICAL_TASK,
 	TOGGLE_OPEN_ENCOUNTER,
 	TOGGLE_ADD_CAFETERIA_FILE,
 	TOGGLE_UPLOAD_RADIOLOGY,
 	TOGGLE_APPROVE_TRANSACTION,
 	TOGGLE_APPLY_VOUCHER,
-	TOGGLE_UPLOAD_HMO_TARIFF,
 	TOGGLE_APPROVE_HMO_TRANSACTION,
 	TOGGLE_ANTENATAL_DETAIL,
 	TOGGLE_ANTENATAL_ASSESSMENT_DETAIL,
@@ -262,13 +259,6 @@ export const toggleCreateClinicalTask = status => {
 	};
 };
 
-export const toggleUploadService = status => {
-	return {
-		type: TOGGLE_UPLOAD_SERVICE,
-		payload: status,
-	};
-};
-
 export const toggleUploadRadiology = status => {
 	return {
 		type: TOGGLE_UPLOAD_RADIOLOGY,
@@ -280,20 +270,6 @@ export const toggleUploadHmo = status => {
 	return {
 		type: TOGGLE_UPLOAD_HMO,
 		payload: status,
-	};
-};
-
-export const toggleUploadHmoTariff = status => {
-	return {
-		type: TOGGLE_UPLOAD_HMO_TARIFF,
-		payload: status,
-	};
-};
-
-export const toggleEditService = (status, data) => {
-	return {
-		type: TOGGLE_EDIT_SERIVCE,
-		payload: { status, data },
 	};
 };
 
@@ -400,11 +376,8 @@ export const closeModals = () => {
 		dispatch(toggleCreateClinicalTask(false));
 		dispatch(toggleCreateRecordVital(false));
 		dispatch(toggleAddCafeteriaFile(false));
-		dispatch(toggleUploadService(false));
 		dispatch(toggleUploadRadiology(false));
 		dispatch(toggleUploadHmo(false));
-		dispatch(toggleUploadHmoTariff(false));
-		dispatch(toggleEditService(false, null));
 		dispatch(toggleOpenEncounter(false, null));
 		dispatch(toggleAntenatalDetail(false, null));
 		dispatch(toggleAntenatalAssessmentDetail(false, null));
@@ -594,35 +567,11 @@ export const viewPayPoint = (action, id) => {
 	};
 };
 
-export const uploadServiceModal = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleUploadService(action));
-	};
-};
-
 export const uploadHmo = action => {
 	return dispatch => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleUploadHmo(action));
-	};
-};
-
-export const uploadHmoTariff = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleUploadHmoTariff(action));
-	};
-};
-
-export const editService = (action, data) => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleEditService(action, data));
 	};
 };
 

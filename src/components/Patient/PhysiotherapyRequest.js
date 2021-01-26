@@ -8,11 +8,7 @@ import { patientAPI } from '../../services/constants';
 import { request } from '../../services/utilities';
 
 import { notifySuccess, notifyError } from '../../services/notify';
-import {
-	getAllRequestServices,
-	getAllService,
-	getAllServiceCategory,
-} from '../../actions/settings';
+import { getAllRequestServices } from '../../actions/settings';
 import SpecializationSession from './SpecializationSession';
 
 const PhysiotherapyRequest = props => {
@@ -138,19 +134,19 @@ const PhysiotherapyRequest = props => {
 
 	useEffect(() => {
 		if (!loaded) {
-			props
-				.getAllService()
-				.then(_ => {})
-				.catch(e => {
-					notifyError(e.message || 'could not fetch services list');
-				});
+			// props
+			// 	.getAllService()
+			// 	.then(_ => {})
+			// 	.catch(e => {
+			// 		notifyError(e.message || 'could not fetch services list');
+			// 	});
 
-			props
-				.getAllServiceCategory()
-				.then(_ => {})
-				.catch(e => {
-					notifyError(e.message || 'could not fetch service categories');
-				});
+			// props
+			// 	.getAllServiceCategory()
+			// 	.then(_ => {})
+			// 	.catch(e => {
+			// 		notifyError(e.message || 'could not fetch service categories');
+			// 	});
 
 			setServiceList(props.ServicesList);
 			setServiceCenter(props.ServiceCategories);
@@ -254,6 +250,4 @@ const mapStateToProps = state => {
 };
 export default connect(mapStateToProps, {
 	getAllRequestServices,
-	getAllService,
-	getAllServiceCategory,
 })(PhysiotherapyRequest);

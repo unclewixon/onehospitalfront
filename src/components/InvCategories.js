@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import CreateInvCategory from '../components/CreateInvCategory';
 import EditInvCategory from '../components/EditInvCategory';
 import { request } from '../services/utilities';

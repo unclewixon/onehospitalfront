@@ -1,12 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import { useSelector, connect } from 'react-redux';
+
 import { request, confirmAction, formatCurrency } from '../services/utilities';
-
 import waiting from '../assets/images/waiting.gif';
-import searchingGIF from '../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../services/notify';
-
+import TableLoading from './TableLoading';
 import {
 	add_room_category,
 	get_all_room_category,
@@ -17,19 +16,22 @@ import {
 const RoomCategory = props => {
 	const initialState = {
 		name: '',
-		hmoId: '',
+		hmo_id: '',
 		price: '',
-		discount: '',
+		hmo_tarrif: '',
 		edit: false,
 		create: true,
 	};
-	const [{ name, hmoId, price, discount }, setState] = useState(initialState);
-	const [Loading, setLoading] = useState(false);
+	const [{ name, hmo_id, price, hmo_tarrif }, setState] = useState(
+		initialState
+	);
+	const [loading, setLoading] = useState(false);
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
 	const [payload, getDataToEdit] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
-	const hmos = useSelector(state => state.settings.hmos);
+	const hmos = useSelector(state => state.hmo.hmo_list);
+	const user = useSelector(state => state.user.profile);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -37,16 +39,11 @@ const RoomCategory = props => {
 	};
 
 	const onAddRoom = async e => {
-		setLoading(true);
-		e.preventDefault();
-		let data = {
-			name,
-			hmoId,
-			price,
-			discount,
-		};
 		try {
-			const rs = await request(`rooms/categories`, 'POST', true, data);
+			e.preventDefault();
+			setLoading(true);
+			const data = { name, hmo_id, price, hmo_tarrif };
+			const rs = await request('rooms/categories', 'POST', true, data);
 			props.add_room_category(rs);
 			setLoading(false);
 			setState({ ...initialState });
@@ -59,22 +56,12 @@ const RoomCategory = props => {
 	};
 
 	const onEditRoomCategory = async e => {
-		setLoading(true);
-		e.preventDefault();
-
-		let data = {
-			name,
-			price,
-			hmoId,
-			discount,
-		};
 		try {
-			const rs = await request(
-				`rooms/categories/${payload.id}/update`,
-				'PATCH',
-				true,
-				data
-			);
+			e.preventDefault();
+			setLoading(true);
+			const data = { name, price, hmo_id, hmo_tarrif };
+			const url = `rooms/categories/${payload.id}/update`;
+			const rs = await request(url, 'PATCH', true, data);
 			props.update_room_category(rs, payload);
 			setState({ ...initialState });
 			setSubmitButton({ create: true, edit: false });
@@ -93,10 +80,10 @@ const RoomCategory = props => {
 		setState(prevState => ({
 			...prevState,
 			name: data.name,
-			discount: data.discount,
+			hmo_tarrif: data.hmoTarrif,
 			price: data.price,
 			id: data.id,
-			hmoId: data.hmo.id,
+			hmo_id: data.hmo.id,
 		}));
 		getDataToEdit(data);
 	};
@@ -108,7 +95,8 @@ const RoomCategory = props => {
 
 	const onDeleteRoomCategory = async data => {
 		try {
-			await request(`rooms/categories/${data.id}`, 'DELETE', true);
+			const url = `rooms/categories/${data.id}`;
+			await request(url, 'DELETE', true, { username: user.username });
 			props.delete_room_category(data);
 			setLoading(false);
 			notifySuccess('Room Category deleted');
@@ -125,7 +113,7 @@ const RoomCategory = props => {
 	useEffect(() => {
 		const fetchRoomCategory = async () => {
 			try {
-				const rs = await request(`rooms/categories`, 'GET', true);
+				const rs = await request('rooms/categories', 'GET', true);
 				props.get_all_room_category(rs);
 				setDataLoaded(true);
 			} catch (error) {
@@ -144,54 +132,55 @@ const RoomCategory = props => {
 			<div className="col-lg-8">
 				<div className="element-wrapper">
 					<div className="element-box m-0 p-3">
-						<div className="table-responsive">
-							<table className="table table-striped">
-								<thead>
-									<tr>
-										<th>Category Name</th>
-										<th>HMO</th>
-										<th>Price</th>
-										<th>Discount</th>
-										<th className="text-right">Action</th>
-									</tr>
-								</thead>
-								<tbody>
-									{!dataLoaded ? (
+						{!dataLoaded ? (
+							<TableLoading />
+						) : (
+							<div className="table-responsive">
+								<table className="table table-striped">
+									<thead>
 										<tr>
-											<td colSpan="4" className="text-center">
-												<img alt="searching" src={searchingGIF} />
-											</td>
+											<th>Category Name</th>
+											<th>HMO</th>
+											<th>Price</th>
+											<th>HMO Price</th>
+											<th className="text-right">Action</th>
 										</tr>
-									) : (
-										<>
-											{props.Room_Categories.map((RoomCategory, i) => {
-												return (
-													<tr key={i}>
-														<td>{RoomCategory.name}</td>
-														<td>{RoomCategory.hmo && RoomCategory.hmo.name}</td>
-														<td>{formatCurrency(RoomCategory.price)}</td>
-														<td>{RoomCategory.discount}</td>
-														<td className="row-actions text-right">
-															<a href="#">
-																<i
-																	className="os-icon os-icon-ui-49"
-																	onClick={() => onClickEdit(RoomCategory)}></i>
-															</a>
+									</thead>
+									<tbody>
+										{props.Room_Categories.map((RoomCategory, i) => {
+											return (
+												<tr key={i}>
+													<td>{RoomCategory.name}</td>
+													<td>{RoomCategory.hmo && RoomCategory.hmo.name}</td>
+													<td>{formatCurrency(RoomCategory.price)}</td>
+													<td>{formatCurrency(RoomCategory.hmoTarrif)}</td>
+													<td className="row-actions text-right">
+														<a href="#">
+															<i
+																className="os-icon os-icon-ui-49"
+																onClick={() => onClickEdit(RoomCategory)}></i>
+														</a>
 
-															<a
-																className="danger"
-																onClick={() => confirmDelete(RoomCategory)}>
-																<i className="os-icon os-icon-ui-15"></i>
-															</a>
-														</td>
-													</tr>
-												);
-											})}
-										</>
-									)}
-								</tbody>
-							</table>
-						</div>
+														<a
+															className="danger"
+															onClick={() => confirmDelete(RoomCategory)}>
+															<i className="os-icon os-icon-ui-15"></i>
+														</a>
+													</td>
+												</tr>
+											);
+										})}
+										{props.Room_Categories.length === 0 && (
+											<tr>
+												<td colSpan="5" className="text-center">
+													No room categories found!
+												</td>
+											</tr>
+										)}
+									</tbody>
+								</table>
+							</div>
+						)}
 					</div>
 				</div>
 			</div>
@@ -213,14 +202,11 @@ const RoomCategory = props => {
 						<div className="form-group">
 							<select
 								className="form-control"
-								name="hmoId"
+								name="hmo_id"
 								placeholder="HMO"
-								value={hmoId}
+								value={hmo_id}
 								onChange={handleInputChange}>
-								<option value="" disabled>
-									{' '}
-									Select HMO{' '}
-								</option>
+								<option value="">Select HMO</option>
 								{hmos.map((RoomCategory, i) => {
 									return (
 										<option value={RoomCategory.id} key={i}>
@@ -244,20 +230,17 @@ const RoomCategory = props => {
 						<div className="form-group">
 							<input
 								className="form-control"
-								placeholder="Discount Rate"
+								placeholder="HMO Price"
 								type="text"
-								name="discount"
+								name="hmo_tarrif"
 								onChange={handleInputChange}
-								value={discount}
+								value={hmo_tarrif}
 							/>
 						</div>
 						<div className="form-buttons-w">
 							{create && (
-								<button
-									className={
-										Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
-									}>
-									{Loading ? (
+								<button className="btn btn-primary">
+									{loading ? (
 										<img src={waiting} alt="submitting" />
 									) : (
 										<span> create</span>
@@ -267,19 +250,13 @@ const RoomCategory = props => {
 							{edit && (
 								<>
 									<button
-										className={
-											Loading
-												? 'btn btn-secondary ml-3 disabled'
-												: 'btn btn-secondary ml-3'
-										}
+										className="btn btn-secondary ml-3"
+										disabled={loading}
 										onClick={cancelEditButton}>
-										<span>{Loading ? 'cancel' : 'cancel'}</span>
+										<span>cancel</span>
 									</button>
-									<button
-										className={
-											Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
-										}>
-										{Loading ? (
+									<button className="btn btn-primary">
+										{loading ? (
 											<img src={waiting} alt="submitting" />
 										) : (
 											<span> edit</span>

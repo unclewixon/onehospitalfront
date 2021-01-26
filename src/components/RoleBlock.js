@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 
 import { request } from '../services/utilities';
 import { notifyError } from '../services/notify';
-import searchingGIF from '../assets/images/searching.gif';
 import { rolesAPI } from '../services/constants';
 import { loadRoles } from '../actions/role';
 import { loadPermissions } from '../actions/permission';
 import EditRole from './EditRole';
 import RolePermissionModal from './Modals/RolePermissionModal';
+import TableLoading from './TableLoading';
 
 class RoleBlock extends Component {
 	state = {
@@ -75,9 +75,7 @@ class RoleBlock extends Component {
 					<div className="element-wrapper">
 						<div className="element-box p-3 m-0">
 							{loading ? (
-								<div className="loading-block">
-									<img alt="searching" src={searchingGIF} />
-								</div>
+								<TableLoading />
 							) : (
 								<div className="table-responsive">
 									<table className="table table-striped">

@@ -1,4 +1,4 @@
-import React, { useRef, Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import Select from 'react-select';
@@ -8,7 +8,6 @@ import { closeModals } from '../actions/general';
 import { nextStep } from '../actions/patient';
 import { patientSchema } from '../services/validationSchemas';
 import { ethnicities, gender, maritalStatus } from '../services/constants';
-import { getAllHmos } from '../actions/hmo';
 
 function PatientForm(props) {
 	const formData = props.formData;
@@ -22,33 +21,13 @@ function PatientForm(props) {
 	const [ethValue, setEthValue] = useState('');
 	const [maritalValue, setMaritalValue] = useState('');
 
-	const didMountRef = useRef(false);
-
-	let hmoList = useSelector(state => state.settings.hmos);
-	let hmos = hmoList.map(hmo => {
+	const hmoList = useSelector(state => state.hmo.hmo_list);
+	const hmos = hmoList.map(hmo => {
 		return {
 			value: hmo.id,
 			label: hmo.name,
 		};
 	});
-	//console.log(hmos);
-
-	useEffect(() => {
-		props.getAllHmos();
-	}, []);
-
-	useEffect(() => {
-		props.getAllHmos();
-
-		if (didMountRef.current) {
-			hmos = hmoList.map(hmo => {
-				return {
-					value: hmo.id,
-					label: hmo.name,
-				};
-			});
-		} else didMountRef.current = true;
-	}, [hmoList]);
 
 	useEffect(() => {
 		let formValues = {
@@ -408,11 +387,8 @@ const mapStateToProps = (state, ownProps) => {
 	return {
 		formData: state.patient.formData,
 		patient: state.user.patient,
-		//hmoList: state.settings.hmos,
 		register_new_patient: state.general.register_new_patient,
 	};
 };
 
-export default connect(mapStateToProps, { closeModals, nextStep, getAllHmos })(
-	PatientForm
-);
+export default connect(mapStateToProps, { closeModals, nextStep })(PatientForm);

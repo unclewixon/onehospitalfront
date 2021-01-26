@@ -1,62 +1,62 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import ServiceCategoryList from '../../components/ServiceCategoryList';
 import ServicesList from '../../components/ServicesList';
-import { request } from '../../services/utilities';
-import { getAllServiceCategories } from '../../actions/settings';
-import { notifyError } from '../../services/notify';
-import { uploadServiceModal } from '../../actions/general';
+import ModalUploadService from '../../components/Modals/ModalUploadService';
 
 const ServicesCategory = () => {
-	const [showServiceCategoryList, setServiceCategoryList] = useState(true);
+	const [showServiceCategory, setServiceCategory] = useState(true);
 	const [showServicesList, setServicesList] = useState(false);
 	const [loaded, setLoaded] = useState(false);
+	const [showModal, setShowModal] = useState(false);
+	const [categoriesLoaded, setCategoriesLoaded] = useState(false);
+	const [servicesLoaded, setServicesLoaded] = useState(false);
 
 	const profile = useSelector(state => state.user.profile);
 	const role = profile.role ? profile.role.slug : 'admin';
 
-	const dispatch = useDispatch();
-
 	const onServiceCategoryList = () => {
-		setServiceCategoryList(true);
+		setServiceCategory(true);
 		setServicesList(false);
+		if (categoriesLoaded) {
+			setCategoriesLoaded(false);
+		}
 	};
 
 	const onServicesList = () => {
-		setServiceCategoryList(false);
+		setServiceCategory(false);
 		setServicesList(true);
+		if (servicesLoaded) {
+			setServicesLoaded(false);
+		}
 	};
 
 	useEffect(() => {
-		const fetchServiceCategories = async () => {
-			try {
-				const rs = await request(`services/categories`, 'GET', true);
-				dispatch(getAllServiceCategories(rs));
-			} catch (error) {
-				notifyError(error.message || 'could not fetch services categories!');
-			}
-		};
-
 		if (!loaded) {
-			fetchServiceCategories();
-
-			if (
-				role === 'lab-attendant' ||
-				role === 'lab-officer' ||
-				role === 'lab-supervisor' ||
-				role === 'lab-hod'
-			) {
-				setServiceCategoryList(false);
-				setServicesList(true);
-			}
+			setServiceCategory(true);
+			setServicesList(false);
 			setLoaded(true);
 		}
-	}, [dispatch, loaded, role]);
+	}, [loaded]);
 
 	const onUploadService = () => {
-		dispatch(uploadServiceModal(true));
+		document.body.classList.add('modal-open');
+		setShowModal(true);
+	};
+
+	const closeModal = () => {
+		document.body.classList.remove('modal-open');
+		setShowModal(false);
+
+		if (showServiceCategory) {
+			setCategoriesLoaded(false);
+		}
+
+		if (servicesLoaded) {
+			setServicesLoaded(false);
+		}
 	};
 
 	return (
@@ -72,7 +72,7 @@ const ServicesCategory = () => {
 											<li className="nav-item">
 												<a
 													className={`nav-link${
-														showServiceCategoryList ? ' active' : ''
+														showServiceCategory ? ' active' : ''
 													}`}
 													onClick={onServiceCategoryList}>
 													CATEGORIES
@@ -99,12 +99,24 @@ const ServicesCategory = () => {
 									</ul>
 								</div>
 							</div>
-							{showServiceCategoryList && loaded && <ServiceCategoryList />}
-							{showServicesList && loaded && <ServicesList role={role} />}
+							{showServiceCategory && loaded && (
+								<ServiceCategoryList
+									loaded={categoriesLoaded}
+									setLoaded={status => setCategoriesLoaded(status)}
+								/>
+							)}
+							{showServicesList && loaded && (
+								<ServicesList
+									role={role}
+									loaded={servicesLoaded}
+									setLoaded={status => setServicesLoaded(status)}
+								/>
+							)}
 						</div>
 					</div>
 				</div>
 			</div>
+			{showModal && <ModalUploadService closeModal={() => closeModal()} />}
 		</div>
 	);
 };
