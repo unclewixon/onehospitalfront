@@ -73,6 +73,28 @@ class InventoryTable extends Component {
 				},
 			},
 			{
+				dataField: 'hmo',
+				text: 'Hmo',
+				formatter: (cell, row, rowIndex, formatExtraData) => {
+					return (
+						<>
+							<span className="bold-label">{row.hmo?.name}</span>
+						</>
+					);
+				},
+			},
+			{
+				dataField: 'hmoPrice',
+				text: 'Hmo Price',
+				formatter: (cell, row, rowIndex, formatExtraData) => {
+					return (
+						<>
+							<span className="bold-label">{row.hmoPrice}</span>
+						</>
+					);
+				},
+			},
+			{
 				dataField: 'selling_price',
 				text: 'Selling Price',
 				formatter: (cell, row, rowIndex, formatExtraData) => {

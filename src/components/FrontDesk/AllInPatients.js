@@ -14,7 +14,7 @@ import searchingGIF from '../../assets/images/searching.gif';
 import ModalPatientDetails from '../../components/Modals/ModalPatientDetails';
 import { toggleProfile } from '../../actions/user';
 import moment from 'moment';
-
+import Tooltip from 'antd/lib/tooltip';
 // const { RangePicker } = DatePicker;
 
 // const customStyle = {
@@ -46,15 +46,24 @@ const AllInPatients = () => {
 	};
 
 	const showProfile = patient => {
-		const info = { patient, type: 'patient' };
+		const info = { patient, type: 'patient', admitted: true };
 		dispatch(toggleProfile(true, info));
+	};
+
+	const getProfileInfo = async patient_id => {
+		try {
+			const url = `patient/show?id=${String(patient_id)}`;
+			const rs = await request(url, 'GET', true);
+			showProfile(rs);
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	const fetchPatients = useCallback(async () => {
 		try {
 			const url = `patient/admissions`;
 			const rs = await request(url, 'GET', true);
-			console.log(rs);
 			setAdmittedPatients(rs);
 			// dispatch(loadAllPatients(rs));
 			setLoaded(false);
@@ -67,7 +76,6 @@ const AllInPatients = () => {
 	const searchEntries = e => {
 		e.preventDefault();
 		const url = `patient/admissions?q=${searchValue}`;
-		console.log(url);
 		request(url, 'GET', true)
 			.then(data => {
 				console.log(data);
@@ -88,19 +96,19 @@ const AllInPatients = () => {
 		return (
 			<tr className="" data-index="0" data-id="20" key={i}>
 				<td>{i + 1}</td>
-				<td>{`${data?.patient_name} `}</td>
-				<td>{}</td>
-				<td>{}</td>
-				<td>{}</td>
+				<td>{`${data?.patient_name}`}</td>
+				<td>{`${data?.patient_filenumber}`}</td>
+				<td>{`${data?.patient_gender} `}</td>
+				<td>{`${data?.suite} `}</td>
 				<td>{moment(data?.admission_date).format('DD/MM/YYYY')}</td>
 				<td>{data?.admitted_by}</td>
-				{/* <td className="row-actions text-right">
+				<td className="row-actions text-right">
 					<Tooltip title="View Request">
-						<a onClick={() => showProfile(data)}>
+						<a onClick={() => getProfileInfo(data.patient_id)}>
 							<i className="os-icon os-icon-documents-03" />
 						</a>
 					</Tooltip>
-				</td> */}
+				</td>
 			</tr>
 		);
 	};

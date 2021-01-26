@@ -4,14 +4,12 @@ import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
-
 import background from '../assets/images/b3.jpeg';
 import profilepix from '../assets/images/a6.jpeg';
 import editIcon from '../assets/medical/edit.png';
 import admitIcon from '../assets/medical/admit.png';
 import immunizeIcon from '../assets/medical/immunize.png';
 import documentIcon from '../assets/medical/document.png';
-
 import { getAge, request } from '../services/utilities';
 import { patientAPI } from '../services/constants';
 import { notifySuccess, notifyError } from './../services/notify';

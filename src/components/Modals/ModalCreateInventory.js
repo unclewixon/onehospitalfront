@@ -194,8 +194,8 @@ class ModalCreateInventory extends Component {
 										<div className="col-sm-6">
 											<div className="form-group">
 												<Field
-													id="hmo_amount"
-													name="hmo_amount"
+													id="hmoPrice"
+													name="hmoPrice"
 													component={renderTextInput}
 													label="HMO Amount"
 													type="text"
