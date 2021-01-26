@@ -25,7 +25,7 @@ class InvCategoryItem extends Component {
 	disableCategory = async () => {
 		const { item } = this.props;
 		try {
-			await request(`${inventoryAPI}/categories/${item.id}`, 'DELETE', true);
+			await request(`inventory/categories/${item.id}`, 'DELETE', true);
 			this.props.removeItem(item);
 			notifySuccess('inventory category  deleted');
 		} catch (error) {

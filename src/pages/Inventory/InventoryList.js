@@ -287,18 +287,18 @@ class InventoryList extends Component {
 	};
 
 	fetchInventories = async (page, category_id) => {
-		console.log('fetchInventories params');
-		console.log(page);
-		console.log(category_id);
 		try {
 			const { profile, categories } = this.props;
 			let roleQy = '';
 			if (profile.role.slug === 'pharmacy') {
 				const category = categories.find(d => d.name === 'Pharmacy');
 				roleQy = category ? `&q=${category.id}` : `&q=${category_id}`;
+			} else {
+				if (category_id) {
+					roleQy = `&q=${category_id}`;
+				}
 			}
 			const p = page || 1;
-			console.log(p);
 			const url = `${inventoryAPI}?page=${p}&limit=20${roleQy}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
@@ -310,7 +310,9 @@ class InventoryList extends Component {
 	};
 
 	changeQuery = async e => {
+		console.log('changeQuery = async e ');
 		const category_id = e.target.value;
+		console.log('category_id: ', category_id);
 		this.fetchInventories(null, category_id);
 	};
 

@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 import moment from 'moment';
 import { confirmAlert } from 'react-confirm-alert';
-
+import Tooltip from 'antd/lib/tooltip';
 import CreateTask from '../Modals/CreateTask';
 import { itemRender, request } from '../../services/utilities';
 import { allVitalItems, patientAPI } from '../../services/constants';
@@ -212,9 +212,11 @@ const ClinicalTasks = () => {
 													item.nextTime !== '' &&
 													item.taskCount > item.tasksCompleted &&
 													moment().isAfter(item.nextTime) && (
-														<div className="warning-task">
-															<img src={warning} alt="" />
-														</div>
+														<Tooltip title="Task Expired">
+															<div className="warning-task">
+																<img src={warning} alt="" />
+															</div>
+														</Tooltip>
 													)}
 												<span>
 													{item.nextTime &&

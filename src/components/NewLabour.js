@@ -17,6 +17,7 @@ import { renderSelect, renderTextInput } from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
 import searchingGIF from '../assets/images/searching.gif';
 import waiting from '../assets/images/waiting.gif';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 const validate = values => {
 	const errors = {};
@@ -48,6 +49,20 @@ const validate = values => {
 };
 
 const selector = formValueSelector('labour-mgt');
+
+const getOptionValues = option => option.id;
+const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+
+const getOptions = async q => {
+	if (!q || q.length < 3) {
+		return [];
+	}
+
+	const url = `${searchAPI}?q=${q}`;
+	const res = await request(url, 'GET', true);
+	return res;
+};
+
 export class NewLabour extends Component {
 	state = {
 		submitting: false,
@@ -180,47 +195,19 @@ export class NewLabour extends Component {
 							<form onSubmit={handleSubmit(this.onSubmit)}>
 								<div className="row">
 									<div className="form-group col-sm-12">
-										<label>Patient Id</label>
+										<label>Patient</label>
 
-										<input
-											className="form-control"
-											placeholder="Search for patient"
-											type="text"
-											name="patient_id"
-											defaultValue=""
-											id="patient"
+										<AsyncSelect
+											isClearable
+											getOptionValue={getOptionValues}
+											getOptionLabel={getOptionLabels}
+											defaultOptions
 											ref={this.patient}
-											onChange={this.handlePatientChange}
-											autoComplete="off"
-											required
+											name="patient_id"
+											loadOptions={getOptions}
+											onChange={e => this.patientSet(e)}
+											placeholder="Search patients"
 										/>
-										{searching && (
-											<div className="searching text-center">
-												<img alt="searching" src={searchingGIF} />
-											</div>
-										)}
-
-										{patients &&
-											patients.map(pat => {
-												return (
-													<div
-														style={{ display: 'flex' }}
-														key={pat.id}
-														className="element-box">
-														<a
-															onClick={() => this.patientSet(pat)}
-															className="ssg-item cursor">
-															{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
-															<div
-																className="item-name"
-																dangerouslySetInnerHTML={{
-																	__html: `${pat.surname} ${pat.other_names}`,
-																}}
-															/>
-														</a>
-													</div>
-												);
-											})}
 									</div>
 								</div>
 

@@ -259,14 +259,14 @@ const CafeteriaDashboard = () => {
 
 	const getOptionValuesStaff = option => option.id;
 	const getOptionLabelsStaff = option =>
-		`${option.other_names} ${option.surname}`;
+		`${option.first_name} ${option.last_name}`;
 
 	const getOptionsStaff = async q => {
 		if (!q || q.length < 3) {
 			return [];
 		}
 
-		const url = `${searchAPI}?q=${q}`;
+		const url = `hr/staffs/find?q=${q}`;
 		const res = await request(url, 'GET', true);
 		return res;
 	};
