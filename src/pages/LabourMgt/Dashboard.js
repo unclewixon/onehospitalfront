@@ -95,7 +95,7 @@ class Dashboard extends Component {
 		const reverse = [...enrolments].reverse();
 		return (
 			<div className="row">
-				<div className="col-md-12">
+				{/* <div className="col-md-12">
 					<div className="element-content">
 						<div className="row">
 							<div className="col-sm-3 col-xxxl-3">
@@ -124,15 +124,15 @@ class Dashboard extends Component {
 							</div>
 						</div>
 					</div>
-				</div>
-				<div className="col-md-12">
+				</div> */}
+				{/* <div className="col-md-12">
 					<h6 className="element-header">Enrolled</h6>
 					<div className="row my-4">
 						<form action="" className="form-inline pl-3">
 							<div className="form-group">
 								<label className="mr-2">Filter by: </label>
 							</div>
-							{/* <div className="form-group mr-2">
+							<div className="form-group mr-2">
 								<label className="mr-2 " htmlFor="id">
 									ID
 								</label>
@@ -150,7 +150,7 @@ class Dashboard extends Component {
 										);
 									})}
 								</select>
-							</div> */}
+							</div>
 							<div className="form-group mr-2">
 								<RangePicker onChange={e => this.dateChange(e)} />
 							</div>
@@ -170,7 +170,7 @@ class Dashboard extends Component {
 							</div>
 						</form>
 					</div>
-				</div>
+				</div> */}
 
 				<div className="col-sm-12">
 					<div className="element-box">
