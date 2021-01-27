@@ -109,7 +109,7 @@ export class NewLabour extends Component {
 			);
 			notifySuccess('succesfully submitted');
 			reset();
-			this.props.loadLabourDetails(rs.data);
+			// this.props.loadLabourDetails(rs.data);
 			this.props.history.push(`/labour-mgt/detail/${rs.data.id}`);
 		} catch (e) {
 			this.setState({ submitting: false });
