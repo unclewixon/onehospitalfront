@@ -85,7 +85,6 @@ class Dashboard extends Component {
 
 	detail = item => {
 		//load data into store
-		console.log(item);
 		this.props.loadLabourDetails(item);
 		this.props.history.push(`/labour-mgt/detail/${item.id}`);
 	};
