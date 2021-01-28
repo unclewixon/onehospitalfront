@@ -44,7 +44,7 @@
 		"lodash.uniqby": "^4.7.0",
 		"lodash.uppercase": "^4.3.0",
 		"moment": "^2.26.0",
-		"node-sass": "^4.13.0",
+		"node-sass": "^5.0.0",
 		"numeral": "^2.0.6",
 		"pad-left": "^2.1.0",
 		"prop-types": "^15.7.2",
