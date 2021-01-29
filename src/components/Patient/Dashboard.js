@@ -10,6 +10,7 @@ import { Link, withRouter } from 'react-router-dom';
 import RoleBlock from '../RoleBlock';
 import VisitSummaryTable from './VisitSummaryTable';
 import BillingTable from './BillingTable';
+import AppointmentHistoryTable from './AppointmentHistoryTable';
 
 const Dashboard = ({ location }) => {
 	const patient = useSelector(state => state.user.patient);
@@ -203,7 +204,7 @@ const Dashboard = ({ location }) => {
 						</div>
 						<div className="tab-content">
 							{tab === 'visitSummary' && <VisitSummaryTable />}
-							{/*{tab === 'appointment' && <RoleBlock />*/}
+							{tab === 'appointment' && <AppointmentHistoryTable />}
 							{tab === 'billing' && <BillingTable />}
 						</div>
 					</div>
