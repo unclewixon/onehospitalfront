@@ -5,6 +5,7 @@ import { viewAppointmentDetail } from '../../actions/general';
 import { fullname } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
+import { formatPatientId } from '../../services/utilities';
 import { toggleProfile } from '../../actions/user';
 
 class FrontDeskTable extends Component {
@@ -49,7 +50,9 @@ class FrontDeskTable extends Component {
 											style={{
 												fontSize: '0.7rem',
 											}}>
-											{moment(appointment.createdAt).format('DD-MM-YYYY')}
+											{moment(appointment.appointment_date).format(
+												'DD-MM-YYYY'
+											)}
 										</span>
 									</td>
 									<td className="cell-with-media">
@@ -61,7 +64,7 @@ class FrontDeskTable extends Component {
 
 									<td className="cell-with-media">
 										<span style={{ fontSize: '0.7rem' }}>
-											{appointment.patient?.fileNumber}
+											{formatPatientId(appointment.patient?.id)}
 										</span>
 									</td>
 									<td className="cell-with-media">
@@ -93,7 +96,12 @@ class FrontDeskTable extends Component {
 											onClick={() => this.showProfile(appointment.patient)}>
 											<i className="os-icon os-icon-user"></i>
 										</a>
-										<a className="danger" href="#">
+										<a
+											className="danger"
+											href="#"
+											onClick={() =>
+												this.props.cancelApppointment(appointment)
+											}>
 											<i className="os-icon os-icon-ui-15"></i>
 										</a>
 									</td>

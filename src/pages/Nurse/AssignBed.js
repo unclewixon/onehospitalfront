@@ -2,70 +2,92 @@ import React, { Component } from 'react';
 // import { connect } from 'react-redux';
 import { reduxForm, SubmissionError } from 'redux-form';
 import Modal from 'react-bootstrap/Modal';
-import { request } from '../../services/utilities';
+import { request, updateImmutable } from '../../services/utilities';
 import Select from 'react-select';
 import waiting from '../../assets/images/waiting.gif';
-import { vitalsAPI } from '../../services/constants';
-import { notifySuccess } from '../../services/notify';
+import { notifySuccess, notifyError } from '../../services/notify';
 
 class AssignBed extends Component {
 	state = {
 		submitting: false,
 		selected: '',
+		categories: [],
+		categoryLables: [],
+		roomLabels: [],
+		room_id: '',
 	};
 
-	takeExtraReadings = async (data, title) => {
-		const { patient } = this.props;
+	componentDidMount() {
+		this.fetchCategories();
+	}
 
+	handleCatChange = val => {
+		const { categories } = this.state;
+		const cat = categories.filter(c => c.id === val);
+		const rooms = cat[0]?.rooms.filter(r => r.status === 'Not occupied');
+		let rmLabels = [];
+		rooms.forEach(room => {
+			rmLabels.push({ value: room.id, label: room.name });
+		});
+		this.setState({ roomLabels: rmLabels });
+		this.props.doHide(true);
+	};
+
+	handleRoomChange = val => {
+		this.setState({ room_id: val });
+		this.props.doHide(true);
+	};
+
+	fetchCategories = async () => {
 		try {
-			let toSave = {
-				readingType: title,
-				reading: data,
-				patient_id: patient.id,
-			};
-			const rs = await request(`${vitalsAPI}`, 'POST', true, toSave);
-			this.props.updateVitals(rs.readings);
+			const rs = await request('rooms/categories', 'GET', true);
+			this.setState({ categories: rs });
+			this.setCatLabels();
 		} catch (e) {}
 	};
 
-	takeReading = async data => {
-		const { patient, info } = this.props;
-		const { title } = 'Blood Pressure';
-		this.setState({ submitting: true });
-		let _data = data;
-		// if (info.type === 'blood-pressure') {
-		// 	_data = { blood_pressure: `${data.systolic}/${data.diastolic}` };
-		// } else if (info.type === 'bmi') {
-		// 	_data = { bmi: (data.weight / (data.height * data.height)).toFixed(2) };
-		// } else if (info.type === 'bsa') {
-		// 	_data = {
-		// 		bsa: (Math.sqrt(data.height) * (data.weight / 3600)).toFixed(2),
-		// 	};
-		// }
+	setCatLabels = () => {
+		const { categories } = this.state;
+		let catLabels = [];
+		categories.forEach(category => {
+			catLabels.push({ value: category.id, label: category.name });
+		});
+		this.setState({ categoryLables: catLabels });
+		this.props.doHide(true);
+	};
 
+	asignBed = async () => {
+		const { item, admittedPatients, setAdmittedPatients } = this.props;
+		const { room_id } = this.state;
+		this.setState({ submitting: true });
 		try {
 			let toSave = {
-				readingType: title,
-				reading: _data,
-				patient_id: patient.id,
+				room_id,
+				admission_id: item.id,
 			};
-			const rs = await request(`${vitalsAPI}`, 'POST', true, toSave);
-			this.props.updateVitals(rs.readings);
+			item.room = room_id;
+			const rs = await request(
+				'patient/admissions/assign-bed',
+				'PATCH',
+				true,
+				toSave
+			);
 
-			if (info.type === 'bmi' || info.type === 'bsa') {
-				// store individual readings for weight and height as well
-				await this.takeExtraReadings({ weight: data.weight }, 'Weight');
-				await this.takeExtraReadings({ height: data.height }, 'Height');
+			if (rs.success) {
+				const uptdDepartments = updateImmutable(admittedPatients, rs.admission);
+				setAdmittedPatients(uptdDepartments);
+				notifySuccess(`patient assigned room ${room_id}`);
+				this.setState({ submitting: false });
+				this.props.doHide(false);
+			} else {
+				notifyError(`${rs.message}`);
+				this.setState({ submitting: false });
+				this.props.doHide(false);
 			}
-
-			notifySuccess(`${title} updated!`);
-			this.props.reset('take-reading');
-			this.setState({ submitting: false });
-			this.props.doHide(true);
 		} catch (e) {
 			this.setState({ submitting: false });
 			throw new SubmissionError({
-				_error: e.message || `could not take reading for ${title}`,
+				_error: e.message || `could not assign bed`,
 			});
 		}
 	};
@@ -73,21 +95,12 @@ class AssignBed extends Component {
 	// set selected value
 	handleSelect(val) {
 		this.setState({ selected: val });
+		this.props.doHide(true);
 	}
 
 	render() {
 		const { error, handleSubmit } = this.props;
-		const { submitting } = this.state;
-		const selectFloor = [
-			{ value: 'chocolate', label: 'Chocolate' },
-			{ value: 'strawberry', label: 'Strawberry' },
-			{ value: 'vanilla', label: 'Vanilla' },
-		];
-		const selectSuite = [
-			{ value: 'chocolate', label: 'Chocolate' },
-			{ value: 'strawberry', label: 'Strawberry' },
-			{ value: 'vanilla', label: 'Vanilla' },
-		];
+		const { submitting, roomLabels, categoryLables } = this.state;
 
 		return (
 			<div className="onboarding-modal fade animated show">
@@ -97,11 +110,11 @@ class AssignBed extends Component {
 							<Modal.Header
 								className="center-header"
 								closeButton
-								onClick={this.props.onModalClick}>
+								onClick={() => this.props.doHide(false)}>
 								<h4 className="onboarding-title">{`Assign Bed`}</h4>
 							</Modal.Header>
 							<div className="form-block">
-								<form onSubmit={handleSubmit(this.takeReading)}>
+								<form onSubmit={handleSubmit(this.asignBed)}>
 									{error && (
 										<div
 											className="alert alert-danger"
@@ -112,12 +125,18 @@ class AssignBed extends Component {
 									)}
 									<div className="row form-group">
 										<div className="col-sm-12">
-											<span>Floor</span>
-											<Select options={selectFloor} />
+											<span>Category</span>
+											<Select
+												options={categoryLables}
+												onChange={evt => this.handleCatChange(evt.value)}
+											/>
 										</div>
 										<div className="col-sm-12">
-											<span>Sult</span>
-											<Select options={selectSuite} />
+											<span>Room</span>
+											<Select
+												options={roomLabels}
+												onChange={evt => this.handleRoomChange(evt.value)}
+											/>
 										</div>
 									</div>
 									<div className="row">

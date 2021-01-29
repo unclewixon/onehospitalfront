@@ -4,7 +4,7 @@ import DatePicker from 'antd/lib/date-picker';
 import { connect } from 'react-redux';
 
 import waiting from '../../assets/images/waiting.gif';
-import { request } from '../../services/utilities';
+import { request, confirmAction } from '../../services/utilities';
 import {
 	applyVoucher,
 	approveTransaction,
@@ -32,9 +32,31 @@ export class AllAppointments extends Component {
 		this.fetchTransaction();
 	}
 
+	doCancelApppointment = async data => {
+		const { reviewTransaction } = this.props;
+		try {
+			this.setState({ loading: true, filtering: true });
+			const rs = await request(
+				`front-desk/appointments/${data.id}/cancel`,
+				'PATCH',
+				true
+			);
+			if (rs.isActive === false) {
+				const filtr = reviewTransaction.filter(a => a.id !== rs.id);
+				this.props.loadTransaction(filtr);
+				this.setState({ loading: false, filtering: false });
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	cancelApppointment = data => {
+		confirmAction(this.doCancelApppointment, data);
+	};
+
 	fetchTransaction = async () => {
 		const { startDate, endDate } = this.state;
-		console.log(startDate, endDate);
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
@@ -42,23 +64,20 @@ export class AllAppointments extends Component {
 				'GET',
 				true
 			);
-			this.props.loadTransaction(
-				rs.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1))
-			);
+			const arr = rs.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+			this.props.loadTransaction(arr);
 			this.setState({ loading: false, filtering: false });
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
-	doFilter = e => {
+	doFilter = async e => {
 		e.preventDefault();
-		this.setState({ filtering: true });
 		this.fetchTransaction();
 	};
 
 	change = e => {
-		//console.log(e.target.value)
 		this.setState({ [e.target.name]: e.target.value });
 	};
 
@@ -66,7 +85,6 @@ export class AllAppointments extends Component {
 		let date = e.map(d => {
 			return moment(d._d).format('YYYY-MM-DD');
 		});
-
 		this.setState({
 			...this.state,
 			startDate: date[0],
@@ -101,6 +119,7 @@ export class AllAppointments extends Component {
 							appointments={transactions}
 							loading={loading}
 							today={false}
+							cancelApppointment={this.cancelApppointment}
 						/>
 					</div>
 				</div>

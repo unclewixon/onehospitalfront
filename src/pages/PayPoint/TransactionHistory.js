@@ -6,9 +6,9 @@ import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
 import { request, confirmAction } from '../../services/utilities';
-
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import { searchAPI } from '../../services/constants';
 import { notifySuccess, notifyError } from '../../services/notify';
-
 import { loadTransaction, deleteTransaction } from '../../actions/transaction';
 import { applyVoucher, approveTransaction } from '../../actions/general';
 import TransactionTable from '../../components/Tables/TransactionTable';
@@ -19,12 +19,25 @@ const paymentStatus = [
 	{ value: 0, label: 'processing' },
 	{ value: 1, label: 'done' },
 ];
+
+const getOptionValues = option => option.id;
+const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+
+const getOptions = async q => {
+	if (!q || q.length < 3) {
+		return [];
+	}
+
+	const url = `${searchAPI}?q=${q}`;
+	const res = await request(url, 'GET', true);
+	return res;
+};
+
 class TransactionHistory extends Component {
 	state = {
 		filtering: false,
 		loading: false,
 		id: null,
-		patients: [],
 		patient_id: '',
 		startDate: '',
 		endDate: '',
@@ -32,8 +45,8 @@ class TransactionHistory extends Component {
 	};
 
 	componentDidMount() {
+		console.log('componentDidMount()');
 		this.fetchTransaction();
-		this.getPatients();
 	}
 
 	fetchTransaction = async () => {
@@ -42,21 +55,12 @@ class TransactionHistory extends Component {
 			this.setState({ loading: true });
 			const url = `${transactionsAPI}/list?patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&transaction_type=&status=${status}`;
 			const rs = await request(url, 'GET', true);
-			this.props.loadTransaction(rs);
+			const arr = rs.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+			arr && this.props.loadTransaction(arr);
 			this.setState({ loading: false, filtering: false });
 		} catch (error) {
 			console.log(error);
 		}
-	};
-
-	getPatients = async () => {
-		const rs = await request(`patient/list`, 'GET', true);
-		const res = rs.map(patient => ({
-			value: patient.id,
-			label: patient.surname + ', ' + patient.other_names,
-		}));
-
-		this.setState({ patients: res });
 	};
 
 	doFilter = e => {
@@ -114,22 +118,21 @@ class TransactionHistory extends Component {
 
 					<form className="row">
 						<div className="form-group col-md-3">
-							<label htmlFor="patient_id">ID</label>
-							<select
-								style={{ height: '32px' }}
-								id="patient_id"
-								className="form-control"
+							<label htmlFor="patient_id">Patient</label>
+
+							<AsyncSelect
+								isClearable
+								getOptionValue={getOptionValues}
+								getOptionLabel={getOptionLabels}
+								defaultOptions
 								name="patient_id"
-								onChange={e => this.change(e)}>
-								<option value="">Choose patient</option>
-								{patients.map((pat, i) => {
-									return (
-										<option key={i} value={pat.value}>
-											{pat.label}
-										</option>
-									);
-								})}
-							</select>
+								id="patient_id"
+								loadOptions={getOptions}
+								onChange={e => {
+									this.setState({ patient_id: e.id });
+								}}
+								placeholder="Search patients"
+							/>
 						</div>
 						<div className="form-group col-md-3">
 							<label>From - To</label>

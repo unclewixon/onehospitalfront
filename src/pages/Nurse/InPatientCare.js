@@ -1,29 +1,32 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState, useCallback } from 'react';
 import moment from 'moment';
-import AssignDropup from './AssignDropup';
 import Tooltip from 'antd/lib/tooltip';
+import Popover from 'antd/lib/popover';
+
 import searchingGIF from '../../assets/images/searching.gif';
 import { notifyError } from '../../services/notify';
-import { request } from '../../services/utilities';
-import documentIcon from '../../assets/medical/document.png';
+import { request, formatPatientId } from '../../services/utilities';
+import AssignBed from './AssignBed';
 
 const InPatientCare = () => {
 	const [admittedPatients, setAdmittedPatients] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [showModal, setShowModal] = useState(false);
-	const [visible, setVisible] = useState(true);
-	const [searchValue, setSearchValue] = useState('');
+	const [visible, setVisible] = useState(false);
+	// const [searchValue, setSearchValue] = useState('');
 
-	const handleInputChange = e => {
-		setSearchValue(e.target.value);
+	// const handleInputChange = e => {
+	// 	setSearchValue(e.target.value);
+	// };
+	const doHide = val => {
+		//e.preventDefault();
+		setVisible(val);
 	};
 
 	const fetchAdmittedPatients = useCallback(async () => {
 		try {
 			const url = `patient/admissions`;
 			const rs = await request(url, 'GET', true);
-			console.log(rs);
 			setAdmittedPatients(rs);
 			setLoading(false);
 		} catch (error) {
@@ -37,9 +40,7 @@ const InPatientCare = () => {
 		fetchAdmittedPatients();
 	}, [fetchAdmittedPatients]);
 
-	useEffect(() => {
-		console.log(admittedPatients);
-	}, [admittedPatients]);
+	useEffect(() => {}, [admittedPatients]);
 
 	useEffect(() => {
 		if (loading) {
@@ -47,49 +48,14 @@ const InPatientCare = () => {
 		}
 	}, [loading]);
 
-	const onModalClick = () => {
-		setShowModal(!showModal);
-	};
-
-	const searchEntries = e => {
-		e.preventDefault();
-		const url = `patient/admissions?q=${searchValue}`;
-		request(url, 'GET', true)
-			.then(data => {
-				setAdmittedPatients(data);
-				// dispatch(loadAllPatients(data));
-			})
-			.catch(error => {
-				notifyError(`error fetching patients ${error}`);
-				setLoading(false);
-			});
-	};
-
 	return (
 		<>
 			<h6 className="element-header">Patients on Admission</h6>
-
-			<div class="controls-above-table">
-				<form class="form-inline justify-content-sm-end">
-					<input
-						class="form-control form-control-sm rounded bright"
-						style={{ paddingLeft: '30px' }}
-						placeholder="Search"
-						name="search"
-						onChange={handleInputChange}
-						value={searchValue}
-					/>
-				</form>
-			</div>
-			<div className="element-box">
+			<div className="element-box m-0 p-3">
 				<div className="table-responsive">
 					<table className="table table-striped">
 						<thead>
 							<tr>
-								<th>
-									<div className="th-inner "></div>
-									<div className="fht-cell"></div>
-								</th>
 								<th>
 									<div className="th-inner sortable both">Patient Name</div>
 									<div className="fht-cell"></div>
@@ -112,6 +78,10 @@ const InPatientCare = () => {
 									<div className="th-inner sortable both">Admitted By</div>
 									<div className="fht-cell"></div>
 								</th>
+								<th>
+									<div className="th-inner sortable both">Room/Floor</div>
+									<div className="fht-cell"></div>
+								</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -123,28 +93,47 @@ const InPatientCare = () => {
 								</tr>
 							) : (
 								admittedPatients.map((item, i) => {
+									console.log(item);
 									return (
-										<tr className="" data-index="0" data-id="20" key={i}>
-											<td>{i + 1}</td>
+										<tr key={i}>
 											<td>{`${item?.patient_name}`}</td>
-											<td>{`${item?.patient_filenumber}`}</td>
-											<td>{`${item?.patient_gender} `}</td>
+											<td>{formatPatientId(item?.patient_id)}</td>
+											<td>{item?.patient_gender}</td>
 											<td>
-												{moment(item?.admission_date).format('DD/MM/YYYY')}
+												{moment(item?.admission_date).format(
+													'DD-MMM-YYYY h:mm A'
+												)}
 											</td>
 											<td>{item?.admitted_by}</td>
-											<td className="row-actions">
-												<Tooltip title="Assign Bed">
-													<div style={{ color: '#fff' }}>
-														<a onClick={onModalClick}>
-															<img
-																style={{ width: '10%', height: '10%' }}
-																src={documentIcon}
-																alt=""
-															/>
-														</a>
-													</div>
-												</Tooltip>
+											<td className="row-actions text-right">
+												{item?.suite ? (
+													<Tooltip title="Room/Floor">
+														{item?.suite + '/' + item?.floor}
+													</Tooltip>
+												) : (
+													<Tooltip title="Assign Bed">
+														<Popover
+															title=""
+															overlayClassName="select-bed"
+															content={
+																<AssignBed
+																	item={item}
+																	admittedPatients={admittedPatients}
+																	setAdmittedPatients={admittedPatients =>
+																		setAdmittedPatients(admittedPatients)
+																	}
+																	doHide={doHide}
+																/>
+															}
+															trigger="click"
+															visible={visible}
+															onVisibleChange={status => setVisible(status)}>
+															<a className="primary">
+																<i className="os-icon os-icon-layers" />
+															</a>
+														</Popover>
+													</Tooltip>
+												)}
 											</td>
 										</tr>
 									);
@@ -154,15 +143,6 @@ const InPatientCare = () => {
 					</table>
 				</div>
 			</div>
-			{showModal && (
-				<div className="text-right">
-					<AssignDropup
-						visible={visible}
-						onModalClick={onModalClick}
-						setVisible={setVisible}
-					/>
-				</div>
-			)}
 		</>
 	);
 };

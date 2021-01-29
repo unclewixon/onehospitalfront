@@ -247,6 +247,16 @@ export const renderTextInputGroup = ({ input, append, label, icon, type, id, pla
 	</div>
 );
 
+export const formatPatientId = id => {
+	let formattedId = String(id);
+	let len = 7 - formattedId.length;
+	while (len >= 0) {
+		formattedId = '0' + formattedId;
+		len--;
+	}
+	return formattedId;
+};
+
 export const renderMultiselect = ({
 	input,
 	data,
@@ -320,7 +330,7 @@ export const confirmAction = (action, payload, alertText, alertHead) => {
 			return (
 				<div className="custom-ui text-center">
 					<h1 className="">{alertHead ? alertHead : 'Are you sure?'}</h1>
-					<p>{alertText ? alertText : 'You want to delete this remove'}</p>
+					<p>{alertText ? alertText : 'You want to delete this'}</p>
 					<div>
 						<button
 							className="btn btn-danger"
