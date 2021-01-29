@@ -61,25 +61,7 @@ const PatientMenu = ({ location }) => {
 						<span>Antenatal</span>
 					</Link>
 				</li>
-				<li className="sub-header">
-					<span>Enrollments</span>
-				</li>
-				<li>
-					<Link to={`${location.pathname}#enroll-antenatal`}>
-						<div className="icon-w">
-							<div className="os-icon os-icon-plus-circle" />
-						</div>
-						<span>Antenatal</span>
-					</Link>
-				</li>
-				<li>
-					<Link to={`${location.pathname}#enroll-ivf`}>
-						<div className="icon-w">
-							<div className="os-icon os-icon-plus-circle" />
-						</div>
-						<span>IVF</span>
-					</Link>
-				</li>
+
 				<li className="sub-header">
 					<span>Requests</span>
 				</li>

@@ -1,12 +1,19 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import Tooltip from 'antd/lib/tooltip';
 
 import patientProfile from '../../assets/svg-icons/patientProfile.svg';
+import patientProfilePic from '../../assets/images/patientprofile.jpg';
 import PatientData from '../PatientData';
+import { Link, withRouter } from 'react-router-dom';
+import RoleBlock from '../RoleBlock';
+import VisitSummaryTable from './VisitSummaryTable';
+import BillingTable from './BillingTable';
 
-const Dashboard = () => {
+const Dashboard = ({ location }) => {
 	const patient = useSelector(state => state.user.patient);
+	const [tab, setTab] = useState('visitSummary');
 
 	return (
 		<>
@@ -18,13 +25,13 @@ const Dashboard = () => {
 				</div>
 			</div> */}
 			{/*  */}
-			<div className="col-lg-4 col-md-12">
+			<div className="col-lg-3 col-md-12">
 				<div className="user-profile compact">
 					<div
 						className="up-head-w"
-						style={{ backgroundImage: 'url(img/profile_bg1.jpg)' }}>
+						style={{ backgroundImage: `url(${patientProfilePic})` }}>
 						<div className="up-main-info">
-							<h2 className="up-header">John Mayers</h2>
+							<h2 className="up-header">{`${patient?.surname} ${patient?.other_names}`}</h2>
 							<h6 className="up-sub-header">
 								<div className="value-pair">
 									<div className="label pr-2" style={{ color: 'inherit' }}>
@@ -122,38 +129,82 @@ const Dashboard = () => {
 			</div>
 
 			{/*  */}
-			<div className="col-lg-8 col-md-12">
-				<div className="element-box">
+			<div className="col-lg-9 col-md-12">
+				<div className="element-actions d-none d-sm-block">
+					<Tooltip title="Admit">
+						<a className="btn btn-primary btn-sm mr-2" href="#">
+							<i className="os-icon os-icon-ui-22"></i>
+							<span>Admit</span>
+						</a>
+					</Tooltip>
+					<Tooltip title="Enroll Antenatal">
+						<Link to={`${location.pathname}#enroll-antenatal`}>
+							<div className="btn btn-primary btn-sm mr-2" href="#">
+								<i className="os-icon os-icon-ui-22"></i>
+								<span>Enroll Antenatal</span>
+							</div>
+						</Link>
+					</Tooltip>
+					<Tooltip title="Enroll IVF">
+						<Link to={`${location.pathname}#enroll-ivf`}>
+							<div className="btn btn-primary btn-sm mr-2" href="#">
+								<i className="os-icon os-icon-ui-22"></i>
+								<span>Enroll IVF</span>
+							</div>
+						</Link>
+					</Tooltip>
+					<Tooltip title="Enroll Immunization">
+						<a className="btn btn-primary btn-sm mr-2" href="#">
+							<i className="os-icon os-icon-ui-22"></i>
+							<span>Enroll Immunization</span>
+						</a>
+					</Tooltip>
+					<Tooltip title="Discharge">
+						<a className="btn btn-primary btn-sm mr-2" href="#">
+							<i className="os-icon os-icon-ui-22"></i>
+							<span>Discharge</span>
+						</a>
+					</Tooltip>
+					{/* discharge, enrole antinantal, ivf ,immuncation, admit */}
+				</div>
+
+				<div className="element-box mt-2">
 					<div className="os-tabs-w">
 						<div className="os-tabs-controls">
 							<ul className="nav nav-tabs smaller">
 								<li className="nav-item">
 									<a
-										className="nav-link active"
-										data-toggle="tab"
-										href="#visit_summary">
+										className={
+											tab === 'visitSummary' ? 'nav-link active' : 'nav-link'
+										}
+										onClick={() => setTab('visitSummary')}>
 										Visit Summary
 									</a>
 								</li>
 								<li className="nav-item">
 									<a
-										className="nav-link"
-										data-toggle="tab"
-										href="#appointment_history">
+										className={
+											tab === 'appointment' ? 'nav-link active' : 'nav-link'
+										}
+										onClick={() => setTab('appointment')}>
 										Appointment History
 									</a>
 								</li>
 								<li className="nav-item">
-									<a className="nav-link" data-toggle="tab" href="#billings">
+									<a
+										className={
+											tab === 'billing' ? 'nav-link active' : 'nav-link'
+										}
+										onClick={() => setTab('billing')}>
 										Billings
 									</a>
 								</li>
 							</ul>
 						</div>
 						<div className="tab-content">
-							<div className="tab-pane active" id="visit_summary"></div>
-							<div className="tab-pane" id="appointment_history"></div>
-							<div className="tab-pane" id="billings"></div>
+							{tab === 'visitSummary' && <VisitSummaryTable />}
+							{/*{tab === 'appointment' && <RoleBlock />*/}
+							{tab === 'billing' && <BillingTable />}
 						</div>
 					</div>
 				</div>
@@ -205,4 +256,4 @@ const Dashboard = () => {
 	);
 };
 
-export default Dashboard;
+export default withRouter(Dashboard);
