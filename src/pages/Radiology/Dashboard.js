@@ -108,11 +108,14 @@ export class Dashboard extends Component {
 			const url = `${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`;
 			const rs = await request(url, 'GET', true);
 
-			this.props.loadRadiology(rs);
-			console.log(rs);
+			this.props.loadRadiology(rs.result);
+			console.log('server response', rs);
 			this.setState({ loading: false, filtering: false });
 		} catch (error) {
-			console.log(error);
+			// DEBUG PURPOSES
+			// console.log('this error', error);
+			// console.log('this state', this.state);
+			// console.log('start ' + this.state.startDate, 'end' + this.state.endDate);
 			notifyError('Error fetching all radiology request');
 			this.setState({ loading: false, filtering: false });
 		}

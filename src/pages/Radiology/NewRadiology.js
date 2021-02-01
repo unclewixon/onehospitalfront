@@ -109,6 +109,8 @@ const NewRadiology = props => {
 	};
 
 	useEffect(() => {
+		console.log(props);
+
 		if (!dataLoaded) {
 			// props
 			// 	.getAllService()
