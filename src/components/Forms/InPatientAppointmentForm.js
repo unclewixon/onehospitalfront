@@ -170,7 +170,7 @@ function InPatientAppointmentForm(props) {
 						className="form-control"
 						name="description"
 						rows="3"
-						placeholder="Enter a breif description"
+						placeholder="Enter a brief description"
 						ref={register}></textarea>
 				</div>
 				<div className="row">
