@@ -82,14 +82,6 @@ const PatientMenu = ({ location }) => {
 					</Link>
 				</li>
 				<li>
-					<Link to={`${location.pathname}#physio`}>
-						<div className="icon-w">
-							<div className="os-icon os-icon-layout" />
-						</div>
-						<span>Physiotherapy</span>
-					</Link>
-				</li>
-				<li>
 					<Link to={`${location.pathname}#opthalmology`}>
 						<div className="icon-w">
 							<div className="os-icon os-icon-layout" />

@@ -61,11 +61,6 @@ class Procedure extends Component {
 												path={`${match.url}/`}
 												component={ProcedureDashboard}
 											/>
-											{/* <Route
-												exact
-												path={`${match.url}/`}
-												component={NewPhysiotherapy}
-											/> */}
 											<Route
 												exact
 												path={`${match.url}/all-requests`}
@@ -84,9 +79,6 @@ class Procedure extends Component {
 						</div>
 					</div>
 				</div>
-				{/* <div className="content-panel compact">
-					<Queue department={department} />
-				</div> */}
 			</div>
 		);
 	}

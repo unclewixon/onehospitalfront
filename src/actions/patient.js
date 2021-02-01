@@ -8,7 +8,6 @@ import {
 	LOAD_PATIENT_UPLOAD_DATA,
 	ADD_PATIENT_UPLOAD_DATA,
 	DELETE_ALLERGY,
-	GET_PHYSIOTHERAPIES,
 	GET_IMAGING_REQUESTS,
 	GET_OPTHALMOLOGY_REQUESTS,
 	LOAD_VITALS,
@@ -145,13 +144,6 @@ export const delete_allergy = payload => {
 	return {
 		type: DELETE_ALLERGY,
 		payload,
-	};
-};
-
-export const getPhysiotherapies = data => {
-	return {
-		type: GET_PHYSIOTHERAPIES,
-		payload: data,
 	};
 };
 
