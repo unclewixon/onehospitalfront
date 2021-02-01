@@ -17,6 +17,8 @@ function InPatientAppointmentForm(props) {
 
 	const [doctorsList, setDoctorsList] = useState();
 	const [rooms, setRooms] = useState();
+	const [room, setRoom] = useState('');
+	const [patient, setPatient] = useState(null);
 	const [doctors, setDoctors] = useState();
 	const [validationMessage, setValidationMessage] = useState();
 	const [patients, setPatients] = useState();
@@ -35,16 +37,24 @@ function InPatientAppointmentForm(props) {
 	}
 
 	const fetchServicesByCategory = async id => {
-		try {
-			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
-			const res = rs.map(service => ({
-				value: service,
-				label: service.name + ' N' + formatNumber(service.tariff),
-			}));
-			setServices(res);
-		} catch (error) {
-			console.log(error);
-			notifyError('error fetching imaging requests for the patient');
+		if (patient === null) {
+			notifyError('please select a patient first!!!');
+		} else {
+			try {
+				const rs = await request(
+					`${serviceAPI}/categories/${id}?hmo_id=${patient?.hmo?.id}`,
+					'GET',
+					true
+				);
+				const res = rs.map(service => ({
+					value: service,
+					label: service.name + ' N' + formatNumber(service.tariff),
+				}));
+				setServices(res);
+			} catch (error) {
+				console.log(error);
+				notifyError('error fetching imaging requests for the patient');
+			}
 		}
 	};
 
@@ -160,6 +170,9 @@ function InPatientAppointmentForm(props) {
 						loadOptions={getOptions}
 						onChange={e => {
 							setValue('patient_id', e.id);
+							setPatient(e);
+							console.log('on react search');
+							console.log(e);
 						}}
 						placeholder="Search patients"
 					/>
@@ -170,7 +183,7 @@ function InPatientAppointmentForm(props) {
 						className="form-control"
 						name="description"
 						rows="3"
-						placeholder="Enter a breif description"
+						placeholder="Enter a brief description"
 						ref={register}></textarea>
 				</div>
 				<div className="row">
@@ -191,6 +204,7 @@ function InPatientAppointmentForm(props) {
 										);
 										// console.log(doctorl);
 										setValue('consulting_room_id', doctor?.room?.id);
+										setRoom(doctor?.room?.name);
 										setValue('doctor_id', evt.value);
 									}
 								}}
@@ -267,19 +281,14 @@ function InPatientAppointmentForm(props) {
 					<div className="col-sm-6">
 						<div className="form-group">
 							<label>Consulting Room</label>
-							<Select
-								isDisabled={true}
-								id="consulting_room_id"
-								placeholder="Select"
+							<input
+								disabled={true}
+								placeholder=""
+								className="form-control"
+								type="text"
 								options={rooms}
 								ref={register({ name: 'consulting_room_id' })}
-								onChange={evt => {
-									if (evt == null) {
-										setValue('consulting_room_id', null);
-									} else {
-										setValue('consulting_room_id', String(evt.value));
-									}
-								}}
+								value={room}
 							/>
 						</div>
 					</div>

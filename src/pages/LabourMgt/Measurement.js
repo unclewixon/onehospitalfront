@@ -19,7 +19,6 @@ export class Measurement extends Component {
 
 	fetchMeasurement = async () => {
 		const { labourDetail } = this.props;
-
 		try {
 			this.setState({ loading: true });
 			const rs = await request(
@@ -113,11 +112,6 @@ export class Measurement extends Component {
 							</tbody>
 						</table>
 					</div>
-				</div>
-
-				<div style={{ display: 'flex' }}>
-					<button className="btn btn-primary col-md-6">Most Viewed</button>
-					<button className="btn btn-primary col-md-6">Show detail</button>
 				</div>
 			</div>
 		);

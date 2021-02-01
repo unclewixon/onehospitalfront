@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 
-import { request } from '../../services/utilities';
+import { request, formatPatientId } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { toggleProfile } from '../../actions/user';
@@ -112,8 +112,8 @@ const AllPatients = () => {
 									return (
 										<tr className="" key={i}>
 											<td>{i + 1}</td>
-											<td>{`${data?.surname} ${data?.other_names}`}</td>
-											<td>{data?.fileNumber}</td>
+											<td>{`${data?.other_names} ${data?.surname}`}</td>
+											<td>{formatPatientId(data?.id)}</td>
 											<td>{data?.phoneNumber}</td>
 											<td>
 												{moment(data?.date_of_birth).format('DD-MMM-YYYY')}

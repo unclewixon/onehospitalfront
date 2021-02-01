@@ -50,16 +50,6 @@ const AllInPatients = () => {
 		dispatch(toggleProfile(true, info));
 	};
 
-	const getProfileInfo = async patient_id => {
-		try {
-			const url = `patient/show?id=${String(patient_id)}`;
-			const rs = await request(url, 'GET', true);
-			showProfile(rs);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
 	const fetchPatients = useCallback(async () => {
 		try {
 			const url = `patient/admissions`;
@@ -104,7 +94,7 @@ const AllInPatients = () => {
 				<td>{data?.admitted_by}</td>
 				<td className="row-actions text-right">
 					<Tooltip title="View Request">
-						<a onClick={() => getProfileInfo(data.patient_id)}>
+						<a onClick={() => showProfile(data.patient)}>
 							<i className="os-icon os-icon-documents-03" />
 						</a>
 					</Tooltip>

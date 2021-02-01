@@ -26,7 +26,6 @@ class index extends Component {
 											className={`mx-2 btn btn-primary btn-sm  ${
 												page === '' ? 'btn-outline-primary' : ''
 											}`}>
-											{' '}
 											Dashboard
 										</Link>
 										<Link
@@ -34,8 +33,7 @@ class index extends Component {
 											className={`mx-2 btn btn-primary btn-sm  ${
 												page === 'enrol-labour' ? 'btn-outline-primary' : ''
 											}`}>
-											{' '}
-											Enrol
+											Enroll
 										</Link>
 									</div>
 									<h6 className="element-header">Labour Management</h6>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import moment from 'moment';
+import { formatPatientId } from '../../services/utilities';
 
 const InsuranceTrans = () => {
 	const [code, setCode] = useState('');
@@ -36,7 +37,7 @@ const InsuranceTrans = () => {
 						</td>
 
 						<td className="cell-with-media">
-							<span style={{ fontSize: '0.7rem' }}>DEDA1234</span>
+							<span style={{ fontSize: '0.7rem' }}>0000002</span>
 						</td>
 						<td className="cell-with-media">
 							<span style={{ fontSize: '0.7rem' }}>HMO</span>
