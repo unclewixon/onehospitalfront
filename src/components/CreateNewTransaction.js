@@ -15,7 +15,7 @@ import {
 import { request } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
-import { getAllRequestServices } from '../actions/settings';
+import { get_all_request_services } from '../actions/settings';
 
 const CreateNewTransaction = props => {
 	let history = useHistory();
@@ -23,10 +23,10 @@ const CreateNewTransaction = props => {
 	const [submitting, setSubmitting] = useState(false);
 	const [loaded, setLoaded] = useState(false);
 	const [patients, setPatients] = useState();
-	const [departments, setDepartments] = useState();
 	const multi = false;
-	const [hmo, setHmo] = useState(false);
+	const [hmo, setHmo] = useState('');
 	const [services, setServices] = useState([]);
+	const [servicesObjects, setServicesObjects] = useState([]);
 	const [servicesCategory, setServicesCategory] = useState([]);
 	const [amount, setAmount] = useState(0);
 
@@ -79,92 +79,91 @@ const CreateNewTransaction = props => {
 		}
 	};
 
-	async function getDepartments() {
-		const rs = await request(`departments`, 'GET', true);
-		const res = rs.map(department => ({
-			value: department.id,
-			label: department.name,
-		}));
-
-		setDepartments(res);
-	}
-
-	useEffect(() => {
-		props.getAllHmos();
-	}, []);
-
-	useEffect(() => {
-		props.getAllHmos();
-
-		if (didMountRef.current) {
-			hmos = hmoList.map(hmo => {
-				return {
-					value: hmo.id,
-					label: hmo.name,
-				};
-			});
-		} else didMountRef.current = true;
-	}, [hmoList]);
-
-	useEffect(() => {
-		getDepartments();
-	}, []);
-
-	useEffect(() => {
-		if (!loaded) {
-			// props
-			// 	.getAllServiceCategory()
-			// 	.then(response => {})
-			// 	.catch(e => {
-			// 		notifyError(e.message || 'could not fetch service categories');
-			// 	});
-
+	const fetchServicesCategory = async () => {
+		try {
+			const rs = await request(`${serviceAPI}/categories`, 'GET', true);
 			let data = [];
-			let services = [];
-			props.ServiceCategories.forEach((item, index) => {
+			rs.forEach((item, index) => {
 				const res = { label: item.name, value: item.id };
 				data = [...data, res];
 			});
-			props.service.forEach((item, index) => {
-				const res = { label: item.name, value: item.id };
-				services = [...services, res];
-			});
 			setServicesCategory(data);
-			setServices(services);
 			setLoaded(true);
+		} catch (error) {
+			console.log(error);
+			notifyError('error fetching imaging requests for the patient');
+		}
+	};
+
+	useEffect(() => {
+		if (!loaded) {
+			fetchServicesCategory();
+			props.getAllHmos();
+
+			if (didMountRef.current) {
+				hmos = hmoList.map(hmo => {
+					return {
+						value: hmo.id,
+						label: hmo.name,
+					};
+				});
+			} else didMountRef.current = true;
 		}
 	}, [props, loaded]);
 
 	const handleChangeServiceCategory = evt => {
-		let value = String(evt.value);
-		fetchServicesByCategory(value);
-		setValue('service_center', value);
+		if (hmo === '') {
+			notifyError('please select Hmo');
+			setValue('revenue_category', null);
+		} else {
+			let value = String(evt.value);
+			fetchServicesByCategory(value);
+			setValue('service_center', value);
+			setValue('revenue_category', value);
+		}
 	};
 
 	const handleChangeHmo = evt => {
+		console.log('handleChangeHmo = evt =>');
 		let value = String(evt.value);
 		setHmo(value);
 		setValue('hmo_id', value);
 	};
 
-	const handleChangeProcedure = evt => {
-		const { service } = props;
-
+	const handleChangeProcedure = async evt => {
 		let sum = 0;
-		evt.forEach(val => {
-			let result = service.find(p => p.id === val.value);
-			sum += parseInt(result.tariff);
+		await evt.forEach(val => {
+			console.log(evt);
+			let result = servicesObjects.find(p => p.id === val.value);
+			sum += result && parseInt(result.tariff);
 		});
 		setAmount(sum);
+		setValue('payment_type', sum);
 		setValue('service_request', evt);
 	};
 
 	const fetchServicesByCategory = async id => {
-		try {
-			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
-		} catch (error) {
-			console.log(error);
-			notifyError('error fetching imaging requests for the patient');
+		if (hmo === '') {
+			notifyError('please select Hmo');
+		} else {
+			try {
+				const rs = await request(
+					`${serviceAPI}/categories/${id}?hmo_id=${hmo}`,
+					'GET',
+					true
+				);
+				setServicesObjects(rs);
+				let services = [];
+				rs &&
+					rs.forEach((item, index) => {
+						const res = { label: item.name, value: item.id };
+						services = [...services, res];
+					});
+				setServices(services);
+			} catch (error) {
+				console.log(error);
+				notifyError('error fetching imaging requests for the patient');
+			}
 		}
 	};
 
@@ -196,6 +195,20 @@ const CreateNewTransaction = props => {
 					</div>
 
 					<div className="form-group col-sm-6">
+						<label>select HMO </label>
+						<Select
+							name="hmo_id:"
+							placeholder="Select HMO"
+							options={hmos}
+							ref={register({ name: 'hmo_id:' })}
+							onChange={evt => handleChangeHmo(evt)}
+							required
+						/>
+					</div>
+				</div>
+
+				<div className="row">
+					<div className="form-group col-sm-6">
 						<label>
 							Revenue Category{' '}
 							<div className="text-danger">
@@ -206,44 +219,20 @@ const CreateNewTransaction = props => {
 						<Select
 							name="revenue_category"
 							placeholder="Select revenue_category"
-							options={departments}
+							options={servicesCategory}
 							ref={register({ name: 'revenue_category' })}
 							defaultValue={{ value: '' }}
 							onChange={evt => {
 								if (evt === null) {
 									setValue('revenue_category', null);
 								} else {
-									setValue('revenue_category', evt.value);
+									handleChangeServiceCategory(evt);
 								}
 							}}
 							required
 						/>
 					</div>
-				</div>
 
-				<div className="row">
-					<div className="form-group col-sm-6">
-						<label>Amount</label>
-
-						<input
-							className="form-control"
-							required
-							placeholder="Amount"
-							type="number"
-							name="amount"
-							min="0"
-							value={amount}
-							ref={register}
-							onChange={evt => {
-								if (evt === null) {
-									setValue('amount', null);
-								} else {
-									setAmount(evt.target.value);
-									setValue('amount', evt.target.value);
-								}
-							}}
-						/>
-					</div>
 					<div className="form-group col-sm-6">
 						<label>
 							Service to request{' '}
@@ -343,15 +332,24 @@ const CreateNewTransaction = props => {
 							required
 						/>
 					</div>
+
 					<div className="form-group col-sm-6">
-						<label>select HMO (If applicable)</label>
-						<Select
-							name="hmo_id:"
-							placeholder="Select HMO"
-							options={hmos}
-							ref={register({ name: 'hmo_id:' })}
-							onChange={evt => handleChangeHmo(evt)}
+						<label>Amount</label>
+
+						<input
+							className="form-control"
 							required
+							placeholder="Amount"
+							type="number"
+							name="amount"
+							min="0"
+							disabled={true}
+							value={amount}
+							ref={register}
+							onChange={evt => {
+								setAmount(evt.target.value);
+								setValue('amount', evt.target.value);
+							}}
 						/>
 					</div>
 				</div>
@@ -385,14 +383,13 @@ const mapStateToProps = state => {
 	return {
 		patient: state.user.patient,
 		requestServices: state.settings.request_services,
-		service: state.settings.services,
 		ServiceCategories: state.settings.service_categories,
 	};
 };
 
 export default withRouter(
 	connect(mapStateToProps, {
-		getAllRequestServices,
+		get_all_request_services,
 		getAllHmos,
 	})(CreateNewTransaction)
 );

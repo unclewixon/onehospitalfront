@@ -388,7 +388,8 @@ button {
 	&.download-roster,
 	&.upload-roster,
 	&.view-vaccine,
-	&.select-drug {
+	&.select-drug,
+	&.select-bed {
 		.ant-popover-inner-content {
 			padding: 0;
 		}
