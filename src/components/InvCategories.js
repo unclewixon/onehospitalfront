@@ -36,6 +36,11 @@ class InvCategories extends Component {
 		});
 	};
 
+	closeCategory = () => {
+		console.log('edited');
+		this.setState({ categoryID: null, edit: false });
+	};
+
 	removeItem = item => {
 		const { categories } = this.props;
 		const rs = categories.filter(c => c.id !== item.id);
@@ -90,7 +95,7 @@ class InvCategories extends Component {
 					{edit ? (
 						<EditInvCategory
 							categoryID={categoryID}
-							editCategory={this.editCategory}
+							closeCategory={this.closeCategory}
 						/>
 					) : (
 						<CreateInvCategory />

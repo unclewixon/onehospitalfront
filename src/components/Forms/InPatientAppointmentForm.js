@@ -19,20 +19,10 @@ function InPatientAppointmentForm(props) {
 	const [rooms, setRooms] = useState();
 	const [doctors, setDoctors] = useState();
 	const [validationMessage, setValidationMessage] = useState();
-	const [patients, setPatients] = useState();
 	const [appointmentDate, setAppointmentDate] = useState(new Date());
 	const [submitting, setSubmitting] = useState(false);
 	const [services, setServices] = useState([]);
 	const [servicesCategory, setServicesCategory] = useState([]);
-
-	async function getPatients() {
-		const rs = await request(`patient/list`, 'GET', true);
-		const res = rs.map(patient => ({
-			value: patient.id,
-			label: patient.surname + ', ' + patient.other_names,
-		}));
-		setPatients(res);
-	}
 
 	const fetchServicesByCategory = async id => {
 		try {
@@ -77,11 +67,8 @@ function InPatientAppointmentForm(props) {
 	}
 
 	async function validateAppointment(patient_id, service_id) {
-		const rs = await request(
-			`front-desk/appointments/validate?patient_id=${patient_id}&service_id=${service_id}`,
-			'GET',
-			true
-		);
+		const url = `front-desk/appointments/validate?patient_id=${patient_id}&service_id=${service_id}`;
+		const rs = await request(url, 'GET', true);
 		if (rs.amount > 0) {
 			register({ name: 'amount' });
 			setValue('amount', rs.amount);
@@ -118,22 +105,26 @@ function InPatientAppointmentForm(props) {
 	};
 
 	const onSubmit = async values => {
-		setSubmitting(true);
-		const url = 'front-desk/appointments/new';
-		const rs = await request(url, 'POST', true, values);
-		setSubmitting(false);
-		if (rs.success) {
-			notifySuccess('New appointment record has been saved!');
-			props.addTransaction(rs.appointment);
-			props.closeModals(false);
-		} else {
-			notifyError(rs.message || 'Could not save appointment record');
+		try {
+			setSubmitting(true);
+			const url = 'front-desk/appointments/new';
+			const rs = await request(url, 'POST', true, values);
+			setSubmitting(false);
+			if (rs.success) {
+				notifySuccess('New appointment record has been saved!');
+				props.addTransaction(rs.appointment);
+				props.closeModals(false);
+			} else {
+				notifyError(rs.message || 'Could not save appointment record');
+			}
+		} catch (e) {
+			setSubmitting(false);
+			notifyError(e.message || 'Could not save appointment record');
 		}
 	};
 
 	const init = useCallback(async () => {
 		await Promise.all([
-			getPatients(),
 			getConsultationServicesCategory(),
 			getActiveDoctors(),
 			getConsultingRooms(),
@@ -144,6 +135,7 @@ function InPatientAppointmentForm(props) {
 	useEffect(() => {
 		init();
 	}, [init]);
+
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<div className="modal-body">

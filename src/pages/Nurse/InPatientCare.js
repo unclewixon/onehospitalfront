@@ -81,7 +81,7 @@ const InPatientCare = () => {
 					/>
 				</form>
 			</div>
-			<div className="element-box">
+			<div className="element-box p-3 m-0">
 				<div className="table-responsive">
 					<table className="table table-striped">
 						<thead>
