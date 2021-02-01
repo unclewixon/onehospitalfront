@@ -64,8 +64,8 @@ class OpenRequest extends Component {
 				'GET',
 				true
 			);
-			console.log(rs);
-			this.props.loadRadiology(rs);
+			console.log(rs.result);
+			this.props.loadRadiology(rs.result);
 			console.log(rs, 'response');
 			this.setState({ loading: false, filtering: false });
 		} catch (error) {

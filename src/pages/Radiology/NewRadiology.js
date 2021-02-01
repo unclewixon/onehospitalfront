@@ -109,7 +109,7 @@ const NewRadiology = props => {
 	};
 
 	useEffect(() => {
-		console.log(props);
+		console.log('props', props);
 
 		if (!dataLoaded) {
 			// props
@@ -123,8 +123,8 @@ const NewRadiology = props => {
 			// 	});
 
 			// setServiceList(props.ServicesList);
-			filterRequest();
-			console.log(services);
+			// filterRequest();
+			console.log('service by HMO', services);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props, dataLoaded]);
