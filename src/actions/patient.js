@@ -155,12 +155,12 @@ export const getPhysiotherapies = data => {
 	};
 };
 
-export const add_dentisry = data => {
-	return {
-		type: SAVE_ALLERGIES,
-		payload: data,
-	};
-};
+// export const add_dentisry = data => {
+// 	return {
+// 		type: SAVE_ALLERGIES,
+// 		payload: data,
+// 	};
+// };
 
 export const loadImagingRequests = data => {
 	return {

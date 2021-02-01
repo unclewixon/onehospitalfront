@@ -48,7 +48,7 @@ class OpenRequest extends Component {
 			this.props.loadRadiology(rs.result);
 			this.setState({ loading: false, filtering: false });
 		} catch (error) {
-			console.log(error);
+			console.log('this', error);
 			notifyError('Error fetching all radiology request');
 			this.setState({ loading: false, filtering: false });
 		}

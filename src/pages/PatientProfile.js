@@ -179,7 +179,10 @@ class PatientProfile extends Component {
 								<div className="content-box">
 									<div className="row">
 										<div className="col-sm-12 pb-4">
-											<ProfileBlock profile={true} patient={patient} />
+											{/* patient profile block */}
+											{location.hash !== '#dashboard' && (
+												<ProfileBlock profile={true} patient={patient} />
+											)}
 										</div>
 										<Suspense fallback={<Splash />}>
 											<Switch>

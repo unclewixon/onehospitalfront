@@ -40,7 +40,7 @@ class SearchScan extends Component {
 			const url = `${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`;
 			const rs = await request(url, 'GET', true);
 
-			this.props.loadRadiology(rs);
+			this.props.loadRadiology(rs.result);
 			console.log(rs);
 			this.setState({ loading: false, filtering: false });
 		} catch (error) {

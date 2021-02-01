@@ -130,9 +130,10 @@ class index extends Component {
 						</div>
 					</div>
 				</div>
-				<div className="content-panel compact">
+				{/* removed based on task requirement DO NOT UNCOMMENT */}
+				{/* <div className="content-panel compact">
 					<Queue department={department} />
-				</div>
+				</div> */}
 			</div>
 		);
 	}

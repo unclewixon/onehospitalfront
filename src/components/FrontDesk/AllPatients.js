@@ -69,7 +69,9 @@ const AllPatients = () => {
 									<div className="fht-cell"></div>
 								</th>
 								<th>
-									<div className="th-inner sortable both">Patient Name</div>
+									<div className="th-inner sortable both">
+										Patient here Name
+									</div>
 									<div className="fht-cell"></div>
 								</th>
 								<th>
