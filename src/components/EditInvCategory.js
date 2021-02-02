@@ -31,7 +31,7 @@ class EditInvCategory extends Component {
 			notifySuccess('category saved!');
 			this.setState({ submitting: false });
 			this.props.reset('edit_category');
-			this.props.editCategory(null, false);
+			this.props.closeCategory();
 		} catch (e) {
 			this.setState({ submitting: false });
 			throw new SubmissionError({
@@ -42,7 +42,7 @@ class EditInvCategory extends Component {
 
 	render() {
 		const { submitting } = this.state;
-		const { error, handleSubmit, editCategory } = this.props;
+		const { error, handleSubmit, closeCategory } = this.props;
 		return (
 			<div className="element-wrapper">
 				<div className="element-box pipeline white lined-warning p-3 m-0">
@@ -79,7 +79,7 @@ class EditInvCategory extends Component {
 								<button
 									className="btn btn-secondary ml-3"
 									type="button"
-									onClick={editCategory(null, false)}>
+									onClick={() => closeCategory()}>
 									Cancel
 								</button>
 							</div>

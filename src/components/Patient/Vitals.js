@@ -1,13 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { lazy, useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
+import { connect } from 'react-redux';
+
 import { patientAPI, vitalItems } from '../../services/constants';
 import { request } from '../../services/utilities';
 import { loadVitals } from '../../actions/patient';
-import { connect } from 'react-redux';
-import waiting from '../../assets/images/searching.gif';
-import { notifySuccess, notifyError } from './../../services/notify';
 
 const BMI = lazy(() => import('../Vitals/BMI'));
 const BloodPressure = lazy(() => import('../Vitals/BloodPressure'));
@@ -86,7 +84,6 @@ const Vitals = props => {
 	const { type, location, patient } = props;
 
 	const [loaded, setLoaded] = useState(false);
-	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		async function doLoadVitals() {
@@ -106,21 +103,6 @@ const Vitals = props => {
 		return res;
 	}
 
-	const sendToDoctor = async () => {
-		setLoading(true);
-		const data = { patient_id: patient?.id };
-		const url = `front-desk/queue-system/add`;
-		const res = await request(url, 'POST', true, data);
-		if (res) {
-			notifySuccess(`Patient has been queued to see the doctor `);
-			setLoading(false);
-			return;
-		}
-		notifyError(`Could not add patient queue`);
-		setLoading(false);
-		return;
-	};
-
 	return (
 		<div className="col-md-12">
 			<div className="element-wrapper">
@@ -137,21 +119,6 @@ const Vitals = props => {
 						))}
 					</div>
 				</div>
-				<div className="floating-actions">
-					<Button
-						className="btn btn-primary btn-sm"
-						disabled={loading}
-						onClick={sendToDoctor}>
-						{loading ? (
-							<img src={waiting} alt="" />
-						) : (
-							<>
-								<i className="os-icon os-icon-mail-18"></i>
-								<span>Send To Doctor</span>
-							</>
-						)}
-					</Button>
-				</div>
 				<h6 className="element-header text-center">{type}</h6>
 				<div className="element-box p-3 m-0">
 					<Page type={type} />
@@ -160,10 +127,12 @@ const Vitals = props => {
 		</div>
 	);
 };
+
 const mapStateToProps = (state, ownProps) => {
 	return {
 		patient: state.user.patient,
 		departments: state.settings.departments,
 	};
 };
+
 export default connect(mapStateToProps, { loadVitals })(withRouter(Vitals));

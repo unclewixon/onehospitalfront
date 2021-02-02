@@ -21,7 +21,6 @@ const Pharmacy = lazy(() => import('../components/Patient/Pharmacy'));
 const Imaging = lazy(() => import('../components/Patient/Imaging'));
 const Opthalmology = lazy(() => import('../components/Patient/Opthalmology'));
 const Procedure = lazy(() => import('../components/Patient/Procedure'));
-const Physiotherapy = lazy(() => import('../components/Patient/Physiotherapy'));
 const Vitals = lazy(() => import('../components/Patient/Vitals'));
 const Allergies = lazy(() => import('../components/Patient/Allergies'));
 const LabRequest = lazy(() => import('../components/Patient/LabRequest'));
@@ -30,9 +29,6 @@ const PharmacyRequest = lazy(() =>
 );
 const OpthalmologyRequest = lazy(() =>
 	import('../components/Patient/OpthalmologyRequest')
-);
-const PhysiotherapyRequest = lazy(() =>
-	import('../components/Patient/PhysiotherapyRequest')
 );
 const ImagingRequest = lazy(() =>
 	import('../components/Patient/ImagingRequest')
@@ -90,17 +86,12 @@ const Page = ({ location }) => {
 			return <Opthalmology />;
 		case 'procedure':
 			return <Procedure />;
-		case 'physio':
-			return <Physiotherapy />;
 		case 'lab-request':
 			return <LabRequest module="patient" />;
 		case 'pharmacy-request':
 			return <PharmacyRequest />;
 		case 'opthalmology-request':
 			return <OpthalmologyRequest />;
-
-		case 'physiotherapy-request':
-			return <PhysiotherapyRequest />;
 		case 'imaging-request':
 			return <ImagingRequest />;
 		case 'procedure-request':
