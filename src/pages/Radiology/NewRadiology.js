@@ -10,6 +10,7 @@ import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 const NewRadiology = props => {
 	let history = useHistory();
@@ -50,6 +51,7 @@ const NewRadiology = props => {
 				};
 			}),
 		};
+		console.log('requestBody', data.requestBody);
 		try {
 			await request(`${patientAPI}/save-request`, 'POST', true, data);
 
@@ -67,6 +69,18 @@ const NewRadiology = props => {
 		searchPatient();
 	};
 
+	const getOptionValues = option => option.id;
+	const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+
+	const getOptions = async q => {
+		if (!q || q.length < 3) {
+			return [];
+		}
+
+		const url = `${searchAPI}?q=${q}`;
+		const res = await request(url, 'GET', true);
+		return res;
+	};
 	const searchPatient = async () => {
 		if (query.length > 2) {
 			try {
@@ -94,23 +108,48 @@ const NewRadiology = props => {
 	const filterRequest = async () => {
 		setServices([]);
 
-		let requestType = props.ServicesList.filter(service => {
-			return service.category.name === 'Ultrasound';
-		}).map(data => {
-			return {
-				value: data.id,
-				label: data.name,
-			};
-		});
+		// dispatch(startBlock());
+		//
+		try {
+			setSearching(true);
+			const res = await request('services/categories/Ultrasound', 'GET', true);
+			const serviceRes = await request(
+				`services/category/${res.id}`,
+				'GET',
+				true
+			);
 
-		await setServices(requestType);
+			let requestType = serviceRes.map(data => {
+				return {
+					value: data.id,
+					label: data.name,
+				};
+			});
+			{
+			}
+			setServices(requestType);
+			console.log('requestType', requestType);
+		} catch (e) {
+			notifyError('Error Occurred');
+			setSearching(false);
+		}
+
+		// console.log('am here oo',res);
+
+		// 	.filter(service => {
+		// 		return res.category.name === 'Ultrasound';
+		// 	})
+		// 	.map(data => {
+		// 		return {
+		// 			value: data.id,
+		// 			label: data.name,
+		// 		};
+		// 	});
 
 		// console.log(serviceList.map(service => service.category.id));
 	};
 
 	useEffect(() => {
-		console.log('props', props);
-
 		if (!dataLoaded) {
 			// props
 			// 	.getAllService()
@@ -123,7 +162,7 @@ const NewRadiology = props => {
 			// 	});
 
 			// setServiceList(props.ServicesList);
-			// filterRequest();
+			filterRequest();
 			console.log('service by HMO', services);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -134,8 +173,6 @@ const NewRadiology = props => {
 			<div className="col-md-12">
 				<div className="element-content">
 					<div className="element-box">
-						<h6 className="element-header">Create Radiology </h6>
-
 						<div className="form-block w-100">
 							<form onSubmit={handleSubmit(onSubmit)}>
 								<div className="row">
@@ -181,8 +218,22 @@ const NewRadiology = props => {
 								<div className="row">
 									<div className="form-group col-sm-6">
 										<label>Patient</label>
-
-										<input
+										<AsyncSelect
+											isClearable
+											getOptionValue={getOptionValues}
+											getOptionLabel={getOptionLabels}
+											defaultOptions
+											required
+											autoComplete="off"
+											name="patient_id"
+											ref={register({ name: 'patient_id' })}
+											loadOptions={getOptions}
+											onChange={e => {
+												setValue('patient_id', e);
+											}}
+											placeholder="Search for patient"
+										/>
+										{/* <input
 											className="form-control"
 											placeholder="Search for patient"
 											type="text"
@@ -198,7 +249,7 @@ const NewRadiology = props => {
 											<div className="searching text-center">
 												<img alt="searching" src={searchingGIF} />
 											</div>
-										)}
+										)} */}
 
 										{patients &&
 											patients.map(pat => {

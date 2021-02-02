@@ -114,7 +114,6 @@ class SearchScan extends Component {
 			<div className="row">
 				<div className="col-sm-12">
 					<div className="element-wrapper">
-						<h6 className="element-header">Search Scan</h6>
 						<div className="col-md-12">
 							<form className="row">
 								<div className="form-group col-md-6">
@@ -207,11 +206,11 @@ class SearchScan extends Component {
 																		<i className="os-icon os-icon-folder-plus" />
 																	</a>
 																</Tooltip>
-																<Tooltip title="Edit Request">
+																{/* <Tooltip title="Edit Request">
 																	<a className="secondary">
 																		<i className="os-icon os-icon-edit-32" />
 																	</a>
-																</Tooltip>
+																</Tooltip> */}
 																<Tooltip title="Delete Request">
 																	<a className="danger">
 																		<i className="os-icon os-icon-ui-15" />

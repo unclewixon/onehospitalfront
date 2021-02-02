@@ -21,6 +21,12 @@ class index extends Component {
 		const page = location.pathname.split('/').pop();
 
 		const department = staff?.details?.department?.name;
+		let pageTitle = 'Dashboard';
+		if (page === 'all-request') {
+			pageTitle = 'All Request';
+		} else if (page === 'new-radiology') {
+			pageTitle = 'New Radiology Request';
+		}
 
 		return (
 			<div className="content-i">
@@ -28,8 +34,7 @@ class index extends Component {
 					<div className="row">
 						<div className="col-sm-12">
 							<div className="element-wrapper">
-								<h6 className="element-header">Radiology</h6>
-								<div className="row mt-2 mb-4">
+								<div className="element-actions">
 									<Link
 										to={`${match.path}/`}
 										className={`btn btn-primary btn-sm my-1 ${
@@ -51,28 +56,21 @@ class index extends Component {
 										}`}
 										to={`${match.path}/scheduled-request`}>
 										Schedule Request
-									</Link>
+										</Link>
 									<Link
 										className={`btn btn-primary btn-sm my-1 ${
 											page === 'appraisal-list' ? 'btn-outline-primary' : ''
 										}`}
 										to={`${match.path}/appraisal-list`}>
 										Appraisal List
-									</Link>
+										</Link>
 									<Link
-										className={`btn btn-primary btn-sm my-1 ${
+									className={`btn btn-primary btn-sm my-1 ${
 											page === 'awaiting-list' ? 'btn-outline-primary' : ''
 										}`}
 										to={`${match.path}/awaiting-list`}>
 										Awaiting List
 									</Link> */}
-									<Link
-										className={`btn btn-primary btn-sm my-1 ${
-											page === 'search-scan' ? 'btn-outline-primary' : ''
-										}`}
-										to={`${match.path}/search-scan`}>
-										Search Scan
-									</Link>
 
 									<Link
 										className={`btn btn-primary btn-sm my-1 ${
@@ -82,6 +80,7 @@ class index extends Component {
 										New Request
 									</Link>
 								</div>
+								<h6 className="element-header">{pageTitle}</h6>
 								<Suspense fallback={<Splash />}>
 									<Switch>
 										<Route

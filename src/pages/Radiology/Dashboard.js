@@ -6,83 +6,13 @@ import Tooltip from 'antd/lib/tooltip';
 
 import { API_URI, patientAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
-import { request, upload } from '../../services/utilities';
+import { request, uploadFileImage, upload } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadRadiology } from '../../actions/patient';
 import { uploadRadiology } from '../../actions/general';
 import { toggleProfile } from '../../actions/user';
-
-const UploadImagingData = ({ uploading, doUpload, hide }) => {
-	const [files, setFiles] = useState(null);
-	const [label, setLabel] = useState('');
-
-	// let uploadAttachment;
-
-	const handleChange = e => {
-		setFiles(e.target.files);
-
-		let label = Array.from(e.target.files)
-			.map(file => {
-				return file.name;
-			})
-			.join(',');
-		setLabel(label);
-	};
-	return (
-		<div
-			className="onboarding-modal fade animated show"
-			role="dialog"
-			style={{ width: '400px' }}>
-			<div className="modal-centered">
-				<div className="modal-content text-center">
-					<button onClick={hide} className="close" type="button">
-						<span className="os-icon os-icon-close"></span>
-					</button>
-					<div className="onboarding-content with-gradient">
-						<h4 className="onboarding-title">Upload Imaging</h4>
-
-						<form
-							className="form-block w-100"
-							onSubmit={e => doUpload(e, files)}>
-							<div className="row my-3">
-								<div className="custom-file col-12">
-									{/* {label ? <textarea>{label}</textarea> : null} */}
-									<input
-										type="file"
-										className="custom-file-input"
-										name="file"
-										accept="image/*"
-										onChange={handleChange}
-										multiple
-									/>
-									<label className="custom-file-label">
-										{label.substring(0, 40) || 'Choose File(s)'}
-									</label>
-								</div>
-							</div>
-
-							<div className="row">
-								<div className="col-sm-12 text-right pr-0">
-									<button
-										className="btn btn-primary"
-										disabled={uploading}
-										type="submit">
-										{uploading ? (
-											<img src={waiting} alt="submitting" />
-										) : (
-											'upload'
-										)}
-									</button>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
-};
+import UploadImagingData from './UploadImageData';
 
 export class Dashboard extends Component {
 	state = {
@@ -94,7 +24,7 @@ export class Dashboard extends Component {
 		status: '',
 		upload_visible: false,
 		uploading: false,
-		patient: null,
+		request: null,
 	};
 
 	componentDidMount() {
@@ -109,7 +39,9 @@ export class Dashboard extends Component {
 			const rs = await request(url, 'GET', true);
 
 			this.props.loadRadiology(rs.result);
-			console.log('server response', rs);
+
+			// debug purposes
+			// console.log('server response', rs);
 			this.setState({ loading: false, filtering: false });
 		} catch (error) {
 			// DEBUG PURPOSES
@@ -188,7 +120,8 @@ export class Dashboard extends Component {
 	onUpload = async (e, files) => {
 		e.preventDefault();
 		console.log(files, 'files');
-		const { patient } = this.state;
+		const { request } = this.state;
+		console.log(request);
 		if (!files) {
 			notifyError('You did not select any image file');
 			return;
@@ -201,14 +134,14 @@ export class Dashboard extends Component {
 		// console.log(fileData.files[0], "file");
 		//files: [file1, file2, file3]
 		const file = files[0];
+		console.log(file, 'file');
 		if (file) {
 			try {
 				let formData = new FormData();
 				formData.append('files', file);
-				formData.append('document_type', 'Imaging');
-				console.log(formData.getAll());
+				formData.append('document_type', 'imaging');
 				const rs = await upload(
-					`${API_URI}/${patientAPI}/${patient.patient_id}/upload-request-document`,
+					`${API_URI}/${patientAPI}/${request.id}/upload-request-document`,
 					'POST',
 					formData
 				);
@@ -221,7 +154,7 @@ export class Dashboard extends Component {
 				// throw new SubmissionError({
 				// 	_error: e.message || 'could not upload data',
 				// });
-				notifyError(e.message || 'could not upload data');
+				notifyError(error.message || 'could not upload data');
 			}
 		}
 	};
@@ -235,7 +168,7 @@ export class Dashboard extends Component {
 	};
 
 	togglePopover = req => {
-		this.setState({ patient: req });
+		this.setState({ request: req });
 		this.setState({ upload_visible: true });
 	};
 	render() {
@@ -244,39 +177,14 @@ export class Dashboard extends Component {
 			loading,
 			uploading,
 			upload_visible,
+			request,
 			// patient,
 		} = this.state;
 		const { radiology } = this.props;
 		return (
 			<div className="row">
-				<div className="col-md-12">
-					<div className="element-content">
-						<div className="row">
-							<div className="col-sm-4 col-xxxl-4">
-								<a className="element-box el-tablo">
-									<div className="label">TOTAL OPEN</div>
-									<div className="value text-center">57</div>
-								</a>
-							</div>
-							<div className="col-sm-4 col-xxxl-4">
-								<a className="element-box el-tablo">
-									<div className="label">TOTAl FILLED</div>
-									<div className="value text-center">457</div>
-								</a>
-							</div>
-							<div className="col-sm-4 col-xxxl-4">
-								<a className="element-box el-tablo">
-									<div className="label">LOW STOCK</div>
-									<div className="value text-center">125</div>
-								</a>
-							</div>
-						</div>
-					</div>
-				</div>
 				<div className="col-sm-12">
 					<div className="element-wrapper">
-						<h6 className="element-header">Dashboard</h6>
-
 						{/* <Popover
 							content={
 								<UploadImagingData
