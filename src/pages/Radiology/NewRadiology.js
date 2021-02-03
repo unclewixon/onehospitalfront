@@ -145,7 +145,6 @@ const NewRadiology = props => {
 		// 			label: data.name,
 		// 		};
 		// 	});
-
 		// console.log(serviceList.map(service => service.category.id));
 	};
 

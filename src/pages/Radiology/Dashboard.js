@@ -25,6 +25,10 @@ export class Dashboard extends Component {
 		upload_visible: false,
 		uploading: false,
 		request: null,
+		approved: false,
+		captured: false,
+		uploaded: false,
+		payment_made: true,
 	};
 
 	componentDidMount() {
@@ -146,7 +150,11 @@ export class Dashboard extends Component {
 					formData
 				);
 				notifySuccess(`Patient Imaging Data Uploaded`);
-				this.setState({ uploading: false, upload_visible: false });
+				this.setState({
+					uploading: false,
+					upload_visible: false,
+					uploaded: true,
+				});
 				console.log(rs);
 			} catch (error) {
 				console.log(error);
@@ -171,6 +179,12 @@ export class Dashboard extends Component {
 		this.setState({ request: req });
 		this.setState({ upload_visible: true });
 	};
+	onCaptured = () => {
+		this.setState({ ...this.state, captured: true });
+	};
+	onApproved = () => {
+		this.setState({ ...this.state, approved: true });
+	};
 	render() {
 		const {
 			// filtering,
@@ -178,6 +192,10 @@ export class Dashboard extends Component {
 			uploading,
 			upload_visible,
 			request,
+			payment_made,
+			approved,
+			captured,
+			uploaded,
 			// patient,
 		} = this.state;
 		const { radiology } = this.props;
@@ -219,7 +237,8 @@ export class Dashboard extends Component {
 										<tr>
 											<th className="text-center">Request Date</th>
 											<th className="text-center">Patient Name</th>
-											<th className="text-center">Request</th>
+											<th className="text-center">Type</th>
+											<th className="text-center">Status</th>
 											<th>
 												<div className="th-inner "></div>
 												<div className="fht-cell"></div>
@@ -245,29 +264,97 @@ export class Dashboard extends Component {
 															{request.patient_name}
 														</td>
 														<td className="text-center">
-															{this.getRequests(request.requestBody)}
+															{/* {this.getRequests(request.requestType)} */}
+															{request.requestType}
 														</td>
-
+														<td className="text-center">
+															{/* {request.status} */}
+															{!payment_made && (
+																<span className="badge badge-warning">
+																	Awaiting Payment
+																</span>
+															)}
+															{payment_made && !captured && (
+																<span className="badge badge-info text-white">
+																	Pending
+																</span>
+															)}
+															{payment_made &&
+																(uploaded || !uploaded) &&
+																captured &&
+																!approved && (
+																	<span className="badge badge-secondary">
+																		Awaiting Approval
+																	</span>
+																)}
+															{approved && (
+																<span className="badge badge-success">
+																	Approved
+																</span>
+															)}
+														</td>
 														<td className="text-right row-actions">
-															<Tooltip title="Receive Request">
-																<a className="secondary">
-																	<i className="os-icon os-icon-folder-plus" />
-																</a>
-															</Tooltip>
-															<Tooltip title="Upload image">
-																<a
-																	onClick={() => {
-																		this.togglePopover(request);
-																	}}>
-																	<i className="os-icon os-icon-upload-cloud" />
-																</a>
-															</Tooltip>
+															{/* after payment, capture scan */}
+															{payment_made && !captured && (
+																<Tooltip title="Captured Scan?">
+																	<a
+																		className="secondary"
+																		onClick={() => {
+																			this.onCaptured();
+																		}}>
+																		<i className="os-icon os-icon-folder-plus" />
+																	</a>
+																</Tooltip>
+															)}
+															{/* after approval, view scan */}
+															{approved && (
+																<Tooltip title="View Scan">
+																	<a className="secondary">
+																		<i className="os-icon os-icon-eye" />
+																	</a>
+																</Tooltip>
+															)}
+															{/* after approval print scan */}
+															{approved && (
+																<Tooltip title="Print Scan">
+																	<a className="secondary">
+																		<i className="os-icon os-icon-printer" />
+																	</a>
+																</Tooltip>
+															)}
+															{/* after capture & after upload, upload scan */}
+															{payment_made &&
+																(uploaded || !uploaded) &&
+																captured &&
+																!approved && (
+																	<Tooltip title="Upload scan Image">
+																		<a
+																			onClick={() => {
+																				this.togglePopover(request);
+																			}}>
+																			<i className="os-icon os-icon-upload-cloud" />
+																		</a>
+																	</Tooltip>
+																)}
+															{/* after upload, approve scan */}
+															{payment_made && uploaded && !approved && (
+																<Tooltip title="Approve Scan Image">
+																	<a
+																		className="secondary"
+																		onClick={() => this.onApproved()}>
+																		<i className="font-bolder icon-feather-check" />
+																	</a>
+																</Tooltip>
+															)}
 
-															<Tooltip title="Delete Request">
-																<a className="danger">
-																	<i className="os-icon os-icon-ui-15" />
-																</a>
-															</Tooltip>
+															{/* until approval, delete request */}
+															{!approved && (
+																<Tooltip title="Delete Request">
+																	<a className="danger">
+																		<i className="os-icon os-icon-ui-15" />
+																	</a>
+																</Tooltip>
+															)}
 														</td>
 													</tr>
 												);
