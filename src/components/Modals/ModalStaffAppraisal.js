@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import { closeModals } from '../../actions/general';
-import CreateAppraisal from '../StaffBlock/CreateAppraisal';
+import LineManagerAssessment from '../StaffBlock/LineManagerAssessment';
 // const validate = values => {
 // 	const errors = {};
 // 	if (!values.comment) {
@@ -53,7 +53,7 @@ export class ModalStaffAppraisal extends Component {
 							</div>
 
 							<div className="row">
-								<CreateAppraisal isStaffAppraisal={true} />
+								<LineManagerAssessment isStaffAppraisal={true} />
 							</div>
 						</div>
 					</div>
@@ -69,8 +69,6 @@ export class ModalStaffAppraisal extends Component {
 // })(ModalStaffAppraisal);
 const mapStateToProps = state => {
 	return {
-		staff: state.general.staff,
-
 		period: state.hr.performancePeriod,
 	};
 };

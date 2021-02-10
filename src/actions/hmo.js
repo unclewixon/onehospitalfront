@@ -89,7 +89,7 @@ export const fetchHmoTariff = data => {
 	console.log(data);
 	return async dispatch => {
 		try {
-			const url = `${hmoAPI}/${data}/tariff?listType=services`;
+			const url = `${hmoAPI}/${data || 1}/tariff?listType=services`;
 			const rs = await request(url, 'GET', true);
 			return rs;
 		} catch (error) {

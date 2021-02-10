@@ -24,27 +24,6 @@ import { setPerformancePeriod } from '../../actions/hr';
 
 const validate = values => {
 	const errors = {};
-	if (
-		!values?.performance ||
-		(values?.performance && parseInt(values.performance, 10) > 70) ||
-		(values?.performance && parseInt(values.performance, 10) < 0)
-	) {
-		errors.performance = 'error';
-	}
-	if (
-		!values.work_attitude ||
-		(values.work_attitude && parseInt(values.work_attitude, 10) > 20) ||
-		(values.work_attitude && parseInt(values.work_attitude, 10) < 0)
-	) {
-		errors.work_attitude = 'error';
-	}
-	if (
-		!values.other_factor ||
-		(values.other_factor && parseInt(values.other_factor, 10) > 10) ||
-		(values.other_factor && parseInt(values.other_factor, 10) < 0)
-	) {
-		errors.other_factor = 'error';
-	}
 	return errors;
 };
 
@@ -77,6 +56,7 @@ class CreateAppraisal extends Component {
 
 	componentDidMount() {
 		this.fetchDepartments();
+		console.log(this.props.staff);
 	}
 
 	fetchDepartments = async () => {
@@ -117,79 +97,90 @@ class CreateAppraisal extends Component {
 	};
 
 	doCreateAppraisal = data => async () => {
-		this.setState({ submitting: true });
-		const { staff, location } = this.props;
-		const { departments } = this.state;
-		console.log('doCreateApprai');
-		console.log(departments);
-		console.log(staff);
-		const deptId = staff?.details?.department?.id;
-		const department = departments?.find(d => d?.id === deptId);
-		console.log(department);
-		if (department) {
-			const details = {
-				staffId: staff?.id,
-				lineManagerId: department?.hod_id,
-				departmentId: staff.details?.department.id,
-				employeeComment: data?.employeeComment,
-				indicators: [
-					{
-						keyFocus: 'Job Performance/Competence',
-						objective: 'Work Efficiency',
-						kpis: [
-							'To provide urgent medical attention and urgent treatment to staff or visitors in case of accident or sudden',
-							'Attending to emergencies as regards clients (inpatient) health care.',
-							"monitor the patents' conditions and progress",
-						],
-						weight: `${data.performance}%`,
-					},
-					{
-						keyFocus: 'Work Attitude',
-						objective: 'Team & Work Collaboration',
-						kpis: [
-							'Collaborate with colleagues and nursing staff regularly',
-							'Makes meaningful recommendation to consultants and communicate effectively with consultants and others',
-						],
-						weight: `${data.work_attitude}%`,
-					},
-					{
-						keyFocus: 'Other Factor',
-						objective: 'Attendence',
-						kpis: ['Achieve 95% monthly attendence at work'],
-						weight: `${data.other_factor}%`,
-					},
-				],
-			};
+		const { performance, work_attitude, other_factor } = this.props;
+		const total = performance + work_attitude + other_factor;
+		if (!isNaN(total) && total == 100) {
+			this.setState({ submitting: true });
+			const { staff, location } = this.props;
+			const { departments } = this.state;
+			console.log('doCreateApprai');
+			console.log(departments);
+			console.log(staff);
+			const deptId = staff?.details?.department?.id;
+			const department = departments?.find(d => d?.id === deptId);
+			console.log(department);
+			if (department) {
+				const details = {
+					staffId: staff?.id,
+					lineManagerId: department?.hod_id,
+					departmentId: staff.details?.department.id,
+					employeeComment: data?.employeeComment,
+					indicators: [
+						{
+							keyFocus: 'Job Performance/Competence',
+							objective: 'Work Efficiency',
+							kpis: [
+								'To provide urgent medical attention and urgent treatment to staff or visitors in case of accident or sudden',
+								'Attending to emergencies as regards clients (inpatient) health care.',
+								"monitor the patents' conditions and progress",
+							],
+							weight: `${data.performance}%`,
+						},
+						{
+							keyFocus: 'Work Attitude',
+							objective: 'Team & Work Collaboration',
+							kpis: [
+								'Collaborate with colleagues and nursing staff regularly',
+								'Makes meaningful recommendation to consultants and communicate effectively with consultants and others',
+							],
+							weight: `${data.work_attitude}%`,
+						},
+						{
+							keyFocus: 'Other Factor',
+							objective: 'Attendence',
+							kpis: ['Achieve 95% monthly attendence at work'],
+							weight: `${data.other_factor}%`,
+						},
+					],
+				};
 
-			console.log(details);
+				console.log(details);
 
-			try {
-				const rs = await request(`${appraisalAPI}/new`, 'POST', true, details);
-				if (rs.success) {
-					this.props.reset('create_appraisal');
-					notifySuccess('appraisal created!');
-				} else {
-					notifyError(`${rs.message}`);
-					console.log(rs);
+				try {
+					const rs = await request(
+						`${appraisalAPI}/new`,
+						'POST',
+						true,
+						details
+					);
+					if (rs.success) {
+						this.props.reset('create_appraisal');
+						notifySuccess('appraisal created!');
+					} else {
+						notifyError(`${rs.message}`);
+						console.log(rs);
+					}
+					this.setState({ submitting: false });
+
+					this.props.history.push(`${location.pathname}#appraisal`);
+				} catch (e) {
+					console.log(e);
+					this.setState({ submitting: false });
+					console.log(e);
+					setTimeout(function() {
+						$('.slide-pane__content').scrollTop(0);
+					}, 500);
+					notifyError(`${e.message}`);
 				}
-				this.setState({ submitting: false });
-
-				this.props.history.push(`${location.pathname}#appraisal`);
-			} catch (e) {
-				console.log(e);
-				this.setState({ submitting: false });
-				console.log(e);
+			} else {
 				setTimeout(function() {
 					$('.slide-pane__content').scrollTop(0);
 				}, 500);
-				notifyError(`${e.message}`);
+				notifyError('invalid department');
+				this.setState({ submitting: false });
 			}
 		} else {
-			setTimeout(function() {
-				$('.slide-pane__content').scrollTop(0);
-			}, 500);
-			notifyError('invalid department');
-			this.setState({ submitting: false });
+			notifyError('please ensure total equals 100%');
 		}
 	};
 
@@ -201,9 +192,7 @@ class CreateAppraisal extends Component {
 
 	confirmSave = data => {
 		confirmAction(
-			this?.props?.isStaffAppraisal
-				? this.lineManager(data)
-				: this.doCreateAppraisal(data),
+			this.doCreateAppraisal(data),
 			null,
 			'You will not be able to edit after submitting appraisal '
 		);
@@ -222,12 +211,12 @@ class CreateAppraisal extends Component {
 								<div className="element-actions">
 									<Link
 										className="btn btn-primary btn-sm text-white"
-										to={`/my-account/appraisal`}>
+										to={`/my-account/appraisal/staff-appraisal`}>
 										<i className="os-icon os-icon-ui-22" />
 										<span>go back</span>
 									</Link>
 								</div>
-								<h6 className="element-header">Self Assessment</h6>
+								<h6 className="element-header">New Staff Appraisal</h6>
 							</>
 						)}
 						<div className="element-box m-0 p-3">
@@ -239,7 +228,7 @@ class CreateAppraisal extends Component {
 											<tr>
 												<th className="text-left">Department</th>
 												<td className="text-right">
-													{staff?.details?.department?.name}
+													{staff?.department?.name}
 												</td>
 											</tr>
 											<tr>
@@ -259,11 +248,11 @@ class CreateAppraisal extends Component {
 												<th>Key Focus</th>
 												<th>Objective</th>
 												<th>KPIs (Assessment Criteria)</th>
-												<th>Weight</th>
+												<th>Example Weight</th>
 												{isStaffAppraisal ? <th>Staff Assessment </th> : null}
 												<th>
 													{!isStaffAppraisal
-														? 'SelfAssessment'
+														? 'Weight'
 														: 'Your assessment of Staff'}
 												</th>
 											</tr>
@@ -366,42 +355,7 @@ class CreateAppraisal extends Component {
 										</tbody>
 									</table>
 								</div>
-								<fieldset className="form-group">
-									<legend>
-										<span className="text-secondary">Employee's Comment</span>
-									</legend>
-									{!isStaffAppraisal ? (
-										<div className="form-group">
-											<Field
-												name="employeeComment"
-												component={renderTextArea}
-												type="text"
-												placeholder="Write your comment here"
-											/>
-										</div>
-									) : (
-										'I did everything in my capacity to make sure all patients are very happy'
-									)}
-								</fieldset>
 
-								{isStaffAppraisal ? (
-									<fieldset className="form-group">
-										<legend>
-											<span className="text-secondary">
-												Line Manager's Comment
-											</span>
-										</legend>
-
-										<div className="form-group">
-											<Field
-												name="lineComment"
-												component={renderTextArea}
-												type="text"
-												placeholder="Write your comment here"
-											/>
-										</div>
-									</fieldset>
-								) : null}
 								<div className="form-buttons-w">
 									<div className="text-right mt-3">
 										<button
@@ -444,12 +398,12 @@ const mapStateToProps = (state, ownProps) => {
 			other_factor: 0,
 			sum_total: 0,
 		},
-		staff: state.user.profile,
+		//staff: state.user.profile,
 		performance: parseInt(_performance, 10),
 		work_attitude: parseInt(_workAttitude, 10),
 		other_factor: parseInt(_otherFactor, 10),
 		period: state.hr.performancePeriod,
-		//isStaffAppraisal : state.general.isStaffAppraisal,
+		staff: state.general.staffForApraisal,
 	};
 };
 

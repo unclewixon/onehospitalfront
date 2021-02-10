@@ -1,25 +1,35 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
-import { viewAppraisal } from '../actions/general';
+import { request, updateImmutable } from '../services/utilities';
+import { loadPerformancePeriod } from '../actions/hr';
+import { notifySuccess, notifyError } from '../services/notify';
 
 const status = value => {
-	switch (value) {
-		case 1:
-			return <span className="badge badge-success-inverted">approved</span>;
-		case 2:
-			return <span className="badge badge-danger-inverted">pending</span>;
-		default:
-			return <span className="badge badge-warning-inverted">closing</span>;
+	if (value.isActive) {
+		return <span className="badge badge-success-inverted">approved</span>;
+	} else {
+		return <span className="badge badge-danger-inverted">closed</span>;
 	}
 };
 
 class AppraisalItem extends Component {
-	doViewAppraisal = e => {
+	doDisable = async (e, data) => {
 		e.preventDefault();
-		console.log('view appraisal');
-		this.props.viewAppraisal(true);
+		try {
+			const { performancePeriods } = this.props;
+			const url = `hr/appraisal/update-period-status/${data.id}`;
+			const rs = await request(url, 'DELETE', true);
+			data.isActive = false;
+			const upd = updateImmutable(performancePeriods, data);
+			this.props.loadPerformancePeriod(upd);
+			notifySuccess('Staff Disabled');
+		} catch (error) {
+			console.log(error);
+			notifyError('Error Disabling Staff');
+		}
 	};
 
 	render() {
@@ -32,7 +42,7 @@ class AppraisalItem extends Component {
 				<td>{item.startDate}</td>
 				<td>{item.endDate}</td>
 
-				<td className="text-center">{status(item.status)}</td>
+				<td className="text-center">{status(item)}</td>
 				<td className="text-right row-actions">
 					<Tooltip title="edit">
 						<a
@@ -45,26 +55,34 @@ class AppraisalItem extends Component {
 					</Tooltip>
 
 					<Tooltip title="open">
-						<a className="">
+						<a className="" onClick={() => this.props.createAppraisal(item)}>
 							<i className="os-icon os-icon-folder"></i>
 						</a>
 					</Tooltip>
 
-					<Tooltip title="view">
-						<a className="">
-							<i className="os-icon os-icon-documents-03"></i>
-						</a>
-					</Tooltip>
-
-					<Tooltip title="close">
-						<a className="danger">
-							<i className="os-icon os-icon-ui-15" />
-						</a>
-					</Tooltip>
+					{item.isActive ? (
+						<Tooltip title="Close Appraisal">
+							<a
+								onClick={e => this.doDisable(e, item)}
+								className="danger"
+								title="Close Appraisal">
+								<i className="os-icon os-icon-x-circle" />
+							</a>
+						</Tooltip>
+					) : (
+						<Tooltip title="Open Appraisal">
+							<a
+								onClick={e => this.doDisable(e, item)}
+								className="success"
+								title="Open Appraisal">
+								<i className="os-icon os-icon-check-circle" />
+							</a>
+						</Tooltip>
+					)}
 				</td>
 			</tr>
 		);
 	}
 }
 
-export default connect(null, { viewAppraisal })(AppraisalItem);
+export default connect(null, { loadPerformancePeriod })(AppraisalItem);

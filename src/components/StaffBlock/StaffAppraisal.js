@@ -3,13 +3,17 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import isEmpty from 'lodash.isempty';
-
+import { viewAppraisal } from '../../actions/general';
 import { request } from '../../services/utilities';
 import { staffAPI } from '../../services/constants';
 import { loadStaff } from '../../actions/hr';
 import Tooltip from 'antd/lib/tooltip';
 import { setPerformancePeriod } from '../../actions/hr';
-import { loadStaffAppraisal } from '../../actions/general';
+import {
+	loadStaffAppraisal,
+	addStaffForAppraisal,
+	setIsStaffAppraisal,
+} from '../../actions/general';
 
 class StaffAppraisal extends Component {
 	state = {
@@ -25,7 +29,7 @@ class StaffAppraisal extends Component {
 	}
 
 	componentWillUnmount() {
-		// this.props.setPerformancePeriod({});
+		//this.props.setIsStaffAppraisal(false);
 	}
 
 	fetchStaffs = async () => {
@@ -40,10 +44,28 @@ class StaffAppraisal extends Component {
 		}
 	};
 
+	doViewAppraisal = (e, staff) => {
+		e.preventDefault();
+		console.log('view appraisal');
+		this.props.addStaffForAppraisal(staff);
+		this.props.viewAppraisal(true);
+	};
+
 	appraiseStaff = staff => {
 		//load it into the redux
 		this.props.loadStaffAppraisal(true, staff);
 	};
+
+	createAppraisal = staff => {
+		const { location, history } = this.props;
+		//set performance period
+
+		setIsStaffAppraisal(true);
+		//got to create apparaisal
+		this.props.addStaffForAppraisal(staff);
+		history.replace(`/my-account/appraisal/new-appraisal`);
+	};
+
 	render() {
 		const { staffs } = this.props;
 		const { loading } = this.state;
@@ -106,40 +128,39 @@ class StaffAppraisal extends Component {
 										) : (
 											staffs.map(el => {
 												return (
-													<tr>
+													<tr key={el.id}>
+														<td className="flex text-center">{el.emp_code}</td>
 														<td className="flex text-center">
-															<a className="item-title text-color">
-																{el.emp_code}
-															</a>
+															{el.first_name + ' ' + el.last_name}
 														</td>
-														<td className="flex text-center">
-															<a className="item-title text-color">
-																{el.first_name + ' ' + el.last_name}
-															</a>
-														</td>
-														<td className="flex text-center">
-															<a className="item-title text-color">
-																{el.job_title}
-															</a>
-														</td>
+														<td className="flex text-center">{el.job_title}</td>
 
 														<td className="flex text-center">
-															<a className="item-title text-color">
-																{el.phone_number}
-															</a>
+															{el.phone_number}
 														</td>
-														<td className="flex text-center">
-															<a className="item-title text-color">
-																{el.gender}
-															</a>
-														</td>
-														<td className="flex text-center">
-															<a className="item-title text-color">
-																{el.email}
-															</a>
-														</td>
+														<td className="flex text-center">{el.gender}</td>
+														<td className="flex text-center">{el.email}</td>
+
 														<td className="text-center row-actions">
-															<Tooltip title="Edit Staff">
+															<Tooltip title="Create Staff Appraisal">
+																<a
+																	className="secondary"
+																	onClick={() => {
+																		this.createAppraisal(el);
+																	}}>
+																	<i className="os-icon os-icon-folder-plus" />
+																</a>
+															</Tooltip>
+
+															<Tooltip title="View Appraisal">
+																<a
+																	className=""
+																	onClick={e => this.doViewAppraisal(e, el)}>
+																	<i className="os-icon os-icon-documents-03"></i>
+																</a>
+															</Tooltip>
+
+															<Tooltip title="Assess Staff">
 																<a
 																	className="secondary"
 																	onClick={() => {
@@ -177,5 +198,8 @@ export default withRouter(
 		loadStaff,
 		setPerformancePeriod,
 		loadStaffAppraisal,
+		viewAppraisal,
+		addStaffForAppraisal,
+		setIsStaffAppraisal,
 	})(StaffAppraisal)
 );

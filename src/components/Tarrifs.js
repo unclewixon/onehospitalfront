@@ -1,12 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import capitalize from 'lodash.capitalize';
-
+import Pagination from 'antd/lib/pagination';
+import waiting from '../assets/images/waiting.gif';
 import { notifyError } from '../services/notify';
 import searchingGIF from '../assets/images/searching.gif';
 import { getAllHmos, fetchHmoTariff } from '../actions/hmo';
-import { formatNumber } from '../services/utilities';
+import { formatNumber, request, itemRender } from '../services/utilities';
+import { startBlock, stopBlock } from '../actions/redux-block';
 
 const Tarrifs = props => {
 	const initialState = {
@@ -14,15 +16,18 @@ const Tarrifs = props => {
 	};
 	const urlParam = new URLSearchParams(props.location.search);
 	const selected = urlParam.get('selected');
-
+	const dispatch = useDispatch();
 	const [{ selectedHmo }, setState] = useState(initialState);
 	const [loading, setLoading] = useState(true);
+	const [loaded, setLoaded] = useState(false);
 	const [services, setServices] = useState([]);
 	const [filtered, setFiltered] = useState([]);
+	const [hmo, setHmo] = useState(1);
+	const [meta, setMeta] = useState(null);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
-		setState({ [name]: value });
+		setHmo(value);
 		setLoading(true);
 		getTariffs(value);
 	};
@@ -40,7 +45,9 @@ const Tarrifs = props => {
 	useEffect(() => {
 		props
 			.getAllHmos()
-			.then(response => {})
+			.then(response => {
+				setState({ selectedHmo: response[0] });
+			})
 			.catch(e => {
 				console.log(e);
 				notifyError(e.message || 'could not fetch lab tests');
@@ -48,18 +55,42 @@ const Tarrifs = props => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	const onNavigatePage = nextPage => {
+		dispatch(startBlock());
+		fetch(hmo, nextPage);
+	};
+
+	const fetch = async (data, page) => {
+		try {
+			setLoaded(true);
+			const p = page || 1;
+			const url = `hmos/${data ||
+				1}/tariff?listType=services&page=${p}&limit=25`;
+			const rs = await request(url, 'GET', true);
+			const { result, ...meta } = rs;
+			setMeta(meta);
+			const arr = [...result];
+			setFiltered(arr);
+			setLoading(false);
+			setLoaded(true);
+			dispatch(stopBlock());
+		} catch (error) {
+			console.log(error);
+			notifyError('error fetching tariff');
+			setLoading(false);
+			setLoaded(true);
+			dispatch(stopBlock());
+		}
+	};
+
+	useEffect(() => {
+		if (!loaded) {
+			fetch(1);
+		}
+	}, [loaded]);
+
 	const getTariffs = selected => {
-		props
-			.fetchHmoTariff(selected)
-			.then(response => {
-				setServices(response);
-				setFiltered(response);
-				setLoading(false);
-			})
-			.catch(error => {
-				console.log(error);
-				setLoading(false);
-			});
+		fetch(selected);
 	};
 
 	const hmos = props.hmoList.map(hmo => {
@@ -130,8 +161,7 @@ const Tarrifs = props => {
 													<tr>
 														<th>Code</th>
 														<th>Service</th>
-														<th>rate</th>
-														<th>Coverage</th>
+														<th>Amount</th>
 														<th>Discount</th>
 														<th>Actions</th>
 													</tr>
@@ -146,6 +176,7 @@ const Tarrifs = props => {
 													) : (
 														<>
 															{filtered.map((hmo, i) => {
+																console.log(hmo);
 																return (
 																	<tr key={i}>
 																		<td>
@@ -157,12 +188,9 @@ const Tarrifs = props => {
 																			<div className="smaller">{hmo.name}</div>
 																		</td>
 																		<td>
-																			<span>{formatNumber(hmo.rate)}</span>
+																			<span>{formatNumber(hmo.tariff)}</span>
 																		</td>
 
-																		<td className="nowrap">
-																			<span>{hmo.percentage}%</span>
-																		</td>
 																		<td className="nowrap">
 																			<span>
 																				{hmo.discount
@@ -200,6 +228,19 @@ const Tarrifs = props => {
 													)}
 												</tbody>
 											</table>
+
+											{meta && (
+												<div className="pagination pagination-center mt-4">
+													<Pagination
+														current={parseInt(meta.currentPage, 10)}
+														pageSize={parseInt(meta.itemsPerPage, 10)}
+														total={parseInt(meta.totalPages, 10)}
+														showTotal={total => `Total ${total} transactions`}
+														itemRender={itemRender}
+														onChange={current => onNavigatePage(current)}
+													/>
+												</div>
+											)}
 										</div>
 									</div>
 								</div>

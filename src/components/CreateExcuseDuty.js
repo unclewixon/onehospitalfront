@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { useForm } from 'react-hook-form';
 import { withRouter } from 'react-router-dom';
 import AsyncSelect from 'react-select/async';
 import DatePicker from 'react-datepicker';
-
+import Select from 'react-select';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from './../services/notify';
 import { diagnosisAPI } from '../services/constants';
@@ -21,6 +21,8 @@ const CreateExcuseDuty = ({ history }) => {
 	const [date, setDate] = useState(new Date());
 	const [startDate, setStartDate] = useState('');
 	const [endDate, setEndDate] = useState('');
+	const [category, setCategory] = useState('');
+	const [cats, setCats] = useState([]);
 
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option => option.description;
@@ -28,6 +30,32 @@ const CreateExcuseDuty = ({ history }) => {
 		setValue('diagnosis', selectedOption);
 		setSelectedOption(selectedOption);
 	};
+
+	const fetchLeaveCategory = useCallback(async () => {
+		try {
+			const rs = await request(`leave-category`, 'GET', true);
+			setCats(rs);
+		} catch (error) {
+			notifyError('could not fetch leave categories!');
+		}
+	}, [setCats]);
+
+	useEffect(() => {
+		fetchLeaveCategory();
+	}, [fetchLeaveCategory]);
+
+	let leaveObj = {};
+	const leaveOptions =
+		cats &&
+		cats.map(leave => {
+			leaveObj[leave.id] = {
+				...leave,
+				value: leave.id,
+				label: leave.name,
+			};
+			return leaveObj[leave.id];
+		});
+
 	const getOptions = async inputValue => {
 		if (!inputValue) {
 			return [];
@@ -90,7 +118,7 @@ const CreateExcuseDuty = ({ history }) => {
 			staff_id: value && value.staff ? value.staff.id : '',
 			start_date: startDate ? startDate : '',
 			end_date: endDate ? endDate : '',
-			leave_category_id: '248cd662-a260-46be-bc90-dbaeb1ba1f1c',
+			leave_category_id: category,
 			application: value ? value.reason : '',
 			appliedBy:
 				value && value.consulting_doctor ? value.consulting_doctor.id : '',
@@ -100,7 +128,7 @@ const CreateExcuseDuty = ({ history }) => {
 			await request(`hr/leave-management`, 'POST', true, newRequestData);
 			setSubmitting(false);
 			notifySuccess('Leave request added');
-			history.push('/front-desk#excuse-duty');
+			history.push('/my-account/excuse-duty');
 		} catch (error) {
 			setSubmitting(false);
 			notifyError('Could not add excuse duty');
@@ -114,7 +142,7 @@ const CreateExcuseDuty = ({ history }) => {
 				<div className="form-block">
 					<form onSubmit={handleSubmit(onHandleSubmit)}>
 						<div className="row">
-							<div className="form-group col-sm-6">
+							<div className="form-group col-sm-4">
 								<label>Staff ID</label>
 								<AsyncSelect
 									required
@@ -130,7 +158,8 @@ const CreateExcuseDuty = ({ history }) => {
 									placeholder="Enter Staff Name"
 								/>
 							</div>
-							<div className="col-sm-6">
+
+							<div className="col-sm-4">
 								<label>Exempted for day:</label>
 								<input
 									id="exempted_days"
@@ -141,11 +170,26 @@ const CreateExcuseDuty = ({ history }) => {
 									placeholder="Enter number of days for exemption"
 									onChange={e => {
 										setDuration(e.target.value);
+									}}
+								/>
+							</div>
+							<div className="col-sm-4">
+								<label>Select leave Category</label>
+								<Select
+									id="leave_type"
+									name="leave_type"
+									ref={register}
+									placeholder="Select leave type"
+									options={leaveOptions}
+									defaultValue={leaveOptions[0]}
+									onChange={e => {
+										setCategory(e.value);
 										getEndDate();
 									}}
 								/>
 							</div>
 						</div>
+
 						<div className="row">
 							<div className="col-sm-3">
 								<label>Start Date</label>

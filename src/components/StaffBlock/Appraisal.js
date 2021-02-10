@@ -56,15 +56,8 @@ export class Appraisal extends Component {
 			<div className="row">
 				<div className="col-sm-12">
 					<div className="element-wrapper">
-						<div className="element-actions">
-							<Link
-								className="btn btn-primary btn-sm text-white"
-								to={`${location.pathname}/create-appraisal`}>
-								<i className="os-icon os-icon-ui-22" />
-								<span>Create Appraisal</span>
-							</Link>
-						</div>
-						<h6 className="element-header mt-3">Appraisal</h6>
+						<div className="element-actions"></div>
+						<h6 className="element-header mt-3">Performance Periods</h6>
 						<div className="element-box m-0 p-3">
 							<div className="table-responsive">
 								<table className="table table-striped">
@@ -100,19 +93,13 @@ export class Appraisal extends Component {
 											return (
 												<tr key={i}>
 													<td className="flex text-center">
-														<a className="item-title text-color">
-															{appraisal.performancePeriod}
-														</a>
+														{appraisal.performancePeriod}
 													</td>
 													<td className="flex text-center">
-														<a className="item-title text-color">
-															{appraisal.startDate}
-														</a>
+														{appraisal.startDate}
 													</td>
 													<td className="flex text-center">
-														<a className="item-title text-color">
-															{appraisal.endDate}
-														</a>
+														{appraisal.endDate}
 													</td>
 
 													<td className="text-center row-actions">
@@ -131,7 +118,7 @@ export class Appraisal extends Component {
 																onClick={() => {
 																	this.createAppraisal(appraisal, 'line');
 																}}>
-																<i className="os-icon os-icon-edit-32" />
+																<i className="os-icon os-icon-layers" />
 															</a>
 														</Tooltip>
 

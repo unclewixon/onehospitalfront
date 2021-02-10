@@ -326,6 +326,7 @@ const CreateNewTransaction = props => {
 								if (evt === null) {
 									setValue('payment_type', null);
 								} else {
+									console.log(evt.value);
 									setValue('payment_type', evt.value);
 								}
 							}}

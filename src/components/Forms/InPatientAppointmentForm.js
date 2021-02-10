@@ -21,20 +21,10 @@ function InPatientAppointmentForm(props) {
 	const [patient, setPatient] = useState(null);
 	const [doctors, setDoctors] = useState();
 	const [validationMessage, setValidationMessage] = useState();
-	const [patients, setPatients] = useState();
 	const [appointmentDate, setAppointmentDate] = useState(new Date());
 	const [submitting, setSubmitting] = useState(false);
 	const [services, setServices] = useState([]);
 	const [servicesCategory, setServicesCategory] = useState([]);
-
-	async function getPatients() {
-		const rs = await request(`patient/list`, 'GET', true);
-		const res = rs.map(patient => ({
-			value: patient.id,
-			label: patient.surname + ', ' + patient.other_names,
-		}));
-		setPatients(res);
-	}
 
 	const fetchServicesByCategory = async id => {
 		if (patient === null) {
@@ -143,7 +133,6 @@ function InPatientAppointmentForm(props) {
 
 	const init = useCallback(async () => {
 		await Promise.all([
-			getPatients(),
 			getConsultationServicesCategory(),
 			getActiveDoctors(),
 			getConsultingRooms(),
@@ -169,10 +158,8 @@ function InPatientAppointmentForm(props) {
 						ref={register({ name: 'patient_id' })}
 						loadOptions={getOptions}
 						onChange={e => {
-							setValue('patient_id', e.id);
+							setValue('patient_id', e?.id);
 							setPatient(e);
-							console.log('on react search');
-							console.log(e);
 						}}
 						placeholder="Search patients"
 					/>

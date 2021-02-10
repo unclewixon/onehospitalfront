@@ -17,10 +17,6 @@ import startCase from 'lodash.startcase';
 import { socket } from '../../services/constants';
 import { notifyError, notifySuccess } from '../../services/notify';
 
-const Appointments = lazy(() =>
-	import('../../components/FrontDesk/FrontDeskAppointments')
-);
-
 const AllAppointments = lazy(() =>
 	import('../../components/FrontDesk/AllAppointments')
 );
@@ -33,9 +29,6 @@ const AllInPatients = lazy(() =>
 	import('../../components/FrontDesk/AllInPatients')
 );
 
-const AllNotifications = lazy(() =>
-	import('../../components/FrontDesk/AllNotifications')
-);
 const InsuranceTrans = lazy(() =>
 	import('../../components/FrontDesk/InsuranceTrans')
 );
@@ -112,14 +105,10 @@ const FrontDesk = props => {
 									<Suspense fallback={<Splash />}>
 										<Switch>
 											<Route
-												exact
-												path={`${match.url}/`}
-												component={Appointments}
-											/>
-											<Route
 												path={`${match.url}/all-appointments`}
 												component={AllAppointments}
 											/>
+
 											<Route
 												path={`${match.url}/all-patients`}
 												component={AllPatients}
@@ -128,10 +117,7 @@ const FrontDesk = props => {
 												path={`${match.url}/in-patients`}
 												component={AllInPatients}
 											/>
-											<Route
-												path={`${match.url}/notifications`}
-												component={AllNotifications}
-											/>
+
 											<Route
 												path={`${match.url}/insurance-trans`}
 												component={InsuranceTrans}

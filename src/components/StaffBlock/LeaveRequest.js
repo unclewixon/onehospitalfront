@@ -66,6 +66,7 @@ const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 			notifySuccess('Successful removed leave applications');
 			getLeaveRequests();
 		} catch (error) {
+			console.log(error);
 			notifyError('Could not remove leave applications');
 		}
 	};
@@ -224,15 +225,10 @@ const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 									)}
 								</tbody>
 							</table>
-							<div className="pagination pagination-center mt-4">
-								<Pagination
-									current={0}
-									pageSize={pageSize}
-									total={0}
-									showTotal={total => `Total ${total} requests`}
-									itemRender={itemRender}
-									onChange={current => onNavigatePage(current)}
-								/>
+							<div className="controls-below-table">
+								<div className="table-records-info">
+									Showing {staffLeaves.length} records{' '}
+								</div>
 							</div>
 						</div>
 					</div>

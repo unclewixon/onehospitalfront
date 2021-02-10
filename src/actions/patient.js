@@ -10,7 +10,6 @@ import {
 	DELETE_ALLERGY,
 	GET_PHYSIOTHERAPIES,
 	GET_IMAGING_REQUESTS,
-	GET_OPTHALMOLOGY_REQUESTS,
 	LOAD_VITALS,
 	UPDATE_VITALS,
 	CREATE_LAB_REQUEST,
@@ -165,13 +164,6 @@ export const add_dentisry = data => {
 export const loadImagingRequests = data => {
 	return {
 		type: GET_IMAGING_REQUESTS,
-		payload: data,
-	};
-};
-
-export const loadOpthalmologyRequests = data => {
-	return {
-		type: GET_OPTHALMOLOGY_REQUESTS,
 		payload: data,
 	};
 };

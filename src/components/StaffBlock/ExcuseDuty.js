@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
 
-import { request } from '../../services/utilities';
+import { redirectToPage, request } from '../../services/utilities';
 import { loadStaffLeave } from '../../actions/hr';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
@@ -12,7 +12,13 @@ import ModalExcuseDuty from '../Modals/ModalExcuseDuty';
 import ModalEditExcuse from '../Modals/ModalEditExcuse';
 import { confirmAction } from '../../services/utilities';
 
-const ExcuseDuty = ({ loadStaffLeave, staffLeaves, location, staff }) => {
+const ExcuseDuty = ({
+	loadStaffLeave,
+	staffLeaves,
+	location,
+	staff,
+	history,
+}) => {
 	const [searching, setSearching] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
 	const [showModal, setShowModal] = useState(false);
@@ -63,6 +69,11 @@ const ExcuseDuty = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 		);
 	};
 
+	const redirect = e => {
+		e.preventDefault();
+		history.push(`${location.pathname}/new`);
+	};
+
 	return (
 		<div className="row my-4">
 			<div className="col-sm-12">
@@ -70,7 +81,7 @@ const ExcuseDuty = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 					<div className="element-actions">
 						<button
 							className="btn btn-primary btn-sm text-white"
-							to={`${location.pathname}/new`}>
+							onClick={e => redirect(e)}>
 							<i className="os-icon os-icon-ui-22" />
 							<span>New Excuse Duty</span>
 						</button>
@@ -191,30 +202,8 @@ const ExcuseDuty = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 							</table>
 
 							<div className="controls-below-table">
-								<div className="table-records-info">Showing records 1 - 5</div>
-								<div className="table-records-pages">
-									<ul>
-										<li>
-											<a href="#">Previous</a>
-										</li>
-										<li>
-											<a className="current" href="#">
-												1
-											</a>
-										</li>
-										<li>
-											<a href="#">2</a>
-										</li>
-										<li>
-											<a href="#">3</a>
-										</li>
-										<li>
-											<a href="#">4</a>
-										</li>
-										<li>
-											<a href="#">Next</a>
-										</li>
-									</ul>
+								<div className="table-records-info">
+									Showing {staffLeaves.length} records{' '}
 								</div>
 							</div>
 						</div>

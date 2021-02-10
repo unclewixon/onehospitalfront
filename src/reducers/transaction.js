@@ -37,10 +37,10 @@ const transaction = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				todayTransaction: state.todayTransaction.filter(
-					transaction => transaction.q_id !== action.payload.q_id
+					transaction => transaction.id !== action.payload.id
 				),
 				reviewTransaction: state.reviewTransaction.filter(
-					transaction => transaction.q_id !== action.payload.q_id
+					transaction => transaction.id !== action.payload.id
 				),
 			};
 

@@ -6,6 +6,10 @@ import { closeModals } from '../../actions/general';
 class ModalViewAppraisal extends Component {
 	componentDidMount() {
 		document.body.classList.add('modal-open');
+		const { staff, period } = this.props;
+		console.log('ModalStaffAppraisal');
+		console.log(staff.id);
+		console.log(period.id);
 	}
 
 	componentWillUnmount() {
@@ -14,10 +18,17 @@ class ModalViewAppraisal extends Component {
 
 	render() {
 		return (
-			<div className="onboarding-modal modal fade animated show" role="dialog" style={{ display: 'block' }}>
+			<div
+				className="onboarding-modal modal fade animated show"
+				role="dialog"
+				style={{ display: 'block' }}>
 				<div className="modal-dialog modal-lg modal-centered" role="document">
 					<div className="modal-content text-center">
-						<button aria-label="Close" className="close" type="button" onClick={() => this.props.closeModals(false)}>
+						<button
+							aria-label="Close"
+							className="close"
+							type="button"
+							onClick={() => this.props.closeModals(false)}>
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
@@ -39,7 +50,9 @@ class ModalViewAppraisal extends Component {
 										</tr>
 										<tr>
 											<th className="text-left">Management Period</th>
-											<td className="text-right text-uppercase">2nd Quarter [Apr - Jun]</td>
+											<td className="text-right text-uppercase">
+												2nd Quarter [Apr - Jun]
+											</td>
 										</tr>
 									</tbody>
 								</table>
@@ -97,9 +110,9 @@ class ModalViewAppraisal extends Component {
 											<td></td>
 										</tr>
 										<tr>
-											<td/>
-											<td/>
-											<td/>
+											<td />
+											<td />
+											<td />
 											<td>100%</td>
 											<td></td>
 											<td></td>
@@ -117,7 +130,9 @@ class ModalViewAppraisal extends Component {
 							</div>
 							<form>
 								<fieldset className="form-group">
-									<legend><span className="text-secondary">HR's Comment</span></legend>
+									<legend>
+										<span className="text-secondary">HR's Comment</span>
+									</legend>
 									<div className="form-group">
 										<textarea className="form-control" rows="3"></textarea>
 									</div>
@@ -136,4 +151,11 @@ class ModalViewAppraisal extends Component {
 	}
 }
 
-export default connect(null, { closeModals })(ModalViewAppraisal);
+const mapStateToProps = ({ general, hr }) => {
+	return {
+		staff: general.staffForApraisal,
+		period: hr.performancePeriod,
+	};
+};
+
+export default connect(mapStateToProps, { closeModals })(ModalViewAppraisal);

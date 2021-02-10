@@ -20,26 +20,34 @@ const ImagingRequest = props => {
 	const [services, setServices] = useState([]);
 	const [servicesCategory, setServicesCategory] = useState([]);
 
-	useEffect(() => {
-		if (!loaded) {
-			// props
-			// 	.getAllServiceCategory()
-			// 	.then(response => {})
-			// 	.catch(e => {
-			// 		notifyError(e.message || 'could not fetch service categories');
-			// 	});
-
+	const fetchServicesCategory = async () => {
+		try {
+			const rs = await request(`${serviceAPI}/categories`, 'GET', true);
 			let data = [];
-			let services = [];
-			props.ServiceCategories.forEach((item, index) => {
+			rs.forEach((item, index) => {
 				const res = { label: item.name, value: item.id };
 				data = [...data, res];
 			});
-			props.service.forEach((item, index) => {
-				const res = { label: item.name, value: item.id };
-				services = [...services, res];
-			});
 			setServicesCategory(data);
+			setLoaded(true);
+		} catch (error) {
+			console.log(error);
+			notifyError('error fetching imaging requests for the patient');
+		}
+	};
+
+	useEffect(() => {
+		if (!loaded) {
+			fetchServicesCategory();
+
+			let services = [];
+
+			props.service &&
+				props.service.forEach((item, index) => {
+					const res = { label: item.name, value: item.id };
+					services = [...services, res];
+				});
+
 			setServices(services);
 			setLoaded(true);
 		}
@@ -102,6 +110,13 @@ const ImagingRequest = props => {
 	const fetchServicesByCategory = async id => {
 		try {
 			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
+			let services = [];
+			rs &&
+				rs.forEach((item, index) => {
+					const res = { label: item.name, value: item.id };
+					services = [...services, res];
+				});
+			setServices(services);
 		} catch (error) {
 			console.log(error);
 			notifyError('error fetching imaging requests for the patient');

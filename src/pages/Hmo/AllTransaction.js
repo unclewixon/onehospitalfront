@@ -6,10 +6,12 @@ import DatePicker from 'antd/lib/date-picker';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import { hmoAPI, transactionsAPI, searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
-import { request } from '../../services/utilities';
+import { request, itemRender } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { loadHmoTransaction } from '../../actions/hmo';
 import HmoTable from '../../components/HMO/HmoTable';
+import Pagination from 'antd/lib/pagination';
+import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const { RangePicker } = DatePicker;
 
@@ -30,17 +32,6 @@ const getOptions = async q => {
 	return res;
 };
 
-const getOptionValuesHMO = option => option.id;
-const getOptionLabelsHMO = option => `${option.other_names} ${option.surname}`;
-const getOptionsHMO = async q => {
-	if (!q || q.length < 3) {
-		return [];
-	}
-	const url = `${searchAPI}?q=${q}`;
-	const res = await request(url, 'GET', true);
-	return res;
-};
-
 export class AllTransaction extends Component {
 	state = {
 		filtering: false,
@@ -50,39 +41,67 @@ export class AllTransaction extends Component {
 		endDate: '',
 		status: '',
 		patient_id: '',
-		hmo_id: '',
+		hmo_id: 1,
+		hmos: [],
+		meta: null,
 	};
 	patient = React.createRef();
 	hmo = React.createRef();
 
 	componentDidMount() {
+		this.fetchHmos();
 		this.fetchHmoTransaction();
 	}
 
-	fetchHmoTransaction = async () => {
-		const { status, startDate, endDate, patient_id, hmo_id } = this.state;
+	componentDidUpdate(prevProps, prevState) {
+		if (prevState.patient_id !== this.state.patient_id) {
+			this.fetchHmoTransaction();
+		}
+	}
 
+	fetchHmos = async () => {
 		try {
 			this.setState({ loading: true });
+			const rs = await request(`${hmoAPI}`, 'GET', true);
+			const hmos = rs.map(hmo => {
+				return {
+					value: hmo.id,
+					label: hmo.name,
+				};
+			});
+			this.setState({ hmos });
+		} catch (error) {
+			console.log(error);
+			notifyError('Error fetching Hmos');
+		}
+	};
+
+	fetchHmoTransaction = async page => {
+		const { patient_id, startDate, endDate, status, hmo_id } = this.state;
+		try {
+			const p = page || 1;
+			this.setState({ loading: true });
 			const rs = await request(
-				`${hmoAPI}/${transactionsAPI}?startDate=${startDate}&endDate=${endDate}&patient_id=${patient_id}&status=${status}&page=1&limit=10&hmo_id=${hmo_id}`,
+				`hmos/transactions?page=${p}&limit=15&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}&hmo_id=${hmo_id}`,
 				'GET',
 				true
 			);
-
-			this.props.loadHmoTransaction(rs);
-			// console.log(rs);
-			this.setState({
-				loading: false,
-				filtering: false,
-				startDate: '',
-				endDate: '',
-			});
+			const { result, ...meta } = rs;
+			const arr = [...result];
+			this.props.loadHmoTransaction(arr);
+			this.setState({ loading: false, filtering: false, meta });
+			this.props.stopBlock();
 		} catch (error) {
 			console.log(error);
-			notifyError('Error fetching today hmos transactions request');
-			this.setState({ loading: false, filtering: false, patient_id: '' });
+			this.props.stopBlock();
+			this.setState({ loading: false, filtering: false });
+			notifyError(error.message || 'could not fetch hmo transactions');
 		}
+	};
+
+	onNavigatePage = nextPage => {
+		this.props.startBlock();
+		this.fetchHmoTransaction(nextPage);
 	};
 
 	doFilter = e => {
@@ -90,6 +109,7 @@ export class AllTransaction extends Component {
 		// this.setState({ filtering: true });
 		this.setState({ ...this.state, filtering: true });
 		console.log(this.state.patient_id);
+		console.log(this.state.hmo_id);
 		// if (this.state.query < 3) {
 		// 	this.setState({ ...this.state, patient_id: '' });
 		// 	console.log(this.state.patient_id);
@@ -151,9 +171,8 @@ export class AllTransaction extends Component {
 	};
 
 	render() {
-		const { filtering, loading } = this.state;
+		const { filtering, loading, hmos, meta } = this.state;
 		const { hmoTransactions } = this.props;
-		// const hmoReversed = hmoTransactions.reverse();
 
 		return (
 			<div className="element-wrapper">
@@ -178,21 +197,25 @@ export class AllTransaction extends Component {
 							/>
 						</div>
 						<div className="form-group col-sm-6 pr-0">
-							<label>Hmo</label>
+							<label>
+								HMO<span className="compulsory-field">*</span>
+							</label>
 
-							<AsyncSelect
-								isClearable
-								getOptionValue={getOptionValuesHMO}
-								getOptionLabel={getOptionLabelsHMO}
-								defaultOptions
-								name="hmo"
-								ref={this.hmo}
-								loadOptions={getOptionsHMO}
-								onChange={e => {
-									this.patientSet(e, 'hmo');
-								}}
-								placeholder="Search for hmo name"
-							/>
+							<select
+								style={{ height: '35px' }}
+								id="hmo_id"
+								className="form-control"
+								name="hmo_id"
+								onChange={evt => this.change(evt)}>
+								<option value="">Choose Hmo</option>
+								{hmos.map((pat, i) => {
+									return (
+										<option key={i} value={pat.value}>
+											{pat.label}
+										</option>
+									);
+								})}
+							</select>
 						</div>
 					</div>
 					<div className="row">
@@ -262,6 +285,18 @@ export class AllTransaction extends Component {
 							<HmoTable loading={loading} hmoTransactions={hmoTransactions} />
 						</table>
 					</div>
+					{meta && (
+						<div className="pagination pagination-center mt-4">
+							<Pagination
+								current={parseInt(meta.currentPage, 10)}
+								pageSize={parseInt(meta.itemsPerPage, 10)}
+								total={parseInt(meta.totalPages, 10)}
+								showTotal={total => `Total ${total} transactions`}
+								itemRender={itemRender}
+								onChange={current => this.onNavigatePage(current)}
+							/>
+						</div>
+					)}
 				</div>
 			</div>
 		);
@@ -273,4 +308,8 @@ const mapStateToProps = state => {
 		hmoTransactions: state.hmo.hmo_transactions,
 	};
 };
-export default connect(mapStateToProps, { loadHmoTransaction })(AllTransaction);
+export default connect(mapStateToProps, {
+	loadHmoTransaction,
+	startBlock,
+	stopBlock,
+})(AllTransaction);

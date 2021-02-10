@@ -69,7 +69,7 @@ export const renderTextInput = ({
 	</div>
 );
 
-class CreateAppraisal extends Component {
+class LineManagerAssessment extends Component {
 	state = {
 		submitting: false,
 		departments: [],
@@ -425,10 +425,10 @@ class CreateAppraisal extends Component {
 	}
 }
 
-CreateAppraisal = reduxForm({
+LineManagerAssessment = reduxForm({
 	form: 'create_appraisal',
 	validate,
-})(CreateAppraisal);
+})(LineManagerAssessment);
 
 const selector = formValueSelector('create_appraisal');
 
@@ -444,7 +444,7 @@ const mapStateToProps = (state, ownProps) => {
 			other_factor: 0,
 			sum_total: 0,
 		},
-		staff: state.user.profile,
+		staff: state.general.staffForApraisal,
 		performance: parseInt(_performance, 10),
 		work_attitude: parseInt(_workAttitude, 10),
 		other_factor: parseInt(_otherFactor, 10),
@@ -455,6 +455,6 @@ const mapStateToProps = (state, ownProps) => {
 
 export default withRouter(
 	connect(mapStateToProps, { change, reset, setPerformancePeriod })(
-		CreateAppraisal
+		LineManagerAssessment
 	)
 );

@@ -19,6 +19,7 @@ class HmoTable extends Component {
 	};
 
 	confirm = (id, data) => {
+		this.setState({ approvalCode: data.hmo_approval_code });
 		let act = id === 1 ? ' Approve' : ' Reject';
 		confirmAlert({
 			customUI: ({ onClose }) => {
@@ -31,6 +32,7 @@ class HmoTable extends Component {
 								<input
 									className="form-control form-control-sm"
 									placeholder="Enter Approval Code"
+									value={this.state.approvalCode}
 									onChange={e => this.setReferralCode(e)}
 								/>
 							</div>
@@ -93,6 +95,7 @@ class HmoTable extends Component {
 	};
 
 	approvalStatus = hmo_approval_status => {
+		console.log(hmo_approval_status);
 		switch (hmo_approval_status) {
 			case 1: {
 				return (
@@ -102,6 +105,7 @@ class HmoTable extends Component {
 					</>
 				);
 			}
+
 			case 2: {
 				return (
 					<>
@@ -126,7 +130,7 @@ class HmoTable extends Component {
 
 	render() {
 		const { hmoTransactions, loading } = this.props;
-		const hmoReversed = hmoTransactions.reverse();
+		const hmoReversed = hmoTransactions; //.filter(h => h.hmo_id !== 1).reverse();
 		return (
 			<>
 				<tbody>
@@ -161,6 +165,7 @@ class HmoTable extends Component {
 									<td className="text-center">
 										{trans.amount ? formatNumber(trans.amount) : 0}
 									</td>
+									<td className="text-center">{trans.hmo_approval_code}</td>
 									<td className="text-center">
 										{this.approvalStatus(trans.hmo_approval_status)}
 									</td>

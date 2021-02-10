@@ -1,14 +1,13 @@
 import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import AppraisalItem from '../../components/AppraisalItem';
-import { request } from '../../services/utilities';
+import { request, updateImmutable } from '../../services/utilities';
 import { appraisalAPI } from '../../services/constants';
-import { updateImmutable } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
 import { notifyError } from '../../services/notify';
-import { loadPerformancePeriod } from '../../actions/hr';
+import { loadPerformancePeriod, setPerformancePeriod } from '../../actions/hr';
 
 const { RangePicker } = DatePicker;
 
@@ -160,11 +159,6 @@ class Appraisal extends Component {
 
 	onUpload = async (e, data) => {
 		e.preventDefault();
-		console.log({
-			performancePeriod: data.period,
-			...data.date,
-		});
-
 		let payload = {
 			performancePeriod: data.period,
 			...data.date,
@@ -180,19 +174,25 @@ class Appraisal extends Component {
 					payload
 				);
 				const { performancePeriods } = this.props;
-				const newArray = [...performancePeriods];
-				newArray.push(rs);
+				const newArray = [...performancePeriods, rs.performancePeriod];
 				this.props.loadPerformancePeriod(newArray);
 			} else {
-				console.log('i am to edit here');
+				const { editItem } = this.state;
+				payload.id = editItem.id;
+				if (payload.performancePeriod === '') {
+					payload.performancePeriod = editItem.performancePeriod;
+				}
 				let rs = await request(
-					`${appraisalAPI}/${data.id}/update`,
+					`${appraisalAPI}/update-period`,
 					'PATCH',
 					true,
 					payload
 				);
 				const { performancePeriods } = this.props;
-				const newArray = updateImmutable(performancePeriods, rs);
+				const newArray = updateImmutable(
+					performancePeriods,
+					rs.performancePeriod
+				);
 				this.props.loadPerformancePeriod(newArray);
 			}
 
@@ -218,6 +218,11 @@ class Appraisal extends Component {
 	editPerformancePeriod = item => {
 		this.performanceIndicatorForm();
 		this.setState({ editItem: item });
+	};
+
+	createAppraisal = item => {
+		this.props.setPerformancePeriod(item);
+		this.props.history.push('/my-account/appraisal/staff-appraisal');
 	};
 
 	render() {
@@ -250,10 +255,10 @@ class Appraisal extends Component {
 										className="btn btn-primary btn-sm text-white"
 										onClick={this.performanceIndicatorForm}>
 										<i className="os-icon os-icon-ui-22" />
-										<span>Create Appraisal</span>
+										<span>Create Performance Period</span>
 									</button>
 								</div>
-								<h6 className="element-header">Appraisals</h6>
+								<h6 className="element-header">Performance Periods</h6>
 								<div className="element-box m-0 p-3">
 									<div className="table-responsive">
 										<table className="table table-striped">
@@ -273,6 +278,8 @@ class Appraisal extends Component {
 														return (
 															<AppraisalItem
 																item={el}
+																createAppraisal={this.createAppraisal}
+																performancePeriods={performancePeriods}
 																key={i + 1}
 																index={i + 1}
 																edit={this.editPerformancePeriod}
@@ -300,4 +307,5 @@ const mapStateToProps = (state, ownProps) => {
 
 export default connect(mapStateToProps, {
 	loadPerformancePeriod,
+	setPerformancePeriod,
 })(Appraisal);

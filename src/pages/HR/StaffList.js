@@ -15,7 +15,7 @@ class StaffList extends Component {
 
 	fetchStaffs = async () => {
 		try {
-			const rs = await request(`${staffAPI}`, 'GET', true);
+			const rs = await request(`${staffAPI}/all-staffs`, 'GET', true);
 			this.props.loadStaff(rs);
 		} catch (error) {
 			console.log(error);
@@ -58,7 +58,9 @@ class StaffList extends Component {
 											</thead>
 											<tbody>
 												{staffs.map((staff, i) => {
-													return <StaffItem key={i} staff={staff} />;
+													return (
+														<StaffItem key={i} staff={staff} staffs={staffs} />
+													);
 												})}
 											</tbody>
 										</table>

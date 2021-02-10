@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import DatePicker from 'react-datepicker';
 import { closeModals } from '../../actions/general';
 import {
 	renderSelect,
@@ -62,6 +62,9 @@ class ModalEditInventory extends Component {
 			...data,
 			quantity: items.quantity,
 		};
+
+		console.log('let dataWithQuantity = {');
+		console.log(dataWithQuantity);
 
 		try {
 			const rs = await request(
@@ -212,7 +215,17 @@ class ModalEditInventory extends Component {
 												data={vendors}
 											/>
 										</div>
-										<div className="col-sm-6" />
+										<div className="col-sm-6">
+											<Field
+												id="expiry_date"
+												name="expiry_date"
+												component={renderTextInputGroup}
+												label="Expiry Date"
+												type="date"
+												placeholder="Select expiry date"
+												append={false}
+											/>
+										</div>
 									</div>
 
 									<div className="form-buttons-w">
@@ -247,13 +260,13 @@ ModalEditInventory = reduxForm({
 
 const mapStateToProps = (state, ownProps) => {
 	const items = state.general.edit_inventory;
-	console.log(items);
 	return {
 		initialValues: {
 			name: items.name,
 			description: items.description,
 			sales_price: items.sales_price,
 			cost_price: items.cost_price,
+			expiry_date: items.expiry_date,
 			sub_category_id: items.subCategory?.id,
 			category_id: items.category?.id,
 			vendor_id: items.vendor?.id,

@@ -5,21 +5,40 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import moment from 'moment';
-
+import { notifySuccess, notifyError } from '../../services/notify';
 import { loadRoster } from '../../actions/hr';
 import { rosterAPI } from '../../services/constants';
 import { request, parseRoster } from '../../services/utilities';
 
 export class DutyRooster extends Component {
 	componentDidMount() {
-		const { departments } = this.props;
-		const period = moment().format('YYYY-MM');
-		const department = departments.length > 0 ? departments[0] : null;
-		if (department) {
-			this.setState({ department_id: department.id, period });
-			this.fetchRoster(period, department.id);
+		this.fetchDepartments();
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		if (
+			prevState &&
+			prevState.departments.length !== this.state.departments.length
+		) {
+			const { departments } = this.state;
+			const period = moment().format('YYYY-MM');
+			const department = departments.length > 0 ? departments[0] : null;
+			if (department) {
+				this.setState({ department_id: department.id, period });
+				this.fetchRoster(period, department.id);
+			}
 		}
 	}
+
+	fetchDepartments = async () => {
+		try {
+			const rs = await request(`departments`, 'GET', true);
+			this.setState({ departments: rs });
+		} catch (error) {
+			console.log(error);
+			notifyError(error.message || 'could not fetch departments');
+		}
+	};
 
 	fetchRoster = async (period, department_id) => {
 		try {
@@ -71,7 +90,6 @@ export class DutyRooster extends Component {
 const mapStateToProps = state => {
 	return {
 		duty_rosters: state.hr.duty_rosters,
-		departments: state.settings.departments,
 	};
 };
 export default connect(mapStateToProps, { loadRoster })(DutyRooster);

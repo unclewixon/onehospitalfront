@@ -10,6 +10,7 @@ import {
 } from '../../services/utilities';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
 import { transactionPaymentType, vouchersAPI } from '../../services/constants';
+import { updateImmutable } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
 import {
@@ -19,6 +20,7 @@ import {
 	showInvoiceToPrint,
 	showReceiptToPrint,
 } from '../../actions/paypoint';
+import { loadTransaction } from '../../actions/transaction';
 
 const validate = values => {
 	const errors = {};
@@ -30,6 +32,8 @@ const validate = values => {
 	}
 	return errors;
 };
+
+const required = value => (value ? undefined : 'Required');
 
 class ModalApproveTransaction extends Component {
 	state = {
@@ -76,7 +80,9 @@ class ModalApproveTransaction extends Component {
 				voucher_id: voucherId,
 				patient_id: items.patient.id,
 			};
+			console.log('console.log(datum);');
 
+			console.log(datum);
 			this.setState({ submitting: true });
 			const url = `transactions/${id}/process`;
 			const rs = await request(url, 'PATCH', true, datum);
@@ -87,6 +93,11 @@ class ModalApproveTransaction extends Component {
 				newTransactions = pendingTransactions.filter(trans => {
 					return trans.id !== rs.transaction.id;
 				});
+				const updatedArr = updateImmutable(
+					this.props.transactions,
+					rs.transaction
+				);
+				this.props.loadTransaction(updatedArr);
 				this.props.getAllPendingTransactions(newTransactions);
 				this.setState({ submitting: false });
 				this.props.getTransactionData(rs.transaction);
@@ -200,6 +211,7 @@ class ModalApproveTransaction extends Component {
 												<Field
 													id="payment_type"
 													name="payment_type"
+													validate={[required]}
 													component={renderSelect}
 													onChange={this.handleChange}
 													label="Payment Type"
@@ -217,7 +229,7 @@ class ModalApproveTransaction extends Component {
 													// defaultValue={`NGN ${approveTransaction.amount}`}
 													type="text"
 													label="Amount"
-													readOnly={true}
+													//readOnly={true}
 													placeholder="Enter Amount"
 													className="form-control"
 												/>
@@ -312,6 +324,7 @@ const mapStateToProps = (state, ownProps) => {
 		approve_hmo_transaction: state.general.approve_hmo_transaction,
 		items,
 		pendingTransactions: state.paypoint.pendingTransactions,
+		transactions: state.transaction.reviewTransaction,
 		showReceipt: state.paypoint.showReceipt,
 		showInvoice: state.paypoint.showInvoice,
 		activeData: state.paypoint.transactionData,
@@ -325,4 +338,5 @@ export default connect(mapStateToProps, {
 	getTransactionData,
 	showReceiptToPrint,
 	showInvoiceToPrint,
+	loadTransaction,
 })(ModalApproveTransaction);

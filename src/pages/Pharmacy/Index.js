@@ -5,10 +5,10 @@ import { Switch, Route, Link } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
 import { socket } from '../../services/constants';
+import PrescriptionForm from '../../components/Pharmacy/PrescriptionForm';
 
 const PrescriptionQueue = lazy(() => import('./PrescriptionQueue'));
 const PrescriptionRequests = lazy(() => import('./PrescriptionRequests'));
-const NewPrescription = lazy(() => import('./NewPrescription'));
 const Billing = lazy(() => import('./PayPoint'));
 
 const Index = ({ match, location }) => {
@@ -83,7 +83,7 @@ const Index = ({ match, location }) => {
 											/>
 											<Route
 												path={`${match.url}/new-request`}
-												component={NewPrescription}
+												component={PrescriptionForm}
 											/>
 											<Route
 												path={`${match.url}/billing`}

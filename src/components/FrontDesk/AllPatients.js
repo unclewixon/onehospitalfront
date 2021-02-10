@@ -4,15 +4,26 @@ import Tooltip from 'antd/lib/tooltip';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
-
-import { request, formatPatientId } from '../../services/utilities';
+import Pagination from 'antd/lib/pagination';
+import waiting from '../../assets/images/waiting.gif';
+import DatePicker from 'antd/lib/date-picker';
+import { startBlock, stopBlock } from '../../actions/redux-block';
+import { request, formatPatientId, itemRender } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { toggleProfile } from '../../actions/user';
 import { loadPatients } from '../../actions/patient';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import { searchAPI } from '../../services/constants';
 
+const { RangePicker } = DatePicker;
 const AllPatients = () => {
 	const [loaded, setLoaded] = useState(false);
+	const [filtering, setFiltering] = useState(false);
+	const [startDate, setStartDate] = useState('');
+	const [endDate, setEndDate] = useState('');
+	const [meta, setMeta] = useState(null);
+	const [patient, setPatient] = useState('');
 	// const [searchValue, setSearchValue] = useState('');
 
 	const dispatch = useDispatch();
@@ -26,19 +37,62 @@ const AllPatients = () => {
 		dispatch(toggleProfile(true, info));
 	};
 
+	const getOptionValues = option => option.id;
+	const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+
+	const getOptions = async q => {
+		if (!q || q.length < 3) {
+			return [];
+		}
+
+		const url = `${searchAPI}?q=${q}`;
+		const res = await request(url, 'GET', true);
+		return res;
+	};
+
 	const patients = useSelector(state => state.patient.patients);
 
-	const fetchPatients = useCallback(async () => {
+	const fetchPatients = async page => {
 		try {
-			const url = 'patient/list';
+			const p = page || 1;
+			const url = `patient/list?page=${p}&limit=24&patient_id=${patient ||
+				''}&startDate=${startDate}&endDate=${endDate}`;
 			const rs = await request(url, 'GET', true);
-			dispatch(loadPatients(rs));
+			const { result, ...meta } = rs;
+			setMeta(meta);
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+			const arr = [...result];
+			dispatch(loadPatients(arr));
 			setLoaded(true);
+			setFiltering(false);
+			dispatch(stopBlock());
 		} catch (error) {
 			notifyError('error fetching patients');
 			setLoaded(true);
+			dispatch(stopBlock());
+			setFiltering(false);
 		}
-	}, [dispatch]);
+	};
+
+	const doFilter = e => {
+		e.preventDefault();
+		setFiltering(true);
+		fetchPatients();
+	};
+
+	const onNavigatePage = nextPage => {
+		dispatch(startBlock());
+		fetchPatients(nextPage);
+	};
+
+	const dateChange = e => {
+		let date = e.map(d => {
+			return moment(d._d).format('YYYY-MM-DD');
+		});
+
+		setStartDate(date[0]);
+		setEndDate(date[1]);
+	};
 
 	// const searchEntries = async e => {
 	// 	e.preventDefault();
@@ -54,12 +108,74 @@ const AllPatients = () => {
 	// };
 
 	useEffect(() => {
-		fetchPatients();
-	}, [fetchPatients]);
+		const fetch = async () => {
+			try {
+				const p = 1;
+				const url = `patient/list?page=${p}&limit=24`;
+				const rs = await request(url, 'GET', true);
+				const { result, ...meta } = rs;
+				setMeta(meta);
+				const arr = [...result];
+				dispatch(loadPatients(arr));
+				setLoaded(true);
+				dispatch(stopBlock());
+			} catch (error) {
+				notifyError('error fetching patients');
+				setLoaded(true);
+				dispatch(stopBlock());
+			}
+		};
 
+		if (!loaded || patient === '') {
+			fetch();
+		}
+	}, [loaded, patient]);
 	return (
 		<>
 			<div className="element-box">
+				<div className="col-md-12 p-4">
+					<h6 className="element-header">Filter by:</h6>
+
+					<form className="row">
+						<div className="form-group col-md-3">
+							<label htmlFor="patient_id">Patient</label>
+
+							<AsyncSelect
+								isClearable
+								getOptionValue={getOptionValues}
+								getOptionLabel={getOptionLabels}
+								defaultOptions
+								name="patient_id"
+								id="patient_id"
+								loadOptions={getOptions}
+								onChange={e => {
+									setPatient(e?.id);
+								}}
+								placeholder="Search patients"
+							/>
+						</div>
+						<div className="form-group col-md-3">
+							<label>Added Between - To</label>
+							<RangePicker onChange={e => dateChange(e)} />
+						</div>
+
+						<div className="form-group col-md-3 mt-4">
+							<div
+								className="btn btn-sm btn-primary btn-upper text-white"
+								onClick={e => doFilter(e)}>
+								<i className="os-icon os-icon-ui-37" />
+								<span>
+									{filtering ? (
+										<img src={waiting} alt="submitting" />
+									) : (
+										'Filter'
+									)}
+								</span>
+							</div>
+						</div>
+					</form>
+				</div>
+
 				<div className="table-responsive">
 					<table className="table table-striped">
 						<thead>
@@ -131,6 +247,19 @@ const AllPatients = () => {
 							)}
 						</tbody>
 					</table>
+
+					{meta && (
+						<div className="pagination pagination-center mt-4">
+							<Pagination
+								current={parseInt(meta.currentPage, 10)}
+								pageSize={parseInt(meta.itemsPerPage, 10)}
+								total={parseInt(meta.totalPages, 10)}
+								showTotal={total => `Total ${total} transactions`}
+								itemRender={itemRender}
+								onChange={current => onNavigatePage(current)}
+							/>
+						</div>
+					)}
 				</div>
 			</div>
 		</>
