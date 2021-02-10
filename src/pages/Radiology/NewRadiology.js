@@ -125,27 +125,13 @@ const NewRadiology = props => {
 					label: data.name,
 				};
 			});
-			{
-			}
+
 			setServices(requestType);
 			console.log('requestType', requestType);
 		} catch (e) {
 			notifyError('Error Occurred');
 			setSearching(false);
 		}
-
-		// console.log('am here oo',res);
-
-		// 	.filter(service => {
-		// 		return res.category.name === 'Ultrasound';
-		// 	})
-		// 	.map(data => {
-		// 		return {
-		// 			value: data.id,
-		// 			label: data.name,
-		// 		};
-		// 	});
-		// console.log(serviceList.map(service => service.category.id));
 	};
 
 	useEffect(() => {

@@ -13,6 +13,7 @@ import { loadRadiology } from '../../actions/patient';
 import { uploadRadiology } from '../../actions/general';
 import { toggleProfile } from '../../actions/user';
 import UploadImagingData from './UploadImageData';
+import ViewScanImage from './ViewScanIamge';
 
 export class Dashboard extends Component {
 	state = {
@@ -29,6 +30,7 @@ export class Dashboard extends Component {
 		captured: false,
 		uploaded: false,
 		payment_made: true,
+		showModal: false,
 	};
 
 	componentDidMount() {
@@ -166,6 +168,10 @@ export class Dashboard extends Component {
 			}
 		}
 	};
+	closeModal = () => {
+		document.body.classList.remove('modal-open');
+		this.setState({ ...this.state, showModal: false });
+	};
 
 	getRequests = arr => {
 		let rer = [];
@@ -178,6 +184,9 @@ export class Dashboard extends Component {
 	togglePopover = req => {
 		this.setState({ request: req });
 		this.setState({ upload_visible: true });
+	};
+	onShowModal = () => {
+		this.setState({ ...this.state, showModal: true });
 	};
 	onCaptured = () => {
 		this.setState({ ...this.state, captured: true });
@@ -196,6 +205,7 @@ export class Dashboard extends Component {
 			approved,
 			captured,
 			uploaded,
+			showModal,
 			// patient,
 		} = this.state;
 		const { radiology } = this.props;
@@ -308,8 +318,13 @@ export class Dashboard extends Component {
 															)}
 															{/* after approval, view scan */}
 															{approved && (
-																<Tooltip title="View Scan">
-																	<a className="secondary">
+																<Tooltip title="View Scan Image">
+																	<a
+																		className="secondary"
+																		onClick={() => {
+																			document.body.classList.add('modal-open');
+																			this.onShowModal();
+																		}}>
 																		<i className="os-icon os-icon-eye" />
 																	</a>
 																</Tooltip>
@@ -366,6 +381,7 @@ export class Dashboard extends Component {
 						</div>
 					</div>
 				</div>
+				{showModal && <ViewScanImage closeModal={this.closeModal} />}
 			</div>
 		);
 	}

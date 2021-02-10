@@ -15,7 +15,7 @@ import {
 	searchAPI,
 } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
-import { request } from '../../services/utilities';
+import { request, requestNonJson } from '../../services/utilities';
 import { notifyError, notifySuccess } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 
@@ -24,11 +24,11 @@ const NewProcedure = props => {
 		mode: 'onBlur',
 	});
 	const [submitting, setSubmitting] = useState(false);
-	const [servicesCategory, setServicesCategory] = useState([]);
 	const [services, setServices] = useState('');
 	const [loaded, setLoaded] = useState(false);
 	const [selectedOption, setSelectedOption] = useState('');
 	const [searching, setSearching] = useState(false);
+	const [diagnosisType, setDiagnosisType] = useState('icd10');
 	const [patients, setPatients] = useState([]);
 	const [query, setQuery] = useState('');
 
@@ -53,7 +53,7 @@ const NewProcedure = props => {
 	};
 
 	const patientSet = pat => {
-		setValue('patient_id', pat.id);
+		setValue('patient', pat.id);
 		let name =
 			(pat.surname ? pat.surname : '') +
 			' ' +
@@ -64,25 +64,7 @@ const NewProcedure = props => {
 
 	useEffect(() => {
 		if (!loaded) {
-			// props
-			// 	.getAllServiceCategory()
-			// 	.then(_ => {})
-			// 	.catch(e => {
-			// 		notifyError(e.message || 'could not fetch service categories');
-			// 	});
-
-			let data = [];
-			let services = [];
-			props.ServiceCategories.forEach((item, index) => {
-				const res = { label: item.name, value: item.id };
-				data = [...data, res];
-			});
-			props.service.forEach((item, index) => {
-				const res = { label: item.name, value: item.id };
-				services = [...services, res];
-			});
-			setServicesCategory(data);
-			setServices(services);
+			filterRequest();
 			setLoaded(true);
 		}
 	}, [props, loaded]);
@@ -94,23 +76,31 @@ const NewProcedure = props => {
 	const handleChangeOptions = selectedOption => {
 		setSelectedOption(selectedOption);
 	};
-	const getOptions = async inputValue => {
-		if (!inputValue) {
+	const getOptions = async q => {
+		if (!q || q.length < 3) {
 			return [];
 		}
-		let val = inputValue.toUpperCase();
-		const res = await request(`${diagnosisAPI}/search?q=${val}`, 'GET', true);
+
+		const url = `${diagnosisAPI}/search?q=${q}&diagnosisType=${diagnosisType}`;
+		const res = await request(url, 'GET', true);
 		return res;
 	};
 
-	const fetchServicesByCategory = async id => {
-		try {
-			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
-		} catch (error) {
-			console.log(error);
-			notifyError('error fetching imaging requests for the patient');
+	// for patient name search
+	const getOptionName = async q => {
+		if (!q || q.length < 3) {
+			return [];
 		}
+
+		const url = `${searchAPI}?q=${q}`;
+		const res = await request(url, 'GET', true);
+		return res;
 	};
+
+	// for patirnt name search
+	const getOptionNameValues = option => option.id;
+	const getOptionNameLabels = option =>
+		`${option.other_names} ${option.surname}`;
 
 	const onSubmit = async values => {
 		setSubmitting(true);
@@ -129,7 +119,7 @@ const NewProcedure = props => {
 			theRequest.requestType = 'procedure';
 			theRequest.bill_now = values.bill === 'on' ? 'true' : 'false';
 			theRequest.request_note = values.request_note;
-			theRequest.patient_id = values.patient_id;
+			theRequest.patient_id = values.patient;
 			theRequest.primary_diagnosis = selectedOption.icd10Code;
 			theRequest.requestBody = requestData;
 			try {
@@ -151,10 +141,39 @@ const NewProcedure = props => {
 		}
 	};
 
-	const handleChangeServiceCategory = evt => {
-		let value = String(evt.value);
-		fetchServicesByCategory(value);
-		setValue('service_center', value);
+	const filterRequest = async () => {
+		setServices([]);
+
+		// dispatch(startBlock());
+		//
+		try {
+			setSearching(true);
+			const res = await request(
+				'services/categories/General&nbsp;surgery',
+				'GET',
+				true
+			);
+
+			// const serviceRes = await request(
+			// 	`services/category/${res.id}`,
+			// 	'GET',
+			// 	true
+			// );
+
+			// let requestType = serviceRes.map(data => {
+			// 	return {
+			// 		value: data.id,
+			// 		label: data.name,
+			// 	};
+			// });
+
+			// setServices(requestType);
+			console.log('requestType', res);
+		} catch (e) {
+			notifyError(e.message || 'Error fetching service category');
+			console.log('requestTypes', e);
+			setSearching(false);
+		}
 	};
 
 	const handleChangeProcedure = evt => {
@@ -164,7 +183,6 @@ const NewProcedure = props => {
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">
-				<h6 className="element-header">New Procedure Request</h6>
 				{!loaded ? (
 					<div className="text-center">
 						<img alt="searching" src={searchingGIF} />
@@ -176,25 +194,20 @@ const NewProcedure = props => {
 								<form onSubmit={handleSubmit(onSubmit)}>
 									<div className="row">
 										<div className="form-group col-sm-12">
-											<label>Patient Id</label>
-
-											<input
-												className="form-control"
-												placeholder="Search for patient"
-												type="text"
-												name="patient_id"
-												defaultValue=""
-												id="patient"
-												ref={register({ name: 'patient_id' })}
-												onChange={handlePatientChange}
-												autoComplete="off"
-												required
+											<label>Patient Name</label>
+											<AsyncSelect
+												isClearable
+												getOptionValue={getOptionNameValues}
+												getOptionLabel={getOptionNameLabels}
+												defaultOptions
+												name="patient"
+												ref={register({ name: 'patient', required: true })}
+												loadOptions={getOptionName}
+												onChange={e => {
+													setValue('patient', e);
+												}}
+												placeholder="Search patient"
 											/>
-											{searching && (
-												<div className="searching text-center">
-													<img alt="searching" src={searchingGIF} />
-												</div>
-											)}
 
 											{patients &&
 												patients.map(pat => {
@@ -218,20 +231,7 @@ const NewProcedure = props => {
 													);
 												})}
 										</div>
-										<div className="form-group col-sm-6">
-											<label>Service Center</label>
-											<Select
-												name="service_center"
-												placeholder="Select Service Center"
-												options={servicesCategory}
-												ref={register({
-													required: true,
-													name: 'service_center',
-												})}
-												onChange={evt => handleChangeServiceCategory(evt)}
-												required
-											/>
-										</div>
+
 										<div className="form-group col-sm-6">
 											<label>Procedure</label>
 											<Select
@@ -251,6 +251,28 @@ const NewProcedure = props => {
 
 									<div className="row">
 										<div className="form-group col-sm-12">
+											<div className="posit-top">
+												<div className="row">
+													<div className="form-group col-sm-12">
+														<label>
+															<input
+																type="radio"
+																checked={diagnosisType === 'icd10'}
+																onChange={() => setDiagnosisType('icd10')}
+															/>{' '}
+															ICD10
+														</label>
+														<label className="ml-2">
+															<input
+																type="radio"
+																checked={diagnosisType === 'icpc2'}
+																onChange={() => setDiagnosisType('icpc2')}
+															/>{' '}
+															ICPC-2
+														</label>
+													</div>
+												</div>
+											</div>
 											<label>Primary Diagnosis</label>
 											<AsyncSelect
 												required
@@ -336,7 +358,6 @@ const mapStateToProps = (state, ownProps) => {
 	return {
 		patient: state.user.patient,
 		service: state.settings.services,
-		ServiceCategories: state.settings.service_categories,
 	};
 };
 

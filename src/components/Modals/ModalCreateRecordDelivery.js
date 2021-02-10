@@ -4,12 +4,16 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
+import SunEditor from 'suneditor-react';
 
 import { renderTextInput, request } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { closeModals } from '../../actions/general';
+import { closeLabour } from '../../actions/patient';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
+import { Carousel } from 'antd';
+import TextArea from 'antd/lib/input/TextArea';
 
 class ModalCreateRecordDelivery extends Component {
 	state = {
@@ -54,6 +58,7 @@ class ModalCreateRecordDelivery extends Component {
 			notifySuccess('succesfully submitted');
 
 			this.props.closeModals(false);
+			this.props.closeLabour();
 		} catch (e) {
 			this.setState({ submitting: false });
 			notifyError(
@@ -127,7 +132,7 @@ class ModalCreateRecordDelivery extends Component {
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
-							<h4 className="onboarding-title">Create Record Delivery</h4>
+							<h4 className="onboarding-title">Record Delivery</h4>
 							<div className="form-block">
 								<form onSubmit={handleSubmit(this.createDelivery)}>
 									{error && (
@@ -138,437 +143,441 @@ class ModalCreateRecordDelivery extends Component {
 											}}
 										/>
 									)}
+									<Carousel arrows infinite={false} className="p-4">
+										<div className="px-3">
+											<div className="row mt-2">
+												<label>Delivery type</label>
+												<div className="col-md-12 d-flex">
+													<div className="col-sm-6">
+														<Field
+															name="deliveryType"
+															component="input"
+															type="radio"
+															value="mormal delivery"
+														/>
+														<label className="mx-1">
+															Full-term normal vaginal delivery
+														</label>
+													</div>
 
-									<div className="row mt-2">
-										<label>Delivery type</label>
-										<div className="col-md-12 d-flex">
-											<div className="col-sm-6">
-												<Field
-													name="deliveryType"
-													component="input"
-													type="radio"
-													value="mormal delivery"
-												/>
-												<label className="mx-1">
-													Full-term normal vaginal delivery
-												</label>
+													<div className="col-sm-6">
+														<Field
+															name="deliveryType"
+															component="input"
+															type="radio"
+															value="epistomy"
+														/>
+														<label className="mx-1">
+															Normal vaginal delivery with epistomy
+														</label>
+													</div>
+												</div>
+												<div className="col-md-12 mt-1 d-flex">
+													<div className="col-sm-6">
+														<Field
+															name="deliveryType"
+															component="input"
+															type="radio"
+															value="malpresentation"
+														/>
+														<label className="mx-1">
+															Vaginal delivery in malpresentation
+														</label>
+													</div>
+													<div className="col-sm-6">
+														<Field
+															name="deliveryType"
+															component="input"
+															type="radio"
+															value="cesarean"
+														/>
+														<label className="mx-1">Cesarean</label>
+													</div>
+												</div>
+
+												<div className="col-md-12 mt-1 d-flex">
+													<div className="col-sm-6">
+														<Field
+															name="deliveryType"
+															component="input"
+															type="radio"
+															value="assisted delivery "
+														/>
+														<label className="mx-1">
+															{' '}
+															Assisted delivery(forcep or vent use)
+														</label>
+													</div>
+												</div>
 											</div>
 
-											<div className="col-sm-6">
-												<Field
-													name="deliveryType"
-													component="input"
-													type="radio"
-													value="epistomy"
-												/>
-												<label className="mx-1">
-													Normal vaginal delivery with epistomy
-												</label>
+											<div className="row mt-2">
+												<label>Is mother alive ?</label>
+
+												<div className="col-md-6 d-flex">
+													<div className="col-sm-4">
+														<Field
+															name="isMotherAlive"
+															component="input"
+															type="radio"
+															value="yes"
+														/>
+														<label className="mx-1">Yes</label>
+													</div>
+													<div className="col-sm-4">
+														<Field
+															name="isMotherAlive"
+															component="input"
+															type="radio"
+															value="no"
+														/>
+														<label className="mx-1">No</label>
+													</div>
+												</div>
+											</div>
+
+											<div className="row mt-2">
+												<label>Is baby alive ?</label>
+
+												<div className="col-md-6 d-flex">
+													<div className="col-sm-4">
+														<Field
+															name="isBabyAlive"
+															component="input"
+															type="radio"
+															value="yes"
+														/>
+														<label className="mx-1">Yes</label>
+													</div>
+													<div className="col-sm-4">
+														<Field
+															name="isBabyAlive"
+															component="input"
+															type="radio"
+															value="no"
+														/>
+														<label className="mx-1">No</label>
+													</div>
+												</div>
+											</div>
+
+											<div className="row mt-2">
+												<label>Administerd 10 units of Oxytocin ?</label>
+												<div className="col-md-6 d-flex">
+													<div className="col-sm-4">
+														<Field
+															name="administeredOxytocin"
+															component="input"
+															type="radio"
+															value="yes"
+														/>
+														<label className="mx-1">Yes</label>
+													</div>
+													<div className="col-sm-4">
+														<Field
+															name="administeredOxytocin"
+															component="input"
+															type="radio"
+															value="no"
+														/>
+														<label className="mx-1">No</label>
+													</div>
+												</div>
+											</div>
+
+											<div className="row mt-2">
+												<label>Was the placenta delivered completely ?</label>
+
+												<div className="col-md-6 d-flex">
+													<div className="col-sm-4">
+														<Field
+															name="placentaComplete"
+															component="input"
+															type="radio"
+															value="yes"
+														/>
+														<label className="mx-1">Yes</label>
+													</div>
+													<div className="col-sm-4">
+														<Field
+															name="placentaComplete"
+															component="input"
+															type="radio"
+															value="no"
+														/>
+														<label className="mx-1">No</label>
+													</div>
+												</div>
+											</div>
+
+											<div className="row mt-2">
+												<label>Bleeding with normal unit (&lt;500ml) ?</label>
+												<div className="col-md-6 d-flex">
+													<div className="col-sm-4">
+														<Field
+															name="bleeading"
+															component="input"
+															type="radio"
+															value="yes"
+														/>
+														<label className="mx-1">Yes</label>
+													</div>
+													<div className="col-sm-4">
+														<Field
+															name="bleeading"
+															component="input"
+															type="radio"
+															value="no"
+														/>
+														<label className="mx-1">No</label>
+													</div>
+												</div>
+											</div>
+
+											<div className="row">
+												<div className="pl-0 col-sm-12">
+													<div className="form-group">
+														<label> Time and Date of Birth</label>
+														<div className="custom-date-input">
+															<DatePicker
+																selected={examDate}
+																onChange={date =>
+																	this.setDate(date, 'examDate')
+																}
+																peekNextMonth
+																showMonthDropdown
+																showYearDropdown
+																dropdownMode="select"
+																className="single-daterange form-control"
+																placeholderText="Select date and time"
+																timeInputLabel="Time:"
+																dateFormat="MM/dd/yyyy h:mm aa"
+																showTimeInput
+																minDate={new Date()}
+																required
+															/>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div className="row mt-2">
+												<label>Baby cried immediately after birth ?</label>
+
+												<div className="col-md-6 d-flex">
+													<div className="col-sm-4">
+														<Field
+															name="babyCried"
+															component="input"
+															type="radio"
+															value="yes"
+														/>
+														<label className="mx-1">Yes</label>
+													</div>
+													<div className="col-sm-4">
+														<Field
+															name="babyCried"
+															component="input"
+															type="radio"
+															value="no"
+														/>
+														<label className="mx-1">No</label>
+													</div>
+												</div>
+											</div>
+
+											<div className="row mt-2">
+												<label>Sex of baby?</label>
+
+												<div className="col-md-6 d-flex">
+													<div className="col-sm-4">
+														<Field
+															name="sexOfBaby"
+															component="input"
+															type="radio"
+															value="female"
+														/>
+														<label className="mx-1">Female</label>
+													</div>
+													<div className="col-sm-4">
+														<Field
+															name="sexOfBaby"
+															component="input"
+															type="radio"
+															value="male"
+														/>
+														<label className="mx-1">Male</label>
+													</div>
+													<div className="col-sm-4">
+														<Field
+															name="sexOfBaby"
+															component="input"
+															type="radio"
+															value="other"
+														/>
+														<label className="mx-1">Other</label>
+													</div>
+												</div>
 											</div>
 										</div>
-										<div className="col-md-12 mt-1 d-flex">
-											<div className="col-sm-6">
-												<Field
-													name="deliveryType"
-													component="input"
-													type="radio"
-													value="malpresentation"
-												/>
-												<label className="mx-1">
-													Vaginal delivery in malpresentation
-												</label>
-											</div>
-											<div className="col-sm-6">
-												<Field
-													name="deliveryType"
-													component="input"
-													type="radio"
-													value="cesarean"
-												/>
-												<label className="mx-1">Cesarean</label>
-											</div>
-										</div>
 
-										<div className="col-md-12 mt-1 d-flex">
-											<div className="col-sm-6">
-												<Field
-													name="deliveryType"
-													component="input"
-													type="radio"
-													value="assisted delivery "
-												/>
-												<label className="mx-1">
-													{' '}
-													Assisted delivery(forcep or vent use)
-												</label>
-											</div>
-										</div>
-									</div>
+										<div className="px-3">
+											<div className="row">
+												<div className="col-sm-6 pl-0">
+													<Field
+														id="apgarScore"
+														name="apgarScore"
+														component={renderTextInput}
+														label="APGAR Score"
+														type="text"
+														placeholder="Enter APGAR score"
+													/>
+												</div>
 
-									<div className="row mt-2">
-										<label>Is mother alive ?</label>
-
-										<div className="col-md-12 d-flex">
-											<div className="col-sm-4">
-												<Field
-													name="isMotherAlive"
-													component="input"
-													type="radio"
-													value="yes"
-												/>
-												<label className="mx-1">Yes</label>
-											</div>
-											<div className="col-sm-4">
-												<Field
-													name="isMotherAlive"
-													component="input"
-													type="radio"
-													value="no"
-												/>
-												<label className="mx-1">No</label>
-											</div>
-										</div>
-									</div>
-
-									<div className="row mt-2">
-										<label>Is baby alive ?</label>
-
-										<div className="col-md-12 d-flex">
-											<div className="col-sm-4">
-												<Field
-													name="isBabyAlive"
-													component="input"
-													type="radio"
-													value="yes"
-												/>
-												<label className="mx-1">Yes</label>
-											</div>
-											<div className="col-sm-4">
-												<Field
-													name="isBabyAlive"
-													component="input"
-													type="radio"
-													value="no"
-												/>
-												<label className="mx-1">No</label>
-											</div>
-										</div>
-									</div>
-
-									<div className="row mt-2">
-										<label>Administerd 10 units of Oxytocin ?</label>
-										<div className="col-md-12 d-flex">
-											<div className="col-sm-4">
-												<Field
-													name="administeredOxytocin"
-													component="input"
-													type="radio"
-													value="yes"
-												/>
-												<label className="mx-1">Yes</label>
-											</div>
-											<div className="col-sm-4">
-												<Field
-													name="administeredOxytocin"
-													component="input"
-													type="radio"
-													value="no"
-												/>
-												<label className="mx-1">No</label>
-											</div>
-										</div>
-									</div>
-
-									<div className="row mt-2">
-										<label>Was the placenta delivered completely ?</label>
-
-										<div className="col-md-12 d-flex">
-											<div className="col-sm-4">
-												<Field
-													name="placentaComplete"
-													component="input"
-													type="radio"
-													value="yes"
-												/>
-												<label className="mx-1">Yes</label>
-											</div>
-											<div className="col-sm-4">
-												<Field
-													name="placentaComplete"
-													component="input"
-													type="radio"
-													value="no"
-												/>
-												<label className="mx-1">No</label>
-											</div>
-										</div>
-									</div>
-
-									<div className="row mt-2">
-										<label>Bleeding with normal unit (&lt;500ml) ?</label>
-										<div className="col-md-12 d-flex">
-											<div className="col-sm-4">
-												<Field
-													name="bleeading"
-													component="input"
-													type="radio"
-													value="yes"
-												/>
-												<label className="mx-1">Yes</label>
-											</div>
-											<div className="col-sm-4">
-												<Field
-													name="bleeading"
-													component="input"
-													type="radio"
-													value="no"
-												/>
-												<label className="mx-1">No</label>
-											</div>
-										</div>
-									</div>
-
-									<div className="row">
-										<div className="col-sm-12">
-											<div className="form-group">
-												<label> Time and Date of Birth</label>
-												<div className="custom-date-input">
-													<DatePicker
-														selected={examDate}
-														onChange={date => this.setDate(date, 'examDate')}
-														peekNextMonth
-														showMonthDropdown
-														showYearDropdown
-														dropdownMode="select"
-														className="single-daterange form-control"
-														placeholderText="Select date and time"
-														timeInputLabel="Time:"
-														dateFormat="MM/dd/yyyy h:mm aa"
-														showTimeInput
-														minDate={new Date()}
-														required
+												<div className="col-sm-6 pl-0">
+													<Field
+														id="weight"
+														name="weight"
+														component={renderTextInput}
+														label="Weight(kg)"
+														placeholder="Enter weight in kg"
 													/>
 												</div>
 											</div>
-										</div>
-									</div>
 
-									<div className="row mt-2">
-										<label>Baby cried immediately after birth ?</label>
+											<div className="row mt-2">
+												<label>Was Vitamin K adminstered ?</label>
 
-										<div className="col-md-12 d-flex">
-											<div className="col-sm-4">
-												<Field
-													name="babyCried"
-													component="input"
-													type="radio"
-													value="yes"
-												/>
-												<label className="mx-1">Yes</label>
-											</div>
-											<div className="col-sm-4">
-												<Field
-													name="babyCried"
-													component="input"
-													type="radio"
-													value="no"
-												/>
-												<label className="mx-1">No</label>
-											</div>
-										</div>
-									</div>
-
-									<div className="row mt-2">
-										<label>Sex of baby?</label>
-
-										<div className="col-md-12 d-flex">
-											<div className="col-sm-4">
-												<Field
-													name="sexOfBaby"
-													component="input"
-													type="radio"
-													value="female"
-												/>
-												<label className="mx-1">Female</label>
-											</div>
-											<div className="col-sm-4">
-												<Field
-													name="sexOfBaby"
-													component="input"
-													type="radio"
-													value="male"
-												/>
-												<label className="mx-1">Male</label>
-											</div>
-											<div className="col-sm-4">
-												<Field
-													name="sexOfBaby"
-													component="input"
-													type="radio"
-													value="other"
-												/>
-												<label className="mx-1">Other</label>
-											</div>
-										</div>
-									</div>
-
-									<div className="row">
-										<div className="col-sm-6 pl-0">
-											<Field
-												id="apgarScore"
-												name="apgarScore"
-												component={renderTextInput}
-												label="APGAR Score"
-												type="text"
-												placeholder="Enter APGAR score"
-											/>
-										</div>
-
-										<div className="col-sm-6 pl-0">
-											<Field
-												id="weight"
-												name="weight"
-												component={renderTextInput}
-												label="Weight(kg)"
-												placeholder="Enter weight in kg"
-											/>
-										</div>
-									</div>
-
-									<div className="row mt-2">
-										<label>Was Vitamin K adminstered ?</label>
-
-										<div className="col-md-12 d-flex">
-											<div className="col-sm-4">
-												<Field
-													name="administeredVitaminK"
-													component="input"
-													type="radio"
-													value="yes"
-												/>
-												<label className="mx-1">Yes</label>
-											</div>
-											<div className="col-sm-4">
-												<Field
-													name="administeredVitaminK"
-													component="input"
-													type="radio"
-													value="no"
-												/>
-												<label className="mx-1">No</label>
-											</div>
-										</div>
-									</div>
-
-									<div className="row mt-2">
-										<label>Is mother Rh negative ?</label>
-
-										<div className="col-md-12 d-flex">
-											<div className="col-sm-4">
-												<Field
-													name="negativeRH"
-													component="input"
-													type="radio"
-													value="yes"
-												/>
-												<label className="mx-1">Yes</label>
-											</div>
-											<div className="col-sm-4">
-												<Field
-													name="negativeRH"
-													component="input"
-													type="radio"
-													value="no"
-												/>
-												<label className="mx-1">No</label>
-											</div>
-										</div>
-									</div>
-
-									<div className="row">
-										<div className="col-sm-12 pl-0">
-											<Field
-												id="drugsAdministered"
-												name="drugsAdministered"
-												component={renderTextInput}
-												label="Drug"
-												placeholder="If drugs were adminstered to the baby then mention"
-											/>
-										</div>
-									</div>
-
-									<div className="row mt-2">
-										<label>Where the baby transfered ?</label>
-
-										<div className="col-md-12 d-flex">
-											<div className="col-sm-4">
-												<Field
-													name="transferredTo"
-													component="input"
-													type="radio"
-													value="transfer out"
-												/>
-												<label className="mx-1">Transfer out</label>
-											</div>
-											<div className="col-sm-4">
-												<Field
-													name="transferredTo"
-													component="input"
-													type="radio"
-													value="nicu"
-												/>
-												<label className="mx-1">NICU</label>
-											</div>
-										</div>
-									</div>
-
-									<div className="row">
-										<div className="form-group col-sm-12">
-											<label>Pediatrician's name</label>
-
-											<input
-												className="form-control"
-												placeholder="Search for pediatrician's name and select"
-												type="text"
-												name="staff_id"
-												defaultValue=""
-												id="staff"
-												ref={this.staff}
-												onChange={this.handlePatientChange}
-												autoComplete="off"
-												required
-											/>
-											{searching && (
-												<div className="searching text-center">
-													<img alt="searching" src={searchingGIF} />
+												<div className="col-md-6 d-flex">
+													<div className="col-sm-4">
+														<Field
+															name="administeredVitaminK"
+															component="input"
+															type="radio"
+															value="yes"
+														/>
+														<label className="mx-1">Yes</label>
+													</div>
+													<div className="col-sm-4">
+														<Field
+															name="administeredVitaminK"
+															component="input"
+															type="radio"
+															value="no"
+														/>
+														<label className="mx-1">No</label>
+													</div>
 												</div>
-											)}
+											</div>
 
-											{staffs &&
-												staffs.map(pat => {
-													return (
-														<div
-															style={{ display: 'flex' }}
-															key={pat.id}
-															className="element-box">
-															<a
-																onClick={() => this.patientSet(pat)}
-																className="ssg-item cursor">
-																{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
-																<div
-																	className="item-name"
-																	dangerouslySetInnerHTML={{
-																		__html: `${pat.first_name} ${pat.last_name}`,
-																	}}
-																/>
-															</a>
+											<div className="row mt-2">
+												<label>Is mother Rh negative ?</label>
+
+												<div className="col-md-6 d-flex">
+													<div className="col-sm-4">
+														<Field
+															name="negativeRH"
+															component="input"
+															type="radio"
+															value="yes"
+														/>
+														<label className="mx-1">Yes</label>
+													</div>
+													<div className="col-sm-4">
+														<Field
+															name="negativeRH"
+															component="input"
+															type="radio"
+															value="no"
+														/>
+														<label className="mx-1">No</label>
+													</div>
+												</div>
+											</div>
+
+											<div className="row">
+												<div className="col-sm-12 pl-0">
+													<Field
+														id="drugsAdministered"
+														name="drugsAdministered"
+														component={renderTextInput}
+														label="Drug"
+														placeholder="If drugs were adminstered to the baby then mention"
+													/>
+												</div>
+											</div>
+
+											<div className="row mt-2">
+												<label>Was the baby transfered ?</label>
+
+												<div className="col-md-6 d-flex">
+													<div className="col-sm-4">
+														<Field
+															name="transferredTo"
+															component="input"
+															type="radio"
+															value="transfer out"
+														/>
+														<label className="mx-1">Transfer out</label>
+													</div>
+													<div className="col-sm-4">
+														<Field
+															name="transferredTo"
+															component="input"
+															type="radio"
+															value="nicu"
+														/>
+														<label className="mx-1">NICU</label>
+													</div>
+												</div>
+											</div>
+
+											<div className="row">
+												<div className="form-group pl-0 col-sm-12">
+													<label>Pediatrician's name</label>
+
+													<input
+														className="form-control"
+														placeholder="Search for pediatrician's name and select"
+														type="text"
+														name="staff_id"
+														defaultValue=""
+														id="staff"
+														ref={this.staff}
+														onChange={this.handlePatientChange}
+														autoComplete="off"
+														required
+													/>
+													{searching && (
+														<div className="searching text-center">
+															<img alt="searching" src={searchingGIF} />
 														</div>
-													);
-												})}
-										</div>
-									</div>
-									<div className="row">
-										{/* <div className="col-sm-12 pl-0">
+													)}
+
+													{staffs &&
+														staffs.map(pat => {
+															return (
+																<div
+																	style={{ display: 'flex' }}
+																	key={pat.id}
+																	className="element-box">
+																	<a
+																		onClick={() => this.patientSet(pat)}
+																		className="ssg-item cursor">
+																		{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
+																		<div
+																			className="item-name"
+																			dangerouslySetInnerHTML={{
+																				__html: `${pat.first_name} ${pat.last_name}`,
+																			}}
+																		/>
+																	</a>
+																</div>
+															);
+														})}
+												</div>
+											</div>
+											<div className="row">
+												{/* <div className="col-sm-12 pl-0">
 											<Field
 												id="pediatrician_name"
 												name="pediatrician_name"
@@ -577,38 +586,67 @@ class ModalCreateRecordDelivery extends Component {
 												placeholder="Enter pediatrician's name"
 											/>
 										</div> */}
-
-										<div className="col-sm-12 pl-0">
-											<Field
-												id="comment"
-												name="comment"
-												component={renderTextInput}
-												label="Comment"
-												placeholder="Enter comment"
-											/>
+											</div>
 										</div>
-									</div>
-									<div className="row mt-2">
-										<div className="col-sm-12 text-right">
-											<button
-												className="btn btn-primary"
-												disabled={submitting}
-												type="submit">
-												{submitting ? (
-													<img src={waiting} alt="submitting" />
-												) : (
-													'Save'
-												)}
-											</button>
 
-											<button
-												className="btn btn-primary ml-2"
-												onClick={() => this.props.closeModals(false)}
-												type="button">
-												Cancel
-											</button>
+										<div className="px-3">
+											<div className="col-sm-12 pl-0">
+												<label>Delivery Note</label>
+												<SunEditor
+													width="100%"
+													placeholder="Please type here..."
+													// setContents={encounterData.complaints}
+													name="complaint_data"
+													// ref={register}
+													autoFocus={false}
+													enableToolbar={true}
+													setOptions={{
+														height: 300,
+														buttonList: [
+															[
+																'bold',
+																'underline',
+																'italic',
+																'strike',
+																'subscript',
+																'superscript',
+																'list',
+																'align',
+																'font',
+																'fontSize',
+																'image',
+															],
+														],
+													}}
+													//onFocus={handleFocus}
+													// onChange={evt => {
+													// 	handleChange(String(evt));
+													// }}
+												/>
+											</div>
+											<div className="row mt-2">
+												<div className="col-sm-12 text-right">
+													<button
+														className="btn btn-primary"
+														disabled={submitting}
+														type="submit">
+														{submitting ? (
+															<img src={waiting} alt="submitting" />
+														) : (
+															'Save'
+														)}
+													</button>
+
+													<button
+														className="btn btn-primary ml-2"
+														onClick={() => this.props.closeModals(false)}
+														type="button">
+														Cancel
+													</button>
+												</div>
+											</div>
 										</div>
-									</div>
+									</Carousel>
 								</form>
 							</div>
 						</div>
@@ -627,6 +665,6 @@ const mapStateToProps = state => {
 		labourDetail: state.patient.labourDetail,
 	};
 };
-export default connect(mapStateToProps, { closeModals })(
+export default connect(mapStateToProps, { closeModals, closeLabour })(
 	ModalCreateRecordDelivery
 );

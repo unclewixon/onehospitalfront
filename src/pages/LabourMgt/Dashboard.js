@@ -96,6 +96,7 @@ class Dashboard extends Component {
 										<th>Name</th>
 										<th>Age</th>
 										<th>Date Enrolled</th>
+										<th>Status</th>
 										<th className="text-right">Actions</th>
 									</tr>
 								</thead>
@@ -108,6 +109,7 @@ class Dashboard extends Component {
 										</tr>
 									) : !isEmpty(reverse) ? (
 										reverse.map((el, i) => {
+											console.log(el);
 											return (
 												<tr key={i + 1}>
 													<td>{el.fileNumber}</td>
@@ -116,6 +118,15 @@ class Dashboard extends Component {
 
 													<td>{getAge(el.date_of_birth)}</td>
 													<td>{moment(el.createdAt).format('DD-MM-YYYY')}</td>
+													<td>
+														{' '}
+														<span
+															className={`badge badge-${
+																el.isActive ? 'success' : 'danger'
+															}`}>
+															{el.isActive ? 'open' : 'closed'}
+														</span>
+													</td>
 													<td className="text-right row-actions">
 														<Tooltip title="view detail">
 															<a

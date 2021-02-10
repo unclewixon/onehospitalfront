@@ -37,6 +37,7 @@ import {
 	GET_ALL_OPD_IMMUNIZATION_APPOINTMENTS,
 	UPDATE_PATIENT,
 	READING_DONE,
+	CAN_CLOSE_LABOUR,
 } from '../actions/types';
 import actions from 'redux-form/lib/actions';
 import { updateImmutable } from '../services/utilities';
@@ -90,10 +91,13 @@ const INITIAL_STATE = {
 	deliveryRecord: [],
 	labourMeasurement: [],
 	reading_done: null,
+	canCloseLabour: false,
 };
 
 const patient = (state = INITIAL_STATE, action) => {
 	switch (action.type) {
+		case CAN_CLOSE_LABOUR:
+			return { ...state, canCloseLabour: true };
 		case NEXT_STEP:
 			return { ...state, formData: action.payload, formStep: 2 };
 		case PREV_STEP:
