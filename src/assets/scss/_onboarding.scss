@@ -24,7 +24,7 @@
 		}
 		.close-label {
 			margin-right: 10px;
-			color: #C26C6C;
+			color: #c26c6c;
 			letter-spacing: 1px;
 			font-weight: $font-weight-bold;
 			font-size: $font-size-base * 0.9;
@@ -39,7 +39,10 @@
 			background-position: top center;
 			background-repeat: no-repeat;
 		}
-		h1, h2, h3, h4 {
+		h1,
+		h2,
+		h3,
+		h4 {
 			color: $primary;
 			margin-bottom: 1.5rem;
 		}
@@ -62,7 +65,7 @@
 				list-style: none;
 				position: relative;
 				&:before {
-					content: "\e961";
+					content: '\e961';
 					@include osfont();
 					font-size: 12px;
 					color: $primary;
@@ -85,7 +88,6 @@
 			padding: 40px 0px;
 		}
 		.onboarding-content {
-
 			padding: 70px 70px 60px;
 			&.with-gradient {
 				padding: 70px 70px 60px;
@@ -96,21 +98,20 @@
 			}
 		}
 	}
-		// when slider exists
+	// when slider exists
 	.onboarding-slide {
 		.onboarding-side-by-side {
 			.onboarding-media {
 				padding-bottom: 60px;
 			}
 			.onboarding-content {
-				padding-bottom: 80px;	
+				padding-bottom: 80px;
 				&.with-gradient {
-					padding-bottom: 80px;	
+					padding-bottom: 80px;
 				}
 			}
 		}
 	}
-
 
 	form {
 		text-align: left;
@@ -138,7 +139,7 @@
 		.onboarding-media {
 			opacity: 0;
 			transform: translateY(80px) scale(0.8);
-			transition: all 0.5s cubic-bezier(.25,1.1,.5,1.35);
+			transition: all 0.5s cubic-bezier(0.25, 1.1, 0.5, 1.35);
 			transition-delay: 0.3s;
 		}
 		.onboarding-content {
@@ -149,17 +150,18 @@
 		}
 		.onboarding-title {
 			transform: translateY(40px);
-			transition: all 0.5s cubic-bezier(.25,1.1,.5,1.35);
+			transition: all 0.5s cubic-bezier(0.25, 1.1, 0.5, 1.35);
 			transition-delay: 0.5s;
 			opacity: 0;
 		}
 		.onboarding-text {
 			transform: translateY(40px);
-			transition: all 0.5s cubic-bezier(.25,1.1,.5,1.35);
+			transition: all 0.5s cubic-bezier(0.25, 1.1, 0.5, 1.35);
 			transition-delay: 0.6s;
 			opacity: 0;
 		}
-		.features-list, form {
+		.features-list,
+		form {
 			transform: translateY(40px);
 			transition: all 0.5s ease;
 			transition-delay: 0.7s;
@@ -189,7 +191,8 @@
 			opacity: 1;
 			transform: translateY(0);
 		}
-		.features-list, form {
+		.features-list,
+		form {
 			opacity: 1;
 			transform: translateY(0);
 		}
@@ -200,9 +203,9 @@
 		}
 	}
 
-
 	// slider
-	.slick-next, .slick-prev {
+	.slick-next,
+	.slick-prev {
 		border: none;
 		background-color: transparent;
 		font-weight: $font-weight-bold;
@@ -213,6 +216,9 @@
 		z-index: 999;
 		cursor: pointer;
 		letter-spacing: 1px;
+		top: unset;
+		width: inherit;
+		height: inherit;
 
 		&.slick-disabled {
 			opacity: 0;
@@ -221,26 +227,26 @@
 			outline: none;
 		}
 		&:before {
-      @include osfont();
-      font-size: 15px;
-      color: $primary;
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
+			@include osfont();
+			font-size: 15px;
+			color: $primary;
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
 		}
-	} 
+	}
 	.slick-next {
 		right: 50px;
 		&:before {
-      content: "\e986";
-      right: -20px;
+			content: '\e986';
+			right: -20px;
 		}
 	}
 	.slick-prev {
 		left: 50px;
 		&:before {
-      content: "\e987";
-      left: -20px;
+			content: '\e987';
+			left: -20px;
 		}
 	}
 	.slick-dots {
@@ -286,8 +292,7 @@
 			outline: none;
 		}
 		.onboarding-content {
-			padding-bottom: 80px;	
+			padding-bottom: 80px;
 		}
 	}
 }
-

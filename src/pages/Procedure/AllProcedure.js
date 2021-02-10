@@ -114,7 +114,6 @@ class AllProcedure extends Component {
 										onModalClick={this.onModalClick}
 									/>
 								) : null}
-								<h6 className="element-header">All Requests:</h6>
 
 								<form className="row">
 									<div className="form-group col-md-6">

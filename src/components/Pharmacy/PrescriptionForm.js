@@ -88,7 +88,7 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 			setLoading(false);
 			dispatch(stopBlock());
 		} catch (error) {
-			console.log(error);
+			console.log('serviceUnit', error);
 			notifyError('Error fetching drugs');
 			setLoading(false);
 			dispatch(stopBlock());

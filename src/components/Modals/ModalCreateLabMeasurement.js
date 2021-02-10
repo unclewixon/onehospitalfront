@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import moment from 'moment';
+import { Carousel } from 'antd';
+import { loadLabourMeasurement } from '../../actions/patient';
 
 import {
 	renderTextInput,
@@ -71,29 +73,58 @@ class ModalCreateLabMeasurement extends Component {
 	};
 	componentDidMount() {
 		document.body.classList.add('modal-open');
-		if (this.props.LabTests.length === 0) {
-			this.props
-				.fetchLabTests()
-				.then(response => {
-					this.filterTests(this.props.LabTests);
-				})
-				.catch(e => {
-					notifyError(
-						e.message || 'could not fetch service categories and services'
-					);
-				});
-		} else {
-			this.filterTests(this.props.LabTests);
-		}
+
+		// fetching labtest disable until confirmed
+
+		// console.log(this.props.LabTests.length, this.props.LabTests);
+		// if (this.props.LabTests.length === 0) {
+		// 	this.props
+		// 		.fetchLabTests()
+		// 		.then(response => {
+		// this.filterTests(this.props.LabTests);
+		// 			console.log(response, 'response');
+		// 		})
+		// 		.catch(e => {
+		// 			notifyError(
+		// 				e.message || 'could not fetch service categories and services'
+		// 			);
+		// 		});
+		// } else {
+		// 	this.filterTests(this.props.LabTests);
+		// 	console.log(this.props.LabTests, 'else block');
+		// }
 	}
 
 	componentWillUnmount() {
 		document.body.classList.remove('modal-open');
 	}
+	// componentDidMount() {
+	// 	this.fetchMeasurement();
+	// }
+
+	fetchMeasurement = async () => {
+		const { labourDetail } = this.props;
+		try {
+			this.setState({ loading: true });
+			const rs = await request(
+				`labour-management/${labourDetail.id}/measurement`,
+				'GET',
+				true
+			);
+			console.log(rs);
+			this.props.loadLabourMeasurement(rs);
+			this.setState({ loading: false });
+		} catch (e) {
+			console.log(e);
+			this.setState({ loading: false });
+			notifyError('Error fetching labour measurement request');
+		}
+	};
 
 	filterTests = tsts => {
 		const tests = tsts.map(el => el.name);
 		this.setState({ tests });
+		console.log(tsts, 'Tests');
 	};
 
 	onChange = (time, timeString) => {
@@ -139,6 +170,7 @@ class ModalCreateLabMeasurement extends Component {
 			);
 			console.log(rs);
 			notifySuccess('succesfully submitted');
+			this.fetchMeasurement();
 			this.props.closeModals(false);
 		} catch (e) {
 			this.setState({ submitting: false });
@@ -167,26 +199,7 @@ class ModalCreateLabMeasurement extends Component {
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
-							<h4 className="onboarding-title">Create Labour Measurement</h4>
-							<div style={{ textAlign: 'left' }}>
-								<p>
-									True Labour Sign:Begins irregularly but becomes regular and
-									predictable. Felt in the lower back and sweeps around the
-									abdomen in a wave pattern.Continues no matter the woman's
-									level of activity. Increases in duration,frequency and
-									intensity with the passage of time.Accompanied by "show"
-									(blood stained manus discharged) Achieved cervical efficement
-									and cervical dilation
-								</p>
-								<p>
-									False Labour Sign:Begins irregularly and remain irregular.
-									Often disappear with ambulation or sleep.Felt first
-									abdominally and remain confined to the abdomen and groin. Does
-									not increase in duration,frequency or intensity with the
-									passage of time. Show absent .Does not achieve cervical
-									effacement and cervical dilation
-								</p>
-							</div>
+							<h4 className="onboarding-title mb-1">Take Measurement</h4>
 							<div className="form-block">
 								<form onSubmit={handleSubmit(this.createMeasurement)}>
 									{error && (
@@ -197,507 +210,544 @@ class ModalCreateLabMeasurement extends Component {
 											}}
 										/>
 									)}
-
-									<div className="row">
-										<div className="col-sm-12">
-											<div className="form-group">
-												<label>
-													Select if patient is in true or false labour
-												</label>
-												<div className="d-flex">
-													<div className="mx-2">
-														<Field
-															name="isFalseLabour"
-															component="input"
-															type="radio"
-															value="true"
-															label="True Labour"
-														/>
-														<label className="mx-1">True Labour</label>
-													</div>
-
-													<div className="mx-2">
-														<Field
-															name="isFalseLabour"
-															component="input"
-															type="radio"
-															value="false"
-															label="False Labour"
-														/>
-														<label className="mx-1">False Labour</label>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div className="row">
-										<h3>Abdominal Palpation/Examination</h3>
-
-										<div className="col-sm-12">
-											<div className="form-group">
-												<label>Presentation</label>
-												<div className="d-flex">
-													<div className="mx-2">
-														<Field
-															name="presentation"
-															component="input"
-															type="radio"
-															value="caphaic"
-														/>
-														<label className="mx-1">Caphaic</label>
-													</div>
-
-													<div className="mx-2">
-														<Field
-															name="presentation"
-															component="input"
-															type="radio"
-															value="bismac"
-														/>
-														<label className="mx-1">Bismac</label>
-													</div>
-													<div className="mx-2">
-														<Field
-															name="presentation"
-															component="input"
-															type="radio"
-															value="shoulder"
-														/>
-														<label className="mx-1">Shoulder</label>
-													</div>
-													<div className="mx-2">
-														<Field
-															name="presentation"
-															component="input"
-															type="radio"
-															value="any other"
-														/>
-														<label className="mx-1"> any other</label>
-													</div>
-												</div>
-												<p>** If head is fat ,Please inform the Doctor</p>
-											</div>
-										</div>
-
-										<div className="col-sm-12">
-											<div className="form-group">
-												{/* <label>Position of fetus</label> */}
-												<Field
-													id="positionOfFetus"
-													name="positionOfFetus"
-													component={renderSelect}
-													label="Position of Fetals"
-													placeholder="Select Position of Fetals"
-													data={position}
-												/>
-											</div>
-										</div>
-
-										<div className="col-sm-12">
-											<div className="form-group">
-												<label>Fetal lies</label>
-												<div className="d-flex">
-													<div className="mx-2">
-														<Field
-															name="fetalLies"
-															component="input"
-															type="radio"
-															value="longitudinal"
-														/>
-														<label className="mx-1">longitudinal</label>
-													</div>
-
-													<div className="mx-2">
-														<Field
-															name="fetalLies"
-															component="input"
-															type="radio"
-															value="oblique"
-														/>
-														<label className="mx-1">Oblique</label>
-													</div>
-													<div className="mx-2">
-														<Field
-															name="fetalLies"
-															component="input"
-															type="radio"
-															value="transverse"
-														/>
-														<label className="mx-1">Transverse</label>
-													</div>
-												</div>
+									<Carousel arrows infinite={false} className="p-4">
+										<div>
+											<div style={{ textAlign: 'left' }}>
 												<p>
-													** if there is bismeech,shoulder or face presentation,
-													inform the Doctor
+													True Labour Sign:Begins irregularly but becomes
+													regular and predictable. Felt in the lower back and
+													sweeps around the abdomen in a wave pattern.Continues
+													no matter the woman's level of activity. Increases in
+													duration,frequency and intensity with the passage of
+													time.Accompanied by "show" (blood stained manus
+													discharged) Achieved cervical efficement and cervical
+													dilation
+												</p>
+												<p>
+													False Labour Sign:Begins irregularly and remain
+													irregular. Often disappear with ambulation or
+													sleep.Felt first abdominally and remain confined to
+													the abdomen and groin. Does not increase in
+													duration,frequency or intensity with the passage of
+													time. Show absent .Does not achieve cervical
+													effacement and cervical dilation
 												</p>
 											</div>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-sm-12">
-											<Field
-												id="descent"
-												name="descent"
-												component={renderSelect}
-												label="Descent"
-												placeholder="Select Department"
-												data={descent}
-											/>
-										</div>
-										<p>** if buttocks felt, inform the Doctor</p>
-									</div>
-									<div className="row">
-										<div className="col-sm-4">
-											<Field
-												id="cervicalLength"
-												name="cervicalLength"
-												component={renderTextInput}
-												label="Cervical Length (cm)"
-												type="text"
-												placeholder="Enter cervical length"
-											/>
-										</div>
-										<div className="col-sm-4">
-											<Field
-												id="cervicalEffacement"
-												name="cervicalEffacement"
-												component={renderTextInput}
-												label="Cervical effacement (%)"
-												type="text"
-												placeholder="Enter cervical effacement"
-											/>
-										</div>
 
-										<div className="col-sm-4">
-											<Field
-												id="cervicalPosition"
-												name="cervicalPosition"
-												component={renderSelect}
-												label="Cervical position"
-												placeholder="Enter cervical position"
-												data={cervicalPosition}
-											/>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-sm-12">
-											<div className="form-group">
-												<label>Membrances/Liquor</label>
-												<div className="d-flex">
-													<div className="mx-2">
-														<Field
-															name="membranes"
-															component={'input'}
-															type="radio"
-															value="intact Membrance"
-														/>
-														<label className="mx-1">intact Membrance</label>
-													</div>
+											<div className="row">
+												<div className="col-sm-12">
+													<div className="form-group">
+														<label>
+															Select if patient is in true or false labour
+														</label>
+														<div className="d-flex">
+															<div className="mx-2">
+																<Field
+																	name="isFalseLabour"
+																	component="input"
+																	type="radio"
+																	value="true"
+																	label="True Labour"
+																/>
+																<label className="mx-1">True Labour</label>
+															</div>
 
-													<div className="mx-2">
-														<Field
-															name="membranes"
-															component="input"
-															type="radio"
-															value="clear"
-														/>
-														<label className="mx-1">Clear</label>
-													</div>
-													<div className="mx-2">
-														<Field
-															name="membranes"
-															component="input"
-															type="radio"
-															value="Blood stained"
-														/>
-														<label className="mx-1">Blood stained</label>
-													</div>
-													<div className="mx-2">
-														<Field
-															name="membranes"
-															component="input"
-															type="radio"
-															value="light maconium staining"
-														/>
-														<label>Light Maconium Staining</label>
-													</div>
-
-													<div className="mx-2">
-														<Field
-															name="membranes"
-															component="input"
-															type="radio"
-															value="heavy maconium staining"
-														/>
-														<label>Heavy Maconium Staining</label>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-
-									<div className="row">
-										<div className="col-sm-6">
-											<Field
-												id="moulding"
-												name="moulding"
-												component={renderSelect}
-												label="Moulding"
-												placeholder="select moulding"
-												data={moulding}
-											/>
-										</div>
-
-										<div className="col-sm-6">
-											<Field
-												id="caput"
-												name="caput"
-												component={renderSelect}
-												label="Caput"
-												placeholder="select caput"
-												data={caput}
-											/>
-										</div>
-									</div>
-
-									<div className="row">
-										<div className="col-sm-12">
-											<div className="form-group">
-												<label>
-													Has the woman passed urine since the last measurement
-												</label>
-												<div className="d-flex">
-													<div className="mx-2">
-														<Field
-															name="hasPassedUrine"
-															component="input"
-															type="radio"
-															value="yes"
-														/>
-														<label className="mx-1">Yes</label>
-													</div>
-
-													<div className="mx-2">
-														<Field
-															name="hasPassedUrine"
-															component="input"
-															type="radio"
-															value="no"
-														/>
-														<label className="mx-1">No</label>
+															<div className="mx-2">
+																<Field
+																	name="isFalseLabour"
+																	component="input"
+																	type="radio"
+																	value="false"
+																	label="False Labour"
+																/>
+																<label className="mx-1">False Labour</label>
+															</div>
+														</div>
 													</div>
 												</div>
 											</div>
 										</div>
 
-										<div className="col-sm-12">
-											<div className="form-group">
-												<label>
-													Has cyatacin been adminstered during the current exam
-												</label>
-												<div className="d-flex">
-													<div className="mx-2">
-														<Field
-															name="administeredCyatacin"
-															component="input"
-															type="radio"
-															value="yes"
-														/>
-														<label className="mx-1">Yes</label>
-													</div>
+										<div className="row mt-1 mx-1 px-2 mb-4">
+											<h3>Abdominal Palpation/Examination</h3>
 
-													<div className="mx-2">
-														<Field
-															name="administeredCyatacin"
-															component="input"
-															type="radio"
-															value="no"
-														/>
-														<label className="mx-1">No</label>
+											<div className="col-sm-12">
+												<div className="form-group">
+													<label>Presentation</label>
+													<div className="d-flex">
+														<div className="mx-2">
+															<Field
+																name="presentation"
+																component="input"
+																type="radio"
+																value="caphaic"
+															/>
+															<label className="mx-1">Caphaic</label>
+														</div>
+
+														<div className="mx-2">
+															<Field
+																name="presentation"
+																component="input"
+																type="radio"
+																value="bismac"
+															/>
+															<label className="mx-1">Bismac</label>
+														</div>
+														<div className="mx-2">
+															<Field
+																name="presentation"
+																component="input"
+																type="radio"
+																value="shoulder"
+															/>
+															<label className="mx-1">Shoulder</label>
+														</div>
+														<div className="mx-2">
+															<Field
+																name="presentation"
+																component="input"
+																type="radio"
+																value="any other"
+															/>
+															<label className="mx-1"> any other</label>
+														</div>
 													</div>
+													<p>** If head is fat ,Please inform the Doctor</p>
 												</div>
 											</div>
-										</div>
 
-										<div className="col-sm-12">
-											<div className="form-group">
-												<label>
-													Has other Drugs or IV fluids been adminstered during
-													current exam ?{' '}
-												</label>
-												<div className="d-flex">
-													<div className="mx-2">
-														<Field
-															name="administeredDrugs"
-															component="input"
-															type="radio"
-															value="yes"
-														/>
-														<label className="mx-1">Yes</label>
-													</div>
-
-													<div className="mx-2">
-														<Field
-															name="administeredDrugs"
-															component="input"
-															type="radio"
-															value="no"
-														/>
-														<label className="mx-1">No</label>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div className="col-sm-12">
-											<label className="mx-1">Lab Tests</label>
-											<Field
-												id="labTests"
-												name="labTests"
-												component={renderMultiselect}
-												label="Lab Tests"
-												placeholder="What lab tests were done ?"
-												data={tests}
-											/>
-										</div>
-									</div>
-									<div className="row mt-2">
-										<h3>Other Measurements</h3>
-
-										<div className="col-md-12 p-0">
-											<div className="col-md-12 d-flex">
-												<div className="col-sm-4 pl-0">
+											<div className="col-sm-12">
+												<div className="form-group">
+													{/* <label>Position of fetus</label> */}
 													<Field
-														name="difficult_breathing"
-														component="input"
-														type="checkbox"
-														value="Difficult Breathing"
+														id="positionOfFetus"
+														name="positionOfFetus"
+														component={renderSelect}
+														label="Position of Fetals"
+														placeholder="Select Position of Fetals"
+														data={position}
 													/>
-													<label className="mx-1">Difficult Breathing</label>
-												</div>
-
-												<div className="col-sm-4 pl-0">
-													<Field
-														name="shock"
-														component="input"
-														type="checkbox"
-														value="Shock"
-													/>
-													<label className="mx-1">Shock</label>
-												</div>
-
-												<div className="col-sm-4 pl-0">
-													<Field
-														name="vaginal_bleeding"
-														component="input"
-														type="checkbox"
-														value="Vaginal bleeding"
-													/>
-													<label className="mx-1">Vaginal bleeding</label>
 												</div>
 											</div>
-											<div className="col-md-12 d-flex">
-												<div className="col-sm-4 pl-0">
+
+											<div className="col-sm-12">
+												<div className="form-group">
+													<label>Fetal lies</label>
+													<div className="d-flex">
+														<div className="mx-2">
+															<Field
+																name="fetalLies"
+																component="input"
+																type="radio"
+																value="longitudinal"
+															/>
+															<label className="mx-1">longitudinal</label>
+														</div>
+
+														<div className="mx-2">
+															<Field
+																name="fetalLies"
+																component="input"
+																type="radio"
+																value="oblique"
+															/>
+															<label className="mx-1">Oblique</label>
+														</div>
+														<div className="mx-2">
+															<Field
+																name="fetalLies"
+																component="input"
+																type="radio"
+																value="transverse"
+															/>
+															<label className="mx-1">Transverse</label>
+														</div>
+													</div>
+													<p>
+														** if there is bismeech,shoulder or face
+														presentation, inform the Doctor
+													</p>
+												</div>
+											</div>
+										</div>
+										<div>
+											<div className="row px-3">
+												<div className="col-sm-12">
 													<Field
-														name="convulsion_or_unconsciousness"
-														component="input"
-														type="checkbox"
-														value="Convulsion or Unconsciousness"
+														id="descent"
+														name="descent"
+														component={renderSelect}
+														label="Descent"
+														placeholder="Select Department"
+														data={descent}
 													/>
-													<label className="mx-1">
-														Convulsion or Unconsciousness
+												</div>
+												<p>** if buttocks felt, inform the Doctor</p>
+											</div>
+											<div className="row px-2">
+												<div className="col-sm-4">
+													<Field
+														id="cervicalLength"
+														name="cervicalLength"
+														component={renderTextInput}
+														label="Cervical Length (cm)"
+														type="text"
+														placeholder="Enter cervical length"
+													/>
+												</div>
+												<div className="col-sm-4">
+													<Field
+														id="cervicalEffacement"
+														name="cervicalEffacement"
+														component={renderTextInput}
+														label="Cervical effacement (%)"
+														type="text"
+														placeholder="Enter cervical effacement"
+													/>
+												</div>
+
+												<div className="col-sm-4">
+													<Field
+														id="cervicalPosition"
+														name="cervicalPosition"
+														component={renderSelect}
+														label="Cervical position"
+														placeholder="Enter cervical position"
+														data={cervicalPosition}
+													/>
+												</div>
+											</div>
+											<div className="row px-2">
+												<div className="col-sm-12">
+													<div className="form-group">
+														<label>Membrances/Liquor</label>
+														<div className="d-flex">
+															<div className="mx-2">
+																<Field
+																	name="membranes"
+																	component={'input'}
+																	type="radio"
+																	value="intact Membrance"
+																/>
+																<label className="mx-1">intact Membrance</label>
+															</div>
+
+															<div className="mx-2">
+																<Field
+																	name="membranes"
+																	component="input"
+																	type="radio"
+																	value="clear"
+																/>
+																<label className="mx-1">Clear</label>
+															</div>
+															<div className="mx-2">
+																<Field
+																	name="membranes"
+																	component="input"
+																	type="radio"
+																	value="Blood stained"
+																/>
+																<label className="mx-1">Blood stained</label>
+															</div>
+															<div className="mx-2">
+																<Field
+																	name="membranes"
+																	component="input"
+																	type="radio"
+																	value="light maconium staining"
+																/>
+																<label>Light Maconium Staining</label>
+															</div>
+
+															<div className="mx-2">
+																<Field
+																	name="membranes"
+																	component="input"
+																	type="radio"
+																	value="heavy maconium staining"
+																/>
+																<label>Heavy Maconium Staining</label>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+
+											<div className="row px-2">
+												<div className="col-sm-6">
+													<Field
+														id="moulding"
+														name="moulding"
+														component={renderSelect}
+														label="Moulding"
+														placeholder="select moulding"
+														data={moulding}
+													/>
+												</div>
+
+												<div className="col-sm-6">
+													<Field
+														id="caput"
+														name="caput"
+														component={renderSelect}
+														label="Caput"
+														placeholder="select caput"
+														data={caput}
+													/>
+												</div>
+											</div>
+										</div>
+
+										<div className="row px-2">
+											<div className="col-sm-12">
+												<div className="form-group">
+													<label>
+														Has the woman passed urine since the last
+														measurement
 													</label>
-												</div>
+													<div className="d-flex">
+														<div className="mx-2">
+															<Field
+																name="hasPassedUrine"
+																component="input"
+																type="radio"
+																value="yes"
+															/>
+															<label className="mx-1">Yes</label>
+														</div>
 
-												<div className="col-sm-4 pl-0">
-													<Field
-														name="prospined_cord"
-														component="input"
-														type="checkbox"
-														value="Prospined cord"
-													/>
-													<label className="mx-1">Prosipned cord</label>
-												</div>
-
-												<div className="col-sm-4 pl-0">
-													<Field
-														name="fetal_distress"
-														component="input"
-														type="checkbox"
-														value="Fetal distress"
-													/>
-													<label className="mx-1">Fetal distress</label>
+														<div className="mx-2">
+															<Field
+																name="hasPassedUrine"
+																component="input"
+																type="radio"
+																value="no"
+															/>
+															<label className="mx-1">No</label>
+														</div>
+													</div>
 												</div>
 											</div>
+
+											<div className="col-sm-12">
+												<div className="form-group">
+													<label>
+														Has cyatacin been adminstered during the current
+														exam
+													</label>
+													<div className="d-flex">
+														<div className="mx-2">
+															<Field
+																name="administeredCyatacin"
+																component="input"
+																type="radio"
+																value="yes"
+															/>
+															<label className="mx-1">Yes</label>
+														</div>
+
+														<div className="mx-2">
+															<Field
+																name="administeredCyatacin"
+																component="input"
+																type="radio"
+																value="no"
+															/>
+															<label className="mx-1">No</label>
+														</div>
+													</div>
+												</div>
+											</div>
+
+											<div className="col-sm-12">
+												<div className="form-group">
+													<label>
+														Has other Drugs or IV fluids been adminstered during
+														current exam ?{' '}
+													</label>
+													<div className="d-flex">
+														<div className="mx-2">
+															<Field
+																name="administeredDrugs"
+																component="input"
+																type="radio"
+																value="yes"
+															/>
+															<label className="mx-1">Yes</label>
+														</div>
+
+														<div className="mx-2">
+															<Field
+																name="administeredDrugs"
+																component="input"
+																type="radio"
+																value="no"
+															/>
+															<label className="mx-1">No</label>
+														</div>
+													</div>
+												</div>
+											</div>
+											{/* lab test disabled until confirmed */}
+											{/* <div className="col-sm-12">
+												<label className="mx-1">Lab Tests</label>
+												<Field
+													id="labTests"
+													name="labTests"
+													component={renderMultiselect}
+													label="Lab Tests"
+													placeholder="What lab tests were done ?"
+													data={tests}
+												/>
+											</div> */}
 										</div>
-										<div className="col-sm-12">
-											<Field
-												id="examiner_name"
-												name="examiner_name"
-												component={renderTextInput}
-												label="Examiner's  Name"
-												placeholder={first_name + ' ' + last_name}
-												readOnly
+										<div>
+											<div className="row mt-2 px-2">
+												<h3>Other Measurements</h3>
+
+												<div className="col-md-12 p-0">
+													<div className="col-md-12 d-flex">
+														<div className="col-sm-4 pl-0">
+															<Field
+																name="difficult_breathing"
+																component="input"
+																type="checkbox"
+																value="Difficult Breathing"
+															/>
+															<label className="mx-1">
+																Difficult Breathing
+															</label>
+														</div>
+
+														<div className="col-sm-4 pl-0">
+															<Field
+																name="shock"
+																component="input"
+																type="checkbox"
+																value="Shock"
+															/>
+															<label className="mx-1">Shock</label>
+														</div>
+
+														<div className="col-sm-4 pl-0">
+															<Field
+																name="vaginal_bleeding"
+																component="input"
+																type="checkbox"
+																value="Vaginal bleeding"
+															/>
+															<label className="mx-1">Vaginal bleeding</label>
+														</div>
+													</div>
+													<div className="col-md-12 d-flex">
+														<div className="col-sm-4 pl-0">
+															<Field
+																name="convulsion_or_unconsciousness"
+																component="input"
+																type="checkbox"
+																value="Convulsion or Unconsciousness"
+															/>
+															<label className="mx-1">
+																Convulsion or Unconsciousness
+															</label>
+														</div>
+
+														<div className="col-sm-4 pl-0">
+															<Field
+																name="prospined_cord"
+																component="input"
+																type="checkbox"
+																value="Prospined cord"
+															/>
+															<label className="mx-1">Prosipned cord</label>
+														</div>
+
+														<div className="col-sm-4 pl-0">
+															<Field
+																name="fetal_distress"
+																component="input"
+																type="checkbox"
+																value="Fetal distress"
+															/>
+															<label className="mx-1">Fetal distress</label>
+														</div>
+													</div>
+												</div>
+												<div className="col-sm-12">
+													<Field
+														id="examiner_name"
+														name="examiner_name"
+														component={renderTextInput}
+														label="Examiner's  Name"
+														placeholder={first_name + ' ' + last_name}
+														readOnly
+													/>
+												</div>
+												{/* <div className="col-sm-12 d-flex">
+											<div className="col-md-6 pl-0">
+											<TimePicker
+											use12Hours
+											defaultOpenValue={moment('00:00:00', 'HH:mm:ss')}
+											onChange={() => this.onChange()}
 											/>
-										</div>
-										{/* <div className="col-sm-12 d-flex">
-											<div className="col-md-6 pl-0">
-												<TimePicker
-													use12Hours
-													defaultOpenValue={moment('00:00:00', 'HH:mm:ss')}
-													onChange={() => this.onChange()}
-												/>
 											</div>
-
+											
 											<div className="col-md-6 pl-0">
-												<DatePicker
-													defaultValue={moment('2015-01-01', 'mm/dd/yyyy')}
-												/>
+											<DatePicker
+											defaultValue={moment('2015-01-01', 'mm/dd/yyyy')}
+											/>
 											</div>
 										</div> */}
-										<div className="col-sm-12">
-											<div className="form-group">
-												<label> Time and Date of measurement</label>
-												<div className="custom-date-input">
-													<DatePicker
-														selected={examDate}
-														onChange={date => this.setDate(date, 'examDate')}
-														peekNextMonth
-														showMonthDropdown
-														showYearDropdown
-														dropdownMode="select"
-														className="single-daterange form-control"
-														placeholderText="Select date and time"
-														timeInputLabel="Time:"
-														dateFormat="MM/dd/yyyy h:mm aa"
-														showTimeInput
-														minDate={new Date()}
-														required
-													/>
+												<div className="col-sm-12">
+													<div className="form-group">
+														<label> Time and Date of measurement</label>
+														<div className="custom-date-input">
+															<DatePicker
+																selected={examDate}
+																onChange={date =>
+																	this.setDate(date, 'examDate')
+																}
+																peekNextMonth
+																showMonthDropdown
+																showYearDropdown
+																dropdownMode="select"
+																className="single-daterange form-control"
+																placeholderText="Select date and time"
+																timeInputLabel="Time:"
+																dateFormat="MM/dd/yyyy h:mm aa"
+																showTimeInput
+																minDate={new Date()}
+																required
+															/>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div className="row mt-3 px-2">
+												<div className="col-sm-12 text-right">
+													<button
+														className="btn btn-primary"
+														disabled={submitting}
+														type="submit">
+														{submitting ? (
+															<img src={waiting} alt="submitting" />
+														) : (
+															'Save'
+														)}
+													</button>
+
+													<button
+														className="btn btn-primary ml-2"
+														disabled={submitting}
+														type="button">
+														Cancel
+													</button>
 												</div>
 											</div>
 										</div>
-									</div>
-									<div className="row mt-3">
-										<div className="col-sm-12 text-right">
-											<button
-												className="btn btn-primary"
-												disabled={submitting}
-												type="submit">
-												{submitting ? (
-													<img src={waiting} alt="submitting" />
-												) : (
-													'Save'
-												)}
-											</button>
-
-											<button
-												className="btn btn-primary ml-2"
-												disabled={submitting}
-												type="button">
-												Cancel
-											</button>
-										</div>
-									</div>
+									</Carousel>
 								</form>
 							</div>
 						</div>
@@ -721,6 +771,8 @@ const mapStateToProps = state => {
 	};
 };
 
-export default connect(mapStateToProps, { closeModals, fetchLabTests })(
-	ModalCreateLabMeasurement
-);
+export default connect(mapStateToProps, {
+	closeModals,
+	loadLabourMeasurement,
+	fetchLabTests,
+})(ModalCreateLabMeasurement);

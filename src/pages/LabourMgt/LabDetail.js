@@ -25,9 +25,11 @@ class LabDetail extends Component {
 		tab: 'measurement',
 		newForm: false,
 		loading: false,
+		displaylabAction: true,
 	};
 	componentDidMount() {
 		this.fetchEnrollmentByID();
+		this.setState({ ...this.state, displaylabAction: true });
 	}
 
 	fetchEnrollmentByID = async () => {
@@ -51,7 +53,11 @@ class LabDetail extends Component {
 	};
 
 	setTab = value => {
-		this.setState({ tab: value, newForm: false });
+		if (value !== 'parto-graph') {
+			this.setState({ tab: value, newForm: false, displaylabAction: true });
+		} else {
+			this.setState({ tab: value, newForm: false });
+		}
 	};
 
 	createForm = () => {
@@ -77,6 +83,32 @@ class LabDetail extends Component {
 		});
 	};
 
+	findTrueLabour = () => {
+		this.props.labourMeasurement.findIndex(labour =>
+			labour.isFalseLabour === true ? true : false
+		);
+	};
+
+	labMgtActions = () => {
+		switch (this.state.tab) {
+			case 'measurement':
+				return 'Take Measurment';
+			case 'parto-graph':
+				if (this.findTrueLabour()) {
+					this.setState({ ...this.state, displaylabAction: false });
+					break;
+				} else {
+					return 'Record Vital';
+				}
+			case 'risk-assessment':
+				return 'Take Risk Assessment';
+			case 'delivery':
+				return 'Record Delivery';
+			default:
+				break;
+		}
+	};
+
 	const;
 	render() {
 		const { tab, loading } = this.state;
@@ -97,11 +129,14 @@ class LabDetail extends Component {
 											: ''}{' '}
 										old)
 									</h6>
-									<a
-										href="."
-										className={'mr-4 mx-2 btn btn-primary btn-sm btn-primary'}>
-										Close
-									</a>
+									{this.props.canCloseLabour && (
+										<button
+											className={
+												'mr-4 mx-2 btn btn-success btn-sm btn-primary'
+											}>
+											close labour
+										</button>
+									)}
 								</div>
 
 								<table className="labmgt">
@@ -220,6 +255,18 @@ class LabDetail extends Component {
 											</a>
 										</li>
 									</ul>
+									<div className="row justify-content-center align-items-center">
+										{this.state.displaylabAction && (
+											<button
+												className={
+													'mr-4 text-center mx-2 btn btn-primary btn-sm'
+												}
+												onClick={() => this.createForm()}>
+												{this.labMgtActions()}{' '}
+												<i className="os-icon os-icon-plus"></i>
+											</button>
+										)}
+									</div>
 								</div>
 								<Suspense fallback={<Splash />}>
 									{tab === 'measurement' && <Measurement />}
@@ -232,12 +279,10 @@ class LabDetail extends Component {
 					)}
 				</div>
 
-				<button
+				{/* <button
 					type="button"
 					className="labmgtAddButton btn-success"
-					onClick={() => this.createForm()}>
-					+
-				</button>
+					onClick={() => this.createForm()}></button> */}
 			</div>
 		);
 	}
@@ -246,6 +291,8 @@ class LabDetail extends Component {
 const mapStateToProps = state => {
 	return {
 		labourDetail: state.patient.labourDetail,
+		labourMeasurement: state.patient.labourMeasurement,
+		canCloseLabour: state.patient.canCloseLabour,
 	};
 };
 

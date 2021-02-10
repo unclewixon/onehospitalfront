@@ -37,6 +37,9 @@ const AdminMenu = ({ role }) => {
 				<span>RADIOLOGY</span>
 			</li>
 			<RadiologyMenu />
+			<li className="sub-header">
+				<span>NURSE</span>
+			</li>
 			<NurseMenu />
 			<li className="sub-header">
 				<span>DOCTOR</span>

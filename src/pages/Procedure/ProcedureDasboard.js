@@ -112,7 +112,6 @@ class ProcedureDashboard extends Component {
 									onModalClick={this.onModalClick}
 								/>
 							)}
-							<h6 className="element-header">Recent Requests:</h6>
 							<form className="row">
 								<div className="form-group col-md-6">
 									<label>From - To</label>

@@ -11,6 +11,7 @@ import RoleBlock from '../RoleBlock';
 import VisitSummaryTable from './VisitSummaryTable';
 import BillingTable from './BillingTable';
 import AppointmentHistoryTable from './AppointmentHistoryTable';
+import PatientActions from '../PatientActions';
 
 const Dashboard = ({ location }) => {
 	const patient = useSelector(state => state.user.patient);
@@ -132,41 +133,7 @@ const Dashboard = ({ location }) => {
 			{/*  */}
 			<div className="col-lg-9 col-md-12">
 				<div className="element-actions d-none d-sm-block">
-					<Tooltip title="Admit">
-						<a className="btn btn-primary btn-sm mr-2" href="#">
-							<i className="os-icon os-icon-ui-22"></i>
-							<span>Admit</span>
-						</a>
-					</Tooltip>
-					<Tooltip title="Enroll Antenatal">
-						<Link to={`${location.pathname}#enroll-antenatal`}>
-							<div className="btn btn-primary btn-sm mr-2" href="#">
-								<i className="os-icon os-icon-ui-22"></i>
-								<span>Enroll Antenatal</span>
-							</div>
-						</Link>
-					</Tooltip>
-					<Tooltip title="Enroll IVF">
-						<Link to={`${location.pathname}#enroll-ivf`}>
-							<div className="btn btn-primary btn-sm mr-2" href="#">
-								<i className="os-icon os-icon-ui-22"></i>
-								<span>Enroll IVF</span>
-							</div>
-						</Link>
-					</Tooltip>
-					<Tooltip title="Enroll Immunization">
-						<a className="btn btn-primary btn-sm mr-2" href="#">
-							<i className="os-icon os-icon-ui-22"></i>
-							<span>Enroll Immunization</span>
-						</a>
-					</Tooltip>
-					<Tooltip title="Discharge">
-						<a className="btn btn-primary btn-sm mr-2" href="#">
-							<i className="os-icon os-icon-ui-22"></i>
-							<span>Discharge</span>
-						</a>
-					</Tooltip>
-					{/* discharge, enrole antinantal, ivf ,immuncation, admit */}
+					<PatientActions location={location} />
 				</div>
 
 				<div className="element-box mt-2">

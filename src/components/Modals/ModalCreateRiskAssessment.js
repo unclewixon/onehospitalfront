@@ -91,7 +91,7 @@ class ModalCreateRiskAssessment extends Component {
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
-							<h4 className="onboarding-title">Create Risk Assessment</h4>
+							<h4 className="onboarding-title">Take Risk Assessment</h4>
 
 							<div className="form-block">
 								<form onSubmit={handleSubmit(this.createRisk)}>
@@ -214,6 +214,7 @@ class ModalCreateRiskAssessment extends Component {
 												<Checkbox.Group
 													options={plainOptions}
 													onChange={this.onChange}
+													className="custom-checkbox"
 												/>
 											</div>
 										</div>

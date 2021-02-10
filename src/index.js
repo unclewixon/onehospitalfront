@@ -79,7 +79,6 @@ const initData = async () => {
 			store.dispatch(loadCountries(rs_countries.data));
 		}
 	} catch (e) {
-		e.preventDefault();
 		// console.log(e.response);
 	}
 

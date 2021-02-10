@@ -34,6 +34,7 @@ import {
 	GET_ALL_OPD_IMMUNIZATION_APPOINTMENTS,
 	UPDATE_PATIENT,
 	READING_DONE,
+	CAN_CLOSE_LABOUR,
 } from './types';
 import { request } from '../services/utilities';
 // import axios from 'axios';
@@ -305,6 +306,12 @@ export const antenatalAssessment = () => {
 				});
 		});
 	};
+};
+
+export const closeLabour = () => dispatch => {
+	dispatch({
+		type: CAN_CLOSE_LABOUR,
+	});
 };
 
 // export const getPartograph = id => {

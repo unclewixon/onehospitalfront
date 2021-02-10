@@ -17,6 +17,7 @@ import patientProfilePic from '../assets/images/patientprofile.jpg';
 import { patientAPI } from '../services/constants';
 import { notifySuccess, notifyError } from './../services/notify';
 import { updatePatient } from '../actions/patient';
+import PatientActions from './PatientActions';
 
 const ProfileBlock = ({ location, history, patient, match, noEdits }) => {
 	const [submitting, setSubmitting] = useState(false);
@@ -119,45 +120,11 @@ const ProfileBlock = ({ location, history, patient, match, noEdits }) => {
 					</div>
 				</div>
 			</div>
-			<div className="element-actions d-none d-sm-block justify-content-sm-end mt-1">
-				<div>
-					<Tooltip title="Admit">
-						<a className="btn btn-primary btn-sm mr-2 ml-auto" href="#">
-							<i className="os-icon os-icon-ui-22"></i>
-							<span>Admit</span>
-						</a>
-					</Tooltip>
-					<Tooltip title="Enroll Antenatal">
-						<Link to={`${location.pathname}#enroll-antenatal`}>
-							<div className="btn btn-primary btn-sm mr-2" href="#">
-								<i className="os-icon os-icon-ui-22"></i>
-								<span>Enroll Antenatal</span>
-							</div>
-						</Link>
-					</Tooltip>
-					<Tooltip title="Enroll IVF">
-						<Link to={`${location.pathname}#enroll-ivf`}>
-							<div className="btn btn-primary btn-sm mr-2" href="#">
-								<i className="os-icon os-icon-ui-22"></i>
-								<span>Enroll IVF</span>
-							</div>
-						</Link>
-					</Tooltip>
-					<Tooltip title="Enroll Immunization">
-						<a className="btn btn-primary btn-sm mr-2" href="#">
-							<i className="os-icon os-icon-ui-22"></i>
-							<span>Enroll Immunization</span>
-						</a>
-					</Tooltip>
-					<Tooltip title="Discharge">
-						<a className="btn btn-primary btn-sm mr-2" href="#">
-							<i className="os-icon os-icon-ui-22"></i>
-							<span>Discharge</span>
-						</a>
-					</Tooltip>
-					{/* discharge, enrole antinantal, ivf ,immuncation, admit */}
+			{location.pathname === '/front-desk/all-patients' && (
+				<div className="element-actions d-none d-sm-block justify-content-sm-end mt-1">
+					<PatientActions location={location} />
 				</div>
-			</div>
+			)}
 		</div>
 	);
 };

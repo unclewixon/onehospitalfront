@@ -234,7 +234,7 @@ class Payroll extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		payrolls: state.hr.payrolls,
-		departments: state.settings.departments,
+		departments: state.department,
 	};
 };
 
