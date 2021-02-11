@@ -872,7 +872,7 @@ class PatientSheet extends Component {
 															</tr>
 															<tr>
 																<td rows={3}>Comments</td>
-																<td colspan={7}></td>
+																<td colSpan={7}></td>
 															</tr>
 														</tbody>
 													</table>
@@ -967,7 +967,7 @@ class PatientSheet extends Component {
 														ABN
 														<br />
 													</th>
-													<th colspan={4}>COMMENTS</th>
+													<th colSpan={4}>COMMENTS</th>
 												</tr>
 											</thead>
 											<tbody>
@@ -1104,7 +1104,7 @@ class PatientSheet extends Component {
 													</tr>
 
 													<tr>
-														<td colspan={3}>COMMENT:</td>
+														<td colSpan={3}>COMMENT:</td>
 													</tr>
 												</tbody>
 											</table>
@@ -1155,7 +1155,7 @@ class PatientSheet extends Component {
 										<table className="table table-striped table-bordered">
 											<thead>
 												<tr>
-													<th colspan={7}></th>
+													<th colSpan={7}></th>
 
 													<th>NON-FERTILIZED</th>
 													<th>OTHERS</th>
@@ -1187,7 +1187,7 @@ class PatientSheet extends Component {
 												</tr>
 												<tr>
 													<td>COMMENTS</td>
-													<td colspan={9}></td>
+													<td colSpan={9}></td>
 												</tr>
 											</tbody>
 										</table>
@@ -1261,12 +1261,12 @@ class PatientSheet extends Component {
 											<tbody>
 												<tr>
 													<td>DAY 2</td>
-													<td colspan={6}>Number of Cleaving Embroyo(s)</td>
+													<td colSpan={6}>Number of Cleaving Embroyo(s)</td>
 												</tr>
 
 												<tr>
 													<td>COMMENT</td>
-													<td colspan={6}></td>
+													<td colSpan={6}></td>
 												</tr>
 											</tbody>
 										</table>
@@ -1275,7 +1275,7 @@ class PatientSheet extends Component {
 										<table className="table table-striped table-bordered">
 											<thead>
 												<tr>
-													<th colspan={2}>EMBROYO/DROP No:</th>
+													<th colSpan={2}>EMBROYO/DROP No:</th>
 													<th>1</th>
 													<th>2</th>
 													<th>3</th>
@@ -1292,7 +1292,7 @@ class PatientSheet extends Component {
 											</thead>
 											<tbody>
 												<tr>
-													<td rowspan={3}>
+													<td rowSpan={3}>
 														DAY 3 <br />
 														PROGRESS RECORD/
 														<br />
@@ -1344,7 +1344,7 @@ class PatientSheet extends Component {
 												</tr>
 												<tr>
 													<td>COMMENT</td>
-													<td colspan={13}></td>
+													<td colSpan={13}></td>
 												</tr>
 											</tbody>
 										</table>
@@ -1588,7 +1588,7 @@ class PatientSheet extends Component {
 										<table className="table table-striped table-bordered">
 											<thead>
 												<tr>
-													<th colspan={6}>Customer Name</th>
+													<th colSpan={6}>Customer Name</th>
 												</tr>
 											</thead>
 											

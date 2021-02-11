@@ -36,7 +36,7 @@ const LabCategory = props => {
 		e.preventDefault();
 		try {
 			setSubmitting(true);
-			const rs = await request(`lab-tests/categories`, 'POST', true, { name });
+			const rs = await request('lab-tests/categories', 'POST', true, { name });
 			dispatch(addLabCategory(rs));
 			setSubmitting(false);
 			setState({ ...initialState });
@@ -184,7 +184,7 @@ const LabCategory = props => {
 									{submitting ? (
 										<img src={waiting} alt="submitting" />
 									) : (
-										<span> create</span>
+										<span>create</span>
 									)}
 								</button>
 							)}
@@ -194,13 +194,13 @@ const LabCategory = props => {
 										className="btn btn-secondary ml-3"
 										disabled={submitting}
 										onClick={cancelEditButton}>
-										<span>{submitting ? 'cancel' : 'cancel'}</span>
+										<span>cancel</span>
 									</button>
 									<button className="btn btn-primary" disabled={submitting}>
 										{submitting ? (
 											<img src={waiting} alt="submitting" />
 										) : (
-											<span> edit</span>
+											<span>edit</span>
 										)}
 									</button>
 								</>

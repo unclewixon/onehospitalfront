@@ -2,29 +2,23 @@
 import React, { Component, lazy, Suspense } from 'react';
 import { Switch, withRouter, Link, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
+
 import NoMatch from '../NoMatch';
-import Queue from '../../components/Queue';
 import Splash from '../../components/Splash';
 
 const AllRequest = lazy(() => import('./AllRequest'));
-const ScheduledRequests = lazy(() => import('./ScheduledRequests'));
-const AppraisalList = lazy(() => import('./AppraisalList'));
-const AwaitingList = lazy(() => import('./AwaitingList'));
-const SearchScan = lazy(() => import('./SearchScan'));
 const NewRadiology = lazy(() => import('./NewRadiology'));
-
 const Dashboard = lazy(() => import('./Dashboard'));
 
 class index extends Component {
 	render() {
-		const { location, match, staff } = this.props;
+		const { location, match } = this.props;
 		const page = location.pathname.split('/').pop();
 
-		const department = staff?.details?.department?.name;
 		let pageTitle = 'Dashboard';
 		if (page === 'all-request') {
 			pageTitle = 'All Request';
-		} else if (page === 'new-radiology') {
+		} else if (page === 'new-request') {
 			pageTitle = 'New Radiology Request';
 		}
 
@@ -49,46 +43,18 @@ class index extends Component {
 										}`}>
 										All Request
 									</Link>
-
-									{/* <Link
-										className={`btn btn-primary btn-sm my-1 ${
-											page === 'scheduled-request' ? 'btn-outline-primary' : ''
-										}`}
-										to={`${match.path}/scheduled-request`}>
-										Schedule Request
-										</Link>
 									<Link
 										className={`btn btn-primary btn-sm my-1 ${
-											page === 'appraisal-list' ? 'btn-outline-primary' : ''
+											page === 'new-request' ? 'btn-outline-primary' : ''
 										}`}
-										to={`${match.path}/appraisal-list`}>
-										Appraisal List
-										</Link>
-									<Link
-									className={`btn btn-primary btn-sm my-1 ${
-											page === 'awaiting-list' ? 'btn-outline-primary' : ''
-										}`}
-										to={`${match.path}/awaiting-list`}>
-										Awaiting List
-									</Link> */}
-
-									<Link
-										className={`btn btn-primary btn-sm my-1 ${
-											page === 'new-radiology' ? 'btn-outline-primary' : ''
-										}`}
-										to={`${match.path}/new-radiology`}>
+										to={`${match.path}/new-request`}>
 										New Request
 									</Link>
 								</div>
 								<h6 className="element-header">{pageTitle}</h6>
 								<Suspense fallback={<Splash />}>
 									<Switch>
-										<Route
-											exact
-											path={`${match.path}/`}
-											component={Dashboard}
-										/>
-
+										<Route exact path={`${match.path}`} component={Dashboard} />
 										<Route
 											exact
 											path={`${match.path}/all-request`}
@@ -96,32 +62,9 @@ class index extends Component {
 										/>
 										<Route
 											exact
-											path={`${match.path}/awaiting-list`}
-											component={AwaitingList}
-										/>
-
-										<Route
-											exact
-											path={`${match.path}/appraisal-list`}
-											component={AppraisalList}
-										/>
-										<Route
-											exact
-											path={`${match.path}/new-radiology`}
+											path={`${match.path}/new-request`}
 											component={NewRadiology}
 										/>
-
-										<Route
-											exact
-											path={`${match.path}/scheduled-request`}
-											component={ScheduledRequests}
-										/>
-										<Route
-											exact
-											path={`${match.path}/search-scan`}
-											component={SearchScan}
-										/>
-
 										<Route component={NoMatch} />
 									</Switch>
 								</Suspense>
@@ -129,10 +72,6 @@ class index extends Component {
 						</div>
 					</div>
 				</div>
-				{/* removed based on task requirement DO NOT UNCOMMENT */}
-				{/* <div className="content-panel compact">
-					<Queue department={department} />
-				</div> */}
 			</div>
 		);
 	}

@@ -1,9 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
-import patientProfilePic from '../../assets/images/patientprofile.jpg';
 
+import patientProfilePic from '../../assets/images/patientprofile.jpg';
 import { closeModals } from '../../actions/general';
 
 class ModalViewAppointment extends Component {
@@ -23,9 +22,9 @@ class ModalViewAppointment extends Component {
 				role="dialog"
 				style={{ display: 'block' }}>
 				<div className="modal-dialog" role="document">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="exampleModalLabel">
+					<div className="modal-content">
+						<div className="modal-header">
+							<h5 className="modal-title" id="exampleModalLabel">
 								<div className="element-inner-header pl-md-3">
 									Appointment Detail
 									{/* appointment_date
@@ -43,11 +42,11 @@ class ModalViewAppointment extends Component {
 								<span aria-hidden="true"> ×</span>
 							</button>
 						</div>
-						<div class="modal-body">
+						<div className="modal-body">
 							<div className="modal-body pb-0">
-								<div class="d-flex">
-									<div class="post-media">
-										<div class="pt-avatar-w">
+								<div className="d-flex">
+									<div className="post-media">
+										<div className="pt-avatar-w">
 											<img
 												alt=""
 												style={{
@@ -61,10 +60,10 @@ class ModalViewAppointment extends Component {
 											/>
 										</div>
 									</div>
-									<div class="post-content w-100">
-										<div class="profile-tile pb-0">
-											<div class="profile-tile-meta">
-												<h6 class="post-title">
+									<div className="post-content w-100">
+										<div className="profile-tile pb-0">
+											<div className="profile-tile-meta">
+												<h6 className="post-title">
 													{view_appointment_detail?.patient?.surname}{' '}
 													{view_appointment_detail?.patient?.other_names}
 												</h6>
@@ -108,7 +107,7 @@ class ModalViewAppointment extends Component {
 												</div>
 											</div>
 										</div>
-										<div class="post-foot"></div>
+										<div className="post-foot"></div>
 									</div>
 								</div>
 								{/*<div className="row">
@@ -131,8 +130,8 @@ class ModalViewAppointment extends Component {
 													</div>
 												</div>
 											</div>
-											<div class="profile-tile profile-tile-inlined">
-												<div class="pt-avatar-w">
+											<div className="profile-tile profile-tile-inlined">
+												<div className="pt-avatar-w">
 													<img alt="" src={patientProfilePic} />
 												</div>
 											</div>

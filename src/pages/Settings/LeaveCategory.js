@@ -1,10 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+
 import waiting from '../../assets/images/waiting.gif';
-import searchingGIF from '../../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request, confirmAction } from '../../services/utilities';
+import TableLoading from '../../components/TableLoading';
 import {
 	add_leave_category,
 	get_all_leave_category,
@@ -21,7 +22,7 @@ const LeaveCategory = props => {
 		id: '',
 	};
 	const [{ name, duration }, setState] = useState(initialState);
-	const [Loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	const [payload, getDataToEdit] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
@@ -32,14 +33,11 @@ const LeaveCategory = props => {
 	};
 
 	const onAddLeaveCategory = async e => {
-		e.preventDefault();
-		setLoading(true);
-		let data = {
-			name,
-			duration,
-		};
 		try {
-			const rs = await request(`leave-category`, 'POST', true, data);
+			e.preventDefault();
+			setLoading(true);
+			const data = { name, duration };
+			const rs = await request('leave-category', 'POST', true, data);
 			props.add_leave_category(rs);
 			setLoading(false);
 			setState({ ...initialState });
@@ -51,20 +49,12 @@ const LeaveCategory = props => {
 	};
 
 	const onEditLeaveCategory = async e => {
-		setLoading(true);
-		e.preventDefault();
-
-		let data = {
-			name,
-			duration,
-		};
 		try {
-			const rs = await request(
-				`leave-category/${payload.id}/update`,
-				'PATCH',
-				true,
-				data
-			);
+			e.preventDefault();
+			setLoading(true);
+			const data = { name, duration };
+			const url = `leave-category/${payload.id}/update`;
+			const rs = await request(url, 'PATCH', true, data);
 			props.update_leave_category(rs, payload);
 			setState({ ...initialState });
 			setSubmitButton({ save: true, edit: false });
@@ -92,10 +82,8 @@ const LeaveCategory = props => {
 	const onDeleteLeaveCategory = async data => {
 		try {
 			const res = await request(`leave-category/${data.id}`, 'DELETE', true);
-
-			setDataLoaded(false);
 			setLoading(false);
-			//props.delete_leave_category(data);
+			props.delete_leave_category(res);
 			notifySuccess('Leave Category deleted');
 		} catch (error) {
 			setLoading(false);
@@ -115,7 +103,7 @@ const LeaveCategory = props => {
 	useEffect(() => {
 		const fetchLeaveCategory = async () => {
 			try {
-				const rs = await request(`leave-category`, 'GET', true);
+				const rs = await request('leave-category', 'GET', true);
 				props.get_all_leave_category(rs);
 				setDataLoaded(true);
 			} catch (error) {
@@ -150,11 +138,7 @@ const LeaveCategory = props => {
 						<div className="col-lg-8">
 							<div className="row">
 								{!dataLoaded ? (
-									<div>
-										<span colSpan="4" className="text-center">
-											<img alt="searching" src={searchingGIF} />
-										</span>
-									</div>
+									<TableLoading />
 								) : (
 									<>
 										{props.leaveCategories.map((leaveCategory, i) => {
@@ -170,7 +154,7 @@ const LeaveCategory = props => {
 																			onClickEdit(leaveCategory)
 																		}></i>
 																</div>
-																<div className="pi-settings os-dropdown-trigger">
+																<div className="pi-settings os-dropdown-trigger text-danger">
 																	<i
 																		className="os-icon os-icon-ui-15"
 																		onClick={() =>
@@ -193,6 +177,13 @@ const LeaveCategory = props => {
 												</div>
 											);
 										})}
+										{props.leaveCategories.length === 0 && (
+											<div
+												className="alert alert-info text-center"
+												style={{ width: '100%' }}>
+												No leave categories
+											</div>
+										)}
 									</>
 								)}
 							</div>
@@ -236,13 +227,8 @@ const LeaveCategory = props => {
 
 										<div className="form-buttons-w text-right compact">
 											{save && (
-												<button
-													className={
-														Loading
-															? 'btn btn-primary disabled'
-															: 'btn btn-primary'
-													}>
-													{Loading ? (
+												<button className="btn btn-primary">
+													{loading ? (
 														<img src={waiting} alt="submitting" />
 													) : (
 														<span> create</span>
@@ -252,21 +238,12 @@ const LeaveCategory = props => {
 											{edit && (
 												<>
 													<button
-														className={
-															Loading
-																? 'btn btn-secondary ml-3 disabled'
-																: 'btn btn-secondary ml-3'
-														}
+														className="btn btn-secondary ml-3"
 														onClick={cancelEditButton}>
-														<span>{Loading ? 'cancel' : 'cancel'}</span>
+														<span>cancel</span>
 													</button>
-													<button
-														className={
-															Loading
-																? 'btn btn-primary disabled'
-																: 'btn btn-primary'
-														}>
-														{Loading ? (
+													<button className="btn btn-primary">
+														{loading ? (
 															<img src={waiting} alt="submitting" />
 														) : (
 															<span>edit</span>

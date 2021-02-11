@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
@@ -13,64 +13,79 @@ import { request } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { ReactComponent as TrashIcon } from '../../assets/svg-icons/trash.svg';
 import { formatCurrency } from '../../services/utilities';
+import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const defaultValues = {
-	patient: '',
 	request_note: '',
 	urgent: false,
 };
 
 const LabRequest = ({ module, history, location }) => {
-	const { register, handleSubmit, setValue } = useForm({
+	const { register, handleSubmit } = useForm({
 		defaultValues,
 	});
 	const [submitting, setSubmitting] = useState(false);
-	const [loaded, setLoaded] = useState(false);
+	const [loadedPatient, setLoadedPatient] = useState(false);
+	const [chosenPatient, setChosenPatient] = useState(null);
 
+	// load categories
 	const [categories, setCategories] = useState([]);
-	const [category, setCategory] = useState(null);
 
+	// load groups
 	const [groups, setGroups] = useState([]);
-	const [group, setGroup] = useState(null);
 
-	const [labTest, setLabTest] = useState(null);
+	// load
 	const [labTests, setLabTests] = useState([]);
+
+	// selected lab tests
 	const [tests, setTests] = useState([]);
+
+	const [category, setCategory] = useState(null);
+	const [group, setGroup] = useState(null);
+	const [labTest, setLabTest] = useState(null);
 
 	const [urgent, setUrgent] = useState(false);
 
 	const currentPatient = useSelector(state => state.user.patient);
 
-	useEffect(() => {
-		const getCategories = async () => {
-			try {
-				const url = 'lab-tests/categories?hasTest=1';
-				const rs = await request(url, 'GET', true);
-				setCategories(rs);
-			} catch (error) {}
-		};
+	const dispatch = useDispatch();
 
-		const getGroups = async () => {
+	const getServiceUnit = useCallback(
+		async hmoId => {
 			try {
-				const url = 'lab-tests/groups';
-				const rs = await request(url, 'GET', true);
-				setGroups(rs);
-			} catch (e) {
-				setLoaded(true);
+				dispatch(startBlock());
+
+				try {
+					const url = `lab-tests/categories?hasTest=1&hmo_id=${hmoId}`;
+					const rs = await request(url, 'GET', true);
+					setCategories(rs);
+				} catch (error) {}
+
+				try {
+					const url = `lab-tests/groups?hmo_id=${hmoId}`;
+					const rs = await request(url, 'GET', true);
+					setGroups(rs);
+				} catch (e) {}
+
+				dispatch(stopBlock());
+			} catch (error) {
+				console.log(error);
+				notifyError('Error fetching drugs');
+				dispatch(stopBlock());
 			}
-		};
+		},
+		[dispatch]
+	);
 
-		if (!loaded) {
-			getCategories();
-			getGroups();
-			setLoaded(true);
+	useEffect(() => {
+		if (!loadedPatient && currentPatient) {
+			setChosenPatient(currentPatient);
+			getServiceUnit(currentPatient.hmo.id);
 		}
-	}, [loaded]);
+		setLoadedPatient(true);
+	}, [currentPatient, loadedPatient, getServiceUnit]);
 
-	const getOptionValues = option => option.id;
-	const getOptionLabels = option => `${option.other_names} ${option.surname}`;
-
-	const getOptions = async q => {
+	const getPatients = async q => {
 		if (!q || q.length < 3) {
 			return [];
 		}
@@ -87,7 +102,7 @@ const LabRequest = ({ module, history, location }) => {
 
 	const onSubmit = async data => {
 		try {
-			if (!data.patient && !currentPatient) {
+			if (!chosenPatient) {
 				notifyError('Please select a patient');
 				return;
 			}
@@ -99,8 +114,8 @@ const LabRequest = ({ module, history, location }) => {
 
 			const datum = {
 				requestType: 'lab',
-				patient_id: data.patient ? data.patient.id : currentPatient.id,
-				requestBody: [...tests],
+				patient_id: chosenPatient.id,
+				tests: [...tests.map(t => ({ id: t.id }))],
 				request_note: data.request_note,
 				urgent: data.urgent,
 			};
@@ -132,14 +147,23 @@ const LabRequest = ({ module, history, location }) => {
 									<label htmlFor="patient">Patient Name</label>
 									<AsyncSelect
 										isClearable
-										getOptionValue={getOptionValues}
-										getOptionLabel={getOptionLabels}
+										getOptionValue={option => option.id}
+										getOptionLabel={option =>
+											`${option.other_names} ${option.surname}`
+										}
 										defaultOptions
 										name="patient"
-										ref={register({ name: 'patient' })}
-										loadOptions={getOptions}
+										loadOptions={getPatients}
 										onChange={e => {
-											setValue('patient', e);
+											if (e) {
+												getServiceUnit(e.hmo.id);
+												setChosenPatient(e);
+											} else {
+												setChosenPatient(null);
+												setCategories([]);
+												setTests([]);
+												setGroups([]);
+											}
 										}}
 										placeholder="Search patients"
 									/>
@@ -158,7 +182,10 @@ const LabRequest = ({ module, history, location }) => {
 									getOptionLabel={option => option.name}
 									onChange={e => {
 										setGroup(e);
-										setTests(e.tests);
+										setTests([
+											...tests,
+											...e.tests.map(t => ({ ...t.labTest })),
+										]);
 									}}
 								/>
 							</div>
@@ -190,12 +217,10 @@ const LabRequest = ({ module, history, location }) => {
 									getOptionLabel={option => option.name}
 									onChange={e => {
 										setLabTest(e);
-										const { lab_tests, ...cat } = category;
-										const item = { ...e, category: cat };
-										setTests([...tests, item]);
-										setCategory('');
+										setTests([...tests, e]);
+										setCategory(null);
 										setLabTests([]);
-										setLabTest('');
+										setLabTest(null);
 									}}
 								/>
 							</div>
@@ -217,7 +242,7 @@ const LabRequest = ({ module, history, location }) => {
 											<tr key={i}>
 												<td>{item.category.name}</td>
 												<td>{item.name}</td>
-												<td>{formatCurrency(item.price)}</td>
+												<td>{formatCurrency(item.hmoPrice)}</td>
 												<td>
 													<TrashIcon
 														onClick={() => onTrash(i)}

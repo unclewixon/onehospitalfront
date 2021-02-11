@@ -100,23 +100,63 @@ const settings = (state = INITIAL_STATE, action) => {
 					item => item.id !== action.payload.id
 				),
 			};
-		case ADD_LAB_TEST:
-			return {
-				...state,
-				lab_tests: [...state.lab_tests, action.payload],
-			};
 		case GET_ALL_LAB_TESTS:
-			return { ...state, lab_tests: action.payload };
+			const tests = state.lab_tests.filter(
+				t => t.hmo.id !== action.payload.hmo.id
+			);
+			return { ...state, lab_tests: [...tests, action.payload] };
+		case ADD_LAB_TEST:
+			const htest = state.lab_tests.find(
+				t => t.hmo.id === action.payload.hmo.id
+			);
+
+			if (htest) {
+				const newTest = {
+					hmo: htest.hmo,
+					result: [...htest.result, action.payload],
+				};
+
+				const tests = state.lab_tests.filter(
+					t => t.hmo.id !== action.payload.hmo.id
+				);
+				return { ...state, lab_tests: [...tests, newTest] };
+			}
+
+			return state;
 		case UPDATE_LAB_TEST:
-			const lab_tests = updateImmutable(state.lab_tests, action.payload);
-			return { ...state, lab_tests: [...lab_tests] };
+			const utest = state.lab_tests.find(
+				t => t.hmo.id === action.payload.hmo.id
+			);
+
+			if (utest) {
+				const lab_tests = updateImmutable(utest.result, action.payload);
+				const newTest = { hmo: utest.hmo, result: [...lab_tests] };
+
+				const tests = state.lab_tests.filter(
+					t => t.hmo.id !== action.payload.hmo.id
+				);
+				return { ...state, lab_tests: [...tests, newTest] };
+			}
+
+			return state;
 		case DELETE_LAB_TEST:
-			return {
-				...state,
-				lab_tests: state.lab_tests.filter(
-					deletedItem => deletedItem.id !== action.payload.id
-				),
-			};
+			const test = state.lab_tests.find(
+				t => t.hmo.id === action.payload.hmo.id
+			);
+
+			if (test) {
+				const newTest = {
+					hmo: test.hmo,
+					result: [...test.result.filter(r => r.id !== action.payload.id)],
+				};
+
+				const tests = state.lab_tests.filter(
+					t => t.hmo.id !== action.payload.hmo.id
+				);
+				return { ...state, lab_tests: [...tests, newTest] };
+			}
+
+			return state;
 		case ADD_LAB_GROUP:
 			return {
 				...state,

@@ -7,15 +7,18 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import { patientAPI } from '../../services/constants';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
-const ModalViewLabResult = ({ closeModal, labTest, labs, updateLab }) => {
+const ModalViewLabResult = ({ closeModal, labRequest, labs, updateLab }) => {
 	const dispatch = useDispatch();
 
 	const approve = async () => {
 		try {
 			dispatch(startBlock());
-			const url = `${patientAPI}/request/${labTest.id}/approve-result?type=lab`;
+			const url = `${patientAPI}/request/${labRequest.request_item.id}/approve-result?type=lab&request_id=${labRequest.id}`;
 			const rs = await request(url, 'PATCH', true);
-			const newLabs = updateImmutable(labs, rs.data);
+			const lab_request = labs.find(l => l.request_item.id === rs.data.id);
+			const request_item = { ...lab_request.request_item, ...rs.data };
+			const newItem = { ...lab_request, request_item };
+			const newLabs = updateImmutable(labs, newItem);
 			updateLab(newLabs);
 			notifySuccess('lab result approved!');
 			dispatch(stopBlock());
@@ -30,9 +33,12 @@ const ModalViewLabResult = ({ closeModal, labTest, labs, updateLab }) => {
 	const reject = async () => {
 		try {
 			dispatch(startBlock());
-			const url = `${patientAPI}/${labTest.id}/reject-result`;
+			const url = `${patientAPI}/${labRequest.request_item.id}/reject-result`;
 			const rs = await request(url, 'PATCH', true);
-			const newLabs = updateImmutable(labs, rs.data);
+			const lab_request = labs.find(l => l.request_item.id === rs.data.id);
+			const request_item = { ...lab_request.request_item, ...rs.data };
+			const newItem = { ...lab_request, request_item };
+			const newLabs = updateImmutable(labs, newItem);
 			updateLab(newLabs);
 			notifySuccess('lab result rejected!');
 			dispatch(stopBlock());
@@ -61,9 +67,9 @@ const ModalViewLabResult = ({ closeModal, labTest, labs, updateLab }) => {
 					<div className="onboarding-content with-gradient">
 						<h4 className="onboarding-title">Lab Result</h4>
 						<div className="onboarding-text alert-custom mb-3">
-							<div>{labTest.requestBody.name}</div>
+							<div>{labRequest.request_item.labTest.name}</div>
 							<div>
-								{labTest.requestBody.specimens.map((s, i) => (
+								{labRequest.request_item.labTest.specimens.map((s, i) => (
 									<span key={i} className="badge badge-info text-white mr-2">
 										{s.label}
 									</span>
@@ -73,56 +79,50 @@ const ModalViewLabResult = ({ closeModal, labTest, labs, updateLab }) => {
 						<div className="element-box p-2">
 							<div className="row">
 								<div className="col-sm-12">
-									{labTest ? (
-										<table className="table table-bordered table-sm table-v2 table-striped">
-											{labTest.requestBody.hasParameters && (
-												<thead>
-													<tr>
-														<th>Parameter</th>
-														<th>Value</th>
-														<th>Inference</th>
-													</tr>
-												</thead>
+									<table className="table table-bordered table-sm table-v2 table-striped">
+										{labRequest.request_item.labTest.hasParameters && (
+											<thead>
+												<tr>
+													<th>Parameter</th>
+													<th>Value</th>
+													<th>Inference</th>
+												</tr>
+											</thead>
+										)}
+										<tbody>
+											{labRequest.request_item.labTest.hasParameters ? (
+												labRequest.request_item.parameters.map((param, i) => {
+													return (
+														<tr key={i}>
+															<td>{param.name}</td>
+															<td>{param.value}</td>
+															<td>{param.inference}</td>
+														</tr>
+													);
+												})
+											) : (
+												<tr>
+													<th>Result</th>
+													<td>{labRequest.request_item.result}</td>
+												</tr>
 											)}
-											<tbody>
-												{labTest.requestBody.hasParameters ? (
-													labTest.requestBody.parameters.map((param, i) => {
-														return (
-															<tr key={i}>
-																<td>{param.name}</td>
-																<td>{param.value}</td>
-																<td>{param.inference}</td>
-															</tr>
-														);
-													})
-												) : (
-													<tr>
-														<th>Result</th>
-														<td>{labTest.requestBody.result}</td>
-													</tr>
-												)}
-												{labTest.requestBody.note && (
-													<tr>
-														<th>Note</th>
-														<td
-															colSpan={
-																labTest.requestBody.hasParameters ? 1 : 2
-															}>
-															{labTest.requestBody.note}
-														</td>
-													</tr>
-												)}
-											</tbody>
-										</table>
-									) : (
-										<table className="table table-bordered table-sm table-v2 table-striped">
-											<tbody>
-												<tr>{`Lab Result: ${request.requestBody.result}`}</tr>
-											</tbody>
-										</table>
-									)}
+											{labRequest.request_item.note && (
+												<tr>
+													<th>Note</th>
+													<td
+														colSpan={
+															labRequest.request_item.labTest.hasParameters
+																? 1
+																: 2
+														}>
+														{labRequest.request_item.note}
+													</td>
+												</tr>
+											)}
+										</tbody>
+									</table>
 								</div>
-								{labTest.status === 0 && (
+								{labRequest.request_item.approved === 0 && (
 									<div className="col-md-12 mt-4">
 										<button
 											onClick={() => approve()}

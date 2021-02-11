@@ -1,5 +1,6 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import { ToastProvider } from 'react-toast-notifications';
 
 class ScrollToTop extends Component {
 	componentDidUpdate(prevProps) {
@@ -12,7 +13,11 @@ class ScrollToTop extends Component {
 	}
 
 	render() {
-		return this.props.children;
+		return (
+			<ToastProvider autoDismiss={false} placement="top-right">
+				{this.props.children}
+			</ToastProvider>
+		);
 	}
 }
 

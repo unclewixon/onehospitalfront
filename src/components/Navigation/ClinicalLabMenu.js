@@ -20,14 +20,6 @@ const ClinicalLabMenu = () => {
 					<span>New Lab Request</span>
 				</Link>
 			</li>
-			<li>
-				<Link to="/lab/all-request">
-					<div className="icon-w">
-						<div className="os-icon os-icon-file-text" />
-					</div>
-					<span>All Requests</span>
-				</Link>
-			</li>
 		</>
 	);
 };

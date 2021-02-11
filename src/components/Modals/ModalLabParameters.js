@@ -104,6 +104,7 @@ const ModalLabParameters = ({ closeModal, labTest }) => {
 			const data = {
 				...labTest,
 				lab_category_id: labTest.category.id,
+				hmo_id: labTest.hmo.id,
 				parameters: parameters
 					.filter(p => p.deleted === 0)
 					.map(p => ({ id: p.ref_id, name: p.name, reference: p.reference })),

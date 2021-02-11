@@ -3,10 +3,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import waiting from '../../assets/images/waiting.gif';
-import searchingGIF from '../../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
 import { loadDepartments, updateDepartment } from '../../actions/department';
+import TableLoading from '../../components/TableLoading';
 
 const Departments = () => {
 	const initialState = {
@@ -120,7 +120,7 @@ const Departments = () => {
 							<ul className="nav nav-tabs upper">
 								<li className="nav-item">
 									<a aria-expanded="true" className="nav-link active">
-										Deda Departments
+										Departments
 									</a>
 								</li>
 							</ul>
@@ -131,9 +131,7 @@ const Departments = () => {
 							<div className="element-wrapper">
 								<div className="element-box-tp">
 									{loading && !staffLoaded ? (
-										<div className="loading-block">
-											<img alt="searching" src={searchingGIF} />
-										</div>
+										<TableLoading />
 									) : (
 										<div className="table-responsive">
 											<table className="table table-striped">

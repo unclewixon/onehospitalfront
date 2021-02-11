@@ -1,11 +1,14 @@
 import React from 'react';
+
 import avatar from '../../assets/images/a6.jpeg';
-export default function ViewScanIamge({ closeModal }) {
+
+export default function ViewScanImage({ closeModal }) {
 	const imageStyle = {
 		width: '842px',
 		maxWidth: '100%',
 		height: '100%',
 	};
+
 	return (
 		<div
 			className="onboarding-modal modal fade animated show"
