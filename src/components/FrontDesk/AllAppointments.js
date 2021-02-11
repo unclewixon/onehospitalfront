@@ -41,11 +41,9 @@ export class AllAppointments extends Component {
 		const { reviewTransaction } = this.props;
 		try {
 			this.setState({ loading: true, filtering: true });
-			const rs = await request(
-				`front-desk/appointments/${data.id}/cancel`,
-				'PATCH',
-				true
-			);
+			const url = `front-desk/appointments/${data.id}/cancel`;
+			const rs = await request(url, 'PATCH', true);
+			notifySuccess('appointment cancelled');
 			if (rs.isActive === false) {
 				const filtr = reviewTransaction.filter(a => a.id !== rs.id);
 				this.props.loadTransaction(filtr);

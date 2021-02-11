@@ -15,23 +15,12 @@ import Splash from '../../components/Splash';
 import { socket } from '../../services/constants';
 import { notifyError, notifySuccess } from '../../services/notify';
 
-const Appointments = lazy(() =>
-	import('../../components/FrontDesk/FrontDeskAppointments')
-);
-
 const AllAppointments = lazy(() =>
 	import('../../components/FrontDesk/AllAppointments')
 );
 
 const AllPatients = lazy(() =>
 	import('../../components/FrontDesk/AllPatients')
-);
-
-const AllNotifications = lazy(() =>
-	import('../../components/FrontDesk/AllNotifications')
-);
-const AllInPatients = lazy(() =>
-	import('../../components/FrontDesk/AllInPatients')
 );
 
 const InsuranceTrans = lazy(() =>
@@ -117,24 +106,13 @@ const FrontDesk = props => {
 										<Switch>
 											<Route
 												exact
-												path={`${match.url}/`}
-												component={Appointments}
-											/>
-											<Route	path={`${match.url}/all-appointments`}
+												path={`${match.url}`}
 												component={AllAppointments}
 											/>
 
 											<Route
-												path={`${match.url}/all-patients`}
+												path={`${match.url}/patients`}
 												component={AllPatients}
-											/>
-											<Route
-												path={`${match.url}/notifications`}
-												component={AllNotifications}
-											/>
-											<Route
-												path={`${match.url}/in-patients`}
-												component={AllInPatients}
 											/>
 
 											<Route
