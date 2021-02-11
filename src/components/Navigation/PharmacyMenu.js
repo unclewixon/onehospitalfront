@@ -13,6 +13,14 @@ const PharmacyMenu = () => {
 				</Link>
 			</li>
 			<li>
+				<Link to="/pharmacy/new-request">
+					<div className="icon-w">
+						<div className="os-icon os-icon-plus-circle" />
+					</div>
+					<span>New Request</span>
+				</Link>
+			</li>
+			<li>
 				<Link to="/pharmacy/billing">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers" />

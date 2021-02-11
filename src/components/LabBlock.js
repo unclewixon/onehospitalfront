@@ -29,7 +29,10 @@ class LabBlock extends Component {
 			this.props.startBlock();
 			const url = `${patientAPI}/${id}/delete-request?type=lab`;
 			const rs = await request(url, 'DELETE', true);
-			const newLabs = updateImmutable(labs, rs.data);
+			const lab_request = labs.find(l => l.request_item.id === rs.data.id);
+			const request_item = { ...lab_request.request_item, ...rs.data };
+			const newItem = { ...lab_request, request_item };
+			const newLabs = updateImmutable(labs, newItem);
 			this.props.updateLab(newLabs);
 			notifySuccess('lab request cancelled!');
 			this.props.stopBlock();
@@ -67,7 +70,7 @@ class LabBlock extends Component {
 	doPrint = async (lab, printGroup) => {
 		try {
 			this.props.startBlock();
-			const url = `${patientAPI}/${lab.id}/print?print_group=${
+			const url = `${patientAPI}/${lab.id}/print?type=lab&print_group=${
 				printGroup ? 1 : 0
 			}`;
 			const rs = await request(url, 'GET', true);
@@ -136,7 +139,10 @@ class LabBlock extends Component {
 			const { labs } = this.props;
 			const url = `${patientAPI}/${id}/receive-specimen`;
 			const rs = await request(url, 'PATCH', true);
-			const newLabs = updateImmutable(labs, rs.data);
+			const lab_request = labs.find(l => l.request_item.id === rs.data.id);
+			const request_item = { ...lab_request.request_item, ...rs.data };
+			const newItem = { ...lab_request, request_item };
+			const newLabs = updateImmutable(labs, newItem);
 			this.props.updateLab(newLabs);
 			notifySuccess('lab specimen received!');
 			this.props.stopBlock();
@@ -222,7 +228,7 @@ class LabBlock extends Component {
 									</td>
 									<td className="flex">
 										<p className="item-title text-color m-0">
-											{lab.requestBody.name}
+											{lab.request_item.labTest.name}
 										</p>
 									</td>
 									{!patient && (
@@ -247,8 +253,8 @@ class LabBlock extends Component {
 										)}
 									</td>
 									<td className="flex">
-										{lab.requestBody.filled && lab.requestBody.filled === 1 ? (
-											lab.status === 1 ? (
+										{lab.request_item.filled === 1 ? (
+											lab.request_item.approved === 1 ? (
 												<a
 													className="item-title text-primary"
 													onClick={() => this.viewResult(lab)}>
@@ -262,25 +268,22 @@ class LabBlock extends Component {
 										)}
 									</td>
 									<td className="text-right row-actions">
-										{!lab.requestBody.cancelled &&
-											lab.transaction_status === 1 && (
+										{lab.request_item.cancelled === 0 &&
+											lab.transaction.status === 1 && (
 												<>
-													{(!lab.requestBody.received ||
-														(lab.requestBody.received &&
-															lab.requestBody.received === 0)) && (
+													{lab.request_item.received === 0 && (
 														<Tooltip title="Receive Specimen">
 															<a
 																className="secondary"
-																onClick={() => this.receiveSpecimen(lab.id)}>
+																onClick={() =>
+																	this.receiveSpecimen(lab.request_item.id)
+																}>
 																<i className="os-icon os-icon-check-circle" />
 															</a>
 														</Tooltip>
 													)}
-													{(!lab.requestBody.filled ||
-														(lab.requestBody.filled &&
-															lab.requestBody.filled === 0)) &&
-														lab.requestBody.received &&
-														lab.requestBody.received === 1 && (
+													{lab.request_item.filled === 0 &&
+														lab.request_item.received === 1 && (
 															<Tooltip title="Fill Result">
 																<a
 																	className="primary"
@@ -289,27 +292,28 @@ class LabBlock extends Component {
 																</a>
 															</Tooltip>
 														)}
-													{lab.requestBody.filled === 1 && lab.status === 0 && (
-														<Tooltip title="Approve Lab Result">
-															<a
-																className="info"
-																onClick={() => this.viewResult(lab)}>
-																<i className="os-icon os-icon-thumbs-up" />
-															</a>
-														</Tooltip>
-													)}
-													{(!lab.requestBody.filled ||
-														(lab.requestBody.filled &&
-															lab.requestBody.filled === 0)) && (
+													{lab.request_item.filled === 1 &&
+														lab.request_item.approved === 0 && (
+															<Tooltip title="Approve Lab Result">
+																<a
+																	className="info"
+																	onClick={() => this.viewResult(lab)}>
+																	<i className="os-icon os-icon-thumbs-up" />
+																</a>
+															</Tooltip>
+														)}
+													{lab.request_item.filled === 0 && (
 														<Tooltip title="Cancel Lab Test">
 															<a
 																className="danger"
-																onClick={() => this.cancelLab(lab.id)}>
+																onClick={() =>
+																	this.cancelLab(lab.request_item.id)
+																}>
 																<i className="os-icon os-icon-ui-15" />
 															</a>
 														</Tooltip>
 													)}
-													{lab.status === 1 && (
+													{lab.request_item.approved === 1 && (
 														<Tooltip title="Print Lab Test">
 															<a
 																className="info"
@@ -330,7 +334,7 @@ class LabBlock extends Component {
 				</table>
 				{labTest && showFLModal && (
 					<ModalFillLabResult
-						labTest={labTest}
+						labRequest={labTest}
 						closeModal={this.closeModal}
 						labs={labs}
 						updateLab={updateLab}
@@ -338,14 +342,14 @@ class LabBlock extends Component {
 				)}
 				{labTest && showVLModal && (
 					<ModalViewLabResult
-						labTest={labTest}
+						labRequest={labTest}
 						closeModal={this.closeModal}
 						labs={labs}
 						updateLab={updateLab}
 					/>
 				)}
 				{labTest && showVNModal && (
-					<ModalViewLabNote labTest={labTest} closeModal={this.closeModal} />
+					<ModalViewLabNote labRequest={labTest} closeModal={this.closeModal} />
 				)}
 			</>
 		);

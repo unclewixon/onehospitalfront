@@ -22,7 +22,7 @@ const allOptions = [
 	{ label: 'Negative', value: 'Negative' },
 ];
 
-const ModalFillLabResult = ({ closeModal, labTest, labs, updateLab }) => {
+const ModalFillLabResult = ({ closeModal, labRequest, labs, updateLab }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
 	const [options, setOptions] = useState([]);
@@ -34,11 +34,11 @@ const ModalFillLabResult = ({ closeModal, labTest, labs, updateLab }) => {
 
 	useEffect(() => {
 		if (!loaded) {
-			setNote(labTest.requestBody.note);
-			setParameters(labTest.requestBody.parameters);
+			setNote(labRequest.request_item.note);
+			setParameters(labRequest.request_item.labTest.parameters);
 			setLoaded(true);
 		}
-	}, [labTest, loaded]);
+	}, [labRequest, loaded]);
 
 	const update = (allParameters, id, type, value) => {
 		const parameter = allParameters.find(d => d.id === id);
@@ -67,9 +67,12 @@ const ModalFillLabResult = ({ closeModal, labTest, labs, updateLab }) => {
 			dispatch(startBlock());
 			setSubmitting(true);
 			const data = { parameters, note, result };
-			const url = `${patientAPI}/${labTest.id}/fill-result`;
+			const url = `${patientAPI}/${labRequest.request_item.id}/fill-result`;
 			const rs = await request(url, 'PATCH', true, data);
-			const newLabs = updateImmutable(labs, rs.data);
+			const lab_request = labs.find(l => l.request_item.id === rs.data.id);
+			const request_item = { ...lab_request.request_item, ...rs.data };
+			const newItem = { ...lab_request, request_item };
+			const newLabs = updateImmutable(labs, newItem);
 			updateLab(newLabs);
 			notifySuccess('lab result filled!');
 			setSubmitting(false);
@@ -100,9 +103,9 @@ const ModalFillLabResult = ({ closeModal, labTest, labs, updateLab }) => {
 					<div className="onboarding-content with-gradient">
 						<h4 className="onboarding-title">Fill Lab Result</h4>
 						<div className="onboarding-text alert-custom mb-3">
-							<div>{labTest.requestBody.name}</div>
+							<div>{labRequest.request_item.labTest.name}</div>
 							<div>
-								{labTest.requestBody.specimens.map((s, i) => (
+								{labRequest.request_item.labTest.specimens.map((s, i) => (
 									<span key={i} className="badge badge-info text-white mr-2">
 										{s.label}
 									</span>
@@ -114,7 +117,7 @@ const ModalFillLabResult = ({ closeModal, labTest, labs, updateLab }) => {
 								<div className="col-sm-12">
 									<table className="table table-bordered table-sm table-v2 table-striped">
 										<tbody>
-											{labTest.requestBody.hasParameters ? (
+											{labRequest.request_item.labTest.hasParameters ? (
 												parameters.map((param, i) => {
 													return (
 														<tr key={i}>

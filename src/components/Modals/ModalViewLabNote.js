@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ModalViewLabNote = ({ closeModal, labTest }) => {
+const ModalViewLabNote = ({ closeModal, labRequest }) => {
 	return (
 		<div
 			className="onboarding-modal modal fade animated show"
@@ -18,9 +18,9 @@ const ModalViewLabNote = ({ closeModal, labTest }) => {
 					<div className="onboarding-content with-gradient">
 						<h4 className="onboarding-title">Lab Note</h4>
 						<div className="onboarding-text alert-custom mb-3">
-							<div>{labTest.requestBody.name}</div>
+							<div>{labRequest.request_item.labTest.name}</div>
 							<div>
-								{labTest.requestBody.specimens.map((s, i) => (
+								{labRequest.request_item.labTest.specimens.map((s, i) => (
 									<span key={i} className="badge badge-info text-white mr-2">
 										{s.label}
 									</span>
@@ -29,7 +29,9 @@ const ModalViewLabNote = ({ closeModal, labTest }) => {
 						</div>
 						<div className="element-box p-2">
 							<div className="row">
-								<div className="col-sm-12 text-left">{labTest.requestNote}</div>
+								<div className="col-sm-12 text-left">
+									{labRequest.requestNote}
+								</div>
 							</div>
 						</div>
 					</div>

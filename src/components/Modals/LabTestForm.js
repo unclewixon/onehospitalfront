@@ -17,10 +17,12 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 		create: true,
 		specimens: '',
 		hmo_id: '',
+		hmoPrice: '',
 	};
-	const [{ name, category, price, description, hmo_id }, setState] = useState(
-		initialState
-	);
+	const [
+		{ name, category, price, description, hmo_id, hmoPrice },
+		setState,
+	] = useState(initialState);
 	const [{ edit }, setSubmitButton] = useState(initialState);
 	const [parameters, setParameters] = useState([]);
 	const [loaded, setLoaded] = useState(false);
@@ -56,6 +58,7 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 					name: labTest.name,
 					category: labTest.category.id,
 					price: labTest.price,
+					hmoPrice: labTest.hmoPrice,
 					description: labTest.description || '',
 					hmo_id: labTest.hmo ? labTest.hmo.id : '',
 				});
@@ -64,6 +67,7 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 				setHasParameters(labTest.hasParameters);
 				setSubmitButton({ create: false, edit: true });
 			} else {
+				setEnableHmo(false);
 				setParameters([]);
 				setLabSpecimens([]);
 				setSubmitButton({ create: true, edit: false });
@@ -77,8 +81,8 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 	};
 
 	const onAddLabTest = async e => {
-		e.preventDefault();
 		try {
+			e.preventDefault();
 			setSubmitting(true);
 			const datum = {
 				name,
@@ -89,8 +93,8 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 				description,
 				hasParameters,
 				hmo_id,
+				hmoPrice,
 			};
-			console.log(datum);
 			const rs = await request('lab-tests', 'POST', true, datum);
 			dispatch(addLabTest(rs));
 			setState({ ...initialState });
@@ -106,8 +110,8 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 	};
 
 	const onEditLabTest = async e => {
-		e.preventDefault();
 		try {
+			e.preventDefault();
 			setSubmitting(true);
 			const datum = {
 				id: labTest.id,
@@ -119,8 +123,8 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 				description,
 				hasParameters,
 				hmo_id,
+				hmoPrice,
 			};
-			console.log(datum);
 			const url = `lab-tests/${labTest.id}/update`;
 			const rs = await request(url, 'PATCH', true, datum);
 			dispatch(updateLabTest(rs));
@@ -178,7 +182,7 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 						disabled={enableHmo}
 						onChange={handleInputChange}
 						value={hmo_id}>
-						{!hmo_id && <option value={''}>Select HMO</option>};
+						{!hmo_id && <option value="">Select HMO</option>};
 						{hmos.map((hmo, i) => {
 							return (
 								<option key={i} value={hmo.id}>
@@ -187,6 +191,16 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 							);
 						})}
 					</select>
+				</div>
+				<div className="form-group">
+					<input
+						className="form-control"
+						placeholder="HMO Price"
+						type="text"
+						name="hmoPrice"
+						onChange={handleInputChange}
+						value={hmoPrice}
+					/>
 				</div>
 				<div className="form-group">
 					<select

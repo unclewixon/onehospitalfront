@@ -3,9 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import waiting from '../../assets/images/waiting.gif';
-import searchingGIF from '../../assets/images/searching.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request, confirmAction } from '../../services/utilities';
+import TableLoading from '../../components/TableLoading';
 import {
 	add_specialziation,
 	loadSpecializations,
@@ -21,7 +21,7 @@ const Specialization = props => {
 		id: '',
 	};
 	const [{ name }, setState] = useState(initialState);
-	const [Loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	const [payload, getDataToEdit] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
@@ -32,11 +32,11 @@ const Specialization = props => {
 	};
 
 	const onAddSpecialization = async e => {
-		e.preventDefault();
 		try {
+			e.preventDefault();
 			setLoading(true);
 			const data = { name };
-			const rs = await request(`specializations`, 'POST', true, data);
+			const rs = await request('specializations', 'POST', true, data);
 			props.add_specialziation(rs);
 			setLoading(false);
 			setState({ ...initialState });
@@ -48,19 +48,12 @@ const Specialization = props => {
 	};
 
 	const onEditSpecialization = async e => {
-		setLoading(true);
-		e.preventDefault();
-
-		let data = {
-			name,
-		};
 		try {
-			const rs = await request(
-				`specializations/${payload.id}/update`,
-				'PATCH',
-				true,
-				data
-			);
+			e.preventDefault();
+			setLoading(true);
+			const data = { name };
+			const url = `specializations/${payload.id}/update`;
+			const rs = await request(url, 'PATCH', true, data);
 			props.update_specialization(rs, payload);
 			setState({ ...initialState });
 			setSubmitButton({ save: true, edit: false });
@@ -87,9 +80,8 @@ const Specialization = props => {
 
 	const onDeleteSpecialization = async data => {
 		try {
-			await request(`specializations/${data.id}`, 'DELETE', true);
-			props.delete_specialization(data);
-			setDataLoaded(false);
+			const rs = await request(`specializations/${data.id}`, 'DELETE', true);
+			props.delete_specialization(rs);
 			setLoading(false);
 			notifySuccess('Specialization deleted');
 		} catch (error) {
@@ -109,7 +101,7 @@ const Specialization = props => {
 
 	const fetchSpecialization = async () => {
 		try {
-			const rs = await request(`specializations`, 'GET', true);
+			const rs = await request('specializations', 'GET', true);
 			props.loadSpecializations(rs);
 			setDataLoaded(true);
 		} catch (error) {
@@ -146,14 +138,12 @@ const Specialization = props => {
 
 					<div className="row">
 						<div className="col-lg-8">
-							<div className="row">
-								{!dataLoaded ? (
-									<div className="text-center">
-										<img alt="searching" src={searchingGIF} />
-									</div>
-								) : (
-									<>
-										{props.Specializations.map((Specialization, i) => {
+							{dataLoaded ? (
+								<TableLoading />
+							) : (
+								<>
+									<div className="row">
+										{props.specializations.map((item, i) => {
 											return (
 												<div className="col-lg-4 col-xxl-3" key={i}>
 													<div className="pt-3">
@@ -162,23 +152,17 @@ const Specialization = props => {
 																<div className="pi-settings os-dropdown-trigger">
 																	<i
 																		className="os-icon os-icon-ui-49"
-																		onClick={() =>
-																			onClickEdit(Specialization)
-																		}></i>
+																		onClick={() => onClickEdit(item)}></i>
 																</div>
-																<div className="pi-settings os-dropdown-trigger">
+																<div className="pi-settings os-dropdown-trigger text-danger">
 																	<i
 																		className="os-icon os-icon-ui-15"
-																		onClick={() =>
-																			confirmDelete(Specialization)
-																		}></i>
+																		onClick={() => confirmDelete(item)}></i>
 																</div>
 															</div>
 															<div className="pi-body">
 																<div className="pi-info">
-																	<div className="h6 pi-name">
-																		{Specialization.name}
-																	</div>
+																	<div className="h6 pi-name">{item.name}</div>
 																</div>
 															</div>
 														</div>
@@ -186,9 +170,16 @@ const Specialization = props => {
 												</div>
 											);
 										})}
-									</>
-								)}
-							</div>
+									</div>
+									{props.specializations.length === 0 && (
+										<div
+											className="alert alert-info text-center"
+											style={{ width: '100%' }}>
+											No specializations
+										</div>
+									)}
+								</>
+							)}
 						</div>
 						<div className="col-lg-4 col-xxl-3  d-xxl-block">
 							<div className="element-wrapper">
@@ -216,13 +207,8 @@ const Specialization = props => {
 
 										<div className="form-buttons-w text-right compact">
 											{save && (
-												<button
-													className={
-														Loading
-															? 'btn btn-primary disabled'
-															: 'btn btn-primary'
-													}>
-													{Loading ? (
+												<button className="btn btn-primary" disabled={loading}>
+													{loading ? (
 														<img src={waiting} alt="submitting" />
 													) : (
 														<span> create</span>
@@ -232,21 +218,12 @@ const Specialization = props => {
 											{edit && (
 												<>
 													<button
-														className={
-															Loading
-																? 'btn btn-secondary ml-3 disabled'
-																: 'btn btn-secondary ml-3'
-														}
+														className="btn btn-secondary ml-3"
 														onClick={cancelEditButton}>
-														<span>{Loading ? 'cancel' : 'cancel'}</span>
+														<span>cancel</span>
 													</button>
-													<button
-														className={
-															Loading
-																? 'btn btn-primary disabled'
-																: 'btn btn-primary'
-														}>
-														{Loading ? (
+													<button className="btn btn-primary">
+														{loading ? (
 															<img src={waiting} alt="submitting" />
 														) : (
 															<span> edit</span>
@@ -268,7 +245,7 @@ const Specialization = props => {
 
 const mapStateToProps = state => {
 	return {
-		Specializations: state.settings.specializations,
+		specializations: state.settings.specializations,
 	};
 };
 export default connect(mapStateToProps, {

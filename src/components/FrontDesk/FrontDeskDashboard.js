@@ -3,8 +3,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { viewAppointmentDetail } from '../../actions/general.js';
 
-const FrontDeskDashboard = (props) => {
-	const ViewAppointmentDetail = (e) => {
+const FrontDeskDashboard = props => {
+	const ViewAppointmentDetail = e => {
 		e.preventDefault();
 		props.viewAppointmentDetail(true);
 	};
@@ -34,7 +34,7 @@ const FrontDeskDashboard = (props) => {
 												aria-labelledby="myLargeModalLabel"
 												className="modal fade bd-example-modal-lg"
 												role="dialog"
-												tabindex="-1"
+												tabIndex="-1"
 												aria-hidden="true"
 												style={{ display: 'none' }}>
 												<div className="modal-dialog modal-lg">

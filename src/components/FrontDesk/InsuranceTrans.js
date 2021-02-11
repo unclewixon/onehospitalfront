@@ -1,6 +1,6 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
 import moment from 'moment';
-import { formatPatientId } from '../../services/utilities';
 
 const InsuranceTrans = () => {
 	const [code, setCode] = useState('');
@@ -52,12 +52,11 @@ const InsuranceTrans = () => {
 								type="number"
 								onChange={handleChange}
 								style={{ fontSize: '0.7rem', border: 'none' }}
-								placeHolder="enter code"
+								placeholder="enter code"
 							/>
 						</td>
 
 						<td className="row-actions">
-							{/* eslint-disable-next-line */}
 							<a className="danger" href="">
 								<i className="os-icon os-icon-ui-15"></i>
 							</a>

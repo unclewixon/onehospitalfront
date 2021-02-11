@@ -1,19 +1,18 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import Tooltip from 'antd/lib/tooltip';
 
 import { API_URI, patientAPI } from '../../services/constants';
-import waiting from '../../assets/images/waiting.gif';
-import { request, uploadFileImage, upload } from '../../services/utilities';
+import { request, upload } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadRadiology } from '../../actions/patient';
 import { uploadRadiology } from '../../actions/general';
 import { toggleProfile } from '../../actions/user';
 import UploadImagingData from './UploadImageData';
-import ViewScanImage from './ViewScanIamge';
+import ViewScanImage from './ViewScanImage';
 
 export class Dashboard extends Component {
 	state = {
@@ -200,7 +199,7 @@ export class Dashboard extends Component {
 			loading,
 			uploading,
 			upload_visible,
-			request,
+			// request,
 			payment_made,
 			approved,
 			captured,
