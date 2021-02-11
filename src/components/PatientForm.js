@@ -62,6 +62,9 @@ function PatientForm(props) {
 				phoneNumber: patient.phoneNumber || '',
 				hmo: patient.hmo_id || '',
 			};
+
+			setValue('date_of_birth', patientData?.date_of_birth);
+
 			setGenderValue(
 				gender.filter(option => option.label === formValues.gender)
 			);
@@ -194,7 +197,9 @@ function PatientForm(props) {
 									</label>
 									<div className="custom-date-input">
 										<DatePicker
-											selected={values?.date_of_birth}
+											selected={
+												patientData?.date_of_birth || values?.date_of_birth
+											}
 											onChange={date => setValue('date_of_birth', date)}
 											peekNextMonth
 											showMonthDropdown

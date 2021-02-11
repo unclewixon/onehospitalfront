@@ -15,6 +15,9 @@ const ExcuseDuty = lazy(() => import('../../components/StaffBlock/ExcuseDuty'));
 const CreateAppraisal = lazy(() =>
 	import('../../components/StaffBlock/CreateAppraisal')
 );
+const NewAppraisal = lazy(() =>
+	import('../../components/StaffBlock/NewAppraisal')
+);
 const LeaveRequest = lazy(() =>
 	import('../../components/StaffBlock/LeaveRequest')
 );
@@ -87,6 +90,11 @@ const MyAccount = ({ match, staff }) => {
 							exact
 							path={`${match.url}/appraisal/create-appraisal`}
 							component={CreateAppraisal}
+						/>
+						<Route
+							exact
+							path={`${match.url}/appraisal/new-appraisal`}
+							component={NewAppraisal}
 						/>
 						<Route exact path={`${match.url}/payslips`} component={Payslip} />
 						<Route component={NoMatch} />

@@ -4,38 +4,54 @@ import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
 import { connect } from 'react-redux';
 import moment from 'moment';
-
-// import { request } from '../../services/utilities';
+import Pagination from 'antd/lib/pagination';
+import { request, itemRender } from '../../services/utilities';
 // import { patientAPI } from '../../services/constants';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import ModalProcedure from '../Modals/ModalProcedure';
+import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const Procedure = props => {
 	const [loading, setLoading] = useState(true);
 	const [showModal, setShowModal] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
 	const [procedures, setProcedures] = useState([]);
+	const [meta, setMeta] = useState(null);
 
 	let location = props.location;
 	let patient = props.patient;
 
-	useEffect(() => {
-		const loadProcedure = async () => {
-			try {
-				// const url = `${patientAPI}/${patient.id}/request/procedure`;
-				// const rs = await request(url, 'GET', true);
-				// setProcedures(rs.results);
-				setProcedures([]);
-				setLoading(false);
-			} catch (e) {
-				setLoading(false);
-				notifyError(e.message || 'could not fetch procedure');
-			}
-		};
+	const init = async page => {
+		try {
+			const p = page || 1;
+			const { patient } = props;
+			const url = `patient/${patient.id}/request/procedure?page=${p}&limit=24&startDate=&endDate=`;
+			const rs = await request(url, 'GET', true);
+			const { result, ...meta } = rs;
+			setMeta(meta);
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+			const arr = [...result];
+			setProcedures(arr);
+			setLoading(false);
+			props.stopBlock();
+		} catch (e) {
+			props.stopBlock();
+			notifyError(
+				e.message || 'error fetching imaging requests for the patient'
+			);
+			setLoading(false);
+		}
+	};
 
+	const onNavigatePage = nextPage => {
+		props.startBlock();
+		init(nextPage);
+	};
+
+	useEffect(() => {
 		if (loading) {
-			loadProcedure();
+			init();
 		}
 	}, [patient.id, props, loading]);
 
@@ -127,6 +143,18 @@ const Procedure = props => {
 									)}
 								</table>
 							</div>
+							{meta && (
+								<div className="pagination pagination-center mt-4">
+									<Pagination
+										current={parseInt(meta.currentPage, 10)}
+										pageSize={parseInt(meta.itemsPerPage, 10)}
+										total={parseInt(meta.totalPages, 10)}
+										showTotal={total => `Total ${total} transactions`}
+										itemRender={itemRender}
+										onChange={current => onNavigatePage(current)}
+									/>
+								</div>
+							)}
 						</div>
 					</div>
 				</div>
@@ -148,4 +176,6 @@ const mapStateToProps = (state, ownProps) => {
 	};
 };
 
-export default withRouter(connect(mapStateToProps)(Procedure));
+export default withRouter(
+	connect(mapStateToProps, { startBlock, stopBlock })(Procedure)
+);

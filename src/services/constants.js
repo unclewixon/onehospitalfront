@@ -269,10 +269,6 @@ export const allVitalItems = [
 
 export const requestTypes = [
 	{
-		value: 'Opthalmology',
-		label: 'Opthalmology',
-	},
-	{
 		value: 'Imaging',
 		label: 'Imaging',
 	},

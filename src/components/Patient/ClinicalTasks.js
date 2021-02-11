@@ -6,13 +6,14 @@ import moment from 'moment';
 import { confirmAlert } from 'react-confirm-alert';
 import Tooltip from 'antd/lib/tooltip';
 import CreateTask from '../Modals/CreateTask';
-import { itemRender, request } from '../../services/utilities';
+import { itemRender, request, confirmAction } from '../../services/utilities';
 import { allVitalItems, patientAPI } from '../../services/constants';
 import TakeReading from '../Modals/TakeReading';
 import { readingDone } from '../../actions/patient';
 import warning from '../../assets/images/warning.png';
 import GiveMedication from '../../components/Modals/GiveMedication';
 import { startBlock, stopBlock } from '../../actions/redux-block';
+import { notifySuccess, notifyError } from '../../services/notify';
 
 const ClinicalTasks = () => {
 	const [showTaskModal, setShowTaskModal] = useState(false);
@@ -52,7 +53,6 @@ const ClinicalTasks = () => {
 			setTasks(result);
 			setLoaded(true);
 		}
-
 		if (!loaded) {
 			doLoadTasks();
 		}
@@ -65,6 +65,24 @@ const ClinicalTasks = () => {
 		}&page=${page || 1}&limit=12`;
 		const res = await request(url, 'GET', true);
 		return res;
+	};
+
+	const deleteTask = async data => {
+		try {
+			const url = `${patientAPI}/admissions/tasks/${data.id}/delete-task`;
+			await request(url, 'DELETE', true);
+			const arr = tasks.filter(tsk => tsk.id !== data.id);
+			setTasks(arr);
+			notifySuccess(`clinical task canceled!`);
+		} catch (err) {
+			console.log(err);
+			notifyError(`${err.message}`);
+		}
+	};
+
+	const confirmDelete = (e, data) => {
+		e.preventDefault();
+		confirmAction(deleteTask, data);
 	};
 
 	const createTask = () => {
@@ -244,9 +262,13 @@ const ClinicalTasks = () => {
 													))}
 											</td>
 											<td className="row-actions text-center">
-												<a className="danger">
-													<i className="os-icon os-icon-ui-15"></i>
-												</a>
+												<Tooltip title="Cancel Clinical Task">
+													<a
+														className="danger"
+														onClick={e => confirmDelete(e, item)}>
+														<i className="os-icon os-icon-ui-15"></i>
+													</a>
+												</Tooltip>
 											</td>
 										</tr>
 									);

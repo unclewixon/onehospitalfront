@@ -58,11 +58,9 @@ export class ModalCreateVoucher extends Component {
 		voucher_date: null,
 		submitting: false,
 		amountClass: 'col-sm-6',
-		patientList: [],
 	};
 
 	componentDidMount() {
-		this.fetchPatient();
 		const { apply_voucher } = this.props;
 		if (apply_voucher) {
 			this.setState({ amountClass: 'col-sm-12' });
@@ -70,22 +68,6 @@ export class ModalCreateVoucher extends Component {
 
 		document.body.classList.add('modal-open');
 	}
-
-	fetchPatient = async data => {
-		try {
-			let patientList = [];
-			const rs = await request(`${patientAPI}/list`, 'GET', true, data);
-			rs.forEach(function(value) {
-				patientList = [
-					...patientList,
-					{ id: value.id, name: value.other_names + ' ' + value.surname },
-				];
-			});
-			this.setState({ patientList });
-		} catch (error) {
-			console.log(error);
-		}
-	};
 
 	componentWillUnmount() {
 		document.body.classList.remove('modal-open');

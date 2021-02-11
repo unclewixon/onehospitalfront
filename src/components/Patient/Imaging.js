@@ -7,12 +7,13 @@ import moment from 'moment';
 import { loadImagingRequests } from '../../actions/patient';
 import searchingGIF from '../../assets/images/searching.gif';
 import { API_URI, patientAPI } from '../../services/constants';
-import { request, upload } from '../../services/utilities';
+import { request, upload, itemRender } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
+import Pagination from 'antd/lib/pagination';
 // import Popover from 'antd/lib/popover';
 import waiting from '../../assets/images/waiting.gif';
 import { SubmissionError } from 'redux-form';
-
+import { startBlock, stopBlock } from '../../actions/redux-block';
 import { uploadRadiology } from '../../actions/general';
 
 const Imaging = props => {
@@ -21,6 +22,7 @@ const Imaging = props => {
 	const [uploading, setUploading] = useState(false);
 	const [hidden, setHidden] = useState(false);
 	// const [selectedRequest, setRequest] = useState(false);
+	const [meta, setMeta] = useState(null);
 
 	const UploadImagingData = ({ uploading, doUpload, hide }) => {
 		const [files, setFiles] = useState(null);
@@ -247,27 +249,36 @@ const Imaging = props => {
 		);
 	};
 
-	useEffect(() => {
-		const fetchImaging = async () => {
-			try {
-				const { patient } = props;
-				const rs = await request(
-					`patient/${patient.id}/request/imaging?startDate=&endDate=`,
-					'GET',
-					true
-				);
-				console.log(rs);
-				props.loadImagingRequests(rs);
-				setLoading(false);
-			} catch (error) {
-				console.log(error);
-				setLoading(false);
-				notifyError('error fetching imaging requests for the patient');
-			}
-		};
+	const init = async page => {
+		try {
+			const p = page || 1;
+			const { patient } = props;
+			const url = `patient/${patient.id}/request/imaging?page=${p}&limit=24&startDate=&endDate=`;
+			const rs = await request(url, 'GET', true);
+			const { result, ...meta } = rs;
+			setMeta(meta);
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+			const arr = [...result];
+			props.loadImagingRequests(arr);
+			setLoading(false);
+			props.stopBlock();
+		} catch (e) {
+			props.stopBlock();
+			notifyError(
+				e.message || 'error fetching imaging requests for the patient'
+			);
+			setLoading(false);
+		}
+	};
 
+	const onNavigatePage = nextPage => {
+		props.startBlock();
+		init(nextPage);
+	};
+
+	useEffect(() => {
 		if (loading) {
-			fetchImaging();
+			init();
 		}
 	}, [props, loading]);
 
@@ -330,6 +341,18 @@ const Imaging = props => {
 									</tbody>
 								</table>
 							</div>
+							{meta && (
+								<div className="pagination pagination-center mt-4">
+									<Pagination
+										current={parseInt(meta.currentPage, 10)}
+										pageSize={parseInt(meta.itemsPerPage, 10)}
+										total={parseInt(meta.totalPages, 10)}
+										showTotal={total => `Total ${total} transactions`}
+										itemRender={itemRender}
+										onChange={current => onNavigatePage(current)}
+									/>
+								</div>
+							)}
 						</div>
 					</div>
 				</div>
@@ -353,5 +376,10 @@ const mapStateToProps = state => {
 };
 
 export default withRouter(
-	connect(mapStateToProps, { loadImagingRequests, uploadRadiology })(Imaging)
+	connect(mapStateToProps, {
+		loadImagingRequests,
+		uploadRadiology,
+		startBlock,
+		stopBlock,
+	})(Imaging)
 );

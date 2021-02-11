@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
-
+import { request } from '../../services/utilities';
 import { confirmAction, formatCurrency } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
-import { deleteTransaction } from '../../actions/transaction';
+import { delete_transaction } from '../../actions/transaction';
 import { applyVoucher, approveTransaction } from '../../actions/general';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { Can } from '../common/Can';
@@ -15,9 +15,9 @@ import ModalServiceDetails from '../Modals/ModalServiceDetails';
 const TransactionTable = ({
 	approveTransaction,
 	applyVoucher,
-	deleteTransaction,
 	handlePrint,
 	transactions,
+	delete_transaction,
 	loading,
 	queue,
 	showPrint = false,
@@ -33,24 +33,27 @@ const TransactionTable = ({
 	const doApplyVoucher = item => {
 		applyVoucher(item);
 	};
-	const onDeleteTransaction = data => {
-		deleteTransaction(data)
-			.then(response => {
-				notifySuccess('Transaction deleted');
-			})
-			.catch(error => {
-				notifyError('Error deleting  transaction ');
-			});
+
+	const deleteTask = async data => {
+		try {
+			const url = `transactions/${data.id}`;
+			await request(url, 'DELETE', true);
+			delete_transaction(data);
+			notifySuccess(`Transaction deleted!`);
+		} catch (err) {
+			console.log(err);
+			notifyError(`${err.message}`);
+		}
 	};
 
 	const confirmDelete = data => {
-		confirmAction(onDeleteTransaction, data);
+		confirmAction(deleteTask, data);
 	};
 
-	const viewDetails = data => {
+	const viewDetails = (transaction_type, data) => {
 		document.body.classList.add('modal-open');
 		setShowModal(true);
-		setDetails(data);
+		setDetails({ transaction_type, data });
 	};
 
 	const closeModal = () => {
@@ -67,8 +70,8 @@ const TransactionTable = ({
 						{!queue && <th>DATE</th>}
 						<th>PATIENT NAME</th>
 						<th>DEPARTMENT</th>
-						<th>SERVICE</th>
-						<th>AMOUNT (&#x20A6;)</th>
+						<th>AMOUNT</th>
+						<th>BALANCE (&#x20A6;)</th>
 						<th>PAYMENT TYPE (&#x20A6;)</th>
 						<th className="text-center">ACTIONS</th>
 					</tr>
@@ -97,7 +100,10 @@ const TransactionTable = ({
 									<a
 										className="item-title text-primary text-underline ml-2"
 										onClick={() =>
-											viewDetails(transaction.transaction_details)
+											viewDetails(
+												transaction.transaction_type,
+												transaction.transaction_details
+											)
 										}>
 										details
 									</a>
@@ -125,14 +131,6 @@ const TransactionTable = ({
 															className="secondary"
 															onClick={() => doApproveTransaction(transaction)}>
 															<i className="os-icon os-icon-thumbs-up" />
-														</a>
-													</Tooltip>
-
-													<Tooltip title="Apply Voucher">
-														<a
-															className="secondary"
-															onClick={() => doApplyVoucher(transaction)}>
-															<i className="os-icon os-icon-folder-plus" />
 														</a>
 													</Tooltip>
 												</>
@@ -181,5 +179,5 @@ const TransactionTable = ({
 export default connect(null, {
 	applyVoucher,
 	approveTransaction,
-	deleteTransaction,
+	delete_transaction,
 })(TransactionTable);

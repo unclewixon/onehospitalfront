@@ -1,3 +1,4 @@
+import { Carousel } from 'react-bootstrap';
 import {
 	TOGGLE_PRELOADING,
 	SIGN_OUT,
@@ -39,6 +40,8 @@ import {
 	TOGGLE_LABOUR_MEASURMENT_DETAIL,
 	TOGGLE_ADD_ACCOUNT,
 	TOGGLE_EDIT_ACCOUNT,
+	ADD_STAFF_FOR_APPRAISAL,
+	SET_IS_STAFF_APPRAISAL,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -91,12 +94,18 @@ const INITIAL_STATE = {
 	create_account: false,
 	accountChart: null,
 	edit_account: false,
+	staffForApraisal: null,
+	isStaffAppraisal: false,
 };
 
 const general = (state = INITIAL_STATE, action) => {
 	switch (action.type) {
+		case SET_IS_STAFF_APPRAISAL:
+			return { ...state, isStaffAppraisal: action.payload };
 		case TOGGLE_PRELOADING:
 			return { ...state, preloading: action.payload };
+		case ADD_STAFF_FOR_APPRAISAL:
+			return { ...state, staffForApraisal: action.payload };
 		case SIGN_OUT:
 			return { ...state, ...INITIAL_STATE, preloading: false };
 		case TOGGLE_IS_MODAL:

@@ -185,9 +185,9 @@ function ModalCreateStaff({
 									)}
 									onSubmit={params => {
 										console.log('step-one 000');
-										console.log(form);
 										setForm({ ...form, ...params });
 										setSection('step-two');
+										console.log(form);
 									}}
 								/>
 							) : (
@@ -228,10 +228,12 @@ function ModalCreateStaff({
 										/>
 									)}
 									onSubmit={async params => {
-										setSaving(true);
-										setForm({ ...form, ...params });
-										console.log('step-two 000');
+										console.log('step-2 action-params');
+										console.log(params);
+										console.log('step-2 old form');
 										console.log(form);
+										setSaving(true);
+										console.log('step-two 000=> new form');
 										const formData = new FormData();
 
 										for (const key in form) {
@@ -240,20 +242,26 @@ function ModalCreateStaff({
 													key,
 													moment(form?.date_of_birth)?.format('YYYY-MM-DD')
 												);
-											} else if (key === 'next_of_kin_dob') {
+											} else {
+												formData.append(key, form[key]);
+											}
+										}
+
+										for (const key in params) {
+											if (key === 'next_of_kin_dob') {
 												formData.append(
 													key,
-													moment(form?.next_of_kin_dob)?.format('YYYY-MM-DD')
+													moment(params?.next_of_kin_dob)?.format('YYYY-MM-DD')
 												);
 											} else if (key === 'employment_start_date') {
 												formData.append(
 													key,
-													moment(form?.employment_start_date)?.format(
+													moment(params?.employment_start_date)?.format(
 														'YYYY-MM-DD'
 													)
 												);
 											} else {
-												formData.append(key, form[key]);
+												formData.append(key, params[key]);
 											}
 										}
 										const user = await storage.getItem(TOKEN_COOKIE);
@@ -292,6 +300,7 @@ function ModalCreateStaff({
 													);
 												});
 										} else {
+											console.log(formData);
 											axios
 												.post(`${API_URI}/${staffAPI}`, formData, { headers })
 												.then(res => {
@@ -725,7 +734,6 @@ function StepTwo({
 				<div className="col-sm-4">
 					<Field
 						name="number_of_children"
-						type="number"
 						value={number_of_children}
 						label={{ value: 'Number of Children' }}
 					/>

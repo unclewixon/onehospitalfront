@@ -2,7 +2,7 @@
 import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
-import { request } from '../services/utilities';
+import { request, updateImmutable } from '../services/utilities';
 import { createStaff } from '../actions/general';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
@@ -10,6 +10,7 @@ import { fullname } from '../services/utilities';
 import { Image } from 'react-bootstrap';
 import placeholder from '../assets/images/placeholder.jpg';
 import capitalize from 'lodash.capitalize';
+import { loadStaff } from '../actions/hr';
 
 const UploadPerformanceData = ({ uploading, doUpload, hide }) => {
 	const [files, setFiles] = useState(null);
@@ -91,12 +92,15 @@ class StaffItem extends Component {
 		this.props.createStaff({ status: true, staff });
 	};
 
-	doEnable = async (e, id) => {
+	doEnable = async (e, data) => {
 		e.preventDefault();
-		console.log('enable staff');
 		try {
-			const url = `staff/enable/${id}`;
-			const rs = await request(url, 'GET', true);
+			const { staffs } = this.props;
+			const url = `hr/staffs/enable/?id=${data.id}`;
+			const rs = await request(url, 'PATCH', true);
+			data.isActive = true;
+			const upd = updateImmutable(staffs, data);
+			this.props.loadStaff(upd);
 			notifySuccess('Staff Enabled');
 		} catch (error) {
 			console.log(error);
@@ -104,15 +108,19 @@ class StaffItem extends Component {
 		}
 	};
 
-	doDisable = async (e, id) => {
+	doDisable = async (e, data) => {
 		e.preventDefault();
 		try {
-			const url = `staff/disable/${id}`;
-			const rs = await request(url, 'GET', true);
-			notifySuccess('Staff Enabled');
+			const { staffs } = this.props;
+			const url = `hr/staffs/${data.id}`;
+			const rs = await request(url, 'DELETE', true);
+			data.isActive = false;
+			const upd = updateImmutable(staffs, data);
+			this.props.loadStaff(upd);
+			notifySuccess('Staff Disabled');
 		} catch (error) {
 			console.log(error);
-			notifyError('Error Enabling Staff');
+			notifyError('Error Disabling Staff');
 		}
 	};
 
@@ -170,8 +178,8 @@ class StaffItem extends Component {
 				<tr>
 					<td onClick={this.toggle} className="user-avatar-w">
 						<div className="user-avatar">
-							{staff.profile_pic ? (
-								<Image alt="" src={staff.profile_pic} width={50} />
+							{staff?.profile_pic ? (
+								<Image alt="" src={staff?.profile_pic} width={50} />
 							) : (
 								<Image alt="" src={placeholder} width={50} />
 							)}
@@ -232,7 +240,7 @@ class StaffItem extends Component {
 						{staff.isActive ? (
 							<Tooltip title="Disable Staff">
 								<a
-									onClick={this.doDisable}
+									onClick={e => this.doDisable(e, staff)}
 									className="danger"
 									title="Disable Staff">
 									<i className="os-icon os-icon-x-circle" />
@@ -241,7 +249,7 @@ class StaffItem extends Component {
 						) : (
 							<Tooltip title="Enable Staff">
 								<a
-									onClick={this.doEnable}
+									onClick={e => this.doEnable(e, staff)}
 									className="success"
 									title="Enable Staff">
 									<i className="os-icon os-icon-check-circle" />
@@ -280,4 +288,4 @@ class StaffItem extends Component {
 	}
 }
 
-export default connect(null, { createStaff })(StaffItem);
+export default connect(null, { createStaff, loadStaff })(StaffItem);

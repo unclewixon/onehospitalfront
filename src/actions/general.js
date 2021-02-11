@@ -40,7 +40,23 @@ import {
 	TOGGLE_LABOUR_MEASURMENT_DETAIL,
 	TOGGLE_ADD_ACCOUNT,
 	TOGGLE_EDIT_ACCOUNT,
+	ADD_STAFF_FOR_APPRAISAL,
+	SET_IS_STAFF_APPRAISAL,
 } from './types';
+
+export const setIsStaffAppraisal = status => {
+	return {
+		type: SET_IS_STAFF_APPRAISAL,
+		payload: status,
+	};
+};
+
+export const addStaffForAppraisal = staff => {
+	return {
+		type: ADD_STAFF_FOR_APPRAISAL,
+		payload: staff,
+	};
+};
 
 export const togglePreloading = status => {
 	return {

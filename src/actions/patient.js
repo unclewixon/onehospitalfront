@@ -9,7 +9,6 @@ import {
 	ADD_PATIENT_UPLOAD_DATA,
 	DELETE_ALLERGY,
 	GET_IMAGING_REQUESTS,
-	GET_OPTHALMOLOGY_REQUESTS,
 	LOAD_VITALS,
 	UPDATE_VITALS,
 	CREATE_LAB_REQUEST,
@@ -158,13 +157,6 @@ export const delete_allergy = payload => {
 export const loadImagingRequests = data => {
 	return {
 		type: GET_IMAGING_REQUESTS,
-		payload: data,
-	};
-};
-
-export const loadOpthalmologyRequests = data => {
-	return {
-		type: GET_OPTHALMOLOGY_REQUESTS,
 		payload: data,
 	};
 };

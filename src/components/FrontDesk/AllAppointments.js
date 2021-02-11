@@ -4,7 +4,7 @@ import DatePicker from 'antd/lib/date-picker';
 import { connect } from 'react-redux';
 
 import waiting from '../../assets/images/waiting.gif';
-import { request, confirmAction } from '../../services/utilities';
+import { request, confirmAction, itemRender } from '../../services/utilities';
 import {
 	applyVoucher,
 	approveTransaction,
@@ -12,8 +12,12 @@ import {
 } from '../../actions/general';
 import { deleteTransaction, loadTransaction } from '../../actions/transaction';
 import FrontDeskTable from './FrontDeskTable';
+import Pagination from 'antd/lib/pagination';
+import { startBlock, stopBlock } from '../../actions/redux-block';
+import { notifySuccess, notifyError } from '../../services/notify';
 
 const { RangePicker } = DatePicker;
+const date = moment(new Date()).format('YYYY-MM-DD');
 
 export class AllAppointments extends Component {
 	state = {
@@ -23,9 +27,10 @@ export class AllAppointments extends Component {
 		patients: [],
 		hmos: [],
 		patient_id: '',
-		startDate: '',
-		endDate: '',
+		startDate: date,
+		endDate: date,
 		status: '',
+		meta: null,
 	};
 
 	componentDidMount() {
@@ -55,21 +60,32 @@ export class AllAppointments extends Component {
 		confirmAction(this.doCancelApppointment, data);
 	};
 
-	fetchTransaction = async () => {
+	fetchTransaction = async page => {
 		const { startDate, endDate } = this.state;
 		try {
+			const p = page || 1;
 			this.setState({ loading: true });
 			const rs = await request(
-				`front-desk/appointments?startDate=${startDate}&endDate=${endDate}`,
+				`front-desk/appointments?page=${p}&limit=15&startDate=${startDate}&endDate=${endDate}`,
 				'GET',
 				true
 			);
-			const arr = rs.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+			const { result, ...meta } = rs;
+			const arr = [...result];
 			this.props.loadTransaction(arr);
-			this.setState({ loading: false, filtering: false });
+			this.setState({ loading: false, filtering: false, meta });
+			this.props.stopBlock();
 		} catch (error) {
 			console.log(error);
+			this.props.stopBlock();
+			this.setState({ loading: false, filtering: false });
+			notifyError(error.message || 'could not fetch appointments');
 		}
+	};
+
+	onNavigatePage = nextPage => {
+		this.props.startBlock();
+		this.fetchTransaction(nextPage);
 	};
 
 	doFilter = async e => {
@@ -93,7 +109,7 @@ export class AllAppointments extends Component {
 	};
 
 	render() {
-		const { filtering, loading } = this.state;
+		const { filtering, loading, meta } = this.state;
 		const transactions = this.props.reviewTransaction;
 		return (
 			<>
@@ -122,6 +138,19 @@ export class AllAppointments extends Component {
 							cancelApppointment={this.cancelApppointment}
 						/>
 					</div>
+
+					{meta && (
+						<div className="pagination pagination-center mt-4">
+							<Pagination
+								current={parseInt(meta.currentPage, 10)}
+								pageSize={parseInt(meta.itemsPerPage, 10)}
+								total={parseInt(meta.totalPages, 10)}
+								showTotal={total => `Total ${total} services`}
+								itemRender={itemRender}
+								onChange={current => this.onNavigatePage(current)}
+							/>
+						</div>
+					)}
 				</div>
 			</>
 		);
@@ -141,4 +170,6 @@ export default connect(mapStateToProps, {
 	viewAppointmentDetail,
 	loadTransaction,
 	deleteTransaction,
+	startBlock,
+	stopBlock,
 })(AllAppointments);

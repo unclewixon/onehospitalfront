@@ -5,13 +5,15 @@ import { transactionsAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
-import { request, confirmAction } from '../../services/utilities';
+import { request, confirmAction, itemRender } from '../../services/utilities';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import { searchAPI } from '../../services/constants';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { loadTransaction, deleteTransaction } from '../../actions/transaction';
 import { applyVoucher, approveTransaction } from '../../actions/general';
 import TransactionTable from '../../components/Tables/TransactionTable';
+import Pagination from 'antd/lib/pagination';
+import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const { RangePicker } = DatePicker;
 
@@ -42,6 +44,7 @@ class TransactionHistory extends Component {
 		startDate: '',
 		endDate: '',
 		status: '',
+		meta: null,
 	};
 
 	componentDidMount() {
@@ -49,18 +52,36 @@ class TransactionHistory extends Component {
 		this.fetchTransaction();
 	}
 
-	fetchTransaction = async () => {
+	componentDidUpdate(prevProps, prevState) {
+		if (prevState.patient_id !== this.state.patient_id) {
+			this.fetchTransaction();
+		}
+	}
+
+	fetchTransaction = async page => {
 		const { patient_id, startDate, endDate, status } = this.state;
 		try {
+			const p = page || 1;
 			this.setState({ loading: true });
-			const url = `${transactionsAPI}/list?patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&transaction_type=&status=${status}`;
+			const url = `${transactionsAPI}/list?page=${p}&limit=15&patient_id=${patient_id ||
+				''}&startDate=${startDate}&endDate=${endDate}&transaction_type=&status=${status}`;
 			const rs = await request(url, 'GET', true);
-			const arr = rs.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
-			arr && this.props.loadTransaction(arr);
-			this.setState({ loading: false, filtering: false });
+			const { result, ...meta } = rs;
+			const arr = [...result];
+			this.props.loadTransaction(arr);
+			this.setState({ loading: false, filtering: false, meta });
+			this.props.stopBlock();
 		} catch (error) {
 			console.log(error);
+			this.props.stopBlock();
+			this.setState({ loading: false, filtering: false });
+			notifyError(error.message || 'could not fetch transactions');
 		}
+	};
+
+	onNavigatePage = nextPage => {
+		this.props.startBlock();
+		this.fetchTransaction(nextPage);
 	};
 
 	doFilter = e => {
@@ -109,7 +130,7 @@ class TransactionHistory extends Component {
 	handlePrintClick = () => {};
 
 	render() {
-		const { filtering, loading, patients } = this.state;
+		const { filtering, loading, meta } = this.state;
 		const { transactions } = this.props;
 		return (
 			<div className="row">
@@ -129,7 +150,7 @@ class TransactionHistory extends Component {
 								id="patient_id"
 								loadOptions={getOptions}
 								onChange={e => {
-									this.setState({ patient_id: e.id });
+									this.setState({ patient_id: e?.id });
 								}}
 								placeholder="Search patients"
 							/>
@@ -143,7 +164,7 @@ class TransactionHistory extends Component {
 								Status
 							</label>
 							<select
-								style={{ height: '32px' }}
+								style={{ height: '35px' }}
 								id="status"
 								className="form-control"
 								name="status"
@@ -188,6 +209,18 @@ class TransactionHistory extends Component {
 							handlePrint={this.handlePrintClick}
 						/>
 					</div>
+					{meta && (
+						<div className="pagination pagination-center mt-4">
+							<Pagination
+								current={parseInt(meta.currentPage, 10)}
+								pageSize={parseInt(meta.itemsPerPage, 10)}
+								total={parseInt(meta.totalPages, 10)}
+								showTotal={total => `Total ${total} transactions`}
+								itemRender={itemRender}
+								onChange={current => this.onNavigatePage(current)}
+							/>
+						</div>
+					)}
 				</div>
 			</div>
 		);
@@ -205,4 +238,6 @@ export default connect(mapStateToProps, {
 	approveTransaction,
 	loadTransaction,
 	deleteTransaction,
+	startBlock,
+	stopBlock,
 })(TransactionHistory);

@@ -161,10 +161,8 @@ function InPatientAppointmentForm(props) {
 						ref={register({ name: 'patient_id' })}
 						loadOptions={getOptions}
 						onChange={e => {
-							setValue('patient_id', e.id);
+							setValue('patient_id', e?.id);
 							setPatient(e);
-							console.log('on react search');
-							console.log(e);
 						}}
 						placeholder="Search patients"
 					/>

@@ -76,6 +76,7 @@ export class Dashboard extends Component {
 								<th className="text-center">Patient name</th>
 								<th className="text-center">Description</th>
 								<th className="text-center">Amount(&#x20A6;)</th>
+								<th className="text-center">Hmo Transaction Code</th>
 								<th className="text-center">Status</th>
 								<th>
 									<div className="th-inner "></div>

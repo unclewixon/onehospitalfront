@@ -64,6 +64,7 @@ function PatientNOKForm(props) {
 				nok_phoneNumber: patient.nextOfKin?.phoneNumber || '',
 				nok_relationship: patient.nextOfKin?.relationship || '',
 			};
+			setValue('nok_date_of_birth', patientData?.nok_date_of_birth);
 			setGenderValue(
 				gender.filter(option => option.label === formValues.nok_gender)
 			);
@@ -150,6 +151,8 @@ function PatientNOKForm(props) {
 			}
 		} else {
 			try {
+				console.log('onsave()');
+				console.log(datum);
 				const url = 'patient/save';
 				const res = await request(url, 'POST', true, datum);
 				setSubmitting(false);
@@ -234,7 +237,7 @@ function PatientNOKForm(props) {
 									<label>Date of birth</label>
 									<div className="custom-date-input">
 										<DatePicker
-											selected={values?.nok_date_of_birth}
+											selected={patientData?.nok_date_of_birth}
 											onChange={date => setValue('nok_date_of_birth', date)}
 											peekNextMonth
 											showMonthDropdown

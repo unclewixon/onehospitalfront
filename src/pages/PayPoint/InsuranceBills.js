@@ -4,13 +4,17 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import DatePicker from 'antd/lib/date-picker';
 import Tooltip from 'antd/lib/tooltip';
-
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import { searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
-import { confirmAction, request } from '../../services/utilities';
+import { confirmAction, request, itemRender } from '../../services/utilities';
 import { applyVoucher, approveHmoTransaction } from '../../actions/general';
 import { deleteTransaction, loadTransaction } from '../../actions/transaction';
 import searchingGIF from '../../assets/images/searching.gif';
 import { notifyError, notifySuccess } from '../../services/notify';
+import ModalServiceDetails from '../../components/Modals/ModalServiceDetails';
+import Pagination from 'antd/lib/pagination';
+import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const { RangePicker } = DatePicker;
 
@@ -19,42 +23,65 @@ const paymentStatus = [
 	{ value: 1, label: 'done' },
 ];
 
+const getOptionValues = option => option.id;
+const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+
+const getOptions = async q => {
+	if (!q || q.length < 3) {
+		return [];
+	}
+
+	const url = `${searchAPI}?q=${q}`;
+	const res = await request(url, 'GET', true);
+	return res;
+};
+
 export class InsuranceBills extends Component {
 	state = {
 		filtering: false,
 		loading: false,
+		showModal: false,
+		details: null,
 		id: null,
-		patients: [],
 		hmos: [],
 		patient_id: '',
 		startDate: '',
 		endDate: '',
 		status: '',
 		hmo_id: '',
+		meta: null,
 	};
 
 	componentDidMount() {
 		this.fetchTransaction();
-		this.getPatients();
 		this.getHmos();
 	}
 
-	fetchTransaction = async () => {
+	fetchTransaction = async page => {
 		const { patient_id, startDate, endDate, status, hmo_id } = this.state;
 		console.log(patient_id, startDate, endDate, status, hmo_id);
 		try {
+			const p = page || 1;
 			this.setState({ loading: true });
 			const rs = await request(
-				`hmos/transactions?patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}&hmo_id=${hmo_id}`,
+				`hmos/transactions?page=${p}&limit=15&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}&hmo_id=${hmo_id}`,
 				'GET',
 				true
 			);
-			console.log(rs);
-			this.props.loadTransaction(rs);
-			this.setState({ loading: false, filtering: false });
+			const { result, ...meta } = rs;
+			const arr = [...result];
+			this.props.loadTransaction(arr);
+			this.setState({ loading: false, filtering: false, meta });
+			this.props.stopBlock();
 		} catch (error) {
 			console.log(error);
+			this.props.stopBlock();
 		}
+	};
+
+	onNavigatePage = nextPage => {
+		this.props.startBlock();
+		this.fetchTransaction(nextPage);
 	};
 
 	onDeleteTransaction = data => {
@@ -76,22 +103,14 @@ export class InsuranceBills extends Component {
 		this.props.approveHmoTransaction(item);
 	};
 
-	getPatients = async () => {
-		const rs = await request(`patient/list`, 'GET', true);
-		const res = rs.map(patient => ({
-			value: patient.id,
-			label: patient.surname + ', ' + patient.other_names,
-		}));
-
-		this.setState({ patients: res });
-	};
-
 	getHmos = async () => {
 		const rs = await request(`hmos`, 'GET', true);
-		const res = rs.map(hmo => ({
-			value: hmo.id,
-			label: hmo.name,
-		}));
+		const res = rs
+			.filter(t => t.id !== 1)
+			.map(hmo => ({
+				value: hmo.id,
+				label: hmo.name,
+			}));
 		this.setState({ hmos: res });
 	};
 	doFilter = e => {
@@ -116,8 +135,19 @@ export class InsuranceBills extends Component {
 			endDate: date[1],
 		});
 	};
+
+	viewDetails = (transaction_type, data) => {
+		document.body.classList.add('modal-open');
+		this.setState({ details: { transaction_type, data }, showModal: true });
+	};
+
+	closeModal = () => {
+		document.body.classList.remove('modal-open');
+		this.setState({ details: null, showModal: false });
+	};
+
 	render() {
-		const { filtering, loading, patients, hmos } = this.state;
+		const { filtering, loading, hmos, showModal, details, meta } = this.state;
 		const transactions = this.props.reviewTransaction;
 		return (
 			<>
@@ -130,28 +160,27 @@ export class InsuranceBills extends Component {
 								<label className="" htmlFor="patient_id">
 									Patient
 								</label>
-								<select
-									style={{ height: '32px' }}
-									id="patient_id"
-									className="form-control"
+
+								<AsyncSelect
+									isClearable
+									getOptionValue={getOptionValues}
+									getOptionLabel={getOptionLabels}
+									defaultOptions
 									name="patient_id"
-									onChange={e => this.change(e)}>
-									<option value="">Choose patient</option>
-									{patients.map((pat, i) => {
-										return (
-											<option key={i} value={pat.value}>
-												{pat.label}
-											</option>
-										);
-									})}
-								</select>
+									id="patient_id"
+									loadOptions={getOptions}
+									onChange={e => {
+										this.setState({ patient_id: e?.id });
+									}}
+									placeholder="Search patients"
+								/>
 							</div>
 							<div className="form-group col-md-3">
 								<label className="" htmlFor="patient_id">
 									Hmo
 								</label>
 								<select
-									style={{ height: '32px' }}
+									style={{ height: '35px' }}
 									id="hmo_id"
 									className="form-control"
 									name="hmo_id"
@@ -175,7 +204,7 @@ export class InsuranceBills extends Component {
 									Status
 								</label>
 								<select
-									style={{ height: '32px' }}
+									style={{ height: '35px' }}
 									id="status"
 									className="form-control"
 									name="status"
@@ -233,8 +262,8 @@ export class InsuranceBills extends Component {
 											return (
 												<tr key={index}>
 													<td className="text-center">
-														{moment(transaction.q_createdAt).format(
-															'YYYY/MM/DD'
+														{moment(transaction.createdAt).format(
+															'DD-MM-YYYY H:mma'
 														)}
 													</td>
 													<td className="text-center">
@@ -246,9 +275,19 @@ export class InsuranceBills extends Component {
 															: 'No Hmo'}
 													</td>
 													<td className="text-center">
-														{transaction.service?.name
-															? transaction.service.name
-															: 'No service yet'}
+														<span className="text-capitalize">
+															{transaction.transaction_type}
+														</span>
+														<a
+															className="item-title text-primary text-underline ml-2"
+															onClick={() =>
+																this.viewDetails(
+																	transaction.transaction_type,
+																	transaction.transaction_details
+																)
+															}>
+															details
+														</a>
 													</td>
 													<td className="text-center">
 														{transaction.amount ? transaction.amount : 0}
@@ -288,8 +327,26 @@ export class InsuranceBills extends Component {
 								</tbody>
 							</table>
 						</div>
+						{meta && (
+							<div className="pagination pagination-center mt-4">
+								<Pagination
+									current={parseInt(meta.currentPage, 10)}
+									pageSize={parseInt(meta.itemsPerPage, 10)}
+									total={parseInt(meta.totalPages, 10)}
+									showTotal={total => `Total ${total} transactions`}
+									itemRender={itemRender}
+									onChange={current => this.onNavigatePage(current)}
+								/>
+							</div>
+						)}
 					</div>
 				</div>
+				{showModal && (
+					<ModalServiceDetails
+						details={details}
+						closeModal={() => this.closeModal()}
+					/>
+				)}
 			</>
 		);
 	}
@@ -307,4 +364,6 @@ export default connect(mapStateToProps, {
 	approveHmoTransaction,
 	loadTransaction,
 	deleteTransaction,
+	startBlock,
+	stopBlock,
 })(InsuranceBills);

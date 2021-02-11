@@ -110,7 +110,7 @@ class FrontDeskTable extends Component {
 						})
 					) : (
 						<tr className="text-center">
-							<td colSpan="6">No Appointments</td>
+							<td colSpan="7">No Appointments</td>
 						</tr>
 					)}
 				</tbody>

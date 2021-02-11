@@ -73,7 +73,7 @@ const CreateLeave = ({
 			await request(`hr/leave-management`, 'POST', true, newRequestData);
 			setSubmitting(false);
 			notifySuccess('Leave request added');
-			history.push('/front-desk#leave-request');
+			history.push('/my-account/leave-request');
 		} catch (error) {
 			setSubmitting(false);
 			notifyError('Could not add leave request');

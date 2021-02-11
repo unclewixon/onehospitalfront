@@ -5,7 +5,7 @@ const FrontDeskMenu = () => {
 	return (
 		<>
 			<li>
-				<Link to="/front-desk">
+				<Link to="/front-desk/all-appointments">
 					<div className="icon-w">
 						<div className="os-icon os-icon-calendar-time" />
 					</div>
@@ -20,14 +20,7 @@ const FrontDeskMenu = () => {
 					<span>Patients</span>
 				</Link>
 			</li>
-			<li>
-				<Link to="/front-desk/notifications">
-					<div className="icon-w">
-						<div className="icon-feather-bell" />
-					</div>
-					<span>Notifications</span>
-				</Link>
-			</li>
+
 			<li>
 				<Link to="/front-desk/insurance-transactions">
 					<div className="icon-w">
