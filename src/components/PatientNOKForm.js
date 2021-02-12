@@ -138,7 +138,6 @@ function PatientNOKForm(props) {
 					props.setPatientRecord(res.patient);
 					props.updatePatient(res.patient);
 					notifySuccess(`${patient.other_names} record was updated!`);
-					props.prevStep(1);
 					props.closeModals(false);
 				} else {
 					notifyError(res.message);
@@ -159,7 +158,6 @@ function PatientNOKForm(props) {
 				if (res.success) {
 					props.addNewPatient(res.patient);
 					notifySuccess('New patient account created!');
-					props.prevStep(1);
 					props.closeModals(false);
 				} else {
 					notifyError(res.message);
@@ -237,7 +235,10 @@ function PatientNOKForm(props) {
 									<label>Date of birth</label>
 									<div className="custom-date-input">
 										<DatePicker
-											selected={patientData?.nok_date_of_birth}
+											selected={
+												patientData?.nok_date_of_birth ||
+												values?.nok_date_of_birth
+											}
 											onChange={date => setValue('nok_date_of_birth', date)}
 											peekNextMonth
 											showMonthDropdown
