@@ -14,6 +14,7 @@ import DatePicker from 'antd/lib/date-picker';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import { searchAPI } from '../../services/constants';
+import { toggleProfile } from '../../actions/user';
 
 const { RangePicker } = DatePicker;
 
@@ -114,6 +115,11 @@ const InPatientCare = () => {
 		fetchPatients(nextPage);
 	};
 
+	const showProfile = patient => {
+		const info = { patient, type: 'patient', admitted: true };
+		dispatch(toggleProfile(true, info));
+	};
+
 	const dateChange = e => {
 		let date = e.map(d => {
 			return moment(d._d).format('YYYY-MM-DD');
@@ -128,8 +134,6 @@ const InPatientCare = () => {
 			<h6 className="element-header">Patients on Admission</h6>
 			<div className="element-box m-0 p-3">
 				<div className="col-md-12 p-4">
-					<h6 className="element-header">Filter by:</h6>
-
 					<form className="row">
 						<div className="form-group col-md-3">
 							<label htmlFor="patient_id">Patient</label>
@@ -253,6 +257,12 @@ const InPatientCare = () => {
 														</Popover>
 													</Tooltip>
 												)}
+
+												<Tooltip title="View Request">
+													<a onClick={() => showProfile(item.patient)}>
+														<i className="os-icon os-icon-documents-03" />
+													</a>
+												</Tooltip>
 											</td>
 										</tr>
 									);
