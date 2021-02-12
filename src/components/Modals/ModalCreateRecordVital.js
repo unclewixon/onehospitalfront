@@ -120,10 +120,6 @@ export class ModalCreateRecordVital extends Component {
 						<div className="onboarding-content with-gradient">
 							<h4 className="onboarding-title"> Record Vital</h4>
 
-							{/* <div className="row alert alert-warning">
-								True Labour has not started;We cannot take readings
-							</div> */}
-
 							<div className="form-block">
 								<form onSubmit={handleSubmit(this.createRecord)}>
 									{error && (

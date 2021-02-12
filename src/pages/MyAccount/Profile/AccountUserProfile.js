@@ -2,7 +2,7 @@ import React from 'react';
 
 const AccountUserProfile = ({ staff }) => {
 	return (
-		<React.Fragment>
+		<>
 			<div className="element-info mb-0">
 				<div className="element-info-with-icon">
 					<div className="element-info-text">
@@ -142,7 +142,7 @@ const AccountUserProfile = ({ staff }) => {
 					</tr>
 				</tbody>
 			</table>
-		</React.Fragment>
+		</>
 	);
 };
 
