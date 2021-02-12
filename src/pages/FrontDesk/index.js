@@ -1,19 +1,17 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import { Switch, Route, withRouter } from 'react-router-dom';
+import { compose } from 'redux';
+import startCase from 'lodash.startcase';
+
 import {
 	registerNewPatient,
 	createNewAppointment,
 	viewAppointmentDetail,
 } from '../../actions/general';
-
-// import Queue from '../../components/Queue';
-import { compose } from 'redux';
 import NoMatch from '../NoMatch';
-
 import Splash from '../../components/Splash';
-import { Switch, Route, withRouter, Link } from 'react-router-dom';
-import startCase from 'lodash.startcase';
 import { socket } from '../../services/constants';
 import { notifyError, notifySuccess } from '../../services/notify';
 
@@ -23,10 +21,6 @@ const AllAppointments = lazy(() =>
 
 const AllPatients = lazy(() =>
 	import('../../components/FrontDesk/AllPatients')
-);
-
-const AllInPatients = lazy(() =>
-	import('../../components/FrontDesk/AllInPatients')
 );
 
 const InsuranceTrans = lazy(() =>
@@ -81,22 +75,20 @@ const FrontDesk = props => {
 					<div className="col-sm-12">
 						<div className="element-wrapper">
 							<div className="element-actions">
-								<Link
-									to="#"
+								<a
 									onClick={RegisterNewPatient}
-									className={`mr-2 btn btn-primary btn-sm  ${
+									className={`mr-2 btn btn-primary btn-sm ${
 										page === 'filled-request' ? 'btn-outline-primary' : ''
 									}`}>
-									Add new patient
-								</Link>
-								<Link
-									to="#"
+									New Patient
+								</a>
+								<a
 									onClick={CreateNewAppointment}
-									className={`mr-2 btn btn-primary btn-sm  ${
+									className={`btn btn-primary btn-sm ${
 										page === 'all-request' ? 'btn-outline-primary' : ''
 									}`}>
-									New appointment
-								</Link>
+									New Appointment
+								</a>
 							</div>
 							<h6 className="element-header">{startCase(title)}</h6>
 
@@ -105,21 +97,18 @@ const FrontDesk = props => {
 									<Suspense fallback={<Splash />}>
 										<Switch>
 											<Route
-												path={`${match.url}/all-appointments`}
+												exact
+												path={`${match.url}`}
 												component={AllAppointments}
 											/>
 
 											<Route
-												path={`${match.url}/all-patients`}
+												path={`${match.url}/patients`}
 												component={AllPatients}
-											/>
-											<Route
-												path={`${match.url}/in-patients`}
-												component={AllInPatients}
 											/>
 
 											<Route
-												path={`${match.url}/insurance-trans`}
+												path={`${match.url}/insurance-transactions`}
 												component={InsuranceTrans}
 											/>
 											<Route component={NoMatch} />

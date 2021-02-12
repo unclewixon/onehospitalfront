@@ -20,16 +20,12 @@ const Encounters = lazy(() => import('../components/Patient/Encounters'));
 const Pharmacy = lazy(() => import('../components/Patient/Pharmacy'));
 const Imaging = lazy(() => import('../components/Patient/Imaging'));
 const Procedure = lazy(() => import('../components/Patient/Procedure'));
-const Physiotherapy = lazy(() => import('../components/Patient/Physiotherapy'));
 const Vitals = lazy(() => import('../components/Patient/Vitals'));
 const Allergies = lazy(() => import('../components/Patient/Allergies'));
 const LabRequest = lazy(() => import('../components/Patient/LabRequest'));
+
 const PharmacyRequest = lazy(() =>
 	import('../components/Patient/PharmacyRequest')
-);
-
-const PhysiotherapyRequest = lazy(() =>
-	import('../components/Patient/PhysiotherapyRequest')
 );
 const ImagingRequest = lazy(() =>
 	import('../components/Patient/ImagingRequest')
@@ -85,20 +81,14 @@ const Page = ({ location }) => {
 			return <Imaging />;
 		case 'procedure':
 			return <Procedure />;
-		case 'physio':
-			return <Physiotherapy />;
 		case 'lab-request':
 			return <LabRequest module="patient" />;
 		case 'pharmacy-request':
 			return <PharmacyRequest />;
-
-		case 'physiotherapy-request':
-			return <PhysiotherapyRequest />;
 		case 'imaging-request':
 			return <ImagingRequest />;
 		case 'procedure-request':
 			return <ProcedureRequest />;
-
 		case 'allergy-request':
 			return <AllergyRequest />;
 		case 'update-allergy':
@@ -172,7 +162,10 @@ class PatientProfile extends Component {
 								<div className="content-box">
 									<div className="row">
 										<div className="col-sm-12 pb-4">
-											<ProfileBlock profile={true} patient={patient} />
+											{/* patient profile block */}
+											{location.hash !== '#dashboard' && (
+												<ProfileBlock profile={true} patient={patient} />
+											)}
 										</div>
 										<Suspense fallback={<Splash />}>
 											<Switch>

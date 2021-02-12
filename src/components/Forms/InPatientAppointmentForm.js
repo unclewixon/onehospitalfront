@@ -77,11 +77,8 @@ function InPatientAppointmentForm(props) {
 	}
 
 	async function validateAppointment(patient_id, service_id) {
-		const rs = await request(
-			`front-desk/appointments/validate?patient_id=${patient_id}&service_id=${service_id}`,
-			'GET',
-			true
-		);
+		const url = `front-desk/appointments/validate?patient_id=${patient_id}&service_id=${service_id}`;
+		const rs = await request(url, 'GET', true);
 		if (rs.amount > 0) {
 			register({ name: 'amount' });
 			setValue('amount', rs.amount);
@@ -118,16 +115,21 @@ function InPatientAppointmentForm(props) {
 	};
 
 	const onSubmit = async values => {
-		setSubmitting(true);
-		const url = 'front-desk/appointments/new';
-		const rs = await request(url, 'POST', true, values);
-		setSubmitting(false);
-		if (rs.success) {
-			notifySuccess('New appointment record has been saved!');
-			props.addTransaction(rs.appointment);
-			props.closeModals(false);
-		} else {
-			notifyError(rs.message || 'Could not save appointment record');
+		try {
+			setSubmitting(true);
+			const url = 'front-desk/appointments/new';
+			const rs = await request(url, 'POST', true, values);
+			setSubmitting(false);
+			if (rs.success) {
+				notifySuccess('New appointment record has been saved!');
+				props.addTransaction(rs.appointment);
+				props.closeModals(false);
+			} else {
+				notifyError(rs.message || 'Could not save appointment record');
+			}
+		} catch (e) {
+			setSubmitting(false);
+			notifyError(e.message || 'Could not save appointment record');
 		}
 	};
 
@@ -143,6 +145,7 @@ function InPatientAppointmentForm(props) {
 	useEffect(() => {
 		init();
 	}, [init]);
+
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<div className="modal-body">
@@ -170,7 +173,7 @@ function InPatientAppointmentForm(props) {
 						className="form-control"
 						name="description"
 						rows="3"
-						placeholder="Enter a breif description"
+						placeholder="Enter a brief description"
 						ref={register}></textarea>
 				</div>
 				<div className="row">

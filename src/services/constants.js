@@ -41,7 +41,7 @@ export const vouchersAPI = 'vouchers';
 export const serviceAPI = 'services';
 export const settingsAPI = 'settings/';
 export const diagnosisAPI = 'settings/diagnosis';
-export const labourAPI = 'labour-management/enrollment';
+export const labourAPI = 'labour-management/enrollments';
 export const consultationAPI = 'consultation/';
 export const IVFEnroll = 'ivf/enroll/';
 export const IVFHCGAdmin = 'ivf/save/hcg-administration';
@@ -268,10 +268,6 @@ export const allVitalItems = [
 ];
 
 export const requestTypes = [
-	{
-		value: 'Physiotherapy',
-		label: 'Physiotherapy',
-	},
 	{
 		value: 'Imaging',
 		label: 'Imaging',

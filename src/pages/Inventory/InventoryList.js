@@ -139,7 +139,7 @@ const UploadInventory = ({
 											<select
 												id="hmo"
 												className="form-control"
-												onChange={e => setVendor(e.target.value)}>
+												onChange={e => setHmo(e.target.value)}>
 												<option>Select HMO</option>
 												{hmos?.map((hmo, i) => {
 													return (
@@ -168,7 +168,7 @@ const UploadInventory = ({
 											/>
 											<label htmlFor="department">Inventory File</label>
 											<a
-												className="btn btn-outline-secondary overflow-hidden ml-3"
+												className="btn btn-outline-secondary overflow-hidden"
 												onClick={() => {
 													uploadAttachment.click();
 												}}>

@@ -8,7 +8,6 @@ import {
 	LOAD_PATIENT_UPLOAD_DATA,
 	ADD_PATIENT_UPLOAD_DATA,
 	DELETE_ALLERGY,
-	GET_PHYSIOTHERAPIES,
 	GET_IMAGING_REQUESTS,
 	LOAD_VITALS,
 	UPDATE_VITALS,
@@ -34,6 +33,7 @@ import {
 	GET_ALL_OPD_IMMUNIZATION_APPOINTMENTS,
 	UPDATE_PATIENT,
 	READING_DONE,
+	CAN_CLOSE_LABOUR,
 } from './types';
 import { request } from '../services/utilities';
 // import axios from 'axios';
@@ -146,21 +146,6 @@ export const delete_allergy = payload => {
 		payload,
 	};
 };
-
-export const getPhysiotherapies = data => {
-	return {
-		type: GET_PHYSIOTHERAPIES,
-		payload: data,
-	};
-};
-
-export const add_dentisry = data => {
-	return {
-		type: SAVE_ALLERGIES,
-		payload: data,
-	};
-};
-
 export const loadImagingRequests = data => {
 	return {
 		type: GET_IMAGING_REQUESTS,
@@ -305,6 +290,12 @@ export const antenatalAssessment = () => {
 				});
 		});
 	};
+};
+
+export const closeLabour = () => dispatch => {
+	dispatch({
+		type: CAN_CLOSE_LABOUR,
+	});
 };
 
 // export const getPartograph = id => {

@@ -20,6 +20,13 @@ class Procedure extends Component {
 		const { match, location } = this.props;
 		const page = location.pathname.split('/').pop();
 
+		// page title
+		let pageTitle = 'Recent Requests';
+		if (page === 'all-requests') {
+			pageTitle = 'All Requests';
+		} else if (page === 'new-request') {
+			pageTitle = 'New Procedure Request';
+		}
 		// const department = staff?.details?.department?.name;
 
 		return (
@@ -28,8 +35,7 @@ class Procedure extends Component {
 					<div className="row">
 						<div className="col-sm-12">
 							<div className="element-wrapper">
-								<h6 className="element-header">Procedure</h6>
-								<div className="row mt-2 mb-4">
+								<div className="element-actions">
 									<Link
 										className={`mr-2 btn btn-primary btn-sm  ${
 											page === '/' ? 'btn-outline-primary' : ''
@@ -52,6 +58,7 @@ class Procedure extends Component {
 										New Procedure Request
 									</Link>
 								</div>
+								<h6 className="element-header">{pageTitle}</h6>
 
 								<div className="row">
 									<Suspense fallback={<Splash />}>
@@ -61,11 +68,6 @@ class Procedure extends Component {
 												path={`${match.url}/`}
 												component={ProcedureDashboard}
 											/>
-											{/* <Route
-												exact
-												path={`${match.url}/`}
-												component={NewPhysiotherapy}
-											/> */}
 											<Route
 												exact
 												path={`${match.url}/all-requests`}
@@ -84,9 +86,6 @@ class Procedure extends Component {
 						</div>
 					</div>
 				</div>
-				{/* <div className="content-panel compact">
-					<Queue department={department} />
-				</div> */}
 			</div>
 		);
 	}

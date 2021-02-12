@@ -48,7 +48,7 @@ class OpenRequest extends Component {
 			this.props.loadRadiology(rs.result);
 			this.setState({ loading: false, filtering: false });
 		} catch (error) {
-			console.log(error);
+			console.log('this', error);
 			notifyError('Error fetching all radiology request');
 			this.setState({ loading: false, filtering: false });
 		}
@@ -64,8 +64,8 @@ class OpenRequest extends Component {
 				'GET',
 				true
 			);
-			console.log(rs);
-			this.props.loadRadiology(rs);
+			console.log(rs.result);
+			this.props.loadRadiology(rs.result);
 			console.log(rs, 'response');
 			this.setState({ loading: false, filtering: false });
 		} catch (error) {
@@ -109,6 +109,7 @@ class OpenRequest extends Component {
 
 	doFilter = e => {
 		e.preventDefault();
+		console.log('Filering....', this.state);
 		// this.setState({ filtering: true });
 		this.setState({ ...this.state, filtering: true });
 
@@ -180,92 +181,92 @@ class OpenRequest extends Component {
 			<div className="row">
 				<div className="col-sm-12">
 					<div className="element-wrapper">
-						<h6 className="element-header">Open Request</h6>
+						<div className="element-box m-0 mb-3 p-3">
+							<div className="col-md-12 px-0">
+								<form className="row">
+									<div className="form-group col-sm-3">
+										<label>Patient</label>
 
-						<div className="col-md-12 px-0">
-							<form className="row">
-								<div className="form-group col-sm-3">
-									<label>Patient</label>
+										<input
+											className="form-control"
+											placeholder="Search for patient"
+											type="text"
+											name="patient"
+											defaultValue=""
+											id="patient"
+											onChange={this.handlePatientChange}
+											autoComplete="off"
+											required
+											style={{ height: '32px' }}
+										/>
+										{searching && (
+											<div className="searching text-center">
+												<img alt="searching" src={searchingGIF} />
+											</div>
+										)}
 
-									<input
-										className="form-control"
-										placeholder="Search for patient"
-										type="text"
-										name="patient"
-										defaultValue=""
-										id="patient"
-										onChange={this.handlePatientChange}
-										autoComplete="off"
-										required
-										style={{ height: '32px' }}
-									/>
-									{searching && (
-										<div className="searching text-center">
-											<img alt="searching" src={searchingGIF} />
-										</div>
-									)}
-
-									{patients &&
-										patients.map(pat => {
-											return (
-												<div
-													style={{ display: 'flex' }}
-													key={pat.id}
-													className="element-box">
-													<a
-														onClick={() => this.patientSet(pat)}
-														className="ssg-item cursor">
-														{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
-														<div
-															className="item-name"
-															dangerouslySetInnerHTML={{
-																__html: `${pat.surname} ${pat.other_names}`,
-															}}
-														/>
-													</a>
-												</div>
-											);
-										})}
-								</div>
-								<div className="form-group col-md-4">
-									<label>From - To</label>
-									<RangePicker onChange={e => this.dateChange(e)} />
-								</div>
-								<div className="form-group col-md-3">
-									<label className="mr-2 " htmlFor="id">
-										Status
-									</label>
-									<select
-										style={{ height: '32px' }}
-										id="status"
-										className="form-control"
-										name="status"
-										onChange={e => this.change(e)}>
-										<option value="">Choose status</option>
-										{status.map((status, i) => {
-											return (
-												<option key={i} value={status.value}>
-													{status.label}
-												</option>
-											);
-										})}
-									</select>
-								</div>
-								<div className="form-group col-md-2 mt-4">
-									<div
-										className="btn btn-sm btn-primary btn-upper text-white filter-btn"
-										onClick={this.doFilter}>
-										<i className="os-icon os-icon-ui-37" />
-										<span>
-											{filtering ? (
-												<img src={waiting} alt="submitting" />
-											) : (
-												'Filter'
-											)}
-										</span>
+										{patients &&
+											patients.map(pat => {
+												return (
+													<div
+														style={{ display: 'flex' }}
+														key={pat.id}
+														className="element-box">
+														<a
+															onClick={() => this.patientSet(pat)}
+															className="ssg-item cursor">
+															{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
+															<div
+																className="item-name"
+																dangerouslySetInnerHTML={{
+																	__html: `${pat.surname} ${pat.other_names}`,
+																}}
+															/>
+														</a>
+													</div>
+												);
+											})}
 									</div>
-								</div>
-							</form>
+									<div className="form-group col-md-4">
+										<label>From - To</label>
+										<RangePicker onChange={e => this.dateChange(e)} />
+									</div>
+									<div className="form-group col-md-3">
+										<label className="mr-2 " htmlFor="id">
+											Status
+										</label>
+										<select
+											style={{ height: '32px' }}
+											id="status"
+											className="form-control"
+											name="status"
+											onChange={e => this.change(e)}>
+											<option value="">Choose status</option>
+											{status.map((status, i) => {
+												return (
+													<option key={i} value={status.value}>
+														{status.label}
+													</option>
+												);
+											})}
+										</select>
+									</div>
+									<div className="form-group col-md-2 mt-4">
+										<div
+											className="btn btn-sm btn-primary btn-upper text-white filter-btn"
+											onClick={this.doFilter}>
+											<i className="os-icon os-icon-ui-37" />
+											<span>
+												{filtering ? (
+													<img src={waiting} alt="submitting" />
+												) : (
+													'Filter'
+												)}
+											</span>
+										</div>
+									</div>
+								</form>
+							</div>
 						</div>
 						<div className="element-box">
 							<div className="table table-responsive">
@@ -316,11 +317,11 @@ class OpenRequest extends Component {
 																		<i className="os-icon os-icon-folder-plus" />
 																	</a>
 																</Tooltip>
-																<Tooltip title="Edit Request">
+																{/* <Tooltip title="Edit Request">
 																	<a className="secondary">
 																		<i className="os-icon os-icon-edit-32" />
 																	</a>
-																</Tooltip>
+																</Tooltip> */}
 																<Tooltip title="Delete Request">
 																	<a className="danger">
 																		<i className="os-icon os-icon-ui-15" />

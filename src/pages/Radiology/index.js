@@ -2,25 +2,25 @@
 import React, { Component, lazy, Suspense } from 'react';
 import { Switch, withRouter, Link, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
+
 import NoMatch from '../NoMatch';
-import Queue from '../../components/Queue';
 import Splash from '../../components/Splash';
 
 const AllRequest = lazy(() => import('./AllRequest'));
-const ScheduledRequests = lazy(() => import('./ScheduledRequests'));
-const AppraisalList = lazy(() => import('./AppraisalList'));
-const AwaitingList = lazy(() => import('./AwaitingList'));
-const SearchScan = lazy(() => import('./SearchScan'));
 const NewRadiology = lazy(() => import('./NewRadiology'));
-
 const Dashboard = lazy(() => import('./Dashboard'));
 
 class index extends Component {
 	render() {
-		const { location, match, staff } = this.props;
+		const { location, match } = this.props;
 		const page = location.pathname.split('/').pop();
 
-		const department = staff?.details?.department?.name;
+		let pageTitle = 'Dashboard';
+		if (page === 'all-request') {
+			pageTitle = 'All Request';
+		} else if (page === 'new-request') {
+			pageTitle = 'New Radiology Request';
+		}
 
 		return (
 			<div className="content-i">
@@ -28,8 +28,7 @@ class index extends Component {
 					<div className="row">
 						<div className="col-sm-12">
 							<div className="element-wrapper">
-								<h6 className="element-header">Radiology</h6>
-								<div className="row mt-2 mb-4">
+								<div className="element-actions">
 									<Link
 										to={`${match.path}/`}
 										className={`btn btn-primary btn-sm my-1 ${
@@ -44,52 +43,18 @@ class index extends Component {
 										}`}>
 										All Request
 									</Link>
-
-									{/* <Link
-										className={`btn btn-primary btn-sm my-1 ${
-											page === 'scheduled-request' ? 'btn-outline-primary' : ''
-										}`}
-										to={`${match.path}/scheduled-request`}>
-										Schedule Request
-									</Link>
 									<Link
 										className={`btn btn-primary btn-sm my-1 ${
-											page === 'appraisal-list' ? 'btn-outline-primary' : ''
+											page === 'new-request' ? 'btn-outline-primary' : ''
 										}`}
-										to={`${match.path}/appraisal-list`}>
-										Appraisal List
-									</Link>
-									<Link
-										className={`btn btn-primary btn-sm my-1 ${
-											page === 'awaiting-list' ? 'btn-outline-primary' : ''
-										}`}
-										to={`${match.path}/awaiting-list`}>
-										Awaiting List
-									</Link> */}
-									<Link
-										className={`btn btn-primary btn-sm my-1 ${
-											page === 'search-scan' ? 'btn-outline-primary' : ''
-										}`}
-										to={`${match.path}/search-scan`}>
-										Search Scan
-									</Link>
-
-									<Link
-										className={`btn btn-primary btn-sm my-1 ${
-											page === 'new-radiology' ? 'btn-outline-primary' : ''
-										}`}
-										to={`${match.path}/new-radiology`}>
+										to={`${match.path}/new-request`}>
 										New Request
 									</Link>
 								</div>
+								<h6 className="element-header">{pageTitle}</h6>
 								<Suspense fallback={<Splash />}>
 									<Switch>
-										<Route
-											exact
-											path={`${match.path}/`}
-											component={Dashboard}
-										/>
-
+										<Route exact path={`${match.path}`} component={Dashboard} />
 										<Route
 											exact
 											path={`${match.path}/all-request`}
@@ -97,41 +62,15 @@ class index extends Component {
 										/>
 										<Route
 											exact
-											path={`${match.path}/awaiting-list`}
-											component={AwaitingList}
-										/>
-
-										<Route
-											exact
-											path={`${match.path}/appraisal-list`}
-											component={AppraisalList}
-										/>
-										<Route
-											exact
-											path={`${match.path}/new-radiology`}
+											path={`${match.path}/new-request`}
 											component={NewRadiology}
 										/>
-
-										<Route
-											exact
-											path={`${match.path}/scheduled-request`}
-											component={ScheduledRequests}
-										/>
-										<Route
-											exact
-											path={`${match.path}/search-scan`}
-											component={SearchScan}
-										/>
-
 										<Route component={NoMatch} />
 									</Switch>
 								</Suspense>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div className="content-panel compact">
-					<Queue department={department} />
 				</div>
 			</div>
 		);

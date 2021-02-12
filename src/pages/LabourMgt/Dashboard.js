@@ -37,23 +37,15 @@ class Dashboard extends Component {
 	}
 
 	fetchAllEnrolment = async () => {
-		// let startDate = moment()
-		// 	.subtract(1, 'd')
-		// 	.format('YYYY-MM-DD');
-		// let endDate = moment().format('YYYY-MM-DD');
 		const { startDate, endDate, page } = this.state;
 		try {
 			this.setState({ loading: true });
-			// console.log(
-			// 	`${labourAPI}s/?startDate=${startDate}&endDate=${endDate}&page=${page}`
-			// );
 			const rs = await request(
-				`${labourAPI}s/?startDate=${startDate}&endDate=${endDate}&page=${page}`,
+				`${labourAPI}/?startDate=${startDate}&endDate=${endDate}&page=${page}`,
 				'GET',
 				true
 			);
 			this.props.loadLabour(rs);
-			console.log(rs);
 			this.setState({ loading: false, filtering: false });
 		} catch (error) {
 			console.log(error);
@@ -85,7 +77,6 @@ class Dashboard extends Component {
 
 	detail = item => {
 		//load data into store
-		console.log(item);
 		this.props.loadLabourDetails(item);
 		this.props.history.push(`/labour-mgt/detail/${item.id}`);
 	};
@@ -95,83 +86,6 @@ class Dashboard extends Component {
 		const reverse = [...enrolments].reverse();
 		return (
 			<div className="row">
-				<div className="col-md-12">
-					<div className="element-content">
-						<div className="row">
-							<div className="col-sm-3 col-xxxl-3">
-								<a className="element-box el-tablo">
-									<div className="label">TOTAL OPEN</div>
-									<div className="value text-center">57</div>
-								</a>
-							</div>
-							<div className="col-sm-3 col-xxxl-3">
-								<a className="element-box el-tablo">
-									<div className="label">TOTAl FILLED</div>
-									<div className="value text-center">457</div>
-								</a>
-							</div>
-							<div className="col-sm-3 col-xxxl-3">
-								<a className="element-box el-tablo">
-									<div className="label">LOW STOCK</div>
-									<div className="value text-center">125</div>
-								</a>
-							</div>
-							<div className="col-sm-3 col-xxxl-3">
-								<a className="element-box el-tablo">
-									<div className="label">BUDGET</div>
-									<div className="value text-center">125</div>
-								</a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div className="col-md-12">
-					<h6 className="element-header">Enrolled</h6>
-					<div className="row my-4">
-						<form action="" className="form-inline pl-3">
-							<div className="form-group">
-								<label className="mr-2">Filter by: </label>
-							</div>
-							{/* <div className="form-group mr-2">
-								<label className="mr-2 " htmlFor="id">
-									ID
-								</label>
-								<select
-									style={{ height: '32px' }}
-									id="department"
-									className="form-control"
-									name="id"
-									onChange={e => this.change(e)}>
-									{departments.map((dept, i) => {
-										return (
-											<option key={i} value={dept.id}>
-												{dept.name}
-											</option>
-										);
-									})}
-								</select>
-							</div> */}
-							<div className="form-group mr-2">
-								<RangePicker onChange={e => this.dateChange(e)} />
-							</div>
-							<div className="form-group mr-2">
-								<a
-									className="btn btn-sm btn-primary btn-upper text-white"
-									onClick={this.doFilter}>
-									<i className="os-icon os-icon-ui-37" />
-									<span>
-										{filtering ? (
-											<img src={waiting} alt="submitting" />
-										) : (
-											'Filter'
-										)}
-									</span>
-								</a>
-							</div>
-						</form>
-					</div>
-				</div>
-
 				<div className="col-sm-12">
 					<div className="element-box">
 						<div className="table-responsive">
@@ -182,6 +96,7 @@ class Dashboard extends Component {
 										<th>Name</th>
 										<th>Age</th>
 										<th>Date Enrolled</th>
+										<th>Status</th>
 										<th className="text-right">Actions</th>
 									</tr>
 								</thead>
@@ -194,6 +109,7 @@ class Dashboard extends Component {
 										</tr>
 									) : !isEmpty(reverse) ? (
 										reverse.map((el, i) => {
+											console.log(el);
 											return (
 												<tr key={i + 1}>
 													<td>{el.fileNumber}</td>
@@ -202,6 +118,15 @@ class Dashboard extends Component {
 
 													<td>{getAge(el.date_of_birth)}</td>
 													<td>{moment(el.createdAt).format('DD-MM-YYYY')}</td>
+													<td>
+														{' '}
+														<span
+															className={`badge badge-${
+																el.isActive ? 'success' : 'danger'
+															}`}>
+															{el.isActive ? 'open' : 'closed'}
+														</span>
+													</td>
 													<td className="text-right row-actions">
 														<Tooltip title="view detail">
 															<a

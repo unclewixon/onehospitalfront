@@ -11,11 +11,15 @@ import admitIcon from '../assets/medical/admit.png';
 import immunizeIcon from '../assets/medical/immunize.png';
 import documentIcon from '../assets/medical/document.png';
 import { getAge, request } from '../services/utilities';
+import patientProfile from '../assets/svg-icons/patientProfile.svg';
+import patientProfilePic from '../assets/images/patientprofile.jpg';
+
 import { patientAPI } from '../services/constants';
 import { notifySuccess, notifyError } from './../services/notify';
 import { updatePatient } from '../actions/patient';
+import PatientActions from './PatientActions';
 
-const ProfileBlock = ({ location, history, patient, noEdits }) => {
+const ProfileBlock = ({ location, history, patient, match, noEdits }) => {
 	const [submitting, setSubmitting] = useState(false);
 
 	const dispatch = useDispatch();
@@ -51,108 +55,76 @@ const ProfileBlock = ({ location, history, patient, noEdits }) => {
 	};
 
 	return (
-		<div
-			className="card-header bg-dark bg-img p-0 no-border"
-			style={{
-				backgroundImage: `url(${background})`,
-				backgroundPosition: '50% -114.052px',
-			}}>
-			<div className="bg-dark-overlay r-2x no-r-b">
-				<div className="d-md-flex">
-					<div className="p-4 flex" style={{ flex: '1 1 auto' }}>
-						<div className="d-flex">
-							<Link to={`${location.pathname}#dashboard`}>
-								<span className="avatar w-64">
-									<img src={profilepix} alt="" /> <i className="on"></i>
-								</span>
-							</Link>
-							<div className="mx-3" style={{ width: '100%' }}>
-								<h5 className="mt-2">{`${patient?.surname} ${patient?.other_names}`}</h5>
-								<div className="row">
-									<div className="col-md-6">
-										<div className="text-fade text-sm">
-											<span className="m-r">
-												<strong>Sex:</strong> {patient?.gender}
-											</span>
+		<div className="element-box mb-0 pt-1 pb-1 p-2 ">
+			<div className="d-flex w-100">
+				<Link to={`${location.pathname}#dashboard`}>
+					<div className="w-100">
+						<div className="user-profile compact">
+							<div
+								className="up-head-w"
+								style={{ backgroundImage: `url(${patientProfilePic})` }}>
+								<div className="up-main-info">
+									<h6 className="up-sub-header">
+										<div className="value-pair">
+											<div className="label pr-2" style={{ color: 'inherit' }}>
+												Patient ID:
+											</div>
+											<div className="value badge badge-pill badge-light">
+												{patient?.fileNumber}
+											</div>
 										</div>
-										<div className="text-fade text-sm">
-											<span className="m-r">
-												<strong>Date of Birth: </strong>
-												{`${moment(new Date(patient?.date_of_birth)).format(
-													'D-MMM-YYYY'
-												)} (${getAge(new Date(patient?.date_of_birth))})`}
-											</span>
-										</div>
-									</div>
-									<div className="col-md-6">
-										<div className="text-fade text-sm">
-											<span className="m-r">
-												<strong>Insurance Status:</strong>{' '}
-												{patient?.hmo?.name || '-'}
-											</span>
-										</div>
-									</div>
+									</h6>
 								</div>
+								<img
+									className="decor"
+									src={patientProfile}
+									alt="patient profile svg"
+								/>
 							</div>
 						</div>
-					</div>
-					<div className="p-4">
-						<div className="row">
-							<div className="col-md-12 align-items-center d-flex">
-								{!noEdits && (
-									<div className="m-2 div-icon">
-										<Tooltip title="Edit Profile">
-											<Link
-												className="btn-icon"
-												to={`${location.pathname}#edit-profile`}>
-												<img src={editIcon} alt="" />
-											</Link>
-										</Tooltip>
-									</div>
-								)}
-								{!noEdits && (
-									<div className="m-2 div-icon">
-										<Tooltip title="Upload Document">
-											<Link
-												className="btn-icon"
-												to={`${location.pathname}#upload-document`}>
-												<img src={documentIcon} alt="" />
-											</Link>
-										</Tooltip>
-									</div>
-								)}
-								{!noEdits &&
-									patient &&
-									(!patient.immunization ||
-										patient.immunization.length === 0) && (
-										<div className="m-2 div-icon">
-											<Tooltip title="Enroll Immunization">
-												<a
-													className="btn-icon"
-													onClick={() => enrollImmunization()}
-													disabled={submitting}>
-													<img src={immunizeIcon} alt="" />
-												</a>
-											</Tooltip>
-										</div>
-									)}
-								{!noEdits && patient && !patient.isAdmitted && (
-									<div className="m-2 div-icon">
-										<Tooltip title="Admit Patient">
-											<a
-												className="btn-icon"
-												onClick={() => enrollAdmission()}
-												disabled={submitting}>
-												<img src={admitIcon} alt="" />
-											</a>
-										</Tooltip>
-									</div>
-								)}
+					</div>{' '}
+				</Link>
+				<div className="mx-3" style={{ width: '100%' }}>
+					<h5 className="mt-2">{`${patient?.surname} ${patient?.other_names}`}</h5>
+					<div className="row col-12">
+						<div className="col-6">
+							<div className="small row">
+								<div className="font-weight-bold col-6">Email:</div>
+
+								<span className="col-6">{patient?.email}</span>
+							</div>
+
+							<div className="small row">
+								<div className="font-weight-bold col-6">Phone Number:</div>
+								<span className="col-6">{patient?.phoneNumber}</span>
+							</div>
+							<div className="small row">
+								<div className="font-weight-bold col-6">Marital Status:</div>
+								<span className="col-6">{patient?.maritalStatus}</span>
+							</div>
+						</div>
+						<div className="col-6">
+							<div className="small row">
+								<div className="font-weight-bold col-6">Ethnicity:</div>
+								<span className="col-6">{patient?.ethnicity}</span>
+							</div>
+							<div className="small row">
+								<div className="font-weight-bold col-6">Occupation:</div>
+								<span className="col-6">{patient?.occupation}</span>
+							</div>
+							<div className="small row">
+								<div className="font-weight-bold col-6">Number of Visits:</div>
+								<span className="col-6">{patient?.noOfVisits}</span>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+			{location.pathname === '/front-desk/all-patients' && (
+				<div className="element-actions d-none d-sm-block justify-content-sm-end mt-1">
+					<PatientActions location={location} />
+				</div>
+			)}
 		</div>
 	);
 };

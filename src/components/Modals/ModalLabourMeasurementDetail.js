@@ -41,208 +41,201 @@ export class ModalLabourMeasurementDetail extends Component {
 							</div>
 							<div className="row">
 								<div className="col-sm-12">
-									<div className="user-profile compact">
-										<div className="up-contents mb-3">
-											<div className="m-b pt-1">
-												<div className="element-wrapper">
-													<div className="element-box-tp">
-														<h6 className="element-header text-left">
-															Patient
-														</h6>
-														<table className="table table-clean">
-															<tbody>
-																<tr>
-																	<td>
-																		<div className="text-left">
-																			Patient Name
-																		</div>
-																	</td>
-																	<td className="text-right text-capitalize">
-																		<div className="value text-success">
-																			{labourDetail.patient_name}
-																		</div>
-																	</td>
-																</tr>
-																<tr>
-																	<td>
-																		<div className="text-left">File Number</div>
-																	</td>
-																	<td className="text-right">
-																		<div className="value text-success">
-																			{labourDetail.fileNumber}
-																		</div>
-																	</td>
-																</tr>
-															</tbody>
-														</table>
-													</div>
+									<div className="element-wrapper pb-0">
+										<div className="element-bo mb-0">
+											<h6 className="element-header text-left">Patient</h6>
+											<div className="table table-clean table-sm mb-4">
+												<tr>
+													<td>
+														<div className="text-left">Patient Name: </div>
+													</td>
+													<td className="text-left text-capitalize">
+														<div className="value ml-1 text-success">
+															{labourDetail.patient_name}
+														</div>
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<div className="text-left">File Number: </div>
+													</td>
+													<td className="text-left">
+														<div className="value ml-1 text-success">
+															{labourDetail.fileNumber}
+														</div>
+													</td>
+												</tr>
+											</div>
+
+											<h6 className="element-header text-left">Measurement</h6>
+											<div className="row">
+												<div className="col-md-6 col-sm-12">
+													<table className="table w-100 table-clean table-sm">
+														<tbody>
+															<tr>
+																<td className="font-weight-bold text-left">
+																	Date of Measurement
+																</td>
+																<td className="text-right">
+																	{labour.dateOfMeasurement}
+																</td>
+															</tr>
+															<tr>
+																<td className="font-weight-bold text-left">
+																	Time of Measurement
+																</td>
+																<td className="text-right">
+																	{labour.timeOfMeasurement}
+																</td>
+															</tr>
+															<tr>
+																<td className="font-weight-bold text-left">
+																	False Labour
+																</td>
+																<td className="text-right">
+																	{!labour.isFalseLabour ? 'Yes' : 'No'}
+																</td>
+															</tr>
+															<tr>
+																<td className="font-weight-bold text-left">
+																	Presentation
+																</td>
+																<td className="text-right">
+																	{labour.presentation
+																		? labour.presentation
+																		: ''}
+																</td>
+															</tr>
+															<tr>
+																<td className="font-weight-bold text-left">
+																	Position Of Fetus
+																</td>
+																<td className="text-right">
+																	{labour.positionOfFetus
+																		? labour.positionOfFetus
+																		: ' - '}
+																</td>
+															</tr>
+															<tr>
+																<td className="font-weight-bold text-left">
+																	Fetal Lies
+																</td>
+																<td className="text-right">
+																	{labour.fetalLies ? labour.fetalLies : '-'}
+																</td>
+															</tr>
+															<tr>
+																<td className="font-weight-bold text-left">
+																	Descent
+																</td>
+																<td className="text-right">
+																	{' '}
+																	{labour.descent ? labour.descent : '-'}
+																</td>
+															</tr>
+															<tr>
+																<td className="font-weight-bold text-left">
+																	Cervical Length
+																</td>
+																<td className="text-right">
+																	{labour.cervicalLength
+																		? labour.cervicalLength
+																		: '-'}
+																</td>
+															</tr>
+															<tr>
+																<td className="font-weight-bold text-left">
+																	Cervical Length
+																</td>
+																<td className="text-right">
+																	{labour.cervicalLength
+																		? labour.cervicalLength
+																		: '-'}
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+												<div className="col-md-6 col-sm-12">
+													<table className="table w-100 table-clean table-sm">
+														<tbody>
+															<tr>
+																<td className="font-weight-bold text-left">
+																	Cervical Effacement
+																</td>
+																<td className="text-right">
+																	{labour.cervicalEffacement
+																		? labour.cervicalEffacement
+																		: '-'}
+																</td>
+															</tr>
+															<tr>
+																<td className="font-weight-bold text-left">
+																	Cervical Position
+																</td>
+																<td className="text-right">
+																	{labour.cervicalPosition
+																		? labour.cervicalPosition
+																		: '-'}
+																</td>
+															</tr>
+															<tr>
+																<td className="font-weight-bold text-left">
+																	Membrances
+																</td>
+																<td className="text-right">
+																	{labour.membrances ? labour.membrances : '-'}
+																</td>
+															</tr>
+															<tr>
+																<td className="font-weight-bold text-left">
+																	Passed Urine
+																</td>
+																<td className="text-right">
+																	{!labour.hasPassedUrine ? 'Yes' : 'No'}
+																</td>
+															</tr>
+															<tr>
+																<td className="font-weight-bold text-left">
+																	Administered Cyatacin
+																</td>
+																<td className="text-right">
+																	{labour.administeredCyatacin ? 'Yes' : 'No'}
+																</td>
+															</tr>
+															<tr>
+																<td className="font-weight-bold text-left">
+																	Administered Drugs
+																</td>
+																<td className="text-right">
+																	{labour.administeredDrugs ? 'Yes' : 'No'}
+																</td>
+															</tr>
+															<tr>
+																<td className="font-weight-bold text-left">
+																	Lab Tests
+																</td>
+																<td className="text-right">
+																	{labour.labTests && labour.labTests.length > 0
+																		? labour.labTests.join(',')
+																		: '-'}
+																</td>
+															</tr>
+															<tr>
+																<td className="font-weight-bold text-left">
+																	Measurements
+																</td>
+																<td className="text-right">
+																	{labour.measurements &&
+																	labour.measurements.length > 0
+																		? labour.measurements.join(',')
+																		: '-'}
+																</td>
+															</tr>
+														</tbody>
+													</table>
 												</div>
 											</div>
-										</div>
-									</div>
-								</div>
-
-								<div className="col-sm-12">
-									<div className="element-wrapper">
-										<div className="element-box">
-											<h6 className="element-header text-left">Measurement</h6>
-											<table className="table ">
-												<tbody>
-													<tr>
-														<td className="font-weight-bold text-left">
-															Date of Measurement
-														</td>
-														<td className="text-right">
-															{labour.dateOfMeasurement}
-														</td>
-													</tr>
-													<tr>
-														<td className="font-weight-bold text-left">
-															Time of Measurement
-														</td>
-														<td className="text-right">
-															{labour.timeOfMeasurement}
-														</td>
-													</tr>
-
-													<tr>
-														<td className="font-weight-bold text-left">
-															False Labour
-														</td>
-														<td className="text-right">
-															{!labour.isFalseLabour ? 'Yes' : 'No'}
-														</td>
-													</tr>
-													<tr>
-														<td className="font-weight-bold text-left">
-															Presentation
-														</td>
-														<td className="text-right">
-															{labour.presentation ? labour.presentation : ''}
-														</td>
-													</tr>
-													<tr>
-														<td className="font-weight-bold text-left">
-															Position Of Fetus
-														</td>
-														<td className="text-right">
-															{labour.positionOfFetus
-																? labour.positionOfFetus
-																: ' - '}
-														</td>
-													</tr>
-													<tr>
-														<td className="font-weight-bold text-left">
-															Fetal Lies
-														</td>
-														<td className="text-right">
-															{labour.fetalLies ? labour.fetalLies : '-'}
-														</td>
-													</tr>
-													<tr>
-														<td className="font-weight-bold text-left">
-															Descent
-														</td>
-														<td className="text-right">
-															{' '}
-															{labour.descent ? labour.descent : '-'}
-														</td>
-													</tr>
-													<tr>
-														<td className="font-weight-bold text-left">
-															Cervical Length
-														</td>
-														<td className="text-right">
-															{labour.cervicalLength
-																? labour.cervicalLength
-																: '-'}
-														</td>
-													</tr>
-													<tr>
-														<td className="font-weight-bold text-left">
-															Cervical Length
-														</td>
-														<td className="text-right">
-															{labour.cervicalLength
-																? labour.cervicalLength
-																: '-'}
-														</td>
-													</tr>
-													<tr>
-														<td className="font-weight-bold text-left">
-															Cervical Effacement
-														</td>
-														<td className="text-right">
-															{labour.cervicalEffacement
-																? labour.cervicalEffacement
-																: '-'}
-														</td>
-													</tr>
-													<tr>
-														<td className="font-weight-bold text-left">
-															Cervical Position
-														</td>
-														<td className="text-right">
-															{labour.cervicalPosition
-																? labour.cervicalPosition
-																: '-'}
-														</td>
-													</tr>
-													<tr>
-														<td className="font-weight-bold text-left">
-															Membrances
-														</td>
-														<td className="text-right">
-															{labour.membrances ? labour.membrances : '-'}
-														</td>
-													</tr>
-													<tr>
-														<td className="font-weight-bold text-left">
-															Passed Urine"
-														</td>
-														<td className="text-right">
-															{!labour.hasPassedUrine ? 'Yes' : 'No'}
-														</td>
-													</tr>
-													<tr>
-														<td className="font-weight-bold text-left">
-															Administered Cyatacin
-														</td>
-														<td className="text-right">
-															{labour.administeredCyatacin ? 'Yes' : 'No'}
-														</td>
-													</tr>
-													<tr>
-														<td className="font-weight-bold text-left">
-															Administered Drugs
-														</td>
-														<td className="text-right">
-															{labour.administeredDrugs ? 'Yes' : 'No'}
-														</td>
-													</tr>
-													<tr>
-														<td className="font-weight-bold text-left">
-															Lab Tests
-														</td>
-														<td className="text-right">
-															{labour.labTests && labour.labTests.length > 0
-																? labour.labTests.join(',')
-																: '-'}
-														</td>
-													</tr>
-													<tr>
-														<td className="font-weight-bold text-left">
-															Measurements
-														</td>
-														<td className="text-right">
-															{labour.measurements &&
-															labour.measurements.length > 0
-																? labour.measurements.join(',')
-																: '-'}
-														</td>
-													</tr>
-												</tbody>
-											</table>
 										</div>
 									</div>
 								</div>

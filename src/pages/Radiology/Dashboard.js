@@ -1,88 +1,18 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import Tooltip from 'antd/lib/tooltip';
 
 import { API_URI, patientAPI } from '../../services/constants';
-import waiting from '../../assets/images/waiting.gif';
 import { request, upload } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadRadiology } from '../../actions/patient';
 import { uploadRadiology } from '../../actions/general';
 import { toggleProfile } from '../../actions/user';
-
-const UploadImagingData = ({ uploading, doUpload, hide }) => {
-	const [files, setFiles] = useState(null);
-	const [label, setLabel] = useState('');
-
-	// let uploadAttachment;
-
-	const handleChange = e => {
-		setFiles(e.target.files);
-
-		let label = Array.from(e.target.files)
-			.map(file => {
-				return file.name;
-			})
-			.join(',');
-		setLabel(label);
-	};
-	return (
-		<div
-			className="onboarding-modal fade animated show"
-			role="dialog"
-			style={{ width: '400px' }}>
-			<div className="modal-centered">
-				<div className="modal-content text-center">
-					<button onClick={hide} className="close" type="button">
-						<span className="os-icon os-icon-close"></span>
-					</button>
-					<div className="onboarding-content with-gradient">
-						<h4 className="onboarding-title">Upload Imaging</h4>
-
-						<form
-							className="form-block w-100"
-							onSubmit={e => doUpload(e, files)}>
-							<div className="row my-3">
-								<div className="custom-file col-12">
-									{/* {label ? <textarea>{label}</textarea> : null} */}
-									<input
-										type="file"
-										className="custom-file-input"
-										name="file"
-										accept="image/*"
-										onChange={handleChange}
-										multiple
-									/>
-									<label className="custom-file-label">
-										{label.substring(0, 40) || 'Choose File(s)'}
-									</label>
-								</div>
-							</div>
-
-							<div className="row">
-								<div className="col-sm-12 text-right pr-0">
-									<button
-										className="btn btn-primary"
-										disabled={uploading}
-										type="submit">
-										{uploading ? (
-											<img src={waiting} alt="submitting" />
-										) : (
-											'upload'
-										)}
-									</button>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
-};
+import UploadImagingData from './UploadImageData';
+import ViewScanImage from './ViewScanImage';
 
 export class Dashboard extends Component {
 	state = {
@@ -94,7 +24,12 @@ export class Dashboard extends Component {
 		status: '',
 		upload_visible: false,
 		uploading: false,
-		patient: null,
+		request: null,
+		approved: false,
+		captured: false,
+		uploaded: false,
+		payment_made: true,
+		showModal: false,
 	};
 
 	componentDidMount() {
@@ -108,11 +43,16 @@ export class Dashboard extends Component {
 			const url = `${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}`;
 			const rs = await request(url, 'GET', true);
 
-			this.props.loadRadiology(rs);
-			console.log(rs);
+			this.props.loadRadiology(rs.result);
+
+			// debug purposes
+			// console.log('server response', rs);
 			this.setState({ loading: false, filtering: false });
 		} catch (error) {
-			console.log(error);
+			// DEBUG PURPOSES
+			// console.log('this error', error);
+			// console.log('this state', this.state);
+			// console.log('start ' + this.state.startDate, 'end' + this.state.endDate);
 			notifyError('Error fetching all radiology request');
 			this.setState({ loading: false, filtering: false });
 		}
@@ -185,7 +125,8 @@ export class Dashboard extends Component {
 	onUpload = async (e, files) => {
 		e.preventDefault();
 		console.log(files, 'files');
-		const { patient } = this.state;
+		const { request } = this.state;
+		console.log(request);
 		if (!files) {
 			notifyError('You did not select any image file');
 			return;
@@ -198,19 +139,23 @@ export class Dashboard extends Component {
 		// console.log(fileData.files[0], "file");
 		//files: [file1, file2, file3]
 		const file = files[0];
+		console.log(file, 'file');
 		if (file) {
 			try {
 				let formData = new FormData();
 				formData.append('files', file);
-				formData.append('document_type', 'Imaging');
-				console.log(formData.getAll());
+				formData.append('document_type', 'imaging');
 				const rs = await upload(
-					`${API_URI}/${patientAPI}/${patient.patient_id}/upload-request-document`,
+					`${API_URI}/${patientAPI}/${request.id}/upload-request-document`,
 					'POST',
 					formData
 				);
 				notifySuccess(`Patient Imaging Data Uploaded`);
-				this.setState({ uploading: false, upload_visible: false });
+				this.setState({
+					uploading: false,
+					upload_visible: false,
+					uploaded: true,
+				});
 				console.log(rs);
 			} catch (error) {
 				console.log(error);
@@ -218,9 +163,13 @@ export class Dashboard extends Component {
 				// throw new SubmissionError({
 				// 	_error: e.message || 'could not upload data',
 				// });
-				notifyError(e.message || 'could not upload data');
+				notifyError(error.message || 'could not upload data');
 			}
 		}
+	};
+	closeModal = () => {
+		document.body.classList.remove('modal-open');
+		this.setState({ ...this.state, showModal: false });
 	};
 
 	getRequests = arr => {
@@ -232,8 +181,17 @@ export class Dashboard extends Component {
 	};
 
 	togglePopover = req => {
-		this.setState({ patient: req });
+		this.setState({ request: req });
 		this.setState({ upload_visible: true });
+	};
+	onShowModal = () => {
+		this.setState({ ...this.state, showModal: true });
+	};
+	onCaptured = () => {
+		this.setState({ ...this.state, captured: true });
+	};
+	onApproved = () => {
+		this.setState({ ...this.state, approved: true });
 	};
 	render() {
 		const {
@@ -241,39 +199,19 @@ export class Dashboard extends Component {
 			loading,
 			uploading,
 			upload_visible,
+			// request,
+			payment_made,
+			approved,
+			captured,
+			uploaded,
+			showModal,
 			// patient,
 		} = this.state;
 		const { radiology } = this.props;
 		return (
 			<div className="row">
-				<div className="col-md-12">
-					<div className="element-content">
-						<div className="row">
-							<div className="col-sm-4 col-xxxl-4">
-								<a className="element-box el-tablo">
-									<div className="label">TOTAL OPEN</div>
-									<div className="value text-center">57</div>
-								</a>
-							</div>
-							<div className="col-sm-4 col-xxxl-4">
-								<a className="element-box el-tablo">
-									<div className="label">TOTAl FILLED</div>
-									<div className="value text-center">457</div>
-								</a>
-							</div>
-							<div className="col-sm-4 col-xxxl-4">
-								<a className="element-box el-tablo">
-									<div className="label">LOW STOCK</div>
-									<div className="value text-center">125</div>
-								</a>
-							</div>
-						</div>
-					</div>
-				</div>
 				<div className="col-sm-12">
 					<div className="element-wrapper">
-						<h6 className="element-header">Dashboard</h6>
-
 						{/* <Popover
 							content={
 								<UploadImagingData
@@ -308,7 +246,8 @@ export class Dashboard extends Component {
 										<tr>
 											<th className="text-center">Request Date</th>
 											<th className="text-center">Patient Name</th>
-											<th className="text-center">Request</th>
+											<th className="text-center">Type</th>
+											<th className="text-center">Status</th>
 											<th>
 												<div className="th-inner "></div>
 												<div className="fht-cell"></div>
@@ -334,29 +273,102 @@ export class Dashboard extends Component {
 															{request.patient_name}
 														</td>
 														<td className="text-center">
-															{this.getRequests(request.requestBody)}
+															{/* {this.getRequests(request.requestType)} */}
+															{request.requestType}
 														</td>
-
+														<td className="text-center">
+															{/* {request.status} */}
+															{!payment_made && (
+																<span className="badge badge-warning">
+																	Awaiting Payment
+																</span>
+															)}
+															{payment_made && !captured && (
+																<span className="badge badge-info text-white">
+																	Pending
+																</span>
+															)}
+															{payment_made &&
+																(uploaded || !uploaded) &&
+																captured &&
+																!approved && (
+																	<span className="badge badge-secondary">
+																		Awaiting Approval
+																	</span>
+																)}
+															{approved && (
+																<span className="badge badge-success">
+																	Approved
+																</span>
+															)}
+														</td>
 														<td className="text-right row-actions">
-															<Tooltip title="Receive Request">
-																<a className="secondary">
-																	<i className="os-icon os-icon-folder-plus" />
-																</a>
-															</Tooltip>
-															<Tooltip title="Upload image">
-																<a
-																	onClick={() => {
-																		this.togglePopover(request);
-																	}}>
-																	<i className="os-icon os-icon-upload-cloud" />
-																</a>
-															</Tooltip>
+															{/* after payment, capture scan */}
+															{payment_made && !captured && (
+																<Tooltip title="Captured Scan?">
+																	<a
+																		className="secondary"
+																		onClick={() => {
+																			this.onCaptured();
+																		}}>
+																		<i className="os-icon os-icon-folder-plus" />
+																	</a>
+																</Tooltip>
+															)}
+															{/* after approval, view scan */}
+															{approved && (
+																<Tooltip title="View Scan Image">
+																	<a
+																		className="secondary"
+																		onClick={() => {
+																			document.body.classList.add('modal-open');
+																			this.onShowModal();
+																		}}>
+																		<i className="os-icon os-icon-eye" />
+																	</a>
+																</Tooltip>
+															)}
+															{/* after approval print scan */}
+															{approved && (
+																<Tooltip title="Print Scan">
+																	<a className="secondary">
+																		<i className="os-icon os-icon-printer" />
+																	</a>
+																</Tooltip>
+															)}
+															{/* after capture & after upload, upload scan */}
+															{payment_made &&
+																(uploaded || !uploaded) &&
+																captured &&
+																!approved && (
+																	<Tooltip title="Upload scan Image">
+																		<a
+																			onClick={() => {
+																				this.togglePopover(request);
+																			}}>
+																			<i className="os-icon os-icon-upload-cloud" />
+																		</a>
+																	</Tooltip>
+																)}
+															{/* after upload, approve scan */}
+															{payment_made && uploaded && !approved && (
+																<Tooltip title="Approve Scan Image">
+																	<a
+																		className="secondary"
+																		onClick={() => this.onApproved()}>
+																		<i className="font-bolder icon-feather-check" />
+																	</a>
+																</Tooltip>
+															)}
 
-															<Tooltip title="Delete Request">
-																<a className="danger">
-																	<i className="os-icon os-icon-ui-15" />
-																</a>
-															</Tooltip>
+															{/* until approval, delete request */}
+															{!approved && (
+																<Tooltip title="Delete Request">
+																	<a className="danger">
+																		<i className="os-icon os-icon-ui-15" />
+																	</a>
+																</Tooltip>
+															)}
 														</td>
 													</tr>
 												);
@@ -368,6 +380,7 @@ export class Dashboard extends Component {
 						</div>
 					</div>
 				</div>
+				{showModal && <ViewScanImage closeModal={this.closeModal} />}
 			</div>
 		);
 	}

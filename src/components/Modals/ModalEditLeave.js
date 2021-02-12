@@ -5,10 +5,10 @@ import moment from 'moment';
 import { useForm } from 'react-hook-form';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
+
 import waiting from '../../assets/images/waiting.gif';
 import { get_all_leave_category } from '../../actions/settings';
 import { notifySuccess, notifyError } from '../../services/notify';
-
 import { request } from '../../services/utilities';
 
 const ModalEditLeave = ({

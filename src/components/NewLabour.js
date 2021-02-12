@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Field, reduxForm, reset, formValueSelector } from 'redux-form';
 import DatePicker from 'react-datepicker';
+import { loadLabourDetails } from '../actions/patient';
 
 import {
 	searchAPI,
@@ -106,11 +107,10 @@ export class NewLabour extends Component {
 				true,
 				newData
 			);
-			console.log(rs);
 			notifySuccess('succesfully submitted');
 			reset();
-
-			this.props.history.push('/labour-mgt');
+			// this.props.loadLabourDetails(rs.data);
+			this.props.history.push(`/labour-mgt/detail/${rs.data.id}`);
 		} catch (e) {
 			this.setState({ submitting: false });
 			notifyError(
@@ -187,142 +187,141 @@ export class NewLabour extends Component {
 			// lmp,
 		} = this.state;
 		return (
-			<div className="col-sm-12">
-				<div className="element-wrapper">
-					<h6 className="element-header">New Labour Management</h6>
-					<div className="element-box">
-						<div className="form-block w-100">
-							<form onSubmit={handleSubmit(this.onSubmit)}>
-								<div className="row">
-									<div className="form-group col-sm-12">
-										<label>Patient</label>
+			<div className="element-wrapper">
+				{/* <h6 className="element-header">New Labour Management</h6> */}
+				<div className="element-box">
+					<div className="form-block w-100">
+						<form onSubmit={handleSubmit(this.onSubmit)}>
+							<div className="row">
+								<div className="form-group col-sm-12">
+									<label>Patient</label>
 
-										<AsyncSelect
-											isClearable
-											getOptionValue={getOptionValues}
-											getOptionLabel={getOptionLabels}
-											defaultOptions
-											ref={this.patient}
-											name="patient_id"
-											loadOptions={getOptions}
-											onChange={e => this.patientSet(e)}
-											placeholder="Search patients"
-										/>
-									</div>
+									<AsyncSelect
+										isClearable
+										getOptionValue={getOptionValues}
+										getOptionLabel={getOptionLabels}
+										defaultOptions
+										ref={this.patient}
+										name="patient_id"
+										loadOptions={getOptions}
+										onChange={e => this.patientSet(e)}
+										placeholder="Search patients"
+									/>
 								</div>
+							</div>
 
-								<div className="row">
-									<div className="col-sm-6">
-										<Field
-											id="husbandName"
-											name="husbandName"
-											component={renderTextInput}
-											label="Husband Name"
-											type="text"
-											placeholder="Enter name of husband"
-										/>
-									</div>
-									<div className="col-sm-6">
-										<Field
-											id="husbandPhoneNo"
-											name="husbandPhoneNo"
-											component={renderTextInput}
-											label="Husband Phone No"
-											type="text"
-											placeholder="Enter the phone of husband"
-										/>
-									</div>
+							<div className="row">
+								<div className="col-sm-6">
+									<Field
+										id="husbandName"
+										name="husbandName"
+										component={renderTextInput}
+										label="Husband Name"
+										type="text"
+										placeholder="Enter name of husband"
+									/>
 								</div>
-								<div className="row">
-									<div className="col-sm-6">
-										<Field
-											id="bloodGroup"
-											name="bloodGroup"
-											component={renderSelect}
-											label="Select Blood Group"
-											placeholder="Select blood group"
-											data={bloodGroup}
-										/>
-									</div>
-									<div className="col-sm-6">
-										<Field
-											id="parity"
-											name="parity"
-											component={renderSelect}
-											label="Select Parity"
-											placeholder="Select Parity"
-											data={para}
-										/>
-									</div>
+								<div className="col-sm-6">
+									<Field
+										id="husbandPhoneNo"
+										name="husbandPhoneNo"
+										component={renderTextInput}
+										label="Husband Phone No"
+										type="text"
+										placeholder="Enter the phone of husband"
+									/>
 								</div>
+							</div>
+							<div className="row">
+								<div className="col-sm-6">
+									<Field
+										id="bloodGroup"
+										name="bloodGroup"
+										component={renderSelect}
+										label="Select Blood Group"
+										placeholder="Select blood group"
+										data={bloodGroup}
+									/>
+								</div>
+								<div className="col-sm-6">
+									<Field
+										id="parity"
+										name="parity"
+										component={renderSelect}
+										label="Select Parity"
+										placeholder="Select Parity"
+										data={para}
+									/>
+								</div>
+							</div>
 
-								<div className="row">
-									<div className="col-sm-6">
-										<Field
-											id="alive"
-											name="alive"
-											component={renderSelect}
-											label="Alive"
-											placeholder="Select Alive"
-											data={previousPregnancies}
-										/>
-									</div>
-									<div className="col-sm-6">
-										<Field
-											id="miscarriage"
-											name="miscarriage"
-											component={renderSelect}
-											label="Select Miscarriage"
-											placeholder="Select miscarriage"
-											data={previousPregnancies}
-										/>
-									</div>
+							<div className="row">
+								<div className="col-sm-6">
+									<Field
+										id="alive"
+										name="alive"
+										component={renderSelect}
+										label="Alive"
+										placeholder="Select Alive"
+										data={previousPregnancies}
+									/>
 								</div>
-								<div className="row">
-									<div className="col-sm-6">
-										<Field
-											id="presentPregnancy"
-											name="presentPregnancy"
-											component={renderTextInput}
-											label="Select present Pregnancy"
-											placeholder="Select present Pregnancy"
-										/>
-									</div>
-									<div className="col-sm-6">
-										<div className="form-group">
-											<label>LMP</label>
-											<div className="custom-date-input">
-												<DatePicker
-													selected={this.state.lmp}
-													onChange={date => this.setDate(date, 'lmp')}
-													peekNextMonth
-													showMonthDropdown
-													showYearDropdown
-													dropdownMode="select"
-													dateFormat="dd-MMM-yyyy"
-													className="single-daterange form-control"
-													placeholderText="Select date of birth"
-													maxDate={new Date()}
-													required
-												/>
-											</div>
+								<div className="col-sm-6">
+									<Field
+										id="miscarriage"
+										name="miscarriage"
+										component={renderSelect}
+										label="Select Miscarriage"
+										placeholder="Select miscarriage"
+										data={previousPregnancies}
+									/>
+								</div>
+							</div>
+							<div className="row">
+								<div className="col-sm-6">
+									<Field
+										id="presentPregnancy"
+										name="presentPregnancy"
+										component={renderSelect}
+										label="Number of current child"
+										placeholder="Number of current child"
+										data={previousPregnancies}
+									/>
+								</div>
+								<div className="col-sm-6">
+									<div className="form-group">
+										<label>LMP</label>
+										<div className="custom-date-input">
+											<DatePicker
+												selected={this.state.lmp}
+												onChange={date => this.setDate(date, 'lmp')}
+												peekNextMonth
+												showMonthDropdown
+												showYearDropdown
+												dropdownMode="select"
+												dateFormat="dd-MMM-yyyy"
+												className="single-daterange form-control"
+												placeholderText="Select date of birth"
+												maxDate={new Date()}
+												required
+											/>
 										</div>
 									</div>
 								</div>
+							</div>
 
-								<div className="row">
-									<div className="col-sm-12 text-right">
-										<button className="btn btn-primary" disabled={submitting}>
-											{submitting ? (
-												<img src={waiting} alt="submitting" />
-											) : (
-												'Save'
-											)}
-										</button>
-									</div>
+							<div className="row">
+								<div className="col-sm-12 text-right">
+									<button className="btn btn-primary" disabled={submitting}>
+										{submitting ? (
+											<img src={waiting} alt="submitting" />
+										) : (
+											'Save'
+										)}
+									</button>
 								</div>
-							</form>
-						</div>
+							</div>
+						</form>
 					</div>
 				</div>
 			</div>
@@ -342,4 +341,6 @@ const mapStateToProps = state => {
 	};
 };
 
-export default withRouter(connect(mapStateToProps, {})(NewLabour));
+export default withRouter(
+	connect(mapStateToProps, { loadLabourDetails })(NewLabour)
+);

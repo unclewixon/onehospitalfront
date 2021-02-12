@@ -2,340 +2,147 @@ import React from 'react';
 
 const AccountUserProfile = ({ staff }) => {
 	return (
-		<div className="col-sm-7">
-			<div className="element-wrapper">
-				<div className="element-box">
-					<div className="element-info">
-						<div className="element-info-with-icon">
-							<div className="element-info-icon">
-								<div className="os-icon os-icon-user-male-circle2"></div>
-							</div>
-							<div className="element-info-text">
-								<h5 className="element-inner-header">My Profile</h5>
-								<div className="element-inner-desc">
-									{/* Validation of the form is made possible using powerful
-										validator plugin for bootstrap.{' '}
-										<a
-											href="http://1000hz.github.io/bootstrap-validator/"
-											target="_blank">
-											Learn more about Bootstrap Validator
-										</a> */}
-								</div>
-							</div>
-						</div>
-					</div>
-					<div className="padded">
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Fullname</span>
-									{/* <span className="negative">-12</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">
-										{staff?.details?.first_name +
-											' ' +
-											staff?.details?.last_name +
-											' ' +
-											staff?.details?.other_names}
-									</span>
-								</div>
-							</div>
-						</div>
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Gender</span>
-									{/* <span className="positive">+10</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">{staff?.details?.gender}</span>
-								</div>
-							</div>
-						</div>
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Date of Birth</span>
-									{/* <span className="positive">+5</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">{staff?.details?.date_of_birth}</span>
-								</div>
-							</div>
-						</div>
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Marital Status</span>
-									{/* <span className="positive">+5</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">{staff?.details?.marital_status}</span>
-								</div>
-							</div>
-						</div>
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>No. of Children</span>
-									{/* <span className="positive">+5</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">
-										{staff?.details?.number_of_children}
-									</span>
-								</div>
-							</div>
-						</div>
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Religion</span>
-									{/* <span className="positive">+5</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">{staff?.details?.religion}</span>
-								</div>
-							</div>
-						</div>
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Contact Address</span>
-									{/* <span className="positive">+5</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">{staff?.details?.address}</span>
-								</div>
-							</div>
-						</div>
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Local Government</span>
-									{/* <span className="positive">+5</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">{staff?.details?.lga}</span>
-								</div>
-							</div>
-						</div>
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>State of Origin</span>
-									{/* <span className="positive">+5</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">
-										{staff?.details?.state_of_origin}
-									</span>
-								</div>
-							</div>
-						</div>
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Nationality</span>
-									{/* <span className="positive">+5</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">{staff?.details?.nationality}</span>
-								</div>
-							</div>
-						</div>
-					</div>
-					<legend>
-						<span>Next of Kin Details</span>
-					</legend>
-					<div className="padded">
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Fullname</span>
-									{/* <span className="negative">-12</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">{staff?.details?.next_of_kin}</span>
-								</div>
-							</div>
-						</div>
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Relationship</span>
-									{/* <span className="negative">-12</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">
-										{staff?.details?.next_of_kin_relationship}
-									</span>
-								</div>
-							</div>
-						</div>
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Phone Number</span>
-									{/* <span className="negative">-12</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">
-										{staff?.details?.next_of_kin_contact_no}
-									</span>
-								</div>
-							</div>
-						</div>
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Date of Birth</span>
-									{/* <span className="negative">-12</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">
-										{staff?.details?.next_of_kin_dob}
-									</span>
-								</div>
-							</div>
-						</div>
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Contact Address</span>
-									{/* <span className="negative">-12</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">
-										{staff?.details?.next_of_kin_address}
-									</span>
-								</div>
-							</div>
-						</div>
-					</div>
-					<legend>
-						<span>Official Details</span>
-					</legend>
-					<div className="padded">
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Job Title</span>
-									{/* <span className="negative">-12</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">{staff?.details?.job_title}</span>
-								</div>
-							</div>
-						</div>
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Department</span>
-									{/* <span className="negative">-12</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">
-										{staff?.details?.department?.name}
-									</span>
-								</div>
-							</div>
-						</div>
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Employment Date</span>
-									{/* <span className="negative">-12</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">
-										{staff?.details?.employment_start_date}
-									</span>
-								</div>
-							</div>
-						</div>
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Employment Code</span>
-									{/* <span className="negative">-12</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">{staff?.details?.emp_code}</span>
-								</div>
-							</div>
-						</div>
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Contract Type</span>
-									{/* <span className="negative">-12</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">{staff?.details?.contract_type}</span>
-								</div>
-							</div>
-						</div>
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Monthly Salary</span>
-									{/* <span className="negative">-12</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">{staff?.details?.monthly_salary}</span>
-								</div>
-							</div>
-						</div>
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Annual Salary</span>
-									{/* <span className="negative">-12</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">{staff?.details?.annual_salary}</span>
-								</div>
-							</div>
-						</div>
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Account Number</span>
-									{/* <span className="negative">-12</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">{staff?.details?.account_number}</span>
-								</div>
-							</div>
-						</div>
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Bank</span>
-									{/* <span className="negative">-12</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">{staff?.details?.bank_name}</span>
-								</div>
-							</div>
-						</div>
-						<div className="os-progress-bar primary">
-							<div className="bar-labels">
-								<div className="bar-label-left">
-									<span>Pension Manager</span>
-									{/* <span className="negative">-12</span> */}
-								</div>
-								<div className="bar-label-right">
-									<span className="info">{staff?.details?.pension_mngr}</span>
-								</div>
-							</div>
-						</div>
+		<>
+			<div className="element-info mb-0">
+				<div className="element-info-with-icon">
+					<div className="element-info-text">
+						<h5 className="element-inner-header">My Profile</h5>
 					</div>
 				</div>
 			</div>
-		</div>
+			<table className="table table-lightborder">
+				<tbody>
+					<tr className="small">
+						<td className="font-weight-bold">Fullname</td>
+						<td className="text-right">
+							{staff?.details?.first_name +
+								' ' +
+								staff?.details?.last_name +
+								' ' +
+								staff?.details?.other_names}
+						</td>
+					</tr>
+					<tr className="small">
+						<td className="font-weight-bold">Gender</td>
+						<td className="text-right">{staff?.details?.gender}</td>
+					</tr>
+					<tr className="small">
+						<td className="font-weight-bold">Date of Birth</td>
+						<td className="text-right">{staff?.details?.date_of_birth}</td>
+					</tr>
+					<tr className="small">
+						<td className="font-weight-bold">Marital Status</td>
+						<td className="text-right">{staff?.details?.marital_status}</td>
+					</tr>
+					<tr className="small">
+						<td className="font-weight-bold">No. of Children</td>
+						<td className="text-right">{staff?.details?.number_of_children}</td>
+					</tr>
+					<tr className="small">
+						<td className="font-weight-bold">Contact Address</td>
+						<td className="text-right">{staff?.details?.address}</td>
+					</tr>
+					<tr className="small">
+						<td className="font-weight-bold">Local Government</td>
+						<td className="text-right">{staff?.details?.lga}</td>
+					</tr>
+					<tr className="small">
+						<td className="font-weight-bold">State of Origin</td>
+						<td className="text-right"> {staff?.details?.state_of_origin}</td>
+					</tr>
+					<tr className="small">
+						<td className="font-weight-bold">Nationality</td>
+						<td className="text-right"> {staff?.details?.nationality}</td>
+					</tr>
+				</tbody>
+			</table>
+			<legend>
+				<span>Next of Kin Details</span>
+			</legend>
+			<table className="table table-lightborder">
+				<tbody>
+					<tr className="small">
+						<td className="font-weight-bold">Fullname</td>
+						<td className="text-right">{staff?.details?.next_of_kin}</td>
+					</tr>
+					<tr className="small">
+						<td className="font-weight-bold">Relationship</td>
+						<td className="text-right">
+							{' '}
+							{staff?.details?.next_of_kin_relationship}
+						</td>
+					</tr>
+					<tr className="small">
+						<td className="font-weight-bold">Phone Number</td>
+						<td className="text-right">
+							{' '}
+							{staff?.details?.next_of_kin_contact_no}
+						</td>
+					</tr>
+					<tr className="small">
+						<td className="font-weight-bold">Date of Birth</td>
+						<td className="text-right"> {staff?.details?.next_of_kin_dob}</td>
+					</tr>
+					<tr className="small">
+						<td className="font-weight-bold">Contact Address</td>
+						<td className="text-right">
+							{' '}
+							{staff?.details?.next_of_kin_address}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<legend>
+				<span>Official Details</span>
+			</legend>
+			<table className="table table-lightborder">
+				<tbody>
+					<tr className="small">
+						<td className="font-weight-bold">Job Title</td>
+						<td className="text-right"> {staff?.details?.job_title}</td>
+					</tr>
+					<tr className="small">
+						<td className="font-weight-bold">Department</td>
+						<td className="text-right"> {staff?.details?.department?.name}</td>
+					</tr>
+					<tr className="small">
+						<td className="font-weight-bold">Employment Date</td>
+						<td className="text-right">
+							{' '}
+							{staff?.details?.employment_start_date}
+						</td>
+					</tr>
+					<tr className="small">
+						<td className="font-weight-bold">Employment Code</td>
+						<td className="text-right">{staff?.details?.emp_code}</td>
+					</tr>
+					<tr className="small">
+						<td className="font-weight-bold">Contract Type</td>
+						<td className="text-right">{staff?.details?.contract_type}</td>
+					</tr>
+					<tr className="small">
+						<td className="font-weight-bold">Monthly Salary</td>
+						<td className="text-right">{staff?.details?.monthly_salary}</td>
+					</tr>
+					<tr className="small">
+						<td className="font-weight-bold">Annual Salary</td>
+						<td className="text-right">{staff?.details?.annual_salary}</td>
+					</tr>
+					<tr className="small">
+						<td className="font-weight-bold">Account Number</td>
+						<td className="text-right">{staff?.details?.account_number}</td>
+					</tr>
+					<tr className="small">
+						<td className="font-weight-bold">Bank</td>
+						<td className="text-right">{staff?.details?.bank_name}</td>
+					</tr>
+					<tr className="small">
+						<td className="font-weight-bold">Pension Manager</td>
+						<td className="text-right">{staff?.details?.pension_mngr}</td>
+					</tr>
+				</tbody>
+			</table>
+		</>
 	);
 };
 

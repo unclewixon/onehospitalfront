@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
 
+import patientProfilePic from '../../assets/images/patientprofile.jpg';
 import { closeModals } from '../../actions/general';
 
 class ModalViewAppointment extends Component {
@@ -18,12 +18,22 @@ class ModalViewAppointment extends Component {
 		const { view_appointment_detail } = this.props;
 		return (
 			<div
-				className="onboarding-modal modal fade animated show"
+				className="modal fade animated show"
 				role="dialog"
 				style={{ display: 'block' }}>
-				<div className="modal-dialog modal-lg" role="document">
-					<div className="modal-content text-center">
-						<div className="modal-header smaller">
+				<div className="modal-dialog" role="document">
+					<div className="modal-content">
+						<div className="modal-header">
+							<h5 className="modal-title" id="exampleModalLabel">
+								<div className="element-inner-header pl-md-3">
+									Appointment Detail
+									{/* appointment_date
+														department.name
+														consultingRoom.name
+														specialization.name
+														department.staff.first_name */}
+								</div>
+							</h5>
 							<button
 								aria-label="Close"
 								className="close"
@@ -32,90 +42,76 @@ class ModalViewAppointment extends Component {
 								<span aria-hidden="true"> ×</span>
 							</button>
 						</div>
-
-						<div className="onboarding-content with-gradient">
-							<div className="modal-body">
-								<div className="row">
-									<div className="col-sm-4">
-										<div className="user-profile compact">
-											<div
-												className="up-head-w"
+						<div className="modal-body">
+							<div className="modal-body pb-0">
+								<div className="d-flex">
+									<div className="post-media">
+										<div className="pt-avatar-w">
+											<img
+												alt=""
 												style={{
-													backgroundImage: require('../../assets/images/b3.jpeg'),
-												}}>
-												<div className="up-main-info">
-													<h2
-														className="up-header"
-														style={{ color: '#334152' }}>
-														{view_appointment_detail.patient.surname}{' '}
-														{view_appointment_detail.patient.other_names}
-													</h2>
-												</div>
-											</div>
-
-											<div className="up-contents">
-												<div className="m-b">
-													<div className="element-box-tp">
-														<table className="table table-clean">
-															<tbody>
-																<tr>
-																	<td>
-																		<div className="text-left">
-																			Date of Birth
-																		</div>
-																	</td>
-																	<td className="text-right">
-																		<div className="value text-success">
-																			{moment(
-																				view_appointment_detail.patient
-																					.date_of_birth
-																			).format('D-MMM-YYYY')}
-																		</div>
-																	</td>
-																</tr>
-																<tr>
-																	<td>
-																		<div className="text-left">Gender</div>
-																	</td>
-																	<td className="text-right">
-																		<div className="value text-success">
-																			{view_appointment_detail.patient.gender}
-																		</div>
-																	</td>
-																</tr>
-
-																<tr>
-																	<td>
-																		<div className="text-left">
-																			Insurance status
-																		</div>
-																	</td>
-																	<td className="text-right">
-																		<div className="value text-success"></div>
-																	</td>
-																</tr>
-
-																<tr>
-																	<td>
-																		<div className="text-left">File Number</div>
-																	</td>
-																	<td className="text-right">
-																		<div className="value text-success">
-																			{
-																				view_appointment_detail?.patient
-																					?.fileNumber
-																			}
-																		</div>
-																	</td>
-																</tr>
-															</tbody>
-														</table>
-													</div>
+													display: 'inlineBlock',
+													verticalAlign: 'middle',
+													width: '100px',
+													height: '100px',
+													borderRadius: '50%',
+												}}
+												src={patientProfilePic}
+											/>
+										</div>
+									</div>
+									<div className="post-content w-100">
+										<div className="profile-tile pb-0">
+											<div className="profile-tile-meta">
+												<h6 className="post-title">
+													{view_appointment_detail?.patient?.surname}{' '}
+													{view_appointment_detail?.patient?.other_names}
+												</h6>
+												<div className="row p-sm-2  flex-nowrap">
+													<ul className="col-md-6">
+														<li>
+															File Number:{' '}
+															<strong>
+																{view_appointment_detail?.patient?.fileNumber}
+															</strong>
+														</li>
+														<li>
+															Appointment Date:{' '}
+															<strong>
+																{view_appointment_detail?.appointment_date}
+															</strong>
+														</li>
+														<li>
+															Department:{' '}
+															<strong>
+																<a href="apps_support_index.html">
+																	{view_appointment_detail?.department?.name}
+																</a>
+															</strong>
+														</li>
+													</ul>
+													<ul className="col-md-6 ml-2">
+														{/* <li>
+															Whom To See:{' '}
+															<strong>
+																{view_appointment_detail?.whomToSee}
+															</strong>
+														</li> */}
+														<li>
+															Consulting Room:{' '}
+															<strong>
+																{view_appointment_detail?.consultingRoom?.name}
+															</strong>
+														</li>
+													</ul>
 												</div>
 											</div>
 										</div>
+										<div className="post-foot"></div>
 									</div>
-									<div className="col-sm-8">
+								</div>
+								{/*<div className="row">
+									<div className="col-sm-12">
 										<div className="element-wrapper">
 											<div className="element-info">
 												<div className="element-info-with-icon">
@@ -126,13 +122,21 @@ class ModalViewAppointment extends Component {
 														<h5 className="element-inner-header">
 															Appointment Detail
 														</h5>
-														{/*appointment_date*/}
-														{/*department.name*/}
-														{/*consultingRoom.name*/}
-														{/*specialization.name*/}
-														{/*department.staff.first_name*/}
+														appointment_date
+														department.name
+														consultingRoom.name
+														specialization.name
+														department.staff.first_name
 													</div>
 												</div>
+											</div>
+											<div className="profile-tile profile-tile-inlined">
+												<div className="pt-avatar-w">
+													<img alt="" src={patientProfilePic} />
+												</div>
+											</div>
+											<div className="value text-success">
+												{view_appointment_detail?.patient?.fileNumber}
 											</div>
 											<table className="table table-padded">
 												<tbody>
@@ -171,7 +175,7 @@ class ModalViewAppointment extends Component {
 											</table>
 										</div>
 									</div>
-								</div>
+								</div>*/}
 							</div>
 						</div>
 					</div>

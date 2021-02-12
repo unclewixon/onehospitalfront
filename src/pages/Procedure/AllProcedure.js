@@ -29,10 +29,10 @@ class AllProcedure extends Component {
 	};
 
 	componentDidMount() {
-		this.fetchPhysio();
+		this.fetchProcedures();
 	}
 
-	fetchPhysio = async patientId => {
+	fetchProcedures = async patientId => {
 		try {
 			const { startDate, endDate } = this.state;
 			this.setState({ loaded: true });
@@ -77,7 +77,7 @@ class AllProcedure extends Component {
 
 	filterEntries = () => {
 		this.setState({ filtering: true });
-		this.fetchPhysio(this.state.patientId);
+		this.fetchProcedures(this.state.patientId);
 	};
 
 	render() {
@@ -114,7 +114,6 @@ class AllProcedure extends Component {
 										onModalClick={this.onModalClick}
 									/>
 								) : null}
-								<h6 className="element-header">All Requests:</h6>
 
 								<form className="row">
 									<div className="form-group col-md-6">
@@ -202,18 +201,18 @@ class AllProcedure extends Component {
 														</td>
 													</tr>
 												) : (
-													procedures.map((physio, i) => {
+													procedures.map((item, i) => {
 														return (
 															<tr key={i}>
 																<td>{i + 1}</td>
-																<td>{physio.patient_name}</td>
+																<td>{item.patient_name}</td>
 																<td>
-																	{moment(physio.createdAt).format(
+																	{moment(item.createdAt).format(
 																		'DD-MMM-YYYY h:mm A'
 																	)}
 																</td>
-																<td>{physio.created_by}</td>
-																<td>{this.getRequests(physio.requestBody)}</td>
+																<td>{item.created_by}</td>
+																<td>{this.getRequests(item.requestBody)}</td>
 																<td></td>
 																<td className="row-actions text-right">
 																	<Tooltip title="View Request">
@@ -222,7 +221,7 @@ class AllProcedure extends Component {
 																			onClick={() => {
 																				this.onModalClick();
 																				this.setState({
-																					activeRequest: physio,
+																					activeRequest: item,
 																				});
 																			}}>
 																			<i className="os-icon os-icon-documents-03" />

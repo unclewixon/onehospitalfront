@@ -1,12 +1,13 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { viewAppointmentDetail } from '../../actions/general';
 import { fullname } from '../../services/utilities';
-import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
 import { formatPatientId } from '../../services/utilities';
 import { toggleProfile } from '../../actions/user';
+import TableLoading from '../TableLoading';
 
 class FrontDeskTable extends Component {
 	ViewAppointmentDetail = appointment => {
@@ -36,11 +37,7 @@ class FrontDeskTable extends Component {
 				</thead>
 				<tbody>
 					{loading ? (
-						<tr>
-							<td colSpan="6" className="text-center">
-								<img alt="searching" src={searchingGIF} />
-							</td>
-						</tr>
+						<TableLoading />
 					) : appointments && appointments.length ? (
 						appointments.map((appointment, i) => {
 							return (
