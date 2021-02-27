@@ -268,7 +268,7 @@ export class Voucher extends Component {
 									current={parseInt(meta.currentPage, 10)}
 									pageSize={parseInt(meta.itemsPerPage, 10)}
 									total={parseInt(meta.totalPages, 10)}
-									showTotal={total => `Total ${total} services`}
+									showTotal={total => `Total ${total} vouchers`}
 									itemRender={itemRender}
 									onChange={current => this.onNavigatePage(current)}
 								/>

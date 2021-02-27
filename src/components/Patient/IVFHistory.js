@@ -5,8 +5,6 @@ import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DatePicker from 'antd/lib/date-picker';
 import Tooltip from 'antd/lib/tooltip';
-import AsyncSelect from 'react-select/async/dist/react-select.esm';
-import { searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request, itemRender, confirmAction } from '../../services/utilities';
 import { setIVF } from '../../actions/patient';
@@ -17,23 +15,10 @@ import { notifyError, notifySuccess } from '../../services/notify';
 
 const { RangePicker } = DatePicker;
 
-const getOptionValues = option => option.id;
-const getOptionLabels = option => `${option.other_names} ${option.surname}`;
-
-const getOptions = async q => {
-	if (!q || q.length < 3) {
-		return [];
-	}
-	const url = `${searchAPI}?q=${q}`;
-	const res = await request(url, 'GET', true);
-	return res;
-};
-
-class IVF extends Component {
+class IVFHistory extends Component {
 	state = {
 		filtering: false,
 		loading: false,
-		patient_id: '',
 		startDate: '',
 		endDate: '',
 		ivfs: [],
@@ -68,7 +53,8 @@ class IVF extends Component {
 	};
 
 	fetchIVF = async page => {
-		const { patient_id, startDate, endDate } = this.state;
+		const { startDate, endDate } = this.state;
+		const patient_id = this.props.patient.id;
 		console.log(patient_id, startDate, endDate);
 		try {
 			const p = page || 1;
@@ -122,35 +108,10 @@ class IVF extends Component {
 			<div className="col-sm-12">
 				<br />
 				<div className="element-wrapper">
-					<div className="element-actions">
-						<Link className="btn btn-primary" to="/ivf/enrol">
-							New Enrollment
-						</Link>
-					</div>
-					<h6 className="element-header">IVF Dashboard</h6>
+					<h6 className="element-header">Patient IVF History</h6>
 					<div className="row">
 						<div className="col-md-12 p-4">
 							<form className="row">
-								<div className="form-group col-md-3">
-									<label className="" htmlFor="patient_id">
-										Patient
-									</label>
-
-									<AsyncSelect
-										isClearable
-										getOptionValue={getOptionValues}
-										getOptionLabel={getOptionLabels}
-										defaultOptions
-										name="patient_id"
-										id="patient_id"
-										loadOptions={getOptions}
-										onChange={e => {
-											this.setState({ patient_id: e?.id });
-										}}
-										placeholder="Search patients"
-									/>
-								</div>
-
 								<div className="form-group col-md-3">
 									<label>From - To</label>
 									<RangePicker onChange={e => this.dateChange(e)} />
@@ -180,14 +141,15 @@ class IVF extends Component {
 										<thead>
 											<tr>
 												<th className="text-center">DATE ENROLLED</th>
-												<th className="text-center">WIFE NAME</th>
+												<th className="text-center">Assessment Comments</th>
 												<th className="text-center">PROGNOSIS</th>
 												<th className="text-center">TREATMENT PLAN</th>
 												<th className="text-center">INDICATION</th>
 												<th className="text-center">DATE OF COMMENCEMENT</th>
 												<th className="text-center">DATE OF TREATMENT</th>
-
-												<th className="text-center">ACTIONS</th>
+												<th className="text-center">RESULT</th>
+												<th className="text-center">INDICATION</th>
+												<th className="text-center">MEDICATION USED</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -207,8 +169,7 @@ class IVF extends Component {
 																)}
 															</td>
 															<td className="text-center">
-																{`${ivf?.wife?.other_names}`}{' '}
-																{`${ivf?.wife?.surname}`}
+																{ivf.assessmentComments}
 															</td>
 															<td className="text-center">{ivf?.prognosis}</td>
 															<td className="text-center">
@@ -228,22 +189,10 @@ class IVF extends Component {
 																	'DD-MM-YYYY H:mma'
 																)}
 															</td>
-															<td className="text-center row-actions">
-																<Tooltip title="View Details">
-																	<a
-																		className="secondary"
-																		onClick={() => this.viewDetails(ivf)}>
-																		<i className="os-icon os-icon-eye" />
-																	</a>
-																</Tooltip>
-
-																<Tooltip title="Delete enrollment">
-																	<a
-																		className="danger"
-																		onClick={() => this.confirmDelete(ivf)}>
-																		<i className="os-icon os-icon-ui-15" />
-																	</a>
-																</Tooltip>
+															<td className="text-center">{ivf.result}</td>
+															<td className="text-center">{ivf.indication}</td>
+															<td className="text-center">
+																{ivf.meducationUsed}
 															</td>
 														</tr>
 													);
@@ -280,9 +229,12 @@ class IVF extends Component {
 const mapStateToProps = state => {
 	return {
 		antennatal: state.patient.antennatal,
+		patient: state.user.patient,
 	};
 };
 
 export default withRouter(
-	connect(mapStateToProps, { setIVF, startBlock, stopBlock, setIVF })(IVF)
+	connect(mapStateToProps, { setIVF, startBlock, stopBlock, setIVF })(
+		IVFHistory
+	)
 );

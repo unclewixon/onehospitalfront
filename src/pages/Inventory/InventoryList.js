@@ -168,7 +168,13 @@ const UploadInventory = ({
 											/>
 											<label htmlFor="department">Inventory File</label>
 											<a
-												className="btn btn-outline-secondary overflow-hidden"
+												className="btn overflow-hidden"
+												style={{
+													color: '#292b2c',
+													backgroundColor: 'transparent',
+													backgroundImage: 'none',
+													borderColor: '#292b2c',
+												}}
 												onClick={() => {
 													uploadAttachment.click();
 												}}>
@@ -250,10 +256,10 @@ class InventoryList extends Component {
 				formData.append('vendor_id', vendor);
 				formData.append('hmo_id', hmo);
 				await axios.post(`${API_URI}/${inventoryUploadAPI}`, formData);
-				await this.fetchInventories();
 				const cat = categories.find(d => d.id === category_id);
 				notifySuccess(`Inventory uploaded for ${cat ? cat.name : ''} Category`);
 				this.setState({ uploading: false, category_id });
+				await this.fetchInventories(null, category_id);
 				this.setState({ upload_visible: false });
 			} catch (error) {
 				console.log(error);

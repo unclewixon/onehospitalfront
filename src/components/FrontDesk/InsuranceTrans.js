@@ -157,8 +157,6 @@ export class InsuranceTrans extends Component {
 			<>
 				<div className="row">
 					<div className="col-md-12 p-4">
-						<h6 className="element-header">Filter by:</h6>
-
 						<form className="row">
 							<div className="form-group col-md-3">
 								<label className="" htmlFor="patient_id">
@@ -179,7 +177,7 @@ export class InsuranceTrans extends Component {
 									placeholder="Search patients"
 								/>
 							</div>
-							<div className="form-group col-md-3">
+							<div className="form-group col-md-2">
 								<label className="" htmlFor="hmo_id">
 									Hmo
 								</label>
@@ -203,7 +201,7 @@ export class InsuranceTrans extends Component {
 								<label>From - To</label>
 								<RangePicker onChange={e => this.dateChange(e)} />
 							</div>
-							<div className="form-group col-md-3">
+							<div className="form-group col-md-2">
 								<label className="mr-2 " htmlFor="id">
 									Status
 								</label>
@@ -223,7 +221,7 @@ export class InsuranceTrans extends Component {
 									})}
 								</select>
 							</div>
-							<div className="form-group col-md-3 mt-4">
+							<div className="form-group col-md-2 mt-4">
 								<div
 									className="btn btn-sm btn-primary btn-upper text-white filter-btn"
 									onClick={this.doFilter}>

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import patientProfilePic from '../../assets/images/patientprofile.jpg';
 import { closeModals } from '../../actions/general';
+import { formatPatientId } from '../../services/utilities';
 
 class ModalViewAppointment extends Component {
 	componentDidMount() {
@@ -70,9 +71,11 @@ class ModalViewAppointment extends Component {
 												<div className="row p-sm-2  flex-nowrap">
 													<ul className="col-md-6">
 														<li>
-															File Number:{' '}
+															Patient ID:{' '}
 															<strong>
-																{view_appointment_detail?.patient?.fileNumber}
+																{formatPatientId(
+																	view_appointment_detail?.patient_id
+																)}
 															</strong>
 														</li>
 														<li>

@@ -130,7 +130,6 @@ class HmoTable extends Component {
 
 	render() {
 		const { hmoTransactions, loading } = this.props;
-		const hmoReversed = hmoTransactions; //.filter(h => h.hmo_id !== 1).reverse();
 		return (
 			<>
 				<tbody>
@@ -141,8 +140,8 @@ class HmoTable extends Component {
 							</td>
 						</tr>
 					) : (
-						hmoReversed &&
-						hmoReversed.map((trans, key) => {
+						hmoTransactions &&
+						hmoTransactions.map((trans, key) => {
 							return (
 								<tr key={key}>
 									<td className="text-center">

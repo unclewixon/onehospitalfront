@@ -14,7 +14,6 @@ import Pagination from 'antd/lib/pagination';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const { RangePicker } = DatePicker;
-
 const status = [
 	{ value: 0, label: 'Open' },
 	{ value: 1, label: 'Closed' },
@@ -52,13 +51,11 @@ export class AllTransaction extends Component {
 		this.fetchHmos();
 		this.fetchHmoTransaction();
 	}
-
 	componentDidUpdate(prevProps, prevState) {
 		if (prevState.patient_id !== this.state.patient_id) {
 			this.fetchHmoTransaction();
 		}
 	}
-
 	fetchHmos = async () => {
 		try {
 			this.setState({ loading: true });

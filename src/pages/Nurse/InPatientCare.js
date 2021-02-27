@@ -184,7 +184,7 @@ const InPatientCare = () => {
 									<div className="fht-cell"></div>
 								</th>
 								<th>
-									<div className="th-inner sortable both">File Number</div>
+									<div className="th-inner sortable both">Patient ID</div>
 									<div className="fht-cell"></div>
 								</th>
 								<th>
@@ -228,7 +228,7 @@ const InPatientCare = () => {
 												)}
 											</td>
 											<td>{item?.admitted_by}</td>
-											<td className="row-actions text-right">
+											<td className="row-actions">
 												{item?.suite ? (
 													<Tooltip title="Room/Floor">
 														{item?.suite + '/' + item?.floor}
@@ -277,7 +277,7 @@ const InPatientCare = () => {
 								current={parseInt(meta.currentPage, 10)}
 								pageSize={parseInt(meta.itemsPerPage, 10)}
 								total={parseInt(meta.totalPages, 10)}
-								showTotal={total => `Total ${total} transactions`}
+								showTotal={total => `Total ${total} patients`}
 								itemRender={itemRender}
 								onChange={current => onNavigatePage(current)}
 							/>

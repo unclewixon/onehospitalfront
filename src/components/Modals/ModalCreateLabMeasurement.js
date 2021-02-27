@@ -4,7 +4,7 @@ import { Field, reduxForm } from 'redux-form';
 import moment from 'moment';
 import { Carousel } from 'antd';
 import { loadLabourMeasurement } from '../../actions/patient';
-
+import Select from 'react-select';
 import {
 	renderTextInput,
 	request,
@@ -70,9 +70,13 @@ class ModalCreateLabMeasurement extends Component {
 		exam_time: null,
 		examDate: '',
 		tests: [],
+		labTestCategoryRaw: [],
+		labTestCategory: [],
+		labTests: [],
 	};
 	componentDidMount() {
 		document.body.classList.add('modal-open');
+		this.fetchLabTestCategory();
 
 		// fetching labtest disable until confirmed
 
@@ -94,6 +98,50 @@ class ModalCreateLabMeasurement extends Component {
 		// 	console.log(this.props.LabTests, 'else block');
 		// }
 	}
+
+	fetchLabTestCategory = async () => {
+		try {
+			const { labourDetail } = this.props;
+			const rs = await request(
+				`lab-tests/categories?loadOnce=${true}&hmo_id=${
+					labourDetail?.patient?.hmo_id
+				}`,
+				'GET',
+				true
+			);
+
+			let data = [];
+			rs.forEach((item, index) => {
+				const res = { label: item.name, value: item.id };
+				data = [...data, res];
+			});
+			this.setState({ labTestCategoryRaw: rs, labTestCategory: data });
+		} catch (error) {
+			console.log(error);
+			notifyError('error fetching lab test category');
+		}
+	};
+
+	handleChangeLabTestCategory = evt => {
+		let value = String(evt.value);
+		this.fetchLabTestsByCategory(value);
+	};
+
+	handleChangeProcedure = evt => {
+		this.setState({ labTests: evt });
+	};
+
+	fetchLabTestsByCategory = id => {
+		const { labTestCategoryRaw } = this.state;
+		const rs = labTestCategoryRaw.find(cat => cat.id === Number(id));
+		let labtests = [];
+		const tests = rs.lab_tests || [];
+		tests.forEach((item, index) => {
+			const res = { label: item.name, value: item.id };
+			labtests = [...labtests, res];
+		});
+		this.setState({ tests: labtests });
+	};
 
 	componentWillUnmount() {
 		document.body.classList.remove('modal-open');
@@ -158,6 +206,8 @@ class ModalCreateLabMeasurement extends Component {
 		console.log(this.props.staff.profile.details.id, newData);
 		const { labourDetail } = this.props;
 		newData = { ...newData, ...labourDetail };
+		const mappedId = this.state.labTests.map(lbt => String(lbt.value));
+		newData.labTests = mappedId;
 		console.dir(newData);
 		try {
 			this.setState({ submitting: true });
@@ -181,7 +231,7 @@ class ModalCreateLabMeasurement extends Component {
 	};
 
 	render() {
-		const { submitting, examDate, tests } = this.state;
+		const { submitting, examDate, tests, labTestCategory } = this.state;
 		const { error, handleSubmit } = this.props;
 		const { first_name, last_name } = this.props.staff.profile.details;
 		return (
@@ -725,6 +775,33 @@ class ModalCreateLabMeasurement extends Component {
 													</div>
 												</div>
 											</div>
+
+											<div className="row">
+												<div className="form-group col-sm-6">
+													<label>Lab Test category</label>
+													<Select
+														name="test_category"
+														placeholder="Select Test Category"
+														options={labTestCategory}
+														onChange={evt =>
+															this.handleChangeLabTestCategory(evt)
+														}
+														required
+													/>
+												</div>
+												<div className="form-group col-sm-6">
+													<label>Lab Tests to request</label>
+													<Select
+														name="lab_tests"
+														placeholder="Select lab tests to request"
+														isMulti
+														options={tests}
+														onChange={evt => this.handleChangeProcedure(evt)}
+														required
+													/>
+												</div>
+											</div>
+
 											<div className="row mt-3 px-2">
 												<div className="col-sm-12 text-right">
 													<button

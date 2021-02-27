@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-
+import { formatPatientId } from '../../services/utilities';
 import { closeModals } from '../../actions/general';
 
 // const fields = [
@@ -119,11 +119,11 @@ class ModalAntenatalAssessmentDetail extends Component {
 																</tr>
 																<tr>
 																	<td>
-																		<div className="text-left">File Number</div>
+																		<div className="text-left">Patient ID</div>
 																	</td>
 																	<td className="text-right">
 																		<div className="value text-success">
-																			{patient.fileNumber}
+																			{formatPatientId(patient?.id)}
 																		</div>
 																	</td>
 																</tr>

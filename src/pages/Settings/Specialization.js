@@ -103,9 +103,9 @@ const Specialization = props => {
 		try {
 			const rs = await request('specializations', 'GET', true);
 			props.loadSpecializations(rs);
-			setDataLoaded(true);
+			setDataLoaded(false);
 		} catch (error) {
-			setDataLoaded(true);
+			setDataLoaded(false);
 			notifyError(error.message || 'could not fetch specializations!');
 		}
 	};

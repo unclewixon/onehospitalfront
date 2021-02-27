@@ -2,11 +2,11 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
-
 import patientProfile from '../../assets/svg-icons/patientProfile.svg';
 import patientProfilePic from '../../assets/images/patientprofile.jpg';
 import PatientData from '../PatientData';
 import { Link, withRouter } from 'react-router-dom';
+import { formatPatientId } from '../../services/utilities';
 import RoleBlock from '../RoleBlock';
 import VisitSummaryTable from './VisitSummaryTable';
 import BillingTable from './BillingTable';
@@ -37,10 +37,10 @@ const Dashboard = ({ location }) => {
 							<h6 className="up-sub-header">
 								<div className="value-pair">
 									<div className="label pr-2" style={{ color: 'inherit' }}>
-										File Number:
+										Patient ID:
 									</div>
 									<div className="value badge badge-pill badge-light">
-										{patient?.fileNumber}
+										{formatPatientId(patient?.id)}
 									</div>
 								</div>
 							</h6>
@@ -68,22 +68,24 @@ const Dashboard = ({ location }) => {
 							<div className="row">
 								<div className="col-sm-12 b-b">
 									<div className="el-tablo centered padded-v">
-										<div className="value">25</div>
-										<div className="label">Products Sold</div>
+										<div className="value">{patient?.maritalStatus}</div>
+										<div className="label">Marital Status</div>
 									</div>
 								</div>
 							</div>
 							<div className="row">
 								<div className="col-sm-6 b-b">
 									<div className="el-tablo padded-v">
-										<div className="value customfont">25</div>
+										<div className="value customfont">{patient?.gender}</div>
 										<div className="label">Gender</div>
 									</div>
 								</div>
 								<div className="col-sm-6 b-b">
 									<div className="el-tablo padded-v">
-										<div className="value customfont">315</div>
-										<div className="label">File Number</div>
+										<div className="value customfont">
+											{formatPatientId(patient?.id)}
+										</div>
+										<div className="label">Patient ID</div>
 									</div>
 								</div>
 							</div>

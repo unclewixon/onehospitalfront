@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import PatientTreatMentSheet from './PatientTreatMentSheet';
 
 const IVF = lazy(() => import('./IVF'));
+const IVFDetails = lazy(() => import('./IVFDetails'));
 const Enrollment = lazy(() => import('./Enrollment'));
 const RegulationChart = lazy(() => import('./RegulationChart'));
 const HcgAdministration = lazy(() => import('./HcgAdministration'));
@@ -27,6 +28,11 @@ export class index extends Component {
 									exact
 									path={`${match.url}/enrol`}
 									component={Enrollment}
+								/>
+								<Route
+									exact
+									path={`${match.url}/ivf-details`}
+									component={IVFDetails}
 								/>
 								<Route
 									exact

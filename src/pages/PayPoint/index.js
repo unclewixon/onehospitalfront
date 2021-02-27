@@ -11,6 +11,7 @@ const InsuranceBills = lazy(() => import('./InsuranceBills'));
 const Dashboard = lazy(() => import('./Dashboard'));
 const TransactionHistory = lazy(() => import('./TransactionHistory'));
 const Voucher = lazy(() => import('./Voucher'));
+const Proforma = lazy(() => import('./Proforma'));
 
 const index = ({ match }) => {
 	return (
@@ -51,6 +52,10 @@ const index = ({ match }) => {
 												<Route
 													path={`${match.url}/new-transaction`}
 													component={NewTransaction}
+												/>
+												<Route
+													path={`${match.url}/proforma-invoice`}
+													component={Proforma}
 												/>
 												<Route component={NoMatch} />
 											</Switch>

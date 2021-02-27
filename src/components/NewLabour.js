@@ -93,6 +93,7 @@ export class NewLabour extends Component {
 		const { patient_id, lmp } = this.state;
 		if (patient_id === '') {
 			notifyError('Please search and select a patient');
+			return;
 		}
 		if (lmp === '') {
 			notifyError('Please lmp date ');
@@ -102,7 +103,7 @@ export class NewLabour extends Component {
 
 		try {
 			const rs = await request(
-				`${labourAPI}/${patient_id}/save`,
+				`labour-management/enrollment/${patient_id}/save`,
 				'POST',
 				true,
 				newData

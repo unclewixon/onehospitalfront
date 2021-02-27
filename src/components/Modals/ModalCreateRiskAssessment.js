@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { Checkbox } from 'antd';
-
 import {
 	renderTextInput,
 	renderTextArea,
@@ -11,6 +10,7 @@ import {
 import { closeModals } from '../../actions/general';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
+import { loadRiskAssessment } from '../../actions/patient';
 
 const plainOptions = [
 	'Pre-eclampsia',
@@ -51,7 +51,7 @@ class ModalCreateRiskAssessment extends Component {
 
 	createRisk = async data => {
 		try {
-			const { labourDetail } = this.props;
+			const { labourDetail, riskAssessment } = this.props;
 			const { previousPregnancyExperience } = this.state;
 			const newData = { ...data, previousPregnancyExperience };
 			this.setState({ submitting: true });
@@ -62,10 +62,9 @@ class ModalCreateRiskAssessment extends Component {
 				true,
 				newData
 			);
-
-			console.log(rs);
+			const new_arr = [rs.data, ...riskAssessment];
+			this.props.loadRiskAssessment(new_arr);
 			notifySuccess('vital record succesfully submitted');
-
 			this.props.closeModals(false);
 		} catch (e) {
 			this.setState({ submitting: false });
@@ -270,8 +269,9 @@ ModalCreateRiskAssessment = reduxForm({
 const mapStateToProps = state => {
 	return {
 		labourDetail: state.patient.labourDetail,
+		riskAssessment: state.patient.riskAssessment,
 	};
 };
-export default connect(mapStateToProps, { closeModals })(
+export default connect(mapStateToProps, { closeModals, loadRiskAssessment })(
 	ModalCreateRiskAssessment
 );

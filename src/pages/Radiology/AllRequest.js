@@ -4,11 +4,15 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
 import Tooltip from 'antd/lib/tooltip';
-
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import { searchAPI, patientAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
-import { request } from '../../services/utilities';
-import { notifyError } from '../../services/notify';
+import {
+	request,
+	updateImmutable,
+	confirmAction,
+} from '../../services/utilities';
+import { notifyError, notifySuccess } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadRadiology } from '../../actions/patient';
 
@@ -20,6 +24,17 @@ const status = [
 	{ value: 2, label: 'Approved' },
 ];
 
+const getOptionValues = option => option.id;
+const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+const getOptions = async q => {
+	if (!q || q.length < 3) {
+		return [];
+	}
+	const url = `${searchAPI}?q=${q}`;
+	const res = await request(url, 'GET', true);
+	return res;
+};
+
 class OpenRequest extends Component {
 	state = {
 		filtering: false,
@@ -29,7 +44,6 @@ class OpenRequest extends Component {
 		endDate: '',
 		status: '',
 		searching: '',
-		patients: [],
 		query: '',
 		patient_id: '',
 	};
@@ -134,6 +148,23 @@ class OpenRequest extends Component {
 		});
 	};
 
+	cancelRequest = async data => {
+		try {
+			const url = `${data.id}/delete-request?type=imaging`;
+			await request(url, 'DELETE', true);
+			const new_arr = this.props.radiology.filter(r => r.id !== data.id);
+			this.props.loadRadiology(new_arr);
+			notifySuccess(`Radiology Cancelled!`);
+		} catch (error) {
+			console.log('this', error);
+			notifyError('Error deleting all radiology request');
+		}
+	};
+
+	confirmDelete = data => {
+		confirmAction(this.cancelRequest, data);
+	};
+
 	patientSet = pat => {
 		console.log(pat);
 		let name =
@@ -142,40 +173,11 @@ class OpenRequest extends Component {
 			(pat.other_names ? pat.other_names : '');
 		document.getElementById('patient').value = name;
 		// setPatients([]);
-		this.setState({ ...this.state, patient_id: pat.id, patients: [] });
+		this.setState({ ...this.state, patient_id: pat.id });
 	};
 
-	searchPatient = async () => {
-		if (this.state.query.length > 2) {
-			try {
-				this.setState({ ...this.state, searching: true });
-				const rs = await request(
-					`${searchAPI}?q=${this.state.query}`,
-					'GET',
-					true
-				);
-
-				this.setState({
-					...this.state,
-					patients: rs,
-					searching: false,
-					query: '',
-				});
-				// setTimeout(() => {
-				// 	this.setState({ ...this.state, patients: [] });
-				// }, 3000);
-			} catch (e) {
-				notifyError('Error Occurred');
-				this.setState({ ...this.state, searching: true });
-			}
-		}
-	};
-	handlePatientChange = e => {
-		this.setState({ ...this.state, query: e.target.value });
-		this.searchPatient();
-	};
 	render() {
-		const { filtering, loading, searching, patients } = this.state;
+		const { filtering, loading } = this.state;
 		const { radiology } = this.props;
 		return (
 			<div className="row">
@@ -187,45 +189,19 @@ class OpenRequest extends Component {
 									<div className="form-group col-sm-3">
 										<label>Patient</label>
 
-										<input
-											className="form-control"
-											placeholder="Search for patient"
-											type="text"
+										<AsyncSelect
+											isClearable
+											getOptionValue={getOptionValues}
+											getOptionLabel={getOptionLabels}
+											defaultOptions
 											name="patient"
-											defaultValue=""
-											id="patient"
-											onChange={this.handlePatientChange}
-											autoComplete="off"
-											required
-											style={{ height: '32px' }}
+											ref={this.patient}
+											loadOptions={getOptions}
+											onChange={e => {
+												this.patientSet(e);
+											}}
+											placeholder="Search for patient"
 										/>
-										{searching && (
-											<div className="searching text-center">
-												<img alt="searching" src={searchingGIF} />
-											</div>
-										)}
-
-										{patients &&
-											patients.map(pat => {
-												return (
-													<div
-														style={{ display: 'flex' }}
-														key={pat.id}
-														className="element-box">
-														<a
-															onClick={() => this.patientSet(pat)}
-															className="ssg-item cursor">
-															{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
-															<div
-																className="item-name"
-																dangerouslySetInnerHTML={{
-																	__html: `${pat.surname} ${pat.other_names}`,
-																}}
-															/>
-														</a>
-													</div>
-												);
-											})}
 									</div>
 									<div className="form-group col-md-4">
 										<label>From - To</label>
@@ -323,7 +299,9 @@ class OpenRequest extends Component {
 																	</a>
 																</Tooltip> */}
 																<Tooltip title="Delete Request">
-																	<a className="danger">
+																	<a
+																		className="danger"
+																		onClick={() => this.confirmDelete(request)}>
 																		<i className="os-icon os-icon-ui-15" />
 																	</a>
 																</Tooltip>

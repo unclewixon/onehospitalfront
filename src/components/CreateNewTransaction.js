@@ -22,7 +22,6 @@ const CreateNewTransaction = props => {
 	const { register, handleSubmit, setValue, errors } = useForm();
 	const [submitting, setSubmitting] = useState(false);
 	const [loaded, setLoaded] = useState(false);
-	const [patients, setPatients] = useState();
 	const multi = false;
 	const [hmo, setHmo] = useState('');
 	const [services, setServices] = useState([]);
@@ -91,7 +90,7 @@ const CreateNewTransaction = props => {
 			setLoaded(true);
 		} catch (error) {
 			console.log(error);
-			notifyError('error fetching imaging requests for the patient');
+			notifyError('error fetching service categories for the patient');
 		}
 	};
 
@@ -124,7 +123,6 @@ const CreateNewTransaction = props => {
 	};
 
 	const handleChangeHmo = evt => {
-		console.log('handleChangeHmo = evt =>');
 		let value = String(evt.value);
 		setHmo(value);
 		setValue('hmo_id', value);
@@ -132,14 +130,17 @@ const CreateNewTransaction = props => {
 
 	const handleChangeProcedure = async evt => {
 		let sum = 0;
-		await evt.forEach(val => {
-			console.log(evt);
-			let result = servicesObjects.find(p => p.id === val.value);
-			sum += result && parseInt(result.tariff);
-		});
-		setAmount(sum);
-		setValue('payment_type', sum);
-		setValue('service_request', evt);
+		evt &&
+			(await evt.forEach(val => {
+				console.log(evt);
+				let result = servicesObjects.find(p => p.id === val.value);
+				if (result) {
+					sum += parseInt(result.tariff);
+				}
+			}));
+		evt && setAmount(sum);
+		evt && setValue('payment_type', sum);
+		evt && setValue('service_request', evt);
 	};
 
 	const fetchServicesByCategory = async id => {
@@ -147,11 +148,13 @@ const CreateNewTransaction = props => {
 			notifyError('please select Hmo');
 		} else {
 			try {
+				console.log('before syaty');
 				const rs = await request(
 					`${serviceAPI}/categories/${id}?hmo_id=${hmo}`,
 					'GET',
 					true
 				);
+				console.log(rs);
 				setServicesObjects(rs);
 				let services = [];
 				rs &&
@@ -162,7 +165,7 @@ const CreateNewTransaction = props => {
 				setServices(services);
 			} catch (error) {
 				console.log(error);
-				notifyError('error fetching imaging requests for the patient');
+				notifyError('error fetching services');
 			}
 		}
 	};
@@ -188,7 +191,7 @@ const CreateNewTransaction = props => {
 							ref={register({ name: 'patient_id' })}
 							loadOptions={getOptions}
 							onChange={e => {
-								setValue('patient_id', e.id);
+								setValue('patient_id', e?.id);
 							}}
 							placeholder="Search patients"
 						/>
@@ -364,7 +367,10 @@ const CreateNewTransaction = props => {
 							name="description"
 							rows="3"
 							placeholder="Enter description"
-							ref={register}></textarea>
+							ref={register}
+							onChange={evt => {
+								setValue('description', evt.target.value);
+							}}></textarea>
 					</div>
 				</div>
 

@@ -1,39 +1,43 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import isEmpty from 'lodash.isempty';
-
 import { notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadDeliveryRecord } from '../../actions/patient';
+import Tooltip from 'antd/lib/tooltip';
+import ModalDeliveryDetails from '../../components/Modals/ModalDeliveryDetails';
 
 const fields = [
+	'dateOfBirth',
+	'timeOfBirth',
 	'deliveryType',
 	'isMotherAlive',
-	'administeredOxytocin',
-	'placentaComplete',
-	'timeOfBirth',
-	'dateOfBirth',
-	'babyCried',
 	'sexOfBaby',
-	'apgarScore',
-	'weight',
-	'administeredVitaminK',
-	'negativeRH',
-	'drugsAdministered',
-	'transferredTo',
-	'comment',
+	'placentaComplete',
 ];
 export class Recorddelivery extends Component {
 	state = {
 		loading: false,
 		risks: [],
+		showModal: false,
+		detail: null,
+		labour: null,
 		submitting: false,
 	};
 
 	componentDidMount() {
 		this.fetchRecord();
 	}
+
+	viewDetails = data => {
+		document.body.classList.add('modal-open');
+		this.setState({ showModal: true, detail: data });
+	};
+
+	closeModal = () => {
+		document.body.classList.remove('modal-open');
+		this.setState({ showModal: false, detail: null });
+	};
 
 	fetchRecord = async () => {
 		const { labourDetail } = this.props;
@@ -59,48 +63,74 @@ export class Recorddelivery extends Component {
 		return fields.map((el, i) => {
 			console.log(typeof record[el], record[el]);
 			return (
-				<tr>
-					<td className="font-weight-bold text-left text-uppercase">
-						{el.replace(/([A-Z])/g, ' $1')}
-					</td>
-
+				<>
 					{typeof record[el] === 'boolean' ? (
-						<td className="text-right text-capitalize">
-							{record[el] ? 'Yes' : 'No'}
-						</td>
+						<td className="text-center">{record[el] ? 'Yes' : 'No'}</td>
 					) : (
 						<td className="text-right text-capitalize">{record[el]}</td>
 					)}
-				</tr>
+				</>
 			);
 		});
 	};
 	render() {
-		const { loading } = this.state;
+		const { loading, showModal, detail } = this.state;
 
-		let record = this.props.deliveryRecord[0];
-		// risk = [...risk].reverse();
-		console.log(record);
+		const { deliveryRecord } = this.props;
 		return (
 			<div className="element-box">
-				{loading ? (
-					<tr className="text-center">
-						<td colSpan="8" className="text-center">
-							<img alt="searching" src={searchingGIF} />
-						</td>
-					</tr>
-				) : !isEmpty(record) ? (
-					<table className="table table-clean">
-						<tbody>{this.detailBody(record)}</tbody>
+				<div className="table table-responsive">
+					<table id="table" className="table">
+						<thead>
+							<tr>
+								<th className="text-center">Date OF BIRTH</th>
+								<th className="text-center">Time OF BIRTH</th>
+								<th className="text-center">DELIVERY TYPE</th>
+								<th className="text-center">IS MOTHER ALIVE</th>
+								<th className="text-center">SEX OF BABY</th>
+								<th className="text-center">PLACENTA COMPLETE</th>
+								<th className="text-center">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{loading ? (
+								<tr className="text-center">
+									<td colSpan="8" className="text-center">
+										<img alt="searching" src={searchingGIF} />
+									</td>
+								</tr>
+							) : deliveryRecord.length > 0 ? (
+								deliveryRecord.map(record => (
+									<tr className="text-center">
+										{this.detailBody(record)}
+										<td className="text-center">
+											<Tooltip title="view details">
+												<a
+													className="secondary mx-1"
+													onClick={() => this.viewDetails(record)}>
+													<i className="os-icon os-icon-eye" />
+												</a>
+											</Tooltip>
+										</td>
+									</tr>
+								))
+							) : (
+								<tr>
+									{' '}
+									<td colSpan="9" className="text-center">
+										No delivery yet
+									</td>
+								</tr>
+							)}
+						</tbody>
 					</table>
-				) : (
-					<tr>
-						{' '}
-						<td colSpan="9" className="text-center">
-							No delivery yet
-						</td>
-					</tr>
-				)}
+					{showModal && (
+						<ModalDeliveryDetails
+							detail={detail}
+							closeModal={() => this.closeModal()}
+						/>
+					)}
+				</div>
 			</div>
 		);
 	}

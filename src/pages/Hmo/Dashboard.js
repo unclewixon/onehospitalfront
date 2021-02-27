@@ -5,9 +5,11 @@ import moment from 'moment';
 
 import { hmoAPI, transactionsAPI, socket } from '../../services/constants';
 import { notifyError, notifyInfo } from '../../services/notify';
-import { request } from '../../services/utilities';
+import { request, itemRender } from '../../services/utilities';
 import { loadHmoTransaction } from '../../actions/hmo';
 import HmoTable from '../../components/HMO/HmoTable';
+import Pagination from 'antd/lib/pagination';
+import { startBlock, stopBlock } from '../../actions/redux-block';
 
 export class Dashboard extends Component {
 	state = {
@@ -15,7 +17,7 @@ export class Dashboard extends Component {
 		dataLoaded: false,
 		loading: false,
 		id: null,
-
+		meta: null,
 		status: '',
 	};
 
@@ -49,18 +51,21 @@ export class Dashboard extends Component {
 				true
 			);
 
-			this.props.loadHmoTransaction(rs);
-			console.log(rs);
-			this.setState({ loading: false });
+			const { result, ...meta } = rs;
+			const arr = [...result];
+			this.props.loadHmoTransaction(arr);
+			this.setState({ loading: false, meta });
+			this.props.stopBlock();
 		} catch (error) {
 			console.log(error);
+			this.props.stopBlock();
 			notifyError('Error fetching today hmos transactions request');
 			this.setState({ loading: false });
 		}
 	};
 
 	render() {
-		const { loading } = this.state;
+		const { loading, meta } = this.state;
 		const { hmoTransactions } = this.props;
 		return (
 			<>
@@ -87,6 +92,18 @@ export class Dashboard extends Component {
 						<HmoTable loading={loading} hmoTransactions={hmoTransactions} />
 					</table>
 				</div>
+				{meta && (
+					<div className="pagination pagination-center mt-4">
+						<Pagination
+							current={parseInt(meta.currentPage, 10)}
+							pageSize={parseInt(meta.itemsPerPage, 10)}
+							total={parseInt(meta.totalPages, 10)}
+							showTotal={total => `Total ${total} transactions`}
+							itemRender={itemRender}
+							onChange={current => this.onNavigatePage(current)}
+						/>
+					</div>
+				)}
 			</>
 		);
 	}
@@ -97,4 +114,8 @@ const mapStateToProps = state => {
 		hmoTransactions: state.hmo.hmo_transactions,
 	};
 };
-export default connect(mapStateToProps, { loadHmoTransaction })(Dashboard);
+export default connect(mapStateToProps, {
+	loadHmoTransaction,
+	startBlock,
+	stopBlock,
+})(Dashboard);

@@ -24,6 +24,8 @@ const Vitals = lazy(() => import('../components/Patient/Vitals'));
 const Allergies = lazy(() => import('../components/Patient/Allergies'));
 const LabRequest = lazy(() => import('../components/Patient/LabRequest'));
 
+const IVFHistory = lazy(() => import('../components/Patient/IVFHistory'));
+
 const PharmacyRequest = lazy(() =>
 	import('../components/Patient/PharmacyRequest')
 );
@@ -109,6 +111,8 @@ const Page = ({ location }) => {
 			return <PatientDataUpload />;
 		case 'immunization-chart':
 			return <ImmunizationChart />;
+		case 'ivf-history':
+			return <IVFHistory />;
 		default:
 			return <Dashboard />;
 	}
