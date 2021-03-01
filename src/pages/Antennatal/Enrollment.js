@@ -17,13 +17,6 @@ export class Enrollment extends Component {
 								path === '' ? 'btn-outline-primary' : ''
 							}`}
 							to="/antenatal">
-							Dashboard
-						</Link>
-						<Link
-							className={`btn btn-primary ${
-								path === 'all-enrol' ? 'btn-outline-primary' : ''
-							}`}
-							to="/antenatal/all-enrol">
 							All Enrollment
 						</Link>
 						<Link

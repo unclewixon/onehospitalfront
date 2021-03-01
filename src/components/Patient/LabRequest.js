@@ -65,7 +65,10 @@ const LabRequest = ({ module, history, location }) => {
 					const url = `lab-tests/groups?hmo_id=${hmoId}`;
 					const rs = await request(url, 'GET', true);
 					setGroups(rs);
-				} catch (e) {}
+					console.log('lab groups', rs);
+				} catch (e) {
+					notifyError('Error fetching drugs');
+				}
 
 				dispatch(stopBlock());
 			} catch (error) {

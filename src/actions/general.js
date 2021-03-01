@@ -665,7 +665,7 @@ export const uploadRadiology = action => {
 export const viewAntenatalDetail = (action, id) => {
 	return dispatch => {
 		dispatch(closeModals());
-		dispatch(toggleModal(true));
+		// dispatch(toggleModal(true));
 		dispatch(toggleAntenatalDetail(action, id));
 	};
 };

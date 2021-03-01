@@ -14,6 +14,7 @@ import { loadAntennatal } from '../../actions/patient';
 import { viewAntenatalDetail } from '../../actions/general';
 import isEmpty from 'lodash.isempty';
 import { patientAPI } from '../../services/constants';
+import { toggleProfile } from '../../actions/user';
 
 const { RangePicker } = DatePicker;
 export class AllEnrollment extends Component {
@@ -77,7 +78,7 @@ export class AllEnrollment extends Component {
 	tableBody = () => {
 		return this.props.antennatal.map((el, i) => {
 			return (
-				<tr>
+				<tr key={i}>
 					<td className="text-center">
 						{moment(el.createdAt).format('DD-MM-YYYY')}
 					</td>
@@ -126,18 +127,18 @@ export class AllEnrollment extends Component {
 			<div className="col-sm-12">
 				<div className="element-wrapper">
 					<div className="element-actions">
-						<Link
+						{/* <Link
 							className={`btn btn-primary ${
 								path === '' ? 'btn-outline-primary' : ''
 							}`}
 							to="/antenatal">
 							Dashboard
-						</Link>
+						</Link> */}
 						<Link
 							className={`btn btn-primary ${
-								path === 'all-enrol' ? 'btn-outline-primary' : ''
+								path === '' ? 'btn-outline-primary' : ''
 							}`}
-							to="/antenatal/all-enrol">
+							to="/antenatal">
 							All Enrollment
 						</Link>
 						<Link

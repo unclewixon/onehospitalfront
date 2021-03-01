@@ -129,6 +129,7 @@ const NewRadiology = props => {
 			setServices(requestType);
 			console.log('requestType', requestType);
 		} catch (e) {
+			console.log('error', e);
 			notifyError('Error Occurred');
 			setSearching(false);
 		}
@@ -161,7 +162,7 @@ const NewRadiology = props => {
 						<div className="form-block w-100">
 							<form onSubmit={handleSubmit(onSubmit)}>
 								<div className="row">
-									<div className="form-group col-sm-6">
+									<div className="form-group d-none">
 										<label>Request Type</label>
 
 										<input
@@ -171,36 +172,10 @@ const NewRadiology = props => {
 											name="requestType"
 											value="Imaging"
 											readOnly
+											hidden
 											ref={register}
 										/>
 									</div>
-									<div className="form-group col-sm-6">
-										<label>
-											Service to request{' '}
-											{multi ? (
-												<span className="mx-1 text-danger">* required </span>
-											) : (
-												''
-											)}
-										</label>
-										<Select
-											name="service_request"
-											placeholder="Select service to request from"
-											isMulti
-											options={services}
-											ref={register({ name: 'service_request' })}
-											onChange={evt => {
-												if (evt) {
-													setMulti(false);
-													setValue('service_request', evt);
-												}
-											}}
-											required
-										/>
-									</div>
-								</div>
-
-								<div className="row">
 									<div className="form-group col-sm-6">
 										<label>Patient</label>
 										<AsyncSelect
@@ -260,6 +235,33 @@ const NewRadiology = props => {
 									</div>
 
 									<div className="form-group col-sm-6">
+										<label>
+											Service to request{' '}
+											{multi ? (
+												<span className="mx-1 text-danger">* required </span>
+											) : (
+												''
+											)}
+										</label>
+										<Select
+											name="service_request"
+											placeholder="Select service to request from"
+											isMulti
+											options={services}
+											ref={register({ name: 'service_request' })}
+											onChange={evt => {
+												if (evt) {
+													setMulti(false);
+													setValue('service_request', evt);
+												}
+											}}
+											required
+										/>
+									</div>
+								</div>
+
+								<div className="row">
+									<div className="form-group col-sm-12">
 										<label>Request Note</label>
 										<textarea
 											required

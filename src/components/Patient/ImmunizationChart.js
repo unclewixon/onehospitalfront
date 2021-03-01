@@ -44,6 +44,7 @@ const ImmunizationChart = () => {
 				const list = groupBy(rs, 'slug');
 				setRecords(Object.values(list));
 				setLoading(false);
+				console.log(patient);
 			} catch (error) {
 				setLoading(false);
 				notifyError(error.message || 'Could not load chart');

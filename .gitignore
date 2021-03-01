@@ -31,3 +31,4 @@ package-lock.json
 .env.production
 debug.log
 .vs
+yarn.lock

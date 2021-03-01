@@ -29,6 +29,7 @@ const INITIAL_STATE = {
 	staff: null,
 	isStaffOpen: false,
 	isPatientOpen: false,
+	isAntenatalOpen: false,
 	menu_mode: 'menu-layout-compact',
 	menu_mini: false,
 };
@@ -46,6 +47,7 @@ const user = (state = INITIAL_STATE, action) => {
 				patient: null,
 				staff: null,
 				isPatientOpen: false,
+				isAntenatalOpen: false,
 				isStaffOpen: false,
 			};
 		case TOGGLE_MODE:

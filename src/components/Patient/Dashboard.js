@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 
@@ -12,11 +12,48 @@ import VisitSummaryTable from './VisitSummaryTable';
 import BillingTable from './BillingTable';
 import AppointmentHistoryTable from './AppointmentHistoryTable';
 import PatientActions from '../PatientActions';
+import { patientAPI } from '../../services/constants';
+import { notifySuccess, notifyError } from '../../services/notify';
+import { updatePatient } from '../../actions/patient';
+import { request } from '../../services/utilities';
+import { useDispatch } from 'react-redux';
 
-const Dashboard = ({ location }) => {
+const Dashboard = ({ location, history }) => {
 	const patient = useSelector(state => state.user.patient);
 	const [tab, setTab] = useState('visitSummary');
+	const [isAdmitted, setisAdmitted] = useState(false);
+	const [submitting, setSubmitting] = useState(false);
 
+	const dispatch = useDispatch();
+
+	const enrollImmunization = async () => {
+		const result = window.confirm('Enroll into immunization?');
+		if (result) {
+			try {
+				setSubmitting(true);
+				const data = { patient_id: patient.id };
+				const url = `${patientAPI}/immunization/enroll`;
+				const rs = await request(url, 'POST', true, data);
+				console.log('rs', rs);
+				if (rs.success) {
+					setSubmitting(false);
+					notifySuccess(
+						`you have enrolled ${patient.other_names} into immunization`
+					);
+					dispatch(updatePatient(rs.patient));
+					history.push(`${location.pathname}#immunization-chart`);
+				} else {
+					setSubmitting(false);
+					notifyError(rs.message);
+					console.error(rs.message);
+				}
+			} catch (error) {
+				setSubmitting(false);
+				console.log(error.message);
+				notifyError(error.message || 'Could not add leave request');
+			}
+		}
+	};
 	return (
 		<>
 			{/* <div className="col-sm-3">
@@ -133,7 +170,11 @@ const Dashboard = ({ location }) => {
 			{/*  */}
 			<div className="col-lg-9 col-md-12">
 				<div className="element-actions d-none d-sm-block">
-					<PatientActions location={location} />
+					<PatientActions
+						location={location}
+						enrollImmunization={enrollImmunization}
+						isAdmitted={isAdmitted}
+					/>
 				</div>
 
 				<div className="element-box mt-2">

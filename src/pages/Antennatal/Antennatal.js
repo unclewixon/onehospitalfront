@@ -11,6 +11,7 @@ import moment from 'moment';
 import { loadAntennatal } from '../../actions/patient';
 import { viewAntenatalDetail } from '../../actions/general';
 import isEmpty from 'lodash.isempty';
+import { toggleProfile } from '../../actions/user';
 import { patientAPI } from '../../services/constants';
 
 export class Antennatal extends Component {
@@ -65,6 +66,10 @@ export class Antennatal extends Component {
 			notifyError('Error deleting Antennatal');
 		}
 	};
+	showProfile = ant => {
+		const info = { ant, type: 'antenatal' };
+		this.props.toggleProfile(true, info);
+	};
 
 	tableBody = () => {
 		return this.props.antennatal.map((el, i) => {
@@ -91,7 +96,7 @@ export class Antennatal extends Component {
 					<td className="text-right row-actions">
 						<Tooltip title="view details">
 							<a className="secondary" onClick={() => this.loadDetail(el.id)}>
-								<i className="os-icon os-icon-eye" />
+								<i className="os-icon os-icon-eye" />i
 							</a>
 						</Tooltip>
 						<Tooltip title="Delete Request">

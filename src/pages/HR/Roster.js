@@ -451,7 +451,7 @@ class Roster extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		duty_rosters: state.hr.duty_rosters,
-		departments: state.settings.departments,
+		departments: state.department,
 	};
 };
 

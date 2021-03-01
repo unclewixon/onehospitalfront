@@ -74,6 +74,7 @@ function InPatientAppointmentForm(props) {
 			label: fullname(item) + ' (Room ' + item.room.name + ')',
 		}));
 		setDoctors(res);
+		console.log('doc', [rs, res]);
 	}
 
 	async function validateAppointment(patient_id, service_id) {

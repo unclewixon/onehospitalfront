@@ -62,6 +62,7 @@ const AllPatients = () => {
 			setMeta(meta);
 			window.scrollTo({ top: 0, behavior: 'smooth' });
 			const arr = [...result];
+			console.log(arr);
 			dispatch(loadPatients(arr));
 			setLoaded(true);
 			setFiltering(false);

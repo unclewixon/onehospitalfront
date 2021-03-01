@@ -21,6 +21,7 @@ import PatientActions from './PatientActions';
 
 const ProfileBlock = ({ location, history, patient, match, noEdits }) => {
 	const [submitting, setSubmitting] = useState(false);
+	const [isAdmitted, setisAdmitted] = useState(false);
 
 	const dispatch = useDispatch();
 
@@ -122,7 +123,11 @@ const ProfileBlock = ({ location, history, patient, match, noEdits }) => {
 			</div>
 			{location.pathname === '/front-desk/all-patients' && (
 				<div className="element-actions d-none d-sm-block justify-content-sm-end mt-1">
-					<PatientActions location={location} />
+					<PatientActions
+						location={location}
+						enrollImmunization={enrollImmunization}
+						isAdmitted={isAdmitted}
+					/>
 				</div>
 			)}
 		</div>

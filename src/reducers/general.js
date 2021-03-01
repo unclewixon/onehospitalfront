@@ -96,6 +96,7 @@ const INITIAL_STATE = {
 	edit_account: false,
 	staffForApraisal: null,
 	isStaffAppraisal: false,
+	isAntenatalOpen: false,
 };
 
 const general = (state = INITIAL_STATE, action) => {
@@ -190,8 +191,9 @@ const general = (state = INITIAL_STATE, action) => {
 		case TOGGLE_ANTENATAL_DETAIL:
 			return {
 				...state,
-				antenatal_detail: action.payload,
+				// antenatal_detail: action.payload,
 				antenatal_id: action.id,
+				isAntenatalOpen: action.payload,
 			};
 		case TOGGLE_ANTENATAL_ASSESSMENT_DETAIL:
 			return {

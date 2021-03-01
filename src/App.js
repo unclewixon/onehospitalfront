@@ -23,6 +23,7 @@ import { AbilityBuilder } from '@casl/ability';
 
 import Login from './pages/Login';
 import NoMatch from './pages/NoMatch';
+import AntenatalDetail from './pages/AntenatalDetail';
 
 const FrontDesk = lazy(() => import('./pages/FrontDesk/index'));
 const Nurse = lazy(() => import('./pages/Nurse/index'));
@@ -76,6 +77,7 @@ class App extends Component {
 			is_modal_open,
 			isStaffOpen,
 			isPatientOpen,
+			isAntenatalOpen,
 			theme_mode,
 			menu_mode,
 			profile,
@@ -152,6 +154,9 @@ class App extends Component {
 										<SlidingPane isOpen={isPatientOpen}>
 											<PatientProfile />
 										</SlidingPane>
+										<SlidingPane isOpen={isAntenatalOpen}>
+											<AntenatalDetail />
+										</SlidingPane>
 										<ModalDialogs />
 									</Suspense>
 								</div>
@@ -178,6 +183,7 @@ const mapStateToProps = state => {
 		profile: state.user?.profile,
 		isStaffOpen: state.user?.isStaffOpen,
 		isPatientOpen: state.user?.isPatientOpen,
+		isAntenatalOpen: state.general?.isAntenatalOpen,
 		theme_mode: state.user?.theme_mode,
 		menu_mode: state.user?.menu_mode,
 		fullscreen: state.user?.fullscreen,
