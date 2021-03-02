@@ -1,4 +1,3 @@
-import { Carousel } from 'react-bootstrap';
 import {
 	TOGGLE_PRELOADING,
 	SIGN_OUT,
@@ -73,7 +72,6 @@ const INITIAL_STATE = {
 	add_cafeteria_file: false,
 	payroll_id: null,
 	payroll_staff: null,
-	upload_service: false,
 	upload_diagnosis: false,
 	upload_radiology: false,
 	upload_hmo: false,

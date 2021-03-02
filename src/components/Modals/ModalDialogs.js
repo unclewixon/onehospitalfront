@@ -17,7 +17,6 @@ import AppointmentFormModal from './AppointmentFormModal';
 import ModalViewAppointment from './ModalViewAppointment';
 import PatientFormModal from './PatientFormModal';
 import ModalViewPayPoint from './ModalViewPayPoint';
-import ModalUploadService from './ModalUploadService';
 import ModalUploadHmo from './ModalUploadHmo';
 import ModalCreateLabMeasurement from './ModalCreateLabMeasurement';
 import ModalCreateRiskAssessment from './ModalCreateRiskAssessment';
@@ -59,7 +58,6 @@ const ModalDialogs = ({
 	create_record_delivery,
 	create_risk_assessment,
 	create_record_vital,
-	upload_service,
 	upload_hmo,
 	openEncounter,
 	create_voucher,
@@ -99,7 +97,6 @@ const ModalDialogs = ({
 			{create_risk_assessment && <ModalCreateRiskAssessment />}
 			{create_record_delivery && <ModalCreateRecordDelivery />}
 			{create_record_vital && <ModalCreateRecordVital />}
-			{upload_service && <ModalUploadService />}
 			{upload_hmo && <ModalUploadHmo />}
 			{create_voucher && <ModalCreateVoucher />}
 			{create_clinical_task && <ModalCreateClinicalTask />}
@@ -140,7 +137,6 @@ const mapStateToProps = (state, ownProps) => {
 		create_record_delivery: state.general.create_record_delivery,
 		create_risk_assessment: state.general.create_risk_assessment,
 		create_record_vital: state.general.create_record_vital,
-		upload_service: state.general.upload_service,
 		upload_hmo: state.general.upload_hmo,
 		upload_hmo_tariff: state.general.upload_hmo_tariff,
 		openEncounter: state.general.openEncounter,

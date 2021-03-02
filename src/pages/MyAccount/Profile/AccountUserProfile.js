@@ -108,7 +108,6 @@ const AccountUserProfile = ({ staff }) => {
 					<tr className="small">
 						<td className="font-weight-bold">Employment Date</td>
 						<td className="text-right">
-							{' '}
 							{staff?.details?.employment_start_date}
 						</td>
 					</tr>

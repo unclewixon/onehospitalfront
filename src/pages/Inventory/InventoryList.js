@@ -1,8 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import Pagination from 'antd/lib/pagination';
+import Popover from 'antd/lib/popover';
 
 import { createInventory } from '../../actions/general';
 import { request, itemRender } from '../../services/utilities';
@@ -15,200 +16,12 @@ import {
 	paginate,
 } from '../../services/constants';
 import { loadInventories } from '../../actions/inventory';
-import Popover from 'antd/lib/popover';
-import waiting from '../../assets/images/waiting.gif';
 import { notifyError, notifySuccess } from '../../services/notify';
 import InventoryTable from '../../components/Inventory/InventoryTable';
 import { getAllHmos } from '../../actions/hmo';
-
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-
-const DownloadInventory = ({ onHide, downloading, doDownload }) => {
-	return (
-		<div
-			className="onboarding-modal fade animated show"
-			role="dialog"
-			style={{ width: '300px' }}>
-			<div className="modal-centered" role="document">
-				<div className="modal-content text-center">
-					<button
-						aria-label="Close"
-						className="close"
-						type="button"
-						onClick={() => onHide()}>
-						<span className="os-icon os-icon-close"></span>
-					</button>
-					<div className="onboarding-content with-gradient">
-						<div className="form-block">
-							<form onSubmit={e => doDownload(e)}>
-								<div className="row">
-									<div className="col-sm-6">
-										<button
-											className="btn btn-primary"
-											disabled={downloading}
-											type="submit">
-											{downloading ? (
-												<img src={waiting} alt="submitting" />
-											) : (
-												'download'
-											)}
-										</button>
-									</div>
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
-};
-
-const UploadInventory = ({
-	onHide,
-	uploading,
-	doUpload,
-	categories,
-	vendors,
-	hmos,
-}) => {
-	const [category, setCategory] = useState('');
-	const [vendor, setVendor] = useState('');
-	const [hmo, setHmo] = useState('');
-	const [files, setFile] = useState(null);
-	let uploadAttachment;
-
-	return (
-		<div
-			className="onboarding-modal fade animated show"
-			role="dialog"
-			style={{ width: '300px' }}>
-			<div className="modal-centered" role="document">
-				<div className="modal-content text-center">
-					<button
-						aria-label="Close"
-						className="close"
-						type="button"
-						onClick={() => onHide()}>
-						<span className="os-icon os-icon-close"></span>
-					</button>
-					<div className="onboarding-content with-gradient">
-						<div className="form-block">
-							<form onSubmit={e => doUpload(e, files, category, vendor, hmo)}>
-								<div className="row">
-									<div className="col-sm-12">
-										<div className="form-group">
-											<label htmlFor="category">Category</label>
-											<select
-												id="category"
-												className="form-control"
-												onChange={e => setCategory(e.target.value)}>
-												<option>Select Category</option>
-												{categories.map((cat, i) => {
-													return (
-														<option key={i} value={cat.id}>
-															{cat.name}
-														</option>
-													);
-												})}
-											</select>
-										</div>
-									</div>
-									<div className="col-sm-12">
-										<div className="form-group">
-											<label htmlFor="vendor">Vendor</label>
-											<select
-												id="vendor"
-												className="form-control"
-												onChange={e => setVendor(e.target.value)}>
-												<option>Select vendor</option>
-												{vendors.map((vendor, i) => {
-													return (
-														<option key={i} value={vendor.id}>
-															{vendor.name}
-														</option>
-													);
-												})}
-											</select>
-										</div>
-									</div>
-
-									<div className="col-sm-12">
-										<div className="form-group">
-											<label htmlFor="hmo">HMO</label>
-											<select
-												id="hmo"
-												className="form-control"
-												onChange={e => setHmo(e.target.value)}>
-												<option>Select HMO</option>
-												{hmos?.map((hmo, i) => {
-													return (
-														<option key={i} value={hmo.id}>
-															{hmo.name}
-														</option>
-													);
-												})}
-											</select>
-										</div>
-									</div>
-
-									<div className="col-sm-12">
-										<div className="form-group">
-											<input
-												className="d-none"
-												onClick={e => {
-													e.target.value = null;
-												}}
-												type="file"
-												accept=".csv"
-												ref={el => {
-													uploadAttachment = el;
-												}}
-												onChange={e => setFile(e.target.files)}
-											/>
-											<label htmlFor="department">Inventory File</label>
-											<a
-												className="btn overflow-hidden"
-												style={{
-													color: '#292b2c',
-													backgroundColor: 'transparent',
-													backgroundImage: 'none',
-													borderColor: '#292b2c',
-												}}
-												onClick={() => {
-													uploadAttachment.click();
-												}}>
-												<i className="os-icon os-icon-ui-51" />
-												<span>{files ? files[0].name : 'Select File'}</span>
-											</a>
-										</div>
-									</div>
-								</div>
-								<div className="row">
-									<div className="col-sm-6 text-left">
-										<button
-											className="btn btn-primary"
-											disabled={uploading}
-											type="submit">
-											{uploading ? (
-												<img src={waiting} alt="submitting" />
-											) : (
-												'upload'
-											)}
-										</button>
-									</div>
-									<div className="col-sm-6 text-right">
-										<p>only .csv files</p>
-									</div>
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
-};
+import DownloadInventory from './DownloadInventory';
+import UploadInventory from './UploadInventory';
+import { startBlock, stopBlock } from '../../actions/redux-block';
 
 class InventoryList extends Component {
 	state = {
@@ -245,25 +58,41 @@ class InventoryList extends Component {
 
 	onUpload = async (e, files, category_id, vendor, hmo) => {
 		e.preventDefault();
-		const file = files[0];
-		if (file) {
+		if (files.length > 0) {
 			try {
+				const file = files[0];
 				const { categories } = this.props;
 				this.setState({ uploading: true });
+				this.props.startBlock();
 				let formData = new FormData();
 				formData.append('file', file);
 				formData.append('category_id', category_id);
 				formData.append('vendor_id', vendor);
 				formData.append('hmo_id', hmo);
-				await axios.post(`${API_URI}/${inventoryUploadAPI}`, formData);
-				const cat = categories.find(d => d.id === category_id);
-				notifySuccess(`Inventory uploaded for ${cat ? cat.name : ''} Category`);
-				this.setState({ uploading: false, category_id });
-				await this.fetchInventories(null, category_id);
-				this.setState({ upload_visible: false });
+				const url = `${API_URI}/${inventoryUploadAPI}`;
+				const rs = await axios.post(url, formData);
+				if (rs.data.success) {
+					setTimeout(async () => {
+						await this.fetchInventories();
+					}, 200);
+					const cat = categories.find(d => d.id === category_id);
+					notifySuccess(
+						`Inventory uploaded for ${cat ? cat.name : ''} Category`
+					);
+					this.setState({
+						uploading: false,
+						category_id,
+						upload_visible: false,
+					});
+				} else {
+					this.setState({ uploading: false });
+					notifyError('upload failed!');
+				}
+				this.props.stopBlock();
 			} catch (error) {
 				console.log(error);
 				this.setState({ uploading: false });
+				this.props.stopBlock();
 			}
 		}
 	};
@@ -297,7 +126,7 @@ class InventoryList extends Component {
 			const { profile, categories } = this.props;
 			let roleQy = '';
 			if (profile.role.slug === 'pharmacy') {
-				const category = categories.find(d => d.name === 'Pharmacy');
+				const category = categories.find(d => d.slug === 'pharmacy');
 				roleQy = category ? `&q=${category.id}` : `&q=${category_id}`;
 			} else {
 				if (category_id) {
@@ -390,7 +219,7 @@ class InventoryList extends Component {
 									</Popover>
 								</div>
 								<h6 className="element-header">Inventory List</h6>
-								<div className="element-box m-0 mb-4">
+								<div className="element-box m-0 p-3">
 									<div className="element-wrapper">
 										<div className="element-actions">
 											<form className="form-inline justify-content-sm-end">
@@ -398,8 +227,10 @@ class InventoryList extends Component {
 													className="form-control form-control-sm"
 													onChange={e => this.changeQuery(e)}>
 													<option value="">Filter by Category</option>
-													{categories?.map(category => (
-														<option value={category.id}>{category.name}</option>
+													{categories?.map((category, i) => (
+														<option key={i} value={category.id}>
+															{category.name}
+														</option>
 													))}
 												</select>
 											</form>
@@ -442,4 +273,6 @@ export default connect(mapStateToProps, {
 	createInventory,
 	loadInventories,
 	getAllHmos,
+	startBlock,
+	stopBlock,
 })(InventoryList);
