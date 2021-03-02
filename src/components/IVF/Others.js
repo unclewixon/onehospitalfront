@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import { Field, reduxForm } from 'redux-form';
 import { withRouter, useHistory } from 'react-router-dom';
-
+import { useForm } from 'react-hook-form';
+import Select from 'react-select';
 import {
 	renderTextInput,
 	renderSelect,
@@ -37,14 +38,71 @@ const pregResult = [
 let Others = props => {
 	const { page, error, ivf, previousPage } = props;
 
+	const { register } = useForm();
 	let [loading, setLoading] = useState(false);
 	let [commencementDate, setCommencementDate] = useState('');
 	let [stimulationDate, setStimulationDate] = useState('');
 	let [embryoTransDate, setEmbryoTransDate] = useState('');
 	let [pregTestDate, setPregTestDate] = useState('');
 	let [oocytePickupDate, setOocytePickupDate] = useState('');
+	const [loaded, setLoaded] = useState(false);
+	const [multi, setMulti] = useState(false);
+	const [labTests, setLabTests] = useState([]);
+	const [test, setTest] = useState([]);
+	const [labTestCategory, setLabTestCategory] = useState([]);
+	const [labTestCategoryRaw, setLabTestCategoryRaw] = useState([]);
 
 	let history = useHistory();
+
+	const fetchLabTestCategory = async () => {
+		try {
+			const rs = await request(
+				`lab-tests/categories?loadOnce=${true}&hmo_id=${ivf.hmo_id}`,
+				'GET',
+				true
+			);
+			setLabTestCategoryRaw(rs);
+			let data = [];
+			rs.forEach((item, index) => {
+				const res = { label: item.name, value: item.id };
+				data = [...data, res];
+			});
+			setLabTestCategory(data);
+			setLoaded(true);
+		} catch (error) {
+			console.log(error);
+			notifyError('error fetching lab test category');
+		}
+	};
+
+	const handleChangeLabTestCategory = evt => {
+		let value = String(evt.value);
+		fetchLabTestsByCategory(value);
+	};
+
+	const handleChangeProcedure = evt => {
+		ivf.lab_tests = evt;
+	};
+
+	const fetchLabTestsByCategory = id => {
+		const rs = labTestCategoryRaw.find(cat => cat.id === Number(id));
+		console.log(rs);
+		let labtests = [];
+		const tests = rs.lab_tests || [];
+		setTest(tests);
+		tests.forEach((item, index) => {
+			const res = { label: item.name, value: item.id };
+			labtests = [...labtests, res];
+		});
+		setLabTests(labtests);
+	};
+
+	useEffect(() => {
+		if (!loaded) {
+			fetchLabTestCategory();
+			setLoaded(true);
+		}
+	}, [loaded]);
 
 	// const setDate = async (date, type) => {
 	// 	await this.setState({ [type]: date });
@@ -63,7 +121,11 @@ let Others = props => {
 		console.log(data);
 
 		let res = { ...ivf, ...data };
+		const mappedId = res.lab_tests.map(lbt => String(lbt.value));
+		res.labTests = mappedId;
 		props.loadPatientIVFForm(res);
+
+		console.log(res);
 
 		try {
 			await request(`${IVFEnroll}`, 'POST', true, res);
@@ -271,6 +333,39 @@ let Others = props => {
 							</div>
 
 							<div className="row">
+								<div className="form-group col-sm-6">
+									<label>Lab Test category</label>
+									<Select
+										name="test_category"
+										placeholder="Select Test Category"
+										options={labTestCategory}
+										ref={register({ name: 'test_category' })}
+										onChange={evt => handleChangeLabTestCategory(evt)}
+										required
+									/>
+								</div>
+								<div className="form-group col-sm-6">
+									<label>
+										Lab Tests to request{' '}
+										{multi ? (
+											<span className="mx-1 text-danger">* required </span>
+										) : (
+											''
+										)}
+									</label>
+									<Select
+										name="lab_tests"
+										placeholder="Select lab tests to request"
+										isMulti
+										options={labTests}
+										ref={register({ name: 'lab_tests' })}
+										onChange={evt => handleChangeProcedure(evt)}
+										required
+									/>
+								</div>
+							</div>
+
+							<div className="row">
 								<div className="col-sm-12 text-right">
 									<button
 										className="btn btn-primary"
@@ -279,7 +374,7 @@ let Others = props => {
 										Previous
 									</button>
 									<button className="btn btn-primary" type="submit">
-										Next
+										Save
 									</button>
 								</div>
 							</div>

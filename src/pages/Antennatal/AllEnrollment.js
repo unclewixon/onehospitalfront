@@ -5,7 +5,6 @@ import Tooltip from 'antd/lib/tooltip';
 import { connect } from 'react-redux';
 
 import { notifyError } from '../../services/notify';
-import { request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
@@ -15,6 +14,24 @@ import { viewAntenatalDetail } from '../../actions/general';
 import isEmpty from 'lodash.isempty';
 import { patientAPI } from '../../services/constants';
 import { toggleProfile } from '../../actions/user';
+import Pagination from 'antd/lib/pagination';
+import { startBlock, stopBlock } from '../../actions/redux-block';
+import { request, confirmAction, itemRender } from '../../services/utilities';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import { searchAPI } from '../../services/constants';
+
+const getOptionValues = option => option.id;
+const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+
+const getOptions = async q => {
+	if (!q || q.length < 3) {
+		return [];
+	}
+
+	const url = `${searchAPI}?q=${q}`;
+	const res = await request(url, 'GET', true);
+	return res;
+};
 
 const { RangePicker } = DatePicker;
 export class AllEnrollment extends Component {
@@ -24,33 +41,42 @@ export class AllEnrollment extends Component {
 		id: null,
 		startDate: '',
 		endDate: '',
+		meta: null,
+		patient_id: '',
 	};
 
 	componentDidMount() {
 		this.fetchAntennatal();
 	}
 
-	fetchAntennatal = async () => {
-		const { startDate, endDate } = this.state;
+	fetchAntennatal = async page => {
+		const { patient_id, startDate, endDate } = this.state;
 		try {
 			this.setState({ loading: true });
-			// console.log(
-			// 	`${patientAPI}/antenatal/list?startDate=${startDate}&endDate=${endDate}`
-			// );
+			const p = page || 1;
 			const rs = await request(
-				`${patientAPI}/antenatal/list?startDate=${startDate}&endDate=${endDate}`,
+				`${patientAPI}/antenatal/list?page=${p}&&limit=24&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}`,
 				'GET',
 				true
 			);
-
-			this.props.loadAntennatal(rs);
-			console.log(rs);
-			this.setState({ loading: false, filtering: false });
+			const { result, ...meta } = rs;
+			const arr = [...result];
+			this.props.loadAntennatal(arr);
+			this.setState({ loading: false, filtering: false, meta });
+			this.props.stopBlock();
 		} catch (error) {
 			console.log(error);
-			notifyError('Error fetching antenatal enrolment requests');
+			this.props.stopBlock();
 			this.setState({ loading: false, filtering: false });
+			notifyError(
+				error.message || 'Error fetching antenatal enrolment requests'
+			);
 		}
+	};
+
+	onNavigatePage = nextPage => {
+		this.props.startBlock();
+		this.fetchAntennatal(nextPage);
 	};
 
 	doFilter = e => {
@@ -120,20 +146,13 @@ export class AllEnrollment extends Component {
 	};
 
 	render() {
-		const { filtering, loading } = this.state;
+		const { filtering, loading, meta } = this.state;
 		const { location } = this.props;
 		const path = location.pathname.split('/').pop();
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
 					<div className="element-actions">
-						{/* <Link
-							className={`btn btn-primary ${
-								path === '' ? 'btn-outline-primary' : ''
-							}`}
-							to="/antenatal">
-							Dashboard
-						</Link> */}
 						<Link
 							className={`btn btn-primary ${
 								path === '' ? 'btn-outline-primary' : ''
@@ -155,20 +174,31 @@ export class AllEnrollment extends Component {
 							<div className="element-wrapper">
 								<div className="col-md-12 px-0">
 									<form className="row">
-										<div className="form-group col-md-6 pr-0">
-											<label>From - To</label>
-											<RangePicker
-												onChange={e => this.dateChange(e)}
-												defaultValue={[
-													this.state.startDate,
-													this.state.endDate,
-												]}
+										<div className="form-group col-md-3">
+											<label htmlFor="patient_id">Patient</label>
+
+											<AsyncSelect
+												isClearable
+												getOptionValue={getOptionValues}
+												getOptionLabel={getOptionLabels}
+												defaultOptions
+												name="patient_id"
+												id="patient_id"
+												loadOptions={getOptions}
+												onChange={e => {
+													this.setState({ patient_id: e?.id });
+												}}
+												placeholder="Search patients"
 											/>
 										</div>
+										<div className="form-group col-md-3">
+											<label>From - To</label>
+											<RangePicker onChange={e => this.dateChange(e)} />
+										</div>
 
-										<div className="form-group col-md-1 pr-0 mt-4">
+										<div className="form-group col-md-3 mt-4">
 											<div
-												className="btn btn-sm btn-primary btn-upper text-white filter-btn"
+												className="btn btn-sm btn-primary btn-upper text-white"
 												onClick={this.doFilter}>
 												<i className="os-icon os-icon-ui-37" />
 												<span>
@@ -221,6 +251,18 @@ export class AllEnrollment extends Component {
 											</tbody>
 										</table>
 									</div>
+									{meta && (
+										<div className="pagination pagination-center mt-4">
+											<Pagination
+												current={parseInt(meta.currentPage, 10)}
+												pageSize={parseInt(meta.itemsPerPage, 10)}
+												total={parseInt(meta.totalPages, 10)}
+												showTotal={total => `Total ${total} transactions`}
+												itemRender={itemRender}
+												onChange={current => this.onNavigatePage(current)}
+											/>
+										</div>
+									)}
 								</div>
 							</div>
 						</div>
@@ -238,7 +280,10 @@ const mapStateToProps = state => {
 };
 
 export default withRouter(
-	connect(mapStateToProps, { loadAntennatal, viewAntenatalDetail })(
-		AllEnrollment
-	)
+	connect(mapStateToProps, {
+		loadAntennatal,
+		viewAntenatalDetail,
+		startBlock,
+		stopBlock,
+	})(AllEnrollment)
 );

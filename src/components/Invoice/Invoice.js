@@ -59,7 +59,7 @@ const Invoice = ({ data }) => {
 										color: '#B8B8B8',
 										marginBottom: 5,
 									}}>
-									File Number:
+									Patient ID:
 								</div>
 								<div
 									style={{

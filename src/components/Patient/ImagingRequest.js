@@ -18,6 +18,7 @@ const ImagingRequest = props => {
 	// const [imagingServices, setImagingServices] = useState([]);
 	const [multi, setMulti] = useState(false);
 	const [services, setServices] = useState([]);
+	const [serv, setServ] = useState([]);
 	const [servicesCategory, setServicesCategory] = useState([]);
 
 	const fetchServicesCategory = async () => {
@@ -69,12 +70,16 @@ const ImagingRequest = props => {
 		try {
 			let requestData = [];
 			let theRequest = {};
+			let currentVal;
+
 			values.service_request.forEach(value => {
+				currentVal = serv.find(s => s.id === value.value);
 				requestData = [
 					...requestData,
 					{
 						service_id: value.value,
 						service_name: value.label,
+						amount: currentVal.tariff,
 					},
 				];
 			});
@@ -110,7 +115,9 @@ const ImagingRequest = props => {
 	const fetchServicesByCategory = async id => {
 		try {
 			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
+			console.log(rs);
 			let services = [];
+			setServ(rs);
 			rs &&
 				rs.forEach((item, index) => {
 					const res = { label: item.name, value: item.id };
@@ -148,10 +155,10 @@ const ImagingRequest = props => {
 
 							<div className="row">
 								<div className="form-group col-sm-6">
-									<label>Service Center</label>
+									<label>Service Category</label>
 									<Select
 										name="service_center"
-										placeholder="Select Service Center"
+										placeholder="Select Service Category"
 										options={servicesCategory}
 										ref={register({ name: 'service_center' })}
 										onChange={evt => handleChangeServiceCategory(evt)}

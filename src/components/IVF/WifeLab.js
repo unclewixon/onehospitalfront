@@ -26,10 +26,9 @@ let WifeLab = props => {
 	const { page, error, ivf } = props;
 	const dispatch = useDispatch();
 	let [searching, setSearching] = useState(false);
-	let [patients, setPatients] = useState([]);
 	let [selectedPatient, setSelectedPatient] = useState([]);
-	// let [staffs, setStaffs] = useState([]);
 	let [query, setQuery] = useState('');
+	let [hmo, setHmo] = useState(null);
 
 	useEffect(() => {
 		const fetchStaffs = async () => {
@@ -41,9 +40,6 @@ let WifeLab = props => {
 					console.log(error);
 				}
 			}
-
-			// let staffs = props.staffs.map(el => el.first_name + ' ' + el.last_name);
-			// setStaffs(staffs);
 		};
 
 		fetchStaffs();
@@ -51,26 +47,9 @@ let WifeLab = props => {
 
 	const patient = React.createRef();
 
-	const handlePatientChange = e => {
-		setQuery(e.target.value);
-		searchPatient();
-	};
-
-	const searchPatient = async () => {
-		if (query.length > 2) {
-			try {
-				setSearching(true);
-				const rs = await request(`${searchAPI}?q=${query}`, 'GET', true);
-				setSearching(false);
-				setPatients(rs);
-			} catch (e) {
-				notifyError('Error Occurred');
-			}
-		}
-	};
-
 	const onSubmitForm = async data => {
 		ivf.wifeLabDetails = data;
+		ivf.hmo_id = hmo;
 		ivf.wife_id = selectedPatient.label;
 		ivf.wifeLabDetails.name = selectedPatient.value;
 		props.loadPatientIVFForm(ivf);
@@ -87,11 +66,11 @@ let WifeLab = props => {
 			(pat.other_names ? pat.other_names : '');
 
 		let res = { label: pat.id, value: name };
+		setHmo(pat?.hmo?.id);
 		setSelectedPatient(res);
 		//this.props.setPatient(pat.id, name);
 		// document.getElementById('patient').value = name;
 		patient.current.value = name;
-		setPatients([]);
 	};
 
 	const getOptionValues = option => option.id;

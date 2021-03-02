@@ -19,6 +19,7 @@ const ProcedureRequest = props => {
 	const [services, setServices] = useState('');
 	const [loaded, setLoaded] = useState(false);
 	const [selectedOption, setSelectedOption] = useState('');
+	const [serv, setServ] = useState([]);
 
 	const fetchServicesCategory = async () => {
 		try {
@@ -70,6 +71,7 @@ const ProcedureRequest = props => {
 		try {
 			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
 			let services = [];
+			setServ(rs);
 			rs &&
 				rs.forEach((item, index) => {
 					const res = { label: item.name, value: item.id };
@@ -91,12 +93,15 @@ const ProcedureRequest = props => {
 		}
 		let requestData = [];
 		let theRequest = {};
+		let currentVal;
 		values.procedure.forEach(value => {
+			currentVal = serv.find(s => s.id === value.value);
 			requestData = [
 				...requestData,
 				{
 					service_id: value.value,
 					service_name: value.label,
+					amount: currentVal.tariff,
 				},
 			];
 		});
@@ -146,10 +151,10 @@ const ProcedureRequest = props => {
 								<form onSubmit={handleSubmit(onSubmit)}>
 									<div className="row">
 										<div className="form-group col-sm-6">
-											<label>Service Center</label>
+											<label>Service Category</label>
 											<Select
 												name="service_center"
-												placeholder="Select Service Center"
+												placeholder="Select Service Category"
 												options={servicesCategory}
 												ref={register({ name: 'service_center' })}
 												onChange={evt => handleChangeServiceCategory(evt)}

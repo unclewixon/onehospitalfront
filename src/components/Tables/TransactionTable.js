@@ -59,7 +59,7 @@ const TransactionTable = ({
 	const closeModal = () => {
 		document.body.classList.remove('modal-open');
 		setShowModal(false);
-		setDetails(null);
+		setDetails([]);
 	};
 
 	return (

@@ -37,6 +37,7 @@ import {
 	GET_ALL_OPD_IMMUNIZATION_APPOINTMENTS,
 	UPDATE_PATIENT,
 	READING_DONE,
+	SET_IVF,
 	CAN_CLOSE_LABOUR,
 } from '../actions/types';
 import actions from 'redux-form/lib/actions';
@@ -51,6 +52,7 @@ const INITIAL_STATE = {
 	imagingRequests: [],
 	patient_upload: [],
 	vitals: [],
+	ivfDetails: {},
 	patients: [],
 	clinicalLab: [],
 	opdLabAppointments: [],
@@ -95,6 +97,9 @@ const INITIAL_STATE = {
 
 const patient = (state = INITIAL_STATE, action) => {
 	switch (action.type) {
+		case SET_IVF:
+			console.log(SET_IVF);
+			return { ...state, ivfDetails: action.payload };
 		case CAN_CLOSE_LABOUR:
 			return { ...state, canCloseLabour: true };
 		case NEXT_STEP:

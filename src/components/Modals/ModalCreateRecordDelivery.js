@@ -13,7 +13,11 @@ import { closeLabour } from '../../actions/patient';
 import { notifySuccess, notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { Carousel } from 'antd';
-import TextArea from 'antd/lib/input/TextArea';
+import {} from '../../actions/patient';
+import { loadDeliveryRecord } from '../../actions/patient';
+
+let date = new Date();
+date.setDate(date.getDate() - 3);
 
 class ModalCreateRecordDelivery extends Component {
 	state = {
@@ -27,6 +31,10 @@ class ModalCreateRecordDelivery extends Component {
 		staff_name: '',
 		searching: false,
 		query: '',
+		comment: '',
+	};
+	handleChange = comm => {
+		this.setState({ comment: comm });
 	};
 	staff = React.createRef();
 	componentDidMount() {
@@ -42,10 +50,10 @@ class ModalCreateRecordDelivery extends Component {
 		newData['dateOfBirth'] = moment(this.state.examDate).format('DD/MM/YYYY');
 		newData['timeOfBirth'] = moment(this.state.examDate).format('LT');
 		newData['pediatrician_id'] = this.state.staff_id;
+		newData['comment'] = this.state.comment;
 		console.log(newData);
-
 		try {
-			const { labourDetail } = this.props;
+			const { labourDetail, deliveryRecord } = this.props;
 
 			this.setState({ submitting: true });
 			const rs = await request(
@@ -54,7 +62,8 @@ class ModalCreateRecordDelivery extends Component {
 				true,
 				newData
 			);
-			console.log(rs);
+			const new_arr = [rs.data, ...deliveryRecord];
+			this.props.loadDeliveryRecord(new_arr);
 			notifySuccess('succesfully submitted');
 
 			this.props.closeModals(false);
@@ -353,7 +362,7 @@ class ModalCreateRecordDelivery extends Component {
 																timeInputLabel="Time:"
 																dateFormat="MM/dd/yyyy h:mm aa"
 																showTimeInput
-																minDate={new Date()}
+																minDate={date}
 																required
 															/>
 														</div>
@@ -595,8 +604,8 @@ class ModalCreateRecordDelivery extends Component {
 												<SunEditor
 													width="100%"
 													placeholder="Please type here..."
-													// setContents={encounterData.complaints}
-													name="complaint_data"
+													//setContents={encounterData.complaints}
+													name="comment"
 													// ref={register}
 													autoFocus={false}
 													enableToolbar={true}
@@ -619,9 +628,9 @@ class ModalCreateRecordDelivery extends Component {
 														],
 													}}
 													//onFocus={handleFocus}
-													// onChange={evt => {
-													// 	handleChange(String(evt));
-													// }}
+													onChange={evt => {
+														this.handleChange(String(evt));
+													}}
 												/>
 											</div>
 											<div className="row mt-2">
@@ -663,8 +672,11 @@ ModalCreateRecordDelivery = reduxForm({
 const mapStateToProps = state => {
 	return {
 		labourDetail: state.patient.labourDetail,
+		deliveryRecord: state.patient.deliveryRecord,
 	};
 };
-export default connect(mapStateToProps, { closeModals, closeLabour })(
-	ModalCreateRecordDelivery
-);
+export default connect(mapStateToProps, {
+	closeModals,
+	closeLabour,
+	loadDeliveryRecord,
+})(ModalCreateRecordDelivery);

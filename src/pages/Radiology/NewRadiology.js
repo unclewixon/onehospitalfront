@@ -114,7 +114,7 @@ const NewRadiology = props => {
 			setSearching(true);
 			const res = await request('services/categories/Ultrasound', 'GET', true);
 			const serviceRes = await request(
-				`services/category/${res.id}`,
+				`services/category/${res?.id}`,
 				'GET',
 				true
 			);

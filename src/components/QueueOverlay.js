@@ -1,5 +1,6 @@
 import React from 'react';
 import Modal from 'react-modal';
+import { formatPatientId } from '../../services/utilities';
 
 const QueueOverlay = ({ isOpen, handleClose, data }) => {
 	return (
@@ -117,15 +118,14 @@ const QueueOverlay = ({ isOpen, handleClose, data }) => {
 																					<tr>
 																						<td>
 																							<div className="text-left">
-																								File Number
+																								Patient ID
 																							</div>
 																						</td>
 																						<td className="text-right">
 																							<div className="value text-success">
-																								{
-																									data?.appointment?.patient
-																										?.fileNumber
-																								}
+																								{formatPatientId(
+																									data?.appointment?.patient_id
+																								)}
 																							</div>
 																						</td>
 																					</tr>

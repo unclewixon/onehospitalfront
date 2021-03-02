@@ -63,6 +63,10 @@ const ModalFillLabResult = ({ closeModal, labRequest, labs, updateLab }) => {
 	};
 
 	const save = async () => {
+		if (note === null || result === null) {
+			notifyError('Please fill in result and note');
+			return;
+		}
 		try {
 			dispatch(startBlock());
 			setSubmitting(true);

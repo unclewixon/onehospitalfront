@@ -1,5 +1,6 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal';
+import { formatPatientId } from '../../services/utilities';
 
 const ModalPatientDetails = ({ showModal, onModalClick, activeRequest }) => {
 	return (
@@ -37,10 +38,10 @@ const ModalPatientDetails = ({ showModal, onModalClick, activeRequest }) => {
 													<tbody>
 														<tr>
 															<td>
-																<div className="text-left">File Number</div>
+																<div className="text-left">Patient ID</div>
 															</td>
 															<td className="text-right">
-																{activeRequest?.fileNumber}
+																{formatPatientId(activeRequest?.id)}
 																<div className="value text-success"></div>
 															</td>
 														</tr>

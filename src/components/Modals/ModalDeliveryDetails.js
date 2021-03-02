@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { closeModals } from '../../actions/general';
 import { formatPatientId } from '../../services/utilities';
+import DOMPurify from 'dompurify';
 
-export class ModalLabourMeasurementDetail extends Component {
+export class ModalDeliveryDetail extends Component {
 	componentDidMount() {
 		document.body.classList.add('modal-open');
 	}
@@ -12,25 +13,12 @@ export class ModalLabourMeasurementDetail extends Component {
 		document.body.classList.remove('modal-open');
 	}
 
-	calculateAmount = arr => {
-		let sum = 0;
-		arr &&
-			arr.forEach(val => {
-				let amt = val.price;
-				if (amt === undefined) {
-					amt = 0;
-				}
-				try {
-					sum += parseInt(amt);
-				} catch (e) {
-					sum += 0;
-				}
-			});
-		return sum;
-	};
+	cleanHTML = DOMPurify.sanitize(this.props.detail.comment, {
+		USE_PROFILES: { html: true },
+	});
 
 	render() {
-		const { labourDetail, labour } = this.props;
+		const { labourDetail, detail } = this.props;
 
 		return (
 			<div
@@ -43,7 +31,7 @@ export class ModalLabourMeasurementDetail extends Component {
 							aria-label="Close"
 							className="close"
 							type="button"
-							onClick={() => this.props.closeModals(false)}>
+							onClick={() => this.props.closeModal()}>
 							<span aria-hidden="true"> ×</span>
 						</button>
 
@@ -51,9 +39,7 @@ export class ModalLabourMeasurementDetail extends Component {
 							<div className="element-info">
 								<div className="element-info-with-icon">
 									<div className="element-info-text">
-										<h5 className="element-inner-header">
-											Labour Measurement Detail
-										</h5>
+										<h5 className="element-inner-header">Delivery Details</h5>
 									</div>
 								</div>
 							</div>
@@ -85,90 +71,73 @@ export class ModalLabourMeasurementDetail extends Component {
 												</tr>
 											</div>
 
-											<h6 className="element-header text-left">Measurement</h6>
+											<h6 className="element-header text-left">Delivery</h6>
 											<div className="row">
 												<div className="col-md-6 col-sm-12">
 													<table className="table w-100 table-clean table-sm">
 														<tbody>
 															<tr>
 																<td className="font-weight-bold text-left">
-																	Date of Measurement
+																	Delivery Type
 																</td>
 																<td className="text-right">
-																	{labour.dateOfMeasurement}
+																	{detail.deliveryType}
 																</td>
 															</tr>
 															<tr>
 																<td className="font-weight-bold text-left">
-																	Time of Measurement
+																	Is Mother Alive
 																</td>
 																<td className="text-right">
-																	{labour.timeOfMeasurement}
+																	{detail.isMotherAlive ? 'Yes' : 'No'}
 																</td>
 															</tr>
 															<tr>
 																<td className="font-weight-bold text-left">
-																	False Labour
+																	Administered Oxytocin
 																</td>
 																<td className="text-right">
-																	{!labour.isFalseLabour ? 'Yes' : 'No'}
+																	{detail.administeredOxytocin ? 'Yes' : 'No'}
 																</td>
 															</tr>
 															<tr>
 																<td className="font-weight-bold text-left">
-																	Presentation
+																	Placenta Complete
 																</td>
 																<td className="text-right">
-																	{labour.presentation
-																		? labour.presentation
-																		: ''}
+																	{detail.placentaComplete ? 'Yes' : 'No'}
 																</td>
 															</tr>
 															<tr>
 																<td className="font-weight-bold text-left">
-																	Position Of Fetus
+																	Date Of Birth
 																</td>
 																<td className="text-right">
-																	{labour.positionOfFetus
-																		? labour.positionOfFetus
-																		: ' - '}
+																	{detail.dateOfBirth}
 																</td>
 															</tr>
 															<tr>
 																<td className="font-weight-bold text-left">
-																	Fetal Lies
+																	Time Of Birth
 																</td>
 																<td className="text-right">
-																	{labour.fetalLies ? labour.fetalLies : '-'}
+																	{detail.timeOfBirth}
 																</td>
 															</tr>
 															<tr>
 																<td className="font-weight-bold text-left">
-																	Descent
+																	Baby Cried
 																</td>
 																<td className="text-right">
-																	{' '}
-																	{labour.descent ? labour.descent : '-'}
+																	{detail.babyCried ? 'Yes' : 'No'}
 																</td>
 															</tr>
 															<tr>
 																<td className="font-weight-bold text-left">
-																	Cervical Length
+																	Sex of Baby
 																</td>
 																<td className="text-right">
-																	{labour.cervicalLength
-																		? labour.cervicalLength
-																		: '-'}
-																</td>
-															</tr>
-															<tr>
-																<td className="font-weight-bold text-left">
-																	Cervical Length
-																</td>
-																<td className="text-right">
-																	{labour.cervicalLength
-																		? labour.cervicalLength
-																		: '-'}
+																	{detail.sexOfBaby}
 																</td>
 															</tr>
 														</tbody>
@@ -179,46 +148,42 @@ export class ModalLabourMeasurementDetail extends Component {
 														<tbody>
 															<tr>
 																<td className="font-weight-bold text-left">
-																	Cervical Effacement
+																	APGAR Score
 																</td>
 																<td className="text-right">
-																	{labour.cervicalEffacement
-																		? labour.cervicalEffacement
-																		: '-'}
+																	{detail.apgarScore}
 																</td>
 															</tr>
 															<tr>
 																<td className="font-weight-bold text-left">
-																	Cervical Position
+																	Weight
+																</td>
+																<td className="text-right">{detail.weight}</td>
+															</tr>
+
+															<tr>
+																<td className="font-weight-bold text-left">
+																	Administered VitaminK
 																</td>
 																<td className="text-right">
-																	{labour.cervicalPosition
-																		? labour.cervicalPosition
-																		: '-'}
+																	{detail.administeredVitaminK ? 'Yes' : 'No'}
 																</td>
 															</tr>
 															<tr>
 																<td className="font-weight-bold text-left">
-																	Membrances
+																	Negative RH
 																</td>
 																<td className="text-right">
-																	{labour.membrances ? labour.membrances : '-'}
+																	{detail.negativeRH ? 'Yes' : 'No'}
 																</td>
 															</tr>
+
 															<tr>
 																<td className="font-weight-bold text-left">
-																	Passed Urine
+																	Drugs Administered
 																</td>
 																<td className="text-right">
-																	{!labour.hasPassedUrine ? 'Yes' : 'No'}
-																</td>
-															</tr>
-															<tr>
-																<td className="font-weight-bold text-left">
-																	Administered Cyatacin
-																</td>
-																<td className="text-right">
-																	{labour.administeredCyatacin ? 'Yes' : 'No'}
+																	{detail.drugsAdministered ? 'Yes' : 'No'}
 																</td>
 															</tr>
 															<tr>
@@ -226,58 +191,27 @@ export class ModalLabourMeasurementDetail extends Component {
 																	Administered Drugs
 																</td>
 																<td className="text-right">
-																	{labour.administeredDrugs ? 'Yes' : 'No'}
+																	{detail.administeredDrugs ? 'Yes' : 'No'}
 																</td>
 															</tr>
 															<tr>
 																<td className="font-weight-bold text-left">
-																	Lab Tests
+																	Transferred To
 																</td>
 																<td className="text-right">
-																	Total Lab tests amount:{' '}
-																	{this.calculateAmount(labour?.labTests)}
-																	<br />
-																	<div className="table-responsive">
-																		<table className="table table-striped">
-																			<thead>
-																				<tr>
-																					<th>Name</th>
-																					<th colSpan="3">Price</th>
-																					<th>Test Type</th>
-																				</tr>
-																			</thead>
-																			<tbody>
-																				{labour?.labTests?.map(lbt => {
-																					return (
-																						<tr>
-																							<td>{lbt?.name}</td>
-
-																							<td
-																								className="text-right"
-																								colSpan="3">
-																								{lbt?.price}
-																							</td>
-
-																							<td className="text-right">
-																								{lbt?.test_type}
-																							</td>
-																						</tr>
-																					);
-																				})}
-																			</tbody>
-																		</table>
-																	</div>
+																	{detail.transferredTo}
 																</td>
 															</tr>
 															<tr>
 																<td className="font-weight-bold text-left">
-																	Measurements
+																	Comment
 																</td>
 																<td className="text-right">
-																	{labour.measurements &&
-																	labour.measurements.length > 0
-																		? labour.measurements.join(',')
-																		: '-'}
+																	<div
+																		dangerouslySetInnerHTML={{
+																			__html: this.cleanHTML,
+																		}}
+																	/>
 																</td>
 															</tr>
 														</tbody>
@@ -298,12 +232,9 @@ export class ModalLabourMeasurementDetail extends Component {
 
 const mapStateToProps = state => {
 	return {
-		labour: state.general.labourMeasurementDetail,
 		patient: state.user.patient,
 		labourDetail: state.patient.labourDetail,
 	};
 };
 
-export default connect(mapStateToProps, { closeModals })(
-	ModalLabourMeasurementDetail
-);
+export default connect(mapStateToProps, { closeModals })(ModalDeliveryDetail);

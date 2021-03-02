@@ -33,12 +33,20 @@ import {
 	GET_ALL_OPD_IMMUNIZATION_APPOINTMENTS,
 	UPDATE_PATIENT,
 	READING_DONE,
+	SET_IVF,
 	CAN_CLOSE_LABOUR,
 } from './types';
 import { request } from '../services/utilities';
 // import axios from 'axios';
 // import { API_URI, transactionsAPI } from '../services/constants';
 // import { delete_transaction } from './transaction';
+
+export const setIVF = data => {
+	return {
+		type: SET_IVF,
+		payload: data,
+	};
+};
 
 export const loadPatients = data => {
 	return {

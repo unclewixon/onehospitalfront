@@ -67,6 +67,22 @@ const Procedure = props => {
 		setShowModal(!showModal);
 	};
 
+	const calculateAmount = arr => {
+		let sum = 0;
+		arr.forEach(val => {
+			let amt = val.amount;
+			if (amt === undefined) {
+				amt = 0;
+			}
+			try {
+				sum += parseInt(amt);
+			} catch (e) {
+				sum += 0;
+			}
+		});
+		return sum;
+	};
+
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">
@@ -97,6 +113,7 @@ const Procedure = props => {
 											<th>Request Date</th>
 											<th>Requested By</th>
 											<th>Request Specimen</th>
+											<th>Amount</th>
 											<th className="text-right" />
 										</tr>
 									</thead>
@@ -120,6 +137,7 @@ const Procedure = props => {
 														</td>
 														<td>{req.created_by}</td>
 														<td>{getRequests(req.requestBody)}</td>
+														<td>{calculateAmount(req.requestBody)}</td>
 														<td className="row-actions text-right">
 															<Tooltip title="View Request">
 																<a

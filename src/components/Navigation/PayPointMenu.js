@@ -53,6 +53,14 @@ const PayPointMenu = () => {
 					<span>Vouchers</span>
 				</Link>
 			</li>
+			<li>
+				<Link to="/paypoint/proforma-invoice">
+					<div className="icon-w">
+						<div className="os-icon os-icon-newspaper" />
+					</div>
+					<span>Proforma Invoice</span>
+				</Link>
+			</li>
 		</>
 	);
 };

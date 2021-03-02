@@ -28,7 +28,7 @@ class FrontDeskTable extends Component {
 					<tr>
 						<th>Date</th>
 						<th>Patient</th>
-						<th>File Number</th>
+						<th>Patient ID</th>
 						<th>Whom to see</th>
 						<th>C.R</th>
 						<th>Status</th>
