@@ -49,6 +49,7 @@ const ServicesCategory = () => {
 	const closeModal = () => {
 		document.body.classList.remove('modal-open');
 		setShowModal(false);
+		setLoaded(false);
 
 		if (showServiceCategory) {
 			setCategoriesLoaded(false);
@@ -99,13 +100,13 @@ const ServicesCategory = () => {
 									</ul>
 								</div>
 							</div>
-							{showServiceCategory && loaded && (
+							{showServiceCategory && (
 								<ServiceCategoryList
 									loaded={categoriesLoaded}
 									setLoaded={status => setCategoriesLoaded(status)}
 								/>
 							)}
-							{showServicesList && loaded && (
+							{showServicesList && (
 								<ServicesList
 									role={role}
 									loaded={servicesLoaded}

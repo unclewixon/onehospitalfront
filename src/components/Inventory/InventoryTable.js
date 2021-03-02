@@ -187,7 +187,6 @@ class InventoryTable extends Component {
 			},
 		];
 		const { data } = this.props;
-		console.log(data);
 		const { showExpiryModal, inventory } = this.state;
 		return (
 			<>
