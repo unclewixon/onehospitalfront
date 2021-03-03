@@ -17,6 +17,11 @@ import {
 import { request } from './../services/utilities';
 import { notifySuccess, notifyError } from './../services/notify';
 
+import { API_URI, TOKEN_COOKIE } from '../services/constants';
+import SSRStorage from '../services/storage';
+import axios from 'axios';
+const storage = new SSRStorage();
+
 export const loadStaff = data => {
 	return {
 		type: LOAD_STAFFS,
@@ -108,20 +113,33 @@ export const setPerformancePeriod = data => {
 	};
 };
 
-export const updateStaff = (data, id, cb) => async dispatch => {
-	try {
-		const res = await request(`hr/staffs/${id}/update`, 'PATCH', true, data);
-		if (res) {
-			dispatch({
-				type: UPDATE_STAFF,
-				payload: res.data,
-			});
-			cb();
-			notifySuccess('Updated Staff Successfully');
-			return;
-		}
-	} catch (error) {
-		cb();
-		notifyError('Could not update staff');
+export const updateStaff = (datum, id, cb) => async dispatch => {
+	console.log('updat:)');
+	console.log(datum);
+	const formDataObj = new FormData();
+	for (const key in datum) {
+		formDataObj.append(key, datum[key]);
 	}
+	const user = await storage.getItem(TOKEN_COOKIE);
+	const jwt = `Bearer ${user.token}`;
+	let headers = { Authorization: jwt };
+	axios
+		.patch(`${API_URI}/hr/staffs/${id}/update`, formDataObj, { headers })
+		.then(res => {
+			if (res) {
+				dispatch({
+					type: UPDATE_STAFF,
+					payload: res.data.staff,
+				});
+				cb();
+				notifySuccess('Updated Staff Successfully');
+				return;
+			} else {
+				notifyError(res.message);
+			}
+		})
+		.catch(e => {
+			cb();
+			notifyError('Could not update staff');
+		});
 };

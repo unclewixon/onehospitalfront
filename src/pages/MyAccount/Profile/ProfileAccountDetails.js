@@ -13,7 +13,13 @@ const AccountDetails = ({ staff, onEdit, buttonText, onView }) => {
 				<div
 					className="up-head-w"
 					// style={{ backgroundImage: `url(${staff?.details?.profile_pic})` }}>
-					style={{ backgroundImage: `url(${patientProfilePic})` }}>
+					style={{
+						backgroundImage: `url(${
+							staff?.details?.profile_pic
+								? staff?.details?.profile_pic
+								: patientProfilePic
+						})`,
+					}}>
 					<div className="up-social">
 						<a href="#">
 							<i className="os-icon os-icon-twitter"></i>

@@ -4,7 +4,6 @@ import { useCallback, useEffect } from 'react';
 import moment from 'moment';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-
 import SSRStorage from '../../services/storage';
 import SelectRoomModal from '../../components/Modals/SelectRoomModal';
 import { socket } from '../../services/constants';
@@ -40,7 +39,7 @@ function DoctorHome({ profile }) {
 			setLoading(false);
 			notifyError(e.message || 'could not fetch appointments');
 		}
-	}, [staff.id]);
+	}, [staff?.id]);
 
 	useEffect(() => {
 		if (!listenning) {

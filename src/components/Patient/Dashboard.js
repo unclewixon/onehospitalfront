@@ -31,7 +31,11 @@ const Dashboard = ({ location }) => {
 				<div className="user-profile compact">
 					<div
 						className="up-head-w"
-						style={{ backgroundImage: `url(${patientProfilePic})` }}>
+						style={{
+							backgroundImage: `url(${
+								patient?.profile_pic ? patient?.profile_pic : patientProfilePic
+							})`,
+						}}>
 						<div className="up-main-info">
 							<h2 className="up-header">{`${patient?.surname} ${patient?.other_names}`}</h2>
 							<h6 className="up-sub-header">

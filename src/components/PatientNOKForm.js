@@ -4,7 +4,8 @@ import { useForm } from 'react-hook-form';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
-
+import axios from 'axios';
+import { API_URI, TOKEN_COOKIE } from '../services/constants';
 import { prevStep } from '../actions/patient';
 import { closeModals } from '../actions/general';
 import { patientNOKSchema } from '../services/validationSchemas';
@@ -19,6 +20,7 @@ import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import { setPatientRecord } from '../actions/user';
 import { addNewPatient, updatePatient } from '../actions/patient';
+import SSRStorage from '../services/storage';
 
 function PatientNOKForm(props) {
 	const formData = props.formData;
@@ -31,6 +33,8 @@ function PatientNOKForm(props) {
 	const [ethValue, setEthValue] = useState('');
 	const [relationshipValue, setRelationshipValue] = useState('');
 	const [maritalValue, setMaritalValue] = useState('');
+
+	const storage = new SSRStorage();
 
 	useEffect(() => {
 		let formValues = {
@@ -128,47 +132,64 @@ function PatientNOKForm(props) {
 				? moment(data.date_of_birth).format('YYYY-MM-DD')
 				: '',
 		};
+		console.log(datum);
+		const formDataObj = new FormData();
+		for (const key in datum) {
+			formDataObj.append(key, datum[key]);
+		}
+		const user = await storage.getItem(TOKEN_COOKIE);
+		const jwt = `Bearer ${user.token}`;
+		let headers = { Authorization: jwt };
 		setSubmitting(true);
 		if (!register_new_patient) {
-			try {
-				const url = `patient/${patient.id}/update`;
-				const res = await request(url, 'PATCH', true, datum);
-				setSubmitting(false);
-				if (res.success) {
-					props.setPatientRecord(res.patient);
-					props.updatePatient(res.patient);
-					notifySuccess(`${patient.other_names} record was updated!`);
-					props.closeModals(false);
-				} else {
-					notifyError(res.message);
-				}
-			} catch (e) {
-				setSubmitting(false);
-				notifyError(
-					e.message || `could not update ${patient.other_names} record`
-				);
-			}
+			axios
+				.patch(`${API_URI}/patient/${patient.id}/update`, formDataObj, {
+					headers,
+				})
+				.then(res => {
+					setSubmitting(false);
+					if (res.data?.success) {
+						props.setPatientRecord(res.data?.patient);
+						props.updatePatient(res.data?.patient);
+						notifySuccess(`${patient.other_names} record was updated!`);
+						props.closeModals(false);
+					} else {
+						notifyError(res.message);
+					}
+				})
+				.catch(e => {
+					setSubmitting(false);
+					notifyError(
+						e.message || `could not update ${patient.other_names} record`
+					);
+				});
 		} else {
-			try {
-				console.log('onsave()');
-				console.log(datum);
-				const url = 'patient/save';
-				const res = await request(url, 'POST', true, datum);
-				setSubmitting(false);
-				if (res.success) {
-					props.addNewPatient(res.patient);
-					notifySuccess('New patient account created!');
-					props.closeModals(false);
-				} else {
-					notifyError(res.message);
-				}
-			} catch (e) {
-				setSubmitting(false);
-				const _message = e.message
-					.map(m => Object.values(m.constraints).join(', '))
-					.join(', ');
-				notifyError(_message || 'could not save patient record');
+			console.log('onsave()');
+			// Display the key/value pairs
+			for (var pair of formDataObj.entries()) {
+				console.log(pair[0] + ', ' + pair[1]);
 			}
+
+			axios
+				.post(`${API_URI}/patient/save`, formDataObj, { headers })
+				.then(res => {
+					setSubmitting(false);
+					console.log(res);
+					if (res.data?.success) {
+						props.addNewPatient(res.data?.patient);
+						notifySuccess('New patient account created!');
+						props.closeModals(false);
+					} else {
+						notifyError(res.message);
+					}
+				})
+				.catch(e => {
+					setSubmitting(false);
+					const _message = e.message
+						.map(m => Object.values(m.constraints).join(', '))
+						.join(', ');
+					notifyError(_message || 'could not save patient record');
+				});
 		}
 	};
 
