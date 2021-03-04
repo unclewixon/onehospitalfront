@@ -3,11 +3,13 @@ import { connect, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
-
+import placeholder from '../assets/images/placeholder.jpg';
 import { closeModals } from '../actions/general';
 import { nextStep } from '../actions/patient';
 import { patientSchema } from '../services/validationSchemas';
 import { ethnicities, gender, maritalStatus } from '../services/constants';
+import { Image } from 'react-bootstrap';
+import { CameraFeed } from './CameraFeed';
 
 function PatientForm(props) {
 	const formData = props.formData;
@@ -20,6 +22,8 @@ function PatientForm(props) {
 	const [hmoValue, setHmoValue] = useState('');
 	const [ethValue, setEthValue] = useState('');
 	const [maritalValue, setMaritalValue] = useState('');
+	const [image, setImage] = useState(null);
+	const [avatar, setAvatar] = useState(null);
 
 	const hmoList = useSelector(state => state.hmo.hmo_list);
 	const hmos = hmoList.map(hmo => {
@@ -42,6 +46,7 @@ function PatientForm(props) {
 			maritalStatus: formData.maritalStatus || '',
 			ethnicity: formData.ethnicity || '',
 			hmo: formData.hmo || '',
+			avatar: formData.avatar || '',
 		};
 		setFormTitle('New patient registration');
 		setPatientData({ ...formValues });
@@ -59,11 +64,16 @@ function PatientForm(props) {
 				gender: patient.gender || '',
 				occupation: patient.occupation || '',
 				address: patient.address || '',
+				avatar: patient.profile_pic || '',
 				phoneNumber: patient.phoneNumber || '',
 				hmo: patient.hmo_id || '',
 			};
+			if (patient.profile_pic) {
+				setAvatar(patient.profile_pic);
+			}
 
 			setValue('date_of_birth', patientData?.date_of_birth);
+			setValue('avatar', patientData?.avatar);
 
 			setGenderValue(
 				gender.filter(option => option.label === formValues.gender)
@@ -79,6 +89,7 @@ function PatientForm(props) {
 			);
 
 			handleChange('gender', formValues.gender, setGenderValue, gender);
+
 			handleChange(
 				'maritalStatus',
 				formValues.maritalStatus,
@@ -99,6 +110,7 @@ function PatientForm(props) {
 	const values = watch();
 
 	const onSubmit = values => {
+		values.avatar = avatar;
 		props.nextStep(values);
 	};
 
@@ -112,6 +124,13 @@ function PatientForm(props) {
 		} else {
 			setValue(name, type);
 		}
+	};
+
+	const uploadImage = async myBlob => {
+		//e.preventDefault();
+		let file = new File([myBlob], 'profile_pic.png');
+		setAvatar(file);
+		console.log('file:', file);
 	};
 
 	return (
@@ -132,6 +151,53 @@ function PatientForm(props) {
 			<div className="onboarding-content with-gradient">
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<div className="modal-body">
+						<div className="row">
+							<div
+								className="col-sm profile-tile"
+								style={{ borderBottom: 'none' }}>
+								<a className="profile-tile-box" style={{ width: '155px' }}>
+									<div className="pt-avatar-w">
+										{image ? (
+											<Image src={URL.createObjectURL(image)} fluid />
+										) : (
+											<Image alt="" src={avatar ? avatar : placeholder} />
+										)}
+									</div>
+									<div className="pt-user-name">
+										<button
+											type="button"
+											onClick={() =>
+												document.querySelector('#profile_pic').click()
+											}
+											className="btn btn-info">
+											Choose Image
+										</button>
+									</div>
+								</a>
+								<input
+									type="file"
+									accept="image/*"
+									id="profile_pic"
+									className="d-none"
+									onChange={e => {
+										setImage(e.currentTarget.files[0]);
+										setAvatar(e.currentTarget.files[0]);
+									}}
+								/>
+							</div>
+
+							<div
+								className="col-sm profile-tile"
+								style={{ borderBottom: 'none' }}>
+								<a
+									className="profile-tile-box"
+									style={{ width: '210px', padding: '8px' }}>
+									<div className="pt-avatar-w">
+										<CameraFeed sendFile={file => uploadImage(file)} />
+									</div>
+								</a>
+							</div>
+						</div>
 						<div className="row">
 							<div className="col-sm">
 								<div className="form-group">

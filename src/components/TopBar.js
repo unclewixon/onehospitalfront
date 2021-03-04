@@ -140,12 +140,26 @@ class TopBar extends Component {
 					<div className="logged-user-w">
 						<div className="logged-user-i">
 							<div className="avatar-w">
-								<img alt="" src={avatar1} />
+								<img
+									alt=""
+									src={
+										profile?.details?.profile_pic
+											? profile?.details?.profile_pic
+											: avatar1
+									}
+								/>
 							</div>
 							<div className="logged-user-menu color-style-bright">
 								<div className="logged-user-avatar-info">
 									<div className="avatar-w">
-										<img alt="" src={avatar1} />
+										<img
+											alt=""
+											src={
+												profile?.details?.profile_pic
+													? profile?.details?.profile_pic
+													: avatar1
+											}
+										/>
 									</div>
 									<div className="logged-user-info-w">
 										<div className="logged-user-name">

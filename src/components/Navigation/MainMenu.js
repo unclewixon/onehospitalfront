@@ -85,8 +85,8 @@ class MainMenu extends Component {
 							<img
 								alt=""
 								src={
-									profile.details.profile_pic
-										? profile.details.profile_pic
+									profile.details?.profile_pic
+										? profile.details?.profile_pic
 										: avatar1
 								}
 							/>

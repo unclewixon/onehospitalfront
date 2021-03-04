@@ -8,6 +8,7 @@ import {
 	SET_PATIENT_RECORD,
 	TOGGLE_PROFILE,
 	SIGN_OUT,
+	UPDATE_STAFF,
 } from '../actions/types';
 import SSRStorage from '../services/storage';
 import {
@@ -36,6 +37,10 @@ const INITIAL_STATE = {
 
 const user = (state = INITIAL_STATE, action) => {
 	switch (action.type) {
+		case UPDATE_STAFF:
+			let prof = state.profile;
+			prof.details = action.payload;
+			return { ...state, profile: prof };
 		case SET_PROFILE:
 			return { ...state, profile: action.payload, loggedIn: action.status };
 		case SIGN_OUT:

@@ -2,12 +2,16 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
-
+import { Image } from 'react-bootstrap';
 import { updateStaff } from '../../../actions/hr';
 import waitingGif from '../../../assets/images/waiting.gif';
+import placeholder from '../../../assets/images/placeholder.jpg';
 
 const EditProfile = ({ staff }) => {
 	const countries = useSelector(({ utility }) => utility.countries);
+	const [image, setImage] = useState(null);
+	const [avatar, setAvatar] = useState(staff?.details?.profile_pic);
+
 	const { register, handleSubmit, watch, setValue } = useForm({
 		defaultValues: {
 			first_name: staff?.details?.first_name,
@@ -64,6 +68,7 @@ const EditProfile = ({ staff }) => {
 
 	const onFormSubmit = vals => {
 		setSubmitting(true);
+		vals.avatar = avatar;
 		dispatch(updateStaff(vals, staff?.details?.id, () => setSubmitting(false)));
 	};
 
@@ -92,7 +97,45 @@ const EditProfile = ({ staff }) => {
 					</div>
 					<form onSubmit={handleSubmit(onFormSubmit)}>
 						<div className="row">
-							<div className="col-sm-4">
+							<div className="col-sm-6">
+								<div className="form-group">
+									<div
+										className="col-sm profile-tile"
+										style={{ borderBottom: 'none' }}>
+										<a className="profile-tile-box" style={{ width: '155px' }}>
+											<div className="pt-avatar-w">
+												{image ? (
+													<Image src={URL.createObjectURL(image)} fluid />
+												) : (
+													<Image alt="" src={avatar ? avatar : placeholder} />
+												)}
+											</div>
+											<div className="pt-user-name">
+												<button
+													type="button"
+													onClick={() =>
+														document.querySelector('#profile_pic').click()
+													}
+													className="btn btn-info">
+													Choose Image
+												</button>
+											</div>
+										</a>
+										<input
+											type="file"
+											accept="image/*"
+											id="profile_pic"
+											className="d-none"
+											onChange={e => {
+												setImage(e.currentTarget.files[0]);
+												setAvatar(e.currentTarget.files[0]);
+												setValue('avatar', e.currentTarget.files[0]);
+											}}
+										/>
+									</div>
+								</div>
+							</div>
+							<div className="col-sm-6">
 								<div className="form-group">
 									<label for="">First Name</label>
 									<input
@@ -105,7 +148,9 @@ const EditProfile = ({ staff }) => {
 									/>
 								</div>
 							</div>
-							<div className="col-sm-4">
+						</div>
+						<div className="row">
+							<div className="col-sm-6">
 								<div className="form-group">
 									<label for="">Last Namer</label>
 									<input
@@ -117,7 +162,7 @@ const EditProfile = ({ staff }) => {
 									/>
 								</div>
 							</div>
-							<div className="col-sm-4">
+							<div className="col-sm-6">
 								<div className="form-group">
 									<label for="">Other Names</label>
 									<input
