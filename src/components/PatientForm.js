@@ -10,6 +10,8 @@ import { patientSchema } from '../services/validationSchemas';
 import { ethnicities, gender, maritalStatus } from '../services/constants';
 import { Image } from 'react-bootstrap';
 import { CameraFeed } from './CameraFeed';
+import isEmpty from 'lodash.isempty';
+import moment from 'moment';
 
 function PatientForm(props) {
 	const formData = props.formData;
@@ -261,10 +263,16 @@ function PatientForm(props) {
 									<label>
 										Date of birth<span className="compulsory-field">*</span>
 									</label>
+
 									<div className="custom-date-input">
 										<DatePicker
 											selected={
-												patientData?.date_of_birth || values?.date_of_birth
+												(patientData &&
+													patientData.date_of_birth &&
+													moment(patientData.date_of_birth).toDate()) ||
+												(values &&
+													values.date_of_birth &&
+													moment(values?.date_of_birth).toDate())
 											}
 											onChange={date => setValue('date_of_birth', date)}
 											peekNextMonth

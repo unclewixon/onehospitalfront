@@ -1,6 +1,7 @@
 import {
 	NEXT_STEP,
 	PREV_STEP,
+	RESET_STEP,
 	SAVE_ALLERGIES,
 	GET_ALLERGIES,
 	ALLERGY,
@@ -94,6 +95,13 @@ export const nextStep = data => {
 	return {
 		type: NEXT_STEP,
 		payload: data,
+	};
+};
+
+export const resetStep = () => {
+	return {
+		type: RESET_STEP,
+		payload: {},
 	};
 };
 

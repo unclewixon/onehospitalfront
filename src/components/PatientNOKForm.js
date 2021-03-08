@@ -6,7 +6,7 @@ import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import axios from 'axios';
 import { API_URI, TOKEN_COOKIE } from '../services/constants';
-import { prevStep } from '../actions/patient';
+import { prevStep, resetStep } from '../actions/patient';
 import { closeModals } from '../actions/general';
 import { patientNOKSchema } from '../services/validationSchemas';
 import {
@@ -179,6 +179,7 @@ function PatientNOKForm(props) {
 						props.addNewPatient(res.data?.patient);
 						notifySuccess('New patient account created!');
 						props.closeModals(false);
+						props.resetStep();
 					} else {
 						notifyError(res.message);
 					}
@@ -447,6 +448,7 @@ const mapStateToProps = (state, ownProps) => {
 export default connect(mapStateToProps, {
 	setPatientRecord,
 	prevStep,
+	resetStep,
 	closeModals,
 	addNewPatient,
 	updatePatient,

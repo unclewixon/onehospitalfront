@@ -38,6 +38,7 @@ import {
 	UPDATE_PATIENT,
 	READING_DONE,
 	SET_IVF,
+	RESET_STEP,
 	CAN_CLOSE_LABOUR,
 } from '../actions/types';
 import actions from 'redux-form/lib/actions';
@@ -104,6 +105,8 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, canCloseLabour: true };
 		case NEXT_STEP:
 			return { ...state, formData: action.payload, formStep: 2 };
+		case RESET_STEP:
+			return { ...state, formStep: 1, formData: {} };
 		case PREV_STEP:
 			return { ...state, formStep: action.payload };
 		case LOAD_PATIENT_UPLOAD_DATA:

@@ -1,6 +1,7 @@
 // general
 export const SET_IS_STAFF_APPRAISAL = 'SET_IS_STAFF_APPRAISAL';
 export const SET_IVF = 'SET_IVF';
+export const RESET_STEP = 'RESET_STEP';
 export const ADD_STAFF_FOR_APPRAISAL = 'ADD_STAFF_FOR_APPRAISAL';
 export const REQUEST_START = 'REQUEST_START';
 export const REQUEST_STOP = 'REQUEST_STOP';

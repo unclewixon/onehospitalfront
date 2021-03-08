@@ -43,7 +43,7 @@ function InPatientAppointmentForm(props) {
 				setServices(res);
 			} catch (error) {
 				console.log(error);
-				notifyError('error fetching imaging requests for the patient');
+				notifyError('error fetching services for the patient');
 			}
 		}
 	};

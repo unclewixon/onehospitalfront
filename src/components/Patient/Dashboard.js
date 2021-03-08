@@ -123,9 +123,7 @@ const Dashboard = ({ location, history }) => {
 								</div>
 								<div className="col-sm-6 b-b">
 									<div className="el-tablo padded-v">
-										<div className="value customfont">
-											{formatPatientId(patient?.id)}
-										</div>
+										<div className="">{formatPatientId(patient?.id)}</div>
 										<div className="label">Patient ID</div>
 									</div>
 								</div>

@@ -10,7 +10,7 @@ import editIcon from '../assets/medical/edit.png';
 import admitIcon from '../assets/medical/admit.png';
 import immunizeIcon from '../assets/medical/immunize.png';
 import documentIcon from '../assets/medical/document.png';
-import { getAge, request } from '../services/utilities';
+import { getAge, request, formatPatientId } from '../services/utilities';
 import patientProfile from '../assets/svg-icons/patientProfile.svg';
 import patientProfilePic from '../assets/images/patientprofile.jpg';
 
@@ -63,7 +63,13 @@ const ProfileBlock = ({ location, history, patient, match, noEdits }) => {
 						<div className="user-profile compact">
 							<div
 								className="up-head-w"
-								style={{ backgroundImage: `url(${patientProfilePic})` }}>
+								style={{
+									backgroundImage: `url(${
+										patient?.profile_pic
+											? patient.profile_pic
+											: patientProfilePic
+									})`,
+								}}>
 								<div className="up-main-info">
 									<h6 className="up-sub-header">
 										<div className="value-pair">
@@ -71,7 +77,7 @@ const ProfileBlock = ({ location, history, patient, match, noEdits }) => {
 												Patient ID:
 											</div>
 											<div className="value badge badge-pill badge-light">
-												{patient?.fileNumber}
+												{formatPatientId(patient?.id)}
 											</div>
 										</div>
 									</h6>

@@ -8,6 +8,7 @@ import { openEncounter } from '../../actions/general';
 import { request } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
+import { notifyError, notifySuccess } from '../../services/notify';
 
 class Encounters extends Component {
 	state = {
@@ -49,6 +50,8 @@ class Encounters extends Component {
 			this.setState({ loading: false, appointments });
 		} catch (error) {
 			console.log(error);
+			this.setState({ loading: false });
+			notifyError('error fetching encounters');
 		}
 	};
 
