@@ -157,7 +157,7 @@ const ProformaInvoice = props => {
 			try {
 				console.log('before syaty');
 				const rs = await request(
-					`${serviceAPI}/categories/${id}?hmo_id=${hmo}`,
+					`${serviceAPI}/category/${id}?hmo_id=${hmo}`,
 					'GET',
 					true
 				);

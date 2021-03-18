@@ -32,10 +32,11 @@ function InPatientAppointmentForm(props) {
 		} else {
 			try {
 				const rs = await request(
-					`${serviceAPI}/categories/${id}?hmo_id=${patient?.hmo?.id}`,
+					`${serviceAPI}/category/${id}?hmo_id=${patient?.hmo?.id}`,
 					'GET',
 					true
 				);
+				console.log(rs);
 				const res = rs.map(service => ({
 					value: service,
 					label: service.name + ' N' + formatNumber(service.tariff),

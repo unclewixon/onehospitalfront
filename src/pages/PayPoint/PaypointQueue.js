@@ -103,7 +103,9 @@ const PaypointQueue = ({ staff }) => {
 			socket.on('paypoint-queue', data => {
 				if (data.payment) {
 					const transaction = data.payment;
-					dispatch(getAllPendingTransactions(transaction));
+					const arr = [transaction, ...transactions];
+					console.log(arr);
+					dispatch(getAllPendingTransactions(arr));
 				}
 			});
 		}

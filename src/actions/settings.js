@@ -133,7 +133,7 @@ export const addLabTest = payload => {
 
 export const getAllLabTests = payload => {
 	return {
-		type: GET_ALL_LAB_TESTS,
+		type: 'SET_LAB_TESTS',
 		payload,
 	};
 };
@@ -455,9 +455,9 @@ export const deleteRoomCategory = data => {
 export const fetchLabTests = () => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			request('lab-tests', 'GET', true)
+			request('lab-tests/unpaginated', 'GET', true)
 				.then(response => {
-					dispatch(getAllLabTests(response));
+					dispatch(getAllLabTests(response.result));
 					return resolve({ success: true });
 				})
 				.catch(error => {
@@ -493,9 +493,9 @@ export const addLabGroup = data => {
 export const getAllLabGroups = () => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
-			request(`lab-tests`, 'GET', true)
+			request(`lab-tests/unpaginated`, 'GET', true)
 				.then(response => {
-					const res = response.filter(grp => grp.test_type === 'combo');
+					const res = response.result.filter(grp => grp.test_type === 'combo');
 					dispatch(get_all_lab_groups(res));
 					return resolve({ success: true });
 				})

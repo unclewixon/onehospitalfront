@@ -21,6 +21,7 @@ const Investigations = props => {
 	const [labTests, setLabTests] = useState(null);
 	const [category, setCategory] = useState('');
 	const [loaded, setLoaded] = useState(false);
+	const [servicesObjects, setServicesObjects] = useState([]);
 	const [services, setServices] = useState([]);
 	const [servicesCategory, setServicesCategory] = useState([]);
 
@@ -39,11 +40,20 @@ const Investigations = props => {
 		fetchServicesByCategory(value);
 		setValue('service_center', value);
 	};
+
 	const fetchServicesByCategory = async id => {
 		try {
-			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
+			const rs = await request(`${serviceAPI}/category/${id}`, 'GET', true);
+			setServicesObjects(rs);
+			let services = [];
+			rs &&
+				rs.forEach((item, index) => {
+					const res = { label: item.name, value: item.id };
+					services = [...services, res];
+				});
+			setServices(services);
 		} catch (error) {
-			notifyError('error fetching imaging requests for the patient');
+			notifyError('error fetching services requests for the patient');
 		}
 	};
 	const onCategoryChange = e => {
@@ -57,7 +67,7 @@ const Investigations = props => {
 			: [];
 
 	const labTestOptions =
-		props && props.LabTests
+		props && props.LabTests && props.LabTests.length
 			? props.LabTests.filter(test => test.category.id === category).map(
 					(test, index) => {
 						return { value: test.id, label: test.name, id: test.id };
@@ -74,11 +84,11 @@ const Investigations = props => {
 	};
 
 	const handleChangeProcedure = evt => {
-		setValue('service_request', evt);
+		setValue('rad_service_request', evt);
 	};
 
 	const labGroupOptions =
-		props && props.LabGroups
+		props && props.LabGroups && props.LabGroups.length
 			? props.LabGroups.filter(groups =>
 					groups && groups.category && groups.category.id === category
 						? true
@@ -172,21 +182,25 @@ const Investigations = props => {
 		return lab_combo;
 	};
 
-	useEffect(() => {
-		if (!loaded) {
+	const fetchServicesCategory = async () => {
+		try {
+			const rs = await request(`${serviceAPI}/categories`, 'GET', true);
 			let data = [];
-			let services = [];
-			props.ServiceCategories.forEach((item, index) => {
+			rs.forEach((item, index) => {
 				const res = { label: item.name, value: item.id };
 				data = [...data, res];
 			});
-			props.service.forEach((item, index) => {
-				const res = { label: item.name, value: item.id };
-				services = [...services, res];
-			});
 			setServicesCategory(data);
-			setServices(services);
+			setLoaded(true);
+		} catch (error) {
+			console.log(error);
+			notifyError('error fetching service categories for the patient');
+		}
+	};
 
+	useEffect(() => {
+		if (!loaded) {
+			fetchServicesCategory();
 			const {
 				getAllLabGroups,
 				fetchLabTests,
@@ -577,8 +591,6 @@ const mapStateToProps = state => {
 		LabTests: state.settings.lab_tests,
 		LabGroups: state.settings.lab_groups,
 		LabParameters: state.settings.lab_parameters,
-		service: state.settings.services,
-		ServiceCategories: state.settings.service_categories,
 		encounterData: state.patient.encounterData,
 		encounterForm: state.patient.encounterForm,
 		encounterInfo: state.general.encounterInfo,
