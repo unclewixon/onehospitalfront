@@ -115,25 +115,25 @@ const Dashboard = ({ location, history }) => {
 								</div>
 							</div>
 							<div className="row">
-								<div className="col-sm-6 b-b">
-									<div className="el-tablo padded-v">
+								<div className="col-sm-5 px-0">
+									<div className="el-tablo padded-v pr-0">
 										<div className="value customfont">{patient?.gender}</div>
 										<div className="label">Gender</div>
 									</div>
 								</div>
-								<div className="col-sm-6 b-b">
-									<div className="el-tablo padded-v">
-										<div className="value customfont">
+								<div className="col-sm-7 pl-0">
+									<div className="el-tablo padded-v px-0">
+										<div className="value customfont small">
 											{formatPatientId(patient?.id)}
 										</div>
 										<div className="label">Patient ID</div>
 									</div>
 								</div>
 							</div>
-							<table className="table">
+							<table className="table" cellpadding="0" cellspacing="0">
 								<tbody>
 									<tr className="small">
-										<th scope="row" className="font-weight-bold">
+										<th scope="row" className="font-weight-bold px-0">
 											Email
 										</th>
 
@@ -141,7 +141,7 @@ const Dashboard = ({ location, history }) => {
 									</tr>
 
 									<tr className="small">
-										<td className="font-weight-bold">Phone Number</td>
+										<td className="font-weight-bold px-0">Phone Number</td>
 										<td>{patient?.phoneNumber}</td>
 									</tr>
 									{/* <tr className="small">
@@ -151,19 +151,19 @@ const Dashboard = ({ location, history }) => {
 										<td>{patient?.address}</td>
 									</tr> */}
 									<tr className="small">
-										<td className="font-weight-bold">Marital Status</td>
+										<td className="font-weight-bold px-0">Marital Status</td>
 										<td>{patient?.maritalStatus}</td>
 									</tr>
 									<tr className="small">
-										<td className="font-weight-bold">Ethnicity</td>
+										<td className="font-weight-bold px-0">Ethnicity</td>
 										<td>{patient?.ethnicity}</td>
 									</tr>
 									<tr className="small">
-										<td className="font-weight-bold">Occupation</td>
+										<td className="font-weight-bold px-0">Occupation</td>
 										<td>{patient?.occupation}</td>
 									</tr>
 									<tr className="small">
-										<td className="font-weight-bold">Number of Visits</td>
+										<td className="font-weight-bold px-0">Number of Visits</td>
 										<td>{patient?.noOfVisits}</td>
 									</tr>
 								</tbody>
