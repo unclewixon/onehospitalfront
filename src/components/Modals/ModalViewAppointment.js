@@ -74,7 +74,7 @@ class ModalViewAppointment extends Component {
 															Patient ID:{' '}
 															<strong>
 																{formatPatientId(
-																	view_appointment_detail?.patient_id
+																	view_appointment_detail?.patient?.id
 																)}
 															</strong>
 														</li>

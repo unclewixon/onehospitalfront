@@ -159,7 +159,7 @@ const LabGroup = () => {
 			return [];
 		}
 
-		const url = `lab-tests?q=${q}&hmo_id=${hmo}`;
+		const url = `lab-tests/unpaginated?q=${q}&hmo_id=${hmo}`;
 		const res = await request(url, 'GET', true);
 		return res.result;
 	};

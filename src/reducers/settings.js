@@ -105,6 +105,9 @@ const settings = (state = INITIAL_STATE, action) => {
 				t => t.hmo.id !== action.payload.hmo.id
 			);
 			return { ...state, lab_tests: [...tests, action.payload] };
+		case 'SET_LAB_TESTS':
+			return { ...state, lab_tests: action.payload };
+
 		case ADD_LAB_TEST:
 			const htest = state.lab_tests.find(
 				t => t.hmo.id === action.payload.hmo.id

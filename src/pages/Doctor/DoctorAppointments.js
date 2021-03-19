@@ -2,12 +2,14 @@ import React, { useCallback, useEffect, useState } from 'react';
 import DatePicker from 'antd/lib/date-picker';
 import { withRouter } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-
+import Pagination from 'antd/lib/pagination';
 import waiting from '../../assets/images/waiting.gif';
-import { formatDateStr, request } from '../../services/utilities';
+import { formatDateStr, request, itemRender } from '../../services/utilities';
 import AppointmentTable from '../../components/Doctor/AppointmentTable';
 import { socket } from '../../services/constants';
 import { loadAppointments, updateAppointment } from '../../actions/appointment';
+import { notifyError } from '../../services/notify';
+import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const { RangePicker } = DatePicker;
 
@@ -19,6 +21,7 @@ const DoctorAppointments = () => {
 		startDate: '',
 		endDate: '',
 		status: '',
+		meta: null,
 	});
 	const [listenning, setListenning] = useState(false);
 
@@ -27,22 +30,32 @@ const DoctorAppointments = () => {
 
 	const dispatch = useDispatch();
 
-	const init = useCallback(async () => {
-		try {
-			const staff = profile.details;
-			setState({ ...state, loading: true });
-			const url = `front-desk/appointments?startDate=${state.startDate}&endDate=${state.endDate}`;
-			const res = await request(url, 'GET', true);
-			setState({ ...state, loading: false, filtering: false });
-			dispatch(
-				loadAppointments(
-					res.filter(appointment => appointment.whomToSee.id === staff.id)
-				)
-			);
-		} catch (error) {
-			console.log(error);
-		}
-	}, [dispatch, profile, state]);
+	const init = useCallback(
+		async page => {
+			try {
+				const p = page || 1;
+				const staff = profile.details;
+				setState({ loading: true });
+				const url = `front-desk/appointments?startDate=${state.startDate}&endDate=${state.endDate}`;
+				const rs = await request(url, 'GET', true);
+				const { result, ...meta } = rs;
+				const arr = [...result];
+				dispatch(
+					loadAppointments(
+						arr.filter(appointment => appointment.whomToSee.id === staff.id)
+					)
+				);
+				setState({ ...state, loading: false, filtering: false, meta });
+				dispatch(stopBlock());
+			} catch (error) {
+				console.log(error);
+				dispatch(stopBlock());
+				setState({ ...state, loading: false, filtering: false });
+				notifyError(error.message || 'could not fetch transactions');
+			}
+		},
+		[dispatch, profile, state]
+	);
 
 	useEffect(() => {
 		if (!listenning) {
@@ -63,6 +76,11 @@ const DoctorAppointments = () => {
 		init();
 	};
 
+	const onNavigatePage = nextPage => {
+		dispatch(startBlock());
+		init(nextPage);
+	};
+
 	// const change = e => {
 	// 	//console.log(e.target.value)
 	// 	setState({ ...state, [e.target.name]: e.target.value });
@@ -80,7 +98,7 @@ const DoctorAppointments = () => {
 		});
 	};
 
-	const { filtering, loading } = state;
+	const { filtering, loading, meta } = state;
 
 	return (
 		<div className="content-i">
@@ -118,6 +136,19 @@ const DoctorAppointments = () => {
 								/>
 							</div>
 						</div>
+
+						{meta && (
+							<div className="pagination pagination-center mt-4">
+								<Pagination
+									current={parseInt(meta.currentPage, 10)}
+									pageSize={parseInt(meta.itemsPerPage, 10)}
+									total={parseInt(meta.totalPages, 10)}
+									showTotal={total => `Total ${total} appointments`}
+									itemRender={itemRender}
+									onChange={current => onNavigatePage(current)}
+								/>
+							</div>
+						)}
 					</div>
 				</div>
 			</div>
