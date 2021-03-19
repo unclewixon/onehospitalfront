@@ -340,11 +340,9 @@ function Observation(props) {
 							className="btn btn-default"
 							type="button"
 							onClick={() => props.closeModals(false)}>
-							{' '}
 							Cancel
 						</button>
 						<button className="btn btn-primary" type="submit">
-							{' '}
 							Next
 						</button>
 					</div>

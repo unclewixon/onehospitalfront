@@ -330,7 +330,7 @@ class PatientAdmission extends Component {
 														'Admit'
 													)}
 												</button>
-												<button className="btn btn-primary">Cancel</button>
+												<button className="btn btn-secondary">Cancel</button>
 											</div>
 										</div>
 									</form>

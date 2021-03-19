@@ -69,7 +69,7 @@ class EditRole extends Component {
 							className="btn btn-secondary ml-3"
 							type="button"
 							onClick={() => cancelEditRole(null)}>
-							Cancel
+							cancel
 						</button>
 						<button
 							className="btn btn-primary"

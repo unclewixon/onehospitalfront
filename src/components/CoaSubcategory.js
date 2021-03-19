@@ -29,7 +29,7 @@ const CoaSubcategory = props => {
 	const [{ name, status, category, category_id, code }, setState] = useState(
 		initialState
 	);
-	const [Loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	// const [data, getDataToEdit] = useState(null);
 	// const [loaded, setLoaded] = useState(null);
@@ -437,11 +437,11 @@ const CoaSubcategory = props => {
 													<>
 														<button
 															className={
-																Loading
+																loading
 																	? 'btn btn-primary disabled'
 																	: 'btn btn-primary'
 															}>
-															{Loading ? (
+															{loading ? (
 																<img src={waiting} alt="submitting" />
 															) : (
 																<span> save</span>
@@ -452,21 +452,14 @@ const CoaSubcategory = props => {
 												{edit && (
 													<>
 														<button
-															className={
-																Loading
-																	? 'btn btn-secondary ml-3 disabled'
-																	: 'btn btn-secondary ml-3'
-															}
+															className="btn btn-secondary ml-3"
 															onClick={cancelEditButton}>
-															<span>{Loading ? 'cancel' : 'cancel'}</span>
+															<span>cancel</span>
 														</button>
 														<button
-															className={
-																Loading
-																	? 'btn btn-primary disabled'
-																	: 'btn btn-primary'
-															}>
-															{Loading ? (
+															className="btn btn-primary"
+															disabled={loading}>
+															{loading ? (
 																<img src={waiting} alt="submitting" />
 															) : (
 																<span> edit</span>

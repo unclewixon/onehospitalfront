@@ -213,7 +213,7 @@ const ConsultationRoom = () => {
 												{edit && (
 													<>
 														<button
-															className="btn btn-primary"
+															className="btn btn-secondary"
 															onClick={cancelEditButton}>
 															<span>cancel</span>
 														</button>
