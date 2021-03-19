@@ -112,7 +112,6 @@ class ModalAddTask extends Component {
 							</div>
 							<div className="modal-footer buttons-on-left">
 								<button className="btn btn-teal" type="button">
-									{' '}
 									Save changes
 								</button>
 								<button
@@ -120,7 +119,6 @@ class ModalAddTask extends Component {
 									data-dismiss="modal"
 									type="button"
 									onClick={() => this.props.closeModals(false)}>
-									{' '}
 									Cancel
 								</button>
 							</div>

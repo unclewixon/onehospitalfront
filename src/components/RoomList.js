@@ -23,7 +23,7 @@ const RoomList = props => {
 		edit: false,
 	};
 	const [{ name, status, floor, category }, setState] = useState(initialState);
-	const [Loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
 	const [payload, getDataToEdit] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
@@ -242,9 +242,9 @@ const RoomList = props => {
 							{create && (
 								<button
 									className={
-										Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
+										loading ? 'btn btn-primary disabled' : 'btn btn-primary'
 									}>
-									{Loading ? (
+									{loading ? (
 										<img src={waiting} alt="submitting" />
 									) : (
 										<span> create</span>
@@ -254,19 +254,16 @@ const RoomList = props => {
 							{edit && (
 								<>
 									<button
-										className={
-											Loading
-												? 'btn btn-secondary ml-3'
-												: 'btn btn-secondary ml-3'
-										}
+										className="btn btn-secondary ml-3"
 										onClick={cancelEditButton}>
-										<span>{Loading ? 'cancel' : 'cancel'}</span>
+										<span>cancel</span>
 									</button>
 									<button
-										className={
-											Loading ? 'btn btn-primary disabled' : 'btn btn-primary'
-										}>
-										{Loading ? (
+										className={`btn btn-primary 
+											${loading ? 'disabled' : ''}
+										`}
+										disabled={loading}>
+										{loading ? (
 											<img src={waiting} alt="submitting" />
 										) : (
 											<span>edit</span>

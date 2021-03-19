@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 
 export class CameraFeed extends Component {
+	videoPlayer = null;
+	stream = null;
+
 	processDevices(devices) {
 		devices.forEach(device => {
 			console.log(device.label);
@@ -10,12 +13,12 @@ export class CameraFeed extends Component {
 
 	async setDevice(device) {
 		const { deviceId } = device;
-		const stream = await navigator.mediaDevices.getUserMedia({
+		this.stream = await navigator.mediaDevices.getUserMedia({
 			audio: false,
 			video: { deviceId },
 		});
 		if (this.videoPlayer) {
-			this.videoPlayer.srcObject = stream;
+			this.videoPlayer.srcObject = this.stream;
 			this.videoPlayer.play();
 		}
 	}
@@ -30,17 +33,18 @@ export class CameraFeed extends Component {
 		this.videoPlayer.pause();
 		this.videoPlayer.src = '';
 		this.videoPlayer.srcObject = null;
-		if (!window.streamReference) return;
 
-		window.streamReference.getAudioTracks().forEach(function(track) {
-			track.stop();
-		});
+		// if (!window.streamReference) return;
 
-		window.streamReference.getVideoTracks().forEach(function(track) {
-			track.stop();
-		});
+		// window.streamReference.getAudioTracks().forEach(function(track) {
+		// 	track.stop();
+		// });
 
-		window.streamReference = null;
+		// window.streamReference.getVideoTracks().forEach(function(track) {
+		// 	track.stop();
+		// });
+
+		// window.streamReference = null;
 	}
 
 	takePhoto = e => {

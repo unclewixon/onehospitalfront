@@ -197,7 +197,7 @@ const ModalUploadRadiology = props => {
 										</button>
 
 										<button
-											className="btn btn-primary ml-2"
+											className="btn btn-secondary ml-2"
 											onClick={() => props.closeModals(false)}
 											type="button">
 											Cancel

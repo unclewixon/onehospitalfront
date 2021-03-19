@@ -593,7 +593,6 @@ function EditStaff(props) {
 							className="btn btn-default"
 							type="button"
 							onClick={() => props.closeModals(false)}>
-							{' '}
 							Cancel
 						</button>
 						<button

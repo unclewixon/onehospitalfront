@@ -1,17 +1,18 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Fragment, useEffect, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
+import { Image } from 'react-bootstrap';
+import moment from 'moment';
+
 import placeholder from '../assets/images/placeholder.jpg';
 import { closeModals } from '../actions/general';
 import { nextStep } from '../actions/patient';
 import { patientSchema } from '../services/validationSchemas';
 import { ethnicities, gender, maritalStatus } from '../services/constants';
-import { Image } from 'react-bootstrap';
 import { CameraFeed } from './CameraFeed';
-import isEmpty from 'lodash.isempty';
-import moment from 'moment';
 
 function PatientForm(props) {
 	const formData = props.formData;

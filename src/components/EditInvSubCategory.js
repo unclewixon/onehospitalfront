@@ -90,7 +90,7 @@ class EditInvSubCategory extends Component {
 									className="btn btn-secondary ml-3"
 									type="button"
 									onClick={editSubCategory(null, false)}>
-									Cancel
+									cancel
 								</button>
 							</div>
 						</div>

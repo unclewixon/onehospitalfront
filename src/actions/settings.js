@@ -39,6 +39,11 @@ import {
 	UPDATE_LAB_GROUP,
 	DELETE_LAB_GROUP,
 	GET_ALL_LAB_GROUPS,
+	LOAD_SERVICES,
+	ADD_SERVICE,
+	UPDATE_SERVICE,
+	DELETE_SERVICE,
+	LOAD_SERVICES_CATEGORIES,
 } from './types';
 
 //Request Service
@@ -123,17 +128,53 @@ export const delete_room_category = payload => {
 	};
 };
 
-//Lab
-export const addLabTest = payload => {
+//Services
+export const loadServiceCategories = payload => {
 	return {
-		type: ADD_LAB_TEST,
+		type: LOAD_SERVICES_CATEGORIES,
 		payload,
 	};
 };
 
+export const loadServices = payload => {
+	return {
+		type: LOAD_SERVICES,
+		payload,
+	};
+};
+
+export const addService = payload => {
+	return {
+		type: ADD_SERVICE,
+		payload,
+	};
+};
+
+export const updateService = payload => {
+	return {
+		type: UPDATE_SERVICE,
+		payload,
+	};
+};
+
+export const deleteService = payload => {
+	return {
+		type: DELETE_SERVICE,
+		payload,
+	};
+};
+
+//Lab
 export const getAllLabTests = payload => {
 	return {
 		type: GET_ALL_LAB_TESTS,
+		payload,
+	};
+};
+
+export const addLabTest = payload => {
+	return {
+		type: ADD_LAB_TEST,
 		payload,
 	};
 };
@@ -269,7 +310,7 @@ export const delete_leave_category = payload => {
 };
 
 //Specialization
-export const add_specialziation = payload => {
+export const addSpecialization = payload => {
 	return {
 		type: ADD_SPECIALIZATION,
 		payload,
@@ -283,15 +324,14 @@ export const loadSpecializations = payload => {
 	};
 };
 
-export const update_specialization = (payload, previousData) => {
+export const updateSpecialization = payload => {
 	return {
 		type: UPDATE_SPECIALIZATION,
 		payload,
-		previousData,
 	};
 };
 
-export const delete_specialization = payload => {
+export const deleteSpecialization = payload => {
 	return {
 		type: DELETE_SPECIALIZATION,
 		payload,
@@ -685,75 +725,6 @@ export const deleteLeaveCategory = data => {
 				.delete(`${API_URI}/leave-category/${data.id}`)
 				.then(response => {
 					dispatch(delete_leave_category(data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-//Specialization
-export const addSpecialization = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.post(`${API_URI}/specializations`, {
-					name: data.name,
-				})
-				.then(response => {
-					dispatch(add_specialziation(response.data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const getAllSpecialization = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.get(`${API_URI}/specializations`)
-				.then(response => {
-					dispatch(loadSpecializations(response.data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const updateSpecialization = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.patch(`${API_URI}/specializations/${data.id}/update`, {
-					name: data.name,
-				})
-				.then(response => {
-					dispatch(update_specialization(response.data, data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const deleteSpecialization = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.delete(`${API_URI}/specializations/${data.id}`)
-				.then(response => {
-					dispatch(delete_specialization(data));
 					return resolve({ success: true });
 				})
 				.catch(error => {

@@ -26,7 +26,7 @@ const CoaCategory = props => {
 		code: '',
 	};
 	const [{ name, type, status, code }, setState] = useState(initialState);
-	const [Loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	// const [data, getDataToEdit] = useState(null);
 	// const [loaded, setLoaded] = useState(null);
@@ -411,39 +411,27 @@ const CoaCategory = props => {
 
 											<div className="form-buttons-w text-right compact">
 												{save && (
-													<>
-														<button
-															className={
-																Loading
-																	? 'btn btn-primary disabled'
-																	: 'btn btn-primary'
-															}>
-															{Loading ? (
-																<img src={waiting} alt="submitting" />
-															) : (
-																<span> save</span>
-															)}
-														</button>
-													</>
+													<button
+														className="btn btn-primary"
+														disabled={loading}>
+														{loading ? (
+															<img src={waiting} alt="submitting" />
+														) : (
+															<span> save</span>
+														)}
+													</button>
 												)}
 												{edit && (
 													<>
 														<button
-															className={
-																Loading
-																	? 'btn btn-secondary ml-3 disabled'
-																	: 'btn btn-secondary ml-3'
-															}
+															className="btn btn-secondary ml-3"
 															onClick={cancelEditButton}>
-															<span>{Loading ? 'cancel' : 'cancel'}</span>
+															<span>cancel</span>
 														</button>
 														<button
-															className={
-																Loading
-																	? 'btn btn-primary disabled'
-																	: 'btn btn-primary'
-															}>
-															{Loading ? (
+															className="btn btn-primary"
+															disabled={loading}>
+															{loading ? (
 																<img src={waiting} alt="submitting" />
 															) : (
 																<span> edit</span>
