@@ -495,12 +495,12 @@ export const getAllLabGroups = () => {
 		return new Promise((resolve, reject) => {
 			request(`lab-tests`, 'GET', true)
 				.then(response => {
-					const res = response.filter(grp => grp.test_type === 'combo');
-					dispatch(get_all_lab_groups(res));
-					return resolve({ success: true });
+					// const res = response.filter(grp => grp.test_type === 'combo');
+					// dispatch(get_all_lab_groups(res));
+					return resolve({ success: true, response });
 				})
 				.catch(error => {
-					return reject({ success: false });
+					return reject({ success: false, error });
 				});
 		});
 	};

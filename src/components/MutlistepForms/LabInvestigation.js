@@ -22,9 +22,11 @@ class LabInvestigation extends Component {
 		if (this.props.LabGroups.length === 0) {
 			Promise.all([this.props.getAllLabGroups(), this.props.fetchLabTests()])
 				.then(response => {
-					this.filterGroupsTests(this.props.LabGroups, this.props.LabTests);
+					console.log(response);
+					// this.filterGroupsTests(this.props.LabGroups, this.props.LabTests);
 				})
 				.catch(e => {
+					console.log(e);
 					notifyError(
 						e.message || 'could not fetch service categories and services'
 					);
