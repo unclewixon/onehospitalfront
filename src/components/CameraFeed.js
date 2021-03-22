@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 
 export class CameraFeed extends Component {
-	/**
-	 * Processes available devices and identifies one by the label
-	 * @memberof CameraFeed
-	 * @instance
-	 */
+	videoPlayer = null;
+	stream = null;
+
 	processDevices(devices) {
 		devices.forEach(device => {
 			console.log(device.label);
@@ -13,38 +11,44 @@ export class CameraFeed extends Component {
 		});
 	}
 
-	/**
-	 * Sets the active device and starts playing the feed
-	 * @memberof CameraFeed
-	 * @instance
-	 */
 	async setDevice(device) {
 		const { deviceId } = device;
-		const stream = await navigator.mediaDevices.getUserMedia({
+		this.stream = await navigator.mediaDevices.getUserMedia({
 			audio: false,
 			video: { deviceId },
 		});
-		this.videoPlayer.srcObject = stream;
-		this.videoPlayer.play();
+		if (this.videoPlayer) {
+			this.videoPlayer.srcObject = this.stream;
+			this.videoPlayer.play();
+		}
 	}
 
-	/**
-	 * On mount, grab the users connected devices and process them
-	 * @memberof CameraFeed
-	 * @instance
-	 * @override
-	 */
 	async componentDidMount() {
 		const cameras = await navigator.mediaDevices.enumerateDevices();
 		this.processDevices(cameras);
 	}
 
-	/**
-	 * Handles taking a still image from the video feed on the camera
-	 * @memberof CameraFeed
-	 * @instance
-	 */
-	takePhoto = () => {
+	componentWillUnmount() {
+		if (!this.videoPlayer) return;
+		this.videoPlayer.pause();
+		this.videoPlayer.src = '';
+		this.videoPlayer.srcObject = null;
+
+		// if (!window.streamReference) return;
+
+		// window.streamReference.getAudioTracks().forEach(function(track) {
+		// 	track.stop();
+		// });
+
+		// window.streamReference.getVideoTracks().forEach(function(track) {
+		// 	track.stop();
+		// });
+
+		// window.streamReference = null;
+	}
+
+	takePhoto = e => {
+		e.preventDefault();
 		const { sendFile } = this.props;
 		const context = this.canvas.getContext('2d');
 		context.drawImage(this.videoPlayer, 0, 0, 200, 150);
@@ -61,7 +65,7 @@ export class CameraFeed extends Component {
 						heigh="150"
 					/>
 				</div>
-				<button onClick={this.takePhoto} className="btn btn-primary">
+				<button onClick={e => this.takePhoto(e)} className="btn btn-primary">
 					Take photo!
 				</button>
 				<div className="c-camera-feed__stage">

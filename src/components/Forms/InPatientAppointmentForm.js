@@ -362,7 +362,6 @@ function InPatientAppointmentForm(props) {
 					data-dismiss="modal"
 					type="button"
 					onClick={() => props.closeModals(false)}>
-					{' '}
 					Cancel
 				</button>
 			</div>

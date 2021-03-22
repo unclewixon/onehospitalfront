@@ -3,11 +3,12 @@ import { connect } from 'react-redux';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import { withRouter } from 'react-router-dom';
-
+import Button from '../common/Button';
 import { openEncounter } from '../../actions/general';
-import { request } from '../../services/utilities';
+import { request, formatPatientId } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
+import { notifyError, notifySuccess } from '../../services/notify';
 
 class Encounters extends Component {
 	state = {
@@ -49,6 +50,8 @@ class Encounters extends Component {
 			this.setState({ loading: false, appointments });
 		} catch (error) {
 			console.log(error);
+			this.setState({ loading: false });
+			notifyError('error fetching encounters');
 		}
 	};
 
@@ -81,17 +84,19 @@ class Encounters extends Component {
 
 	render() {
 		const { appointments, loading } = this.state;
+		const { staff } = this.props;
 		return (
 			<div className="col-sm-12 col-xxl-6">
 				<div className="element-wrapper">
 					<h6 className="element-header">Encounters</h6>
 					<div className="element-box p-3 m-0">
 						<div className="table-responsive">
-							<table className="table table-padded">
+							<table className="table">
 								<thead>
 									<tr>
 										<th>Date</th>
 										<th>Patient</th>
+										<th>Patient ID</th>
 										<th>Whom to see</th>
 										<th>Consulting Room</th>
 										<th>Status</th>
@@ -113,11 +118,12 @@ class Encounters extends Component {
 														{moment(appointment.createdAt).format('DD-MM-YYYY')}
 													</td>
 													<td>
-														<span className="smaller lighter">
-															{appointment.patient?.fileNumber}
-														</span>
-														<br />
 														<span>{`${appointment.patient.surname} ${appointment.patient.other_names}`}</span>
+													</td>
+													<td>
+														<span className="smaller lighter">
+															{formatPatientId(appointment.patient?.id)}
+														</span>
 													</td>
 
 													<td className="cell-with-media">
@@ -144,9 +150,10 @@ class Encounters extends Component {
 													<td className="row-actions">
 														{appointment.transaction?.status === 1 && (
 															<DropdownButton
-																id="dropdown-basic-button"
+																id="dropdown-basic"
 																title="Action"
-																size="sm">
+																size="sm"
+																key={appointment.id}>
 																{!appointment.stat && (
 																	<Dropdown.Item
 																		onClick={() =>
@@ -196,6 +203,7 @@ const mapStateToProps = (state, ownProps) => {
 	return {
 		encounters: state.patient.encounters,
 		patient: state.user.patient,
+		staff: state.user.profile.details,
 	};
 };
 

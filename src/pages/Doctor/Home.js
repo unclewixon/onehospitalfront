@@ -31,7 +31,8 @@ function DoctorHome({ profile }) {
 				res.filter(
 					appointment =>
 						appointment.whomToSee.id === staff.id &&
-						appointment.transaction?.status === 1
+						appointment.transaction?.status === 1 &&
+						appointment.canSeeDoctor === 1
 				)
 			);
 			setLoading(false);
@@ -48,11 +49,18 @@ function DoctorHome({ profile }) {
 			socket.on('consultation-queue', res => {
 				console.log('new appointment message');
 				if (res.success) {
-					const { appointment } = res.queue;
+					console.log(res.queue);
 					const today = moment().format('YYYY-MM-DD');
-					if (appointment.appointment_date === today) {
-						setAppointments([...appointments, appointment]);
+					console.log(today);
+					if (
+						moment(res.queue.appointment.appointment_date).format(
+							'YYYY-MM-DD'
+						) === today
+					) {
+						console.log(res.queue.appointment);
+						setAppointments([...appointments, res.queue.appointment]);
 					}
+					console.log(appointments);
 				}
 			});
 
@@ -104,47 +112,6 @@ function DoctorHome({ profile }) {
 									</h6>
 								</div>
 							)}
-							<h6 className="element-header">Overview </h6>
-							<div className="element-content">
-								<div className="row">
-									<div className="col-sm-3 col-xxxl-3">
-										<a className="element-box el-tablo" href="#">
-											<div className="label">Appointments Today</div>
-											<div className="value">15</div>
-											<div className="trending">
-												<span>Patients</span>
-											</div>
-										</a>
-									</div>
-									<div className="col-sm-3 col-xxxl-3">
-										<a className="element-box el-tablo" href="#">
-											<div className="label">Appointments Seen</div>
-											<div className="value">4</div>
-											<div className="trending">
-												<span>Patients</span>
-											</div>
-										</a>
-									</div>
-									<div className="col-sm-3 col-xxxl-3">
-										<a className="element-box el-tablo" href="#">
-											<div className="label">Pending Appointments</div>
-											<div className="value">8</div>
-											<div className="trending">
-												<span>Patients</span>
-											</div>
-										</a>
-									</div>
-									<div className="col-sm-3 col-xxxl-3">
-										<a className="element-box el-tablo" href="#">
-											<div className="label">Total Appointments</div>
-											<div className="value">8</div>
-											<div className="trending">
-												<span>Patients</span>
-											</div>
-										</a>
-									</div>
-								</div>
-							</div>
 						</div>
 					</div>
 				</div>

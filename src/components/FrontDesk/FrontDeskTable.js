@@ -20,9 +20,11 @@ class FrontDeskTable extends Component {
 	};
 
 	render() {
-		const { appointments, loading, today } = this.props;
+		const { appointments, loading } = this.props;
 
-		return (
+		return loading ? (
+			<TableLoading />
+		) : (
 			<table className="table table-padded">
 				<thead>
 					<tr>
@@ -36,76 +38,69 @@ class FrontDeskTable extends Component {
 					</tr>
 				</thead>
 				<tbody>
-					{loading ? (
-						<TableLoading />
-					) : appointments && appointments.length ? (
-						appointments.map((appointment, i) => {
-							return (
-								<tr key={i}>
-									<td className="nowrap">
-										<span
-											style={{
-												fontSize: '0.7rem',
-											}}>
-											{moment(appointment.appointment_date).format(
-												'DD-MM-YYYY'
-											)}
-										</span>
-									</td>
-									<td className="cell-with-media">
-										<span
-											style={{
-												fontSize: '0.7rem',
-											}}>{`${appointment.patient?.surname} ${appointment.patient?.other_names}`}</span>
-									</td>
+					{appointments.map((appointment, i) => {
+						return (
+							<tr key={i}>
+								<td className="nowrap">
+									<span
+										style={{
+											fontSize: '0.7rem',
+										}}>
+										{moment(appointment.appointment_date).format('DD-MM-YYYY')}
+									</span>
+								</td>
+								<td className="cell-with-media">
+									<span
+										style={{
+											fontSize: '0.7rem',
+										}}>{`${appointment.patient?.surname} ${appointment.patient?.other_names}`}</span>
+								</td>
 
-									<td className="cell-with-media">
-										<span style={{ fontSize: '0.7rem' }}>
-											{formatPatientId(appointment.patient?.id)}
-										</span>
-									</td>
-									<td className="cell-with-media">
-										<span style={{ fontSize: '0.7rem' }}>
-											{`${fullname(appointment?.whomToSee)}`}
-										</span>
-									</td>
+								<td className="cell-with-media">
+									<span style={{ fontSize: '0.7rem' }}>
+										{formatPatientId(appointment.patient?.id)}
+									</span>
+								</td>
+								<td className="cell-with-media">
+									<span style={{ fontSize: '0.7rem' }}>
+										{`${fullname(appointment?.whomToSee)}`}
+									</span>
+								</td>
 
-									<td className="cell-with-media">
-										<span style={{ fontSize: '0.7rem' }}>
-											{appointment.consultingRoom?.name}
-										</span>
-									</td>
+								<td className="cell-with-media">
+									<span style={{ fontSize: '0.7rem' }}>
+										{appointment.consultingRoom?.name}
+									</span>
+								</td>
 
-									<td>
-										{/* <span className="status-pill smaller green"></span> */}
-										<span style={{ fontSize: '0.7rem' }}>
-											{appointment.status}
-										</span>
-									</td>
-									<td className="row-actions">
-										<a
-											href="#"
-											onClick={() => this.ViewAppointmentDetail(appointment)}>
-											<i className="os-icon os-icon-folder"></i>
-										</a>
-										<a
-											href="#"
-											onClick={() => this.showProfile(appointment.patient)}>
-											<i className="os-icon os-icon-user"></i>
-										</a>
-										<a
-											className="danger"
-											href="#"
-											onClick={() =>
-												this.props.cancelApppointment(appointment)
-											}>
-											<i className="os-icon os-icon-ui-15"></i>
-										</a>
-									</td>
-								</tr>
-							);
-						})
-					) : (
+								<td>
+									{/* <span className="status-pill smaller green"></span> */}
+									<span style={{ fontSize: '0.7rem' }}>
+										{appointment.status}
+									</span>
+								</td>
+								<td className="row-actions">
+									<a
+										href="#"
+										onClick={() => this.ViewAppointmentDetail(appointment)}>
+										<i className="os-icon os-icon-folder"></i>
+									</a>
+									<a
+										href="#"
+										onClick={() => this.showProfile(appointment.patient)}>
+										<i className="os-icon os-icon-user"></i>
+									</a>
+									<a
+										className="danger"
+										href="#"
+										onClick={() => this.props.cancelApppointment(appointment)}>
+										<i className="os-icon os-icon-ui-15"></i>
+									</a>
+								</td>
+							</tr>
+						);
+					})}
+					{appointments && appointments.length === 0 && (
 						<tr className="text-center">
 							<td colSpan="7">No Appointments</td>
 						</tr>

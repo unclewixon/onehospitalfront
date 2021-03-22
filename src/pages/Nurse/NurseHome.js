@@ -19,7 +19,7 @@ const NurseHome = () => {
 
 	const dispatch = useDispatch();
 
-	const { data } = useSWR('front-desk/queue-system/get-lists');
+	const { data } = useSWR('front-desk/queue-system/get-vitals-queue-lists');
 
 	useEffect(() => {
 		if (data && loading) {
@@ -30,6 +30,7 @@ const NurseHome = () => {
 
 	useEffect(() => {
 		socket.on('nursing-queue', data => {
+			console.log(data);
 			if (data.queue) {
 				const queue = data.queue;
 				setQueues(queues => [...queues, queue]);
@@ -42,18 +43,21 @@ const NurseHome = () => {
 		dispatch(toggleProfile(true, info));
 	};
 
-	const sendToDoctor = async patient => {
+	const sendToDoctor = async (e, id, queue_id) => {
+		e.preventDefault();
 		dispatch(startBlock());
 
-		const data = { patient_id: patient?.id };
+		const data = { patient_id: id, queue_id };
 		const url = 'front-desk/queue-system/add';
 		const res = await request(url, 'POST', true, data);
 		if (res) {
+			console.log(res);
+			const arr = queues.filter(q => q.id !== queue_id);
+			setQueues(arr);
 			dispatch(stopBlock());
 			notifySuccess(`Patient has been queued to see the doctor `);
 			return;
 		}
-
 		dispatch(stopBlock());
 		notifyError(`Could not add patient queue`);
 	};
@@ -125,7 +129,13 @@ const NurseHome = () => {
 														<Tooltip title="Send To Doctor">
 															<a
 																className="btn btn-primary btn-sm ml-2"
-																onClick={sendToDoctor}>
+																onClick={e =>
+																	sendToDoctor(
+																		e,
+																		queue?.appointment?.patient?.id,
+																		queue?.id
+																	)
+																}>
 																<i className="os-icon os-icon-mail-18" />
 															</a>
 														</Tooltip>

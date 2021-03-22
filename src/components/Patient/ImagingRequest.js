@@ -114,7 +114,7 @@ const ImagingRequest = props => {
 
 	const fetchServicesByCategory = async id => {
 		try {
-			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
+			const rs = await request(`${serviceAPI}/category/${id}`, 'GET', true);
 			console.log(rs);
 			let services = [];
 			setServ(rs);

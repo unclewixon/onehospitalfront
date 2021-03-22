@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import Pagination from 'antd/lib/pagination';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
 	confirmAction,
@@ -9,6 +10,7 @@ import {
 	itemRender,
 } from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
+import { loadServiceCategories } from '../actions/settings';
 import waiting from '../assets/images/waiting.gif';
 import TableLoading from './TableLoading';
 
@@ -22,9 +24,12 @@ const ServiceCategoryList = ({ loaded, setLoaded }) => {
 	const [working, setWorking] = useState(false);
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
 	const [payload, getDataToEdit] = useState(null);
-	const [categories, setCategories] = useState([]);
 	const [list, setList] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
+
+	const categories = useSelector(state => state.settings.service_categories);
+
+	const dispatch = useDispatch();
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -37,7 +42,7 @@ const ServiceCategoryList = ({ loaded, setLoaded }) => {
 				setCurrentPage(1);
 				const rs = await request('services/categories', 'GET', true);
 				setList([...rs]);
-				setCategories([...rs.slice(0, 10)]);
+				dispatch(loadServiceCategories([...rs.slice(0, 10)]));
 				setLoaded(true);
 			} catch (error) {
 				notifyError(error.message || 'could not fetch services categories!');
@@ -58,7 +63,11 @@ const ServiceCategoryList = ({ loaded, setLoaded }) => {
 			const rs = await request('services/categories', 'POST', true, data);
 			const lists = [...list, rs];
 			setList(lists);
-			setCategories([...lists.slice((currentPage - 1) * 10, currentPage * 10)]);
+			dispatch(
+				loadServiceCategories([
+					...lists.slice((currentPage - 1) * 10, currentPage * 10),
+				])
+			);
 			setWorking(false);
 			setState({ ...initialState });
 			notifySuccess('Service category created');
@@ -78,9 +87,11 @@ const ServiceCategoryList = ({ loaded, setLoaded }) => {
 			const rs = await request(url, 'PATCH', true, data);
 			const newCategories = updateImmutable(list, rs);
 			setList(newCategories);
-			setCategories([
-				...newCategories.slice((currentPage - 1) * 10, currentPage * 10),
-			]);
+			dispatch(
+				loadServiceCategories([
+					...newCategories.slice((currentPage - 1) * 10, currentPage * 10),
+				])
+			);
 			setState({ ...initialState });
 			setSubmitButton({ create: true, edit: false });
 			setWorking(false);
@@ -114,7 +125,11 @@ const ServiceCategoryList = ({ loaded, setLoaded }) => {
 			const rs = await request(url, 'DELETE', true);
 			const lists = [...list.filter(c => c.id !== parseInt(rs.id, 10))];
 			setList(lists);
-			setCategories([...lists.slice((currentPage - 1) * 10, currentPage * 10)]);
+			dispatch(
+				loadServiceCategories([
+					...lists.slice((currentPage - 1) * 10, currentPage * 10),
+				])
+			);
 			setWorking(false);
 			notifySuccess('Service category deleted');
 		} catch (error) {
@@ -130,7 +145,9 @@ const ServiceCategoryList = ({ loaded, setLoaded }) => {
 
 	const onNavigatePage = page => {
 		setCurrentPage(parseInt(page, 10));
-		setCategories([...list.slice((page - 1) * 10, page * 10)]);
+		dispatch(
+			loadServiceCategories([...list.slice((page - 1) * 10, page * 10)])
+		);
 	};
 
 	return (
@@ -230,16 +247,15 @@ const ServiceCategoryList = ({ loaded, setLoaded }) => {
 							{edit && (
 								<>
 									<button
-										className={
-											working ? 'btn btn-primary disabled' : 'btn btn-primary'
-										}
+										className="btn btn-secondary"
+										disabled={working}
 										onClick={cancelEditButton}>
-										<span>{working ? 'cancel' : 'cancel'}</span>
+										<span>cancel</span>
 									</button>
 									<button
-										className={
-											working ? 'btn btn-primary disabled' : 'btn btn-primary'
-										}>
+										className={`btn btn-primary 
+											${working ? 'disabled' : ''}`}
+										disabled={working}>
 										{working ? (
 											<img src={waiting} alt="submitting" />
 										) : (

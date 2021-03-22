@@ -69,7 +69,7 @@ const ProcedureRequest = props => {
 
 	const fetchServicesByCategory = async id => {
 		try {
-			const rs = await request(`${serviceAPI}/categories/${id}`, 'GET', true);
+			const rs = await request(`${serviceAPI}/category/${id}`, 'GET', true);
 			let services = [];
 			setServ(rs);
 			rs &&

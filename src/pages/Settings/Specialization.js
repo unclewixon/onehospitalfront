@@ -1,19 +1,19 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request, confirmAction } from '../../services/utilities';
 import TableLoading from '../../components/TableLoading';
 import {
-	add_specialziation,
+	addSpecialization,
 	loadSpecializations,
-	update_specialization,
-	delete_specialization,
+	updateSpecialization,
+	deleteSpecialization,
 } from '../../actions/settings';
 
-const Specialization = props => {
+const Specialization = () => {
 	const initialState = {
 		name: '',
 		save: true,
@@ -26,6 +26,10 @@ const Specialization = props => {
 	const [payload, getDataToEdit] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
+	const specializations = useSelector(state => state.settings.specializations);
+
+	const dispatch = useDispatch();
+
 	const handleInputChange = e => {
 		const { name, value } = e.target;
 		setState(prevState => ({ ...prevState, [name]: value }));
@@ -37,7 +41,7 @@ const Specialization = props => {
 			setLoading(true);
 			const data = { name };
 			const rs = await request('specializations', 'POST', true, data);
-			props.add_specialziation(rs);
+			dispatch(addSpecialization(rs));
 			setLoading(false);
 			setState({ ...initialState });
 			notifySuccess('Specialization created');
@@ -54,7 +58,7 @@ const Specialization = props => {
 			const data = { name };
 			const url = `specializations/${payload.id}/update`;
 			const rs = await request(url, 'PATCH', true, data);
-			props.update_specialization(rs, payload);
+			dispatch(updateSpecialization(rs));
 			setState({ ...initialState });
 			setSubmitButton({ save: true, edit: false });
 			setLoading(false);
@@ -81,7 +85,7 @@ const Specialization = props => {
 	const onDeleteSpecialization = async data => {
 		try {
 			const rs = await request(`specializations/${data.id}`, 'DELETE', true);
-			props.delete_specialization(rs);
+			dispatch(deleteSpecialization(rs));
 			setLoading(false);
 			notifySuccess('Specialization deleted');
 		} catch (error) {
@@ -99,23 +103,21 @@ const Specialization = props => {
 		setState({ ...initialState });
 	};
 
-	const fetchSpecialization = async () => {
-		try {
-			const rs = await request('specializations', 'GET', true);
-			props.loadSpecializations(rs);
-			setDataLoaded(false);
-		} catch (error) {
-			setDataLoaded(false);
-			notifyError(error.message || 'could not fetch specializations!');
-		}
-	};
-
 	useEffect(() => {
+		const fetchSpecialization = async () => {
+			try {
+				const rs = await request('specializations', 'GET', true);
+				dispatch(loadSpecializations(rs));
+			} catch (error) {
+				notifyError(error.message || 'could not fetch specializations!');
+			}
+		};
+
 		if (!dataLoaded) {
 			fetchSpecialization();
+			setDataLoaded(true);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [dataLoaded, props]);
+	}, [dataLoaded, dispatch]);
 
 	return (
 		<div className="content-i">
@@ -138,12 +140,12 @@ const Specialization = props => {
 
 					<div className="row">
 						<div className="col-lg-8">
-							{dataLoaded ? (
+							{!dataLoaded ? (
 								<TableLoading />
 							) : (
 								<>
 									<div className="row">
-										{props.specializations.map((item, i) => {
+										{specializations.map((item, i) => {
 											return (
 												<div className="col-lg-4 col-xxl-3" key={i}>
 													<div className="pt-3">
@@ -171,7 +173,7 @@ const Specialization = props => {
 											);
 										})}
 									</div>
-									{props.specializations.length === 0 && (
+									{specializations.length === 0 && (
 										<div
 											className="alert alert-info text-center"
 											style={{ width: '100%' }}>
@@ -196,7 +198,7 @@ const Specialization = props => {
 											<div className="input-group mb-2 mr-sm-2 mb-sm-0">
 												<input
 													className="form-control"
-													placeholder="Enter leave type"
+													placeholder="Enter specialization"
 													type="text"
 													name="name"
 													value={name}
@@ -222,7 +224,9 @@ const Specialization = props => {
 														onClick={cancelEditButton}>
 														<span>cancel</span>
 													</button>
-													<button className="btn btn-primary">
+													<button
+														className="btn btn-primary"
+														disabled={loading}>
 														{loading ? (
 															<img src={waiting} alt="submitting" />
 														) : (
@@ -243,14 +247,4 @@ const Specialization = props => {
 	);
 };
 
-const mapStateToProps = state => {
-	return {
-		specializations: state.settings.specializations,
-	};
-};
-export default connect(mapStateToProps, {
-	add_specialziation,
-	loadSpecializations,
-	update_specialization,
-	delete_specialization,
-})(Specialization);
+export default Specialization;

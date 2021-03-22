@@ -14,7 +14,6 @@ import Tooltip from 'antd/lib/tooltip';
 import Button from '../common/Button';
 import { notifyError, notifySuccess } from '../../services/notify';
 // import { Badge } from '../common';
-
 const AppointmentTable = ({
 	appointments,
 	today,

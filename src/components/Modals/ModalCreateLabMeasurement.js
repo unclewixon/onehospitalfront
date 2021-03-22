@@ -816,7 +816,7 @@ class ModalCreateLabMeasurement extends Component {
 													</button>
 
 													<button
-														className="btn btn-primary ml-2"
+														className="btn btn-secondary ml-2"
 														disabled={submitting}
 														type="button">
 														Cancel

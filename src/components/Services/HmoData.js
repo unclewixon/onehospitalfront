@@ -1,89 +1,88 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import Pagination from 'antd/lib/pagination';
 import Tooltip from 'antd/lib/tooltip';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { getAllLabTests, deleteLabTest } from '../../actions/settings';
-import { confirmAction, itemRender, request } from '../../services/utilities';
+import TableLoading from '../TableLoading';
+import ModalEditService from '../Modals/ModalEditService';
+import {
+	request,
+	confirmAction,
+	formatCurrency,
+	itemRender,
+} from '../../services/utilities';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
-import TableLoading from '../TableLoading';
+import { deleteService, loadServices } from '../../actions/settings';
 import useSearchInputState from '../../services/search-hook';
-import ModalLabParameters from '../../components/Modals/ModalLabParameters';
 
-const HmoTests = ({ hmo, index, toggle, doToggle, doToggleForm }) => {
-	const [loaded, setLoaded] = useState(false);
+const HmoData = ({ hmo, index, toggle, doToggle, loaded, setLoaded }) => {
 	const [meta, setMeta] = useState(null);
 	const [keyword, setKeyword] = useState('');
 	const [showModal, setShowModal] = useState(false);
-	const [labTest, setLabTest] = useState(null);
+	const [service, setService] = useState(null);
 
-	const tests = useSelector(state =>
-		state.settings.lab_tests.find(test => test.hmo.id === hmo.id)
+	const services = useSelector(state =>
+		state.settings.services.find(s => s.hmo.id === hmo.id)
 	);
 
 	const dispatch = useDispatch();
 
-	const fetchTests = async (page, q) => {
+	const fetchServices = async (page, q) => {
 		try {
 			const p = page || 1;
-			const url = `lab-tests?page=${p}&limit=24&q=${q || ''}&hmo_id=${hmo.id}`;
+			const url = `services?page=${p}&limit=24&q=${q || ''}&hmo_id=${hmo.id}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
-			dispatch(getAllLabTests({ hmo, result: [...result] }));
+			dispatch(loadServices({ hmo, result: [...result] }));
 			setMeta(meta);
 			window.scrollTo({ top: 0, behavior: 'smooth' });
 			setLoaded(true);
 			dispatch(stopBlock());
 		} catch (e) {
 			dispatch(stopBlock());
-			notifyError(e.message || 'could not fetch lab tests');
+			notifyError(e.message || 'could not fetch services');
 		}
 	};
 
 	useEffect(() => {
 		if (!loaded) {
-			fetchTests();
+			fetchServices();
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [loaded]);
 
-	const onDeleteLabTest = async data => {
+	const onDeleteService = async data => {
 		try {
 			dispatch(startBlock());
-			const rs = await request(`lab-tests/${data.id}`, 'DELETE', true);
-			dispatch(deleteLabTest(rs));
-			notifySuccess('Lab test deleted');
+			const rs = await request(`services/${data.id}`, 'DELETE', true);
+			dispatch(deleteService(rs));
+			notifySuccess('Service deleted');
 			dispatch(stopBlock());
 		} catch (error) {
 			dispatch(stopBlock());
-			notifyError('Error deleting lab test');
+			notifyError('Error deleting service');
 		}
 	};
 
 	const confirmDelete = data => {
-		confirmAction(onDeleteLabTest, data);
+		confirmAction(onDeleteService, data);
 	};
 
 	const onNavigatePage = nextPage => {
-		fetchTests(nextPage, keyword);
+		fetchServices(nextPage, keyword);
 	};
 
 	const onClickEdit = data => {
-		doToggleForm(true, data);
-	};
-
-	const addParameters = item => {
+		setService(data);
 		document.body.classList.add('modal-open');
 		setShowModal(true);
-		setLabTest(item);
 	};
 
 	const closeModal = () => {
-		document.body.classList.remove('modal-open');
 		setShowModal(false);
-		setLabTest(null);
+		document.body.classList.remove('modal-open');
+		setService(null);
 	};
 
 	const onSearchChange = item => {
@@ -96,13 +95,13 @@ const HmoTests = ({ hmo, index, toggle, doToggle, doToggleForm }) => {
 
 	const doSearch = async q => {
 		dispatch(startBlock());
-		await fetchTests(1, q);
+		await fetchServices(1, q);
 		dispatch(stopBlock());
 	};
 
 	return (
 		<div className="filter-side mb-2" style={{ flex: '0 0 100%' }}>
-			{!loaded && !tests ? (
+			{!loaded && !services ? (
 				<TableLoading />
 			) : (
 				<div className={`filter-w ${toggle ? '' : 'collapsed'}`}>
@@ -117,7 +116,7 @@ const HmoTests = ({ hmo, index, toggle, doToggle, doToggleForm }) => {
 							<div className="col-lg-12">
 								<div className="element-search">
 									<input
-										placeholder="Search lab tests..."
+										placeholder="Search services..."
 										value={keyword}
 										onChange={e => {
 											setKeyword(e.target.value);
@@ -129,7 +128,7 @@ const HmoTests = ({ hmo, index, toggle, doToggle, doToggleForm }) => {
 						</div>
 						<div className="pipelines-w mt-4">
 							<div className="row">
-								{tests.result.map((item, i) => {
+								{services.result.map((item, i) => {
 									return (
 										<div className="col-lg-4 mb-2" key={i}>
 											<div className="pipeline white p-1 mb-2">
@@ -137,21 +136,13 @@ const HmoTests = ({ hmo, index, toggle, doToggle, doToggleForm }) => {
 													<div className="pipeline-item">
 														<div className="pi-controls">
 															<div className="pi-settings os-dropdown-trigger">
-																{item.hasParameters && (
-																	<Tooltip title="Add Parameters">
-																		<i
-																			className="os-icon os-icon-grid-10 mr-1"
-																			onClick={() => addParameters(item)}
-																		/>
-																	</Tooltip>
-																)}
-																<Tooltip title="Edit Test">
+																<Tooltip title="Edit Service">
 																	<i
 																		className="os-icon os-icon-ui-49 mr-1"
 																		onClick={() => onClickEdit(item)}
 																	/>
 																</Tooltip>
-																<Tooltip title="Delete Test">
+																<Tooltip title="Delete Service">
 																	<i
 																		className="os-icon os-icon-ui-15 text-danger"
 																		onClick={() => confirmDelete(item)}
@@ -163,21 +154,14 @@ const HmoTests = ({ hmo, index, toggle, doToggle, doToggleForm }) => {
 															<div className="pi-info">
 																<div className="h6 pi-name h7">{item.name}</div>
 																<div className="pi-sub">
-																	{item?.category?.name}
+																	{item.category.name}
 																</div>
 															</div>
 														</div>
 														<div className="pi-foot">
 															<div className="tags">
-																{item.specimens?.map((s, i) => (
-																	<a key={i} className="tag">
-																		{s.label}
-																	</a>
-																)) || ''}
+																{formatCurrency(item.hmoTarrif)}
 															</div>
-															<a className="extra-info">
-																<span>{`${item?.parameters?.length} parameters`}</span>
-															</a>
 														</div>
 													</div>
 												</div>
@@ -185,11 +169,11 @@ const HmoTests = ({ hmo, index, toggle, doToggle, doToggleForm }) => {
 										</div>
 									);
 								})}
-								{tests.result.length === 0 && (
+								{services.result.length === 0 && (
 									<div
 										className="alert alert-info text-center"
 										style={{ width: '100%' }}>
-										No lab tests
+										No services found!
 									</div>
 								)}
 							</div>
@@ -199,7 +183,7 @@ const HmoTests = ({ hmo, index, toggle, doToggle, doToggleForm }) => {
 										current={parseInt(meta.currentPage, 10)}
 										pageSize={parseInt(meta.itemsPerPage, 10)}
 										total={parseInt(meta.totalPages, 10)}
-										showTotal={total => `Total ${total} lab tests`}
+										showTotal={total => `Total ${total} services`}
 										itemRender={itemRender}
 										onChange={current => onNavigatePage(current)}
 									/>
@@ -209,11 +193,11 @@ const HmoTests = ({ hmo, index, toggle, doToggle, doToggleForm }) => {
 					</div>
 				</div>
 			)}
-			{showModal && (
-				<ModalLabParameters closeModal={() => closeModal()} labTest={labTest} />
+			{showModal && service && (
+				<ModalEditService closeModal={() => closeModal()} service={service} />
 			)}
 		</div>
 	);
 };
 
-export default HmoTests;
+export default HmoData;
