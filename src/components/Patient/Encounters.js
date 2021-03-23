@@ -28,7 +28,11 @@ class Encounters extends Component {
 	fetchTransaction = async () => {
 		try {
 			this.setState({ loading: true });
-			const rs = await request(`front-desk/appointments/today`, 'GET', true);
+			const rs = await request(
+				`front-desk/appointments/patient-list`,
+				'GET',
+				true
+			);
 
 			const { patient } = this.props;
 			const appointments = rs

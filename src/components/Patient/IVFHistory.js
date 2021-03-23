@@ -112,11 +112,10 @@ class IVFHistory extends Component {
 					<div className="row">
 						<div className="col-md-12 p-4">
 							<form className="row">
-								<div className="form-group col-md-3">
+								<div className="form-group col-md-10">
 									<label>From - To</label>
 									<RangePicker onChange={e => this.dateChange(e)} />
 								</div>
-
 								<div className="form-group col-md-2 mt-4">
 									<div
 										className="btn btn-sm btn-primary btn-upper text-white filter-btn"

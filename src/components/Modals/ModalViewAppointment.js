@@ -17,6 +17,7 @@ class ModalViewAppointment extends Component {
 
 	render() {
 		const { view_appointment_detail } = this.props;
+		console.log(view_appointment_detail);
 		return (
 			<div
 				className="modal fade animated show"
@@ -57,7 +58,11 @@ class ModalViewAppointment extends Component {
 													height: '100px',
 													borderRadius: '50%',
 												}}
-												src={patientProfilePic}
+												src={
+													view_appointment_detail?.patient?.profile_pic
+														? view_appointment_detail?.patient?.profile_pic
+														: patientProfilePic
+												}
 											/>
 										</div>
 									</div>

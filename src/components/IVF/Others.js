@@ -55,13 +55,15 @@ let Others = props => {
 	let history = useHistory();
 
 	const fetchLabTestCategory = async () => {
+		console.log(ivf.hmo_id);
 		try {
 			const rs = await request(
-				`lab-tests/categories?loadOnce=${true}&hmo_id=${ivf.hmo_id}`,
+				`lab-tests/categories?hasTest=1&hmo_id=${ivf.hmo_id}`,
 				'GET',
 				true
 			);
 			setLabTestCategoryRaw(rs);
+			console.log(rs);
 			let data = [];
 			rs.forEach((item, index) => {
 				const res = { label: item.name, value: item.id };
@@ -85,6 +87,7 @@ let Others = props => {
 	};
 
 	const fetchLabTestsByCategory = id => {
+		console.log(id);
 		const rs = labTestCategoryRaw.find(cat => cat.id === Number(id));
 		console.log(rs);
 		let labtests = [];

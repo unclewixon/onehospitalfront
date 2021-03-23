@@ -65,6 +65,7 @@ const PaypointQueue = ({ staff }) => {
 				''}&startDate=${startDate}&endDate=${endDate}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
+			console.log(rs);
 			setMeta(meta);
 			window.scrollTo({ top: 0, behavior: 'smooth' });
 			const arr = [...result];
@@ -102,6 +103,7 @@ const PaypointQueue = ({ staff }) => {
 
 			socket.on('paypoint-queue', data => {
 				if (data.payment) {
+					console.log(data.payment);
 					const transaction = data.payment;
 					const arr = [transaction, ...transactions];
 					console.log(arr);

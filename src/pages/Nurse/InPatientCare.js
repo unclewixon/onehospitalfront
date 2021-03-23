@@ -258,7 +258,7 @@ const InPatientCare = () => {
 													</Tooltip>
 												)}
 
-												<Tooltip title="View Request">
+												<Tooltip title="View Patient">
 													<a onClick={() => showProfile(item.patient)}>
 														<i className="os-icon os-icon-documents-03" />
 													</a>

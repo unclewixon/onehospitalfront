@@ -17,24 +17,9 @@ import { toggleProfile } from '../../actions/user';
 import Pagination from 'antd/lib/pagination';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { request, confirmAction, itemRender } from '../../services/utilities';
-import AsyncSelect from 'react-select/async/dist/react-select.esm';
-import { searchAPI } from '../../services/constants';
-
-const getOptionValues = option => option.id;
-const getOptionLabels = option => `${option.other_names} ${option.surname}`;
-
-const getOptions = async q => {
-	if (!q || q.length < 3) {
-		return [];
-	}
-
-	const url = `${searchAPI}?q=${q}`;
-	const res = await request(url, 'GET', true);
-	return res;
-};
 
 const { RangePicker } = DatePicker;
-export class AllEnrollment extends Component {
+export class AntennatalHistory extends Component {
 	state = {
 		filtering: false,
 		loading: false,
@@ -42,7 +27,6 @@ export class AllEnrollment extends Component {
 		startDate: '',
 		endDate: '',
 		meta: null,
-		patient_id: '',
 	};
 
 	componentDidMount() {
@@ -50,7 +34,8 @@ export class AllEnrollment extends Component {
 	}
 
 	fetchAntennatal = async page => {
-		const { patient_id, startDate, endDate } = this.state;
+		const { startDate, endDate } = this.state;
+		const patient_id = this.props.patient.id;
 		try {
 			this.setState({ loading: true });
 			const p = page || 1;
@@ -129,16 +114,6 @@ export class AllEnrollment extends Component {
 								<i className="os-icon os-icon-eye" />
 							</a>
 						</Tooltip>
-						<Tooltip title="Edit Request">
-							<a className="secondary">
-								<i className="os-icon os-icon-edit-32" />
-							</a>
-						</Tooltip>
-						<Tooltip title="Delete Request">
-							<a className="danger">
-								<i className="os-icon os-icon-ui-15" />
-							</a>
-						</Tooltip>
 					</td>
 				</tr>
 			);
@@ -152,46 +127,12 @@ export class AllEnrollment extends Component {
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
-					<div className="element-actions">
-						<Link
-							className={`btn btn-primary ${
-								path === '' ? 'btn-outline-primary' : ''
-							}`}
-							to="/antenatal">
-							All Enrollment
-						</Link>
-						<Link
-							className={`btn btn-primary ${
-								path === 'enrol' ? 'btn-outline-primary' : ''
-							}`}
-							to="/antenatal/enrol">
-							New Enrollment
-						</Link>
-					</div>
-					<h6 className="element-header">Enrollments</h6>
 					<div className="row">
 						<div className="col-sm-12">
 							<div className="element-wrapper">
 								<div className="col-md-12 px-0">
 									<form className="row">
-										<div className="form-group col-md-3">
-											<label htmlFor="patient_id">Patient</label>
-
-											<AsyncSelect
-												isClearable
-												getOptionValue={getOptionValues}
-												getOptionLabel={getOptionLabels}
-												defaultOptions
-												name="patient_id"
-												id="patient_id"
-												loadOptions={getOptions}
-												onChange={e => {
-													this.setState({ patient_id: e?.id });
-												}}
-												placeholder="Search patients"
-											/>
-										</div>
-										<div className="form-group col-md-3">
+										<div className="form-group col-md-6">
 											<label>From - To</label>
 											<RangePicker onChange={e => this.dateChange(e)} />
 										</div>
@@ -217,7 +158,7 @@ export class AllEnrollment extends Component {
 									<div className="table table-responsive">
 										<table id="table" className="table">
 											<thead>
-												<tr className="text-bold">
+												<tr className="">
 													<td className="text-center">Date</td>
 													<td className="text-center">Patient Name</td>
 
@@ -276,6 +217,7 @@ export class AllEnrollment extends Component {
 const mapStateToProps = state => {
 	return {
 		antennatal: state.patient.antennatal,
+		patient: state.user.patient,
 	};
 };
 
@@ -285,5 +227,5 @@ export default withRouter(
 		viewAntenatalDetail,
 		startBlock,
 		stopBlock,
-	})(AllEnrollment)
+	})(AntennatalHistory)
 );
