@@ -134,7 +134,7 @@ class PatientAdmission extends Component {
 		this.setState({ submitting: true });
 		try {
 			const url = `${patientAPI}/admissions/${patient.id}/save`;
-			const rs = await request(url, 'POST', true, formData);
+			await request(url, 'POST', true, formData);
 			this.setState({ submitting: false });
 			patient.isAdmitted = true;
 			this.props.setPatientRecord(patient);

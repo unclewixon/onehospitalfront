@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import size from 'lodash.size';
@@ -76,6 +77,7 @@ const CafeteriaDashboard = () => {
 			// setSearchResults(cafeteriaItems);
 			setLoaded(true);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [loaded, cafeteriaItems]);
 
 	const changeCustomer = e => {

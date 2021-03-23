@@ -25,10 +25,10 @@ import { searchAPI } from '../../services/constants';
 
 const { RangePicker } = DatePicker;
 
-const paymentStatus = [
-	{ value: 0, label: 'processing' },
-	{ value: 1, label: 'done' },
-];
+// const paymentStatus = [
+// 	{ value: 0, label: 'processing' },
+// 	{ value: 1, label: 'done' },
+// ];
 
 const getOptionValues = option => option.id;
 const getOptionLabels = option => `${option.other_names} ${option.surname}`;

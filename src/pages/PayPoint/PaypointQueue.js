@@ -31,6 +31,7 @@ const PaypointQueue = ({ staff }) => {
 	const [patient, setPatient] = useState('');
 	const [startDate, setStartDate] = useState('');
 	const [endDate, setEndDate] = useState('');
+	// eslint-disable-next-line no-unused-vars
 	const [currentPage, setCurrentPage] = useState(null);
 	const [meta, setMeta] = useState(null);
 	const ref = useRef(null);
@@ -111,6 +112,7 @@ const PaypointQueue = ({ staff }) => {
 				}
 			});
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [dispatch, listenning, patient]);
 
 	const doApproveTransaction = item => {

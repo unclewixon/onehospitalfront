@@ -11,12 +11,11 @@ import {
 	bloodGroup,
 	para,
 	previousPregnancies,
-	labourAPI,
 } from '../services/constants';
 import { request } from '../services/utilities';
 import { renderSelect, renderTextInput } from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
-import searchingGIF from '../assets/images/searching.gif';
+
 import waiting from '../assets/images/waiting.gif';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
@@ -179,8 +178,6 @@ export class NewLabour extends Component {
 		const { handleSubmit } = this.props;
 		const {
 			submitting,
-			searching,
-			patients,
 			// patient_name,
 			// staff_name,
 			// searchingStaff,

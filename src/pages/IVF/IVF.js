@@ -117,7 +117,7 @@ class IVF extends Component {
 	};
 
 	render() {
-		const { filtering, loading, visible, meta, ivfs } = this.state;
+		const { filtering, loading, meta, ivfs } = this.state;
 		return (
 			<div className="col-sm-12">
 				<br />
@@ -284,5 +284,5 @@ const mapStateToProps = state => {
 };
 
 export default withRouter(
-	connect(mapStateToProps, { setIVF, startBlock, stopBlock, setIVF })(IVF)
+	connect(mapStateToProps, { setIVF, startBlock, stopBlock })(IVF)
 );

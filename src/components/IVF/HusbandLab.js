@@ -9,9 +9,7 @@ import {
 	renderSelect,
 	renderTextArea,
 } from '../../services/utilities';
-import searchingGIF from '../../assets/images/searching.gif';
 import { request } from '../../services/utilities';
-import { notifyError } from '../../services/notify';
 import {
 	searchAPI,
 	staffAPI,
@@ -26,10 +24,7 @@ const validate = validateAntennatal;
 let HusbandLab = props => {
 	const dispatch = useDispatch();
 	const { page, error, ivf, previousPage } = props;
-	let [searching, setSearching] = useState(false);
 	let [selectedPatient, setSelectedPatient] = useState([]);
-	// let [staffs, setStaffs] = useState([]);
-	let [query, setQuery] = useState('');
 
 	useEffect(() => {
 		const fetchStaffs = async () => {

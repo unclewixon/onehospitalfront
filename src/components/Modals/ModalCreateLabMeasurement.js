@@ -9,7 +9,6 @@ import {
 	renderTextInput,
 	request,
 	renderSelect,
-	renderMultiselect,
 } from '../../services/utilities';
 import DatePicker from 'react-datepicker';
 import waiting from '../../assets/images/waiting.gif';

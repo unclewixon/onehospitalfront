@@ -280,6 +280,7 @@ const Imaging = props => {
 		if (loading) {
 			init();
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props, loading]);
 
 	return (

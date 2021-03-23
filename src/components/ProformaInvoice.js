@@ -1,26 +1,22 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useRef, useState, useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
-import { useHistory, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import { searchAPI } from '../services/constants';
 import { getAllHmos } from '../actions/hmo';
 import ModalProformaInvoice from './Modals/ModalProformaInvoice';
-import {
-	transactionsAPI,
-	paymentTypeExtra,
-	serviceAPI,
-} from '../services/constants';
+import { serviceAPI } from '../services/constants';
 import { request } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
-import { notifySuccess, notifyError } from '../services/notify';
+import { notifyError } from '../services/notify';
 import { get_all_request_services } from '../actions/settings';
 
 const ProformaInvoice = props => {
-	let history = useHistory();
 	const { register, handleSubmit, setValue, errors } = useForm();
-	const [submitting, setSubmitting] = useState(false);
+	const [submitting] = useState(false);
 	const [loaded, setLoaded] = useState(false);
 	const multi = false;
 	const [hmo, setHmo] = useState('');

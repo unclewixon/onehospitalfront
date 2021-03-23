@@ -21,6 +21,7 @@ const Investigations = props => {
 	const [labTests, setLabTests] = useState(null);
 	const [category, setCategory] = useState('');
 	const [loaded, setLoaded] = useState(false);
+	// eslint-disable-next-line no-unused-vars
 	const [servicesObjects, setServicesObjects] = useState([]);
 	const [services, setServices] = useState([]);
 	const [servicesCategory, setServicesCategory] = useState([]);

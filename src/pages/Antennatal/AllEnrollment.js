@@ -13,10 +13,9 @@ import { loadAntennatal } from '../../actions/patient';
 import { viewAntenatalDetail } from '../../actions/general';
 import isEmpty from 'lodash.isempty';
 import { patientAPI } from '../../services/constants';
-import { toggleProfile } from '../../actions/user';
 import Pagination from 'antd/lib/pagination';
 import { startBlock, stopBlock } from '../../actions/redux-block';
-import { request, confirmAction, itemRender } from '../../services/utilities';
+import { request, itemRender } from '../../services/utilities';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import { searchAPI } from '../../services/constants';
 

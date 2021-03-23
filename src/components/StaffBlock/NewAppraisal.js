@@ -11,12 +11,7 @@ import {
 } from 'redux-form';
 import $ from 'jquery';
 
-import {
-	errorMessage,
-	request,
-	renderTextArea,
-	confirmAction,
-} from '../../services/utilities';
+import { errorMessage, request, confirmAction } from '../../services/utilities';
 import { appraisalAPI } from '../../services/constants';
 import { notifySuccess, notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
@@ -99,7 +94,7 @@ class CreateAppraisal extends Component {
 	doCreateAppraisal = data => async () => {
 		const { performance, work_attitude, other_factor } = this.props;
 		const total = performance + work_attitude + other_factor;
-		if (!isNaN(total) && total == 100) {
+		if (!isNaN(total) && total === 100) {
 			this.setState({ submitting: true });
 			const { staff, location } = this.props;
 			const { departments } = this.state;

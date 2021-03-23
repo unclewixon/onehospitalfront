@@ -97,7 +97,7 @@ class StaffItem extends Component {
 		try {
 			const { staffs } = this.props;
 			const url = `hr/staffs/enable/?id=${data.id}`;
-			const rs = await request(url, 'PATCH', true);
+			await request(url, 'PATCH', true);
 			data.isActive = true;
 			const upd = updateImmutable(staffs, data);
 			this.props.loadStaff(upd);
@@ -113,7 +113,7 @@ class StaffItem extends Component {
 		try {
 			const { staffs } = this.props;
 			const url = `hr/staffs/${data.id}`;
-			const rs = await request(url, 'DELETE', true);
+			await request(url, 'DELETE', true);
 			data.isActive = false;
 			const upd = updateImmutable(staffs, data);
 			this.props.loadStaff(upd);

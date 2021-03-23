@@ -8,9 +8,7 @@ import {
 } from '../../services/utilities';
 import { Field, reduxForm } from 'redux-form';
 import { withRouter } from 'react-router-dom';
-import searchingGIF from '../../assets/images/searching.gif';
 import { request } from '../../services/utilities';
-import { notifyError } from '../../services/notify';
 import {
 	searchAPI,
 	staffAPI,
@@ -84,7 +82,6 @@ class General extends Component {
 
 	render() {
 		const { handleSubmit, error, page, name } = this.props;
-		const { searching, patients } = this.state;
 
 		console.log(name);
 		return (

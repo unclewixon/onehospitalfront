@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
@@ -8,14 +9,9 @@ import { withRouter } from 'react-router-dom';
 import { SubmissionError } from 'redux-form';
 import { compose } from 'redux';
 
-import {
-	diagnosisAPI,
-	patientAPI,
-	serviceAPI,
-	searchAPI,
-} from '../../services/constants';
+import { diagnosisAPI, patientAPI, searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
-import { request, requestNonJson } from '../../services/utilities';
+import { request } from '../../services/utilities';
 import { notifyError, notifySuccess } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 
@@ -32,10 +28,10 @@ const NewProcedure = props => {
 	const [patients, setPatients] = useState([]);
 	const [query, setQuery] = useState('');
 
-	const handlePatientChange = e => {
-		setQuery(e.target.value);
-		searchPatient();
-	};
+	// const handlePatientChange = e => {
+	// 	setQuery(e.target.value);
+	// 	searchPatient();
+	// };
 
 	const searchPatient = async () => {
 		if (query.length > 2) {

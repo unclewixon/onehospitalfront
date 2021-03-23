@@ -1,22 +1,18 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import Tooltip from 'antd/lib/tooltip';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import Pagination from 'antd/lib/pagination';
-import waiting from '../../assets/images/waiting.gif';
-import DatePicker from 'antd/lib/date-picker';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { request, formatPatientId, itemRender } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { toggleProfile } from '../../actions/user';
 import { loadPatients } from '../../actions/patient';
-import AsyncSelect from 'react-select/async/dist/react-select.esm';
-import { searchAPI } from '../../services/constants';
 
-const { RangePicker } = DatePicker;
 const AllPatients = () => {
 	const [loaded, setLoaded] = useState(false);
 	const [filtering, setFiltering] = useState(false);
@@ -35,19 +31,6 @@ const AllPatients = () => {
 	const showProfile = patient => {
 		const info = { patient, type: 'patient' };
 		dispatch(toggleProfile(true, info));
-	};
-
-	const getOptionValues = option => option.id;
-	const getOptionLabels = option => `${option.other_names} ${option.surname}`;
-
-	const getOptions = async q => {
-		if (!q || q.length < 3) {
-			return [];
-		}
-
-		const url = `${searchAPI}?q=${q}`;
-		const res = await request(url, 'GET', true);
-		return res;
 	};
 
 	const patients = useSelector(state => state.patient.patients);
@@ -75,24 +58,9 @@ const AllPatients = () => {
 		}
 	};
 
-	const doFilter = e => {
-		e.preventDefault();
-		setFiltering(true);
-		fetchPatients();
-	};
-
 	const onNavigatePage = nextPage => {
 		dispatch(startBlock());
 		fetchPatients(nextPage);
-	};
-
-	const dateChange = e => {
-		let date = e.map(d => {
-			return moment(d._d).format('YYYY-MM-DD');
-		});
-
-		setStartDate(date[0]);
-		setEndDate(date[1]);
 	};
 
 	// const searchEntries = async e => {
@@ -130,6 +98,7 @@ const AllPatients = () => {
 		if (!loaded || patient === '') {
 			fetch();
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [loaded, patient]);
 	return (
 		<>

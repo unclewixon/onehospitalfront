@@ -7,11 +7,7 @@ import Tooltip from 'antd/lib/tooltip';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import { searchAPI, patientAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
-import {
-	request,
-	updateImmutable,
-	confirmAction,
-} from '../../services/utilities';
+import { request, confirmAction } from '../../services/utilities';
 import { notifyError, notifySuccess } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadRadiology } from '../../actions/patient';

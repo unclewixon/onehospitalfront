@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import DatePicker from 'react-datepicker';
@@ -107,6 +108,7 @@ let Others = props => {
 			fetchLabTestCategory();
 			setLoaded(true);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [loaded]);
 
 	// const setDate = async (date, type) => {

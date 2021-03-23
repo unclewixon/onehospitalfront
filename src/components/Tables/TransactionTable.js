@@ -30,9 +30,6 @@ const TransactionTable = ({
 	const doApproveTransaction = item => {
 		approveTransaction(item);
 	};
-	const doApplyVoucher = item => {
-		applyVoucher(item);
-	};
 
 	const deleteTask = async data => {
 		try {

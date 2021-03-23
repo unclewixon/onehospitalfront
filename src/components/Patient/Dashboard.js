@@ -1,13 +1,12 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import Tooltip from 'antd/lib/tooltip';
+
 import patientProfile from '../../assets/svg-icons/patientProfile.svg';
 import patientProfilePic from '../../assets/images/patientprofile.jpg';
-import PatientData from '../PatientData';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { formatPatientId } from '../../services/utilities';
-import RoleBlock from '../RoleBlock';
 import VisitSummaryTable from './VisitSummaryTable';
 import BillingTable from './BillingTable';
 import AppointmentHistoryTable from './AppointmentHistoryTable';

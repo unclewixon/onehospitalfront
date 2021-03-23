@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
@@ -9,7 +10,6 @@ import { patientAPI, searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
-import searchingGIF from '../../assets/images/searching.gif';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 const NewRadiology = props => {

@@ -14,7 +14,6 @@ import {
 	LOAD_PERFORMANCE_PERIOD,
 	SET_PERFORMANCE_PERIOD,
 } from './types';
-import { request } from './../services/utilities';
 import { notifySuccess, notifyError } from './../services/notify';
 
 import { API_URI, TOKEN_COOKIE } from '../services/constants';
