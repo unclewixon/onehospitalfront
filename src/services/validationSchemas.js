@@ -1,5 +1,19 @@
 import * as yup from 'yup';
 
+export const inPatientSchema = yup.object().shape({
+	// patient: yup.string().required('Please select a patient'),
+	description: yup.string().required('please enter a description'),
+	doctor_id: yup.string().required('Please select whom to see'),
+	serviceType: yup
+		.string()
+		.required('Please select a service type')
+		.nullable(),
+	appointment_date: yup.string().required('Please select a date'),
+	consulting_room_id: yup.string().required('Please select a date'),
+	referredBy: yup.string(),
+	referralCompany: yup.string(),
+});
+
 export const patientSchema = yup.object().shape({
 	surname: yup.string().required("Please enter the patient's last name"),
 	other_names: yup

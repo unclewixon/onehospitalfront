@@ -11,9 +11,12 @@ import { closeModals } from '../../actions/general';
 import { addTransaction } from '../../actions/transaction';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import { searchAPI } from '../../services/constants';
+import { inPatientSchema } from '../../services/validationSchemas';
 
 function InPatientAppointmentForm(props) {
-	const { register, handleSubmit, setValue, getValues } = useForm();
+	const { register, handleSubmit, setValue, getValues, errors } = useForm({
+		validationSchema: inPatientSchema,
+	});
 
 	const [doctorsList, setDoctorsList] = useState();
 	const [rooms, setRooms] = useState();
@@ -30,21 +33,24 @@ function InPatientAppointmentForm(props) {
 		if (patient === null) {
 			notifyError('please select a patient first!!!');
 		} else {
-			try {
-				const rs = await request(
-					`${serviceAPI}/category/${id}?hmo_id=${patient?.hmo?.id}`,
-					'GET',
-					true
-				);
-				console.log(rs);
-				const res = rs.map(service => ({
-					value: service,
-					label: service.name + ' N' + formatNumber(service.tariff),
-				}));
-				setServices(res);
-			} catch (error) {
-				console.log(error);
-				notifyError('error fetching services for the patient');
+			if (patient.hmo) {
+				try {
+					const rs = await request(
+						`${serviceAPI}/category/${id}?hmo_id=${patient?.hmo?.id}`,
+						'GET',
+						true
+					);
+					const res = rs.map(service => ({
+						value: service,
+						label: service.name + ' N' + formatNumber(service.tariff),
+					}));
+					setServices(res);
+				} catch (error) {
+					console.log({ error });
+					notifyError('error fetching imaging requests for the patient');
+				}
+			} else {
+				notifyError('Patient has no hmo');
 			}
 		}
 	};
@@ -177,6 +183,9 @@ function InPatientAppointmentForm(props) {
 						rows="3"
 						placeholder="Enter a brief description"
 						ref={register}></textarea>
+					<small className="text-danger">
+						{errors.description && errors.description.message}
+					</small>
 				</div>
 				<div className="row">
 					<div className="col-sm-12">
@@ -184,6 +193,7 @@ function InPatientAppointmentForm(props) {
 							<label>Whom To See?</label>
 							<Select
 								id="doctor_id"
+								name="doctor_id"
 								placeholder="Select Whom to see"
 								options={doctors}
 								ref={register({ name: 'doctor_id' })}
@@ -201,6 +211,9 @@ function InPatientAppointmentForm(props) {
 									}
 								}}
 							/>
+							<small className="text-danger">
+								{errors.doctor_id && errors.doctor_id.message}
+							</small>
 						</div>
 					</div>
 				</div>
@@ -211,10 +224,12 @@ function InPatientAppointmentForm(props) {
 							<label>Appointment Category</label>
 							<Select
 								id="serviceCategory"
+								name="serviceCategory"
 								placeholder=""
 								options={servicesCategory}
 								ref={register({ name: 'serviceCategory' })}
 								onChange={evt => {
+									console.warn({ evt });
 									if (evt == null) {
 										setValue('serviceCategory', null);
 									} else {
@@ -222,6 +237,9 @@ function InPatientAppointmentForm(props) {
 									}
 								}}
 							/>
+							{/* <small className="text-danger">
+								{errors.serviceCategory && errors.serviceCategory.message}
+							</small> */}
 						</div>
 					</div>
 					<div className="col-sm-6">
@@ -229,6 +247,7 @@ function InPatientAppointmentForm(props) {
 							<label>Appointment Type</label>
 							<Select
 								id="serviceType"
+								name="serviceType"
 								placeholder=""
 								options={services}
 								ref={register({ name: 'serviceType' })}
@@ -246,6 +265,9 @@ function InPatientAppointmentForm(props) {
 								</div>
 							)}
 						</div>
+						<small className="text-danger">
+							{errors.serviceType && errors.serviceType.message}
+						</small>
 					</div>
 				</div>
 
@@ -267,6 +289,9 @@ function InPatientAppointmentForm(props) {
 										setAppointmentDate(date);
 									}}
 								/>
+								<small className="text-danger">
+									{errors.appointment_date && errors.appointment_date.message}
+								</small>
 							</div>
 						</div>
 					</div>

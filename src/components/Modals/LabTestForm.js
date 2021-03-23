@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import Select from 'react-select';
 
@@ -153,7 +154,9 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 			className={`lab-form pipeline white lined-warning ${
 				showHide ? 'show' : 'hide'
 			}`}>
-			<form onSubmit={edit ? onEditLabTest : onAddLabTest}>
+			<form
+				onSubmit={edit ? onEditLabTest : onAddLabTest}
+				style={{ overflowY: 'auto' }}>
 				<h6 className="form-header">{edit ? 'Edit Test' : 'Create Test'}</h6>
 				<div className="form-group mt-4">
 					<input

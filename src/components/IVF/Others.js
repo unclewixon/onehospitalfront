@@ -65,6 +65,7 @@ let Others = props => {
 			setLabTestCategoryRaw(rs);
 			console.log(rs);
 			let data = [];
+			console.log(rs, 'RAW RS');
 			rs.forEach((item, index) => {
 				const res = { label: item.name, value: item.id };
 				data = [...data, res];
@@ -97,6 +98,7 @@ let Others = props => {
 			const res = { label: item.name, value: item.id };
 			labtests = [...labtests, res];
 		});
+		console.log(labtests, 'labtest');
 		setLabTests(labtests);
 	};
 

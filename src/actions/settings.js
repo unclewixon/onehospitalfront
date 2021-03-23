@@ -540,7 +540,7 @@ export const getAllLabGroups = () => {
 					return resolve({ success: true });
 				})
 				.catch(error => {
-					return reject({ success: false });
+					return reject({ success: false, error });
 				});
 		});
 	};
