@@ -4,7 +4,7 @@ import Pagination from 'antd/lib/pagination';
 import Tooltip from 'antd/lib/tooltip';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { getAllLabTests, deleteLabTest } from '../../actions/settings';
+import { setLabTests, deleteLabTest } from '../../actions/settings';
 import { confirmAction, itemRender, request } from '../../services/utilities';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
@@ -31,7 +31,7 @@ const HmoTests = ({ hmo, index, toggle, doToggle, doToggleForm }) => {
 			const url = `lab-tests?page=${p}&limit=24&q=${q || ''}&hmo_id=${hmo.id}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
-			dispatch(getAllLabTests({ hmo, result: [...result] }));
+			dispatch(setLabTests({ hmo, result: [...result] }));
 			setMeta(meta);
 			window.scrollTo({ top: 0, behavior: 'smooth' });
 			setLoaded(true);
@@ -102,7 +102,7 @@ const HmoTests = ({ hmo, index, toggle, doToggle, doToggleForm }) => {
 
 	return (
 		<div className="filter-side mb-2" style={{ flex: '0 0 100%' }}>
-			{!loaded && !tests ? (
+			{!loaded ? (
 				<TableLoading />
 			) : (
 				<div className={`filter-w ${toggle ? '' : 'collapsed'}`}>
@@ -129,63 +129,66 @@ const HmoTests = ({ hmo, index, toggle, doToggle, doToggleForm }) => {
 						</div>
 						<div className="pipelines-w mt-4">
 							<div className="row">
-								{tests.result.map((item, i) => {
-									return (
-										<div className="col-lg-4 mb-2" key={i}>
-											<div className="pipeline white p-1 mb-2">
-												<div className="pipeline-body">
-													<div className="pipeline-item">
-														<div className="pi-controls">
-															<div className="pi-settings os-dropdown-trigger">
-																{item.hasParameters && (
-																	<Tooltip title="Add Parameters">
+								{tests &&
+									tests.result.map((item, i) => {
+										return (
+											<div className="col-lg-4 mb-2" key={i}>
+												<div className="pipeline white p-1 mb-2">
+													<div className="pipeline-body">
+														<div className="pipeline-item">
+															<div className="pi-controls">
+																<div className="pi-settings os-dropdown-trigger">
+																	{item.hasParameters && (
+																		<Tooltip title="Add Parameters">
+																			<i
+																				className="os-icon os-icon-grid-10 mr-1"
+																				onClick={() => addParameters(item)}
+																			/>
+																		</Tooltip>
+																	)}
+																	<Tooltip title="Edit Test">
 																		<i
-																			className="os-icon os-icon-grid-10 mr-1"
-																			onClick={() => addParameters(item)}
+																			className="os-icon os-icon-ui-49 mr-1"
+																			onClick={() => onClickEdit(item)}
 																		/>
 																	</Tooltip>
-																)}
-																<Tooltip title="Edit Test">
-																	<i
-																		className="os-icon os-icon-ui-49 mr-1"
-																		onClick={() => onClickEdit(item)}
-																	/>
-																</Tooltip>
-																<Tooltip title="Delete Test">
-																	<i
-																		className="os-icon os-icon-ui-15 text-danger"
-																		onClick={() => confirmDelete(item)}
-																	/>
-																</Tooltip>
-															</div>
-														</div>
-														<div className="pi-body mt-2">
-															<div className="pi-info">
-																<div className="h6 pi-name h7">{item.name}</div>
-																<div className="pi-sub">
-																	{item?.category?.name}
+																	<Tooltip title="Delete Test">
+																		<i
+																			className="os-icon os-icon-ui-15 text-danger"
+																			onClick={() => confirmDelete(item)}
+																		/>
+																	</Tooltip>
 																</div>
 															</div>
-														</div>
-														<div className="pi-foot">
-															<div className="tags">
-																{item.specimens?.map((s, i) => (
-																	<a key={i} className="tag">
-																		{s.label}
-																	</a>
-																)) || ''}
+															<div className="pi-body mt-2">
+																<div className="pi-info">
+																	<div className="h6 pi-name h7">
+																		{item.name}
+																	</div>
+																	<div className="pi-sub">
+																		{item?.category?.name}
+																	</div>
+																</div>
 															</div>
-															<a className="extra-info">
-																<span>{`${item?.parameters?.length} parameters`}</span>
-															</a>
+															<div className="pi-foot">
+																<div className="tags">
+																	{item.specimens?.map((s, i) => (
+																		<a key={i} className="tag">
+																			{s.label}
+																		</a>
+																	)) || ''}
+																</div>
+																<a className="extra-info">
+																	<span>{`${item?.parameters?.length} parameters`}</span>
+																</a>
+															</div>
 														</div>
 													</div>
 												</div>
 											</div>
-										</div>
-									);
-								})}
-								{tests.result.length === 0 && (
+										);
+									})}
+								{tests && tests.result.length === 0 && (
 									<div
 										className="alert alert-info text-center"
 										style={{ width: '100%' }}>

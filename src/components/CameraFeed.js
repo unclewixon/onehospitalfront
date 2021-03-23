@@ -4,9 +4,12 @@ export class CameraFeed extends Component {
 	videoPlayer = null;
 	stream = null;
 
+	state = {
+		pictureTaken: false,
+	};
+
 	processDevices(devices) {
 		devices.forEach(device => {
-			console.log(device.label);
 			this.setDevice(device);
 		});
 	}
@@ -33,18 +36,6 @@ export class CameraFeed extends Component {
 		this.videoPlayer.pause();
 		this.videoPlayer.src = '';
 		this.videoPlayer.srcObject = null;
-
-		// if (!window.streamReference) return;
-
-		// window.streamReference.getAudioTracks().forEach(function(track) {
-		// 	track.stop();
-		// });
-
-		// window.streamReference.getVideoTracks().forEach(function(track) {
-		// 	track.stop();
-		// });
-
-		// window.streamReference = null;
 	}
 
 	takePhoto = e => {
@@ -53,24 +44,36 @@ export class CameraFeed extends Component {
 		const context = this.canvas.getContext('2d');
 		context.drawImage(this.videoPlayer, 0, 0, 200, 150);
 		this.canvas.toBlob(sendFile);
+		this.setState({ pictureTaken: true });
 	};
 
 	render() {
+		const { pictureTaken } = this.state;
 		return (
 			<div className="c-camera-feed">
-				<div className="c-camera-feed__viewer">
+				<div
+					className={`c-camera-feed__viewer ${pictureTaken ? 'hidden' : ''}`}>
 					<video
 						ref={ref => (this.videoPlayer = ref)}
 						width="200"
 						heigh="150"
 					/>
 				</div>
-				<button onClick={e => this.takePhoto(e)} className="btn btn-primary">
-					Take photo!
-				</button>
-				<div className="c-camera-feed__stage">
+				<div
+					className={`c-camera-feed__stage ${!pictureTaken ? 'hidden' : ''}`}>
 					<canvas width="200" height="150" ref={ref => (this.canvas = ref)} />
 				</div>
+				{pictureTaken ? (
+					<button
+						onClick={e => this.setState({ pictureTaken: false })}
+						className="btn btn-secondary mr-2">
+						Cancel
+					</button>
+				) : (
+					<button onClick={e => this.takePhoto(e)} className="btn btn-primary">
+						Take photo!
+					</button>
+				)}
 			</div>
 		);
 	}

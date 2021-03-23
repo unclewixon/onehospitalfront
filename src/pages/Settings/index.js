@@ -84,8 +84,8 @@ const Settings = ({ match, location }) => {
 								</span>
 							</Link>
 						</li>
-						<li className={page === 'services-category' ? 'active' : ''}>
-							<Link to="/settings/services-category">
+						<li className={page === 'services' ? 'active' : ''}>
+							<Link to="/settings/services">
 								<i className="os-icon os-icon-layers" />
 								<span>Services</span>
 							</Link>
@@ -107,10 +107,7 @@ const Settings = ({ match, location }) => {
 				<Route path={`${match.url}/lab-mgt`} component={Laboratory} />
 				<Route path={`${match.url}/room-mgt`} component={RoomMgmt} />
 				<Route path={`${match.url}/leave-category`} component={LeaveCategory} />
-				<Route
-					path={`${match.url}/services-category`}
-					component={ServicesCategory}
-				/>
+				<Route path={`${match.url}/services`} component={ServicesCategory} />
 				<Route
 					path={`${match.url}/specializations`}
 					component={Specialization}

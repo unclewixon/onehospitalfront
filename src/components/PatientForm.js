@@ -130,10 +130,9 @@ function PatientForm(props) {
 	};
 
 	const uploadImage = async myBlob => {
-		//e.preventDefault();
-		let file = new File([myBlob], 'profile_pic.png');
-		setAvatar(file);
-		console.log('file:', file);
+		const file = new File([myBlob], 'profile_pic.png');
+		setAvatar(myBlob);
+		console.log('file:', file.stream);
 	};
 
 	return (
@@ -195,9 +194,7 @@ function PatientForm(props) {
 								<a
 									className="profile-tile-box"
 									style={{ width: '210px', padding: '8px' }}>
-									<div className="pt-avatar-w">
-										<CameraFeed sendFile={file => uploadImage(file)} />
-									</div>
+									<CameraFeed sendFile={file => uploadImage(file)} />
 								</a>
 							</div>
 						</div>

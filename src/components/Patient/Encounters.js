@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import { withRouter } from 'react-router-dom';
-import Button from '../common/Button';
+
 import { openEncounter } from '../../actions/general';
 import { request, formatPatientId } from '../../services/utilities';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
-import { notifyError, notifySuccess } from '../../services/notify';
+import { notifyError } from '../../services/notify';
 
 class Encounters extends Component {
 	state = {
@@ -22,47 +22,21 @@ class Encounters extends Component {
 	};
 
 	componentDidMount() {
-		this.fetchTransaction();
+		this.fetchEncouters();
 	}
 
-	fetchTransaction = async () => {
+	fetchEncouters = async () => {
 		try {
 			this.setState({ loading: true });
-			const rs = await request(`front-desk/appointments/today`, 'GET', true);
-
 			const { patient } = this.props;
-			const appointments = rs
-				.filter(key => patient.id === key.patient.id)
-				.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
-			var enc = [];
-			const asyncRes = await Promise.all(
-				appointments.map(async value => {
-					var stat = await this.getViewStatus(value);
-					value.stat = stat;
-					return value;
-				})
-			);
+			const url = `front-desk/appointments/patient/${patient.id}`;
+			const rs = await request(url, 'GET', true);
 
-			console.log(enc);
-			console.log(asyncRes);
-			//console.log(result);
-
-			this.setState({ loading: false, appointments });
+			this.setState({ loading: false, appointments: rs });
 		} catch (error) {
 			console.log(error);
 			this.setState({ loading: false });
 			notifyError('error fetching encounters');
-		}
-	};
-
-	getViewStatus = async appointment => {
-		try {
-			const url = `consultation/appointment/${appointment.id}`;
-			const rs = await request(url, 'GET', true);
-			console.log(rs);
-			return !!rs;
-		} catch (error) {
-			return false;
 		}
 	};
 
@@ -84,7 +58,6 @@ class Encounters extends Component {
 
 	render() {
 		const { appointments, loading } = this.state;
-		const { staff } = this.props;
 		return (
 			<div className="col-sm-12 col-xxl-6">
 				<div className="element-wrapper">
@@ -137,7 +110,7 @@ class Encounters extends Component {
 													</td>
 
 													<td>
-														{appointment.stat ? (
+														{appointment.encounter ? (
 															<span className="badge badge-success">
 																Consultation Completed
 															</span>
@@ -154,7 +127,7 @@ class Encounters extends Component {
 																title="Action"
 																size="sm"
 																key={appointment.id}>
-																{!appointment.stat && (
+																{!appointment.encounter && (
 																	<Dropdown.Item
 																		onClick={() =>
 																			this.doOpenEncounter(

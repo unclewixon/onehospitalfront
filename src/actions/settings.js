@@ -11,7 +11,7 @@ import {
 	UPDATE_ROOM_CATEGORY,
 	DELETE_ROOM_CATEGORY,
 	ADD_LAB_TEST,
-	GET_ALL_LAB_TESTS,
+	SET_LAB_TESTS,
 	UPDATE_LAB_TEST,
 	DELETE_LAB_TEST,
 	ADD_LAB_TEST_CATEGORY,
@@ -165,9 +165,9 @@ export const deleteService = payload => {
 };
 
 //Lab
-export const getAllLabTests = payload => {
+export const setLabTests = payload => {
 	return {
-		type: 'SET_LAB_TESTS',
+		type: SET_LAB_TESTS,
 		payload,
 	};
 };
@@ -497,7 +497,7 @@ export const fetchLabTests = () => {
 		return new Promise((resolve, reject) => {
 			request('lab-tests/unpaginated', 'GET', true)
 				.then(response => {
-					dispatch(getAllLabTests(response.result));
+					dispatch(setLabTests(response.result));
 					return resolve({ success: true });
 				})
 				.catch(error => {

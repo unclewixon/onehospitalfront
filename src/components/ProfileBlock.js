@@ -1,16 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import moment from 'moment';
 import { useDispatch } from 'react-redux';
-import Tooltip from 'antd/lib/tooltip';
-import background from '../assets/images/b3.jpeg';
-import profilepix from '../assets/images/a6.jpeg';
-import editIcon from '../assets/medical/edit.png';
-import admitIcon from '../assets/medical/admit.png';
-import immunizeIcon from '../assets/medical/immunize.png';
-import documentIcon from '../assets/medical/document.png';
-import { getAge, request, formatPatientId } from '../services/utilities';
+
+import { request, formatPatientId } from '../services/utilities';
 import patientProfile from '../assets/svg-icons/patientProfile.svg';
 import patientProfilePic from '../assets/images/patientprofile.jpg';
 
@@ -18,41 +11,35 @@ import { patientAPI } from '../services/constants';
 import { notifySuccess, notifyError } from './../services/notify';
 import { updatePatient } from '../actions/patient';
 import PatientActions from './PatientActions';
+import { startBlock, stopBlock } from '../actions/redux-block';
 
 const ProfileBlock = ({ location, history, patient, match, noEdits }) => {
-	const [submitting, setSubmitting] = useState(false);
-	const [isAdmitted, setisAdmitted] = useState(false);
-
 	const dispatch = useDispatch();
 
 	const enrollImmunization = async () => {
 		const result = window.confirm('Enroll into immunization?');
 		if (result) {
 			try {
-				setSubmitting(true);
+				dispatch(startBlock());
 				const data = { patient_id: patient.id };
 				const url = `${patientAPI}/immunization/enroll`;
 				const rs = await request(url, 'POST', true, data);
 				if (rs.success) {
-					setSubmitting(false);
+					dispatch(stopBlock());
 					notifySuccess(
 						`you have enrolled ${patient.other_names} into immunization`
 					);
 					dispatch(updatePatient({ ...patient, immunization: rs.records }));
 					history.push(`${location.pathname}#immunization-chart`);
 				} else {
-					setSubmitting(false);
+					dispatch(stopBlock());
 					notifyError(rs.message);
 				}
 			} catch (error) {
-				setSubmitting(false);
+				dispatch(stopBlock());
 				notifyError(error.message || 'Could not add leave request');
 			}
 		}
-	};
-
-	const enrollAdmission = () => {
-		history.push(`${location.pathname}#start-admission`);
 	};
 
 	return (
@@ -107,21 +94,21 @@ const ProfileBlock = ({ location, history, patient, match, noEdits }) => {
 							</div>
 							<div className="small row">
 								<div className="font-weight-bold col-6">Marital Status:</div>
-								<span className="col-6">{patient?.maritalStatus}</span>
+								<span className="col-6">{patient?.maritalStatus || ''}</span>
 							</div>
 						</div>
 						<div className="col-6">
 							<div className="small row">
 								<div className="font-weight-bold col-6">Ethnicity:</div>
-								<span className="col-6">{patient?.ethnicity}</span>
+								<span className="col-6">{patient?.ethnicity || ''}</span>
 							</div>
 							<div className="small row">
 								<div className="font-weight-bold col-6">Occupation:</div>
-								<span className="col-6">{patient?.occupation}</span>
+								<span className="col-6">{patient?.occupation || ''}</span>
 							</div>
 							<div className="small row">
 								<div className="font-weight-bold col-6">Number of Visits:</div>
-								<span className="col-6">{patient?.noOfVisits}</span>
+								<span className="col-6">{patient?.noOfVisits || ''}</span>
 							</div>
 						</div>
 					</div>
@@ -132,7 +119,7 @@ const ProfileBlock = ({ location, history, patient, match, noEdits }) => {
 					<PatientActions
 						location={location}
 						enrollImmunization={enrollImmunization}
-						isAdmitted={isAdmitted}
+						isAdmitted={patient.isAdmitted}
 					/>
 				</div>
 			)}

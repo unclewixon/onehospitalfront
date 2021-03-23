@@ -101,7 +101,7 @@ const HmoData = ({ hmo, index, toggle, doToggle, loaded, setLoaded }) => {
 
 	return (
 		<div className="filter-side mb-2" style={{ flex: '0 0 100%' }}>
-			{!loaded && !services ? (
+			{!loaded ? (
 				<TableLoading />
 			) : (
 				<div className={`filter-w ${toggle ? '' : 'collapsed'}`}>
@@ -128,48 +128,51 @@ const HmoData = ({ hmo, index, toggle, doToggle, loaded, setLoaded }) => {
 						</div>
 						<div className="pipelines-w mt-4">
 							<div className="row">
-								{services.result.map((item, i) => {
-									return (
-										<div className="col-lg-4 mb-2" key={i}>
-											<div className="pipeline white p-1 mb-2">
-												<div className="pipeline-body">
-													<div className="pipeline-item">
-														<div className="pi-controls">
-															<div className="pi-settings os-dropdown-trigger">
-																<Tooltip title="Edit Service">
-																	<i
-																		className="os-icon os-icon-ui-49 mr-1"
-																		onClick={() => onClickEdit(item)}
-																	/>
-																</Tooltip>
-																<Tooltip title="Delete Service">
-																	<i
-																		className="os-icon os-icon-ui-15 text-danger"
-																		onClick={() => confirmDelete(item)}
-																	/>
-																</Tooltip>
-															</div>
-														</div>
-														<div className="pi-body mt-2">
-															<div className="pi-info">
-																<div className="h6 pi-name h7">{item.name}</div>
-																<div className="pi-sub">
-																	{item.category.name}
+								{services &&
+									services.result.map((item, i) => {
+										return (
+											<div className="col-lg-4 mb-2" key={i}>
+												<div className="pipeline white p-1 mb-2">
+													<div className="pipeline-body">
+														<div className="pipeline-item">
+															<div className="pi-controls">
+																<div className="pi-settings os-dropdown-trigger">
+																	<Tooltip title="Edit Service">
+																		<i
+																			className="os-icon os-icon-ui-49 mr-1"
+																			onClick={() => onClickEdit(item)}
+																		/>
+																	</Tooltip>
+																	<Tooltip title="Delete Service">
+																		<i
+																			className="os-icon os-icon-ui-15 text-danger"
+																			onClick={() => confirmDelete(item)}
+																		/>
+																	</Tooltip>
 																</div>
 															</div>
-														</div>
-														<div className="pi-foot">
-															<div className="tags">
-																{formatCurrency(item.hmoTarrif)}
+															<div className="pi-body mt-2">
+																<div className="pi-info">
+																	<div className="h6 pi-name h7">
+																		{item.name}
+																	</div>
+																	<div className="pi-sub">
+																		{item.category.name}
+																	</div>
+																</div>
+															</div>
+															<div className="pi-foot">
+																<div className="tags">
+																	{formatCurrency(item.hmoTarrif)}
+																</div>
 															</div>
 														</div>
 													</div>
 												</div>
 											</div>
-										</div>
-									);
-								})}
-								{services.result.length === 0 && (
+										);
+									})}
+								{services && services.result.length === 0 && (
 									<div
 										className="alert alert-info text-center"
 										style={{ width: '100%' }}>

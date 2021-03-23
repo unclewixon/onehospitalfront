@@ -5,6 +5,7 @@ import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import axios from 'axios';
+
 import { API_URI, TOKEN_COOKIE } from '../services/constants';
 import { prevStep, resetStep } from '../actions/patient';
 import { closeModals } from '../actions/general';
@@ -15,7 +16,6 @@ import {
 	maritalStatus,
 	relationships,
 } from '../services/constants';
-import { request } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import { setPatientRecord } from '../actions/user';
@@ -166,9 +166,9 @@ function PatientNOKForm(props) {
 		} else {
 			console.log('onsave()');
 			// Display the key/value pairs
-			for (var pair of formDataObj.entries()) {
-				console.log(pair[0] + ', ' + pair[1]);
-			}
+			// for (var pair of formDataObj.entries()) {
+			// 	console.log(pair[0] + ', ' + pair[1]);
+			// }
 
 			axios
 				.post(`${API_URI}/patient/save`, formDataObj, { headers })
@@ -186,7 +186,7 @@ function PatientNOKForm(props) {
 				})
 				.catch(e => {
 					setSubmitting(false);
-					const _message = e.message
+					const _message = e.response.data.message
 						.map(m => Object.values(m.constraints).join(', '))
 						.join(', ');
 					notifyError(_message || 'could not save patient record');

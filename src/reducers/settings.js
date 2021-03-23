@@ -8,7 +8,7 @@ import {
 	UPDATE_ROOM_CATEGORY,
 	DELETE_ROOM_CATEGORY,
 	ADD_LAB_TEST,
-	GET_ALL_LAB_TESTS,
+	SET_LAB_TESTS,
 	UPDATE_LAB_TEST,
 	DELETE_LAB_TEST,
 	ADD_LAB_TEST_CATEGORY,
@@ -109,14 +109,11 @@ const settings = (state = INITIAL_STATE, action) => {
 			};
 
 		// lab tests
-		case GET_ALL_LAB_TESTS:
+		case SET_LAB_TESTS:
 			const tests = state.lab_tests.filter(
 				t => t.hmo.id !== action.payload.hmo.id
 			);
 			return { ...state, lab_tests: [...tests, action.payload] };
-		case 'SET_LAB_TESTS':
-			return { ...state, lab_tests: action.payload };
-
 		case ADD_LAB_TEST:
 			const htest = state.lab_tests.find(
 				t => t.hmo.id === action.payload.hmo.id

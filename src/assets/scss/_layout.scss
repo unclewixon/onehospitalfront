@@ -40,6 +40,9 @@ body {
 b, strong {
   font-weight: $font-weight-bold;
 }
+.flex {
+	display: flex;
+}
 
 .all-wrapper {
   box-shadow: 0px 0px 40px rgba(0,0,0,0.1);
