@@ -1,14 +1,85 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import { startBlock, stopBlock } from '../../actions/redux-block';
+import { notifySuccess, notifyError } from '../../services/notify';
 import TableLoading from '../TableLoading';
+import Pagination from 'antd/lib/pagination';
+import { request, itemRender } from '../../services/utilities';
+import moment from 'moment';
+import waiting from '../../assets/images/waiting.gif';
+import DatePicker from 'antd/lib/date-picker';
+import PatientAppointmentTable from './PatientAppointmentTable';
+
+const { RangePicker } = DatePicker;
 
 class AppointmentHistoryTable extends Component {
 	state = {
 		loading: false,
 		role: null,
 		showModal: false,
+		filtering: false,
+		startDate: '',
+		endDate: '',
+		appointments: [],
+		meta: null,
+	};
+
+	fetchAppointments = async page => {
+		const { startDate, endDate } = this.state;
+		const patient_id = this.props.patient.id;
+		try {
+			const p = page || 1;
+			this.setState({ loading: true });
+			const rs = await request(
+				`front-desk/appointments?page=${p}&limit=15&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}`,
+				'GET',
+				true
+			);
+			const { result, ...meta } = rs;
+			const arr = [...result];
+			this.setState({
+				loading: false,
+				filtering: false,
+				meta,
+				appointments: arr,
+			});
+			this.props.stopBlock();
+		} catch (error) {
+			console.log(error);
+			this.props.stopBlock();
+			this.setState({ loading: false, filtering: false });
+			notifyError(error.message || 'could not fetch appointments');
+		}
+	};
+
+	componentDidMount() {
+		this.fetchAppointments();
+	}
+
+	onNavigatePage = nextPage => {
+		this.props.startBlock();
+		this.fetchTransaction(nextPage);
+	};
+
+	doFilter = async e => {
+		e.preventDefault();
+		this.fetchTransaction();
+	};
+
+	change = e => {
+		this.setState({ [e.target.name]: e.target.value });
+	};
+
+	dateChange = e => {
+		let date = e.map(d => {
+			return moment(d._d).format('YYYY-MM-DD');
+		});
+		this.setState({
+			...this.state,
+			startDate: date[0],
+			endDate: date[1],
+		});
 	};
 
 	openPermissionModal = role => () => {
@@ -22,7 +93,7 @@ class AppointmentHistoryTable extends Component {
 	};
 
 	render() {
-		const { loading } = this.state;
+		const { loading, filtering, meta, appointments } = this.state;
 		return (
 			<div className="row">
 				<div className="m-0 w-100">
@@ -34,199 +105,49 @@ class AppointmentHistoryTable extends Component {
 								<div
 									id="dataTable1_wrapper"
 									className="dataTables_wrapper container-fluid dt-bootstrap4">
-									<div className="row">
-										<div className="col-sm-12 col-md-6">
-											<div className="dataTables_length" id="dataTable1_length">
-												<label>
-													Show{' '}
-													<select
-														name="dataTable1_length"
-														aria-controls="dataTable1"
-														className="form-control form-control-sm">
-														<option value="10">10</option>
-														<option value="25">25</option>
-														<option value="50">50</option>
-														<option value="100">100</option>
-													</select>{' '}
-													entries
-												</label>
-											</div>
+									<form className="row">
+										<div className="form-group col-md-4">
+											<label>From - To</label>
+											<RangePicker onChange={e => this.dateChange(e)} />
 										</div>
-										<div className="col-sm-12 col-md-6">
-											<div id="dataTable1_filter" className="dataTables_filter">
-												<label>
-													Search:
-													<input
-														type="search"
-														className="form-control form-control-sm"
-														placeholder=""
-														aria-controls="dataTable1"
-													/>
-												</label>
-											</div>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-sm-12">
-											<table
-												id="dataTable1"
-												width="100%"
-												className="table table-striped table-lightfont dataTable"
-												role="grid"
-												aria-describedby="dataTable1_info"
-												style={{ width: '100%' }}>
-												<thead style={{ borderCollapse: 'collapse' }}>
-													<tr>
-														<th rowSpan="1" colSpan="1">
-															Id
-														</th>
-														<th rowSpan="1" colSpan="1">
-															Date
-														</th>
-														<th rowSpan="1" colSpan="1">
-															Type of Appointment
-														</th>
-														<th rowSpan="1" colSpan="1">
-															Doctor
-														</th>
-													</tr>
-												</thead>
-												<tfoot>
-													<tr>
-														<th rowSpan="1" colSpan="1">
-															Id
-														</th>
-														<th rowSpan="1" colSpan="1">
-															Date
-														</th>
-														<th rowSpan="1" colSpan="1">
-															Type of Appointment
-														</th>
-														<th rowSpan="1" colSpan="1">
-															Doctor
-														</th>
-													</tr>
-												</tfoot>
-												<tbody>
-													<tr role="row" className="odd">
-														<td className="sorting_1">012443</td>
-														<td>Accountant</td>
-														<td>3/23/23</td>
-														<td>something we do</td>
-													</tr>
-													<tr role="row" className="odd">
-														<td className="sorting_1">012443</td>
-														<td>Accountant</td>
-														<td>3/23/23</td>
-														<td>something we do</td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-sm-12 col-md-5">
+										<div className="form-group col-md-2 mt-4">
 											<div
-												className="dataTables_info"
-												id="dataTable1_info"
-												role="status"
-												aria-live="polite">
-												Showing 1 to 10 of 57 entries
+												className="btn btn-sm btn-primary btn-upper text-white filter-btn"
+												onClick={this.doFilter}>
+												<i className="os-icon os-icon-ui-37" />
+												<span>
+													{filtering ? (
+														<img src={waiting} alt="submitting" />
+													) : (
+														'Filter'
+													)}
+												</span>
 											</div>
 										</div>
-										<div className="col-sm-12 col-md-7">
-											<div
-												className="dataTables_paginate paging_simple_numbers"
-												id="dataTable1_paginate">
-												<ul className="pagination">
-													<li
-														className="paginate_button page-item previous disabled"
-														id="dataTable1_previous">
-														<a
-															href="#"
-															aria-controls="dataTable1"
-															data-dt-idx="0"
-															tabIndex="0"
-															className="page-link">
-															Previous
-														</a>
-													</li>
-													<li className="paginate_button page-item active">
-														<a
-															href="#"
-															aria-controls="dataTable1"
-															data-dt-idx="1"
-															tabIndex="0"
-															className="page-link">
-															1
-														</a>
-													</li>
-													<li className="paginate_button page-item ">
-														<a
-															href="#"
-															aria-controls="dataTable1"
-															data-dt-idx="2"
-															tabIndex="0"
-															className="page-link">
-															2
-														</a>
-													</li>
-													<li className="paginate_button page-item ">
-														<a
-															href="#"
-															aria-controls="dataTable1"
-															data-dt-idx="3"
-															tabIndex="0"
-															className="page-link">
-															3
-														</a>
-													</li>
-													<li className="paginate_button page-item ">
-														<a
-															href="#"
-															aria-controls="dataTable1"
-															data-dt-idx="4"
-															tabIndex="0"
-															className="page-link">
-															4
-														</a>
-													</li>
-													<li className="paginate_button page-item ">
-														<a
-															href="#"
-															aria-controls="dataTable1"
-															data-dt-idx="5"
-															tabIndex="0"
-															className="page-link">
-															5
-														</a>
-													</li>
-													<li className="paginate_button page-item ">
-														<a
-															href="#"
-															aria-controls="dataTable1"
-															data-dt-idx="6"
-															tabIndex="0"
-															className="page-link">
-															6
-														</a>
-													</li>
-													<li
-														className="paginate_button page-item next"
-														id="dataTable1_next">
-														<a
-															href="#"
-															aria-controls="dataTable1"
-															data-dt-idx="7"
-															tabIndex="0"
-															className="page-link">
-															Next
-														</a>
-													</li>
-												</ul>
-											</div>
+									</form>
+
+									<div className="element-box-tp">
+										<div className="table-responsive">
+											<PatientAppointmentTable
+												appointments={appointments}
+												loading={loading}
+												today={false}
+											/>
 										</div>
 									</div>
+
+									{meta && (
+										<div className="pagination pagination-center mt-4">
+											<Pagination
+												current={parseInt(meta.currentPage, 10)}
+												pageSize={parseInt(meta.itemsPerPage, 10)}
+												total={parseInt(meta.totalPages, 10)}
+												showTotal={total => `Total ${total} appointments`}
+												itemRender={itemRender}
+												onChange={current => this.onNavigatePage(current)}
+											/>
+										</div>
+									)}
 								</div>
 							</div>
 						</div>
@@ -240,7 +161,10 @@ class AppointmentHistoryTable extends Component {
 const mapStateToProps = state => {
 	return {
 		roles: state.role.roles,
+		patient: state.user.patient,
 	};
 };
 
-export default connect(mapStateToProps)(AppointmentHistoryTable);
+export default connect(mapStateToProps, { startBlock, stopBlock })(
+	AppointmentHistoryTable
+);

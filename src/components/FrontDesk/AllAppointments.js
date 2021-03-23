@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
 import { connect } from 'react-redux';
-
 import waiting from '../../assets/images/waiting.gif';
 import { request, confirmAction, itemRender } from '../../services/utilities';
 import {
@@ -143,7 +142,7 @@ export class AllAppointments extends Component {
 								current={parseInt(meta.currentPage, 10)}
 								pageSize={parseInt(meta.itemsPerPage, 10)}
 								total={parseInt(meta.totalPages, 10)}
-								showTotal={total => `Total ${total} services`}
+								showTotal={total => `Total ${total} appointments`}
 								itemRender={itemRender}
 								onChange={current => this.onNavigatePage(current)}
 							/>
