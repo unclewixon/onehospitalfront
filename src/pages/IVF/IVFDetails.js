@@ -15,25 +15,6 @@ class IVFDetails extends Component {
 		status: '',
 	};
 
-	componentDidMount() {}
-
-	calculateAmount = arr => {
-		let sum = 0;
-		arr &&
-			arr.forEach(val => {
-				let amt = val.price;
-				if (amt === undefined) {
-					amt = 0;
-				}
-				try {
-					sum += parseInt(amt);
-				} catch (e) {
-					sum += 0;
-				}
-			});
-		return sum;
-	};
-
 	render() {
 		const { location, ivfDetails } = this.props;
 		console.log(ivfDetails);
@@ -79,7 +60,12 @@ class IVFDetails extends Component {
 								<h6 className="element-header text-left">Treatment Details</h6>
 								<div className="row">
 									<div className="col-md-3 col-sm-12">
-										<table className="table table-striped">
+										<table
+											className="table table-striped"
+											style={{
+												tableLayout: 'fixed',
+												borderCollapse: 'collapse',
+											}}>
 											<tbody>
 												<tr>
 													<td className="font-weight-bold text-left">
@@ -104,7 +90,12 @@ class IVFDetails extends Component {
 													<td className="font-weight-bold text-left">
 														Other Comments:
 													</td>
-													<td className="text-right">
+													<td
+														className="text-right"
+														style={{
+															whiteSpace: 'pre-wrap',
+															overflowWrap: 'break-word',
+														}}>
 														{ivfDetails?.otherComments}
 													</td>
 												</tr>
@@ -144,7 +135,12 @@ class IVFDetails extends Component {
 									<div className="col-md-1 col-sm-12"></div>
 
 									<div className="col-md-3 col-sm-12">
-										<table className="table table-striped">
+										<table
+											className="table table-striped"
+											style={{
+												tableLayout: 'fixed',
+												borderCollapse: 'collapse',
+											}}>
 											<tbody>
 												<tr>
 													<td className="font-weight-bold text-left">
@@ -193,7 +189,12 @@ class IVFDetails extends Component {
 													<td className="font-weight-bold text-left">
 														Assessment Comments:
 													</td>
-													<td className="text-right">
+													<td
+														className="text-right text-wrap"
+														style={{
+															whiteSpace: 'pre-wrap',
+															overflowWrap: 'break-word',
+														}}>
 														{ivfDetails?.assessmentComments}
 													</td>
 												</tr>
@@ -267,10 +268,6 @@ class IVFDetails extends Component {
 									IVF Lab Tests Requested
 								</h6>
 								<div className="row">
-									<div className="col-md-12 col-sm-12">
-										Total Lab tests amount:{' '}
-										{this.calculateAmount(ivfDetails?.labTests)}
-									</div>
 									<div className="col-md-6 col-sm-12">
 										<table className="table table-striped">
 											<thead>
@@ -278,20 +275,20 @@ class IVFDetails extends Component {
 													<th>Name</th>
 													<th>Price</th>
 													<th>Test Type</th>
-													<th>Description</th>
 												</tr>
 											</thead>
 											<tbody>
-												{ivfDetails?.labTests?.map(lbt => {
+												{ivfDetails?.requests?.map(lbt => {
+													console.log(lbt);
+													const labTest = lbt?.items[0].labTest;
+													console.log(labTest);
 													return (
 														<tr>
-															<td>{lbt?.name}</td>
+															<td>{labTest?.name}</td>
 
-															<td>{lbt?.price}</td>
+															<td>{labTest?.hmoPrice}</td>
 
-															<td>{lbt?.test_type}</td>
-
-															<td>{lbt?.description}</td>
+															<td>{labTest?.test_type}</td>
 														</tr>
 													);
 												})}
@@ -578,7 +575,12 @@ class IVFDetails extends Component {
 														SFA Andrology
 													</td>
 													<td className="text-right">
-														<table className="table table-striped">
+														<table
+															className="table table-striped"
+															style={{
+																tableLayout: 'fixed',
+																borderCollapse: 'collapse',
+															}}>
 															<thead>
 																<tr>
 																	<th>COUNT</th>
@@ -610,7 +612,11 @@ class IVFDetails extends Component {
 																		}
 																	</td>
 
-																	<td>
+																	<td
+																		style={{
+																			whiteSpace: 'pre-wrap',
+																			overflowWrap: 'break-word',
+																		}}>
 																		{
 																			ivfDetails?.husbandLabDetails
 																				?.sfaAndrology?.summary

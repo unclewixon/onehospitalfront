@@ -51,11 +51,11 @@ let HusbandLab = props => {
 
 		console.log(pat);
 		let name =
-			(pat.surname ? pat.surname : '') +
+			(pat?.surname ? pat?.surname : '') +
 			' ' +
-			(pat.other_names ? pat.other_names : '');
+			(pat?.other_names ? pat?.other_names : '');
 
-		let res = { label: pat.id, value: name };
+		let res = { label: pat?.id, value: name };
 		setSelectedPatient(res);
 		//this.props.setPatient(pat.id, name);
 		// document.getElementById('patient').value = name;
