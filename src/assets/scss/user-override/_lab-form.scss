@@ -96,16 +96,16 @@
 
 .lab-form {
 	position: fixed;
-	width: 350px;
+	width: 420px;
 	z-index: 4000;
-	right: -340px;
+	right: -410px;
 
 	&.hide {
 		-webkit-animation: slideOut 0.5s forwards;
 		-webkit-animation-delay: 2s;
 		animation: slideOut 0.5s forwards;
-		animation-delay: 2s;	
-		
+		animation-delay: 2s;
+
 		-webkit-animation-name: spaceboots;
 		-webkit-animation-duration: 5s;
 		-webkit-animation-iteration-count: infinite;

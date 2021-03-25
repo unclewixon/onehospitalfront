@@ -19,8 +19,7 @@ const Procedure = props => {
 	const [procedures, setProcedures] = useState([]);
 	const [meta, setMeta] = useState(null);
 
-	let location = props.location;
-	let patient = props.patient;
+	const location = props.location;
 
 	const init = async page => {
 		try {
@@ -53,7 +52,8 @@ const Procedure = props => {
 		if (loading) {
 			init();
 		}
-	}, [patient.id, props, loading]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [loading]);
 
 	const getRequests = arr => {
 		let rer = [];

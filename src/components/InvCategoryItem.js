@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { request } from '../services/utilities';
-import { inventoryAPI } from '../services/constants';
 import { updateInvCategory } from '../actions/inventory';
 import { notifySuccess, notifyError } from '../services/notify';
 

@@ -157,71 +157,89 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 				onSubmit={edit ? onEditLabTest : onAddLabTest}
 				style={{ overflowY: 'auto' }}>
 				<h6 className="form-header">{edit ? 'Edit Test' : 'Create Test'}</h6>
-				<div className="form-group mt-4">
-					<input
-						className="form-control"
-						placeholder="Test Name"
-						type="text"
-						name="name"
-						onChange={handleInputChange}
-						value={name}
-					/>
-				</div>
-				<div className="form-group">
-					<input
-						className="form-control"
-						placeholder="Test Price"
-						type="text"
-						name="price"
-						onChange={handleInputChange}
-						value={price}
-					/>
-				</div>
-				<div className="form-group">
-					<select
-						className="form-control"
-						name="hmo_id"
-						disabled={enableHmo}
-						onChange={handleInputChange}
-						value={hmo_id}>
-						{!hmo_id && <option value="">Select HMO</option>};
-						{hmos.map((hmo, i) => {
-							return (
-								<option key={i} value={hmo.id}>
-									{hmo.name}
-								</option>
-							);
-						})}
-					</select>
-				</div>
-				<div className="form-group">
-					<input
-						className="form-control"
-						placeholder="HMO Price"
-						type="text"
-						name="hmoPrice"
-						onChange={handleInputChange}
-						value={hmoPrice}
-					/>
-				</div>
-				<div className="form-group">
-					<select
-						className="form-control"
-						name="category"
-						onChange={handleInputChange}
-						value={category}>
-						{!category && <option value={''}>Select Category</option>};
-						{categories.map((category, i) => {
-							return (
-								<option key={i} value={category.id}>
-									{category.name}
-								</option>
-							);
-						})}
-					</select>
+				<div className="row mt-4">
+					<div className="col-md-6">
+						<div className="form-group">
+							<label>Test Name</label>
+							<input
+								className="form-control"
+								placeholder="Test Name"
+								type="text"
+								name="name"
+								onChange={handleInputChange}
+								value={name}
+							/>
+						</div>
+					</div>
+					<div className="col-md-6">
+						<div className="form-group">
+							<label>Test Price</label>
+							<input
+								className="form-control"
+								placeholder="Test Price"
+								type="text"
+								name="price"
+								onChange={handleInputChange}
+								value={price}
+							/>
+						</div>
+					</div>
 				</div>
 				<div className="row">
-					<div className="form-group col-sm-12">
+					<div className="col-md-6">
+						<div className="form-group">
+							<label>HMO</label>
+							<select
+								className="form-control"
+								name="hmo_id"
+								disabled={enableHmo}
+								onChange={handleInputChange}
+								value={hmo_id}>
+								{!hmo_id && <option value="">Select HMO</option>};
+								{hmos.map((hmo, i) => {
+									return (
+										<option key={i} value={hmo.id}>
+											{hmo.name}
+										</option>
+									);
+								})}
+							</select>
+						</div>
+					</div>
+					<div className="col-md-6">
+						<div className="form-group">
+							<label>HMO Price</label>
+							<input
+								className="form-control"
+								placeholder="HMO Price"
+								type="text"
+								name="hmoPrice"
+								onChange={handleInputChange}
+								value={hmoPrice}
+							/>
+						</div>
+					</div>
+				</div>
+				<div className="row">
+					<div className="form-group col-sm-6">
+						<label>Test Category</label>
+						<select
+							className="form-control"
+							name="category"
+							onChange={handleInputChange}
+							value={category}>
+							{!category && <option value={''}>Select Category</option>};
+							{categories.map((category, i) => {
+								return (
+									<option key={i} value={category.id}>
+										{category.name}
+									</option>
+								);
+							})}
+						</select>
+					</div>
+					<div className="form-group col-sm-6">
+						<label>Specimen</label>
 						<Select
 							isMulti
 							isClearable

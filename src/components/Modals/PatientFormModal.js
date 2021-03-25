@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { closeModals } from '../../actions/general';
 import PatientForm from '../PatientForm';
 import PatientNOKForm from '../PatientNOKForm';
-import moment from 'moment';
 
 class PatientFormModal extends Component {
 	componentDidMount() {

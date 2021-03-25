@@ -3,15 +3,12 @@ import React, { Component, Suspense, lazy, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Switch, withRouter } from 'react-router-dom';
 
-import { toggleProfile } from '../actions/user';
 import { viewAntenatalDetail } from '../actions/general';
 
 import HashRoute from '../components/HashRoute';
 import Splash from '../components/Splash';
 
 import AntenatalMenu from '../components/Navigation/AntenatalMenu';
-import patientProfile from '../assets/svg-icons/patientProfile.svg';
-import patientProfilePic from '../assets/images/patientprofile.jpg';
 
 const GeneralView = lazy(() => import('../pages/AntenatalDetail/GeneralView'));
 const ObstericHistory = lazy(() =>

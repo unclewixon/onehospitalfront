@@ -1,18 +1,19 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import Tooltip from 'antd/lib/tooltip';
 import Popover from 'antd/lib/popover';
 import { useDispatch } from 'react-redux';
+import Pagination from 'antd/lib/pagination';
+import DatePicker from 'antd/lib/date-picker';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
+
 import searchingGIF from '../../assets/images/searching.gif';
 import { notifyError } from '../../services/notify';
 import { request, formatPatientId, itemRender } from '../../services/utilities';
 import AssignBed from './AssignBed';
-import Pagination from 'antd/lib/pagination';
 import waiting from '../../assets/images/waiting.gif';
-import DatePicker from 'antd/lib/date-picker';
 import { startBlock, stopBlock } from '../../actions/redux-block';
-import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import { searchAPI } from '../../services/constants';
 import { toggleProfile } from '../../actions/user';
 
@@ -94,7 +95,7 @@ const InPatientCare = () => {
 		if (!loaded || patient === '') {
 			fetch();
 		}
-	}, [loaded, patient]);
+	}, [dispatch, loaded, patient]);
 
 	useEffect(() => {}, [admittedPatients]);
 

@@ -3,6 +3,7 @@ import DatePicker from 'antd/lib/date-picker';
 import { withRouter } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
+
 import waiting from '../../assets/images/waiting.gif';
 import { formatDateStr, request, itemRender } from '../../services/utilities';
 import AppointmentTable from '../../components/Doctor/AppointmentTable';
@@ -33,7 +34,6 @@ const DoctorAppointments = () => {
 	const init = useCallback(
 		async page => {
 			try {
-				const p = page || 1;
 				const staff = profile.details;
 				setState({ loading: true });
 				const url = `front-desk/appointments?startDate=${state.startDate}&endDate=${state.endDate}`;

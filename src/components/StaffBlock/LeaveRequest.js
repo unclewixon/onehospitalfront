@@ -3,7 +3,7 @@ import React, { useEffect, useCallback, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
-import Pagination from 'antd/lib/pagination';
+// import Pagination from 'antd/lib/pagination';
 
 import { request } from '../../services/utilities';
 import { loadStaffLeave } from '../../actions/hr';
@@ -13,16 +13,7 @@ import ModalLeaveRequest from './../Modals/ModalLeaveRequest';
 import ModalEditLeave from '../Modals/ModalEditLeave';
 import { confirmAction } from '../../services/utilities';
 
-const itemRender = (current, type, originalElement) => {
-	if (type === 'prev') {
-		return <a>Previous</a>;
-	}
-	if (type === 'next') {
-		return <a>Next</a>;
-	}
-	return originalElement;
-};
-const pageSize = 10;
+// const pageSize = 10;
 
 const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 	const [searching, setSearching] = useState(false);
@@ -80,9 +71,9 @@ const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 		);
 	};
 
-	const onNavigatePage = page => {
-		console.log(page);
-	};
+	// const onNavigatePage = page => {
+	// 	console.log(page);
+	// };
 
 	return (
 		<div className="row my-4">

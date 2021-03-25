@@ -1,14 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import moment from 'moment';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DatePicker from 'antd/lib/date-picker';
-import Tooltip from 'antd/lib/tooltip';
+import Pagination from 'antd/lib/pagination';
+
 import waiting from '../../assets/images/waiting.gif';
 import { request, itemRender, confirmAction } from '../../services/utilities';
 import { setIVF } from '../../actions/patient';
-import Pagination from 'antd/lib/pagination';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import searchingGIF from '../../assets/images/searching.gif';
 import { notifyError, notifySuccess } from '../../services/notify';
@@ -103,7 +103,7 @@ class IVFHistory extends Component {
 	};
 
 	render() {
-		const { filtering, loading, visible, meta, ivfs } = this.state;
+		const { filtering, loading, meta, ivfs } = this.state;
 		return (
 			<div className="col-sm-12">
 				<br />
@@ -233,7 +233,5 @@ const mapStateToProps = state => {
 };
 
 export default withRouter(
-	connect(mapStateToProps, { setIVF, startBlock, stopBlock, setIVF })(
-		IVFHistory
-	)
+	connect(mapStateToProps, { setIVF, startBlock, stopBlock })(IVFHistory)
 );

@@ -5,7 +5,8 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import moment from 'moment';
-import { notifySuccess, notifyError } from '../../services/notify';
+
+import { notifyError } from '../../services/notify';
 import { loadRoster } from '../../actions/hr';
 import { rosterAPI } from '../../services/constants';
 import { request, parseRoster } from '../../services/utilities';

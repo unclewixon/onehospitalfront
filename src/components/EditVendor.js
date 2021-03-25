@@ -42,7 +42,7 @@ class EditVendor extends Component {
 
 	render() {
 		const { submitting } = this.state;
-		const { error, handleSubmit, editVendor } = this.props;
+		const { error, handleSubmit } = this.props;
 		return (
 			<div className="element-wrapper">
 				<div className="element-box pipeline white lined-warning p-3 m-0">

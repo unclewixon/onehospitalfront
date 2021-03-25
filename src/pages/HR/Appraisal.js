@@ -1,11 +1,12 @@
 import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
+import DatePicker from 'antd/lib/date-picker';
+
 import AppraisalItem from '../../components/AppraisalItem';
 import { request, updateImmutable } from '../../services/utilities';
 import { appraisalAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
-import moment from 'moment';
-import DatePicker from 'antd/lib/date-picker';
 import { notifyError } from '../../services/notify';
 import { loadPerformancePeriod, setPerformancePeriod } from '../../actions/hr';
 

@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import StaffItem from '../../components/StaffItem';
 import { createStaff } from '../../actions/general';
 import { request } from '../../services/utilities';
-import { API_URI, staffAPI, hmoAPI } from '../../services/constants';
+import { staffAPI } from '../../services/constants';
 import { loadStaff } from '../../actions/hr';
 
 class StaffList extends Component {

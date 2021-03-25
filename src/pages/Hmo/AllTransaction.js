@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
-import { hmoAPI, transactionsAPI, searchAPI } from '../../services/constants';
+import Pagination from 'antd/lib/pagination';
+
+import { hmoAPI, searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request, itemRender } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { loadHmoTransaction } from '../../actions/hmo';
 import HmoTable from '../../components/HMO/HmoTable';
-import Pagination from 'antd/lib/pagination';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const { RangePicker } = DatePicker;
@@ -134,10 +135,10 @@ export class AllTransaction extends Component {
 		console.log(pat);
 
 		if (type === 'patient') {
-			let name =
-				(pat?.surname ? pat?.surname : '') +
-				' ' +
-				(pat?.other_names ? pat?.other_names : '');
+			// let name =
+			// 	(pat?.surname ? pat?.surname : '') +
+			// 	' ' +
+			// 	(pat?.other_names ? pat?.other_names : '');
 			// setPatients([]);
 			this.setState({ ...this.state, patient_id: pat?.id });
 		} else {

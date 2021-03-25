@@ -181,7 +181,7 @@ const LabGroup = () => {
 													<div className="pipeline-item">
 														<div className="pi-controls">
 															<div className="pi-settings os-dropdown-trigger">
-																<Tooltip title="Edit Test">
+																<Tooltip title="Edit Group">
 																	<i
 																		className="os-icon os-icon-ui-49 mr-1"
 																		onClick={() => onClickEdit(item)}

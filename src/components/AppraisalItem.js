@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
+
 import { request, updateImmutable } from '../services/utilities';
 import { loadPerformancePeriod } from '../actions/hr';
 import { notifySuccess, notifyError } from '../services/notify';
@@ -21,7 +21,7 @@ class AppraisalItem extends Component {
 		try {
 			const { performancePeriods } = this.props;
 			const url = `hr/appraisal/update-period-status/${data.id}`;
-			const rs = await request(url, 'DELETE', true);
+			await request(url, 'DELETE', true);
 			data.isActive = false;
 			const upd = updateImmutable(performancePeriods, data);
 			this.props.loadPerformancePeriod(upd);

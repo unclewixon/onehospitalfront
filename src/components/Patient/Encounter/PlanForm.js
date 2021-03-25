@@ -4,15 +4,15 @@ import SunEditor from 'suneditor-react';
 import uniqBy from 'lodash.uniqby';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import DatePicker from 'react-datepicker';
+import { Controller, ErrorMessage, useForm } from 'react-hook-form';
+import Select from 'react-select';
+import { connect, useDispatch } from 'react-redux';
 
 import {
 	diagnosisAPI,
 	planServiceCenter,
 	serviceAPI,
 } from '../../../services/constants';
-import { Controller, ErrorMessage, useForm } from 'react-hook-form';
-import Select from 'react-select';
-import { connect, useDispatch } from 'react-redux';
 import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
 import { loadInvCategories, loadInventories } from '../../../actions/inventory';
 import { notifyError } from '../../../services/notify';
@@ -33,6 +33,7 @@ const PlanForm = props => {
 	const [genName, setGenName] = useState('');
 	const [start_time, setTime] = useState(new Date());
 	const [servicesCategory, setServicesCategory] = useState([]);
+	// eslint-disable-next-line no-unused-vars
 	const [servicesObjects, setServicesObjects] = useState([]);
 	const dispatch = useDispatch();
 	let [data, setData] = useState([]);

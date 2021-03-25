@@ -3,11 +3,12 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import isEmpty from 'lodash.isempty';
+import Tooltip from 'antd/lib/tooltip';
+
 import { viewAppraisal } from '../../actions/general';
 import { request } from '../../services/utilities';
 import { staffAPI } from '../../services/constants';
 import { loadStaff } from '../../actions/hr';
-import Tooltip from 'antd/lib/tooltip';
 import { setPerformancePeriod } from '../../actions/hr';
 import {
 	loadStaffAppraisal,
@@ -57,7 +58,7 @@ class StaffAppraisal extends Component {
 	};
 
 	createAppraisal = staff => {
-		const { location, history } = this.props;
+		const { history } = this.props;
 		//set performance period
 
 		setIsStaffAppraisal(true);

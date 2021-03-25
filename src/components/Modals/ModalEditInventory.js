@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import DatePicker from 'react-datepicker';
+import { Field, reduxForm, SubmissionError } from 'redux-form';
+
 import { closeModals } from '../../actions/general';
 import {
 	renderSelect,
@@ -8,7 +9,6 @@ import {
 	renderTextInputGroup,
 	request,
 } from '../../services/utilities';
-import { Field, reduxForm, SubmissionError } from 'redux-form';
 import { inventoryAPI, vendorAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';

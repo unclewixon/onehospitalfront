@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
 import { connect } from 'react-redux';
 
@@ -8,6 +8,7 @@ import { request } from '../../services/utilities';
 import { appraisalAPI } from '../../services/constants';
 import { loadPerformancePeriod, setPerformancePeriod } from '../../actions/hr';
 import { lineAppraisal } from '../../actions/general';
+
 export class Appraisal extends Component {
 	state = {};
 
@@ -47,11 +48,11 @@ export class Appraisal extends Component {
 		}
 	};
 	render() {
-		const { location } = this.props;
 		// const deptId = staff.details.department.id;
 		// const department = departments.find(d => d.id === deptId);
 		const { performancePeriods } = this.props;
 		const rev = performancePeriods.slice().reverse();
+
 		return (
 			<div className="row">
 				<div className="col-sm-12">

@@ -3,18 +3,17 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import DatePicker from 'antd/lib/date-picker';
-import Tooltip from 'antd/lib/tooltip';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import Popover from 'antd/lib/popover';
+import Pagination from 'antd/lib/pagination';
+
 import { searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request, itemRender } from '../../services/utilities';
 import { loadTransaction } from '../../actions/transaction';
 import searchingGIF from '../../assets/images/searching.gif';
-import { notifyError, notifySuccess } from '../../services/notify';
 import ModalServiceDetails from '../../components/Modals/ModalServiceDetails';
 import InputCode from './InputCode';
-import Popover from 'antd/lib/popover';
-import Pagination from 'antd/lib/pagination';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const { RangePicker } = DatePicker;

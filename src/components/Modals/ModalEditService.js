@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+// import { useDispatch, useSelector } from 'react-redux';
 
 // import { notifySuccess, notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
 
 const ModalEditService = ({ closeModal, service }) => {
-	const [loading, setLoading] = useState(false);
+	const [loading] = useState(false);
 
-	const categories = useSelector(state => state.settings.service_categories);
+	// const categories = useSelector(state => state.settings.service_categories);
 
-	const dispatch = useDispatch();
+	// const dispatch = useDispatch();
 
 	const handleInputChange = e => {
 		// const { name, value } = e.target;

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import capitalize from 'lodash.capitalize';
 import Pagination from 'antd/lib/pagination';
-import waiting from '../assets/images/waiting.gif';
+
 import { notifyError } from '../services/notify';
 import searchingGIF from '../assets/images/searching.gif';
 import { getAllHmos, fetchHmoTariff } from '../actions/hmo';
@@ -20,13 +20,13 @@ const Tarrifs = props => {
 	const [{ selectedHmo }, setState] = useState(initialState);
 	const [loading, setLoading] = useState(true);
 	const [loaded, setLoaded] = useState(false);
-	const [services, setServices] = useState([]);
+	const [services] = useState([]);
 	const [filtered, setFiltered] = useState([]);
 	const [hmo, setHmo] = useState(1);
 	const [meta, setMeta] = useState(null);
 
 	const handleInputChange = e => {
-		const { name, value } = e.target;
+		const { value } = e.target;
 		setHmo(value);
 		setLoading(true);
 		getTariffs(value);
@@ -87,6 +87,7 @@ const Tarrifs = props => {
 		if (!loaded) {
 			fetch(1);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [loaded]);
 
 	const getTariffs = selected => {

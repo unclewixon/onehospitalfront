@@ -1,24 +1,24 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
 import { connect } from 'react-redux';
+import moment from 'moment';
+import DatePicker from 'antd/lib/date-picker';
+import isEmpty from 'lodash.isempty';
+import Pagination from 'antd/lib/pagination';
 
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
-import moment from 'moment';
-import DatePicker from 'antd/lib/date-picker';
 import waiting from '../../assets/images/waiting.gif';
 import { loadAntennatal } from '../../actions/patient';
 import { viewAntenatalDetail } from '../../actions/general';
-import isEmpty from 'lodash.isempty';
 import { patientAPI } from '../../services/constants';
-import { toggleProfile } from '../../actions/user';
-import Pagination from 'antd/lib/pagination';
 import { startBlock, stopBlock } from '../../actions/redux-block';
-import { request, confirmAction, itemRender } from '../../services/utilities';
+import { request, itemRender } from '../../services/utilities';
 
 const { RangePicker } = DatePicker;
+
 export class AntennatalHistory extends Component {
 	state = {
 		filtering: false,
@@ -122,8 +122,7 @@ export class AntennatalHistory extends Component {
 
 	render() {
 		const { filtering, loading, meta } = this.state;
-		const { location } = this.props;
-		const path = location.pathname.split('/').pop();
+
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">

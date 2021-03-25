@@ -52,7 +52,7 @@ const ImmunizationChart = () => {
 		};
 
 		fetchImmunization();
-	}, [patient.id]);
+	}, [patient]);
 
 	const onHover = data => setVisible(data);
 

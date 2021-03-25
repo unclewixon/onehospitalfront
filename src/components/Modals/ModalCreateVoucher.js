@@ -1,20 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
-import {
-	renderSelect,
-	renderTextInput,
-	request,
-} from '../../services/utilities';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
+import { renderTextInput, request } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { closeModals } from '../../actions/general';
-import { patientAPI, vouchersAPI } from '../../services/constants';
+import { vouchersAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
 import { createVoucherData } from '../../actions/paypoint';
-import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import { searchAPI } from '../../services/constants';
 
 const validate = values => {
@@ -127,7 +123,7 @@ export class ModalCreateVoucher extends Component {
 
 	render() {
 		const { error, handleSubmit, apply_voucher } = this.props;
-		const { submitting, voucher_date, patientList, amountClass } = this.state;
+		const { submitting, voucher_date, amountClass } = this.state;
 		return (
 			<div
 				className="onboarding-modal modal fade animated show d-flex align-items-center"
