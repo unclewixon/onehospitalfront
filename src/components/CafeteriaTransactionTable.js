@@ -59,6 +59,7 @@ const CafeteriaTransactionTable = props => {
 			};
 			await props.saveSale(summary);
 			setAmountPaid(0);
+			onModalClick();
 		}
 	};
 
@@ -172,7 +173,7 @@ const CafeteriaTransactionTable = props => {
 						calBalance={calBalance}
 					/>
 				) : null}
-				<form onSubmit={handleSubmit} className="form-row">
+				<form onSubmit={e => handleSubmit(e)} className="form-row">
 					<div className="col-md-6">
 						<select className="form-control" onChange={handleType} required>
 							<option value="">Payment type...</option>
@@ -188,12 +189,12 @@ const CafeteriaTransactionTable = props => {
 					</div>
 
 					<div className="col-md-3">
-						<button
+						<input
 							className="btn btn-primary"
-							onClick={onModalClick}
-							disabled={type === '' ? true : false}>
-							<span> Process </span>
-						</button>
+							disabled={type === '' ? true : false}
+							value="Process"
+							type="submit"
+						/>
 					</div>
 					<div className="col-md-3">
 						<button className="btn btn-warning" onClick={e => resetCounter(e)}>

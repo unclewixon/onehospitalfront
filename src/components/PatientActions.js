@@ -21,10 +21,10 @@ export default function PatientActions({ location, enrollImmunization }) {
 						<span>Admit</span>
 					</Link>
 				) : (
-					<Link className="btn btn-primary btn-sm mr-2" to="#">
-						<i className="os-icon os-icon-ui-22"></i>
+					<a className="btn btn-danger btn-sm mr-2">
+						<i className="os-icon os-icon-ui-23"></i>
 						<span>Discharge</span>
-					</Link>
+					</a>
 				)}
 			</Tooltip>
 			<Tooltip title="Enroll Antenatal">

@@ -16,7 +16,6 @@ import Pagination from 'antd/lib/pagination';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const { RangePicker } = DatePicker;
-
 const paymentStatus = [
 	{ value: 0, label: 'processing' },
 	{ value: 1, label: 'done' },
@@ -134,8 +133,6 @@ class TransactionHistory extends Component {
 		return (
 			<div className="row">
 				<div className="col-md-12 p-4">
-					<h6 className="element-header">Filter by:</h6>
-
 					<form className="row">
 						<div className="form-group col-md-3">
 							<label htmlFor="patient_id">Patient</label>
