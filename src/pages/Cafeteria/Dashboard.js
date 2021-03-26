@@ -210,7 +210,7 @@ const CafeteriaDashboard = () => {
 			}),
 		};
 
-		//console.log(data);
+		console.log(data);
 
 		try {
 			setSubmitting(true);
@@ -219,7 +219,6 @@ const CafeteriaDashboard = () => {
 			setSubmitting(false);
 		} catch (e) {
 			console.log(e);
-
 			notifyError('Transaction not successful');
 			setSubmitting(false);
 		}
