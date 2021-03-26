@@ -135,7 +135,8 @@ let Others = props => {
 		console.log(res);
 
 		try {
-			await request(`${IVFEnroll}`, 'POST', true, res);
+			const rs = await request(`${IVFEnroll}`, 'POST', true, res);
+			console.log(rs);
 			//props.closeModals(true);
 			notifySuccess('IVF created successfully');
 			history.push('/ivf');

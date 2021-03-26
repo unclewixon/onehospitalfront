@@ -8,6 +8,7 @@ import patientProfilePic from '../../assets/images/patientprofile.jpg';
 import { withRouter } from 'react-router-dom';
 import { formatPatientId } from '../../services/utilities';
 import VisitSummaryTable from './VisitSummaryTable';
+import VisitNotesTable from './VisitNotesTable';
 import BillingTable from './BillingTable';
 import AppointmentHistoryTable from './AppointmentHistoryTable';
 import PatientActions from '../PatientActions';
@@ -19,7 +20,7 @@ import { useDispatch } from 'react-redux';
 
 const Dashboard = ({ location, history }) => {
 	const patient = useSelector(state => state.user.patient);
-	const [tab, setTab] = useState('visitSummary');
+	const [tab, setTab] = useState('visitNotes');
 	const [isAdmitted, setisAdmitted] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
 
@@ -91,18 +92,22 @@ const Dashboard = ({ location, history }) => {
 							alt="patient profile svg"
 						/>
 					</div>
-					<div className="up-controls">
-						<div className="row">
-							<div className="col-sm-6">
-								<div className="value-pair">
-									<div className="label">Status:</div>
-									<div className="value badge badge-pill badge-success">
-										Online
+					{patient?.isAdmitted ? (
+						<div className="up-controls">
+							<div className="row">
+								<div className="col-sm-12">
+									<div className="value-pair">
+										<div className="label">Status:</div>
+										<div className="value badge badge-pill badge-danger ml-2">
+											Admitted
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
+					) : (
+						''
+					)}
 					<div className="up-contents">
 						<div className="m-b">
 							<div className="row">
@@ -187,6 +192,15 @@ const Dashboard = ({ location, history }) => {
 								<li className="nav-item">
 									<a
 										className={
+											tab === 'visitNotes' ? 'nav-link active' : 'nav-link'
+										}
+										onClick={() => setTab('visitNotes')}>
+										Visit Notes
+									</a>
+								</li>
+								<li className="nav-item">
+									<a
+										className={
 											tab === 'visitSummary' ? 'nav-link active' : 'nav-link'
 										}
 										onClick={() => setTab('visitSummary')}>
@@ -214,6 +228,7 @@ const Dashboard = ({ location, history }) => {
 							</ul>
 						</div>
 						<div className="tab-content">
+							{tab === 'visitNotes' && <VisitNotesTable />}
 							{tab === 'visitSummary' && <VisitSummaryTable />}
 							{tab === 'appointment' && <AppointmentHistoryTable />}
 							{tab === 'billing' && <BillingTable />}

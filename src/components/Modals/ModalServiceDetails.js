@@ -1,11 +1,9 @@
 import React from 'react';
 
-const DisplayBilling = ({ details }) => {
+const Cafeteria = ({ details }) => {
 	console.log('DisplayBilling =');
 	return (
-		<div>
-			<h2>List of services</h2>
-
+		<>
 			<table className="table table-striped">
 				<thead>
 					<tr>
@@ -21,7 +19,41 @@ const DisplayBilling = ({ details }) => {
 								<tr key={index}>
 									<td>{index + 1}</td>
 									<td>{tr.name}</td>
-									<td className="flex">{tr.amount}</td>
+									<td>{tr.amount}</td>
+								</tr>
+							);
+						})}
+					{details.length === 0 && (
+						<tr className="text-center">
+							<td colSpan={3}>No Items</td>
+						</tr>
+					)}
+				</tbody>
+			</table>
+		</>
+	);
+};
+
+const DisplayBilling = ({ details }) => {
+	console.log('DisplayBilling =');
+	return (
+		<>
+			<table className="table table-striped">
+				<thead>
+					<tr>
+						<th>S/N</th>
+						<th>NAME</th>
+						<th>AMOUNT (&#x20A6;)</th>
+					</tr>
+				</thead>
+				<tbody>
+					{details.data &&
+						details.data.map((tr, index) => {
+							return (
+								<tr key={index}>
+									<td>{index + 1}</td>
+									<td>{tr.name}</td>
+									<td>{tr.amount}</td>
 								</tr>
 							);
 						})}
@@ -32,16 +64,14 @@ const DisplayBilling = ({ details }) => {
 					)}
 				</tbody>
 			</table>
-		</div>
+		</>
 	);
 };
 
 const DisplayLab = ({ details }) => {
-	console.log('DisplayLab =');
+	console.log('DisplayLab =', details);
 	return (
-		<div>
-			<h2>Lab Request Detail</h2>
-
+		<>
 			<table className="table table-striped">
 				<thead>
 					<tr>
@@ -53,21 +83,19 @@ const DisplayLab = ({ details }) => {
 				<tbody>
 					<tr>
 						<td>{details.data.name}</td>
-						<td className="flex">{details.data.price}</td>
+						<td>{details.data.price}</td>
 						<td>{details.data.createdBy}</td>
 					</tr>
 				</tbody>
 			</table>
-		</div>
+		</>
 	);
 };
 
 const DisplayPharmacy = ({ details }) => {
 	console.log('DisplayPharmacy =');
 	return (
-		<div>
-			<h2>List of Prescriptions</h2>
-
+		<>
 			<table className="table table-striped">
 				<thead>
 					<tr>
@@ -84,7 +112,7 @@ const DisplayPharmacy = ({ details }) => {
 								<tr key={index}>
 									<td>{index + 1}</td>
 									<td>{tr.drug_name}</td>
-									<td className="flex">{tr.drug_cost}</td>
+									<td>{tr.drug_cost}</td>
 									<td>{tr.filled_by}</td>
 								</tr>
 							);
@@ -96,13 +124,28 @@ const DisplayPharmacy = ({ details }) => {
 					)}
 				</tbody>
 			</table>
-		</div>
+		</>
 	);
 };
 
 const ModalServiceDetails = ({ closeModal, details }) => {
 	console.log('ModalServiceDetails =');
 	console.log(details);
+
+	const renderServiceType = type => {
+		switch (type) {
+			case 'billing':
+				return 'Billing Details';
+			case 'lab':
+				return 'Lab Tests';
+			case 'pharmacy':
+				return 'List of Drugs';
+			case 'cafeteria':
+				return 'Cafeteria';
+			default:
+				return 'Billing Details';
+		}
+	};
 
 	return (
 		<div
@@ -122,28 +165,33 @@ const ModalServiceDetails = ({ closeModal, details }) => {
 						<div className="element-info">
 							<div className="element-info-with-icon">
 								<div className="element-info-text">
-									<h5 className="element-inner-header">Service Details</h5>
+									<h5 className="element-inner-header">
+										{renderServiceType(details?.transaction_type)}
+									</h5>
 								</div>
 							</div>
 						</div>
 
-						<div className="table-responsive">
-							{details?.transaction_type === 'billing' ? (
-								<DisplayBilling details={details} />
-							) : (
-								''
-							)}
-							{details?.transaction_type === 'lab' ? (
-								<DisplayLab details={details} />
-							) : (
-								''
-							)}
-							{details?.transaction_type === 'pharmacy' ? (
-								<DisplayPharmacy details={details} />
-							) : (
-								''
-							)}
-						</div>
+						{details?.transaction_type === 'billing' ? (
+							<DisplayBilling details={details} />
+						) : (
+							''
+						)}
+						{details?.transaction_type === 'cafeteria' ? (
+							<Cafeteria details={details} />
+						) : (
+							''
+						)}
+						{details?.transaction_type === 'lab' ? (
+							<DisplayLab details={details} />
+						) : (
+							''
+						)}
+						{details?.transaction_type === 'pharmacy' ? (
+							<DisplayPharmacy details={details} />
+						) : (
+							''
+						)}
 					</div>
 				</div>
 			</div>

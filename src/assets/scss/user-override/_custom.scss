@@ -396,3 +396,7 @@ tr {
 .hidden {
 	display: none;
 }
+
+.ant-calendar-picker-container, .ant-tooltip {
+	z-index: 2100 !important;
+}

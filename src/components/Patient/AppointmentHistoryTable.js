@@ -60,12 +60,12 @@ class AppointmentHistoryTable extends Component {
 
 	onNavigatePage = nextPage => {
 		this.props.startBlock();
-		this.fetchTransaction(nextPage);
+		this.fetchAppointments(nextPage);
 	};
 
 	doFilter = async e => {
 		e.preventDefault();
-		this.fetchTransaction();
+		this.fetchAppointments();
 	};
 
 	change = e => {

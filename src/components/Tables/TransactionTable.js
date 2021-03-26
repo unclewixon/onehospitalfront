@@ -88,7 +88,12 @@ const TransactionTable = ({
 									{moment(transaction.createdAt).format('DD-MM-YYYY H:mma')}
 								</td>
 								<td>
-									{`${transaction.patient?.other_names} ${transaction.patient?.surname}`}
+									{transaction.patient
+										? `${transaction.patient?.other_names} ${transaction.patient?.surname}`
+										: ''}
+									{transaction.staff
+										? `${transaction.staff?.first_name} ${transaction.staff?.last_name}`
+										: ''}
 								</td>
 								<td className="flex">
 									<span className="text-capitalize">

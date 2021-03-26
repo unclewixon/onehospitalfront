@@ -80,6 +80,7 @@ class IVF extends Component {
 			);
 			const { result, ...meta } = rs;
 			const arr = [...result];
+			console.log('ivf', arr);
 			this.setState({ ivfs: arr, loading: false, filtering: false, meta });
 			this.props.stopBlock();
 		} catch (error) {

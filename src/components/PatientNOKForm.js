@@ -134,9 +134,30 @@ function PatientNOKForm(props) {
 		};
 		console.log(datum);
 		const formDataObj = new FormData();
+		const unValidatedFields = [
+			'occupation',
+			'address',
+			'ethnicity',
+			'nok_date_of_birth',
+			'relationship',
+			'nok_occupation',
+			'nok_address',
+			'nok_email',
+			'nok_phoneNumber',
+			'nok_gender',
+			'nok_maritalStatus',
+			'nok_ethnicity',
+		];
 		for (const key in datum) {
 			formDataObj.append(key, datum[key]);
 		}
+
+		for (const f in unValidatedFields) {
+			if (!(f in datum)) {
+				formDataObj.append(f, '');
+			}
+		}
+
 		const user = await storage.getItem(TOKEN_COOKIE);
 		const jwt = `Bearer ${user.token}`;
 		let headers = { Authorization: jwt };
