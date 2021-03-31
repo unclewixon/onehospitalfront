@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
@@ -9,7 +10,9 @@ export default function PatientActions({ location, enrollImmunization }) {
 	useEffect(() => {
 		console.log(patient, 'patient');
 	}, [patient]);
+
 	const { isAdmitted, immunization } = patient;
+
 	return (
 		<>
 			<Tooltip title={isAdmitted ? 'Discharge' : 'Admit'}>

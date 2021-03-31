@@ -187,9 +187,9 @@ function PatientNOKForm(props) {
 		} else {
 			console.log('onsave()');
 			// Display the key/value pairs
-			// for (var pair of formDataObj.entries()) {
-			// 	console.log(pair[0] + ', ' + pair[1]);
-			// }
+			for (var pair of formDataObj.entries()) {
+				console.log(pair[0] + ', ' + pair[1]);
+			}
 
 			axios
 				.post(`${API_URI}/patient/save`, formDataObj, { headers })

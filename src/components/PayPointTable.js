@@ -15,7 +15,9 @@ import TransactionTable from './Tables/TransactionTable';
 export class PayPointTable extends Component {
 	state = {
 		loading: false,
+		meta: null,
 	};
+
 	componentDidMount() {
 		this.fetchTransaction();
 	}
@@ -27,11 +29,9 @@ export class PayPointTable extends Component {
 			console.log(today);
 			const url = `${transactionsAPI}/list?patient_id=&startDate=${today}&endDate=${today}&transaction_type=&status=`;
 			const rs = await request(url, 'GET', true);
-			console.log(rs);
-			//const res = rs.sort((a, b) => a.q_createdAt.localeCompare(b.q_createdAt));
-
-			this.props.loadTodayTransaction(rs.reverse());
-			this.setState({ loading: false });
+			const { result, ...meta } = rs;
+			this.props.loadTodayTransaction(result.reverse());
+			this.setState({ loading: false, meta });
 		} catch (error) {
 			console.log(error);
 		}

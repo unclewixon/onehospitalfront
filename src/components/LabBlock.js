@@ -213,7 +213,7 @@ class LabBlock extends Component {
 							const grouped = labs.filter(l => l.code === lab.code);
 							return (
 								<tr key={i} className={lab.urgent ? 'urgent' : ''}>
-									<td className="flex">
+									<td>
 										<span
 											className="w-32 avatar gd-warning"
 											style={{
@@ -223,25 +223,25 @@ class LabBlock extends Component {
 											{moment(lab.createdAt).format('DD-MM-YYYY h:mmA')}
 										</span>
 									</td>
-									<td className="flex">
+									<td>
 										<p className="item-title text-color m-0">{lab.code}</p>
 									</td>
-									<td className="flex">
+									<td>
 										<p className="item-title text-color m-0">
 											{lab.request_item.labTest.name}
 										</p>
 									</td>
 									{!patient && (
-										<td className="flex">
+										<td>
 											<p className="item-title text-color m-0">
 												{lab.patient_name}
 											</p>
 										</td>
 									)}
-									<td className="flex">
+									<td>
 										<a className="item-title text-color">{lab.created_by}</a>
 									</td>
-									<td className="flex">
+									<td>
 										{lab.requestNote ? (
 											<a
 												className="item-title text-primary"
@@ -252,8 +252,12 @@ class LabBlock extends Component {
 											'-'
 										)}
 									</td>
-									<td className="flex">
-										{lab.request_item.filled === 1 ? (
+									<td>
+										{lab.transaction.status === 0 ? (
+											<span className="badge badge-warning">
+												Awaiting Payment
+											</span>
+										) : lab.request_item.filled === 1 ? (
 											lab.request_item.approved === 1 ? (
 												<a
 													className="item-title text-primary"
@@ -261,7 +265,9 @@ class LabBlock extends Component {
 													Result
 												</a>
 											) : (
-												'Pending Approval'
+												<span className="badge badge-secondary">
+													Pending Approval
+												</span>
 											)
 										) : (
 											'-'

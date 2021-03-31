@@ -1,9 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
+
 import background from '../assets/images/b3.jpeg';
 import profilepix from '../assets/images/a6.jpeg';
 import editIcon from '../assets/medical/edit.png';

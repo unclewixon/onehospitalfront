@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -7,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import { Table } from 'react-bootstrap';
 
-import { searchAPI } from '../../services/constants';
+import { searchAPI, serviceAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
@@ -20,32 +19,22 @@ const defaultValues = {
 	urgent: false,
 };
 
-const LabRequest = ({ module, history, location }) => {
-	const { register, handleSubmit } = useForm({
-		defaultValues,
-	});
+const category_id = 13;
+
+const RadiologyRequest = ({ module, history, location }) => {
+	const { register, handleSubmit } = useForm({ defaultValues });
 
 	const [submitting, setSubmitting] = useState(false);
 	const [loadedPatient, setLoadedPatient] = useState(false);
 	const [chosenPatient, setChosenPatient] = useState(null);
-
-	// load categories
-	const [categories, setCategories] = useState([]);
-
-	// load groups
-	const [groups, setGroups] = useState([]);
-
-	// load
-	const [labTests, setLabTests] = useState([]);
-
-	// selected lab tests
-	const [tests, setTests] = useState([]);
-
-	const [category, setCategory] = useState(null);
-	const [group, setGroup] = useState(null);
-	const [labTest, setLabTest] = useState(null);
-
+	const [service, setService] = useState(null);
 	const [urgent, setUrgent] = useState(false);
+
+	// load services
+	const [services, setServices] = useState([]);
+
+	// selected radiology
+	const [tests, setTests] = useState([]);
 
 	const currentPatient = useSelector(state => state.user.patient);
 
@@ -56,24 +45,14 @@ const LabRequest = ({ module, history, location }) => {
 			try {
 				dispatch(startBlock());
 
-				try {
-					const url = `lab-tests/categories?hasTest=1&hmo_id=${hmoId}`;
-					const rs = await request(url, 'GET', true);
-					setCategories(rs);
-				} catch (error) {}
-
-				try {
-					const url = `lab-tests/groups?hmo_id=${hmoId}`;
-					const rs = await request(url, 'GET', true);
-					setGroups(rs);
-				} catch (e) {
-					notifyError('Error fetching drugs');
-				}
+				const url = `${serviceAPI}/category/${category_id}?hmo_id=${hmoId}`;
+				const rs = await request(url, 'GET', true);
+				setServices(rs);
 
 				dispatch(stopBlock());
 			} catch (error) {
 				console.log(error);
-				notifyError('Error fetching drugs');
+				notifyError('error fetching radiology requests for the patient');
 				dispatch(stopBlock());
 			}
 		},
@@ -111,12 +90,12 @@ const LabRequest = ({ module, history, location }) => {
 			}
 
 			if (tests.length === 0) {
-				notifyError('Please select a lab test');
+				notifyError('Please select a radiology test');
 				return;
 			}
 
 			const datum = {
-				requestType: 'lab',
+				requestType: 'radiology',
 				patient_id: chosenPatient.id,
 				tests: [...tests.map(t => ({ id: t.id }))],
 				request_note: data.request_note,
@@ -126,16 +105,16 @@ const LabRequest = ({ module, history, location }) => {
 			setSubmitting(true);
 			await request('patient/save-request', 'POST', true, datum);
 			setSubmitting(false);
-			notifySuccess('Lab request sent!');
+			notifySuccess('Radiology request sent!');
 			if (module !== 'patient') {
-				history.push('/lab');
+				history.push('/radiology');
 			} else {
-				history.push(`${location.pathname}#lab`);
+				history.push(`${location.pathname}#radiology`);
 			}
 		} catch (error) {
 			console.log(error);
 			setSubmitting(false);
-			notifyError('Error sending lab request');
+			notifyError('Error sending radiology request');
 		}
 	};
 
@@ -163,9 +142,8 @@ const LabRequest = ({ module, history, location }) => {
 												setChosenPatient(e);
 											} else {
 												setChosenPatient(null);
-												setCategories([]);
 												setTests([]);
-												setGroups([]);
+												setServices([]);
 											}
 										}}
 										placeholder="Search patients"
@@ -175,55 +153,18 @@ const LabRequest = ({ module, history, location }) => {
 						)}
 						<div className="row">
 							<div className="form-group col-sm-12">
-								<label>Lab Group</label>
+								<label>Radiology Test</label>
 								<Select
-									name="lab_group"
-									placeholder="Select Lab Group"
-									options={groups}
-									value={group}
+									name="service_request"
+									placeholder="Select Radiology Test"
+									options={services}
+									value={service}
 									getOptionValue={option => option.id}
 									getOptionLabel={option => option.name}
 									onChange={e => {
-										setGroup(e);
-										setTests([
-											...tests,
-											...e.tests.map(t => ({ ...t.labTest })),
-										]);
-									}}
-								/>
-							</div>
-						</div>
-						<div className="row">
-							<div className="form-group col-sm-6">
-								<label>Lab Categories</label>
-								<Select
-									name="lab_category"
-									placeholder="Select Lab Category"
-									options={categories}
-									value={category}
-									getOptionValue={option => option.id}
-									getOptionLabel={option => option.name}
-									onChange={e => {
-										setCategory(e);
-										setLabTests(e.lab_tests);
-									}}
-								/>
-							</div>
-							<div className="form-group col-sm-6">
-								<label>Lab Test</label>
-								<Select
-									name="lab_tests"
-									placeholder="Select Lab Tests"
-									options={labTests}
-									value={labTest}
-									getOptionValue={option => option.id}
-									getOptionLabel={option => option.name}
-									onChange={e => {
-										setLabTest(e);
+										setService(e);
 										setTests([...tests, e]);
-										setCategory(null);
-										setLabTests([]);
-										setLabTest(null);
+										setService(null);
 									}}
 								/>
 							</div>
@@ -233,8 +174,7 @@ const LabRequest = ({ module, history, location }) => {
 							<Table>
 								<thead>
 									<tr>
-										<th>Category</th>
-										<th>Lab Test</th>
+										<th>Radiology Test</th>
 										<th>Price</th>
 										<th>Action</th>
 									</tr>
@@ -243,9 +183,8 @@ const LabRequest = ({ module, history, location }) => {
 									{tests.map((item, i) => {
 										return (
 											<tr key={i}>
-												<td>{item.category.name}</td>
 												<td>{item.name}</td>
-												<td>{formatCurrency(item.hmoPrice)}</td>
+												<td>{formatCurrency(item.hmoTarrif)}</td>
 												<td>
 													<TrashIcon
 														onClick={() => onTrash(i)}
@@ -306,4 +245,4 @@ const LabRequest = ({ module, history, location }) => {
 	);
 };
 
-export default withRouter(LabRequest);
+export default withRouter(RadiologyRequest);

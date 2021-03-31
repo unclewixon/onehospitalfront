@@ -18,7 +18,7 @@ const Dashboard = lazy(() => import('../components/Patient/Dashboard'));
 const Lab = lazy(() => import('../components/Patient/Lab'));
 const Encounters = lazy(() => import('../components/Patient/Encounters'));
 const Pharmacy = lazy(() => import('../components/Patient/Pharmacy'));
-const Imaging = lazy(() => import('../components/Patient/Imaging'));
+const Radiology = lazy(() => import('../components/Patient/Radiology'));
 const Procedure = lazy(() => import('../components/Patient/Procedure'));
 const Vitals = lazy(() => import('../components/Patient/Vitals'));
 const Allergies = lazy(() => import('../components/Patient/Allergies'));
@@ -32,8 +32,8 @@ const AntennatalHistory = lazy(() =>
 const PharmacyRequest = lazy(() =>
 	import('../components/Patient/PharmacyRequest')
 );
-const ImagingRequest = lazy(() =>
-	import('../components/Patient/ImagingRequest')
+const RadiologyRequest = lazy(() =>
+	import('../components/Patient/RadiologyRequest')
 );
 
 const ProcedureRequest = lazy(() =>
@@ -82,18 +82,18 @@ const Page = ({ location }) => {
 			return <Allergies />;
 		case 'clinical-tasks':
 			return <ClinicalTasks />;
-		case 'imaging':
-			return <Imaging />;
+		case 'radiology':
+			return <Radiology />;
 		case 'procedure':
 			return <Procedure />;
 		case 'lab-request':
 			return <LabRequest module="patient" />;
 		case 'pharmacy-request':
 			return <PharmacyRequest />;
-		case 'imaging-request':
-			return <ImagingRequest />;
+		case 'radiology-request':
+			return <RadiologyRequest module="patient" />;
 		case 'procedure-request':
-			return <ProcedureRequest />;
+			return <ProcedureRequest module="patient" />;
 		case 'allergy-request':
 			return <AllergyRequest />;
 		case 'update-allergy':

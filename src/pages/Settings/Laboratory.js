@@ -50,7 +50,7 @@ const Laboratory = () => {
 	};
 
 	return (
-		<React.Fragment>
+		<>
 			<div className="content-i">
 				<div className="content-box">
 					<div className="row">
@@ -129,7 +129,7 @@ const Laboratory = () => {
 					refreshing={refresh}
 				/>
 			</div>
-		</React.Fragment>
+		</>
 	);
 };
 

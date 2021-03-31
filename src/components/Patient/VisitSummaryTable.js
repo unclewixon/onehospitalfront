@@ -2,20 +2,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { request, confirmAction, itemRender } from '../../services/utilities';
-import { notifySuccess, notifyError } from '../../services/notify';
-import Pagination from 'antd/lib/pagination';
+// import Pagination from 'antd/lib/pagination';
+import DatePicker from 'antd/lib/date-picker';
+// import { formValueSelector } from 'redux-form';
+
+// import { request, confirmAction, itemRender } from '../../services/utilities';
+// import { notifySuccess, notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import waiting from '../../assets/images/waiting.gif';
-import DatePicker from 'antd/lib/date-picker';
 import TableLoading from '../TableLoading';
-import { formValueSelector } from 'redux-form';
 
 const { RangePicker } = DatePicker;
-const paymentStatus = [
-	{ value: 0, label: 'processing' },
-	{ value: 1, label: 'done' },
-];
+
+// const paymentStatus = [
+// 	{ value: 0, label: 'processing' },
+// 	{ value: 1, label: 'done' },
+// ];
 
 class VisitSummaryTable extends Component {
 	state = {
@@ -30,28 +32,28 @@ class VisitSummaryTable extends Component {
 	};
 
 	componentDidMount() {
-		console.log('componentDidMount()');
 		this.fetchSummary();
 	}
+
 	fetchSummary = async () => {
-		const { startDate, endDate } = this.state;
-		try {
-			this.setState({ loading: true });
-			const url = `dummy/list?startDate=${startDate}&endDate=${endDate}`;
-			const rs = await request(url, 'GET', true);
-			const { notes, diagnoses, vitals } = rs;
-			this.setState({
-				loading: false,
-				notes,
-				diagnoses,
-				vitals,
-				filtering: false,
-			});
-		} catch (error) {
-			console.log(error);
-			this.setState({ loading: false, filtering: false });
-			notifyError(error.message || 'could not fetch visit notes');
-		}
+		// try {
+		// 	const { startDate, endDate } = this.state;
+		// 	this.setState({ loading: true });
+		// 	const url = `dummy/list?startDate=${startDate}&endDate=${endDate}`;
+		// 	const rs = await request(url, 'GET', true);
+		// 	const { notes, diagnoses, vitals } = rs;
+		// 	this.setState({
+		// 		loading: false,
+		// 		notes,
+		// 		diagnoses,
+		// 		vitals,
+		// 		filtering: false,
+		// 	});
+		// } catch (error) {
+		// 	console.log(error);
+		// 	this.setState({ loading: false, filtering: false });
+		// 	notifyError(error.message || 'could not fetch visit notes');
+		// }
 	};
 
 	doFilter = e => {

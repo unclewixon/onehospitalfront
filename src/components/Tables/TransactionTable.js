@@ -110,32 +110,20 @@ const TransactionTable = ({
 										details
 									</a>
 								</td>
-								<td>
-									{formatCurrency(transaction.amount ? transaction.amount : 0)}
-								</td>
-								<td>
-									{formatCurrency(
-										transaction?.balance ? transaction.balance : 0
-									)}
-								</td>
-								<td>
-									{transaction.payment_type
-										? transaction.payment_type
-										: 'Not specified'}
-								</td>
+								<td>{formatCurrency(transaction.amount || 0)}</td>
+								<td>{formatCurrency(transaction.balance || 0)}</td>
+								<td>{transaction.payment_type || 'Not specified'}</td>
 								<td className="text-center row-actions">
 									{showActionBtns && transaction.status === 0 && (
 										<>
 											{transaction.payment_type !== 'HMO' && (
-												<>
-													<Tooltip title="Approve Transactions">
-														<a
-															className="secondary"
-															onClick={() => doApproveTransaction(transaction)}>
-															<i className="os-icon os-icon-thumbs-up" />
-														</a>
-													</Tooltip>
-												</>
+												<Tooltip title="Approve Transactions">
+													<a
+														className="secondary"
+														onClick={() => doApproveTransaction(transaction)}>
+														<i className="os-icon os-icon-thumbs-up" />
+													</a>
+												</Tooltip>
 											)}
 											<Can I="delete-transaction" on="all">
 												<Tooltip title="Delete Transactions">
@@ -148,7 +136,7 @@ const TransactionTable = ({
 											</Can>
 										</>
 									)}
-									{showPrint ? (
+									{showPrint && (
 										<Tooltip title="Print">
 											<a
 												className="text-info"
@@ -156,7 +144,7 @@ const TransactionTable = ({
 												<i className="os-icon os-icon-printer" />
 											</a>
 										</Tooltip>
-									) : null}
+									)}
 								</td>
 							</tr>
 						);

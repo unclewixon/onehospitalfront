@@ -9,7 +9,7 @@ const ClinicalLabMenu = () => {
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers" />
 					</div>
-					<span>Home</span>
+					<span>Dashboard</span>
 				</Link>
 			</li>
 			<li>

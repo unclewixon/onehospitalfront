@@ -109,6 +109,7 @@ export const relationships = [
 ];
 
 export const ethnicities = [
+	{ value: '', label: 'Select Ethnicity' },
 	{ value: 'Igbo', label: 'Igbo' },
 	{ value: 'Hausa', label: 'Hausa' },
 	{ value: 'Hausa-Fulani', label: 'Hausa-Fulani' },

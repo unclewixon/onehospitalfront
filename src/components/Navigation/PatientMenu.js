@@ -83,11 +83,11 @@ const PatientMenu = ({ location }) => {
 				</li>
 
 				<li>
-					<Link to={`${location.pathname}#imaging`}>
+					<Link to={`${location.pathname}#radiology`}>
 						<div className="icon-w">
 							<div className="os-icon os-icon-layout" />
 						</div>
-						<span>Imaging</span>
+						<span>Radiology</span>
 					</Link>
 				</li>
 				<li>

@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { Image } from 'react-bootstrap';
+
 import { updateStaff } from '../../../actions/hr';
 import waitingGif from '../../../assets/images/waiting.gif';
 import placeholder from '../../../assets/images/placeholder.jpg';
@@ -389,11 +390,7 @@ const EditProfile = ({ staff }) => {
 							</div>
 						</fieldset>
 						<button className="btn btn-primary" type="submit">
-							{submitting ? (
-								<img src={`url(${waitingGif})`} alt="waiting" />
-							) : (
-								'Update'
-							)}
+							{submitting ? <img src={waitingGif} alt="waiting" /> : 'Update'}
 						</button>
 					</form>
 				</div>

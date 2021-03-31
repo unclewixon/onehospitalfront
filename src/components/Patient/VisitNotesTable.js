@@ -2,9 +2,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { request, confirmAction, itemRender } from '../../services/utilities';
-import { notifySuccess, notifyError } from '../../services/notify';
 import Pagination from 'antd/lib/pagination';
+
+import { itemRender } from '../../services/utilities';
+// import { notifySuccess, notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
 import TableLoading from '../TableLoading';
@@ -19,25 +20,25 @@ class VisitNotesTable extends Component {
 	};
 
 	componentDidMount() {
-		console.log('componentDidMount()');
 		this.fetchNotes();
 	}
+
 	fetchNotes = async page => {
-		try {
-			const p = page || 1;
-			this.setState({ loading: true });
-			const url = `dummy/list?page=${p}&limit=24`;
-			const rs = await request(url, 'GET', true);
-			const { result, ...meta } = rs;
-			const arr = [...result];
-			this.setState({ loading: false, meta, notes: arr });
-			this.props.stopBlock();
-		} catch (error) {
-			console.log(error);
-			this.props.stopBlock();
-			this.setState({ loading: false });
-			notifyError(error.message || 'could not fetch visit notes');
-		}
+		// 	try {
+		// 		const p = page || 1;
+		// 		this.setState({ loading: true });
+		// 		const url = `dummy/list?page=${p}&limit=24`;
+		// 		const rs = await request(url, 'GET', true);
+		// 		const { result, ...meta } = rs;
+		// 		const arr = [...result];
+		// 		this.setState({ loading: false, meta, notes: arr });
+		// 		this.props.stopBlock();
+		// 	} catch (error) {
+		// 		console.log(error);
+		// 		this.props.stopBlock();
+		// 		this.setState({ loading: false });
+		// 		notifyError(error.message || 'could not fetch visit notes');
+		// 	}
 	};
 
 	onNavigatePage = nextPage => {

@@ -68,14 +68,12 @@ const AccountUserProfile = ({ staff }) => {
 					<tr className="small">
 						<td className="font-weight-bold">Relationship</td>
 						<td className="text-right">
-							{' '}
 							{staff?.details?.next_of_kin_relationship}
 						</td>
 					</tr>
 					<tr className="small">
 						<td className="font-weight-bold">Phone Number</td>
 						<td className="text-right">
-							{' '}
 							{staff?.details?.next_of_kin_contact_no}
 						</td>
 					</tr>
@@ -86,7 +84,6 @@ const AccountUserProfile = ({ staff }) => {
 					<tr className="small">
 						<td className="font-weight-bold">Contact Address</td>
 						<td className="text-right">
-							{' '}
 							{staff?.details?.next_of_kin_address}
 						</td>
 					</tr>

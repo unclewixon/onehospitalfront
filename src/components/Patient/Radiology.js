@@ -4,14 +4,14 @@ import { Link, withRouter } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 
-import searchingGIF from '../../assets/images/searching.gif';
+import searching from '../../assets/images/searching.gif';
 import { notifyError } from '../../services/notify';
 import { request, itemRender } from '../../services/utilities';
-import LabBlock from '../LabBlock';
+import RadiologyBlock from '../RadiologyBlock';
 
-const Lab = ({ location }) => {
+const Radiology = ({ location }) => {
 	const [loaded, setLoaded] = useState(false);
-	const [labs, setLabs] = useState([]);
+	const [scans, setScans] = useState([]);
 	const [meta, setMeta] = useState(null);
 
 	const startDate = '';
@@ -19,48 +19,35 @@ const Lab = ({ location }) => {
 
 	const patient = useSelector(state => state.user.patient);
 
-	const fetch = async page => {
-		try {
-			const p = page || 1;
-			const url = `patient/${patient.id}/request/lab?page=${p}&limit=10&startDate=${startDate}&endDate=${endDate}`;
-			const rs = await request(url, 'GET', true);
-			const { result, ...meta } = rs;
-			setLabs(result);
-			setMeta(meta);
-			setLoaded(true);
-		} catch (e) {
-			notifyError(e.message || 'could not fetch lab requests');
-			setLoaded(true);
-		}
-	};
-
-	const fetchLabs = useCallback(async () => {
-		try {
-			const p = 1;
-			const url = `patient/${patient.id}/request/lab?page=${p}&limit=10&startDate=${startDate}&endDate=${endDate}`;
-			const rs = await request(url, 'GET', true);
-			const { result, ...meta } = rs;
-			setLabs(result);
-			setMeta(meta);
-			setLoaded(true);
-		} catch (e) {
-			notifyError(e.message || 'could not fetch lab requests');
-			setLoaded(true);
-		}
-	}, [patient.id]);
+	const fetchScans = useCallback(
+		async page => {
+			try {
+				const url = `patient/${patient.id}/request/radiology?page=${page}&limit=10&startDate=${startDate}&endDate=${endDate}`;
+				const rs = await request(url, 'GET', true);
+				const { result, ...meta } = rs;
+				setScans(result);
+				setMeta(meta);
+				setLoaded(true);
+			} catch (e) {
+				notifyError(e.message || 'could not fetch scan requests');
+				setLoaded(true);
+			}
+		},
+		[patient.id]
+	);
 
 	useEffect(() => {
 		if (!loaded) {
-			fetchLabs();
+			fetchScans(1);
 		}
-	}, [fetchLabs, loaded]);
+	}, [fetchScans, loaded]);
 
-	const updateLab = labs => {
-		setLabs(labs);
+	const updateScan = items => {
+		setScans(items);
 	};
 
 	const onNavigatePage = nextPage => {
-		fetch(nextPage);
+		fetchScans(nextPage);
 	};
 
 	return (
@@ -68,28 +55,28 @@ const Lab = ({ location }) => {
 			<div className="element-wrapper">
 				<div className="element-actions">
 					<Link
-						to={`${location.pathname}#lab-request`}
+						to={`${location.pathname}#radiology-request`}
 						className="btn btn-primary btn-sm">
 						<i className="os-icon os-icon-plus" />
-						New Lab Request
+						New Radiology Request
 					</Link>
 				</div>
-				<h6 className="element-header">Lab Requests</h6>
+				<h6 className="element-header">Radiology Requests</h6>
 				<div className="element-box p-3 m-0 mt-3">
 					<div className="bootstrap-table">
 						{!loaded ? (
 							<div className="text-center">
-								<img alt="searching" src={searchingGIF} />
+								<img alt="searching" src={searching} />
 							</div>
 						) : (
 							<div
 								className="fixed-table-container"
 								style={{ paddingBottom: '0px' }}>
 								<div className="fixed-table-body">
-									<LabBlock
+									<RadiologyBlock
 										loading={false}
-										labs={labs}
-										updateLab={updateLab}
+										scans={scans}
+										updateScan={updateScan}
 										patient={patient}
 									/>
 								</div>
@@ -99,7 +86,7 @@ const Lab = ({ location }) => {
 											current={parseInt(meta.currentPage, 10)}
 											pageSize={parseInt(meta.itemsPerPage, 10)}
 											total={parseInt(meta.totalPages, 10)}
-											showTotal={total => `Total ${total} lab results`}
+											showTotal={total => `Total ${total} scan results`}
 											itemRender={itemRender}
 											onChange={current => onNavigatePage(current)}
 										/>
@@ -114,4 +101,4 @@ const Lab = ({ location }) => {
 	);
 };
 
-export default withRouter(Lab);
+export default withRouter(Radiology);

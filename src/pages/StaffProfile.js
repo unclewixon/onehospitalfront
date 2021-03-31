@@ -168,9 +168,7 @@ class StaffProfile extends Component {
 												<img alt="" src={avatar1} />
 											</div>
 											<h4 className="customer-name">
-												{staff.details.first_name +
-													' ' +
-													staff.details.last_name}
+												{`${staff.details.first_name} ${staff.details.last_name}`}
 											</h4>
 											<div className="customer-tickets">
 												Clinical Laboratory

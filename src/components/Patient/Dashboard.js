@@ -132,7 +132,7 @@ const Dashboard = ({ location, history }) => {
 									</div>
 								</div>
 							</div>
-							<table className="table" cellpadding="0" cellspacing="0">
+							<table className="table" cellPadding="0" cellSpacing="0">
 								<tbody>
 									<tr className="small">
 										<th scope="row" className="font-weight-bold px-0">

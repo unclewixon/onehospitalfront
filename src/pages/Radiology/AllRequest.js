@@ -1,131 +1,70 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
-import Tooltip from 'antd/lib/tooltip';
+import Pagination from 'antd/lib/pagination';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
-import { searchAPI, patientAPI } from '../../services/constants';
+
 import waiting from '../../assets/images/waiting.gif';
-import { request, confirmAction } from '../../services/utilities';
-import { notifyError, notifySuccess } from '../../services/notify';
-import searchingGIF from '../../assets/images/searching.gif';
-import { loadRadiology } from '../../actions/patient';
+import { request, itemRender } from '../../services/utilities';
+import { patientAPI, searchAPI } from '../../services/constants';
+import { notifyError } from '../../services/notify';
+import RadiologyBlock from '../../components/RadiologyBlock';
 
 const { RangePicker } = DatePicker;
 
 const status = [
-	{ value: 0, label: 'Open' },
-	{ value: 1, label: 'Closed' },
-	{ value: 2, label: 'Approved' },
+	{ label: 'All' },
+	{ label: 'Open' },
+	{ label: 'Closed' },
+	{ label: 'Approved' },
 ];
 
-const getOptionValues = option => option.id;
-const getOptionLabels = option => `${option.other_names} ${option.surname}`;
-const getOptions = async q => {
-	if (!q || q.length < 3) {
-		return [];
-	}
-	const url = `${searchAPI}?q=${q}`;
-	const res = await request(url, 'GET', true);
-	return res;
-};
-
-class OpenRequest extends Component {
+class AllRequest extends Component {
 	state = {
 		filtering: false,
 		loading: false,
-		id: null,
 		startDate: '',
 		endDate: '',
 		status: '',
-		searching: '',
-		query: '',
+		scans: [],
+		meta: null,
 		patient_id: '',
 	};
 
 	componentDidMount() {
-		this.fetchRadiology();
+		this.fetchRequests();
 	}
 
-	fetchRadiology = async () => {
+	fetchRequests = async page => {
 		try {
-			const { startDate, endDate, status } = this.state;
+			const { startDate, endDate, status, patient_id } = this.state;
 			this.setState({ loading: true });
-			const url = `${patientAPI}/requests/imaging?startDate=${startDate}&endDate=${endDate}&status=${status}`;
+			const p = page || 1;
+			const url = `${patientAPI}/requests/radiology?page=${p}&limit=10&startDate=${startDate}&endDate=${endDate}&status=${status}&patient_id=${patient_id}`;
 			const rs = await request(url, 'GET', true);
-
-			this.props.loadRadiology(rs.result);
-			this.setState({ loading: false, filtering: false });
-		} catch (error) {
-			console.log('this', error);
-			notifyError('Error fetching all radiology request');
-			this.setState({ loading: false, filtering: false });
-		}
-	};
-
-	fetchRadiologyByPatient = async () => {
-		const { startDate, endDate, status, patient_id } = this.state;
-		console.log(startDate, endDate, status, patient_id);
-		try {
-			this.setState({ loading: true });
-			const rs = await request(
-				`${patientAPI}/${patient_id}/request/imaging?startDate=${startDate}&endDate=${endDate}&status=${status}`,
-				'GET',
-				true
-			);
-			console.log(rs.result);
-			this.props.loadRadiology(rs.result);
-			console.log(rs, 'response');
-			this.setState({ loading: false, filtering: false });
+			const { result, ...meta } = rs;
+			this.setState({
+				scans: result,
+				loading: false,
+				filtering: false,
+				meta,
+			});
+			window.scrollTo({ top: 0, behavior: 'smooth' });
 		} catch (error) {
 			console.log(error);
-			notifyError('Error fetching all radiology request');
-			this.setState({ loading: false, filtering: false });
+			notifyError('Error fetching all scan request');
 		}
-	};
-
-	convertToIndividualRequest = data => {
-		console.log(data);
-		let newData = [];
-		data.forEach(value => {
-			if (Array.isArray(value.requestBody)) {
-				value.requestBody.forEach(val => {
-					newData.push({
-						id: value.id,
-						isActive: value.isActive,
-						createdAt: value.createdAt,
-						updateAt: value.updateAt,
-						requestType: value.requestType,
-						requestBody: {
-							amount: val.amount,
-							service_id: val.service_id,
-							specialization: val.specialization
-								? val.specialization
-								: val.service_name,
-						},
-						status: value.status,
-						patientName: value.patient_name,
-						fileNumber: value.fileNumber,
-					});
-				});
-			} else {
-				newData.push(value);
-			}
-		});
-
-		return newData.reverse();
 	};
 
 	doFilter = e => {
-		e.preventDefault();
-		console.log('Filering....', this.state);
-		// this.setState({ filtering: true });
-		this.setState({ ...this.state, filtering: true });
+		if (e) e.preventDefault();
+		this.setState({ filtering: true });
+		this.fetchRequests();
 
-		this.state.patient_id
-			? this.fetchRadiologyByPatient()
-			: this.fetchRadiology();
+		// this.state.patient_id
+		// 	? this.fetchRadiologyByPatient()
+		// 	: this.fetchRadiology();
 	};
 
 	change = e => {
@@ -144,184 +83,112 @@ class OpenRequest extends Component {
 		});
 	};
 
-	cancelRequest = async data => {
-		try {
-			const url = `${data.id}/delete-request?type=imaging`;
-			await request(url, 'DELETE', true);
-			const new_arr = this.props.radiology.filter(r => r.id !== data.id);
-			this.props.loadRadiology(new_arr);
-			notifySuccess(`Radiology Cancelled!`);
-		} catch (error) {
-			console.log('this', error);
-			notifyError('Error deleting all radiology request');
+	updateScan = items => {
+		this.setState({ scans: items });
+	};
+
+	onNavigatePage = nextPage => {
+		this.fetchRequests(nextPage);
+	};
+
+	getPatients = async q => {
+		if (!q || q.length < 3) {
+			return [];
 		}
-	};
 
-	confirmDelete = data => {
-		confirmAction(this.cancelRequest, data);
-	};
-
-	patientSet = pat => {
-		console.log(pat);
-		let name =
-			(pat.surname ? pat.surname : '') +
-			' ' +
-			(pat.other_names ? pat.other_names : '');
-		document.getElementById('patient').value = name;
-		// setPatients([]);
-		this.setState({ ...this.state, patient_id: pat.id });
+		const url = `${searchAPI}?q=${q}`;
+		const res = await request(url, 'GET', true);
+		return res;
 	};
 
 	render() {
-		const { filtering, loading } = this.state;
-		const { radiology } = this.props;
+		const { filtering, loading, scans, meta, patient_id } = this.state;
 		return (
-			<div className="row">
-				<div className="col-sm-12">
-					<div className="element-wrapper">
-						<div className="element-box m-0 mb-3 p-3">
-							<div className="col-md-12 px-0">
-								<form className="row">
-									<div className="form-group col-sm-3">
-										<label>Patient</label>
-
-										<AsyncSelect
-											isClearable
-											getOptionValue={getOptionValues}
-											getOptionLabel={getOptionLabels}
-											defaultOptions
-											name="patient"
-											ref={this.patient}
-											loadOptions={getOptions}
-											onChange={e => {
-												this.patientSet(e);
-											}}
-											placeholder="Search for patient"
-										/>
-									</div>
-									<div className="form-group col-md-4">
-										<label>From - To</label>
-										<RangePicker onChange={e => this.dateChange(e)} />
-									</div>
-									<div className="form-group col-md-3">
-										<label className="mr-2 " htmlFor="id">
-											Status
-										</label>
-										<select
-											style={{ height: '32px' }}
-											id="status"
-											className="form-control"
-											name="status"
-											onChange={e => this.change(e)}>
-											<option value="">Choose status</option>
-											{status.map((status, i) => {
-												return (
-													<option key={i} value={status.value}>
-														{status.label}
-													</option>
-												);
-											})}
-										</select>
-									</div>
-									<div className="form-group col-md-2 mt-4">
-										<div
-											className="btn btn-sm btn-primary btn-upper text-white filter-btn"
-											onClick={this.doFilter}>
-											<i className="os-icon os-icon-ui-37" />
-											<span>
-												{filtering ? (
-													<img src={waiting} alt="submitting" />
-												) : (
-													'Filter'
-												)}
-											</span>
-										</div>
-									</div>
-								</form>
+			<>
+				<div className="element-box m-0 mb-4 p-3">
+					<form className="row">
+						<div className="form-group col-md-3">
+							<label>From - To</label>
+							<RangePicker onChange={e => this.dateChange(e)} />
+						</div>
+						<div className="form-group col-sm-3">
+							<label>Patient</label>
+							<AsyncSelect
+								isClearable
+								getOptionValue={option => option.id}
+								getOptionLabel={option =>
+									`${option.other_names} ${option.surname}`
+								}
+								defaultOptions
+								name="patient"
+								ref={this.patient}
+								value={patient_id}
+								loadOptions={this.getPatients}
+								onChange={e => {
+									this.setState({ patient_id: e.id || '' });
+								}}
+								placeholder="Search for patient"
+							/>
+						</div>
+						<div className="form-group col-md-3">
+							<label className="mr-2 " htmlFor="id">
+								Status
+							</label>
+							<select
+								style={{ height: '32px' }}
+								id="status"
+								className="form-control"
+								name="status"
+								onChange={e => this.change(e)}>
+								{status.map((status, i) => {
+									return (
+										<option key={i} value={status.label}>
+											{status.label}
+										</option>
+									);
+								})}
+							</select>
+						</div>
+						<div className="form-group col-md-3 mt-4">
+							<div
+								className="btn btn-sm btn-primary btn-upper text-white filter-btn"
+								onClick={this.doFilter}>
+								<i className="os-icon os-icon-ui-37" />
+								<span>
+									{filtering ? (
+										<img src={waiting} alt="submitting" />
+									) : (
+										'Filter'
+									)}
+								</span>
 							</div>
 						</div>
-						<div className="element-box">
-							<div className="table table-responsive">
-								<table
-									id="table"
-									className="table table-theme v-middle table-hover">
-									<thead>
-										<tr>
-											<th className="text-center">Request Date</th>
-											<th className="text-center">Patiend ID</th>
-											<th className="text-center">Patient Name</th>
-											<th className="text-center">Request</th>
-											<th>
-												<div className="th-inner "></div>
-												<div className="fht-cell"></div>
-											</th>
-										</tr>
-									</thead>
-									<tbody>
-										{loading ? (
-											<tr>
-												<td className="text-center">
-													<img alt="searching" src={searchingGIF} />
-												</td>
-											</tr>
-										) : (
-											radiology &&
-											this.convertToIndividualRequest(radiology).map(
-												(request, i) => {
-													return (
-														<tr data-index="0" key={i}>
-															<td className="text-center">
-																{moment(request.createdAt).format('DD-MM-YYYY')}
-															</td>
-															<td className="text-center">
-																{request.fileNumber}
-															</td>
-															<td className="text-center">
-																{request.patientName}
-															</td>
-															<td className="text-center">
-																{request.requestBody.specialization}
-															</td>
-
-															<td className="text-right row-actions">
-																<Tooltip title="Receive Request">
-																	<a className="secondary">
-																		<i className="os-icon os-icon-folder-plus" />
-																	</a>
-																</Tooltip>
-																{/* <Tooltip title="Edit Request">
-																	<a className="secondary">
-																		<i className="os-icon os-icon-edit-32" />
-																	</a>
-																</Tooltip> */}
-																<Tooltip title="Delete Request">
-																	<a
-																		className="danger"
-																		onClick={() => this.confirmDelete(request)}>
-																		<i className="os-icon os-icon-ui-15" />
-																	</a>
-																</Tooltip>
-															</td>
-														</tr>
-													);
-												}
-											)
-										)}
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
+					</form>
 				</div>
-			</div>
+				<div className="element-box p-3 m-0 mt-3">
+					<div className="table table-responsive">
+						<RadiologyBlock
+							loading={loading}
+							scans={scans}
+							updateScan={this.updateScan}
+						/>
+					</div>
+					{meta && (
+						<div className="pagination pagination-center mt-4">
+							<Pagination
+								current={parseInt(meta.currentPage, 10)}
+								pageSize={parseInt(meta.itemsPerPage, 10)}
+								total={parseInt(meta.totalPages, 10)}
+								showTotal={total => `Total ${total} scan results`}
+								itemRender={itemRender}
+								onChange={current => this.onNavigatePage(current)}
+							/>
+						</div>
+					)}
+				</div>
+			</>
 		);
 	}
 }
 
-const mapStateToProps = state => {
-	return {
-		radiology: state.patient.radiology,
-	};
-};
-
-export default connect(mapStateToProps, { loadRadiology })(OpenRequest);
+export default AllRequest;
