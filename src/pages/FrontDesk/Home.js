@@ -1,15 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { lazy, Suspense, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { Switch, Route, withRouter } from 'react-router-dom';
-import { compose } from 'redux';
+import { useDispatch } from 'react-redux';
+import { Switch, Route, withRouter, Link } from 'react-router-dom';
 import startCase from 'lodash.startcase';
+import qs from 'querystring';
 
-import {
-	registerNewPatient,
-	createNewAppointment,
-	viewAppointmentDetail,
-} from '../../actions/general';
+import { registerNewPatient } from '../../actions/general';
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
 import { socket } from '../../services/constants';
@@ -27,22 +23,18 @@ const InsuranceTrans = lazy(() =>
 	import('../../components/FrontDesk/InsuranceTrans')
 );
 
-const FrontDesk = props => {
+const Home = ({ match, location }) => {
 	const [title, setTitle] = useState('Dashboard');
 	const [listenning, setListenning] = useState(false);
+	const [count, setCount] = useState(0);
 
-	const { match, location } = props;
+	const dispatch = useDispatch();
 
 	const page = location.pathname.split('/').pop();
 
-	const RegisterNewPatient = e => {
+	const doRegisterNewPatient = e => {
 		e.preventDefault();
-		props.registerNewPatient(true);
-	};
-
-	const CreateNewAppointment = e => {
-		e.preventDefault();
-		props.createNewAppointment(true);
+		dispatch(registerNewPatient(true));
 	};
 
 	useEffect(() => {
@@ -51,30 +43,25 @@ const FrontDesk = props => {
 		} else {
 			setTitle(startCase(page));
 		}
-	}, [page]);
+
+		const query = qs.parse(location.search.replace('?', ''));
+		setCount(parseInt(query?.new || 0, 10) + 1);
+	}, [location.search, page]);
 
 	useEffect(() => {
 		if (!listenning) {
 			setListenning(true);
 
-			if (page === 'front-desk') {
-				setTitle('Appointments');
-			} else {
-				setTitle(startCase(page));
-			}
-
 			socket.on('appointment-update', data => {
+				console.log(data);
 				if (data.action === 1) {
 					notifySuccess('Doctor has accepted to see patient');
 				} else {
 					notifyError('Doctor has declined to see patient');
 				}
-
-				// open appointment modal
-				props.viewAppointmentDetail(data.appointment);
 			});
 		}
-	}, [listenning, page, props]);
+	}, [listenning]);
 
 	return (
 		<div className="content-i">
@@ -84,19 +71,23 @@ const FrontDesk = props => {
 						<div className="element-wrapper">
 							<div className="element-actions">
 								<a
-									onClick={RegisterNewPatient}
+									onClick={doRegisterNewPatient}
 									className={`mr-2 btn btn-primary btn-sm ${
 										page === 'filled-request' ? 'btn-outline-primary' : ''
 									}`}>
 									New Patient
 								</a>
-								<a
-									onClick={CreateNewAppointment}
+								<Link
+									to={{
+										pathname: '/front-desk',
+										search: `?new=${count}`,
+										state: { from: location.pathname },
+									}}
 									className={`btn btn-primary btn-sm ${
 										page === 'all-request' ? 'btn-outline-primary' : ''
 									}`}>
 									New Appointment
-								</a>
+								</Link>
 							</div>
 							<h6 className="element-header">{startCase(title)}</h6>
 
@@ -132,11 +123,4 @@ const FrontDesk = props => {
 	);
 };
 
-export default compose(
-	withRouter,
-	connect(null, {
-		registerNewPatient,
-		createNewAppointment,
-		viewAppointmentDetail,
-	})
-)(FrontDesk);
+export default withRouter(Home);

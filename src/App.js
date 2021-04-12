@@ -17,19 +17,19 @@ import { toggleProfile } from './actions/user';
 import { request } from './services/utilities';
 import ability from './services/ability';
 import { AbilityContext } from './components/common/Can';
-import DoctorHome from './pages/Doctor/Home';
-import DoctorAppointments from './pages/Doctor/DoctorAppointments';
+
 import { AbilityBuilder } from '@casl/ability';
 
 import Login from './pages/Login';
 import NoMatch from './pages/NoMatch';
 import AntenatalDetail from './pages/AntenatalDetail';
+import PatientProfile from './pages/PatientProfile';
+import ProcedureProfile from './pages/ProcedureProfile';
 
-const FrontDesk = lazy(() => import('./pages/FrontDesk/index'));
-const Nurse = lazy(() => import('./pages/Nurse/index'));
-const PatientProfile = lazy(() => import('./pages/PatientProfile'));
+const FrontDesk = lazy(() => import('./pages/FrontDesk/Home'));
+const Nurse = lazy(() => import('./pages/Nurse/Home'));
 const Pharmacy = lazy(() => import('./pages/Pharmacy/Index'));
-const Procedure = lazy(() => import('./pages/Procedure'));
+const Procedure = lazy(() => import('./pages/Procedure/Home'));
 const Staff = lazy(() => import('./pages/HR/index'));
 const Inventory = lazy(() => import('./pages/Inventory/index'));
 const Settings = lazy(() => import('./pages/Settings'));
@@ -38,13 +38,14 @@ const Hmo = lazy(() => import('./pages/Hmo/Index'));
 const ClinicalLab = lazy(() => import('./pages/ClinicalLab/Home'));
 const PayPoint = lazy(() => import('./pages/PayPoint/index'));
 const Radiology = lazy(() => import('./pages/Radiology/Home'));
-const Antennatal = lazy(() => import('./pages/Antennatal/index'));
+const Antennatal = lazy(() => import('./pages/Antennatal/Home'));
 const IVF = lazy(() => import('./pages/IVF'));
 const Nicu = lazy(() => import('./pages/Nicu/Nicu'));
-const LabMgt = lazy(() => import('./pages/LabourMgt/index'));
+const LabourMgt = lazy(() => import('./pages/LabourMgt/Home'));
 const Cafeteria = lazy(() => import('./pages/Cafeteria/index'));
 const Account = lazy(() => import('./pages/Account/index'));
 const MyAccount = lazy(() => import('./pages/MyAccount/index'));
+const Doctor = lazy(() => import('./pages/Doctor/Home'));
 const Logout = lazy(() => import('./pages/Logout'));
 
 const storage = new SSRStorage();
@@ -77,11 +78,13 @@ class App extends Component {
 			is_modal_open,
 			isStaffOpen,
 			isPatientOpen,
+			isProcedureOpen,
 			isAntenatalOpen,
 			theme_mode,
 			menu_mode,
 			profile,
 		} = this.props;
+
 		return preloading ? (
 			<Splash />
 		) : (
@@ -118,11 +121,7 @@ class App extends Component {
 														errorRetryCount: 2,
 													}}>
 													<Switch>
-														<Route
-															path="/doctor/appointments"
-															component={DoctorAppointments}
-														/>
-														<Route path="/doctor" component={DoctorHome} />
+														<Route path="/doctor" component={Doctor} />
 														<Route path="/front-desk" component={FrontDesk} />
 														<Route path="/nurse" component={Nurse} />
 														<Route path="/pharmacy" component={Pharmacy} />
@@ -136,7 +135,7 @@ class App extends Component {
 														<Route path="/settings" component={Settings} />
 														<Route path="/hmo" component={Hmo} />
 														<Route path="/lab" component={ClinicalLab} />
-														<Route path="/labour-mgt" component={LabMgt} />
+														<Route path="/labour-mgt" component={LabourMgt} />
 														<Route path="/cafeteria" component={Cafeteria} />
 														<Route path="/paypoint" component={PayPoint} />
 														<Route path="/account" component={Account} />
@@ -153,6 +152,9 @@ class App extends Component {
 										</SlidingPane>
 										<SlidingPane isOpen={isPatientOpen}>
 											<PatientProfile />
+										</SlidingPane>
+										<SlidingPane isOpen={isProcedureOpen}>
+											<ProcedureProfile />
 										</SlidingPane>
 										<SlidingPane isOpen={isAntenatalOpen}>
 											<AntenatalDetail />
@@ -183,6 +185,7 @@ const mapStateToProps = state => {
 		profile: state.user?.profile,
 		isStaffOpen: state.user?.isStaffOpen,
 		isPatientOpen: state.user?.isPatientOpen,
+		isProcedureOpen: state.user?.isProcedureOpen,
 		isAntenatalOpen: state.general?.isAntenatalOpen,
 		theme_mode: state.user?.theme_mode,
 		menu_mode: state.user?.menu_mode,

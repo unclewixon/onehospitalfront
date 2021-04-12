@@ -200,6 +200,10 @@
     align-items: center;
     padding: 10px 15px;
 
+    &.custom-padd {
+      padding: 16px 12px 8px;
+    }
+
     .avatar {
       width: 50px;
       margin-right: 15px;

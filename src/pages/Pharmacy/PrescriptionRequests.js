@@ -12,6 +12,8 @@ import { request, updateImmutable, itemRender } from '../../services/utilities';
 
 const { RangePicker } = DatePicker;
 
+const category_id = 1;
+
 class PrescriptionRequests extends Component {
 	state = {
 		filtering: false,
@@ -38,15 +40,9 @@ class PrescriptionRequests extends Component {
 
 	getServiceUnit = async hmoId => {
 		try {
-			const res = await request('inventory/categories', 'GET', true);
-
-			if (res && res.length > 0) {
-				const selectCat = res.find(cat => cat.name === 'Pharmacy');
-
-				const url = `inventory/stocks-by-category/${selectCat.id}/${hmoId}`;
-				const rs = await request(url, 'GET', true);
-				this.setState({ drugs: rs });
-			}
+			const url = `inventory/stocks-by-category/${category_id}/${hmoId}`;
+			const rs = await request(url, 'GET', true);
+			this.setState({ drugs: rs });
 		} catch (error) {
 			notifyError('Error fetching Service Unit');
 		}
@@ -176,20 +172,22 @@ class PrescriptionRequests extends Component {
 												</span>
 											</td>
 											<td>
-												{request.patient_name ? request.patient_name : ''}
+												{`${request.patient.surname} ${request.patient.other_names}`}
 											</td>
 											<td>{request.created_by ? request.created_by : ''}</td>
 											<td className="nowrap">
 												{request.status === 0 && !request.isFilled && (
 													<span className="badge badge-warning">Pending</span>
 												)}
-												{request.transaction_status === 0 &&
+												{request.transaction &&
+													request.transaction.status === 0 &&
 													request.isFilled && (
 														<span className="badge badge-info text-white">
 															Awaiting Payment
 														</span>
 													)}
-												{request.transaction_status === 1 &&
+												{request.transaction &&
+													request.transaction.status === 1 &&
 													request.status === 0 && (
 														<span className="badge badge-secondary">
 															Awaiting Dispense
@@ -222,7 +220,7 @@ class PrescriptionRequests extends Component {
 															className="primary"
 															onClick={async () => {
 																await this.getServiceUnit(
-																	request.patient_hmo_id
+																	request.patient.hmo.id
 																);
 																document.body.classList.add('modal-open');
 																this.setState({

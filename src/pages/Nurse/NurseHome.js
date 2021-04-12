@@ -4,14 +4,15 @@ import useSWR from 'swr/esm/use-swr';
 import Tooltip from 'antd/lib/tooltip';
 import { useDispatch } from 'react-redux';
 import truncate from 'lodash.truncate';
+import moment from 'moment';
 
-import searchingGIF from '../../assets/images/searching.gif';
 import { toggleProfile } from '../../actions/user';
 import { getAge, fullname } from '../../services/utilities';
 import { socket } from '../../services/constants';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
 import { startBlock, stopBlock } from '../../actions/redux-block';
+import TableLoading from '../../components/TableLoading';
 
 const NurseHome = () => {
 	const [loading, setLoading] = useState(true);
@@ -66,94 +67,89 @@ const NurseHome = () => {
 		<>
 			<h6 className="element-header">List of patients in queue for vitals</h6>
 			<div className="element-box p-3 m-0">
-				<div className="table-responsive">
-					<table className="table table-striped">
-						<thead>
-							<tr>
-								<th>
-									<div className="th-inner sortable both">Patient</div>
-								</th>
-								<th>
-									<div className="th-inner sortable both">Whom To See</div>
-								</th>
-								<th>
-									<div className="th-inner sortable both">Gender / Age</div>
-								</th>
-								<th>
-									<div className="th-inner sortable both">Service</div>
-								</th>
-								<th>
-									<div className="th-inner sortable both">Date</div>
-								</th>
-								<th>
-									<div className="th-inner "></div>
-								</th>
-							</tr>
-						</thead>
-						<tbody>
-							{loading ? (
+				{loading ? (
+					<TableLoading />
+				) : (
+					<div className="table-responsive">
+						<table className="table table-striped">
+							<thead>
 								<tr>
-									<td colSpan="7" className="text-center">
-										<img alt="searching" src={searchingGIF} />
-									</td>
+									<th>
+										<div className="th-inner sortable both">Patient</div>
+									</th>
+									<th>
+										<div className="th-inner sortable both">Whom To See</div>
+									</th>
+									<th>
+										<div className="th-inner sortable both">Gender / Age</div>
+									</th>
+									<th>
+										<div className="th-inner sortable both">Service</div>
+									</th>
+									<th>
+										<div className="th-inner sortable both">Date</div>
+									</th>
+									<th>
+										<div className="th-inner "></div>
+									</th>
 								</tr>
-							) : (
-								<>
-									{queues ? (
-										queues
-											.filter(queue => queue.queueType === 'vitals')
-											.map((queue, key) => (
-												<tr key={key}>
-													<td>{`${queue.patientName}`}</td>
-													<td>{fullname(queue.appointment.whomToSee)}</td>
-													<td>{`${queue.appointment.patient.gender} / ${getAge(
-														queue.appointment.patient.date_of_birth
-													)}`}</td>
-													<td>
-														{truncate(queue.appointment.serviceType.name, {
-															length: 50,
-															omission: '...',
-														})}
-													</td>
-													<td>{queue.createdAt}</td>
-													<td>
-														<Tooltip title="View Profile">
-															<a
-																className="btn btn-primary btn-sm ml-2"
-																onClick={() =>
-																	showProfile(queue.appointment.patient)
-																}>
-																<i className="os-icon os-icon-user" />
-															</a>
-														</Tooltip>
-														<Tooltip title="Send To Doctor">
-															<a
-																className="btn btn-primary btn-sm ml-2"
-																onClick={e =>
-																	sendToDoctor(
-																		e,
-																		queue?.appointment?.patient?.id,
-																		queue?.id
-																	)
-																}>
-																<i className="os-icon os-icon-mail-18" />
-															</a>
-														</Tooltip>
-													</td>
-												</tr>
-											))
-									) : (
-										<tr>
-											<td colSpan="7" className="text-center">
-												No result found
+							</thead>
+							<tbody>
+								{queues
+									.filter(queue => queue.queueType === 'vitals')
+									.map((queue, key) => (
+										<tr key={key}>
+											<td>{`${queue.patientName}`}</td>
+											<td>{fullname(queue.appointment.whomToSee)}</td>
+											<td>{`${queue.appointment.patient.gender} / ${getAge(
+												queue.appointment.patient.date_of_birth
+											)}`}</td>
+											<td>
+												{truncate(queue.appointment.serviceType.name, {
+													length: 50,
+													omission: '...',
+												})}
+											</td>
+											<td>
+												{moment(queue.createdAt).format('DD-MM-YYYY h:mmA')}
+											</td>
+											<td>
+												<Tooltip title="View Profile">
+													<a
+														className="btn btn-primary btn-sm ml-2"
+														onClick={() =>
+															showProfile(queue.appointment.patient)
+														}>
+														<i className="os-icon os-icon-user" />
+													</a>
+												</Tooltip>
+												<Tooltip title="Send To Doctor">
+													<a
+														className="btn btn-primary btn-sm ml-2"
+														onClick={e =>
+															sendToDoctor(
+																e,
+																queue?.appointment?.patient?.id,
+																queue?.id
+															)
+														}>
+														<i className="os-icon os-icon-mail-18" />
+													</a>
+												</Tooltip>
 											</td>
 										</tr>
-									)}
-								</>
-							)}
-						</tbody>
-					</table>
-				</div>
+									))}
+								{queues.length === 0 && (
+									<tr>
+										<td colSpan="7" className="text-center">
+											No result found
+										</td>
+									</tr>
+								)}
+							</tbody>
+						</table>
+					</div>
+				)}
 			</div>
 		</>
 	);

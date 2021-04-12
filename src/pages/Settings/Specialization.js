@@ -162,7 +162,7 @@ const Specialization = () => {
 																		onClick={() => confirmDelete(item)}></i>
 																</div>
 															</div>
-															<div className="pi-body">
+															<div className="pi-body custom-padd">
 																<div className="pi-info">
 																	<div className="h6 pi-name">{item.name}</div>
 																</div>

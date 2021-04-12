@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { closeModals } from '../../actions/general';
 import { formatPatientId } from '../../services/utilities';
 
-export class ModalLabourMeasurementDetail extends Component {
+class ModalLabourMeasurementDetail extends Component {
 	componentDidMount() {
 		document.body.classList.add('modal-open');
 	}
@@ -13,20 +14,7 @@ export class ModalLabourMeasurementDetail extends Component {
 	}
 
 	calculateAmount = arr => {
-		let sum = 0;
-		arr &&
-			arr.forEach(val => {
-				let amt = val.price;
-				if (amt === undefined) {
-					amt = 0;
-				}
-				try {
-					sum += parseInt(amt);
-				} catch (e) {
-					sum += 0;
-				}
-			});
-		return sum;
+		return arr.reduce((total, item) => total + parseFloat(item.price || 0), 0);
 	};
 
 	render() {

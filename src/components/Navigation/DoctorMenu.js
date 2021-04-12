@@ -9,11 +9,11 @@ const DoctorMenu = () => {
 					<div className="icon-w">
 						<div className="icon-feather-home" />
 					</div>
-					<span>Home</span>
+					<span>Dashboard</span>
 				</Link>
 			</li>
 			<li>
-				<Link to="/doctor/appointments">
+				<Link to="/doctor/appointment-history">
 					<div className="icon-w">
 						<div className="os-icon os-icon-calendar-time" />
 					</div>

@@ -371,16 +371,16 @@ tr {
 
 .set-immediately {
 	text-align: right;
-    right: 0;
-    position: absolute;
-    top: 0;
+	right: 0;
+	position: absolute;
+	top: 0;
 }
 
 .set-pharmacy {
 	text-align: right;
-    right: 0;
-    position: absolute;
-    top: 0;
+	right: 0;
+	position: absolute;
+	top: 0;
 }
 
 .loading-block {
@@ -397,6 +397,11 @@ tr {
 	display: none;
 }
 
-.ant-calendar-picker-container, .ant-tooltip {
+.ant-calendar-picker-container,
+.ant-tooltip {
 	z-index: 2100 !important;
+}
+
+.block-ui-container {
+	z-index: 10000 !important;
 }

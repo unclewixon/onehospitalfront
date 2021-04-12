@@ -14,11 +14,12 @@ class Logout extends Component {
 		const user = await storage.getItem(TOKEN_COOKIE);
 
 		if (user.role.slug === 'doctor') {
-			request(`hr/staffs/unset-room/${user.details.id}`, 'GET');
+			request(`hr/staffs/unset-room/${user.details.id}`, 'GET', true);
 			storage.removeItem('ACTIVE:ROOM');
 		}
-		storage.removeItem(TOKEN_COOKIE);
+
 		storage.removeItem(USER_RECORD);
+		storage.removeItem(TOKEN_COOKIE);
 		this.props.signOut();
 	}
 

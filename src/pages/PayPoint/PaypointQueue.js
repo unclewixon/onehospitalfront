@@ -33,7 +33,11 @@ const PaypointQueue = ({ staff }) => {
 	const [endDate, setEndDate] = useState('');
 	// eslint-disable-next-line no-unused-vars
 	const [currentPage, setCurrentPage] = useState(null);
-	const [meta, setMeta] = useState(null);
+	const [meta, setMeta] = useState({
+		currentPage: 1,
+		itemsPerPage: 24,
+		totalPages: 0,
+	});
 	const ref = useRef(null);
 
 	const dispatch = useDispatch();
@@ -145,12 +149,11 @@ const PaypointQueue = ({ staff }) => {
 	return (
 		<div className="row">
 			<div className="col-md-12 p-4">
-				<h6 className="element-header">Filter by:</h6>
+				<h6 className="element-header">Pending Payments</h6>
 
 				<form className="row">
 					<div className="form-group col-md-3">
 						<label htmlFor="patient_id">Patient</label>
-
 						<AsyncSelect
 							isClearable
 							getOptionValue={getOptionValues}
@@ -236,7 +239,6 @@ const PaypointQueue = ({ staff }) => {
 						<TransactionTable
 							transactions={transactions}
 							loading={false}
-							queue={true}
 							showActionBtns={true}
 							approveTransaction={doApproveTransaction}
 							doApplyVoucher={doApplyVoucher}

@@ -21,7 +21,6 @@ import {
 	LOAD_LABOUR,
 	LOAD_LABOUR_DETAIL,
 	CLEAR_LABOUR_DETAIL,
-	LOAD_ENCOUNTERS,
 	ENCOUNTER_FORM,
 	PATIENT_REGULATION_TABLE,
 	LOAD_PARTOGRAPH,
@@ -31,16 +30,15 @@ import {
 	PATIENT_IVF,
 	ADD_NEW_PATIENT,
 	GET_ALL_OPD_LAB_APPOINTMENTS,
-	GET_ALL_OPD_IMMUNIZATION_APPOINTMENTS,
 	UPDATE_PATIENT,
 	READING_DONE,
 	SET_IVF,
 	CAN_CLOSE_LABOUR,
+	UPDATE_ENCOUNTER_DATA,
 } from './types';
 import { request } from '../services/utilities';
-// import axios from 'axios';
-// import { API_URI, transactionsAPI } from '../services/constants';
-// import { delete_transaction } from './transaction';
+
+export const loadEncounterData = () => {};
 
 export const setIVF = data => {
 	return {
@@ -66,13 +64,6 @@ export const readingDone = data => {
 export const loadOPDLabAppointments = data => {
 	return {
 		type: GET_ALL_OPD_LAB_APPOINTMENTS,
-		payload: data,
-	};
-};
-
-export const loadOPDImmunizationAppointments = data => {
-	return {
-		type: GET_ALL_OPD_IMMUNIZATION_APPOINTMENTS,
 		payload: data,
 	};
 };
@@ -205,9 +196,9 @@ export const loadPatientRegulationTable = data => {
 	};
 };
 
-export const loadEncounterData = data => {
+export const updateEncounterData = data => {
 	return {
-		type: LOAD_ENCOUNTERS,
+		type: UPDATE_ENCOUNTER_DATA,
 		payload: data,
 	};
 };

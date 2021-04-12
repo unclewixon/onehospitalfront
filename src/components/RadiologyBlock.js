@@ -18,10 +18,11 @@ import { notifySuccess, notifyError } from '../services/notify';
 import { startBlock, stopBlock } from '../actions/redux-block';
 import TableLoading from './TableLoading';
 import { toggleProfile } from '../actions/user';
+import ProfilePopup from './Patient/ProfilePopup';
 
 class RadiologyBlock extends Component {
 	state = {
-		scan: null,
+		scanItem: null,
 		showModal: false,
 		uploading: false,
 		uploadModal: false,
@@ -29,7 +30,7 @@ class RadiologyBlock extends Component {
 
 	viewScan = item => {
 		document.body.classList.add('modal-open');
-		this.setState({ showModal: true, scan: item });
+		this.setState({ showModal: true, scanItem: item });
 	};
 
 	capturedScan = data => {
@@ -41,15 +42,14 @@ class RadiologyBlock extends Component {
 		);
 	};
 
-	capture = async id => {
+	capture = async data => {
 		try {
 			this.props.startBlock();
 			const { scans } = this.props;
-			const url = `${patientAPI}/${id}/receive-specimen`;
+			const url = `${patientAPI}/${data.item_id}/receive-specimen`;
 			const rs = await request(url, 'PATCH', true);
-			const scan_request = scans.find(l => l.request_item.id === rs.data.id);
-			const request_item = { ...scan_request.request_item, ...rs.data };
-			const newItem = { ...scan_request, request_item };
+			const scan_request = scans.find(l => l.id === data.scan_id);
+			const newItem = { ...scan_request, items: [rs.data] };
 			const newScans = updateImmutable(scans, newItem);
 			this.props.updateScan(newScans);
 			notifySuccess('scan captured!');
@@ -63,7 +63,7 @@ class RadiologyBlock extends Component {
 
 	uploadScan = scan => {
 		document.body.classList.add('modal-open');
-		this.setState({ uploadModal: true, scan });
+		this.setState({ uploadModal: true, scanItem: scan });
 	};
 
 	showProfile = patient => {
@@ -76,7 +76,7 @@ class RadiologyBlock extends Component {
 			e.preventDefault();
 
 			const { scans } = this.props;
-			const { scan } = this.state;
+			const { scanItem } = this.state;
 
 			if (files && files.length === 0) {
 				notifyError('You did not select any image file');
@@ -90,16 +90,13 @@ class RadiologyBlock extends Component {
 			let formData = new FormData();
 			formData.append('file', file);
 			formData.append('document_type', 'radiology');
-			formData.append('id', scan.request_item.id);
+			formData.append('id', scanItem.items[0].id);
 
-			const url = `${API_URI}/${patientAPI}/${scan.patient_id}/upload-document`;
+			const url = `${API_URI}/${patientAPI}/${scanItem.patient.id}/upload-document`;
 			const rs = await upload(url, 'POST', formData);
 
-			const scan_request = scans.find(
-				l => l.request_item.id === rs.request_item.id
-			);
-			const request_item = { ...scan_request.request_item, ...rs.request_item };
-			const newItem = { ...scan_request, request_item };
+			const scan_request = scans.find(l => l.id === scanItem.id);
+			const newItem = { ...scan_request, items: [rs.data] };
 			const newScans = updateImmutable(scans, newItem);
 			this.props.updateScan(newScans);
 
@@ -113,15 +110,14 @@ class RadiologyBlock extends Component {
 		}
 	};
 
-	approveScan = async (id, request_id) => {
+	approveScan = async (id, item_id) => {
 		try {
 			this.props.startBlock();
 			const { scans } = this.props;
-			const url = `${patientAPI}/request/${id}/approve-result?type=radiology&request_id=${request_id}`;
+			const url = `${patientAPI}/request/${id}/approve-result?type=radiology&request_item_id=${item_id}`;
 			const rs = await request(url, 'PATCH', true);
-			const scan_request = scans.find(l => l.request_item.id === rs.data.id);
-			const request_item = { ...scan_request.request_item, ...rs.data };
-			const newItem = { ...scan_request, request_item };
+			const scan_request = scans.find(l => l.id === id);
+			const newItem = { ...scan_request, status: 1, items: [rs.data] };
 			const newScans = updateImmutable(scans, newItem);
 			this.props.updateScan(newScans);
 			notifySuccess('scan image approved!');
@@ -193,21 +189,21 @@ class RadiologyBlock extends Component {
 		confirmAction(
 			this.cancel,
 			data,
-			'Do you want to cancel this radiology test?',
+			'Do you want to cancel this radiology scan?',
 			'Are you sure?'
 		);
 	};
 
-	cancel = async id => {
+	cancel = async data => {
 		try {
 			const { scans } = this.props;
 			this.props.startBlock();
-			const url = `${patientAPI}/${id}/delete-request?type=radiology`;
+			const url = `${patientAPI}/${data.item_id}/delete-request?type=radiology&request_id=${data.id}`;
 			const rs = await request(url, 'DELETE', true);
-			const scan_request = scans.find(l => l.request_item.id === rs.data.id);
-			const request_item = { ...scan_request.request_item, ...rs.data };
-			const newItem = { ...scan_request, request_item };
+			const scan_request = scans.find(l => l.id === data.id);
+			const newItem = { ...scan_request, ...rs.data, items: rs.data.items };
 			const newScans = updateImmutable(scans, newItem);
+			console.log(newScans);
 			this.props.updateScan(newScans);
 			notifySuccess('radiology request cancelled!');
 			this.props.stopBlock();
@@ -221,7 +217,7 @@ class RadiologyBlock extends Component {
 	closeModal = () => {
 		document.body.classList.remove('modal-open');
 		this.setState({
-			scan: null,
+			scanItem: null,
 			showModal: false,
 			uploadModal: false,
 		});
@@ -229,7 +225,7 @@ class RadiologyBlock extends Component {
 
 	render() {
 		const { loading, scans, patient } = this.props;
-		const { scan, showModal, uploading, uploadModal } = this.state;
+		const { scanItem, showModal, uploading, uploadModal } = this.state;
 
 		return loading ? (
 			<TableLoading />
@@ -275,162 +271,165 @@ class RadiologyBlock extends Component {
 						</tr>
 					</thead>
 					<tbody>
-						{scans.map((item, i) => {
-							const grouped = scans.filter(l => l.code === item.code);
-							return (
-								<tr key={i} className={item.urgent ? 'urgent' : ''}>
-									<td>
-										<span
-											className="w-32 avatar gd-warning"
-											style={{
-												boxShadow: 'none',
-												justifyContent: 'start',
-											}}>
-											{moment(item.createdAt).format('DD-MM-YYYY h:mmA')}
-										</span>
-									</td>
-									<td>
-										<p className="item-title text-color m-0">{item.code}</p>
-									</td>
-									<td>
-										<p className="item-title text-color m-0">
-											{item.request_item.service.name}
-										</p>
-									</td>
-									{!patient && (
+						{scans.map((scan, i) => {
+							const grouped = scans.filter(l => l.code === scan.code);
+							return scan.items.map((item, j) => {
+								console.log('refresh---------------------------------');
+								return (
+									<tr key={j} className={scan.urgent ? 'urgent' : ''}>
+										<td>
+											<span>
+												{moment(scan.createdAt).format('DD-MM-YYYY h:mmA')}
+											</span>
+										</td>
+										<td>
+											<p className="item-title text-color m-0">{scan.code}</p>
+										</td>
 										<td>
 											<p className="item-title text-color m-0">
-												<Tooltip title="">
-													<a
-														className="cursor"
-														onClick={() => this.showProfile(item.patient)}>
-														{item.patient_name}
-													</a>
-												</Tooltip>
+												{item.service.name}
 											</p>
 										</td>
-									)}
-									<td>
-										<a className="item-title text-color">{item.created_by}</a>
-									</td>
-									<td>
-										{item.request_item.filled === 1 ? (
-											<Tooltip title="View Scan Image">
-												<a
-													className="success"
-													onClick={() => this.viewScan(item)}>
-													<i className="os-icon os-icon-link" /> view
-												</a>
-											</Tooltip>
-										) : (
-											'-'
+										{!patient && (
+											<td>
+												<p className="item-title text-color m-0">
+													<Tooltip
+														title={<ProfilePopup patient={scan.patient} />}>
+														<a
+															className="cursor"
+															onClick={() => this.showProfile(scan.patient)}>
+															{scan.patient_name}
+														</a>
+													</Tooltip>
+												</p>
+											</td>
 										)}
-									</td>
-									<td>
-										{item.request_item.cancelled === 0 &&
-											item.transaction.status === 0 && (
-												<span className="badge badge-warning">
-													Awaiting Payment
-												</span>
+										<td>
+											<a className="item-title text-color">{scan.created_by}</a>
+										</td>
+										<td>
+											{item.filled === 1 ? (
+												<Tooltip title="View Scan Image">
+													<a
+														className="success"
+														onClick={() => this.viewScan(item)}>
+														<i className="os-icon os-icon-link" /> view
+													</a>
+												</Tooltip>
+											) : (
+												'-'
 											)}
-										{item.request_item.cancelled === 0 &&
-											item.transaction.status === 1 &&
-											item.request_item.filled === 0 && (
-												<span className="badge badge-info text-white">
-													Pending
-												</span>
+										</td>
+										<td>
+											{item.cancelled === 0 &&
+												item.transaction &&
+												item.transaction.status === 0 && (
+													<span className="badge badge-warning">
+														Awaiting Payment
+													</span>
+												)}
+											{item.cancelled === 0 &&
+												item.transaction &&
+												item.transaction.status === 1 &&
+												item.filled === 0 && (
+													<span className="badge badge-info text-white">
+														Pending
+													</span>
+												)}
+											{item.cancelled === 0 &&
+												item.transaction &&
+												item.transaction.status === 1 &&
+												item.filled === 1 &&
+												item.approved === 0 && (
+													<span className="badge badge-secondary">
+														Awaiting Approval
+													</span>
+												)}
+											{item.cancelled === 0 &&
+												scan.status === 1 &&
+												item.approved === 1 && (
+													<span className="badge badge-success">Approved</span>
+												)}
+											{item.cancelled === 1 && (
+												<span className="badge badge-danger">cancelled</span>
 											)}
-										{item.request_item.cancelled === 0 &&
-											item.transaction.status === 1 &&
-											item.request_item.filled === 1 &&
-											item.request_item.approved === 0 && (
-												<span className="badge badge-secondary">
-													Awaiting Approval
-												</span>
-											)}
-										{item.request_item.cancelled === 0 &&
-											item.status === 1 &&
-											item.request_item.approved === 1 && (
-												<span className="badge badge-success">Approved</span>
-											)}
-										{item.request_item.cancelled === 1 && (
-											<span className="badge badge-danger">cancelled</span>
-										)}
-									</td>
-									<td className="row-actions">
-										{item.request_item.cancelled === 0 &&
-											item.transaction.status === 1 && (
-												<>
-													{/* after payment, capture scan */}
-													{item.request_item.received === 0 && (
-														<Tooltip title="Captured Scan?">
-															<a
-																className="secondary"
-																onClick={() =>
-																	this.capturedScan(item.request_item.id)
-																}>
-																<i className="os-icon os-icon-check-circle" />
-															</a>
-														</Tooltip>
-													)}
-													{/* after capture, upload scan */}
-													{item.request_item.received === 1 &&
-														item.request_item.filled === 0 &&
-														item.request_item.approved === 0 && (
-															<Tooltip title="Upload Scan Image">
+										</td>
+										<td className="row-actions">
+											{item.cancelled === 0 &&
+												item.transaction &&
+												item.transaction.status === 1 && (
+													<>
+														{/* after payment, capture scan */}
+														{item.received === 0 && (
+															<Tooltip title="Captured Scan?">
 																<a
-																	className="primary"
-																	onClick={() => this.uploadScan(item)}>
-																	<i className="os-icon os-icon-camera" />
+																	className="secondary"
+																	onClick={() =>
+																		this.capturedScan({
+																			scan_id: scan.id,
+																			item_id: item.id,
+																		})
+																	}>
+																	<i className="os-icon os-icon-check-circle" />
 																</a>
 															</Tooltip>
 														)}
-													{/* after upload, approve scan */}
-													{item.request_item.received === 1 &&
-														item.request_item.filled === 1 &&
-														item.request_item.approved === 0 && (
-															<Tooltip title="Approve Scan Image">
+														{/* after capture, upload scan */}
+														{item.received === 1 &&
+															item.filled === 0 &&
+															item.approved === 0 && (
+																<Tooltip title="Upload Scan Image">
+																	<a
+																		className="primary"
+																		onClick={() => this.uploadScan(scan)}>
+																		<i className="os-icon os-icon-camera" />
+																	</a>
+																</Tooltip>
+															)}
+														{/* after upload, approve scan */}
+														{item.received === 1 &&
+															item.filled === 1 &&
+															item.approved === 0 && (
+																<Tooltip title="Approve Scan Image">
+																	<a
+																		className="info"
+																		onClick={() =>
+																			this.approveScan(scan.id, item.id)
+																		}>
+																		<i className="os-icon os-icon-thumbs-up" />
+																	</a>
+																</Tooltip>
+															)}
+														{/* after approval, print scan */}
+														{item.approved === 1 && (
+															<Tooltip title="Print Scan">
 																<a
 																	className="info"
 																	onClick={() =>
-																		this.approveScan(
-																			item.id,
-																			item.request_item.id
-																		)
+																		this.printResult(scan, grouped.length > 1)
 																	}>
-																	<i className="os-icon os-icon-thumbs-up" />
+																	<i className="os-icon os-icon-printer" />
 																</a>
 															</Tooltip>
 														)}
-													{/* after approval, print scan */}
-													{item.request_item.approved === 1 && (
-														<Tooltip title="Print Scan">
-															<a
-																className="info"
-																onClick={() =>
-																	this.printResult(item, grouped.length > 1)
-																}>
-																<i className="os-icon os-icon-printer" />
-															</a>
-														</Tooltip>
-													)}
-													{/* before approval, cancel scan */}
-													{item.request_item.approved === 0 && (
-														<Tooltip title="Cancel Scan">
-															<a
-																className="danger"
-																onClick={() =>
-																	this.cancelScan(item.request_item.id)
-																}>
-																<i className="os-icon os-icon-ui-15" />
-															</a>
-														</Tooltip>
-													)}
-												</>
+													</>
+												)}
+											{/* before approval, cancel scan */}
+											{item.cancelled === 0 && item.approved === 0 && (
+												<Tooltip title="Cancel Scan">
+													<a
+														className="danger"
+														onClick={() =>
+															this.cancelScan({ id: scan.id, item_id: item.id })
+														}>
+														<i className="os-icon os-icon-ui-15" />
+													</a>
+												</Tooltip>
 											)}
-									</td>
-								</tr>
-							);
+										</td>
+									</tr>
+								);
+							});
 						})}
 					</tbody>
 				</table>
@@ -441,8 +440,8 @@ class RadiologyBlock extends Component {
 						closeModal={this.closeModal}
 					/>
 				)}
-				{scan && showModal && (
-					<ViewScanImage scan={scan} closeModal={this.closeModal} />
+				{scanItem && showModal && (
+					<ViewScanImage scan={scanItem} closeModal={this.closeModal} />
 				)}
 			</>
 		);

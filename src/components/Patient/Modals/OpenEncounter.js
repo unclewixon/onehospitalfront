@@ -17,8 +17,7 @@ import PastHistory from '../Encounter/PastHistory';
 import HxForm from '../Encounter/HxForm';
 import ReviewOfSystem from '../Encounter/ReviewOfSystem';
 import { encounters } from '../../../services/constants';
-import { closeModals } from '../../../actions/general';
-import ProfileBlock from '../../ProfileBlock';
+import { updateEncounterData } from '../../../actions/patient';
 
 const EncounterTabs = ({ index, previous, next }) => {
 	switch (index) {
@@ -102,6 +101,29 @@ class OpenEncounter extends Component {
 		}, 200);
 	};
 
+	componentWillUnmount() {
+		// this.props.updateEncounterData({
+		// 	complaints: 'Presenting Complaints:',
+		// 	reviewOfSystem: [],
+		// 	patientHistory: [],
+		// 	medicalHistory: [],
+		// 	allergies: [],
+		// 	physicalExamination: [],
+		// 	//physicalExaminationSummary: [],
+		// 	diagnosis: [],
+		// 	investigations: {
+		// 		labRequest: {},
+		// 		imagingRequest: {},
+		// 	},
+		// 	plan: {
+		// 		treatmentPlan: 'Treatment Plan:',
+		// 		pharmacyRequests: {},
+		// 		nextAppointment: {},
+		// 		procedureRequest: {},
+		// 	},
+		// });
+	}
+
 	previous = () => {
 		const { eIndex } = this.state;
 		const i = eIndex - 1;
@@ -126,11 +148,9 @@ class OpenEncounter extends Component {
 	}
 
 	render() {
-		const { patient } = this.props.encounterInfo;
-
-		const { eIndex, dropdown } = this.state;
+		const { appointment_id, patient, closeModal } = this.props;
+		const { eIndex } = this.state;
 		const current = encounters[eIndex];
-
 		return (
 			<div
 				className="onboarding-modal modal fade animated show top-modal"
@@ -145,29 +165,26 @@ class OpenEncounter extends Component {
 							aria-label="Close"
 							className="close"
 							type="button"
-							onClick={() => this.props.closeModals()}>
+							onClick={closeModal}>
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="layout-w flex-column">
-							<ProfileBlock
-								dropdown={dropdown}
-								patient={patient}
-								toggleDropdown={this.toggleDropdown}
-								noEdits={true}
-							/>
 							<EncounterMenu
-								profile={false}
 								encounters={encounters}
 								active={kebabCase(current)}
 								open={this.open}
 							/>
 							<div className="content-w">
 								<div className="content-i">
-									<div className="content-box encounter-box">
+									<div
+										className="content-box encounter-box"
+										style={eIndex === 3 ? { overflowY: 'visible' } : {}}>
 										<EncounterTabs
 											index={eIndex}
 											next={this.next}
 											previous={this.previous}
+											patient={patient}
+											appointment_id={appointment_id}
 										/>
 									</div>
 								</div>
@@ -180,10 +197,4 @@ class OpenEncounter extends Component {
 	}
 }
 
-const mapStateToProps = (state, ownProps) => {
-	return {
-		encounterInfo: state.general.encounterInfo,
-	};
-};
-
-export default connect(mapStateToProps, { closeModals })(OpenEncounter);
+export default connect(null, updateEncounterData)(OpenEncounter);

@@ -10,8 +10,6 @@ import {
 	TOGGLE_EDIT_INVENTORY,
 	TOGGLE_UPDATE_QTY,
 	TOGGLE_REGISTER_NEW_PATIENT,
-	TOGGLE_CREATE_APPOINTMENT,
-	TOGGLE_VIEW_APPOINTMENT_DETAIL,
 	TOGGLE_VIEW_APPRAISAL,
 	TOGGLE_VIEW_PAYROLL_HISTORY,
 	TOGGLE_VIEW_CURRENT_PAYROLL,
@@ -25,7 +23,6 @@ import {
 	TOGGLE_CREATE_RISK_ASSESSMENT,
 	TOGGLE_CREATE_RECORD_VITAL,
 	TOGGLE_CREATE_RECORD_DELIVERY,
-	TOGGLE_OPEN_ENCOUNTER,
 	TOGGLE_CREATE_CLINICAL_TASK,
 	TOGGLE_ADD_CAFETERIA_FILE,
 	TOGGLE_UPLOAD_RADIOLOGY,
@@ -54,8 +51,6 @@ const INITIAL_STATE = {
 	edit_inventory: false,
 	update_inventory_qty: false,
 	register_new_patient: false,
-	create_new_appointment: false,
-	view_appointment_detail: false,
 	view_appraisal: false,
 	view_payroll_history: false,
 	current_payroll: false,
@@ -78,8 +73,6 @@ const INITIAL_STATE = {
 	upload_hmo_tariff: false,
 	create_clinical_task: false,
 	edit_service: { status: false, data: null },
-	openEncounter: false,
-	encounterInfo: { appointmentId: null, patient: null },
 	antenatal_detail: false,
 	antenatal_id: null,
 	antenatal_assessment_detail: false,
@@ -133,10 +126,6 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, update_inventory_qty: action.payload };
 		case TOGGLE_REGISTER_NEW_PATIENT:
 			return { ...state, register_new_patient: action.payload };
-		case TOGGLE_CREATE_APPOINTMENT:
-			return { ...state, create_new_appointment: action.payload };
-		case TOGGLE_VIEW_APPOINTMENT_DETAIL:
-			return { ...state, view_appointment_detail: action.payload };
 		case TOGGLE_VIEW_APPRAISAL:
 			return { ...state, view_appraisal: action.payload };
 		case TOGGLE_VIEW_PAYROLL_HISTORY:
@@ -177,12 +166,6 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, upload_hmo: action.payload };
 		case TOGGLE_UPLOAD_HMO_TARIFF:
 			return { ...state, upload_hmo_tariff: action.payload };
-		case TOGGLE_OPEN_ENCOUNTER:
-			return {
-				...state,
-				openEncounter: action.status,
-				encounterInfo: action.payload,
-			};
 
 		case TOGGLE_ADD_CAFETERIA_FILE:
 			return { ...state, add_cafeteria_file: action.payload };

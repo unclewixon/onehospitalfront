@@ -295,9 +295,6 @@ const Nicu = props => {
 					</div>
 				</div>
 			</div>
-			{/* <div className="content-panel compact">
-					<Queue department={department} />
-				</div> */}
 		</div>
 	);
 };

@@ -23,7 +23,11 @@ const Tarrifs = props => {
 	const [services] = useState([]);
 	const [filtered, setFiltered] = useState([]);
 	const [hmo, setHmo] = useState(1);
-	const [meta, setMeta] = useState(null);
+	const [meta, setMeta] = useState({
+		currentPage: 1,
+		itemsPerPage: 25,
+		totalPages: 0,
+	});
 
 	const handleInputChange = e => {
 		const { value } = e.target;

@@ -17,8 +17,6 @@ import {
 	TOGGLE_EDIT_PAYROLL,
 	TOGGLE_REGISTER_NEW_PATIENT,
 	TOGGLE_ADD_NEW_OBSERVATION,
-	TOGGLE_CREATE_APPOINTMENT,
-	TOGGLE_VIEW_APPOINTMENT_DETAIL,
 	TOGGLE_VIEW_PAYPOINT,
 	TOGGLE_CREATE_VOUCHER,
 	TOGGLE_CREATE_LABOUR_MEASUREMENT,
@@ -27,7 +25,6 @@ import {
 	TOGGLE_CREATE_RECORD_VITAL,
 	TOGGLE_UPLOAD_HMO,
 	TOGGLE_CREATE_CLINICAL_TASK,
-	TOGGLE_OPEN_ENCOUNTER,
 	TOGGLE_ADD_CAFETERIA_FILE,
 	TOGGLE_UPLOAD_RADIOLOGY,
 	TOGGLE_APPROVE_TRANSACTION,
@@ -159,20 +156,6 @@ export const toggleRegisterNewPatient = status => {
 	};
 };
 
-export const toggleNewAppointment = status => {
-	return {
-		type: TOGGLE_CREATE_APPOINTMENT,
-		payload: status,
-	};
-};
-
-export const toggleViewAppointDetail = status => {
-	return {
-		type: TOGGLE_VIEW_APPOINTMENT_DETAIL,
-		payload: status,
-	};
-};
-
 // appraisals
 export const toggleViewAppraisal = status => {
 	return {
@@ -290,14 +273,6 @@ export const toggleUploadHmo = status => {
 };
 
 // patient
-export const toggleOpenEncounter = (status, payload) => {
-	return {
-		type: TOGGLE_OPEN_ENCOUNTER,
-		payload,
-		status,
-	};
-};
-
 export const toggleAntenatalDetail = (status, id) => {
 	return {
 		type: TOGGLE_ANTENATAL_DETAIL,
@@ -381,8 +356,6 @@ export const closeModals = () => {
 		dispatch(toggleEditPayroll(false));
 		dispatch(toggleRegisterNewPatient(false));
 		dispatch(toggleAddNewObservation(false));
-		dispatch(toggleNewAppointment(false));
-		dispatch(toggleViewAppointDetail(false));
 		dispatch(toggleViewPayPoint(false));
 		dispatch(toggleCreateVoucher(false));
 		dispatch(toggleCreateLabourMeasurement(false));
@@ -394,7 +367,6 @@ export const closeModals = () => {
 		dispatch(toggleAddCafeteriaFile(false));
 		dispatch(toggleUploadRadiology(false));
 		dispatch(toggleUploadHmo(false));
-		dispatch(toggleOpenEncounter(false, null));
 		dispatch(toggleAntenatalDetail(false, null));
 		dispatch(toggleAntenatalAssessmentDetail(false, null));
 		dispatch(toggleLineAppraisal(false));
@@ -514,22 +486,6 @@ export const registerNewPatient = action => {
 	};
 };
 
-export const createNewAppointment = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleNewAppointment(action));
-	};
-};
-
-export const viewAppointmentDetail = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleViewAppointDetail(action));
-	};
-};
-
 //appraisal modals
 export const viewAppraisal = action => {
 	return dispatch => {
@@ -619,14 +575,6 @@ export const createRecordVital = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleCreateRecordVital(action));
-	};
-};
-
-export const openEncounter = (action, payload) => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleOpenEncounter(action, payload));
 	};
 };
 

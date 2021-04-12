@@ -49,22 +49,24 @@ const ClinicalLab = ({ match, location }) => {
 								</Link>
 							</div>
 							<h6 className="element-header">{pageTitle}</h6>
-							<Suspense fallback={<Splash />}>
-								<Switch>
-									<Route exact path={`${match.url}`} component={LabQueue} />
-									<Route
-										exact
-										path={`${match.url}/new-request`}
-										component={LabRequest}
-									/>
-									<Route
-										exact
-										path={`${match.url}/all-request`}
-										component={AllRequest}
-									/>
-									<Route component={NoMatch} />
-								</Switch>
-							</Suspense>
+							<div className="element-content">
+								<Suspense fallback={<Splash />}>
+									<Switch>
+										<Route exact path={`${match.url}`} component={LabQueue} />
+										<Route
+											exact
+											path={`${match.url}/new-request`}
+											component={LabRequest}
+										/>
+										<Route
+											exact
+											path={`${match.url}/all-request`}
+											component={AllRequest}
+										/>
+										<Route component={NoMatch} />
+									</Switch>
+								</Suspense>
+							</div>
 						</div>
 					</div>
 				</div>

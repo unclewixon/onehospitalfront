@@ -1,28 +1,28 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import patientProfile from '../../assets/svg-icons/patientProfile.svg';
 import patientProfilePic from '../../assets/images/patientprofile.jpg';
-import { withRouter } from 'react-router-dom';
 import { formatPatientId } from '../../services/utilities';
 import VisitSummaryTable from './VisitSummaryTable';
 import VisitNotesTable from './VisitNotesTable';
 import BillingTable from './BillingTable';
-import AppointmentHistoryTable from './AppointmentHistoryTable';
+import AppointmentHistory from './AppointmentHistory';
 import PatientActions from '../PatientActions';
 import { patientAPI } from '../../services/constants';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { updatePatient } from '../../actions/patient';
 import { request } from '../../services/utilities';
-import { useDispatch } from 'react-redux';
 
 const Dashboard = ({ location, history }) => {
-	const patient = useSelector(state => state.user.patient);
 	const [tab, setTab] = useState('visitNotes');
-	const [isAdmitted, setisAdmitted] = useState(false);
+	const [isAdmitted, setIsAdmitted] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
+
+	const patient = useSelector(state => state.user.patient);
 
 	const dispatch = useDispatch();
 
@@ -54,16 +54,9 @@ const Dashboard = ({ location, history }) => {
 			}
 		}
 	};
+
 	return (
 		<>
-			{/* <div className="col-sm-3">
-				<div className="user-profile compact">
-					<div className="up-contents">
-						<PatientData patient={patient} />
-					</div>
-				</div>
-			</div> */}
-			{/*  */}
 			<div className="col-lg-3 col-md-12">
 				<div className="user-profile compact">
 					<div
@@ -92,7 +85,7 @@ const Dashboard = ({ location, history }) => {
 							alt="patient profile svg"
 						/>
 					</div>
-					{patient?.isAdmitted ? (
+					{patient?.isAdmitted && (
 						<div className="up-controls">
 							<div className="row">
 								<div className="col-sm-12">
@@ -105,8 +98,6 @@ const Dashboard = ({ location, history }) => {
 								</div>
 							</div>
 						</div>
-					) : (
-						''
 					)}
 					<div className="up-contents">
 						<div className="m-b">
@@ -175,7 +166,6 @@ const Dashboard = ({ location, history }) => {
 				</div>
 			</div>
 
-			{/*  */}
 			<div className="col-lg-9 col-md-12">
 				<div className="element-actions d-none d-sm-block">
 					<PatientActions
@@ -230,7 +220,7 @@ const Dashboard = ({ location, history }) => {
 						<div className="tab-content">
 							{tab === 'visitNotes' && <VisitNotesTable />}
 							{tab === 'visitSummary' && <VisitSummaryTable />}
-							{tab === 'appointment' && <AppointmentHistoryTable />}
+							{tab === 'appointment' && <AppointmentHistory />}
 							{tab === 'billing' && <BillingTable />}
 						</div>
 					</div>
@@ -244,7 +234,7 @@ const Dashboard = ({ location, history }) => {
 							<tbody>
 								<tr>
 									<td className="font-weight-bold">File Number</td>
-									<td>{patient?.fileNumber}</td>
+									<td>{patient?.folderNumber}</td>
 								</tr>
 								<tr>
 									<td className="font-weight-bold">Email Address</td>

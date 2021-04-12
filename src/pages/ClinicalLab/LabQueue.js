@@ -11,8 +11,6 @@ class LabQueue extends Component {
 	state = {
 		loading: false,
 		labs: [],
-		startDate: moment().format('YYYY-MM-DD'),
-		endDate: '',
 		meta: null,
 	};
 
@@ -22,10 +20,10 @@ class LabQueue extends Component {
 
 	fetchRequests = async page => {
 		try {
-			const { startDate, endDate } = this.state;
 			this.setState({ ...this.state, loading: true });
 			const p = page || 1;
-			const url = `${patientAPI}/requests/lab?page=${p}&limit=10&startDate=${startDate}&endDate=${endDate}`;
+			const date = moment().format('YYYY-MM-DD');
+			const url = `${patientAPI}/requests/lab?page=${p}&limit=10&today=${date}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			this.setState({ ...this.state, loading: false, labs: result, meta });
@@ -36,6 +34,7 @@ class LabQueue extends Component {
 	};
 
 	updateLab = labs => {
+		console.log(labs);
 		this.setState({ labs });
 	};
 

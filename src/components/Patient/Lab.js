@@ -12,7 +12,11 @@ import LabBlock from '../LabBlock';
 const Lab = ({ location }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [labs, setLabs] = useState([]);
-	const [meta, setMeta] = useState(null);
+	const [meta, setMeta] = useState({
+		currentPage: 1,
+		itemsPerPage: 10,
+		totalPages: 0,
+	});
 
 	const startDate = '';
 	const endDate = '';

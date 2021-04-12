@@ -44,7 +44,6 @@ const UploadImagingData = ({ uploading, upload, closeModal }) => {
 											name="file"
 											accept="image/*"
 											onChange={handleChange}
-											multiple
 										/>
 										<label className="custom-file-label">
 											{label.substring(0, 40) || 'Choose File(s)'}

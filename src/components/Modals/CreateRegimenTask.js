@@ -22,6 +22,8 @@ const defaultValues = {
 	taskCount: '',
 };
 
+const category_id = 1;
+
 const CreateRegimenTask = ({ closeModal, setMedicalTask }) => {
 	const { register, handleSubmit, setValue, reset } = useForm({
 		defaultValues,
@@ -43,14 +45,9 @@ const CreateRegimenTask = ({ closeModal, setMedicalTask }) => {
 	const getServiceUnit = async hmoId => {
 		try {
 			dispatch(startBlock());
-			const res = await request('inventory/categories', 'GET', true);
-			if (res && res.length > 0) {
-				const selectCat = res.find(cat => cat.name === 'Pharmacy');
-
-				const url = `inventory/stocks-by-category/${selectCat.id}/${hmoId}`;
-				const rs = await request(url, 'GET', true);
-				setInventories(rs);
-			}
+			const url = `inventory/stocks-by-category/${category_id}/${hmoId}`;
+			const rs = await request(url, 'GET', true);
+			setInventories(rs);
 			setLoading(false);
 			dispatch(stopBlock());
 		} catch (error) {

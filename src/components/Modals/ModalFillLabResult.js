@@ -22,7 +22,7 @@ const allOptions = [
 	{ label: 'Negative', value: 'Negative' },
 ];
 
-const ModalFillLabResult = ({ closeModal, labRequest, labs, updateLab }) => {
+const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
 	const [options, setOptions] = useState([]);
@@ -30,15 +30,17 @@ const ModalFillLabResult = ({ closeModal, labRequest, labs, updateLab }) => {
 	const [note, setNote] = useState(null);
 	const [result, setResult] = useState(null);
 
+	const item = lab.items[0];
+
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (!loaded) {
-			setNote(labRequest.request_item.note);
-			setParameters(labRequest.request_item.labTest.parameters);
+			setNote(item.note);
+			setParameters(item.labTest.parameters);
 			setLoaded(true);
 		}
-	}, [labRequest, loaded]);
+	}, [item, loaded]);
 
 	const update = (allParameters, id, type, value) => {
 		const parameter = allParameters.find(d => d.id === id);
@@ -71,11 +73,10 @@ const ModalFillLabResult = ({ closeModal, labRequest, labs, updateLab }) => {
 			dispatch(startBlock());
 			setSubmitting(true);
 			const data = { parameters, note, result };
-			const url = `${patientAPI}/${labRequest.request_item.id}/fill-result`;
+			const url = `${patientAPI}/${item.id}/fill-result`;
 			const rs = await request(url, 'PATCH', true, data);
-			const lab_request = labs.find(l => l.request_item.id === rs.data.id);
-			const request_item = { ...lab_request.request_item, ...rs.data };
-			const newItem = { ...lab_request, request_item };
+			const lab_request = labs.find(l => l.id === lab.id);
+			const newItem = { ...lab_request, items: [rs.data] };
 			const newLabs = updateImmutable(labs, newItem);
 			updateLab(newLabs);
 			notifySuccess('lab result filled!');
@@ -107,9 +108,9 @@ const ModalFillLabResult = ({ closeModal, labRequest, labs, updateLab }) => {
 					<div className="onboarding-content with-gradient">
 						<h4 className="onboarding-title">Fill Lab Result</h4>
 						<div className="onboarding-text alert-custom mb-3">
-							<div>{labRequest.request_item.labTest.name}</div>
+							<div>{item.labTest.name}</div>
 							<div>
-								{labRequest.request_item.labTest.specimens.map((s, i) => (
+								{item.labTest.specimens.map((s, i) => (
 									<span key={i} className="badge badge-info text-white mr-2">
 										{s.label}
 									</span>
@@ -121,7 +122,7 @@ const ModalFillLabResult = ({ closeModal, labRequest, labs, updateLab }) => {
 								<div className="col-sm-12">
 									<table className="table table-bordered table-sm table-v2 table-striped">
 										<tbody>
-											{labRequest.request_item.labTest.hasParameters ? (
+											{item.labTest.hasParameters ? (
 												parameters.map((param, i) => {
 													return (
 														<tr key={i}>

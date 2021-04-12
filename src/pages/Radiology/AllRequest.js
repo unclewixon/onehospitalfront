@@ -61,10 +61,6 @@ class AllRequest extends Component {
 		if (e) e.preventDefault();
 		this.setState({ filtering: true });
 		this.fetchRequests();
-
-		// this.state.patient_id
-		// 	? this.fetchRadiologyByPatient()
-		// 	: this.fetchRadiology();
 	};
 
 	change = e => {

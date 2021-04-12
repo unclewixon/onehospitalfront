@@ -106,7 +106,7 @@ let Login = props => {
 	const doLogin = async data => {
 		setState({ ...state, submitting: true });
 		try {
-			const rs = await request(`auth/login`, 'POST', true, data);
+			const rs = await request('auth/login', 'POST', true, data);
 			try {
 				const jwt = `Bearer ${rs.token}`;
 				let [

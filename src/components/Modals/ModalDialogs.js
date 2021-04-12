@@ -13,8 +13,6 @@ import ModalPayrollHistory from './ModalPayrollHistory';
 import ModalCurrentPayroll from './ModalCurrentPayroll';
 import ModalPreparePayroll from './ModalPreparePayroll';
 import ModalEditPayroll from './ModalEditPayroll';
-import AppointmentFormModal from './AppointmentFormModal';
-import ModalViewAppointment from './ModalViewAppointment';
 import PatientFormModal from './PatientFormModal';
 import ModalViewPayPoint from './ModalViewPayPoint';
 import ModalUploadHmo from './ModalUploadHmo';
@@ -22,7 +20,6 @@ import ModalCreateLabMeasurement from './ModalCreateLabMeasurement';
 import ModalCreateRiskAssessment from './ModalCreateRiskAssessment';
 import ModalCreateRecordDelivery from './ModalCreateRecordDelivery';
 import ModalCreateRecordVital from './ModalCreateRecordVital';
-import OpenEncounter from '../Patient/Modals/OpenEncounter';
 import ModalCreateVoucher from './ModalCreateVoucher';
 import ModalCreateClinicalTask from './ModalCreateClinicalTask';
 import AddCafeteriaFile from './AddCafeteriaFile';
@@ -51,15 +48,12 @@ const ModalDialogs = ({
 	prepare_payroll,
 	edit_payroll,
 	register_new_patient,
-	create_new_appointment,
-	view_appointment_detail,
 	view_paypoint,
 	create_labour_measurement,
 	create_record_delivery,
 	create_risk_assessment,
 	create_record_vital,
 	upload_hmo,
-	openEncounter,
 	create_voucher,
 	create_clinical_task,
 	add_cafeteria_file,
@@ -90,8 +84,6 @@ const ModalDialogs = ({
 			{prepare_payroll && <ModalPreparePayroll />}
 			{edit_payroll && <ModalEditPayroll />}
 			{register_new_patient && <PatientFormModal />}
-			{create_new_appointment && <AppointmentFormModal />}
-			{view_appointment_detail && <ModalViewAppointment />}
 			{view_paypoint && <ModalViewPayPoint />}
 			{create_labour_measurement && <ModalCreateLabMeasurement />}
 			{create_risk_assessment && <ModalCreateRiskAssessment />}
@@ -100,7 +92,6 @@ const ModalDialogs = ({
 			{upload_hmo && <ModalUploadHmo />}
 			{create_voucher && <ModalCreateVoucher />}
 			{create_clinical_task && <ModalCreateClinicalTask />}
-			{openEncounter && <OpenEncounter />}
 			{add_cafeteria_file && <AddCafeteriaFile />}
 			{upload_radiology && <ModalUploadRadiology />}
 			{antenatal_detail && <ModalAntenatalDetail />}
@@ -125,8 +116,6 @@ const mapStateToProps = (state, ownProps) => {
 		approve_transaction: state.general.approve_transaction,
 		update_inventory_qty: state.general.update_inventory_qty,
 		register_new_patient: state.general.register_new_patient,
-		create_new_appointment: state.general.create_new_appointment,
-		view_appointment_detail: state.general.view_appointment_detail,
 		view_appraisal: state.general.view_appraisal,
 		view_payroll_history: state.general.view_payroll_history,
 		current_payroll: state.general.current_payroll,
@@ -139,7 +128,6 @@ const mapStateToProps = (state, ownProps) => {
 		create_record_vital: state.general.create_record_vital,
 		upload_hmo: state.general.upload_hmo,
 		upload_hmo_tariff: state.general.upload_hmo_tariff,
-		openEncounter: state.general.openEncounter,
 		create_voucher: state.general.create_voucher,
 		create_clinical_task: state.general.create_clinical_task,
 		add_cafeteria_file: state.general.add_cafeteria_file,

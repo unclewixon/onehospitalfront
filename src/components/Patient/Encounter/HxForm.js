@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 
 import { renderSelect } from '../../../services/utilities';
-import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
+import { updateEncounterData } from '../../../actions/patient';
 import { FamilyHistory } from '../../Enrollment/FamilyHistory';
 import { SocialHistory } from '../../Enrollment/SocialHistory';
 import GynaeHistory from '../../Enrollment/GynaeHistory';
@@ -184,10 +184,13 @@ class HxForm extends Component {
 				oedema: data.oedema || '',
 			},
 		};
-		const { encounterData, next } = this.props;
-		encounterData.patientHistory = obstericsHistory || [];
-		//encounterData.patientHistory =  [];
-		this.props.loadEncounterData(encounterData);
+
+		const { encounter, next } = this.props;
+
+		this.props.updateEncounterData({
+			...encounter,
+			patientHistory: obstericsHistory || [],
+		});
 		this.props.dispatch(next);
 	};
 
@@ -252,11 +255,10 @@ HxForm = reduxForm({
 
 const mapStateToProps = state => {
 	return {
-		encounterData: state.patient.encounterData,
+		encounter: state.patient.encounterData,
 		value: selector(state, 'obstericsHistory'),
 	};
 };
 export default connect(mapStateToProps, {
-	loadEncounterData,
-	loadEncounterForm,
+	updateEncounterData,
 })(HxForm);

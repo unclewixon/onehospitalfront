@@ -14,6 +14,7 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import { ReactComponent as TrashIcon } from '../../assets/svg-icons/trash.svg';
 import { formatCurrency } from '../../services/utilities';
 import { startBlock, stopBlock } from '../../actions/redux-block';
+import { formatPatientId } from '../../services/utilities';
 
 const defaultValues = {
 	request_note: '',
@@ -89,7 +90,7 @@ const LabRequest = ({ module, history, location }) => {
 	}, [currentPatient, loadedPatient, getServiceUnit]);
 
 	const getPatients = async q => {
-		if (!q || q.length < 3) {
+		if (!q || q.length < 1) {
 			return [];
 		}
 
@@ -152,7 +153,9 @@ const LabRequest = ({ module, history, location }) => {
 										isClearable
 										getOptionValue={option => option.id}
 										getOptionLabel={option =>
-											`${option.other_names} ${option.surname}`
+											`${option.other_names} ${
+												option.surname
+											} (${formatPatientId(option.id)})`
 										}
 										defaultOptions
 										name="patient"

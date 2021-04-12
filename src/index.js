@@ -94,6 +94,7 @@ const initData = async () => {
 				rs_roles,
 				rs_specializations,
 				rs_hmos,
+				rs_user,
 			] = await Promise.all([
 				axiosFetch(`${API_URI}/${departmentAPI}`, jwt),
 				axiosFetch(`${API_URI}/${inventoryCatAPI}`, jwt),
@@ -101,6 +102,7 @@ const initData = async () => {
 				axiosFetch(`${API_URI}/${rolesAPI}`, jwt),
 				axiosFetch(`${API_URI}/specializations`, jwt),
 				axiosFetch(`${API_URI}/hmos`, jwt),
+				axiosFetch(`${API_URI}/auth/${user.username}`, jwt),
 			]);
 
 			if (rs_depts && rs_depts.data) {
@@ -122,7 +124,12 @@ const initData = async () => {
 				store.dispatch(fetch_all_hmos_data(rs_hmos.data));
 			}
 
-			store.dispatch(loginUser(user));
+			const details = {
+				...user.details,
+				room: rs_user?.data?.details?.room || null,
+			};
+
+			store.dispatch(loginUser({ ...user, details }));
 			store.dispatch(togglePreloading(false));
 
 			const search = history.location.search.replace('?', '');

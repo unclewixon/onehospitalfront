@@ -8,6 +8,8 @@ import { notifyError } from '../../services/notify';
 import ViewPrescription from '../../components/Pharmacy/ViewPrescription';
 import { request, updateImmutable, itemRender } from '../../services/utilities';
 
+const category_id = 1;
+
 class PrescriptionQueue extends Component {
 	state = {
 		filtering: false,
@@ -15,8 +17,6 @@ class PrescriptionQueue extends Component {
 		patientId: '',
 		activeRequest: null,
 		showModal: false,
-		startDate: moment().format('YYYY-MM-DD'),
-		endDate: '',
 		drugs: [],
 		prescriptions: [],
 		filled: false,
@@ -25,15 +25,9 @@ class PrescriptionQueue extends Component {
 
 	getServiceUnit = async hmoId => {
 		try {
-			const res = await request('inventory/categories', 'GET', true);
-
-			if (res && res.length > 0) {
-				const selectCat = res.find(cat => cat.name === 'Pharmacy');
-
-				const url = `inventory/stocks-by-category/${selectCat.id}/${hmoId}`;
-				const rs = await request(url, 'GET', true);
-				this.setState({ drugs: rs });
-			}
+			const url = `inventory/stocks-by-category/${category_id}/${hmoId}`;
+			const rs = await request(url, 'GET', true);
+			this.setState({ drugs: rs });
 		} catch (error) {
 			notifyError('Error fetching Service Unit');
 		}
@@ -49,15 +43,15 @@ class PrescriptionQueue extends Component {
 	};
 
 	componentDidMount() {
-		const { startDate, endDate } = this.state;
-		this.loadPrescriptions(startDate, endDate);
+		this.loadPrescriptions();
 	}
 
-	loadPrescriptions = async (start, end, p) => {
+	loadPrescriptions = async p => {
 		try {
 			const page = p || 1;
 			this.setState({ loading: true });
-			const url = `patient/requests/pharmacy?startDate=${start}&endDate=${end}&limit=10&page=${page}`;
+			const date = moment().format('YYYY-MM-DD');
+			const url = `patient/requests/pharmacy?page=${page}&limit=10&today=${date}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			this.setState({ loading: false, prescriptions: result, meta });
@@ -73,16 +67,8 @@ class PrescriptionQueue extends Component {
 		this.setState({ prescriptions: updatedDrugs });
 	};
 
-	filterEntries = () => {
-		const { startDate, endDate } = this.state;
-		this.setState({ filtering: true });
-		this.loadPrescriptions(startDate, endDate);
-		this.setState({ filtering: false });
-	};
-
 	onNavigatePage = nextPage => {
-		const { startDate, endDate } = this.state;
-		this.loadPrescriptions(startDate, endDate, nextPage);
+		this.loadPrescriptions(nextPage);
 	};
 
 	render() {
@@ -116,7 +102,7 @@ class PrescriptionQueue extends Component {
 									console.log('prescriptions=======');
 									console.log(request);
 									return (
-										<tr className="" key={index}>
+										<tr key={index}>
 											<td>
 												<span>
 													{moment(request.createdAt).format(
@@ -125,21 +111,23 @@ class PrescriptionQueue extends Component {
 												</span>
 											</td>
 											<td>
-												{request.patient_name ? request.patient_name : ''}
+												{`${request.patient.surname} ${request.patient.other_names}`}
 											</td>
 											<td>{request.created_by ? request.created_by : ''}</td>
 											<td className="nowrap">
 												{request.status === 0 && !request.isFilled && (
 													<span className="badge badge-warning">Pending</span>
 												)}
-												{request.transaction_status === 0 &&
+												{request.transaction &&
+													request.transaction.status === 0 &&
 													request.status === 0 &&
 													request.isFilled && (
 														<span className="badge badge-info text-white">
 															Awaiting Payment
 														</span>
 													)}
-												{request.transaction_status === 1 &&
+												{request.transaction &&
+													request.transaction.status === 1 &&
 													request.status === 0 && (
 														<span className="badge badge-secondary">
 															Awaiting Dispense
@@ -172,7 +160,7 @@ class PrescriptionQueue extends Component {
 															className="primary"
 															onClick={async () => {
 																await this.getServiceUnit(
-																	request.patient_hmo_id
+																	request.patient.hmo.id
 																);
 																document.body.classList.add('modal-open');
 																this.setState({

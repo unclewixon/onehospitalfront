@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react';
+import React, { useState } from 'react';
+
 import AccountDetails from './ProfileAccountDetails';
 import AccountUserProfile from './AccountUserProfile';
 import { useSelector } from 'react-redux';
-import { useState } from 'react';
 import EditProfile from './EditProfile';
 
 const AccountProfile = () => {
@@ -70,8 +70,6 @@ const AccountProfile = () => {
 								</div>
 								<div className="tab-content">
 									{tab === 'profile' && <AccountUserProfile staff={staff} />}
-									{/* {tab === 'payroll' && <AppointmentHistoryTable />}
-									{tab === 'appraisal' && <BillingTable />} */}
 								</div>
 							</div>
 						</div>

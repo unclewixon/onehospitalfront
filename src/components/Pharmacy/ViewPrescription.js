@@ -31,14 +31,13 @@ const ViewPrescription = ({
 	const staff = useSelector(state => state.user.profile);
 
 	useEffect(() => {
-		if (!loaded && activeRequest) {
-			setPrescriptions(activeRequest.requestBody);
+		if (!loaded && activeRequest && activeRequest.items) {
+			setPrescriptions(activeRequest.items);
 
-			const total = activeRequest.requestBody.reduce((total, item) => {
-				const amount =
-					item.drug_hmo_id === 1 ? item.drug_cost : item.drug_hmo_cost;
+			const total = activeRequest.items.reduce((total, item) => {
+				const amount = item.drug.hmoPrice;
 
-				return (total += parseFloat(amount) * item.quantity);
+				return (total += parseFloat(amount) * item.fillQuantity);
 			}, 0.0);
 
 			setSumTotal(total);
@@ -48,22 +47,21 @@ const ViewPrescription = ({
 	}, [activeRequest, loaded]);
 
 	const onChange = (e, id) => {
-		let quantity = e.target.value;
+		const quantity = e.target.value;
 
 		const updatedDrugs = updateImmutable(prescriptions, {
 			id,
-			quantity,
-			filled_by: staff.username,
+			fillQuantity: quantity,
+			filledBy: staff.username,
 		});
 		setPrescriptions(updatedDrugs);
 
 		const total = updatedDrugs.reduce((total, item) => {
-			if (quantity === '') {
+			if (item.fillQuantity === '') {
 				return (total += 0);
 			}
-			const amount =
-				item.drug_hmo_id === 1 ? item.drug_cost : item.drug_hmo_cost;
-			return (total += parseFloat(amount) * parseInt(item.quantity, 10));
+			const amount = item.drug.hmoPrice;
+			return (total += parseFloat(amount) * parseInt(item.fillQuantity, 10));
 		}, 0.0);
 
 		setSumTotal(total);
@@ -93,28 +91,23 @@ const ViewPrescription = ({
 
 		const update = {
 			id,
-			drug_generic_name: drug.generic_name,
-			drug_name: drug.name,
-			drug_cost: drug.sales_price,
-			drug_hmo_id: drug.hmo.id,
-			drug_hmo_cost: drug?.hmoPrice || 0.0,
-			drug_id: drug.id,
-			dose_quantity: 1,
+			drug,
+			doseQuantity: 1,
 			refills: 0,
 			frequency: 1,
 			frequencyType: 'immediately',
 			duration: 1,
-			quantity: 1,
-			filled_by: staff.username,
+			filledBy: staff.username,
+			externalPrescription: 'No',
+			fillQuantity: 1,
 		};
 
 		const updatedDrugs = updateImmutable(prescriptions, update);
 		setPrescriptions(updatedDrugs);
 
 		const total = updatedDrugs.reduce((total, item) => {
-			const cost = item.drug_cost && item.drug_cost !== '' ? item.drug_cost : 0;
-			const amount = item.drug_hmo_id === 1 ? cost : item.drug_hmo_cost;
-			const costItem = amount > 0 ? parseFloat(amount) * item.quantity : 0;
+			const amount = item.drug.hmoPrice || 0;
+			const costItem = parseFloat(amount) * item.fillQuantity;
 			return (total += costItem);
 		}, 0.0);
 
@@ -123,8 +116,17 @@ const ViewPrescription = ({
 
 	const doFill = async () => {
 		try {
+			if (prescriptions.length === 0) {
+				notifyError('Error, no prescriptions found!');
+				return;
+			}
+			if (sumTotal <= 0) {
+				notifyError('Error, no prescriptions filled!');
+				return;
+			}
+
 			const emptyItem = prescriptions.find(
-				p => !p.quantity || (p.quantity && p.quantity === '')
+				p => !p.fillQuantity || (p.fillQuantity && p.fillQuantity === '')
 			);
 			if (emptyItem) {
 				notifyError(
@@ -136,7 +138,7 @@ const ViewPrescription = ({
 			setSubmitting(true);
 			const url = `patient/fill-request/${activeRequest.id}`;
 			const rs = await request(url, 'POST', true, {
-				requestBody: prescriptions,
+				items: prescriptions,
 				patient_id: activeRequest.patient_id,
 				total_amount: sumTotal,
 			});
@@ -158,7 +160,7 @@ const ViewPrescription = ({
 	const dispense = async () => {
 		try {
 			setSubmitting(true);
-			const url = `patient/request/${activeRequest.id}/approve-result`;
+			const url = `patient/request/${activeRequest.id}/approve-result?type=pharmacy`;
 			const rs = await request(url, 'PATCH', true);
 
 			setSubmitting(false);
@@ -230,8 +232,8 @@ const ViewPrescription = ({
 																</span>
 															</div>
 															<div>
-																{item.drug_generic_name &&
-																	`${item.drug_generic_name} ${item.frequency} x ${item.frequencyType}${when}`}
+																{item.drug.generic_name &&
+																	`${item.drug.generic_name} ${item.frequency} x ${item.frequencyType}${when}`}
 																{item.vaccine && !filled && (
 																	<Popover
 																		content={
@@ -255,19 +257,17 @@ const ViewPrescription = ({
 															</div>
 														</td>
 														<td>
-															{item.filled_by && filled
-																? item.filled_by
-																: 'Open'}
+															{item.filledBy && filled ? item.filledBy : 'Open'}
 														</td>
-														<td>{item.drug_name || '-'}</td>
-														<td>{formatCurrency(item.drug_cost || 0.0)}</td>
+														<td>{item.drug.name || '-'}</td>
+														<td>{formatCurrency(item.drug.hmoPrice || 0.0)}</td>
 														<td>
 															<div className="form-group">
 																<input
 																	type="number"
 																	className="form-control"
 																	placeholder="Qty"
-																	value={item.quantity || ''}
+																	value={item.fillQuantity || ''}
 																	onChange={e => onChange(e, item.id)}
 																	disabled={filled}
 																/>
@@ -327,8 +327,8 @@ const ViewPrescription = ({
 									)}
 									{filled &&
 										activeRequest &&
-										activeRequest.transaction_status &&
-										activeRequest.transaction_status === 1 &&
+										activeRequest.transaction &&
+										activeRequest.transaction.status === 1 &&
 										activeRequest.status === 0 && (
 											<button
 												onClick={() => dispense()}

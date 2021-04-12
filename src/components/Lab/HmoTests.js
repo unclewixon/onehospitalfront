@@ -14,7 +14,11 @@ import ModalLabParameters from '../../components/Modals/ModalLabParameters';
 
 const HmoTests = ({ hmo, index, toggle, doToggle, doToggleForm }) => {
 	const [loaded, setLoaded] = useState(false);
-	const [meta, setMeta] = useState(null);
+	const [meta, setMeta] = useState({
+		currentPage: 1,
+		itemsPerPage: 24,
+		totalPages: 0,
+	});
 	const [keyword, setKeyword] = useState('');
 	const [showModal, setShowModal] = useState(false);
 	const [labTest, setLabTest] = useState(null);

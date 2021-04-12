@@ -13,6 +13,7 @@ import HMOMenu from './HMOMenu';
 import Account from './Account';
 import SettingsMenu from './SettingsMenu';
 import FrontDeskMenu from './FrontDeskMenu';
+import ProcedureMenu from './ProcedureMenu';
 
 const AdminMenu = ({ role }) => {
 	return (
@@ -37,6 +38,10 @@ const AdminMenu = ({ role }) => {
 				<span>RADIOLOGY</span>
 			</li>
 			<RadiologyMenu />
+			<li className="sub-header">
+				<span>PROCEDURE</span>
+			</li>
+			<ProcedureMenu />
 			<li className="sub-header">
 				<span>NURSE</span>
 			</li>

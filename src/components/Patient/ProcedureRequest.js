@@ -1,264 +1,293 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import AsyncSelect from 'react-select/async';
+import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { compose } from 'redux';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
-import { diagnosisAPI, patientAPI, serviceAPI } from '../../services/constants';
+import { searchAPI, serviceAPI, diagnosisAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
-import { request } from '../../services/utilities';
-import { notifyError, notifySuccess } from '../../services/notify';
-import searchingGIF from '../../assets/images/searching.gif';
+import { request, formatPatientId } from '../../services/utilities';
+import { notifySuccess, notifyError } from '../../services/notify';
+import { startBlock, stopBlock } from '../../actions/redux-block';
 
-const ProcedureRequest = props => {
-	const { register, handleSubmit, setValue } = useForm();
+const defaultValues = {
+	request_note: '',
+	diagnosis: [],
+	bill: 'later',
+};
+
+const categories = [{ id: 19, name: 'Genreal Surgery' }];
+
+const ProcedureRequest = ({ module, history, location }) => {
+	const { register, handleSubmit, setValue } = useForm({ defaultValues });
+
 	const [submitting, setSubmitting] = useState(false);
-	const [servicesCategory, setServicesCategory] = useState([]);
-	const [services, setServices] = useState('');
-	const [loaded, setLoaded] = useState(false);
-	const [selectedOption, setSelectedOption] = useState('');
-	const [serv, setServ] = useState([]);
+	const [category, setCategory] = useState(null);
+	const [loadedPatient, setLoadedPatient] = useState(false);
+	const [chosenPatient, setChosenPatient] = useState(null);
+	const [service, setService] = useState(null);
 
-	const fetchServicesCategory = async () => {
+	// diagnosis
+	const [diagnosisType, setDiagnosisType] = useState('10');
+
+	// load services
+	const [services, setServices] = useState([]);
+
+	const currentPatient = useSelector(state => state.user.patient);
+
+	const dispatch = useDispatch();
+
+	const getServiceUnit = async (hmoId, categoryId) => {
 		try {
-			const rs = await request(`${serviceAPI}/categories`, 'GET', true);
-			let data = [];
-			rs.forEach((item, index) => {
-				const res = { label: item.name, value: item.id };
-				data = [...data, res];
-			});
-			setServicesCategory(data);
-			setLoaded(true);
+			dispatch(startBlock());
+
+			const url = `${serviceAPI}/category/${categoryId}?hmo_id=${hmoId}`;
+			const rs = await request(url, 'GET', true);
+			setServices(rs);
+
+			dispatch(stopBlock());
 		} catch (error) {
 			console.log(error);
-			notifyError('error fetching procedure requests for the patient');
+			notifyError('error fetching procedures');
+			dispatch(stopBlock());
 		}
 	};
+
 	useEffect(() => {
-		if (!loaded) {
-			fetchServicesCategory();
-			let services = [];
-
-			props.service &&
-				props.service.forEach((item, index) => {
-					const res = { label: item.name, value: item.id };
-					services = [...services, res];
-				});
-			setServices(services);
-			setLoaded(true);
+		if (!loadedPatient && currentPatient) {
+			setChosenPatient(currentPatient);
 		}
-	}, [props, loaded]);
+		setLoadedPatient(true);
+	}, [currentPatient, loadedPatient]);
 
-	const getOptionValues = option => option.id;
-
-	const getOptionLabels = option => option.description;
-
-	const handleChangeOptions = selectedOption => {
-		setSelectedOption(selectedOption);
-	};
-	const getOptions = async inputValue => {
-		if (!inputValue) {
+	const getPatients = async q => {
+		if (!q || q.length < 1) {
 			return [];
 		}
-		let val = inputValue.toUpperCase();
-		const res = await request(`${diagnosisAPI}/search?q=${val}`, 'GET', true);
+
+		const url = `${searchAPI}?q=${q}`;
+		const res = await request(url, 'GET', true);
 		return res;
 	};
 
-	const fetchServicesByCategory = async id => {
+	const onSubmit = async data => {
 		try {
-			const rs = await request(`${serviceAPI}/category/${id}`, 'GET', true);
-			let services = [];
-			setServ(rs);
-			rs &&
-				rs.forEach((item, index) => {
-					const res = { label: item.name, value: item.id };
-					services = [...services, res];
-				});
-			setServices(services);
+			if (!chosenPatient) {
+				notifyError('Please select a patient');
+				return;
+			}
+
+			if (!service) {
+				notifyError('Please select a procedure');
+				return;
+			}
+
+			const datum = {
+				requestType: 'procedure',
+				patient_id: chosenPatient.id,
+				tests: [{ id: service.id }],
+				request_note: data.request_note,
+				urgent: false,
+				diagnosis: data.diagnosis || [],
+				bill: data.bill,
+			};
+
+			setSubmitting(true);
+			await request('patient/save-request', 'POST', true, datum);
+			setSubmitting(false);
+			notifySuccess('Procedure request sent!');
+			if (module !== 'patient') {
+				history.push('/procedure');
+			} else {
+				history.push(`${location.pathname}#procedure`);
+			}
 		} catch (error) {
 			console.log(error);
-			notifyError('error fetching procedure requests for the patient');
+			setSubmitting(false);
+			notifyError('Error sending procedure request');
 		}
 	};
 
-	const onSubmit = async values => {
-		setSubmitting(true);
-		if (!values.service_center || !values.procedure) {
-			notifyError('Service center and Procedure are required');
-			setSubmitting(false);
-			return;
+	const getOptionValues = option => option.id;
+	const getOptionLabels = option =>
+		`${option.description} (Icd${option.diagnosisType}: ${option.icd10Code ||
+			option.procedureCode})`;
+
+	const getOptions = async q => {
+		if (!q || q.length < 2) {
+			return [];
 		}
-		let requestData = [];
-		let theRequest = {};
-		let currentVal;
-		values.procedure.forEach(value => {
-			currentVal = serv.find(s => s.id === value.value);
-			requestData = [
-				...requestData,
-				{
-					service_id: value.value,
-					service_name: value.label,
-					amount: currentVal.tariff,
-				},
-			];
-		});
-		theRequest.requestType = 'procedure';
-		theRequest.bill_now = values.bill === 'on' ? 'true' : 'false';
-		theRequest.request_note = values.request_note;
-		theRequest.patient_id = props.patient.id;
-		theRequest.primary_diagnosis = selectedOption.icd10Code;
-		theRequest.requestBody = requestData;
 
-		try {
-			await request(`${patientAPI}/save-request`, 'POST', true, theRequest);
-
-			setSubmitting(false);
-			notifySuccess('Procedure Request Saved');
-			props.history.push('/settings/roles#procedure');
-			// return  <Redirect  to="/settings/roles#procedure" />
-		} catch (e) {
-			setSubmitting(false);
-			const message = e.message || 'could not save Procedure Request';
-			notifyError(message);
-		}
-	};
-
-	const handleChangeServiceCategory = evt => {
-		let value = String(evt.value);
-		fetchServicesByCategory(value);
-		setValue('service_center', value);
-	};
-
-	const handleChangeProcedure = evt => {
-		setValue('procedure', evt);
+		const url = `${diagnosisAPI}/search?q=${q}&diagnosisType=${diagnosisType}`;
+		const res = await request(url, 'GET', true);
+		return res;
 	};
 
 	return (
-		<div className="col-sm-12">
-			<div className="element-wrapper">
-				<h6 className="element-header">New Procedure Request</h6>
-				{!loaded ? (
-					<div className="text-center">
-						<img alt="searching" src={searchingGIF} />
-					</div>
-				) : (
-					<>
-						<div className="element-box">
-							<div className="form-block w-100">
-								<form onSubmit={handleSubmit(onSubmit)}>
-									<div className="row">
-										<div className="form-group col-sm-6">
-											<label>Service Category</label>
-											<Select
-												name="service_center"
-												placeholder="Select Service Category"
-												options={servicesCategory}
-												ref={register({ name: 'service_center' })}
-												onChange={evt => handleChangeServiceCategory(evt)}
-												required
-											/>
-										</div>
-										<div className="form-group col-sm-6">
-											<label>Procedure</label>
-											<Select
-												name="procedure"
-												placeholder="Select procedure"
-												isMulti
-												options={services}
-												ref={register({ name: 'procedure' })}
-												onChange={evt => handleChangeProcedure(evt)}
-												required
-											/>
-										</div>
-									</div>
-
-									<div className="row">
-										<div className="form-group col-sm-12">
-											<label>Primary Diagnosis</label>
-											<AsyncSelect
-												required
-												cacheOptions
-												value={selectedOption}
-												getOptionValue={getOptionValues}
-												getOptionLabel={getOptionLabels}
-												defaultOptions
-												loadOptions={getOptions}
-												onChange={handleChangeOptions}
-												placeholder="primary diagnosis"
-											/>
-										</div>
-									</div>
-
-									<div className="row">
-										<div className="form-group col-sm-12">
-											<label>Request Note</label>
-											<textarea
-												required
-												className="form-control"
-												name="request_note"
-												rows="3"
-												placeholder="Enter request note"
-												ref={register}></textarea>
-										</div>
-									</div>
-
-									<div className="row">
-										<div className="form-group col-sm-3">
-											<div className="d-flex">
-												<input
-													className="form-control"
-													placeholder="Bill number"
-													type="radio"
-													name="bill"
-													ref={register}
-												/>
-												<label className="mx-1">Bill now</label>
-											</div>
-										</div>
-										<div className="form-group col-sm-3">
-											<div className="d-flex">
-												<input
-													className="form-control"
-													placeholder="bill later"
-													type="radio"
-													name="bill"
-													ref={register}
-												/>
-												<label className="mx-1">Bill later </label>
-											</div>
-										</div>
-									</div>
-
-									<div>
-										<div className="col-sm-12 text-right">
-											<button className="btn btn-primary" disabled={submitting}>
-												{submitting ? (
-													<img src={waiting} alt="submitting" />
-												) : (
-													'Create Procedure Request'
-												)}
-											</button>
-										</div>
-									</div>
-								</form>
+		<div className={module && module === 'patient' ? 'col-sm-12' : ''}>
+			<div className="element-box m-0 p-3">
+				<div className="form-block w-100">
+					<form onSubmit={handleSubmit(onSubmit)}>
+						{!currentPatient && (
+							<div className="row">
+								<div className="form-group col-sm-12">
+									<label htmlFor="patient">Patient Name</label>
+									<AsyncSelect
+										isClearable
+										getOptionValue={option => option.id}
+										getOptionLabel={option =>
+											`${option.other_names} ${
+												option.surname
+											} (${formatPatientId(option.id)})`
+										}
+										defaultOptions
+										name="patient"
+										loadOptions={getPatients}
+										onChange={e => {
+											if (e) {
+												setChosenPatient(e);
+											} else {
+												setChosenPatient(null);
+												setServices([]);
+											}
+										}}
+										placeholder="Search patients"
+									/>
+								</div>
+							</div>
+						)}
+						<div className="row">
+							<div className="form-group col-sm-6">
+								<label>Category</label>
+								<Select
+									name="category"
+									placeholder="Select Category"
+									options={categories}
+									value={category}
+									getOptionValue={option => option.id}
+									getOptionLabel={option => option.name}
+									onChange={e => {
+										if (!chosenPatient) {
+											notifyError('Please select patient');
+											return false;
+										}
+										setCategory(e);
+										getServiceUnit(chosenPatient.hmo.id, e.id);
+									}}
+								/>
+							</div>
+							<div className="form-group col-sm-6">
+								<label>Procedure</label>
+								<Select
+									name="service_request"
+									placeholder="Select Procedure"
+									options={services}
+									value={service}
+									getOptionValue={option => option.id}
+									getOptionLabel={option => option.name}
+									onChange={e => {
+										setService(e);
+									}}
+								/>
 							</div>
 						</div>
-					</>
-				)}
+						<div className="row">
+							<div className="form-group col-sm-12 relative">
+								<div className="posit-top">
+									<div className="row">
+										<div className="form-group col-sm-12">
+											<label>
+												<input
+													type="radio"
+													checked={diagnosisType === '10'}
+													onChange={() => setDiagnosisType('10')}
+												/>{' '}
+												ICD10
+											</label>
+											<label className="ml-2">
+												<input
+													type="radio"
+													checked={diagnosisType === '2'}
+													onChange={() => setDiagnosisType('2')}
+												/>{' '}
+												ICPC-2
+											</label>
+										</div>
+									</div>
+								</div>
+								<label>Primary diagnoses</label>
+								<AsyncSelect
+									required
+									getOptionValue={getOptionValues}
+									getOptionLabel={getOptionLabels}
+									defaultOptions
+									isMulti
+									name="diagnosis"
+									ref={register({ name: 'diagnosis', required: true })}
+									loadOptions={getOptions}
+									onChange={e => {
+										setValue('diagnosis', e);
+									}}
+									placeholder="Search for diagnosis"
+								/>
+							</div>
+						</div>
+						<div className="row">
+							<div className="form-group col-sm-12">
+								<label>Request Note</label>
+								<textarea
+									className="form-control"
+									name="request_note"
+									rows="3"
+									placeholder="Enter request note"
+									ref={register}></textarea>
+							</div>
+						</div>
+						<div className="row">
+							<div className="col-sm-6">
+								<div className="row">
+									<div className="form-group col-sm-3">
+										<div className="d-flex">
+											<input
+												className="form-control"
+												type="radio"
+												name="bill"
+												ref={register}
+												value="now"
+											/>
+											<label className="mx-1">Bill now</label>
+										</div>
+									</div>
+									<div className="form-group col-sm-3">
+										<div className="d-flex">
+											<input
+												className="form-control"
+												type="radio"
+												name="bill"
+												ref={register}
+												value="later"
+											/>
+											<label className="mx-1">Bill later </label>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div className="col-sm-6 text-right">
+								<button className="btn btn-primary" disabled={submitting}>
+									{submitting ? (
+										<img src={waiting} alt="submitting" />
+									) : (
+										'Send Request'
+									)}
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
 			</div>
 		</div>
 	);
 };
 
-const mapStateToProps = (state, ownProps) => {
-	return {
-		patient: state.user.patient,
-		service: state.settings.services,
-		ServiceCategories: state.settings.service_categories,
-	};
-};
-
-export default compose(withRouter, connect(mapStateToProps))(ProcedureRequest);
+export default withRouter(ProcedureRequest);

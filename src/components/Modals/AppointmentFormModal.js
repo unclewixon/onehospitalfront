@@ -1,59 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { closeModals } from '../../actions/general';
-import consultingImage from '../../assets/images/icon-consultatio-1.png';
-import inPatientImg from '../../assets/images/in-patient.png';
 import 'react-datepicker/dist/react-datepicker.css';
 import Image from 'react-bootstrap/Image';
-import InPatientAppointmentForm from '../Forms/InPatientAppointmentForm';
+
+import consultingImage from '../../assets/images/icon-consultatio-1.png';
+import inPatientImg from '../../assets/images/in-patient.png';
+import PatientAppointment from '../Forms/PatientAppointment';
 import OutPatientAppointmentForm from '../Forms/OutPatientAppointmentForm';
-
-const AppointmentFormModal = props => {
-	const [currentView, setCurrentView] = useState('select-appointment');
-
-	useEffect(() => {
-		document.body.classList.add('modal-open');
-		return () => {
-			document.body.classList.remove('modal-open');
-		};
-	});
-
-	const changeView = view => {
-		setCurrentView(view);
-	};
-
-	return (
-		<div
-			className="onboarding-modal modal fade animated show"
-			role="dialog"
-			style={{ display: 'block' }}>
-			<div className="modal-dialog modal-centered" role="document">
-				<div className="modal-content text-center">
-					<div className="modal-header faded smaller">
-						<div className="modal-title">New Appointment</div>
-						<button
-							aria-label="Close"
-							className="close"
-							data-dismiss="modal"
-							type="button"
-							onClick={() => props.closeModals(false)}>
-							<span aria-hidden="true"> ×</span>
-						</button>
-					</div>
-
-					{
-						{
-							'select-appointment': <SelectAppointment setView={changeView} />,
-							'consultation-form': <InPatientAppointmentForm />,
-							'outpatient-form': <OutPatientAppointmentForm />,
-						}[currentView]
-					}
-				</div>
-			</div>
-		</div>
-	);
-};
 
 function SelectAppointment({ setView }) {
 	return (
@@ -67,7 +20,7 @@ function SelectAppointment({ setView }) {
 							<Image src={consultingImage} width={60} />
 						</div>
 						<div className="label">
-							Create an appointment for in-patient going to see a doctor
+							Create an appointment for a patient who wants to see a doctor
 						</div>
 						<div className="value">Consultation</div>
 					</a>
@@ -92,4 +45,62 @@ function SelectAppointment({ setView }) {
 	);
 }
 
-export default connect(null, { closeModals })(AppointmentFormModal);
+const AppointmentFormModal = ({ addAppointment, closeModal }) => {
+	const [currentView, setCurrentView] = useState('select-appointment');
+
+	useEffect(() => {
+		document.body.classList.add('modal-open');
+		return () => {
+			document.body.classList.remove('modal-open');
+		};
+	});
+
+	const changeView = view => {
+		setCurrentView(view);
+	};
+
+	return (
+		<div
+			className="onboarding-modal modal fade animated show"
+			role="dialog"
+			style={{ display: 'block' }}>
+			<div
+				className="modal-dialog modal-centered"
+				style={{
+					maxWidth: `${
+						currentView === 'consultation-form' ? '800px' : '550px'
+					}`,
+				}}
+				role="document">
+				<div className="modal-content text-center">
+					<div className="modal-header faded smaller">
+						<div className="modal-title">New Appointment</div>
+						<button
+							aria-label="Close"
+							className="close"
+							data-dismiss="modal"
+							type="button"
+							onClick={closeModal}>
+							<span aria-hidden="true"> ×</span>
+						</button>
+					</div>
+
+					{
+						{
+							'select-appointment': <SelectAppointment setView={changeView} />,
+							'consultation-form': (
+								<PatientAppointment
+									closeModal={closeModal}
+									addAppointment={addAppointment}
+								/>
+							),
+							'outpatient-form': <OutPatientAppointmentForm />,
+						}[currentView]
+					}
+				</div>
+			</div>
+		</div>
+	);
+};
+
+export default AppointmentFormModal;

@@ -114,15 +114,13 @@ const ProfileBlock = ({ location, history, patient, match, noEdits }) => {
 					</div>
 				</div>
 			</div>
-			{location.pathname === '/front-desk/all-patients' && (
-				<div className="element-actions d-none d-sm-block justify-content-sm-end mt-1">
-					<PatientActions
-						location={location}
-						enrollImmunization={enrollImmunization}
-						isAdmitted={patient.isAdmitted}
-					/>
-				</div>
-			)}
+			<div className="element-actions d-none d-sm-block justify-content-sm-end mt-1">
+				<PatientActions
+					location={location}
+					enrollImmunization={enrollImmunization}
+					isAdmitted={patient.isAdmitted}
+				/>
+			</div>
 		</div>
 	);
 };

@@ -533,7 +533,8 @@ export const redirectToPage = (role, history) => {
 	}
 };
 
-export const fullname = user => `${user?.first_name} ${user?.last_name}`;
+export const fullname = user =>
+	user ? `${user?.first_name} ${user?.last_name}` : '-';
 
 export const formatNumber = n =>
 	parseFloat(n).toLocaleString(undefined, { maximumFractionDigits: 2 });
@@ -629,6 +630,16 @@ export const vaccineMissed = data => {
 export const hasExpired = date => {
 	if (date) {
 		return moment().isAfter(moment(date, 'YYYY-MM-DD'));
+	}
+
+	return false;
+};
+
+export const hasPassed = date => {
+	if (date) {
+		return moment(date, 'YYYY-MM-DD HH:mm:ss').isBefore(
+			moment().startOf('day')
+		);
 	}
 
 	return false;

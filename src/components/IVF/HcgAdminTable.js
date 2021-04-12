@@ -127,7 +127,7 @@ class HcgAdminTable extends Component {
 			const result = allPatients.find(
 				c => c.other_names + ' ' + c.surname === row.name_of_patient
 			);
-			let theFIle = result.fileNumber;
+			let theFIle = result.folderNumber;
 			// eslint-disable-next-line array-callback-return
 			hcgRecord.map((value, index, array) => {
 				let datas = { ...value };

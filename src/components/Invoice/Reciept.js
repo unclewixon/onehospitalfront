@@ -84,7 +84,7 @@ const Reciept = ({ data }) => {
 										RECEIVED FROM:{' '}
 									</span>
 									<span style={{ fontSize: 8, fontWeight: 'bold' }}>
-										{`${data?.patient?.surname} ${data?.patient?.other_names} (${data?.patient?.fileNumber})`.toUpperCase()}
+										{`${data?.patient?.surname} ${data?.patient?.other_names} (${data?.patient?.folderNumber})`.toUpperCase()}
 									</span>
 								</td>
 							</tr>

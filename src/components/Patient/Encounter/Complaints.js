@@ -1,35 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SunEditor from 'suneditor-react';
-import { useForm } from 'react-hook-form';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
-import { loadEncounterData } from '../../../actions/patient';
+import { updateEncounterData } from '../../../actions/patient';
 
-const Complaints = props => {
-	const { register, handleSubmit } = useForm();
+const Complaints = ({ next }) => {
+	const [loaded, setLoaded] = useState(false);
 	const [complaint, setComplaint] = useState('');
-	let { encounterData } = props;
+
+	const encounter = useSelector(state => state.patient.encounterData);
+
 	const dispatch = useDispatch();
 
-	const handleChange = e => {
-		setComplaint(e);
-	};
+	useEffect(() => {
+		if (!loaded) {
+			setComplaint(encounter.complaints);
+			setLoaded(true);
+		}
+	}, [encounter, loaded]);
 
-	// const handleFocus = e => {
-	// 	var temp_value = e.target.textContent;
-	// 	e.target.textContent = '';
-	// 	e.target.textContent = temp_value;
-	// };
-
-	const onSubmit = async values => {
-		encounterData.complaints = complaint;
-		props.loadEncounterData(encounterData);
-		dispatch(props.next);
+	const onSubmit = async e => {
+		e.preventDefault();
+		dispatch(updateEncounterData({ ...encounter, complaints: complaint }));
+		dispatch(next);
 	};
 
 	return (
 		<div className="form-block encounter">
-			<form onSubmit={handleSubmit(onSubmit)}>
+			<form onSubmit={onSubmit}>
 				<div className="row">
 					<div className="col-sm-12">
 						<div className="form-group">
@@ -37,9 +35,8 @@ const Complaints = props => {
 							<SunEditor
 								width="100%"
 								placeholder="Please type here..."
-								setContents={encounterData.complaints}
+								setContents={complaint}
 								name="complaint_data"
-								ref={register}
 								autoFocus={true}
 								enableToolbar={true}
 								setOptions={{
@@ -60,9 +57,8 @@ const Complaints = props => {
 										],
 									],
 								}}
-								//onFocus={handleFocus}
-								onChange={evt => {
-									handleChange(String(evt));
+								onChange={e => {
+									setComplaint(String(e));
 								}}
 							/>
 						</div>
@@ -84,10 +80,4 @@ const Complaints = props => {
 	);
 };
 
-const mapStateToProps = state => {
-	return {
-		encounterData: state.patient.encounterData,
-	};
-};
-
-export default connect(mapStateToProps, { loadEncounterData })(Complaints);
+export default Complaints;

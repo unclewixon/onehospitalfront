@@ -8,7 +8,7 @@ const Dashboard = lazy(() => import('./Dashboard'));
 const LabDetail = lazy(() => import('./LabDetail'));
 const EnrolLab = lazy(() => import('./EnrolLab'));
 
-class index extends Component {
+class Home extends Component {
 	render() {
 		const { match, location } = this.props;
 		const page = location.pathname.split('/').pop();
@@ -64,13 +64,10 @@ class index extends Component {
 							</div>
 						</div>
 					</div>
-					{/* <div className="content-panel compact">
-						<Queue />
-					</div> */}
 				</div>
 			</>
 		);
 	}
 }
 
-export default connect(null, null)(withRouter(index));
+export default connect(null, null)(withRouter(Home));

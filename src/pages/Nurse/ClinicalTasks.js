@@ -16,7 +16,11 @@ import { toggleProfile } from '../../actions/user';
 import Tooltip from 'antd/lib/tooltip';
 
 const ClinicalTasks = () => {
-	const [meta, setMeta] = useState(null);
+	const [meta, setMeta] = useState({
+		currentPage: 1,
+		itemsPerPage: 12,
+		totalPages: 0,
+	});
 	const [tasks, setTasks] = useState([]);
 	const [loaded, setLoaded] = useState(false);
 	const [showModal, setShowModal] = useState(false);

@@ -25,9 +25,9 @@ const Allergies = props => {
 
 	const dispatch = useDispatch();
 
-	let { previous, encounterData, encounterForm } = props;
+	const { previous, encounterData, encounterForm } = props;
 
-	let [data, setData] = useState([]);
+	const [data, setData] = useState([]);
 	const defaultValues = {
 		allForm: encounterForm.allergies?.allForm || [],
 	};

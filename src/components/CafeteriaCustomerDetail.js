@@ -64,9 +64,7 @@ const CafeteriaCustomerDetail = props => {
 								<ul>
 									<li>
 										PatientID:
-										<strong>
-											{customer.fileNumber ? customer.fileNumber : ''}
-										</strong>
+										<strong>{customer.id}</strong>
 									</li>
 									<li>
 										Patient Name:

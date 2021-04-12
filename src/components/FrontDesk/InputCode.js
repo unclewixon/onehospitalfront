@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-// import { connect } from 'react-redux';
 import { reduxForm, SubmissionError } from 'redux-form';
 import Modal from 'react-bootstrap/Modal';
+
 import { request, updateImmutable } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';

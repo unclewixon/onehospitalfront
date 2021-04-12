@@ -1,15 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
 import { useSelector } from 'react-redux';
 
 export default function PatientActions({ location, enrollImmunization }) {
 	const patient = useSelector(state => state.user.patient);
-
-	useEffect(() => {
-		console.log(patient, 'patient');
-	}, [patient]);
 
 	const { isAdmitted, immunization } = patient;
 
@@ -58,8 +54,6 @@ export default function PatientActions({ location, enrollImmunization }) {
 					</button>
 				</Tooltip>
 			)}
-
-			{/* discharge, enrole antinantal, ivf ,immuncation, admit */}
 		</>
 	);
 }

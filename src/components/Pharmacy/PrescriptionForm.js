@@ -13,7 +13,12 @@ import { ReactComponent as EditIcon } from '../../assets/svg-icons/edit.svg';
 import { ReactComponent as TrashIcon } from '../../assets/svg-icons/trash.svg';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { diagnosisAPI, searchAPI } from '../../services/constants';
-import { request, groupBy, hasExpired } from '../../services/utilities';
+import {
+	request,
+	groupBy,
+	hasExpired,
+	formatPatientId,
+} from '../../services/utilities';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const defaultValues = {
@@ -26,8 +31,10 @@ const defaultValues = {
 	frequencyType: '',
 	duration: '',
 	regimenNote: '',
-	diagnosis: '',
+	diagnosis: [],
 };
+
+const category_id = 1;
 
 const PrescriptionForm = ({ patient, history, module, location }) => {
 	const [refillable, setRefillable] = useState(false);
@@ -41,9 +48,14 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 	const [prescription, setPrescription] = useState(false);
 	const [chosenPatient, setChosenPatient] = useState(null);
 	const [genName, setGenName] = useState(null);
-	const [diagnosisType, setDiagnosisType] = useState('icd10');
+	const [diagnosisType, setDiagnosisType] = useState('10');
 	const [selectedDrug, setSelectedDrug] = useState(null);
 	const [loading, setLoading] = useState(true);
+
+	const [diagnoses, setDiagnoses] = useState([]);
+	const [frequencyType, setFrequencyType] = useState(null);
+	const [chosenDrug, setChosenDrug] = useState(null);
+	const [chosenGeneric, setChosenGeneric] = useState(null);
 
 	const dispatch = useDispatch();
 
@@ -52,7 +64,8 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 	};
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option =>
-		`${option.description} (${option.icd10Code || option.procedureCode})`;
+		`${option.description} (Icd${option.diagnosisType}: ${option.icd10Code ||
+			option.procedureCode})`;
 
 	const getOptions = async q => {
 		if (!q || q.length < 3) {
@@ -65,7 +78,7 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 	};
 
 	const getPatients = async q => {
-		if (!q || q.length < 3) {
+		if (!q || q.length < 1) {
 			return [];
 		}
 
@@ -77,14 +90,9 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 	const getServiceUnit = async hmoId => {
 		try {
 			dispatch(startBlock());
-			const res = await request('inventory/categories', 'GET', true);
-			if (res && res.length > 0) {
-				const selectCat = res.find(cat => cat.name === 'Pharmacy');
-
-				const url = `inventory/stocks-by-category/${selectCat.id}/${hmoId}`;
-				const rs = await request(url, 'GET', true);
-				setInventories(rs);
-			}
+			const url = `inventory/stocks-by-category/${category_id}/${hmoId}`;
+			const rs = await request(url, 'GET', true);
+			setInventories(rs);
 			setLoading(false);
 			dispatch(stopBlock());
 		} catch (error) {
@@ -137,7 +145,7 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 
 	const onFormSubmit = (data, e) => {
 		const drug = inventories.find(drug => drug.id === data.drugId);
-		let newDrug = [
+		const newDrug = [
 			...drugsSelected,
 			{
 				...data,
@@ -151,6 +159,11 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 		setEditing(false);
 		setSelectedDrug(null);
 		reset(defaultValues);
+
+		setDiagnoses([]);
+		setFrequencyType(null);
+		setChosenDrug(null);
+		setChosenGeneric(null);
 	};
 
 	const onTrash = index => {
@@ -168,7 +181,7 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 		setEditing(true);
 	};
 
-	const saveTableData = async e => {
+	const submitRequest = async e => {
 		try {
 			e.preventDefault();
 
@@ -204,21 +217,25 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 				frequencyType: request.frequencyType,
 				duration: request.duration,
 				regimenNote: request.regimenNote,
-				diagnosis: request.diagnosis,
-				prescription: request.prescription ? 1 : 0,
+				diagnosis: request.diagnosis || [],
+				prescription: request.prescription ? 'Yes' : 'No',
 			}));
 
-			await request('patient/save-request', 'POST', true, {
+			const rs = await request('patient/save-request', 'POST', true, {
 				requestType: 'pharmacy',
-				requestBody: data,
+				items: data,
 				patient_id,
 			});
 			setSubmitting(false);
-			notifySuccess('pharmacy request done');
-			if (module !== 'patient') {
-				history.push('/pharmacy');
+			if (rs.success) {
+				notifySuccess('pharmacy request done');
+				if (module !== 'patient') {
+					history.push('/pharmacy');
+				} else {
+					history.push(`${location.pathname}#pharmacy`);
+				}
 			} else {
-				history.push(`${location.pathname}#pharmacy`);
+				notifyError(rs.message);
 			}
 		} catch (e) {
 			setSubmitting(false);
@@ -271,7 +288,9 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 							isClearable
 							getOptionValue={option => option.id}
 							getOptionLabel={option =>
-								`${option.other_names} ${option.surname}`
+								`${option.other_names} ${option.surname} (${formatPatientId(
+									option.id
+								)})`
 							}
 							defaultOptions
 							name="patient"
@@ -290,6 +309,9 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 								// reset drug
 								setValue('drugId', '');
 								setSelectedDrug(null);
+
+								setChosenGeneric(null);
+								setChosenDrug(null);
 							}}
 							placeholder="Search patients"
 						/>
@@ -309,9 +331,11 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 								// reset drug
 								setValue('drugId', '');
 								setSelectedDrug(null);
+								setChosenGeneric(e);
 							}}
 							options={genericNameOptions}
 							required
+							value={chosenGeneric}
 						/>
 					</div>
 				</div>
@@ -335,7 +359,11 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 							ref={register({ name: 'drugId', required: true })}
 							name="drugId"
 							options={drugNameOptions}
-							onChange={e => onDrugSelection(e)}
+							value={chosenDrug}
+							onChange={e => {
+								onDrugSelection(e);
+								setChosenDrug(e);
+							}}
 						/>
 					</div>
 					<div className="form-group col-sm-6">
@@ -396,6 +424,7 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 							placeholder="Frequency type"
 							ref={register({ name: 'frequencyType', required: true })}
 							name="frequencyType"
+							value={frequencyType}
 							options={[
 								{ value: '', label: 'Select frequency' },
 								{ value: 'immediately', label: 'Immediately' },
@@ -411,6 +440,7 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 							]}
 							onChange={e => {
 								setValue('frequencyType', e.value);
+								setFrequencyType(e);
 							}}
 						/>
 					</div>
@@ -447,16 +477,16 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 									<label>
 										<input
 											type="radio"
-											checked={diagnosisType === 'icd10'}
-											onChange={() => setDiagnosisType('icd10')}
+											checked={diagnosisType === '10'}
+											onChange={() => setDiagnosisType('10')}
 										/>{' '}
 										ICD10
 									</label>
 									<label className="ml-2">
 										<input
 											type="radio"
-											checked={diagnosisType === 'icpc2'}
-											onChange={() => setDiagnosisType('icpc2')}
+											checked={diagnosisType === '2'}
+											onChange={() => setDiagnosisType('2')}
 										/>{' '}
 										ICPC-2
 									</label>
@@ -469,11 +499,14 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 							getOptionValue={getOptionValues}
 							getOptionLabel={getOptionLabels}
 							defaultOptions
+							isMulti
+							value={diagnoses}
 							name="diagnosis"
 							ref={register({ name: 'diagnosis', required: true })}
 							loadOptions={getOptions}
 							onChange={e => {
 								setValue('diagnosis', e);
+								setDiagnoses(e);
 							}}
 							placeholder="Search for diagnosis"
 						/>
@@ -555,8 +588,14 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 									</td>
 									<td>
 										{request.diagnosis
-											? `${request.diagnosis.description} (${request.diagnosis
-													.icd10Code || request.diagnosis.procedureCode})`
+											? request.diagnosis
+													.map(
+														d =>
+															`Icd${d.diagnosisType}: ${
+																d.description
+															} (${d.icd10Code || d.procedureCode})`
+													)
+													.join(', ')
 											: '-'}
 									</td>
 									<td>
@@ -597,12 +636,9 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 			</div>
 			<div>
 				<button
-					onClick={saveTableData}
-					className={
-						submitting
-							? 'btn btn-primary disabled mt-4'
-							: 'btn btn-primary mt-4'
-					}>
+					onClick={submitRequest}
+					disabled={submitting}
+					className="btn btn-primary mt-4">
 					{submitting ? (
 						<img src={waiting} alt="submitting" />
 					) : (

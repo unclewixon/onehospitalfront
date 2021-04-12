@@ -68,7 +68,7 @@ const Invoice = ({ data }) => {
 										fontWeight: 'bold',
 										marginBottom: 20,
 									}}>
-									{data?.patient?.fileNumber}
+									{data?.patient?.folderNumber}
 								</div>
 							</td>
 						</tr>

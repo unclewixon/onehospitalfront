@@ -12,7 +12,11 @@ import RadiologyBlock from '../RadiologyBlock';
 const Radiology = ({ location }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [scans, setScans] = useState([]);
-	const [meta, setMeta] = useState(null);
+	const [meta, setMeta] = useState({
+		currentPage: 1,
+		itemsPerPage: 10,
+		totalPages: 0,
+	});
 
 	const startDate = '';
 	const endDate = '';

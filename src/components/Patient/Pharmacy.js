@@ -11,6 +11,8 @@ import searchingGIF from '../../assets/images/searching.gif';
 import ViewPrescription from '../Pharmacy/ViewPrescription';
 import { request, updateImmutable, itemRender } from '../../services/utilities';
 
+const category_id = 1;
+
 const Pharmacy = ({ location, patient }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [allDrugs, setAllDrugs] = useState([]);
@@ -18,7 +20,11 @@ const Pharmacy = ({ location, patient }) => {
 	const [activeRequest, setActiveRequest] = useState(null);
 	const [prescriptions, setPrescriptions] = useState([]);
 	const [filled, setFilled] = useState(false);
-	const [meta, setMeta] = useState(null);
+	const [meta, setMeta] = useState({
+		currentPage: 1,
+		itemsPerPage: 10,
+		totalPages: 0,
+	});
 
 	const startDate = '';
 	const endDate = '';
@@ -32,15 +38,9 @@ const Pharmacy = ({ location, patient }) => {
 
 	const getServiceUnit = async hmoId => {
 		try {
-			const res = await request('inventory/categories', 'GET', true);
-
-			if (res && res.length > 0) {
-				const selectCat = res.find(cat => cat.name === 'Pharmacy');
-
-				const url = `inventory/stocks-by-category/${selectCat.id}/${hmoId}`;
-				const rs = await request(url, 'GET', true);
-				setAllDrugs(rs);
-			}
+			const url = `inventory/stocks-by-category/${category_id}/${hmoId}`;
+			const rs = await request(url, 'GET', true);
+			setAllDrugs(rs);
 		} catch (error) {
 			notifyError('Error fetching Service Unit');
 		}
@@ -136,14 +136,16 @@ const Pharmacy = ({ location, patient }) => {
 																	Pending
 																</span>
 															)}
-															{request.transaction_status === 0 &&
+															{request.transaction &&
+																request.transaction.status === 0 &&
 																request.status === 0 &&
 																request.isFilled && (
 																	<span className="badge badge-info text-white">
 																		Awaiting Payment
 																	</span>
 																)}
-															{request.transaction_status === 1 &&
+															{request.transaction &&
+																request.transaction.status === 1 &&
 																request.status === 0 && (
 																	<span className="badge badge-secondary">
 																		Awaiting Dispense
@@ -176,7 +178,7 @@ const Pharmacy = ({ location, patient }) => {
 																		className="primary"
 																		onClick={async () => {
 																			await getServiceUnit(
-																				request.patient_hmo_id
+																				request.patient.hmo.id
 																			);
 																			document.body.classList.add('modal-open');
 																			setActiveRequest(request);

@@ -124,11 +124,11 @@ class SearchPatient extends Component {
 												<a
 													onClick={this.showProfile(p)}
 													className="ssg-item cursor">
-													{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.fileNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
+													{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.folderNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
 													<div
 														className="item-name"
 														dangerouslySetInnerHTML={{
-															__html: `${p.fileNumber} - ${p.surname} ${p.other_names}`,
+															__html: `${p.folderNumber} - ${p.surname} ${p.other_names}`,
 														}}
 													/>
 												</a>

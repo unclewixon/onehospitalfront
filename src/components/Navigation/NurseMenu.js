@@ -60,14 +60,6 @@ const NurseMenu = () => {
 					<span>Labour Management</span>
 				</Link>
 			</li>
-			<li>
-				<Link to="/procedure">
-					<div className="icon-w">
-						<div className="os-icon os-icon-agenda-1" />
-					</div>
-					<span>Procedures</span>
-				</Link>
-			</li>
 		</>
 	);
 };

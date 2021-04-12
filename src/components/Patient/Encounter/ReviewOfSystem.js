@@ -3,44 +3,40 @@ import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { reviewOfSystem } from '../../../services/constants';
-import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
+import { updateEncounterData } from '../../../actions/patient';
 
 const ReviewOfSystem = ({ next, previous }) => {
-	const [system, setSystem] = useState(null);
 	const [loaded, setLoaded] = useState(false);
+	const [system, setSystem] = useState(null);
 	const [options, setOptions] = useState([]);
 
-	const encounterData = useSelector(state => state.patient.encounterData);
-	const encounterForm = useSelector(state => state.patient.encounterForm);
+	const encounter = useSelector(state => state.patient.encounterData);
 
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (!loaded) {
-			setSystem(encounterForm?.reviewOfSystem?.system);
-			setOptions(encounterData?.reviewOfSystem);
+			setOptions(encounter.reviewOfSystem);
 			setLoaded(true);
 		}
-	}, [encounterData, encounterForm, loaded]);
+	}, [encounter, loaded]);
 
 	const handleChange = e => setSystem(e);
 
-	const onChecked = e => {
+	const onChecked = (e, label) => {
 		const value = e.target.value;
-		const selected = options.find(o => o === value);
+		const selected = options.find(o => o.value === value);
 		if (selected) {
-			const filtered = options.filter(o => o !== value);
+			const filtered = options.filter(o => o.value !== value);
 			setOptions(filtered);
 		} else {
-			setOptions([...options, value]);
+			setOptions([...options, { label, value }]);
 		}
 	};
 
 	const onSubmit = () => {
-		encounterData.reviewOfSystem = options || [];
-		encounterForm.reviewOfSystem = { system };
-		dispatch(loadEncounterForm(encounterForm));
-		dispatch(loadEncounterData(encounterData));
+		dispatch(updateEncounterData({ ...encounter, reviewOfSystem: options }));
+		dispatch(next);
 		next();
 	};
 
@@ -69,7 +65,7 @@ const ReviewOfSystem = ({ next, previous }) => {
 							<div className="form-group">
 								<label>{system.label}</label>
 								{system.children.map((option, i) => {
-									const selected = options.find(o => o === option);
+									const selected = options.find(o => o.value === option);
 									return (
 										<div key={i}>
 											<label>
@@ -79,7 +75,7 @@ const ReviewOfSystem = ({ next, previous }) => {
 													className="form-control"
 													value={option}
 													checked={!!selected}
-													onChange={e => onChecked(e)}
+													onChange={e => onChecked(e, system.label)}
 												/>
 												{option}
 											</label>

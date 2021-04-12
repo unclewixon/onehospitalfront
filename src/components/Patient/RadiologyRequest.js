@@ -8,7 +8,7 @@ import { Table } from 'react-bootstrap';
 
 import { searchAPI, serviceAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
-import { request } from '../../services/utilities';
+import { request, formatPatientId } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { ReactComponent as TrashIcon } from '../../assets/svg-icons/trash.svg';
 import { formatCurrency } from '../../services/utilities';
@@ -52,7 +52,7 @@ const RadiologyRequest = ({ module, history, location }) => {
 				dispatch(stopBlock());
 			} catch (error) {
 				console.log(error);
-				notifyError('error fetching radiology requests for the patient');
+				notifyError('error fetching radiology scans');
 				dispatch(stopBlock());
 			}
 		},
@@ -68,7 +68,7 @@ const RadiologyRequest = ({ module, history, location }) => {
 	}, [currentPatient, loadedPatient, getServiceUnit]);
 
 	const getPatients = async q => {
-		if (!q || q.length < 3) {
+		if (!q || q.length < 1) {
 			return [];
 		}
 
@@ -131,7 +131,9 @@ const RadiologyRequest = ({ module, history, location }) => {
 										isClearable
 										getOptionValue={option => option.id}
 										getOptionLabel={option =>
-											`${option.other_names} ${option.surname}`
+											`${option.other_names} ${
+												option.surname
+											} (${formatPatientId(option.id)})`
 										}
 										defaultOptions
 										name="patient"

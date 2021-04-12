@@ -3,7 +3,6 @@ import {
 	PREV_STEP,
 	SAVE_ALLERGIES,
 	GET_ALLERGIES,
-	LOAD_ENCOUNTERS,
 	ALLERGY,
 	UPDATE_ALLERGY,
 	DELETE_ALLERGY,
@@ -18,7 +17,6 @@ import {
 	GET_ALL_REQUESTS,
 	LOAD_CLINICAL_LAB,
 	LOAD_RADIOLOGY,
-	UPDATE_COMPLAINT_DATA,
 	LOAD_ANTENNATAL,
 	LOAD_ANTENATAL_ASSESSMENT,
 	LOAD_LABOUR,
@@ -33,12 +31,12 @@ import {
 	PATIENT_IVF,
 	ADD_NEW_PATIENT,
 	GET_ALL_OPD_LAB_APPOINTMENTS,
-	GET_ALL_OPD_IMMUNIZATION_APPOINTMENTS,
 	UPDATE_PATIENT,
 	READING_DONE,
 	SET_IVF,
 	RESET_STEP,
 	CAN_CLOSE_LABOUR,
+	UPDATE_ENCOUNTER_DATA,
 } from '../actions/types';
 import actions from 'redux-form/lib/actions';
 import { updateImmutable } from '../services/utilities';
@@ -48,7 +46,6 @@ const INITIAL_STATE = {
 	formData: {},
 	allergy: {},
 	allergies: [],
-	encounters: [],
 	imagingRequests: [],
 	patient_upload: [],
 	vitals: [],
@@ -56,7 +53,6 @@ const INITIAL_STATE = {
 	patients: [],
 	clinicalLab: [],
 	opdLabAppointments: [],
-	opdImmunizationAppointments: [],
 	radiology: [],
 	labRequests: [],
 	pharmacyRequests: [],
@@ -121,21 +117,16 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, allergies: [...state.allergies, action.payload] };
 		case ALLERGY:
 			return { ...state, allergy: action.payload };
-		case LOAD_ENCOUNTERS:
-			return { ...state, encounters: [action.payload] };
 		case ENCOUNTER_FORM:
 			return { ...state, encounterForm: action.payload };
 		case PATIENT_IVF:
 			return { ...state, ivf: action.payload };
 		case PATIENT_REGULATION_TABLE:
 			return { ...state, regulationTable: action.payload };
-		case UPDATE_COMPLAINT_DATA:
+		case UPDATE_ENCOUNTER_DATA:
 			return {
 				...state,
-				encounterData: {
-					...state.encounterData,
-					complaints: action.payload,
-				},
+				encounterData: { ...action.payload },
 			};
 		case GET_IMAGING_REQUESTS:
 			return { ...state, imagingRequests: action.payload };
@@ -218,11 +209,6 @@ const patient = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				opdLabAppointments: action.payload,
-			};
-		case GET_ALL_OPD_IMMUNIZATION_APPOINTMENTS:
-			return {
-				...state,
-				opdImmunizationAppointments: action.payload,
 			};
 		case LOAD_PATIENTS:
 			return { ...state, patients: action.payload };

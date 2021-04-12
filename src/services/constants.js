@@ -531,7 +531,7 @@ export const reviewOfSystem = [
 		value: 'Skin',
 		children: [
 			'Rashness',
-			'Lumbps',
+			'Lumps',
 			'Itching',
 			'Dryness',
 			'Color Changes',

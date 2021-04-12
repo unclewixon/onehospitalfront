@@ -9,7 +9,7 @@ import Splash from '../../components/Splash';
 const Enrollment = lazy(() => import('./Enrollment'));
 const AllEnrollment = lazy(() => import('./AllEnrollment'));
 
-class index extends Component {
+class Home extends Component {
 	render() {
 		const { match } = this.props;
 		// const department = staff?.details?.department?.name;
@@ -32,9 +32,6 @@ class index extends Component {
 						</Suspense>
 					</div>
 				</div>
-				{/* <div className="content-panel compact">
-					<Queue department={department} />
-				</div> */}
 			</div>
 		);
 	}
@@ -46,4 +43,4 @@ const mapStatetoProps = state => {
 	};
 };
 
-export default withRouter(connect(mapStatetoProps)(index));
+export default withRouter(connect(mapStatetoProps)(Home));

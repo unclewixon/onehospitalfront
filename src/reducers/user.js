@@ -30,6 +30,7 @@ const INITIAL_STATE = {
 	staff: null,
 	isStaffOpen: false,
 	isPatientOpen: false,
+	isProcedureOpen: false,
 	isAntenatalOpen: false,
 	menu_mode: 'menu-layout-compact',
 	menu_mini: false,
@@ -52,6 +53,7 @@ const user = (state = INITIAL_STATE, action) => {
 				patient: null,
 				staff: null,
 				isPatientOpen: false,
+				isProcedureOpen: false,
 				isAntenatalOpen: false,
 				isStaffOpen: false,
 			};
@@ -98,12 +100,18 @@ const user = (state = INITIAL_STATE, action) => {
 			if (action.payload) {
 				const type = action.info.type;
 				const { patient, staff } = action.info;
-				const data = type === 'patient' ? { patient } : { staff };
+				const data =
+					type === 'patient' || type === 'procedure' || type === 'antenatal'
+						? { patient }
+						: { staff };
 				storage.setItem(USER_RECORD, { ...data, type });
+
 				return {
 					...state,
 					isStaffOpen: type === 'staff',
 					isPatientOpen: type === 'patient',
+					isProcedureOpen: type === 'procedure',
+					isAntenatalOpen: type === 'antenatal',
 					...data,
 				};
 			}
@@ -112,6 +120,8 @@ const user = (state = INITIAL_STATE, action) => {
 				...state,
 				isStaffOpen: false,
 				isPatientOpen: false,
+				isProcedureOpen: false,
+				isAntenatalOpen: false,
 				userID: null,
 				patient: null,
 				staff: null,

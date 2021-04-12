@@ -7,18 +7,22 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import { patientAPI } from '../../services/constants';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
-const ModalViewLabResult = ({ closeModal, labRequest, labs, updateLab }) => {
+const ModalViewLabResult = ({ closeModal, lab, labs, updateLab }) => {
+	const item = lab.items[0];
+
 	const dispatch = useDispatch();
 
 	const approve = async () => {
 		try {
 			dispatch(startBlock());
-			const url = `${patientAPI}/request/${labRequest.request_item.id}/approve-result?type=lab&request_id=${labRequest.id}`;
+			const url = `${patientAPI}/request/${lab.id}/approve-result?type=lab&request_item_id=${item.id}`;
 			const rs = await request(url, 'PATCH', true);
-			const lab_request = labs.find(l => l.request_item.id === rs.data.id);
-			const request_item = { ...lab_request.request_item, ...rs.data };
-			const newItem = { ...lab_request, request_item };
-			const newLabs = updateImmutable(labs, newItem);
+			const lab_request = labs.find(l => l.id === lab.id);
+			const newLabs = updateImmutable(labs, {
+				...lab_request,
+				status: 1,
+				items: [rs.data],
+			});
 			updateLab(newLabs);
 			notifySuccess('lab result approved!');
 			dispatch(stopBlock());
@@ -33,11 +37,10 @@ const ModalViewLabResult = ({ closeModal, labRequest, labs, updateLab }) => {
 	const reject = async () => {
 		try {
 			dispatch(startBlock());
-			const url = `${patientAPI}/${labRequest.request_item.id}/reject-result`;
+			const url = `${patientAPI}/${item.id}/reject-result`;
 			const rs = await request(url, 'PATCH', true);
-			const lab_request = labs.find(l => l.request_item.id === rs.data.id);
-			const request_item = { ...lab_request.request_item, ...rs.data };
-			const newItem = { ...lab_request, request_item };
+			const lab_request = labs.find(l => l.id === lab.id);
+			const newItem = { ...lab_request, items: [rs.data] };
 			const newLabs = updateImmutable(labs, newItem);
 			updateLab(newLabs);
 			notifySuccess('lab result rejected!');
@@ -67,9 +70,9 @@ const ModalViewLabResult = ({ closeModal, labRequest, labs, updateLab }) => {
 					<div className="onboarding-content with-gradient">
 						<h4 className="onboarding-title">Lab Result</h4>
 						<div className="onboarding-text alert-custom mb-3">
-							<div>{labRequest.request_item.labTest.name}</div>
+							<div>{item.labTest.name}</div>
 							<div>
-								{labRequest.request_item.labTest.specimens.map((s, i) => (
+								{item.labTest.specimens.map((s, i) => (
 									<span key={i} className="badge badge-info text-white mr-2">
 										{s.label}
 									</span>
@@ -80,7 +83,7 @@ const ModalViewLabResult = ({ closeModal, labRequest, labs, updateLab }) => {
 							<div className="row">
 								<div className="col-sm-12">
 									<table className="table table-bordered table-sm table-v2 table-striped">
-										{labRequest.request_item.labTest.hasParameters && (
+										{item.labTest.hasParameters && (
 											<thead>
 												<tr>
 													<th>Parameter</th>
@@ -90,8 +93,8 @@ const ModalViewLabResult = ({ closeModal, labRequest, labs, updateLab }) => {
 											</thead>
 										)}
 										<tbody>
-											{labRequest.request_item.labTest.hasParameters ? (
-												labRequest.request_item.parameters.map((param, i) => {
+											{item.labTest.hasParameters ? (
+												item.parameters.map((param, i) => {
 													return (
 														<tr key={i}>
 															<td>{param.name}</td>
@@ -103,26 +106,21 @@ const ModalViewLabResult = ({ closeModal, labRequest, labs, updateLab }) => {
 											) : (
 												<tr>
 													<th>Result</th>
-													<td>{labRequest.request_item.result}</td>
+													<td>{item.result}</td>
 												</tr>
 											)}
-											{labRequest.request_item.note && (
+											{item.note && (
 												<tr>
 													<th>Note</th>
-													<td
-														colSpan={
-															labRequest.request_item.labTest.hasParameters
-																? 1
-																: 2
-														}>
-														{labRequest.request_item.note}
+													<td colSpan={item.labTest.hasParameters ? 1 : 2}>
+														{item.note}
 													</td>
 												</tr>
 											)}
 										</tbody>
 									</table>
 								</div>
-								{labRequest.request_item.approved === 0 && (
+								{item.approved === 0 && (
 									<div className="col-md-12 mt-4">
 										<button
 											onClick={() => approve()}

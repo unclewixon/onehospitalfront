@@ -17,6 +17,7 @@ import Account from './Account';
 import PayPointMenu from './PayPointMenu';
 import PharmacyMenu from './PharmacyMenu';
 import RadiologyMenu from './RadiologyMenu';
+import ProcedureMenu from './ProcedureMenu';
 import MyAccount from './MyAccount';
 import NurseMenu from './NurseMenu';
 import AdminMenu from './AdminMenu';
@@ -118,6 +119,7 @@ class MainMenu extends Component {
 					{role === 'accountant' && <PayPointMenu />}
 					{role === 'pharmacy' && <PharmacyMenu />}
 					{role === 'radiology' && <RadiologyMenu />}
+					{role === 'procedure' && <ProcedureMenu />}
 					{role === 'nurse' && <NurseMenu />}
 					{role === 'doctor' && <DoctorMenu />}
 					{role === 'hr' && <HrMenu />}

@@ -1,77 +1,58 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from 'react';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import DatePicker from 'react-datepicker';
+import { useDispatch, useSelector } from 'react-redux';
+import { Table } from 'react-bootstrap';
+import moment from 'moment';
+
 import { request } from '../../../services/utilities';
 import { diagnosisAPI } from '../../../services/constants';
-import DatePicker from 'react-datepicker';
-import { connect, useDispatch } from 'react-redux';
-import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
-import { Controller, ErrorMessage, useForm } from 'react-hook-form';
+import { updateEncounterData } from '../../../actions/patient';
+import { ReactComponent as TrashIcon } from '../../../assets/svg-icons/trash.svg';
+import { notifyError } from '../../../services/notify';
 
-let PastHistory = props => {
-	// eslint-disable-next-line no-unused-vars
-	const [start_time, setStart_time] = useState(new Date());
-	const [multiDate, setMultiDate] = useState([]);
-	let [data, setData] = useState([]);
+const PastHistory = ({ previous, next }) => {
+	const [loaded, setLoaded] = useState(false);
+	const [diagnoses, setDiagnoses] = useState([]);
+	const [diagnosis, setDiagnosis] = useState(null);
+	const [date, setDate] = useState('');
+	const [comment, setComment] = useState('');
 
-	const append = () => {
-		setData([...data, { id: data.length }]);
-	};
-	const remove = index => {
-		setData([...data.slice(0, index), ...data.slice(index + 1)]);
-	};
+	const encounter = useSelector(state => state.patient.encounterData);
 
-	const { encounterData, previous, encounterForm } = props;
-	const defaultValues = {
-		...(encounterForm.medicalHistory || []),
-	};
-
-	const { register, handleSubmit, control, errors } = useForm({
-		defaultValues,
-	});
 	const dispatch = useDispatch();
 
-	const onSubmit = async data => {
-		encounterData.medicalHistory = data.pastHistory || [];
-		encounterForm.medicalHistory = data;
-		props.loadEncounterForm(encounterForm);
-		props.loadEncounterData(encounterData);
-		dispatch(props.next);
+	const remove = index => {
+		const newItems = diagnoses.filter((item, i) => index !== i);
+		setDiagnoses(newItems);
+	};
+
+	const onSubmit = () => {
+		dispatch(updateEncounterData({ ...encounter, medicalHistory: diagnoses }));
+		dispatch(next);
 	};
 
 	useEffect(() => {
-		if (defaultValues.pastHistory?.length > 0) {
-			// eslint-disable-next-line array-callback-return
-			defaultValues.pastHistory.map((item, index) => {
-				multiDate[index] = item.date;
-				setMultiDate(multiDate);
-				// eslint-disable-next-line react-hooks/exhaustive-deps
-				data = [...data, { id: index }];
-			});
-
-			setData(data);
+		if (!loaded) {
+			setDiagnoses(encounter.medicalHistory);
+			setLoaded(true);
 		}
-	}, []);
+	}, [encounter.medicalHistory, loaded]);
 
 	const getOptionValues = option => option.id;
-	const getOptionLabels = option => option.description;
-	const setDate = (date, i) => {
-		multiDate[i] = date;
-		setStart_time(date);
-		setMultiDate(multiDate);
-	};
+	const getOptionLabels = option =>
+		`${option.description} (Icd${option.diagnosisType}: ${option.icd10Code ||
+			option.procedureCode})`;
 
-	const getOptions = async inputValue => {
-		if (!inputValue) {
+	const getOptions = async q => {
+		if (!q || (q && q.length <= 1)) {
 			return [];
 		}
-		let val = inputValue.toUpperCase();
-		const res = await request(
-			`${diagnosisAPI}/search?q=${val}&diagnosisType=10`,
-			'GET',
-			true
-		);
-		console.log(res);
+
+		const url = `${diagnosisAPI}/search?q=${q}&diagnosisType=`;
+		const res = await request(url, 'GET', true);
+
 		return res;
 	};
 
@@ -79,161 +60,138 @@ let PastHistory = props => {
 		height: '500px',
 	};
 
+	const add = () => {
+		if (diagnosis && date !== '') {
+			setDiagnoses([
+				...diagnoses,
+				{ diagnosis, date: moment(date).format('DD-MM-YYYY'), comment },
+			]);
+			setDiagnosis(null);
+			setDate('');
+			setComment('');
+		} else {
+			notifyError('Error, please select diagnosis or date of diagnosis');
+		}
+	};
+
 	return (
 		<div className="form-block encounter" style={divStyle}>
-			<form onSubmit={handleSubmit(onSubmit)}>
-				<div className="row">
-					<div className="col-md-12">
-						<a
-							className="btn btn-success btn-sm text-white"
-							onClick={() => {
-								append();
-							}}>
-							<i className="os-icon os-icon-plus-circle" />
-							<span>add</span>
-						</a>
+			<div className="row mt-1">
+				<div className="col-md-6">
+					<label>Past Medical History:</label>
+				</div>
+				<div className="col-md-6"></div>
+			</div>
+			<div className="row">
+				<div className="col-sm-6">
+					<div className="form-group">
+						<label>Diagnosis</label>
+						<AsyncSelect
+							required
+							getOptionValue={getOptionValues}
+							getOptionLabel={getOptionLabels}
+							defaultOptions
+							name="diagnosis"
+							loadOptions={getOptions}
+							value={diagnosis}
+							onChange={e => {
+								setDiagnosis(e);
+							}}
+							placeholder="Enter the diagnosis name or ICD-10/ICPC-2 code"
+						/>
 					</div>
 				</div>
-				<div className="row mt-1">
-					<div className="col-md-6">
-						<label>Past Medical History:</label>
-					</div>
-					<div className="col-md-6">
-						<div className="form-group clearfix diagnosis-type">
-							<div className="float-right ml-2">
-								<input
-									type="radio"
-									name="icd10"
-									ref={register}
-									value="icpc2"
-									className="form-control"
-								/>
-								<label>ICPC-2</label>
-							</div>
-							<div className="float-right">
-								<input
-									type="radio"
-									name="icd10"
-									ref={register}
-									value="icd10"
-									className="form-control"
-								/>
-								<label>ICD-10</label>
-							</div>
-						</div>
+				<div className="col-sm-2">
+					<div className="form-group">
+						<label>Date Diagnosed</label>
+						<DatePicker
+							selected={date}
+							peekNextMonth
+							showMonthDropdown
+							showYearDropdown
+							dropdownMode="select"
+							dateFormat="dd-MMM-yyyy"
+							className="single-daterange form-control"
+							placeholderText="Date Diagnosed"
+							onChange={e => setDate(e)}
+						/>
 					</div>
 				</div>
-				{data.map((hist, i) => {
-					return (
-						<div className="row" key={i}>
-							<div className="col-sm-6">
-								<div className="form-group">
-									<label>Diagnosis</label>
-									<Controller
-										as={
-											<AsyncSelect
-												required
-												cacheOptions
-												getOptionValue={getOptionValues}
-												getOptionLabel={getOptionLabels}
-												defaultOptions
-												loadOptions={getOptions}
-												placeholder="Enter the diagnosis name or ICD-10/ICPC-2 code"
-											/>
-										}
-										control={control}
-										rules={{ required: true }}
-										onChange={([selected]) => {
-											return selected;
-										}}
-										name={`pastHistory[${hist.id}].diagnosis`}
-									/>
-									<ErrorMessage
-										errors={errors}
-										name={`pastHistory[${hist.id}].diagnosis`}
-										message="This is required"
-										as={<span className="alert alert-danger" />}
-									/>
-								</div>
-							</div>
-							<div className="col-sm-2">
-								<div className="form-group">
-									<label>Date Diagnosed</label>
+				<div className="col-sm-3">
+					<div className="form-group">
+						<label>Comment</label>
+						<input
+							placeholder="Comment on the past medical history"
+							name="comment"
+							className="form-control"
+							value={comment}
+							onChange={e => setComment(e.target.value)}
+						/>
+					</div>
+				</div>
+				<div className="col-sm-1" style={{ position: 'relative' }}>
+					<a
+						className="text-danger delete-icon"
+						style={{ margin: '45px 0 0', display: 'block' }}
+						onClick={() => add()}>
+						<i className="os-icon os-icon-plus-circle" />
+					</a>
+				</div>
+			</div>
 
-									<Controller
-										as={
-											<DatePicker
-												selected={multiDate[hist.id]}
-												peekNextMonth
-												showMonthDropdown
-												showYearDropdown
-												dropdownMode="select"
-												dateFormat="dd-MMM-yyyy"
-												className="single-daterange form-control"
-												placeholderText="Date Diagnosed"
-											/>
-										}
-										control={control}
-										rules={{ required: true }}
-										onChange={([selected]) => {
-											setDate(selected, hist.id);
-											return selected;
-										}}
-										name={`pastHistory[${hist.id}].date`}
-									/>
-									<ErrorMessage
-										errors={errors}
-										name={`pastHistory[${hist.id}].date`}
-										message="This is required"
-										as={<span className="alert alert-danger" />}
-									/>
-								</div>
-							</div>
-							<div className="col-sm-3">
-								<div className="form-group">
-									<label>Comment</label>
-									<input
-										placeholder="Comment on the past medical history"
-										ref={register}
-										name={`pastHistory[${hist.id}].comment`}
-										className="form-control"
-									/>
-								</div>
-							</div>
-							<div className="col-sm-1" style={{ position: 'relative' }}>
-								<a
-									className="text-danger delete-icon"
-									style={{ margin: '45px 0 0', display: 'block' }}
-									onClick={() => remove(hist.id)}>
-									<i className="os-icon os-icon-cancel-circle" />
-								</a>
-							</div>
-						</div>
-					);
-				})}
+			<div className="row">
+				<Table>
+					<thead>
+						<tr>
+							<th>Diagnosis</th>
+							<th>Date</th>
+							<th>Comment</th>
+							<th nowrap="nowrap" className="text-center"></th>
+						</tr>
+					</thead>
+					<tbody>
+						{diagnoses.map((item, index) => {
+							return (
+								<tr key={index}>
+									<td>{`${item.diagnosis.description} (Icd${
+										item.diagnosis.diagnosisType
+									}: ${item.diagnosis.icd10Code ||
+										item.diagnosis.procedureCode})`}</td>
+									<td>{item.date}</td>
+									<td>{item.comment}</td>
+									<td>
+										<div className="display-flex">
+											<div className="ml-2">
+												<TrashIcon
+													onClick={() => remove(index)}
+													style={{
+														width: '1rem',
+														height: '1rem',
+														cursor: 'pointer',
+													}}
+												/>
+											</div>
+										</div>
+									</td>
+								</tr>
+							);
+						})}
+					</tbody>
+				</Table>
+			</div>
 
-				<div className="row mt-5">
-					<div className="col-sm-12 d-flex ant-row-flex-space-between">
-						<button className="btn btn-primary" onClick={previous}>
-							Previous
-						</button>
-						<button className="btn btn-primary" type="submit">
-							Next
-						</button>
-					</div>
+			<div className="row mt-5">
+				<div className="col-sm-12 d-flex ant-row-flex-space-between">
+					<button className="btn btn-primary" onClick={previous}>
+						Previous
+					</button>
+					<button className="btn btn-primary" onClick={onSubmit}>
+						Next
+					</button>
 				</div>
-			</form>
+			</div>
 		</div>
 	);
 };
 
-const mapStateToProps = state => {
-	return {
-		encounterData: state.patient.encounterData,
-		encounterForm: state.patient.encounterForm,
-	};
-};
-export default connect(mapStateToProps, {
-	loadEncounterData,
-	loadEncounterForm,
-})(PastHistory);
+export default PastHistory;

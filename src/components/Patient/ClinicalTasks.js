@@ -18,7 +18,11 @@ import { notifySuccess, notifyError } from '../../services/notify';
 const ClinicalTasks = () => {
 	const [showTaskModal, setShowTaskModal] = useState(false);
 	const [showModal, setShowModal] = useState(false);
-	const [meta, setMeta] = useState(null);
+	const [meta, setMeta] = useState({
+		currentPage: 1,
+		itemsPerPage: 12,
+		totalPages: 0,
+	});
 	const [tasks, setTasks] = useState([]);
 	const [loaded, setLoaded] = useState(false);
 	const [taskItem, setTaskItem] = useState(null);

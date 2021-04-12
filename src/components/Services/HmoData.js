@@ -17,7 +17,11 @@ import { deleteService, loadServices } from '../../actions/settings';
 import useSearchInputState from '../../services/search-hook';
 
 const HmoData = ({ hmo, index, toggle, doToggle, loaded, setLoaded }) => {
-	const [meta, setMeta] = useState(null);
+	const [meta, setMeta] = useState({
+		currentPage: 1,
+		itemsPerPage: 24,
+		totalPages: 0,
+	});
 	const [keyword, setKeyword] = useState('');
 	const [showModal, setShowModal] = useState(false);
 	const [service, setService] = useState(null);

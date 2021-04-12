@@ -19,6 +19,8 @@ import { toggleProfile } from '../../actions/user';
 
 const { RangePicker } = DatePicker;
 
+const limit = 24;
+
 const InPatientCare = () => {
 	const [admittedPatients, setAdmittedPatients] = useState([]);
 	const [loading, setLoading] = useState(false);
@@ -26,11 +28,13 @@ const InPatientCare = () => {
 	const [filtering, setFiltering] = useState(false);
 	const [startDate, setStartDate] = useState('');
 	const [endDate, setEndDate] = useState('');
-	const [meta, setMeta] = useState(null);
+	const [meta, setMeta] = useState({
+		currentPage: 1,
+		itemsPerPage: limit,
+		totalPages: 0,
+	});
 	const [patient, setPatient] = useState('');
 	const [loaded, setLoaded] = useState(false);
-
-	const limit = 24;
 
 	const doHide = val => {
 		//e.preventDefault();

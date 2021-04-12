@@ -19,7 +19,6 @@ const TransactionTable = ({
 	transactions,
 	delete_transaction,
 	loading,
-	queue,
 	showPrint = false,
 	showActionBtns,
 	columns,
@@ -64,7 +63,7 @@ const TransactionTable = ({
 			<table className="table table-striped">
 				<thead>
 					<tr>
-						{!queue && <th>DATE</th>}
+						<th>DATE</th>
 						<th>PATIENT NAME</th>
 						<th>DEPARTMENT</th>
 						<th>AMOUNT</th>
@@ -84,7 +83,7 @@ const TransactionTable = ({
 					{transactions.map((transaction, index) => {
 						return (
 							<tr key={index}>
-								<td hidden={queue}>
+								<td>
 									{moment(transaction.createdAt).format('DD-MM-YYYY H:mma')}
 								</td>
 								<td>
@@ -151,7 +150,7 @@ const TransactionTable = ({
 					})}
 					{transactions.length === 0 && (
 						<tr className="text-center">
-							<td colSpan={queue ? 6 : 7}>No transactions</td>
+							<td colSpan="7">No transactions</td>
 						</tr>
 					)}
 				</tbody>
