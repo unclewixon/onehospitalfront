@@ -13,7 +13,7 @@ import { updatePatient } from '../actions/patient';
 import PatientActions from './PatientActions';
 import { startBlock, stopBlock } from '../actions/redux-block';
 
-const ProfileBlock = ({ location, history, patient, match, noEdits }) => {
+const ProfileBlock = ({ location, history, patient, noButtons }) => {
 	const dispatch = useDispatch();
 
 	const enrollImmunization = async () => {
@@ -115,11 +115,13 @@ const ProfileBlock = ({ location, history, patient, match, noEdits }) => {
 				</div>
 			</div>
 			<div className="element-actions d-none d-sm-block justify-content-sm-end mt-1">
-				<PatientActions
-					location={location}
-					enrollImmunization={enrollImmunization}
-					isAdmitted={patient.isAdmitted}
-				/>
+				{!noButtons && (
+					<PatientActions
+						location={location}
+						enrollImmunization={enrollImmunization}
+						isAdmitted={patient.isAdmitted}
+					/>
+				)}
 			</div>
 		</div>
 	);

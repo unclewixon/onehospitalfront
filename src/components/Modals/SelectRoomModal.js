@@ -1,19 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect } from 'reactn';
 import { useSelector, useDispatch } from 'react-redux';
-import useSWR from 'swr';
 
 import { request } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
-import SSRStorage from '../../services/storage';
 import { loginUser } from '../../actions/user';
 import TableLoading from '../TableLoading';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
-const storage = new SSRStorage();
-
-const SelectRoomModal = ({ closeModal }) => {
+const SelectRoomModal = ({ rooms, closeModal }) => {
 	const profile = useSelector(state => state.user.profile);
 
 	const dispatch = useDispatch();
@@ -34,14 +30,11 @@ const SelectRoomModal = ({ closeModal }) => {
 				closeModal(rs.room);
 				const details = { ...profile.details, room: rs.room };
 				dispatch(loginUser({ ...profile, details }));
-				storage.setItem('ACTIVE:ROOM', rs.room);
 			}
 		} catch (e) {
 			notifyError('Error selecting consulting room');
 		}
 	};
-
-	const { data: rooms } = useSWR('consulting-rooms');
 
 	return (
 		<div

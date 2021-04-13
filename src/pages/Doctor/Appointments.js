@@ -40,9 +40,8 @@ const Appointments = () => {
 				const url = `front-desk/appointments?page=${p}&limit=${limit}&doctor_id=${
 					staff.id
 				}&canSeeDoctor=1&startDate=${state.startDate ||
-					''}&endDate=${state.endDate || ''}&department_id=${
-					staff.department.id
-				}`;
+					''}&endDate=${state.endDate || ''}&department_id=${staff?.department
+					?.id || ''}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setAllAppointments(result);

@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useState } from 'react';
-import useSWR from 'swr/esm/use-swr';
+import React, { useEffect, useState, useCallback } from 'react';
 import Tooltip from 'antd/lib/tooltip';
 import { useDispatch } from 'react-redux';
 import truncate from 'lodash.truncate';
@@ -14,20 +13,28 @@ import { request } from '../../services/utilities';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import TableLoading from '../../components/TableLoading';
 
-const NurseHome = () => {
+const VitalsQueue = () => {
 	const [loading, setLoading] = useState(true);
 	const [queues, setQueues] = useState([]);
 
 	const dispatch = useDispatch();
 
-	const { data } = useSWR('front-desk/queue-system/get-vitals-queue-lists');
+	const fetchQueue = useCallback(async () => {
+		try {
+			const url = 'front-desk/queue-system/get-vitals-queue-lists';
+			const rs = await request(url, 'GET', true);
+			setQueues(rs);
+		} catch (e) {
+			console.log(e);
+		}
+	}, []);
 
 	useEffect(() => {
-		if (data && loading) {
-			setQueues(data);
+		if (loading) {
+			fetchQueue();
 			setLoading(false);
 		}
-	}, [data, loading]);
+	}, [loading, fetchQueue]);
 
 	useEffect(() => {
 		socket.on('nursing-queue', data => {
@@ -44,23 +51,32 @@ const NurseHome = () => {
 		dispatch(toggleProfile(true, info));
 	};
 
-	const sendToDoctor = async (e, id, queue_id) => {
-		e.preventDefault();
-		dispatch(startBlock());
-
-		const data = { patient_id: id, queue_id };
-		const url = 'front-desk/queue-system/add';
-		const res = await request(url, 'POST', true, data);
-		if (res) {
-			console.log(res);
-			const arr = queues.filter(q => q.id !== queue_id);
-			setQueues(arr);
+	const sendToDoctor = async queue => {
+		try {
+			if (!queue) {
+				notifyError('Could not add patient to queue');
+				return;
+			}
+			dispatch(startBlock());
+			const data = {
+				patient_id: queue.appointment?.patient?.id,
+				queue_id: queue.id,
+			};
+			const url = `front-desk/queue-system/add/${queue.appointment.id}`;
+			const res = await request(url, 'POST', true, data);
+			if (res.success) {
+				const arr = queues.filter(q => q.id !== queue.id);
+				setQueues(arr);
+				dispatch(stopBlock());
+				notifySuccess('Patient has been queued to see the doctor');
+			} else {
+				dispatch(stopBlock());
+				notifyError('Could not add patient to queue');
+			}
+		} catch (e) {
 			dispatch(stopBlock());
-			notifySuccess(`Patient has been queued to see the doctor `);
-			return;
+			notifyError('Could not add patient to queue');
 		}
-		dispatch(stopBlock());
-		notifyError(`Could not add patient queue`);
 	};
 
 	return (
@@ -126,13 +142,7 @@ const NurseHome = () => {
 												<Tooltip title="Send To Doctor">
 													<a
 														className="btn btn-primary btn-sm ml-2"
-														onClick={e =>
-															sendToDoctor(
-																e,
-																queue?.appointment?.patient?.id,
-																queue?.id
-															)
-														}>
+														onClick={() => sendToDoctor(queue)}>
 														<i className="os-icon os-icon-mail-18" />
 													</a>
 												</Tooltip>
@@ -141,7 +151,7 @@ const NurseHome = () => {
 									))}
 								{queues.length === 0 && (
 									<tr>
-										<td colSpan="7" className="text-center">
+										<td colSpan="6" className="text-center">
 											No result found
 										</td>
 									</tr>
@@ -155,4 +165,4 @@ const NurseHome = () => {
 	);
 };
 
-export default NurseHome;
+export default VitalsQueue;

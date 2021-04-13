@@ -4,122 +4,34 @@ import { connect } from 'react-redux';
 import { Switch, withRouter } from 'react-router-dom';
 
 import { toggleProfile } from '../actions/user';
-import PatientMenu from '../components/Navigation/PatientMenu';
 import SSRStorage from '../services/storage';
 import { USER_RECORD } from '../services/constants';
 import HashRoute from '../components/HashRoute';
 import Splash from '../components/Splash';
 import ProfileBlock from '../components/ProfileBlock';
-import { confirmAction } from '../services/utilities';
-import PatientDataUpload from '../components/Patient/PatientDataUpload';
 
-const ClinicalTasks = lazy(() => import('../components/Patient/ClinicalTasks'));
-const Dashboard = lazy(() => import('../components/Patient/Dashboard'));
-const Lab = lazy(() => import('../components/Patient/Lab'));
-const Encounters = lazy(() => import('../components/Patient/Encounters'));
-const Pharmacy = lazy(() => import('../components/Patient/Pharmacy'));
-const Radiology = lazy(() => import('../components/Patient/Radiology'));
-const Procedure = lazy(() => import('../components/Patient/Procedure'));
-const Vitals = lazy(() => import('../components/Patient/Vitals'));
-const Allergies = lazy(() => import('../components/Patient/Allergies'));
-const LabRequest = lazy(() => import('../components/Patient/LabRequest'));
-
-const IVFHistory = lazy(() => import('../components/Patient/IVFHistory'));
-const AntennatalHistory = lazy(() =>
-	import('../components/Patient/AntennatalHistory')
+const Notes = lazy(() => import('../components/Procedures/Notes'));
+const PreProcedure = lazy(() =>
+	import('../components/Procedures/PreProcedure')
 );
-
-const PharmacyRequest = lazy(() =>
-	import('../components/Patient/PharmacyRequest')
-);
-const RadiologyRequest = lazy(() =>
-	import('../components/Patient/RadiologyRequest')
-);
-
-const ProcedureRequest = lazy(() =>
-	import('../components/Patient/ProcedureRequest')
-);
-const AllergyRequest = lazy(() =>
-	import('../components/Patient/AllergyRequest')
-);
-
-const UpdateAllergy = lazy(() => import('../components/Patient/UpdateAllergy'));
-const Antennatal = lazy(() => import('../components/Patient/Antennatal'));
-const AntennatalRequest = lazy(() =>
-	import('../components/Patient/AntennatalRequest')
-);
-
-const EnrollAntenatalPatient = lazy(() =>
-	import('../components/Patient/EnrollAntenatalPatient')
-);
-
-const EnrollIVFPatient = lazy(() =>
-	import('../components/Patient/EnrollIVFPatient')
-);
-
-const PatientAdmission = lazy(() =>
-	import('../components/Patient/PatientAdmission')
-);
-const EditPatient = lazy(() => import('../components/Patient/EditPatient'));
-const ImmunizationChart = lazy(() =>
-	import('../components/Patient/ImmunizationChart')
-);
+const Resources = lazy(() => import('../components/Procedures/Resources'));
+const Attachments = lazy(() => import('../components/Procedures/Attachments'));
 
 const storage = new SSRStorage();
 
 const Page = ({ location }) => {
 	const hash = location.hash.substr(1).split('#');
 	switch (hash[0]) {
-		case 'encounters':
-			return <Encounters />;
-		case 'lab':
-			return <Lab />;
-		case 'pharmacy':
-			return <Pharmacy />;
-		case 'vitals':
-			return <Vitals type={hash[1].split('%20').join(' ')} />;
-		case 'allergies':
-			return <Allergies />;
-		case 'clinical-tasks':
-			return <ClinicalTasks />;
-		case 'radiology':
-			return <Radiology />;
-		case 'procedure':
-			return <Procedure />;
-		case 'lab-request':
-			return <LabRequest module="patient" />;
-		case 'pharmacy-request':
-			return <PharmacyRequest />;
-		case 'radiology-request':
-			return <RadiologyRequest module="patient" />;
-		case 'procedure-request':
-			return <ProcedureRequest module="patient" />;
-		case 'allergy-request':
-			return <AllergyRequest />;
-		case 'update-allergy':
-			return <UpdateAllergy />;
-		case 'anc-visit-entry':
-			return <Antennatal />;
-		case 'antennal-request':
-			return <AntennatalRequest />;
-		case 'start-admission':
-			return <PatientAdmission />;
-		case 'edit-profile':
-			return <EditPatient />;
-		case 'enroll-ivf':
-			return <EnrollIVFPatient />;
-		case 'enroll-antenatal':
-			return <EnrollAntenatalPatient />;
-		case 'upload-document':
-			return <PatientDataUpload />;
-		case 'immunization-chart':
-			return <ImmunizationChart />;
-		case 'ivf-history':
-			return <IVFHistory />;
-		case 'anc-history':
-			return <AntennatalHistory />;
+		case 'attachments':
+			return <Attachments />;
+		case 'resources':
+			return <Resources />;
+		case 'pre-procedure':
+			return <PreProcedure />;
+		case 'notes':
+			return <Notes />;
 		default:
-			return <Dashboard />;
+			return <Notes />;
 	}
 };
 
@@ -129,19 +41,10 @@ class ProcedureProfile extends Component {
 		this.props.toggleProfile(false);
 	};
 
-	confirmStartAdmission = () => {
-		confirmAction(
-			this.startAdmission,
-			null,
-			'Are you sure you want to place this patient on admission?',
-			'Confirm Admission'
-		);
-	};
-
 	componentDidMount() {
 		const { location } = this.props;
 		if (!location.hash) {
-			this.props.history.push(`${location.pathname}#dashboard`);
+			this.props.history.push(`${location.pathname}#notes`);
 		}
 	}
 
@@ -163,19 +66,20 @@ class ProcedureProfile extends Component {
 				</button>
 				{patient ? (
 					<Fragment>
-						<PatientMenu />
 						<div
-							className="content-w content-w-l-18"
-							style={{ width: 'calc(100% - 18%)', overflow: 'hidden' }}>
+							className="content-w"
+							style={{ width: '100%', overflow: 'hidden' }}>
 							<div className="content-i">
 								<div className="content-box">
 									<div className="row">
 										<div className="col-sm-12 pb-4">
-											{/* patient profile block */}
-											{location.hash !== '#dashboard' && (
-												<ProfileBlock profile={true} patient={patient} />
-											)}
+											<ProfileBlock
+												profile={true}
+												patient={patient}
+												noButtons={true}
+											/>
 										</div>
+										{/* tabs should be here */}
 										<Suspense fallback={<Splash />}>
 											<Switch>
 												<HashRoute hash={location.hash} component={Page} />

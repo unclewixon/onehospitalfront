@@ -1,34 +1,47 @@
 import React, { lazy, Suspense, useState, useEffect, useCallback } from 'react';
 import { Switch, Route } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
-import SSRStorage from '../../services/storage';
 import SelectRoomModal from '../../components/Modals/SelectRoomModal';
+import { request } from '../../services/utilities';
 
 const Dashboard = lazy(() => import('./Dashboard'));
 const Appointments = lazy(() => import('./Appointments'));
-
-const storage = new SSRStorage();
 
 const Doctor = ({ match }) => {
 	const [showModal, setShowModal] = useState(false);
 	const [activeRoom, setActiveRoom] = useState(null);
 	const [selected, setSelected] = useState(false);
+	const [rooms, setRooms] = useState([]);
 
-	const initModal = useCallback(async () => {
-		const room = await storage.getItem('ACTIVE:ROOM');
-		if (!room) {
-			setShowModal(true);
-		} else {
-			setActiveRoom(room);
-			setSelected(true);
+	const profile = useSelector(state => state.user.profile);
+
+	const fetchConsultations = useCallback(async () => {
+		try {
+			const url = 'consulting-rooms';
+			const rs = await request(url, 'GET', true);
+			setRooms(rs);
+		} catch (e) {
+			console.log(e);
 		}
 	}, []);
 
+	const initModal = useCallback(async () => {
+		const staff = profile.details;
+		if (!staff.room) {
+			setShowModal(true);
+		} else {
+			setActiveRoom(staff.room);
+			setSelected(true);
+		}
+	}, [profile]);
+
 	useEffect(() => {
+		fetchConsultations();
 		initModal();
-	}, [initModal]);
+	}, [initModal, fetchConsultations]);
 
 	const closeModal = room => {
 		setShowModal(false);
@@ -75,7 +88,7 @@ const Doctor = ({ match }) => {
 					</div>
 				</div>
 			</div>
-			{showModal && <SelectRoomModal closeModal={closeModal} />}
+			{showModal && <SelectRoomModal rooms={rooms} closeModal={closeModal} />}
 		</div>
 	);
 };

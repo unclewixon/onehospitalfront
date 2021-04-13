@@ -163,7 +163,7 @@ class OpenEncounter extends Component {
 					<div className="modal-content">
 						<button
 							aria-label="Close"
-							className="close"
+							className="close text-white"
 							type="button"
 							onClick={closeModal}>
 							<span className="os-icon os-icon-close"></span>

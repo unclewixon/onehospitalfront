@@ -8,7 +8,7 @@ import DatePicker from 'antd/lib/date-picker';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { notifyError } from '../../services/notify';
 import TableLoading from '../TableLoading';
-import { request, itemRender } from '../../services/utilities';
+import { request, itemRender, hasPassed } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { fullname } from '../../services/utilities';
 import ModalViewAppointment from '../Modals/ModalViewAppointment';
@@ -161,9 +161,36 @@ class AppointmentHistory extends Component {
 														<td>{appointment.department?.name || ''}</td>
 
 														<td>
-															<p className="item-title text-color m-0">
-																{appointment.status}
-															</p>
+															{appointment.status === 'Cancelled' ||
+															hasPassed(appointment.appointment_date) ? (
+																<span className="badge badge-danger">
+																	{hasPassed(appointment.appointment_date) &&
+																	!appointment.encounter
+																		? 'Missed'
+																		: 'Cancelled'}
+																</span>
+															) : (
+																<>
+																	{appointment.status === 'Pending' && (
+																		<span className="badge badge-secondary">
+																			Pending
+																		</span>
+																	)}
+																	{(appointment.status ===
+																		'Pending Paypoint Approval' ||
+																		appointment.status ===
+																			'Pending HMO Approval') && (
+																		<span className="badge badge-secondary">
+																			Pending Payment
+																		</span>
+																	)}
+																	{appointment.status === 'Approved' && (
+																		<span className="badge badge-success">
+																			Approved
+																		</span>
+																	)}
+																</>
+															)}
 														</td>
 														<td className="row-actions text-left">
 															<a

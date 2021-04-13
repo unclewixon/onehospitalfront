@@ -2,21 +2,22 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
+import { useSelector } from 'react-redux';
 
 import {
 	confirmAction,
 	formatDateStr,
 	request,
 	trimText,
+	formatPatientId,
+	hasPassed,
 } from '../../services/utilities';
 import { toggleProfile } from '../../actions/user';
 import Button from '../common/Button';
 import { notifyError, notifySuccess } from '../../services/notify';
 import ProfilePopup from '../Patient/ProfilePopup';
-import { formatPatientId } from '../../services/utilities';
 import TableLoading from '../TableLoading';
 import ModalViewAppointment from '../Modals/ModalViewAppointment';
-import { useSelector } from 'react-redux';
 import OpenEncounter from '../Patient/Modals/OpenEncounter';
 
 const AppointmentTable = ({ appointments, loading }) => {
@@ -145,16 +146,23 @@ const AppointmentTable = ({ appointments, loading }) => {
 												className="btn btn-sm btn-success"
 												value="Accept"
 											/>
+										) : !appointment.encounter &&
+										  appointment.status !== 'Cancelled' &&
+										  !hasPassed(appointment.appointment_date) ? (
+											<Button
+												onClick={() =>
+													startEncounter(appointment.id, appointment?.patient)
+												}
+												className="btn btn-sm btn-info"
+												value="Start Encounter"
+											/>
 										) : (
-											!appointment.encounter && (
-												<Button
-													onClick={() =>
-														startEncounter(appointment.id, appointment?.patient)
-													}
-													className="btn btn-sm btn-info"
-													value="Start Encounter"
-												/>
-											)
+											<span className="badge badge-danger">
+												{hasPassed(appointment.appointment_date) &&
+												!appointment.encounter
+													? 'Missed'
+													: 'Cancelled'}
+											</span>
 										)}
 									</td>
 								) : (

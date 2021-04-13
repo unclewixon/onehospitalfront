@@ -1,11 +1,10 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { lazy, Suspense } from 'react';
 import { Switch, withRouter, Route } from 'react-router-dom';
 
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
 
-const NurseHome = lazy(() => import('./NurseHome'));
+const VitalsQueue = lazy(() => import('./VitalsQueue'));
 const InPatientCare = lazy(() => import('./InPatientCare'));
 const ClinicalTasks = lazy(() => import('./ClinicalTasks'));
 
@@ -18,7 +17,7 @@ const Nurse = ({ match }) => {
 						<div className="element-wrapper">
 							<Suspense fallback={<Splash />}>
 								<Switch>
-									<Route exact path={`${match.url}`} component={NurseHome} />
+									<Route exact path={`${match.url}`} component={VitalsQueue} />
 									<Route
 										path={`${match.url}/in-patients/care`}
 										component={InPatientCare}
