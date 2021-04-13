@@ -198,5 +198,4 @@ const ModalServiceDetails = ({ closeModal, details }) => {
 		</div>
 	);
 };
-
 export default ModalServiceDetails;
