@@ -40,6 +40,7 @@ class ProcedureProfile extends Component {
 		tab: 'notes',
 		loading: false,
 		showModal: false,
+		displayAdd: true,
 	};
 
 	closeModal = () => {
@@ -53,7 +54,11 @@ class ProcedureProfile extends Component {
 	};
 
 	setTab = value => {
-		this.setState({ tab: value });
+		if (value === 'billing') {
+			this.setState({ tab: value, displayAdd: false });
+		} else {
+			this.setState({ tab: value, displayAdd: true });
+		}
 	};
 
 	componentWillUnmount() {
@@ -65,6 +70,8 @@ class ProcedureProfile extends Component {
 		switch (this.state.tab) {
 			case 'notes':
 				return 'Add a Note';
+			case 'attachments':
+				return 'Add Attachment';
 			case 'pre-procedure':
 				return 'Take Pre-Procedure';
 			case 'resources':
@@ -113,151 +120,168 @@ class ProcedureProfile extends Component {
 												/>
 											</div>
 											{/* tabs should be here */}
-											<div className="os-tabs-controls mt-4">
-												<ul className="nav nav-tabs upper">
-													<li className="nav-item">
-														<a
-															className={
-																tab === 'notes' ? 'nav-link active' : 'nav-link'
-															}
-															onClick={() => this.setTab('notes')}>
-															Notes
-														</a>
-													</li>
-													<li className="nav-item">
-														<a
-															className={
-																tab === 'pre-procedure'
-																	? 'nav-link active'
-																	: 'nav-link'
-															}
-															onClick={() => this.setTab('pre-procedure')}>
-															PRE-PROCEDURE
-														</a>
-													</li>
+											<div className="col-sm-12 pb-4">
+												<div className="os-tabs-controls">
+													<ul
+														className="nav nav-tabs upper"
+														style={{ fontSize: '11px' }}>
+														<li className="nav-item">
+															<a
+																className={
+																	tab === 'notes'
+																		? 'nav-link active'
+																		: 'nav-link'
+																}
+																onClick={() => this.setTab('notes')}>
+																NOTES
+															</a>
+														</li>
+														<li className="nav-item">
+															<a
+																className={
+																	tab === 'pre-procedure'
+																		? 'nav-link active'
+																		: 'nav-link'
+																}
+																onClick={() => this.setTab('pre-procedure')}>
+																PRE-PROCEDURE
+															</a>
+														</li>
 
-													<li className="nav-item">
-														<a
-															className={
-																tab === 'resources'
-																	? 'nav-link active'
-																	: 'nav-link'
-															}
-															onClick={() => this.setTab('resources')}>
-															RESOURCES
-														</a>
-													</li>
+														<li className="nav-item">
+															<a
+																className={
+																	tab === 'resources'
+																		? 'nav-link active'
+																		: 'nav-link'
+																}
+																onClick={() => this.setTab('resources')}>
+																RESOURCES
+															</a>
+														</li>
 
-													<li className="nav-item">
-														<a
-															className={
-																tab === 'attachments'
-																	? 'nav-link active'
-																	: 'nav-link'
-															}
-															onClick={() => this.setTab('attachments')}>
-															ATTACHMENTS
-														</a>
-													</li>
+														<li className="nav-item">
+															<a
+																className={
+																	tab === 'attachments'
+																		? 'nav-link active'
+																		: 'nav-link'
+																}
+																onClick={() => this.setTab('attachments')}>
+																ATTACHMENTS
+															</a>
+														</li>
 
-													<li className="nav-item">
-														<a
-															className={
-																tab === 'consumables'
-																	? 'nav-link active'
-																	: 'nav-link'
-															}
-															onClick={() => this.setTab('consumables')}>
-															CONSUMABLES
-														</a>
-													</li>
+														<li className="nav-item">
+															<a
+																className={
+																	tab === 'consumables'
+																		? 'nav-link active'
+																		: 'nav-link'
+																}
+																onClick={() => this.setTab('consumables')}>
+																CONSUMABLES
+															</a>
+														</li>
 
-													<li className="nav-item">
-														<a
-															className={
-																tab === 'nursing-services'
-																	? 'nav-link active'
-																	: 'nav-link'
-															}
-															onClick={() => this.setTab('nursing-services')}>
-															NURSING SERVICES
-														</a>
-													</li>
+														<li className="nav-item">
+															<a
+																className={
+																	tab === 'nursing-services'
+																		? 'nav-link active'
+																		: 'nav-link'
+																}
+																onClick={() => this.setTab('nursing-services')}>
+																NURSING SERVICES
+															</a>
+														</li>
 
-													<li className="nav-item">
-														<a
-															className={
-																tab === 'medications-used'
-																	? 'nav-link active'
-																	: 'nav-link'
-															}
-															onClick={() => this.setTab('medications-used')}>
-															MEDICATIONS USED
-														</a>
-													</li>
+														<li className="nav-item">
+															<a
+																className={
+																	tab === 'medications-used'
+																		? 'nav-link active'
+																		: 'nav-link'
+																}
+																onClick={() => this.setTab('medications-used')}>
+																MEDICATIONS USED
+															</a>
+														</li>
 
-													<li className="nav-item">
-														<a
-															className={
-																tab === 'medical-report'
-																	? 'nav-link active'
-																	: 'nav-link'
-															}
-															onClick={() => this.setTab('medical-report')}>
-															MEDICAL REPORT
-														</a>
-													</li>
+														<li className="nav-item">
+															<a
+																className={
+																	tab === 'medical-report'
+																		? 'nav-link active'
+																		: 'nav-link'
+																}
+																onClick={() => this.setTab('medical-report')}>
+																MEDICAL REPORT
+															</a>
+														</li>
 
-													<li className="nav-item">
-														<a
-															className={
-																tab === 'patient-equipment'
-																	? 'nav-link active'
-																	: 'nav-link'
-															}
-															onClick={() => this.setTab('patient-equipment')}>
-															PATIENT EQUIPMENT
-														</a>
-													</li>
+														<li className="nav-item">
+															<a
+																className={
+																	tab === 'patient-equipment'
+																		? 'nav-link active'
+																		: 'nav-link'
+																}
+																onClick={() =>
+																	this.setTab('patient-equipment')
+																}>
+																PATIENT EQUIPMENT
+															</a>
+														</li>
 
-													<li className="nav-item">
-														<a
-															className={
-																tab === 'billing'
-																	? 'nav-link active'
-																	: 'nav-link'
-															}
-															onClick={() => this.setTab('billing')}>
-															BILLING
-														</a>
-													</li>
-												</ul>
-												<div className="row justify-content-center align-items-center">
-													{this.state.displaylabAction && (
+														<li className="nav-item">
+															<a
+																className={
+																	tab === 'billing'
+																		? 'nav-link active'
+																		: 'nav-link'
+																}
+																onClick={() => this.setTab('billing')}>
+																BILLING
+															</a>
+														</li>
+													</ul>
+												</div>
+											</div>
+											{this.state.displayAdd ? (
+												<div className="col-sm-12 pb-4">
+													<div className="justify-content-center align-items-center">
 														<button
 															className={
 																'mr-4 text-center mx-2 btn btn-primary btn-sm'
 															}
-															onClick={() => console.log('btn clicked()')}>
+															onClick={() =>
+																this.setState({ showModal: true })
+															}>
 															{this.labMgtActions()}{' '}
 															<i className="os-icon os-icon-plus"></i>
 														</button>
-													)}
+													</div>
 												</div>
-											</div>
-											<Suspense fallback={<Splash />}>
-												{tab === 'notes' && <Notes />}
-												{tab === 'pre-procedure' && <PreProcedure />}
-												{tab === 'resources' && <Resources />}
-												{tab === 'attachments' && <Attachments />}
+											) : (
+												''
+											)}
 
-												{tab === 'consumables' && <Consumables />}
-												{tab === 'nursing-services' && <NursingServices />}
-												{tab === 'medications-used' && <MedicationsUsed />}
-												{tab === 'medical-report' && <MedicalReport />}
-												{tab === 'patient-equipment' && <PatientEquipment />}
-												{tab === 'billing' && <Billing />}
-											</Suspense>
+											<div className="col-sm-12 pb-4">
+												<Suspense fallback={<Splash />}>
+													{tab === 'notes' && <Notes />}
+													{tab === 'pre-procedure' && <PreProcedure />}
+													{tab === 'resources' && <Resources />}
+													{tab === 'attachments' && <Attachments />}
+
+													{tab === 'consumables' && <Consumables />}
+													{tab === 'nursing-services' && <NursingServices />}
+													{tab === 'medications-used' && <MedicationsUsed />}
+													{tab === 'medical-report' && <MedicalReport />}
+													{tab === 'patient-equipment' && <PatientEquipment />}
+													{tab === 'billing' && <Billing />}
+												</Suspense>
+											</div>
 
 											{/* <Suspense fallback={<Splash />}>
 											<Switch>

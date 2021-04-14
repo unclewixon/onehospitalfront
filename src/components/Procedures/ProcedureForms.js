@@ -62,12 +62,13 @@ const NoteForm = () => {
 
 					<div className="row">
 						<div className="col-sm-12">
-							<label>Note</label>
 							<textarea
 								name="notes"
+								style={{ padding: '20px' }}
 								onChange={e => setNote(e.target.value)}
 								placeholder="Enter note"
 								rows="10"
+								cols="53"
 								required></textarea>
 						</div>
 					</div>
@@ -143,12 +144,13 @@ const PreProcedureForm = () => {
 
 					<div className="row">
 						<div className="col-sm-12">
-							<label>Task description</label>
 							<textarea
 								name="notes"
+								style={{ padding: '20px' }}
 								onChange={e => setNote(e.target.value)}
-								placeholder="Task description"
-								rows="5"
+								placeholder="Enter Task"
+								rows="10"
+								cols="53"
 								required></textarea>
 						</div>
 					</div>
@@ -230,12 +232,13 @@ const NurseForm = () => {
 
 					<div className="row">
 						<div className="col-sm-12">
-							<label>Task description</label>
 							<textarea
 								name="notes"
+								style={{ padding: '20px' }}
 								onChange={e => setNote(e.target.value)}
 								placeholder="Task description"
-								rows="5"
+								rows="10"
+								cols="53"
 								required></textarea>
 						</div>
 					</div>
@@ -317,12 +320,13 @@ const PrescriptionForm = () => {
 
 					<div className="row">
 						<div className="col-sm-12">
-							<label>Task description</label>
 							<textarea
 								name="notes"
+								style={{ padding: '20px' }}
 								onChange={e => setNote(e.target.value)}
 								placeholder="Task description"
-								rows="5"
+								rows="10"
+								cols="53"
 								required></textarea>
 						</div>
 					</div>
@@ -350,12 +354,13 @@ const ReportForm = () => {
 				<form onSubmit={e => console.log(e)}>
 					<div className="row">
 						<div className="col-sm-12">
-							<label>Report</label>
 							<textarea
 								name="notes"
+								style={{ padding: '20px' }}
 								onChange={e => setNote(e.target.value)}
-								placeholder="Task description"
-								rows="5"
+								placeholder="Enter Report"
+								rows="10"
+								cols="53"
 								required></textarea>
 						</div>
 					</div>
@@ -380,6 +385,8 @@ const ProcedureForms = ({ closeModal, tab }) => {
 		switch (type) {
 			case 'notes':
 				return 'Add a Note';
+			case 'attachments':
+				return 'Add Attachment';
 			case 'pre-procedure':
 				return 'Take Pre-Procedure';
 			case 'resources':
