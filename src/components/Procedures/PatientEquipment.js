@@ -3,14 +3,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import Pagination from 'antd/lib/pagination';
-
 import { itemRender } from '../../services/utilities';
 // import { notifySuccess, notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
 import TableLoading from '../TableLoading';
 
-class Resources extends Component {
+class PatientEquipment extends Component {
 	state = {
 		loading: false,
 		role: null,
@@ -20,10 +19,10 @@ class Resources extends Component {
 	};
 
 	componentDidMount() {
-		this.fetchResources();
+		this.fetchPatientEquipment();
 	}
 
-	fetchResources = async page => {
+	fetchPatientEquipment = async page => {
 		// 	try {
 		// 		const p = page || 1;
 		// 		this.setState({ loading: true });
@@ -81,17 +80,17 @@ class Resources extends Component {
 												<thead style={{ borderCollapse: 'collapse' }}>
 													<tr>
 														<th rowSpan="1" colSpan="1">
-															Status
-														</th>
-														<th rowSpan="1" colSpan="1">
 															Date
 														</th>
 
 														<th rowSpan="1" colSpan="1">
-															Description
+															Equipment
 														</th>
 														<th rowSpan="1" colSpan="1">
-															Noted By
+															Assigned By
+														</th>
+														<th rowSpan="1" colSpan="1">
+															Status
 														</th>
 													</tr>
 												</thead>
@@ -100,21 +99,20 @@ class Resources extends Component {
 													{notes?.map((note, i) => {
 														return (
 															<tr key={i} role="row" className="odd">
-																<td>{note.type}</td>
 																<td className="sorting_1">
 																	{moment(note.note_date).format('DD-MM-YYYY')}
 																</td>
 
-																<td>{note.description}</td>
-																<td>{note.note}</td>
+																<td>{note.equipment}</td>
 																<td>{note.notedBy}</td>
+																<td>{note.status}</td>
 															</tr>
 														);
 													})}
 
 													{notes && notes.length === 0 && (
 														<tr className="text-center">
-															<td colSpan="7">No Resource</td>
+															<td colSpan="7">No Patient Equipment</td>
 														</tr>
 													)}
 												</tbody>
@@ -154,4 +152,4 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps, {
 	startBlock,
 	stopBlock,
-})(Resources);
+})(PatientEquipment);

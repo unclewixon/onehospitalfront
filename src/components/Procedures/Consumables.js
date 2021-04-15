@@ -10,7 +10,7 @@ import { startBlock, stopBlock } from '../../actions/redux-block';
 
 import TableLoading from '../TableLoading';
 
-class Resources extends Component {
+class Consumables extends Component {
 	state = {
 		loading: false,
 		role: null,
@@ -20,10 +20,10 @@ class Resources extends Component {
 	};
 
 	componentDidMount() {
-		this.fetchResources();
+		this.fetchConsumables();
 	}
 
-	fetchResources = async page => {
+	fetchConsumables = async page => {
 		// 	try {
 		// 		const p = page || 1;
 		// 		this.setState({ loading: true });
@@ -81,9 +81,6 @@ class Resources extends Component {
 												<thead style={{ borderCollapse: 'collapse' }}>
 													<tr>
 														<th rowSpan="1" colSpan="1">
-															Status
-														</th>
-														<th rowSpan="1" colSpan="1">
 															Date
 														</th>
 
@@ -91,7 +88,7 @@ class Resources extends Component {
 															Description
 														</th>
 														<th rowSpan="1" colSpan="1">
-															Noted By
+															By
 														</th>
 													</tr>
 												</thead>
@@ -100,13 +97,12 @@ class Resources extends Component {
 													{notes?.map((note, i) => {
 														return (
 															<tr key={i} role="row" className="odd">
-																<td>{note.type}</td>
 																<td className="sorting_1">
 																	{moment(note.note_date).format('DD-MM-YYYY')}
 																</td>
 
 																<td>{note.description}</td>
-																<td>{note.note}</td>
+
 																<td>{note.notedBy}</td>
 															</tr>
 														);
@@ -114,7 +110,7 @@ class Resources extends Component {
 
 													{notes && notes.length === 0 && (
 														<tr className="text-center">
-															<td colSpan="7">No Resource</td>
+															<td colSpan="7">No Consumables</td>
 														</tr>
 													)}
 												</tbody>
@@ -154,4 +150,4 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps, {
 	startBlock,
 	stopBlock,
-})(Resources);
+})(Consumables);
