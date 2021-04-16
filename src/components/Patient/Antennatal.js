@@ -42,18 +42,23 @@ class Antennatal extends Component {
 	};
 
 	render() {
-		const { location, antenatal } = this.props;
+		const { location, antenatal, isAntenatalOpen } = this.props;
 		const { loading } = this.state;
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
-					<div className="element-actions">
-						<Link
-							to={`${location.pathname}#antennal-request`}
-							className="btn btn-primary">
-							New Antennatal Assessment
-						</Link>
-					</div>
+					{isAntenatalOpen ? (
+						''
+					) : (
+						<div className="element-actions">
+							<Link
+								to={`${location.pathname}#antennal-request`}
+								className="btn btn-primary">
+								New Antennatal Assessment
+							</Link>
+						</div>
+					)}
+
 					<h6 className="element-header">Antennatal Assessment</h6>
 					<div className="element-box p-3 m-0">
 						<div className="bootstrap-table">
@@ -164,6 +169,7 @@ const mapStateToProps = state => {
 	return {
 		patient: state.user.patient,
 		antenatal: state.patient.antenatalAssessment,
+		isAntenatalOpen: state.user.isAntenatalOpen,
 	};
 };
 

@@ -1,39 +1,37 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component, Suspense, lazy, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { Switch, withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { toggleProfile } from '../actions/user';
 import SSRStorage from '../services/storage';
 import { USER_RECORD } from '../services/constants';
 import HashRoute from '../components/HashRoute';
 import Splash from '../components/Splash';
 import ProfileBlock from '../components/ProfileBlock';
-import ProcedureForms from '../components/Procedures/ProcedureForms';
+import AntennatalForms from '../components/Antennatal/AntennatalForms';
 
-const Notes = lazy(() => import('../components/Procedures/Notes'));
-const PreProcedure = lazy(() =>
-	import('../components/Procedures/PreProcedure')
+const AntennatalRequest = lazy(() =>
+	import('../components/Patient/AntennatalRequest')
 );
-const Resources = lazy(() => import('../components/Procedures/Resources'));
-const Attachments = lazy(() => import('../components/Procedures/Attachments'));
-const Consumables = lazy(() => import('../components/Procedures/Consumables'));
-const NursingServices = lazy(() =>
-	import('../components/Procedures/NursingServices')
+const Vaccines = lazy(() => import('../components/Antennatal/Vaccines'));
+const VitalSigns = lazy(() => import('../components/Antennatal/VitalSigns'));
+
+const AntenatalDetailTab = lazy(() => import('./AntennatalDetailTab'));
+const Notes = lazy(() => import('../components/Antennatal/Notes'));
+const Antennatal = lazy(() => import('../components/Patient/Antennatal'));
+const LabTests = lazy(() => import('../components/Antennatal/LabTests'));
+const Imaging = lazy(() => import('../components/Antennatal/Imaging'));
+const RiskAssessments = lazy(() =>
+	import('../components/Antennatal/RiskAssessments')
 );
 const MedicationsUsed = lazy(() =>
-	import('../components/Procedures/MedicationsUsed')
+	import('../components/Antennatal/MedicationsUsed')
 );
-const MedicalReport = lazy(() =>
-	import('../components/Procedures/MedicalReport')
-);
-const PatientEquipment = lazy(() =>
-	import('../components/Procedures/PatientEquipment')
-);
-const Billing = lazy(() => import('../components/Procedures/Billing'));
+const ProblemList = lazy(() => import('../components/Antennatal/ProblemList'));
 
 const storage = new SSRStorage();
 
-class ProcedureProfile extends Component {
+class AntennatalProfile extends Component {
 	state = {
 		tab: 'notes',
 		loading: false,
@@ -52,7 +50,11 @@ class ProcedureProfile extends Component {
 	};
 
 	setTab = value => {
-		if (value === 'billing') {
+		if (
+			value === 'assessments' ||
+			value === 'antennal-request' ||
+			value === 'details'
+		) {
 			this.setState({ tab: value, displayAdd: false });
 		} else {
 			this.setState({ tab: value, displayAdd: true });
@@ -68,30 +70,29 @@ class ProcedureProfile extends Component {
 		switch (this.state.tab) {
 			case 'notes':
 				return 'Add a Note';
-			case 'attachments':
-				return 'Add Attachment';
-			case 'pre-procedure':
-				return 'Take Pre-Procedure';
-			case 'resources':
-				return 'Add Resource';
-			case 'consumables':
-				return 'Add Consumables';
-			case 'nursing-services':
-				return 'Add Nursing Services';
+			case 'problem-list':
+				return 'Add Issue';
+			case 'vital-signs':
+				return 'Add Vital Sign';
+			case 'risk-assessments':
+				return 'New Risk Assessment';
+			case 'vaccines':
+				return 'New Vaccine';
 			case 'medications-used':
-				return 'Add Medications Used';
-			case 'medical-report':
+				return 'Add Medication';
+			case 'lab-tests':
 				return 'Add Medical Report';
-			case 'patient-equipment':
-				return 'Add Patient Equipment';
+			case 'imaging':
+				return 'New Imaging';
 			default:
 				break;
 		}
 	};
 
 	render() {
-		const { patient } = this.props;
+		const { patient, antennatal } = this.props;
 		const { tab, showModal } = this.state;
+		console.log(antennatal);
 		return (
 			<>
 				<div className="layout-w">
@@ -137,63 +138,38 @@ class ProcedureProfile extends Component {
 														<li className="nav-item">
 															<a
 																className={
-																	tab === 'pre-procedure'
+																	tab === 'assessments'
 																		? 'nav-link active'
 																		: 'nav-link'
 																}
-																onClick={() => this.setTab('pre-procedure')}>
-																PRE-PROCEDURE
+																onClick={() => this.setTab('assessments')}>
+																ASSESSMENTS
 															</a>
 														</li>
 
 														<li className="nav-item">
 															<a
 																className={
-																	tab === 'resources'
+																	tab === 'details'
 																		? 'nav-link active'
 																		: 'nav-link'
 																}
-																onClick={() => this.setTab('resources')}>
-																RESOURCES
+																onClick={() => this.setTab('details')}>
+																DETAILS
 															</a>
 														</li>
 
 														<li className="nav-item">
 															<a
 																className={
-																	tab === 'attachments'
+																	tab === 'vital-signs'
 																		? 'nav-link active'
 																		: 'nav-link'
 																}
-																onClick={() => this.setTab('attachments')}>
-																ATTACHMENTS
+																onClick={() => this.setTab('vital-signs')}>
+																VITAL SIGNS
 															</a>
 														</li>
-
-														<li className="nav-item">
-															<a
-																className={
-																	tab === 'consumables'
-																		? 'nav-link active'
-																		: 'nav-link'
-																}
-																onClick={() => this.setTab('consumables')}>
-																CONSUMABLES
-															</a>
-														</li>
-
-														<li className="nav-item">
-															<a
-																className={
-																	tab === 'nursing-services'
-																		? 'nav-link active'
-																		: 'nav-link'
-																}
-																onClick={() => this.setTab('nursing-services')}>
-																NURSING SERVICES
-															</a>
-														</li>
-
 														<li className="nav-item">
 															<a
 																className={
@@ -202,45 +178,67 @@ class ProcedureProfile extends Component {
 																		: 'nav-link'
 																}
 																onClick={() => this.setTab('medications-used')}>
-																MEDICATIONS USED
+																MEDICATIONS
 															</a>
 														</li>
 
 														<li className="nav-item">
 															<a
 																className={
-																	tab === 'medical-report'
+																	tab === 'lab-tests'
 																		? 'nav-link active'
 																		: 'nav-link'
 																}
-																onClick={() => this.setTab('medical-report')}>
-																MEDICAL REPORT
+																onClick={() => this.setTab('lab-tests')}>
+																LAB TESTS
 															</a>
 														</li>
 
 														<li className="nav-item">
 															<a
 																className={
-																	tab === 'patient-equipment'
+																	tab === 'imaging'
 																		? 'nav-link active'
 																		: 'nav-link'
 																}
-																onClick={() =>
-																	this.setTab('patient-equipment')
-																}>
-																PATIENT EQUIPMENT
+																onClick={() => this.setTab('imaging')}>
+																IMAGING
 															</a>
 														</li>
 
 														<li className="nav-item">
 															<a
 																className={
-																	tab === 'billing'
+																	tab === 'risk-assessments'
 																		? 'nav-link active'
 																		: 'nav-link'
 																}
-																onClick={() => this.setTab('billing')}>
-																BILLING
+																onClick={() => this.setTab('risk-assessments')}>
+																RISK ASSESSMENTS
+															</a>
+														</li>
+
+														<li className="nav-item">
+															<a
+																className={
+																	tab === 'vaccines'
+																		? 'nav-link active'
+																		: 'nav-link'
+																}
+																onClick={() => this.setTab('vaccines')}>
+																VACCINES
+															</a>
+														</li>
+
+														<li className="nav-item">
+															<a
+																className={
+																	tab === 'problem-list'
+																		? 'nav-link active'
+																		: 'nav-link'
+																}
+																onClick={() => this.setTab('problem-list')}>
+																PROBLEM LISTS
 															</a>
 														</li>
 													</ul>
@@ -265,27 +263,38 @@ class ProcedureProfile extends Component {
 												''
 											)}
 
+											{this.state.tab === 'assessments' ? (
+												<div className="col-sm-12 pb-4">
+													<div className="justify-content-center align-items-center">
+														<button
+															className={
+																'mr-4 text-center mx-2 btn btn-primary btn-sm'
+															}
+															onClick={() => this.setTab('antennal-request')}>
+															New Antennatal Assessment
+															<i className="os-icon os-icon-plus"></i>
+														</button>
+													</div>
+												</div>
+											) : (
+												''
+											)}
+
 											<div className="col-sm-12 pb-4">
 												<Suspense fallback={<Splash />}>
 													{tab === 'notes' && <Notes />}
-													{tab === 'pre-procedure' && <PreProcedure />}
-													{tab === 'resources' && <Resources />}
-													{tab === 'attachments' && <Attachments />}
-
-													{tab === 'consumables' && <Consumables />}
-													{tab === 'nursing-services' && <NursingServices />}
+													{tab === 'vital-signs' && <VitalSigns />}
+													{tab === 'assessments' && <Antennatal />}
+													{tab === 'antennal-request' && <AntennatalRequest />}
+													{tab === 'details' && <AntenatalDetailTab />}
+													{tab === 'risk-assessments' && <RiskAssessments />}
+													{tab === 'vaccines' && <Vaccines />}
 													{tab === 'medications-used' && <MedicationsUsed />}
-													{tab === 'medical-report' && <MedicalReport />}
-													{tab === 'patient-equipment' && <PatientEquipment />}
-													{tab === 'billing' && <Billing />}
+													{tab === 'lab-tests' && <LabTests />}
+													{tab === 'imaging' && <Imaging />}
+													{tab === 'problem-list' && <ProblemList />}
 												</Suspense>
 											</div>
-
-											{/* <Suspense fallback={<Splash />}>
-											<Switch>
-												<HashRoute hash={location.hash} component={Page} />
-											</Switch>
-										</Suspense> */}
 										</div>
 									</div>
 								</div>
@@ -303,7 +312,7 @@ class ProcedureProfile extends Component {
 					)}
 				</div>
 				{showModal && (
-					<ProcedureForms tab={tab} closeModal={() => this.closeModal()} />
+					<AntennatalForms tab={tab} closeModal={() => this.closeModal()} />
 				)}
 			</>
 		);
@@ -313,9 +322,10 @@ class ProcedureProfile extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		patient: state.user.patient,
+		antennatal: state.user.antennatal,
 	};
 };
 
 export default withRouter(
-	connect(mapStateToProps, { toggleProfile })(ProcedureProfile)
+	connect(mapStateToProps, { toggleProfile })(AntennatalProfile)
 );
