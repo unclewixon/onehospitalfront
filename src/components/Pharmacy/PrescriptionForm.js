@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import Select from 'react-select';
 import { Table } from 'react-bootstrap';
@@ -30,17 +30,17 @@ const defaultValues = {
 	frequency: '',
 	frequencyType: '',
 	duration: '',
-	regimenNote: '',
+	regimen_instruction: '',
 	diagnosis: [],
 };
 
 const category_id = 1;
 
 const PrescriptionForm = ({ patient, history, module, location }) => {
-	const [refillable, setRefillable] = useState(false);
 	const { register, handleSubmit, setValue, reset } = useForm({
 		defaultValues,
 	});
+	const [refillable, setRefillable] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
 	const [inventories, setInventories] = useState([]);
 	const [drugsSelected, setDrugsSelected] = useState([]);
@@ -51,6 +51,7 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 	const [diagnosisType, setDiagnosisType] = useState('10');
 	const [selectedDrug, setSelectedDrug] = useState(null);
 	const [loading, setLoading] = useState(true);
+	const [regimenNote, setRegimenNote] = useState('');
 
 	const [diagnoses, setDiagnoses] = useState([]);
 	const [frequencyType, setFrequencyType] = useState(null);
@@ -87,32 +88,29 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 		return res;
 	};
 
-	const getServiceUnit = async hmoId => {
-		try {
-			dispatch(startBlock());
-			const url = `inventory/stocks-by-category/${category_id}/${hmoId}`;
-			const rs = await request(url, 'GET', true);
-			setInventories(rs);
-			setLoading(false);
-			dispatch(stopBlock());
-		} catch (error) {
-			console.log('serviceUnit', error);
-			notifyError('Error fetching drugs');
-			setLoading(false);
-			dispatch(stopBlock());
-		}
-	};
+	const getServiceUnit = useCallback(
+		async hmoId => {
+			try {
+				dispatch(startBlock());
+				const url = `inventory/stocks-by-category/${category_id}/${hmoId}`;
+				const rs = await request(url, 'GET', true);
+				setInventories(rs);
+				setLoading(false);
+				dispatch(stopBlock());
+			} catch (error) {
+				notifyError('Error fetching drugs');
+				setLoading(false);
+				dispatch(stopBlock());
+			}
+		},
+		[dispatch]
+	);
 
 	useEffect(() => {
-		const fetch = () => {
-			getServiceUnit(patient.hmo.id);
-		};
-
 		if (loading && patient) {
-			fetch();
+			getServiceUnit(patient.hmo.id);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [loading, patient]);
+	}, [getServiceUnit, loading, patient]);
 
 	// group drugs by generic name
 	const drugValues = groupBy(
@@ -136,6 +134,7 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 	const genericItem = drugObj.find(
 		drug => genName && drug.generic_name === genName
 	);
+
 	const drugNameOptions = genericItem
 		? genericItem.drugs.map(drug => ({
 				value: drug.id,
@@ -173,11 +172,11 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 
 	const startEdit = (request, index) => {
 		onTrash(index);
-		// eslint-disable-next-line array-callback-return
-		Object.entries(request).map(req => {
+		const items = Object.entries(request);
+		for (const req of items) {
 			const [key, value] = req;
 			setValue(key, value);
-		});
+		}
 		setEditing(true);
 	};
 
@@ -212,20 +211,24 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 				drug_hmo_cost: request.hmoPrice,
 				drug_id: request.drugId,
 				dose_quantity: request.quantity,
-				refills: request.refills,
+				refills:
+					request.refills && request.refills !== '' ? request.refills : 0,
 				frequency: request.frequency,
 				frequencyType: request.frequencyType,
 				duration: request.duration,
-				regimenNote: request.regimenNote,
+				regimenInstruction: request.regimen_instruction,
 				diagnosis: request.diagnosis || [],
 				prescription: request.prescription ? 'Yes' : 'No',
 			}));
 
-			const rs = await request('patient/save-request', 'POST', true, {
+			const regimen = {
 				requestType: 'pharmacy',
 				items: data,
 				patient_id,
-			});
+				request_note: regimenNote,
+			};
+
+			const rs = await request('patient/save-request', 'POST', true, regimen);
 			setSubmitting(false);
 			if (rs.success) {
 				notifySuccess('pharmacy request done');
@@ -464,7 +467,7 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 							className="form-control"
 							placeholder="Regimen line instruction"
 							ref={register}
-							name="regimenNote"
+							name="regimen_instruction"
 							onChange={onHandleInputChange}
 						/>
 					</div>
@@ -633,6 +636,19 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 						})}
 					</tbody>
 				</Table>
+			</div>
+			<div className="row mt-4">
+				<div className="form-group col-sm-12">
+					<label>Regimen Note</label>
+					<textarea
+						className="form-control"
+						name="regimen_note"
+						rows="3"
+						placeholder="Regimen note"
+						onChange={e => setRegimenNote(e.target.value)}>
+						{regimenNote}
+					</textarea>
+				</div>
 			</div>
 			<div>
 				<button

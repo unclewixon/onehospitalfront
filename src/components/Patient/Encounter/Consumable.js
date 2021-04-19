@@ -1,256 +1,250 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import SunEditor from 'suneditor-react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { Table } from 'react-bootstrap';
 import Select from 'react-select';
-import {
-	Field,
-	formValueSelector,
-	reduxForm,
-	SubmissionError,
-} from 'redux-form';
-import { useDispatch } from 'react-redux';
 
-import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
+import { updateEncounterData } from '../../../actions/patient';
 import {
 	consultationAPI,
-	stockByCategoryAPI,
+	consumableAPI,
+	defaultEncounter,
 } from '../../../services/constants';
-import {
-	renderSelect,
-	renderTextArea,
-	renderTextInput,
-	request,
-} from '../../../services/utilities';
-import searchingGIF from '../../../assets/images/searching.gif';
+import { request } from '../../../services/utilities';
 import { notifyError, notifySuccess } from '../../../services/notify';
-import { closeModals } from '../../../actions/general';
+import { startBlock, stopBlock } from '../../../actions/redux-block';
+import { ReactComponent as TrashIcon } from '../../../assets/svg-icons/trash.svg';
 
-const selector = formValueSelector('consumableForm');
-let Consumable = props => {
-	const { previous, encounterData } = props;
+const Consumable = ({
+	previous,
+	patient,
+	closeModal,
+	updateAppointment,
+	appointment_id,
+}) => {
+	const [loaded, setLoaded] = useState(false);
+	const [instruction, setInstruction] = useState('');
+	const [requestNote, setRequestNote] = useState('');
+	const [quantity, setQuantity] = useState('');
+	const [items, setItems] = useState([]);
+	const [item, setItem] = useState(null);
 
-	let [data, setData] = useState([]);
-	let [loading, setLoading] = useState(true);
-	const [summary, setSummary] = useState('');
-	let [stocks, setStock] = useState(false);
-	const append = () => {
-		setData([...data, { id: data.length }]);
-	};
-	const handleChange = e => {
-		setSummary(e);
-	};
+	// selected
+	const [selectedConsumables, setSelectedConsumables] = useState([]);
+
+	const encounter = useSelector(state => state.patient.encounterData);
 
 	const dispatch = useDispatch();
 
-	const listConsumable = async () => {
+	const fetchConsumables = useCallback(async () => {
 		try {
-			const url = `${stockByCategoryAPI}/Consumable`;
-			const rs = await request(url, 'GET', true);
-			setStock(rs);
-			setLoading(false);
-		} catch (e) {
-			setLoading(false);
-			throw new SubmissionError({
-				_error: e.message || 'could not load data',
-			});
+			dispatch(startBlock());
+			const rs = await request(`${consumableAPI}?list=all`, 'GET', true);
+			setItems(rs);
+			dispatch(stopBlock());
+		} catch (error) {
+			console.log(error);
+			notifyError('Error fetching consumables');
+			dispatch(stopBlock());
+		}
+	}, [dispatch]);
+
+	useEffect(() => {
+		if (!loaded) {
+			fetchConsumables();
+			setInstruction(encounter.instruction);
+			setLoaded(true);
+		}
+	}, [encounter, fetchConsumables, loaded]);
+
+	const add = () => {
+		if (item && item !== '' && quantity !== '') {
+			const found = selectedConsumables.find(c => c.item === item);
+			if (!found) {
+				setSelectedConsumables([...selectedConsumables, { item, quantity }]);
+				setItem(null);
+				setQuantity('');
+			}
+		} else {
+			notifyError('Error, please select item or enter quantity');
 		}
 	};
 
-	useEffect(() => {
-		listConsumable();
-	}, []);
-
-	const remove = index => {
-		setData([...data.slice(0, index), ...data.slice(index + 1)]);
+	const onTrash = (index, type) => {
+		const items = selectedConsumables.filter((test, i) => index !== i);
+		setSelectedConsumables(items);
 	};
 
-	const onSubmit = async data => {
-		const { patient, appointmentId } = props.encounterInfo;
-
-		encounterData.consumable = data || [];
-		encounterData.consumable.instruction = summary;
-		encounterData.appointment_id = appointmentId;
-
-		props.loadEncounterData(encounterData);
-
-		console.log(encounterData);
-		console.log(JSON.stringify(encounterData));
-		// dispatch(props.next);
-		setLoading(true);
-
+	const onSubmit = async e => {
 		try {
-			const url = `${consultationAPI}${patient.id}/save`;
+			e.preventDefault();
+			dispatch(startBlock());
+			const consumables = {
+				patient_id: patient.id,
+				items: [...selectedConsumables.map(t => ({ id: t.id }))],
+				request_note: requestNote,
+			};
+
+			const encounterData = { ...encounter, instruction, consumables };
+			dispatch(updateEncounterData(encounterData));
+
+			const url = `${consultationAPI}${patient.id}/save?appointment_id=${appointment_id}`;
 			const rs = await request(url, 'POST', true, encounterData);
-			console.log(rs);
-			// dispatch(updateAppointment(data.appointment));
-			dispatch(closeModals());
-			notifySuccess('Consultation created successfully');
-			setLoading(false);
+			if (rs && rs.success) {
+				console.log(rs);
+				updateAppointment(rs);
+				notifySuccess('Consultation completed successfully');
+				dispatch(stopBlock());
+				dispatch(updateEncounterData(defaultEncounter));
+				dispatch(closeModal());
+			} else {
+				dispatch(stopBlock());
+				notifyError('Error, could not save consultation data');
+			}
 		} catch (error) {
 			console.log(error);
-			notifyError('Consultation failed');
-			setLoading(false);
+			dispatch(stopBlock());
+			notifyError('Error, could not save consultation data');
 		}
 	};
 
 	return (
-		<form onSubmit={props.handleSubmit(onSubmit)}>
-			{loading ? (
-				<div className="form-block encounter">
-					<img alt="searching" src={searchingGIF} />
+		<div className="form-block encounter">
+			<form onSubmit={onSubmit}>
+				<div className="row">
+					<div className="form-group col-sm-4">
+						<label>Item</label>
+						<Select
+							placeholder="Select item"
+							getOptionValue={option => option.id}
+							getOptionLabel={option => option.description}
+							name="item"
+							options={items}
+							value={item}
+							onChange={e => setItem(e)}
+						/>
+					</div>
+					<div className="form-group col-sm-4">
+						<label>Quantity</label>
+						<input
+							type="number"
+							className="form-control"
+							placeholder="Enter quantity"
+							name="quantity"
+							onChange={e => setQuantity(e.target.value)}
+							value={quantity}
+						/>
+					</div>
+					<div className="col-sm-2" style={{ position: 'relative' }}>
+						<a
+							className="btn btn-danger btn-sm"
+							style={{ margin: '45px 0 0', display: 'block' }}
+							onClick={() => add()}>
+							<i className="os-icon os-icon-plus-circle" /> Add
+						</a>
+					</div>
 				</div>
-			) : (
-				<>
-					<div className="form-block encounter">
-						<div className="row">
-							<div className="col-sm-12">
-								<div className="form-group">
-									<Select
-										options={[{ label: 'Consumable', value: 'Consumable' }]}
-										defaultValue={{ label: 'Consumable', value: 'Consumable' }}
-										placeholder="Select Service Center"
-										name="service_center"
-									/>
-								</div>
-							</div>
-						</div>
-						<div className="row mt-4">
-							<div className="col-md-12">
-								{!loading ? (
-									<a
-										className="btn btn-success btn-sm text-white"
-										onClick={() => {
-											append();
-										}}>
-										<i className="os-icon os-icon-plus-circle" />
-										<span>add</span>
-									</a>
-								) : (
-									''
-								)}
-							</div>
-						</div>
-						{data.map((item, i) => {
-							return (
-								<div className="row" key={i}>
-									<div className="col-sm-5">
-										<div className="form-group">
-											<Field
-												id="item"
-												name={`items[${item.id}].item`}
-												component={renderSelect}
-												label="Item"
-												placeholder="Item"
-												data={stocks}
-											/>
-										</div>
-									</div>
-									<div className="col-sm-4">
-										<div className="form-group">
-											<Field
-												id="quantity"
-												name={`items[${item.id}].quantity`}
-												component={renderTextInput}
-												label="Quantity"
-												placeholder="Quantity"
-											/>
-										</div>
-									</div>
-									<div className="col-sm-1" style={{ position: 'relative' }}>
-										<a
-											className="text-danger delete-icon"
-											onClick={() => remove(item.id)}>
-											<i className="os-icon os-icon-cancel-circle" />
-										</a>
-									</div>
-								</div>
-							);
-						})}
-						<div className="row">
-							<div className="col-sm-12">
-								<div className="form-group">
-									<label>Note</label>
-									<Field
-										id="note"
-										name="note"
-										component={renderTextArea}
-										label="Request Note"
-										placeholder="Request Note"
-									/>
-								</div>
-							</div>
-						</div>
-						<div className="row">
-							<div className="col-sm-12">
-								<div className="form-group">
-									<label>Add patient instructions</label>
-									<SunEditor
-										width="100%"
-										name="instructions"
-										placeholder="Please type here..."
-										autoFocus={false}
-										enableToolbar={true}
-										onChange={evt => {
-											handleChange(String(evt));
-										}}
-										setOptions={{
-											height: 300,
-											buttonList: [
-												[
-													'bold',
-													'underline',
-													'italic',
-													'strike',
-													'subscript',
-													'superscript',
-													'list',
-													'align',
-													'font',
-													'fontSize',
-													'image',
-												],
-											],
-										}}
-									/>
-								</div>
-							</div>
-						</div>
-
-						<div className="row mt-5">
-							<div className="col-sm-12 d-flex ant-row-flex-space-between">
-								<button className="btn btn-primary" onClick={previous}>
-									Previous
-								</button>
-								<button className="btn btn-primary" type="submit">
-									Finish
-								</button>
-							</div>
+				<div className="row">
+					<div className="col-md-12">
+						<div className="element-box p-3 m-0 mt-3 w-100">
+							<Table>
+								<thead>
+									<tr>
+										<th>Item</th>
+										<th>Quantity</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									{selectedConsumables.map((item, i) => {
+										return (
+											<tr key={i}>
+												<td>{item.item.name}</td>
+												<td>{item.quantity}</td>
+												<td>
+													<TrashIcon
+														onClick={() => onTrash(i)}
+														style={{
+															width: '1rem',
+															height: '1rem',
+															cursor: 'pointer',
+														}}
+													/>
+												</td>
+											</tr>
+										);
+									})}
+								</tbody>
+							</Table>
 						</div>
 					</div>
-				</>
-			)}
-		</form>
+				</div>
+				<div className="row mt-4">
+					<div className="form-group col-sm-12">
+						<label>Request Note</label>
+						<textarea
+							className="form-control"
+							name="request_note"
+							rows="3"
+							placeholder="Enter request note"
+							onChange={e => setRequestNote(e.target.value)}
+							value={requestNote}></textarea>
+					</div>
+				</div>
+				<div className="mt-4"></div>
+				<h5>Patient Instructions</h5>
+				<div className="row">
+					<div className="col-sm-12">
+						<div className="form-group">
+							<label>Add patient instructions</label>
+							<SunEditor
+								width="100%"
+								placeholder="Please type here..."
+								setContents={instruction}
+								name="complaint_data"
+								autoFocus={true}
+								enableToolbar={true}
+								setOptions={{
+									height: 300,
+									buttonList: [
+										[
+											'bold',
+											'underline',
+											'italic',
+											'strike',
+											'subscript',
+											'superscript',
+											'list',
+											'align',
+											'font',
+											'fontSize',
+											'image',
+											'codeView',
+										],
+									],
+								}}
+								onChange={e => {
+									setInstruction(String(e));
+								}}
+							/>
+						</div>
+					</div>
+				</div>
+
+				<div className="row mt-5">
+					<div className="col-sm-12 d-flex ant-row-flex-space-between">
+						<button className="btn btn-primary" onClick={previous}>
+							Previous
+						</button>
+						<button className="btn btn-primary" type="submit">
+							Finish
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
 	);
 };
 
-Consumable = reduxForm({
-	form: 'consumableForm', //Form name is same
-	destroyOnUnmount: false,
-	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
-})(Consumable);
-
-const mapStateToProps = (state, ownProps) => {
-	return {
-		encounterData: state.patient.encounterData,
-		encounterForm: state.patient.encounterForm,
-		encounterInfo: state.general.encounterInfo,
-		value: selector(state, 'consumable'),
-	};
-};
-
-export default connect(mapStateToProps, {
-	loadEncounterData,
-	closeModals,
-	loadEncounterForm,
-})(Consumable);
+export default Consumable;

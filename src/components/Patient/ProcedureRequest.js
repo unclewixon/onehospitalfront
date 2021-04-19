@@ -17,7 +17,7 @@ const defaultValues = {
 	bill: 'later',
 };
 
-const categories = [{ id: 19, name: 'Genreal Surgery' }];
+const categories = [{ id: 19, name: 'General Surgery' }];
 
 const ProcedureRequest = ({ module, history, location }) => {
 	const { register, handleSubmit, setValue } = useForm({ defaultValues });

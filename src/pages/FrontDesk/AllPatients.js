@@ -16,7 +16,7 @@ import {
 } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { toggleProfile } from '../../actions/user';
-import TableLoading from '../TableLoading';
+import TableLoading from '../../components/TableLoading';
 import waiting from '../../assets/images/waiting.gif';
 
 const { RangePicker } = DatePicker;

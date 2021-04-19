@@ -21,7 +21,6 @@ import {
 	LOAD_LABOUR,
 	LOAD_LABOUR_DETAIL,
 	CLEAR_LABOUR_DETAIL,
-	ENCOUNTER_FORM,
 	PATIENT_REGULATION_TABLE,
 	LOAD_PARTOGRAPH,
 	LOAD_RISK,
@@ -35,6 +34,7 @@ import {
 	SET_IVF,
 	CAN_CLOSE_LABOUR,
 	UPDATE_ENCOUNTER_DATA,
+	RESET_ENCOUNTER_DATA,
 } from './types';
 import { request } from '../services/utilities';
 
@@ -175,13 +175,6 @@ export const updateVitals = data => {
 	};
 };
 
-export const loadEncounterForm = data => {
-	return {
-		type: ENCOUNTER_FORM,
-		payload: data,
-	};
-};
-
 export const loadPatientIVFForm = data => {
 	return {
 		type: PATIENT_IVF,
@@ -199,6 +192,13 @@ export const loadPatientRegulationTable = data => {
 export const updateEncounterData = data => {
 	return {
 		type: UPDATE_ENCOUNTER_DATA,
+		payload: data,
+	};
+};
+
+export const resetEncounterData = data => {
+	return {
+		type: RESET_ENCOUNTER_DATA,
 		payload: data,
 	};
 };

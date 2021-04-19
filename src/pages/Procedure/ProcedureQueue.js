@@ -3,7 +3,6 @@ import moment from 'moment';
 import Pagination from 'antd/lib/pagination';
 
 import { request, itemRender } from '../../services/utilities';
-import { patientAPI } from '../../services/constants';
 import ProcedureBlock from '../../components/ProcedureBlock';
 
 class ProcedureQueue extends Component {
@@ -24,7 +23,7 @@ class ProcedureQueue extends Component {
 			this.setState({ ...this.state, loading: true });
 			const p = page || 1;
 			const date = moment().format('YYYY-MM-DD');
-			const url = `${patientAPI}/requests/procedure?page=${p}&limit=10&today=${date}`;
+			const url = `requests/list/procedure?page=${p}&limit=10&today=${date}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			this.setState({

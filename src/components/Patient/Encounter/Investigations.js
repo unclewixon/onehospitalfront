@@ -1,578 +1,356 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Select from 'react-select';
-import { useForm, Controller, ErrorMessage } from 'react-hook-form';
-import { connect, useDispatch } from 'react-redux';
+import { useForm } from 'react-hook-form';
+import { Table } from 'react-bootstrap';
 
-import { serviceAPI, serviceCenter } from '../../../services/constants';
-import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
-import {
-	getAllLabGroups,
-	getAllLabTestCategories,
-	getAllLabTestParameters,
-	fetchLabTests,
-} from '../../../actions/settings';
+import { serviceAPI } from '../../../services/constants';
+import { request, formatCurrency } from '../../../services/utilities';
 import { notifyError } from '../../../services/notify';
-import { request } from '../../../services/utilities';
+import { ReactComponent as TrashIcon } from '../../../assets/svg-icons/trash.svg';
+import { startBlock, stopBlock } from '../../../actions/redux-block';
+import { updateEncounterData } from '../../../actions/patient';
 
-const Investigations = props => {
-	const { previous, encounterData, encounterForm } = props;
+const defaultValues = {
+	lab_request_note: '',
+	lab_urgent: false,
+	scan_request_note: '',
+	scan_urgent: false,
+};
 
-	const [labCombos, setLabCombos] = useState(null);
-	const [labTests, setLabTests] = useState(null);
-	const [category, setCategory] = useState('');
-	const [loaded, setLoaded] = useState(false);
-	// eslint-disable-next-line no-unused-vars
-	const [servicesObjects, setServicesObjects] = useState([]);
-	const [services, setServices] = useState([]);
-	const [servicesCategory, setServicesCategory] = useState([]);
+const category_id = 13;
 
-	const dispatch = useDispatch();
-
-	const defaultValues = {
-		...(encounterForm.investigations || []),
-	};
-
-	const { register, handleSubmit, setValue, control, errors } = useForm({
+const Investigations = ({ patient, previous, next }) => {
+	const { register, handleSubmit } = useForm({
 		defaultValues,
 	});
 
-	const handleChangeServiceCategory = evt => {
-		let value = String(evt.value);
-		fetchServicesByCategory(value);
-		setValue('service_center', value);
-	};
+	const encounter = useSelector(state => state.patient.encounterData);
 
-	const fetchServicesByCategory = async id => {
-		try {
-			const rs = await request(`${serviceAPI}/category/${id}`, 'GET', true);
-			setServicesObjects(rs);
-			let services = [];
-			rs &&
-				rs.forEach((item, index) => {
-					const res = { label: item.name, value: item.id };
-					services = [...services, res];
-				});
-			setServices(services);
-		} catch (error) {
-			notifyError('error fetching services requests for the patient');
-		}
-	};
-	const onCategoryChange = e => {
-		setCategory(e);
-	};
-	const labCatsOptions =
-		props && props.LabCategories
-			? props.LabCategories.map((cats, index) => {
-					return { value: cats.id, label: cats.name };
-			  })
-			: [];
+	const [loaded, setLoaded] = useState(false);
 
-	const labTestOptions =
-		props && props.LabTests && props.LabTests.length
-			? props.LabTests.filter(test => test.category.id === category).map(
-					(test, index) => {
-						return { value: test.id, label: test.name, id: test.id };
-					}
-			  )
-			: [];
-	const handleMultipleSelectInput = (field, selected) => {
-		if (field === 'lab_combos') {
-			setLabCombos(selected);
-		}
-		if (field === 'lab_tests_torequest') {
-			setLabTests(selected);
-		}
-	};
+	const [labTests, setLabTests] = useState([]);
+	const [categories, setCategories] = useState([]);
+	const [groups, setGroups] = useState([]);
+	const [services, setServices] = useState([]);
 
-	const handleChangeProcedure = evt => {
-		setValue('rad_service_request', evt);
-	};
+	// selected requests
+	const [selectedTests, setSelectedTests] = useState([]);
+	const [selectedScans, setSelectedScans] = useState([]);
 
-	const labGroupOptions =
-		props && props.LabGroups && props.LabGroups.length
-			? props.LabGroups.filter(groups =>
-					groups && groups.category && groups.category.id === category
-						? true
-						: false
-			  ).map((grp, index) => {
-					return { value: grp.id, label: grp.name, id: grp.id };
-			  })
-			: [];
+	// lab
+	const [category, setCategory] = useState(null);
+	const [group, setGroup] = useState(null);
+	const [labTest, setLabTest] = useState(null);
+	const [urgentLab, setUrgentLab] = useState(false);
 
-	const structuredTest = () => {
-		const parameterObj = {};
-		// eslint-disable-next-line no-unused-vars
-		const parVals =
-			props && props.LabParameters && props.LabParameters.length
-				? // eslint-disable-next-line array-callback-return
-				  props.LabParameters.map(par => {
-						parameterObj[par.id] = par;
-				  })
-				: [];
+	// radiology
+	const [service, setService] = useState(null);
+	const [urgentScan, setUrgentScan] = useState(false);
 
-		const testObj = {};
-		// eslint-disable-next-line no-unused-vars
-		const testVals =
-			props && props.LabTests && props.LabTests.length
-				? // eslint-disable-next-line array-callback-return
-				  props.LabTests.map(test => {
-						testObj[test.id] = test;
-				  })
-				: [];
+	const dispatch = useDispatch();
 
-		const lab_test =
-			labTests && labTests.length
-				? labTests.map(test => {
-						const fullParams = testObj[test.value].parameters.map(par => {
-							const newParamObj = {
-								parameter_type: 'parameter',
-								referenceRange: par.referenceRange,
-								...parameterObj[par.parameter_id],
-							};
-							return newParamObj;
-						});
-						const fullTest = {
-							...testObj[test.value],
-							parameters: fullParams,
-						};
-						return fullTest;
-				  })
-				: [];
-		return lab_test;
-	};
+	const getServiceUnit = useCallback(
+		async hmoId => {
+			try {
+				dispatch(startBlock());
 
-	const structuredGroup = () => {
-		const parameterObj = {};
-		// eslint-disable-next-line no-unused-vars
-		const parVals =
-			props && props.LabParameters && props.LabParameters.length
-				? // eslint-disable-next-line array-callback-return
-				  props.LabParameters.map(par => {
-						parameterObj[par.id] = par;
-				  })
-				: [];
+				try {
+					const url = `lab-tests/categories?hasTest=1&hmo_id=${hmoId}`;
+					const rs = await request(url, 'GET', true);
+					setCategories(rs);
+				} catch (error) {}
 
-		const groupObj = {};
-		// eslint-disable-next-line no-unused-vars
-		const groupVals =
-			props && props.LabGroups && props.LabGroups.length
-				? // eslint-disable-next-line array-callback-return
-				  props.LabGroups.map(group => {
-						groupObj[group.id] = group;
-				  })
-				: [];
+				try {
+					const url = `lab-tests/groups?hmo_id=${hmoId}`;
+					const rs = await request(url, 'GET', true);
+					setGroups(rs);
+				} catch (e) {
+					notifyError('Error fetching drugs');
+				}
 
-		const lab_combo =
-			labCombos && labCombos.length
-				? labCombos.map(combo => {
-						const fullParams = groupObj[combo.value].parameters.map(par => {
-							const newParamObj = {
-								parameter_type: 'parameter',
-								referenceRange: par.referenceRange,
-								...parameterObj[par.parameter_id],
-							};
-							return newParamObj;
-						});
-						const fullGroup = {
-							...groupObj[combo.value],
-							parameters: fullParams,
-						};
-						return fullGroup;
-				  })
-				: [];
-		return lab_combo;
-	};
+				try {
+					const url = `${serviceAPI}/category/${category_id}?hmo_id=${hmoId}`;
+					const rs = await request(url, 'GET', true);
+					setServices(rs);
+				} catch (e) {
+					notifyError('Error fetching scan services');
+				}
 
-	const fetchServicesCategory = async () => {
-		try {
-			const rs = await request(`${serviceAPI}/categories`, 'GET', true);
-			let data = [];
-			rs.forEach((item, index) => {
-				const res = { label: item.name, value: item.id };
-				data = [...data, res];
-			});
-			setServicesCategory(data);
-			setLoaded(true);
-		} catch (error) {
-			console.log(error);
-			notifyError('error fetching service categories for the patient');
-		}
-	};
+				dispatch(stopBlock());
+			} catch (error) {
+				console.log(error);
+				notifyError('Error fetching drugs');
+				dispatch(stopBlock());
+			}
+		},
+		[dispatch]
+	);
 
 	useEffect(() => {
-		if (!loaded) {
-			fetchServicesCategory();
-			const {
-				getAllLabGroups,
-				fetchLabTests,
-				getAllLabTestCategories,
-				getAllLabTestParameters,
-			} = props;
-
-			getAllLabGroups();
-			fetchLabTests();
-			getAllLabTestCategories();
-			getAllLabTestParameters();
-
-			setLoaded(true);
+		if (!loaded && patient) {
+			getServiceUnit(patient.hmo.id);
 		}
-	}, [props, loaded]);
+		setLoaded(true);
+	}, [
+		encounter.investigations.labRequest,
+		encounter.investigations.radiologyRequest,
+		getServiceUnit,
+		loaded,
+		patient,
+	]);
 
-	const onSubmit = async data => {
-		const { patient } = props.encounterInfo;
+	const onTrash = (index, type) => {
+		if (type === 'lab') {
+			const items = selectedTests.filter((test, i) => index !== i);
+			setSelectedTests(items);
+		} else {
+			const items = selectedScans.filter((test, i) => index !== i);
+			setSelectedScans(items);
+		}
+	};
 
-		encounterForm.investigations = data;
-		props.loadEncounterForm(encounterForm);
-
-		const lab_test = structuredTest();
-		const lab_combo = structuredGroup();
-
-		let newGroup = lab_combo.map(grp => {
-			return {
-				name: grp.name ? grp.name : '',
-				amount: grp.price ? grp.price : '',
-				service_id: grp.id ? grp.id : '',
-				tests: grp.subTests
-					? grp.subTests.map(test => {
-							return {
-								testName: test.name ? test.name : '',
-								paramenters: test.parameters.length
-									? test.parameters.map(param => {
-											return {
-												name:
-													param.parameter && param.parameter.name
-														? param.parameter.name
-														: '',
-												range: param.referenceRange ? param.referenceRange : '',
-												result: param.result ? param.result : '',
-											};
-									  })
-									: [],
-							};
-					  })
-					: [],
-				parameters: grp.parameters
-					? grp.parameters.map(param => {
-							return {
-								name: param.name ? param.name : '',
-								range: param.referenceRange ? param.referenceRange : '',
-								result: param.result ? param.result : '',
-							};
-					  })
-					: [],
-			};
-		});
-
-		let newTest = lab_test
-			? lab_test.map(test => {
-					return {
-						testName: test && test.name ? test.name : '',
-						service_id: test && test.id ? test.id : '',
-						amount: test && test.price ? test.price : '',
-						paramenters:
-							test.parameters &&
-							test.parameters.map(param => {
-								return {
-									name: param && param.name ? param.name : '',
-									range:
-										param && param.referenceRange ? param.referenceRange : '',
-									result: param.result ? param.result : '',
-								};
-							}),
-					};
-			  })
-			: [];
-
-		let labRequestObj = {
-			requestType: data.lab_service_center.value,
+	const onSubmit = data => {
+		const labRequest = {
+			requestType: 'lab',
 			patient_id: patient.id,
-			requestBody: {
-				specialization: '',
-				sessionCount: '',
-				groups: newGroup,
-				tests: newTest,
-				refferredSpecimen: data.pref_specimen,
-				requestNote: data.lab_req_note,
-			},
+			tests: [...selectedTests.map(t => ({ id: t.id }))],
+			request_note: data.lab_request_note,
+			urgent: data.lab_urgent,
 		};
 
-		let imagingRequestObj = [];
-		let theRequest = {};
-		if (data.rad_service_request?.length > 0) {
-			data.rad_service_request.forEach(value => {
-				imagingRequestObj = [
-					...imagingRequestObj,
-					{
-						service_id: value.value,
-						service_name: value.label,
-					},
-				];
-			});
-		}
+		const radiologyRequest = {
+			requestType: 'radiology',
+			patient_id: patient.id,
+			tests: [...selectedScans.map(t => ({ id: t.id }))],
+			request_note: data.sacn_request_note,
+			urgent: data.scan_urgent,
+		};
 
-		theRequest.requestType = data.rad_service_center?.label?.toLowerCase();
-		theRequest.request_note = data.lab_req_note;
-		theRequest.patient_id = patient.id;
-		theRequest.requestBody = imagingRequestObj;
-
-		encounterData.investigations.labRequest = labRequestObj || [];
-		encounterData.investigations.imagingRequest = theRequest || [];
-		props.loadEncounterData(encounterData);
-		dispatch(props.next);
+		dispatch(
+			updateEncounterData({
+				...encounter,
+				investigations: {
+					...encounter.investigations,
+					labRequest,
+					radiologyRequest,
+				},
+			})
+		);
+		dispatch(next);
 	};
+
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<div className="form-block encounter">
 				<h5>Lab Requests</h5>
 				<div className="row">
-					<div className="col-sm-6">
-						<div className="form-group">
-							<label>Business Unit/Service Center</label>
-
-							<Controller
-								as={
-									<Select
-										options={serviceCenter}
-										placeholder="Select Service Center"
-									/>
-								}
-								control={control}
-								//rules={{ required: true }}
-								onChange={([selected]) => {
-									// Place your logic here
-									return selected;
-								}}
-								name="lab_service_center"
-								defaultValue={{ label: 'LAB', value: 'lab' }}
-							/>
-						</div>
+					<div className="form-group col-sm-12">
+						<label>Lab Group</label>
+						<Select
+							name="lab_group"
+							placeholder="Select Lab Group"
+							options={groups}
+							value={group}
+							getOptionValue={option => option.id}
+							getOptionLabel={option => option.name}
+							onChange={e => {
+								setGroup(e);
+								setSelectedTests([
+									...selectedTests,
+									...e.tests.map(t => ({ ...t.labTest })),
+								]);
+							}}
+						/>
 					</div>
+				</div>
+				<div className="row">
 					<div className="form-group col-sm-6">
 						<label>Lab Categories</label>
-						<Controller
-							as={
-								<Select
-									options={labCatsOptions}
-									placeholder="Select Lab Categories"
-								/>
-							}
-							control={control}
-							//rules={{ required: true }}
-							onChange={([selected]) => {
-								// Place your logic here
-								onCategoryChange(selected.value);
-								return selected;
+						<Select
+							name="lab_category"
+							placeholder="Select Lab Category"
+							options={categories}
+							value={category}
+							getOptionValue={option => option.id}
+							getOptionLabel={option => option.name}
+							onChange={e => {
+								setCategory(e);
+								setLabTests(e.lab_tests);
 							}}
-							name="lab_categories"
-						/>
-						<ErrorMessage
-							errors={errors}
-							name="lab_categories"
-							message="This is required"
-							as={<span className="alert alert-danger" />}
 						/>
 					</div>
-				</div>
-				<div className="row">
-					<div className="col-sm-6">
-						<div className="form-group">
-							<label>Lab Combos</label>
-							<Controller
-								as={
-									<Select
-										options={labGroupOptions}
-										placeholder="Select Lab Combination"
-										isMulti
-									/>
-								}
-								control={control}
-								//rules={{ required: true }}
-								onChange={([selected]) => {
-									handleMultipleSelectInput('lab_combos', selected);
-									return selected;
-								}}
-								name="lab_combos"
-							/>
-							<ErrorMessage
-								errors={errors}
-								name="lab_combos"
-								message="This is required"
-								as={<span className="alert alert-danger" />}
-							/>
-						</div>
-					</div>
-					<div className="col-sm-6">
-						<div className="form-group">
-							<label>Lab Tests To Request</label>
-							<Controller
-								as={
-									<Select
-										options={labTestOptions}
-										placeholder="Select lab tests to request"
-										isMulti
-									/>
-								}
-								control={control}
-								//rules={{ required: true }}
-								onChange={([selected]) => {
-									handleMultipleSelectInput('lab_tests_torequest', selected);
-									return selected;
-								}}
-								name="lab_tests_torequest"
-							/>
-							<ErrorMessage
-								errors={errors}
-								name="lab_tests_torequest"
-								message="This is required"
-								as={<span className="alert alert-danger" />}
-							/>
-						</div>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-sm-12">
-						<div className="form-group">
-							<label>
-								<input
-									type="checkbox"
-									className="form-control"
-									ref={register}
-									name="lab_urgent"
-								/>{' '}
-								Please tick if urgent
-							</label>
-						</div>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-sm-12">
-						<div className="form-group">
-							<label>Preferred Specimen(s)</label>
-							<input
-								type="text"
-								className="form-control"
-								ref={register}
-								name="pref_specimen"
-							/>
-							<ErrorMessage
-								errors={errors}
-								name="pref_specimen"
-								message="This is required"
-								as={<span className="alert alert-danger" />}
-							/>
-						</div>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-sm-12">
-						<div className="form-group">
-							<label>Lab Request Note</label>
-							<textarea
-								className="form-control"
-								cols="4"
-								ref={register}
-								name="lab_req_note"></textarea>
-							<ErrorMessage
-								errors={errors}
-								name="lab_req_note"
-								message="This is required"
-								as={<span className="alert alert-danger" />}
-							/>
-						</div>
-					</div>
-				</div>
-				<h5 className="mt-4">Radiological Investigation</h5>
-				<div className="row">
-					<div className="col-sm-12">
-						<div className="form-group">
-							<label>Business Unit/Service Center</label>
-							<Controller
-								as={
-									<Select
-										options={servicesCategory}
-										placeholder="Select Service Center"
-									/>
-								}
-								control={control}
-								//rules={{ required: true }}
-								onChange={([selected]) => {
-									handleChangeServiceCategory(selected);
-									return selected;
-								}}
-								name="rad_service_center"
-							/>
-							<ErrorMessage
-								errors={errors}
-								name="rad_service_center"
-								message="This is required"
-								as={<span className="alert alert-danger" />}
-							/>
-						</div>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-sm-12">
-						<div className="form-group">
-							<label>Scans To Request</label>
-							<Controller
-								as={
-									<Select
-										options={services}
-										placeholder="Select service to request from"
-										isMulti
-									/>
-								}
-								control={control}
-								//rules={{ required: true }}
-								onChange={([selected]) => {
-									handleChangeProcedure(selected);
-									return selected;
-								}}
-								name="rad_service_request"
-							/>
-							<ErrorMessage
-								errors={errors}
-								name="rad_service_request"
-								message="This is required"
-								as={<span className="alert alert-danger" />}
-							/>
-						</div>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-sm-12">
-						<div className="form-group">
-							<label>
-								<input
-									type="checkbox"
-									className="form-control"
-									ref={register}
-									name="rad_urgent"
-								/>{' '}
-								Please tick if urgent
-							</label>
-						</div>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-sm-12">
-						<div className="form-group">
-							<label>Request Note/Reason</label>
-							<textarea
-								className="form-control"
-								cols="4"
-								ref={register}
-								name="rad_req_note"></textarea>
-							<ErrorMessage
-								errors={errors}
-								name="rad_req_note"
-								message="This is required"
-								as={<span className="alert alert-danger" />}
-							/>
-						</div>
+					<div className="form-group col-sm-6">
+						<label>Lab Test</label>
+						<Select
+							name="lab_tests"
+							placeholder="Select Lab Tests"
+							options={labTests}
+							value={labTest}
+							getOptionValue={option => option.id}
+							getOptionLabel={option => option.name}
+							onChange={e => {
+								setLabTest(e);
+								setSelectedTests([...selectedTests, e]);
+								setCategory(null);
+								setLabTests([]);
+								setLabTest(null);
+							}}
+						/>
 					</div>
 				</div>
 
+				<div className="row">
+					<div className="col-md-12">
+						<div className="element-box p-3 m-0 mt-3 w-100">
+							<Table>
+								<thead>
+									<tr>
+										<th>Category</th>
+										<th>Lab Test</th>
+										<th>Price</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									{selectedTests.map((item, i) => {
+										return (
+											<tr key={i}>
+												<td>{item.category.name}</td>
+												<td>{item.name}</td>
+												<td>{formatCurrency(item.hmoPrice)}</td>
+												<td>
+													<TrashIcon
+														onClick={() => onTrash(i)}
+														style={{
+															width: '1rem',
+															height: '1rem',
+															cursor: 'pointer',
+														}}
+													/>
+												</td>
+											</tr>
+										);
+									})}
+								</tbody>
+							</Table>
+						</div>
+					</div>
+				</div>
+				<div className="row mt-4">
+					<div className="form-group col-sm-12">
+						<label>Lab Request Note</label>
+						<textarea
+							className="form-control"
+							name="lab_request_note"
+							rows="3"
+							placeholder="Enter request note"
+							ref={register}></textarea>
+					</div>
+				</div>
+				<div className="row">
+					<div className="form-group col-sm-6">
+						<div className="form-check col-sm-12">
+							<label className="form-check-label">
+								<input
+									className="form-check-input mt-0"
+									name="lab_urgent"
+									type="checkbox"
+									checked={urgentLab}
+									onChange={e => setUrgentLab(!urgentLab)}
+									ref={register}
+								/>
+								Please check if urgent
+							</label>
+						</div>
+					</div>
+					<div className="col-sm-6 text-right"></div>
+				</div>
+				<div className="mt-4"></div>
+				<h5>Radiology Requests</h5>
+				<div className="row">
+					<div className="form-group col-sm-12">
+						<label>Radiology Test</label>
+						<Select
+							name="service_request"
+							placeholder="Select Radiology Test"
+							options={services}
+							value={service}
+							getOptionValue={option => option.id}
+							getOptionLabel={option => option.name}
+							onChange={e => {
+								setService(e);
+								setSelectedScans([...selectedScans, e]);
+								setService(null);
+							}}
+						/>
+					</div>
+				</div>
+
+				<div className="row">
+					<div className="col-md-12">
+						<div className="element-box p-3 m-0 mt-3 w-100">
+							<Table>
+								<thead>
+									<tr>
+										<th>Radiology Scan</th>
+										<th>Price</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									{selectedScans.map((item, i) => {
+										return (
+											<tr key={i}>
+												<td>{item.name}</td>
+												<td>{formatCurrency(item.hmoTarrif)}</td>
+												<td>
+													<TrashIcon
+														onClick={() => onTrash(i)}
+														style={{
+															width: '1rem',
+															height: '1rem',
+															cursor: 'pointer',
+														}}
+													/>
+												</td>
+											</tr>
+										);
+									})}
+								</tbody>
+							</Table>
+						</div>
+					</div>
+				</div>
+				<div className="row mt-4">
+					<div className="form-group col-sm-12">
+						<label>Scan Request Note</label>
+						<textarea
+							className="form-control"
+							name="scan_request_note"
+							rows="3"
+							placeholder="Enter request note"
+							ref={register}></textarea>
+					</div>
+				</div>
+				<div className="row">
+					<div className="form-group col-sm-6">
+						<div className="form-check col-sm-12">
+							<label className="form-check-label">
+								<input
+									className="form-check-input mt-0"
+									name="scan_urgent"
+									type="checkbox"
+									checked={urgentScan}
+									onChange={e => setUrgentScan(!urgentScan)}
+									ref={register}
+								/>
+								Please check if urgent
+							</label>
+						</div>
+					</div>
+					<div className="col-sm-6 text-right"></div>
+				</div>
 				<div className="row mt-5">
 					<div className="col-sm-12 d-flex ant-row-flex-space-between">
 						<button className="btn btn-primary" onClick={previous}>
@@ -587,21 +365,5 @@ const Investigations = props => {
 		</form>
 	);
 };
-const mapStateToProps = state => {
-	return {
-		LabTests: state.settings.lab_tests,
-		LabGroups: state.settings.lab_groups,
-		LabParameters: state.settings.lab_parameters,
-		encounterData: state.patient.encounterData,
-		encounterForm: state.patient.encounterForm,
-		encounterInfo: state.general.encounterInfo,
-	};
-};
-export default connect(mapStateToProps, {
-	loadEncounterData,
-	loadEncounterForm,
-	getAllLabGroups,
-	fetchLabTests,
-	getAllLabTestParameters,
-	getAllLabTestCategories,
-})(Investigations);
+
+export default Investigations;

@@ -19,22 +19,40 @@ import ReviewOfSystem from '../Encounter/ReviewOfSystem';
 import { encounters } from '../../../services/constants';
 import { updateEncounterData } from '../../../actions/patient';
 
-const EncounterTabs = ({ index, previous, next }) => {
+const EncounterTabs = ({
+	index,
+	previous,
+	next,
+	patient,
+	closeModal,
+	updateAppointment,
+	appointment_id,
+}) => {
 	switch (index) {
 		case 9:
-			return <Consumable previous={previous} />;
+			return (
+				<Consumable
+					previous={previous}
+					patient={patient}
+					closeModal={closeModal}
+					updateAppointment={updateAppointment}
+					appointment_id={appointment_id}
+				/>
+			);
 		case 8:
-			return <PlanForm next={next} previous={previous} />;
+			return <PlanForm next={next} previous={previous} patient={patient} />;
 		case 7:
-			return <Investigations next={next} previous={previous} />;
+			return (
+				<Investigations next={next} previous={previous} patient={patient} />
+			);
 		case 6:
-			return <Diagnosis next={next} previous={previous} />;
+			return <Diagnosis next={next} previous={previous} patient={patient} />;
 		// case 6:
 		// return <PhysicalExamSummary next={next} previous={previous} />;
 		case 5:
 			return <PhysicalExam next={next} previous={previous} />;
 		case 4:
-			return <Allergies next={next} previous={previous} />;
+			return <Allergies next={next} previous={previous} patient={patient} />;
 		case 3:
 			return <PastHistory next={next} previous={previous} />;
 		case 2:
@@ -59,30 +77,30 @@ class OpenEncounter extends Component {
 			this.focusDiv();
 		}, 200);
 
-		ArrowKeysReact.config({
-			left: () => {
-				this.setState({
-					content: 'left key detected.',
-				});
-				this.previous();
-			},
-			right: () => {
-				this.setState({
-					content: 'right key detected.',
-				});
-				this.next();
-			},
-			up: () => {
-				this.setState({
-					content: 'up key detected.',
-				});
-			},
-			down: () => {
-				this.setState({
-					content: 'down key detected.',
-				});
-			},
-		});
+		// ArrowKeysReact.config({
+		// 	left: () => {
+		// 		this.setState({
+		// 			content: 'left key detected.',
+		// 		});
+		// 		this.previous();
+		// 	},
+		// 	right: () => {
+		// 		this.setState({
+		// 			content: 'right key detected.',
+		// 		});
+		// 		this.next();
+		// 	},
+		// 	up: () => {
+		// 		this.setState({
+		// 			content: 'up key detected.',
+		// 		});
+		// 	},
+		// 	down: () => {
+		// 		this.setState({
+		// 			content: 'down key detected.',
+		// 		});
+		// 	},
+		// });
 	}
 
 	open = i => () => {
@@ -100,29 +118,6 @@ class OpenEncounter extends Component {
 			this.focusDiv();
 		}, 200);
 	};
-
-	componentWillUnmount() {
-		// this.props.updateEncounterData({
-		// 	complaints: 'Presenting Complaints:',
-		// 	reviewOfSystem: [],
-		// 	patientHistory: [],
-		// 	medicalHistory: [],
-		// 	allergies: [],
-		// 	physicalExamination: [],
-		// 	//physicalExaminationSummary: [],
-		// 	diagnosis: [],
-		// 	investigations: {
-		// 		labRequest: {},
-		// 		imagingRequest: {},
-		// 	},
-		// 	plan: {
-		// 		treatmentPlan: 'Treatment Plan:',
-		// 		pharmacyRequests: {},
-		// 		nextAppointment: {},
-		// 		procedureRequest: {},
-		// 	},
-		// });
-	}
 
 	previous = () => {
 		const { eIndex } = this.state;
@@ -148,7 +143,12 @@ class OpenEncounter extends Component {
 	}
 
 	render() {
-		const { appointment_id, patient, closeModal } = this.props;
+		const {
+			appointment_id,
+			patient,
+			closeModal,
+			updateAppointment,
+		} = this.props;
 		const { eIndex } = this.state;
 		const current = encounters[eIndex];
 		return (
@@ -185,6 +185,8 @@ class OpenEncounter extends Component {
 											previous={this.previous}
 											patient={patient}
 											appointment_id={appointment_id}
+											closeModal={closeModal}
+											updateAppointment={updateAppointment}
 										/>
 									</div>
 								</div>

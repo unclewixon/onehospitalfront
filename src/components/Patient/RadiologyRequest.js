@@ -176,7 +176,7 @@ const RadiologyRequest = ({ module, history, location }) => {
 							<Table>
 								<thead>
 									<tr>
-										<th>Radiology Test</th>
+										<th>Radiology Scan</th>
 										<th>Price</th>
 										<th>Action</th>
 									</tr>

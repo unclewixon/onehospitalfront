@@ -6,7 +6,7 @@ import { request } from '../../services/utilities';
 import {
 	allergyCategories,
 	patientAPI,
-	severity,
+	severities,
 } from '../../services/constants';
 import { add_allergies } from '../../actions/patient';
 import waiting from '../../assets/images/waiting.gif';
@@ -91,7 +91,7 @@ const AllergyRequest = props => {
 									<Select
 										name="severity"
 										placeholder="Select severity"
-										options={severity}
+										options={severities}
 										ref={register({ name: 'severity' })}
 										onChange={evt => {
 											if (evt === null) {

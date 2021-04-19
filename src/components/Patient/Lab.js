@@ -23,41 +23,29 @@ const Lab = ({ location }) => {
 
 	const patient = useSelector(state => state.user.patient);
 
-	const fetch = async page => {
-		try {
-			const p = page || 1;
-			const url = `patient/${patient.id}/request/lab?page=${p}&limit=10&startDate=${startDate}&endDate=${endDate}`;
-			const rs = await request(url, 'GET', true);
-			const { result, ...meta } = rs;
-			setLabs(result);
-			setMeta(meta);
-			setLoaded(true);
-		} catch (e) {
-			notifyError(e.message || 'could not fetch lab requests');
-			setLoaded(true);
-		}
-	};
-
-	const fetchLabs = useCallback(async () => {
-		try {
-			const p = 1;
-			const url = `patient/${patient.id}/request/lab?page=${p}&limit=10&startDate=${startDate}&endDate=${endDate}`;
-			const rs = await request(url, 'GET', true);
-			const { result, ...meta } = rs;
-			setLabs(result);
-			setMeta(meta);
-			setLoaded(true);
-		} catch (e) {
-			notifyError(e.message || 'could not fetch lab requests');
-			setLoaded(true);
-		}
-	}, [patient.id]);
+	const fetch = useCallback(
+		async page => {
+			try {
+				const p = page || 1;
+				const url = `requests/${patient.id}/request/lab?page=${p}&limit=10&startDate=${startDate}&endDate=${endDate}`;
+				const rs = await request(url, 'GET', true);
+				const { result, ...meta } = rs;
+				setLabs(result);
+				setMeta(meta);
+				setLoaded(true);
+			} catch (e) {
+				notifyError(e.message || 'could not fetch lab requests');
+				setLoaded(true);
+			}
+		},
+		[patient]
+	);
 
 	useEffect(() => {
 		if (!loaded) {
-			fetchLabs();
+			fetch(1);
 		}
-	}, [fetchLabs, loaded]);
+	}, [fetch, loaded]);
 
 	const updateLab = labs => {
 		setLabs(labs);

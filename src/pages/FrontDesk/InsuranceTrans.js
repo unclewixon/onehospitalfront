@@ -13,7 +13,7 @@ import { request, itemRender } from '../../services/utilities';
 import { loadTransaction } from '../../actions/transaction';
 import searchingGIF from '../../assets/images/searching.gif';
 import ModalServiceDetails from '../../components/Modals/ModalServiceDetails';
-import InputCode from './InputCode';
+import InputCode from '../../components/FrontDesk/InputCode';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const { RangePicker } = DatePicker;

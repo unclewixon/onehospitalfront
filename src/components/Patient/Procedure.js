@@ -25,7 +25,7 @@ const Procedure = ({ location }) => {
 	const fetchProcedures = useCallback(
 		async page => {
 			try {
-				const url = `patient/${patient.id}/request/procedure?page=${page}&limit=10&startDate=${startDate}&endDate=${endDate}`;
+				const url = `requests/${patient.id}/request/procedure?page=${page}&limit=10&startDate=${startDate}&endDate=${endDate}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setProcedures(result);

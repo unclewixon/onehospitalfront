@@ -17,8 +17,8 @@ const status = value => {
 
 class AppraisalItem extends Component {
 	doDisable = async (e, data) => {
-		e.preventDefault();
 		try {
+			e.preventDefault();
 			const { performancePeriods } = this.props;
 			const url = `hr/appraisal/update-period-status/${data.id}`;
 			await request(url, 'DELETE', true);

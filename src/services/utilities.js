@@ -659,3 +659,7 @@ export const nth = n => {
 	const _nth = [, 'st', 'nd', 'rd'][(n % 100 >> 3) ^ 1 && n % 10] || 'th';
 	return `${n}${_nth} Floor`;
 };
+
+export const getType = type => {
+	return type && type === 2 ? 'ICPC2' : 'ICD10';
+};

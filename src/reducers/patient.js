@@ -22,7 +22,6 @@ import {
 	LOAD_LABOUR,
 	LOAD_LABOUR_DETAIL,
 	CLEAR_LABOUR_DETAIL,
-	ENCOUNTER_FORM,
 	LOAD_PARTOGRAPH,
 	LOAD_RISK,
 	PATIENT_REGULATION_TABLE,
@@ -37,8 +36,8 @@ import {
 	RESET_STEP,
 	CAN_CLOSE_LABOUR,
 	UPDATE_ENCOUNTER_DATA,
+	RESET_ENCOUNTER_DATA,
 } from '../actions/types';
-import actions from 'redux-form/lib/actions';
 import { updateImmutable } from '../services/utilities';
 
 const INITIAL_STATE = {
@@ -58,31 +57,33 @@ const INITIAL_STATE = {
 	pharmacyRequests: [],
 	allRequests: [],
 	antennatal: [],
-	encounterForm: {},
 	ivf: {},
 	encounterData: {
-		complaints: 'Presenting Complaints:',
+		complaints:
+			'<p><u>Presenting Complaints:</u>​&nbsp;</p><p><br></p><p><br></p><p><br></p><p><u>History of complains</u>:&nbsp;</p><p><br></p>',
 		reviewOfSystem: [],
 		patientHistory: [],
 		medicalHistory: [],
 		allergies: [],
+		pastAllergies: [],
 		physicalExamination: [],
 		//physicalExaminationSummary: [],
 		diagnosis: [],
+		pastDiagnosis: [],
 		investigations: {
-			labRequest: {},
-			imagingRequest: {},
+			labRequest: null,
+			radiologyRequest: null,
+			pharmacyRequest: null,
+			procedureRequest: null,
 		},
-		plan: {
-			treatmentPlan: 'Treatment Plan:',
-			pharmacyRequests: {},
-			nextAppointment: {},
-			procedureRequest: {},
-		},
+		treatmentPlan: '<p><u>Treatment Plan:</u>​&nbsp;</p><p><br></p>',
+		nextAppointment: null,
+		instruction: '',
+		consumables: null,
 	},
 	antenatalAssessment: [],
 	enrolments: [],
-	labourDetail: {},
+	labourDetail: null,
 	partographies: [],
 	riskAssessment: [],
 	deliveryRecord: [],
@@ -117,8 +118,6 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, allergies: [...state.allergies, action.payload] };
 		case ALLERGY:
 			return { ...state, allergy: action.payload };
-		case ENCOUNTER_FORM:
-			return { ...state, encounterForm: action.payload };
 		case PATIENT_IVF:
 			return { ...state, ivf: action.payload };
 		case PATIENT_REGULATION_TABLE:
@@ -127,6 +126,11 @@ const patient = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				encounterData: { ...action.payload },
+			};
+		case RESET_ENCOUNTER_DATA:
+			return {
+				...state,
+				encounterData: action.payload,
 			};
 		case GET_IMAGING_REQUESTS:
 			return { ...state, imagingRequests: action.payload };
@@ -141,7 +145,6 @@ const patient = (state = INITIAL_STATE, action) => {
 				],
 			};
 		case DELETE_ALLERGY:
-			console.log(actions.payload);
 			return {
 				...state,
 				allergies: state.allergies.filter(

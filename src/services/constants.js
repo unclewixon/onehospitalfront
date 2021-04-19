@@ -43,6 +43,7 @@ export const settingsAPI = 'settings/';
 export const diagnosisAPI = 'settings/diagnosis';
 export const labourAPI = 'labour-management/enrollments';
 export const consultationAPI = 'consultation/';
+export const consumableAPI = 'consumables';
 export const IVFEnroll = 'ivf/enroll/';
 export const IVFHCGAdmin = 'ivf/save/hcg-administration';
 export const IVFHCGDown = 'ivf/save/down-regulation';
@@ -61,7 +62,7 @@ export const months = [
 	'November',
 	'December',
 ];
-export const severity = [
+export const severities = [
 	{
 		value: 'mild',
 		label: 'mild',
@@ -84,19 +85,19 @@ export const planServiceCenter = [
 ];
 export const diagnosisType = [
 	{
-		value: 'Queried',
-		label: 'Queried',
+		value: 'Query',
+		label: 'Query',
 	},
 	{ value: 'Differential', label: 'Differential' },
-	{ value: 'Suspected', label: 'Suspected' },
 	{ value: 'Confirmed', label: 'Confirmed' },
+	{ value: 'Suspected', label: 'Suspected' },
 ];
 
 export const allergyCategories = [
 	{ value: 'Drug', label: 'Drug' },
 	{ value: 'Food', label: 'Food' },
 	{ value: 'Environment', label: 'Environment' },
-	{ value: 'other', label: 'other' },
+	{ value: 'Other', label: 'Other' },
 ];
 
 export const relationships = [
@@ -1163,3 +1164,27 @@ export const alphabets = [
 	'Y',
 	'Z',
 ];
+
+export const defaultEncounter = {
+	complaints:
+		'<p><u>Presenting Complaints:</u>​&nbsp;</p><p><br></p><p><br></p><p><br></p><p><u>History of complains</u>:&nbsp;</p><p><br></p>',
+	reviewOfSystem: [],
+	patientHistory: [],
+	medicalHistory: [],
+	allergies: [],
+	pastAllergies: [],
+	physicalExamination: [],
+	//physicalExaminationSummary: [],
+	diagnosis: [],
+	pastDiagnosis: [],
+	investigations: {
+		labRequest: null,
+		radiologyRequest: null,
+		pharmacyRequest: null,
+		procedureRequest: null,
+	},
+	treatmentPlan: '<p><u>Treatment Plan:</u>​&nbsp;</p><p><br></p>',
+	nextAppointment: null,
+	instruction: '',
+	consumables: null,
+};

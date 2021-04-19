@@ -26,7 +26,7 @@ const Radiology = ({ location }) => {
 	const fetchScans = useCallback(
 		async page => {
 			try {
-				const url = `patient/${patient.id}/request/radiology?page=${page}&limit=10&startDate=${startDate}&endDate=${endDate}`;
+				const url = `requests/${patient.id}/request/radiology?page=${page}&limit=10&startDate=${startDate}&endDate=${endDate}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setScans(result);

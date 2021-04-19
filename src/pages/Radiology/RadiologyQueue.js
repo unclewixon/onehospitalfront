@@ -3,7 +3,6 @@ import moment from 'moment';
 import Pagination from 'antd/lib/pagination';
 
 import { request, itemRender } from '../../services/utilities';
-import { patientAPI } from '../../services/constants';
 import RadiologyBlock from '../../components/RadiologyBlock';
 
 class RadiologyQueue extends Component {
@@ -24,7 +23,7 @@ class RadiologyQueue extends Component {
 			this.setState({ ...this.state, loading: true });
 			const p = page || 1;
 			const date = moment().format('YYYY-MM-DD');
-			const url = `${patientAPI}/requests/radiology?page=${p}&limit=10&today=${date}`;
+			const url = `requests/list/radiology?page=${p}&limit=10&today=${date}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			this.setState({

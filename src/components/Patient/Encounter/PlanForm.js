@@ -1,851 +1,715 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import SunEditor from 'suneditor-react';
-import uniqBy from 'lodash.uniqby';
-import AsyncSelect from 'react-select/async/dist/react-select.esm';
-import DatePicker from 'react-datepicker';
-import { Controller, ErrorMessage, useForm } from 'react-hook-form';
+import { useSelector, useDispatch } from 'react-redux';
+import { useForm } from 'react-hook-form';
 import Select from 'react-select';
-import { connect, useDispatch } from 'react-redux';
+import { confirmAlert } from 'react-confirm-alert';
+import { Table } from 'react-bootstrap';
+import DatePicker from 'react-datepicker';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
-import {
-	diagnosisAPI,
-	planServiceCenter,
-	serviceAPI,
-} from '../../../services/constants';
-import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
-import { loadInvCategories, loadInventories } from '../../../actions/inventory';
+import { updateEncounterData } from '../../../actions/patient';
+import { startBlock, stopBlock } from '../../../actions/redux-block';
+import { request, groupBy, hasExpired } from '../../../services/utilities';
 import { notifyError } from '../../../services/notify';
-import { request } from '../../../services/utilities';
+import { ReactComponent as PlusIcon } from '../../../assets/svg-icons/plus.svg';
+import { ReactComponent as EditIcon } from '../../../assets/svg-icons/edit.svg';
+import { ReactComponent as TrashIcon } from '../../../assets/svg-icons/trash.svg';
+import { serviceAPI, diagnosisAPI } from '../../../services/constants';
 
-const PlanForm = props => {
-	const {
-		previous,
-		encounterData,
-		loadInvCategories,
-		loadInventories,
-		inventories,
-		encounterForm,
-	} = props;
-	const [loaded, setLoaded] = useState(false);
-	const [selectedOption, setSelectedOption] = useState('');
-	const [services, setServices] = useState([]);
-	const [genName, setGenName] = useState('');
-	const [start_time, setTime] = useState(new Date());
-	const [servicesCategory, setServicesCategory] = useState([]);
-	// eslint-disable-next-line no-unused-vars
-	const [servicesObjects, setServicesObjects] = useState([]);
-	const dispatch = useDispatch();
-	let [data, setData] = useState([]);
-	const append = () => {
-		setData([...data, { id: data.length }]);
-	};
-	const remove = index => {
-		setData([...data.slice(0, index), ...data.slice(index + 1)]);
-	};
+const defaultValues = {
+	genericName: '',
+	drugId: '',
+	quantity: '',
+	refills: '',
+	frequency: '',
+	frequencyType: '',
+	duration: '',
+	regimen_instruction: '',
+};
 
-	const defaultValues = {
-		...(encounterForm.plan || []),
-	};
-	const { register, handleSubmit, setValue, control, errors } = useForm({
+const category_id = 1;
+const categories = [{ id: 19, name: 'General Surgery' }];
+
+const PlanForm = ({ previous, next, patient }) => {
+	const { register, handleSubmit, setValue, reset } = useForm({
 		defaultValues,
 	});
 
-	useEffect(() => {
-		if (encounterForm.plan?.regimens?.length > 0) {
-			// eslint-disable-next-line array-callback-return
-			encounterForm.plan.regimens.map((item, index) => {
-				// eslint-disable-next-line react-hooks/exhaustive-deps
-				data = [...data, { id: index }];
-			});
-			setData(data);
-		}
-	}, []);
+	const [loaded, setLoaded] = useState(false);
+	const [treatmentPlan, setTreatmentPlan] = useState('');
+	const [inventories, setInventories] = useState([]);
+	const [services, setServices] = useState([]);
+	const [genName, setGenName] = useState(null);
+	const [editing, setEditing] = useState(false);
+	const [regimenNote, setRegimenNote] = useState('');
 
-	const getServiceUnit = useCallback(async () => {
-		try {
-			const res = await request(`inventory/categories`, 'GET', true);
-			loadInvCategories(res);
-		} catch (error) {
-			notifyError('Error fetching Service Unit');
-		}
-	}, [loadInvCategories]);
+	// selected items
+	const [frequencyType, setFrequencyType] = useState(null);
+	const [refillable, setRefillable] = useState(false);
+	const [chosenDrug, setChosenDrug] = useState(null);
+	const [chosenGeneric, setChosenGeneric] = useState(null);
+	const [selectedDrug, setSelectedDrug] = useState(null);
+	const [drugsSelected, setDrugsSelected] = useState([]);
 
-	const getPharmacyItems = useCallback(
-		async id => {
+	// appointment
+	const [appointmentDate, setAppointmentDate] = useState('');
+	const [appointmentReason, setAppointmentReason] = useState('');
+
+	// procedure
+	const [service, setService] = useState(null);
+	const [diagnoses, setDiagnoses] = useState([]);
+	const [bill, setBill] = useState('later');
+	const [procedureNote, setProcedureNote] = useState('');
+	const [category, setCategory] = useState(null);
+
+	const encounter = useSelector(state => state.patient.encounterData);
+
+	const dispatch = useDispatch();
+
+	const getServiceUnit = useCallback(
+		async hmoId => {
 			try {
-				const res = await request(
-					`inventory/stocks-by-category/1/1`,
-					'GET',
-					true
-				);
-				loadInventories(res);
+				dispatch(startBlock());
+
+				const url = `inventory/stocks-by-category/${category_id}/${hmoId}`;
+				const rs = await request(url, 'GET', true);
+				setInventories(rs);
+
+				dispatch(stopBlock());
 			} catch (error) {
-				notifyError('Error fetching pharmacy items');
+				console.log(error);
+				notifyError('Error fetching drugs');
+				dispatch(stopBlock());
 			}
 		},
-		[loadInventories]
+		[dispatch]
 	);
-
-	useEffect(() => {
-		getServiceUnit();
-		getPharmacyItems();
-	}, [getServiceUnit, getPharmacyItems]);
-
-	const genericNameOptions =
-		inventories && inventories.length
-			? inventories
-					.filter(drug => drug.generic_name !== null)
-					.map(drug => {
-						return {
-							value: drug && drug.generic_name ? drug.generic_name : 'nil',
-							label: drug && drug.generic_name ? drug.generic_name : 'nil',
-						};
-					})
-			: [];
-	const filteredGenericNameOptions = uniqBy(genericNameOptions, 'value');
-
-	// let drugObj = {};
-
-	const drugNameOptions =
-		genericNameOptions && genericNameOptions.length
-			? genericNameOptions.filter(drug => drug.value === genName)
-			: //.map(drug => drugObj[drug.value])
-			  [];
-
-	const fetchServicesCategory = async () => {
-		try {
-			const rs = await request(`${serviceAPI}/categories`, 'GET', true);
-			let data = [];
-			rs.forEach((item, index) => {
-				const res = { label: item.name, value: item.id };
-				data = [...data, res];
-			});
-			setServicesCategory(data);
-			setLoaded(true);
-		} catch (error) {
-			console.log(error);
-			notifyError('error fetching service categories for the patient');
-		}
-	};
 
 	useEffect(() => {
 		if (!loaded) {
-			fetchServicesCategory();
+			getServiceUnit(patient.hmo.id);
+			setTreatmentPlan(encounter.treatmentPlan);
+			setLoaded(true);
 		}
-	}, [props, loaded]);
+	}, [encounter, getServiceUnit, loaded, patient]);
 
-	const getOptionValues = option => option.id;
+	// group drugs by generic name
+	const drugValues = groupBy(
+		inventories.filter(drug => drug.generic_name !== null),
+		'generic_name'
+	);
 
-	const getOptionLabels = option => option.description;
+	// list of drugs by generic name
+	const drugObj = Object.keys(drugValues).map(name => ({
+		generic_name: name,
+		drugs: drugValues[name],
+	}));
 
-	const handleChangeOptions = selectedOption => {
-		setSelectedOption(selectedOption);
-	};
-	const getOptions = async inputValue => {
-		if (!inputValue) {
-			return [];
-		}
-		let val = inputValue.toUpperCase();
-		const res = await request(`${diagnosisAPI}/search?q=${val}`, 'GET', true);
-		return res;
-	};
+	// list generic names
+	const genericNameOptions = Object.keys(drugValues).map(name => ({
+		value: name,
+		label: name,
+	}));
 
-	const fetchServicesByCategory = async id => {
-		try {
-			const rs = await request(`${serviceAPI}/category/${id}`, 'GET', true);
-			setServicesObjects(rs);
-			let services = [];
-			rs &&
-				rs.forEach((item, index) => {
-					const res = { label: item.name, value: item.id };
-					services = [...services, res];
-				});
-			setServices(services);
-		} catch (error) {
-			notifyError('error fetching services requests for the patient');
-		}
-	};
+	// list of drugs
+	const genericItem = drugObj.find(
+		drug => genName && drug.generic_name === genName
+	);
 
-	const handleChangeServiceCategory = evt => {
-		let value = String(evt.value);
-		fetchServicesByCategory(value);
-		setValue('service_center', value);
-	};
+	const drugNameOptions = genericItem
+		? genericItem.drugs.map(drug => ({
+				value: drug.id,
+				label: `${drug.name}${drug.vendor ? ` - ${drug.vendor.name}` : ''}`,
+		  }))
+		: [];
 
-	const handleChangeProcedure = evt => {
-		console.log(evt);
-		setValue('proc_procedure', evt);
-	};
-
-	// const divStyle = {
-	// 	//marginTop: '100em',
-	// 	height: '1400px',
-	// 	overflowY: 'scroll',
-	// };
-
-	const onSubmit = async data => {
-		encounterForm.plan = data;
-		const { patient } = props.encounterInfo;
-
-		props.loadEncounterForm(encounterForm);
-		let regiments = data.regimens;
-		const requestData = regiments
-			? regiments.map(request => ({
-					forumalary: request.formulary,
-					drug_generic_name: request.genericName,
-					drug_name: request.drugName.value,
-					dose_quantity: request.quantity,
-					service_id: request.drugName.label,
-					refillable: {
-						number_of_refills: request && request.refills ? request.refills : 0,
-						eg: request && request.eg ? request.eg : 0,
-						frequency_type:
-							request && request.frequency ? request.frequency : '',
-						duration: request && request.duration ? request.duration : 0,
-						note: request && request.refillNote ? request.refillNote : '',
-					},
-			  }))
-			: [];
-		let pharmacyRequestsObj = {
-			requestType: 'pharmacy',
-			requestBody: requestData,
-			diagnosis: data.pharm_diagnosis,
-			prescription: '',
-			patient_id: patient.id,
-		};
-
-		let appointmentObj = {
-			appointment_date: data.appointment_date,
-			appointment_duration: data.appointment_duration,
-			appointment_desc: data.appointment_desc,
-		};
-
-		let requestDataProc = [];
-		let theRequest = {};
-		if (data.proc_procedure?.length > 0) {
-			data.proc_procedure.forEach(value => {
-				requestDataProc = [
-					...requestDataProc,
-					{
-						service_id: value.value,
-						service_name: value.label,
-					},
-				];
-			});
-		}
-		theRequest.requestType = data.proc_service_center?.label?.toLowerCase();
-		theRequest.bill_now = data.proc_bill_now === 'on' ? 'true' : 'false';
-		theRequest.request_note = data.proc_note;
-		theRequest.patient_id = patient.id;
-		theRequest.primary_diagnosis = data.proc_diagnosis?.description;
-		theRequest.requestBody = requestDataProc;
-
-		let res = {
-			treatmentPlan: data.treatmentPlan,
-			pharmacyRequests: pharmacyRequestsObj || [],
-			nextAppointment: appointmentObj,
-			procedureRequest: theRequest || [],
-		};
-
-		encounterData.plan = res;
-		props.loadEncounterData(encounterData);
-		dispatch(props.next);
-	};
-
-	return (
-		<form onSubmit={handleSubmit(onSubmit)}>
-			<div className="form-block encounter">
-				<div className="row">
-					<div className="col-sm-12">
-						<div className="form-group">
-							<label>Plan:</label>
-							<Controller
-								as={
-									<SunEditor
-										width="100%"
-										placeholder="Please type here..."
-										setContents={encounterForm.plan?.treatmentPlan}
-										autoFocus={false}
-										enableToolbar={true}
-										setOptions={{
-											height: 300,
-											buttonList: [
-												[
-													'bold',
-													'underline',
-													'italic',
-													'strike',
-													'subscript',
-													'superscript',
-													'list',
-													'align',
-													'font',
-													'fontSize',
-													'image',
-												],
-											],
-										}}
-									/>
-								}
-								control={control}
-								//rules={{ required: true }}
-								onChange={([selected]) => {
-									return selected;
-								}}
-								name="treatmentPlan"
-							/>
-						</div>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-sm-6">
-						<div className="form-group">
-							<label>Business Unit/Service Center</label>
-							<Controller
-								as={
-									<Select
-										options={planServiceCenter}
-										placeholder="Select Service Center"
-									/>
-								}
-								control={control}
-								//rules={{ required: true }}
-								onChange={([selected]) => {
-									return selected;
-								}}
-								name="service_center"
-								defaultValue={{ label: 'Pharmacy', value: 'Pharmacy' }}
-							/>
-							<ErrorMessage
-								errors={errors}
-								name="service_center"
-								message="This is required"
-								as={<span className="alert alert-danger" />}
-							/>
-						</div>
-					</div>
-					<div className="col-sm-6">
-						<div className="form-group">
-							<label>Diagnosis Data</label>
-							<Controller
-								as={
-									<AsyncSelect
-										cacheOptions
-										value={selectedOption}
-										getOptionValue={getOptionValues}
-										getOptionLabel={getOptionLabels}
-										defaultOptions
-										loadOptions={getOptions}
-										placeholder="primary diagnosis"
-									/>
-								}
-								control={control}
-								//rules={{ required: true }}
-								onChange={([selected]) => {
-									handleChangeOptions(selected);
-									return selected;
-								}}
-								name="pharm_diagnosis"
-							/>
-							<ErrorMessage
-								errors={errors}
-								name="service_center"
-								message="This is required"
-								as={<span className="alert alert-danger" />}
-							/>
-						</div>
-					</div>
-				</div>
-				<h5 className="mt-4">Add Medication</h5>
-				<div className="row mt-4">
-					<div className="col-md-12">
-						<a
-							className="btn btn-success btn-sm text-white"
-							onClick={() => {
-								append();
-							}}>
-							<i className="os-icon os-icon-plus-circle" />
-							<span>add</span>
-						</a>
-					</div>
-				</div>
-				{data.map((drug, i) => {
+	const onDrugSelection = e => {
+		const drug = inventories.find(drug => drug.id === e.value);
+		const expired = hasExpired(drug.expiry_date);
+		if (expired) {
+			confirmAlert({
+				customUI: ({ onClose }) => {
 					return (
-						<div className="mt-4" key={i}>
-							<div className="row">
-								<div className="col-sm-6">
-									<div className="form-group">
-										<label>Formulary</label>
-										<Controller
-											as={
-												<Select
-													options={genericNameOptions}
-													placeholder="Choose a formulary"
-												/>
-											}
-											control={control}
-											//rules={{ required: true }}
-											onChange={([selected]) => {
-												return selected;
-											}}
-											name={`regimens[${drug.id}].formulary`}
-										/>
-										<ErrorMessage
-											errors={errors}
-											name={`regimens[${drug.id}].formulary`}
-											message="This is required"
-											as={<span className="alert alert-danger" />}
-										/>
-									</div>
-								</div>
-								<div className="col-sm-6">
-									<div className="form-group">
-										<label>Drug Generic Name</label>
-										<Controller
-											as={
-												<Select
-													options={filteredGenericNameOptions}
-													placeholder="Choose a drug generic name"
-												/>
-											}
-											control={control}
-											//rules={{ required: true }}
-											onChange={([selected]) => {
-												setGenName(selected.value);
-												return selected;
-											}}
-											name={`regimens[${drug.id}].genericName`}
-										/>
-										<ErrorMessage
-											errors={errors}
-											name={`regimens[${drug.id}].genericName`}
-											message="This is required"
-											as={<span className="alert alert-danger" />}
-										/>
-									</div>
-								</div>
-								<div className="col-sm-6">
-									<div className="form-group">
-										<label>Drug Name</label>
-										<Controller
-											as={
-												<Select
-													options={drugNameOptions}
-													placeholder="Choose a drug name"
-												/>
-											}
-											control={control}
-											//rules={{ required: true }}
-											onChange={([selected]) => {
-												return selected;
-											}}
-											name={`regimens[${drug.id}].drugName`}
-										/>
-										<ErrorMessage
-											errors={errors}
-											name={`regimens[${drug.id}].drugName`}
-											message="This is required"
-											as={<span className="alert alert-danger" />}
-										/>
-									</div>
-								</div>
-							</div>
-							<div className="row">
-								<div className="col-sm-6">
-									<div className="row">
-										<div className="col-sm-5">
-											<div className="form-group">
-												<label>Frequency</label>
-												<input
-													ref={register}
-													name={`regimens[${drug.id}].frequency`}
-													type="number"
-													placeholder="eg. 3"
-													className="form-control"
-												/>
-											</div>
-										</div>
-										<div className="col-sm-4">
-											<div className="form-group">
-												<label>Frequency Type</label>
-												<select
-													placeholder="-- Select frequency type --"
-													className="form-control">
-													<option value=""></option>
-												</select>
-											</div>
-										</div>
-										<div className="col-sm-3">
-											<div className="form-group">
-												<label>Dose</label>
-												<input
-													type="number"
-													className="form-control"
-													placeholder="Dose Quantity"
-													ref={register}
-													name={`regimens[${drug.id}].quantity`}
-												/>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div className="col-sm-5">
-									<div className="row">
-										<div className="col-sm-4">
-											<div className="form-group">
-												<label>Duration</label>
-												<input
-													type="number"
-													placeholder="(value in days) eg. 7"
-													className="form-control"
-													ref={register}
-													name={`regimens[${drug.id}].duration`}
-												/>
-											</div>
-										</div>
-										<div className="col-sm-8">
-											<div className="form-group">
-												<label>Note</label>
-												<input
-													type="text"
-													placeholder="Regimen line instruction"
-													className="form-control"
-													ref={register}
-													name={`regimens[${drug.id}].refillNote`}
-												/>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div className="col-sm-1" style={{ position: 'relative' }}>
-									<a
-										className="text-danger delete-icon"
-										onClick={() => remove(drug.id)}>
-										<i className="os-icon os-icon-cancel-circle" />
-									</a>
-								</div>
-							</div>
-							<div className="row">
-								<div className="col-sm-12">
-									<div className="form-group">
-										<label>
-											<input
-												type="checkbox"
-												ref={register}
-												name={`regimens[${drug.id}].refills`}
-												className="form-control"
-											/>{' '}
-											Refilable?
-										</label>
-									</div>
-								</div>
+						<div className="custom-ui text-center">
+							<h3 className="text-danger">Expiration</h3>
+							<p>{`${drug.name} has expired`}</p>
+							<div>
+								<button
+									className="btn btn-primary"
+									style={{ margin: 10 }}
+									onClick={onClose}>
+									Okay
+								</button>
 							</div>
 						</div>
 					);
-				})}
+				},
+			});
+		} else {
+			setValue('drugId', e.value);
+			setSelectedDrug(drug);
+		}
+	};
+
+	const onHandleInputChange = e => {
+		const { name, value } = e.target;
+		setValue(name, value);
+	};
+
+	const onRefillableClick = () => {
+		setRefillable(!refillable);
+	};
+
+	const onFormSubmit = (data, e) => {
+		const drug = inventories.find(drug => drug.id === data.drugId);
+		const newDrug = [
+			...drugsSelected,
+			{
+				...data,
+				drugName: drug?.name || '',
+				drugCost: drug?.sales_price || 0.0,
+				hmoId: drug.hmo.id,
+				hmoPrice: drug?.hmoPrice || 0.0,
+			},
+		];
+		setDrugsSelected(newDrug);
+		setEditing(false);
+		setSelectedDrug(null);
+		reset(defaultValues);
+
+		setFrequencyType(null);
+		setChosenDrug(null);
+		setChosenGeneric(null);
+	};
+
+	const onTrash = index => {
+		const newPharm = drugsSelected.filter((pharm, i) => index !== i);
+		setDrugsSelected(newPharm);
+	};
+
+	const startEdit = (request, index) => {
+		onTrash(index);
+		const items = Object.entries(request);
+		for (const req of items) {
+			const [key, value] = req;
+			setValue(key, value);
+		}
+		setEditing(true);
+	};
+
+	const getProcedures = async (hmoId, categoryId) => {
+		try {
+			dispatch(startBlock());
+
+			const url = `${serviceAPI}/category/${categoryId}?hmo_id=${hmoId}`;
+			const rs = await request(url, 'GET', true);
+			setServices(rs);
+
+			dispatch(stopBlock());
+		} catch (error) {
+			console.log(error);
+			notifyError('Error fetching procedures');
+			dispatch(stopBlock());
+		}
+	};
+
+	const getOptionValues = option => option.id;
+	const getOptionLabels = option =>
+		`${option.description} (Icd${option.diagnosisType}: ${option.icd10Code ||
+			option.procedureCode})`;
+
+	const getOptions = async q => {
+		if (!q || q.length < 2) {
+			return [];
+		}
+
+		const url = `${diagnosisAPI}/search?q=${q}`;
+		const res = await request(url, 'GET', true);
+		return res;
+	};
+
+	const onSubmit = () => {
+		const data = drugsSelected.map((request, i) => ({
+			id: i + 1,
+			drug_generic_name: request.genericName,
+			drug_name: request.drugName,
+			drug_cost: request.drugCost,
+			drug_hmo_id: request.hmoId,
+			drug_hmo_cost: request.hmoPrice,
+			drug_id: request.drugId,
+			dose_quantity: request.quantity,
+			refills: request.refills && request.refills !== '' ? request.refills : 0,
+			frequency: request.frequency,
+			frequencyType: request.frequencyType,
+			duration: request.duration,
+			regimenInstruction: request.regimen_instruction,
+			diagnosis: request.diagnosis || [],
+			prescription: request.prescription ? 'Yes' : 'No',
+		}));
+
+		const pharmacyRequest = {
+			requestType: 'pharmacy',
+			items: data,
+			patient_id: patient.id,
+			request_note: regimenNote,
+		};
+
+		const procedureRequest = {
+			requestType: 'procedure',
+			patient_id: patient.id,
+			tests: [{ id: service.id }],
+			request_note: procedureNote,
+			urgent: false,
+			diagnosis: diagnoses || [],
+			bill,
+		};
+
+		const nextAppointment = {
+			appointment_date: appointmentDate,
+			description: appointmentReason,
+		};
+
+		dispatch(
+			updateEncounterData({
+				...encounter,
+				investigations: {
+					...encounter.investigations,
+					pharmacyRequest,
+					procedureRequest,
+				},
+				nextAppointment,
+			})
+		);
+		dispatch(next);
+	};
+
+	return (
+		<div className="form-block encounter">
+			<form onSubmit={handleSubmit(onFormSubmit)}>
 				<div className="row">
 					<div className="col-sm-12">
 						<div className="form-group">
-							<label>Regimen Note</label>
-							<textarea
-								placeholder="Enter regimen note"
-								name="pharm_note"
-								ref={register}
-								className="form-control"
-								cols="3"></textarea>
+							<label>Treatment Plan</label>
+							<SunEditor
+								width="100%"
+								placeholder="Please type here..."
+								setContents={treatmentPlan}
+								name="treatmentPlan"
+								autoFocus={true}
+								enableToolbar={true}
+								setOptions={{
+									height: 300,
+									buttonList: [
+										[
+											'bold',
+											'underline',
+											'italic',
+											'strike',
+											'subscript',
+											'superscript',
+											'list',
+											'align',
+											'font',
+											'fontSize',
+											'image',
+											'codeView',
+										],
+									],
+								}}
+								onChange={e => {
+									setTreatmentPlan(String(e));
+								}}
+							/>
 						</div>
 					</div>
 				</div>
-				<h5 className="mt-4">Add Appointment (Schedule Next Appointment)</h5>
+				<div className="mt-4"></div>
+				<h5>Add Medication</h5>
 				<div className="row">
-					<div className="col-sm-6">
-						<div className="form-group">
-							<label>Appontment Date</label>
-							<Controller
-								as={
-									<DatePicker
-										selected={start_time}
-										peekNextMonth
-										showMonthDropdown
-										showYearDropdown
-										dropdownMode="select"
-										dateFormat="dd-MMM-yyyy"
-										className="single-daterange form-control"
-										placeholderText="Select Date"
-									/>
-								}
-								control={control}
-								//rules={{ required: true }}
-								onChange={([selected]) => {
-									setTime(selected);
-									return selected;
-								}}
-								name="appointment_date"
-							/>
-							<ErrorMessage
-								errors={errors}
-								name="appointment_date"
-								message="This is required"
-								as={<span className="alert alert-danger" />}
-							/>
-						</div>
+					<div className="form-group col-sm-6">
+						<label>Drug Generic Name</label>
+						<Select
+							placeholder="Choose a drug generic name"
+							name="genericName"
+							ref={register({ name: 'genericName', required: true })}
+							onChange={e => {
+								setValue('genericName', e.value);
+								setGenName(e.value);
+
+								// reset drug
+								setValue('drugId', '');
+								setSelectedDrug(null);
+								setChosenGeneric(e);
+							}}
+							options={genericNameOptions}
+							required
+							value={chosenGeneric}
+						/>
 					</div>
-					<div className="col-sm-3">
-						<div className="form-group">
-							<label>Duration</label>
+					<div className="form-group col-sm-6 relative">
+						<label>Drug Name</label>
+						{selectedDrug && (
+							<div className="posit-top">
+								<div className="row">
+									<div className="col-sm-12">
+										<span
+											className={`badge badge-${
+												selectedDrug.quantity > 0 ? 'info' : 'danger'
+											} text-white`}>{`Stock Level: ${selectedDrug.quantity}; Base Price: ₦${selectedDrug.sales_price}`}</span>
+									</div>
+								</div>
+							</div>
+						)}
+						<Select
+							placeholder="Choose a drug name"
+							ref={register({ name: 'drugId', required: true })}
+							name="drugId"
+							options={drugNameOptions}
+							value={chosenDrug}
+							onChange={e => {
+								onDrugSelection(e);
+								setChosenDrug(e);
+							}}
+						/>
+					</div>
+				</div>
+				<div className="row">
+					<div className="form-group col-sm-3">
+						<label>Frequency</label>
+						<input
+							type="number"
+							className="form-control"
+							placeholder="eg 3"
+							ref={register({ required: true })}
+							name="frequency"
+							onChange={onHandleInputChange}
+						/>
+					</div>
+					<div className="form-group col-sm-3">
+						<label>Frequency Type</label>
+						<Select
+							placeholder="Frequency type"
+							ref={register({ name: 'frequencyType', required: true })}
+							name="frequencyType"
+							value={frequencyType}
+							options={[
+								{ value: '', label: 'Select frequency' },
+								{ value: 'immediately', label: 'Immediately' },
+								{ value: 'daily', label: 'Daily' },
+								{
+									value: 'weekly',
+									label: 'Weekly',
+								},
+								{
+									value: 'monthly',
+									label: 'Monthly',
+								},
+							]}
+							onChange={e => {
+								setValue('frequencyType', e.value);
+								setFrequencyType(e);
+							}}
+						/>
+					</div>
+					<div className="form-group col-sm-3">
+						<label>Dose Quantity</label>
+						<input
+							type="number"
+							className="form-control"
+							placeholder="Dose Quantity"
+							ref={register({ required: true })}
+							name="quantity"
+							onChange={onHandleInputChange}
+						/>
+					</div>
+					<div className="form-group col-sm-3">
+						<label>Duration</label>
+						<input
+							type="number"
+							className="form-control"
+							placeholder="(value in days) eg: 7"
+							ref={register({ required: true })}
+							name="duration"
+							onChange={onHandleInputChange}
+						/>
+					</div>
+				</div>
+				<div className="row">
+					<div className="form-group col-sm-6">
+						<label>Note</label>
+						<input
+							type="text"
+							className="form-control"
+							placeholder="Regimen line instruction"
+							ref={register}
+							name="regimen_instruction"
+							onChange={onHandleInputChange}
+						/>
+					</div>
+					<div className="form-group col-sm-4">
+						{refillable && (
+							<>
+								<label>Number of refills</label>
+								<input
+									type="number"
+									className="form-control"
+									placeholder="Number of refills"
+									ref={register({ name: 'refills' })}
+									name="refills"
+									onChange={onHandleInputChange}
+								/>
+							</>
+						)}
+					</div>
+					<div className="form-group col-sm-2" style={{ textAlign: 'right' }}>
+						<label className="form-check-label">
 							<input
-								type="number"
-								name="appointment_duration"
-								ref={register}
-								placeholder="eg. 5"
-								className="form-control"
-							/>
-						</div>
-					</div>
-					<div className="col-sm-3">
-						<div className="form-group">
-							<label>(Minutes/Hour/Days/etc)</label>
-							<select
-								placeholder="-- Select an option here --"
-								className="form-control">
-								<option value=""></option>
-							</select>
-						</div>
-					</div>
-				</div>
-
-				<div className="row">
-					<div className="col-sm-6">
-						<div className="form-group">
-							<label>Select Location</label>
-							<select
-								placeholder="-- Select location --"
-								className="form-control">
-								<option value=""></option>
-							</select>
-						</div>
-					</div>
-					<div className="col-sm-6">
-						<div className="form-group">
-							<label>Select Clinic</label>
-							<select
-								placeholder="-- Select appointment clinic --"
-								className="form-control">
-								<option value=""></option>
-							</select>
-						</div>
+								className="form-check-input mt-0"
+								name="urgent"
+								type="checkbox"
+								onClick={onRefillableClick}
+							/>{' '}
+							Refillable
+						</label>
 					</div>
 				</div>
 				<div className="row">
-					<div className="col-sm-12">
-						<div className="form-group">
-							<label>Description/Reason</label>
-							<textarea
-								placeholder="Enter description"
-								name="appointment_desc"
-								ref={register}
-								className="form-control"
-								cols="3"></textarea>
+					{!editing ? (
+						<div className="form-group col-sm-3">
+							<button
+								onClick={handleSubmit}
+								style={{
+									backgroundColor: 'transparent',
+									border: 'none',
+								}}>
+								<PlusIcon
+									style={{
+										width: '1.5rem',
+										height: '1.5rem',
+										cursor: 'pointer',
+									}}
+								/>
+							</button>
 						</div>
-					</div>
-				</div>
-				<h5 className="mt-4">Add New Procedure</h5>
-				<div className="row">
-					<div className="col-sm-12">
-						<div className="form-group">
-							<label>Business Unit/Service Center</label>
-							<Controller
-								as={
-									<Select
-										placeholder="Select Service Center"
-										options={servicesCategory}
-									/>
-								}
-								control={control}
-								//rules={{ required: true }}
-								onChange={([selected]) => {
-									handleChangeServiceCategory(selected);
-									return selected;
-								}}
-								name="proc_service_center"
-							/>
-							<ErrorMessage
-								errors={errors}
-								name="proc_service_center"
-								message="This is required"
-								as={<span className="alert alert-danger" />}
-							/>
-						</div>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-sm-6">
-						<div className="form-group">
-							<label>Procedure</label>
-							<Controller
-								as={
-									<Select
-										placeholder="Select procedure"
-										isMulti
-										options={services}
-									/>
-								}
-								control={control}
-								//rules={{ required: true }}
-								onChange={([selected]) => {
-									handleChangeProcedure(selected);
-									return selected;
-								}}
-								name="proc_procedure"
-							/>
-							<ErrorMessage
-								errors={errors}
-								name="proc_procedure"
-								message="This is required"
-								as={<span className="alert alert-danger" />}
-							/>
-						</div>
-					</div>
-					<div className="col-sm-6">
-						<div className="form-group">
-							<label>Primary Diagnoses</label>
-
-							<Controller
-								as={
-									<AsyncSelect
-										cacheOptions
-										value={selectedOption}
-										getOptionValue={getOptionValues}
-										getOptionLabel={getOptionLabels}
-										defaultOptions
-										loadOptions={getOptions}
-										placeholder="primary diagnosis"
-									/>
-								}
-								control={control}
-								//rules={{ required: true }}
-								onChange={([selected]) => {
-									handleChangeOptions(selected);
-									return selected;
-								}}
-								name="proc_diagnosis"
-							/>
-							<ErrorMessage
-								errors={errors}
-								name="proc_diagnosis"
-								message="This is required"
-								as={<span className="alert alert-danger" />}
-							/>
-						</div>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-sm-12">
-						<div className="form-group">
-							<label>Request Note</label>
-							<textarea
-								placeholder="Enter note"
-								name="proc_note"
-								ref={register}
-								className="form-control"
-								cols="3"></textarea>
-						</div>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-sm-6">
-						<div className="row">
-							<div className="col-sm-6">
-								<div className="form-group">
-									<label>
-										<input
-											type="checkbox"
-											name="requires"
-											ref={register}
-											className="form-control"
-										/>{' '}
-										Requires Anesthesiologist
-									</label>
-								</div>
-							</div>
-							<div className="col-sm-6">
-								<div className="form-group">
-									<label>
-										<input
-											type="checkbox"
-											name="requires"
-											ref={register}
-											className="form-control"
-										/>{' '}
-										Requires Surgeon
-									</label>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div className="col-sm-6">
-						<div className="row">
-							<div className="col-sm-6">
-								<div className="form-group">
-									<label>
-										<input
-											type="radio"
-											className="form-control"
-											name="proc_bill_now"
-											ref={register}
-										/>{' '}
-										Bill Now
-									</label>
-								</div>
-							</div>
-							<div className="col-sm-6">
-								<div className="form-group">
-									<label>
-										<input
-											type="radio"
-											name="proc_bill_now"
-											ref={register}
-											className="form-control"
-										/>{' '}
-										Bill Later
-									</label>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div className="row mt-5">
-					<div className="col-sm-12 d-flex ant-row-flex-space-between">
-						<button className="btn btn-primary" onClick={previous}>
-							Previous
+					) : (
+						<button onClick={handleSubmit} className="btn btn-primary">
+							Done
 						</button>
-						<button className="btn btn-primary" type="submit">
-							Next
-						</button>
+					)}
+				</div>
+
+				<div className="row">
+					<div className="col-md-12">
+						<div className="element-box p-3 m-0 mt-3 w-100">
+							<Table>
+								<thead>
+									<tr>
+										<th>Generic Name</th>
+										<th>Drug Name</th>
+										<th>Summary</th>
+										<th nowrap="nowrap" className="text-center">
+											Action
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									{drugsSelected.map((request, index) => {
+										return (
+											<tr key={index}>
+												<td>{request.genericName}</td>
+												<td>{request.drugName}</td>
+												<td>
+													<div className="badge badge-dark">{`${request.quantity} - ${request.frequency}x ${request.frequencyType} for ${request.duration} days`}</div>
+												</td>
+												<td>
+													<div className="display-flex">
+														<div>
+															<EditIcon
+																onClick={() => {
+																	if (editing) {
+																		return;
+																	} else {
+																		startEdit(request, index);
+																	}
+																}}
+																style={{
+																	width: '1rem',
+																	height: '1rem',
+																	cursor: 'pointer',
+																}}
+															/>
+														</div>
+														<div className="ml-2">
+															<TrashIcon
+																onClick={() => onTrash(index)}
+																style={{
+																	width: '1rem',
+																	height: '1rem',
+																	cursor: 'pointer',
+																}}
+															/>
+														</div>
+													</div>
+												</td>
+											</tr>
+										);
+									})}
+								</tbody>
+							</Table>
+						</div>
+					</div>
+				</div>
+				<div className="row">
+					<div className="form-group col-sm-12">
+						<label>Regimen Note</label>
+						<textarea
+							className="form-control"
+							name="regimen_note"
+							rows="3"
+							placeholder="Regimen note"
+							onChange={e => setRegimenNote(e.target.value)}
+							value={regimenNote}></textarea>
+					</div>
+				</div>
+			</form>
+			<div className="mt-4"></div>
+			<h5>Schedule Next Appointment</h5>
+			<div className="row">
+				<div className="col-sm-6">
+					<div className="form-group">
+						<label>Appontment Date</label>
+						<DatePicker
+							dateFormat="dd-MMM-yyyy"
+							className="single-daterange form-control"
+							selected={appointmentDate}
+							onChange={date => {
+								setAppointmentDate(date);
+							}}
+						/>
 					</div>
 				</div>
 			</div>
-		</form>
+			<div className="row">
+				<div className="col-sm-12">
+					<div className="form-group">
+						<label>Description/Reason</label>
+						<textarea
+							placeholder="Enter description"
+							name="appointment_desc"
+							className="form-control"
+							cols="3"
+							onChange={e => setAppointmentReason(e.target.value)}
+							value={appointmentReason}></textarea>
+					</div>
+				</div>
+			</div>
+			<div className="mt-4"></div>
+			<h5>Procedure</h5>
+			<div className="row">
+				<div className="form-group col-sm-6">
+					<label>Category</label>
+					<Select
+						name="category"
+						placeholder="Select Category"
+						options={categories}
+						value={category}
+						getOptionValue={option => option.id}
+						getOptionLabel={option => option.name}
+						onChange={e => {
+							setCategory(e);
+							getProcedures(patient.hmo.id, e.id);
+						}}
+					/>
+				</div>
+				<div className="form-group col-sm-6">
+					<label>Procedure</label>
+					<Select
+						name="service_request"
+						placeholder="Select Procedure"
+						options={services}
+						value={service}
+						getOptionValue={option => option.id}
+						getOptionLabel={option => option.name}
+						onChange={e => setService(e)}
+					/>
+				</div>
+			</div>
+			<div className="row">
+				<div className="form-group col-sm-12">
+					<label>Primary diagnoses</label>
+					<AsyncSelect
+						required
+						getOptionValue={getOptionValues}
+						getOptionLabel={getOptionLabels}
+						defaultOptions
+						isMulti
+						name="diagnosis"
+						loadOptions={getOptions}
+						value={diagnoses}
+						onChange={e => {
+							setDiagnoses(e);
+						}}
+						placeholder="Search for diagnosis"
+					/>
+				</div>
+			</div>
+			<div className="row">
+				<div className="form-group col-sm-12">
+					<label>Request Note</label>
+					<textarea
+						className="form-control"
+						name="request_note"
+						rows="3"
+						placeholder="Enter request note"
+						onChange={e => setProcedureNote(e.target.value)}
+						value={procedureNote}></textarea>
+				</div>
+			</div>
+			<div className="row">
+				<div className="col-sm-6">
+					<div className="row">
+						<div className="form-group col-sm-3">
+							<div className="d-flex">
+								<input
+									className="form-control"
+									type="radio"
+									name="bill"
+									value="now"
+									checked={bill === 'now'}
+									onChange={() => setBill('now')}
+								/>
+								<label className="mx-1">Bill now</label>
+							</div>
+						</div>
+						<div className="form-group col-sm-3">
+							<div className="d-flex">
+								<input
+									className="form-control"
+									type="radio"
+									name="bill"
+									value="later"
+									checked={bill === 'later'}
+									onChange={() => setBill('later')}
+								/>
+								<label className="mx-1">Bill later </label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div className="row mt-5">
+				<div className="col-sm-12 d-flex ant-row-flex-space-between">
+					<button className="btn btn-primary" onClick={previous}>
+						Previous
+					</button>
+					<button className="btn btn-primary" onClick={() => onSubmit()}>
+						Next
+					</button>
+				</div>
+			</div>
+		</div>
 	);
 };
 
-const mapStateToProps = (state, ownProps) => {
-	return {
-		categories: state.inventory.categories,
-		inventories: state.inventory.inventories,
-		service: state.settings.services,
-		ServiceCategories: state.settings.service_categories,
-		encounterData: state.patient.encounterData,
-		encounterForm: state.patient.encounterForm,
-		encounterInfo: state.general.encounterInfo,
-	};
-};
-
-export default connect(mapStateToProps, {
-	loadEncounterData,
-	loadEncounterForm,
-	loadInvCategories,
-	loadInventories,
-})(PlanForm);
+export default PlanForm;

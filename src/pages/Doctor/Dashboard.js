@@ -15,12 +15,11 @@ const limit = 15;
 
 const Dashboard = () => {
 	const [loading, setLoading] = useState(true);
-
 	const [appointments, setAppointments] = useState([]);
 	const [listenning, setListenning] = useState(false);
 	const [meta, setMeta] = useState({
 		currentPage: 1,
-		itemsPerPage: 15,
+		itemsPerPage: limit,
 		totalPages: 0,
 	});
 
@@ -78,6 +77,7 @@ const Dashboard = () => {
 
 			socket.on('appointment-update', data => {
 				if (data.action === 1) {
+					// replace with update appointments
 					getAppointments();
 				}
 			});
@@ -90,6 +90,10 @@ const Dashboard = () => {
 		}
 	}, [getAppointments, loading]);
 
+	const updateAppointment = e => {
+		console.log(e);
+	};
+
 	const onNavigatePage = nextPage => {
 		dispatch(startBlock());
 		getAppointments(nextPage);
@@ -100,7 +104,11 @@ const Dashboard = () => {
 			<h6 className="element-header">Today's Appointments</h6>
 			<div className="element-box p-3 m-0 mt-3">
 				<div className="table-responsive">
-					<AppointmentTable appointments={appointments} loading={loading} />
+					<AppointmentTable
+						appointments={appointments}
+						loading={loading}
+						updateAppointment={updateAppointment}
+					/>
 				</div>
 
 				{meta && (

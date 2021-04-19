@@ -11,17 +11,9 @@ import Splash from '../../components/Splash';
 import { socket } from '../../services/constants';
 import { notifyError, notifySuccess } from '../../services/notify';
 
-const AllAppointments = lazy(() =>
-	import('../../components/FrontDesk/AllAppointments')
-);
-
-const AllPatients = lazy(() =>
-	import('../../components/FrontDesk/AllPatients')
-);
-
-const InsuranceTrans = lazy(() =>
-	import('../../components/FrontDesk/InsuranceTrans')
-);
+const AllAppointments = lazy(() => import('./AllAppointments'));
+const AllPatients = lazy(() => import('./AllPatients'));
+const InsuranceTrans = lazy(() => import('./InsuranceTrans'));
 
 const Home = ({ match, location }) => {
 	const [title, setTitle] = useState('Dashboard');

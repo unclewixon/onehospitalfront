@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import PrescriptionForm from '../Pharmacy/PrescriptionForm';
 
-const PharmacyRequest = props => {
-	const { patient } = props;
+const PharmacyRequest = () => {
+	const patient = useSelector(state => state.user.patient);
 
 	return (
 		<div className="col-sm-12">
@@ -16,8 +16,4 @@ const PharmacyRequest = props => {
 	);
 };
 
-const mapStateToProps = ({ user }) => ({
-	patient: user.patient,
-});
-
-export default connect(mapStateToProps)(PharmacyRequest);
+export default PharmacyRequest;

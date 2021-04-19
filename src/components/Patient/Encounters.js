@@ -17,6 +17,7 @@ class Encounters extends Component {
 		canView: false,
 		showModal: false,
 		encounter: null,
+		meta: null,
 	};
 
 	componentDidMount() {
@@ -29,7 +30,8 @@ class Encounters extends Component {
 			const { patient } = this.props;
 			const url = `consultation/encounters?patient_id=${patient.id}`;
 			const rs = await request(url, 'GET', true);
-			this.setState({ loading: false, encounters: rs });
+			const { result, ...meta } = rs;
+			this.setState({ loading: false, encounters: result, meta });
 		} catch (error) {
 			console.log(error);
 			this.setState({ loading: false });

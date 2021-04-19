@@ -1,311 +1,264 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Select from 'react-select';
+import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+import { Table } from 'react-bootstrap';
 
-import { Controller, ErrorMessage, useForm } from 'react-hook-form';
-import { connect, useDispatch } from 'react-redux';
-import {
-	fetch_Allergies,
-	loadEncounterData,
-	loadEncounterForm,
-} from '../../../actions/patient';
-
-import {
-	allergyCategories,
-	patientAPI,
-	severity,
-} from '../../../services/constants';
+import { updateEncounterData } from '../../../actions/patient';
+import { allergyCategories, severities } from '../../../services/constants';
 import { request } from '../../../services/utilities';
 import { notifyError } from '../../../services/notify';
-import searchingGIF from '../../../assets/images/searching.gif';
+import { ReactComponent as TrashIcon } from '../../../assets/svg-icons/trash.svg';
 
-const Allergies = props => {
+const Allergies = ({ previous, next, patient }) => {
+	const { register, handleSubmit, reset } = useForm();
 	const [loaded, setLoaded] = useState(false);
-	const [queried, setQueried] = useState(false);
+	const [allergens, setAllergens] = useState([]);
+	const [pastAllergies, setPastAllergies] = useState([]);
+	const [selectedPastAllergies, setSelectedPastAllergies] = useState([]);
+	const [category, setCategory] = useState('');
+	const [severity, setSeverity] = useState('');
+	const [drug, setDrug] = useState('');
+	const [existing, setExisting] = useState(false);
+	// eslint-disable-next-line no-unused-vars
+	const [meta, setMeta] = useState(null);
+
+	const encounter = useSelector(state => state.patient.encounterData);
 
 	const dispatch = useDispatch();
 
-	const { previous, encounterData, encounterForm } = props;
-
-	const [data, setData] = useState([]);
-	const defaultValues = {
-		allForm: encounterForm.allergies?.allForm || [],
-	};
-	const {
-		register,
-		handleSubmit,
-		setValue,
-		getValues,
-		control,
-		errors,
-		// watch,
-	} = useForm({
-		defaultValues,
-	});
+	const fetchAllergies = useCallback(async () => {
+		try {
+			const url = `patient-allergens?patient_id=${patient.id}`;
+			const rs = await request(url, 'GET', true);
+			const { result, ...metadata } = rs;
+			setPastAllergies(result);
+			setMeta(metadata);
+		} catch (error) {
+			notifyError('Could not fetch allergens for the patient');
+		}
+	}, [patient]);
 
 	useEffect(() => {
-		if (defaultValues?.allForm?.length > 0) {
-			// eslint-disable-next-line array-callback-return
-			defaultValues.allForm.map((item, index) => {
-				// eslint-disable-next-line react-hooks/exhaustive-deps
-				data = [...data, { id: index }];
-			});
-			setData(data);
+		if (!loaded) {
+			setAllergens(encounter.allergies);
+			setSelectedPastAllergies(encounter.pastAllergies);
+			setLoaded(true);
+			fetchAllergies();
 		}
-	}, [defaultValues]);
+	}, [encounter.allergies, encounter.pastAllergies, fetchAllergies, loaded]);
 
-	const append = () => {
-		setData([...data, { id: data.length }]);
-	};
 	const remove = index => {
-		setData([...data.slice(0, index), ...data.slice(index + 1)]);
+		const newItems = allergens.filter((item, i) => index !== i);
+		setAllergens(newItems);
 	};
 
-	const fetchAllergies = async () => {
-		const { patient } = props.encounterInfo;
-
-		setLoaded(true);
-		setQueried(true);
-		try {
-			const rs = await request(
-				`${patientAPI}/${patient.id}/allergies`,
-				'GET',
-				true
-			);
-
-			let newForm = getValues({ nest: true })['allForm'] || [];
-			// eslint-disable-next-line array-callback-return
-			rs.map((value, i) => {
-				data = [...data, { id: data.length }];
-				newForm = [
-					...newForm,
-					{
-						category: {
-							value: value.category,
-							label: value.category,
-						},
-						severity: {
-							value: value.severity,
-							label: value.severity,
-						},
-						allergy: value.allergy,
-						reaction: value.reaction,
-					},
-				];
-			});
-			setData(data);
-			setValue('allForm', newForm);
-			setLoaded(false);
-		} catch (error) {
-			setLoaded(false);
-			notifyError('Could not fetch allergies for the patient');
-		}
-	};
-
-	const handleChecked = async e => {
-		if (e.target.checked && !queried) {
-			fetchAllergies().then(res => {});
-		}
-	};
-	const onSubmit = async values => {
-		encounterForm.allergies = values;
-		props.loadEncounterForm(encounterForm);
-
-		let form = values.allForm || [];
-		let reformatPersons = [];
-		if (form.length > 0) {
-			reformatPersons = form.map((value, index, array) => {
-				return {
-					category: value.category.value,
-					severity: value.severity.value,
-					allergy: value.allergy,
-					reaction: value.reaction,
-				};
-			});
-		}
-
-		encounterData.allergies = reformatPersons;
-		props.loadEncounterData(encounterData);
-		dispatch(props.next);
+	const onNext = () => {
+		dispatch(
+			updateEncounterData({
+				...encounter,
+				allergies: [...allergens],
+				pastAllergies: [...selectedPastAllergies],
+			})
+		);
+		dispatch(next);
 	};
 
 	const divStyle = {
 		height: '500px',
-		overflow: 'scroll',
+		overflowY: 'scroll',
 	};
+
+	const onSubmit = values => {
+		if (category !== '' && values.reaction !== '') {
+			setAllergens([...allergens, { ...values, category, severity, drug }]);
+			setCategory('');
+			setSeverity('');
+			setDrug('');
+			reset();
+		} else {
+			notifyError('Error, please complete the allergens form');
+		}
+	};
+
+	const onSelect = (checked, index, allergy) => {};
 
 	return (
 		<div className="form-block encounter" style={divStyle}>
-			<form onSubmit={handleSubmit(onSubmit)}>
-				<div className="row">
-					<div className="col-md-12">
-						<a
-							className="btn btn-success btn-sm text-white"
-							onClick={() => {
-								append();
-							}}>
-							<i className="os-icon os-icon-plus-circle" />
-							<span>add allergen</span>
-						</a>
-					</div>
-				</div>
-
-				{loaded ? (
-					<div className="row">
-						<img alt="searching" src={searchingGIF} />
-					</div>
-				) : (
-					<>
+			<div className="row">
+				<div className="col-md-7">
+					<form onSubmit={handleSubmit(onSubmit)}>
 						<div className="row">
 							<div className="col-sm-6">
-								{data.map((form, index) => {
-									return (
-										<div className="mt-4" key={index}>
-											<div className="row">
-												<div className="col-md-12">
-													<a
-														className="text-danger"
-														onClick={() => remove(form.id)}
-														style={{ lineHeight: '78px' }}>
-														<i className="os-icon os-icon-cancel-circle" />{' '}
-														remove allergen
-													</a>
-												</div>
-											</div>
-											<div className="row">
-												<div className="col-md-12">
-													<div className="form-group">
-														<label>Category</label>
-														<Controller
-															as={
-																<Select
-																	placeholder="Select Allergy Category"
-																	options={allergyCategories}
-																	// onChange={evt => {
-																	// 	category[allergy.id] = evt;
-																	// 	setCategory(category);
-																	// }}
-																/>
-															}
-															control={control}
-															rules={{ required: true }}
-															onChange={([selected]) => {
-																return selected;
-															}}
-															name={`allForm[${form.id}].category`}
-														/>
-														<ErrorMessage
-															errors={errors}
-															name={`allForm[${form.id}].category`}
-															message="This is required"
-															as={<span className="alert alert-danger" />}
-														/>
-													</div>
-												</div>
-											</div>
-											<div className="row">
-												<div className="col-md-12">
-													<div className="form-group">
-														<label>Allergen</label>
-														<input
-															className="form-control"
-															placeholder="Allergy"
-															type="text"
-															ref={register}
-															name={`allForm[${form.id}].allergy`}
-														/>
-													</div>
-												</div>
-											</div>
-											<div className="row">
-												<div className="col-md-12">
-													<div className="form-group">
-														<label>Reaction</label>
-														<input
-															type="text"
-															ref={register}
-															name={`allForm[${form.id}].reaction`}
-															placeholder="Reaction"
-															className="form-control"
-														/>
-													</div>
-												</div>
-											</div>
-											<div className="row">
-												<div className="col-md-12">
-													<div className="form-group">
-														<label>Severity</label>
-
-														<Controller
-															as={
-																<Select
-																	placeholder="Select severity"
-																	options={severity}
-																/>
-															}
-															control={control}
-															rules={{ required: true }}
-															onChange={([selected]) => {
-																return selected;
-															}}
-															name={`allForm[${form.id}].severity`}
-														/>
-														<ErrorMessage
-															errors={errors}
-															name={`allForm[${form.id}].severity`}
-															message="This is required"
-															as={<span className="alert alert-danger" />}
-														/>
-													</div>
-												</div>
-											</div>
-										</div>
-									);
-								})}
+								<div className="form-group">
+									<label>Category</label>
+									<Select
+										placeholder="Select Allergy Category"
+										ref={register}
+										options={allergyCategories}
+										value={category}
+										onChange={e => {
+											setCategory(e);
+										}}
+									/>
+								</div>
 							</div>
 							<div className="col-sm-6">
+								<div className="form-group">
+									<label>Allergen</label>
+									<input
+										className="form-control"
+										placeholder="Allergen"
+										type="text"
+										ref={register}
+										name="allergen"
+									/>
+								</div>
+							</div>
+							<div className="col-sm-6">
+								<div className="form-group">
+									<label>Reaction</label>
+									<input
+										type="text"
+										ref={register}
+										name="reaction"
+										placeholder="Reaction"
+										className="form-control"
+									/>
+								</div>
+							</div>
+							<div className="col-sm-4">
+								<div className="form-group">
+									<label>Severity</label>
+									<Select
+										placeholder="Select Severity"
+										ref={register}
+										options={severities}
+										value={severity}
+										onChange={e => {
+											setSeverity(e);
+										}}
+									/>
+								</div>
+							</div>
+							<div className="col-sm-2" style={{ position: 'relative' }}>
+								<button
+									className="btn btn-danger btn-sm"
+									style={{ margin: '45px 0 0', display: 'block' }}
+									type="submit">
+									<i className="os-icon os-icon-plus-circle" /> Add
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div className="col-md-5">
+					<div className="allergen-block">
+						<div className="row">
+							<div className="col-md-12">
 								<div className="form-group">
 									<label>
 										Existing Allergies{' '}
 										<input
 											type="checkbox"
+											checked={existing}
 											className="form-control"
-											onChange={evt => {
-												handleChecked(evt);
+											onChange={e => {
+												setExisting(e.target.checked);
+												setSelectedPastAllergies(
+													e.target.checked ? [...pastAllergies] : []
+												);
 											}}
 										/>
 									</label>
 								</div>
 							</div>
 						</div>
-					</>
-				)}
-
-				<div className="row mt-5">
-					<div className="col-sm-12 d-flex ant-row-flex-space-between">
-						<button className="btn btn-primary" onClick={previous}>
-							Previous
-						</button>
-						<button className="btn btn-primary" type="submit">
-							Next
-						</button>
+						<div className="row">
+							{pastAllergies.map((item, i) => {
+								const value = selectedPastAllergies.find(o => o.id === item.id);
+								return (
+									<div className="col-md-12" key={i}>
+										<div className="form-group history-item">
+											<label>
+												{`${item.drug ? item.drug.name : item.allergen}(${
+													item.category
+												})`}
+											</label>
+											<div>
+												<input
+													type="checkbox"
+													className="form-control"
+													value={value !== null}
+													onChange={e => onSelect(e, item)}
+												/>
+											</div>
+										</div>
+									</div>
+								);
+							})}
+						</div>
 					</div>
 				</div>
-			</form>
+			</div>
+
+			<div className="row">
+				<div className="element-box p-3 m-0 mt-3 w-100">
+					<Table>
+						<thead>
+							<tr>
+								<th>Category</th>
+								<th>Allergen</th>
+								<th>Drug</th>
+								<th>Reaction</th>
+								<th>Severity</th>
+								<th nowrap="nowrap" className="text-center"></th>
+							</tr>
+						</thead>
+						<tbody>
+							{allergens.map((item, index) => {
+								return (
+									<tr key={index}>
+										<td>{item.category.value}</td>
+										<td>{item.allergen}</td>
+										<td>{item?.drug?.name || ''}</td>
+										<td>{item.reaction}</td>
+										<td>{item.severity.value}</td>
+										<td>
+											<div className="display-flex">
+												<div className="ml-2">
+													<TrashIcon
+														onClick={() => remove(index)}
+														style={{
+															width: '1rem',
+															height: '1rem',
+															cursor: 'pointer',
+														}}
+													/>
+												</div>
+											</div>
+										</td>
+									</tr>
+								);
+							})}
+						</tbody>
+					</Table>
+				</div>
+			</div>
+
+			<div className="row mt-5">
+				<div className="col-sm-12 d-flex ant-row-flex-space-between">
+					<button className="btn btn-primary" onClick={previous}>
+						Previous
+					</button>
+					<button className="btn btn-primary" onClick={onNext}>
+						Next
+					</button>
+				</div>
+			</div>
 		</div>
 	);
 };
 
-const mapStateToProps = (state, ownProps) => {
-	return {
-		allergiesProp: state.patient.allergies,
-		encounterData: state.patient.encounterData,
-		encounterForm: state.patient.encounterForm,
-		encounterInfo: state.general.encounterInfo,
-	};
-};
-export default connect(mapStateToProps, {
-	fetch_Allergies,
-	loadEncounterData,
-	loadEncounterForm,
-})(Allergies);
+export default Allergies;

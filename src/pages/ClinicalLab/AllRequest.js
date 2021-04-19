@@ -34,7 +34,7 @@ class AllRequest extends Component {
 			const { startDate, endDate, status } = this.state;
 			this.setState({ loading: true });
 			const p = page || 1;
-			const url = `${patientAPI}/requests/lab?page=${p}&limit=10&startDate=${startDate}&endDate=${endDate}&status=${status}`;
+			const url = `requests/list/lab?page=${p}&limit=10&startDate=${startDate}&endDate=${endDate}&status=${status}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			this.setState({ labs: result, loading: false, filtering: false, meta });

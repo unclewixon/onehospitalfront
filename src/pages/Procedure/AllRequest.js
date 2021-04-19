@@ -6,7 +6,7 @@ import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 import waiting from '../../assets/images/waiting.gif';
 import { request, itemRender } from '../../services/utilities';
-import { patientAPI, searchAPI } from '../../services/constants';
+import { searchAPI } from '../../services/constants';
 import { notifyError } from '../../services/notify';
 import ProcedureBlock from '../../components/ProcedureBlock';
 
@@ -41,7 +41,7 @@ class AllRequest extends Component {
 			const { startDate, endDate, status, patient_id } = this.state;
 			this.setState({ loading: true });
 			const p = page || 1;
-			const url = `${patientAPI}/requests/procedure?page=${p}&limit=10&startDate=${startDate}&endDate=${endDate}&status=${status}&patient_id=${patient_id}`;
+			const url = `requests/list/procedure?page=${p}&limit=10&startDate=${startDate}&endDate=${endDate}&status=${status}&patient_id=${patient_id}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			this.setState({

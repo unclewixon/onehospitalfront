@@ -12,7 +12,9 @@ import Departments from './Departments';
 import LeaveCategory from './LeaveCategory';
 import ServicesCategory from './ServiceCategory';
 import Specialization from './Specialization';
-import ConsultatingRoom from './ConsultatingRoom';
+import ConsultingRoom from './ConsultingRoom';
+import Consumable from './Consumable';
+import AntenatalPackage from './AntenatalPackage';
 
 const Settings = ({ match, location }) => {
 	const [toggle, setToggle] = useState(false);
@@ -96,6 +98,18 @@ const Settings = ({ match, location }) => {
 								<span>Specializations</span>
 							</Link>
 						</li>
+						{/* <li className={page === 'consumables' ? 'active' : ''}>
+							<Link to="/settings/consumables">
+								<i className="os-icon os-icon-layers" />
+								<span>Consumables</span>
+							</Link>
+						</li>
+						<li className={page === 'antenatal-packages' ? 'active' : ''}>
+							<Link to="/settings/antenatal-packages">
+								<i className="os-icon os-icon-layers" />
+								<span>Antenatal Packages</span>
+							</Link>
+						</li> */}
 					</ul>
 				</div>
 			)}
@@ -114,7 +128,12 @@ const Settings = ({ match, location }) => {
 				/>
 				<Route
 					path={`${match.url}/consulting-room`}
-					component={ConsultatingRoom}
+					component={ConsultingRoom}
+				/>
+				<Route path={`${match.url}/consumables`} component={Consumable} />
+				<Route
+					path={`${match.url}/antenatal-packages`}
+					component={AntenatalPackage}
 				/>
 
 				<Route component={Roles} />

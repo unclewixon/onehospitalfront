@@ -58,6 +58,7 @@ const PastHistory = ({ previous, next }) => {
 
 	const divStyle = {
 		height: '500px',
+		overflowY: 'scroll',
 	};
 
 	const add = () => {
@@ -76,12 +77,6 @@ const PastHistory = ({ previous, next }) => {
 
 	return (
 		<div className="form-block encounter" style={divStyle}>
-			<div className="row mt-1">
-				<div className="col-md-6">
-					<label>Past Medical History:</label>
-				</div>
-				<div className="col-md-6"></div>
-			</div>
 			<div className="row">
 				<div className="col-sm-6">
 					<div className="form-group">
@@ -131,53 +126,55 @@ const PastHistory = ({ previous, next }) => {
 				</div>
 				<div className="col-sm-1" style={{ position: 'relative' }}>
 					<a
-						className="text-danger delete-icon"
+						className="btn btn-danger btn-sm"
 						style={{ margin: '45px 0 0', display: 'block' }}
 						onClick={() => add()}>
-						<i className="os-icon os-icon-plus-circle" />
+						<i className="os-icon os-icon-plus-circle" /> Add
 					</a>
 				</div>
 			</div>
 
 			<div className="row">
-				<Table>
-					<thead>
-						<tr>
-							<th>Diagnosis</th>
-							<th>Date</th>
-							<th>Comment</th>
-							<th nowrap="nowrap" className="text-center"></th>
-						</tr>
-					</thead>
-					<tbody>
-						{diagnoses.map((item, index) => {
-							return (
-								<tr key={index}>
-									<td>{`${item.diagnosis.description} (Icd${
-										item.diagnosis.diagnosisType
-									}: ${item.diagnosis.icd10Code ||
-										item.diagnosis.procedureCode})`}</td>
-									<td>{item.date}</td>
-									<td>{item.comment}</td>
-									<td>
-										<div className="display-flex">
-											<div className="ml-2">
-												<TrashIcon
-													onClick={() => remove(index)}
-													style={{
-														width: '1rem',
-														height: '1rem',
-														cursor: 'pointer',
-													}}
-												/>
+				<div className="element-box p-3 m-0 mt-3 w-100">
+					<Table>
+						<thead>
+							<tr>
+								<th>Diagnosis</th>
+								<th>Date</th>
+								<th>Comment</th>
+								<th nowrap="nowrap" className="text-center"></th>
+							</tr>
+						</thead>
+						<tbody>
+							{diagnoses.map((item, index) => {
+								return (
+									<tr key={index}>
+										<td>{`${item.diagnosis.description} (Icd${
+											item.diagnosis.diagnosisType
+										}: ${item.diagnosis.icd10Code ||
+											item.diagnosis.procedureCode})`}</td>
+										<td>{item.date}</td>
+										<td>{item.comment}</td>
+										<td>
+											<div className="display-flex">
+												<div className="ml-2">
+													<TrashIcon
+														onClick={() => remove(index)}
+														style={{
+															width: '1rem',
+															height: '1rem',
+															cursor: 'pointer',
+														}}
+													/>
+												</div>
 											</div>
-										</div>
-									</td>
-								</tr>
-							);
-						})}
-					</tbody>
-				</Table>
+										</td>
+									</tr>
+								);
+							})}
+						</tbody>
+					</Table>
+				</div>
 			</div>
 
 			<div className="row mt-5">

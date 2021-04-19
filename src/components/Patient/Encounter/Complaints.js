@@ -54,6 +54,7 @@ const Complaints = ({ next }) => {
 											'font',
 											'fontSize',
 											'image',
+											'codeView',
 										],
 									],
 								}}

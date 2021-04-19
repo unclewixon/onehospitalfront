@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
 import { connect } from 'react-redux';
@@ -46,33 +46,32 @@ const Pharmacy = ({ location, patient }) => {
 		}
 	};
 
-	useEffect(() => {
-		const getPrescriptions = async () => {
-			const url = `patient/${patient.id}/request/pharmacy?startDate=${startDate}&endDate=${endDate}&limit=10`;
-			const rs = await request(url, 'GET', true);
-			const { result, ...meta } = rs;
-			setPrescriptions(result);
-			setMeta(meta);
-			setLoaded(true);
-		};
+	const fetch = useCallback(
+		async page => {
+			try {
+				const url = `requests/${patient.id}/request/pharmacy?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=10`;
+				const rs = await request(url, 'GET', true);
+				const { result, ...meta } = rs;
+				setPrescriptions(result);
+				setMeta(meta);
+				setLoaded(true);
+			} catch (error) {
+				setLoaded(true);
+				notifyError('Error could not fetch regimen prescriptions');
+			}
+		},
+		[patient]
+	);
 
+	useEffect(() => {
 		if (!loaded) {
-			getPrescriptions();
+			fetch(1);
 		}
-	}, [endDate, loaded, patient.id, startDate]);
+	}, [fetch, loaded]);
 
 	const updatePrescriptions = update => {
 		const updatedDrugs = updateImmutable(prescriptions, update);
 		setPrescriptions(updatedDrugs);
-	};
-
-	const fetch = async page => {
-		const url = `patient/${patient.id}/request/pharmacy?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=10`;
-		const rs = await request(url, 'GET', true);
-		const { result, ...meta } = rs;
-		setPrescriptions(result);
-		setMeta(meta);
-		setLoaded(true);
 	};
 
 	const onNavigatePage = nextPage => {

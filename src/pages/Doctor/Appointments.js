@@ -64,11 +64,16 @@ const Appointments = () => {
 
 			socket.on('appointment-update', data => {
 				if (data.action === 1) {
+					// change with update appointment
 					getAppointments();
 				}
 			});
 		}
 	}, [dispatch, getAppointments, listenning]);
+
+	const updateAppointment = e => {
+		console.log(e);
+	};
 
 	const doFilter = e => {
 		e.preventDefault();
@@ -121,6 +126,7 @@ const Appointments = () => {
 						<AppointmentTable
 							appointments={allAppointments}
 							loading={loading}
+							updateAppointment={updateAppointment}
 						/>
 					</div>
 

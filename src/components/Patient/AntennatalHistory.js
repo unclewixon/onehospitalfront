@@ -182,7 +182,6 @@ export class AntennatalHistory extends Component {
 													this.tableBody()
 												) : (
 													<tr>
-														{' '}
 														<td colSpan="9" className="text-center">
 															No antenatal enrolment
 														</td>

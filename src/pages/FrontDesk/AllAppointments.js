@@ -18,11 +18,11 @@ import {
 } from '../../services/utilities';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { notifySuccess, notifyError } from '../../services/notify';
-import AppointmentFormModal from '../Modals/AppointmentFormModal';
-import ModalViewAppointment from '../Modals/ModalViewAppointment';
-import TableLoading from '../TableLoading';
+import AppointmentFormModal from '../../components/Modals/AppointmentFormModal';
+import ModalViewAppointment from '../../components/Modals/ModalViewAppointment';
 import { toggleProfile } from '../../actions/user';
-import ProfilePopup from '../Patient/ProfilePopup';
+import ProfilePopup from '../../components/Patient/ProfilePopup';
+import TableLoading from '../../components/TableLoading';
 
 const { RangePicker } = DatePicker;
 

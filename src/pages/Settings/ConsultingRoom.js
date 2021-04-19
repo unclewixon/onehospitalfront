@@ -7,7 +7,7 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import { request, confirmAction } from '../../services/utilities';
 import { updateImmutable } from '../../services/utilities';
 
-const ConsultationRoom = () => {
+const ConsultingRoom = () => {
 	const initialState = {
 		name: '',
 		save: true,
@@ -155,7 +155,7 @@ const ConsultationRoom = () => {
 															</div>
 															<div className="pi-settings os-dropdown-trigger">
 																<i
-																	className="os-icon os-icon-ui-15"
+																	className="os-icon os-icon-ui-15 text-danger"
 																	onClick={() => confirmDelete(room)}></i>
 															</div>
 														</div>
@@ -239,4 +239,4 @@ const ConsultationRoom = () => {
 	);
 };
 
-export default ConsultationRoom;
+export default ConsultingRoom;

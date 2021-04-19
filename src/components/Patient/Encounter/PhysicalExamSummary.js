@@ -1,22 +1,19 @@
 import React, { useState } from 'react';
 import SunEditor from 'suneditor-react';
-import { connect, useDispatch } from 'react-redux';
-import { loadEncounterData, loadEncounterForm } from '../../../actions/patient';
+import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 
-const PhysicalExamSummary = props => {
+const PhysicalExamSummary = ({ previous, next }) => {
 	const { register, handleSubmit } = useForm();
-	let { encounterData, previous } = props;
+
 	const [summary, setSummary] = useState('');
+
 	const dispatch = useDispatch();
-	const handleChange = e => {
-		setSummary(e);
-	};
+
 	const onSubmit = async values => {
-		encounterData.physicalExaminationSummary = [summary];
-		props.loadEncounterData(encounterData);
-		dispatch(props.next);
+		dispatch(next);
 	};
+
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<div className="form-block encounter">
@@ -39,7 +36,7 @@ const PhysicalExamSummary = props => {
 							<SunEditor
 								width="100%"
 								placeholder="Please type here..."
-								//setContents={summary}
+								setContents={summary}
 								name="summary"
 								ref={register}
 								autoFocus={true}
@@ -64,7 +61,7 @@ const PhysicalExamSummary = props => {
 								}}
 								//onFocus={handleFocus}
 								onChange={evt => {
-									handleChange(String(evt));
+									setSummary(String(evt));
 								}}
 							/>
 						</div>
@@ -86,14 +83,4 @@ const PhysicalExamSummary = props => {
 	);
 };
 
-const mapStateToProps = state => {
-	return {
-		encounterData: state.patient.encounterData,
-		encounterForm: state.patient.encounterForm,
-	};
-};
-
-export default connect(mapStateToProps, {
-	loadEncounterData,
-	loadEncounterForm,
-})(PhysicalExamSummary);
+export default PhysicalExamSummary;

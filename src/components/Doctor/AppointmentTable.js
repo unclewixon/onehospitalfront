@@ -20,7 +20,7 @@ import TableLoading from '../TableLoading';
 import ModalViewAppointment from '../Modals/ModalViewAppointment';
 import OpenEncounter from '../Patient/Modals/OpenEncounter';
 
-const AppointmentTable = ({ appointments, loading }) => {
+const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 	const [updating, setUpdating] = useState(null);
 	const [appointment, setAppointment] = useState(null);
 	const [appointmentId, setAppointmentId] = useState(null);
@@ -200,6 +200,7 @@ const AppointmentTable = ({ appointments, loading }) => {
 					patient={patient}
 					appointment_id={appointmentId}
 					closeModal={closeModal}
+					updateAppointment={updateAppointment}
 				/>
 			)}
 		</>
