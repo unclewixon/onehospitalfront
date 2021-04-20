@@ -6,7 +6,6 @@ import Pagination from 'antd/lib/pagination';
 
 import waiting from '../../assets/images/waiting.gif';
 import { request, itemRender } from '../../services/utilities';
-import { patientAPI } from '../../services/constants';
 import { notifyError } from '../../services/notify';
 import LabBlock from '../../components/LabBlock';
 

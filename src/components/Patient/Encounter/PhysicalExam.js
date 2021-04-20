@@ -16,7 +16,7 @@ const PhysicalExam = ({ next, previous }) => {
 
 	useEffect(() => {
 		if (!loaded) {
-			setOptions(encounter.reviewOfSystem);
+			setOptions(encounter.physicalExamination);
 			setLoaded(true);
 		}
 	}, [encounter, loaded]);

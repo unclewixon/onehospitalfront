@@ -62,7 +62,8 @@ const INITIAL_STATE = {
 		complaints:
 			'<p><u>Presenting Complaints:</u>​&nbsp;</p><p><br></p><p><br></p><p><br></p><p><u>History of complains</u>:&nbsp;</p><p><br></p>',
 		reviewOfSystem: [],
-		patientHistory: [],
+		patientHistory: null,
+		patientHistorySelected: [],
 		medicalHistory: [],
 		allergies: [],
 		pastAllergies: [],
@@ -128,10 +129,7 @@ const patient = (state = INITIAL_STATE, action) => {
 				encounterData: { ...action.payload },
 			};
 		case RESET_ENCOUNTER_DATA:
-			return {
-				...state,
-				encounterData: action.payload,
-			};
+			return { ...state, encounterData: action.payload };
 		case GET_IMAGING_REQUESTS:
 			return { ...state, imagingRequests: action.payload };
 		case UPDATE_ALLERGY:

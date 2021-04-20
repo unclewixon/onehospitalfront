@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 
 import { socket } from '../../services/constants';
-import { request, itemRender } from '../../services/utilities';
+import { request, itemRender, updateImmutable } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import AppointmentTable from '../../components/Doctor/AppointmentTable';
 import { startBlock, stopBlock } from '../../actions/redux-block';
@@ -91,7 +91,8 @@ const Dashboard = () => {
 	}, [getAppointments, loading]);
 
 	const updateAppointment = e => {
-		console.log(e);
+		const updatedAppointments = updateImmutable(appointments, e);
+		setAppointments([...updatedAppointments]);
 	};
 
 	const onNavigatePage = nextPage => {

@@ -5,7 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 
 import waiting from '../../assets/images/waiting.gif';
-import { formatDateStr, request, itemRender } from '../../services/utilities';
+import {
+	formatDateStr,
+	request,
+	itemRender,
+	updateImmutable,
+} from '../../services/utilities';
 import AppointmentTable from '../../components/Doctor/AppointmentTable';
 import { socket } from '../../services/constants';
 import { notifyError } from '../../services/notify';
@@ -72,7 +77,8 @@ const Appointments = () => {
 	}, [dispatch, getAppointments, listenning]);
 
 	const updateAppointment = e => {
-		console.log(e);
+		const updatedAppointments = updateImmutable(allAppointments, e);
+		setAllAppointments([...updatedAppointments]);
 	};
 
 	const doFilter = e => {

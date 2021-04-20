@@ -28,7 +28,13 @@ class HxForm extends Component {
 		gest_date: '',
 		dob: '',
 		lmp: '',
+		patientHistory: null,
+		patientHistorySelected: [],
 	};
+
+	componentDidMount() {
+		// init already selected items in form
+	}
 
 	setDate = (date, type) => {
 		this.setState({ [type]: date });
@@ -185,11 +191,26 @@ class HxForm extends Component {
 			},
 		};
 
+		let patientHistorySelected = [];
+
+		const obstHistoriesCategory = Object.keys(obstericsHistory);
+		const obstHistories = Object.values(obstericsHistory);
+		for (let i = 0; i < obstHistories.length; i++) {
+			const item = obstHistories[i];
+			if (Object.values(item).filter(x => x).length > 0) {
+				patientHistorySelected = [
+					...patientHistorySelected,
+					{ category: obstHistoriesCategory[i], description: item },
+				];
+			}
+		}
+
 		const { encounter, next } = this.props;
 
 		this.props.updateEncounterData({
 			...encounter,
-			patientHistory: obstericsHistory || [],
+			patientHistory: obstericsHistory,
+			patientHistorySelected,
 		});
 		this.props.dispatch(next);
 	};
@@ -198,51 +219,49 @@ class HxForm extends Component {
 		const { handleSubmit, previous, error, value } = this.props;
 
 		return (
-			<>
-				<div className="form-block">
-					<form onSubmit={handleSubmit(this.onSubmit)}>
-						{error && (
-							<div
-								className="alert alert-danger"
-								dangerouslySetInnerHTML={{
-									__html: `<strong>Error!</strong> ${error}`,
-								}}
+			<div className="form-block">
+				<form onSubmit={handleSubmit(this.onSubmit)}>
+					{error && (
+						<div
+							className="alert alert-danger"
+							dangerouslySetInnerHTML={{
+								__html: `<strong>Error!</strong> ${error}`,
+							}}
+						/>
+					)}
+
+					<div className="row">
+						<div className="col-sm-12">
+							<Field
+								id="obstericsHistory"
+								name="obstericsHistory"
+								component={renderSelect}
+								label="Select Previous Obsteric History"
+								placeholder="Select Previous Obsteric History"
+								data={obstericHistory}
 							/>
-						)}
-
-						<div className="row">
-							<div className="col-sm-12">
-								<Field
-									id="obstericsHistory"
-									name="obstericsHistory"
-									component={renderSelect}
-									label="Select Previous Obsteric History"
-									placeholder="Select Previous Obsteric History"
-									data={obstericHistory}
-								/>
-							</div>
 						</div>
+					</div>
 
-						<div className="row" style={{ minHeight: '180px' }}>
-							{this.obstHistory(value)}
-						</div>
+					<div className="row" style={{ minHeight: '180px' }}>
+						{this.obstHistory(value)}
+					</div>
 
-						<div className="row mt-5">
-							<div className="col-sm-12 d-flex ant-row-flex-space-between">
-								<button
-									type="button"
-									className="btn btn-primary"
-									onClick={previous}>
-									Previous
-								</button>
-								<button className="btn btn-primary" type="submit">
-									Next
-								</button>
-							</div>
+					<div className="row mt-5">
+						<div className="col-sm-12 d-flex ant-row-flex-space-between">
+							<button
+								type="button"
+								className="btn btn-primary"
+								onClick={previous}>
+								Previous
+							</button>
+							<button className="btn btn-primary" type="submit">
+								Next
+							</button>
 						</div>
-					</form>
-				</div>
-			</>
+					</div>
+				</form>
+			</div>
 		);
 	}
 }

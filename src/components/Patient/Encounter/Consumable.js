@@ -5,7 +5,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Table } from 'react-bootstrap';
 import Select from 'react-select';
 
-import { updateEncounterData } from '../../../actions/patient';
+import {
+	updateEncounterData,
+	resetEncounterData,
+} from '../../../actions/patient';
 import {
 	consultationAPI,
 	consumableAPI,
@@ -82,7 +85,7 @@ const Consumable = ({
 			dispatch(startBlock());
 			const consumables = {
 				patient_id: patient.id,
-				items: [...selectedConsumables.map(t => ({ id: t.id }))],
+				items: [...selectedConsumables],
 				request_note: requestNote,
 			};
 
@@ -92,12 +95,11 @@ const Consumable = ({
 			const url = `${consultationAPI}${patient.id}/save?appointment_id=${appointment_id}`;
 			const rs = await request(url, 'POST', true, encounterData);
 			if (rs && rs.success) {
-				console.log(rs);
-				updateAppointment(rs);
-				notifySuccess('Consultation completed successfully');
 				dispatch(stopBlock());
-				dispatch(updateEncounterData(defaultEncounter));
-				dispatch(closeModal());
+				updateAppointment(rs.appointment);
+				notifySuccess('Consultation completed successfully');
+				dispatch(resetEncounterData(defaultEncounter));
+				closeModal();
 			} else {
 				dispatch(stopBlock());
 				notifyError('Error, could not save consultation data');

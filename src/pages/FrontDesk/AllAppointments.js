@@ -256,11 +256,11 @@ class AllAppointments extends Component {
 												<td>{item.department?.name || ''}</td>
 
 												<td>
-													{item.status === 'Cancelled' ||
-													hasPassed(item.appointment_date) ? (
+													{!item.encounter &&
+													(item.status === 'Cancelled' ||
+														hasPassed(item.appointment_date)) ? (
 														<span className="badge badge-danger">
-															{hasPassed(item.appointment_date) &&
-															!item.encounter
+															{hasPassed(item.appointment_date)
 																? 'Missed'
 																: 'Cancelled'}
 														</span>
@@ -278,8 +278,13 @@ class AllAppointments extends Component {
 																</span>
 															)}
 															{item.status === 'Approved' && (
-																<span className="badge badge-success">
+																<span className="badge badge-primary">
 																	Approved
+																</span>
+															)}
+															{item.status === 'Completed' && (
+																<span className="badge badge-success">
+																	Completed
 																</span>
 															)}
 														</>

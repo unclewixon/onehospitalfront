@@ -3,7 +3,7 @@ import Select from 'react-select';
 import { connect } from 'react-redux';
 
 import { request } from '../../services/utilities';
-import { patientAPI } from '../../services/constants';
+import { patientAPI, severities } from '../../services/constants';
 import { update_allergy } from '../../actions/patient';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
@@ -15,17 +15,8 @@ const allergyCategories = [
 	{ value: 'Environment', label: 'Environment' },
 	{ value: 'other', label: 'other' },
 ];
-const severityCategory = [
-	{
-		value: 'mild',
-		label: 'mild',
-	},
-	{ value: 'moderate', label: 'moderate' },
-	{ value: 'severe', label: 'severe' },
-	{ value: 'intolerance', label: 'intolerance' },
-];
-const UpdateAllergy = props => {
-	let { Allergy } = props;
+
+const UpdateAllergy = ({ Allergy, patient }, props) => {
 	const initialState = {
 		category: Allergy.category,
 		allergy: Allergy.allergy,
@@ -41,8 +32,7 @@ const UpdateAllergy = props => {
 
 	const onSubmit = async e => {
 		e.preventDefault();
-		let { patient } = props;
-		let data = {
+		const data = {
 			category: category,
 			allergy: allergy,
 			severity: severity,
@@ -118,7 +108,7 @@ const UpdateAllergy = props => {
 									<Select
 										name="severity"
 										placeholder="Select severity"
-										options={severityCategory}
+										options={severities}
 										value={{ label: severity, value: severity }}
 										defaultValue={{ label: severity, value: severity }}
 										onChange={evt => {

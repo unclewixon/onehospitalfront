@@ -143,32 +143,46 @@ const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 												onClick={() =>
 													confirm({ id: appointment.id, action: 1 })
 												}
-												className="btn btn-sm btn-success"
+												className="btn btn-sm btn-primary"
 												value="Accept"
 											/>
-										) : !appointment.encounter &&
-										  appointment.status !== 'Cancelled' &&
-										  !hasPassed(appointment.appointment_date) ? (
-											<Button
-												onClick={() =>
-													startEncounter(appointment.id, appointment?.patient)
-												}
-												className="btn btn-sm btn-info"
-												value="Start Encounter"
-											/>
 										) : (
-											<span className="badge badge-danger">
-												{hasPassed(appointment.appointment_date) &&
-												!appointment.encounter
-													? 'Missed'
-													: 'Cancelled'}
-											</span>
+											<>
+												{!appointment.encounter &&
+												(appointment.status === 'Cancelled' ||
+													hasPassed(appointment.appointment_date)) ? (
+													<span className="badge badge-danger">
+														{hasPassed(appointment.appointment_date)
+															? 'Missed'
+															: 'Cancelled'}
+													</span>
+												) : (
+													<>
+														{appointment.encounter ? (
+															<span className="badge badge-success">
+																Completed
+															</span>
+														) : (
+															<Button
+																onClick={() =>
+																	startEncounter(
+																		appointment.id,
+																		appointment?.patient
+																	)
+																}
+																className="btn btn-sm btn-info"
+																value="Start Encounter"
+															/>
+														)}
+													</>
+												)}
+											</>
 										)}
 									</td>
 								) : (
 									<td>
 										<Tooltip title="please select a consulting room">
-											<a className="btn btn-primary text-white">Accept</a>
+											<button className="btn btn-sm btn-link">Accept</button>
 										</Tooltip>
 									</td>
 								)}

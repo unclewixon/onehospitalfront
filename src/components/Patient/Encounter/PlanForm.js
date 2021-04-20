@@ -258,7 +258,7 @@ const PlanForm = ({ previous, next, patient }) => {
 		const procedureRequest = {
 			requestType: 'procedure',
 			patient_id: patient.id,
-			tests: [{ id: service.id }],
+			tests: service ? [{ id: service.id }] : [],
 			request_note: procedureNote,
 			urgent: false,
 			diagnosis: diagnoses || [],
@@ -279,6 +279,7 @@ const PlanForm = ({ previous, next, patient }) => {
 					procedureRequest,
 				},
 				nextAppointment,
+				treatmentPlan,
 			})
 		);
 		dispatch(next);

@@ -182,7 +182,7 @@ const Allergies = ({ previous, next, patient }) => {
 									<div className="col-md-12" key={i}>
 										<div className="form-group history-item">
 											<label>
-												{`${item.drug ? item.drug.name : item.allergen}(${
+												{`${item.drug ? item.drug.name : item.allergy}(${
 													item.category
 												})`}
 											</label>

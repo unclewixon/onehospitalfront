@@ -64,12 +64,12 @@ export const months = [
 ];
 export const severities = [
 	{
-		value: 'mild',
-		label: 'mild',
+		value: 'Mild',
+		label: 'Mild',
 	},
-	{ value: 'moderate', label: 'moderate' },
-	{ value: 'severe', label: 'severe' },
-	{ value: 'intolerance', label: 'intolerance' },
+	{ value: 'Moderate', label: 'Moderate' },
+	{ value: 'Severe', label: 'Severe' },
+	{ value: 'Intolerance', label: 'Intolerance' },
 ];
 export const serviceCenter = [
 	{
@@ -1169,7 +1169,8 @@ export const defaultEncounter = {
 	complaints:
 		'<p><u>Presenting Complaints:</u>​&nbsp;</p><p><br></p><p><br></p><p><br></p><p><u>History of complains</u>:&nbsp;</p><p><br></p>',
 	reviewOfSystem: [],
-	patientHistory: [],
+	patientHistory: null,
+	patientHistorySelected: [],
 	medicalHistory: [],
 	allergies: [],
 	pastAllergies: [],
