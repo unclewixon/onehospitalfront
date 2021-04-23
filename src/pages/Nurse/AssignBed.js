@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { reduxForm, SubmissionError } from 'redux-form';
-import Modal from 'react-bootstrap/Modal';
 import Select from 'react-select';
 
 import { request, updateImmutable } from '../../services/utilities';
@@ -12,8 +11,7 @@ class AssignBed extends Component {
 		submitting: false,
 		selected: '',
 		categories: [],
-		categoryLables: [],
-		roomLabels: [],
+		rooms: [],
 		room_id: '',
 	};
 
@@ -21,68 +19,61 @@ class AssignBed extends Component {
 		this.fetchCategories();
 	}
 
+	fetchCategories = async () => {
+		try {
+			const rs = await request('rooms/categories', 'GET', true);
+			const categories = rs.map(category => ({
+				...category,
+				value: category.id,
+				label: category.name,
+			}));
+			this.setState({ categories });
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
 	handleCatChange = val => {
 		const { categories } = this.state;
-		const cat = categories.filter(c => c.id === val);
-		const rooms = cat[0]?.rooms.filter(r => r.status === 'Not occupied');
-		let rmLabels = [];
-		rooms.forEach(room => {
-			rmLabels.push({ value: room.id, label: room.name });
-		});
-		this.setState({ roomLabels: rmLabels });
-		this.props.doHide(true);
+		const category = categories.find(c => c.id === val);
+		if (category) {
+			const rooms = category.rooms.filter(r => r.status === 'Not occupied');
+			const allRooms = rooms.map(room => ({
+				value: room.id,
+				label: room.name,
+			}));
+			this.setState({ rooms: allRooms });
+		}
 	};
 
 	handleRoomChange = val => {
 		this.setState({ room_id: val });
-		this.props.doHide(true);
-	};
-
-	fetchCategories = async () => {
-		try {
-			const rs = await request('rooms/categories', 'GET', true);
-			this.setState({ categories: rs });
-			this.setCatLabels();
-		} catch (e) {}
-	};
-
-	setCatLabels = () => {
-		const { categories } = this.state;
-		let catLabels = [];
-		categories.forEach(category => {
-			catLabels.push({ value: category.id, label: category.name });
-		});
-		this.setState({ categoryLables: catLabels });
-		this.props.doHide(true);
 	};
 
 	asignBed = async () => {
-		const { item, admittedPatients, setAdmittedPatients } = this.props;
-		const { room_id } = this.state;
-		this.setState({ submitting: true });
 		try {
-			let toSave = {
+			const { item, patients, updatePatient } = this.props;
+			const { room_id } = this.state;
+
+			this.setState({ submitting: true });
+
+			const data = {
 				room_id,
 				admission_id: item.id,
 			};
 			item.room = room_id;
-			const rs = await request(
-				'patient/admissions/assign-bed',
-				'PATCH',
-				true,
-				toSave
-			);
-
+			const url = 'patient/admissions/assign-bed';
+			const rs = await request(url, 'PATCH', true, data);
 			if (rs.success) {
-				const uptdDepartments = updateImmutable(admittedPatients, rs.admission);
-				setAdmittedPatients(uptdDepartments);
-				notifySuccess(`patient assigned room ${room_id}`);
+				const update = updateImmutable(patients, rs.admission);
+				updatePatient(update);
+				notifySuccess(`patient assigned ${room_id}`);
 				this.setState({ submitting: false });
-				this.props.doHide(false);
+				this.props.closeModal();
 			} else {
-				notifyError(`${rs.message}`);
+				notifyError(rs.message);
 				this.setState({ submitting: false });
-				this.props.doHide(false);
+				this.props.closeModal();
 			}
 		} catch (e) {
 			this.setState({ submitting: false });
@@ -92,28 +83,29 @@ class AssignBed extends Component {
 		}
 	};
 
-	// set selected value
-	handleSelect(val) {
-		this.setState({ selected: val });
-		this.props.doHide(true);
-	}
-
 	render() {
-		const { error, handleSubmit } = this.props;
-		const { submitting, roomLabels, categoryLables } = this.state;
+		const { error, handleSubmit, closeModal } = this.props;
+		const { submitting, rooms, categories } = this.state;
 
 		return (
-			<div className="onboarding-modal fade animated show">
-				<div className="modal-centered">
+			<div
+				className="onboarding-modal modal fade animated show"
+				role="dialog"
+				style={{ display: 'block' }}>
+				<div
+					className="modal-dialog modal-centered"
+					style={{ maxWidth: '320px' }}>
 					<div className="modal-content text-center">
+						<button
+							aria-label="Close"
+							className="close"
+							type="button"
+							onClick={closeModal}>
+							<span className="os-icon os-icon-close" />
+						</button>
 						<div className="onboarding-content with-gradient">
-							<Modal.Header
-								className="center-header"
-								closeButton
-								onClick={() => this.props.doHide(false)}>
-								<h4 className="onboarding-title">{`Assign Bed`}</h4>
-							</Modal.Header>
-							<div className="form-block">
+							<h4 className="onboarding-title">{`Assign Bed`}</h4>
+							<div className="element-box">
 								<form onSubmit={handleSubmit(this.asignBed)}>
 									{error && (
 										<div
@@ -125,17 +117,17 @@ class AssignBed extends Component {
 									)}
 									<div className="row form-group">
 										<div className="col-sm-12">
-											<span>Category</span>
+											<label>Category</label>
 											<Select
-												options={categoryLables}
-												onChange={evt => this.handleCatChange(evt.value)}
+												options={categories}
+												onChange={e => this.handleCatChange(e.value)}
 											/>
 										</div>
 										<div className="col-sm-12">
-											<span>Room</span>
+											<label>Room</label>
 											<Select
-												options={roomLabels}
-												onChange={evt => this.handleRoomChange(evt.value)}
+												options={rooms}
+												onChange={e => this.handleRoomChange(e.value)}
 											/>
 										</div>
 									</div>

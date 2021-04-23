@@ -2,13 +2,11 @@
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import Tooltip from 'antd/lib/tooltip';
-import Popover from 'antd/lib/popover';
 import { useDispatch } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 import DatePicker from 'antd/lib/date-picker';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
-import searchingGIF from '../../assets/images/searching.gif';
 import { notifyError } from '../../services/notify';
 import { request, formatPatientId, itemRender } from '../../services/utilities';
 import AssignBed from './AssignBed';
@@ -16,6 +14,7 @@ import waiting from '../../assets/images/waiting.gif';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { searchAPI } from '../../services/constants';
 import { toggleProfile } from '../../actions/user';
+import TableLoading from '../../components/TableLoading';
 
 const { RangePicker } = DatePicker;
 
@@ -24,7 +23,8 @@ const limit = 24;
 const InPatientCare = () => {
 	const [admittedPatients, setAdmittedPatients] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [visible, setVisible] = useState(false);
+	const [selected, setSelected] = useState(null);
+	const [showModal, setShowModal] = useState(false);
 	const [filtering, setFiltering] = useState(false);
 	const [startDate, setStartDate] = useState('');
 	const [endDate, setEndDate] = useState('');
@@ -35,11 +35,6 @@ const InPatientCare = () => {
 	});
 	const [patient, setPatient] = useState('');
 	const [loaded, setLoaded] = useState(false);
-
-	const doHide = val => {
-		//e.preventDefault();
-		setVisible(val);
-	};
 
 	const dispatch = useDispatch();
 
@@ -134,6 +129,18 @@ const InPatientCare = () => {
 		setEndDate(date[1]);
 	};
 
+	const assignBed = item => {
+		document.body.classList.add('modal-open');
+		setSelected(item);
+		setShowModal(true);
+	};
+
+	const closeModal = () => {
+		setShowModal(false);
+		setSelected(null);
+		document.body.classList.remove('modal-open');
+	};
+
 	return (
 		<>
 			<h6 className="element-header">Patients on Admission</h6>
@@ -181,115 +188,119 @@ const InPatientCare = () => {
 				</div>
 
 				<div className="table-responsive">
-					<table className="table table-striped">
-						<thead>
-							<tr>
-								<th>
-									<div className="th-inner sortable both">Patient Name</div>
-									<div className="fht-cell"></div>
-								</th>
-								<th>
-									<div className="th-inner sortable both">Patient ID</div>
-									<div className="fht-cell"></div>
-								</th>
-								<th>
-									<div className="th-inner sortable both">Gender</div>
-									<div className="fht-cell"></div>
-								</th>
-								<th>
-									<div className="th-inner sortable both">
-										Date of Admission
-									</div>
-									<div className="fht-cell"></div>
-								</th>
-								<th>
-									<div className="th-inner sortable both">Admitted By</div>
-									<div className="fht-cell"></div>
-								</th>
-								<th>
-									<div className="th-inner sortable both">Room/Floor</div>
-									<div className="fht-cell"></div>
-								</th>
-							</tr>
-						</thead>
-						<tbody>
-							{loading ? (
-								<tr>
-									<td colSpan="5" className="text-center">
-										<img alt="searching" src={searchingGIF} />
-									</td>
-								</tr>
-							) : (
-								admittedPatients.map((item, i) => {
-									console.log(item);
-									return (
-										<tr key={i}>
-											<td>{`${item?.patient_name}`}</td>
-											<td>{formatPatientId(item?.patient_id)}</td>
-											<td>{item?.patient_gender}</td>
-											<td>
-												{moment(item?.admission_date).format(
-													'DD-MMM-YYYY h:mm A'
-												)}
-											</td>
-											<td>{item?.admitted_by}</td>
-											<td className="row-actions">
-												{item?.suite ? (
-													<Tooltip title="Room/Floor">
-														{item?.suite + '/' + item?.floor}
-													</Tooltip>
-												) : (
-													<Tooltip title="Assign Bed">
-														<Popover
-															title=""
-															overlayClassName="select-bed"
-															content={
-																<AssignBed
-																	item={item}
-																	admittedPatients={admittedPatients}
-																	setAdmittedPatients={admittedPatients =>
-																		setAdmittedPatients(admittedPatients)
-																	}
-																	doHide={doHide}
-																/>
-															}
-															trigger="click"
-															visible={visible}
-															onVisibleChange={status => setVisible(status)}>
-															<a className="primary">
-																<i className="os-icon os-icon-layers" />
+					{loading ? (
+						<TableLoading />
+					) : (
+						<>
+							<table className="table table-striped">
+								<thead>
+									<tr>
+										<th>
+											<div className="th-inner sortable both">Patient Name</div>
+											<div className="fht-cell"></div>
+										</th>
+										<th>
+											<div className="th-inner sortable both">Patient ID</div>
+											<div className="fht-cell"></div>
+										</th>
+										<th>
+											<div className="th-inner sortable both">Gender</div>
+											<div className="fht-cell"></div>
+										</th>
+										<th>
+											<div className="th-inner sortable both">
+												Date of Admission
+											</div>
+											<div className="fht-cell"></div>
+										</th>
+										<th>
+											<div className="th-inner sortable both">Admitted By</div>
+											<div className="fht-cell"></div>
+										</th>
+										<th>
+											<div className="th-inner sortable both">Room/Floor</div>
+											<div className="fht-cell"></div>
+										</th>
+										<th>
+											<div className="fht-cell"></div>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									{admittedPatients.map((item, i) => {
+										return (
+											<tr key={i}>
+												<td>{item?.patient_name}</td>
+												<td>{formatPatientId(item?.patient_id)}</td>
+												<td>{item?.patient_gender}</td>
+												<td>
+													{moment(item?.admission_date).format(
+														'DD-MMM-YYYY h:mm A'
+													)}
+												</td>
+												<td>{item?.admitted_by}</td>
+												<td>
+													{item?.suite ? (
+														<Tooltip title="Room/Floor">
+															{item?.suite + '/ Floor ' + item?.floor}
+														</Tooltip>
+													) : (
+														'-'
+													)}
+												</td>
+												<td className="row-actions">
+													{!item.suite && (
+														<Tooltip title="Assign Bed">
+															<a
+																onClick={() => assignBed(item)}
+																className="primary">
+																<i className="fa fa-bed" />
 															</a>
-														</Popover>
+														</Tooltip>
+													)}
+													<Tooltip title="View Patient">
+														<a onClick={() => showProfile(item.patient)}>
+															<i className="os-icon os-icon-user-male-circle2" />
+														</a>
 													</Tooltip>
-												)}
-
-												<Tooltip title="View Patient">
-													<a onClick={() => showProfile(item.patient)}>
-														<i className="os-icon os-icon-documents-03" />
-													</a>
-												</Tooltip>
+												</td>
+											</tr>
+										);
+									})}
+									{admittedPatients.length === 0 && (
+										<tr>
+											<td colSpan="7" className="text-center">
+												No result found
 											</td>
 										</tr>
-									);
-								})
-							)}
-						</tbody>
-					</table>
+									)}
+								</tbody>
+							</table>
 
-					{meta && (
-						<div className="pagination pagination-center mt-4">
-							<Pagination
-								current={parseInt(meta.currentPage, 10)}
-								pageSize={parseInt(meta.itemsPerPage, 10)}
-								total={parseInt(meta.totalPages, 10)}
-								showTotal={total => `Total ${total} patients`}
-								itemRender={itemRender}
-								onChange={current => onNavigatePage(current)}
-							/>
-						</div>
+							{meta && (
+								<div className="pagination pagination-center mt-4">
+									<Pagination
+										current={parseInt(meta.currentPage, 10)}
+										pageSize={parseInt(meta.itemsPerPage, 10)}
+										total={parseInt(meta.totalPages, 10)}
+										showTotal={total => `Total ${total} patients`}
+										itemRender={itemRender}
+										onChange={current => onNavigatePage(current)}
+									/>
+								</div>
+							)}
+						</>
 					)}
 				</div>
 			</div>
+			{selected && showModal && (
+				<AssignBed
+					item={selected}
+					patients={admittedPatients}
+					updatePatient={patients => setAdmittedPatients(patients)}
+					closeModal={() => closeModal()}
+				/>
+			)}
 		</>
 	);
 };

@@ -5,11 +5,7 @@ import { connect } from 'react-redux';
 
 import { transactionsAPI } from '../services/constants';
 import { request } from '../services/utilities';
-import {
-	loadTodayTransaction,
-	deleteTransaction,
-} from '../actions/transaction';
-import { applyVoucher, approveTransaction } from '../actions/general';
+import { loadTodayTransaction } from '../actions/transaction';
 import TransactionTable from './Tables/TransactionTable';
 
 export class PayPointTable extends Component {
@@ -68,7 +64,4 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
 	loadTodayTransaction,
-	applyVoucher,
-	approveTransaction,
-	deleteTransaction,
 })(PayPointTable);

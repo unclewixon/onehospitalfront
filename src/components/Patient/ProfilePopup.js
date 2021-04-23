@@ -1,8 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 
-import patientProfilePic from '../../assets/images/placeholder.jpg';
-import { formatPatientId, getAge } from '../../services/utilities';
+import { formatPatientId, getAge, parseAvatar } from '../../services/utilities';
 
 const ProfilePopup = ({ patient }) => {
 	return (
@@ -14,9 +13,7 @@ const ProfilePopup = ({ patient }) => {
 					<div className="pt-avatar-w">
 						<img
 							alt=""
-							src={
-								patient?.profile_pic ? patient?.profile_pic : patientProfilePic
-							}
+							src={parseAvatar(patient?.profile_pic)}
 							style={{ maxWidth: '100%' }}
 						/>
 					</div>

@@ -1,8 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 
-import patientProfilePic from '../../assets/images/placeholder.jpg';
-import { formatPatientId } from '../../services/utilities';
+import { formatPatientId, parseAvatar } from '../../services/utilities';
 
 const ModalViewAppointment = ({ appointment, closeModal }) => {
 	return (
@@ -40,11 +39,7 @@ const ModalViewAppointment = ({ appointment, closeModal }) => {
 												height: '100px',
 												borderRadius: '50%',
 											}}
-											src={
-												appointment?.patient?.profile_pic
-													? appointment?.patient?.profile_pic
-													: patientProfilePic
-											}
+											src={parseAvatar(appointment?.patient?.profile_pic)}
 										/>
 									</div>
 								</div>

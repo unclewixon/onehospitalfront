@@ -4,7 +4,6 @@ import capitalize from 'lodash.capitalize';
 import $ from 'jquery';
 import { connect } from 'react-redux';
 
-import avatar1 from '../../assets/images/placeholder.jpg';
 import HrMenu from './HrMenu';
 import InventoryMenu from './InventoryMenu';
 import FrontDeskMenu from './FrontDeskMenu';
@@ -12,7 +11,7 @@ import HMOMenu from './HMOMenu';
 import DoctorMenu from './DoctorMenu';
 import CafeteriaMenu from './CafeteriaMenu';
 import ClinicalLabMenu from './ClinicalLabMenu';
-import { fullname } from '../../services/utilities';
+import { fullname, parseAvatar } from '../../services/utilities';
 import Account from './Account';
 import PayPointMenu from './PayPointMenu';
 import PharmacyMenu from './PharmacyMenu';
@@ -83,14 +82,7 @@ class MainMenu extends Component {
 				<div className="logged-user-w avatar-inline">
 					<div className="logged-user-i">
 						<div className="avatar-w">
-							<img
-								alt=""
-								src={
-									profile.details?.profile_pic
-										? profile.details?.profile_pic
-										: avatar1
-								}
-							/>
+							<img alt="" src={parseAvatar(profile.details?.profile_pic)} />
 						</div>
 						<div className="logged-user-info-w">
 							<div className="logged-user-name">

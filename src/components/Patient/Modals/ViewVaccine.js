@@ -24,7 +24,7 @@ const ViewVaccine = ({ data, setRecords }) => {
 				requestBody: { due_date: date },
 				patient_id: patient.id,
 			};
-			const rs = await request('patient/save-request', 'POST', true, values);
+			const rs = await request('requests/save-request', 'POST', true, values);
 			if (rs.success) {
 				const url = `${patientAPI}/immunization/${patient.id}`;
 				const rs = await request(url, 'GET', true);

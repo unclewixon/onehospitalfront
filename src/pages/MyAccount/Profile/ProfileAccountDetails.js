@@ -1,24 +1,17 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 
-import patientProfilePic from '../../../assets/images/patientprofile.jpg';
-
 import { ReactComponent as CurveBg } from '../../../assets/svg-icons/curve.svg';
+import { parseAvatar } from '../../../services/utilities';
 
 const AccountDetails = ({ staff, onEdit, buttonText, onView }) => {
-	console.log(staff);
 	return (
 		<div className="col-sm-5">
 			<div className="user-profile compact">
 				<div
 					className="up-head-w"
-					// style={{ backgroundImage: `url(${staff?.details?.profile_pic})` }}>
 					style={{
-						backgroundImage: `url(${
-							staff?.details?.profile_pic
-								? staff?.details?.profile_pic
-								: patientProfilePic
-						})`,
+						backgroundImage: `url(${parseAvatar(staff?.details?.profile_pic)})`,
 					}}>
 					<div className="up-social">
 						<a href="#">
@@ -33,9 +26,7 @@ const AccountDetails = ({ staff, onEdit, buttonText, onView }) => {
 						<h2 className="up-header">
 							{`${staff?.details?.first_name} ${staff?.details?.last_name}`}
 						</h2>
-						<h6 className="up-sub-header">
-							{staff?.details?.job_title && `${staff?.details?.job_title}`}
-						</h6>
+						<h6 className="up-sub-header">{staff?.details?.job_title || ''}</h6>
 					</div>
 					<CurveBg />
 				</div>

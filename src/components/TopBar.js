@@ -6,7 +6,6 @@ import upperCase from 'lodash.uppercase';
 import startCase from 'lodash.startcase';
 import capitalize from 'lodash.capitalize';
 
-import avatar1 from '../assets/images/placeholder.jpg';
 import topimg from '../assets/images/company5.png';
 import {
 	toggleProfile,
@@ -15,7 +14,7 @@ import {
 	toggleFullscreen,
 } from '../actions/user';
 import SearchPatient from './SearchPatient';
-import { fullname } from '../services/utilities';
+import { fullname, parseAvatar } from '../services/utilities';
 
 class TopBar extends Component {
 	state = {
@@ -140,25 +139,14 @@ class TopBar extends Component {
 					<div className="logged-user-w">
 						<div className="logged-user-i">
 							<div className="avatar-w">
-								<img
-									alt=""
-									src={
-										profile?.details?.profile_pic
-											? profile?.details?.profile_pic
-											: avatar1
-									}
-								/>
+								<img alt="" src={parseAvatar(profile?.details?.profile_pic)} />
 							</div>
 							<div className="logged-user-menu color-style-bright">
 								<div className="logged-user-avatar-info">
 									<div className="avatar-w">
 										<img
 											alt=""
-											src={
-												profile?.details?.profile_pic
-													? profile?.details?.profile_pic
-													: avatar1
-											}
+											src={parseAvatar(profile?.details?.profile_pic)}
 										/>
 									</div>
 									<div className="logged-user-info-w">

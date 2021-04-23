@@ -16,6 +16,8 @@ import SSRStorage from './storage';
 import { API_URI, patientAPI, TOKEN_COOKIE } from './constants';
 import axios from 'axios';
 
+import placeholder from '../assets/images/placeholder.jpg';
+
 //const store = configureStore();
 export const formatCurrency = amount => `₦${numeral(amount).format('0,0.00')}`;
 
@@ -662,4 +664,10 @@ export const nth = n => {
 
 export const getType = type => {
 	return type && type === 2 ? 'ICPC2' : 'ICD10';
+};
+
+export const parseAvatar = avatar => {
+	return avatar
+		? `${process.env.REACT_APP_API}/uploads/avatars/${avatar}`
+		: placeholder;
 };

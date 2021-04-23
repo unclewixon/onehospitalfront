@@ -3,21 +3,21 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
 import { connect } from 'react-redux';
-import { notifyError } from '../../services/notify';
-import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
+import Pagination from 'antd/lib/pagination';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
+
+import { notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
 import { loadAntennatal } from '../../actions/patient';
 import { viewAntenatalDetail } from '../../actions/general';
-import isEmpty from 'lodash.isempty';
 import { patientAPI } from '../../services/constants';
-import Pagination from 'antd/lib/pagination';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { request, itemRender } from '../../services/utilities';
-import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import { searchAPI } from '../../services/constants';
 import { toggleProfile } from '../../actions/user';
+import TableLoading from '../../components/TableLoading';
 
 const getOptionValues = option => option.id;
 const getOptionLabels = option => `${option.other_names} ${option.surname}`;
@@ -33,6 +33,7 @@ const getOptions = async q => {
 };
 
 const { RangePicker } = DatePicker;
+
 export class AllEnrollment extends Component {
 	state = {
 		filtering: false,
@@ -49,15 +50,12 @@ export class AllEnrollment extends Component {
 	}
 
 	fetchAntennatal = async page => {
-		const { patient_id, startDate, endDate } = this.state;
 		try {
 			this.setState({ loading: true });
 			const p = page || 1;
-			const rs = await request(
-				`${patientAPI}/antenatal/list?page=${p}&&limit=24&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}`,
-				'GET',
-				true
-			);
+			const { patient_id, startDate, endDate } = this.state;
+			const url = `${patientAPI}/antenatal/list?page=${p}&&limit=24&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}`;
+			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			const arr = [...result];
 			this.props.loadAntennatal(arr);
@@ -106,55 +104,9 @@ export class AllEnrollment extends Component {
 		this.props.viewAntenatalDetail(true, id);
 	};
 
-	tableBody = () => {
-		return this.props.antennatal.map((el, i) => {
-			return (
-				<tr key={i}>
-					<td className="text-center">
-						{moment(el.createdAt).format('DD-MM-YYYY')}
-					</td>
-					<td className="text-center">
-						{el.patient.surname || ''} {el.patient.other_names || ''}
-					</td>
-					<td className="text-center">{el.l_m_p}</td>
-					<td className="text-center">{el.e_o_d}</td>
-					<td className="text-center">{el.bookingPeriod}</td>
-					<td className="text-center">{el.lmpSource}</td>
-					<td className="text-center">{el.enrollmentPackage}</td>
-
-					<td className="text-center">
-						{Array.isArray(el.requiredCare)
-							? el.requiredCare.join(',')
-							: el.requiredCare}
-					</td>
-
-					<td className="text-right row-actions">
-						<Tooltip title="view details">
-							<a
-								className="secondary"
-								onClick={() => this.showAntennatal(el.patient, el)}>
-								<i className="os-icon os-icon-eye" />
-							</a>
-						</Tooltip>
-						<Tooltip title="Edit Request">
-							<a className="secondary">
-								<i className="os-icon os-icon-edit-32" />
-							</a>
-						</Tooltip>
-						<Tooltip title="Delete Request">
-							<a className="danger">
-								<i className="os-icon os-icon-ui-15" />
-							</a>
-						</Tooltip>
-					</td>
-				</tr>
-			);
-		});
-	};
-
 	render() {
 		const { filtering, loading, meta } = this.state;
-		const { location } = this.props;
+		const { location, antennatals } = this.props;
 		const path = location.pathname.split('/').pop();
 		return (
 			<div className="col-sm-12">
@@ -222,41 +174,86 @@ export class AllEnrollment extends Component {
 
 								<div className="element-box">
 									<div className="table table-responsive">
-										<table id="table" className="table">
-											<thead>
-												<tr className="text-bold">
-													<td className="text-center">Date</td>
-													<td className="text-center">Patient Name</td>
+										{loading ? (
+											<TableLoading />
+										) : (
+											<table id="table" className="table">
+												<thead>
+													<tr className="text-bold">
+														<td className="text-center">Date</td>
+														<td className="text-center">Patient Name</td>
 
-													<td className="text-center">LMP</td>
-													<td className="text-center">EOD</td>
-													<td className="text-center">Booking Period</td>
-													<td className="text-center">LMP Source</td>
-													<td className="text-center">Package</td>
-													<td className="text-center">Required Care</td>
+														<td className="text-center">LMP</td>
+														<td className="text-center">EOD</td>
+														<td className="text-center">Booking Period</td>
+														<td className="text-center">LMP Source</td>
+														<td className="text-center">Package</td>
+														<td className="text-center">Required Care</td>
 
-													<td className="text-center">Actions</td>
-												</tr>
-											</thead>
-											<tbody>
-												{loading ? (
-													<tr>
-														<td colSpan="8" className="text-center">
-															<img alt="searching" src={searchingGIF} />
-														</td>
+														<td className="text-center">Actions</td>
 													</tr>
-												) : !isEmpty(this.props.antennatal) ? (
-													this.tableBody()
-												) : (
-													<tr>
-														{' '}
-														<td colSpan="9" className="text-center">
-															No antenatal enrolment
-														</td>
-													</tr>
-												)}
-											</tbody>
-										</table>
+												</thead>
+												<tbody>
+													{antennatals.map((el, i) => {
+														return (
+															<tr key={i}>
+																<td className="text-center">
+																	{moment(el.createdAt).format('DD-MM-YYYY')}
+																</td>
+																<td className="text-center">
+																	{el.patient.surname || ''}{' '}
+																	{el.patient.other_names || ''}
+																</td>
+																<td className="text-center">{el.l_m_p}</td>
+																<td className="text-center">{el.e_o_d}</td>
+																<td className="text-center">
+																	{el.bookingPeriod}
+																</td>
+																<td className="text-center">{el.lmpSource}</td>
+																<td className="text-center">
+																	{el.enrollmentPackage}
+																</td>
+
+																<td className="text-center">
+																	{Array.isArray(el.requiredCare)
+																		? el.requiredCare.join(',')
+																		: el.requiredCare}
+																</td>
+
+																<td className="text-right row-actions">
+																	<Tooltip title="view details">
+																		<a
+																			className="secondary"
+																			onClick={() =>
+																				this.showAntennatal(el.patient, el)
+																			}>
+																			<i className="os-icon os-icon-eye" />
+																		</a>
+																	</Tooltip>
+																	<Tooltip title="Edit Request">
+																		<a className="secondary">
+																			<i className="os-icon os-icon-edit-32" />
+																		</a>
+																	</Tooltip>
+																	<Tooltip title="Delete Request">
+																		<a className="danger">
+																			<i className="os-icon os-icon-ui-15" />
+																		</a>
+																	</Tooltip>
+																</td>
+															</tr>
+														);
+													})}
+													{antennatals.length === 0 && (
+														<tr>
+															<td colSpan="9" className="text-center">
+																No antenatal enrolment
+															</td>
+														</tr>
+													)}
+												</tbody>
+											</table>
+										)}
 									</div>
 									{meta && (
 										<div className="pagination pagination-center mt-4">
@@ -282,7 +279,7 @@ export class AllEnrollment extends Component {
 
 const mapStateToProps = state => {
 	return {
-		antennatal: state.patient.antennatal,
+		antennatals: state.patient.antennatal,
 	};
 };
 

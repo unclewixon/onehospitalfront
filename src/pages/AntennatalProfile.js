@@ -1,11 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component, Suspense, lazy, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { toggleProfile } from '../actions/user';
 import SSRStorage from '../services/storage';
 import { USER_RECORD } from '../services/constants';
-import HashRoute from '../components/HashRoute';
 import Splash from '../components/Splash';
 import ProfileBlock from '../components/ProfileBlock';
 import AntennatalForms from '../components/Antennatal/AntennatalForms';
@@ -90,9 +89,8 @@ class AntennatalProfile extends Component {
 	};
 
 	render() {
-		const { patient, antennatal } = this.props;
+		const { patient } = this.props;
 		const { tab, showModal } = this.state;
-		console.log(antennatal);
 		return (
 			<>
 				<div className="layout-w">

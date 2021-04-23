@@ -7,7 +7,7 @@ import size from 'lodash.size';
 // import split from 'lodash.split';
 
 import searchingGIF from '../assets/images/searching.gif';
-import { request } from '../services/utilities';
+import { request, formatPatientId } from '../services/utilities';
 import { searchAPI } from '../services/constants';
 import { toggleProfile } from '../actions/user';
 
@@ -128,7 +128,9 @@ class SearchPatient extends Component {
 													<div
 														className="item-name"
 														dangerouslySetInnerHTML={{
-															__html: `${p.folderNumber} - ${p.surname} ${p.other_names}`,
+															__html: `${formatPatientId(p.id)} - ${
+																p.surname
+															} ${p.other_names}`,
 														}}
 													/>
 												</a>

@@ -55,7 +55,6 @@ function PatientNOKForm(props) {
 			formValues = {
 				nok_surname: patient.nextOfKin?.surname || '',
 				nok_other_names: patient.nextOfKin?.other_names || '',
-				//nok_date_of_birth: patient.nextOfKin?.nok_date_of_birth || '',
 				nok_date_of_birth: patient.nextOfKin?.nok_date_of_birth
 					? new Date(patient.nextOfKin.nok_date_of_birth)
 					: '',
@@ -185,12 +184,6 @@ function PatientNOKForm(props) {
 					);
 				});
 		} else {
-			console.log('onsave()');
-			// Display the key/value pairs
-			for (var pair of formDataObj.entries()) {
-				console.log(pair[0] + ', ' + pair[1]);
-			}
-
 			axios
 				.post(`${API_URI}/patient/save`, formDataObj, { headers })
 				.then(res => {

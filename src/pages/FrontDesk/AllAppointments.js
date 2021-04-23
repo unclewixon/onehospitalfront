@@ -217,7 +217,6 @@ class AllAppointments extends Component {
 								</thead>
 								<tbody>
 									{appointments.map((item, i) => {
-										console.log(item);
 										return (
 											<tr key={i}>
 												<td className="nowrap">

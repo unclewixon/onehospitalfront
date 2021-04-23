@@ -194,7 +194,7 @@ class ModalApproveTransaction extends Component {
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
-							<h4 className="onboarding-title">Process transaction</h4>
+							<h4 className="onboarding-title">Process Transaction</h4>
 							<div className="form-block">
 								<form onSubmit={handleSubmit(this.approveTransaction)}>
 									{error && (

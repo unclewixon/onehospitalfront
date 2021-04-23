@@ -125,7 +125,7 @@ const LabRequest = ({ module, history, location }) => {
 			};
 
 			setSubmitting(true);
-			await request('patient/save-request', 'POST', true, datum);
+			await request('requests/save-request', 'POST', true, datum);
 			setSubmitting(false);
 			notifySuccess('Lab request sent!');
 			if (module !== 'patient') {

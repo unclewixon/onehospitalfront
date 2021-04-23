@@ -11,10 +11,10 @@ import { searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request, itemRender } from '../../services/utilities';
 import { loadTransaction } from '../../actions/transaction';
-import searchingGIF from '../../assets/images/searching.gif';
 import ModalServiceDetails from '../../components/Modals/ModalServiceDetails';
 import InputCode from '../../components/FrontDesk/InputCode';
 import { startBlock, stopBlock } from '../../actions/redux-block';
+import TableLoading from '../../components/TableLoading';
 
 const { RangePicker } = DatePicker;
 
@@ -239,69 +239,61 @@ export class InsuranceTrans extends Component {
 
 					<div className="col-sm-12">
 						<div className="table-responsive">
-							<table className="table table-striped">
-								<thead>
-									<tr>
-										<th className="text-center">DATE</th>
-										<th className="text-center">PATIENT NAME</th>
-										<th className="text-center">HMO</th>
-										<th className="text-center">SERVICE</th>
-										<th className="text-center">AMOUNT (&#x20A6;)</th>
-										<th className="text-center">PAYMENT TYPE</th>
-										<th className="text-center">HMO TRANSACTION CODE</th>
-										<th className="text-center">ACTIONS</th>
-									</tr>
-								</thead>
-								<tbody>
-									{loading ? (
+							{loading ? (
+								<TableLoading />
+							) : (
+								<table className="table table-striped">
+									<thead>
 										<tr>
-											<td colSpan="6" className="text-center">
-												<img alt="searching" src={searchingGIF} />
-											</td>
+											<th className="text-center">DATE</th>
+											<th className="text-center">PATIENT NAME</th>
+											<th className="text-center">HMO</th>
+											<th className="text-center">SERVICE</th>
+											<th className="text-center">AMOUNT (&#x20A6;)</th>
+											<th className="text-center">PAYMENT TYPE</th>
+											<th className="text-center">HMO TRANSACTION CODE</th>
+											<th className="text-center">ACTIONS</th>
 										</tr>
-									) : transactions.length > 0 ? (
-										transactions.map((transaction, index) => {
+									</thead>
+									<tbody>
+										{transactions.map((item, index) => {
 											return (
 												<tr key={index}>
 													<td className="text-center">
-														{moment(transaction.createdAt).format(
-															'DD-MM-YYYY H:mma'
-														)}
+														{moment(item.createdAt).format('DD-MM-YYYY H:mma')}
 													</td>
 													<td className="text-center">
-														{`${transaction.patient_name}`}
+														{`${item.patient_name}`}
 													</td>
 													<td className="text-center">
-														{transaction.hmo_name
-															? transaction.hmo_name
-															: 'No Hmo'}
+														{item.hmo_name ? item.hmo_name : 'No Hmo'}
 													</td>
 													<td className="text-center">
 														<span className="text-capitalize">
-															{transaction.transaction_type}
+															{item.transaction_type}
 														</span>
 														<a
 															className="item-title text-primary text-underline ml-2"
 															onClick={() =>
 																this.viewDetails(
-																	transaction.transaction_type,
-																	transaction.transaction_details
+																	item.transaction_type,
+																	item.transaction_details
 																)
 															}>
 															details
 														</a>
 													</td>
 													<td className="text-center">
-														{transaction.amount ? transaction.amount : 0}
+														{item.amount ? item.amount : 0.0}
 													</td>
 													<td className="text-center">
-														{transaction.payment_type
-															? transaction.payment_type
+														{item.payment_type
+															? item.payment_type
 															: 'Not specified'}
 													</td>
 
 													<td className="text-center">
-														{transaction.hmo_approval_code}
+														{item.hmo_approval_code}
 													</td>
 													<td className="text-center row-actions">
 														<Popover
@@ -309,7 +301,7 @@ export class InsuranceTrans extends Component {
 															overlayClassName="select-bed"
 															content={
 																<InputCode
-																	transaction={transaction}
+																	transaction={item}
 																	transactions={transactions}
 																	loadTransaction={trs =>
 																		this.props.loadTransaction(trs)
@@ -320,11 +312,11 @@ export class InsuranceTrans extends Component {
 															trigger="click"
 															visible={
 																visible &&
-																visible.id === transaction.id &&
+																visible.id === item.id &&
 																visible.show
 															}
 															onVisibleChange={e =>
-																this.handleVisibleChange(e, transaction.id)
+																this.handleVisibleChange(e, item.id)
 															}>
 															<a
 																className="btn btn-primary btn-sm text-white
@@ -336,14 +328,15 @@ export class InsuranceTrans extends Component {
 													</td>
 												</tr>
 											);
-										})
-									) : (
-										<tr className="text-center">
-											<td colSpan="7">No transaction</td>
-										</tr>
-									)}
-								</tbody>
-							</table>
+										})}
+										{transactions.length > 0 && (
+											<tr className="text-center">
+												<td colSpan="8">No transaction</td>
+											</tr>
+										)}
+									</tbody>
+								</table>
+							)}
 						</div>
 						{meta && (
 							<div className="pagination pagination-center mt-4">

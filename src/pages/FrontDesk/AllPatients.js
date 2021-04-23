@@ -214,7 +214,14 @@ const AllPatients = () => {
 										return (
 											<tr className="" key={i}>
 												<td>{i + 1}</td>
-												<td>{`${data?.other_names} ${data?.surname}`}</td>
+												<td>
+													{`${data?.other_names} ${data?.surname}`}{' '}
+													{data.isAdmitted && (
+														<Tooltip title="Admitted">
+															<i className="fa fa-hospital-o text-danger" />
+														</Tooltip>
+													)}
+												</td>
 												<td>{`${formatPatientId(
 													data?.id
 												)} [${data.folderNumber || '-'}]`}</td>

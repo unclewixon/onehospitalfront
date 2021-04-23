@@ -2,14 +2,14 @@
 import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
+import { Image } from 'react-bootstrap';
+import capitalize from 'lodash.capitalize';
+
 import { request, updateImmutable } from '../services/utilities';
 import { createStaff } from '../actions/general';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
-import { fullname } from '../services/utilities';
-import { Image } from 'react-bootstrap';
-import placeholder from '../assets/images/placeholder.jpg';
-import capitalize from 'lodash.capitalize';
+import { fullname, parseAvatar } from '../services/utilities';
 import { loadStaff } from '../actions/hr';
 
 const UploadPerformanceData = ({ uploading, doUpload, hide }) => {
@@ -178,11 +178,7 @@ class StaffItem extends Component {
 				<tr>
 					<td onClick={this.toggle} className="user-avatar-w">
 						<div className="user-avatar">
-							{staff?.profile_pic ? (
-								<Image alt="" src={staff?.profile_pic} width={50} />
-							) : (
-								<Image alt="" src={placeholder} width={50} />
-							)}
+							<Image alt="" src={parseAvatar(staff?.profile_pic)} width={50} />
 						</div>
 					</td>
 					<td onClick={this.toggle}>{staff.emp_code}</td>

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
 import { useSelector } from 'react-redux';
 
-export default function PatientActions({ location, enrollImmunization }) {
+const PatientActions = ({ location, enrollImmunization }) => {
 	const patient = useSelector(state => state.user.patient);
 
 	const { isAdmitted, immunization } = patient;
@@ -56,4 +56,6 @@ export default function PatientActions({ location, enrollImmunization }) {
 			)}
 		</>
 	);
-}
+};
+
+export default PatientActions;

@@ -228,7 +228,7 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 				request_note: regimenNote,
 			};
 
-			const rs = await request('patient/save-request', 'POST', true, regimen);
+			const rs = await request('requests/save-request', 'POST', true, regimen);
 			setSubmitting(false);
 			if (rs.success) {
 				notifySuccess('pharmacy request done');

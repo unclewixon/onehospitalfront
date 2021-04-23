@@ -170,12 +170,11 @@ class PatientProfile extends Component {
 							<div className="content-i">
 								<div className="content-box">
 									<div className="row">
-										<div className="col-sm-12 pb-4">
-											{/* patient profile block */}
-											{location.hash !== '#dashboard' && (
+										{location.hash !== '#dashboard' && (
+											<div className="col-sm-12 pb-4">
 												<ProfileBlock profile={true} patient={patient} />
-											)}
-										</div>
+											</div>
+										)}
 										<Suspense fallback={<Splash />}>
 											<Switch>
 												<HashRoute hash={location.hash} component={Page} />

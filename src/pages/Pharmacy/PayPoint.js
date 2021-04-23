@@ -7,7 +7,6 @@ import {
 	loadTodayTransaction,
 	deleteTransaction,
 } from '../../actions/transaction';
-import { applyVoucher, approveTransaction } from '../../actions/general';
 import TransactionTable from '../../components/Tables/TransactionTable';
 
 class PayPoint extends Component {
@@ -85,8 +84,6 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
 	loadTodayTransaction,
-	applyVoucher,
-	approveTransaction,
 	deleteTransaction,
 	startBlock,
 	stopBlock,

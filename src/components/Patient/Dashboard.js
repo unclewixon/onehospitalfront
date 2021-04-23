@@ -5,8 +5,11 @@ import { withRouter } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import patientProfile from '../../assets/svg-icons/patientProfile.svg';
-import patientProfilePic from '../../assets/images/patientprofile.jpg';
-import { formatPatientId } from '../../services/utilities';
+import {
+	formatPatientId,
+	parseAvatar,
+	request,
+} from '../../services/utilities';
 import VisitSummaryTable from './VisitSummaryTable';
 import VisitNotesTable from './VisitNotesTable';
 import BillingTable from './BillingTable';
@@ -15,13 +18,10 @@ import PatientActions from '../PatientActions';
 import { patientAPI } from '../../services/constants';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { updatePatient } from '../../actions/patient';
-import { request } from '../../services/utilities';
+import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const Dashboard = ({ location, history }) => {
 	const [tab, setTab] = useState('visitNotes');
-	const [isAdmitted, setIsAdmitted] = useState(false);
-	const [submitting, setSubmitting] = useState(false);
-
 	const patient = useSelector(state => state.user.patient);
 
 	const dispatch = useDispatch();
@@ -30,25 +30,24 @@ const Dashboard = ({ location, history }) => {
 		const result = window.confirm('Enroll into immunization?');
 		if (result) {
 			try {
-				setSubmitting(true);
+				dispatch(startBlock());
 				const data = { patient_id: patient.id };
 				const url = `${patientAPI}/immunization/enroll`;
 				const rs = await request(url, 'POST', true, data);
 				console.log('rs', rs);
+				dispatch(stopBlock());
 				if (rs.success) {
-					setSubmitting(false);
 					notifySuccess(
 						`you have enrolled ${patient.other_names} into immunization`
 					);
 					dispatch(updatePatient(rs.patient));
 					history.push(`${location.pathname}#immunization-chart`);
 				} else {
-					setSubmitting(false);
 					notifyError(rs.message);
 					console.error(rs.message);
 				}
 			} catch (error) {
-				setSubmitting(false);
+				dispatch(stopBlock());
 				console.log(error.message);
 				notifyError(error.message || 'Could not add leave request');
 			}
@@ -62,9 +61,7 @@ const Dashboard = ({ location, history }) => {
 					<div
 						className="up-head-w"
 						style={{
-							backgroundImage: `url(${
-								patient?.profile_pic ? patient?.profile_pic : patientProfilePic
-							})`,
+							backgroundImage: `url(${parseAvatar(patient?.profile_pic)})`,
 						}}>
 						<div className="up-main-info">
 							<h2 className="up-header">{`${patient?.surname} ${patient?.other_names}`}</h2>
@@ -104,22 +101,22 @@ const Dashboard = ({ location, history }) => {
 							<div className="row">
 								<div className="col-sm-12 b-b">
 									<div className="el-tablo centered padded-v">
-										<div className="value">{patient?.maritalStatus}</div>
 										<div className="label">Marital Status</div>
+										<div className="value">{patient?.maritalStatus}</div>
 									</div>
 								</div>
 							</div>
 							<div className="row">
 								<div className="col-sm-5 px-0">
 									<div className="el-tablo padded-v pr-0">
-										<div className="value customfont">{patient?.gender}</div>
 										<div className="label">Gender</div>
+										<div className="value customfont">{patient?.gender}</div>
 									</div>
 								</div>
 								<div className="col-sm-6 b-b">
 									<div className="el-tablo padded-v">
-										<div className="">{formatPatientId(patient?.id)}</div>
 										<div className="label">Patient ID</div>
+										<div className="">{formatPatientId(patient?.id)}</div>
 									</div>
 								</div>
 							</div>
@@ -137,12 +134,6 @@ const Dashboard = ({ location, history }) => {
 										<td className="font-weight-bold px-0">Phone Number</td>
 										<td>{patient?.phoneNumber}</td>
 									</tr>
-									{/* <tr className="small">
-										<td className="font-weight-bold">
-											Contact Address
-										</td>
-										<td>{patient?.address}</td>
-									</tr> */}
 									<tr className="small">
 										<td className="font-weight-bold px-0">Marital Status</td>
 										<td>{patient?.maritalStatus}</td>
@@ -171,7 +162,7 @@ const Dashboard = ({ location, history }) => {
 					<PatientActions
 						location={location}
 						enrollImmunization={enrollImmunization}
-						isAdmitted={isAdmitted}
+						isAdmitted={patient?.isAdmitted}
 					/>
 				</div>
 
@@ -226,49 +217,6 @@ const Dashboard = ({ location, history }) => {
 					</div>
 				</div>
 			</div>
-
-			{/* <div className="col-lg-9 col-md-12">
-				<div className="element-wrapper">
-					<div className="element-box">
-						<table className="table table-padded">
-							<tbody>
-								<tr>
-									<td className="font-weight-bold">File Number</td>
-									<td>{patient?.folderNumber}</td>
-								</tr>
-								<tr>
-									<td className="font-weight-bold">Email Address</td>
-									<td>{patient?.email}</td>
-								</tr>
-								<tr>
-									<td className="font-weight-bold">Phone Number</td>
-									<td>{patient?.phoneNumber}</td>
-								</tr>
-								<tr>
-									<td className="font-weight-bold">Contact Address</td>
-									<td>{patient?.address}</td>
-								</tr>
-								<tr>
-									<td className="font-weight-bold">Marital Status</td>
-									<td>{patient?.maritalStatus}</td>
-								</tr>
-								<tr>
-									<td className="font-weight-bold">Ethnicity</td>
-									<td>{patient?.ethnicity}</td>
-								</tr>
-								<tr>
-									<td className="font-weight-bold">Occupation</td>
-									<td>{patient?.occupation}</td>
-								</tr>
-								<tr>
-									<td className="font-weight-bold">Number of Visits</td>
-									<td>{patient?.noOfVisits}</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div> */}
 		</>
 	);
 };

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import { SWRConfig } from 'swr';
 import ReduxBlockUi from 'react-block-ui/redux';
+import { AbilityBuilder } from '@casl/ability';
 
 import ScrollToTop from './containers/ScrollToTop';
 import TopBar from './components/TopBar';
@@ -18,11 +19,8 @@ import { request } from './services/utilities';
 import ability from './services/ability';
 import { AbilityContext } from './components/common/Can';
 
-import { AbilityBuilder } from '@casl/ability';
-
 import Login from './pages/Login';
 import NoMatch from './pages/NoMatch';
-import AntenatalDetail from './pages/AntenatalDetail';
 import PatientProfile from './pages/PatientProfile';
 import ProcedureProfile from './pages/ProcedureProfile';
 import AntennatalProfile from './pages/AntennatalProfile';

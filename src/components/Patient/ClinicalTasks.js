@@ -232,6 +232,7 @@ const ClinicalTasks = () => {
 											<td>
 												{item.nextTime &&
 													item.nextTime !== '' &&
+													item.nextTime !== 'Invalid date' &&
 													item.taskCount > item.tasksCompleted &&
 													moment().isAfter(item.nextTime) && (
 														<Tooltip title="Task Expired">
@@ -243,6 +244,7 @@ const ClinicalTasks = () => {
 												<span>
 													{item.nextTime &&
 													item.nextTime !== '' &&
+													item.nextTime !== 'Invalid date' &&
 													item.taskCount > item.tasksCompleted
 														? moment(item.nextTime).fromNow()
 														: ''}
