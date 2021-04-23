@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component, Suspense, lazy, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { Switch, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { toggleProfile } from '../actions/user';
 import SSRStorage from '../services/storage';
 import { USER_RECORD } from '../services/constants';
