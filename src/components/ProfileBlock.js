@@ -1,8 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
+import Tooltip from 'antd/lib/tooltip';
 
 import {
 	request,
@@ -102,64 +103,54 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 											{!noButtons && (
 												<div className="d-flex flex-wrap">
 													<a className="btn btn-primary">Edit</a>
-													<button
-														type="button"
-														className="btn ml-1 btn-outline-danger">
-														Disable
-													</button>
+													<Tooltip
+														title={patient?.isAdmitted ? 'Discharge' : 'Admit'}>
+														{!patient?.isAdmitted ? (
+															<Link
+																to={`${location.pathname}#start-admission`}
+																className="btn btn-primary btn-sm ml-2">
+																<i className="os-icon os-icon-ui-22"></i>
+																<span>Admit</span>
+															</Link>
+														) : (
+															<a className="btn btn-danger btn-sm ml-2">
+																<i className="os-icon os-icon-ui-23"></i>
+																<span>Discharge</span>
+															</a>
+														)}
+													</Tooltip>
 												</div>
 											)}
 										</div>
 									</div>
-									<div className="d-flex align-items-center mt-2">
-										<div className="d-flex align-items-center mr-2">
-											<span className="b-avatar badge-light-primary rounded">
-												<span className="b-avatar-custom">
-													<svg
-														xmlns="http://www.w3.org/2000/svg"
-														width="18px"
-														height="18px"
-														viewBox="0 0 24 24"
-														fill="none"
-														stroke="currentColor"
-														strokeWidth="2"
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														className="feather feather-dollar-sign">
-														<line x1="12" y1="1" x2="12" y2="23"></line>
-														<path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-													</svg>
-												</span>
-											</span>
-											<div className="ml-1">
-												<h5 className="mb-0"> 23.3k </h5>
-												<small>Monthly Sales</small>
-											</div>
-										</div>
-										<div className="d-flex align-items-center">
-											<span className="b-avatar badge-light-success rounded">
-												<span className="b-avatar-custom">
-													<svg
-														xmlns="http://www.w3.org/2000/svg"
-														width="18px"
-														height="18px"
-														viewBox="0 0 24 24"
-														fill="none"
-														stroke="currentColor"
-														strokeWidth="2"
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														className="feather feather-trending-up">
-														<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-														<polyline points="17 6 23 6 23 12"></polyline>
-													</svg>
-												</span>
-											</span>
-											<div className="ml-1">
-												<h5 className="mb-0"> $99.87k </h5>
-												<small>Annual Profit</small>
-											</div>
-										</div>
+									<div className="d-flex align-items-center mt-4">
+										<Tooltip title="Enroll Antenatal">
+											<Link
+												to={`${location.pathname}#enroll-antenatal`}
+												className="btn btn-primary btn-sm mr-1">
+												<i className="os-icon os-icon-ui-22"></i>
+												<span>Enroll Antenatal</span>
+											</Link>
+										</Tooltip>
+										<Tooltip title="Enroll IVF">
+											<Link
+												to={`${location.pathname}#enroll-ivf`}
+												className="btn btn-primary btn-sm mr-1">
+												<i className="os-icon os-icon-ui-22"></i>
+												<span>Enroll IVF</span>
+											</Link>
+										</Tooltip>
+										{(patient?.immunization === undefined ||
+											patient?.immunization.length <= 0) && (
+											<Tooltip title="Enroll Immunization">
+												<button
+													className="btn btn-primary btn-sm"
+													onClick={enrollImmunization}>
+													<i className="os-icon os-icon-ui-22"></i>
+													<span>Enroll Immunization</span>
+												</button>
+											</Tooltip>
+										)}
 									</div>
 								</div>
 								<div className="col-xl-6 col-12">
@@ -186,7 +177,7 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 													value={`${dob} (${getAge(patient?.date_of_birth)})`}
 												/>
 											</tr>
-											<tr>
+											{/* <tr>
 												<UserItem
 													icon="user"
 													label="Insurance Status"
@@ -195,7 +186,7 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 											</tr>
 											<tr>
 												<UserItem icon="user" label="" value="" />
-											</tr>
+											</tr> */}
 										</tbody>
 									</table>
 								</div>
@@ -205,13 +196,17 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 				</div>
 				<div className="col-md-5 col-lg-4 col-xl-3 col-12">
 					<div className="element-box border-primary p-3">
-						<div className="card-header d-flex justify-content-between align-items-center pt-75 pb-25">
-							<h5 className="mb-0"> Current Plan </h5>
-							<span className="badge badge-light-primary"> Basic </span>
+						<div className="card-header align-items-center pt-75 pb-25">
+							<h5 className="mb-0">Insurance Status</h5>
+							<div className="mt-1">
+								<span className="badge badge-light-primary">
+									{patient.hmo?.name || ''}
+								</span>
+							</div>
 						</div>
 						<div className="card-body">
 							<ul className="list-unstyled my-1">
-								<li>
+								{/* <li>
 									<span className="align-middle">5 Users</span>
 								</li>
 								<li className="my-25">
@@ -219,11 +214,15 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 								</li>
 								<li>
 									<span className="align-middle">Basic Support</span>
-								</li>
+								</li> */}
 							</ul>
-							<button type="button" className="btn btn-primary btn-block">
-								Upgrade Plan
-							</button>
+							{!noButtons && (
+								<button
+									type="button"
+									className="btn btn-block btn-outline-danger">
+									Disable Patient
+								</button>
+							)}
 						</div>
 					</div>
 				</div>

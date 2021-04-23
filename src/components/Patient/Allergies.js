@@ -1,45 +1,41 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { request } from '../../services/utilities';
-import { confirmAction } from '../../services/utilities';
-import { patientAPI } from '../../services/constants';
-import {
-	fetch_Allergies,
-	Allergy,
-	delete_allergy,
-} from '../../actions/patient';
-import { notifySuccess, notifyError } from '../../services/notify';
-import searchingGIF from '../../assets/images/searching.gif';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
+
+import { request } from '../../services/utilities';
+import { notifySuccess, notifyError } from '../../services/notify';
+import TableLoading from '../TableLoading';
 
 class Allergies extends Component {
 	state = {
 		loaded: false,
+		allergens: [],
+		meta: null,
 	};
+
 	componentDidMount() {
 		this.fetchAllergies();
 	}
+
 	fetchAllergies = async () => {
-		this.setState({ loaded: true });
-		const { patient } = this.props;
 		try {
-			const rs = await request(
-				`${patientAPI}/${patient.id}/allergies`,
-				'GET',
-				true
-			);
-			this.props.fetch_Allergies(rs);
-			this.setState({ loaded: false });
+			this.setState({ loaded: true });
+			const { patient } = this.props;
+			const url = `patient-allergens?patient_id=${patient.id}`;
+			const rs = await request(url, 'GET', true);
+			const { result, ...meta } = rs;
+			this.setState({ loaded: false, allergens: result, meta });
 		} catch (error) {
 			this.setState({ loaded: false });
 			notifyError('Could not fetch allergies for the patient');
 		}
 	};
+
 	deleteAllergy = async data => {
 		try {
-			await request(`${patientAPI}/${data.id}/delete-allergy`, 'DELETE', true);
+			await request(`patient-allergens/${data.id}`, 'DELETE', true);
 			this.props.delete_allergy(data);
 			notifySuccess('Allergy deleted');
 		} catch (error) {
@@ -48,11 +44,12 @@ class Allergies extends Component {
 	};
 
 	confirmDelete = data => {
-		confirmAction(this.deleteAllergy, data);
+		// confirmAction(this.deleteAllergy, data);
 	};
+
 	render() {
-		const { location, allergies } = this.props;
-		const { loaded } = this.state;
+		const { location } = this.props;
+		const { loading, allergens } = this.state;
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
@@ -72,78 +69,61 @@ class Allergies extends Component {
 									<div id="toolbar"></div>
 								</div>
 							</div>
-							<div
-								className="fixed-table-container"
-								style={{ paddingBottom: '0px' }}>
-								<div className="fixed-table-body">
-									<table
-										id="table"
-										className="table table-theme v-middle table-hover">
-										<thead>
-											<tr>
-												{/* <th>ID</th> */}
-												<th>Category</th>
-												<th>Allergy</th>
-												<th>Reaction</th>
-												<th className="text-center">Severity</th>
-												<th className="text-right" />
-											</tr>
-										</thead>
-										<tbody>
-											{loaded ? (
+							<div className="fixed-table-container pb-0">
+								{loading ? (
+									<TableLoading />
+								) : (
+									<div className="fixed-table-body">
+										<table
+											id="table"
+											className="table table-theme v-middle table-hover">
+											<thead>
 												<tr>
-													<td colSpan="4" className="text-center">
-														<img alt="searching" src={searchingGIF} />
-													</td>
+													<th>Category</th>
+													<th>Allergy</th>
+													<th>Reaction</th>
+													<th>Severity</th>
+													<th className="text-left" />
 												</tr>
-											) : (
-												<>
-													{allergies.map((item, i) => {
-														return (
-															<tr
-																className=""
-																data-index="0"
-																data-id="20"
-																key={i}>
-																<td>
-																	<span>{item.category}</span>
-																</td>
-																<td>
-																	<span>{item.allergy}</span>
-																</td>
-																<td>{item.reaction}</td>
-																<td className="text-center">
-																	<span>{item.severity}</span>
-																</td>
-																<td className="row-actions text-right">
-																	<Tooltip title="Update">
-																		<Link
-																			className=""
-																			to={`${location.pathname}#update-allergy`}
-																			state={item}>
-																			<i
-																				className="os-icon os-icon-ui-49"
-																				onClick={() =>
-																					this.props.Allergy(item)
-																				}></i>
-																		</Link>
-																		<Tooltip title="Delete">
-																			<i
-																				className="os-icon os-icon-ui-15"
-																				onClick={() =>
-																					this.confirmDelete(item)
-																				}></i>
-																		</Tooltip>
+											</thead>
+											<tbody>
+												{allergens.map((item, i) => {
+													return (
+														<tr key={i}>
+															<td>
+																<span>{item.category}</span>
+															</td>
+															<td>
+																<span>{item.allergy}</span>
+															</td>
+															<td>{item.reaction}</td>
+															<td className="text-center">
+																<span>{item.severity}</span>
+															</td>
+															<td className="row-actions text-right">
+																<Tooltip title="Update">
+																	<Link
+																		className=""
+																		to={`${location.pathname}#update-allergy`}
+																		state={item}>
+																		<i className="os-icon os-icon-ui-49"></i>
+																	</Link>
+																	<Tooltip title="Delete">
+																		<i
+																			className="os-icon os-icon-ui-15"
+																			onClick={() =>
+																				this.confirmDelete(item)
+																			}></i>
 																	</Tooltip>
-																</td>
-															</tr>
-														);
-													})}
-												</>
-											)}
-										</tbody>
-									</table>
-								</div>
+																</Tooltip>
+															</td>
+														</tr>
+													);
+												})}
+											</tbody>
+										</table>
+									</div>
+								)}
 							</div>
 						</div>
 					</div>
@@ -156,12 +136,7 @@ class Allergies extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		patient: state.user.patient,
-		allergies: state.patient.allergies,
 	};
 };
 
-export default withRouter(
-	connect(mapStateToProps, { fetch_Allergies, Allergy, delete_allergy })(
-		Allergies
-	)
-);
+export default withRouter(connect(mapStateToProps)(Allergies));
