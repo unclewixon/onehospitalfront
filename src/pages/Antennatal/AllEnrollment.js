@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
 import { connect } from 'react-redux';
-
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
@@ -18,6 +17,7 @@ import { startBlock, stopBlock } from '../../actions/redux-block';
 import { request, itemRender } from '../../services/utilities';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import { searchAPI } from '../../services/constants';
+import { toggleProfile } from '../../actions/user';
 
 const getOptionValues = option => option.id;
 const getOptionLabels = option => `${option.other_names} ${option.surname}`;
@@ -84,6 +84,11 @@ export class AllEnrollment extends Component {
 		this.fetchAntennatal();
 	};
 
+	showAntennatal = (patient, antennatal) => {
+		const info = { patient, type: 'antennatal', antennatal };
+		this.props.toggleProfile(true, info);
+	};
+
 	dateChange = e => {
 		let date = e.map(d => {
 			return moment(d._d).format('YYYY-MM-DD');
@@ -97,6 +102,7 @@ export class AllEnrollment extends Component {
 	};
 
 	loadDetail = id => {
+		console.log(id);
 		this.props.viewAntenatalDetail(true, id);
 	};
 
@@ -124,7 +130,9 @@ export class AllEnrollment extends Component {
 
 					<td className="text-right row-actions">
 						<Tooltip title="view details">
-							<a className="secondary" onClick={() => this.loadDetail(el.id)}>
+							<a
+								className="secondary"
+								onClick={() => this.showAntennatal(el.patient, el)}>
 								<i className="os-icon os-icon-eye" />
 							</a>
 						</Tooltip>
@@ -284,5 +292,6 @@ export default withRouter(
 		viewAntenatalDetail,
 		startBlock,
 		stopBlock,
+		toggleProfile,
 	})(AllEnrollment)
 );

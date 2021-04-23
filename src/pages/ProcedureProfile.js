@@ -8,7 +8,6 @@ import SSRStorage from '../services/storage';
 import { USER_RECORD } from '../services/constants';
 import Splash from '../components/Splash';
 import ProfileBlock from '../components/ProfileBlock';
-
 import ProcedureForms from '../components/Procedures/ProcedureForms';
 
 const Notes = lazy(() => import('../components/Procedures/Notes'));

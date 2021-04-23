@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
 import { connect } from 'react-redux';
-
 import TableLoading from './TableLoading';
 import { toggleProfile } from '../actions/user';
 import { startBlock, stopBlock } from '../actions/redux-block';

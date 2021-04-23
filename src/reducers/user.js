@@ -34,6 +34,7 @@ const INITIAL_STATE = {
 	isAntenatalOpen: false,
 	menu_mode: 'menu-layout-compact',
 	menu_mini: false,
+	antennatal: null,
 };
 
 const user = (state = INITIAL_STATE, action) => {
@@ -99,9 +100,10 @@ const user = (state = INITIAL_STATE, action) => {
 		case TOGGLE_PROFILE:
 			if (action.payload) {
 				const type = action.info.type;
+				const antennatal = action.info.antennatal;
 				const { patient, staff } = action.info;
 				const data =
-					type === 'patient' || type === 'procedure' || type === 'antenatal'
+					type === 'patient' || type === 'procedure' || type === 'antennatal'
 						? { patient }
 						: { staff };
 				storage.setItem(USER_RECORD, { ...data, type });
@@ -111,7 +113,8 @@ const user = (state = INITIAL_STATE, action) => {
 					isStaffOpen: type === 'staff',
 					isPatientOpen: type === 'patient',
 					isProcedureOpen: type === 'procedure',
-					isAntenatalOpen: type === 'antenatal',
+					isAntenatalOpen: type === 'antennatal',
+					antennatal,
 					...data,
 				};
 			}

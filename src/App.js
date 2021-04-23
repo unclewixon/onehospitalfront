@@ -25,6 +25,7 @@ import NoMatch from './pages/NoMatch';
 import AntenatalDetail from './pages/AntenatalDetail';
 import PatientProfile from './pages/PatientProfile';
 import ProcedureProfile from './pages/ProcedureProfile';
+import AntennatalProfile from './pages/AntennatalProfile';
 
 const FrontDesk = lazy(() => import('./pages/FrontDesk/Home'));
 const Nurse = lazy(() => import('./pages/Nurse/Home'));
@@ -157,7 +158,7 @@ class App extends Component {
 											<ProcedureProfile />
 										</SlidingPane>
 										<SlidingPane isOpen={isAntenatalOpen}>
-											<AntenatalDetail />
+											<AntennatalProfile />
 										</SlidingPane>
 										<ModalDialogs />
 									</Suspense>
@@ -186,7 +187,7 @@ const mapStateToProps = state => {
 		isStaffOpen: state.user?.isStaffOpen,
 		isPatientOpen: state.user?.isPatientOpen,
 		isProcedureOpen: state.user?.isProcedureOpen,
-		isAntenatalOpen: state.general?.isAntenatalOpen,
+		isAntenatalOpen: state.user?.isAntenatalOpen,
 		theme_mode: state.user?.theme_mode,
 		menu_mode: state.user?.menu_mode,
 		fullscreen: state.user?.fullscreen,
