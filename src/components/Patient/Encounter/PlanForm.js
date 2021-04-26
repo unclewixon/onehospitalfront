@@ -416,7 +416,7 @@ const PlanForm = ({ previous, next, patient }) => {
 					<div className="form-group col-sm-3">
 						<label>Dose Quantity</label>
 						<input
-							type="number"
+							type="text"
 							className="form-control"
 							placeholder="Dose Quantity"
 							ref={register({ required: true })}

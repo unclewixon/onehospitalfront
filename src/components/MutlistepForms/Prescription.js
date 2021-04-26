@@ -247,7 +247,7 @@ const Prescription = ({
 				<div className="form-group col-sm-6">
 					<label>Dose Quantity</label>
 					<input
-						type="number"
+						type="text"
 						className="form-control"
 						placeholder="Dose Quantity"
 						ref={register}
