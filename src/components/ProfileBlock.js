@@ -16,6 +16,7 @@ import { notifySuccess, notifyError } from './../services/notify';
 import { updatePatient } from '../actions/patient';
 import { startBlock, stopBlock } from '../actions/redux-block';
 import ExtraBlock from './ExtraBlock';
+import { formatCurrency } from '../services/utilities';
 
 const UserItem = ({ icon, label, value }) => {
 	return (
@@ -113,44 +114,44 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 																<span>Admit</span>
 															</Link>
 														) : (
-															<a className="btn btn-danger btn-sm ml-2">
-																<i className="os-icon os-icon-ui-23"></i>
-																<span>Discharge</span>
-															</a>
+															<button className="btn btn-danger btn-sm ml-2">
+																<i className="fa fa-hospital-o"></i>
+																<span style={{ marginLeft: '4px' }}>
+																	Discharge
+																</span>
+															</button>
 														)}
 													</Tooltip>
 												</div>
 											)}
 										</div>
 									</div>
-									<div className="d-flex align-items-center mt-4">
-										<Tooltip title="Enroll Antenatal">
-											<Link
-												to={`${location.pathname}#enroll-antenatal`}
-												className="btn btn-primary btn-sm mr-1">
-												<i className="os-icon os-icon-ui-22"></i>
-												<span>Enroll Antenatal</span>
-											</Link>
-										</Tooltip>
-										<Tooltip title="Enroll IVF">
-											<Link
-												to={`${location.pathname}#enroll-ivf`}
-												className="btn btn-primary btn-sm mr-1">
-												<i className="os-icon os-icon-ui-22"></i>
-												<span>Enroll IVF</span>
-											</Link>
-										</Tooltip>
-										{(patient?.immunization === undefined ||
-											patient?.immunization.length <= 0) && (
-											<Tooltip title="Enroll Immunization">
-												<button
-													className="btn btn-primary btn-sm"
-													onClick={enrollImmunization}>
-													<i className="os-icon os-icon-ui-22"></i>
-													<span>Enroll Immunization</span>
-												</button>
-											</Tooltip>
-										)}
+									<div className="d-flex align-items-center mt-2">
+										<div className="d-flex align-items-center mr-2">
+											<span className="b-avatar badge-light-primary rounded">
+												<span className="b-avatar-custom">
+													<i className="icon-feather icon-feather-activity"></i>
+												</span>
+											</span>
+											<div className="ml-1">
+												<h5 className="mb-0">0</h5>
+												<small>Visits</small>
+											</div>
+										</div>
+										<div className="d-flex align-items-center">
+											<span className="b-avatar badge-light-success rounded">
+												<span className="b-avatar-custom">
+													<i className="icon-feather icon-feather-credit-card"></i>
+												</span>
+											</span>
+											<div className="ml-1">
+												<h5 className="mb-0">
+													{' '}
+													{formatCurrency(patient?.wallet || 0)}{' '}
+												</h5>
+												<small>Outstanding Balance</small>
+											</div>
+										</div>
 									</div>
 								</div>
 								<div className="col-xl-6 col-12">
@@ -177,16 +178,6 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 													value={`${dob} (${getAge(patient?.date_of_birth)})`}
 												/>
 											</tr>
-											{/* <tr>
-												<UserItem
-													icon="user"
-													label="Insurance Status"
-													value={patient.hmo?.name || ''}
-												/>
-											</tr>
-											<tr>
-												<UserItem icon="user" label="" value="" />
-											</tr> */}
 										</tbody>
 									</table>
 								</div>
@@ -204,26 +195,56 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 								</span>
 							</div>
 						</div>
-						<div className="card-body">
-							<ul className="list-unstyled my-1">
-								{/* <li>
-									<span className="align-middle">5 Users</span>
-								</li>
-								<li className="my-25">
-									<span className="align-middle">10 GB storage</span>
-								</li>
-								<li>
-									<span className="align-middle">Basic Support</span>
-								</li> */}
-							</ul>
-							{!noButtons && (
+						{!noButtons && (
+							<div className="card-body">
+								<div className="design-group">
+									<ul className="demo-icons-list">
+										{(patient?.immunization === undefined ||
+											patient?.immunization.length <= 0) && (
+											<span className="b-avatar badge-light-primary rounded shiftright post-box">
+												<li>
+													<a onClick={enrollImmunization}>
+														<i className="picons-thin-icon-thin-0811_medicine_health_injection_ill"></i>
+														<span>immunization</span>
+													</a>
+												</li>
+											</span>
+										)}
+										{!patient.isAdmitted && (
+											<span className="b-avatar badge-light-primary rounded shiftright post-box">
+												<li>
+													<Link to={`${location.pathname}#start-admission`}>
+														<i className="picons-thin-icon-thin-0821_blood_infusion"></i>
+														<span>admission</span>
+													</Link>
+												</li>
+											</span>
+										)}
+										<span className="b-avatar badge-light-primary rounded shiftright post-box">
+											<li>
+												<Link to={`${location.pathname}#enroll-ivf`}>
+													<i className="picons-thin-icon-thin-0816_microscope_laboratory"></i>
+													<span>IVF</span>
+												</Link>
+											</li>
+										</span>
+										<span className="b-avatar badge-light-primary rounded shiftright post-box">
+											<li>
+												<Link to={`${location.pathname}#enroll-antenatal`}>
+													<i className="picons-thin-icon-thin-0813_heart_vitals_pulse_rate_health"></i>
+													<span>Antenatal</span>
+												</Link>
+											</li>
+										</span>
+									</ul>
+								</div>
 								<button
 									type="button"
 									className="btn btn-block btn-outline-danger">
 									Disable Patient
 								</button>
-							)}
-						</div>
+							</div>
+						)}
 					</div>
 				</div>
 			</div>

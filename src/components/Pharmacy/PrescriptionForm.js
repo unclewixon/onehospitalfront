@@ -372,7 +372,7 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 					<div className="form-group col-sm-6">
 						<label>Dose Quantity</label>
 						<input
-							type="number"
+							type="text"
 							className="form-control"
 							placeholder="Dose Quantity"
 							ref={register({ required: true })}
@@ -645,9 +645,8 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 						name="regimen_note"
 						rows="3"
 						placeholder="Regimen note"
-						onChange={e => setRegimenNote(e.target.value)}>
-						{regimenNote}
-					</textarea>
+						value={regimenNote}
+						onChange={e => setRegimenNote(e.target.value)}></textarea>
 				</div>
 			</div>
 			<div>

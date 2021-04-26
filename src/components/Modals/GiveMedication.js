@@ -23,13 +23,13 @@ const GiveMedication = ({ closeModal, taskItem }) => {
 			}
 
 			setSubmitting(true);
-			let toSave = {
+			const data = {
 				readingType: 'regimen',
 				reading: { regimen: quantity },
 				patient_id: taskItem.patient_id,
 				task_id: taskItem.id,
 			};
-			const rs = await request(`${vitalsAPI}`, 'POST', true, toSave);
+			const rs = await request(vitalsAPI, 'POST', true, data);
 			if (rs.success) {
 				notifySuccess('medication fulfilled');
 				setSubmitting(false);

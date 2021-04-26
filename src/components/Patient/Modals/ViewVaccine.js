@@ -21,11 +21,11 @@ const ViewVaccine = ({ data, setRecords }) => {
 			const patient = data.patient;
 			const values = {
 				requestType: 'immunization',
-				requestBody: { due_date: date },
+				date_due: date,
 				patient_id: patient.id,
 			};
-			const rs = await request('requests/save-request', 'POST', true, values);
-			if (rs.success) {
+			const req = await request('requests/save-request', 'POST', true, values);
+			if (req.success) {
 				const url = `${patientAPI}/immunization/${patient.id}`;
 				const rs = await request(url, 'GET', true);
 				const list = groupBy(rs, 'slug');
@@ -36,7 +36,7 @@ const ViewVaccine = ({ data, setRecords }) => {
 			} else {
 				setSubmitting(false);
 				notifyError(
-					rs.message || 'Could not save out patient appointment record'
+					req.message || 'Could not save out patient appointment record'
 				);
 			}
 		} catch (e) {

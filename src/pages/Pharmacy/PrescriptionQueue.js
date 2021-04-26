@@ -3,10 +3,13 @@ import React, { Component } from 'react';
 import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
 import Pagination from 'antd/lib/pagination';
+import { connect } from 'react-redux';
 
 import { notifyError } from '../../services/notify';
 import ViewPrescription from '../../components/Pharmacy/ViewPrescription';
 import { request, updateImmutable, itemRender } from '../../services/utilities';
+import ProfilePopup from '../../components/Patient/ProfilePopup';
+import { toggleProfile } from '../../actions/user';
 
 const category_id = 1;
 
@@ -71,6 +74,11 @@ class PrescriptionQueue extends Component {
 		this.loadPrescriptions(nextPage);
 	};
 
+	showProfile = patient => {
+		const info = { patient, type: 'patient' };
+		this.props.toggleProfile(true, info);
+	};
+
 	render() {
 		const {
 			showModal,
@@ -111,7 +119,16 @@ class PrescriptionQueue extends Component {
 												</span>
 											</td>
 											<td>
-												{`${request.patient.surname} ${request.patient.other_names}`}
+												<p className="item-title text-color m-0">
+													<Tooltip
+														title={<ProfilePopup patient={request.patient} />}>
+														<a
+															className="cursor"
+															onClick={() => this.showProfile(request.patient)}>
+															{`${request.patient.other_names} ${request.patient.surname}`}
+														</a>
+													</Tooltip>
+												</p>
 											</td>
 											<td>{request.created_by ? request.created_by : ''}</td>
 											<td className="nowrap">
@@ -212,4 +229,4 @@ class PrescriptionQueue extends Component {
 	}
 }
 
-export default PrescriptionQueue;
+export default connect(null, { toggleProfile })(PrescriptionQueue);

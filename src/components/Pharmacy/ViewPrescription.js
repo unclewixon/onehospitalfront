@@ -35,7 +35,7 @@ const ViewPrescription = ({
 			setPrescriptions(activeRequest.items);
 
 			const total = activeRequest.items.reduce((total, item) => {
-				const amount = item.drug.hmoPrice;
+				const amount = item.drug?.hmoPrice || 0;
 
 				return (total += parseFloat(amount) * item.fillQuantity);
 			}, 0.0);
@@ -60,7 +60,7 @@ const ViewPrescription = ({
 			if (item.fillQuantity === '') {
 				return (total += 0);
 			}
-			const amount = item.drug.hmoPrice;
+			const amount = item.drug?.hmoPrice || 0;
 			return (total += parseFloat(amount) * parseInt(item.fillQuantity, 10));
 		}, 0.0);
 
@@ -106,7 +106,7 @@ const ViewPrescription = ({
 		setPrescriptions(updatedDrugs);
 
 		const total = updatedDrugs.reduce((total, item) => {
-			const amount = item.drug.hmoPrice || 0;
+			const amount = item.drug?.hmoPrice || 0;
 			const costItem = parseFloat(amount) * item.fillQuantity;
 			return (total += costItem);
 		}, 0.0);
@@ -136,7 +136,7 @@ const ViewPrescription = ({
 			}
 
 			setSubmitting(true);
-			const url = `patient/fill-request/${activeRequest.id}`;
+			const url = `requests/fill-request/${activeRequest.id}`;
 			const rs = await request(url, 'POST', true, {
 				items: prescriptions,
 				patient_id: activeRequest.patient_id,
@@ -160,7 +160,7 @@ const ViewPrescription = ({
 	const dispense = async () => {
 		try {
 			setSubmitting(true);
-			const url = `patient/request/${activeRequest.id}/approve-result?type=pharmacy`;
+			const url = `requests/${activeRequest.id}/approve-result?type=pharmacy`;
 			const rs = await request(url, 'PATCH', true);
 
 			setSubmitting(false);
@@ -232,8 +232,9 @@ const ViewPrescription = ({
 																</span>
 															</div>
 															<div>
-																{item.drug.generic_name &&
-																	`${item.drug.generic_name} ${item.frequency} x ${item.frequencyType}${when}`}
+																{item.drug?.generic_name
+																	? `${item.doseQuantity} of ${item.drug?.generic_name} ${item.frequency} x ${item.frequencyType}${when}`
+																	: ''}
 																{item.vaccine && !filled && (
 																	<Popover
 																		content={
@@ -259,8 +260,10 @@ const ViewPrescription = ({
 														<td>
 															{item.filledBy && filled ? item.filledBy : 'Open'}
 														</td>
-														<td>{item.drug.name || '-'}</td>
-														<td>{formatCurrency(item.drug.hmoPrice || 0.0)}</td>
+														<td>{item.drug?.name || '-'}</td>
+														<td>
+															{formatCurrency(item.drug?.hmoPrice || 0.0)}
+														</td>
 														<td>
 															<div className="form-group">
 																<input

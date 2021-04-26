@@ -4,11 +4,14 @@ import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
 import Pagination from 'antd/lib/pagination';
+import { connect } from 'react-redux';
 
 import waiting from '../../assets/images/waiting.gif';
 import { notifyError } from '../../services/notify';
 import ViewPrescription from '../../components/Pharmacy/ViewPrescription';
 import { request, updateImmutable, itemRender } from '../../services/utilities';
+import ProfilePopup from '../../components/Patient/ProfilePopup';
+import { toggleProfile } from '../../actions/user';
 
 const { RangePicker } = DatePicker;
 
@@ -83,6 +86,11 @@ class PrescriptionRequests extends Component {
 	onNavigatePage = nextPage => {
 		const { startDate, endDate } = this.state;
 		this.loadPrescriptions(startDate, endDate, nextPage);
+	};
+
+	showProfile = patient => {
+		const info = { patient, type: 'patient' };
+		this.props.toggleProfile(true, info);
 	};
 
 	render() {
@@ -172,7 +180,16 @@ class PrescriptionRequests extends Component {
 												</span>
 											</td>
 											<td>
-												{`${request.patient.surname} ${request.patient.other_names}`}
+												<p className="item-title text-color m-0">
+													<Tooltip
+														title={<ProfilePopup patient={request.patient} />}>
+														<a
+															className="cursor"
+															onClick={() => this.showProfile(request.patient)}>
+															{`${request.patient.other_names} ${request.patient.surname}`}
+														</a>
+													</Tooltip>
+												</p>
 											</td>
 											<td>{request.created_by ? request.created_by : ''}</td>
 											<td className="nowrap">
@@ -272,4 +289,4 @@ class PrescriptionRequests extends Component {
 	}
 }
 
-export default PrescriptionRequests;
+export default connect(null, { toggleProfile })(PrescriptionRequests);
