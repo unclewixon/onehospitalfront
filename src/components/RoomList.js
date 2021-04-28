@@ -56,7 +56,7 @@ const RoomList = props => {
 		try {
 			e.preventDefault();
 			setLoading(true);
-			const data = { name, status, floor, room_category_id: category };
+			const data = { name, floor, room_category_id: category };
 			const url = `rooms/${payload.id}/update`;
 			const rs = await request(url, 'PATCH', true, data);
 			props.update_room(rs, payload);
@@ -226,16 +226,6 @@ const RoomList = props => {
 								value={floor}
 								onChange={handleInputChange}
 							/>
-						</div>
-						<div className="form-group">
-							<select
-								className="form-control"
-								name="status"
-								value={status}
-								onChange={handleInputChange}>
-								<option value="Occupied">Occupied</option>
-								<option value="Not occupied">Not Occupied</option>
-							</select>
 						</div>
 
 						<div className="form-buttons-w">

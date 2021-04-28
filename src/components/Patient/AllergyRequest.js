@@ -74,7 +74,7 @@ const AllergyRequest = props => {
 								</div>
 
 								<div className="form-group col-sm-6">
-									<label>Allergy</label>
+									<label>Allergy00</label>
 									<input
 										className="form-control"
 										placeholder="Allergy"

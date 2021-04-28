@@ -29,7 +29,7 @@ class LabBlock extends Component {
 		try {
 			const { labs } = this.props;
 			this.props.startBlock();
-			const url = `${patientAPI}/${data.item_id}/delete-request?type=lab&request_id=${data.id}`;
+			const url = `requests/${data.item_id}/delete-request?type=lab&request_id=${data.id}`;
 			const rs = await request(url, 'DELETE', true);
 			const lab_request = labs.find(l => l.id === data.id);
 			const newItem = { ...lab_request, ...rs.data, items: rs.data.items };
@@ -71,7 +71,7 @@ class LabBlock extends Component {
 	doPrint = async (lab, printGroup) => {
 		try {
 			this.props.startBlock();
-			const url = `${patientAPI}/${lab.id}/print?type=lab&print_group=${
+			const url = `requests/${lab.id}/print?type=lab&print_group=${
 				printGroup ? 1 : 0
 			}`;
 			const rs = await request(url, 'GET', true);
@@ -138,7 +138,7 @@ class LabBlock extends Component {
 		try {
 			this.props.startBlock();
 			const { labs } = this.props;
-			const url = `${patientAPI}/${data.item_id}/receive-specimen`;
+			const url = `requests/${data.item_id}/receive-specimen`;
 			const rs = await request(url, 'PATCH', true);
 			const lab_request = labs.find(l => l.id === data.lab_id);
 			const newItem = { ...lab_request, items: [rs.data] };

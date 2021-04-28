@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 import qs from 'querystring';
 import Tooltip from 'antd/lib/tooltip';
-
+import { socket } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import {
 	request,
@@ -15,6 +15,7 @@ import {
 	hasPassed,
 	fullname,
 	formatPatientId,
+	updateImmutable,
 } from '../../services/utilities';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { notifySuccess, notifyError } from '../../services/notify';
@@ -54,6 +55,20 @@ class AllAppointments extends Component {
 				history.replace({ pathname: '/front-desk' });
 			}
 		}
+	}
+
+	componentDidUpdate() {
+		socket.on('nursing-queue', data => {
+			console.log(data);
+			if (data.queue) {
+				const { appointments } = this.state;
+				const appointment = data.queue?.appointment;
+				const result = updateImmutable(appointments, appointment);
+				this.setState({
+					appointments: result,
+				});
+			}
+		});
 	}
 
 	componentWillUpdate(nextProps, nextState) {
