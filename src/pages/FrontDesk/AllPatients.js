@@ -1,13 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import Tooltip from 'antd/lib/tooltip';
-import { useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import Pagination from 'antd/lib/pagination';
 import DatePicker from 'antd/lib/date-picker';
 
 import { startBlock, stopBlock } from '../../actions/redux-block';
+import { loadPatients } from '../../actions/patient';
 import {
 	request,
 	formatPatientId,
@@ -28,7 +30,7 @@ const statuses = [
 	{ label: 'Disabled', value: 0 },
 ];
 
-const AllPatients = () => {
+const AllPatients = props => {
 	const [loaded, setLoaded] = useState(false);
 	const [filtering, setFiltering] = useState(false);
 	const [startDate, setStartDate] = useState('');
@@ -38,10 +40,8 @@ const AllPatients = () => {
 		itemsPerPage: pageLimit,
 		totalPages: 0,
 	});
-	const [patients, setPatients] = useState([]);
 	const [searchValue, setSearchValue] = useState('');
 	const [status, setStatus] = useState('');
-
 	const dispatch = useDispatch();
 
 	const dateChange = e => {
@@ -67,7 +67,7 @@ const AllPatients = () => {
 			const { result, ...meta } = rs;
 			setMeta(meta);
 			window.scrollTo({ top: 0, behavior: 'smooth' });
-			setPatients(result);
+			dispatch(loadPatients(result));
 			setLoaded(true);
 			setFiltering(false);
 			dispatch(stopBlock());
@@ -98,7 +98,7 @@ const AllPatients = () => {
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setMeta(meta);
-				setPatients(result);
+				dispatch(loadPatients(result));
 				setLoaded(true);
 				dispatch(stopBlock());
 			} catch (error) {
@@ -210,7 +210,7 @@ const AllPatients = () => {
 									</tr>
 								</thead>
 								<tbody>
-									{patients.map((data, i) => {
+									{props.patients.map((data, i) => {
 										return (
 											<tr className="" key={i}>
 												<td>{i + 1}</td>
@@ -264,4 +264,10 @@ const AllPatients = () => {
 	);
 };
 
-export default withRouter(AllPatients);
+const mapStateToProps = (state, ownProps) => {
+	return {
+		patients: state.patient.patients,
+	};
+};
+
+export default connect(mapStateToProps)(AllPatients);

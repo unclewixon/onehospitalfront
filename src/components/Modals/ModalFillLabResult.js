@@ -73,7 +73,7 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 			dispatch(startBlock());
 			setSubmitting(true);
 			const data = { parameters, note, result };
-			const url = `${patientAPI}/${item.id}/fill-result`;
+			const url = `requests/${item.id}/fill-result`;
 			const rs = await request(url, 'PATCH', true, data);
 			const lab_request = labs.find(l => l.id === lab.id);
 			const newItem = { ...lab_request, items: [rs.data] };

@@ -114,7 +114,7 @@ class RadiologyBlock extends Component {
 		try {
 			this.props.startBlock();
 			const { scans } = this.props;
-			const url = `${patientAPI}/request/${id}/approve-result?type=radiology&request_item_id=${item_id}`;
+			const url = `requests/${id}/approve-result?type=radiology&request_item_id=${item_id}`;
 			const rs = await request(url, 'PATCH', true);
 			const scan_request = scans.find(l => l.id === id);
 			const newItem = { ...scan_request, status: 1, items: [rs.data] };
@@ -198,7 +198,7 @@ class RadiologyBlock extends Component {
 		try {
 			const { scans } = this.props;
 			this.props.startBlock();
-			const url = `${patientAPI}/${data.item_id}/delete-request?type=radiology&request_id=${data.id}`;
+			const url = `requests/${data.item_id}/delete-request?type=radiology&request_id=${data.id}`;
 			const rs = await request(url, 'DELETE', true);
 			const scan_request = scans.find(l => l.id === data.id);
 			const newItem = { ...scan_request, ...rs.data, items: rs.data.items };
