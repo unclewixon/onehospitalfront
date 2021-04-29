@@ -15,6 +15,7 @@ import { startBlock, stopBlock } from '../../actions/redux-block';
 import { searchAPI } from '../../services/constants';
 import { toggleProfile } from '../../actions/user';
 import TableLoading from '../../components/TableLoading';
+import ProfilePopup from '../../components/Patient/ProfilePopup';
 
 const { RangePicker } = DatePicker;
 
@@ -116,7 +117,12 @@ const InPatientCare = () => {
 	};
 
 	const showProfile = patient => {
-		const info = { patient, type: 'patient', admitted: true };
+		const info = { patient, type: 'patient' };
+		dispatch(toggleProfile(true, info));
+	};
+
+	const showAdmission = patient => {
+		const info = { patient, type: 'admission' };
 		dispatch(toggleProfile(true, info));
 	};
 
@@ -149,7 +155,6 @@ const InPatientCare = () => {
 					<form className="row">
 						<div className="form-group col-md-3">
 							<label htmlFor="patient_id">Patient</label>
-
 							<AsyncSelect
 								isClearable
 								getOptionValue={getOptionValues}
@@ -169,7 +174,6 @@ const InPatientCare = () => {
 							<label>Admitted Between - To</label>
 							<RangePicker onChange={e => dateChange(e)} />
 						</div>
-
 						<div className="form-group col-md-3 mt-4">
 							<div
 								className="btn btn-sm btn-primary btn-upper text-white"
@@ -200,11 +204,7 @@ const InPatientCare = () => {
 											<div className="fht-cell"></div>
 										</th>
 										<th>
-											<div className="th-inner sortable both">Patient ID</div>
-											<div className="fht-cell"></div>
-										</th>
-										<th>
-											<div className="th-inner sortable both">Gender</div>
+											<div className="th-inner sortable both">Reason</div>
 											<div className="fht-cell"></div>
 										</th>
 										<th>
@@ -230,9 +230,21 @@ const InPatientCare = () => {
 									{admittedPatients.map((item, i) => {
 										return (
 											<tr key={i}>
-												<td>{item?.patient_name}</td>
-												<td>{formatPatientId(item?.patient_id)}</td>
-												<td>{item?.patient_gender}</td>
+												<td>
+													<p className="item-title text-color m-0">
+														<Tooltip
+															title={<ProfilePopup patient={item?.patient} />}>
+															<a
+																className="cursor"
+																onClick={() => showProfile(item?.patient)}>
+																{`${item?.patient_name} [${formatPatientId(
+																	item?.patient_id
+																)}]`}
+															</a>
+														</Tooltip>
+													</p>
+												</td>
+												<td>{item?.reason}</td>
 												<td>
 													{moment(item?.admission_date).format(
 														'DD-MMM-YYYY h:mm A'
@@ -242,7 +254,7 @@ const InPatientCare = () => {
 												<td>
 													{item?.suite ? (
 														<Tooltip title="Room/Floor">
-															{item?.suite + '/ Floor ' + item?.floor}
+															{`${item?.suite} / ${item?.floor}`}
 														</Tooltip>
 													) : (
 														'-'
@@ -258,8 +270,8 @@ const InPatientCare = () => {
 															</a>
 														</Tooltip>
 													)}
-													<Tooltip title="View Patient">
-														<a onClick={() => showProfile(item.patient)}>
+													<Tooltip title="Admission">
+														<a onClick={() => showAdmission(item.patient)}>
 															<i className="os-icon os-icon-user-male-circle2" />
 														</a>
 													</Tooltip>

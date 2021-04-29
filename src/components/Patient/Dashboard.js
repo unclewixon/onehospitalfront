@@ -47,7 +47,7 @@ const Dashboard = () => {
 								<a
 									className={tab === 'billing' ? 'nav-link active' : 'nav-link'}
 									onClick={() => setTab('billing')}>
-									Billings
+									Billing
 								</a>
 							</li>
 						</ul>

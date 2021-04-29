@@ -17,7 +17,7 @@ const VitalSigns = lazy(() => import('../components/Antennatal/VitalSigns'));
 
 // const AntenatalDetailTab = lazy(() => import('./AntennatalDetailTab'));
 const Notes = lazy(() => import('../components/Antennatal/Notes'));
-const Antennatal = lazy(() => import('../components/Patient/Antennatal'));
+// const Antennatal = lazy(() => import('../components/Patient/Antennatal'));
 const LabTests = lazy(() => import('../components/Antennatal/LabTests'));
 const Imaging = lazy(() => import('../components/Antennatal/Imaging'));
 const RiskAssessments = lazy(() =>
@@ -282,7 +282,7 @@ class AntennatalProfile extends Component {
 												<Suspense fallback={<Splash />}>
 													{tab === 'notes' && <Notes />}
 													{tab === 'vital-signs' && <VitalSigns />}
-													{tab === 'assessments' && <Antennatal />}
+													{/* {tab === 'assessments' && <Antennatal />} */}
 													{tab === 'antennal-request' && <AntennatalRequest />}
 													{/* {tab === 'details' && <AntenatalDetailTab />} */}
 													{tab === 'risk-assessments' && <RiskAssessments />}

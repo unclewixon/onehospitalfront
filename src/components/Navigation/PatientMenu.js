@@ -14,22 +14,6 @@ const PatientMenu = ({ location }) => {
 					</Link>
 				</li>
 				<li>
-					<Link to={`${location.pathname}#vitals#Blood Pressure`}>
-						<div className="icon-w">
-							<div className="os-icon os-icon-layout" />
-						</div>
-						<span>Vitals</span>
-					</Link>
-				</li>
-				<li>
-					<Link to={`${location.pathname}#allergies`}>
-						<div className="icon-w">
-							<div className="os-icon os-icon-layout" />
-						</div>
-						<span>Allergies</span>
-					</Link>
-				</li>
-				<li>
 					<Link to={`${location.pathname}#encounters`}>
 						<div className="icon-w">
 							<div className="os-icon os-icon-layout" />
@@ -38,11 +22,27 @@ const PatientMenu = ({ location }) => {
 					</Link>
 				</li>
 				<li>
-					<Link to={`${location.pathname}#clinical-tasks`}>
+					<Link to={`${location.pathname}#vitals#Blood Pressure`}>
 						<div className="icon-w">
 							<div className="os-icon os-icon-layout" />
 						</div>
-						<span>Clinical Tasks</span>
+						<span>Vitals</span>
+					</Link>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#allergens`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout" />
+						</div>
+						<span>Allergens</span>
+					</Link>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#problem-list`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout" />
+						</div>
+						<span>Problem List</span>
 					</Link>
 				</li>
 				<li>
@@ -54,11 +54,19 @@ const PatientMenu = ({ location }) => {
 					</Link>
 				</li>
 				<li>
-					<Link to={`${location.pathname}#anc-visit-entry`}>
+					<Link to={`${location.pathname}#clinical-tasks`}>
 						<div className="icon-w">
 							<div className="os-icon os-icon-layout" />
 						</div>
-						<span>Antenatal</span>
+						<span>Clinical Tasks</span>
+					</Link>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#documents`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout" />
+						</div>
+						<span>Documents</span>
 					</Link>
 				</li>
 
@@ -99,9 +107,8 @@ const PatientMenu = ({ location }) => {
 					</Link>
 				</li>
 				<li className="sub-header">
-					<span>Reports</span>
+					<span>History</span>
 				</li>
-
 				<li>
 					<Link to={`${location.pathname}#anc-history`}>
 						<div className="icon-w">

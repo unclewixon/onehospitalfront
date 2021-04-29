@@ -8,7 +8,6 @@ import { confirmAlert } from 'react-confirm-alert';
 import ModalFillLabResult from './Modals/ModalFillLabResult';
 import ModalViewLabResult from './Modals/ModalViewLabResult';
 import ModalViewLabNote from './Modals/ModalViewLabNote';
-import { patientAPI } from '../services/constants';
 import { request, confirmAction, updateImmutable } from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
 import { startBlock, stopBlock } from '../actions/redux-block';

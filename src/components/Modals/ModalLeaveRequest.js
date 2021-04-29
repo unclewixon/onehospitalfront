@@ -2,6 +2,8 @@ import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import moment from 'moment';
 
+import { parseAvatar } from '../../services/utilities';
+
 const ModalLeaveRequest = ({
 	showModal,
 	onModalClick,
@@ -26,7 +28,9 @@ const ModalLeaveRequest = ({
 									<div
 										className="up-head-w"
 										style={{
-											backgroundImage: require('../../assets/images/b3.jpeg'),
+											backgroundImage: `url(${parseAvatar(
+												staff?.profile_pic
+											)})`,
 										}}>
 										<div className="up-main-info">
 											<h2 className="up-header" style={{ color: '#334152' }}>
@@ -86,7 +90,6 @@ const ModalLeaveRequest = ({
 							</div>
 							<div className="col-sm-8">
 								<div className="element-wrapper">
-									<form id="formValidate" novalidate="true"></form>
 									<div className="element-info">
 										<div className="element-info-with-icon">
 											<div className="element-info-icon">

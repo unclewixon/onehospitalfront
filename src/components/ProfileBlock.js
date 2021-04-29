@@ -77,6 +77,10 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 		? moment(patient.date_of_birth, 'YYYY-MM-DD').format('DD-MMM-YYYY')
 		: '';
 
+	const showAlerts = () => {
+		window.alert('show alerts');
+	};
+
 	return (
 		<>
 			<div className="row profile-block">
@@ -101,9 +105,10 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 												<h4 className="mb-0">{`${patient?.other_names} ${patient?.surname}`}</h4>
 												<span className="card-text">{patient?.email}</span>
 											</div>
-											{!noButtons && (
-												<div className="d-flex flex-wrap">
-													<a className="btn btn-primary">Edit</a>
+
+											<div className="d-flex flex-wrap mt-3">
+												{!noButtons && <a className="btn btn-primary">Edit</a>}
+												{!noButtons && (
 													<Tooltip
 														title={patient?.isAdmitted ? 'Discharge' : 'Admit'}>
 														{!patient?.isAdmitted ? (
@@ -122,37 +127,47 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 															</button>
 														)}
 													</Tooltip>
+												)}
+												<Tooltip title="Alerts">
+													<a
+														className="text-danger relative ml-2"
+														style={{ fontSize: '20px', padding: '0 4px' }}
+														onClick={() => showAlerts()}>
+														<i className="fa fa-exclamation-triangle" />
+														<span className="text-danger alert-badge">2</span>
+													</a>
+												</Tooltip>
+											</div>
+										</div>
+									</div>
+									{!noButtons && (
+										<div className="d-flex align-items-center mt-2">
+											<div className="d-flex align-items-center mr-2">
+												<span className="b-avatar badge-light-primary rounded">
+													<span className="b-avatar-custom">
+														<i className="icon-feather icon-feather-activity"></i>
+													</span>
+												</span>
+												<div className="ml-1">
+													<h5 className="mb-0">0</h5>
+													<small>Visits</small>
 												</div>
-											)}
-										</div>
-									</div>
-									<div className="d-flex align-items-center mt-2">
-										<div className="d-flex align-items-center mr-2">
-											<span className="b-avatar badge-light-primary rounded">
-												<span className="b-avatar-custom">
-													<i className="icon-feather icon-feather-activity"></i>
+											</div>
+											<div className="d-flex align-items-center">
+												<span className="b-avatar badge-light-success rounded">
+													<span className="b-avatar-custom">
+														<i className="icon-feather icon-feather-credit-card"></i>
+													</span>
 												</span>
-											</span>
-											<div className="ml-1">
-												<h5 className="mb-0">0</h5>
-												<small>Visits</small>
+												<div className="ml-1">
+													<h5 className="mb-0">
+														{formatCurrency(patient?.wallet || 0)}{' '}
+													</h5>
+													<small>Outstanding Balance</small>
+												</div>
 											</div>
 										</div>
-										<div className="d-flex align-items-center">
-											<span className="b-avatar badge-light-success rounded">
-												<span className="b-avatar-custom">
-													<i className="icon-feather icon-feather-credit-card"></i>
-												</span>
-											</span>
-											<div className="ml-1">
-												<h5 className="mb-0">
-													{' '}
-													{formatCurrency(patient?.wallet || 0)}{' '}
-												</h5>
-												<small>Outstanding Balance</small>
-											</div>
-										</div>
-									</div>
+									)}
 								</div>
 								<div className="col-xl-6 col-12">
 									<table className="mt-4 w-100">

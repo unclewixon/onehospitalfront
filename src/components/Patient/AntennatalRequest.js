@@ -90,12 +90,8 @@ class AntennatalRequest extends Component {
 
 			console.dir(JSON.stringify(newAntenatal));
 			try {
-				const rs = await request(
-					`${patientAPI}/antenatal/visits`,
-					'POST',
-					true,
-					newAntenatal
-				);
+				const url = `${patientAPI}/antenatal/visits`;
+				const rs = await request(url, 'POST', true, newAntenatal);
 				console.log(rs);
 				const { history, location, reset } = this.props;
 
@@ -217,4 +213,4 @@ const mapStateToProps = state => {
 	};
 };
 
-export default withRouter(connect(mapStateToProps, {})(AntennatalRequest));
+export default withRouter(connect(mapStateToProps)(AntennatalRequest));

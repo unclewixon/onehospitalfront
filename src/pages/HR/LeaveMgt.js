@@ -1,21 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import ModalLeaveRequest from '../../components/Modals/ModalLeaveRequest';
 import LeaveItem from '../../components/LeaveItem';
 import { loadStaffLeave } from '../../actions/hr';
-import { request } from '../../services/utilities';
+import { request, confirmAction } from '../../services/utilities';
 import { leaveMgtAPI } from '../../services/constants';
 import { get_all_leave_category } from '../../actions/settings';
 import { notifySuccess, notifyError } from '../../services/notify';
-
-import { confirmAction } from '../../services/utilities';
 
 class LeaveMgt extends Component {
 	state = {
 		searching: false,
 		activeRequest: null,
 		showModal: false,
-		LeaveList: [],
+		leaveList: [],
 	};
 
 	onModalClick = () => {
@@ -42,16 +41,16 @@ class LeaveMgt extends Component {
 	};
 
 	fetchStaffLeave = async () => {
-		this.setState({ searching: true });
 		try {
-			const rs = await request(`${leaveMgtAPI}`, 'GET', true);
+			this.setState({ searching: true });
+			const rs = await request(leaveMgtAPI, 'GET', true);
 			this.setState({ searching: false });
 			const filteredRes =
 				rs && rs.length
 					? rs.filter(leave => leave.leaveType !== 'excuse_duty')
 					: [];
 			this.props.loadStaffLeave(filteredRes);
-			this.setState({ LeaveList: filteredRes });
+			this.setState({ leaveList: filteredRes });
 		} catch (error) {
 			this.setState({ searching: false });
 			console.log(error);
@@ -60,11 +59,8 @@ class LeaveMgt extends Component {
 
 	rejectLeaveRequests = async data => {
 		try {
-			const res = await request(
-				`hr/leave-management/${data.id}/reject`,
-				'GET',
-				true
-			);
+			const url = `hr/leave-management/${data.id}/reject`;
+			const res = await request(url, 'GET', true);
 			console.log(res);
 			notifySuccess('Successful rejecting leave applications');
 			this.fetchStaffLeave();
@@ -84,11 +80,8 @@ class LeaveMgt extends Component {
 
 	approveLeaveRequests = async data => {
 		try {
-			const res = await request(
-				`hr/leave-management/${data.id}/approve`,
-				'GET',
-				true
-			);
+			const url = `hr/leave-management/${data.id}/approve`;
+			const res = await request(url, 'GET', true);
 			console.log(res);
 			notifySuccess('Successful approving leave applications');
 			this.fetchStaffLeave();
@@ -130,21 +123,23 @@ class LeaveMgt extends Component {
 
 		const filterByCategory = id => {
 			if (id === 'none') {
-				return this.setState({ LeaveList: staff_leave });
+				return this.setState({ leaveList: staff_leave });
 			}
 			const list = staff_leave.filter(leave => leave.category.id === id);
-			this.setState({ LeaveList: list });
+			this.setState({ leaveList: list });
 		};
 
 		const filterByStatus = status => {
 			if (status === 'none') {
-				return this.setState({ LeaveList: staff_leave });
+				return this.setState({ leaveList: staff_leave });
 			}
 			const list = staff_leave.filter(
 				leave => leave.status === parseInt(status)
 			);
-			this.setState({ LeaveList: list });
+			this.setState({ leaveList: list });
 		};
+
+		const { leaveList } = this.state;
 
 		return (
 			<div className="content-i">
@@ -179,13 +174,6 @@ class LeaveMgt extends Component {
 									</form>
 								</div>
 								<h6 className="element-header">Leave Management</h6>
-								{this.state.activeRequest ? (
-									<ModalLeaveRequest
-										showModal={this.state.showModal}
-										activeRequest={this.state.activeRequest}
-										onModalClick={this.onModalClick}
-									/>
-								) : null}
 								<div className="element-box">
 									<div className="table-responsive">
 										<table className="table table-striped">
@@ -201,7 +189,7 @@ class LeaveMgt extends Component {
 												</tr>
 											</thead>
 											<tbody>
-												{this.state.LeaveList.map((leave, i) => {
+												{leaveList.map((leave, i) => {
 													return (
 														<LeaveItem
 															key={i}
@@ -224,6 +212,13 @@ class LeaveMgt extends Component {
 						</div>
 					</div>
 				</div>
+				{this.state.activeRequest && (
+					<ModalLeaveRequest
+						showModal={this.state.showModal}
+						activeRequest={this.state.activeRequest}
+						onModalClick={this.onModalClick}
+					/>
+				)}
 			</div>
 		);
 	}

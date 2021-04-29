@@ -10,7 +10,10 @@ const Reading = ({ vital, visible, info, setVisible, unit, task }) => {
 			<div className="text-center">
 				<div className="last-reading">{`Last ${info.title} Reading:`}</div>
 				{vital ? (
-					<div className="reading">{`${vital._reading} ${unit}`}</div>
+					<div
+						className={`reading ${
+							vital.isAbnormal ? 'text-danger' : ''
+						}`}>{`${vital._reading} ${unit}`}</div>
 				) : (
 					<div className="reading">-</div>
 				)}
