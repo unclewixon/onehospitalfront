@@ -2,8 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Tooltip from 'antd/lib/tooltip';
 import { connect } from 'react-redux';
-import { useDispatch, useSelector } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import moment from 'moment';
 import Pagination from 'antd/lib/pagination';
 import DatePicker from 'antd/lib/date-picker';

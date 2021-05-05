@@ -3,9 +3,8 @@ import { connect } from 'react-redux';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import { withRouter } from 'react-router-dom';
-import moment from 'moment';
 
-import { request } from '../../services/utilities';
+import { request, formatDateStr } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import ViewEncounter from './Modals/ViewEncounter';
 import TableLoading from '../TableLoading';
@@ -75,15 +74,19 @@ class Encounters extends Component {
 									</thead>
 									<tbody>
 										{encounters.map((item, i) => {
+											console.log(item);
 											return (
 												<tr key={i}>
 													<td className="nowrap">
-														{moment(item.createdAt).format('DD-MM-YYYY')}
+														{formatDateStr(
+															item.createdAt,
+															'DD-MMM-YYYY h:mm A'
+														)}
 													</td>
 
 													<td className="cell-with-media">
 														<span>
-															{`${item.whomToSee?.last_name} ${item.whomToSee?.first_name}`}
+															{`${item.staff?.details?.first_name} ${item.staff?.details?.last_name}`}
 														</span>
 													</td>
 
@@ -129,7 +132,6 @@ class Encounters extends Component {
 
 const mapStateToProps = (state, ownProps) => {
 	return {
-		encounters: state.patient.encounters,
 		patient: state.user.patient,
 		staff: state.user.profile.details,
 	};

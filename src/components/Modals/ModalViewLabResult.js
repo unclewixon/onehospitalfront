@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 
 import { request, updateImmutable } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
-import { patientAPI } from '../../services/constants';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const ModalViewLabResult = ({ closeModal, lab, labs, updateLab }) => {

@@ -38,11 +38,6 @@ const AdmissionMenu = ({ location }) => {
 						Vitals
 					</Link>
 				</li>
-				{/* <li className={checkHash(hash, 'care-team') ? 'active' : ''}>
-					<Link to={`${location.pathname}#care-team`} className="pointer">
-						Care Team
-					</Link>
-				</li> */}
 			</ul>
 		</div>
 	);

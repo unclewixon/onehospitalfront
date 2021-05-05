@@ -12,7 +12,7 @@ import { notifyError } from '../../../services/notify';
 import { ReactComponent as TrashIcon } from '../../../assets/svg-icons/trash.svg';
 
 const Allergies = ({ previous, next, patient }) => {
-	const { register, handleSubmit, reset } = useForm();
+	const { register, reset } = useForm();
 	const [loaded, setLoaded] = useState(false);
 	const [allergens, setAllergens] = useState([]);
 	const [pastAllergies, setPastAllergies] = useState([]);

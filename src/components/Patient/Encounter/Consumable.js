@@ -119,7 +119,7 @@ const Consumable = ({
 
 	return (
 		<div className="form-block encounter">
-			<form>
+			<form onSubmit={onSubmit}>
 				<div className="row">
 					<div className="form-group col-sm-4">
 						<label>Item</label>

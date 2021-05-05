@@ -77,7 +77,7 @@ const ClinicalTasks = () => {
 			await request(url, 'DELETE', true);
 			const arr = tasks.filter(tsk => tsk.id !== data.id);
 			setTasks(arr);
-			notifySuccess(`clinical task canceled!`);
+			notifySuccess('clinical task canceled!');
 		} catch (err) {
 			console.log(err);
 			notifyError(`${err.message}`);
@@ -109,12 +109,12 @@ const ClinicalTasks = () => {
 	};
 
 	const onNavigatePage = async nextPage => {
-		startBlock();
+		dispatch(startBlock());
 		const rs = await getTasks(nextPage);
 		const { result, ...paginate } = rs;
 		setMeta(paginate);
 		setTasks(result);
-		stopBlock();
+		dispatch(stopBlock());
 	};
 
 	const refreshTasks = async () => {
