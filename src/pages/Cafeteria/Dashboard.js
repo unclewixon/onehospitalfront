@@ -4,8 +4,9 @@ import React, { useState, useEffect } from 'react';
 import size from 'lodash.size';
 import isEmpty from 'lodash.isempty';
 import Pagination from 'antd/lib/pagination';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
+
 import {
 	staffAPI,
 	searchAPI,
@@ -17,8 +18,9 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import CafeteriaCustomerDetail from '../../components/CafeteriaCustomerDetail';
 import CafeteriaTransactionTable from '../../components/CafeteriaTransactionTable';
 import searchingGIF from '../../assets/images/searching.gif';
+import { startBlock, stopBlock } from '../../actions/redux-block';
 
-const CafeteriaDashboard = () => {
+const Dashboard = () => {
 	const [patients, setPatients] = useState([]);
 	const [customer, setCustomer] = useState('');
 	// const [activePage, togglePage] = useState('Dashboard');
@@ -28,7 +30,7 @@ const CafeteriaDashboard = () => {
 	const [items, setItems] = useState([]);
 	const [cafeteriaItems, setCafeteriaItems] = useState([]);
 	const [staffs, setStaffs] = useState([]);
-	const [selectedCustomer, setSelectedCustomer] = useState({});
+	const [selectedCustomer, setSelectedCustomer] = useState('');
 	const [order, setOrder] = useState([]);
 	const [item, setItem] = useState({
 		quantity: 1,
@@ -45,10 +47,20 @@ const CafeteriaDashboard = () => {
 	const [paging, setPaging] = useState({
 		meta: paginate,
 	});
+
+	const dispatch = useDispatch();
 	const categories = useSelector(state => state.inventory.categories);
 
-	const clearCart = () => {
+	const clearCart = () => {};
+
+	const clearAll = () => {
+		setPatients([]);
 		setCart([]);
+		setStaffs([]);
+		setSelectedCustomer('');
+		setCustomer('');
+		setOrder([]);
+		setQuery('');
 	};
 
 	const fetchInventories = async page => {
@@ -195,40 +207,31 @@ const CafeteriaDashboard = () => {
 	};
 
 	const saveSale = async summary => {
-		let data = {
-			user_type: customer ? customer : 'walk-in',
-			user_id: selectedCustomer ? selectedCustomer.id : '',
-			amount: summary.subTotal,
-			amount_paid: summary.amount,
-			balance: +summary.subTotal - +summary.amount,
-			payment_type: summary.type,
-			items: order.map(el => {
-				return {
-					item_id: el.item.q_id,
-					amount: +el.quantity * (el.item.q_price - el.item.q_discount_price),
-				};
-			}),
-		};
-
-		console.log(data);
-
 		try {
+			const data = {
+				user_type: customer ? customer : 'walk-in',
+				user_id: selectedCustomer ? selectedCustomer.id : '',
+				amount: summary.subTotal,
+				amount_paid: summary.amount,
+				balance: +summary.subTotal - +summary.amount,
+				payment_type: summary.type,
+				items: cart,
+			};
+
+			dispatch(startBlock());
 			setSubmitting(true);
-			await request(`cafeteria/sales`, 'POST', true, data);
-			notifySuccess('Transaction successful');
+			const rs = await request('cafeteria/sales', 'POST', true, data);
 			setSubmitting(false);
+			dispatch(stopBlock());
+			return rs;
 		} catch (e) {
 			console.log(e);
-			notifyError('Transaction not successful');
+			dispatch(stopBlock());
 			setSubmitting(false);
+			throw e;
 		}
-
-		setPatients([]);
-		setStaffs([]);
-		setSelectedCustomer({});
-		setOrder([]);
-		setQuery('');
 	};
+
 	const setHandleChange = event => {
 		const text = event.target.value;
 		setSearchTerm(text);
@@ -291,11 +294,6 @@ const CafeteriaDashboard = () => {
 												aria-label="Recipient's username"
 												aria-describedby="basic-addon2"
 											/>
-											{/* <div className="input-group-append">
-												<span className="input-group-text" id="basic-addon2">
-													filter
-												</span>
-											</div> */}
 										</div>
 									</div>
 									<div className="row">
@@ -306,11 +304,12 @@ const CafeteriaDashboard = () => {
 												className="col-4 col-sm-4">
 												<div className="profile-tile profile-tile-inlined">
 													<a className="profile-tile-box">
-														<div>
-															{item.quantity} {item.name}
-														</div>
-														<div className="pt-avatar-w">
+														<div>{item.name}</div>
+														<div className="pt-avatar-w d-block">
 															{formatCurrency(item.sales_price)}
+														</div>
+														<div className="d-block">
+															{`${item.quantity} items`}
 														</div>
 													</a>
 												</div>
@@ -354,6 +353,7 @@ const CafeteriaDashboard = () => {
 														className="form-control"
 														name="customer"
 														onChange={changeCustomer}
+														value={customer}
 														required>
 														<option value="">Choose Customer ...</option>
 														<option value="staff">Staff</option>
@@ -380,6 +380,7 @@ const CafeteriaDashboard = () => {
 																	getOptionLabel={getOptionLabelsStaff}
 																	defaultOptions
 																	name="staff"
+																	value={selectedCustomer}
 																	loadOptions={getOptionsStaff}
 																	onChange={e => patientSet(e)}
 																	placeholder="Search staff"
@@ -397,6 +398,7 @@ const CafeteriaDashboard = () => {
 																	getOptionLabel={getOptionLabels}
 																	defaultOptions
 																	name="patient"
+																	value={selectedCustomer}
 																	loadOptions={getOptions}
 																	onChange={e => patientSet(e)}
 																	placeholder="Search patients"
@@ -448,7 +450,7 @@ const CafeteriaDashboard = () => {
 											<thead>
 												<tr>
 													<th>Item</th>
-													<th>Qty</th>
+													{/* <th>Qty</th> */}
 													<th className="text-center">Price(&#x20A6;)</th>
 													<th></th>
 												</tr>
@@ -460,7 +462,7 @@ const CafeteriaDashboard = () => {
 															<td className="text-center">
 																<span>{item.name}</span>
 															</td>
-															<td className="text-center">{item.quantity}</td>
+															{/* <td className="text-center">{item.quantity}</td> */}
 															<td className="text-center">
 																{item.sales_price}
 															</td>
@@ -491,6 +493,7 @@ const CafeteriaDashboard = () => {
 							<CafeteriaTransactionTable
 								cart={cart}
 								clearCart={clearCart}
+								clearAll={clearAll}
 								customer={customer}
 								special={special}
 								orders={order}
@@ -511,4 +514,4 @@ const CafeteriaDashboard = () => {
 	);
 };
 
-export default CafeteriaDashboard;
+export default Dashboard;

@@ -1,23 +1,23 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from 'react';
-import isEmpty from 'lodash.isempty';
+import React, { useState } from 'react';
+
 import CafeteriaRecipt from './CafeteriaRecipt';
 import { paymentType } from '../services/constants';
-// import waiting from '../assets/images/waiting.gif';
-// import { CartesianAxis } from 'recharts';
+import { notifyError, notifySuccess } from '../services/notify';
 
 const CafeteriaTransactionTable = props => {
 	const [toggle, setToggle] = useState(false);
-	const [orders, setOrders] = useState([]);
-	const [loaded, setLoaded] = useState(false);
-	// const [subTotal, setSubTotal] = useState(0);
 	const [amountPaid, setAmountPaid] = useState(0);
-	// const [balance, setBalance] = useState(0);
 	const [type, setType] = useState('');
 
 	const onModalClick = () => {
+		if (toggle) {
+			console.log('----------clear all');
+			props.clearAll();
+		}
 		setToggle(!toggle);
 	};
+
 	const calSubTotal = () => {
 		if (!props.cart.length) {
 			return 0;
@@ -46,30 +46,35 @@ const CafeteriaTransactionTable = props => {
 		console.log('resetCounter');
 		props.clearCart();
 		setAmountPaid(0);
-		setOrders([]);
 		setType('');
 	};
+
 	const handleSubmit = async e => {
 		e.preventDefault();
-		if (type && !isEmpty(orders)) {
-			let summary = {
-				type,
-				amount: amountPaid,
-				subTotal: calSubTotal(),
-			};
-			await props.saveSale(summary);
-			setAmountPaid(0);
-			onModalClick();
+		if (props.cart.length > 0) {
+			try {
+				const summary = {
+					type,
+					amount: amountPaid,
+					subTotal: calSubTotal(),
+				};
+				const rs = await props.saveSale(summary);
+				if (rs.success) {
+					setAmountPaid(0);
+					onModalClick();
+					props.clearCart();
+
+					notifySuccess('Transaction successful');
+				} else {
+					notifyError('Transaction failed');
+				}
+			} catch (e) {
+				notifyError('payment failed, please try again');
+			}
+		} else {
+			notifyError('please select an item');
 		}
 	};
-
-	useEffect(() => {
-		if (!loaded) {
-			console.log(props.cart);
-			setOrders(props.orders);
-			setLoaded(true);
-		}
-	}, [loaded, props.cart, props.orders]);
 
 	return (
 		<div className="content-panel compact" style={{ backgroundColor: '#fff' }}>
@@ -160,7 +165,7 @@ const CafeteriaTransactionTable = props => {
 						</tr>
 					</tbody>
 				</table>
-				{toggle ? (
+				{toggle && (
 					<CafeteriaRecipt
 						toggle={toggle}
 						onModalClick={onModalClick}
@@ -172,7 +177,7 @@ const CafeteriaTransactionTable = props => {
 						amountPaid={amountPaid}
 						calBalance={calBalance}
 					/>
-				) : null}
+				)}
 				<form onSubmit={e => handleSubmit(e)} className="form-row">
 					<div className="col-md-6">
 						<select className="form-control" onChange={handleType} required>
