@@ -65,21 +65,15 @@ export class Appraisal extends Component {
 									<thead>
 										<tr>
 											<th data-field="owner">
-												<div className="th-inner sortable both text-center">
-													PERIOD
-												</div>
+												<div className="th-inner sortable">PERIOD</div>
 												<div className="fht-cell"></div>
 											</th>
 											<th data-field="project">
-												<div className="th-inner sortable both text-center">
-													FROM DATE
-												</div>
+												<div className="th-inner sortable">FROM DATE</div>
 												<div className="fht-cell"></div>
 											</th>
 											<th data-field="project">
-												<div className="th-inner sortable both text-center">
-													TO DATE
-												</div>
+												<div className="th-inner sortable">TO DATE</div>
 												<div className="fht-cell"></div>
 											</th>
 
@@ -93,17 +87,11 @@ export class Appraisal extends Component {
 										{rev.map((appraisal, i) => {
 											return (
 												<tr key={i}>
-													<td className="flex text-center">
-														{appraisal.performancePeriod}
-													</td>
-													<td className="flex text-center">
-														{appraisal.startDate}
-													</td>
-													<td className="flex text-center">
-														{appraisal.endDate}
-													</td>
+													<td>{appraisal.performancePeriod}</td>
+													<td>{appraisal.startDate}</td>
+													<td>{appraisal.endDate}</td>
 
-													<td className="text-center row-actions">
+													<td className="row-actions">
 														<Tooltip title="Self Appraisal">
 															<a
 																className="secondary"

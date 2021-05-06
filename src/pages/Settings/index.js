@@ -12,6 +12,7 @@ import Departments from './Departments';
 import LeaveCategory from './LeaveCategory';
 import ServicesCategory from './ServiceCategory';
 import Specialization from './Specialization';
+import Appraisal from './Appraisal';
 import ConsultingRoom from './ConsultingRoom';
 import Consumable from './Consumable';
 import AntenatalPackage from './AntenatalPackage';
@@ -98,6 +99,16 @@ const Settings = ({ match, location }) => {
 								<span>Specializations</span>
 							</Link>
 						</li>
+
+						<li className={page === 'appraisal' ? 'active' : ''}>
+							<Link to="/settings/appraisal">
+								<i className="os-icon os-icon-layers" />
+								<span>
+									Appraisal
+									<br /> Indicators
+								</span>
+							</Link>
+						</li>
 						{/* <li className={page === 'consumables' ? 'active' : ''}>
 							<Link to="/settings/consumables">
 								<i className="os-icon os-icon-layers" />
@@ -122,6 +133,7 @@ const Settings = ({ match, location }) => {
 				<Route path={`${match.url}/room-mgt`} component={RoomMgmt} />
 				<Route path={`${match.url}/leave-category`} component={LeaveCategory} />
 				<Route path={`${match.url}/services`} component={ServicesCategory} />
+				<Route path={`${match.url}/appraisal`} component={Appraisal} />
 				<Route
 					path={`${match.url}/specializations`}
 					component={Specialization}
