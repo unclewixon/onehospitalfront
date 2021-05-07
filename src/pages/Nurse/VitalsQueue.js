@@ -4,7 +4,6 @@ import Tooltip from 'antd/lib/tooltip';
 import { useDispatch } from 'react-redux';
 import truncate from 'lodash.truncate';
 import moment from 'moment';
-
 import { toggleProfile } from '../../actions/user';
 import { getAge, fullname } from '../../services/utilities';
 import { socket } from '../../services/constants';
@@ -16,7 +15,6 @@ import TableLoading from '../../components/TableLoading';
 const VitalsQueue = () => {
 	const [loading, setLoading] = useState(true);
 	const [queues, setQueues] = useState([]);
-
 	const dispatch = useDispatch();
 
 	const fetchQueue = useCallback(async () => {
