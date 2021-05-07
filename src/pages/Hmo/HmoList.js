@@ -153,7 +153,7 @@ const HmoList = props => {
 			<h6 className="element-header">Health Management Organization</h6>
 			<div className="pipelines-w">
 				<div className="row">
-					<div className="col-lg-8 col-xxl-8">
+					<div className="col-lg-8">
 						<div className="element-wrapper">
 							<div className="element-box-tp">
 								{!dataLoaded ? (
@@ -216,7 +216,7 @@ const HmoList = props => {
 							</div>
 						</div>
 					</div>
-					<div className="col-lg-4 col-xxl-3  d-xxl-block">
+					<div className="col-lg-4">
 						<div className="pipeline white lined-warning">
 							<form onSubmit={edit ? onEdiHmo : onAddHmo}>
 								<h6 className="form-header">Add New HMO</h6>

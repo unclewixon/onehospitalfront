@@ -98,7 +98,7 @@ const Settings = ({ match, location }) => {
 								<span>Specializations</span>
 							</Link>
 						</li>
-						{/* <li className={page === 'consumables' ? 'active' : ''}>
+						<li className={page === 'consumables' ? 'active' : ''}>
 							<Link to="/settings/consumables">
 								<i className="os-icon os-icon-layers" />
 								<span>Consumables</span>
@@ -107,9 +107,13 @@ const Settings = ({ match, location }) => {
 						<li className={page === 'antenatal-packages' ? 'active' : ''}>
 							<Link to="/settings/antenatal-packages">
 								<i className="os-icon os-icon-layers" />
-								<span>Antenatal Packages</span>
+								<span>
+									Antenatal
+									<br />
+									Packages
+								</span>
 							</Link>
-						</li> */}
+						</li>
 					</ul>
 				</div>
 			)}

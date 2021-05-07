@@ -149,7 +149,7 @@ const Diagnosis = () => {
 							{loading ? (
 								<TableLoading />
 							) : (
-								<div className="col-lg-12 col-xxl-12">
+								<div className="col-lg-12">
 									<div className="element-wrapper">
 										<div className="element-box-tp">
 											<div className="controls-above-table">

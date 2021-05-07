@@ -164,7 +164,7 @@ const Tarrifs = props => {
 			</div>
 			<div className="pipelines-w">
 				<div className="row">
-					<div className="col-lg-12 col-xxl-12">
+					<div className="col-lg-12">
 						<div className="element-wrapper">
 							<div className="element-box-tp p-3">
 								{loading ? (

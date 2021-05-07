@@ -13,6 +13,7 @@ import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
 import { loadHmoTransaction } from '../../actions/hmo';
 import TableLoading from '../../components/TableLoading';
+import { formatCurrency } from '../../services/utilities';
 
 const { RangePicker } = DatePicker;
 
@@ -304,7 +305,7 @@ class Transactions extends Component {
 									<th>Customer</th>
 									<th>Item Sold</th>
 									<th>Payment Type</th>
-									<th>Amount(&#x20A6;)</th>
+									<th>Amount</th>
 									<th>Paid</th>
 									<th>
 										<div className="th-inner "></div>
@@ -328,11 +329,11 @@ class Transactions extends Component {
 											</td>
 											<td>
 												{request?.transaction_details
-													?.map(t => t.name)
+													?.map(t => `${t.name} (${t?.qty || 1})`)
 													.join(', ') || '-'}
 											</td>
 											<td>{request.payment_type}</td>
-											<td>{request.amount}</td>
+											<td>{formatCurrency(request.amount)}</td>
 											<td>
 												{request.status === 1 ? (
 													<span className="badge badge-success">paid</span>

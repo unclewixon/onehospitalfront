@@ -23,7 +23,7 @@ const NurseObservation = () => {
 	const dispatch = useDispatch();
 	const patient = useSelector(state => state.user.patient);
 
-	const fetchCharts = useCallback(
+	const fetchObservations = useCallback(
 		async page => {
 			try {
 				dispatch(startBlock());
@@ -45,13 +45,13 @@ const NurseObservation = () => {
 
 	useEffect(() => {
 		if (loading) {
-			fetchCharts();
+			fetchObservations();
 			setLoading(false);
 		}
-	}, [fetchCharts, loading]);
+	}, [fetchObservations, loading]);
 
 	const onNavigatePage = nextPage => {
-		fetchCharts(nextPage);
+		fetchObservations(nextPage);
 	};
 
 	const newEntry = () => {
@@ -74,7 +74,7 @@ const NurseObservation = () => {
 	};
 
 	return (
-		<div className="col-sm-12 col-xxl-6">
+		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<div className="element-actions flex-action">
 					<a
@@ -83,7 +83,7 @@ const NurseObservation = () => {
 						New Note
 					</a>
 				</div>
-				<h6 className="element-header">New Observation Note</h6>
+				<h6 className="element-header">Observation Notes</h6>
 				<div className="element-box p-3 m-0">
 					{loading ? (
 						<TableLoading />

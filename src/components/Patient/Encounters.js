@@ -55,7 +55,7 @@ class Encounters extends Component {
 	render() {
 		const { encounters, loading, encounter, showModal } = this.state;
 		return (
-			<div className="col-sm-12 col-xxl-6">
+			<div className="col-sm-12">
 				<div className="element-wrapper">
 					<h6 className="element-header">Encounters</h6>
 					<div className="element-box p-3 m-0">

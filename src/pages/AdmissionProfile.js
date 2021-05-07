@@ -42,12 +42,6 @@ const Page = ({ location }) => {
 };
 
 class AdmissionProfile extends Component {
-	state = {
-		tab: 'notes',
-		loading: false,
-		displayAdd: true,
-	};
-
 	closeProfile = () => {
 		storage.removeItem(USER_RECORD);
 		this.props.toggleProfile(false);

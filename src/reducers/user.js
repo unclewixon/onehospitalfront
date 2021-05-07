@@ -24,7 +24,7 @@ const INITIAL_STATE = {
 	profile: null,
 	loggedIn: false,
 	theme_mode: false,
-	fullscreen: false,
+	fullscreen: true,
 	userID: null,
 	patient: null,
 	staff: null,

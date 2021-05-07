@@ -173,7 +173,7 @@ const ClinicalTasks = () => {
 	};
 
 	return (
-		<div className="col-sm-12 col-xxl-6">
+		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<div className="element-actions flex-action">
 					<div>

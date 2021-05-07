@@ -119,7 +119,7 @@ class RoleBlock extends Component {
 					</div>
 				</div>
 				{!showModal && role && (
-					<div className="col-lg-4 col-xxl-3  d-xxl-block">
+					<div className="col-lg-4">
 						<EditRole cancelEditRole={this.cancelEditRole} role={role} />
 					</div>
 				)}

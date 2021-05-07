@@ -239,7 +239,7 @@ const PatientDataUpload = props => {
 					<div className="form-block w-100">
 						<div className="pipelines-w">
 							<div className="row">
-								<div className="col-lg-12 col-xxl-12">
+								<div className="col-lg-12">
 									<div className="element-wrapper">
 										<div className="element-box-tp">
 											<div className="table-responsive">

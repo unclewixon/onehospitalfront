@@ -214,7 +214,7 @@ const ServiceCategoryList = ({ loaded, setLoaded }) => {
 					</div>
 				</div>
 			</div>
-			<div className="col-lg-4 col-xxl-3">
+			<div className="col-lg-4">
 				<div className="pipeline white lined-warning">
 					<form onSubmit={edit ? onEditServiceCategory : onAddServiceCat}>
 						<h6 className="form-header">

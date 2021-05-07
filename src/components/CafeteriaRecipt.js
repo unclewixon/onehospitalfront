@@ -140,8 +140,8 @@ const CafeteriaRecipt = props => {
 									? props.cart.map((item, i) => (
 											<tr key={i}>
 												<td>{item?.name}</td>
-												<td className="text-center">{item?.quantity}</td>
-												<td className="text-center">{item?.sales_price}</td>
+												<td className="text-center">{item?.qty}</td>
+												<td className="text-center">{item?.price}</td>
 											</tr>
 									  ))
 									: null}
