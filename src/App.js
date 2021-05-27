@@ -27,6 +27,7 @@ import AntennatalProfile from './pages/AntennatalProfile';
 import AdmissionProfile from './pages/AdmissionProfile';
 
 const FrontDesk = lazy(() => import('./pages/FrontDesk/Home'));
+const Speech = lazy(() => import('./pages/FrontDesk/Speech'));
 const Nurse = lazy(() => import('./pages/Nurse/Home'));
 const Pharmacy = lazy(() => import('./pages/Pharmacy/Index'));
 const Procedure = lazy(() => import('./pages/Procedure/Home'));
@@ -124,6 +125,7 @@ class App extends Component {
 													<Switch>
 														<Route path="/doctor" component={Doctor} />
 														<Route path="/front-desk" component={FrontDesk} />
+														<Route path="/speech" component={Speech} />
 														<Route path="/nurse" component={Nurse} />
 														<Route path="/pharmacy" component={Pharmacy} />
 														<Route path="/procedure" component={Procedure} />
