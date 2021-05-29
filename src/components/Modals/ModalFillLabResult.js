@@ -6,7 +6,6 @@ import Select from 'react-select';
 import { request, updateImmutable } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
-import { patientAPI } from '../../services/constants';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const allOptions = [
@@ -65,15 +64,15 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 	};
 
 	const save = async () => {
-		if (note === null || result === null) {
-			notifyError('Please fill in result and note');
+		if (result === null) {
+			notifyError('Please fill in result');
 			return;
 		}
 		try {
 			dispatch(startBlock());
 			setSubmitting(true);
 			const data = { parameters, note, result };
-			const url = `${patientAPI}/${item.id}/fill-result`;
+			const url = `requests/${item.id}/fill-result`;
 			const rs = await request(url, 'PATCH', true, data);
 			const lab_request = labs.find(l => l.id === lab.id);
 			const newItem = { ...lab_request, items: [rs.data] };

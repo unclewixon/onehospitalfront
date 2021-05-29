@@ -1,25 +1,24 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useCallback, useState } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
-// import Pagination from 'antd/lib/pagination';
 
-import { request } from '../../services/utilities';
-import { loadStaffLeave } from '../../actions/hr';
+import { request, confirmAction } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
-import searchingGIF from '../../assets/images/searching.gif';
 import ModalLeaveRequest from './../Modals/ModalLeaveRequest';
 import ModalEditLeave from '../Modals/ModalEditLeave';
-import { confirmAction } from '../../services/utilities';
+import TableLoading from '../TableLoading';
+import { leaveMgtAPI } from '../../services/constants';
 
-// const pageSize = 10;
-
-const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
+const LeaveRequest = ({ location }) => {
 	const [searching, setSearching] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
 	const [showModal, setShowModal] = useState(false);
 	const [showEdit, setShowEdit] = useState(false);
+	const [staffLeaves, setStaffLeaves] = useState([]);
+
+	const staff = useSelector(state => state.user.profile.details);
 
 	const onModalClick = () => {
 		setShowModal(!showModal);
@@ -31,21 +30,25 @@ const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 	const onExitModal = () => {
 		setActiveRequest(null);
 	};
+
 	const getLeaveRequests = useCallback(async () => {
-		setSearching(true);
-		try {
-			const res = await request(`hr/leave-management`, 'GET', true);
-			const filteredRes =
-				res && res.length
-					? res.filter(leave => leave.leaveType !== 'excuse_duty')
-					: [];
-			loadStaffLeave(filteredRes);
-			setSearching(false);
-		} catch (error) {
-			setSearching(false);
-			notifyError('Could not fetch leave applications');
+		if (staff) {
+			try {
+				setSearching(true);
+				const url = `${leaveMgtAPI}?staff_id=${staff.id}`;
+				const res = await request(url, 'GET', true);
+				const filteredRes =
+					res && res.length
+						? res.filter(leave => leave.leaveType !== 'excuse_duty')
+						: [];
+				setStaffLeaves(filteredRes);
+				setSearching(false);
+			} catch (error) {
+				setSearching(false);
+				notifyError('Could not fetch leave applications');
+			}
 		}
-	}, [loadStaffLeave]);
+	}, [staff]);
 
 	useEffect(() => {
 		getLeaveRequests();
@@ -53,7 +56,7 @@ const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 
 	const deleteLeaveRequests = async data => {
 		try {
-			await request(`hr/leave-management/${data.id}`, 'DELETE', true);
+			await request(`${leaveMgtAPI}/${data.id}`, 'DELETE', true);
 			notifySuccess('Successful removed leave applications');
 			getLeaveRequests();
 		} catch (error) {
@@ -71,10 +74,6 @@ const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 		);
 	};
 
-	// const onNavigatePage = page => {
-	// 	console.log(page);
-	// };
-
 	return (
 		<div className="row my-4">
 			<div className="col-sm-12">
@@ -88,72 +87,51 @@ const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 						</Link>
 					</div>
 					<h6 className="element-header">Leave Requests</h6>
-					{activeRequest ? (
-						<ModalLeaveRequest
-							showModal={showModal}
-							activeRequest={activeRequest}
-							staff={staff}
-							onModalClick={onModalClick}
-						/>
-					) : null}
-					{activeRequest ? (
-						<ModalEditLeave
-							showModal={showEdit}
-							activeRequest={activeRequest}
-							staff={staff}
-							onModalClick={onEditClick}
-							onExitModal={onExitModal}
-						/>
-					) : null}
 					<div className="element-box m-0 p-3">
-						<div className="table-responsive">
-							<table className="table table-striped">
-								<thead>
-									<tr>
-										<th data-field="id">
-											<div className="th-inner sortable both "></div>
-											<div className="fht-cell"></div>
-										</th>
-										<th data-field="owner">
-											<div className="th-inner sortable both ">Type</div>
-											<div className="fht-cell"></div>
-										</th>
-										<th data-field="project">
-											<div className="th-inner sortable both ">Date start</div>
-											<div className="fht-cell"></div>
-										</th>
-										<th data-field="project">
-											<div className="th-inner sortable both ">Date return</div>
-											<div className="fht-cell"></div>
-										</th>
-										<th data-field="project">
-											<div className="th-inner sortable both ">status</div>
-											<div className="fht-cell"></div>
-										</th>
-
-										<th data-field="5">
-											<div className="th-inner ">Actions</div>
-											<div className="fht-cell"></div>
-										</th>
-									</tr>
-								</thead>
-								<tbody>
-									{searching ? (
+						{searching ? (
+							<TableLoading />
+						) : (
+							<div className="table-responsive">
+								<table className="table table-striped">
+									<thead>
 										<tr>
-											<td colSpan="6">
-												<img src={searchingGIF} alt="searching" />
-											</td>
+											<th data-field="id">
+												<div className="th-inner sortable both "></div>
+												<div className="fht-cell"></div>
+											</th>
+											<th data-field="owner">
+												<div className="th-inner sortable both ">Type</div>
+												<div className="fht-cell"></div>
+											</th>
+											<th data-field="project">
+												<div className="th-inner sortable both ">
+													Date start
+												</div>
+												<div className="fht-cell"></div>
+											</th>
+											<th data-field="project">
+												<div className="th-inner sortable both ">
+													Date return
+												</div>
+												<div className="fht-cell"></div>
+											</th>
+											<th data-field="project">
+												<div className="th-inner sortable both ">status</div>
+												<div className="fht-cell"></div>
+											</th>
+
+											<th data-field="5">
+												<div className="th-inner ">Actions</div>
+												<div className="fht-cell"></div>
+											</th>
 										</tr>
-									) : staffLeaves && staffLeaves.length ? (
-										staffLeaves.map((leave, index) => {
+									</thead>
+									<tbody>
+										{staffLeaves.map((leave, index) => {
 											return (
 												<tr key={index}>
 													<td>{index + 1}</td>
-													<td>
-														{leave.category && leave.category.name
-															? leave.category.name
-															: ''}
-													</td>
+													<td>{leave.category?.name || ''}</td>
 													<td>{leave.start_date}</td>
 													<td>{leave.end_date}</td>
 													<td>
@@ -206,38 +184,45 @@ const LeaveRequest = ({ loadStaffLeave, staffLeaves, location, staff }) => {
 													</td>
 												</tr>
 											);
-										})
-									) : (
-										<tr>
-											<td colSpan="6">
-												'There are no available leave applications'
-											</td>
-										</tr>
-									)}
-								</tbody>
-							</table>
-							<div className="controls-below-table">
-								<div className="table-records-info">
-									Showing {staffLeaves.length} records{' '}
+										})}
+										{staffLeaves.length === 0 && (
+											<tr>
+												<td colSpan="6" className="text-center">
+													There are no available leave applications
+												</td>
+											</tr>
+										)}
+									</tbody>
+								</table>
+								<div className="controls-below-table">
+									<div className="table-records-info">
+										Showing {staffLeaves.length} records
+									</div>
 								</div>
 							</div>
-						</div>
+						)}
 					</div>
 				</div>
 			</div>
+			{activeRequest && showModal && (
+				<ModalLeaveRequest
+					showModal={showModal}
+					activeRequest={activeRequest}
+					staff={staff}
+					onModalClick={onModalClick}
+				/>
+			)}
+			{activeRequest && showEdit && (
+				<ModalEditLeave
+					showModal={showEdit}
+					activeRequest={activeRequest}
+					staff={staff}
+					onModalClick={onEditClick}
+					onExitModal={onExitModal}
+				/>
+			)}
 		</div>
 	);
 };
 
-const mapStatetoProps = state => {
-	return {
-		staffLeaves: state.hr.staff_leave,
-		staff: state.user.staff,
-	};
-};
-
-export default withRouter(
-	connect(mapStatetoProps, {
-		loadStaffLeave,
-	})(LeaveRequest)
-);
+export default withRouter(LeaveRequest);

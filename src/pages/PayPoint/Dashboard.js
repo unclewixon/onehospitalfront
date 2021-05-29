@@ -65,7 +65,7 @@ class PayPointPage extends Component {
 		const { payPoints } = this.state;
 		return (
 			<>
-				<div className="col-sm-12 col-xxl-12">
+				<div className="col-sm-12">
 					<div className="element-content">
 						<div className="row">
 							{payPoints.map((payPoint, i) => {

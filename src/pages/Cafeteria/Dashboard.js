@@ -1,173 +1,98 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from 'react';
-import size from 'lodash.size';
-import isEmpty from 'lodash.isempty';
+import React, { useState, useEffect, useCallback } from 'react';
 import Pagination from 'antd/lib/pagination';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
-import {
-	staffAPI,
-	searchAPI,
-	inventoryAPI,
-	paginate,
-} from '../../services/constants';
-import { request, formatCurrency, itemRender } from '../../services/utilities';
-import { notifySuccess, notifyError } from '../../services/notify';
-import CafeteriaCustomerDetail from '../../components/CafeteriaCustomerDetail';
-import CafeteriaTransactionTable from '../../components/CafeteriaTransactionTable';
-import searchingGIF from '../../assets/images/searching.gif';
 
-const CafeteriaDashboard = () => {
-	const [patients, setPatients] = useState([]);
+import { searchAPI, inventoryAPI, paginate } from '../../services/constants';
+import {
+	request,
+	formatCurrency,
+	itemRender,
+	updateImmutable,
+} from '../../services/utilities';
+import CafeteriaTransactionTable from '../../components/CafeteriaTransactionTable';
+import { startBlock, stopBlock } from '../../actions/redux-block';
+
+const Dashboard = () => {
 	const [customer, setCustomer] = useState('');
-	// const [activePage, togglePage] = useState('Dashboard');
 	const [special, setSpecial] = useState('');
 	const [loaded, setLoaded] = useState(false);
-	// const [dataLoaded, setDataLoaded] = useState(false);
-	const [items, setItems] = useState([]);
 	const [cafeteriaItems, setCafeteriaItems] = useState([]);
-	const [staffs, setStaffs] = useState([]);
-	const [selectedCustomer, setSelectedCustomer] = useState({});
+	const [selectedCustomer, setSelectedCustomer] = useState('');
 	const [order, setOrder] = useState([]);
-	const [item, setItem] = useState({
-		quantity: 1,
-		item: {},
-	});
 
-	const [query, setQuery] = useState('');
-	const [searching, setSearching] = useState(false);
-	const [itemSearching, setItemSearching] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
 	const [cart, setCart] = useState([]);
 	const [searchTerm, setSearchTerm] = useState('');
-	// const [searchResults, setSearchResults] = useState([]);
-	const [paging, setPaging] = useState({
-		meta: paginate,
-	});
+	const [meta, setMeta] = useState({ ...paginate });
+
+	const dispatch = useDispatch();
 	const categories = useSelector(state => state.inventory.categories);
 
-	const clearCart = () => {
+	const clearCart = () => {};
+
+	const clearAll = () => {
 		setCart([]);
+		setSelectedCustomer('');
+		setCustomer('');
+		setOrder([]);
 	};
 
-	const fetchInventories = async page => {
-		console.log('const fetchInventories = async page => {');
-		console.log(categories);
-		try {
-			let roleQy = '';
-			const category = categories.find(d => d.name === 'Cafeteria');
-			roleQy = category ? `&q=${category.id}` : '';
-			const p = page || 1;
-			const url = `${inventoryAPI}?page=${p}&limit=20${roleQy}`;
-			const rs = await request(url, 'GET', true);
-			console.log(rs);
-			const { result, ...meta } = rs;
-			setCafeteriaItems(result);
-			setPaging({ meta });
-		} catch (error) {
-			console.log(error);
+	const fetchInventories = useCallback(
+		async page => {
+			try {
+				let roleQy = '';
+				const category = categories.find(d => d.name === 'Cafeteria');
+				roleQy = category ? `&q=${category.id}` : '';
+				const p = page || 1;
+				const url = `${inventoryAPI}?page=${p}&limit=20${roleQy}`;
+				const rs = await request(url, 'GET', true);
+				const { result, ...info } = rs;
+				setCafeteriaItems(result);
+				setMeta(info);
+			} catch (error) {
+				console.log(error);
+			}
+		},
+		[categories]
+	);
+
+	const updateCafeteria = data => {
+		for (let i = 0; i < data.length; i++) {
+			const item = data[i];
+
+			const cafeteriaItem = cafeteriaItems.find(c => c.id === item.id);
+			if (cafeteriaItem) {
+				const product = updateImmutable(cafeteriaItems, {
+					id: item.id,
+					quantity: cafeteriaItem.quantity - item.qty,
+				});
+
+				setCafeteriaItems(product);
+			}
 		}
 	};
 
 	useEffect(() => {
 		if (!loaded) {
 			fetchInventories();
-			// setCafeteriaItems(allItems);
-			// setSearchResults(cafeteriaItems);
 			setLoaded(true);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [loaded, cafeteriaItems]);
+	}, [fetchInventories, loaded]);
 
 	const changeCustomer = e => {
 		setCustomer(e.target.value);
 	};
 
-	const handleCustomerChange = e => {
-		setQuery(e.target.value);
-		if (e.target.name === 'item') {
-			searchItem();
-			return;
-		}
-		// searchCustomer();
-	};
-
-	// const handleChange = e => {
-	// 	let { name, value } = e.target;
-	// 	if (name === 'item') {
-	// 	}
-
-	// 	setItem({ ...item, [name]: value });
-	// };
-
-	const itemSet = product => {
-		// value = items.find(el => el.q_id === product);
-		setItem({ ...item, item: product });
-		setItems([]);
-
-		document.getElementById('product').value = product.q_name;
-	};
-
-	const searchCustomer = async e => {
-		e.preventDefault();
-		if (size(query) > 2) {
-			if (customer === 'patient') {
-				try {
-					setSearching(true);
-					const rs = await request(`${searchAPI}?q=${query}`, 'GET', true);
-					setPatients(rs);
-					setSearching(false);
-				} catch (e) {
-					notifyError('Error Occurred');
-					setSearching(false);
-				}
-			} else if (customer === 'staff') {
-				try {
-					setSearching(true);
-					const rs = await request(`${staffAPI}/find?q=${query}`, 'GET', true);
-					setStaffs(rs);
-					setSearching(false);
-				} catch (e) {
-					notifyError('Error Occurred');
-					setSearching(false);
-				}
-			}
+	const addToCart = product => {
+		const item = cart.find(el => el.id === product.id);
+		if (!item) {
+			setCart([...cart, { ...product, qty: 1, price: product.sales_price }]);
 		} else {
-			setPatients([]);
-			setStaffs([]);
-			setSelectedCustomer({});
+			const qty = item.qty === '' ? 1 : item.qty + 1;
+			updateCart(qty, item.id, product.sales_price * qty);
 		}
-	};
-
-	const searchItem = async () => {
-		if (size(query) >= 2) {
-			try {
-				setItemSearching(true);
-				const rs = await request(`cafeteria/items/?q=${query}`, 'GET', true);
-				setItems(rs);
-				setItemSearching(false);
-			} catch (e) {
-				notifyError('Error Occurred');
-				setItemSearching(false);
-			}
-		}
-	};
-	const addItem = e => {
-		e.preventDefault();
-		console.log(item);
-
-		if (!isEmpty(item.item) && item.quantity > 0) {
-			if (isEmpty(order.find(el => el.item.q_id === item.item.q_id))) {
-				setOrder([...order, item]);
-			}
-		}
-
-		setItem({
-			quantity: 1,
-			item: {},
-		});
-		document.getElementById('item').reset();
 	};
 
 	const deleteItem = id => {
@@ -178,8 +103,6 @@ const CafeteriaDashboard = () => {
 
 	const patientSet = pat => {
 		setSelectedCustomer(pat);
-		setPatients([]);
-		setStaffs([]);
 		let name;
 		if (customer === 'patient') {
 			name = `${pat?.surname ? pat?.surname : ''} ${
@@ -190,45 +113,36 @@ const CafeteriaDashboard = () => {
 				pat?.last_name ? pat?.last_name : ''
 			}`;
 		}
-		//document.getElementById('cust').value = name;
+
 		setSpecial(name);
 	};
 
 	const saveSale = async summary => {
-		let data = {
-			user_type: customer ? customer : 'walk-in',
-			user_id: selectedCustomer ? selectedCustomer.id : '',
-			amount: summary.subTotal,
-			amount_paid: summary.amount,
-			balance: +summary.subTotal - +summary.amount,
-			payment_type: summary.type,
-			items: order.map(el => {
-				return {
-					item_id: el.item.q_id,
-					amount: +el.quantity * (el.item.q_price - el.item.q_discount_price),
-				};
-			}),
-		};
-
-		console.log(data);
-
 		try {
+			const data = {
+				user_type: customer ? customer : 'walk-in',
+				user_id: selectedCustomer ? selectedCustomer.id : '',
+				amount: summary.subTotal,
+				amount_paid: summary.amount,
+				balance: +summary.subTotal - +summary.amount,
+				payment_type: summary.type,
+				items: cart,
+			};
+
+			dispatch(startBlock());
 			setSubmitting(true);
-			await request(`cafeteria/sales`, 'POST', true, data);
-			notifySuccess('Transaction successful');
+			const rs = await request('cafeteria/sales', 'POST', true, data);
 			setSubmitting(false);
+			dispatch(stopBlock());
+			return rs;
 		} catch (e) {
 			console.log(e);
-			notifyError('Transaction not successful');
+			dispatch(stopBlock());
 			setSubmitting(false);
+			throw e;
 		}
-
-		setPatients([]);
-		setStaffs([]);
-		setSelectedCustomer({});
-		setOrder([]);
-		setQuery('');
 	};
+
 	const setHandleChange = event => {
 		const text = event.target.value;
 		setSearchTerm(text);
@@ -272,6 +186,11 @@ const CafeteriaDashboard = () => {
 		return res;
 	};
 
+	const updateCart = (qty, id, price) => {
+		const product = updateImmutable(cart, { id, qty, price });
+		setCart(product);
+	};
+
 	return (
 		<div className="element-box-tp">
 			<div className="row">
@@ -291,26 +210,22 @@ const CafeteriaDashboard = () => {
 												aria-label="Recipient's username"
 												aria-describedby="basic-addon2"
 											/>
-											{/* <div className="input-group-append">
-												<span className="input-group-text" id="basic-addon2">
-													filter
-												</span>
-											</div> */}
 										</div>
 									</div>
 									<div className="row">
 										{cafeteriaItems.map((item, i) => (
 											<div
 												key={i}
-												onClick={() => setCart([...cart, item])}
+												onClick={() => addToCart(item)}
 												className="col-4 col-sm-4">
 												<div className="profile-tile profile-tile-inlined">
 													<a className="profile-tile-box">
-														<div>
-															{item.quantity} {item.name}
-														</div>
-														<div className="pt-avatar-w">
+														<div>{item.name}</div>
+														<div className="pt-avatar-w d-block">
 															{formatCurrency(item.sales_price)}
+														</div>
+														<div className="d-block">
+															{`${item.quantity} items`}
 														</div>
 													</a>
 												</div>
@@ -319,9 +234,9 @@ const CafeteriaDashboard = () => {
 									</div>
 									<div className="pagination pagination-center mt-4">
 										<Pagination
-											current={parseInt(paging.meta.currentPage, 10)}
-											pageSize={parseInt(paging.meta.itemsPerPage, 10)}
-											total={parseInt(paging.meta.totalPages, 10)}
+											current={parseInt(meta.currentPage, 10)}
+											pageSize={parseInt(meta.itemsPerPage, 10)}
+											total={parseInt(meta.totalPages, 10)}
 											showTotal={total => `Total ${total} stocks`}
 											itemRender={itemRender}
 											onChange={onNavigatePage}
@@ -354,7 +269,7 @@ const CafeteriaDashboard = () => {
 														className="form-control"
 														name="customer"
 														onChange={changeCustomer}
-														required>
+														value={customer}>
 														<option value="">Choose Customer ...</option>
 														<option value="staff">Staff</option>
 														<option value="patient">Patient</option>
@@ -366,7 +281,7 @@ const CafeteriaDashboard = () => {
 
 										<div>
 											{['', 'walk-in'].includes(customer) ? null : (
-												<form onSubmit={searchCustomer}>
+												<form>
 													<div className="row">
 														<div className="col-sm-12">
 															<div
@@ -380,6 +295,7 @@ const CafeteriaDashboard = () => {
 																	getOptionLabel={getOptionLabelsStaff}
 																	defaultOptions
 																	name="staff"
+																	value={selectedCustomer}
 																	loadOptions={getOptionsStaff}
 																	onChange={e => patientSet(e)}
 																	placeholder="Search staff"
@@ -397,6 +313,7 @@ const CafeteriaDashboard = () => {
 																	getOptionLabel={getOptionLabels}
 																	defaultOptions
 																	name="patient"
+																	value={selectedCustomer}
 																	loadOptions={getOptions}
 																	onChange={e => patientSet(e)}
 																	placeholder="Search patients"
@@ -406,43 +323,10 @@ const CafeteriaDashboard = () => {
 													</div>
 												</form>
 											)}
-											<form onSubmit={addItem} id="item">
-												<div className="row">
-													<div className="col-sm-12">
-														{itemSearching && (
-															<div className="searching text-center">
-																<img alt="searching" src={searchingGIF} />
-															</div>
-														)}
-
-														{items.map((item, i) => {
-															return (
-																<div
-																	style={{ display: 'flex' }}
-																	key={i}
-																	className="element-box">
-																	<a
-																		onClick={() => itemSet(item)}
-																		className="ssg-item cursor">
-																		<div
-																			className="item-name"
-																			dangerouslySetInnerHTML={{
-																				__html: `${item.q_name}`,
-																			}}
-																		/>
-																	</a>
-																</div>
-															);
-														})}
-													</div>
-												</div>
-											</form>
 										</div>
 									</div>
 								</div>
 								<div className="element-wrapper compact">
-									<div className="element-actions actions-only"></div>
-
 									<div className="element-box-tp">
 										<table className="table table-compact smaller text-faded mb-0">
 											<thead>
@@ -460,10 +344,28 @@ const CafeteriaDashboard = () => {
 															<td className="text-center">
 																<span>{item.name}</span>
 															</td>
-															<td className="text-center">{item.quantity}</td>
 															<td className="text-center">
-																{item.sales_price}
+																<input
+																	type="number"
+																	className="form-control"
+																	value={item.qty}
+																	min="1"
+																	onChange={e => {
+																		if (e.target.value !== '') {
+																			const qty = parseInt(e.target.value);
+																			updateCart(
+																				parseInt(qty, 10),
+																				item.id,
+																				item.sales_price * qty
+																			);
+																		} else {
+																			updateCart('', item.id, 0);
+																		}
+																	}}
+																	style={{ width: '80px' }}
+																/>
 															</td>
+															<td className="text-center">{item.price}</td>
 															<td className="text-center">
 																<a
 																	style={{
@@ -486,22 +388,19 @@ const CafeteriaDashboard = () => {
 										</table>
 									</div>
 								</div>
-								<div className="element-wrapper compact"></div>
 							</div>
 							<CafeteriaTransactionTable
 								cart={cart}
 								clearCart={clearCart}
+								clearAll={clearAll}
 								customer={customer}
+								selectedCustomer={selectedCustomer}
 								special={special}
 								orders={order}
 								deleteItem={deleteItem}
 								saveSale={saveSale}
 								submitting={submitting}
-							/>
-
-							<CafeteriaCustomerDetail
-								customer={selectedCustomer}
-								orderBy={customer}
+								updateCafeteria={updateCafeteria}
 							/>
 						</div>
 					</div>
@@ -511,4 +410,4 @@ const CafeteriaDashboard = () => {
 	);
 };
 
-export default CafeteriaDashboard;
+export default Dashboard;

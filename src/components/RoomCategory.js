@@ -184,7 +184,7 @@ const RoomCategory = props => {
 					</div>
 				</div>
 			</div>
-			<div className="col-lg-4 col-xxl-3  d-xxl-block">
+			<div className="col-lg-4">
 				<div className="pipeline white lined-warning">
 					<form onSubmit={edit ? onEditRoomCategory : onAddRoom}>
 						<h6 className="form-header">New category</h6>

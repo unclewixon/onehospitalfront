@@ -11,7 +11,7 @@ import HmoTable from '../../components/HMO/HmoTable';
 import Pagination from 'antd/lib/pagination';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
-export class Dashboard extends Component {
+export class PendingTransactions extends Component {
 	state = {
 		filtering: false,
 		dataLoaded: false,
@@ -69,41 +69,43 @@ export class Dashboard extends Component {
 		const { hmoTransactions } = this.props;
 		return (
 			<>
-				<h6 className="element-header py-2 px-2">
+				<h6 className="element-header">
 					Today's Transactions ({moment().format('YYYY-MM-DD')})
 				</h6>
-				<div className="table-responsive">
-					<table className="table table-striped">
-						<thead>
-							<tr>
-								<th className="text-center">Date</th>
-								<th className="text-center">Hmo name</th>
-								<th className="text-center">Patient name</th>
-								<th className="text-center">Description</th>
-								<th className="text-center">Amount(&#x20A6;)</th>
-								<th className="text-center">Hmo Transaction Code</th>
-								<th className="text-center">Status</th>
-								<th>
-									<div className="th-inner "></div>
-									<div className="fht-cell"></div>
-								</th>
-							</tr>
-						</thead>
-						<HmoTable loading={loading} hmoTransactions={hmoTransactions} />
-					</table>
-				</div>
-				{meta && (
-					<div className="pagination pagination-center mt-4">
-						<Pagination
-							current={parseInt(meta.currentPage, 10)}
-							pageSize={parseInt(meta.itemsPerPage, 10)}
-							total={parseInt(meta.totalPages, 10)}
-							showTotal={total => `Total ${total} transactions`}
-							itemRender={itemRender}
-							onChange={current => this.onNavigatePage(current)}
-						/>
+				<div className="element-box p-3 m-0">
+					<div className="table-responsive">
+						<table className="table table-striped">
+							<thead>
+								<tr>
+									<th className="text-center">Date</th>
+									<th className="text-center">Hmo name</th>
+									<th className="text-center">Patient name</th>
+									<th className="text-center">Description</th>
+									<th className="text-center">Amount(&#x20A6;)</th>
+									<th className="text-center">Hmo Transaction Code</th>
+									<th className="text-center">Status</th>
+									<th>
+										<div className="th-inner "></div>
+										<div className="fht-cell"></div>
+									</th>
+								</tr>
+							</thead>
+							<HmoTable loading={loading} hmoTransactions={hmoTransactions} />
+						</table>
 					</div>
-				)}
+					{meta && (
+						<div className="pagination pagination-center mt-4">
+							<Pagination
+								current={parseInt(meta.currentPage, 10)}
+								pageSize={parseInt(meta.itemsPerPage, 10)}
+								total={parseInt(meta.totalPages, 10)}
+								showTotal={total => `Total ${total} transactions`}
+								itemRender={itemRender}
+								onChange={current => this.onNavigatePage(current)}
+							/>
+						</div>
+					)}
+				</div>
 			</>
 		);
 	}
@@ -118,4 +120,4 @@ export default connect(mapStateToProps, {
 	loadHmoTransaction,
 	startBlock,
 	stopBlock,
-})(Dashboard);
+})(PendingTransactions);

@@ -173,99 +173,97 @@ export class AllTransaction extends Component {
 		const { hmoTransactions } = this.props;
 
 		return (
-			<div className="element-wrapper">
-				<h6 className="element-header pt-3 pl-1">Open Request</h6>
-				<form className="px-2">
-					<div className="row">
-						<div className="form-group col-sm-6 pr-0">
-							<label>Patient</label>
+			<>
+				<h6 className="element-header">HMO Transactions</h6>
+				<div className="element-box p-3 m-0">
+					<form className="px-2">
+						<div className="row">
+							<div className="form-group col-sm-6 pr-0">
+								<label>Patient</label>
 
-							<AsyncSelect
-								isClearable
-								getOptionValue={getOptionValues}
-								getOptionLabel={getOptionLabels}
-								defaultOptions
-								name="patient"
-								ref={this.patient}
-								loadOptions={getOptions}
-								onChange={e => {
-									this.patientSet(e, 'patient');
-								}}
-								placeholder="Search for patient"
-							/>
-						</div>
-						<div className="form-group col-sm-6 pr-0">
-							<label>
-								HMO<span className="compulsory-field">*</span>
-							</label>
+								<AsyncSelect
+									isClearable
+									getOptionValue={getOptionValues}
+									getOptionLabel={getOptionLabels}
+									defaultOptions
+									name="patient"
+									ref={this.patient}
+									loadOptions={getOptions}
+									onChange={e => {
+										this.patientSet(e, 'patient');
+									}}
+									placeholder="Search for patient"
+								/>
+							</div>
+							<div className="form-group col-sm-6 pr-0">
+								<label>
+									HMO<span className="compulsory-field">*</span>
+								</label>
 
-							<select
-								style={{ height: '35px' }}
-								id="hmo_id"
-								className="form-control"
-								name="hmo_id"
-								onChange={evt => this.change(evt)}>
-								<option value="">Choose Hmo</option>
-								{hmos.map((pat, i) => {
-									return (
-										<option key={i} value={pat.value}>
-											{pat.label}
-										</option>
-									);
-								})}
-							</select>
-						</div>
-					</div>
-					<div className="row">
-						<div className="form-group col-md-5 pr-0">
-							<label>From - To</label>
-							<RangePicker
-								onChange={e => this.dateChange(e)}
-								defaultValue={[this.state.startDate, this.state.endDate]}
-							/>
-						</div>
-						<div className="form-group col-md-5 pr-0">
-							<label className="mr-2 " htmlFor="id">
-								Status
-							</label>
-							<select
-								style={{ height: '32px' }}
-								id="status"
-								className="form-control"
-								name="status"
-								onChange={e => this.change(e)}>
-								<option value="">Choose status</option>
-								{status.map((status, i) => {
-									return (
-										<option key={i} value={status.value}>
-											{status.label}
-										</option>
-									);
-								})}
-							</select>
-						</div>
-						<div className="form-group col-md-1 pr-0 mt-4">
-							<div
-								className="btn btn-sm btn-primary btn-upper text-white"
-								onClick={this.doFilter}>
-								<i className="os-icon os-icon-ui-37" />
-								<span>
-									{filtering ? (
-										<img src={waiting} alt="submitting" />
-									) : (
-										'Filter'
-									)}
-								</span>
+								<select
+									style={{ height: '35px' }}
+									id="hmo_id"
+									className="form-control"
+									name="hmo_id"
+									onChange={evt => this.change(evt)}>
+									<option value="">Choose Hmo</option>
+									{hmos.map((pat, i) => {
+										return (
+											<option key={i} value={pat.value}>
+												{pat.label}
+											</option>
+										);
+									})}
+								</select>
 							</div>
 						</div>
-					</div>
-				</form>
+						<div className="row">
+							<div className="form-group col-md-5 pr-0">
+								<label>From - To</label>
+								<RangePicker
+									onChange={e => this.dateChange(e)}
+									defaultValue={[this.state.startDate, this.state.endDate]}
+								/>
+							</div>
+							<div className="form-group col-md-5 pr-0">
+								<label className="mr-2 " htmlFor="id">
+									Status
+								</label>
+								<select
+									style={{ height: '32px' }}
+									id="status"
+									className="form-control"
+									name="status"
+									onChange={e => this.change(e)}>
+									<option value="">Choose status</option>
+									{status.map((status, i) => {
+										return (
+											<option key={i} value={status.value}>
+												{status.label}
+											</option>
+										);
+									})}
+								</select>
+							</div>
+							<div className="form-group col-md-1 pr-0 mt-4">
+								<div
+									className="btn btn-sm btn-primary btn-upper text-white"
+									onClick={this.doFilter}>
+									<i className="os-icon os-icon-ui-37" />
+									<span>
+										{filtering ? (
+											<img src={waiting} alt="submitting" />
+										) : (
+											'Filter'
+										)}
+									</span>
+								</div>
+							</div>
+						</div>
+					</form>
 
-				<div className="element-box px-0">
 					<div className="table table-responsive">
-						<table
-							id="table"
-							className="table table-theme v-middle table-hover">
+						<table className="table table-theme v-middle table-hover">
 							<thead>
 								<tr>
 									<th className="text-center">Date</th>
@@ -296,7 +294,7 @@ export class AllTransaction extends Component {
 						</div>
 					)}
 				</div>
-			</div>
+			</>
 		);
 	}
 }

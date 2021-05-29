@@ -25,9 +25,9 @@ const ProfilePopup = ({ patient }) => {
 						</li>
 						<li>
 							EMR:
-							<strong>{`#${formatPatientId(patient.id)} [${
-								patient.folderNumber
-							}]`}</strong>
+							<strong>{`#${formatPatientId(patient.id)} ${
+								patient.folderNumber ? `[${patient.folderNumber}]` : ''
+							}`}</strong>
 						</li>
 						<li>
 							<strong className="m-0">{`${getAge(patient?.date_of_birth)}/${

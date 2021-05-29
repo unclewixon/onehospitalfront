@@ -269,7 +269,7 @@ const CreateExcuseDuty = ({ history }) => {
 								/>
 							</div>
 						</div>
-						<div className="row">
+						<div className="row mt-4">
 							<div className="col-sm-12 form-group">
 								<label>Doctor's Note</label>
 								<textarea
@@ -277,7 +277,7 @@ const CreateExcuseDuty = ({ history }) => {
 									name="reason"
 									ref={register}
 									type="text"
-									style={{ width: '100%', borderRadius: '7px', height: '80px' }}
+									className="form-control"
 									onChange={e => setValue('reason', e.target.value)}
 									placeholder="Enter doctor's note"
 								/>

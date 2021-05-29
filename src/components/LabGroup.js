@@ -233,7 +233,7 @@ const LabGroup = () => {
 					</div>
 				</div>
 			</div>
-			<div className="col-lg-4 col-xxl-3  d-xxl-block">
+			<div className="col-lg-4">
 				<div className="pipeline white lined-warning">
 					<form onSubmit={edit ? onEditGroup : onAddGroup}>
 						<h6 className="form-header">Create Group</h6>

@@ -31,7 +31,7 @@ const Complaints = ({ next }) => {
 				<div className="row">
 					<div className="col-sm-12">
 						<div className="form-group">
-							<label>Presenting Complaints</label>
+							<label>Presenting Complaints==</label>
 							<SunEditor
 								width="100%"
 								placeholder="Please type here..."

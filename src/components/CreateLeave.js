@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import Select from 'react-select';
@@ -7,76 +7,69 @@ import { useForm } from 'react-hook-form';
 import { withRouter } from 'react-router-dom';
 
 import waiting from '../assets/images/waiting.gif';
-import { get_all_leave_category } from '../actions/settings';
 import { notifySuccess, notifyError } from './../services/notify';
 import { request } from '../services/utilities';
 
-const CreateLeave = ({
-	get_all_leave_category,
-	leave_categories,
-	staff,
-	history,
-}) => {
+const CreateLeave = ({ history }) => {
 	const { register, handleSubmit, setValue } = useForm();
 	const [submitting, setSubmitting] = useState(false);
-	const [date, setDate] = useState(new Date());
-	const [leaveDate, setLeaveDate] = useState(new Date());
+	const [date, setDate] = useState('');
+	const [leaveDate, setLeaveDate] = useState('');
 	const [category, setCategory] = useState('');
 	const [endDate, setEndDate] = useState('');
+	const [leaveCategories, setLeaveCategories] = useState([]);
+
+	const staff = useSelector(state => state.user.profile);
 
 	const fetchLeaveCategory = useCallback(async () => {
 		try {
-			const rs = await request(`leave-category`, 'GET', true);
-			get_all_leave_category(rs);
+			const rs = await request('leave-category', 'GET', true);
+			setLeaveCategories(rs);
 		} catch (error) {
 			notifyError('could not fetch leave categories!');
 		}
-	}, [get_all_leave_category]);
+	}, []);
 
 	useEffect(() => {
 		fetchLeaveCategory();
 	}, [fetchLeaveCategory]);
 
-	let leaveObj = {};
-	const leaveOptions =
-		leave_categories &&
-		leave_categories.map(leave => {
-			leaveObj[leave.id] = {
-				...leave,
-				value: leave.id,
-				label: leave.name,
-			};
-			return leaveObj[leave.id];
-		});
+	const leaveOptions = leaveCategories.map(leave => ({
+		...leave,
+		value: leave.id,
+		label: leave.name,
+	}));
 
-	const getEndDate = () => {
-		const catObj = category ? leaveObj[category] : '';
+	const getEndDate = categoryId => {
+		const catObj = leaveCategories.find(c => c.id === categoryId);
 		const duration = catObj && catObj.duration ? parseInt(catObj.duration) : 0;
-		const startDate = moment(date).format('YYYY-MM-DD');
-		const newDate = moment(date)
+		const start = date === '' ? new Date() : date;
+		const startDate = moment(start).format('YYYY-MM-DD');
+		const newDate = moment(start)
 			.add(duration, 'days')
 			.format('YYYY-MM-DD');
+		setDate(start);
 		setLeaveDate(startDate);
 		setEndDate(newDate);
 	};
 
 	const onHandleSubmit = async value => {
-		setSubmitting(true);
-		const newRequestData = {
-			staff_id: staff && staff.details ? staff.details.id : '',
-			start_date: leaveDate ? leaveDate : '',
-			end_date: endDate ? endDate : '',
-			leave_category_id: category ? category : '',
-			application: value.reason,
-		};
 		try {
-			await request(`hr/leave-management`, 'POST', true, newRequestData);
+			setSubmitting(true);
+			const newRequestData = {
+				staff_id: staff && staff.details ? staff.details.id : '',
+				start_date: leaveDate ? leaveDate : '',
+				end_date: endDate ? endDate : '',
+				leave_category_id: category ? category : '',
+				application: value.reason,
+			};
+			await request('hr/leave-management', 'POST', true, newRequestData);
 			setSubmitting(false);
-			notifySuccess('Leave request added');
+			notifySuccess('Leave request sent');
 			history.push('/my-account/leave-request');
 		} catch (error) {
 			setSubmitting(false);
-			notifyError('Could not add leave request');
+			notifyError('Could not send leave request');
 		}
 	};
 
@@ -84,7 +77,7 @@ const CreateLeave = ({
 		<div className="row my-4">
 			<div className="col-sm-12">
 				<div className="element-wrapper">
-					<h6 className="element-header">Create Leave Request</h6>
+					<h6 className="element-header">Leave Request</h6>
 					<div className="element-box">
 						<div className="form-block">
 							<form onSubmit={handleSubmit(onHandleSubmit)}>
@@ -97,10 +90,9 @@ const CreateLeave = ({
 											ref={register}
 											placeholder="Select leave type"
 											options={leaveOptions}
-											defaultValue={leaveOptions[0]}
 											onChange={e => {
 												setCategory(e.value);
-												getEndDate();
+												getEndDate(e.value);
 											}}
 										/>
 									</div>
@@ -112,8 +104,8 @@ const CreateLeave = ({
 												<DatePicker
 													selected={date}
 													onChange={date => {
-														setDate(date, 'leave_date');
-														getEndDate();
+														setDate(date);
+														getEndDate(category);
 													}}
 													peekNextMonth
 													showMonthDropdown
@@ -159,18 +151,14 @@ const CreateLeave = ({
 											label="Leave Reason"
 											ref={register}
 											type="text"
-											style={{
-												width: '100%',
-												borderRadius: '7px',
-												height: '80px',
-											}}
+											className="form-control"
 											onChange={e => setValue('reason', e.target.value)}
 											placeholder="Enter your leave reason"
 										/>
 									</div>
 								</div>
 
-								<div className="row">
+								<div className="row mt-2">
 									<div className="col-sm-12 text-right">
 										<button
 											className="btn btn-primary"
@@ -179,7 +167,7 @@ const CreateLeave = ({
 											{submitting ? (
 												<img src={waiting} alt="submitting" />
 											) : (
-												'Create leave request'
+												'Submit'
 											)}
 										</button>
 									</div>
@@ -193,14 +181,4 @@ const CreateLeave = ({
 	);
 };
 
-const mapStateToProps = state => {
-	return {
-		leave_categories: state.settings.leave_categories,
-		staff: state.user.profile,
-	};
-};
-export default withRouter(
-	connect(mapStateToProps, {
-		get_all_leave_category,
-	})(CreateLeave)
-);
+export default withRouter(CreateLeave);

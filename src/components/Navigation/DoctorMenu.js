@@ -20,6 +20,14 @@ const DoctorMenu = () => {
 					<span>Appointment History</span>
 				</Link>
 			</li>
+			<li>
+				<Link to="/nurse/in-patients/care">
+					<div className="icon-w">
+						<div className="icon-feather-folder-plus" />
+					</div>
+					<span>In-Patient (Care)</span>
+				</Link>
+			</li>
 		</>
 	);
 };

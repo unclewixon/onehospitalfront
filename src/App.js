@@ -24,8 +24,10 @@ import NoMatch from './pages/NoMatch';
 import PatientProfile from './pages/PatientProfile';
 import ProcedureProfile from './pages/ProcedureProfile';
 import AntennatalProfile from './pages/AntennatalProfile';
+import AdmissionProfile from './pages/AdmissionProfile';
 
 const FrontDesk = lazy(() => import('./pages/FrontDesk/Home'));
+const Speech = lazy(() => import('./pages/FrontDesk/Speech'));
 const Nurse = lazy(() => import('./pages/Nurse/Home'));
 const Pharmacy = lazy(() => import('./pages/Pharmacy/Index'));
 const Procedure = lazy(() => import('./pages/Procedure/Home'));
@@ -33,7 +35,7 @@ const Staff = lazy(() => import('./pages/HR/index'));
 const Inventory = lazy(() => import('./pages/Inventory/index'));
 const Settings = lazy(() => import('./pages/Settings'));
 const StaffProfile = lazy(() => import('./pages/StaffProfile'));
-const Hmo = lazy(() => import('./pages/Hmo/Index'));
+const Hmo = lazy(() => import('./pages/Hmo/Home'));
 const ClinicalLab = lazy(() => import('./pages/ClinicalLab/Home'));
 const PayPoint = lazy(() => import('./pages/PayPoint/index'));
 const Radiology = lazy(() => import('./pages/Radiology/Home'));
@@ -41,7 +43,7 @@ const Antennatal = lazy(() => import('./pages/Antennatal/Home'));
 const IVF = lazy(() => import('./pages/IVF'));
 const Nicu = lazy(() => import('./pages/Nicu/Nicu'));
 const LabourMgt = lazy(() => import('./pages/LabourMgt/Home'));
-const Cafeteria = lazy(() => import('./pages/Cafeteria/index'));
+const Cafeteria = lazy(() => import('./pages/Cafeteria/Home'));
 const Account = lazy(() => import('./pages/Account/index'));
 const MyAccount = lazy(() => import('./pages/MyAccount/index'));
 const Doctor = lazy(() => import('./pages/Doctor/Home'));
@@ -79,6 +81,7 @@ class App extends Component {
 			isPatientOpen,
 			isProcedureOpen,
 			isAntenatalOpen,
+			isAdmissionOpen,
 			theme_mode,
 			menu_mode,
 			profile,
@@ -122,6 +125,7 @@ class App extends Component {
 													<Switch>
 														<Route path="/doctor" component={Doctor} />
 														<Route path="/front-desk" component={FrontDesk} />
+														<Route path="/speech" component={Speech} />
 														<Route path="/nurse" component={Nurse} />
 														<Route path="/pharmacy" component={Pharmacy} />
 														<Route path="/procedure" component={Procedure} />
@@ -158,6 +162,9 @@ class App extends Component {
 										<SlidingPane isOpen={isAntenatalOpen}>
 											<AntennatalProfile />
 										</SlidingPane>
+										<SlidingPane isOpen={isAdmissionOpen}>
+											<AdmissionProfile />
+										</SlidingPane>
 										<ModalDialogs />
 									</Suspense>
 								</div>
@@ -186,6 +193,7 @@ const mapStateToProps = state => {
 		isPatientOpen: state.user?.isPatientOpen,
 		isProcedureOpen: state.user?.isProcedureOpen,
 		isAntenatalOpen: state.user?.isAntenatalOpen,
+		isAdmissionOpen: state.user?.isAdmissionOpen,
 		theme_mode: state.user?.theme_mode,
 		menu_mode: state.user?.menu_mode,
 		fullscreen: state.user?.fullscreen,

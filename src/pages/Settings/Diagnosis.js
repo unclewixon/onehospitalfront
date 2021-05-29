@@ -4,12 +4,12 @@ import Pagination from 'antd/lib/pagination';
 import { useDispatch } from 'react-redux';
 
 import { notifyError } from '../../services/notify';
-import searchingGIF from '../../assets/images/searching.gif';
 import { request, itemRender } from '../../services/utilities';
 import ModalUploadDiagnosis from '../../components/Modals/ModalUploadDiagnosis';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import useSearchInputState from '../../services/search-hook';
 import { diagnosisAPI, alphabets } from '../../services/constants';
+import TableLoading from '../../components/TableLoading';
 
 const Diagnosis = () => {
 	const [loading, setLoading] = useState(true);
@@ -147,11 +147,9 @@ const Diagnosis = () => {
 					<div className="pipelines-w">
 						<div className="row">
 							{loading ? (
-								<div className="loading-block">
-									<img alt="searching" src={searchingGIF} />
-								</div>
+								<TableLoading />
 							) : (
-								<div className="col-lg-12 col-xxl-12">
+								<div className="col-lg-12">
 									<div className="element-wrapper">
 										<div className="element-box-tp">
 											<div className="controls-above-table">

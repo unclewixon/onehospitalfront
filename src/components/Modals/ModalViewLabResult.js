@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 
 import { request, updateImmutable } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
-import { patientAPI } from '../../services/constants';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const ModalViewLabResult = ({ closeModal, lab, labs, updateLab }) => {
@@ -15,7 +14,7 @@ const ModalViewLabResult = ({ closeModal, lab, labs, updateLab }) => {
 	const approve = async () => {
 		try {
 			dispatch(startBlock());
-			const url = `${patientAPI}/request/${lab.id}/approve-result?type=lab&request_item_id=${item.id}`;
+			const url = `requests/${lab.id}/approve-result?type=lab&request_item_id=${item.id}`;
 			const rs = await request(url, 'PATCH', true);
 			const lab_request = labs.find(l => l.id === lab.id);
 			const newLabs = updateImmutable(labs, {
@@ -37,7 +36,7 @@ const ModalViewLabResult = ({ closeModal, lab, labs, updateLab }) => {
 	const reject = async () => {
 		try {
 			dispatch(startBlock());
-			const url = `${patientAPI}/${item.id}/reject-result`;
+			const url = `requests/${item.id}/reject-result`;
 			const rs = await request(url, 'PATCH', true);
 			const lab_request = labs.find(l => l.id === lab.id);
 			const newItem = { ...lab_request, items: [rs.data] };

@@ -44,7 +44,6 @@ const AllergyRequest = lazy(() =>
 );
 
 const UpdateAllergy = lazy(() => import('../components/Patient/UpdateAllergy'));
-const Antennatal = lazy(() => import('../components/Patient/Antennatal'));
 const AntennatalRequest = lazy(() =>
 	import('../components/Patient/AntennatalRequest')
 );
@@ -64,6 +63,8 @@ const EditPatient = lazy(() => import('../components/Patient/EditPatient'));
 const ImmunizationChart = lazy(() =>
 	import('../components/Patient/ImmunizationChart')
 );
+const ProblemList = lazy(() => import('../components/Patient/ProblemList'));
+const Documents = lazy(() => import('../components/Patient/Documents'));
 
 const storage = new SSRStorage();
 
@@ -76,9 +77,13 @@ const Page = ({ location }) => {
 			return <Lab />;
 		case 'pharmacy':
 			return <Pharmacy />;
+		case 'problem-list':
+			return <ProblemList />;
+		case 'documents':
+			return <Documents />;
 		case 'vitals':
 			return <Vitals type={hash[1].split('%20').join(' ')} />;
-		case 'allergies':
+		case 'allergens':
 			return <Allergies />;
 		case 'clinical-tasks':
 			return <ClinicalTasks />;
@@ -98,8 +103,6 @@ const Page = ({ location }) => {
 			return <AllergyRequest />;
 		case 'update-allergy':
 			return <UpdateAllergy />;
-		case 'anc-visit-entry':
-			return <Antennatal />;
 		case 'antennal-request':
 			return <AntennatalRequest />;
 		case 'start-admission':

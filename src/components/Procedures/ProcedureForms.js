@@ -1,10 +1,8 @@
-import { Input } from 'antd';
-import React, { useState, useEffect } from 'react';
-import { notifyError, notifySuccess } from '../../services/notify';
+/* eslint-disable no-unused-vars */
+import React, { useState } from 'react';
 import Select from 'react-select';
 
 const NoteForm = () => {
-	const [loaded, setLoaded] = useState(false);
 	const [note, setNote] = useState('');
 	const [specialty, setSpecialty] = useState('');
 	const [type, setType] = useState('');

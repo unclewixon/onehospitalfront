@@ -21,6 +21,7 @@ class TopBar extends Component {
 		hover_settings: false,
 		focus: false,
 		style: { display: 'none' },
+		count: 0,
 	};
 
 	getCoords = elem => {
@@ -66,7 +67,7 @@ class TopBar extends Component {
 		const paths = location.pathname.split('/');
 		const title = paths.length > 1 ? paths[1] : '';
 		const sub_title = paths.length > 2 ? paths[2] : '';
-		const { hover_settings, focus, style } = this.state;
+		const { hover_settings, focus, style, count } = this.state;
 		return (
 			<div className="top-bar color-scheme-transparent">
 				{title && title !== '' && (
@@ -108,7 +109,7 @@ class TopBar extends Component {
 					<div className="messages-notifications os-dropdown-trigger os-dropdown-position-left">
 						{/* <i className="os-icon os-icon-mail-14" /> */}
 						<i className="icon-feather-bell" />
-						<div className="new-messages-count">12</div>
+						{count > 0 && <div className="new-messages-count">{{ count }}</div>}
 					</div>
 					<div
 						className={`top-icon top-settings os-dropdown-trigger os-dropdown-position-left ${

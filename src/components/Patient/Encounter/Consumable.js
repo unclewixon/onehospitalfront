@@ -111,6 +111,12 @@ const Consumable = ({
 		}
 	};
 
+	const handleKeyDown = event => {
+		if (event.key === 'Enter') {
+			add();
+		}
+	};
+
 	return (
 		<div className="form-block encounter">
 			<form onSubmit={onSubmit}>
@@ -134,18 +140,19 @@ const Consumable = ({
 							className="form-control"
 							placeholder="Enter quantity"
 							name="quantity"
+							onKeyDown={handleKeyDown}
 							onChange={e => setQuantity(e.target.value)}
 							value={quantity}
 						/>
 					</div>
-					<div className="col-sm-2" style={{ position: 'relative' }}>
+					{/* <div className="col-sm-2" style={{ position: 'relative' }}>
 						<a
 							className="btn btn-danger btn-sm"
 							style={{ margin: '45px 0 0', display: 'block' }}
 							onClick={() => add()}>
 							<i className="os-icon os-icon-plus-circle" /> Add
 						</a>
-					</div>
+					</div> */}
 				</div>
 				<div className="row">
 					<div className="col-md-12">

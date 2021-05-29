@@ -169,7 +169,7 @@ const Departments = () => {
 							</div>
 						</div>
 						{payload && (
-							<div className="col-lg-5 col-xxl-3  d-xxl-block">
+							<div className="col-lg-5">
 								<div className="element-wrapper">
 									<div className="element-box">
 										<form onSubmit={onEditDept}>

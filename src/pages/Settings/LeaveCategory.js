@@ -143,7 +143,7 @@ const LeaveCategory = props => {
 									<>
 										{props.leaveCategories.map((leaveCategory, i) => {
 											return (
-												<div className="col-lg-4 col-xxl-3" key={i}>
+												<div className="col-lg-4" key={i}>
 													<div className="pt-3">
 														<div className="pipeline-item">
 															<div className="pi-controls">
@@ -188,7 +188,7 @@ const LeaveCategory = props => {
 								)}
 							</div>
 						</div>
-						<div className="col-lg-4 col-xxl-3  d-xxl-block">
+						<div className="col-lg-4">
 							<div className="element-wrapper">
 								<div className="element-box">
 									<form

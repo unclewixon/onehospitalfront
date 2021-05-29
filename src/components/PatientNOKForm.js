@@ -5,7 +5,6 @@ import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import axios from 'axios';
-
 import { API_URI, TOKEN_COOKIE } from '../services/constants';
 import { prevStep, resetStep } from '../actions/patient';
 import { closeModals } from '../actions/general';
@@ -21,6 +20,7 @@ import { notifySuccess, notifyError } from '../services/notify';
 import { setPatientRecord } from '../actions/user';
 import { addNewPatient, updatePatient } from '../actions/patient';
 import SSRStorage from '../services/storage';
+import { loadPatients } from '../actions/patient';
 
 function PatientNOKForm(props) {
 	const formData = props.formData;
@@ -33,7 +33,6 @@ function PatientNOKForm(props) {
 	const [ethValue, setEthValue] = useState('');
 	const [relationshipValue, setRelationshipValue] = useState('');
 	const [maritalValue, setMaritalValue] = useState('');
-
 	const storage = new SSRStorage();
 
 	useEffect(() => {
@@ -190,7 +189,10 @@ function PatientNOKForm(props) {
 					setSubmitting(false);
 					console.log(res);
 					if (res.data?.success) {
-						props.addNewPatient(res.data?.patient);
+						const pat = res.data?.patient || {};
+						props.addNewPatient(pat);
+						const allPatients = [pat, ...props.patients];
+						props.loadPatients(allPatients);
 						notifySuccess('New patient account created!');
 						props.closeModals(false);
 						props.resetStep();
@@ -456,6 +458,7 @@ const mapStateToProps = (state, ownProps) => {
 	return {
 		formData: state.patient.formData,
 		patient: state.user.patient,
+		patients: state.patient.patients,
 		register_new_patient: state.general.register_new_patient,
 	};
 };
@@ -464,6 +467,7 @@ export default connect(mapStateToProps, {
 	prevStep,
 	resetStep,
 	closeModals,
+	loadPatients,
 	addNewPatient,
 	updatePatient,
 })(PatientNOKForm);

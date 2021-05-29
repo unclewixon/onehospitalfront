@@ -17,13 +17,14 @@ import { notifyError } from '../../../services/notify';
 import { ReactComponent as TrashIcon } from '../../../assets/svg-icons/trash.svg';
 
 const Diagnosis = ({ previous, next, patient }) => {
-	const { register, handleSubmit, reset } = useForm();
+	const { register, reset } = useForm();
 	const [loaded, setLoaded] = useState(false);
 	const [diagnoses, setDiagnoses] = useState([]);
 	const [pastDiagnoses, setPastDiagnoses] = useState([]);
 	const [selectedPastDiagnoses, setSelectedPastDiagnoses] = useState([]);
 	const [diagnosis, setDiagnosis] = useState('');
 	const [type, setType] = useState('');
+	const [comment, setComment] = useState('');
 	const [existing, setExisting] = useState(false);
 
 	const encounter = useSelector(state => state.patient.encounterData);
@@ -71,10 +72,11 @@ const Diagnosis = ({ previous, next, patient }) => {
 		overflowY: 'scroll',
 	};
 
-	const onSubmit = values => {
+	const onSubmit = () => {
 		if (diagnosis !== '' && type !== '') {
-			setDiagnoses([...diagnoses, { ...values, diagnosis, type }]);
+			setDiagnoses([...diagnoses, { comment, diagnosis, type }]);
 			setDiagnosis('');
+			setComment('');
 			setType('');
 			reset();
 		} else {
@@ -111,11 +113,17 @@ const Diagnosis = ({ previous, next, patient }) => {
 		}
 	};
 
+	const handleKeyDown = event => {
+		if (event.key === 'Enter') {
+			onSubmit();
+		}
+	};
+
 	return (
 		<div className="form-block encounter" style={divStyle}>
 			<div className="row">
 				<div className="col-md-7">
-					<form onSubmit={handleSubmit(onSubmit)}>
+					<form>
 						<div className="row">
 							<div className="col-sm-10">
 								<div className="form-group">
@@ -156,19 +164,22 @@ const Diagnosis = ({ previous, next, patient }) => {
 										className="form-control"
 										placeholder="Comment"
 										type="text"
+										value={comment}
+										onChange={e => setComment(e.target.value)}
 										ref={register}
+										onKeyDown={handleKeyDown}
 										name="comment"
 									/>
 								</div>
 							</div>
-							<div className="col-sm-2" style={{ position: 'relative' }}>
+							{/* <div className="col-sm-2" style={{ position: 'relative' }}>
 								<button
 									className="btn btn-danger btn-sm"
 									style={{ margin: '45px 0 0', display: 'block' }}
 									type="submit">
 									<i className="os-icon os-icon-plus-circle" /> Add
 								</button>
-							</div>
+							</div> */}
 						</div>
 					</form>
 				</div>

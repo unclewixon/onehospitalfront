@@ -12,13 +12,15 @@ import { notifyError } from '../../../services/notify';
 import { ReactComponent as TrashIcon } from '../../../assets/svg-icons/trash.svg';
 
 const Allergies = ({ previous, next, patient }) => {
-	const { register, handleSubmit, reset } = useForm();
+	const { register, reset } = useForm();
 	const [loaded, setLoaded] = useState(false);
 	const [allergens, setAllergens] = useState([]);
 	const [pastAllergies, setPastAllergies] = useState([]);
 	const [selectedPastAllergies, setSelectedPastAllergies] = useState([]);
 	const [category, setCategory] = useState('');
 	const [severity, setSeverity] = useState('');
+	const [reaction, setReaction] = useState('');
+	const [allerg, setAllerg] = useState('');
 	const [drug, setDrug] = useState('');
 	const [existing, setExisting] = useState(false);
 	// eslint-disable-next-line no-unused-vars
@@ -70,11 +72,17 @@ const Allergies = ({ previous, next, patient }) => {
 		overflowY: 'scroll',
 	};
 
-	const onSubmit = values => {
-		if (category !== '' && values.reaction !== '') {
-			setAllergens([...allergens, { ...values, category, severity, drug }]);
+	const onSubmit = async e => {
+		setSeverity(e);
+		if (category !== '' && reaction !== '' && allerg !== '') {
+			setAllergens([
+				{ allergen: allerg, category, severity: e, reaction, drug },
+				...allergens,
+			]);
 			setCategory('');
 			setSeverity('');
+			setAllerg('');
+			setReaction('');
 			setDrug('');
 			reset();
 		} else {
@@ -88,7 +96,7 @@ const Allergies = ({ previous, next, patient }) => {
 		<div className="form-block encounter" style={divStyle}>
 			<div className="row">
 				<div className="col-md-7">
-					<form onSubmit={handleSubmit(onSubmit)}>
+					<form>
 						<div className="row">
 							<div className="col-sm-6">
 								<div className="form-group">
@@ -111,7 +119,8 @@ const Allergies = ({ previous, next, patient }) => {
 										className="form-control"
 										placeholder="Allergen"
 										type="text"
-										ref={register}
+										value={allerg}
+										onChange={e => setAllerg(e.target.value)}
 										name="allergen"
 									/>
 								</div>
@@ -121,7 +130,8 @@ const Allergies = ({ previous, next, patient }) => {
 									<label>Reaction</label>
 									<input
 										type="text"
-										ref={register}
+										onChange={e => setReaction(e.target.value)}
+										value={reaction}
 										name="reaction"
 										placeholder="Reaction"
 										className="form-control"
@@ -133,23 +143,22 @@ const Allergies = ({ previous, next, patient }) => {
 									<label>Severity</label>
 									<Select
 										placeholder="Select Severity"
-										ref={register}
 										options={severities}
 										value={severity}
 										onChange={e => {
-											setSeverity(e);
+											onSubmit(e);
 										}}
 									/>
 								</div>
 							</div>
-							<div className="col-sm-2" style={{ position: 'relative' }}>
+							{/* <div className="col-sm-2" style={{ position: 'relative' }}>
 								<button
 									className="btn btn-danger btn-sm"
 									style={{ margin: '45px 0 0', display: 'block' }}
 									type="submit">
 									<i className="os-icon os-icon-plus-circle" /> Add
 								</button>
-							</div>
+							</div> */}
 						</div>
 					</form>
 				</div>

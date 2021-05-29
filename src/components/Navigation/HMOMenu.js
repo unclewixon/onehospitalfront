@@ -5,15 +5,7 @@ const HMOMenu = () => {
 	return (
 		<>
 			<li>
-				<Link to="/hmo/dashboard">
-					<div className="icon-w">
-						<div className="os-icon os-icon-agenda-1" />
-					</div>
-					<span>Transactions</span>
-				</Link>
-			</li>
-			<li>
-				<Link to="/hmo/list">
+				<Link to="/hmo">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers" />
 					</div>
@@ -26,6 +18,14 @@ const HMOMenu = () => {
 						<div className="os-icon os-icon-layers" />
 					</div>
 					<span>HMO Tariffs</span>
+				</Link>
+			</li>
+			<li>
+				<Link to="/hmo/transactions">
+					<div className="icon-w">
+						<div className="os-icon os-icon-agenda-1" />
+					</div>
+					<span>Transactions</span>
 				</Link>
 			</li>
 		</>

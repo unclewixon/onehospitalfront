@@ -77,7 +77,7 @@ const ClinicalTasks = () => {
 			await request(url, 'DELETE', true);
 			const arr = tasks.filter(tsk => tsk.id !== data.id);
 			setTasks(arr);
-			notifySuccess(`clinical task canceled!`);
+			notifySuccess('clinical task canceled!');
 		} catch (err) {
 			console.log(err);
 			notifyError(`${err.message}`);
@@ -109,12 +109,12 @@ const ClinicalTasks = () => {
 	};
 
 	const onNavigatePage = async nextPage => {
-		startBlock();
+		dispatch(startBlock());
 		const rs = await getTasks(nextPage);
 		const { result, ...paginate } = rs;
 		setMeta(paginate);
 		setTasks(result);
-		stopBlock();
+		dispatch(stopBlock());
 	};
 
 	const refreshTasks = async () => {
@@ -173,7 +173,7 @@ const ClinicalTasks = () => {
 	};
 
 	return (
-		<div className="col-sm-12 col-xxl-6">
+		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<div className="element-actions flex-action">
 					<div>
@@ -226,8 +226,9 @@ const ClinicalTasks = () => {
 											</td>
 											<td>
 												{lastReading
-													? moment(lastReading.createdAt).fromNow()
-													: ''}
+													? moment(lastReading.createdAt).fromNow(true)
+													: ''}{' '}
+												{`by ${item?.staff?.details?.first_name} ${item?.staff?.details?.last_name}`}
 											</td>
 											<td>
 												{item.nextTime &&

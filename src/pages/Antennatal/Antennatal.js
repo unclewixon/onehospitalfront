@@ -11,7 +11,6 @@ import moment from 'moment';
 import { loadAntennatal } from '../../actions/patient';
 import { viewAntenatalDetail } from '../../actions/general';
 import isEmpty from 'lodash.isempty';
-import { toggleProfile } from '../../actions/user';
 import { patientAPI } from '../../services/constants';
 
 export class Antennatal extends Component {
@@ -56,7 +55,7 @@ export class Antennatal extends Component {
 		e.preventDefault();
 		try {
 			const url = `antenatal/${id}`;
-			const rs = await request(url, 'DELETE', true);
+			await request(url, 'DELETE', true);
 			const { antennatal } = this.props;
 			const newList = antennatal.filter(ant => ant.id !== id);
 			this.props.loadAntennatal(newList);
@@ -205,7 +204,6 @@ export class Antennatal extends Component {
 												this.tableBody()
 											) : (
 												<tr>
-													{' '}
 													<td colSpan="9" className="text-center">
 														No antenatal enrolment
 													</td>
