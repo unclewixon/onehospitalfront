@@ -226,8 +226,9 @@ const ClinicalTasks = () => {
 											</td>
 											<td>
 												{lastReading
-													? moment(lastReading.createdAt).fromNow()
-													: ''}
+													? moment(lastReading.createdAt).fromNow(true)
+													: ''}{' '}
+												{`by ${item?.staff?.details?.first_name} ${item?.staff?.details?.last_name}`}
 											</td>
 											<td>
 												{item.nextTime &&

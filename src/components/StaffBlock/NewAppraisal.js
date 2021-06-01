@@ -47,9 +47,27 @@ class CreateAppraisal extends Component {
 	state = {
 		submitting: false,
 		departments: [],
+		indicators: [],
+		res: [],
 	};
 
+	fetchIndicators = async id => {
+		try {
+			const rs = await request(
+				`hr/appraisal/department-indicators/${id}`,
+				'GET',
+				true
+			);
+			this.setState({
+				indicators: rs,
+			});
+		} catch (error) {
+			notifyError(error.message || 'could not department indicators!');
+		}
+	};
 	componentDidMount() {
+		const { staff } = this.props;
+		this.fetchIndicators(staff?.department?.id);
 		this.fetchDepartments();
 		console.log(this.props.staff);
 	}
@@ -64,12 +82,25 @@ class CreateAppraisal extends Component {
 		}
 	};
 
-	handleChangeA1 = e => {
+	handleChange = e => {
+		let { res } = this.state;
 		let newValue = e.target.value;
+		let name = e.target.name;
+		const id = name.split('/')[1];
+		const ind = res.find(e => e.id === Number(id));
+
 		const { work_attitude, other_factor } = this.props;
 		const total = parseInt(newValue, 10) + work_attitude + other_factor;
 		if (!isNaN(total) && total <= 100) {
 			this.props.dispatch(this.props.change('sum_total', total));
+		}
+		if (ind) {
+			const rs = res.filter(o => o.id !== Number(id));
+			rs.push({ score: total, id: Number(id) });
+			this.setState({ res: rs });
+		} else {
+			res.push({ score: total, id: Number(id) });
+			this.setState({ res });
 		}
 	};
 
@@ -97,46 +128,37 @@ class CreateAppraisal extends Component {
 		if (!isNaN(total) && total === 100) {
 			this.setState({ submitting: true });
 			const { staff, location } = this.props;
-			const { departments } = this.state;
+			const { departments, indicators, res } = this.state;
 			console.log('doCreateApprai');
 			console.log(departments);
 			console.log(staff);
 			const deptId = staff?.details?.department?.id;
 			const department = departments?.find(d => d?.id === deptId);
 			console.log(department);
+
+			const inds = [];
+			indicators.forEach(ind => {
+				const score = res.find(id => id === ind.id);
+				if (score) {
+					inds = [
+						...inds,
+						{
+							keyFocus: ind.keyFocus,
+							objective: ind.objective,
+							kpis: ind.kpis,
+							weight: score.score,
+						},
+					];
+				}
+			});
+
 			if (department) {
 				const details = {
 					staffId: staff?.id,
 					lineManagerId: department?.hod_id,
 					departmentId: staff.details?.department.id,
 					employeeComment: data?.employeeComment,
-					indicators: [
-						{
-							keyFocus: 'Job Performance/Competence',
-							objective: 'Work Efficiency',
-							kpis: [
-								'To provide urgent medical attention and urgent treatment to staff or visitors in case of accident or sudden',
-								'Attending to emergencies as regards clients (inpatient) health care.',
-								"monitor the patents' conditions and progress",
-							],
-							weight: `${data.performance}%`,
-						},
-						{
-							keyFocus: 'Work Attitude',
-							objective: 'Team & Work Collaboration',
-							kpis: [
-								'Collaborate with colleagues and nursing staff regularly',
-								'Makes meaningful recommendation to consultants and communicate effectively with consultants and others',
-							],
-							weight: `${data.work_attitude}%`,
-						},
-						{
-							keyFocus: 'Other Factor',
-							objective: 'Attendence',
-							kpis: ['Achieve 95% monthly attendence at work'],
-							weight: `${data.other_factor}%`,
-						},
-					],
+					indicators: inds,
 				};
 
 				console.log(details);
@@ -195,7 +217,7 @@ class CreateAppraisal extends Component {
 
 	render() {
 		const { staff, error, handleSubmit, period, isStaffAppraisal } = this.props;
-		const { submitting } = this.state;
+		const { submitting, indicators } = this.state;
 
 		return (
 			<div className="row my-4">
@@ -253,82 +275,27 @@ class CreateAppraisal extends Component {
 											</tr>
 										</thead>
 										<tbody>
-											<tr>
-												<td rowSpan="5">Job Performance / Competence</td>
-												<td rowSpan="5">Work Efficiency</td>
-												<td>
-													To provide urgent medical attention and urgent
-													treatment to staff or visitors in case of accident or
-													sudden
-												</td>
-												<td rowSpan="5">70%</td>
-												{isStaffAppraisal ? <td rowSpan="5">65%</td> : null}
-												<td rowSpan="5">
-													<Field
-														name="performance"
-														component={renderTextInput}
-														label="Job Performance / Competence"
-														type="number"
-														onChange={this.handleChangeA1}
-													/>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													Attending to emergencies as regards clients
-													(inpatient) health care.
-												</td>
-											</tr>
-											<tr>
-												<td>monitor the patents' conditions and progress</td>
-											</tr>
-											<tr>
-												<td>assessment 4</td>
-											</tr>
-											<tr>
-												<td>assessment 5</td>
-											</tr>
-											<tr>
-												<td rowSpan="2">Work Attitude</td>
-												<td rowSpan="2">Team & Work Collaboration</td>
-												<td>
-													Collaborate with colleagues and nursing staff
-													regularly
-												</td>
-												<td rowSpan="2">20%</td>
-												{isStaffAppraisal ? <td rowSpan="2">15%</td> : null}
-												<td rowSpan="2">
-													<Field
-														name="work_attitude"
-														component={renderTextInput}
-														label="Work Attitude"
-														type="number"
-														onChange={this.handleChangeA2}
-													/>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													Makes meaningful recommendation to consultants and
-													communicate effectively with consultants and others
-												</td>
-											</tr>
-											<tr>
-												<td>Other Factor</td>
-												<td>Attendance</td>
-												<td>Achieve 95% monthly attendance at work</td>
-												<td>10%</td>
-												{isStaffAppraisal ? <td>9%</td> : null}
-												<td>
-													<Field
-														name="other_factor"
-														component={renderTextInput}
-														label="Other Factor"
-														type="number"
-														onChange={this.handleChangeA3}
-													/>
-												</td>
-											</tr>
+											{indicators?.map((ind, i) => {
+												return (
+													<tr key={i}>
+														<td rowSpan="5">{ind.keyFocus}</td>
+														<td rowSpan="5">{ind.objective}</td>
+														<td>{ind.kpis}</td>
+														<td rowSpan="5">{ind.weight}%</td>
+														{/* {isStaffAppraisal ? <td rowSpan="5">65%</td> : null} */}
+														<td rowSpan="5">
+															<Field
+																name={`performance/${ind.id}`}
+																component={renderTextInput}
+																label="Job Performance / Competence"
+																type="number"
+																onChange={e => this.handleChange(e)}
+															/>
+														</td>
+													</tr>
+												);
+											})}
+
 											<tr>
 												<td />
 												<td />

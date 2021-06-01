@@ -64,7 +64,8 @@ const INITIAL_STATE = {
 		reviewOfSystem: [],
 		patientHistory: null,
 		patientHistorySelected: [],
-		medicalHistory: [],
+		medicalHistory:
+			'<p><u>Past Medical History:</u>​&nbsp;</p><p><br></p><p><br></p><p><br></p><p><u><br></p>',
 		allergies: [],
 		pastAllergies: [],
 		physicalExamination: [],

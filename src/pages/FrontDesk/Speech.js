@@ -2,13 +2,11 @@
 import React, { Component } from 'react';
 import DatePicker from 'antd/lib/date-picker';
 import { connect } from 'react-redux';
-import { socket } from '../../services/constants';
-import { startBlock, stopBlock } from '../../actions/redux-block';
-import { toggleProfile } from '../../actions/user';
+import { socket, VOICE_RSS } from '../../services/constants';
 import axios from 'axios';
 
 const { RangePicker } = DatePicker;
-const apiKey = '22c03acdd54643c2b2d050d7c343c194'; //process.env.REACT_APP_VOICE_RSS_API;
+const apiKey = process.env.REACT_APP_VOICE_RSS_API;
 
 class Speech extends Component {
 	state = {
@@ -91,8 +89,4 @@ class Speech extends Component {
 	}
 }
 
-export default connect(null, {
-	startBlock,
-	stopBlock,
-	toggleProfile,
-})(Speech);
+export default Speech;

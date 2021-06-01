@@ -73,7 +73,7 @@ class Encounters extends Component {
 										</tr>
 									</thead>
 									<tbody>
-										{encounters.map((item, i) => {
+										{encounters?.map((item, i) => {
 											console.log(item);
 											return (
 												<tr key={i}>
@@ -111,7 +111,7 @@ class Encounters extends Component {
 											);
 										})}
 
-										{encounters.length === 0 && (
+										{encounters?.length === 0 && (
 											<tr className="text-center">
 												<td colSpan="7">No Encounters</td>
 											</tr>

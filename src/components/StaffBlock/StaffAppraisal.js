@@ -81,44 +81,34 @@ class StaffAppraisal extends Component {
 									<thead>
 										<tr>
 											<th data-field="owner">
-												<div className="th-inner sortable both text-center">
-													STAFF ID
-												</div>
+												<div className="th-inner sortable both ">STAFF ID</div>
 												<div className="fht-cell"></div>
 											</th>
 											<th data-field="project">
-												<div className="th-inner sortable both text-center">
-													NAME
-												</div>
+												<div className="th-inner sortable both ">NAME</div>
 												<div className="fht-cell"></div>
 											</th>
 											<th data-field="project">
-												<div className="th-inner sortable both text-center">
-													JOB TITLE
-												</div>
+												<div className="th-inner sortable both ">JOB TITLE</div>
 												<div className="fht-cell"></div>
 											</th>
 											<th data-field="project">
-												<div className="th-inner sortable both text-center">
+												<div className="th-inner sortable both ">
 													Phone Number
 												</div>
 												<div className="fht-cell"></div>
 											</th>
 											<th data-field="project">
-												<div className="th-inner sortable both text-center">
-													Gender
-												</div>
+												<div className="th-inner sortable both ">Gender</div>
 												<div className="fht-cell"></div>
 											</th>
 											<th data-field="project">
-												<div className="th-inner sortable both text-center">
-													Email
-												</div>
+												<div className="th-inner sortable both ">Email</div>
 												<div className="fht-cell"></div>
 											</th>
 
 											<th data-field="5">
-												<div className="th-inner text-center">Actions</div>
+												<div className="th-inner ">Actions</div>
 												<div className="fht-cell"></div>
 											</th>
 										</tr>
@@ -130,19 +120,15 @@ class StaffAppraisal extends Component {
 											staffs.map(el => {
 												return (
 													<tr key={el.id}>
-														<td className="flex text-center">{el.emp_code}</td>
-														<td className="flex text-center">
-															{el.first_name + ' ' + el.last_name}
-														</td>
-														<td className="flex text-center">{el.job_title}</td>
+														<td>{el.emp_code}</td>
+														<td>{el.first_name + ' ' + el.last_name}</td>
+														<td>{el.job_title}</td>
 
-														<td className="flex text-center">
-															{el.phone_number}
-														</td>
-														<td className="flex text-center">{el.gender}</td>
-														<td className="flex text-center">{el.email}</td>
+														<td>{el.phone_number}</td>
+														<td>{el.gender}</td>
+														<td>{el.email}</td>
 
-														<td className="text-center row-actions">
+														<td className=" row-actions">
 															<Tooltip title="Create Staff Appraisal">
 																<a
 																	className="secondary"
