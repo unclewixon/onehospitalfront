@@ -3,14 +3,15 @@ import { connect, useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import Pagination from 'antd/lib/pagination';
-import waiting from '../../assets/images/waiting.gif';
 import DatePicker from 'antd/lib/date-picker';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import { Popover, Overlay } from 'react-bootstrap';
+
+import waiting from '../../assets/images/waiting.gif';
 import { searchAPI } from '../../services/constants';
 import TransactionTable from '../../components/Tables/TransactionTable';
 import { socket } from '../../services/constants';
 import { request, itemRender } from '../../services/utilities';
-import { Popover, Overlay } from 'react-bootstrap';
 import Reciept from './../../components/Invoice/Reciept';
 import Invoice from './../../components/Invoice/Invoice';
 import {
@@ -21,10 +22,12 @@ import {
 import PrintReceiptPortal from './PrintReceiptPortal';
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
+import TableLoading from '../../components/TableLoading';
 
 const { RangePicker } = DatePicker;
 const PaypointQueue = ({ staff }) => {
 	const [show, setShow] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const [target, setTarget] = useState(null);
 	const [listenning, setListenning] = useState(false);
 	const [filtering, setFiltering] = useState(false);
@@ -64,6 +67,7 @@ const PaypointQueue = ({ staff }) => {
 
 	const init = async page => {
 		try {
+			setLoading(true);
 			const p = page || 1;
 			setCurrentPage(p);
 			const url = `transactions/list/pending?page=${p}&limit=24&patient_id=${patient ||
@@ -76,11 +80,13 @@ const PaypointQueue = ({ staff }) => {
 			const arr = [...result];
 			dispatch(getAllPendingTransactions(arr));
 			setFiltering(false);
+			setLoading(false);
 			dispatch(stopBlock());
 		} catch (e) {
 			dispatch(stopBlock());
 			notifyError(e.message || 'could not fetch transactions');
 			setFiltering(false);
+			setLoading(false);
 		}
 	};
 
@@ -187,78 +193,84 @@ const PaypointQueue = ({ staff }) => {
 			</div>
 
 			<div className="col-sm-12">
-				<div className="table-responsive">
-					{activeData && showReceipt && (
-						<PrintReceiptPortal>
-							<Reciept data={activeData} />
-						</PrintReceiptPortal>
-					)}
-					{activeData && showInvoice && (
-						<PrintReceiptPortal>
-							<Invoice data={activeData} />
-						</PrintReceiptPortal>
-					)}
-					<Overlay
-						show={show}
-						target={target}
-						placement="left"
-						container={ref.current}>
-						<Popover id="print" style={{ width: '10rem' }}>
-							<Popover.Title>Print</Popover.Title>
-							<div action>
-								<button
-									onClick={onPrintInvoice}
-									style={{
-										border: 'none',
-										background: '#fff',
-										width: '100%',
-										textAlign: 'center',
-										paddingTop: '0.5rem',
-										paddingBottom: '0.5rem',
-									}}>
-									INVOICE
-								</button>
+				{loading ? (
+					<TableLoading />
+				) : (
+					<>
+						<div className="table-responsive">
+							<Overlay
+								show={show}
+								target={target}
+								placement="left"
+								container={ref.current}>
+								<Popover id="print" style={{ width: '10rem' }}>
+									<Popover.Title>Print</Popover.Title>
+									<div action>
+										<button
+											onClick={onPrintInvoice}
+											style={{
+												border: 'none',
+												background: '#fff',
+												width: '100%',
+												textAlign: 'center',
+												paddingTop: '0.5rem',
+												paddingBottom: '0.5rem',
+											}}>
+											INVOICE
+										</button>
+									</div>
+									<div action>
+										<button
+											onClick={onPrintReceipt}
+											style={{
+												border: 'none',
+												background: '#fff',
+												width: '100%',
+												textAlign: 'center',
+												paddingTop: '0.5rem',
+												paddingBottom: '0.5rem',
+											}}>
+											RECEIPT
+										</button>
+									</div>
+								</Popover>
+							</Overlay>
+							{transactions && (
+								<TransactionTable
+									transactions={transactions}
+									showActionBtns={true}
+									approveTransaction={doApproveTransaction}
+									doApplyVoucher={doApplyVoucher}
+									handlePrint={handlePrintClick}
+									queue={true}
+								/>
+							)}
+						</div>
+						{meta && (
+							<div className="pagination pagination-center mt-4">
+								<Pagination
+									current={parseInt(meta.currentPage, 10)}
+									pageSize={parseInt(meta.itemsPerPage, 10)}
+									total={parseInt(meta.totalPages, 10)}
+									showTotal={total => `Total ${total} transactions`}
+									itemRender={itemRender}
+									onChange={current => onNavigatePage(current)}
+								/>
 							</div>
-							<div action>
-								<button
-									onClick={onPrintReceipt}
-									style={{
-										border: 'none',
-										background: '#fff',
-										width: '100%',
-										textAlign: 'center',
-										paddingTop: '0.5rem',
-										paddingBottom: '0.5rem',
-									}}>
-									RECEIPT
-								</button>
-							</div>
-						</Popover>
-					</Overlay>
-					{transactions && (
-						<TransactionTable
-							transactions={transactions}
-							loading={false}
-							showActionBtns={true}
-							approveTransaction={doApproveTransaction}
-							doApplyVoucher={doApplyVoucher}
-							handlePrint={handlePrintClick}
-						/>
-					)}
-				</div>
-				{meta && (
-					<div className="pagination pagination-center mt-4">
-						<Pagination
-							current={parseInt(meta.currentPage, 10)}
-							pageSize={parseInt(meta.itemsPerPage, 10)}
-							total={parseInt(meta.totalPages, 10)}
-							showTotal={total => `Total ${total} transactions`}
-							itemRender={itemRender}
-							onChange={current => onNavigatePage(current)}
-						/>
-					</div>
+						)}
+					</>
 				)}
 			</div>
+			{activeData && showReceipt && (
+				<PrintReceiptPortal>
+					<Reciept data={activeData} />
+				</PrintReceiptPortal>
+			)}
+			{activeData && showInvoice && (
+				<PrintReceiptPortal>
+					<Invoice data={activeData} />
+				</PrintReceiptPortal>
+			)}
 		</div>
 	);
 };

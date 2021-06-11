@@ -16,6 +16,7 @@ export const socket = socketIOClient(API_URI, {
 });
 
 export const hmoAPI = 'hmos';
+export const cafeteriaAPI = 'cafeteria';
 export const inventoryAPI = 'inventory/stocks';
 export const inventoryUpdateQuantityAPI = 'inventory/stocks/update-quantity';
 export const stocksAPI = 'stocks';

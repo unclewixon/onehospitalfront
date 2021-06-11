@@ -1,10 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { transactionsAPI } from '../../services/constants';
-import waiting from '../../assets/images/waiting.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
+import Pagination from 'antd/lib/pagination';
+
+import { transactionsAPI } from '../../services/constants';
+import waiting from '../../assets/images/waiting.gif';
 import { request, confirmAction, itemRender } from '../../services/utilities';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import { searchAPI } from '../../services/constants';
@@ -12,8 +14,8 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import { loadTransaction, deleteTransaction } from '../../actions/transaction';
 import { applyVoucher, approveTransaction } from '../../actions/general';
 import TransactionTable from '../../components/Tables/TransactionTable';
-import Pagination from 'antd/lib/pagination';
 import { startBlock, stopBlock } from '../../actions/redux-block';
+import TableLoading from '../../components/TableLoading';
 
 const { RangePicker } = DatePicker;
 const paymentStatus = [
@@ -193,29 +195,35 @@ class TransactionHistory extends Component {
 				</div>
 
 				<div className="col-sm-12">
-					<div className="table-responsive">
-						<TransactionTable
-							transactions={transactions}
-							loading={loading}
-							showPrint={true}
-							queue={false}
-							showActionBtns={true}
-							approveTransaction={this.doApproveTransaction}
-							doApplyVoucher={this.doApplyVoucher}
-							handlePrint={this.handlePrintClick}
-						/>
-					</div>
-					{meta && (
-						<div className="pagination pagination-center mt-4">
-							<Pagination
-								current={parseInt(meta.currentPage, 10)}
-								pageSize={parseInt(meta.itemsPerPage, 10)}
-								total={parseInt(meta.totalPages, 10)}
-								showTotal={total => `Total ${total} transactions`}
-								itemRender={itemRender}
-								onChange={current => this.onNavigatePage(current)}
-							/>
-						</div>
+					{loading ? (
+						<TableLoading />
+					) : (
+						<>
+							<div className="table-responsive">
+								<TransactionTable
+									transactions={transactions}
+									loading={loading}
+									showPrint={true}
+									queue={false}
+									showActionBtns={true}
+									approveTransaction={this.doApproveTransaction}
+									doApplyVoucher={this.doApplyVoucher}
+									handlePrint={this.handlePrintClick}
+								/>
+							</div>
+							{meta && (
+								<div className="pagination pagination-center mt-4">
+									<Pagination
+										current={parseInt(meta.currentPage, 10)}
+										pageSize={parseInt(meta.itemsPerPage, 10)}
+										total={parseInt(meta.totalPages, 10)}
+										showTotal={total => `Total ${total} transactions`}
+										itemRender={itemRender}
+										onChange={current => this.onNavigatePage(current)}
+									/>
+								</div>
+							)}
+						</>
 					)}
 				</div>
 			</div>

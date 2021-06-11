@@ -1,14 +1,18 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import moment from 'moment';
+import { connect } from 'react-redux';
 
-import { request } from '../../services/utilities';
 import { transactionsAPI } from '../../services/constants';
-import PayPointTable from '../../components/PayPointTable';
-import PayPointItem from '../../components/PayPointItem';
+import { request } from '../../services/utilities';
+import { loadTodayTransaction } from '../../actions/transaction';
+import TransactionTable from '../../components/Tables/TransactionTable';
+import TableLoading from '../../components/TableLoading';
 
-class PayPointPage extends Component {
+export class Dashboard extends Component {
 	state = {
-		payPoints: [],
+		loading: false,
+		meta: null,
 	};
 
 	componentDidMount() {
@@ -17,67 +21,47 @@ class PayPointPage extends Component {
 
 	fetchTransaction = async () => {
 		try {
+			this.setState({ loading: true });
 			let today = moment().format('YYYY-MM-DD');
 			console.log(today);
-			const rs = await request(`${transactionsAPI}/dashboard`, 'GET', true);
-			this.setState({
-				payPoints: [
-					{
-						type: 'Daily Total',
-						id: 'daily-total',
-						total: rs.dailyTotal.amount ? rs.dailyTotal.amount : 0,
-					},
-					{
-						type: 'Total Unpaid',
-						id: 'total-unpaid',
-						total: rs.unpaidTotal.amount ? rs.unpaidTotal.amount : 0,
-					},
-
-					{
-						type: 'Total Cash',
-						id: 'total-cash',
-						total: rs.totalCash.amount ? rs.totalCash.amount : 0,
-					},
-					{
-						type: 'Total POS',
-						id: 'total-pos',
-						total: rs.totalPOS.amount ? rs.totalPOS.amount : 0,
-					},
-					{
-						type: 'Total Cheque',
-						id: 'total-cheque',
-						total: rs.totalCheque.amount ? rs.totalCheque.amount : 0,
-					},
-					{
-						type: 'Total Outstanding',
-						id: 'total-outstanding',
-						total: rs.totalOutstanding.amount ? rs.totalOutstanding.amount : 0,
-					},
-				],
-			});
-			console.log(rs);
+			const url = `${transactionsAPI}/list?patient_id=&startDate=${today}&endDate=${today}&transaction_type=&status=`;
+			const rs = await request(url, 'GET', true);
+			const { result, ...meta } = rs;
+			this.props.loadTodayTransaction(result.reverse());
+			this.setState({ loading: false, meta });
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
 	render() {
-		const { payPoints } = this.state;
+		const { loading } = this.state;
+		const transactions = this.props.todayTransaction;
 		return (
-			<>
-				<div className="col-sm-12">
-					<div className="element-content">
-						<div className="row">
-							{payPoints.map((payPoint, i) => {
-								return <PayPointItem payPoint={payPoint} key={i} />;
-							})}
+			<div className="col-sm-12">
+				<div className="element-box">
+					<h6 className="element-header">
+						Today's Transactions ({moment().format('DD-MMM-YYYY')})
+					</h6>
+					{loading ? (
+						<TableLoading />
+					) : (
+						<div className="table-responsive">
+							<TransactionTable transactions={transactions} queue={true} />
 						</div>
-					</div>
+					)}
 				</div>
-				<PayPointTable />
-			</>
+			</div>
 		);
 	}
 }
 
-export default PayPointPage;
+const mapStateToProps = state => {
+	return {
+		todayTransaction: state.transaction.todayTransaction,
+	};
+};
+
+export default connect(mapStateToProps, {
+	loadTodayTransaction,
+})(Dashboard);

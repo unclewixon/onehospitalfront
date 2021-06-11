@@ -16,6 +16,7 @@ const defaultValues = {
 	lab_urgent: false,
 	scan_request_note: '',
 	scan_urgent: false,
+	pay_later: false,
 };
 
 const category_id = 13;
@@ -30,7 +31,6 @@ const Investigations = ({ patient, previous, next }) => {
 	const [loaded, setLoaded] = useState(false);
 
 	const [labTests, setLabTests] = useState([]);
-	const [categories, setCategories] = useState([]);
 	const [groups, setGroups] = useState([]);
 	const [services, setServices] = useState([]);
 
@@ -39,10 +39,10 @@ const Investigations = ({ patient, previous, next }) => {
 	const [selectedScans, setSelectedScans] = useState([]);
 
 	// lab
-	const [category, setCategory] = useState(null);
 	const [group, setGroup] = useState(null);
 	const [labTest, setLabTest] = useState(null);
 	const [urgentLab, setUrgentLab] = useState(false);
+	const [payLater, setPayLater] = useState(false);
 
 	// radiology
 	const [service, setService] = useState(null);
@@ -54,12 +54,6 @@ const Investigations = ({ patient, previous, next }) => {
 		async hmoId => {
 			try {
 				dispatch(startBlock());
-
-				try {
-					const url = `lab-tests/categories?hasTest=1&hmo_id=${hmoId}`;
-					const rs = await request(url, 'GET', true);
-					setCategories(rs);
-				} catch (error) {}
 
 				try {
 					const url = `lab-tests/groups?hmo_id=${hmoId}`;
@@ -117,6 +111,7 @@ const Investigations = ({ patient, previous, next }) => {
 			tests: [...selectedTests.map(t => ({ id: t.id }))],
 			request_note: data.lab_request_note,
 			urgent: data.lab_urgent,
+			pay_later: data.pay_later ? -1 : 0,
 		};
 
 		const radiologyRequest = {
@@ -145,7 +140,7 @@ const Investigations = ({ patient, previous, next }) => {
 			<div className="form-block encounter">
 				<h5>Lab Requests</h5>
 				<div className="row">
-					<div className="form-group col-sm-12">
+					<div className="form-group col-sm-6">
 						<label>Lab Group</label>
 						<Select
 							name="lab_group"
@@ -163,23 +158,6 @@ const Investigations = ({ patient, previous, next }) => {
 							}}
 						/>
 					</div>
-				</div>
-				<div className="row">
-					<div className="form-group col-sm-6">
-						<label>Lab Categories</label>
-						<Select
-							name="lab_category"
-							placeholder="Select Lab Category"
-							options={categories}
-							value={category}
-							getOptionValue={option => option.id}
-							getOptionLabel={option => option.name}
-							onChange={e => {
-								setCategory(e);
-								setLabTests(e.lab_tests);
-							}}
-						/>
-					</div>
 					<div className="form-group col-sm-6">
 						<label>Lab Test</label>
 						<Select
@@ -192,7 +170,6 @@ const Investigations = ({ patient, previous, next }) => {
 							onChange={e => {
 								setLabTest(e);
 								setSelectedTests([...selectedTests, e]);
-								setCategory(null);
 								setLabTests([]);
 								setLabTest(null);
 							}}
@@ -249,7 +226,7 @@ const Investigations = ({ patient, previous, next }) => {
 					</div>
 				</div>
 				<div className="row">
-					<div className="form-group col-sm-6">
+					<div className="form-group col-sm-4">
 						<div className="form-check col-sm-12">
 							<label className="form-check-label">
 								<input
@@ -264,7 +241,22 @@ const Investigations = ({ patient, previous, next }) => {
 							</label>
 						</div>
 					</div>
-					<div className="col-sm-6 text-right"></div>
+					<div className="form-group col-sm-4">
+						<div className="form-check col-sm-12">
+							<label className="form-check-label">
+								<input
+									className="form-check-input mt-0"
+									name="pay_later"
+									type="checkbox"
+									checked={payLater}
+									onChange={e => setPayLater(!payLater)}
+									ref={register}
+								/>
+								Pay Later
+							</label>
+						</div>
+					</div>
+					<div className="col-sm-4 text-right"></div>
 				</div>
 				<div className="mt-4"></div>
 				<h5>Radiology Requests</h5>

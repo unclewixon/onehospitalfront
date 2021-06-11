@@ -743,7 +743,7 @@ body.color-scheme-dark, .content-panel.color-scheme-dark {
 	}
 
 	.table thead th {
-		border-bottom-color: $dark-border-color;
+		// border-bottom-color: $dark-border-color;
 		@include text-faded-dark();
 	}
 

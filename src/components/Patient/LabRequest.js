@@ -19,6 +19,7 @@ import { formatPatientId } from '../../services/utilities';
 const defaultValues = {
 	request_note: '',
 	urgent: false,
+	payLater: false,
 };
 
 const LabRequest = ({ module, history, location }) => {
@@ -30,23 +31,17 @@ const LabRequest = ({ module, history, location }) => {
 	const [loadedPatient, setLoadedPatient] = useState(false);
 	const [chosenPatient, setChosenPatient] = useState(null);
 
-	// load categories
-	const [categories, setCategories] = useState([]);
-
 	// load groups
 	const [groups, setGroups] = useState([]);
-
-	// load
-	const [labTests, setLabTests] = useState([]);
 
 	// selected lab tests
 	const [tests, setTests] = useState([]);
 
-	const [category, setCategory] = useState(null);
 	const [group, setGroup] = useState(null);
 	const [labTest, setLabTest] = useState(null);
 
 	const [urgent, setUrgent] = useState(false);
+	const [payLater, setPayLater] = useState(false);
 
 	const currentPatient = useSelector(state => state.user.patient);
 
@@ -58,23 +53,17 @@ const LabRequest = ({ module, history, location }) => {
 				dispatch(startBlock());
 
 				try {
-					const url = `lab-tests/categories?hasTest=1&hmo_id=${hmoId}`;
-					const rs = await request(url, 'GET', true);
-					setCategories(rs);
-				} catch (error) {}
-
-				try {
 					const url = `lab-tests/groups?hmo_id=${hmoId}`;
 					const rs = await request(url, 'GET', true);
 					setGroups(rs);
 				} catch (e) {
-					notifyError('Error fetching drugs');
+					notifyError('Error fetching lab groups');
 				}
 
 				dispatch(stopBlock());
 			} catch (error) {
 				console.log(error);
-				notifyError('Error fetching drugs');
+				notifyError('Error fetching groups');
 				dispatch(stopBlock());
 			}
 		},
@@ -97,6 +86,20 @@ const LabRequest = ({ module, history, location }) => {
 		const url = `${searchAPI}?q=${q}`;
 		const res = await request(url, 'GET', true);
 		return res;
+	};
+
+	const getLabTests = async q => {
+		if (!q || q.length < 1) {
+			return [];
+		}
+
+		if (!chosenPatient?.hmo) {
+			return [];
+		}
+
+		const url = `lab-tests?q=${q}&hmo_id=${chosenPatient.hmo.id}`;
+		const res = await request(url, 'GET', true);
+		return res?.result || [];
 	};
 
 	const onTrash = index => {
@@ -122,6 +125,7 @@ const LabRequest = ({ module, history, location }) => {
 				tests: [...tests.map(t => ({ id: t.id }))],
 				request_note: data.request_note,
 				urgent: data.urgent,
+				pay_later: data.payLater ? -1 : 0,
 			};
 
 			setSubmitting(true);
@@ -166,7 +170,6 @@ const LabRequest = ({ module, history, location }) => {
 												setChosenPatient(e);
 											} else {
 												setChosenPatient(null);
-												setCategories([]);
 												setTests([]);
 												setGroups([]);
 											}
@@ -177,7 +180,7 @@ const LabRequest = ({ module, history, location }) => {
 							</div>
 						)}
 						<div className="row">
-							<div className="form-group col-sm-12">
+							<div className="form-group col-sm-6">
 								<label>Lab Group</label>
 								<Select
 									name="lab_group"
@@ -195,39 +198,21 @@ const LabRequest = ({ module, history, location }) => {
 									}}
 								/>
 							</div>
-						</div>
-						<div className="row">
-							<div className="form-group col-sm-6">
-								<label>Lab Categories</label>
-								<Select
-									name="lab_category"
-									placeholder="Select Lab Category"
-									options={categories}
-									value={category}
-									getOptionValue={option => option.id}
-									getOptionLabel={option => option.name}
-									onChange={e => {
-										setCategory(e);
-										setLabTests(e.lab_tests);
-									}}
-								/>
-							</div>
 							<div className="form-group col-sm-6">
 								<label>Lab Test</label>
-								<Select
-									name="lab_tests"
-									placeholder="Select Lab Tests"
-									options={labTests}
-									value={labTest}
+								<AsyncSelect
 									getOptionValue={option => option.id}
 									getOptionLabel={option => option.name}
+									defaultOptions
+									name="lab_test"
+									loadOptions={getLabTests}
+									value={labTest}
 									onChange={e => {
 										setLabTest(e);
 										setTests([...tests, e]);
-										setCategory(null);
-										setLabTests([]);
 										setLabTest(null);
 									}}
+									placeholder="Search Lab Test"
 								/>
 							</div>
 						</div>
@@ -277,7 +262,7 @@ const LabRequest = ({ module, history, location }) => {
 							</div>
 						</div>
 						<div className="row">
-							<div className="form-group col-sm-6">
+							<div className="form-group col-sm-4">
 								<div className="form-check col-sm-12">
 									<label className="form-check-label">
 										<input
@@ -292,7 +277,22 @@ const LabRequest = ({ module, history, location }) => {
 									</label>
 								</div>
 							</div>
-							<div className="col-sm-6 text-right">
+							<div className="form-group col-sm-4">
+								<div className="form-check col-sm-12">
+									<label className="form-check-label">
+										<input
+											className="form-check-input mt-0"
+											name="payLater"
+											type="checkbox"
+											checked={payLater}
+											onChange={e => setPayLater(!payLater)}
+											ref={register}
+										/>
+										Pay Later
+									</label>
+								</div>
+							</div>
+							<div className="col-sm-4 text-right">
 								<button className="btn btn-primary" disabled={submitting}>
 									{submitting ? (
 										<img src={waiting} alt="submitting" />

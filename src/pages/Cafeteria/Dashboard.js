@@ -1,17 +1,17 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useCallback } from 'react';
 import Pagination from 'antd/lib/pagination';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
-import { searchAPI, inventoryAPI, paginate } from '../../services/constants';
+import { searchAPI, cafeteriaAPI, paginate } from '../../services/constants';
 import {
 	request,
 	formatCurrency,
 	itemRender,
 	updateImmutable,
 } from '../../services/utilities';
-import CafeteriaTransactionTable from '../../components/CafeteriaTransactionTable';
+import CafeteriaTransaction from '../../components/CafeteriaTransaction';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const Dashboard = () => {
@@ -20,7 +20,6 @@ const Dashboard = () => {
 	const [loaded, setLoaded] = useState(false);
 	const [cafeteriaItems, setCafeteriaItems] = useState([]);
 	const [selectedCustomer, setSelectedCustomer] = useState('');
-	const [order, setOrder] = useState([]);
 
 	const [submitting, setSubmitting] = useState(false);
 	const [cart, setCart] = useState([]);
@@ -28,7 +27,6 @@ const Dashboard = () => {
 	const [meta, setMeta] = useState({ ...paginate });
 
 	const dispatch = useDispatch();
-	const categories = useSelector(state => state.inventory.categories);
 
 	const clearCart = () => {};
 
@@ -36,31 +34,24 @@ const Dashboard = () => {
 		setCart([]);
 		setSelectedCustomer('');
 		setCustomer('');
-		setOrder([]);
 	};
 
-	const fetchInventories = useCallback(
-		async page => {
-			try {
-				let roleQy = '';
-				const category = categories.find(d => d.name === 'Cafeteria');
-				roleQy = category ? `&q=${category.id}` : '';
-				const p = page || 1;
-				const url = `${inventoryAPI}?page=${p}&limit=20${roleQy}`;
-				const rs = await request(url, 'GET', true);
-				const { result, ...info } = rs;
-				setCafeteriaItems(result);
-				setMeta(info);
-			} catch (error) {
-				console.log(error);
-			}
-		},
-		[categories]
-	);
+	const fetchInventories = useCallback(async page => {
+		try {
+			const p = page || 1;
+			const url = `${cafeteriaAPI}/items?page=${p}&limit=20`;
+			const rs = await request(url, 'GET', true);
+			const { result, ...info } = rs;
+			setCafeteriaItems(result);
+			setMeta(info);
+		} catch (error) {
+			console.log(error);
+		}
+	}, []);
 
 	const updateCafeteria = data => {
-		for (let i = 0; i < data.length; i++) {
-			const item = data[i];
+		for (let i = 0; i < data.transaction_details.length; i++) {
+			const item = data.transaction_details[i];
 
 			const cafeteriaItem = cafeteriaItems.find(c => c.id === item.id);
 			if (cafeteriaItem) {
@@ -88,17 +79,11 @@ const Dashboard = () => {
 	const addToCart = product => {
 		const item = cart.find(el => el.id === product.id);
 		if (!item) {
-			setCart([...cart, { ...product, qty: 1, price: product.sales_price }]);
+			setCart([...cart, { ...product, qty: 1, amount: product.price }]);
 		} else {
 			const qty = item.qty === '' ? 1 : item.qty + 1;
-			updateCart(qty, item.id, product.sales_price * qty);
+			updateCart(qty, item.id, product.price * qty);
 		}
-	};
-
-	const deleteItem = id => {
-		let newOrder = order.filter(el => el.item.q_id !== id);
-
-		setOrder(newOrder);
 	};
 
 	const patientSet = pat => {
@@ -122,16 +107,18 @@ const Dashboard = () => {
 			const data = {
 				user_type: customer ? customer : 'walk-in',
 				user_id: selectedCustomer ? selectedCustomer.id : '',
-				amount: summary.subTotal,
-				amount_paid: summary.amount,
-				balance: +summary.subTotal - +summary.amount,
+				sub_total: summary.subTotal,
+				vat: summary.vat,
+				total_amount: summary.total,
+				amount_paid: summary.amountPaid,
 				payment_type: summary.type,
 				items: cart,
+				balance: summary.balance,
 			};
 
 			dispatch(startBlock());
 			setSubmitting(true);
-			const rs = await request('cafeteria/sales', 'POST', true, data);
+			const rs = await request('cafeteria/sale', 'POST', true, data);
 			setSubmitting(false);
 			dispatch(stopBlock());
 			return rs;
@@ -186,8 +173,8 @@ const Dashboard = () => {
 		return res;
 	};
 
-	const updateCart = (qty, id, price) => {
-		const product = updateImmutable(cart, { id, qty, price });
+	const updateCart = (qty, id, amount) => {
+		const product = updateImmutable(cart, { id, qty, amount });
 		setCart(product);
 	};
 
@@ -222,7 +209,7 @@ const Dashboard = () => {
 													<a className="profile-tile-box">
 														<div>{item.name}</div>
 														<div className="pt-avatar-w d-block">
-															{formatCurrency(item.sales_price)}
+															{formatCurrency(item.price)}
 														</div>
 														<div className="d-block">
 															{`${item.quantity} items`}
@@ -237,7 +224,7 @@ const Dashboard = () => {
 											current={parseInt(meta.currentPage, 10)}
 											pageSize={parseInt(meta.itemsPerPage, 10)}
 											total={parseInt(meta.totalPages, 10)}
-											showTotal={total => `Total ${total} stocks`}
+											showTotal={total => `Total ${total} items`}
 											itemRender={itemRender}
 											onChange={onNavigatePage}
 										/>
@@ -251,15 +238,8 @@ const Dashboard = () => {
 				<div className="col-lg-5 b-l-lg">
 					<div className="padded-lg">
 						<div className="element-wrapper">
-							<div
-								className="content-panel compact"
-								style={{ backgroundColor: '#fff' }}>
-								<div className="content-panel-close">
-									<i className="os-icon os-icon-close"></i>
-								</div>
+							<div className="content-panel compact py-0 mt-2 bg-white">
 								<div className="element-wrapper">
-									<div className="element-actions actions-only"></div>
-
 									<h6 className="element-header">Payment Calculator</h6>
 									<div className="element-box-tp">
 										<div className="row">
@@ -347,7 +327,7 @@ const Dashboard = () => {
 															<td className="text-center">
 																<input
 																	type="number"
-																	className="form-control"
+																	className="form-control no-arrows"
 																	value={item.qty}
 																	min="1"
 																	onChange={e => {
@@ -356,16 +336,16 @@ const Dashboard = () => {
 																			updateCart(
 																				parseInt(qty, 10),
 																				item.id,
-																				item.sales_price * qty
+																				item.price * qty
 																			);
 																		} else {
 																			updateCart('', item.id, 0);
 																		}
 																	}}
-																	style={{ width: '80px' }}
+																	style={{ width: '80px', height: '25px' }}
 																/>
 															</td>
-															<td className="text-center">{item.price}</td>
+															<td className="text-center">{item.amount}</td>
 															<td className="text-center">
 																<a
 																	style={{
@@ -389,15 +369,13 @@ const Dashboard = () => {
 									</div>
 								</div>
 							</div>
-							<CafeteriaTransactionTable
+							<CafeteriaTransaction
 								cart={cart}
 								clearCart={clearCart}
 								clearAll={clearAll}
 								customer={customer}
 								selectedCustomer={selectedCustomer}
 								special={special}
-								orders={order}
-								deleteItem={deleteItem}
 								saveSale={saveSale}
 								submitting={submitting}
 								updateCafeteria={updateCafeteria}

@@ -8,6 +8,7 @@ import {
 	deleteTransaction,
 } from '../../actions/transaction';
 import TransactionTable from '../../components/Tables/TransactionTable';
+import TableLoading from '../../components/TableLoading';
 
 class PayPoint extends Component {
 	state = {
@@ -50,25 +51,31 @@ class PayPoint extends Component {
 		return (
 			<div className="col-sm-12">
 				<div className="element-box m-0 p-3">
-					<div className="table-responsive">
-						<TransactionTable
-							transactions={transactions}
-							loading={loading}
-							queue={true}
-							showActionBtns={true}
-						/>
-					</div>
-					{meta && (
-						<div className="pagination pagination-center mt-4">
-							<Pagination
-								current={parseInt(meta.currentPage, 10)}
-								pageSize={parseInt(meta.itemsPerPage, 10)}
-								total={parseInt(meta.totalPages, 10)}
-								showTotal={total => `Total ${total} transactions`}
-								itemRender={itemRender}
-								onChange={current => this.onNavigatePage(current)}
-							/>
-						</div>
+					{loading ? (
+						<TableLoading />
+					) : (
+						<>
+							<div className="table-responsive">
+								<TransactionTable
+									transactions={transactions}
+									loading={loading}
+									queue={true}
+									showActionBtns={true}
+								/>
+							</div>
+							{meta && (
+								<div className="pagination pagination-center mt-4">
+									<Pagination
+										current={parseInt(meta.currentPage, 10)}
+										pageSize={parseInt(meta.itemsPerPage, 10)}
+										total={parseInt(meta.totalPages, 10)}
+										showTotal={total => `Total ${total} transactions`}
+										itemRender={itemRender}
+										onChange={current => this.onNavigatePage(current)}
+									/>
+								</div>
+							)}
+						</>
 					)}
 				</div>
 			</div>

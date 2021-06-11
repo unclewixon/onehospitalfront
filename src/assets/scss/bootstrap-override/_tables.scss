@@ -26,6 +26,7 @@
   }
   th {
     font-weight: $font-weight-bold;
+    border-bottom: none !important;
   }
   .smaller, &.smaller {
     font-size: $font-size-base * 0.8;

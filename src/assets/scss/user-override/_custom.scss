@@ -404,6 +404,7 @@ tr {
 
 .block-ui-container {
 	z-index: 10000 !important;
+	height: 100vh;
 }
 
 // div[class$='-menu'] {
@@ -713,4 +714,56 @@ tr {
 }
 .d-block {
 	display: block;
+}
+
+.o-order {
+	background-color: #fff;
+}
+
+.order {
+	margin-left: auto;
+	margin-top: 15px;
+	border-top: 3px solid #eee;
+	padding-top: 20px;
+	margin-bottom: 20px;
+
+	.sub-total {
+		color: #b8b8b8;
+		font-size: 12px;
+		padding: 5px 0px;
+	}
+
+	.sub-item {
+		color: #111;
+		text-align: right;
+		font-weight: bold;
+		padding: 5px 0px 5px 40px;
+		font-size: 12px;
+
+		.amount {
+			color: #047bf8;
+		}
+
+		.sub-item2 {
+			color: #45bb4c;
+		}
+
+		.balance {
+			color: #45bb4c;
+		}
+	}
+
+	.amt-paid {
+		text-align: right;
+		width: 100px;
+		display: inline-block;
+		-webkit-appearance: none;
+		-moz-appearance: textfield;
+	}
+}
+
+.no-arrows::-webkit-outer-spin-button,
+.no-arrows::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
 }

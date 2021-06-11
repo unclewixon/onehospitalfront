@@ -128,8 +128,8 @@ let Others = props => {
 		console.log(data);
 
 		let res = { ...ivf, ...data };
-		const mappedId = res.lab_tests.map(lbt => String(lbt.value));
-		res.labTests = mappedId;
+		// const mappedId = res.lab_tests.map(lbt => String(lbt.value));
+		// res.labTests = mappedId;
 		props.loadPatientIVFForm(res);
 
 		console.log(res);

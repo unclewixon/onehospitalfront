@@ -3,14 +3,15 @@ import React, { useState } from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
+
 import { request } from '../../services/utilities';
 import { confirmAction, formatCurrency } from '../../services/utilities';
-import searchingGIF from '../../assets/images/searching.gif';
 import { delete_transaction } from '../../actions/transaction';
 import { applyVoucher, approveTransaction } from '../../actions/general';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { Can } from '../common/Can';
 import ModalServiceDetails from '../Modals/ModalServiceDetails';
+import TableLoading from '../../components/TableLoading';
 
 const TransactionTable = ({
 	approveTransaction,
@@ -18,10 +19,10 @@ const TransactionTable = ({
 	handlePrint,
 	transactions,
 	delete_transaction,
-	loading,
 	showPrint = false,
 	showActionBtns,
 	columns,
+	queue,
 }) => {
 	const [showModal, setShowModal] = useState(false);
 	const [details, setDetails] = useState([]);
@@ -66,20 +67,13 @@ const TransactionTable = ({
 						<th>DATE</th>
 						<th>PATIENT NAME</th>
 						<th>DEPARTMENT</th>
-						<th>AMOUNT</th>
-						<th>BALANCE (&#x20A6;)</th>
-						<th>PAYMENT TYPE (&#x20A6;)</th>
+						<th>AMOUNT (&#x20A6;)</th>
+						{!queue && <th>BALANCE (&#x20A6;)</th>}
+						{!queue && <th>PAYMENT TYPE</th>}
 						<th className="text-center">ACTIONS</th>
 					</tr>
 				</thead>
 				<tbody>
-					{loading && (
-						<tr>
-							<td colSpan={columns} className="text-center">
-								<img alt="searching" src={searchingGIF} />
-							</td>
-						</tr>
-					)}
 					{transactions.map((transaction, index) => {
 						return (
 							<tr key={index}>
@@ -110,29 +104,34 @@ const TransactionTable = ({
 									</a>
 								</td>
 								<td>{formatCurrency(transaction.amount || 0)}</td>
-								<td>{formatCurrency(transaction.balance || 0)}</td>
-								<td>{transaction.payment_type || 'Not specified'}</td>
+								{!queue && <td>{formatCurrency(transaction.balance || 0)}</td>}
+								{!queue && <td>{transaction.payment_type || '-'}</td>}
 								<td className="text-center row-actions">
-									{showActionBtns && transaction.status === 0 && (
+									{showActionBtns && (
 										<>
-											{transaction.payment_type !== 'HMO' && (
-												<Tooltip title="Approve Transactions">
-													<a
-														className="secondary"
-														onClick={() => doApproveTransaction(transaction)}>
-														<i className="os-icon os-icon-thumbs-up" />
-													</a>
-												</Tooltip>
+											{transaction.payment_type !== 'HMO' &&
+												(transaction.status === 0 ||
+													transaction.status === -1) && (
+													<Tooltip title="Approve Transactions">
+														<a
+															className="secondary"
+															onClick={() => doApproveTransaction(transaction)}>
+															<i className="os-icon os-icon-thumbs-up" />
+														</a>
+													</Tooltip>
+												)}
+											{(transaction.status === 0 ||
+												transaction.status === -1) && (
+												<Can I="delete-transaction" on="all">
+													<Tooltip title="Delete Transactions">
+														<a
+															className="text-danger"
+															onClick={() => confirmDelete(transaction)}>
+															<i className="os-icon os-icon-ui-15" />
+														</a>
+													</Tooltip>
+												</Can>
 											)}
-											<Can I="delete-transaction" on="all">
-												<Tooltip title="Delete Transactions">
-													<a
-														className="text-danger"
-														onClick={() => confirmDelete(transaction)}>
-														<i className="os-icon os-icon-ui-15" />
-													</a>
-												</Tooltip>
-											</Can>
 										</>
 									)}
 									{showPrint && (

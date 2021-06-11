@@ -152,7 +152,6 @@ const Settings = ({ match, location }) => {
 					path={`${match.url}/antenatal-packages`}
 					component={AntenatalPackage}
 				/>
-
 				<Route component={Roles} />
 			</Switch>
 		</div>

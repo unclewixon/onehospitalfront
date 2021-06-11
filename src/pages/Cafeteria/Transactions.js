@@ -307,10 +307,6 @@ class Transactions extends Component {
 									<th>Payment Type</th>
 									<th>Amount</th>
 									<th>Paid</th>
-									<th>
-										<div className="th-inner "></div>
-										<div className="fht-cell"></div>
-									</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -342,18 +338,6 @@ class Transactions extends Component {
 														pending payment
 													</span>
 												)}
-											</td>
-											<td className="row-actions">
-												<Tooltip title="Approve status">
-													<a className="secondary">
-														<i className="os-icon os-icon-edit-32" />
-													</a>
-												</Tooltip>
-												<Tooltip title="Delete Request">
-													<a className="danger">
-														<i className="os-icon os-icon-ui-15" />
-													</a>
-												</Tooltip>
 											</td>
 										</tr>
 									);

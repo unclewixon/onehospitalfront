@@ -200,7 +200,9 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 						</div>
 					</div>
 				</div>
-				<div className="col-md-5 col-lg-4 col-xl-3 col-12">
+				<div
+					className="col-md-5 col-lg-4 col-xl-3 col-12"
+					style={{ paddingLeft: 0 }}>
 					<div className="element-box border-primary p-3">
 						<div className="card-header align-items-center pt-75 pb-25">
 							<h5 className="mb-0">Insurance Status</h5>

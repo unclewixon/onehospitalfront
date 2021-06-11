@@ -3,7 +3,13 @@ import Modal from 'react-bootstrap/Modal';
 import moment from 'moment';
 import { useReactToPrint } from 'react-to-print';
 
-const CafeteriaRecipt = props => {
+const CafeteriaRecipt = ({
+	toggle,
+	transaction,
+	type,
+	customer,
+	onModalClick,
+}) => {
 	const receiptRef = useRef();
 
 	const handlePrint = useReactToPrint({
@@ -12,12 +18,14 @@ const CafeteriaRecipt = props => {
 
 	return (
 		<Modal
-			show={props.toggle}
-			onHide={props.onModalClick}
+			show={toggle}
+			onHide={() => onModalClick(null)}
 			dialogClassName="modal-90w"
 			aria-labelledby="example-custom-modal-styling-title"
 			className="onboarding-modal modal fade animated show">
-			<Modal.Header closeButton onClick={props.onModalClick}></Modal.Header>
+			<Modal.Header
+				closeButton
+				onClick={() => onModalClick(null)}></Modal.Header>
 			<Modal.Body>
 				<div id="divToPrint" ref={receiptRef}>
 					<center className="reciept-header">
@@ -83,7 +91,7 @@ const CafeteriaRecipt = props => {
 											padding: '5px 0px 5px 40px',
 											fontSize: '12px',
 										}}>
-										{`${props.customer}-${props.special}`}
+										{customer}
 									</td>
 								</tr>
 								<tr>
@@ -101,7 +109,7 @@ const CafeteriaRecipt = props => {
 											padding: '5px 0px 5px 40px',
 											fontSize: '12px',
 										}}>
-										{props.type}
+										{type}
 									</td>
 								</tr>
 								<tr>
@@ -127,7 +135,7 @@ const CafeteriaRecipt = props => {
 					</div>
 
 					<div className="element-box-tp">
-						<table className="table ">
+						<table className="table">
 							<thead>
 								<tr>
 									<th>Item</th>
@@ -136,49 +144,61 @@ const CafeteriaRecipt = props => {
 								</tr>
 							</thead>
 							<tbody>
-								{props.cart && props.cart.length
-									? props.cart.map((item, i) => (
-											<tr key={i}>
-												<td>{item?.name}</td>
-												<td className="text-center">{item?.qty}</td>
-												<td className="text-center">{item?.price}</td>
-											</tr>
-									  ))
-									: null}
+								{transaction.transaction_details.map((item, i) => (
+									<tr key={i}>
+										<td>{item?.name}</td>
+										<td className="text-center">{item?.qty}</td>
+										<td className="text-center">{item?.amount}</td>
+									</tr>
+								))}
+								<tr>
+									<td colSpan={2} className="text-bold">
+										Sub Total
+									</td>
+									<td className="text-center text-bold">
+										{transaction.sub_total}
+									</td>
+								</tr>
+								<tr>
+									<td colSpan={2} className="text-bold">
+										VAT
+									</td>
+									<td className="text-center text-bold">{transaction.vat}</td>
+								</tr>
 								<tr>
 									<td colSpan={2} className="text-bold">
 										Total
 									</td>
 									<td className="text-center text-bold">
-										{props.calSubTotal()}
+										{transaction.amount}
 									</td>
 								</tr>
 								<tr>
 									<td colSpan={2} className="text-bold">
 										Amount Paid
 									</td>
-									<td className="text-center text-bold">{props.amountPaid}</td>
+									<td className="text-center text-bold">
+										{transaction.amount_paid}
+									</td>
 								</tr>
 								<tr>
 									<td colSpan={2} className="text-bold">
 										Balance
 									</td>
 									<td className="text-center text-bold">
-										{props.calBalance()}
+										{transaction.balance}
 									</td>
 								</tr>
 							</tbody>
 						</table>
-						{!props.cart.length ? (
+						{!transaction.transaction_details.length === 0 && (
 							<div className="text-center">
 								No item added, Check back later!
 							</div>
-						) : null}
+						)}
 						<div>
 							<p className="justify-center">
-								<strong>Thanks for your patronage!</strong>  Payment is expected
-								within 31 days; please process this invoice within that time.
-								There will be a 5% interest charge per month on late invoices.
+								<strong>Thanks for your patronage!</strong>
 							</p>
 						</div>
 					</div>

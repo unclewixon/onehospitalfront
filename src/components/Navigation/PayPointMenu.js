@@ -22,7 +22,7 @@ const PayPointMenu = () => {
 			</li>
 
 			<li>
-				<Link to="/paypoint/upcoming-bills">
+				<Link to="/paypoint/pending-bills">
 					<div className="icon-w">
 						<div className="icon-feather-file-text" />
 					</div>

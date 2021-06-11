@@ -133,7 +133,7 @@ const AllPatients = props => {
 						/>
 					</div>
 					<div className="form-group col-md-3">
-						<label className="mr-2 " htmlFor="id">
+						<label className="mr-2" htmlFor="id">
 							Status
 						</label>
 						<select

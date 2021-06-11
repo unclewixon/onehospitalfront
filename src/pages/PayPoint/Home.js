@@ -13,7 +13,7 @@ const TransactionHistory = lazy(() => import('./TransactionHistory'));
 const Voucher = lazy(() => import('./Voucher'));
 const Proforma = lazy(() => import('./Proforma'));
 
-const index = ({ match }) => {
+const Home = ({ match }) => {
 	return (
 		<div className="content-i">
 			<div className="content-box">
@@ -33,7 +33,7 @@ const index = ({ match }) => {
 												/>
 												<Route
 													exact
-													path={`${match.url}/upcoming-bills`}
+													path={`${match.url}/pending-bills`}
 													component={PaypointQueue}
 												/>
 												<Route
@@ -71,4 +71,4 @@ const index = ({ match }) => {
 	);
 };
 
-export default withRouter(index);
+export default withRouter(Home);

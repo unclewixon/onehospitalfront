@@ -26,7 +26,6 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 	const [submitting, setSubmitting] = useState(false);
 	const [options, setOptions] = useState([]);
 	const [parameters, setParameters] = useState([]);
-	const [note, setNote] = useState(null);
 	const [result, setResult] = useState(null);
 
 	const item = lab.items[0];
@@ -35,7 +34,6 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 
 	useEffect(() => {
 		if (!loaded) {
-			setNote(item.note);
 			setParameters(item.labTest.parameters);
 			setLoaded(true);
 		}
@@ -71,7 +69,7 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 		try {
 			dispatch(startBlock());
 			setSubmitting(true);
-			const data = { parameters, note, result };
+			const data = { parameters, result };
 			const url = `requests/${item.id}/fill-result`;
 			const rs = await request(url, 'PATCH', true, data);
 			const lab_request = labs.find(l => l.id === lab.id);
@@ -184,18 +182,6 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 											)}
 										</tbody>
 									</table>
-								</div>
-								<div className="col-md-12 mt-4">
-									<div className="form-group col-sm-12 text-left">
-										<label>Result Note</label>
-										<textarea
-											className="form-control"
-											name="note"
-											rows="3"
-											onChange={e => setNote(e.target.value)}
-											placeholder="Enter note"
-											value={note || ''}></textarea>
-									</div>
 								</div>
 								<div className="col-md-12 mt-4">
 									<button

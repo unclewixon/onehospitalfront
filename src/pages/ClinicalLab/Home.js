@@ -28,21 +28,21 @@ const ClinicalLab = ({ match, location }) => {
 							<div className="element-actions">
 								<Link
 									to={`${match.path}`}
-									className={`mx-2 btn btn-primary btn-sm  ${
+									className={`mx-2 btn btn-primary btn-sm ${
 										page === 'lab' ? 'btn-outline-primary' : ''
 									}`}>
 									Lab Queue
 								</Link>
 								<Link
 									to={`${match.path}/all-request`}
-									className={`mr-2 btn btn-primary btn-sm  ${
+									className={`mr-2 btn btn-primary btn-sm ${
 										page === 'all-request' ? 'btn-outline-primary' : ''
 									}`}>
 									Lab Requests
 								</Link>
 								<Link
 									to={`${match.path}/new-request`}
-									className={`mr-2 btn btn-primary btn-sm  ${
+									className={`mr-2 btn btn-primary btn-sm ${
 										page === 'new-request' ? 'btn-outline-primary' : ''
 									}`}>
 									New Lab Request
