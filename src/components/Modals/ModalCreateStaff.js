@@ -25,6 +25,7 @@ import { object, string, number } from 'yup';
 import { Button, Field, Select } from '../common';
 import { Form, Image } from 'react-bootstrap';
 import SSRStorage from '../../services/storage';
+import { loadStaff } from '../../actions/hr';
 
 export const StepOneSchema = object({
 	username: string().required('Username is required'),
@@ -283,7 +284,7 @@ function ModalCreateStaff({
 															staffs,
 															updatedStaff
 														);
-														this.props.loadStaff(newArray);
+														dispatch(loadStaff(newArray));
 														notifySuccess('Staff details has been saved');
 														closeModals(false);
 													} else {

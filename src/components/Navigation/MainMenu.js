@@ -114,12 +114,12 @@ class MainMenu extends Component {
 					{role === 'procedure' && <ProcedureMenu />}
 					{role === 'nurse' && <NurseMenu />}
 					{role === 'doctor' && <DoctorMenu />}
-					{role === 'hr' && <HrMenu />}
+					{role === 'hr-manager' && <HrMenu />}
 					{(role === 'inventory' || role === 'pharmacy') && (
 						<InventoryMenu role={role} />
 					)}
 					{role === 'cafeteria' && <CafeteriaMenu />}
-					{role === 'hmo' && <HMOMenu />}
+					{role === 'hmo-officer' && <HMOMenu />}
 					{role === 'account' && <Account />}
 					{role === 'admin' && <AdminMenu role={role} />}
 					<MyAccount />
