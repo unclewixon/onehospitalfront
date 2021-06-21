@@ -228,7 +228,7 @@ class AllAppointments extends Component {
 										<th>Specialty</th>
 										<th>Department</th>
 										<th>Status</th>
-										<th>Actions</th>
+										<th></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -329,7 +329,7 @@ class AllAppointments extends Component {
 									})}
 									{appointments && appointments.length === 0 && (
 										<tr className="text-center">
-											<td colSpan="7">No Appointments</td>
+											<td colSpan="8">No Appointments</td>
 										</tr>
 									)}
 								</tbody>
