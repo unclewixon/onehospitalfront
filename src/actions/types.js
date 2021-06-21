@@ -76,6 +76,7 @@ export const UPDATE_SUB_CATEGORY = 'UPDATE_SUB_CATEGORY';
 
 // role
 export const LOAD_ROLES = 'LOAD_ROLES';
+export const ADD_ROLE = 'ADD_ROLE';
 export const UPDATE_ROLE = 'UPDATE_ROLE';
 
 // hr

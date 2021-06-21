@@ -6,39 +6,44 @@ import { renderTextInput, request } from '../services/utilities';
 import { rolesAPI } from '../services/constants';
 import { notifySuccess } from '../services/notify';
 import waiting from '../assets/images/waiting.gif';
-import { updateRole } from '../actions/role';
+import { addRole } from '../actions/role';
 
-class EditRole extends Component {
+const validate = values => {
+	const errors = {};
+	if (!values.name) {
+		errors.name = 'enter name';
+	}
+	return errors;
+};
+
+class CreateRole extends Component {
 	state = {
 		submitting: false,
 	};
 
-	doEditRole = async data => {
+	doCreateRole = async data => {
 		try {
 			this.setState({ submitting: true });
-			const { role } = this.props;
-			const url = `${rolesAPI}/${role.id}`;
-			const rs = await request(url, 'PUT', true, data);
-			this.props.updateRole(rs);
+			const rs = await request(rolesAPI, 'POST', true, data);
+			this.props.addRole(rs);
 			this.setState({ submitting: false });
-			this.props.reset('edit_role');
-			notifySuccess('role updated!');
-			this.props.cancelEditRole(null);
+			this.props.reset('create_role');
+			notifySuccess('role created!');
 		} catch (e) {
 			this.setState({ submitting: false });
 			throw new SubmissionError({
-				_error: e.message || 'could not update role',
+				_error: e.message || 'could not create role',
 			});
 		}
 	};
 
 	render() {
 		const { submitting } = this.state;
-		const { error, handleSubmit, cancelEditRole } = this.props;
+		const { error, handleSubmit } = this.props;
 		return (
 			<div className="pipeline white lined-warning">
-				<form onSubmit={handleSubmit(this.doEditRole)}>
-					<h6 className="form-header">Edit Role</h6>
+				<form onSubmit={handleSubmit(this.doCreateRole)}>
+					<h6 className="form-header">Create Role</h6>
 					{error && (
 						<div
 							className="alert alert-danger"
@@ -54,7 +59,6 @@ class EditRole extends Component {
 						label="Name"
 						type="text"
 						placeholder="Enter name"
-						readOnly
 					/>
 					<Field
 						id="description"
@@ -65,12 +69,6 @@ class EditRole extends Component {
 						placeholder="Enter description"
 					/>
 					<div className="form-buttons-w">
-						<button
-							className="btn btn-secondary ml-3"
-							type="button"
-							onClick={() => cancelEditRole(null)}>
-							cancel
-						</button>
 						<button
 							className="btn btn-primary"
 							disabled={submitting}
@@ -84,17 +82,9 @@ class EditRole extends Component {
 	}
 }
 
-EditRole = reduxForm({
-	form: 'edit_role',
-})(EditRole);
+CreateRole = reduxForm({
+	form: 'create_role',
+	validate,
+})(CreateRole);
 
-const mapStateToProps = (state, ownProps) => {
-	return {
-		initialValues: {
-			name: ownProps.role?.name || '',
-			description: ownProps.role?.description || '',
-		},
-	};
-};
-
-export default connect(mapStateToProps, { reset, updateRole })(EditRole);
+export default connect(null, { reset, addRole })(CreateRole);

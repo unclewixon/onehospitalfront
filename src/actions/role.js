@@ -1,4 +1,4 @@
-import { LOAD_ROLES, UPDATE_ROLE } from './types';
+import { LOAD_ROLES, UPDATE_ROLE, ADD_ROLE } from './types';
 
 export const loadRoles = roles => {
 	return {
@@ -10,6 +10,13 @@ export const loadRoles = roles => {
 export const updateRole = role => {
 	return {
 		type: UPDATE_ROLE,
+		payload: role,
+	};
+};
+
+export const addRole = role => {
+	return {
+		type: ADD_ROLE,
 		payload: role,
 	};
 };

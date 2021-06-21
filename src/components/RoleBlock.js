@@ -7,7 +7,7 @@ import { notifyError } from '../services/notify';
 import { rolesAPI } from '../services/constants';
 import { loadRoles } from '../actions/role';
 import { loadPermissions } from '../actions/permission';
-import EditRole from './EditRole';
+import CreateRole from './CreateRole';
 import RolePermissionModal from './Modals/RolePermissionModal';
 import TableLoading from './TableLoading';
 
@@ -96,12 +96,6 @@ class RoleBlock extends Component {
 														<td>{role.description}</td>
 														<td className="row-actions text-right">
 															<a
-																onClick={this.editRole(role)}
-																className="secondary"
-																title="Edit Role">
-																<i className="os-icon os-icon-edit-32" />
-															</a>
-															<a
 																onClick={this.openPermissionModal(role)}
 																className="secondary"
 																title="Permission Modal">
@@ -118,11 +112,9 @@ class RoleBlock extends Component {
 						</div>
 					</div>
 				</div>
-				{!showModal && role && (
-					<div className="col-lg-4">
-						<EditRole cancelEditRole={this.cancelEditRole} role={role} />
-					</div>
-				)}
+				<div className="col-lg-4">
+					<CreateRole />
+				</div>
 				{showModal && role && (
 					<RolePermissionModal role={role} closeModal={this.closeModal} />
 				)}
