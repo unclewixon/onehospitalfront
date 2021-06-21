@@ -139,6 +139,9 @@ let Others = props => {
 			console.log(rs);
 			//props.closeModals(true);
 			notifySuccess('IVF created successfully');
+			if (props.module === 'patient') {
+				//
+			}
 			history.push('/ivf');
 			setLoading(false);
 		} catch (error) {
@@ -146,7 +149,6 @@ let Others = props => {
 			notifyError('IVF creation failed');
 			setLoading(false);
 		}
-		//dispatch(props.onSubmit);
 	};
 
 	return (

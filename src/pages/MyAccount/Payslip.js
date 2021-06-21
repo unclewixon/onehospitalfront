@@ -22,20 +22,16 @@ const Payslip = () => {
 								<thead>
 									<tr>
 										<th>
-											<div className="th-inner sortable both">
-												Date (Month/Year)
-											</div>
+											<div>Date (Month/Year)</div>
 										</th>
 										<th>
-											<div className="th-inner sortable both">
-												Monthly Salary
-											</div>
+											<div>Monthly Salary</div>
 										</th>
 										<th>
-											<div className="th-inner sortable both">Amount Paid</div>
+											<div>Amount Paid</div>
 										</th>
 										<th>
-											<div className="th-inner sortable both">Actions</div>
+											<div>Actions</div>
 										</th>
 									</tr>
 								</thead>

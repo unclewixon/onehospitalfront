@@ -10,19 +10,7 @@ import {
 	ADD_SUB_CATEGORY,
 	UPDATE_SUB_CATEGORY,
 	UPDATE_INVENTORY,
-	ADD_CAFETERIA_CATEGORY,
-	GET_ALL_CAFETERIA_CATEGORY,
-	UPDATE_CAFETERIA_CATEGORY,
-	DELETE_CAFETERIA_CATEGORY,
-	ADD_CAFETERIA_ITEM,
-	GET_ALL_CAFETERIA_ITEMS,
-	UPDATE_CAFETERIA_ITEM,
-	DELETE_CAFETERIA_ITEM,
-	FILTER_CAFETERIA_ITEM,
-	ADD_CAFETERIA_INV_CATEGORY,
 	GET_ALL_CAFETERIA_INV_CATEGORY,
-	UPDATE_CAFETERIA_INV_CATEGORY,
-	DELETE_CAFETERIA_INV_CATEGORY,
 	ADD_CAFETERIA_INVENTORY,
 	GET_ALL_CAFETERIA_INVENTORY,
 	UPDATE_CAFETERIA_INVENTORY,
@@ -96,96 +84,9 @@ export const updateInvSubCategory = data => {
 };
 
 //cafeteria
-const add_cafeteria_category = payload => {
-	return {
-		type: ADD_CAFETERIA_CATEGORY,
-		payload,
-	};
-};
-
-const get_all_cafeteria_categorys = payload => {
-	return {
-		type: GET_ALL_CAFETERIA_CATEGORY,
-		payload,
-	};
-};
-
-const update_cafeteria_category = (payload, previousData) => {
-	return {
-		type: UPDATE_CAFETERIA_CATEGORY,
-		payload,
-		previousData,
-	};
-};
-
-const delete_cafeteria_category = payload => {
-	return {
-		type: DELETE_CAFETERIA_CATEGORY,
-		payload,
-	};
-};
-
-const add_cafeteria_item = payload => {
-	return {
-		type: ADD_CAFETERIA_ITEM,
-		payload,
-	};
-};
-
-const get_all_cafeteria_items = payload => {
-	return {
-		type: GET_ALL_CAFETERIA_ITEMS,
-		payload,
-	};
-};
-
-const update_cafeteria_item = (payload, previousData) => {
-	return {
-		type: UPDATE_CAFETERIA_ITEM,
-		payload,
-		previousData,
-	};
-};
-
-const delete_cafeteria_item = payload => {
-	return {
-		type: DELETE_CAFETERIA_ITEM,
-		payload,
-	};
-};
-
-const filter_cafeteria_item = payload => {
-	return {
-		type: FILTER_CAFETERIA_ITEM,
-		payload,
-	};
-};
-
-const add_cafeteria_inv_category = payload => {
-	return {
-		type: ADD_CAFETERIA_INV_CATEGORY,
-		payload,
-	};
-};
-
 const get_all_cafeteria_inv_categorys = payload => {
 	return {
 		type: GET_ALL_CAFETERIA_INV_CATEGORY,
-		payload,
-	};
-};
-
-const update_cafeteria_inv_category = (payload, previousData) => {
-	return {
-		type: UPDATE_CAFETERIA_INV_CATEGORY,
-		payload,
-		previousData,
-	};
-};
-
-const delete_cafeteria_inv_category = payload => {
-	return {
-		type: DELETE_CAFETERIA_INV_CATEGORY,
 		payload,
 	};
 };

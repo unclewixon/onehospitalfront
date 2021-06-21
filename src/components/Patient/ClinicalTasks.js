@@ -5,6 +5,7 @@ import Pagination from 'antd/lib/pagination';
 import moment from 'moment';
 import { confirmAlert } from 'react-confirm-alert';
 import Tooltip from 'antd/lib/tooltip';
+
 import CreateTask from '../Modals/CreateTask';
 import { itemRender, request, confirmAction } from '../../services/utilities';
 import { allVitalItems, patientAPI } from '../../services/constants';
@@ -227,8 +228,10 @@ const ClinicalTasks = () => {
 											<td>
 												{lastReading
 													? moment(lastReading.createdAt).fromNow(true)
-													: ''}{' '}
-												{`by ${item?.staff?.details?.first_name} ${item?.staff?.details?.last_name}`}
+													: '-'}{' '}
+												{lastReading
+													? `by ${item?.staff?.details?.first_name} ${item?.staff?.details?.last_name}`
+													: ''}
 											</td>
 											<td>
 												{item.nextTime &&
@@ -248,7 +251,7 @@ const ClinicalTasks = () => {
 													item.nextTime !== 'Invalid date' &&
 													item.taskCount > item.tasksCompleted
 														? moment(item.nextTime).fromNow()
-														: ''}
+														: '-'}
 												</span>
 											</td>
 											<td>{`${item.tasksCompleted}/${item.taskCount}`}</td>

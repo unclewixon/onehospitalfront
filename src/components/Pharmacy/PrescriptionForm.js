@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import Select from 'react-select';
 import { Table } from 'react-bootstrap';
@@ -13,16 +13,10 @@ import { ReactComponent as EditIcon } from '../../assets/svg-icons/edit.svg';
 import { ReactComponent as TrashIcon } from '../../assets/svg-icons/trash.svg';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { diagnosisAPI, searchAPI } from '../../services/constants';
-import {
-	request,
-	groupBy,
-	hasExpired,
-	formatPatientId,
-} from '../../services/utilities';
+import { request, hasExpired, formatPatientId } from '../../services/utilities';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const defaultValues = {
-	genericName: '',
 	drugId: '',
 	quantity: '',
 	anotherFacility: false,
@@ -36,18 +30,22 @@ const defaultValues = {
 
 const category_id = 1;
 
-const PrescriptionForm = ({ patient, history, module, location }) => {
+const PrescriptionForm = ({
+	patient,
+	history,
+	module,
+	location,
+	procedure,
+}) => {
 	const { register, handleSubmit, setValue, reset } = useForm({
 		defaultValues,
 	});
 	const [refillable, setRefillable] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
-	const [inventories, setInventories] = useState([]);
 	const [drugsSelected, setDrugsSelected] = useState([]);
 	const [editing, setEditing] = useState(false);
 	const [prescription, setPrescription] = useState(false);
 	const [chosenPatient, setChosenPatient] = useState(null);
-	const [genName, setGenName] = useState(null);
 	const [diagnosisType, setDiagnosisType] = useState('10');
 	const [selectedDrug, setSelectedDrug] = useState(null);
 	const [loading, setLoading] = useState(true);
@@ -56,7 +54,6 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 	const [diagnoses, setDiagnoses] = useState([]);
 	const [frequencyType, setFrequencyType] = useState(null);
 	const [chosenDrug, setChosenDrug] = useState(null);
-	const [chosenGeneric, setChosenGeneric] = useState(null);
 
 	const dispatch = useDispatch();
 
@@ -88,72 +85,15 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 		return res;
 	};
 
-	const getServiceUnit = useCallback(
-		async hmoId => {
-			try {
-				dispatch(startBlock());
-				const url = `inventory/stocks-by-category/${category_id}/${hmoId}`;
-				const rs = await request(url, 'GET', true);
-				setInventories(rs);
-				setLoading(false);
-				dispatch(stopBlock());
-			} catch (error) {
-				notifyError('Error fetching drugs');
-				setLoading(false);
-				dispatch(stopBlock());
-			}
-		},
-		[dispatch]
-	);
-
 	useEffect(() => {
-		if (loading && patient) {
-			getServiceUnit(patient.hmo.id);
+		if (loading && patient && !chosenPatient) {
+			setChosenPatient(patient);
+			setLoading(false);
 		}
-	}, [getServiceUnit, loading, patient]);
-
-	// group drugs by generic name
-	const drugValues = groupBy(
-		inventories.filter(drug => drug.generic_name !== null),
-		'generic_name'
-	);
-
-	// list of drugs by generic name
-	const drugObj = Object.keys(drugValues).map(name => ({
-		generic_name: name,
-		drugs: drugValues[name],
-	}));
-
-	// list generic names
-	const genericNameOptions = Object.keys(drugValues).map(name => ({
-		value: name,
-		label: name,
-	}));
-
-	// list of drugs
-	const genericItem = drugObj.find(
-		drug => genName && drug.generic_name === genName
-	);
-
-	const drugNameOptions = genericItem
-		? genericItem.drugs.map(drug => ({
-				value: drug.id,
-				label: `${drug.name}${drug.vendor ? ` - ${drug.vendor.name}` : ''}`,
-		  }))
-		: [];
+	}, [chosenPatient, loading, patient]);
 
 	const onFormSubmit = (data, e) => {
-		const drug = inventories.find(drug => drug.id === data.drugId);
-		const newDrug = [
-			...drugsSelected,
-			{
-				...data,
-				drugName: drug?.name || '',
-				drugCost: drug?.sales_price || 0.0,
-				hmoId: drug.hmo.id,
-				hmoPrice: drug?.hmoPrice || 0.0,
-			},
-		];
+		const newDrug = [...drugsSelected, { drug: selectedDrug, ...data }];
 		setDrugsSelected(newDrug);
 		setEditing(false);
 		setSelectedDrug(null);
@@ -162,7 +102,6 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 		setDiagnoses([]);
 		setFrequencyType(null);
 		setChosenDrug(null);
-		setChosenGeneric(null);
 	};
 
 	const onTrash = index => {
@@ -170,13 +109,16 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 		setDrugsSelected(newPharm);
 	};
 
-	const startEdit = (request, index) => {
+	const startEdit = (item, index) => {
 		onTrash(index);
-		const items = Object.entries(request);
+		const items = Object.entries(item);
 		for (const req of items) {
 			const [key, value] = req;
 			setValue(key, value);
 		}
+		setFrequencyType(item.frequencyType);
+		setSelectedDrug(item.drug);
+		setChosenDrug(item.drug);
 		setEditing(true);
 	};
 
@@ -184,16 +126,12 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 		try {
 			e.preventDefault();
 
-			let patient_id;
-			if (chosenPatient) {
-				patient_id = chosenPatient.id;
-			} else {
-				patient_id = patient && patient.id ? patient.id : '';
-			}
-			if (!patient_id) {
+			if (!chosenPatient) {
 				notifyError('No patient has been selected');
 				return;
 			}
+
+			const patient_id = chosenPatient.id;
 
 			if (drugsSelected.length === 0) {
 				notifyError('No drugs has been selected');
@@ -201,24 +139,24 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 			}
 
 			setSubmitting(true);
+			dispatch(startBlock());
 
-			const data = drugsSelected.map((request, i) => ({
+			const data = drugsSelected.map((item, i) => ({
 				id: i + 1,
-				drug_generic_name: request.genericName,
-				drug_name: request.drugName,
-				drug_cost: request.drugCost,
-				drug_hmo_id: request.hmoId,
-				drug_hmo_cost: request.hmoPrice,
-				drug_id: request.drugId,
-				dose_quantity: request.quantity,
-				refills:
-					request.refills && request.refills !== '' ? request.refills : 0,
-				frequency: request.frequency,
-				frequencyType: request.frequencyType,
-				duration: request.duration,
-				regimenInstruction: request.regimen_instruction,
-				diagnosis: request.diagnosis || [],
-				prescription: request.prescription ? 'Yes' : 'No',
+				drug_generic_name: item.drug.generic_name,
+				drug_name: item.drug.name,
+				drug_cost: item.drug.hmoPrice,
+				drug_hmo_id: chosenPatient.hmo.id,
+				drug_hmo_cost: item.drug.hmoPrice,
+				drug_id: item.drug.id,
+				dose_quantity: item.quantity,
+				refills: item.refills && item.refills !== '' ? item.refills : 0,
+				frequency: item.frequency,
+				frequencyType: item.frequencyType,
+				duration: item.duration,
+				regimenInstruction: item.regimen_instruction,
+				diagnosis: item.diagnosis || [],
+				prescription: item.prescription ? 'Yes' : 'No',
 			}));
 
 			const regimen = {
@@ -226,21 +164,28 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 				items: data,
 				patient_id,
 				request_note: regimenNote,
+				procedure_id: procedure?.id,
 			};
 
 			const rs = await request('requests/save-request', 'POST', true, regimen);
 			setSubmitting(false);
+			dispatch(stopBlock());
 			if (rs.success) {
-				notifySuccess('pharmacy request done');
+				notifySuccess('regimen request completed');
 				if (module !== 'patient') {
 					history.push('/pharmacy');
 				} else {
-					history.push(`${location.pathname}#pharmacy`);
+					if (procedure) {
+						history.push(`${location.pathname}#medications-used`);
+					} else {
+						history.push(`${location.pathname}#pharmacy`);
+					}
 				}
 			} else {
 				notifyError(rs.message);
 			}
 		} catch (e) {
+			dispatch(stopBlock());
 			setSubmitting(false);
 			notifyError('Error while creating new pharmacy request');
 		}
@@ -251,9 +196,8 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 		setValue(name, value);
 	};
 
-	const onDrugSelection = e => {
-		const drug = inventories.find(drug => drug.id === e.value);
-		const expired = hasExpired(drug.expiry_date);
+	const onDrugSelection = drug => {
+		const expired = hasExpired(drug?.expiry_date);
 		if (expired) {
 			confirmAlert({
 				customUI: ({ onClose }) => {
@@ -274,9 +218,23 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 				},
 			});
 		} else {
-			setValue('drugId', e.value);
+			setValue('drugId', drug.id);
 			setSelectedDrug(drug);
 		}
+	};
+
+	const getDrugOptions = async q => {
+		if (!q || q.length < 1) {
+			return [];
+		}
+
+		if (!chosenPatient?.hmo) {
+			return [];
+		}
+
+		const url = `inventory/stocks-by-category/${category_id}/${chosenPatient.hmo.id}?q=${q}`;
+		const res = await request(url, 'GET', true);
+		return res || [];
 	};
 
 	return (
@@ -300,48 +258,20 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 							loadOptions={getPatients}
 							onChange={val => {
 								if (val) {
-									getServiceUnit(val.hmo.id);
 									setChosenPatient(val);
 								} else {
 									setChosenPatient(null);
-									setInventories([]);
 								}
-								setValue('genericName', '');
-								setGenName(null);
 
 								// reset drug
 								setValue('drugId', '');
 								setSelectedDrug(null);
-
-								setChosenGeneric(null);
 								setChosenDrug(null);
 							}}
 							placeholder="Search patients"
 						/>
 					</div>
 				)}
-				<div className="row">
-					<div className="form-group col-sm-12">
-						<label>Drug Generic Name</label>
-						<Select
-							placeholder="Choose a drug generic name"
-							name="genericName"
-							ref={register({ name: 'genericName', required: true })}
-							onChange={e => {
-								setValue('genericName', e.value);
-								setGenName(e.value);
-
-								// reset drug
-								setValue('drugId', '');
-								setSelectedDrug(null);
-								setChosenGeneric(e);
-							}}
-							options={genericNameOptions}
-							required
-							value={chosenGeneric}
-						/>
-					</div>
-				</div>
 				<div className="row">
 					<div className="form-group col-sm-6 relative">
 						<label>Drug Name</label>
@@ -357,16 +287,21 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 								</div>
 							</div>
 						)}
-						<Select
-							placeholder="Choose a drug name"
+						<AsyncSelect
+							getOptionValue={option => option.id}
+							getOptionLabel={option =>
+								`${option.name} (${option.generic_name})`
+							}
+							defaultOptions
 							ref={register({ name: 'drugId', required: true })}
 							name="drugId"
-							options={drugNameOptions}
+							loadOptions={getDrugOptions}
 							value={chosenDrug}
 							onChange={e => {
 								onDrugSelection(e);
 								setChosenDrug(e);
 							}}
+							placeholder="select a drug"
 						/>
 					</div>
 					<div className="form-group col-sm-6">
@@ -581,17 +516,17 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 						</tr>
 					</thead>
 					<tbody>
-						{drugsSelected.map((request, index) => {
+						{drugsSelected.map((item, i) => {
 							return (
-								<tr key={index}>
-									<td>{request.genericName}</td>
-									<td>{request.drugName}</td>
+								<tr key={i}>
+									<td>{item.drug.generic_name}</td>
+									<td>{item.drug.name}</td>
 									<td>
-										<div className="badge badge-dark">{`${request.quantity} - ${request.frequency}x ${request.frequencyType} for ${request.duration} days`}</div>
+										<div className="badge badge-dark">{`${item.quantity} - ${item.frequency}x ${item.frequencyType} for ${item.duration} days`}</div>
 									</td>
 									<td>
-										{request.diagnosis
-											? request.diagnosis
+										{item.diagnosis && item.diagnosis.length > 0
+											? item.diagnosis
 													.map(
 														d =>
 															`Icd${d.diagnosisType}: ${
@@ -609,7 +544,7 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 														if (editing) {
 															return;
 														} else {
-															startEdit(request, index);
+															startEdit(item, i);
 														}
 													}}
 													style={{
@@ -621,7 +556,7 @@ const PrescriptionForm = ({ patient, history, module, location }) => {
 											</div>
 											<div className="ml-2">
 												<TrashIcon
-													onClick={() => onTrash(index)}
+													onClick={() => onTrash(i)}
 													style={{
 														width: '1rem',
 														height: '1rem',

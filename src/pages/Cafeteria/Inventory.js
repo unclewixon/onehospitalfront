@@ -156,8 +156,7 @@ const Inventory = () => {
 											<th>Quantity</th>
 											<th>Date</th>
 											<th>
-												<div className="th-inner "></div>
-												<div className="fht-cell"></div>
+												<div></div>
 											</th>
 										</tr>
 									</thead>

@@ -176,40 +176,14 @@ class LabBlock extends Component {
 				<table id="table" className="table table-theme v-middle table-hover">
 					<thead>
 						<tr>
-							<th>
-								<div className="th-inner sortable both">Request Date</div>
-								<div className="fht-cell"></div>
-							</th>
-							<th>
-								<div className="th-inner sortable both">ID</div>
-								<div className="fht-cell"></div>
-							</th>
-							<th>
-								<div className="th-inner sortable both">Lab</div>
-								<div className="fht-cell"></div>
-							</th>
-							{!patient && (
-								<th>
-									<div className="th-inner sortable both">Patient</div>
-									<div className="fht-cell"></div>
-								</th>
-							)}
-							<th>
-								<div className="th-inner sortable both">By</div>
-								<div className="fht-cell"></div>
-							</th>
-							<th>
-								<div className="th-inner sortable both">Note</div>
-								<div className="fht-cell"></div>
-							</th>
-							<th>
-								<div className="th-inner sortable both">Result</div>
-								<div className="fht-cell"></div>
-							</th>
-							<th>
-								<div className="th-inner"></div>
-								<div className="fht-cell"></div>
-							</th>
+							<th>Request Date</th>
+							<th>ID</th>
+							<th>Lab</th>
+							{!patient && <th>Patient</th>}
+							<th>By</th>
+							<th>Note</th>
+							<th>Result</th>
+							<th></th>
 						</tr>
 					</thead>
 					<tbody>

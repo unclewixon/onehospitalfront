@@ -136,7 +136,7 @@ class CreateAppraisal extends Component {
 			const department = departments?.find(d => d?.id === deptId);
 			console.log(department);
 
-			const inds = [];
+			let inds = [];
 			indicators.forEach(ind => {
 				const score = res.find(id => id === ind.id);
 				if (score) {

@@ -89,22 +89,22 @@ const VitalsQueue = () => {
 							<thead>
 								<tr>
 									<th>
-										<div className="th-inner sortable both">Patient</div>
+										<div>Patient</div>
 									</th>
 									<th>
-										<div className="th-inner sortable both">Whom To See</div>
+										<div>Whom To See</div>
 									</th>
 									<th>
-										<div className="th-inner sortable both">Gender / Age</div>
+										<div>Gender / Age</div>
 									</th>
 									<th>
-										<div className="th-inner sortable both">Service</div>
+										<div>Service</div>
 									</th>
 									<th>
-										<div className="th-inner sortable both">Date</div>
+										<div>Date</div>
 									</th>
 									<th>
-										<div className="th-inner "></div>
+										<div></div>
 									</th>
 								</tr>
 							</thead>

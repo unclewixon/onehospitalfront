@@ -68,18 +68,13 @@ class ModalViewPayPoint extends Component {
 									<thead>
 										<tr>
 											<th data-field="id">
-												<div className="th-inner sortable both">Patient ID</div>
-												<div className="fht-cell"></div>
+												<div>Patient ID</div>
 											</th>
 											<th data-field="owner">
-												<div className="th-inner sortable both">Amount</div>
-												<div className="fht-cell"></div>
+												<div>Amount</div>
 											</th>
 											<th data-field="project">
-												<div className="th-inner sortable both">
-													Amount Paid
-												</div>
-												<div className="fht-cell"></div>
+												<div>Amount Paid</div>
 											</th>
 										</tr>
 									</thead>

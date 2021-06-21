@@ -1,11 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-import DatePicker from 'antd/lib/date-picker';
-import { connect } from 'react-redux';
-import { socket, VOICE_RSS } from '../../services/constants';
+
+import { socket } from '../../services/constants';
 import axios from 'axios';
 
-const { RangePicker } = DatePicker;
 const apiKey = process.env.REACT_APP_VOICE_RSS_API;
 
 class Speech extends Component {

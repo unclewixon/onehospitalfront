@@ -38,21 +38,17 @@ export class Overall extends Component {
 							<thead>
 								<tr>
 									<th data-field="id">
-										<div className="th-inner sortable both">FOLDER ID</div>
-										<div className="fht-cell"></div>
+										<div>FOLDER ID</div>
 									</th>
 									<th data-field="owner">
-										<div className="th-inner sortable both">PRESCRIPTION</div>
-										<div className="fht-cell"></div>
+										<div>PRESCRIPTION</div>
 									</th>
 									<th data-field="project">
-										<div className="th-inner sortable both">DON'T KNOW YET</div>
-										<div className="fht-cell"></div>
+										<div>DON'T KNOW YET</div>
 									</th>
 
 									<th data-field="5">
-										<div className="th-inner "></div>
-										<div className="fht-cell"></div>
+										<div></div>
 									</th>
 								</tr>
 							</thead>

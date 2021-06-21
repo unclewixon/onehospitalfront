@@ -7,7 +7,7 @@ import TableLoading from '../TableLoading';
 import { request, itemRender, formatDateStr } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
-import CreateNote from './Modals/CreateNote';
+import CreateNote from '../Modals/CreateNote';
 import { fullname } from '../../services/utilities';
 
 const MedicalReport = () => {
@@ -21,14 +21,16 @@ const MedicalReport = () => {
 	const [showModal, setShowModal] = useState(false);
 
 	const dispatch = useDispatch();
+
 	const patient = useSelector(state => state.user.patient);
+	const procedure = useSelector(state => state.user.item);
 
 	const fetchNotes = useCallback(
 		async page => {
 			try {
 				dispatch(startBlock());
 				const p = page || 1;
-				const url = `patient-notes?patient_id=${patient.id}&page=${p}&limit=10&type=procedures`;
+				const url = `patient-notes?patient_id=${patient.id}&page=${p}&limit=10&type=procedure-medical-report&id=${procedure.id}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setNotes(result);
@@ -37,10 +39,10 @@ const MedicalReport = () => {
 			} catch (error) {
 				console.log(error);
 				dispatch(stopBlock());
-				notifyError('error fetching notes');
+				notifyError('error fetching report');
 			}
 		},
-		[dispatch, patient]
+		[dispatch, patient.id, procedure]
 	);
 
 	useEffect(() => {
@@ -77,11 +79,13 @@ const MedicalReport = () => {
 		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<div className="element-actions flex-action">
-					<a
-						className="btn btn-sm btn-secondary text-white ml-3"
-						onClick={() => newEntry()}>
-						New Note
-					</a>
+					{procedure && !procedure.finishedDate && (
+						<a
+							className="btn btn-sm btn-secondary text-white ml-3"
+							onClick={() => newEntry()}>
+							New Note
+						</a>
+					)}
 				</div>
 				<h6 className="element-header">Medical Report</h6>
 				<div className="element-box p-3 m-0">
@@ -93,18 +97,14 @@ const MedicalReport = () => {
 								<thead>
 									<tr>
 										<th>
-											<div className="th-inner sortable both">Date</div>
-											<div className="fht-cell"></div>
+											<div>Date</div>
 										</th>
 										<th>
-											<div className="th-inner sortable both">Note</div>
-											<div className="fht-cell"></div>
+											<div>Note</div>
 										</th>
 										<th>
-											<div className="th-inner sortable both">Noted By</div>
-											<div className="fht-cell"></div>
+											<div>Noted By</div>
 										</th>
-										<th></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -114,8 +114,6 @@ const MedicalReport = () => {
 												<td nowrap="nowrap">
 													{formatDateStr(item.createdAt, 'D-MMM-YYYY h:mm A')}
 												</td>
-												<td>{item.type}</td>
-												<td>{item.specialty}</td>
 												<td>
 													<div
 														dangerouslySetInnerHTML={{
@@ -123,8 +121,7 @@ const MedicalReport = () => {
 														}}
 													/>
 												</td>
-												<td nowrap="nowrap">{fullname(item.staff?.details)}</td>
-												<td></td>
+												<td nowrap="nowrap">{fullname(item.staff)}</td>
 											</tr>
 										);
 									})}
@@ -147,7 +144,12 @@ const MedicalReport = () => {
 				</div>
 			</div>
 			{showModal && (
-				<CreateNote closeModal={closeModal} updateNote={updateNote} />
+				<CreateNote
+					closeModal={closeModal}
+					updateNote={updateNote}
+					item={procedure}
+					type="procedure-medical-report"
+				/>
 			)}
 		</div>
 	);

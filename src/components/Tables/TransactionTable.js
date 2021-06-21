@@ -11,7 +11,6 @@ import { applyVoucher, approveTransaction } from '../../actions/general';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { Can } from '../common/Can';
 import ModalServiceDetails from '../Modals/ModalServiceDetails';
-import TableLoading from '../../components/TableLoading';
 
 const TransactionTable = ({
 	approveTransaction,
@@ -70,6 +69,7 @@ const TransactionTable = ({
 						<th>AMOUNT (&#x20A6;)</th>
 						{!queue && <th>BALANCE (&#x20A6;)</th>}
 						{!queue && <th>PAYMENT TYPE</th>}
+						<th>PAYMENT STATUS</th>
 						<th className="text-center">ACTIONS</th>
 					</tr>
 				</thead>
@@ -106,6 +106,21 @@ const TransactionTable = ({
 								<td>{formatCurrency(transaction.amount || 0)}</td>
 								{!queue && <td>{formatCurrency(transaction.balance || 0)}</td>}
 								{!queue && <td>{transaction.payment_type || '-'}</td>}
+								<td>
+									{transaction.status === 0 && (
+										<span className="badge badge-secondary text-white">
+											pending
+										</span>
+									)}
+									{transaction.status === -1 && (
+										<span className="badge badge-info text-white">
+											pay later
+										</span>
+									)}
+									{transaction.status === 1 && (
+										<span className="badge badge-success">paid</span>
+									)}
+								</td>
 								<td className="text-center row-actions">
 									{showActionBtns && (
 										<>
@@ -134,7 +149,7 @@ const TransactionTable = ({
 											)}
 										</>
 									)}
-									{showPrint && (
+									{showPrint && transaction.status === 1 && (
 										<Tooltip title="Print">
 											<a
 												className="text-info"

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError, reset } from 'redux-form';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
+import { withRouter } from 'react-router-dom';
 
 import {
 	renderSelect,
@@ -10,10 +11,13 @@ import {
 	renderTextInput,
 	request,
 } from '../../services/utilities';
-import { patientAPI } from '../../services/constants';
+import { patientAPI, USER_RECORD } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess } from '../../services/notify';
-import { setPatientRecord } from '../../actions/user';
+import { setPatientRecord, toggleProfile } from '../../actions/user';
+import SSRStorage from '../../services/storage';
+
+const storage = new SSRStorage();
 
 const validate = values => {
 	const errors = {};
@@ -63,6 +67,9 @@ class PatientAdmission extends Component {
 			this.props.setPatientRecord(rs.patient);
 			this.props.reset('admit_patient');
 			notifySuccess('Admission Started!');
+			storage.removeItem(USER_RECORD);
+			this.props.toggleProfile(false);
+			this.props.history.push('/nurse/in-patients/care');
 		} catch (e) {
 			this.setState({ submitting: false });
 			throw new SubmissionError({
@@ -211,6 +218,8 @@ const mapStateToProps = (state, ownProps) => {
 	};
 };
 
-export default connect(mapStateToProps, { setPatientRecord, reset })(
-	PatientAdmission
+export default withRouter(
+	connect(mapStateToProps, { setPatientRecord, reset, toggleProfile })(
+		PatientAdmission
+	)
 );

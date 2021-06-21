@@ -32,16 +32,13 @@ const Consumables = () => {
 								<thead>
 									<tr>
 										<th>
-											<div className="th-inner sortable both">Date</div>
-											<div className="fht-cell"></div>
+											<div>Date</div>
 										</th>
 										<th>
-											<div className="th-inner sortable both">Name</div>
-											<div className="fht-cell"></div>
+											<div>Name</div>
 										</th>
 										<th>
-											<div className="th-inner sortable both">Added By</div>
-											<div className="fht-cell"></div>
+											<div>Added By</div>
 										</th>
 										<th></th>
 									</tr>

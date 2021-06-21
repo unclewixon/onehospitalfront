@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import SunEditor from 'suneditor-react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { updateEncounterData } from '../../../actions/patient';
+import SSRStorage from '../../../services/storage';
+import { CK_COMPLAINTS } from '../../../services/constants';
+
+const storage = new SSRStorage();
 
 const Complaints = ({ next }) => {
 	const [loaded, setLoaded] = useState(false);
@@ -12,12 +16,18 @@ const Complaints = ({ next }) => {
 
 	const dispatch = useDispatch();
 
+	const retrieveData = useCallback(async () => {
+		const data = await storage.getItem(CK_COMPLAINTS);
+		console.log(data);
+		setComplaint(data || encounter.complaints);
+	}, [encounter]);
+
 	useEffect(() => {
 		if (!loaded) {
-			setComplaint(encounter.complaints);
+			retrieveData();
 			setLoaded(true);
 		}
-	}, [encounter, loaded]);
+	}, [loaded, retrieveData]);
 
 	const onSubmit = async e => {
 		e.preventDefault();
@@ -31,7 +41,7 @@ const Complaints = ({ next }) => {
 				<div className="row">
 					<div className="col-sm-12">
 						<div className="form-group">
-							<label>Presenting Complaints==</label>
+							<label>Presenting Complaints</label>
 							<SunEditor
 								width="100%"
 								placeholder="Please type here..."
@@ -60,6 +70,7 @@ const Complaints = ({ next }) => {
 								}}
 								onChange={e => {
 									setComplaint(String(e));
+									storage.setItem(CK_COMPLAINTS, String(e));
 								}}
 							/>
 						</div>

@@ -278,8 +278,7 @@ export class Billing extends Component {
 											<th className="text-center">Status</th>
 
 											<th>
-												<div className="th-inner "></div>
-												<div className="fht-cell"></div>
+												<div></div>
 											</th>
 										</tr>
 									</thead>

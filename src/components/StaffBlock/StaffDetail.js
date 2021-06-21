@@ -19,24 +19,20 @@ class StaffDetail extends Component {
 												<div className="th-inner sortable both text-center">
 													STAFF ID
 												</div>
-												<div className="fht-cell"></div>
 											</th>
 											<th data-field="project">
 												<div className="th-inner sortable both text-center">
 													NAME
 												</div>
-												<div className="fht-cell"></div>
 											</th>
 											<th data-field="project">
 												<div className="th-inner sortable both text-center">
 													JOB TITLE
 												</div>
-												<div className="fht-cell"></div>
 											</th>
 
 											<th data-field="5">
 												<div className="th-inner text-center">Actions</div>
-												<div className="fht-cell"></div>
 											</th>
 										</tr>
 									</thead>

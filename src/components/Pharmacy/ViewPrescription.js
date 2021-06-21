@@ -17,7 +17,6 @@ import { notifySuccess, notifyError } from '../../services/notify';
 const ViewPrescription = ({
 	closeModal,
 	activeRequest,
-	drugs,
 	updatePrescriptions,
 	filled,
 }) => {
@@ -239,7 +238,6 @@ const ViewPrescription = ({
 																	<Popover
 																		content={
 																			<SelectDrug
-																				drugs={drugs}
 																				onHide={() => setVisible(null)}
 																				setDrug={drug => setDrug(drug, item.id)}
 																			/>
@@ -323,11 +321,6 @@ const ViewPrescription = ({
 											</button>
 										</>
 									)}
-									{filled && (
-										<button onClick={() => {}} className="btn btn-success">
-											<span>Print</span>
-										</button>
-									)}
 									{filled &&
 										activeRequest &&
 										activeRequest.transaction &&
@@ -343,6 +336,11 @@ const ViewPrescription = ({
 												)}
 											</button>
 										)}
+									{activeRequest.status === 1 && (
+										<button onClick={() => {}} className="btn btn-success">
+											<span>Print</span>
+										</button>
+									)}
 								</div>
 							</div>
 						</div>

@@ -140,7 +140,7 @@ const CreateTask = ({ closeModal, refreshTasks }) => {
 			setSubmitting(true);
 			const data = { tasks: clinicalTasks, prescription };
 			const url = `${patientAPI}/admissions/create-task/${patient.id}`;
-			await request(url, 'PATCH', true, data);
+			await request(url, 'POST', true, data);
 			refreshTasks();
 			notifySuccess('clinical tasks created!');
 			setSubmitting(false);

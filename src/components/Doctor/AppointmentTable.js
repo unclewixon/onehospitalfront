@@ -94,7 +94,7 @@ const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 		<TableLoading />
 	) : (
 		<>
-			<table className="table table-padded">
+			<table className="table table-striped">
 				<thead>
 					<tr>
 						<th>Date</th>
@@ -106,6 +106,7 @@ const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 				</thead>
 				<tbody>
 					{appointments.map((appointment, i) => {
+						console.log(appointment);
 						return (
 							<tr key={i}>
 								<td className="nowrap">
@@ -137,15 +138,29 @@ const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 								{profile.details.room ? (
 									<td>
 										{appointment.doctorStatus === 0 ? (
-											<Button
-												isSubmitting={updating && updating === appointment.id}
-												isValid={!updating}
-												onClick={() =>
-													confirm({ id: appointment.id, action: 1 })
-												}
-												className="btn btn-sm btn-primary"
-												value="Accept"
-											/>
+											<>
+												{!appointment.encounter &&
+												(appointment.status === 'Cancelled' ||
+													hasPassed(appointment.appointment_date)) ? (
+													<span className="badge badge-danger">
+														{hasPassed(appointment.appointment_date)
+															? 'Missed'
+															: 'Cancelled'}
+													</span>
+												) : (
+													<Button
+														isSubmitting={
+															updating && updating === appointment.id
+														}
+														isValid={!updating}
+														onClick={() =>
+															confirm({ id: appointment.id, action: 1 })
+														}
+														className="btn btn-sm btn-primary"
+														value="Accept"
+													/>
+												)}
+											</>
 										) : (
 											<>
 												{!appointment.encounter &&
@@ -170,7 +185,7 @@ const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 																		appointment?.patient
 																	)
 																}
-																className="btn btn-sm btn-info"
+																className="btn btn-sm btn-info text-white"
 																value="Start Encounter"
 															/>
 														)}
@@ -180,11 +195,27 @@ const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 										)}
 									</td>
 								) : (
-									<td>
-										<Tooltip title="please select a consulting room">
-											<button className="btn btn-sm btn-link">Accept</button>
-										</Tooltip>
-									</td>
+									<>
+										{!appointment.encounter &&
+										(appointment.status === 'Cancelled' ||
+											hasPassed(appointment.appointment_date)) ? (
+											<td>
+												<span className="badge badge-danger">
+													{hasPassed(appointment.appointment_date)
+														? 'Missed'
+														: 'Cancelled'}
+												</span>
+											</td>
+										) : (
+											<td>
+												<Tooltip title="please select a consulting room">
+													<button className="btn btn-sm btn-link">
+														Accept
+													</button>
+												</Tooltip>
+											</td>
+										)}
+									</>
 								)}
 								<td className="row-actions">
 									<Tooltip title="View Appointment Details">

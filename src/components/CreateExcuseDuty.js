@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import AsyncSelect from 'react-select/async';
 import DatePicker from 'react-datepicker';
 import Select from 'react-select';
+
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from './../services/notify';
 import { diagnosisAPI } from '../services/constants';

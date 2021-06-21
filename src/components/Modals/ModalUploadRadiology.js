@@ -9,14 +9,13 @@ import { notifyError, notifySuccess } from '../../services/notify';
 import { API_URI, searchAPI, patientAPI } from '../../services/constants';
 import { upload } from '../../services/utilities';
 import { request } from '../../services/utilities';
-import searchingGIF from '../../assets/images/searching.gif';
 
 const ModalUploadRadiology = props => {
 	const [submitting, setSubmitting] = useState(false);
 	const [file, setFile] = useState(false);
 	const [label, setLabel] = useState('');
-	// const [uploading, setUploading] = useState(false);
 	const [query, setQuery] = useState('');
+	// eslint-disable-next-line no-unused-vars
 	const [searching, setSearching] = useState(false);
 	const [patients, setPatients] = useState([]);
 	const [patientId, setPatientId] = useState(null);
@@ -44,11 +43,8 @@ const ModalUploadRadiology = props => {
 				formData.append('document_type', patientId);
 				formData.append('files', file);
 
-				await upload(
-					`${API_URI}/${patientAPI}/${patientId}/upload-request-document`,
-					'POST',
-					formData
-				);
+				const url = `${API_URI}/${patientAPI}/${patientId}/upload-request-document`;
+				await upload(url, 'POST', formData);
 
 				history.push('/radiology#imaging');
 				props.closeModals(true);
@@ -138,11 +134,6 @@ const ModalUploadRadiology = props => {
 												autoComplete="off"
 												required
 											/>
-											{searching && (
-												<div className="searching text-center">
-													<img alt="searching" src={searchingGIF} />
-												</div>
-											)}
 
 											{patients &&
 												patients.map(pat => {

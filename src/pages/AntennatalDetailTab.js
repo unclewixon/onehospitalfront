@@ -279,7 +279,7 @@
 // 	return {
 // 		antennatal: state.patient.antennatal,
 // 		antenatal_id: state.general.antenatal_id,
-// 		user_antennatal: state.user.antennatal,
+// 		user_antennatal: state.user.item,
 // 	};
 // };
 

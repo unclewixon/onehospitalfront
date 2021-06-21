@@ -13,7 +13,7 @@ import { notifyError, notifySuccess } from '../../services/notify';
 
 const AllAppointments = lazy(() => import('./AllAppointments'));
 const AllPatients = lazy(() => import('./AllPatients'));
-const InsuranceTrans = lazy(() => import('./InsuranceTrans'));
+const InsuranceTransactions = lazy(() => import('./InsuranceTransactions'));
 
 const Home = ({ match, location }) => {
 	const [title, setTitle] = useState('Dashboard');
@@ -100,7 +100,7 @@ const Home = ({ match, location }) => {
 
 											<Route
 												path={`${match.url}/insurance-transactions`}
-												component={InsuranceTrans}
+												component={InsuranceTransactions}
 											/>
 											<Route component={NoMatch} />
 										</Switch>

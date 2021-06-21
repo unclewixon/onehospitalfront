@@ -20,14 +20,14 @@ const Home = ({ match, location }) => {
 									<Link
 										to={`${match.path}/transactions`}
 										className={`mx-2 btn btn-primary btn-sm  ${
-											page === 'transactions' ? '' : 'btn-outline-primary'
+											page === 'transactions' ? 'btn-outline-primary' : ''
 										}`}>
 										Pending Transactions
 									</Link>
 									<Link
 										to={`${match.path}/transactions/all`}
 										className={`mr-2 btn btn-primary btn-sm  ${
-											page === 'all' ? '' : 'btn-outline-primary'
+											page === 'all' ? 'btn-outline-primary' : ''
 										}`}>
 										All transactions
 									</Link>

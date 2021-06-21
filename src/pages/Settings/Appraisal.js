@@ -5,7 +5,7 @@ import Tooltip from 'antd/lib/tooltip';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request, confirmAction } from '../../services/utilities';
-import { loadDepartments, updateDepartment } from '../../actions/department';
+import { loadDepartments } from '../../actions/department';
 import TableLoading from '../../components/TableLoading';
 
 const Appraisal = () => {
@@ -18,12 +18,14 @@ const Appraisal = () => {
 		objective: '',
 	};
 
+	// eslint-disable-next-line no-unused-vars
 	const [{ id, dname, keyFocus, weight, kpis, objective }, setState] = useState(
 		initialState
 	);
 	const [payload, setPayload] = useState(null);
 	const [payloadView, setPayloadView] = useState(null);
 	const [loading, setLoading] = useState(true);
+	// eslint-disable-next-line no-unused-vars
 	const [staffList, setStaffList] = useState([]);
 	const [staffLoaded, setStaffLoaded] = useState(false);
 	const [submitting, setSubmitting] = useState(false);

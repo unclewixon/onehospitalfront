@@ -15,8 +15,6 @@ import { toggleProfile } from '../../actions/user';
 
 const { RangePicker } = DatePicker;
 
-const category_id = 1;
-
 class PrescriptionRequests extends Component {
 	state = {
 		filtering: false,
@@ -26,7 +24,6 @@ class PrescriptionRequests extends Component {
 		startDate: '',
 		endDate: '',
 		patientId: '',
-		drugs: [],
 		prescriptions: [],
 		filled: false,
 		meta: null,
@@ -39,16 +36,6 @@ class PrescriptionRequests extends Component {
 			activeRequest: null,
 			filled: false,
 		});
-	};
-
-	getServiceUnit = async hmoId => {
-		try {
-			const url = `inventory/stocks-by-category/${category_id}/${hmoId}`;
-			const rs = await request(url, 'GET', true);
-			this.setState({ drugs: rs });
-		} catch (error) {
-			notifyError('Error fetching Service Unit');
-		}
 	};
 
 	componentDidMount() {
@@ -98,7 +85,6 @@ class PrescriptionRequests extends Component {
 			filtering,
 			showModal,
 			activeRequest,
-			drugs,
 			prescriptions,
 			filled,
 			meta,
@@ -175,7 +161,7 @@ class PrescriptionRequests extends Component {
 											<td>
 												<span>
 													{moment(request.createdAt).format(
-														'DD-MMM-YYYY HH:mm A'
+														'DD-MMM-YYYY h:mm A'
 													)}
 												</span>
 											</td>
@@ -236,9 +222,6 @@ class PrescriptionRequests extends Component {
 														<a
 															className="primary"
 															onClick={async () => {
-																await this.getServiceUnit(
-																	request.patient.hmo.id
-																);
 																document.body.classList.add('modal-open');
 																this.setState({
 																	activeRequest: request,
@@ -250,11 +233,13 @@ class PrescriptionRequests extends Component {
 														</a>
 													</Tooltip>
 												)}
-												<Tooltip title="Print Prescription">
-													<a className="ml-2">
-														<i className="icon-feather-printer" />
-													</a>
-												</Tooltip>
+												{request.status === 1 && (
+													<Tooltip title="Print Prescription">
+														<a className="ml-2">
+															<i className="icon-feather-printer" />
+														</a>
+													</Tooltip>
+												)}
 											</td>
 										</tr>
 									);
@@ -279,7 +264,6 @@ class PrescriptionRequests extends Component {
 					<ViewPrescription
 						closeModal={this.closeModal}
 						activeRequest={activeRequest}
-						drugs={drugs}
 						updatePrescriptions={this.updatePrescriptions}
 						filled={filled}
 					/>

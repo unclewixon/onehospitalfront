@@ -170,44 +170,34 @@ const ClinicalTasks = () => {
 						<thead>
 							<tr>
 								<th>
-									<div className="th-inner sortable both">Patient</div>
-									<div className="fht-cell"></div>
+									<div>Patient</div>
 								</th>
 								<th>
-									<div className="th-inner sortable both">Bed/Ward</div>
-									<div className="fht-cell"></div>
+									<div>Bed/Ward</div>
 								</th>
 								<th>
-									<div className="th-inner sortable both">Task</div>
-									<div className="fht-cell"></div>
+									<div>Task</div>
 								</th>
 								<th>
-									<div className="th-inner sortable both">Read Count</div>
-									<div className="fht-cell"></div>
+									<div>Read Count</div>
 								</th>
 								<th>
-									<div className="th-inner sortable both">Set On</div>
-									<div className="fht-cell"></div>
+									<div>Set On</div>
 								</th>
 								<th>
-									<div className="th-inner sortable both">Last Read</div>
-									<div className="fht-cell"></div>
+									<div>Last Read</div>
 								</th>
 								<th>
-									<div className="th-inner sortable both">Next Due</div>
-									<div className="fht-cell"></div>
+									<div>Next Due</div>
 								</th>
 								<th>
-									<div className="th-inner sortable both">Count</div>
-									<div className="fht-cell"></div>
+									<div>Count</div>
 								</th>
 								<th>
-									<div className="th-inner sortable both">Take Reading</div>
-									<div className="fht-cell"></div>
+									<div>Take Reading</div>
 								</th>
 								<th>
 									<div className="th-inner"></div>
-									<div className="fht-cell"></div>
 								</th>
 							</tr>
 						</thead>

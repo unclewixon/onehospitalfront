@@ -3,7 +3,7 @@ import { Link, withRouter } from 'react-router-dom';
 
 const checkHash = (hash, path) => hash.find(h => h === path);
 
-const ProcedureMenu = ({ location }) => {
+const ProcedureProfileMenu = ({ location }) => {
 	const hash = location.hash.split('#');
 
 	return (
@@ -41,4 +41,4 @@ const ProcedureMenu = ({ location }) => {
 	);
 };
 
-export default withRouter(ProcedureMenu);
+export default withRouter(ProcedureProfileMenu);

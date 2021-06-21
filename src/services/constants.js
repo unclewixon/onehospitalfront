@@ -11,6 +11,18 @@ export const MODE_COOKIE = 'EMR:MODE_COOKIE';
 export const FULLSCREEN_COOKIE = 'EMR:FULLSCREEN_COOKIE';
 export const MENU_COOKE = 'EMR:MENU_COOKIE';
 export const USER_RECORD = 'EMR:USER_RECORD';
+
+export const CK_COMPLAINTS = 'E:COMPLAINTS';
+export const CK_REVIEW_OF_SYSTEMS = 'E:REVIEW_OF_SYSTEMS';
+export const CK_HX_FORMS = 'E:HX_FORMS';
+export const CK_PAST_HISTORY = 'E:PAST_HISTORY';
+export const CK_ALLERGIES = 'E:ALLERGIES';
+export const CK_PHYSICAL_EXAM = 'E:PHYSICAL_EXAM';
+export const CK_DIAGNOSIS = 'E:DIAGNOSIS';
+export const CK_INVESTIGATIONS = 'E:INVESTIGATIONS';
+export const CK_PLAN_FORM = 'E:PLAN_FORM';
+export const CK_CONSUMABLE = 'E:CONSUMABLE';
+
 export const socket = socketIOClient(API_URI, {
 	transports: ['websocket', 'polling'],
 });
@@ -1176,7 +1188,6 @@ export const defaultEncounter = {
 	allergies: [],
 	pastAllergies: [],
 	physicalExamination: [],
-	//physicalExaminationSummary: [],
 	diagnosis: [],
 	pastDiagnosis: [],
 	investigations: {

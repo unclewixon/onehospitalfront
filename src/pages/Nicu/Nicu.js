@@ -57,35 +57,20 @@ const Nicu = props => {
 													<thead>
 														<tr>
 															<th data-field="id">
-																<div className="th-inner sortable both">
-																	FOLDER NUMBER
-																</div>
-																<div className="fht-cell"></div>
+																<div>FOLDER NUMBER</div>
 															</th>
 															<th data-field="owner">
-																<div className="th-inner sortable both">
-																	NAME
-																</div>
-																<div className="fht-cell"></div>
+																<div>NAME</div>
 															</th>
 															<th data-field="project">
-																<div className="th-inner sortable both">
-																	DATE OF BIRTH
-																</div>
-																<div className="fht-cell"></div>
+																<div>DATE OF BIRTH</div>
 															</th>
 
 															<th data-field="5">
-																<div className="th-inner sortable both">
-																	STATUS
-																</div>
-																<div className="fht-cell"></div>
+																<div>STATUS</div>
 															</th>
 															<th data-field="5">
-																<div className="th-inner sortable both">
-																	ACTION
-																</div>
-																<div className="fht-cell"></div>
+																<div>ACTION</div>
 															</th>
 														</tr>
 													</thead>

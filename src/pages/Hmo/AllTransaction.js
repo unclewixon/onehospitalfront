@@ -13,6 +13,7 @@ import { notifyError } from '../../services/notify';
 import { loadHmoTransaction } from '../../actions/hmo';
 import HmoTable from '../../components/HMO/HmoTable';
 import { startBlock, stopBlock } from '../../actions/redux-block';
+import TableLoading from '../../components/TableLoading';
 
 const { RangePicker } = DatePicker;
 const status = [
@@ -23,8 +24,9 @@ const status = [
 
 const getOptionValues = option => option.id;
 const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+
 const getOptions = async q => {
-	if (!q || q.length < 3) {
+	if (!q || q.length < 1) {
 		return [];
 	}
 	const url = `${searchAPI}?q=${q}`;
@@ -32,7 +34,7 @@ const getOptions = async q => {
 	return res;
 };
 
-export class AllTransaction extends Component {
+class AllTransaction extends Component {
 	state = {
 		filtering: false,
 		loading: false,
@@ -41,10 +43,11 @@ export class AllTransaction extends Component {
 		endDate: '',
 		status: '',
 		patient_id: '',
-		hmo_id: 1,
+		hmo_id: '',
 		hmos: [],
 		meta: null,
 	};
+
 	patient = React.createRef();
 	hmo = React.createRef();
 
@@ -52,11 +55,13 @@ export class AllTransaction extends Component {
 		this.fetchHmos();
 		this.fetchHmoTransaction();
 	}
+
 	componentDidUpdate(prevProps, prevState) {
 		if (prevState.patient_id !== this.state.patient_id) {
 			this.fetchHmoTransaction();
 		}
 	}
+
 	fetchHmos = async () => {
 		try {
 			this.setState({ loading: true });
@@ -75,15 +80,12 @@ export class AllTransaction extends Component {
 	};
 
 	fetchHmoTransaction = async page => {
-		const { patient_id, startDate, endDate, status, hmo_id } = this.state;
 		try {
+			const { patient_id, startDate, endDate, status, hmo_id } = this.state;
 			const p = page || 1;
 			this.setState({ loading: true });
-			const rs = await request(
-				`hmos/transactions?page=${p}&limit=15&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}&hmo_id=${hmo_id}`,
-				'GET',
-				true
-			);
+			const url = `hmos/transactions?page=${p}&limit=15&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}&hmo_id=${hmo_id}`;
+			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			const arr = [...result];
 			this.props.loadHmoTransaction(arr);
@@ -132,14 +134,7 @@ export class AllTransaction extends Component {
 	};
 
 	patientSet = (pat, type) => {
-		console.log(pat);
-
 		if (type === 'patient') {
-			// let name =
-			// 	(pat?.surname ? pat?.surname : '') +
-			// 	' ' +
-			// 	(pat?.other_names ? pat?.other_names : '');
-			// setPatients([]);
 			this.setState({ ...this.state, patient_id: pat?.id });
 		} else {
 			this.setState({ ...this.state, hmo_id: pat?.id });
@@ -168,14 +163,21 @@ export class AllTransaction extends Component {
 		}
 	};
 
+	updateTransaction = data => {
+		this.props.loadHmoTransaction(data);
+		const i = this.state.meta;
+		const meta = { ...i, total: (i.total = 1) };
+		this.setState({ loading: false, meta });
+	};
+
 	render() {
 		const { filtering, loading, hmos, meta } = this.state;
 		const { hmoTransactions } = this.props;
 
 		return (
 			<>
-				<h6 className="element-header">HMO Transactions</h6>
-				<div className="element-box p-3 m-0">
+				<h6 className="element-header">Transactions</h6>
+				<div className="element-box m-0 mb-4 p-3">
 					<form className="px-2">
 						<div className="row">
 							<div className="form-group col-sm-6 pr-0">
@@ -261,38 +263,46 @@ export class AllTransaction extends Component {
 							</div>
 						</div>
 					</form>
-
+				</div>
+				<div className="element-box p-3 m-0">
 					<div className="table table-responsive">
-						<table className="table table-theme v-middle table-hover">
-							<thead>
-								<tr>
-									<th className="text-center">Date</th>
-									<th className="text-center">Hmo name</th>
-									<th className="text-center">Patient name</th>
-									<th className="text-center">Description</th>
-									<th className="text-center">Amount(&#x20A6;)</th>
-									<th className="text-center">Status</th>
-									<th>
-										<div className="th-inner "></div>
-										<div className="fht-cell"></div>
-									</th>
-								</tr>
-							</thead>
-							<HmoTable loading={loading} hmoTransactions={hmoTransactions} />
-						</table>
+						{loading ? (
+							<TableLoading />
+						) : (
+							<>
+								<table className="table table-striped">
+									<thead>
+										<tr>
+											<th>Date</th>
+											<th>Hmo name</th>
+											<th>Patient name</th>
+											<th>Description</th>
+											<th>Amount(&#x20A6;)</th>
+											<th>Hmo Transaction Code</th>
+											<th>Status</th>
+											<th></th>
+										</tr>
+									</thead>
+									<HmoTable
+										hmoTransactions={hmoTransactions}
+										updateTransaction={this.updateTransaction}
+									/>
+								</table>
+								{meta && (
+									<div className="pagination pagination-center mt-4">
+										<Pagination
+											current={parseInt(meta.currentPage, 10)}
+											pageSize={parseInt(meta.itemsPerPage, 10)}
+											total={parseInt(meta.totalPages, 10)}
+											showTotal={total => `Total ${total} transactions`}
+											itemRender={itemRender}
+											onChange={current => this.onNavigatePage(current)}
+										/>
+									</div>
+								)}
+							</>
+						)}
 					</div>
-					{meta && (
-						<div className="pagination pagination-center mt-4">
-							<Pagination
-								current={parseInt(meta.currentPage, 10)}
-								pageSize={parseInt(meta.itemsPerPage, 10)}
-								total={parseInt(meta.totalPages, 10)}
-								showTotal={total => `Total ${total} transactions`}
-								itemRender={itemRender}
-								onChange={current => this.onNavigatePage(current)}
-							/>
-						</div>
-					)}
 				</div>
 			</>
 		);
@@ -304,6 +314,7 @@ const mapStateToProps = state => {
 		hmoTransactions: state.hmo.hmo_transactions,
 	};
 };
+
 export default connect(mapStateToProps, {
 	loadHmoTransaction,
 	startBlock,

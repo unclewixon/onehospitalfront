@@ -320,7 +320,7 @@ class AntennatalProfile extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		patient: state.user.patient,
-		antennatal: state.user.antennatal,
+		antennatal: state.user.item,
 	};
 };
 

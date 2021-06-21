@@ -33,9 +33,10 @@ const INITIAL_STATE = {
 	isProcedureOpen: false,
 	isAntenatalOpen: false,
 	isAdmissionOpen: false,
+	isIVFOpen: false,
 	menu_mode: 'menu-layout-compact',
 	menu_mini: false,
-	antennatal: null,
+	item: null,
 };
 
 const user = (state = INITIAL_STATE, action) => {
@@ -54,11 +55,13 @@ const user = (state = INITIAL_STATE, action) => {
 				userID: null,
 				patient: null,
 				staff: null,
+				item: null,
 				isPatientOpen: false,
 				isProcedureOpen: false,
 				isAntenatalOpen: false,
 				isAdmissionOpen: false,
 				isStaffOpen: false,
+				isIVFOpen: false,
 			};
 		case TOGGLE_MODE:
 			storage.setItem(MODE_COOKIE, !state.theme_mode);
@@ -101,8 +104,8 @@ const user = (state = INITIAL_STATE, action) => {
 			return { ...state, patient: action.payload };
 		case TOGGLE_PROFILE:
 			if (action.payload) {
+				const item = action.info.item;
 				const type = action.info.type;
-				const antennatal = action.info.antennatal;
 				const { patient, staff } = action.info;
 				const data =
 					type === 'patient' ||
@@ -111,7 +114,7 @@ const user = (state = INITIAL_STATE, action) => {
 					type === 'admission'
 						? { patient }
 						: { staff };
-				storage.setItem(USER_RECORD, { ...data, type });
+				storage.setItem(USER_RECORD, { ...data, type, item });
 
 				return {
 					...state,
@@ -120,7 +123,8 @@ const user = (state = INITIAL_STATE, action) => {
 					isProcedureOpen: type === 'procedure',
 					isAntenatalOpen: type === 'antennatal',
 					isAdmissionOpen: type === 'admission',
-					antennatal,
+					isIVFOpen: type === 'ivf',
+					item,
 					...data,
 				};
 			}
@@ -132,9 +136,11 @@ const user = (state = INITIAL_STATE, action) => {
 				isProcedureOpen: false,
 				isAntenatalOpen: false,
 				isAdmissionOpen: false,
+				isIVFOpen: false,
 				userID: null,
 				patient: null,
 				staff: null,
+				item: null,
 			};
 		default:
 			return state;

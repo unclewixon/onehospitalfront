@@ -66,20 +66,16 @@ export class Appraisal extends Component {
 										<tr>
 											<th data-field="owner">
 												<div className="th-inner sortable">PERIOD</div>
-												<div className="fht-cell"></div>
 											</th>
 											<th data-field="project">
 												<div className="th-inner sortable">FROM DATE</div>
-												<div className="fht-cell"></div>
 											</th>
 											<th data-field="project">
 												<div className="th-inner sortable">TO DATE</div>
-												<div className="fht-cell"></div>
 											</th>
 
 											<th data-field="5">
 												<div className="th-inner text-center">Actions</div>
-												<div className="fht-cell"></div>
 											</th>
 										</tr>
 									</thead>

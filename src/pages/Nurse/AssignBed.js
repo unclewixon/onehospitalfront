@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { reduxForm, SubmissionError } from 'redux-form';
 import Select from 'react-select';
 
-import { request, updateImmutable } from '../../services/utilities';
+import { request, updateImmutable, nth } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 
@@ -57,17 +57,25 @@ class AssignBed extends Component {
 
 			this.setState({ submitting: true });
 
+			if (room_id === '') {
+				notifyError('please select a room');
+				return;
+			}
+
 			const data = {
 				room_id,
 				admission_id: item.id,
 			};
-			item.room = room_id;
+
 			const url = 'patient/admissions/assign-bed';
 			const rs = await request(url, 'PATCH', true, data);
 			if (rs.success) {
 				const update = updateImmutable(patients, rs.admission);
 				updatePatient(update);
-				notifySuccess(`patient assigned ${room_id}`);
+				const room = rs.admission.room;
+				notifySuccess(
+					`patient assigned to ${nth(parseInt(room.floor, 10))} Room ${room.id}`
+				);
 				this.setState({ submitting: false });
 				this.props.closeModal();
 			} else {
@@ -105,7 +113,7 @@ class AssignBed extends Component {
 						</button>
 						<div className="onboarding-content with-gradient">
 							<h4 className="onboarding-title">{`Assign Bed`}</h4>
-							<div className="element-box">
+							<div className="element-box m-0 p-3">
 								<form onSubmit={handleSubmit(this.asignBed)}>
 									{error && (
 										<div
@@ -123,7 +131,7 @@ class AssignBed extends Component {
 												onChange={e => this.handleCatChange(e.value)}
 											/>
 										</div>
-										<div className="col-sm-12">
+										<div className="col-sm-12 mt-2">
 											<label>Room</label>
 											<Select
 												options={rooms}

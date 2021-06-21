@@ -44,6 +44,7 @@ class ModalApproveTransaction extends Component {
 		voucherAmount: 0,
 		activeData: null,
 		voucherId: null,
+		isPart: false,
 	};
 
 	componentDidMount() {
@@ -60,7 +61,7 @@ class ModalApproveTransaction extends Component {
 
 	approveTransaction = async data => {
 		try {
-			const { voucherId } = this.state;
+			const { voucherId, isPart } = this.state;
 			const {
 				items,
 				approve_hmo_transaction,
@@ -79,13 +80,14 @@ class ModalApproveTransaction extends Component {
 				...others,
 				voucher_id: voucherId,
 				patient_id: items.patient.id,
+				is_part_payment: isPart ? 1 : 0,
 			};
 			console.log('console.log(datum);');
 
 			console.log(datum);
 			this.setState({ submitting: true });
 			const url = `transactions/${id}/process`;
-			const rs = await request(url, 'PATCH', true, datum);
+			const rs = await request(url, 'POST', true, datum);
 
 			if (rs.success) {
 				this.props.reset('approve_transaction');
@@ -178,7 +180,7 @@ class ModalApproveTransaction extends Component {
 			approve_hmo_transaction,
 			approveTransaction,
 		} = this.props;
-		const { submitting, hidden, amountClass } = this.state;
+		const { submitting, hidden, amountClass, isPart } = this.state;
 		return (
 			<div
 				className="onboarding-modal modal fade animated show"
@@ -229,7 +231,7 @@ class ModalApproveTransaction extends Component {
 													// defaultValue={`NGN ${approveTransaction.amount}`}
 													type="text"
 													label="Amount"
-													//readOnly={true}
+													readOnly={!isPart}
 													placeholder="Enter Amount"
 													className="form-control"
 												/>
@@ -277,6 +279,23 @@ class ModalApproveTransaction extends Component {
 												defaultValue={approveTransaction.amount}
 												placeholder="Enter Note"
 											/>
+										</div>
+									</div>
+
+									<div className="row">
+										<div className="form-check col-sm-12">
+											<label className="form-check-label">
+												<input
+													className="form-check-input mt-0"
+													name="is_part_payment"
+													type="checkbox"
+													checked={isPart}
+													onChange={e =>
+														this.setState({ isPart: e.target.checked })
+													}
+												/>
+												Part Payment
+											</label>
 										</div>
 									</div>
 

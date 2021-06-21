@@ -1,57 +1,30 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component, Suspense, lazy, Fragment } from 'react';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { Switch, withRouter } from 'react-router-dom';
 
 import { toggleProfile } from '../actions/user';
-import ProcedureMenu from '../components/Navigation/ProcedureProfileMenu';
+import IVFMenu from '../components/Navigation/IVFProfileMenu';
 import SSRStorage from '../services/storage';
 import { USER_RECORD } from '../services/constants';
 import Splash from '../components/Splash';
 import ProfileBlock from '../components/ProfileBlock';
 import HashRoute from '../components/HashRoute';
-// import ProcedureForms from '../components/Procedures/ProcedureForms';
 
-const Notes = lazy(() => import('../components/Procedures/Notes'));
-const Attachments = lazy(() => import('../components/Procedures/Attachments'));
-const Consumables = lazy(() => import('../components/Procedures/Consumables'));
-const Pharmacy = lazy(() => import('../components/Patient/Pharmacy'));
-const PharmacyRequest = lazy(() =>
-	import('../components/Patient/PharmacyRequest')
-);
-const MedicalReport = lazy(() =>
-	import('../components/Procedures/MedicalReport')
-);
+const Notes = lazy(() => import('../components/IVF/Notes'));
 
 const storage = new SSRStorage();
 
 const Page = ({ location }) => {
-	const procedure = useSelector(state => state.user.item);
 	const hash = location.hash.substr(1).split('#');
 	switch (hash[0]) {
 		case 'notes':
-			return <Notes />;
-		case 'attachments':
-			return <Attachments />;
-		case 'consumables':
-			return <Consumables />;
-		case 'medical-report':
-			return <MedicalReport />;
-		case 'medications-used':
-			return (
-				<Pharmacy
-					can_request={procedure && !procedure.finishedDate}
-					procedure={procedure}
-				/>
-			);
-		case 'pharmacy-request':
-			return <PharmacyRequest />;
 		default:
 			return <Notes />;
 	}
 };
 
-class ProcedureProfile extends Component {
+class IVFProfile extends Component {
 	closeProfile = () => {
 		storage.removeItem(USER_RECORD);
 		this.props.toggleProfile(false);
@@ -85,7 +58,7 @@ class ProcedureProfile extends Component {
 						<div
 							className="content-w"
 							style={{ width: 'calc(100% - 18%)', overflow: 'hidden' }}>
-							<ProcedureMenu />
+							<IVFMenu />
 							<div className="content-i">
 								<div className="content-box">
 									<div className="row">
@@ -128,5 +101,5 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default withRouter(
-	connect(mapStateToProps, { toggleProfile })(ProcedureProfile)
+	connect(mapStateToProps, { toggleProfile })(IVFProfile)
 );

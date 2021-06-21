@@ -127,7 +127,7 @@ const Appointments = () => {
 			</div>
 			<h6 className="element-header">Appointment History </h6>
 			<div className="element-content">
-				<div className="element-box p-3 m-0 mt-3">
+				<div className="element-box p-3 m-0">
 					<div className="table-responsive">
 						<AppointmentTable
 							appointments={allAppointments}

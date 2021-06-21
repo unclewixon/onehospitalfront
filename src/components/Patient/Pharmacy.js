@@ -7,15 +7,12 @@ import moment from 'moment';
 import Pagination from 'antd/lib/pagination';
 
 import { notifyError } from '../../services/notify';
-import searchingGIF from '../../assets/images/searching.gif';
 import ViewPrescription from '../Pharmacy/ViewPrescription';
 import { request, updateImmutable, itemRender } from '../../services/utilities';
+import TableLoading from '../TableLoading';
 
-const category_id = 1;
-
-const Pharmacy = ({ location, patient }) => {
+const Pharmacy = ({ location, patient, can_request = true, procedure }) => {
 	const [loaded, setLoaded] = useState(false);
-	const [allDrugs, setAllDrugs] = useState([]);
 	const [showModal, setShowModal] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
 	const [prescriptions, setPrescriptions] = useState([]);
@@ -36,20 +33,11 @@ const Pharmacy = ({ location, patient }) => {
 		setFilled(false);
 	};
 
-	const getServiceUnit = async hmoId => {
-		try {
-			const url = `inventory/stocks-by-category/${category_id}/${hmoId}`;
-			const rs = await request(url, 'GET', true);
-			setAllDrugs(rs);
-		} catch (error) {
-			notifyError('Error fetching Service Unit');
-		}
-	};
-
 	const fetch = useCallback(
 		async page => {
 			try {
-				const url = `requests/${patient.id}/request/pharmacy?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=10`;
+				const pid = procedure?.id || '';
+				const url = `requests/${patient.id}/request/pharmacy?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=10&procedure_id=${pid}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setPrescriptions(result);
@@ -60,7 +48,7 @@ const Pharmacy = ({ location, patient }) => {
 				notifyError('Error could not fetch regimen prescriptions');
 			}
 		},
-		[patient]
+		[patient, procedure]
 	);
 
 	useEffect(() => {
@@ -82,12 +70,14 @@ const Pharmacy = ({ location, patient }) => {
 		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<div className="element-actions">
-					<Link
-						className="btn btn-primary btn-sm"
-						to={`${location.pathname}#pharmacy-request`}>
-						<i className="os-icon os-icon-plus" />
-						New Pharmacy Request
-					</Link>
+					{can_request && (
+						<Link
+							className="btn btn-primary btn-sm"
+							to={`${location.pathname}#pharmacy-request`}>
+							<i className="os-icon os-icon-plus" />
+							New Pharmacy Request
+						</Link>
+					)}
 				</div>
 				<h6 className="element-header">Pharmacy Requests</h6>
 				<div className="element-box p-3 m-0">
@@ -98,9 +88,7 @@ const Pharmacy = ({ location, patient }) => {
 							</div>
 						</div>
 						{!loaded ? (
-							<div colSpan="5" className="text-center">
-								<img alt="searching" src={searchingGIF} />
-							</div>
+							<TableLoading />
 						) : (
 							<div
 								className="fixed-table-container"
@@ -176,9 +164,6 @@ const Pharmacy = ({ location, patient }) => {
 																	<a
 																		className="primary"
 																		onClick={async () => {
-																			await getServiceUnit(
-																				request.patient.hmo.id
-																			);
 																			document.body.classList.add('modal-open');
 																			setActiveRequest(request);
 																			setShowModal(true);
@@ -188,11 +173,13 @@ const Pharmacy = ({ location, patient }) => {
 																	</a>
 																</Tooltip>
 															)}
-															<Tooltip title="Print Prescription">
-																<a className="ml-2">
-																	<i className="icon-feather-printer" />
-																</a>
-															</Tooltip>
+															{request.status === 1 && (
+																<Tooltip title="Print Prescription">
+																	<a className="ml-2">
+																		<i className="icon-feather-printer" />
+																	</a>
+																</Tooltip>
+															)}
 														</td>
 													</tr>
 												);
@@ -221,7 +208,6 @@ const Pharmacy = ({ location, patient }) => {
 				<ViewPrescription
 					closeModal={closeModal}
 					activeRequest={activeRequest}
-					drugs={allDrugs}
 					updatePrescriptions={updatePrescriptions}
 					filled={filled}
 				/>

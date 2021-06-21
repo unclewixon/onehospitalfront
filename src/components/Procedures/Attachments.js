@@ -32,16 +32,13 @@ const Attachments = () => {
 								<thead>
 									<tr>
 										<th>
-											<div className="th-inner sortable both">Date</div>
-											<div className="fht-cell"></div>
+											<div>Date</div>
 										</th>
 										<th>
-											<div className="th-inner sortable both">File</div>
-											<div className="fht-cell"></div>
+											<div>File</div>
 										</th>
 										<th>
-											<div className="th-inner sortable both">Uploaded By</div>
-											<div className="fht-cell"></div>
+											<div>Uploaded By</div>
 										</th>
 										<th></th>
 									</tr>

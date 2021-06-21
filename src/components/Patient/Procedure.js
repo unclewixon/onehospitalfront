@@ -3,10 +3,10 @@ import { Link, withRouter } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 
-import searching from '../../assets/images/searching.gif';
 import { notifyError } from '../../services/notify';
 import { request, itemRender } from '../../services/utilities';
 import ProcedureBlock from '../ProcedureBlock';
+import TableLoading from '../TableLoading';
 
 const Procedure = ({ location }) => {
 	const [loaded, setLoaded] = useState(false);
@@ -68,9 +68,7 @@ const Procedure = ({ location }) => {
 				<div className="element-box p-3 m-0 mt-3">
 					<div className="bootstrap-table">
 						{!loaded ? (
-							<div className="text-center">
-								<img alt="searching" src={searching} />
-							</div>
+							<TableLoading />
 						) : (
 							<div
 								className="fixed-table-container"

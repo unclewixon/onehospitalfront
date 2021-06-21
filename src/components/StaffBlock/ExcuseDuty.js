@@ -7,10 +7,10 @@ import Tooltip from 'antd/lib/tooltip';
 import { request } from '../../services/utilities';
 import { loadStaffLeave } from '../../actions/hr';
 import { notifySuccess, notifyError } from '../../services/notify';
-import searchingGIF from '../../assets/images/searching.gif';
 import ModalExcuseDuty from '../Modals/ModalExcuseDuty';
 import ModalEditExcuse from '../Modals/ModalEditExcuse';
 import { confirmAction } from '../../services/utilities';
+import TableLoading from '../TableLoading';
 
 const ExcuseDuty = ({
 	loadStaffLeave,
@@ -87,129 +87,127 @@ const ExcuseDuty = ({
 						</button>
 					</div>
 					<h6 className="element-header">Excuse Duty</h6>
-					{activeRequest ? (
-						<ModalExcuseDuty
-							showModal={showModal}
-							activeRequest={activeRequest}
-							staff={staff}
-							onModalClick={onModalClick}
-						/>
-					) : null}
-					{activeRequest ? (
-						<ModalEditExcuse
-							showModal={showEdit}
-							activeRequest={activeRequest}
-							staff={staff}
-							onModalClick={onEditClick}
-							onExitModal={onExitModal}
-						/>
-					) : null}
 					<div className="element-box">
 						<div className="table-responsive">
-							<table className="table table-striped">
-								<thead>
-									<tr>
-										<th data-field="id">
-											<div className="th-inner sortable both "></div>
-											<div className="fht-cell"></div>
-										</th>
-										<th data-field="project">
-											<div className="th-inner sortable both ">Date start</div>
-											<div className="fht-cell"></div>
-										</th>
-										<th data-field="project">
-											<div className="th-inner sortable both ">Date return</div>
-											<div className="fht-cell"></div>
-										</th>
-										<th data-field="project">
-											<div className="th-inner sortable both ">status</div>
-											<div className="fht-cell"></div>
-										</th>
+							{searching ? (
+								<TableLoading />
+							) : (
+								<>
+									<table className="table table-striped">
+										<thead>
+											<tr>
+												<th data-field="id">
+													<div className="th-inner sortable both "></div>
+												</th>
+												<th data-field="project">
+													<div className="th-inner sortable both ">
+														Date start
+													</div>
+												</th>
+												<th data-field="project">
+													<div className="th-inner sortable both ">
+														Date return
+													</div>
+												</th>
+												<th data-field="project">
+													<div className="th-inner sortable both ">status</div>
+												</th>
 
-										<th data-field="5">
-											<div className="th-inner ">Actions</div>
-											<div className="fht-cell"></div>
-										</th>
-									</tr>
-								</thead>
-								<tbody>
-									{searching ? (
-										<tr>
-											<td>
-												<img src={searchingGIF} alt="searching" />
-											</td>
-										</tr>
-									) : staffLeaves && staffLeaves.length ? (
-										staffLeaves.map((leave, index) => {
-											return (
-												<tr key={index}>
-													<td>{index + 1}</td>
-													<td>{leave.start_date}</td>
-													<td>{leave.end_date}</td>
-													<td>
-														{leave.status === 1 ? (
-															<div>
-																<span className="status-pill smaller green"></span>
-																<span>Approved</span>
-															</div>
-														) : (
-															<div>
-																<span className="status-pill smaller yellow"></span>
-																<span>Pending</span>
-															</div>
-														)}
-													</td>
-													<td>
-														<Tooltip title="View Request">
-															<a
-																style={{ height: '2rem', width: '2rem' }}
-																onClick={() => {
-																	onModalClick();
-																	setActiveRequest(leave);
-																}}>
-																<i className="os-icon os-icon-folder" />
-															</a>
-														</Tooltip>
-														{leave.status === 0 ? (
-															<Tooltip title="Edit Leave">
+												<th data-field="5">
+													<div>Actions</div>
+												</th>
+											</tr>
+										</thead>
+										<tbody>
+											{staffLeaves.map((leave, index) => {
+												return (
+													<tr key={index}>
+														<td>{index + 1}</td>
+														<td>{leave.start_date}</td>
+														<td>{leave.end_date}</td>
+														<td>
+															{leave.status === 1 ? (
+																<div>
+																	<span className="status-pill smaller green"></span>
+																	<span>Approved</span>
+																</div>
+															) : (
+																<div>
+																	<span className="status-pill smaller yellow"></span>
+																	<span>Pending</span>
+																</div>
+															)}
+														</td>
+														<td className="row-actions">
+															<Tooltip title="View Request">
 																<a
 																	style={{ height: '2rem', width: '2rem' }}
 																	onClick={() => {
-																		onEditClick();
+																		onModalClick();
 																		setActiveRequest(leave);
 																	}}>
-																	<i className="os-icon os-icon-documents-03" />
+																	<i className="os-icon os-icon-folder" />
 																</a>
 															</Tooltip>
-														) : null}
-														{leave.status === 0 ? (
-															<Tooltip title="Cancel">
-																<a
-																	style={{ height: '2rem', width: '2rem' }}
-																	onClick={() => {
-																		confirmDelete(leave);
-																	}}>
-																	<i className="os-icon os-icon-trash" />
-																</a>
-															</Tooltip>
-														) : null}
-													</td>
-												</tr>
-											);
-										})
-									) : null}
-								</tbody>
-							</table>
+															{leave.status === 0 ? (
+																<Tooltip title="Edit Leave">
+																	<a
+																		style={{ height: '2rem', width: '2rem' }}
+																		onClick={() => {
+																			onEditClick();
+																			setActiveRequest(leave);
+																		}}>
+																		<i className="os-icon os-icon-documents-03" />
+																	</a>
+																</Tooltip>
+															) : null}
+															{leave.status === 0 && (
+																<Tooltip title="Cancel">
+																	<a
+																		className="danger cursor"
+																		style={{ height: '2rem', width: '2rem' }}
+																		onClick={() => {
+																			confirmDelete(leave);
+																		}}>
+																		<i className="os-icon os-icon-ui-15" />
+																	</a>
+																</Tooltip>
+															)}
+														</td>
+													</tr>
+												);
+											})}
+										</tbody>
+									</table>
 
-							<div className="controls-below-table">
-								<div className="table-records-info">
-									Showing {staffLeaves.length} records{' '}
-								</div>
-							</div>
+									<div className="controls-below-table">
+										<div className="table-records-info">
+											Showing {staffLeaves.length} records
+										</div>
+									</div>
+								</>
+							)}
 						</div>
 					</div>
 				</div>
 			</div>
+			{activeRequest && (
+				<ModalExcuseDuty
+					showModal={showModal}
+					activeRequest={activeRequest}
+					staff={staff}
+					onModalClick={onModalClick}
+				/>
+			)}
+			{activeRequest && (
+				<ModalEditExcuse
+					showModal={showEdit}
+					activeRequest={activeRequest}
+					staff={staff}
+					onModalClick={onEditClick}
+					onExitModal={onExitModal}
+				/>
+			)}
 		</div>
 	);
 };

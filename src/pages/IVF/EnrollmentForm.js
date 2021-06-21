@@ -2,11 +2,13 @@ import React, { Component, lazy, Suspense } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { reduxForm } from 'redux-form';
+
 import Splash from '../../components/Splash';
-const WifeLab = lazy(() => import('./WifeLab'));
-const HusbandLab = lazy(() => import('./HusbandLab'));
-const AssesmentInfo = lazy(() => import('./AssesmentInfo'));
-const Others = lazy(() => import('./Others'));
+
+const WifeLab = lazy(() => import('../../components/IVF/WifeLab'));
+const HusbandLab = lazy(() => import('../../components/IVF/HusbandLab'));
+const AssesmentInfo = lazy(() => import('../../components/IVF/AssesmentInfo'));
+const Others = lazy(() => import('../../components/IVF/Others'));
 
 class EnrollmentForm extends Component {
 	state = {
@@ -21,9 +23,10 @@ class EnrollmentForm extends Component {
 		lmp: '',
 	};
 
-	setDate = async (date, type) => {
-		await this.setState({ [type]: date });
+	setDate = (date, type) => {
+		this.setState({ [type]: date });
 	};
+
 	nextPage = async data => {
 		console.log(this.state.patient_id);
 
@@ -34,6 +37,7 @@ class EnrollmentForm extends Component {
 			};
 		});
 	};
+
 	previousPage = () => {
 		this.setState(prevState => {
 			return {
@@ -89,6 +93,7 @@ EnrollmentForm = reduxForm({
 	destroyOnUnmount: false,
 	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
 })(EnrollmentForm);
+
 const mapStateToProps = state => {
 	return {
 		patient: state.user.patient,

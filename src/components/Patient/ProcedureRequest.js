@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
@@ -17,13 +16,10 @@ const defaultValues = {
 	bill: 'later',
 };
 
-const categories = [{ id: 19, name: 'General Surgery' }];
-
 const ProcedureRequest = ({ module, history, location }) => {
 	const { register, handleSubmit, setValue } = useForm({ defaultValues });
 
 	const [submitting, setSubmitting] = useState(false);
-	const [category, setCategory] = useState(null);
 	const [loadedPatient, setLoadedPatient] = useState(false);
 	const [chosenPatient, setChosenPatient] = useState(null);
 	const [service, setService] = useState(null);
@@ -31,28 +27,9 @@ const ProcedureRequest = ({ module, history, location }) => {
 	// diagnosis
 	const [diagnosisType, setDiagnosisType] = useState('10');
 
-	// load services
-	const [services, setServices] = useState([]);
-
 	const currentPatient = useSelector(state => state.user.patient);
 
 	const dispatch = useDispatch();
-
-	const getServiceUnit = async (hmoId, categoryId) => {
-		try {
-			dispatch(startBlock());
-
-			const url = `${serviceAPI}/category/${categoryId}?hmo_id=${hmoId}`;
-			const rs = await request(url, 'GET', true);
-			setServices(rs);
-
-			dispatch(stopBlock());
-		} catch (error) {
-			console.log(error);
-			notifyError('error fetching procedures');
-			dispatch(stopBlock());
-		}
-	};
 
 	useEffect(() => {
 		if (!loadedPatient && currentPatient) {
@@ -90,19 +67,22 @@ const ProcedureRequest = ({ module, history, location }) => {
 				request_note: data.request_note,
 				urgent: false,
 				diagnosis: data.diagnosis || [],
-				bill: data.bill,
+				bill: data.bill === 'later' ? -1 : 0,
 			};
 
+			dispatch(startBlock());
 			setSubmitting(true);
 			await request('requests/save-request', 'POST', true, datum);
 			setSubmitting(false);
 			notifySuccess('Procedure request sent!');
+			dispatch(stopBlock());
 			if (module !== 'patient') {
 				history.push('/procedure');
 			} else {
 				history.push(`${location.pathname}#procedure`);
 			}
 		} catch (error) {
+			dispatch(stopBlock());
 			console.log(error);
 			setSubmitting(false);
 			notifyError('Error sending procedure request');
@@ -122,6 +102,20 @@ const ProcedureRequest = ({ module, history, location }) => {
 		const url = `${diagnosisAPI}/search?q=${q}&diagnosisType=${diagnosisType}`;
 		const res = await request(url, 'GET', true);
 		return res;
+	};
+
+	const getServices = async q => {
+		if (!q || q.length < 1) {
+			return [];
+		}
+
+		if (!chosenPatient?.hmo) {
+			return [];
+		}
+
+		const url = `${serviceAPI}?q=${q}&hmo_id=${chosenPatient.hmo.id}`;
+		const res = await request(url, 'GET', true);
+		return res?.result || [];
 	};
 
 	return (
@@ -149,7 +143,7 @@ const ProcedureRequest = ({ module, history, location }) => {
 												setChosenPatient(e);
 											} else {
 												setChosenPatient(null);
-												setServices([]);
+												setService([]);
 											}
 										}}
 										placeholder="Search patients"
@@ -159,36 +153,22 @@ const ProcedureRequest = ({ module, history, location }) => {
 						)}
 						<div className="row">
 							<div className="form-group col-sm-6">
-								<label>Category</label>
-								<Select
-									name="category"
-									placeholder="Select Category"
-									options={categories}
-									value={category}
+								<label>Procedure</label>
+								<AsyncSelect
 									getOptionValue={option => option.id}
 									getOptionLabel={option => option.name}
+									defaultOptions
+									name="service_request"
+									loadOptions={getServices}
+									value={service}
 									onChange={e => {
 										if (!chosenPatient) {
 											notifyError('Please select patient');
 											return false;
 										}
-										setCategory(e);
-										getServiceUnit(chosenPatient.hmo.id, e.id);
-									}}
-								/>
-							</div>
-							<div className="form-group col-sm-6">
-								<label>Procedure</label>
-								<Select
-									name="service_request"
-									placeholder="Select Procedure"
-									options={services}
-									value={service}
-									getOptionValue={option => option.id}
-									getOptionLabel={option => option.name}
-									onChange={e => {
 										setService(e);
 									}}
+									placeholder="Select Procedure"
 								/>
 							</div>
 						</div>

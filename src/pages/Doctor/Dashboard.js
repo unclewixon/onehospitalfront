@@ -103,7 +103,7 @@ const Dashboard = () => {
 	return (
 		<div className="element-wrapper">
 			<h6 className="element-header">Today's Appointments</h6>
-			<div className="element-box p-3 m-0 mt-3">
+			<div className="element-box p-3 m-0">
 				<div className="table-responsive">
 					<AppointmentTable
 						appointments={appointments}

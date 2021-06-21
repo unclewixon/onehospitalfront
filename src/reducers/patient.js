@@ -69,7 +69,6 @@ const INITIAL_STATE = {
 		allergies: [],
 		pastAllergies: [],
 		physicalExamination: [],
-		//physicalExaminationSummary: [],
 		diagnosis: [],
 		pastDiagnosis: [],
 		investigations: {

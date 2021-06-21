@@ -365,10 +365,6 @@ tr {
 	color: rgba(69, 76, 96, 0.8) !important;
 }
 
-// .react-datepicker {
-//     width: 328px;
-// }
-
 .set-immediately {
 	text-align: right;
 	right: 0;
@@ -766,4 +762,34 @@ tr {
 .no-arrows::-webkit-inner-spin-button {
 	-webkit-appearance: none;
 	margin: 0;
+}
+
+div[class$="-control"] {
+	// height: 32px;
+	min-height: 32px;
+	box-shadow: none !important;
+}
+
+div[class$="-IndicatorsContainer"] {
+	height: 30px;
+}
+
+div[class$="-indicatorContainer"] {
+	height: 32px;
+}
+
+div[class$="-ValueContainer"] {
+	min-height: 30px;
+}
+
+.btn-sm, .btn-group-sm > .btn, .all-wrapper .btn-group-sm > .fc-button {
+	padding: 7px 0.5rem;
+}
+
+.btn.filter-btn, .all-wrapper .filter-btn.fc-button {
+	line-height: 0.69;
+}
+
+.react-datepicker {
+	width: max-content;
 }

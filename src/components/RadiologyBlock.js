@@ -235,38 +235,30 @@ class RadiologyBlock extends Component {
 					<thead>
 						<tr>
 							<th>
-								<div className="th-inner sortable both">Request Date</div>
-								<div className="fht-cell"></div>
+								<div>Request Date</div>
 							</th>
 							<th>
-								<div className="th-inner sortable both">ID</div>
-								<div className="fht-cell"></div>
+								<div>ID</div>
 							</th>
 							<th>
-								<div className="th-inner sortable both">Type</div>
-								<div className="fht-cell"></div>
+								<div>Type</div>
 							</th>
 							{!patient && (
 								<th>
-									<div className="th-inner sortable both">Patient</div>
-									<div className="fht-cell"></div>
+									<div>Patient</div>
 								</th>
 							)}
 							<th>
-								<div className="th-inner sortable both">By</div>
-								<div className="fht-cell"></div>
+								<div>By</div>
 							</th>
 							<th>
-								<div className="th-inner sortable both">Attachment</div>
-								<div className="fht-cell"></div>
+								<div>Attachment</div>
 							</th>
 							<th>
-								<div className="th-inner sortable both">Status</div>
-								<div className="fht-cell"></div>
+								<div>Status</div>
 							</th>
 							<th>
 								<div className="th-inner"></div>
-								<div className="fht-cell"></div>
 							</th>
 						</tr>
 					</thead>

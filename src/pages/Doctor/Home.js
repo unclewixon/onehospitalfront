@@ -72,7 +72,7 @@ const Doctor = ({ match }) => {
 						</div>
 					</div>
 				</div>
-				<div className="row mt-2">
+				<div className="row mt-4">
 					<div className="col-sm-12">
 						<Suspense fallback={<Splash />}>
 							<Switch>

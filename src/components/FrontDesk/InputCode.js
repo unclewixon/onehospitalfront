@@ -25,11 +25,8 @@ class InputCode extends Component {
 		this.setState({ submitting: true });
 		try {
 			transaction.hmo_approval_code = hmo_approval_code;
-			const rs = await request(
-				`transactions/${transaction.id}/update?hmo_approval_code=${hmo_approval_code}`,
-				'PATCH',
-				true
-			);
+			const url = `transactions/${transaction.id}/update?hmo_approval_code=${hmo_approval_code}`;
+			const rs = await request(url, 'PATCH', true);
 
 			if (rs.success) {
 				const uptdTransactions = updateImmutable(transactions, transaction);
@@ -86,7 +83,7 @@ class InputCode extends Component {
 											<input
 												value={hmo_approval_code}
 												className="form-control"
-												placeHolder="Enter code"
+												placeholder="Enter code"
 												name="hmo_approval_code"
 												onChange={evt => this.handleInput(evt.target.value)}
 											/>

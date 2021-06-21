@@ -10,7 +10,6 @@ import Consumable from '../Encounter/Consumable';
 import PlanForm from '../Encounter/PlanForm';
 import Investigations from '../Encounter/Investigations';
 import Diagnosis from '../Encounter/Diagnosis';
-// import PhysicalExamSummary from '../Encounter/PhysicalExamSummary';
 import PhysicalExam from '../Encounter/PhysicalExam';
 import Allergies from '../Encounter/Allergies';
 import PastHistory from '../Encounter/PastHistory';
@@ -47,8 +46,6 @@ const EncounterTabs = ({
 			);
 		case 6:
 			return <Diagnosis next={next} previous={previous} patient={patient} />;
-		// case 6:
-		// return <PhysicalExamSummary next={next} previous={previous} />;
 		case 5:
 			return <PhysicalExam next={next} previous={previous} />;
 		case 4:
@@ -77,30 +74,30 @@ class OpenEncounter extends Component {
 			this.focusDiv();
 		}, 200);
 
-		// ArrowKeysReact.config({
-		// 	left: () => {
-		// 		this.setState({
-		// 			content: 'left key detected.',
-		// 		});
-		// 		this.previous();
-		// 	},
-		// 	right: () => {
-		// 		this.setState({
-		// 			content: 'right key detected.',
-		// 		});
-		// 		this.next();
-		// 	},
-		// 	up: () => {
-		// 		this.setState({
-		// 			content: 'up key detected.',
-		// 		});
-		// 	},
-		// 	down: () => {
-		// 		this.setState({
-		// 			content: 'down key detected.',
-		// 		});
-		// 	},
-		// });
+		ArrowKeysReact.config({
+			left: () => {
+				this.setState({
+					content: 'left key detected.',
+				});
+				this.previous();
+			},
+			right: () => {
+				this.setState({
+					content: 'right key detected.',
+				});
+				this.next();
+			},
+			up: () => {
+				this.setState({
+					content: 'up key detected.',
+				});
+			},
+			down: () => {
+				this.setState({
+					content: 'down key detected.',
+				});
+			},
+		});
 	}
 
 	open = i => () => {

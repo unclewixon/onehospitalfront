@@ -172,47 +172,19 @@ const AllPatients = props => {
 							<table className="table table-striped">
 								<thead>
 									<tr>
-										<th>
-											<div className="th-inner "></div>
-											<div className="fht-cell"></div>
-										</th>
-										<th>
-											<div className="th-inner sortable both">Patient Name</div>
-											<div className="fht-cell"></div>
-										</th>
-										<th>
-											<div className="th-inner sortable both">Patient ID</div>
-											<div className="fht-cell"></div>
-										</th>
-										<th>
-											<div className="th-inner sortable both">Phone Number</div>
-											<div className="fht-cell"></div>
-										</th>
-										<th>
-											<div className="th-inner sortable both">
-												Date of Birth
-											</div>
-											<div className="fht-cell"></div>
-										</th>
-										<th>
-											<div className="th-inner sortable both">HMO</div>
-											<div className="fht-cell"></div>
-										</th>
-										<th>
-											<div className="th-inner sortable both">Balance</div>
-											<div className="fht-cell"></div>
-										</th>
-										<th>
-											<div className="th-inner "></div>
-											<div className="fht-cell"></div>
-										</th>
+										<th>Patient Name</th>
+										<th>Patient ID</th>
+										<th>Phone Number</th>
+										<th>Date of Birth</th>
+										<th>HMO</th>
+										<th>Balance</th>
+										<th></th>
 									</tr>
 								</thead>
 								<tbody>
 									{props.patients.map((data, i) => {
 										return (
-											<tr className="" key={i}>
-												<td>{i + 1}</td>
+											<tr key={i}>
 												<td>
 													{`${data?.other_names} ${data?.surname}`}{' '}
 													{data.isAdmitted && (

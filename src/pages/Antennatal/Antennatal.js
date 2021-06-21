@@ -65,10 +65,6 @@ export class Antennatal extends Component {
 			notifyError('Error deleting Antennatal');
 		}
 	};
-	showProfile = ant => {
-		const info = { ant, type: 'antenatal' };
-		this.props.toggleProfile(true, info);
-	};
 
 	tableBody = () => {
 		return this.props.antennatal.map((el, i) => {

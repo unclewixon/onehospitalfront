@@ -97,32 +97,26 @@ const LeaveRequest = ({ location }) => {
 										<tr>
 											<th data-field="id">
 												<div className="th-inner sortable both "></div>
-												<div className="fht-cell"></div>
 											</th>
 											<th data-field="owner">
 												<div className="th-inner sortable both ">Type</div>
-												<div className="fht-cell"></div>
 											</th>
 											<th data-field="project">
 												<div className="th-inner sortable both ">
 													Date start
 												</div>
-												<div className="fht-cell"></div>
 											</th>
 											<th data-field="project">
 												<div className="th-inner sortable both ">
 													Date return
 												</div>
-												<div className="fht-cell"></div>
 											</th>
 											<th data-field="project">
 												<div className="th-inner sortable both ">status</div>
-												<div className="fht-cell"></div>
 											</th>
 
 											<th data-field="5">
-												<div className="th-inner ">Actions</div>
-												<div className="fht-cell"></div>
+												<div>Actions</div>
 											</th>
 										</tr>
 									</thead>

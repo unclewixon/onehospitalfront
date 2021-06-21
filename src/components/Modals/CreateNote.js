@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import SunEditor from 'suneditor-react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { startBlock, stopBlock } from '../../../actions/redux-block';
-import { notifySuccess, notifyError } from '../../../services/notify';
-import { request } from '../../../services/utilities';
+import { startBlock, stopBlock } from '../../actions/redux-block';
+import { notifySuccess, notifyError } from '../../services/notify';
+import { request } from '../../services/utilities';
 
-const CreateNote = ({ closeModal, updateNote }) => {
+const CreateNote = ({ closeModal, updateNote, item, type }) => {
 	const [note, setNote] = useState('');
 
 	const dispatch = useDispatch();
@@ -17,10 +17,12 @@ const CreateNote = ({ closeModal, updateNote }) => {
 		try {
 			e.preventDefault();
 			dispatch(startBlock());
+
 			const data = {
 				patient_id: patient.id,
 				description: note,
-				type: 'procedure',
+				type,
+				id: item?.id,
 			};
 
 			const rs = await request('patient-notes', 'POST', true, data);

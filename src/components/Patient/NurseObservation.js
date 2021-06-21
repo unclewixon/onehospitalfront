@@ -93,16 +93,13 @@ const NurseObservation = () => {
 								<thead>
 									<tr>
 										<th>
-											<div className="th-inner sortable both">Date</div>
-											<div className="fht-cell"></div>
+											<div>Date</div>
 										</th>
 										<th>
-											<div className="th-inner sortable both">Note</div>
-											<div className="fht-cell"></div>
+											<div>Note</div>
 										</th>
 										<th>
-											<div className="th-inner sortable both">Noted By</div>
-											<div className="fht-cell"></div>
+											<div>Noted By</div>
 										</th>
 										<th></th>
 									</tr>

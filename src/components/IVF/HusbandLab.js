@@ -4,6 +4,7 @@ import { connect, useDispatch } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { withRouter } from 'react-router-dom';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
+
 import {
 	renderTextInput,
 	renderSelect,
@@ -75,7 +76,7 @@ let HusbandLab = props => {
 	const getOptionLabels = option => `${option.other_names} ${option.surname}`;
 
 	const getOptions = async q => {
-		if (!q || q.length < 3) {
+		if (!q || q.length < 1) {
 			return [];
 		}
 

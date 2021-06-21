@@ -83,7 +83,7 @@ export class AllEnrollment extends Component {
 	};
 
 	showAntennatal = (patient, antennatal) => {
-		const info = { patient, type: 'antennatal', antennatal };
+		const info = { patient, type: 'antennatal', item: antennatal };
 		this.props.toggleProfile(true, info);
 	};
 

@@ -121,8 +121,8 @@ const InPatientCare = () => {
 		dispatch(toggleProfile(true, info));
 	};
 
-	const showAdmission = patient => {
-		const info = { patient, type: 'admission' };
+	const showAdmission = (patient, admission) => {
+		const info = { patient, type: 'admission', item: admission };
 		dispatch(toggleProfile(true, info));
 	};
 
@@ -200,30 +200,21 @@ const InPatientCare = () => {
 								<thead>
 									<tr>
 										<th>
-											<div className="th-inner sortable both">Patient Name</div>
-											<div className="fht-cell"></div>
+											<div>Patient Name</div>
 										</th>
 										<th>
-											<div className="th-inner sortable both">Reason</div>
-											<div className="fht-cell"></div>
+											<div>Reason</div>
 										</th>
 										<th>
-											<div className="th-inner sortable both">
-												Date of Admission
-											</div>
-											<div className="fht-cell"></div>
+											<div>Date of Admission</div>
 										</th>
 										<th>
-											<div className="th-inner sortable both">Admitted By</div>
-											<div className="fht-cell"></div>
+											<div>Admitted By</div>
 										</th>
 										<th>
-											<div className="th-inner sortable both">Room/Floor</div>
-											<div className="fht-cell"></div>
+											<div>Room/Floor</div>
 										</th>
-										<th>
-											<div className="fht-cell"></div>
-										</th>
+										<th></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -271,7 +262,8 @@ const InPatientCare = () => {
 														</Tooltip>
 													)}
 													<Tooltip title="Admission">
-														<a onClick={() => showAdmission(item.patient)}>
+														<a
+															onClick={() => showAdmission(item.patient, item)}>
 															<i className="os-icon os-icon-user-male-circle2" />
 														</a>
 													</Tooltip>

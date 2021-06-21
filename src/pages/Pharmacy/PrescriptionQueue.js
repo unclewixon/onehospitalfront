@@ -11,8 +11,6 @@ import { request, updateImmutable, itemRender } from '../../services/utilities';
 import ProfilePopup from '../../components/Patient/ProfilePopup';
 import { toggleProfile } from '../../actions/user';
 
-const category_id = 1;
-
 class PrescriptionQueue extends Component {
 	state = {
 		filtering: false,
@@ -20,20 +18,9 @@ class PrescriptionQueue extends Component {
 		patientId: '',
 		activeRequest: null,
 		showModal: false,
-		drugs: [],
 		prescriptions: [],
 		filled: false,
 		meta: null,
-	};
-
-	getServiceUnit = async hmoId => {
-		try {
-			const url = `inventory/stocks-by-category/${category_id}/${hmoId}`;
-			const rs = await request(url, 'GET', true);
-			this.setState({ drugs: rs });
-		} catch (error) {
-			notifyError('Error fetching Service Unit');
-		}
 	};
 
 	closeModal = () => {
@@ -83,7 +70,6 @@ class PrescriptionQueue extends Component {
 		const {
 			showModal,
 			activeRequest,
-			drugs,
 			prescriptions,
 			filled,
 			meta,
@@ -107,14 +93,12 @@ class PrescriptionQueue extends Component {
 							</thead>
 							<tbody>
 								{prescriptions.map((request, index) => {
-									console.log('prescriptions=======');
-									console.log(request);
 									return (
 										<tr key={index}>
 											<td>
 												<span>
 													{moment(request.createdAt).format(
-														'DD-MMM-YYYY HH:mm A'
+														'DD-MMM-YYYY h:mm A'
 													)}
 												</span>
 											</td>
@@ -176,9 +160,6 @@ class PrescriptionQueue extends Component {
 														<a
 															className="primary"
 															onClick={async () => {
-																await this.getServiceUnit(
-																	request.patient.hmo.id
-																);
 																document.body.classList.add('modal-open');
 																this.setState({
 																	activeRequest: request,
@@ -190,11 +171,13 @@ class PrescriptionQueue extends Component {
 														</a>
 													</Tooltip>
 												)}
-												<Tooltip title="Print Prescription">
-													<a className="ml-2">
-														<i className="icon-feather-printer" />
-													</a>
-												</Tooltip>
+												{request.status === 1 && (
+													<Tooltip title="Print Prescription">
+														<a className="ml-2">
+															<i className="icon-feather-printer" />
+														</a>
+													</Tooltip>
+												)}
 											</td>
 										</tr>
 									);
@@ -219,7 +202,6 @@ class PrescriptionQueue extends Component {
 					<ViewPrescription
 						closeModal={this.closeModal}
 						activeRequest={activeRequest}
-						drugs={drugs}
 						updatePrescriptions={this.updatePrescriptions}
 						filled={filled}
 					/>

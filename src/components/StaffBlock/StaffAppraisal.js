@@ -82,34 +82,27 @@ class StaffAppraisal extends Component {
 										<tr>
 											<th data-field="owner">
 												<div className="th-inner sortable both ">STAFF ID</div>
-												<div className="fht-cell"></div>
 											</th>
 											<th data-field="project">
 												<div className="th-inner sortable both ">NAME</div>
-												<div className="fht-cell"></div>
 											</th>
 											<th data-field="project">
 												<div className="th-inner sortable both ">JOB TITLE</div>
-												<div className="fht-cell"></div>
 											</th>
 											<th data-field="project">
 												<div className="th-inner sortable both ">
 													Phone Number
 												</div>
-												<div className="fht-cell"></div>
 											</th>
 											<th data-field="project">
 												<div className="th-inner sortable both ">Gender</div>
-												<div className="fht-cell"></div>
 											</th>
 											<th data-field="project">
 												<div className="th-inner sortable both ">Email</div>
-												<div className="fht-cell"></div>
 											</th>
 
 											<th data-field="5">
-												<div className="th-inner ">Actions</div>
-												<div className="fht-cell"></div>
+												<div>Actions</div>
 											</th>
 										</tr>
 									</thead>

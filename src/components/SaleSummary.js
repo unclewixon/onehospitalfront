@@ -15,27 +15,20 @@ export class SaleSummary extends Component {
 									<thead>
 										<tr>
 											<th data-field="id">
-												<div className="th-inner sortable both">
-													Item prescription
-												</div>
-												<div className="fht-cell"></div>
+												<div>Item prescription</div>
 											</th>
 											<th data-field="owner">
-												<div className="th-inner sortable both">Folder Id</div>
-												<div className="fht-cell"></div>
+												<div>Folder Id</div>
 											</th>
 											<th data-field="project">
-												<div className="th-inner sortable both">Quantity</div>
-												<div className="fht-cell"></div>
+												<div>Quantity</div>
 											</th>
 											<th data-field="project">
-												<div className="th-inner sortable both">Agent</div>
-												<div className="fht-cell"></div>
+												<div>Agent</div>
 											</th>
 
 											<th data-field="5">
-												<div className="th-inner "></div>
-												<div className="fht-cell"></div>
+												<div></div>
 											</th>
 										</tr>
 									</thead>

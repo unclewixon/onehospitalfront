@@ -22,14 +22,14 @@ const Notes = () => {
 
 	const dispatch = useDispatch();
 	const patient = useSelector(state => state.user.patient);
-	const procedure = useSelector(state => state.user.item);
+	const ivf = useSelector(state => state.user.item);
 
 	const fetchNotes = useCallback(
 		async page => {
 			try {
 				dispatch(startBlock());
 				const p = page || 1;
-				const url = `patient-notes?patient_id=${patient.id}&page=${p}&limit=10&type=procedure&id=${procedure.id}`;
+				const url = `patient-notes?patient_id=${patient.id}&page=${p}&limit=10&type=ivf&id=${ivf.id}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setNotes(result);
@@ -41,7 +41,7 @@ const Notes = () => {
 				notifyError('error fetching notes');
 			}
 		},
-		[dispatch, patient, procedure]
+		[dispatch, patient, ivf]
 	);
 
 	useEffect(() => {
@@ -78,15 +78,13 @@ const Notes = () => {
 		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<div className="element-actions flex-action">
-					{procedure && !procedure.finishedDate && (
-						<a
-							className="btn btn-sm btn-secondary text-white ml-3"
-							onClick={() => newEntry()}>
-							New Note
-						</a>
-					)}
+					<a
+						className="btn btn-sm btn-secondary text-white ml-3"
+						onClick={() => newEntry()}>
+						New Note
+					</a>
 				</div>
-				<h6 className="element-header">Procedure Notes</h6>
+				<h6 className="element-header">IVF Notes</h6>
 				<div className="element-box p-3 m-0">
 					{loading ? (
 						<TableLoading />
@@ -154,8 +152,8 @@ const Notes = () => {
 				<CreateNote
 					closeModal={closeModal}
 					updateNote={updateNote}
-					item={procedure}
-					type="procedure"
+					item={ivf}
+					type="ivf"
 				/>
 			)}
 		</div>
