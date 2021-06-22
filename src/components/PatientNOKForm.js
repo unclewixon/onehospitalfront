@@ -187,7 +187,6 @@ function PatientNOKForm(props) {
 				.post(`${API_URI}/patient/save`, formDataObj, { headers })
 				.then(res => {
 					setSubmitting(false);
-					console.log(res);
 					if (res.data?.success) {
 						const pat = res.data?.patient || {};
 						props.addNewPatient(pat);
@@ -197,7 +196,7 @@ function PatientNOKForm(props) {
 						props.closeModals(false);
 						props.resetStep();
 					} else {
-						notifyError(res.message);
+						notifyError(res.data.message);
 					}
 				})
 				.catch(e => {

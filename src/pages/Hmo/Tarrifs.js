@@ -58,10 +58,9 @@ const Tarrifs = ({ location }) => {
 	};
 
 	const handleInputChange = async e => {
-		console.log(e);
 		const { value } = e.target;
 		setHmo(value);
-		// await fetchTarrifs(1, '', value);
+		await fetchTarrifs(1, '', value);
 	};
 
 	return (
@@ -94,10 +93,11 @@ const Tarrifs = ({ location }) => {
 										name="selectedHmo"
 										value={hmo}
 										onChange={handleInputChange}>
+										<option value="">Select HMO</option>
 										{hmoList.map((hmo, i) => {
 											return (
-												<option key={i} value={hmo.value}>
-													{hmo.label}
+												<option key={i} value={hmo.id}>
+													{hmo.name}
 												</option>
 											);
 										})}
