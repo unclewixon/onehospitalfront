@@ -4,11 +4,11 @@ import { withRouter } from 'react-router-dom';
 
 import VisitSummaryTable from './VisitSummaryTable';
 import VisitNotesTable from './VisitNotesTable';
-import BillingTable from './BillingTable';
+import PatientBills from './PatientBills';
 import AppointmentHistory from './AppointmentHistory';
 
 const Dashboard = () => {
-	const [tab, setTab] = useState('visitNotes');
+	const [tab, setTab] = useState('billing');
 
 	return (
 		<div className="col-lg-12 col-md-12">
@@ -56,7 +56,7 @@ const Dashboard = () => {
 						{tab === 'visitNotes' && <VisitNotesTable />}
 						{tab === 'visitSummary' && <VisitSummaryTable />}
 						{tab === 'appointment' && <AppointmentHistory />}
-						{tab === 'billing' && <BillingTable />}
+						{tab === 'billing' && <PatientBills />}
 					</div>
 				</div>
 			</div>

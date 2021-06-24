@@ -4,8 +4,13 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 
-import { request } from '../../services/utilities';
-import { confirmAction, formatCurrency } from '../../services/utilities';
+import {
+	request,
+	staffname,
+	confirmAction,
+	formatCurrency,
+	patientName,
+} from '../../services/utilities';
 import { delete_transaction } from '../../actions/transaction';
 import { applyVoucher, approveTransaction } from '../../actions/general';
 import { notifyError, notifySuccess } from '../../services/notify';
@@ -70,6 +75,7 @@ const TransactionTable = ({
 						{!queue && <th>BALANCE (&#x20A6;)</th>}
 						{!queue && <th>PAYMENT TYPE</th>}
 						<th>PAYMENT STATUS</th>
+						<th>RECEIVED By</th>
 						<th className="text-center">ACTIONS</th>
 					</tr>
 				</thead>
@@ -81,27 +87,24 @@ const TransactionTable = ({
 									{moment(transaction.createdAt).format('DD-MM-YYYY H:mma')}
 								</td>
 								<td>
-									{transaction.patient
-										? `${transaction.patient?.other_names} ${transaction.patient?.surname}`
-										: ''}
-									{transaction.staff
-										? `${transaction.staff?.first_name} ${transaction.staff?.last_name}`
-										: ''}
+									{transaction.patient ? patientName(transaction.patient) : ''}
 								</td>
 								<td className="flex">
 									<span className="text-capitalize">
 										{transaction.transaction_type}
 									</span>
-									<a
-										className="item-title text-primary text-underline ml-2"
-										onClick={() =>
-											viewDetails(
-												transaction.transaction_type,
-												transaction.transaction_details
-											)
-										}>
-										details
-									</a>
+									{transaction.transaction_type !== 'registration' && (
+										<a
+											className="item-title text-primary text-underline ml-2"
+											onClick={() =>
+												viewDetails(
+													transaction.transaction_type,
+													transaction.transaction_details
+												)
+											}>
+											details
+										</a>
+									)}
 								</td>
 								<td>{formatCurrency(transaction.amount || 0)}</td>
 								{!queue && <td>{formatCurrency(transaction.balance || 0)}</td>}
@@ -120,6 +123,9 @@ const TransactionTable = ({
 									{transaction.status === 1 && (
 										<span className="badge badge-success">paid</span>
 									)}
+								</td>
+								<td>
+									{transaction.staff ? staffname(transaction.staff) : '--'}
 								</td>
 								<td className="text-center row-actions">
 									{showActionBtns && (

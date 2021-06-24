@@ -4,10 +4,10 @@ import { Link, withRouter } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 
-import searchingGIF from '../../assets/images/searching.gif';
 import { notifyError } from '../../services/notify';
 import { request, itemRender } from '../../services/utilities';
 import LabBlock from '../LabBlock';
+import TableLoading from '../TableLoading';
 
 const Lab = ({ location }) => {
 	const [loaded, setLoaded] = useState(false);
@@ -70,9 +70,7 @@ const Lab = ({ location }) => {
 				<div className="element-box p-3 m-0 mt-3">
 					<div className="bootstrap-table">
 						{!loaded ? (
-							<div className="text-center">
-								<img alt="searching" src={searchingGIF} />
-							</div>
+							<TableLoading />
 						) : (
 							<div
 								className="fixed-table-container"
