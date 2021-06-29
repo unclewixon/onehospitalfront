@@ -5,7 +5,6 @@ import Pagination from 'antd/lib/pagination';
 import moment from 'moment';
 import padLeft from 'pad-left';
 
-import { closeModals } from '../../actions/general';
 import PayrollItem from '../PayrollItem';
 import { payrollAPI, months } from '../../services/constants';
 import { request } from '../../services/utilities';
@@ -45,19 +44,19 @@ class ModalPreparePayroll extends Component {
 	}
 
 	payStaff = async () => {
-		const { staffs, month, year } = this.state;
-		let staffIds = [];
-		for (const item of staffs) {
-			staffIds = [...staffIds, item.id];
-		}
-		const data = { payment_month: `${year}-${month}`, staffIds };
-		this.setState({ paying: true });
 		try {
+			const { staffs, month, year } = this.state;
+			let staffIds = [];
+			for (const item of staffs) {
+				staffIds = [...staffIds, item.id];
+			}
+			const data = { payment_month: `${year}-${month}`, staffIds };
+			this.setState({ paying: true });
 			await request(`${payrollAPI}/make-payment`, 'POST', true, data);
 			this.props.loadUnpaidPayroll([]);
 			this.setState({ paying: false });
 			notifySuccess('staff(s) paid');
-			this.props.closeModals(false);
+			this.props.closeModal();
 		} catch (error) {
 			notifyError(error.message || 'could not pay staff');
 			this.setState({ paying: false });
@@ -65,18 +64,14 @@ class ModalPreparePayroll extends Component {
 	};
 
 	generatePayroll = async e => {
-		e.preventDefault();
-		this.setState({ generating: true });
 		try {
+			e.preventDefault();
+			this.setState({ generating: true });
 			const { year, month } = this.state;
 			const period = `${year}-${month}`;
 			const data = { payment_month: period };
-			const rs = await request(
-				`${payrollAPI}/generate-payslip`,
-				'POST',
-				true,
-				data
-			);
+			const url = `${payrollAPI}/generate-payslip`;
+			const rs = await request(url, 'POST', true, data);
 			const payrolls = rs.filter(p => p.status === 0);
 			this.props.loadUnpaidPayroll(payrolls);
 			this.setState({
@@ -121,7 +116,7 @@ class ModalPreparePayroll extends Component {
 	};
 
 	render() {
-		const { payrolls } = this.props;
+		const { payrolls, closeModal } = this.props;
 		const {
 			year,
 			month,
@@ -144,7 +139,7 @@ class ModalPreparePayroll extends Component {
 							aria-label="Close"
 							className="close"
 							type="button"
-							onClick={() => this.props.closeModals(false)}>
+							onClick={closeModal}>
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
@@ -219,6 +214,7 @@ class ModalPreparePayroll extends Component {
 									</thead>
 									<tbody>
 										{payrolls.map((pay, i) => {
+											console.log(pay);
 											return (
 												<PayrollItem
 													key={i}
@@ -257,6 +253,6 @@ const mapStateToProps = (state, ownProps) => {
 	};
 };
 
-export default connect(mapStateToProps, { closeModals, loadUnpaidPayroll })(
+export default connect(mapStateToProps, { loadUnpaidPayroll })(
 	ModalPreparePayroll
 );

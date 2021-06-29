@@ -1,11 +1,10 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import Pagination from 'antd/lib/pagination';
 
-import { itemRender } from '../../services/utilities';
-// import { notifySuccess, notifyError } from '../../services/notify';
+import { itemRender, request, staffname } from '../../services/utilities';
+import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
 import TableLoading from '../TableLoading';
@@ -13,126 +12,104 @@ import TableLoading from '../TableLoading';
 class VisitNotesTable extends Component {
 	state = {
 		loading: false,
-		role: null,
-		showModal: false,
 		meta: null,
 		notes: [],
 	};
 
-	componentDidMount() {
-		this.fetchNotes();
+	async componentDidMount() {
+		this.setState({ loading: true });
+		await this.fetchNotes();
 	}
 
 	fetchNotes = async page => {
-		// 	try {
-		// 		const p = page || 1;
-		// 		this.setState({ loading: true });
-		// 		const url = `dummy/list?page=${p}&limit=24`;
-		// 		const rs = await request(url, 'GET', true);
-		// 		const { result, ...meta } = rs;
-		// 		const arr = [...result];
-		// 		this.setState({ loading: false, meta, notes: arr });
-		// 		this.props.stopBlock();
-		// 	} catch (error) {
-		// 		console.log(error);
-		// 		this.props.stopBlock();
-		// 		this.setState({ loading: false });
-		// 		notifyError(error.message || 'could not fetch visit notes');
-		// 	}
+		try {
+			const { patient } = this.props;
+			this.props.startBlock();
+			const p = page || 1;
+			const url = `patient-notes?patient_id=${patient.id}&page=${p}`;
+			const rs = await request(url, 'GET', true);
+			const { result, ...meta } = rs;
+			this.setState({ loading: false, notes: result, meta });
+			this.props.stopBlock();
+		} catch (error) {
+			console.log(error);
+			this.setState({ loading: false, filtering: false });
+			this.props.stopBlock();
+			notifyError(error.message || 'could not fetch visit notes');
+		}
 	};
 
 	onNavigatePage = nextPage => {
-		this.props.startBlock();
 		this.fetchNotes(nextPage);
-	};
-
-	openPermissionModal = role => () => {
-		document.body.classList.add('modal-open');
-		this.setState({ role, showModal: true });
-	};
-
-	closeModal = () => {
-		document.body.classList.remove('modal-open');
-		this.setState({ role: null, showModal: false });
 	};
 
 	render() {
 		const { loading, meta, notes } = this.state;
 		return (
-			<div className="row">
-				<div className="m-0 w-100">
-					{loading ? (
-						<TableLoading />
-					) : (
-						<div className="">
-							<div className="table-responsive">
-								<div
-									id="dataTable1_wrapper"
-									className="dataTables_wrapper container-fluid dt-bootstrap4">
-									<div className="row">
-										<div className="col-sm-12">
-											<table
-												id="dataTable1"
-												width="100%"
-												className="table table-striped table-lightfont dataTable"
-												role="grid"
-												aria-describedby="dataTable1_info"
-												style={{ width: '100%' }}>
-												<thead style={{ borderCollapse: 'collapse' }}>
-													<tr>
-														<th rowSpan="1" colSpan="1">
-															Date
-														</th>
-														<th rowSpan="1" colSpan="1">
-															Notes
-														</th>
-														<th rowSpan="1" colSpan="1">
-															Noted By
-														</th>
+			<div className="m-0 w-100">
+				{loading ? (
+					<TableLoading />
+				) : (
+					<div className="table-responsive">
+						<div className="dataTables_wrapper container-fluid dt-bootstrap4">
+							<div className="row">
+								<div className="col-sm-12">
+									<table
+										className="table table-striped table-lightfont dataTable"
+										style={{ width: '100%' }}>
+										<thead style={{ borderCollapse: 'collapse' }}>
+											<tr>
+												<th>Date</th>
+												<th>Notes</th>
+												<th>Noted By</th>
+											</tr>
+										</thead>
+
+										<tbody>
+											{notes.map((note, i) => {
+												return (
+													<tr key={i} className={i % 2 === 1 ? 'odd' : 'even'}>
+														<td>
+															{moment(note.note_date).format(
+																'DD-MM-YYYY h:mm A'
+															)}
+														</td>
+														<td>
+															<div
+																dangerouslySetInnerHTML={{
+																	__html: note.description,
+																}}
+															/>
+														</td>
+														<td>{staffname(note.staff)}</td>
 													</tr>
-												</thead>
+												);
+											})}
 
-												<tbody>
-													{notes?.map((note, i) => {
-														return (
-															<tr key={i} role="row" className="odd">
-																<td className="sorting_1">
-																	{moment(note.note_date).format('DD-MM-YYYY')}
-																</td>
-																<td>{note.note}</td>
-																<td>{note.notedBy}</td>
-															</tr>
-														);
-													})}
-
-													{notes && notes.length === 0 && (
-														<tr className="text-center">
-															<td colSpan="7">No Visit Notes</td>
-														</tr>
-													)}
-												</tbody>
-											</table>
-										</div>
-									</div>
-									<div className="row">
-										{meta && (
-											<div className="pagination pagination-center mt-4">
-												<Pagination
-													current={parseInt(meta.currentPage, 10)}
-													pageSize={parseInt(meta.itemsPerPage, 10)}
-													total={parseInt(meta.totalPages, 10)}
-													showTotal={total => `Total ${total} visit notes`}
-													itemRender={itemRender}
-													onChange={current => this.onNavigatePage(current)}
-												/>
-											</div>
-										)}
-									</div>
+											{notes && notes.length === 0 && (
+												<tr className="text-center">
+													<td colSpan="3">No Visit Notes</td>
+												</tr>
+											)}
+										</tbody>
+									</table>
 								</div>
 							</div>
+							{meta && (
+								<div className="pagination pagination-center mt-4">
+									<Pagination
+										current={parseInt(meta.currentPage, 10)}
+										pageSize={parseInt(meta.itemsPerPage, 10)}
+										total={parseInt(meta.totalPages, 10)}
+										showTotal={total => `Total ${total} visit notes`}
+										itemRender={itemRender}
+										onChange={current => this.onNavigatePage(current)}
+									/>
+								</div>
+							)}
 						</div>
-					)}
-				</div>
+					</div>
+				)}
 			</div>
 		);
 	}
@@ -140,7 +117,7 @@ class VisitNotesTable extends Component {
 
 const mapStateToProps = state => {
 	return {
-		roles: state.role.roles,
+		patient: state.user.patient,
 	};
 };
 

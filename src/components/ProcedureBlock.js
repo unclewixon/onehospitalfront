@@ -203,6 +203,11 @@ class ProcedureBlock extends Component {
 															{data.patient_name}
 														</a>
 													</Tooltip>
+													{data.patient.isAdmitted && (
+														<Tooltip title="Admitted">
+															<i className="fa fa-hospital-o text-danger ml-1" />
+														</Tooltip>
+													)}
 												</p>
 											</td>
 										)}

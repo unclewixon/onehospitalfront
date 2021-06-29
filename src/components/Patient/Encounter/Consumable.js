@@ -13,11 +13,15 @@ import {
 	consultationAPI,
 	consumableAPI,
 	defaultEncounter,
+	CK_CONSUMABLE,
 } from '../../../services/constants';
 import { request } from '../../../services/utilities';
 import { notifyError, notifySuccess } from '../../../services/notify';
 import { startBlock, stopBlock } from '../../../actions/redux-block';
 import { ReactComponent as TrashIcon } from '../../../assets/svg-icons/trash.svg';
+import SSRStorage from '../../../services/storage';
+
+const storage = new SSRStorage();
 
 const Consumable = ({
 	previous,
@@ -53,13 +57,18 @@ const Consumable = ({
 		}
 	}, [dispatch]);
 
+	const retrieveData = useCallback(async () => {
+		const data = await storage.getItem(CK_CONSUMABLE);
+		setInstruction(data || encounter.instruction);
+	}, [encounter]);
+
 	useEffect(() => {
 		if (!loaded) {
 			fetchConsumables();
-			setInstruction(encounter.instruction);
+			retrieveData();
 			setLoaded(true);
 		}
-	}, [encounter, fetchConsumables, loaded]);
+	}, [fetchConsumables, loaded, retrieveData]);
 
 	const add = () => {
 		if (item && item !== '' && quantity !== '') {
@@ -235,6 +244,7 @@ const Consumable = ({
 								}}
 								onChange={e => {
 									setInstruction(String(e));
+									storage.setItem(CK_CONSUMABLE, String(e));
 								}}
 							/>
 						</div>

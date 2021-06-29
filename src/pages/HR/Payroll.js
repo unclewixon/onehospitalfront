@@ -6,11 +6,11 @@ import moment from 'moment';
 import padLeft from 'pad-left';
 
 import PayrollItem from '../../components/PayrollItem';
-import { preparePayroll } from '../../actions/general';
 import { loadPayroll } from '../../actions/hr';
 import { request } from '../../services/utilities';
 import { payrollAPI, months } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
+import ModalPreparePayroll from '../../components/Modals/ModalPreparePayroll';
 
 const itemRender = (current, type, originalElement) => {
 	if (type === 'prev') {
@@ -29,11 +29,22 @@ class Payroll extends Component {
 		month: '',
 		department_id: '',
 		filtering: false,
+		openModal: false,
 	};
 
 	doPreparePayroll = e => {
 		e.preventDefault();
-		this.props.preparePayroll(true);
+		document.body.classList.add('modal-open');
+		this.setState({ openModal: true });
+	};
+
+	closeModal = () => {
+		document.body.classList.remove('modal-open');
+		this.setState({ openModal: false });
+
+		const { year, month, department_id } = this.state;
+		const period = `${year}-${month}`;
+		this.fetchPayroll(period, department_id);
 	};
 
 	onNavigatePage = pageNumber => {
@@ -42,12 +53,8 @@ class Payroll extends Component {
 
 	componentDidMount() {
 		const { departments } = this.props;
-		const month = moment()
-			.subtract(1, 'months')
-			.format('MM');
-		const year = moment()
-			.subtract(1, 'months')
-			.format('YYYY');
+		const month = moment().format('MM');
+		const year = moment().format('YYYY');
 		const period = `${year}-${month}`;
 		const department = departments.length > 0 ? departments[0] : null;
 		if (department) {
@@ -58,15 +65,9 @@ class Payroll extends Component {
 
 	fetchPayroll = async (period, department_id) => {
 		try {
-			const data = { period, department_id };
-			const rs = await request(
-				`${payrollAPI}/list-payroll`,
-				'POST',
-				true,
-				data
-			);
-			const payrolls = rs.filter(p => p.status === 1);
-			this.props.loadPayroll([...payrolls]);
+			const url = `${payrollAPI}/list-payroll?period=${period}&department_id=${department_id}`;
+			const rs = await request(url, 'GET', true);
+			this.props.loadPayroll([...rs]);
 			this.setState({ filtering: false });
 		} catch (error) {
 			console.log(error);
@@ -88,7 +89,7 @@ class Payroll extends Component {
 
 	render() {
 		const { payrolls, departments } = this.props;
-		const { department_id, filtering, year, month } = this.state;
+		const { department_id, filtering, year, month, openModal } = this.state;
 		const y = parseInt(moment().format('YYYY'), 10) + 1;
 		const years = [...Array(y - 2000).keys()].map(x => y - ++x);
 		return (
@@ -113,7 +114,7 @@ class Payroll extends Component {
 												<div className="form-group">
 													<label className="mr-2">Filter by: </label>
 												</div>
-												<div className="form-group mr-4">
+												<div className="form-group mr-3">
 													<label className="mr-2">Department</label>
 													<select
 														id="department"
@@ -159,7 +160,7 @@ class Payroll extends Component {
 														})}
 													</select>
 												</div>
-												<div className="form-group mr-4">
+												<div className="form-group">
 													<a
 														className="btn btn-sm btn-primary btn-upper text-white"
 														onClick={this.doFilter}>
@@ -178,7 +179,7 @@ class Payroll extends Component {
 										<div className="col-3 text-right" />
 									</div>
 								</div>
-								<div className="element-box">
+								<div className="element-box m-0 p-3">
 									<div className="table-responsive">
 										<table className="table table-striped">
 											<thead>
@@ -226,6 +227,9 @@ class Payroll extends Component {
 						</div>
 					</div>
 				</div>
+				{openModal && (
+					<ModalPreparePayroll closeModal={() => this.closeModal()} />
+				)}
 			</div>
 		);
 	}
@@ -238,6 +242,4 @@ const mapStateToProps = (state, ownProps) => {
 	};
 };
 
-export default connect(mapStateToProps, { preparePayroll, loadPayroll })(
-	Payroll
-);
+export default connect(mapStateToProps, { loadPayroll })(Payroll);

@@ -3,13 +3,22 @@ import { useSelector, useDispatch } from 'react-redux';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import { Table } from 'react-bootstrap';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
-import { serviceAPI } from '../../../services/constants';
+import {
+	serviceAPI,
+	CK_INVESTIGATION_LAB,
+	CK_INVESTIGATION_SCAN,
+	CK_INVESTIGATIONS,
+} from '../../../services/constants';
 import { request, formatCurrency } from '../../../services/utilities';
 import { notifyError } from '../../../services/notify';
 import { ReactComponent as TrashIcon } from '../../../assets/svg-icons/trash.svg';
 import { startBlock, stopBlock } from '../../../actions/redux-block';
 import { updateEncounterData } from '../../../actions/patient';
+import SSRStorage from '../../../services/storage';
+
+const storage = new SSRStorage();
 
 const defaultValues = {
 	lab_request_note: '',
@@ -22,7 +31,7 @@ const defaultValues = {
 const category_id = 13;
 
 const Investigations = ({ patient, previous, next }) => {
-	const { register, handleSubmit } = useForm({
+	const { register, handleSubmit, setValue } = useForm({
 		defaultValues,
 	});
 
@@ -30,9 +39,9 @@ const Investigations = ({ patient, previous, next }) => {
 
 	const [loaded, setLoaded] = useState(false);
 
-	const [labTests, setLabTests] = useState([]);
 	const [groups, setGroups] = useState([]);
 	const [services, setServices] = useState([]);
+	const [formset, setFormSet] = useState(null);
 
 	// selected requests
 	const [selectedTests, setSelectedTests] = useState([]);
@@ -81,26 +90,45 @@ const Investigations = ({ patient, previous, next }) => {
 		[dispatch]
 	);
 
+	const retrieveData = useCallback(async () => {
+		const lab = await storage.getItem(CK_INVESTIGATION_LAB);
+		setSelectedTests(
+			lab ? lab.items : encounter.investigations?.labRequest?.tests || []
+		);
+
+		const scan = await storage.getItem(CK_INVESTIGATION_SCAN);
+		setSelectedScans(
+			scan
+				? scan.items
+				: encounter.investigations?.radiologyRequest?.tests || []
+		);
+
+		const item = await storage.getItem(CK_INVESTIGATIONS);
+		if (item) {
+			setFormSet(item);
+			setUrgentLab(item.urgentLab);
+			setValue('scan_request_note', item.scan_request_note);
+			setValue('lab_request_note', item.lab_request_note);
+		}
+	}, [encounter, setValue]);
+
 	useEffect(() => {
 		if (!loaded && patient) {
 			getServiceUnit(patient.hmo.id);
+			retrieveData();
 		}
 		setLoaded(true);
-	}, [
-		encounter.investigations.labRequest,
-		encounter.investigations.radiologyRequest,
-		getServiceUnit,
-		loaded,
-		patient,
-	]);
+	}, [getServiceUnit, loaded, patient, retrieveData]);
 
 	const onTrash = (index, type) => {
 		if (type === 'lab') {
 			const items = selectedTests.filter((test, i) => index !== i);
 			setSelectedTests(items);
+			storage.setItem(CK_INVESTIGATION_LAB, { items });
 		} else {
 			const items = selectedScans.filter((test, i) => index !== i);
 			setSelectedScans(items);
+			storage.setItem(CK_INVESTIGATION_SCAN, { items });
 		}
 	};
 
@@ -135,6 +163,16 @@ const Investigations = ({ patient, previous, next }) => {
 		dispatch(next);
 	};
 
+	const getLabTests = async q => {
+		if (!q || q.length < 1) {
+			return [];
+		}
+
+		const url = `lab-tests?q=${q}&hmo_id=${patient.hmo.id}`;
+		const res = await request(url, 'GET', true);
+		return res?.result || [];
+	};
+
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<div className="form-block encounter">
@@ -150,29 +188,33 @@ const Investigations = ({ patient, previous, next }) => {
 							getOptionValue={option => option.id}
 							getOptionLabel={option => option.name}
 							onChange={e => {
-								setGroup(e);
-								setSelectedTests([
+								const items = [
 									...selectedTests,
 									...e.tests.map(t => ({ ...t.labTest })),
-								]);
+								];
+								setGroup(e);
+								setSelectedTests(items);
+								storage.setItem(CK_INVESTIGATION_LAB, { items });
 							}}
 						/>
 					</div>
 					<div className="form-group col-sm-6">
 						<label>Lab Test</label>
-						<Select
-							name="lab_tests"
-							placeholder="Select Lab Tests"
-							options={labTests}
-							value={labTest}
+						<AsyncSelect
 							getOptionValue={option => option.id}
 							getOptionLabel={option => option.name}
+							defaultOptions
+							name="lab_tests"
+							loadOptions={getLabTests}
+							value={labTest}
 							onChange={e => {
+								const items = [...selectedTests, e];
 								setLabTest(e);
-								setSelectedTests([...selectedTests, e]);
-								setLabTests([]);
+								setSelectedTests(items);
 								setLabTest(null);
+								storage.setItem(CK_INVESTIGATION_LAB, { items });
 							}}
+							placeholder="Search Lab Test"
 						/>
 					</div>
 				</div>
@@ -234,7 +276,13 @@ const Investigations = ({ patient, previous, next }) => {
 									name="lab_urgent"
 									type="checkbox"
 									checked={urgentLab}
-									onChange={e => setUrgentLab(!urgentLab)}
+									onChange={e => {
+										setUrgentLab(!urgentLab);
+										storage.setItem(CK_INVESTIGATIONS, {
+											...formset,
+											urgentLab: !urgentLab,
+										});
+									}}
 									ref={register}
 								/>
 								Please check if urgent
@@ -249,7 +297,13 @@ const Investigations = ({ patient, previous, next }) => {
 									name="pay_later"
 									type="checkbox"
 									checked={payLater}
-									onChange={e => setPayLater(!payLater)}
+									onChange={e => {
+										setPayLater(!payLater);
+										storage.setItem(CK_INVESTIGATIONS, {
+											...formset,
+											payLater,
+										});
+									}}
 									ref={register}
 								/>
 								Pay Later
@@ -271,9 +325,11 @@ const Investigations = ({ patient, previous, next }) => {
 							getOptionValue={option => option.id}
 							getOptionLabel={option => option.name}
 							onChange={e => {
+								const items = [...selectedScans, e];
 								setService(e);
-								setSelectedScans([...selectedScans, e]);
+								setSelectedScans(items);
 								setService(null);
+								storage.setItem(CK_INVESTIGATION_LAB, { items });
 							}}
 						/>
 					</div>
@@ -334,7 +390,13 @@ const Investigations = ({ patient, previous, next }) => {
 									name="scan_urgent"
 									type="checkbox"
 									checked={urgentScan}
-									onChange={e => setUrgentScan(!urgentScan)}
+									onChange={e => {
+										setUrgentScan(!urgentScan);
+										storage.setItem(CK_INVESTIGATIONS, {
+											...formset,
+											urgentScan: !urgentScan,
+										});
+									}}
 									ref={register}
 								/>
 								Please check if urgent

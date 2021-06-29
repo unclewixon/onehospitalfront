@@ -1,9 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { physicalExamination } from '../../../services/constants';
+import {
+	physicalExamination,
+	CK_PHYSICAL_EXAM,
+} from '../../../services/constants';
 import { updateEncounterData } from '../../../actions/patient';
+import SSRStorage from '../../../services/storage';
+
+const storage = new SSRStorage();
 
 const PhysicalExam = ({ next, previous }) => {
 	const [loaded, setLoaded] = useState(false);
@@ -14,12 +20,17 @@ const PhysicalExam = ({ next, previous }) => {
 
 	const dispatch = useDispatch();
 
+	const retrieveData = useCallback(async () => {
+		const data = await storage.getItem(CK_PHYSICAL_EXAM);
+		setOptions(data || encounter.physicalExamination);
+	}, [encounter]);
+
 	useEffect(() => {
 		if (!loaded) {
-			setOptions(encounter.physicalExamination);
+			retrieveData();
 			setLoaded(true);
 		}
-	}, [encounter, loaded]);
+	}, [loaded, retrieveData]);
 
 	const handleChange = e => setSystem(e);
 
@@ -29,8 +40,11 @@ const PhysicalExam = ({ next, previous }) => {
 		if (selected) {
 			const filtered = options.filter(o => o.value !== value);
 			setOptions(filtered);
+			storage.setItem(CK_PHYSICAL_EXAM, filtered);
 		} else {
-			setOptions([...options, { label, value }]);
+			const items = [...options, { label, value }];
+			setOptions(items);
+			storage.setItem(CK_PHYSICAL_EXAM, items);
 		}
 	};
 

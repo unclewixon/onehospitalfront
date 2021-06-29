@@ -13,7 +13,6 @@ import {
 	TOGGLE_VIEW_APPRAISAL,
 	TOGGLE_VIEW_PAYROLL_HISTORY,
 	TOGGLE_VIEW_CURRENT_PAYROLL,
-	TOGGLE_PREPARE_PAYROLL,
 	TOGGLE_EDIT_PAYROLL,
 	TOGGLE_VIEW_PAYPOINT,
 	TOGGLE_CREATE_VOUCHER,
@@ -140,8 +139,6 @@ const general = (state = INITIAL_STATE, action) => {
 				current_payroll: action.payload,
 				payroll_id: action.id,
 			};
-		case TOGGLE_PREPARE_PAYROLL:
-			return { ...state, prepare_payroll: action.payload };
 		case TOGGLE_EDIT_PAYROLL:
 			return { ...state, edit_payroll: action.payload, payroll_id: action.id };
 		case TOGGLE_VIEW_PAYPOINT:

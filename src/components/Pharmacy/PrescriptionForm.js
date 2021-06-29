@@ -273,7 +273,22 @@ const PrescriptionForm = ({
 					</div>
 				)}
 				<div className="row">
-					<div className="form-group col-sm-6 relative">
+					{/* <div className="form-group col-sm-6">
+						<label>Drug Generic</label>
+						<AsyncSelect
+							getOptionValue={option => option.id}
+							getOptionLabel={option =>option.generic_name}
+							defaultOptions
+							ref={register({ name: 'drugId', required: true })}
+							name="drugId"
+							loadOptions={getDrugOptions}
+							value={chosenDrug}
+							onChange={e => {
+							}}
+							placeholder="select a drug"
+						/>
+					</div> */}
+					<div className="form-group col-sm-12 relative">
 						<label>Drug Name</label>
 						{selectedDrug && (
 							<div className="posit-top">
@@ -304,6 +319,8 @@ const PrescriptionForm = ({
 							placeholder="select a drug"
 						/>
 					</div>
+				</div>
+				<div className="row">
 					<div className="form-group col-sm-6">
 						<label>Dose Quantity</label>
 						<input
@@ -315,33 +332,28 @@ const PrescriptionForm = ({
 							onChange={onHandleInputChange}
 						/>
 					</div>
-				</div>
-				<div className="row">
-					<div className="form-group col-sm-10">
-						{refillable && (
-							<>
-								<label>Number of refills</label>
+					<div className="form-group col-sm-6">
+						<div className="refills">
+							<label className="form-check-label">
 								<input
-									type="number"
-									className="form-control"
-									placeholder="Number of refills"
-									ref={register({ name: 'refills' })}
-									name="refills"
-									onChange={onHandleInputChange}
-								/>
-							</>
-						)}
-					</div>
-					<div className="form-group col-sm-2" style={{ textAlign: 'right' }}>
-						<label className="form-check-label">
-							<input
-								className="form-check-input mt-0"
-								name="urgent"
-								type="checkbox"
-								onClick={onRefillableClick}
-							/>{' '}
-							Refillable
-						</label>
+									className="form-check-input mt-0"
+									name="urgent"
+									type="checkbox"
+									onClick={onRefillableClick}
+								/>{' '}
+								Refillable
+							</label>
+						</div>
+						<label>Number of refills</label>
+						<input
+							type="number"
+							className="form-control"
+							placeholder="Number of refills"
+							ref={register({ name: 'refills' })}
+							name="refills"
+							disabled={!refillable}
+							onChange={onHandleInputChange}
+						/>
 					</div>
 				</div>
 				<div className="row">

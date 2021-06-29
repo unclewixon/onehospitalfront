@@ -11,10 +11,15 @@ import {
 	patientAPI,
 	diagnosisAPI,
 	diagnosisType,
+	CK_DIAGNOSIS,
+	CK_PAST_DIAGNOSIS,
 } from '../../../services/constants';
 import { request, getType } from '../../../services/utilities';
 import { notifyError } from '../../../services/notify';
 import { ReactComponent as TrashIcon } from '../../../assets/svg-icons/trash.svg';
+import SSRStorage from '../../../services/storage';
+
+const storage = new SSRStorage();
 
 const Diagnosis = ({ previous, next, patient }) => {
 	const { register, reset } = useForm();
@@ -42,18 +47,26 @@ const Diagnosis = ({ previous, next, patient }) => {
 		}
 	}, [patient]);
 
+	const retrieveData = useCallback(async () => {
+		const data = await storage.getItem(CK_DIAGNOSIS);
+		setDiagnoses(data || encounter.diagnosis);
+
+		const past = await storage.getItem(CK_PAST_DIAGNOSIS);
+		setSelectedPastDiagnoses(past || encounter.pastDiagnosis);
+	}, [encounter]);
+
 	useEffect(() => {
 		if (!loaded) {
-			setDiagnoses(encounter.diagnosis);
-			setSelectedPastDiagnoses(encounter.pastDiagnosis);
+			retrieveData();
 			setLoaded(true);
 			fetchDiagnoses();
 		}
-	}, [encounter.diagnosis, encounter.pastDiagnosis, fetchDiagnoses, loaded]);
+	}, [fetchDiagnoses, loaded, retrieveData]);
 
 	const remove = index => {
 		const newItems = diagnoses.filter((item, i) => index !== i);
 		setDiagnoses(newItems);
+		storage.setItem(CK_DIAGNOSIS, newItems);
 	};
 
 	const onNext = () => {
@@ -74,7 +87,9 @@ const Diagnosis = ({ previous, next, patient }) => {
 
 	const onSubmit = () => {
 		if (diagnosis !== '' && type !== '') {
-			setDiagnoses([...diagnoses, { comment, diagnosis, type }]);
+			const items = [...diagnoses, { comment, diagnosis, type }];
+			setDiagnoses(items);
+			storage.setItem(CK_DIAGNOSIS, items);
 			setDiagnosis('');
 			setComment('');
 			setType('');
@@ -105,11 +120,11 @@ const Diagnosis = ({ previous, next, patient }) => {
 		if (selected) {
 			const filtered = selectedPastDiagnoses.filter(o => o.id !== diagnosis.id);
 			setSelectedPastDiagnoses(filtered);
+			storage.setItem(CK_PAST_DIAGNOSIS, filtered);
 		} else {
-			setSelectedPastDiagnoses([
-				...selectedPastDiagnoses,
-				{ id: diagnosis.id, diagnosis },
-			]);
+			const items = [...selectedPastDiagnoses, { id: diagnosis.id, diagnosis }];
+			setSelectedPastDiagnoses(items);
+			storage.setItem(CK_PAST_DIAGNOSIS, items);
 		}
 	};
 

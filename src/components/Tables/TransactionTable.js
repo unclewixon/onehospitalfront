@@ -84,7 +84,7 @@ const TransactionTable = ({
 						return (
 							<tr key={index}>
 								<td>
-									{moment(transaction.createdAt).format('DD-MM-YYYY H:mma')}
+									{moment(transaction.createdAt).format('DD-MM-YYYY h:mm a')}
 								</td>
 								<td>
 									{transaction.patient ? patientName(transaction.patient) : ''}

@@ -17,7 +17,10 @@ import { PhysicalExam } from '../../Enrollment/PhysicalExam';
 import { InitialAssessment } from '../../Enrollment/InitialAssessment';
 import { LabObservation } from '../../Enrollment/LabObservation';
 import { RoutineAssessment } from '../../Enrollment/RoutineAssessment';
-import { obstericHistory } from '../../../services/constants';
+import { obstericHistory, CK_HX_FORMS } from '../../../services/constants';
+import SSRStorage from '../../../services/storage';
+
+const storage = new SSRStorage();
 
 const selector = formValueSelector('hx-form');
 
@@ -32,8 +35,14 @@ class HxForm extends Component {
 		patientHistorySelected: [],
 	};
 
-	componentDidMount() {
-		// init already selected items in form
+	async componentDidMount() {
+		const data = await storage.getItem(CK_HX_FORMS);
+		const { encounter } = this.props;
+		this.setState({
+			patientHistorySelected: data || encounter.patientHistorySelected,
+		});
+
+		console.log(encounter.patientHistorySelected);
 	}
 
 	setDate = (date, type) => {

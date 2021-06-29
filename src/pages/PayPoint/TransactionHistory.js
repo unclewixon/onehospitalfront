@@ -49,7 +49,6 @@ class TransactionHistory extends Component {
 	};
 
 	componentDidMount() {
-		console.log('componentDidMount()');
 		this.fetchTransaction();
 	}
 

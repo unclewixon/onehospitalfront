@@ -175,6 +175,11 @@ class PrescriptionRequests extends Component {
 															{`${request.patient.other_names} ${request.patient.surname}`}
 														</a>
 													</Tooltip>
+													{request.patient.isAdmitted && (
+														<Tooltip title="Admitted">
+															<i className="fa fa-hospital-o text-danger ml-1" />
+														</Tooltip>
+													)}
 												</p>
 											</td>
 											<td>{request.created_by ? request.created_by : ''}</td>

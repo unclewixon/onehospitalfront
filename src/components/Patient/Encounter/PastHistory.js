@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import SunEditor from 'suneditor-react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { updateEncounterData } from '../../../actions/patient';
+import { CK_PAST_HISTORY } from '../../../services/constants';
+import SSRStorage from '../../../services/storage';
+
+const storage = new SSRStorage();
 
 const PastHistory = ({ next }) => {
 	const [loaded, setLoaded] = useState(false);
@@ -12,12 +16,17 @@ const PastHistory = ({ next }) => {
 
 	const dispatch = useDispatch();
 
+	const retrieveData = useCallback(async () => {
+		const data = await storage.getItem(CK_PAST_HISTORY);
+		setHistory(data || encounter.medicalHistory);
+	}, [encounter]);
+
 	useEffect(() => {
 		if (!loaded) {
-			setHistory(encounter.medicalHistory);
+			retrieveData();
 			setLoaded(true);
 		}
-	}, [encounter, loaded]);
+	}, [loaded, retrieveData]);
 
 	const onSubmit = async e => {
 		e.preventDefault();
@@ -60,6 +69,7 @@ const PastHistory = ({ next }) => {
 								}}
 								onChange={e => {
 									setHistory(String(e));
+									storage.setItem(CK_PAST_HISTORY, String(e));
 								}}
 							/>
 						</div>

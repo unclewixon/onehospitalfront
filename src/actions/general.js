@@ -13,7 +13,6 @@ import {
 	TOGGLE_VIEW_APPRAISAL,
 	TOGGLE_VIEW_PAYROLL_HISTORY,
 	TOGGLE_VIEW_CURRENT_PAYROLL,
-	TOGGLE_PREPARE_PAYROLL,
 	TOGGLE_EDIT_PAYROLL,
 	TOGGLE_REGISTER_NEW_PATIENT,
 	TOGGLE_ADD_NEW_OBSERVATION,
@@ -170,13 +169,6 @@ export const toggleViewPayrollHistory = (status, staff) => {
 		type: TOGGLE_VIEW_PAYROLL_HISTORY,
 		payload: status,
 		staff,
-	};
-};
-
-export const togglePreparePayroll = status => {
-	return {
-		type: TOGGLE_PREPARE_PAYROLL,
-		payload: status,
 	};
 };
 
@@ -352,7 +344,6 @@ export const closeModals = () => {
 		dispatch(toggleViewAppraisal(false));
 		dispatch(toggleViewPayrollHistory(false));
 		dispatch(toggleCurrentPayroll(false));
-		dispatch(togglePreparePayroll(false));
 		dispatch(toggleEditPayroll(false));
 		dispatch(toggleRegisterNewPatient(false));
 		dispatch(toggleAddNewObservation(false));
@@ -511,14 +502,6 @@ export const viewCurrentPayroll = (action, isModal, id) => {
 		}
 		dispatch(toggleIsModal(isModal ? true : false));
 		dispatch(toggleCurrentPayroll(action, id));
-	};
-};
-
-export const preparePayroll = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(togglePreparePayroll(action));
 	};
 };
 

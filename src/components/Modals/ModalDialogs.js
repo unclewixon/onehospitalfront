@@ -11,7 +11,6 @@ import ModalUpdInventoryQty from './ModalUpdInventoryQty';
 import ModalViewAppraisal from './ModalViewAppraisal';
 import ModalPayrollHistory from './ModalPayrollHistory';
 import ModalCurrentPayroll from './ModalCurrentPayroll';
-import ModalPreparePayroll from './ModalPreparePayroll';
 import ModalEditPayroll from './ModalEditPayroll';
 import PatientFormModal from './PatientFormModal';
 import ModalViewPayPoint from './ModalViewPayPoint';
@@ -81,7 +80,6 @@ const ModalDialogs = ({
 			{view_appraisal && <ModalViewAppraisal />}
 			{view_payroll_history && <ModalPayrollHistory />}
 			{current_payroll && <ModalCurrentPayroll />}
-			{prepare_payroll && <ModalPreparePayroll />}
 			{edit_payroll && <ModalEditPayroll />}
 			{register_new_patient && <PatientFormModal />}
 			{view_paypoint && <ModalViewPayPoint />}

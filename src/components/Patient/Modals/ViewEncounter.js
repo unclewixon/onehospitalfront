@@ -21,7 +21,7 @@ const ViewEncounter = ({ closeModal, encounter }) => {
 					<div className="onboarding-content with-gradient">
 						<h4 className="onboarding-title">Encounter Details</h4>
 						<div className="row">
-							<div className="col-md-3 col-sm-12">
+							<div className="col-md-4 col-sm-12">
 								<table
 									className="table table-striped"
 									style={{
@@ -30,20 +30,22 @@ const ViewEncounter = ({ closeModal, encounter }) => {
 									}}>
 									<tbody>
 										<tr>
-											<h6 className="font-weight-bold text-center">
-												Patient Name:{' '}
-											</h6>
+											<td>
+												<h6 className="font-weight-bold text-center">
+													Patient Name:{' '}
+												</h6>
 
-											<h6 className="text-center">
-												{encounter?.patient?.other_names}{' '}
-												{encounter?.patient?.surname}
-											</h6>
+												<h6 className="text-center">
+													{encounter?.patient?.other_names}{' '}
+													{encounter?.patient?.surname}
+												</h6>
+											</td>
 										</tr>
 									</tbody>
 								</table>
 							</div>
 
-							<div className="col-md-3 col-sm-12">
+							<div className="col-md-4 col-sm-12">
 								<table
 									className="table table-striped text-center"
 									style={{
@@ -51,18 +53,20 @@ const ViewEncounter = ({ closeModal, encounter }) => {
 									}}>
 									<tbody>
 										<tr>
-											<h6 className="font-weight-bold text-center">
-												Patient ID:
-											</h6>
-											<h6 className="text-center">
-												{formatPatientId(encounter?.patient?.id)}
-											</h6>
+											<td>
+												<h6 className="font-weight-bold text-center">
+													Patient ID:
+												</h6>
+												<h6 className="text-center">
+													{formatPatientId(encounter?.patient?.id)}
+												</h6>
+											</td>
 										</tr>
 									</tbody>
 								</table>
 							</div>
 
-							<div className="col-md-3 col-sm-12">
+							<div className="col-md-4 col-sm-12">
 								<table
 									className="table table-striped"
 									style={{
@@ -71,22 +75,21 @@ const ViewEncounter = ({ closeModal, encounter }) => {
 									}}>
 									<tbody>
 										<tr>
-											<h6 className="font-weight-bold text-center">
-												Enrollment Date:
-											</h6>
-											<h6 className="text-center">
-												{moment(encounter?.reatedAt).format('DD-MM-YYYY H:mma')}
-											</h6>
+											<td>
+												<h6 className="font-weight-bold text-center">
+													Enrollment Date:
+												</h6>
+												<h6 className="text-center">
+													{moment(encounter?.reatedAt).format(
+														'DD-MM-YYYY H:mma'
+													)}
+												</h6>
+											</td>
 										</tr>
 									</tbody>
 								</table>
 							</div>
-
-							<div className="col-md-1 col-sm-12"></div>
 						</div>
-						<br />
-						<br />
-						<br />
 
 						<div className="row">
 							<h6 className="font-weight-bold text-center">
@@ -102,14 +105,12 @@ const ViewEncounter = ({ closeModal, encounter }) => {
 										</tr>
 									</thead>
 									<tbody>
-										{encounter?.patient_physical_exams?.map(labTest => {
+										{encounter?.patient_physical_exams?.map((exam, i) => {
 											return (
-												<tr key={labTest?.id}>
-													<td>{labTest?.category}</td>
-
-													<td>{labTest?.description}</td>
-
-													<td>{labTest?.createdBy}</td>
+												<tr key={i}>
+													<td>{exam.category}</td>
+													<td>{exam.description}</td>
+													<td>{exam.createdBy}</td>
 												</tr>
 											);
 										})}
@@ -117,10 +118,6 @@ const ViewEncounter = ({ closeModal, encounter }) => {
 								</table>
 							</div>
 						</div>
-
-						<br />
-						<br />
-						<br />
 
 						<div className="row">
 							<h6 className="font-weight-bold text-center">

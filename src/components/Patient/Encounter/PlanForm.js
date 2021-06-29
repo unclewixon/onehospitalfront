@@ -15,7 +15,14 @@ import { notifyError } from '../../../services/notify';
 import { ReactComponent as PlusIcon } from '../../../assets/svg-icons/plus.svg';
 import { ReactComponent as EditIcon } from '../../../assets/svg-icons/edit.svg';
 import { ReactComponent as TrashIcon } from '../../../assets/svg-icons/trash.svg';
-import { serviceAPI, diagnosisAPI } from '../../../services/constants';
+import {
+	serviceAPI,
+	diagnosisAPI,
+	CK_TREATMENT_PLAN,
+} from '../../../services/constants';
+import SSRStorage from '../../../services/storage';
+
+const storage = new SSRStorage();
 
 const defaultValues = {
 	genericName: '',
@@ -86,13 +93,18 @@ const PlanForm = ({ previous, next, patient }) => {
 		[dispatch]
 	);
 
+	const retrieveData = useCallback(async () => {
+		const data = await storage.getItem(CK_TREATMENT_PLAN);
+		setTreatmentPlan(data || encounter.treatmentPlan);
+	}, [encounter]);
+
 	useEffect(() => {
 		if (!loaded) {
 			getServiceUnit(patient.hmo.id);
-			setTreatmentPlan(encounter.treatmentPlan);
+			retrieveData();
 			setLoaded(true);
 		}
-	}, [encounter, getServiceUnit, loaded, patient]);
+	}, [getServiceUnit, loaded, patient, retrieveData]);
 
 	// group drugs by generic name
 	const drugValues = groupBy(
@@ -320,6 +332,7 @@ const PlanForm = ({ previous, next, patient }) => {
 								}}
 								onChange={e => {
 									setTreatmentPlan(String(e));
+									storage.setItem(CK_TREATMENT_PLAN, String(e));
 								}}
 							/>
 						</div>

@@ -18,7 +18,6 @@ const Complaints = ({ next }) => {
 
 	const retrieveData = useCallback(async () => {
 		const data = await storage.getItem(CK_COMPLAINTS);
-		console.log(data);
 		setComplaint(data || encounter.complaints);
 	}, [encounter]);
 

@@ -17,10 +17,14 @@ export const CK_REVIEW_OF_SYSTEMS = 'E:REVIEW_OF_SYSTEMS';
 export const CK_HX_FORMS = 'E:HX_FORMS';
 export const CK_PAST_HISTORY = 'E:PAST_HISTORY';
 export const CK_ALLERGIES = 'E:ALLERGIES';
+export const CK_PAST_ALLERGIES = 'E:PAST_ALLERGIES';
 export const CK_PHYSICAL_EXAM = 'E:PHYSICAL_EXAM';
 export const CK_DIAGNOSIS = 'E:DIAGNOSIS';
+export const CK_PAST_DIAGNOSIS = 'E:PAST_DIAGNOSIS';
 export const CK_INVESTIGATIONS = 'E:INVESTIGATIONS';
-export const CK_PLAN_FORM = 'E:PLAN_FORM';
+export const CK_INVESTIGATION_LAB = 'E:INVESTIGATION_LAB';
+export const CK_INVESTIGATION_SCAN = 'E:INVESTIGATION_SCAN';
+export const CK_TREATMENT_PLAN = 'E:TREATMENT_PLAN';
 export const CK_CONSUMABLE = 'E:CONSUMABLE';
 
 export const socket = socketIOClient(API_URI, {

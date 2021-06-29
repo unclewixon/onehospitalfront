@@ -1,12 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector, connect } from 'react-redux';
-import { request, updateImmutable } from '../../services/utilities';
 import axios from 'axios';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import orderBy from 'lodash.orderby';
 import { Formik } from 'formik';
+import { Form, Image } from 'react-bootstrap';
+import { object, string, number } from 'yup';
+
+import { request, updateImmutable } from '../../services/utilities';
 import placeholder from '../../assets/images/placeholder.jpg';
 import { loadDepartments } from '../../actions/department';
 import {
@@ -21,9 +24,7 @@ import {
 import { notifyError, notifySuccess } from '../../services/notify';
 import { addStaff } from '../../actions/hr';
 import { closeModals } from '../../actions/general';
-import { object, string, number } from 'yup';
 import { Button, Field, Select } from '../common';
-import { Form, Image } from 'react-bootstrap';
 import SSRStorage from '../../services/storage';
 import { loadStaff } from '../../actions/hr';
 
@@ -53,7 +54,6 @@ export const StepOneSchema = object({
 });
 
 export const StepTwoSchema = object({
-	job_title: string().required('Job title is required'),
 	marital_status: string().required('Marital status is required'),
 	bank_name: string().required('Bank name is required'),
 	account_number: string().required('Enter an account number'),
@@ -185,10 +185,9 @@ function ModalCreateStaff({
 										/>
 									)}
 									onSubmit={params => {
-										console.log('step-one 000');
 										setForm({ ...form, ...params });
 										setSection('step-two');
-										console.log(form);
+										console.log('------------ enter step-2');
 									}}
 								/>
 							) : (
@@ -229,12 +228,8 @@ function ModalCreateStaff({
 										/>
 									)}
 									onSubmit={async params => {
-										console.log('step-2 action-params');
-										console.log(params);
-										console.log('step-2 old form');
-										console.log(form);
+										console.log('--------------------- submit form');
 										setSaving(true);
-										console.log('step-two 000=> new form');
 										const formData = new FormData();
 
 										for (const key in form) {
@@ -269,60 +264,55 @@ function ModalCreateStaff({
 										const jwt = `Bearer ${user.token}`;
 										let headers = { Authorization: jwt };
 										if (staff) {
-											axios
-												.patch(
+											try {
+												const res = await axios.patch(
 													`${API_URI}/hr/staffs/${staff.id}/update`,
 													formData,
 													{ headers }
-												)
-												.then(res => {
-													setSaving(false);
-													if (res.data?.success) {
-														let updatedStaff = res.data?.staff;
-														let { staffs } = this.props;
-														let newArray = updateImmutable(
-															staffs,
-															updatedStaff
-														);
-														dispatch(loadStaff(newArray));
-														notifySuccess('Staff details has been saved');
-														closeModals(false);
-													} else {
-														notifyError(
-															res.data?.message ||
-																'could not save staff details'
-														);
-													}
-												})
-												.catch(e => {
-													setSaving(false);
+												);
+												setSaving(false);
+												if (res.data?.success) {
+													let updatedStaff = res.data?.staff;
+													let { staffs } = this.props;
+													let newArray = updateImmutable(staffs, updatedStaff);
+													dispatch(loadStaff(newArray));
+													notifySuccess('Staff details has been saved');
+													closeModals(false);
+												} else {
 													notifyError(
-														e.message || 'could not save staff details'
+														res.data?.message || 'could not save staff details'
 													);
-												});
+												}
+											} catch (e) {
+												setSaving(false);
+												notifyError(
+													e.message || 'could not save staff details'
+												);
+											}
 										} else {
-											console.log(formData);
-											axios
-												.post(`${API_URI}/${staffAPI}`, formData, { headers })
-												.then(res => {
-													setSaving(false);
-													if (res.data?.success) {
-														addStaff(res.data?.staff);
-														notifySuccess('Staff details has been saved');
-														closeModals(false);
-													} else {
-														notifyError(
-															res.data?.message ||
-																'could not save staff details'
-														);
-													}
-												})
-												.catch(e => {
-													setSaving(false);
+											try {
+												const res = await axios.post(
+													`${API_URI}/${staffAPI}`,
+													formData,
+													{ headers }
+												);
+												console.log(res);
+												setSaving(false);
+												if (res.data?.success) {
+													addStaff(res.data?.staff);
+													notifySuccess('Staff details has been saved');
+													closeModals(false);
+												} else {
 													notifyError(
-														e.message || 'could not save staff details'
+														res.data?.message || 'could not save staff details'
 													);
-												});
+												}
+											} catch (e) {
+												setSaving(false);
+												notifyError(
+													e.message || 'could not save staff details'
+												);
+											}
 										}
 									}}
 								/>

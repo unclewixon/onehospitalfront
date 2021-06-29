@@ -216,6 +216,11 @@ class LabBlock extends Component {
 															{lab.patient_name}
 														</a>
 													</Tooltip>
+													{lab.patient.isAdmitted && (
+														<Tooltip title="Admitted">
+															<i className="fa fa-hospital-o text-danger ml-1" />
+														</Tooltip>
+													)}
 												</p>
 											</td>
 										)}

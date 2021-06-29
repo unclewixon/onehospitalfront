@@ -173,7 +173,7 @@ function PatientNOKForm(props) {
 						notifySuccess(`${patient.other_names} record was updated!`);
 						props.closeModals(false);
 					} else {
-						notifyError(res.message);
+						notifyError(res.data.message);
 					}
 				})
 				.catch(e => {

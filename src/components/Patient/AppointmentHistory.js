@@ -189,6 +189,11 @@ class AppointmentHistory extends Component {
 																			Approved
 																		</span>
 																	)}
+																	{appointment.status === 'Completed' && (
+																		<span className="badge badge-success">
+																			Completed
+																		</span>
+																	)}
 																</>
 															)}
 														</td>

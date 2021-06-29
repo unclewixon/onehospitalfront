@@ -4,7 +4,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import { withRouter } from 'react-router-dom';
 
-import { request, formatDateStr } from '../../services/utilities';
+import { request, formatDateStr, staffname } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import ViewEncounter from './Modals/ViewEncounter';
 import TableLoading from '../TableLoading';
@@ -67,13 +67,14 @@ class Encounters extends Component {
 									<thead>
 										<tr>
 											<th>Date</th>
-											<th>Whom to see</th>
-											<th>Specialty</th>
-											<th className="text-center">Actions</th>
+											<th>Department</th>
+											<th>Specialization</th>
+											<th>Staff</th>
+											<th className="text-center"></th>
 										</tr>
 									</thead>
 									<tbody>
-										{encounters?.map((item, i) => {
+										{encounters.map((item, i) => {
 											console.log(item);
 											return (
 												<tr key={i}>
@@ -83,14 +84,15 @@ class Encounters extends Component {
 															'DD-MMM-YYYY h:mm A'
 														)}
 													</td>
-
+													<td>{item?.appointment?.department?.name || '--'}</td>
+													<td>
+														{item?.appointment?.serviceType?.name || '--'}
+													</td>
 													<td className="cell-with-media">
 														<span>
-															{`${item.staff?.details?.first_name} ${item.staff?.details?.last_name}`}
+															{item.staff ? staffname(item.staff) : '--'}
 														</span>
 													</td>
-
-													<td></td>
 
 													<td className="row-actions">
 														<DropdownButton

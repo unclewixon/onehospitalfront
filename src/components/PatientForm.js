@@ -32,7 +32,7 @@ function PatientForm(props) {
 	const hmos = hmoList.map(hmo => {
 		return {
 			value: hmo.id,
-			label: hmo.name,
+			label: `${hmo.name} ${hmo.phoneNumber || ''}`,
 		};
 	});
 

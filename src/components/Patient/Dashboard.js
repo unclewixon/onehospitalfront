@@ -2,13 +2,13 @@
 import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 
-import VisitSummaryTable from './VisitSummaryTable';
 import VisitNotesTable from './VisitNotesTable';
+import VisitSummaryTable from './VisitSummaryTable';
 import PatientBills from './PatientBills';
 import AppointmentHistory from './AppointmentHistory';
 
 const Dashboard = () => {
-	const [tab, setTab] = useState('billing');
+	const [tab, setTab] = useState('visitNotes');
 
 	return (
 		<div className="col-lg-12 col-md-12">

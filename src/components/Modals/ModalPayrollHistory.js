@@ -24,16 +24,12 @@ class ModalPayrollHistory extends Component {
 	}
 
 	fetchHistory = async () => {
-		this.setState({ fetching: true });
-		const { staff } = this.props;
 		try {
-			const rs = await request(
-				`${payrollAPI}/${staff.emp_code}/list`,
-				'GET',
-				true
-			);
-			const payrolls = rs.filter(p => p.status === 1);
-			this.props.loadPayrollHistory([...payrolls]);
+			this.setState({ fetching: true });
+			const { staff } = this.props;
+			const url = `${payrollAPI}/${staff.id}/list`;
+			const rs = await request(url, 'GET', true);
+			this.props.loadPayrollHistory([...rs]);
 			this.setState({ fetching: false });
 		} catch (error) {
 			notifyError(error.message || 'could not load staff payroll');

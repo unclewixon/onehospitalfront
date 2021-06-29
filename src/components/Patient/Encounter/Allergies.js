@@ -10,6 +10,10 @@ import { allergyCategories, severities } from '../../../services/constants';
 import { request } from '../../../services/utilities';
 import { notifyError } from '../../../services/notify';
 import { ReactComponent as TrashIcon } from '../../../assets/svg-icons/trash.svg';
+import { CK_ALLERGIES, CK_PAST_ALLERGIES } from '../../../services/constants';
+import SSRStorage from '../../../services/storage';
+
+const storage = new SSRStorage();
 
 const Allergies = ({ previous, next, patient }) => {
 	const { register, reset } = useForm();
@@ -42,18 +46,26 @@ const Allergies = ({ previous, next, patient }) => {
 		}
 	}, [patient]);
 
+	const retrieveData = useCallback(async () => {
+		const data = await storage.getItem(CK_ALLERGIES);
+		setAllergens(data || encounter.allergies);
+
+		const past = await storage.getItem(CK_PAST_ALLERGIES);
+		setSelectedPastAllergies(past || encounter.pastAllergies);
+	}, [encounter]);
+
 	useEffect(() => {
 		if (!loaded) {
-			setAllergens(encounter.allergies);
-			setSelectedPastAllergies(encounter.pastAllergies);
+			retrieveData();
 			setLoaded(true);
 			fetchAllergies();
 		}
-	}, [encounter.allergies, encounter.pastAllergies, fetchAllergies, loaded]);
+	}, [fetchAllergies, loaded, retrieveData]);
 
 	const remove = index => {
 		const newItems = allergens.filter((item, i) => index !== i);
 		setAllergens(newItems);
+		storage.setItem(CK_ALLERGIES, newItems);
 	};
 
 	const onNext = () => {
@@ -75,10 +87,12 @@ const Allergies = ({ previous, next, patient }) => {
 	const onSubmit = async e => {
 		setSeverity(e);
 		if (category !== '' && reaction !== '' && allerg !== '') {
-			setAllergens([
+			const items = [
 				{ allergen: allerg, category, severity: e, reaction, drug },
 				...allergens,
-			]);
+			];
+			setAllergens(items);
+			storage.setItem(CK_ALLERGIES, items);
 			setCategory('');
 			setSeverity('');
 			setAllerg('');
@@ -151,14 +165,6 @@ const Allergies = ({ previous, next, patient }) => {
 									/>
 								</div>
 							</div>
-							{/* <div className="col-sm-2" style={{ position: 'relative' }}>
-								<button
-									className="btn btn-danger btn-sm"
-									style={{ margin: '45px 0 0', display: 'block' }}
-									type="submit">
-									<i className="os-icon os-icon-plus-circle" /> Add
-								</button>
-							</div> */}
 						</div>
 					</form>
 				</div>

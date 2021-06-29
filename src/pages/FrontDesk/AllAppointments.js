@@ -14,9 +14,9 @@ import {
 	confirmAction,
 	itemRender,
 	hasPassed,
-	fullname,
 	formatPatientId,
 	updateImmutable,
+	staffname,
 } from '../../services/utilities';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { notifySuccess, notifyError } from '../../services/notify';
@@ -224,7 +224,6 @@ class AllAppointments extends Component {
 										<th>Date</th>
 										<th>Patient</th>
 										<th>Whom to see</th>
-										<th>CR</th>
 										<th>Specialty</th>
 										<th>Department</th>
 										<th>Status</th>
@@ -258,13 +257,11 @@ class AllAppointments extends Component {
 												</td>
 												<td>
 													<p className="item-title text-color m-0">
-														{fullname(item?.whomToSee)}
-													</p>
-												</td>
-
-												<td>
-													<p className="item-title text-color m-0">
-														{item.consultingRoom?.name || '-'}
+														{item.consultingRoom
+															? `${item.consultingRoom.name} (${staffname(
+																	item.whomToSee
+															  ).replace('-', '')})`
+															: '-'}
 													</p>
 												</td>
 												<td>{item.serviceType?.name || ''}</td>

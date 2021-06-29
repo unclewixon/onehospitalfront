@@ -266,7 +266,6 @@ class RadiologyBlock extends Component {
 						{scans.map((scan, i) => {
 							const grouped = scans.filter(l => l.code === scan.code);
 							return scan.items.map((item, j) => {
-								console.log('refresh---------------------------------');
 								return (
 									<tr key={j} className={scan.urgent ? 'urgent' : ''}>
 										<td>
@@ -293,6 +292,11 @@ class RadiologyBlock extends Component {
 															{scan.patient_name}
 														</a>
 													</Tooltip>
+													{scan.patient.isAdmitted && (
+														<Tooltip title="Admitted">
+															<i className="fa fa-hospital-o text-danger ml-1" />
+														</Tooltip>
+													)}
 												</p>
 											</td>
 										)}

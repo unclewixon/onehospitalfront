@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import { formatCurrency } from '../services/utilities';
+import { formatCurrency, staffname } from '../services/utilities';
 import {
 	viewPayrollHistory,
 	viewCurrentPayroll,
@@ -14,7 +14,7 @@ class PayrollItem extends Component {
 	doViewPayroll = e => {
 		e.preventDefault();
 		const { item } = this.props;
-		const staff = { emp_code: item.emp_code, name: item.staff_name };
+		const staff = { id: item.staff.id };
 		this.props.viewPayrollHistory(true, staff);
 	};
 
@@ -50,11 +50,11 @@ class PayrollItem extends Component {
 					</td>
 				)}
 				<td>{index}</td>
-				{!modal && <td>{item.staff_name}</td>}
+				{!modal && <td>{staffname(item.staff)}</td>}
 				<td>{formatCurrency(item.total_allowance)}</td>
 				<td>{formatCurrency(item.total_deduction)}</td>
 				<td>{formatCurrency(item.total_allowance - item.total_deduction)}</td>
-				{!modal && <td>{item.department}</td>}
+				{!modal && <td>{item.department.name}</td>}
 				{!is_new && <td>{date.format('MMMM')}</td>}
 				{!is_new && <td>{date.format('YYYY')}</td>}
 				{!is_new && <td>{moment(item.createdAt).format('D MMM, YYYY')}</td>}
