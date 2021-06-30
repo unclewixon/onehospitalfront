@@ -9,7 +9,7 @@ import {
 	staffname,
 	confirmAction,
 	formatCurrency,
-	patientName,
+	patientname,
 } from '../../services/utilities';
 import { delete_transaction } from '../../actions/transaction';
 import { applyVoucher, approveTransaction } from '../../actions/general';
@@ -86,9 +86,7 @@ const TransactionTable = ({
 								<td>
 									{moment(transaction.createdAt).format('DD-MM-YYYY h:mm a')}
 								</td>
-								<td>
-									{transaction.patient ? patientName(transaction.patient) : ''}
-								</td>
+								<td>{patientname(transaction.patient)}</td>
 								<td className="flex">
 									<span className="text-capitalize">
 										{transaction.transaction_type}

@@ -55,6 +55,7 @@ class PatientAdmission extends Component {
 			const formData = {
 				healthState: data.health_state,
 				riskToFall: data.risk === true,
+				nicu: data.nicu === true,
 				reason: data.reason,
 				discharge_date: moment(discharged_date).format('YYYY-MM-DD'),
 			};

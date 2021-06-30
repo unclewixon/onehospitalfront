@@ -7,7 +7,12 @@ import { confirmAlert } from 'react-confirm-alert';
 import Tooltip from 'antd/lib/tooltip';
 
 import CreateTask from '../Modals/CreateTask';
-import { itemRender, request, confirmAction } from '../../services/utilities';
+import {
+	itemRender,
+	request,
+	confirmAction,
+	staffname,
+} from '../../services/utilities';
 import { allVitalItems, patientAPI } from '../../services/constants';
 import TakeReading from '../Modals/TakeReading';
 import { readingDone } from '../../actions/patient';
@@ -230,7 +235,7 @@ const ClinicalTasks = () => {
 													? moment(lastReading.createdAt).fromNow(true)
 													: '-'}{' '}
 												{lastReading
-													? `by ${item?.staff?.details?.first_name} ${item?.staff?.details?.last_name}`
+													? `by ${staffname(item?.staff?.details)}`
 													: ''}
 											</td>
 											<td>

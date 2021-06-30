@@ -11,7 +11,7 @@ import HMOMenu from './HMOMenu';
 import DoctorMenu from './DoctorMenu';
 import CafeteriaMenu from './CafeteriaMenu';
 import ClinicalLabMenu from './ClinicalLabMenu';
-import { fullname, parseAvatar } from '../../services/utilities';
+import { staffname, parseAvatar } from '../../services/utilities';
 import Account from './Account';
 import PayPointMenu from './PayPointMenu';
 import PharmacyMenu from './PharmacyMenu';
@@ -86,7 +86,7 @@ class MainMenu extends Component {
 						</div>
 						<div className="logged-user-info-w">
 							<div className="logged-user-name">
-								{fullname(profile.details)}
+								{staffname(profile.details)}
 							</div>
 							<div className="logged-user-role">{capitalize(role)}</div>
 						</div>

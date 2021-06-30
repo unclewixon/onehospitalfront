@@ -4,8 +4,15 @@ import Pagination from 'antd/lib/pagination';
 import moment from 'moment';
 import { useSelector, useDispatch } from 'react-redux';
 import { confirmAlert } from 'react-confirm-alert';
+import Tooltip from 'antd/lib/tooltip';
+
 import { notifySuccess, notifyError } from '../../services/notify';
-import { itemRender, request, confirmAction } from '../../services/utilities';
+import {
+	itemRender,
+	request,
+	confirmAction,
+	staffname,
+} from '../../services/utilities';
 import { patientAPI, allVitalItems } from '../../services/constants';
 import TakeReading from '../../components/Modals/TakeReading';
 import { readingDone } from '../../actions/patient';
@@ -13,7 +20,6 @@ import warning from '../../assets/images/warning.png';
 import GiveMedication from '../../components/Modals/GiveMedication';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { toggleProfile } from '../../actions/user';
-import Tooltip from 'antd/lib/tooltip';
 
 const ClinicalTasks = () => {
 	const [meta, setMeta] = useState({
@@ -208,10 +214,15 @@ const ClinicalTasks = () => {
 								const vital = allVitalItems.find(v => v.name === item.task);
 								return (
 									<tr key={i}>
-										<td>
+										<td width="120px">
 											<a onClick={() => showProfile(item.patient)}>
 												{item.patient_name}
-											</a>
+											</a>{' '}
+											{item.patient.isAdmitted && (
+												<Tooltip title="Admitted">
+													<i className="fa fa-hospital-o text-danger" />
+												</Tooltip>
+											)}
 										</td>
 										<td>{item.admission?.room?.name || '-'}</td>
 										<td>{item.title}</td>
@@ -244,29 +255,43 @@ const ClinicalTasks = () => {
 										</td>
 										<td>{item.taskCount}</td>
 										<td className="row-actions">
-											{item.taskCount > item.tasksCompleted &&
-												(item.taskType === 'vitals' ? (
-													<a
-														className="btn btn-primary btn-sm text-white text-uppercase"
-														onClick={() => takeReading(item)}>
-														Take Reading
-													</a>
-												) : (
-													<a
-														className="btn btn-primary btn-sm text-white text-uppercase"
-														onClick={() => recordMedication(item)}>
-														Take Reading
-													</a>
-												))}
+											{item.taskCount > item.tasksCompleted ? (
+												<>
+													{item.taskType === 'vitals' ? (
+														<a
+															className="btn btn-primary btn-sm text-white text-uppercase"
+															onClick={() => takeReading(item)}>
+															Take Reading
+														</a>
+													) : (
+														<a
+															className="btn btn-primary btn-sm text-white text-uppercase"
+															onClick={() => recordMedication(item)}>
+															Take Reading
+														</a>
+													)}
+												</>
+											) : (
+												<>
+													{lastReading
+														? moment(lastReading.createdAt).fromNow(true)
+														: '-'}{' '}
+													{lastReading
+														? `by ${staffname(item?.staff?.details)}`
+														: ''}
+												</>
+											)}
 										</td>
 										<td className="row-actions text-center">
-											<Tooltip title="Cancel Clinical Task">
-												<a
-													className="danger"
-													onClick={e => confirmDelete(e, item)}>
-													<i className="os-icon os-icon-ui-15"></i>
-												</a>
-											</Tooltip>
+											{item.taskCount > item.tasksCompleted && (
+												<Tooltip title="Cancel Clinical Task">
+													<a
+														className="danger"
+														onClick={e => confirmDelete(e, item)}>
+														<i className="os-icon os-icon-ui-15"></i>
+													</a>
+												</Tooltip>
+											)}
 										</td>
 									</tr>
 								);

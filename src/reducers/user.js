@@ -34,6 +34,8 @@ const INITIAL_STATE = {
 	isAntenatalOpen: false,
 	isAdmissionOpen: false,
 	isIVFOpen: false,
+	isNicuOpen: false,
+	isLabourOpen: false,
 	menu_mode: 'menu-layout-compact',
 	menu_mini: false,
 	item: null,
@@ -62,6 +64,8 @@ const user = (state = INITIAL_STATE, action) => {
 				isAdmissionOpen: false,
 				isStaffOpen: false,
 				isIVFOpen: false,
+				isNicuOpen: false,
+				isLabourOpen: false,
 			};
 		case TOGGLE_MODE:
 			storage.setItem(MODE_COOKIE, !state.theme_mode);
@@ -111,7 +115,10 @@ const user = (state = INITIAL_STATE, action) => {
 					type === 'patient' ||
 					type === 'procedure' ||
 					type === 'antennatal' ||
-					type === 'admission'
+					type === 'admission' ||
+					type === 'ivf' ||
+					type === 'nicu' ||
+					type === 'labour'
 						? { patient }
 						: { staff };
 				storage.setItem(USER_RECORD, { ...data, type, item });
@@ -124,6 +131,8 @@ const user = (state = INITIAL_STATE, action) => {
 					isAntenatalOpen: type === 'antennatal',
 					isAdmissionOpen: type === 'admission',
 					isIVFOpen: type === 'ivf',
+					isNicuOpen: type === 'nicu',
+					isLabourOpen: type === 'labour',
 					item,
 					...data,
 				};
@@ -137,6 +146,8 @@ const user = (state = INITIAL_STATE, action) => {
 				isAntenatalOpen: false,
 				isAdmissionOpen: false,
 				isIVFOpen: false,
+				isNicuOpen: false,
+				isLabourOpen: false,
 				userID: null,
 				patient: null,
 				staff: null,

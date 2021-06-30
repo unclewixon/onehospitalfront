@@ -5,7 +5,7 @@ import Tooltip from 'antd/lib/tooltip';
 import { useDispatch } from 'react-redux';
 
 import {
-	patientName,
+	patientname,
 	formatCurrency,
 	confirmAction,
 	request,
@@ -48,7 +48,7 @@ const HmoTable = ({ hmoTransactions, updateTransaction }) => {
 					<tr key={key}>
 						<td>{moment(item.createdAt).format('DD-MM-YYYY h:mm A')}</td>
 						<td className="text-capitalize">{item.hmo?.name || '--'}</td>
-						<td className="text-capitalize">{patientName(item.patient)}</td>
+						<td className="text-capitalize">{patientname(item.patient)}</td>
 						<td>{item.description || '--'}</td>
 
 						<td>{item.amount ? formatCurrency(item.amount) : 0}</td>

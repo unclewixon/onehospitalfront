@@ -11,6 +11,7 @@ import waiting from '../../assets/images/waiting.gif';
 import { vitalsAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
 import { updateVitals, readingDone } from '../../actions/patient';
+import { messageService } from '../../services/message';
 
 class TakeReadings extends Component {
 	state = {
@@ -61,6 +62,10 @@ class TakeReadings extends Component {
 					// store individual readings for weight and height as well
 					await this.takeExtraReadings({ weight: data.weight }, 'Weight');
 					await this.takeExtraReadings({ height: data.height }, 'Height');
+				}
+
+				if (rs.readings.isAbnormal) {
+					messageService.sendMessage('refresh');
 				}
 
 				notifySuccess(`${title} updated!`);

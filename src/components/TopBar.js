@@ -14,7 +14,7 @@ import {
 	toggleFullscreen,
 } from '../actions/user';
 import SearchPatient from './SearchPatient';
-import { fullname, parseAvatar } from '../services/utilities';
+import { staffname, parseAvatar } from '../services/utilities';
 
 class TopBar extends Component {
 	state = {
@@ -152,7 +152,7 @@ class TopBar extends Component {
 									</div>
 									<div className="logged-user-info-w">
 										<div className="logged-user-name">
-											{fullname(profile?.details)}
+											{staffname(profile?.details)}
 										</div>
 										<div className="logged-user-role">
 											{role !== 'patient' ? capitalize(role) : 'Doctor'}

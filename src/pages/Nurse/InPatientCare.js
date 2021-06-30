@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import moment from 'moment';
 import Tooltip from 'antd/lib/tooltip';
 import { useDispatch } from 'react-redux';
@@ -19,11 +19,11 @@ import ProfilePopup from '../../components/Patient/ProfilePopup';
 
 const { RangePicker } = DatePicker;
 
-const limit = 24;
+const limit = 12;
 
 const InPatientCare = () => {
 	const [admittedPatients, setAdmittedPatients] = useState([]);
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const [selected, setSelected] = useState(null);
 	const [showModal, setShowModal] = useState(false);
 	const [filtering, setFiltering] = useState(false);
@@ -35,30 +35,39 @@ const InPatientCare = () => {
 		totalPages: 0,
 	});
 	const [patient, setPatient] = useState('');
-	const [loaded, setLoaded] = useState(false);
 
 	const dispatch = useDispatch();
 
-	const fetchPatients = async page => {
-		try {
-			const p = page || 1;
-			const url = `patient/admissions?page=${p}&limit=${limit}&patient_id=${patient ||
-				''}&startDate=${startDate}&endDate=${endDate}`;
-			const rs = await request(url, 'GET', true);
-			const { result, ...meta } = rs;
-			setMeta(meta);
-			window.scrollTo({ top: 0, behavior: 'smooth' });
-			const arr = [...result];
-			setAdmittedPatients(arr);
-			setFiltering(false);
-			dispatch(stopBlock());
-		} catch (error) {
-			console.log(error);
-			notifyError('error fetching patients');
-			dispatch(stopBlock());
-			setFiltering(false);
+	const fetchPatients = useCallback(
+		async (page, patientId, sDate, eDate) => {
+			try {
+				const p = page || 1;
+				const url = `patient/admissions?page=${p}&limit=${limit}&patient_id=${patientId ||
+					''}&startDate=${sDate || ''}&endDate=${eDate || ''}`;
+				const rs = await request(url, 'GET', true);
+				const { result, ...meta } = rs;
+				setMeta(meta);
+				window.scrollTo({ top: 0, behavior: 'smooth' });
+				const arr = [...result];
+				setAdmittedPatients(arr);
+				setFiltering(false);
+				dispatch(stopBlock());
+			} catch (error) {
+				console.log(error);
+				notifyError('error fetching patients');
+				dispatch(stopBlock());
+				setFiltering(false);
+			}
+		},
+		[dispatch]
+	);
+
+	useEffect(() => {
+		if (loading) {
+			fetchPatients();
+			setLoading(false);
 		}
-	};
+	}, [loading, fetchPatients]);
 
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option => `${option.other_names} ${option.surname}`;
@@ -73,47 +82,15 @@ const InPatientCare = () => {
 		return res;
 	};
 
-	useEffect(() => {
-		const fetch = async () => {
-			try {
-				const url = `patient/admissions?page=1&limit=${limit}`;
-				const rs = await request(url, 'GET', true);
-				const { result, ...meta } = rs;
-				setMeta(meta);
-				const arr = [...result];
-				setAdmittedPatients(arr);
-				setLoaded(false);
-				dispatch(stopBlock());
-			} catch (error) {
-				console.log(error);
-				notifyError('error fetching patients');
-				setLoaded(false);
-				dispatch(stopBlock());
-			}
-		};
-
-		if (!loaded || patient === '') {
-			fetch();
-		}
-	}, [dispatch, loaded, patient]);
-
-	useEffect(() => {}, [admittedPatients]);
-
-	useEffect(() => {
-		if (loading) {
-			setLoading(false);
-		}
-	}, [loading]);
-
 	const doFilter = e => {
 		e.preventDefault();
 		setFiltering(true);
-		fetchPatients();
+		fetchPatients(1, patient, startDate, endDate);
 	};
 
 	const onNavigatePage = nextPage => {
 		dispatch(startBlock());
-		fetchPatients(nextPage);
+		fetchPatients(nextPage, patient, startDate, endDate);
 	};
 
 	const showProfile = patient => {
@@ -150,7 +127,7 @@ const InPatientCare = () => {
 	return (
 		<>
 			<h6 className="element-header">Patients on Admission</h6>
-			<div className="element-box m-0 p-3">
+			<div className="element-box m-0 mb-4 p-3">
 				<div className="col-md-12 p-4">
 					<form className="row">
 						<div className="form-group col-md-3">
@@ -190,7 +167,8 @@ const InPatientCare = () => {
 						</div>
 					</form>
 				</div>
-
+			</div>
+			<div className="element-box m-0 mb-4 p-3">
 				<div className="table-responsive">
 					{loading ? (
 						<TableLoading />
@@ -199,21 +177,12 @@ const InPatientCare = () => {
 							<table className="table table-striped">
 								<thead>
 									<tr>
-										<th>
-											<div>Patient Name</div>
-										</th>
-										<th>
-											<div>Reason</div>
-										</th>
-										<th>
-											<div>Date of Admission</div>
-										</th>
-										<th>
-											<div>Admitted By</div>
-										</th>
-										<th>
-											<div>Room/Floor</div>
-										</th>
+										<th>Patient Name</th>
+										<th>Reason</th>
+										<th>Date of Admission</th>
+										<th>Admitted By</th>
+										<th>Room/Floor</th>
+										<th>Status</th>
 										<th></th>
 									</tr>
 								</thead>
@@ -224,35 +193,42 @@ const InPatientCare = () => {
 												<td>
 													<p className="item-title text-color m-0">
 														<Tooltip
-															title={<ProfilePopup patient={item?.patient} />}>
+															title={<ProfilePopup patient={item.patient} />}>
 															<a
 																className="cursor"
-																onClick={() => showProfile(item?.patient)}>
-																{`${item?.patient_name} [${formatPatientId(
-																	item?.patient_id
+																onClick={() => showProfile(item.patient)}>
+																{`${item.patient_name} [${formatPatientId(
+																	item.patient_id
 																)}]`}
 															</a>
 														</Tooltip>
 													</p>
 												</td>
-												<td>{item?.reason}</td>
+												<td>{item.reason}</td>
 												<td>
-													{moment(item?.admission_date).format(
+													{moment(item.admission_date).format(
 														'DD-MMM-YYYY h:mm A'
 													)}
 												</td>
-												<td>{item?.admitted_by}</td>
+												<td>{item.admitted_by}</td>
 												<td>
-													{item?.suite ? (
+													{item.suite ? (
 														<Tooltip title="Room/Floor">
-															{`${item?.suite} / ${item?.floor}`}
+															{`${item.suite} / ${item.floor}`}
 														</Tooltip>
 													) : (
 														'-'
 													)}
 												</td>
+												<td>
+													{item.status === 0 ? (
+														<span className="badge badge-secondary">Open</span>
+													) : (
+														<span className="badge badge-success">Closed</span>
+													)}
+												</td>
 												<td className="row-actions">
-													{!item.suite && (
+													{!item.suite && !item.nicu && (
 														<Tooltip title="Assign Bed">
 															<a
 																onClick={() => assignBed(item)}

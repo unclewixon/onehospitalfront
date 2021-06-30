@@ -535,14 +535,11 @@ export const redirectToPage = (role, history) => {
 	}
 };
 
-export const fullname = user =>
-	user ? `${user?.first_name} ${user?.last_name}` : '-';
-
 export const staffname = user =>
 	user ? `${user?.first_name} ${user?.last_name}` : '-';
 
-export const patientName = user =>
-	user ? `${user?.other_names} ${user?.surname}` : '-';
+export const patientname = user =>
+	user ? `${user?.other_names} ${user?.surname}` : '--';
 
 export const formatNumber = n =>
 	parseFloat(n).toLocaleString(undefined, { maximumFractionDigits: 2 });

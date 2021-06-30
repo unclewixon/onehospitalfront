@@ -6,7 +6,7 @@ import moment from 'moment';
 import { transactionsAPI, searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import DatePicker from 'antd/lib/date-picker';
-import { request, fullname } from '../../services/utilities';
+import { request, staffname } from '../../services/utilities';
 
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
@@ -317,7 +317,7 @@ class Transactions extends Component {
 											</td>
 											<td>
 												{request.staff
-													? fullname(request.staff)
+													? staffname(request.staff)
 													: request.patient
 													? `${request.patient.other_names} ${request.patient.surname}`
 													: 'walk-in'}

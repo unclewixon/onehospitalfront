@@ -15,15 +15,16 @@ import { searchAPI } from '../../services/constants';
 import { toggleProfile } from '../../actions/user';
 import TableLoading from '../../components/TableLoading';
 import ProfilePopup from '../../components/Patient/ProfilePopup';
-import { staffname } from '../../services/utilities';
 
 const { RangePicker } = DatePicker;
 
 const limit = 12;
 
-const IvfPatients = () => {
-	const [ivfPatients, setIvfPatients] = useState([]);
+const NicuPatients = () => {
+	const [admittedPatients, setAdmittedPatients] = useState([]);
 	const [loading, setLoading] = useState(true);
+	const [selected, setSelected] = useState(null);
+	const [showModal, setShowModal] = useState(false);
 	const [filtering, setFiltering] = useState(false);
 	const [startDate, setStartDate] = useState('');
 	const [endDate, setEndDate] = useState('');
@@ -36,18 +37,18 @@ const IvfPatients = () => {
 
 	const dispatch = useDispatch();
 
-	const fetchIvfPatients = useCallback(
+	const fetchNicuPatients = useCallback(
 		async (page, patientId, sDate, eDate) => {
 			try {
 				const p = page || 1;
-				const url = `ivf?page=${p}&limit=${limit}&patient_id=${patientId ||
+				const url = `nicu?page=${p}&limit=${limit}&patient_id=${patientId ||
 					''}&startDate=${sDate || ''}&endDate=${eDate || ''}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setMeta(meta);
 				window.scrollTo({ top: 0, behavior: 'smooth' });
 				const arr = [...result];
-				setIvfPatients(arr);
+				setAdmittedPatients(arr);
 				setFiltering(false);
 				dispatch(stopBlock());
 			} catch (error) {
@@ -62,10 +63,10 @@ const IvfPatients = () => {
 
 	useEffect(() => {
 		if (loading) {
-			fetchIvfPatients();
+			fetchNicuPatients();
 			setLoading(false);
 		}
-	}, [loading, fetchIvfPatients]);
+	}, [loading, fetchNicuPatients]);
 
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option => `${option.other_names} ${option.surname}`;
@@ -83,12 +84,12 @@ const IvfPatients = () => {
 	const doFilter = e => {
 		e.preventDefault();
 		setFiltering(true);
-		fetchIvfPatients(1, patient, startDate, endDate);
+		fetchNicuPatients(1, patient, startDate, endDate);
 	};
 
 	const onNavigatePage = nextPage => {
 		dispatch(startBlock());
-		fetchIvfPatients(nextPage, patient, startDate, endDate);
+		fetchNicuPatients(nextPage, patient, startDate, endDate);
 	};
 
 	const showProfile = patient => {
@@ -96,8 +97,8 @@ const IvfPatients = () => {
 		dispatch(toggleProfile(true, info));
 	};
 
-	const openIVF = (patient, ivf) => {
-		const info = { patient, type: 'ivf', item: ivf };
+	const openNicu = (patient, nicu) => {
+		const info = { patient, type: 'nicu', item: nicu };
 		dispatch(toggleProfile(true, info));
 	};
 
@@ -108,6 +109,18 @@ const IvfPatients = () => {
 
 		setStartDate(date[0]);
 		setEndDate(date[1]);
+	};
+
+	const assignBed = item => {
+		// document.body.classList.add('modal-open');
+		// setSelected(item);
+		// setShowModal(true);
+	};
+
+	const closeModal = () => {
+		setShowModal(false);
+		setSelected(null);
+		document.body.classList.remove('modal-open');
 	};
 
 	return (
@@ -153,6 +166,7 @@ const IvfPatients = () => {
 					</form>
 				</div>
 			</div>
+
 			<div className="element-box m-0 mb-4 p-3">
 				<div className="table-responsive">
 					{loading ? (
@@ -163,14 +177,16 @@ const IvfPatients = () => {
 								<thead>
 									<tr>
 										<th>Patient Name</th>
-										<th>Date of Enrollment</th>
-										<th>Enrolled By</th>
+										<th>Reason</th>
+										<th>Date of Admission</th>
+										<th>Admitted By</th>
+										<th>Room</th>
 										<th>Status</th>
 										<th></th>
 									</tr>
 								</thead>
 								<tbody>
-									{ivfPatients.map((item, i) => {
+									{admittedPatients.map((item, i) => {
 										return (
 											<tr key={i}>
 												<td>
@@ -187,10 +203,14 @@ const IvfPatients = () => {
 														</Tooltip>
 													</p>
 												</td>
+												<td>{item.admission?.reason}</td>
 												<td>
-													{moment(item.createdAt).format('DD-MMM-YYYY h:mm A')}
+													{moment(item?.admission_date).format(
+														'DD-MMM-YYYY h:mm A'
+													)}
 												</td>
-												<td>{staffname(item.staff)}</td>
+												<td>{item.admitted_by}</td>
+												<td>{item.room || '--'}</td>
 												<td>
 													{item.status === 0 ? (
 														<span className="badge badge-secondary">Open</span>
@@ -199,8 +219,17 @@ const IvfPatients = () => {
 													)}
 												</td>
 												<td className="row-actions">
-													<Tooltip title="Open IVF">
-														<a onClick={() => openIVF(item.patient, item)}>
+													{!item.room && (
+														<Tooltip title="Assign Bed">
+															<a
+																onClick={() => assignBed(item)}
+																className="primary">
+																<i className="fa fa-bed" />
+															</a>
+														</Tooltip>
+													)}
+													<Tooltip title="Admission">
+														<a onClick={() => openNicu(item.patient, item)}>
 															<i className="os-icon os-icon-user-male-circle2" />
 														</a>
 													</Tooltip>
@@ -208,7 +237,7 @@ const IvfPatients = () => {
 											</tr>
 										);
 									})}
-									{ivfPatients.length === 0 && (
+									{admittedPatients.length === 0 && (
 										<tr>
 											<td colSpan="7" className="text-center">
 												No patients found
@@ -234,8 +263,16 @@ const IvfPatients = () => {
 					)}
 				</div>
 			</div>
+			{/* {selected && showModal && (
+				<AssignBed
+					item={selected}
+					patients={admittedPatients}
+					updatePatient={patients => setAdmittedPatients(patients)}
+					closeModal={() => closeModal()}
+				/>
+			)} */}
 		</>
 	);
 };
 
-export default IvfPatients;
+export default NicuPatients;

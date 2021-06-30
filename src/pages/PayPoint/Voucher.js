@@ -16,7 +16,7 @@ import {
 	confirmAction,
 	formatCurrency,
 	itemRender,
-	patientName,
+	patientname,
 } from '../../services/utilities';
 import { vouchersAPI } from '../../services/constants';
 import { loadVoucher } from '../../actions/paypoint';
@@ -245,7 +245,7 @@ export class Voucher extends Component {
 																	Used
 																</span>
 																<br />
-																{` by ${patientName(
+																{` by ${patientname(
 																	voucher.transaction.patient
 																)}`}
 															</>

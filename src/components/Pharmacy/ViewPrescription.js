@@ -240,6 +240,7 @@ const ViewPrescription = ({
 																			<SelectDrug
 																				onHide={() => setVisible(null)}
 																				setDrug={drug => setDrug(drug, item.id)}
+																				hmo={activeRequest.patient.hmo}
 																			/>
 																		}
 																		overlayClassName="select-drug"

@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
@@ -10,6 +10,7 @@ import {
 	formatPatientId,
 	parseAvatar,
 	getAge,
+	patientname,
 } from '../services/utilities';
 import { patientAPI } from '../services/constants';
 import { notifySuccess, notifyError } from './../services/notify';
@@ -17,6 +18,8 @@ import { updatePatient } from '../actions/patient';
 import { startBlock, stopBlock } from '../actions/redux-block';
 import ExtraBlock from './ExtraBlock';
 import { formatCurrency } from '../services/utilities';
+import { messageService } from '../services/message';
+import ViewAlerts from './Modals/ViewAlerts';
 
 const UserItem = ({ icon, label, value }) => {
 	return (
@@ -46,7 +49,38 @@ const UserItem = ({ icon, label, value }) => {
 };
 
 const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
+	const [alerts, setAlerts] = useState([]);
+	const [showModal, setShowModal] = useState(false);
+
 	const dispatch = useDispatch();
+
+	const getAlerts = useCallback(async () => {
+		try {
+			const url = `patient/${patient.id}/alerts`;
+			const rs = await request(url, 'GET', true);
+			setAlerts(rs);
+		} catch (error) {
+			notifyError('Error fetching alerts');
+		}
+	}, [patient]);
+
+	useEffect(() => {
+		getAlerts();
+	}, [getAlerts]);
+
+	useEffect(() => {
+		const subscription = messageService.getMessage().subscribe(message => {
+			if (message !== '') {
+				if (message.text === 'refresh') {
+					getAlerts();
+				}
+			}
+		});
+
+		return () => {
+			subscription.unsubscribe();
+		};
+	});
 
 	const enrollImmunization = async () => {
 		const result = window.confirm('Enroll into immunization?');
@@ -78,7 +112,13 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 		: '';
 
 	const showAlerts = () => {
-		window.alert('show alerts');
+		document.body.classList.add('modal-open');
+		setShowModal(true);
+	};
+
+	const closeModal = () => {
+		document.body.classList.remove('modal-open');
+		setShowModal(false);
 	};
 
 	return (
@@ -102,7 +142,14 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 										</span>
 										<div className="d-flex flex-column ml-1">
 											<div className="mb-1">
-												<h4 className="mb-0">{`${patient?.other_names} ${patient?.surname}`}</h4>
+												<h4 className="mb-0">
+													{patientname(patient)}{' '}
+													{patient.isAdmitted && (
+														<Tooltip title="Admitted">
+															<i className="fa fa-hospital-o text-danger" />
+														</Tooltip>
+													)}
+												</h4>
 												<span className="card-text">{patient?.email}</span>
 											</div>
 
@@ -130,11 +177,20 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 												)}
 												<Tooltip title="Alerts">
 													<a
-														className="text-danger relative ml-2"
+														className={`${
+															alerts.length > 0 ? 'text-danger' : 'text-success'
+														} relative ml-2`}
 														style={{ fontSize: '20px', padding: '0 4px' }}
 														onClick={() => showAlerts()}>
 														<i className="fa fa-exclamation-triangle" />
-														<span className="text-danger alert-badge">2</span>
+														<span
+															className={`alert-badge ${
+																alerts.length > 0
+																	? 'text-danger'
+																	: 'text-success'
+															}`}>
+															{alerts.length}
+														</span>
 													</a>
 												</Tooltip>
 											</div>
@@ -266,6 +322,7 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 				</div>
 			</div>
 			{extraData && <ExtraBlock data={extraData} />}
+			{showModal && <ViewAlerts closeModal={closeModal} />}
 		</>
 	);
 };

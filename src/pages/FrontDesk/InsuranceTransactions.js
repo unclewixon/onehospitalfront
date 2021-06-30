@@ -13,7 +13,7 @@ import {
 	request,
 	itemRender,
 	formatCurrency,
-	patientName,
+	patientname,
 } from '../../services/utilities';
 import { loadTransaction } from '../../actions/transaction';
 import ModalServiceDetails from '../../components/Modals/ModalServiceDetails';
@@ -265,7 +265,7 @@ class InsuranceTransactions extends Component {
 												<td>
 													{moment(item.createdAt).format('DD-MM-YYYY H:mma')}
 												</td>
-												<td>{patientName(item.patient)}</td>
+												<td>{patientname(item.patient)}</td>
 												<td>{item.hmo ? item.hmo.name : 'No Hmo'}</td>
 												<td>
 													<span className="text-capitalize">

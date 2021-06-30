@@ -9,7 +9,7 @@ import { request, updateImmutable } from '../services/utilities';
 import { createStaff } from '../actions/general';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
-import { fullname, parseAvatar } from '../services/utilities';
+import { staffname, parseAvatar } from '../services/utilities';
 import { loadStaff } from '../actions/hr';
 
 const UploadPerformanceData = ({ uploading, doUpload, hide }) => {
@@ -182,7 +182,7 @@ class StaffItem extends Component {
 						</div>
 					</td>
 					<td onClick={this.toggle}>{staff.emp_code}</td>
-					<td onClick={this.toggle}>{`${capitalize(fullname(staff))} (${
+					<td onClick={this.toggle}>{`${capitalize(staffname(staff))} (${
 						staff.user.username
 					})`}</td>
 					<td onClick={this.toggle}>{staff?.user?.role?.name}</td>

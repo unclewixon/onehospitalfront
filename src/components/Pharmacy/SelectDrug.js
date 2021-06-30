@@ -1,11 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Select from 'react-select';
 
-import { groupBy } from '../../services/utilities';
+import { groupBy, request } from '../../services/utilities';
+import { notifyError } from '../../services/notify';
 
-const SelectDrug = ({ drugs, onHide, setDrug }) => {
+const SelectDrug = ({ onHide, setDrug, hmo }) => {
 	const [genericName, setGenericName] = useState(null);
 	const [drugItem, setDrugItem] = useState(null);
+	const [drugs, setDrugs] = useState([]);
+
+	const getServiceUnit = useCallback(async () => {
+		try {
+			const res = await request('inventory/categories', 'GET', true);
+			if (res && res.length > 0) {
+				const selectCat = res.find(cat => cat.name === 'Pharmacy');
+
+				const url = `inventory/stocks-by-category/${selectCat.id}/${hmo.id}`;
+				const rs = await request(url, 'GET', true);
+				setDrugs(rs);
+			}
+		} catch (error) {
+			notifyError('Error fetching Service Unit');
+		}
+	}, [hmo]);
+
+	useEffect(() => {
+		getServiceUnit();
+	}, [getServiceUnit]);
 
 	// group drugs by generic name
 	const drugValues = groupBy(

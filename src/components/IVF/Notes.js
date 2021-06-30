@@ -8,7 +8,7 @@ import { request, itemRender, formatDateStr } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import CreateNote from '../Modals/CreateNote';
-import { fullname } from '../../services/utilities';
+import { staffname } from '../../services/utilities';
 
 const Notes = () => {
 	const [loading, setLoading] = useState(true);
@@ -126,7 +126,7 @@ const Notes = () => {
 														}}
 													/>
 												</td>
-												<td nowrap="nowrap">{fullname(item.staff)}</td>
+												<td nowrap="nowrap">{staffname(item.staff)}</td>
 											</tr>
 										);
 									})}

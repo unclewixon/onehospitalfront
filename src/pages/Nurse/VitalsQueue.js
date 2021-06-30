@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import truncate from 'lodash.truncate';
 import moment from 'moment';
 import { toggleProfile } from '../../actions/user';
-import { getAge, fullname } from '../../services/utilities';
+import { getAge, staffname } from '../../services/utilities';
 import { socket } from '../../services/constants';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
@@ -88,24 +88,12 @@ const VitalsQueue = () => {
 						<table className="table table-striped">
 							<thead>
 								<tr>
-									<th>
-										<div>Patient</div>
-									</th>
-									<th>
-										<div>Whom To See</div>
-									</th>
-									<th>
-										<div>Gender / Age</div>
-									</th>
-									<th>
-										<div>Service</div>
-									</th>
-									<th>
-										<div>Date</div>
-									</th>
-									<th>
-										<div></div>
-									</th>
+									<th>Patient</th>
+									<th>Whom To See</th>
+									<th>Gender / Age</th>
+									<th>Service</th>
+									<th>Date</th>
+									<th></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -114,7 +102,7 @@ const VitalsQueue = () => {
 									.map((queue, key) => (
 										<tr key={key}>
 											<td>{`${queue.patientName}`}</td>
-											<td>{fullname(queue.appointment.whomToSee)}</td>
+											<td>{staffname(queue.appointment.whomToSee)}</td>
 											<td>{`${queue.appointment.patient.gender} / ${getAge(
 												queue.appointment.patient.date_of_birth
 											)}`}</td>

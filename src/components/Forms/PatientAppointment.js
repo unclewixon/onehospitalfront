@@ -8,7 +8,7 @@ import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import waiting from '../../assets/images/waiting.gif';
 import {
 	formatNumber,
-	fullname,
+	staffname,
 	request,
 	formatPatientId,
 } from '../../services/utilities';
@@ -94,7 +94,7 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 		const res = rs.map(item => ({
 			...item,
 			value: item.id,
-			label: fullname(item) + ' (Room ' + item.room.name + ')',
+			label: staffname(item) + ' (Room ' + item.room.name + ')',
 		}));
 		setDoctors(res);
 	}

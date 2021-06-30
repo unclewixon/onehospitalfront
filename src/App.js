@@ -26,6 +26,8 @@ import ProcedureProfile from './pages/ProcedureProfile';
 import AntennatalProfile from './pages/AntennatalProfile';
 import AdmissionProfile from './pages/AdmissionProfile';
 import IVFProfile from './pages/IVFProfile';
+import NicuProfile from './pages/NicuProfile';
+import LabourProfile from './pages/LabourProfile';
 
 const FrontDesk = lazy(() => import('./pages/FrontDesk/Home'));
 const Speech = lazy(() => import('./pages/FrontDesk/Speech'));
@@ -42,7 +44,7 @@ const PayPoint = lazy(() => import('./pages/PayPoint/Home'));
 const Radiology = lazy(() => import('./pages/Radiology/Home'));
 const Antennatal = lazy(() => import('./pages/Antennatal/Home'));
 const IVF = lazy(() => import('./pages/IVF/Home'));
-const Nicu = lazy(() => import('./pages/Nicu/Nicu'));
+const Nicu = lazy(() => import('./pages/Nicu/Home'));
 const LabourMgt = lazy(() => import('./pages/LabourMgt/Home'));
 const Cafeteria = lazy(() => import('./pages/Cafeteria/Home'));
 const Account = lazy(() => import('./pages/Account/index'));
@@ -84,6 +86,8 @@ class App extends Component {
 			isAntenatalOpen,
 			isAdmissionOpen,
 			isIVFOpen,
+			isNicuOpen,
+			isLabourOpen,
 			theme_mode,
 			menu_mode,
 			profile,
@@ -170,6 +174,12 @@ class App extends Component {
 										<SlidingPane isOpen={isIVFOpen}>
 											<IVFProfile />
 										</SlidingPane>
+										<SlidingPane isOpen={isNicuOpen}>
+											<NicuProfile />
+										</SlidingPane>
+										<SlidingPane isOpen={isLabourOpen}>
+											<LabourProfile />
+										</SlidingPane>
 										<ModalDialogs />
 									</Suspense>
 								</div>
@@ -200,6 +210,8 @@ const mapStateToProps = state => {
 		isAntenatalOpen: state.user?.isAntenatalOpen,
 		isAdmissionOpen: state.user?.isAdmissionOpen,
 		isIVFOpen: state.user?.isIVFOpen,
+		isNicuOpen: state.user?.isNicuOpen,
+		isLabourOpen: state.user?.isLabourOpen,
 		theme_mode: state.user?.theme_mode,
 		menu_mode: state.user?.menu_mode,
 		fullscreen: state.user?.fullscreen,

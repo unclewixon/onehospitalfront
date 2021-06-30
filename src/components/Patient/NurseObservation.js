@@ -8,7 +8,7 @@ import { request, itemRender, formatDateStr } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import CreateObservation from './Modals/CreateObservation';
-import { fullname } from '../../services/utilities';
+import { staffname } from '../../services/utilities';
 
 const NurseObservation = () => {
 	const [loading, setLoading] = useState(true);
@@ -118,7 +118,9 @@ const NurseObservation = () => {
 														}}
 													/>
 												</td>
-												<td nowrap="nowrap">{fullname(item.staff?.details)}</td>
+												<td nowrap="nowrap">
+													{staffname(item.staff?.details)}
+												</td>
 												<td></td>
 											</tr>
 										);

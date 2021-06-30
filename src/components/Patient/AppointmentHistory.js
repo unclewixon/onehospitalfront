@@ -10,7 +10,7 @@ import { notifyError } from '../../services/notify';
 import TableLoading from '../TableLoading';
 import { request, itemRender, hasPassed } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
-import { fullname } from '../../services/utilities';
+import { staffname } from '../../services/utilities';
 import ModalViewAppointment from '../Modals/ModalViewAppointment';
 
 const { RangePicker } = DatePicker;
@@ -154,15 +154,16 @@ class AppointmentHistory extends Component {
 														</td>
 														<td>
 															<p className="item-title text-color m-0">
-																{fullname(appointment?.whomToSee)}
+																{staffname(appointment?.whomToSee)}
 															</p>
 														</td>
 														<td>{appointment.serviceType?.name || ''}</td>
 														<td>{appointment.department?.name || ''}</td>
 
 														<td>
-															{appointment.status === 'Cancelled' ||
-															hasPassed(appointment.appointment_date) ? (
+															{!appointment.encounter &&
+															(appointment.status === 'Cancelled' ||
+																hasPassed(appointment.appointment_date)) ? (
 																<span className="badge badge-danger">
 																	{hasPassed(appointment.appointment_date) &&
 																	!appointment.encounter
