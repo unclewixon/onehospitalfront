@@ -1,14 +1,11 @@
 import React, { useEffect } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { renderSelect, renderTextArea } from '../../services/utilities';
 import { Field, reduxForm } from 'redux-form';
 import { withRouter } from 'react-router-dom';
 
-import { loadStaff } from '../../actions/hr';
-import { validateAntennatal } from '../../services/validationSchemas';
 import { loadPatientIVFForm } from '../../actions/patient';
 
-const validate = validateAntennatal;
 export const prognosis = [
 	{
 		id: 'IVR Self',
@@ -51,25 +48,43 @@ export const treatmentPlan = [
 	},
 ];
 
-let AssesmentInfo = props => {
+const validate = values => {
+	const errors = {};
+	// if (!values.name) {
+	// 	errors.name = 'enter vendor';
+	// }
+
+	return errors;
+};
+
+const AssesmentInfo = ({
+	page,
+	onSubmit,
+	handleSubmit,
+	error,
+	previousPage,
+}) => {
 	const dispatch = useDispatch();
-	const { page, error, ivf, previousPage } = props;
+
+	const ivf = useSelector(state => state.patient.ivf);
 
 	useEffect(() => {}, []);
 
-	const onSubmitForm = async data => {
-		let res = { ...ivf, ...data };
-		props.loadPatientIVFForm(res);
-		dispatch(props.onSubmit);
-	};
+	const onSubmitForm = data => {
+		const ivfData = {
+			...ivf,
+			...data,
+		};
 
-	// const patient = React.createRef();
+		dispatch(loadPatientIVFForm(ivfData));
+		onSubmit();
+	};
 
 	return (
 		<>
 			<h6 className="element-header">Step {page}. Assessment/Plan</h6>
 			<div className="form-block">
-				<form onSubmit={props.handleSubmit(onSubmitForm)}>
+				<form onSubmit={handleSubmit(onSubmitForm)}>
 					{error && (
 						<div
 							className="alert alert-danger"
@@ -145,21 +160,11 @@ let AssesmentInfo = props => {
 	);
 };
 
-AssesmentInfo = reduxForm({
-	form: 'AssesmentInfo', //Form name is same
-	destroyOnUnmount: false,
-	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
-	validate,
-})(AssesmentInfo);
-
-const mapStateToProps = state => {
-	return {
-		patient: state.user.patient,
-		ivf: state.patient.ivf,
-		staffs: state.hr.staffs,
-	};
-};
-
 export default withRouter(
-	connect(mapStateToProps, { loadStaff, loadPatientIVFForm })(AssesmentInfo)
+	reduxForm({
+		form: 'AssesmentInfo',
+		destroyOnUnmount: false,
+		forceUnregisterOnUnmount: true,
+		validate,
+	})(AssesmentInfo)
 );

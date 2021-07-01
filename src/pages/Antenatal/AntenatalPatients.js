@@ -16,7 +16,7 @@ import {
 } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { startBlock, stopBlock } from '../../actions/redux-block';
-import { searchAPI } from '../../services/constants';
+import { searchAPI, antenatalAPI } from '../../services/constants';
 import { toggleProfile } from '../../actions/user';
 import TableLoading from '../../components/TableLoading';
 import ProfilePopup from '../../components/Patient/ProfilePopup';
@@ -26,8 +26,8 @@ const { RangePicker } = DatePicker;
 
 const limit = 12;
 
-const IvfPatients = () => {
-	const [ivfPatients, setIvfPatients] = useState([]);
+const AntenatalPatients = () => {
+	const [patients, setPatients] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [filtering, setFiltering] = useState(false);
 	const [startDate, setStartDate] = useState('');
@@ -41,18 +41,18 @@ const IvfPatients = () => {
 
 	const dispatch = useDispatch();
 
-	const fetchIvfPatients = useCallback(
+	const fetchAntenatals = useCallback(
 		async (page, patientId, sDate, eDate) => {
 			try {
 				const p = page || 1;
-				const url = `ivf?page=${p}&limit=${limit}&patient_id=${patientId ||
+				const url = `${antenatalAPI}/list?page=${p}&limit=${limit}&patient_id=${patientId ||
 					''}&startDate=${sDate || ''}&endDate=${eDate || ''}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setMeta(meta);
 				window.scrollTo({ top: 0, behavior: 'smooth' });
 				const arr = [...result];
-				setIvfPatients(arr);
+				setPatients(arr);
 				setFiltering(false);
 				dispatch(stopBlock());
 			} catch (error) {
@@ -67,10 +67,10 @@ const IvfPatients = () => {
 
 	useEffect(() => {
 		if (loading) {
-			fetchIvfPatients();
+			fetchAntenatals();
 			setLoading(false);
 		}
-	}, [loading, fetchIvfPatients]);
+	}, [loading, fetchAntenatals]);
 
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option => `${option.other_names} ${option.surname}`;
@@ -88,12 +88,12 @@ const IvfPatients = () => {
 	const doFilter = e => {
 		e.preventDefault();
 		setFiltering(true);
-		fetchIvfPatients(1, patient, startDate, endDate);
+		fetchAntenatals(1, patient, startDate, endDate);
 	};
 
 	const onNavigatePage = nextPage => {
 		dispatch(startBlock());
-		fetchIvfPatients(nextPage, patient, startDate, endDate);
+		fetchAntenatals(nextPage, patient, startDate, endDate);
 	};
 
 	const showProfile = patient => {
@@ -101,8 +101,8 @@ const IvfPatients = () => {
 		dispatch(toggleProfile(true, info));
 	};
 
-	const openIVF = (patient, ivf) => {
-		const info = { patient, type: 'ivf', item: ivf };
+	const openAntenatal = (patient, antenatal) => {
+		const info = { patient, type: 'antenatal', item: antenatal };
 		dispatch(toggleProfile(true, info));
 	};
 
@@ -175,19 +175,19 @@ const IvfPatients = () => {
 									</tr>
 								</thead>
 								<tbody>
-									{ivfPatients.map((item, i) => {
+									{patients.map((item, i) => {
 										return (
 											<tr key={i}>
 												<td>
 													<p className="item-title text-color m-0">
 														<Tooltip
-															title={<ProfilePopup patient={item.wife} />}>
+															title={<ProfilePopup patient={item.patient} />}>
 															<a
 																className="cursor"
-																onClick={() => showProfile(item.wife)}>
-																{`${patientname(item.wife)} [${formatPatientId(
-																	item.wife.id
-																)}]`}
+																onClick={() => showProfile(item.patient)}>
+																{`${patientname(
+																	item.patient
+																)} [${formatPatientId(item.patient.id)}]`}
 															</a>
 														</Tooltip>
 													</p>
@@ -204,8 +204,9 @@ const IvfPatients = () => {
 													)}
 												</td>
 												<td className="row-actions">
-													<Tooltip title="Open IVF">
-														<a onClick={() => openIVF(item.wife, item)}>
+													<Tooltip title="Open Antenatal">
+														<a
+															onClick={() => openAntenatal(item.patient, item)}>
 															<i className="os-icon os-icon-user-male-circle2" />
 														</a>
 													</Tooltip>
@@ -213,7 +214,7 @@ const IvfPatients = () => {
 											</tr>
 										);
 									})}
-									{ivfPatients.length === 0 && (
+									{patients.length === 0 && (
 										<tr>
 											<td colSpan="7" className="text-center">
 												No patients found
@@ -243,4 +244,4 @@ const IvfPatients = () => {
 	);
 };
 
-export default IvfPatients;
+export default AntenatalPatients;

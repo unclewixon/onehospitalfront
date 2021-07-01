@@ -180,24 +180,28 @@ const CreateTask = ({ closeModal, refreshTasks }) => {
 								<div className="col-sm-12">
 									<div className="element-box-tp mb-3">
 										<div className="el-buttons-list">
-											{[...vitalItems, 'Medication'].map((vital, i) => {
-												const item = clinicalTasks.find(t => t.name === vital);
-												return (
-													<a
-														className={`btn btn-white btn-sm mr-2 ${
-															item ? 'toggled' : ''
-														}`}
-														key={i}
-														onClick={() =>
-															vital === 'Medication'
-																? createMedication()
-																: setTask(vital)
-														}>
-														<i className="os-icon os-icon-delivery-box-2" />
-														<span>{vital}</span>
-													</a>
-												);
-											})}
+											{[...vitalItems, 'Medication', 'Fluid Chart'].map(
+												(vital, i) => {
+													const item = clinicalTasks.find(
+														t => t.name === vital
+													);
+													return (
+														<a
+															className={`btn btn-white btn-sm mr-2 ${
+																item ? 'toggled' : ''
+															}`}
+															key={i}
+															onClick={() =>
+																vital === 'Medication'
+																	? createMedication()
+																	: setTask(vital)
+															}>
+															<i className="os-icon os-icon-delivery-box-2" />
+															<span>{vital}</span>
+														</a>
+													);
+												}
+											)}
 										</div>
 									</div>
 								</div>

@@ -56,7 +56,7 @@ let IVFHcgAdmin = props => {
 };
 
 IVFHcgAdmin = reduxForm({
-	form: 'antennatal', //Form name is same
+	form: 'antenatal', //Form name is same
 	destroyOnUnmount: false,
 	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
 })(IVFHcgAdmin);

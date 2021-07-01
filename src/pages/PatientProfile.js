@@ -25,8 +25,8 @@ const Allergies = lazy(() => import('../components/Patient/Allergies'));
 const LabRequest = lazy(() => import('../components/Patient/LabRequest'));
 
 const IVFHistory = lazy(() => import('../components/Patient/IVFHistory'));
-const AntennatalHistory = lazy(() =>
-	import('../components/Patient/AntennatalHistory')
+const AntenatalHistory = lazy(() =>
+	import('../components/Patient/AntenatalHistory')
 );
 
 const PharmacyRequest = lazy(() =>
@@ -44,10 +44,6 @@ const AllergyRequest = lazy(() =>
 );
 
 const UpdateAllergy = lazy(() => import('../components/Patient/UpdateAllergy'));
-const AntennatalRequest = lazy(() =>
-	import('../components/Patient/AntennatalRequest')
-);
-
 const EnrollAntenatalPatient = lazy(() =>
 	import('../components/Patient/EnrollAntenatalPatient')
 );
@@ -103,8 +99,6 @@ const Page = ({ location }) => {
 			return <AllergyRequest />;
 		case 'update-allergy':
 			return <UpdateAllergy />;
-		case 'antennal-request':
-			return <AntennatalRequest />;
 		case 'start-admission':
 			return <PatientAdmission />;
 		case 'edit-profile':
@@ -120,7 +114,7 @@ const Page = ({ location }) => {
 		case 'ivf-history':
 			return <IVFHistory />;
 		case 'anc-history':
-			return <AntennatalHistory />;
+			return <AntenatalHistory />;
 		default:
 			return <Dashboard />;
 	}

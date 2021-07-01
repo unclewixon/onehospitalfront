@@ -1,19 +1,28 @@
-import React, { Component, lazy, Suspense } from 'react';
-import Splash from '../../components/Splash';
-import { patientAPI } from '../../services/constants';
+import React, { Component, Suspense, lazy } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { reduxForm } from 'redux-form';
+import moment from 'moment';
 
+import Splash from '../../components/Splash';
+import { patientAPI } from '../../services/constants';
 import { request } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 
-import { reduxForm } from 'redux-form';
-import moment from 'moment';
-const General = lazy(() => import('./General'));
-const FathersInfo = lazy(() => import('./FathersInfo'));
-const ObstericsHistory = lazy(() => import('./ObstericsHistory'));
-const PreviousPregnancies = lazy(() => import('./PreviousPregnancies'));
-const EnrollmentPackages = lazy(() => import('./EnrollmentPackages'));
+const General = lazy(() => import('../../components/Enrollment/General'));
+const FathersInfo = lazy(() =>
+	import('../../components/Enrollment/FathersInfo')
+);
+const ObstericsHistory = lazy(() =>
+	import('../../components/Enrollment/ObstericsHistory')
+);
+const PreviousPregnancies = lazy(() =>
+	import('../../components/Enrollment/PreviousPregnancies')
+);
+const EnrollmentPackages = lazy(() =>
+	import('../../components/Enrollment/EnrollmentPackages')
+);
+
 class EnrollmentForm extends Component {
 	state = {
 		page: 1,
@@ -27,16 +36,12 @@ class EnrollmentForm extends Component {
 		lmp: '',
 	};
 
-	submitAntennatal = async data => {
-		await this.setState({ submitting: true });
-
+	submitAntenatal = async data => {
 		try {
-			const rs = await request(
-				`${patientAPI}/antenatal/save`,
-				'POST',
-				true,
-				data
-			);
+			this.setState({ submitting: true });
+
+			const url = `${patientAPI}/antenatal/save`;
+			const rs = await request(url, 'POST', true, data);
 
 			const { history, location, reset } = this.props;
 			this.setState({
@@ -44,7 +49,7 @@ class EnrollmentForm extends Component {
 			});
 			console.log(rs);
 
-			notifySuccess('New antennatal succesfully submitted');
+			notifySuccess('New antenatal succesfully submitted');
 			reset();
 			this.setState({ patient_id: '' });
 
@@ -54,19 +59,20 @@ class EnrollmentForm extends Component {
 			);
 		} catch (e) {
 			this.setState({ submitting: false });
-			notifyError(e.message || 'Submission of antennatal form not successful');
+			notifyError(e.message || 'Submission of antenatal form not successful');
 		}
 	};
 
-	setDate = async (date, type) => {
-		await this.setState({ [type]: date });
+	setDate = (date, type) => {
+		this.setState({ [type]: date });
 	};
+
 	nextPage = async data => {
 		console.log(this.state.patient_id);
 
 		if (this.state.page === 5) {
 			console.log(data);
-			const newAntennatal = {
+			const newAntenatal = {
 				patient_id: this.props.location.hash
 					? this.props.patient.id
 					: this.state.patient_id,
@@ -213,9 +219,9 @@ class EnrollmentForm extends Component {
 				},
 			};
 
-			console.log(newAntennatal);
+			console.log(newAntenatal);
 
-			this.submitAntennatal(newAntennatal);
+			this.submitAntenatal(newAntenatal);
 			return;
 		}
 
@@ -226,6 +232,7 @@ class EnrollmentForm extends Component {
 			};
 		});
 	};
+
 	previousPage = () => {
 		this.setState(prevState => {
 			return {
@@ -236,7 +243,7 @@ class EnrollmentForm extends Component {
 	};
 
 	setPatient = (value, name) => {
-		this.setState({ ...this.state, patient_id: value, patient_name: name });
+		this.setState({ patient_id: value, patient_name: name });
 		console.log(this.state.patient_id, value);
 	};
 
@@ -250,7 +257,6 @@ class EnrollmentForm extends Component {
 							onSubmit={this.nextPage}
 							page={page}
 							setPatient={this.setPatient}
-							name={this.state.patient_name}
 							lmp={this.state.lmp}
 							setDate={this.setDate}
 						/>
@@ -298,7 +304,7 @@ class EnrollmentForm extends Component {
 }
 
 EnrollmentForm = reduxForm({
-	form: 'antennatal', //Form name is same
+	form: 'antenatal', //Form name is same
 	destroyOnUnmount: false,
 	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
 })(EnrollmentForm);

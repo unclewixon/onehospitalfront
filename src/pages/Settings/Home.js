@@ -16,8 +16,9 @@ import Appraisal from './Appraisal';
 import ConsultingRoom from './ConsultingRoom';
 import Consumable from './Consumable';
 import AntenatalPackage from './AntenatalPackage';
+import NicuAccommodation from './NicuAccommodation';
 
-const Settings = ({ match, location }) => {
+const Home = ({ match, location }) => {
 	const [toggle, setToggle] = useState(false);
 	const page = location.pathname.split('/').pop();
 
@@ -126,6 +127,16 @@ const Settings = ({ match, location }) => {
 								</span>
 							</Link>
 						</li>
+						<li className={page === 'nicu-accommodations' ? 'active' : ''}>
+							<Link to="/settings/nicu-accommodations">
+								<i className="os-icon os-icon-layers" />
+								<span>
+									NICU
+									<br />
+									Accommodation
+								</span>
+							</Link>
+						</li>
 					</ul>
 				</div>
 			)}
@@ -152,10 +163,14 @@ const Settings = ({ match, location }) => {
 					path={`${match.url}/antenatal-packages`}
 					component={AntenatalPackage}
 				/>
+				<Route
+					path={`${match.url}/nicu-accommodations`}
+					component={NicuAccommodation}
+				/>
 				<Route component={Roles} />
 			</Switch>
 		</div>
 	);
 };
 
-export default Settings;
+export default Home;

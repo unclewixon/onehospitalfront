@@ -10,7 +10,7 @@ import {
 } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 
-const selector = formValueSelector('antennatalAssessment');
+const selector = formValueSelector('antenatalAssessment');
 class RadiologicalInvestigation extends Component {
 	state = {
 		services: [],
@@ -72,7 +72,7 @@ class RadiologicalInvestigation extends Component {
 		const { handleSubmit, previousPage, error, page, value } = this.props;
 		const { serviceCenter } = this.state;
 		// if (value !== this.state.value) {
-		// 	this.props.dispatch(change('antennatalAssessment', 'scansToRequest', []));
+		// 	this.props.dispatch(change('antenatalAssessment', 'scansToRequest', []));
 		// }
 
 		return (
@@ -144,7 +144,7 @@ class RadiologicalInvestigation extends Component {
 	}
 }
 RadiologicalInvestigation = reduxForm({
-	form: 'antennatalAssessment', //Form name is same
+	form: 'antenatalAssessment', //Form name is same
 	destroyOnUnmount: false,
 	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
 	validate,

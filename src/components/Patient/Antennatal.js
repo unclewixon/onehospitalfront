@@ -12,7 +12,7 @@ import { loadAntenatalAssessment } from '../../actions/patient';
 import { antenatalAssessmentDetail } from '../../actions/general';
 import moment from 'moment';
 
-class Antennatal extends Component {
+class Antenatal extends Component {
 	state = {
 		loading: false,
 		startDate: '',
@@ -20,10 +20,10 @@ class Antennatal extends Component {
 	};
 
 	componentDidMount() {
-		this.fetchAntennatalAssessment();
+		this.fetchAntenatalAssessment();
 	}
 
-	fetchAntennatalAssessment = async () => {
+	fetchAntenatalAssessment = async () => {
 		this.setState({ loading: true });
 		const { patient } = this.props;
 
@@ -54,12 +54,12 @@ class Antennatal extends Component {
 							<Link
 								to={`${location.pathname}#antennal-request`}
 								className="btn btn-primary">
-								New Antennatal Assessment
+								New Antenatal Assessment
 							</Link>
 						</div>
 					)}
 
-					<h6 className="element-header">Antennatal Assessment</h6>
+					<h6 className="element-header">Antenatal Assessment</h6>
 					<div className="element-box p-3 m-0">
 						<div className="bootstrap-table">
 							<div className="fixed-table-toolbar">
@@ -177,5 +177,5 @@ export default withRouter(
 	connect(mapStateToProps, {
 		loadAntenatalAssessment,
 		antenatalAssessmentDetail,
-	})(Antennatal)
+	})(Antenatal)
 );

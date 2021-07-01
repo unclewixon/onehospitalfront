@@ -4,10 +4,10 @@ import { renderSelect } from '../../services/utilities';
 
 import waiting from '../../assets/images/waiting.gif';
 import { Field, reduxForm } from 'redux-form';
-import { validateAntennatal } from '../../services/validationSchemas';
+import { validateAntenatal } from '../../services/validationSchemas';
 import { antenatalPackages } from '../../services/constants';
 
-const validate = validateAntennatal;
+const validate = validateAntenatal;
 
 class EnrollmentPackages extends Component {
 	state = {
@@ -23,7 +23,7 @@ class EnrollmentPackages extends Component {
 			page,
 			submitting,
 		} = this.props;
-		console.log(submitting);
+
 		return (
 			<>
 				<h6 className="element-header">Step {page}. Enrollment Packages</h6>
@@ -44,7 +44,7 @@ class EnrollmentPackages extends Component {
 									id="package"
 									name="package"
 									component={renderSelect}
-									label="Antennatal Package"
+									label="Antenatal Package"
 									placeholder="Select Package"
 									data={antenatalPackages}
 								/>
@@ -75,7 +75,7 @@ class EnrollmentPackages extends Component {
 }
 
 EnrollmentPackages = reduxForm({
-	form: 'antennatal', //Form name is same
+	form: 'antenatal', //Form name is same
 	destroyOnUnmount: false,
 	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
 	validate,

@@ -12,7 +12,7 @@ import ProfilePopup from './Patient/ProfilePopup';
 import { notifySuccess, notifyError } from '../services/notify';
 import ModalScheduleDate from './Modals/ModalScheduleDate';
 
-class ProcedureBlock extends Component {
+class IVFBlock extends Component {
 	state = {
 		procedue: null,
 		showRSModal: false,
@@ -143,13 +143,29 @@ class ProcedureBlock extends Component {
 				<table id="table" className="table table-theme v-middle table-hover">
 					<thead>
 						<tr>
-							<th>Request Date</th>
-							<th>Procedure</th>
-							{!patient && <th>Patient</th>}
-							<th>By</th>
-							<th>Status</th>
-							<th>Resources</th>
-							<th>Scheduled</th>
+							<th>
+								<div>Request Date</div>
+							</th>
+							<th>
+								<div>Procedure</div>
+							</th>
+							{!patient && (
+								<th>
+									<div>Patient</div>
+								</th>
+							)}
+							<th>
+								<div>By</div>
+							</th>
+							<th>
+								<div>Status</div>
+							</th>
+							<th>
+								<div>Resources</div>
+							</th>
+							<th>
+								<div>Scheduled</div>
+							</th>
 							<th>
 								<div className="th-inner"></div>
 							</th>
@@ -323,5 +339,5 @@ class ProcedureBlock extends Component {
 }
 
 export default connect(null, { startBlock, stopBlock, toggleProfile })(
-	ProcedureBlock
+	IVFBlock
 );

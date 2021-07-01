@@ -4,40 +4,23 @@ import { connect } from 'react-redux';
 import { Switch, withRouter } from 'react-router-dom';
 
 import { toggleProfile } from '../actions/user';
-import AdmissionMenu from '../components/Navigation/AdmissionMenu';
+import LabourProfileMenu from '../components/Navigation/LabourProfileMenu';
 import SSRStorage from '../services/storage';
 import { USER_RECORD } from '../services/constants';
 import Splash from '../components/Splash';
 import ProfileBlock from '../components/ProfileBlock';
 import HashRoute from '../components/HashRoute';
 
-const ClinicalTasks = lazy(() => import('../components/Patient/ClinicalTasks'));
-const Encounters = lazy(() => import('../components/Patient/Encounters'));
-const Vitals = lazy(() => import('../components/Patient/Vitals'));
-const NurseObservation = lazy(() =>
-	import('../components/Patient/NurseObservation')
-);
-const FluidChart = lazy(() => import('../components/Patient/FluidChart'));
+const Notes = lazy(() => import('../components/IVF/Notes'));
 
 const storage = new SSRStorage();
 
 const Page = ({ location }) => {
 	const hash = location.hash.substr(1).split('#');
 	switch (hash[0]) {
-		case 'encounters':
-			return <Encounters />;
-		case 'vitals':
-			return <Vitals type={hash[1].split('%20').join(' ')} />;
-		case 'clinical-tasks':
-			return <ClinicalTasks />;
-		case 'nurse-observations':
-			return <NurseObservation />;
-		case 'fluid-chart':
-			return <FluidChart />;
-		case 'care-team':
-			return <ClinicalTasks />;
+		case 'notes':
 		default:
-			return <ClinicalTasks />;
+			return <Notes />;
 	}
 };
 
@@ -50,7 +33,7 @@ class LabourProfile extends Component {
 	componentDidMount() {
 		const { location } = this.props;
 		if (!location.hash) {
-			this.props.history.push(`${location.pathname}#clinical-tasks`);
+			this.props.history.push(`${location.pathname}#notes`);
 		}
 	}
 
@@ -75,7 +58,7 @@ class LabourProfile extends Component {
 						<div
 							className="content-w"
 							style={{ width: 'calc(100% - 18%)', overflow: 'hidden' }}>
-							<AdmissionMenu />
+							<LabourProfileMenu />
 							<div className="content-i">
 								<div className="content-box">
 									<div className="row">

@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { withRouter } from 'react-router-dom';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
@@ -12,16 +12,32 @@ import {
 } from '../../services/utilities';
 import { searchAPI, genotype, bloodGroup } from '../../services/constants';
 import { loadPatientIVFForm } from '../../actions/patient';
+import { formatPatientId } from '../../services/utilities';
 
-const validate = {};
+const validate = values => {
+	const errors = {};
+	// if (!values.name) {
+	// 	errors.name = 'enter vendor';
+	// }
 
-const WifeLab = ({ page, onSubmit, handleSubmit, error, location }) => {
-	const [selectedPatient, setSelectedPatient] = useState([]);
+	return errors;
+};
+
+const WifeLab = ({ page, onSubmit, handleSubmit, error }) => {
+	const [loaded, setLoaded] = useState(false);
+	const [selectedPatient, setSelectedPatient] = useState(null);
 	const [hmo, setHmo] = useState(null);
 
-	// const ivf = useSelector(state => state.patient.ivf);
-
 	const dispatch = useDispatch();
+
+	const ivf = useSelector(state => state.patient.ivf);
+
+	useEffect(() => {
+		if (!loaded) {
+			setSelectedPatient(ivf.wife);
+			setLoaded(true);
+		}
+	}, [ivf, loaded]);
 
 	const onSubmitForm = data => {
 		const ivfData = { wifeLabDetails: data, hmo, wife: selectedPatient };
@@ -31,19 +47,13 @@ const WifeLab = ({ page, onSubmit, handleSubmit, error, location }) => {
 	};
 
 	const patientSet = patient => {
-		// setValue('patient_id', pat.id);
-		// console.log(pat);
-		// let name =
-		// 	(pat?.surname ? pat?.surname : '') +
-		// 	' ' +
-		// 	(pat?.other_names ? pat?.other_names : '');
-		// let res = { label: pat?.id, value: name };
 		setSelectedPatient(patient);
 		setHmo(patient.hmo?.id);
 	};
 
 	const getOptionValues = option => option.id;
-	const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+	const getOptionLabels = option =>
+		`${option.other_names} ${option.surname} (${formatPatientId(option.id)})`;
 
 	const getOptions = async q => {
 		if (!q || q.length < 1) {
@@ -71,13 +81,12 @@ const WifeLab = ({ page, onSubmit, handleSubmit, error, location }) => {
 
 					<div className="row">
 						<div className="form-group col-sm-12">
-							<div>{selectedPatient.value}</div>
-
 							<AsyncSelect
 								isClearable
 								getOptionValue={getOptionValues}
 								getOptionLabel={getOptionLabels}
 								defaultOptions
+								value={selectedPatient}
 								name="patient_id"
 								loadOptions={getOptions}
 								onChange={e => {
@@ -89,7 +98,6 @@ const WifeLab = ({ page, onSubmit, handleSubmit, error, location }) => {
 					</div>
 
 					<h5>Hormonals</h5>
-					<br />
 
 					<div className="row">
 						<div className="col-sm-3">
@@ -134,7 +142,6 @@ const WifeLab = ({ page, onSubmit, handleSubmit, error, location }) => {
 					</div>
 
 					<h5>Serology</h5>
-					<br />
 
 					<div className="row">
 						<div className="col-sm-3">

@@ -7,7 +7,6 @@ import TableLoading from '../TableLoading';
 import { request, itemRender, formatDateStr } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
-import CreateChart from './Modals/CreateChart';
 
 const FluidChart = () => {
 	const [loading, setLoading] = useState(true);
@@ -17,7 +16,6 @@ const FluidChart = () => {
 		itemsPerPage: 10,
 		totalPages: 0,
 	});
-	const [showModal, setShowModal] = useState(false);
 	const [sumInputs, setSumInputs] = useState(0);
 	const [sumOutputs, setSumOutputs] = useState(0);
 
@@ -58,25 +56,6 @@ const FluidChart = () => {
 		fetchCharts(nextPage);
 	};
 
-	const newEntry = () => {
-		document.body.classList.add('modal-open');
-		setShowModal(true);
-	};
-
-	const closeModal = () => {
-		document.body.classList.remove('modal-open');
-		setShowModal(false);
-	};
-
-	const updateChart = item => {
-		setCharts([item, ...charts]);
-		setMeta({
-			currentPage: 1,
-			itemsPerPage: 10,
-			totalPages: charts.length + 1,
-		});
-	};
-
 	const sum = (arr, type) => {
 		return arr
 			.filter(e => e.type === type)
@@ -86,13 +65,6 @@ const FluidChart = () => {
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">
-				<div className="element-actions flex-action">
-					<a
-						className="btn btn-sm btn-secondary text-white ml-3"
-						onClick={() => newEntry()}>
-						New Entry
-					</a>
-				</div>
 				<h6 className="element-header">Fluid Chart</h6>
 				<div className="element-box p-3 m-0">
 					{loading ? (
@@ -133,7 +105,7 @@ const FluidChart = () => {
 								<tbody>
 									<tr>
 										<td>{`Total Inputs: ${sumInputs}ml`}</td>
-										<td>{`Total Inputs: ${sumOutputs}ml`}</td>
+										<td>{`Total Outputs: ${sumOutputs}ml`}</td>
 										<td>{`Balance: ${sumInputs - sumOutputs}ml`}</td>
 									</tr>
 								</tbody>
@@ -154,9 +126,6 @@ const FluidChart = () => {
 					)}
 				</div>
 			</div>
-			{showModal && (
-				<CreateChart closeModal={closeModal} updateChart={updateChart} />
-			)}
 		</div>
 	);
 };

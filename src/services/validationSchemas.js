@@ -64,7 +64,7 @@ export const validate = values => {
 	return errors;
 };
 
-export const validateAntennatal = values => {
+export const validateAntenatal = values => {
 	const errors = {};
 	if (!values.bookingPeriod || values.bookingPeriod === '') {
 		errors.bookingPeriod = 'select booking period';
@@ -106,7 +106,7 @@ export const validateAntennatal = values => {
 		errors.abortion = 'select abortion';
 	}
 	if (!values.package || values.package === '') {
-		errors.package = 'select antennatal package';
+		errors.package = 'select antenatal package';
 	}
 	return errors;
 };

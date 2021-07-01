@@ -9,7 +9,7 @@ import Pagination from 'antd/lib/pagination';
 
 import { notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
-import { loadAntennatal } from '../../actions/patient';
+import { loadAntenatal } from '../../actions/patient';
 import { viewAntenatalDetail } from '../../actions/general';
 import { patientAPI } from '../../services/constants';
 import { startBlock, stopBlock } from '../../actions/redux-block';
@@ -18,7 +18,7 @@ import TableLoading from '../TableLoading';
 
 const { RangePicker } = DatePicker;
 
-export class AntennatalHistory extends Component {
+class AntenatalHistory extends Component {
 	state = {
 		filtering: false,
 		loading: false,
@@ -29,10 +29,10 @@ export class AntennatalHistory extends Component {
 	};
 
 	componentDidMount() {
-		this.fetchAntennatal();
+		this.fetchAntenatal();
 	}
 
-	fetchAntennatal = async page => {
+	fetchAntenatal = async page => {
 		const { startDate, endDate } = this.state;
 		const patient_id = this.props.patient.id;
 		try {
@@ -42,7 +42,7 @@ export class AntennatalHistory extends Component {
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			const arr = [...result];
-			this.props.loadAntennatal(arr);
+			this.props.loadAntenatal(arr);
 			this.setState({ loading: false, filtering: false, meta });
 			this.props.stopBlock();
 		} catch (error) {
@@ -57,13 +57,13 @@ export class AntennatalHistory extends Component {
 
 	onNavigatePage = nextPage => {
 		this.props.startBlock();
-		this.fetchAntennatal(nextPage);
+		this.fetchAntenatal(nextPage);
 	};
 
 	doFilter = e => {
 		e.preventDefault();
 		this.setState({ ...this.state, filtering: true });
-		this.fetchAntennatal();
+		this.fetchAntenatal();
 	};
 
 	dateChange = e => {
@@ -84,11 +84,11 @@ export class AntennatalHistory extends Component {
 
 	render() {
 		const { filtering, loading, meta } = this.state;
-		const { antennatals } = this.props;
+		const { antenatals } = this.props;
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
-					<h6 className="element-header">Antennatal History</h6>
+					<h6 className="element-header">Antenatal History</h6>
 					<form className="row">
 						<div className="form-group col-md-10">
 							<RangePicker onChange={e => this.dateChange(e)} />
@@ -131,7 +131,7 @@ export class AntennatalHistory extends Component {
 										</tr>
 									</thead>
 									<tbody>
-										{antennatals.map((el, i) => {
+										{antenatals.map((el, i) => {
 											return (
 												<tr key={i}>
 													<td>{moment(el.createdAt).format('DD-MM-YYYY')}</td>
@@ -163,7 +163,7 @@ export class AntennatalHistory extends Component {
 												</tr>
 											);
 										})}
-										{antennatals.length === 0 && (
+										{antenatals.length === 0 && (
 											<tr>
 												<td colSpan="9" className="text-center">
 													No antenatal enrolment
@@ -195,16 +195,16 @@ export class AntennatalHistory extends Component {
 
 const mapStateToProps = state => {
 	return {
-		antennatals: state.patient.antennatal,
+		antenatals: state.patient.antenatal,
 		patient: state.user.patient,
 	};
 };
 
 export default withRouter(
 	connect(mapStateToProps, {
-		loadAntennatal,
+		loadAntenatal,
 		viewAntenatalDetail,
 		startBlock,
 		stopBlock,
-	})(AntennatalHistory)
+	})(AntenatalHistory)
 );

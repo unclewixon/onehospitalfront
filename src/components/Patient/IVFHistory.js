@@ -58,7 +58,7 @@ class IVFHistory extends Component {
 			const patient_id = this.props.patient.id;
 			const p = page || 1;
 			this.setState({ loading: true });
-			const url = `ivf/enrollments?page=${p}&limit=15&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}`;
+			const url = `ivf?page=${p}&limit=15&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			const arr = [...result];
@@ -205,7 +205,7 @@ class IVFHistory extends Component {
 
 const mapStateToProps = state => {
 	return {
-		antennatal: state.patient.antennatal,
+		antenatal: state.patient.antenatal,
 		patient: state.user.patient,
 	};
 };

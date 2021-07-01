@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { withRouter } from 'react-router-dom';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
@@ -11,69 +11,52 @@ import {
 	renderTextArea,
 } from '../../services/utilities';
 import { request } from '../../services/utilities';
-import {
-	searchAPI,
-	staffAPI,
-	genotype,
-	bloodGroup,
-} from '../../services/constants';
-import { loadStaff } from '../../actions/hr';
-import { validateAntennatal } from '../../services/validationSchemas';
+import { searchAPI, genotype, bloodGroup } from '../../services/constants';
 import { loadPatientIVFForm } from '../../actions/patient';
+import { formatPatientId } from '../../services/utilities';
 
-const validate = validateAntennatal;
-let HusbandLab = props => {
+const validate = values => {
+	const errors = {};
+	// if (!values.name) {
+	// 	errors.name = 'enter vendor';
+	// }
+
+	return errors;
+};
+
+const HusbandLab = ({ page, onSubmit, handleSubmit, error, previousPage }) => {
+	const [loaded, setLoaded] = useState(false);
+	const [selectedPatient, setSelectedPatient] = useState(null);
+
 	const dispatch = useDispatch();
-	const { page, error, ivf, previousPage } = props;
-	let [selectedPatient, setSelectedPatient] = useState([]);
+
+	const ivf = useSelector(state => state.patient.ivf);
 
 	useEffect(() => {
-		const fetchStaffs = async () => {
-			if (props.staffs.length < 1) {
-				try {
-					const rs = await request(`${staffAPI}`, 'GET', true);
-					props.loadStaff(rs);
-				} catch (error) {
-					console.log(error);
-				}
-			}
+		if (!loaded) {
+			setSelectedPatient(ivf.husband);
+			setLoaded(true);
+		}
+	}, [ivf, loaded]);
 
-			// let staffs = props.staffs.map(el => el.first_name + ' ' + el.last_name);
-			// setStaffs(staffs);
+	const onSubmitForm = data => {
+		const ivfData = {
+			...ivf,
+			husbandLabDetails: data,
+			husband: selectedPatient,
 		};
 
-		fetchStaffs();
-	}, [props]);
-
-	const patient = React.createRef();
-
-	const patientSet = pat => {
-		// setValue('patient_id', pat.id);
-
-		console.log(pat);
-		let name =
-			(pat?.surname ? pat?.surname : '') +
-			' ' +
-			(pat?.other_names ? pat?.other_names : '');
-
-		let res = { label: pat?.id, value: name };
-		setSelectedPatient(res);
-		//this.props.setPatient(pat.id, name);
-		// document.getElementById('patient').value = name;
-		patient.current.value = name;
+		dispatch(loadPatientIVFForm(ivfData));
+		onSubmit();
 	};
 
-	const onSubmitForm = async data => {
-		console.log(data);
-		ivf.husband_id = selectedPatient.label;
-		ivf.husbandLabDetails = data;
-		ivf.husbandLabDetails.name = selectedPatient.value;
-		props.loadPatientIVFForm(ivf);
-		dispatch(props.onSubmit);
+	const patientSet = patient => {
+		setSelectedPatient(patient);
 	};
 
 	const getOptionValues = option => option.id;
-	const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+	const getOptionLabels = option =>
+		`${option.other_names} ${option.surname} (${formatPatientId(option.id)})`;
 
 	const getOptions = async q => {
 		if (!q || q.length < 1) {
@@ -89,7 +72,7 @@ let HusbandLab = props => {
 		<>
 			<h6 className="element-header">Step {page}. Husband's Lab Details</h6>
 			<div className="form-block">
-				<form onSubmit={props.handleSubmit(onSubmitForm)}>
+				<form onSubmit={handleSubmit(onSubmitForm)}>
 					{error && (
 						<div
 							className="alert alert-danger"
@@ -102,14 +85,13 @@ let HusbandLab = props => {
 					<div className="row">
 						<div className="form-group col-sm-12">
 							<label>Husband (Secondary Patient Patient)</label>
-
 							<AsyncSelect
 								isClearable
 								getOptionValue={getOptionValues}
 								getOptionLabel={getOptionLabels}
 								defaultOptions
+								value={selectedPatient}
 								name="patient_id"
-								ref={patient}
 								loadOptions={getOptions}
 								onChange={e => {
 									patientSet(e);
@@ -120,7 +102,6 @@ let HusbandLab = props => {
 					</div>
 
 					<h5>SFA (Andrology)</h5>
-					<br />
 
 					<div className="row">
 						<div className="col-sm-3">
@@ -165,7 +146,6 @@ let HusbandLab = props => {
 					</div>
 
 					<h5>Serology</h5>
-					<br />
 
 					<div className="row">
 						<div className="col-sm-3">
@@ -256,7 +236,6 @@ let HusbandLab = props => {
 					</div>
 
 					<h5>Hormonals</h5>
-					<br />
 
 					<div className="row">
 						<div className="col-sm-3">
@@ -319,21 +298,11 @@ let HusbandLab = props => {
 	);
 };
 
-HusbandLab = reduxForm({
-	form: 'HusbandLab', //Form name is same
-	destroyOnUnmount: false,
-	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
-	validate,
-})(HusbandLab);
-
-const mapStateToProps = state => {
-	return {
-		patient: state.user.patient,
-		staffs: state.hr.staffs,
-		ivf: state.patient.ivf,
-	};
-};
-
 export default withRouter(
-	connect(mapStateToProps, { loadStaff, loadPatientIVFForm })(HusbandLab)
+	reduxForm({
+		form: 'HusbandLab',
+		destroyOnUnmount: false,
+		forceUnregisterOnUnmount: true,
+		validate,
+	})(HusbandLab)
 );

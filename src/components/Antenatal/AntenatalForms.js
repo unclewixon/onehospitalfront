@@ -549,7 +549,7 @@ const ReportForm = () => {
 	);
 };
 
-const AntennatalForms = ({ closeModal, tab }) => {
+const AntenatalForms = ({ closeModal, tab }) => {
 	console.log(tab);
 
 	const renderServiceType = type => {
@@ -613,4 +613,4 @@ const AntennatalForms = ({ closeModal, tab }) => {
 		</div>
 	);
 };
-export default AntennatalForms;
+export default AntenatalForms;

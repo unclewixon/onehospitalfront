@@ -83,7 +83,7 @@ class NextAppointment extends Component {
 									{submitting ? (
 										<img src={waiting} alt="submitting" />
 									) : (
-										'Create Antennatal'
+										'Create Antenatal'
 									)}
 								</button>
 							</div>
@@ -95,7 +95,7 @@ class NextAppointment extends Component {
 	}
 }
 NextAppointment = reduxForm({
-	form: 'antennatalAssessment', //Form name is same
+	form: 'antenatalAssessment', //Form name is same
 	destroyOnUnmount: false,
 	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
 	validate,

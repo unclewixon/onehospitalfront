@@ -1,13 +1,19 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Field, reduxForm } from 'redux-form';
+import { withRouter } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import moment from 'moment';
+
 import {
 	renderTextInput,
 	renderSelect,
 	renderMultiselect,
+	formatPatientId,
+	patientname,
 } from '../../services/utilities';
-import { Field, reduxForm } from 'redux-form';
-import { withRouter } from 'react-router-dom';
 import { request } from '../../services/utilities';
 import {
 	searchAPI,
@@ -15,18 +21,14 @@ import {
 	lmpSource,
 	bookingPeriod,
 } from '../../services/constants';
-import DatePicker from 'react-datepicker';
-import AsyncSelect from 'react-select/async/dist/react-select.esm';
-import moment from 'moment';
-
 import { loadStaff } from '../../actions/hr';
-import { validateAntennatal } from '../../services/validationSchemas';
 
 const getOptionValues = option => option.id;
-const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+const getOptionLabels = option =>
+	`${option.other_names} ${option.surname} (${formatPatientId(option.id)})`;
 
 const getOptions = async q => {
-	if (!q || q.length < 3) {
+	if (!q || q.length < 1) {
 		return [];
 	}
 
@@ -35,17 +37,24 @@ const getOptions = async q => {
 	return res;
 };
 
-const validate = validateAntennatal;
+const validate = values => {
+	const errors = {};
+	// if (!values.name) {
+	// 	errors.name = 'enter vendor';
+	// }
+
+	return errors;
+};
+
 class General extends Component {
 	state = {
 		searching: false,
 		query: '',
 		staffs: [],
+		patient: null,
 	};
 
 	componentDidMount() {
-		console.log(this.props.staffs);
-
 		this.fetchStaffs();
 	}
 
@@ -65,25 +74,15 @@ class General extends Component {
 
 		this.setState({ staffs });
 	};
-	patient = React.createRef();
 
-	patientSet = pat => {
-		// setValue('patient_id', pat.id);
-
-		let name =
-			(pat?.surname ? pat?.surname : '') +
-			' ' +
-			(pat?.other_names ? pat?.other_names : '');
-		this.props.setPatient(pat.id, name);
-		// document.getElementById('patient').value = name;
-
-		this.patient.current.value = name;
+	patientSet = patient => {
+		this.props.setPatient(patient.id, patientname(patient));
+		this.setState({ patient });
 	};
 
 	render() {
-		const { handleSubmit, error, page, name } = this.props;
-
-		console.log(name);
+		const { handleSubmit, error, page } = this.props;
+		const { patient } = this.state;
 		return (
 			<>
 				<h6 className="element-header">Step {page}. General</h6>
@@ -109,7 +108,7 @@ class General extends Component {
 										getOptionLabel={getOptionLabels}
 										defaultOptions
 										name="patient"
-										ref={this.patient}
+										value={patient}
 										loadOptions={getOptions}
 										onChange={e => this.patientSet(e)}
 										placeholder="Search patients"
@@ -216,7 +215,7 @@ class General extends Component {
 }
 
 General = reduxForm({
-	form: 'antennatal', //Form name is same
+	form: 'antenatal', //Form name is same
 	destroyOnUnmount: false,
 	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
 	validate,

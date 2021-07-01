@@ -465,8 +465,8 @@ class ModalAntenatalDetail extends Component {
 	};
 
 	render() {
-		const { antenatal_id, antennatal } = this.props;
-		const ant = antennatal.find(el => el.id === antenatal_id);
+		const { antenatal_id, antenatal } = this.props;
+		const ant = antenatal.find(el => el.id === antenatal_id);
 		const fathersInfo = JSON.parse(ant.fathersInfo);
 		const previousPregnancy = JSON.parse(ant.previousPregnancy);
 
@@ -633,7 +633,7 @@ class ModalAntenatalDetail extends Component {
 
 const mapStateToProps = state => {
 	return {
-		antennatal: state.patient.antennatal,
+		antenatal: state.patient.antenatal,
 		antenatal_id: state.general.antenatal_id,
 	};
 };

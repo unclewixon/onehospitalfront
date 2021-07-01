@@ -89,7 +89,7 @@ class EnrollmentForm extends Component {
 }
 
 EnrollmentForm = reduxForm({
-	form: 'antennatal', //Form name is same
+	form: 'antenatal', //Form name is same
 	destroyOnUnmount: false,
 	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
 })(EnrollmentForm);

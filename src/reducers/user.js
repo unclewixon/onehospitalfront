@@ -114,7 +114,7 @@ const user = (state = INITIAL_STATE, action) => {
 				const data =
 					type === 'patient' ||
 					type === 'procedure' ||
-					type === 'antennatal' ||
+					type === 'antenatal' ||
 					type === 'admission' ||
 					type === 'ivf' ||
 					type === 'nicu' ||
@@ -128,7 +128,7 @@ const user = (state = INITIAL_STATE, action) => {
 					isStaffOpen: type === 'staff',
 					isPatientOpen: type === 'patient',
 					isProcedureOpen: type === 'procedure',
-					isAntenatalOpen: type === 'antennatal',
+					isAntenatalOpen: type === 'antenatal',
 					isAdmissionOpen: type === 'admission',
 					isIVFOpen: type === 'ivf',
 					isNicuOpen: type === 'nicu',

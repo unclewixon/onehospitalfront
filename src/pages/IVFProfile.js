@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Switch, withRouter } from 'react-router-dom';
 
 import { toggleProfile } from '../actions/user';
-import IVFMenu from '../components/Navigation/IVFProfileMenu';
+import IVFProfileMenu from '../components/Navigation/IVFProfileMenu';
 import SSRStorage from '../services/storage';
 import { USER_RECORD } from '../services/constants';
 import Splash from '../components/Splash';
@@ -12,12 +12,15 @@ import ProfileBlock from '../components/ProfileBlock';
 import HashRoute from '../components/HashRoute';
 
 const Notes = lazy(() => import('../components/IVF/Notes'));
+const Embryology = lazy(() => import('../components/IVF/Embryology'));
 
 const storage = new SSRStorage();
 
 const Page = ({ location }) => {
 	const hash = location.hash.substr(1).split('#');
 	switch (hash[0]) {
+		case 'embryology':
+			return <Embryology />;
 		case 'notes':
 		default:
 			return <Notes />;
@@ -58,7 +61,7 @@ class IVFProfile extends Component {
 						<div
 							className="content-w"
 							style={{ width: 'calc(100% - 18%)', overflow: 'hidden' }}>
-							<IVFMenu />
+							<IVFProfileMenu />
 							<div className="content-i">
 								<div className="content-box">
 									<div className="row">

@@ -4,55 +4,49 @@ import { connect, useSelector } from 'react-redux';
 import { Switch, withRouter } from 'react-router-dom';
 
 import { toggleProfile } from '../actions/user';
-import ProcedureMenu from '../components/Navigation/ProcedureProfileMenu';
+import AntenatalMenu from '../components/Navigation/AntenatalProfileMenu';
 import SSRStorage from '../services/storage';
 import { USER_RECORD } from '../services/constants';
 import Splash from '../components/Splash';
 import ProfileBlock from '../components/ProfileBlock';
 import HashRoute from '../components/HashRoute';
-// import ProcedureForms from '../components/Procedures/ProcedureForms';
 
-const Notes = lazy(() => import('../components/Procedures/Notes'));
-const Attachments = lazy(() => import('../components/Procedures/Attachments'));
-const Consumables = lazy(() => import('../components/Procedures/Consumables'));
+const Notes = lazy(() => import('../components/Antenatal/Notes'));
+const Vitals = lazy(() => import('../components/Patient/Vitals'));
 const Pharmacy = lazy(() => import('../components/Patient/Pharmacy'));
-const PharmacyRequest = lazy(() =>
-	import('../components/Patient/PharmacyRequest')
-);
-const MedicalReport = lazy(() =>
-	import('../components/Procedures/MedicalReport')
-);
+const Radiology = lazy(() => import('../components/Patient/Radiology'));
 
 const storage = new SSRStorage();
 
 const Page = ({ location }) => {
-	const procedure = useSelector(state => state.user.item);
+	const antenatal = useSelector(state => state.user.item);
 	const hash = location.hash.substr(1).split('#');
 	switch (hash[0]) {
-		case 'notes':
-			return <Notes />;
-		case 'attachments':
-			return <Attachments />;
-		case 'consumables':
-			return <Consumables />;
-		case 'medical-report':
-			return <MedicalReport />;
+		case 'radiology':
+			return (
+				<Radiology
+					can_request={antenatal && antenatal.status === 0}
+					itemId={antenatal.id || ''}
+					type="antenatal"
+				/>
+			);
 		case 'medications-used':
 			return (
 				<Pharmacy
-					can_request={procedure && !procedure.finishedDate}
-					itemId={procedure.id || ''}
-					type="procedure"
+					can_request={antenatal && antenatal.status === 0}
+					itemId={antenatal.id || ''}
+					type="antenatal"
 				/>
 			);
-		case 'pharmacy-request':
-			return <PharmacyRequest />;
+		case 'vitals':
+			return <Vitals type={hash[1].split('%20').join(' ')} />;
+		case 'notes':
 		default:
 			return <Notes />;
 	}
 };
 
-class ProcedureProfile extends Component {
+class AntenatalProfile extends Component {
 	closeProfile = () => {
 		storage.removeItem(USER_RECORD);
 		this.props.toggleProfile(false);
@@ -86,7 +80,7 @@ class ProcedureProfile extends Component {
 						<div
 							className="content-w"
 							style={{ width: 'calc(100% - 18%)', overflow: 'hidden' }}>
-							<ProcedureMenu />
+							<AntenatalMenu />
 							<div className="content-i">
 								<div className="content-box">
 									<div className="row">
@@ -129,5 +123,5 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default withRouter(
-	connect(mapStateToProps, { toggleProfile })(ProcedureProfile)
+	connect(mapStateToProps, { toggleProfile })(AntenatalProfile)
 );

@@ -10,7 +10,7 @@ import searchingGIF from '../../assets/images/searching.gif';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
 import waiting from '../../assets/images/waiting.gif';
-import { loadAntennatal } from '../../actions/patient';
+import { loadAntenatal } from '../../actions/patient';
 import { viewAntenatalDetail } from '../../actions/general';
 import isEmpty from 'lodash.isempty';
 
@@ -25,10 +25,10 @@ export class AllEnrollment extends Component {
 	};
 
 	componentDidMount() {
-		this.fetchAntennatal();
+		this.fetchAntenatal();
 	}
 
-	fetchAntennatal = async () => {
+	fetchAntenatal = async () => {
 		const { startDate, endDate } = this.state;
 		try {
 			this.setState({ loading: true });
@@ -41,7 +41,7 @@ export class AllEnrollment extends Component {
 				true
 			);
 
-			this.props.loadAntennatal(rs);
+			this.props.loadAntenatal(rs);
 			console.log(rs);
 			this.setState({ loading: false, filtering: false });
 		} catch (error) {
@@ -54,7 +54,7 @@ export class AllEnrollment extends Component {
 	doFilter = e => {
 		e.preventDefault();
 		this.setState({ ...this.state, filtering: true });
-		this.fetchAntennatal();
+		this.fetchAntenatal();
 	};
 
 	dateChange = e => {
@@ -74,7 +74,7 @@ export class AllEnrollment extends Component {
 	};
 
 	tableBody = () => {
-		return this.props.antennatal.map((el, i) => {
+		return this.props.antenatal.map((el, i) => {
 			return (
 				<tr key={i}>
 					<td className="text-center">
@@ -213,7 +213,7 @@ export class AllEnrollment extends Component {
 															<img alt="searching" src={searchingGIF} />
 														</td>
 													</tr>
-												) : !isEmpty(this.props.antennatal) ? (
+												) : !isEmpty(this.props.antenatal) ? (
 													this.tableBody()
 												) : (
 													<tr>
@@ -237,12 +237,12 @@ export class AllEnrollment extends Component {
 
 const mapStateToProps = state => {
 	return {
-		antennatal: state.patient.antennatal,
+		antenatal: state.patient.antenatal,
 	};
 };
 
 export default withRouter(
-	connect(mapStateToProps, { loadAntennatal, viewAntenatalDetail })(
+	connect(mapStateToProps, { loadAntenatal, viewAntenatalDetail })(
 		AllEnrollment
 	)
 );

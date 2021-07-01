@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
-import { loadAntennatal } from '../../actions/patient';
+import { loadAntenatal } from '../../actions/patient';
 import { viewAntenatalDetail } from '../../actions/general';
 import { formatPatientId } from '../../services/utilities';
 
@@ -642,11 +642,11 @@ class IVFDetails extends Component {
 
 const mapStateToProps = state => {
 	return {
-		antennatal: state.patient.antennatal,
+		antenatal: state.patient.antenatal,
 		ivfDetails: state.patient.ivfDetails,
 	};
 };
 
 export default withRouter(
-	connect(mapStateToProps, { loadAntennatal, viewAntenatalDetail })(IVFDetails)
+	connect(mapStateToProps, { loadAntenatal, viewAntenatalDetail })(IVFDetails)
 );

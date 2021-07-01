@@ -20,6 +20,7 @@ import warning from '../../assets/images/warning.png';
 import GiveMedication from '../../components/Modals/GiveMedication';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { notifySuccess, notifyError } from '../../services/notify';
+import CreateChart from './Modals/CreateChart';
 
 const ClinicalTasks = () => {
 	const [showTaskModal, setShowTaskModal] = useState(false);
@@ -33,6 +34,7 @@ const ClinicalTasks = () => {
 	const [loaded, setLoaded] = useState(false);
 	const [taskItem, setTaskItem] = useState(null);
 	const [showMedication, setShowMedication] = useState(false);
+	const [showChartModal, setShowChartModal] = useState(false);
 
 	const patient = useSelector(state => state.user.patient);
 	const done = useSelector(state => state.patient.reading_done);
@@ -106,11 +108,19 @@ const ClinicalTasks = () => {
 		setTaskItem(item);
 	};
 
+	const recordFluid = item => {
+		console.log(item);
+		document.body.classList.add('modal-open');
+		setShowChartModal(true);
+		setTaskItem(item);
+	};
+
 	const closeModal = () => {
 		document.body.classList.remove('modal-open');
 		setShowTaskModal(false);
 		setShowModal(false);
 		setShowMedication(false);
+		setShowChartModal(false);
 		setTaskItem(null);
 	};
 
@@ -222,10 +232,19 @@ const ClinicalTasks = () => {
 											<td>{item.title}</td>
 											<td>{item.createdBy}</td>
 											<td>
-												{lastReading
-													? `${Object.values(lastReading.reading)[0]} `
-													: '- '}
-												{lastReading && vital ? vital.unit : ''}
+												{lastReading ? (
+													<>
+														{lastReading.readingType === 'Fluid Chart'
+															? `vol: ${
+																	Object.values(lastReading.reading)[1]
+															  }ml`
+															: `${Object.values(lastReading.reading)[0]} ${
+																	vital ? vital.unit : ''
+															  }`}
+													</>
+												) : (
+													''
+												)}
 											</td>
 											<td>
 												{moment(item.createdAt).format('DD-MMM-YYYY HH:mm A')}
@@ -261,20 +280,31 @@ const ClinicalTasks = () => {
 											</td>
 											<td>{`${item.tasksCompleted}/${item.taskCount}`}</td>
 											<td className="row-actions">
-												{item.taskCount > item.tasksCompleted &&
-													(item.taskType === 'vitals' ? (
-														<a
-															className="btn btn-primary btn-sm text-white text-uppercase"
-															onClick={() => takeReading(item)}>
-															Take Reading
-														</a>
-													) : (
-														<a
-															className="btn btn-primary btn-sm text-white text-uppercase"
-															onClick={() => recordMedication(item)}>
-															Take Reading
-														</a>
-													))}
+												{item.taskCount > item.tasksCompleted && (
+													<>
+														{item.taskType === 'vitals' && (
+															<a
+																className="btn btn-primary btn-sm text-white text-uppercase"
+																onClick={() => takeReading(item)}>
+																Take Reading
+															</a>
+														)}
+														{item.taskType === 'fluid' && (
+															<a
+																className="btn btn-primary btn-sm text-white text-uppercase"
+																onClick={() => recordFluid(item)}>
+																Take Reading
+															</a>
+														)}
+														{item.taskType === 'regimen' && (
+															<a
+																className="btn btn-primary btn-sm text-white text-uppercase"
+																onClick={() => recordMedication(item)}>
+																Take Reading
+															</a>
+														)}
+													</>
+												)}
 											</td>
 											<td className="row-actions text-center">
 												<Tooltip title="Cancel Clinical Task">
@@ -321,6 +351,9 @@ const ClinicalTasks = () => {
 			{showModal && <TakeReading closeModal={closeModal} taskItem={taskItem} />}
 			{showMedication && (
 				<GiveMedication closeModal={closeModal} taskItem={taskItem} />
+			)}
+			{showChartModal && (
+				<CreateChart closeModal={closeModal} taskItem={taskItem} />
 			)}
 		</div>
 	);

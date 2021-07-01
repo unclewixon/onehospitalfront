@@ -9,7 +9,7 @@ import { notifyError } from '../../services/notify';
 import { request, itemRender } from '../../services/utilities';
 import RadiologyBlock from '../RadiologyBlock';
 
-const Radiology = ({ location }) => {
+const Radiology = ({ location, itemId, type }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [scans, setScans] = useState([]);
 	const [meta, setMeta] = useState({
@@ -26,7 +26,8 @@ const Radiology = ({ location }) => {
 	const fetchScans = useCallback(
 		async page => {
 			try {
-				const url = `requests/${patient.id}/request/radiology?page=${page}&limit=10&startDate=${startDate}&endDate=${endDate}`;
+				const block = type || '';
+				const url = `requests/${patient.id}/request/radiology?page=${page}&limit=10&startDate=${startDate}&endDate=${endDate}&item_id=${itemId}&type=${block}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setScans(result);
@@ -37,7 +38,7 @@ const Radiology = ({ location }) => {
 				setLoaded(true);
 			}
 		},
-		[patient.id]
+		[patient, type, itemId]
 	);
 
 	useEffect(() => {

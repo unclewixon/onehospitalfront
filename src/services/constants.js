@@ -61,9 +61,10 @@ export const diagnosisAPI = 'settings/diagnosis';
 export const labourAPI = 'labour-management/enrollments';
 export const consultationAPI = 'consultation/';
 export const consumableAPI = 'consumables';
-export const IVFEnroll = 'ivf/enroll/';
+export const ivfEnroll = 'ivf/enroll';
 export const IVFHCGAdmin = 'ivf/save/hcg-administration';
 export const IVFHCGDown = 'ivf/save/down-regulation';
+export const antenatalAPI = 'patient/antenatal';
 
 export const months = [
 	'January',
@@ -257,7 +258,6 @@ export const vitalItems = [
 	'Temperature',
 	'Urine',
 	'Weight',
-	'Others',
 ];
 
 export const allVitalItems = [
@@ -283,7 +283,6 @@ export const allVitalItems = [
 	{ name: 'Temperature', unit: '°C' },
 	{ name: 'Urine', unit: '' },
 	{ name: 'Weight', unit: 'kg' },
-	{ name: 'Others', unit: '' },
 ];
 
 export const requestTypes = [
@@ -308,7 +307,6 @@ export const encounters = [
 	'Past Medical History',
 	'Allergies',
 	'Physical Examination',
-	//'Physical Examination Summary',
 	'Diagnosis',
 	'Investigations',
 	'Plan',

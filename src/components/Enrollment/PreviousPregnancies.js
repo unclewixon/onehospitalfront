@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { renderSelect } from '../../services/utilities';
 import { Field, reduxForm } from 'redux-form';
-import { validateAntennatal } from '../../services/validationSchemas';
+import { validateAntenatal } from '../../services/validationSchemas';
 import { previousPregnancies, gravida, para } from '../../services/constants';
 
-const validate = validateAntennatal;
+const validate = validateAntenatal;
 
 export class PreviousPregnancies extends Component {
 	render() {
@@ -102,7 +102,7 @@ export class PreviousPregnancies extends Component {
 	}
 }
 PreviousPregnancies = reduxForm({
-	form: 'antennatal', //Form name is same
+	form: 'antenatal', //Form name is same
 	destroyOnUnmount: false,
 	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
 	validate,

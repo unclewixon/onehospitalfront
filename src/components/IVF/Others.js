@@ -1,25 +1,21 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import { Field, reduxForm } from 'redux-form';
-import { withRouter, useHistory } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import Select from 'react-select';
+import { withRouter } from 'react-router-dom';
+import moment from 'moment';
+
 import {
 	renderTextInput,
 	renderSelect,
 	renderTextArea,
 	request,
 } from '../../services/utilities';
-import { loadStaff } from '../../actions/hr';
-import { validateAntennatal } from '../../services/validationSchemas';
-import { loadPatientIVFForm } from '../../actions/patient';
-import searchingGIF from '../../assets/images/searching.gif';
-import { IVFEnroll } from '../../services/constants';
+import { ivfEnroll } from '../../services/constants';
 import { notifyError, notifySuccess } from '../../services/notify';
-
-const validate = validateAntennatal;
+import { startBlock, stopBlock } from '../../actions/redux-block';
+import { loadPatientIVFForm } from '../../actions/patient';
 
 const pregResult = [
 	{
@@ -36,118 +32,48 @@ const pregResult = [
 	},
 ];
 
-let Others = props => {
-	const { page, error, ivf, previousPage } = props;
+const validate = values => {
+	const errors = {};
+	// if (!values.name) {
+	// 	errors.name = 'enter vendor';
+	// }
 
-	const { register } = useForm();
-	let [loading, setLoading] = useState(false);
-	let [commencementDate, setCommencementDate] = useState('');
-	let [stimulationDate, setStimulationDate] = useState('');
-	let [embryoTransDate, setEmbryoTransDate] = useState('');
-	let [pregTestDate, setPregTestDate] = useState('');
-	let [oocytePickupDate, setOocytePickupDate] = useState('');
-	const [loaded, setLoaded] = useState(false);
-	const [multi, setMulti] = useState(false);
-	const [labTests, setLabTests] = useState([]);
-	const [test, setTest] = useState([]);
-	const [labTestCategory, setLabTestCategory] = useState([]);
-	const [labTestCategoryRaw, setLabTestCategoryRaw] = useState([]);
+	return errors;
+};
 
-	let history = useHistory();
+const Others = ({ page, handleSubmit, error, previousPage, history }) => {
+	const [commencementDate, setCommencementDate] = useState('');
+	const [stimulationDate, setStimulationDate] = useState('');
+	const [embryoTransDate, setEmbryoTransDate] = useState('');
+	const [pregTestDate, setPregTestDate] = useState('');
+	const [oocytePickupDate, setOocytePickupDate] = useState('');
 
-	const fetchLabTestCategory = async () => {
-		console.log(ivf.hmo_id);
-		try {
-			const rs = await request(
-				`lab-tests/categories?hasTest=1&hmo_id=${ivf.hmo_id}`,
-				'GET',
-				true
-			);
-			setLabTestCategoryRaw(rs);
-			console.log(rs);
-			let data = [];
-			console.log(rs, 'RAW RS');
-			rs.forEach((item, index) => {
-				const res = { label: item.name, value: item.id };
-				data = [...data, res];
-			});
-			setLabTestCategory(data);
-			setLoaded(true);
-		} catch (error) {
-			console.log(error);
-			notifyError('error fetching lab test category');
-		}
-	};
+	const ivf = useSelector(state => state.patient.ivf);
 
-	const handleChangeLabTestCategory = evt => {
-		let value = String(evt.value);
-		fetchLabTestsByCategory(value);
-	};
-
-	const handleChangeProcedure = evt => {
-		ivf.lab_tests = evt;
-	};
-
-	const fetchLabTestsByCategory = id => {
-		console.log(id);
-		const rs = labTestCategoryRaw.find(cat => cat.id === Number(id));
-		console.log(rs);
-		let labtests = [];
-		const tests = rs.lab_tests || [];
-		setTest(tests);
-		tests.forEach((item, index) => {
-			const res = { label: item.name, value: item.id };
-			labtests = [...labtests, res];
-		});
-		console.log(labtests, 'labtest');
-		setLabTests(labtests);
-	};
-
-	useEffect(() => {
-		if (!loaded) {
-			fetchLabTestCategory();
-			setLoaded(true);
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [loaded]);
-
-	// const setDate = async (date, type) => {
-	// 	await this.setState({ [type]: date });
-	// };
-	// const patient = React.createRef();
+	const dispatch = useDispatch();
 
 	const onSubmitForm = async data => {
-		console.log(stimulationDate);
-		console.log(commencementDate);
-		setLoading(true);
-		data.dateOfCommencement = commencementDate;
-		data.dateOfStimulation = stimulationDate;
-		data.dateOfTreatment = commencementDate;
-		data.embryoTransferDate = embryoTransDate;
-		data.pregnancyTestDate = pregTestDate;
-		console.log(data);
-
-		let res = { ...ivf, ...data };
-		// const mappedId = res.lab_tests.map(lbt => String(lbt.value));
-		// res.labTests = mappedId;
-		props.loadPatientIVFForm(res);
-
-		console.log(res);
-
 		try {
-			const rs = await request(`${IVFEnroll}`, 'POST', true, res);
-			console.log(rs);
-			//props.closeModals(true);
-			notifySuccess('IVF created successfully');
-			if (props.module === 'patient') {
-				//
-			}
+			dispatch(startBlock());
+			data.dateOfCommencement = moment(commencementDate).format('YYYY-MM-DD');
+			data.dateOfStimulation = moment(stimulationDate).format('YYYY-MM-DD');
+			data.dateOfTreatment = moment(commencementDate).format('YYYY-MM-DD');
+			data.embryoTransferDate = moment(embryoTransDate).format('YYYY-MM-DD');
+			data.pregnancyTestDate = moment(pregTestDate).format('YYYY-MM-DD');
+
+			const info = { ...ivf, ...data };
+
+			console.log(info);
+
+			await request(ivfEnroll, 'POST', true, info);
+			notifySuccess('IVF patient enrolled!');
+			dispatch(loadPatientIVFForm(null));
+			dispatch(stopBlock());
 			history.push('/ivf');
-			setLoading(false);
 		} catch (error) {
 			console.log(error);
-			notifyError('IVF creation failed');
-			setLoading(false);
+			notifyError('IVF enrollment failed');
+			dispatch(stopBlock());
 		}
 	};
 
@@ -155,262 +81,213 @@ let Others = props => {
 		<>
 			<h6 className="element-header">Step {page}. Others</h6>
 			<div className="form-block">
-				{loading ? (
-					<div className="form-block encounter">
-						<img alt="searching" src={searchingGIF} />
-					</div>
-				) : (
-					<>
-						<form onSubmit={props.handleSubmit(onSubmitForm)}>
-							{error && (
-								<div
-									className="alert alert-danger"
-									dangerouslySetInnerHTML={{
-										__html: `<strong>Error!</strong> ${error}`,
-									}}
+				<>
+					<form onSubmit={handleSubmit(onSubmitForm)}>
+						{error && (
+							<div
+								className="alert alert-danger"
+								dangerouslySetInnerHTML={{
+									__html: `<strong>Error!</strong> ${error}`,
+								}}
+							/>
+						)}
+
+						<div className="row">
+							<div className="col-sm-6">
+								<div className="form-group">
+									<label>Date of Commencement</label>
+									<div className="custom-date-input">
+										<DatePicker
+											selected={commencementDate}
+											onChange={date => setCommencementDate(date)}
+											peekNextMonth
+											showMonthDropdown
+											showYearDropdown
+											dropdownMode="select"
+											dateFormat="dd-MMM-yyyy"
+											className="	form-control"
+											placeholderText="Date of Commencement"
+											required
+										/>
+									</div>
+								</div>
+							</div>
+
+							<div className="col-sm-6">
+								<div className="form-group">
+									<label>Date of Stimulation</label>
+									<div className="custom-date-input">
+										<DatePicker
+											selected={stimulationDate}
+											onChange={date => setStimulationDate(date)}
+											peekNextMonth
+											showMonthDropdown
+											showYearDropdown
+											dropdownMode="select"
+											dateFormat="dd-MMM-yyyy"
+											className="form-control"
+											placeholderText="Date of Stimulation"
+											required
+										/>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div className="row">
+							<div className="col-sm-4">
+								<Field
+									id="medication_used"
+									name="meducationUsed"
+									component={renderTextInput}
+									label="Medication Used"
+									placeholder="Medication Used"
 								/>
-							)}
-
-							<div className="row">
-								<div className="col-sm-6">
-									<div className="form-group">
-										<label>Date of Commencement</label>
-										<div className="custom-date-input">
-											<DatePicker
-												selected={commencementDate}
-												onChange={date => setCommencementDate(date)}
-												peekNextMonth
-												showMonthDropdown
-												showYearDropdown
-												dropdownMode="select"
-												dateFormat="dd-MMM-yyyy"
-												className="	form-control"
-												placeholderText="Date of Commencement"
-												required
-											/>
-										</div>
-									</div>
-								</div>
-
-								<div className="col-sm-6">
-									<div className="form-group">
-										<label>Date of Stimulation</label>
-										<div className="custom-date-input">
-											<DatePicker
-												selected={stimulationDate}
-												onChange={date => setStimulationDate(date)}
-												peekNextMonth
-												showMonthDropdown
-												showYearDropdown
-												dropdownMode="select"
-												dateFormat="dd-MMM-yyyy"
-												className="form-control"
-												placeholderText="Date of Stimulation"
-												required
-											/>
-										</div>
-									</div>
-								</div>
 							</div>
 
-							<div className="row">
-								<div className="col-sm-4">
-									<Field
-										id="medication_used"
-										name="meducationUsed"
-										component={renderTextInput}
-										label="Medication Used"
-										placeholder="Medication Used"
-									/>
-								</div>
-
-								<div className="col-sm-4">
-									<Field
-										id="endometric_thickness"
-										name="endometricThickness"
-										component={renderTextInput}
-										label="Endometric Thickness"
-										placeholder="Endometric Thickness"
-									/>
-								</div>
-
-								<div className="col-sm-4">
-									<Field
-										id="no_of_o_ret"
-										name="noOfOocyteRetrieved"
-										component={renderTextInput}
-										label="Number of Oocyte Retrieved"
-										placeholder="Number of Oocyte Retrieved"
-									/>
-								</div>
+							<div className="col-sm-4">
+								<Field
+									id="endometric_thickness"
+									name="endometricThickness"
+									component={renderTextInput}
+									label="Endometric Thickness"
+									placeholder="Endometric Thickness"
+								/>
 							</div>
 
-							<div className="row">
-								<div className="col-sm-6">
-									<div className="form-group">
-										<label>Date of Oocyte Pickup/Retrieval/Treatment</label>
-										<div className="custom-date-input">
-											<DatePicker
-												selected={oocytePickupDate}
-												onChange={date => setOocytePickupDate(date)}
-												peekNextMonth
-												showMonthDropdown
-												showYearDropdown
-												dropdownMode="select"
-												dateFormat="dd-MMM-yyyy"
-												className="	form-control"
-												placeholderText="Date of Oocyte Pickup/Retrieval/Treatment"
-												required
-											/>
-										</div>
-									</div>
-								</div>
+							<div className="col-sm-4">
+								<Field
+									id="no_of_o_ret"
+									name="noOfOocyteRetrieved"
+									component={renderTextInput}
+									label="Number of Oocyte Retrieved"
+									placeholder="Number of Oocyte Retrieved"
+								/>
+							</div>
+						</div>
 
-								<div className="col-sm-6">
-									<div className="form-group">
-										<label>Embryo Transfer Date</label>
-										<div className="custom-date-input">
-											<DatePicker
-												selected={embryoTransDate}
-												onChange={date => setEmbryoTransDate(date)}
-												peekNextMonth
-												showMonthDropdown
-												showYearDropdown
-												dropdownMode="select"
-												dateFormat="dd-MMM-yyyy"
-												className="form-control"
-												placeholderText="Embryo Transfer Date"
-												required
-											/>
-										</div>
+						<div className="row">
+							<div className="col-sm-6">
+								<div className="form-group">
+									<label>Date of Oocyte Pickup/Retrieval/Treatment</label>
+									<div className="custom-date-input">
+										<DatePicker
+											selected={oocytePickupDate}
+											onChange={date => setOocytePickupDate(date)}
+											peekNextMonth
+											showMonthDropdown
+											showYearDropdown
+											dropdownMode="select"
+											dateFormat="dd-MMM-yyyy"
+											className="	form-control"
+											placeholderText="Date of Oocyte Pickup/Retrieval/Treatment"
+											required
+										/>
 									</div>
 								</div>
 							</div>
 
-							<div className="row">
-								<div className="col-sm-6">
-									<Field
-										id="numberEmbTransfer"
-										name="noOfEmbryoTransfer"
-										component={renderTextInput}
-										label="Number Of Embryo Transfer"
-										placeholder="Number Of Embryo Transfer"
-									/>
-								</div>
-
-								<div className="col-sm-6">
-									<div className="form-group">
-										<label>Pregnancy Test Date</label>
-										<div className="custom-date-input">
-											<DatePicker
-												selected={pregTestDate}
-												onChange={date => setPregTestDate(date)}
-												peekNextMonth
-												showMonthDropdown
-												showYearDropdown
-												dropdownMode="select"
-												dateFormat="dd-MMM-yyyy"
-												className="form-control"
-												placeholderText="Pregnancy Test Date"
-												required
-											/>
-										</div>
+							<div className="col-sm-6">
+								<div className="form-group">
+									<label>Embryo Transfer Date</label>
+									<div className="custom-date-input">
+										<DatePicker
+											selected={embryoTransDate}
+											onChange={date => setEmbryoTransDate(date)}
+											peekNextMonth
+											showMonthDropdown
+											showYearDropdown
+											dropdownMode="select"
+											dateFormat="dd-MMM-yyyy"
+											className="form-control"
+											placeholderText="Embryo Transfer Date"
+											required
+										/>
 									</div>
 								</div>
 							</div>
+						</div>
 
-							<div className="row">
-								<div className="col-sm-6">
-									<Field
-										id="result"
-										name="result"
-										component={renderSelect}
-										label="Result"
-										placeholder="Result"
-										data={pregResult}
-									/>
-								</div>
-
-								<div className="col-sm-6">
-									<Field
-										id="comments"
-										name="otherComments"
-										component={renderTextArea}
-										label="Comments"
-										placeholder="Comments"
-									/>
-								</div>
+						<div className="row">
+							<div className="col-sm-6">
+								<Field
+									id="numberEmbTransfer"
+									name="noOfEmbryoTransfer"
+									component={renderTextInput}
+									label="Number Of Embryo Transfer"
+									placeholder="Number Of Embryo Transfer"
+								/>
 							</div>
 
-							<div className="row">
-								<div className="form-group col-sm-6">
-									<label>Lab Test category</label>
-									<Select
-										name="test_category"
-										placeholder="Select Test Category"
-										options={labTestCategory}
-										ref={register({ name: 'test_category' })}
-										onChange={evt => handleChangeLabTestCategory(evt)}
-										required
-									/>
+							<div className="col-sm-6">
+								<div className="form-group">
+									<label>Pregnancy Test Date</label>
+									<div className="custom-date-input">
+										<DatePicker
+											selected={pregTestDate}
+											onChange={date => setPregTestDate(date)}
+											peekNextMonth
+											showMonthDropdown
+											showYearDropdown
+											dropdownMode="select"
+											dateFormat="dd-MMM-yyyy"
+											className="form-control"
+											placeholderText="Pregnancy Test Date"
+											required
+										/>
+									</div>
 								</div>
-								<div className="form-group col-sm-6">
-									<label>
-										Lab Tests to request{' '}
-										{multi ? (
-											<span className="mx-1 text-danger">* required </span>
-										) : (
-											''
-										)}
-									</label>
-									<Select
-										name="lab_tests"
-										placeholder="Select lab tests to request"
-										isMulti
-										options={labTests}
-										ref={register({ name: 'lab_tests' })}
-										onChange={evt => handleChangeProcedure(evt)}
-										required
-									/>
-								</div>
+							</div>
+						</div>
+
+						<div className="row">
+							<div className="col-sm-6">
+								<Field
+									id="result"
+									name="result"
+									component={renderSelect}
+									label="Result"
+									placeholder="Result"
+									data={pregResult}
+								/>
 							</div>
 
-							<div className="row">
-								<div className="col-sm-12 text-right">
-									<button
-										className="btn btn-primary"
-										type="button"
-										onClick={previousPage}>
-										Previous
-									</button>
-									<button className="btn btn-primary" type="submit">
-										Save
-									</button>
-								</div>
+							<div className="col-sm-6">
+								<Field
+									id="comments"
+									name="otherComments"
+									component={renderTextArea}
+									label="Comments"
+									placeholder="Comments"
+								/>
 							</div>
-						</form>
-					</>
-				)}
+						</div>
+
+						<div className="row">
+							<div className="col-sm-12 text-right">
+								<button
+									className="btn btn-primary"
+									type="button"
+									onClick={previousPage}>
+									Previous
+								</button>
+								<button className="btn btn-primary" type="submit">
+									Save
+								</button>
+							</div>
+						</div>
+					</form>
+				</>
 			</div>
 		</>
 	);
 };
 
-Others = reduxForm({
-	form: 'Others', //Form name is same
-	destroyOnUnmount: false,
-	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
-	validate,
-})(Others);
-
-const mapStateToProps = state => {
-	return {
-		patient: state.user.patient,
-		staffs: state.hr.staffs,
-		ivf: state.patient.ivf,
-	};
-};
-
 export default withRouter(
-	connect(mapStateToProps, { loadStaff, loadPatientIVFForm })(Others)
+	reduxForm({
+		form: 'Others',
+		destroyOnUnmount: false,
+		forceUnregisterOnUnmount: true,
+		validate,
+	})(Others)
 );

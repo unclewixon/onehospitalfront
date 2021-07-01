@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import { reduxForm } from 'redux-form';
+
 import { patientAPI } from '../../services/constants';
 import { request } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
@@ -13,7 +14,7 @@ import RadiologicalInvestigation from '../MutlistepForms/RadiologicalInvestigati
 import Prescription from '../MutlistepForms/Prescription';
 import NextAppointment from '../MutlistepForms/NextAppointment';
 
-class AntennatalRequest extends Component {
+class AntenatalRequest extends Component {
 	state = {
 		page: 1,
 		submit: false,
@@ -95,17 +96,15 @@ class AntennatalRequest extends Component {
 				console.log(rs);
 				const { history, location, reset } = this.props;
 
-				notifySuccess('Antennatal Assessment succesfully submitted');
+				notifySuccess('Antenatal Assessment succesfully submitted');
 				reset();
 
 				history.push(
-					location.hash ? `${location.pathname}#dashboard` : '/antennatal'
+					location.hash ? `${location.pathname}#dashboard` : '/antenatal'
 				);
 			} catch (e) {
 				this.setState({ submitting: false });
-				notifyError(
-					e.message || 'Submission of antennatal form not successful'
-				);
+				notifyError(e.message || 'Submission of antenatal form not successful');
 			}
 
 			return;
@@ -194,14 +193,14 @@ class AntennatalRequest extends Component {
 	}
 }
 
-// AntennatalRequest.propTypes = {
+// AntenatalRequest.propTypes = {
 // 	onSubmit: PropTypes.func.isRequired,
 // };
-AntennatalRequest = reduxForm({
-	form: 'antennatalAssessment', //Form name is same
+AntenatalRequest = reduxForm({
+	form: 'antenatalAssessment', //Form name is same
 	destroyOnUnmount: false,
 	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
-})(AntennatalRequest);
+})(AntenatalRequest);
 
 const mapStateToProps = state => {
 	return {
@@ -213,4 +212,4 @@ const mapStateToProps = state => {
 	};
 };
 
-export default withRouter(connect(mapStateToProps)(AntennatalRequest));
+export default withRouter(connect(mapStateToProps)(AntenatalRequest));

@@ -11,7 +11,7 @@ import ViewPrescription from '../Pharmacy/ViewPrescription';
 import { request, updateImmutable, itemRender } from '../../services/utilities';
 import TableLoading from '../TableLoading';
 
-const Pharmacy = ({ location, patient, can_request = true, procedure }) => {
+const Pharmacy = ({ location, patient, can_request = true, type, itemId }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [activeRequest, setActiveRequest] = useState(null);
@@ -36,8 +36,8 @@ const Pharmacy = ({ location, patient, can_request = true, procedure }) => {
 	const fetch = useCallback(
 		async page => {
 			try {
-				const pid = procedure?.id || '';
-				const url = `requests/${patient.id}/request/pharmacy?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=10&procedure_id=${pid}`;
+				const block = type || '';
+				const url = `requests/${patient.id}/request/pharmacy?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=10&item_id=${itemId}&type=${block}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setPrescriptions(result);
@@ -48,7 +48,7 @@ const Pharmacy = ({ location, patient, can_request = true, procedure }) => {
 				notifyError('Error could not fetch regimen prescriptions');
 			}
 		},
-		[patient, procedure]
+		[itemId, patient, type]
 	);
 
 	useEffect(() => {

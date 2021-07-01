@@ -20,6 +20,7 @@ import warning from '../../assets/images/warning.png';
 import GiveMedication from '../../components/Modals/GiveMedication';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { toggleProfile } from '../../actions/user';
+import CreateChart from '../../components/Patient/Modals/CreateChart';
 
 const ClinicalTasks = () => {
 	const [meta, setMeta] = useState({
@@ -32,6 +33,7 @@ const ClinicalTasks = () => {
 	const [showModal, setShowModal] = useState(false);
 	const [showMedication, setShowMedication] = useState(false);
 	const [taskItem, setTaskItem] = useState(null);
+	const [showChartModal, setShowChartModal] = useState(false);
 
 	const done = useSelector(state => state.patient.reading_done);
 
@@ -105,10 +107,18 @@ const ClinicalTasks = () => {
 		setTaskItem(item);
 	};
 
+	const recordFluid = item => {
+		console.log(item);
+		document.body.classList.add('modal-open');
+		setShowChartModal(true);
+		setTaskItem(item);
+	};
+
 	const closeModal = () => {
 		document.body.classList.remove('modal-open');
 		setShowModal(false);
 		setShowMedication(false);
+		setShowChartModal(false);
 		setTaskItem(null);
 	};
 
@@ -175,33 +185,15 @@ const ClinicalTasks = () => {
 					<table id="table" className="table table-theme v-middle table-hover">
 						<thead>
 							<tr>
-								<th>
-									<div>Patient</div>
-								</th>
-								<th>
-									<div>Bed/Ward</div>
-								</th>
-								<th>
-									<div>Task</div>
-								</th>
-								<th>
-									<div>Read Count</div>
-								</th>
-								<th>
-									<div>Set On</div>
-								</th>
-								<th>
-									<div>Last Read</div>
-								</th>
-								<th>
-									<div>Next Due</div>
-								</th>
-								<th>
-									<div>Count</div>
-								</th>
-								<th>
-									<div>Take Reading</div>
-								</th>
+								<th>Patient</th>
+								<th>Bed/Ward</th>
+								<th>Task</th>
+								<th>Set On</th>
+								<th>Last Read</th>
+								<th>Next Due</th>
+								<th>Read Count</th>
+								<th>Last Reading</th>
+								<th>Take Reading</th>
 								<th>
 									<div className="th-inner"></div>
 								</th>
@@ -226,15 +218,21 @@ const ClinicalTasks = () => {
 										</td>
 										<td>{item.admission?.room?.name || '-'}</td>
 										<td>{item.title}</td>
-										<td>{item.tasksCompleted}</td>
 										<td>
 											{moment(item.createdAt).format('DD-MMM-YYYY HH:mm A')}
 										</td>
 										<td>
-											{lastReading
-												? `${Object.values(lastReading.reading)[0]} `
-												: '- '}
-											{lastReading && vital ? vital.unit : ''}
+											{lastReading ? (
+												<>
+													{lastReading.readingType === 'Fluid Chart'
+														? `vol: ${Object.values(lastReading.reading)[1]}ml`
+														: `${Object.values(lastReading.reading)[0]} ${
+																vital ? vital.unit : ''
+														  }`}
+												</>
+											) : (
+												''
+											)}
 										</td>
 										<td>
 											{item.nextTime &&
@@ -253,32 +251,39 @@ const ClinicalTasks = () => {
 													: ''}
 											</span>
 										</td>
-										<td>{item.taskCount}</td>
+										<td>{`${item.tasksCompleted} / ${item.taskCount}`}</td>
+										<td>
+											{lastReading
+												? moment(lastReading.createdAt).fromNow(true)
+												: '-'}{' '}
+											{lastReading
+												? `by ${staffname(item?.staff?.details)}`
+												: ''}
+										</td>
 										<td className="row-actions">
-											{item.taskCount > item.tasksCompleted ? (
+											{item.taskCount > item.tasksCompleted && (
 												<>
-													{item.taskType === 'vitals' ? (
+													{item.taskType === 'vitals' && (
 														<a
 															className="btn btn-primary btn-sm text-white text-uppercase"
 															onClick={() => takeReading(item)}>
 															Take Reading
 														</a>
-													) : (
+													)}
+													{item.taskType === 'fluid' && (
+														<a
+															className="btn btn-primary btn-sm text-white text-uppercase"
+															onClick={() => recordFluid(item)}>
+															Take Reading
+														</a>
+													)}
+													{item.taskType === 'regimen' && (
 														<a
 															className="btn btn-primary btn-sm text-white text-uppercase"
 															onClick={() => recordMedication(item)}>
 															Take Reading
 														</a>
 													)}
-												</>
-											) : (
-												<>
-													{lastReading
-														? moment(lastReading.createdAt).fromNow(true)
-														: '-'}{' '}
-													{lastReading
-														? `by ${staffname(item?.staff?.details)}`
-														: ''}
 												</>
 											)}
 										</td>
@@ -322,6 +327,9 @@ const ClinicalTasks = () => {
 			{showModal && <TakeReading closeModal={closeModal} taskItem={taskItem} />}
 			{showMedication && (
 				<GiveMedication closeModal={closeModal} taskItem={taskItem} />
+			)}
+			{showChartModal && (
+				<CreateChart closeModal={closeModal} taskItem={taskItem} />
 			)}
 		</>
 	);

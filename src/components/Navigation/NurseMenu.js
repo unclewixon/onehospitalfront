@@ -60,6 +60,17 @@ const NurseMenu = () => {
 					<span>Labour Management</span>
 				</Link>
 			</li>
+			<li className="sub-header">
+				<span>TRANSACTIONS</span>
+			</li>
+			<li>
+				<Link to="/front-desk/insurance-transactions">
+					<div className="icon-w">
+						<div className="os-icon os-icon-ui-55" />
+					</div>
+					<span>Insurance Transactions</span>
+				</Link>
+			</li>
 		</>
 	);
 };

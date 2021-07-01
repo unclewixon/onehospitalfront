@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import waiting from '../../../assets/images/waiting.gif';
 import { request } from '../../../services/utilities';
 import { startBlock, stopBlock } from '../../../actions/redux-block';
 import { notifySuccess, notifyError } from '../../../services/notify';
+import { readingDone } from '../../../actions/patient';
 
 const entries = [
 	{ type: 'input', name: 'Oral' },
@@ -32,7 +33,7 @@ const entries = [
 	{ type: 'output', name: 'Aspirated Fluids' },
 ];
 
-const CreateChart = ({ closeModal, updateChart }) => {
+const CreateChart = ({ closeModal, taskItem }) => {
 	const [submitting, setSubmitting] = useState(false);
 	const [fluidRoute, setFluidRoute] = useState('');
 	const [volume, setVolume] = useState('');
@@ -40,25 +41,24 @@ const CreateChart = ({ closeModal, updateChart }) => {
 
 	const dispatch = useDispatch();
 
-	const patient = useSelector(state => state.user.patient);
-
 	const onSubmit = async e => {
 		try {
 			e.preventDefault();
 			dispatch(startBlock());
 			setSubmitting(true);
 			const data = {
-				patient_id: patient.id,
+				patient_id: taskItem.patient_id,
 				type,
 				fluidRoute,
 				volume,
+				task_id: taskItem.id,
 			};
 
-			const rs = await request('fluid-charts', 'POST', true, data);
+			await request('fluid-charts', 'POST', true, data);
 			dispatch(stopBlock());
-			updateChart(rs);
 			setSubmitting(false);
 			notifySuccess('Fluid chart saved!');
+			dispatch(readingDone(taskItem.id));
 			closeModal();
 		} catch (error) {
 			console.log(error);

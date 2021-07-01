@@ -15,6 +15,7 @@ import { searchAPI } from '../../services/constants';
 import { toggleProfile } from '../../actions/user';
 import TableLoading from '../../components/TableLoading';
 import ProfilePopup from '../../components/Patient/ProfilePopup';
+import AssignAccommodation from './AssignAccommodation';
 
 const { RangePicker } = DatePicker;
 
@@ -111,10 +112,10 @@ const NicuPatients = () => {
 		setEndDate(date[1]);
 	};
 
-	const assignBed = item => {
-		// document.body.classList.add('modal-open');
-		// setSelected(item);
-		// setShowModal(true);
+	const assignAccommodation = item => {
+		document.body.classList.add('modal-open');
+		setSelected(item);
+		setShowModal(true);
 	};
 
 	const closeModal = () => {
@@ -192,25 +193,36 @@ const NicuPatients = () => {
 												<td>
 													<p className="item-title text-color m-0">
 														<Tooltip
-															title={<ProfilePopup patient={item?.patient} />}>
+															title={<ProfilePopup patient={item.patient} />}>
 															<a
 																className="cursor"
-																onClick={() => showProfile(item?.patient)}>
-																{`${item?.patient_name} [${formatPatientId(
-																	item?.patient_id
+																onClick={() => showProfile(item.patient)}>
+																{`${item.patient_name} [${formatPatientId(
+																	item.patient_id
 																)}]`}
 															</a>
 														</Tooltip>
 													</p>
 												</td>
-												<td>{item.admission?.reason}</td>
+												<td>{item.admission.reason}</td>
 												<td>
-													{moment(item?.admission_date).format(
+													{moment(item.admission_date).format(
 														'DD-MMM-YYYY h:mm A'
 													)}
 												</td>
 												<td>{item.admitted_by}</td>
-												<td>{item.room || '--'}</td>
+												<td>
+													{item.accommodation?.name || '--'}
+													{item.accommodation && (
+														<Tooltip title="Change Accommodation">
+															<a
+																onClick={() => assignAccommodation(item)}
+																className="primary ml-2">
+																<i className="fa fa-bed" />
+															</a>
+														</Tooltip>
+													)}
+												</td>
 												<td>
 													{item.status === 0 ? (
 														<span className="badge badge-secondary">Open</span>
@@ -219,10 +231,10 @@ const NicuPatients = () => {
 													)}
 												</td>
 												<td className="row-actions">
-													{!item.room && (
-														<Tooltip title="Assign Bed">
+													{!item.accommodation && (
+														<Tooltip title="Assign Accommodation">
 															<a
-																onClick={() => assignBed(item)}
+																onClick={() => assignAccommodation(item)}
 																className="primary">
 																<i className="fa fa-bed" />
 															</a>
@@ -263,14 +275,14 @@ const NicuPatients = () => {
 					)}
 				</div>
 			</div>
-			{/* {selected && showModal && (
-				<AssignBed
+			{selected && showModal && (
+				<AssignAccommodation
 					item={selected}
 					patients={admittedPatients}
 					updatePatient={patients => setAdmittedPatients(patients)}
 					closeModal={() => closeModal()}
 				/>
-			)} */}
+			)}
 		</>
 	);
 };

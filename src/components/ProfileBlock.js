@@ -261,7 +261,7 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 					style={{ paddingLeft: 0 }}>
 					<div className="element-box border-primary p-3">
 						<div className="card-header align-items-center pt-75 pb-25">
-							<h5 className="mb-0">Insurance Status</h5>
+							<h5 className="mb-0">Patient Status</h5>
 							<div className="mt-1">
 								<span className="badge badge-light-primary">
 									{patient.hmo?.name || ''}

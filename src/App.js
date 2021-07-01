@@ -23,7 +23,7 @@ import Login from './pages/Login';
 import NoMatch from './pages/NoMatch';
 import PatientProfile from './pages/PatientProfile';
 import ProcedureProfile from './pages/ProcedureProfile';
-import AntennatalProfile from './pages/AntennatalProfile';
+import AntenatalProfile from './pages/AntenatalProfile';
 import AdmissionProfile from './pages/AdmissionProfile';
 import IVFProfile from './pages/IVFProfile';
 import NicuProfile from './pages/NicuProfile';
@@ -36,13 +36,13 @@ const Pharmacy = lazy(() => import('./pages/Pharmacy/Index'));
 const Procedure = lazy(() => import('./pages/Procedure/Home'));
 const Staff = lazy(() => import('./pages/HR/index'));
 const Inventory = lazy(() => import('./pages/Inventory/index'));
-const Settings = lazy(() => import('./pages/Settings'));
+const Settings = lazy(() => import('./pages/Settings/Home'));
 const StaffProfile = lazy(() => import('./pages/StaffProfile'));
 const Hmo = lazy(() => import('./pages/Hmo/Home'));
 const ClinicalLab = lazy(() => import('./pages/ClinicalLab/Home'));
 const PayPoint = lazy(() => import('./pages/PayPoint/Home'));
 const Radiology = lazy(() => import('./pages/Radiology/Home'));
-const Antennatal = lazy(() => import('./pages/Antennatal/Home'));
+const Antenatal = lazy(() => import('./pages/Antenatal/Home'));
 const IVF = lazy(() => import('./pages/IVF/Home'));
 const Nicu = lazy(() => import('./pages/Nicu/Home'));
 const LabourMgt = lazy(() => import('./pages/LabourMgt/Home'));
@@ -136,7 +136,7 @@ class App extends Component {
 														<Route path="/pharmacy" component={Pharmacy} />
 														<Route path="/procedure" component={Procedure} />
 														<Route path="/radiology" component={Radiology} />
-														<Route path="/antenatal" component={Antennatal} />
+														<Route path="/antenatal" component={Antenatal} />
 														<Route path="/ivf" component={IVF} />
 														<Route path="/nicu" component={Nicu} />
 														<Route path="/hr" component={Staff} />
@@ -166,7 +166,7 @@ class App extends Component {
 											<ProcedureProfile />
 										</SlidingPane>
 										<SlidingPane isOpen={isAntenatalOpen}>
-											<AntennatalProfile />
+											<AntenatalProfile />
 										</SlidingPane>
 										<SlidingPane isOpen={isAdmissionOpen}>
 											<AdmissionProfile />
