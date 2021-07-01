@@ -19,6 +19,8 @@ import {
 	CK_INVESTIGATION_SCAN,
 	CK_TREATMENT_PLAN,
 	CK_CONSUMABLE,
+	CK_DIAGNOSIS,
+	CK_PAST_DIAGNOSIS,
 } from '../services/constants';
 import { request } from '../services/utilities';
 
@@ -48,6 +50,8 @@ class Logout extends Component {
 		storage.removeItem(CK_INVESTIGATION_SCAN);
 		storage.removeItem(CK_TREATMENT_PLAN);
 		storage.removeItem(CK_CONSUMABLE);
+		storage.removeItem(CK_DIAGNOSIS);
+		storage.removeItem(CK_PAST_DIAGNOSIS);
 
 		this.props.signOut();
 	}

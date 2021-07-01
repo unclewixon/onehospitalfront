@@ -14,6 +14,19 @@ import {
 	consumableAPI,
 	defaultEncounter,
 	CK_CONSUMABLE,
+	CK_COMPLAINTS,
+	CK_REVIEW_OF_SYSTEMS,
+	CK_HX_FORMS,
+	CK_PAST_HISTORY,
+	CK_ALLERGIES,
+	CK_PAST_ALLERGIES,
+	CK_PHYSICAL_EXAM,
+	CK_INVESTIGATIONS,
+	CK_INVESTIGATION_LAB,
+	CK_INVESTIGATION_SCAN,
+	CK_TREATMENT_PLAN,
+	CK_DIAGNOSIS,
+	CK_PAST_DIAGNOSIS,
 } from '../../../services/constants';
 import { request } from '../../../services/utilities';
 import { notifyError, notifySuccess } from '../../../services/notify';
@@ -108,6 +121,22 @@ const Consumable = ({
 				updateAppointment(rs.appointment);
 				notifySuccess('Consultation completed successfully');
 				dispatch(resetEncounterData(defaultEncounter));
+
+				storage.removeItem(CK_COMPLAINTS);
+				storage.removeItem(CK_REVIEW_OF_SYSTEMS);
+				storage.removeItem(CK_HX_FORMS);
+				storage.removeItem(CK_PAST_HISTORY);
+				storage.removeItem(CK_ALLERGIES);
+				storage.removeItem(CK_PAST_ALLERGIES);
+				storage.removeItem(CK_PHYSICAL_EXAM);
+				storage.removeItem(CK_INVESTIGATIONS);
+				storage.removeItem(CK_INVESTIGATION_LAB);
+				storage.removeItem(CK_INVESTIGATION_SCAN);
+				storage.removeItem(CK_TREATMENT_PLAN);
+				storage.removeItem(CK_CONSUMABLE);
+				storage.removeItem(CK_DIAGNOSIS);
+				storage.removeItem(CK_PAST_DIAGNOSIS);
+
 				closeModal();
 			} else {
 				dispatch(stopBlock());
