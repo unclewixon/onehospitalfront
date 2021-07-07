@@ -11,6 +11,7 @@ import {
 import { notifyError } from '../../services/notify';
 
 const selector = formValueSelector('antenatalAssessment');
+
 class RadiologicalInvestigation extends Component {
 	state = {
 		services: [],
@@ -143,6 +144,7 @@ class RadiologicalInvestigation extends Component {
 		);
 	}
 }
+
 RadiologicalInvestigation = reduxForm({
 	form: 'antenatalAssessment', //Form name is same
 	destroyOnUnmount: false,

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { Field, reduxForm } from 'redux-form';
+
 import { validate } from '../../services/validationSchemas';
 import { renderTextArea } from '../../services/utilities';
-import { Field, reduxForm } from 'redux-form';
+
 class GeneralComments extends Component {
 	render() {
 		const { handleSubmit, previousPage, error, page } = this.props;
@@ -50,6 +52,7 @@ class GeneralComments extends Component {
 		);
 	}
 }
+
 GeneralComments = reduxForm({
 	form: 'antenatalAssessment', //Form name is same
 	destroyOnUnmount: false,

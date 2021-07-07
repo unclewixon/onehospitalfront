@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { renderTextInput, renderSelect } from '../../services/utilities';
 import { Field, reduxForm } from 'redux-form';
+
+import { renderTextInput, renderSelect } from '../../services/utilities';
 import { validateAntenatal } from '../../services/validationSchemas';
+
 // const fetal = [
 // 	{
 // 		value: 'daily',
@@ -42,8 +44,10 @@ const bloodGroup = [
 		name: 'O-',
 	},
 ];
+
 const validate = validateAntenatal;
-export class FathersInfo extends Component {
+
+class FathersInfo extends Component {
 	render() {
 		const { handleSubmit, previousPage, error, page } = this.props;
 		return (
@@ -120,4 +124,5 @@ FathersInfo = reduxForm({
 	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
 	validate,
 })(FathersInfo);
+
 export default FathersInfo;

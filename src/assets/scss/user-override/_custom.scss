@@ -764,29 +764,32 @@ tr {
 	margin: 0;
 }
 
-div[class$="-control"] {
+div[class$='-control'] {
 	// height: 32px;
 	min-height: 32px;
 	box-shadow: none !important;
 }
 
-div[class$="-IndicatorsContainer"] {
+div[class$='-IndicatorsContainer'] {
 	height: 30px;
 }
 
-div[class$="-indicatorContainer"] {
+div[class$='-indicatorContainer'] {
 	height: 32px;
 }
 
-div[class$="-ValueContainer"] {
+div[class$='-ValueContainer'] {
 	min-height: 30px;
 }
 
-.btn-sm, .btn-group-sm > .btn, .all-wrapper .btn-group-sm > .fc-button {
+.btn-sm,
+.btn-group-sm > .btn,
+.all-wrapper .btn-group-sm > .fc-button {
 	padding: 7px 0.5rem;
 }
 
-.btn.filter-btn, .all-wrapper .filter-btn.fc-button {
+.btn.filter-btn,
+.all-wrapper .filter-btn.fc-button {
 	line-height: 0.69;
 }
 
@@ -798,4 +801,18 @@ div[class$="-ValueContainer"] {
 	position: absolute;
 	right: 0;
 	top: 0;
+}
+
+.embryology .nav-link.active .tab-label {
+	font-size: 1.08rem !important;
+	line-height: unset !important;
+}
+
+.no-pointer {
+	cursor: default !important;
+}
+
+.breadcrumb-item a {
+	font-size: 11px;
+	line-height: 24px;
 }

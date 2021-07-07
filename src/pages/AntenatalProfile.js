@@ -15,6 +15,12 @@ const Notes = lazy(() => import('../components/Antenatal/Notes'));
 const Vitals = lazy(() => import('../components/Patient/Vitals'));
 const Pharmacy = lazy(() => import('../components/Patient/Pharmacy'));
 const Radiology = lazy(() => import('../components/Patient/Radiology'));
+const PharmacyRequest = lazy(() =>
+	import('../components/Patient/PharmacyRequest')
+);
+const RadiologyRequest = lazy(() =>
+	import('../components/Patient/RadiologyRequest')
+);
 
 const storage = new SSRStorage();
 
@@ -30,6 +36,8 @@ const Page = ({ location }) => {
 					type="antenatal"
 				/>
 			);
+		case 'radiology-request':
+			return <RadiologyRequest module="antenatal" />;
 		case 'medications-used':
 			return (
 				<Pharmacy
@@ -38,6 +46,8 @@ const Page = ({ location }) => {
 					type="antenatal"
 				/>
 			);
+		case 'pharmacy-request':
+			return <PharmacyRequest module="antenatal" />;
 		case 'vitals':
 			return <Vitals type={hash[1].split('%20').join(' ')} />;
 		case 'notes':

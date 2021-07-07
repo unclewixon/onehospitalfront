@@ -62,8 +62,6 @@ export const labourAPI = 'labour-management/enrollments';
 export const consultationAPI = 'consultation/';
 export const consumableAPI = 'consumables';
 export const ivfEnroll = 'ivf/enroll';
-export const IVFHCGAdmin = 'ivf/save/hcg-administration';
-export const IVFHCGDown = 'ivf/save/down-regulation';
 export const antenatalAPI = 'patient/antenatal';
 
 export const months = [

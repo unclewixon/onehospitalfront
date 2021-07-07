@@ -9,7 +9,7 @@ import { notifyError } from '../../services/notify';
 import { request, itemRender } from '../../services/utilities';
 import RadiologyBlock from '../RadiologyBlock';
 
-const Radiology = ({ location, itemId, type }) => {
+const Radiology = ({ location, itemId, type, can_request = true }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [scans, setScans] = useState([]);
 	const [meta, setMeta] = useState({
@@ -59,12 +59,14 @@ const Radiology = ({ location, itemId, type }) => {
 		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<div className="element-actions">
-					<Link
-						to={`${location.pathname}#radiology-request`}
-						className="btn btn-primary btn-sm">
-						<i className="os-icon os-icon-plus" />
-						New Radiology Request
-					</Link>
+					{can_request && (
+						<Link
+							to={`${location.pathname}#radiology-request`}
+							className="btn btn-primary btn-sm">
+							<i className="os-icon os-icon-plus" />
+							New Radiology Request
+						</Link>
+					)}
 				</div>
 				<h6 className="element-header">Radiology Requests</h6>
 				<div className="element-box p-3 m-0 mt-3">

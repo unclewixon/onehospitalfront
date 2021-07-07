@@ -10,6 +10,7 @@ import {
 	renderTextInput,
 } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
+
 const work = {
 	q16:
 		'Expresses self well to verbal and written communication;steps all appropriate individuals informedregarding the progrss or problems',
@@ -38,6 +39,7 @@ const admin = {
 	q7:
 		'Emphazies the need to deliver quality services;confirm standard for quality  and evaluates processes against those standard in an effoort to improve departement performance',
 };
+
 const leader = {
 	q8:
 		"Demonstrate knowledge of the Hospital's mission and values and their relationship to the department's work",

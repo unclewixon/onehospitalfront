@@ -63,7 +63,7 @@ const getOptions = async q => {
 	return res;
 };
 
-export class NewLabour extends Component {
+class NewLabour extends Component {
 	state = {
 		submitting: false,
 		discharged_date: '',

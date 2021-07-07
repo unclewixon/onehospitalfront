@@ -9,7 +9,7 @@ import { request, itemRender } from '../../services/utilities';
 import LabBlock from '../LabBlock';
 import TableLoading from '../TableLoading';
 
-const Lab = ({ location }) => {
+const Lab = ({ location, itemId, type, can_request = true }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [labs, setLabs] = useState([]);
 	const [meta, setMeta] = useState({
@@ -27,7 +27,8 @@ const Lab = ({ location }) => {
 		async page => {
 			try {
 				const p = page || 1;
-				const url = `requests/${patient.id}/request/lab?page=${p}&limit=10&startDate=${startDate}&endDate=${endDate}`;
+				const block = type || '';
+				const url = `requests/${patient.id}/request/lab?page=${p}&limit=10&startDate=${startDate}&endDate=${endDate}&item_id=${itemId}&type=${block}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setLabs(result);
@@ -38,7 +39,7 @@ const Lab = ({ location }) => {
 				setLoaded(true);
 			}
 		},
-		[patient]
+		[patient, type, itemId]
 	);
 
 	useEffect(() => {
@@ -59,12 +60,14 @@ const Lab = ({ location }) => {
 		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<div className="element-actions">
-					<Link
-						to={`${location.pathname}#lab-request`}
-						className="btn btn-primary btn-sm">
-						<i className="os-icon os-icon-plus" />
-						New Lab Request
-					</Link>
+					{can_request && (
+						<Link
+							to={`${location.pathname}#lab-request`}
+							className="btn btn-primary btn-sm">
+							<i className="os-icon os-icon-plus" />
+							New Lab Request
+						</Link>
+					)}
 				</div>
 				<h6 className="element-header">Lab Requests</h6>
 				<div className="element-box p-3 m-0 mt-3">

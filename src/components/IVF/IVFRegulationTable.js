@@ -3,12 +3,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-
 import cellEditFactory from 'react-bootstrap-table2-editor';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { Type } from 'react-bootstrap-table2-editor';
 import moment from 'moment';
 import Tooltip from 'antd/lib/tooltip';
+
 import { loadPatientRegulationTable } from '../../actions/patient';
 
 class IVFRegulationTable extends Component {

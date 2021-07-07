@@ -49,7 +49,7 @@ const getOptions = async q => {
 	return res;
 };
 
-export class ModalCreateVoucher extends Component {
+class ModalCreateVoucher extends Component {
 	state = {
 		voucher_date: null,
 		submitting: false,

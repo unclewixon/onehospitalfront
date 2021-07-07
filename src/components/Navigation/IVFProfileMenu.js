@@ -14,6 +14,28 @@ const IVFProfileMenu = ({ location }) => {
 						Notes
 					</Link>
 				</li>
+				<li
+					className={
+						checkHash(hash, 'lab') || checkHash(hash, 'lab-request')
+							? 'active'
+							: ''
+					}>
+					<Link to={`${location.pathname}#lab`} className="pointer">
+						Lab
+					</Link>
+				</li>
+				<li className={checkHash(hash, 'regulation-chart') ? 'active' : ''}>
+					<Link
+						to={`${location.pathname}#regulation-chart`}
+						className="pointer">
+						Down Regulation Chart
+					</Link>
+				</li>
+				<li className={checkHash(hash, 'hcg') ? 'active' : ''}>
+					<Link to={`${location.pathname}#hcg`} className="pointer">
+						HCG Administration
+					</Link>
+				</li>
 				<li className={checkHash(hash, 'embryology') ? 'active' : ''}>
 					<Link to={`${location.pathname}#embryology`} className="pointer">
 						Embryology

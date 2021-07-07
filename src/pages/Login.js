@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
 import axios from 'axios';
 import { setGlobal } from 'reactn';
@@ -75,11 +75,13 @@ const renderTextInput = ({input, label, type, id, placeholder, icon, meta: { tou
 	</div>
 );
 
-let Login = props => {
+const Login = ({ location, history, error, handleSubmit }) => {
 	const [state, setState] = useState({
 		submitting: false,
 		loaded: false,
 	});
+
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (!state.loaded) {
@@ -92,16 +94,13 @@ let Login = props => {
 			return async () => {
 				const fullscreen = await storage.getItem(FULLSCREEN_COOKIE);
 				const theme_mode = await storage.getItem(MODE_COOKIE);
-
-				const { location } = props;
-
 				const isLogin = location.pathname === '/';
 				window.document.body.className = `menu-position-side menu-side-left${
 					fullscreen || isLogin ? ' full-screen' : ''
 				} with-content-panel${theme_mode ? ' color-scheme-dark' : ''}`;
 			};
 		}
-	}, [props, state]);
+	}, [location, state]);
 
 	const doLogin = async data => {
 		setState({ ...state, submitting: true });
@@ -130,31 +129,31 @@ let Login = props => {
 				]);
 
 				if (rs_hmos && rs_hmos.data) {
-					props.fetch_all_hmos_data(rs_hmos.data);
+					dispatch(fetch_all_hmos_data(rs_hmos.data));
 				}
 				if (rs_depts && rs_depts.data) {
-					props.loadDepartments(rs_depts.data);
+					dispatch(loadDepartments(rs_depts.data));
 				}
 				if (rs_invcategories && rs_invcategories.data) {
-					props.loadInvCategories(rs_invcategories.data);
+					dispatch(loadInvCategories(rs_invcategories.data));
 				}
 				if (rs_invsubcategories && rs_invsubcategories.data) {
-					props.loadInvSubCategories(rs_invsubcategories.data);
+					dispatch(loadInvSubCategories(rs_invsubcategories.data));
 				}
 				if (rs_roles && rs_roles.data) {
-					props.loadRoles(rs_roles.data);
+					dispatch(loadRoles(rs_roles.data));
 				}
 				if (rs_specializations && rs_specializations.data) {
-					props.loadSpecializations(rs_specializations.data);
+					dispatch(loadSpecializations(rs_specializations.data));
 				}
 				if (rs_banks && rs_banks.data) {
-					props.loadBanks(rs_banks.data);
+					dispatch(loadBanks(rs_banks.data));
 				}
 				if (rs_countries && rs_countries.data) {
-					props.loadCountries(rs_countries.data);
+					dispatch(loadCountries(rs_countries.data));
 				}
 				// console.log(rs);
-				props.loginUser(rs);
+				dispatch(loginUser(rs));
 				storage.setItem(TOKEN_COOKIE, rs);
 				storage.setItem('permissions', JSON.stringify(rs.permissions));
 
@@ -173,7 +172,7 @@ let Login = props => {
 					fullscreen ? ' full-screen' : ''
 				} with-content-panel${theme_mode ? ' color-scheme-dark' : ''}`;
 
-				redirectToPage(rs.role, props.history);
+				redirectToPage(rs.role, history);
 			} catch (e) {
 				console.log(e);
 				setState({ ...state, submitting: false });
@@ -191,7 +190,6 @@ let Login = props => {
 	};
 
 	const { submitting } = state;
-	const { error, handleSubmit } = props;
 
 	return (
 		<section className="fxt-animation template">
@@ -253,19 +251,4 @@ let Login = props => {
 	);
 };
 
-Login = reduxForm({
-	form: 'login_user',
-	validate,
-})(Login);
-
-export default connect(null, {
-	loginUser,
-	loadDepartments,
-	loadInvCategories,
-	loadInvSubCategories,
-	loadRoles,
-	loadSpecializations,
-	loadBanks,
-	loadCountries,
-	fetch_all_hmos_data,
-})(Login);
+export default reduxForm({ form: 'login_user', validate })(Login);

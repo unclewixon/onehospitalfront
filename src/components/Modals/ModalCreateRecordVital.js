@@ -69,7 +69,8 @@ const validate = values => {
 
 	return errors;
 };
-export class ModalCreateRecordVital extends Component {
+
+class ModalCreateRecordVital extends Component {
 	state = {
 		submitting: false,
 	};
