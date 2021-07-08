@@ -161,8 +161,19 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 
 				<div className="row">
 					<div className="col-sm-6">
-						<div className="form-group">
+						<div className="form-group relative">
 							<label>Patient</label>
+							{patient && (
+								<div className="posit-top">
+									<div className="row">
+										<div className="col-sm-12">
+											<span className="badge badge-info text-white">
+												{patient.hmo.name}
+											</span>
+										</div>
+									</div>
+								</div>
+							)}
 							<AsyncSelect
 								isClearable
 								getOptionValue={getOptionValues}

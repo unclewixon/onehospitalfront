@@ -235,7 +235,7 @@ function PatientNOKForm(props) {
 						<div className="row">
 							<div className="col-sm">
 								<div className="form-group">
-									<label>Surame</label>
+									<label>Surname</label>
 									<input
 										className="form-control"
 										placeholder="Enter surname name"
@@ -400,6 +400,11 @@ function PatientNOKForm(props) {
 										ref={register}
 										type="text"
 									/>
+									{errors.nok_address && (
+										<small className="text-danger">
+											{errors.nok_address.message}
+										</small>
+									)}
 								</div>
 							</div>
 							<div className="col-sm">
@@ -413,6 +418,11 @@ function PatientNOKForm(props) {
 										ref={register}
 										type="text"
 									/>
+									{errors.nok_phoneNumber && (
+										<small className="text-danger">
+											{errors.nok_phoneNumber.message}
+										</small>
+									)}
 								</div>
 							</div>
 							<div className="col-sm">

@@ -14,6 +14,7 @@ import { notifyError, notifySuccess } from '../../services/notify';
 const AllAppointments = lazy(() => import('./AllAppointments'));
 const AllPatients = lazy(() => import('./AllPatients'));
 const InsuranceTransactions = lazy(() => import('./InsuranceTransactions'));
+const InPatientCare = lazy(() => import('../Nurse/InPatientCare'));
 
 const Home = ({ match, location }) => {
 	const [title, setTitle] = useState('Dashboard');
@@ -32,6 +33,8 @@ const Home = ({ match, location }) => {
 	useEffect(() => {
 		if (page === 'front-desk') {
 			setTitle('Appointments');
+		} else if (page === 'admitted-patients') {
+			setTitle('Patients on Admission');
 		} else {
 			setTitle(startCase(page));
 		}
@@ -97,7 +100,10 @@ const Home = ({ match, location }) => {
 												path={`${match.url}/patients`}
 												component={AllPatients}
 											/>
-
+											<Route
+												path={`${match.url}/admitted-patients`}
+												component={InPatientCare}
+											/>
 											<Route
 												path={`${match.url}/insurance-transactions`}
 												component={InsuranceTransactions}

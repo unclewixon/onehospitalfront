@@ -26,6 +26,7 @@ export const patientSchema = yup.object().shape({
 	address: yup.string().required("Please enter the patient's address"),
 	phoneNumber: yup.string().required("Please enter the patient's phone number"),
 	hmoId: yup.string().required('Please select HMO'),
+	ethnicity: yup.string().required("Please select patient's ethnicity"),
 });
 
 export const patientNOKSchema = yup.object().shape({
@@ -35,7 +36,16 @@ export const patientNOKSchema = yup.object().shape({
 	nok_other_names: yup
 		.string()
 		.required("Please enter the nex of kin's first name and other names"),
-	//nok_email: yup.string().required("Please enter the patient's email address"),
+	nok_email: yup
+		.string()
+		.required("Please enter the next of kin's email address"),
+	nok_phoneNumber: yup
+		.string()
+		.required("Please enter the next of kin's phone number"),
+	nok_relationship: yup
+		.string()
+		.required("Please enter the next of kin's relationship"),
+	nok_address: yup.string().required("Please enter the next of kin's address"),
 });
 
 export const validate = values => {

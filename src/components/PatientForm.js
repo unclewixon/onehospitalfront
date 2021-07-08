@@ -412,6 +412,7 @@ function PatientForm(props) {
 									<input
 										className="form-control"
 										name="phoneNumber"
+										placeholder="Phone Number"
 										defaultValue={patientData.phoneNumber || ''}
 										ref={register}
 										type="text"
@@ -423,7 +424,9 @@ function PatientForm(props) {
 							</div>
 							<div className="col-sm">
 								<div className="form-group">
-									<label>Ethnicity</label>
+									<label>
+										Ethnicity<span className="compulsory-field">*</span>
+									</label>
 									<Select
 										name="ethnicity"
 										ref={register({ name: 'ethnicity' })}
@@ -438,6 +441,11 @@ function PatientForm(props) {
 											);
 										}}
 									/>
+									{errors.ethnicity && (
+										<small className="text-danger">
+											{errors.ethnicity.message}
+										</small>
+									)}
 								</div>
 							</div>
 						</div>

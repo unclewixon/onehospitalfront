@@ -20,7 +20,14 @@ const FrontDeskMenu = () => {
 					<span>Patients</span>
 				</Link>
 			</li>
-
+			<li>
+				<Link to="/front-desk/admitted-patients">
+					<div className="icon-w">
+						<div className="icon-feather-folder-plus" />
+					</div>
+					<span>Admitted Patients</span>
+				</Link>
+			</li>
 			<li>
 				<Link to="/front-desk/insurance-transactions">
 					<div className="icon-w">

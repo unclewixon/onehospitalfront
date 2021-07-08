@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import moment from 'moment';
 import Tooltip from 'antd/lib/tooltip';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 import DatePicker from 'antd/lib/date-picker';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
@@ -21,7 +21,7 @@ const { RangePicker } = DatePicker;
 
 const limit = 12;
 
-const InPatientCare = () => {
+const InPatientCare = ({ match }) => {
 	const [admittedPatients, setAdmittedPatients] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [selected, setSelected] = useState(null);
@@ -37,6 +37,8 @@ const InPatientCare = () => {
 	const [patient, setPatient] = useState('');
 
 	const dispatch = useDispatch();
+
+	const user = useSelector(state => state.user.profile);
 
 	const fetchPatients = useCallback(
 		async (page, patientId, sDate, eDate) => {
@@ -126,9 +128,11 @@ const InPatientCare = () => {
 
 	return (
 		<>
-			<h6 className="element-header">Patients on Admission</h6>
+			{match.path === '/nurse/in-patients/care' && (
+				<h6 className="element-header">Patients on Admission</h6>
+			)}
 			<div className="element-box m-0 mb-4 p-3">
-				<div className="col-md-12 p-4">
+				<div className="col-md-12">
 					<form className="row">
 						<div className="form-group col-md-3">
 							<label htmlFor="patient_id">Patient</label>
@@ -183,7 +187,7 @@ const InPatientCare = () => {
 										<th>Admitted By</th>
 										<th>Room/Floor</th>
 										<th>Status</th>
-										<th></th>
+										{user && user.role === 'nurse' && <th></th>}
 									</tr>
 								</thead>
 								<tbody>
@@ -227,29 +231,35 @@ const InPatientCare = () => {
 														<span className="badge badge-success">Closed</span>
 													)}
 												</td>
-												<td className="row-actions">
-													{!item.suite && !item.nicu && (
-														<Tooltip title="Assign Bed">
+												{user && user.role === 'nurse' && (
+													<td className="row-actions">
+														{!item.suite && !item.nicu && (
+															<Tooltip title="Assign Bed">
+																<a
+																	onClick={() => assignBed(item)}
+																	className="primary">
+																	<i className="fa fa-bed" />
+																</a>
+															</Tooltip>
+														)}
+														<Tooltip title="Admission">
 															<a
-																onClick={() => assignBed(item)}
-																className="primary">
-																<i className="fa fa-bed" />
+																onClick={() =>
+																	showAdmission(item.patient, item)
+																}>
+																<i className="os-icon os-icon-user-male-circle2" />
 															</a>
 														</Tooltip>
-													)}
-													<Tooltip title="Admission">
-														<a
-															onClick={() => showAdmission(item.patient, item)}>
-															<i className="os-icon os-icon-user-male-circle2" />
-														</a>
-													</Tooltip>
-												</td>
+													</td>
+												)}
 											</tr>
 										);
 									})}
 									{admittedPatients.length === 0 && (
 										<tr>
-											<td colSpan="7" className="text-center">
+											<td
+												colSpan={user && user.role === 'nurse' ? '7' : '6'}
+												className="text-center">
 												No result found
 											</td>
 										</tr>
