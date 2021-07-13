@@ -1,27 +1,29 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { confirmAlert } from 'react-confirm-alert';
 import Tooltip from 'antd/lib/tooltip';
 import capitalize from 'lodash.capitalize';
 import { Link } from 'react-router-dom';
 
-import { uploadHmo } from '../../actions/general';
 import waiting from '../../assets/images/waiting.gif';
 import { notifyError } from '../../services/notify';
-import { addHmo, getAllHmos, updateHmo, deleteHmo } from '../../actions/hmo';
+import { fetchHmo, addHmo, updateHmo, deleteHmo } from '../../actions/hmo';
 import TableLoading from '../../components/TableLoading';
+import { request } from '../../services/utilities';
+import { hmoAPI } from '../../services/constants';
 
-const HmoList = props => {
+const HmoList = () => {
 	const initialState = {
 		name: '',
 		email: '',
 		phoneNumber: '',
 		address: '',
+		cacNumber: '',
 		add: true,
 		edit: false,
 	};
-	const [{ name, email, phoneNumber, address }, setState] = useState(
+	const [{ name, email, phoneNumber, address, cacNumber }, setState] = useState(
 		initialState
 	);
 	const [loading, setLoading] = useState(false);
@@ -31,50 +33,74 @@ const HmoList = props => {
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [adding, setAdding] = useState(false);
 
+	const hmoList = useSelector(state => state.hmo.hmo_list);
+
+	const dispatch = useDispatch();
+
 	const handleInputChange = e => {
 		const { name, value } = e.target;
 		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	const onAddHmo = e => {
-		e.preventDefault();
-		const data = {
-			name,
-			email,
-			phoneNumber,
-			address,
-		};
+	const onAddHmo = async e => {
+		try {
+			e.preventDefault();
 
-		setAdding(true);
-		props.addHmo(data).then(response => {
+			const data = {
+				name,
+				email,
+				phoneNumber,
+				address,
+				cacNumber,
+			};
+
+			setAdding(true);
+			const rs = await request(hmoAPI, 'POST', true, data);
+			dispatch(addHmo(rs));
 			setState({ ...initialState });
 			setAdding(false);
-		});
+		} catch (e) {
+			console.log(e);
+			const message =
+				e.message
+					?.map(m => Object.values(m.constraints).join(', '))
+					?.join(', ') || 'could not save hmo';
+			notifyError(message);
+
+			setAdding(false);
+		}
 	};
 
-	const onEdiHmo = e => {
-		setLoading(true);
-		e.preventDefault();
-		const editedData = {
-			id: data.id,
-			name,
-			email,
-			phoneNumber,
-			address,
-		};
-		console.log(editedData);
-		props
-			.updateHmo(editedData, data)
-			.then(response => {
-				setState({ ...initialState });
-				setSubmitButton({ add: true, edit: false });
-				setLoading(false);
-			})
-			.catch(error => {
-				setState({ ...initialState });
-				setSubmitButton({ add: true, edit: false });
-				setLoading(false);
-			});
+	const onEditHmo = async e => {
+		try {
+			e.preventDefault();
+			const info = {
+				id: data.id,
+				name,
+				email,
+				phoneNumber,
+				address,
+				cacNumber,
+			};
+
+			setLoading(true);
+			const url = `${hmoAPI}/${data.id}/update`;
+			const rs = await request(url, 'PATCH', true, info);
+			dispatch(updateHmo(rs));
+			setState({ ...initialState });
+			setSubmitButton({ add: true, edit: false });
+			setLoading(false);
+		} catch (e) {
+			console.log(e);
+			const message =
+				e.message
+					?.map(m => Object.values(m.constraints).join(', '))
+					?.join(', ') || 'could not save hmo';
+			notifyError(message);
+
+			setState({ ...initialState });
+			setLoading(false);
+		}
 	};
 
 	const onClickEdit = data => {
@@ -86,6 +112,7 @@ const HmoList = props => {
 			phoneNumber: data.phoneNumber,
 			address: data.address,
 			logo: data.logo,
+			cacNumber: data.cacNumber,
 		}));
 		getDataToEdit(data);
 	};
@@ -95,13 +122,14 @@ const HmoList = props => {
 		setState({ ...initialState });
 	};
 
-	const onDeleteHmo = data => {
-		props
-			.deleteHmo(data)
-			.then(data => {})
-			.catch(error => {
-				console.log(error);
-			});
+	const onDeleteHmo = async data => {
+		try {
+			const url = `${hmoAPI}/${data.id}`;
+			await request(url, 'DELETE', true);
+			dispatch(deleteHmo(data));
+		} catch (e) {
+			console.log(e);
+		}
 	};
 
 	const confirmDelete = data => {
@@ -134,19 +162,22 @@ const HmoList = props => {
 		});
 	};
 
+	const fetchHmos = useCallback(async () => {
+		try {
+			const rs = await request(hmoAPI, 'GET', true);
+			dispatch(fetchHmo(rs));
+			setDataLoaded(true);
+		} catch (e) {
+			console.log(e);
+			notifyError('could not fetch hmos');
+		}
+	}, [dispatch]);
+
 	useEffect(() => {
 		if (!dataLoaded) {
-			props
-				.getAllHmos()
-				.then(response => {
-					setDataLoaded(true);
-				})
-				.catch(e => {
-					setDataLoaded(true);
-					notifyError(e.message || 'could not fetch lab tests');
-				});
+			fetchHmos();
 		}
-	}, [dataLoaded, props]);
+	}, [dataLoaded, fetchHmos]);
 
 	return (
 		<>
@@ -166,11 +197,12 @@ const HmoList = props => {
 													<th>Name</th>
 													<th>Phone</th>
 													<th>Email</th>
+													<th>CAC Number</th>
 													<th></th>
 												</tr>
 											</thead>
 											<tbody>
-												{props.hmoList.map((hmo, i) => {
+												{hmoList.map((hmo, i) => {
 													return (
 														<tr key={i}>
 															<td>
@@ -182,6 +214,9 @@ const HmoList = props => {
 
 															<td className="nowrap">
 																<span>{hmo.email || '-'}</span>
+															</td>
+															<td className="nowrap">
+																<span>{hmo.cacNumber || '-'}</span>
 															</td>
 															<td className="row-actions">
 																{hmo.name !== 'Private' && (
@@ -218,7 +253,7 @@ const HmoList = props => {
 					</div>
 					<div className="col-lg-4">
 						<div className="pipeline white lined-warning">
-							<form onSubmit={edit ? onEdiHmo : onAddHmo}>
+							<form onSubmit={edit ? onEditHmo : onAddHmo}>
 								<h6 className="form-header">Add New HMO</h6>
 								<div className="form-group">
 									<input
@@ -260,6 +295,16 @@ const HmoList = props => {
 										value={address || ''}
 									/>
 								</div>
+								<div className="form-group">
+									<input
+										className="form-control"
+										placeholder="CAC Number"
+										type="text"
+										name="cacNumber"
+										onChange={handleInputChange}
+										value={cacNumber || ''}
+									/>
+								</div>
 								<div className="form-buttons-w">
 									{add && (
 										<button
@@ -290,7 +335,7 @@ const HmoList = props => {
 													{loading ? (
 														<img src={waiting} alt="submitting" />
 													) : (
-														'edit'
+														'save'
 													)}
 												</span>
 											</button>
@@ -306,16 +351,4 @@ const HmoList = props => {
 	);
 };
 
-const mapStateToProps = state => {
-	return {
-		hmoList: state.hmo.hmo_list,
-	};
-};
-
-export default connect(mapStateToProps, {
-	addHmo,
-	getAllHmos,
-	updateHmo,
-	uploadHmo,
-	deleteHmo,
-})(HmoList);
+export default HmoList;

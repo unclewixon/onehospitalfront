@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
+
 import { searchAPI } from '../services/constants';
-import { getAllHmos } from '../actions/hmo';
 import ModalProformaInvoice from './Modals/ModalProformaInvoice';
 import { serviceAPI } from '../services/constants';
 import { request } from '../services/utilities';
@@ -31,11 +31,10 @@ const ProformaInvoice = props => {
 	const [showModal, setShowModal] = useState(false);
 	const [details, setDetails] = useState([]);
 
-	const didMountRef = useRef(false);
 	const user = useSelector(state => state.user.profile);
 
-	let hmoList = useSelector(state => state.hmo.hmo_list);
-	let hmos = hmoList.map(hmo => {
+	const hmoList = useSelector(state => state.hmo.hmo_list);
+	const hmos = hmoList.map(hmo => {
 		return {
 			value: hmo.id,
 			label: hmo.name,
@@ -95,16 +94,6 @@ const ProformaInvoice = props => {
 	useEffect(() => {
 		if (!loaded) {
 			fetchServicesCategory();
-			props.getAllHmos();
-
-			if (didMountRef.current) {
-				hmos = hmoList.map(hmo => {
-					return {
-						value: hmo.id,
-						label: hmo.name,
-					};
-				});
-			} else didMountRef.current = true;
 		}
 	}, [props, loaded]);
 
@@ -339,6 +328,5 @@ const mapStateToProps = state => {
 export default withRouter(
 	connect(mapStateToProps, {
 		get_all_request_services,
-		getAllHmos,
 	})(ProformaInvoice)
 );

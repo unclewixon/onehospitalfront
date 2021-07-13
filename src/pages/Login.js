@@ -6,7 +6,7 @@ import axios from 'axios';
 import { setGlobal } from 'reactn';
 import { AbilityBuilder } from '@casl/ability';
 import { useEffect } from 'reactn';
-import { fetch_all_hmos_data } from '../actions/hmo';
+import { fetchHmo } from '../actions/hmo';
 
 import waiting from '../assets/images/waiting.gif';
 import { request, redirectToPage, defaultHeaders } from '../services/utilities';
@@ -129,7 +129,7 @@ const Login = ({ location, history, error, handleSubmit }) => {
 				]);
 
 				if (rs_hmos && rs_hmos.data) {
-					dispatch(fetch_all_hmos_data(rs_hmos.data));
+					dispatch(fetchHmo(rs_hmos.data));
 				}
 				if (rs_depts && rs_depts.data) {
 					dispatch(loadDepartments(rs_depts.data));

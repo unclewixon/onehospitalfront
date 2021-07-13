@@ -31,10 +31,7 @@ import {
 	UPDATE_SPECIALIZATION,
 	DELETE_SPECIALIZATION,
 	LOAD_STAFFS,
-	ADD_REQUEST_SERVICE,
 	GET_ALL_REQUEST_SERVICES,
-	UPDATE_REQUEST_SERVICE,
-	DELETE_REQUEST_SERVICE,
 	ADD_LAB_GROUP,
 	UPDATE_LAB_GROUP,
 	DELETE_LAB_GROUP,
@@ -47,26 +44,8 @@ import {
 } from './types';
 
 //Request Service
-export const add_request_service = payload => {
-	return {
-		type: ADD_REQUEST_SERVICE,
-		payload,
-	};
-};
-
 export const get_all_request_services = payload => {
 	return { type: GET_ALL_REQUEST_SERVICES, payload };
-};
-
-export const update_request_service = (payload, previousData) => {
-	return { type: UPDATE_REQUEST_SERVICE, payload, previousData };
-};
-
-export const delete_request_service = payload => {
-	return {
-		type: DELETE_REQUEST_SERVICE,
-		payload,
-	};
 };
 
 //room
@@ -751,26 +730,6 @@ export const getAllStaff = data => {
 	};
 };
 
-export const addRequestService = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.post(`${API_URI}/request-types`, {
-					name: data.name,
-					group: data.group,
-					amount: data.amount,
-				})
-				.then(response => {
-					dispatch(add_request_service(response.data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
 export const getAllRequestServices = () => {
 	return dispatch => {
 		return new Promise((resolve, reject) => {
@@ -778,42 +737,6 @@ export const getAllRequestServices = () => {
 				.get(`${API_URI}/request-types`)
 				.then(response => {
 					dispatch(get_all_request_services(response.data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const updateRequestService = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.patch(`${API_URI}/request-types/${data.id}/update`, {
-					name: data.name,
-					group: data.group,
-					amount: data.amount,
-				})
-				.then(response => {
-					dispatch(update_request_service(response.data, data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const deleteRequestService = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.delete(`${API_URI}/request-types/${data.id}`)
-				.then(response => {
-					dispatch(delete_request_service(data));
 					return resolve({ success: true });
 				})
 				.catch(error => {

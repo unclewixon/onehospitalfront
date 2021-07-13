@@ -490,7 +490,7 @@ export const redirectToPage = (role, history) => {
 				uri = '/cafeteria';
 				break;
 			case 'admin':
-				uri = '/settings/roles';
+				uri = '/settings';
 				break;
 			case 'hmo-officer':
 				uri = '/hmo/dashboard';
@@ -519,6 +519,9 @@ export const redirectToPage = (role, history) => {
 				break;
 			case 'ivf':
 				uri = '/ivf';
+				break;
+			case 'records':
+				uri = '/records';
 				break;
 			default:
 				uri = '/front-desk';

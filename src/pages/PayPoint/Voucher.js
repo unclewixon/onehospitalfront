@@ -134,18 +134,16 @@ export class Voucher extends Component {
 		const { loading, meta, filtering } = this.state;
 		const { vouchers } = this.props;
 		return (
-			<div className="element-wrapper">
-				<div className="element-actions p-3">
-					<button
-						className="btn btn-primary"
-						onClick={() => this.props.createVoucher(true)}>
+			<>
+				<div className="element-actions">
+					<a
+						onClick={() => this.props.createVoucher(true)}
+						className="btn btn-primary btn-sm filled-request">
 						New Voucher
-					</button>
+					</a>
 				</div>
-
-				<div className="col-md-12 p-4">
-					<h6 className="element-header">Filter by:</h6>
-
+				<h6 className="element-header">Vouchers</h6>
+				<div className="element-box m-0 mb-4 p-3">
 					<form className="row">
 						<div className="form-group col-md-3">
 							<label htmlFor="patient_id">Patient</label>
@@ -186,7 +184,7 @@ export class Voucher extends Component {
 					</form>
 				</div>
 
-				<div className="element-box-content">
+				<div className="element-box p-3 m-0">
 					<div className="table table-responsive">
 						{loading ? (
 							<TableLoading />
@@ -287,7 +285,7 @@ export class Voucher extends Component {
 						)}
 					</div>
 				</div>
-			</div>
+			</>
 		);
 	}
 }

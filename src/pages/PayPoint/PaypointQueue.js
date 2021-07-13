@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { connect, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import Pagination from 'antd/lib/pagination';
@@ -25,7 +25,8 @@ import { startBlock, stopBlock } from '../../actions/redux-block';
 import TableLoading from '../../components/TableLoading';
 
 const { RangePicker } = DatePicker;
-const PaypointQueue = ({ staff }) => {
+
+const PaypointQueue = () => {
 	const [show, setShow] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [target, setTarget] = useState(null);
@@ -34,8 +35,6 @@ const PaypointQueue = ({ staff }) => {
 	const [patient, setPatient] = useState('');
 	const [startDate, setStartDate] = useState('');
 	const [endDate, setEndDate] = useState('');
-	// eslint-disable-next-line no-unused-vars
-	const [currentPage, setCurrentPage] = useState(null);
 	const [meta, setMeta] = useState({
 		currentPage: 1,
 		itemsPerPage: 24,
@@ -69,12 +68,10 @@ const PaypointQueue = ({ staff }) => {
 		try {
 			setLoading(true);
 			const p = page || 1;
-			setCurrentPage(p);
 			const url = `transactions/list/pending?page=${p}&limit=24&patient_id=${patient ||
 				''}&startDate=${startDate}&endDate=${endDate}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
-			console.log(rs);
 			setMeta(meta);
 			window.scrollTo({ top: 0, behavior: 'smooth' });
 			const arr = [...result];
@@ -153,10 +150,9 @@ const PaypointQueue = ({ staff }) => {
 	};
 
 	return (
-		<div className="row">
-			<div className="col-md-12 p-4">
-				<h6 className="element-header">Pending Payments</h6>
-
+		<>
+			<h6 className="element-header">Pending Payments</h6>
+			<div className="element-box m-0 mb-4 p-3">
 				<form className="row">
 					<div className="form-group col-md-3">
 						<label htmlFor="patient_id">Patient</label>
@@ -192,12 +188,34 @@ const PaypointQueue = ({ staff }) => {
 				</form>
 			</div>
 
-			<div className="col-sm-12">
-				{loading ? (
-					<TableLoading />
-				) : (
-					<>
-						<div className="table-responsive">
+			<div className="element-box m-0 p-3">
+				<div className="table-responsive">
+					{loading ? (
+						<TableLoading />
+					) : (
+						<>
+							{transactions && (
+								<TransactionTable
+									transactions={transactions}
+									showActionBtns={true}
+									approveTransaction={doApproveTransaction}
+									doApplyVoucher={doApplyVoucher}
+									handlePrint={handlePrintClick}
+									queue={true}
+								/>
+							)}
+							{meta && (
+								<div className="pagination pagination-center mt-4">
+									<Pagination
+										current={parseInt(meta.currentPage, 10)}
+										pageSize={parseInt(meta.itemsPerPage, 10)}
+										total={parseInt(meta.totalPages, 10)}
+										showTotal={total => `Total ${total} transactions`}
+										itemRender={itemRender}
+										onChange={current => onNavigatePage(current)}
+									/>
+								</div>
+							)}
 							<Overlay
 								show={show}
 								target={target}
@@ -235,31 +253,9 @@ const PaypointQueue = ({ staff }) => {
 									</div>
 								</Popover>
 							</Overlay>
-							{transactions && (
-								<TransactionTable
-									transactions={transactions}
-									showActionBtns={true}
-									approveTransaction={doApproveTransaction}
-									doApplyVoucher={doApplyVoucher}
-									handlePrint={handlePrintClick}
-									queue={true}
-								/>
-							)}
-						</div>
-						{meta && (
-							<div className="pagination pagination-center mt-4">
-								<Pagination
-									current={parseInt(meta.currentPage, 10)}
-									pageSize={parseInt(meta.itemsPerPage, 10)}
-									total={parseInt(meta.totalPages, 10)}
-									showTotal={total => `Total ${total} transactions`}
-									itemRender={itemRender}
-									onChange={current => onNavigatePage(current)}
-								/>
-							</div>
-						)}
-					</>
-				)}
+						</>
+					)}
+				</div>
 			</div>
 			{activeData && showReceipt && (
 				<PrintReceiptPortal>
@@ -271,14 +267,8 @@ const PaypointQueue = ({ staff }) => {
 					<Invoice data={activeData} />
 				</PrintReceiptPortal>
 			)}
-		</div>
+		</>
 	);
 };
 
-const mapStatetoProps = state => {
-	return {
-		staff: state.user.profile,
-	};
-};
-
-export default withRouter(connect(mapStatetoProps)(PaypointQueue));
+export default withRouter(PaypointQueue);

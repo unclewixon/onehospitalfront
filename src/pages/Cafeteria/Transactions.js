@@ -239,11 +239,11 @@ class Transactions extends Component {
 							})}
 					</div>
 					<div className="form-group col-md-3">
-						<label>Payment type</label>
+						<label>Payment method</label>
 
 						<input
 							className="form-control"
-							placeholder="Search for payment type"
+							placeholder="Search for payment method"
 							type="text"
 							name="patient"
 							defaultValue=""
@@ -303,7 +303,7 @@ class Transactions extends Component {
 									<th>Date</th>
 									<th>Customer</th>
 									<th>Item Sold</th>
-									<th>Payment Type</th>
+									<th>Payment Method</th>
 									<th>Amount</th>
 									<th>Paid</th>
 								</tr>

@@ -18,7 +18,6 @@ import {
 import { loadInventories } from '../../actions/inventory';
 import { notifyError, notifySuccess } from '../../services/notify';
 import InventoryTable from '../../components/Inventory/InventoryTable';
-import { getAllHmos } from '../../actions/hmo';
 import DownloadInventory from './DownloadInventory';
 import UploadInventory from './UploadInventory';
 import { startBlock, stopBlock } from '../../actions/redux-block';
@@ -38,7 +37,6 @@ class InventoryList extends Component {
 	};
 
 	componentDidMount() {
-		this.props.getAllHmos();
 		this.fetchInventories();
 		this.fetchVendors();
 	}
@@ -272,7 +270,6 @@ const mapStateToProps = (state, ownProps) => {
 export default connect(mapStateToProps, {
 	createInventory,
 	loadInventories,
-	getAllHmos,
 	startBlock,
 	stopBlock,
 })(InventoryList);

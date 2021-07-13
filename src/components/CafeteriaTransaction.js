@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import CafeteriaRecipt from './CafeteriaRecipt';
-import { paymentType } from '../services/constants';
 import { notifyError, notifySuccess } from '../services/notify';
 
 const CafeteriaTransaction = ({
@@ -22,6 +22,8 @@ const CafeteriaTransaction = ({
 	const [total, setTotal] = useState(0);
 	const [balance, setBalance] = useState(0);
 	const [transaction, setTransaction] = useState(null);
+
+	const paymentMethods = useSelector(state => state.utility.methods);
 
 	useEffect(() => {
 		if (!cart.length) {
@@ -165,11 +167,11 @@ const CafeteriaTransaction = ({
 					<div className="row">
 						<div className="col-md-12">
 							<select className="form-control" onChange={handleType} required>
-								<option value="">Payment type...</option>
-								{paymentType.map((type, i) => {
+								<option value="">Payment method</option>
+								{paymentMethods.map((type, i) => {
 									return (
-										<option value={type.value} key={i}>
-											{type.label}
+										<option value={type.name} key={i}>
+											{type.name}
 										</option>
 									);
 								})}

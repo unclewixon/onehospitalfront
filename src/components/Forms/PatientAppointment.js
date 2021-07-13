@@ -11,6 +11,7 @@ import {
 	staffname,
 	request,
 	formatPatientId,
+	formatCurrency,
 } from '../../services/utilities';
 import { serviceAPI } from '../../services/constants';
 import { notifyError, notifySuccess } from '../../services/notify';
@@ -156,6 +157,11 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 								? formatNumber(0)
 								: formatNumber(service.hmoTarrif)
 						}`}
+					</div>
+				)}
+				{patient && patient.wallet > 0 && (
+					<div className="alert alert-danger">
+						{`Outstanding Balance: ${formatCurrency(patient.wallet)}`}
 					</div>
 				)}
 

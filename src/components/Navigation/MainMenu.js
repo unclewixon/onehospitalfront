@@ -12,7 +12,7 @@ import DoctorMenu from './DoctorMenu';
 import CafeteriaMenu from './CafeteriaMenu';
 import ClinicalLabMenu from './ClinicalLabMenu';
 import { staffname, parseAvatar } from '../../services/utilities';
-import Account from './Account';
+import AccountMenu from './AccountMenu';
 import PayPointMenu from './PayPointMenu';
 import PharmacyMenu from './PharmacyMenu';
 import RadiologyMenu from './RadiologyMenu';
@@ -21,6 +21,7 @@ import MyAccount from './MyAccount';
 import NurseMenu from './NurseMenu';
 import AdminMenu from './AdminMenu';
 import SettingsMenu from './SettingsMenu';
+import RecordsMenu from './RecordsMenu';
 
 class MainMenu extends Component {
 	menu_ref = null;
@@ -120,7 +121,8 @@ class MainMenu extends Component {
 					)}
 					{role === 'cafeteria' && <CafeteriaMenu />}
 					{role === 'hmo-officer' && <HMOMenu />}
-					{role === 'account' && <Account />}
+					{role === 'account' && <AccountMenu />}
+					{role === 'records' && <RecordsMenu />}
 					{role === 'admin' && <AdminMenu role={role} />}
 					<MyAccount />
 					{(role === 'lab-attendant' ||

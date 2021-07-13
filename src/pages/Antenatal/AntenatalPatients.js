@@ -118,7 +118,7 @@ const AntenatalPatients = () => {
 	return (
 		<>
 			<div className="element-box m-0 mb-4 p-3">
-				<div className="col-md-12 p-4">
+				<div className="col-md-12">
 					<form className="row">
 						<div className="form-group col-md-3">
 							<label htmlFor="patient_id">Patient</label>

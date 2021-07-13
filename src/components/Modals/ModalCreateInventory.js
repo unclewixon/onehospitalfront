@@ -15,7 +15,6 @@ import { inventoryAPI, vendorAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
 import { addInventory } from '../../actions/inventory';
-import { getAllHmos } from '../../actions/hmo';
 
 const validate = values => {
 	const errors = {};
@@ -38,7 +37,6 @@ class ModalCreateInventory extends Component {
 	};
 
 	componentDidMount() {
-		this.props.getAllHmos();
 		this.fetchVendors();
 		const { sub_categories } = this.props;
 		this.setState({ sub_categories: sub_categories });
@@ -327,5 +325,4 @@ export default connect(mapStateToProps, {
 	closeModals,
 	reset,
 	addInventory,
-	getAllHmos,
 })(ModalCreateInventory);

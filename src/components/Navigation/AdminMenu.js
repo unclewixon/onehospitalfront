@@ -10,10 +10,11 @@ import HrMenu from './HrMenu';
 import InventoryMenu from './InventoryMenu';
 import CafeteriaMenu from './CafeteriaMenu';
 import HMOMenu from './HMOMenu';
-import Account from './Account';
+import AccountMenu from './AccountMenu';
 import SettingsMenu from './SettingsMenu';
 import FrontDeskMenu from './FrontDeskMenu';
 import ProcedureMenu from './ProcedureMenu';
+import RecordsMenu from './RecordsMenu';
 
 const AdminMenu = ({ role }) => {
 	return (
@@ -67,9 +68,13 @@ const AdminMenu = ({ role }) => {
 			</li>
 			<HMOMenu />
 			<li className="sub-header">
+				<span>RECORDS</span>
+			</li>
+			<RecordsMenu />
+			<li className="sub-header">
 				<span>ACCOUNTING & REPORT</span>
 			</li>
-			<Account />
+			<AccountMenu />
 			<SettingsMenu role={role} />
 		</>
 	);

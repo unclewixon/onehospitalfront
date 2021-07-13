@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
 
 import CreateNewTransaction from '../../components/CreateNewTransaction';
-import { connect } from 'react-redux';
-import { getAllHmos } from '../../actions/hmo';
 
 export class NewTransaction extends Component {
-	componentDidMount() {
-		this.props.getAllHmos();
-	}
-
 	render() {
-		return <CreateNewTransaction />;
+		return (
+			<div className="element-box p-3 m-0">
+				<CreateNewTransaction />
+			</div>
+		);
 	}
 }
 
-export default connect(null, { getAllHmos })(NewTransaction);
+export default NewTransaction;

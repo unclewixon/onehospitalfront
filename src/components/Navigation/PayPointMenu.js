@@ -38,14 +38,6 @@ const PayPointMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/paypoint/insurance-bills">
-					<div className="icon-w">
-						<div className="os-icon os-icon-ui-55" />
-					</div>
-					<span>Insurance Bills</span>
-				</Link>
-			</li>
-			<li>
 				<Link to="/paypoint/vouchers">
 					<div className="icon-w">
 						<div className="os-icon os-icon-newspaper" />

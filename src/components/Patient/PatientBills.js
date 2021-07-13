@@ -122,7 +122,7 @@ const PatientBills = () => {
 													<th>Date</th>
 													<th>Amount</th>
 													<th>Balance</th>
-													<th>Payment Type</th>
+													<th>Payment Method</th>
 													<th>Status</th>
 													<th>Received By</th>
 												</tr>

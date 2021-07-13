@@ -1,4 +1,4 @@
-import { LOAD_BANKS, LOAD_COUNTRIES } from './types';
+import { LOAD_BANKS, LOAD_COUNTRIES, LOAD_PAYMENT_METHODS } from './types';
 
 export const loadBanks = data => {
 	return {
@@ -10,6 +10,13 @@ export const loadBanks = data => {
 export const loadCountries = data => {
 	return {
 		type: LOAD_COUNTRIES,
+		payload: data,
+	};
+};
+
+export const loadPaymentMethods = data => {
+	return {
+		type: LOAD_PAYMENT_METHODS,
 		payload: data,
 	};
 };

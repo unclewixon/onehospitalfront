@@ -17,6 +17,8 @@ import ConsultingRoom from './ConsultingRoom';
 import Consumable from './Consumable';
 import AntenatalPackage from './AntenatalPackage';
 import NicuAccommodation from './NicuAccommodation';
+import PaymentMethod from './PaymentMethod';
+import Settings from './Settings';
 
 const Home = ({ match, location }) => {
 	const [toggle, setToggle] = useState(false);
@@ -37,21 +39,41 @@ const Home = ({ match, location }) => {
 						</a>
 					</div>
 					<ul className="ae-main-menu">
+						<li className={page === 'settings' ? 'active' : ''}>
+							<Link to="/settings">
+								<i className="os-icon os-icon-layers" />
+								<span>
+									Global
+									<br />
+									Settings
+								</span>
+							</Link>
+						</li>
 						<li className={page === 'roles' ? 'active' : ''}>
 							<Link to="/settings/roles">
-								<i className="os-icon os-icon-hierarchy-structure-2" />
+								<i className="os-icon os-icon-layers" />
 								<span>Roles</span>
 							</Link>
 						</li>
 						<li className={page === 'departments' ? 'active' : ''}>
 							<Link to="/settings/departments">
-								<i className="os-icon os-icon-folder-plus" />
+								<i className="os-icon os-icon-layers" />
 								<span>Departments</span>
+							</Link>
+						</li>
+						<li className={page === 'payment-methods' ? 'active' : ''}>
+							<Link to="/settings/payment-methods">
+								<i className="os-icon os-icon-layers" />
+								<span>
+									Payment
+									<br />
+									Methods
+								</span>
 							</Link>
 						</li>
 						<li className={page === 'consulting-room' ? 'active' : ''}>
 							<Link to="/settings/consulting-room">
-								<i className="os-icon os-icon-documents-03" />
+								<i className="os-icon os-icon-layers" />
 								<span>
 									Consulting
 									<br /> Rooms MGT
@@ -60,13 +82,13 @@ const Home = ({ match, location }) => {
 						</li>
 						<li className={page === 'diagnosis' ? 'active' : ''}>
 							<Link to="/settings/diagnosis">
-								<i className="os-icon os-icon-search" />
+								<i className="os-icon os-icon-layers" />
 								<span>Diagnosis</span>
 							</Link>
 						</li>
 						<li className={page === 'lab-mgt' ? 'active' : ''}>
 							<Link to="/settings/lab-mgt">
-								<i className="os-icon os-icon-ui-44" />
+								<i className="os-icon os-icon-layers" />
 								<span>
 									Lab Tests <br /> Management
 								</span>
@@ -74,13 +96,13 @@ const Home = ({ match, location }) => {
 						</li>
 						<li className={page === 'room-mgt' ? 'active' : ''}>
 							<Link to="/settings/room-mgt">
-								<i className="os-icon os-icon-home" />
+								<i className="os-icon os-icon-layers" />
 								<span>Room MGT</span>
 							</Link>
 						</li>
 						<li className={page === 'leave-category' ? 'active' : ''}>
 							<Link to="/settings/leave-category">
-								<i className="os-icon os-icon-map" />
+								<i className="os-icon os-icon-layers" />
 								<span>
 									Leave
 									<br />
@@ -141,6 +163,7 @@ const Home = ({ match, location }) => {
 				</div>
 			)}
 			<Switch>
+				<Route path={`${match.url}`} component={Settings} exact />
 				<Route path={`${match.url}/roles`} component={Roles} />
 				<Route path={`${match.url}/departments`} component={Departments} />
 				<Route path={`${match.url}/consultation`} component={Consultation} />
@@ -167,7 +190,10 @@ const Home = ({ match, location }) => {
 					path={`${match.url}/nicu-accommodations`}
 					component={NicuAccommodation}
 				/>
-				<Route component={Roles} />
+				<Route
+					path={`${match.url}/payment-methods`}
+					component={PaymentMethod}
+				/>
 			</Switch>
 		</div>
 	);

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import DatePicker from 'antd/lib/date-picker';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import Popover from 'antd/lib/popover';
+import Tooltip from 'antd/lib/tooltip';
 import Pagination from 'antd/lib/pagination';
 
 import { searchAPI } from '../../services/constants';
@@ -14,12 +15,15 @@ import {
 	itemRender,
 	formatCurrency,
 	patientname,
+	updateImmutable,
 } from '../../services/utilities';
 import { loadTransaction } from '../../actions/transaction';
 import ModalServiceDetails from '../../components/Modals/ModalServiceDetails';
 import InputCode from '../../components/FrontDesk/InputCode';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import TableLoading from '../../components/TableLoading';
+import { confirmAction } from '../../services/utilities';
+import { notifySuccess, notifyError } from '../../services/notify';
 
 const { RangePicker } = DatePicker;
 
@@ -145,6 +149,66 @@ class InsuranceTransactions extends Component {
 		this.setState({ visible: { show: e, id } });
 	};
 
+	doApprove = async id => {
+		try {
+			const { transactions } = this.props;
+			this.setState({ submitting: true });
+			const url = `transactions/${id}/approve`;
+			const rs = await request(url, 'PATCH', true);
+			if (rs.success) {
+				const uptdTransactions = updateImmutable(transactions, rs.transaction);
+				this.props.loadTransaction(uptdTransactions);
+				notifySuccess('Hmo transaction approved');
+				this.setState({ submitting: false });
+			} else {
+				notifyError(rs.message);
+				this.setState({ submitting: false });
+			}
+		} catch (e) {
+			this.setState({ submitting: false });
+			notifyError(e.message || 'could not approve transaction');
+		}
+	};
+
+	approve = itemId => {
+		confirmAction(
+			this.doApprove,
+			itemId,
+			'Do you want to approve this transaction without code?',
+			'Are you sure?'
+		);
+	};
+
+	doTransfer = async id => {
+		try {
+			const { transactions } = this.props;
+			this.setState({ submitting: true });
+			const url = `transactions/${id}/transfer`;
+			const rs = await request(url, 'PATCH', true);
+			if (rs.success) {
+				const uptdTransactions = updateImmutable(transactions, rs.transaction);
+				this.props.loadTransaction(uptdTransactions);
+				notifySuccess('Hmo transaction transferred');
+				this.setState({ submitting: false });
+			} else {
+				notifyError(rs.message);
+				this.setState({ submitting: false });
+			}
+		} catch (e) {
+			this.setState({ submitting: false });
+			notifyError(e.message || 'could not transfer transaction');
+		}
+	};
+
+	transfer = itemId => {
+		confirmAction(
+			this.doTransfer,
+			itemId,
+			'Do you want to transfer this transaction to paypoint?',
+			'Are you sure?'
+		);
+	};
+
 	render() {
 		const {
 			filtering,
@@ -155,7 +219,7 @@ class InsuranceTransactions extends Component {
 			visible,
 			meta,
 		} = this.state;
-		const transactions = this.props.reviewTransactions;
+		const { transactions } = this.props;
 		return (
 			<>
 				<div className="element-box m-0 mb-4 p-3">
@@ -252,8 +316,7 @@ class InsuranceTransactions extends Component {
 										<th>HMO</th>
 										<th>SERVICE</th>
 										<th>AMOUNT (&#x20A6;)</th>
-										<th>PAYMENT TYPE</th>
-										<th>HMO TRANSACTION CODE</th>
+										<th>CODE</th>
 										<th>STATUS</th>
 										<th>ACTIONS</th>
 									</tr>
@@ -266,26 +329,28 @@ class InsuranceTransactions extends Component {
 													{moment(item.createdAt).format('DD-MM-YYYY H:mma')}
 												</td>
 												<td>{patientname(item.patient)}</td>
-												<td>{item.hmo ? item.hmo.name : 'No Hmo'}</td>
+												<td>{`${item.hmo?.name || '--'} (${item.hmo
+													?.phoneNumber || ''})`}</td>
 												<td>
 													<span className="text-capitalize">
 														{item.transaction_type}
 													</span>
-													<a
-														className="item-title text-primary text-underline ml-2"
-														onClick={() =>
-															this.viewDetails(
-																item.transaction_type,
-																item.transaction_details
-															)
-														}>
-														details
-													</a>
+													{item.transaction_type !== 'registration' && (
+														<a
+															className="item-title text-primary text-underline ml-2"
+															onClick={() =>
+																this.viewDetails(
+																	item.transaction_type,
+																	item.transaction_details
+																)
+															}>
+															details
+														</a>
+													)}
 												</td>
 												<td>
 													{item.amount ? formatCurrency(item.amount) : 0.0}
 												</td>
-												<td>{item.payment_type || 'Not specified'}</td>
 
 												<td>{item.hmo_approval_code || '--'}</td>
 												<td>
@@ -308,32 +373,50 @@ class InsuranceTransactions extends Component {
 														(item.hmo_approval_code &&
 															item.hmo_approval_code === '')) &&
 														item.status !== 1 && (
-															<Popover
-																title=""
-																overlayClassName="select-bed"
-																content={
-																	<InputCode
-																		transaction={item}
-																		transactions={transactions}
-																		loadTransaction={trs =>
-																			this.props.loadTransaction(trs)
-																		}
-																		doHide={this.doHide}
-																	/>
-																}
-																trigger="click"
-																visible={
-																	visible &&
-																	visible.id === item.id &&
-																	visible.show
-																}
-																onVisibleChange={e =>
-																	this.handleVisibleChange(e, item.id)
-																}>
-																<a className="btn btn-primary btn-sm text-white">
-																	Apply Code
-																</a>
-															</Popover>
+															<>
+																<Popover
+																	title=""
+																	overlayClassName="select-bed"
+																	content={
+																		<InputCode
+																			transaction={item}
+																			transactions={transactions}
+																			loadTransaction={trs =>
+																				this.props.loadTransaction(trs)
+																			}
+																			doHide={this.doHide}
+																		/>
+																	}
+																	trigger="click"
+																	visible={
+																		visible &&
+																		visible.id === item.id &&
+																		visible.show
+																	}
+																	onVisibleChange={e =>
+																		this.handleVisibleChange(e, item.id)
+																	}>
+																	<Tooltip title="Enter Code">
+																		<a className="text-primary btn-sm text-white mr-2 px-1">
+																			<i className="os-icon os-icon-thumbs-up" />
+																		</a>
+																	</Tooltip>
+																</Popover>
+																<Tooltip title="Approve Without Code">
+																	<a
+																		className="text-success btn-sm text-white mr-2 px-1"
+																		onClick={() => this.approve(item.id)}>
+																		<i className="os-icon os-icon-check-square" />
+																	</a>
+																</Tooltip>
+																<Tooltip title="Transfer to Paypoint">
+																	<a
+																		className="text-info btn-sm text-white mr-2 px-1"
+																		onClick={() => this.transfer(item.id)}>
+																		<i className="os-icon os-icon-mail-18" />
+																	</a>
+																</Tooltip>
+															</>
 														)}
 												</td>
 											</tr>
@@ -376,8 +459,7 @@ class InsuranceTransactions extends Component {
 
 const mapStateToProps = state => {
 	return {
-		reviewTransactions: state.transaction.reviewTransaction,
-		//	hmoList: state.hmo.hmo_list,
+		transactions: state.transaction.reviewTransaction,
 	};
 };
 

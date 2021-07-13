@@ -9,7 +9,7 @@ import {
 	request,
 } from '../../services/utilities';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
-import { transactionPaymentType, vouchersAPI } from '../../services/constants';
+import { vouchersAPI } from '../../services/constants';
 import { updateImmutable } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
@@ -82,7 +82,6 @@ class ModalApproveTransaction extends Component {
 				patient_id: items.patient.id,
 				is_part_payment: isPart ? 1 : 0,
 			};
-			console.log('console.log(datum);');
 
 			console.log(datum);
 			this.setState({ submitting: true });
@@ -179,6 +178,7 @@ class ModalApproveTransaction extends Component {
 			handleSubmit,
 			approve_hmo_transaction,
 			approveTransaction,
+			paymentMethods,
 		} = this.props;
 		const { submitting, hidden, amountClass, isPart } = this.state;
 		return (
@@ -216,9 +216,12 @@ class ModalApproveTransaction extends Component {
 													validate={[required]}
 													component={renderSelect}
 													onChange={this.handleChange}
-													label="Payment Type"
-													placeholder="Select Payment Type"
-													data={transactionPaymentType}
+													label="Payment Method"
+													placeholder="Select Payment Method"
+													data={paymentMethods.map(p => ({
+														name: p.name,
+														id: p.name,
+													}))}
 												/>
 											</div>
 										</div>
@@ -228,7 +231,6 @@ class ModalApproveTransaction extends Component {
 													id="amount_paid"
 													name="amount_paid"
 													component={renderTextInput}
-													// defaultValue={`NGN ${approveTransaction.amount}`}
 													type="text"
 													label="Amount"
 													readOnly={!isPart}
@@ -347,6 +349,7 @@ const mapStateToProps = (state, ownProps) => {
 		showReceipt: state.paypoint.showReceipt,
 		showInvoice: state.paypoint.showInvoice,
 		activeData: state.paypoint.transactionData,
+		paymentMethods: state.utility.methods,
 	};
 };
 

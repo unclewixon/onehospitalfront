@@ -129,7 +129,7 @@ const Reciept = ({ data }) => {
 											fontWeight: 'bold',
 											marginBottom: 3,
 										}}>
-										PAYMENT TYPE:
+										PAYMENT METHOD:
 									</span>
 									<span style={{ fontSize: 8, fontWeight: 'bold' }}>
 										{`${data?.payment_type}`.toUpperCase()}

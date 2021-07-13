@@ -119,7 +119,7 @@ class Dashboard extends Component {
 		const reverse = [...enrolments].reverse();
 		return (
 			<div className="row">
-				<div className="col-md-12 p-4">
+				<div className="col-md-12">
 					<form className="row">
 						<div className="form-group col-md-3">
 							<label className="" htmlFor="patient_id">

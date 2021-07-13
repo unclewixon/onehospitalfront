@@ -1,8 +1,13 @@
-import { LOAD_BANKS, LOAD_COUNTRIES } from '../actions/types';
+import {
+	LOAD_BANKS,
+	LOAD_COUNTRIES,
+	LOAD_PAYMENT_METHODS,
+} from '../actions/types';
 
 const INITIAL_STATE = {
 	banks: [],
 	countries: [],
+	methods: [],
 };
 
 const utility = (state = INITIAL_STATE, action) => {
@@ -11,6 +16,8 @@ const utility = (state = INITIAL_STATE, action) => {
 			return { ...state, banks: action.payload };
 		case LOAD_COUNTRIES:
 			return { ...state, countries: action.payload };
+		case LOAD_PAYMENT_METHODS:
+			return { ...state, methods: action.payload };
 		default:
 			return state;
 	}

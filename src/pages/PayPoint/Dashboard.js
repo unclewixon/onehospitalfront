@@ -9,7 +9,7 @@ import { loadTodayTransaction } from '../../actions/transaction';
 import TransactionTable from '../../components/Tables/TransactionTable';
 import TableLoading from '../../components/TableLoading';
 
-export class Dashboard extends Component {
+class Dashboard extends Component {
 	state = {
 		loading: false,
 		meta: null,
@@ -22,8 +22,7 @@ export class Dashboard extends Component {
 	fetchTransaction = async () => {
 		try {
 			this.setState({ loading: true });
-			let today = moment().format('YYYY-MM-DD');
-			console.log(today);
+			const today = moment().format('YYYY-MM-DD');
 			const url = `${transactionsAPI}/list?patient_id=&startDate=${today}&endDate=${today}&transaction_type=&status=`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
@@ -38,20 +37,20 @@ export class Dashboard extends Component {
 		const { loading } = this.state;
 		const transactions = this.props.todayTransaction;
 		return (
-			<div className="col-sm-12">
-				<div className="element-box">
-					<h6 className="element-header">
-						Today's Transactions ({moment().format('DD-MMM-YYYY')})
-					</h6>
-					{loading ? (
-						<TableLoading />
-					) : (
-						<div className="table-responsive">
+			<>
+				<h6 className="element-header">
+					Today's Transactions ({moment().format('DD-MMM-YYYY')})
+				</h6>
+				<div className="element-box p-3 m-0">
+					<div className="table-responsive">
+						{loading ? (
+							<TableLoading />
+						) : (
 							<TransactionTable transactions={transactions} queue={true} />
-						</div>
-					)}
+						)}
+					</div>
 				</div>
-			</div>
+			</>
 		);
 	}
 }

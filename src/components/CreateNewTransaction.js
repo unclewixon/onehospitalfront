@@ -1,18 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { useHistory, withRouter } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import { searchAPI } from '../services/constants';
-import { getAllHmos } from '../actions/hmo';
 
-import {
-	transactionsAPI,
-	paymentTypeExtra,
-	serviceAPI,
-} from '../services/constants';
+import { transactionsAPI, serviceAPI } from '../services/constants';
 import { request } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
@@ -30,15 +25,18 @@ const CreateNewTransaction = props => {
 	const [servicesCategory, setServicesCategory] = useState([]);
 	const [amount, setAmount] = useState(0);
 
-	const didMountRef = useRef(false);
-
-	let hmoList = useSelector(state => state.hmo.hmo_list);
-	let hmos = hmoList.map(hmo => {
+	const hmoList = useSelector(state => state.hmo.hmo_list);
+	const hmos = hmoList.map(hmo => {
 		return {
 			value: hmo.id,
 			label: hmo.name,
 		};
 	});
+
+	const paymentMethods = useSelector(state => state.utility.methods).map(p => ({
+		label: p.name,
+		value: p.name,
+	}));
 
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option => `${option.other_names} ${option.surname}`;
@@ -98,16 +96,6 @@ const CreateNewTransaction = props => {
 	useEffect(() => {
 		if (!loaded) {
 			fetchServicesCategory();
-			props.getAllHmos();
-
-			if (didMountRef.current) {
-				hmos = hmoList.map(hmo => {
-					return {
-						value: hmo.id,
-						label: hmo.name,
-					};
-				});
-			} else didMountRef.current = true;
 		}
 	}, [props, loaded]);
 
@@ -313,7 +301,7 @@ const CreateNewTransaction = props => {
 				<div className="row">
 					<div className="form-group col-sm-6">
 						<label>
-							Payment Type{' '}
+							Payment Method{' '}
 							{multi ? (
 								<span className="mx-1 text-danger">* required </span>
 							) : (
@@ -323,8 +311,8 @@ const CreateNewTransaction = props => {
 
 						<Select
 							name="payment_type"
-							placeholder="Select Payment Type"
-							options={paymentTypeExtra}
+							placeholder="Select Payment Method"
+							options={paymentMethods}
 							ref={register({ name: 'payment_type' })}
 							onChange={evt => {
 								if (evt === null) {
@@ -398,6 +386,5 @@ const mapStateToProps = state => {
 export default withRouter(
 	connect(mapStateToProps, {
 		get_all_request_services,
-		getAllHmos,
 	})(CreateNewTransaction)
 );

@@ -20,10 +20,10 @@ class InputCode extends Component {
 	}
 
 	asignCode = async () => {
-		const { transaction, transactions, loadTransaction } = this.props;
-		const { hmo_approval_code } = this.state;
-		this.setState({ submitting: true });
 		try {
+			const { transaction, transactions, loadTransaction } = this.props;
+			const { hmo_approval_code } = this.state;
+			this.setState({ submitting: true });
 			transaction.hmo_approval_code = hmo_approval_code;
 			const url = `transactions/${transaction.id}/update?hmo_approval_code=${hmo_approval_code}`;
 			const rs = await request(url, 'PATCH', true);
@@ -35,7 +35,7 @@ class InputCode extends Component {
 				this.setState({ submitting: false });
 				this.props.doHide();
 			} else {
-				notifyError(`${rs.message}`);
+				notifyError(rs.message);
 				this.setState({ submitting: false });
 				this.props.doHide();
 			}

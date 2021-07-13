@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
 import moment from 'moment';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 
 import {
@@ -12,34 +12,35 @@ import {
 	patientname,
 } from '../../services/utilities';
 import { delete_transaction } from '../../actions/transaction';
-import { applyVoucher, approveTransaction } from '../../actions/general';
+import { approveTransaction } from '../../actions/general';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { Can } from '../common/Can';
 import ModalServiceDetails from '../Modals/ModalServiceDetails';
+import ModalShowTransactions from '../Modals/ModalShowTransactions';
 
 const TransactionTable = ({
-	approveTransaction,
-	applyVoucher,
 	handlePrint,
 	transactions,
-	delete_transaction,
 	showPrint = false,
 	showActionBtns,
-	columns,
 	queue,
 }) => {
 	const [showModal, setShowModal] = useState(false);
+	const [showTransactions, setShowTransactions] = useState(false);
 	const [details, setDetails] = useState([]);
+	const [patient, setPatient] = useState(null);
+
+	const dispatch = useDispatch();
 
 	const doApproveTransaction = item => {
-		approveTransaction(item);
+		dispatch(approveTransaction(item));
 	};
 
 	const deleteTask = async data => {
 		try {
 			const url = `transactions/${data.id}`;
 			await request(url, 'DELETE', true);
-			delete_transaction(data);
+			dispatch(delete_transaction(data));
 			notifySuccess(`Transaction deleted!`);
 		} catch (err) {
 			console.log(err);
@@ -57,10 +58,18 @@ const TransactionTable = ({
 		setDetails({ transaction_type, data });
 	};
 
+	const showList = patient => {
+		document.body.classList.add('modal-open');
+		setShowTransactions(true);
+		setPatient(patient);
+	};
+
 	const closeModal = () => {
 		document.body.classList.remove('modal-open');
 		setShowModal(false);
+		setShowTransactions(false);
 		setDetails([]);
+		setPatient(null);
 	};
 
 	return (
@@ -73,7 +82,7 @@ const TransactionTable = ({
 						<th>DEPARTMENT</th>
 						<th>AMOUNT (&#x20A6;)</th>
 						{!queue && <th>BALANCE (&#x20A6;)</th>}
-						{!queue && <th>PAYMENT TYPE</th>}
+						{!queue && <th>PAYMENT METHOD</th>}
 						<th>PAYMENT STATUS</th>
 						<th>RECEIVED By</th>
 						<th className="text-center">ACTIONS</th>
@@ -86,7 +95,11 @@ const TransactionTable = ({
 								<td>
 									{moment(transaction.createdAt).format('DD-MM-YYYY h:mm a')}
 								</td>
-								<td>{patientname(transaction.patient)}</td>
+								<td>
+									<a onClick={() => showList(transaction.patient)}>
+										{patientname(transaction.patient)}
+									</a>
+								</td>
 								<td className="flex">
 									<span className="text-capitalize">
 										{transaction.transaction_type}
@@ -168,7 +181,7 @@ const TransactionTable = ({
 					})}
 					{transactions.length === 0 && (
 						<tr className="text-center">
-							<td colSpan="7">No transactions</td>
+							<td colSpan={!queue ? '9' : '7'}>No transactions</td>
 						</tr>
 					)}
 				</tbody>
@@ -179,12 +192,14 @@ const TransactionTable = ({
 					closeModal={() => closeModal()}
 				/>
 			)}
+			{showTransactions && (
+				<ModalShowTransactions
+					patient={patient}
+					closeModal={() => closeModal()}
+				/>
+			)}
 		</>
 	);
 };
 
-export default connect(null, {
-	applyVoucher,
-	approveTransaction,
-	delete_transaction,
-})(TransactionTable);
+export default TransactionTable;

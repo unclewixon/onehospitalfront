@@ -100,7 +100,7 @@ const CafeteriaRecipt = ({
 											fontsize: '12px',
 											padding: '5px 0px',
 										}}>
-										Payment Type
+										Payment Method
 									</td>
 									<td
 										style={{

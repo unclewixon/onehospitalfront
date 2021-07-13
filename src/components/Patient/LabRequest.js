@@ -5,7 +5,6 @@ import { withRouter } from 'react-router-dom';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
-import { Table } from 'react-bootstrap';
 
 import { searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
@@ -19,7 +18,6 @@ import { formatPatientId } from '../../services/utilities';
 const defaultValues = {
 	request_note: '',
 	urgent: false,
-	payLater: false,
 };
 
 const LabRequest = ({ module, history, location }) => {
@@ -41,7 +39,6 @@ const LabRequest = ({ module, history, location }) => {
 	const [labTest, setLabTest] = useState(null);
 
 	const [urgent, setUrgent] = useState(false);
-	const [payLater, setPayLater] = useState(false);
 
 	const currentPatient = useSelector(state => state.user.patient);
 
@@ -125,7 +122,7 @@ const LabRequest = ({ module, history, location }) => {
 				tests: [...tests.map(t => ({ id: t.id }))],
 				request_note: data.request_note,
 				urgent: data.urgent,
-				pay_later: data.payLater ? -1 : 0,
+				pay_later: 0,
 			};
 
 			setSubmitting(true);
@@ -151,6 +148,11 @@ const LabRequest = ({ module, history, location }) => {
 			}>
 			<div className="element-box m-0 p-3">
 				<div className="form-block w-100">
+					{chosenPatient && chosenPatient.wallet > 0 && (
+						<div className="alert alert-danger">
+							{`Outstanding Balance: ${formatCurrency(chosenPatient.wallet)}`}
+						</div>
+					)}
 					<form onSubmit={handleSubmit(onSubmit)}>
 						{!currentPatient && (
 							<div className="row">
@@ -221,7 +223,7 @@ const LabRequest = ({ module, history, location }) => {
 						</div>
 
 						<div className="row">
-							<Table>
+							<table className="table table-striped">
 								<thead>
 									<tr>
 										<th>Category</th>
@@ -251,7 +253,7 @@ const LabRequest = ({ module, history, location }) => {
 										);
 									})}
 								</tbody>
-							</Table>
+							</table>
 						</div>
 						<div className="row mt-4">
 							<div className="form-group col-sm-12">
@@ -280,30 +282,19 @@ const LabRequest = ({ module, history, location }) => {
 									</label>
 								</div>
 							</div>
-							<div className="form-group col-sm-4">
-								<div className="form-check col-sm-12">
-									<label className="form-check-label">
-										<input
-											className="form-check-input mt-0"
-											name="payLater"
-											type="checkbox"
-											checked={payLater}
-											onChange={e => setPayLater(!payLater)}
-											ref={register}
-										/>
-										Pay Later
-									</label>
-								</div>
-							</div>
-							<div className="col-sm-4 text-right">
-								<button className="btn btn-primary" disabled={submitting}>
-									{submitting ? (
-										<img src={waiting} alt="submitting" />
-									) : (
-										'Send Request'
-									)}
-								</button>
-							</div>
+							{chosenPatient &&
+								((chosenPatient.wallet === 0 && !chosenPatient.isAdmitted) ||
+									chosenPatient.isAdmitted) && (
+									<div className="col-sm-8 text-right">
+										<button className="btn btn-primary" disabled={submitting}>
+											{submitting ? (
+												<img src={waiting} alt="submitting" />
+											) : (
+												'Send Request'
+											)}
+										</button>
+									</div>
+								)}
 						</div>
 					</form>
 				</div>

@@ -266,14 +266,12 @@ export class Billing extends Component {
 						</div>
 						<div className="element-box">
 							<div className="table table-responsive">
-								<table
-									id="table"
-									className="table table-theme v-middle table-hover">
+								<table className="table table-theme v-middle table-hover">
 									<thead>
 										<tr>
 											<th className="text-center">Date</th>
 											<th className="text-center">Name</th>
-											<th className="text-center">Payment Type</th>
+											<th className="text-center">Payment Method</th>
 											<th className="text-center">Amount(&#x20A6;)</th>
 											<th className="text-center">Status</th>
 

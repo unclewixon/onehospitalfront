@@ -132,8 +132,9 @@ class TransactionHistory extends Component {
 		const { filtering, loading, meta } = this.state;
 		const { transactions } = this.props;
 		return (
-			<div className="row">
-				<div className="col-md-12 p-4">
+			<>
+				<h6 className="element-header">Transaction History</h6>
+				<div className="element-box m-0 mb-4 p-3">
 					<form className="row">
 						<div className="form-group col-md-3">
 							<label htmlFor="patient_id">Patient</label>
@@ -193,12 +194,12 @@ class TransactionHistory extends Component {
 					</form>
 				</div>
 
-				<div className="col-sm-12">
-					{loading ? (
-						<TableLoading />
-					) : (
-						<>
-							<div className="table-responsive">
+				<div className="element-box p-3 m-0">
+					<div className="table-responsive">
+						{loading ? (
+							<TableLoading />
+						) : (
+							<>
 								<TransactionTable
 									transactions={transactions}
 									loading={loading}
@@ -209,23 +210,23 @@ class TransactionHistory extends Component {
 									doApplyVoucher={this.doApplyVoucher}
 									handlePrint={this.handlePrintClick}
 								/>
-							</div>
-							{meta && (
-								<div className="pagination pagination-center mt-4">
-									<Pagination
-										current={parseInt(meta.currentPage, 10)}
-										pageSize={parseInt(meta.itemsPerPage, 10)}
-										total={parseInt(meta.totalPages, 10)}
-										showTotal={total => `Total ${total} transactions`}
-										itemRender={itemRender}
-										onChange={current => this.onNavigatePage(current)}
-									/>
-								</div>
-							)}
-						</>
-					)}
+								{meta && (
+									<div className="pagination pagination-center mt-4">
+										<Pagination
+											current={parseInt(meta.currentPage, 10)}
+											pageSize={parseInt(meta.itemsPerPage, 10)}
+											total={parseInt(meta.totalPages, 10)}
+											showTotal={total => `Total ${total} transactions`}
+											itemRender={itemRender}
+											onChange={current => this.onNavigatePage(current)}
+										/>
+									</div>
+								)}
+							</>
+						)}
+					</div>
 				</div>
-			</div>
+			</>
 		);
 	}
 }

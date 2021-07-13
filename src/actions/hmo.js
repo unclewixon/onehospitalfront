@@ -12,14 +12,14 @@ import {
 import { API_URI, hmoAPI } from '../services/constants';
 import { request } from '../services/utilities';
 
-export const add_hmo = payload => {
+export const addHmo = payload => {
 	return {
 		type: ADD_HMO,
 		payload,
 	};
 };
 
-export const fetch_all_hmos_data = payload => {
+export const fetchHmo = payload => {
 	return {
 		type: FETCH_ALL_HMOS_DATA,
 		payload,
@@ -33,15 +33,14 @@ export const fetch_hmo_tariff = payload => {
 	};
 };
 
-export const update_hmo = (payload, previousData) => {
+export const updateHmo = payload => {
 	return {
 		type: UPDATE_HMO,
 		payload,
-		previousData,
 	};
 };
 
-export const delete_hmo = payload => {
+export const deleteHmo = payload => {
 	return {
 		type: DELETE_HMO,
 		payload,
@@ -62,29 +61,6 @@ export const loadHmoTransaction = payload => {
 	};
 };
 
-export const addHmo = data => {
-	return async dispatch => {
-		try {
-			const rs = await request(hmoAPI, 'POST', true, data);
-			return dispatch(add_hmo(rs));
-		} catch (error) {
-			return error;
-		}
-	};
-};
-
-export const getAllHmos = data => {
-	return async dispatch => {
-		try {
-			const rs = await request(hmoAPI, 'GET', true);
-			dispatch(fetch_all_hmos_data(rs));
-			return { success: true };
-		} catch (e) {
-			return { success: false };
-		}
-	};
-};
-
 export const fetchHmoTariff = data => {
 	console.log(data);
 	return async dispatch => {
@@ -92,18 +68,6 @@ export const fetchHmoTariff = data => {
 			const url = `${hmoAPI}/${data || 1}/tariff?listType=services`;
 			const rs = await request(url, 'GET', true);
 			return rs;
-		} catch (error) {
-			return error;
-		}
-	};
-};
-
-export const updateHmo = (editedData, previousData) => {
-	return async dispatch => {
-		const url = `${hmoAPI}/${previousData.id}/update`;
-		try {
-			const rs = await request(url, 'PATCH', true, editedData);
-			return dispatch(update_hmo(rs, previousData));
 		} catch (error) {
 			return error;
 		}
@@ -148,19 +112,5 @@ export const uploadHmoTariff = data => {
 					return reject(error)({ success: false });
 				});
 		});
-	};
-};
-
-export const deleteHmo = data => {
-	return async dispatch => {
-		try {
-			console.log(data);
-			const url = `${hmoAPI}/${data.id}`;
-			await request(url, 'DELETE', true);
-			dispatch(delete_hmo(data));
-			return true;
-		} catch (error) {
-			return error;
-		}
 	};
 };

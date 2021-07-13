@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-const Account = () => {
+
+const AccountMenu = () => {
 	return (
 		<>
 			<li>
@@ -31,4 +32,4 @@ const Account = () => {
 	);
 };
 
-export default Account;
+export default AccountMenu;

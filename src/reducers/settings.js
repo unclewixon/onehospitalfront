@@ -28,10 +28,7 @@ import {
 	UPDATE_SPECIALIZATION,
 	DELETE_SPECIALIZATION,
 	LOAD_STAFFS,
-	ADD_REQUEST_SERVICE,
 	GET_ALL_REQUEST_SERVICES,
-	UPDATE_REQUEST_SERVICE,
-	DELETE_REQUEST_SERVICE,
 	ADD_LAB_GROUP,
 	UPDATE_LAB_GROUP,
 	DELETE_LAB_GROUP,
@@ -348,31 +345,9 @@ const settings = (state = INITIAL_STATE, action) => {
 		// staff
 		case LOAD_STAFFS:
 			return { ...state, staff_list: action.payload };
-		case ADD_REQUEST_SERVICE:
-			return {
-				...state,
-				request_services: [...state.request_services, action.payload],
-			};
 
 		case GET_ALL_REQUEST_SERVICES:
 			return { ...state, request_services: action.payload };
-		case UPDATE_REQUEST_SERVICE:
-			return {
-				...state,
-				request_services: [
-					...state.request_services.filter(
-						deletedItem => deletedItem.id !== action.previousData.id
-					),
-					action.payload,
-				],
-			};
-		case DELETE_REQUEST_SERVICE:
-			return {
-				...state,
-				request_services: state.request_services.filter(
-					deletedItem => deletedItem.id !== action.payload.id
-				),
-			};
 		default:
 			return state;
 	}

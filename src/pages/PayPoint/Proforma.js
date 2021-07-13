@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
 
 import ProformaInvoice from '../../components/ProformaInvoice';
-import { connect } from 'react-redux';
-import { getAllHmos } from '../../actions/hmo';
 
 export class Proforma extends Component {
-	componentDidMount() {
-		this.props.getAllHmos();
-	}
-
 	render() {
-		return <ProformaInvoice />;
+		return (
+			<div className="element-box m-0 p-3">
+				<ProformaInvoice />
+			</div>
+		);
 	}
 }
 
-export default connect(null, { getAllHmos })(Proforma);
+export default Proforma;

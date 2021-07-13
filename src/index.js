@@ -43,11 +43,15 @@ import SSRStorage from './services/storage';
 import { defaultHeaders, getUser } from './services/utilities';
 import { loadDepartments } from './actions/department';
 import { loadSpecializations } from './actions/settings';
-import { fetch_all_hmos_data } from './actions/hmo';
+import { fetchHmo } from './actions/hmo';
 import { loadInvCategories, loadInvSubCategories } from './actions/inventory';
 import { togglePreloading } from './actions/general';
 import { loadRoles } from './actions/role';
-import { loadBanks, loadCountries } from './actions/utility';
+import {
+	loadBanks,
+	loadCountries,
+	loadPaymentMethods,
+} from './actions/utility';
 
 Notify.notifications.subscribe(alert => alert instanceof Function && alert());
 const store = configureStore();
@@ -70,9 +74,10 @@ const initData = async () => {
 	await initSettings();
 
 	try {
-		let [rs_banks, rs_countries] = await Promise.all([
+		let [rs_banks, rs_countries, rs_pm] = await Promise.all([
 			axiosFetch(`${API_URI}/${utilityAPI}/banks`),
 			axiosFetch(`${API_URI}/${utilityAPI}/countries`),
+			axiosFetch(`${API_URI}/${utilityAPI}/payment-methods`),
 		]);
 
 		if (rs_banks && rs_banks.data) {
@@ -80,6 +85,9 @@ const initData = async () => {
 		}
 		if (rs_countries && rs_countries.data) {
 			store.dispatch(loadCountries(rs_countries.data));
+		}
+		if (rs_pm && rs_pm.data) {
+			store.dispatch(loadPaymentMethods(rs_pm.data));
 		}
 	} catch (e) {
 		// console.log(e.response);
@@ -123,7 +131,7 @@ const initData = async () => {
 				store.dispatch(loadSpecializations(rs_specializations.data));
 			}
 			if (rs_hmos && rs_hmos.data) {
-				store.dispatch(fetch_all_hmos_data(rs_hmos.data));
+				store.dispatch(fetchHmo(rs_hmos.data));
 			}
 
 			const details = {
