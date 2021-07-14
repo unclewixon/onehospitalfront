@@ -14,7 +14,7 @@ import {
 import { patientAPI, USER_RECORD } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess } from '../../services/notify';
-import { setPatientRecord, toggleProfile } from '../../actions/user';
+import { toggleProfile } from '../../actions/user';
 import SSRStorage from '../../services/storage';
 
 const storage = new SSRStorage();
@@ -63,9 +63,8 @@ class PatientAdmission extends Component {
 			this.setState({ submitting: true });
 
 			const url = `${patientAPI}/admissions/${patient.id}/save`;
-			const rs = await request(url, 'POST', true, formData);
+			await request(url, 'POST', true, formData);
 			this.setState({ submitting: false });
-			this.props.setPatientRecord(rs.patient);
 			this.props.reset('admit_patient');
 			notifySuccess('Admission Started!');
 			storage.removeItem(USER_RECORD);
@@ -220,7 +219,5 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default withRouter(
-	connect(mapStateToProps, { setPatientRecord, reset, toggleProfile })(
-		PatientAdmission
-	)
+	connect(mapStateToProps, { reset, toggleProfile })(PatientAdmission)
 );

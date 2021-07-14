@@ -11,7 +11,6 @@ import HashRoute from '../components/HashRoute';
 import Splash from '../components/Splash';
 import ProfileBlock from '../components/ProfileBlock';
 import { confirmAction } from '../services/utilities';
-import PatientDataUpload from '../components/Patient/PatientDataUpload';
 
 const ClinicalTasks = lazy(() => import('../components/Patient/ClinicalTasks'));
 const Dashboard = lazy(() => import('../components/Patient/Dashboard'));
@@ -107,8 +106,6 @@ const Page = ({ location }) => {
 			return <EnrollIVFPatient />;
 		case 'enroll-antenatal':
 			return <EnrollAntenatalPatient />;
-		case 'upload-document':
-			return <PatientDataUpload />;
 		case 'immunization-chart':
 			return <ImmunizationChart />;
 		case 'ivf-history':

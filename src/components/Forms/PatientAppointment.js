@@ -159,9 +159,9 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 						}`}
 					</div>
 				)}
-				{patient && patient.wallet > 0 && (
+				{patient && patient.outstanding > 0 && (
 					<div className="alert alert-danger">
-						{`Outstanding Balance: ${formatCurrency(patient.wallet)}`}
+						{`Outstanding Balance: ${formatCurrency(patient.outstanding)}`}
 					</div>
 				)}
 

@@ -6,7 +6,7 @@ import Pagination from 'antd/lib/pagination';
 
 import waiting from '../../assets/images/waiting.gif';
 import {
-	formatDateStr,
+	formatDate,
 	request,
 	itemRender,
 	updateImmutable,
@@ -94,7 +94,7 @@ const Appointments = () => {
 
 	const dateChange = e => {
 		let date = e.map(d => {
-			return formatDateStr(d._d);
+			return formatDate(d._d);
 		});
 
 		setState({

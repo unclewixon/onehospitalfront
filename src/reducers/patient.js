@@ -9,8 +9,6 @@ import {
 	GET_IMAGING_REQUESTS,
 	LOAD_VITALS,
 	UPDATE_VITALS,
-	LOAD_PATIENT_UPLOAD_DATA,
-	ADD_PATIENT_UPLOAD_DATA,
 	LOAD_PATIENTS,
 	GET_LAB_REQUESTS,
 	GET_PHARMACY_REQUESTS,
@@ -46,7 +44,6 @@ const INITIAL_STATE = {
 	allergy: {},
 	allergies: [],
 	imagingRequests: [],
-	patient_upload: [],
 	vitals: [],
 	ivfDetails: {},
 	patients: [],
@@ -106,13 +103,6 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, formStep: 1, formData: {} };
 		case PREV_STEP:
 			return { ...state, formStep: action.payload };
-		case LOAD_PATIENT_UPLOAD_DATA:
-			return { ...state, patient_upload: action.payload };
-		case ADD_PATIENT_UPLOAD_DATA:
-			return {
-				...state,
-				patient_upload: [...state.patient_upload, action.payload],
-			};
 		case GET_ALLERGIES:
 			return { ...state, allergies: action.payload };
 		case SAVE_ALLERGIES:

@@ -15,7 +15,7 @@ const SettingsMenu = ({ role }) => {
 						role === 'lab-supervisor' ||
 						role === 'lab-hod'
 							? '/settings/lab-mgt'
-							: '/settings/roles'
+							: '/settings'
 					}>
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers" />

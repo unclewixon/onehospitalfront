@@ -4,7 +4,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import { withRouter } from 'react-router-dom';
 
-import { request, formatDateStr, staffname } from '../../services/utilities';
+import { request, formatDate, staffname } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import ViewEncounter from './Modals/ViewEncounter';
 import TableLoading from '../TableLoading';
@@ -79,10 +79,7 @@ class Encounters extends Component {
 											return (
 												<tr key={i}>
 													<td className="nowrap">
-														{formatDateStr(
-															item.createdAt,
-															'DD-MMM-YYYY h:mm A'
-														)}
+														{formatDate(item.createdAt, 'DD-MMM-YYYY h:mm A')}
 													</td>
 													<td>{item?.appointment?.department?.name || '--'}</td>
 													<td>

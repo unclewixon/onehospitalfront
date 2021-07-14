@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 
 import TableLoading from '../TableLoading';
-import { request, itemRender, formatDateStr } from '../../services/utilities';
+import { request, itemRender, formatDate } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
@@ -86,8 +86,8 @@ const FluidChart = () => {
 									{charts.map((item, i) => {
 										return (
 											<tr key={i}>
-												<td>{formatDateStr(item.createdAt, 'D-MMM-YYYY')}</td>
-												<td>{formatDateStr(item.createdAt, 'h:mm A')}</td>
+												<td>{formatDate(item.createdAt, 'D-MMM-YYYY')}</td>
+												<td>{formatDate(item.createdAt, 'h:mm A')}</td>
 												<td>
 													{item.type === 'input' ? item.fluid_route : '--'}
 												</td>

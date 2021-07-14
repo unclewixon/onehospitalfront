@@ -18,6 +18,7 @@ import { startBlock, stopBlock } from '../../actions/redux-block';
 import TableLoading from '../../components/TableLoading';
 
 const { RangePicker } = DatePicker;
+
 const paymentStatus = [
 	{ value: 0, label: 'processing' },
 	{ value: 1, label: 'done' },

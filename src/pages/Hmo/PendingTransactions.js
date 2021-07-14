@@ -12,7 +12,7 @@ import HmoTable from '../../components/HMO/HmoTable';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import TableLoading from '../../components/TableLoading';
 
-export class PendingTransactions extends Component {
+class PendingTransactions extends Component {
 	state = {
 		filtering: false,
 		dataLoaded: false,
@@ -63,6 +63,11 @@ export class PendingTransactions extends Component {
 			notifyError('Error fetching hmo transactions request');
 			this.setState({ loading: false });
 		}
+	};
+
+	onNavigatePage = nextPage => {
+		this.props.startBlock();
+		this.fetchHmoTransaction(nextPage);
 	};
 
 	updateTransaction = data => {
@@ -128,6 +133,7 @@ const mapStateToProps = state => {
 		hmoTransactions: state.hmo.hmo_transactions,
 	};
 };
+
 export default connect(mapStateToProps, {
 	loadHmoTransaction,
 	startBlock,

@@ -39,6 +39,7 @@ const INITIAL_STATE = {
 	menu_mode: 'menu-layout-compact',
 	menu_mini: false,
 	item: null,
+	type: null,
 };
 
 const user = (state = INITIAL_STATE, action) => {
@@ -105,7 +106,13 @@ const user = (state = INITIAL_STATE, action) => {
 			storage.setItem(FULLSCREEN_COOKIE, action.payload);
 			return { ...state, fullscreen: action.payload };
 		case SET_PATIENT_RECORD:
-			return { ...state, patient: action.payload };
+			const patient = { ...state.patient, ...action.payload };
+			storage.setItem(USER_RECORD, {
+				patient,
+				type: state.type,
+				item: state.item,
+			});
+			return { ...state, patient };
 		case TOGGLE_PROFILE:
 			if (action.payload) {
 				const item = action.info.item;
@@ -134,6 +141,7 @@ const user = (state = INITIAL_STATE, action) => {
 					isNicuOpen: type === 'nicu',
 					isLabourOpen: type === 'labour',
 					item,
+					type,
 					...data,
 				};
 			}
@@ -152,6 +160,7 @@ const user = (state = INITIAL_STATE, action) => {
 				patient: null,
 				staff: null,
 				item: null,
+				type: null,
 			};
 		default:
 			return state;

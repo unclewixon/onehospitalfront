@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 
 import {
 	confirmAction,
-	formatDateStr,
+	formatDate,
 	request,
 	trimText,
 	formatPatientId,
@@ -110,7 +110,7 @@ const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 						return (
 							<tr key={i}>
 								<td className="nowrap">
-									{formatDateStr(
+									{formatDate(
 										appointment.appointment_date,
 										'DD-MMM-YYYY h:mm a'
 									)}

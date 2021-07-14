@@ -64,19 +64,12 @@ class Allergies extends Component {
 					<h6 className="element-header">Allergies</h6>
 					<div className="element-box m-0 p-3">
 						<div className="bootstrap-table">
-							<div className="fixed-table-toolbar">
-								<div className="bs-bars float-left">
-									<div id="toolbar"></div>
-								</div>
-							</div>
 							<div className="fixed-table-container pb-0">
-								{loading ? (
-									<TableLoading />
-								) : (
-									<div className="fixed-table-body">
-										<table
-											id="table"
-											className="table table-theme v-middle table-hover">
+								<div className="fixed-table-body">
+									{loading ? (
+										<TableLoading />
+									) : (
+										<table className="table table-theme v-middle table-hover">
 											<thead>
 												<tr>
 													<th>Category</th>
@@ -122,8 +115,8 @@ class Allergies extends Component {
 												})}
 											</tbody>
 										</table>
-									</div>
-								)}
+									)}
+								</div>
 							</div>
 						</div>
 					</div>

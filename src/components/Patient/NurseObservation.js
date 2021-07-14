@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 
 import TableLoading from '../TableLoading';
-import { request, itemRender, formatDateStr } from '../../services/utilities';
+import { request, itemRender, formatDate } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import CreateObservation from './Modals/CreateObservation';
@@ -109,7 +109,7 @@ const NurseObservation = () => {
 										return (
 											<tr key={i}>
 												<td nowrap="nowrap">
-													{formatDateStr(item.createdAt, 'D-MMM-YYYY h:mm A')}
+													{formatDate(item.createdAt, 'D-MMM-YYYY h:mm A')}
 												</td>
 												<td>
 													<div

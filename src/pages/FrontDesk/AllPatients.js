@@ -201,7 +201,7 @@ const AllPatients = props => {
 													{moment(data?.date_of_birth).format('DD-MMM-YYYY')}
 												</td>
 												<td>{data?.hmo?.name}</td>
-												<td>{formatCurrency(data.wallet || 0)}</td>
+												<td>{formatCurrency(data.outstanding || 0)}</td>
 												<td className="row-actions text-right">
 													<Tooltip title="View Patient">
 														<a onClick={() => showProfile(data)}>

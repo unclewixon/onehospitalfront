@@ -217,7 +217,7 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 												</span>
 												<div className="ml-1">
 													<h5 className="mb-0">
-														{formatCurrency(patient?.wallet || 0)}{' '}
+														{formatCurrency(patient?.outstanding || 0)}{' '}
 													</h5>
 													<small>Outstanding Balance</small>
 												</div>

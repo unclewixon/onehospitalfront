@@ -187,7 +187,9 @@ const InPatientCare = ({ match }) => {
 										<th>Admitted By</th>
 										<th>Room/Floor</th>
 										<th>Status</th>
-										{user && user.role === 'nurse' && <th></th>}
+										{user &&
+											(user.role.slug === 'nurse' ||
+												user.role.slug === 'admin') && <th></th>}
 									</tr>
 								</thead>
 								<tbody>
@@ -231,27 +233,29 @@ const InPatientCare = ({ match }) => {
 														<span className="badge badge-success">Closed</span>
 													)}
 												</td>
-												{user && user.role === 'nurse' && (
-													<td className="row-actions">
-														{!item.suite && !item.nicu && (
-															<Tooltip title="Assign Bed">
+												{user &&
+													(user.role.slug === 'nurse' ||
+														user.role.slug === 'admin') && (
+														<td className="row-actions">
+															{!item.suite && !item.nicu && (
+																<Tooltip title="Assign Bed">
+																	<a
+																		onClick={() => assignBed(item)}
+																		className="primary">
+																		<i className="fa fa-bed" />
+																	</a>
+																</Tooltip>
+															)}
+															<Tooltip title="Admission">
 																<a
-																	onClick={() => assignBed(item)}
-																	className="primary">
-																	<i className="fa fa-bed" />
+																	onClick={() =>
+																		showAdmission(item.patient, item)
+																	}>
+																	<i className="os-icon os-icon-user-male-circle2" />
 																</a>
 															</Tooltip>
-														)}
-														<Tooltip title="Admission">
-															<a
-																onClick={() =>
-																	showAdmission(item.patient, item)
-																}>
-																<i className="os-icon os-icon-user-male-circle2" />
-															</a>
-														</Tooltip>
-													</td>
-												)}
+														</td>
+													)}
 											</tr>
 										);
 									})}

@@ -547,8 +547,8 @@ export const patientname = user =>
 export const formatNumber = n =>
 	parseFloat(n).toLocaleString(undefined, { maximumFractionDigits: 2 });
 
-export const formatDateStr = (str, format = 'YYYY-MM-DD') =>
-	moment(str).format(format);
+export const formatDate = (date, format = 'YYYY-MM-DD') =>
+	date ? moment(date).format(format) : '--';
 
 export const trimText = (str, length = 50, omission = '...') =>
 	truncate(str, { length, omission });

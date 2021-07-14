@@ -5,13 +5,15 @@ import { confirmAlert } from 'react-confirm-alert';
 import Tooltip from 'antd/lib/tooltip';
 import capitalize from 'lodash.capitalize';
 import { Link } from 'react-router-dom';
+import Pagination from 'antd/lib/pagination';
 
 import waiting from '../../assets/images/waiting.gif';
 import { notifyError } from '../../services/notify';
 import { fetchHmo, addHmo, updateHmo, deleteHmo } from '../../actions/hmo';
 import TableLoading from '../../components/TableLoading';
-import { request } from '../../services/utilities';
+import { request, itemRender } from '../../services/utilities';
 import { hmoAPI } from '../../services/constants';
+import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const HmoList = () => {
 	const initialState = {
@@ -20,18 +22,22 @@ const HmoList = () => {
 		phoneNumber: '',
 		address: '',
 		cacNumber: '',
+		coverageType: '',
+		coverage: '100',
 		add: true,
 		edit: false,
 	};
-	const [{ name, email, phoneNumber, address, cacNumber }, setState] = useState(
-		initialState
-	);
+	const [
+		{ name, email, phoneNumber, address, cacNumber, coverageType, coverage },
+		setState,
+	] = useState(initialState);
 	const [loading, setLoading] = useState(false);
 	const [{ edit, add }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
 	// const [logo, setLogo] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [adding, setAdding] = useState(false);
+	const [meta, setMeta] = useState(null);
 
 	const hmoList = useSelector(state => state.hmo.hmo_list);
 
@@ -52,6 +58,8 @@ const HmoList = () => {
 				phoneNumber,
 				address,
 				cacNumber,
+				coverageType,
+				coverage,
 			};
 
 			setAdding(true);
@@ -81,6 +89,8 @@ const HmoList = () => {
 				phoneNumber,
 				address,
 				cacNumber,
+				coverageType,
+				coverage,
 			};
 
 			setLoading(true);
@@ -113,6 +123,8 @@ const HmoList = () => {
 			address: data.address,
 			logo: data.logo,
 			cacNumber: data.cacNumber,
+			coverageType: data.coverageType,
+			coverage: data.coverage,
 		}));
 		getDataToEdit(data);
 	};
@@ -162,16 +174,25 @@ const HmoList = () => {
 		});
 	};
 
-	const fetchHmos = useCallback(async () => {
-		try {
-			const rs = await request(hmoAPI, 'GET', true);
-			dispatch(fetchHmo(rs));
-			setDataLoaded(true);
-		} catch (e) {
-			console.log(e);
-			notifyError('could not fetch hmos');
-		}
-	}, [dispatch]);
+	const fetchHmos = useCallback(
+		async page => {
+			try {
+				const p = page || 1;
+				const rs = await request(`${hmoAPI}?page=${p}`, 'GET', true);
+				const { result, ...meta } = rs;
+				dispatch(fetchHmo([...result]));
+				setMeta(meta);
+				setDataLoaded(true);
+				dispatch(stopBlock());
+			} catch (e) {
+				console.log(e);
+				notifyError('could not fetch hmos');
+				setDataLoaded(true);
+				dispatch(stopBlock());
+			}
+		},
+		[dispatch]
+	);
 
 	useEffect(() => {
 		if (!dataLoaded) {
@@ -179,79 +200,106 @@ const HmoList = () => {
 		}
 	}, [dataLoaded, fetchHmos]);
 
+	const onNavigatePage = nextPage => {
+		dispatch(startBlock());
+		this.fetchHmoTransaction(nextPage);
+	};
+
 	return (
 		<>
 			<h6 className="element-header">Health Management Organization</h6>
 			<div className="pipelines-w">
 				<div className="row">
-					<div className="col-lg-8">
+					<div className="col-lg-9">
 						<div className="element-wrapper">
-							<div className="element-box-tp">
-								{!dataLoaded ? (
-									<TableLoading />
-								) : (
-									<div className="table-responsive">
-										<table className="table table-striped">
-											<thead>
-												<tr>
-													<th>Name</th>
-													<th>Phone</th>
-													<th>Email</th>
-													<th>CAC Number</th>
-													<th></th>
-												</tr>
-											</thead>
-											<tbody>
-												{hmoList.map((hmo, i) => {
-													return (
-														<tr key={i}>
-															<td>
-																<span>{capitalize(hmo.name || '')}</span>
-															</td>
-															<td>
-																<span>{hmo.phoneNumber || '-'}</span>
-															</td>
+							<div className="element-box p-3 m-0">
+								<div className="table-responsive">
+									{!dataLoaded ? (
+										<TableLoading />
+									) : (
+										<>
+											<table className="table table-striped">
+												<thead>
+													<tr>
+														<th>Name</th>
+														<th>Phone</th>
+														<th>Email</th>
+														<th>CAC Number</th>
+														<th>Coverage</th>
+														<th></th>
+													</tr>
+												</thead>
+												<tbody>
+													{hmoList.map((hmo, i) => {
+														return (
+															<tr key={i}>
+																<td>
+																	<span>{capitalize(hmo.name || '')}</span>
+																</td>
+																<td>
+																	<span>{hmo.phoneNumber || '-'}</span>
+																</td>
 
-															<td className="nowrap">
-																<span>{hmo.email || '-'}</span>
-															</td>
-															<td className="nowrap">
-																<span>{hmo.cacNumber || '-'}</span>
-															</td>
-															<td className="row-actions">
-																{hmo.name !== 'Private' && (
-																	<>
-																		<Tooltip title="Edit">
-																			<a onClick={() => onClickEdit(hmo)}>
-																				<i className="os-icon os-icon-edit-1" />
-																			</a>
-																		</Tooltip>
-																		<Tooltip title="HMO Tariffs">
-																			<Link to={`/hmo/tariffs?id=${hmo.id}`}>
-																				<i className="os-icon os-icon-documents-03" />
-																			</Link>
-																		</Tooltip>
-																		<Tooltip title="Delete">
-																			<a
-																				className="danger"
-																				onClick={() => confirmDelete(hmo)}>
-																				<i className="os-icon os-icon-ui-15" />
-																			</a>
-																		</Tooltip>
-																	</>
-																)}
-															</td>
-														</tr>
-													);
-												})}
-											</tbody>
-										</table>
-									</div>
-								)}
+																<td>
+																	<span>{hmo.email || '-'}</span>
+																</td>
+																<td className="nowrap">
+																	<span>{hmo.cacNumber || '-'}</span>
+																</td>
+																<td className="nowrap">
+																	<span>{`${capitalize(hmo.coverageType)} ${
+																		hmo.coverageType === 'partial'
+																			? `(${hmo.coverage}%)`
+																			: ''
+																	}`}</span>
+																</td>
+																<td className="row-actions">
+																	<Tooltip title="Edit">
+																		<a onClick={() => onClickEdit(hmo)}>
+																			<i className="os-icon os-icon-edit-1" />
+																		</a>
+																	</Tooltip>
+																	{hmo.name !== 'Private' && (
+																		<>
+																			<Tooltip title="HMO Tariffs">
+																				<Link to={`/hmo/tariffs?id=${hmo.id}`}>
+																					<i className="os-icon os-icon-documents-03" />
+																				</Link>
+																			</Tooltip>
+																			<Tooltip title="Delete">
+																				<a
+																					className="danger"
+																					onClick={() => confirmDelete(hmo)}>
+																					<i className="os-icon os-icon-ui-15" />
+																				</a>
+																			</Tooltip>
+																		</>
+																	)}
+																</td>
+															</tr>
+														);
+													})}
+												</tbody>
+											</table>
+											{meta && (
+												<div className="pagination pagination-center mt-4">
+													<Pagination
+														current={parseInt(meta.currentPage, 10)}
+														pageSize={parseInt(meta.itemsPerPage, 10)}
+														total={parseInt(meta.totalPages, 10)}
+														showTotal={total => `Total ${total} HMOs`}
+														itemRender={itemRender}
+														onChange={current => onNavigatePage(current)}
+													/>
+												</div>
+											)}
+										</>
+									)}
+								</div>
 							</div>
 						</div>
 					</div>
-					<div className="col-lg-4">
+					<div className="col-lg-3">
 						<div className="pipeline white lined-warning">
 							<form onSubmit={edit ? onEditHmo : onAddHmo}>
 								<h6 className="form-header">Add New HMO</h6>
@@ -303,6 +351,28 @@ const HmoList = () => {
 										name="cacNumber"
 										onChange={handleInputChange}
 										value={cacNumber || ''}
+									/>
+								</div>
+								<div className="form-group">
+									<select
+										name="coverageType"
+										className="form-control"
+										placeholder="Select coverage type"
+										onChange={handleInputChange}
+										defaultValue={coverageType}>
+										<option>Select coverage Type</option>
+										<option value="partial">Partial</option>
+										<option value="full">Full</option>
+									</select>
+								</div>
+								<div className="form-group">
+									<input
+										className="form-control"
+										placeholder="Coverage (%)"
+										type="text"
+										name="coverage"
+										onChange={handleInputChange}
+										value={coverage || ''}
 									/>
 								</div>
 								<div className="form-buttons-w">

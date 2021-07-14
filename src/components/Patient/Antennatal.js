@@ -62,11 +62,6 @@ class Antenatal extends Component {
 					<h6 className="element-header">Antenatal Assessment</h6>
 					<div className="element-box p-3 m-0">
 						<div className="bootstrap-table">
-							<div className="fixed-table-toolbar">
-								<div className="bs-bars float-left">
-									<div id="toolbar"></div>
-								</div>
-							</div>
 							<div
 								className="fixed-table-container"
 								style={{ paddingBottom: '0px' }}>
