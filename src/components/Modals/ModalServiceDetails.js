@@ -166,31 +166,21 @@ const ModalServiceDetails = ({ closeModal, details }) => {
 							<div className="element-info-with-icon">
 								<div className="element-info-text">
 									<h5 className="element-inner-header">
-										{renderServiceType(details?.transaction_type)}
+										{renderServiceType(details?.bill_source)}
 									</h5>
 								</div>
 							</div>
 						</div>
 
-						{details?.transaction_type === 'billing' ? (
+						{details?.bill_source === 'billing' && (
 							<DisplayBilling details={details} />
-						) : (
-							''
 						)}
-						{details?.transaction_type === 'cafeteria' ? (
+						{details?.bill_source === 'cafeteria' && (
 							<Cafeteria details={details} />
-						) : (
-							''
 						)}
-						{details?.transaction_type === 'lab' ? (
-							<DisplayLab details={details} />
-						) : (
-							''
-						)}
-						{details?.transaction_type === 'pharmacy' ? (
+						{details?.bill_source === 'lab' && <DisplayLab details={details} />}
+						{details?.bill_source === 'pharmacy' && (
 							<DisplayPharmacy details={details} />
-						) : (
-							''
 						)}
 					</div>
 				</div>

@@ -68,7 +68,7 @@ const PaypointQueue = () => {
 		try {
 			setLoading(true);
 			const p = page || 1;
-			const url = `transactions/list/pending?page=${p}&limit=24&patient_id=${patient ||
+			const url = `transactions/pending?page=${p}&limit=24&patient_id=${patient ||
 				''}&startDate=${startDate}&endDate=${endDate}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;

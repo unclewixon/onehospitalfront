@@ -161,7 +161,7 @@ const RoomList = props => {
 																className="os-icon os-icon-ui-49"
 																onClick={() => onClickEdit(Room)}></i>
 														</a>
-														{user.role.slug === 'admin' && (
+														{user.role.slug === 'it-admin' && (
 															<a
 																className="danger"
 																onClick={() => confirmDelete(Room)}>

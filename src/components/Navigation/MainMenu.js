@@ -5,14 +5,13 @@ import $ from 'jquery';
 import { connect } from 'react-redux';
 
 import HrMenu from './HrMenu';
-import InventoryMenu from './InventoryMenu';
+import StoreMenu from './StoreMenu';
 import FrontDeskMenu from './FrontDeskMenu';
 import HMOMenu from './HMOMenu';
 import DoctorMenu from './DoctorMenu';
 import CafeteriaMenu from './CafeteriaMenu';
 import ClinicalLabMenu from './ClinicalLabMenu';
 import { staffname, parseAvatar } from '../../services/utilities';
-import AccountMenu from './AccountMenu';
 import PayPointMenu from './PayPointMenu';
 import PharmacyMenu from './PharmacyMenu';
 import RadiologyMenu from './RadiologyMenu';
@@ -22,6 +21,7 @@ import NurseMenu from './NurseMenu';
 import AdminMenu from './AdminMenu';
 import SettingsMenu from './SettingsMenu';
 import RecordsMenu from './RecordsMenu';
+import AccountingMenu from './AccountingMenu';
 
 class MainMenu extends Component {
 	menu_ref = null;
@@ -109,27 +109,25 @@ class MainMenu extends Component {
 						role === 'lab-officer' ||
 						role === 'lab-supervisor' ||
 						role === 'lab-hod') && <ClinicalLabMenu />}
-					{role === 'accountant' && <PayPointMenu />}
+					{role === 'paypoint' && <PayPointMenu />}
 					{role === 'pharmacy' && <PharmacyMenu />}
 					{role === 'radiology' && <RadiologyMenu />}
 					{role === 'procedure' && <ProcedureMenu />}
 					{role === 'nurse' && <NurseMenu />}
 					{role === 'doctor' && <DoctorMenu />}
 					{role === 'hr-manager' && <HrMenu />}
-					{(role === 'inventory' || role === 'pharmacy') && (
-						<InventoryMenu role={role} />
-					)}
+					{role === 'store' && <StoreMenu />}
 					{role === 'cafeteria' && <CafeteriaMenu />}
 					{role === 'hmo-officer' && <HMOMenu />}
-					{role === 'account' && <AccountMenu />}
 					{role === 'records' && <RecordsMenu />}
-					{role === 'admin' && <AdminMenu role={role} />}
+					{role === 'accounts' && <AccountingMenu />}
+					{role === 'it-admin' && <AdminMenu role={role} />}
 					<MyAccount />
 					{(role === 'lab-attendant' ||
 						role === 'lab-officer' ||
 						role === 'lab-supervisor' ||
 						role === 'lab-hod' ||
-						role === 'admin') && <SettingsMenu role={role} />}
+						role === 'it-admin') && <SettingsMenu role={role} />}
 				</ul>
 			</div>
 		);

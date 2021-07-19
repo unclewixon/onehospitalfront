@@ -35,6 +35,7 @@ export class Billing extends Component {
 		staffBilling: [],
 		hmoQuery: '',
 		hmo_id: '',
+		transactions: [],
 	};
 	patient = React.createRef();
 	hmo = React.createRef();
@@ -47,11 +48,8 @@ export class Billing extends Component {
 		const { startDate, endDate } = this.state;
 		try {
 			this.setState({ loading: true });
-			const rs = await request(
-				`${transactionsAPI}/list?staff_id=${this.props.staff.details.id}&startDate=${startDate}&endDate=${endDate}&status=&transaction_type=cafeteria&payment_type&page=2&limit=2`,
-				'GET',
-				true
-			);
+			const url = `${transactionsAPI}?staff_id=${this.props.staff.details.id}&startDate=${startDate}&endDate=${endDate}&status=&bill_source=cafeteria&payment_type&page=2&limit=2`;
+			const rs = await request(url, 'GET', true);
 
 			this.props.loadStaffTransaction(rs);
 			console.log(rs);
@@ -188,10 +186,8 @@ export class Billing extends Component {
 			// 	hmos,
 			// 	staffBilling,
 			// 	searchStaffBilling,
-			// 	query,
+			transactions,
 		} = this.state;
-		const { hmoTransactions } = this.props;
-		const hmoReversed = hmoTransactions.reverse();
 		return (
 			<div className="row">
 				<div className="col-sm-12">
@@ -288,8 +284,7 @@ export class Billing extends Component {
 												</td>
 											</tr>
 										) : (
-											hmoReversed &&
-											hmoReversed.map((request, i) => {
+											transactions.map((request, i) => {
 												return (
 													<tr data-index="0" key={i}>
 														<td className="text-center">
@@ -319,7 +314,7 @@ export class Billing extends Component {
 												);
 											})
 										)}
-										{!loading && hmoTransactions.length < 1 ? (
+										{!loading && transactions.length < 1 ? (
 											<tr>
 												<td className="text-center" colSpan="6">
 													No transaction
@@ -340,7 +335,6 @@ export class Billing extends Component {
 const mapStateToProps = state => {
 	return {
 		staff: state.user.staff,
-		hmoTransactions: state.hmo.hmo_transactions,
 	};
 };
 export default connect(mapStateToProps, { loadStaffTransaction })(Billing);

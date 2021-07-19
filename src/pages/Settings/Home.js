@@ -25,11 +25,11 @@ const Home = ({ match, location }) => {
 	const page = location.pathname.split('/').pop();
 
 	const profile = useSelector(state => state.user.profile);
-	const role = profile.role ? profile.role.slug : 'admin';
+	const role = profile.role ? profile.role.slug : 'it-admin';
 
 	return (
 		<div className={`settings-menu ${toggle ? 'compact-menu' : ''}`}>
-			{role === 'admin' && (
+			{role === 'it-admin' && (
 				<div className="ae-side-menu">
 					<div className="aem-head">
 						<a
@@ -69,6 +69,12 @@ const Home = ({ match, location }) => {
 									<br />
 									Methods
 								</span>
+							</Link>
+						</li>
+						<li className={page === 'consultation' ? 'active' : ''}>
+							<Link to="/settings/consultation">
+								<i className="os-icon os-icon-layers" />
+								<span>Consultation</span>
 							</Link>
 						</li>
 						<li className={page === 'consulting-room' ? 'active' : ''}>

@@ -60,6 +60,8 @@ class InsuranceTransactions extends Component {
 		hmo_id: '',
 		visible: null,
 		meta: null,
+		dateRange: [],
+		filtered: false,
 	};
 
 	componentDidMount() {
@@ -67,9 +69,15 @@ class InsuranceTransactions extends Component {
 		this.fetchTransaction();
 	}
 
-	fetchTransaction = async page => {
+	fetchTransaction = async (
+		page,
+		patient_id = '',
+		hmo_id = '',
+		startDate = '',
+		endDate = '',
+		status = ''
+	) => {
 		try {
-			const { patient_id, startDate, endDate, status, hmo_id } = this.state;
 			const p = page || 1;
 			this.setState({ loading: true });
 			const url = `hmos/transactions?page=${p}&limit=15&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}&hmo_id=${hmo_id}`;
@@ -85,9 +93,17 @@ class InsuranceTransactions extends Component {
 		}
 	};
 
-	onNavigatePage = nextPage => {
+	onNavigatePage = async nextPage => {
+		const { patient_id, hmo_id, startDate, endDate, status } = this.state;
 		this.props.startBlock();
-		this.fetchTransaction(nextPage);
+		await this.fetchTransaction(
+			nextPage,
+			patient_id,
+			hmo_id,
+			startDate,
+			endDate,
+			status
+		);
 	};
 
 	updateCode = async data => {
@@ -95,25 +111,23 @@ class InsuranceTransactions extends Component {
 	};
 
 	getHmos = async () => {
-		const rs = await request('hmos', 'GET', true);
-		const res = rs
-			.filter(t => t.id !== 1)
-			.map(hmo => ({
-				value: hmo.id,
-				label: hmo.name,
-			}));
+		const rs = await request('hmos?limit=100', 'GET', true);
+		const res = rs.result.map(hmo => ({
+			value: hmo.id,
+			label: hmo.name,
+		}));
 
 		this.setState({ hmos: res });
 	};
 
 	doFilter = e => {
 		e.preventDefault();
-		this.setState({ filtering: true });
-		this.fetchTransaction();
+		const { patient_id, hmo_id, startDate, endDate, status } = this.state;
+		this.setState({ filtering: true, filtered: true });
+		this.fetchTransaction(1, patient_id, hmo_id, startDate, endDate, status);
 	};
 
 	change = e => {
-		//console.log(e.target.value)
 		this.setState({ [e.target.name]: e.target.value });
 	};
 
@@ -126,6 +140,7 @@ class InsuranceTransactions extends Component {
 			...this.state,
 			startDate: date[0],
 			endDate: date[1],
+			dateRange: e,
 		});
 	};
 
@@ -135,9 +150,9 @@ class InsuranceTransactions extends Component {
 		});
 	};
 
-	viewDetails = (transaction_type, data) => {
+	viewDetails = (bill_source, data) => {
 		document.body.classList.add('modal-open');
-		this.setState({ details: { transaction_type, data }, showModal: true });
+		this.setState({ details: { bill_source, data }, showModal: true });
 	};
 
 	closeModal = () => {
@@ -218,6 +233,8 @@ class InsuranceTransactions extends Component {
 			details,
 			visible,
 			meta,
+			dateRange,
+			filtered,
 		} = this.state;
 		const { transactions } = this.props;
 		return (
@@ -225,10 +242,7 @@ class InsuranceTransactions extends Component {
 				<div className="element-box m-0 mb-4 p-3">
 					<form className="row">
 						<div className="form-group col-md-3">
-							<label className="" htmlFor="patient_id">
-								Patient
-							</label>
-
+							<label>Patient</label>
 							<AsyncSelect
 								isClearable
 								getOptionValue={getOptionValues}
@@ -244,9 +258,7 @@ class InsuranceTransactions extends Component {
 							/>
 						</div>
 						<div className="form-group col-md-2">
-							<label className="" htmlFor="hmo_id">
-								Hmo
-							</label>
+							<label>Hmo</label>
 							<select
 								style={{ height: '35px' }}
 								id="hmo_id"
@@ -264,13 +276,14 @@ class InsuranceTransactions extends Component {
 							</select>
 						</div>
 						<div className="form-group col-md-3">
-							<label>From - To</label>
-							<RangePicker onChange={e => this.dateChange(e)} />
+							<label>Transaction Date</label>
+							<RangePicker
+								value={dateRange}
+								onChange={e => this.dateChange(e)}
+							/>
 						</div>
 						<div className="form-group col-md-2">
-							<label className="mr-2 " htmlFor="id">
-								Status
-							</label>
+							<label>Status</label>
 							<select
 								style={{ height: '35px' }}
 								id="status"
@@ -300,6 +313,24 @@ class InsuranceTransactions extends Component {
 									)}
 								</span>
 							</div>
+							{filtered && (
+								<div
+									className="btn btn-sm btn-secondary text-white ml-2"
+									onClick={async () => {
+										this.setState({
+											filtered: false,
+											dateRange: [],
+											startDate: '',
+											endDate: '',
+											status: '',
+											hmo_id: '',
+											patient_id: '',
+										});
+										await this.fetchTransaction(1);
+									}}>
+									<i className="os-icon os-icon-close" />
+								</div>
+							)}
 						</div>
 					</form>
 				</div>
@@ -333,14 +364,14 @@ class InsuranceTransactions extends Component {
 													?.phoneNumber || ''})`}</td>
 												<td>
 													<span className="text-capitalize">
-														{item.transaction_type}
+														{item.bill_source}
 													</span>
-													{item.transaction_type !== 'registration' && (
+													{item.bill_source !== 'registration' && (
 														<a
 															className="item-title text-primary text-underline ml-2"
 															onClick={() =>
 																this.viewDetails(
-																	item.transaction_type,
+																	item.bill_source,
 																	item.transaction_details
 																)
 															}>

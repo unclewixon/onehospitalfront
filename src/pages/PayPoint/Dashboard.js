@@ -23,7 +23,7 @@ class Dashboard extends Component {
 		try {
 			this.setState({ loading: true });
 			const today = moment().format('YYYY-MM-DD');
-			const url = `${transactionsAPI}/list?patient_id=&startDate=${today}&endDate=${today}&transaction_type=&status=`;
+			const url = `${transactionsAPI}?patient_id=&startDate=${today}&endDate=${today}&bill_source=&status=`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			this.props.loadTodayTransaction(result.reverse());

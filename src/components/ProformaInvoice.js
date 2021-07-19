@@ -33,7 +33,7 @@ const ProformaInvoice = props => {
 
 	const user = useSelector(state => state.user.profile);
 
-	const hmoList = useSelector(state => state.hmo.hmo_list);
+	const hmoList = [];
 	const hmos = hmoList.map(hmo => {
 		return {
 			value: hmo.id,

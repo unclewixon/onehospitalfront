@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import moment from 'moment';
 
 import { transactionsAPI, searchAPI } from '../../services/constants';
@@ -10,7 +9,6 @@ import { request, staffname } from '../../services/utilities';
 
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
-import { loadHmoTransaction } from '../../actions/hmo';
 import TableLoading from '../../components/TableLoading';
 import { formatCurrency } from '../../services/utilities';
 
@@ -36,6 +34,7 @@ class Transactions extends Component {
 		query: '',
 		paymentType: '',
 		patients: [],
+		transactions: [],
 		hmoQuery: '',
 		hmo_id: '',
 	};
@@ -50,16 +49,15 @@ class Transactions extends Component {
 		const { startDate, endDate } = this.state;
 		try {
 			this.setState({ loading: true });
-			const url = `${transactionsAPI}/list?patient_id=&startDate=${startDate}&endDate=${endDate}&status=&transaction_type=cafeteria&payment_type&page=1&limit=10`;
+			const url = `${transactionsAPI}?patient_id=&startDate=${startDate}&endDate=${endDate}&status=&bill_source=cafeteria&payment_type&page=1&limit=10`;
 			const rs = await request(url, 'GET', true);
 
-			this.props.loadHmoTransaction(rs.result);
-			console.log(rs);
 			this.setState({
 				loading: false,
 				filtering: false,
 				startDate: '',
 				endDate: '',
+				transactions: rs.result,
 			});
 		} catch (error) {
 			console.log(error);
@@ -140,12 +138,8 @@ class Transactions extends Component {
 		if (this.state.hmoQuery.length > 2) {
 			try {
 				this.setState({ ...this.state, searchHmo: true });
-				const rs = await request(
-					`hmos?name=${this.state.hmoQuery}`,
-					'GET',
-					true
-				);
-
+				const url = `hmos/schemes?name=${this.state.hmoQuery}`;
+				const rs = await request(url, 'GET', true);
 				this.setState({
 					...this.state,
 					hmos: rs,
@@ -188,9 +182,8 @@ class Transactions extends Component {
 			// hmos,
 			patients,
 			// searchHmo,
-			// query,
+			transactions,
 		} = this.state;
-		const { transactions } = this.props;
 
 		return (
 			<div className="element-box">
@@ -355,10 +348,4 @@ class Transactions extends Component {
 	}
 }
 
-const mapStateToProps = state => {
-	return {
-		transactions: state.hmo.hmo_transactions,
-	};
-};
-
-export default connect(mapStateToProps, { loadHmoTransaction })(Transactions);
+export default Transactions;

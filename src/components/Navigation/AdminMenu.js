@@ -7,14 +7,14 @@ import RadiologyMenu from './RadiologyMenu';
 import NurseMenu from './NurseMenu';
 import DoctorMenu from './DoctorMenu';
 import HrMenu from './HrMenu';
-import InventoryMenu from './InventoryMenu';
+import StoreMenu from './StoreMenu';
 import CafeteriaMenu from './CafeteriaMenu';
 import HMOMenu from './HMOMenu';
-import AccountMenu from './AccountMenu';
 import SettingsMenu from './SettingsMenu';
 import FrontDeskMenu from './FrontDeskMenu';
 import ProcedureMenu from './ProcedureMenu';
 import RecordsMenu from './RecordsMenu';
+import AccountingMenu from './AccountingMenu';
 
 const AdminMenu = ({ role }) => {
 	return (
@@ -56,9 +56,9 @@ const AdminMenu = ({ role }) => {
 			</li>
 			<HrMenu />
 			<li className="sub-header">
-				<span>INVENTORY</span>
+				<span>STORE</span>
 			</li>
-			<InventoryMenu />
+			<StoreMenu />
 			<li className="sub-header">
 				<span>CAFETERIA</span>
 			</li>
@@ -72,9 +72,9 @@ const AdminMenu = ({ role }) => {
 			</li>
 			<RecordsMenu />
 			<li className="sub-header">
-				<span>ACCOUNTING & REPORT</span>
+				<span>ACCOUNTING</span>
 			</li>
-			<AccountMenu />
+			<AccountingMenu />
 			<SettingsMenu role={role} />
 		</>
 	);

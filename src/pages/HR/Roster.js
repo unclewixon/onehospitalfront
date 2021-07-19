@@ -245,7 +245,7 @@ class Roster extends Component {
 			const qs = Object.keys(data)
 				.map(k => k + '=' + data[k])
 				.join('&');
-			const url = `${API_URI}/${rosterAPI}/download-roaster?${qs}`;
+			const url = `${API_URI}/${rosterAPI}/download-roster?${qs}`;
 			setTimeout(() => {
 				window.open(url, '_blank').focus();
 				this.setState({ downloading: false, download_visible: false });
@@ -268,7 +268,7 @@ class Roster extends Component {
 	fetchRoster = async (period, department_id) => {
 		try {
 			const data = { period, department_id };
-			const rs = await request(`${rosterAPI}/list-roaster`, 'POST', true, data);
+			const rs = await request(`${rosterAPI}/list-roster`, 'POST', true, data);
 			const rosters = parseRoster(rs);
 			this.props.loadRoster(rosters);
 			this.setState({ filtering: false });
@@ -299,7 +299,7 @@ class Roster extends Component {
 				formData.append('department_id', department_id);
 
 				const rs = await upload(
-					`${API_URI}/${rosterAPI}/upload-roaster`,
+					`${API_URI}/${rosterAPI}/upload-roster`,
 					'POST',
 					formData
 				);

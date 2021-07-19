@@ -13,7 +13,6 @@ import ModalPayrollHistory from './ModalPayrollHistory';
 import ModalCurrentPayroll from './ModalCurrentPayroll';
 import ModalEditPayroll from './ModalEditPayroll';
 import PatientFormModal from './PatientFormModal';
-import ModalViewPayPoint from './ModalViewPayPoint';
 import ModalUploadHmo from './ModalUploadHmo';
 import ModalCreateLabMeasurement from './ModalCreateLabMeasurement';
 import ModalCreateRiskAssessment from './ModalCreateRiskAssessment';
@@ -47,7 +46,6 @@ const ModalDialogs = ({
 	prepare_payroll,
 	edit_payroll,
 	register_new_patient,
-	view_paypoint,
 	create_labour_measurement,
 	create_record_delivery,
 	create_risk_assessment,
@@ -82,7 +80,6 @@ const ModalDialogs = ({
 			{current_payroll && <ModalCurrentPayroll />}
 			{edit_payroll && <ModalEditPayroll />}
 			{register_new_patient && <PatientFormModal />}
-			{view_paypoint && <ModalViewPayPoint />}
 			{create_labour_measurement && <ModalCreateLabMeasurement />}
 			{create_risk_assessment && <ModalCreateRiskAssessment />}
 			{create_record_delivery && <ModalCreateRecordDelivery />}
@@ -119,7 +116,6 @@ const mapStateToProps = (state, ownProps) => {
 		current_payroll: state.general.current_payroll,
 		prepare_payroll: state.general.prepare_payroll,
 		edit_payroll: state.general.edit_payroll,
-		view_paypoint: state.general.view_paypoint,
 		create_labour_measurement: state.general.create_labour_measurement,
 		create_record_delivery: state.general.create_record_delivery,
 		create_risk_assessment: state.general.create_risk_assessment,

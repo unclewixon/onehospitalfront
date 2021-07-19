@@ -26,8 +26,6 @@ import {
 	FULLSCREEN_COOKIE,
 	API_URI,
 	departmentAPI,
-	inventoryCatAPI,
-	inventorySubCatAPI,
 	rolesAPI,
 	utilityAPI,
 	USER_RECORD,
@@ -40,11 +38,9 @@ import {
 	loginUser,
 } from './actions/user';
 import SSRStorage from './services/storage';
-import { defaultHeaders, getUser } from './services/utilities';
+import { defaultHeaders, getUser, redirectToPage } from './services/utilities';
 import { loadDepartments } from './actions/department';
 import { loadSpecializations } from './actions/settings';
-import { fetchHmo } from './actions/hmo';
-import { loadInvCategories, loadInvSubCategories } from './actions/inventory';
 import { togglePreloading } from './actions/general';
 import { loadRoles } from './actions/role';
 import {
@@ -99,39 +95,24 @@ const initData = async () => {
 			const jwt = `Bearer ${user.token}`;
 			let [
 				rs_depts,
-				rs_invcategories,
-				rs_invsubcategories,
 				rs_roles,
 				rs_specializations,
-				rs_hmos,
 				rs_user,
 			] = await Promise.all([
 				axiosFetch(`${API_URI}/${departmentAPI}`, jwt),
-				axiosFetch(`${API_URI}/${inventoryCatAPI}`, jwt),
-				axiosFetch(`${API_URI}/${inventorySubCatAPI}`, jwt),
 				axiosFetch(`${API_URI}/${rolesAPI}`, jwt),
 				axiosFetch(`${API_URI}/specializations`, jwt),
-				axiosFetch(`${API_URI}/hmos`, jwt),
 				axiosFetch(`${API_URI}/auth/${user.username}`, jwt),
 			]);
 
 			if (rs_depts && rs_depts.data) {
 				store.dispatch(loadDepartments(rs_depts.data));
 			}
-			if (rs_invcategories && rs_invcategories.data) {
-				store.dispatch(loadInvCategories(rs_invcategories.data));
-			}
-			if (rs_invsubcategories && rs_invsubcategories.data) {
-				store.dispatch(loadInvSubCategories(rs_invsubcategories.data));
-			}
 			if (rs_roles && rs_roles.data) {
 				store.dispatch(loadRoles(rs_roles.data));
 			}
 			if (rs_specializations && rs_specializations.data) {
 				store.dispatch(loadSpecializations(rs_specializations.data));
-			}
-			if (rs_hmos && rs_hmos.data) {
-				store.dispatch(fetchHmo(rs_hmos.data));
 			}
 
 			const details = {
@@ -145,14 +126,22 @@ const initData = async () => {
 			const search = history.location.search.replace('?', '');
 			const qm = search === '' ? '' : '?';
 			const url = `${history.location.pathname}${qm}${search}`;
-			history.push(url);
+			if (user.passwordChanged) {
+				setTimeout(async () => {
+					const user_record = await storage.getItem(USER_RECORD);
+					if (user_record) {
+						store.dispatch(toggleProfile(true, user_record));
+					}
+				}, 200);
 
-			setTimeout(async () => {
-				const user_record = await storage.getItem(USER_RECORD);
-				if (user_record) {
-					store.dispatch(toggleProfile(true, user_record));
+				if (history.location.pathname === '/') {
+					redirectToPage(user.role, history);
+				} else {
+					history.push(url);
 				}
-			}, 200);
+			} else {
+				history.push('/change-password');
+			}
 		} catch (e) {
 			// console.log(e);
 			storage.removeItem(TOKEN_COOKIE);
@@ -165,12 +154,7 @@ const initData = async () => {
 	}
 };
 
-if (history.location.pathname !== '/') {
-	initData();
-} else {
-	initSettings();
-	store.dispatch(togglePreloading(false));
-}
+initData();
 
 ReactDOM.render(
 	<Provider store={store}>

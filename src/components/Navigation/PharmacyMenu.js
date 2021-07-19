@@ -28,6 +28,14 @@ const PharmacyMenu = () => {
 					<span>Pay Point</span>
 				</Link>
 			</li>
+			<li>
+				<Link to="/pharmacy/inventory">
+					<div className="icon-w">
+						<div className="os-icon os-icon-layers" />
+					</div>
+					<span>Inventory</span>
+				</Link>
+			</li>
 		</>
 	);
 };

@@ -35,7 +35,7 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 	const dispatch = useDispatch();
 
 	const categories = useSelector(state => state.settings.lab_categories);
-	const hmos = useSelector(state => state.hmo.hmo_list);
+	const hmos = [];
 
 	useEffect(() => {
 		const fetchSpecimens = async () => {

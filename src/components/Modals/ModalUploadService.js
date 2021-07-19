@@ -131,7 +131,7 @@ class ModalUploadService extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		staff: state.user.profile,
-		hmos: state.hmo.hmo_list,
+		hmos: [],
 	};
 };
 

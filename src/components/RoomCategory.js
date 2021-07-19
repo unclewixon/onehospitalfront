@@ -30,7 +30,7 @@ const RoomCategory = props => {
 	const [payload, getDataToEdit] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
-	const hmos = useSelector(state => state.hmo.hmo_list);
+	const hmos = [];
 	const user = useSelector(state => state.user.profile);
 
 	const handleInputChange = e => {

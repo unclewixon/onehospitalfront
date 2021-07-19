@@ -9,7 +9,15 @@ const HMOMenu = () => {
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers" />
 					</div>
-					<span>List of HMOs</span>
+					<span>HMO Companies</span>
+				</Link>
+			</li>
+			<li>
+				<Link to="/hmo/schemes">
+					<div className="icon-w">
+						<div className="os-icon os-icon-layers" />
+					</div>
+					<span>HMO Schemes</span>
 				</Link>
 			</li>
 			<li>
@@ -21,7 +29,7 @@ const HMOMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/hmo/transactions">
+				<Link to="/hmo/transactions/all">
 					<div className="icon-w">
 						<div className="os-icon os-icon-agenda-1" />
 					</div>

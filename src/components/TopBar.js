@@ -12,9 +12,31 @@ import {
 	toggleMode,
 	toggleMenu,
 	toggleFullscreen,
+	signOut,
 } from '../actions/user';
 import SearchPatient from './SearchPatient';
-import { staffname, parseAvatar } from '../services/utilities';
+import { staffname, parseAvatar, request } from '../services/utilities';
+import SSRStorage from '../services/storage';
+import {
+	TOKEN_COOKIE,
+	USER_RECORD,
+	CK_COMPLAINTS,
+	CK_REVIEW_OF_SYSTEMS,
+	CK_HX_FORMS,
+	CK_PAST_HISTORY,
+	CK_ALLERGIES,
+	CK_PAST_ALLERGIES,
+	CK_PHYSICAL_EXAM,
+	CK_INVESTIGATIONS,
+	CK_INVESTIGATION_LAB,
+	CK_INVESTIGATION_SCAN,
+	CK_TREATMENT_PLAN,
+	CK_CONSUMABLE,
+	CK_DIAGNOSIS,
+	CK_PAST_DIAGNOSIS,
+} from '../services/constants';
+
+const storage = new SSRStorage();
 
 class TopBar extends Component {
 	state = {
@@ -60,6 +82,37 @@ class TopBar extends Component {
 	onExit = () => {
 		const style = { display: 'none' };
 		this.setState({ style, focus: false });
+	};
+
+	doLogout = async () => {
+		const { profile } = this.props;
+
+		if (profile.role.slug === 'doctor') {
+			request(`hr/staffs/unset-room/${profile.details.id}`, 'GET', true);
+			storage.removeItem('ACTIVE:ROOM');
+		}
+
+		storage.removeItem(USER_RECORD);
+		storage.removeItem(TOKEN_COOKIE);
+
+		storage.removeItem(CK_COMPLAINTS);
+		storage.removeItem(CK_REVIEW_OF_SYSTEMS);
+		storage.removeItem(CK_HX_FORMS);
+		storage.removeItem(CK_PAST_HISTORY);
+		storage.removeItem(CK_ALLERGIES);
+		storage.removeItem(CK_PAST_ALLERGIES);
+		storage.removeItem(CK_PHYSICAL_EXAM);
+		storage.removeItem(CK_INVESTIGATIONS);
+		storage.removeItem(CK_INVESTIGATION_LAB);
+		storage.removeItem(CK_INVESTIGATION_SCAN);
+		storage.removeItem(CK_TREATMENT_PLAN);
+		storage.removeItem(CK_CONSUMABLE);
+		storage.removeItem(CK_DIAGNOSIS);
+		storage.removeItem(CK_PAST_DIAGNOSIS);
+
+		this.props.signOut();
+
+		this.props.history.push('/');
 	};
 
 	render() {
@@ -176,10 +229,10 @@ class TopBar extends Component {
 										</Link>
 									</li>
 									<li>
-										<Link to="/logout">
+										<a onClick={this.doLogout} to="/logout" className="pointer">
 											<i className="os-icon os-icon-signs-11" />
 											<span>Logout</span>
-										</Link>
+										</a>
 									</li>
 								</ul>
 							</div>
@@ -203,5 +256,6 @@ export default withRouter(
 		toggleMode,
 		toggleMenu,
 		toggleFullscreen,
+		signOut,
 	})(TopBar)
 );

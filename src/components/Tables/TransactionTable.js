@@ -52,10 +52,10 @@ const TransactionTable = ({
 		confirmAction(deleteTask, data);
 	};
 
-	const viewDetails = (transaction_type, data) => {
+	const viewDetails = (bill_source, data) => {
 		document.body.classList.add('modal-open');
 		setShowModal(true);
-		setDetails({ transaction_type, data });
+		setDetails({ bill_source, data });
 	};
 
 	const showList = patient => {
@@ -102,14 +102,14 @@ const TransactionTable = ({
 								</td>
 								<td className="flex">
 									<span className="text-capitalize">
-										{transaction.transaction_type}
+										{transaction.bill_source}
 									</span>
-									{transaction.transaction_type !== 'registration' && (
+									{transaction.bill_source !== 'registration' && (
 										<a
 											className="item-title text-primary text-underline ml-2"
 											onClick={() =>
 												viewDetails(
-													transaction.transaction_type,
+													transaction.bill_source,
 													transaction.transaction_details
 												)
 											}>

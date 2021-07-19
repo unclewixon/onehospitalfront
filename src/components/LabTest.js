@@ -6,7 +6,7 @@ import HmoTests from './Lab/HmoTests';
 const LabTest = ({ doToggleForm }) => {
 	const [toggled, setToggled] = useState([]);
 
-	const hmos = useSelector(state => state.hmo.hmo_list);
+	const hmos = [];
 
 	const doToggle = index => {
 		const found = toggled.find(t => t.id === index);

@@ -45,7 +45,7 @@ const HrMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/hr/roster">
+				<Link to="/hr/duty-roster">
 					<div className="icon-w">
 						<div className="os-icon os-icon-layers" />
 					</div>

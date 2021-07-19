@@ -317,7 +317,7 @@ const mapStateToProps = (state, ownProps) => {
 		},
 		categories: state.inventory.categories,
 		sub_categories: state.inventory.sub_categories,
-		hmos: state.hmo.hmo_list,
+		hmos: [],
 	};
 };
 

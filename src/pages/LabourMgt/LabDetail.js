@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component, Suspense, lazy } from 'react';
 import { connect } from 'react-redux';
-// import { viewPayPoint } from '../actions/general';
 import moment from 'moment';
+
 import Splash from '../../components/Splash';
 import {
 	createLabourMeasurement,
@@ -15,6 +15,7 @@ import isEmpty from 'lodash.isempty';
 import { clearLabourDetails, loadLabourDetails } from '../../actions/patient';
 import { labourAPI } from '../../services/constants';
 import { notifyError } from '../../services/notify';
+
 const Measurement = lazy(() => import('./Measurement'));
 const Partograph = lazy(() => import('./Partograph'));
 const RiskAssessment = lazy(() => import('./RiskAssessment'));

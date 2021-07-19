@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Tooltip from 'antd/lib/tooltip';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
 import Pagination from 'antd/lib/pagination';
@@ -14,6 +14,7 @@ import {
 	formatPatientId,
 	itemRender,
 	formatCurrency,
+	patientname,
 } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { toggleProfile } from '../../actions/user';
@@ -29,7 +30,7 @@ const statuses = [
 	{ label: 'Disabled', value: 0 },
 ];
 
-const AllPatients = props => {
+const AllPatients = () => {
 	const [loaded, setLoaded] = useState(false);
 	const [filtering, setFiltering] = useState(false);
 	const [startDate, setStartDate] = useState('');
@@ -41,7 +42,10 @@ const AllPatients = props => {
 	});
 	const [searchValue, setSearchValue] = useState('');
 	const [status, setStatus] = useState('');
+
 	const dispatch = useDispatch();
+
+	const patients = useSelector(state => state.patient.patients);
 
 	const dateChange = e => {
 		let date = e.map(d => {
@@ -57,30 +61,33 @@ const AllPatients = props => {
 		dispatch(toggleProfile(true, info));
 	};
 
-	const fetchPatients = async (page, q) => {
-		try {
-			const p = page || 1;
-			const url = `patient/list?page=${p}&limit=${pageLimit}&q=${q ||
-				''}&startDate=${startDate}&endDate=${endDate}&status=${status}`;
-			const rs = await request(url, 'GET', true);
-			const { result, ...meta } = rs;
-			setMeta(meta);
-			window.scrollTo({ top: 0, behavior: 'smooth' });
-			dispatch(loadPatients(result));
-			setLoaded(true);
-			setFiltering(false);
-			dispatch(stopBlock());
-		} catch (error) {
-			notifyError('error fetching patients');
-			setLoaded(true);
-			dispatch(stopBlock());
-			setFiltering(false);
-		}
-	};
+	const fetchPatients = useCallback(
+		async (page, q) => {
+			try {
+				dispatch(startBlock());
+				const p = page || 1;
+				const url = `patient/list?page=${p}&limit=${pageLimit}&q=${q ||
+					''}&startDate=${startDate}&endDate=${endDate}&status=${status}`;
+				const rs = await request(url, 'GET', true);
+				const { result, ...meta } = rs;
+				setMeta(meta);
+				window.scrollTo({ top: 0, behavior: 'smooth' });
+				dispatch(loadPatients(result));
+				setLoaded(true);
+				setFiltering(false);
+				dispatch(stopBlock());
+			} catch (error) {
+				notifyError('error fetching patients');
+				setLoaded(true);
+				dispatch(stopBlock());
+				setFiltering(false);
+			}
+		},
+		[dispatch, endDate, startDate, status]
+	);
 
-	const onNavigatePage = nextPage => {
-		dispatch(startBlock());
-		fetchPatients(nextPage);
+	const onNavigatePage = async nextPage => {
+		await fetchPatients(nextPage);
 	};
 
 	const doFilter = e => {
@@ -90,27 +97,11 @@ const AllPatients = props => {
 	};
 
 	useEffect(() => {
-		const fetch = async () => {
-			try {
-				const p = 1;
-				const url = `patient/list?page=${p}&limit=${pageLimit}`;
-				const rs = await request(url, 'GET', true);
-				const { result, ...meta } = rs;
-				setMeta(meta);
-				dispatch(loadPatients(result));
-				setLoaded(true);
-				dispatch(stopBlock());
-			} catch (error) {
-				notifyError('error fetching patients');
-				setLoaded(true);
-				dispatch(stopBlock());
-			}
-		};
-
 		if (!loaded) {
-			fetch();
+			fetchPatients();
+			setLoaded(true);
 		}
-	}, [dispatch, loaded]);
+	}, [fetchPatients, loaded]);
 
 	return (
 		<>
@@ -176,31 +167,34 @@ const AllPatients = props => {
 										<th>Patient ID</th>
 										<th>Phone Number</th>
 										<th>Date of Birth</th>
-										<th>HMO</th>
+										<th>Scheme</th>
 										<th>Balance</th>
 										<th></th>
 									</tr>
 								</thead>
 								<tbody>
-									{props.patients.map((data, i) => {
+									{patients.map((data, i) => {
 										return (
 											<tr key={i}>
 												<td>
-													{`${data?.other_names} ${data?.surname}`}{' '}
+													{patientname(data)}{' '}
 													{data.isAdmitted && (
 														<Tooltip title="Admitted">
 															<i className="fa fa-hospital-o text-danger" />
 														</Tooltip>
 													)}
 												</td>
-												<td>{`${formatPatientId(
-													data?.id
-												)} [${data.folderNumber || '-'}]`}</td>
-												<td>{data?.phoneNumber}</td>
+												<td>{`${formatPatientId(data.id)} ${
+													data.legacy_patient_id &&
+													data.legacy_patient_id !== ''
+														? `[${data.legacy_patient_id}]`
+														: ''
+												}`}</td>
+												<td>{data.phone_number || '--'}</td>
 												<td>
-													{moment(data?.date_of_birth).format('DD-MMM-YYYY')}
+													{moment(data.date_of_birth).format('DD-MMM-YYYY')}
 												</td>
-												<td>{data?.hmo?.name}</td>
+												<td>{data.hmo.name}</td>
 												<td>{formatCurrency(data.outstanding || 0)}</td>
 												<td className="row-actions text-right">
 													<Tooltip title="View Patient">
@@ -235,10 +229,4 @@ const AllPatients = props => {
 	);
 };
 
-const mapStateToProps = (state, ownProps) => {
-	return {
-		patients: state.patient.patients,
-	};
-};
-
-export default connect(mapStateToProps)(AllPatients);
+export default AllPatients;

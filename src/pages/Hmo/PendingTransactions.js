@@ -3,11 +3,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import Pagination from 'antd/lib/pagination';
+import { Link } from 'react-router-dom';
 
 import { socket } from '../../services/constants';
 import { notifyError, notifyInfo } from '../../services/notify';
 import { request, itemRender } from '../../services/utilities';
-import { loadHmoTransaction } from '../../actions/hmo';
 import HmoTable from '../../components/HMO/HmoTable';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import TableLoading from '../../components/TableLoading';
@@ -22,6 +22,7 @@ class PendingTransactions extends Component {
 		status: 0,
 		patient_id: '',
 		hmo_id: '',
+		transactions: [],
 	};
 
 	componentDidMount() {
@@ -54,8 +55,7 @@ class PendingTransactions extends Component {
 
 			const { result, ...meta } = rs;
 			const arr = [...result];
-			this.props.loadHmoTransaction(arr);
-			this.setState({ loading: false, meta });
+			this.setState({ loading: false, meta, transactions: arr });
 			this.props.stopBlock();
 		} catch (error) {
 			console.log(error);
@@ -71,17 +71,28 @@ class PendingTransactions extends Component {
 	};
 
 	updateTransaction = data => {
-		this.props.loadHmoTransaction(data);
 		const i = this.state.meta;
 		const meta = { ...i, total: (i.total = 1) };
-		this.setState({ loading: false, meta });
+		this.setState({ loading: false, meta, transactions: data });
 	};
 
 	render() {
-		const { loading, meta } = this.state;
-		const { hmoTransactions } = this.props;
+		const { transactions, loading, meta } = this.state;
+		const { match } = this.props;
 		return (
 			<>
+				<div className="element-actions">
+					<Link
+						to={`${match.path}/transactions/pending`}
+						className="btn btn-primary btn-sm btn-outline-primary">
+						Pending Transactions
+					</Link>
+					<Link
+						to={`${match.path}/transactions/all`}
+						className="btn btn-primary btn-sm ml-2">
+						All transactions
+					</Link>
+				</div>
 				<h6 className="element-header">Transactions</h6>
 				<div className="element-box p-3 m-0">
 					<div className="table-responsive">
@@ -103,7 +114,7 @@ class PendingTransactions extends Component {
 										</tr>
 									</thead>
 									<HmoTable
-										hmoTransactions={hmoTransactions}
+										hmoTransactions={transactions}
 										updateTransaction={this.updateTransaction}
 									/>
 								</table>
@@ -128,14 +139,7 @@ class PendingTransactions extends Component {
 	}
 }
 
-const mapStateToProps = state => {
-	return {
-		hmoTransactions: state.hmo.hmo_transactions,
-	};
-};
-
-export default connect(mapStateToProps, {
-	loadHmoTransaction,
+export default connect(null, {
 	startBlock,
 	stopBlock,
 })(PendingTransactions);

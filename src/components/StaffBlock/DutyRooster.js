@@ -44,7 +44,7 @@ export class DutyRooster extends Component {
 	fetchRoster = async (period, department_id) => {
 		try {
 			const data = { period, department_id };
-			const rs = await request(`${rosterAPI}/list-roaster`, 'POST', true, data);
+			const rs = await request(`${rosterAPI}/list-roster`, 'POST', true, data);
 			const rosters = parseRoster(rs);
 			this.props.loadRoster(rosters);
 			this.setState({ filtering: false });

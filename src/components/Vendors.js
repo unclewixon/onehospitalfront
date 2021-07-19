@@ -88,7 +88,7 @@ class Vendors extends Component {
 													<td>{i + 1}</td>
 													<td>{vendor.name}</td>
 													<td className="text-center row-actions">
-														{role === 'admin' ? (
+														{role === 'it-admin' ? (
 															<>
 																<a
 																	onClick={this.editVendor(vendor, true)}

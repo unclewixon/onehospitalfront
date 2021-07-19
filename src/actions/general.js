@@ -16,7 +16,6 @@ import {
 	TOGGLE_EDIT_PAYROLL,
 	TOGGLE_REGISTER_NEW_PATIENT,
 	TOGGLE_ADD_NEW_OBSERVATION,
-	TOGGLE_VIEW_PAYPOINT,
 	TOGGLE_CREATE_VOUCHER,
 	TOGGLE_CREATE_LABOUR_MEASUREMENT,
 	TOGGLE_CREATE_RISK_ASSESSMENT,
@@ -188,13 +187,6 @@ export const toggleEditPayroll = (status, id) => {
 	};
 };
 
-export const toggleViewPayPoint = (status, id) => {
-	return {
-		type: TOGGLE_VIEW_PAYPOINT,
-		payload: id,
-	};
-};
-
 export const toggleCreateVoucher = status => {
 	return {
 		type: TOGGLE_CREATE_VOUCHER,
@@ -347,7 +339,6 @@ export const closeModals = () => {
 		dispatch(toggleEditPayroll(false));
 		dispatch(toggleRegisterNewPatient(false));
 		dispatch(toggleAddNewObservation(false));
-		dispatch(toggleViewPayPoint(false));
 		dispatch(toggleCreateVoucher(false));
 		dispatch(toggleCreateLabourMeasurement(false));
 		dispatch(toggleApproveHmoTransaction(false));
@@ -509,16 +500,6 @@ export const viewEditPayroll = (action, isModal, id) => {
 	return dispatch => {
 		dispatch(toggleIsModal(isModal ? true : false));
 		dispatch(toggleEditPayroll(action, id));
-	};
-};
-
-//paypoint
-export const viewPayPoint = (action, id) => {
-	// console.log(id);
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleViewPayPoint(action, id));
 	};
 };
 

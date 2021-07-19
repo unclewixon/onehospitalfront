@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { lazy, Suspense } from 'react';
 import { Switch, withRouter, Route } from 'react-router-dom';
-import { connect } from 'react-redux';
 
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
@@ -34,7 +33,7 @@ const StaffAppraisal = lazy(() =>
 	import('../../components/StaffBlock/StaffAppraisal')
 );
 
-const MyAccount = ({ match, staff }) => {
+const Home = ({ match }) => {
 	return (
 		<div className="content-i">
 			<div className="content-box">
@@ -105,10 +104,4 @@ const MyAccount = ({ match, staff }) => {
 	);
 };
 
-const mapStatetoProps = state => {
-	return {
-		staff: state.user.profile,
-	};
-};
-
-export default withRouter(connect(mapStatetoProps)(MyAccount));
+export default withRouter(Home);

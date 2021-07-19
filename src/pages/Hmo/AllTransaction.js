@@ -5,12 +5,12 @@ import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import Pagination from 'antd/lib/pagination';
+import { Link } from 'react-router-dom';
 
-import { hmoAPI, searchAPI } from '../../services/constants';
+import { searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request, itemRender } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
-import { loadHmoTransaction } from '../../actions/hmo';
 import HmoTable from '../../components/HMO/HmoTable';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import TableLoading from '../../components/TableLoading';
@@ -45,6 +45,7 @@ class AllTransaction extends Component {
 		patient_id: '',
 		hmo_id: '',
 		hmos: [],
+		transactions: [],
 		meta: null,
 	};
 
@@ -65,8 +66,8 @@ class AllTransaction extends Component {
 	fetchHmos = async () => {
 		try {
 			this.setState({ loading: true });
-			const rs = await request(`${hmoAPI}`, 'GET', true);
-			const hmos = rs.map(hmo => {
+			const rs = await request('hmos?limit=100', 'GET', true);
+			const hmos = rs.result.map(hmo => {
 				return {
 					value: hmo.id,
 					label: hmo.name,
@@ -88,8 +89,12 @@ class AllTransaction extends Component {
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			const arr = [...result];
-			this.props.loadHmoTransaction(arr);
-			this.setState({ loading: false, filtering: false, meta });
+			this.setState({
+				loading: false,
+				filtering: false,
+				meta,
+				transactions: arr,
+			});
 			this.props.stopBlock();
 		} catch (error) {
 			console.log(error);
@@ -164,102 +169,103 @@ class AllTransaction extends Component {
 	};
 
 	updateTransaction = data => {
-		this.props.loadHmoTransaction(data);
 		const i = this.state.meta;
 		const meta = { ...i, total: (i.total = 1) };
-		this.setState({ loading: false, meta });
+		this.setState({ loading: false, meta, transactions: data });
 	};
 
 	render() {
-		const { filtering, loading, hmos, meta } = this.state;
-		const { hmoTransactions } = this.props;
+		const { transactions, filtering, loading, hmos, meta } = this.state;
+		const { match } = this.props;
 
 		return (
 			<>
+				<div className="element-actions">
+					<Link
+						to={`${match.path}/transactions/pending`}
+						className="btn btn-primary btn-sm">
+						Pending Transactions
+					</Link>
+					<Link
+						to={`${match.path}/transactions/all`}
+						className="btn btn-primary btn-sm btn-outline-primary ml-2">
+						All transactions
+					</Link>
+				</div>
 				<h6 className="element-header">Transactions</h6>
 				<div className="element-box m-0 mb-4 p-3">
-					<form className="px-2">
-						<div className="row">
-							<div className="form-group col-sm-6 pr-0">
-								<label>Patient</label>
-
-								<AsyncSelect
-									isClearable
-									getOptionValue={getOptionValues}
-									getOptionLabel={getOptionLabels}
-									defaultOptions
-									name="patient"
-									ref={this.patient}
-									loadOptions={getOptions}
-									onChange={e => {
-										this.patientSet(e, 'patient');
-									}}
-									placeholder="Search for patient"
-								/>
-							</div>
-							<div className="form-group col-sm-6 pr-0">
-								<label>
-									HMO<span className="compulsory-field">*</span>
-								</label>
-
-								<select
-									style={{ height: '35px' }}
-									id="hmo_id"
-									className="form-control"
-									name="hmo_id"
-									onChange={evt => this.change(evt)}>
-									<option value="">Choose Hmo</option>
-									{hmos.map((pat, i) => {
-										return (
-											<option key={i} value={pat.value}>
-												{pat.label}
-											</option>
-										);
-									})}
-								</select>
-							</div>
+					<form className="row">
+						<div className="form-group col-sm-3 pr-0">
+							<label>Patient</label>
+							<AsyncSelect
+								isClearable
+								getOptionValue={getOptionValues}
+								getOptionLabel={getOptionLabels}
+								defaultOptions
+								name="patient"
+								ref={this.patient}
+								loadOptions={getOptions}
+								onChange={e => {
+									this.patientSet(e, 'patient');
+								}}
+								placeholder="Search for patient"
+							/>
 						</div>
-						<div className="row">
-							<div className="form-group col-md-5 pr-0">
-								<label>From - To</label>
-								<RangePicker
-									onChange={e => this.dateChange(e)}
-									defaultValue={[this.state.startDate, this.state.endDate]}
-								/>
-							</div>
-							<div className="form-group col-md-5 pr-0">
-								<label className="mr-2 " htmlFor="id">
-									Status
-								</label>
-								<select
-									style={{ height: '32px' }}
-									id="status"
-									className="form-control"
-									name="status"
-									onChange={e => this.change(e)}>
-									<option value="">Choose status</option>
-									{status.map((status, i) => {
-										return (
-											<option key={i} value={status.value}>
-												{status.label}
-											</option>
-										);
-									})}
-								</select>
-							</div>
-							<div className="form-group col-md-1 pr-0 mt-4">
-								<div
-									className="btn btn-sm btn-primary btn-upper text-white"
-									onClick={this.doFilter}>
-									<i className="os-icon os-icon-ui-37" />
-									<span>
-										{filtering ? (
-											<img src={waiting} alt="submitting" />
-										) : (
-											'Filter'
-										)}
-									</span>
-								</div>
+						<div className="form-group col-sm-2 pr-0">
+							<label>HMO</label>
+							<select
+								style={{ height: '32px' }}
+								id="hmo_id"
+								className="form-control"
+								name="hmo_id"
+								onChange={evt => this.change(evt)}>
+								<option value="">Choose Hmo</option>
+								{hmos.map((pat, i) => {
+									return (
+										<option key={i} value={pat.value}>
+											{pat.label}
+										</option>
+									);
+								})}
+							</select>
+						</div>
+						<div className="form-group col-md-3 pr-0">
+							<label>Transaction Date</label>
+							<RangePicker
+								onChange={e => this.dateChange(e)}
+								defaultValue={[this.state.startDate, this.state.endDate]}
+							/>
+						</div>
+						<div className="form-group col-md-2 pr-0">
+							<label>Status</label>
+							<select
+								style={{ height: '32px' }}
+								id="status"
+								className="form-control"
+								name="status"
+								onChange={e => this.change(e)}>
+								<option value="">Choose status</option>
+								{status.map((status, i) => {
+									return (
+										<option key={i} value={status.value}>
+											{status.label}
+										</option>
+									);
+								})}
+							</select>
+						</div>
+						<div className="form-group col-md-2 mt-4">
+							<div
+								className="btn btn-sm btn-primary btn-upper text-white"
+								onClick={this.doFilter}>
+								<i className="os-icon os-icon-ui-37" />
+								<span>
+									{filtering ? (
+										<img src={waiting} alt="submitting" />
+									) : (
+										'Filter'
+									)}
+								</span>
 							</div>
 						</div>
 					</form>
@@ -284,7 +290,7 @@ class AllTransaction extends Component {
 										</tr>
 									</thead>
 									<HmoTable
-										hmoTransactions={hmoTransactions}
+										hmoTransactions={transactions}
 										updateTransaction={this.updateTransaction}
 									/>
 								</table>
@@ -309,14 +315,7 @@ class AllTransaction extends Component {
 	}
 }
 
-const mapStateToProps = state => {
-	return {
-		hmoTransactions: state.hmo.hmo_transactions,
-	};
-};
-
-export default connect(mapStateToProps, {
-	loadHmoTransaction,
+export default connect(null, {
 	startBlock,
 	stopBlock,
 })(AllTransaction);

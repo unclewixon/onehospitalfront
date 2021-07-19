@@ -14,7 +14,6 @@ import {
 	TOGGLE_VIEW_PAYROLL_HISTORY,
 	TOGGLE_VIEW_CURRENT_PAYROLL,
 	TOGGLE_EDIT_PAYROLL,
-	TOGGLE_VIEW_PAYPOINT,
 	TOGGLE_CREATE_VOUCHER,
 	TOGGLE_UPLOAD_HMO,
 	TOGGLE_UPLOAD_HMO_TARIFF,
@@ -56,7 +55,6 @@ const INITIAL_STATE = {
 	prepare_payroll: false,
 	edit_payroll: false,
 	approve_hmo_transaction: false,
-	view_paypoint: false,
 	create_voucher: false,
 	apply_voucher: false,
 	create_labour_measurement: false,
@@ -141,8 +139,6 @@ const general = (state = INITIAL_STATE, action) => {
 			};
 		case TOGGLE_EDIT_PAYROLL:
 			return { ...state, edit_payroll: action.payload, payroll_id: action.id };
-		case TOGGLE_VIEW_PAYPOINT:
-			return { ...state, view_paypoint: action.payload };
 		case TOGGLE_CREATE_LABOUR_MEASUREMENT:
 			return { ...state, create_labour_measurement: action.payload };
 		case TOGGLE_CREATE_RISK_ASSESSMENT:

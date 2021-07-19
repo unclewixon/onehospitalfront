@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
+
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { request, itemRender } from '../../services/utilities';
 import {
@@ -24,11 +25,8 @@ class PayPoint extends Component {
 		try {
 			const p = page || 1;
 			this.setState({ loading: true });
-			const rs = await request(
-				`transactions/list?page=${p}&limit=15&patient_id=&startDate=&endDate=&status=&hmo_id=`,
-				'GET',
-				true
-			);
+			const url = `transactions?page=${p}&limit=15&patient_id=&startDate=&endDate=&status=&hmo_id=&bill_source=pharmacy`;
+			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			const arr = [...result];
 			this.props.loadTodayTransaction(arr);

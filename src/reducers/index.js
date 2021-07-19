@@ -6,7 +6,6 @@ import reduxBlock from './redux-block';
 import user from './user';
 import general from './general';
 import settings from './settings';
-import hmo from './hmo';
 import inventory from './inventory';
 import role from './role';
 import hr from './hr';
@@ -27,7 +26,6 @@ const reducers = combineReducers({
 	general,
 	paypoint,
 	settings,
-	hmo,
 	inventory,
 	role,
 	hr,

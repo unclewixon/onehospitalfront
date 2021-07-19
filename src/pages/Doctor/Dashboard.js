@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useCallback, useEffect } from 'reactn';
+import React, { useState, useCallback, useEffect } from 'react';
 import moment from 'moment';
 import { withRouter } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';

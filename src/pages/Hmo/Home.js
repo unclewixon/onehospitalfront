@@ -1,49 +1,38 @@
-import React from 'react';
-import { Switch, Route, withRouter, Link } from 'react-router-dom';
+import React, { lazy, Suspense } from 'react';
+import { Switch, Route, withRouter } from 'react-router-dom';
 
-import HmoList from './HmoList';
-import Tarrifs from './Tarrifs';
-import Transactions from './Transactions';
-import NoMatch from '../NoMatch';
+import Splash from '../../components/Splash';
 
-const Home = ({ match, location }) => {
-	const page = location.pathname.split('/').pop();
+const HmoCompany = lazy(() => import('./HmoCompany'));
+const HmoScheme = lazy(() => import('./HmoScheme'));
+const Tarrifs = lazy(() => import('./Tarrifs'));
+const AllTransaction = lazy(() => import('./AllTransaction'));
+const PendingTransactions = lazy(() => import('./PendingTransactions'));
+const NoMatch = lazy(() => import('../NoMatch'));
 
+const Home = ({ match }) => {
 	return (
 		<div className="content-i">
 			<div className="content-box">
 				<div className="row">
 					<div className="col-sm-12">
 						<div className="element-wrapper">
-							{page !== 'tariffs' && page !== 'hmo' && (
-								<div className="element-actions">
-									<Link
-										to={`${match.path}/transactions`}
-										className={`mx-2 btn btn-primary btn-sm  ${
-											page === 'transactions' ? 'btn-outline-primary' : ''
-										}`}>
-										Pending Transactions
-									</Link>
-									<Link
-										to={`${match.path}/transactions/all`}
-										className={`mr-2 btn btn-primary btn-sm  ${
-											page === 'all' ? 'btn-outline-primary' : ''
-										}`}>
-										All transactions
-									</Link>
-								</div>
-							)}
-							<Switch>
+							<Suspense fallback={<Splash />}>
 								<Switch>
-									<Route exact path={`${match.url}`} component={HmoList} />
-									<Route
-										path={`${match.url}/transactions`}
-										component={Transactions}
-									/>
+									<Route exact path={match.url} component={HmoCompany} />
+									<Route path={`${match.url}/schemes`} component={HmoScheme} />
 									<Route path={`${match.url}/tariffs`} component={Tarrifs} />
+									<Route
+										path={`${match.url}/transactions/pending`}
+										component={PendingTransactions}
+									/>
+									<Route
+										path={`${match.url}/transactions/all`}
+										component={AllTransaction}
+									/>
 									<Route component={NoMatch} />
 								</Switch>
-							</Switch>
+							</Suspense>
 						</div>
 					</div>
 				</div>

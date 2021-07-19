@@ -24,7 +24,7 @@ const Tarrifs = ({ location }) => {
 
 	const dispatch = useDispatch();
 
-	const hmoList = useSelector(state => state.hmo.hmo_list);
+	const hmoList = [];
 
 	const fetchTarrifs = useCallback(
 		async (page, q, hmo_id) => {

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Can } from '../common/Can';
 
 const MyAccount = () => {
 	return (
@@ -21,7 +20,7 @@ const MyAccount = () => {
 					<div className="icon-w">
 						<div className="os-icon icon-feather-calendar" />
 					</div>
-					<span>Duty Roaster</span>
+					<span>Duty Roster</span>
 				</Link>
 			</li>
 			<li>
@@ -40,16 +39,14 @@ const MyAccount = () => {
 					<span>Leave Request</span>
 				</Link>
 			</li>
-			<Can I="excuse-duty" this="all">
-				<li>
-					<Link to="/my-account/excuse-duty">
-						<div className="icon-w">
-							<div className="os-icon os-icon-agenda-1" />
-						</div>
-						<span>Excuse Duty</span>
-					</Link>
-				</li>
-			</Can>
+			<li>
+				<Link to="/my-account/excuse-duty">
+					<div className="icon-w">
+						<div className="os-icon os-icon-agenda-1" />
+					</div>
+					<span>Excuse Duty</span>
+				</Link>
+			</li>
 		</>
 	);
 };

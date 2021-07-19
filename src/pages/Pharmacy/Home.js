@@ -5,13 +5,16 @@ import { Switch, Route, Link } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
 import { socket } from '../../services/constants';
-import PrescriptionForm from '../../components/Pharmacy/PrescriptionForm';
 
 const PrescriptionQueue = lazy(() => import('./PrescriptionQueue'));
+const PrescriptionForm = lazy(() =>
+	import('../../components/Pharmacy/PrescriptionForm')
+);
 const PrescriptionRequests = lazy(() => import('./PrescriptionRequests'));
 const Billing = lazy(() => import('./PayPoint'));
+const Inventory = lazy(() => import('./Inventory'));
 
-const Index = ({ match, location }) => {
+const Home = ({ match, location }) => {
 	const [listenning, setListenning] = useState(false);
 
 	const page = location.pathname.split('/').pop();
@@ -23,6 +26,8 @@ const Index = ({ match, location }) => {
 		pageTitle = 'New Prescription';
 	} else if (page === 'billing') {
 		pageTitle = 'Transactions';
+	} else if (page === 'inventory') {
+		pageTitle = 'Inventory';
 	}
 
 	useEffect(() => {
@@ -89,6 +94,10 @@ const Index = ({ match, location }) => {
 												path={`${match.url}/billing`}
 												component={Billing}
 											/>
+											<Route
+												path={`${match.url}/inventory`}
+												component={Inventory}
+											/>
 											<Route component={NoMatch} />
 										</Switch>
 									</Suspense>
@@ -102,4 +111,4 @@ const Index = ({ match, location }) => {
 	);
 };
 
-export default Index;
+export default Home;

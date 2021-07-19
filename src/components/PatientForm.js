@@ -1,18 +1,25 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Fragment, useEffect, useState } from 'react';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import { Image } from 'react-bootstrap';
 import moment from 'moment';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 import placeholder from '../assets/images/placeholder.jpg';
 import { closeModals } from '../actions/general';
 import { nextStep } from '../actions/patient';
 import { patientSchema } from '../services/validationSchemas';
-import { ethnicities, gender, maritalStatus } from '../services/constants';
+import {
+	ethnicities,
+	gender,
+	maritalStatus,
+	hmoAPI,
+} from '../services/constants';
 import { CameraFeed } from './CameraFeed';
+import { request } from '../services/utilities';
 
 function PatientForm(props) {
 	const formData = props.formData;
@@ -22,19 +29,11 @@ function PatientForm(props) {
 	const [formTitle, setFormTitle] = useState('');
 	const [patientData, setPatientData] = useState({});
 	const [genderValue, setGenderValue] = useState('');
-	const [hmoValue, setHmoValue] = useState('');
+	const [hmoValue, setHmoValue] = useState(null);
 	const [ethValue, setEthValue] = useState('');
 	const [maritalValue, setMaritalValue] = useState('');
 	const [image, setImage] = useState(null);
 	const [avatar, setAvatar] = useState(null);
-
-	const hmoList = useSelector(state => state.hmo.hmo_list);
-	const hmos = hmoList.map(hmo => {
-		return {
-			value: hmo.id,
-			label: `${hmo.name} ${hmo.phoneNumber || ''}`,
-		};
-	});
 
 	useEffect(() => {
 		let formValues = {
@@ -81,7 +80,8 @@ function PatientForm(props) {
 			setGenderValue(
 				gender.filter(option => option.label === formValues.gender)
 			);
-			setHmoValue(hmos.filter(option => option.label === formValues.hmo));
+			setHmoValue(patient.hmo);
+			setHmoValue('hmoId', patient.hmo.id);
 			setEthValue(
 				ethnicities.filter(option => option.label === formValues.ethnicity)
 			);
@@ -99,7 +99,7 @@ function PatientForm(props) {
 				setMaritalValue,
 				maritalStatus
 			);
-			handleChange('hmoId', formValues.hmo, setHmoValue, hmos);
+
 			handleChange('ethnicity', formValues.ethnicity, setEthValue, ethnicities);
 			setPatientData(formValues);
 		}
@@ -133,6 +133,16 @@ function PatientForm(props) {
 		const file = new File([myBlob], 'profile_pic.png');
 		setAvatar(myBlob);
 		console.log('file:', file.stream);
+	};
+
+	const getHmoSchemes = async q => {
+		if (!q || q.length <= 1) {
+			return [];
+		}
+
+		const url = `${hmoAPI}/schemes?q=${q}`;
+		const { result } = await request(url, 'GET', true);
+		return result;
 	};
 
 	return (
@@ -349,20 +359,25 @@ function PatientForm(props) {
 									<label>
 										HMO<span className="compulsory-field">*</span>
 									</label>
-
-									<Select
-										id="hmoId"
+									<AsyncSelect
+										isClearable
+										getOptionValue={option => option.id}
+										getOptionLabel={option =>
+											`${option.name} ${
+												option.name !== 'Private'
+													? option.phoneNumber || ''
+													: ''
+											}`
+										}
+										defaultOptions
 										ref={register({ name: 'hmoId' })}
-										options={hmos}
 										value={hmoValue}
-										onChange={evt => {
-											handleChange(
-												'hmoId',
-												String(evt.value),
-												setHmoValue,
-												hmos
-											);
+										loadOptions={getHmoSchemes}
+										onChange={e => {
+											setValue('hmoId', String(e.id));
+											setHmoValue(e);
 										}}
+										placeholder="Search hmo scheme"
 									/>
 									{errors.hmoId && (
 										<small className="text-danger">

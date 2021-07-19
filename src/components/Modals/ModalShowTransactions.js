@@ -46,7 +46,7 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 			try {
 				dispatch(startBlock());
 				const p = page || 1;
-				const url = `transactions/list/pending?page=${p}&limit=12&patient_id=${patient.id}&startDate=&endDate=`;
+				const url = `transactions/pending?page=${p}&limit=12&patient_id=${patient.id}&startDate=&endDate=`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setMeta(meta);
@@ -232,7 +232,7 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 															</td>
 															<td className="flex">
 																<span className="text-capitalize">
-																	{item.transaction_type}
+																	{item.bill_source}
 																</span>
 															</td>
 															<td>{formatCurrency(item.amount || 0)}</td>

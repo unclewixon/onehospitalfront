@@ -89,10 +89,10 @@ const PatientBills = () => {
 		fetchBills(nextPage, startDate, endDate, status);
 	};
 
-	const viewDetails = (transaction_type, data) => {
+	const viewDetails = (bill_source, data) => {
 		document.body.classList.add('modal-open');
 		setShowModal(true);
-		setDetails({ transaction_type, data });
+		setDetails({ bill_source, data });
 	};
 
 	const closeModal = () => {
@@ -236,14 +236,14 @@ const PatientBills = () => {
 														<td className="sorting_1">{item.id}</td>
 														<td>
 															<span className="text-capitalize">
-																{item.transaction_type}
+																{item.bill_source}
 															</span>
-															{item.transaction_type !== 'registration' && (
+															{item.bill_source !== 'registration' && (
 																<a
 																	className="item-title text-primary text-underline ml-2"
 																	onClick={() =>
 																		viewDetails(
-																			item.transaction_type,
+																			item.bill_source,
 																			item.transaction_details
 																		)
 																	}>

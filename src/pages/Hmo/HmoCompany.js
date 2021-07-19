@@ -1,47 +1,71 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { confirmAlert } from 'react-confirm-alert';
 import Tooltip from 'antd/lib/tooltip';
 import capitalize from 'lodash.capitalize';
-import { Link } from 'react-router-dom';
 import Pagination from 'antd/lib/pagination';
 
 import waiting from '../../assets/images/waiting.gif';
 import { notifyError } from '../../services/notify';
-import { fetchHmo, addHmo, updateHmo, deleteHmo } from '../../actions/hmo';
 import TableLoading from '../../components/TableLoading';
-import { request, itemRender } from '../../services/utilities';
+import { request, itemRender, updateImmutable } from '../../services/utilities';
 import { hmoAPI } from '../../services/constants';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
-const HmoList = () => {
+const HmoCompany = () => {
 	const initialState = {
 		name: '',
+		address: '',
 		email: '',
 		phoneNumber: '',
-		address: '',
-		cacNumber: '',
-		coverageType: '',
-		coverage: '100',
 		add: true,
 		edit: false,
 	};
-	const [
-		{ name, email, phoneNumber, address, cacNumber, coverageType, coverage },
-		setState,
-	] = useState(initialState);
+	const [companies, setCompanies] = useState([]);
+	const [{ name, email, phoneNumber, address }, setState] = useState(
+		initialState
+	);
 	const [loading, setLoading] = useState(false);
 	const [{ edit, add }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
-	// const [logo, setLogo] = useState(null);
-	const [dataLoaded, setDataLoaded] = useState(false);
+	const [loaded, setLoaded] = useState(false);
 	const [adding, setAdding] = useState(false);
 	const [meta, setMeta] = useState(null);
 
-	const hmoList = useSelector(state => state.hmo.hmo_list);
-
 	const dispatch = useDispatch();
+
+	const fetchHmos = useCallback(
+		async page => {
+			try {
+				const p = page || 1;
+				const url = `${hmoAPI}/owners?page=${p}&limit=12`;
+				const rs = await request(url, 'GET', true);
+				const { result, ...meta } = rs;
+				setCompanies([...result]);
+				setMeta(meta);
+				setLoaded(true);
+				dispatch(stopBlock());
+			} catch (e) {
+				console.log(e);
+				notifyError('could not fetch hmo companies');
+				setLoaded(true);
+				dispatch(stopBlock());
+			}
+		},
+		[dispatch]
+	);
+
+	useEffect(() => {
+		if (!loaded) {
+			fetchHmos();
+		}
+	}, [loaded, fetchHmos]);
+
+	const onNavigatePage = nextPage => {
+		dispatch(startBlock());
+		fetchHmos(nextPage);
+	};
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -51,30 +75,31 @@ const HmoList = () => {
 	const onAddHmo = async e => {
 		try {
 			e.preventDefault();
-
+			dispatch(startBlock());
 			const data = {
 				name,
 				email,
 				phoneNumber,
 				address,
-				cacNumber,
-				coverageType,
-				coverage,
 			};
-
 			setAdding(true);
-			const rs = await request(hmoAPI, 'POST', true, data);
-			dispatch(addHmo(rs));
+			const rs = await request(`${hmoAPI}/owners`, 'POST', true, data);
+			setCompanies([...companies, rs]);
 			setState({ ...initialState });
 			setAdding(false);
+			dispatch(stopBlock());
 		} catch (e) {
 			console.log(e);
-			const message =
-				e.message
+			let message = '';
+			try {
+				message = e.message
 					?.map(m => Object.values(m.constraints).join(', '))
-					?.join(', ') || 'could not save hmo';
+					?.join(', ');
+			} catch (e) {
+				message = 'could not save hmo company';
+			}
 			notifyError(message);
-
+			dispatch(stopBlock());
 			setAdding(false);
 		}
 	};
@@ -88,28 +113,31 @@ const HmoList = () => {
 				email,
 				phoneNumber,
 				address,
-				cacNumber,
-				coverageType,
-				coverage,
 			};
-
+			dispatch(startBlock());
 			setLoading(true);
-			const url = `${hmoAPI}/${data.id}/update`;
+			const url = `${hmoAPI}/owners/${data.id}`;
 			const rs = await request(url, 'PATCH', true, info);
-			dispatch(updateHmo(rs));
+			const list = updateImmutable(companies, rs);
+			setCompanies([...list]);
 			setState({ ...initialState });
 			setSubmitButton({ add: true, edit: false });
 			setLoading(false);
+			dispatch(stopBlock());
 		} catch (e) {
 			console.log(e);
-			const message =
-				e.message
+			let message = '';
+			try {
+				message = e.message
 					?.map(m => Object.values(m.constraints).join(', '))
-					?.join(', ') || 'could not save hmo';
+					?.join(', ');
+			} catch (e) {
+				message = 'could not save hmo company';
+			}
 			notifyError(message);
-
 			setState({ ...initialState });
 			setLoading(false);
+			dispatch(stopBlock());
 		}
 	};
 
@@ -121,10 +149,6 @@ const HmoList = () => {
 			email: data.email,
 			phoneNumber: data.phoneNumber,
 			address: data.address,
-			logo: data.logo,
-			cacNumber: data.cacNumber,
-			coverageType: data.coverageType,
-			coverage: data.coverage,
 		}));
 		getDataToEdit(data);
 	};
@@ -136,11 +160,15 @@ const HmoList = () => {
 
 	const onDeleteHmo = async data => {
 		try {
-			const url = `${hmoAPI}/${data.id}`;
-			await request(url, 'DELETE', true);
-			dispatch(deleteHmo(data));
+			dispatch(startBlock());
+			const url = `${hmoAPI}/owners/${data.id}`;
+			const rs = await request(url, 'DELETE', true);
+			setCompanies([...companies.filter(c => c.id !== rs.id)]);
+			dispatch(stopBlock());
 		} catch (e) {
 			console.log(e);
+			dispatch(stopBlock());
+			notifyError(e.message || 'could not delete company');
 		}
 	};
 
@@ -150,7 +178,7 @@ const HmoList = () => {
 				return (
 					<div className="custom-ui">
 						<h1>Are you sure?</h1>
-						<p>You want to delete this remove ?</p>
+						<p>You want to delete this remove?</p>
 						<div style={{}}>
 							<button
 								className="btn btn-primary"
@@ -174,47 +202,16 @@ const HmoList = () => {
 		});
 	};
 
-	const fetchHmos = useCallback(
-		async page => {
-			try {
-				const p = page || 1;
-				const rs = await request(`${hmoAPI}?page=${p}`, 'GET', true);
-				const { result, ...meta } = rs;
-				dispatch(fetchHmo([...result]));
-				setMeta(meta);
-				setDataLoaded(true);
-				dispatch(stopBlock());
-			} catch (e) {
-				console.log(e);
-				notifyError('could not fetch hmos');
-				setDataLoaded(true);
-				dispatch(stopBlock());
-			}
-		},
-		[dispatch]
-	);
-
-	useEffect(() => {
-		if (!dataLoaded) {
-			fetchHmos();
-		}
-	}, [dataLoaded, fetchHmos]);
-
-	const onNavigatePage = nextPage => {
-		dispatch(startBlock());
-		this.fetchHmoTransaction(nextPage);
-	};
-
 	return (
 		<>
-			<h6 className="element-header">Health Management Organization</h6>
+			<h6 className="element-header">HMO Companies</h6>
 			<div className="pipelines-w">
 				<div className="row">
-					<div className="col-lg-9">
+					<div className="col-lg-8">
 						<div className="element-wrapper">
 							<div className="element-box p-3 m-0">
 								<div className="table-responsive">
-									{!dataLoaded ? (
+									{!loaded ? (
 										<TableLoading />
 									) : (
 										<>
@@ -223,35 +220,26 @@ const HmoList = () => {
 													<tr>
 														<th>Name</th>
 														<th>Phone</th>
+														<th>Address</th>
 														<th>Email</th>
-														<th>CAC Number</th>
-														<th>Coverage</th>
 														<th></th>
 													</tr>
 												</thead>
 												<tbody>
-													{hmoList.map((hmo, i) => {
+													{companies.map((hmo, i) => {
 														return (
 															<tr key={i}>
 																<td>
-																	<span>{capitalize(hmo.name || '')}</span>
+																	<span>{capitalize(hmo.name || '--')}</span>
 																</td>
 																<td>
-																	<span>{hmo.phoneNumber || '-'}</span>
+																	<span>{hmo.phoneNumber || '--'}</span>
 																</td>
-
 																<td>
-																	<span>{hmo.email || '-'}</span>
+																	<span>{hmo.address || '--'}</span>
 																</td>
-																<td className="nowrap">
-																	<span>{hmo.cacNumber || '-'}</span>
-																</td>
-																<td className="nowrap">
-																	<span>{`${capitalize(hmo.coverageType)} ${
-																		hmo.coverageType === 'partial'
-																			? `(${hmo.coverage}%)`
-																			: ''
-																	}`}</span>
+																<td>
+																	<span>{hmo.email || '--'}</span>
 																</td>
 																<td className="row-actions">
 																	<Tooltip title="Edit">
@@ -259,21 +247,14 @@ const HmoList = () => {
 																			<i className="os-icon os-icon-edit-1" />
 																		</a>
 																	</Tooltip>
-																	{hmo.name !== 'Private' && (
-																		<>
-																			<Tooltip title="HMO Tariffs">
-																				<Link to={`/hmo/tariffs?id=${hmo.id}`}>
-																					<i className="os-icon os-icon-documents-03" />
-																				</Link>
-																			</Tooltip>
-																			<Tooltip title="Delete">
-																				<a
-																					className="danger"
-																					onClick={() => confirmDelete(hmo)}>
-																					<i className="os-icon os-icon-ui-15" />
-																				</a>
-																			</Tooltip>
-																		</>
+																	{hmo.name !== 'Deda Hospital' && (
+																		<Tooltip title="Delete">
+																			<a
+																				className="danger"
+																				onClick={() => confirmDelete(hmo)}>
+																				<i className="os-icon os-icon-ui-15" />
+																			</a>
+																		</Tooltip>
 																	)}
 																</td>
 															</tr>
@@ -302,11 +283,13 @@ const HmoList = () => {
 					<div className="col-lg-3">
 						<div className="pipeline white lined-warning">
 							<form onSubmit={edit ? onEditHmo : onAddHmo}>
-								<h6 className="form-header">Add New HMO</h6>
+								<h6 className="form-header">{`${
+									edit ? 'Edit' : 'Add New'
+								} HMO Company`}</h6>
 								<div className="form-group">
 									<input
 										className="form-control"
-										placeholder="HMO Name"
+										placeholder="Name"
 										type="text"
 										name="name"
 										value={name || ''}
@@ -341,38 +324,6 @@ const HmoList = () => {
 										type="text"
 										onChange={handleInputChange}
 										value={address || ''}
-									/>
-								</div>
-								<div className="form-group">
-									<input
-										className="form-control"
-										placeholder="CAC Number"
-										type="text"
-										name="cacNumber"
-										onChange={handleInputChange}
-										value={cacNumber || ''}
-									/>
-								</div>
-								<div className="form-group">
-									<select
-										name="coverageType"
-										className="form-control"
-										placeholder="Select coverage type"
-										onChange={handleInputChange}
-										defaultValue={coverageType}>
-										<option>Select coverage Type</option>
-										<option value="partial">Partial</option>
-										<option value="full">Full</option>
-									</select>
-								</div>
-								<div className="form-group">
-									<input
-										className="form-control"
-										placeholder="Coverage (%)"
-										type="text"
-										name="coverage"
-										onChange={handleInputChange}
-										value={coverage || ''}
 									/>
 								</div>
 								<div className="form-buttons-w">
@@ -421,4 +372,4 @@ const HmoList = () => {
 	);
 };
 
-export default HmoList;
+export default HmoCompany;

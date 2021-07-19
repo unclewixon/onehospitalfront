@@ -189,7 +189,7 @@ const InPatientCare = ({ match }) => {
 										<th>Status</th>
 										{user &&
 											(user.role.slug === 'nurse' ||
-												user.role.slug === 'admin') && <th></th>}
+												user.role.slug === 'it-admin') && <th></th>}
 									</tr>
 								</thead>
 								<tbody>
@@ -235,7 +235,7 @@ const InPatientCare = ({ match }) => {
 												</td>
 												{user &&
 													(user.role.slug === 'nurse' ||
-														user.role.slug === 'admin') && (
+														user.role.slug === 'it-admin') && (
 														<td className="row-actions">
 															{!item.suite && !item.nicu && (
 																<Tooltip title="Assign Bed">

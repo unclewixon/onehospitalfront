@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { closeModals } from '../../actions/general';
-import { uploadHmo } from '../../actions/hmo';
 import { notifySuccess, notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
 import { ProgressBar } from 'react-bootstrap';
@@ -112,5 +111,4 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
 	closeModals,
-	uploadHmo,
 })(ModalUploadHmo);

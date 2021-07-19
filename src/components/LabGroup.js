@@ -37,7 +37,7 @@ const LabGroup = () => {
 		}
 	};
 
-	const hmos = useSelector(state => state.hmo.hmo_list);
+	const hmos = [];
 
 	useEffect(() => {
 		const fetchGroup = async () => {

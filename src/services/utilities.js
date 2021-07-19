@@ -489,13 +489,13 @@ export const redirectToPage = (role, history) => {
 			case 'cafeteria':
 				uri = '/cafeteria';
 				break;
-			case 'admin':
+			case 'it-admin':
 				uri = '/settings';
 				break;
 			case 'hmo-officer':
 				uri = '/hmo/dashboard';
 				break;
-			case 'billing':
+			case 'paypoint':
 				uri = '/paypoint';
 				break;
 			case 'lab':
@@ -503,7 +503,6 @@ export const redirectToPage = (role, history) => {
 			case 'lab-officer':
 			case 'lab-supervisor':
 			case 'lab-hod':
-				uri = '/lab';
 				break;
 			case 'radiology':
 				uri = '/radiology';
@@ -522,6 +521,12 @@ export const redirectToPage = (role, history) => {
 				break;
 			case 'records':
 				uri = '/records';
+				break;
+			case 'accounts':
+				uri = '/accounting';
+				break;
+			case 'store':
+				uri = '/store';
 				break;
 			default:
 				uri = '/front-desk';

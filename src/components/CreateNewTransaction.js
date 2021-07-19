@@ -25,7 +25,7 @@ const CreateNewTransaction = props => {
 	const [servicesCategory, setServicesCategory] = useState([]);
 	const [amount, setAmount] = useState(0);
 
-	const hmoList = useSelector(state => state.hmo.hmo_list);
+	const hmoList = [];
 	const hmos = hmoList.map(hmo => {
 		return {
 			value: hmo.id,
