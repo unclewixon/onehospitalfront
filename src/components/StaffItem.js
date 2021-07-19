@@ -181,7 +181,6 @@ class StaffItem extends Component {
 							<Image alt="" src={parseAvatar(staff?.profile_pic)} width={50} />
 						</div>
 					</td>
-					<td onClick={this.toggle}>{staff.emp_code}</td>
 					<td onClick={this.toggle}>{`${capitalize(staffname(staff))} (${
 						staff.user.username
 					})`}</td>

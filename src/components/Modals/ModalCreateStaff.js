@@ -155,7 +155,6 @@ function ModalCreateStaff({
 									enableReinitialize
 									initialValues={{
 										username: form?.user?.username || '',
-										password: '',
 										role_id: form?.user?.role?.id || '',
 										department_id: form?.department?.id || '',
 										first_name: form?.first_name || '',
@@ -265,11 +264,10 @@ function ModalCreateStaff({
 										let headers = { Authorization: jwt };
 										if (staff) {
 											try {
-												const res = await axios.patch(
-													`${API_URI}/hr/staffs/${staff.id}/update`,
-													formData,
-													{ headers }
-												);
+												const url = `${API_URI}/hr/staffs/${staff.id}/update`;
+												const res = await axios.patch(url, formData, {
+													headers,
+												});
 												setSaving(false);
 												if (res.data?.success) {
 													let updatedStaff = res.data?.staff;
@@ -291,11 +289,10 @@ function ModalCreateStaff({
 											}
 										} else {
 											try {
-												const res = await axios.post(
-													`${API_URI}/${staffAPI}`,
-													formData,
-													{ headers }
-												);
+												const url = `${API_URI}/${staffAPI}`;
+												const res = await axios.post(url, formData, {
+													headers,
+												});
 												console.log(res);
 												setSaving(false);
 												if (res.data?.success) {
@@ -340,7 +337,6 @@ function StepOne({
 }) {
 	const {
 		username,
-		password,
 		first_name,
 		last_name,
 		other_names,
@@ -409,13 +405,6 @@ function StepOne({
 								name="username"
 								label={{ value: 'User Name' }}
 								value={username}
-							/>
-						</div>
-						<div className="col-sm-6">
-							<Field
-								name="password"
-								value={password}
-								label={{ value: 'Password' }}
 							/>
 						</div>
 					</div>
