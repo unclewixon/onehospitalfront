@@ -65,7 +65,6 @@ class InsuranceTransactions extends Component {
 	};
 
 	componentDidMount() {
-		this.getHmos();
 		this.fetchTransaction();
 	}
 
@@ -108,16 +107,6 @@ class InsuranceTransactions extends Component {
 
 	updateCode = async data => {
 		console.log(data);
-	};
-
-	getHmos = async () => {
-		const rs = await request('hmos?limit=100', 'GET', true);
-		const res = rs.result.map(hmo => ({
-			value: hmo.id,
-			label: hmo.name,
-		}));
-
-		this.setState({ hmos: res });
 	};
 
 	doFilter = e => {

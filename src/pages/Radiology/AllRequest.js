@@ -41,7 +41,7 @@ class AllRequest extends Component {
 			const { startDate, endDate, status, patient_id } = this.state;
 			this.setState({ loading: true });
 			const p = page || 1;
-			const url = `requests/list/radiology?page=${p}&limit=10&startDate=${startDate}&endDate=${endDate}&status=${status}&patient_id=${patient_id}`;
+			const url = `requests/list/scans?page=${p}&limit=10&startDate=${startDate}&endDate=${endDate}&status=${status}&patient_id=${patient_id}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			this.setState({

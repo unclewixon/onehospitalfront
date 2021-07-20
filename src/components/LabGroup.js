@@ -1,8 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import Tooltip from 'antd/lib/tooltip';
-import { useSelector } from 'react-redux';
 
 import { confirmAction, request, updateImmutable } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
@@ -13,50 +12,41 @@ const LabGroup = () => {
 	const initialState = {
 		name: '',
 		labs: '',
-		hmo_id: '',
 		description: '',
 		edit: false,
 		create: true,
 	};
-	const [{ name, price, description, hmo_id }, setState] = useState(
-		initialState
-	);
+	const [{ name, description }, setState] = useState(initialState);
 	const [loaded, setLoaded] = useState(false);
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
 	const [group, setGroup] = useState(null);
 	const [groups, setGroups] = useState([]);
 	const [labTests, setLabTests] = useState([]);
 	const [submitting, setSubmitting] = useState(false);
-	const [hmo, setHmo] = useState(null);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
 		setState(prevState => ({ ...prevState, [name]: value }));
-		if (name === 'hmo_id') {
-			setHmo(value);
-		}
 	};
 
-	const hmos = [];
+	const fetchGroup = useCallback(async () => {
+		try {
+			const url = 'lab-tests/groups';
+			const rs = await request(url, 'GET', true);
+			setGroups([...rs]);
+			setLoaded(true);
+		} catch (e) {
+			setSubmitting(false);
+			notifyError(e.message || 'could not fetch test groups');
+			setLoaded(true);
+		}
+	}, []);
 
 	useEffect(() => {
-		const fetchGroup = async () => {
-			try {
-				const url = 'lab-tests/groups';
-				const rs = await request(url, 'GET', true);
-				setGroups([...rs]);
-				setLoaded(true);
-			} catch (e) {
-				setSubmitting(false);
-				notifyError(e.message || 'could not fetch test groups');
-				setLoaded(true);
-			}
-		};
-
 		if (!loaded) {
 			fetchGroup();
 		}
-	}, [loaded]);
+	}, [loaded, fetchGroup]);
 
 	const onAddGroup = async e => {
 		try {
@@ -64,10 +54,8 @@ const LabGroup = () => {
 			setSubmitting(true);
 			const data = {
 				name,
-				price,
 				description,
-				lab_tests: labTests.map(l => ({ id: l.id, name: l.name })),
-				hmo_id,
+				lab_tests: [...labTests],
 			};
 			const url = 'lab-tests/groups';
 			const rs = await request(url, 'POST', true, data);
@@ -87,12 +75,9 @@ const LabGroup = () => {
 			e.preventDefault();
 			setSubmitting(true);
 			const data = {
-				id: group.id,
 				name,
-				price,
 				description,
-				lab_tests: labTests.map(l => ({ id: l.id, name: l.name })),
-				hmo_id,
+				lab_tests: [...labTests],
 			};
 			const url = `lab-tests/groups/${group.id}`;
 			const rs = await request(url, 'PATCH', true, data);
@@ -115,12 +100,9 @@ const LabGroup = () => {
 		setState(prevState => ({
 			...prevState,
 			name: data.name,
-			price: data.price,
-			description: data.description,
-			hmo_id: data.hmo ? data.hmo.id : '',
+			description: data.description || '',
 		}));
-		setHmo(data.hmo ? data.hmo.id : null);
-		setLabTests(data.lab_tests);
+		setLabTests(data.tests.map(t => ({ ...t.labTest })));
 		setGroup(data);
 	};
 
@@ -128,7 +110,6 @@ const LabGroup = () => {
 		setSubmitButton({ ...initialState });
 		setState({ ...initialState });
 		setGroup(null);
-		setHmo(null);
 		setLabTests([]);
 	};
 
@@ -150,16 +131,11 @@ const LabGroup = () => {
 	};
 
 	const getOptions = async q => {
-		if (!hmo) {
-			notifyError('Please select HMO');
-			return;
-		}
-
-		if (!q || q.length < 3) {
+		if (!q || q.length < 1) {
 			return [];
 		}
 
-		const url = `lab-tests/unpaginated?q=${q}&hmo_id=${hmo}`;
+		const url = `lab-tests/unpaginated?q=${q}`;
 		const res = await request(url, 'GET', true);
 		return res.result;
 	};
@@ -201,16 +177,14 @@ const LabGroup = () => {
 																<div className="pi-sub mt-2">
 																	{item.tests.map((s, i) => (
 																		<span key={i} className="gp-block">
-																			{`• ${s.labTest.name}`}
+																			{`• ${s.labTest.name} (${s.labTest.category.name})`}
 																		</span>
 																	))}
 																</div>
 															</div>
 														</div>
 														<div className="pi-foot">
-															<div className="tags">
-																<a className="tag">{item.hmo.name}</a>
-															</div>
+															<div className="tags"></div>
 															<a className="extra-info">
 																<span>{`${item.tests.length} tests`}</span>
 															</a>
@@ -236,7 +210,9 @@ const LabGroup = () => {
 			<div className="col-lg-4">
 				<div className="pipeline white lined-warning">
 					<form onSubmit={edit ? onEditGroup : onAddGroup}>
-						<h6 className="form-header">Create Group</h6>
+						<h6 className="form-header">{`${
+							edit ? 'Edit' : 'Create'
+						} Group`}</h6>
 						<div className="form-group mt-2">
 							<input
 								className="form-control"
@@ -247,30 +223,14 @@ const LabGroup = () => {
 								value={name}
 							/>
 						</div>
-						<div className="form-group">
-							<select
-								className="form-control"
-								name="hmo_id"
-								onChange={handleInputChange}
-								value={hmo_id}>
-								{!hmo_id && <option value="">Select HMO</option>};
-								{hmos.map((hmo, i) => {
-									return (
-										<option key={i} value={hmo.id}>
-											{hmo.name}
-										</option>
-									);
-								})}
-							</select>
-						</div>
 						<div className="row">
 							<div className="form-group col-sm-12">
 								<label htmlFor="labs">Select Lab Test</label>
 								<AsyncSelect
 									isMulti
-									isClearable
 									getOptionValue={option => option.id}
 									getOptionLabel={option => option.name}
+									defaultOptions
 									value={labTests}
 									name="labs"
 									loadOptions={getOptions}
@@ -314,7 +274,7 @@ const LabGroup = () => {
 										{submitting ? (
 											<img src={waiting} alt="submitting" />
 										) : (
-											<span>edit</span>
+											<span>save</span>
 										)}
 									</button>
 								</>

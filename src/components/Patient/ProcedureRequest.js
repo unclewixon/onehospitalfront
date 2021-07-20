@@ -63,7 +63,7 @@ const ProcedureRequest = ({ module, history, location }) => {
 			const datum = {
 				requestType: 'procedure',
 				patient_id: chosenPatient.id,
-				tests: [{ id: service.id }],
+				tests: [{ ...service }],
 				request_note: data.request_note,
 				urgent: false,
 				diagnosis: data.diagnosis || [],

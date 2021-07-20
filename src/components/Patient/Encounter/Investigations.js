@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
-import { Table } from 'react-bootstrap';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 import {
@@ -11,9 +10,8 @@ import {
 	CK_INVESTIGATION_SCAN,
 	CK_INVESTIGATIONS,
 } from '../../../services/constants';
-import { request, formatCurrency } from '../../../services/utilities';
+import { request } from '../../../services/utilities';
 import { notifyError } from '../../../services/notify';
-import { ReactComponent as TrashIcon } from '../../../assets/svg-icons/trash.svg';
 import { startBlock, stopBlock } from '../../../actions/redux-block';
 import { updateEncounterData } from '../../../actions/patient';
 import SSRStorage from '../../../services/storage';
@@ -28,8 +26,6 @@ const defaultValues = {
 	pay_later: false,
 };
 
-const category_id = 13;
-
 const Investigations = ({ patient, previous, next }) => {
 	const { register, handleSubmit, setValue } = useForm({
 		defaultValues,
@@ -40,7 +36,6 @@ const Investigations = ({ patient, previous, next }) => {
 	const [loaded, setLoaded] = useState(false);
 
 	const [groups, setGroups] = useState([]);
-	const [services, setServices] = useState([]);
 	const [formset, setFormSet] = useState(null);
 
 	// selected requests
@@ -48,47 +43,32 @@ const Investigations = ({ patient, previous, next }) => {
 	const [selectedScans, setSelectedScans] = useState([]);
 
 	// lab
-	const [group, setGroup] = useState(null);
-	const [labTest, setLabTest] = useState(null);
 	const [urgentLab, setUrgentLab] = useState(false);
-	const [payLater, setPayLater] = useState(false);
 
 	// radiology
-	const [service, setService] = useState(null);
 	const [urgentScan, setUrgentScan] = useState(false);
 
 	const dispatch = useDispatch();
 
-	const getServiceUnit = useCallback(
-		async hmoId => {
+	const fetchLabCombo = useCallback(async () => {
+		try {
+			dispatch(startBlock());
+
 			try {
-				dispatch(startBlock());
-
-				try {
-					const url = `lab-tests/groups?hmo_id=${hmoId}`;
-					const rs = await request(url, 'GET', true);
-					setGroups(rs);
-				} catch (e) {
-					notifyError('Error fetching drugs');
-				}
-
-				try {
-					const url = `${serviceAPI}/category/${category_id}?hmo_id=${hmoId}`;
-					const rs = await request(url, 'GET', true);
-					setServices(rs);
-				} catch (e) {
-					notifyError('Error fetching scan services');
-				}
-
-				dispatch(stopBlock());
-			} catch (error) {
-				console.log(error);
-				notifyError('Error fetching drugs');
-				dispatch(stopBlock());
+				const url = 'lab-tests/groups';
+				const rs = await request(url, 'GET', true);
+				setGroups(rs);
+			} catch (e) {
+				notifyError('Error fetching lab groups');
 			}
-		},
-		[dispatch]
-	);
+
+			dispatch(stopBlock());
+		} catch (error) {
+			console.log(error);
+			notifyError('Error fetching groups');
+			dispatch(stopBlock());
+		}
+	}, [dispatch]);
 
 	const retrieveData = useCallback(async () => {
 		const lab = await storage.getItem(CK_INVESTIGATION_LAB);
@@ -114,39 +94,27 @@ const Investigations = ({ patient, previous, next }) => {
 
 	useEffect(() => {
 		if (!loaded && patient) {
-			getServiceUnit(patient.hmo.id);
+			fetchLabCombo();
 			retrieveData();
+			setLoaded(true);
 		}
-		setLoaded(true);
-	}, [getServiceUnit, loaded, patient, retrieveData]);
-
-	const onTrash = (index, type) => {
-		if (type === 'lab') {
-			const items = selectedTests.filter((test, i) => index !== i);
-			setSelectedTests(items);
-			storage.setItem(CK_INVESTIGATION_LAB, { items });
-		} else {
-			const items = selectedScans.filter((test, i) => index !== i);
-			setSelectedScans(items);
-			storage.setItem(CK_INVESTIGATION_SCAN, { items });
-		}
-	};
+	}, [fetchLabCombo, loaded, patient, retrieveData]);
 
 	const onSubmit = data => {
 		const labRequest = {
-			requestType: 'lab',
+			requestType: 'labs',
 			patient_id: patient.id,
-			tests: [...selectedTests.map(t => ({ id: t.id }))],
+			tests: [...selectedTests],
 			request_note: data.lab_request_note,
 			urgent: data.lab_urgent,
-			pay_later: data.pay_later ? -1 : 0,
+			pay_later: 0,
 		};
 
 		const radiologyRequest = {
-			requestType: 'radiology',
+			requestType: 'scans',
 			patient_id: patient.id,
-			tests: [...selectedScans.map(t => ({ id: t.id }))],
-			request_note: data.sacn_request_note,
+			tests: [...selectedScans],
+			request_note: data.scan_request_note,
 			urgent: data.scan_urgent,
 		};
 
@@ -168,9 +136,19 @@ const Investigations = ({ patient, previous, next }) => {
 			return [];
 		}
 
-		const url = `lab-tests?q=${q}&hmo_id=${patient.hmo.id}`;
+		const url = `lab-tests?q=${q}`;
 		const res = await request(url, 'GET', true);
 		return res?.result || [];
+	};
+
+	const getServices = async q => {
+		if (!q || q.length < 1) {
+			return [];
+		}
+
+		const url = `${serviceAPI}/category/scans?q=${q}`;
+		const res = await request(url, 'GET', true);
+		return res;
 	};
 
 	return (
@@ -184,7 +162,6 @@ const Investigations = ({ patient, previous, next }) => {
 							name="lab_group"
 							placeholder="Select Lab Group"
 							options={groups}
-							value={group}
 							getOptionValue={option => option.id}
 							getOptionLabel={option => option.name}
 							onChange={e => {
@@ -192,7 +169,6 @@ const Investigations = ({ patient, previous, next }) => {
 									...selectedTests,
 									...e.tests.map(t => ({ ...t.labTest })),
 								];
-								setGroup(e);
 								setSelectedTests(items);
 								storage.setItem(CK_INVESTIGATION_LAB, { items });
 							}}
@@ -201,59 +177,22 @@ const Investigations = ({ patient, previous, next }) => {
 					<div className="form-group col-sm-6">
 						<label>Lab Test</label>
 						<AsyncSelect
+							isMulti
+							isClearable
 							getOptionValue={option => option.id}
-							getOptionLabel={option => option.name}
+							getOptionLabel={option =>
+								`${option.name} (${option.category.name})`
+							}
 							defaultOptions
-							name="lab_tests"
+							value={selectedTests}
+							name="lab_test"
 							loadOptions={getLabTests}
-							value={labTest}
 							onChange={e => {
-								const items = [...selectedTests, e];
-								setLabTest(e);
-								setSelectedTests(items);
-								setLabTest(null);
-								storage.setItem(CK_INVESTIGATION_LAB, { items });
+								setSelectedTests(e);
+								storage.setItem(CK_INVESTIGATION_LAB, { items: e });
 							}}
 							placeholder="Search Lab Test"
 						/>
-					</div>
-				</div>
-
-				<div className="row">
-					<div className="col-md-12">
-						<div className="element-box p-3 m-0 mt-3 w-100">
-							<Table>
-								<thead>
-									<tr>
-										<th>Category</th>
-										<th>Lab Test</th>
-										<th>Price</th>
-										<th>Action</th>
-									</tr>
-								</thead>
-								<tbody>
-									{selectedTests.map((item, i) => {
-										return (
-											<tr key={i}>
-												<td>{item.category.name}</td>
-												<td>{item.name}</td>
-												<td>{formatCurrency(item.hmoPrice)}</td>
-												<td>
-													<TrashIcon
-														onClick={() => onTrash(i)}
-														style={{
-															width: '1rem',
-															height: '1rem',
-															cursor: 'pointer',
-														}}
-													/>
-												</td>
-											</tr>
-										);
-									})}
-								</tbody>
-							</Table>
-						</div>
 					</div>
 				</div>
 				<div className="row mt-4">
@@ -289,87 +228,30 @@ const Investigations = ({ patient, previous, next }) => {
 							</label>
 						</div>
 					</div>
-					<div className="form-group col-sm-4">
-						<div className="form-check col-sm-12">
-							<label className="form-check-label">
-								<input
-									className="form-check-input mt-0"
-									name="pay_later"
-									type="checkbox"
-									checked={payLater}
-									onChange={e => {
-										setPayLater(!payLater);
-										storage.setItem(CK_INVESTIGATIONS, {
-											...formset,
-											payLater,
-										});
-									}}
-									ref={register}
-								/>
-								Pay Later
-							</label>
-						</div>
-					</div>
-					<div className="col-sm-4 text-right"></div>
 				</div>
 				<div className="mt-4"></div>
 				<h5>Radiology Requests</h5>
 				<div className="row">
 					<div className="form-group col-sm-12">
 						<label>Radiology Test</label>
-						<Select
-							name="service_request"
-							placeholder="Select Radiology Test"
-							options={services}
-							value={service}
+						<AsyncSelect
+							isMulti
+							isClearable
 							getOptionValue={option => option.id}
 							getOptionLabel={option => option.name}
+							defaultOptions
+							value={selectedScans}
+							name="service_request"
+							loadOptions={getServices}
 							onChange={e => {
-								const items = [...selectedScans, e];
-								setService(e);
-								setSelectedScans(items);
-								setService(null);
-								storage.setItem(CK_INVESTIGATION_LAB, { items });
+								setSelectedScans(e);
+								storage.setItem(CK_INVESTIGATION_SCAN, { items: e });
 							}}
+							placeholder="Search Lab Test"
 						/>
 					</div>
 				</div>
 
-				<div className="row">
-					<div className="col-md-12">
-						<div className="element-box p-3 m-0 mt-3 w-100">
-							<Table>
-								<thead>
-									<tr>
-										<th>Radiology Scan</th>
-										<th>Price</th>
-										<th>Action</th>
-									</tr>
-								</thead>
-								<tbody>
-									{selectedScans.map((item, i) => {
-										return (
-											<tr key={i}>
-												<td>{item.name}</td>
-												<td>{formatCurrency(item.hmoTarrif)}</td>
-												<td>
-													<TrashIcon
-														onClick={() => onTrash(i)}
-														style={{
-															width: '1rem',
-															height: '1rem',
-															cursor: 'pointer',
-														}}
-													/>
-												</td>
-											</tr>
-										);
-									})}
-								</tbody>
-							</Table>
-						</div>
-					</div>
-				</div>
 				<div className="row mt-4">
 					<div className="form-group col-sm-12">
 						<label>Scan Request Note</label>

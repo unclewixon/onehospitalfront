@@ -7,20 +7,20 @@ import { notifySuccess, notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const ModalViewLabResult = ({ closeModal, lab, labs, updateLab }) => {
-	const item = lab.items[0];
+	const item = lab.item;
 
 	const dispatch = useDispatch();
 
 	const approve = async () => {
 		try {
 			dispatch(startBlock());
-			const url = `requests/${lab.id}/approve-result?type=lab&request_item_id=${item.id}`;
+			const url = `requests/${lab.id}/approve-result?type=lab`;
 			const rs = await request(url, 'PATCH', true);
 			const lab_request = labs.find(l => l.id === lab.id);
 			const newLabs = updateImmutable(labs, {
 				...lab_request,
 				status: 1,
-				items: [rs.data],
+				item: rs.data,
 			});
 			updateLab(newLabs);
 			notifySuccess('lab result approved!');
@@ -39,7 +39,7 @@ const ModalViewLabResult = ({ closeModal, lab, labs, updateLab }) => {
 			const url = `requests/${item.id}/reject-result`;
 			const rs = await request(url, 'PATCH', true);
 			const lab_request = labs.find(l => l.id === lab.id);
-			const newItem = { ...lab_request, items: [rs.data] };
+			const newItem = { ...lab_request, item: rs.data };
 			const newLabs = updateImmutable(labs, newItem);
 			updateLab(newLabs);
 			notifySuccess('lab result rejected!');
@@ -71,7 +71,7 @@ const ModalViewLabResult = ({ closeModal, lab, labs, updateLab }) => {
 						<div className="onboarding-text alert-custom mb-3">
 							<div>{item.labTest.name}</div>
 							<div>
-								{item.labTest.specimens.map((s, i) => (
+								{item.labTest.specimens?.map((s, i) => (
 									<span key={i} className="badge badge-info text-white mr-2">
 										{s.label}
 									</span>

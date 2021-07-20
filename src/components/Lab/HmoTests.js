@@ -1,11 +1,16 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Pagination from 'antd/lib/pagination';
 import Tooltip from 'antd/lib/tooltip';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { setLabTests, deleteLabTest } from '../../actions/settings';
-import { confirmAction, itemRender, request } from '../../services/utilities';
+import {
+	confirmAction,
+	formatCurrency,
+	itemRender,
+	request,
+} from '../../services/utilities';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import TableLoading from '../TableLoading';
@@ -29,29 +34,33 @@ const HmoTests = ({ hmo, index, toggle, doToggle, doToggleForm }) => {
 
 	const dispatch = useDispatch();
 
-	const fetchTests = async (page, q) => {
-		try {
-			const p = page || 1;
-			const url = `lab-tests?page=${p}&limit=24&q=${q || ''}&hmo_id=${hmo.id}`;
-			const rs = await request(url, 'GET', true);
-			const { result, ...meta } = rs;
-			dispatch(setLabTests({ hmo, result: [...result] }));
-			setMeta(meta);
-			window.scrollTo({ top: 0, behavior: 'smooth' });
-			setLoaded(true);
-			dispatch(stopBlock());
-		} catch (e) {
-			dispatch(stopBlock());
-			notifyError(e.message || 'could not fetch lab tests');
-		}
-	};
+	const fetchTests = useCallback(
+		async (page, q) => {
+			try {
+				const p = page || 1;
+				const url = `lab-tests?page=${p}&limit=24&q=${q || ''}&hmo_id=${
+					hmo.id
+				}`;
+				const rs = await request(url, 'GET', true);
+				const { result, ...meta } = rs;
+				dispatch(setLabTests({ hmo, result: [...result] }));
+				setMeta(meta);
+				window.scrollTo({ top: 0, behavior: 'smooth' });
+				setLoaded(true);
+				dispatch(stopBlock());
+			} catch (e) {
+				dispatch(stopBlock());
+				notifyError(e.message || 'could not fetch lab tests');
+			}
+		},
+		[dispatch, hmo]
+	);
 
 	useEffect(() => {
-		if (!loaded) {
+		if (!loaded && toggle && toggle.id === index) {
 			fetchTests();
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [loaded]);
+	}, [fetchTests, index, loaded, toggle]);
 
 	const onDeleteLabTest = async data => {
 		try {
@@ -106,14 +115,14 @@ const HmoTests = ({ hmo, index, toggle, doToggle, doToggleForm }) => {
 
 	return (
 		<div className="filter-side mb-2" style={{ flex: '0 0 100%' }}>
-			{!loaded ? (
-				<TableLoading />
-			) : (
-				<div className={`filter-w ${toggle ? '' : 'collapsed'}`}>
-					<div className="filter-toggle" onClick={() => doToggle(index)}>
-						<i className="os-icon-minus os-icon" />
-					</div>
-					<h6 className="filter-header">{hmo.name}</h6>
+			<div className={`filter-w ${toggle ? '' : 'collapsed'}`}>
+				<div className="filter-toggle" onClick={() => doToggle(index)}>
+					<i className="os-icon-minus os-icon" />
+				</div>
+				<h6 className="filter-header">{hmo.name}</h6>
+				{!loaded ? (
+					<TableLoading />
+				) : (
 					<div
 						className="filter-body"
 						style={{ display: toggle ? 'block' : 'none' }}>
@@ -172,6 +181,9 @@ const HmoTests = ({ hmo, index, toggle, doToggle, doToggleForm }) => {
 																	<div className="pi-sub">
 																		{item?.category?.name}
 																	</div>
+																	<div className="pi-sub">
+																		{formatCurrency(item.service?.tariff || 0)}
+																	</div>
 																</div>
 															</div>
 															<div className="pi-foot">
@@ -183,7 +195,8 @@ const HmoTests = ({ hmo, index, toggle, doToggle, doToggleForm }) => {
 																	)) || ''}
 																</div>
 																<a className="extra-info">
-																	<span>{`${item?.parameters?.length} parameters`}</span>
+																	<span>{`${item?.parameters?.length ||
+																		0} parameters`}</span>
 																</a>
 															</div>
 														</div>
@@ -214,8 +227,8 @@ const HmoTests = ({ hmo, index, toggle, doToggle, doToggleForm }) => {
 							)}
 						</div>
 					</div>
-				</div>
-			)}
+				)}
+			</div>
 			{showModal && (
 				<ModalLabParameters closeModal={() => closeModal()} labTest={labTest} />
 			)}

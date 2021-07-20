@@ -5,7 +5,11 @@ import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
-import { renderTextInput, request } from '../../services/utilities';
+import {
+	renderTextInput,
+	request,
+	formatPatientId,
+} from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { closeModals } from '../../actions/general';
 import { vouchersAPI } from '../../services/constants';
@@ -37,10 +41,11 @@ const validate = values => {
 };
 
 const getOptionValues = option => option.id;
-const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+const getOptionLabels = option =>
+	`${option.other_names} ${option.surname} (${formatPatientId(option.id)})`;
 
 const getOptions = async q => {
-	if (!q || q.length < 3) {
+	if (!q || q.length < 1) {
 		return [];
 	}
 
@@ -51,6 +56,7 @@ const getOptions = async q => {
 
 class ModalCreateVoucher extends Component {
 	state = {
+		patient_id: null,
 		voucher_date: null,
 		submitting: false,
 		amountClass: 'col-sm-6',
@@ -79,7 +85,7 @@ class ModalCreateVoucher extends Component {
 		data.start_date = this.state.voucher_date;
 		console.log(data, create_voucher);
 		try {
-			const rs = await request(`${vouchersAPI}`, 'POST', true, data);
+			const rs = await request(vouchersAPI, 'POST', true, data);
 
 			// let voucher = {
 			// 	id: rs.voucher.q_id,
@@ -178,7 +184,7 @@ class ModalCreateVoucher extends Component {
 												name="patient"
 												loadOptions={getOptions}
 												onChange={e => {
-													this.setPatient(e.id);
+													this.setPatient(e?.id);
 												}}
 												placeholder="Search patients"
 											/>

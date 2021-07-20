@@ -151,7 +151,7 @@ class AllAppointments extends Component {
 	};
 
 	dateChange = e => {
-		let date = e.map(d => {
+		const date = e.map(d => {
 			return moment(d._d).format('YYYY-MM-DD');
 		});
 
@@ -261,11 +261,11 @@ class AllAppointments extends Component {
 															? `${item.consultingRoom.name} (${staffname(
 																	item.whomToSee
 															  ).replace('-', '')})`
-															: '-'}
+															: '--'}
 													</p>
 												</td>
-												<td>{item.serviceType?.name || ''}</td>
-												<td>{item.department?.name || ''}</td>
+												<td>{item.service?.item?.name || '--'}</td>
+												<td>{item.department?.name || '--'}</td>
 
 												<td>
 													{!item.encounter &&

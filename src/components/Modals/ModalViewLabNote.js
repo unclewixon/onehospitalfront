@@ -1,7 +1,7 @@
 import React from 'react';
 
 const ModalViewLabNote = ({ closeModal, lab }) => {
-	const item = lab.items[0];
+	const item = lab.item;
 	return (
 		<div
 			className="onboarding-modal modal fade animated show"

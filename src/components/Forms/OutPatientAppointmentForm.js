@@ -1,23 +1,36 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
-import { connect } from 'react-redux';
 import DatePicker from 'react-datepicker';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import { withRouter } from 'react-router-dom';
 
 import waiting from '../../assets/images/waiting.gif';
-import { request } from '../../services/utilities';
+import { request, formatPatientId } from '../../services/utilities';
 import { notifyError, notifySuccess } from '../../services/notify';
-import { closeModals } from '../../actions/general';
-import { addNewPatient } from '../../actions/patient';
-// import { addTransaction } from '../../actions/transaction';
+import { searchAPI } from '../../services/constants';
 
-function OutPatientAppointmentForm(props) {
+const OutPatientAppointmentForm = ({ closeModal, addAppointment }) => {
 	const { register, handleSubmit, setValue, watch } = useForm();
 	const [submitting, setSubmitting] = useState(false);
 
 	const values = watch();
-	const dispatch = useDispatch();
+
+	const getOptionValues = option => option.id;
+	const getOptionLabels = option =>
+		`${option.other_names} ${option.surname} (${formatPatientId(option.id)} ${
+			option.legacy_patient_id ? `[${option.legacy_patient_id}]` : ''
+		})`;
+
+	const getOptions = async q => {
+		if (!q || q.length < 1) {
+			return [];
+		}
+
+		const url = `${searchAPI}?q=${q}&isOpd=1`;
+		const res = await request(url, 'GET', true);
+		return res;
+	};
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -25,18 +38,22 @@ function OutPatientAppointmentForm(props) {
 	};
 
 	const onSubmit = async values => {
-		setSubmitting(true);
-		const rs = await request(`patient/opd`, 'POST', true, values);
-		setSubmitting(false);
-		if (rs.success) {
-			notifySuccess('New Out Patient appointment record has been saved!');
-			// props.addTransaction(rs.appointment);
-			dispatch(addNewPatient(rs?.patient));
-			props.closeModals(false);
-		} else {
-			notifyError(
-				rs.message || 'Could not save out patient appointment record'
-			);
+		try {
+			setSubmitting(true);
+			const rs = await request('patient/opd', 'POST', true, values);
+			setSubmitting(false);
+			if (rs.success) {
+				notifySuccess('Out patient appointment created!');
+				addAppointment(rs.appointment);
+				closeModal();
+			} else {
+				notifyError(
+					rs.message || 'Could not save out patient appointment record'
+				);
+			}
+		} catch (e) {
+			setSubmitting(false);
+			notifyError(e.message || 'Could not schedule appointment');
 		}
 	};
 
@@ -44,12 +61,37 @@ function OutPatientAppointmentForm(props) {
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<div className="modal-body">
 				<div className="row">
+					<div className="col-md-12">
+						<div className="form-group relative">
+							<label>Search Patient</label>
+							<AsyncSelect
+								isClearable
+								getOptionValue={getOptionValues}
+								getOptionLabel={getOptionLabels}
+								defaultOptions
+								name="patient"
+								loadOptions={getOptions}
+								onChange={e => {
+									setValue('surname', e.surname);
+									setValue('other_names', e.other_names);
+									setValue('email', e.email);
+									setValue('phoneNumber', e.phone_number);
+									setValue('gender', e.gender);
+									setValue('date_of_birth', e.date_of_birth);
+									setValue('address', e.address);
+								}}
+								placeholder="Search patients"
+							/>
+						</div>
+					</div>
+				</div>
+				<div className="row">
 					<div className="col-sm-6">
 						<div className="form-group">
 							<label>Surname</label>
 							<input
 								className="form-control"
-								placeholder=""
+								placeholder="Surname"
 								type="text"
 								name="surname"
 								value={values.surname}
@@ -65,7 +107,7 @@ function OutPatientAppointmentForm(props) {
 							<label>Other Names</label>
 							<input
 								className="form-control"
-								placeholder=""
+								placeholder="Other names"
 								type="text"
 								name="other_names"
 								onChange={handleInputChange}
@@ -83,7 +125,7 @@ function OutPatientAppointmentForm(props) {
 							<label>Email</label>
 							<input
 								className="form-control"
-								placeholder=""
+								placeholder="Email address"
 								type="email"
 								name="email"
 								value={values.email}
@@ -101,7 +143,7 @@ function OutPatientAppointmentForm(props) {
 							<label>Phone</label>
 							<input
 								className="form-control"
-								placeholder=""
+								placeholder="Phone number"
 								type="number"
 								name="phoneNumber"
 								value={values.phoneNumber}
@@ -212,19 +254,19 @@ function OutPatientAppointmentForm(props) {
 					{submitting ? (
 						<img src={waiting} alt="submitting" />
 					) : (
-						'Save Schedule'
+						'Schedule Appointment'
 					)}
 				</button>
 				<button
 					className="btn btn-link"
 					data-dismiss="modal"
 					type="button"
-					onClick={() => props.closeModals(false)}>
+					onClick={closeModal}>
 					Cancel
 				</button>
 			</div>
 		</form>
 	);
-}
+};
 
-export default connect(null, { closeModals })(OutPatientAppointmentForm);
+export default withRouter(OutPatientAppointmentForm);

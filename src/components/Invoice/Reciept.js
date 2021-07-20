@@ -148,7 +148,7 @@ const Reciept = ({ data }) => {
 										OUTSTANDING BALANCE (NGN):{' '}
 									</span>
 									<span style={{ fontSize: 8, fontWeight: 'bold' }}>
-										{data?.balance ? data?.balance : '0.00'}
+										{data?.change || '0.00'}
 									</span>
 								</td>
 							</tr>

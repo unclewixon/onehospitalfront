@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Pagination from 'antd/lib/pagination';
 import Tooltip from 'antd/lib/tooltip';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,7 +16,8 @@ import { startBlock, stopBlock } from '../../actions/redux-block';
 import { deleteService, loadServices } from '../../actions/settings';
 import useSearchInputState from '../../services/search-hook';
 
-const HmoData = ({ hmo, index, toggle, doToggle, loaded, setLoaded }) => {
+const HmoData = ({ hmo, toggle, doToggle }) => {
+	const [loaded, setLoaded] = useState(false);
 	const [meta, setMeta] = useState({
 		currentPage: 1,
 		itemsPerPage: 24,
@@ -32,29 +33,30 @@ const HmoData = ({ hmo, index, toggle, doToggle, loaded, setLoaded }) => {
 
 	const dispatch = useDispatch();
 
-	const fetchServices = async (page, q) => {
-		try {
-			const p = page || 1;
-			const url = `services?page=${p}&limit=24&q=${q || ''}&hmo_id=${hmo.id}`;
-			const rs = await request(url, 'GET', true);
-			const { result, ...meta } = rs;
-			dispatch(loadServices({ hmo, result: [...result] }));
-			setMeta(meta);
-			window.scrollTo({ top: 0, behavior: 'smooth' });
-			setLoaded(true);
-			dispatch(stopBlock());
-		} catch (e) {
-			dispatch(stopBlock());
-			notifyError(e.message || 'could not fetch services');
-		}
-	};
+	const fetchServices = useCallback(
+		async (page, q) => {
+			try {
+				const p = page || 1;
+				const url = `services?page=${p}&limit=24&q=${q || ''}&hmo_id=${hmo.id}`;
+				const rs = await request(url, 'GET', true);
+				const { result, ...meta } = rs;
+				dispatch(loadServices({ hmo, result: [...result] }));
+				setMeta(meta);
+				setLoaded(true);
+				dispatch(stopBlock());
+			} catch (e) {
+				dispatch(stopBlock());
+				notifyError(e.message || 'could not fetch services');
+			}
+		},
+		[dispatch, hmo, setLoaded]
+	);
 
 	useEffect(() => {
-		if (!loaded) {
+		if (toggle && toggle.id === hmo.id) {
 			fetchServices();
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [loaded]);
+	}, [fetchServices, hmo, toggle]);
 
 	const onDeleteService = async data => {
 		try {
@@ -105,14 +107,24 @@ const HmoData = ({ hmo, index, toggle, doToggle, loaded, setLoaded }) => {
 
 	return (
 		<div className="filter-side mb-2" style={{ flex: '0 0 100%' }}>
-			{!loaded ? (
-				<TableLoading />
-			) : (
-				<div className={`filter-w ${toggle ? '' : 'collapsed'}`}>
-					<div className="filter-toggle" onClick={() => doToggle(index)}>
-						<i className="os-icon-minus os-icon" />
-					</div>
-					<h6 className="filter-header">{hmo.name}</h6>
+			<div className={`filter-w ${toggle ? '' : 'collapsed'}`}>
+				<div
+					className="filter-toggle"
+					onClick={() => {
+						setMeta({
+							currentPage: 1,
+							itemsPerPage: 24,
+							totalPages: 0,
+						});
+						doToggle(hmo.id);
+						setLoaded(false);
+					}}>
+					<i className="os-icon-minus os-icon" />
+				</div>
+				<h6 className="filter-header">{hmo.name}</h6>
+				{!loaded && toggle && toggle.id === hmo.id ? (
+					<TableLoading />
+				) : (
 					<div
 						className="filter-body"
 						style={{ display: toggle ? 'block' : 'none' }}>
@@ -167,7 +179,7 @@ const HmoData = ({ hmo, index, toggle, doToggle, loaded, setLoaded }) => {
 															</div>
 															<div className="pi-foot">
 																<div className="tags">
-																	{formatCurrency(item.hmoTarrif)}
+																	{formatCurrency(item.service?.tariff || 0)}
 																</div>
 															</div>
 														</div>
@@ -198,8 +210,8 @@ const HmoData = ({ hmo, index, toggle, doToggle, loaded, setLoaded }) => {
 							)}
 						</div>
 					</div>
-				</div>
-			)}
+				)}
+			</div>
 			{showModal && service && (
 				<ModalEditService closeModal={() => closeModal()} service={service} />
 			)}

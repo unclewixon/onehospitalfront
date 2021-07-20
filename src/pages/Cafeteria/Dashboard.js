@@ -113,7 +113,7 @@ const Dashboard = () => {
 				amount_paid: summary.amountPaid,
 				payment_type: summary.type,
 				items: cart,
-				balance: summary.balance,
+				change: summary.change,
 			};
 
 			dispatch(startBlock());

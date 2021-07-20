@@ -1,25 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
-import { Table } from 'react-bootstrap';
 
 import { searchAPI, serviceAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request, formatPatientId } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
-import { ReactComponent as TrashIcon } from '../../assets/svg-icons/trash.svg';
-import { formatCurrency } from '../../services/utilities';
-import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const defaultValues = {
 	request_note: '',
 	urgent: false,
 };
-
-const category_id = 13;
 
 const RadiologyRequest = ({ module, history, location }) => {
 	const { register, handleSubmit } = useForm({ defaultValues });
@@ -27,45 +20,19 @@ const RadiologyRequest = ({ module, history, location }) => {
 	const [submitting, setSubmitting] = useState(false);
 	const [loadedPatient, setLoadedPatient] = useState(false);
 	const [chosenPatient, setChosenPatient] = useState(null);
-	const [service, setService] = useState(null);
 	const [urgent, setUrgent] = useState(false);
-
-	// load services
-	const [services, setServices] = useState([]);
 
 	// selected radiology
 	const [tests, setTests] = useState([]);
 
 	const currentPatient = useSelector(state => state.user.patient);
 
-	const dispatch = useDispatch();
-
-	const getServiceUnit = useCallback(
-		async hmoId => {
-			try {
-				dispatch(startBlock());
-
-				const url = `${serviceAPI}/category/${category_id}?hmo_id=${hmoId}`;
-				const rs = await request(url, 'GET', true);
-				setServices(rs);
-
-				dispatch(stopBlock());
-			} catch (error) {
-				console.log(error);
-				notifyError('error fetching radiology scans');
-				dispatch(stopBlock());
-			}
-		},
-		[dispatch]
-	);
-
 	useEffect(() => {
 		if (!loadedPatient && currentPatient) {
 			setChosenPatient(currentPatient);
-			getServiceUnit(currentPatient.hmo.id);
+			setLoadedPatient(true);
 		}
-		setLoadedPatient(true);
-	}, [currentPatient, loadedPatient, getServiceUnit]);
+	}, [currentPatient, loadedPatient]);
 
 	const getPatients = async q => {
 		if (!q || q.length < 1) {
@@ -77,9 +44,14 @@ const RadiologyRequest = ({ module, history, location }) => {
 		return res;
 	};
 
-	const onTrash = index => {
-		const items = tests.filter((test, i) => index !== i);
-		setTests(items);
+	const getServices = async q => {
+		if (!q || q.length < 1) {
+			return [];
+		}
+
+		const url = `${serviceAPI}/category/scans?q=${q}`;
+		const res = await request(url, 'GET', true);
+		return res;
 	};
 
 	const onSubmit = async data => {
@@ -95,9 +67,9 @@ const RadiologyRequest = ({ module, history, location }) => {
 			}
 
 			const datum = {
-				requestType: 'radiology',
+				requestType: 'scans',
 				patient_id: chosenPatient.id,
-				tests: [...tests.map(t => ({ id: t.id }))],
+				tests: [...tests],
 				request_note: data.request_note,
 				urgent: data.urgent,
 			};
@@ -145,12 +117,10 @@ const RadiologyRequest = ({ module, history, location }) => {
 										loadOptions={getPatients}
 										onChange={e => {
 											if (e) {
-												getServiceUnit(e.hmo.id);
 												setChosenPatient(e);
 											} else {
 												setChosenPatient(null);
 												setTests([]);
-												setServices([]);
 											}
 										}}
 										placeholder="Search patients"
@@ -161,53 +131,23 @@ const RadiologyRequest = ({ module, history, location }) => {
 						<div className="row">
 							<div className="form-group col-sm-12">
 								<label>Radiology Test</label>
-								<Select
-									name="service_request"
-									placeholder="Select Radiology Test"
-									options={services}
-									value={service}
+								<AsyncSelect
+									isMulti
+									isClearable
 									getOptionValue={option => option.id}
 									getOptionLabel={option => option.name}
+									defaultOptions
+									value={tests}
+									name="service_request"
+									loadOptions={getServices}
 									onChange={e => {
-										setService(e);
-										setTests([...tests, e]);
-										setService(null);
+										setTests(e);
 									}}
+									placeholder="Select Radiology Test"
 								/>
 							</div>
 						</div>
 
-						<div className="row">
-							<Table>
-								<thead>
-									<tr>
-										<th>Radiology Scan</th>
-										<th>Price</th>
-										<th>Action</th>
-									</tr>
-								</thead>
-								<tbody>
-									{tests.map((item, i) => {
-										return (
-											<tr key={i}>
-												<td>{item.name}</td>
-												<td>{formatCurrency(item.hmoTarrif)}</td>
-												<td>
-													<TrashIcon
-														onClick={() => onTrash(i)}
-														style={{
-															width: '1rem',
-															height: '1rem',
-															cursor: 'pointer',
-														}}
-													/>
-												</td>
-											</tr>
-										);
-									})}
-								</tbody>
-							</Table>
-						</div>
 						<div className="row mt-4">
 							<div className="form-group col-sm-12">
 								<label>Request Note</label>

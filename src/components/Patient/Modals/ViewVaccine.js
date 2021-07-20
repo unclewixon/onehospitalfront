@@ -20,7 +20,7 @@ const ViewVaccine = ({ data, setRecords }) => {
 			setSubmitting(true);
 			const patient = data.patient;
 			const values = {
-				requestType: 'immunization',
+				requestType: 'vaccines',
 				date_due: date,
 				patient_id: patient.id,
 			};

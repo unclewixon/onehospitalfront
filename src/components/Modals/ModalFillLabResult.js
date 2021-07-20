@@ -28,13 +28,13 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 	const [parameters, setParameters] = useState([]);
 	const [result, setResult] = useState(null);
 
-	const item = lab.items[0];
+	const item = lab.item;
 
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (!loaded) {
-			setParameters(item.labTest.parameters);
+			setParameters(item.labTest?.parameters || []);
 			setLoaded(true);
 		}
 	}, [item, loaded]);
@@ -70,10 +70,10 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 			dispatch(startBlock());
 			setSubmitting(true);
 			const data = { parameters, result };
-			const url = `requests/${item.id}/fill-result`;
+			const url = `requests/${lab.id}/fill-result`;
 			const rs = await request(url, 'PATCH', true, data);
 			const lab_request = labs.find(l => l.id === lab.id);
-			const newItem = { ...lab_request, items: [rs.data] };
+			const newItem = { ...lab_request, item: rs.data };
 			const newLabs = updateImmutable(labs, newItem);
 			updateLab(newLabs);
 			notifySuccess('lab result filled!');
@@ -107,7 +107,7 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 						<div className="onboarding-text alert-custom mb-3">
 							<div>{item.labTest.name}</div>
 							<div>
-								{item.labTest.specimens.map((s, i) => (
+								{item.labTest?.specimens?.map((s, i) => (
 									<span key={i} className="badge badge-info text-white mr-2">
 										{s.label}
 									</span>

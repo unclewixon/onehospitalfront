@@ -157,8 +157,8 @@ class AppointmentHistory extends Component {
 																{staffname(appointment?.whomToSee)}
 															</p>
 														</td>
-														<td>{appointment.serviceType?.name || ''}</td>
-														<td>{appointment.department?.name || ''}</td>
+														<td>{appointment.service?.item?.name || '--'}</td>
+														<td>{appointment.department?.name || '--'}</td>
 
 														<td>
 															{!appointment.encounter &&

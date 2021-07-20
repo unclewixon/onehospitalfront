@@ -10,7 +10,6 @@ import { searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
-import { ReactComponent as TrashIcon } from '../../assets/svg-icons/trash.svg';
 import { formatCurrency } from '../../services/utilities';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { formatPatientId } from '../../services/utilities';
@@ -26,6 +25,7 @@ const LabRequest = ({ module, history, location }) => {
 	});
 
 	const [submitting, setSubmitting] = useState(false);
+	const [loaded, setLoaded] = useState(false);
 	const [loadedPatient, setLoadedPatient] = useState(false);
 	const [chosenPatient, setChosenPatient] = useState(null);
 
@@ -33,10 +33,7 @@ const LabRequest = ({ module, history, location }) => {
 	const [groups, setGroups] = useState([]);
 
 	// selected lab tests
-	const [tests, setTests] = useState([]);
-
-	const [group, setGroup] = useState(null);
-	const [labTest, setLabTest] = useState(null);
+	const [labTests, setLabTests] = useState([]);
 
 	const [urgent, setUrgent] = useState(false);
 
@@ -44,36 +41,36 @@ const LabRequest = ({ module, history, location }) => {
 
 	const dispatch = useDispatch();
 
-	const getServiceUnit = useCallback(
-		async hmoId => {
+	const fetchLabCombo = useCallback(async () => {
+		try {
+			dispatch(startBlock());
+
 			try {
-				dispatch(startBlock());
-
-				try {
-					const url = `lab-tests/groups?hmo_id=${hmoId}`;
-					const rs = await request(url, 'GET', true);
-					setGroups(rs);
-				} catch (e) {
-					notifyError('Error fetching lab groups');
-				}
-
-				dispatch(stopBlock());
-			} catch (error) {
-				console.log(error);
-				notifyError('Error fetching groups');
-				dispatch(stopBlock());
+				const url = 'lab-tests/groups';
+				const rs = await request(url, 'GET', true);
+				setGroups(rs);
+			} catch (e) {
+				notifyError('Error fetching lab groups');
 			}
-		},
-		[dispatch]
-	);
+
+			dispatch(stopBlock());
+		} catch (error) {
+			console.log(error);
+			notifyError('Error fetching groups');
+			dispatch(stopBlock());
+		}
+	}, [dispatch]);
 
 	useEffect(() => {
+		if (!loaded) {
+			fetchLabCombo();
+			setLoaded(true);
+		}
 		if (!loadedPatient && currentPatient) {
 			setChosenPatient(currentPatient);
-			getServiceUnit(currentPatient.hmo.id);
+			setLoadedPatient(true);
 		}
-		setLoadedPatient(true);
-	}, [currentPatient, loadedPatient, getServiceUnit]);
+	}, [currentPatient, fetchLabCombo, loaded, loadedPatient]);
 
 	const getPatients = async q => {
 		if (!q || q.length < 1) {
@@ -90,18 +87,9 @@ const LabRequest = ({ module, history, location }) => {
 			return [];
 		}
 
-		if (!chosenPatient?.hmo) {
-			return [];
-		}
-
-		const url = `lab-tests?q=${q}&hmo_id=${chosenPatient.hmo.id}`;
+		const url = `lab-tests?q=${q}`;
 		const res = await request(url, 'GET', true);
 		return res?.result || [];
-	};
-
-	const onTrash = index => {
-		const items = tests.filter((test, i) => index !== i);
-		setTests(items);
 	};
 
 	const onSubmit = async data => {
@@ -111,15 +99,15 @@ const LabRequest = ({ module, history, location }) => {
 				return;
 			}
 
-			if (tests.length === 0) {
-				notifyError('Please select a lab test');
+			if (labTests.length === 0) {
+				notifyError('Please select a lab tests');
 				return;
 			}
 
 			const datum = {
-				requestType: 'lab',
+				requestType: 'labs',
 				patient_id: chosenPatient.id,
-				tests: [...tests.map(t => ({ id: t.id }))],
+				tests: [...labTests],
 				request_note: data.request_note,
 				urgent: data.urgent,
 				pay_later: 0,
@@ -173,12 +161,10 @@ const LabRequest = ({ module, history, location }) => {
 										loadOptions={getPatients}
 										onChange={e => {
 											if (e) {
-												getServiceUnit(e.hmo.id);
 												setChosenPatient(e);
 											} else {
 												setChosenPatient(null);
-												setTests([]);
-												setGroups([]);
+												setLabTests([]);
 											}
 										}}
 										placeholder="Search patients"
@@ -193,13 +179,11 @@ const LabRequest = ({ module, history, location }) => {
 									name="lab_group"
 									placeholder="Select Lab Group"
 									options={groups}
-									value={group}
 									getOptionValue={option => option.id}
 									getOptionLabel={option => option.name}
 									onChange={e => {
-										setGroup(e);
-										setTests([
-											...tests,
+										setLabTests([
+											...labTests,
 											...e.tests.map(t => ({ ...t.labTest })),
 										]);
 									}}
@@ -208,55 +192,24 @@ const LabRequest = ({ module, history, location }) => {
 							<div className="form-group col-sm-6">
 								<label>Lab Test</label>
 								<AsyncSelect
+									isMulti
+									isClearable
 									getOptionValue={option => option.id}
-									getOptionLabel={option => option.name}
+									getOptionLabel={option =>
+										`${option.name} (${option.category.name})`
+									}
 									defaultOptions
+									value={labTests}
 									name="lab_test"
 									loadOptions={getLabTests}
-									value={labTest}
 									onChange={e => {
-										setLabTest(e);
-										setTests([...tests, e]);
-										setLabTest(null);
+										setLabTests(e);
 									}}
 									placeholder="Search Lab Test"
 								/>
 							</div>
 						</div>
 
-						<div className="row">
-							<table className="table table-striped">
-								<thead>
-									<tr>
-										<th>Category</th>
-										<th>Lab Test</th>
-										<th>Price</th>
-										<th>Action</th>
-									</tr>
-								</thead>
-								<tbody>
-									{tests.map((item, i) => {
-										return (
-											<tr key={i}>
-												<td>{item.category.name}</td>
-												<td>{item.name}</td>
-												<td>{formatCurrency(item.hmoPrice)}</td>
-												<td>
-													<TrashIcon
-														onClick={() => onTrash(i)}
-														style={{
-															width: '1rem',
-															height: '1rem',
-															cursor: 'pointer',
-														}}
-													/>
-												</td>
-											</tr>
-										);
-									})}
-								</tbody>
-							</table>
-						</div>
 						<div className="row mt-4">
 							<div className="form-group col-sm-12">
 								<label>Request Note</label>

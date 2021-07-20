@@ -83,7 +83,7 @@ class Encounters extends Component {
 													</td>
 													<td>{item?.appointment?.department?.name || '--'}</td>
 													<td>
-														{item?.appointment?.serviceType?.name || '--'}
+														{item?.appointment?.service?.item?.name || '--'}
 													</td>
 													<td className="cell-with-media">
 														<span>

@@ -261,7 +261,7 @@ const PlanForm = ({ previous, next, patient }) => {
 		}));
 
 		const pharmacyRequest = {
-			requestType: 'pharmacy',
+			requestType: 'drugs',
 			items: data,
 			patient_id: patient.id,
 			request_note: regimenNote,

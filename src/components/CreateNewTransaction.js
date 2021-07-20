@@ -53,7 +53,7 @@ const CreateNewTransaction = props => {
 
 	const onSubmit = async values => {
 		setSubmitting(true);
-		let data = {
+		const data = {
 			patient_id: values.patient_id,
 			hmo_id: hmo,
 			department_id: values.revenue_category,

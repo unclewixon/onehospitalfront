@@ -131,7 +131,7 @@ const CreateTask = ({ closeModal, refreshTasks }) => {
 				}));
 
 			const prescription = {
-				requestType: 'pharmacy',
+				requestType: 'drugs',
 				requestBody: regimens,
 				patient_id: patient.id,
 			};

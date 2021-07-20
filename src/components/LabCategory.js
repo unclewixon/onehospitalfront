@@ -200,7 +200,7 @@ const LabCategory = props => {
 										{submitting ? (
 											<img src={waiting} alt="submitting" />
 										) : (
-											<span>edit</span>
+											<span>save</span>
 										)}
 									</button>
 								</>

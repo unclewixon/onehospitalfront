@@ -223,7 +223,6 @@ const PatientBills = () => {
 												<th>Item</th>
 												<th>Date</th>
 												<th>Amount</th>
-												<th>Balance</th>
 												<th>Payment Method</th>
 												<th>Status</th>
 												<th>Received By</th>
@@ -257,7 +256,6 @@ const PatientBills = () => {
 															)}
 														</td>
 														<td>{formatCurrency(item.amount || 0)}</td>
-														<td>{formatCurrency(item.balance || 0)}</td>
 														<td>{item.payment_type || '--'}</td>
 														<td>
 															{item.status === 0 && (

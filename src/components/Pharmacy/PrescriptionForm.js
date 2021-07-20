@@ -160,7 +160,7 @@ const PrescriptionForm = ({
 			}));
 
 			const regimen = {
-				requestType: 'pharmacy',
+				requestType: 'drugs',
 				items: data,
 				patient_id,
 				request_note: regimenNote,

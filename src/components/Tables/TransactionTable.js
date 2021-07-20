@@ -81,7 +81,6 @@ const TransactionTable = ({
 						<th>PATIENT NAME</th>
 						<th>DEPARTMENT</th>
 						<th>AMOUNT (&#x20A6;)</th>
-						{!queue && <th>BALANCE (&#x20A6;)</th>}
 						{!queue && <th>PAYMENT METHOD</th>}
 						<th>PAYMENT STATUS</th>
 						<th>RECEIVED By</th>
@@ -118,7 +117,6 @@ const TransactionTable = ({
 									)}
 								</td>
 								<td>{formatCurrency(transaction.amount || 0)}</td>
-								{!queue && <td>{formatCurrency(transaction.balance || 0)}</td>}
 								{!queue && <td>{transaction.payment_type || '-'}</td>}
 								<td>
 									{transaction.status === 0 && (

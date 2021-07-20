@@ -107,7 +107,7 @@ const Invoice = ({ data }) => {
 								}}>
 								<div
 									style={{ color: '#111', fontSize: 14, fontWeight: 'bold' }}>
-									{data?.serviceType?.name}
+									{data?.service?.item?.name}
 								</div>
 								{/* <div style={{ color: '#B8B8B8', fontSize: 12 }}>
 									Extended license included

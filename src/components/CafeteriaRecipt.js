@@ -183,10 +183,10 @@ const CafeteriaRecipt = ({
 								</tr>
 								<tr>
 									<td colSpan={2} className="text-bold">
-										Balance
+										Change
 									</td>
 									<td className="text-center text-bold">
-										{transaction.balance}
+										{transaction.change}
 									</td>
 								</tr>
 							</tbody>

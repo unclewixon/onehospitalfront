@@ -5,6 +5,8 @@ import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import axios from 'axios';
+import { withRouter } from 'react-router-dom';
+
 import { API_URI, TOKEN_COOKIE } from '../services/constants';
 import { prevStep, resetStep } from '../actions/patient';
 import { closeModals } from '../actions/general';
@@ -34,6 +36,9 @@ function PatientNOKForm(props) {
 	const [relationshipValue, setRelationshipValue] = useState('');
 	const [maritalValue, setMaritalValue] = useState('');
 	const storage = new SSRStorage();
+
+	const { location } = props;
+	const path = location.pathname.split('/').pop();
 
 	useEffect(() => {
 		let formValues = {
@@ -122,6 +127,7 @@ function PatientNOKForm(props) {
 			setValue(name, type);
 		}
 	};
+
 	const onSubmit = async values => {
 		const data = { ...formData, ...values };
 		const datum = {
@@ -171,6 +177,9 @@ function PatientNOKForm(props) {
 						props.setPatientRecord(res.data?.patient);
 						props.updatePatient(res.data?.patient);
 						notifySuccess(`${patient.other_names} record was updated!`);
+						if (path === 'front-desk') {
+							props.history.push('/front-desk/patients');
+						}
 						props.closeModals(false);
 					} else {
 						notifyError(res.data.message);
@@ -193,6 +202,9 @@ function PatientNOKForm(props) {
 						const allPatients = [pat, ...props.patients];
 						props.loadPatients(allPatients);
 						notifySuccess('New patient account created!');
+						if (path === 'front-desk') {
+							props.history.push('/front-desk/patients');
+						}
 						props.closeModals(false);
 						props.resetStep();
 					} else {
@@ -471,12 +483,15 @@ const mapStateToProps = (state, ownProps) => {
 		register_new_patient: state.general.register_new_patient,
 	};
 };
-export default connect(mapStateToProps, {
-	setPatientRecord,
-	prevStep,
-	resetStep,
-	closeModals,
-	loadPatients,
-	addNewPatient,
-	updatePatient,
-})(PatientNOKForm);
+
+export default withRouter(
+	connect(mapStateToProps, {
+		setPatientRecord,
+		prevStep,
+		resetStep,
+		closeModals,
+		loadPatients,
+		addNewPatient,
+		updatePatient,
+	})(PatientNOKForm)
+);

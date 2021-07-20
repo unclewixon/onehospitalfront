@@ -33,23 +33,14 @@ class RadiologyBlock extends Component {
 		this.setState({ showModal: true, scanItem: item });
 	};
 
-	capturedScan = data => {
-		confirmAction(
-			this.capture,
-			data,
-			'Have you captured scan?',
-			'Are you sure?'
-		);
-	};
-
 	capture = async data => {
 		try {
 			this.props.startBlock();
 			const { scans } = this.props;
-			const url = `${patientAPI}/${data.item_id}/receive-specimen`;
+			const url = `requests/${data}/receive-specimen`;
 			const rs = await request(url, 'PATCH', true);
-			const scan_request = scans.find(l => l.id === data.scan_id);
-			const newItem = { ...scan_request, items: [rs.data] };
+			const scan_request = scans.find(l => l.id === data);
+			const newItem = { ...scan_request, item: rs.data };
 			const newScans = updateImmutable(scans, newItem);
 			this.props.updateScan(newScans);
 			notifySuccess('scan captured!');
@@ -59,6 +50,15 @@ class RadiologyBlock extends Component {
 			notifyError('Error found please try again');
 			this.props.stopBlock();
 		}
+	};
+
+	capturedScan = data => {
+		confirmAction(
+			this.capture,
+			data,
+			'Have you captured scan?',
+			'Are you sure?'
+		);
 	};
 
 	uploadScan = scan => {
@@ -89,14 +89,14 @@ class RadiologyBlock extends Component {
 
 			let formData = new FormData();
 			formData.append('file', file);
-			formData.append('document_type', 'radiology');
-			formData.append('id', scanItem.items[0].id);
+			formData.append('document_type', 'scans');
+			formData.append('id', scanItem.item.id);
 
 			const url = `${API_URI}/${patientAPI}/${scanItem.patient.id}/upload-document`;
 			const rs = await upload(url, 'POST', formData);
 
 			const scan_request = scans.find(l => l.id === scanItem.id);
-			const newItem = { ...scan_request, items: [rs.data] };
+			const newItem = { ...scan_request, item: rs.data };
 			const newScans = updateImmutable(scans, newItem);
 			this.props.updateScan(newScans);
 
@@ -110,14 +110,14 @@ class RadiologyBlock extends Component {
 		}
 	};
 
-	approveScan = async (id, item_id) => {
+	approveScan = async id => {
 		try {
 			this.props.startBlock();
 			const { scans } = this.props;
-			const url = `requests/${id}/approve-result?type=radiology&request_item_id=${item_id}`;
+			const url = `requests/${id}/approve-result?type=scans`;
 			const rs = await request(url, 'PATCH', true);
 			const scan_request = scans.find(l => l.id === id);
-			const newItem = { ...scan_request, status: 1, items: [rs.data] };
+			const newItem = { ...scan_request, status: 1, item: rs.data };
 			const newScans = updateImmutable(scans, newItem);
 			this.props.updateScan(newScans);
 			notifySuccess('scan image approved!');
@@ -125,6 +125,22 @@ class RadiologyBlock extends Component {
 		} catch (error) {
 			console.log(error);
 			notifyError('Error while trying to approve scan');
+			this.props.stopBlock();
+		}
+	};
+
+	doPrint = async (item, printGroup) => {
+		try {
+			this.props.startBlock();
+			const url = `requests/${item.id}/print?type=scans&print_group=${
+				printGroup ? 1 : 0
+			}`;
+			const rs = await request(url, 'GET', true);
+			window.open(rs.file, '_blank');
+			this.props.stopBlock();
+		} catch (error) {
+			console.log(error);
+			notifyError('Error printing scan');
 			this.props.stopBlock();
 		}
 	};
@@ -169,18 +185,22 @@ class RadiologyBlock extends Component {
 		}
 	};
 
-	doPrint = async (item, printGroup) => {
+	cancel = async data => {
 		try {
+			const { scans } = this.props;
 			this.props.startBlock();
-			const url = `${patientAPI}/${item.id}/print?type=radiology&print_group=${
-				printGroup ? 1 : 0
-			}`;
-			const rs = await request(url, 'GET', true);
-			window.open(rs.file, '_blank');
+			const url = `requests/${data}/delete-request?type=scans`;
+			const rs = await request(url, 'DELETE', true);
+			const scan_request = scans.find(l => l.id === data);
+			const newItem = { ...scan_request, item: rs.data };
+			const newScans = updateImmutable(scans, newItem);
+			console.log(newScans);
+			this.props.updateScan(newScans);
+			notifySuccess('radiology request cancelled!');
 			this.props.stopBlock();
 		} catch (error) {
 			console.log(error);
-			notifyError('Error printing scan');
+			notifyError('Error cancelling radiology request');
 			this.props.stopBlock();
 		}
 	};
@@ -192,26 +212,6 @@ class RadiologyBlock extends Component {
 			'Do you want to cancel this radiology scan?',
 			'Are you sure?'
 		);
-	};
-
-	cancel = async data => {
-		try {
-			const { scans } = this.props;
-			this.props.startBlock();
-			const url = `requests/${data.item_id}/delete-request?type=radiology&request_id=${data.id}`;
-			const rs = await request(url, 'DELETE', true);
-			const scan_request = scans.find(l => l.id === data.id);
-			const newItem = { ...scan_request, ...rs.data, items: rs.data.items };
-			const newScans = updateImmutable(scans, newItem);
-			console.log(newScans);
-			this.props.updateScan(newScans);
-			notifySuccess('radiology request cancelled!');
-			this.props.stopBlock();
-		} catch (error) {
-			console.log(error);
-			notifyError('Error cancelling radiology request');
-			this.props.stopBlock();
-		}
 	};
 
 	closeModal = () => {
@@ -234,29 +234,13 @@ class RadiologyBlock extends Component {
 				<table id="table" className="table table-theme v-middle table-hover">
 					<thead>
 						<tr>
-							<th>
-								<div>Request Date</div>
-							</th>
-							<th>
-								<div>ID</div>
-							</th>
-							<th>
-								<div>Type</div>
-							</th>
-							{!patient && (
-								<th>
-									<div>Patient</div>
-								</th>
-							)}
-							<th>
-								<div>By</div>
-							</th>
-							<th>
-								<div>Attachment</div>
-							</th>
-							<th>
-								<div>Status</div>
-							</th>
+							<th>Request Date</th>
+							<th>ID</th>
+							<th>Type</th>
+							{!patient && <th>Patient</th>}
+							<th>By</th>
+							<th>Attachment</th>
+							<th>Status</th>
 							<th>
 								<div className="th-inner"></div>
 							</th>
@@ -265,167 +249,158 @@ class RadiologyBlock extends Component {
 					<tbody>
 						{scans.map((scan, i) => {
 							const grouped = scans.filter(l => l.code === scan.code);
-							return scan.items.map((item, j) => {
-								return (
-									<tr key={j} className={scan.urgent ? 'urgent' : ''}>
-										<td>
-											<span>
-												{moment(scan.createdAt).format('DD-MM-YYYY h:mmA')}
-											</span>
-										</td>
-										<td>
-											<p className="item-title text-color m-0">{scan.code}</p>
-										</td>
+							return (
+								<tr key={i} className={scan.urgent ? 'urgent' : ''}>
+									<td>
+										<span>
+											{moment(scan.createdAt).format('DD-MM-YYYY h:mmA')}
+										</span>
+									</td>
+									<td>
+										<p className="item-title text-color m-0">{scan.code}</p>
+									</td>
+									<td>
+										<p className="item-title text-color m-0">
+											{scan.item.service.item.name}
+										</p>
+									</td>
+									{!patient && (
 										<td>
 											<p className="item-title text-color m-0">
-												{item.service.name}
-											</p>
-										</td>
-										{!patient && (
-											<td>
-												<p className="item-title text-color m-0">
-													<Tooltip
-														title={<ProfilePopup patient={scan.patient} />}>
-														<a
-															className="cursor"
-															onClick={() => this.showProfile(scan.patient)}>
-															{scan.patient_name}
-														</a>
-													</Tooltip>
-													{scan.patient.isAdmitted && (
-														<Tooltip title="Admitted">
-															<i className="fa fa-hospital-o text-danger ml-1" />
-														</Tooltip>
-													)}
-												</p>
-											</td>
-										)}
-										<td>
-											<a className="item-title text-color">{scan.created_by}</a>
-										</td>
-										<td>
-											{item.filled === 1 ? (
-												<Tooltip title="View Scan Image">
+												<Tooltip
+													title={<ProfilePopup patient={scan.patient} />}>
 													<a
-														className="success"
-														onClick={() => this.viewScan(item)}>
-														<i className="os-icon os-icon-link" /> view
+														className="cursor"
+														onClick={() => this.showProfile(scan.patient)}>
+														{scan.patient_name}
 													</a>
 												</Tooltip>
-											) : (
-												'-'
-											)}
+												{scan.patient.isAdmitted && (
+													<Tooltip title="Admitted">
+														<i className="fa fa-hospital-o text-danger ml-1" />
+													</Tooltip>
+												)}
+											</p>
 										</td>
-										<td>
-											{item.cancelled === 0 &&
-												item.transaction &&
-												item.transaction.status === 0 && (
-													<span className="badge badge-warning">
-														Awaiting Payment
-													</span>
-												)}
-											{item.cancelled === 0 &&
-												item.transaction &&
-												item.transaction.status === 1 &&
-												item.filled === 0 && (
-													<span className="badge badge-info text-white">
-														Pending
-													</span>
-												)}
-											{item.cancelled === 0 &&
-												item.transaction &&
-												item.transaction.status === 1 &&
-												item.filled === 1 &&
-												item.approved === 0 && (
-													<span className="badge badge-secondary">
-														Awaiting Approval
-													</span>
-												)}
-											{item.cancelled === 0 &&
-												scan.status === 1 &&
-												item.approved === 1 && (
-													<span className="badge badge-success">Approved</span>
-												)}
-											{item.cancelled === 1 && (
-												<span className="badge badge-danger">cancelled</span>
+									)}
+									<td>
+										<a className="item-title text-color">{scan.created_by}</a>
+									</td>
+									<td>
+										{scan.item.filled === 1 ? (
+											<Tooltip title="View Scan Image">
+												<a
+													className="success"
+													onClick={() => this.viewScan(scan.item)}>
+													<i className="os-icon os-icon-link" /> view
+												</a>
+											</Tooltip>
+										) : (
+											'--'
+										)}
+									</td>
+									<td>
+										{scan.item.cancelled === 0 &&
+											scan.transaction &&
+											scan.transaction.status === 0 && (
+												<span className="badge badge-warning">
+													Awaiting Payment
+												</span>
 											)}
-										</td>
-										<td className="row-actions">
-											{item.cancelled === 0 &&
-												item.transaction &&
-												item.transaction.status === 1 && (
-													<>
-														{/* after payment, capture scan */}
-														{item.received === 0 && (
-															<Tooltip title="Captured Scan?">
+										{scan.item.cancelled === 0 &&
+											scan.transaction &&
+											scan.transaction.status === 1 &&
+											scan.item.filled === 0 && (
+												<span className="badge badge-info text-white">
+													Pending
+												</span>
+											)}
+										{scan.item.cancelled === 0 &&
+											scan.transaction &&
+											scan.transaction.status === 1 &&
+											scan.item.filled === 1 &&
+											scan.item.approved === 0 && (
+												<span className="badge badge-secondary">
+													Awaiting Approval
+												</span>
+											)}
+										{scan.item.cancelled === 0 &&
+											scan.status === 1 &&
+											scan.item.approved === 1 && (
+												<span className="badge badge-success">Approved</span>
+											)}
+										{scan.item.cancelled === 1 && (
+											<span className="badge badge-danger">cancelled</span>
+										)}
+									</td>
+									<td className="row-actions">
+										{scan.item.cancelled === 0 &&
+											scan.transaction &&
+											scan.transaction.status === 1 && (
+												<>
+													{/* after payment, capture scan */}
+													{scan.item.received === 0 && (
+														<Tooltip title="Captured Scan?">
+															<a
+																className="secondary"
+																onClick={() => this.capturedScan(scan.item.id)}>
+																<i className="os-icon os-icon-check-circle" />
+															</a>
+														</Tooltip>
+													)}
+													{/* after capture, upload scan */}
+													{scan.item.received === 1 &&
+														scan.item.filled === 0 &&
+														scan.item.approved === 0 && (
+															<Tooltip title="Upload Scan Image">
 																<a
-																	className="secondary"
-																	onClick={() =>
-																		this.capturedScan({
-																			scan_id: scan.id,
-																			item_id: item.id,
-																		})
-																	}>
-																	<i className="os-icon os-icon-check-circle" />
+																	className="primary"
+																	onClick={() => this.uploadScan(scan)}>
+																	<i className="os-icon os-icon-camera" />
 																</a>
 															</Tooltip>
 														)}
-														{/* after capture, upload scan */}
-														{item.received === 1 &&
-															item.filled === 0 &&
-															item.approved === 0 && (
-																<Tooltip title="Upload Scan Image">
-																	<a
-																		className="primary"
-																		onClick={() => this.uploadScan(scan)}>
-																		<i className="os-icon os-icon-camera" />
-																	</a>
-																</Tooltip>
-															)}
-														{/* after upload, approve scan */}
-														{item.received === 1 &&
-															item.filled === 1 &&
-															item.approved === 0 && (
-																<Tooltip title="Approve Scan Image">
-																	<a
-																		className="info"
-																		onClick={() =>
-																			this.approveScan(scan.id, item.id)
-																		}>
-																		<i className="os-icon os-icon-thumbs-up" />
-																	</a>
-																</Tooltip>
-															)}
-														{/* after approval, print scan */}
-														{item.approved === 1 && (
-															<Tooltip title="Print Scan">
+													{/* after upload, approve scan */}
+													{scan.item.received === 1 &&
+														scan.item.filled === 1 &&
+														scan.item.approved === 0 && (
+															<Tooltip title="Approve Scan Image">
 																<a
 																	className="info"
 																	onClick={() =>
-																		this.printResult(scan, grouped.length > 1)
+																		this.approveScan(scan.item.id)
 																	}>
-																	<i className="os-icon os-icon-printer" />
+																	<i className="os-icon os-icon-thumbs-up" />
 																</a>
 															</Tooltip>
 														)}
-													</>
-												)}
-											{/* before approval, cancel scan */}
-											{item.cancelled === 0 && item.approved === 0 && (
-												<Tooltip title="Cancel Scan">
-													<a
-														className="danger"
-														onClick={() =>
-															this.cancelScan({ id: scan.id, item_id: item.id })
-														}>
-														<i className="os-icon os-icon-ui-15" />
-													</a>
-												</Tooltip>
+													{/* after approval, print scan */}
+													{scan.item.approved === 1 && (
+														<Tooltip title="Print Scan">
+															<a
+																className="info"
+																onClick={() =>
+																	this.printResult(scan, grouped.length > 1)
+																}>
+																<i className="os-icon os-icon-printer" />
+															</a>
+														</Tooltip>
+													)}
+												</>
 											)}
-										</td>
-									</tr>
-								);
-							});
+										{/* before approval, cancel scan */}
+										{scan.item.cancelled === 0 && scan.item.approved === 0 && (
+											<Tooltip title="Cancel Scan">
+												<a
+													className="danger"
+													onClick={() => this.cancelScan(scan.item.id)}>
+													<i className="os-icon os-icon-ui-15" />
+												</a>
+											</Tooltip>
+										)}
+									</td>
+								</tr>
+							);
 						})}
 					</tbody>
 				</table>

@@ -94,7 +94,12 @@ const AppointmentFormModal = ({ addAppointment, closeModal }) => {
 									addAppointment={addAppointment}
 								/>
 							),
-							'outpatient-form': <OutPatientAppointmentForm />,
+							'outpatient-form': (
+								<OutPatientAppointmentForm
+									closeModal={closeModal}
+									addAppointment={addAppointment}
+								/>
+							),
 						}[currentView]
 					}
 				</div>

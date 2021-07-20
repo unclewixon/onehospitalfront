@@ -7,7 +7,6 @@ import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 import waiting from '../../assets/images/waiting.gif';
 import {
-	formatNumber,
 	staffname,
 	request,
 	formatPatientId,
@@ -27,7 +26,7 @@ const consultations = [
 	{ label: 'Follow Up Consultation', value: 'follow-up' },
 	{ label: 'Investigation Review', value: 'review' },
 ];
-const category_id = 2;
+
 const defaultValues = {
 	consultation_id: 'initial',
 	appointment_date: new Date(),
@@ -49,6 +48,7 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 	);
 
 	const [patient, setPatient] = useState(null);
+	const [loaded, setLoaded] = useState(false);
 	const [doctors, setDoctors] = useState();
 	const [appointmentDate, setAppointmentDate] = useState(new Date());
 	const [submitting, setSubmitting] = useState(false);
@@ -62,10 +62,20 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 
 	const dispatch = useDispatch();
 
+	async function getActiveDoctors() {
+		const rs = await request('utility/active-doctors', 'GET', true);
+		const res = rs.map(item => ({
+			...item,
+			value: item.id,
+			label: staffname(item) + ' (Room ' + item.room.name + ')',
+		}));
+		setDoctors(res);
+	}
+
 	const fetchServicesByCategory = useCallback(
-		async id => {
+		async slug => {
 			try {
-				const url = `${serviceAPI}/category/${id}?hmo_id=${patient.hmo.id}`;
+				const url = `${serviceAPI}/category/${slug}`;
 				const rs = await request(url, 'GET', true);
 				const res = rs.map(service => ({
 					...service,
@@ -80,29 +90,23 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 				dispatch(stopBlock());
 			}
 		},
-		[dispatch, patient]
+		[dispatch]
 	);
 
 	useEffect(() => {
-		if (patient) {
+		if (!loaded) {
 			dispatch(startBlock());
-			fetchServicesByCategory(category_id);
+			fetchServicesByCategory('consultancy');
+			getActiveDoctors();
+			setLoaded(true);
 		}
-	}, [fetchServicesByCategory, patient, dispatch]);
-
-	async function getActiveDoctors() {
-		const rs = await request('utility/active-doctors', 'GET', true);
-		const res = rs.map(item => ({
-			...item,
-			value: item.id,
-			label: staffname(item) + ' (Room ' + item.room.name + ')',
-		}));
-		setDoctors(res);
-	}
+	}, [dispatch, fetchServicesByCategory, loaded]);
 
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option =>
-		`${option.other_names} ${option.surname} (${formatPatientId(option.id)})`;
+		`${option.other_names} ${option.surname} (${formatPatientId(option.id)} ${
+			option.legacy_patient_id ? `[${option.legacy_patient_id}]` : ''
+		})`;
 
 	const getOptions = async q => {
 		if (!q || q.length < 1) {
@@ -117,12 +121,7 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 	const onSubmit = async data => {
 		try {
 			setSubmitting(true);
-			const values = {
-				...data,
-				service_id: data.specialty,
-				doctor,
-				consultation,
-			};
+			const values = { ...data, service, doctor, consultation };
 			const url = 'front-desk/appointments/new';
 			const rs = await request(url, 'POST', true, values);
 			setSubmitting(false);
@@ -139,26 +138,9 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 		}
 	};
 
-	const init = useCallback(async () => {
-		await Promise.all([getActiveDoctors()]);
-	}, []);
-
-	useEffect(() => {
-		init();
-	}, [init]);
-
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<div className="modal-body">
-				{consultation && service && (
-					<div className="alert alert-warning">
-						{`Consultation Fee: ₦${
-							consultation?.value === 'follow-up'
-								? formatNumber(0)
-								: formatNumber(service.hmoTarrif)
-						}`}
-					</div>
-				)}
 				{patient && patient.outstanding > 0 && (
 					<div className="alert alert-danger">
 						{`Outstanding Balance: ${formatCurrency(patient.outstanding)}`}

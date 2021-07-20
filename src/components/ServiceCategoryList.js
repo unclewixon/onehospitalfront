@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Pagination from 'antd/lib/pagination';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -36,24 +36,23 @@ const ServiceCategoryList = ({ loaded, setLoaded }) => {
 		setState(prevState => ({ ...prevState, [name]: value }));
 	};
 
-	useEffect(() => {
-		const fetchCategories = async () => {
-			try {
-				setCurrentPage(1);
-				const rs = await request('services/categories', 'GET', true);
-				setList([...rs]);
-				dispatch(loadServiceCategories([...rs.slice(0, 10)]));
-				setLoaded(true);
-			} catch (error) {
-				notifyError(error.message || 'could not fetch services categories!');
-			}
-		};
+	const fetchCategories = useCallback(async () => {
+		try {
+			setCurrentPage(1);
+			const rs = await request('services/categories', 'GET', true);
+			setList([...rs]);
+			dispatch(loadServiceCategories([...rs.slice(0, 10)]));
+			setLoaded(true);
+		} catch (error) {
+			notifyError(error.message || 'could not fetch services categories!');
+		}
+	}, [dispatch, setLoaded]);
 
+	useEffect(() => {
 		if (!loaded) {
 			fetchCategories();
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [loaded]);
+	}, [fetchCategories, loaded]);
 
 	const onAddServiceCat = async e => {
 		try {
@@ -83,7 +82,7 @@ const ServiceCategoryList = ({ loaded, setLoaded }) => {
 			e.preventDefault();
 			setWorking(true);
 			const data = { name };
-			const url = `services/categories/${payload.id}/update`;
+			const url = `services/categories/${payload.id}`;
 			const rs = await request(url, 'PATCH', true, data);
 			const newCategories = updateImmutable(list, rs);
 			setList(newCategories);
