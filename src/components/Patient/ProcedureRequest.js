@@ -25,7 +25,7 @@ const ProcedureRequest = ({ module, history, location }) => {
 	const [service, setService] = useState(null);
 
 	// diagnosis
-	const [diagnosisType, setDiagnosisType] = useState('10');
+	const [diagnosisType, setDiagnosisType] = useState('icd10');
 
 	const currentPatient = useSelector(state => state.user.patient);
 
@@ -91,8 +91,7 @@ const ProcedureRequest = ({ module, history, location }) => {
 
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option =>
-		`${option.description} (Icd${option.diagnosisType}: ${option.icd10Code ||
-			option.procedureCode})`;
+		`${option.description} (${option.type}: ${option.code})`;
 
 	const getOptions = async q => {
 		if (!q || q.length < 2) {
@@ -109,13 +108,9 @@ const ProcedureRequest = ({ module, history, location }) => {
 			return [];
 		}
 
-		if (!chosenPatient?.hmo) {
-			return [];
-		}
-
-		const url = `${serviceAPI}?q=${q}&hmo_id=${chosenPatient.hmo.id}`;
+		const url = `${serviceAPI}/category/procedure?q=${q}`;
 		const res = await request(url, 'GET', true);
-		return res?.result || [];
+		return res;
 	};
 
 	return (
@@ -180,16 +175,16 @@ const ProcedureRequest = ({ module, history, location }) => {
 											<label>
 												<input
 													type="radio"
-													checked={diagnosisType === '10'}
-													onChange={() => setDiagnosisType('10')}
+													checked={diagnosisType === 'icd10'}
+													onChange={() => setDiagnosisType('icd10')}
 												/>{' '}
 												ICD10
 											</label>
 											<label className="ml-2">
 												<input
 													type="radio"
-													checked={diagnosisType === '2'}
-													onChange={() => setDiagnosisType('2')}
+													checked={diagnosisType === 'icpc-2'}
+													onChange={() => setDiagnosisType('icpc-2')}
 												/>{' '}
 												ICPC-2
 											</label>

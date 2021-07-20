@@ -39,7 +39,7 @@ const ModalScheduleDate = ({
 
 			setSubmitting(true);
 			dispatch(startBlock());
-			const url = `requests/${procedure.item_id}/schedule`;
+			const url = `requests/${procedure.id}/schedule`;
 			const data = {
 				resources: JSON.stringify(resources.map(r => r.value)),
 				start_date: moment(startDate).format('DD/MM/YYYY h:mm A'),
@@ -47,7 +47,7 @@ const ModalScheduleDate = ({
 			};
 			const rs = await request(url, 'PUT', true, data);
 			const procedure_request = procedures.find(l => l.id === procedure.id);
-			const newItem = { ...procedure_request, items: [rs.data] };
+			const newItem = { ...procedure_request, item: rs.data };
 			const newItems = updateImmutable(procedures, newItem);
 			updateProcedure(newItems);
 			dispatch(stopBlock());

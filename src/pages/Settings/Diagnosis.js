@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Pagination from 'antd/lib/pagination';
 import { useDispatch } from 'react-redux';
 
@@ -38,25 +38,25 @@ const Diagnosis = () => {
 		}
 	};
 
-	useEffect(() => {
-		const init = async () => {
-			try {
-				const url = `${diagnosisAPI}?page=1`;
-				const rs = await request(url, 'GET', true);
-				const { data, ...info } = rs;
-				setDiagnoses([...data]);
-				setMeta({ ...meta, totalPages: info.total, currentPage: info.page });
-				setLoading(false);
-			} catch (e) {
-				setLoading(false);
-				notifyError(e.message || 'could not load diagnoses');
-			}
-		};
+	const init = useCallback(async () => {
+		try {
+			const url = `${diagnosisAPI}?page=1`;
+			const rs = await request(url, 'GET', true);
+			const { data, ...info } = rs;
+			setDiagnoses([...data]);
+			setMeta({ ...meta, totalPages: info.total, currentPage: info.page });
+			setLoading(false);
+		} catch (e) {
+			setLoading(false);
+			notifyError(e.message || 'could not load diagnoses');
+		}
+	}, [meta]);
 
+	useEffect(() => {
 		if (loading) {
 			init(1);
 		}
-	}, [loading, meta]);
+	}, [init, loading]);
 
 	const onUploadService = () => {
 		document.body.classList.add('modal-open');
@@ -179,9 +179,8 @@ const Diagnosis = () => {
 												<table className="table table-striped">
 													<thead>
 														<tr>
-															<th>Procedure Code</th>
+															<th>Code</th>
 															<th>Type</th>
-															<th>ICD 10 Code</th>
 															<th>Description</th>
 														</tr>
 													</thead>
@@ -189,20 +188,15 @@ const Diagnosis = () => {
 														{diagnoses.map((item, i) => {
 															return (
 																<tr key={i}>
-																	<td>{item.procedureCode}</td>
-																	<td nowrap="nowrap">
-																		{item.diagnosisType === '10'
-																			? 'ICD-10'
-																			: 'ICPC-2'}
-																	</td>
-																	<td>{item.icd10Code || '-'}</td>
+																	<td>{item.code}</td>
+																	<td nowrap="nowrap">{item.type}</td>
 																	<td>{item.description}</td>
 																</tr>
 															);
 														})}
 														{diagnoses.length === 0 && (
 															<tr>
-																<td colSpan="4" className="text-center">
+																<td colSpan="3" className="text-center">
 																	No diagnosis found!
 																</td>
 															</tr>

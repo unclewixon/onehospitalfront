@@ -70,17 +70,17 @@ class ProcedureBlock extends Component {
 		this.setState({ showRSModal: false, procedure: null });
 	};
 
-	startProcedureTest = async procedure => {
+	startProcedureTest = async id => {
 		try {
 			const { procedures } = this.props;
 			this.props.startBlock();
-			const url = `requests/${procedure.item_id}/start`;
+			const url = `requests/${id}/start`;
 			const data = {
 				date: moment().format('DD-MM-YYYY HH:mm:ss'),
 			};
 			const rs = await request(url, 'PUT', true, data);
-			const procedure_request = procedures.find(l => l.id === procedure.id);
-			const newItem = { ...procedure_request, items: [rs.data] };
+			const procedure_request = procedures.find(l => l.id === id);
+			const newItem = { ...procedure_request, item: rs.data };
 			const newItems = updateImmutable(procedures, newItem);
 			this.props.updateProcedure(newItems);
 			this.props.stopBlock();
@@ -92,26 +92,26 @@ class ProcedureBlock extends Component {
 		}
 	};
 
-	startProcedure = procedure => {
+	startProcedure = id => {
 		confirmAction(
 			this.startProcedureTest,
-			procedure,
+			id,
 			'Do you want to start this procedure?',
 			'Are you sure?'
 		);
 	};
 
-	concludeProcedure = async procedure => {
+	concludeProcedure = async id => {
 		try {
 			const { procedures } = this.props;
 			this.props.startBlock();
-			const url = `requests/${procedure.item_id}/end`;
+			const url = `requests/${id}/end`;
 			const data = {
 				date: moment().format('DD-MM-YYYY HH:mm:ss'),
 			};
 			const rs = await request(url, 'PUT', true, data);
-			const procedure_request = procedures.find(l => l.id === procedure.id);
-			const newItem = { ...procedure_request, items: [rs.data] };
+			const procedure_request = procedures.find(l => l.id === id);
+			const newItem = { ...procedure_request, item: rs.data };
 			const newItems = updateImmutable(procedures, newItem);
 			this.props.updateProcedure(newItems);
 			this.props.stopBlock();
@@ -123,10 +123,10 @@ class ProcedureBlock extends Component {
 		}
 	};
 
-	finishProcedure = procedure => {
+	finishProcedure = id => {
 		confirmAction(
 			this.concludeProcedure,
-			procedure,
+			id,
 			'Do you want to end this procedure? You wont be able to make entries after closing this procedure.',
 			'Are you sure?'
 		);
@@ -157,155 +157,136 @@ class ProcedureBlock extends Component {
 					</thead>
 					<tbody>
 						{procedures.map((data, i) => {
-							return data.items.map((item, j) => {
-								return (
-									<tr key={j} className={data.urgent ? 'urgent' : ''}>
-										<td>
-											<span>
-												{moment(data.createdAt).format('DD-MM-YYYY h:mmA')}
-											</span>
-										</td>
+							console.log(data);
+							return (
+								<tr key={i} className={data.urgent ? 'urgent' : ''}>
+									<td>
+										<span>
+											{moment(data.createdAt).format('DD-MM-YYYY h:mmA')}
+										</span>
+									</td>
+									<td>
+										<p className="item-title text-color m-0">
+											<a
+												className="cursor"
+												onClick={() =>
+													this.showProcedure(data.patient, data.item)
+												}>
+												{data.item.service.item.name}
+											</a>
+										</p>
+									</td>
+									{!patient && (
 										<td>
 											<p className="item-title text-color m-0">
-												<a
-													className="cursor"
-													onClick={() =>
-														this.showProcedure(data.patient, item)
-													}>
-													{item.service.name}
-												</a>
+												<Tooltip
+													title={<ProfilePopup patient={data.patient} />}>
+													<a
+														className="cursor"
+														onClick={() => this.showProfile(data.patient)}>
+														{data.patient_name}
+													</a>
+												</Tooltip>
+												{data.patient.isAdmitted && (
+													<Tooltip title="Admitted">
+														<i className="fa fa-hospital-o text-danger ml-1" />
+													</Tooltip>
+												)}
 											</p>
 										</td>
-										{!patient && (
-											<td>
-												<p className="item-title text-color m-0">
-													<Tooltip
-														title={<ProfilePopup patient={data.patient} />}>
-														<a
-															className="cursor"
-															onClick={() => this.showProfile(data.patient)}>
-															{data.patient_name}
-														</a>
-													</Tooltip>
-													{data.patient.isAdmitted && (
-														<Tooltip title="Admitted">
-															<i className="fa fa-hospital-o text-danger ml-1" />
-														</Tooltip>
-													)}
-												</p>
-											</td>
-										)}
-										<td>
-											<a className="item-title text-color">{data.created_by}</a>
-										</td>
-										<td>
-											{item.cancelled === 0 && (
-												<>
-													{item.transaction?.status === 0 ? (
-														<span className="badge badge-warning">
-															Awaiting Payment
-														</span>
-													) : (
-														<>
-															{!item.scheduledDate && (
-																<span className="badge badge-secondary">
-																	Open
-																</span>
-															)}
-															{item.scheduledDate && !item.startedDate && (
+									)}
+									<td>
+										<a className="item-title text-color">{data.created_by}</a>
+									</td>
+									<td>
+										{data.item.cancelled === 0 && (
+											<>
+												{data.transaction?.status === 0 ? (
+													<span className="badge badge-warning">
+														Awaiting Payment
+													</span>
+												) : (
+													<>
+														{!data.item?.scheduledDate && (
+															<span className="badge badge-secondary">
+																Open
+															</span>
+														)}
+														{data.item?.scheduledDate &&
+															!data.item.startedDate && (
 																<span className="badge badge-primary">
 																	Scheduled
 																</span>
 															)}
-															{item.startedDate && !item.finishedDate && (
+														{data.item.startedDate &&
+															!data.item.finishedDate && (
 																<span className="badge badge-info text-white">
 																	Started
 																</span>
 															)}
-															{item.finishedDate && (
-																<span className="badge badge-success">
-																	Concluded
-																</span>
-															)}
-														</>
-													)}
-												</>
-											)}
-											{item.cancelled === 1 && (
-												<span className="badge badge-danger">cancelled</span>
-											)}
-										</td>
-										<td>
-											{item.resources
-												? JSON.parse(item.resources).join(', ')
-												: '--'}
-										</td>
-										<td>
-											{item.transaction.status === 1 ||
-											item.transaction.status === -1 ? (
-												<>
-													{!item.scheduledDate ? (
-														<a
-															onClick={() =>
-																this.scheduleDate({
-																	id: data.id,
-																	item_id: item.id,
-																})
-															}
-															className="btn btn-sm btn-primary px-2 py-1">
-															schedule date
-														</a>
-													) : (
-														`${item.scheduledStartDate} => ${item.scheduledEndDate}`
-													)}
-												</>
-											) : (
-												'--'
-											)}
-										</td>
-										<td className="row-actions">
-											{item.scheduledDate && !item.startedDate && (
-												<a
-													onClick={() =>
-														this.startProcedure({
-															id: data.id,
-															item_id: item.id,
-														})
-													}
-													className="btn btn-sm btn-primary px-2 py-1 text-white">
-													Start
-												</a>
-											)}
-											{item.startedDate && !item.finishedDate && (
-												<a
-													onClick={() =>
-														this.finishProcedure({
-															id: data.id,
-															item_id: item.id,
-														})
-													}
-													className="btn btn-sm btn-primary px-2 py-1 text-white">
-													Conclude
-												</a>
-											)}
-											{item.cancelled === 0 && !item.scheduledDate && (
-												<Tooltip title="Cancel Lab Test">
+														{data.item.finishedDate && (
+															<span className="badge badge-success">
+																Concluded
+															</span>
+														)}
+													</>
+												)}
+											</>
+										)}
+										{data.item.cancelled === 1 && (
+											<span className="badge badge-danger">cancelled</span>
+										)}
+									</td>
+									<td>
+										{data.item.resources
+											? JSON.parse(data.item.resources).join(', ')
+											: '--'}
+									</td>
+									<td>
+										{data.transaction.status === 1 ||
+										data.transaction.status === -1 ? (
+											<>
+												{!data.item?.scheduledDate ? (
 													<a
-														className="danger"
-														onClick={() =>
-															this.cancelProcedure({
-																id: data.id,
-																item_id: item.id,
-															})
-														}>
-														<i className="os-icon os-icon-ui-15" />
+														onClick={() => this.scheduleDate(data)}
+														className="btn btn-sm btn-primary px-2 py-1">
+														schedule date
 													</a>
-												</Tooltip>
-											)}
-										</td>
-									</tr>
-								);
-							});
+												) : (
+													`${data.item.scheduledStartDate} => ${data.item.scheduledEndDate}`
+												)}
+											</>
+										) : (
+											'--'
+										)}
+									</td>
+									<td className="row-actions">
+										{data?.item?.scheduledDate && !data?.item?.startedDate && (
+											<a
+												onClick={() => this.startProcedure(data.item.id)}
+												className="btn btn-sm btn-primary px-2 py-1 text-white">
+												Start
+											</a>
+										)}
+										{data.item.startedDate && !data.item.finishedDate && (
+											<a
+												onClick={() => this.finishProcedure(data.item.id)}
+												className="btn btn-sm btn-primary px-2 py-1 text-white">
+												Conclude
+											</a>
+										)}
+										{data.item.cancelled === 0 && !data.item?.scheduledDate && (
+											<Tooltip title="Cancel Lab Test">
+												<a
+													className="danger"
+													onClick={() => this.cancelProcedure(data.item.id)}>
+													<i className="os-icon os-icon-ui-15" />
+												</a>
+											</Tooltip>
+										)}
+									</td>
+								</tr>
+							);
 						})}
 					</tbody>
 				</table>

@@ -47,7 +47,7 @@ class PrescriptionRequests extends Component {
 		try {
 			const page = p || 1;
 			this.setState({ loading: true });
-			const url = `requests/list/pharmacy?startDate=${start}&endDate=${end}&limit=10&page=${page}`;
+			const url = `requests/list/drugs?startDate=${start}&endDate=${end}&limit=10&page=${page}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			this.setState({ loading: false, prescriptions: result, meta });

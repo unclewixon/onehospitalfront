@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import Select from 'react-select';
 import { Table } from 'react-bootstrap';
@@ -41,7 +41,9 @@ const PrescriptionForm = ({
 		defaultValues,
 	});
 	const [refillable, setRefillable] = useState(false);
+	const [loaded, setLoaded] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
+	const [genericDrugs, setGenericDrugs] = useState([]);
 	const [drugsSelected, setDrugsSelected] = useState([]);
 	const [editing, setEditing] = useState(false);
 	const [prescription, setPrescription] = useState(false);
@@ -62,11 +64,10 @@ const PrescriptionForm = ({
 	};
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option =>
-		`${option.description} (Icd${option.diagnosisType}: ${option.icd10Code ||
-			option.procedureCode})`;
+		`${option.description} (${option.type}: ${option.code})`;
 
 	const getOptions = async q => {
-		if (!q || q.length < 3) {
+		if (!q || q.length < 2) {
 			return [];
 		}
 
@@ -85,12 +86,29 @@ const PrescriptionForm = ({
 		return res;
 	};
 
+	const loadGenericDrugs = useCallback(async () => {
+		try {
+			dispatch(startBlock());
+			const rs = await request('inventory/generics?limit=100', 'GET', true);
+			setGenericDrugs(rs.result);
+			dispatch(stopBlock());
+		} catch (e) {
+			dispatch(stopBlock());
+			setSubmitting(false);
+			notifyError('Error while fetching generic names');
+		}
+	}, [dispatch]);
+
 	useEffect(() => {
+		if (!loaded) {
+			loadGenericDrugs();
+			setLoaded(true);
+		}
 		if (loading && patient && !chosenPatient) {
 			setChosenPatient(patient);
 			setLoading(false);
 		}
-	}, [chosenPatient, loading, patient]);
+	}, [chosenPatient, loadGenericDrugs, loaded, loading, patient]);
 
 	const onFormSubmit = (data, e) => {
 		const newDrug = [...drugsSelected, { drug: selectedDrug, ...data }];
@@ -232,7 +250,7 @@ const PrescriptionForm = ({
 			return [];
 		}
 
-		const url = `inventory/stocks-by-category/${category_id}/${chosenPatient.hmo.id}?q=${q}`;
+		const url = `inventory/stocks-by-category/${category_id}?q=${q}`;
 		const res = await request(url, 'GET', true);
 		return res || [];
 	};
@@ -273,22 +291,22 @@ const PrescriptionForm = ({
 					</div>
 				)}
 				<div className="row">
-					{/* <div className="form-group col-sm-6">
-						<label>Drug Generic</label>
-						<AsyncSelect
+					<div className="form-group col-sm-6">
+						<label>Drug Generic Name</label>
+						<Select
+							placeholder="--select generic name--"
+							defaultValue
 							getOptionValue={option => option.id}
-							getOptionLabel={option =>option.generic_name}
-							defaultOptions
-							ref={register({ name: 'drugId', required: true })}
-							name="drugId"
-							loadOptions={getDrugOptions}
-							value={chosenDrug}
+							getOptionLabel={option => option.name}
 							onChange={e => {
+								console.log(e);
 							}}
-							placeholder="select a drug"
+							isSearchable={true}
+							options={genericDrugs}
+							name="generic_name"
 						/>
-					</div> */}
-					<div className="form-group col-sm-12 relative">
+					</div>
+					<div className="form-group col-sm-6 relative">
 						<label>Drug Name</label>
 						{selectedDrug && (
 							<div className="posit-top">
