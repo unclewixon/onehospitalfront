@@ -94,10 +94,10 @@ const ViewPrescription = ({
 				notifyError('Error, no regimens found!');
 				return;
 			}
-			// if (sumTotal <= 0) {
-			// 	notifyError('Error, no regimens filled!');
-			// 	return;
-			// }
+			if (sumTotal <= 0) {
+				notifyError('Error, no regimens filled!');
+				return;
+			}
 
 			const emptyItem = regimens.find(
 				p =>
