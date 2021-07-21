@@ -8,7 +8,7 @@ import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import {
 	renderTextInput,
 	request,
-	formatPatientId,
+	patientname,
 } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { closeModals } from '../../actions/general';
@@ -41,8 +41,7 @@ const validate = values => {
 };
 
 const getOptionValues = option => option.id;
-const getOptionLabels = option =>
-	`${option.other_names} ${option.surname} (${formatPatientId(option.id)})`;
+const getOptionLabels = option => patientname(option, true);
 
 const getOptions = async q => {
 	if (!q || q.length < 1) {
@@ -87,18 +86,7 @@ class ModalCreateVoucher extends Component {
 		try {
 			const rs = await request(vouchersAPI, 'POST', true, data);
 
-			// let voucher = {
-			// 	id: rs.voucher.q_id,
-			// 	voucher_no: rs.voucher.q_voucher_no,
-			// 	amount: rs.voucher.q_amount,
-			// 	amount_used: null,
-			// 	created_by: rs.voucher.q_createdBy,
-			// 	patient_name: rs.voucher.surname + ' ' + rs.voucher.other_names,
-			// 	patient_id: rs.voucher.q_patientId,
-			// };
-
-			rs.voucher.patient_name =
-				rs.voucher.patient.surname + ' ' + rs.voucher.patient.other_names;
+			rs.voucher.patient_name = patientname(rs.voucher.patient);
 			rs.voucher.patient_id = rs.voucher.patient.id;
 
 			this.props.createVoucherData(rs.voucher);

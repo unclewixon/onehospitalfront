@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
-import { formatPatientId } from '../../../services/utilities';
+
+import { formatPatientId, patientname } from '../../../services/utilities';
 
 const ViewEncounter = ({ closeModal, encounter }) => {
 	console.log('encanter details: ', encounter);
@@ -36,8 +37,7 @@ const ViewEncounter = ({ closeModal, encounter }) => {
 												</h6>
 
 												<h6 className="text-center">
-													{encounter?.patient?.other_names}{' '}
-													{encounter?.patient?.surname}
+													{patientname(encounter.patient)}
 												</h6>
 											</td>
 										</tr>
@@ -58,7 +58,7 @@ const ViewEncounter = ({ closeModal, encounter }) => {
 													Patient ID:
 												</h6>
 												<h6 className="text-center">
-													{formatPatientId(encounter?.patient?.id)}
+													{formatPatientId(encounter?.patient)}
 												</h6>
 											</td>
 										</tr>

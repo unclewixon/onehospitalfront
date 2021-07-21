@@ -1,7 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 
-import { formatPatientId, getAge, parseAvatar } from '../../services/utilities';
+import {
+	formatPatientId,
+	getAge,
+	parseAvatar,
+	patientname,
+} from '../../services/utilities';
 
 const ProfilePopup = ({ patient }) => {
 	return (
@@ -21,13 +26,11 @@ const ProfilePopup = ({ patient }) => {
 				<div className="profile-tile-meta pl-2">
 					<ul>
 						<li>
-							<strong className="m-0">{`${patient.surname} ${patient.other_names}`}</strong>
+							<strong className="m-0">{patientname(patient)}</strong>
 						</li>
 						<li>
 							EMR:
-							<strong>{`#${formatPatientId(patient.id)} ${
-								patient.folderNumber ? `[${patient.folderNumber}]` : ''
-							}`}</strong>
+							<strong>{`#${formatPatientId(patient)}`}</strong>
 						</li>
 						<li>
 							<strong className="m-0">{`${getAge(patient?.date_of_birth)}/${

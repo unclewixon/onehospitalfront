@@ -13,6 +13,7 @@ import {
 	confirmAction,
 	updateImmutable,
 	upload,
+	patientname,
 } from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
 import { startBlock, stopBlock } from '../actions/redux-block';
@@ -231,7 +232,7 @@ class RadiologyBlock extends Component {
 			<TableLoading />
 		) : (
 			<>
-				<table id="table" className="table table-theme v-middle table-hover">
+				<table className="table table-striped">
 					<thead>
 						<tr>
 							<th>Request Date</th>
@@ -272,7 +273,7 @@ class RadiologyBlock extends Component {
 													<a
 														className="cursor"
 														onClick={() => this.showProfile(scan.patient)}>
-														{scan.patient_name}
+														{patientname(scan.patient, true)}
 													</a>
 												</Tooltip>
 												{scan.patient.isAdmitted && (

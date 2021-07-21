@@ -5,7 +5,7 @@ import moment from 'moment';
 import { transactionsAPI, searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import DatePicker from 'antd/lib/date-picker';
-import { request, staffname } from '../../services/utilities';
+import { request, staffname, patientname } from '../../services/utilities';
 
 import { notifyError } from '../../services/notify';
 import searchingGIF from '../../assets/images/searching.gif';
@@ -71,7 +71,7 @@ class Transactions extends Component {
 		// this.setState({ filtering: true });
 		this.setState({ ...this.state, filtering: true });
 		console.log(this.state.patient_id);
-		// if (this.state.query < 3) {
+		// if (this.state.query < 1) {
 		// 	this.setState({ ...this.state, patient_id: '' });
 		// 	console.log(this.state.patient_id);
 		// }
@@ -98,10 +98,7 @@ class Transactions extends Component {
 		console.log(pat);
 
 		if (type === 'patient') {
-			let name =
-				(pat.surname ? pat.surname : '') +
-				' ' +
-				(pat.other_names ? pat.other_names : '');
+			let name = patientname(pat);
 			document.getElementById('patient').value = name;
 			// setPatients([]);
 			this.setState({ ...this.state, patient_id: pat.id, patients: [] });
@@ -223,7 +220,7 @@ class Transactions extends Component {
 											<div
 												className="item-name"
 												dangerouslySetInnerHTML={{
-													__html: `${pat.surname} ${pat.other_names}`,
+													__html: patientname(pat),
 												}}
 											/>
 										</a>
@@ -259,7 +256,7 @@ class Transactions extends Component {
 											<div
 												className="item-name"
 												dangerouslySetInnerHTML={{
-													__html: `${pat.surname} ${pat.other_names}`,
+													__html: patientname(pat),
 												}}
 											/>
 										</a>
@@ -303,17 +300,16 @@ class Transactions extends Component {
 							</thead>
 							<tbody>
 								{transactions.map((request, i) => {
+									const patient = request.patient
+										? patientname(request.patient, true)
+										: 'walk-in';
 									return (
 										<tr data-index="0" key={i}>
 											<td>
 												{moment(request.createdAt).format('DD-MM-YYYY h:mm a')}
 											</td>
 											<td>
-												{request.staff
-													? staffname(request.staff)
-													: request.patient
-													? `${request.patient.other_names} ${request.patient.surname}`
-													: 'walk-in'}
+												{request.staff ? staffname(request.staff) : patient}
 											</td>
 											<td>
 												{request?.transaction_details

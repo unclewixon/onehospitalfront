@@ -65,7 +65,7 @@ export class ModalDeliveryDetail extends Component {
 													</td>
 													<td className="text-left">
 														<div className="value ml-1 text-success">
-															{formatPatientId(labourDetail?.patient_id)}
+															{formatPatientId(labourDetail?.patient)}
 														</div>
 													</td>
 												</tr>

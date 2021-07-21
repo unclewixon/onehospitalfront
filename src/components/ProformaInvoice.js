@@ -9,7 +9,7 @@ import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import { searchAPI } from '../services/constants';
 import ModalProformaInvoice from './Modals/ModalProformaInvoice';
 import { serviceAPI } from '../services/constants';
-import { request } from '../services/utilities';
+import { request, patientname } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
 import { notifyError } from '../services/notify';
 import { get_all_request_services } from '../actions/settings';
@@ -42,10 +42,10 @@ const ProformaInvoice = props => {
 	});
 
 	const getOptionValues = option => option.id;
-	const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+	const getOptionLabels = option => patientname(option, true);
 
 	const getOptions = async q => {
-		if (!q || q.length < 3) {
+		if (!q || q.length < 1) {
 			return [];
 		}
 

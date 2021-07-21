@@ -7,7 +7,7 @@ import waiting from '../../assets/images/waiting.gif';
 import { closeModals } from '../../actions/general';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { API_URI, searchAPI, patientAPI } from '../../services/constants';
-import { upload } from '../../services/utilities';
+import { patientname, upload } from '../../services/utilities';
 import { request } from '../../services/utilities';
 
 const ModalUploadRadiology = props => {
@@ -85,10 +85,7 @@ const ModalUploadRadiology = props => {
 	const patientSet = pat => {
 		// setValue('patient_id', pat.id);
 		setPatientId(pat.id);
-		let name =
-			(pat.surname ? pat.surname : '') +
-			' ' +
-			(pat.other_names ? pat.other_names : '');
+		const name = patientname(pat);
 		document.getElementById('patient').value = name;
 		setPatients([]);
 	};
@@ -149,7 +146,7 @@ const ModalUploadRadiology = props => {
 																<div
 																	className="item-name"
 																	dangerouslySetInnerHTML={{
-																		__html: `${pat.surname} ${pat.other_names}`,
+																		__html: patientname(pat),
 																	}}
 																/>
 															</a>

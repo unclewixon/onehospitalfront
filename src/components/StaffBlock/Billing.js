@@ -71,7 +71,7 @@ export class Billing extends Component {
 		// this.setState({ filtering: true });
 		this.setState({ ...this.state, filtering: true });
 		console.log(this.state.staff_id);
-		// if (this.state.query < 3) {
+		// if (this.state.query < 1) {
 		// 	this.setState({ ...this.state, patient_id: '' });
 		// 	console.log(this.state.patient_id);
 		// }
@@ -93,23 +93,6 @@ export class Billing extends Component {
 			endDate: date[1] ? date[1] : '',
 		});
 	};
-
-	// staffSet = (staff, type) => {
-	// 	console.log(staff);
-
-	// 	if (type === 'staff') {
-	// 		let name =
-	// 			(pat.surname ? pat.surname : '') +
-	// 			' ' +
-	// 			(pat.other_names ? pat.other_names : '');
-	// 		document.getElementById('patient').value = name;
-	// 		// setstaffBilling([]);
-	// 		this.setState({ ...this.state, patient_id: pat.id, staffBilling: [] });
-	// 	} else {
-	// 		document.getElementById('hmo').value = pat.name;
-	// 		this.setState({ ...this.state, hmo_id: pat.id, hmos: [] });
-	// 	}
-	// };
 
 	searchPatient = async () => {
 		if (this.state.query.length > 2) {
@@ -229,7 +212,7 @@ export class Billing extends Component {
 														<div
 															className="item-name"
 															dangerouslySetInnerHTML={{
-																__html: `${pat.surname} ${pat.other_names}`,
+																__html: patientname(pat),
 															}}
 														/>
 													</a>

@@ -10,6 +10,7 @@ import {
 	formatCurrency,
 	itemRender,
 	updateImmutable,
+	patientname,
 } from '../../services/utilities';
 import CafeteriaTransaction from '../../components/CafeteriaTransaction';
 import { startBlock, stopBlock } from '../../actions/redux-block';
@@ -90,9 +91,7 @@ const Dashboard = () => {
 		setSelectedCustomer(pat);
 		let name;
 		if (customer === 'patient') {
-			name = `${pat?.surname ? pat?.surname : ''} ${
-				pat?.other_names ? pat?.other_names : ''
-			}`;
+			name = patientname(pat);
 		} else {
 			name = `${pat?.first_name ? pat?.first_name : ''} ${
 				pat?.last_name ? pat?.last_name : ''
@@ -147,10 +146,10 @@ const Dashboard = () => {
 	};
 
 	const getOptionValues = option => option.id;
-	const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+	const getOptionLabels = option => patientname(option, true);
 
 	const getOptions = async q => {
-		if (!q || q.length < 3) {
+		if (!q || q.length < 1) {
 			return [];
 		}
 
@@ -164,7 +163,7 @@ const Dashboard = () => {
 		`${option.first_name} ${option.last_name}`;
 
 	const getOptionsStaff = async q => {
-		if (!q || q.length < 3) {
+		if (!q || q.length < 1) {
 			return [];
 		}
 

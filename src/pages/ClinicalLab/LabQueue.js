@@ -22,7 +22,7 @@ class LabQueue extends Component {
 			this.setState({ ...this.state, loading: true });
 			const p = page || 1;
 			const date = moment().format('YYYY-MM-DD');
-			const url = `requests/list/lab?page=${p}&limit=10&today=${date}`;
+			const url = `requests/list/labs?page=${p}&limit=10&today=${date}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			this.setState({ ...this.state, loading: false, labs: result, meta });

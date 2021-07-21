@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import moment from 'moment';
+import { patientname } from '../../services/utilities';
 
 const Reciept = ({ data }) => {
 	return (
@@ -84,7 +85,7 @@ const Reciept = ({ data }) => {
 										RECEIVED FROM:{' '}
 									</span>
 									<span style={{ fontSize: 8, fontWeight: 'bold' }}>
-										{`${data?.patient?.surname} ${data?.patient?.other_names} (${data?.patient?.folderNumber})`.toUpperCase()}
+										{patientname(data.patient)}
 									</span>
 								</td>
 							</tr>

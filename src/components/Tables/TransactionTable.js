@@ -11,7 +11,7 @@ import {
 	formatCurrency,
 	patientname,
 } from '../../services/utilities';
-import { delete_transaction } from '../../actions/transaction';
+import { deleteTransaction } from '../../actions/transaction';
 import { approveTransaction } from '../../actions/general';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { Can } from '../common/Can';
@@ -19,10 +19,10 @@ import ModalServiceDetails from '../Modals/ModalServiceDetails';
 import ModalShowTransactions from '../Modals/ModalShowTransactions';
 
 const TransactionTable = ({
-	handlePrint,
 	transactions,
-	showPrint = false,
 	showActionBtns,
+	showPrint = false,
+	handlePrint,
 	queue,
 }) => {
 	const [showModal, setShowModal] = useState(false);
@@ -40,7 +40,7 @@ const TransactionTable = ({
 		try {
 			const url = `transactions/${data.id}`;
 			await request(url, 'DELETE', true);
-			dispatch(delete_transaction(data));
+			dispatch(deleteTransaction(data));
 			notifySuccess(`Transaction deleted!`);
 		} catch (err) {
 			console.log(err);
@@ -96,7 +96,7 @@ const TransactionTable = ({
 								</td>
 								<td>
 									<a onClick={() => showList(transaction.patient)}>
-										{patientname(transaction.patient)}
+										{patientname(transaction.patient, true)}
 									</a>
 								</td>
 								<td className="flex">

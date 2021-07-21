@@ -48,7 +48,9 @@ const HmoTable = ({ hmoTransactions, updateTransaction }) => {
 					<tr key={key}>
 						<td>{moment(item.createdAt).format('DD-MM-YYYY h:mm A')}</td>
 						<td className="text-capitalize">{item.hmo?.name || '--'}</td>
-						<td className="text-capitalize">{patientname(item.patient)}</td>
+						<td className="text-capitalize">
+							{patientname(item.patient, true)}
+						</td>
 						<td>{item.description || '--'}</td>
 
 						<td>{item.amount ? formatCurrency(item.amount) : 0}</td>

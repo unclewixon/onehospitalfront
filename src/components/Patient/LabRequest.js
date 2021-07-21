@@ -8,11 +8,10 @@ import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 import { searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
-import { request } from '../../services/utilities';
+import { request, patientname } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { formatCurrency } from '../../services/utilities';
 import { startBlock, stopBlock } from '../../actions/redux-block';
-import { formatPatientId } from '../../services/utilities';
 
 const defaultValues = {
 	request_note: '',
@@ -151,11 +150,7 @@ const LabRequest = ({ module, history, location }) => {
 									<AsyncSelect
 										isClearable
 										getOptionValue={option => option.id}
-										getOptionLabel={option =>
-											`${option.other_names} ${
-												option.surname
-											} (${formatPatientId(option.id)})`
-										}
+										getOptionLabel={option => patientname(option, true)}
 										defaultOptions
 										name="patient"
 										loadOptions={getPatients}

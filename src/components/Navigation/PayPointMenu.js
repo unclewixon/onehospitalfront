@@ -12,15 +12,14 @@ const PayPointMenu = () => {
 					<span>Home</span>
 				</Link>
 			</li>
-			<li>
+			{/* <li>
 				<Link to="/paypoint/new-transaction">
 					<div className="icon-w">
 						<div className="icon-feather-plus-square" />
 					</div>
 					<span>New Transaction</span>
 				</Link>
-			</li>
-
+			</li> */}
 			<li>
 				<Link to="/paypoint/pending-bills">
 					<div className="icon-w">

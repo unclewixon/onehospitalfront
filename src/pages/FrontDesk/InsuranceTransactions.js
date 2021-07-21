@@ -17,7 +17,7 @@ import {
 	patientname,
 	updateImmutable,
 } from '../../services/utilities';
-import { loadTransaction } from '../../actions/transaction';
+import { loadTransactions } from '../../actions/transaction';
 import ModalServiceDetails from '../../components/Modals/ModalServiceDetails';
 import InputCode from '../../components/FrontDesk/InputCode';
 import { startBlock, stopBlock } from '../../actions/redux-block';
@@ -33,7 +33,7 @@ const paymentStatus = [
 ];
 
 const getOptionValues = option => option.id;
-const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+const getOptionLabels = option => patientname(option, true);
 
 const getOptions = async q => {
 	if (!q || q.length < 1) {
@@ -65,10 +65,10 @@ class InsuranceTransactions extends Component {
 	};
 
 	componentDidMount() {
-		this.fetchTransaction();
+		this.fetchTransactions();
 	}
 
-	fetchTransaction = async (
+	fetchTransactions = async (
 		page,
 		patient_id = '',
 		hmo_id = '',
@@ -83,7 +83,7 @@ class InsuranceTransactions extends Component {
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			const arr = [...result];
-			this.props.loadTransaction(arr);
+			this.props.loadTransactions(arr);
 			this.setState({ loading: false, filtering: false, meta });
 			this.props.stopBlock();
 		} catch (error) {
@@ -95,7 +95,7 @@ class InsuranceTransactions extends Component {
 	onNavigatePage = async nextPage => {
 		const { patient_id, hmo_id, startDate, endDate, status } = this.state;
 		this.props.startBlock();
-		await this.fetchTransaction(
+		await this.fetchTransactions(
 			nextPage,
 			patient_id,
 			hmo_id,
@@ -113,7 +113,7 @@ class InsuranceTransactions extends Component {
 		e.preventDefault();
 		const { patient_id, hmo_id, startDate, endDate, status } = this.state;
 		this.setState({ filtering: true, filtered: true });
-		this.fetchTransaction(1, patient_id, hmo_id, startDate, endDate, status);
+		this.fetchTransactions(1, patient_id, hmo_id, startDate, endDate, status);
 	};
 
 	change = e => {
@@ -161,7 +161,7 @@ class InsuranceTransactions extends Component {
 			const rs = await request(url, 'PATCH', true);
 			if (rs.success) {
 				const uptdTransactions = updateImmutable(transactions, rs.transaction);
-				this.props.loadTransaction(uptdTransactions);
+				this.props.loadTransactions(uptdTransactions);
 				notifySuccess('Hmo transaction approved');
 				this.setState({ submitting: false });
 			} else {
@@ -191,7 +191,7 @@ class InsuranceTransactions extends Component {
 			const rs = await request(url, 'PATCH', true);
 			if (rs.success) {
 				const uptdTransactions = updateImmutable(transactions, rs.transaction);
-				this.props.loadTransaction(uptdTransactions);
+				this.props.loadTransactions(uptdTransactions);
 				notifySuccess('Hmo transaction transferred');
 				this.setState({ submitting: false });
 			} else {
@@ -315,7 +315,7 @@ class InsuranceTransactions extends Component {
 											hmo_id: '',
 											patient_id: '',
 										});
-										await this.fetchTransaction(1);
+										await this.fetchTransactions(1);
 									}}>
 									<i className="os-icon os-icon-close" />
 								</div>
@@ -348,7 +348,7 @@ class InsuranceTransactions extends Component {
 												<td>
 													{moment(item.createdAt).format('DD-MM-YYYY H:mma')}
 												</td>
-												<td>{patientname(item.patient)}</td>
+												<td>{patientname(item.patient, true)}</td>
 												<td>{`${item.hmo?.name || '--'} (${item.hmo
 													?.phoneNumber || ''})`}</td>
 												<td>
@@ -402,7 +402,7 @@ class InsuranceTransactions extends Component {
 																			transaction={item}
 																			transactions={transactions}
 																			loadTransaction={trs =>
-																				this.props.loadTransaction(trs)
+																				this.props.loadTransactions(trs)
 																			}
 																			doHide={this.doHide}
 																		/>
@@ -479,12 +479,12 @@ class InsuranceTransactions extends Component {
 
 const mapStateToProps = state => {
 	return {
-		transactions: state.transaction.reviewTransaction,
+		transactions: state.transaction.transactions,
 	};
 };
 
 export default connect(mapStateToProps, {
-	loadTransaction,
+	loadTransactions,
 	startBlock,
 	stopBlock,
 })(InsuranceTransactions);

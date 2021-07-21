@@ -28,10 +28,10 @@ import TableLoading from '../../components/TableLoading';
 const { RangePicker } = DatePicker;
 
 const getOptionValues = option => option.id;
-const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+const getOptionLabels = option => patientname(option, true);
 
 const getOptions = async q => {
-	if (!q || q.length < 3) {
+	if (!q || q.length < 1) {
 		return [];
 	}
 
@@ -244,7 +244,8 @@ export class Voucher extends Component {
 																</span>
 																<br />
 																{` by ${patientname(
-																	voucher.transaction.patient
+																	voucher.transaction.patient,
+																	true
 																)}`}
 															</>
 														)}

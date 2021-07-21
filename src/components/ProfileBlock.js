@@ -232,12 +232,7 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 												<UserItem
 													icon="user"
 													label="Patient ID"
-													value={`${formatPatientId(patient.id)} ${
-														patient.legacy_patient_id &&
-														patient.legacy_patient_id !== ''
-															? `[${patient.legacy_patient_id}]`
-															: ''
-													}`}
+													value={formatPatientId(patient)}
 												/>
 											</tr>
 											<tr>

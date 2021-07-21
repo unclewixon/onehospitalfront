@@ -11,7 +11,6 @@ import {
 	renderTextInput,
 	renderSelect,
 	renderMultiselect,
-	formatPatientId,
 	patientname,
 } from '../../services/utilities';
 import { request } from '../../services/utilities';
@@ -24,8 +23,7 @@ import {
 import { loadStaff } from '../../actions/hr';
 
 const getOptionValues = option => option.id;
-const getOptionLabels = option =>
-	`${option.other_names} ${option.surname} (${formatPatientId(option.id)})`;
+const getOptionLabels = option => patientname(option, true);
 
 const getOptions = async q => {
 	if (!q || q.length < 1) {

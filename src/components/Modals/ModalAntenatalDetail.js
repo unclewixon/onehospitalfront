@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 
 import { closeModals } from '../../actions/general';
+import { patientname } from '../../services/utilities';
 
 class GeneralView extends Component {
 	render() {
@@ -509,7 +510,7 @@ class ModalAntenatalDetail extends Component {
 												<h2
 													className="up-header text-capitalize"
 													style={{ color: '#334152' }}>
-													{ant.surname} {ant.other_names}
+													{patientname(ant)}
 												</h2>
 											</div>
 										</div>

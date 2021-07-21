@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import moment from 'moment';
 import { useReactToPrint } from 'react-to-print';
+import { patientname } from '../../services/utilities';
 
 const DisplayBilling = ({ details, total }) => {
 	console.log('DisplayBilling =');
@@ -140,7 +141,7 @@ const ModalProformaInvoice = ({
 											padding: '5px 0px 5px 40px',
 											fontSize: '12px',
 										}}>
-										{`${patient?.other_names} ${patient?.surname}`}
+										{patientname(patient)}
 									</td>
 								</tr>
 								<tr>

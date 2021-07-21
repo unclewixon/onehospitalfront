@@ -15,7 +15,7 @@ import {
 } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { getAllPendingTransactions } from '../../actions/paypoint';
-import { loadTransaction } from '../../actions/transaction';
+import { loadTransactions } from '../../actions/transaction';
 
 const ModalShowTransactions = ({ patient, closeModal }) => {
 	const [loading, setLoading] = useState(true);
@@ -37,9 +37,7 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 	const pendingTransactions = useSelector(
 		state => state.paypoint.pendingTransactions
 	);
-	const allTransactions = useSelector(
-		state => state.transaction.reviewTransaction
-	);
+	const allTransactions = useSelector(state => state.transaction.transactions);
 
 	const fetchTransactions = useCallback(
 		async page => {
@@ -162,7 +160,7 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 			for (const item of rs.transactions) {
 				transactionsList = updateImmutable(transactionsList, item);
 			}
-			dispatch(loadTransaction(transactionsList));
+			dispatch(loadTransactions(transactionsList));
 			setSubmitting(false);
 			closeModal();
 			dispatch(stopBlock());
@@ -190,9 +188,10 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div className="onboarding-content with-gradient">
-						<h4 className="onboarding-title">{`Transactions for ${patientname(
-							patient
-						)}`}</h4>
+						<h6 className="onboarding-title">{`Transactions for ${patientname(
+							patient,
+							true
+						)}`}</h6>
 						<div className="element-box p-2">
 							<div className="table-responsive">
 								<div className="row">

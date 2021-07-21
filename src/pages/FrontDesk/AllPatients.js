@@ -184,12 +184,7 @@ const AllPatients = () => {
 														</Tooltip>
 													)}
 												</td>
-												<td>{`${formatPatientId(data.id)} ${
-													data.legacy_patient_id &&
-													data.legacy_patient_id !== ''
-														? `[${data.legacy_patient_id}]`
-														: ''
-												}`}</td>
+												<td>{formatPatientId(data)}</td>
 												<td>{data.phone_number || '--'}</td>
 												<td>
 													{moment(data.date_of_birth).format('DD-MMM-YYYY')}

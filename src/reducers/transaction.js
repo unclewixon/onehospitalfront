@@ -1,45 +1,34 @@
 import {
-	LOAD_TODAY_TRANSACTION,
 	DELETE_TRANSACTION,
 	LOAD_RECENT_TRANSACTION,
 	UPDATE_TRANSACTION,
 	ADD_TRANSACTION,
 } from '../actions/types';
+import { updateImmutable } from '../services/utilities';
 
 const INITIAL_STATE = {
-	todayTransaction: [],
-	reviewTransaction: [],
+	transactions: [],
 };
 
 const transaction = (state = INITIAL_STATE, action) => {
 	switch (action.type) {
-		case LOAD_TODAY_TRANSACTION:
-			return { ...state, todayTransaction: action.payload };
 		case LOAD_RECENT_TRANSACTION:
-			return { ...state, reviewTransaction: action.payload };
+			return { ...state, transactions: action.payload };
 		case ADD_TRANSACTION:
 			return {
 				...state,
-				reviewTransaction: [...state.reviewTransaction, action.payload],
+				transactions: [...state.transactions, action.payload],
 			};
 		case UPDATE_TRANSACTION:
-			const reviewTransactions = state.reviewTransaction;
-			reviewTransactions.forEach(function(value, i) {
-				if (value.id === action.payload.id) {
-					reviewTransactions.splice(i, 1);
-				}
-			});
+			const transactions = updateImmutable(state.transactions, action.payload);
 			return {
 				...state,
-				reviewTransaction: [...reviewTransactions, action.payload],
+				transactions,
 			};
 		case DELETE_TRANSACTION:
 			return {
 				...state,
-				todayTransaction: state.todayTransaction.filter(
-					transaction => transaction.id !== action.payload.id
-				),
-				reviewTransaction: state.reviewTransaction.filter(
+				transactions: state.transactions.filter(
 					transaction => transaction.id !== action.payload.id
 				),
 			};

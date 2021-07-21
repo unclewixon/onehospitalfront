@@ -7,12 +7,11 @@ import Pagination from 'antd/lib/pagination';
 
 import { transactionsAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
-import { request, confirmAction, itemRender } from '../../services/utilities';
+import { request, itemRender, patientname } from '../../services/utilities';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import { searchAPI } from '../../services/constants';
-import { notifySuccess, notifyError } from '../../services/notify';
-import { loadTransaction, deleteTransaction } from '../../actions/transaction';
-import { applyVoucher, approveTransaction } from '../../actions/general';
+import { notifyError } from '../../services/notify';
+import { loadTransactions } from '../../actions/transaction';
 import TransactionTable from '../../components/Tables/TransactionTable';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import TableLoading from '../../components/TableLoading';
@@ -25,10 +24,10 @@ const paymentStatus = [
 ];
 
 const getOptionValues = option => option.id;
-const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+const getOptionLabels = option => patientname(option, true);
 
 const getOptions = async q => {
-	if (!q || q.length < 3) {
+	if (!q || q.length < 1) {
 		return [];
 	}
 
@@ -68,7 +67,7 @@ class TransactionHistory extends Component {
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			const arr = [...result];
-			this.props.loadTransaction(arr);
+			this.props.loadTransactions(arr);
 			this.setState({ loading: false, filtering: false, meta });
 			this.props.stopBlock();
 		} catch (error) {
@@ -96,7 +95,7 @@ class TransactionHistory extends Component {
 	};
 
 	dateChange = e => {
-		let date = e.map(d => {
+		const date = e.map(d => {
 			return moment(d._d).format('YYYY-MM-DD');
 		});
 
@@ -107,27 +106,9 @@ class TransactionHistory extends Component {
 		});
 	};
 
-	onDeleteTransaction = data => {
-		this.props
-			.deleteTransaction(data)
-			.then(response => {
-				notifySuccess('Transaction deleted');
-			})
-			.catch(error => {
-				notifyError('Error deleting  transaction ');
-			});
+	handlePrintClick = () => {
+		console.log('print');
 	};
-	confirmDelete = data => {
-		confirmAction(this.onDeleteTransaction, data);
-	};
-	doApproveTransaction = item => {
-		this.props.approveTransaction(item);
-	};
-	doApplyVoucher = item => {
-		this.props.applyVoucher(item);
-	};
-
-	handlePrintClick = () => {};
 
 	render() {
 		const { filtering, loading, meta } = this.state;
@@ -203,13 +184,9 @@ class TransactionHistory extends Component {
 							<>
 								<TransactionTable
 									transactions={transactions}
-									loading={loading}
-									showPrint={true}
-									queue={false}
 									showActionBtns={true}
-									approveTransaction={this.doApproveTransaction}
-									doApplyVoucher={this.doApplyVoucher}
 									handlePrint={this.handlePrintClick}
+									queue={true}
 								/>
 								{meta && (
 									<div className="pagination pagination-center mt-4">
@@ -234,15 +211,12 @@ class TransactionHistory extends Component {
 
 const mapStateToProps = state => {
 	return {
-		transactions: state.transaction.reviewTransaction,
+		transactions: state.transaction.transactions,
 	};
 };
 
 export default connect(mapStateToProps, {
-	applyVoucher,
-	approveTransaction,
-	loadTransaction,
-	deleteTransaction,
+	loadTransactions,
 	startBlock,
 	stopBlock,
 })(TransactionHistory);

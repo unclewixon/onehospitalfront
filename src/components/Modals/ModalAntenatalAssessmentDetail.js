@@ -1,22 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { formatPatientId } from '../../services/utilities';
-import { closeModals } from '../../actions/general';
 
-// const fields = [
-// 	'createdAt',
-// 	'heightOfFunds',
-// 	'fetalHeartRate',
-// 	'positionOfFetus',
-// 	'fetalLie',
-// 	'relationshipToBrim',
-// 	'comment',
-// 	'lab_request',
-// 	'radiology_request',
-// 	'pharmacy_request',
-// 	'nextAppointment',
-// ];
+import { formatPatientId, patientname } from '../../services/utilities';
+import { closeModals } from '../../actions/general';
 
 class ModalAntenatalAssessmentDetail extends Component {
 	componentDidMount() {
@@ -111,9 +98,7 @@ class ModalAntenatalAssessmentDetail extends Component {
 																	</td>
 																	<td className="text-right text-capitalize">
 																		<div className="value text-success">
-																			{patient.surname +
-																				' ' +
-																				patient.other_names}
+																			{patientname(patient)}
 																		</div>
 																	</td>
 																</tr>
@@ -123,7 +108,7 @@ class ModalAntenatalAssessmentDetail extends Component {
 																	</td>
 																	<td className="text-right">
 																		<div className="value text-success">
-																			{formatPatientId(patient?.id)}
+																			{formatPatientId(patient)}
 																		</div>
 																	</td>
 																</tr>

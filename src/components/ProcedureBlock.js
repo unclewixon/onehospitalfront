@@ -6,7 +6,12 @@ import { connect } from 'react-redux';
 
 import TableLoading from './TableLoading';
 import { toggleProfile } from '../actions/user';
-import { request, confirmAction, updateImmutable } from '../services/utilities';
+import {
+	request,
+	confirmAction,
+	updateImmutable,
+	patientname,
+} from '../services/utilities';
 import { startBlock, stopBlock } from '../actions/redux-block';
 import ProfilePopup from './Patient/ProfilePopup';
 import { notifySuccess, notifyError } from '../services/notify';
@@ -184,7 +189,7 @@ class ProcedureBlock extends Component {
 													<a
 														className="cursor"
 														onClick={() => this.showProfile(data.patient)}>
-														{data.patient_name}
+														{patientname(data.patient, true)}
 													</a>
 												</Tooltip>
 												{data.patient.isAdmitted && (

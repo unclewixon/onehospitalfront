@@ -9,7 +9,7 @@ import {
 	formatDate,
 	request,
 	trimText,
-	formatPatientId,
+	patientname,
 	hasPassed,
 } from '../../services/utilities';
 import { toggleProfile } from '../../actions/user';
@@ -122,9 +122,7 @@ const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 											<a
 												className="cursor"
 												onClick={() => showProfile(appointment.patient)}>
-												{`${appointment.patient.surname} ${
-													appointment.patient.other_names
-												} (${formatPatientId(appointment.patient?.id)})`}
+												{patientname(appointment.patient, true)}
 											</a>
 										</Tooltip>
 									</p>

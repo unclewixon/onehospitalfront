@@ -6,7 +6,7 @@ import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import { withRouter } from 'react-router-dom';
 
 import waiting from '../../assets/images/waiting.gif';
-import { request, formatPatientId } from '../../services/utilities';
+import { request, patientname } from '../../services/utilities';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { searchAPI } from '../../services/constants';
 
@@ -17,10 +17,7 @@ const OutPatientAppointmentForm = ({ closeModal, addAppointment }) => {
 	const values = watch();
 
 	const getOptionValues = option => option.id;
-	const getOptionLabels = option =>
-		`${option.other_names} ${option.surname} (${formatPatientId(option.id)} ${
-			option.legacy_patient_id ? `[${option.legacy_patient_id}]` : ''
-		})`;
+	const getOptionLabels = option => patientname(option, true);
 
 	const getOptions = async q => {
 		if (!q || q.length < 1) {

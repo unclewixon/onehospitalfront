@@ -8,7 +8,7 @@ import DatePicker from 'antd/lib/date-picker';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 import { notifyError } from '../../services/notify';
-import { request, formatPatientId, itemRender } from '../../services/utilities';
+import { request, patientname, itemRender } from '../../services/utilities';
 import AssignBed from './AssignBed';
 import waiting from '../../assets/images/waiting.gif';
 import { startBlock, stopBlock } from '../../actions/redux-block';
@@ -72,10 +72,10 @@ const InPatientCare = ({ match }) => {
 	}, [loading, fetchPatients]);
 
 	const getOptionValues = option => option.id;
-	const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+	const getOptionLabels = option => patientname(option, true);
 
 	const getOptions = async q => {
-		if (!q || q.length < 3) {
+		if (!q || q.length < 1) {
 			return [];
 		}
 
@@ -203,9 +203,7 @@ const InPatientCare = ({ match }) => {
 															<a
 																className="cursor"
 																onClick={() => showProfile(item.patient)}>
-																{`${item.patient_name} [${formatPatientId(
-																	item.patient_id
-																)}]`}
+																{patientname(item.patient, true)}
 															</a>
 														</Tooltip>
 													</p>

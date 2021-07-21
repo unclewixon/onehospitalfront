@@ -12,6 +12,7 @@ import {
 	getAge,
 	itemRender,
 	formatPatientId,
+	patientname,
 } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { loadLabour, loadLabourDetails } from '../../actions/patient';
@@ -31,10 +32,10 @@ const { RangePicker } = DatePicker;
 // ];
 
 const getOptionValues = option => option.id;
-const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+const getOptionLabels = option => patientname(option, true);
 
 const getOptions = async q => {
-	if (!q || q.length < 3) {
+	if (!q || q.length < 1) {
 		return [];
 	}
 
@@ -189,7 +190,7 @@ class Dashboard extends Component {
 											console.log(el);
 											return (
 												<tr key={i + 1}>
-													<td>{formatPatientId(el?.patient_id)}</td>
+													<td>{formatPatientId(el?.patient)}</td>
 
 													<td>{el.patient_name}</td>
 

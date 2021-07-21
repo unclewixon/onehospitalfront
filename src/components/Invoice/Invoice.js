@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import circleLogo from '../../assets/images/logo-big.png';
+import { patientname } from '../../services/utilities';
 
 const Invoice = ({ data }) => {
 	return (
@@ -46,7 +47,7 @@ const Invoice = ({ data }) => {
 										fontWeight: 'bold',
 										maxWidth: '100px',
 									}}>
-									{`${data?.patient?.surname} ${data?.patient?.other_names}`}
+									{patientname(data.patient)}
 								</div>
 							</td>
 							<td style={{ maxWidth: 150, textAlign: 'right' }}>

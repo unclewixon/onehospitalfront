@@ -13,7 +13,7 @@ import {
 import { request } from '../../services/utilities';
 import { searchAPI, genotype, bloodGroup } from '../../services/constants';
 import { loadPatientIVFForm } from '../../actions/patient';
-import { formatPatientId } from '../../services/utilities';
+import { patientname } from '../../services/utilities';
 
 const validate = values => {
 	const errors = {};
@@ -55,8 +55,7 @@ const HusbandLab = ({ page, onSubmit, handleSubmit, error, previousPage }) => {
 	};
 
 	const getOptionValues = option => option.id;
-	const getOptionLabels = option =>
-		`${option.other_names} ${option.surname} (${formatPatientId(option.id)})`;
+	const getOptionLabels = option => patientname(option, true);
 
 	const getOptions = async q => {
 		if (!q || q.length < 1) {

@@ -14,7 +14,7 @@ import {
 	confirmAction,
 	itemRender,
 	hasPassed,
-	formatPatientId,
+	patientname,
 	updateImmutable,
 	staffname,
 } from '../../services/utilities';
@@ -248,9 +248,7 @@ class AllAppointments extends Component {
 															<a
 																className="cursor"
 																onClick={() => this.showProfile(item.patient)}>
-																{`${item.patient.surname} ${
-																	item.patient.other_names
-																} (${formatPatientId(item.patient?.id)})`}
+																{patientname(item.patient, true)}
 															</a>
 														</Tooltip>
 													</p>

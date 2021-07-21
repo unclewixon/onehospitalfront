@@ -3,9 +3,8 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
 
-import { transactionsAPI } from '../../services/constants';
 import { request } from '../../services/utilities';
-import { loadTodayTransaction } from '../../actions/transaction';
+import { loadTransactions } from '../../actions/transaction';
 import TransactionTable from '../../components/Tables/TransactionTable';
 import TableLoading from '../../components/TableLoading';
 
@@ -23,19 +22,23 @@ class Dashboard extends Component {
 		try {
 			this.setState({ loading: true });
 			const today = moment().format('YYYY-MM-DD');
-			const url = `${transactionsAPI}?patient_id=&startDate=${today}&endDate=${today}&bill_source=&status=`;
+			const url = `transactions?patient_id=&startDate=${today}&endDate=${today}&bill_source=&status=`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
-			this.props.loadTodayTransaction(result.reverse());
+			this.props.loadTransactions(result);
 			this.setState({ loading: false, meta });
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
+	handlePrintClick = () => {
+		console.log('print');
+	};
+
 	render() {
 		const { loading } = this.state;
-		const transactions = this.props.todayTransaction;
+		const { transactions } = this.props;
 		return (
 			<>
 				<h6 className="element-header">
@@ -46,7 +49,12 @@ class Dashboard extends Component {
 						{loading ? (
 							<TableLoading />
 						) : (
-							<TransactionTable transactions={transactions} queue={true} />
+							<TransactionTable
+								transactions={transactions}
+								showActionBtns={true}
+								handlePrint={this.handlePrintClick}
+								queue={true}
+							/>
 						)}
 					</div>
 				</div>
@@ -57,10 +65,10 @@ class Dashboard extends Component {
 
 const mapStateToProps = state => {
 	return {
-		todayTransaction: state.transaction.todayTransaction,
+		transactions: state.transaction.transactions,
 	};
 };
 
 export default connect(mapStateToProps, {
-	loadTodayTransaction,
+	loadTransactions,
 })(Dashboard);

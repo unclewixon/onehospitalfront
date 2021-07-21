@@ -9,7 +9,7 @@ import waiting from '../../assets/images/waiting.gif';
 import {
 	staffname,
 	request,
-	formatPatientId,
+	patientname,
 	formatCurrency,
 } from '../../services/utilities';
 import { serviceAPI } from '../../services/constants';
@@ -103,10 +103,7 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 	}, [dispatch, fetchServicesByCategory, loaded]);
 
 	const getOptionValues = option => option.id;
-	const getOptionLabels = option =>
-		`${option.other_names} ${option.surname} (${formatPatientId(option.id)} ${
-			option.legacy_patient_id ? `[${option.legacy_patient_id}]` : ''
-		})`;
+	const getOptionLabels = option => patientname(option, true);
 
 	const getOptions = async q => {
 		if (!q || q.length < 1) {

@@ -27,7 +27,7 @@ const Radiology = ({ location, itemId, type, can_request = true }) => {
 		async page => {
 			try {
 				const block = type || '';
-				const url = `requests/${patient.id}/request/radiology?page=${page}&limit=10&startDate=${startDate}&endDate=${endDate}&item_id=${itemId}&type=${block}`;
+				const url = `requests/${patient.id}/request/scans?page=${page}&limit=10&startDate=${startDate}&endDate=${endDate}&item_id=${itemId}&type=${block}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setScans(result);

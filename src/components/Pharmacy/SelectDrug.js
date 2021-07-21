@@ -1,66 +1,134 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Select from 'react-select';
+import { useDispatch } from 'react-redux';
+import AsyncSelect from 'react-select/async';
+import { confirmAlert } from 'react-confirm-alert';
 
-import { groupBy, request } from '../../services/utilities';
+import { hasExpired, request } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
+import { startBlock, stopBlock } from '../../actions/redux-block';
 
-const SelectDrug = ({ onHide, setDrug, hmo }) => {
-	const [genericName, setGenericName] = useState(null);
-	const [drugItem, setDrugItem] = useState(null);
-	const [drugs, setDrugs] = useState([]);
+const SelectDrug = ({ onHide, setDrug, generic }) => {
+	const [loaded, setLoaded] = useState(false);
+	const [genericDrugs, setGenericDrugs] = useState([]);
+	const [selectedGeneric, setSelectedGeneric] = useState(null);
+	const [selectedDrug, setSelectedDrug] = useState(null);
 
-	const getServiceUnit = useCallback(async () => {
+	const dispatch = useDispatch();
+
+	const loadGenericDrugs = useCallback(async () => {
 		try {
-			const res = await request('inventory/categories', 'GET', true);
-			if (res && res.length > 0) {
-				const selectCat = res.find(cat => cat.name === 'Pharmacy');
-
-				const url = `inventory/stocks-by-category/${selectCat.id}/${hmo.id}`;
-				const rs = await request(url, 'GET', true);
-				setDrugs(rs);
-			}
-		} catch (error) {
-			notifyError('Error fetching Service Unit');
+			dispatch(startBlock());
+			const rs = await request('inventory/generics?limit=100', 'GET', true);
+			setGenericDrugs(rs.result);
+			dispatch(stopBlock());
+		} catch (e) {
+			dispatch(stopBlock());
+			notifyError('Error while fetching generic names');
 		}
-	}, [hmo]);
+	}, [dispatch]);
 
 	useEffect(() => {
-		getServiceUnit();
-	}, [getServiceUnit]);
-
-	// group drugs by generic name
-	const drugValues = groupBy(
-		drugs.filter(drug => drug.generic_name !== null),
-		'generic_name'
-	);
-
-	// list of drugs by generic name
-	const drugObj = Object.keys(drugValues).map(name => ({
-		generic_name: name,
-		drugs: drugValues[name],
-	}));
-
-	// list generic names
-	const genericNames = Object.keys(drugValues).map(name => ({
-		value: name,
-		label: name,
-	}));
-
-	// list of drugs
-	const genericItem = drugObj.find(
-		drug => genericName && drug.generic_name === genericName
-	);
-
-	const drugList = genericItem
-		? genericItem.drugs.map(drug => ({
-				value: drug.id,
-				label: drug.name,
-		  }))
-		: [];
+		if (!loaded) {
+			if (generic) {
+				setSelectedGeneric(generic);
+			}
+			loadGenericDrugs();
+			setLoaded(true);
+		}
+	}, [generic, loadGenericDrugs, loaded]);
 
 	const selectDrug = () => {
-		setDrug(drugItem);
+		setDrug(selectedGeneric, selectedDrug);
 		onHide();
+	};
+
+	const onDrugExpired = (drug, bypass) => {
+		const expired =
+			drug.batches.length > 0
+				? hasExpired(drug.batches[0].expirationDate)
+				: true;
+		if (!expired || bypass) {
+			setSelectedDrug({
+				...drug,
+				qty: drug.batches.reduce((total, item) => total + item.quantity, 0),
+			});
+			setSelectedGeneric(drug.generic);
+		} else {
+			confirmAlert({
+				customUI: ({ onClose }) => {
+					return (
+						<div className="custom-ui text-center">
+							<h3 className="text-danger">Expiration</h3>
+							<p>{`${drug.name} has expired`}</p>
+							<div>
+								<button
+									className="btn btn-primary"
+									style={{ margin: 10 }}
+									onClick={onClose}>
+									Okay
+								</button>
+							</div>
+						</div>
+					);
+				},
+			});
+		}
+	};
+
+	const onDrugSelection = drug => {
+		if (
+			drug.batches.length === 0 ||
+			(drug.batches.length > 0 &&
+				drug.batches.reduce((total, item) => total + item.quantity, 0) === 0)
+		) {
+			confirmAlert({
+				customUI: ({ onClose }) => {
+					const continueBtn = async () => {
+						onDrugExpired(drug, true);
+						onClose();
+					};
+
+					const changeBtn = async () => {
+						setSelectedDrug(null);
+						onClose();
+					};
+
+					return (
+						<div className="custom-ui text-center">
+							<h3 className="text-danger">Stock</h3>
+							<p>{`${drug.name} is out of stock`}</p>
+							<div>
+								<button
+									className="btn btn-primary"
+									style={{ margin: '10px' }}
+									onClick={changeBtn}>
+									Change
+								</button>
+								<button
+									className="btn btn-secondary"
+									style={{ margin: '10px' }}
+									onClick={continueBtn}>
+									Continue
+								</button>
+							</div>
+						</div>
+					);
+				},
+			});
+		} else {
+			onDrugExpired(drug, false);
+		}
+	};
+
+	const getDrugOptions = async q => {
+		if (!q || q.length < 1) {
+			return [];
+		}
+
+		const url = `inventory/drugs?q=${q}&generic_id=${selectedGeneric.id || ''}`;
+		const res = await request(url, 'GET', true);
+		return res.result || [];
 	};
 
 	return (
@@ -70,55 +138,62 @@ const SelectDrug = ({ onHide, setDrug, hmo }) => {
 			style={{ width: '300px' }}>
 			<div className="modal-centered" role="document">
 				<div className="modal-content text-center">
-					<button
-						aria-label="Close"
-						className="close"
-						type="button"
-						onClick={() => onHide()}>
-						<span className="os-icon os-icon-close"></span>
+					<button className="close" type="button" onClick={() => onHide()}>
+						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
 						<div className="form-block">
-							<div className="row">
-								<div className="form-group col-sm-12">
-									<label>Drug Generic Name</label>
-									<Select
-										placeholder="--select generic name--"
-										defaultValue=""
-										onChange={e => {
-											setGenericName(e.value);
-											setDrugItem(null);
-										}}
-										isSearchable={true}
-										options={genericNames}
-										name="generic_name"
-									/>
+							{!generic && (
+								<div className="row">
+									<div className="form-group col-sm-12">
+										<label>Drug Generic Name</label>
+										<Select
+											isClearable
+											placeholder="Select generic name"
+											defaultValue
+											getOptionValue={option => option.id}
+											getOptionLabel={option => option.name}
+											onChange={e => {
+												setSelectedGeneric(e);
+											}}
+											value={selectedGeneric}
+											isSearchable={true}
+											options={genericDrugs}
+											name="generic_name"
+										/>
+									</div>
 								</div>
-							</div>
+							)}
 							<div className="form-group col-sm-12 relative">
 								<label>Drug Name</label>
-								{drugItem && (
+								{selectedDrug && (
 									<div className="posit-top">
 										<div className="row">
 											<div className="col-sm-12">
 												<span
 													className={`badge badge-${
-														drugItem.quantity > 0 ? 'info' : 'danger'
-													} text-white`}>{`Stock Level: ${drugItem.quantity}; Base Price: ₦${drugItem.sales_price}`}</span>
+														selectedDrug.qty > 0 ? 'info' : 'danger'
+													} text-white`}>{`Stock Level: ${selectedDrug.qty}; Base Price: ₦${selectedDrug.basePrice}`}</span>
 											</div>
 										</div>
 									</div>
 								)}
-								<Select
-									placeholder="--select drug name--"
-									options={drugList}
-									defaultValue=""
-									isSearchable={true}
+								<AsyncSelect
+									isClearable
+									getOptionValue={option => option.id}
+									getOptionLabel={option => option.name}
+									defaultOptions
+									name="drugId"
+									loadOptions={getDrugOptions}
+									value={selectedDrug}
 									onChange={e => {
-										const drug = drugs.find(drug => drug.id === e.value);
-										setDrugItem(drug);
+										if (e) {
+											onDrugSelection(e);
+										} else {
+											setSelectedDrug(null);
+										}
 									}}
-									name="drug_name"
+									placeholder="select a drug"
 								/>
 							</div>
 							<div className="row">

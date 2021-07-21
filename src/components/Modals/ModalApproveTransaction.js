@@ -20,7 +20,7 @@ import {
 	showInvoiceToPrint,
 	showReceiptToPrint,
 } from '../../actions/paypoint';
-import { loadTransaction } from '../../actions/transaction';
+import { loadTransactions } from '../../actions/transaction';
 
 const validate = values => {
 	const errors = {};
@@ -98,7 +98,7 @@ class ModalApproveTransaction extends Component {
 					this.props.transactions,
 					rs.transaction
 				);
-				this.props.loadTransaction(updatedArr);
+				this.props.loadTransactions(updatedArr);
 				this.props.getAllPendingTransactions(newTransactions);
 				this.setState({ submitting: false });
 				this.props.getTransactionData(rs.transaction);
@@ -345,7 +345,7 @@ const mapStateToProps = (state, ownProps) => {
 		approve_hmo_transaction: state.general.approve_hmo_transaction,
 		items,
 		pendingTransactions: state.paypoint.pendingTransactions,
-		transactions: state.transaction.reviewTransaction,
+		transactions: state.transaction.transactions,
 		showReceipt: state.paypoint.showReceipt,
 		showInvoice: state.paypoint.showInvoice,
 		activeData: state.paypoint.transactionData,
@@ -360,5 +360,5 @@ export default connect(mapStateToProps, {
 	getTransactionData,
 	showReceiptToPrint,
 	showInvoiceToPrint,
-	loadTransaction,
+	loadTransactions,
 })(ModalApproveTransaction);

@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 
 import { searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
-import { request, itemRender } from '../../services/utilities';
+import { request, itemRender, patientname } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import HmoTable from '../../components/HMO/HmoTable';
 import { startBlock, stopBlock } from '../../actions/redux-block';
@@ -23,7 +23,7 @@ const status = [
 ];
 
 const getOptionValues = option => option.id;
-const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+const getOptionLabels = option => patientname(option, true);
 
 const getOptions = async q => {
 	if (!q || q.length < 1) {
@@ -115,7 +115,7 @@ class AllTransaction extends Component {
 		this.setState({ ...this.state, filtering: true });
 		console.log(this.state.patient_id);
 		console.log(this.state.hmo_id);
-		// if (this.state.query < 3) {
+		// if (this.state.query < 1) {
 		// 	this.setState({ ...this.state, patient_id: '' });
 		// 	console.log(this.state.patient_id);
 		// }

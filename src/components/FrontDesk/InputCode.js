@@ -21,7 +21,7 @@ class InputCode extends Component {
 
 	asignCode = async () => {
 		try {
-			const { transaction, transactions, loadTransaction } = this.props;
+			const { transaction, transactions, loadTransactions } = this.props;
 			const { hmo_approval_code } = this.state;
 			this.setState({ submitting: true });
 			transaction.hmo_approval_code = hmo_approval_code;
@@ -30,7 +30,7 @@ class InputCode extends Component {
 
 			if (rs.success) {
 				const uptdTransactions = updateImmutable(transactions, transaction);
-				loadTransaction(uptdTransactions);
+				loadTransactions(uptdTransactions);
 				notifySuccess(`Hmo code ${hmo_approval_code} added`);
 				this.setState({ submitting: false });
 				this.props.doHide();

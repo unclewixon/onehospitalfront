@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
@@ -11,7 +11,7 @@ import waiting from '../../assets/images/waiting.gif';
 import { searchAPI } from '../../services/constants';
 import TransactionTable from '../../components/Tables/TransactionTable';
 import { socket } from '../../services/constants';
-import { request, itemRender } from '../../services/utilities';
+import { request, itemRender, patientname } from '../../services/utilities';
 import Reciept from './../../components/Invoice/Reciept';
 import Invoice from './../../components/Invoice/Invoice';
 import {
@@ -28,6 +28,7 @@ const { RangePicker } = DatePicker;
 
 const PaypointQueue = () => {
 	const [show, setShow] = useState(false);
+	const [loaded, setLoaded] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [target, setTarget] = useState(null);
 	const [listenning, setListenning] = useState(false);
@@ -52,10 +53,10 @@ const PaypointQueue = () => {
 	const showReceipt = useSelector(({ paypoint }) => paypoint.showReceipt);
 
 	const getOptionValues = option => option.id;
-	const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+	const getOptionLabels = option => patientname(option, true);
 
 	const getOptions = async q => {
-		if (!q || q.length < 3) {
+		if (!q || q.length < 1) {
 			return [];
 		}
 
@@ -64,28 +65,31 @@ const PaypointQueue = () => {
 		return res;
 	};
 
-	const init = async page => {
-		try {
-			setLoading(true);
-			const p = page || 1;
-			const url = `transactions/pending?page=${p}&limit=24&patient_id=${patient ||
-				''}&startDate=${startDate}&endDate=${endDate}`;
-			const rs = await request(url, 'GET', true);
-			const { result, ...meta } = rs;
-			setMeta(meta);
-			window.scrollTo({ top: 0, behavior: 'smooth' });
-			const arr = [...result];
-			dispatch(getAllPendingTransactions(arr));
-			setFiltering(false);
-			setLoading(false);
-			dispatch(stopBlock());
-		} catch (e) {
-			dispatch(stopBlock());
-			notifyError(e.message || 'could not fetch transactions');
-			setFiltering(false);
-			setLoading(false);
-		}
-	};
+	const init = useCallback(
+		async page => {
+			try {
+				setLoading(true);
+				const p = page || 1;
+				const url = `transactions/pending?page=${p}&limit=24&patient_id=${patient ||
+					''}&startDate=${startDate}&endDate=${endDate}`;
+				const rs = await request(url, 'GET', true);
+				const { result, ...meta } = rs;
+				setMeta(meta);
+				window.scrollTo({ top: 0, behavior: 'smooth' });
+				const arr = [...result];
+				dispatch(getAllPendingTransactions(arr));
+				setFiltering(false);
+				setLoading(false);
+				dispatch(stopBlock());
+			} catch (e) {
+				dispatch(stopBlock());
+				notifyError(e.message || 'could not fetch transactions');
+				setFiltering(false);
+				setLoading(false);
+			}
+		},
+		[dispatch, endDate, patient, startDate]
+	);
 
 	const onNavigatePage = nextPage => {
 		dispatch(startBlock());
@@ -104,7 +108,10 @@ const PaypointQueue = () => {
 	useEffect(() => {
 		if (!listenning || patient === '') {
 			// fetch transactions
-			init();
+			if (!loaded) {
+				init();
+				setLoaded(true);
+			}
 
 			// listen for new transactions
 			setListenning(true);
@@ -119,16 +126,7 @@ const PaypointQueue = () => {
 				}
 			});
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [dispatch, listenning, patient]);
-
-	const doApproveTransaction = item => {
-		this.props.approveTransaction(item);
-	};
-
-	const doApplyVoucher = item => {
-		this.props.applyVoucher(item);
-	};
+	}, [dispatch, init, listenning, patient, transactions, loaded]);
 
 	const handlePrintClick = (event, data) => {
 		setShow(!show);
@@ -198,8 +196,6 @@ const PaypointQueue = () => {
 								<TransactionTable
 									transactions={transactions}
 									showActionBtns={true}
-									approveTransaction={doApproveTransaction}
-									doApplyVoucher={doApplyVoucher}
 									handlePrint={handlePrintClick}
 									queue={true}
 								/>

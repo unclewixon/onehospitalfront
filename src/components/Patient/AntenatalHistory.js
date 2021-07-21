@@ -13,7 +13,7 @@ import { loadAntenatal } from '../../actions/patient';
 import { viewAntenatalDetail } from '../../actions/general';
 import { patientAPI } from '../../services/constants';
 import { startBlock, stopBlock } from '../../actions/redux-block';
-import { request, itemRender } from '../../services/utilities';
+import { request, itemRender, patientname } from '../../services/utilities';
 import TableLoading from '../TableLoading';
 
 const { RangePicker } = DatePicker;
@@ -135,10 +135,7 @@ class AntenatalHistory extends Component {
 											return (
 												<tr key={i}>
 													<td>{moment(el.createdAt).format('DD-MM-YYYY')}</td>
-													<td>
-														{el.patient.surname || ''}{' '}
-														{el.patient.other_names || ''}
-													</td>
+													<td>{patientname(el.patient, true)}</td>
 													<td>{el.l_m_p}</td>
 													<td>{el.e_o_d}</td>
 													<td>{el.bookingPeriod}</td>

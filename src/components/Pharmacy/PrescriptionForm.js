@@ -13,7 +13,7 @@ import { ReactComponent as EditIcon } from '../../assets/svg-icons/edit.svg';
 import { ReactComponent as TrashIcon } from '../../assets/svg-icons/trash.svg';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { diagnosisAPI, searchAPI } from '../../services/constants';
-import { request, hasExpired, formatPatientId } from '../../services/utilities';
+import { request, hasExpired, patientname } from '../../services/utilities';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const defaultValues = {
@@ -27,8 +27,6 @@ const defaultValues = {
 	regimen_instruction: '',
 	diagnosis: [],
 };
-
-const category_id = 1;
 
 const PrescriptionForm = ({
 	patient,
@@ -48,14 +46,14 @@ const PrescriptionForm = ({
 	const [editing, setEditing] = useState(false);
 	const [prescription, setPrescription] = useState(false);
 	const [chosenPatient, setChosenPatient] = useState(null);
-	const [diagnosisType, setDiagnosisType] = useState('10');
+	const [diagnosisType, setDiagnosisType] = useState('icd10');
 	const [selectedDrug, setSelectedDrug] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [regimenNote, setRegimenNote] = useState('');
 
+	const [generic, setGeneric] = useState(null);
 	const [diagnoses, setDiagnoses] = useState([]);
 	const [frequencyType, setFrequencyType] = useState(null);
-	const [chosenDrug, setChosenDrug] = useState(null);
 
 	const dispatch = useDispatch();
 
@@ -94,7 +92,6 @@ const PrescriptionForm = ({
 			dispatch(stopBlock());
 		} catch (e) {
 			dispatch(stopBlock());
-			setSubmitting(false);
 			notifyError('Error while fetching generic names');
 		}
 	}, [dispatch]);
@@ -111,15 +108,18 @@ const PrescriptionForm = ({
 	}, [chosenPatient, loadGenericDrugs, loaded, loading, patient]);
 
 	const onFormSubmit = (data, e) => {
-		const newDrug = [...drugsSelected, { drug: selectedDrug, ...data }];
+		const newDrug = [
+			...drugsSelected,
+			{ drug: selectedDrug, generic, ftype: frequencyType, ...data },
+		];
 		setDrugsSelected(newDrug);
 		setEditing(false);
 		setSelectedDrug(null);
 		reset(defaultValues);
 
 		setDiagnoses([]);
+		setGeneric(null);
 		setFrequencyType(null);
-		setChosenDrug(null);
 	};
 
 	const onTrash = index => {
@@ -134,9 +134,9 @@ const PrescriptionForm = ({
 			const [key, value] = req;
 			setValue(key, value);
 		}
-		setFrequencyType(item.frequencyType);
+		setFrequencyType(item.ftype);
 		setSelectedDrug(item.drug);
-		setChosenDrug(item.drug);
+		setGeneric(item.generic);
 		setEditing(true);
 	};
 
@@ -161,12 +161,9 @@ const PrescriptionForm = ({
 
 			const data = drugsSelected.map((item, i) => ({
 				id: i + 1,
-				drug_generic_name: item.drug.generic_name,
-				drug_name: item.drug.name,
-				drug_cost: item.drug.hmoPrice,
-				drug_hmo_id: chosenPatient.hmo.id,
-				drug_hmo_cost: item.drug.hmoPrice,
-				drug_id: item.drug.id,
+				generic: item.generic,
+				drug: item.drug,
+				hmo_id: chosenPatient.hmo.id,
 				dose_quantity: item.quantity,
 				refills: item.refills && item.refills !== '' ? item.refills : 0,
 				frequency: item.frequency,
@@ -214,9 +211,19 @@ const PrescriptionForm = ({
 		setValue(name, value);
 	};
 
-	const onDrugSelection = drug => {
-		const expired = hasExpired(drug?.expiry_date);
-		if (expired) {
+	const onDrugExpired = (drug, bypass) => {
+		const expired =
+			drug.batches.length > 0
+				? hasExpired(drug.batches[0].expirationDate)
+				: true;
+		if (!expired || bypass) {
+			setValue('drugId', drug.id);
+			setSelectedDrug({
+				...drug,
+				qty: drug.batches.reduce((total, item) => total + item.quantity, 0),
+			});
+			setGeneric(drug.generic);
+		} else {
 			confirmAlert({
 				customUI: ({ onClose }) => {
 					return (
@@ -235,9 +242,51 @@ const PrescriptionForm = ({
 					);
 				},
 			});
+		}
+	};
+
+	const onDrugSelection = drug => {
+		if (
+			drug.batches.length === 0 ||
+			(drug.batches.length > 0 &&
+				drug.batches.reduce((total, item) => total + item.quantity, 0) === 0)
+		) {
+			confirmAlert({
+				customUI: ({ onClose }) => {
+					const continueBtn = async () => {
+						onDrugExpired(drug, true);
+						onClose();
+					};
+
+					const changeBtn = async () => {
+						setSelectedDrug(null);
+						onClose();
+					};
+
+					return (
+						<div className="custom-ui text-center">
+							<h3 className="text-danger">Stock</h3>
+							<p>{`${drug.name} is out of stock`}</p>
+							<div>
+								<button
+									className="btn btn-primary"
+									style={{ margin: '10px' }}
+									onClick={changeBtn}>
+									Change
+								</button>
+								<button
+									className="btn btn-secondary"
+									style={{ margin: '10px' }}
+									onClick={continueBtn}>
+									Continue
+								</button>
+							</div>
+						</div>
+					);
+				},
+			});
 		} else {
-			setValue('drugId', drug.id);
-			setSelectedDrug(drug);
+			onDrugExpired(drug, false);
 		}
 	};
 
@@ -246,13 +295,9 @@ const PrescriptionForm = ({
 			return [];
 		}
 
-		if (!chosenPatient?.hmo) {
-			return [];
-		}
-
-		const url = `inventory/stocks-by-category/${category_id}?q=${q}`;
+		const url = `inventory/drugs?q=${q}&generic_id=${generic?.id || ''}`;
 		const res = await request(url, 'GET', true);
-		return res || [];
+		return res.result || [];
 	};
 
 	return (
@@ -266,11 +311,7 @@ const PrescriptionForm = ({
 						<AsyncSelect
 							isClearable
 							getOptionValue={option => option.id}
-							getOptionLabel={option =>
-								`${option.other_names} ${option.surname} (${formatPatientId(
-									option.id
-								)})`
-							}
+							getOptionLabel={option => patientname(option, true)}
 							defaultOptions
 							name="patient"
 							loadOptions={getPatients}
@@ -284,7 +325,7 @@ const PrescriptionForm = ({
 								// reset drug
 								setValue('drugId', '');
 								setSelectedDrug(null);
-								setChosenDrug(null);
+								setGeneric(null);
 							}}
 							placeholder="Search patients"
 						/>
@@ -294,13 +335,15 @@ const PrescriptionForm = ({
 					<div className="form-group col-sm-6">
 						<label>Drug Generic Name</label>
 						<Select
-							placeholder="--select generic name--"
+							isClearable
+							placeholder="Select generic name"
 							defaultValue
 							getOptionValue={option => option.id}
 							getOptionLabel={option => option.name}
 							onChange={e => {
-								console.log(e);
+								setGeneric(e);
 							}}
+							value={generic}
 							isSearchable={true}
 							options={genericDrugs}
 							name="generic_name"
@@ -314,32 +357,35 @@ const PrescriptionForm = ({
 									<div className="col-sm-12">
 										<span
 											className={`badge badge-${
-												selectedDrug.quantity > 0 ? 'info' : 'danger'
-											} text-white`}>{`Stock Level: ${selectedDrug.quantity}; Base Price: ₦${selectedDrug.sales_price}`}</span>
+												selectedDrug.qty > 0 ? 'info' : 'danger'
+											} text-white`}>{`Stock Level: ${selectedDrug.qty}; Base Price: ₦${selectedDrug.basePrice}`}</span>
 									</div>
 								</div>
 							</div>
 						)}
 						<AsyncSelect
+							isClearable
 							getOptionValue={option => option.id}
-							getOptionLabel={option =>
-								`${option.name} (${option.generic_name})`
-							}
+							getOptionLabel={option => option.name}
 							defaultOptions
 							ref={register({ name: 'drugId', required: true })}
 							name="drugId"
 							loadOptions={getDrugOptions}
-							value={chosenDrug}
+							value={selectedDrug}
 							onChange={e => {
-								onDrugSelection(e);
-								setChosenDrug(e);
+								if (e) {
+									onDrugSelection(e);
+								} else {
+									setValue('drugId', '');
+									setSelectedDrug(null);
+								}
 							}}
 							placeholder="select a drug"
 						/>
 					</div>
 				</div>
 				<div className="row">
-					<div className="form-group col-sm-6">
+					<div className="form-group col-sm-4">
 						<label>Dose Quantity</label>
 						<input
 							type="text"
@@ -350,32 +396,7 @@ const PrescriptionForm = ({
 							onChange={onHandleInputChange}
 						/>
 					</div>
-					<div className="form-group col-sm-6">
-						<div className="refills">
-							<label className="form-check-label">
-								<input
-									className="form-check-input mt-0"
-									name="urgent"
-									type="checkbox"
-									onClick={onRefillableClick}
-								/>{' '}
-								Refillable
-							</label>
-						</div>
-						<label>Number of refills</label>
-						<input
-							type="number"
-							className="form-control"
-							placeholder="Number of refills"
-							ref={register({ name: 'refills' })}
-							name="refills"
-							disabled={!refillable}
-							onChange={onHandleInputChange}
-						/>
-					</div>
-				</div>
-				<div className="row">
-					<div className="form-group col-sm-6">
+					<div className="form-group col-sm-4">
 						<label>Frequency</label>
 						<input
 							type="number"
@@ -386,7 +407,7 @@ const PrescriptionForm = ({
 							onChange={onHandleInputChange}
 						/>
 					</div>
-					<div className="form-group col-sm-6">
+					<div className="form-group col-sm-4">
 						<label>Frequency Type</label>
 						<Select
 							placeholder="Frequency type"
@@ -414,7 +435,7 @@ const PrescriptionForm = ({
 					</div>
 				</div>
 				<div className="row">
-					<div className="form-group col-sm-6">
+					<div className="form-group col-sm-4">
 						<label>Duration</label>
 						<input
 							type="number"
@@ -425,7 +446,30 @@ const PrescriptionForm = ({
 							onChange={onHandleInputChange}
 						/>
 					</div>
-					<div className="form-group col-sm-6">
+					<div className="form-group col-sm-4">
+						<div className="refills">
+							<label className="form-check-label">
+								<input
+									className="form-check-input mt-0"
+									name="urgent"
+									type="checkbox"
+									onClick={onRefillableClick}
+								/>{' '}
+								Refillable
+							</label>
+						</div>
+						<label>Number of refills</label>
+						<input
+							type="number"
+							className="form-control"
+							placeholder="Number of refills"
+							ref={register({ name: 'refills' })}
+							name="refills"
+							disabled={!refillable}
+							onChange={onHandleInputChange}
+						/>
+					</div>
+					<div className="form-group col-sm-4">
 						<label>Note</label>
 						<input
 							type="text"
@@ -445,16 +489,16 @@ const PrescriptionForm = ({
 									<label>
 										<input
 											type="radio"
-											checked={diagnosisType === '10'}
-											onChange={() => setDiagnosisType('10')}
+											checked={diagnosisType === 'icd10'}
+											onChange={() => setDiagnosisType('icd10')}
 										/>{' '}
 										ICD10
 									</label>
 									<label className="ml-2">
 										<input
 											type="radio"
-											checked={diagnosisType === '2'}
-											onChange={() => setDiagnosisType('2')}
+											checked={diagnosisType === 'icpc-2'}
+											onChange={() => setDiagnosisType('icpc-2')}
 										/>{' '}
 										ICPC-2
 									</label>
@@ -549,20 +593,15 @@ const PrescriptionForm = ({
 						{drugsSelected.map((item, i) => {
 							return (
 								<tr key={i}>
-									<td>{item.drug.generic_name}</td>
-									<td>{item.drug.name}</td>
+									<td>{item.generic?.name || '--'}</td>
+									<td>{item.drug?.name || '--'}</td>
 									<td>
 										<div className="badge badge-dark">{`${item.quantity} - ${item.frequency}x ${item.frequencyType} for ${item.duration} days`}</div>
 									</td>
 									<td>
 										{item.diagnosis && item.diagnosis.length > 0
 											? item.diagnosis
-													.map(
-														d =>
-															`Icd${d.diagnosisType}: ${
-																d.description
-															} (${d.icd10Code || d.procedureCode})`
-													)
+													.map(d => `${d.type}: ${d.description} (${d.code})`)
 													.join(', ')
 											: '-'}
 									</td>

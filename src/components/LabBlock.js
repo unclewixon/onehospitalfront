@@ -173,7 +173,7 @@ class LabBlock extends Component {
 			<TableLoading />
 		) : (
 			<>
-				<table id="table" className="table table-theme v-middle table-hover">
+				<table className="table table-striped">
 					<thead>
 						<tr>
 							<th>Request Date</th>
@@ -304,7 +304,7 @@ class LabBlock extends Component {
 															</a>
 														</Tooltip>
 													)}
-													{lab.item.approved === 1 && (
+													{lab.status === 1 && (
 														<Tooltip title="Print Lab Test">
 															<a
 																className="info"

@@ -4,10 +4,7 @@ import Pagination from 'antd/lib/pagination';
 
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { request, itemRender } from '../../services/utilities';
-import {
-	loadTodayTransaction,
-	deleteTransaction,
-} from '../../actions/transaction';
+import { loadTransactions } from '../../actions/transaction';
 import TransactionTable from '../../components/Tables/TransactionTable';
 import TableLoading from '../../components/TableLoading';
 
@@ -25,12 +22,15 @@ class PayPoint extends Component {
 		try {
 			const p = page || 1;
 			this.setState({ loading: true });
-			const url = `transactions?page=${p}&limit=15&patient_id=&startDate=&endDate=&status=&hmo_id=&bill_source=pharmacy`;
+			const url = `transactions?page=${p}&limit=15&patient_id=&startDate=&endDate=&status=&hmo_id=&bill_source=drugs`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
-			const arr = [...result];
-			this.props.loadTodayTransaction(arr);
-			this.setState({ loading: false, filtering: false, meta });
+			this.props.loadTransactions(result);
+			this.setState({
+				loading: false,
+				filtering: false,
+				meta,
+			});
 			this.props.stopBlock();
 		} catch (error) {
 			console.log(error);
@@ -43,9 +43,13 @@ class PayPoint extends Component {
 		this.fetchTransaction(nextPage);
 	};
 
+	handlePrintClick = () => {
+		console.log('print');
+	};
+
 	render() {
 		const { loading, meta } = this.state;
-		const transactions = this.props.todayTransaction;
+		const { transactions } = this.props;
 		return (
 			<div className="col-sm-12">
 				<div className="element-box m-0 p-3">
@@ -56,9 +60,9 @@ class PayPoint extends Component {
 							<div className="table-responsive">
 								<TransactionTable
 									transactions={transactions}
-									loading={loading}
-									queue={true}
 									showActionBtns={true}
+									handlePrint={this.handlePrintClick}
+									queue={true}
 								/>
 							</div>
 							{meta && (
@@ -83,13 +87,12 @@ class PayPoint extends Component {
 
 const mapStateToProps = state => {
 	return {
-		todayTransaction: state.transaction.todayTransaction,
+		transactions: state.transaction.transactions,
 	};
 };
 
 export default connect(mapStateToProps, {
-	loadTodayTransaction,
-	deleteTransaction,
+	loadTransactions,
 	startBlock,
 	stopBlock,
 })(PayPoint);

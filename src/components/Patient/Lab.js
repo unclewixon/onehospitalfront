@@ -28,7 +28,7 @@ const Lab = ({ location, itemId, type, can_request = true }) => {
 			try {
 				const p = page || 1;
 				const block = type || '';
-				const url = `requests/${patient.id}/request/lab?page=${p}&limit=10&startDate=${startDate}&endDate=${endDate}&item_id=${itemId}&type=${block}`;
+				const url = `requests/${patient.id}/request/labs?page=${p}&limit=10&startDate=${startDate}&endDate=${endDate}&item_id=${itemId}&type=${block}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setLabs(result);
@@ -75,9 +75,7 @@ const Lab = ({ location, itemId, type, can_request = true }) => {
 						{!loaded ? (
 							<TableLoading />
 						) : (
-							<div
-								className="fixed-table-container"
-								style={{ paddingBottom: '0px' }}>
+							<div className="fixed-table-container pb-0">
 								<div className="fixed-table-body">
 									<LabBlock
 										loading={false}

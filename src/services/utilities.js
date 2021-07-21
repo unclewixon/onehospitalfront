@@ -249,14 +249,18 @@ export const renderTextInputGroup = ({ input, append, label, icon, type, id, pla
 	</div>
 );
 
-export const formatPatientId = id => {
-	let formattedId = String(id);
+export const formatPatientId = data => {
+	let formattedId = String(data.id);
 	let len = 7 - formattedId.length;
 	while (len >= 0) {
 		formattedId = '0' + formattedId;
 		len--;
 	}
-	return formattedId;
+	return `${formattedId} ${
+		data.legacy_patient_id && data.legacy_patient_id !== ''
+			? `[${data.legacy_patient_id}]`
+			: ''
+	}`;
 };
 
 export const renderMultiselect = ({
@@ -546,8 +550,12 @@ export const redirectToPage = (role, history) => {
 export const staffname = user =>
 	user ? `${user?.first_name} ${user?.last_name}` : '-';
 
-export const patientname = user =>
-	user ? `${user?.other_names} ${user?.surname}` : '--';
+export const patientname = (user, pid = false) =>
+	user
+		? `${user.other_names} ${user.surname} ${
+				pid ? `(${formatPatientId(user)})` : ''
+		  }`
+		: '--';
 
 export const formatNumber = n =>
 	parseFloat(n).toLocaleString(undefined, { maximumFractionDigits: 2 });

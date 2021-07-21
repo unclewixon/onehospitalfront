@@ -1,7 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 
-import { formatPatientId, parseAvatar } from '../../services/utilities';
+import {
+	formatPatientId,
+	parseAvatar,
+	patientname,
+} from '../../services/utilities';
 
 const ModalViewAppointment = ({ appointment, closeModal }) => {
 	return (
@@ -47,15 +51,14 @@ const ModalViewAppointment = ({ appointment, closeModal }) => {
 									<div className="profile-tile pb-0">
 										<div className="profile-tile-meta">
 											<h6 className="post-title">
-												{appointment?.patient?.surname}{' '}
-												{appointment?.patient?.other_names}
+												{patientname(appointment.patient)}
 											</h6>
 											<div className="row p-sm-2  flex-nowrap">
 												<ul className="col-md-6">
 													<li>
 														Patient ID:{' '}
 														<strong>
-															{formatPatientId(appointment?.patient?.id)}
+															{formatPatientId(appointment?.patient)}
 														</strong>
 													</li>
 													<li>

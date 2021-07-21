@@ -12,7 +12,7 @@ import {
 	para,
 	previousPregnancies,
 } from '../services/constants';
-import { request } from '../services/utilities';
+import { request, patientname } from '../services/utilities';
 import { renderSelect, renderTextInput } from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
 
@@ -51,10 +51,10 @@ const validate = values => {
 const selector = formValueSelector('labour-mgt');
 
 const getOptionValues = option => option.id;
-const getOptionLabels = option => `${option.other_names} ${option.surname}`;
+const getOptionLabels = option => patientname(option, true);
 
 const getOptions = async q => {
-	if (!q || q.length < 3) {
+	if (!q || q.length < 1) {
 		return [];
 	}
 
@@ -120,15 +120,10 @@ class NewLabour extends Component {
 	};
 	patientSet = pat => {
 		// setValue('patient_id', pat.id);
-		console.log(pat);
-		let surname = pat.surname ? pat.surname : '';
-		let other_names = pat.other_names ? pat.other_names : '';
-		let name = surname + ' ' + other_names;
 
-		this.setPatient(pat.id, name);
+		this.setPatient(pat.id, patientname(pat));
 		// document.getElementById('patient').value = name;
 
-		this.patient.current.value = name;
 		this.setState({ patients: [], patientError: false, query: '' });
 	};
 

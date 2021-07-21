@@ -5,7 +5,7 @@ import Pagination from 'antd/lib/pagination';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 import waiting from '../../assets/images/waiting.gif';
-import { request, itemRender } from '../../services/utilities';
+import { request, itemRender, patientname } from '../../services/utilities';
 import { searchAPI } from '../../services/constants';
 import { notifyError } from '../../services/notify';
 import ProcedureBlock from '../../components/ProcedureBlock';
@@ -88,7 +88,7 @@ class AllRequest extends Component {
 	};
 
 	getPatients = async q => {
-		if (!q || q.length < 3) {
+		if (!q || q.length < 1) {
 			return [];
 		}
 
@@ -112,9 +112,7 @@ class AllRequest extends Component {
 							<AsyncSelect
 								isClearable
 								getOptionValue={option => option.id}
-								getOptionLabel={option =>
-									`${option.other_names} ${option.surname}`
-								}
+								getOptionLabel={option => patientname(option, true)}
 								defaultOptions
 								name="patient"
 								ref={this.patient}
