@@ -33,18 +33,15 @@ class ProcedureBlock extends Component {
 		this.props.toggleProfile(true, info);
 	};
 
-	canceProcedureTest = async data => {
+	cancelProcedureTest = async data => {
 		try {
 			const { procedures } = this.props;
 			this.props.startBlock();
-			const url = `requests/${data.item_id}/delete-request?type=procedure&request_id=${data.id}`;
+			const url = `requests/${data.id}/delete-request?type=procedure`;
 			const rs = await request(url, 'DELETE', true);
 			const procedure_request = procedures.find(l => l.id === data.id);
-			const newItem = {
-				...procedure_request,
-				...rs.data,
-				items: rs.data.items,
-			};
+			const item = { ...data.item, ...rs.data };
+			const newItem = { ...procedure_request, item };
 			const newItems = updateImmutable(procedures, newItem);
 			this.props.updateProcedure(newItems);
 			notifySuccess('procedure request cancelled!');
@@ -58,7 +55,7 @@ class ProcedureBlock extends Component {
 
 	cancelProcedure = procedure => {
 		confirmAction(
-			this.canceProcedureTest,
+			this.cancelProcedureTest,
 			procedure,
 			'Do you want to cancel this procedure?',
 			'Are you sure?'
@@ -75,17 +72,18 @@ class ProcedureBlock extends Component {
 		this.setState({ showRSModal: false, procedure: null });
 	};
 
-	startProcedureTest = async id => {
+	startProcedureTest = async data => {
 		try {
 			const { procedures } = this.props;
 			this.props.startBlock();
-			const url = `requests/${id}/start`;
-			const data = {
+			const url = `requests/${data.id}/start`;
+			const datum = {
 				date: moment().format('DD-MM-YYYY HH:mm:ss'),
 			};
-			const rs = await request(url, 'PUT', true, data);
-			const procedure_request = procedures.find(l => l.id === id);
-			const newItem = { ...procedure_request, item: rs.data };
+			const rs = await request(url, 'PUT', true, datum);
+			const procedure_request = procedures.find(l => l.id === data.id);
+			const item = { ...data.item, ...rs.data };
+			const newItem = { ...procedure_request, item };
 			const newItems = updateImmutable(procedures, newItem);
 			this.props.updateProcedure(newItems);
 			this.props.stopBlock();
@@ -97,26 +95,27 @@ class ProcedureBlock extends Component {
 		}
 	};
 
-	startProcedure = id => {
+	startProcedure = procedure => {
 		confirmAction(
 			this.startProcedureTest,
-			id,
+			procedure,
 			'Do you want to start this procedure?',
 			'Are you sure?'
 		);
 	};
 
-	concludeProcedure = async id => {
+	concludeProcedure = async data => {
 		try {
 			const { procedures } = this.props;
 			this.props.startBlock();
-			const url = `requests/${id}/end`;
-			const data = {
+			const url = `requests/${data.id}/end`;
+			const datum = {
 				date: moment().format('DD-MM-YYYY HH:mm:ss'),
 			};
-			const rs = await request(url, 'PUT', true, data);
-			const procedure_request = procedures.find(l => l.id === id);
-			const newItem = { ...procedure_request, item: rs.data };
+			const rs = await request(url, 'PUT', true, datum);
+			const procedure_request = procedures.find(l => l.id === data.id);
+			const item = { ...data.item, ...rs.data };
+			const newItem = { ...procedure_request, item };
 			const newItems = updateImmutable(procedures, newItem);
 			this.props.updateProcedure(newItems);
 			this.props.stopBlock();
@@ -128,10 +127,10 @@ class ProcedureBlock extends Component {
 		}
 	};
 
-	finishProcedure = id => {
+	finishProcedure = procedure => {
 		confirmAction(
 			this.concludeProcedure,
-			id,
+			procedure,
 			'Do you want to end this procedure? You wont be able to make entries after closing this procedure.',
 			'Are you sure?'
 		);
@@ -268,14 +267,14 @@ class ProcedureBlock extends Component {
 									<td className="row-actions">
 										{data?.item?.scheduledDate && !data?.item?.startedDate && (
 											<a
-												onClick={() => this.startProcedure(data.item.id)}
+												onClick={() => this.startProcedure(data)}
 												className="btn btn-sm btn-primary px-2 py-1 text-white">
 												Start
 											</a>
 										)}
 										{data.item.startedDate && !data.item.finishedDate && (
 											<a
-												onClick={() => this.finishProcedure(data.item.id)}
+												onClick={() => this.finishProcedure(data)}
 												className="btn btn-sm btn-primary px-2 py-1 text-white">
 												Conclude
 											</a>
@@ -284,7 +283,7 @@ class ProcedureBlock extends Component {
 											<Tooltip title="Cancel Lab Test">
 												<a
 													className="danger"
-													onClick={() => this.cancelProcedure(data.item.id)}>
+													onClick={() => this.cancelProcedure(data)}>
 													<i className="os-icon os-icon-ui-15" />
 												</a>
 											</Tooltip>

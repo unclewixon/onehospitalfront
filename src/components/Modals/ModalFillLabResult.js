@@ -73,7 +73,8 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 			const url = `requests/${lab.id}/fill-result`;
 			const rs = await request(url, 'PATCH', true, data);
 			const lab_request = labs.find(l => l.id === lab.id);
-			const newItem = { ...lab_request, item: rs.data };
+			const item = { ...lab.item, ...rs.data };
+			const newItem = { ...lab_request, item };
 			const newLabs = updateImmutable(labs, newItem);
 			updateLab(newLabs);
 			notifySuccess('lab result filled!');

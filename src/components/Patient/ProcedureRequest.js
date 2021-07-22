@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
-import { searchAPI, serviceAPI, diagnosisAPI } from '../../services/constants';
+import { searchAPI, diagnosisAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request, patientname } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
@@ -108,7 +108,7 @@ const ProcedureRequest = ({ module, history, location }) => {
 			return [];
 		}
 
-		const url = `${serviceAPI}/category/procedure?q=${q}`;
+		const url = `services/category/procedure?q=${q}`;
 		const res = await request(url, 'GET', true);
 		return res;
 	};

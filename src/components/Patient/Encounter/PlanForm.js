@@ -15,11 +15,7 @@ import { notifyError } from '../../../services/notify';
 import { ReactComponent as PlusIcon } from '../../../assets/svg-icons/plus.svg';
 import { ReactComponent as EditIcon } from '../../../assets/svg-icons/edit.svg';
 import { ReactComponent as TrashIcon } from '../../../assets/svg-icons/trash.svg';
-import {
-	serviceAPI,
-	diagnosisAPI,
-	CK_TREATMENT_PLAN,
-} from '../../../services/constants';
+import { diagnosisAPI, CK_TREATMENT_PLAN } from '../../../services/constants';
 import SSRStorage from '../../../services/storage';
 
 const storage = new SSRStorage();
@@ -210,22 +206,6 @@ const PlanForm = ({ previous, next, patient }) => {
 		setEditing(true);
 	};
 
-	const getProcedures = async (hmoId, categoryId) => {
-		try {
-			dispatch(startBlock());
-
-			const url = `${serviceAPI}/category/${categoryId}?hmo_id=${hmoId}`;
-			const rs = await request(url, 'GET', true);
-			setServices(rs);
-
-			dispatch(stopBlock());
-		} catch (error) {
-			console.log(error);
-			notifyError('Error fetching procedures');
-			dispatch(stopBlock());
-		}
-	};
-
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option =>
 		`${option.description} (Icd${option.diagnosisType}: ${option.icd10Code ||
@@ -295,6 +275,16 @@ const PlanForm = ({ previous, next, patient }) => {
 			})
 		);
 		dispatch(next);
+	};
+
+	const getServices = async q => {
+		if (!q || q.length < 1) {
+			return [];
+		}
+
+		const url = `services/category/procedure?q=${q}`;
+		const res = await request(url, 'GET', true);
+		return res;
 	};
 
 	return (
@@ -622,21 +612,6 @@ const PlanForm = ({ previous, next, patient }) => {
 			<h5>Procedure</h5>
 			<div className="row">
 				<div className="form-group col-sm-6">
-					<label>Category</label>
-					<Select
-						name="category"
-						placeholder="Select Category"
-						options={categories}
-						value={category}
-						getOptionValue={option => option.id}
-						getOptionLabel={option => option.name}
-						onChange={e => {
-							setCategory(e);
-							getProcedures(patient.hmo.id, e.id);
-						}}
-					/>
-				</div>
-				<div className="form-group col-sm-6">
 					<label>Procedure</label>
 					<Select
 						name="service_request"
@@ -648,9 +623,7 @@ const PlanForm = ({ previous, next, patient }) => {
 						onChange={e => setService(e)}
 					/>
 				</div>
-			</div>
-			<div className="row">
-				<div className="form-group col-sm-12">
+				<div className="form-group col-sm-6">
 					<label>Primary diagnoses</label>
 					<AsyncSelect
 						required

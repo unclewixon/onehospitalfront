@@ -106,13 +106,13 @@ const PaypointQueue = () => {
 	};
 
 	useEffect(() => {
-		if (!listenning || patient === '') {
-			// fetch transactions
-			if (!loaded) {
-				init();
-				setLoaded(true);
-			}
+		// fetch transactions
+		if (!loaded) {
+			init();
+			setLoaded(true);
+		}
 
+		if (!listenning) {
 			// listen for new transactions
 			setListenning(true);
 
@@ -126,7 +126,7 @@ const PaypointQueue = () => {
 				}
 			});
 		}
-	}, [dispatch, init, listenning, patient, transactions, loaded]);
+	}, [dispatch, init, listenning, transactions, loaded]);
 
 	const handlePrintClick = (event, data) => {
 		setShow(!show);

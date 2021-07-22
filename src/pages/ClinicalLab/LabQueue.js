@@ -33,7 +33,6 @@ class LabQueue extends Component {
 	};
 
 	updateLab = labs => {
-		console.log(labs);
 		this.setState({ labs });
 	};
 

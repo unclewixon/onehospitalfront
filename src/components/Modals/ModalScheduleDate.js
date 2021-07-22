@@ -47,7 +47,8 @@ const ModalScheduleDate = ({
 			};
 			const rs = await request(url, 'PUT', true, data);
 			const procedure_request = procedures.find(l => l.id === procedure.id);
-			const newItem = { ...procedure_request, item: rs.data };
+			const item = { ...data.item, ...rs.data };
+			const newItem = { ...procedure_request, item };
 			const newItems = updateImmutable(procedures, newItem);
 			updateProcedure(newItems);
 			dispatch(stopBlock());

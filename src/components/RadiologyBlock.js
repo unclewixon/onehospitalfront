@@ -38,10 +38,11 @@ class RadiologyBlock extends Component {
 		try {
 			this.props.startBlock();
 			const { scans } = this.props;
-			const url = `requests/${data}/receive-specimen`;
+			const url = `requests/${data.id}/receive-specimen`;
 			const rs = await request(url, 'PATCH', true);
-			const scan_request = scans.find(l => l.id === data);
-			const newItem = { ...scan_request, item: rs.data };
+			const scan_request = scans.find(l => l.id === data.id);
+			const item = { ...data.item, ...rs.data };
+			const newItem = { ...scan_request, item };
 			const newScans = updateImmutable(scans, newItem);
 			this.props.updateScan(newScans);
 			notifySuccess('scan captured!');
@@ -97,7 +98,8 @@ class RadiologyBlock extends Component {
 			const rs = await upload(url, 'POST', formData);
 
 			const scan_request = scans.find(l => l.id === scanItem.id);
-			const newItem = { ...scan_request, item: rs.data };
+			const item = { ...scanItem.item, ...rs.data };
+			const newItem = { ...scan_request, item };
 			const newScans = updateImmutable(scans, newItem);
 			this.props.updateScan(newScans);
 
@@ -111,14 +113,15 @@ class RadiologyBlock extends Component {
 		}
 	};
 
-	approveScan = async id => {
+	doApproveScan = async data => {
 		try {
 			this.props.startBlock();
 			const { scans } = this.props;
-			const url = `requests/${id}/approve-result?type=scans`;
+			const url = `requests/${data.id}/approve-result?type=scans`;
 			const rs = await request(url, 'PATCH', true);
-			const scan_request = scans.find(l => l.id === id);
-			const newItem = { ...scan_request, status: 1, item: rs.data };
+			const scan_request = scans.find(l => l.id === data.id);
+			const item = { ...data.item, ...rs.data };
+			const newItem = { ...scan_request, status: 1, item };
 			const newScans = updateImmutable(scans, newItem);
 			this.props.updateScan(newScans);
 			notifySuccess('scan image approved!');
@@ -128,6 +131,15 @@ class RadiologyBlock extends Component {
 			notifyError('Error while trying to approve scan');
 			this.props.stopBlock();
 		}
+	};
+
+	approveScan = data => {
+		confirmAction(
+			this.doApproveScan,
+			data,
+			'Want to approve scan?',
+			'Are you sure?'
+		);
 	};
 
 	doPrint = async (item, printGroup) => {
@@ -190,12 +202,12 @@ class RadiologyBlock extends Component {
 		try {
 			const { scans } = this.props;
 			this.props.startBlock();
-			const url = `requests/${data}/delete-request?type=scans`;
+			const url = `requests/${data.id}/delete-request?type=scans`;
 			const rs = await request(url, 'DELETE', true);
-			const scan_request = scans.find(l => l.id === data);
-			const newItem = { ...scan_request, item: rs.data };
+			const scan_request = scans.find(l => l.id === data.id);
+			const item = { ...data.item, ...rs.data };
+			const newItem = { ...scan_request, item };
 			const newScans = updateImmutable(scans, newItem);
-			console.log(newScans);
 			this.props.updateScan(newScans);
 			notifySuccess('radiology request cancelled!');
 			this.props.stopBlock();
@@ -249,7 +261,6 @@ class RadiologyBlock extends Component {
 					</thead>
 					<tbody>
 						{scans.map((scan, i) => {
-							const grouped = scans.filter(l => l.code === scan.code);
 							return (
 								<tr key={i} className={scan.urgent ? 'urgent' : ''}>
 									<td>
@@ -344,7 +355,7 @@ class RadiologyBlock extends Component {
 														<Tooltip title="Captured Scan?">
 															<a
 																className="secondary"
-																onClick={() => this.capturedScan(scan.item.id)}>
+																onClick={() => this.capturedScan(scan)}>
 																<i className="os-icon os-icon-check-circle" />
 															</a>
 														</Tooltip>
@@ -368,25 +379,12 @@ class RadiologyBlock extends Component {
 															<Tooltip title="Approve Scan Image">
 																<a
 																	className="info"
-																	onClick={() =>
-																		this.approveScan(scan.item.id)
-																	}>
+																	onClick={() => this.approveScan(scan)}>
 																	<i className="os-icon os-icon-thumbs-up" />
 																</a>
 															</Tooltip>
 														)}
 													{/* after approval, print scan */}
-													{scan.item.approved === 1 && (
-														<Tooltip title="Print Scan">
-															<a
-																className="info"
-																onClick={() =>
-																	this.printResult(scan, grouped.length > 1)
-																}>
-																<i className="os-icon os-icon-printer" />
-															</a>
-														</Tooltip>
-													)}
 												</>
 											)}
 										{/* before approval, cancel scan */}
@@ -394,7 +392,7 @@ class RadiologyBlock extends Component {
 											<Tooltip title="Cancel Scan">
 												<a
 													className="danger"
-													onClick={() => this.cancelScan(scan.item.id)}>
+													onClick={() => this.cancelScan(scan)}>
 													<i className="os-icon os-icon-ui-15" />
 												</a>
 											</Tooltip>

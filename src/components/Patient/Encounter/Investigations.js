@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 import {
-	serviceAPI,
 	CK_INVESTIGATION_LAB,
 	CK_INVESTIGATION_SCAN,
 	CK_INVESTIGATIONS,
@@ -146,7 +145,7 @@ const Investigations = ({ patient, previous, next }) => {
 			return [];
 		}
 
-		const url = `${serviceAPI}/category/scans?q=${q}`;
+		const url = `services/category/scans?q=${q}`;
 		const res = await request(url, 'GET', true);
 		return res;
 	};

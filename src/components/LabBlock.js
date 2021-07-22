@@ -28,10 +28,11 @@ class LabBlock extends Component {
 		try {
 			const { labs } = this.props;
 			this.props.startBlock();
-			const url = `requests/${data}/delete-request?type=lab`;
+			const url = `requests/${data.id}/delete-request?type=lab`;
 			const rs = await request(url, 'DELETE', true);
-			const lab_request = labs.find(l => l.id === data);
-			const newItem = { ...lab_request, item: rs.data };
+			const lab_request = labs.find(l => l.id === data.id);
+			const item = { ...data.item, ...rs.data };
+			const newItem = { ...lab_request, item };
 			const newLabs = updateImmutable(labs, newItem);
 			this.props.updateLab(newLabs);
 			notifySuccess('lab request cancelled!');
@@ -137,10 +138,11 @@ class LabBlock extends Component {
 		try {
 			this.props.startBlock();
 			const { labs } = this.props;
-			const url = `requests/${data}/receive-specimen`;
+			const url = `requests/${data.id}/receive-specimen`;
 			const rs = await request(url, 'PATCH', true);
-			const lab_request = labs.find(l => l.id === data);
-			const newItem = { ...lab_request, item: rs.data };
+			const lab_request = labs.find(l => l.id === data.id);
+			const item = { ...data.item, ...rs.data };
+			const newItem = { ...lab_request, item };
 			const newLabs = updateImmutable(labs, newItem);
 			this.props.updateLab(newLabs);
 			notifySuccess('lab specimen received!');
@@ -281,7 +283,7 @@ class LabBlock extends Component {
 														<Tooltip title="Receive Specimen">
 															<a
 																className="secondary"
-																onClick={() => this.receiveSpecimen(lab.id)}>
+																onClick={() => this.receiveSpecimen(lab)}>
 																<i className="os-icon os-icon-check-circle" />
 															</a>
 														</Tooltip>
@@ -305,15 +307,24 @@ class LabBlock extends Component {
 														</Tooltip>
 													)}
 													{lab.status === 1 && (
-														<Tooltip title="Print Lab Test">
-															<a
-																className="info"
-																onClick={() =>
-																	this.printResult(lab, grouped.length > 1)
-																}>
-																<i className="os-icon os-icon-printer" />
-															</a>
-														</Tooltip>
+														<>
+															<Tooltip title="Approve Lab Result">
+																<a
+																	className="info"
+																	onClick={() => this.viewResult(lab)}>
+																	<i className="os-icon os-icon-eye" />
+																</a>
+															</Tooltip>
+															<Tooltip title="Print Lab Test">
+																<a
+																	className="info"
+																	onClick={() =>
+																		this.printResult(lab, grouped.length > 1)
+																	}>
+																	<i className="os-icon os-icon-printer" />
+																</a>
+															</Tooltip>
+														</>
 													)}
 												</>
 											)}
@@ -321,7 +332,7 @@ class LabBlock extends Component {
 											<Tooltip title="Cancel Lab Test">
 												<a
 													className="danger"
-													onClick={() => this.cancelLab(lab.item.id)}>
+													onClick={() => this.cancelLab(lab)}>
 													<i className="os-icon os-icon-ui-15" />
 												</a>
 											</Tooltip>

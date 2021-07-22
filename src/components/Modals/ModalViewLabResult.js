@@ -14,13 +14,14 @@ const ModalViewLabResult = ({ closeModal, lab, labs, updateLab }) => {
 	const approve = async () => {
 		try {
 			dispatch(startBlock());
-			const url = `requests/${lab.id}/approve-result?type=lab`;
+			const url = `requests/${lab.id}/approve-result?type=labs`;
 			const rs = await request(url, 'PATCH', true);
 			const lab_request = labs.find(l => l.id === lab.id);
+			const item = { ...lab.item, ...rs.data };
 			const newLabs = updateImmutable(labs, {
 				...lab_request,
 				status: 1,
-				item: rs.data,
+				item,
 			});
 			updateLab(newLabs);
 			notifySuccess('lab result approved!');
@@ -36,10 +37,11 @@ const ModalViewLabResult = ({ closeModal, lab, labs, updateLab }) => {
 	const reject = async () => {
 		try {
 			dispatch(startBlock());
-			const url = `requests/${item.id}/reject-result`;
+			const url = `requests/${lab.id}/reject-result`;
 			const rs = await request(url, 'PATCH', true);
 			const lab_request = labs.find(l => l.id === lab.id);
-			const newItem = { ...lab_request, item: rs.data };
+			const item = { ...lab.item, ...rs.data };
+			const newItem = { ...lab_request, item };
 			const newLabs = updateImmutable(labs, newItem);
 			updateLab(newLabs);
 			notifySuccess('lab result rejected!');

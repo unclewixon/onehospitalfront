@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
-import { searchAPI, serviceAPI } from '../../services/constants';
+import { searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request, patientname } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
@@ -49,7 +49,7 @@ const RadiologyRequest = ({ module, history, location }) => {
 			return [];
 		}
 
-		const url = `${serviceAPI}/category/scans?q=${q}`;
+		const url = `services/category/scans?q=${q}`;
 		const res = await request(url, 'GET', true);
 		return res;
 	};

@@ -72,7 +72,8 @@ const ModalServiceDetails = ({ closeModal, transaction }) => {
 							</div>
 						)}
 						{(transaction?.bill_source === 'labs' ||
-							transaction?.bill_source === 'scans') && (
+							transaction?.bill_source === 'scans' ||
+							transaction?.bill_source === 'procedure') && (
 							<div className="element-box p-2">
 								<div className="table-responsive">
 									<table className="table table-striped">
