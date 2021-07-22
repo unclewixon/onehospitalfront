@@ -12,11 +12,11 @@ import {
 	patientname,
 } from '../../services/utilities';
 import { deleteTransaction } from '../../actions/transaction';
-import { approveTransaction } from '../../actions/general';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { Can } from '../common/Can';
 import ModalServiceDetails from '../Modals/ModalServiceDetails';
 import ModalShowTransactions from '../Modals/ModalShowTransactions';
+import ModalApproveTransaction from '../Modals/ModalApproveTransaction';
 
 const TransactionTable = ({
 	transactions,
@@ -27,13 +27,16 @@ const TransactionTable = ({
 }) => {
 	const [showModal, setShowModal] = useState(false);
 	const [showTransactions, setShowTransactions] = useState(false);
-	const [details, setDetails] = useState([]);
+	const [transaction, setTransaction] = useState(null);
 	const [patient, setPatient] = useState(null);
+	const [processTransaction, setProcessTransaction] = useState(false);
 
 	const dispatch = useDispatch();
 
 	const doApproveTransaction = item => {
-		dispatch(approveTransaction(item));
+		document.body.classList.add('modal-open');
+		setTransaction(item);
+		setProcessTransaction(true);
 	};
 
 	const deleteTask = async data => {
@@ -52,10 +55,10 @@ const TransactionTable = ({
 		confirmAction(deleteTask, data);
 	};
 
-	const viewDetails = (bill_source, data) => {
+	const viewDetails = transaction => {
 		document.body.classList.add('modal-open');
 		setShowModal(true);
-		setDetails({ bill_source, data });
+		setTransaction(transaction);
 	};
 
 	const showList = patient => {
@@ -67,8 +70,9 @@ const TransactionTable = ({
 	const closeModal = () => {
 		document.body.classList.remove('modal-open');
 		setShowModal(false);
+		setProcessTransaction(false);
 		setShowTransactions(false);
-		setDetails([]);
+		setTransaction(null);
 		setPatient(null);
 	};
 
@@ -106,12 +110,7 @@ const TransactionTable = ({
 									{transaction.bill_source !== 'registration' && (
 										<a
 											className="item-title text-primary text-underline ml-2"
-											onClick={() =>
-												viewDetails(
-													transaction.bill_source,
-													transaction.transaction_details
-												)
-											}>
+											onClick={() => viewDetails(transaction)}>
 											details
 										</a>
 									)}
@@ -184,15 +183,21 @@ const TransactionTable = ({
 					)}
 				</tbody>
 			</table>
-			{showModal && (
+			{showModal && transaction && (
 				<ModalServiceDetails
-					details={details}
+					transaction={transaction}
 					closeModal={() => closeModal()}
 				/>
 			)}
-			{showTransactions && (
+			{showTransactions && patient && (
 				<ModalShowTransactions
 					patient={patient}
+					closeModal={() => closeModal()}
+				/>
+			)}
+			{processTransaction && transaction && (
+				<ModalApproveTransaction
+					transaction={transaction}
 					closeModal={() => closeModal()}
 				/>
 			)}

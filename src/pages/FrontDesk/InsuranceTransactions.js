@@ -50,7 +50,7 @@ class InsuranceTransactions extends Component {
 		filtering: false,
 		loading: false,
 		showModal: false,
-		details: null,
+		transaction: null,
 		id: null,
 		hmos: [],
 		patient_id: '',
@@ -139,14 +139,14 @@ class InsuranceTransactions extends Component {
 		});
 	};
 
-	viewDetails = (bill_source, data) => {
+	viewDetails = transaction => {
 		document.body.classList.add('modal-open');
-		this.setState({ details: { bill_source, data }, showModal: true });
+		this.setState({ transaction, showModal: true });
 	};
 
 	closeModal = () => {
 		document.body.classList.remove('modal-open');
-		this.setState({ details: null, showModal: false });
+		this.setState({ transaction: null, showModal: false });
 	};
 
 	handleVisibleChange = (e, id) => {
@@ -219,7 +219,7 @@ class InsuranceTransactions extends Component {
 			loading,
 			hmos,
 			showModal,
-			details,
+			transaction,
 			visible,
 			meta,
 			dateRange,
@@ -358,12 +358,7 @@ class InsuranceTransactions extends Component {
 													{item.bill_source !== 'registration' && (
 														<a
 															className="item-title text-primary text-underline ml-2"
-															onClick={() =>
-																this.viewDetails(
-																	item.bill_source,
-																	item.transaction_details
-																)
-															}>
+															onClick={() => this.viewDetails(item)}>
 															details
 														</a>
 													)}
@@ -466,9 +461,9 @@ class InsuranceTransactions extends Component {
 						</div>
 					)}
 				</div>
-				{showModal && (
+				{showModal && transaction && (
 					<ModalServiceDetails
-						details={details}
+						transaction={transaction}
 						closeModal={() => this.closeModal()}
 					/>
 				)}

@@ -49,29 +49,31 @@ const Home = ({ match, location }) => {
 				<div className="row">
 					<div className="col-sm-12">
 						<div className="element-wrapper">
-							<div className="element-actions">
-								<Link
-									to={`${match.path}`}
-									className={`mx-2 btn btn-primary btn-sm  ${
-										page === 'pharmacy' ? 'btn-outline-primary' : ''
-									}`}>
-									Prescription Queue
-								</Link>
-								<Link
-									to={`${match.path}/all-request`}
-									className={`mr-2 btn btn-primary btn-sm  ${
-										page === 'all-request' ? 'btn-outline-primary' : ''
-									}`}>
-									Prescription Requests
-								</Link>
-								<Link
-									to={`${match.path}/new-request`}
-									className={`mr-2 btn btn-primary btn-sm  ${
-										page === 'new-request' ? 'btn-outline-primary' : ''
-									}`}>
-									New Prescription
-								</Link>
-							</div>
+							{page !== 'inventory' && (
+								<div className="element-actions">
+									<Link
+										to={`${match.path}`}
+										className={`mx-2 btn btn-primary btn-sm  ${
+											page === 'pharmacy' ? 'btn-outline-primary' : ''
+										}`}>
+										Prescription Queue
+									</Link>
+									<Link
+										to={`${match.path}/all-request`}
+										className={`mr-2 btn btn-primary btn-sm  ${
+											page === 'all-request' ? 'btn-outline-primary' : ''
+										}`}>
+										Prescription Requests
+									</Link>
+									<Link
+										to={`${match.path}/new-request`}
+										className={`mr-2 btn btn-primary btn-sm  ${
+											page === 'new-request' ? 'btn-outline-primary' : ''
+										}`}>
+										New Prescription
+									</Link>
+								</div>
+							)}
 							<h6 className="element-header">{pageTitle}</h6>
 							<div className="row">
 								<div className="col-sm-12">

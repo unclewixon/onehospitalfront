@@ -184,7 +184,7 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={() => closeModal()}>
+						onClick={closeModal}>
 						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -267,11 +267,13 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 													className="form-control"
 													onChange={e => setPaymentType(e.target.value)}>
 													<option value="">Select Payment Method</option>
-													{paymentMethods.map((d, i) => (
-														<option key={i} value={d.name}>
-															{d.name}
-														</option>
-													))}
+													{paymentMethods
+														.filter(p => p.name !== 'Voucher')
+														.map((d, i) => (
+															<option key={i} value={d.name}>
+																{d.name}
+															</option>
+														))}
 												</select>
 											</div>
 											<button

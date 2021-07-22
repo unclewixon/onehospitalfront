@@ -4,8 +4,9 @@ import Tooltip from 'antd/lib/tooltip';
 import { useDispatch } from 'react-redux';
 import truncate from 'lodash.truncate';
 import moment from 'moment';
+
 import { toggleProfile } from '../../actions/user';
-import { getAge, staffname } from '../../services/utilities';
+import { getAge, staffname, patientname } from '../../services/utilities';
 import { socket } from '../../services/constants';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
@@ -22,6 +23,7 @@ const VitalsQueue = () => {
 			const url = 'front-desk/queue-system/get-vitals-queue-lists';
 			const rs = await request(url, 'GET', true);
 			setQueues(rs);
+			setLoading(false);
 		} catch (e) {
 			console.log(e);
 		}
@@ -30,7 +32,6 @@ const VitalsQueue = () => {
 	useEffect(() => {
 		if (loading) {
 			fetchQueue();
-			setLoading(false);
 		}
 	}, [loading, fetchQueue]);
 
@@ -101,7 +102,7 @@ const VitalsQueue = () => {
 									.filter(queue => queue.queueType === 'vitals')
 									.map((queue, key) => (
 										<tr key={key}>
-											<td>{`${queue.patientName}`}</td>
+											<td>{patientname(queue.patient, true)}</td>
 											<td>{staffname(queue.appointment.whomToSee)}</td>
 											<td>{`${queue.appointment.patient.gender} / ${getAge(
 												queue.appointment.patient.date_of_birth

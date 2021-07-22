@@ -21,6 +21,7 @@ const ViewPrescription = ({
 	prescription,
 	updatePrescriptions,
 	closeModal,
+	doPrint,
 }) => {
 	const [visible, setVisible] = useState(null);
 	const [loaded, setLoaded] = useState(false);
@@ -35,10 +36,10 @@ const ViewPrescription = ({
 			const items = prescriptions.filter(p => p.code === prescription.code);
 			setRegimens(items);
 
-			const total = items.reduce((total, item) => {
-				const amount = item.item.drug?.unitCost || 0;
+			const total = items.reduce((total, regItem) => {
+				const amount = regItem.item.drug?.unitCost || 0;
 
-				return (total += parseFloat(amount) * item.fillQuantity);
+				return (total += parseFloat(amount) * regItem.item.fillQuantity);
 			}, 0.0);
 
 			setSumTotal(total);
@@ -57,13 +58,13 @@ const ViewPrescription = ({
 		};
 		const updatedDrugs = updateImmutable(regimens, { ...regimen, item });
 		setRegimens(updatedDrugs);
-		const total = updatedDrugs.reduce((total, item) => {
-			if (item.item.fillQuantity === '') {
+		const total = updatedDrugs.reduce((total, regItem) => {
+			if (regItem.item.fillQuantity === '') {
 				return (total += 0);
 			}
-			const amount = item.item.drug?.unitCost || 0;
+			const amount = regItem.item.drug?.unitCost || 0;
 			return (total +=
-				parseFloat(amount) * parseInt(item.item.fillQuantity, 10));
+				parseFloat(amount) * parseInt(regItem.item.fillQuantity, 10));
 		}, 0);
 		setSumTotal(total);
 	};
@@ -123,7 +124,8 @@ const ViewPrescription = ({
 			setSubmitting(false);
 			if (rs.success) {
 				for (const item of rs.data) {
-					updatePrescriptions(item);
+					const regimen = prescriptions.find(p => p.item.id === item.id);
+					updatePrescriptions({ ...regimen, item });
 				}
 				notifySuccess('pharmacy prescription filled');
 				closeModal();
@@ -144,7 +146,8 @@ const ViewPrescription = ({
 			setSubmitting(false);
 			if (rs.success) {
 				for (const item of rs.data) {
-					updatePrescriptions(item);
+					const regimen = prescriptions.find(p => p.item.id === item.id);
+					updatePrescriptions({ ...regimen, status: 1, item });
 				}
 				notifySuccess('pharmacy prescription dispensed');
 				closeModal();
@@ -340,7 +343,7 @@ const ViewPrescription = ({
 																	</Tooltip>
 																</Popover>
 															)}
-															<br />
+															{regimen.item.filled === 0 && <br />}
 															{regimen.item.drug?.name || ''}
 														</td>
 														<td>
@@ -377,7 +380,7 @@ const ViewPrescription = ({
 															)}
 														</td>
 														<td>
-															<div className="form-group">
+															<div className="form-group mb-0">
 																<input
 																	type="number"
 																	className="form-control"
@@ -442,7 +445,9 @@ const ViewPrescription = ({
 												</button>
 											)}
 										{prescription.status === 1 && (
-											<button onClick={() => {}} className="btn btn-success">
+											<button
+												onClick={() => doPrint(prescription)}
+												className="btn btn-success">
 												<span>Print</span>
 											</button>
 										)}

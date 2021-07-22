@@ -9,6 +9,9 @@ import ProfilePopup from './Patient/ProfilePopup';
 import { patientname } from '../services/utilities';
 import ViewPrescription from './Pharmacy/ViewPrescription';
 import { toggleProfile } from '../actions/user';
+import { startBlock, stopBlock } from '../actions/redux-block';
+import { request } from '../services/utilities';
+import { notifyError } from '../services/notify';
 
 const PrescriptionBlock = ({
 	loading,
@@ -30,6 +33,20 @@ const PrescriptionBlock = ({
 	const showProfile = patient => {
 		const info = { patient, type: 'patient' };
 		dispatch(toggleProfile(true, info));
+	};
+
+	const doPrint = async regimen => {
+		try {
+			dispatch(startBlock());
+			const url = `requests/${regimen.id}/print?type=drugs&print_group=1`;
+			const rs = await request(url, 'GET', true);
+			window.open(rs.file, '_blank');
+			dispatch(stopBlock());
+		} catch (error) {
+			console.log(error);
+			notifyError('Error printing regimen request');
+			dispatch(stopBlock());
+		}
 	};
 
 	return loading ? (
@@ -114,7 +131,7 @@ const PrescriptionBlock = ({
 									</Tooltip>
 									{request.status === 1 && (
 										<Tooltip title="Print Prescription">
-											<a className="ml-2">
+											<a className="ml-2" onClick={() => doPrint(request)}>
 												<i className="icon-feather-printer" />
 											</a>
 										</Tooltip>
@@ -131,6 +148,7 @@ const PrescriptionBlock = ({
 					prescription={prescription}
 					closeModal={closeModal}
 					updatePrescriptions={updatePrescriptions}
+					doPrint={doPrint}
 				/>
 			)}
 		</>

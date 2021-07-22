@@ -21,8 +21,6 @@ import ModalCreateRecordVital from './ModalCreateRecordVital';
 import ModalCreateVoucher from './ModalCreateVoucher';
 import ModalCreateClinicalTask from './ModalCreateClinicalTask';
 import AddCafeteriaFile from './AddCafeteriaFile';
-import ModalUploadRadiology from './ModalUploadRadiology';
-import ModalApproveTransaction from './ModalApproveTransaction';
 import ModalAntenatalDetail from './ModalAntenatalDetail';
 import ModalAntenatalAssessmentDetail from './ModalAntenatalAssessmentDetail';
 import ModalLineAppraisal from './ModalLineAppraisal';
@@ -38,12 +36,10 @@ const ModalDialogs = ({
 	show_history,
 	create_inventory,
 	edit_inventory,
-	approve_transaction,
 	update_inventory_qty,
 	view_appraisal,
 	view_payroll_history,
 	current_payroll,
-	prepare_payroll,
 	edit_payroll,
 	register_new_patient,
 	create_labour_measurement,
@@ -54,7 +50,6 @@ const ModalDialogs = ({
 	create_voucher,
 	create_clinical_task,
 	add_cafeteria_file,
-	upload_radiology,
 	antenatal_detail,
 	antenatal_assessment_detail,
 	line_appraisal,
@@ -71,9 +66,6 @@ const ModalDialogs = ({
 			{show_history && <ModalLeaveHistory />}
 			{create_inventory && <ModalCreateInventory />}
 			{edit_inventory && <ModalEditInventory />}
-			{approve_transaction && (
-				<ModalApproveTransaction approveTransaction={approve_transaction} />
-			)}
 			{update_inventory_qty && <ModalUpdInventoryQty />}
 			{view_appraisal && <ModalViewAppraisal />}
 			{view_payroll_history && <ModalPayrollHistory />}
@@ -88,7 +80,6 @@ const ModalDialogs = ({
 			{create_voucher && <ModalCreateVoucher />}
 			{create_clinical_task && <ModalCreateClinicalTask />}
 			{add_cafeteria_file && <AddCafeteriaFile />}
-			{upload_radiology && <ModalUploadRadiology />}
 			{antenatal_detail && <ModalAntenatalDetail />}
 			{antenatal_assessment_detail && <ModalAntenatalAssessmentDetail />}
 			{line_appraisal && <ModalLineAppraisal />}
@@ -108,13 +99,11 @@ const mapStateToProps = (state, ownProps) => {
 		add_task: state.general.add_task,
 		create_inventory: state.general.create_inventory,
 		edit_inventory: state.general.edit_inventory,
-		approve_transaction: state.general.approve_transaction,
 		update_inventory_qty: state.general.update_inventory_qty,
 		register_new_patient: state.general.register_new_patient,
 		view_appraisal: state.general.view_appraisal,
 		view_payroll_history: state.general.view_payroll_history,
 		current_payroll: state.general.current_payroll,
-		prepare_payroll: state.general.prepare_payroll,
 		edit_payroll: state.general.edit_payroll,
 		create_labour_measurement: state.general.create_labour_measurement,
 		create_record_delivery: state.general.create_record_delivery,
@@ -125,7 +114,6 @@ const mapStateToProps = (state, ownProps) => {
 		create_voucher: state.general.create_voucher,
 		create_clinical_task: state.general.create_clinical_task,
 		add_cafeteria_file: state.general.add_cafeteria_file,
-		upload_radiology: state.general.upload_radiology,
 		antenatal_detail: state.general.antenatal_detail,
 		antenatal_assessment_detail: state.general.antenatal_assessment_detail,
 		line_appraisal: state.general.line_appraisal,

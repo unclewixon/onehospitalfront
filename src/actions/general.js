@@ -24,10 +24,7 @@ import {
 	TOGGLE_UPLOAD_HMO,
 	TOGGLE_CREATE_CLINICAL_TASK,
 	TOGGLE_ADD_CAFETERIA_FILE,
-	TOGGLE_UPLOAD_RADIOLOGY,
-	TOGGLE_APPROVE_TRANSACTION,
 	TOGGLE_APPLY_VOUCHER,
-	TOGGLE_APPROVE_HMO_TRANSACTION,
 	TOGGLE_ANTENATAL_DETAIL,
 	TOGGLE_ANTENATAL_ASSESSMENT_DETAIL,
 	TOGGLE_LINE_APPRAISAL,
@@ -121,20 +118,6 @@ export const toggleCreateInventory = status => {
 export const toggleEditInventory = status => {
 	return {
 		type: TOGGLE_EDIT_INVENTORY,
-		payload: status,
-	};
-};
-
-export const toggleApproveTransaction = status => {
-	return {
-		type: TOGGLE_APPROVE_TRANSACTION,
-		payload: status,
-	};
-};
-
-export const toggleApproveHmoTransaction = status => {
-	return {
-		type: TOGGLE_APPROVE_HMO_TRANSACTION,
 		payload: status,
 	};
 };
@@ -242,13 +225,6 @@ export const toggleCreateClinicalTask = status => {
 	};
 };
 
-export const toggleUploadRadiology = status => {
-	return {
-		type: TOGGLE_UPLOAD_RADIOLOGY,
-		payload: status,
-	};
-};
-
 export const toggleUploadHmo = status => {
 	return {
 		type: TOGGLE_UPLOAD_HMO,
@@ -331,7 +307,6 @@ export const closeModals = () => {
 		dispatch(toggleCreateInventory(false));
 		dispatch(toggleApplyVoucher(false));
 		dispatch(toggleEditInventory(false));
-		dispatch(toggleApproveTransaction(false));
 		dispatch(toggleUpdateQuantity(false));
 		dispatch(toggleViewAppraisal(false));
 		dispatch(toggleViewPayrollHistory(false));
@@ -341,13 +316,11 @@ export const closeModals = () => {
 		dispatch(toggleAddNewObservation(false));
 		dispatch(toggleCreateVoucher(false));
 		dispatch(toggleCreateLabourMeasurement(false));
-		dispatch(toggleApproveHmoTransaction(false));
 		dispatch(toggleCreateRiskAssessment(false));
 		dispatch(toggleCreateRecordDelivery(false));
 		dispatch(toggleCreateClinicalTask(false));
 		dispatch(toggleCreateRecordVital(false));
 		dispatch(toggleAddCafeteriaFile(false));
-		dispatch(toggleUploadRadiology(false));
 		dispatch(toggleUploadHmo(false));
 		dispatch(toggleAntenatalDetail(false, null));
 		dispatch(toggleAntenatalAssessmentDetail(false, null));
@@ -425,29 +398,12 @@ export const editInventory = action => {
 	};
 };
 
-export const approveHmoTransaction = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleApproveHmoTransaction(true));
-		dispatch(toggleApproveTransaction(action));
-	};
-};
-
 export const applyVoucher = action => {
 	return dispatch => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleApplyVoucher(true));
 		dispatch(toggleCreateVoucher(action));
-	};
-};
-
-export const approveTransaction = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleApproveTransaction(action));
 	};
 };
 
@@ -563,14 +519,6 @@ export const addCafeteriaFile = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleAddCafeteriaFile(action));
-	};
-};
-
-export const uploadRadiology = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleUploadRadiology(action));
 	};
 };
 
