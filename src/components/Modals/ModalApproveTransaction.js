@@ -25,7 +25,7 @@ const validate = values => {
 	if (!values.amount_paid) {
 		errors.amount_paid = 'enter amount';
 	}
-	if (!values.voucher_code && values.payment_type === 'Voucher') {
+	if (!values.voucher_code && values.payment_method === 'Voucher') {
 		errors.voucher_code = 'enter voucher';
 	}
 	return errors;
@@ -180,8 +180,8 @@ class ModalApproveTransaction extends Component {
 										<div className="col-sm-6">
 											<div className="form-group">
 												<Field
-													id="payment_type"
-													name="payment_type"
+													id="payment_method"
+													name="payment_method"
 													validate={[required]}
 													component={renderSelect}
 													onChange={this.handleChange}

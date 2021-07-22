@@ -17,7 +17,7 @@ import TableLoading from '../TableLoading';
 import useSearchInputState from '../../services/search-hook';
 import ModalLabParameters from '../../components/Modals/ModalLabParameters';
 
-const HmoTests = ({ hmo, index, toggle, doToggle, doToggleForm }) => {
+const HmoTests = ({ hmo, toggle, doToggle, doToggleForm }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [meta, setMeta] = useState({
 		currentPage: 1,
@@ -57,10 +57,10 @@ const HmoTests = ({ hmo, index, toggle, doToggle, doToggleForm }) => {
 	);
 
 	useEffect(() => {
-		if (!loaded && toggle && toggle.id === index) {
+		if (toggle && toggle.id === hmo.id) {
 			fetchTests();
 		}
-	}, [fetchTests, index, loaded, toggle]);
+	}, [fetchTests, hmo, toggle]);
 
 	const onDeleteLabTest = async data => {
 		try {
@@ -116,11 +116,21 @@ const HmoTests = ({ hmo, index, toggle, doToggle, doToggleForm }) => {
 	return (
 		<div className="filter-side mb-2" style={{ flex: '0 0 100%' }}>
 			<div className={`filter-w ${toggle ? '' : 'collapsed'}`}>
-				<div className="filter-toggle" onClick={() => doToggle(index)}>
+				<div
+					className="filter-toggle"
+					onClick={() => {
+						setMeta({
+							currentPage: 1,
+							itemsPerPage: 24,
+							totalPages: 0,
+						});
+						doToggle(hmo.id);
+						setLoaded(false);
+					}}>
 					<i className="os-icon-minus os-icon" />
 				</div>
 				<h6 className="filter-header">{hmo.name}</h6>
-				{!loaded ? (
+				{!loaded && toggle && toggle.id === hmo.id ? (
 					<TableLoading />
 				) : (
 					<div

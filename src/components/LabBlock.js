@@ -238,25 +238,25 @@ class LabBlock extends Component {
 									</td>
 									<td>
 										{lab.item.cancelled === 0 &&
-											lab.transaction &&
-											lab.transaction.status === 0 && (
+											lab.item.transaction &&
+											lab.item.transaction.status === 0 && (
 												<span className="badge badge-warning">
 													Awaiting Payment
 												</span>
 											)}
 										{lab.item.cancelled === 0 &&
-											lab.transaction &&
-											(lab.transaction.status === 1 ||
-												lab.transaction.status === -1) &&
+											lab.item.transaction &&
+											(lab.item.transaction.status === 1 ||
+												lab.item.transaction.status === -1) &&
 											lab.item.filled === 0 && (
 												<span className="badge badge-info text-white">
 													Pending
 												</span>
 											)}
 										{lab.item.cancelled === 0 &&
-											lab.transaction &&
-											(lab.transaction.status === 1 ||
-												lab.transaction.status === -1) &&
+											lab.item.transaction &&
+											(lab.item.transaction.status === 1 ||
+												lab.item.transaction.status === -1) &&
 											lab.item.filled === 1 &&
 											lab.item.approved === 0 && (
 												<span className="badge badge-secondary">
@@ -274,8 +274,8 @@ class LabBlock extends Component {
 									</td>
 									<td className="text-right row-actions">
 										{lab.item.cancelled === 0 &&
-											(lab.transaction.status === 1 ||
-												lab.transaction.status === -1) && (
+											(lab.item.transaction.status === 1 ||
+												lab.item.transaction.status === -1) && (
 												<>
 													{lab.item.received === 0 && (
 														<Tooltip title="Receive Specimen">

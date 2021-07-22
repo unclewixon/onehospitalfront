@@ -87,7 +87,8 @@ const TransactionTable = ({
 						<th>AMOUNT (&#x20A6;)</th>
 						{!queue && <th>PAYMENT METHOD</th>}
 						<th>PAYMENT STATUS</th>
-						<th>RECEIVED By</th>
+						{!queue && <th>TYPE</th>}
+						{!queue && <th>RECEIVED By</th>}
 						<th className="text-center">ACTIONS</th>
 					</tr>
 				</thead>
@@ -109,14 +110,14 @@ const TransactionTable = ({
 									</span>
 									{transaction.bill_source !== 'registration' && (
 										<a
-											className="item-title text-primary text-underline ml-2"
+											className="item-title text-info ml-2"
 											onClick={() => viewDetails(transaction)}>
-											details
+											<i className="os-icon os-icon-alert-circle" />
 										</a>
 									)}
 								</td>
 								<td>{formatCurrency(transaction.amount || 0)}</td>
-								{!queue && <td>{transaction.payment_type || '-'}</td>}
+								{!queue && <td>{transaction.payment_method || '--'}</td>}
 								<td>
 									{transaction.status === 0 && (
 										<span className="badge badge-secondary text-white">
@@ -132,9 +133,12 @@ const TransactionTable = ({
 										<span className="badge badge-success">paid</span>
 									)}
 								</td>
-								<td>
-									{transaction.staff ? staffname(transaction.staff) : '--'}
-								</td>
+								{!queue && <td>{transaction.transaction_type || '--'}</td>}
+								{!queue && (
+									<td>
+										{transaction.staff ? staffname(transaction.staff) : '--'}
+									</td>
+								)}
 								<td className="text-center row-actions">
 									{showActionBtns && (
 										<>

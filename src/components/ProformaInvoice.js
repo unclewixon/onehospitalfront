@@ -131,7 +131,7 @@ const ProformaInvoice = props => {
 				}
 			}));
 		evt && setAmount(sum);
-		evt && setValue('payment_type', sum);
+		evt && setValue('payment_method', sum);
 		evt && setServs(servArr);
 	};
 

@@ -24,12 +24,12 @@ class InputCode extends Component {
 			const { transaction, transactions, loadTransactions } = this.props;
 			const { hmo_approval_code } = this.state;
 			this.setState({ submitting: true });
-			transaction.hmo_approval_code = hmo_approval_code;
-			const url = `transactions/${transaction.id}/update?hmo_approval_code=${hmo_approval_code}`;
-			const rs = await request(url, 'PATCH', true);
+			const url = `transactions/${transaction.id}/pay`;
+			const data = { hmo_approval_code };
+			const rs = await request(url, 'PATCH', true, data);
 
 			if (rs.success) {
-				const uptdTransactions = updateImmutable(transactions, transaction);
+				const uptdTransactions = updateImmutable(transactions, rs.transaction);
 				loadTransactions(uptdTransactions);
 				notifySuccess(`Hmo code ${hmo_approval_code} added`);
 				this.setState({ submitting: false });

@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { formatCurrency } from '../../services/utilities';
+
 const ModalServiceDetails = ({ closeModal, transaction }) => {
 	console.log(transaction);
 
@@ -22,6 +24,8 @@ const ModalServiceDetails = ({ closeModal, transaction }) => {
 		}
 	};
 
+	const item = transaction.patientRequestItem;
+
 	return (
 		<div
 			className="onboarding-modal modal fade animated show"
@@ -36,26 +40,60 @@ const ModalServiceDetails = ({ closeModal, transaction }) => {
 						<h6 className="onboarding-title">
 							{renderServiceType(transaction?.bill_source)}
 						</h6>
-						<div className="element-box p-2">
-							<div className="table-responsive">
-								<table className="table table-striped">
-									<thead>
-										<tr>
-											<th>ID</th>
-											<th>ITEM</th>
-											<th>AMOUNT</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td></td>
-											<td></td>
-											<td></td>
-										</tr>
-									</tbody>
-								</table>
+						{transaction?.bill_source === 'drugs' && (
+							<div className="element-box p-2">
+								<div className="table-responsive">
+									<table className="table table-striped">
+										<thead>
+											<tr>
+												<th>ID</th>
+												<th>ITEM</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>{item?.request?.code}</td>
+												<td>{`${item.fillQuantity} ${
+													item.drug.unitOfMeasure
+												} of ${item.drugGeneric.name} (${
+													item.drug.name
+												}) at ${formatCurrency(
+													item.drugBatch.unitPrice
+												)} each`}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
 							</div>
-						</div>
+						)}
+						{transaction?.bill_source === 'consultancy' && (
+							<div className="element-box p-2">
+								<div>{transaction.service.item.name}</div>
+							</div>
+						)}
+						{(transaction?.bill_source === 'labs' ||
+							transaction?.bill_source === 'scans') && (
+							<div className="element-box p-2">
+								<div className="table-responsive">
+									<table className="table table-striped">
+										<thead>
+											<tr>
+												<th>ID</th>
+												<th>ITEM</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>{item?.request?.code}</td>
+												<td nowrap="nowrap">
+													{transaction?.service?.item?.name}
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						)}
 					</div>
 				</div>
 			</div>

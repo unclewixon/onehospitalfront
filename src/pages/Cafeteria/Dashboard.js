@@ -110,7 +110,7 @@ const Dashboard = () => {
 				vat: summary.vat,
 				total_amount: summary.total,
 				amount_paid: summary.amountPaid,
-				payment_type: summary.type,
+				payment_method: summary.type,
 				items: cart,
 				change: summary.change,
 			};

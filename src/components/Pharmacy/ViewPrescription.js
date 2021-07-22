@@ -37,7 +37,7 @@ const ViewPrescription = ({
 			setRegimens(items);
 
 			const total = items.reduce((total, regItem) => {
-				const amount = regItem.item.drug?.unitCost || 0;
+				const amount = regItem.item.drugBatch?.unitPrice || 0;
 
 				return (total += parseFloat(amount) * regItem.item.fillQuantity);
 			}, 0.0);
@@ -62,7 +62,7 @@ const ViewPrescription = ({
 			if (regItem.item.fillQuantity === '') {
 				return (total += 0);
 			}
-			const amount = regItem.item.drug?.unitCost || 0;
+			const amount = regItem.item.drugBatch?.unitPrice || 0;
 			return (total +=
 				parseFloat(amount) * parseInt(regItem.item.fillQuantity, 10));
 		}, 0);
@@ -376,7 +376,7 @@ const ViewPrescription = ({
 														</td>
 														<td>
 															{formatCurrency(
-																regimen.item.drug?.unitCost || 0.0
+																regimen.item.drugBatch?.unitPrice || 0.0
 															)}
 														</td>
 														<td>
@@ -431,8 +431,8 @@ const ViewPrescription = ({
 											</>
 										)}
 										{prescription.item.filled === 1 &&
-											prescription.transaction &&
-											prescription.transaction.status === 1 &&
+											prescription.item.transaction &&
+											prescription.item.transaction.status === 1 &&
 											prescription.status === 0 && (
 												<button
 													onClick={() => dispense()}

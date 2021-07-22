@@ -69,7 +69,7 @@ const PrescriptionBlock = ({
 					{prescriptions.map((request, i) => {
 						return (
 							<tr key={i}>
-								<td>
+								<td nowrap="nowrap">
 									{moment(request.createdAt).format('DD-MMM-YYYY : h:mmA')}
 								</td>
 								<td>{request.code || ''}</td>
@@ -98,16 +98,16 @@ const PrescriptionBlock = ({
 									{request.status === 0 && request.item.filled === 0 && (
 										<span className="badge badge-warning">Pending</span>
 									)}
-									{request.transaction &&
-										request.transaction.status === 0 &&
+									{request.item.transaction &&
+										request.item.transaction.status === 0 &&
 										request.status === 0 &&
 										request.item.filled === 1 && (
 											<span className="badge badge-info text-white">
 												Awaiting Payment
 											</span>
 										)}
-									{request.transaction &&
-										request.transaction.status === 1 &&
+									{request.item.transaction &&
+										request.item.transaction.status === 1 &&
 										request.status === 0 && (
 											<span className="badge badge-secondary">
 												Awaiting Dispense

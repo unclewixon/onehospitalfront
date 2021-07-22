@@ -60,7 +60,7 @@ const CreateNewTransaction = props => {
 			amount: values.amount,
 			serviceType: values.service_request?.map(req => req.value),
 			description: values.description,
-			payment_type: values.payment_type,
+			payment_method: values.payment_method,
 		};
 
 		console.log('onSubmit(): ');
@@ -128,7 +128,7 @@ const CreateNewTransaction = props => {
 				}
 			}));
 		evt && setAmount(sum);
-		evt && setValue('payment_type', sum);
+		evt && setValue('payment_method', sum);
 		evt && setValue('service_request', evt);
 	};
 
@@ -310,16 +310,16 @@ const CreateNewTransaction = props => {
 						</label>
 
 						<Select
-							name="payment_type"
+							name="payment_method"
 							placeholder="Select Payment Method"
 							options={paymentMethods}
-							ref={register({ name: 'payment_type' })}
+							ref={register({ name: 'payment_method' })}
 							onChange={evt => {
 								if (evt === null) {
-									setValue('payment_type', null);
+									setValue('payment_method', null);
 								} else {
 									console.log(evt.value);
-									setValue('payment_type', evt.value);
+									setValue('payment_method', evt.value);
 								}
 							}}
 							required

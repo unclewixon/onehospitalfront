@@ -87,7 +87,7 @@ const PrescriptionForm = ({
 	const loadGenericDrugs = useCallback(async () => {
 		try {
 			dispatch(startBlock());
-			const rs = await request('inventory/generics?limit=100', 'GET', true);
+			const rs = await request('inventory/generics?limit=1000', 'GET', true);
 			setGenericDrugs(rs.result);
 			dispatch(stopBlock());
 		} catch (e) {
@@ -221,6 +221,7 @@ const PrescriptionForm = ({
 			setSelectedDrug({
 				...drug,
 				qty: drug.batches.reduce((total, item) => total + item.quantity, 0),
+				basePrice: drug.batches.length > 0 ? drug.batches[0].unitPrice : 0,
 			});
 			setGeneric(drug.generic);
 		} else {

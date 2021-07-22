@@ -19,8 +19,9 @@ import TableLoading from '../../components/TableLoading';
 const { RangePicker } = DatePicker;
 
 const paymentStatus = [
-	{ value: 0, label: 'processing' },
-	{ value: 1, label: 'done' },
+	{ value: 0, label: 'Pending' },
+	{ value: -1, label: 'Pay Later' },
+	{ value: 1, label: 'Paid' },
 ];
 
 const getOptionValues = option => option.id;
@@ -186,7 +187,7 @@ class TransactionHistory extends Component {
 									transactions={transactions}
 									showActionBtns={true}
 									handlePrint={this.handlePrintClick}
-									queue={true}
+									queue={false}
 								/>
 								{meta && (
 									<div className="pagination pagination-center mt-4">

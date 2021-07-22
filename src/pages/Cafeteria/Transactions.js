@@ -49,7 +49,7 @@ class Transactions extends Component {
 		const { startDate, endDate } = this.state;
 		try {
 			this.setState({ loading: true });
-			const url = `${transactionsAPI}?patient_id=&startDate=${startDate}&endDate=${endDate}&status=&bill_source=cafeteria&payment_type&page=1&limit=10`;
+			const url = `${transactionsAPI}?patient_id=&startDate=${startDate}&endDate=${endDate}&status=&bill_source=cafeteria&payment_method&page=1&limit=10`;
 			const rs = await request(url, 'GET', true);
 
 			this.setState({
@@ -316,7 +316,7 @@ class Transactions extends Component {
 													?.map(t => `${t.name} (${t?.qty || 1})`)
 													.join(', ') || '-'}
 											</td>
-											<td>{request.payment_type}</td>
+											<td>{request.payment_method}</td>
 											<td>{formatCurrency(request.amount)}</td>
 											<td>
 												{request.status === 1 ? (
@@ -332,7 +332,7 @@ class Transactions extends Component {
 								})}
 								{!loading && transactions.length === 0 && (
 									<tr>
-										<td colSpan="7">No transactions</td>
+										<td colSpan="6">No transactions</td>
 									</tr>
 								)}
 							</tbody>

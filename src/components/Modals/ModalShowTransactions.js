@@ -29,7 +29,7 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 	const [total, setTotal] = useState(0);
 	const [allChecked, setAllChecked] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
-	const [paymentType, setPaymentType] = useState('');
+	const [paymentMethod, setPaymentMethod] = useState('');
 
 	const dispatch = useDispatch();
 
@@ -136,7 +136,7 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 				return;
 			}
 
-			if (paymentType === '') {
+			if (paymentMethod === '') {
 				notifyError('select payment method');
 				return;
 			}
@@ -146,7 +146,7 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 			const data = {
 				items: checked,
 				patient_id: patient.id,
-				payment_type: paymentType,
+				payment_method: paymentMethod,
 				amount_paid: total,
 			};
 			const url = 'transactions/process-bulk';
@@ -193,102 +193,107 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 							true
 						)}`}</h6>
 						<div className="element-box p-2">
-							<div className="table-responsive">
-								<div className="row">
-									<div className="col-sm-12">
-										<table className="table table-striped">
-											<thead>
-												<tr>
-													<th>
-														<input
-															type="checkbox"
-															checked={allChecked}
-															onChange={checkAll}
-														/>
-													</th>
-													<th>DATE</th>
-													<th>DEPARTMENT</th>
-													<th>AMOUNT (&#x20A6;)</th>
-												</tr>
-											</thead>
-											<tbody>
-												{transactions.map((item, i) => {
-													return (
-														<tr key={i}>
-															<td>
-																<input
-																	type="checkbox"
-																	name="select"
-																	id={`select${i}`}
-																	value={item.id}
-																	onChange={onChecked}
-																/>
-															</td>
-															<td>
-																{moment(item.createdAt).format(
-																	'DD-MMM-YYYY h:mm a'
-																)}
-															</td>
-															<td className="flex">
-																<span className="text-capitalize">
-																	{item.bill_source}
-																</span>
-															</td>
-															<td>{formatCurrency(item.amount || 0)}</td>
-														</tr>
-													);
-												})}
-												<tr>
-													<td colSpan="3" className="text-right">
-														Total:
-													</td>
-													<td>{formatCurrency(total)}</td>
-												</tr>
-											</tbody>
-										</table>
-										{meta && (
-											<div className="pagination pagination-center mt-4">
-												<Pagination
-													current={parseInt(meta.currentPage, 10)}
-													pageSize={parseInt(meta.itemsPerPage, 10)}
-													total={parseInt(meta.totalPages, 10)}
-													showTotal={total => `Total ${total} transactions`}
-													itemRender={itemRender}
-													onChange={current => onNavigatePage(current)}
-												/>
+							{!loading && transactions.length > 0 && (
+								<div className="table-responsive">
+									<div className="row">
+										<div className="col-sm-12">
+											<table className="table table-striped">
+												<thead>
+													<tr>
+														<th>
+															<input
+																type="checkbox"
+																checked={allChecked}
+																onChange={checkAll}
+															/>
+														</th>
+														<th>DATE</th>
+														<th>DEPARTMENT</th>
+														<th>AMOUNT (&#x20A6;)</th>
+													</tr>
+												</thead>
+												<tbody>
+													{transactions.map((item, i) => {
+														return (
+															<tr key={i}>
+																<td>
+																	<input
+																		type="checkbox"
+																		name="select"
+																		id={`select${i}`}
+																		value={item.id}
+																		onChange={onChecked}
+																	/>
+																</td>
+																<td>
+																	{moment(item.createdAt).format(
+																		'DD-MMM-YYYY h:mm a'
+																	)}
+																</td>
+																<td className="flex">
+																	<span className="text-capitalize">
+																		{item.bill_source}
+																	</span>
+																</td>
+																<td>{formatCurrency(item.amount || 0)}</td>
+															</tr>
+														);
+													})}
+													<tr>
+														<td colSpan="3" className="text-right">
+															Total:
+														</td>
+														<td>{formatCurrency(total)}</td>
+													</tr>
+												</tbody>
+											</table>
+											{meta && (
+												<div className="pagination pagination-center mt-4">
+													<Pagination
+														current={parseInt(meta.currentPage, 10)}
+														pageSize={parseInt(meta.itemsPerPage, 10)}
+														total={parseInt(meta.totalPages, 10)}
+														showTotal={total => `Total ${total} transactions`}
+														itemRender={itemRender}
+														onChange={current => onNavigatePage(current)}
+													/>
+												</div>
+											)}
+										</div>
+										<div className="col-md-12 mt-4">
+											<div className="form-inline">
+												<div className="form-group mr-3">
+													<select
+														placeholder="Select Payment Method"
+														className="form-control"
+														onChange={e => setPaymentMethod(e.target.value)}>
+														<option value="">Select Payment Method</option>
+														{paymentMethods
+															.filter(p => p.name !== 'Voucher')
+															.map((d, i) => (
+																<option key={i} value={d.name}>
+																	{d.name}
+																</option>
+															))}
+													</select>
+												</div>
+												<button
+													onClick={() => processPayment()}
+													className="btn btn-primary">
+													{submitting ? (
+														<img src={waiting} alt="submitting" />
+													) : (
+														'Approve Payment'
+													)}
+												</button>
 											</div>
-										)}
-									</div>
-									<div className="col-md-12 mt-4">
-										<div className="form-inline">
-											<div className="form-group mr-3">
-												<select
-													placeholder="Select Payment Method"
-													className="form-control"
-													onChange={e => setPaymentType(e.target.value)}>
-													<option value="">Select Payment Method</option>
-													{paymentMethods
-														.filter(p => p.name !== 'Voucher')
-														.map((d, i) => (
-															<option key={i} value={d.name}>
-																{d.name}
-															</option>
-														))}
-												</select>
-											</div>
-											<button
-												onClick={() => processPayment()}
-												className="btn btn-primary">
-												{submitting ? (
-													<img src={waiting} alt="submitting" />
-												) : (
-													'Approve Payment'
-												)}
-											</button>
 										</div>
 									</div>
 								</div>
-							</div>
+							)}
+							{!loading && transactions.length === 0 && (
+								<div>No Transactions Pending!</div>
+							)}
 						</div>
 					</div>
 				</div>

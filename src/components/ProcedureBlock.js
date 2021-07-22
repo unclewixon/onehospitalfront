@@ -206,7 +206,7 @@ class ProcedureBlock extends Component {
 									<td>
 										{data.item.cancelled === 0 && (
 											<>
-												{data.transaction?.status === 0 ? (
+												{data.item.transaction?.status === 0 ? (
 													<span className="badge badge-warning">
 														Awaiting Payment
 													</span>
@@ -248,8 +248,8 @@ class ProcedureBlock extends Component {
 											: '--'}
 									</td>
 									<td>
-										{data.transaction.status === 1 ||
-										data.transaction.status === -1 ? (
+										{data.item.transaction.status === 1 ||
+										data.item.transaction.status === -1 ? (
 											<>
 												{!data.item?.scheduledDate ? (
 													<a

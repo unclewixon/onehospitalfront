@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 
 import { paginate } from '../../services/constants';
-import { itemRender, formatCurrency } from '../../services/utilities';
+import { itemRender } from '../../services/utilities';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { request } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
@@ -64,7 +64,6 @@ const Inventory = () => {
 										<th>Drug Name</th>
 										<th>Generic Name</th>
 										<th>Unit of Measure</th>
-										<th>Unit Price</th>
 										<th></th>
 									</tr>
 								</thead>
@@ -75,7 +74,6 @@ const Inventory = () => {
 												<td>{item.name}</td>
 												<td>{item.generic.name}</td>
 												<td>{item.unitOfMeasure}</td>
-												<td>{formatCurrency(item.unitCost)}</td>
 												<td>
 													<Tooltip title="Edit Drug">
 														<i

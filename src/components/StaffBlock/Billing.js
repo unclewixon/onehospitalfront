@@ -48,7 +48,7 @@ export class Billing extends Component {
 		const { startDate, endDate } = this.state;
 		try {
 			this.setState({ loading: true });
-			const url = `${transactionsAPI}?staff_id=${this.props.staff.details.id}&startDate=${startDate}&endDate=${endDate}&status=&bill_source=cafeteria&payment_type&page=2&limit=2`;
+			const url = `${transactionsAPI}?staff_id=${this.props.staff.details.id}&startDate=${startDate}&endDate=${endDate}&status=&bill_source=cafeteria&payment_method&page=2&limit=2`;
 			const rs = await request(url, 'GET', true);
 
 			this.props.loadStaffTransaction(rs);
@@ -277,7 +277,7 @@ export class Billing extends Component {
 															{request.name ? request.name : 'No name'}
 														</td>
 														<td className="text-center">
-															{request.payment_type}
+															{request.payment_method}
 														</td>
 														<td className="text-center">{request.amount}</td>
 														<td className="text-center">{request.status}</td>

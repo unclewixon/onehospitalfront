@@ -256,7 +256,7 @@ const PatientBills = () => {
 															)}
 														</td>
 														<td>{formatCurrency(item.amount || 0)}</td>
-														<td>{item.payment_type || '--'}</td>
+														<td>{item.payment_method || '--'}</td>
 														<td>
 															{item.status === 0 && (
 																<span className="badge badge-secondary text-white">

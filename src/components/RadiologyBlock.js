@@ -302,23 +302,23 @@ class RadiologyBlock extends Component {
 									</td>
 									<td>
 										{scan.item.cancelled === 0 &&
-											scan.transaction &&
-											scan.transaction.status === 0 && (
+											scan.item.transaction &&
+											scan.item.transaction.status === 0 && (
 												<span className="badge badge-warning">
 													Awaiting Payment
 												</span>
 											)}
 										{scan.item.cancelled === 0 &&
-											scan.transaction &&
-											scan.transaction.status === 1 &&
+											scan.item.transaction &&
+											scan.item.transaction.status === 1 &&
 											scan.item.filled === 0 && (
 												<span className="badge badge-info text-white">
 													Pending
 												</span>
 											)}
 										{scan.item.cancelled === 0 &&
-											scan.transaction &&
-											scan.transaction.status === 1 &&
+											scan.item.transaction &&
+											scan.item.transaction.status === 1 &&
 											scan.item.filled === 1 &&
 											scan.item.approved === 0 && (
 												<span className="badge badge-secondary">
@@ -336,8 +336,8 @@ class RadiologyBlock extends Component {
 									</td>
 									<td className="row-actions">
 										{scan.item.cancelled === 0 &&
-											scan.transaction &&
-											scan.transaction.status === 1 && (
+											scan.item.transaction &&
+											scan.item.transaction.status === 1 && (
 												<>
 													{/* after payment, capture scan */}
 													{scan.item.received === 0 && (
