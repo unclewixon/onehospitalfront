@@ -86,9 +86,7 @@ const ModalServiceDetails = ({ closeModal, transaction }) => {
 										<tbody>
 											<tr>
 												<td>{item?.request?.code}</td>
-												<td nowrap="nowrap">
-													{transaction?.service?.item?.name}
-												</td>
+												<td>{transaction?.service?.item?.name}</td>
 											</tr>
 										</tbody>
 									</table>
