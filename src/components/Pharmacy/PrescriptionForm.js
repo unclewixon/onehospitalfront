@@ -163,7 +163,6 @@ const PrescriptionForm = ({
 				id: i + 1,
 				generic: item.generic,
 				drug: item.drug,
-				hmo_id: chosenPatient.hmo.id,
 				dose_quantity: item.quantity,
 				refills: item.refills && item.refills !== '' ? item.refills : 0,
 				frequency: item.frequency,
@@ -200,6 +199,7 @@ const PrescriptionForm = ({
 				notifyError(rs.message);
 			}
 		} catch (e) {
+			console.log(e);
 			dispatch(stopBlock());
 			setSubmitting(false);
 			notifyError('Error while creating new pharmacy request');
