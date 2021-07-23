@@ -5,23 +5,26 @@ import { useForm } from 'react-hook-form';
 import Select from 'react-select';
 import { confirmAlert } from 'react-confirm-alert';
 import { Table } from 'react-bootstrap';
-import DatePicker from 'react-datepicker';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 import { updateEncounterData } from '../../../actions/patient';
 import { startBlock, stopBlock } from '../../../actions/redux-block';
-import { request, groupBy, hasExpired } from '../../../services/utilities';
+import { request, hasExpired } from '../../../services/utilities';
 import { notifyError } from '../../../services/notify';
 import { ReactComponent as PlusIcon } from '../../../assets/svg-icons/plus.svg';
 import { ReactComponent as EditIcon } from '../../../assets/svg-icons/edit.svg';
 import { ReactComponent as TrashIcon } from '../../../assets/svg-icons/trash.svg';
-import { diagnosisAPI, CK_TREATMENT_PLAN } from '../../../services/constants';
+import {
+	diagnosisAPI,
+	CK_TREATMENT_PLAN,
+	CK_INVESTIGATION_REGIMEN,
+	CK_INVESTIGATION_PROCEDURE,
+} from '../../../services/constants';
 import SSRStorage from '../../../services/storage';
 
 const storage = new SSRStorage();
 
 const defaultValues = {
-	genericName: '',
 	drugId: '',
 	quantity: '',
 	refills: '',
@@ -29,10 +32,8 @@ const defaultValues = {
 	frequencyType: '',
 	duration: '',
 	regimen_instruction: '',
+	diagnosis: [],
 };
-
-const category_id = 1;
-const categories = [{ id: 19, name: 'General Surgery' }];
 
 const PlanForm = ({ previous, next, patient }) => {
 	const { register, handleSubmit, setValue, reset } = useForm({
@@ -40,104 +41,107 @@ const PlanForm = ({ previous, next, patient }) => {
 	});
 
 	const [loaded, setLoaded] = useState(false);
+	const [procedureData, setProcedureData] = useState(null);
+	const [regimenData, setRegimenData] = useState(null);
 	const [treatmentPlan, setTreatmentPlan] = useState('');
-	const [inventories, setInventories] = useState([]);
-	const [services, setServices] = useState([]);
-	const [genName, setGenName] = useState(null);
 	const [editing, setEditing] = useState(false);
 	const [regimenNote, setRegimenNote] = useState('');
+	const [diagnosisType, setDiagnosisType] = useState('icd10');
 
 	// selected items
 	const [frequencyType, setFrequencyType] = useState(null);
 	const [refillable, setRefillable] = useState(false);
-	const [chosenDrug, setChosenDrug] = useState(null);
-	const [chosenGeneric, setChosenGeneric] = useState(null);
+	const [generic, setGeneric] = useState(null);
+	const [genericDrugs, setGenericDrugs] = useState([]);
 	const [selectedDrug, setSelectedDrug] = useState(null);
 	const [drugsSelected, setDrugsSelected] = useState([]);
-
-	// appointment
-	const [appointmentDate, setAppointmentDate] = useState('');
-	const [appointmentReason, setAppointmentReason] = useState('');
+	const [diagnoses, setDiagnoses] = useState([]);
 
 	// procedure
 	const [service, setService] = useState(null);
-	const [diagnoses, setDiagnoses] = useState([]);
+	const [procDiagnoses, setProcDiagnoses] = useState([]);
 	const [bill, setBill] = useState('later');
 	const [procedureNote, setProcedureNote] = useState('');
-	const [category, setCategory] = useState(null);
 
 	const encounter = useSelector(state => state.patient.encounterData);
 
 	const dispatch = useDispatch();
 
-	const getServiceUnit = useCallback(
-		async hmoId => {
-			try {
-				dispatch(startBlock());
-
-				const url = `inventory/stocks-by-category/${category_id}/${hmoId}`;
-				const rs = await request(url, 'GET', true);
-				setInventories(rs);
-
-				dispatch(stopBlock());
-			} catch (error) {
-				console.log(error);
-				notifyError('Error fetching drugs');
-				dispatch(stopBlock());
-			}
-		},
-		[dispatch]
-	);
+	const loadGenericDrugs = useCallback(async () => {
+		try {
+			dispatch(startBlock());
+			const rs = await request('inventory/generics?limit=1000', 'GET', true);
+			setGenericDrugs(rs.result);
+			dispatch(stopBlock());
+		} catch (e) {
+			dispatch(stopBlock());
+			notifyError('Error while fetching generic names');
+		}
+	}, [dispatch]);
 
 	const retrieveData = useCallback(async () => {
 		const data = await storage.getItem(CK_TREATMENT_PLAN);
 		setTreatmentPlan(data || encounter.treatmentPlan);
+
+		const regimenData = await storage.getItem(CK_INVESTIGATION_REGIMEN);
+		console.log(regimenData);
+		if (regimenData) {
+			setDrugsSelected(regimenData.drugs);
+			setRegimenNote(regimenData.regimenNote);
+		}
+
+		const proc = await storage.getItem(CK_INVESTIGATION_PROCEDURE);
+		if (proc) {
+			setBill(proc.bill);
+			setProcedureNote(proc.procedureNote);
+			setService(proc.service);
+			setProcDiagnoses(proc.procDiagnoses);
+		}
 	}, [encounter]);
 
 	useEffect(() => {
 		if (!loaded) {
-			getServiceUnit(patient.hmo.id);
+			loadGenericDrugs();
 			retrieveData();
 			setLoaded(true);
 		}
-	}, [getServiceUnit, loaded, patient, retrieveData]);
+	}, [loadGenericDrugs, loaded, retrieveData]);
 
-	// group drugs by generic name
-	const drugValues = groupBy(
-		inventories.filter(drug => drug.generic_name !== null),
-		'generic_name'
-	);
-
-	// list of drugs by generic name
-	const drugObj = Object.keys(drugValues).map(name => ({
-		generic_name: name,
-		drugs: drugValues[name],
-	}));
-
-	// list generic names
-	const genericNameOptions = Object.keys(drugValues).map(name => ({
-		value: name,
-		label: name,
-	}));
-
-	// list of drugs
-	const genericItem = drugObj.find(
-		drug => genName && drug.generic_name === genName
-	);
-
-	const drugNameOptions = genericItem
-		? genericItem.drugs.map(drug => ({
-				value: drug.id,
-				label: `${drug.name}${drug.vendor ? ` - ${drug.vendor.name}` : ''}`,
-		  }))
-		: [];
-
-	const onDrugSelection = e => {
-		const drug = inventories.find(drug => drug.id === e.value);
-		const expired = hasExpired(drug.expiry_date);
-		if (expired) {
+	const onDrugExpired = (drug, bypass) => {
+		const expired =
+			drug.batches.length > 0
+				? hasExpired(drug.batches[0].expirationDate)
+				: true;
+		if (!expired || bypass) {
+			setValue('drugId', drug.id);
+			setSelectedDrug({
+				...drug,
+				qty: drug.batches.reduce((total, item) => total + item.quantity, 0),
+				basePrice: drug.batches.length > 0 ? drug.batches[0].unitPrice : 0,
+			});
+			setGeneric(drug.generic);
+		} else {
 			confirmAlert({
 				customUI: ({ onClose }) => {
+					const continueBtn = async () => {
+						setValue('drugId', drug.id);
+						setSelectedDrug({
+							...drug,
+							qty: drug.batches.reduce(
+								(total, item) => total + item.quantity,
+								0
+							),
+							basePrice:
+								drug.batches.length > 0 ? drug.batches[0].unitPrice : 0,
+						});
+						setGeneric(drug.generic);
+					};
+
+					const changeBtn = async () => {
+						setSelectedDrug(null);
+						onClose();
+					};
+
 					return (
 						<div className="custom-ui text-center">
 							<h3 className="text-danger">Expiration</h3>
@@ -145,9 +149,58 @@ const PlanForm = ({ previous, next, patient }) => {
 							<div>
 								<button
 									className="btn btn-primary"
-									style={{ margin: 10 }}
-									onClick={onClose}>
-									Okay
+									style={{ margin: '10px' }}
+									onClick={changeBtn}>
+									Change
+								</button>
+								<button
+									className="btn btn-secondary"
+									style={{ margin: '10px' }}
+									onClick={continueBtn}>
+									Continue
+								</button>
+							</div>
+						</div>
+					);
+				},
+			});
+		}
+	};
+
+	const onDrugSelection = drug => {
+		if (
+			drug.batches.length === 0 ||
+			(drug.batches.length > 0 &&
+				drug.batches.reduce((total, item) => total + item.quantity, 0) === 0)
+		) {
+			confirmAlert({
+				customUI: ({ onClose }) => {
+					const continueBtn = async () => {
+						onDrugExpired(drug, true);
+						onClose();
+					};
+
+					const changeBtn = async () => {
+						setSelectedDrug(null);
+						onClose();
+					};
+
+					return (
+						<div className="custom-ui text-center">
+							<h3 className="text-danger">Stock</h3>
+							<p>{`${drug.name} is out of stock`}</p>
+							<div>
+								<button
+									className="btn btn-primary"
+									style={{ margin: '10px' }}
+									onClick={changeBtn}>
+									Change
+								</button>
+								<button
+									className="btn btn-secondary"
+									style={{ margin: '10px' }}
+									onClick={continueBtn}>
+									Continue
 								</button>
 							</div>
 						</div>
@@ -155,9 +208,18 @@ const PlanForm = ({ previous, next, patient }) => {
 				},
 			});
 		} else {
-			setValue('drugId', e.value);
-			setSelectedDrug(drug);
+			onDrugExpired(drug, false);
 		}
+	};
+
+	const getDrugOptions = async q => {
+		if (!q || q.length < 1) {
+			return [];
+		}
+
+		const url = `inventory/drugs?q=${q}&generic_id=${generic?.id || ''}`;
+		const res = await request(url, 'GET', true);
+		return res.result || [];
 	};
 
 	const onHandleInputChange = e => {
@@ -170,77 +232,76 @@ const PlanForm = ({ previous, next, patient }) => {
 	};
 
 	const onFormSubmit = (data, e) => {
-		const drug = inventories.find(drug => drug.id === data.drugId);
 		const newDrug = [
 			...drugsSelected,
-			{
-				...data,
-				drugName: drug?.name || '',
-				drugCost: drug?.sales_price || 0.0,
-				hmoId: drug.hmo.id,
-				hmoPrice: drug?.hmoPrice || 0.0,
-			},
+			{ drug: selectedDrug, generic, ftype: frequencyType, ...data },
 		];
 		setDrugsSelected(newDrug);
 		setEditing(false);
 		setSelectedDrug(null);
 		reset(defaultValues);
 
+		setDiagnoses([]);
+		setGeneric(null);
 		setFrequencyType(null);
-		setChosenDrug(null);
-		setChosenGeneric(null);
+
+		const datum = { ...regimenData, regimenNote, drugs: newDrug };
+		setRegimenData(datum);
+		storage.setItem(CK_INVESTIGATION_REGIMEN, datum);
 	};
 
 	const onTrash = index => {
 		const newPharm = drugsSelected.filter((pharm, i) => index !== i);
 		setDrugsSelected(newPharm);
+		const datum = { ...regimenData, regimenNote, drugs: newPharm };
+		setRegimenData(datum);
+		storage.setItem(CK_INVESTIGATION_REGIMEN, datum);
 	};
 
-	const startEdit = (request, index) => {
+	const startEdit = (item, index) => {
 		onTrash(index);
-		const items = Object.entries(request);
+		const items = Object.entries(item);
 		for (const req of items) {
 			const [key, value] = req;
 			setValue(key, value);
 		}
+		setFrequencyType(item.ftype);
+		setSelectedDrug(item.drug);
+		setGeneric(item.generic);
 		setEditing(true);
 	};
 
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option =>
-		`${option.description} (Icd${option.diagnosisType}: ${option.icd10Code ||
-			option.procedureCode})`;
+		`${option.description} (${option.type}: ${option.code})`;
 
 	const getOptions = async q => {
 		if (!q || q.length < 2) {
 			return [];
 		}
 
-		const url = `${diagnosisAPI}/search?q=${q}`;
+		const url = `${diagnosisAPI}/search?q=${q}&diagnosisType=${diagnosisType}`;
 		const res = await request(url, 'GET', true);
 		return res;
 	};
 
 	const onSubmit = () => {
-		const data = drugsSelected.map((request, i) => ({
+		const data = drugsSelected.map((item, i) => ({
 			id: i + 1,
-			drug_generic_name: request.genericName,
-			drug_name: request.drugName,
-			drug_cost: request.drugCost,
-			drug_hmo_id: request.hmoId,
-			drug_hmo_cost: request.hmoPrice,
-			drug_id: request.drugId,
-			dose_quantity: request.quantity,
-			refills: request.refills && request.refills !== '' ? request.refills : 0,
-			frequency: request.frequency,
-			frequencyType: request.frequencyType,
-			duration: request.duration,
-			regimenInstruction: request.regimen_instruction,
-			diagnosis: request.diagnosis || [],
-			prescription: request.prescription ? 'Yes' : 'No',
+			generic: item.generic,
+			drug: item.drug,
+			hmo_id: patient.hmo.id,
+			dose_quantity: item.quantity,
+			refills: item.refills && item.refills !== '' ? item.refills : 0,
+			frequency: item.frequency,
+			frequencyType: item.frequencyType,
+			duration: item.duration,
+			regimenInstruction: item.regimen_instruction,
+			diagnosis: item.drugDiagnoses,
+			prescription: item.prescription ? 'Yes' : 'No',
 		}));
 
-		const pharmacyRequest = {
+		const regimen = {
 			requestType: 'drugs',
 			items: data,
 			patient_id: patient.id,
@@ -250,16 +311,11 @@ const PlanForm = ({ previous, next, patient }) => {
 		const procedureRequest = {
 			requestType: 'procedure',
 			patient_id: patient.id,
-			tests: service ? [{ id: service.id }] : [],
+			tests: [{ ...service }],
 			request_note: procedureNote,
 			urgent: false,
-			diagnosis: diagnoses || [],
-			bill,
-		};
-
-		const nextAppointment = {
-			appointment_date: appointmentDate,
-			description: appointmentReason,
+			diagnosis: procDiagnoses,
+			bill: bill === 'later' ? -1 : 0,
 		};
 
 		dispatch(
@@ -267,10 +323,9 @@ const PlanForm = ({ previous, next, patient }) => {
 				...encounter,
 				investigations: {
 					...encounter.investigations,
-					pharmacyRequest,
+					pharmacyRequest: regimen,
 					procedureRequest,
 				},
-				nextAppointment,
 				treatmentPlan,
 			})
 		);
@@ -334,21 +389,18 @@ const PlanForm = ({ previous, next, patient }) => {
 					<div className="form-group col-sm-6">
 						<label>Drug Generic Name</label>
 						<Select
-							placeholder="Choose a drug generic name"
-							name="genericName"
-							ref={register({ name: 'genericName', required: true })}
+							isClearable
+							placeholder="Select generic name"
+							defaultValue
+							getOptionValue={option => option.id}
+							getOptionLabel={option => option.name}
 							onChange={e => {
-								setValue('genericName', e.value);
-								setGenName(e.value);
-
-								// reset drug
-								setValue('drugId', '');
-								setSelectedDrug(null);
-								setChosenGeneric(e);
+								setGeneric(e);
 							}}
-							options={genericNameOptions}
-							required
-							value={chosenGeneric}
+							value={generic}
+							isSearchable={true}
+							options={genericDrugs}
+							name="generic_name"
 						/>
 					</div>
 					<div className="form-group col-sm-6 relative">
@@ -359,26 +411,45 @@ const PlanForm = ({ previous, next, patient }) => {
 									<div className="col-sm-12">
 										<span
 											className={`badge badge-${
-												selectedDrug.quantity > 0 ? 'info' : 'danger'
-											} text-white`}>{`Stock Level: ${selectedDrug.quantity}; Base Price: ₦${selectedDrug.sales_price}`}</span>
+												selectedDrug.qty > 0 ? 'info' : 'danger'
+											} text-white`}>{`Stock Level: ${selectedDrug.qty}; Base Price: ₦${selectedDrug.basePrice}`}</span>
 									</div>
 								</div>
 							</div>
 						)}
-						<Select
-							placeholder="Choose a drug name"
+						<AsyncSelect
+							isClearable
+							getOptionValue={option => option.id}
+							getOptionLabel={option => option.name}
+							defaultOptions
 							ref={register({ name: 'drugId', required: true })}
 							name="drugId"
-							options={drugNameOptions}
-							value={chosenDrug}
+							loadOptions={getDrugOptions}
+							value={selectedDrug}
 							onChange={e => {
-								onDrugSelection(e);
-								setChosenDrug(e);
+								if (e) {
+									onDrugSelection(e);
+								} else {
+									setValue('drugId', '');
+									setSelectedDrug(null);
+								}
 							}}
+							placeholder="select a drug"
 						/>
 					</div>
 				</div>
 				<div className="row">
+					<div className="form-group col-sm-3">
+						<label>Dose Quantity</label>
+						<input
+							type="text"
+							className="form-control"
+							placeholder="Dose Quantity"
+							ref={register({ required: true })}
+							name="quantity"
+							onChange={onHandleInputChange}
+						/>
+					</div>
 					<div className="form-group col-sm-3">
 						<label>Frequency</label>
 						<input
@@ -414,17 +485,6 @@ const PlanForm = ({ previous, next, patient }) => {
 								setValue('frequencyType', e.value);
 								setFrequencyType(e);
 							}}
-						/>
-					</div>
-					<div className="form-group col-sm-3">
-						<label>Dose Quantity</label>
-						<input
-							type="text"
-							className="form-control"
-							placeholder="Dose Quantity"
-							ref={register({ required: true })}
-							name="quantity"
-							onChange={onHandleInputChange}
 						/>
 					</div>
 					<div className="form-group col-sm-3">
@@ -479,6 +539,49 @@ const PlanForm = ({ previous, next, patient }) => {
 					</div>
 				</div>
 				<div className="row">
+					<div className="form-group col-sm-12 relative">
+						<div className="posit-top" style={{ top: '-12px' }}>
+							<div className="row">
+								<div className="form-group col-sm-12">
+									<label>
+										<input
+											type="radio"
+											checked={diagnosisType === 'icd10'}
+											onChange={() => setDiagnosisType('icd10')}
+										/>{' '}
+										ICD10
+									</label>
+									<label className="ml-2">
+										<input
+											type="radio"
+											checked={diagnosisType === 'icpc-2'}
+											onChange={() => setDiagnosisType('icpc-2')}
+										/>{' '}
+										ICPC-2
+									</label>
+								</div>
+							</div>
+						</div>
+						<h6>Diagnosis Data</h6>
+						<AsyncSelect
+							required
+							getOptionValue={getOptionValues}
+							getOptionLabel={getOptionLabels}
+							defaultOptions
+							isMulti
+							value={diagnoses}
+							name="diagnosis"
+							ref={register({ name: 'diagnosis', required: true })}
+							loadOptions={getOptions}
+							onChange={e => {
+								setValue('diagnosis', e);
+								setDiagnoses(e);
+							}}
+							placeholder="Search for diagnosis"
+						/>
+					</div>
+				</div>
+				<div className="row">
 					{!editing ? (
 						<div className="form-group col-sm-3">
 							<button
@@ -512,19 +615,29 @@ const PlanForm = ({ previous, next, patient }) => {
 										<th>Generic Name</th>
 										<th>Drug Name</th>
 										<th>Summary</th>
-										<th nowrap="nowrap" className="text-center">
+										<th>Diagnosis</th>
+										<th nowrap="nowrap" className="text-left">
 											Action
 										</th>
 									</tr>
 								</thead>
 								<tbody>
-									{drugsSelected.map((request, index) => {
+									{drugsSelected.map((item, i) => {
 										return (
-											<tr key={index}>
-												<td>{request.genericName}</td>
-												<td>{request.drugName}</td>
+											<tr key={i}>
+												<td>{item.generic?.name || '--'}</td>
+												<td>{item.drug?.name || '--'}</td>
 												<td>
-													<div className="badge badge-dark">{`${request.quantity} - ${request.frequency}x ${request.frequencyType} for ${request.duration} days`}</div>
+													<div className="badge badge-dark">{`${item.quantity} - ${item.frequency}x ${item.frequencyType} for ${item.duration} days`}</div>
+												</td>
+												<td>
+													{item.diagnosis && item.diagnosis.length > 0
+														? item.diagnosis
+																.map(
+																	d => `${d.type}: ${d.description} (${d.code})`
+																)
+																.join(', ')
+														: '-'}
 												</td>
 												<td>
 													<div className="display-flex">
@@ -534,7 +647,7 @@ const PlanForm = ({ previous, next, patient }) => {
 																	if (editing) {
 																		return;
 																	} else {
-																		startEdit(request, index);
+																		startEdit(item, i);
 																	}
 																}}
 																style={{
@@ -546,7 +659,7 @@ const PlanForm = ({ previous, next, patient }) => {
 														</div>
 														<div className="ml-2">
 															<TrashIcon
-																onClick={() => onTrash(index)}
+																onClick={() => onTrash(i)}
 																style={{
 																	width: '1rem',
 																	height: '1rem',
@@ -572,70 +685,77 @@ const PlanForm = ({ previous, next, patient }) => {
 							name="regimen_note"
 							rows="3"
 							placeholder="Regimen note"
-							onChange={e => setRegimenNote(e.target.value)}
+							onChange={e => {
+								setRegimenNote(e.target.value);
+								const data = { ...regimenData, regimenNote: e.target.value };
+								setRegimenData(data);
+								storage.setItem(CK_INVESTIGATION_REGIMEN, data);
+							}}
 							value={regimenNote}></textarea>
 					</div>
 				</div>
 			</form>
 			<div className="mt-4"></div>
-			<h5>Schedule Next Appointment</h5>
-			<div className="row">
-				<div className="col-sm-6">
-					<div className="form-group">
-						<label>Appontment Date</label>
-						<DatePicker
-							dateFormat="dd-MMM-yyyy"
-							className="single-daterange form-control"
-							selected={appointmentDate}
-							onChange={date => {
-								setAppointmentDate(date);
-							}}
-						/>
-					</div>
-				</div>
-			</div>
-			<div className="row">
-				<div className="col-sm-12">
-					<div className="form-group">
-						<label>Description/Reason</label>
-						<textarea
-							placeholder="Enter description"
-							name="appointment_desc"
-							className="form-control"
-							cols="3"
-							onChange={e => setAppointmentReason(e.target.value)}
-							value={appointmentReason}></textarea>
-					</div>
-				</div>
-			</div>
-			<div className="mt-4"></div>
 			<h5>Procedure</h5>
 			<div className="row">
-				<div className="form-group col-sm-6">
+				<div className="form-group col-sm-12">
 					<label>Procedure</label>
-					<Select
-						name="service_request"
-						placeholder="Select Procedure"
-						options={services}
-						value={service}
+					<AsyncSelect
 						getOptionValue={option => option.id}
 						getOptionLabel={option => option.name}
-						onChange={e => setService(e)}
+						defaultOptions
+						name="service_request"
+						loadOptions={getServices}
+						value={service}
+						onChange={e => {
+							setService(e);
+							const data = { ...procedureData, service: e };
+							setProcedureData(data);
+							storage.setItem(CK_INVESTIGATION_PROCEDURE, data);
+						}}
+						placeholder="Select Procedure"
 					/>
 				</div>
-				<div className="form-group col-sm-6">
-					<label>Primary diagnoses</label>
+			</div>
+			<div className="row">
+				<div className="form-group col-sm-12 relative">
+					<div className="posit-top">
+						<div className="row">
+							<div className="form-group col-sm-12">
+								<label>
+									<input
+										type="radio"
+										checked={diagnosisType === 'icd10'}
+										onChange={() => setDiagnosisType('icd10')}
+									/>{' '}
+									ICD10
+								</label>
+								<label className="ml-2">
+									<input
+										type="radio"
+										checked={diagnosisType === 'icpc-2'}
+										onChange={() => setDiagnosisType('icpc-2')}
+									/>{' '}
+									ICPC-2
+								</label>
+							</div>
+						</div>
+					</div>
+					<h6>Diagnosis Data</h6>
 					<AsyncSelect
 						required
 						getOptionValue={getOptionValues}
 						getOptionLabel={getOptionLabels}
 						defaultOptions
 						isMulti
+						value={diagnoses}
 						name="diagnosis"
 						loadOptions={getOptions}
-						value={diagnoses}
 						onChange={e => {
-							setDiagnoses(e);
+							setProcDiagnoses(e);
+							const data = { ...procedureData, procDiagnoses: e };
+							setProcedureData(data);
+							storage.setItem(CK_INVESTIGATION_PROCEDURE, data);
 						}}
 						placeholder="Search for diagnosis"
 					/>
@@ -649,7 +769,12 @@ const PlanForm = ({ previous, next, patient }) => {
 						name="request_note"
 						rows="3"
 						placeholder="Enter request note"
-						onChange={e => setProcedureNote(e.target.value)}
+						onChange={e => {
+							setProcedureNote(e.target.value);
+							const data = { ...procedureData, procedureNote: e.target.value };
+							setProcedureData(data);
+							storage.setItem(CK_INVESTIGATION_PROCEDURE, data);
+						}}
 						value={procedureNote}></textarea>
 				</div>
 			</div>
@@ -664,7 +789,12 @@ const PlanForm = ({ previous, next, patient }) => {
 									name="bill"
 									value="now"
 									checked={bill === 'now'}
-									onChange={() => setBill('now')}
+									onChange={() => {
+										setBill('now');
+										const data = { ...procedureData, bill: 'now' };
+										setProcedureData(data);
+										storage.setItem(CK_INVESTIGATION_PROCEDURE, data);
+									}}
 								/>
 								<label className="mx-1">Bill now</label>
 							</div>
@@ -677,7 +807,12 @@ const PlanForm = ({ previous, next, patient }) => {
 									name="bill"
 									value="later"
 									checked={bill === 'later'}
-									onChange={() => setBill('later')}
+									onChange={() => {
+										setBill('later');
+										const data = { ...procedureData, bill: 'later' };
+										setProcedureData(data);
+										storage.setItem(CK_INVESTIGATION_PROCEDURE, data);
+									}}
 								/>
 								<label className="mx-1">Bill later </label>
 							</div>

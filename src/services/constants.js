@@ -24,8 +24,11 @@ export const CK_PAST_DIAGNOSIS = 'E:PAST_DIAGNOSIS';
 export const CK_INVESTIGATIONS = 'E:INVESTIGATIONS';
 export const CK_INVESTIGATION_LAB = 'E:INVESTIGATION_LAB';
 export const CK_INVESTIGATION_SCAN = 'E:INVESTIGATION_SCAN';
+export const CK_INVESTIGATION_REGIMEN = 'E:INVESTIGATION_REGIMEN';
+export const CK_INVESTIGATION_PROCEDURE = 'E:INVESTIGATION_PROCEDURE';
 export const CK_TREATMENT_PLAN = 'E:TREATMENT_PLAN';
 export const CK_CONSUMABLE = 'E:CONSUMABLE';
+export const CK_ITEM_OTEHRS = 'E:ITEM_OTEHRS';
 
 export const socket = socketIOClient(API_URI, {
 	transports: ['websocket', 'polling'],
@@ -60,7 +63,6 @@ export const settingsAPI = 'settings/';
 export const diagnosisAPI = 'settings/diagnosis';
 export const labourAPI = 'labour-management/enrollments';
 export const consultationAPI = 'consultation/';
-export const consumableAPI = 'consumables';
 export const ivfEnroll = 'ivf/enroll';
 export const antenatalAPI = 'patient/antenatal';
 

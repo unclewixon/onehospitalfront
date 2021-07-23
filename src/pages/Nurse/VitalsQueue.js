@@ -116,7 +116,7 @@ const VitalsQueue = () => {
 											<td>
 												{moment(queue.createdAt).format('DD-MM-YYYY h:mmA')}
 											</td>
-											<td>
+											<td nowrap="nowrap">
 												<Tooltip title="View Profile">
 													<a
 														className="btn btn-primary btn-sm ml-2"

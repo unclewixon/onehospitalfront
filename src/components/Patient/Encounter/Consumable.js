@@ -2,8 +2,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import SunEditor from 'suneditor-react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Table } from 'react-bootstrap';
 import Select from 'react-select';
+import DatePicker from 'react-datepicker';
 
 import {
 	updateEncounterData,
@@ -11,7 +11,6 @@ import {
 } from '../../../actions/patient';
 import {
 	consultationAPI,
-	consumableAPI,
 	defaultEncounter,
 	CK_CONSUMABLE,
 	CK_COMPLAINTS,
@@ -24,6 +23,9 @@ import {
 	CK_INVESTIGATIONS,
 	CK_INVESTIGATION_LAB,
 	CK_INVESTIGATION_SCAN,
+	CK_INVESTIGATION_REGIMEN,
+	CK_INVESTIGATION_PROCEDURE,
+	CK_ITEM_OTEHRS,
 	CK_TREATMENT_PLAN,
 	CK_DIAGNOSIS,
 	CK_PAST_DIAGNOSIS,
@@ -31,7 +33,6 @@ import {
 import { request } from '../../../services/utilities';
 import { notifyError, notifySuccess } from '../../../services/notify';
 import { startBlock, stopBlock } from '../../../actions/redux-block';
-import { ReactComponent as TrashIcon } from '../../../assets/svg-icons/trash.svg';
 import SSRStorage from '../../../services/storage';
 
 const storage = new SSRStorage();
@@ -49,6 +50,11 @@ const Consumable = ({
 	const [quantity, setQuantity] = useState('');
 	const [items, setItems] = useState([]);
 	const [item, setItem] = useState(null);
+	const [others, setOthers] = useState(null);
+
+	// appointment
+	const [appointmentDate, setAppointmentDate] = useState('');
+	const [appointmentReason, setAppointmentReason] = useState('');
 
 	// selected
 	const [selectedConsumables, setSelectedConsumables] = useState([]);
@@ -60,8 +66,8 @@ const Consumable = ({
 	const fetchConsumables = useCallback(async () => {
 		try {
 			dispatch(startBlock());
-			const rs = await request(`${consumableAPI}?list=all`, 'GET', true);
-			setItems(rs);
+			const rs = await request('inventory/stores?limit=100', 'GET', true);
+			setItems(rs.result);
 			dispatch(stopBlock());
 		} catch (error) {
 			console.log(error);
@@ -73,6 +79,14 @@ const Consumable = ({
 	const retrieveData = useCallback(async () => {
 		const data = await storage.getItem(CK_CONSUMABLE);
 		setInstruction(data || encounter.instruction);
+
+		const datum = await storage.getItem(CK_ITEM_OTEHRS);
+		if (datum) {
+			setSelectedConsumables(datum.consumables);
+			setRequestNote(datum.requestNote);
+			// setAppointmentDate(datum.date || '');
+			setAppointmentReason(datum.value);
+		}
 	}, [encounter]);
 
 	useEffect(() => {
@@ -87,9 +101,14 @@ const Consumable = ({
 		if (item && item !== '' && quantity !== '') {
 			const found = selectedConsumables.find(c => c.item === item);
 			if (!found) {
-				setSelectedConsumables([...selectedConsumables, { item, quantity }]);
+				const i = [...selectedConsumables, { item, quantity }];
+				setSelectedConsumables(i);
 				setItem(null);
 				setQuantity('');
+
+				const data = { ...others, consumables: i };
+				setOthers(data);
+				storage.setItem(CK_ITEM_OTEHRS, data);
 			}
 		} else {
 			notifyError('Error, please select item or enter quantity');
@@ -99,6 +118,9 @@ const Consumable = ({
 	const onTrash = (index, type) => {
 		const items = selectedConsumables.filter((test, i) => index !== i);
 		setSelectedConsumables(items);
+		const data = { ...others, consumables: items };
+		setOthers(data);
+		storage.setItem(CK_ITEM_OTEHRS, data);
 	};
 
 	const onSubmit = async e => {
@@ -111,7 +133,17 @@ const Consumable = ({
 				request_note: requestNote,
 			};
 
-			const encounterData = { ...encounter, instruction, consumables };
+			const nextAppointment = {
+				appointment_date: appointmentDate,
+				description: appointmentReason,
+			};
+
+			const encounterData = {
+				...encounter,
+				instruction,
+				consumables,
+				nextAppointment,
+			};
 			dispatch(updateEncounterData(encounterData));
 
 			const url = `${consultationAPI}${patient.id}/save?appointment_id=${appointment_id}`;
@@ -132,8 +164,11 @@ const Consumable = ({
 				storage.removeItem(CK_INVESTIGATIONS);
 				storage.removeItem(CK_INVESTIGATION_LAB);
 				storage.removeItem(CK_INVESTIGATION_SCAN);
+				storage.removeItem(CK_INVESTIGATION_REGIMEN);
+				storage.removeItem(CK_INVESTIGATION_PROCEDURE);
 				storage.removeItem(CK_TREATMENT_PLAN);
 				storage.removeItem(CK_CONSUMABLE);
+				storage.removeItem(CK_ITEM_OTEHRS);
 				storage.removeItem(CK_DIAGNOSIS);
 				storage.removeItem(CK_PAST_DIAGNOSIS);
 
@@ -183,50 +218,44 @@ const Consumable = ({
 							value={quantity}
 						/>
 					</div>
-					{/* <div className="col-sm-2" style={{ position: 'relative' }}>
-						<a
-							className="btn btn-danger btn-sm"
-							style={{ margin: '45px 0 0', display: 'block' }}
-							onClick={() => add()}>
-							<i className="os-icon os-icon-plus-circle" /> Add
-						</a>
-					</div> */}
 				</div>
-				<div className="row">
-					<div className="col-md-12">
-						<div className="element-box p-3 m-0 mt-3 w-100">
-							<Table>
-								<thead>
-									<tr>
-										<th>Item</th>
-										<th>Quantity</th>
-										<th>Action</th>
-									</tr>
-								</thead>
-								<tbody>
-									{selectedConsumables.map((item, i) => {
-										return (
-											<tr key={i}>
-												<td>{item.item.name}</td>
-												<td>{item.quantity}</td>
-												<td>
-													<TrashIcon
-														onClick={() => onTrash(i)}
-														style={{
-															width: '1rem',
-															height: '1rem',
-															cursor: 'pointer',
-														}}
-													/>
-												</td>
-											</tr>
-										);
-									})}
-								</tbody>
-							</Table>
+				{selectedConsumables.length > 0 && (
+					<div className="row">
+						<div className="col-md-12">
+							<div className="rentals-list-w">
+								<div className="filter-side">
+									<div className="filter-w">
+										<div className="filter-body p-2">
+											<span className="select2 select2-container select2-container--default">
+												<span className="selection">
+													<span className="select2-selection select2-selection--multiple">
+														<ul className="select2-selection__rendered">
+															{selectedConsumables.map((item, i) => {
+																return (
+																	<li
+																		className="select2-selection__choice"
+																		key={i}>
+																		<span
+																			className="select2-selection__choice__remove pointer"
+																			role="presentation"
+																			onClick={() => onTrash(i)}>
+																			×
+																		</span>
+																		{`${item.item.name} - ${item.quantity}`}
+																	</li>
+																);
+															})}
+														</ul>
+													</span>
+												</span>
+											</span>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
-				</div>
+				)}
 				<div className="row mt-4">
 					<div className="form-group col-sm-12">
 						<label>Request Note</label>
@@ -235,8 +264,52 @@ const Consumable = ({
 							name="request_note"
 							rows="3"
 							placeholder="Enter request note"
-							onChange={e => setRequestNote(e.target.value)}
+							onChange={e => {
+								setRequestNote(e.target.value);
+								const data = { ...others, requestNote: e.target.value };
+								setOthers(data);
+								storage.setItem(CK_ITEM_OTEHRS, data);
+							}}
 							value={requestNote}></textarea>
+					</div>
+				</div>
+				<div className="mt-4"></div>
+				<h5>Schedule Next Appointment</h5>
+				<div className="row">
+					<div className="col-sm-6">
+						<div className="form-group">
+							<label>Appontment Date</label>
+							<DatePicker
+								dateFormat="dd-MMM-yyyy"
+								className="single-daterange form-control"
+								selected={appointmentDate}
+								onChange={date => {
+									setAppointmentDate(date);
+									const data = { ...others, date };
+									setOthers(data);
+									storage.setItem(CK_ITEM_OTEHRS, data);
+								}}
+							/>
+						</div>
+					</div>
+				</div>
+				<div className="row">
+					<div className="col-sm-12">
+						<div className="form-group">
+							<label>Description/Reason</label>
+							<textarea
+								placeholder="Enter description"
+								name="appointment_desc"
+								className="form-control"
+								cols="3"
+								onChange={e => {
+									setAppointmentReason(e.target.value);
+									const data = { ...others, reason: e.target.value };
+									setOthers(data);
+									storage.setItem(CK_ITEM_OTEHRS, data);
+								}}
+								value={appointmentReason}></textarea>
+						</div>
 					</div>
 				</div>
 				<div className="mt-4"></div>

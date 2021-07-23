@@ -52,6 +52,14 @@ const Dashboard = () => {
 		[dispatch, profile]
 	);
 
+	const updateAppointment = useCallback(
+		e => {
+			const updatedAppointments = updateImmutable(appointments, e);
+			setAppointments([...updatedAppointments]);
+		},
+		[appointments]
+	);
+
 	useEffect(() => {
 		if (!listenning) {
 			setListenning(true);
@@ -77,23 +85,17 @@ const Dashboard = () => {
 
 			socket.on('appointment-update', data => {
 				if (data.action === 1) {
-					// replace with update appointments
-					getAppointments();
+					updateAppointment(data.appointment);
 				}
 			});
 		}
-	}, [appointments, getAppointments, listenning, meta]);
+	}, [appointments, listenning, meta, updateAppointment]);
 
 	useEffect(() => {
 		if (loading) {
 			getAppointments();
 		}
 	}, [getAppointments, loading]);
-
-	const updateAppointment = e => {
-		const updatedAppointments = updateImmutable(appointments, e);
-		setAppointments([...updatedAppointments]);
-	};
 
 	const onNavigatePage = nextPage => {
 		dispatch(startBlock());

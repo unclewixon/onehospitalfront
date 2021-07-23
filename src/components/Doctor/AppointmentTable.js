@@ -19,6 +19,7 @@ import ProfilePopup from '../Patient/ProfilePopup';
 import TableLoading from '../TableLoading';
 import ModalViewAppointment from '../Modals/ModalViewAppointment';
 import OpenEncounter from '../Patient/Modals/OpenEncounter';
+import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 	const [updating, setUpdating] = useState(null);
@@ -54,11 +55,14 @@ const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 				doctor_id: staff.id,
 				consulting_room_id: staff.room.id,
 			};
-			const url = 'front-desk/appointments/accept-decline';
+			const url = 'front-desk/appointments/accept';
 			const res = await request(url, 'PATCH', true, data);
 			setUpdating(null);
 			if (res.success) {
+				updateAppointment(res);
 				notifySuccess('Front desk has been notified');
+			} else {
+				notifyError('Something went wrong. Cannot select patient');
 			}
 		} catch (e) {
 			setUpdating(null);
@@ -90,6 +94,19 @@ const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 		document.body.classList.remove('modal-open');
 	};
 
+	const blastPrompt = async id => {
+		try {
+			dispatch(startBlock());
+			const url = `front-desk/appointments/${id}/repeat-prompt`;
+			await request(url, 'GET', true);
+			dispatch(stopBlock());
+		} catch (e) {
+			setUpdating(null);
+			notifyError('Something went wrong');
+			dispatch(stopBlock());
+		}
+	};
+
 	return loading ? (
 		<TableLoading />
 	) : (
@@ -106,7 +123,6 @@ const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 				</thead>
 				<tbody>
 					{appointments.map((appointment, i) => {
-						console.log(appointment);
 						return (
 							<tr key={i}>
 								<td className="nowrap">
@@ -130,62 +146,79 @@ const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 
 								<td>
 									<p className="item-title text-color m-0">
-										{trimText(appointment.description, 150)}
+										{trimText(appointment.description || '--', 150)}
 									</p>
 								</td>
 								{profile.details.room ? (
 									<td>
-										{appointment.doctorStatus === 0 ? (
-											<>
-												{!appointment.encounter &&
-												(appointment.status === 'Cancelled' ||
-													hasPassed(appointment.appointment_date)) ? (
-													<span className="badge badge-danger">
-														{hasPassed(appointment.appointment_date)
-															? 'Missed'
-															: 'Cancelled'}
-													</span>
-												) : (
-													<Button
-														isSubmitting={
-															updating && updating === appointment.id
-														}
-														isValid={!updating}
-														onClick={() =>
-															confirm({ id: appointment.id, action: 1 })
-														}
-														className="btn btn-sm btn-primary"
-														value="Accept"
-													/>
-												)}
-											</>
+										{appointment.status === 'Completed' ? (
+											<span className="badge badge-success">Completed</span>
 										) : (
 											<>
-												{!appointment.encounter &&
-												(appointment.status === 'Cancelled' ||
-													hasPassed(appointment.appointment_date)) ? (
-													<span className="badge badge-danger">
-														{hasPassed(appointment.appointment_date)
-															? 'Missed'
-															: 'Cancelled'}
-													</span>
-												) : (
+												{appointment.doctorStatus === 0 ? (
 													<>
-														{appointment.encounter ? (
-															<span className="badge badge-success">
-																Completed
+														{!appointment.encounter &&
+														(appointment.status === 'Cancelled' ||
+															hasPassed(appointment.appointment_date)) ? (
+															<span className="badge badge-danger">
+																{hasPassed(appointment.appointment_date)
+																	? 'Missed'
+																	: 'Cancelled'}
 															</span>
 														) : (
 															<Button
-																onClick={() =>
-																	startEncounter(
-																		appointment.id,
-																		appointment?.patient
-																	)
+																isSubmitting={
+																	updating && updating === appointment.id
 																}
-																className="btn btn-sm btn-info text-white"
-																value="Start Encounter"
+																isValid={!updating}
+																onClick={() =>
+																	confirm({ id: appointment.id, action: 1 })
+																}
+																className="btn btn-sm btn-primary"
+																value="Accept"
 															/>
+														)}
+													</>
+												) : (
+													<>
+														{!appointment.encounter &&
+														(appointment.status === 'Cancelled' ||
+															hasPassed(appointment.appointment_date)) ? (
+															<span className="badge badge-danger">
+																{hasPassed(appointment.appointment_date)
+																	? 'Missed'
+																	: 'Cancelled'}
+															</span>
+														) : (
+															<>
+																{appointment.encounter ? (
+																	<span className="badge badge-success">
+																		Completed
+																	</span>
+																) : (
+																	<>
+																		<button
+																			onClick={() =>
+																				startEncounter(
+																					appointment.id,
+																					appointment?.patient
+																				)
+																			}
+																			className="btn btn-sm btn-info text-white">
+																			Start Encounter
+																		</button>
+																		<Tooltip title="Call Patient">
+																			<a
+																				onClick={() =>
+																					blastPrompt(appointment.id)
+																				}
+																				className="btn text-primary ml-1">
+																				<i className="os-icon os-icon-volume-2" />
+																			</a>
+																		</Tooltip>
+																	</>
+																)}
+															</>
 														)}
 													</>
 												)}
@@ -194,24 +227,32 @@ const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 									</td>
 								) : (
 									<>
-										{!appointment.encounter &&
-										(appointment.status === 'Cancelled' ||
-											hasPassed(appointment.appointment_date)) ? (
+										{appointment.status === 'Completed' ? (
 											<td>
-												<span className="badge badge-danger">
-													{hasPassed(appointment.appointment_date)
-														? 'Missed'
-														: 'Cancelled'}
-												</span>
+												<span className="badge badge-success">Completed</span>
 											</td>
 										) : (
-											<td>
-												<Tooltip title="please select a consulting room">
-													<button className="btn btn-sm btn-link">
-														Accept
-													</button>
-												</Tooltip>
-											</td>
+											<>
+												{!appointment.encounter &&
+												(appointment.status === 'Cancelled' ||
+													hasPassed(appointment.appointment_date)) ? (
+													<td>
+														<span className="badge badge-danger">
+															{hasPassed(appointment.appointment_date)
+																? 'Missed'
+																: 'Cancelled'}
+														</span>
+													</td>
+												) : (
+													<td>
+														<Tooltip title="please select a consulting room">
+															<button className="btn btn-sm btn-link">
+																Accept
+															</button>
+														</Tooltip>
+													</td>
+												)}
+											</>
 										)}
 									</>
 								)}

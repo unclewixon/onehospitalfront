@@ -38,14 +38,18 @@ const ReviewOfSystem = ({ next, previous }) => {
 		const value = e.target.value;
 		const selected = options.find(o => o.value === value);
 		if (selected) {
-			const filtered = options.filter(o => o.value !== value);
-			setOptions(filtered);
-			storage.setItem(CK_REVIEW_OF_SYSTEMS, filtered);
+			removeItem(value);
 		} else {
 			const items = [...options, { label, value }];
 			setOptions(items);
 			storage.setItem(CK_REVIEW_OF_SYSTEMS, items);
 		}
+	};
+
+	const removeItem = value => {
+		const filtered = options.filter(o => o.value !== value);
+		setOptions(filtered);
+		storage.setItem(CK_REVIEW_OF_SYSTEMS, filtered);
 	};
 
 	const onSubmit = () => {
@@ -60,6 +64,37 @@ const ReviewOfSystem = ({ next, previous }) => {
 
 	return (
 		<div className="form-block encounter">
+			{options.length > 0 && (
+				<div className="rentals-list-w">
+					<div className="filter-side">
+						<div className="filter-w">
+							<div className="filter-body p-2">
+								<span className="select2 select2-container select2-container--default">
+									<span className="selection">
+										<span className="select2-selection select2-selection--multiple">
+											<ul className="select2-selection__rendered">
+												{options.map((item, i) => {
+													return (
+														<li className="select2-selection__choice" key={i}>
+															<span
+																className="select2-selection__choice__remove pointer"
+																role="presentation"
+																onClick={() => removeItem(item.value)}>
+																×
+															</span>
+															{`${item.label}: ${item.value}`}
+														</li>
+													);
+												})}
+											</ul>
+										</span>
+									</span>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			)}
 			<div style={divStyle}>
 				<div className="row">
 					<div className="col-sm-12">

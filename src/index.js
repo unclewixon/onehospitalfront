@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import axios from 'axios';
 
+import './assets/bower_components/select2/dist/css/select2.css';
 import 'react-widgets/dist/css/react-widgets.css';
 import './assets/icon_fonts_assets/feather/style.css';
 import './assets/icon_fonts_assets/picons-thin/style.css';

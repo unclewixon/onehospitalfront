@@ -30,8 +30,11 @@ import {
 	CK_INVESTIGATIONS,
 	CK_INVESTIGATION_LAB,
 	CK_INVESTIGATION_SCAN,
+	CK_INVESTIGATION_REGIMEN,
+	CK_INVESTIGATION_PROCEDURE,
 	CK_TREATMENT_PLAN,
 	CK_CONSUMABLE,
+	CK_ITEM_OTEHRS,
 	CK_DIAGNOSIS,
 	CK_PAST_DIAGNOSIS,
 } from '../services/constants';
@@ -106,7 +109,10 @@ class TopBar extends Component {
 		storage.removeItem(CK_INVESTIGATION_LAB);
 		storage.removeItem(CK_INVESTIGATION_SCAN);
 		storage.removeItem(CK_TREATMENT_PLAN);
+		storage.removeItem(CK_INVESTIGATION_REGIMEN);
+		storage.removeItem(CK_INVESTIGATION_PROCEDURE);
 		storage.removeItem(CK_CONSUMABLE);
+		storage.removeItem(CK_ITEM_OTEHRS);
 		storage.removeItem(CK_DIAGNOSIS);
 		storage.removeItem(CK_PAST_DIAGNOSIS);
 

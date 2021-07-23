@@ -70,6 +70,14 @@ class AllAppointments extends Component {
 				});
 			}
 		});
+
+		socket.on('appointment-update', data => {
+			const { appointments } = this.state;
+			const result = updateImmutable(appointments, data.appointment);
+			this.setState({
+				appointments: result,
+			});
+		});
 	}
 
 	componentWillUpdate(nextProps, nextState) {
@@ -289,7 +297,9 @@ class AllAppointments extends Component {
 															)}
 															{item.status === 'Approved' && (
 																<span className="badge badge-primary">
-																	Approved
+																	{item.doctorStatus === 0
+																		? 'In Queue'
+																		: 'Seeing Doctor'}
 																</span>
 															)}
 															{item.status === 'Completed' && (

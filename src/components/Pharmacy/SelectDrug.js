@@ -52,11 +52,31 @@ const SelectDrug = ({ onHide, setDrug, generic }) => {
 			setSelectedDrug({
 				...drug,
 				qty: drug.batches.reduce((total, item) => total + item.quantity, 0),
+				basePrice: drug.batches.length > 0 ? drug.batches[0].unitPrice : 0,
 			});
 			setSelectedGeneric(drug.generic);
 		} else {
 			confirmAlert({
 				customUI: ({ onClose }) => {
+					const continueBtn = async () => {
+						setSelectedDrug({
+							...drug,
+							qty: drug.batches.reduce(
+								(total, item) => total + item.quantity,
+								0
+							),
+							basePrice:
+								drug.batches.length > 0 ? drug.batches[0].unitPrice : 0,
+						});
+						setSelectedGeneric(drug.generic);
+						onClose();
+					};
+
+					const changeBtn = async () => {
+						setSelectedDrug(null);
+						onClose();
+					};
+
 					return (
 						<div className="custom-ui text-center">
 							<h3 className="text-danger">Expiration</h3>
@@ -64,9 +84,15 @@ const SelectDrug = ({ onHide, setDrug, generic }) => {
 							<div>
 								<button
 									className="btn btn-primary"
-									style={{ margin: 10 }}
-									onClick={onClose}>
-									Okay
+									style={{ margin: '10px' }}
+									onClick={changeBtn}>
+									Change
+								</button>
+								<button
+									className="btn btn-secondary"
+									style={{ margin: '10px' }}
+									onClick={continueBtn}>
+									Continue
 								</button>
 							</div>
 						</div>

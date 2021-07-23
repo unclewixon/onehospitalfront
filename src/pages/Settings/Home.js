@@ -14,7 +14,6 @@ import ServicesCategory from './ServiceCategory';
 import Specialization from './Specialization';
 import Appraisal from './Appraisal';
 import ConsultingRoom from './ConsultingRoom';
-import Consumable from './Consumable';
 import AntenatalPackage from './AntenatalPackage';
 import NicuAccommodation from './NicuAccommodation';
 import PaymentMethod from './PaymentMethod';
@@ -138,13 +137,6 @@ const Home = ({ match, location }) => {
 								</span>
 							</Link>
 						</li>
-
-						<li className={page === 'consumables' ? 'active' : ''}>
-							<Link to="/settings/consumables">
-								<i className="os-icon os-icon-layers" />
-								<span>Consumables</span>
-							</Link>
-						</li>
 						<li className={page === 'antenatal-packages' ? 'active' : ''}>
 							<Link to="/settings/antenatal-packages">
 								<i className="os-icon os-icon-layers" />
@@ -187,7 +179,6 @@ const Home = ({ match, location }) => {
 					path={`${match.url}/consulting-room`}
 					component={ConsultingRoom}
 				/>
-				<Route path={`${match.url}/consumables`} component={Consumable} />
 				<Route
 					path={`${match.url}/antenatal-packages`}
 					component={AntenatalPackage}

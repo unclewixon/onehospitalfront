@@ -187,7 +187,9 @@ class AppointmentHistory extends Component {
 																	)}
 																	{appointment.status === 'Approved' && (
 																		<span className="badge badge-success">
-																			Approved
+																			{appointment.doctorStatus === 0
+																				? 'In Queue'
+																				: 'Seeing Doctor'}
 																		</span>
 																	)}
 																	{appointment.status === 'Completed' && (

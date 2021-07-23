@@ -101,8 +101,7 @@ const Diagnosis = ({ previous, next, patient }) => {
 
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option =>
-		`${option.description} (Icd${option.diagnosisType}: ${option.icd10Code ||
-			option.procedureCode})`;
+		`${option.description} (${option.type}: ${option.code})`;
 
 	const getOptions = async q => {
 		if (!q || (q && q.length <= 1)) {

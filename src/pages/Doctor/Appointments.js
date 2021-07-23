@@ -62,6 +62,14 @@ const Appointments = () => {
 		[dispatch, profile, state]
 	);
 
+	const updateAppointment = useCallback(
+		e => {
+			const updatedAppointments = updateImmutable(allAppointments, e);
+			setAllAppointments([...updatedAppointments]);
+		},
+		[allAppointments]
+	);
+
 	useEffect(() => {
 		if (!listenning) {
 			setListenning(true);
@@ -69,17 +77,11 @@ const Appointments = () => {
 
 			socket.on('appointment-update', data => {
 				if (data.action === 1) {
-					// change with update appointment
-					getAppointments();
+					updateAppointment(data.appointment);
 				}
 			});
 		}
-	}, [dispatch, getAppointments, listenning]);
-
-	const updateAppointment = e => {
-		const updatedAppointments = updateImmutable(allAppointments, e);
-		setAllAppointments([...updatedAppointments]);
-	};
+	}, [getAppointments, listenning, updateAppointment]);
 
 	const doFilter = e => {
 		e.preventDefault();
