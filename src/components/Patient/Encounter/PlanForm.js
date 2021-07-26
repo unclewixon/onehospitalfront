@@ -477,6 +477,10 @@ const PlanForm = ({ previous, next, patient }) => {
 							value={frequencyType}
 							options={[
 								{ value: '', label: 'Select frequency' },
+								{
+									value: 'hourly',
+									label: 'Hourly',
+								},
 								{ value: 'immediately', label: 'Immediately' },
 								{ value: 'daily', label: 'Daily' },
 								{
@@ -499,7 +503,8 @@ const PlanForm = ({ previous, next, patient }) => {
 						<input
 							type="number"
 							className="form-control"
-							placeholder={`(value in ${frequencyType}) eg: 7`}
+							placeholder={`(value in ${frequencyType?.value ||
+								'daily'}) eg: 7`}
 							ref={register({ required: true })}
 							name="duration"
 							onChange={onHandleInputChange}

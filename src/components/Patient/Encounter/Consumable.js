@@ -140,7 +140,10 @@ const Consumable = ({
 			};
 
 			const nextAppointment = {
-				appointment_date: appointmentDate,
+				appointment_date:
+					appointmentDate !== ''
+						? moment(new Date(appointmentDate)).format('YYYY-MM-DD HH:mm:ss')
+						: '',
 				description: appointmentReason,
 			};
 
@@ -257,7 +260,7 @@ const Consumable = ({
 					</div>
 				</div>
 				{selectedConsumables.length > 0 && (
-					<div className="row">
+					<div className="row mt-2">
 						<div className="col-md-12">
 							<div className="rentals-list-w">
 								<div className="filter-side">

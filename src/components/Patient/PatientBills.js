@@ -38,7 +38,7 @@ const PatientBills = () => {
 		totalPages: 0,
 	});
 	const [showModal, setShowModal] = useState(false);
-	const [details, setDetails] = useState([]);
+	const [transaction, setTransaction] = useState(null);
 	const [outstandingAmount, setOutstandingAmount] = useState(0);
 	const [totalAmount, setTotalAmount] = useState(0);
 	const [startDate, setStartDate] = useState('');
@@ -89,16 +89,16 @@ const PatientBills = () => {
 		fetchBills(nextPage, startDate, endDate, status);
 	};
 
-	const viewDetails = (bill_source, data) => {
+	const viewDetails = transaction => {
 		document.body.classList.add('modal-open');
 		setShowModal(true);
-		setDetails({ bill_source, data });
+		setTransaction(transaction);
 	};
 
 	const closeModal = () => {
 		document.body.classList.remove('modal-open');
 		setShowModal(false);
-		setDetails([]);
+		setTransaction(null);
 	};
 
 	const dateChange = e => {
@@ -240,13 +240,8 @@ const PatientBills = () => {
 															{item.bill_source !== 'registration' && (
 																<a
 																	className="item-title text-primary text-underline ml-2"
-																	onClick={() =>
-																		viewDetails(
-																			item.bill_source,
-																			item.transaction_details
-																		)
-																	}>
-																	details
+																	onClick={() => viewDetails(item)}>
+																	<i className="os-icon os-icon-alert-circle" />
 																</a>
 															)}
 														</td>
@@ -306,7 +301,7 @@ const PatientBills = () => {
 			</div>
 			{showModal && (
 				<ModalServiceDetails
-					details={details}
+					transaction={transaction}
 					closeModal={() => closeModal()}
 				/>
 			)}
