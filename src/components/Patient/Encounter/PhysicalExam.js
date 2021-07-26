@@ -20,10 +20,25 @@ const PhysicalExam = ({ next, previous }) => {
 
 	const dispatch = useDispatch();
 
+	const saveOptions = useCallback(
+		data => {
+			setOptions(data);
+			storage.setLocalStorage(CK_PHYSICAL_EXAM, data);
+
+			dispatch(
+				updateEncounterData({
+					...encounter,
+					physicalExamination: data,
+				})
+			);
+		},
+		[dispatch, encounter]
+	);
+
 	const retrieveData = useCallback(async () => {
 		const data = await storage.getItem(CK_PHYSICAL_EXAM);
-		setOptions(data || encounter.physicalExamination);
-	}, [encounter]);
+		saveOptions(data || encounter.physicalExamination);
+	}, [encounter, saveOptions]);
 
 	useEffect(() => {
 		if (!loaded) {
@@ -41,15 +56,13 @@ const PhysicalExam = ({ next, previous }) => {
 			removeItem(value);
 		} else {
 			const items = [...options, { label, value }];
-			setOptions(items);
-			storage.setLocalStorage(CK_PHYSICAL_EXAM, items);
+			saveOptions(items);
 		}
 	};
 
 	const removeItem = value => {
 		const filtered = options.filter(o => o.value !== value);
-		setOptions(filtered);
-		storage.setLocalStorage(CK_PHYSICAL_EXAM, filtered);
+		saveOptions(filtered);
 	};
 
 	const onSubmit = () => {

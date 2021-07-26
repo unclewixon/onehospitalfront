@@ -46,13 +46,43 @@ const Allergies = ({ previous, next, patient }) => {
 		}
 	}, [patient]);
 
+	const saveAllergens = useCallback(
+		data => {
+			setAllergens(data);
+			storage.setLocalStorage(CK_ALLERGIES, data);
+
+			dispatch(
+				updateEncounterData({
+					...encounter,
+					allergies: [...data],
+				})
+			);
+		},
+		[dispatch, encounter]
+	);
+
+	const savePastAllergens = useCallback(
+		data => {
+			setSelectedPastAllergies(data);
+			storage.setLocalStorage(CK_PAST_ALLERGIES, data);
+
+			dispatch(
+				updateEncounterData({
+					...encounter,
+					pastAllergies: [...data],
+				})
+			);
+		},
+		[dispatch, encounter]
+	);
+
 	const retrieveData = useCallback(async () => {
 		const data = await storage.getItem(CK_ALLERGIES);
-		setAllergens(data || encounter.allergies);
+		saveAllergens(data || encounter.allergies);
 
 		const past = await storage.getItem(CK_PAST_ALLERGIES);
-		setSelectedPastAllergies(past || encounter.pastAllergies);
-	}, [encounter]);
+		savePastAllergens(past || encounter.pastAllergies);
+	}, [encounter, saveAllergens, savePastAllergens]);
 
 	useEffect(() => {
 		if (!loaded) {
@@ -64,8 +94,7 @@ const Allergies = ({ previous, next, patient }) => {
 
 	const remove = index => {
 		const newItems = allergens.filter((item, i) => index !== i);
-		setAllergens(newItems);
-		storage.setLocalStorage(CK_ALLERGIES, newItems);
+		saveAllergens(newItems);
 	};
 
 	const onNext = () => {
@@ -91,8 +120,7 @@ const Allergies = ({ previous, next, patient }) => {
 				{ allergen: allerg, category, severity: e, reaction, drug },
 				...allergens,
 			];
-			setAllergens(items);
-			storage.setLocalStorage(CK_ALLERGIES, items);
+			saveAllergens(items);
 			setCategory('');
 			setSeverity('');
 			setAllerg('');

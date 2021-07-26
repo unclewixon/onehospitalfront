@@ -16,10 +16,25 @@ const Complaints = ({ next }) => {
 
 	const dispatch = useDispatch();
 
+	const saveComplaints = useCallback(
+		data => {
+			setComplaint(data);
+			storage.setLocalStorage(CK_COMPLAINTS, data);
+
+			dispatch(
+				updateEncounterData({
+					...encounter,
+					complaints: data,
+				})
+			);
+		},
+		[dispatch, encounter]
+	);
+
 	const retrieveData = useCallback(async () => {
 		const data = await storage.getItem(CK_COMPLAINTS);
-		setComplaint(data || encounter.complaints);
-	}, [encounter]);
+		saveComplaints(data || encounter.complaints);
+	}, [encounter, saveComplaints]);
 
 	useEffect(() => {
 		if (!loaded) {
@@ -68,8 +83,7 @@ const Complaints = ({ next }) => {
 									],
 								}}
 								onChange={e => {
-									setComplaint(String(e));
-									storage.setLocalStorage(CK_COMPLAINTS, String(e));
+									saveComplaints(String(e));
 								}}
 							/>
 						</div>

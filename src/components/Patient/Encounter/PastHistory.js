@@ -16,10 +16,25 @@ const PastHistory = ({ next }) => {
 
 	const dispatch = useDispatch();
 
+	const saveHistory = useCallback(
+		data => {
+			setHistory(data);
+			storage.setLocalStorage(CK_PAST_HISTORY, data);
+
+			dispatch(
+				updateEncounterData({
+					...encounter,
+					medicalHistory: data,
+				})
+			);
+		},
+		[dispatch, encounter]
+	);
+
 	const retrieveData = useCallback(async () => {
 		const data = await storage.getItem(CK_PAST_HISTORY);
-		setHistory(data || encounter.medicalHistory);
-	}, [encounter]);
+		saveHistory(data || encounter.medicalHistory);
+	}, [encounter, saveHistory]);
 
 	useEffect(() => {
 		if (!loaded) {
@@ -68,8 +83,7 @@ const PastHistory = ({ next }) => {
 									],
 								}}
 								onChange={e => {
-									setHistory(String(e));
-									storage.setLocalStorage(CK_PAST_HISTORY, String(e));
+									saveHistory(String(e));
 								}}
 							/>
 						</div>

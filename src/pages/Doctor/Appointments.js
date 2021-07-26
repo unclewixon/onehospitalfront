@@ -98,7 +98,7 @@ const Appointments = () => {
 						setAllAppointments([...allAppointments, res.queue.appointment]);
 						const meta = {
 							...state.meta,
-							totalPages: state.meta.totalPages + 1,
+							totalPages: (state.meta?.totalPages || 0) + 1,
 						};
 						setState({ ...state, meta });
 					}

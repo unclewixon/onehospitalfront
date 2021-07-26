@@ -20,10 +20,25 @@ const ReviewOfSystem = ({ next, previous }) => {
 
 	const dispatch = useDispatch();
 
+	const saveOptions = useCallback(
+		data => {
+			setOptions(data);
+			storage.setLocalStorage(CK_REVIEW_OF_SYSTEMS, data);
+
+			dispatch(
+				updateEncounterData({
+					...encounter,
+					reviewOfSystem: data,
+				})
+			);
+		},
+		[dispatch, encounter]
+	);
+
 	const retrieveData = useCallback(async () => {
 		const data = await storage.getItem(CK_REVIEW_OF_SYSTEMS);
-		setOptions(data || encounter.reviewOfSystem);
-	}, [encounter]);
+		saveOptions(data || encounter.reviewOfSystem);
+	}, [encounter, saveOptions]);
 
 	useEffect(() => {
 		if (!loaded) {
@@ -41,15 +56,13 @@ const ReviewOfSystem = ({ next, previous }) => {
 			removeItem(value);
 		} else {
 			const items = [...options, { label, value }];
-			setOptions(items);
-			storage.setLocalStorage(CK_REVIEW_OF_SYSTEMS, items);
+			saveOptions(items);
 		}
 	};
 
 	const removeItem = value => {
 		const filtered = options.filter(o => o.value !== value);
-		setOptions(filtered);
-		storage.setLocalStorage(CK_REVIEW_OF_SYSTEMS, filtered);
+		saveOptions(filtered);
 	};
 
 	const onSubmit = () => {

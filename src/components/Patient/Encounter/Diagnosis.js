@@ -47,13 +47,28 @@ const Diagnosis = ({ previous, next, patient }) => {
 		}
 	}, [patient]);
 
+	const saveDiagnoses = useCallback(
+		data => {
+			setDiagnoses(data);
+			storage.setLocalStorage(CK_DIAGNOSIS, data);
+
+			dispatch(
+				updateEncounterData({
+					...encounter,
+					diagnosis: data,
+				})
+			);
+		},
+		[dispatch, encounter]
+	);
+
 	const retrieveData = useCallback(async () => {
 		const data = await storage.getItem(CK_DIAGNOSIS);
-		setDiagnoses(data || encounter.diagnosis);
+		saveDiagnoses(data || encounter.diagnosis);
 
 		const past = await storage.getItem(CK_PAST_DIAGNOSIS);
 		setSelectedPastDiagnoses(past || encounter.pastDiagnosis);
-	}, [encounter]);
+	}, [encounter, saveDiagnoses]);
 
 	useEffect(() => {
 		if (!loaded) {
@@ -65,8 +80,7 @@ const Diagnosis = ({ previous, next, patient }) => {
 
 	const remove = index => {
 		const newItems = diagnoses.filter((item, i) => index !== i);
-		setDiagnoses(newItems);
-		storage.setLocalStorage(CK_DIAGNOSIS, newItems);
+		saveDiagnoses(newItems);
 	};
 
 	const onNext = () => {
@@ -88,8 +102,7 @@ const Diagnosis = ({ previous, next, patient }) => {
 	const onSubmit = () => {
 		if (diagnosis !== '' && type !== '') {
 			const items = [...diagnoses, { comment, diagnosis, type }];
-			setDiagnoses(items);
-			storage.setLocalStorage(CK_DIAGNOSIS, items);
+			saveDiagnoses(items);
 			setDiagnosis('');
 			setComment('');
 			setType('');

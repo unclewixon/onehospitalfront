@@ -57,18 +57,17 @@ const Doctor = ({ match }) => {
 				<div className="row">
 					<div className="col-sm-12">
 						<div className="text-right">
-							{activeRoom && selected ? (
+							{activeRoom && selected && (
 								<h6>
 									Active Room:{' '}
 									<span className="text-success">{activeRoom.name}</span>
 								</h6>
-							) : (
-								<button
-									className="btn btn-sm btn-primary"
-									onClick={() => setShowModal(true)}>
-									Select Consulting Room
-								</button>
 							)}
+							<button
+								className="btn btn-sm btn-primary"
+								onClick={() => setShowModal(true)}>
+								Select Consulting Room
+							</button>
 						</div>
 					</div>
 				</div>
