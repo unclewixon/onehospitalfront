@@ -4,6 +4,7 @@ import SunEditor from 'suneditor-react';
 import { useSelector, useDispatch } from 'react-redux';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
+import moment from 'moment';
 
 import {
 	updateEncounterData,
@@ -25,7 +26,7 @@ import {
 	CK_INVESTIGATION_SCAN,
 	CK_INVESTIGATION_REGIMEN,
 	CK_INVESTIGATION_PROCEDURE,
-	CK_ITEM_OTEHRS,
+	CK_ITEM_OTHERS,
 	CK_TREATMENT_PLAN,
 	CK_DIAGNOSIS,
 	CK_PAST_DIAGNOSIS,
@@ -60,6 +61,7 @@ const Consumable = ({
 	const [selectedConsumables, setSelectedConsumables] = useState([]);
 
 	const encounter = useSelector(state => state.patient.encounterData);
+	const staff = useSelector(state => state.user.profile.details);
 
 	const dispatch = useDispatch();
 
@@ -80,12 +82,16 @@ const Consumable = ({
 		const data = await storage.getItem(CK_CONSUMABLE);
 		setInstruction(data || encounter.instruction);
 
-		const datum = await storage.getItem(CK_ITEM_OTEHRS);
+		const datum = await storage.getItem(CK_ITEM_OTHERS);
+		console.log(datum);
 		if (datum) {
-			setSelectedConsumables(datum.consumables);
-			setRequestNote(datum.requestNote);
-			// setAppointmentDate(datum.date || '');
-			setAppointmentReason(datum.value);
+			setOthers(datum);
+			setSelectedConsumables(datum.consumables || []);
+			setRequestNote(datum?.requestNote || '');
+			if (datum.date && datum.date !== '') {
+				setAppointmentDate(new Date(moment(datum.date)));
+			}
+			setAppointmentReason(datum?.reason || '');
 		}
 	}, [encounter]);
 
@@ -108,7 +114,7 @@ const Consumable = ({
 
 				const data = { ...others, consumables: i };
 				setOthers(data);
-				storage.setItem(CK_ITEM_OTEHRS, data);
+				storage.setLocalStorage(CK_ITEM_OTHERS, data);
 			}
 		} else {
 			notifyError('Error, please select item or enter quantity');
@@ -120,7 +126,7 @@ const Consumable = ({
 		setSelectedConsumables(items);
 		const data = { ...others, consumables: items };
 		setOthers(data);
-		storage.setItem(CK_ITEM_OTEHRS, data);
+		storage.setLocalStorage(CK_ITEM_OTHERS, data);
 	};
 
 	const onSubmit = async e => {
@@ -168,7 +174,7 @@ const Consumable = ({
 				storage.removeItem(CK_INVESTIGATION_PROCEDURE);
 				storage.removeItem(CK_TREATMENT_PLAN);
 				storage.removeItem(CK_CONSUMABLE);
-				storage.removeItem(CK_ITEM_OTEHRS);
+				storage.removeItem(CK_ITEM_OTHERS);
 				storage.removeItem(CK_DIAGNOSIS);
 				storage.removeItem(CK_PAST_DIAGNOSIS);
 
@@ -187,6 +193,37 @@ const Consumable = ({
 	const handleKeyDown = event => {
 		if (event.key === 'Enter') {
 			add();
+		}
+	};
+
+	const checkNextDate = async date => {
+		try {
+			setAppointmentDate(date);
+			dispatch(startBlock());
+			const _date = moment(new Date(date));
+			const url = `front-desk/appointments/${appointment_id}/check-date?date=${_date.format(
+				'YYYY-MM-DD HH:mm:ss'
+			)}&staff_id=${staff.id}`;
+			const rs = await request(url, 'GET', true);
+			if (rs && rs.success) {
+				if (rs.available) {
+					const data = { ...others, date };
+					setOthers(data);
+					storage.setLocalStorage(CK_ITEM_OTHERS, data);
+					dispatch(stopBlock());
+				}
+			} else {
+				dispatch(stopBlock());
+				notifyError(
+					`The selected time (${_date.format(
+						'DD-MMM-YYYY h:mm A'
+					)}) is not available`
+				);
+			}
+		} catch (e) {
+			console.log(e);
+			dispatch(stopBlock());
+			notifyError('Error, could not check date');
 		}
 	};
 
@@ -268,7 +305,7 @@ const Consumable = ({
 								setRequestNote(e.target.value);
 								const data = { ...others, requestNote: e.target.value };
 								setOthers(data);
-								storage.setItem(CK_ITEM_OTEHRS, data);
+								storage.setLocalStorage(CK_ITEM_OTHERS, data);
 							}}
 							value={requestNote}></textarea>
 					</div>
@@ -280,15 +317,13 @@ const Consumable = ({
 						<div className="form-group">
 							<label>Appontment Date</label>
 							<DatePicker
-								dateFormat="dd-MMM-yyyy"
+								dateFormat="dd-MMM-yyyy h:mm aa"
 								className="single-daterange form-control"
 								selected={appointmentDate}
-								onChange={date => {
-									setAppointmentDate(date);
-									const data = { ...others, date };
-									setOthers(data);
-									storage.setItem(CK_ITEM_OTEHRS, data);
-								}}
+								showTimeSelect
+								timeFormat="HH:mm"
+								timeIntervals={15}
+								onChange={date => checkNextDate(date)}
 							/>
 						</div>
 					</div>
@@ -306,7 +341,7 @@ const Consumable = ({
 									setAppointmentReason(e.target.value);
 									const data = { ...others, reason: e.target.value };
 									setOthers(data);
-									storage.setItem(CK_ITEM_OTEHRS, data);
+									storage.setLocalStorage(CK_ITEM_OTHERS, data);
 								}}
 								value={appointmentReason}></textarea>
 						</div>
@@ -346,7 +381,7 @@ const Consumable = ({
 								}}
 								onChange={e => {
 									setInstruction(String(e));
-									storage.setItem(CK_CONSUMABLE, String(e));
+									storage.setLocalStorage(CK_CONSUMABLE, String(e));
 								}}
 							/>
 						</div>

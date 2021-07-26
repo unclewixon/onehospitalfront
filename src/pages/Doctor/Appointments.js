@@ -3,6 +3,7 @@ import DatePicker from 'antd/lib/date-picker';
 import { withRouter } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
+import moment from 'moment';
 
 import waiting from '../../assets/images/waiting.gif';
 import {
@@ -22,13 +23,13 @@ const limit = 15;
 const Appointments = () => {
 	const [state, setState] = useState({
 		filtering: false,
-		loading: false,
 		id: null,
 		startDate: '',
 		endDate: '',
 		status: '',
 		meta: null,
 	});
+	const [loading, setLoading] = useState(true);
 	const [listenning, setListenning] = useState(false);
 	const [allAppointments, setAllAppointments] = useState([]);
 
@@ -39,7 +40,7 @@ const Appointments = () => {
 	const getAppointments = useCallback(
 		async page => {
 			try {
-				setState({ loading: true });
+				setLoading(true);
 				const staff = profile.details;
 				const p = page || 1;
 				const url = `front-desk/appointments?page=${p}&limit=${limit}&doctor_id=${
@@ -50,17 +51,25 @@ const Appointments = () => {
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setAllAppointments(result);
-				setState({ ...state, loading: false, filtering: false, meta });
+				setLoading(false);
+				setState({ ...state, filtering: false, meta });
 				dispatch(stopBlock());
 			} catch (error) {
 				console.log(error);
 				dispatch(stopBlock());
-				setState({ ...state, loading: false, filtering: false });
+				setLoading(false);
+				setState({ ...state, filtering: false });
 				notifyError(error.message || 'could not fetch transactions');
 			}
 		},
 		[dispatch, profile, state]
 	);
+
+	useEffect(() => {
+		if (loading) {
+			getAppointments();
+		}
+	}, [getAppointments, loading]);
 
 	const updateAppointment = useCallback(
 		e => {
@@ -73,15 +82,30 @@ const Appointments = () => {
 	useEffect(() => {
 		if (!listenning) {
 			setListenning(true);
-			getAppointments();
 
-			socket.on('appointment-update', data => {
-				if (data.action === 1) {
-					updateAppointment(data.appointment);
+			socket.on('consultation-queue', res => {
+				console.log('new appointment message');
+				if (res.success) {
+					console.log(res.queue);
+					const today = moment().format('YYYY-MM-DD');
+					console.log(today);
+					if (
+						moment(res.queue.appointment.appointment_date).format(
+							'YYYY-MM-DD'
+						) === today
+					) {
+						console.log(res.queue.appointment);
+						setAllAppointments([...allAppointments, res.queue.appointment]);
+						const meta = {
+							...state.meta,
+							totalPages: state.meta.totalPages + 1,
+						};
+						setState({ ...state, meta });
+					}
 				}
 			});
 		}
-	}, [getAppointments, listenning, updateAppointment]);
+	}, [allAppointments, listenning, state]);
 
 	const doFilter = e => {
 		e.preventDefault();
@@ -106,7 +130,7 @@ const Appointments = () => {
 		});
 	};
 
-	const { filtering, loading, meta } = state;
+	const { filtering, meta } = state;
 
 	return (
 		<div className="element-wrapper">

@@ -46,7 +46,6 @@ const PrescriptionForm = ({
 	const [editing, setEditing] = useState(false);
 	const [prescription, setPrescription] = useState(false);
 	const [chosenPatient, setChosenPatient] = useState(null);
-	const [diagnosisType, setDiagnosisType] = useState('icd10');
 	const [selectedDrug, setSelectedDrug] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [regimenNote, setRegimenNote] = useState('');
@@ -69,7 +68,7 @@ const PrescriptionForm = ({
 			return [];
 		}
 
-		const url = `${diagnosisAPI}/search?q=${q}&diagnosisType=${diagnosisType}`;
+		const url = `${diagnosisAPI}/search?q=${q}&diagnosisType=`;
 		const res = await request(url, 'GET', true);
 		return res;
 	};
@@ -466,7 +465,7 @@ const PrescriptionForm = ({
 						<input
 							type="number"
 							className="form-control"
-							placeholder="(value in days) eg: 7"
+							placeholder={`(value in ${frequencyType}) eg: 7`}
 							ref={register({ required: true })}
 							name="duration"
 							onChange={onHandleInputChange}
@@ -508,29 +507,7 @@ const PrescriptionForm = ({
 					</div>
 				</div>
 				<div className="row">
-					<div className="form-group col-sm-12 relative">
-						<div className="posit-top">
-							<div className="row">
-								<div className="form-group col-sm-12">
-									<label>
-										<input
-											type="radio"
-											checked={diagnosisType === 'icd10'}
-											onChange={() => setDiagnosisType('icd10')}
-										/>{' '}
-										ICD10
-									</label>
-									<label className="ml-2">
-										<input
-											type="radio"
-											checked={diagnosisType === 'icpc-2'}
-											onChange={() => setDiagnosisType('icpc-2')}
-										/>{' '}
-										ICPC-2
-									</label>
-								</div>
-							</div>
-						</div>
+					<div className="form-group col-sm-12">
 						<h6>Diagnosis Data</h6>
 						<AsyncSelect
 							required

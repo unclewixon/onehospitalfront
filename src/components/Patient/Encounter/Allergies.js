@@ -65,7 +65,7 @@ const Allergies = ({ previous, next, patient }) => {
 	const remove = index => {
 		const newItems = allergens.filter((item, i) => index !== i);
 		setAllergens(newItems);
-		storage.setItem(CK_ALLERGIES, newItems);
+		storage.setLocalStorage(CK_ALLERGIES, newItems);
 	};
 
 	const onNext = () => {
@@ -92,7 +92,7 @@ const Allergies = ({ previous, next, patient }) => {
 				...allergens,
 			];
 			setAllergens(items);
-			storage.setItem(CK_ALLERGIES, items);
+			storage.setLocalStorage(CK_ALLERGIES, items);
 			setCategory('');
 			setSeverity('');
 			setAllerg('');

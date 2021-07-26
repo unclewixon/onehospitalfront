@@ -69,7 +69,7 @@ const PastHistory = ({ next }) => {
 								}}
 								onChange={e => {
 									setHistory(String(e));
-									storage.setItem(CK_PAST_HISTORY, String(e));
+									storage.setLocalStorage(CK_PAST_HISTORY, String(e));
 								}}
 							/>
 						</div>

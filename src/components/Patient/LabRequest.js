@@ -198,10 +198,27 @@ const LabRequest = ({ module, history, location }) => {
 									name="lab_test"
 									loadOptions={getLabTests}
 									onChange={e => {
-										setLabTests(e);
+										if (e) {
+											setLabTests(e);
+										} else {
+											setLabTests([]);
+										}
 									}}
 									placeholder="Search Lab Test"
 								/>
+							</div>
+						</div>
+						<div className="row mt-2">
+							<div className="col-sm-12">
+								{labTests.map((lab, i) => (
+									<span
+										className={`badge badge-${
+											lab ? 'info' : 'danger'
+										} text-white ml-2`}
+										key={i}>{`${lab.name}: ${formatCurrency(
+										lab?.service?.tariff || 0
+									)}`}</span>
+								))}
 							</div>
 						</div>
 

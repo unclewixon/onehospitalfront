@@ -42,14 +42,14 @@ const ReviewOfSystem = ({ next, previous }) => {
 		} else {
 			const items = [...options, { label, value }];
 			setOptions(items);
-			storage.setItem(CK_REVIEW_OF_SYSTEMS, items);
+			storage.setLocalStorage(CK_REVIEW_OF_SYSTEMS, items);
 		}
 	};
 
 	const removeItem = value => {
 		const filtered = options.filter(o => o.value !== value);
 		setOptions(filtered);
-		storage.setItem(CK_REVIEW_OF_SYSTEMS, filtered);
+		storage.setLocalStorage(CK_REVIEW_OF_SYSTEMS, filtered);
 	};
 
 	const onSubmit = () => {

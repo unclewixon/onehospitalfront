@@ -28,7 +28,7 @@ export const CK_INVESTIGATION_REGIMEN = 'E:INVESTIGATION_REGIMEN';
 export const CK_INVESTIGATION_PROCEDURE = 'E:INVESTIGATION_PROCEDURE';
 export const CK_TREATMENT_PLAN = 'E:TREATMENT_PLAN';
 export const CK_CONSUMABLE = 'E:CONSUMABLE';
-export const CK_ITEM_OTEHRS = 'E:ITEM_OTEHRS';
+export const CK_ITEM_OTHERS = 'E:ITEM_OTHERS';
 
 export const socket = socketIOClient(API_URI, {
 	transports: ['websocket', 'polling'],

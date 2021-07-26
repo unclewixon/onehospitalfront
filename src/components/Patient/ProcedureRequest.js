@@ -6,7 +6,7 @@ import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 import { searchAPI, diagnosisAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
-import { request, patientname } from '../../services/utilities';
+import { request, patientname, formatCurrency } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
@@ -23,9 +23,6 @@ const ProcedureRequest = ({ module, history, location }) => {
 	const [loadedPatient, setLoadedPatient] = useState(false);
 	const [chosenPatient, setChosenPatient] = useState(null);
 	const [service, setService] = useState(null);
-
-	// diagnosis
-	const [diagnosisType, setDiagnosisType] = useState('icd10');
 
 	const currentPatient = useSelector(state => state.user.patient);
 
@@ -98,7 +95,7 @@ const ProcedureRequest = ({ module, history, location }) => {
 			return [];
 		}
 
-		const url = `${diagnosisAPI}/search?q=${q}&diagnosisType=${diagnosisType}`;
+		const url = `${diagnosisAPI}/search?q=${q}&diagnosisType=`;
 		const res = await request(url, 'GET', true);
 		return res;
 	};
@@ -143,8 +140,22 @@ const ProcedureRequest = ({ module, history, location }) => {
 							</div>
 						)}
 						<div className="row">
-							<div className="form-group col-sm-6">
+							<div className="form-group col-sm-6 relative">
 								<label>Procedure</label>
+								{service && (
+									<div className="posit-top">
+										<div className="row">
+											<div className="col-sm-12">
+												<span
+													className={`badge badge-${
+														service ? 'info' : 'danger'
+													} text-white`}>{`Base Price: ${formatCurrency(
+													service?.serviceCost?.tariff || 0
+												)}`}</span>
+											</div>
+										</div>
+									</div>
+								)}
 								<AsyncSelect
 									getOptionValue={option => option.id}
 									getOptionLabel={option => option.name}
@@ -164,29 +175,7 @@ const ProcedureRequest = ({ module, history, location }) => {
 							</div>
 						</div>
 						<div className="row">
-							<div className="form-group col-sm-12 relative">
-								<div className="posit-top">
-									<div className="row">
-										<div className="form-group col-sm-12">
-											<label>
-												<input
-													type="radio"
-													checked={diagnosisType === 'icd10'}
-													onChange={() => setDiagnosisType('icd10')}
-												/>{' '}
-												ICD10
-											</label>
-											<label className="ml-2">
-												<input
-													type="radio"
-													checked={diagnosisType === 'icpc-2'}
-													onChange={() => setDiagnosisType('icpc-2')}
-												/>{' '}
-												ICPC-2
-											</label>
-										</div>
-									</div>
-								</div>
+							<div className="form-group col-sm-12">
 								<label>Primary diagnoses</label>
 								<AsyncSelect
 									required

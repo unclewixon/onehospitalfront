@@ -26,7 +26,7 @@ import {
 	CK_INVESTIGATION_PROCEDURE,
 	CK_TREATMENT_PLAN,
 	CK_CONSUMABLE,
-	CK_ITEM_OTEHRS,
+	CK_ITEM_OTHERS,
 	CK_DIAGNOSIS,
 	CK_PAST_DIAGNOSIS,
 } from '../services/constants';
@@ -144,7 +144,7 @@ const ChangePassword = ({ location, history, error, handleSubmit }) => {
 		storage.removeItem(CK_INVESTIGATION_PROCEDURE);
 		storage.removeItem(CK_TREATMENT_PLAN);
 		storage.removeItem(CK_CONSUMABLE);
-		storage.removeItem(CK_ITEM_OTEHRS);
+		storage.removeItem(CK_ITEM_OTHERS);
 		storage.removeItem(CK_DIAGNOSIS);
 		storage.removeItem(CK_PAST_DIAGNOSIS);
 

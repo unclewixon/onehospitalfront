@@ -59,8 +59,8 @@ const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 			const res = await request(url, 'PATCH', true, data);
 			setUpdating(null);
 			if (res.success) {
-				updateAppointment(res);
-				notifySuccess('Front desk has been notified');
+				updateAppointment(res.appointment);
+				notifySuccess('Front desk has been notified!');
 			} else {
 				notifyError('Something went wrong. Cannot select patient');
 			}

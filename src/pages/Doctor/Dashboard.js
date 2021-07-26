@@ -82,14 +82,8 @@ const Dashboard = () => {
 					console.log(appointments);
 				}
 			});
-
-			socket.on('appointment-update', data => {
-				if (data.action === 1) {
-					updateAppointment(data.appointment);
-				}
-			});
 		}
-	}, [appointments, listenning, meta, updateAppointment]);
+	}, [appointments, listenning, meta]);
 
 	useEffect(() => {
 		if (loading) {

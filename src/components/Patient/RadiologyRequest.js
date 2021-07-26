@@ -6,7 +6,7 @@ import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 import { searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
-import { request, patientname } from '../../services/utilities';
+import { request, patientname, formatCurrency } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 
 const defaultValues = {
@@ -125,7 +125,7 @@ const RadiologyRequest = ({ module, history, location }) => {
 							</div>
 						)}
 						<div className="row">
-							<div className="form-group col-sm-12">
+							<div className="form-group col-sm-12 relative">
 								<label>Radiology Test</label>
 								<AsyncSelect
 									isMulti
@@ -137,10 +137,27 @@ const RadiologyRequest = ({ module, history, location }) => {
 									name="service_request"
 									loadOptions={getServices}
 									onChange={e => {
-										setTests(e);
+										if (e) {
+											setTests(e);
+										} else {
+											setTests([]);
+										}
 									}}
 									placeholder="Select Radiology Test"
 								/>
+							</div>
+						</div>
+						<div className="row mt-2">
+							<div className="col-sm-12">
+								{tests.map((scan, i) => (
+									<span
+										className={`badge badge-${
+											scan ? 'info' : 'danger'
+										} text-white ml-2`}
+										key={i}>{`${scan.name}: ${formatCurrency(
+										scan?.serviceCost?.tariff || 0
+									)}`}</span>
+								))}
 							</div>
 						</div>
 

@@ -9,7 +9,11 @@ import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 import { updateEncounterData } from '../../../actions/patient';
 import { startBlock, stopBlock } from '../../../actions/redux-block';
-import { request, hasExpired } from '../../../services/utilities';
+import {
+	request,
+	hasExpired,
+	formatCurrency,
+} from '../../../services/utilities';
 import { notifyError } from '../../../services/notify';
 import { ReactComponent as PlusIcon } from '../../../assets/svg-icons/plus.svg';
 import { ReactComponent as EditIcon } from '../../../assets/svg-icons/edit.svg';
@@ -46,7 +50,6 @@ const PlanForm = ({ previous, next, patient }) => {
 	const [treatmentPlan, setTreatmentPlan] = useState('');
 	const [editing, setEditing] = useState(false);
 	const [regimenNote, setRegimenNote] = useState('');
-	const [diagnosisType, setDiagnosisType] = useState('icd10');
 
 	// selected items
 	const [frequencyType, setFrequencyType] = useState(null);
@@ -92,10 +95,10 @@ const PlanForm = ({ previous, next, patient }) => {
 
 		const proc = await storage.getItem(CK_INVESTIGATION_PROCEDURE);
 		if (proc) {
-			setBill(proc.bill);
-			setProcedureNote(proc.procedureNote);
-			setService(proc.service);
-			setProcDiagnoses(proc.procDiagnoses);
+			setBill(proc?.bill || 'later');
+			setProcedureNote(proc?.procedureNote || '');
+			setService(proc?.service);
+			setProcDiagnoses(proc?.procDiagnoses || []);
 		}
 	}, [encounter]);
 
@@ -247,7 +250,7 @@ const PlanForm = ({ previous, next, patient }) => {
 
 		const datum = { ...regimenData, regimenNote, drugs: newDrug };
 		setRegimenData(datum);
-		storage.setItem(CK_INVESTIGATION_REGIMEN, datum);
+		storage.setLocalStorage(CK_INVESTIGATION_REGIMEN, datum);
 	};
 
 	const onTrash = index => {
@@ -255,7 +258,7 @@ const PlanForm = ({ previous, next, patient }) => {
 		setDrugsSelected(newPharm);
 		const datum = { ...regimenData, regimenNote, drugs: newPharm };
 		setRegimenData(datum);
-		storage.setItem(CK_INVESTIGATION_REGIMEN, datum);
+		storage.setLocalStorage(CK_INVESTIGATION_REGIMEN, datum);
 	};
 
 	const startEdit = (item, index) => {
@@ -280,7 +283,7 @@ const PlanForm = ({ previous, next, patient }) => {
 			return [];
 		}
 
-		const url = `${diagnosisAPI}/search?q=${q}&diagnosisType=${diagnosisType}`;
+		const url = `${diagnosisAPI}/search?q=${q}&diagnosisType=`;
 		const res = await request(url, 'GET', true);
 		return res;
 	};
@@ -377,7 +380,7 @@ const PlanForm = ({ previous, next, patient }) => {
 								}}
 								onChange={e => {
 									setTreatmentPlan(String(e));
-									storage.setItem(CK_TREATMENT_PLAN, String(e));
+									storage.setLocalStorage(CK_TREATMENT_PLAN, String(e));
 								}}
 							/>
 						</div>
@@ -412,7 +415,11 @@ const PlanForm = ({ previous, next, patient }) => {
 										<span
 											className={`badge badge-${
 												selectedDrug.qty > 0 ? 'info' : 'danger'
-											} text-white`}>{`Stock Level: ${selectedDrug.qty}; Base Price: ₦${selectedDrug.basePrice}`}</span>
+											} text-white`}>{`Stock Level: ${
+											selectedDrug.qty
+										}; Base Price: ${formatCurrency(
+											selectedDrug.basePrice
+										)}`}</span>
 									</div>
 								</div>
 							</div>
@@ -492,7 +499,7 @@ const PlanForm = ({ previous, next, patient }) => {
 						<input
 							type="number"
 							className="form-control"
-							placeholder="(value in days) eg: 7"
+							placeholder={`(value in ${frequencyType}) eg: 7`}
 							ref={register({ required: true })}
 							name="duration"
 							onChange={onHandleInputChange}
@@ -539,29 +546,7 @@ const PlanForm = ({ previous, next, patient }) => {
 					</div>
 				</div>
 				<div className="row">
-					<div className="form-group col-sm-12 relative">
-						<div className="posit-top" style={{ top: '-12px' }}>
-							<div className="row">
-								<div className="form-group col-sm-12">
-									<label>
-										<input
-											type="radio"
-											checked={diagnosisType === 'icd10'}
-											onChange={() => setDiagnosisType('icd10')}
-										/>{' '}
-										ICD10
-									</label>
-									<label className="ml-2">
-										<input
-											type="radio"
-											checked={diagnosisType === 'icpc-2'}
-											onChange={() => setDiagnosisType('icpc-2')}
-										/>{' '}
-										ICPC-2
-									</label>
-								</div>
-							</div>
-						</div>
+					<div className="form-group col-sm-12">
 						<h6>Diagnosis Data</h6>
 						<AsyncSelect
 							required
@@ -689,7 +674,7 @@ const PlanForm = ({ previous, next, patient }) => {
 								setRegimenNote(e.target.value);
 								const data = { ...regimenData, regimenNote: e.target.value };
 								setRegimenData(data);
-								storage.setItem(CK_INVESTIGATION_REGIMEN, data);
+								storage.setLocalStorage(CK_INVESTIGATION_REGIMEN, data);
 							}}
 							value={regimenNote}></textarea>
 					</div>
@@ -698,8 +683,22 @@ const PlanForm = ({ previous, next, patient }) => {
 			<div className="mt-4"></div>
 			<h5>Procedure</h5>
 			<div className="row">
-				<div className="form-group col-sm-12">
+				<div className="form-group col-sm-12 relative">
 					<label>Procedure</label>
+					{service && (
+						<div className="posit-top">
+							<div className="row">
+								<div className="col-sm-12">
+									<span
+										className={`badge badge-${
+											service ? 'info' : 'danger'
+										} text-white`}>{`Base Price: ${formatCurrency(
+										service?.serviceCost?.tariff || 0
+									)}`}</span>
+								</div>
+							</div>
+						</div>
+					)}
 					<AsyncSelect
 						getOptionValue={option => option.id}
 						getOptionLabel={option => option.name}
@@ -711,36 +710,14 @@ const PlanForm = ({ previous, next, patient }) => {
 							setService(e);
 							const data = { ...procedureData, service: e };
 							setProcedureData(data);
-							storage.setItem(CK_INVESTIGATION_PROCEDURE, data);
+							storage.setLocalStorage(CK_INVESTIGATION_PROCEDURE, data);
 						}}
 						placeholder="Select Procedure"
 					/>
 				</div>
 			</div>
 			<div className="row">
-				<div className="form-group col-sm-12 relative">
-					<div className="posit-top">
-						<div className="row">
-							<div className="form-group col-sm-12">
-								<label>
-									<input
-										type="radio"
-										checked={diagnosisType === 'icd10'}
-										onChange={() => setDiagnosisType('icd10')}
-									/>{' '}
-									ICD10
-								</label>
-								<label className="ml-2">
-									<input
-										type="radio"
-										checked={diagnosisType === 'icpc-2'}
-										onChange={() => setDiagnosisType('icpc-2')}
-									/>{' '}
-									ICPC-2
-								</label>
-							</div>
-						</div>
-					</div>
+				<div className="form-group col-sm-12">
 					<h6>Diagnosis Data</h6>
 					<AsyncSelect
 						required
@@ -755,7 +732,7 @@ const PlanForm = ({ previous, next, patient }) => {
 							setProcDiagnoses(e);
 							const data = { ...procedureData, procDiagnoses: e };
 							setProcedureData(data);
-							storage.setItem(CK_INVESTIGATION_PROCEDURE, data);
+							storage.setLocalStorage(CK_INVESTIGATION_PROCEDURE, data);
 						}}
 						placeholder="Search for diagnosis"
 					/>
@@ -773,7 +750,7 @@ const PlanForm = ({ previous, next, patient }) => {
 							setProcedureNote(e.target.value);
 							const data = { ...procedureData, procedureNote: e.target.value };
 							setProcedureData(data);
-							storage.setItem(CK_INVESTIGATION_PROCEDURE, data);
+							storage.setLocalStorage(CK_INVESTIGATION_PROCEDURE, data);
 						}}
 						value={procedureNote}></textarea>
 				</div>
@@ -793,7 +770,7 @@ const PlanForm = ({ previous, next, patient }) => {
 										setBill('now');
 										const data = { ...procedureData, bill: 'now' };
 										setProcedureData(data);
-										storage.setItem(CK_INVESTIGATION_PROCEDURE, data);
+										storage.setLocalStorage(CK_INVESTIGATION_PROCEDURE, data);
 									}}
 								/>
 								<label className="mx-1">Bill now</label>
@@ -811,7 +788,7 @@ const PlanForm = ({ previous, next, patient }) => {
 										setBill('later');
 										const data = { ...procedureData, bill: 'later' };
 										setProcedureData(data);
-										storage.setItem(CK_INVESTIGATION_PROCEDURE, data);
+										storage.setLocalStorage(CK_INVESTIGATION_PROCEDURE, data);
 									}}
 								/>
 								<label className="mx-1">Bill later </label>

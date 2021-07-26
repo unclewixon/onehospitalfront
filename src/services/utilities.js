@@ -681,10 +681,6 @@ export const nth = n => {
 	return `${n}${_nth} Floor`;
 };
 
-export const getType = type => {
-	return type && type === 2 ? 'ICPC2' : 'ICD10';
-};
-
 export const parseAvatar = avatar => {
 	return avatar
 		? `${process.env.REACT_APP_API}/uploads/avatars/${avatar}`

@@ -8,16 +8,14 @@ export default class SSRStorage {
 		this.$cookies = cookies;
 	}
 
-	setItem(key, value, options = { path: '/' }, useCookie = false) {
+	setItem(key, value, options = { path: '/' }) {
 		// Unset null, undefined
 		if (isUnset(value)) {
 			return this.removeItem(key);
 		}
 
 		// Cookies
-		if (useCookie) {
-			this.setCookie(key, value, options);
-		}
+		this.setCookie(key, value, options);
 
 		// Local Storage
 		this.setLocalStorage(key, value);

@@ -9,7 +9,7 @@ import {
 	CK_INVESTIGATION_SCAN,
 	CK_INVESTIGATIONS,
 } from '../../../services/constants';
-import { request } from '../../../services/utilities';
+import { request, formatCurrency } from '../../../services/utilities';
 import { notifyError } from '../../../services/notify';
 import { startBlock, stopBlock } from '../../../actions/redux-block';
 import { updateEncounterData } from '../../../actions/patient';
@@ -78,16 +78,16 @@ const Investigations = ({ patient, previous, next }) => {
 		const scan = await storage.getItem(CK_INVESTIGATION_SCAN);
 		setSelectedScans(
 			scan
-				? scan.items
+				? scan.items || []
 				: encounter.investigations?.radiologyRequest?.tests || []
 		);
 
 		const item = await storage.getItem(CK_INVESTIGATIONS);
 		if (item) {
 			setFormSet(item);
-			setUrgentLab(item.urgentLab);
-			setValue('scan_request_note', item.scan_request_note);
-			setValue('lab_request_note', item.lab_request_note);
+			setUrgentLab(item?.urgentLab);
+			setValue('scan_request_note', item?.scan_request_note || '');
+			setValue('lab_request_note', item?.lab_request_note || '');
 		}
 	}, [encounter, setValue]);
 
@@ -169,7 +169,7 @@ const Investigations = ({ patient, previous, next }) => {
 									...e.tests.map(t => ({ ...t.labTest })),
 								];
 								setSelectedTests(items);
-								storage.setItem(CK_INVESTIGATION_LAB, { items });
+								storage.setLocalStorage(CK_INVESTIGATION_LAB, { items });
 							}}
 						/>
 					</div>
@@ -187,11 +187,30 @@ const Investigations = ({ patient, previous, next }) => {
 							name="lab_test"
 							loadOptions={getLabTests}
 							onChange={e => {
-								setSelectedTests(e);
-								storage.setItem(CK_INVESTIGATION_LAB, { items: e });
+								if (e) {
+									setSelectedTests(e);
+								} else {
+									setSelectedTests([]);
+								}
+								storage.setLocalStorage(CK_INVESTIGATION_LAB, {
+									items: e || [],
+								});
 							}}
 							placeholder="Search Lab Test"
 						/>
+					</div>
+				</div>
+				<div className="row mt-2">
+					<div className="col-sm-12">
+						{selectedTests.map((lab, i) => (
+							<span
+								className={`badge badge-${
+									lab ? 'info' : 'danger'
+								} text-white ml-2`}
+								key={i}>{`${lab.name}: ${formatCurrency(
+								lab?.service?.tariff || 0
+							)}`}</span>
+						))}
 					</div>
 				</div>
 				<div className="row mt-4">
@@ -216,7 +235,7 @@ const Investigations = ({ patient, previous, next }) => {
 									checked={urgentLab}
 									onChange={e => {
 										setUrgentLab(!urgentLab);
-										storage.setItem(CK_INVESTIGATIONS, {
+										storage.setLocalStorage(CK_INVESTIGATIONS, {
 											...formset,
 											urgentLab: !urgentLab,
 										});
@@ -243,11 +262,26 @@ const Investigations = ({ patient, previous, next }) => {
 							name="service_request"
 							loadOptions={getServices}
 							onChange={e => {
-								setSelectedScans(e);
-								storage.setItem(CK_INVESTIGATION_SCAN, { items: e });
+								setSelectedScans(e || []);
+								storage.setLocalStorage(CK_INVESTIGATION_SCAN, {
+									items: e || [],
+								});
 							}}
 							placeholder="Search Lab Test"
 						/>
+					</div>
+				</div>
+				<div className="row mt-2">
+					<div className="col-sm-12">
+						{selectedScans.map((scan, i) => (
+							<span
+								className={`badge badge-${
+									scan ? 'info' : 'danger'
+								} text-white ml-2`}
+								key={i}>{`${scan.name}: ${formatCurrency(
+								scan?.serviceCost?.tariff || 0
+							)}`}</span>
+						))}
 					</div>
 				</div>
 
@@ -273,7 +307,7 @@ const Investigations = ({ patient, previous, next }) => {
 									checked={urgentScan}
 									onChange={e => {
 										setUrgentScan(!urgentScan);
-										storage.setItem(CK_INVESTIGATIONS, {
+										storage.setLocalStorage(CK_INVESTIGATIONS, {
 											...formset,
 											urgentScan: !urgentScan,
 										});

@@ -69,7 +69,7 @@ const Complaints = ({ next }) => {
 								}}
 								onChange={e => {
 									setComplaint(String(e));
-									storage.setItem(CK_COMPLAINTS, String(e));
+									storage.setLocalStorage(CK_COMPLAINTS, String(e));
 								}}
 							/>
 						</div>

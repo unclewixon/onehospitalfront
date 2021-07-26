@@ -14,7 +14,7 @@ import {
 	CK_DIAGNOSIS,
 	CK_PAST_DIAGNOSIS,
 } from '../../../services/constants';
-import { request, getType } from '../../../services/utilities';
+import { request } from '../../../services/utilities';
 import { notifyError } from '../../../services/notify';
 import { ReactComponent as TrashIcon } from '../../../assets/svg-icons/trash.svg';
 import SSRStorage from '../../../services/storage';
@@ -66,7 +66,7 @@ const Diagnosis = ({ previous, next, patient }) => {
 	const remove = index => {
 		const newItems = diagnoses.filter((item, i) => index !== i);
 		setDiagnoses(newItems);
-		storage.setItem(CK_DIAGNOSIS, newItems);
+		storage.setLocalStorage(CK_DIAGNOSIS, newItems);
 	};
 
 	const onNext = () => {
@@ -89,7 +89,7 @@ const Diagnosis = ({ previous, next, patient }) => {
 		if (diagnosis !== '' && type !== '') {
 			const items = [...diagnoses, { comment, diagnosis, type }];
 			setDiagnoses(items);
-			storage.setItem(CK_DIAGNOSIS, items);
+			storage.setLocalStorage(CK_DIAGNOSIS, items);
 			setDiagnosis('');
 			setComment('');
 			setType('');
@@ -119,11 +119,11 @@ const Diagnosis = ({ previous, next, patient }) => {
 		if (selected) {
 			const filtered = selectedPastDiagnoses.filter(o => o.id !== diagnosis.id);
 			setSelectedPastDiagnoses(filtered);
-			storage.setItem(CK_PAST_DIAGNOSIS, filtered);
+			storage.setLocalStorage(CK_PAST_DIAGNOSIS, filtered);
 		} else {
 			const items = [...selectedPastDiagnoses, { id: diagnosis.id, diagnosis }];
 			setSelectedPastDiagnoses(items);
-			storage.setItem(CK_PAST_DIAGNOSIS, items);
+			storage.setLocalStorage(CK_PAST_DIAGNOSIS, items);
 		}
 	};
 
@@ -235,10 +235,7 @@ const Diagnosis = ({ previous, next, patient }) => {
 									<div className="col-md-12" key={i}>
 										<div className="form-group history-item">
 											<label>
-												{`${getType(diagnosis.diagnosisType)} (${diagnosis.item
-													.icd10Code || diagnosis.item.procedureCode}): ${
-													diagnosis.item.description
-												}`}
+												{`${diagnosis.type} (${diagnosis.item.code}): ${diagnosis.item.description}`}
 											</label>
 											<div>
 												<input
@@ -272,10 +269,7 @@ const Diagnosis = ({ previous, next, patient }) => {
 							{diagnoses.map((item, index) => {
 								return (
 									<tr key={index}>
-										<td>{`${getType(item.diagnosis.diagnosisType)} (${item
-											.diagnosis.icd10Code || item.diagnosis.procedureCode}): ${
-											item.diagnosis.description
-										}`}</td>
+										<td>{`${item.diagnosis.type} (${item.diagnosis.code}): ${item.diagnosis.description}`}</td>
 										<td>{item.type.value}</td>
 										<td>{item.comment}</td>
 										<td>
