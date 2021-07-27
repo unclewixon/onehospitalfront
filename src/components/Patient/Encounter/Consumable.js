@@ -65,6 +65,56 @@ const Consumable = ({
 
 	const dispatch = useDispatch();
 
+	const saveInstruction = useCallback(
+		data => {
+			setInstruction(data);
+			storage.setLocalStorage(CK_CONSUMABLE, data);
+
+			dispatch(
+				updateEncounterData({
+					...encounter,
+					instruction: data,
+				})
+			);
+		},
+		[dispatch, encounter]
+	);
+
+	const saveOthers = useCallback(
+		data => {
+			setOthers(data);
+			setSelectedConsumables(data.consumables || []);
+			setRequestNote(data.requestNote || '');
+			if (data.date && data.date !== '') {
+				setAppointmentDate(new Date(moment(data.date)));
+			}
+			setAppointmentReason(data.reason || '');
+
+			storage.setLocalStorage(CK_ITEM_OTHERS, data);
+
+			const consumables = {
+				patient_id: patient.id,
+				items: data.consumables || [],
+				request_note: data.requestNote || '',
+			};
+
+			const nextAppointment = {
+				appointment_date:
+					data.date && data.date !== '' ? new Date(moment(data.date)) : '',
+				description: data.reason || '',
+			};
+
+			dispatch(
+				updateEncounterData({
+					...encounter,
+					consumables,
+					nextAppointment,
+				})
+			);
+		},
+		[dispatch, encounter, patient]
+	);
+
 	const fetchConsumables = useCallback(async () => {
 		try {
 			dispatch(startBlock());
@@ -80,20 +130,13 @@ const Consumable = ({
 
 	const retrieveData = useCallback(async () => {
 		const data = await storage.getItem(CK_CONSUMABLE);
-		setInstruction(data || encounter.instruction);
+		saveInstruction(data || encounter.instruction);
 
 		const datum = await storage.getItem(CK_ITEM_OTHERS);
-		console.log(datum);
 		if (datum) {
-			setOthers(datum);
-			setSelectedConsumables(datum.consumables || []);
-			setRequestNote(datum?.requestNote || '');
-			if (datum.date && datum.date !== '') {
-				setAppointmentDate(new Date(moment(datum.date)));
-			}
-			setAppointmentReason(datum?.reason || '');
+			saveOthers(datum);
 		}
-	}, [encounter]);
+	}, [encounter, saveOthers, saveInstruction]);
 
 	useEffect(() => {
 		if (!loaded) {
@@ -113,8 +156,7 @@ const Consumable = ({
 				setQuantity('');
 
 				const data = { ...others, consumables: i };
-				setOthers(data);
-				storage.setLocalStorage(CK_ITEM_OTHERS, data);
+				saveOthers(data);
 			}
 		} else {
 			notifyError('Error, please select item or enter quantity');
@@ -125,8 +167,7 @@ const Consumable = ({
 		const items = selectedConsumables.filter((test, i) => index !== i);
 		setSelectedConsumables(items);
 		const data = { ...others, consumables: items };
-		setOthers(data);
-		storage.setLocalStorage(CK_ITEM_OTHERS, data);
+		saveOthers(data);
 	};
 
 	const onSubmit = async e => {
@@ -211,8 +252,7 @@ const Consumable = ({
 			if (rs && rs.success) {
 				if (rs.available) {
 					const data = { ...others, date };
-					setOthers(data);
-					storage.setLocalStorage(CK_ITEM_OTHERS, data);
+					saveOthers(data);
 					dispatch(stopBlock());
 				}
 			} else {
@@ -305,10 +345,8 @@ const Consumable = ({
 							rows="3"
 							placeholder="Enter request note"
 							onChange={e => {
-								setRequestNote(e.target.value);
 								const data = { ...others, requestNote: e.target.value };
-								setOthers(data);
-								storage.setLocalStorage(CK_ITEM_OTHERS, data);
+								saveOthers(data);
 							}}
 							value={requestNote}></textarea>
 					</div>
@@ -341,10 +379,8 @@ const Consumable = ({
 								className="form-control"
 								cols="3"
 								onChange={e => {
-									setAppointmentReason(e.target.value);
 									const data = { ...others, reason: e.target.value };
-									setOthers(data);
-									storage.setLocalStorage(CK_ITEM_OTHERS, data);
+									saveOthers(data);
 								}}
 								value={appointmentReason}></textarea>
 						</div>
@@ -383,8 +419,7 @@ const Consumable = ({
 									],
 								}}
 								onChange={e => {
-									setInstruction(String(e));
-									storage.setLocalStorage(CK_CONSUMABLE, String(e));
+									saveInstruction(String(e));
 								}}
 							/>
 						</div>

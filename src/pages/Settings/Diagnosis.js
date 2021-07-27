@@ -77,7 +77,7 @@ const Diagnosis = () => {
 
 	const onNavigatePage = async page => {
 		dispatch(startBlock());
-		await loadDiagnosis(page);
+		await loadDiagnosis(page, search, selected);
 		dispatch(stopBlock());
 	};
 

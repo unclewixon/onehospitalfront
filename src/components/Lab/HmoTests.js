@@ -183,7 +183,7 @@ const HmoTests = ({ hmo, toggle, doToggle, doToggleForm }) => {
 																	</Tooltip>
 																</div>
 															</div>
-															<div className="pi-body mt-2">
+															<div className="pi-body mt-3">
 																<div className="pi-info">
 																	<div className="h6 pi-name h7">
 																		{item.name}

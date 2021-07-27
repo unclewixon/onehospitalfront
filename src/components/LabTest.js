@@ -53,14 +53,13 @@ const LabTest = ({ doToggleForm }) => {
 			<div className="col-lg-12">
 				<div className="rentals-list-w" style={{ flexDirection: 'column' }}>
 					{schemes.map((hmo, i) => {
-						const toggle = toggled.find(t => t.id === i);
+						const toggle = toggled.find(t => t.id === hmo.id);
 						return (
 							<HmoTests
 								key={i}
-								index={i}
 								hmo={hmo}
 								toggle={toggle}
-								doToggle={doToggle}
+								doToggle={() => doToggle(hmo.id)}
 								doToggleForm={doToggleForm}
 							/>
 						);

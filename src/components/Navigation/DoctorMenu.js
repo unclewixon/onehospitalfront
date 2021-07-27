@@ -21,6 +21,14 @@ const DoctorMenu = () => {
 				</Link>
 			</li>
 			<li>
+				<Link to="/front-desk/patients">
+					<div className="icon-w">
+						<div className="os-icon os-icon-cv-2" />
+					</div>
+					<span>Patients</span>
+				</Link>
+			</li>
+			<li>
 				<Link to="/nurse/in-patients/care">
 					<div className="icon-w">
 						<div className="icon-feather-folder-plus" />

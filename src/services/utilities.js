@@ -507,6 +507,7 @@ export const redirectToPage = (role, history) => {
 			case 'lab-officer':
 			case 'lab-supervisor':
 			case 'lab-hod':
+				uri = '/lab';
 				break;
 			case 'radiology':
 				uri = '/radiology';

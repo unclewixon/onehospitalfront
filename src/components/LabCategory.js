@@ -51,7 +51,7 @@ const LabCategory = props => {
 		e.preventDefault();
 		try {
 			setSubmitting(true);
-			const url = `lab-tests/categories/${data.id}/update`;
+			const url = `lab-tests/categories/${data.id}`;
 			const rs = await request(url, 'PUT', true, { name });
 			dispatch(updateLabCategory(rs));
 			setState({ ...initialState });

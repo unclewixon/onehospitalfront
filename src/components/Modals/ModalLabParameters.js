@@ -104,12 +104,12 @@ const ModalLabParameters = ({ closeModal, labTest }) => {
 			const data = {
 				...labTest,
 				lab_category_id: labTest.category.id,
-				hmo_id: labTest.hmo.id,
+				hmo_id: labTest.service.hmo.id,
 				parameters: parameters
 					.filter(p => p.deleted === 0)
 					.map(p => ({ id: p.ref_id, name: p.name, reference: p.reference })),
 			};
-			const url = `lab-tests/${labTest.id}/update`;
+			const url = `lab-tests/${labTest.id}`;
 			const rs = await request(url, 'PATCH', true, data);
 			dispatch(updateLabTest(rs));
 			setSubmitting(false);

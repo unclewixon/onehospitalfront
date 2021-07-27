@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { lazy, Suspense, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Switch, Route, withRouter, Link } from 'react-router-dom';
 import startCase from 'lodash.startcase';
 import qs from 'querystring';
@@ -22,6 +22,8 @@ const Home = ({ match, location }) => {
 	const [count, setCount] = useState(0);
 
 	const dispatch = useDispatch();
+
+	const staff = useSelector(state => state.user.profile);
 
 	const page = location.pathname.split('/').pop();
 
@@ -64,26 +66,29 @@ const Home = ({ match, location }) => {
 				<div className="row">
 					<div className="col-sm-12">
 						<div className="element-wrapper">
-							<div className="element-actions">
-								<a
-									onClick={doRegisterNewPatient}
-									className={`mr-2 btn btn-primary btn-sm ${
-										page === 'filled-request' ? 'btn-outline-primary' : ''
-									}`}>
-									New Patient
-								</a>
-								<Link
-									to={{
-										pathname: '/front-desk',
-										search: `?new=${count}`,
-										state: { from: location.pathname },
-									}}
-									className={`btn btn-primary btn-sm ${
-										page === 'all-request' ? 'btn-outline-primary' : ''
-									}`}>
-									New Appointment
-								</Link>
-							</div>
+							{(staff?.role?.slug === 'front-desk' ||
+								staff?.role?.slug === 'it-admin') && (
+								<div className="element-actions">
+									<a
+										onClick={doRegisterNewPatient}
+										className={`mr-2 btn btn-primary btn-sm ${
+											page === 'filled-request' ? 'btn-outline-primary' : ''
+										}`}>
+										New Patient
+									</a>
+									<Link
+										to={{
+											pathname: '/front-desk',
+											search: `?new=${count}`,
+											state: { from: location.pathname },
+										}}
+										className={`btn btn-primary btn-sm ${
+											page === 'all-request' ? 'btn-outline-primary' : ''
+										}`}>
+										New Appointment
+									</Link>
+								</div>
+							)}
 							<h6 className="element-header">{startCase(title)}</h6>
 
 							<div className="element-content row">

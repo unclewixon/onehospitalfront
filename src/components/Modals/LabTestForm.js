@@ -1,28 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Select from 'react-select';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 import waiting from '../../assets/images/waiting.gif';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { request } from '../../services/utilities';
+import { hmoAPI } from '../../services/constants';
 import { addLabTest, updateLabTest } from '../../actions/settings';
 
 const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 	const initialState = {
 		name: '',
 		category: '',
-		price: '',
-		description: '',
 		edit: false,
 		create: true,
 		specimens: '',
-		hmo_id: '',
-		hmoPrice: '',
 	};
-	const [
-		{ name, category, price, description, hmo_id, hmoPrice },
-		setState,
-	] = useState(initialState);
+	const [{ name, category }, setState] = useState(initialState);
 	const [{ edit }, setSubmitButton] = useState(initialState);
 	const [parameters, setParameters] = useState([]);
 	const [loaded, setLoaded] = useState(false);
@@ -30,12 +25,11 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 	const [labSpecimens, setLabSpecimens] = useState([]);
 	const [specimens, setSpecimens] = useState([]);
 	const [hasParameters, setHasParameters] = useState(false);
-	const [enableHmo, setEnableHmo] = useState(false);
+	const [hmoValue, setHmoValue] = useState(null);
 
 	const dispatch = useDispatch();
 
 	const categories = useSelector(state => state.settings.lab_categories);
-	const hmos = [];
 
 	useEffect(() => {
 		const fetchSpecimens = async () => {
@@ -53,21 +47,16 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 	useEffect(() => {
 		if (showHide) {
 			if (labTest) {
-				setEnableHmo(true);
 				setState({
 					name: labTest.name,
 					category: labTest.category.id,
-					price: labTest.price,
-					hmoPrice: labTest.hmoPrice,
-					description: labTest.description || '',
-					hmo_id: labTest.hmo ? labTest.hmo.id : '',
 				});
+				setHmoValue(labTest.service.hmo);
 				setParameters(labTest.parameters);
 				setLabSpecimens(labTest.specimens);
 				setHasParameters(labTest.hasParameters);
 				setSubmitButton({ create: false, edit: true });
 			} else {
-				setEnableHmo(false);
 				setParameters([]);
 				setLabSpecimens([]);
 				setSubmitButton({ create: true, edit: false });
@@ -86,14 +75,11 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 			setSubmitting(true);
 			const datum = {
 				name,
-				price,
 				lab_category_id: category,
 				parameters,
 				specimens: labSpecimens,
-				description,
 				hasParameters,
-				hmo_id,
-				hmoPrice,
+				hmo_id: hmoValue.id,
 			};
 			const rs = await request('lab-tests', 'POST', true, datum);
 			dispatch(addLabTest(rs));
@@ -114,18 +100,14 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 			e.preventDefault();
 			setSubmitting(true);
 			const datum = {
-				id: labTest.id,
 				name,
-				price,
 				lab_category_id: category,
 				parameters,
 				specimens: labSpecimens,
-				description,
 				hasParameters,
-				hmo_id,
-				hmoPrice,
+				hmo_id: hmoValue.id,
 			};
-			const url = `lab-tests/${labTest.id}/update`;
+			const url = `lab-tests/${labTest.id}`;
 			const rs = await request(url, 'PATCH', true, datum);
 			dispatch(updateLabTest(rs));
 			setState({ ...initialState });
@@ -146,6 +128,16 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 		setSubmitButton({ ...initialState });
 		setState({ ...initialState });
 		doToggleForm(false);
+	};
+
+	const getHmoSchemes = async q => {
+		if (!q || q.length <= 1) {
+			return [];
+		}
+
+		const url = `${hmoAPI}/schemes?q=${q}`;
+		const { result } = await request(url, 'GET', true);
+		return result;
 	};
 
 	return (
@@ -171,56 +163,6 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 							/>
 						</div>
 					</div>
-					<div className="col-md-6">
-						<div className="form-group">
-							<label>Test Price</label>
-							<input
-								className="form-control"
-								placeholder="Test Price"
-								type="text"
-								name="price"
-								onChange={handleInputChange}
-								value={price}
-							/>
-						</div>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-md-6">
-						<div className="form-group">
-							<label>HMO</label>
-							<select
-								className="form-control"
-								name="hmo_id"
-								disabled={enableHmo}
-								onChange={handleInputChange}
-								value={hmo_id}>
-								{!hmo_id && <option value="">Select HMO</option>};
-								{hmos.map((hmo, i) => {
-									return (
-										<option key={i} value={hmo.id}>
-											{hmo.name}
-										</option>
-									);
-								})}
-							</select>
-						</div>
-					</div>
-					<div className="col-md-6">
-						<div className="form-group">
-							<label>HMO Price</label>
-							<input
-								className="form-control"
-								placeholder="HMO Price"
-								type="text"
-								name="hmoPrice"
-								onChange={handleInputChange}
-								value={hmoPrice}
-							/>
-						</div>
-					</div>
-				</div>
-				<div className="row">
 					<div className="form-group col-sm-6">
 						<label>Test Category</label>
 						<select
@@ -237,6 +179,29 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 								);
 							})}
 						</select>
+					</div>
+				</div>
+				<div className="row">
+					<div className="col-md-6">
+						<div className="form-group">
+							<label>HMO</label>
+							<AsyncSelect
+								isClearable
+								getOptionValue={option => option.id}
+								getOptionLabel={option =>
+									`${option.name} ${
+										option.name !== 'Private' ? option.phoneNumber || '' : ''
+									}`
+								}
+								defaultOptions
+								value={hmoValue}
+								loadOptions={getHmoSchemes}
+								onChange={e => {
+									setHmoValue(e);
+								}}
+								placeholder="Search hmo scheme"
+							/>
+						</div>
 					</div>
 					<div className="form-group col-sm-6">
 						<label>Specimen</label>
@@ -268,17 +233,6 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 							has parameters?
 						</label>
 					</div>
-				</div>
-				<div className="form-group">
-					<textarea
-						className="form-control"
-						placeholder="Description"
-						type="textarea"
-						name="description"
-						onChange={handleInputChange}
-						value={description}
-						rows={4}
-					/>
 				</div>
 				<div className="form-buttons-w">
 					<button

@@ -82,25 +82,113 @@ const PlanForm = ({ previous, next, patient }) => {
 		}
 	}, [dispatch]);
 
+	const saveTreatmentPlan = useCallback(
+		data => {
+			setTreatmentPlan(data);
+			storage.setLocalStorage(CK_TREATMENT_PLAN, data);
+
+			dispatch(
+				updateEncounterData({
+					...encounter,
+					treatmentPlan: data,
+				})
+			);
+		},
+		[dispatch, encounter]
+	);
+
+	const saveRegimenData = useCallback(
+		data => {
+			setRegimenData(data);
+			setDrugsSelected(data.drugs || []);
+			setRegimenNote(data.regimenNote || '');
+
+			storage.setLocalStorage(CK_INVESTIGATION_REGIMEN, data);
+
+			const datum = data.drugs
+				? data.drugs.map((item, i) => ({
+						id: i + 1,
+						generic: item.generic,
+						drug: item.drug,
+						hmo_id: patient.hmo.id,
+						dose_quantity: item.quantity,
+						refills: item.refills && item.refills !== '' ? item.refills : 0,
+						frequency: item.frequency,
+						frequencyType: item.frequencyType,
+						duration: item.duration,
+						regimenInstruction: item.regimen_instruction,
+						diagnosis: item.drugDiagnoses,
+						prescription: item.prescription ? 'Yes' : 'No',
+				  }))
+				: [];
+
+			const regimen = {
+				requestType: 'drugs',
+				items: datum,
+				patient_id: patient.id,
+				request_note: data.regimenNote || '',
+			};
+
+			dispatch(
+				updateEncounterData({
+					...encounter,
+					investigations: {
+						...encounter.investigations,
+						pharmacyRequest: regimen,
+					},
+				})
+			);
+		},
+		[dispatch, encounter, patient]
+	);
+
+	const saveProcedureData = useCallback(
+		data => {
+			setProcedureData(data);
+			setBill(data.bill || 'later');
+			setProcedureNote(data.procedureNote || '');
+			setService(data?.service);
+			setProcDiagnoses(data.procDiagnoses || []);
+
+			storage.setLocalStorage(CK_INVESTIGATION_PROCEDURE, data);
+
+			const procedureRequest = {
+				requestType: 'procedure',
+				patient_id: patient.id,
+				tests: [{ ...data?.service }],
+				request_note: data.procedureNote || '',
+				urgent: false,
+				diagnosis: data.procDiagnoses || [],
+				bill: data?.bill === 'later' ? -1 : 0,
+			};
+
+			dispatch(
+				updateEncounterData({
+					...encounter,
+					investigations: {
+						...encounter.investigations,
+						procedureRequest,
+					},
+				})
+			);
+		},
+		[dispatch, encounter, patient]
+	);
+
 	const retrieveData = useCallback(async () => {
 		const data = await storage.getItem(CK_TREATMENT_PLAN);
-		setTreatmentPlan(data || encounter.treatmentPlan);
+		saveTreatmentPlan(data || encounter.treatmentPlan);
 
 		const regimenData = await storage.getItem(CK_INVESTIGATION_REGIMEN);
-		console.log(regimenData);
 		if (regimenData) {
-			setDrugsSelected(regimenData.drugs);
-			setRegimenNote(regimenData.regimenNote);
+			saveRegimenData(regimenData);
 		}
 
 		const proc = await storage.getItem(CK_INVESTIGATION_PROCEDURE);
 		if (proc) {
-			setBill(proc?.bill || 'later');
-			setProcedureNote(proc?.procedureNote || '');
-			setService(proc?.service);
-			setProcDiagnoses(proc?.procDiagnoses || []);
+			saveProcedureData(proc);
 		}
-	}, [encounter]);
+	}, [encounter, saveRegimenData, saveTreatmentPlan, saveProcedureData]);
 
 	useEffect(() => {
 		if (!loaded) {
@@ -239,7 +327,8 @@ const PlanForm = ({ previous, next, patient }) => {
 			...drugsSelected,
 			{ drug: selectedDrug, generic, ftype: frequencyType, ...data },
 		];
-		setDrugsSelected(newDrug);
+		const datum = { ...regimenData, regimenNote, drugs: newDrug };
+		saveRegimenData(datum);
 		setEditing(false);
 		setSelectedDrug(null);
 		reset(defaultValues);
@@ -247,18 +336,12 @@ const PlanForm = ({ previous, next, patient }) => {
 		setDiagnoses([]);
 		setGeneric(null);
 		setFrequencyType(null);
-
-		const datum = { ...regimenData, regimenNote, drugs: newDrug };
-		setRegimenData(datum);
-		storage.setLocalStorage(CK_INVESTIGATION_REGIMEN, datum);
 	};
 
 	const onTrash = index => {
 		const newPharm = drugsSelected.filter((pharm, i) => index !== i);
-		setDrugsSelected(newPharm);
 		const datum = { ...regimenData, regimenNote, drugs: newPharm };
-		setRegimenData(datum);
-		storage.setLocalStorage(CK_INVESTIGATION_REGIMEN, datum);
+		saveRegimenData(datum);
 	};
 
 	const startEdit = (item, index) => {
@@ -379,8 +462,7 @@ const PlanForm = ({ previous, next, patient }) => {
 									],
 								}}
 								onChange={e => {
-									setTreatmentPlan(String(e));
-									storage.setLocalStorage(CK_TREATMENT_PLAN, String(e));
+									saveTreatmentPlan(String(e));
 								}}
 							/>
 						</div>
@@ -712,10 +794,8 @@ const PlanForm = ({ previous, next, patient }) => {
 						loadOptions={getServices}
 						value={service}
 						onChange={e => {
-							setService(e);
 							const data = { ...procedureData, service: e };
-							setProcedureData(data);
-							storage.setLocalStorage(CK_INVESTIGATION_PROCEDURE, data);
+							saveProcedureData(data);
 						}}
 						placeholder="Select Procedure"
 					/>
@@ -734,10 +814,8 @@ const PlanForm = ({ previous, next, patient }) => {
 						name="diagnosis"
 						loadOptions={getOptions}
 						onChange={e => {
-							setProcDiagnoses(e);
 							const data = { ...procedureData, procDiagnoses: e };
-							setProcedureData(data);
-							storage.setLocalStorage(CK_INVESTIGATION_PROCEDURE, data);
+							saveProcedureData(data);
 						}}
 						placeholder="Search for diagnosis"
 					/>
@@ -752,10 +830,8 @@ const PlanForm = ({ previous, next, patient }) => {
 						rows="3"
 						placeholder="Enter request note"
 						onChange={e => {
-							setProcedureNote(e.target.value);
 							const data = { ...procedureData, procedureNote: e.target.value };
-							setProcedureData(data);
-							storage.setLocalStorage(CK_INVESTIGATION_PROCEDURE, data);
+							saveProcedureData(data);
 						}}
 						value={procedureNote}></textarea>
 				</div>
@@ -772,10 +848,8 @@ const PlanForm = ({ previous, next, patient }) => {
 									value="now"
 									checked={bill === 'now'}
 									onChange={() => {
-										setBill('now');
 										const data = { ...procedureData, bill: 'now' };
-										setProcedureData(data);
-										storage.setLocalStorage(CK_INVESTIGATION_PROCEDURE, data);
+										saveProcedureData(data);
 									}}
 								/>
 								<label className="mx-1">Bill now</label>
@@ -790,10 +864,8 @@ const PlanForm = ({ previous, next, patient }) => {
 									value="later"
 									checked={bill === 'later'}
 									onChange={() => {
-										setBill('later');
 										const data = { ...procedureData, bill: 'later' };
-										setProcedureData(data);
-										storage.setLocalStorage(CK_INVESTIGATION_PROCEDURE, data);
+										saveProcedureData(data);
 									}}
 								/>
 								<label className="mx-1">Bill later </label>

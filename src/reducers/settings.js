@@ -131,7 +131,7 @@ const settings = (state = INITIAL_STATE, action) => {
 			return state;
 		case UPDATE_LAB_TEST:
 			const utest = state.lab_tests.find(
-				t => t.hmo.id === action.payload.hmo.id
+				t => t.hmo.id === action.payload.service.hmo.id
 			);
 
 			if (utest) {
@@ -139,7 +139,7 @@ const settings = (state = INITIAL_STATE, action) => {
 				const newTest = { hmo: utest.hmo, result: [...lab_tests] };
 
 				const tests = state.lab_tests.filter(
-					t => t.hmo.id !== action.payload.hmo.id
+					t => t.hmo.id !== action.payload.service.hmo.id
 				);
 				return { ...state, lab_tests: [...tests, newTest] };
 			}
