@@ -190,7 +190,9 @@ class InsuranceTransactions extends Component {
 			const url = `transactions/${id}/transfer`;
 			const rs = await request(url, 'PATCH', true);
 			if (rs.success) {
-				const uptdTransactions = updateImmutable(transactions, rs.transaction);
+				const uptdTransactions = transactions.filter(
+					t => t.id !== rs.transaction.id
+				);
 				this.props.loadTransactions(uptdTransactions);
 				notifySuccess('Hmo transaction transferred');
 				this.setState({ submitting: false });
@@ -291,7 +293,7 @@ class InsuranceTransactions extends Component {
 						</div>
 						<div className="form-group col-md-2 mt-4">
 							<div
-								className="btn btn-sm btn-primary btn-upper text-white filter-btn"
+								className="btn btn-primary btn-upper text-white filter-btn"
 								onClick={this.doFilter}>
 								<i className="os-icon os-icon-ui-37" />
 								<span>
@@ -304,7 +306,7 @@ class InsuranceTransactions extends Component {
 							</div>
 							{filtered && (
 								<div
-									className="btn btn-sm btn-secondary text-white ml-2"
+									className="btn btn-secondary text-white ml-2"
 									onClick={async () => {
 										this.setState({
 											filtered: false,
@@ -349,8 +351,11 @@ class InsuranceTransactions extends Component {
 													{moment(item.createdAt).format('DD-MM-YYYY H:mma')}
 												</td>
 												<td>{patientname(item.patient, true)}</td>
-												<td>{`${item.hmo?.name || '--'} (${item.hmo
-													?.phoneNumber || ''})`}</td>
+												<td>{`${item.scheme?.name || '--'} ${
+													item.scheme && item.scheme.phoneNumber
+														? `(${item.scheme?.phoneNumber})`
+														: ''
+												}`}</td>
 												<td>
 													<span className="text-capitalize">
 														{item.bill_source}
@@ -412,21 +417,21 @@ class InsuranceTransactions extends Component {
 																		this.handleVisibleChange(e, item.id)
 																	}>
 																	<Tooltip title="Enter Code">
-																		<a className="text-primary btn-sm text-white">
+																		<a className="text-primary text-white">
 																			<i className="os-icon os-icon-thumbs-up" />
 																		</a>
 																	</Tooltip>
 																</Popover>
 																<Tooltip title="Approve Without Code">
 																	<a
-																		className="text-success btn-sm text-white"
+																		className="text-success text-white"
 																		onClick={() => this.approve(item.id)}>
 																		<i className="os-icon os-icon-check-square" />
 																	</a>
 																</Tooltip>
 																<Tooltip title="Transfer to Paypoint">
 																	<a
-																		className="text-info btn-sm text-white"
+																		className="info"
 																		onClick={() => this.transfer(item.id)}>
 																		<i className="os-icon os-icon-mail-18" />
 																	</a>

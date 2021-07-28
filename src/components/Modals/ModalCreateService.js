@@ -118,7 +118,7 @@ const ModalCreateService = ({ closeModal, error, handleSubmit }) => {
 											id="tariff"
 											name="tariff"
 											component={renderTextInput}
-											label="Bse Price"
+											label="Base Price"
 											type="text"
 										/>
 									</div>
