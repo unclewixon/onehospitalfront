@@ -174,7 +174,7 @@ const ServiceCategoryList = ({ loaded, setLoaded }) => {
 													<td>
 														<div className="value">{category.name}</div>
 													</td>
-													<td className="row-actions text-right">
+													<td className="row-actions">
 														<a onClick={() => onClickEdit(category)}>
 															<i className="os-icon os-icon-ui-49"></i>
 														</a>

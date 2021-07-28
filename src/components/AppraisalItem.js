@@ -43,7 +43,7 @@ class AppraisalItem extends Component {
 				<td>{item.endDate}</td>
 
 				<td className="text-center">{status(item)}</td>
-				<td className="text-right row-actions">
+				<td className="row-actions">
 					<Tooltip title="edit">
 						<a
 							className=""

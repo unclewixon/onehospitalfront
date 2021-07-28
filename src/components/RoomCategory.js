@@ -154,7 +154,7 @@ const RoomCategory = props => {
 													<td>{RoomCategory.hmo && RoomCategory.hmo.name}</td>
 													<td>{formatCurrency(RoomCategory.price)}</td>
 													<td>{formatCurrency(RoomCategory.hmoTarrif)}</td>
-													<td className="row-actions text-right">
+													<td className="row-actions">
 														<a href="#">
 															<i
 																className="os-icon os-icon-ui-49"

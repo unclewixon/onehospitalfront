@@ -113,7 +113,7 @@ const settings = (state = INITIAL_STATE, action) => {
 			return { ...state, lab_tests: [...tests, action.payload] };
 		case ADD_LAB_TEST:
 			const htest = state.lab_tests.find(
-				t => t.hmo.id === action.payload.hmo.id
+				t => t.hmo.id === action.payload.service.hmo.id
 			);
 
 			if (htest) {
@@ -123,7 +123,7 @@ const settings = (state = INITIAL_STATE, action) => {
 				};
 
 				const tests = state.lab_tests.filter(
-					t => t.hmo.id !== action.payload.hmo.id
+					t => t.hmo.id !== action.payload.service.hmo.id
 				);
 				return { ...state, lab_tests: [...tests, newTest] };
 			}
@@ -147,7 +147,7 @@ const settings = (state = INITIAL_STATE, action) => {
 			return state;
 		case DELETE_LAB_TEST:
 			const test = state.lab_tests.find(
-				t => t.hmo.id === action.payload.hmo.id
+				t => t.hmo.id === action.payload.service.hmo.id
 			);
 
 			if (test) {
@@ -157,7 +157,7 @@ const settings = (state = INITIAL_STATE, action) => {
 				};
 
 				const tests = state.lab_tests.filter(
-					t => t.hmo.id !== action.payload.hmo.id
+					t => t.hmo.id !== action.payload.service.hmo.id
 				);
 				return { ...state, lab_tests: [...tests, newTest] };
 			}
@@ -176,7 +176,7 @@ const settings = (state = INITIAL_STATE, action) => {
 			return { ...state, services: [...services, action.payload] };
 		case ADD_SERVICE:
 			const service = state.services.find(
-				s => s.hmo.id === action.payload.hmo.id
+				s => s.hmo.id === action.payload.service.hmo.id
 			);
 
 			if (service) {
@@ -186,7 +186,7 @@ const settings = (state = INITIAL_STATE, action) => {
 				};
 
 				const services = state.services.filter(
-					s => s.hmo.id !== action.payload.hmo.id
+					s => s.hmo.id !== action.payload.service.hmo.id
 				);
 
 				return { ...state, services: [...services, newService] };
@@ -195,7 +195,7 @@ const settings = (state = INITIAL_STATE, action) => {
 			return state;
 		case UPDATE_SERVICE:
 			const uservice = state.services.find(
-				s => s.hmo.id === action.payload.hmo.id
+				s => s.hmo.id === action.payload.service.hmo.id
 			);
 
 			if (uservice) {
@@ -203,7 +203,7 @@ const settings = (state = INITIAL_STATE, action) => {
 				const newService = { hmo: uservice.hmo, result: [...services] };
 
 				const uservices = state.services.filter(
-					s => s.hmo.id !== action.payload.hmo.id
+					s => s.hmo.id !== action.payload.service.hmo.id
 				);
 
 				return { ...state, services: [...uservices, newService] };
@@ -212,7 +212,7 @@ const settings = (state = INITIAL_STATE, action) => {
 			return state;
 		case DELETE_SERVICE:
 			const dservice = state.services.find(
-				s => s.hmo.id === action.payload.hmo.id
+				s => s.hmo.id === action.payload.service.hmo.id
 			);
 
 			if (dservice) {
@@ -222,7 +222,7 @@ const settings = (state = INITIAL_STATE, action) => {
 				};
 
 				const dservices = state.services.filter(
-					s => s.hmo.id !== action.payload.hmo.id
+					s => s.hmo.id !== action.payload.service.hmo.id
 				);
 
 				return { ...state, services: [...dservices, newService] };

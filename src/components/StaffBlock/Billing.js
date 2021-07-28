@@ -281,7 +281,7 @@ export class Billing extends Component {
 														</td>
 														<td className="text-center">{request.amount}</td>
 														<td className="text-center">{request.status}</td>
-														<td className="text-right row-actions">
+														<td className="row-actions">
 															<Tooltip title="Approve status">
 																<a className="secondary">
 																	<i className="os-icon os-icon-edit-32" />

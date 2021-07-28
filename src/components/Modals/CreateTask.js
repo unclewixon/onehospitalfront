@@ -233,7 +233,7 @@ const CreateTask = ({ closeModal, refreshTasks }) => {
 																)}
 															</label>
 														</td>
-														<td className="row-actions text-center">
+														<td className="row-actions">
 															<Tooltip title="Remove Task">
 																<a
 																	className="danger"
@@ -304,7 +304,7 @@ const CreateTask = ({ closeModal, refreshTasks }) => {
 																name="startTime"
 															/>
 														</td>
-														<td className="row-actions text-center">
+														<td className="row-actions">
 															<Tooltip title="Remove Task">
 																<a
 																	className="danger"

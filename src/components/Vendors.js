@@ -78,7 +78,7 @@ class Vendors extends Component {
 										<tr>
 											<th>S/N</th>
 											<th>Name</th>
-											<th className="text-center">Actions</th>
+											<th>Actions</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -87,7 +87,7 @@ class Vendors extends Component {
 												<tr key={i}>
 													<td>{i + 1}</td>
 													<td>{vendor.name}</td>
-													<td className="text-center row-actions">
+													<td className="row-actions">
 														{role === 'it-admin' ? (
 															<>
 																<a

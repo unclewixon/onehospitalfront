@@ -48,7 +48,7 @@ class InventoryItem extends Component {
 						</>
 					)}
 				</td>
-				<td className="text-right row-actions">
+				<td className="row-actions">
 					<Tooltip title="Update Quantity">
 						<a
 							onClick={() => this.doUpdateQuantity(item)}

@@ -93,7 +93,7 @@ class Allergies extends Component {
 															<td className="text-center">
 																<span>{item.severity}</span>
 															</td>
-															<td className="row-actions text-right">
+															<td className="row-actions">
 																<Tooltip title="Update">
 																	<Link
 																		className=""

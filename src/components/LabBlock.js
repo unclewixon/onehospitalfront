@@ -274,7 +274,7 @@ class LabBlock extends Component {
 											<span className="badge badge-danger">cancelled</span>
 										)}
 									</td>
-									<td className="text-right row-actions">
+									<td className="row-actions">
 										{lab.item.cancelled === 0 &&
 											(lab.item.transaction.status === 1 ||
 												lab.item.transaction.status === -1) && (

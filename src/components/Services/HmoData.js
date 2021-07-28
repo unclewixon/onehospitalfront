@@ -151,22 +151,24 @@ const HmoData = ({ hmo, toggle, doToggle }) => {
 												<div className="pipeline white p-1 mb-2">
 													<div className="pipeline-body">
 														<div className="pipeline-item">
-															<div className="pi-controls">
-																<div className="pi-settings os-dropdown-trigger">
-																	<Tooltip title="Edit Service">
-																		<i
-																			className="os-icon os-icon-ui-49 mr-1"
-																			onClick={() => onClickEdit(item)}
-																		/>
-																	</Tooltip>
-																	<Tooltip title="Delete Service">
-																		<i
-																			className="os-icon os-icon-ui-15 text-danger"
-																			onClick={() => confirmDelete(item)}
-																		/>
-																	</Tooltip>
+															{hmo.name === 'Private' && (
+																<div className="pi-controls">
+																	<div className="pi-settings os-dropdown-trigger">
+																		<Tooltip title="Edit Service">
+																			<i
+																				className="os-icon os-icon-ui-49 mr-1"
+																				onClick={() => onClickEdit(item)}
+																			/>
+																		</Tooltip>
+																		<Tooltip title="Delete Service">
+																			<i
+																				className="os-icon os-icon-ui-15 text-danger"
+																				onClick={() => confirmDelete(item)}
+																			/>
+																		</Tooltip>
+																	</div>
 																</div>
-															</div>
+															)}
 															<div className="pi-body mt-2">
 																<div className="pi-info">
 																	<div className="h6 pi-name h7">
@@ -213,7 +215,11 @@ const HmoData = ({ hmo, toggle, doToggle }) => {
 				)}
 			</div>
 			{showModal && service && (
-				<ModalEditService closeModal={() => closeModal()} service={service} />
+				<ModalEditService
+					closeModal={() => closeModal()}
+					service={service}
+					hmo={hmo}
+				/>
 			)}
 		</div>
 	);

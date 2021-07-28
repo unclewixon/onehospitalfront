@@ -200,7 +200,7 @@ class AppointmentHistory extends Component {
 																</>
 															)}
 														</td>
-														<td className="row-actions text-left">
+														<td className="row-actions">
 															<a
 																onClick={() =>
 																	this.viewAppointment(appointment)

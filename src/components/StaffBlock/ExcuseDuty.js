@@ -164,7 +164,7 @@ const ExcuseDuty = ({
 															{leave.status === 0 && (
 																<Tooltip title="Cancel">
 																	<a
-																		className="danger cursor"
+																		className="danger"
 																		style={{ height: '2rem', width: '2rem' }}
 																		onClick={() => {
 																			confirmDelete(leave);

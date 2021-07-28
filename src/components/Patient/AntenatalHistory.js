@@ -148,7 +148,7 @@ class AntenatalHistory extends Component {
 															: el.requiredCare}
 													</td>
 
-													<td className="text-right row-actions">
+													<td className="row-actions">
 														<Tooltip title="view details">
 															<a
 																className="secondary"

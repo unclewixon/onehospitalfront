@@ -310,7 +310,7 @@ class AllAppointments extends Component {
 														</>
 													)}
 												</td>
-												<td className="row-actions text-left">
+												<td className="row-actions">
 													<Tooltip title="View Appointment">
 														<a
 															onClick={() => this.viewAppointmentDetail(item)}

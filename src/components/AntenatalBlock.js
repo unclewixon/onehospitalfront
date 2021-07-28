@@ -288,7 +288,7 @@ class AntenatalBlock extends Component {
 															item_id: item.id,
 														})
 													}
-													className="btn btn-sm btn-primary px-2 py-1 text-white">
+													className="btn btn-sm btn-primary py-1 text-white">
 													Start
 												</a>
 											)}
@@ -300,7 +300,7 @@ class AntenatalBlock extends Component {
 															item_id: item.id,
 														})
 													}
-													className="btn btn-sm btn-primary px-2 py-1 text-white">
+													className="btn btn-sm btn-primary py-1 text-white">
 													Conclude
 												</a>
 											)}

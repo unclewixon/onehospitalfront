@@ -200,7 +200,7 @@ class StaffItem extends Component {
 							</Tooltip>
 						)}
 					</td>
-					<td className="text-right row-actions">
+					<td className="row-actions">
 						{/* <a onClick={this.doEditStaff} className="secondary" title="Edit Staff">
 							<i className="os-icon os-icon-edit-32" />
 						</a> */}

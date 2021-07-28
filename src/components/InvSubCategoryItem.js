@@ -39,7 +39,7 @@ class InvSubCategoryItem extends Component {
 				<td className="text-center">
 					<div className={`status-pill ${item.isActive ? 'green' : 'red'}`} />
 				</td>
-				<td className="text-right row-actions">
+				<td className="row-actions">
 					<a
 						onClick={editSubCategory(item, true)}
 						className="secondary"

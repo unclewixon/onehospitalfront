@@ -118,7 +118,7 @@ const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 						<th>Patient</th>
 						<th>Reason</th>
 						<th>Accepted</th>
-						<th className="text-center">Actions</th>
+						<th>Actions</th>
 					</tr>
 				</thead>
 				<tbody>

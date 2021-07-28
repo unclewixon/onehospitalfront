@@ -41,7 +41,7 @@ class InvCategoryItem extends Component {
 				<td className="text-center">
 					<div className={`status-pill ${item.isActive ? 'green' : 'red'}`} />
 				</td>
-				<td className="text-right row-actions">
+				<td className="row-actions">
 					<div hidden={role === 'it-admin' ? false : true}>
 						<a
 							onClick={editCategory(item, true)}

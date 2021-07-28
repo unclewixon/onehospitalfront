@@ -306,7 +306,7 @@ const ClinicalTasks = () => {
 													</>
 												)}
 											</td>
-											<td className="row-actions text-center">
+											<td className="row-actions">
 												<Tooltip title="Cancel Clinical Task">
 													<a
 														className="danger"

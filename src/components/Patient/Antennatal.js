@@ -118,7 +118,7 @@ class Antenatal extends Component {
 																		{' '}
 																		{item.fetalLie ? item.fetalLie : '-'}
 																	</td>
-																	<td className="row-actions text-right">
+																	<td className="row-actions">
 																		<Tooltip title="View Request">
 																			<a
 																				onClick={() =>

@@ -58,7 +58,7 @@ export class SaleSummary extends Component {
 												</a>
 											</td>
 
-											<td className="text-right row-actions">
+											<td className="row-actions">
 												<Tooltip title="Receive Request">
 													<a className="secondary">
 														<i className="os-icon os-icon-folder-plus" />
@@ -101,7 +101,7 @@ export class SaleSummary extends Component {
 												</a>
 											</td>
 
-											<td className="text-right row-actions">
+											<td className="row-actions">
 												<Tooltip title="Receive Request">
 													<a className="secondary">
 														<i className="os-icon os-icon-folder-plus" />
@@ -145,7 +145,7 @@ export class SaleSummary extends Component {
 												</a>
 											</td>
 
-											<td className="text-right row-actions">
+											<td className="row-actions">
 												<Tooltip title="Receive Request">
 													<a className="secondary">
 														<i className="os-icon os-icon-folder-plus" />
@@ -189,7 +189,7 @@ export class SaleSummary extends Component {
 												</a>
 											</td>
 
-											<td className="text-right row-actions">
+											<td className="row-actions">
 												<Tooltip title="Receive Request">
 													<a className="secondary">
 														<i className="os-icon os-icon-folder-plus" />
@@ -233,7 +233,7 @@ export class SaleSummary extends Component {
 												</a>
 											</td>
 
-											<td className="text-right row-actions">
+											<td className="row-actions">
 												<Tooltip title="Receive Request">
 													<a className="secondary">
 														<i className="os-icon os-icon-folder-plus" />

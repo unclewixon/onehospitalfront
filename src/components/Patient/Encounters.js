@@ -101,6 +101,14 @@ class Encounters extends Component {
 																onClick={() => this.viewEncounter(item)}>
 																View Details
 															</Dropdown.Item>
+															<Dropdown.Item
+																onClick={() => this.viewEncounter(item)}>
+																Add Note
+															</Dropdown.Item>
+															<Dropdown.Item
+																onClick={() => this.viewEncounter(item)}>
+																Add Diagnosis
+															</Dropdown.Item>
 															<Dropdown.Item onClick={() => this.print(item)}>
 																Print
 															</Dropdown.Item>

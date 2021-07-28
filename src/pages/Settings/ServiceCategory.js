@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import ServiceCategoryList from '../../components/ServiceCategoryList';
 import ServicesList from '../../components/ServicesList';
 import ModalUploadService from '../../components/Modals/ModalUploadService';
+import ModalCreateService from '../../components/Modals/ModalCreateService';
 
 const ServicesCategory = () => {
 	const [showServiceCategory, setServiceCategory] = useState(true);
@@ -13,6 +14,7 @@ const ServicesCategory = () => {
 	const [showModal, setShowModal] = useState(false);
 	const [categoriesLoaded, setCategoriesLoaded] = useState(false);
 	const [servicesLoaded, setServicesLoaded] = useState(false);
+	const [newModal, setNewModal] = useState(false);
 
 	const profile = useSelector(state => state.user.profile);
 	const role = profile.role ? profile.role.slug : 'it-admin';
@@ -35,21 +37,27 @@ const ServicesCategory = () => {
 
 	useEffect(() => {
 		if (!loaded) {
-			setServiceCategory(true);
-			setServicesList(false);
+			setServiceCategory(showServiceCategory);
+			setServicesList(showServicesList);
 			setLoaded(true);
 		}
-	}, [loaded]);
+	}, [loaded, showServiceCategory, showServicesList]);
 
 	const onUploadService = () => {
 		document.body.classList.add('modal-open');
 		setShowModal(true);
 	};
 
+	const addService = () => {
+		document.body.classList.add('modal-open');
+		setNewModal(true);
+	};
+
 	const closeModal = () => {
 		document.body.classList.remove('modal-open');
 		setShowModal(false);
 		setLoaded(false);
+		setNewModal(false);
 
 		if (showServiceCategory) {
 			setCategoriesLoaded(false);
@@ -87,7 +95,20 @@ const ServicesCategory = () => {
 												SERVICES
 											</a>
 										</li>
-										<li className="nav-item nav-actions d-sm-block">
+										{showServicesList && (
+											<li className="nav-item nav-actions d-sm-block">
+												<a
+													className="btn btn-primary btn-sm text-white"
+													onClick={() => addService()}>
+													<i className="os-icon os-icon-ui-22"></i>
+													<span>New Service</span>
+												</a>
+											</li>
+										)}
+										<li
+											className={`nav-item ${
+												showServiceCategory ? 'nav-actions' : ''
+											} d-sm-block`}>
 											<a
 												className="btn btn-primary btn-sm text-white"
 												onClick={() => onUploadService()}>
@@ -116,6 +137,7 @@ const ServicesCategory = () => {
 				</div>
 			</div>
 			{showModal && <ModalUploadService closeModal={() => closeModal()} />}
+			{newModal && <ModalCreateService closeModal={() => closeModal()} />}
 		</div>
 	);
 };

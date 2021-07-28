@@ -1,30 +1,26 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
 import Select from 'react-select';
-import { connect, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { renderTextInput, request } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { notifyError, notifySuccess } from '../../services/notify';
-import { updateService } from '../../actions/settings';
 
 const validate = values => {
 	const errors = {};
 	if (!values.name) {
 		errors.name = 'enter name';
 	}
+	if (!values.tariff) {
+		errors.tariff = 'enter base price';
+	}
 
 	return errors;
 };
 
-const ModalEditService = ({
-	closeModal,
-	service,
-	error,
-	handleSubmit,
-	hmo,
-}) => {
+const ModalCreateService = ({ closeModal, error, handleSubmit }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [category, setCategory] = useState(null);
 	const [submitting, setSubmitting] = useState(false);
@@ -49,12 +45,11 @@ const ModalEditService = ({
 	useEffect(() => {
 		if (!loaded) {
 			fetchCategories();
-			setCategory(service.category);
 			setLoaded(true);
 		}
-	}, [fetchCategories, loaded, service]);
+	}, [fetchCategories, loaded]);
 
-	const update = async data => {
+	const save = async data => {
 		try {
 			if (!category) {
 				notifyError('Please select a category');
@@ -62,17 +57,16 @@ const ModalEditService = ({
 			}
 
 			setSubmitting(true);
-			const info = { ...data, category_id: category.id, hmo_id: hmo.id };
-			const rs = await request(`services/${service.id}`, 'PATCH', true, info);
-			dispatch(updateService(rs));
+			const info = { ...data, category_id: category.id };
+			await request('services', 'POST', true, info);
 			setSubmitting(false);
-			notifySuccess('Service saved!');
+			notifySuccess('Service created!');
 			closeModal();
 		} catch (error) {
 			console.log(error);
 			setSubmitting(false);
 			throw new SubmissionError({
-				_error: 'could not save service',
+				_error: 'could not create service',
 			});
 		}
 	};
@@ -94,10 +88,10 @@ const ModalEditService = ({
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
-						<h4 className="onboarding-title">Edit Service</h4>
+						<h4 className="onboarding-title">Create New Service</h4>
 
 						<div className="form-block">
-							<form onSubmit={handleSubmit(update)}>
+							<form onSubmit={handleSubmit(save)}>
 								{error && (
 									<div
 										className="alert alert-danger"
@@ -114,6 +108,17 @@ const ModalEditService = ({
 											name="name"
 											component={renderTextInput}
 											label="Name"
+											type="text"
+										/>
+									</div>
+								</div>
+								<div className="row">
+									<div className="col-sm-12">
+										<Field
+											id="tariff"
+											name="tariff"
+											component={renderTextInput}
+											label="Bse Price"
 											type="text"
 										/>
 									</div>
@@ -155,14 +160,4 @@ const ModalEditService = ({
 	);
 };
 
-const mapStateToProps = (state, ownProps) => {
-	return {
-		initialValues: {
-			...ownProps.service,
-		},
-	};
-};
-
-export default connect(mapStateToProps)(
-	reduxForm({ form: 'edit-service', validate })(ModalEditService)
-);
+export default reduxForm({ form: 'new-service', validate })(ModalCreateService);

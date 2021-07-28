@@ -58,7 +58,7 @@ class PayrollItem extends Component {
 				{!is_new && <td>{date.format('MMMM')}</td>}
 				{!is_new && <td>{date.format('YYYY')}</td>}
 				{!is_new && <td>{moment(item.createdAt).format('D MMM, YYYY')}</td>}
-				<td className="text-right row-actions">
+				<td className="row-actions">
 					{is_new ? (
 						<a
 							onClick={this.doEditPayroll}

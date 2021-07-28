@@ -136,7 +136,7 @@ const Documents = () => {
 													<td>{item.id}</td>
 													<td>{item.document_name}</td>
 													<td>{item.document_type}</td>
-													<td className="row-actions text-right">
+													<td className="row-actions">
 														<Tooltip title="View File">
 															<a onClick={e => handleDownload(e, item)}>
 																<i className="os-icon os-icon-eye" />

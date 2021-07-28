@@ -117,7 +117,7 @@ const PrescriptionBlock = ({
 										<span className="badge badge-success">Completed</span>
 									)}
 								</td>
-								<td className="row-actions text-right">
+								<td className="row-actions">
 									<Tooltip title="View Prescription">
 										<a
 											className="info"

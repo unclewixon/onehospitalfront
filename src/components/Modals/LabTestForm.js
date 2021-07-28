@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Select from 'react-select';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
@@ -16,8 +16,9 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 		edit: false,
 		create: true,
 		specimens: '',
+		tariff: '',
 	};
-	const [{ name, category }, setState] = useState(initialState);
+	const [{ name, category, tariff }, setState] = useState(initialState);
 	const [{ edit }, setSubmitButton] = useState(initialState);
 	const [parameters, setParameters] = useState([]);
 	const [loaded, setLoaded] = useState(false);
@@ -26,23 +27,32 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 	const [specimens, setSpecimens] = useState([]);
 	const [hasParameters, setHasParameters] = useState(false);
 	const [hmoValue, setHmoValue] = useState(null);
+	const [privateHmo, setPrivateHmo] = useState(null);
 
 	const dispatch = useDispatch();
 
 	const categories = useSelector(state => state.settings.lab_categories);
 
-	useEffect(() => {
-		const fetchSpecimens = async () => {
+	const loadData = useCallback(async () => {
+		try {
 			const url = 'lab-tests/specimens';
 			const rs = await request(url, 'GET', true);
 			setSpecimens([...rs.map(s => ({ value: s.id, label: s.name }))]);
-			setLoaded(true);
-		};
 
-		if (!loaded || refreshing) {
-			fetchSpecimens();
+			const uri = 'hmos/schemes/Private';
+			const res = await request(uri, 'GET', true);
+			setPrivateHmo(res);
+			setLoaded(true);
+		} catch (e) {
+			setLoaded(true);
 		}
-	}, [loaded, refreshing]);
+	}, []);
+
+	useEffect(() => {
+		if (!loaded || refreshing) {
+			loadData();
+		}
+	}, [loadData, loaded, refreshing]);
 
 	useEffect(() => {
 		if (showHide) {
@@ -57,12 +67,13 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 				setHasParameters(labTest.hasParameters);
 				setSubmitButton({ create: false, edit: true });
 			} else {
+				setHmoValue(privateHmo);
 				setParameters([]);
 				setLabSpecimens([]);
 				setSubmitButton({ create: true, edit: false });
 			}
 		}
-	}, [labTest, showHide]);
+	}, [labTest, privateHmo, showHide]);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -80,6 +91,7 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 				specimens: labSpecimens,
 				hasParameters,
 				hmo_id: hmoValue.id,
+				tariff,
 			};
 			const rs = await request('lab-tests', 'POST', true, datum);
 			dispatch(addLabTest(rs));
@@ -147,7 +159,7 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 			}`}>
 			<form
 				onSubmit={edit ? onEditLabTest : onAddLabTest}
-				style={{ overflowY: 'auto' }}>
+				style={{ overflowY: 'visible' }}>
 				<h6 className="form-header">{edit ? 'Edit Test' : 'Create Test'}</h6>
 				<div className="row mt-4">
 					<div className="col-md-6">
@@ -188,18 +200,15 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 							<AsyncSelect
 								isClearable
 								getOptionValue={option => option.id}
-								getOptionLabel={option =>
-									`${option.name} ${
-										option.name !== 'Private' ? option.phoneNumber || '' : ''
-									}`
-								}
+								getOptionLabel={option => option.name}
 								defaultOptions
 								value={hmoValue}
 								loadOptions={getHmoSchemes}
 								onChange={e => {
 									setHmoValue(e);
 								}}
-								placeholder="Search hmo scheme"
+								placeholder="Hmo scheme"
+								isDisabled
 							/>
 						</div>
 					</div>
@@ -218,6 +227,24 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 						/>
 					</div>
 				</div>
+				{!edit && (
+					<div className="row">
+						<div className="col-md-6">
+							<div className="form-group">
+								<label>Base Price</label>
+								<input
+									className="form-control"
+									placeholder="Base Price"
+									type="text"
+									name="tariff"
+									onChange={handleInputChange}
+									value={tariff}
+								/>
+							</div>
+						</div>
+						<div className="col-md-6"></div>
+					</div>
+				)}
 				<div className="row">
 					<div className="form-group col-sm-12">
 						<label>

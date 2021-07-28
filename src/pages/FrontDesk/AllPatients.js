@@ -191,7 +191,7 @@ const AllPatients = () => {
 												</td>
 												<td>{data.hmo.name}</td>
 												<td>{formatCurrency(data.outstanding || 0)}</td>
-												<td className="row-actions text-right">
+												<td className="row-actions">
 													<Tooltip title="View Patient">
 														<a onClick={() => showProfile(data)}>
 															<i className="os-icon os-icon-user-male-circle2" />

@@ -13,7 +13,7 @@ class JournalItem extends Component {
 				<td>{item.debit}</td>
 
 				<td className="text-center">{item.credit}</td>
-				<td className="text-right row-actions">
+				<td className="row-actions">
 					<Tooltip title="Edit">
 						<a
 							className=""

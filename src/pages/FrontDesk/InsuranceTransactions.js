@@ -383,7 +383,7 @@ class InsuranceTransactions extends Component {
 														<span className="badge badge-success">paid</span>
 													)}
 												</td>
-												<td className="text-center row-actions">
+												<td className="row-actions">
 													{(!item.hmo_approval_code ||
 														(item.hmo_approval_code &&
 															item.hmo_approval_code === '')) &&
@@ -412,21 +412,21 @@ class InsuranceTransactions extends Component {
 																		this.handleVisibleChange(e, item.id)
 																	}>
 																	<Tooltip title="Enter Code">
-																		<a className="text-primary btn-sm text-white mr-2 px-1">
+																		<a className="text-primary btn-sm text-white">
 																			<i className="os-icon os-icon-thumbs-up" />
 																		</a>
 																	</Tooltip>
 																</Popover>
 																<Tooltip title="Approve Without Code">
 																	<a
-																		className="text-success btn-sm text-white mr-2 px-1"
+																		className="text-success btn-sm text-white"
 																		onClick={() => this.approve(item.id)}>
 																		<i className="os-icon os-icon-check-square" />
 																	</a>
 																</Tooltip>
 																<Tooltip title="Transfer to Paypoint">
 																	<a
-																		className="text-info btn-sm text-white mr-2 px-1"
+																		className="text-info btn-sm text-white"
 																		onClick={() => this.transfer(item.id)}>
 																		<i className="os-icon os-icon-mail-18" />
 																	</a>

@@ -155,7 +155,7 @@ const RoomList = props => {
 													<td>{nth(parseInt(Room.floor, 10))}</td>
 													<td>{Room.category?.name}</td>
 													<td>{Room.status}</td>
-													<td className="row-actions text-right">
+													<td className="row-actions">
 														<a href="#">
 															<i
 																className="os-icon os-icon-ui-49"

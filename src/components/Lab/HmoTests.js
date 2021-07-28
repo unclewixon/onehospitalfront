@@ -160,28 +160,30 @@ const HmoTests = ({ hmo, toggle, doToggle, doToggleForm }) => {
 													<div className="pipeline-body">
 														<div className="pipeline-item">
 															<div className="pi-controls">
-																<div className="pi-settings os-dropdown-trigger">
-																	{item.hasParameters && (
-																		<Tooltip title="Add Parameters">
+																{hmo.name === 'Private' && (
+																	<div className="pi-settings os-dropdown-trigger">
+																		{item.hasParameters && (
+																			<Tooltip title="Add Parameters">
+																				<i
+																					className="os-icon os-icon-grid-10 mr-1"
+																					onClick={() => addParameters(item)}
+																				/>
+																			</Tooltip>
+																		)}
+																		<Tooltip title="Edit Test">
 																			<i
-																				className="os-icon os-icon-grid-10 mr-1"
-																				onClick={() => addParameters(item)}
+																				className="os-icon os-icon-ui-49 mr-1"
+																				onClick={() => onClickEdit(item)}
 																			/>
 																		</Tooltip>
-																	)}
-																	<Tooltip title="Edit Test">
-																		<i
-																			className="os-icon os-icon-ui-49 mr-1"
-																			onClick={() => onClickEdit(item)}
-																		/>
-																	</Tooltip>
-																	<Tooltip title="Delete Test">
-																		<i
-																			className="os-icon os-icon-ui-15 text-danger"
-																			onClick={() => confirmDelete(item)}
-																		/>
-																	</Tooltip>
-																</div>
+																		<Tooltip title="Delete Test">
+																			<i
+																				className="os-icon os-icon-ui-15 text-danger"
+																				onClick={() => confirmDelete(item)}
+																			/>
+																		</Tooltip>
+																	</div>
+																)}
 															</div>
 															<div className="pi-body mt-3">
 																<div className="pi-info">

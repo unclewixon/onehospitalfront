@@ -94,7 +94,7 @@ class RoleBlock extends Component {
 														<td>{role.id}</td>
 														<td>{role.name}</td>
 														<td>{role.description}</td>
-														<td className="row-actions text-right">
+														<td className="row-actions">
 															<a
 																onClick={this.openPermissionModal(role)}
 																className="secondary"

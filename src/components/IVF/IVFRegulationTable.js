@@ -111,7 +111,7 @@ class IVFRegulationTable extends Component {
 				isDummyField: true,
 				editable: false,
 				text: 'Actions',
-				classes: 'text-center row-actions',
+				classes: 'row-actions',
 				formatter: (cellContent, row) => {
 					return (
 						<div>

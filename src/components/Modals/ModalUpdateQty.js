@@ -1,78 +1,50 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
-import Select from 'react-select';
 import { connect, useDispatch } from 'react-redux';
 
 import { renderTextInput, request } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { startBlock, stopBlock } from '../../actions/redux-block';
-import { notifyError, notifySuccess } from '../../services/notify';
-import { updateService } from '../../actions/settings';
+import { notifySuccess } from '../../services/notify';
 
 const validate = values => {
 	const errors = {};
-	if (!values.name) {
-		errors.name = 'enter name';
+	if (!values.quantity) {
+		errors.quantity = 'enter quantity';
 	}
 
 	return errors;
 };
 
-const ModalEditService = ({
+const ModalUpdateQty = ({
 	closeModal,
-	service,
 	error,
 	handleSubmit,
-	hmo,
+	batch,
+	updateBatch,
 }) => {
-	const [loaded, setLoaded] = useState(false);
-	const [category, setCategory] = useState(null);
 	const [submitting, setSubmitting] = useState(false);
-	const [categories, setCategories] = useState([]);
 
 	const dispatch = useDispatch();
 
-	const fetchCategories = useCallback(async () => {
-		try {
-			dispatch(startBlock());
-			const url = 'services/categories';
-			const rs = await request(url, 'GET', true);
-			setCategories(rs);
-			dispatch(stopBlock());
-		} catch (error) {
-			console.log(error);
-			notifyError('Error fetching categories');
-			dispatch(stopBlock());
-		}
-	}, [dispatch]);
-
-	useEffect(() => {
-		if (!loaded) {
-			fetchCategories();
-			setCategory(service.category);
-			setLoaded(true);
-		}
-	}, [fetchCategories, loaded, service]);
-
 	const update = async data => {
 		try {
-			if (!category) {
-				notifyError('Please select a category');
-				return;
-			}
-
+			dispatch(startBlock());
 			setSubmitting(true);
-			const info = { ...data, category_id: category.id, hmo_id: hmo.id };
-			const rs = await request(`services/${service.id}`, 'PATCH', true, info);
-			dispatch(updateService(rs));
+			const info = { ...data };
+			const url = `inventory/batches/${batch.id}/quantity`;
+			const rs = await request(url, 'PUT', true, info);
+			updateBatch(rs.batch);
 			setSubmitting(false);
-			notifySuccess('Service saved!');
+			dispatch(stopBlock());
+			notifySuccess('Batch quantity updated!');
 			closeModal();
 		} catch (error) {
 			console.log(error);
+			dispatch(stopBlock());
 			setSubmitting(false);
 			throw new SubmissionError({
-				_error: 'could not save service',
+				_error: 'could not update quantity',
 			});
 		}
 	};
@@ -94,8 +66,10 @@ const ModalEditService = ({
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
-						<h4 className="onboarding-title">Edit Service</h4>
-
+						<h4 className="onboarding-title">Update Quantity</h4>
+						<div className="onboarding-text alert-custom mb-3">
+							<div className="text-center">{`Available quantity: ${batch.quantity}`}</div>
+						</div>
 						<div className="form-block">
 							<form onSubmit={handleSubmit(update)}>
 								{error && (
@@ -106,29 +80,14 @@ const ModalEditService = ({
 										}}
 									/>
 								)}
-
 								<div className="row">
 									<div className="col-sm-12">
 										<Field
-											id="name"
-											name="name"
+											id="quantity"
+											name="quantity"
 											component={renderTextInput}
-											label="Name"
+											label="Quantity"
 											type="text"
-										/>
-									</div>
-								</div>
-								<div className="row">
-									<div className="col-sm-12">
-										<label>Category</label>
-										<Select
-											getOptionValue={option => option.id}
-											getOptionLabel={option => option.name}
-											options={categories}
-											name="category"
-											value={category}
-											onChange={e => setCategory(e)}
-											placeholder="Select category"
 										/>
 									</div>
 								</div>
@@ -155,14 +114,14 @@ const ModalEditService = ({
 	);
 };
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = () => {
 	return {
 		initialValues: {
-			...ownProps.service,
+			quantity: 0,
 		},
 	};
 };
 
 export default connect(mapStateToProps)(
-	reduxForm({ form: 'edit-service', validate })(ModalEditService)
+	reduxForm({ form: 'edit-qty', validate })(ModalUpdateQty)
 );

@@ -158,7 +158,7 @@ class InventoryTable extends Component {
 				dataField: 'df2',
 				isDummyField: true,
 				text: 'Actions',
-				classes: 'text-center row-actions',
+				classes: 'row-actions',
 				formatter: (cellContent, row) => {
 					return (
 						<div>

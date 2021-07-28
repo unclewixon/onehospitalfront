@@ -828,3 +828,16 @@ div[class$='-ValueContainer'] {
 .filter-side {
 	flex: 0 0 100% !important;
 }
+
+
+.table .row-actions a {
+	margin-right: 0.8rem;
+
+	&:last-child {
+		margin-right: 0;
+	}
+}
+
+.pipeline-item .pi-body .pi-name {
+	word-break: break-word;
+}
