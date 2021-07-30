@@ -65,7 +65,7 @@ const ModalMakeRequisition = ({
 				...data,
 				category: category.id,
 				item_id: item.id,
-				staff_if: staff.id,
+				staff_id: staff.id,
 			};
 			const url = `inventory/requisitions`;
 			const rs = await request(url, 'POST', true, info);
