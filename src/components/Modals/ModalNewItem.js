@@ -1,45 +1,65 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
-import { connect, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import Select from 'react-select';
 
 import { renderTextInput, request } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { notifySuccess } from '../../services/notify';
+import { allUnitOfMeasures } from '../../services/constants';
 
 const validate = values => {
 	const errors = {};
+	if (!values.name) {
+		errors.name = 'enter name';
+	}
 	if (!values.quantity) {
 		errors.quantity = 'enter quantity';
+	}
+	if (!values.unitPrice) {
+		errors.unitPrice = 'enter unit price';
+	}
+	if (!values.unitOfMeasure) {
+		errors.unitOfMeasure = 'enter unit of measure';
 	}
 
 	return errors;
 };
 
-const ModalUpdateQty = ({
+const ModalNewItem = ({
 	closeModal,
-	error,
 	handleSubmit,
-	item,
-	updateItem,
+	error,
 	category,
+	addItem,
 }) => {
 	const [submitting, setSubmitting] = useState(false);
+	const [unitOfMeasures, setUnitOfMeasures] = useState([]);
+	const [loaded, setLoaded] = useState(false);
+	const [unitOfMeasure, setUnitOfMeasure] = useState(null);
 
 	const dispatch = useDispatch();
 
-	const update = async data => {
+	useEffect(() => {
+		if (!loaded) {
+			setUnitOfMeasures(allUnitOfMeasures);
+			setLoaded(true);
+		}
+	}, [loaded]);
+
+	const add = async data => {
 		try {
 			dispatch(startBlock());
 			setSubmitting(true);
-			const info = { ...data };
-			const url = `inventory/${category}/${item.id}/quantity`;
-			const rs = await request(url, 'PUT', true, info);
+			const info = { ...data, unitOfMeasure: unitOfMeasure?.name || '' };
+			const url = `inventory/${category}`;
+			const rs = await request(url, 'POST', true, info);
 			if (rs.success) {
-				updateItem(rs.item);
+				addItem(rs.item);
 				setSubmitting(false);
 				dispatch(stopBlock());
-				notifySuccess(`Quantity updated!`);
+				notifySuccess('Item saved!');
 				closeModal();
 			} else {
 				dispatch(stopBlock());
@@ -53,7 +73,7 @@ const ModalUpdateQty = ({
 			dispatch(stopBlock());
 			setSubmitting(false);
 			throw new SubmissionError({
-				_error: 'could not update quantity',
+				_error: 'could not save item',
 			});
 		}
 	};
@@ -75,12 +95,9 @@ const ModalUpdateQty = ({
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
-						<h4 className="onboarding-title">Update Quantity</h4>
-						<div className="onboarding-text alert-custom mb-3">
-							<div className="text-center">{`Available quantity: ${item.quantity}`}</div>
-						</div>
+						<h4 className="onboarding-title">New Item</h4>
 						<div className="form-block">
-							<form onSubmit={handleSubmit(update)}>
+							<form onSubmit={handleSubmit(add)}>
 								{error && (
 									<div
 										className="alert alert-danger"
@@ -92,12 +109,54 @@ const ModalUpdateQty = ({
 								<div className="row">
 									<div className="col-sm-12">
 										<Field
+											id="name"
+											name="name"
+											component={renderTextInput}
+											label="Name"
+											type="text"
+										/>
+									</div>
+								</div>
+								<div className="row">
+									<div className="col-sm-12">
+										<Field
 											id="quantity"
 											name="quantity"
 											component={renderTextInput}
 											label="Quantity"
 											type="text"
 										/>
+									</div>
+								</div>
+								<div className="row">
+									<div className="col-sm-12">
+										<Field
+											id="unitPrice"
+											name="unitPrice"
+											component={renderTextInput}
+											label="Unit Price"
+											type="text"
+										/>
+									</div>
+								</div>
+								<div className="row">
+									<div className="col-sm-12">
+										<div className="form-group">
+											<label>Unit of Measure</label>
+											<Select
+												isClearable
+												placeholder="Select unit of measure"
+												defaultValue
+												getOptionValue={option => option.id}
+												getOptionLabel={option => option.name}
+												onChange={e => {
+													setUnitOfMeasure(e);
+												}}
+												value={unitOfMeasure}
+												isSearchable={true}
+												options={unitOfMeasures.map(u => ({ id: u, name: u }))}
+											/>
+										</div>
 									</div>
 								</div>
 								<div className="row mt-4">
@@ -123,14 +182,4 @@ const ModalUpdateQty = ({
 	);
 };
 
-const mapStateToProps = () => {
-	return {
-		initialValues: {
-			quantity: 0,
-		},
-	};
-};
-
-export default connect(mapStateToProps)(
-	reduxForm({ form: 'edit-qty', validate })(ModalUpdateQty)
-);
+export default reduxForm({ form: 'new-item', validate })(ModalNewItem);

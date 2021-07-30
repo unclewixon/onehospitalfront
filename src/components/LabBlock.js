@@ -271,7 +271,7 @@ class LabBlock extends Component {
 												<span className="badge badge-success">Approved</span>
 											)}
 										{lab.item.cancelled === 1 && (
-											<span className="badge badge-danger">cancelled</span>
+											<span className="badge badge-danger">Cancelled</span>
 										)}
 									</td>
 									<td className="row-actions">

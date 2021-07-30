@@ -131,6 +131,12 @@ const ModalViewBatches = ({ closeModal, drug }) => {
 										</thead>
 										<tbody>
 											{batches.map((item, i) => {
+												const low =
+													item.quantity === 0 ? 'out of stock' : 'low';
+												const lowBadge =
+													item.quantity === 0
+														? 'badge-danger'
+														: 'badge-warning';
 												return (
 													<tr key={i}>
 														<td>{item.name || '--'}</td>
@@ -140,6 +146,16 @@ const ModalViewBatches = ({ closeModal, drug }) => {
 															{formatDate(item.expirationDate, 'DD-MMM-YYYY')}
 														</td>
 														<td>{item.vendor?.name || '--'}</td>
+														<td>
+															<span
+																className={`badge ${
+																	item.quantity < 10
+																		? lowBadge
+																		: 'badge-success'
+																}`}>
+																{item.quantity < 10 ? low : 'good'}
+															</span>
+														</td>
 														<td className="row-actions">
 															<Tooltip title="Edit Batch">
 																<a
@@ -189,9 +205,10 @@ const ModalViewBatches = ({ closeModal, drug }) => {
 			)}
 			{showQuantity && batch && (
 				<ModalUpdateQty
+					item={batch}
+					category="batches"
 					closeModal={() => closeBatchModal()}
-					updateBatch={updateBatch}
-					batch={batch}
+					updateItem={updateBatch}
 				/>
 			)}
 			{newBatch && (

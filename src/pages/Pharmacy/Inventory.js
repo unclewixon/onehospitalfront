@@ -72,11 +72,11 @@ const Inventory = () => {
 		setShowModal(true);
 	};
 
-	const closeModal = item => {
+	const closeModal = () => {
 		document.body.classList.remove('modal-open');
-		setDrug(null);
 		setShowModal(false);
 		setShowDrugModal(false);
+		setDrug(null);
 	};
 
 	const updateDrug = item => {

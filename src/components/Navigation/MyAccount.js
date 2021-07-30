@@ -47,6 +47,14 @@ const MyAccount = () => {
 					<span>Excuse Duty</span>
 				</Link>
 			</li>
+			<li>
+				<Link to="/my-account/requisitions">
+					<div className="icon-w">
+						<div className="os-icon os-icon-agenda-1" />
+					</div>
+					<span>Requisitions</span>
+				</Link>
+			</li>
 		</>
 	);
 };

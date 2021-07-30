@@ -7,6 +7,7 @@ import NoMatch from '../NoMatch';
 
 const Cafeteria = lazy(() => import('./Cafeteria'));
 const Inventory = lazy(() => import('./Inventory'));
+const Requisitions = lazy(() => import('./Requisitions'));
 
 const Home = ({ match }) => {
 	return (
@@ -28,6 +29,10 @@ const Home = ({ match }) => {
 									component={Cafeteria}
 								/>
 								<Route path={`${match.url}/inventory`} component={Inventory} />
+								<Route
+									path={`${match.url}/requisitions`}
+									component={Requisitions}
+								/>
 								<Route component={NoMatch} />
 							</Switch>
 						</Suspense>

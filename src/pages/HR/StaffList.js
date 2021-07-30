@@ -106,7 +106,7 @@ const StaffList = () => {
 												current={parseInt(meta.currentPage, 10)}
 												pageSize={parseInt(meta.itemsPerPage, 10)}
 												total={parseInt(meta.totalPages, 10)}
-												showTotal={total => `Total ${total} patients`}
+												showTotal={total => `Total ${total} staffs`}
 												itemRender={itemRender}
 												onChange={current => onNavigatePage(current)}
 											/>

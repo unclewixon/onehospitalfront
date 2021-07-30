@@ -1,22 +1,34 @@
-import React, { Suspense, lazy } from 'react';
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React, { Suspense, lazy, useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
+import ModalNewItem from '../../components/Modals/ModalNewItem';
+import { messageService } from '../../services/message';
 
 const Inventory = lazy(() => import('./Inventory'));
+const Requisitions = lazy(() => import('./Requisitions'));
 
 const Home = ({ match, location }) => {
+	const [addModal, setAddModal] = useState(false);
+
 	const page = location.pathname.split('/').pop();
 
 	let pageTitle = 'Inventory';
-	if (page === 'categories') {
-		pageTitle = 'Category';
-	} else if (page === 'sub-categories') {
-		pageTitle = 'Sub Category';
-	} else if (page === 'vendors') {
-		pageTitle = 'Vendors';
+	if (page === 'requisitions') {
+		pageTitle = 'Requisitions';
 	}
+
+	const addItem = () => {
+		document.body.classList.add('modal-open');
+		setAddModal(true);
+	};
+
+	const closeModal = () => {
+		document.body.classList.remove('modal-open');
+		setAddModal(false);
+	};
 
 	return (
 		<div className="content-i">
@@ -24,23 +36,29 @@ const Home = ({ match, location }) => {
 				<div className="row">
 					<div className="col-sm-12">
 						<div className="element-wrapper">
+							{page !== 'requisitions' && (
+								<div className="element-actions">
+									<a
+										className="btn btn-primary btn-sm text-white"
+										onClick={() => addItem()}>
+										<i className="os-icon os-icon-ui-22" />
+										<span>Add Item</span>
+									</a>
+								</div>
+							)}
 							<h6 className="element-header">{pageTitle}</h6>
 							<div className="row">
 								<div className="col-sm-12">
 									<Suspense fallback={<Splash />}>
 										<Switch>
-											<Route path={`${match.url}`} component={Inventory} />
 											<Route
-												path={`${match.url}/categories`}
+												exact
+												path={`${match.url}`}
 												component={Inventory}
 											/>
 											<Route
-												path={`${match.url}/sub-categories`}
-												component={Inventory}
-											/>
-											<Route
-												path={`${match.url}/vendors`}
-												component={Inventory}
+												path={`${match.url}/requisitions`}
+												component={Requisitions}
 											/>
 											<Route component={NoMatch} />
 										</Switch>
@@ -51,6 +69,13 @@ const Home = ({ match, location }) => {
 					</div>
 				</div>
 			</div>
+			{addModal && (
+				<ModalNewItem
+					category="stores"
+					closeModal={() => closeModal()}
+					addItem={data => messageService.sendMessage(data)}
+				/>
+			)}
 		</div>
 	);
 };

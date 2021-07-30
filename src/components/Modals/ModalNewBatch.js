@@ -52,7 +52,7 @@ const ModalNewBatch = ({ closeModal, error, handleSubmit, drug, addBatch }) => {
 				...data,
 				expirationDate: moment(new Date(expirationDate)).format('YYYY-MM-DD'),
 				drug_id: drug.id,
-				vendor_id: vendor.id || '',
+				vendor_id: vendor?.id || '',
 				vendor,
 			};
 			const url = 'inventory/batches';

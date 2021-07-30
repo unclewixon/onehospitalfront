@@ -143,7 +143,7 @@ const RoomCategory = props => {
 											<th>HMO</th>
 											<th>Price</th>
 											<th>HMO Price</th>
-											<th className="text-right">Action</th>
+											<th></th>
 										</tr>
 									</thead>
 									<tbody>
@@ -155,15 +155,13 @@ const RoomCategory = props => {
 													<td>{formatCurrency(RoomCategory.price)}</td>
 													<td>{formatCurrency(RoomCategory.hmoTarrif)}</td>
 													<td className="row-actions">
-														<a href="#">
-															<i
-																className="os-icon os-icon-ui-49"
-																onClick={() => onClickEdit(RoomCategory)}></i>
+														<a onClick={() => onClickEdit(RoomCategory)}>
+															<i className="os-icon os-icon-ui-49"></i>
 														</a>
 
 														<a
-															className="danger"
-															onClick={() => confirmDelete(RoomCategory)}>
+															onClick={() => confirmDelete(RoomCategory)}
+															className="danger">
 															<i className="os-icon os-icon-ui-15"></i>
 														</a>
 													</td>

@@ -32,6 +32,7 @@ const LineAppraisal = lazy(() =>
 const StaffAppraisal = lazy(() =>
 	import('../../components/StaffBlock/StaffAppraisal')
 );
+const Requisitions = lazy(() => import('./Requisitions'));
 
 const Home = ({ match }) => {
 	return (
@@ -96,6 +97,11 @@ const Home = ({ match }) => {
 							component={NewAppraisal}
 						/>
 						<Route exact path={`${match.url}/payslips`} component={Payslip} />
+						<Route
+							exact
+							path={`${match.url}/requisitions`}
+							component={Requisitions}
+						/>
 						<Route component={NoMatch} />
 					</Switch>
 				</Suspense>
