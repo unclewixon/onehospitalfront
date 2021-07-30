@@ -247,8 +247,9 @@ class ProcedureBlock extends Component {
 											: '--'}
 									</td>
 									<td>
-										{data.item.transaction.status === 1 ||
-										data.item.transaction.status === -1 ? (
+										{data.item.transaction &&
+										(data.item.transaction.status === 1 ||
+											data.item.transaction.status === -1) ? (
 											<>
 												{!data.item?.scheduledDate ? (
 													<a

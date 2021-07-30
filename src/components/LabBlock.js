@@ -276,6 +276,7 @@ class LabBlock extends Component {
 									</td>
 									<td className="row-actions">
 										{lab.item.cancelled === 0 &&
+											lab.item.transaction &&
 											(lab.item.transaction.status === 1 ||
 												lab.item.transaction.status === -1) && (
 												<>
