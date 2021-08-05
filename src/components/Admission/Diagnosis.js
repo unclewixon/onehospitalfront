@@ -239,7 +239,7 @@ const Diagnosis = ({ previous, next, patient }) => {
 									<div className="col-md-12" key={i}>
 										<div className="form-group history-item">
 											<label>
-												{`${item.diagnosis.type} (${item.diagnosis.code}): ${item.diagnosis.description}`}
+												{`${item.diagnosis?.type} (${item.diagnosis?.code}): ${item.diagnosis?.description}`}
 											</label>
 											<div>
 												<input
