@@ -134,7 +134,7 @@ const Diagnosis = ({ previous, next, patient }) => {
 			setSelectedPastDiagnoses(filtered);
 			storage.setLocalStorage(CK_PAST_DIAGNOSIS, filtered);
 		} else {
-			const items = [...selectedPastDiagnoses, { id: diagnosis.id, diagnosis }];
+			const items = [...selectedPastDiagnoses, diagnosis];
 			setSelectedPastDiagnoses(items);
 			storage.setLocalStorage(CK_PAST_DIAGNOSIS, items);
 		}
@@ -224,14 +224,7 @@ const Diagnosis = ({ previous, next, patient }) => {
 											onChange={e => {
 												setExisting(e.target.checked);
 												setSelectedPastDiagnoses(
-													e.target.checked
-														? [
-																...pastDiagnoses.map(d => ({
-																	id: d.id,
-																	diagnosis: d,
-																})),
-														  ]
-														: []
+													e.target.checked ? [...pastDiagnoses] : []
 												);
 											}}
 										/>
@@ -240,22 +233,21 @@ const Diagnosis = ({ previous, next, patient }) => {
 							</div>
 						</div>
 						<div className="row">
-							{pastDiagnoses.map((diagnosis, i) => {
-								const value = selectedPastDiagnoses.find(
-									o => o.id === diagnosis.id
-								);
+							{pastDiagnoses.map((item, i) => {
+								const value = selectedPastDiagnoses.find(o => o.id === item.id);
 								return (
 									<div className="col-md-12" key={i}>
 										<div className="form-group history-item">
 											<label>
-												{`${diagnosis.type} (${diagnosis.item.code}): ${diagnosis.item.description}`}
+												{`${item.diagnosis.type} (${item.diagnosis.code}): ${item.diagnosis.description}`}
 											</label>
 											<div>
 												<input
 													type="checkbox"
 													className="form-control"
-													value={value !== null}
-													onChange={e => onSelect(e, diagnosis)}
+													checked={value && value.id === item.id}
+													onChange={e => onSelect(e, item)}
+													value={item}
 												/>
 											</div>
 										</div>
@@ -279,9 +271,9 @@ const Diagnosis = ({ previous, next, patient }) => {
 							</tr>
 						</thead>
 						<tbody>
-							{diagnoses.map((item, index) => {
+							{diagnoses.map((item, i) => {
 								return (
-									<tr key={index}>
+									<tr key={i}>
 										<td>{`${item.diagnosis.type} (${item.diagnosis.code}): ${item.diagnosis.description}`}</td>
 										<td>{item.type.value}</td>
 										<td>{item.comment}</td>
@@ -289,7 +281,7 @@ const Diagnosis = ({ previous, next, patient }) => {
 											<div className="display-flex">
 												<div className="ml-2">
 													<TrashIcon
-														onClick={() => remove(index)}
+														onClick={() => remove(i)}
 														style={{
 															width: '1rem',
 															height: '1rem',

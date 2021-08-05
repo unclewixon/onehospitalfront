@@ -240,22 +240,21 @@ const Diagnosis = ({ previous, next, patient }) => {
 							</div>
 						</div>
 						<div className="row">
-							{pastDiagnoses.map((diagnosis, i) => {
-								const value = selectedPastDiagnoses.find(
-									o => o.id === diagnosis.id
-								);
+							{pastDiagnoses.map((item, i) => {
+								const value = selectedPastDiagnoses.find(o => o.id === item.id);
 								return (
 									<div className="col-md-12" key={i}>
 										<div className="form-group history-item">
 											<label>
-												{`${diagnosis.type} (${diagnosis.item.code}): ${diagnosis.item.description}`}
+												{`${item.diagnosis.type} (${item.diagnosis.code}): ${item.diagnosis.description}`}
 											</label>
 											<div>
 												<input
 													type="checkbox"
 													className="form-control"
-													value={value !== null}
-													onChange={e => onSelect(e, diagnosis)}
+													checked={value && value.id === item.id}
+													onChange={e => onSelect(e, item)}
+													value={item}
 												/>
 											</div>
 										</div>
