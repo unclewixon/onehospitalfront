@@ -57,7 +57,7 @@ class App extends Component {
 		const fullscreen = await storage.getItem(FULLSCREEN_COOKIE);
 		const theme_mode = await storage.getItem(MODE_COOKIE);
 		// get user permissions
-		const permissions = await storage.getItem('permissions');
+		const permissions = [];
 		// casal/ability
 		const { can, rules } = new AbilityBuilder();
 		// set user permissions

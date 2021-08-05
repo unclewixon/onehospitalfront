@@ -113,7 +113,6 @@ const Login = ({ location, history, error, handleSubmit }) => {
 
 					dispatch(loginUser(rs));
 					storage.setItem(TOKEN_COOKIE, rs);
-					storage.setItem('permissions', JSON.stringify(rs.permissions));
 
 					const { can, rules } = new AbilityBuilder();
 
