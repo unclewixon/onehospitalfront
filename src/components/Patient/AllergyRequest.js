@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Select from 'react-select';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
+import { useHistory } from 'react-router-dom';
+
 import { request } from '../../services/utilities';
 import {
 	allergyCategories,
@@ -11,32 +13,29 @@ import {
 import { add_allergies } from '../../actions/patient';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
-import { useHistory } from 'react-router-dom';
 
 const AllergyRequest = props => {
-	let history = useHistory();
+	const history = useHistory();
 
 	const { register, handleSubmit, setValue } = useForm();
 
 	const [submitting, setSubmitting] = useState(false);
 
 	const onSubmit = async values => {
-		let { patient } = props;
-		let data = {
+		const { patient } = props;
+		const data = {
 			category: values.category,
 			allergy: values.allergy,
 			severity: values.severity,
 			reaction: values.reaction,
 			patient_id: patient.id,
 		};
+
 		setSubmitting(true);
+
 		try {
-			const rs = await request(
-				`${patientAPI}/save-allergies`,
-				'POST',
-				true,
-				data
-			);
+			const url = `${patientAPI}/save-allergies`;
+			const rs = await request(url, 'POST', true, data);
 			props.add_allergies(rs);
 			history.push('settings/roles#allergies');
 			notifySuccess('allergies saved');

@@ -1,20 +1,14 @@
 import React, { Component } from 'react';
 import kebabCase from 'lodash.kebabcase';
-import ArrowKeysReact from 'arrow-keys-react';
 import ReactDOM from 'react-dom';
 
-import EncounterMenu from '../../Navigation/EncounterMenu';
-import Complaints from '../Encounter/Complaints';
-import Consumable from '../Encounter/Consumable';
-import PlanForm from '../Encounter/PlanForm';
-import Investigations from '../Encounter/Investigations';
-import Diagnosis from '../Encounter/Diagnosis';
-import PhysicalExam from '../Encounter/PhysicalExam';
-import Allergies from '../Encounter/Allergies';
-import PastHistory from '../Encounter/PastHistory';
-import HxForm from '../Encounter/HxForm';
-import ReviewOfSystem from '../Encounter/ReviewOfSystem';
-import { encounters } from '../../../services/constants';
+import EncounterMenu from '../Navigation/EncounterMenu';
+import Complaints from './Complaints';
+import ReviewOfSystem from './ReviewOfSystem';
+import PhysicalExamSummary from './PhysicalExamSummary';
+import Diagnosis from './Diagnosis';
+import Plan from './Plan';
+import { soap } from '../../services/constants';
 
 const EncounterTabs = ({
 	index,
@@ -22,36 +16,22 @@ const EncounterTabs = ({
 	next,
 	patient,
 	closeModal,
-	updateAppointment,
-	appointment_id,
+	admission_id,
 }) => {
 	switch (index) {
-		case 9:
+		case 4:
 			return (
-				<Consumable
+				<Plan
 					previous={previous}
 					patient={patient}
 					closeModal={closeModal}
-					updateAppointment={updateAppointment}
-					appointment_id={appointment_id}
+					admission_id={admission_id}
 				/>
 			);
-		case 8:
-			return <PlanForm next={next} previous={previous} patient={patient} />;
-		case 7:
-			return (
-				<Investigations next={next} previous={previous} patient={patient} />
-			);
-		case 6:
-			return <Diagnosis next={next} previous={previous} patient={patient} />;
-		case 5:
-			return <PhysicalExam next={next} previous={previous} />;
-		case 4:
-			return <Allergies next={next} previous={previous} patient={patient} />;
 		case 3:
-			return <PastHistory next={next} previous={previous} />;
+			return <Diagnosis next={next} previous={previous} patient={patient} />;
 		case 2:
-			return <HxForm next={next} previous={previous} />;
+			return <PhysicalExamSummary next={next} previous={previous} />;
 		case 1:
 			return <ReviewOfSystem next={next} previous={previous} />;
 		case 0:
@@ -60,10 +40,9 @@ const EncounterTabs = ({
 	}
 };
 
-class OpenEncounter extends Component {
+class VisitNote extends Component {
 	state = {
 		eIndex: 0,
-		content: '',
 		dropdown: false,
 	};
 
@@ -71,31 +50,6 @@ class OpenEncounter extends Component {
 		setTimeout(() => {
 			this.focusDiv();
 		}, 200);
-
-		ArrowKeysReact.config({
-			left: () => {
-				this.setState({
-					content: 'left key detected.',
-				});
-				this.previous();
-			},
-			right: () => {
-				this.setState({
-					content: 'right key detected.',
-				});
-				this.next();
-			},
-			up: () => {
-				this.setState({
-					content: 'up key detected.',
-				});
-			},
-			down: () => {
-				this.setState({
-					content: 'down key detected.',
-				});
-			},
-		});
 	}
 
 	open = i => () => {
@@ -105,7 +59,7 @@ class OpenEncounter extends Component {
 	next = () => {
 		const { eIndex } = this.state;
 		const i = eIndex + 1;
-		if (i <= encounters.length - 1) {
+		if (i <= soap.length - 1) {
 			this.setState({ eIndex: i });
 		}
 
@@ -140,34 +94,28 @@ class OpenEncounter extends Component {
 	}
 
 	render() {
-		const {
-			appointment_id,
-			patient,
-			closeModal,
-			updateAppointment,
-		} = this.props;
+		const { item, patient, closeModal, type } = this.props;
 		const { eIndex } = this.state;
-		const current = encounters[eIndex];
+		const current = soap[eIndex];
 		return (
 			<div
 				className="onboarding-modal modal fade animated show top-modal"
 				role="dialog"
 				style={{ display: 'block' }}
 				tabIndex="1"
-				{...ArrowKeysReact.events}
 				ref="theDiv">
 				<div className="modal-dialog modal-lg modal-centered" role="document">
 					<div className="modal-content">
 						<button
 							aria-label="Close"
-							className="close text-white"
+							className="close override text-white"
 							type="button"
 							onClick={closeModal}>
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="layout-w flex-column">
 							<EncounterMenu
-								encounters={encounters}
+								encounters={soap}
 								active={kebabCase(current)}
 								open={this.open}
 							/>
@@ -181,9 +129,9 @@ class OpenEncounter extends Component {
 											next={this.next}
 											previous={this.previous}
 											patient={patient}
-											appointment_id={appointment_id}
+											admission_id={item.id}
 											closeModal={closeModal}
-											updateAppointment={updateAppointment}
+											type={type}
 										/>
 									</div>
 								</div>
@@ -196,4 +144,4 @@ class OpenEncounter extends Component {
 	}
 }
 
-export default OpenEncounter;
+export default VisitNote;

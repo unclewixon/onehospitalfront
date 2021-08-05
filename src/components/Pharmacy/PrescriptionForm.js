@@ -238,6 +238,7 @@ const PrescriptionForm = ({
 								drug.batches.length > 0 ? drug.batches[0].unitPrice : 0,
 						});
 						setGeneric(drug.generic);
+						onClose();
 					};
 
 					const changeBtn = async () => {
@@ -465,7 +466,7 @@ const PrescriptionForm = ({
 						<input
 							type="number"
 							className="form-control"
-							placeholder={`(value in ${frequencyType}) eg: 7`}
+							placeholder={`(value in ${frequencyType}) eg: 3`}
 							ref={register({ required: true })}
 							name="duration"
 							onChange={onHandleInputChange}

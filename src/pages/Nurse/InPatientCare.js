@@ -187,9 +187,7 @@ const InPatientCare = ({ match }) => {
 										<th>Admitted By</th>
 										<th>Room/Floor</th>
 										<th>Status</th>
-										{user &&
-											(user.role.slug === 'nurse' ||
-												user.role.slug === 'it-admin') && <th></th>}
+										<th></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -231,37 +229,33 @@ const InPatientCare = ({ match }) => {
 														<span className="badge badge-success">Closed</span>
 													)}
 												</td>
-												{user &&
-													(user.role.slug === 'nurse' ||
-														user.role.slug === 'it-admin') && (
-														<td className="row-actions">
-															{!item.suite && !item.nicu && (
-																<Tooltip title="Assign Bed">
-																	<a
-																		onClick={() => assignBed(item)}
-																		className="primary">
-																		<i className="fa fa-bed" />
-																	</a>
-																</Tooltip>
-															)}
-															<Tooltip title="Admission">
+												<td className="row-actions">
+													{!item.suite &&
+														!item.nicu &&
+														user &&
+														(user.role.slug === 'nurse' ||
+															user.role.slug === 'it-admin') && (
+															<Tooltip title="Assign Bed">
 																<a
-																	onClick={() =>
-																		showAdmission(item.patient, item)
-																	}>
-																	<i className="os-icon os-icon-user-male-circle2" />
+																	onClick={() => assignBed(item)}
+																	className="primary">
+																	<i className="fa fa-bed" />
 																</a>
 															</Tooltip>
-														</td>
-													)}
+														)}
+													<Tooltip title="Admission">
+														<a
+															onClick={() => showAdmission(item.patient, item)}>
+															<i className="os-icon os-icon-user-male-circle2" />
+														</a>
+													</Tooltip>
+												</td>
 											</tr>
 										);
 									})}
 									{admittedPatients.length === 0 && (
 										<tr>
-											<td
-												colSpan={user && user.role === 'nurse' ? '7' : '6'}
-												className="text-center">
+											<td colSpan="7" className="text-center">
 												No result found
 											</td>
 										</tr>

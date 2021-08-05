@@ -33,10 +33,8 @@ import {
 	CAN_CLOSE_LABOUR,
 	UPDATE_ENCOUNTER_DATA,
 	RESET_ENCOUNTER_DATA,
+	UPDATE_SOAP_DATA,
 } from './types';
-import { request } from '../services/utilities';
-
-export const loadEncounterData = () => {};
 
 export const setIVF = data => {
 	return {
@@ -180,6 +178,13 @@ export const updateEncounterData = data => {
 	};
 };
 
+export const updateSoapData = data => {
+	return {
+		type: UPDATE_SOAP_DATA,
+		payload: data,
+	};
+};
+
 export const resetEncounterData = data => {
 	return {
 		type: RESET_ENCOUNTER_DATA,
@@ -268,38 +273,8 @@ export const loadLabourMeasurement = payload => {
 	};
 };
 
-export const antenatalAssessment = () => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			request(`patient/immunizations`, 'GET', true)
-				.then(response => {
-					dispatch(loadAntenatalAssessment(response.data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
 export const closeLabour = () => dispatch => {
 	dispatch({
 		type: CAN_CLOSE_LABOUR,
 	});
 };
-
-// export const getPartograph = id => {
-// 	return dispatch => {
-// 		return new Promise((resolve, reject) => {
-// 			request(`labour-management/${id}/vitals`, 'GET', true)
-// 				.then(response => {
-// 					dispatch(loadPartograph(response));
-// 					return resolve({ success: true });
-// 				})
-// 				.catch(error => {
-// 					return reject({ success: false });
-// 				});
-// 		});
-// 	};
-// };

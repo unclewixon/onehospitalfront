@@ -71,7 +71,6 @@ class Vendors extends Component {
 					<div className="element-wrapper">
 						<div className="element-box m-0 p-3">
 							<h5 className="form-header">Vendors</h5>
-							<div className="form-desc" />
 							<div className="table-responsive">
 								<table className="table table-striped">
 									<thead>

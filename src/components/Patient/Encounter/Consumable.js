@@ -279,7 +279,7 @@ const Consumable = ({
 						<Select
 							placeholder="Select item"
 							getOptionValue={option => option.id}
-							getOptionLabel={option => option.description}
+							getOptionLabel={option => option.name}
 							name="item"
 							options={items}
 							value={item}

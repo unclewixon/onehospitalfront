@@ -549,7 +549,7 @@ export const redirectToPage = (role, history) => {
 };
 
 export const staffname = user =>
-	user ? `${user?.first_name} ${user?.last_name}` : '-';
+	user ? `${startCase(user?.first_name)} ${startCase(user?.last_name)}` : '-';
 
 export const patientname = (user, pid = false) =>
 	user
@@ -686,4 +686,29 @@ export const parseAvatar = avatar => {
 	return avatar
 		? `${process.env.REACT_APP_API}/uploads/avatars/${avatar}`
 		: placeholder;
+};
+
+export const parseNote = note => {
+	if (note.type === 'diagnosis') {
+		return `${note.diagnosis.description} - ${note.diagnosis.type}`;
+	}
+
+	if (note.type === 'allergy') {
+		return `${note.allergy} [${note.category}] - ${note.reaction} (${note.severity})`;
+	}
+
+	if (note.type === 'patient-history') {
+		const title = startCase(note.category);
+		const keys = Object.keys(note.history);
+		const values = Object.values(note.history).map(
+			(name, i) => `${startCase(keys[i])}: ${name}`
+		);
+
+		return `</br><span class="text-underline">${title.replaceAll(
+			'history',
+			''
+		)}</span></br>${values.join('</br>')}`;
+	}
+
+	return note.description;
 };

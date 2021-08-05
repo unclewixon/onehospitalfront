@@ -5,7 +5,8 @@
 	}
 }
 
-.table tfoot th, .table thead th {
+.table tfoot th,
+.table thead th {
 	font-size: 0.78rem;
 }
 
@@ -406,10 +407,6 @@ tr {
 	z-index: 10000 !important;
 	height: 100vh !important;
 }
-
-// div[class$='-menu'] {
-// 	 z-index: 10000 !important;
-// }
 
 .allergen-block {
 	padding: 8px 20px;
@@ -829,7 +826,6 @@ div[class$='-ValueContainer'] {
 	flex: 0 0 100% !important;
 }
 
-
 .table .row-actions a {
 	margin-right: 0.8rem;
 
@@ -840,4 +836,27 @@ div[class$='-ValueContainer'] {
 
 .pipeline-item .pi-body .pi-name {
 	word-break: break-word;
+}
+
+h4.onboarding-title {
+	font-size: 0.95rem;
+}
+
+.slide-pane__content button.close {
+	&.override {
+		position: absolute;
+		top: 15px;
+		right: 20px;
+		float: none;
+		z-index: 1;
+		opacity: 1;
+		text-shadow: none;
+		background-color: transparent;
+	}
+}
+
+.overtop {
+	div[class$='-menu'] {
+		z-index: 10000 !important;
+	}
 }

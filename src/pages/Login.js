@@ -1,9 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { Field, reduxForm, SubmissionError } from 'redux-form';
+import { useDispatch, connect } from 'react-redux';
+import { Field, reduxForm, SubmissionError, change } from 'redux-form';
 import axios from 'axios';
 import { AbilityBuilder } from '@casl/ability';
+import { v4 as uuidv4 } from 'uuid';
 
 import waiting from '../assets/images/waiting.gif';
 import { request, redirectToPage, defaultHeaders } from '../services/utilities';
@@ -88,44 +89,57 @@ const Login = ({ location, history, error, handleSubmit }) => {
 	const doLogin = async data => {
 		try {
 			setState({ ...state, submitting: true });
-			const rs = await request('auth/login', 'POST', true, data);
-			try {
-				const jwt = `Bearer ${rs.token}`;
-				let [rs_depts, rs_roles, rs_specializations] = await Promise.all([
-					axiosFetch(`${API_URI}/${departmentAPI}`, jwt),
-					axiosFetch(`${API_URI}/${rolesAPI}`, jwt),
-					axiosFetch(`${API_URI}/specializations`, jwt),
-				]);
+			const address = uuidv4();
+			const detail = { ...data, address };
+			const rs = await request('auth/login', 'POST', true, detail);
+			if (rs && rs.token) {
+				try {
+					const jwt = `Bearer ${rs.token}`;
+					let [rs_depts, rs_roles, rs_specializations] = await Promise.all([
+						axiosFetch(`${API_URI}/${departmentAPI}`, jwt),
+						axiosFetch(`${API_URI}/${rolesAPI}`, jwt),
+						axiosFetch(`${API_URI}/specializations`, jwt),
+					]);
 
-				if (rs_depts && rs_depts.data) {
-					dispatch(loadDepartments(rs_depts.data));
+					if (rs_depts && rs_depts.data) {
+						dispatch(loadDepartments(rs_depts.data));
+					}
+					if (rs_roles && rs_roles.data) {
+						dispatch(loadRoles(rs_roles.data));
+					}
+					if (rs_specializations && rs_specializations.data) {
+						dispatch(loadSpecializations(rs_specializations.data));
+					}
+
+					dispatch(loginUser(rs));
+					storage.setItem(TOKEN_COOKIE, rs);
+					storage.setItem('permissions', JSON.stringify(rs.permissions));
+
+					const { can, rules } = new AbilityBuilder();
+
+					can(rs.permissions, 'all');
+
+					ability.update(rules);
+
+					notifySuccess('login successful!');
+
+					if (rs.passwordChanged) {
+						redirectToPage(rs.role, history);
+					} else {
+						history.push('/change-password');
+					}
+				} catch (e) {
+					console.log(e);
+					setState({ ...state, submitting: false });
+					throw new SubmissionError({
+						_error: 'could not login user',
+					});
 				}
-				if (rs_roles && rs_roles.data) {
-					dispatch(loadRoles(rs_roles.data));
-				}
-				if (rs_specializations && rs_specializations.data) {
-					dispatch(loadSpecializations(rs_specializations.data));
-				}
-
-				dispatch(loginUser(rs));
-				storage.setItem(TOKEN_COOKIE, rs);
-				storage.setItem('permissions', JSON.stringify(rs.permissions));
-
-				const { can, rules } = new AbilityBuilder();
-
-				can(rs.permissions, 'all');
-
-				ability.update(rules);
-
-				notifySuccess('login successful!');
-
-				if (rs.passwordChanged) {
-					redirectToPage(rs.role, history);
-				} else {
-					history.push('/change-password');
-				}
-			} catch (e) {
-				console.log(e);
+			} else if (rs && rs.error) {
+				dispatch(change('login_user', 'bypass', 1));
+				setState({ ...state, submitting: false });
+				// throw prompt to logout other users
+			} else {
 				setState({ ...state, submitting: false });
 				throw new SubmissionError({
 					_error: 'could not login user',
@@ -203,4 +217,14 @@ const Login = ({ location, history, error, handleSubmit }) => {
 	);
 };
 
-export default reduxForm({ form: 'login_user', validate })(Login);
+const mapStateToProps = () => {
+	return {
+		initialValues: {
+			bypass: 0,
+		},
+	};
+};
+
+export default connect(mapStateToProps)(
+	reduxForm({ form: 'login_user', validate })(Login)
+);

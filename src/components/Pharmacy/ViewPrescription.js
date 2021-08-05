@@ -15,6 +15,7 @@ import {
 } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
+import ViewRequestNote from '../Modals/ViewRequestNote';
 
 const ViewPrescription = ({
 	prescriptions,
@@ -28,6 +29,7 @@ const ViewPrescription = ({
 	const [sumTotal, setSumTotal] = useState(0.0);
 	const [regimens, setRegimens] = useState([]);
 	const [submitting, setSubmitting] = useState(false);
+	const [noteVisible, setNoteVisible] = useState(null);
 
 	const staff = useSelector(state => state.user.profile);
 
@@ -250,6 +252,7 @@ const ViewPrescription = ({
 												<td>Batch</td>
 												<td>Price</td>
 												<td>Quantity</td>
+												<td>Note</td>
 												<td></td>
 											</tr>
 										</thead>
@@ -391,6 +394,32 @@ const ViewPrescription = ({
 																	style={{ width: '90px' }}
 																/>
 															</div>
+														</td>
+														<td>
+															{regimen.item.note ? (
+																<Popover
+																	content={
+																		<ViewRequestNote
+																			title="Regimen Note"
+																			note={regimen.item.note}
+																			closeModal={() => setNoteVisible(null)}
+																		/>
+																	}
+																	overlayClassName="show-note"
+																	trigger="click"
+																	visible={
+																		noteVisible && noteVisible === regimen.id
+																	}
+																	onVisibleChange={() =>
+																		setNoteVisible(regimen.id)
+																	}>
+																	<a className="item-title text-primary">
+																		Note
+																	</a>
+																</Popover>
+															) : (
+																'--'
+															)}
 														</td>
 														{regimen.item.filled === 0 && (
 															<td className="row-actions text-center">

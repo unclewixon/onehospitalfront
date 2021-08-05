@@ -4,10 +4,11 @@ import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { confirmAlert } from 'react-confirm-alert';
+import Popover from 'antd/lib/popover';
 
 import ModalFillLabResult from './Modals/ModalFillLabResult';
 import ModalViewLabResult from './Modals/ModalViewLabResult';
-import ModalViewLabNote from './Modals/ModalViewLabNote';
+import ViewRequestNote from './Modals/ViewRequestNote';
 import { request, confirmAction, updateImmutable } from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
 import { startBlock, stopBlock } from '../actions/redux-block';
@@ -21,7 +22,7 @@ class LabBlock extends Component {
 		lab: null,
 		showFLModal: false,
 		showVLModal: false,
-		showVNModal: false,
+		visible: null,
 	};
 
 	cancelLabTest = async data => {
@@ -61,11 +62,6 @@ class LabBlock extends Component {
 	viewResult = lab => {
 		document.body.classList.add('modal-open');
 		this.setState({ showVLModal: true, lab });
-	};
-
-	viewNote = lab => {
-		document.body.classList.add('modal-open');
-		this.setState({ showVNModal: true, lab });
 	};
 
 	doPrint = async (lab, printGroup) => {
@@ -130,7 +126,6 @@ class LabBlock extends Component {
 			labTest: null,
 			showFLModal: false,
 			showVLModal: false,
-			showVNModal: false,
 		});
 	};
 
@@ -170,7 +165,7 @@ class LabBlock extends Component {
 
 	render() {
 		const { loading, labs, patient, updateLab } = this.props;
-		const { showFLModal, showVLModal, showVNModal, lab } = this.state;
+		const { showFLModal, showVLModal, lab, visible } = this.state;
 		return loading ? (
 			<TableLoading />
 		) : (
@@ -229,13 +224,24 @@ class LabBlock extends Component {
 									</td>
 									<td>
 										{lab.requestNote ? (
-											<a
-												className="item-title text-primary"
-												onClick={() => this.viewNote(lab)}>
-												Note
-											</a>
+											<Popover
+												content={
+													<ViewRequestNote
+														title="Lab Note"
+														note={lab.requestNote}
+														closeModal={() => this.setState({ visible: null })}
+													/>
+												}
+												overlayClassName="show-note"
+												trigger="click"
+												visible={visible && visible === lab.id}
+												onVisibleChange={() =>
+													this.setState({ visible: lab.id })
+												}>
+												<a className="item-title text-primary">Note</a>
+											</Popover>
 										) : (
-											'-'
+											'--'
 										)}
 									</td>
 									<td>
@@ -359,9 +365,6 @@ class LabBlock extends Component {
 						lab={lab}
 						updateLab={updateLab}
 					/>
-				)}
-				{lab && showVNModal && (
-					<ModalViewLabNote lab={lab} closeModal={this.closeModal} />
 				)}
 			</>
 		);

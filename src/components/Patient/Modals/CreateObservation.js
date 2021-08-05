@@ -6,7 +6,7 @@ import { startBlock, stopBlock } from '../../../actions/redux-block';
 import { notifySuccess, notifyError } from '../../../services/notify';
 import { request } from '../../../services/utilities';
 
-const CreateObservation = ({ closeModal, updateNote }) => {
+const CreateObservation = ({ closeModal, updateNote, item }) => {
 	const [observation, setObservation] = useState('');
 
 	const dispatch = useDispatch();
@@ -21,6 +21,7 @@ const CreateObservation = ({ closeModal, updateNote }) => {
 				patient_id: patient.id,
 				description: observation,
 				type: 'nurse-observation',
+				admission_id: item.id,
 			};
 
 			const rs = await request('patient-notes', 'POST', true, data);

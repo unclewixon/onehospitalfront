@@ -65,6 +65,7 @@ export const labourAPI = 'labour-management/enrollments';
 export const consultationAPI = 'consultation/';
 export const ivfEnroll = 'ivf/enroll';
 export const antenatalAPI = 'patient/antenatal';
+export const admissionAPI = 'patient/admissions';
 
 export const months = [
 	'January',
@@ -311,6 +312,14 @@ export const encounters = [
 	'Investigations',
 	'Plan',
 	'Consumable',
+];
+
+export const soap = [
+	'Current Complaints',
+	'Review Of Systems',
+	'Physical Examination Summary',
+	'Diagnosis',
+	'Plan',
 ];
 
 export const bookingPeriod = [
@@ -1131,6 +1140,7 @@ export const descent = [
 		name: '0: None of head palpable',
 	},
 ];
+
 export const religions = [
 	{ value: 'Atheist', label: 'Atheist' },
 	{ value: 'Buddhism', label: 'Buddhism' },
@@ -1237,4 +1247,19 @@ export const allUnitOfMeasures = [
 	'Tin',
 	'Tube',
 	'Vial',
+];
+
+export const specialties = [
+	{ value: 'General Medicine', label: 'General Medicine' },
+	{ value: 'Anaesthesiology', label: 'Anaesthesiology' },
+	{ value: 'Paediatrics', label: 'Paediatrics' },
+	{ value: 'Obstetrics & Gynaecology', label: 'Obstetrics & Gynaecology' },
+	{ value: 'IVF', label: 'IVF' },
+	{ value: 'Scrub Nurse', label: 'Scrub Nurse' },
+];
+
+export const noteTypes = [
+	{ value: 'Findings', label: 'Findings' },
+	{ value: 'Post-Procedure', label: 'Post-Procedure' },
+	{ value: 'Pre-Procedure', label: 'Pre-Procedure' },
 ];

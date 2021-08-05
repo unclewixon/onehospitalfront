@@ -2,15 +2,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
+import startCase from 'lodash.startcase';
 
 import TableLoading from '../TableLoading';
 import { request, itemRender, formatDate } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
-import CreateObservation from './Modals/CreateObservation';
+import VisitNote from '../Admission/VisitNote';
 import { staffname } from '../../services/utilities';
+import { admissionAPI } from '../../services/constants';
 
-const NurseObservation = () => {
+const InPatientNote = () => {
 	const [loading, setLoading] = useState(true);
 	const [notes, setNotes] = useState([]);
 	const [meta, setMeta] = useState({
@@ -22,13 +24,14 @@ const NurseObservation = () => {
 
 	const dispatch = useDispatch();
 	const admission = useSelector(state => state.user.item);
+	const patient = useSelector(state => state.user.patient);
 
-	const fetchObservations = useCallback(
+	const fetchNotes = useCallback(
 		async page => {
 			try {
 				dispatch(startBlock());
 				const p = page || 1;
-				const url = `patient-notes?page=${p}&limit=10&type=nurse-observation&admission_id=${admission.id}`;
+				const url = `${admissionAPI}/${admission.id}/ward-rounds?page=${p}&limit=10&visit=soap`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setNotes(result);
@@ -37,21 +40,21 @@ const NurseObservation = () => {
 			} catch (error) {
 				console.log(error);
 				dispatch(stopBlock());
-				notifyError('error fetching nurse observations');
+				notifyError('error fetching notes');
 			}
 		},
-		[admission, dispatch]
+		[dispatch, admission]
 	);
 
 	useEffect(() => {
 		if (loading) {
-			fetchObservations();
+			fetchNotes();
 			setLoading(false);
 		}
-	}, [fetchObservations, loading]);
+	}, [fetchNotes, loading]);
 
 	const onNavigatePage = nextPage => {
-		fetchObservations(nextPage);
+		fetchNotes(nextPage);
 	};
 
 	const newEntry = () => {
@@ -59,18 +62,12 @@ const NurseObservation = () => {
 		setShowModal(true);
 	};
 
-	const closeModal = () => {
+	const closeModal = reset => {
 		document.body.classList.remove('modal-open');
 		setShowModal(false);
-	};
-
-	const updateNote = item => {
-		setNotes([item, ...notes]);
-		setMeta({
-			currentPage: 1,
-			itemsPerPage: 10,
-			totalPages: notes.length + 1,
-		});
+		if (reset) {
+			fetchNotes();
+		}
 	};
 
 	return (
@@ -80,22 +77,21 @@ const NurseObservation = () => {
 					<a
 						className="btn btn-sm btn-secondary text-white ml-3"
 						onClick={() => newEntry()}>
-						New Note
+						S . O . A . P
 					</a>
 				</div>
-				<h6 className="element-header">Observation Notes</h6>
+				<h6 className="element-header">In-Patient Note</h6>
 				<div className="element-box p-3 m-0">
 					{loading ? (
 						<TableLoading />
 					) : (
 						<div className="table-responsive">
-							<table className="table table-theme v-middle table-hover">
+							<table className="table table-striped">
 								<thead>
 									<tr>
 										<th>Date</th>
 										<th>Note</th>
 										<th nowrap="nowrap">Noted By</th>
-										<th></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -108,12 +104,17 @@ const NurseObservation = () => {
 												<td>
 													<div
 														dangerouslySetInnerHTML={{
-															__html: item.description,
+															__html: `<strong class="float-left mr-2"><em>${startCase(
+																item.type
+															)}:</em></strong> ${
+																item.type === 'diagnosis'
+																	? `${item.diagnosis.description} - ${item.diagnosis.type}`
+																	: item.description
+															}`,
 														}}
 													/>
 												</td>
 												<td nowrap="nowrap">{staffname(item.staff)}</td>
-												<td></td>
 											</tr>
 										);
 									})}
@@ -136,14 +137,10 @@ const NurseObservation = () => {
 				</div>
 			</div>
 			{showModal && (
-				<CreateObservation
-					closeModal={closeModal}
-					updateNote={updateNote}
-					item={admission}
-				/>
+				<VisitNote closeModal={closeModal} item={admission} patient={patient} />
 			)}
 		</div>
 	);
 };
 
-export default NurseObservation;
+export default InPatientNote;

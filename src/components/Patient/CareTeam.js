@@ -7,12 +7,12 @@ import TableLoading from '../TableLoading';
 import { request, itemRender, formatDate } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
-import CreateObservation from './Modals/CreateObservation';
+import AddEditTeam from './Modals/AddEditTeam';
 import { staffname } from '../../services/utilities';
 
-const NurseObservation = () => {
+const CareTeam = () => {
 	const [loading, setLoading] = useState(true);
-	const [notes, setNotes] = useState([]);
+	const [members, setMembers] = useState([]);
 	const [meta, setMeta] = useState({
 		currentPage: 1,
 		itemsPerPage: 10,
@@ -21,37 +21,38 @@ const NurseObservation = () => {
 	const [showModal, setShowModal] = useState(false);
 
 	const dispatch = useDispatch();
+	const patient = useSelector(state => state.user.patient);
 	const admission = useSelector(state => state.user.item);
 
-	const fetchObservations = useCallback(
+	const fetchMembers = useCallback(
 		async page => {
 			try {
 				dispatch(startBlock());
 				const p = page || 1;
-				const url = `patient-notes?page=${p}&limit=10&type=nurse-observation&admission_id=${admission.id}`;
+				const url = `care-teams?patient_id=${patient.id}&page=${p}&limit=10&type=admission&id=${admission.id}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
-				setNotes(result);
+				setMembers(result);
 				setMeta(meta);
 				dispatch(stopBlock());
 			} catch (error) {
 				console.log(error);
 				dispatch(stopBlock());
-				notifyError('error fetching nurse observations');
+				notifyError('error fetching team member');
 			}
 		},
-		[admission, dispatch]
+		[dispatch, patient, admission]
 	);
 
 	useEffect(() => {
 		if (loading) {
-			fetchObservations();
+			fetchMembers();
 			setLoading(false);
 		}
-	}, [fetchObservations, loading]);
+	}, [fetchMembers, loading]);
 
 	const onNavigatePage = nextPage => {
-		fetchObservations(nextPage);
+		fetchMembers(nextPage);
 	};
 
 	const newEntry = () => {
@@ -64,12 +65,13 @@ const NurseObservation = () => {
 		setShowModal(false);
 	};
 
-	const updateNote = item => {
-		setNotes([item, ...notes]);
+	const updateMembers = items => {
+		const allMembers = [...items];
+		setMembers(allMembers);
 		setMeta({
 			currentPage: 1,
 			itemsPerPage: 10,
-			totalPages: notes.length + 1,
+			totalPages: allMembers.length + 1,
 		});
 	};
 
@@ -80,10 +82,10 @@ const NurseObservation = () => {
 					<a
 						className="btn btn-sm btn-secondary text-white ml-3"
 						onClick={() => newEntry()}>
-						New Note
+						Add/Edit Team Member
 					</a>
 				</div>
-				<h6 className="element-header">Observation Notes</h6>
+				<h6 className="element-header">Care Team</h6>
 				<div className="element-box p-3 m-0">
 					{loading ? (
 						<TableLoading />
@@ -93,27 +95,26 @@ const NurseObservation = () => {
 								<thead>
 									<tr>
 										<th>Date</th>
-										<th>Note</th>
-										<th nowrap="nowrap">Noted By</th>
-										<th></th>
+										<th>Team/Member Name</th>
+										<th>Team/Member Details</th>
 									</tr>
 								</thead>
 								<tbody>
-									{notes.map((item, i) => {
+									{members.map((item, i) => {
 										return (
 											<tr key={i}>
 												<td nowrap="nowrap">
 													{formatDate(item.createdAt, 'D-MMM-YYYY h:mm A')}
 												</td>
 												<td>
-													<div
-														dangerouslySetInnerHTML={{
-															__html: item.description,
-														}}
-													/>
+													{staffname(item.member)}{' '}
+													{item.is_primary_care_giver && (
+														<span className="badge badge-success">
+															primary care giver
+														</span>
+													)}
 												</td>
-												<td nowrap="nowrap">{staffname(item.staff)}</td>
-												<td></td>
+												<td>{item.member?.profession || '--'}</td>
 											</tr>
 										);
 									})}
@@ -125,7 +126,7 @@ const NurseObservation = () => {
 										current={parseInt(meta.currentPage, 10)}
 										pageSize={parseInt(meta.itemsPerPage, 10)}
 										total={parseInt(meta.totalPages, 10)}
-										showTotal={total => `Total ${total} items`}
+										showTotal={total => `Total ${total} team members`}
 										itemRender={itemRender}
 										onChange={current => onNavigatePage(current)}
 									/>
@@ -136,14 +137,15 @@ const NurseObservation = () => {
 				</div>
 			</div>
 			{showModal && (
-				<CreateObservation
+				<AddEditTeam
 					closeModal={closeModal}
-					updateNote={updateNote}
+					updateMembers={updateMembers}
 					item={admission}
+					type="admission"
 				/>
 			)}
 		</div>
 	);
 };
 
-export default NurseObservation;
+export default CareTeam;

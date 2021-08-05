@@ -2,9 +2,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
-import Tooltip from 'antd/lib/tooltip';
 
-import { request } from '../../services/utilities';
+import { request, confirmAction } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import TableLoading from '../TableLoading';
 
@@ -44,7 +43,7 @@ class Allergies extends Component {
 	};
 
 	confirmDelete = data => {
-		// confirmAction(this.deleteAllergy, data);
+		confirmAction(this.deleteAllergy, data);
 	};
 
 	render() {
@@ -63,61 +62,51 @@ class Allergies extends Component {
 					</div>
 					<h6 className="element-header">Allergies</h6>
 					<div className="element-box m-0 p-3">
-						<div className="bootstrap-table">
-							<div className="fixed-table-container pb-0">
-								<div className="fixed-table-body">
-									{loading ? (
-										<TableLoading />
-									) : (
-										<table className="table table-theme v-middle table-hover">
-											<thead>
-												<tr>
-													<th>Category</th>
-													<th>Allergy</th>
-													<th>Reaction</th>
-													<th>Severity</th>
-													<th className="text-left" />
+						<div className="table-responsive">
+							{loading ? (
+								<TableLoading />
+							) : (
+								<table className="table table-striped">
+									<thead>
+										<tr>
+											<th>Category</th>
+											<th>Allergy</th>
+											<th>Reaction</th>
+											<th>Severity</th>
+											<th className="text-left" />
+										</tr>
+									</thead>
+									<tbody>
+										{allergens.map((item, i) => {
+											return (
+												<tr key={i}>
+													<td>{item.category}</td>
+													<td>{item.allergy}</td>
+													<td>{item.reaction}</td>
+													<td>{item.severity}</td>
+													<td className="row-actions">
+														{/* <Tooltip title="Update">
+															<Link
+																className=""
+																to={`${location.pathname}#update-allergy`}
+																state={item}>
+																<i className="os-icon os-icon-ui-49"></i>
+															</Link>
+															<Tooltip title="Delete">
+																<i
+																	className="os-icon os-icon-ui-15"
+																	onClick={() =>
+																		this.confirmDelete(item)
+																	}></i>
+															</Tooltip>
+														</Tooltip> */}
+													</td>
 												</tr>
-											</thead>
-											<tbody>
-												{allergens.map((item, i) => {
-													return (
-														<tr key={i}>
-															<td>
-																<span>{item.category}</span>
-															</td>
-															<td>
-																<span>{item.allergy}</span>
-															</td>
-															<td>{item.reaction}</td>
-															<td className="text-center">
-																<span>{item.severity}</span>
-															</td>
-															<td className="row-actions">
-																<Tooltip title="Update">
-																	<Link
-																		className=""
-																		to={`${location.pathname}#update-allergy`}
-																		state={item}>
-																		<i className="os-icon os-icon-ui-49"></i>
-																	</Link>
-																	<Tooltip title="Delete">
-																		<i
-																			className="os-icon os-icon-ui-15"
-																			onClick={() =>
-																				this.confirmDelete(item)
-																			}></i>
-																	</Tooltip>
-																</Tooltip>
-															</td>
-														</tr>
-													);
-												})}
-											</tbody>
-										</table>
-									)}
-								</div>
-							</div>
+											);
+										})}
+									</tbody>
+								</table>
+							)}
 						</div>
 					</div>
 				</div>

@@ -390,7 +390,8 @@ button {
 	&.view-vaccine,
 	&.select-drug,
 	&.set-credit-limit,
-	&.select-bed {
+	&.select-bed,
+	&.show-note {
 		.ant-popover-inner-content {
 			padding: 0;
 		}

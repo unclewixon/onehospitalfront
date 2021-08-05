@@ -21,7 +21,6 @@ const Notes = () => {
 	const [showModal, setShowModal] = useState(false);
 
 	const dispatch = useDispatch();
-	const patient = useSelector(state => state.user.patient);
 	const procedure = useSelector(state => state.user.item);
 
 	const fetchNotes = useCallback(
@@ -29,7 +28,7 @@ const Notes = () => {
 			try {
 				dispatch(startBlock());
 				const p = page || 1;
-				const url = `patient-notes?patient_id=${patient.id}&page=${p}&limit=10&type=procedure&id=${procedure.id}`;
+				const url = `patient-notes?page=${p}&limit=10&type=findings&procedure_id=${procedure.id}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setNotes(result);
@@ -41,7 +40,7 @@ const Notes = () => {
 				notifyError('error fetching notes');
 			}
 		},
-		[dispatch, patient, procedure]
+		[dispatch, procedure]
 	);
 
 	useEffect(() => {
@@ -92,24 +91,14 @@ const Notes = () => {
 						<TableLoading />
 					) : (
 						<div className="table-responsive">
-							<table className="table table-theme v-middle table-hover">
+							<table className="table table-striped">
 								<thead>
 									<tr>
-										<th>
-											<div>Date</div>
-										</th>
-										<th>
-											<div>Type</div>
-										</th>
-										<th>
-											<div>Specialty</div>
-										</th>
-										<th>
-											<div>Note</div>
-										</th>
-										<th>
-											<div>Noted By</div>
-										</th>
+										<th>Date</th>
+										<th>Type</th>
+										<th>Specialty</th>
+										<th>Note</th>
+										<th nowrap="nowrap">Noted By</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -119,7 +108,7 @@ const Notes = () => {
 												<td nowrap="nowrap">
 													{formatDate(item.createdAt, 'D-MMM-YYYY h:mm A')}
 												</td>
-												<td>{item.type}</td>
+												<td>{item.note_type}</td>
 												<td>{item.specialty || '--'}</td>
 												<td>
 													<div
@@ -154,8 +143,8 @@ const Notes = () => {
 				<CreateNote
 					closeModal={closeModal}
 					updateNote={updateNote}
-					item={procedure}
-					type="procedure"
+					procedure_id={procedure.id}
+					type="findings"
 				/>
 			)}
 		</div>

@@ -4,6 +4,7 @@ import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { confirmAlert } from 'react-confirm-alert';
+import Popover from 'antd/lib/popover';
 
 import ViewScanImage from './Modals/ViewScanImage';
 import UploadScanImage from './Modals/UploadScanImage';
@@ -20,6 +21,7 @@ import { startBlock, stopBlock } from '../actions/redux-block';
 import TableLoading from './TableLoading';
 import { toggleProfile } from '../actions/user';
 import ProfilePopup from './Patient/ProfilePopup';
+import ViewRequestNote from './Modals/ViewRequestNote';
 
 class RadiologyBlock extends Component {
 	state = {
@@ -27,6 +29,7 @@ class RadiologyBlock extends Component {
 		showModal: false,
 		uploading: false,
 		uploadModal: false,
+		visible: null,
 	};
 
 	viewScan = item => {
@@ -238,7 +241,7 @@ class RadiologyBlock extends Component {
 
 	render() {
 		const { loading, scans, patient } = this.props;
-		const { scanItem, showModal, uploading, uploadModal } = this.state;
+		const { scanItem, showModal, uploading, uploadModal, visible } = this.state;
 
 		return loading ? (
 			<TableLoading />
@@ -252,6 +255,7 @@ class RadiologyBlock extends Component {
 							<th>Type</th>
 							{!patient && <th>Patient</th>}
 							<th>By</th>
+							<th>Note</th>
 							<th>Attachment</th>
 							<th>Status</th>
 							<th>
@@ -297,6 +301,28 @@ class RadiologyBlock extends Component {
 									)}
 									<td>
 										<a className="item-title text-color">{scan.created_by}</a>
+									</td>
+									<td>
+										{scan.requestNote ? (
+											<Popover
+												content={
+													<ViewRequestNote
+														title="Scan Note"
+														note={scan.requestNote}
+														closeModal={() => this.setState({ visible: null })}
+													/>
+												}
+												overlayClassName="show-note"
+												trigger="click"
+												visible={visible && visible === scan.id}
+												onVisibleChange={() =>
+													this.setState({ visible: scan.id })
+												}>
+												<a className="item-title text-primary">Note</a>
+											</Popover>
+										) : (
+											'--'
+										)}
 									</td>
 									<td>
 										{scan.item.filled === 1 ? (

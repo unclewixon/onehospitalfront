@@ -226,6 +226,7 @@ const PlanForm = ({ previous, next, patient }) => {
 								drug.batches.length > 0 ? drug.batches[0].unitPrice : 0,
 						});
 						setGeneric(drug.generic);
+						onClose();
 					};
 
 					const changeBtn = async () => {
@@ -586,7 +587,7 @@ const PlanForm = ({ previous, next, patient }) => {
 							type="number"
 							className="form-control"
 							placeholder={`(value in ${frequencyType?.value ||
-								'daily'}) eg: 7`}
+								'daily'}) eg: 3`}
 							ref={register({ required: true })}
 							name="duration"
 							onChange={onHandleInputChange}
@@ -810,7 +811,7 @@ const PlanForm = ({ previous, next, patient }) => {
 						getOptionLabel={getOptionLabels}
 						defaultOptions
 						isMulti
-						value={diagnoses}
+						value={procDiagnoses}
 						name="diagnosis"
 						loadOptions={getOptions}
 						onChange={e => {

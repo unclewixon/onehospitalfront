@@ -9,6 +9,11 @@ const AdmissionMenu = ({ location }) => {
 	return (
 		<div className="top-bar color-scheme-light">
 			<ul>
+				<li className={checkHash(hash, 'ward-round') ? 'active' : ''}>
+					<Link to={`${location.pathname}#ward-round`} className="pointer">
+						Notes
+					</Link>
+				</li>
 				<li className={checkHash(hash, 'clinical-tasks') ? 'active' : ''}>
 					<Link to={`${location.pathname}#clinical-tasks`} className="pointer">
 						Clinical Tasks
@@ -36,6 +41,11 @@ const AdmissionMenu = ({ location }) => {
 						to={`${location.pathname}#vitals#Blood Pressure`}
 						className="pointer">
 						Vitals
+					</Link>
+				</li>
+				<li className={checkHash(hash, 'care-team') ? 'active' : ''}>
+					<Link to={`${location.pathname}#care-team`} className="pointer">
+						Care Team
 					</Link>
 				</li>
 			</ul>

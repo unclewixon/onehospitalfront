@@ -31,15 +31,9 @@ const Attachments = () => {
 							<table className="table table-theme v-middle table-hover">
 								<thead>
 									<tr>
-										<th>
-											<div>Date</div>
-										</th>
-										<th>
-											<div>File</div>
-										</th>
-										<th>
-											<div>Uploaded By</div>
-										</th>
+										<th>Date</th>
+										<th>File</th>
+										<th>Uploaded By</th>
 										<th></th>
 									</tr>
 								</thead>

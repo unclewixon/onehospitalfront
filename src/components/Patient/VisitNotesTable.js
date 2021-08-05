@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
 import Pagination from 'antd/lib/pagination';
+import startCase from 'lodash.startcase';
 
-import { itemRender, request, staffname } from '../../services/utilities';
+import {
+	formatDate,
+	itemRender,
+	request,
+	staffname,
+	parseNote,
+} from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
@@ -26,7 +32,7 @@ class VisitNotesTable extends Component {
 			const { patient } = this.props;
 			this.props.startBlock();
 			const p = page || 1;
-			const url = `patient-notes?patient_id=${patient.id}&page=${p}`;
+			const url = `patient-notes?patient_id=${patient.id}&page=${p}&visit=encounter`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			this.setState({ loading: false, notes: result, meta });
@@ -61,34 +67,35 @@ class VisitNotesTable extends Component {
 											<tr>
 												<th>Date</th>
 												<th>Notes</th>
-												<th>Noted By</th>
+												<th nowrap="nowrap">Noted By</th>
 											</tr>
 										</thead>
-
 										<tbody>
 											{notes.map((note, i) => {
 												return (
 													<tr key={i} className={i % 2 === 1 ? 'odd' : 'even'}>
-														<td>
-															{moment(note.note_date).format(
-																'DD-MM-YYYY h:mm A'
-															)}
+														<td nowrap="nowrap">
+															{formatDate(note.createdAt, 'DD-MMM-YYYY h:mm A')}
 														</td>
 														<td>
 															<div
 																dangerouslySetInnerHTML={{
-																	__html: note.description,
+																	__html: `<strong class="float-left mr-2"><em>${startCase(
+																		note.type
+																	)}:</em></strong> ${parseNote(note)}`,
 																}}
 															/>
 														</td>
-														<td>{staffname(note.staff)}</td>
+														<td nowrap="nowrap">{staffname(note.staff)}</td>
 													</tr>
 												);
 											})}
 
 											{notes && notes.length === 0 && (
-												<tr className="text-center">
-													<td colSpan="3">No Visit Notes</td>
+												<tr>
+													<td colSpan="3" className="text-center">
+														No Visit Notes
+													</td>
 												</tr>
 											)}
 										</tbody>

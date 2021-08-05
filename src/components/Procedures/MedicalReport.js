@@ -22,7 +22,6 @@ const MedicalReport = () => {
 
 	const dispatch = useDispatch();
 
-	const patient = useSelector(state => state.user.patient);
 	const procedure = useSelector(state => state.user.item);
 
 	const fetchNotes = useCallback(
@@ -30,7 +29,7 @@ const MedicalReport = () => {
 			try {
 				dispatch(startBlock());
 				const p = page || 1;
-				const url = `patient-notes?patient_id=${patient.id}&page=${p}&limit=10&type=procedure-medical-report&id=${procedure.id}`;
+				const url = `patient-notes?page=${p}&limit=10&type=medical-report&procedure_id=${procedure.id}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setNotes(result);
@@ -42,7 +41,7 @@ const MedicalReport = () => {
 				notifyError('error fetching report');
 			}
 		},
-		[dispatch, patient.id, procedure]
+		[dispatch, procedure]
 	);
 
 	useEffect(() => {
@@ -96,15 +95,9 @@ const MedicalReport = () => {
 							<table className="table table-theme v-middle table-hover">
 								<thead>
 									<tr>
-										<th>
-											<div>Date</div>
-										</th>
-										<th>
-											<div>Note</div>
-										</th>
-										<th>
-											<div>Noted By</div>
-										</th>
+										<th>Date</th>
+										<th>Note</th>
+										<th nowrap="nowrap">Noted By</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -147,8 +140,8 @@ const MedicalReport = () => {
 				<CreateNote
 					closeModal={closeModal}
 					updateNote={updateNote}
-					item={procedure}
-					type="procedure-medical-report"
+					procedure_id={procedure.id}
+					type="medical-report"
 				/>
 			)}
 		</div>

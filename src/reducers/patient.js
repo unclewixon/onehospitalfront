@@ -35,8 +35,17 @@ import {
 	CAN_CLOSE_LABOUR,
 	UPDATE_ENCOUNTER_DATA,
 	RESET_ENCOUNTER_DATA,
+	UPDATE_SOAP_DATA,
 } from '../actions/types';
 import { updateImmutable } from '../services/utilities';
+
+const soapData = {
+	complaints: '',
+	reviewOfSystem: [],
+	physicalExaminationSummary: '',
+	diagnosis: [],
+	treatmentPlan: '',
+};
 
 const INITIAL_STATE = {
 	formStep: 1,
@@ -79,6 +88,14 @@ const INITIAL_STATE = {
 		instruction: '',
 		consumables: null,
 	},
+	soapData: {
+		complaints: '',
+		reviewOfSystem: [],
+		physicalExaminationSummary: '',
+		diagnosis: [],
+		pastDiagnosis: [],
+		treatmentPlan: '',
+	},
 	antenatalAssessment: [],
 	enrolments: [],
 	labourDetail: null,
@@ -118,25 +135,30 @@ const patient = (state = INITIAL_STATE, action) => {
 				...state,
 				encounterData: { ...action.payload },
 			};
+		case UPDATE_SOAP_DATA:
+			return {
+				...state,
+				soapData: { ...action.payload },
+			};
 		case RESET_ENCOUNTER_DATA:
-			return { ...state, encounterData: action.payload };
+			return {
+				...state,
+				encounterData: action.payload,
+				soapData,
+			};
 		case GET_IMAGING_REQUESTS:
 			return { ...state, imagingRequests: action.payload };
 		case UPDATE_ALLERGY:
+			const allergens = updateImmutable(state.allergies, action.payload);
 			return {
 				...state,
-				allergies: [
-					...state.allergies.filter(
-						deletedItem => deletedItem.id !== action.previousData.id
-					),
-					action.payload,
-				],
+				allergies: [...allergens],
 			};
 		case DELETE_ALLERGY:
 			return {
 				...state,
 				allergies: state.allergies.filter(
-					deletedItem => deletedItem.id !== action.payload.id
+					item => item.id !== action.payload.id
 				),
 			};
 		case LOAD_VITALS:

@@ -1,13 +1,25 @@
 import React, { useState } from 'react';
 import SunEditor from 'suneditor-react';
 import { useSelector, useDispatch } from 'react-redux';
+import Select from 'react-select';
+import startCase from 'lodash.startcase';
 
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
+import { noteTypes, specialties } from '../../services/constants';
 
-const CreateNote = ({ closeModal, updateNote, item, type }) => {
+const CreateNote = ({
+	closeModal,
+	updateNote,
+	type,
+	ivf_id,
+	antenatal_id,
+	procedure_id,
+}) => {
 	const [note, setNote] = useState('');
+	const [noteType, setNoteType] = useState('');
+	const [specialty, setSpecialty] = useState('');
 
 	const dispatch = useDispatch();
 
@@ -22,7 +34,11 @@ const CreateNote = ({ closeModal, updateNote, item, type }) => {
 				patient_id: patient.id,
 				description: note,
 				type,
-				id: item?.id,
+				ivf_id,
+				antenatal_id,
+				procedure_id,
+				note_type: noteType,
+				specialty,
 			};
 
 			const rs = await request('patient-notes', 'POST', true, data);
@@ -52,9 +68,28 @@ const CreateNote = ({ closeModal, updateNote, item, type }) => {
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
-						<h4 className="onboarding-title">New Note</h4>
+						<h4 className="onboarding-title">
+							{type && type !== '' ? startCase(type) : 'New Note'}
+						</h4>
 						<div className="element-box">
 							<form onSubmit={onSubmit}>
+								{type && type === 'findings' && (
+									<div className="row">
+										<div className="col-sm-12">
+											<div className="form-group overtop">
+												<label>Specialty</label>
+												<Select
+													name="specialty"
+													placeholder="Select Specialty"
+													options={specialties}
+													onChange={e => {
+														setSpecialty(e?.value || '');
+													}}
+												/>
+											</div>
+										</div>
+									</div>
+								)}
 								<div className="row">
 									<div className="col-sm-12">
 										<div className="form-group">
@@ -92,6 +127,23 @@ const CreateNote = ({ closeModal, updateNote, item, type }) => {
 										</div>
 									</div>
 								</div>
+								{type && type === 'findings' && (
+									<div className="row">
+										<div className="col-sm-12">
+											<div className="form-group">
+												<label>Note Type</label>
+												<Select
+													name="type"
+													placeholder="Select Findings"
+													options={noteTypes}
+													onChange={e => {
+														setNoteType(e?.value || '');
+													}}
+												/>
+											</div>
+										</div>
+									</div>
+								)}
 								<div className="row mt-5">
 									<div className="col-sm-12 d-flex ant-row-flex-space-between">
 										<button className="btn btn-primary" type="submit">

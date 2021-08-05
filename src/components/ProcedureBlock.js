@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Tooltip from 'antd/lib/tooltip';
 import moment from 'moment';
 import { connect } from 'react-redux';
+import Popover from 'antd/lib/popover';
 
 import TableLoading from './TableLoading';
 import { toggleProfile } from '../actions/user';
@@ -16,11 +17,13 @@ import { startBlock, stopBlock } from '../actions/redux-block';
 import ProfilePopup from './Patient/ProfilePopup';
 import { notifySuccess, notifyError } from '../services/notify';
 import ModalScheduleDate from './Modals/ModalScheduleDate';
+import ViewRequestNote from './Modals/ViewRequestNote';
 
 class ProcedureBlock extends Component {
 	state = {
 		procedue: null,
 		showRSModal: false,
+		visible: null,
 	};
 
 	showProfile = patient => {
@@ -138,7 +141,7 @@ class ProcedureBlock extends Component {
 
 	render() {
 		const { loading, procedures, patient, updateProcedure } = this.props;
-		const { procedure, showRSModal } = this.state;
+		const { procedure, showRSModal, visible } = this.state;
 
 		return loading ? (
 			<TableLoading />
@@ -151,6 +154,7 @@ class ProcedureBlock extends Component {
 							<th>Procedure</th>
 							{!patient && <th>Patient</th>}
 							<th>By</th>
+							<th>Note</th>
 							<th>Status</th>
 							<th>Resources</th>
 							<th>Scheduled</th>
@@ -161,7 +165,6 @@ class ProcedureBlock extends Component {
 					</thead>
 					<tbody>
 						{procedures.map((data, i) => {
-							console.log(data);
 							return (
 								<tr key={i} className={data.urgent ? 'urgent' : ''}>
 									<td>
@@ -201,6 +204,28 @@ class ProcedureBlock extends Component {
 									)}
 									<td>
 										<a className="item-title text-color">{data.created_by}</a>
+									</td>
+									<td>
+										{data.requestNote ? (
+											<Popover
+												content={
+													<ViewRequestNote
+														title="Procedure Note"
+														note={data.requestNote}
+														closeModal={() => this.setState({ visible: null })}
+													/>
+												}
+												overlayClassNamedata="show-note"
+												trigger="click"
+												visible={visible && visible === data.id}
+												onVisibleChange={() =>
+													this.setState({ visible: data.id })
+												}>
+												<a className="item-title text-primary">Note</a>
+											</Popover>
+										) : (
+											'--'
+										)}
 									</td>
 									<td>
 										{data.item.cancelled === 0 && (

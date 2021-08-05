@@ -31,15 +31,9 @@ const Consumables = () => {
 							<table className="table table-theme v-middle table-hover">
 								<thead>
 									<tr>
-										<th>
-											<div>Date</div>
-										</th>
-										<th>
-											<div>Name</div>
-										</th>
-										<th>
-											<div>Added By</div>
-										</th>
+										<th>Date</th>
+										<th>Name</th>
+										<th>Added By</th>
 										<th></th>
 									</tr>
 								</thead>

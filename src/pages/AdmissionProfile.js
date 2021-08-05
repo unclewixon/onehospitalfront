@@ -18,12 +18,16 @@ const NurseObservation = lazy(() =>
 	import('../components/Patient/NurseObservation')
 );
 const FluidChart = lazy(() => import('../components/Patient/FluidChart'));
+const InPatientNote = lazy(() => import('../components/Patient/InPatientNote'));
+const CareTeam = lazy(() => import('../components/Patient/CareTeam'));
 
 const storage = new SSRStorage();
 
 const Page = ({ location }) => {
 	const hash = location.hash.substr(1).split('#');
 	switch (hash[0]) {
+		case 'ward-round':
+			return <InPatientNote />;
 		case 'encounters':
 			return <Encounters />;
 		case 'vitals':
@@ -35,7 +39,7 @@ const Page = ({ location }) => {
 		case 'fluid-chart':
 			return <FluidChart />;
 		case 'care-team':
-			return <ClinicalTasks />;
+			return <CareTeam />;
 		default:
 			return <ClinicalTasks />;
 	}
@@ -50,7 +54,7 @@ class AdmissionProfile extends Component {
 	componentDidMount() {
 		const { location } = this.props;
 		if (!location.hash) {
-			this.props.history.push(`${location.pathname}#clinical-tasks`);
+			this.props.history.push(`${location.pathname}#ward-round`);
 		}
 	}
 
