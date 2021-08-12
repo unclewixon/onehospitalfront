@@ -1,43 +1,83 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useEffect, useCallback } from 'react';
+import Pagination from 'antd/lib/pagination';
 
-class Consultation extends Component {
-	render() {
-		return (
-			<div className="content-i">
-				<div className="content-box">
-					<div className="row">
-						<div className="col-sm-12">
-							<div className="element-wrapper">
-								<div className="element-box">
-									<h5 className="form-header">Consultation</h5>
-									<div className="table-responsive">
-										<table className="table table-striped">
-											<thead>
-												<tr>
-													<th></th>
-													<th>Name</th>
-													<th>Traffic</th>
-													<th>Category ID</th>
-													<th className="text-center">Status</th>
-													<th className="text-right">Actions</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td colSpan="6">No consultations found!</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+import { request, itemRender } from '../../services/utilities';
+import { hmoAPI } from '../../services/constants';
+import { notifyError } from '../../services/notify';
+
+const Consultation = () => {
+	const [toggled, setToggled] = useState([]);
+	const [schemes, setSchemes] = useState([]);
+	const [meta, setMeta] = useState(null);
+	const [loaded, setLoaded] = useState(false);
+
+	const doToggle = index => {
+		const found = toggled.find(t => t.id === index);
+		if (found) {
+			setToggled([...toggled.filter(t => t.id !== index)]);
+		} else {
+			setToggled([...toggled, { id: index }]);
+		}
+	};
+
+	const fetchHmos = useCallback(async page => {
+		try {
+			const p = page || 1;
+			const url = `${hmoAPI}/schemes?page=${p}&limit=10`;
+			const rs = await request(url, 'GET', true);
+			const { result, ...meta } = rs;
+			setSchemes([...result]);
+			setToggled([]);
+			setMeta(meta);
+			setLoaded(true);
+		} catch (e) {
+			console.log(e);
+			notifyError('could not fetch hmo schemes');
+			setLoaded(true);
+		}
+	}, []);
+
+	useEffect(() => {
+		if (!loaded) {
+			fetchHmos();
+		}
+	}, [fetchHmos, loaded]);
+
+	const onNavigatePage = nextPage => {
+		fetchHmos(nextPage);
+	};
+
+	return (
+		<div className="row">
+			<div className="col-lg-12">
+				<div className="rentals-list-w" style={{ flexDirection: 'column' }}>
+					{schemes.map((hmo, i) => {
+						const toggle = toggled.find(t => t.id === hmo.id);
+						return (
+							<div
+								key={i}
+								hmo={hmo}
+								toggle={toggle}
+								doToggle={() => doToggle(hmo.id)}
+							/>
+						);
+					})}
 				</div>
+				{meta && (
+					<div className="pagination pagination-center mt-4">
+						<Pagination
+							current={parseInt(meta.currentPage, 10)}
+							pageSize={parseInt(meta.itemsPerPage, 10)}
+							total={parseInt(meta.totalPages, 10)}
+							showTotal={total => `Total ${total} HMOs`}
+							itemRender={itemRender}
+							onChange={current => onNavigatePage(current)}
+						/>
+					</div>
+				)}
 			</div>
-		);
-	}
-}
+		</div>
+	);
+};
 
-export default connect()(Consultation);
+export default Consultation;

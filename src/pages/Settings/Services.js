@@ -7,7 +7,7 @@ import ServicesList from '../../components/ServicesList';
 import ModalUploadService from '../../components/Modals/ModalUploadService';
 import ModalCreateService from '../../components/Modals/ModalCreateService';
 
-const ServicesCategory = () => {
+const Services = () => {
 	const [showServiceCategory, setServiceCategory] = useState(true);
 	const [showServicesList, setServicesList] = useState(false);
 	const [loaded, setLoaded] = useState(false);
@@ -142,4 +142,4 @@ const ServicesCategory = () => {
 	);
 };
 
-export default ServicesCategory;
+export default Services;

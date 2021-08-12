@@ -63,11 +63,7 @@ class LabourProfile extends Component {
 								<div className="content-box">
 									<div className="row">
 										<div className="col-sm-12">
-											<ProfileBlock
-												profile={true}
-												patient={patient}
-												noButtons={true}
-											/>
+											<ProfileBlock profile={true} patient={patient} />
 										</div>
 										<Suspense fallback={<Splash />}>
 											<Switch>

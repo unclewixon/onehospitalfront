@@ -84,7 +84,7 @@ const PrescriptionBlock = ({
 													{patientname(request.patient, true)}
 												</a>
 											</Tooltip>
-											{request.patient.isAdmitted && (
+											{request.patient.is_admitted && (
 												<Tooltip title="Admitted">
 													<i className="fa fa-hospital-o text-danger ml-1" />
 												</Tooltip>

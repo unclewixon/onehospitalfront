@@ -44,7 +44,7 @@ function PatientForm(props) {
 			gender: formData.gender || '',
 			occupation: formData.occupation || '',
 			address: formData.address || '',
-			phoneNumber: formData.phoneNumber || '',
+			phone_number: formData.phone_number || '',
 			maritalStatus: formData.maritalStatus || '',
 			ethnicity: formData.ethnicity || '',
 			hmo: formData.hmo || '',
@@ -67,7 +67,7 @@ function PatientForm(props) {
 				occupation: patient.occupation || '',
 				address: patient.address || '',
 				avatar: patient.profile_pic || '',
-				phoneNumber: patient.phoneNumber || '',
+				phone_number: patient.phone_number || '',
 				hmo: patient.hmo_id || '',
 			};
 			if (patient.profile_pic) {
@@ -365,7 +365,7 @@ function PatientForm(props) {
 										getOptionLabel={option =>
 											`${option.name} ${
 												option.name !== 'Private'
-													? option.phoneNumber || ''
+													? option.phone_number || ''
 													: ''
 											}`
 										}
@@ -426,14 +426,14 @@ function PatientForm(props) {
 									</label>
 									<input
 										className="form-control"
-										name="phoneNumber"
+										name="phone_number"
 										placeholder="Phone Number"
-										defaultValue={patientData.phoneNumber || ''}
+										defaultValue={patientData.phone_number || ''}
 										ref={register}
 										type="text"
 									/>
 									<small className="text-danger">
-										{errors.phoneNumber && errors.phoneNumber.message}
+										{errors.phone_number && errors.phone_number.message}
 									</small>
 								</div>
 							</div>

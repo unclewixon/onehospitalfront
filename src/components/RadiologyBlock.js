@@ -291,7 +291,7 @@ class RadiologyBlock extends Component {
 														{patientname(scan.patient, true)}
 													</a>
 												</Tooltip>
-												{scan.patient.isAdmitted && (
+												{scan.patient.is_admitted && (
 													<Tooltip title="Admitted">
 														<i className="fa fa-hospital-o text-danger ml-1" />
 													</Tooltip>

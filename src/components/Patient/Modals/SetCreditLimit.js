@@ -26,9 +26,9 @@ const SetCreditLimit = ({ patient, onHide }) => {
 			dispatch(
 				setPatientRecord({
 					id: rs.patient.id,
-					credit_limit: rs.patient.creditLimit,
-					credit_limit_expiry_date: rs.patient.creditLimitExpiryDate,
-					outstanding: rs.patient.creditLimit > 0 ? 0 : patient.outstanding,
+					credit_limit: rs.patient.credit_limit,
+					credit_limit_expiry_date: rs.patient.credit_limit_expiry_date,
+					outstanding: rs.patient.credit_limit > 0 ? 0 : patient.outstanding,
 				})
 			);
 			notifySuccess('Credit limit saved');

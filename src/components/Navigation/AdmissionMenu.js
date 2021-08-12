@@ -16,19 +16,24 @@ const AdmissionMenu = ({ location }) => {
 				</li>
 				<li className={checkHash(hash, 'clinical-tasks') ? 'active' : ''}>
 					<Link to={`${location.pathname}#clinical-tasks`} className="pointer">
-						Clinical Tasks
-					</Link>
-				</li>
-				<li className={checkHash(hash, 'encounters') ? 'active' : ''}>
-					<Link to={`${location.pathname}#encounters`} className="pointer">
-						Encounters
+						Tasks
 					</Link>
 				</li>
 				<li className={checkHash(hash, 'nurse-observations') ? 'active' : ''}>
 					<Link
 						to={`${location.pathname}#nurse-observations`}
 						className="pointer">
-						Nurse Observations
+						Observations
+					</Link>
+				</li>
+				<li className={checkHash(hash, 'lab') ? 'active' : ''}>
+					<Link to={`${location.pathname}#lab`} className="pointer">
+						Lab
+					</Link>
+				</li>
+				<li className={checkHash(hash, 'regimen') ? 'active' : ''}>
+					<Link to={`${location.pathname}#regimen`} className="pointer">
+						Regimen
 					</Link>
 				</li>
 				<li className={checkHash(hash, 'fluid-chart') ? 'active' : ''}>
@@ -46,6 +51,11 @@ const AdmissionMenu = ({ location }) => {
 				<li className={checkHash(hash, 'care-team') ? 'active' : ''}>
 					<Link to={`${location.pathname}#care-team`} className="pointer">
 						Care Team
+					</Link>
+				</li>
+				<li className={checkHash(hash, 'encounters') ? 'active' : ''}>
+					<Link to={`${location.pathname}#encounters`} className="pointer">
+						Encounters
 					</Link>
 				</li>
 			</ul>

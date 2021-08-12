@@ -251,8 +251,8 @@ const LabRequest = ({ module, history, location }) => {
 							</div>
 							{chosenPatient &&
 								((chosenPatient.outstanding === 0 &&
-									!chosenPatient.isAdmitted) ||
-									chosenPatient.isAdmitted) && (
+									!chosenPatient.is_admitted) ||
+									chosenPatient.is_admitted) && (
 									<div className="col-sm-8 text-right">
 										<button className="btn btn-primary" disabled={submitting}>
 											{submitting ? (

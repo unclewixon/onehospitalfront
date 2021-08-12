@@ -165,7 +165,12 @@ class PatientProfile extends Component {
 								<div className="content-box">
 									<div className="row">
 										<div className="col-sm-12">
-											<ProfileBlock profile={true} patient={patient} />
+											<ProfileBlock
+												profile={true}
+												patient={patient}
+												hasButtons={true}
+												canAdmit={true}
+											/>
 										</div>
 										<Suspense fallback={<Splash />}>
 											<Switch>

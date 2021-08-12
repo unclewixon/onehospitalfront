@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError, reset } from 'redux-form';
-import moment from 'moment';
-import DatePicker from 'react-datepicker';
 import { withRouter } from 'react-router-dom';
 
 import {
@@ -40,24 +38,17 @@ const healthState = [
 class PatientAdmission extends Component {
 	state = {
 		submitting: false,
-		discharged_date: null,
-	};
-
-	setDate = (date, type) => {
-		this.setState({ [type]: date });
 	};
 
 	admitPatient = async data => {
 		try {
 			const { patient } = this.props;
-			const { discharged_date } = this.state;
 
 			const formData = {
 				healthState: data.health_state,
 				riskToFall: data.risk === true,
 				nicu: data.nicu === true,
 				reason: data.reason,
-				discharge_date: moment(discharged_date).format('YYYY-MM-DD'),
 			};
 
 			this.setState({ submitting: true });
@@ -80,7 +71,7 @@ class PatientAdmission extends Component {
 
 	render() {
 		const { error, handleSubmit } = this.props;
-		const { submitting, discharged_date } = this.state;
+		const { submitting } = this.state;
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
@@ -107,7 +98,8 @@ class PatientAdmission extends Component {
 											data={healthState}
 										/>
 									</div>
-
+								</div>
+								<div className="row">
 									<div className="col-sm-6 d-flex align-items-center">
 										<div
 											className="d-flex"
@@ -151,7 +143,6 @@ class PatientAdmission extends Component {
 										</div>
 									</div>
 								</div>
-
 								<div className="row">
 									<div className="col-sm-6">
 										<Field
@@ -163,40 +154,16 @@ class PatientAdmission extends Component {
 											placeholder="Enter reason for admission"
 										/>
 									</div>
-
-									<div className="col-sm-6">
-										<div className="form-group">
-											<label>Anticipated discharge date</label>
-											<div className="custom-date-input">
-												<DatePicker
-													selected={discharged_date}
-													onChange={date =>
-														this.setDate(date, 'discharged_date')
-													}
-													peekNextMonth
-													showMonthDropdown
-													showYearDropdown
-													dropdownMode="select"
-													dateFormat="dd-MMM-yyyy"
-													className="single-daterange form-control"
-													placeholderText="anticipated discharged date"
-												/>
-											</div>
-										</div>
-									</div>
 								</div>
-
-								<div>
-									<div className="col-sm-12 text-right">
-										<button className="btn btn-primary" disabled={submitting}>
-											{submitting ? (
-												<img src={waiting} alt="submitting" />
-											) : (
-												'Admit'
-											)}
-										</button>
-										<button className="btn btn-secondary">Cancel</button>
-									</div>
+								<div className="col-sm-12">
+									<button className="btn btn-primary" disabled={submitting}>
+										{submitting ? (
+											<img src={waiting} alt="submitting" />
+										) : (
+											'Admit'
+										)}
+									</button>
+									<button className="btn btn-secondary">Cancel</button>
 								</div>
 							</form>
 						</div>

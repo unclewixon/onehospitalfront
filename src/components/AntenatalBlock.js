@@ -203,7 +203,7 @@ class AntenatalBlock extends Component {
 															{data.patient_name}
 														</a>
 													</Tooltip>
-													{data.patient.isAdmitted && (
+													{data.patient.is_admitted && (
 														<Tooltip title="Admitted">
 															<i className="fa fa-hospital-o text-danger ml-1" />
 														</Tooltip>

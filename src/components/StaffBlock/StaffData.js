@@ -41,7 +41,7 @@ const StaffData = ({ staff }) => {
 							</td>
 							<td className="text-right">
 								<div className="value text-success">
-									{staff.isAdmitted ? 'Yes' : 'No'}
+									{staff.is_admitted ? 'Yes' : 'No'}
 								</div>
 							</td>
 						</tr>

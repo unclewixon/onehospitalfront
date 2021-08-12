@@ -12,6 +12,8 @@ import {
 	request,
 	confirmAction,
 	staffname,
+	patientname,
+	formatDate,
 } from '../../services/utilities';
 import { patientAPI, allVitalItems } from '../../services/constants';
 import TakeReading from '../../components/Modals/TakeReading';
@@ -208,19 +210,17 @@ const ClinicalTasks = () => {
 									<tr key={i}>
 										<td width="120px">
 											<a onClick={() => showProfile(item.patient)}>
-												{item.patient_name}
+												{patientname(item.patient)}
 											</a>{' '}
-											{item.patient.isAdmitted && (
+											{item.patient.is_admitted && (
 												<Tooltip title="Admitted">
 													<i className="fa fa-hospital-o text-danger" />
 												</Tooltip>
 											)}
 										</td>
-										<td>{item.admission?.room?.name || '-'}</td>
+										<td>{item.admission?.room?.name || '--'}</td>
 										<td>{item.title}</td>
-										<td>
-											{moment(item.createdAt).format('DD-MMM-YYYY HH:mm A')}
-										</td>
+										<td>{formatDate(item.createdAt, 'DD-MMM-YYYY HH:mm A')}</td>
 										<td>
 											{lastReading ? (
 												<>

@@ -10,7 +10,7 @@ import Consultation from './Consultation';
 import RoomMgmt from './RoomMgmt';
 import Departments from './Departments';
 import LeaveCategory from './LeaveCategory';
-import ServicesCategory from './ServiceCategory';
+import Services from './Services';
 import Specialization from './Specialization';
 import Appraisal from './Appraisal';
 import ConsultingRoom from './ConsultingRoom';
@@ -169,7 +169,7 @@ const Home = ({ match, location }) => {
 				<Route path={`${match.url}/lab-mgt`} component={Laboratory} />
 				<Route path={`${match.url}/room-mgt`} component={RoomMgmt} />
 				<Route path={`${match.url}/leave-category`} component={LeaveCategory} />
-				<Route path={`${match.url}/services`} component={ServicesCategory} />
+				<Route path={`${match.url}/services`} component={Services} />
 				<Route path={`${match.url}/appraisal`} component={Appraisal} />
 				<Route
 					path={`${match.url}/specializations`}

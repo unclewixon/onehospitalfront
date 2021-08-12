@@ -20,6 +20,8 @@ const NurseObservation = lazy(() =>
 const FluidChart = lazy(() => import('../components/Patient/FluidChart'));
 const InPatientNote = lazy(() => import('../components/Patient/InPatientNote'));
 const CareTeam = lazy(() => import('../components/Patient/CareTeam'));
+const Lab = lazy(() => import('../components/Patient/Lab'));
+const Pharmacy = lazy(() => import('../components/Patient/Pharmacy'));
 
 const storage = new SSRStorage();
 
@@ -40,6 +42,10 @@ const Page = ({ location }) => {
 			return <FluidChart />;
 		case 'care-team':
 			return <CareTeam />;
+		case 'lab':
+			return <Lab />;
+		case 'regimen':
+			return <Pharmacy />;
 		default:
 			return <ClinicalTasks />;
 	}
@@ -87,7 +93,7 @@ class AdmissionProfile extends Component {
 											<ProfileBlock
 												profile={true}
 												patient={patient}
-												noButtons={true}
+												canAdmit={true}
 											/>
 										</div>
 										<Suspense fallback={<Splash />}>

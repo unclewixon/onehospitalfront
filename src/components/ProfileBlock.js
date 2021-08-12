@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useCallback, useEffect, useState } from 'react';
 import { withRouter, Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import Tooltip from 'antd/lib/tooltip';
 
@@ -11,15 +11,16 @@ import {
 	parseAvatar,
 	getAge,
 	patientname,
+	confirmAction,
 } from '../services/utilities';
-import { patientAPI } from '../services/constants';
+import { patientAPI, admissionAPI } from '../services/constants';
 import { notifySuccess, notifyError } from './../services/notify';
 import { updatePatient } from '../actions/patient';
 import { startBlock, stopBlock } from '../actions/redux-block';
-import ExtraBlock from './ExtraBlock';
 import { formatCurrency } from '../services/utilities';
 import { messageService } from '../services/message';
 import ViewAlerts from './Modals/ViewAlerts';
+import { toggleProfile } from '../actions/user';
 
 const UserItem = ({ icon, label, value }) => {
 	return (
@@ -48,11 +49,14 @@ const UserItem = ({ icon, label, value }) => {
 	);
 };
 
-const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
+const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 	const [alerts, setAlerts] = useState([]);
 	const [showModal, setShowModal] = useState(false);
 
 	const dispatch = useDispatch();
+
+	const item = useSelector(state => state.user.item);
+	const type = useSelector(state => state.user.type);
 
 	const getAlerts = useCallback(async () => {
 		try {
@@ -82,29 +86,35 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 		};
 	});
 
-	const enrollImmunization = async () => {
-		const result = window.confirm('Enroll into immunization?');
-		if (result) {
-			try {
-				dispatch(startBlock());
-				const data = { patient_id: patient.id };
-				const url = `${patientAPI}/immunization/enroll`;
-				const rs = await request(url, 'POST', true, data);
-				dispatch(stopBlock());
-				if (rs.success) {
-					notifySuccess(
-						`you have enrolled ${patient.other_names} into immunization`
-					);
-					dispatch(updatePatient({ ...patient, immunization: rs.records }));
-					history.push(`${location.pathname}#immunization-chart`);
-				} else {
-					notifyError(rs.message);
-				}
-			} catch (error) {
-				dispatch(stopBlock());
-				notifyError(error.message || 'Could not add leave request');
+	const onEnrollImmunization = async () => {
+		try {
+			dispatch(startBlock());
+			const data = { patient_id: patient.id };
+			const url = `${patientAPI}/immunization/enroll`;
+			const rs = await request(url, 'POST', true, data);
+			dispatch(stopBlock());
+			if (rs.success) {
+				notifySuccess(
+					`you have enrolled ${patient.other_names} into immunization`
+				);
+				dispatch(updatePatient({ ...patient, immunization: rs.records }));
+				history.push(`${location.pathname}#immunization-chart`);
+			} else {
+				notifyError(rs.message);
 			}
+		} catch (error) {
+			dispatch(stopBlock());
+			notifyError(error.message || 'Could not add leave request');
 		}
+	};
+
+	const enrollImmunization = () => {
+		confirmAction(
+			onEnrollImmunization,
+			{},
+			'Enroll into immunization?',
+			'Are you sure?'
+		);
 	};
 
 	const dob = patient.date_of_birth
@@ -119,6 +129,56 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 	const closeModal = () => {
 		document.body.classList.remove('modal-open');
 		setShowModal(false);
+	};
+
+	const onStartDischarge = async id => {
+		try {
+			dispatch(startBlock());
+			const url = `${admissionAPI}/${id}/start-discharge`;
+			const rs = await request(url, 'PUT', true, {});
+			dispatch(stopBlock());
+			if (rs.success) {
+				const newPatient = { ...patient, admission: rs.admission };
+				dispatch(updatePatient(newPatient));
+				let info;
+				if (item) {
+					info = {
+						patient: newPatient,
+						type,
+						item: { ...item, ...rs.admission },
+					};
+				} else {
+					info = { patient: newPatient, type };
+				}
+				dispatch(toggleProfile(true, info));
+				notifySuccess('Patient discharge initiated');
+			} else {
+				notifyError(rs.message);
+			}
+		} catch (error) {
+			dispatch(stopBlock());
+			notifyError(error.message || 'Could not add initiate discharge');
+		}
+	};
+
+	const startDischarge = id => {
+		confirmAction(
+			onStartDischarge,
+			id,
+			'Initiate patient discharge?',
+			'Are you sure?'
+		);
+	};
+
+	const onCompleteDischarge = async () => {};
+
+	const completeDischarge = id => {
+		confirmAction(
+			onCompleteDischarge,
+			id,
+			'Completely discharge patient?',
+			'Are you sure?'
+		);
 	};
 
 	return (
@@ -144,7 +204,7 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 											<div className="mb-1">
 												<h4 className="mb-0">
 													{patientname(patient)}{' '}
-													{patient.isAdmitted && (
+													{patient.is_admitted && (
 														<Tooltip title="Admitted">
 															<i className="fa fa-hospital-o text-danger" />
 														</Tooltip>
@@ -154,32 +214,60 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 											</div>
 
 											<div className="d-flex flex-wrap mt-3">
-												{!noButtons && <a className="btn btn-primary">Edit</a>}
-												{!noButtons && (
-													<Tooltip
-														title={patient?.isAdmitted ? 'Discharge' : 'Admit'}>
-														{!patient?.isAdmitted ? (
-															<Link
-																to={`${location.pathname}#start-admission`}
-																className="btn btn-primary btn-sm ml-2">
-																<i className="os-icon os-icon-ui-22"></i>
-																<span>Admit</span>
-															</Link>
+												{hasButtons && (
+													<a className="btn btn-primary mr-1">Edit</a>
+												)}
+												{canAdmit && (
+													<>
+														{!patient?.is_admitted ? (
+															<Tooltip title="Admit">
+																<Link
+																	to={`${location.pathname}#start-admission`}
+																	className="btn btn-primary btn-sm mr-1">
+																	<i className="os-icon os-icon-ui-22"></i>
+																	<span>Admit</span>
+																</Link>
+															</Tooltip>
 														) : (
-															<button className="btn btn-danger btn-sm ml-2">
-																<i className="fa fa-hospital-o"></i>
-																<span style={{ marginLeft: '4px' }}>
-																	Discharge
-																</span>
-															</button>
+															<>
+																{patient?.admission?.start_discharge ? (
+																	<Tooltip title="Complete Discharge">
+																		<button
+																			className="btn btn-warning btn-sm mr-1"
+																			onClick={() =>
+																				completeDischarge(
+																					patient?.admission?.id
+																				)
+																			}>
+																			<i className="fa fa-hospital-o"></i>
+																			<span style={{ marginLeft: '4px' }}>
+																				Finish Discharge
+																			</span>
+																		</button>
+																	</Tooltip>
+																) : (
+																	<Tooltip title="Discharge">
+																		<button
+																			className="btn btn-danger btn-sm mr-1"
+																			onClick={() =>
+																				startDischarge(patient?.admission?.id)
+																			}>
+																			<i className="fa fa-hospital-o"></i>
+																			<span style={{ marginLeft: '4px' }}>
+																				Discharge
+																			</span>
+																		</button>
+																	</Tooltip>
+																)}
+															</>
 														)}
-													</Tooltip>
+													</>
 												)}
 												<Tooltip title="Alerts">
 													<a
 														className={`${
 															alerts.length > 0 ? 'text-danger' : 'text-success'
-														} relative ml-2`}
+														} relative`}
 														style={{ fontSize: '20px', padding: '0 4px' }}
 														onClick={() => showAlerts()}>
 														<i className="fa fa-exclamation-triangle" />
@@ -196,7 +284,7 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 											</div>
 										</div>
 									</div>
-									{!noButtons && (
+									{hasButtons && (
 										<div className="d-flex align-items-center mt-2">
 											<div className="d-flex align-items-center mr-2">
 												<span className="b-avatar badge-light-primary rounded">
@@ -245,6 +333,13 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 											<tr>
 												<UserItem
 													icon="user"
+													label="Phone"
+													value={patient?.phone_nuber || '--'}
+												/>
+											</tr>
+											<tr>
+												<UserItem
+													icon="user"
 													label="DOB"
 													value={`${dob} (${getAge(patient?.date_of_birth)})`}
 												/>
@@ -268,7 +363,7 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 								</span>
 							</div>
 						</div>
-						{!noButtons && (
+						{hasButtons && (
 							<div className="card-body">
 								<div className="design-group">
 									<ul className="demo-icons-list">
@@ -283,7 +378,7 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 												</li>
 											</span>
 										)}
-										{!patient.isAdmitted && (
+										{!patient.is_admitted && (
 											<span className="b-avatar badge-light-primary rounded shiftright post-box">
 												<li>
 													<Link to={`${location.pathname}#start-admission`}>
@@ -321,7 +416,6 @@ const ProfileBlock = ({ location, history, patient, noButtons, extraData }) => {
 					</div>
 				</div>
 			</div>
-			{extraData && <ExtraBlock data={extraData} />}
 			{showModal && <ViewAlerts closeModal={closeModal} />}
 		</>
 	);

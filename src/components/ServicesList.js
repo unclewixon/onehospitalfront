@@ -8,6 +8,7 @@ import { request, itemRender } from '../services/utilities';
 
 const ServicesList = ({ loaded, setLoaded }) => {
 	const [toggled, setToggled] = useState([]);
+	const [categories, setCategories] = useState([]);
 	const [schemes, setSchemes] = useState([]);
 	const [meta, setMeta] = useState(null);
 
@@ -19,6 +20,15 @@ const ServicesList = ({ loaded, setLoaded }) => {
 			setToggled([...toggled, { id: index }]);
 		}
 	};
+
+	const fetchCategories = useCallback(async () => {
+		try {
+			const rs = await request('services/categories', 'GET', true);
+			setCategories([...rs]);
+		} catch (error) {
+			notifyError(error.message || 'could not fetch services categories!');
+		}
+	}, []);
 
 	const fetchHmos = useCallback(
 		async page => {
@@ -43,9 +53,10 @@ const ServicesList = ({ loaded, setLoaded }) => {
 
 	useEffect(() => {
 		if (!loaded) {
+			fetchCategories();
 			fetchHmos();
 		}
-	}, [fetchHmos, loaded]);
+	}, [fetchCategories, fetchHmos, loaded]);
 
 	const onNavigatePage = nextPage => {
 		fetchHmos(nextPage);
@@ -63,6 +74,7 @@ const ServicesList = ({ loaded, setLoaded }) => {
 								hmo={hmo}
 								toggle={toggle}
 								doToggle={() => doToggle(hmo.id)}
+								categories={categories}
 							/>
 						);
 					})}

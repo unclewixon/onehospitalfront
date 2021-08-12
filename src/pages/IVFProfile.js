@@ -88,11 +88,7 @@ class IVFProfile extends Component {
 								<div className="content-box">
 									<div className="row">
 										<div className="col-sm-12">
-											<ProfileBlock
-												profile={true}
-												patient={patient}
-												noButtons={true}
-											/>
+											<ProfileBlock profile={true} patient={patient} />
 											<ExtraBlock module="ivf" item={ivf} />
 										</div>
 										<Suspense fallback={<Splash />}>

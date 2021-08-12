@@ -8,7 +8,12 @@ import DatePicker from 'antd/lib/date-picker';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 import { notifyError } from '../../services/notify';
-import { request, patientname, itemRender } from '../../services/utilities';
+import {
+	request,
+	patientname,
+	itemRender,
+	formatDate,
+} from '../../services/utilities';
 import AssignBed from './AssignBed';
 import waiting from '../../assets/images/waiting.gif';
 import { startBlock, stopBlock } from '../../actions/redux-block';
@@ -16,6 +21,7 @@ import { searchAPI } from '../../services/constants';
 import { toggleProfile } from '../../actions/user';
 import TableLoading from '../../components/TableLoading';
 import ProfilePopup from '../../components/Patient/ProfilePopup';
+import { staffname } from '../../services/utilities';
 
 const { RangePicker } = DatePicker;
 
@@ -53,10 +59,12 @@ const InPatientCare = ({ match }) => {
 				const arr = [...result];
 				setAdmittedPatients(arr);
 				setFiltering(false);
+				setLoading(false);
 				dispatch(stopBlock());
 			} catch (error) {
 				console.log(error);
 				notifyError('error fetching patients');
+				setLoading(false);
 				dispatch(stopBlock());
 				setFiltering(false);
 			}
@@ -66,10 +74,10 @@ const InPatientCare = ({ match }) => {
 
 	useEffect(() => {
 		if (loading) {
+			dispatch(startBlock());
 			fetchPatients();
-			setLoading(false);
 		}
-	}, [loading, fetchPatients]);
+	}, [loading, fetchPatients, dispatch]);
 
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option => patientname(option, true);
@@ -101,7 +109,11 @@ const InPatientCare = ({ match }) => {
 	};
 
 	const showAdmission = (patient, admission) => {
-		const info = { patient, type: 'admission', item: admission };
+		const info = {
+			patient: { ...patient, admission },
+			type: 'admission',
+			item: admission,
+		};
 		dispatch(toggleProfile(true, info));
 	};
 
@@ -200,7 +212,12 @@ const InPatientCare = ({ match }) => {
 															title={<ProfilePopup patient={item.patient} />}>
 															<a
 																className="cursor"
-																onClick={() => showProfile(item.patient)}>
+																onClick={() =>
+																	showProfile({
+																		...item.patient,
+																		admission: item,
+																	})
+																}>
 																{patientname(item.patient, true)}
 															</a>
 														</Tooltip>
@@ -208,18 +225,16 @@ const InPatientCare = ({ match }) => {
 												</td>
 												<td>{item.reason}</td>
 												<td>
-													{moment(item.admission_date).format(
-														'DD-MMM-YYYY h:mm A'
-													)}
+													{formatDate(item.createdAt, 'DD-MMM-YYYY h:mm A')}
 												</td>
-												<td>{item.admitted_by}</td>
+												<td>{staffname(item.admitted_by)}</td>
 												<td>
 													{item.suite ? (
 														<Tooltip title="Room/Floor">
 															{`${item.suite} / ${item.floor}`}
 														</Tooltip>
 													) : (
-														'-'
+														'--'
 													)}
 												</td>
 												<td>
@@ -230,7 +245,8 @@ const InPatientCare = ({ match }) => {
 													)}
 												</td>
 												<td className="row-actions">
-													{!item.suite &&
+													{!item.start_discharge &&
+														!item.suite &&
 														!item.nicu &&
 														user &&
 														(user.role.slug === 'nurse' ||

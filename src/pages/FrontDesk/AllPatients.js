@@ -57,6 +57,7 @@ const AllPatients = () => {
 	};
 
 	const showProfile = patient => {
+		console.log(patient);
 		const info = { patient, type: 'patient' };
 		dispatch(toggleProfile(true, info));
 	};
@@ -178,7 +179,7 @@ const AllPatients = () => {
 											<tr key={i}>
 												<td>
 													{patientname(data)}{' '}
-													{data.isAdmitted && (
+													{data.is_admitted && (
 														<Tooltip title="Admitted">
 															<i className="fa fa-hospital-o text-danger" />
 														</Tooltip>

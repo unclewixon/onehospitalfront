@@ -1,7 +1,9 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useCallback } from 'react';
 import Pagination from 'antd/lib/pagination';
 import Tooltip from 'antd/lib/tooltip';
 import { useDispatch, useSelector } from 'react-redux';
+import Select from 'react-select';
 
 import TableLoading from '../TableLoading';
 import ModalEditService from '../Modals/ModalEditService';
@@ -16,16 +18,17 @@ import { startBlock, stopBlock } from '../../actions/redux-block';
 import { deleteService, loadServices } from '../../actions/settings';
 import useSearchInputState from '../../services/search-hook';
 
-const HmoData = ({ hmo, toggle, doToggle }) => {
+const HmoData = ({ hmo, toggle, doToggle, categories }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [meta, setMeta] = useState({
 		currentPage: 1,
-		itemsPerPage: 24,
+		itemsPerPage: 10,
 		totalPages: 0,
 	});
 	const [keyword, setKeyword] = useState('');
 	const [showModal, setShowModal] = useState(false);
 	const [service, setService] = useState(null);
+	const [searchCategory, setSearchCategory] = useState(null);
 
 	const services = useSelector(state =>
 		state.settings.services.find(s => s.hmo.id === hmo.id)
@@ -34,10 +37,11 @@ const HmoData = ({ hmo, toggle, doToggle }) => {
 	const dispatch = useDispatch();
 
 	const fetchServices = useCallback(
-		async (page, q) => {
+		async (page, q, category) => {
 			try {
 				const p = page || 1;
-				const url = `services?page=${p}&limit=24&q=${q || ''}&hmo_id=${hmo.id}`;
+				const url = `services?page=${p}&limit=10&q=${q ||
+					''}&category_id=${category || ''}&hmo_id=${hmo.id}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				dispatch(loadServices({ hmo, result: [...result] }));
@@ -76,7 +80,7 @@ const HmoData = ({ hmo, toggle, doToggle }) => {
 	};
 
 	const onNavigatePage = nextPage => {
-		fetchServices(nextPage, keyword);
+		fetchServices(nextPage, keyword, searchCategory?.id || '');
 	};
 
 	const onClickEdit = data => {
@@ -101,7 +105,7 @@ const HmoData = ({ hmo, toggle, doToggle }) => {
 
 	const doSearch = async q => {
 		dispatch(startBlock());
-		await fetchServices(1, q);
+		await fetchServices(1, q, searchCategory?.id || '');
 		dispatch(stopBlock());
 	};
 
@@ -129,7 +133,7 @@ const HmoData = ({ hmo, toggle, doToggle }) => {
 						className="filter-body"
 						style={{ display: toggle ? 'block' : 'none' }}>
 						<div className="row">
-							<div className="col-lg-12">
+							<div className="col-lg-6">
 								<div className="element-search">
 									<input
 										placeholder="Search services..."
@@ -141,75 +145,94 @@ const HmoData = ({ hmo, toggle, doToggle }) => {
 									/>
 								</div>
 							</div>
+							<div className="col-lg-6">
+								<div className="element-search">
+									<Select
+										isClearable
+										name="category"
+										getOptionValue={option => option.id}
+										getOptionLabel={option => option.name}
+										placeholder="Select Category"
+										options={categories}
+										value={searchCategory}
+										onChange={async e => {
+											setSearchCategory(e);
+											setKeyword('');
+											await fetchServices(1, '', e?.id || '');
+										}}>
+										<option>Select Category</option>
+									</Select>
+								</div>
+							</div>
 						</div>
 						<div className="pipelines-w mt-4">
 							<div className="row">
-								{services &&
-									services.result.map((item, i) => {
-										return (
-											<div className="col-lg-4 mb-2" key={i}>
-												<div className="pipeline white p-1 mb-2">
-													<div className="pipeline-body">
-														<div className="pipeline-item">
-															{hmo.name === 'Private' && (
-																<div className="pi-controls">
-																	<div className="pi-settings os-dropdown-trigger">
+								<div className="table-responsive">
+									<>
+										<table className="table table-striped">
+											<thead>
+												<tr>
+													<th>Name</th>
+													<th>Category</th>
+													<th>Tarrif</th>
+													{hmo.name === 'Private' && <th></th>}
+												</tr>
+											</thead>
+											<tbody>
+												{services &&
+													services.result.map((item, i) => {
+														return (
+															<tr key={i}>
+																<td>{item.name}</td>
+																<td>{item.category.name}</td>
+																<td nowrap="nowrap">
+																	{formatCurrency(item.service?.tariff || 0)}
+																</td>
+																{hmo.name === 'Private' && (
+																	<td nowrap="nowrap" className="row-actions">
 																		<Tooltip title="Edit Service">
-																			<i
-																				className="os-icon os-icon-ui-49 mr-1"
-																				onClick={() => onClickEdit(item)}
-																			/>
+																			<a onClick={() => onClickEdit(item)}>
+																				<i className="os-icon os-icon-ui-49 mr-1" />
+																			</a>
 																		</Tooltip>
 																		<Tooltip title="Delete Service">
-																			<i
-																				className="os-icon os-icon-ui-15 text-danger"
-																				onClick={() => confirmDelete(item)}
-																			/>
+																			<a onClick={() => confirmDelete(item)}>
+																				<i className="os-icon os-icon-ui-15 text-danger" />
+																			</a>
 																		</Tooltip>
-																	</div>
-																</div>
-															)}
-															<div className="pi-body mt-2">
-																<div className="pi-info">
-																	<div className="h6 pi-name h7">
-																		{item.name}
-																	</div>
-																	<div className="pi-sub">
-																		{item.category.name}
-																	</div>
-																</div>
+																	</td>
+																)}
+															</tr>
+														);
+													})}
+												{services && services.result.length === 0 && (
+													<tr>
+														<td colSpan="4" className="text-center">
+															<div
+																className="alert alert-info text-center"
+																style={{ width: '100%' }}>
+																No services found!
 															</div>
-															<div className="pi-foot">
-																<div className="tags">
-																	{formatCurrency(item.service?.tariff || 0)}
-																</div>
-															</div>
-														</div>
-													</div>
-												</div>
+														</td>
+													</tr>
+												)}
+											</tbody>
+										</table>
+										{meta && (
+											<div className="pagination pagination-center mt-4">
+												<Pagination
+													current={parseInt(meta.currentPage, 10)}
+													pageSize={parseInt(meta.itemsPerPage, 10)}
+													total={parseInt(meta.totalPages, 10)}
+													showTotal={total => `Total ${total} services`}
+													itemRender={itemRender}
+													onChange={current => onNavigatePage(current)}
+												/>
 											</div>
-										);
-									})}
-								{services && services.result.length === 0 && (
-									<div
-										className="alert alert-info text-center"
-										style={{ width: '100%' }}>
-										No services found!
-									</div>
-								)}
-							</div>
-							{meta && (
-								<div className="pagination pagination-center mt-4">
-									<Pagination
-										current={parseInt(meta.currentPage, 10)}
-										pageSize={parseInt(meta.itemsPerPage, 10)}
-										total={parseInt(meta.totalPages, 10)}
-										showTotal={total => `Total ${total} services`}
-										itemRender={itemRender}
-										onChange={current => onNavigatePage(current)}
-									/>
+										)}
+									</>
 								</div>
-							)}
+							</div>
 						</div>
 					</div>
 				)}
