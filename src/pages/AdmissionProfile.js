@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component, Suspense, lazy, Fragment } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { Switch, withRouter } from 'react-router-dom';
 
 import { toggleProfile } from '../actions/user';
@@ -21,11 +21,16 @@ const FluidChart = lazy(() => import('../components/Patient/FluidChart'));
 const InPatientNote = lazy(() => import('../components/Patient/InPatientNote'));
 const CareTeam = lazy(() => import('../components/Patient/CareTeam'));
 const Lab = lazy(() => import('../components/Patient/Lab'));
+const LabRequest = lazy(() => import('../components/Patient/LabRequest'));
 const Pharmacy = lazy(() => import('../components/Patient/Pharmacy'));
+const PharmacyRequest = lazy(() =>
+	import('../components/Patient/PharmacyRequest')
+);
 
 const storage = new SSRStorage();
 
 const Page = ({ location }) => {
+	const admission = useSelector(state => state.user.item);
 	const hash = location.hash.substr(1).split('#');
 	switch (hash[0]) {
 		case 'ward-round':
@@ -43,9 +48,25 @@ const Page = ({ location }) => {
 		case 'care-team':
 			return <CareTeam />;
 		case 'lab':
-			return <Lab />;
+			return (
+				<Lab
+					can_request={admission && admission.status === 0}
+					itemId={admission.id || ''}
+					type="admission"
+				/>
+			);
+		case 'lab-request':
+			return <LabRequest module="admission" />;
 		case 'regimen':
-			return <Pharmacy />;
+			return (
+				<Pharmacy
+					can_request={admission && admission.status === 0}
+					itemId={admission.id || ''}
+					type="admission"
+				/>
+			);
+		case 'pharmacy-request':
+			return <PharmacyRequest />;
 		default:
 			return <ClinicalTasks />;
 	}

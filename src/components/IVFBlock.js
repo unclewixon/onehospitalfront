@@ -6,7 +6,12 @@ import { connect } from 'react-redux';
 
 import TableLoading from './TableLoading';
 import { toggleProfile } from '../actions/user';
-import { request, confirmAction, updateImmutable } from '../services/utilities';
+import {
+	request,
+	confirmAction,
+	updateImmutable,
+	formatDate,
+} from '../services/utilities';
 import { startBlock, stopBlock } from '../actions/redux-block';
 import ProfilePopup from './Patient/ProfilePopup';
 import { notifySuccess, notifyError } from '../services/notify';
@@ -143,29 +148,13 @@ class IVFBlock extends Component {
 				<table id="table" className="table table-theme v-middle table-hover">
 					<thead>
 						<tr>
-							<th>
-								<div>Request Date</div>
-							</th>
-							<th>
-								<div>Procedure</div>
-							</th>
-							{!patient && (
-								<th>
-									<div>Patient</div>
-								</th>
-							)}
-							<th>
-								<div>By</div>
-							</th>
-							<th>
-								<div>Status</div>
-							</th>
-							<th>
-								<div>Resources</div>
-							</th>
-							<th>
-								<div>Scheduled</div>
-							</th>
+							<th>Request Date</th>
+							<th>Procedure</th>
+							{!patient && <th>Patient</th>}
+							<th>By</th>
+							<th>Status</th>
+							<th>Resources</th>
+							<th>Scheduled</th>
 							<th>
 								<div className="th-inner"></div>
 							</th>
@@ -176,11 +165,7 @@ class IVFBlock extends Component {
 							return data.items.map((item, j) => {
 								return (
 									<tr key={j} className={data.urgent ? 'urgent' : ''}>
-										<td>
-											<span>
-												{moment(data.createdAt).format('DD-MM-YYYY h:mmA')}
-											</span>
-										</td>
+										<td>{formatDate(data.createdAt, 'DD-MMM-YYYY h:mmA')}</td>
 										<td>
 											<p className="item-title text-color m-0">
 												<a

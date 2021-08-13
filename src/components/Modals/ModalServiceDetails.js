@@ -19,6 +19,8 @@ const ModalServiceDetails = ({ closeModal, transaction }) => {
 				return 'Procedure';
 			case 'cafeteria':
 				return 'Cafeteria';
+			case 'ward':
+				return 'Room';
 			default:
 				return 'Billing Details';
 		}
@@ -91,6 +93,11 @@ const ModalServiceDetails = ({ closeModal, transaction }) => {
 										</tbody>
 									</table>
 								</div>
+							</div>
+						)}
+						{transaction?.bill_source === 'ward' && (
+							<div className="element-box p-2">
+								<div>{transaction.description}</div>
 							</div>
 						)}
 					</div>

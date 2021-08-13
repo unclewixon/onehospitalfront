@@ -3,22 +3,21 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Pagination from 'antd/lib/pagination';
 import Tooltip from 'antd/lib/tooltip';
 import { useDispatch, useSelector } from 'react-redux';
-import Select from 'react-select';
 
-import TableLoading from '../TableLoading';
-import ModalEditService from '../Modals/ModalEditService';
+import TableLoading from './TableLoading';
+import ModalEditService from './Modals/ModalEditService';
 import {
 	request,
 	confirmAction,
 	formatCurrency,
 	itemRender,
-} from '../../services/utilities';
-import { notifyError, notifySuccess } from '../../services/notify';
-import { startBlock, stopBlock } from '../../actions/redux-block';
-import { deleteService, loadServices } from '../../actions/settings';
-import useSearchInputState from '../../services/search-hook';
+} from '../services/utilities';
+import { notifyError, notifySuccess } from '../services/notify';
+import { startBlock, stopBlock } from '../actions/redux-block';
+import { deleteService, loadServices } from '../actions/settings';
+import useSearchInputState from '../services/search-hook';
 
-const HmoData = ({ hmo, toggle, doToggle, categories }) => {
+const ConsultingTypes = ({ hmo, toggle, doToggle, category }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [meta, setMeta] = useState({
 		currentPage: 1,
@@ -58,9 +57,10 @@ const HmoData = ({ hmo, toggle, doToggle, categories }) => {
 
 	useEffect(() => {
 		if (toggle && toggle.id === hmo.id) {
-			fetchServices();
+			setSearchCategory(category);
+			fetchServices(1, '', searchCategory?.id || '');
 		}
-	}, [fetchServices, hmo, toggle]);
+	}, [category, fetchServices, hmo, searchCategory, toggle]);
 
 	const onDeleteService = async data => {
 		try {
@@ -133,7 +133,7 @@ const HmoData = ({ hmo, toggle, doToggle, categories }) => {
 						className="filter-body"
 						style={{ display: toggle ? 'block' : 'none' }}>
 						<div className="row">
-							<div className="col-lg-6">
+							<div className="col-lg-12">
 								<div className="element-search">
 									<input
 										placeholder="Search services..."
@@ -145,25 +145,6 @@ const HmoData = ({ hmo, toggle, doToggle, categories }) => {
 									/>
 								</div>
 							</div>
-							<div className="col-lg-6">
-								<div className="element-search">
-									<Select
-										isClearable
-										name="category"
-										getOptionValue={option => option.id}
-										getOptionLabel={option => option.name}
-										placeholder="Select Category"
-										options={categories}
-										value={searchCategory}
-										onChange={async e => {
-											setSearchCategory(e);
-											setKeyword('');
-											await fetchServices(1, '', e?.id || '');
-										}}>
-										<option>Select Category</option>
-									</Select>
-								</div>
-							</div>
 						</div>
 						<div className="pipelines-w mt-4">
 							<div className="row">
@@ -173,7 +154,6 @@ const HmoData = ({ hmo, toggle, doToggle, categories }) => {
 											<thead>
 												<tr>
 													<th>Name</th>
-													<th>Category</th>
 													<th>Tarrif</th>
 													{hmo.name === 'Private' && <th></th>}
 												</tr>
@@ -184,7 +164,6 @@ const HmoData = ({ hmo, toggle, doToggle, categories }) => {
 														return (
 															<tr key={i}>
 																<td>{item.name}</td>
-																<td>{item.category.name}</td>
 																<td nowrap="nowrap">
 																	{formatCurrency(item.service?.tariff || 0)}
 																</td>
@@ -248,4 +227,4 @@ const HmoData = ({ hmo, toggle, doToggle, categories }) => {
 	);
 };
 
-export default HmoData;
+export default ConsultingTypes;

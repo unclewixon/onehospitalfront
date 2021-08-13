@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Select from 'react-select';
 import { useDispatch } from 'react-redux';
-import AsyncSelect from 'react-select/async';
 import { confirmAlert } from 'react-confirm-alert';
 
 import { hasExpired, request } from '../../services/utilities';
@@ -147,16 +146,6 @@ const SelectDrug = ({ onHide, setDrug, generic }) => {
 		}
 	};
 
-	const getDrugOptions = async q => {
-		if (!q || q.length < 1) {
-			return [];
-		}
-
-		const url = `inventory/drugs?q=${q}&generic_id=${selectedGeneric.id || ''}`;
-		const res = await request(url, 'GET', true);
-		return res.result || [];
-	};
-
 	return (
 		<div
 			className="onboarding-modal fade animated show"
@@ -174,7 +163,6 @@ const SelectDrug = ({ onHide, setDrug, generic }) => {
 									<div className="form-group col-sm-12">
 										<label>Drug Generic Name</label>
 										<Select
-											isClearable
 											placeholder="Select generic name"
 											defaultValue
 											getOptionValue={option => option.id}
@@ -204,13 +192,13 @@ const SelectDrug = ({ onHide, setDrug, generic }) => {
 										</div>
 									</div>
 								)}
-								<AsyncSelect
+								<Select
 									isClearable
 									getOptionValue={option => option.id}
 									getOptionLabel={option => option.name}
 									defaultOptions
 									name="drugId"
-									loadOptions={getDrugOptions}
+									options={selectedGeneric?.drugs || []}
 									value={selectedDrug}
 									onChange={e => {
 										if (e) {

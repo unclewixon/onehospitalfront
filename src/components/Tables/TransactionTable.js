@@ -102,11 +102,18 @@ const TransactionTable = ({
 								<td>
 									<a onClick={() => showList(transaction.patient)}>
 										{patientname(transaction.patient, true)}
+										{transaction.patient?.is_admitted && (
+											<Tooltip title="Admitted">
+												<i className="fa fa-hospital-o text-danger ml-1" />
+											</Tooltip>
+										)}
 									</a>
 								</td>
 								<td className="flex">
 									<span className="text-capitalize">
-										{transaction.bill_source}
+										{transaction.bill_source === 'ward'
+											? 'Room'
+											: transaction.bill_source}
 									</span>
 									{transaction.bill_source !== 'registration' && (
 										<a

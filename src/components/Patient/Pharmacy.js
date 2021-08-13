@@ -26,7 +26,10 @@ const Pharmacy = ({ location, can_request = true, type, itemId }) => {
 		async page => {
 			try {
 				const block = type || '';
-				const url = `requests/${patient.id}/request/drugs?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=10&item_id=${itemId}&type=${block}`;
+				const url = `requests/${
+					patient.id
+				}/request/drugs?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=10&item_id=${itemId ||
+					''}&type=${block}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setPrescriptions(result);

@@ -4,11 +4,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import Select from 'react-select';
 import Tooltip from 'antd/lib/tooltip';
 import DatePicker from 'react-datepicker';
-import moment from 'moment';
 
 import waiting from '../../assets/images/waiting.gif';
-import { patientAPI, vitalItems } from '../../services/constants';
-import { request } from '../../services/utilities';
+import { admissionAPI, vitalItems } from '../../services/constants';
+import { formatDate, request } from '../../services/utilities';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { notifyError, notifySuccess } from '../../services/notify';
 import CreateRegimenTask from './CreateRegimenTask';
@@ -114,32 +113,28 @@ const CreateTask = ({ closeModal, refreshTasks }) => {
 
 			const regimens = clinicalTasks
 				.filter(c => c.title === 'Medication' && c.requestPharmacy === 1)
-				.map((request, i) => ({
+				.map((item, i) => ({
 					id: i + 1,
-					drug_generic_name: request.drug.generic_name,
-					drug_name: request.drugName,
-					drug_cost: request.drugCost,
-					drug_hmo_id: request.hmoId,
-					drug_hmo_cost: request.hmoPrice,
-					drug_id: request.drug.id,
-					dose_quantity: request.dose,
-					refills: true,
-					frequency: request.frequency.replace(/\D+/g, ''),
-					frequencyType: request.duration !== '' ? 'daily' : 'hourly',
-					duration: request.taskCount,
-					drug: request.drug,
+					generic: item.generic,
+					drug: item.drug,
+					dose_quantity: item.dose,
+					refills: 0,
+					frequency: item.frequency.replace(/\D+/g, ''),
+					frequencyType: item.duration !== '' ? 'daily' : 'hourly',
+					duration: item.taskCount,
+					requestPharmacy: item.requestPharmacy,
 				}));
 
 			const prescription = {
 				requestType: 'drugs',
-				requestBody: regimens,
+				items: regimens,
 				patient_id: patient.id,
 			};
 
 			dispatch(startBlock());
 			setSubmitting(true);
 			const data = { tasks: clinicalTasks, prescription };
-			const url = `${patientAPI}/admissions/create-task/${patient.id}`;
+			const url = `${admissionAPI}/create-task/${patient.id}`;
 			await request(url, 'POST', true, data);
 			refreshTasks();
 			notifySuccess('clinical tasks created!');
@@ -209,15 +204,14 @@ const CreateTask = ({ closeModal, refreshTasks }) => {
 									<table className="table table-bordered table-sm table-v2 table-striped">
 										<tbody>
 											{clinicalTasks.map((item, i) => {
-												const hourly =
-													item.duration !== ''
-														? ` for ${item.taskCount} ${item.duration}`
-														: '';
+												const hourly = ` for ${item.taskCount} ${
+													item.duration !== '' ? item.duration : 'times'
+												}`;
 												return item.title === 'Medication' ? (
 													<tr key={i}>
 														<td>{item.title}</td>
 														<td colSpan="3">
-															<label className="alert m-0">{`${item.dose}dose of ${item.drugName} ${item.frequency}${hourly}`}</label>
+															<label className="alert m-0">{`${item.dose}dose of ${item.drug.name} ${item.frequency}${hourly}`}</label>
 															{item.requestPharmacy === 1 && (
 																<span className="badge">
 																	<i className="os-icon os-icon-alert-circle"></i>{' '}
@@ -228,8 +222,9 @@ const CreateTask = ({ closeModal, refreshTasks }) => {
 														<td>
 															<label className="alert m-0">
 																Start Time:{' '}
-																{moment(item.startTime).format(
-																	'YYYY-MM-DD h:mm a'
+																{formatDate(
+																	item.startTime,
+																	'DD-MMM-YYYY h:mm a'
 																)}
 															</label>
 														</td>

@@ -22,8 +22,8 @@ class CreateInvSubCategory extends Component {
 	};
 
 	createCategory = async data => {
-		this.setState({ submitting: true });
 		try {
+			this.setState({ submitting: true });
 			const rs = await request(`${inventorySubCatAPI}`, 'POST', true, data);
 			this.props.addInvSubCategory(rs);
 			this.setState({ submitting: false });

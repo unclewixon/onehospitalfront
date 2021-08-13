@@ -110,7 +110,7 @@ class Payroll extends Component {
 								<div className="control-header">
 									<div className="row align-items-center">
 										<div className="col-9">
-											<form action="" className="form-inline">
+											<form className="form-inline">
 												<div className="form-group">
 													<label className="mr-2">Filter by: </label>
 												</div>

@@ -316,16 +316,6 @@ const PrescriptionForm = ({
 		}
 	};
 
-	const getDrugOptions = async q => {
-		if (!q || q.length < 1) {
-			return [];
-		}
-
-		const url = `inventory/drugs?q=${q}&generic_id=${generic?.id || ''}`;
-		const res = await request(url, 'GET', true);
-		return res.result || [];
-	};
-
 	return (
 		<div className="form-block element-box">
 			<form onSubmit={handleSubmit(onFormSubmit)}>
@@ -361,7 +351,6 @@ const PrescriptionForm = ({
 					<div className="form-group col-sm-6">
 						<label>Drug Generic Name</label>
 						<Select
-							isClearable
 							placeholder="Select generic name"
 							defaultValue
 							getOptionValue={option => option.id}
@@ -389,14 +378,14 @@ const PrescriptionForm = ({
 								</div>
 							</div>
 						)}
-						<AsyncSelect
+						<Select
 							isClearable
 							getOptionValue={option => option.id}
 							getOptionLabel={option => option.name}
 							defaultOptions
 							ref={register({ name: 'drugId', required: true })}
 							name="drugId"
-							loadOptions={getDrugOptions}
+							options={generic?.drugs || []}
 							value={selectedDrug}
 							onChange={e => {
 								if (e) {
@@ -443,6 +432,7 @@ const PrescriptionForm = ({
 							options={[
 								{ value: '', label: 'Select frequency' },
 								{ value: 'immediately', label: 'Immediately' },
+								{ value: 'hourly', label: 'Hourly' },
 								{ value: 'daily', label: 'Daily' },
 								{
 									value: 'weekly',
@@ -466,7 +456,8 @@ const PrescriptionForm = ({
 						<input
 							type="number"
 							className="form-control"
-							placeholder={`(value in ${frequencyType}) eg: 3`}
+							placeholder={`(value in ${frequencyType?.value ||
+								'daily'}) eg: 3`}
 							ref={register({ required: true })}
 							name="duration"
 							onChange={onHandleInputChange}
@@ -588,9 +579,7 @@ const PrescriptionForm = ({
 							<th>Drug Name</th>
 							<th>Summary</th>
 							<th>Diagnosis</th>
-							<th nowrap="nowrap" className="text-center">
-								Action
-							</th>
+							<th></th>
 						</tr>
 					</thead>
 					<tbody>

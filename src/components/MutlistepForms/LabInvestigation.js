@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { validate } from '../../services/validationSchemas';
 import {
 	renderTextInput,
@@ -7,8 +6,6 @@ import {
 	renderMultiselect,
 } from '../../services/utilities';
 import { Field, reduxForm } from 'redux-form';
-import { notifyError } from '../../services/notify';
-import { fetchLabTests, getAllLabGroups } from '../../actions/settings';
 
 const fetal = [{ id: 'Lab', name: 'Lab' }];
 
@@ -17,30 +14,9 @@ class LabInvestigation extends Component {
 		groups: [],
 		tests: [],
 	};
-	componentDidMount() {
-		console.log(this.props.LabGroups, this.props.LabTests);
-		if (this.props.LabGroups.length === 0) {
-			Promise.all([this.props.getAllLabGroups(), this.props.fetchLabTests()])
-				.then(response => {
-					console.log(response);
-					// this.filterGroupsTests(this.props.LabGroups, this.props.LabTests);
-				})
-				.catch(e => {
-					console.log(e);
-					notifyError(
-						e.message || 'could not fetch service categories and services'
-					);
-				});
-		} else {
-			this.filterGroupsTests(this.props.LabGroups, this.props.LabTests);
-		}
-	}
 
-	filterGroupsTests = (grps, tsts) => {
-		const groups = grps.map(el => el.name);
-		const tests = tsts.map(el => el.name);
-		this.setState({ groups, tests });
-	};
+	componentDidMount() {}
+
 	render() {
 		const { handleSubmit, previousPage, error, page } = this.props;
 		const { groups, tests } = this.state;
@@ -125,13 +101,4 @@ LabInvestigation = reduxForm({
 	validate,
 })(LabInvestigation);
 
-const mapStateToProps = state => {
-	return {
-		LabTests: state.settings.lab_tests,
-		LabGroups: state.settings.lab_groups,
-	};
-};
-export default connect(mapStateToProps, {
-	getAllLabGroups,
-	fetchLabTests,
-})(LabInvestigation);
+export default LabInvestigation;

@@ -21,13 +21,8 @@ class AssignBed extends Component {
 
 	fetchCategories = async () => {
 		try {
-			const rs = await request('rooms/categories', 'GET', true);
-			const categories = rs.map(category => ({
-				...category,
-				value: category.id,
-				label: category.name,
-			}));
-			this.setState({ categories });
+			const rs = await request('rooms/categories?limit=50', 'GET', true);
+			this.setState({ categories: rs.result });
 		} catch (e) {
 			console.log(e);
 		}
@@ -37,12 +32,8 @@ class AssignBed extends Component {
 		const { categories } = this.state;
 		const category = categories.find(c => c.id === val);
 		if (category) {
-			const rooms = category.rooms.filter(r => r.status === 'Not occupied');
-			const allRooms = rooms.map(room => ({
-				value: room.id,
-				label: room.name,
-			}));
-			this.setState({ rooms: allRooms });
+			const rooms = category.rooms.filter(r => r.status === 'Not Occupied');
+			this.setState({ rooms });
 		}
 	};
 
@@ -74,7 +65,7 @@ class AssignBed extends Component {
 				updatePatient(update);
 				const room = rs.admission.room;
 				notifySuccess(
-					`patient assigned to ${nth(parseInt(room.floor, 10))} Room ${room.id}`
+					`patient assigned to ${nth(parseInt(room.floor, 10))}, ${room.id}`
 				);
 				this.setState({ submitting: false });
 				this.props.closeModal();
@@ -123,20 +114,30 @@ class AssignBed extends Component {
 											}}
 										/>
 									)}
-									<div className="row form-group">
+									<div className="row">
 										<div className="col-sm-12">
-											<label>Category</label>
-											<Select
-												options={categories}
-												onChange={e => this.handleCatChange(e.value)}
-											/>
+											<div className=" form-group">
+												<label>Category</label>
+												<Select
+													getOptionValue={option => option.id}
+													getOptionLabel={option => option.name}
+													options={categories}
+													onChange={e => this.handleCatChange(e.id)}
+												/>
+											</div>
 										</div>
-										<div className="col-sm-12 mt-2">
-											<label>Room</label>
-											<Select
-												options={rooms}
-												onChange={e => this.handleRoomChange(e.value)}
-											/>
+									</div>
+									<div className="row mt-2">
+										<div className="col-sm-12">
+											<div className=" form-group">
+												<label>Room</label>
+												<Select
+													getOptionValue={option => option.id}
+													getOptionLabel={option => option.name}
+													options={rooms}
+													onChange={e => this.handleRoomChange(e.id)}
+												/>
+											</div>
 										</div>
 									</div>
 									<div className="row">
@@ -164,7 +165,7 @@ class AssignBed extends Component {
 }
 
 AssignBed = reduxForm({
-	form: 'take-reading',
+	form: 'assign-bed',
 })(AssignBed);
 
 export default AssignBed;

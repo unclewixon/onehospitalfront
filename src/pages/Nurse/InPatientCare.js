@@ -13,6 +13,7 @@ import {
 	patientname,
 	itemRender,
 	formatDate,
+	nth,
 } from '../../services/utilities';
 import AssignBed from './AssignBed';
 import waiting from '../../assets/images/waiting.gif';
@@ -229,13 +230,9 @@ const InPatientCare = ({ match }) => {
 												</td>
 												<td>{staffname(item.admitted_by)}</td>
 												<td>
-													{item.suite ? (
-														<Tooltip title="Room/Floor">
-															{`${item.suite} / ${item.floor}`}
-														</Tooltip>
-													) : (
-														'--'
-													)}
+													{item.room
+														? `${item.room.name} / ${nth(item.room.floor)}`
+														: '--'}
 												</td>
 												<td>
 													{item.status === 0 ? (
@@ -244,9 +241,9 @@ const InPatientCare = ({ match }) => {
 														<span className="badge badge-success">Closed</span>
 													)}
 												</td>
-												<td className="row-actions">
+												<td nowrap="nowrap" className="row-actions">
 													{!item.start_discharge &&
-														!item.suite &&
+														!item.room &&
 														!item.nicu &&
 														user &&
 														(user.role.slug === 'nurse' ||

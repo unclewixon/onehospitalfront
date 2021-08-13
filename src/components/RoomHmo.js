@@ -4,99 +4,103 @@ import Pagination from 'antd/lib/pagination';
 import Tooltip from 'antd/lib/tooltip';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { setLabTests, deleteLabTest } from '../../actions/settings';
+import TableLoading from './TableLoading';
+import ModalViewRooms from './Modals/ModalViewRooms';
+import ModalEditRoom from './Modals/ModalEditRoom';
 import {
+	request,
 	confirmAction,
 	formatCurrency,
 	itemRender,
-	request,
-} from '../../services/utilities';
-import { notifyError, notifySuccess } from '../../services/notify';
-import { startBlock, stopBlock } from '../../actions/redux-block';
-import TableLoading from '../TableLoading';
-import useSearchInputState from '../../services/search-hook';
-import ModalLabParameters from '../../components/Modals/ModalLabParameters';
+} from '../services/utilities';
+import { notifyError, notifySuccess } from '../services/notify';
+import { startBlock, stopBlock } from '../actions/redux-block';
+import { deleteService, loadServices } from '../actions/settings';
+import useSearchInputState from '../services/search-hook';
 
-const HmoTests = ({ hmo, toggle, doToggle, doToggleForm }) => {
+const RoomHmo = ({ hmo, toggle, doToggle }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [meta, setMeta] = useState({
 		currentPage: 1,
-		itemsPerPage: 24,
+		itemsPerPage: 10,
 		totalPages: 0,
 	});
 	const [keyword, setKeyword] = useState('');
 	const [showModal, setShowModal] = useState(false);
-	const [labTest, setLabTest] = useState(null);
-
-	const tests = useSelector(state =>
-		state.settings.lab_tests.find(test => test.hmo.id === hmo.id)
-	);
+	const [showEditModal, setShowEditModal] = useState(false);
+	const [service, setService] = useState(null);
 
 	const dispatch = useDispatch();
 
-	const fetchTests = useCallback(
+	const services = useSelector(state =>
+		state.settings.services.find(s => s.hmo.id === hmo.id)
+	);
+
+	const fetchServices = useCallback(
 		async (page, q) => {
 			try {
 				const p = page || 1;
-				const url = `lab-tests?page=${p}&limit=24&q=${q || ''}&hmo_id=${
+				const url = `rooms/categories?page=${p}&limit=10&q=${q || ''}&hmo_id=${
 					hmo.id
 				}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
-				dispatch(setLabTests({ hmo, result: [...result] }));
+				dispatch(loadServices({ hmo, result: [...result] }));
 				setMeta(meta);
-				window.scrollTo({ top: 0, behavior: 'smooth' });
 				setLoaded(true);
 				dispatch(stopBlock());
 			} catch (e) {
 				dispatch(stopBlock());
-				notifyError(e.message || 'could not fetch lab tests');
+				notifyError(e.message || 'could not fetch services');
 			}
 		},
-		[dispatch, hmo]
+		[dispatch, hmo, setLoaded]
 	);
 
 	useEffect(() => {
 		if (toggle && toggle.id === hmo.id) {
-			fetchTests();
+			fetchServices();
 		}
-	}, [fetchTests, hmo, toggle]);
+	}, [fetchServices, hmo, toggle]);
 
-	const onDeleteLabTest = async data => {
+	const onDeleteService = async data => {
 		try {
 			dispatch(startBlock());
-			const rs = await request(`lab-tests/${data.id}`, 'DELETE', true);
-			dispatch(deleteLabTest(rs));
-			notifySuccess('Lab test deleted');
+			const rs = await request(`services/${data.id}`, 'DELETE', true);
+			dispatch(deleteService(rs));
+			notifySuccess('Service deleted');
 			dispatch(stopBlock());
 		} catch (error) {
 			dispatch(stopBlock());
-			notifyError('Error deleting lab test');
+			notifyError('Error deleting service');
 		}
 	};
 
 	const confirmDelete = data => {
-		confirmAction(onDeleteLabTest, data);
+		confirmAction(onDeleteService, data);
 	};
 
 	const onNavigatePage = nextPage => {
-		fetchTests(nextPage, keyword);
+		fetchServices(nextPage, keyword);
 	};
 
-	const onClickEdit = data => {
-		doToggleForm(true, data);
-	};
-
-	const addParameters = item => {
+	const viewRoom = data => {
+		setService(data);
 		document.body.classList.add('modal-open');
 		setShowModal(true);
-		setLabTest(item);
+	};
+
+	const editRoom = data => {
+		setService(data);
+		document.body.classList.add('modal-open');
+		setShowEditModal(true);
 	};
 
 	const closeModal = () => {
-		document.body.classList.remove('modal-open');
 		setShowModal(false);
-		setLabTest(null);
+		setShowEditModal(false);
+		document.body.classList.remove('modal-open');
+		setService(null);
 	};
 
 	const onSearchChange = item => {
@@ -109,7 +113,7 @@ const HmoTests = ({ hmo, toggle, doToggle, doToggleForm }) => {
 
 	const doSearch = async q => {
 		dispatch(startBlock());
-		await fetchTests(1, q);
+		await fetchServices(1, q);
 		dispatch(stopBlock());
 	};
 
@@ -140,7 +144,7 @@ const HmoTests = ({ hmo, toggle, doToggle, doToggleForm }) => {
 							<div className="col-lg-12">
 								<div className="element-search">
 									<input
-										placeholder="Search lab tests..."
+										placeholder="Search services..."
 										value={keyword}
 										onChange={e => {
 											setKeyword(e.target.value);
@@ -152,8 +156,8 @@ const HmoTests = ({ hmo, toggle, doToggle, doToggleForm }) => {
 						</div>
 						<div className="pipelines-w mt-4">
 							<div className="row">
-								{tests &&
-									tests.result.map((item, i) => {
+								{services &&
+									services.result.map((item, i) => {
 										return (
 											<div className="col-lg-4 mb-2" key={i}>
 												<div className="pipeline white p-1 mb-2">
@@ -162,21 +166,19 @@ const HmoTests = ({ hmo, toggle, doToggle, doToggleForm }) => {
 															<div className="pi-controls">
 																{hmo.name === 'Private' && (
 																	<div className="pi-settings os-dropdown-trigger">
-																		{item.hasParameters && (
-																			<Tooltip title="Add Parameters">
-																				<i
-																					className="os-icon os-icon-grid-10 mr-1"
-																					onClick={() => addParameters(item)}
-																				/>
-																			</Tooltip>
-																		)}
-																		<Tooltip title="Edit Test">
+																		<Tooltip title="View Room">
 																			<i
-																				className="os-icon os-icon-ui-49 mr-1"
-																				onClick={() => onClickEdit(item)}
+																				className="os-icon os-icon-eye mr-1"
+																				onClick={() => viewRoom(item)}
 																			/>
 																		</Tooltip>
-																		<Tooltip title="Delete Test">
+																		<Tooltip title="Edit Room">
+																			<i
+																				className="os-icon os-icon-ui-49 mr-1"
+																				onClick={() => editRoom(item)}
+																			/>
+																		</Tooltip>
+																		<Tooltip title="Delete Room">
 																			<i
 																				className="os-icon os-icon-ui-15 text-danger"
 																				onClick={() => confirmDelete(item)}
@@ -191,24 +193,14 @@ const HmoTests = ({ hmo, toggle, doToggle, doToggleForm }) => {
 																		{item.name}
 																	</div>
 																	<div className="pi-sub">
-																		{item?.category?.name}
-																	</div>
-																	<div className="pi-sub">
 																		{formatCurrency(item.service?.tariff || 0)}
 																	</div>
 																</div>
 															</div>
 															<div className="pi-foot">
-																<div className="tags">
-																	{item.specimens?.map((s, i) => (
-																		<a key={i} className="tag">
-																			{s.label}
-																		</a>
-																	)) || ''}
-																</div>
+																<div className="tags" />
 																<a className="extra-info">
-																	<span>{`${item?.parameters?.length ||
-																		0} parameters`}</span>
+																	<span>{`${item.rooms || 0} rooms`}</span>
 																</a>
 															</div>
 														</div>
@@ -217,11 +209,11 @@ const HmoTests = ({ hmo, toggle, doToggle, doToggleForm }) => {
 											</div>
 										);
 									})}
-								{tests && tests.result.length === 0 && (
+								{services && services.result.length === 0 && (
 									<div
 										className="alert alert-info text-center"
 										style={{ width: '100%' }}>
-										No lab tests
+										No rooms
 									</div>
 								)}
 							</div>
@@ -241,11 +233,18 @@ const HmoTests = ({ hmo, toggle, doToggle, doToggleForm }) => {
 					</div>
 				)}
 			</div>
-			{showModal && (
-				<ModalLabParameters closeModal={() => closeModal()} labTest={labTest} />
+			{showModal && service && (
+				<ModalViewRooms closeModal={() => closeModal()} service={service} />
+			)}
+			{showEditModal && service && (
+				<ModalEditRoom
+					closeModal={() => closeModal()}
+					service={service}
+					hmo={hmo}
+				/>
 			)}
 		</div>
 	);
 };
 
-export default HmoTests;
+export default RoomHmo;

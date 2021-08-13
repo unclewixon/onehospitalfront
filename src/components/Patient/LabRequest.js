@@ -116,10 +116,13 @@ const LabRequest = ({ module, history, location }) => {
 			await request('requests/save-request', 'POST', true, datum);
 			setSubmitting(false);
 			notifySuccess('Lab request sent!');
-			if (module !== 'patient') {
-				history.push('/lab');
-			} else {
+			if (
+				module &&
+				(module === 'patient' || module === 'ivf' || module === 'admission')
+			) {
 				history.push(`${location.pathname}#lab`);
+			} else {
+				history.push('/lab');
 			}
 		} catch (error) {
 			console.log(error);
@@ -131,7 +134,10 @@ const LabRequest = ({ module, history, location }) => {
 	return (
 		<div
 			className={
-				module && (module === 'patient' || module === 'ivf') ? 'col-sm-12' : ''
+				module &&
+				(module === 'patient' || module === 'ivf' || module === 'admission')
+					? 'col-sm-12'
+					: ''
 			}>
 			<div className="element-box m-0 p-3">
 				<div className="form-block w-100">

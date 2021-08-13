@@ -14,6 +14,11 @@ const AdmissionMenu = ({ location }) => {
 						Notes
 					</Link>
 				</li>
+				<li className={checkHash(hash, 'encounters') ? 'active' : ''}>
+					<Link to={`${location.pathname}#encounters`} className="pointer">
+						Visits
+					</Link>
+				</li>
 				<li className={checkHash(hash, 'clinical-tasks') ? 'active' : ''}>
 					<Link to={`${location.pathname}#clinical-tasks`} className="pointer">
 						Tasks
@@ -51,11 +56,6 @@ const AdmissionMenu = ({ location }) => {
 				<li className={checkHash(hash, 'care-team') ? 'active' : ''}>
 					<Link to={`${location.pathname}#care-team`} className="pointer">
 						Care Team
-					</Link>
-				</li>
-				<li className={checkHash(hash, 'encounters') ? 'active' : ''}>
-					<Link to={`${location.pathname}#encounters`} className="pointer">
-						Encounters
 					</Link>
 				</li>
 			</ul>

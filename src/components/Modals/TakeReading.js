@@ -1,4 +1,4 @@
-import React, { lazy, useEffect, useState } from 'react';
+import React, { lazy, useEffect, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { patientAPI } from '../../services/constants';
@@ -83,6 +83,12 @@ const TakeReading = ({ closeModal, taskItem }) => {
 
 	const dispatch = useDispatch();
 
+	const getData = useCallback(async () => {
+		const url = `${patientAPI}/${taskItem.patient_id}/vitals`;
+		const res = await request(url, 'GET', true);
+		return res;
+	}, [taskItem]);
+
 	useEffect(() => {
 		async function doLoadVitals() {
 			const rs = await getData();
@@ -95,14 +101,7 @@ const TakeReading = ({ closeModal, taskItem }) => {
 		if (!loaded) {
 			doLoadVitals();
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [dispatch, loaded]);
-
-	async function getData() {
-		const url = `${patientAPI}/${taskItem.patient_id}/vitals`;
-		const res = await request(url, 'GET', true);
-		return res;
-	}
+	}, [dispatch, getData, loaded]);
 
 	return (
 		<div

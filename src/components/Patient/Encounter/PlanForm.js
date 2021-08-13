@@ -304,16 +304,6 @@ const PlanForm = ({ previous, next, patient }) => {
 		}
 	};
 
-	const getDrugOptions = async q => {
-		if (!q || q.length < 1) {
-			return [];
-		}
-
-		const url = `inventory/drugs?q=${q}&generic_id=${generic?.id || ''}`;
-		const res = await request(url, 'GET', true);
-		return res.result || [];
-	};
-
 	const onHandleInputChange = e => {
 		const { name, value } = e.target;
 		setValue(name, value);
@@ -475,7 +465,6 @@ const PlanForm = ({ previous, next, patient }) => {
 					<div className="form-group col-sm-6">
 						<label>Drug Generic Name</label>
 						<Select
-							isClearable
 							placeholder="Select generic name"
 							defaultValue
 							getOptionValue={option => option.id}
@@ -507,14 +496,14 @@ const PlanForm = ({ previous, next, patient }) => {
 								</div>
 							</div>
 						)}
-						<AsyncSelect
+						<Select
 							isClearable
 							getOptionValue={option => option.id}
 							getOptionLabel={option => option.name}
 							defaultOptions
 							ref={register({ name: 'drugId', required: true })}
 							name="drugId"
-							loadOptions={getDrugOptions}
+							options={generic?.drugs || []}
 							value={selectedDrug}
 							onChange={e => {
 								if (e) {
@@ -560,11 +549,11 @@ const PlanForm = ({ previous, next, patient }) => {
 							value={frequencyType}
 							options={[
 								{ value: '', label: 'Select frequency' },
+								{ value: 'immediately', label: 'Immediately' },
 								{
 									value: 'hourly',
 									label: 'Hourly',
 								},
-								{ value: 'immediately', label: 'Immediately' },
 								{ value: 'daily', label: 'Daily' },
 								{
 									value: 'weekly',

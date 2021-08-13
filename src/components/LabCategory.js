@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 
 import waiting from '../assets/images/waiting.gif';
@@ -7,13 +7,13 @@ import { notifySuccess, notifyError } from '../services/notify';
 import { confirmAction, request } from '../services/utilities';
 import {
 	addLabCategory,
-	getAllLabTestCategories,
 	updateLabCategory,
 	deleteLabCategory,
+	getLabCategories,
 } from '../actions/settings';
 import TableLoading from './TableLoading';
 
-const LabCategory = props => {
+const LabCategory = () => {
 	const initialState = {
 		name: '',
 		edit: false,
@@ -26,6 +26,25 @@ const LabCategory = props => {
 	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const dispatch = useDispatch();
+
+	const categories = useSelector(state => state.settings.lab_categories);
+
+	const fetchLabTestCategories = useCallback(async () => {
+		try {
+			const rs = await request('lab-tests/categories', 'GET', true);
+			dispatch(getLabCategories(rs));
+			setDataLoaded(true);
+		} catch (e) {
+			setDataLoaded(true);
+			notifyError(e.message || 'could not fetch lab categories');
+		}
+	}, [dispatch]);
+
+	useEffect(() => {
+		if (!dataLoaded) {
+			fetchLabTestCategories();
+		}
+	}, [dataLoaded, fetchLabTestCategories]);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -95,20 +114,6 @@ const LabCategory = props => {
 		confirmAction(onDeleteLabCategory, data);
 	};
 
-	useEffect(() => {
-		if (!dataLoaded) {
-			props
-				.getAllLabTestCategories()
-				.then(response => {
-					setDataLoaded(true);
-				})
-				.catch(e => {
-					setDataLoaded(true);
-					notifyError(e.message || 'could not fetch lab categories');
-				});
-		}
-	}, [props, dataLoaded]);
-
 	return (
 		<div className="row">
 			<div className="col-lg-8">
@@ -118,7 +123,7 @@ const LabCategory = props => {
 							<TableLoading />
 						) : (
 							<>
-								{props.categories.map((item, i) => {
+								{categories.map((item, i) => {
 									return (
 										<div className="col-lg-4 mb-2" key={i}>
 											<div className="pipeline white p-1 mb-2">
@@ -151,7 +156,7 @@ const LabCategory = props => {
 										</div>
 									);
 								})}
-								{props.categories.length === 0 && (
+								{categories.length === 0 && (
 									<div
 										className="alert alert-info text-center"
 										style={{ width: '100%' }}>
@@ -213,12 +218,4 @@ const LabCategory = props => {
 	);
 };
 
-const mapStateToProps = state => {
-	return {
-		categories: state.settings.lab_categories,
-	};
-};
-
-export default connect(mapStateToProps, { getAllLabTestCategories })(
-	LabCategory
-);
+export default LabCategory;

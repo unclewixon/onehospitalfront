@@ -20,7 +20,6 @@ import {
 	cervicalPosition,
 } from '../../services/constants';
 import { notifySuccess, notifyError } from '../../services/notify';
-import { fetchLabTests } from '../../actions/settings';
 
 const validate = values => {
 	const errors = {};
@@ -850,5 +849,4 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps, {
 	closeModals,
 	loadLabourMeasurement,
-	fetchLabTests,
 })(ModalCreateLabMeasurement);

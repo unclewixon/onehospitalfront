@@ -1,16 +1,21 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import Pagination from 'antd/lib/pagination';
+import { useDispatch } from 'react-redux';
 
 import { notifyError } from '../services/notify';
 import HmoData from './Services/HmoData';
 import { hmoAPI } from '../services/constants';
 import { request, itemRender } from '../services/utilities';
+import { startBlock, stopBlock } from '../actions/redux-block';
+import { resetService } from '../actions/settings';
 
 const ServicesList = ({ loaded, setLoaded }) => {
 	const [toggled, setToggled] = useState([]);
 	const [categories, setCategories] = useState([]);
 	const [schemes, setSchemes] = useState([]);
 	const [meta, setMeta] = useState(null);
+
+	const dispatch = useDispatch();
 
 	const doToggle = index => {
 		const found = toggled.find(t => t.id === index);
@@ -33,30 +38,33 @@ const ServicesList = ({ loaded, setLoaded }) => {
 	const fetchHmos = useCallback(
 		async page => {
 			try {
+				dispatch(startBlock());
 				const p = page || 1;
 				const url = `${hmoAPI}/schemes?page=${p}&limit=10`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setSchemes([...result]);
-				window.scrollTo({ top: 0, behavior: 'smooth' });
 				setToggled([]);
 				setMeta(meta);
+				dispatch(stopBlock());
 				setLoaded(true);
 			} catch (e) {
 				console.log(e);
+				dispatch(stopBlock());
 				notifyError('could not fetch hmo schemes');
 				setLoaded(true);
 			}
 		},
-		[setLoaded]
+		[dispatch, setLoaded]
 	);
 
 	useEffect(() => {
 		if (!loaded) {
+			dispatch(resetService());
 			fetchCategories();
 			fetchHmos();
 		}
-	}, [fetchCategories, fetchHmos, loaded]);
+	}, [dispatch, fetchCategories, fetchHmos, loaded]);
 
 	const onNavigatePage = nextPage => {
 		fetchHmos(nextPage);

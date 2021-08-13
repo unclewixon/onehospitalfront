@@ -27,6 +27,7 @@ const HmoScheme = () => {
 	const fetchHmos = useCallback(
 		async page => {
 			try {
+				dispatch(startBlock());
 				const p = page || 1;
 				const rs = await request(`${hmoAPI}/schemes?page=${p}`, 'GET', true);
 				const { result, ...meta } = rs;
@@ -51,7 +52,6 @@ const HmoScheme = () => {
 	}, [loaded, fetchHmos]);
 
 	const onNavigatePage = nextPage => {
-		dispatch(startBlock());
 		fetchHmos(nextPage);
 	};
 

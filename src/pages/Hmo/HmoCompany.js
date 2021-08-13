@@ -38,6 +38,7 @@ const HmoCompany = () => {
 	const fetchHmos = useCallback(
 		async page => {
 			try {
+				dispatch(startBlock());
 				const p = page || 1;
 				const url = `${hmoAPI}/owners?page=${p}&limit=12`;
 				const rs = await request(url, 'GET', true);
@@ -63,7 +64,6 @@ const HmoCompany = () => {
 	}, [loaded, fetchHmos]);
 
 	const onNavigatePage = nextPage => {
-		dispatch(startBlock());
 		fetchHmos(nextPage);
 	};
 

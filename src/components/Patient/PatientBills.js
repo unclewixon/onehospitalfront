@@ -235,7 +235,9 @@ const PatientBills = () => {
 														<td className="sorting_1">{item.id}</td>
 														<td>
 															<span className="text-capitalize">
-																{item.bill_source}
+																{item.bill_source === 'ward'
+																	? 'Room'
+																	: item.bill_source}
 															</span>
 															{item.bill_source !== 'registration' && (
 																<a
