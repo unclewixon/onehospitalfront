@@ -2,10 +2,21 @@ import React, { useState, useEffect, useCallback } from 'react';
 import AsyncCreatableSelect from 'react-select/async-creatable/dist/react-select.esm';
 import { useDispatch } from 'react-redux';
 
-import { notifyError } from '../../services/notify';
+import { notifyError, notifySuccess } from '../../services/notify';
 import { request, updateImmutable } from '../../services/utilities';
 import { hmoAPI } from '../../services/constants';
 import { startBlock, stopBlock } from '../../actions/redux-block';
+
+const initialState = {
+	name: '',
+	address: '',
+	phoneNumber: '',
+	email: '',
+	type: '',
+	cacNumber: '',
+	coverageType: '',
+	coverage: '',
+};
 
 const HmoSchemeForm = ({
 	scheme,
@@ -14,16 +25,6 @@ const HmoSchemeForm = ({
 	updateScheme,
 	buttonState,
 }) => {
-	const initialState = {
-		name: '',
-		address: '',
-		phoneNumber: '',
-		email: '',
-		type: '',
-		cacNumber: '',
-		coverageType: '',
-		coverage: '',
-	};
 	const [
 		{
 			name,
@@ -38,7 +39,7 @@ const HmoSchemeForm = ({
 		setState,
 	] = useState(initialState);
 	const [loaded, setLoaded] = useState(false);
-	// const [logo, setLogo] = useState('');
+	// const [logo, setLogo] = useState('');1
 	const [submitting, setSubmitting] = useState(false);
 	const [hmo, setHmo] = useState(null);
 	const [insuranceTypes, setInsuranceTypes] = useState([]);
@@ -102,11 +103,16 @@ const HmoSchemeForm = ({
 			dispatch(startBlock());
 			setSubmitting(true);
 			const rs = await request(`${hmoAPI}/schemes`, 'POST', true, data);
-			updateScheme([...schemes, rs]);
-			setState({ ...initialState });
-			setSubmitting(false);
 			dispatch(stopBlock());
-			closeModal();
+			setSubmitting(false);
+			if (rs.success) {
+				notifySuccess('scheme tariff saved!');
+				updateScheme([...schemes, rs]);
+				setState({ ...initialState });
+				closeModal();
+			} else {
+				notifyError(rs.message || 'could not save scheme');
+			}
 		} catch (e) {
 			console.log(e);
 			let message = '';
@@ -147,6 +153,7 @@ const HmoSchemeForm = ({
 			updateScheme([...list]);
 			setState({ ...initialState });
 			setSubmitting(false);
+			notifySuccess('scheme tariff saved!');
 			dispatch(stopBlock());
 			closeModal();
 		} catch (e) {

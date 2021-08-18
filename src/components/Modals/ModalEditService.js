@@ -24,6 +24,8 @@ const ModalEditService = ({
 	error,
 	handleSubmit,
 	hmo,
+	editTariff,
+	updateTariff,
 }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [category, setCategory] = useState(null);
@@ -61,10 +63,26 @@ const ModalEditService = ({
 				return;
 			}
 
+			const amount = parseFloat(data.tariff);
+
+			if (editTariff && amount <= 0) {
+				notifyError('Please enter tariff');
+				return;
+			}
+
 			setSubmitting(true);
-			const info = { ...data, category_id: category.id, hmo_id: hmo.id };
+			const info = {
+				...data,
+				category_id: category.id,
+				hmo_id: hmo.id,
+				update_tariff: updateTariff ? 1 : 0,
+			};
 			const rs = await request(`services/${service.id}`, 'PATCH', true, info);
-			dispatch(updateService(rs));
+			if (updateTariff) {
+				updateTariff(rs);
+			} else {
+				dispatch(updateService(rs));
+			}
 			setSubmitting(false);
 			notifySuccess('Service saved!');
 			closeModal();
@@ -106,7 +124,6 @@ const ModalEditService = ({
 										}}
 									/>
 								)}
-
 								<div className="row">
 									<div className="col-sm-12">
 										<Field
@@ -132,6 +149,19 @@ const ModalEditService = ({
 										/>
 									</div>
 								</div>
+								{editTariff && (
+									<div className="row mt-3">
+										<div className="col-sm-12">
+											<Field
+												id="tariff"
+												name="tariff"
+												component={renderTextInput}
+												label="Tariff"
+												type="number"
+											/>
+										</div>
+									</div>
+								)}
 								<div className="row mt-4">
 									<div className="col-sm-12 text-right">
 										<button
@@ -158,7 +188,8 @@ const ModalEditService = ({
 const mapStateToProps = (state, ownProps) => {
 	return {
 		initialValues: {
-			...ownProps.service,
+			name: ownProps.service.name,
+			tariff: ownProps.service?.service?.tariff || 0,
 		},
 	};
 };

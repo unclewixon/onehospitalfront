@@ -14,6 +14,7 @@ import {
 	itemRender,
 	formatDate,
 	nth,
+	updateImmutable,
 } from '../../services/utilities';
 import AssignBed from './AssignBed';
 import waiting from '../../assets/images/waiting.gif';
@@ -23,6 +24,7 @@ import { toggleProfile } from '../../actions/user';
 import TableLoading from '../../components/TableLoading';
 import ProfilePopup from '../../components/Patient/ProfilePopup';
 import { staffname } from '../../services/utilities';
+import { messageService } from '../../services/message';
 
 const { RangePicker } = DatePicker;
 
@@ -79,6 +81,17 @@ const InPatientCare = ({ match }) => {
 			fetchPatients();
 		}
 	}, [loading, fetchPatients, dispatch]);
+
+	useEffect(() => {
+		const subscription = messageService.getMessage().subscribe(message => {
+			const update = updateImmutable(admittedPatients, message.text);
+			setAdmittedPatients(update);
+		});
+
+		return () => {
+			subscription.unsubscribe();
+		};
+	});
 
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option => patientname(option, true);

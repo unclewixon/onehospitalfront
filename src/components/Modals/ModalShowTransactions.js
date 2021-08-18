@@ -2,7 +2,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
-import moment from 'moment';
 
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
@@ -12,17 +11,25 @@ import {
 	patientname,
 	formatCurrency,
 	updateImmutable,
+	parseSource,
+	formatDate,
 } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { getAllPendingTransactions } from '../../actions/paypoint';
 import { loadTransactions } from '../../actions/transaction';
 
-const ModalShowTransactions = ({ patient, closeModal }) => {
+const ModalShowTransactions = ({
+	patient,
+	closeModal,
+	isAdmitted,
+	completeDischarge,
+	admissionId,
+}) => {
 	const [loading, setLoading] = useState(true);
 	const [transactions, setTransactions] = useState([]);
 	const [meta, setMeta] = useState({
 		currentPage: 1,
-		itemsPerPage: 12,
+		itemsPerPage: 10,
 		totalPages: 0,
 	});
 	const [checked, setChecked] = useState([]);
@@ -44,7 +51,7 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 			try {
 				dispatch(startBlock());
 				const p = page || 1;
-				const url = `transactions/pending?page=${p}&limit=12&patient_id=${patient.id}&startDate=&endDate=`;
+				const url = `transactions/pending?page=${p}&limit=10&patient_id=${patient.id}&startDate=&endDate=`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setMeta(meta);
@@ -208,7 +215,7 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 															/>
 														</th>
 														<th>DATE</th>
-														<th>DEPARTMENT</th>
+														<th>Service</th>
 														<th>AMOUNT (&#x20A6;)</th>
 													</tr>
 												</thead>
@@ -226,13 +233,14 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 																	/>
 																</td>
 																<td>
-																	{moment(item.createdAt).format(
+																	{formatDate(
+																		item.createdAt,
 																		'DD-MMM-YYYY h:mm a'
 																	)}
 																</td>
 																<td className="flex">
 																	<span className="text-capitalize">
-																		{item.bill_source}
+																		{parseSource(item.bill_source)}
 																	</span>
 																</td>
 																<td>{formatCurrency(item.amount || 0)}</td>
@@ -261,38 +269,77 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 											)}
 										</div>
 										<div className="col-md-12 mt-4">
-											<div className="form-inline">
-												<div className="form-group mr-3">
-													<select
-														placeholder="Select Payment Method"
-														className="form-control"
-														onChange={e => setPaymentMethod(e.target.value)}>
-														<option value="">Select Payment Method</option>
-														{paymentMethods
-															.filter(p => p.name !== 'Voucher')
-															.map((d, i) => (
-																<option key={i} value={d.name}>
-																	{d.name}
-																</option>
-															))}
-													</select>
+											{!isAdmitted ? (
+												<div
+													className="form-inline"
+													style={{ justifyContent: 'center' }}>
+													<div className="form-group mr-3">
+														<select
+															placeholder="Select Payment Method"
+															className="form-control"
+															onChange={e => setPaymentMethod(e.target.value)}>
+															<option value="">Select Payment Method</option>
+															{paymentMethods
+																.filter(p => p.name !== 'Voucher')
+																.map((d, i) => (
+																	<option key={i} value={d.name}>
+																		{d.name}
+																	</option>
+																))}
+														</select>
+													</div>
+													<button
+														onClick={() => processPayment()}
+														className="btn btn-primary">
+														{submitting ? (
+															<img src={waiting} alt="submitting" />
+														) : (
+															'Approve Payment'
+														)}
+													</button>
 												</div>
+											) : (
+												<div
+													className="form-inline"
+													style={{ justifyContent: 'center' }}>
+													<button
+														onClick={() => completeDischarge(admissionId)}
+														className="btn btn-primary">
+														{submitting ? (
+															<img src={waiting} alt="submitting" />
+														) : (
+															'Discharge Patient'
+														)}
+													</button>
+												</div>
+											)}
+										</div>
+									</div>
+								</div>
+							)}
+							{!loading && transactions.length === 0 && (
+								<div className="table-responsive">
+									<div className="row">
+										<div className="col-sm-12">
+											<div>No Transactions Pending!</div>
+										</div>
+										<div className="col-md-12 mt-4">
+											<div
+												className="form-inline"
+												style={{ justifyContent: 'center' }}>
 												<button
-													onClick={() => processPayment()}
+													onClick={() => completeDischarge(admissionId)}
 													className="btn btn-primary">
 													{submitting ? (
 														<img src={waiting} alt="submitting" />
 													) : (
-														'Approve Payment'
+														'Discharge Patient'
 													)}
 												</button>
 											</div>
 										</div>
 									</div>
 								</div>
-							)}
-							{!loading && transactions.length === 0 && (
-								<div>No Transactions Pending!</div>
 							)}
 						</div>
 					</div>

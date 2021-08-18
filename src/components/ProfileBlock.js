@@ -21,6 +21,7 @@ import { formatCurrency } from '../services/utilities';
 import { messageService } from '../services/message';
 import ViewAlerts from './Modals/ViewAlerts';
 import { toggleProfile } from '../actions/user';
+import ModalShowTransactions from './Modals/ModalShowTransactions';
 
 const UserItem = ({ icon, label, value }) => {
 	return (
@@ -52,6 +53,8 @@ const UserItem = ({ icon, label, value }) => {
 const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 	const [alerts, setAlerts] = useState([]);
 	const [showModal, setShowModal] = useState(false);
+	const [showTransactions, setShowTransactions] = useState(false);
+	const [admissionId, setAdmissionId] = useState(null);
 
 	const dispatch = useDispatch();
 
@@ -150,6 +153,7 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 				} else {
 					info = { patient: newPatient, type };
 				}
+				messageService.sendMessage({ ...rs.admission });
 				dispatch(toggleProfile(true, info));
 				notifySuccess('Patient discharge initiated');
 			} else {
@@ -157,7 +161,7 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 			}
 		} catch (error) {
 			dispatch(stopBlock());
-			notifyError(error.message || 'Could not add initiate discharge');
+			notifyError(error.message || 'Could not initiate discharge');
 		}
 	};
 
@@ -170,7 +174,44 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 		);
 	};
 
-	const onCompleteDischarge = async () => {};
+	const onCompleteDischarge = async id => {
+		try {
+			dispatch(startBlock());
+			const url = `${admissionAPI}/${id}/complete-discharge`;
+			const rs = await request(url, 'PUT', true, {});
+			dispatch(stopBlock());
+			if (rs.success) {
+				const newPatient = {
+					...patient,
+					admission: rs.admission,
+					is_admitted: false,
+				};
+				dispatch(updatePatient(newPatient));
+				let info;
+				if (item) {
+					info = {
+						patient: newPatient,
+						type,
+						item: { ...item, ...rs.admission },
+					};
+				} else {
+					info = { patient: newPatient, type };
+				}
+				messageService.sendMessage({
+					...rs.admission,
+					patient: { ...rs.admission.patient, is_admitted: false },
+				});
+				dispatch(toggleProfile(true, info));
+				notifySuccess('Patient discharged');
+				closeDischarge();
+			} else {
+				notifyError(rs.message);
+			}
+		} catch (error) {
+			dispatch(stopBlock());
+			notifyError(error.message || 'Could not discharge patient');
+		}
+	};
 
 	const completeDischarge = id => {
 		confirmAction(
@@ -179,6 +220,18 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 			'Completely discharge patient?',
 			'Are you sure?'
 		);
+	};
+
+	const showTransaction = id => {
+		setAdmissionId(id);
+		document.body.classList.add('modal-open');
+		setShowTransactions(true);
+	};
+
+	const closeDischarge = () => {
+		setShowTransactions(false);
+		document.body.classList.remove('modal-open');
+		setAdmissionId(null);
 	};
 
 	return (
@@ -220,14 +273,16 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 												{canAdmit && (
 													<>
 														{!patient?.is_admitted ? (
-															<Tooltip title="Admit">
-																<Link
-																	to={`${location.pathname}#start-admission`}
-																	className="btn btn-primary btn-sm mr-1">
-																	<i className="os-icon os-icon-ui-22"></i>
-																	<span>Admit</span>
-																</Link>
-															</Tooltip>
+															!patient.admission && (
+																<Tooltip title="Admit">
+																	<Link
+																		to={`${location.pathname}#start-admission`}
+																		className="btn btn-primary btn-sm mr-1">
+																		<i className="os-icon os-icon-ui-22"></i>
+																		<span>Admit</span>
+																	</Link>
+																</Tooltip>
+															)
 														) : (
 															<>
 																{patient?.admission?.start_discharge ? (
@@ -235,9 +290,7 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 																		<button
 																			className="btn btn-warning btn-sm mr-1"
 																			onClick={() =>
-																				completeDischarge(
-																					patient?.admission?.id
-																				)
+																				showTransaction(patient?.admission?.id)
 																			}>
 																			<i className="fa fa-hospital-o"></i>
 																			<span style={{ marginLeft: '4px' }}>
@@ -417,6 +470,15 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 				</div>
 			</div>
 			{showModal && <ViewAlerts closeModal={closeModal} />}
+			{showTransactions && patient && (
+				<ModalShowTransactions
+					patient={patient}
+					admissionId={admissionId}
+					completeDischarge={completeDischarge}
+					closeModal={() => closeDischarge()}
+					isAdmitted={true}
+				/>
+			)}
 		</>
 	);
 };

@@ -10,7 +10,7 @@ import { startBlock, stopBlock } from '../../actions/redux-block';
 import AddEditTeam from './Modals/AddEditTeam';
 import { staffname } from '../../services/utilities';
 
-const CareTeam = () => {
+const CareTeam = ({ can_request }) => {
 	const [loading, setLoading] = useState(true);
 	const [members, setMembers] = useState([]);
 	const [meta, setMeta] = useState({
@@ -79,11 +79,13 @@ const CareTeam = () => {
 		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<div className="element-actions flex-action">
-					<a
-						className="btn btn-sm btn-secondary text-white ml-3"
-						onClick={() => newEntry()}>
-						Add/Edit Team Member
-					</a>
+					{can_request && (
+						<a
+							className="btn btn-sm btn-secondary text-white ml-3"
+							onClick={() => newEntry()}>
+							Add/Edit Team Member
+						</a>
+					)}
 				</div>
 				<h6 className="element-header">Care Team</h6>
 				<div className="element-box p-3 m-0">

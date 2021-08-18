@@ -63,6 +63,13 @@ const ViewAlerts = ({ closeModal }) => {
 											</tr>
 										);
 									})}
+									{alerts.length === 0 && (
+										<tr>
+											<td colSpan="4" className="text-center">
+												No Alerts!
+											</td>
+										</tr>
+									)}
 								</tbody>
 							</table>
 						</div>

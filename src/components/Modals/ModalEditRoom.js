@@ -110,7 +110,7 @@ const ModalEditRoom = ({ closeModal, service, error, handleSubmit, hmo }) => {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		initialValues: {
-			...ownProps.service,
+			name: ownProps.service.name,
 		},
 	};
 };

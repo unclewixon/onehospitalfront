@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import { confirmAlert } from 'react-confirm-alert';
 import Tooltip from 'antd/lib/tooltip';
 import capitalize from 'lodash.capitalize';
-import { Link } from 'react-router-dom';
 import Pagination from 'antd/lib/pagination';
 
 import { notifyError } from '../../services/notify';
@@ -13,6 +12,7 @@ import { request, itemRender } from '../../services/utilities';
 import { hmoAPI } from '../../services/constants';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import HmoSchemeForm from '../../components/Modals/HmoSchemeForm';
+import ModalHmoTariff from '../../components/Modals/ModalHmoTariff';
 
 const HmoScheme = () => {
 	const [schemes, setSchemes] = useState([]);
@@ -21,8 +21,20 @@ const HmoScheme = () => {
 	const [meta, setMeta] = useState(null);
 	const [scheme, setScheme] = useState(null);
 	const [showModal, setShowModal] = useState(false);
+	const [showTariffModal, setShowTariffModal] = useState(false);
+	const [hmo, setHmo] = useState(null);
+	const [categories, setCategories] = useState([]);
 
 	const dispatch = useDispatch();
+
+	const fetchCategories = useCallback(async () => {
+		try {
+			const rs = await request('services/categories', 'GET', true);
+			setCategories([...rs]);
+		} catch (error) {
+			notifyError(error.message || 'could not fetch categories!');
+		}
+	}, []);
 
 	const fetchHmos = useCallback(
 		async page => {
@@ -47,12 +59,19 @@ const HmoScheme = () => {
 
 	useEffect(() => {
 		if (!loaded) {
+			fetchCategories();
 			fetchHmos();
 		}
-	}, [loaded, fetchHmos]);
+	}, [loaded, fetchHmos, fetchCategories]);
 
 	const onNavigatePage = nextPage => {
 		fetchHmos(nextPage);
+	};
+
+	const showTariffs = item => {
+		setHmo(item);
+		document.body.classList.add('modal-open');
+		setShowTariffModal(true);
 	};
 
 	const newScheme = () => {
@@ -71,8 +90,10 @@ const HmoScheme = () => {
 	const closeModal = () => {
 		document.body.classList.remove('modal-open');
 		setShowModal(false);
+		setShowTariffModal(false);
 		setSubmitButton({ add: true, edit: false });
 		setScheme(null);
+		setHmo(null);
 	};
 
 	const onDeleteHmo = async data => {
@@ -165,9 +186,7 @@ const HmoScheme = () => {
 																		{capitalize(hmo.owner.name || '--')}
 																	</span>
 																</td>
-																<td>
-																	<span>{hmo.name || '--'}</span>
-																</td>
+																<td>{hmo.name || '--'}</td>
 																<td>
 																	<span>{hmo.hmoType?.name || '--'}</span>
 																</td>
@@ -195,9 +214,9 @@ const HmoScheme = () => {
 																		</a>
 																	</Tooltip>
 																	<Tooltip title="HMO Tariffs">
-																		<Link to={`/hmo/tariffs?id=${hmo.id}`}>
+																		<a onClick={() => showTariffs(hmo)}>
 																			<i className="os-icon os-icon-documents-03" />
-																		</Link>
+																		</a>
 																	</Tooltip>
 																	{hmo.name !== 'Private' && (
 																		<Tooltip title="Delete">
@@ -241,6 +260,13 @@ const HmoScheme = () => {
 					closeModal={closeModal}
 					updateScheme={updateScheme}
 					buttonState={{ edit, add }}
+				/>
+			)}
+			{showTariffModal && (
+				<ModalHmoTariff
+					hmo={hmo}
+					categories={categories}
+					closeModal={() => closeModal()}
 				/>
 			)}
 		</>

@@ -31,7 +31,7 @@ const ServicesList = ({ loaded, setLoaded }) => {
 			const rs = await request('services/categories', 'GET', true);
 			setCategories([...rs]);
 		} catch (error) {
-			notifyError(error.message || 'could not fetch services categories!');
+			notifyError(error.message || 'could not fetch categories!');
 		}
 	}, []);
 

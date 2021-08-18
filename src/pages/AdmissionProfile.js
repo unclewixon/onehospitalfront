@@ -46,7 +46,7 @@ const Page = ({ location }) => {
 		case 'fluid-chart':
 			return <FluidChart />;
 		case 'care-team':
-			return <CareTeam />;
+			return <CareTeam can_request={admission && admission.status === 0} />;
 		case 'lab':
 			return (
 				<Lab

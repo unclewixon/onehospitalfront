@@ -74,11 +74,13 @@ const InPatientNote = () => {
 		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<div className="element-actions flex-action">
-					<a
-						className="btn btn-sm btn-secondary text-white ml-3"
-						onClick={() => newEntry()}>
-						S . O . A . P
-					</a>
+					{admission && admission.status === 0 && (
+						<a
+							className="btn btn-sm btn-secondary text-white"
+							onClick={() => newEntry()}>
+							S . O . A . P
+						</a>
+					)}
 				</div>
 				<h6 className="element-header">In-Patient Note</h6>
 				<div className="element-box p-3 m-0">

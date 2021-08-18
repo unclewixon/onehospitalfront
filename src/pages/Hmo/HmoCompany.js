@@ -6,32 +6,20 @@ import Tooltip from 'antd/lib/tooltip';
 import capitalize from 'lodash.capitalize';
 import Pagination from 'antd/lib/pagination';
 
-import waiting from '../../assets/images/waiting.gif';
 import { notifyError } from '../../services/notify';
 import TableLoading from '../../components/TableLoading';
-import { request, itemRender, updateImmutable } from '../../services/utilities';
+import { request, itemRender } from '../../services/utilities';
 import { hmoAPI } from '../../services/constants';
 import { startBlock, stopBlock } from '../../actions/redux-block';
+import ModalHmoCompany from '../../components/Modals/ModalHmoCompany';
 
 const HmoCompany = () => {
-	const initialState = {
-		name: '',
-		address: '',
-		email: '',
-		phoneNumber: '',
-		add: true,
-		edit: false,
-	};
 	const [companies, setCompanies] = useState([]);
-	const [{ name, email, phoneNumber, address }, setState] = useState(
-		initialState
-	);
-	const [loading, setLoading] = useState(false);
-	const [{ edit, add }, setSubmitButton] = useState(initialState);
-	const [data, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
-	const [adding, setAdding] = useState(false);
 	const [meta, setMeta] = useState(null);
+	const [company, setCompany] = useState(null);
+	const [showModal, setShowModal] = useState(false);
+	const [{ edit, add }, setSubmitButton] = useState({ edit: false, add: true });
 
 	const dispatch = useDispatch();
 
@@ -67,97 +55,6 @@ const HmoCompany = () => {
 		fetchHmos(nextPage);
 	};
 
-	const handleInputChange = e => {
-		const { name, value } = e.target;
-		setState(prevState => ({ ...prevState, [name]: value }));
-	};
-
-	const onAddHmo = async e => {
-		try {
-			e.preventDefault();
-			dispatch(startBlock());
-			const data = {
-				name,
-				email,
-				phoneNumber,
-				address,
-			};
-			setAdding(true);
-			const rs = await request(`${hmoAPI}/owners`, 'POST', true, data);
-			setCompanies([...companies, rs]);
-			setState({ ...initialState });
-			setAdding(false);
-			dispatch(stopBlock());
-		} catch (e) {
-			console.log(e);
-			let message = '';
-			try {
-				message = e.message
-					?.map(m => Object.values(m.constraints).join(', '))
-					?.join(', ');
-			} catch (e) {
-				message = 'could not save hmo company';
-			}
-			notifyError(message);
-			dispatch(stopBlock());
-			setAdding(false);
-		}
-	};
-
-	const onEditHmo = async e => {
-		try {
-			e.preventDefault();
-			const info = {
-				id: data.id,
-				name,
-				email,
-				phoneNumber,
-				address,
-			};
-			dispatch(startBlock());
-			setLoading(true);
-			const url = `${hmoAPI}/owners/${data.id}`;
-			const rs = await request(url, 'PATCH', true, info);
-			const list = updateImmutable(companies, rs);
-			setCompanies([...list]);
-			setState({ ...initialState });
-			setSubmitButton({ add: true, edit: false });
-			setLoading(false);
-			dispatch(stopBlock());
-		} catch (e) {
-			console.log(e);
-			let message = '';
-			try {
-				message = e.message
-					?.map(m => Object.values(m.constraints).join(', '))
-					?.join(', ');
-			} catch (e) {
-				message = 'could not save hmo company';
-			}
-			notifyError(message);
-			setState({ ...initialState });
-			setLoading(false);
-			dispatch(stopBlock());
-		}
-	};
-
-	const onClickEdit = data => {
-		setSubmitButton({ edit: true, add: false });
-		setState(prevState => ({
-			...prevState,
-			name: data.name,
-			email: data.email,
-			phoneNumber: data.phoneNumber,
-			address: data.address,
-		}));
-		getDataToEdit(data);
-	};
-
-	const cancelEditButton = () => {
-		setSubmitButton({ add: true, edit: false });
-		setState({ ...initialState });
-	};
-
 	const onDeleteHmo = async data => {
 		try {
 			dispatch(startBlock());
@@ -170,6 +67,30 @@ const HmoCompany = () => {
 			dispatch(stopBlock());
 			notifyError(e.message || 'could not delete company');
 		}
+	};
+
+	const newCompany = () => {
+		setShowModal(true);
+		document.body.classList.add('modal-open');
+		setCompany(null);
+	};
+
+	const editCompany = data => {
+		setCompany(data);
+		document.body.classList.add('modal-open');
+		setSubmitButton({ edit: true, add: false });
+		setShowModal(true);
+	};
+
+	const closeModal = () => {
+		document.body.classList.remove('modal-open');
+		setShowModal(false);
+		setSubmitButton({ add: true, edit: false });
+		setCompany(null);
+	};
+
+	const updateCompany = items => {
+		setCompanies(items);
 	};
 
 	const confirmDelete = data => {
@@ -204,10 +125,17 @@ const HmoCompany = () => {
 
 	return (
 		<>
+			<div className="element-actions">
+				<a
+					onClick={() => newCompany()}
+					className="btn btn-primary btn-sm btn-outline-primary">
+					Create Company
+				</a>
+			</div>
 			<h6 className="element-header">HMO Companies</h6>
 			<div className="pipelines-w">
 				<div className="row">
-					<div className="col-lg-8">
+					<div className="col-lg-12">
 						<div className="element-wrapper">
 							<div className="element-box p-3 m-0">
 								<div className="table-responsive">
@@ -243,7 +171,7 @@ const HmoCompany = () => {
 																</td>
 																<td className="row-actions">
 																	<Tooltip title="Edit">
-																		<a onClick={() => onClickEdit(hmo)}>
+																		<a onClick={() => editCompany(hmo)}>
 																			<i className="os-icon os-icon-edit-1" />
 																		</a>
 																	</Tooltip>
@@ -280,94 +208,17 @@ const HmoCompany = () => {
 							</div>
 						</div>
 					</div>
-					<div className="col-lg-3">
-						<div className="pipeline white lined-warning">
-							<form onSubmit={edit ? onEditHmo : onAddHmo}>
-								<h6 className="form-header">{`${
-									edit ? 'Edit' : 'Add New'
-								} HMO Company`}</h6>
-								<div className="form-group">
-									<input
-										className="form-control"
-										placeholder="Name"
-										type="text"
-										name="name"
-										value={name || ''}
-										onChange={handleInputChange}
-									/>
-								</div>
-								<div className="form-group">
-									<input
-										className="form-control"
-										placeholder="E-mail"
-										type="email"
-										name="email"
-										onChange={handleInputChange}
-										value={email || ''}
-									/>
-								</div>
-								<div className="form-group">
-									<input
-										className="form-control"
-										placeholder="Phone Number"
-										type="Phone"
-										name="phoneNumber"
-										onChange={handleInputChange}
-										value={phoneNumber || ''}
-									/>
-								</div>
-								<div className="form-group">
-									<input
-										className="form-control"
-										placeholder="Address"
-										name="address"
-										type="text"
-										onChange={handleInputChange}
-										value={address || ''}
-									/>
-								</div>
-								<div className="form-buttons-w">
-									{add && (
-										<button
-											className={`btn btn-primary ${adding ? 'disabled' : ''}`}>
-											<span>
-												{adding ? (
-													<img src={waiting} alt="submitting" />
-												) : (
-													'Add'
-												)}
-											</span>
-										</button>
-									)}
-									{edit && (
-										<>
-											<button
-												className={`btn btn-secondary ${
-													loading ? 'disabled' : ''
-												}`}
-												onClick={cancelEditButton}>
-												<span>cancel</span>
-											</button>
-											<button
-												className={`btn btn-primary ${
-													loading ? 'disabled' : ''
-												}`}>
-												<span>
-													{loading ? (
-														<img src={waiting} alt="submitting" />
-													) : (
-														'save'
-													)}
-												</span>
-											</button>
-										</>
-									)}
-								</div>
-							</form>
-						</div>
-					</div>
 				</div>
 			</div>
+			{showModal && (
+				<ModalHmoCompany
+					company={company}
+					companies={companies}
+					closeModal={closeModal}
+					updateCompany={updateCompany}
+					buttonState={{ edit, add }}
+				/>
+			)}
 		</>
 	);
 };

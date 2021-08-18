@@ -5,7 +5,6 @@ import Splash from '../../components/Splash';
 
 const HmoCompany = lazy(() => import('./HmoCompany'));
 const HmoScheme = lazy(() => import('./HmoScheme'));
-const Tarrifs = lazy(() => import('./Tarrifs'));
 const AllTransaction = lazy(() => import('./AllTransaction'));
 const PendingTransactions = lazy(() => import('./PendingTransactions'));
 const NoMatch = lazy(() => import('../NoMatch'));
@@ -21,7 +20,6 @@ const Home = ({ match }) => {
 								<Switch>
 									<Route exact path={match.url} component={HmoCompany} />
 									<Route path={`${match.url}/schemes`} component={HmoScheme} />
-									<Route path={`${match.url}/tariffs`} component={Tarrifs} />
 									<Route
 										path={`${match.url}/transactions/pending`}
 										component={PendingTransactions}

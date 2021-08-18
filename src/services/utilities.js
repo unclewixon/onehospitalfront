@@ -53,6 +53,7 @@ const checkStatus = async response => {
 		if (response.statusText === 'Unauthorized') {
 			// prettier-ignore
 			(new SSRStorage()).removeItem(TOKEN_COOKIE);
+			window.location.reload(true);
 		}
 		const message = await response.text();
 		const err = JSON.parse(message);
@@ -712,3 +713,5 @@ export const parseNote = note => {
 
 	return note.description;
 };
+
+export const parseSource = source => (source === 'ward' ? 'Room' : source);

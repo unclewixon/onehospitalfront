@@ -58,7 +58,7 @@ const ConsultingTypes = ({ hmo, toggle, doToggle, category }) => {
 	useEffect(() => {
 		if (toggle && toggle.id === hmo.id) {
 			setSearchCategory(category);
-			fetchServices(1, '', searchCategory?.id || '');
+			fetchServices(1, '', category?.id || '');
 		}
 	}, [category, fetchServices, hmo, searchCategory, toggle]);
 
