@@ -18,6 +18,7 @@ import AntenatalPackage from './AntenatalPackage';
 import NicuAccommodation from './NicuAccommodation';
 import PaymentMethod from './PaymentMethod';
 import Settings from './Settings';
+import SendMail from './SendMail';
 
 const Home = ({ match, location }) => {
 	const [toggle, setToggle] = useState(false);
@@ -157,6 +158,12 @@ const Home = ({ match, location }) => {
 								</span>
 							</Link>
 						</li>
+						<li className={page === 'send-mail' ? 'active' : ''}>
+							<Link to="/settings/send-mail">
+								<i className="os-icon os-icon-layers" />
+								<span>Send Email</span>
+							</Link>
+						</li>
 					</ul>
 				</div>
 			)}
@@ -191,6 +198,7 @@ const Home = ({ match, location }) => {
 					path={`${match.url}/payment-methods`}
 					component={PaymentMethod}
 				/>
+				<Route path={`${match.url}/send-mail`} component={SendMail} />
 			</Switch>
 		</div>
 	);

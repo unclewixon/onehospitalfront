@@ -3,9 +3,7 @@ import {
 	SIGN_OUT,
 	TOGGLE_IS_MODAL,
 	TOGGLE_MODAL,
-	TOGGLE_CREATE_STAFF,
 	TOGGLE_SHOW_HISTORY,
-	TOGGLE_EDIT_STAFF,
 	TOGGLE_CREATE_INVENTORY,
 	TOGGLE_EDIT_INVENTORY,
 	TOGGLE_UPDATE_QTY,
@@ -39,7 +37,6 @@ const INITIAL_STATE = {
 	preloading: true,
 	is_modal_open: false,
 	is_modal: false,
-	create_staff: false,
 	set_leave: false,
 	show_history: false,
 	create_inventory: false,
@@ -95,14 +92,6 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, is_modal: action.payload };
 		case TOGGLE_MODAL:
 			return { ...state, is_modal_open: action.payload };
-		case TOGGLE_CREATE_STAFF:
-			return {
-				...state,
-				create_staff: action.payload.status,
-				staff: action.payload.staff,
-			};
-		case TOGGLE_EDIT_STAFF:
-			return { ...state, edit_staff: action.payload };
 		case TOGGLE_SHOW_HISTORY:
 			return { ...state, show_history: action.payload };
 		case TOGGLE_CREATE_INVENTORY:

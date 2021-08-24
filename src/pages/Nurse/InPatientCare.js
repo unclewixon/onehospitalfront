@@ -260,7 +260,8 @@ const InPatientCare = ({ match }) => {
 														!item.nicu &&
 														user &&
 														(user.role.slug === 'nurse' ||
-															user.role.slug === 'it-admin') && (
+															user.role.slug === 'it-admin') &&
+														item.status === 0 && (
 															<Tooltip title="Assign Bed">
 																<a
 																	onClick={() => assignBed(item)}

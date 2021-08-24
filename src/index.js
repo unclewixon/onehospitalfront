@@ -24,7 +24,6 @@ import history from './services/history';
 import Notify from './services/notify';
 import {
 	MODE_COOKIE,
-	FULLSCREEN_COOKIE,
 	API_URI,
 	departmentAPI,
 	rolesAPI,
@@ -56,10 +55,10 @@ const storage = new SSRStorage();
 
 const initSettings = async () => {
 	const theme_mode = await storage.getItem(MODE_COOKIE);
-	const fullscreen = await storage.getItem(FULLSCREEN_COOKIE);
+	// const fullscreen = await storage.getItem(FULLSCREEN_COOKIE);
 
 	store.dispatch(initMode(theme_mode));
-	store.dispatch(initFullscreen(fullscreen));
+	store.dispatch(initFullscreen(true));
 };
 
 const axiosFetch = (url, jwt) =>

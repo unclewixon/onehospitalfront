@@ -1,8 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import ModalCreateStaff from './ModalCreateStaff';
-import ModalEditStaff from './ModalEditStaff';
 import ModalAddTask from './ModalAddTask';
 import ModalLeaveHistory from './ModalLeaveHistory';
 import ModalCreateInventory from './ModalCreateInventory';
@@ -30,8 +28,6 @@ import ModalCreateAccount from './ModalCreateAccount';
 import ModalEditAccount from './ModalEditAccount';
 
 const ModalDialogs = ({
-	create_staff,
-	edit_staff,
 	add_task,
 	show_history,
 	create_inventory,
@@ -60,8 +56,6 @@ const ModalDialogs = ({
 }) => {
 	return (
 		<>
-			{create_staff && <ModalCreateStaff />}
-			{edit_staff && <ModalEditStaff />}
 			{add_task && <ModalAddTask />}
 			{show_history && <ModalLeaveHistory />}
 			{create_inventory && <ModalCreateInventory />}
@@ -93,8 +87,6 @@ const ModalDialogs = ({
 
 const mapStateToProps = (state, ownProps) => {
 	return {
-		create_staff: state.general.create_staff,
-		edit_staff: state.general.edit_staff,
 		show_history: state.general.show_history,
 		add_task: state.general.add_task,
 		create_inventory: state.general.create_inventory,

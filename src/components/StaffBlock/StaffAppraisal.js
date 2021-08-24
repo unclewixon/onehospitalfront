@@ -8,7 +8,6 @@ import Tooltip from 'antd/lib/tooltip';
 import { viewAppraisal } from '../../actions/general';
 import { request } from '../../services/utilities';
 import { staffAPI } from '../../services/constants';
-import { loadStaff } from '../../actions/hr';
 import { setPerformancePeriod } from '../../actions/hr';
 import {
 	loadStaffAppraisal,
@@ -19,12 +18,14 @@ import {
 class StaffAppraisal extends Component {
 	state = {
 		loading: false,
+		staffs: [],
 	};
+
 	componentDidMount() {
 		if (isEmpty(this.props.period.performancePeriod)) {
 			this.props.history.push(`${this.props.location.pathname}#appraisal`);
 		}
-		if (this.props.staffs.length === 0) {
+		if (this.state.staffs.length === 0) {
 			this.fetchStaffs();
 		}
 	}
@@ -37,8 +38,7 @@ class StaffAppraisal extends Component {
 		try {
 			this.setState({ loading: true });
 			const rs = await request(`${staffAPI}`, 'GET', true);
-			this.props.loadStaff(rs);
-			this.setState({ loading: false });
+			this.setState({ staffs: rs, loading: false });
 		} catch (error) {
 			console.log(error);
 			this.setState({ loading: false });
@@ -68,8 +68,7 @@ class StaffAppraisal extends Component {
 	};
 
 	render() {
-		const { staffs } = this.props;
-		const { loading } = this.state;
+		const { loading, staffs } = this.state;
 		return (
 			<div className="row">
 				<div className="col-sm-12">
@@ -168,14 +167,12 @@ class StaffAppraisal extends Component {
 const mapStateToProps = ({ settings, hr }) => {
 	return {
 		departments: settings.departments,
-		staffs: hr.staffs,
 		period: hr.performancePeriod,
 	};
 };
 
 export default withRouter(
 	connect(mapStateToProps, {
-		loadStaff,
 		setPerformancePeriod,
 		loadStaffAppraisal,
 		viewAppraisal,

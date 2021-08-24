@@ -12,7 +12,6 @@ import { serviceAPI } from '../services/constants';
 import { request, patientname } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
 import { notifyError } from '../services/notify';
-import { get_all_request_services } from '../actions/settings';
 
 const ProformaInvoice = props => {
 	const { register, handleSubmit, setValue, errors } = useForm();
@@ -320,13 +319,8 @@ const ProformaInvoice = props => {
 const mapStateToProps = state => {
 	return {
 		patient: state.user.patient,
-		requestServices: state.settings.request_services,
 		ServiceCategories: state.settings.service_categories,
 	};
 };
 
-export default withRouter(
-	connect(mapStateToProps, {
-		get_all_request_services,
-	})(ProformaInvoice)
-);
+export default withRouter(connect(mapStateToProps)(ProformaInvoice));

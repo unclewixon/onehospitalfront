@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState, useCallback } from 'react';
-import { useDispatch, useSelector, connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
@@ -22,11 +22,8 @@ import {
 	TOKEN_COOKIE,
 } from '../../services/constants';
 import { notifyError, notifySuccess } from '../../services/notify';
-import { addStaff } from '../../actions/hr';
-import { closeModals } from '../../actions/general';
 import { Button, Field, Select } from '../common';
 import SSRStorage from '../../services/storage';
-import { loadStaff } from '../../actions/hr';
 
 export const StepOneSchema = object({
 	username: string().required('Username is required'),
@@ -67,22 +64,17 @@ export const StepTwoSchema = object({
 
 const storage = new SSRStorage();
 
-function ModalCreateStaff({
-	countries,
-	roles,
-	banks,
-	specializations,
-	addStaff,
-	closeModals,
-	staff,
-}) {
+function ModalCreateStaff({ updateStaffs, closeModal, staff, staffs }) {
 	const [section, setSection] = useState('step-one');
 	const [form, setForm] = useState(staff);
 	const [saving, setSaving] = useState(false);
-
 	const [loading, setLoading] = useState(true);
 
 	const departments = useSelector(state => state.department);
+	const roles = useSelector(state => state.role.roles);
+	const countries = useSelector(state => state.utility.countries);
+	const banks = useSelector(state => state.utility.banks);
+	const specializations = useSelector(state => state.settings.specializations);
 
 	const dispatch = useDispatch();
 
@@ -140,7 +132,7 @@ function ModalCreateStaff({
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={() => closeModals(false)}>
+						onClick={closeModal}>
 						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -155,6 +147,7 @@ function ModalCreateStaff({
 									enableReinitialize
 									initialValues={{
 										username: form?.user?.username || '',
+										profession: form?.user?.profession || '',
 										role_id: form?.user?.role?.id || '',
 										department_id: form?.department?.id || '',
 										first_name: form?.first_name || '',
@@ -261,7 +254,7 @@ function ModalCreateStaff({
 										}
 										const user = await storage.getItem(TOKEN_COOKIE);
 										const jwt = `Bearer ${user.token}`;
-										let headers = { Authorization: jwt };
+										const headers = { Authorization: jwt };
 										if (staff) {
 											try {
 												const url = `${API_URI}/hr/staffs/${staff.id}/update`;
@@ -270,12 +263,13 @@ function ModalCreateStaff({
 												});
 												setSaving(false);
 												if (res.data?.success) {
-													let updatedStaff = res.data?.staff;
-													let { staffs } = this.props;
-													let newArray = updateImmutable(staffs, updatedStaff);
-													dispatch(loadStaff(newArray));
+													const allStaffs = updateImmutable(
+														staffs,
+														res.data?.staff
+													);
+													updateStaffs(allStaffs);
 													notifySuccess('Staff details has been saved');
-													closeModals(false);
+													closeModal();
 												} else {
 													notifyError(
 														res.data?.message || 'could not save staff details'
@@ -293,12 +287,11 @@ function ModalCreateStaff({
 												const res = await axios.post(url, formData, {
 													headers,
 												});
-												console.log(res);
 												setSaving(false);
 												if (res.data?.success) {
-													addStaff(res.data?.staff);
-													notifySuccess('Staff details has been saved');
-													closeModals(false);
+													updateStaffs([...staffs, res.data?.staff]);
+													notifySuccess('Staff account has been saved');
+													closeModal();
 												} else {
 													notifyError(
 														res.data?.message || 'could not save staff details'
@@ -337,6 +330,7 @@ function StepOne({
 }) {
 	const {
 		username,
+		profession,
 		first_name,
 		last_name,
 		other_names,
@@ -403,8 +397,17 @@ function StepOne({
 						<div className="col-sm-6">
 							<Field
 								name="username"
-								label={{ value: 'User Name' }}
+								placeholder="Username"
+								label={{ value: 'Username' }}
 								value={username}
+							/>
+						</div>
+						<div className="col-sm-6">
+							<Field
+								name="profession"
+								placeholder="Profession"
+								value={profession}
+								label={{ value: 'Profession' }}
 							/>
 						</div>
 					</div>
@@ -448,22 +451,25 @@ function StepOne({
 				<div className="col-sm-4">
 					<Field
 						name="first_name"
+						placeholder="First Name"
 						value={first_name}
-						label={{ value: 'First name' }}
+						label={{ value: 'First Name' }}
 					/>
 				</div>
 				<div className="col-sm-4">
 					<Field
 						value={last_name}
+						placeholder="Last Name"
 						name="last_name"
-						label={{ value: 'Last name' }}
+						label={{ value: 'Last Name' }}
 					/>
 				</div>
 				<div className="col-sm-4">
 					<Field
 						name="other_names"
+						placeholder="Other Name"
 						value={other_names}
-						label={{ value: 'Other name' }}
+						label={{ value: 'Other Name' }}
 					/>
 				</div>
 			</div>
@@ -530,22 +536,38 @@ function StepOne({
 					/>
 				</div>
 				<div className="col-sm-4">
-					<Field name="lga" value={lga} label={{ value: 'LGA' }} />
+					<Field
+						name="lga"
+						value={lga}
+						label={{ value: 'LGA' }}
+						placeholder="LGA"
+					/>
 				</div>
 			</div>
 			<div className="row">
 				<div className="col-sm-4">
-					<Field name="email" label={{ value: 'Email' }} value={email} />
+					<Field
+						name="email"
+						label={{ value: 'Email' }}
+						placeholder="Email"
+						value={email}
+					/>
 				</div>
 				<div className="col-sm-4">
 					<Field
 						name="phone_number"
+						placeholder="Phone Number"
 						value={phone_number}
 						label={{ value: 'Phone Number' }}
 					/>
 				</div>
 				<div className="col-sm-4">
-					<Field name="address" value={address} label={{ value: 'Address' }} />
+					<Field
+						name="address"
+						placeholder="Address"
+						value={address}
+						label={{ value: 'Address' }}
+					/>
 				</div>
 			</div>
 			<div className="row">
@@ -600,6 +622,7 @@ function StepTwo({
 				<div className="col-sm-4">
 					<Field
 						name="job_title"
+						placeholder="Job Title"
 						value={job_title}
 						label={{ value: 'Job Title' }}
 					/>
@@ -653,6 +676,7 @@ function StepTwo({
 				<div className="col-sm-4">
 					<Field
 						name="account_number"
+						placeholder="Account Number"
 						value={account_number}
 						label={{ value: 'Account Number' }}
 					/>
@@ -660,6 +684,7 @@ function StepTwo({
 				<div className="col-sm-4">
 					<Field
 						name="pension_mngr"
+						placeholder="Pension Manager"
 						value={pension_mngr}
 						label={{ value: 'Pension Manager' }}
 					/>
@@ -688,6 +713,7 @@ function StepTwo({
 				<div className="col-sm-4">
 					<Field
 						name="monthly_salary"
+						placeholder="Gross Salary (Monthly)"
 						value={monthly_salary}
 						label={{ value: 'Gross Salary (Monthly)' }}
 					/>
@@ -695,6 +721,7 @@ function StepTwo({
 				<div className="col-sm-4">
 					<Field
 						name="annual_salary"
+						placeholder="Gross Salary (Annually)"
 						value={annual_salary}
 						label={{ value: 'Gross Salary (Annually)' }}
 					/>
@@ -714,6 +741,7 @@ function StepTwo({
 				<div className="col-sm-4">
 					<Field
 						name="number_of_children"
+						placeholder="Number of Children"
 						value={number_of_children}
 						label={{ value: 'Number of Children' }}
 					/>
@@ -723,6 +751,7 @@ function StepTwo({
 				<div className="col-sm-4">
 					<Field
 						name="next_of_kin"
+						placeholder="Next of Kin Name"
 						value={next_of_kin}
 						label={{ value: 'Next of kin name' }}
 					/>
@@ -730,6 +759,7 @@ function StepTwo({
 				<div className="col-sm-4">
 					<Field
 						name="next_of_kin_relationship"
+						placeholder="Next of Kin Relationship"
 						value={next_of_kin_relationship}
 						label={{ value: 'Next of kin relationship' }}
 					/>
@@ -737,6 +767,7 @@ function StepTwo({
 				<div className="col-sm-4">
 					<Field
 						name="next_of_kin_contact_no"
+						placeholder="Next of Kin Phone Number"
 						value={next_of_kin_contact_no}
 						label={{ value: 'Next of Kin Phone Number' }}
 					/>
@@ -746,6 +777,7 @@ function StepTwo({
 				<div className="col-sm-8">
 					<Field
 						name="next_of_kin_address"
+						placeholder="Next of Kin Address"
 						value={next_of_kin_address}
 						label={{ value: 'Next of Kin address' }}
 					/>
@@ -792,16 +824,4 @@ function StepTwo({
 	);
 }
 
-const mapStateToProps = (state, ownProps) => {
-	return {
-		roles: state.role.roles,
-		countries: state.utility.countries,
-		banks: state.utility.banks,
-		specializations: state.settings.specializations,
-		staff: state.general.staff,
-	};
-};
-
-export default connect(mapStateToProps, { closeModals, addStaff })(
-	ModalCreateStaff
-);
+export default ModalCreateStaff;

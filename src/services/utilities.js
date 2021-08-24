@@ -503,11 +503,7 @@ export const redirectToPage = (role, history) => {
 			case 'paypoint':
 				uri = '/paypoint';
 				break;
-			case 'lab':
-			case 'lab-attendant':
-			case 'lab-officer':
-			case 'lab-supervisor':
-			case 'lab-hod':
+			case 'laboratory':
 				uri = '/lab';
 				break;
 			case 'radiology':

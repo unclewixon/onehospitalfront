@@ -1,15 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useCallback, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 
 import StaffItem from '../../components/StaffItem';
-import { createStaff } from '../../actions/general';
 import { request, getPageList, itemRender } from '../../services/utilities';
 import { staffAPI } from '../../services/constants';
-import { loadStaff } from '../../actions/hr';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { notifyError } from '../../services/notify';
+import TableLoading from '../../components/TableLoading';
+import ModalCreateStaff from '../../components/Modals/ModalCreateStaff';
 
 const pageLimit = 24;
 
@@ -20,10 +20,10 @@ const StaffList = () => {
 		itemsPerPage: getPageList,
 		totalPages: 0,
 	});
+	const [staffs, setStaffs] = useState([]);
+	const [showModal, setShowModal] = useState(false);
 
 	const dispatch = useDispatch();
-
-	const staffs = useSelector(state => state.hr.staffs);
 
 	const fetchStaffs = useCallback(
 		async (page, q) => {
@@ -35,11 +35,11 @@ const StaffList = () => {
 				const { result, ...meta } = rs;
 				setMeta(meta);
 				window.scrollTo({ top: 0, behavior: 'smooth' });
-				dispatch(loadStaff(result));
+				setStaffs(result);
 				setLoaded(true);
 				dispatch(stopBlock());
 			} catch (error) {
-				notifyError('error fetching patients');
+				notifyError('error fetching staffs');
 				setLoaded(true);
 				dispatch(stopBlock());
 			}
@@ -50,7 +50,6 @@ const StaffList = () => {
 	useEffect(() => {
 		if (!loaded) {
 			fetchStaffs();
-			setLoaded(true);
 		}
 	}, [fetchStaffs, loaded]);
 
@@ -59,7 +58,17 @@ const StaffList = () => {
 	};
 
 	const doCreateStaff = () => {
-		dispatch(createStaff({ status: true, staff: null }));
+		document.body.classList.add('modal-open');
+		setShowModal(true);
+	};
+
+	const closeModal = () => {
+		setShowModal(true);
+		document.body.classList.remove('modal-open');
+	};
+
+	const updateStaffs = staffs => {
+		setStaffs(staffs);
 	};
 
 	return (
@@ -79,38 +88,42 @@ const StaffList = () => {
 							<h6 className="element-header">Staff List</h6>
 							<div className="element-box p-3 m-0">
 								<div className="table-responsive">
-									<table className="table table-striped">
-										<thead>
-											<tr>
-												<th></th>
-												<th>Name</th>
-												<th>Role</th>
-												<th>Phone</th>
-												<th>Department</th>
-												<th className="text-center">Status</th>
-												<th className="text-right">Actions</th>
-											</tr>
-										</thead>
-										<tbody>
-											{staffs.map((staff, i) => {
-												return (
-													<StaffItem key={i} staff={staff} staffs={staffs} />
-												);
-											})}
-										</tbody>
-									</table>
-
-									{meta && (
-										<div className="pagination pagination-center mt-4">
-											<Pagination
-												current={parseInt(meta.currentPage, 10)}
-												pageSize={parseInt(meta.itemsPerPage, 10)}
-												total={parseInt(meta.totalPages, 10)}
-												showTotal={total => `Total ${total} staffs`}
-												itemRender={itemRender}
-												onChange={current => onNavigatePage(current)}
-											/>
-										</div>
+									{!loaded ? (
+										<TableLoading />
+									) : (
+										<>
+											<table className="table table-striped">
+												<thead>
+													<tr>
+														<th></th>
+														<th>Name</th>
+														<th>Role</th>
+														<th>Phone</th>
+														<th>Department</th>
+														<th className="text-center">Status</th>
+														<th className="text-right">Actions</th>
+													</tr>
+												</thead>
+												<tbody>
+													<StaffItem
+														staffs={staffs}
+														updateStaffs={updateStaffs}
+													/>
+												</tbody>
+											</table>
+											{meta && (
+												<div className="pagination pagination-center mt-4">
+													<Pagination
+														current={parseInt(meta.currentPage, 10)}
+														pageSize={parseInt(meta.itemsPerPage, 10)}
+														total={parseInt(meta.totalPages, 10)}
+														showTotal={total => `Total ${total} staffs`}
+														itemRender={itemRender}
+														onChange={current => onNavigatePage(current)}
+													/>
+												</div>
+											)}
+										</>
 									)}
 								</div>
 							</div>
@@ -118,6 +131,12 @@ const StaffList = () => {
 					</div>
 				</div>
 			</div>
+			{showModal && (
+				<ModalCreateStaff
+					updateStaffs={updateStaffs}
+					closeModal={() => closeModal()}
+				/>
+			)}
 		</div>
 	);
 };

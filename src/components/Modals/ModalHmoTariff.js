@@ -101,7 +101,7 @@ const ModalHmoTariff = ({ closeModal, hmo, categories }) => {
 			<div
 				className="modal-dialog modal-centered"
 				style={{ maxWidth: '1024px' }}>
-				<div className="modal-content text-center">
+				<div className="modal-content">
 					<button
 						aria-label="Close"
 						className="close"
@@ -110,7 +110,7 @@ const ModalHmoTariff = ({ closeModal, hmo, categories }) => {
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
-						<h4 className="onboarding-title">{hmo.name}</h4>
+						<h4 className="onboarding-title text-center">{hmo.name}</h4>
 						<div className="element-box m-0 p-3">
 							<div className="row">
 								<div className="col-lg-6">
@@ -151,7 +151,7 @@ const ModalHmoTariff = ({ closeModal, hmo, categories }) => {
 										{!loaded ? (
 											<TableLoading />
 										) : (
-											<div className="table-responsive text-left">
+											<div className="table-responsive">
 												<>
 													<table className="table table-striped">
 														<thead>

@@ -88,7 +88,7 @@ const AllPatients = () => {
 	);
 
 	const onNavigatePage = async nextPage => {
-		await fetchPatients(nextPage);
+		await fetchPatients(nextPage, searchValue);
 	};
 
 	const doFilter = e => {
@@ -122,6 +122,7 @@ const AllPatients = () => {
 							className="form-control"
 							name="search"
 							onChange={e => setSearchValue(e.target.value)}
+							placeholder="search for patient: emr id, name, phone number, email"
 						/>
 					</div>
 					<div className="form-group col-md-3">

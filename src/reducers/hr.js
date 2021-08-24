@@ -1,10 +1,8 @@
 import {
-	LOAD_STAFFS,
 	LOAD_APPRAISALS,
 	LOAD_LEAVE,
 	LOAD_DUTY_ROSTERS,
 	LOAD_PAYROLL,
-	ADD_STAFF,
 	LOAD_UNPAID_PAYROLL,
 	LOAD_PAYROLL_HISTORY,
 	ADD_PERFORMANCE_PERIOD,
@@ -13,7 +11,6 @@ import {
 } from '../actions/types';
 
 const INITIAL_STATE = {
-	staffs: [],
 	appraisals: [],
 	staff_leave: [],
 	duty_rosters: [],
@@ -24,12 +21,8 @@ const INITIAL_STATE = {
 	performancePeriod: {},
 };
 
-const user = (state = INITIAL_STATE, action) => {
+const hr = (state = INITIAL_STATE, action) => {
 	switch (action.type) {
-		case LOAD_STAFFS:
-			return { ...state, staffs: action.payload };
-		case ADD_STAFF:
-			return { ...state, staffs: [action.payload, ...state.staffs] };
 		case LOAD_APPRAISALS:
 			return { ...state, appraisals: action.payload };
 		case LOAD_LEAVE:
@@ -59,4 +52,4 @@ const user = (state = INITIAL_STATE, action) => {
 	}
 };
 
-export default user;
+export default hr;

@@ -174,11 +174,11 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 		);
 	};
 
-	const onCompleteDischarge = async id => {
+	const onCompleteDischarge = async data => {
 		try {
 			dispatch(startBlock());
-			const url = `${admissionAPI}/${id}/complete-discharge`;
-			const rs = await request(url, 'PUT', true, {});
+			const url = `${admissionAPI}/${data.id}/complete-discharge`;
+			const rs = await request(url, 'PUT', true, { note: data.note });
 			dispatch(stopBlock());
 			if (rs.success) {
 				const newPatient = {
@@ -213,10 +213,10 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 		}
 	};
 
-	const completeDischarge = id => {
+	const completeDischarge = data => {
 		confirmAction(
 			onCompleteDischarge,
-			id,
+			data,
 			'Completely discharge patient?',
 			'Are you sure?'
 		);

@@ -11,7 +11,6 @@ import { transactionsAPI, serviceAPI } from '../services/constants';
 import { request, patientname } from '../services/utilities';
 import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
-import { get_all_request_services } from '../actions/settings';
 
 const CreateNewTransaction = props => {
 	let history = useHistory();
@@ -378,13 +377,8 @@ const CreateNewTransaction = props => {
 const mapStateToProps = state => {
 	return {
 		patient: state.user.patient,
-		requestServices: state.settings.request_services,
 		ServiceCategories: state.settings.service_categories,
 	};
 };
 
-export default withRouter(
-	connect(mapStateToProps, {
-		get_all_request_services,
-	})(CreateNewTransaction)
-);
+export default withRouter(connect(mapStateToProps)(CreateNewTransaction));

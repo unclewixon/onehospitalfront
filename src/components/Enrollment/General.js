@@ -20,7 +20,6 @@ import {
 	lmpSource,
 	bookingPeriod,
 } from '../../services/constants';
-import { loadStaff } from '../../actions/hr';
 
 const getOptionValues = option => option.id;
 const getOptionLabels = option => patientname(option, true);
@@ -57,16 +56,16 @@ class General extends Component {
 	}
 
 	fetchStaffs = async () => {
-		if (this.props.staffs.length < 1) {
+		if (this.state.staffs.length < 1) {
 			try {
 				const rs = await request(`${staffAPI}`, 'GET', true);
-				this.props.loadStaff(rs);
+				this.setState({ staffs: rs });
 			} catch (error) {
 				console.log(error);
 			}
 		}
 
-		let staffs = this.props.staffs.map(
+		const staffs = this.state.staffs.map(
 			el => el.first_name + ' ' + el.last_name
 		);
 
@@ -222,8 +221,7 @@ General = reduxForm({
 const mapStateToProps = state => {
 	return {
 		patient: state.user.patient,
-		staffs: state.hr.staffs,
 	};
 };
 
-export default withRouter(connect(mapStateToProps, { loadStaff })(General));
+export default withRouter(connect(mapStateToProps)(General));

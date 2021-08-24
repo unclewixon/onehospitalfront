@@ -105,10 +105,7 @@ class MainMenu extends Component {
 				</div> */}
 				<ul className="main-menu" ref={ref => (this.menu_list = ref)}>
 					{role === 'front-desk' && <FrontDeskMenu />}
-					{(role === 'lab-attendant' ||
-						role === 'lab-officer' ||
-						role === 'lab-supervisor' ||
-						role === 'lab-hod') && <ClinicalLabMenu />}
+					{role === 'laboratory' && <ClinicalLabMenu />}
 					{role === 'paypoint' && <PayPointMenu />}
 					{role === 'pharmacy' && <PharmacyMenu />}
 					{role === 'radiology' && <RadiologyMenu />}
@@ -128,11 +125,9 @@ class MainMenu extends Component {
 					{role === 'accounts' && <AccountingMenu />}
 					{role === 'it-admin' && <AdminMenu role={role} />}
 					<MyAccount />
-					{(role === 'lab-attendant' ||
-						role === 'lab-officer' ||
-						role === 'lab-supervisor' ||
-						role === 'lab-hod' ||
-						role === 'it-admin') && <SettingsMenu role={role} />}
+					{(role === 'laboratory' || role === 'it-admin') && (
+						<SettingsMenu role={role} />
+					)}
 				</ul>
 			</div>
 		);

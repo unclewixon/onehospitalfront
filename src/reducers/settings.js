@@ -15,8 +15,6 @@ import {
 	GET_ALL_SPECIALIZATIONS,
 	UPDATE_SPECIALIZATION,
 	DELETE_SPECIALIZATION,
-	LOAD_STAFFS,
-	GET_ALL_REQUEST_SERVICES,
 	LOAD_SERVICES,
 	ADD_SERVICE,
 	UPDATE_SERVICE,
@@ -35,7 +33,6 @@ const INITIAL_STATE = {
 	specializations: [],
 	staff_list: [],
 	roles: [],
-	request_services: [],
 	services: [],
 	service_categories: [],
 };
@@ -232,13 +229,6 @@ const settings = (state = INITIAL_STATE, action) => {
 					s => s.id !== parseInt(action.payload.id, 10)
 				),
 			};
-
-		// staff
-		case LOAD_STAFFS:
-			return { ...state, staff_list: action.payload };
-
-		case GET_ALL_REQUEST_SERVICES:
-			return { ...state, request_services: action.payload };
 		default:
 			return state;
 	}

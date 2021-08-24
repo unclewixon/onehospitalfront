@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { Image } from 'react-bootstrap';
 
-import { updateStaff } from '../../../actions/hr';
 import waitingGif from '../../../assets/images/waiting.gif';
 import placeholder from '../../../assets/images/placeholder.jpg';
 
@@ -40,6 +39,8 @@ const EditProfile = ({ staff }) => {
 	const nationality = values.nationality;
 	const [states, setStates] = useState([]);
 	const [submitting, setSubmitting] = useState(false);
+
+	// eslint-disable-next-line no-unused-vars
 	const dispatch = useDispatch();
 
 	const sortedCountries = countries.map((country, index) => (
@@ -71,7 +72,7 @@ const EditProfile = ({ staff }) => {
 	const onFormSubmit = vals => {
 		setSubmitting(true);
 		vals.avatar = avatar;
-		dispatch(updateStaff(vals, staff?.details?.id, () => setSubmitting(false)));
+		// dispatch(updateStaff(vals, staff?.details?.id, () => setSubmitting(false)));
 	};
 
 	return (

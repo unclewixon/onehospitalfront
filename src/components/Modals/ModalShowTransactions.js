@@ -37,6 +37,7 @@ const ModalShowTransactions = ({
 	const [allChecked, setAllChecked] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
 	const [paymentMethod, setPaymentMethod] = useState('');
+	const [note, setNote] = useState('');
 
 	const dispatch = useDispatch();
 
@@ -268,6 +269,19 @@ const ModalShowTransactions = ({
 												</div>
 											)}
 										</div>
+										{isAdmitted && (
+											<div className="row">
+												<div className="form-group col-sm-12">
+													<label>Discharge note</label>
+													<textarea
+														className="form-control"
+														name="discharge_note"
+														rows="3"
+														placeholder="Enter discharge note"
+														onChange={e => setNote(e.target.value)}></textarea>
+												</div>
+											</div>
+										)}
 										<div className="col-md-12 mt-4">
 											{!isAdmitted ? (
 												<div
@@ -303,7 +317,9 @@ const ModalShowTransactions = ({
 													className="form-inline"
 													style={{ justifyContent: 'center' }}>
 													<button
-														onClick={() => completeDischarge(admissionId)}
+														onClick={() =>
+															completeDischarge({ id: admissionId, note })
+														}
 														className="btn btn-primary">
 														{submitting ? (
 															<img src={waiting} alt="submitting" />
@@ -323,12 +339,25 @@ const ModalShowTransactions = ({
 										<div className="col-sm-12">
 											<div>No Transactions Pending!</div>
 										</div>
+										<div className="row">
+											<div className="form-group col-sm-12">
+												<label>Discharge note</label>
+												<textarea
+													className="form-control"
+													name="discharge_note"
+													rows="3"
+													placeholder="Enter discharge note"
+													onChange={e => setNote(e.target.value)}></textarea>
+											</div>
+										</div>
 										<div className="col-md-12 mt-4">
 											<div
 												className="form-inline"
 												style={{ justifyContent: 'center' }}>
 												<button
-													onClick={() => completeDischarge(admissionId)}
+													onClick={() =>
+														completeDischarge({ id: admissionId, note })
+													}
 													className="btn btn-primary">
 													{submitting ? (
 														<img src={waiting} alt="submitting" />

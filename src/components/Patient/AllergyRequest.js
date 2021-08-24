@@ -73,7 +73,7 @@ const AllergyRequest = props => {
 								</div>
 
 								<div className="form-group col-sm-6">
-									<label>Allergy00</label>
+									<label>Allergy</label>
 									<input
 										className="form-control"
 										placeholder="Allergy"
@@ -122,7 +122,7 @@ const AllergyRequest = props => {
 										{submitting ? (
 											<img src={waiting} alt="submitting" />
 										) : (
-											'Create Allergy Request'
+											'Save'
 										)}
 									</button>
 								</div>

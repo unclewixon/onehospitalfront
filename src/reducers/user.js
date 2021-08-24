@@ -45,9 +45,7 @@ const INITIAL_STATE = {
 const user = (state = INITIAL_STATE, action) => {
 	switch (action.type) {
 		case UPDATE_STAFF:
-			let prof = state.profile;
-			prof.details = action.payload;
-			return { ...state, profile: prof };
+			return { ...state, profile: { ...state.profile, ...action.payload } };
 		case SET_PROFILE:
 			return { ...state, profile: action.payload, loggedIn: action.status };
 		case SIGN_OUT:

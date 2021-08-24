@@ -2,9 +2,7 @@ import {
 	TOGGLE_PRELOADING,
 	TOGGLE_MODAL,
 	TOGGLE_IS_MODAL,
-	TOGGLE_CREATE_STAFF,
 	TOGGLE_SET_LEAVE,
-	TOGGLE_EDIT_STAFF,
 	TOGGLE_ADD_TASK,
 	TOGGLE_SHOW_HISTORY,
 	TOGGLE_CREATE_INVENTORY,
@@ -72,20 +70,6 @@ export const toggleModal = status => {
 };
 
 //Hr Modals
-export const toggleCreateStaff = payload => {
-	return {
-		type: TOGGLE_CREATE_STAFF,
-		payload,
-	};
-};
-
-export const toggleEditStaff = status => {
-	return {
-		type: TOGGLE_EDIT_STAFF,
-		payload: status,
-	};
-};
-
 export const toggleShowHistory = status => {
 	return {
 		type: TOGGLE_SHOW_HISTORY,
@@ -300,10 +284,8 @@ export const toggleAddNewObservation = status => {
 export const closeModals = () => {
 	return dispatch => {
 		dispatch(toggleModal(false));
-		dispatch(toggleCreateStaff({ status: false, staff: null }));
 		dispatch(toggleShowHistory(false));
 		dispatch(toggleAddTask(false));
-		dispatch(toggleEditStaff(false));
 		dispatch(toggleCreateInventory(false));
 		dispatch(toggleApplyVoucher(false));
 		dispatch(toggleEditInventory(false));
@@ -350,26 +332,11 @@ export const closeEditPayRoll = is_modal => {
 	};
 };
 
-export const createStaff = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleCreateStaff(action));
-	};
-};
 export const showHistory = action => {
 	return dispatch => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleShowHistory(action));
-	};
-};
-
-export const editStaff = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleEditStaff(action));
 	};
 };
 

@@ -17,8 +17,6 @@ import {
 	GET_ALL_SPECIALIZATIONS,
 	UPDATE_SPECIALIZATION,
 	DELETE_SPECIALIZATION,
-	LOAD_STAFFS,
-	GET_ALL_REQUEST_SERVICES,
 	LOAD_SERVICES,
 	ADD_SERVICE,
 	UPDATE_SERVICE,
@@ -26,11 +24,6 @@ import {
 	LOAD_SERVICES_CATEGORIES,
 	RESET_SERVICES,
 } from './types';
-
-//Request Service
-export const get_all_request_services = payload => {
-	return { type: GET_ALL_REQUEST_SERVICES, payload };
-};
 
 //Services
 export const loadServiceCategories = payload => {
@@ -190,13 +183,6 @@ export const deleteSpecialization = payload => {
 	};
 };
 
-export const get_all_staff = payload => {
-	return {
-		type: LOAD_STAFFS,
-		payload,
-	};
-};
-
 //Leave Category
 export const addLeaveCategory = data => {
 	return dispatch => {
@@ -259,39 +245,6 @@ export const deleteLeaveCategory = data => {
 				.delete(`${API_URI}/leave-category/${data.id}`)
 				.then(response => {
 					dispatch(delete_leave_category(data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-//GET ALL STAFF
-export const getAllStaff = data => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.get(`${API_URI}/hr/staffs`)
-				.then(response => {
-					dispatch(get_all_staff(response.data));
-					return resolve({ success: true });
-				})
-				.catch(error => {
-					return reject({ success: false });
-				});
-		});
-	};
-};
-
-export const getAllRequestServices = () => {
-	return dispatch => {
-		return new Promise((resolve, reject) => {
-			axios
-				.get(`${API_URI}/request-types`)
-				.then(response => {
-					dispatch(get_all_request_services(response.data));
 					return resolve({ success: true });
 				})
 				.catch(error => {

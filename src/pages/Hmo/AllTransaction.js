@@ -66,7 +66,7 @@ class AllTransaction extends Component {
 	fetchHmos = async () => {
 		try {
 			this.setState({ loading: true });
-			const rs = await request('hmos?limit=100', 'GET', true);
+			const rs = await request('hmos/schemes?limit=1000', 'GET', true);
 			const hmos = rs.result.map(hmo => {
 				return {
 					value: hmo.id,
