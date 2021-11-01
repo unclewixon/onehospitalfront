@@ -24,7 +24,9 @@ export const patientSchema = yup.object().shape({
 		.required("Please enter the patient's marital status"),
 	gender: yup.string().required("Please enter the patient's gender"),
 	address: yup.string().required("Please enter the patient's address"),
-	phoneNumber: yup.string().required("Please enter the patient's phone number"),
+	phone_number: yup
+		.string()
+		.required("Please enter the patient's phone number"),
 	hmoId: yup.string().required('Please select HMO'),
 	ethnicity: yup.string().required("Please select patient's ethnicity"),
 });

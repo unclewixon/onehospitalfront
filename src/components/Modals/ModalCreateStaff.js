@@ -257,6 +257,8 @@ function ModalCreateStaff({ updateStaffs, closeModal, staff, staffs }) {
 										const jwt = `Bearer ${user.token}`;
 										const headers = { Authorization: jwt };
 										if (staff) {
+											console.log(params);
+											console.log(...formData);
 											try {
 												const url = `${API_URI}/hr/staffs/${staff.id}/update`;
 												const res = await axios.patch(url, formData, {

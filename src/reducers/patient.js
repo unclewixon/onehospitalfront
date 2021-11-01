@@ -115,6 +115,7 @@ const patient = (state = INITIAL_STATE, action) => {
 		case CAN_CLOSE_LABOUR:
 			return { ...state, canCloseLabour: true };
 		case NEXT_STEP:
+			console.log(action.payload);
 			return { ...state, formData: action.payload, formStep: 2 };
 		case RESET_STEP:
 			return { ...state, formStep: 1, formData: {} };

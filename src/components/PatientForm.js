@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import Select from 'react-select';
@@ -114,6 +114,7 @@ function PatientForm(props) {
 
 	const onSubmit = values => {
 		values.avatar = avatar;
+		console.log(values);
 		props.nextStep(values);
 	};
 
@@ -146,7 +147,7 @@ function PatientForm(props) {
 	};
 
 	return (
-		<Fragment>
+		<>
 			<div className="modal-header faded smaller">
 				<h5 className="form-header">{formTitle}</h5>
 				<button
@@ -479,7 +480,7 @@ function PatientForm(props) {
 					</div>
 				</form>
 			</div>
-		</Fragment>
+		</>
 	);
 }
 

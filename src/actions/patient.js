@@ -79,6 +79,7 @@ export const updatePatient = data => {
 };
 
 export const nextStep = data => {
+	console.log(data);
 	return {
 		type: NEXT_STEP,
 		payload: data,
