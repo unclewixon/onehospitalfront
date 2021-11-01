@@ -116,7 +116,11 @@ function ModalCreateStaff({ updateStaffs, closeModal, staff, staffs }) {
 		}
 
 		if (form !== null && form[entry] !== null) {
-			return moment(form[entry]).toDate(); //;
+			try {
+				return moment(form[entry]).toDate(); //;
+			} catch (e) {
+				return '';
+			}
 		} else {
 			return '';
 		}
@@ -148,7 +152,7 @@ function ModalCreateStaff({ updateStaffs, closeModal, staff, staffs }) {
 									enableReinitialize
 									initialValues={{
 										username: form?.user?.username || '',
-										profession: form?.user?.profession || '',
+										profession: form?.profession || '',
 										role_id: form?.user?.role?.id || '',
 										department_id: form?.department?.id || '',
 										first_name: form?.first_name || '',
@@ -255,10 +259,11 @@ function ModalCreateStaff({ updateStaffs, closeModal, staff, staffs }) {
 										}
 										const user = await storage.getItem(TOKEN_COOKIE);
 										const jwt = `Bearer ${user.token}`;
-										const headers = { Authorization: jwt };
+										const headers = {
+											Authorization: jwt,
+											'content-type': 'multipart/form-data',
+										};
 										if (staff) {
-											console.log(params);
-											console.log(...formData);
 											try {
 												const url = `${API_URI}/hr/staffs/${staff.id}/update`;
 												const res = await axios.patch(url, formData, {

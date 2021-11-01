@@ -136,7 +136,6 @@ function PatientNOKForm(props) {
 				? moment(data.date_of_birth).format('YYYY-MM-DD')
 				: '',
 		};
-		console.log(datum);
 		const formDataObj = new FormData();
 		const unValidatedFields = [
 			'occupation',
