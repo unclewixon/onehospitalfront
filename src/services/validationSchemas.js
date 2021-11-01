@@ -79,8 +79,8 @@ export const validateAntenatal = values => {
 	if (!values.bookingPeriod || values.bookingPeriod === '') {
 		errors.bookingPeriod = 'select booking period';
 	}
-	if (!values.requiredCare || values.requiredCare.length === 0) {
-		errors.requiredCare = 'select required care(s)';
+	if (!values.doctors || values.doctors.length === 0) {
+		errors.doctors = 'select doctors';
 	}
 
 	if (!values.lmpSource || values.lmpSource === '') {
@@ -114,9 +114,6 @@ export const validateAntenatal = values => {
 	}
 	if (!values.abortion || values.abortion === '') {
 		errors.abortion = 'select abortion';
-	}
-	if (!values.package || values.package === '') {
-		errors.package = 'select antenatal package';
 	}
 	return errors;
 };

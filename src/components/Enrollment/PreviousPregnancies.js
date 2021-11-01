@@ -29,7 +29,7 @@ export class PreviousPregnancies extends Component {
 									id="gravida"
 									name="gravida"
 									component={renderSelect}
-									label="Gravida"
+									label="Gravida (number of pregancies)"
 									placeholder="Select Gravida"
 									data={gravida}
 								/>
@@ -39,7 +39,7 @@ export class PreviousPregnancies extends Component {
 									id="para"
 									name="para"
 									component={renderSelect}
-									label="Select Para"
+									label="Select Para (number of deliveries)"
 									placeholder="Select Para"
 									data={para}
 								/>
@@ -52,7 +52,7 @@ export class PreviousPregnancies extends Component {
 									id="alive"
 									name="alive"
 									component={renderSelect}
-									label="Alive"
+									label="Alive (children alive)"
 									placeholder="Select Alive"
 									data={previousPregnancies}
 								/>

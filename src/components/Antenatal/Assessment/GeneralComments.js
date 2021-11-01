@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
 
-import { validate } from '../../services/validationSchemas';
-import { renderTextArea } from '../../services/utilities';
+import { validate } from '../../../services/validationSchemas';
+import { renderTextArea } from '../../../services/utilities';
 
 class GeneralComments extends Component {
 	render() {

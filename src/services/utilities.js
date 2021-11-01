@@ -257,11 +257,7 @@ export const formatPatientId = data => {
 		formattedId = '0' + formattedId;
 		len--;
 	}
-	return `${formattedId}${
-		data.legacy_patient_id && data.legacy_patient_id !== ''
-			? ` [${data.legacy_patient_id}]`
-			: ''
-	}`;
+	return formattedId;
 };
 
 export const renderMultiselect = ({

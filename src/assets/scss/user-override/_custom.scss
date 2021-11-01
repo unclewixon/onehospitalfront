@@ -817,9 +817,11 @@ div[class$='-ValueContainer'] {
 	cursor: default !important;
 }
 
-.breadcrumb-item a {
-	font-size: 11px;
-	line-height: 24px;
+.breadcrumb-item {
+	a {
+		font-size: 13px;
+		line-height: 24px;
+	}
 }
 
 .filter-side {
@@ -859,4 +861,8 @@ h4.onboarding-title {
 	div[class$='-menu'] {
 		z-index: 10000 !important;
 	}
+}
+
+.text-dotted-underline {
+	text-decoration: underline dashed;
 }

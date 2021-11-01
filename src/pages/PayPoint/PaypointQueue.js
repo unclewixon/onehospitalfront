@@ -1,25 +1,17 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import Pagination from 'antd/lib/pagination';
 import DatePicker from 'antd/lib/date-picker';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
-import { Popover, Overlay } from 'react-bootstrap';
 
 import waiting from '../../assets/images/waiting.gif';
 import { searchAPI } from '../../services/constants';
 import TransactionTable from '../../components/Tables/TransactionTable';
 import { socket } from '../../services/constants';
 import { request, itemRender, patientname } from '../../services/utilities';
-import Reciept from './../../components/Invoice/Reciept';
-import Invoice from './../../components/Invoice/Invoice';
-import {
-	getAllPendingTransactions,
-	showInvoiceToPrint,
-	showReceiptToPrint,
-} from './../../actions/paypoint';
-import PrintReceiptPortal from './PrintReceiptPortal';
+import { getAllPendingTransactions } from './../../actions/paypoint';
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import TableLoading from '../../components/TableLoading';
@@ -27,10 +19,8 @@ import TableLoading from '../../components/TableLoading';
 const { RangePicker } = DatePicker;
 
 const PaypointQueue = () => {
-	const [show, setShow] = useState(false);
 	const [loaded, setLoaded] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const [target, setTarget] = useState(null);
 	const [listenning, setListenning] = useState(false);
 	const [filtering, setFiltering] = useState(false);
 	const [patient, setPatient] = useState('');
@@ -41,17 +31,12 @@ const PaypointQueue = () => {
 		itemsPerPage: 24,
 		totalPages: 0,
 	});
-	const ref = useRef(null);
 
 	const dispatch = useDispatch();
 
 	const transactions = useSelector(
 		({ paypoint }) => paypoint.pendingTransactions
 	);
-	const activeData = useSelector(({ paypoint }) => paypoint.transactionData);
-	const showInvoice = useSelector(({ paypoint }) => paypoint.showInvoice);
-	const showReceipt = useSelector(({ paypoint }) => paypoint.showReceipt);
-
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option => patientname(option, true);
 
@@ -128,19 +113,6 @@ const PaypointQueue = () => {
 		}
 	}, [dispatch, init, listenning, transactions, loaded]);
 
-	const handlePrintClick = (event, data) => {
-		setShow(!show);
-		setTarget(event.target);
-	};
-
-	const onPrintReceipt = () => {
-		dispatch(showReceiptToPrint(!showReceipt));
-	};
-
-	const onPrintInvoice = () => {
-		dispatch(showInvoiceToPrint(!showInvoice));
-	};
-
 	const doFilter = e => {
 		e.preventDefault();
 		setFiltering(true);
@@ -196,8 +168,8 @@ const PaypointQueue = () => {
 								<TransactionTable
 									transactions={transactions}
 									showActionBtns={true}
-									handlePrint={handlePrintClick}
 									queue={true}
+									showPrint={true}
 								/>
 							)}
 							{meta && (
@@ -212,57 +184,10 @@ const PaypointQueue = () => {
 									/>
 								</div>
 							)}
-							<Overlay
-								show={show}
-								target={target}
-								placement="left"
-								container={ref.current}>
-								<Popover id="print" style={{ width: '10rem' }}>
-									<Popover.Title>Print</Popover.Title>
-									<div action>
-										<button
-											onClick={onPrintInvoice}
-											style={{
-												border: 'none',
-												background: '#fff',
-												width: '100%',
-												textAlign: 'center',
-												paddingTop: '0.5rem',
-												paddingBottom: '0.5rem',
-											}}>
-											INVOICE
-										</button>
-									</div>
-									<div action>
-										<button
-											onClick={onPrintReceipt}
-											style={{
-												border: 'none',
-												background: '#fff',
-												width: '100%',
-												textAlign: 'center',
-												paddingTop: '0.5rem',
-												paddingBottom: '0.5rem',
-											}}>
-											RECEIPT
-										</button>
-									</div>
-								</Popover>
-							</Overlay>
 						</>
 					)}
 				</div>
 			</div>
-			{activeData && showReceipt && (
-				<PrintReceiptPortal>
-					<Reciept data={activeData} />
-				</PrintReceiptPortal>
-			)}
-			{activeData && showInvoice && (
-				<PrintReceiptPortal>
-					<Invoice data={activeData} />
-				</PrintReceiptPortal>
-			)}
 		</>
 	);
 };

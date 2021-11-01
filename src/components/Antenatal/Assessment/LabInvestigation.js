@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { validate } from '../../services/validationSchemas';
+import { Field, reduxForm } from 'redux-form';
+
+import { validate } from '../../../services/validationSchemas';
 import {
 	renderTextInput,
 	renderSelect,
 	renderMultiselect,
-} from '../../services/utilities';
-import { Field, reduxForm } from 'redux-form';
+} from '../../../services/utilities';
 
 const fetal = [{ id: 'Lab', name: 'Lab' }];
 

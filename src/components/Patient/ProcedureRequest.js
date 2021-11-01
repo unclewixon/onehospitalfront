@@ -111,7 +111,7 @@ const ProcedureRequest = ({ module, history, location }) => {
 	};
 
 	return (
-		<div className={module && module === 'patient' ? 'col-sm-12' : ''}>
+		<div className={!module || (module && module === '') ? '' : 'col-sm-12'}>
 			<div className="element-box m-0 p-3">
 				<div className="form-block w-100">
 					<form onSubmit={handleSubmit(onSubmit)}>

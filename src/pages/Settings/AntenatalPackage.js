@@ -22,8 +22,24 @@ const AntenatalPackage = () => {
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	const [payload, getDataToEdit] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
-	// eslint-disable-next-line no-unused-vars
-	const [meta, setMeta] = useState(null);
+
+	const fetchPackages = useCallback(async () => {
+		try {
+			const rs = await request('antenatal-packages', 'GET', true);
+			const { result } = rs;
+			setPackages([...result]);
+			setDataLoaded(true);
+		} catch (error) {
+			setDataLoaded(true);
+			notifyError(error.message || 'could not fetch antenatal packages!');
+		}
+	}, []);
+
+	useEffect(() => {
+		if (!dataLoaded) {
+			fetchPackages();
+		}
+	}, [dataLoaded, fetchPackages]);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -100,25 +116,6 @@ const AntenatalPackage = () => {
 		setSubmitButton({ save: true, edit: false });
 		setState({ ...initialState });
 	};
-
-	const fetchPackages = useCallback(async () => {
-		try {
-			const rs = await request('antenatal-packages', 'GET', true);
-			const { result, ...info } = rs;
-			setPackages([...result]);
-			setMeta(info);
-			setDataLoaded(true);
-		} catch (error) {
-			setDataLoaded(true);
-			notifyError(error.message || 'could not fetch antenatal packages!');
-		}
-	}, []);
-
-	useEffect(() => {
-		if (!dataLoaded) {
-			fetchPackages();
-		}
-	}, [dataLoaded, fetchPackages]);
 
 	return (
 		<div className="content-i">

@@ -10,7 +10,7 @@ import { startBlock, stopBlock } from '../../actions/redux-block';
 import CreateNote from '../Modals/CreateNote';
 import { staffname } from '../../services/utilities';
 
-const Notes = () => {
+const Notes = ({ can_request = true }) => {
 	const [loading, setLoading] = useState(true);
 	const [notes, setNotes] = useState([]);
 	const [meta, setMeta] = useState({
@@ -77,11 +77,13 @@ const Notes = () => {
 		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<div className="element-actions flex-action">
-					<a
-						className="btn btn-sm btn-secondary text-white ml-3"
-						onClick={() => newEntry()}>
-						New Note
-					</a>
+					{can_request && (
+						<a
+							className="btn btn-sm btn-secondary text-white ml-3"
+							onClick={() => newEntry()}>
+							New Note
+						</a>
+					)}
 				</div>
 				<h6 className="element-header">Antenatal Notes</h6>
 				<div className="element-box p-3 m-0">
@@ -93,8 +95,6 @@ const Notes = () => {
 								<thead>
 									<tr>
 										<th>Date</th>
-										<th>Type</th>
-										<th>Specialty</th>
 										<th>Note</th>
 										<th nowrap="nowrap">Noted By</th>
 									</tr>
@@ -106,8 +106,6 @@ const Notes = () => {
 												<td nowrap="nowrap">
 													{formatDate(item.createdAt, 'D-MMM-YYYY h:mm A')}
 												</td>
-												<td>{item.type}</td>
-												<td>{item.specialty || '--'}</td>
 												<td>
 													<div
 														dangerouslySetInnerHTML={{
@@ -142,6 +140,7 @@ const Notes = () => {
 					closeModal={closeModal}
 					updateNote={updateNote}
 					antenatal_id={antenatal.id}
+					type="antenatal"
 				/>
 			)}
 		</div>

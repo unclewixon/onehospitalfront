@@ -43,8 +43,9 @@ class PayPoint extends Component {
 		this.fetchTransaction(nextPage);
 	};
 
-	handlePrintClick = () => {
+	handlePrintClick = item => {
 		console.log('print');
+		console.log(item);
 	};
 
 	render() {
@@ -63,6 +64,7 @@ class PayPoint extends Component {
 									showActionBtns={true}
 									handlePrint={this.handlePrintClick}
 									queue={false}
+									showPrint={true}
 								/>
 							</div>
 							{meta && (

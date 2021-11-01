@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component, Suspense, lazy, Fragment } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { Switch, withRouter } from 'react-router-dom';
 
 import { toggleProfile } from '../actions/user';
@@ -16,11 +16,12 @@ const Notes = lazy(() => import('../components/IVF/Notes'));
 const storage = new SSRStorage();
 
 const Page = ({ location }) => {
+	const labour = useSelector(state => state.user.item);
 	const hash = location.hash.substr(1).split('#');
 	switch (hash[0]) {
 		case 'notes':
 		default:
-			return <Notes />;
+			return <Notes can_request={labour && labour.status === 0} />;
 	}
 };
 

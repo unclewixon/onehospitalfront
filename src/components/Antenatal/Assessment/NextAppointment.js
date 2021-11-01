@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { validate } from '../../services/validationSchemas';
 import { reduxForm } from 'redux-form';
-import waiting from '../../assets/images/waiting.gif';
-
 import DatePicker from 'react-datepicker';
+
+import { validate } from '../../../services/validationSchemas';
+import waiting from '../../../assets/images/waiting.gif';
 
 class NextAppointment extends Component {
 	render() {

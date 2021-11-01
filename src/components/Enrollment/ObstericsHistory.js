@@ -1,21 +1,11 @@
 import React, { Component } from 'react';
-import { renderSelect } from '../../services/utilities';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
-import { validateAntenatal } from '../../services/validationSchemas';
-import { FamilyHistory } from './FamilyHistory';
-import { obstericHistory } from '../../services/constants';
-import { SocialHistory } from './SocialHistory';
-import { ObstericHistory } from './ObstericHistory';
-import { SexualHistory } from './SexualHistory';
-import GynaeHistory from './GynaeHistory';
-import { GynaePap } from './GynaePap';
-import { FGM } from './FGM';
-import { PastOcular } from './PastOcular';
-import { PhysicalExam } from './PhysicalExam';
-import { InitialAssessment } from './InitialAssessment';
-import { LabObservation } from './LabObservation';
-import { RoutineAssessment } from './RoutineAssessment';
 import { connect } from 'react-redux';
+
+import { renderSelect } from '../../services/utilities';
+import { validateAntenatal } from '../../services/validationSchemas';
+import { obstericHistory } from '../../services/constants';
+import { ObstericHistory } from './ObstericHistory';
 
 const validate = validateAntenatal;
 
@@ -24,58 +14,16 @@ const selector = formValueSelector('antenatal');
 export class ObstericsHistory extends Component {
 	obstHistory = value => {
 		switch (value) {
-			case 'Family History':
-				return <FamilyHistory />;
-			case 'Social History':
-				return <SocialHistory />;
-			case 'Gynae History':
-				return (
-					<GynaeHistory
-						setLmpHx={this.props.setDate}
-						lmpHx={this.props.lmpHx}
-					/>
-				);
 			case 'Obsteric History':
 				return (
-					<ObstericHistory setDate={this.props.setDate} dob={this.props.dob} />
-				);
-			case 'Sexual History':
-				return <SexualHistory />;
-			case 'Gynae Pap-Mear History':
-				return <GynaePap />;
-			case 'FGM':
-				return <FGM />;
-			case 'Past Ocular History':
-				return <PastOcular />;
-			case 'Antenatal General/Physical Examination':
-				return <PhysicalExam />;
-			case 'Antenatal Initial Assessment':
-				return (
-					<InitialAssessment dom={this.props.dom} setDom={this.props.setDate} />
-				);
-			case 'Antenatal Lab Observations':
-				return <LabObservation />;
-			case 'Antenatal Routine Assessments':
-				return (
-					<RoutineAssessment
-						gest_date={this.props.gest_date}
-						setGest={this.props.setDate}
-					/>
+					<ObstericHistory setDate={this.props.setInput} dob={this.props.dob} />
 				);
 			default:
 				break;
 		}
 	};
 	render() {
-		const {
-			handleSubmit,
-			previousPage,
-			error,
-			page,
-			value,
-			//setLmpHx,
-			//lmpHx,
-		} = this.props;
+		const { handleSubmit, previousPage, error, page, value } = this.props;
 		return (
 			<>
 				<h6 className="element-header">Step {page}. Obsterics History</h6>
@@ -98,7 +46,9 @@ export class ObstericsHistory extends Component {
 									component={renderSelect}
 									label="Select Previous Obsteric History"
 									placeholder="Select Previous Obsteric History"
-									data={obstericHistory}
+									data={obstericHistory.filter(
+										o => o.id === 'Obsteric History'
+									)}
 								/>
 							</div>
 						</div>
@@ -138,4 +88,4 @@ const mapStateToProps = state => {
 	};
 };
 
-export default connect(mapStateToProps, null)(ObstericsHistory);
+export default connect(mapStateToProps)(ObstericsHistory);

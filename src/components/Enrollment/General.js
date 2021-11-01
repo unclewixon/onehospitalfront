@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { withRouter } from 'react-router-dom';
@@ -10,218 +10,199 @@ import moment from 'moment';
 import {
 	renderTextInput,
 	renderSelect,
-	renderMultiselect,
 	patientname,
+	staffname,
 } from '../../services/utilities';
 import { request } from '../../services/utilities';
-import {
-	searchAPI,
-	staffAPI,
-	lmpSource,
-	bookingPeriod,
-} from '../../services/constants';
-
-const getOptionValues = option => option.id;
-const getOptionLabels = option => patientname(option, true);
-
-const getOptions = async q => {
-	if (!q || q.length < 1) {
-		return [];
-	}
-
-	const url = `${searchAPI}?q=${q}`;
-	const res = await request(url, 'GET', true);
-	return res;
-};
+import { searchAPI, lmpSource, bookingPeriod } from '../../services/constants';
 
 const validate = values => {
 	const errors = {};
-	// if (!values.name) {
-	// 	errors.name = 'enter vendor';
-	// }
-
 	return errors;
 };
 
-class General extends Component {
-	state = {
-		searching: false,
-		query: '',
-		staffs: [],
-		patient: null,
-	};
+const General = ({
+	location,
+	handleSubmit,
+	onSubmit,
+	error,
+	page,
+	setPatient,
+	patient,
+	setInput,
+	lmp,
+	setDoctors,
+	doctors,
+}) => {
+	const getOptionValues = option => option.id;
+	const getOptionLabels = option => patientname(option, true);
 
-	componentDidMount() {
-		this.fetchStaffs();
-	}
-
-	fetchStaffs = async () => {
-		if (this.state.staffs.length < 1) {
-			try {
-				const rs = await request(`${staffAPI}`, 'GET', true);
-				this.setState({ staffs: rs });
-			} catch (error) {
-				console.log(error);
-			}
+	const getOptions = async q => {
+		if (!q || q.length < 1) {
+			return [];
 		}
 
-		const staffs = this.state.staffs.map(
-			el => el.first_name + ' ' + el.last_name
-		);
-
-		this.setState({ staffs });
+		const url = `${searchAPI}?q=${q}&gender=female`;
+		const res = await request(url, 'GET', true);
+		return res;
 	};
 
-	patientSet = patient => {
-		this.props.setPatient(patient.id, patientname(patient));
-		this.setState({ patient });
+	const getOptionValuesStaff = option => option.id;
+	const getOptionLabelsStaff = option => staffname(option);
+
+	const getOptionsStaff = async q => {
+		if (!q || q.length < 1) {
+			return [];
+		}
+
+		const url = `hr/staffs/find?q=${q}&profession=Doctor`;
+		const res = await request(url, 'GET', true);
+		return res;
 	};
 
-	render() {
-		const { handleSubmit, error, page } = this.props;
-		const { patient } = this.state;
-		return (
-			<>
-				<h6 className="element-header">Step {page}. General</h6>
-				<div className="form-block">
-					<form onSubmit={handleSubmit}>
-						{error && (
-							<div
-								className="alert alert-danger"
-								dangerouslySetInnerHTML={{
-									__html: `<strong>Error!</strong> ${error}`,
-								}}
+	return (
+		<>
+			<h6 className="element-header">Step {page}. General</h6>
+			<div className="form-block">
+				<form onSubmit={handleSubmit(onSubmit)}>
+					{error && (
+						<div
+							className="alert alert-danger"
+							dangerouslySetInnerHTML={{
+								__html: `<strong>Error!</strong> ${error}`,
+							}}
+						/>
+					)}
+
+					{location.hash ? null : (
+						<div className="row">
+							<div className="form-group col-sm-12">
+								<label>Patient</label>
+
+								<AsyncSelect
+									isClearable
+									getOptionValue={getOptionValues}
+									getOptionLabel={getOptionLabels}
+									defaultOptions
+									name="patient"
+									value={patient}
+									loadOptions={getOptions}
+									onChange={e => setPatient(e)}
+									placeholder="Search patients"
+								/>
+							</div>
+						</div>
+					)}
+					<div className="row">
+						<div className="col-sm-6">
+							<Field
+								id="bookingPeriod"
+								name="bookingPeriod"
+								component={renderSelect}
+								label="Indication for booking"
+								placeholder="Select bookings"
+								data={bookingPeriod}
 							/>
-						)}
+						</div>
 
-						{this.props.location.hash ? null : (
-							<div className="row">
-								<div className="form-group col-sm-12">
-									<label>Patient</label>
+						<div className="col-sm-6">
+							<label>Doctor</label>
+							<AsyncSelect
+								isClearable
+								isMulti
+								getOptionValue={getOptionValuesStaff}
+								getOptionLabel={getOptionLabelsStaff}
+								defaultOptions
+								name="doctors"
+								value={doctors}
+								loadOptions={getOptionsStaff}
+								onChange={e => setDoctors(e)}
+								placeholder="Search doctors"
+							/>
+						</div>
+					</div>
 
-									<AsyncSelect
-										isClearable
-										getOptionValue={getOptionValues}
-										getOptionLabel={getOptionLabels}
-										defaultOptions
-										name="patient"
-										value={patient}
-										loadOptions={getOptions}
-										onChange={e => this.patientSet(e)}
-										placeholder="Search patients"
+					<div className="row">
+						<div className="col-sm-6">
+							<div className="form-group">
+								<label>LMP</label>
+								<div className="custom-date-input">
+									<DatePicker
+										selected={lmp}
+										onChange={date => setInput(date, 'lmp')}
+										peekNextMonth
+										showMonthDropdown
+										showYearDropdown
+										dropdownMode="select"
+										dateFormat="dd-MMM-yyyy"
+										className="single-daterange form-control"
+										placeholderText="Select LMP"
+										maxDate={new Date()}
+										required
 									/>
 								</div>
 							</div>
-						)}
-						<div className="row">
-							<div className="col-sm-6">
-								<Field
-									id="bookingPeriod"
-									name="bookingPeriod"
-									component={renderSelect}
-									label="Indication for booking"
-									placeholder="Select bookings"
-									data={bookingPeriod}
-								/>
-							</div>
-
-							<div className="col-sm-6">
-								<label>Care</label>
-								<Field
-									name="requiredCare"
-									component={renderMultiselect}
-									defaultValue={[]}
-									data={this.state.staffs}
-								/>
-							</div>
 						</div>
 
-						<div className="row">
-							<div className="col-sm-6">
-								<div className="form-group">
-									<label>LMP</label>
-									<div className="custom-date-input">
-										<DatePicker
-											selected={this.props.lmp}
-											onChange={date => this.props.setDate(date, 'lmp')}
-											peekNextMonth
-											showMonthDropdown
-											showYearDropdown
-											dropdownMode="select"
-											dateFormat="dd-MMM-yyyy"
-											className="single-daterange form-control"
-											placeholderText="Select date of birth"
-											maxDate={new Date()}
-											required
-										/>
-									</div>
-								</div>
-							</div>
-
-							<div className="col-sm-6">
-								<Field
-									id="lmpSource"
-									name="lmpSource"
-									component={renderSelect}
-									label="Select Lmp Source"
-									placeholder="Select lmp source"
-									data={lmpSource}
-								/>
-							</div>
+						<div className="col-sm-6">
+							<Field
+								id="lmpSource"
+								name="lmpSource"
+								component={renderSelect}
+								label="Select LMP Source"
+								placeholder="Select lmp source"
+								data={lmpSource}
+							/>
 						</div>
+					</div>
 
-						<div className="row">
-							<div className="col-sm-12">
-								<Field
-									id="e_o_d"
-									name="e_o_d"
-									component={renderTextInput}
-									value={
-										this.props.lmp
-											? moment(this.props.lmp)
-													.add(9, 'M')
-													.format('DD-MM-YYYY')
-											: ''
-									}
-									label="E.O.D"
-									type="text"
-									placeholder={
-										this.props.lmp
-											? moment(this.props.lmp)
-													.add(9, 'M')
-													.format('DD-MM-YYYY')
-											: ''
-									}
-									readOnly
-								/>
-							</div>
+					<div className="row">
+						<div className="col-sm-12">
+							<Field
+								id="edd"
+								name="edd"
+								component={renderTextInput}
+								value={
+									lmp
+										? moment(lmp)
+												.add(9, 'M')
+												.format('DD-MM-YYYY')
+										: ''
+								}
+								label="EDD"
+								type="text"
+								placeholder={
+									lmp
+										? moment(lmp)
+												.add(9, 'M')
+												.format('DD-MM-YYYY')
+										: ''
+								}
+								readOnly
+							/>
 						</div>
+					</div>
 
-						<div className="row">
-							<div className="col-sm-12 text-right">
-								<button className="btn btn-primary" type="submit">
-									Next
-								</button>
-							</div>
+					<div className="row">
+						<div className="col-sm-12 text-right">
+							<button className="btn btn-primary" type="submit">
+								Next
+							</button>
 						</div>
-					</form>
-				</div>
-			</>
-		);
-	}
-}
-
-General = reduxForm({
-	form: 'antenatal', //Form name is same
-	destroyOnUnmount: false,
-	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
-	validate,
-})(General);
-
-const mapStateToProps = state => {
-	return {
-		patient: state.user.patient,
-	};
+					</div>
+				</form>
+			</div>
+		</>
+	);
 };
 
-export default withRouter(connect(mapStateToProps)(General));
+export default withRouter(
+	connect(null)(
+		reduxForm({
+			form: 'antenatal',
+			destroyOnUnmount: false,
+			forceUnregisterOnUnmount: true,
+			validate,
+		})(General)
+	)
+);

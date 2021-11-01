@@ -22,6 +22,7 @@ const StaffList = () => {
 	});
 	const [staffs, setStaffs] = useState([]);
 	const [showModal, setShowModal] = useState(false);
+	const [staff, setStaff] = useState(null);
 
 	const dispatch = useDispatch();
 
@@ -63,7 +64,8 @@ const StaffList = () => {
 	};
 
 	const closeModal = () => {
-		setShowModal(true);
+		setShowModal(false);
+		setStaff(null);
 		document.body.classList.remove('modal-open');
 	};
 
@@ -108,6 +110,11 @@ const StaffList = () => {
 													<StaffItem
 														staffs={staffs}
 														updateStaffs={updateStaffs}
+														editStaff={staff => {
+															setStaff(staff);
+															document.body.classList.add('modal-open');
+															setShowModal(true);
+														}}
 													/>
 												</tbody>
 											</table>
@@ -133,6 +140,8 @@ const StaffList = () => {
 			</div>
 			{showModal && (
 				<ModalCreateStaff
+					staff={staff}
+					staffs={staffs}
 					updateStaffs={updateStaffs}
 					closeModal={() => closeModal()}
 				/>

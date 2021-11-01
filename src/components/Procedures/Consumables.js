@@ -6,7 +6,7 @@ import TableLoading from '../TableLoading';
 import { itemRender } from '../../services/utilities';
 import { paginate } from '../../services/constants';
 
-const Consumables = () => {
+const Consumables = ({ itemId, type, can_request = true }) => {
 	// eslint-disable-next-line no-unused-vars
 	const [loading, setLoading] = useState(false);
 	// eslint-disable-next-line no-unused-vars
@@ -18,9 +18,11 @@ const Consumables = () => {
 		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<div className="element-actions flex-action">
-					<a className="btn btn-sm btn-secondary text-white ml-3">
-						Add Consumable
-					</a>
+					{can_request && (
+						<a className="btn btn-sm btn-secondary text-white ml-3">
+							Add Consumable
+						</a>
+					)}
 				</div>
 				<h6 className="element-header">Consumables</h6>
 				<div className="element-box p-3 m-0">

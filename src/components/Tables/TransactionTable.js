@@ -17,15 +17,16 @@ import { Can } from '../common/Can';
 import ModalServiceDetails from '../Modals/ModalServiceDetails';
 import ModalShowTransactions from '../Modals/ModalShowTransactions';
 import ModalApproveTransaction from '../Modals/ModalApproveTransaction';
+import ModalPrintTransaction from '../Modals/ModalPrintTransaction';
 
 const TransactionTable = ({
 	transactions,
 	showActionBtns,
 	showPrint = false,
-	handlePrint,
 	queue,
 }) => {
 	const [showModal, setShowModal] = useState(false);
+	const [showPrintModal, setShowPrintModal] = useState(false);
 	const [showTransactions, setShowTransactions] = useState(false);
 	const [transaction, setTransaction] = useState(null);
 	const [patient, setPatient] = useState(null);
@@ -74,6 +75,13 @@ const TransactionTable = ({
 		setShowTransactions(false);
 		setTransaction(null);
 		setPatient(null);
+		setShowPrintModal(false);
+	};
+
+	const handlePrint = item => {
+		setTransaction(item);
+		document.body.classList.add('modal-open');
+		setShowPrintModal(true);
 	};
 
 	return (
@@ -178,7 +186,7 @@ const TransactionTable = ({
 										<Tooltip title="Print">
 											<a
 												className="text-info"
-												onClick={e => handlePrint(e, transaction)}>
+												onClick={() => handlePrint(transaction)}>
 												<i className="os-icon os-icon-printer" />
 											</a>
 										</Tooltip>
@@ -208,6 +216,12 @@ const TransactionTable = ({
 			)}
 			{processTransaction && transaction && (
 				<ModalApproveTransaction
+					transaction={transaction}
+					closeModal={() => closeModal()}
+				/>
+			)}
+			{showPrintModal && transaction && (
+				<ModalPrintTransaction
 					transaction={transaction}
 					closeModal={() => closeModal()}
 				/>

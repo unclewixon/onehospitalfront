@@ -3,17 +3,11 @@ import {
 	LOAD_VOUCHER,
 	UPDATE_VOUCHER,
 	GET_ALL_PENDING_TRANSACTIONS,
-	SHOW_INVOICE,
-	SHOW_RECEIPT,
-	TRANSACTION_DATA,
 } from '../actions/types';
 
 const INITIAL_STATE = {
 	voucher: [],
 	pendingTransactions: [],
-	showInvoice: false,
-	showReceipt: false,
-	transactionData: null,
 };
 
 const reformatInput = payload => {
@@ -62,21 +56,6 @@ const paypoint = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				pendingTransactions: action.payload,
-			};
-		case SHOW_INVOICE:
-			return {
-				...state,
-				showInvoice: action.payload,
-			};
-		case SHOW_RECEIPT:
-			return {
-				...state,
-				showReceipt: action.payload,
-			};
-		case TRANSACTION_DATA:
-			return {
-				...state,
-				transactionData: action.payload,
 			};
 		default:
 			return state;

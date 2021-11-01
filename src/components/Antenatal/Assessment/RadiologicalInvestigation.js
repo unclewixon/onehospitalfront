@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
 
-import { validate } from '../../services/validationSchemas';
+import { validate } from '../../../services/validationSchemas';
 import {
 	renderSelect,
 	renderMultiselect,
 	renderTextArea,
-} from '../../services/utilities';
-import { notifyError } from '../../services/notify';
+} from '../../../services/utilities';
+import { notifyError } from '../../../services/notify';
 
 const selector = formValueSelector('antenatalAssessment');
 

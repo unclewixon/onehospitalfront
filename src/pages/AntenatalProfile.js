@@ -10,6 +10,7 @@ import { USER_RECORD } from '../services/constants';
 import Splash from '../components/Splash';
 import ProfileBlock from '../components/ProfileBlock';
 import HashRoute from '../components/HashRoute';
+import ExtraBlock from '../components/ExtraBlock';
 
 const Notes = lazy(() => import('../components/Antenatal/Notes'));
 const Vitals = lazy(() => import('../components/Patient/Vitals'));
@@ -20,6 +21,11 @@ const PharmacyRequest = lazy(() =>
 );
 const RadiologyRequest = lazy(() =>
 	import('../components/Patient/RadiologyRequest')
+);
+const Lab = lazy(() => import('../components/Patient/Lab'));
+const LabRequest = lazy(() => import('../components/Patient/LabRequest'));
+const AntenatalAssessments = lazy(() =>
+	import('../components/Antenatal/AntenatalAssessments')
 );
 
 const storage = new SSRStorage();
@@ -37,8 +43,10 @@ const Page = ({ location }) => {
 				/>
 			);
 		case 'radiology-request':
-			return <RadiologyRequest module="antenatal" />;
-		case 'medications-used':
+			return (
+				<RadiologyRequest module="antenatal" itemId={antenatal.id || ''} />
+			);
+		case 'regimen':
 			return (
 				<Pharmacy
 					can_request={antenatal && antenatal.status === 0}
@@ -47,12 +55,30 @@ const Page = ({ location }) => {
 				/>
 			);
 		case 'pharmacy-request':
-			return <PharmacyRequest module="antenatal" />;
+			return <PharmacyRequest module="antenatal" itemId={antenatal.id || ''} />;
+		case 'lab':
+			return (
+				<Lab
+					can_request={antenatal && antenatal.status === 0}
+					itemId={antenatal.id || ''}
+					type="antenatal"
+				/>
+			);
+		case 'lab-request':
+			return <LabRequest module="antenatal" itemId={antenatal.id || ''} />;
 		case 'vitals':
 			return <Vitals type={hash[1].split('%20').join(' ')} />;
+		case 'assessments':
+			return (
+				<AntenatalAssessments
+					can_request={antenatal && antenatal.status === 0}
+				/>
+			);
+		case 'gynae-history':
+		case 'obst-history':
 		case 'notes':
 		default:
-			return <Notes />;
+			return <Notes can_request={antenatal && antenatal.status === 0} />;
 	}
 };
 
@@ -75,7 +101,7 @@ class AntenatalProfile extends Component {
 	}
 
 	render() {
-		const { location, patient } = this.props;
+		const { location, patient, antenatal } = this.props;
 		return (
 			<div className="layout-w">
 				<button
@@ -96,6 +122,7 @@ class AntenatalProfile extends Component {
 									<div className="row">
 										<div className="col-sm-12">
 											<ProfileBlock profile={true} patient={patient} />
+											<ExtraBlock module="antenatal" item={antenatal} />
 										</div>
 										<Suspense fallback={<Splash />}>
 											<Switch>
@@ -125,6 +152,7 @@ class AntenatalProfile extends Component {
 const mapStateToProps = (state, ownProps) => {
 	return {
 		patient: state.user.patient,
+		antenatal: state.user.item,
 	};
 };
 

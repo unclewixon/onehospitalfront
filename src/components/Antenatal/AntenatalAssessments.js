@@ -7,12 +7,15 @@ import TableLoading from '../TableLoading';
 import { request, itemRender, formatDate } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
-import CreateNote from '../Modals/CreateNote';
 import { staffname } from '../../services/utilities';
+import NewAssessment from './NewAssessment';
+import { antenatalAPI } from '../../services/constants';
 
-const Notes = () => {
+const limit = 12;
+
+const AntenatalAssessment = ({ can_request = true }) => {
 	const [loading, setLoading] = useState(true);
-	const [notes, setNotes] = useState([]);
+	const [assessments, setAssessments] = useState([]);
 	const [meta, setMeta] = useState({
 		currentPage: 1,
 		itemsPerPage: 10,
@@ -21,40 +24,41 @@ const Notes = () => {
 	const [showModal, setShowModal] = useState(false);
 
 	const dispatch = useDispatch();
-	const ivf = useSelector(state => state.user.item);
+	const antenatal = useSelector(state => state.user.item);
 
-	const fetchNotes = useCallback(
+	const fetchAssessments = useCallback(
 		async page => {
 			try {
 				dispatch(startBlock());
 				const p = page || 1;
-				const url = `patient-notes?page=${p}&limit=10&ivf_id=${ivf.id}`;
+				const url = `${antenatalAPI}/assessments/${antenatal.id}?page=${p}&limit=${limit}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
-				setNotes(result);
 				setMeta(meta);
+				window.scrollTo({ top: 0, behavior: 'smooth' });
+				setAssessments([...result]);
 				dispatch(stopBlock());
 			} catch (error) {
 				console.log(error);
+				notifyError('error fetching assessments');
 				dispatch(stopBlock());
-				notifyError('error fetching notes');
 			}
 		},
-		[dispatch, ivf]
+		[antenatal, dispatch]
 	);
 
 	useEffect(() => {
 		if (loading) {
-			fetchNotes();
+			fetchAssessments();
 			setLoading(false);
 		}
-	}, [fetchNotes, loading]);
+	}, [fetchAssessments, loading]);
 
 	const onNavigatePage = nextPage => {
-		fetchNotes(nextPage);
+		fetchAssessments(nextPage);
 	};
 
-	const newEntry = () => {
+	const newAssessment = () => {
 		document.body.classList.add('modal-open');
 		setShowModal(true);
 	};
@@ -64,26 +68,23 @@ const Notes = () => {
 		setShowModal(false);
 	};
 
-	const updateNote = item => {
-		setNotes([item, ...notes]);
-		setMeta({
-			currentPage: 1,
-			itemsPerPage: 10,
-			totalPages: notes.length + 1,
-		});
+	const refreshAssessments = async () => {
+		await fetchAssessments();
 	};
 
 	return (
 		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<div className="element-actions flex-action">
-					<a
-						className="btn btn-sm btn-secondary text-white ml-3"
-						onClick={() => newEntry()}>
-						New Note
-					</a>
+					{can_request && (
+						<a
+							className="btn btn-sm btn-secondary text-white ml-3"
+							onClick={() => newAssessment()}>
+							New Assessment
+						</a>
+					)}
 				</div>
-				<h6 className="element-header">IVF Notes</h6>
+				<h6 className="element-header">Antenatal Assessments</h6>
 				<div className="element-box p-3 m-0">
 					{loading ? (
 						<TableLoading />
@@ -93,25 +94,29 @@ const Notes = () => {
 								<thead>
 									<tr>
 										<th>Date</th>
-										<th>Type</th>
-										<th>Specialty</th>
-										<th>Note</th>
-										<th nowrap="nowrap">Noted By</th>
+										<th>G.A.</th>
+										<th>Measurements</th>
+										<th>Fetal Lie</th>
+										<th>Presentation</th>
+										<th>Comment</th>
+										<th>By</th>
 									</tr>
 								</thead>
 								<tbody>
-									{notes.map((item, i) => {
+									{assessments.map((item, i) => {
 										return (
 											<tr key={i}>
 												<td nowrap="nowrap">
 													{formatDate(item.createdAt, 'D-MMM-YYYY h:mm A')}
 												</td>
-												<td>{item.type}</td>
-												<td>{item.specialty || '--'}</td>
+												<td>G.A.</td>
+												<td>Measurements</td>
+												<td>Fetal Lie</td>
+												<td>Presentation</td>
 												<td>
 													<div
 														dangerouslySetInnerHTML={{
-															__html: item.description,
+															__html: item.comment,
 														}}
 													/>
 												</td>
@@ -138,15 +143,13 @@ const Notes = () => {
 				</div>
 			</div>
 			{showModal && (
-				<CreateNote
+				<NewAssessment
 					closeModal={closeModal}
-					updateNote={updateNote}
-					ivf_id={ivf.id}
-					type="ivf"
+					refreshAssessments={refreshAssessments}
 				/>
 			)}
 		</div>
 	);
 };
 
-export default Notes;
+export default AntenatalAssessment;

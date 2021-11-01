@@ -10,7 +10,6 @@ import { USER_RECORD } from '../services/constants';
 import Splash from '../components/Splash';
 import ProfileBlock from '../components/ProfileBlock';
 import HashRoute from '../components/HashRoute';
-// import ProcedureForms from '../components/Procedures/ProcedureForms';
 
 const Notes = lazy(() => import('../components/Procedures/Notes'));
 const Attachments = lazy(() => import('../components/Procedures/Attachments'));
@@ -22,6 +21,7 @@ const PharmacyRequest = lazy(() =>
 const MedicalReport = lazy(() =>
 	import('../components/Procedures/MedicalReport')
 );
+const Vitals = lazy(() => import('../components/Patient/Vitals'));
 
 const storage = new SSRStorage();
 
@@ -29,15 +29,19 @@ const Page = ({ location }) => {
 	const procedure = useSelector(state => state.user.item);
 	const hash = location.hash.substr(1).split('#');
 	switch (hash[0]) {
-		case 'notes':
-			return <Notes />;
 		case 'attachments':
-			return <Attachments />;
+			return <Attachments can_request={procedure && procedure.status === 0} />;
 		case 'consumables':
-			return <Consumables />;
+			return (
+				<Consumables
+					can_request={procedure && procedure.status === 0}
+					itemId={procedure.id || ''}
+					type="procedure"
+				/>
+			);
 		case 'medical-report':
 			return <MedicalReport />;
-		case 'medications-used':
+		case 'regimen':
 			return (
 				<Pharmacy
 					can_request={procedure && !procedure.finishedDate}
@@ -46,9 +50,12 @@ const Page = ({ location }) => {
 				/>
 			);
 		case 'pharmacy-request':
-			return <PharmacyRequest />;
+			return <PharmacyRequest module="procedure" itemId={procedure.id || ''} />;
+		case 'vitals':
+			return <Vitals type={hash[1].split('%20').join(' ')} />;
+		case 'notes':
 		default:
-			return <Notes />;
+			return <Notes can_request={procedure && procedure.status === 0} />;
 	}
 };
 

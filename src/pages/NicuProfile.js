@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component, Suspense, lazy, Fragment } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { Switch, withRouter } from 'react-router-dom';
 
 import { toggleProfile } from '../actions/user';
@@ -12,32 +12,49 @@ import ProfileBlock from '../components/ProfileBlock';
 import HashRoute from '../components/HashRoute';
 
 const ClinicalTasks = lazy(() => import('../components/Patient/ClinicalTasks'));
-const Encounters = lazy(() => import('../components/Patient/Encounters'));
+const InPatientNote = lazy(() => import('../components/Patient/InPatientNote'));
 const Vitals = lazy(() => import('../components/Patient/Vitals'));
 const NurseObservation = lazy(() =>
 	import('../components/Patient/NurseObservation')
 );
 const FluidChart = lazy(() => import('../components/Patient/FluidChart'));
+const CareTeam = lazy(() => import('../components/Patient/CareTeam'));
+const PharmacyRequest = lazy(() =>
+	import('../components/Patient/PharmacyRequest')
+);
+const Pharmacy = lazy(() => import('../components/Patient/Pharmacy'));
 
 const storage = new SSRStorage();
 
 const Page = ({ location }) => {
 	const hash = location.hash.substr(1).split('#');
+	const admission = useSelector(state => state.user.item);
 	switch (hash[0]) {
-		case 'encounters':
-			return <Encounters />;
 		case 'vitals':
 			return <Vitals type={hash[1].split('%20').join(' ')} />;
 		case 'clinical-tasks':
-			return <ClinicalTasks />;
+			return (
+				<ClinicalTasks can_request={admission && admission.status === 0} />
+			);
 		case 'nurse-observations':
 			return <NurseObservation />;
 		case 'fluid-chart':
 			return <FluidChart />;
 		case 'care-team':
-			return <ClinicalTasks />;
+			return <CareTeam can_request={admission && admission.status === 0} />;
+		case 'regimen':
+			return (
+				<Pharmacy
+					can_request={admission && admission.status === 0}
+					itemId={admission.id || ''}
+					type="admission"
+				/>
+			);
+		case 'pharmacy-request':
+			return <PharmacyRequest module="admission" itemId={admission.id || ''} />;
+		case 'ward-round':
 		default:
-			return <ClinicalTasks />;
+			return <InPatientNote />;
 	}
 };
 

@@ -40,7 +40,7 @@ const AntenatalPatients = () => {
 		async (page, patientId, sDate, eDate) => {
 			try {
 				const p = page || 1;
-				const url = `${antenatalAPI}/list?page=${p}&limit=${limit}&patient_id=${patientId ||
+				const url = `${antenatalAPI}?page=${p}&limit=${limit}&patient_id=${patientId ||
 					''}&startDate=${sDate || ''}&endDate=${eDate || ''}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;

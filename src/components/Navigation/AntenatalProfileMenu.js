@@ -46,10 +46,8 @@ const AntenatalProfileMenu = ({ location }) => {
 						Scans
 					</Link>
 				</li>
-				<li className={checkHash(hash, 'medications-used') ? 'active' : ''}>
-					<Link
-						to={`${location.pathname}#medications-used`}
-						className="pointer">
+				<li className={checkHash(hash, 'regimen') ? 'active' : ''}>
+					<Link to={`${location.pathname}#regimen`} className="pointer">
 						Medications
 					</Link>
 				</li>

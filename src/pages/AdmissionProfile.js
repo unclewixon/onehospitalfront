@@ -26,6 +26,10 @@ const Pharmacy = lazy(() => import('../components/Patient/Pharmacy'));
 const PharmacyRequest = lazy(() =>
 	import('../components/Patient/PharmacyRequest')
 );
+const NursingService = lazy(() =>
+	import('../components/Patient/NursingService')
+);
+const Consumables = lazy(() => import('../components/Procedures/Consumables'));
 
 const storage = new SSRStorage();
 
@@ -33,14 +37,14 @@ const Page = ({ location }) => {
 	const admission = useSelector(state => state.user.item);
 	const hash = location.hash.substr(1).split('#');
 	switch (hash[0]) {
-		case 'ward-round':
-			return <InPatientNote />;
 		case 'encounters':
 			return <Encounters />;
 		case 'vitals':
 			return <Vitals type={hash[1].split('%20').join(' ')} />;
 		case 'clinical-tasks':
-			return <ClinicalTasks />;
+			return (
+				<ClinicalTasks can_request={admission && admission.status === 0} />
+			);
 		case 'nurse-observations':
 			return <NurseObservation />;
 		case 'fluid-chart':
@@ -56,7 +60,7 @@ const Page = ({ location }) => {
 				/>
 			);
 		case 'lab-request':
-			return <LabRequest module="admission" />;
+			return <LabRequest module="admission" itemId={admission.id || ''} />;
 		case 'regimen':
 			return (
 				<Pharmacy
@@ -66,9 +70,22 @@ const Page = ({ location }) => {
 				/>
 			);
 		case 'pharmacy-request':
-			return <PharmacyRequest />;
+			return <PharmacyRequest module="admission" itemId={admission.id || ''} />;
+		case 'nursing-service':
+			return (
+				<NursingService can_request={admission && admission.status === 0} />
+			);
+		case 'consumables':
+			return (
+				<Consumables
+					can_request={admission && admission.status === 0}
+					itemId={admission.id || ''}
+					type="admission"
+				/>
+			);
+		case 'ward-round':
 		default:
-			return <ClinicalTasks />;
+			return <InPatientNote />;
 	}
 };
 
@@ -106,7 +123,7 @@ class AdmissionProfile extends Component {
 						<div
 							className="content-w"
 							style={{ width: 'calc(100% - 18%)', overflow: 'hidden' }}>
-							<AdmissionMenu />
+							<AdmissionMenu isAdmission={true} />
 							<div className="content-i">
 								<div className="content-box">
 									<div className="row">

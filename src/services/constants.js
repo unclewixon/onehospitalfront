@@ -322,6 +322,15 @@ export const soap = [
 	'Plan',
 ];
 
+export const assessmentMenu = [
+	'General Assessment',
+	'General Comments',
+	'Lab',
+	'Radiology',
+	'Prescription',
+	'Next Appointment',
+];
+
 export const bookingPeriod = [
 	{
 		id: 'Routine',
@@ -454,13 +463,6 @@ export const previousPregnancies = range(1, 12).map((_, i) => {
 		name: i,
 	};
 });
-
-export const antenatalPackages = [
-	{
-		id: 'ANC',
-		name: 'ANC',
-	},
-];
 
 export const obstericHistory = [
 	{

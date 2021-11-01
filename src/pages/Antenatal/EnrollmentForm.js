@@ -5,9 +5,9 @@ import { reduxForm } from 'redux-form';
 import moment from 'moment';
 
 import Splash from '../../components/Splash';
-import { patientAPI } from '../../services/constants';
 import { request } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
+import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const General = lazy(() => import('../../components/Enrollment/General'));
 const FathersInfo = lazy(() =>
@@ -27,187 +27,69 @@ class EnrollmentForm extends Component {
 	state = {
 		page: 1,
 		submitting: false,
-		patient_id: '',
-		patient_name: '',
-		lmpHx: '',
-		dom: '',
-		gest_date: '',
-		dob: '',
+		patient: null,
+		doctors: [],
 		lmp: '',
+		dob: '',
 	};
 
 	submitAntenatal = async data => {
 		try {
-			this.setState({ submitting: true });
-
-			const url = `${patientAPI}/antenatal/save`;
-			const rs = await request(url, 'POST', true, data);
-
+			this.props.startBlock();
 			const { history, location, reset } = this.props;
-			this.setState({
-				submitting: false,
-			});
-			console.log(rs);
-
-			notifySuccess('New antenatal succesfully submitted');
-			reset();
-			this.setState({ patient_id: '' });
-
-			// this.props.addStaff(rs);
+			this.setState({ submitting: true });
+			const url = 'patient/antenatal/save';
+			await request(url, 'POST', true, data);
+			this.setState({ submitting: false });
+			notifySuccess('antenatal enrollment done!');
+			reset('antenatal');
+			this.props.stopBlock();
 			history.push(
 				location.hash ? `${location.pathname}#dashboard` : '/antenatal'
 			);
 		} catch (e) {
+			this.props.stopBlock();
 			this.setState({ submitting: false });
-			notifyError(e.message || 'Submission of antenatal form not successful');
+			notifyError(e.message || 'antenatal enrollment failed');
 		}
 	};
 
-	setDate = (date, type) => {
-		this.setState({ [type]: date });
+	setInput = (value, type) => {
+		this.setState({ [type]: value });
 	};
 
 	nextPage = async data => {
-		console.log(this.state.patient_id);
+		console.log(data);
 
 		if (this.state.page === 5) {
-			console.log(data);
+			const { patient, doctors, lmp, dob } = this.state;
+
 			const newAntenatal = {
-				patient_id: this.props.location.hash
-					? this.props.patient.id
-					: this.state.patient_id,
-				enrollmentPackage: data.package,
+				patient_id: patient.id,
 				bookingPeriod: data.bookingPeriod,
-				requiredCare: data.requiredCare,
-				l_m_p: this.state.lmp
-					? moment(this.state.lmp).format('DD-MM-YYYY')
-					: '',
+				doctors: doctors,
+				lmp: lmp !== '' ? moment(lmp).format('YYYY-MM-DD') : '',
 				lmpSource: data.lmpSource,
-				e_o_d: this.state.lmp
-					? moment(this.state.lmp)
-							.add(9, 'M')
-							.format('DD-MM-YYYY')
-					: '',
-				fathersInfo: {
+				edd:
+					lmp !== ''
+						? moment(lmp)
+								.add(9, 'M')
+								.format('YYYY-MM-DD')
+						: '',
+				father: {
 					name: data.name,
-					phone_number: data.phone,
+					phone: data.phone,
 					blood_group: data.blood_group,
 				},
-				obstericsHistory: {
-					familyHistory: {
-						childHealthHistory: data.childHealthHistory || '',
-						adultHealthHistory: data.adultHealthHistory || '',
-						hereditaryDisease: data.hereditaryDisease || '',
-						motherHealthStatus: data.motherHealthStatus || '',
-						motherAgeOfDeath: data.motherAgeOfDeath || '',
-						motherCauseOfDeath: data.motherCauseOfDeath || '',
-						fatherHealthStatus: data.fatherHealthStatus || '',
-						fatherAgeOfDeath: data.fatherAgeOfDeath || '',
-						fatherCauseOfDeath: data.fatherCauseOfDeath || '',
-						siblingHealthStatus: data.siblingHealthStatus || '',
-						siblingAgeOfDeath: data.siblingAgeOfDeath || '',
-						siblingCauseOfDeath: data.siblingCauseOfDeath || '',
-					},
-					socialHistory: {
-						maritalStatus: data.maritalStatus || '',
-						occupation: data.occupation || '',
-						homeEnvironment: data.homeEnvironment || '',
-						dailyRoutine: data.dailyRoutine || '',
-						dietaryPattern: data.dietaryPattern || '',
-						motherAgeOfDeath: data.motherAgeOfDeath || '',
-						exercisePattern: data.exercisePattern || '',
-						sleepPattern: data.sleepPattern || '',
-						coffeConsumption: data.coffeConsumption || '',
-						alcoholUse: data.alcoholUse || '',
-						drugUse: data.drugUse || '',
-					},
-					gynaeHistory: {
-						menarche: data.menarche || '',
-						menstralCycle: data.menstralCycle || '',
-						lmp: this.state.lmpHx
-							? moment(this.state.lmpHx).format('DD-MM-YYYY')
-							: '',
-						contraception: data.contraception || '',
-						contraceptionMethod: data.contraceptionMethod || '',
-						dysmenorrhea: data.dysmenorrhea || '',
-						abnormalBleeding: data.abnormalBleeding || '',
-					},
+				history: {
 					obstericHistory: {
 						gestHistory: data.gestHistory || '',
 						sex: data.sex || '',
 						weight: data.weight || '',
 						alive: data.obsteric_alive || '',
-						dob: this.state.dob
-							? moment(this.state.dob).format('DD-MM-YYYY')
-							: '',
+						dob: dob ? moment(dob).format('DD-MM-YYYY') : '',
 						abnormalities: data.abnormalities || '',
 						comment: data.additional_comment || '',
-					},
-					sexualHistory: {
-						coitarche: data.coitarche || '',
-						noOfPartners: data.noOfPartners || '',
-						methodOfSex: data.methodOfSex || '',
-						currentPartnerHealth: data.currentPartnerHealth || '',
-						dyspareunia: data.dyspareunia || '',
-						satisfaction: data.satisfaction || '',
-						historyOfAbuse: data.historyOfAbuse || '',
-					},
-					gynaePapMearHistory: {
-						abnormalPapSmear: data.abnormalPapSmear || '',
-						followupTreatment: data.followup || '',
-					},
-					f_g_m: {
-						f_g_m: data.f_g_m || '',
-						fgmType: data.fgmType || '',
-					},
-					pastOcularHistory: {
-						ocularTrauma: data.ocularTrauma || '',
-						spectacleCorrection: data.spectacleCorrection || '',
-						ocularSurgery: data.ocularSurgery || '',
-						ocularMedication: data.ocularMedication || '',
-						traditionalMedication: data.traditionalMedication || '',
-						lastEyeExam: data.lastEyeExam || '',
-						others: data.past_others || '',
-					},
-					physicalExam: {
-						codema: data.codema || '',
-						breast: data.breast || '',
-						goitre: data.goitre || '',
-						teeth: data.teeth || '',
-						nutrition: data.nutrition || '',
-						anemia: data.anemia || '',
-						cvs: data.cvs || '',
-						comment: data.physicalExamComment || '',
-					},
-					initialAssessment: {
-						menarche: data.initialMenarche || '',
-						menstralCycle: data.initialMenstralCycle || '',
-						dateOfMovement: this.state.dom
-							? moment(this.state.dom).format('DD-MM-YYYY')
-							: '',
-						w_r: data.w_r || '',
-						height: data.initHeight || '',
-						weight: data.initWeight || '',
-						heightOfFundus: data.height_of_fundus || '',
-						engaged: data.engaged || '',
-					},
-					labObservations: {
-						hb: data.h_b || '',
-						hbsag: data.hbsag || '',
-						hiv: data.hiv || '',
-						vdrl: data.vdrl || '',
-						urinalysis: data.urinalysis || '',
-						comment: data.lab_comment || '',
-					},
-					routineAssessments: {
-						gestDate: this.state.gest_date
-							? moment(this.state.gest_date).format('DD-MM-YYYY')
-							: '',
-						heightOfFundus: data.routine_height_of_fundus || '',
-						position: data.position || '',
-						fetalHeart: data.fetal_heart || '',
-						weight: data.routineWeight || '',
-						oedema: data.oedema || '',
 					},
 				},
 				previousPregnancy: {
@@ -217,6 +99,7 @@ class EnrollmentForm extends Component {
 					miscarriage: data.miscarriage || '',
 					abortion: data.abortion || '',
 				},
+				enrollment_package_id: data.package_id,
 			};
 
 			console.log(newAntenatal);
@@ -242,13 +125,16 @@ class EnrollmentForm extends Component {
 		});
 	};
 
-	setPatient = (value, name) => {
-		this.setState({ patient_id: value, patient_name: name });
-		console.log(this.state.patient_id, value);
+	setPatient = patient => {
+		this.setState({ patient });
+	};
+
+	setDoctors = doctors => {
+		this.setState({ doctors });
 	};
 
 	render() {
-		const { page, submitting } = this.state;
+		const { page, submitting, patient, lmp, doctors, dob } = this.state;
 		return (
 			<div className="element-box">
 				<Suspense fallback={<Splash />}>
@@ -257,8 +143,11 @@ class EnrollmentForm extends Component {
 							onSubmit={this.nextPage}
 							page={page}
 							setPatient={this.setPatient}
-							lmp={this.state.lmp}
-							setDate={this.setDate}
+							patient={patient}
+							setDoctors={this.setDoctors}
+							doctors={doctors}
+							setInput={this.setInput}
+							lmp={lmp}
 						/>
 					)}
 					{page === 2 && (
@@ -273,11 +162,8 @@ class EnrollmentForm extends Component {
 						<ObstericsHistory
 							previousPage={this.previousPage}
 							onSubmit={this.nextPage}
-							lmpHx={this.state.lmpHx}
-							dob={this.state.dob}
-							gest_date={this.state.gest_date}
-							dom={this.state.dom}
-							setDate={this.setDate}
+							setInput={this.setInput}
+							dob={dob}
 							page={page}
 						/>
 					)}
@@ -314,4 +200,6 @@ const mapStateToProps = state => {
 	};
 };
 
-export default withRouter(connect(mapStateToProps, null)(EnrollmentForm));
+export default withRouter(
+	connect(mapStateToProps, { startBlock, stopBlock })(EnrollmentForm)
+);

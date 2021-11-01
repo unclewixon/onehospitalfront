@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { validate } from '../../services/validationSchemas';
-import { renderTextInput, renderSelect } from '../../services/utilities';
 import { Field, reduxForm } from 'redux-form';
 
-const relToBrim = [
+import { validate } from '../../../services/validationSchemas';
+import { renderTextInput, renderSelect } from '../../../services/utilities';
+
+const brims = [
 	{
 		id: '0/5',
 		name: '0/5',
@@ -18,7 +19,7 @@ const relToBrim = [
 	{ id: '5/5', name: '5/5' },
 ];
 
-const position = [
+const positions = [
 	{
 		id: 'Cephalic',
 		name: 'Cephalic',
@@ -29,7 +30,7 @@ const position = [
 	},
 ];
 
-const fetalLie = [
+const fetalLies = [
 	{
 		id: 'Longitudinal',
 		name: 'Longitudinal',
@@ -43,6 +44,7 @@ const fetalLie = [
 		name: 'Transaverse',
 	},
 ];
+
 class GeneralAssessment extends Component {
 	render() {
 		const { handleSubmit, error, page } = this.props;
@@ -90,7 +92,7 @@ class GeneralAssessment extends Component {
 									component={renderSelect}
 									label="Presentation and Position of Fetals"
 									placeholder="Select Presentation and Position of Fetals"
-									data={position}
+									data={positions}
 								/>
 							</div>
 							<div className="col-sm-6">
@@ -100,7 +102,7 @@ class GeneralAssessment extends Component {
 									component={renderSelect}
 									label="Fetal Lie"
 									placeholder="Select fetal lie"
-									data={fetalLie}
+									data={fetalLies}
 								/>
 							</div>
 						</div>
@@ -113,7 +115,7 @@ class GeneralAssessment extends Component {
 									component={renderSelect}
 									label="Relationship to Brim"
 									placeholder="Select Relationship to Brim"
-									data={relToBrim}
+									data={brims}
 								/>
 							</div>
 						</div>

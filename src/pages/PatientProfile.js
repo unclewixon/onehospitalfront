@@ -43,13 +43,6 @@ const AllergyRequest = lazy(() =>
 );
 
 const UpdateAllergy = lazy(() => import('../components/Patient/UpdateAllergy'));
-const EnrollAntenatalPatient = lazy(() =>
-	import('../components/Patient/EnrollAntenatalPatient')
-);
-
-const EnrollIVFPatient = lazy(() =>
-	import('../components/Patient/EnrollIVFPatient')
-);
 
 const PatientAdmission = lazy(() =>
 	import('../components/Patient/PatientAdmission')
@@ -70,8 +63,12 @@ const Page = ({ location }) => {
 			return <Encounters />;
 		case 'lab':
 			return <Lab />;
+		case 'lab-request':
+			return <LabRequest module="patient" />;
 		case 'pharmacy':
 			return <Pharmacy />;
+		case 'pharmacy-request':
+			return <PharmacyRequest module="patient" />;
 		case 'problem-list':
 			return <ProblemList />;
 		case 'documents':
@@ -84,14 +81,10 @@ const Page = ({ location }) => {
 			return <ClinicalTasks />;
 		case 'radiology':
 			return <Radiology />;
-		case 'procedure':
-			return <Procedure />;
-		case 'lab-request':
-			return <LabRequest module="patient" />;
-		case 'pharmacy-request':
-			return <PharmacyRequest />;
 		case 'radiology-request':
 			return <RadiologyRequest module="patient" />;
+		case 'procedure':
+			return <Procedure />;
 		case 'procedure-request':
 			return <ProcedureRequest module="patient" />;
 		case 'allergy-request':
@@ -102,16 +95,13 @@ const Page = ({ location }) => {
 			return <PatientAdmission />;
 		case 'edit-profile':
 			return <EditPatient />;
-		case 'enroll-ivf':
-			return <EnrollIVFPatient />;
-		case 'enroll-antenatal':
-			return <EnrollAntenatalPatient />;
 		case 'immunization-chart':
 			return <ImmunizationChart />;
 		case 'ivf-history':
 			return <IVFHistory />;
 		case 'anc-history':
 			return <AntenatalHistory />;
+		case 'dashboard':
 		default:
 			return <Dashboard />;
 	}

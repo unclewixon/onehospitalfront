@@ -17,6 +17,7 @@ import {
 import waiting from '../../assets/images/waiting.gif';
 import { getAllPendingTransactions } from '../../actions/paypoint';
 import { loadTransactions } from '../../actions/transaction';
+import TableLoading from '../TableLoading';
 
 const ModalShowTransactions = ({
 	patient,
@@ -201,6 +202,7 @@ const ModalShowTransactions = ({
 							true
 						)}`}</h6>
 						<div className="element-box p-2">
+							{loading && <TableLoading />}
 							{!loading && transactions.length > 0 && (
 								<div className="table-responsive">
 									<div className="row">
@@ -270,8 +272,8 @@ const ModalShowTransactions = ({
 											)}
 										</div>
 										{isAdmitted && (
-											<div className="row">
-												<div className="form-group col-sm-12">
+											<div className="col-sm-12 mt-2">
+												<div className="form-group">
 													<label>Discharge note</label>
 													<textarea
 														className="form-control"
@@ -339,34 +341,38 @@ const ModalShowTransactions = ({
 										<div className="col-sm-12">
 											<div>No Transactions Pending!</div>
 										</div>
-										<div className="row">
-											<div className="form-group col-sm-12">
-												<label>Discharge note</label>
-												<textarea
-													className="form-control"
-													name="discharge_note"
-													rows="3"
-													placeholder="Enter discharge note"
-													onChange={e => setNote(e.target.value)}></textarea>
+										{isAdmitted && (
+											<div className="col-sm-12 mt-2">
+												<div className="form-group">
+													<label>Discharge note</label>
+													<textarea
+														className="form-control"
+														name="discharge_note"
+														rows="3"
+														placeholder="Enter discharge note"
+														onChange={e => setNote(e.target.value)}></textarea>
+												</div>
 											</div>
-										</div>
-										<div className="col-md-12 mt-4">
-											<div
-												className="form-inline"
-												style={{ justifyContent: 'center' }}>
-												<button
-													onClick={() =>
-														completeDischarge({ id: admissionId, note })
-													}
-													className="btn btn-primary">
-													{submitting ? (
-														<img src={waiting} alt="submitting" />
-													) : (
-														'Discharge Patient'
-													)}
-												</button>
+										)}
+										{isAdmitted && (
+											<div className="col-md-12 mt-4">
+												<div
+													className="form-inline"
+													style={{ justifyContent: 'center' }}>
+													<button
+														onClick={() =>
+															completeDischarge({ id: admissionId, note })
+														}
+														className="btn btn-primary">
+														{submitting ? (
+															<img src={waiting} alt="submitting" />
+														) : (
+															'Discharge Patient'
+														)}
+													</button>
+												</div>
 											</div>
-										</div>
+										)}
 									</div>
 								</div>
 							)}

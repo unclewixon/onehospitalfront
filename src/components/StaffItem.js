@@ -1,104 +1,28 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component, useState } from 'react';
+import React, { Component, Fragment } from 'react';
 import Tooltip from 'antd/lib/tooltip';
 import { Image } from 'react-bootstrap';
 import capitalize from 'lodash.capitalize';
 
 import { request, updateImmutable } from '../services/utilities';
-import waiting from '../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../services/notify';
 import { staffname, parseAvatar } from '../services/utilities';
-import ModalCreateStaff from './Modals/ModalCreateStaff';
-
-const UploadPerformanceData = ({ uploading, doUpload, hide }) => {
-	const [files, setFiles] = useState(null);
-	const [label, setLabel] = useState('');
-
-	const handleChange = e => {
-		setFiles(e.target.files[0]);
-		setLabel(e.target.files[0].name);
-	};
-
-	return (
-		<div
-			className="onboarding-modal fade animated show"
-			role="dialog"
-			style={{ width: '400px' }}>
-			<div className="modal-centered">
-				<div className="modal-content text-center">
-					<button onClick={hide} className="close" type="button">
-						<span className="os-icon os-icon-close"></span>
-					</button>
-					<div className="onboarding-content with-gradient">
-						<h4 className="onboarding-title">Upload Performance Indicators</h4>
-
-						<form
-							className="form-block w-100"
-							onSubmit={e => doUpload(e, files)}>
-							<div className="row my-3">
-								<div className="custom-file col-12">
-									{/* {label ? <textarea>{label}</textarea> : null} */}
-									<input
-										type="file"
-										className="custom-file-input"
-										name="file"
-										accept=".csv"
-										onChange={handleChange}
-									/>
-									<label className="custom-file-label">
-										{label.substring(0, 40) || 'Choose File(s)'}
-									</label>
-								</div>
-							</div>
-
-							<div className="row">
-								<div className="col-sm-12 text-right pr-0">
-									<button
-										className="btn btn-primary"
-										disabled={uploading}
-										type="submit">
-										{uploading ? (
-											<img src={waiting} alt="submitting" />
-										) : (
-											'upload'
-										)}
-									</button>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
-};
 
 class StaffItem extends Component {
 	state = {
-		collapsed: true,
-		staff: null,
+		collapsed: null,
 		form_visible: false,
 		uploading: false,
-		showModal: false,
 	};
 
-	toggle = () => {
-		this.setState({ collapsed: !this.state.collapsed });
-	};
-
-	doEditStaff = staff => {
-		this.setState({ staff, showModal: true });
-		document.body.classList.add('modal-open');
-	};
-
-	closeModal = () => {
-		this.setState({ staff: null, showModal: false });
-		document.body.classList.remove('modal-open');
+	toggle = id => () => {
+		const collapsed = this.state.collapsed;
+		this.setState({ collapsed: collapsed === id ? null : id });
 	};
 
 	doEnable = async (e, data) => {
-		e.preventDefault();
 		try {
+			e.preventDefault();
 			const { staffs } = this.props;
 			const url = `hr/staffs/enable/?id=${data.id}`;
 			await request(url, 'PATCH', true);
@@ -113,8 +37,8 @@ class StaffItem extends Component {
 	};
 
 	doDisable = async (e, data) => {
-		e.preventDefault();
 		try {
+			e.preventDefault();
 			const { staffs } = this.props;
 			const url = `hr/staffs/${data.id}`;
 			await request(url, 'DELETE', true);
@@ -128,20 +52,9 @@ class StaffItem extends Component {
 		}
 	};
 
-	// togglePopover = req => {
-	// 	this.setState({ staff: req, form_visible: true });
-	// };
-
 	hide = () => {
 		this.setState({ form_visible: false });
 	};
-
-	// upload = req => {
-	// 	console.log(req);
-	// 	const info = { patient: req.patient, type: 'patient' };
-	// 	this.props.toggleProfile(true, info);
-	// 	this.props.uploadRadiology(true);
-	// };
 
 	onUpload = async (e, files) => {
 		e.preventDefault();
@@ -179,15 +92,15 @@ class StaffItem extends Component {
 	};
 
 	render() {
-		const { staffs } = this.props;
-		const { collapsed, form_visible, uploading, showModal, staff } = this.state;
+		const { staffs, editStaff } = this.props;
+		const { collapsed } = this.state;
 		return (
 			<>
 				{staffs.map((item, i) => {
 					return (
-						<>
+						<Fragment key={i}>
 							<tr>
-								<td onClick={this.toggle} className="user-avatar-w">
+								<td onClick={this.toggle(item.id)} className="user-avatar-w">
 									<div className="user-avatar">
 										<Image
 											alt=""
@@ -196,12 +109,12 @@ class StaffItem extends Component {
 										/>
 									</div>
 								</td>
-								<td onClick={this.toggle}>{`${capitalize(staffname(item))} (${
-									item.user.username
-								})`}</td>
-								<td onClick={this.toggle}>{item?.user?.role?.name}</td>
-								<td onClick={this.toggle}>{item?.phone_number}</td>
-								<td onClick={this.toggle}>
+								<td onClick={this.toggle(item.id)}>{`${capitalize(
+									staffname(item)
+								)} (${item.user.username})`}</td>
+								<td onClick={this.toggle(item.id)}>{item?.user?.role?.name}</td>
+								<td onClick={this.toggle(item.id)}>{item?.phone_number}</td>
+								<td onClick={this.toggle(item.id)}>
 									{item.department ? item.department?.name : ''}
 								</td>
 								<td className="text-center">
@@ -216,37 +129,11 @@ class StaffItem extends Component {
 									)}
 								</td>
 								<td className="row-actions">
-									{/* <a onClick={this.doEditStaff} className="secondary" title="Edit Staff">
-										<i className="os-icon os-icon-edit-32" />
-									</a> */}
-									<div
-										hidden={!form_visible}
-										className="element-actions"
-										style={{ position: 'absolute', right: '40px' }}>
-										<UploadPerformanceData
-											uploading={uploading}
-											doUpload={this.onUpload}
-											hide={this.hide}
-											onBackClick={this.onBackClick}
-										/>
-									</div>
 									<Tooltip title="Edit Staff">
-										<a
-											onClick={() => {
-												this.doEditStaff(item);
-											}}>
+										<a onClick={() => editStaff(item)}>
 											<i className="os-icon os-icon-edit-1" />
 										</a>
 									</Tooltip>
-									{/* <Tooltip title="Upload Appraisal">
-										<a
-											onClick={() => {
-												this.togglePopover(item);
-											}}>
-											<i className="os-icon os-icon-upload-cloud" />
-										</a>
-									</Tooltip> */}
-
 									{item.isActive ? (
 										<Tooltip title="Disable Staff">
 											<a
@@ -268,7 +155,7 @@ class StaffItem extends Component {
 									)}
 								</td>
 							</tr>
-							{!collapsed && (
+							{collapsed && collapsed === item.id && (
 								<tr className="expanded-row">
 									<td />
 									<td colSpan="8">
@@ -293,17 +180,9 @@ class StaffItem extends Component {
 									</td>
 								</tr>
 							)}
-						</>
+						</Fragment>
 					);
 				})}
-				{showModal && (
-					<ModalCreateStaff
-						staff={staff}
-						staffs={staffs}
-						updateStaffs={this.props.updateStaffs}
-						closeModal={() => this.closeModal()}
-					/>
-				)}
 			</>
 		);
 	}

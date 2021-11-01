@@ -3,7 +3,7 @@ import { Link, withRouter } from 'react-router-dom';
 
 const checkHash = (hash, path) => hash.find(h => h === path);
 
-const AdmissionMenu = ({ location }) => {
+const AdmissionMenu = ({ location, isAdmission }) => {
 	const hash = location.hash.split('#');
 
 	return (
@@ -14,11 +14,13 @@ const AdmissionMenu = ({ location }) => {
 						Notes
 					</Link>
 				</li>
-				<li className={checkHash(hash, 'encounters') ? 'active' : ''}>
-					<Link to={`${location.pathname}#encounters`} className="pointer">
-						Visits
-					</Link>
-				</li>
+				{isAdmission && (
+					<li className={checkHash(hash, 'encounters') ? 'active' : ''}>
+						<Link to={`${location.pathname}#encounters`} className="pointer">
+							Encounters
+						</Link>
+					</li>
+				)}
 				<li className={checkHash(hash, 'clinical-tasks') ? 'active' : ''}>
 					<Link to={`${location.pathname}#clinical-tasks`} className="pointer">
 						Tasks
@@ -31,11 +33,13 @@ const AdmissionMenu = ({ location }) => {
 						Observations
 					</Link>
 				</li>
-				<li className={checkHash(hash, 'lab') ? 'active' : ''}>
-					<Link to={`${location.pathname}#lab`} className="pointer">
-						Lab
-					</Link>
-				</li>
+				{isAdmission && (
+					<li className={checkHash(hash, 'lab') ? 'active' : ''}>
+						<Link to={`${location.pathname}#lab`} className="pointer">
+							Lab
+						</Link>
+					</li>
+				)}
 				<li className={checkHash(hash, 'regimen') ? 'active' : ''}>
 					<Link to={`${location.pathname}#regimen`} className="pointer">
 						Regimen
@@ -58,6 +62,22 @@ const AdmissionMenu = ({ location }) => {
 						Care Team
 					</Link>
 				</li>
+				{isAdmission && (
+					<li className={checkHash(hash, 'consumables') ? 'active' : ''}>
+						<Link to={`${location.pathname}#consumables`} className="pointer">
+							Consumables
+						</Link>
+					</li>
+				)}
+				{isAdmission && (
+					<li className={checkHash(hash, 'nursing-service') ? 'active' : ''}>
+						<Link
+							to={`${location.pathname}#nursing-service`}
+							className="pointer">
+							Nursing Service
+						</Link>
+					</li>
+				)}
 			</ul>
 		</div>
 	);

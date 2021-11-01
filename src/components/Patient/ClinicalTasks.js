@@ -22,7 +22,7 @@ import { startBlock, stopBlock } from '../../actions/redux-block';
 import { notifySuccess, notifyError } from '../../services/notify';
 import CreateChart from './Modals/CreateChart';
 
-const ClinicalTasks = () => {
+const ClinicalTasks = ({ can_request = true }) => {
 	const [showTaskModal, setShowTaskModal] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [meta, setMeta] = useState({
@@ -199,11 +199,13 @@ const ClinicalTasks = () => {
 							</select>
 						</form>
 					</div>
-					<a
-						className="btn btn-sm btn-secondary text-white ml-3"
-						onClick={() => createTask()}>
-						Create Task
-					</a>
+					{can_request && (
+						<a
+							className="btn btn-sm btn-secondary text-white ml-3"
+							onClick={() => createTask()}>
+							Create Task
+						</a>
+					)}
 				</div>
 				<h6 className="element-header">Clinical Tasks</h6>
 				<div className="element-box p-3 m-0">

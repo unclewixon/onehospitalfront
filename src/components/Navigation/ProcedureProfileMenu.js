@@ -29,11 +29,21 @@ const ProcedureProfileMenu = ({ location }) => {
 						Medical Report
 					</Link>
 				</li>
-				<li className={checkHash(hash, 'medications-used') ? 'active' : ''}>
-					<Link
-						to={`${location.pathname}#medications-used`}
-						className="pointer">
+				<li className={checkHash(hash, 'regimen') ? 'active' : ''}>
+					<Link to={`${location.pathname}#regimen`} className="pointer">
 						Medications Used
+					</Link>
+				</li>
+				<li className={checkHash(hash, 'vitals') ? 'active' : ''}>
+					<Link
+						to={`${location.pathname}#vitals#Blood Pressure`}
+						className="pointer">
+						Vitals
+					</Link>
+				</li>
+				<li className={checkHash(hash, 'nursing-service') ? 'active' : ''}>
+					<Link to={`${location.pathname}#nursing-service`} className="pointer">
+						Nursing Service
 					</Link>
 				</li>
 			</ul>

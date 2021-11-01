@@ -32,10 +32,6 @@ class Dashboard extends Component {
 		}
 	};
 
-	handlePrintClick = () => {
-		console.log('print');
-	};
-
 	render() {
 		const { loading } = this.state;
 		const { transactions } = this.props;
@@ -52,8 +48,8 @@ class Dashboard extends Component {
 							<TransactionTable
 								transactions={transactions}
 								showActionBtns={true}
-								handlePrint={this.handlePrintClick}
 								queue={false}
+								showPrint={true}
 							/>
 						)}
 					</div>

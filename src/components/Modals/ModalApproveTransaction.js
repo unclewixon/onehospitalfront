@@ -11,13 +11,7 @@ import { vouchersAPI } from '../../services/constants';
 import { updateImmutable } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
-import {
-	loadVoucher,
-	getAllPendingTransactions,
-	getTransactionData,
-	showInvoiceToPrint,
-	showReceiptToPrint,
-} from '../../actions/paypoint';
+import { loadVoucher, getAllPendingTransactions } from '../../actions/paypoint';
 import { loadTransactions } from '../../actions/transaction';
 
 const validate = values => {
@@ -76,7 +70,6 @@ class ModalApproveTransaction extends Component {
 				this.props.loadTransactions(updatedArr);
 				this.props.getAllPendingTransactions(newTransactions);
 				this.setState({ submitting: false });
-				this.props.getTransactionData(rs.transaction);
 				this.props.closeModal();
 			} else {
 				this.setState({ submitting: false });
@@ -307,8 +300,5 @@ const mapStateToProps = (state, ownProps) => {
 export default connect(mapStateToProps, {
 	loadVoucher,
 	getAllPendingTransactions,
-	getTransactionData,
-	showReceiptToPrint,
-	showInvoiceToPrint,
 	loadTransactions,
 })(ModalApproveTransaction);

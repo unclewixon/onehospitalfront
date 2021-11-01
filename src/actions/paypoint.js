@@ -4,9 +4,6 @@ import {
 	LOAD_VOUCHER,
 	UPDATE_VOUCHER,
 	GET_ALL_PENDING_TRANSACTIONS,
-	SHOW_INVOICE,
-	SHOW_RECEIPT,
-	TRANSACTION_DATA,
 } from './types';
 
 export const createVoucherData = data => {
@@ -40,27 +37,6 @@ export const deleteVoucher = data => {
 export const getAllPendingTransactions = data => {
 	return {
 		type: GET_ALL_PENDING_TRANSACTIONS,
-		payload: data,
-	};
-};
-
-export const showReceiptToPrint = data => {
-	return {
-		type: SHOW_RECEIPT,
-		payload: data,
-	};
-};
-
-export const showInvoiceToPrint = data => {
-	return {
-		type: SHOW_INVOICE,
-		payload: data,
-	};
-};
-
-export const getTransactionData = data => {
-	return {
-		type: TRANSACTION_DATA,
 		payload: data,
 	};
 };

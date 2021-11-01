@@ -1,17 +1,36 @@
 import React, { Component } from 'react';
-
-import { renderSelect } from '../../services/utilities';
-
-import waiting from '../../assets/images/waiting.gif';
 import { Field, reduxForm } from 'redux-form';
+import { connect } from 'react-redux';
+
+import { renderSelect, request } from '../../services/utilities';
+import waiting from '../../assets/images/waiting.gif';
 import { validateAntenatal } from '../../services/validationSchemas';
-import { antenatalPackages } from '../../services/constants';
+import { notifyError } from '../../services/notify';
+import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const validate = validateAntenatal;
 
 class EnrollmentPackages extends Component {
 	state = {
 		submitting: false,
+		packages: [],
+	};
+
+	componentDidMount() {
+		this.fetchPackages();
+	}
+
+	fetchPackages = async () => {
+		try {
+			this.props.startBlock();
+			const rs = await request('antenatal-packages', 'GET', true);
+			const { result } = rs;
+			this.setState({ packages: [...result] });
+			this.props.stopBlock();
+		} catch (error) {
+			this.props.stopBlock();
+			notifyError(error.message || 'could not fetch antenatal packages!');
+		}
 	};
 
 	render() {
@@ -23,7 +42,7 @@ class EnrollmentPackages extends Component {
 			page,
 			submitting,
 		} = this.props;
-
+		const { packages } = this.state;
 		return (
 			<>
 				<h6 className="element-header">Step {page}. Enrollment Packages</h6>
@@ -41,12 +60,12 @@ class EnrollmentPackages extends Component {
 						<div className="row">
 							<div className="col-sm-12">
 								<Field
-									id="package"
-									name="package"
+									id="package_id"
+									name="package_id"
 									component={renderSelect}
 									label="Antenatal Package"
 									placeholder="Select Package"
-									data={antenatalPackages}
+									data={packages}
 								/>
 							</div>
 						</div>
@@ -81,4 +100,4 @@ EnrollmentPackages = reduxForm({
 	validate,
 })(EnrollmentPackages);
 
-export default EnrollmentPackages;
+export default connect(null, { startBlock, stopBlock })(EnrollmentPackages);

@@ -5,12 +5,12 @@ import { connect } from 'react-redux';
 import uniqBy from 'lodash.uniqby';
 import { Table } from 'react-bootstrap';
 
-import { ReactComponent as PlusIcon } from '../../assets/svg-icons/plus.svg';
-import { ReactComponent as EditIcon } from '../../assets/svg-icons/edit.svg';
-import { ReactComponent as TrashIcon } from '../../assets/svg-icons/trash.svg';
-import { loadInvCategories, loadInventories } from '../../actions/inventory';
-import { notifyError } from '../../services/notify';
-import { request } from '../../services/utilities';
+import { ReactComponent as PlusIcon } from '../../../assets/svg-icons/plus.svg';
+import { ReactComponent as EditIcon } from '../../../assets/svg-icons/edit.svg';
+import { ReactComponent as TrashIcon } from '../../../assets/svg-icons/trash.svg';
+import { loadInvCategories, loadInventories } from '../../../actions/inventory';
+import { notifyError } from '../../../services/notify';
+import { request } from '../../../services/utilities';
 
 const dummyData1 = [
 	{ value: 'Pharmacy', label: 'Pharmacy', name: 'serviceUnit' },

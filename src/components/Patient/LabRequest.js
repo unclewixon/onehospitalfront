@@ -18,7 +18,7 @@ const defaultValues = {
 	urgent: false,
 };
 
-const LabRequest = ({ module, history, location }) => {
+const LabRequest = ({ module, history, location, itemId }) => {
 	const { register, handleSubmit } = useForm({
 		defaultValues,
 	});
@@ -110,19 +110,19 @@ const LabRequest = ({ module, history, location }) => {
 				request_note: data.request_note,
 				urgent: data.urgent,
 				pay_later: 0,
+				antenatal_id: module === 'antenatal' ? itemId : '',
+				admission_id: module === 'admission' ? itemId : '',
+				ivf_id: module === 'ivf' ? itemId : '',
 			};
 
 			setSubmitting(true);
 			await request('requests/save-request', 'POST', true, datum);
 			setSubmitting(false);
 			notifySuccess('Lab request sent!');
-			if (
-				module &&
-				(module === 'patient' || module === 'ivf' || module === 'admission')
-			) {
-				history.push(`${location.pathname}#lab`);
-			} else {
+			if (!module || (module && module === '')) {
 				history.push('/lab');
+			} else {
+				history.push(`${location.pathname}#lab`);
 			}
 		} catch (error) {
 			console.log(error);
@@ -132,13 +132,7 @@ const LabRequest = ({ module, history, location }) => {
 	};
 
 	return (
-		<div
-			className={
-				module &&
-				(module === 'patient' || module === 'ivf' || module === 'admission')
-					? 'col-sm-12'
-					: ''
-			}>
+		<div className={!module || (module && module === '') ? '' : 'col-sm-12'}>
 			<div className="element-box m-0 p-3">
 				<div className="form-block w-100">
 					{chosenPatient && chosenPatient.outstanding > 0 && (

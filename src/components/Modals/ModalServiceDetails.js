@@ -3,7 +3,7 @@ import React from 'react';
 import { formatCurrency } from '../../services/utilities';
 
 const ModalServiceDetails = ({ closeModal, transaction }) => {
-	console.log(transaction);
+	// console.log(transaction);
 
 	const renderServiceType = type => {
 		switch (type) {
@@ -75,7 +75,8 @@ const ModalServiceDetails = ({ closeModal, transaction }) => {
 						)}
 						{(transaction?.bill_source === 'labs' ||
 							transaction?.bill_source === 'scans' ||
-							transaction?.bill_source === 'procedure') && (
+							transaction?.bill_source === 'procedure' ||
+							transaction?.bill_source === 'nursing-service') && (
 							<div className="element-box p-2">
 								<div className="table-responsive">
 									<table className="table table-striped">
@@ -95,7 +96,8 @@ const ModalServiceDetails = ({ closeModal, transaction }) => {
 								</div>
 							</div>
 						)}
-						{transaction?.bill_source === 'ward' && (
+						{(transaction?.bill_source === 'ward' ||
+							transaction?.bill_source === 'nicu-accommodation') && (
 							<div className="element-box p-2">
 								<div>{transaction.description}</div>
 							</div>

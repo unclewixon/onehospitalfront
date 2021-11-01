@@ -42,10 +42,10 @@ const Page = ({ location }) => {
 				/>
 			);
 		case 'lab-request':
-			return <LabRequest module="ivf" />;
+			return <LabRequest module="ivf" itemId={ivf.id || ''} />;
 		case 'notes':
 		default:
-			return <Notes />;
+			return <Notes can_request={ivf && ivf.status === 0} />;
 	}
 };
 

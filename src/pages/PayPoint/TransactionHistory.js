@@ -107,10 +107,6 @@ class TransactionHistory extends Component {
 		});
 	};
 
-	handlePrintClick = () => {
-		console.log('print');
-	};
-
 	render() {
 		const { filtering, loading, meta } = this.state;
 		const { transactions } = this.props;
@@ -186,8 +182,8 @@ class TransactionHistory extends Component {
 								<TransactionTable
 									transactions={transactions}
 									showActionBtns={true}
-									handlePrint={this.handlePrintClick}
 									queue={false}
+									showPrint={true}
 								/>
 								{meta && (
 									<div className="pagination pagination-center mt-4">

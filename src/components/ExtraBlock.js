@@ -2,11 +2,18 @@
 import React from 'react';
 import moment from 'moment';
 
+import { formatDate } from '../services/utilities';
+
 const ExtraBlock = ({ module, item }) => {
+	let pregnancy_history = null;
+	try {
+		pregnancy_history = JSON.parse(item.pregnancy_history);
+	} catch (e) {}
+
 	return (
 		<div className="element-box m-0 p-0 mb-4">
-			<ul className="breadcrumb px-3">
-				{module === 'ivf' && (
+			{module === 'ivf' && (
+				<ul className="breadcrumb px-3">
 					<>
 						<li className="breadcrumb-item">
 							<a className="no-pointer">{`Pregnancy Test Date: ${moment(
@@ -182,8 +189,79 @@ const ExtraBlock = ({ module, item }) => {
 								?.husbandLabDetails?.sfaAndrology?.summary || '--'}`}</a>
 						</li>
 					</>
-				)}
-			</ul>
+				</ul>
+			)}
+			{module === 'antenatal' && (
+				<ul className="breadcrumb px-3">
+					<>
+						<li className="breadcrumb-item">
+							<a className="no-pointer">{`ANC #: ${item.serial_code}`}</a>
+						</li>
+						<li className="breadcrumb-item">
+							<a className="no-pointer">Husband</a>
+						</li>
+						<li className="breadcrumb-item">
+							<a className="no-pointer">{`Enrolled: ${formatDate(
+								item.createdAt,
+								'DD MMM, YYYY'
+							)}`}</a>
+						</li>
+						<li className="breadcrumb-item">
+							<a className="no-pointer">{`Package: ${item.package?.name ||
+								'Nil'}`}</a>
+						</li>
+						<li className="breadcrumb-item">
+							<a className="no-pointer">{`Reason: ${item.booking_period}`}</a>
+						</li>
+						<li className="breadcrumb-item">
+							<a className="no-pointer">
+								LMP:{' '}
+								<span className="text-dotted-underline text-primary">{`${formatDate(
+									item.lmp,
+									'MMM Do, YYYY'
+								)}`}</span>
+							</a>
+						</li>
+						<li className="breadcrumb-item">
+							<a className="no-pointer">{`EDD: ${formatDate(
+								item.edd,
+								'DD MMM, YYYY'
+							)}`}</a>
+						</li>
+					</>
+				</ul>
+			)}
+			{module === 'antenatal' && (
+				<ul className="breadcrumb px-3">
+					<>
+						<li className="breadcrumb-item">
+							<a className="no-pointer">{`Gravida: ${pregnancy_history.gravida ||
+								'--'}`}</a>
+						</li>
+						<li className="breadcrumb-item">
+							<a className="no-pointer">{`Para: ${pregnancy_history.para ||
+								'--'}`}</a>
+						</li>
+						<li className="breadcrumb-item">
+							<a className="no-pointer">{`Alive: ${pregnancy_history.alive ||
+								'--'}`}</a>
+						</li>
+						<li className="breadcrumb-item">
+							<a className="no-pointer">{`Miscarriages: ${pregnancy_history.miscarriage ||
+								'--'}`}</a>
+						</li>
+						<li className="breadcrumb-item">
+							<a className="no-pointer">{`Abortions: ${pregnancy_history.abortion ||
+								'--'}`}</a>
+						</li>
+						<li className="breadcrumb-item">
+							<a className="no-pointer">{`Number of days to delivery: ${moment(
+								item.edd
+							).diff(moment(), 'days')} day(s)`}</a>
+						</li>
+					</>
+				</ul>
+			)}
 		</div>
 	);
 };

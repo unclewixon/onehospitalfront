@@ -15,18 +15,17 @@ const NicuAccommodation = () => {
 	const initialState = {
 		name: '',
 		amount: '',
+		quantity: '',
 		save: true,
 		edit: false,
 		id: '',
 	};
 	const [accommodations, setAccommodations] = useState([]);
-	const [{ name, amount }, setState] = useState(initialState);
+	const [{ name, amount, quantity }, setState] = useState(initialState);
 	const [loading, setLoading] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	const [payload, getDataToEdit] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
-	// eslint-disable-next-line no-unused-vars
-	const [meta, setMeta] = useState(null);
 
 	const handleInputChange = e => {
 		const { name, value } = e.target;
@@ -37,7 +36,7 @@ const NicuAccommodation = () => {
 		try {
 			e.preventDefault();
 			setLoading(true);
-			const data = { name, amount };
+			const data = { name, amount, quantity };
 			const rs = await request('nicu-accommodations', 'POST', true, data);
 			setAccommodations([...accommodations, rs]);
 			setLoading(false);
@@ -53,7 +52,7 @@ const NicuAccommodation = () => {
 		try {
 			e.preventDefault();
 			setLoading(true);
-			const data = { name, id: payload.id, amount };
+			const data = { name, id: payload.id, amount, quantity };
 			const url = `nicu-accommodations/${data.id}`;
 			const rs = await request(url, 'PATCH', true, data);
 			const allAccommodations = updateImmutable(accommodations, rs);
@@ -75,6 +74,8 @@ const NicuAccommodation = () => {
 		setState(prevState => ({
 			...prevState,
 			name: data.name,
+			quantity: data.quantity,
+			amount: data.amount,
 			id: data.id,
 		}));
 		getDataToEdit(data);
@@ -108,9 +109,8 @@ const NicuAccommodation = () => {
 	const fetchAccommodation = useCallback(async () => {
 		try {
 			const rs = await request('nicu-accommodations', 'GET', true);
-			const { result, ...info } = rs;
+			const { result } = rs;
 			setAccommodations([...result]);
-			setMeta(info);
 			setDataLoaded(true);
 		} catch (error) {
 			setDataLoaded(true);
@@ -168,6 +168,12 @@ const NicuAccommodation = () => {
 														<div className="pi-body">
 															<div className="pi-info">
 																<div className="h6 pi-name h7">{item.name}</div>
+																<div className="pi-sub mt-2">
+																	{`Qty Owned: ${item.quantity}`}
+																</div>
+																<div className="pi-sub">
+																	{`Qty Unused: ${item.quantity_unused}`}
+																</div>
 															</div>
 														</div>
 														<div className="pi-foot">
@@ -224,6 +230,19 @@ const NicuAccommodation = () => {
 														type="text"
 														name="amount"
 														value={amount}
+														onChange={handleInputChange}
+													/>
+												</div>
+											</div>
+											<div className="form-group">
+												<label className="lighter">Quantity Owned</label>
+												<div className="input-group mb-2 mr-sm-2 mb-sm-0">
+													<input
+														className="form-control"
+														placeholder="Quantity"
+														type="number"
+														name="quantity"
+														value={quantity}
 														onChange={handleInputChange}
 													/>
 												</div>

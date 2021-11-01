@@ -27,9 +27,10 @@ import SSRStorage from '../../services/storage';
 
 export const StepOneSchema = object({
 	username: string().required('Username is required'),
-	first_name: string().required('Please enter user first name'),
-	last_name: string().required('Please enter user last name'),
-	gender: string().required('Please enter user last name'),
+	first_name: string().required('Please enter first name'),
+	last_name: string().required('Please enter last name'),
+	profession: string().required('Please enter profession'),
+	gender: string().required('Please enter gender'),
 	role_id: string().required('Role is required'),
 	department_id: string().required('Department is required'),
 	date_of_birth: string().required('Date of birth is required'),
@@ -110,12 +111,12 @@ function ModalCreateStaff({ updateStaffs, closeModal, staff, staffs }) {
 	};
 
 	const formatDateEntry = entry => {
-		if (form !== null) {
-			if (form[entry] !== null) {
-				return moment(form[entry]).toDate(); //;
-			} else {
-				return '';
-			}
+		if (typeof form === 'undefined') {
+			return '';
+		}
+
+		if (form !== null && form[entry] !== null) {
+			return moment(form[entry]).toDate(); //;
 		} else {
 			return '';
 		}

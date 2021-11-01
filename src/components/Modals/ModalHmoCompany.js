@@ -141,9 +141,6 @@ const ModalHmoCompany = ({
 						} HMO Scheme`}</h4>
 						<div className="element-box">
 							<form onSubmit={edit ? onEditHmo : onAddHmo}>
-								<h6 className="form-header">{`${
-									edit ? 'Edit' : 'Add New'
-								} HMO Company`}</h6>
 								<div className="form-group">
 									<input
 										className="form-control"

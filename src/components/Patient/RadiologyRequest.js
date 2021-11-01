@@ -14,7 +14,7 @@ const defaultValues = {
 	urgent: false,
 };
 
-const RadiologyRequest = ({ module, history, location }) => {
+const RadiologyRequest = ({ module, history, location, itemId }) => {
 	const { register, handleSubmit } = useForm({ defaultValues });
 
 	const [submitting, setSubmitting] = useState(false);
@@ -72,13 +72,14 @@ const RadiologyRequest = ({ module, history, location }) => {
 				tests: [...tests],
 				request_note: data.request_note,
 				urgent: data.urgent,
+				antenatal_id: module === 'antenatal' ? itemId : '',
 			};
 
 			setSubmitting(true);
 			await request('requests/save-request', 'POST', true, datum);
 			setSubmitting(false);
 			notifySuccess('Radiology request sent!');
-			if (module !== 'patient') {
+			if (!module || (module && module === '')) {
 				history.push('/radiology');
 			} else {
 				history.push(`${location.pathname}#radiology`);
@@ -91,12 +92,7 @@ const RadiologyRequest = ({ module, history, location }) => {
 	};
 
 	return (
-		<div
-			className={
-				module && (module === 'patient' || module === 'antenatal')
-					? 'col-sm-12'
-					: ''
-			}>
+		<div className={!module || (module && module === '') ? '' : 'col-sm-12'}>
 			<div className="element-box m-0 p-3">
 				<div className="form-block w-100">
 					<form onSubmit={handleSubmit(onSubmit)}>

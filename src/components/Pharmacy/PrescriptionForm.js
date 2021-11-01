@@ -28,13 +28,7 @@ const defaultValues = {
 	diagnosis: [],
 };
 
-const PrescriptionForm = ({
-	patient,
-	history,
-	module,
-	location,
-	procedure,
-}) => {
+const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 	const { register, handleSubmit, setValue, reset } = useForm({
 		defaultValues,
 	});
@@ -177,7 +171,9 @@ const PrescriptionForm = ({
 				items: data,
 				patient_id,
 				request_note: regimenNote,
-				procedure_id: procedure?.id,
+				antenatal_id: module === 'antenatal' ? itemId : '',
+				admission_id: module === 'admission' ? itemId : '',
+				procedure_id: module === 'procedure' ? itemId : '',
 			};
 
 			const rs = await request('requests/save-request', 'POST', true, regimen);
@@ -185,13 +181,13 @@ const PrescriptionForm = ({
 			dispatch(stopBlock());
 			if (rs.success) {
 				notifySuccess('regimen request completed');
-				if (module !== 'patient') {
+				if (!module || (module && module === '')) {
 					history.push('/pharmacy');
 				} else {
-					if (procedure) {
-						history.push(`${location.pathname}#medications-used`);
-					} else {
+					if (module === 'patient') {
 						history.push(`${location.pathname}#pharmacy`);
+					} else {
+						history.push(`${location.pathname}#regimen`);
 					}
 				}
 			} else {
