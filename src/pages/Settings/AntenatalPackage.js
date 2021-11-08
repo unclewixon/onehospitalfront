@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Fragment } from 'react';
 
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
@@ -7,6 +7,8 @@ import { request, confirmAction } from '../../services/utilities';
 import { updateImmutable } from '../../services/utilities';
 import TableLoading from '../../components/TableLoading';
 import { formatCurrency } from '../../services/utilities';
+import AncCoverage from '../../components/AncCoverage';
+import ModalSelectServices from '../../components/Modals/ModalSelectServices';
 
 const AntenatalPackage = () => {
 	const initialState = {
@@ -22,6 +24,9 @@ const AntenatalPackage = () => {
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
 	const [payload, getDataToEdit] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
+	const [showModal, setShowModal] = useState(false);
+	const [slug, setSlug] = useState(null);
+	const [ancPackage, setAncPackage] = useState(null);
 
 	const fetchPackages = useCallback(async () => {
 		try {
@@ -117,6 +122,25 @@ const AntenatalPackage = () => {
 		setState({ ...initialState });
 	};
 
+	const updatePackage = item => {
+		const items = updateImmutable(packages, item);
+		setPackages(items);
+	};
+
+	const selectServices = (title, item) => {
+		setSlug(title);
+		setAncPackage(item);
+		setShowModal(true);
+		document.body.classList.add('modal-open');
+	};
+
+	const closeModal = () => {
+		document.body.classList.remove('modal-open');
+		setShowModal(false);
+		setAncPackage(null);
+		setSlug(null);
+	};
+
 	return (
 		<div className="content-i">
 			<div className="content-box">
@@ -142,33 +166,55 @@ const AntenatalPackage = () => {
 							<div className="col-lg-8">
 								<div className="row">
 									{packages.map((item, i) => {
+										const coverages = Object.keys(item.coverage);
 										return (
-											<div className="col-lg-4" key={i}>
-												<div className="pt-3">
-													<div className="pipeline-item">
-														<div className="pi-controls">
-															<div className="pi-settings os-dropdown-trigger">
-																<i
-																	className="os-icon os-icon-ui-49"
-																	onClick={() => onClickEdit(item)}></i>
+											<Fragment key={i}>
+												<div className="col-lg-4">
+													<div className="pt-3">
+														<div className="pipeline-item">
+															<div className="pi-controls">
+																<div className="pi-settings os-dropdown-trigger">
+																	<i
+																		className="os-icon os-icon-ui-49"
+																		onClick={() => onClickEdit(item)}></i>
+																</div>
+																<div className="pi-settings os-dropdown-trigger">
+																	<i
+																		className="os-icon os-icon-ui-15 text-danger"
+																		onClick={() => confirmDelete(item)}></i>
+																</div>
 															</div>
-															<div className="pi-settings os-dropdown-trigger">
-																<i
-																	className="os-icon os-icon-ui-15 text-danger"
-																	onClick={() => confirmDelete(item)}></i>
-															</div>
-														</div>
-														<div className="pi-body">
-															<div className="pi-info">
-																<div className="h6 pi-name">{item.name}</div>
-																<div className="pi-sub">
-																	{formatCurrency(item.amount)}
+															<div className="pi-body">
+																<div className="pi-info">
+																	<div className="h6 pi-name">{item.name}</div>
+																	<div className="pi-sub">
+																		{formatCurrency(item.amount)}
+																	</div>
 																</div>
 															</div>
 														</div>
 													</div>
 												</div>
-											</div>
+												{coverages.map((cover, i) => {
+													return (
+														<div className="col-lg-12 mt-4" key={i}>
+															<div
+																className="rentals-list-w"
+																style={{ flexDirection: 'column' }}>
+																<div
+																	className="filter-side mb-2"
+																	style={{ flex: '0 0 100%' }}>
+																	<AncCoverage
+																		title={cover}
+																		item={item}
+																		selectServices={selectServices}
+																	/>
+																</div>
+															</div>
+														</div>
+													);
+												})}
+											</Fragment>
 										);
 									})}
 								</div>
@@ -247,6 +293,14 @@ const AntenatalPackage = () => {
 					)}
 				</div>
 			</div>
+			{showModal && (
+				<ModalSelectServices
+					slug={slug}
+					updatePackage={updatePackage}
+					closeModal={() => closeModal()}
+					item={ancPackage}
+				/>
+			)}
 		</div>
 	);
 };

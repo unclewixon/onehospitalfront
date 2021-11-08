@@ -26,7 +26,7 @@ const RequestService = ({ closeModal, refresh, error, handleSubmit }) => {
 	const fetchServices = useCallback(async () => {
 		try {
 			dispatch(startBlock());
-			const url = `services/category/nursing-service?hmo_id=${patient.hmo.id}`;
+			const url = `services/nursing-service?hmo_id=${patient.hmo.id}`;
 			const rs = await request(url, 'GET', true);
 			setServices(rs);
 			dispatch(stopBlock());

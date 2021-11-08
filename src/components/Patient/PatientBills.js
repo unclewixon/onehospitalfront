@@ -20,6 +20,7 @@ import { startBlock, stopBlock } from '../../actions/redux-block';
 import ModalServiceDetails from '../Modals/ModalServiceDetails';
 import waiting from '../../assets/images/waiting.gif';
 import SetCreditLimit from './Modals/SetCreditLimit';
+import MakeDeposit from './Modals/MakeDeposit';
 
 const { RangePicker } = DatePicker;
 
@@ -46,6 +47,7 @@ const PatientBills = () => {
 	const [status, setStatus] = useState('');
 	const [filtering, setFiltering] = useState(false);
 	const [visible, setVisible] = useState(false);
+	const [depositVisible, setDepositVisible] = useState(false);
 	const [filtered, setFiltered] = useState(false);
 	const [date, setDate] = useState([]);
 
@@ -124,10 +126,10 @@ const PatientBills = () => {
 					<TableLoading />
 				) : (
 					<>
-						<div className="row">
-							<div className="col-sm-12">
+						<div className="row justify-content-end">
+							<div className="col-6">
 								<div className="text-right">
-									<label>
+									<label className="btn">
 										Credit Limit:{' '}
 										<Popover
 											content={
@@ -141,7 +143,7 @@ const PatientBills = () => {
 											visible={visible}
 											onVisibleChange={() => setVisible(!visible)}>
 											<Tooltip title="Set Credit Limit">
-												<a className="text-bold link-primary">{`${formatCurrency(
+												<a className="text-bold link-primary mr-3">{`${formatCurrency(
 													patient.credit_limit
 												)}`}</a>{' '}
 												Validity:
@@ -154,6 +156,34 @@ const PatientBills = () => {
 									</label>
 								</div>
 							</div>
+							<div className="col-md-auto">
+								<div className="text-right">
+									<Popover
+										content={
+											<MakeDeposit
+												onHide={() => setDepositVisible(false)}
+												patient={patient}
+												addBill={(bill, outstanding, total_amount) => {
+													setBills([...bills, bill]);
+													setOutstandingAmount(outstanding);
+													setTotalAmount(total_amount);
+												}}
+											/>
+										}
+										overlayClassName="set-credit-limit"
+										trigger="click"
+										visible={depositVisible}
+										onVisibleChange={() => setDepositVisible(!depositVisible)}>
+										<Tooltip title="Make Deposit">
+											<button className="btn btn-primary btn-sm">
+												Make Deposit
+											</button>
+										</Tooltip>
+									</Popover>
+								</div>
+							</div>
+						</div>
+						<div className="row">
 							<div className="col-sm-12">
 								<form className="row">
 									<div className="form-group col-md-6">
@@ -239,13 +269,14 @@ const PatientBills = () => {
 																	? 'Room'
 																	: item.bill_source}
 															</span>
-															{item.bill_source !== 'registration' && (
-																<a
-																	className="item-title text-primary text-underline ml-2"
-																	onClick={() => viewDetails(item)}>
-																	<i className="os-icon os-icon-alert-circle" />
-																</a>
-															)}
+															{item.bill_source !== 'registration' &&
+																item.bill_source !== 'credit' && (
+																	<a
+																		className="item-title text-primary text-underline ml-2"
+																		onClick={() => viewDetails(item)}>
+																		<i className="os-icon os-icon-alert-circle" />
+																	</a>
+																)}
 														</td>
 														<td>
 															{moment(item.createdAt).format(
@@ -276,10 +307,14 @@ const PatientBills = () => {
 												);
 											})}
 											<tr className="even">
-												<td colSpan="3">Total</td>
+												<td colSpan="3">
+													<strong>Total</strong>
+												</td>
 												<td>{formatCurrency(totalAmount)}</td>
-												<td>{formatCurrency(outstandingAmount)}</td>
-												<td colSpan="3"></td>
+												<td colSpan="3">
+													<strong>Outstanding Amount:</strong>{' '}
+													{formatCurrency(outstandingAmount)}
+												</td>
 											</tr>
 										</tbody>
 									</table>

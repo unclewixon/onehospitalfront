@@ -75,7 +75,7 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 	const fetchServicesByCategory = useCallback(
 		async slug => {
 			try {
-				const url = `${serviceAPI}/category/${slug}`;
+				const url = `${serviceAPI}/${slug}`;
 				const rs = await request(url, 'GET', true);
 				const res = rs.map(service => ({
 					...service,
@@ -117,11 +117,13 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 
 	const onSubmit = async data => {
 		try {
+			dispatch(startBlock());
 			setSubmitting(true);
 			const values = { ...data, service, doctor, consultation };
 			const url = 'front-desk/appointments/new';
 			const rs = await request(url, 'POST', true, values);
 			setSubmitting(false);
+			dispatch(stopBlock());
 			if (rs.success) {
 				notifySuccess('New appointment scheduled!');
 				addAppointment(rs.appointment);
@@ -130,6 +132,7 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 				notifyError(rs.message || 'Could not schedule appointment');
 			}
 		} catch (e) {
+			dispatch(stopBlock());
 			setSubmitting(false);
 			notifyError(e.message || 'Could not schedule appointment');
 		}

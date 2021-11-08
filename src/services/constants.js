@@ -1265,3 +1265,23 @@ export const noteTypes = [
 	{ value: 'Post-Procedure', label: 'Post-Procedure' },
 	{ value: 'Pre-Procedure', label: 'Pre-Procedure' },
 ];
+
+export const brims = [
+	{ id: '0/5', name: '0/5' },
+	{ id: '1/5', name: '1/5' },
+	{ id: '2/5', name: '2/5' },
+	{ id: '3/5', name: '3/5' },
+	{ id: '4/5', name: '4/5' },
+	{ id: '5/5', name: '5/5' },
+];
+
+export const fetalPositions = [
+	{ id: 'Cephalic', name: 'Cephalic' },
+	{ id: 'Breech', name: 'Breech' },
+];
+
+export const fetalLies = [
+	{ id: 'Longitudinal', name: 'Longitudinal' },
+	{ id: 'Oblique', name: 'Oblique' },
+	{ id: 'Transaverse', name: 'Transaverse' },
+];

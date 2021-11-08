@@ -19,7 +19,8 @@ import axios from 'axios';
 import placeholder from '../assets/images/placeholder.jpg';
 
 //const store = configureStore();
-export const formatCurrency = amount => `₦${numeral(amount).format('0,0.00')}`;
+export const formatCurrency = amount =>
+	`₦${numeral(Math.abs(parseFloat(amount))).format('0,0.00')}`;
 
 export const isUnset = o => typeof o === 'undefined' || o === null;
 
@@ -707,3 +708,10 @@ export const parseNote = note => {
 };
 
 export const parseSource = source => (source === 'ward' ? 'Room' : source);
+
+export const getGestationAge = date => {
+	const weeks = moment().diff(moment(date), 'weeks');
+	const days = moment().diff(moment(date).add(weeks, 'w'), 'days');
+	const display = `${days}day${days > 1 ? 's' : ''}`;
+	return `${weeks}week${weeks > 1 ? 's' : ''} ${days > 0 ? display : ''}`;
+};

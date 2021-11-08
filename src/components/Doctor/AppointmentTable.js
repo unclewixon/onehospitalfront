@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 import { useSelector } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import {
 	confirmAction,
@@ -19,15 +20,23 @@ import ProfilePopup from '../Patient/ProfilePopup';
 import TableLoading from '../TableLoading';
 import ModalViewAppointment from '../Modals/ModalViewAppointment';
 import OpenEncounter from '../Patient/Modals/OpenEncounter';
+import NewAssessment from '../Antenatal/NewAssessment';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
-const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
+const AppointmentTable = ({
+	appointments,
+	loading,
+	updateAppointment,
+	history,
+}) => {
 	const [updating, setUpdating] = useState(null);
 	const [appointment, setAppointment] = useState(null);
 	const [appointmentId, setAppointmentId] = useState(null);
 	const [patient, setPatient] = useState(null);
 	const [showModal, setShowModal] = useState(false);
 	const [encounterModal, setEncounterModal] = useState(false);
+	const [assessmentModal, setAssessmentModal] = useState(false);
+	const [antenatal, setAntenatal] = useState(null);
 
 	const profile = useSelector(state => state.user.profile);
 
@@ -43,6 +52,14 @@ const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 		setPatient(patient);
 		setAppointmentId(id);
 		setEncounterModal(true);
+	};
+
+	const startAssessment = (id, patient, antenatal) => {
+		document.body.classList.add('modal-open');
+		setPatient(patient);
+		setAntenatal(antenatal);
+		setAppointmentId(id);
+		setAssessmentModal(true);
 	};
 
 	const updateStatus = async ({ id, action }) => {
@@ -88,6 +105,7 @@ const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 	const closeModal = () => {
 		setShowModal(false);
 		setEncounterModal(false);
+		setAssessmentModal(false);
 		setAppointment(null);
 		setPatient(null);
 		setAppointmentId(null);
@@ -123,6 +141,7 @@ const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 				</thead>
 				<tbody>
 					{appointments.map((appointment, i) => {
+						console.log(appointment);
 						return (
 							<tr key={i}>
 								<td className="nowrap">
@@ -197,16 +216,30 @@ const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 																	</span>
 																) : (
 																	<>
-																		<button
-																			onClick={() =>
-																				startEncounter(
-																					appointment.id,
-																					appointment?.patient
-																				)
-																			}
-																			className="btn btn-sm btn-info text-white">
-																			Start Encounter
-																		</button>
+																		{appointment?.antenatal ? (
+																			<button
+																				onClick={() =>
+																					startAssessment(
+																						appointment.id,
+																						appointment?.patient,
+																						appointment.antenatal
+																					)
+																				}
+																				className="btn btn-sm btn-info text-white">
+																				Start Assessment
+																			</button>
+																		) : (
+																			<button
+																				onClick={() =>
+																					startEncounter(
+																						appointment.id,
+																						appointment?.patient
+																					)
+																				}
+																				className="btn btn-sm btn-info text-white">
+																				Start Encounter
+																			</button>
+																		)}
 																		<Tooltip title="Call Patient">
 																			<a
 																				onClick={() =>
@@ -287,8 +320,21 @@ const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 					updateAppointment={updateAppointment}
 				/>
 			)}
+			{assessmentModal && (
+				<NewAssessment
+					closeModal={closeModal}
+					appointment_id={appointmentId}
+					refreshAssessments={() => {
+						history.push(`/antenatal#assessments`);
+						const info = { patient, type: 'antenatal', item: antenatal };
+						dispatch(toggleProfile(true, info));
+					}}
+					patient={patient}
+					antenatal={antenatal}
+				/>
+			)}
 		</>
 	);
 };
 
-export default AppointmentTable;
+export default withRouter(AppointmentTable);

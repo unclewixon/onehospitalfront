@@ -319,7 +319,8 @@ class AllAppointments extends Component {
 														</a>
 													</Tooltip>
 													{!item.encounter &&
-														!hasPassed(item.appointment_date) && (
+														!hasPassed(item.appointment_date) &&
+														item.status !== 'Cancelled' && (
 															<Tooltip title="Cancel Appointment">
 																<a
 																	className="danger cursor"

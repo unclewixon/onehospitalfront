@@ -414,7 +414,7 @@ const PlanForm = ({ previous, next, patient }) => {
 			return [];
 		}
 
-		const url = `services/category/procedure?q=${q}`;
+		const url = `services/procedure?q=${q}`;
 		const res = await request(url, 'GET', true);
 		return res;
 	};

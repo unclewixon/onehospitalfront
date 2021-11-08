@@ -285,7 +285,7 @@ ModalApproveTransaction = reduxForm({
 const mapStateToProps = (state, ownProps) => {
 	return {
 		initialValues: {
-			amount_paid: ownProps.transaction.amount,
+			amount_paid: Math.abs(parseFloat(ownProps.transaction.amount)),
 		},
 		voucher: state.paypoint.voucher,
 		pendingTransactions: state.paypoint.pendingTransactions,

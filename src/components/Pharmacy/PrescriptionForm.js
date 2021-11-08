@@ -171,9 +171,9 @@ const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 				items: data,
 				patient_id,
 				request_note: regimenNote,
-				antenatal_id: module === 'antenatal' ? itemId : '',
-				admission_id: module === 'admission' ? itemId : '',
-				procedure_id: module === 'procedure' ? itemId : '',
+				antenatal_id: module === 'antenatal' ? itemId : null,
+				admission_id: module === 'admission' ? itemId : null,
+				procedure_id: module === 'procedure' ? itemId : null,
 			};
 
 			const rs = await request('requests/save-request', 'POST', true, regimen);

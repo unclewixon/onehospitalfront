@@ -159,7 +159,6 @@ class AppointmentHistory extends Component {
 														</td>
 														<td>{appointment.service?.item?.name || '--'}</td>
 														<td>{appointment.department?.name || '--'}</td>
-
 														<td>
 															{!appointment.encounter &&
 															(appointment.status === 'Cancelled' ||

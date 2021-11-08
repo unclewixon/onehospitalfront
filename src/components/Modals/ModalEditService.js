@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Field, reduxForm, SubmissionError } from 'redux-form';
+import { Field, reduxForm, SubmissionError, change } from 'redux-form';
 import Select from 'react-select';
 import { connect, useDispatch } from 'react-redux';
 
@@ -26,6 +26,7 @@ const ModalEditService = ({
 	hmo,
 	editTariff,
 	updateTariff,
+	change,
 }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [category, setCategory] = useState(null);
@@ -40,13 +41,16 @@ const ModalEditService = ({
 			const url = 'services/categories';
 			const rs = await request(url, 'GET', true);
 			setCategories(rs);
+			const privateUrl = `services/private/${service.code}`;
+			const privateRs = await request(privateUrl, 'GET', true);
+			dispatch(change('amount', privateRs.tariff));
 			dispatch(stopBlock());
 		} catch (error) {
 			console.log(error);
 			notifyError('Error fetching categories');
 			dispatch(stopBlock());
 		}
-	}, [dispatch]);
+	}, [change, dispatch, service]);
 
 	useEffect(() => {
 		if (!loaded) {
@@ -112,7 +116,7 @@ const ModalEditService = ({
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
-						<h4 className="onboarding-title">Edit Service</h4>
+						<h4 className="onboarding-title">{`${hmo.name || ''} HMO`}</h4>
 
 						<div className="form-block">
 							<form onSubmit={handleSubmit(update)}>
@@ -149,8 +153,23 @@ const ModalEditService = ({
 										/>
 									</div>
 								</div>
-								{editTariff && (
+								{editTariff && hmo.name !== 'Private' && (
 									<div className="row mt-3">
+										<div className="col-sm-12">
+											<Field
+												id="amount"
+												name="amount"
+												component={renderTextInput}
+												label="Base Tarrif"
+												type="number"
+												readOnly={true}
+											/>
+										</div>
+									</div>
+								)}
+								{editTariff && (
+									<div
+										className={`row ${hmo.name === 'Private' ? 'mt-3' : ''}`}>
 										<div className="col-sm-12">
 											<Field
 												id="tariff"
@@ -194,6 +213,6 @@ const mapStateToProps = (state, ownProps) => {
 	};
 };
 
-export default connect(mapStateToProps)(
+export default connect(mapStateToProps, { change })(
 	reduxForm({ form: 'edit-service', validate })(ModalEditService)
 );

@@ -91,7 +91,7 @@ class AntenatalProfile extends Component {
 	componentDidMount() {
 		const { location } = this.props;
 		if (!location.hash) {
-			this.props.history.push(`${location.pathname}#notes`);
+			this.props.history.push(`${location.pathname}#assessments`);
 		}
 	}
 

@@ -7,44 +7,77 @@ import { assessmentMenu } from '../../services/constants';
 import GeneralAssessment from './Assessment/GeneralAssessment';
 import GeneralComments from './Assessment/GeneralComments';
 import LabInvestigation from './Assessment/LabInvestigation';
-import RadiologyRequest from './Assessment/RadiologicalInvestigation';
+import RadiologyRequest from './Assessment/RadiologyRequest';
 import Prescription from './Assessment/Prescription';
 import NextAppointment from './Assessment/NextAppointment';
 
-const EncounterTabs = ({
+const AssessmentTabs = ({
 	index,
 	previous,
 	next,
 	refreshAssessments,
 	closeModal,
+	assessment,
+	appointment_id,
+	patient,
+	antenatal,
 }) => {
 	switch (index) {
 		case 5:
 			return (
 				<NextAppointment
+					assessment={assessment}
 					previous={previous}
 					refreshAssessments={refreshAssessments}
 					closeModal={closeModal}
+					appointment_id={appointment_id || ''}
+					antenatal={antenatal}
 				/>
 			);
 		case 4:
-			return <Prescription next={next} previous={previous} />;
+			return (
+				<Prescription
+					assessment={assessment}
+					next={next}
+					previous={previous}
+					patient={patient}
+				/>
+			);
 		case 3:
-			return <RadiologyRequest next={next} previous={previous} />;
+			return (
+				<RadiologyRequest
+					assessment={assessment}
+					next={next}
+					previous={previous}
+				/>
+			);
 		case 2:
-			return <LabInvestigation next={next} previous={previous} />;
+			return (
+				<LabInvestigation
+					assessment={assessment}
+					next={next}
+					previous={previous}
+				/>
+			);
 		case 1:
-			return <GeneralComments next={next} previous={previous} />;
+			return (
+				<GeneralComments
+					assessment={assessment}
+					next={next}
+					previous={previous}
+				/>
+			);
 		case 0:
 		default:
-			return <GeneralAssessment next={next} />;
+			return <GeneralAssessment assessment={assessment} next={next} />;
 	}
 };
 
-class VisitNote extends Component {
+class NewAssessment extends Component {
 	state = {
 		eIndex: 0,
 		dropdown: false,
+		assessment: null,
 	};
 
 	componentDidMount() {
@@ -57,11 +90,11 @@ class VisitNote extends Component {
 		this.setState({ eIndex: i });
 	};
 
-	next = () => {
-		const { eIndex } = this.state;
+	next = data => {
+		const { eIndex, assessment } = this.state;
 		const i = eIndex + 1;
 		if (i <= assessmentMenu.length - 1) {
-			this.setState({ eIndex: i });
+			this.setState({ eIndex: i, assessment: { ...assessment, ...data } });
 		}
 
 		setTimeout(() => {
@@ -95,8 +128,14 @@ class VisitNote extends Component {
 	}
 
 	render() {
-		const { refreshAssessments, closeModal } = this.props;
-		const { eIndex } = this.state;
+		const {
+			refreshAssessments,
+			closeModal,
+			appointment_id,
+			patient,
+			antenatal,
+		} = this.props;
+		const { eIndex, assessment } = this.state;
 		const current = assessmentMenu[eIndex];
 		return (
 			<div
@@ -119,18 +158,23 @@ class VisitNote extends Component {
 								encounters={assessmentMenu}
 								active={kebabCase(current)}
 								open={this.open}
+								noClick={true}
 							/>
 							<div className="content-w">
 								<div className="content-i">
 									<div
 										className="content-box encounter-box"
 										style={eIndex === 3 ? { overflowY: 'visible' } : {}}>
-										<EncounterTabs
+										<AssessmentTabs
 											index={eIndex}
 											next={this.next}
 											previous={this.previous}
 											closeModal={closeModal}
 											refreshAssessments={refreshAssessments}
+											assessment={assessment}
+											appointment_id={appointment_id}
+											patient={patient}
+											antenatal={antenatal}
 										/>
 									</div>
 								</div>
@@ -143,4 +187,4 @@ class VisitNote extends Component {
 	}
 }
 
-export default VisitNote;
+export default NewAssessment;

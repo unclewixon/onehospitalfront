@@ -245,23 +245,17 @@ const Consumable = ({
 			setAppointmentDate(date);
 			dispatch(startBlock());
 			const _date = moment(new Date(date));
-			const url = `front-desk/appointments/${appointment_id}/check-date?date=${_date.format(
-				'YYYY-MM-DD HH:mm:ss'
-			)}&staff_id=${staff.id}`;
+			const _next = _date.format('YYYY-MM-DD HH:mm:ss');
+			const url = `front-desk/appointments/check-date/available?date=${_next}&staff_id=${staff.id}`;
 			const rs = await request(url, 'GET', true);
-			if (rs && rs.success) {
-				if (rs.available) {
-					const data = { ...others, date };
-					saveOthers(data);
-					dispatch(stopBlock());
-				}
+			if (rs && rs.success && rs.available) {
+				const data = { ...others, date };
+				saveOthers(data);
+				dispatch(stopBlock());
 			} else {
 				dispatch(stopBlock());
-				notifyError(
-					`The selected time (${_date.format(
-						'DD-MMM-YYYY h:mm A'
-					)}) is not available`
-				);
+				const _time = _date.format('DD-MMM-YYYY h:mm A');
+				notifyError(`The selected time (${_time}) is not available`);
 			}
 		} catch (e) {
 			console.log(e);
@@ -356,7 +350,7 @@ const Consumable = ({
 				<div className="row">
 					<div className="col-sm-6">
 						<div className="form-group">
-							<label>Appontment Date</label>
+							<label>Appointment Date</label>
 							<DatePicker
 								dateFormat="dd-MMM-yyyy h:mm aa"
 								className="single-daterange form-control"

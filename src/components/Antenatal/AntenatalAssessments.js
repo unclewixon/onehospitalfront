@@ -24,6 +24,7 @@ const AntenatalAssessment = ({ can_request = true }) => {
 	const [showModal, setShowModal] = useState(false);
 
 	const dispatch = useDispatch();
+
 	const antenatal = useSelector(state => state.user.item);
 
 	const fetchAssessments = useCallback(
@@ -104,6 +105,7 @@ const AntenatalAssessment = ({ can_request = true }) => {
 								</thead>
 								<tbody>
 									{assessments.map((item, i) => {
+										console.log(item);
 										return (
 											<tr key={i}>
 												<td nowrap="nowrap">
@@ -111,12 +113,12 @@ const AntenatalAssessment = ({ can_request = true }) => {
 												</td>
 												<td>G.A.</td>
 												<td>Measurements</td>
-												<td>Fetal Lie</td>
-												<td>Presentation</td>
+												<td>{item.fetal_lie}</td>
+												<td>{item.position_of_foetus}</td>
 												<td>
 													<div
 														dangerouslySetInnerHTML={{
-															__html: item.comment,
+															__html: item.comment?.description || '--',
 														}}
 													/>
 												</td>
@@ -145,7 +147,10 @@ const AntenatalAssessment = ({ can_request = true }) => {
 			{showModal && (
 				<NewAssessment
 					closeModal={closeModal}
+					appointment_id=""
 					refreshAssessments={refreshAssessments}
+					patient={antenatal.patient}
+					antenatal={antenatal}
 				/>
 			)}
 		</div>

@@ -866,3 +866,9 @@ h4.onboarding-title {
 .text-dotted-underline {
 	text-decoration: underline dashed;
 }
+
+.pi-label {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}

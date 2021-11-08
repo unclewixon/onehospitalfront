@@ -262,6 +262,7 @@ const ViewPrescription = ({
 													regimen.item.frequencyType === 'immediately'
 														? ''
 														: ` for ${regimen.item.duration} days`;
+												console.log(regimen.item);
 												return (
 													<tr key={i}>
 														<td>

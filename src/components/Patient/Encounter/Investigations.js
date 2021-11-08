@@ -145,7 +145,7 @@ const Investigations = ({ patient, previous, next }) => {
 			return [];
 		}
 
-		const url = `services/category/scans?q=${q}`;
+		const url = `services/scans?q=${q}`;
 		const res = await request(url, 'GET', true);
 		return res;
 	};
@@ -267,7 +267,7 @@ const Investigations = ({ patient, previous, next }) => {
 									items: e || [],
 								});
 							}}
-							placeholder="Search Lab Test"
+							placeholder="Search Scans"
 						/>
 					</div>
 				</div>
@@ -284,7 +284,6 @@ const Investigations = ({ patient, previous, next }) => {
 						))}
 					</div>
 				</div>
-
 				<div className="row mt-4">
 					<div className="form-group col-sm-12">
 						<label>Scan Request Note</label>

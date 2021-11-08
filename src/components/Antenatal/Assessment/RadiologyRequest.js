@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Field, reduxForm, change } from 'redux-form';
 import { connect, useDispatch } from 'react-redux';
-import Select from 'react-select';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 import {
@@ -9,15 +8,13 @@ import {
 	formatCurrency,
 	request,
 } from '../../../services/utilities';
-import { startBlock, stopBlock } from '../../../actions/redux-block';
-import { notifyError } from '../../../services/notify';
 
 const validate = values => {
 	const errors = {};
 	return errors;
 };
 
-const LabInvestigation = ({
+const RadiologyRequest = ({
 	handleSubmit,
 	change,
 	previous,
@@ -25,112 +22,65 @@ const LabInvestigation = ({
 	assessment,
 }) => {
 	const [loaded, setLoaded] = useState(false);
-	const [groups, setGroups] = useState([]);
-	const [selectedTests, setSelectedTests] = useState([]);
-	const [urgentLab, setUrgentLab] = useState(false);
+	const [selectedScans, setSelectedScans] = useState([]);
+	const [urgentScan, setUrgentScan] = useState(false);
 
 	const dispatch = useDispatch();
 
 	const initData = useCallback(() => {
-		setSelectedTests(assessment.lab_tests || []);
-		setUrgentLab(assessment?.lab_urgent || false);
+		setSelectedScans(assessment.scans || []);
+		setUrgentScan(assessment?.scan_urgent || false);
 	}, [assessment]);
-
-	const fetchLabCombo = useCallback(async () => {
-		try {
-			dispatch(startBlock());
-
-			try {
-				const url = 'lab-tests/groups';
-				const rs = await request(url, 'GET', true);
-				setGroups(rs);
-			} catch (e) {
-				notifyError('Error fetching lab groups');
-			}
-
-			dispatch(stopBlock());
-		} catch (error) {
-			console.log(error);
-			notifyError('Error fetching groups');
-			dispatch(stopBlock());
-		}
-	}, [dispatch]);
 
 	useEffect(() => {
 		if (!loaded) {
-			fetchLabCombo();
 			initData();
 			setLoaded(true);
 		}
-	}, [fetchLabCombo, initData, loaded]);
+	}, [initData, loaded]);
 
-	const getLabTests = async q => {
+	const getServices = async q => {
 		if (!q || q.length < 1) {
 			return [];
 		}
 
-		const url = `lab-tests?q=${q}`;
+		const url = `services/scans?q=${q}`;
 		const res = await request(url, 'GET', true);
-		return res?.result || [];
+		return res;
 	};
 
 	return (
 		<div className="form-block encounter">
 			<form onSubmit={handleSubmit(next)}>
 				<div className="row">
-					<div className="form-group col-sm-6">
-						<label>Lab Group</label>
-						<Select
-							name="lab_group"
-							placeholder="Select Lab Group"
-							options={groups}
-							getOptionValue={option => option.id}
-							getOptionLabel={option => option.name}
-							onChange={e => {
-								const items = [
-									...selectedTests,
-									...e.tests.map(t => ({ ...t.labTest })),
-								];
-								setSelectedTests(items);
-								dispatch(change('lab_tests', items));
-							}}
-						/>
-					</div>
-					<div className="form-group col-sm-6">
-						<label>Lab Test</label>
+					<div className="form-group col-sm-12">
+						<label>Radiology Test</label>
 						<AsyncSelect
 							isMulti
 							isClearable
 							getOptionValue={option => option.id}
-							getOptionLabel={option =>
-								`${option.name} (${option.category.name})`
-							}
+							getOptionLabel={option => option.name}
 							defaultOptions
-							value={selectedTests}
-							name="lab_test"
-							loadOptions={getLabTests}
+							value={selectedScans}
+							name="service_request"
+							loadOptions={getServices}
 							onChange={e => {
-								if (e) {
-									setSelectedTests(e);
-									dispatch(change('lab_tests', e));
-								} else {
-									setSelectedTests([]);
-									dispatch(change('lab_tests', []));
-								}
+								setSelectedScans(e || []);
+								dispatch(change('scans', e || []));
 							}}
-							placeholder="Search Lab Test"
+							placeholder="Search Scans"
 						/>
 					</div>
 				</div>
 				<div className="row mt-2">
 					<div className="col-sm-12">
-						{selectedTests.map((lab, i) => (
+						{selectedScans.map((scan, i) => (
 							<span
 								className={`badge badge-${
-									lab ? 'info' : 'danger'
+									scan ? 'info' : 'danger'
 								} text-white ml-2`}
-								key={i}>{`${lab.name}: ${formatCurrency(
-								lab?.service?.tariff || 0
+								key={i}>{`${scan.name}: ${formatCurrency(
+								scan?.serviceCost?.tariff || 0
 							)}`}</span>
 						))}
 					</div>
@@ -139,32 +89,33 @@ const LabInvestigation = ({
 					<div className="form-group col-sm-12">
 						<Field
 							id="note"
-							name="lab_note"
+							name="scan_note"
 							component={renderTextArea}
-							label="Lab Request Note"
+							label="Scan Request Note"
 							type="text"
 							placeholder="Enter note"
 						/>
 					</div>
 				</div>
 				<div className="row">
-					<div className="form-group col-sm-4">
+					<div className="form-group col-sm-6">
 						<div className="form-check col-sm-12">
 							<label className="form-check-label">
 								<input
 									className="form-check-input mt-0"
-									name="lab_urgent"
+									name="scan_urgent"
 									type="checkbox"
-									checked={urgentLab}
+									checked={urgentScan}
 									onChange={e => {
-										setUrgentLab(!urgentLab);
-										dispatch(change('lab_urgent', !urgentLab));
+										setUrgentScan(!urgentScan);
+										dispatch(change('scan_urgent', !urgentScan));
 									}}
 								/>
 								Please check if urgent
 							</label>
 						</div>
 					</div>
+					<div className="col-sm-6 text-right"></div>
 				</div>
 				<div className="row mt-5">
 					<div className="col-sm-12 d-flex ant-row-flex-space-between">
@@ -193,5 +144,5 @@ export default connect(mapStateToProps, { change })(
 		destroyOnUnmount: false,
 		forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
 		validate,
-	})(LabInvestigation)
+	})(RadiologyRequest)
 );

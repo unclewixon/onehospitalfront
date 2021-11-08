@@ -2,13 +2,15 @@
 import React from 'react';
 import moment from 'moment';
 
-import { formatDate } from '../services/utilities';
+import { formatDate, getGestationAge } from '../services/utilities';
 
 const ExtraBlock = ({ module, item }) => {
 	let pregnancy_history = null;
 	try {
 		pregnancy_history = JSON.parse(item.pregnancy_history);
-	} catch (e) {}
+	} catch (e) {
+		pregnancy_history = item.pregnancy_history;
+	}
 
 	return (
 		<div className="element-box m-0 p-0 mb-4">
@@ -207,7 +209,7 @@ const ExtraBlock = ({ module, item }) => {
 							)}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Package: ${item.package?.name ||
+							<a className="no-pointer">{`Package: ${item.ancpackage?.name ||
 								'Nil'}`}</a>
 						</li>
 						<li className="breadcrumb-item">
@@ -235,27 +237,35 @@ const ExtraBlock = ({ module, item }) => {
 				<ul className="breadcrumb px-3">
 					<>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Gravida: ${pregnancy_history.gravida ||
+							<a className="no-pointer">{`Gravida: ${
+								pregnancy_history?.gravida
+									? pregnancy_history?.gravida.replace(/[^0-9]/g, '')
+									: '--'
+							}`}</a>
+						</li>
+						<li className="breadcrumb-item">
+							<a className="no-pointer">{`Para: ${pregnancy_history?.para ||
 								'--'}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Para: ${pregnancy_history.para ||
+							<a className="no-pointer">{`Alive: ${pregnancy_history?.alive ||
 								'--'}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Alive: ${pregnancy_history.alive ||
+							<a className="no-pointer">{`Miscarriages: ${pregnancy_history?.miscarriage ||
 								'--'}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Miscarriages: ${pregnancy_history.miscarriage ||
+							<a className="no-pointer">{`Abortions: ${pregnancy_history?.abortion ||
 								'--'}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Abortions: ${pregnancy_history.abortion ||
-								'--'}`}</a>
+							<a className="no-pointer">{`Gestation Age: ${getGestationAge(
+								item.lmp
+							)}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Number of days to delivery: ${moment(
+							<a className="no-pointer">{`No. of days to delivery: ${moment(
 								item.edd
 							).diff(moment(), 'days')} day(s)`}</a>
 						</li>

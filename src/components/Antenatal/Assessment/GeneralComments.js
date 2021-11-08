@@ -1,63 +1,56 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Field, reduxForm } from 'redux-form';
+import { connect } from 'react-redux';
 
-import { validate } from '../../../services/validationSchemas';
 import { renderTextArea } from '../../../services/utilities';
 
-class GeneralComments extends Component {
-	render() {
-		const { handleSubmit, previousPage, error, page } = this.props;
-		return (
-			<>
-				<h6 className="element-header">Step {page}. General Comments</h6>
-				<div className="form-block">
-					<form onSubmit={handleSubmit}>
-						{error && (
-							<div
-								className="alert alert-danger"
-								dangerouslySetInnerHTML={{
-									__html: `<strong>Error!</strong> ${error}`,
-								}}
-							/>
-						)}
-						<div className="row">
-							<div className="col-sm-12">
-								<Field
-									id="comments"
-									name="comments"
-									component={renderTextArea}
-									label="Comment"
-									type="text"
-									placeholder="Enter comment"
-								/>
-							</div>
-						</div>
+const validate = values => {
+	const errors = {};
+	return errors;
+};
 
-						<div className="row">
-							<div className="col-sm-12 text-right">
-								<button
-									className="btn btn-primary"
-									type="button"
-									onClick={previousPage}>
-									Previous
-								</button>
-								<button className="btn btn-primary" type="submit">
-									Next
-								</button>
-							</div>
-						</div>
-					</form>
+const GeneralComments = ({ handleSubmit, previous, next }) => {
+	return (
+		<div className="form-block encounter">
+			<form onSubmit={handleSubmit(next)}>
+				<div className="row">
+					<div className="col-sm-12">
+						<Field
+							id="comment"
+							name="comment"
+							component={renderTextArea}
+							label="Comment"
+							type="text"
+							placeholder="Enter comment"
+						/>
+					</div>
 				</div>
-			</>
-		);
-	}
-}
+				<div className="row mt-5">
+					<div className="col-sm-12 d-flex ant-row-flex-space-between">
+						<button className="btn btn-primary" onClick={previous}>
+							Previous
+						</button>
+						<button className="btn btn-primary" type="submit">
+							Next
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	);
+};
 
-GeneralComments = reduxForm({
-	form: 'antenatalAssessment', //Form name is same
-	destroyOnUnmount: false,
-	forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
-	validate,
-})(GeneralComments);
+const mapStateToProps = (state, ownProps) => {
+	return {
+		initialValues: { ...ownProps.assessment },
+	};
+};
 
-export default GeneralComments;
+export default connect(mapStateToProps)(
+	reduxForm({
+		form: 'antenatalAssessment', //Form name is same
+		destroyOnUnmount: false,
+		forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
+		validate,
+	})(GeneralComments)
+);

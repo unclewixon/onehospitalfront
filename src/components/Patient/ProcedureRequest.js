@@ -105,7 +105,7 @@ const ProcedureRequest = ({ module, history, location }) => {
 			return [];
 		}
 
-		const url = `services/category/procedure?q=${q}`;
+		const url = `services/procedure?q=${q}`;
 		const res = await request(url, 'GET', true);
 		return res;
 	};

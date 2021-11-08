@@ -49,7 +49,7 @@ const RadiologyRequest = ({ module, history, location, itemId }) => {
 			return [];
 		}
 
-		const url = `services/category/scans?q=${q}`;
+		const url = `services/scans?q=${q}`;
 		const res = await request(url, 'GET', true);
 		return res;
 	};
