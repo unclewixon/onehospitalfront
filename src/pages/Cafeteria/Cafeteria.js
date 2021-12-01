@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Dashboard from './Dashboard';
 import Transactions from './Transactions';
 import Showcase from './Showcase';
+import FoodItems from './FoodItems';
 
 const Cafeteria = ({ location }) => {
 	const [activePage, setActivePage] = useState('');
@@ -51,12 +52,23 @@ const Cafeteria = ({ location }) => {
 								Showcase
 							</Link>
 						</li>
+						<li className="nav-item">
+							<Link
+								aria-expanded="false"
+								className={`nav-link ${
+									activePage === 'food-items' ? 'active' : ''
+								}`}
+								to="/cafeteria/food-items">
+								Food Items
+							</Link>
+						</li>
 					</ul>
 				</div>
 			</div>
 			{activePage === 'cafeteria' && <Dashboard />}
 			{activePage === 'transactions' && <Transactions />}
 			{activePage === 'showcase' && <Showcase />}
+			{activePage === 'food-items' && <FoodItems />}
 		</div>
 	);
 };

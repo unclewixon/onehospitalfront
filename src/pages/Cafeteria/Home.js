@@ -33,6 +33,7 @@ const Home = ({ match }) => {
 									path={`${match.url}/requisitions`}
 									component={Requisitions}
 								/>
+								<Route path={`${match.url}/food-items`} component={Cafeteria} />
 								<Route component={NoMatch} />
 							</Switch>
 						</Suspense>

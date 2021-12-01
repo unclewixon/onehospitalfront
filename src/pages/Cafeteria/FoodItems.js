@@ -1,15 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useCallback } from 'react';
 import Pagination from 'antd/lib/pagination';
-import Tooltip from 'antd/lib/tooltip';
-import moment from 'moment';
 import { useDispatch } from 'react-redux';
-import AsyncSelect from 'react-select/async';
 
 import {
 	request,
 	itemRender,
-	formatCurrency,
 	updateImmutable,
 	confirmAction,
 } from '../../services/utilities';
@@ -18,18 +14,17 @@ import { notifyError, notifySuccess } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import TableLoading from '../../components/TableLoading';
 
-const Showcase = () => {
+const FoodItems = () => {
 	const initialState = {
-		price: '',
-		quantity: '',
+		name: '',
+		description: '',
 		edit: false,
 		create: true,
 	};
-	const [{ price, quantity }, setState] = useState(initialState);
+	const [{ name, description }, setState] = useState(initialState);
 	const [{ edit, create }, setSubmitButton] = useState(initialState);
 	const [data, getDataToEdit] = useState(null);
 	const [loaded, setLoaded] = useState(false);
-	const [foodItem, setFoodItem] = useState(null);
 
 	const [items, setItems] = useState([]);
 	const [meta, setMeta] = useState({ ...paginate });
@@ -39,10 +34,10 @@ const Showcase = () => {
 	const fetchItems = useCallback(async page => {
 		try {
 			const p = page || 1;
-			const url = `${cafeteriaAPI}/items?page=${p}&limit=20`;
+			const url = `${cafeteriaAPI}/food-items?page=${p}&limit=20`;
 			const rs = await request(url, 'GET', true);
-			const { result, ...paginattion } = rs;
-			setMeta(paginattion);
+			const { result, ...pagination } = rs;
+			setMeta(pagination);
 			setItems(result);
 		} catch (error) {
 			console.log(error);
@@ -65,15 +60,20 @@ const Showcase = () => {
 		try {
 			e.preventDefault();
 			dispatch(startBlock());
-			const info = { item_id: foodItem.id, price, quantity };
-			const rs = await request(`${cafeteriaAPI}/items`, 'POST', true, info);
+			const info = { name, description };
+			const rs = await request(
+				`${cafeteriaAPI}/food-items`,
+				'POST',
+				true,
+				info
+			);
 			setItems([rs, ...items]);
 			dispatch(stopBlock());
 			setState({ ...initialState });
-			notifySuccess('Showcase item created');
+			notifySuccess('Food item added');
 		} catch (error) {
 			dispatch(stopBlock());
-			notifyError('Error creating showcase item');
+			notifyError('Error creating food item');
 		}
 	};
 
@@ -81,28 +81,28 @@ const Showcase = () => {
 		try {
 			e.preventDefault();
 			dispatch(startBlock());
-			const info = { item_id: foodItem.id, price, quantity };
-			const url = `${cafeteriaAPI}/items/${data.id}`;
+			const info = { name, description };
+			const url = `${cafeteriaAPI}/food-items/${data.id}`;
 			const rs = await request(url, 'PUT', true, info);
 			setItems([...updateImmutable(items, rs)]);
 			setState({ ...initialState });
 			setSubmitButton({ create: true, edit: false });
 			dispatch(stopBlock());
-			notifySuccess('Show case item updated');
+			notifySuccess('Food item updated');
 		} catch (error) {
 			dispatch(stopBlock());
-			notifyError('Error updating show case item');
+			notifyError('Error updating food item');
 		}
 	};
 
+	// eslint-disable-next-line no-unused-vars
 	const onClickEdit = data => {
 		setSubmitButton({ edit: true, create: false });
 		setState(prevState => ({
 			...prevState,
-			price: data.price,
-			quantity: data.quantity,
+			name: data.name,
+			description: data.description,
 		}));
-		setFoodItem(data.foodItem);
 		getDataToEdit(data);
 	};
 
@@ -114,18 +114,19 @@ const Showcase = () => {
 	const onDeleteItem = async data => {
 		try {
 			dispatch(startBlock());
-			const url = `${cafeteriaAPI}/items/${data.id}`;
+			const url = `${cafeteriaAPI}/food-items/${data.id}`;
 			const rs = await request(url, 'DELETE', true);
 			setItems([...items.filter(i => i.id !== rs.id)]);
 			dispatch(stopBlock());
-			notifySuccess('Show case item deleted');
+			notifySuccess('Food item deleted');
 		} catch (error) {
 			console.log(error);
 			dispatch(stopBlock());
-			notifyError('Error deleting showcase item');
+			notifyError('Error deleting food item');
 		}
 	};
 
+	// eslint-disable-next-line no-unused-vars
 	const confirmDelete = data => {
 		confirmAction(onDeleteItem, data);
 	};
@@ -133,31 +134,6 @@ const Showcase = () => {
 	const onNavigatePage = async pageNumber => {
 		await fetchItems(pageNumber);
 		window.scrollTo({ top: 0, behavior: 'smooth' });
-	};
-
-	const onApprove = async item => {
-		try {
-			dispatch(startBlock());
-			const info = { approved: 1 };
-			const url = `${cafeteriaAPI}/approve/${item.id}`;
-			const rs = await request(url, 'PUT', true, info);
-			setItems([...updateImmutable(items, rs)]);
-			dispatch(stopBlock());
-			notifySuccess('Food item approved');
-		} catch (error) {
-			dispatch(stopBlock());
-			notifyError('Error approving food item');
-		}
-	};
-
-	const fetchFoodItems = async q => {
-		if (!q || q.length < 1) {
-			return [];
-		}
-
-		const url = `cafeteria/food-items?q=${q}`;
-		const res = await request(url, 'GET', true);
-		return res?.result || [];
 	};
 
 	return (
@@ -173,9 +149,7 @@ const Showcase = () => {
 									<thead>
 										<tr>
 											<th>Name</th>
-											<th>Amount</th>
-											<th>Quantity</th>
-											<th>Date</th>
+											<th>Description</th>
 											<th></th>
 										</tr>
 									</thead>
@@ -183,54 +157,8 @@ const Showcase = () => {
 										{items.map((item, i) => {
 											return (
 												<tr key={i}>
-													<td>{item.foodItem.name}</td>
-													<td>{formatCurrency(item.price)}</td>
-													<td>{item.quantity}</td>
-													<td>
-														{moment(item.createdAt).format('DD-MM-YYYY h:mm a')}
-													</td>
-													<td>
-														{item.approved === 0 ? (
-															<span className="badge badge-secondary">
-																pending
-															</span>
-														) : (
-															<>
-																<span className="badge badge-success">
-																	approved
-																</span>
-																<br />
-																{`by ${item.approved_by}`}
-															</>
-														)}
-													</td>
-													<td className="row-actions">
-														{item.approved === 0 && (
-															<>
-																<Tooltip title="Approve Item">
-																	<a
-																		className="info"
-																		onClick={() => onApprove(item)}>
-																		<i className="os-icon os-icon-check-square" />
-																	</a>
-																</Tooltip>
-																<Tooltip title="Edit Item">
-																	<a
-																		className="secondary"
-																		onClick={() => onClickEdit(item)}>
-																		<i className="os-icon os-icon-edit-32" />
-																	</a>
-																</Tooltip>
-																<Tooltip title="Delete Item">
-																	<a
-																		className="danger"
-																		onClick={() => confirmDelete(item)}>
-																		<i className="os-icon os-icon-ui-15" />
-																	</a>
-																</Tooltip>
-															</>
-														)}
-													</td>
+													<td>{item.name}</td>
+													<td>{item.description}</td>
 												</tr>
 											);
 										})}
@@ -265,41 +193,25 @@ const Showcase = () => {
 							{edit ? 'Edit Food Item' : 'Add Food Item'}
 						</h6>
 						<div className="form-group mt-2">
-							<label>Food Item</label>
-							<AsyncSelect
-								isClearable
-								getOptionValue={option => option.id}
-								getOptionLabel={option => option.name}
-								defaultOptions
-								loadOptions={fetchFoodItems}
-								value={foodItem}
-								onChange={e => {
-									setFoodItem(e);
-								}}
-								placeholder="--Select--"
+							<input
+								className="form-control"
+								placeholder="Item name"
+								type="text"
+								name="name"
+								onChange={handleInputChange}
+								value={name}
 							/>
 						</div>
 						<div className="form-group">
 							<input
 								className="form-control"
-								placeholder="Item price"
+								placeholder="Item description"
 								type="text"
-								name="price"
+								name="description"
 								onChange={handleInputChange}
-								value={price}
+								value={description}
 							/>
 						</div>
-						<div className="form-group">
-							<input
-								className="form-control"
-								placeholder="Item quantity"
-								type="text"
-								name="quantity"
-								onChange={handleInputChange}
-								value={quantity}
-							/>
-						</div>
-
 						<div className="form-buttons-w">
 							{create && (
 								<button className="btn btn-primary">
@@ -326,4 +238,4 @@ const Showcase = () => {
 	);
 };
 
-export default Showcase;
+export default FoodItems;

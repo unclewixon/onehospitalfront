@@ -39,8 +39,8 @@ const ModalShowTransactions = ({
 	const [submitting, setSubmitting] = useState(false);
 	const [paymentMethod, setPaymentMethod] = useState('');
 	const [note, setNote] = useState('');
-	const [credit, setCredit] = useState(null);
-	const [payCredit, setPayCredit] = useState(false);
+	// const [credit, setCredit] = useState(null);
+	// const [payCredit, setPayCredit] = useState(false);
 
 	const dispatch = useDispatch();
 
@@ -62,9 +62,9 @@ const ModalShowTransactions = ({
 				setTransactions([...result]);
 				setLoading(false);
 
-				const uri = `patient/${patient.id}/outstandings`;
-				const res = await request(uri, 'GET', true);
-				setCredit(res);
+				// const uri = `patient/${patient.id}/outstandings`;
+				// const res = await request(uri, 'GET', true);
+				// setCredit(res);
 
 				dispatch(stopBlock());
 			} catch (e) {
@@ -164,7 +164,7 @@ const ModalShowTransactions = ({
 				patient_id: patient.id,
 				payment_method: paymentMethod,
 				amount_paid: total,
-				pay_with_credit: payCredit ? 1 : 0,
+				// pay_with_credit: payCredit ? 1 : 0,
 			};
 			const url = 'transactions/process-bulk';
 			const rs = await request(url, 'POST', true, data);
@@ -264,7 +264,7 @@ const ModalShowTransactions = ({
 														<td colSpan="3" className="text-right">
 															Total:
 														</td>
-														<td>
+														{/* <td>
 															{formatCurrency(
 																payCredit
 																	? credit.balance < 0
@@ -273,7 +273,8 @@ const ModalShowTransactions = ({
 																	: total,
 																true
 															)}
-														</td>
+														</td> */}
+														<td>{formatCurrency(total, true)}</td>
 													</tr>
 												</tbody>
 											</table>
@@ -303,7 +304,7 @@ const ModalShowTransactions = ({
 												</div>
 											</div>
 										)}
-										<div className="form-check col-md-12 mt-2">
+										{/* <div className="form-check col-md-12 mt-2">
 											<label className="form-check-label">
 												<input
 													className="form-check-input mt-0"
@@ -314,7 +315,7 @@ const ModalShowTransactions = ({
 												/>
 												Pay with Credit
 											</label>
-										</div>
+										</div> */}
 										<div className="col-md-12 mt-4">
 											{!isAdmitted ? (
 												<div
