@@ -548,7 +548,11 @@ export const staffname = user =>
 export const patientname = (user, pid = false) =>
 	user
 		? `${user.other_names} ${user.surname} ${
-				pid ? `(${formatPatientId(user)})` : ''
+				pid
+					? `(${formatPatientId(user)} ${
+							user.legacy_patient_id ? `[${user.legacy_patient_id}]` : ''
+					  })`
+					: ''
 		  }`
 		: '--';
 
