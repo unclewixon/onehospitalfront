@@ -21,16 +21,15 @@ class InputCode extends Component {
 
 	asignCode = async () => {
 		try {
-			const { transaction, transactions, loadTransactions } = this.props;
+			const { transaction, transactions, loadTransaction } = this.props;
 			const { hmo_approval_code } = this.state;
 			this.setState({ submitting: true });
 			const url = `transactions/${transaction.id}/pay`;
 			const data = { hmo_approval_code };
 			const rs = await request(url, 'PATCH', true, data);
-
 			if (rs.success) {
 				const uptdTransactions = updateImmutable(transactions, rs.transaction);
-				loadTransactions(uptdTransactions);
+				loadTransaction(uptdTransactions);
 				notifySuccess(`Hmo code ${hmo_approval_code} added`);
 				this.setState({ submitting: false });
 				this.props.doHide();

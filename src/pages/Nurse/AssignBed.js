@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { reduxForm, SubmissionError } from 'redux-form';
 import Select from 'react-select';
 
-import { request, updateImmutable, nth } from '../../services/utilities';
+import { request, updateImmutable } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 
@@ -64,9 +64,7 @@ class AssignBed extends Component {
 				const update = updateImmutable(patients, rs.admission);
 				updatePatient(update);
 				const room = rs.admission.room;
-				notifySuccess(
-					`patient assigned to ${nth(parseInt(room.floor, 10))}, ${room.id}`
-				);
+				notifySuccess(`patient assigned to ${room.floor}, ${room.id}`);
 				this.setState({ submitting: false });
 				this.props.closeModal();
 			} else {

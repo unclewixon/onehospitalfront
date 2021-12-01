@@ -200,7 +200,8 @@ const RoomHmo = ({ hmo, toggle, doToggle }) => {
 															<div className="pi-foot">
 																<div className="tags" />
 																<a className="extra-info">
-																	<span>{`${item.rooms || 0} rooms`}</span>
+																	<span>{`${item.rooms.length ||
+																		0} rooms`}</span>
 																</a>
 															</div>
 														</div>

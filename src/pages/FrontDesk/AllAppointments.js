@@ -234,6 +234,7 @@ class AllAppointments extends Component {
 										<th>Whom to see</th>
 										<th>Specialty</th>
 										<th>Department</th>
+										<th>Type</th>
 										<th>Status</th>
 										<th></th>
 									</tr>
@@ -272,7 +273,7 @@ class AllAppointments extends Component {
 												</td>
 												<td>{item.service?.item?.name || '--'}</td>
 												<td>{item.department?.name || '--'}</td>
-
+												<td>{item.consultation_type || '--'}</td>
 												<td>
 													{!item.encounter &&
 													(item.status === 'Cancelled' ||

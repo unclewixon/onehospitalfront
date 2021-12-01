@@ -9,7 +9,6 @@ import { startBlock, stopBlock } from '../../actions/redux-block';
 import TableLoading from '../TableLoading';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess } from '../../services/notify';
-import { nth } from '../../services/utilities';
 import { updateService } from '../../actions/settings';
 
 const ModalViewRooms = ({ closeModal, service, error }) => {
@@ -144,7 +143,7 @@ const ModalViewRooms = ({ closeModal, service, error }) => {
 											return (
 												<tr key={i}>
 													<td>{item.name}</td>
-													<td>{nth(parseInt(item.floor, 10))}</td>
+													<td>{item.floor}</td>
 													<td>{item.status}</td>
 													<td className="row-actions">
 														<Tooltip title="Edit Room">

@@ -134,6 +134,7 @@ const AppointmentTable = ({
 					<tr>
 						<th>Date</th>
 						<th>Patient</th>
+						<th>Type</th>
 						<th>Reason</th>
 						<th>Accepted</th>
 						<th>Actions</th>
@@ -141,7 +142,6 @@ const AppointmentTable = ({
 				</thead>
 				<tbody>
 					{appointments.map((appointment, i) => {
-						console.log(appointment);
 						return (
 							<tr key={i}>
 								<td className="nowrap">
@@ -162,7 +162,7 @@ const AppointmentTable = ({
 										</Tooltip>
 									</p>
 								</td>
-
+								<td>{appointment.consultation_type || '--'}</td>
 								<td>
 									<p className="item-title text-color m-0">
 										{trimText(appointment.description || '--', 150)}

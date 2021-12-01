@@ -13,7 +13,6 @@ import {
 	patientname,
 	itemRender,
 	formatDate,
-	nth,
 	updateImmutable,
 } from '../../services/utilities';
 import AssignBed from './AssignBed';
@@ -244,7 +243,7 @@ const InPatientCare = ({ match }) => {
 												<td>{staffname(item.admitted_by)}</td>
 												<td>
 													{item.room
-														? `${item.room.name} / ${nth(item.room.floor)}`
+														? `${item.room.name} / ${item.room.floor}`
 														: '--'}
 												</td>
 												<td>
