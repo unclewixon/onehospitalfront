@@ -138,9 +138,24 @@ const Showcase = () => {
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
 
+	const onApprove = async item => {
+		try {
+			dispatch(startBlock());
+			const info = { approved: 1 };
+			const url = `${cafeteriaAPI}/approve/${item.id}`;
+			const rs = await request(url, 'PUT', true, info);
+			setItems([...updateImmutable(items, rs)]);
+			dispatch(stopBlock());
+			notifySuccess('Food item approved');
+		} catch (error) {
+			dispatch(stopBlock());
+			notifyError('Error approving food item');
+		}
+	};
+
 	return (
 		<div className="row">
-			<div className="col-lg-8">
+			<div className="col-lg-9">
 				<div className="element-box p-3 m-0">
 					{!loaded ? (
 						<TableLoading />
@@ -152,12 +167,9 @@ const Showcase = () => {
 										<tr>
 											<th>Name</th>
 											<th>Amount</th>
-											<th>Description</th>
 											<th>Quantity</th>
 											<th>Date</th>
-											<th>
-												<div></div>
-											</th>
+											<th></th>
 										</tr>
 									</thead>
 									<tbody>
@@ -166,33 +178,60 @@ const Showcase = () => {
 												<tr key={i}>
 													<td>{item.name}</td>
 													<td>{formatCurrency(item.price)}</td>
-													<td>{item.description}</td>
 													<td>{item.quantity}</td>
 													<td>
 														{moment(item.createdAt).format('DD-MM-YYYY h:mm a')}
 													</td>
+													<td>
+														{item.approved === 0 ? (
+															<span className="badge badge-secondary">
+																pending
+															</span>
+														) : (
+															<>
+																<span className="badge badge-success">
+																	approved
+																</span>
+																<br />
+																{`by ${item.approved_by}`}
+															</>
+														)}
+													</td>
 													<td className="row-actions">
-														<Tooltip title="Edit Item">
-															<a
-																className="secondary"
-																onClick={() => onClickEdit(item)}>
-																<i className="os-icon os-icon-edit-32" />
-															</a>
-														</Tooltip>
-														<Tooltip title="Delete Item">
-															<a
-																className="danger"
-																onClick={() => confirmDelete(item)}>
-																<i className="os-icon os-icon-ui-15" />
-															</a>
-														</Tooltip>
+														{item.approved === 0 && (
+															<>
+																<Tooltip title="Approve Item">
+																	<a
+																		className="info"
+																		onClick={() => onApprove(item)}>
+																		<i className="os-icon os-icon-check-square" />
+																	</a>
+																</Tooltip>
+																<Tooltip title="Edit Item">
+																	<a
+																		className="secondary"
+																		onClick={() => onClickEdit(item)}>
+																		<i className="os-icon os-icon-edit-32" />
+																	</a>
+																</Tooltip>
+																<Tooltip title="Delete Item">
+																	<a
+																		className="danger"
+																		onClick={() => confirmDelete(item)}>
+																		<i className="os-icon os-icon-ui-15" />
+																	</a>
+																</Tooltip>
+															</>
+														)}
 													</td>
 												</tr>
 											);
 										})}
 										{loaded && items.length === 0 && (
 											<tr>
-												<td colSpan="6">No Items</td>
+												<td colSpan="5" className="text-center">
+													No Items
+												</td>
 											</tr>
 										)}
 									</tbody>
@@ -212,10 +251,12 @@ const Showcase = () => {
 					)}
 				</div>
 			</div>
-			<div className="col-lg-4">
+			<div className="col-lg-3">
 				<div className="pipeline white lined-warning">
 					<form onSubmit={edit ? onEditItem : onCreateItem}>
-						<h6 className="form-header">Create Item</h6>
+						<h6 className="form-header">
+							{edit ? 'Edit Food Item' : 'Add Food Item'}
+						</h6>
 						<div className="form-group mt-2">
 							<input
 								className="form-control"
@@ -225,6 +266,12 @@ const Showcase = () => {
 								onChange={handleInputChange}
 								value={name}
 							/>
+						</div>
+						<div className="form-group mt-2">
+							<label>Food Item</label>
+							<select className="form-control">
+								<option>--Select--</option>
+							</select>
 						</div>
 						<div className="form-group">
 							<input

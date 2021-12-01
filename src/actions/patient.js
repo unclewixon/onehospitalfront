@@ -14,7 +14,6 @@ import {
 	LOAD_PATIENTS,
 	LOAD_CLINICAL_LAB,
 	LOAD_RADIOLOGY,
-	LOAD_ANTENATAL,
 	LOAD_ANTENATAL_ASSESSMENT,
 	LOAD_LABOUR,
 	LOAD_LABOUR_DETAIL,
@@ -211,13 +210,6 @@ export const loadRadiology = data => {
 	return {
 		type: LOAD_RADIOLOGY,
 		payload: data,
-	};
-};
-
-export const loadAntenatal = payload => {
-	return {
-		type: LOAD_ANTENATAL,
-		payload,
 	};
 };
 

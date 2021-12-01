@@ -12,7 +12,6 @@ import {
 	TOGGLE_VIEW_PAYROLL_HISTORY,
 	TOGGLE_VIEW_CURRENT_PAYROLL,
 	TOGGLE_EDIT_PAYROLL,
-	TOGGLE_CREATE_VOUCHER,
 	TOGGLE_UPLOAD_HMO,
 	TOGGLE_UPLOAD_HMO_TARIFF,
 	TOGGLE_CREATE_LABOUR_MEASUREMENT,
@@ -21,9 +20,6 @@ import {
 	TOGGLE_CREATE_RECORD_DELIVERY,
 	TOGGLE_CREATE_CLINICAL_TASK,
 	TOGGLE_ADD_CAFETERIA_FILE,
-	TOGGLE_APPLY_VOUCHER,
-	TOGGLE_ANTENATAL_DETAIL,
-	TOGGLE_ANTENATAL_ASSESSMENT_DETAIL,
 	TOGGLE_LINE_APPRAISAL,
 	TOGGLE_STAFF_APPRAISAL,
 	TOGGLE_LABOUR_MEASURMENT_DETAIL,
@@ -31,6 +27,8 @@ import {
 	TOGGLE_EDIT_ACCOUNT,
 	ADD_STAFF_FOR_APPRAISAL,
 	SET_IS_STAFF_APPRAISAL,
+	CREAE_NEW_DRUG,
+	CREAE_NEW_GENERIC,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -47,8 +45,6 @@ const INITIAL_STATE = {
 	view_payroll_history: false,
 	current_payroll: false,
 	edit_payroll: false,
-	create_voucher: false,
-	apply_voucher: false,
 	create_labour_measurement: false,
 	create_risk_assessment: false,
 	create_record_delivery: false,
@@ -61,10 +57,6 @@ const INITIAL_STATE = {
 	upload_hmo_tariff: false,
 	create_clinical_task: false,
 	edit_service: { status: false, data: null },
-	antenatal_detail: false,
-	antenatal_id: null,
-	antenatal_assessment_detail: false,
-	antenatal_visit: null,
 	line_appraisal: false,
 	staff_appraisal: false,
 	staff: null,
@@ -75,7 +67,8 @@ const INITIAL_STATE = {
 	edit_account: false,
 	staffForApraisal: null,
 	isStaffAppraisal: false,
-	isAntenatalOpen: false,
+	create_new_drug: false,
+	create_new_generic: false,
 };
 
 const general = (state = INITIAL_STATE, action) => {
@@ -126,10 +119,6 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, create_record_delivery: action.payload };
 		case TOGGLE_CREATE_RECORD_VITAL:
 			return { ...state, create_record_vital: action.payload };
-		case TOGGLE_CREATE_VOUCHER:
-			return { ...state, create_voucher: action.payload };
-		case TOGGLE_APPLY_VOUCHER:
-			return { ...state, apply_voucher: action.payload };
 		case TOGGLE_CREATE_CLINICAL_TASK:
 			return { ...state, create_clinical_task: action.payload };
 		case TOGGLE_UPLOAD_HMO:
@@ -139,19 +128,6 @@ const general = (state = INITIAL_STATE, action) => {
 
 		case TOGGLE_ADD_CAFETERIA_FILE:
 			return { ...state, add_cafeteria_file: action.payload };
-		case TOGGLE_ANTENATAL_DETAIL:
-			return {
-				...state,
-				// antenatal_detail: action.payload,
-				antenatal_id: action.id,
-				isAntenatalOpen: action.payload,
-			};
-		case TOGGLE_ANTENATAL_ASSESSMENT_DETAIL:
-			return {
-				...state,
-				antenatal_assessment_detail: action.payload,
-				antenatal_visit: action.data,
-			};
 		case TOGGLE_LINE_APPRAISAL:
 			return {
 				...state,
@@ -181,6 +157,10 @@ const general = (state = INITIAL_STATE, action) => {
 				edit_account: action.payload,
 				accountChart: action.data,
 			};
+		case CREAE_NEW_DRUG:
+			return { ...state, create_new_drug: action.payload };
+		case CREAE_NEW_GENERIC:
+			return { ...state, create_new_generic: action.payload };
 		default:
 			return state;
 	}

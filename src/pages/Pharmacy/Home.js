@@ -1,10 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { Switch, Route, Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
 import { socket } from '../../services/constants';
+import { createNewDrug, createNewGeneric } from '../../actions/general';
 
 const PrescriptionQueue = lazy(() => import('./PrescriptionQueue'));
 const PrescriptionForm = lazy(() =>
@@ -16,6 +18,8 @@ const Inventory = lazy(() => import('./Inventory'));
 
 const Home = ({ match, location }) => {
 	const [listenning, setListenning] = useState(false);
+
+	const dispatch = useDispatch();
 
 	const page = location.pathname.split('/').pop();
 
@@ -42,6 +46,14 @@ const Home = ({ match, location }) => {
 			});
 		}
 	}, [listenning]);
+
+	const newGeneric = () => {
+		dispatch(createNewGeneric(true));
+	};
+
+	const newDrug = () => {
+		dispatch(createNewDrug(true));
+	};
 
 	return (
 		<div className="content-i">
@@ -72,6 +84,20 @@ const Home = ({ match, location }) => {
 										}`}>
 										New Prescription
 									</Link>
+								</div>
+							)}
+							{page === 'inventory' && (
+								<div className="element-actions">
+									<a
+										className="btn btn-sm btn-primary text-white ml-3"
+										onClick={() => newGeneric()}>
+										Add Generic Name
+									</a>
+									<a
+										className="btn btn-sm btn-secondary text-white ml-3"
+										onClick={() => newDrug()}>
+										New Drug
+									</a>
 								</div>
 							)}
 							<h6 className="element-header">{pageTitle}</h6>

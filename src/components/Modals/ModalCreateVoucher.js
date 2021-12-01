@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Field, reduxForm, SubmissionError } from 'redux-form';
+import {
+	Field,
+	reduxForm,
+	SubmissionError,
+	formValueSelector,
+	change,
+} from 'redux-form';
 import moment from 'moment';
-import DatePicker from 'react-datepicker';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 import {
@@ -11,23 +16,12 @@ import {
 	patientname,
 } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
-import { closeModals } from '../../actions/general';
 import { vouchersAPI } from '../../services/constants';
 import { notifySuccess } from '../../services/notify';
-import { createVoucherData } from '../../actions/paypoint';
 import { searchAPI } from '../../services/constants';
 
 const validate = values => {
-	//const {  apply_voucher } = this.props;
 	const errors = {};
-
-	// if (
-	// 	values.patient_id === null ||
-	// 	values.patient_id === '' ||
-	// 	!values.patient_id
-	// ) {
-	// 	errors.patient_id = 'select patient';
-	// }
 
 	if (!values.amount || values.amount === '') {
 		errors.amount = 'please specify your amount';
@@ -36,7 +30,6 @@ const validate = values => {
 		errors.duration = 'please specify a duration';
 	}
 
-	console.log(errors);
 	return errors;
 };
 
@@ -56,53 +49,38 @@ const getOptions = async q => {
 class ModalCreateVoucher extends Component {
 	state = {
 		patient_id: null,
-		voucher_date: null,
 		submitting: false,
-		amountClass: 'col-sm-6',
 	};
 
-	componentDidMount() {
-		const { apply_voucher } = this.props;
-		if (apply_voucher) {
-			this.setState({ amountClass: 'col-sm-12' });
-		}
-
-		document.body.classList.add('modal-open');
-	}
-
-	componentWillUnmount() {
-		document.body.classList.remove('modal-open');
-	}
-
 	createVoucher = async data => {
-		this.setState({ submitting: true });
-		const { apply_voucher, create_voucher } = this.props;
-		if (apply_voucher) {
-			data.transaction_id = create_voucher.id;
-		}
-		data.patient_id = this.state.patient_id;
-		data.start_date = this.state.voucher_date;
-		console.log(data, create_voucher);
+		const { applyNow, closeModal } = this.props;
 		try {
-			const rs = await request(vouchersAPI, 'POST', true, data);
-
-			rs.voucher.patient_name = patientname(rs.voucher.patient);
-			rs.voucher.patient_id = rs.voucher.patient.id;
-
-			this.props.createVoucherData(rs.voucher);
-			notifySuccess(
-				apply_voucher ? 'Voucher Applied!' : 'Voucher item created!'
-			);
+			this.setState({ submitting: true });
+			const { patient_id } = this.state;
+			let value = {
+				...data,
+				patient_id,
+				expiration_date: moment(data.voucher_date, 'DD-MM-YYYY').format(
+					'MM-DD-YYYY'
+				),
+			};
+			if (applyNow) {
+				const date = moment().format('MM-DD-YYYY');
+				value = { ...value, duration: 0, expiration_date: date };
+			}
+			console.log(value);
+			const rs = await request(vouchersAPI, 'POST', true, value);
+			this.props.update(rs.voucher);
+			notifySuccess(applyNow ? 'Voucher Applied!' : 'Voucher Created!');
 			this.setState({ submitting: false });
-			this.props.closeModals(true);
+			closeModal();
 		} catch (e) {
 			console.log(e);
 			this.setState({ submitting: false });
 			throw new SubmissionError({
-				_error:
-					e.message || apply_voucher
-						? 'Could not apply voucher'
-						: 'Could not create voucher',
+				_error: applyNow
+					? 'Could not apply voucher'
+					: 'Could not create voucher',
 			});
 		}
 	};
@@ -116,26 +94,24 @@ class ModalCreateVoucher extends Component {
 	};
 
 	render() {
-		const { error, handleSubmit, apply_voucher } = this.props;
-		const { submitting, voucher_date, amountClass } = this.state;
+		const { error, handleSubmit, closeModal, applyNow } = this.props;
+		const { submitting } = this.state;
 		return (
 			<div
-				className="onboarding-modal modal fade animated show d-flex align-items-center"
+				className="onboarding-modal modal fade animated show"
 				role="dialog"
 				style={{ display: 'block' }}>
-				<div className="modal-dialog modal-lg modal-centered" role="document">
+				<div className="modal-dialog modal-centered" role="document">
 					<div className="modal-content text-center">
 						<button
 							aria-label="Close"
 							className="close"
 							type="button"
-							onClick={() => this.props.closeModals(false)}>
+							onClick={closeModal}>
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
-							<h4 className="onboarding-title">
-								{apply_voucher ? 'Apply Voucher' : 'Create New Voucher'}
-							</h4>
+							<h4 className="onboarding-title">Create New Voucher</h4>
 
 							<div className="form-block">
 								<form onSubmit={handleSubmit(this.createVoucher)}>
@@ -161,7 +137,7 @@ class ModalCreateVoucher extends Component {
 										</div>
 									</div>
 									<div className="row">
-										<div className="col-sm-6" hidden={apply_voucher}>
+										<div className="col-sm-6">
 											<label>Patient</label>
 
 											<AsyncSelect
@@ -178,7 +154,7 @@ class ModalCreateVoucher extends Component {
 											/>
 										</div>
 
-										<div className={amountClass}>
+										<div className="col-sm-6">
 											<Field
 												id="amount"
 												name="amount"
@@ -191,52 +167,50 @@ class ModalCreateVoucher extends Component {
 										</div>
 									</div>
 
-									<div className="row" hidden={apply_voucher}>
-										<div className="col-sm-6">
-											<Field
-												id="duration"
-												name="duration"
-												component={renderTextInput}
-												label="Duration (Days)"
-												placeholder="Enter duration in days"
-											/>
-										</div>
-										<div className="form-group col-sm-6">
-											<label>Date</label>
-											<div className="custom-date-input">
-												<DatePicker
-													selected={voucher_date}
-													onChange={date => this.setDate(date, 'voucher_date')}
-													peekNextMonth
-													showMonthDropdown
-													showYearDropdown
-													dropdownMode="select"
-													dateFormat="dd-MMM-yyyy"
-													className="single-daterange form-control"
-													placeholderText="Select Voucher date"
+									{!applyNow && (
+										<div className="row">
+											<div className="col-sm-6">
+												<Field
+													id="duration"
+													name="duration"
+													component={renderTextInput}
+													label="Duration (Days)"
+													placeholder="Enter duration in days"
+													onChange={e => {
+														const date = moment()
+															.add(parseInt(e.target.value, 10), 'days')
+															.format('DD-MM-YYYY');
+														this.props.change('voucher_date', date);
+													}}
+												/>
+											</div>
+											<div className="form-group col-sm-6">
+												<Field
+													id="voucher_date"
+													name="voucher_date"
+													component={renderTextInput}
+													label="Expiration Date"
+													placeholder="Enter date"
+													readOnly={true}
 												/>
 											</div>
 										</div>
-									</div>
+									)}
 
-									<div className="row" hidden={apply_voucher}>
-										<div className="col-sm-12 d-flex">
-											<div>
+									{/* <div className="row">
+										<div className="col-sm-4">
+											<label className="d-flex">
 												<Field
-													name="immediately"
+													name="applyNow"
 													id="immediately"
 													component={renderTextInput}
 													type="checkbox"
+													className="mr-2"
 												/>
-											</div>
-											<label
-												htmlFor="immediately"
-												className="ml-1"
-												style={{ marginTop: '-2px' }}>
 												Apply immediately
 											</label>
 										</div>
-									</div>
+									</div> */}
 									<div className="row">
 										<div className="col-sm-12 text-right">
 											<button
@@ -266,21 +240,20 @@ ModalCreateVoucher = reduxForm({
 	validate,
 })(ModalCreateVoucher);
 
+const selector = formValueSelector('create_voucher');
+
 const mapStateToProps = (state, ownProps) => {
-	const toApply = state.general.apply_voucher;
-	const voucher = state.general.create_voucher;
+	const applyNow = selector(state, 'applyNow');
+
 	return {
 		initialValues: {
 			voucher_no: moment()
 				.toDate()
 				.getTime(),
-			patient_id: toApply ? voucher.q_patient_id : '',
+			voucher_date: '',
 		},
-		create_voucher: voucher,
-		apply_voucher: toApply,
+		applyNow,
 	};
 };
 
-export default connect(mapStateToProps, { createVoucherData, closeModals })(
-	ModalCreateVoucher
-);
+export default connect(mapStateToProps, { change })(ModalCreateVoucher);

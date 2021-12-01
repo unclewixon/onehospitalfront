@@ -19,8 +19,8 @@ import axios from 'axios';
 import placeholder from '../assets/images/placeholder.jpg';
 
 //const store = configureStore();
-export const formatCurrency = amount =>
-	`₦${numeral(Math.abs(parseFloat(amount))).format('0,0.00')}`;
+export const formatCurrency = (amount, abs) =>
+	`₦${numeral(abs ? Math.abs(amount) : amount).format('0,0.00')}`;
 
 export const isUnset = o => typeof o === 'undefined' || o === null;
 
@@ -168,10 +168,10 @@ export const getPageList = (array, page_size, page_number) => {
 };
 
 // prettier-ignore
-export const renderTextInput = ({ input, label, type, id, placeholder, readOnly = false, meta: { touched, error } }) => (
+export const renderTextInput = ({ className, input, label, type, id, placeholder, readOnly = false, meta: { touched, error } }) => (
 	<div
 		className={`form-group ${touched &&
-		(error ? 'has-error has-danger' : '')}`}>
+		(error ? 'has-error has-danger' : '')} ${className ? className : ''}`}>
 		<label htmlFor={id}>{label}</label>
 		<input
 			{...input}

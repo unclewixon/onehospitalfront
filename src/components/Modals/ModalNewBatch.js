@@ -75,6 +75,9 @@ const ModalNewBatch = ({ closeModal, error, handleSubmit, drug, addBatch }) => {
 	const month = moment().format('MM');
 	const year = moment().format('YYYY');
 
+	const random1 = Math.floor(Math.random() * 9);
+	const random2 = Math.floor(Math.random() * 9);
+
 	return (
 		<div
 			className="onboarding-modal modal fade animated show"
@@ -112,7 +115,7 @@ const ModalNewBatch = ({ closeModal, error, handleSubmit, drug, addBatch }) => {
 												type="text"
 												className="form-control"
 												placeholder="Name of Batch"
-												value={`BA/${month}/${year}`}
+												value={`BA/${month}/${year}/${random1}${random2}`}
 												disabled
 											/>
 										</div>

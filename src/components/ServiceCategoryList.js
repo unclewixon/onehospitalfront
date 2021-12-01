@@ -39,7 +39,7 @@ const ServiceCategoryList = ({ loaded, setLoaded }) => {
 	const fetchCategories = useCallback(async () => {
 		try {
 			setCurrentPage(1);
-			const rs = await request('services/categories', 'GET', true);
+			const rs = await request('service-categories', 'GET', true);
 			setList([...rs]);
 			dispatch(loadServiceCategories([...rs.slice(0, 10)]));
 			setLoaded(true);
@@ -59,7 +59,7 @@ const ServiceCategoryList = ({ loaded, setLoaded }) => {
 			e.preventDefault();
 			setWorking(true);
 			const data = { name };
-			const rs = await request('services/categories', 'POST', true, data);
+			const rs = await request('service-categories', 'POST', true, data);
 			const lists = [...list, rs];
 			setList(lists);
 			dispatch(
@@ -82,7 +82,7 @@ const ServiceCategoryList = ({ loaded, setLoaded }) => {
 			e.preventDefault();
 			setWorking(true);
 			const data = { name };
-			const url = `services/categories/${payload.id}`;
+			const url = `service-categories/${payload.id}`;
 			const rs = await request(url, 'PATCH', true, data);
 			const newCategories = updateImmutable(list, rs);
 			setList(newCategories);
@@ -120,7 +120,7 @@ const ServiceCategoryList = ({ loaded, setLoaded }) => {
 
 	const onDeleteServiceCategory = async data => {
 		try {
-			const url = `services/categories/${data.id}`;
+			const url = `service-categories/${data.id}`;
 			const rs = await request(url, 'DELETE', true);
 			const lists = [...list.filter(c => c.id !== parseInt(rs.id, 10))];
 			setList(lists);

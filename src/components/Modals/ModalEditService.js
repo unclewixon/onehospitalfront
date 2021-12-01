@@ -38,7 +38,7 @@ const ModalEditService = ({
 	const fetchCategories = useCallback(async () => {
 		try {
 			dispatch(startBlock());
-			const url = 'services/categories';
+			const url = 'service-categories';
 			const rs = await request(url, 'GET', true);
 			setCategories(rs);
 			const privateUrl = `services/private/${service.code}`;

@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useCallback, useEffect } from 'react';
 import Pagination from 'antd/lib/pagination';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 
 import { paginate } from '../../services/constants';
@@ -10,8 +10,11 @@ import { startBlock, stopBlock } from '../../actions/redux-block';
 import { request } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import TableLoading from '../../components/TableLoading';
+import ModalNewDrug from '../../components/Modals/ModalNewDrug';
 import ModalEditDrug from '../../components/Modals/ModalEditDrug';
 import ModalViewBatches from '../../components/Modals/ModalViewBatches';
+import ModalNewGeneric from '../../components/Modals/ModalNewGeneric';
+import { createNewDrug, createNewGeneric } from '../../actions/general';
 
 const Inventory = () => {
 	const [drugs, setDrugs] = useState([]);
@@ -22,8 +25,13 @@ const Inventory = () => {
 	const [showDrugModal, setShowDrugModal] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [hasSearched, setHasSearched] = useState(false);
+	const [showNewDrug, setShowNewDrug] = useState(false);
+	const [showNewGeneric, setShowNewGeneric] = useState(false);
 
 	const dispatch = useDispatch();
+
+	const newDrug = useSelector(state => state.general.create_new_drug);
+	const newGeneric = useSelector(state => state.general.create_new_generic);
 
 	const loadDrugs = useCallback(
 		async (page, q) => {
@@ -52,6 +60,20 @@ const Inventory = () => {
 		}
 	}, [loadDrugs, loaded]);
 
+	useEffect(() => {
+		if (newDrug && !showNewDrug) {
+			document.body.classList.add('modal-open');
+			setShowNewDrug(true);
+		}
+	}, [newDrug, showNewDrug]);
+
+	useEffect(() => {
+		if (newGeneric && !showNewGeneric) {
+			document.body.classList.add('modal-open');
+			setShowNewGeneric(true);
+		}
+	}, [newGeneric, showNewGeneric]);
+
 	const onNavigatePage = async nextPage => {
 		await loadDrugs(nextPage);
 	};
@@ -74,9 +96,18 @@ const Inventory = () => {
 
 	const closeModal = () => {
 		document.body.classList.remove('modal-open');
+		dispatch(createNewDrug(false));
+		dispatch(createNewGeneric(false));
 		setShowModal(false);
+		setShowNewDrug(false);
+		setShowNewGeneric(false);
 		setShowDrugModal(false);
 		setDrug(null);
+	};
+
+	const addDrug = item => {
+		setDrugs([item, ...drugs]);
+		setMeta({ ...meta, totalPages: meta.totalPages + 1 });
 	};
 
 	const updateDrug = item => {
@@ -180,6 +211,10 @@ const Inventory = () => {
 					)}
 				</div>
 			</div>
+			{showNewDrug && (
+				<ModalNewDrug closeModal={closeModal} addDrug={addDrug} />
+			)}
+			{showNewGeneric && <ModalNewGeneric closeModal={closeModal} />}
 			{showDrugModal && drug && (
 				<ModalEditDrug
 					drug={drug}

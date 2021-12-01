@@ -9,20 +9,19 @@ import Pagination from 'antd/lib/pagination';
 
 import { notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
-import { loadAntenatal } from '../../actions/patient';
-import { viewAntenatalDetail } from '../../actions/general';
-import { patientAPI } from '../../services/constants';
 import { startBlock, stopBlock } from '../../actions/redux-block';
-import { request, itemRender, patientname } from '../../services/utilities';
+import { request, itemRender } from '../../services/utilities';
 import TableLoading from '../TableLoading';
+import { staffname } from '../../services/utilities';
+import { toggleProfile } from '../../actions/user';
 
 const { RangePicker } = DatePicker;
 
 class AntenatalHistory extends Component {
 	state = {
+		enrollments: [],
 		filtering: false,
 		loading: false,
-		id: null,
 		startDate: '',
 		endDate: '',
 		meta: null,
@@ -33,25 +32,26 @@ class AntenatalHistory extends Component {
 	}
 
 	fetchAntenatal = async page => {
-		const { startDate, endDate } = this.state;
-		const patient_id = this.props.patient.id;
 		try {
+			const { startDate, endDate } = this.state;
+			const patient_id = this.props.patient.id;
 			this.setState({ loading: true });
 			const p = page || 1;
-			const url = `${patientAPI}/antenatal/list?page=${p}&&limit=24&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}`;
+			const url = `patient/antenatal?page=${p}&limit=12&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
-			const arr = [...result];
-			this.props.loadAntenatal(arr);
-			this.setState({ loading: false, filtering: false, meta });
+			this.setState({
+				enrollments: [...result],
+				loading: false,
+				filtering: false,
+				meta,
+			});
 			this.props.stopBlock();
 		} catch (error) {
 			console.log(error);
 			this.props.stopBlock();
 			this.setState({ loading: false, filtering: false });
-			notifyError(
-				error.message || 'Error fetching antenatal enrolment requests'
-			);
+			notifyError(error.message || 'Error fetching antenatal enrollments');
 		}
 	};
 
@@ -67,7 +67,7 @@ class AntenatalHistory extends Component {
 	};
 
 	dateChange = e => {
-		let date = e.map(d => {
+		const date = e.map(d => {
 			return moment(d._d).format('YYYY-MM-DD');
 		});
 
@@ -78,13 +78,14 @@ class AntenatalHistory extends Component {
 		});
 	};
 
-	loadDetail = id => {
-		this.props.viewAntenatalDetail(true, id);
+	openAntenatal = (patient, antenatal) => {
+		const info = { patient, type: 'antenatal', item: antenatal };
+		this.props.toggleProfile(true, info);
 	};
 
 	render() {
 		const { filtering, loading, meta } = this.state;
-		const { antenatals } = this.props;
+		const { enrollments } = this.state;
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
@@ -110,79 +111,79 @@ class AntenatalHistory extends Component {
 						</div>
 					</form>
 					<div className="element-box p-3 m-0 mt-3">
-						{loading ? (
-							<TableLoading />
-						) : (
-							<div className="table table-responsive">
-								<table className="table">
-									<thead>
-										<tr className="">
-											<td>Date</td>
-											<td>Patient Name</td>
-
-											<td>LMP</td>
-											<td>EOD</td>
-											<td>Booking Period</td>
-											<td>LMP Source</td>
-											<td>Package</td>
-											<td>Required Care</td>
-
-											<td>Actions</td>
-										</tr>
-									</thead>
-									<tbody>
-										{antenatals.map((el, i) => {
-											return (
-												<tr key={i}>
-													<td>{moment(el.createdAt).format('DD-MM-YYYY')}</td>
-													<td>{patientname(el.patient, true)}</td>
-													<td>{el.l_m_p}</td>
-													<td>{el.e_o_d}</td>
-													<td>{el.bookingPeriod}</td>
-													<td>{el.lmpSource}</td>
-													<td>{el.enrollmentPackage}</td>
-
-													<td>
-														{Array.isArray(el.requiredCare)
-															? el.requiredCare.join(',')
-															: el.requiredCare}
-													</td>
-
-													<td className="row-actions">
-														<Tooltip title="view details">
-															<a
-																className="secondary"
-																onClick={() => this.loadDetail(el.id)}>
-																<i className="os-icon os-icon-eye" />
-															</a>
-														</Tooltip>
+						<div className="table-responsive">
+							{loading ? (
+								<TableLoading />
+							) : (
+								<>
+									<table className="table table-striped">
+										<thead>
+											<tr>
+												<th>Date of Enrollment</th>
+												<th>Enrolled By</th>
+												<th>Status</th>
+												<th></th>
+											</tr>
+										</thead>
+										<tbody>
+											{enrollments.map((item, i) => {
+												return (
+													<tr key={i}>
+														<td>
+															{moment(item.createdAt).format(
+																'DD-MMM-YYYY h:mm A'
+															)}
+														</td>
+														<td>{staffname(item.staff)}</td>
+														<td>
+															{item.status === 0 ? (
+																<span className="badge badge-secondary">
+																	Open
+																</span>
+															) : (
+																<span className="badge badge-success">
+																	Closed
+																</span>
+															)}
+														</td>
+														<td className="row-actions">
+															<Tooltip title="Open Antenatal">
+																<a
+																	onClick={() =>
+																		this.openAntenatal(item.patient, item)
+																	}>
+																	<i className="os-icon os-icon-user-male-circle2" />
+																</a>
+															</Tooltip>
+														</td>
+													</tr>
+												);
+											})}
+											{enrollments.length === 0 && (
+												<tr>
+													<td colSpan="7" className="text-center">
+														No enrolments found!
 													</td>
 												</tr>
-											);
-										})}
-										{antenatals.length === 0 && (
-											<tr>
-												<td colSpan="9" className="text-center">
-													No antenatal enrolment
-												</td>
-											</tr>
-										)}
-									</tbody>
-								</table>
-							</div>
-						)}
-						{meta && (
-							<div className="pagination pagination-center mt-4">
-								<Pagination
-									current={parseInt(meta.currentPage, 10)}
-									pageSize={parseInt(meta.itemsPerPage, 10)}
-									total={parseInt(meta.totalPages, 10)}
-									showTotal={total => `Total ${total} enrollments`}
-									itemRender={itemRender}
-									onChange={current => this.onNavigatePage(current)}
-								/>
-							</div>
-						)}
+											)}
+										</tbody>
+									</table>
+
+									{meta && (
+										<div className="pagination pagination-center mt-4">
+											<Pagination
+												current={parseInt(meta.currentPage, 10)}
+												pageSize={parseInt(meta.itemsPerPage, 10)}
+												total={parseInt(meta.totalPages, 10)}
+												showTotal={total => `Total ${total} enrollments`}
+												itemRender={itemRender}
+												onChange={current => this.onNavigatePage(current)}
+											/>
+										</div>
+									)}
+								</>
+							)}
+						</div>
 					</div>
 				</div>
 			</div>
@@ -192,16 +193,12 @@ class AntenatalHistory extends Component {
 
 const mapStateToProps = state => {
 	return {
-		antenatals: state.patient.antenatal,
 		patient: state.user.patient,
 	};
 };
 
 export default withRouter(
-	connect(mapStateToProps, {
-		loadAntenatal,
-		viewAntenatalDetail,
-		startBlock,
-		stopBlock,
-	})(AntenatalHistory)
+	connect(mapStateToProps, { startBlock, stopBlock, toggleProfile })(
+		AntenatalHistory
+	)
 );

@@ -41,12 +41,26 @@ const ClinicalTasks = ({ can_request = true }) => {
 
 	const dispatch = useDispatch();
 
+	const getTasks = async page => {
+		try {
+			const url = `${patientAPI}/admissions/tasks?patient_id=${
+				patient.id
+			}&page=${page || 1}&limit=12`;
+			const res = await request(url, 'GET', true);
+			return res;
+		} catch (e) {
+			return null;
+		}
+	};
+
 	useEffect(() => {
 		async function doLoadTasks() {
 			const rs = await getTasks();
-			const { result, ...paginate } = rs;
-			setMeta(paginate);
-			setTasks(result);
+			if (rs) {
+				const { result, ...paginate } = rs;
+				setMeta(paginate);
+				setTasks(result);
+			}
 			setLoaded(true);
 		}
 
@@ -60,9 +74,11 @@ const ClinicalTasks = ({ can_request = true }) => {
 	useEffect(() => {
 		async function doLoadTasks() {
 			const rs = await getTasks();
-			const { result, ...paginate } = rs;
-			setMeta(paginate);
-			setTasks(result);
+			if (rs) {
+				const { result, ...paginate } = rs;
+				setMeta(paginate);
+				setTasks(result);
+			}
 			setLoaded(true);
 		}
 		if (!loaded) {
@@ -70,14 +86,6 @@ const ClinicalTasks = ({ can_request = true }) => {
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [loaded]);
-
-	const getTasks = async page => {
-		const url = `${patientAPI}/admissions/tasks?patient_id=${
-			patient.id
-		}&page=${page || 1}&limit=12`;
-		const res = await request(url, 'GET', true);
-		return res;
-	};
 
 	const deleteTask = async data => {
 		try {
@@ -127,17 +135,21 @@ const ClinicalTasks = ({ can_request = true }) => {
 	const onNavigatePage = async nextPage => {
 		dispatch(startBlock());
 		const rs = await getTasks(nextPage);
-		const { result, ...paginate } = rs;
-		setMeta(paginate);
-		setTasks(result);
+		if (rs) {
+			const { result, ...paginate } = rs;
+			setMeta(paginate);
+			setTasks(result);
+		}
 		dispatch(stopBlock());
 	};
 
 	const refreshTasks = async () => {
 		const rs = await getTasks();
-		const { result, ...paginate } = rs;
-		setMeta(paginate);
-		setTasks(result);
+		if (rs) {
+			const { result, ...paginate } = rs;
+			setMeta(paginate);
+			setTasks(result);
+		}
 	};
 
 	const recordMedication = item => {

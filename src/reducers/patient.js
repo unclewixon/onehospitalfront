@@ -15,7 +15,6 @@ import {
 	GET_ALL_REQUESTS,
 	LOAD_CLINICAL_LAB,
 	LOAD_RADIOLOGY,
-	LOAD_ANTENATAL,
 	LOAD_ANTENATAL_ASSESSMENT,
 	LOAD_LABOUR,
 	LOAD_LABOUR_DETAIL,
@@ -62,7 +61,6 @@ const INITIAL_STATE = {
 	labRequests: [],
 	pharmacyRequests: [],
 	allRequests: [],
-	antenatal: [],
 	ivf: {},
 	encounterData: {
 		complaints:
@@ -177,8 +175,6 @@ const patient = (state = INITIAL_STATE, action) => {
 		case GET_ALL_REQUESTS:
 			return { ...state, allRequests: action.payload };
 
-		case LOAD_ANTENATAL:
-			return { ...state, antenatal: [...action.payload] };
 		case LOAD_ANTENATAL_ASSESSMENT:
 			return {
 				...state,

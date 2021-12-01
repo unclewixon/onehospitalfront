@@ -14,7 +14,6 @@ import {
 	TOGGLE_EDIT_PAYROLL,
 	TOGGLE_REGISTER_NEW_PATIENT,
 	TOGGLE_ADD_NEW_OBSERVATION,
-	TOGGLE_CREATE_VOUCHER,
 	TOGGLE_CREATE_LABOUR_MEASUREMENT,
 	TOGGLE_CREATE_RISK_ASSESSMENT,
 	TOGGLE_CREATE_RECORD_DELIVERY,
@@ -22,9 +21,6 @@ import {
 	TOGGLE_UPLOAD_HMO,
 	TOGGLE_CREATE_CLINICAL_TASK,
 	TOGGLE_ADD_CAFETERIA_FILE,
-	TOGGLE_APPLY_VOUCHER,
-	TOGGLE_ANTENATAL_DETAIL,
-	TOGGLE_ANTENATAL_ASSESSMENT_DETAIL,
 	TOGGLE_LINE_APPRAISAL,
 	TOGGLE_STAFF_APPRAISAL,
 	TOGGLE_LABOUR_MEASURMENT_DETAIL,
@@ -32,7 +28,23 @@ import {
 	TOGGLE_EDIT_ACCOUNT,
 	ADD_STAFF_FOR_APPRAISAL,
 	SET_IS_STAFF_APPRAISAL,
+	CREAE_NEW_DRUG,
+	CREAE_NEW_GENERIC,
 } from './types';
+
+export const createNewGeneric = status => {
+	return {
+		type: CREAE_NEW_GENERIC,
+		payload: status,
+	};
+};
+
+export const createNewDrug = status => {
+	return {
+		type: CREAE_NEW_DRUG,
+		payload: status,
+	};
+};
 
 export const setIsStaffAppraisal = status => {
 	return {
@@ -154,20 +166,6 @@ export const toggleEditPayroll = (status, id) => {
 	};
 };
 
-export const toggleCreateVoucher = status => {
-	return {
-		type: TOGGLE_CREATE_VOUCHER,
-		payload: status,
-	};
-};
-
-export const toggleApplyVoucher = status => {
-	return {
-		type: TOGGLE_APPLY_VOUCHER,
-		payload: status,
-	};
-};
-
 export const toggleCreateLabourMeasurement = status => {
 	return {
 		type: TOGGLE_CREATE_LABOUR_MEASUREMENT,
@@ -217,22 +215,6 @@ export const toggleUploadHmo = status => {
 };
 
 // patient
-export const toggleAntenatalDetail = (status, id) => {
-	return {
-		type: TOGGLE_ANTENATAL_DETAIL,
-		payload: status,
-		id,
-	};
-};
-
-export const toggleAntenatalAssessmentDetail = (status, data) => {
-	return {
-		type: TOGGLE_ANTENATAL_ASSESSMENT_DETAIL,
-		payload: status,
-		data,
-	};
-};
-
 export const toggleLineAppraisal = status => {
 	return {
 		type: TOGGLE_LINE_APPRAISAL,
@@ -287,7 +269,6 @@ export const closeModals = () => {
 		dispatch(toggleShowHistory(false));
 		dispatch(toggleAddTask(false));
 		dispatch(toggleCreateInventory(false));
-		dispatch(toggleApplyVoucher(false));
 		dispatch(toggleEditInventory(false));
 		dispatch(toggleUpdateQuantity(false));
 		dispatch(toggleViewAppraisal(false));
@@ -296,7 +277,6 @@ export const closeModals = () => {
 		dispatch(toggleEditPayroll(false));
 		dispatch(toggleRegisterNewPatient(false));
 		dispatch(toggleAddNewObservation(false));
-		dispatch(toggleCreateVoucher(false));
 		dispatch(toggleCreateLabourMeasurement(false));
 		dispatch(toggleCreateRiskAssessment(false));
 		dispatch(toggleCreateRecordDelivery(false));
@@ -304,8 +284,6 @@ export const closeModals = () => {
 		dispatch(toggleCreateRecordVital(false));
 		dispatch(toggleAddCafeteriaFile(false));
 		dispatch(toggleUploadHmo(false));
-		dispatch(toggleAntenatalDetail(false, null));
-		dispatch(toggleAntenatalAssessmentDetail(false, null));
 		dispatch(toggleLineAppraisal(false));
 		dispatch(toggleStaffAppraisal(false, null));
 		dispatch(toggleLabourMeasurementDetail(false, null));
@@ -362,15 +340,6 @@ export const editInventory = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleEditInventory(action));
-	};
-};
-
-export const applyVoucher = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleApplyVoucher(true));
-		dispatch(toggleCreateVoucher(action));
 	};
 };
 
@@ -465,14 +434,6 @@ export const createRecordVital = action => {
 	};
 };
 
-export const createVoucher = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleCreateVoucher(action));
-	};
-};
-
 export const createClinicalTask = action => {
 	return dispatch => {
 		dispatch(closeModals());
@@ -486,22 +447,6 @@ export const addCafeteriaFile = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleAddCafeteriaFile(action));
-	};
-};
-
-export const viewAntenatalDetail = (action, id) => {
-	return dispatch => {
-		dispatch(closeModals());
-		// dispatch(toggleModal(true));
-		dispatch(toggleAntenatalDetail(action, id));
-	};
-};
-
-export const antenatalAssessmentDetail = (action, data) => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleAntenatalAssessmentDetail(action, data));
 	};
 };
 

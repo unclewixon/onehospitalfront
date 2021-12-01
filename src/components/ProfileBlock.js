@@ -55,6 +55,7 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 	const [showModal, setShowModal] = useState(false);
 	const [showTransactions, setShowTransactions] = useState(false);
 	const [admissionId, setAdmissionId] = useState(null);
+	const [amount, setAmount] = useState(null);
 
 	const dispatch = useDispatch();
 
@@ -66,6 +67,10 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 			const url = `patient/${patient.id}/alerts`;
 			const rs = await request(url, 'GET', true);
 			setAlerts(rs);
+
+			const uri = `patient/${patient.id}/outstandings`;
+			const res = await request(uri, 'GET', true);
+			setAmount(res);
 		} catch (error) {
 			notifyError('Error fetching alerts');
 		}
@@ -358,9 +363,9 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 												</span>
 												<div className="ml-1">
 													<h5 className="mb-0">
-														{formatCurrency(patient?.outstanding || 0)}{' '}
+														{formatCurrency(amount?.balance || 0)}{' '}
 													</h5>
-													<small>Outstanding Balance</small>
+													<small>Balance</small>
 												</div>
 											</div>
 										</div>

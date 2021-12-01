@@ -30,7 +30,7 @@ const Consultation = () => {
 
 	const fetchCategory = useCallback(async () => {
 		try {
-			const rs = await request('services/categories/consultancy', 'GET', true);
+			const rs = await request('service-categories/consultancy', 'GET', true);
 			setCategory(rs);
 		} catch (error) {
 			notifyError(error.message || 'could not fetch category');

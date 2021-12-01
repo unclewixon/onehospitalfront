@@ -132,7 +132,7 @@ const TransactionTable = ({
 										)}
 									</div>
 								</td>
-								<td>{formatCurrency(transaction.amount || 0)}</td>
+								<td>{formatCurrency(transaction.amount || 0, true)}</td>
 								<td>
 									{transaction.payment_method || ''}
 									{transaction.payment_method && <br />}

@@ -11,14 +11,11 @@ import { vouchersAPI } from '../../services/constants';
 import { updateImmutable } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
-import { loadVoucher, getAllPendingTransactions } from '../../actions/paypoint';
+import { getAllPendingTransactions } from '../../actions/paypoint';
 import { loadTransactions } from '../../actions/transaction';
 
 const validate = values => {
 	const errors = {};
-	if (!values.amount_paid) {
-		errors.amount_paid = 'enter amount';
-	}
 	if (!values.voucher_code && values.payment_method === 'Voucher') {
 		errors.voucher_code = 'enter voucher';
 	}
@@ -31,16 +28,27 @@ class ModalApproveTransaction extends Component {
 	state = {
 		submitting: false,
 		hidden: true,
-		voucherList: [],
 		voucherAmount: 0,
 		activeData: null,
 		voucherId: null,
 		isPart: false,
+		payCredit: false,
+		vouchers: [],
+		amount: null,
 	};
+
+	async componentDidMount() {
+		try {
+			const { transaction } = this.props;
+			const uri = `patient/${transaction.patient.id}/outstandings`;
+			const res = await request(uri, 'GET', true);
+			this.setState({ amount: res });
+		} catch (e) {}
+	}
 
 	approveTransaction = async data => {
 		try {
-			const { voucherId, isPart } = this.state;
+			const { voucherId, isPart, payCredit } = this.state;
 			const { transaction, pendingTransactions } = this.props;
 
 			const id = transaction.id;
@@ -51,6 +59,7 @@ class ModalApproveTransaction extends Component {
 				voucher_id: voucherId,
 				patient_id: transaction.patient.id,
 				is_part_payment: isPart ? 1 : 0,
+				pay_with_credit: payCredit ? 1 : 0,
 			};
 
 			this.setState({ submitting: true });
@@ -86,12 +95,11 @@ class ModalApproveTransaction extends Component {
 	};
 
 	handleChange = event => {
-		let newValue = event.target.value;
+		const newValue = event.target.value;
 		this.setState({ hidden: true });
 		if (newValue === 'Voucher') {
 			this.setState({ hidden: false });
 		}
-		console.log(newValue);
 	};
 
 	handleChangeVoucher = async event => {
@@ -118,31 +126,21 @@ class ModalApproveTransaction extends Component {
 		try {
 			const url = `${vouchersAPI}/list?patient_id=${data.patient_id}`;
 			const rs = await request(url, 'GET', true);
-			this.props.loadVoucher(rs);
+			this.setState({ vouchers: rs });
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
-	componentDidUpdate(prevProps, prevState, snapshot) {
-		if (prevProps.voucher !== this.props.voucher) {
-			if (!this.state.hidden) {
-				let voucherList = [];
-				const { voucher } = this.props;
-				voucher.forEach((item, index) => {
-					voucherList = [
-						...voucherList,
-						{ id: item.q_id, name: item.q_voucher_no },
-					];
-				});
-				this.setState({ voucherList });
-			}
-		}
-	}
-
 	render() {
-		const { error, handleSubmit, paymentMethods, closeModal } = this.props;
-		const { submitting, hidden, isPart } = this.state;
+		const {
+			error,
+			handleSubmit,
+			paymentMethods,
+			closeModal,
+			amount_available,
+		} = this.props;
+		const { submitting, hidden, isPart, payCredit, amount } = this.state;
 		return (
 			<div
 				className="onboarding-modal modal fade animated show"
@@ -171,70 +169,63 @@ class ModalApproveTransaction extends Component {
 									)}
 									<div className="row">
 										<div className="col-sm-6">
-											<div className="form-group">
-												<Field
-													id="payment_method"
-													name="payment_method"
-													validate={[required]}
-													component={renderSelect}
-													onChange={this.handleChange}
-													label="Payment Method"
-													placeholder="Select Payment Method"
-													data={paymentMethods.map(p => ({
-														name: p.name,
-														id: p.name,
-													}))}
-												/>
-											</div>
+											<Field
+												id="payment_method"
+												name="payment_method"
+												validate={[required]}
+												component={renderSelect}
+												onChange={this.handleChange}
+												label="Payment Method"
+												placeholder="Select Payment Method"
+												data={paymentMethods.map(p => ({
+													name: p.name,
+													id: p.name,
+												}))}
+											/>
 										</div>
 										<div className="col-sm-6">
-											<div className="form-group">
-												<Field
-													id="amount_paid"
-													name="amount_paid"
-													component={renderTextInput}
-													type="text"
-													label="Amount"
-													readOnly={!isPart}
-													placeholder="Enter Amount"
-													className="form-control"
-												/>
-											</div>
+											<Field
+												id="amount_paid"
+												name="amount_paid"
+												component={renderTextInput}
+												type="text"
+												label="Amount"
+												readOnly={!isPart}
+												placeholder="Enter Amount"
+											/>
 										</div>
 									</div>
 
 									<div className="row" hidden={hidden}>
 										<div className="col-sm-6">
-											<div className="form-group">
-												<Field
-													id="voucher_code"
-													name="voucher_code"
-													component={renderTextInput}
-													onChange={this.handleChangeVoucher}
-													label="Voucher"
-													placeholder="Enter Voucher Code"
-												/>
-											</div>
+											<Field
+												id="voucher_code"
+												name="voucher_code"
+												component={renderTextInput}
+												onChange={this.handleChangeVoucher}
+												label="Voucher"
+												placeholder="Enter Voucher Code"
+											/>
 										</div>
 										<div className="col-sm-6">
-											<div className="form-group">
-												<Field
-													id="voucher_amount"
-													value={this.state.voucherAmount}
-													name="voucher_amount"
-													component={renderTextInput}
-													label="Voucher Amount"
-													readOnly={true}
-													type="text"
-													placeholder="Enter Amount"
-												/>
-											</div>
+											<Field
+												id="voucher_amount"
+												value={this.state.voucherAmount}
+												name="voucher_amount"
+												component={renderTextInput}
+												label="Voucher Amount"
+												readOnly={true}
+												type="text"
+												placeholder="Enter Amount"
+											/>
 										</div>
 									</div>
 
 									<div className="row">
-										<div className="form-check col-sm-12">
-											<label className="form-check-label">
+										<div className="form-check col-sm-4">
+											<label
+												className="form-check-label"
+												style={{ marginLeft: '12px' }}>
 												<input
 													className="form-check-input mt-0"
 													name="is_part_payment"
@@ -245,6 +236,37 @@ class ModalApproveTransaction extends Component {
 													}
 												/>
 												Part Payment
+											</label>
+										</div>
+										<div className="form-check col-sm-4">
+											<label className="form-check-label">
+												<input
+													className="form-check-input mt-0"
+													name="pay_with_credit"
+													type="checkbox"
+													checked={payCredit}
+													onChange={e => {
+														this.setState({ payCredit: e.target.checked });
+														if (e.target.checked) {
+															this.props.dispatch(
+																this.props.change(
+																	'amount_paid',
+																	amount.balance < 0
+																		? Math.abs(amount.balance)
+																		: 0
+																)
+															);
+														} else {
+															this.props.dispatch(
+																this.props.change(
+																	'amount_paid',
+																	amount_available
+																)
+															);
+														}
+													}}
+												/>
+												Pay with Credit
 											</label>
 										</div>
 									</div>
@@ -287,18 +309,14 @@ const mapStateToProps = (state, ownProps) => {
 		initialValues: {
 			amount_paid: Math.abs(parseFloat(ownProps.transaction.amount)),
 		},
-		voucher: state.paypoint.voucher,
+		amount_available: Math.abs(parseFloat(ownProps.transaction.amount)),
 		pendingTransactions: state.paypoint.pendingTransactions,
 		transactions: state.transaction.transactions,
-		showReceipt: state.paypoint.showReceipt,
-		showInvoice: state.paypoint.showInvoice,
-		activeData: state.paypoint.transactionData,
 		paymentMethods: state.utility.methods,
 	};
 };
 
 export default connect(mapStateToProps, {
-	loadVoucher,
 	getAllPendingTransactions,
 	loadTransactions,
 })(ModalApproveTransaction);

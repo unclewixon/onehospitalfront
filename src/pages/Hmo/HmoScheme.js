@@ -29,7 +29,7 @@ const HmoScheme = () => {
 
 	const fetchCategories = useCallback(async () => {
 		try {
-			const rs = await request('services/categories', 'GET', true);
+			const rs = await request('service-categories', 'GET', true);
 			setCategories([...rs]);
 		} catch (error) {
 			notifyError(error.message || 'could not fetch categories!');

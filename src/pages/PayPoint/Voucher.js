@@ -1,15 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import Tooltip from 'antd/lib/tooltip';
 import DatePicker from 'antd/lib/date-picker';
 import moment from 'moment';
-import { compose } from 'redux';
 import Pagination from 'antd/lib/pagination';
 
-import { createVoucher } from '../../actions/general';
 import { searchAPI } from '../../services/constants';
 import {
 	request,
@@ -17,13 +14,14 @@ import {
 	formatCurrency,
 	itemRender,
 	patientname,
+	formatDate,
 } from '../../services/utilities';
 import { vouchersAPI } from '../../services/constants';
-import { loadVoucher } from '../../actions/paypoint';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import waiting from '../../assets/images/waiting.gif';
 import TableLoading from '../../components/TableLoading';
+import ModalCreateVoucher from '../../components/Modals/ModalCreateVoucher';
 
 const { RangePicker } = DatePicker;
 
@@ -49,11 +47,12 @@ export class Voucher extends Component {
 		status: '',
 		filtering: false,
 		meta: null,
+		showModal: false,
+		vouchers: [],
 	};
 
 	componentDidMount() {
 		this.fetchVoucher();
-		//document.body.classList.add('modal-open');
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -66,14 +65,17 @@ export class Voucher extends Component {
 		const { patient_id, startDate, endDate, status } = this.state;
 		try {
 			const p = page || 1;
+			const patient = patient_id || '';
 			this.setState({ loading: true });
-			const url = `${vouchersAPI}/list?page=${p}&limit=10&patient_id=${patient_id ||
-				''}&startDate=${startDate}&endDate=${endDate}&status=${status}`;
+			const url = `${vouchersAPI}/list?page=${p}&limit=10&patient_id=${patient}&startDate=${startDate}&endDate=${endDate}&status=${status}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
-			const arr = [...result];
-			this.props.loadVoucher(arr);
-			this.setState({ loading: false, filtering: false, meta });
+			this.setState({
+				loading: false,
+				filtering: false,
+				vouchers: [...result],
+				meta,
+			});
 			this.props.stopBlock();
 		} catch (error) {
 			console.log(error);
@@ -100,7 +102,7 @@ export class Voucher extends Component {
 	};
 
 	dateChange = e => {
-		let date = e.map(d => {
+		const date = e.map(d => {
 			return moment(d._d).format('YYYY-MM-DD');
 		});
 
@@ -116,8 +118,7 @@ export class Voucher extends Component {
 			this.setState({ loading: true });
 			await request(`vouchers/${data.id}`, 'DELETE', true);
 			const rs = this.props.vouchers.filter(v => v.id !== data.id);
-			this.props.loadVoucher(rs);
-			this.setState({ loading: false });
+			this.setState({ loading: false, vouchers: rs });
 			notifySuccess('Voucher  deleted');
 		} catch (error) {
 			console.log(error);
@@ -130,14 +131,23 @@ export class Voucher extends Component {
 		confirmAction(this.onDeleteVoucher, data);
 	};
 
+	createVoucher = () => {
+		document.body.classList.add('modal-open');
+		this.setState({ showModal: true });
+	};
+
+	closeModal = () => {
+		this.setState({ showModal: false });
+		document.body.classList.remove('modal-open');
+	};
+
 	render() {
-		const { loading, meta, filtering } = this.state;
-		const { vouchers } = this.props;
+		const { loading, meta, filtering, showModal, vouchers } = this.state;
 		return (
 			<>
 				<div className="element-actions">
 					<a
-						onClick={() => this.props.createVoucher(true)}
+						onClick={this.createVoucher}
 						className="btn btn-primary btn-sm filled-request">
 						New Voucher
 					</a>
@@ -197,7 +207,6 @@ export class Voucher extends Component {
 											<th className="text-center">Patient</th>
 											<th className="text-center">Voucher Number</th>
 											<th className="text-center">Amount (₦)</th>
-											<th className="text-center">Start Date</th>
 											<th className="text-center">Expiry Date</th>
 											<th className="text-center">Status</th>
 											<th className="text-center"></th>
@@ -205,31 +214,24 @@ export class Voucher extends Component {
 									</thead>
 									<tbody>
 										{vouchers.map((voucher, i) => {
-											const result = new Date(moment(voucher.start_date));
-											result.setDate(
-												result.getDate() + parseInt(voucher.duration)
-											);
-
 											return (
 												<tr key={i}>
 													<td className="text-center">
-														{moment(voucher.createdAt).format(
-															'D-MMM-YYYY h:mm a'
-														)}
+														{formatDate(voucher.createdAt, 'D-MMM-YYYY h:mm a')}
 													</td>
 													<td className="text-center">
-														{voucher.patient_name}
+														{patientname(voucher.patient)}
 													</td>
 													<td className="text-center">{voucher.voucher_no}</td>
 													<td className="text-center">
 														{formatCurrency(voucher.amount)}
 													</td>
-													<td className="text-center">
-														{moment(voucher.start_date).format('D-MMM-YYYY')}
-													</td>
 
 													<td className="text-center">
-														{moment(result).format('D-MMM-YYYY')}
+														{moment(
+															voucher.expiration_date,
+															'MM-DD-YYYY'
+														).format('D-MMM-YYYY')}
 													</td>
 
 													<td className="text-center">
@@ -286,21 +288,17 @@ export class Voucher extends Component {
 						)}
 					</div>
 				</div>
+				{showModal && (
+					<ModalCreateVoucher
+						update={item =>
+							this.setState({ vouchers: [...this.state.vouchers, item] })
+						}
+						closeModal={() => this.closeModal()}
+					/>
+				)}
 			</>
 		);
 	}
 }
-const mapStateToProps = (state, ownProps) => {
-	return {
-		vouchers: state.paypoint.voucher,
-	};
-};
-export default compose(
-	withRouter,
-	connect(mapStateToProps, {
-		loadVoucher,
-		createVoucher,
-		stopBlock,
-		startBlock,
-	})
-)(Voucher);
+
+export default connect(null, { stopBlock, startBlock })(Voucher);

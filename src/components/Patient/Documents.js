@@ -1,35 +1,46 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 import Popover from 'antd/lib/popover';
+import Pagination from 'antd/lib/pagination';
 
 import TableLoading from '../TableLoading';
 import { notifySuccess, notifyError } from '../../services/notify';
-import { request, upload } from '../../services/utilities';
+import { itemRender, request, upload } from '../../services/utilities';
 import { API_URI, patientAPI, documentType } from '../../services/constants';
 import UploadDocument from './UploadDocument';
+import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const Documents = () => {
 	const [loading, setLoading] = useState(true);
 	const [documentList, setDocumentList] = useState([]);
 	const [uploading, setUploading] = useState(false);
-	const [upload_visible, setUploadVisible] = useState(false);
+	const [uploadVisible, setUploadVisible] = useState(false);
+	const [meta, setMeta] = useState(null);
+
+	const dispatch = useDispatch();
 
 	const patient = useSelector(state => state.user.patient);
 
-	const fetchDocuments = useCallback(async () => {
-		try {
-			const url = `${patientAPI}/${patient.id}/documents`;
-			const rs = await request(url, 'GET', true);
-			setDocumentList(rs);
-			setLoading(false);
-		} catch (e) {
-			console.log(e);
-			setLoading(false);
-			notifyError(e.message || 'could not fetch documents');
-		}
-	}, [patient]);
+	const fetchDocuments = useCallback(
+		async page => {
+			try {
+				const p = page || 1;
+				const url = `${patientAPI}/${patient.id}/documents?page=${p}`;
+				const rs = await request(url, 'GET', true);
+				const { result, ...paginate } = rs;
+				setMeta(paginate);
+				setDocumentList(result);
+				setLoading(false);
+			} catch (e) {
+				console.log(e);
+				setLoading(false);
+				notifyError(e.message || 'could not fetch documents');
+			}
+		},
+		[patient]
+	);
 
 	useEffect(() => {
 		if (loading) {
@@ -45,15 +56,16 @@ const Documents = () => {
 		setUploadVisible(visible);
 	};
 
-	const handleDownload = async (evt, data) => {
+	const handleDownload = data => {
 		try {
-			setLoading(true);
-			const url = `${API_URI}/${patientAPI}/download/${data.document_name}`;
+			dispatch(startBlock());
+			const url = `${API_URI}/uploads/docs/${data.document_name}`;
 			setTimeout(() => {
+				dispatch(stopBlock());
 				window.open(url, '_blank').focus();
-				setLoading(false);
 			}, 1000);
 		} catch (e) {
+			dispatch(stopBlock());
 			console.log(e);
 			setLoading(false);
 			notifyError(e.message || 'could not download data');
@@ -74,8 +86,8 @@ const Documents = () => {
 					console.log(key[0] + ', ' + key[1]);
 				}
 				const url = `${API_URI}/${patientAPI}/${patient.id}/upload-document`;
-				await upload(url, 'POST', formData);
-				//props.addPatientUploadData(rs);
+				const rs = await upload(url, 'POST', formData);
+				setDocumentList([...documentList, rs.document]);
 				const doc = documentType.find(d => d.id === documentID);
 				notifySuccess(
 					`Patient Data Uploaded for ${doc ? doc.name : ''} Document`
@@ -88,6 +100,12 @@ const Documents = () => {
 				notifyError(e.message || 'could not upload data');
 			}
 		}
+	};
+
+	const onNavigatePage = async nextPage => {
+		dispatch(startBlock());
+		await fetchDocuments(nextPage);
+		dispatch(stopBlock());
 	};
 
 	return (
@@ -105,9 +123,9 @@ const Documents = () => {
 						}
 						overlayClassName="upload-roster"
 						onVisibleChange={handleUploadVisibleChange}
-						visible={upload_visible}
+						visible={uploadVisible}
 						trigger="click">
-						<a className="btn btn-sm btn-link btn-upper mr-4 d-lg-inline-block">
+						<a className="btn btn-sm btn-secondary text-white">
 							<i className="os-icon os-icon-upload" />
 							<span>Upload Document</span>
 						</a>
@@ -131,19 +149,15 @@ const Documents = () => {
 									</thead>
 									<tbody>
 										{documentList.map((item, i) => {
+											console.log(item);
 											return (
 												<tr key={i}>
 													<td>{item.id}</td>
 													<td>{item.document_name}</td>
 													<td>{item.document_type}</td>
 													<td className="row-actions">
-														<Tooltip title="View File">
-															<a onClick={e => handleDownload(e, item)}>
-																<i className="os-icon os-icon-eye" />
-															</a>
-														</Tooltip>
 														<Tooltip title="Download File">
-															<a onClick={e => handleDownload(e, item)}>
+															<a onClick={() => handleDownload(item)}>
 																<i className="os-icon os-icon-download-cloud" />
 															</a>
 														</Tooltip>
@@ -156,6 +170,18 @@ const Documents = () => {
 							</>
 						)}
 					</div>
+					{meta && (
+						<div className="pagination pagination-center mt-4">
+							<Pagination
+								current={parseInt(meta.currentPage, 10)}
+								pageSize={parseInt(meta.itemsPerPage, 10)}
+								total={parseInt(meta.totalPages, 10)}
+								showTotal={total => `Total ${total} lab results`}
+								itemRender={itemRender}
+								onChange={current => onNavigatePage(current)}
+							/>
+						</div>
+					)}
 				</div>
 			</div>
 		</div>

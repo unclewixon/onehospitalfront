@@ -40,7 +40,7 @@ const Dashboard = () => {
 	const fetchInventories = useCallback(async page => {
 		try {
 			const p = page || 1;
-			const url = `${cafeteriaAPI}/items?page=${p}&limit=20`;
+			const url = `${cafeteriaAPI}/items?page=${p}&limit=20&approved=1`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...info } = rs;
 			setCafeteriaItems(result);

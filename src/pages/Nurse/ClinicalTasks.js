@@ -41,12 +41,24 @@ const ClinicalTasks = () => {
 
 	const dispatch = useDispatch();
 
+	const getTasks = async page => {
+		try {
+			const url = `${patientAPI}/admissions/tasks?page=${page || 1}&limit=12`;
+			const res = await request(url, 'GET', true);
+			return res;
+		} catch (e) {
+			return null;
+		}
+	};
+
 	useEffect(() => {
 		async function doLoadTasks() {
 			const rs = await getTasks();
-			const { result, ...paginate } = rs;
-			setMeta(paginate);
-			setTasks(result);
+			if (rs) {
+				const { result, ...paginate } = rs;
+				setMeta(paginate);
+				setTasks(result);
+			}
 			setLoaded(true);
 		}
 
@@ -59,9 +71,11 @@ const ClinicalTasks = () => {
 	useEffect(() => {
 		async function doLoadTasks() {
 			const rs = await getTasks();
-			const { result, ...paginate } = rs;
-			setMeta(paginate);
-			setTasks(result);
+			if (rs) {
+				const { result, ...paginate } = rs;
+				setMeta(paginate);
+				setTasks(result);
+			}
 			setLoaded(true);
 		}
 
@@ -69,12 +83,6 @@ const ClinicalTasks = () => {
 			doLoadTasks();
 		}
 	}, [loaded]);
-
-	const getTasks = async page => {
-		const url = `${patientAPI}/admissions/tasks?page=${page || 1}&limit=12`;
-		const res = await request(url, 'GET', true);
-		return res;
-	};
 
 	const deleteTask = async data => {
 		try {
@@ -97,9 +105,11 @@ const ClinicalTasks = () => {
 	const onNavigatePage = async nextPage => {
 		startBlock();
 		const rs = await getTasks(nextPage);
-		const { result, ...paginate } = rs;
-		setMeta(paginate);
-		setTasks(result);
+		if (rs) {
+			const { result, ...paginate } = rs;
+			setMeta(paginate);
+			setTasks(result);
+		}
 		stopBlock();
 	};
 

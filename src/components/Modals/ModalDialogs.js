@@ -16,11 +16,8 @@ import ModalCreateLabMeasurement from './ModalCreateLabMeasurement';
 import ModalCreateRiskAssessment from './ModalCreateRiskAssessment';
 import ModalCreateRecordDelivery from './ModalCreateRecordDelivery';
 import ModalCreateRecordVital from './ModalCreateRecordVital';
-import ModalCreateVoucher from './ModalCreateVoucher';
 import ModalCreateClinicalTask from './ModalCreateClinicalTask';
 import AddCafeteriaFile from './AddCafeteriaFile';
-import ModalAntenatalDetail from './ModalAntenatalDetail';
-import ModalAntenatalAssessmentDetail from './ModalAntenatalAssessmentDetail';
 import ModalLineAppraisal from './ModalLineAppraisal';
 import ModalStaffAppraisal from './ModalStaffAppraisal';
 import ModalLabourMeasurementDetail from './ModalLabourMeasurementDetail';
@@ -43,11 +40,8 @@ const ModalDialogs = ({
 	create_risk_assessment,
 	create_record_vital,
 	upload_hmo,
-	create_voucher,
 	create_clinical_task,
 	add_cafeteria_file,
-	antenatal_detail,
-	antenatal_assessment_detail,
 	line_appraisal,
 	staff_appraisal,
 	view_labour_measurement,
@@ -71,11 +65,8 @@ const ModalDialogs = ({
 			{create_record_delivery && <ModalCreateRecordDelivery />}
 			{create_record_vital && <ModalCreateRecordVital />}
 			{upload_hmo && <ModalUploadHmo />}
-			{create_voucher && <ModalCreateVoucher />}
 			{create_clinical_task && <ModalCreateClinicalTask />}
 			{add_cafeteria_file && <AddCafeteriaFile />}
-			{antenatal_detail && <ModalAntenatalDetail />}
-			{antenatal_assessment_detail && <ModalAntenatalAssessmentDetail />}
 			{line_appraisal && <ModalLineAppraisal />}
 			{staff_appraisal && <ModalStaffAppraisal />}
 			{view_labour_measurement && <ModalLabourMeasurementDetail />}
@@ -103,11 +94,8 @@ const mapStateToProps = (state, ownProps) => {
 		create_record_vital: state.general.create_record_vital,
 		upload_hmo: state.general.upload_hmo,
 		upload_hmo_tariff: state.general.upload_hmo_tariff,
-		create_voucher: state.general.create_voucher,
 		create_clinical_task: state.general.create_clinical_task,
 		add_cafeteria_file: state.general.add_cafeteria_file,
-		antenatal_detail: state.general.antenatal_detail,
-		antenatal_assessment_detail: state.general.antenatal_assessment_detail,
 		line_appraisal: state.general.line_appraisal,
 		staff_appraisal: state.general.staff_appraisal,
 		view_labour_measurement: state.general.view_labour_measurement,

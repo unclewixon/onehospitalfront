@@ -1,72 +1,42 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
-import Select from 'react-select';
 import { useDispatch } from 'react-redux';
 
 import { renderTextInput, request } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { startBlock, stopBlock } from '../../actions/redux-block';
-import { notifyError, notifySuccess } from '../../services/notify';
+import { notifySuccess } from '../../services/notify';
 
 const validate = values => {
 	const errors = {};
 	if (!values.name) {
 		errors.name = 'enter name';
 	}
-	if (!values.tariff) {
-		errors.tariff = 'enter base price';
-	}
 
 	return errors;
 };
 
-const ModalCreateService = ({ closeModal, error, handleSubmit }) => {
-	const [loaded, setLoaded] = useState(false);
-	const [category, setCategory] = useState(null);
+const ModalNewGeneric = ({ closeModal, handleSubmit, error }) => {
 	const [submitting, setSubmitting] = useState(false);
-	const [categories, setCategories] = useState([]);
 
 	const dispatch = useDispatch();
 
-	const fetchCategories = useCallback(async () => {
-		try {
-			dispatch(startBlock());
-			const url = 'service-categories';
-			const rs = await request(url, 'GET', true);
-			setCategories(rs);
-			dispatch(stopBlock());
-		} catch (error) {
-			console.log(error);
-			notifyError('Error fetching categories');
-			dispatch(stopBlock());
-		}
-	}, [dispatch]);
-
-	useEffect(() => {
-		if (!loaded) {
-			fetchCategories();
-			setLoaded(true);
-		}
-	}, [fetchCategories, loaded]);
-
 	const save = async data => {
 		try {
-			if (!category) {
-				notifyError('Please select a category');
-				return;
-			}
-
+			dispatch(startBlock());
 			setSubmitting(true);
-			const info = { ...data, category_id: category.id };
-			await request('services', 'POST', true, info);
+			const info = { ...data };
+			await request('inventory/generics', 'POST', true, info);
 			setSubmitting(false);
-			notifySuccess('Service created!');
+			dispatch(stopBlock());
+			notifySuccess('Generic name created!');
 			closeModal();
 		} catch (error) {
 			console.log(error);
+			dispatch(stopBlock());
 			setSubmitting(false);
 			throw new SubmissionError({
-				_error: 'could not create service',
+				_error: 'could not add new generic name',
 			});
 		}
 	};
@@ -88,8 +58,7 @@ const ModalCreateService = ({ closeModal, error, handleSubmit }) => {
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
-						<h4 className="onboarding-title">Create New Service</h4>
-
+						<h4 className="onboarding-title">Add Generic Name</h4>
 						<div className="form-block">
 							<form onSubmit={handleSubmit(save)}>
 								{error && (
@@ -100,40 +69,14 @@ const ModalCreateService = ({ closeModal, error, handleSubmit }) => {
 										}}
 									/>
 								)}
-
 								<div className="row">
 									<div className="col-sm-12">
 										<Field
 											id="name"
 											name="name"
 											component={renderTextInput}
-											label="Name"
+											label="Generic name"
 											type="text"
-										/>
-									</div>
-								</div>
-								<div className="row">
-									<div className="col-sm-12">
-										<Field
-											id="tariff"
-											name="tariff"
-											component={renderTextInput}
-											label="Base Price"
-											type="text"
-										/>
-									</div>
-								</div>
-								<div className="row">
-									<div className="col-sm-12">
-										<label>Category</label>
-										<Select
-											getOptionValue={option => option.id}
-											getOptionLabel={option => option.name}
-											options={categories}
-											name="category"
-											value={category}
-											onChange={e => setCategory(e)}
-											placeholder="Select category"
 										/>
 									</div>
 								</div>
@@ -160,4 +103,4 @@ const ModalCreateService = ({ closeModal, error, handleSubmit }) => {
 	);
 };
 
-export default reduxForm({ form: 'new-service', validate })(ModalCreateService);
+export default reduxForm({ form: 'new-generic', validate })(ModalNewGeneric);
