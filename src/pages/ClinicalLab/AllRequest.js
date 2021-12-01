@@ -22,6 +22,7 @@ class AllRequest extends Component {
 		status: '',
 		labs: [],
 		meta: null,
+		patient_id: '',
 	};
 
 	componentDidMount() {
@@ -30,10 +31,10 @@ class AllRequest extends Component {
 
 	fetchLabs = async page => {
 		try {
-			const { startDate, endDate, status } = this.state;
+			const { startDate, endDate, status, patient_id } = this.state;
 			this.setState({ loading: true });
 			const p = page || 1;
-			const url = `requests/list/labs?page=${p}&limit=10&startDate=${startDate}&endDate=${endDate}&status=${status}`;
+			const url = `requests/list/labs?page=${p}&limit=10&startDate=${startDate}&endDate=${endDate}&status=${status}&patient_id=${patient_id}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			this.setState({ labs: result, loading: false, filtering: false, meta });
@@ -80,7 +81,21 @@ class AllRequest extends Component {
 			<>
 				<div className="element-box m-0 mb-4 p-3">
 					<form className="row">
-						<div className="form-group col-md-6">
+						<div className="form-group col-md-3">
+							<label className="mr-2 " htmlFor="id">
+								Search
+							</label>
+							<input
+								style={{ height: '32px' }}
+								id="search"
+								className="form-control"
+								type="number"
+								name="search"
+								onChange={e => this.setState({ patient_id: e.target.value })}
+								placeholder="search for patient: emr id"
+							/>
+						</div>
+						<div className="form-group col-md-3">
 							<label>From - To</label>
 							<RangePicker onChange={e => this.dateChange(e)} />
 						</div>
