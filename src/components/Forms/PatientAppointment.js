@@ -96,8 +96,10 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 	useEffect(() => {
 		if (!loaded) {
 			dispatch(startBlock());
-			fetchServicesByCategory('consultancy');
-			getActiveDoctors();
+			try {
+				fetchServicesByCategory('consultancy');
+				getActiveDoctors();
+			} catch (e) {}
 			setLoaded(true);
 		}
 	}, [dispatch, fetchServicesByCategory, loaded]);

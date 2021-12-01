@@ -198,7 +198,7 @@ class LabBlock extends Component {
 									</td>
 									<td>
 										<p className="item-title text-color m-0">
-											{lab.item.labTest.name}
+											{lab.item?.labTest?.name || '--'}
 										</p>
 									</td>
 									{!patient && (

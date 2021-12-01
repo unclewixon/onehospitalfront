@@ -62,11 +62,12 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 	};
 
 	const save = async () => {
-		if (result === null) {
-			notifyError('Please fill in result');
-			return;
-		}
 		try {
+			if (result === null && !lab.item.labTest.hasParameters) {
+				notifyError('Please fill in result');
+				return;
+			}
+
 			dispatch(startBlock());
 			setSubmitting(true);
 			const data = { parameters, result };
@@ -122,6 +123,7 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 										<tbody>
 											{item.labTest.hasParameters ? (
 												parameters.map((param, i) => {
+													console.log(param);
 													return (
 														<tr key={i}>
 															<td>
@@ -156,7 +158,10 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 																	<Select
 																		name="inference"
 																		options={allOptions}
-																		value={options[i] || ''}
+																		value={{
+																			label: param.inference,
+																			value: param.inference,
+																		}}
 																		onChange={e => {
 																			setOptions([...options, e]);
 																			onChange(e, 'inference', param.id, true);
