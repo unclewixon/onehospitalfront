@@ -109,6 +109,7 @@ const Showcase = () => {
 	const cancelEditButton = () => {
 		setSubmitButton({ ...initialState });
 		setState({ ...initialState });
+		setFoodItem(null);
 	};
 
 	const onDeleteItem = async data => {
