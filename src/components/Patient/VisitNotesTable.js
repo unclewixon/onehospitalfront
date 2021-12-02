@@ -14,6 +14,7 @@ import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
 import TableLoading from '../TableLoading';
+import { messageService } from '../../services/message';
 
 class VisitNotesTable extends Component {
 	state = {
@@ -25,6 +26,14 @@ class VisitNotesTable extends Component {
 	async componentDidMount() {
 		this.setState({ loading: true });
 		await this.fetchNotes();
+
+		messageService.getMessage().subscribe(async message => {
+			if (message !== '') {
+				if (message.text === 'patient-note') {
+					await this.fetchNotes();
+				}
+			}
+		});
 	}
 
 	fetchNotes = async page => {
@@ -32,7 +41,7 @@ class VisitNotesTable extends Component {
 			const { patient } = this.props;
 			this.props.startBlock();
 			const p = page || 1;
-			const url = `patient-notes?patient_id=${patient.id}&page=${p}&visit=encounter`;
+			const url = `patient-notes?patient_id=${patient.id}&page=${p}&visit=encounter&type=consultation`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			this.setState({ loading: false, notes: result, meta });

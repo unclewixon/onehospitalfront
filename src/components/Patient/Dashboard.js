@@ -6,16 +6,28 @@ import VisitNotesTable from './VisitNotesTable';
 import VisitSummaryTable from './VisitSummaryTable';
 import PatientBills from './PatientBills';
 import AppointmentHistory from './AppointmentHistory';
+import CreateNote from '../Modals/CreateNote';
 
 const Dashboard = () => {
 	const [tab, setTab] = useState('visitNotes');
+	const [showModal, setShowModal] = useState(false);
+
+	const addNote = () => {
+		document.body.classList.add('modal-open');
+		setShowModal(true);
+	};
+
+	const closeModal = () => {
+		document.body.classList.remove('modal-open');
+		setShowModal(false);
+	};
 
 	return (
 		<div className="col-lg-12 col-md-12">
 			<div className="element-box mt-2">
 				<div className="os-tabs-w">
-					<div className="os-tabs-controls">
-						<ul className="nav nav-tabs smaller">
+					<div className="os-tabs-controls os-tabs-complex">
+						<ul className="nav nav-tabs">
 							<li className="nav-item">
 								<a
 									className={
@@ -50,6 +62,14 @@ const Dashboard = () => {
 									Billing
 								</a>
 							</li>
+							<li className="nav-item nav-actions d-sm-block">
+								<a
+									className="btn btn-primary btn-sm text-white"
+									onClick={() => addNote()}>
+									<i className="os-icon os-icon-ui-22"></i>
+									<span>New Note</span>
+								</a>
+							</li>
 						</ul>
 					</div>
 					<div className="tab-content">
@@ -60,6 +80,13 @@ const Dashboard = () => {
 					</div>
 				</div>
 			</div>
+			{showModal && (
+				<CreateNote
+					closeModal={closeModal}
+					updateNote={() => {}}
+					type="consultation"
+				/>
+			)}
 		</div>
 	);
 };

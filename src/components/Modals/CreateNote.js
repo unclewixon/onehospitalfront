@@ -8,6 +8,7 @@ import { startBlock, stopBlock } from '../../actions/redux-block';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
 import { noteTypes, specialties } from '../../services/constants';
+import { messageService } from '../../services/message';
 
 const CreateNote = ({
 	closeModal,
@@ -45,6 +46,9 @@ const CreateNote = ({
 			dispatch(stopBlock());
 			updateNote(rs);
 			notifySuccess('Note added!');
+			if (type === 'consultation') {
+				messageService.sendMessage('patient-note');
+			}
 			closeModal();
 		} catch (error) {
 			console.log(error);
@@ -69,7 +73,9 @@ const CreateNote = ({
 					</button>
 					<div className="onboarding-content with-gradient">
 						<h4 className="onboarding-title">
-							{type && type !== '' ? startCase(type) : 'New Note'}
+							{type && type !== '' && type !== 'consultation'
+								? startCase(type)
+								: 'New Note'}
 						</h4>
 						<div className="element-box">
 							<form onSubmit={onSubmit}>
