@@ -93,6 +93,19 @@ const ModalHmoTariff = ({ closeModal, hmo, categories }) => {
 		setServices(items);
 	};
 
+	const downloadHmo = async () => {
+		try {
+			dispatch(startBlock());
+			const url = `services/download/${searchCategory?.id}?hmo_id=${hmo.id}`;
+			const rs = await request(url, 'GET', true);
+			dispatch(stopBlock());
+			window.open(rs.url, '_blank').focus();
+		} catch (e) {
+			dispatch(stopBlock());
+			notifyError(e.message || 'could not download services');
+		}
+	};
+
 	return (
 		<div
 			className="onboarding-modal modal fade animated show"
@@ -113,7 +126,7 @@ const ModalHmoTariff = ({ closeModal, hmo, categories }) => {
 						<h4 className="onboarding-title text-center">{hmo.name}</h4>
 						<div className="element-box m-0 p-3">
 							<div className="row">
-								<div className="col-lg-6">
+								<div className="col-lg-4">
 									<div className="element-search">
 										<input
 											placeholder="Search services..."
@@ -125,7 +138,7 @@ const ModalHmoTariff = ({ closeModal, hmo, categories }) => {
 										/>
 									</div>
 								</div>
-								<div className="col-lg-6">
+								<div className="col-lg-4">
 									<div className="element-search">
 										<Select
 											name="category"
@@ -143,8 +156,15 @@ const ModalHmoTariff = ({ closeModal, hmo, categories }) => {
 										</Select>
 									</div>
 								</div>
+								<div className="col-lg-4 text-right">
+									<a
+										className="btn btn-sm btn-secondary text-white"
+										onClick={downloadHmo}>
+										<i className="os-icon os-icon-download" />
+										<span>Download HMO</span>
+									</a>
+								</div>
 							</div>
-
 							<div className="filter-body">
 								<div className="pipelines-w mt-4">
 									<div className="row">

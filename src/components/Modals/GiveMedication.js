@@ -17,7 +17,7 @@ const GiveMedication = ({ closeModal, taskItem }) => {
 
 	const saveMedication = async () => {
 		try {
-			if (quantity <= 0) {
+			if (quantity === '') {
 				notifyError('enter quantity to administer');
 				return;
 			}
@@ -75,7 +75,7 @@ const GiveMedication = ({ closeModal, taskItem }) => {
 								<div className="col-sm-12">
 									<div className="form-group">
 										<input
-											type="number"
+											type="text"
 											className="form-control"
 											placeholder="Quantity"
 											value={quantity}

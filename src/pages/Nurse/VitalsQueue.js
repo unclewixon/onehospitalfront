@@ -102,7 +102,7 @@ const VitalsQueue = () => {
 									.filter(queue => queue.queueType === 'vitals')
 									.map((queue, key) => (
 										<tr key={key}>
-											<td>{patientname(queue.patient, true)}</td>
+											<td>{patientname(queue.appointment.patient, true)}</td>
 											<td>{staffname(queue.appointment.whomToSee)}</td>
 											<td>{`${queue.appointment.patient.gender} / ${getAge(
 												queue.appointment.patient.date_of_birth
