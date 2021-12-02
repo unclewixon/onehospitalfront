@@ -27,15 +27,22 @@ const SelectDrug = ({ onHide, setDrug, generic }) => {
 		}
 	}, [dispatch]);
 
+	const getGeneric = useCallback(async () => {
+		try {
+			const rs = await request(`inventory/generics/${generic.id}`, 'GET', true);
+			setSelectedGeneric(rs);
+		} catch (e) {}
+	}, [generic.id]);
+
 	useEffect(() => {
 		if (!loaded) {
 			if (generic) {
-				setSelectedGeneric(generic);
+				getGeneric();
 			}
 			loadGenericDrugs();
 			setLoaded(true);
 		}
-	}, [generic, loadGenericDrugs, loaded]);
+	}, [generic, getGeneric, loadGenericDrugs, loaded]);
 
 	const selectDrug = () => {
 		setDrug(selectedGeneric, selectedDrug);

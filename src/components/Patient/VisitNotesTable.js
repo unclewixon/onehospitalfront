@@ -41,7 +41,7 @@ class VisitNotesTable extends Component {
 			const { patient } = this.props;
 			this.props.startBlock();
 			const p = page || 1;
-			const url = `patient-notes?patient_id=${patient.id}&page=${p}&visit=encounter&type=consultation`;
+			const url = `patient-notes?patient_id=${patient.id}&page=${p}&visit=encounter`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			this.setState({ loading: false, notes: result, meta });

@@ -108,7 +108,7 @@ const Services = () => {
 										<li
 											className={`nav-item ${
 												showServiceCategory ? 'nav-actions' : ''
-											} d-sm-block`}>
+											} d-sm-block d-none`}>
 											<a
 												className="btn btn-primary btn-sm text-white"
 												onClick={() => onUploadService()}>

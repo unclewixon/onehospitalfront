@@ -67,6 +67,7 @@ const PrescriptionBlock = ({
 				</thead>
 				<tbody>
 					{prescriptions.map((request, i) => {
+						console.log(request);
 						return (
 							<tr key={i}>
 								<td nowrap="nowrap">

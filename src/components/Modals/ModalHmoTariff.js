@@ -106,6 +106,10 @@ const ModalHmoTariff = ({ closeModal, hmo, categories }) => {
 		}
 	};
 
+	const uploadHmo = async () => {
+		//
+	};
+
 	return (
 		<div
 			className="onboarding-modal modal fade animated show"
@@ -162,6 +166,12 @@ const ModalHmoTariff = ({ closeModal, hmo, categories }) => {
 										onClick={downloadHmo}>
 										<i className="os-icon os-icon-download" />
 										<span>Download HMO</span>
+									</a>
+									<a
+										className="btn btn-sm btn-primary text-white"
+										onClick={uploadHmo}>
+										<i className="os-icon os-icon-download" />
+										<span>Upload HMO</span>
 									</a>
 								</div>
 							</div>
