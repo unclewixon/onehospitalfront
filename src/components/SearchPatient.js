@@ -29,21 +29,27 @@ class SearchPatient extends Component {
 
 	handleChange = e => {
 		const search = e.target.value;
-		this.setState({ search }, () => {
-			this.changed(search);
-		});
+		// this.setState({ search }, () => {
+		// 	this.changed(search);
+		// });
+		this.setState({ search });
+		this.changed();
 	};
 
-	doSearch = async searchTerm => {
-		if (size(searchTerm) >= 3) {
+	doSearch = async () => {
+		const { search } = this.state;
+		console.log(search);
+		if (size(search) >= 3) {
 			try {
 				this.setState({ searching: true, error: false, hasSearched: true });
-				const url = `${searchAPI}?q=${searchTerm}&limit=10`;
+				const url = `${searchAPI}?q=${search}&limit=10`;
 				const patients = await request(url, 'GET', true);
 				this.setState({ searching: false, patients });
 			} catch (e) {
 				this.setState({ searching: false });
 			}
+		} else {
+			this.setState({ searching: false, patients: [], hasSearched: false });
 		}
 	};
 
@@ -119,6 +125,9 @@ class SearchPatient extends Component {
 									)}
 									{patients.map(p => {
 										//const ps = split(p.id, search);
+										const legacy_id = p.legacy_patient_id
+											? `[${p.legacy_patient_id}]`
+											: '';
 										return (
 											<div style={{ display: 'flex' }} key={p.id}>
 												<a
@@ -128,9 +137,9 @@ class SearchPatient extends Component {
 													<div
 														className="item-name"
 														dangerouslySetInnerHTML={{
-															__html: `${formatPatientId(p)} - ${patientname(
+															__html: `${formatPatientId(
 																p
-															)}`,
+															)} ${legacy_id} - ${patientname(p)}`,
 														}}
 													/>
 												</a>
