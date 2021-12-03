@@ -70,7 +70,7 @@ const ModalServiceDetails = ({ closeModal, transaction }) => {
 						)}
 						{transaction?.bill_source === 'consultancy' && (
 							<div className="element-box p-2">
-								<div>{transaction.service.item.name}</div>
+								<div>{transaction.service?.item?.name || ''}</div>
 							</div>
 						)}
 						{(transaction?.bill_source === 'labs' ||

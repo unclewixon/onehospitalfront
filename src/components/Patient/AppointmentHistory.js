@@ -8,7 +8,7 @@ import DatePicker from 'antd/lib/date-picker';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { notifyError } from '../../services/notify';
 import TableLoading from '../TableLoading';
-import { request, itemRender, hasPassed } from '../../services/utilities';
+import { request, itemRender } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { staffname } from '../../services/utilities';
 import ModalViewAppointment from '../Modals/ModalViewAppointment';
@@ -162,12 +162,9 @@ class AppointmentHistory extends Component {
 														<td>
 															{!appointment.encounter &&
 															(appointment.status === 'Cancelled' ||
-																hasPassed(appointment.appointment_date)) ? (
+																appointment.status === 'Missed') ? (
 																<span className="badge badge-danger">
-																	{hasPassed(appointment.appointment_date) &&
-																	!appointment.encounter
-																		? 'Missed'
-																		: 'Cancelled'}
+																	{appointment.status}
 																</span>
 															) : (
 																<>

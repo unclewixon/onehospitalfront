@@ -277,11 +277,9 @@ class AllAppointments extends Component {
 												<td>
 													{!item.encounter &&
 													(item.status === 'Cancelled' ||
-														hasPassed(item.appointment_date)) ? (
+														item.status === 'Missed') ? (
 														<span className="badge badge-danger">
-															{hasPassed(item.appointment_date)
-																? 'Missed'
-																: 'Cancelled'}
+															{item.status}
 														</span>
 													) : (
 														<>

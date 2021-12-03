@@ -120,9 +120,14 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 
 	const onSubmit = async data => {
 		try {
+			if (!service) {
+				notifyError('Select specialty');
+				return;
+			}
+
 			dispatch(startBlock());
 			setSubmitting(true);
-			const values = { ...data, service, doctor, consultation };
+			const values = { ...data, service_id: service.id, doctor, consultation };
 			const url = 'front-desk/appointments/new';
 			const rs = await request(url, 'POST', true, values);
 			setSubmitting(false);

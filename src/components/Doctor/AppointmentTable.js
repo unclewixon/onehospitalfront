@@ -11,7 +11,6 @@ import {
 	request,
 	trimText,
 	patientname,
-	hasPassed,
 } from '../../services/utilities';
 import { toggleProfile } from '../../actions/user';
 import Button from '../common/Button';
@@ -178,11 +177,9 @@ const AppointmentTable = ({
 													<>
 														{!appointment.encounter &&
 														(appointment.status === 'Cancelled' ||
-															hasPassed(appointment.appointment_date)) ? (
+															appointment.status === 'Missed') ? (
 															<span className="badge badge-danger">
-																{hasPassed(appointment.appointment_date)
-																	? 'Missed'
-																	: 'Cancelled'}
+																{appointment.status}
 															</span>
 														) : (
 															<Button
@@ -202,11 +199,9 @@ const AppointmentTable = ({
 													<>
 														{!appointment.encounter &&
 														(appointment.status === 'Cancelled' ||
-															hasPassed(appointment.appointment_date)) ? (
+															appointment.status === 'Missed') ? (
 															<span className="badge badge-danger">
-																{hasPassed(appointment.appointment_date)
-																	? 'Missed'
-																	: 'Cancelled'}
+																{appointment.status}
 															</span>
 														) : (
 															<>
@@ -268,12 +263,10 @@ const AppointmentTable = ({
 											<>
 												{!appointment.encounter &&
 												(appointment.status === 'Cancelled' ||
-													hasPassed(appointment.appointment_date)) ? (
+													appointment.status === 'Missed') ? (
 													<td>
 														<span className="badge badge-danger">
-															{hasPassed(appointment.appointment_date)
-																? 'Missed'
-																: 'Cancelled'}
+															{appointment.status}
 														</span>
 													</td>
 												) : (
