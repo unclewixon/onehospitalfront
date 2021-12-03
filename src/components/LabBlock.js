@@ -317,7 +317,7 @@ class LabBlock extends Component {
 														)}
 													{lab.status === 1 && (
 														<>
-															<Tooltip title="Approve Lab Result">
+															<Tooltip title="View Lab Result">
 																<a
 																	className="info"
 																	onClick={() => this.viewResult(lab)}>
