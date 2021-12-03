@@ -4,6 +4,7 @@ import DatePicker from 'react-datepicker';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import moment from 'moment';
 
 import waiting from '../../assets/images/waiting.gif';
 import {
@@ -143,13 +144,19 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<div className="modal-body">
+				{patient && patient.lastAppointment && (
+					<div className="onboarding-text alert-custom text-center">
+						{`Last Appointment Date - ${moment(
+							patient.lastAppointment.appointment_date
+						).format('DD MMM, YYYY HH:mm A')}`}
+					</div>
+				)}
 				{patient && patient.outstanding > 0 && (
-					<div className="alert alert-danger">
+					<div className="alert alert-danger mt-3">
 						{`Outstanding Balance: ${formatCurrency(patient.outstanding)}`}
 					</div>
 				)}
-
-				<div className="row">
+				<div className="row mt-3">
 					<div className="col-sm-6">
 						<div className="form-group relative">
 							<label>Patient</label>

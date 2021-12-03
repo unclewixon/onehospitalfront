@@ -108,7 +108,7 @@ const VitalsQueue = () => {
 												queue.appointment.patient.date_of_birth
 											)}`}</td>
 											<td>
-												{truncate(queue.appointment.service.item.name, {
+												{truncate(queue.appointment.service?.item?.name || '', {
 													length: 50,
 													omission: '...',
 												})}

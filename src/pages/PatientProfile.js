@@ -160,6 +160,7 @@ class PatientProfile extends Component {
 												patient={patient}
 												hasButtons={true}
 												canAdmit={true}
+												closeProfile={this.closeProfile}
 											/>
 										</div>
 										<Suspense fallback={<Splash />}>

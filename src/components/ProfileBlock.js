@@ -50,7 +50,14 @@ const UserItem = ({ icon, label, value }) => {
 	);
 };
 
-const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
+const ProfileBlock = ({
+	location,
+	history,
+	patient,
+	hasButtons,
+	canAdmit,
+	closeProfile,
+}) => {
 	const [alerts, setAlerts] = useState([]);
 	const [showModal, setShowModal] = useState(false);
 	const [showTransactions, setShowTransactions] = useState(false);
@@ -273,7 +280,13 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 
 											<div className="d-flex flex-wrap mt-3">
 												{hasButtons && (
-													<a className="btn btn-primary mr-1">Edit</a>
+													<a
+														className="btn btn-primary mr-1"
+														onClick={() => {
+															closeProfile();
+														}}>
+														Edit
+													</a>
 												)}
 												{canAdmit && (
 													<>

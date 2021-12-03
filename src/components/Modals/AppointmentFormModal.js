@@ -84,7 +84,6 @@ const AppointmentFormModal = ({ addAppointment, closeModal }) => {
 							<span aria-hidden="true"> ×</span>
 						</button>
 					</div>
-
 					{
 						{
 							'select-appointment': <SelectAppointment setView={changeView} />,
