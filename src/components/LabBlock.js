@@ -164,7 +164,7 @@ class LabBlock extends Component {
 	};
 
 	render() {
-		const { loading, labs, patient, updateLab } = this.props;
+		const { loading, labs, patient, updateLab, user } = this.props;
 		const { showFLModal, showVLModal, lab, visible } = this.state;
 		return loading ? (
 			<TableLoading />
@@ -304,15 +304,17 @@ class LabBlock extends Component {
 															</a>
 														</Tooltip>
 													)}
-													{lab.item.filled === 1 && lab.item.approved === 0 && (
-														<Tooltip title="Approve Lab Result">
-															<a
-																className="info"
-																onClick={() => this.viewResult(lab)}>
-																<i className="os-icon os-icon-thumbs-up" />
-															</a>
-														</Tooltip>
-													)}
+													{lab.item.filled === 1 &&
+														lab.item.approved === 0 &&
+														user.role.slug === 'lab-manager' && (
+															<Tooltip title="Approve Lab Result">
+																<a
+																	className="info"
+																	onClick={() => this.viewResult(lab)}>
+																	<i className="os-icon os-icon-thumbs-up" />
+																</a>
+															</Tooltip>
+														)}
 													{lab.status === 1 && (
 														<>
 															<Tooltip title="Approve Lab Result">
@@ -371,6 +373,14 @@ class LabBlock extends Component {
 	}
 }
 
-export default connect(null, { startBlock, stopBlock, toggleProfile })(
-	LabBlock
-);
+const mapStateToProps = (state, ownProps) => {
+	return {
+		user: state.user.profile,
+	};
+};
+
+export default connect(mapStateToProps, {
+	startBlock,
+	stopBlock,
+	toggleProfile,
+})(LabBlock);

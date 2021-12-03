@@ -18,7 +18,7 @@ const RolePermissionModal = ({ role, closeModal }) => {
 	useEffect(() => {
 		let newSelected = [];
 		if (role) {
-			for (const permission of role?.permissions) {
+			for (const permission of role?.permissions || []) {
 				newSelected.push(permission.id);
 			}
 

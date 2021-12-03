@@ -489,6 +489,8 @@ export const redirectToPage = (role, history) => {
 				uri = '/inventory/categories';
 				break;
 			case 'cafeteria':
+			case 'cafeteria-manager':
+			case 'cafeteria-sales':
 				uri = '/cafeteria';
 				break;
 			case 'it-admin':
@@ -500,7 +502,9 @@ export const redirectToPage = (role, history) => {
 			case 'paypoint':
 				uri = '/paypoint';
 				break;
-			case 'laboratory':
+			case 'lab-manager':
+			case 'lab-supervisor':
+			case 'lab-user':
 				uri = '/lab';
 				break;
 			case 'radiology':
