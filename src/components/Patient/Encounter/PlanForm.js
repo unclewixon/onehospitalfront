@@ -549,6 +549,8 @@ const PlanForm = ({ previous, next, patient }) => {
 							value={frequencyType}
 							options={[
 								{ value: '', label: 'Select frequency' },
+								{ value: 'as-needed', label: 'As Needed' },
+								{ value: 'at-night', label: 'At Night' },
 								{ value: 'immediately', label: 'Immediately' },
 								{
 									value: 'hourly',
@@ -564,6 +566,7 @@ const PlanForm = ({ previous, next, patient }) => {
 									label: 'Monthly',
 								},
 								{ value: 'quarterly', label: 'Quarterly' },
+								{ value: 'stat', label: 'Stat' },
 							]}
 							onChange={e => {
 								setValue('frequencyType', e.value);

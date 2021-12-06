@@ -260,7 +260,10 @@ const ViewPrescription = ({
 											{regimens.map((regimen, i) => {
 												const when =
 													regimen.item.frequencyType === 'immediately' ||
-													regimen.item.frequencyType === 'quarterly'
+													regimen.item.frequencyType === 'quarterly' ||
+													regimen.item.frequencyType === 'as-needed' ||
+													regimen.item.frequencyType === 'at-night' ||
+													regimen.item.frequencyType === 'stat'
 														? ''
 														: ` for ${regimen.item.duration} days`;
 												return (

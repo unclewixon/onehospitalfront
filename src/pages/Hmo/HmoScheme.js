@@ -174,6 +174,7 @@ const HmoScheme = () => {
 														<th>Email</th>
 														<th>CAC Number</th>
 														<th>Coverage</th>
+														<th>Patients</th>
 														<th></th>
 													</tr>
 												</thead>
@@ -207,6 +208,7 @@ const HmoScheme = () => {
 																			: ''
 																	}`}</span>
 																</td>
+																<td>{`${hmo.patients || 0} patients`}</td>
 																<td className="row-actions">
 																	<Tooltip title="Edit">
 																		<a onClick={() => editScheme(hmo)}>

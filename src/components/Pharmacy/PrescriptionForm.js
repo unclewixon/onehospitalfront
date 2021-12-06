@@ -427,6 +427,8 @@ const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 							value={frequencyType}
 							options={[
 								{ value: '', label: 'Select frequency' },
+								{ value: 'as-needed', label: 'As Needed' },
+								{ value: 'at-night', label: 'At Night' },
 								{ value: 'immediately', label: 'Immediately' },
 								{ value: 'hourly', label: 'Hourly' },
 								{ value: 'daily', label: 'Daily' },
@@ -439,6 +441,7 @@ const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 									label: 'Monthly',
 								},
 								{ value: 'quarterly', label: 'Quarterly' },
+								{ value: 'stat', label: 'Stat' },
 							]}
 							onChange={e => {
 								setValue('frequencyType', e.value);

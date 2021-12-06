@@ -318,6 +318,8 @@ const Prescription = ({
 							value={frequencyType}
 							options={[
 								{ value: '', label: 'Select frequency' },
+								{ value: 'as-needed', label: 'As Needed' },
+								{ value: 'at-night', label: 'At Night' },
 								{ value: 'immediately', label: 'Immediately' },
 								{
 									value: 'hourly',
@@ -333,6 +335,7 @@ const Prescription = ({
 									label: 'Monthly',
 								},
 								{ value: 'quarterly', label: 'Quarterly' },
+								{ value: 'stat', label: 'Stat' },
 							]}
 							onChange={e => {
 								setFrequencyType(e);
