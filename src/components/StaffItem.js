@@ -3,6 +3,7 @@ import React, { Component, Fragment } from 'react';
 import Tooltip from 'antd/lib/tooltip';
 import { Image } from 'react-bootstrap';
 import capitalize from 'lodash.capitalize';
+import { connect } from 'react-redux';
 
 import { request, updateImmutable } from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
@@ -56,43 +57,8 @@ class StaffItem extends Component {
 		this.setState({ form_visible: false });
 	};
 
-	onUpload = async (e, files) => {
-		e.preventDefault();
-		console.log(files);
-		if (!files) {
-			notifyError('You did not select any image file');
-			return;
-		}
-		this.setState({ uploading: true });
-
-		if (files) {
-			try {
-				let formData = new FormData();
-				formData.append('file', files);
-				formData.append('document_type', 'Performance Indicators');
-				// const rs = await upload(
-				// 	`${API_URI}/${patientAPI}/${patient.id}/upload-request-document`,
-				// 	'POST',
-				// 	formData
-				// );
-				console.log(this.state.staff);
-				notifySuccess(`Performance indicator Uploaded`);
-				this.setState({ uploading: false, form_visible: false });
-				// console.log(rs);
-			} catch (error) {
-				console.log(error);
-				this.setState({ uploading: false, form_visible: false });
-				// throw new SubmissionError({
-				// 	_error: e.message || 'could not upload data',
-				// });
-
-				notifyError(e.message || 'could not upload data');
-			}
-		}
-	};
-
 	render() {
-		const { staffs, editStaff } = this.props;
+		const { staffs, editStaff, profile } = this.props;
 		const { collapsed } = this.state;
 		return (
 			<>
@@ -130,10 +96,17 @@ class StaffItem extends Component {
 								</td>
 								<td className="row-actions">
 									<Tooltip title="Edit Staff">
-										<a onClick={() => editStaff(item)}>
+										<a onClick={() => editStaff(item, false)}>
 											<i className="os-icon os-icon-edit-1" />
 										</a>
 									</Tooltip>
+									{profile.role.slug === 'it-admin' && (
+										<Tooltip title="Edit Account">
+											<a onClick={() => editStaff(item, true)}>
+												<i className="os-icon os-icon-user-male-circle" />
+											</a>
+										</Tooltip>
+									)}
 									{item.isActive ? (
 										<Tooltip title="Disable Staff">
 											<a
@@ -188,4 +161,10 @@ class StaffItem extends Component {
 	}
 }
 
-export default StaffItem;
+const mapStateToProps = (state, ownProps) => {
+	return {
+		profile: state.user.profile,
+	};
+};
+
+export default connect(mapStateToProps)(StaffItem);

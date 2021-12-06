@@ -563,6 +563,7 @@ const PlanForm = ({ previous, next, patient }) => {
 									value: 'monthly',
 									label: 'Monthly',
 								},
+								{ value: 'quarterly', label: 'Quarterly' },
 							]}
 							onChange={e => {
 								setValue('frequencyType', e.value);

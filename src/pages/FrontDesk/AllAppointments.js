@@ -35,15 +35,15 @@ class AllAppointments extends Component {
 		id: null,
 		patients: [],
 		hmos: [],
-		patient_id: '',
 		startDate: '',
 		endDate: '',
-		status: '',
 		meta: null,
 		appointments: [],
 		showModal: false,
 		count: 0,
 		showAppointment: false,
+		patient_id: '',
+		status: '',
 	};
 
 	componentDidMount() {
@@ -122,11 +122,11 @@ class AllAppointments extends Component {
 
 	fetchAppointments = async page => {
 		try {
-			const { startDate, endDate } = this.state;
+			const { startDate, endDate, patient_id, status } = this.state;
 			const p = page || 1;
 			this.setState({ loading: true });
 			const url = `front-desk/appointments?page=${p}&limit=15&startDate=${startDate ||
-				''}&endDate=${endDate || ''}`;
+				''}&endDate=${endDate || ''}&patient_id=${patient_id}&status=${status}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			this.setState({
@@ -201,9 +201,39 @@ class AllAppointments extends Component {
 			<>
 				<div className="element-box m-0 mb-4 p-3">
 					<form className="row">
-						<div className="form-group col-md-10">
+						<div className="form-group col-md-3">
+							<label className="mr-2 " htmlFor="id">
+								Search
+							</label>
+							<input
+								style={{ height: '32px' }}
+								id="search"
+								className="form-control"
+								name="search"
+								onChange={e => this.setState({ patient_id: e.target.value })}
+								placeholder="search for patient: emr id, name, phone number, email"
+							/>
+						</div>
+						<div className="form-group col-md-4">
 							<label>From - To</label>
 							<RangePicker onChange={e => this.dateChange(e)} />
+						</div>
+						<div className="form-group col-md-3">
+							<label className="mr-2" htmlFor="id">
+								Status
+							</label>
+							<select
+								style={{ height: '32px' }}
+								id="status"
+								className="form-control"
+								name="status"
+								onChange={e => this.setState({ status: e.target.value })}>
+								<option value="">All</option>
+								<option value="Pending">Pending</option>
+								<option value="Approved">Approved</option>
+								<option value="Missed">Missed</option>
+								<option value="Cancelled">Cancelled</option>
+							</select>
 						</div>
 						<div className="form-group col-md-2 mt-4">
 							<div

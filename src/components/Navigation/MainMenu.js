@@ -111,17 +111,19 @@ class MainMenu extends Component {
 					{role === 'paypoint' && <PayPointMenu />}
 					{role === 'pharmacy' && <PharmacyMenu />}
 					{role === 'radiology' && <RadiologyMenu />}
+					{role === 'nurse' && <NurseMenu />}
 					{role === 'doctor' && <DoctorMenu />}
-					{role === 'doctor' && (
+					{(role === 'doctor' || role === 'nurse') && (
 						<li className="sub-header">
 							<span>PROCEDURE</span>
 						</li>
 					)}
-					{(role === 'procedure' || role === 'doctor') && <ProcedureMenu />}
-					{role === 'nurse' && <NurseMenu />}
+					{(role === 'doctor' || role === 'nurse') && <ProcedureMenu />}
 					{role === 'hr-manager' && <HrMenu />}
 					{role === 'store' && <StoreMenu />}
-					{role === 'cafeteria' && <CafeteriaMenu />}
+					{(role === 'cafeteria' ||
+						role === 'cafeteria-manager' ||
+						role === 'cafeteria-sales') && <CafeteriaMenu />}
 					{role === 'hmo-officer' && <HMOMenu />}
 					{role === 'records' && <RecordsMenu />}
 					{role === 'accounts' && <AccountingMenu />}

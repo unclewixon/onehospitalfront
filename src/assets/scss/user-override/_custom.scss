@@ -338,6 +338,9 @@ tr {
 }
 
 .modal-open {
+	padding-right: 16px !important;
+	background-color: #f2f4f8;
+
 	.modal {
 		&.show {
 			background-color: rgba(0, 0, 0, 0.35);
@@ -879,4 +882,14 @@ h4.onboarding-title {
 
 .block-ui-overlay {
 	height: 100vh;
+}
+
+.element-search {
+	&:before {
+		content: '' !important;
+	}
+
+	input {
+		padding: 10px 55px 10px 10px !important;
+	}
 }

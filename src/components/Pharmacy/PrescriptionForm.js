@@ -438,6 +438,7 @@ const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 									value: 'monthly',
 									label: 'Monthly',
 								},
+								{ value: 'quarterly', label: 'Quarterly' },
 							]}
 							onChange={e => {
 								setValue('frequencyType', e.value);

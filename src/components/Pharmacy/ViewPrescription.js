@@ -259,7 +259,8 @@ const ViewPrescription = ({
 										<tbody>
 											{regimens.map((regimen, i) => {
 												const when =
-													regimen.item.frequencyType === 'immediately'
+													regimen.item.frequencyType === 'immediately' ||
+													regimen.item.frequencyType === 'quarterly'
 														? ''
 														: ` for ${regimen.item.duration} days`;
 												return (

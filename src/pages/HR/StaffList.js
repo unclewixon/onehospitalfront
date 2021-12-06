@@ -10,6 +10,8 @@ import { startBlock, stopBlock } from '../../actions/redux-block';
 import { notifyError } from '../../services/notify';
 import TableLoading from '../../components/TableLoading';
 import ModalCreateStaff from '../../components/Modals/ModalCreateStaff';
+import ModalEditUserAccount from '../../components/Modals/ModalEditUserAccount';
+import waiting from '../../assets/images/waiting.gif';
 
 const pageLimit = 24;
 
@@ -22,30 +24,36 @@ const StaffList = () => {
 	});
 	const [staffs, setStaffs] = useState([]);
 	const [showModal, setShowModal] = useState(false);
+	const [showAccountModal, setShowAccountModal] = useState(false);
 	const [staff, setStaff] = useState(null);
+	const [searchValue, setSearchValue] = useState('');
+	const [status, setStatus] = useState('');
+	const [filtering, setFiltering] = useState(false);
 
 	const dispatch = useDispatch();
 
 	const fetchStaffs = useCallback(
-		async (page, q) => {
+		async page => {
 			try {
 				dispatch(startBlock());
 				const p = page || 1;
-				const url = `${staffAPI}?page=${p}&limit=${pageLimit}&q=${q || ''}`;
+				const url = `${staffAPI}?page=${p}&limit=${pageLimit}&q=${searchValue}&status=${status}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setMeta(meta);
 				window.scrollTo({ top: 0, behavior: 'smooth' });
 				setStaffs(result);
 				setLoaded(true);
+				setFiltering(false);
 				dispatch(stopBlock());
 			} catch (error) {
 				notifyError('error fetching staffs');
 				setLoaded(true);
+				setFiltering(false);
 				dispatch(stopBlock());
 			}
 		},
-		[dispatch]
+		[dispatch, searchValue, status]
 	);
 
 	useEffect(() => {
@@ -65,12 +73,18 @@ const StaffList = () => {
 
 	const closeModal = () => {
 		setShowModal(false);
+		setShowAccountModal(false);
 		setStaff(null);
 		document.body.classList.remove('modal-open');
 	};
 
 	const updateStaffs = staffs => {
 		setStaffs(staffs);
+	};
+
+	const doFilter = async () => {
+		setFiltering(true);
+		await fetchStaffs(1);
 	};
 
 	return (
@@ -88,6 +102,52 @@ const StaffList = () => {
 								</a>
 							</div>
 							<h6 className="element-header">Staff List</h6>
+							<div className="element-box m-0 mb-4 p-3">
+								<form className="row">
+									<div className="form-group col-md-6">
+										<label className="mr-2 " htmlFor="search">
+											Search
+										</label>
+										<input
+											style={{ height: '32px' }}
+											id="search"
+											className="form-control"
+											name="search"
+											onChange={e => setSearchValue(e.target.value)}
+											placeholder="search for staff"
+										/>
+									</div>
+									<div className="form-group col-md-3">
+										<label className="mr-2" htmlFor="id">
+											Status
+										</label>
+										<select
+											style={{ height: '32px' }}
+											id="status"
+											className="form-control"
+											name="status"
+											onChange={e => setStatus(e.target.value)}>
+											<option value="">All</option>
+											<option value="enabled">Enabled</option>
+											<option value="disabled">Disabled</option>
+										</select>
+									</div>
+									<div className="form-group col-md-3 mt-4">
+										<div
+											className="btn btn-sm btn-primary btn-upper text-white filter-btn"
+											onClick={doFilter}>
+											<i className="os-icon os-icon-ui-37" />
+											<span>
+												{filtering ? (
+													<img src={waiting} alt="submitting" />
+												) : (
+													'Filter'
+												)}
+											</span>
+										</div>
+									</div>
+								</form>
+							</div>
 							<div className="element-box p-3 m-0">
 								<div className="table-responsive">
 									{!loaded ? (
@@ -110,10 +170,14 @@ const StaffList = () => {
 													<StaffItem
 														staffs={staffs}
 														updateStaffs={updateStaffs}
-														editStaff={staff => {
+														editStaff={(staff, isAccount) => {
 															setStaff(staff);
 															document.body.classList.add('modal-open');
-															setShowModal(true);
+															if (isAccount) {
+																setShowAccountModal(true);
+															} else {
+																setShowModal(true);
+															}
 														}}
 													/>
 												</tbody>
@@ -140,6 +204,14 @@ const StaffList = () => {
 			</div>
 			{showModal && (
 				<ModalCreateStaff
+					staff={staff}
+					staffs={staffs}
+					updateStaffs={updateStaffs}
+					closeModal={() => closeModal()}
+				/>
+			)}
+			{showAccountModal && (
+				<ModalEditUserAccount
 					staff={staff}
 					staffs={staffs}
 					updateStaffs={updateStaffs}

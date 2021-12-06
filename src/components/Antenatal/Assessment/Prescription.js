@@ -332,6 +332,7 @@ const Prescription = ({
 									value: 'monthly',
 									label: 'Monthly',
 								},
+								{ value: 'quarterly', label: 'Quarterly' },
 							]}
 							onChange={e => {
 								setFrequencyType(e);

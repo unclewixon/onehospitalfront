@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import debounce from 'lodash.debounce';
+// import debounce from 'lodash.debounce';
 import size from 'lodash.size';
 // import template from 'lodash.template';
 // import split from 'lodash.split';
@@ -24,7 +24,7 @@ class SearchPatient extends Component {
 			hasSearched: false,
 		};
 
-		this.changed = debounce(this.doSearch, 250);
+		// this.changed = debounce(this.doSearch, 250);
 	}
 
 	handleChange = e => {
@@ -33,13 +33,12 @@ class SearchPatient extends Component {
 		// 	this.changed(search);
 		// });
 		this.setState({ search });
-		this.changed();
+		// this.changed();
 	};
 
 	doSearch = async () => {
 		const { search } = this.state;
-		console.log(search);
-		if (size(search) >= 3) {
+		if (size(search) >= 1) {
 			try {
 				this.setState({ searching: true, error: false, hasSearched: true });
 				const url = `${searchAPI}?q=${search}&limit=10`;
@@ -96,6 +95,9 @@ class SearchPatient extends Component {
 							value={search}
 							onChange={this.handleChange}
 						/>
+						<div className="btn-search-suggestions" onClick={this.doSearch}>
+							<i className="os-icon os-icon-ui-37" />
+						</div>
 						<div className="close-search-suggestions" onClick={onExit}>
 							<i className="os-icon os-icon-x" />
 						</div>

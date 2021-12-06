@@ -294,7 +294,7 @@ const AppointmentTable = ({
 					})}
 					{appointments.length === 0 && (
 						<tr className="text-center">
-							<td colSpan="5">No Appointments</td>
+							<td colSpan="6">No Appointments</td>
 						</tr>
 					)}
 				</tbody>

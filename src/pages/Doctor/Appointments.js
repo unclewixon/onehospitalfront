@@ -32,6 +32,7 @@ const Appointments = () => {
 	const [loading, setLoading] = useState(true);
 	const [listenning, setListenning] = useState(false);
 	const [allAppointments, setAllAppointments] = useState([]);
+	const [patientId, setPatientId] = useState('');
 
 	const profile = useSelector(state => state.user.profile);
 
@@ -47,7 +48,7 @@ const Appointments = () => {
 					staff.id
 				}&canSeeDoctor=1&startDate=${state.startDate ||
 					''}&endDate=${state.endDate || ''}&department_id=${staff?.department
-					?.id || ''}`;
+					?.id || ''}&patient_id=${patientId}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setAllAppointments(result);
@@ -62,7 +63,7 @@ const Appointments = () => {
 				notifyError(error.message || 'could not fetch transactions');
 			}
 		},
-		[dispatch, profile, state]
+		[dispatch, patientId, profile, state]
 	);
 
 	useEffect(() => {
@@ -136,6 +137,16 @@ const Appointments = () => {
 		<div className="element-wrapper">
 			<div className="element-actions">
 				<form style={{ display: 'flex' }}>
+					<div className="form-group">
+						<input
+							style={{ height: '32px' }}
+							id="search"
+							className="form-control"
+							name="search"
+							onChange={e => setPatientId(e.target.value)}
+							placeholder="search for patient: emr id, name, phone number, email"
+						/>
+					</div>
 					<div className="mr-2">
 						<RangePicker onChange={e => dateChange(e)} />
 					</div>
