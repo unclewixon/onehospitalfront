@@ -34,7 +34,11 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 
 	useEffect(() => {
 		if (!loaded) {
-			setParameters(item.labTest?.parameters || []);
+			setParameters(
+				item.parameters && item.parameters.length > 0
+					? item.parameters
+					: item.labTest?.parameters || []
+			);
 			setLoaded(true);
 		}
 	}, [item, loaded]);
@@ -63,7 +67,7 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 
 	const save = async () => {
 		try {
-			if (result === null && !lab.item.labTest.hasParameters) {
+			if (result === null && !lab.item.labTest?.hasParameters) {
 				notifyError('Please fill in result');
 				return;
 			}
@@ -107,7 +111,7 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 					<div className="onboarding-content with-gradient">
 						<h4 className="onboarding-title">Fill Lab Result</h4>
 						<div className="onboarding-text alert-custom mb-3">
-							<div>{item.labTest.name}</div>
+							<div>{item.labTest?.name || '--'}</div>
 							<div>
 								{item.labTest?.specimens?.map((s, i) => (
 									<span key={i} className="badge badge-info text-white mr-2">
@@ -121,9 +125,8 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 								<div className="col-sm-12">
 									<table className="table table-bordered table-sm table-v2 table-striped">
 										<tbody>
-											{item.labTest.hasParameters ? (
+											{item.labTest?.hasParameters ? (
 												parameters.map((param, i) => {
-													console.log(param);
 													return (
 														<tr key={i}>
 															<td>

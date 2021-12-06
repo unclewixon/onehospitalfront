@@ -162,6 +162,7 @@ const StaffList = () => {
 														<th>Role</th>
 														<th>Phone</th>
 														<th>Department</th>
+														<th>Date Created</th>
 														<th className="text-center">Status</th>
 														<th className="text-right">Actions</th>
 													</tr>

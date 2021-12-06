@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useCallback } from 'react';
 import Tooltip from 'antd/lib/tooltip';
@@ -15,9 +16,11 @@ import {
 	itemRender,
 	formatCurrency,
 	patientname,
+	formatDate,
 } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { toggleProfile } from '../../actions/user';
+import { hmoAPI } from '../../services/constants';
 import TableLoading from '../../components/TableLoading';
 import waiting from '../../assets/images/waiting.gif';
 
@@ -42,10 +45,28 @@ const AllPatients = () => {
 	});
 	const [searchValue, setSearchValue] = useState('');
 	const [status, setStatus] = useState('');
+	const [hmo, setHmo] = useState('');
+	// const [hmos, setHmos] = useState([]);
 
 	const dispatch = useDispatch();
 
 	const patients = useSelector(state => state.patient.patients);
+
+	// const fetchHmos = useCallback(
+	// 	async page => {
+	// 		try {
+	// 			const p = page || 1;
+	// 			const url = `${hmoAPI}/schemes?page=${p}&limit=10`;
+	// 			const rs = await request(url, 'GET', true);
+	// 			setHmos([...rs.result]);
+	// 		} catch (e) {
+	// 			console.log(e);
+	// 			dispatch(stopBlock());
+	// 			notifyError('could not fetch hmo schemes');
+	// 		}
+	// 	},
+	// 	[dispatch]
+	// );
 
 	const dateChange = e => {
 		let date = e.map(d => {
@@ -68,7 +89,7 @@ const AllPatients = () => {
 				dispatch(startBlock());
 				const p = page || 1;
 				const url = `patient/list?page=${p}&limit=${pageLimit}&q=${q ||
-					''}&startDate=${startDate}&endDate=${endDate}&status=${status}`;
+					''}&startDate=${startDate}&endDate=${endDate}&status=${status}&hmo_id=${hmo}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setMeta(meta);
@@ -84,7 +105,7 @@ const AllPatients = () => {
 				setFiltering(false);
 			}
 		},
-		[dispatch, endDate, startDate, status]
+		[dispatch, endDate, hmo, startDate, status]
 	);
 
 	const onNavigatePage = async nextPage => {
@@ -144,7 +165,7 @@ const AllPatients = () => {
 							})}
 						</select>
 					</div>
-					<div className="form-group col-md-3 mt-4">
+					<div className="form-group col mt-4">
 						<div
 							className="btn btn-sm btn-primary btn-upper text-white filter-btn"
 							onClick={doFilter}>
@@ -165,6 +186,7 @@ const AllPatients = () => {
 							<table className="table table-striped">
 								<thead>
 									<tr>
+										<th>Date Registered</th>
 										<th>Patient Name</th>
 										<th>Patient ID</th>
 										<th>Phone Number</th>
@@ -178,6 +200,9 @@ const AllPatients = () => {
 									{patients.map((data, i) => {
 										return (
 											<tr key={i}>
+												<td>
+													{formatDate(data.createdAt, 'D-MMM-YYYY h:mma')}
+												</td>
 												<td>
 													{patientname(data)}{' '}
 													{data.is_admitted && (

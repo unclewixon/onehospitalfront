@@ -183,7 +183,7 @@ const HmoScheme = () => {
 															<tr key={i}>
 																<td>
 																	<span>
-																		{capitalize(hmo.owner.name || '--')}
+																		{capitalize(hmo.owner?.name || '--')}
 																	</span>
 																</td>
 																<td>{hmo.name || '--'}</td>

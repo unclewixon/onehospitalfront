@@ -6,7 +6,7 @@ import { request, updateImmutable } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
-const ModalViewLabResult = ({ closeModal, lab, labs, updateLab }) => {
+const ModalViewLabResult = ({ closeModal, lab, labs, updateLab, role }) => {
 	const item = lab.item;
 
 	const dispatch = useDispatch();
@@ -83,6 +83,11 @@ const ModalViewLabResult = ({ closeModal, lab, labs, updateLab }) => {
 						<div className="element-box p-2">
 							<div className="row">
 								<div className="col-sm-12">
+									{item.approved === 0 && role === 'doctor' && (
+										<div className="alert alert-warning">
+											lab result pending approval
+										</div>
+									)}
 									<table className="table table-bordered table-sm table-v2 table-striped">
 										{item.labTest.hasParameters && (
 											<thead>
@@ -121,7 +126,7 @@ const ModalViewLabResult = ({ closeModal, lab, labs, updateLab }) => {
 										</tbody>
 									</table>
 								</div>
-								{item.approved === 0 && (
+								{item.approved === 0 && role !== 'doctor' && (
 									<div className="col-md-12 mt-4">
 										<button
 											onClick={() => approve()}

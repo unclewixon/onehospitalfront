@@ -167,7 +167,7 @@ const mapStateToProps = (state, ownProps) => {
 	return {
 		initialValues: {
 			username: ownProps.staff.user.username,
-			department: ownProps.staff?.department.name || '',
+			department: ownProps.staff?.department?.name || '',
 		},
 	};
 };

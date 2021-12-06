@@ -5,7 +5,7 @@ import { Image } from 'react-bootstrap';
 import capitalize from 'lodash.capitalize';
 import { connect } from 'react-redux';
 
-import { request, updateImmutable } from '../services/utilities';
+import { request, updateImmutable, formatDate } from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
 import { staffname, parseAvatar } from '../services/utilities';
 
@@ -81,8 +81,9 @@ class StaffItem extends Component {
 								<td onClick={this.toggle(item.id)}>{item?.user?.role?.name}</td>
 								<td onClick={this.toggle(item.id)}>{item?.phone_number}</td>
 								<td onClick={this.toggle(item.id)}>
-									{item.department ? item.department?.name : ''}
+									{item.department ? item.department.name : '--'}
 								</td>
+								<td>{formatDate(item.createdAt, 'D-MMM-YYYY h:mma')}</td>
 								<td className="text-center">
 									{item.isActive ? (
 										<Tooltip title="Enabled">

@@ -295,7 +295,7 @@ class LabBlock extends Component {
 															</a>
 														</Tooltip>
 													)}
-													{lab.item.filled === 0 && lab.item.received === 1 && (
+													{lab.item.received === 1 && lab.item.approved === 0 && (
 														<Tooltip title="Fill Result">
 															<a
 																className="primary"
@@ -306,7 +306,9 @@ class LabBlock extends Component {
 													)}
 													{lab.item.filled === 1 &&
 														lab.item.approved === 0 &&
-														user.role.slug === 'lab-manager' && (
+														(user.role.slug === 'lab-manager' ||
+															user.role.slug === 'lab-supervisor' ||
+															user.role.slug === 'it-admin') && (
 															<Tooltip title="Approve Lab Result">
 																<a
 																	className="info"
@@ -315,8 +317,8 @@ class LabBlock extends Component {
 																</a>
 															</Tooltip>
 														)}
-													{lab.status === 1 && (
-														<>
+													{lab.item.filled === 1 &&
+														user.role.slug === 'doctor' && (
 															<Tooltip title="View Lab Result">
 																<a
 																	className="info"
@@ -324,6 +326,18 @@ class LabBlock extends Component {
 																	<i className="os-icon os-icon-eye" />
 																</a>
 															</Tooltip>
+														)}
+													{lab.status === 1 && (
+														<>
+															{user.role.slug !== 'doctor' && (
+																<Tooltip title="View Lab Result">
+																	<a
+																		className="info"
+																		onClick={() => this.viewResult(lab)}>
+																		<i className="os-icon os-icon-eye" />
+																	</a>
+																</Tooltip>
+															)}
 															<Tooltip title="Print Lab Test">
 																<a
 																	className="info"
@@ -366,6 +380,7 @@ class LabBlock extends Component {
 						labs={labs}
 						lab={lab}
 						updateLab={updateLab}
+						role={user.role.slug}
 					/>
 				)}
 			</>
