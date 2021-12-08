@@ -15,8 +15,8 @@ import { loadDepartments } from '../../actions/department';
 import {
 	API_URI,
 	contracts,
-	gender,
-	maritalStatus,
+	genders,
+	maritalStatuses,
 	religions,
 	staffAPI,
 	TOKEN_COOKIE,
@@ -176,7 +176,7 @@ function ModalCreateStaff({ updateStaffs, closeModal, staff, staffs }) {
 											roles={roles}
 											departments={departments}
 											sortedCountries={sortedCountries}
-											genders={gender}
+											genders={genders}
 											religions={religions}
 											countries={countries}
 										/>
@@ -218,7 +218,7 @@ function ModalCreateStaff({ updateStaffs, closeModal, staff, staffs }) {
 											{...props}
 											specializations={specializations}
 											banks={banks}
-											maritalStatus={maritalStatus}
+											maritalStatus={maritalStatuses}
 											contracts={contracts}
 											setSection={stepOne}
 											isSubmitting={saving}
