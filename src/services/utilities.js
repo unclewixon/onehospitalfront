@@ -547,7 +547,7 @@ export const redirectToPage = (role, history) => {
 };
 
 export const staffname = user =>
-	user ? `${startCase(user?.first_name)} ${startCase(user?.last_name)}` : '-';
+	user ? `${startCase(user?.first_name)} ${startCase(user?.last_name)}` : '--';
 
 export const patientname = (user, pid = false) =>
 	user

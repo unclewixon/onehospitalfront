@@ -47,7 +47,6 @@ const UpdateAllergy = lazy(() => import('../components/Patient/UpdateAllergy'));
 const PatientAdmission = lazy(() =>
 	import('../components/Patient/PatientAdmission')
 );
-const EditPatient = lazy(() => import('../components/Patient/EditPatient'));
 const ImmunizationChart = lazy(() =>
 	import('../components/Patient/ImmunizationChart')
 );
@@ -93,8 +92,6 @@ const Page = ({ location }) => {
 			return <UpdateAllergy />;
 		case 'start-admission':
 			return <PatientAdmission />;
-		case 'edit-profile':
-			return <EditPatient />;
 		case 'immunization-chart':
 			return <ImmunizationChart />;
 		case 'ivf-history':
@@ -140,7 +137,7 @@ class PatientProfile extends Component {
 			<div className="layout-w">
 				<button
 					aria-label="Close"
-					className="close"
+					className="close custom-close"
 					type="button"
 					onClick={this.closeProfile}>
 					<span className="os-icon os-icon-close" />
@@ -160,7 +157,6 @@ class PatientProfile extends Component {
 												patient={patient}
 												hasButtons={true}
 												canAdmit={true}
-												closeProfile={this.closeProfile}
 											/>
 										</div>
 										<Suspense fallback={<Splash />}>

@@ -9,7 +9,7 @@ import { request } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { staffAPI } from '../../services/constants';
-import { gender, maritalStatus, religions } from '../../services/constants';
+import { genders, maritalStatuses, religions } from '../../services/constants';
 import moment from 'moment';
 // import orderBy from 'lodash.orderby';
 
@@ -93,11 +93,11 @@ function EditStaff(props) {
 				religion: staff.details.religion,
 			};
 			setGenderValue(
-				gender.filter(option => option.label === formValues.gender)
+				genders.filter(option => option.label === formValues.gender)
 			);
 
 			setMaritalValue(
-				maritalStatus.filter(
+				maritalStatuses.filter(
 					option => option.label === formValues.maritalStatus
 				)
 			);
@@ -119,12 +119,12 @@ function EditStaff(props) {
 			setDob(formValues.date_of_birth);
 			setNextOfKinDob(moment(formValues.next_of_kin_dob).format('DD-MM-YYYY'));
 			console.log(next_of_kin_dob);
-			handleChange('gender', formValues.gender, setGenderValue, gender);
+			handleChange('gender', formValues.gender, setGenderValue, genders);
 			handleChange(
 				'maritalStatus',
 				formValues.maritalStatus,
 				setMaritalValue,
-				maritalStatus
+				maritalStatuses
 			);
 			handleChange(
 				'religion',
@@ -245,14 +245,14 @@ function EditStaff(props) {
 									<Select
 										id="gender"
 										ref={register({ name: 'gender' })}
-										options={gender}
+										options={genders}
 										value={genderValue}
 										onChange={evt => {
 											handleChange(
 												'gender',
 												String(evt.value),
 												setGenderValue,
-												gender
+												genders
 											);
 										}}
 										isDisabled
@@ -335,14 +335,14 @@ function EditStaff(props) {
 									<Select
 										id="gender"
 										ref={register({ name: 'gender' })}
-										options={gender}
+										options={genders}
 										value={genderValue}
 										onChange={evt => {
 											handleChange(
 												'gender',
 												String(evt.value),
 												setGenderValue,
-												gender
+												genders
 											);
 										}}
 									/>
@@ -414,14 +414,14 @@ function EditStaff(props) {
 									<Select
 										id="maritalStatus"
 										ref={register({ name: 'maritalStatus' })}
-										options={maritalStatus}
+										options={maritalStatuses}
 										value={maritalValue}
 										onChange={evt => {
 											handleChange(
 												'maritalStatus',
 												String(evt.value),
 												setMaritalValue,
-												maritalStatus
+												maritalStatuses
 											);
 										}}
 									/>
@@ -612,7 +612,6 @@ const mapStateToProps = (state, ownProps) => {
 	return {
 		formData: state.patient.formData,
 		staff: state.user.staff,
-		// register_new_patient: state.general.register_new_patient,
 		countries: state.utility.countries,
 		banks: state.utility.banks,
 	};

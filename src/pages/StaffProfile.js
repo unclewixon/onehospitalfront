@@ -94,7 +94,7 @@ class StaffProfile extends Component {
 					<div className="row">
 						<button
 							aria-label="Close"
-							className="close"
+							className="close custom-close"
 							type="button"
 							onClick={this.closeProfile}>
 							<span className="os-icon os-icon-close"></span>

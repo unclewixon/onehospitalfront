@@ -138,7 +138,8 @@ const LabRequest = ({ module, history, location, itemId }) => {
 					{chosenPatient && chosenPatient.outstanding > 0 && (
 						<div className="alert alert-danger">
 							{`Outstanding Balance: ${formatCurrency(
-								chosenPatient.outstanding
+								chosenPatient.outstanding,
+								true
 							)}`}
 						</div>
 					)}

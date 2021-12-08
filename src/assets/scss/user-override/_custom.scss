@@ -855,7 +855,7 @@ h4.onboarding-title {
 	font-size: 0.95rem;
 }
 
-.slide-pane__content button.close {
+.slide-pane__content .custom-close {
 	&.override {
 		position: absolute;
 		top: 15px;

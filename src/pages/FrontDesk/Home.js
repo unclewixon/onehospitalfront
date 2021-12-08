@@ -1,15 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { lazy, Suspense, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Switch, Route, withRouter, Link } from 'react-router-dom';
 import startCase from 'lodash.startcase';
 import qs from 'querystring';
 
-import { registerNewPatient } from '../../actions/general';
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
 import { socket } from '../../services/constants';
 import { notifyError, notifySuccess } from '../../services/notify';
+import PatientForm from '../../components/Modals/PatientForm';
 
 const AllAppointments = lazy(() => import('./AllAppointments'));
 const AllPatients = lazy(() => import('./AllPatients'));
@@ -19,18 +19,12 @@ const InPatientCare = lazy(() => import('../Nurse/InPatientCare'));
 const Home = ({ match, location }) => {
 	const [title, setTitle] = useState('Dashboard');
 	const [listenning, setListenning] = useState(false);
+	const [showModal, setShowModal] = useState(false);
 	const [count, setCount] = useState(0);
-
-	const dispatch = useDispatch();
 
 	const staff = useSelector(state => state.user.profile);
 
 	const page = location.pathname.split('/').pop();
-
-	const doRegisterNewPatient = e => {
-		e.preventDefault();
-		dispatch(registerNewPatient(true));
-	};
 
 	useEffect(() => {
 		if (page === 'front-desk') {
@@ -60,6 +54,16 @@ const Home = ({ match, location }) => {
 		}
 	}, [listenning]);
 
+	const newPatient = () => {
+		document.body.classList.add('modal-open');
+		setShowModal(true);
+	};
+
+	const closeModal = () => {
+		document.body.classList.remove('modal-open');
+		setShowModal(false);
+	};
+
 	return (
 		<div className="content-i">
 			<div className="content-box">
@@ -70,7 +74,7 @@ const Home = ({ match, location }) => {
 								staff?.role?.slug === 'it-admin') && (
 								<div className="element-actions">
 									<a
-										onClick={doRegisterNewPatient}
+										onClick={() => newPatient()}
 										className={`mr-2 btn btn-primary btn-sm ${
 											page === 'filled-request' ? 'btn-outline-primary' : ''
 										}`}>
@@ -122,6 +126,7 @@ const Home = ({ match, location }) => {
 					</div>
 				</div>
 			</div>
+			{showModal && <PatientForm closeModal={() => closeModal()} />}
 		</div>
 	);
 };

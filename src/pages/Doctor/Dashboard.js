@@ -34,9 +34,7 @@ const Dashboard = () => {
 				const staff = profile.details;
 				const today = moment().format('YYYY-MM-DD');
 				const p = page || 1;
-				const url = `front-desk/appointments?page=${p}&limit=${limit}&today=${today}&doctor_id=${
-					staff.id
-				}&canSeeDoctor=1&department_id=${staff?.department?.id || ''}`;
+				const url = `front-desk/appointments?page=${p}&limit=${limit}&today=${today}&doctor_id=${staff.id}&canSeeDoctor=1&department_id=`;
 				const res = await request(url, 'GET', true);
 				const { result, ...meta } = res;
 				setAppointments([...result]);

@@ -76,7 +76,7 @@ class ModalApproveTransaction extends Component {
 					this.props.transactions,
 					rs.transaction
 				);
-				this.props.loadTransactions(updatedArr);
+				this.props.loadTransactions([rs.credit, ...updatedArr]);
 				this.props.getAllPendingTransactions(newTransactions);
 				this.setState({ submitting: false });
 				this.props.closeModal();
@@ -195,7 +195,6 @@ class ModalApproveTransaction extends Component {
 											/>
 										</div>
 									</div>
-
 									<div className="row" hidden={hidden}>
 										<div className="col-sm-6">
 											<Field
@@ -220,7 +219,6 @@ class ModalApproveTransaction extends Component {
 											/>
 										</div>
 									</div>
-
 									<div className="row">
 										<div className="form-check col-sm-4">
 											<label
@@ -238,7 +236,7 @@ class ModalApproveTransaction extends Component {
 												Part Payment
 											</label>
 										</div>
-										<div className="form-check col-sm-4">
+										{/* <div className="form-check col-sm-4">
 											<label className="form-check-label">
 												<input
 													className="form-check-input mt-0"
@@ -268,7 +266,7 @@ class ModalApproveTransaction extends Component {
 												/>
 												Pay with Credit
 											</label>
-										</div>
+										</div> */}
 									</div>
 
 									<div className="form-buttons-w text-right">

@@ -9,7 +9,6 @@ import {
 	GET_IMAGING_REQUESTS,
 	LOAD_VITALS,
 	UPDATE_VITALS,
-	LOAD_PATIENTS,
 	GET_LAB_REQUESTS,
 	GET_PHARMACY_REQUESTS,
 	GET_ALL_REQUESTS,
@@ -25,9 +24,7 @@ import {
 	LOAD_DELIVERY_RECORD,
 	LOAD_LABOUR_MEASUREMENT,
 	PATIENT_IVF,
-	ADD_NEW_PATIENT,
 	GET_ALL_OPD_LAB_APPOINTMENTS,
-	UPDATE_PATIENT,
 	READING_DONE,
 	SET_IVF,
 	RESET_STEP,
@@ -54,7 +51,6 @@ const INITIAL_STATE = {
 	imagingRequests: [],
 	vitals: [],
 	ivfDetails: {},
-	patients: [],
 	clinicalLab: [],
 	opdLabAppointments: [],
 	radiology: [],
@@ -220,16 +216,6 @@ const patient = (state = INITIAL_STATE, action) => {
 				...state,
 				opdLabAppointments: action.payload,
 			};
-		case LOAD_PATIENTS:
-			return { ...state, patients: action.payload };
-		case ADD_NEW_PATIENT:
-			return {
-				...state,
-				patients: [action.payload, ...state.patients],
-			};
-		case UPDATE_PATIENT:
-			const patients = updateImmutable(state.patients, action.payload);
-			return { ...state, patients };
 		case READING_DONE:
 			return { ...state, reading_done: action.payload };
 		default:

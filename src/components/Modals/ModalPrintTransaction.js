@@ -1,4 +1,14 @@
 import React from 'react';
+import T2W from 'numbers2words';
+
+import {
+	formatDate,
+	patientname,
+	staffname,
+	formatCurrency,
+} from '../../services/utilities';
+
+const translator = new T2W('EN_US');
 
 const ModalPrintTransaction = ({ transaction, closeModal }) => {
 	const printReceipt = () => {
@@ -62,7 +72,10 @@ const ModalPrintTransaction = ({ transaction, closeModal }) => {
 									fontSize: '12px',
 									marginTop: '4px',
 								}}>
-								Transaction Date: 2021 Nov, 01
+								{`Transaction Date: ${formatDate(
+									transaction.createdAt,
+									'YYYY MMM, DD'
+								)}`}
 							</div>
 							<div
 								style={{
@@ -71,7 +84,7 @@ const ModalPrintTransaction = ({ transaction, closeModal }) => {
 									marginTop: '12px',
 									borderBottom: '1px dashed',
 								}}>
-								Received from: Maryam Aliyu, Dikko (0001)
+								{`Received from: ${patientname(transaction.patient, true)}`}
 							</div>
 							<div
 								style={{
@@ -79,7 +92,9 @@ const ModalPrintTransaction = ({ transaction, closeModal }) => {
 									textAlign: 'left',
 									fontSize: '13px',
 								}}>
-								The sum of Ten Thousand (NGN10,000.00)
+								{`The sum of ${translator.toWords(
+									transaction.amount
+								)} (${formatCurrency(transaction.amount)})`}
 							</div>
 							<div
 								style={{
@@ -97,7 +112,7 @@ const ModalPrintTransaction = ({ transaction, closeModal }) => {
 									paddingBottom: '6px',
 									fontSize: '12px',
 								}}>
-								Cashier: Kashet Selis
+								{`Cashier: ${staffname(transaction.cashier)}`}
 							</div>
 							<div
 								style={{

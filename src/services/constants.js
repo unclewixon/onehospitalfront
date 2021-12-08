@@ -180,12 +180,12 @@ export const ethnicities = [
 	{ value: 'Mandara', label: 'Mandara' },
 ];
 
-export const gender = [
+export const genders = [
 	{ value: 'Male', label: 'Male' },
 	{ value: 'Female', label: 'Female' },
 ];
 
-export const maritalStatus = [
+export const maritalStatuses = [
 	{ value: 'Single', label: 'Single' },
 	{ value: 'Married', label: 'Married' },
 ];

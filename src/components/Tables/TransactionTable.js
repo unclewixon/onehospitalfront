@@ -152,9 +152,21 @@ const TransactionTable = ({
 								</td>
 								{!queue && <td>{transaction.transaction_type || '--'}</td>}
 								{!queue && (
-									<td>
-										{transaction.staff ? staffname(transaction.staff) : '--'}
-									</td>
+									<>
+										{transaction.transaction_type === 'debit' ? (
+											<td>
+												{transaction.staff
+													? staffname(transaction.staff)
+													: '--'}
+											</td>
+										) : (
+											<td>
+												{transaction.cashier
+													? staffname(transaction.cashier)
+													: '--'}
+											</td>
+										)}
+									</>
 								)}
 								<td className="text-center row-actions">
 									{showActionBtns && (
@@ -184,15 +196,17 @@ const TransactionTable = ({
 											)}
 										</>
 									)}
-									{showPrint && transaction.status === 1 && (
-										<Tooltip title="Print">
-											<a
-												className="text-info"
-												onClick={() => handlePrint(transaction)}>
-												<i className="os-icon os-icon-printer" />
-											</a>
-										</Tooltip>
-									)}
+									{showPrint &&
+										transaction.status === 1 &&
+										transaction.transaction_type === 'credit' && (
+											<Tooltip title="Print">
+												<a
+													className="text-info"
+													onClick={() => handlePrint(transaction)}>
+													<i className="os-icon os-icon-printer" />
+												</a>
+											</Tooltip>
+										)}
 								</td>
 							</tr>
 						);

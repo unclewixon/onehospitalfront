@@ -15,13 +15,14 @@ import {
 } from '../services/utilities';
 import { patientAPI, admissionAPI } from '../services/constants';
 import { notifySuccess, notifyError } from './../services/notify';
-import { updatePatient } from '../actions/patient';
 import { startBlock, stopBlock } from '../actions/redux-block';
 import { formatCurrency } from '../services/utilities';
 import { messageService } from '../services/message';
 import ViewAlerts from './Modals/ViewAlerts';
 import { toggleProfile } from '../actions/user';
 import ModalShowTransactions from './Modals/ModalShowTransactions';
+import PatientForm from './Modals/PatientForm';
+import { setPatientRecord } from '../actions/user';
 
 const UserItem = ({ icon, label, value }) => {
 	return (
@@ -50,16 +51,10 @@ const UserItem = ({ icon, label, value }) => {
 	);
 };
 
-const ProfileBlock = ({
-	location,
-	history,
-	patient,
-	hasButtons,
-	canAdmit,
-	closeProfile,
-}) => {
+const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 	const [alerts, setAlerts] = useState([]);
 	const [showModal, setShowModal] = useState(false);
+	const [editModal, setEditModal] = useState(false);
 	const [showTransactions, setShowTransactions] = useState(false);
 	const [admissionId, setAdmissionId] = useState(null);
 	const [amount, setAmount] = useState(null);
@@ -89,10 +84,8 @@ const ProfileBlock = ({
 
 	useEffect(() => {
 		const subscription = messageService.getMessage().subscribe(message => {
-			if (message !== '') {
-				if (message.text === 'refresh') {
-					getAlerts();
-				}
+			if (message !== '' && message.text === 'refresh') {
+				getAlerts();
 			}
 		});
 
@@ -112,7 +105,11 @@ const ProfileBlock = ({
 				notifySuccess(
 					`you have enrolled ${patient.other_names} into immunization`
 				);
-				dispatch(updatePatient({ ...patient, immunization: rs.records }));
+				messageService.sendMessage({
+					type: 'update-patient',
+					data: { ...patient, immunization: rs.records },
+				});
+				dispatch(setPatientRecord({ ...patient, immunization: rs.records }));
 				history.push(`${location.pathname}#immunization-chart`);
 			} else {
 				notifyError(rs.message);
@@ -144,6 +141,7 @@ const ProfileBlock = ({
 	const closeModal = () => {
 		document.body.classList.remove('modal-open');
 		setShowModal(false);
+		setEditModal(false);
 	};
 
 	const onStartDischarge = async id => {
@@ -154,7 +152,10 @@ const ProfileBlock = ({
 			dispatch(stopBlock());
 			if (rs.success) {
 				const newPatient = { ...patient, admission: rs.admission };
-				dispatch(updatePatient(newPatient));
+				messageService.sendMessage({
+					type: 'update-patient',
+					data: newPatient,
+				});
 				let info;
 				if (item) {
 					info = {
@@ -198,7 +199,10 @@ const ProfileBlock = ({
 					admission: rs.admission,
 					is_admitted: false,
 				};
-				dispatch(updatePatient(newPatient));
+				messageService.sendMessage({
+					type: 'update-patient',
+					data: newPatient,
+				});
 				let info;
 				if (item) {
 					info = {
@@ -246,6 +250,11 @@ const ProfileBlock = ({
 		setAdmissionId(null);
 	};
 
+	const editPatient = () => {
+		document.body.classList.add('modal-open');
+		setEditModal(true);
+	};
+
 	return (
 		<>
 			<div className="row profile-block">
@@ -282,9 +291,7 @@ const ProfileBlock = ({
 												{hasButtons && (
 													<a
 														className="btn btn-primary mr-1"
-														onClick={() => {
-															closeProfile();
-														}}>
+														onClick={editPatient}>
 														Edit
 													</a>
 												)}
@@ -496,6 +503,9 @@ const ProfileBlock = ({
 					closeModal={() => closeDischarge()}
 					isAdmitted={true}
 				/>
+			)}
+			{editModal && (
+				<PatientForm patient={patient} closeModal={() => closeModal()} />
 			)}
 		</>
 	);

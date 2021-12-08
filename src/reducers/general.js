@@ -7,7 +7,6 @@ import {
 	TOGGLE_CREATE_INVENTORY,
 	TOGGLE_EDIT_INVENTORY,
 	TOGGLE_UPDATE_QTY,
-	TOGGLE_REGISTER_NEW_PATIENT,
 	TOGGLE_VIEW_APPRAISAL,
 	TOGGLE_VIEW_PAYROLL_HISTORY,
 	TOGGLE_VIEW_CURRENT_PAYROLL,
@@ -40,7 +39,6 @@ const INITIAL_STATE = {
 	create_inventory: false,
 	edit_inventory: false,
 	update_inventory_qty: false,
-	register_new_patient: false,
 	view_appraisal: false,
 	view_payroll_history: false,
 	current_payroll: false,
@@ -93,8 +91,6 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, edit_inventory: action.payload };
 		case TOGGLE_UPDATE_QTY:
 			return { ...state, update_inventory_qty: action.payload };
-		case TOGGLE_REGISTER_NEW_PATIENT:
-			return { ...state, register_new_patient: action.payload };
 		case TOGGLE_VIEW_APPRAISAL:
 			return { ...state, view_appraisal: action.payload };
 		case TOGGLE_VIEW_PAYROLL_HISTORY:

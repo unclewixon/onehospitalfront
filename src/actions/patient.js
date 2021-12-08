@@ -11,7 +11,6 @@ import {
 	LOAD_VITALS,
 	UPDATE_VITALS,
 	CREATE_LAB_REQUEST,
-	LOAD_PATIENTS,
 	LOAD_CLINICAL_LAB,
 	LOAD_RADIOLOGY,
 	LOAD_ANTENATAL_ASSESSMENT,
@@ -24,9 +23,7 @@ import {
 	LOAD_DELIVERY_RECORD,
 	LOAD_LABOUR_MEASUREMENT,
 	PATIENT_IVF,
-	ADD_NEW_PATIENT,
 	GET_ALL_OPD_LAB_APPOINTMENTS,
-	UPDATE_PATIENT,
 	READING_DONE,
 	SET_IVF,
 	CAN_CLOSE_LABOUR,
@@ -42,13 +39,6 @@ export const setIVF = data => {
 	};
 };
 
-export const loadPatients = data => {
-	return {
-		type: LOAD_PATIENTS,
-		payload: data,
-	};
-};
-
 export const readingDone = data => {
 	return {
 		type: READING_DONE,
@@ -59,20 +49,6 @@ export const readingDone = data => {
 export const loadOPDLabAppointments = data => {
 	return {
 		type: GET_ALL_OPD_LAB_APPOINTMENTS,
-		payload: data,
-	};
-};
-
-export const addNewPatient = data => {
-	return {
-		type: ADD_NEW_PATIENT,
-		payload: data,
-	};
-};
-
-export const updatePatient = data => {
-	return {
-		type: UPDATE_PATIENT,
 		payload: data,
 	};
 };

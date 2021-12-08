@@ -1,15 +1,12 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useCallback } from 'react';
 import Tooltip from 'antd/lib/tooltip';
-import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
 import Pagination from 'antd/lib/pagination';
 import DatePicker from 'antd/lib/date-picker';
 
 import { startBlock, stopBlock } from '../../actions/redux-block';
-import { loadPatients } from '../../actions/patient';
 import {
 	request,
 	formatPatientId,
@@ -17,12 +14,14 @@ import {
 	formatCurrency,
 	patientname,
 	formatDate,
+	updateImmutable,
 } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { toggleProfile } from '../../actions/user';
-import { hmoAPI } from '../../services/constants';
+// import { hmoAPI } from '../../services/constants';
 import TableLoading from '../../components/TableLoading';
 import waiting from '../../assets/images/waiting.gif';
+import { messageService } from '../../services/message';
 
 const { RangePicker } = DatePicker;
 
@@ -45,12 +44,12 @@ const AllPatients = () => {
 	});
 	const [searchValue, setSearchValue] = useState('');
 	const [status, setStatus] = useState('');
+	const [patients, setPatients] = useState([]);
+	// eslint-disable-next-line no-unused-vars
 	const [hmo, setHmo] = useState('');
 	// const [hmos, setHmos] = useState([]);
 
 	const dispatch = useDispatch();
-
-	const patients = useSelector(state => state.patient.patients);
 
 	// const fetchHmos = useCallback(
 	// 	async page => {
@@ -69,7 +68,7 @@ const AllPatients = () => {
 	// );
 
 	const dateChange = e => {
-		let date = e.map(d => {
+		const date = e.map(d => {
 			return moment(d._d).format('YYYY-MM-DD');
 		});
 
@@ -94,7 +93,7 @@ const AllPatients = () => {
 				const { result, ...meta } = rs;
 				setMeta(meta);
 				window.scrollTo({ top: 0, behavior: 'smooth' });
-				dispatch(loadPatients(result));
+				setPatients(result);
 				setLoaded(true);
 				setFiltering(false);
 				dispatch(stopBlock());
@@ -107,6 +106,22 @@ const AllPatients = () => {
 		},
 		[dispatch, endDate, hmo, startDate, status]
 	);
+
+	useEffect(() => {
+		const subscription = messageService.getMessage().subscribe(message => {
+			const { type, data } = message.text;
+			if (type === 'new-patient') {
+				setPatients([data, ...patients]);
+			} else if (type === 'update-patient') {
+				const newPatients = updateImmutable(patients, data);
+				setPatients(newPatients);
+			}
+		});
+
+		return () => {
+			subscription.unsubscribe();
+		};
+	});
 
 	const onNavigatePage = async nextPage => {
 		await fetchPatients(nextPage, searchValue);
@@ -190,7 +205,6 @@ const AllPatients = () => {
 										<th>Patient Name</th>
 										<th>Patient ID</th>
 										<th>Phone Number</th>
-										<th>Date of Birth</th>
 										<th>Scheme</th>
 										<th>Balance</th>
 										<th></th>
@@ -217,9 +231,6 @@ const AllPatients = () => {
 														: ''
 												}`}</td>
 												<td>{data.phone_number || '--'}</td>
-												<td>
-													{moment(data.date_of_birth).format('DD-MMM-YYYY')}
-												</td>
 												<td>{data.hmo.name}</td>
 												<td>{formatCurrency(data.outstanding || 0)}</td>
 												<td className="row-actions">

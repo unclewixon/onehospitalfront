@@ -113,7 +113,7 @@ class AdmissionProfile extends Component {
 			<div className="layout-w">
 				<button
 					aria-label="Close"
-					className="close"
+					className="close custom-close"
 					type="button"
 					onClick={this.closeProfile}>
 					<span className="os-icon os-icon-close" />

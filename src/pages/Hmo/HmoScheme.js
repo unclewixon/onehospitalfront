@@ -99,7 +99,7 @@ const HmoScheme = () => {
 	const onDeleteHmo = async data => {
 		try {
 			dispatch(startBlock());
-			const url = `${hmoAPI}/${data.id}`;
+			const url = `${hmoAPI}/schemes/${data.id}`;
 			const rs = await request(url, 'DELETE', true);
 			setSchemes([...schemes.filter(s => s.id !== rs.id)]);
 			dispatch(stopBlock());

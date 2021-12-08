@@ -12,7 +12,6 @@ import {
 	TOGGLE_VIEW_PAYROLL_HISTORY,
 	TOGGLE_VIEW_CURRENT_PAYROLL,
 	TOGGLE_EDIT_PAYROLL,
-	TOGGLE_REGISTER_NEW_PATIENT,
 	TOGGLE_ADD_NEW_OBSERVATION,
 	TOGGLE_CREATE_LABOUR_MEASUREMENT,
 	TOGGLE_CREATE_RISK_ASSESSMENT,
@@ -121,14 +120,6 @@ export const toggleEditInventory = status => {
 export const toggleUpdateQuantity = status => {
 	return {
 		type: TOGGLE_UPDATE_QTY,
-		payload: status,
-	};
-};
-
-//frontdesk modals
-export const toggleRegisterNewPatient = status => {
-	return {
-		type: TOGGLE_REGISTER_NEW_PATIENT,
 		payload: status,
 	};
 };
@@ -275,7 +266,6 @@ export const closeModals = () => {
 		dispatch(toggleViewPayrollHistory(false));
 		dispatch(toggleCurrentPayroll(false));
 		dispatch(toggleEditPayroll(false));
-		dispatch(toggleRegisterNewPatient(false));
 		dispatch(toggleAddNewObservation(false));
 		dispatch(toggleCreateLabourMeasurement(false));
 		dispatch(toggleCreateRiskAssessment(false));
@@ -348,15 +338,6 @@ export const updateQuantity = action => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleUpdateQuantity(action));
-	};
-};
-
-// frontdesk modals
-export const registerNewPatient = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleRegisterNewPatient(action));
 	};
 };
 
