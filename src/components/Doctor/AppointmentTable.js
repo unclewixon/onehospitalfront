@@ -21,6 +21,7 @@ import ModalViewAppointment from '../Modals/ModalViewAppointment';
 import OpenEncounter from '../Patient/Modals/OpenEncounter';
 import NewAssessment from '../Antenatal/NewAssessment';
 import { startBlock, stopBlock } from '../../actions/redux-block';
+import { staffname } from '../../services/utilities';
 
 const AppointmentTable = ({
 	appointments,
@@ -134,8 +135,10 @@ const AppointmentTable = ({
 						<th>Date</th>
 						<th>Patient</th>
 						<th>Type</th>
+						<th>Department</th>
 						<th>Reason</th>
 						<th>Accepted</th>
+						<th>Whom To See</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
@@ -162,6 +165,7 @@ const AppointmentTable = ({
 									</p>
 								</td>
 								<td>{appointment.consultation_type || '--'}</td>
+								<td>{appointment.department?.name || '--'}</td>
 								<td>
 									<p className="item-title text-color m-0">
 										{trimText(appointment.description || '--', 150)}
@@ -282,6 +286,15 @@ const AppointmentTable = ({
 										)}
 									</>
 								)}
+								<td>
+									<p className="item-title text-color m-0">
+										{appointment.consultingRoom
+											? `${appointment.consultingRoom.name} (${staffname(
+													appointment.whomToSee
+											  ).replace('-', '')})`
+											: '--'}
+									</p>
+								</td>
 								<td className="row-actions">
 									<Tooltip title="View Appointment Details">
 										<a onClick={() => viewAppointment(appointment)}>

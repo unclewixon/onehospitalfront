@@ -41,24 +41,19 @@ const Appointments = () => {
 	const getAppointments = useCallback(
 		async page => {
 			try {
-				setLoading(true);
 				const staff = profile.details;
 				const p = page || 1;
-				const url = `front-desk/appointments?page=${p}&limit=${limit}&doctor_id=${
-					staff.id
-				}&canSeeDoctor=1&startDate=${state.startDate ||
-					''}&endDate=${state.endDate || ''}&department_id=${staff?.department
-					?.id || ''}&patient_id=${patientId}`;
+				const startDate = state.startDate || '';
+				const endDate = state.endDate || '';
+				const url = `front-desk/appointments?page=${p}&limit=${limit}&canSeeDoctor=1&startDate=${startDate}&endDate=${endDate}&patient_id=${patientId}&staff_id=${staff.id}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setAllAppointments(result);
-				setLoading(false);
 				setState({ ...state, filtering: false, meta });
 				dispatch(stopBlock());
 			} catch (error) {
 				console.log(error);
 				dispatch(stopBlock());
-				setLoading(false);
 				setState({ ...state, filtering: false });
 				notifyError(error.message || 'could not fetch transactions');
 			}
@@ -69,6 +64,7 @@ const Appointments = () => {
 	useEffect(() => {
 		if (loading) {
 			getAppointments();
+			setLoading(false);
 		}
 	}, [getAppointments, loading]);
 

@@ -2,7 +2,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import moment from 'moment';
 import { withRouter } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 
 import { socket } from '../../services/constants';
@@ -23,31 +23,28 @@ const Dashboard = () => {
 		totalPages: 0,
 	});
 
-	const profile = useSelector(state => state.user.profile);
+	// const profile = useSelector(state => state.user.profile);
 
 	const dispatch = useDispatch();
 
 	const getAppointments = useCallback(
 		async page => {
 			try {
-				setLoading(true);
-				const staff = profile.details;
+				// const staff = profile.details;
 				const today = moment().format('YYYY-MM-DD');
 				const p = page || 1;
-				const url = `front-desk/appointments?page=${p}&limit=${limit}&today=${today}&doctor_id=${staff.id}&canSeeDoctor=1&department_id=`;
+				const url = `front-desk/appointments?page=${p}&limit=${limit}&today=${today}&canSeeDoctor=1&is_queue=1&status=Approved`;
 				const res = await request(url, 'GET', true);
 				const { result, ...meta } = res;
 				setAppointments([...result]);
 				setMeta(meta);
-				setLoading(false);
 				dispatch(stopBlock());
 			} catch (e) {
-				setLoading(false);
 				dispatch(stopBlock());
 				notifyError(e.message || 'could not fetch appointments');
 			}
 		},
-		[dispatch, profile]
+		[dispatch]
 	);
 
 	const updateAppointment = useCallback(
@@ -86,6 +83,7 @@ const Dashboard = () => {
 	useEffect(() => {
 		if (loading) {
 			getAppointments();
+			setLoading(false);
 		}
 	}, [getAppointments, loading]);
 
