@@ -9,7 +9,7 @@
 		"scss:build": "node-sass -r --output-style compressed src/assets/scss/main.scss -o src/assets/css",
 		"build": "yarn clean && yarn scss:build && react-scripts build",
 		"test": "react-scripts test",
-		"clean": "sudo rm -rf build",
+		"clean": "rm -rf build",
 		"eject": "react-scripts eject"
 	},
 	"dependencies": {
