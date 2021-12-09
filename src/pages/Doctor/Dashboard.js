@@ -38,6 +38,7 @@ const Dashboard = () => {
 				const { result, ...meta } = res;
 				setAppointments([...result]);
 				setMeta(meta);
+				setLoading(false);
 				dispatch(stopBlock());
 			} catch (e) {
 				dispatch(stopBlock());
@@ -47,6 +48,12 @@ const Dashboard = () => {
 		[dispatch]
 	);
 
+	useEffect(() => {
+		if (loading) {
+			getAppointments();
+		}
+	}, [getAppointments, loading]);
+
 	const updateAppointment = useCallback(
 		e => {
 			const updatedAppointments = updateImmutable(appointments, e);
@@ -55,37 +62,35 @@ const Dashboard = () => {
 		[appointments]
 	);
 
+	const startListenning = useCallback(() => {
+		socket.on('consultation-queue', res => {
+			console.log('new appointment message');
+			if (res.success) {
+				console.log(res.queue);
+				const today = moment().format('YYYY-MM-DD');
+				console.log(today);
+				if (
+					moment(res.queue.appointment.appointment_date).format(
+						'YYYY-MM-DD'
+					) === today
+				) {
+					console.log(appointments);
+					console.log(res.queue.appointment);
+					const list = [res.queue.appointment, ...appointments];
+					setAppointments(list);
+					setMeta({ ...meta, totalPages: meta.totalPages + 1 });
+					console.log(list);
+				}
+			}
+		});
+	}, [appointments, meta]);
+
 	useEffect(() => {
 		if (!listenning) {
+			startListenning();
 			setListenning(true);
-
-			socket.on('consultation-queue', res => {
-				console.log('new appointment message');
-				if (res.success) {
-					console.log(res.queue);
-					const today = moment().format('YYYY-MM-DD');
-					console.log(today);
-					if (
-						moment(res.queue.appointment.appointment_date).format(
-							'YYYY-MM-DD'
-						) === today
-					) {
-						console.log(res.queue.appointment);
-						setAppointments([...appointments, res.queue.appointment]);
-						setMeta({ ...meta, totalPages: meta.totalPages + 1 });
-					}
-					console.log(appointments);
-				}
-			});
 		}
-	}, [appointments, listenning, meta]);
-
-	useEffect(() => {
-		if (loading) {
-			getAppointments();
-			setLoading(false);
-		}
-	}, [getAppointments, loading]);
+	}, [listenning, startListenning]);
 
 	const onNavigatePage = nextPage => {
 		dispatch(startBlock());

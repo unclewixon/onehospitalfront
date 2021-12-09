@@ -17,8 +17,10 @@ class PrescriptionRequests extends Component {
 		loading: false,
 		startDate: '',
 		endDate: '',
+		status: '',
 		prescriptions: [],
 		meta: null,
+		patient_id: '',
 	};
 
 	componentDidMount() {
@@ -28,9 +30,10 @@ class PrescriptionRequests extends Component {
 
 	loadPrescriptions = async (start, end, p) => {
 		try {
+			const { status, patient_id } = this.state;
 			const page = p || 1;
 			this.setState({ loading: true });
-			const url = `requests/list/drugs?startDate=${start}&endDate=${end}&limit=10&page=${page}`;
+			const url = `requests/prescriptions?startDate=${start}&endDate=${end}&limit=10&page=${page}&status=${status}&patient_id=${patient_id}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			this.setState({ loading: false, prescriptions: result, meta });
@@ -70,17 +73,32 @@ class PrescriptionRequests extends Component {
 			<>
 				<div className="element-box m-0 mb-4 p-3">
 					<form className="row">
-						<div className="form-group col-md-6">
+						<div className="form-group col-md-3">
+							<label className="mr-2 " htmlFor="id">
+								Search
+							</label>
+							<input
+								style={{ height: '32px' }}
+								id="search"
+								className="form-control"
+								type="number"
+								name="search"
+								onChange={e => this.setState({ patient_id: e.target.value })}
+								placeholder="search for patient: emr id"
+							/>
+						</div>
+						<div className="form-group col-md-3">
 							<label>From - To</label>
 							<RangePicker
 								onChange={e => {
-									const date = e.map(date => {
-										return moment(date._d).format('YYYY-MM-DD');
-									});
-									this.setState({
-										startDate: date[0],
-										endDate: date[1],
-									});
+									if (e.length > 0) {
+										const date = e.map(date => {
+											return moment(date._d).format('YYYY-MM-DD');
+										});
+										this.setState({ startDate: date[0], endDate: date[1] });
+									} else {
+										this.setState({ startDate: '', endDate: '' });
+									}
 								}}
 							/>
 						</div>
@@ -88,11 +106,14 @@ class PrescriptionRequests extends Component {
 							<label className="mr-2 " htmlFor="patient">
 								Request
 							</label>
-							<select className="form-control" style={{ ...customStyle }}>
+							<select
+								className="form-control"
+								onChange={e => this.setState({ status: e.target.value })}
+								style={{ ...customStyle }}>
 								<option value="">All</option>
-								<option value="open">Open</option>
-								<option value="filled">Filled</option>
-								<option value="completed">Completed</option>
+								<option value="Open">Open</option>
+								<option value="Filled">Filled</option>
+								<option value="Completed">Completed</option>
 							</select>
 						</div>
 						<div className="form-group col-md-3 mt-4">

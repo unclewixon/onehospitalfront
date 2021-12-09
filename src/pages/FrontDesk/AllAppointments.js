@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 import qs from 'querystring';
 import Tooltip from 'antd/lib/tooltip';
+import startCase from 'lodash.startcase';
 
 import { socket } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
@@ -303,7 +304,11 @@ class AllAppointments extends Component {
 												</td>
 												<td>{item.service?.item?.name || '--'}</td>
 												<td>{item.department?.name || '--'}</td>
-												<td>{item.consultation_type || '--'}</td>
+												<td>
+													{item.consultation_type
+														? startCase(item.consultation_type)
+														: '--'}
+												</td>
 												<td>
 													{!item.encounter &&
 													(item.status === 'Cancelled' ||

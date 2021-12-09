@@ -351,9 +351,7 @@ const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 							defaultValue
 							getOptionValue={option => option.id}
 							getOptionLabel={option => option.name}
-							onChange={e => {
-								setGeneric(e);
-							}}
+							onChange={e => setGeneric(e)}
 							value={generic}
 							isSearchable={true}
 							options={genericDrugs}

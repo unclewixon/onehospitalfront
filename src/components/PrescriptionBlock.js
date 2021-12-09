@@ -25,9 +25,9 @@ const PrescriptionBlock = ({
 	const dispatch = useDispatch();
 
 	const closeModal = () => {
+		setShowModal(false);
 		document.body.classList.remove('modal-open');
 		setPrescription(null);
-		setShowModal(false);
 	};
 
 	const showProfile = patient => {
@@ -61,19 +61,19 @@ const PrescriptionBlock = ({
 						{!patient && <th>Patient</th>}
 						{!patient && <th>Insurance</th>}
 						<th>Requested By</th>
+						<th>Filled By</th>
 						<th className="text-center">Request Status</th>
 						<th />
 					</tr>
 				</thead>
 				<tbody>
 					{prescriptions.map((request, i) => {
-						console.log(request);
 						return (
 							<tr key={i}>
 								<td nowrap="nowrap">
-									{moment(request.createdAt).format('DD-MMM-YYYY : h:mmA')}
+									{moment(request.created_at).format('DD-MMM-YYYY : h:mmA')}
 								</td>
-								<td>{request.code || ''}</td>
+								<td>{request.group_code || ''}</td>
 								{!patient && (
 									<td>
 										<p className="item-title text-color m-0">
@@ -94,26 +94,24 @@ const PrescriptionBlock = ({
 									</td>
 								)}
 								{!patient && <td>{request.patient.hmo.name}</td>}
-								<td>{request.created_by ? request.created_by : ''}</td>
+								<td>{request.created_by || '--'}</td>
+								<td>{request.filled_by || '--'}</td>
 								<td className="text-center">
-									{request.status === 0 && request.item.filled === 0 && (
+									{request.status === 0 && request.filled === 0 && (
 										<span className="badge badge-warning">Pending</span>
 									)}
-									{request.item.transaction &&
-										request.item.transaction.status === 0 &&
+									{request.transaction_status === 0 &&
 										request.status === 0 &&
-										request.item.filled === 1 && (
+										request.filled === 1 && (
 											<span className="badge badge-info text-white">
 												Awaiting Payment
 											</span>
 										)}
-									{request.item.transaction &&
-										request.item.transaction.status === 1 &&
-										request.status === 0 && (
-											<span className="badge badge-secondary">
-												Awaiting Dispense
-											</span>
-										)}
+									{request.transaction_status === 1 && request.status === 0 && (
+										<span className="badge badge-secondary">
+											Awaiting Dispense
+										</span>
+									)}
 									{request.status === 1 && (
 										<span className="badge badge-success">Completed</span>
 									)}
@@ -130,7 +128,7 @@ const PrescriptionBlock = ({
 											<i className="os-icon os-icon-eye" />
 										</a>
 									</Tooltip>
-									{request.status === 1 && (
+									{request.filled === 1 && (
 										<Tooltip title="Print Prescription">
 											<a className="ml-2" onClick={() => doPrint(request)}>
 												<i className="icon-feather-printer" />
@@ -145,7 +143,6 @@ const PrescriptionBlock = ({
 			</table>
 			{showModal && (
 				<ViewPrescription
-					prescriptions={prescriptions}
 					prescription={prescription}
 					closeModal={closeModal}
 					updatePrescriptions={updatePrescriptions}

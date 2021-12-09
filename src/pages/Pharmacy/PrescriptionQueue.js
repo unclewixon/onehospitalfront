@@ -22,7 +22,7 @@ class PrescriptionQueue extends Component {
 			const page = p || 1;
 			this.setState({ loading: true });
 			const date = moment().format('YYYY-MM-DD');
-			const url = `requests/list/drugs?page=${page}&limit=10&today=${date}`;
+			const url = `requests/prescriptions?page=${page}&limit=10&today=${date}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			this.setState({ loading: false, prescriptions: result, meta });

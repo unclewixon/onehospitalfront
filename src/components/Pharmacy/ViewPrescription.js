@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
-import moment from 'moment';
 import Popover from 'antd/lib/popover';
 import Tooltip from 'antd/lib/tooltip';
 import { useSelector } from 'react-redux';
@@ -12,13 +11,14 @@ import {
 	updateImmutable,
 	formatCurrency,
 	hasExpired,
+	formatDate,
 } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import ViewRequestNote from '../Modals/ViewRequestNote';
+import SwitchPrescription from '../Modals/SwitchPrescription';
 
 const ViewPrescription = ({
-	prescriptions,
 	prescription,
 	updatePrescriptions,
 	closeModal,
@@ -30,16 +30,18 @@ const ViewPrescription = ({
 	const [regimens, setRegimens] = useState([]);
 	const [submitting, setSubmitting] = useState(false);
 	const [noteVisible, setNoteVisible] = useState(null);
+	const [prescriptionItemId, setPrescriptionItemId] = useState(null);
+	const [showModal, setShowModal] = useState(false);
 
 	const staff = useSelector(state => state.user.profile);
 
 	useEffect(() => {
 		if (!loaded) {
-			const items = prescriptions.filter(p => p.code === prescription.code);
+			const items = prescription.requests;
 			setRegimens(items);
 
 			const total = items.reduce((total, regItem) => {
-				const amount = regItem.item.drugBatch?.unitPrice || 0;
+				const amount = regItem.item?.drugBatch?.unitPrice || 0;
 
 				return (total += parseFloat(amount) * regItem.item.fillQuantity);
 			}, 0.0);
@@ -48,7 +50,7 @@ const ViewPrescription = ({
 
 			setLoaded(true);
 		}
-	}, [loaded, prescription, prescriptions]);
+	}, [loaded, prescription]);
 
 	const onChange = (e, id) => {
 		const quantity = e.target.value;
@@ -120,15 +122,21 @@ const ViewPrescription = ({
 				items: regimens,
 				patient_id: prescription.patient.id,
 				total_amount: sumTotal,
-				code: prescription.code,
+				code: prescription.group_code,
 			});
 
 			setSubmitting(false);
 			if (rs.success) {
-				for (const item of rs.data) {
-					const regimen = prescriptions.find(p => p.item.id === item.id);
-					updatePrescriptions({ ...regimen, item });
-				}
+				updatePrescriptions({
+					...prescription,
+					requests: [
+						...rs.data.map(i => {
+							const regimen = regimens.find(r => r.item.id === i.id);
+							return { ...regimen, item: { ...regimen.item, ...i } };
+						}),
+					],
+					filled: 1,
+				});
 				notifySuccess('pharmacy prescription filled');
 				closeModal();
 			} else {
@@ -144,13 +152,21 @@ const ViewPrescription = ({
 		try {
 			setSubmitting(true);
 			const url = `requests/${prescription.id}/approve-result?type=drugs`;
-			const rs = await request(url, 'PATCH', true, { code: prescription.code });
+			const rs = await request(url, 'PATCH', true, {
+				code: prescription.group_code,
+			});
 			setSubmitting(false);
 			if (rs.success) {
-				for (const item of rs.data) {
-					const regimen = prescriptions.find(p => p.item.id === item.id);
-					updatePrescriptions({ ...regimen, status: 1, item });
-				}
+				updatePrescriptions({
+					...prescription,
+					requests: [
+						...rs.data.map(i => {
+							const regimen = regimens.find(r => r.item.id === i.id);
+							return { ...regimen, item: { ...regimen.item, ...i } };
+						}),
+					],
+					status: 1,
+				});
 				notifySuccess('pharmacy prescription dispensed');
 				closeModal();
 			} else {
@@ -215,6 +231,37 @@ const ViewPrescription = ({
 		setRegimens(updatedDrugs);
 	};
 
+	const updateSwichedRegimen = item => {
+		const req = regimens.find(r => r.item.id === item.id);
+		const index = regimens.findIndex(r => r.item.id === item.id);
+
+		const newRegimens = [
+			...regimens.slice(0, index),
+			{ ...req, item },
+			...regimens.slice(index + 1),
+		];
+		setRegimens(newRegimens);
+		const total = newRegimens.reduce((total, regItem) => {
+			const amount = regItem.item?.drugBatch?.unitPrice || 0;
+
+			return (total += parseFloat(amount) * regItem.item.fillQuantity);
+		}, 0.0);
+
+		setSumTotal(total);
+
+		updatePrescriptions({ ...prescription, requests: newRegimens });
+	};
+
+	const switchPrescription = regimenId => {
+		setPrescriptionItemId(regimenId);
+		setShowModal(true);
+	};
+
+	const closeModalSwitch = () => {
+		setShowModal(false);
+		setPrescriptionItemId(null);
+	};
+
 	return (
 		<div
 			className="onboarding-modal modal fade animated show"
@@ -233,13 +280,18 @@ const ViewPrescription = ({
 					</button>
 					<div className="onboarding-content with-gradient">
 						<h4 className="onboarding-title">Prescription Details</h4>
-						<div className="onboarding-text alert-custom">
-							{`Prescription Requested By ${
-								prescription?.created_by
-							} on ${moment(prescription?.createdAt).format(
+						<div className="onboarding-text alert-custom mb-2">
+							{`Prescription Requested By ${prescription.created_by ||
+								'--'} on ${formatDate(
+								prescription.created_at,
 								'DD MMM, YYYY HH:mm A'
 							)}`}
 						</div>
+						{prescription.requestNote && prescription.requestNote !== '' && (
+							<div className="onboarding-text alert-custom">
+								{`Prescription Note: ${prescription.requestNote}`}
+							</div>
+						)}
 						<div className="element-box p-3 m-0">
 							<div className="row">
 								<div className="col-sm-12">
@@ -425,31 +477,42 @@ const ViewPrescription = ({
 																'--'
 															)}
 														</td>
-														{regimen.item.filled === 0 && (
-															<td className="row-actions text-center">
-																<Tooltip title="Cancel Prescription">
-																	<a
-																		className="danger"
-																		onClick={() => deleteItem(regimen.id)}>
-																		<i className="os-icon os-icon-ui-15" />
-																	</a>
-																</Tooltip>
-															</td>
-														)}
+														<td className="row-actions">
+															{regimen.item.filled === 0 && (
+																<>
+																	<Tooltip title="Switch Prescription">
+																		<a
+																			className="info"
+																			onClick={() =>
+																				switchPrescription(regimen.id)
+																			}>
+																			<i className="os-icon os-icon-grid-18" />
+																		</a>
+																	</Tooltip>
+																	<Tooltip title="Cancel Prescription">
+																		<a
+																			className="danger"
+																			onClick={() => deleteItem(regimen.id)}>
+																			<i className="os-icon os-icon-ui-15" />
+																		</a>
+																	</Tooltip>
+																</>
+															)}
+														</td>
 													</tr>
 												);
 											})}
 											<tr>
 												<td colSpan="4">&nbsp;</td>
 												<td>{formatCurrency(sumTotal)}</td>
-												<td colSpan="2">&nbsp;</td>
+												<td colSpan="3">&nbsp;</td>
 											</tr>
 										</tbody>
 									</table>
 								</div>
 								{prescription && (
 									<div className="col-md-12 mt-4">
-										{prescription.item.filled === 0 && (
+										{prescription.filled === 0 && (
 											<>
 												<button
 													onClick={() => doFill()}
@@ -463,9 +526,8 @@ const ViewPrescription = ({
 												</button>
 											</>
 										)}
-										{prescription.item.filled === 1 &&
-											prescription.item.transaction &&
-											prescription.item.transaction.status === 1 &&
+										{prescription.filled === 1 &&
+											prescription.transaction_status === 1 &&
 											prescription.status === 0 && (
 												<button
 													onClick={() => dispense()}
@@ -491,6 +553,14 @@ const ViewPrescription = ({
 					</div>
 				</div>
 			</div>
+			{showModal && (
+				<SwitchPrescription
+					itemId={prescriptionItemId}
+					prescriptionId={prescription.id}
+					update={updateSwichedRegimen}
+					closeModal={() => closeModalSwitch()}
+				/>
+			)}
 		</div>
 	);
 };

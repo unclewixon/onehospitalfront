@@ -3,7 +3,6 @@ import DatePicker from 'antd/lib/date-picker';
 import { withRouter } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
-import moment from 'moment';
 
 import waiting from '../../assets/images/waiting.gif';
 import {
@@ -13,7 +12,6 @@ import {
 	updateImmutable,
 } from '../../services/utilities';
 import AppointmentTable from '../../components/Doctor/AppointmentTable';
-import { socket } from '../../services/constants';
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
@@ -30,7 +28,6 @@ const Appointments = () => {
 		meta: null,
 	});
 	const [loading, setLoading] = useState(true);
-	const [listenning, setListenning] = useState(false);
 	const [allAppointments, setAllAppointments] = useState([]);
 	const [patientId, setPatientId] = useState('');
 
@@ -75,34 +72,6 @@ const Appointments = () => {
 		},
 		[allAppointments]
 	);
-
-	useEffect(() => {
-		if (!listenning) {
-			setListenning(true);
-
-			socket.on('consultation-queue', res => {
-				console.log('new appointment message');
-				if (res.success) {
-					console.log(res.queue);
-					const today = moment().format('YYYY-MM-DD');
-					console.log(today);
-					if (
-						moment(res.queue.appointment.appointment_date).format(
-							'YYYY-MM-DD'
-						) === today
-					) {
-						console.log(res.queue.appointment);
-						setAllAppointments([...allAppointments, res.queue.appointment]);
-						const meta = {
-							...state.meta,
-							totalPages: (state.meta?.totalPages || 0) + 1,
-						};
-						setState({ ...state, meta });
-					}
-				}
-			});
-		}
-	}, [allAppointments, listenning, state]);
 
 	const doFilter = e => {
 		e.preventDefault();

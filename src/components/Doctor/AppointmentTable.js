@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import startCase from 'lodash.startcase';
 
 import {
 	confirmAction,
@@ -164,7 +165,11 @@ const AppointmentTable = ({
 										</Tooltip>
 									</p>
 								</td>
-								<td>{appointment.consultation_type || '--'}</td>
+								<td>
+									{appointment.consultation_type
+										? startCase(appointment.consultation_type)
+										: '--'}
+								</td>
 								<td>{appointment.department?.name || '--'}</td>
 								<td>
 									<p className="item-title text-color m-0">
@@ -307,7 +312,7 @@ const AppointmentTable = ({
 					})}
 					{appointments.length === 0 && (
 						<tr className="text-center">
-							<td colSpan="6">No Appointments</td>
+							<td colSpan="8">No Appointments</td>
 						</tr>
 					)}
 				</tbody>
