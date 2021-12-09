@@ -300,7 +300,9 @@ class RadiologyBlock extends Component {
 										</td>
 									)}
 									<td>
-										<a className="item-title text-color">{scan.created_by}</a>
+										<a className="item-title text-color">
+											{scan.created_by || scan.createdBy || ''}
+										</a>
 									</td>
 									<td>
 										{scan.requestNote ? (

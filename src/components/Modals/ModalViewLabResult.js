@@ -59,7 +59,9 @@ const ModalViewLabResult = ({ closeModal, lab, labs, updateLab, role }) => {
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
 			style={{ display: 'block' }}>
-			<div className="modal-dialog modal-md modal-centered">
+			<div
+				className="modal-dialog modal-centered"
+				style={{ maxWidth: '700px' }}>
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
@@ -88,12 +90,13 @@ const ModalViewLabResult = ({ closeModal, lab, labs, updateLab, role }) => {
 											lab result pending approval
 										</div>
 									)}
-									<table className="table table-bordered table-sm table-v2 table-striped">
+									<table className="table table-bordered table-sm table-striped">
 										{item.labTest.hasParameters && (
 											<thead>
 												<tr>
 													<th>Parameter</th>
 													<th>Value</th>
+													<th>Reference</th>
 													<th>Inference</th>
 												</tr>
 											</thead>
@@ -105,7 +108,8 @@ const ModalViewLabResult = ({ closeModal, lab, labs, updateLab, role }) => {
 														<tr key={i}>
 															<td>{param.name}</td>
 															<td>{param.value}</td>
-															<td>{param.inference}</td>
+															<td>{param.reference}</td>
+															<td>{param.inference || 'None'}</td>
 														</tr>
 													);
 												})
@@ -118,7 +122,7 @@ const ModalViewLabResult = ({ closeModal, lab, labs, updateLab, role }) => {
 											{item.note && (
 												<tr>
 													<th>Note</th>
-													<td colSpan={item.labTest.hasParameters ? 1 : 2}>
+													<td colSpan={item.labTest.hasParameters ? 3 : 1}>
 														{item.note}
 													</td>
 												</tr>

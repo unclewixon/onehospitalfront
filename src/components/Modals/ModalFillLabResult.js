@@ -99,7 +99,9 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
 			style={{ display: 'block' }}>
-			<div className="modal-dialog modal-md modal-centered">
+			<div
+				className="modal-dialog modal-centered"
+				style={{ maxWidth: '700px' }}>
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
@@ -143,7 +145,7 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 																	/>
 																</div>
 															</td>
-															<td>
+															<td className="w-25">
 																<div className="form-group mb-0">
 																	<label>Reference</label>
 																	<input
@@ -155,7 +157,7 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 																	/>
 																</div>
 															</td>
-															<td className="w-50">
+															<td className="w-25">
 																<div className="form-group mb-0">
 																	<label>Inference</label>
 																	<Select

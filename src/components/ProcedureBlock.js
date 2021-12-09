@@ -203,7 +203,9 @@ class ProcedureBlock extends Component {
 										</td>
 									)}
 									<td>
-										<a className="item-title text-color">{data.created_by}</a>
+										<a className="item-title text-color">
+											{data.created_by || data.createdBy || '--'}
+										</a>
 									</td>
 									<td>
 										{data.requestNote ? (

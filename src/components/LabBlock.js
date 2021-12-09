@@ -220,7 +220,9 @@ class LabBlock extends Component {
 										</td>
 									)}
 									<td>
-										<a className="item-title text-color">{lab.created_by}</a>
+										<a className="item-title text-color">
+											{lab.createdBy || lab.created_by || '--'}
+										</a>
 									</td>
 									<td>
 										{lab.requestNote ? (
