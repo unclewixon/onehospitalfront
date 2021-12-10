@@ -13,7 +13,7 @@ import HashRoute from '../components/HashRoute';
 
 const Notes = lazy(() => import('../components/Procedures/Notes'));
 const Attachments = lazy(() => import('../components/Procedures/Attachments'));
-const Consumables = lazy(() => import('../components/Procedures/Consumables'));
+const Consumables = lazy(() => import('../components/Patient/Consumables'));
 const Pharmacy = lazy(() => import('../components/Patient/Pharmacy'));
 const PharmacyRequest = lazy(() =>
 	import('../components/Patient/PharmacyRequest')
@@ -22,6 +22,9 @@ const MedicalReport = lazy(() =>
 	import('../components/Procedures/MedicalReport')
 );
 const Vitals = lazy(() => import('../components/Patient/Vitals'));
+const NursingService = lazy(() =>
+	import('../components/Patient/NursingService')
+);
 
 const storage = new SSRStorage();
 
@@ -30,11 +33,11 @@ const Page = ({ location }) => {
 	const hash = location.hash.substr(1).split('#');
 	switch (hash[0]) {
 		case 'attachments':
-			return <Attachments can_request={procedure && procedure.status === 0} />;
+			return <Attachments can_request={procedure && !procedure.finishedDate} />;
 		case 'consumables':
 			return (
 				<Consumables
-					can_request={procedure && procedure.status === 0}
+					can_request={procedure && !procedure.finishedDate}
 					itemId={procedure.id || ''}
 					type="procedure"
 				/>
@@ -51,11 +54,19 @@ const Page = ({ location }) => {
 			);
 		case 'pharmacy-request':
 			return <PharmacyRequest module="procedure" itemId={procedure.id || ''} />;
+		case 'nursing-service':
+			return (
+				<NursingService
+					module="procedure"
+					can_request={procedure && !procedure.finishedDate}
+					itemId={procedure.id || ''}
+				/>
+			);
 		case 'vitals':
 			return <Vitals type={hash[1].split('%20').join(' ')} />;
 		case 'notes':
 		default:
-			return <Notes can_request={procedure && procedure.status === 0} />;
+			return <Notes can_request={procedure && !procedure.finishedDate} />;
 	}
 };
 

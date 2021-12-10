@@ -3,11 +3,13 @@ import { Field, reduxForm, formValueSelector } from 'redux-form';
 import { connect } from 'react-redux';
 
 import { renderSelect } from '../../services/utilities';
-import { validateAntenatal } from '../../services/validationSchemas';
 import { obstericHistory } from '../../services/constants';
 import { ObstericHistory } from './ObstericHistory';
 
-const validate = validateAntenatal;
+const validate = values => {
+	const errors = {};
+	return errors;
+};
 
 const selector = formValueSelector('antenatal');
 

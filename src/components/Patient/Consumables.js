@@ -7,11 +7,11 @@ import TableLoading from '../TableLoading';
 import { request, itemRender, formatDate } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
-import RequestService from '../Modals/RequestService';
+import RequestConsumable from '../Modals/RequestConsumable';
 
-const NursingService = ({ itemId, module, can_request }) => {
+const Consumables = ({ itemId, type, can_request }) => {
 	const [loading, setLoading] = useState(true);
-	const [services, setServices] = useState([]);
+	const [consumables, setConsumables] = useState([]);
 	const [meta, setMeta] = useState({
 		currentPage: 1,
 		itemsPerPage: 10,
@@ -28,19 +28,19 @@ const NursingService = ({ itemId, module, can_request }) => {
 			try {
 				dispatch(startBlock());
 				const p = page || 1;
-				const url = `requests/${patient.id}/request/nursing-service?page=${p}&limit=10&item_id=${itemId}&type=${module}`;
+				const url = `patient/consumables/${patient.id}?page=${p}&limit=10&item_id=${itemId}&type=${type}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
-				setServices(result);
+				setConsumables(result);
 				setMeta(meta);
 				dispatch(stopBlock());
 			} catch (error) {
 				console.log(error);
 				dispatch(stopBlock());
-				notifyError('error fetching nursing service');
+				notifyError('error fetching consumables');
 			}
 		},
-		[dispatch, itemId, module, patient]
+		[dispatch, itemId, patient, type]
 	);
 
 	useEffect(() => {
@@ -76,11 +76,11 @@ const NursingService = ({ itemId, module, can_request }) => {
 						<a
 							className="btn btn-sm btn-secondary text-white"
 							onClick={() => newRequest()}>
-							Add a Nursing Service
+							Add Consumable
 						</a>
 					)}
 				</div>
-				<h6 className="element-header">Nursing Service</h6>
+				<h6 className="element-header">Consumables</h6>
 				<div className="element-box p-3 m-0">
 					{loading ? (
 						<TableLoading />
@@ -90,19 +90,21 @@ const NursingService = ({ itemId, module, can_request }) => {
 								<thead>
 									<tr>
 										<th>Date</th>
-										<th>Task</th>
-										<th nowrap="nowrap">By</th>
+										<th>Name</th>
+										<th>Added By</th>
+										<th></th>
 									</tr>
 								</thead>
 								<tbody>
-									{services.map((item, i) => {
+									{consumables.map((item, i) => {
 										return (
 											<tr key={i}>
 												<td nowrap="nowrap">
 													{formatDate(item.createdAt, 'D-MMM-YYYY h:mm A')}
 												</td>
-												<td>{item.item.service.item.name}</td>
+												<td>{item.comsumable?.name || '--'}</td>
 												<td nowrap="nowrap">{item.createdBy}</td>
+												<td></td>
 											</tr>
 										);
 									})}
@@ -125,10 +127,10 @@ const NursingService = ({ itemId, module, can_request }) => {
 				</div>
 			</div>
 			{showModal && (
-				<RequestService
+				<RequestConsumable
 					closeModal={closeModal}
 					refresh={refresh}
-					module={module}
+					module={type}
 					itemId={itemId}
 				/>
 			)}
@@ -136,4 +138,4 @@ const NursingService = ({ itemId, module, can_request }) => {
 	);
 };
 
-export default NursingService;
+export default Consumables;

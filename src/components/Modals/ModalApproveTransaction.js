@@ -32,23 +32,13 @@ class ModalApproveTransaction extends Component {
 		activeData: null,
 		voucherId: null,
 		isPart: false,
-		payCredit: false,
 		vouchers: [],
 		amount: null,
 	};
 
-	async componentDidMount() {
-		try {
-			const { transaction } = this.props;
-			const uri = `patient/${transaction.patient.id}/outstandings`;
-			const res = await request(uri, 'GET', true);
-			this.setState({ amount: res });
-		} catch (e) {}
-	}
-
 	approveTransaction = async data => {
 		try {
-			const { voucherId, isPart, payCredit } = this.state;
+			const { voucherId, isPart } = this.state;
 			const { transaction, pendingTransactions } = this.props;
 
 			const id = transaction.id;
@@ -59,7 +49,6 @@ class ModalApproveTransaction extends Component {
 				voucher_id: voucherId,
 				patient_id: transaction.patient.id,
 				is_part_payment: isPart ? 1 : 0,
-				pay_with_credit: payCredit ? 1 : 0,
 			};
 
 			this.setState({ submitting: true });
@@ -133,14 +122,8 @@ class ModalApproveTransaction extends Component {
 	};
 
 	render() {
-		const {
-			error,
-			handleSubmit,
-			paymentMethods,
-			closeModal,
-			amount_available,
-		} = this.props;
-		const { submitting, hidden, isPart, payCredit, amount } = this.state;
+		const { error, handleSubmit, paymentMethods, closeModal } = this.props;
+		const { submitting, hidden, isPart } = this.state;
 		return (
 			<div
 				className="onboarding-modal modal fade animated show"
@@ -236,37 +219,6 @@ class ModalApproveTransaction extends Component {
 												Part Payment
 											</label>
 										</div>
-										{/* <div className="form-check col-sm-4">
-											<label className="form-check-label">
-												<input
-													className="form-check-input mt-0"
-													name="pay_with_credit"
-													type="checkbox"
-													checked={payCredit}
-													onChange={e => {
-														this.setState({ payCredit: e.target.checked });
-														if (e.target.checked) {
-															this.props.dispatch(
-																this.props.change(
-																	'amount_paid',
-																	amount.balance < 0
-																		? Math.abs(amount.balance)
-																		: 0
-																)
-															);
-														} else {
-															this.props.dispatch(
-																this.props.change(
-																	'amount_paid',
-																	amount_available
-																)
-															);
-														}
-													}}
-												/>
-												Pay with Credit
-											</label>
-										</div> */}
 									</div>
 
 									<div className="form-buttons-w text-right">

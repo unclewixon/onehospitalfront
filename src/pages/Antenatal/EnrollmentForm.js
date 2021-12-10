@@ -64,6 +64,11 @@ class EnrollmentForm extends Component {
 		if (this.state.page === 5) {
 			const { patient, doctors, lmp, dob } = this.state;
 
+			if (!patient) {
+				notifyError('please select antenatal patient');
+				return;
+			}
+
 			const newAntenatal = {
 				patient_id: patient.id,
 				bookingPeriod: data.bookingPeriod,

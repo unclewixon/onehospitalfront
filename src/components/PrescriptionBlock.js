@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
-import moment from 'moment';
 import Tooltip from 'antd/lib/tooltip';
 import { useDispatch } from 'react-redux';
 
@@ -10,7 +9,7 @@ import { patientname } from '../services/utilities';
 import ViewPrescription from './Pharmacy/ViewPrescription';
 import { toggleProfile } from '../actions/user';
 import { startBlock, stopBlock } from '../actions/redux-block';
-import { request } from '../services/utilities';
+import { request, formatDate } from '../services/utilities';
 import { notifyError } from '../services/notify';
 
 const PrescriptionBlock = ({
@@ -71,7 +70,7 @@ const PrescriptionBlock = ({
 						return (
 							<tr key={i}>
 								<td nowrap="nowrap">
-									{moment(request.created_at).format('DD-MMM-YYYY : h:mmA')}
+									{formatDate(request.created_at, 'DD-MMM-YYYY h:mmA')}
 								</td>
 								<td>{request.group_code || ''}</td>
 								{!patient && (

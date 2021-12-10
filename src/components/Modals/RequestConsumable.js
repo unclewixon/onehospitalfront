@@ -1,19 +1,22 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { reduxForm, SubmissionError } from 'redux-form';
+import { reduxForm, SubmissionError, Field } from 'redux-form';
 import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { request } from '../../services/utilities';
+import { request, renderTextInput } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { notifyError, notifySuccess } from '../../services/notify';
 
 const validate = values => {
 	const errors = {};
+	if (!values.quantity) {
+		errors.quantity = 'enter quantity';
+	}
 	return errors;
 };
 
-const RequestService = ({
+const RequestConsumable = ({
 	closeModal,
 	refresh,
 	error,
@@ -23,55 +26,54 @@ const RequestService = ({
 }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
-	const [services, setServices] = useState([]);
+	const [items, setItems] = useState([]);
 	const [option, setOption] = useState(null);
+	const [requestNote, setRequestNote] = useState('');
 
 	const dispatch = useDispatch();
 
 	const patient = useSelector(state => state.user.patient);
 
-	const fetchServices = useCallback(async () => {
+	const fetchConsumables = useCallback(async () => {
 		try {
 			dispatch(startBlock());
-			const url = `services/nursing-service?hmo_id=${patient.hmo.id}`;
-			const rs = await request(url, 'GET', true);
-			setServices(rs);
+			const rs = await request('inventory/stores?limit=100', 'GET', true);
+			setItems(rs.result);
 			dispatch(stopBlock());
 		} catch (error) {
 			console.log(error);
-			notifyError('Error fetching services');
+			notifyError('Error fetching consumables');
 			dispatch(stopBlock());
 		}
-	}, [dispatch, patient]);
+	}, [dispatch]);
 
 	useEffect(() => {
 		if (!loaded) {
-			fetchServices();
+			fetchConsumables();
 			setLoaded(true);
 		}
-	}, [fetchServices, loaded]);
+	}, [fetchConsumables, loaded]);
 
-	const save = async () => {
+	const save = async data => {
 		try {
 			if (!option) {
-				notifyError('Please select a service');
+				notifyError('Please select an item from inventory');
 				return;
 			}
 
+			dispatch(startBlock());
 			setSubmitting(true);
 			const info = {
-				requestType: 'nursing-service',
+				...data,
+				consumable_id: option.id,
 				patient_id: patient.id,
-				tests: [{ ...option }],
-				request_note: '',
-				urgent: false,
-				diagnosis: [],
-				bill: -1,
-				admission_id: module === 'admission' ? itemId : '',
-				procedure_id: module === 'procedure' ? itemId : '',
+				module,
+				item_id: itemId,
+				request_note: requestNote,
 			};
-			const rs = await request('requests/nursing-service', 'POST', true, info);
+			const rs = await request('patient/consumables', 'POST', true, info);
 			setSubmitting(false);
+			dispatch(stopBlock());
 			if (rs.success) {
 				refresh();
 				notifySuccess('service request completed!');
@@ -80,6 +82,7 @@ const RequestService = ({
 				notifyError('could not request service!');
 			}
 		} catch (error) {
+			dispatch(stopBlock());
 			console.log(error);
 			setSubmitting(false);
 			throw new SubmissionError({
@@ -105,7 +108,7 @@ const RequestService = ({
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
-						<h4 className="onboarding-title">Request New Service</h4>
+						<h4 className="onboarding-title">Request Consumable</h4>
 
 						<div className="form-block">
 							<form onSubmit={handleSubmit(save)}>
@@ -119,16 +122,39 @@ const RequestService = ({
 								)}
 								<div className="row">
 									<div className="col-sm-12">
-										<label>Nursing Service</label>
+										<label>Item</label>
 										<Select
 											getOptionValue={option => option.id}
 											getOptionLabel={option => option.name}
-											options={services}
-											name="service"
+											options={items}
+											name="item"
 											value={option}
 											onChange={e => setOption(e)}
-											placeholder="Select service"
+											placeholder="Select item"
 										/>
+									</div>
+								</div>
+								<div className="row mt-2">
+									<div className="col-sm-12">
+										<Field
+											id="quantity"
+											name="quantity"
+											component={renderTextInput}
+											label="Quantity"
+											type="text"
+										/>
+									</div>
+								</div>
+								<div className="row">
+									<div className="form-group col-sm-12">
+										<label>Request Note</label>
+										<textarea
+											className="form-control"
+											name="request_note"
+											rows="3"
+											placeholder="Enter request note"
+											onChange={e => setRequestNote(e.target.value)}
+											value={requestNote}></textarea>
 									</div>
 								</div>
 								<div className="row mt-4">
@@ -154,4 +180,6 @@ const RequestService = ({
 	);
 };
 
-export default reduxForm({ form: 'request-service', validate })(RequestService);
+export default reduxForm({ form: 'request-service', validate })(
+	RequestConsumable
+);

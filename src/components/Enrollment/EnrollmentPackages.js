@@ -4,11 +4,13 @@ import { connect } from 'react-redux';
 
 import { renderSelect, request } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
-import { validateAntenatal } from '../../services/validationSchemas';
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
-const validate = validateAntenatal;
+const validate = values => {
+	const errors = {};
+	return errors;
+};
 
 class EnrollmentPackages extends Component {
 	state = {

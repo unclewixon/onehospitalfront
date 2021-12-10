@@ -29,7 +29,7 @@ const PharmacyRequest = lazy(() =>
 const NursingService = lazy(() =>
 	import('../components/Patient/NursingService')
 );
-const Consumables = lazy(() => import('../components/Procedures/Consumables'));
+const Consumables = lazy(() => import('../components/Patient/Consumables'));
 
 const storage = new SSRStorage();
 
@@ -73,7 +73,11 @@ const Page = ({ location }) => {
 			return <PharmacyRequest module="admission" itemId={admission.id || ''} />;
 		case 'nursing-service':
 			return (
-				<NursingService can_request={admission && admission.status === 0} />
+				<NursingService
+					module="admission"
+					can_request={admission && admission.status === 0}
+					itemId={admission.id || ''}
+				/>
 			);
 		case 'consumables':
 			return (

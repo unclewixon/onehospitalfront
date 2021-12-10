@@ -2,50 +2,12 @@ import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
 
 import { renderTextInput, renderSelect } from '../../services/utilities';
-import { validateAntenatal } from '../../services/validationSchemas';
+import { bloodGroup } from '../../services/constants';
 
-// const fetal = [
-// 	{
-// 		value: 'daily',
-// 		label: 'daily',
-// 	},
-// 	{ value: 'weekend', label: 'weekend' },
-// 	{ value: 'monthly', label: 'monthly' },
-// ];
-// const fetal2 = ['daily', 'weekend', 'monthly'];
-
-const bloodGroup = [
-	{
-		id: 'A+',
-		name: 'A+',
-	},
-	{
-		id: 'A-',
-		name: 'A-',
-	},
-	{
-		id: 'B+',
-		name: 'B+',
-	},
-	{
-		id: 'B-',
-		name: 'B-',
-	},
-	{
-		id: 'AB+',
-		name: 'AB+',
-	},
-	{
-		id: 'O+',
-		name: 'O+',
-	},
-	{
-		id: 'O-',
-		name: 'O-',
-	},
-];
-
-const validate = validateAntenatal;
+const validate = values => {
+	const errors = {};
+	return errors;
+};
 
 class FathersInfo extends Component {
 	render() {

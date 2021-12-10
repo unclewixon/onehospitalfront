@@ -136,6 +136,7 @@ const ViewPrescription = ({
 						}),
 					],
 					filled: 1,
+					filled_by: rs?.data[0]?.item?.filledBy || '--',
 				});
 				notifySuccess('pharmacy prescription filled');
 				closeModal();

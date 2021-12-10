@@ -50,6 +50,7 @@ const PatientBills = () => {
 	const [depositVisible, setDepositVisible] = useState(false);
 	const [filtered, setFiltered] = useState(false);
 	const [date, setDate] = useState([]);
+	const [depositBalance, setDepositBalance] = useState(0);
 
 	const dispatch = useDispatch();
 
@@ -80,12 +81,24 @@ const PatientBills = () => {
 		[dispatch, patient]
 	);
 
+	const fetchDepositBal = useCallback(async () => {
+		try {
+			const url = `patient/${patient.id}/deposit-balance`;
+			const rs = await request(url, 'GET', true);
+			const { balance } = rs;
+			setDepositBalance(balance);
+		} catch (e) {
+			notifyError(e.message || 'could not fetch deposit');
+		}
+	}, [patient]);
+
 	useEffect(() => {
 		if (loading) {
 			fetchBills(1);
+			fetchDepositBal();
 			setLoading(false);
 		}
-	}, [fetchBills, loading]);
+	}, [fetchBills, fetchDepositBal, loading]);
 
 	const onNavigatePage = nextPage => {
 		fetchBills(nextPage, startDate, endDate, status);
@@ -130,7 +143,6 @@ const PatientBills = () => {
 							<div className="col-6">
 								<div className="text-right">
 									<label className="btn">
-										Credit Limit:{' '}
 										<Popover
 											content={
 												<SetCreditLimit
@@ -143,6 +155,9 @@ const PatientBills = () => {
 											visible={visible}
 											onVisibleChange={() => setVisible(!visible)}>
 											<Tooltip title="Set Credit Limit">
+												<span className="btn btn-success mr-4">
+													Add Credit Limit
+												</span>
 												<a className="text-bold link-primary mr-3">{`${formatCurrency(
 													patient.credit_limit
 												)}`}</a>{' '}
@@ -163,10 +178,8 @@ const PatientBills = () => {
 											<MakeDeposit
 												onHide={() => setDepositVisible(false)}
 												patient={patient}
-												addBill={(bill, outstanding, total_amount) => {
-													setBills([...bills, bill]);
-													setOutstandingAmount(outstanding);
-													setTotalAmount(total_amount);
+												updateBalance={amount => {
+													setDepositBalance(amount);
 												}}
 											/>
 										}
@@ -175,11 +188,17 @@ const PatientBills = () => {
 										visible={depositVisible}
 										onVisibleChange={() => setDepositVisible(!depositVisible)}>
 										<Tooltip title="Make Deposit">
-											<button className="btn btn-primary btn-sm">
+											<button className="btn btn-info btn-sm text-white mr-4">
 												Make Deposit
 											</button>
 										</Tooltip>
 									</Popover>
+									<span className="text-bold text-underline mr-4">
+										{formatCurrency(depositBalance)}
+									</span>
+									<button className="btn btn-primary btn-sm">
+										Apply Deposit
+									</button>
 								</div>
 							</div>
 						</div>

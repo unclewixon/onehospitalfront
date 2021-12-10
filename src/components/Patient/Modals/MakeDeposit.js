@@ -5,7 +5,7 @@ import { notifyError, notifySuccess } from '../../../services/notify';
 import { request } from '../../../services/utilities';
 import { startBlock, stopBlock } from '../../../actions/redux-block';
 
-const MakeDeposit = ({ patient, onHide, addBill }) => {
+const MakeDeposit = ({ patient, onHide, updateBalance }) => {
 	const [amount, setAmount] = useState('');
 	const [paymentMethod, setPaymentMethod] = useState('');
 
@@ -27,7 +27,7 @@ const MakeDeposit = ({ patient, onHide, addBill }) => {
 			};
 			const url = `transactions/credit-account`;
 			const rs = await request(url, 'POST', true, data);
-			addBill(rs.transaction, rs.outstanding, rs.total_amount);
+			updateBalance(rs.balance);
 			notifySuccess('Account Credited!');
 			onHide();
 			dispatch(stopBlock());

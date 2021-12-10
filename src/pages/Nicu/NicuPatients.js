@@ -211,7 +211,7 @@ const NicuPatients = () => {
 												<td>{item.admitted_by}</td>
 												<td>
 													{item.accommodation?.name || '--'}
-													{!item.accommodation && (
+													{item.accommodation && (
 														<Tooltip title="Change Accommodation">
 															<a
 																onClick={() => assignAccommodation(item)}

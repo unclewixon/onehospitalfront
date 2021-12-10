@@ -11,7 +11,6 @@ import {
 	itemRender,
 	request,
 	confirmAction,
-	staffname,
 	patientname,
 	formatDate,
 } from '../../services/utilities';
@@ -206,9 +205,7 @@ const ClinicalTasks = () => {
 								<th>Read Count</th>
 								<th>Last Reading</th>
 								<th>Take Reading</th>
-								<th>
-									<div className="th-inner"></div>
-								</th>
+								<th></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -264,11 +261,9 @@ const ClinicalTasks = () => {
 										<td>{`${item.tasksCompleted} / ${item.taskCount}`}</td>
 										<td>
 											{lastReading
-												? moment(lastReading.createdAt).fromNow(true)
+												? moment(lastReading.createdAt).fromNow()
 												: '-'}{' '}
-											{lastReading
-												? `by ${staffname(item?.staff?.details)}`
-												: ''}
+											{lastReading ? `by ${lastReading.createdBy}` : ''}
 										</td>
 										<td className="row-actions">
 											{item.taskCount > item.tasksCompleted && (

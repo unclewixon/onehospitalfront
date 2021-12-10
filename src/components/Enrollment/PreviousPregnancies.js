@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
-import { renderSelect } from '../../services/utilities';
 import { Field, reduxForm } from 'redux-form';
-import { validateAntenatal } from '../../services/validationSchemas';
+
+import { renderSelect } from '../../services/utilities';
 import { previousPregnancies, gravida, para } from '../../services/constants';
 
-const validate = validateAntenatal;
+const validate = values => {
+	const errors = {};
+	return errors;
+};
 
 export class PreviousPregnancies extends Component {
 	render() {

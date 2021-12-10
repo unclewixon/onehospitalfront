@@ -250,7 +250,9 @@ const InPatientCare = ({ match }) => {
 													{item.status === 0 ? (
 														<span className="badge badge-secondary">Open</span>
 													) : (
-														<span className="badge badge-success">Closed</span>
+														<span className="badge badge-success">
+															Discharged
+														</span>
 													)}
 												</td>
 												<td nowrap="nowrap" className="row-actions">

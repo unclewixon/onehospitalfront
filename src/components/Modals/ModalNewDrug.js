@@ -78,14 +78,20 @@ const ModalNewDrug = ({ closeModal, handleSubmit, error, addDrug }) => {
 				...data,
 				generic_id: generic.id,
 				unitOfMeasure: unitOfMeasure.name,
-				manufacturer_id: manufacturer.id || '',
+				manufacturer_id: manufacturer?.id || '',
 			};
 			const rs = await request('inventory/drugs', 'POST', true, info);
-			addDrug(rs.drug);
 			setSubmitting(false);
 			dispatch(stopBlock());
-			notifySuccess('Drug saved!');
-			closeModal();
+			if (rs.success) {
+				addDrug(rs.drug);
+				notifySuccess('Drug saved!');
+				closeModal();
+			} else {
+				throw new SubmissionError({
+					_error: 'could not add new drug',
+				});
+			}
 		} catch (error) {
 			console.log(error);
 			dispatch(stopBlock());

@@ -91,7 +91,7 @@ const ModalEditDrug = ({
 				...data,
 				generic_id: generic.id,
 				unitOfMeasure: unitOfMeasure.name,
-				manufacturer_id: manufacturer.id || '',
+				manufacturer_id: manufacturer?.id || '',
 			};
 			const url = `inventory/drugs/${drug.id}`;
 			const rs = await request(url, 'PUT', true, info);
@@ -148,9 +148,7 @@ const ModalEditDrug = ({
 												defaultValue
 												getOptionValue={option => option.id}
 												getOptionLabel={option => option.name}
-												onChange={e => {
-													setGeneric(e);
-												}}
+												onChange={e => setGeneric(e)}
 												value={generic}
 												isSearchable={true}
 												options={generics}
