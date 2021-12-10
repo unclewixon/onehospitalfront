@@ -52,6 +52,11 @@ const Pharmacy = ({ location, can_request = true, type, itemId }) => {
 		setPrescriptions(updatedDrugs);
 	};
 
+	const removePrescription = item => {
+		const updatedDrugs = prescriptions.filter(p => p.id !== item);
+		setPrescriptions(updatedDrugs);
+	};
+
 	const onNavigatePage = nextPage => {
 		fetch(nextPage);
 	};
@@ -79,6 +84,7 @@ const Pharmacy = ({ location, can_request = true, type, itemId }) => {
 									patient={patient}
 									prescriptions={prescriptions}
 									updatePrescriptions={updatePrescriptions}
+									removePrescription={removePrescription}
 								/>
 							</div>
 							{meta && (

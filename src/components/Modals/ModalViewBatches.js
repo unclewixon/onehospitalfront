@@ -126,6 +126,7 @@ const ModalViewBatches = ({ closeModal, drug }) => {
 												<th>Unit Price</th>
 												<th>Expiration</th>
 												<th>Vendor</th>
+												<th>Date Added</th>
 												<th></th>
 											</tr>
 										</thead>
@@ -146,6 +147,9 @@ const ModalViewBatches = ({ closeModal, drug }) => {
 															{formatDate(item.expirationDate, 'DD-MMM-YYYY')}
 														</td>
 														<td>{item.vendor?.name || '--'}</td>
+														<td>
+															{formatDate(item.createdAt, 'DD-MMM-YYYY h:mma')}
+														</td>
 														<td>
 															<span
 																className={`badge ${

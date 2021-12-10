@@ -694,7 +694,7 @@ const PlanForm = ({ previous, next, patient }) => {
 												<td>{item.generic?.name || '--'}</td>
 												<td>{item.drug?.name || '--'}</td>
 												<td>
-													<div className="badge badge-dark">{`${item.quantity} - ${item.frequency}x ${item.frequencyType} for ${item.duration} days`}</div>
+													<div className="badge badge-dark">{`${item.quantity} - ${item.frequency}x ${item.frequencyType} for ${item.duration} ${item.frequencyType}`}</div>
 												</td>
 												<td>
 													{item.diagnosis && item.diagnosis.length > 0

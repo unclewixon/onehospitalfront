@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Popover from 'antd/lib/popover';
 import Tooltip from 'antd/lib/tooltip';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { confirmAlert } from 'react-confirm-alert';
 
 import SelectDrug from './SelectDrug';
@@ -12,16 +12,19 @@ import {
 	formatCurrency,
 	hasExpired,
 	formatDate,
+	confirmAction,
 } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
 import ViewRequestNote from '../Modals/ViewRequestNote';
 import SwitchPrescription from '../Modals/SwitchPrescription';
+import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const ViewPrescription = ({
 	prescription,
 	updatePrescriptions,
 	closeModal,
+	removePrescription,
 	doPrint,
 }) => {
 	const [visible, setVisible] = useState(null);
@@ -32,6 +35,8 @@ const ViewPrescription = ({
 	const [noteVisible, setNoteVisible] = useState(null);
 	const [prescriptionItemId, setPrescriptionItemId] = useState(null);
 	const [showModal, setShowModal] = useState(false);
+
+	const dispatch = useDispatch();
 
 	const staff = useSelector(state => state.user.profile);
 
@@ -73,12 +78,45 @@ const ViewPrescription = ({
 		setSumTotal(total);
 	};
 
+	const doDeleteItem = async id => {
+		try {
+			dispatch(startBlock());
+			const url = `requests/${id}/delete-request?type=prescription`;
+			const rs = await request(url, 'DELETE', true);
+			dispatch(stopBlock());
+			if (rs.success) {
+				const regimensRem = regimens.filter(p => p.item.id !== rs.data.id);
+				if (regimensRem.length === 0) {
+					setRegimens([]);
+					removePrescription(prescription.id);
+					closeModal();
+				} else {
+					setRegimens(regimensRem);
+					updatePrescriptions({ ...prescription, requests: regimensRem });
+				}
+			} else {
+				notifyError('Error could not delete prescription');
+			}
+		} catch (error) {
+			console.log(error);
+			notifyError('Error could not delete prescription');
+			dispatch(stopBlock());
+		}
+	};
+
 	const deleteItem = id => {
 		const regimen = regimens.find(p => p.id === parseInt(id, 10));
 		if (regimen.item.vaccine) {
 			notifyError('you cannot remove a vaccine prescription');
 			return;
 		}
+
+		confirmAction(
+			doDeleteItem,
+			id,
+			'Do you want to remove this prescription?',
+			'Are you sure?'
+		);
 	};
 
 	const setDrug = (generic, drug, id) => {

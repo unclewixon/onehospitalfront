@@ -388,6 +388,11 @@ export const gravida = [
 	},
 
 	{
+		id: 'Eighth Gravida (G8)',
+		name: 'Eighth Gravida (G8)',
+	},
+
+	{
 		id: 'Ninth Gravida (G9)',
 		name: 'Ninth Gravida (G9)',
 	},
@@ -407,12 +412,12 @@ export const gravida = [
 
 export const para = [
 	{
-		id: 'Zero (P1)',
-		name: 'Zero (P1)',
+		id: 'Zero (P0)',
+		name: 'Zero (P0)',
 	},
 	{
-		id: 'Primi Para (P2)',
-		name: 'Primi Para (P2)',
+		id: 'Primi Para (P1)',
+		name: 'Primi Para (P1)',
 	},
 	{
 		id: 'Second Para (P2)',

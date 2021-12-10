@@ -17,6 +17,7 @@ const PrescriptionBlock = ({
 	patient,
 	prescriptions,
 	updatePrescriptions,
+	removePrescription,
 }) => {
 	const [showModal, setShowModal] = useState(false);
 	const [prescription, setPrescription] = useState(null);
@@ -145,6 +146,7 @@ const PrescriptionBlock = ({
 					prescription={prescription}
 					closeModal={closeModal}
 					updatePrescriptions={updatePrescriptions}
+					removePrescription={removePrescription}
 					doPrint={doPrint}
 				/>
 			)}

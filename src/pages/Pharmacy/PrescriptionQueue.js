@@ -38,6 +38,12 @@ class PrescriptionQueue extends Component {
 		this.setState({ prescriptions: updatedDrugs });
 	};
 
+	removePrescription = item => {
+		const { prescriptions } = this.state;
+		const updatedDrugs = prescriptions.filter(p => p.id !== item);
+		this.setState({ prescriptions: updatedDrugs });
+	};
+
 	onNavigatePage = nextPage => {
 		this.loadPrescriptions(nextPage);
 	};
@@ -52,6 +58,7 @@ class PrescriptionQueue extends Component {
 						loading={loading}
 						prescriptions={prescriptions}
 						updatePrescriptions={this.updatePrescriptions}
+						removePrescription={this.removePrescription}
 					/>
 				</div>
 				{meta && (

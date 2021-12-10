@@ -49,6 +49,12 @@ class PrescriptionRequests extends Component {
 		this.setState({ prescriptions: updatedDrugs });
 	};
 
+	removePrescription = item => {
+		const { prescriptions } = this.state;
+		const updatedDrugs = prescriptions.filter(p => p.id !== item);
+		this.setState({ prescriptions: updatedDrugs });
+	};
+
 	filterEntries = () => {
 		const { startDate, endDate } = this.state;
 		this.setState({ filtering: true });
@@ -138,6 +144,7 @@ class PrescriptionRequests extends Component {
 							loading={loading}
 							prescriptions={prescriptions}
 							updatePrescriptions={this.updatePrescriptions}
+							removePrescription={this.removePrescription}
 						/>
 					</div>
 					{meta && (
