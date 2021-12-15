@@ -175,6 +175,13 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 	const onSubmit = async values => {
 		const data = {
 			...values,
+			date_of_birth: moment(values.date_of_birth, 'DD-MM-YYYY').format(
+				'YYYY-MM-DD'
+			),
+			nok_date_of_birth:
+				values.nok_date_of_birth && values.nok_date_of_birth !== ''
+					? moment(values.nok_date_of_birth, 'DD-MM-YYYY').format('YYYY-MM-DD')
+					: '',
 			ethnicity: values.ethnicity?.value || '',
 			gender: values.gender?.value || '',
 			maritalStatus: values.maritalStatus?.value || '',
