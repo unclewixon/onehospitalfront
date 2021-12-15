@@ -108,6 +108,7 @@ const HmoSchemeForm = ({
 			notifySuccess('scheme tariff saved!');
 			updateScheme([...schemes, rs]);
 			setState({ ...initialState });
+			closeModal();
 		} catch (e) {
 			console.log(e);
 			let message = '';
