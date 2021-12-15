@@ -125,6 +125,7 @@ export const relationships = [
 	{ value: 'Sister', label: 'Sister' },
 	{ value: 'Brother', label: 'Brother' },
 	{ value: 'Aunt', label: 'Aunt' },
+	{ value: 'Spouse', label: 'Spouse' },
 	{ value: 'Others', label: 'Others' },
 ];
 

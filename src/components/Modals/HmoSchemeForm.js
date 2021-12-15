@@ -105,14 +105,9 @@ const HmoSchemeForm = ({
 			const rs = await request(`${hmoAPI}/schemes`, 'POST', true, data);
 			dispatch(stopBlock());
 			setSubmitting(false);
-			if (rs.success) {
-				notifySuccess('scheme tariff saved!');
-				updateScheme([...schemes, rs]);
-				setState({ ...initialState });
-				closeModal();
-			} else {
-				notifyError(rs.message || 'could not save scheme');
-			}
+			notifySuccess('scheme tariff saved!');
+			updateScheme([...schemes, rs]);
+			setState({ ...initialState });
 		} catch (e) {
 			console.log(e);
 			let message = '';
@@ -149,13 +144,18 @@ const HmoSchemeForm = ({
 			setSubmitting(true);
 			const url = `${hmoAPI}/schemes/${scheme.id}`;
 			const rs = await request(url, 'PATCH', true, data);
-			const list = updateImmutable(schemes, rs);
-			updateScheme([...list]);
-			setState({ ...initialState });
 			setSubmitting(false);
-			notifySuccess('scheme tariff saved!');
-			dispatch(stopBlock());
-			closeModal();
+			if (rs.success) {
+				const list = updateImmutable(schemes, rs.scheme);
+				updateScheme([...list]);
+				setState({ ...initialState });
+				notifySuccess('scheme tariff saved!');
+				dispatch(stopBlock());
+				closeModal();
+			} else {
+				notifyError(rs.message || 'could not save scheme');
+				dispatch(stopBlock());
+			}
 		} catch (e) {
 			console.log(e);
 			let message = '';

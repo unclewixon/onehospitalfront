@@ -201,7 +201,9 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 					}
 					closeModal();
 				} else {
-					return { [FORM_ERROR]: 'could not save patient record' };
+					return {
+						[FORM_ERROR]: rs.message || 'could not save patient record',
+					};
 				}
 			} catch (e) {
 				console.log(e.message);
@@ -225,7 +227,9 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 					notifySuccess('Patient account saved!');
 					closeModal();
 				} else {
-					return { [FORM_ERROR]: 'could not save patient record' };
+					return {
+						[FORM_ERROR]: rs.message || 'could not save patient record',
+					};
 				}
 			} catch (e) {
 				console.log(e.message);
