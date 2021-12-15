@@ -78,7 +78,6 @@ const AppointmentFormModal = ({ addAppointment, closeModal }) => {
 						<button
 							aria-label="Close"
 							className="close"
-							data-dismiss="modal"
 							type="button"
 							onClick={closeModal}>
 							<span aria-hidden="true"> ×</span>

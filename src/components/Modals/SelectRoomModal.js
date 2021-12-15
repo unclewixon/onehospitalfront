@@ -51,7 +51,6 @@ const SelectRoomModal = ({ rooms, closeModal }) => {
 							<button
 								aria-label="Close"
 								className="close"
-								data-dismiss="modal"
 								type="button"
 								onClick={() => closeModal(null)}>
 								<span aria-hidden="true"> ×</span>

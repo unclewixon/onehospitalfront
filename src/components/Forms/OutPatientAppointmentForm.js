@@ -254,11 +254,7 @@ const OutPatientAppointmentForm = ({ closeModal, addAppointment }) => {
 						'Schedule Appointment'
 					)}
 				</button>
-				<button
-					className="btn btn-link"
-					data-dismiss="modal"
-					type="button"
-					onClick={closeModal}>
+				<button className="btn btn-link" type="button" onClick={closeModal}>
 					Cancel
 				</button>
 			</div>

@@ -35,7 +35,6 @@ class ModalAddTask extends Component {
 							<button
 								aria-label="Close"
 								className="close"
-								data-dismiss="modal"
 								type="button"
 								onClick={() => this.props.closeModals(false)}>
 								<span aria-hidden="true"> ×</span>
@@ -116,7 +115,6 @@ class ModalAddTask extends Component {
 								</button>
 								<button
 									className="btn btn-link"
-									data-dismiss="modal"
 									type="button"
 									onClick={() => this.props.closeModals(false)}>
 									Cancel

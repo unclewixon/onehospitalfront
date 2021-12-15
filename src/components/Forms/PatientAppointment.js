@@ -31,7 +31,6 @@ const consultations = [
 const defaultValues = {
 	consultation_id: 'initial',
 	appointment_date: new Date(),
-	department_id: 1,
 };
 
 const PatientAppointment = ({ addAppointment, closeModal }) => {
@@ -50,27 +49,27 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 
 	const [patient, setPatient] = useState(null);
 	const [loaded, setLoaded] = useState(false);
-	const [doctors, setDoctors] = useState();
+	const [doctors, setDoctors] = useState([]);
 	const [appointmentDate, setAppointmentDate] = useState(new Date());
 	const [submitting, setSubmitting] = useState(false);
 	const [services, setServices] = useState([]);
 	const [consultation, setConsultation] = useState({ ...consultations[0] });
-	const [department, setDepartment] = useState({
-		...departments.find(d => d.id === 1),
-	});
+	const [department, setDepartment] = useState({ ...departments[0] });
 	const [doctor, setDoctor] = useState(null);
 	const [service, setService] = useState(null);
 
 	const dispatch = useDispatch();
 
 	async function getActiveDoctors() {
-		const rs = await request('utility/active-doctors', 'GET', true);
-		const res = rs.map(item => ({
-			...item,
-			value: item.id,
-			label: staffname(item) + ' (Room ' + item.room.name + ')',
-		}));
-		setDoctors(res);
+		try {
+			const rs = await request('utility/active-doctors', 'GET', true);
+			const res = rs.map(item => ({
+				...item,
+				value: item.id,
+				label: staffname(item) + ' (Room ' + item.room.name + ')',
+			}));
+			setDoctors(res);
+		} catch (e) {}
 	}
 
 	const fetchServicesByCategory = useCallback(
@@ -97,13 +96,14 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 	useEffect(() => {
 		if (!loaded) {
 			dispatch(startBlock());
+			setValue('department_id', departments[0].id);
 			try {
 				fetchServicesByCategory('consultancy');
 				getActiveDoctors();
 			} catch (e) {}
 			setLoaded(true);
 		}
-	}, [dispatch, fetchServicesByCategory, loaded]);
+	}, [departments, dispatch, fetchServicesByCategory, loaded, setValue]);
 
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option => patientname(option, true);
@@ -369,11 +369,7 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 						'Schedule Appointment'
 					)}
 				</button>
-				<button
-					className="btn btn-link"
-					data-dismiss="modal"
-					type="button"
-					onClick={closeModal}>
+				<button className="btn btn-link" type="button" onClick={closeModal}>
 					Cancel
 				</button>
 			</div>
