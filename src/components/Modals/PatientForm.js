@@ -175,13 +175,13 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 	const onSubmit = async values => {
 		const data = {
 			...values,
-			ethnicity: values.ethnicity.value,
-			gender: values.gender.value,
-			maritalStatus: values.maritalStatus.value,
-			nok_ethnicity: values.nok_ethnicity.value,
-			nok_gender: values.nok_gender.value,
-			nok_maritalStatus: values.nok_maritalStatus.value,
-			nok_relationship: values.nok_relationship.value,
+			ethnicity: values.ethnicity?.value || '',
+			gender: values.gender?.value || '',
+			maritalStatus: values.maritalStatus?.value || '',
+			nok_ethnicity: values.nok_ethnicity?.value || '',
+			nok_gender: values.nok_gender?.value || '',
+			nok_maritalStatus: values.nok_maritalStatus?.value || '',
+			nok_relationship: values.nok_relationship?.value || '',
 		};
 
 		if (!patient) {
