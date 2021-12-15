@@ -66,7 +66,7 @@ const Dashboard = () => {
 								</a>
 							</li>
 							{(user.role.slug === 'it-admin' ||
-								(user.role.slug === 'doctor' && user.id === 21)) && (
+								user.role.slug === 'doctor') && (
 								<li className="nav-item nav-actions d-sm-block">
 									<a
 										className="btn btn-primary btn-sm text-white"
