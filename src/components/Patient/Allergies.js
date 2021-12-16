@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
+import Tooltip from 'antd/lib/tooltip';
 
 import { request, confirmAction } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
@@ -35,7 +36,9 @@ class Allergies extends Component {
 	deleteAllergy = async data => {
 		try {
 			await request(`patient-allergens/${data.id}`, 'DELETE', true);
-			this.props.delete_allergy(data);
+			this.setState({
+				allergens: this.state.allergens.filter(a => a.id !== data.id),
+			});
 			notifySuccess('Allergy deleted');
 		} catch (error) {
 			notifyError('Could not delete allergy');
@@ -70,6 +73,7 @@ class Allergies extends Component {
 									<thead>
 										<tr>
 											<th>Category</th>
+											<th>Drug</th>
 											<th>Allergy</th>
 											<th>Reaction</th>
 											<th>Severity</th>
@@ -81,6 +85,9 @@ class Allergies extends Component {
 											return (
 												<tr key={i}>
 													<td>{item.category}</td>
+													<td>
+														{item.drugGeneric ? item.drugGeneric.name : '--'}
+													</td>
 													<td>{item.allergy}</td>
 													<td>{item.reaction}</td>
 													<td>{item.severity}</td>
@@ -92,14 +99,13 @@ class Allergies extends Component {
 																state={item}>
 																<i className="os-icon os-icon-ui-49"></i>
 															</Link>
-															<Tooltip title="Delete">
-																<i
-																	className="os-icon os-icon-ui-15"
-																	onClick={() =>
-																		this.confirmDelete(item)
-																	}></i>
-															</Tooltip>
 														</Tooltip> */}
+														<Tooltip title="Delete">
+															<i
+																className="os-icon os-icon-ui-15"
+																onClick={() => this.confirmDelete(item)}
+															/>
+														</Tooltip>
 													</td>
 												</tr>
 											);

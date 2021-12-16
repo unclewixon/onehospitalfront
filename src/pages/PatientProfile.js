@@ -42,8 +42,6 @@ const AllergyRequest = lazy(() =>
 	import('../components/Patient/AllergyRequest')
 );
 
-const UpdateAllergy = lazy(() => import('../components/Patient/UpdateAllergy'));
-
 const PatientAdmission = lazy(() =>
 	import('../components/Patient/PatientAdmission')
 );
@@ -88,8 +86,6 @@ const Page = ({ location }) => {
 			return <ProcedureRequest module="patient" />;
 		case 'allergy-request':
 			return <AllergyRequest />;
-		case 'update-allergy':
-			return <UpdateAllergy />;
 		case 'start-admission':
 			return <PatientAdmission />;
 		case 'immunization-chart':

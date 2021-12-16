@@ -1,48 +1,73 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Select from 'react-select';
-import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { useHistory } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import { request } from '../../services/utilities';
-import {
-	allergyCategories,
-	patientAPI,
-	severities,
-} from '../../services/constants';
-import { add_allergies } from '../../actions/patient';
+import { allergyCategories, severities } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
+import { startBlock, stopBlock } from '../../actions/redux-block';
 
-const AllergyRequest = props => {
-	const history = useHistory();
-
+const AllergyRequest = ({ history, location }) => {
 	const { register, handleSubmit, setValue } = useForm();
 
 	const [submitting, setSubmitting] = useState(false);
+	const [generic, setGeneric] = useState(null);
+	const [loaded, setLoaded] = useState(false);
+	const [genericDrugs, setGenericDrugs] = useState([]);
+
+	const currentPatient = useSelector(state => state.user.patient);
+
+	const dispatch = useDispatch();
+
+	const loadGenericDrugs = useCallback(async () => {
+		try {
+			dispatch(startBlock());
+			const rs = await request('inventory/generics?limit=1000', 'GET', true);
+			setGenericDrugs(rs.result);
+			dispatch(stopBlock());
+		} catch (e) {
+			dispatch(stopBlock());
+			notifyError('Error while fetching generic names');
+		}
+	}, [dispatch]);
+
+	useEffect(() => {
+		if (!loaded) {
+			loadGenericDrugs();
+			setLoaded(true);
+		}
+	}, [loadGenericDrugs, loaded]);
 
 	const onSubmit = async values => {
-		const { patient } = props;
-		const data = {
-			category: values.category,
-			allergy: values.allergy,
-			severity: values.severity,
-			reaction: values.reaction,
-			patient_id: patient.id,
-		};
-
-		setSubmitting(true);
-
 		try {
-			const url = `${patientAPI}/save-allergies`;
-			const rs = await request(url, 'POST', true, data);
-			props.add_allergies(rs);
-			history.push('settings/roles#allergies');
-			notifySuccess('allergies saved');
+			if (!currentPatient) {
+				notifyError('Please select a patient');
+				return;
+			}
+
+			dispatch(startBlock());
+			const data = {
+				category: values.category,
+				allergy: values.allergy,
+				severity: values.severity,
+				reaction: values.reaction,
+				patient_id: currentPatient.id,
+				generic_id: generic?.id || '',
+			};
+
+			setSubmitting(true);
+			await request('patient-allergens', 'POST', true, data);
+			history.push(`${location.pathname}#allergens`);
+			notifySuccess('allergy saved!');
 			setSubmitting(false);
+			dispatch(stopBlock());
 		} catch (e) {
+			dispatch(stopBlock());
 			setSubmitting(false);
-			notifyError(e.message || 'could not save allergies');
+			notifyError(e.message || 'could not save allergy');
 		}
 	};
 
@@ -71,7 +96,23 @@ const AllergyRequest = props => {
 										required
 									/>
 								</div>
-
+								<div className="form-group col-sm-6">
+									<label>Drug Generic Name</label>
+									<Select
+										placeholder="Select generic name"
+										defaultValue
+										getOptionValue={option => option.id}
+										getOptionLabel={option => option.name}
+										onChange={e => {
+											setGeneric(e);
+										}}
+										value={generic}
+										isSearchable={true}
+										options={genericDrugs}
+									/>
+								</div>
+							</div>
+							<div className="row">
 								<div className="form-group col-sm-6">
 									<label>Allergy</label>
 									<input
@@ -82,10 +123,7 @@ const AllergyRequest = props => {
 										ref={register}
 									/>
 								</div>
-							</div>
-
-							<div className="row">
-								<div className="form-group col-sm-12">
+								<div className="form-group col-sm-6">
 									<label>Severity </label>
 									<Select
 										name="severity"
@@ -115,8 +153,7 @@ const AllergyRequest = props => {
 										ref={register}></textarea>
 								</div>
 							</div>
-
-							<div>
+							<div className="row">
 								<div className="col-sm-12 text-right">
 									<button className="btn btn-primary" disabled={submitting}>
 										{submitting ? (
@@ -135,11 +172,4 @@ const AllergyRequest = props => {
 	);
 };
 
-const mapStateToProps = (state, ownProps) => {
-	return {
-		patient: state.user.patient,
-		allergies: state.patient.allergies,
-	};
-};
-
-export default connect(mapStateToProps, { add_allergies })(AllergyRequest);
+export default withRouter(AllergyRequest);

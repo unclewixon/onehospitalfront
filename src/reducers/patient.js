@@ -1,20 +1,9 @@
 import {
-	NEXT_STEP,
-	PREV_STEP,
-	SAVE_ALLERGIES,
-	GET_ALLERGIES,
-	ALLERGY,
-	UPDATE_ALLERGY,
-	DELETE_ALLERGY,
-	GET_IMAGING_REQUESTS,
 	LOAD_VITALS,
 	UPDATE_VITALS,
 	GET_LAB_REQUESTS,
 	GET_PHARMACY_REQUESTS,
 	GET_ALL_REQUESTS,
-	LOAD_CLINICAL_LAB,
-	LOAD_RADIOLOGY,
-	LOAD_ANTENATAL_ASSESSMENT,
 	LOAD_LABOUR,
 	LOAD_LABOUR_DETAIL,
 	CLEAR_LABOUR_DETAIL,
@@ -24,16 +13,13 @@ import {
 	LOAD_DELIVERY_RECORD,
 	LOAD_LABOUR_MEASUREMENT,
 	PATIENT_IVF,
-	GET_ALL_OPD_LAB_APPOINTMENTS,
 	READING_DONE,
 	SET_IVF,
-	RESET_STEP,
 	CAN_CLOSE_LABOUR,
 	UPDATE_ENCOUNTER_DATA,
 	RESET_ENCOUNTER_DATA,
 	UPDATE_SOAP_DATA,
 } from '../actions/types';
-import { updateImmutable } from '../services/utilities';
 
 const soapData = {
 	complaints: '',
@@ -44,16 +30,8 @@ const soapData = {
 };
 
 const INITIAL_STATE = {
-	formStep: 1,
-	formData: {},
-	allergy: {},
-	allergies: [],
-	imagingRequests: [],
 	vitals: [],
 	ivfDetails: {},
-	clinicalLab: [],
-	opdLabAppointments: [],
-	radiology: [],
 	labRequests: [],
 	pharmacyRequests: [],
 	allRequests: [],
@@ -90,7 +68,6 @@ const INITIAL_STATE = {
 		pastDiagnosis: [],
 		treatmentPlan: '',
 	},
-	antenatalAssessment: [],
 	enrolments: [],
 	labourDetail: null,
 	partographies: [],
@@ -108,19 +85,6 @@ const patient = (state = INITIAL_STATE, action) => {
 			return { ...state, ivfDetails: action.payload };
 		case CAN_CLOSE_LABOUR:
 			return { ...state, canCloseLabour: true };
-		case NEXT_STEP:
-			console.log(action.payload);
-			return { ...state, formData: action.payload, formStep: 2 };
-		case RESET_STEP:
-			return { ...state, formStep: 1, formData: {} };
-		case PREV_STEP:
-			return { ...state, formStep: action.payload };
-		case GET_ALLERGIES:
-			return { ...state, allergies: action.payload };
-		case SAVE_ALLERGIES:
-			return { ...state, allergies: [...state.allergies, action.payload] };
-		case ALLERGY:
-			return { ...state, allergy: action.payload };
 		case PATIENT_IVF:
 			return { ...state, ivf: action.payload };
 		case PATIENT_REGULATION_TABLE:
@@ -141,41 +105,16 @@ const patient = (state = INITIAL_STATE, action) => {
 				encounterData: action.payload,
 				soapData,
 			};
-		case GET_IMAGING_REQUESTS:
-			return { ...state, imagingRequests: action.payload };
-		case UPDATE_ALLERGY:
-			const allergens = updateImmutable(state.allergies, action.payload);
-			return {
-				...state,
-				allergies: [...allergens],
-			};
-		case DELETE_ALLERGY:
-			return {
-				...state,
-				allergies: state.allergies.filter(
-					item => item.id !== action.payload.id
-				),
-			};
 		case LOAD_VITALS:
 			return { ...state, vitals: [...action.payload] };
 		case UPDATE_VITALS:
 			return { ...state, vitals: [action.payload, ...state.vitals] };
-		case LOAD_CLINICAL_LAB:
-			return { ...state, clinicalLab: [...action.payload] };
-		case LOAD_RADIOLOGY:
-			return { ...state, radiology: [...action.payload] };
 		case GET_LAB_REQUESTS:
 			return { ...state, labRequests: action.payload };
 		case GET_PHARMACY_REQUESTS:
 			return { ...state, pharmacyRequests: action.payload };
 		case GET_ALL_REQUESTS:
 			return { ...state, allRequests: action.payload };
-
-		case LOAD_ANTENATAL_ASSESSMENT:
-			return {
-				...state,
-				antenatalAssessment: action.payload,
-			};
 		case LOAD_LABOUR:
 			return {
 				...state,
@@ -210,11 +149,6 @@ const patient = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				labourMeasurement: action.payload,
-			};
-		case GET_ALL_OPD_LAB_APPOINTMENTS:
-			return {
-				...state,
-				opdLabAppointments: action.payload,
 			};
 		case READING_DONE:
 			return { ...state, reading_done: action.payload };

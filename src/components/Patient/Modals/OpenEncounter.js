@@ -45,18 +45,20 @@ const EncounterTabs = ({
 		case 6:
 			return <Diagnosis next={next} previous={previous} patient={patient} />;
 		case 5:
-			return <PhysicalExam next={next} previous={previous} />;
+			return <PhysicalExam next={next} previous={previous} patient={patient} />;
 		case 4:
 			return <Allergies next={next} previous={previous} patient={patient} />;
 		case 3:
-			return <PastHistory next={next} previous={previous} />;
+			return <PastHistory next={next} previous={previous} patient={patient} />;
 		case 2:
-			return <HxForm next={next} previous={previous} />;
+			return <HxForm next={next} previous={previous} patient={patient} />;
 		case 1:
-			return <ReviewOfSystem next={next} previous={previous} />;
+			return (
+				<ReviewOfSystem next={next} previous={previous} patient={patient} />
+			);
 		case 0:
 		default:
-			return <Complaints next={next} />;
+			return <Complaints next={next} patient={patient} />;
 	}
 };
 

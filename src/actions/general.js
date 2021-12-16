@@ -5,9 +5,6 @@ import {
 	TOGGLE_SET_LEAVE,
 	TOGGLE_ADD_TASK,
 	TOGGLE_SHOW_HISTORY,
-	TOGGLE_CREATE_INVENTORY,
-	TOGGLE_EDIT_INVENTORY,
-	TOGGLE_UPDATE_QTY,
 	TOGGLE_VIEW_APPRAISAL,
 	TOGGLE_VIEW_PAYROLL_HISTORY,
 	TOGGLE_VIEW_CURRENT_PAYROLL,
@@ -17,14 +14,10 @@ import {
 	TOGGLE_CREATE_RISK_ASSESSMENT,
 	TOGGLE_CREATE_RECORD_DELIVERY,
 	TOGGLE_CREATE_RECORD_VITAL,
-	TOGGLE_UPLOAD_HMO,
 	TOGGLE_CREATE_CLINICAL_TASK,
-	TOGGLE_ADD_CAFETERIA_FILE,
 	TOGGLE_LINE_APPRAISAL,
 	TOGGLE_STAFF_APPRAISAL,
 	TOGGLE_LABOUR_MEASURMENT_DETAIL,
-	TOGGLE_ADD_ACCOUNT,
-	TOGGLE_EDIT_ACCOUNT,
 	ADD_STAFF_FOR_APPRAISAL,
 	SET_IS_STAFF_APPRAISAL,
 	CREAE_NEW_DRUG,
@@ -102,28 +95,6 @@ export const toggleAddTask = status => {
 	};
 };
 
-// inventory modals
-export const toggleCreateInventory = status => {
-	return {
-		type: TOGGLE_CREATE_INVENTORY,
-		payload: status,
-	};
-};
-
-export const toggleEditInventory = status => {
-	return {
-		type: TOGGLE_EDIT_INVENTORY,
-		payload: status,
-	};
-};
-
-export const toggleUpdateQuantity = status => {
-	return {
-		type: TOGGLE_UPDATE_QTY,
-		payload: status,
-	};
-};
-
 // appraisals
 export const toggleViewAppraisal = status => {
 	return {
@@ -184,23 +155,9 @@ export const toggleCreateRecordDelivery = status => {
 	};
 };
 
-export const toggleAddCafeteriaFile = status => {
-	return {
-		type: TOGGLE_ADD_CAFETERIA_FILE,
-		payload: status,
-	};
-};
-
 export const toggleCreateClinicalTask = status => {
 	return {
 		type: TOGGLE_CREATE_CLINICAL_TASK,
-		payload: status,
-	};
-};
-
-export const toggleUploadHmo = status => {
-	return {
-		type: TOGGLE_UPLOAD_HMO,
 		payload: status,
 	};
 };
@@ -229,23 +186,7 @@ export const toggleLabourMeasurementDetail = (action, data) => {
 	};
 };
 
-export const toggleCreateAccount = status => {
-	return {
-		type: TOGGLE_ADD_ACCOUNT,
-		payload: status,
-	};
-};
-
-export const toggleEditAccount = (action, data) => {
-	return {
-		type: TOGGLE_EDIT_ACCOUNT,
-		payload: action,
-		data,
-	};
-};
-
 // nicu
-
 export const toggleAddNewObservation = status => {
 	return {
 		type: TOGGLE_ADD_NEW_OBSERVATION,
@@ -259,9 +200,6 @@ export const closeModals = () => {
 		dispatch(toggleModal(false));
 		dispatch(toggleShowHistory(false));
 		dispatch(toggleAddTask(false));
-		dispatch(toggleCreateInventory(false));
-		dispatch(toggleEditInventory(false));
-		dispatch(toggleUpdateQuantity(false));
 		dispatch(toggleViewAppraisal(false));
 		dispatch(toggleViewPayrollHistory(false));
 		dispatch(toggleCurrentPayroll(false));
@@ -272,13 +210,9 @@ export const closeModals = () => {
 		dispatch(toggleCreateRecordDelivery(false));
 		dispatch(toggleCreateClinicalTask(false));
 		dispatch(toggleCreateRecordVital(false));
-		dispatch(toggleAddCafeteriaFile(false));
-		dispatch(toggleUploadHmo(false));
 		dispatch(toggleLineAppraisal(false));
 		dispatch(toggleStaffAppraisal(false, null));
 		dispatch(toggleLabourMeasurementDetail(false, null));
-		dispatch(toggleCreateAccount(false));
-		dispatch(toggleEditAccount(false, null));
 	};
 };
 
@@ -316,31 +250,6 @@ export const addTask = action => {
 	};
 };
 
-// inventory modal toggles
-export const createInventory = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleCreateInventory(action));
-	};
-};
-
-export const editInventory = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleEditInventory(action));
-	};
-};
-
-export const updateQuantity = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleUpdateQuantity(action));
-	};
-};
-
 //appraisal modals
 export const viewAppraisal = action => {
 	return dispatch => {
@@ -373,14 +282,6 @@ export const viewEditPayroll = (action, isModal, id) => {
 	return dispatch => {
 		dispatch(toggleIsModal(isModal ? true : false));
 		dispatch(toggleEditPayroll(action, id));
-	};
-};
-
-export const uploadHmo = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleUploadHmo(action));
 	};
 };
 
@@ -423,14 +324,6 @@ export const createClinicalTask = action => {
 	};
 };
 
-export const addCafeteriaFile = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleAddCafeteriaFile(action));
-	};
-};
-
 export const lineAppraisal = (action, data) => {
 	return dispatch => {
 		dispatch(closeModals());
@@ -452,22 +345,6 @@ export const labourMeasurementDetail = (action, data) => {
 		dispatch(closeModals());
 		dispatch(toggleModal(true));
 		dispatch(toggleLabourMeasurementDetail(action, data));
-	};
-};
-
-export const createAccount = action => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleCreateAccount(action));
-	};
-};
-
-export const editAccount = (action, data) => {
-	return dispatch => {
-		dispatch(closeModals());
-		dispatch(toggleModal(true));
-		dispatch(toggleEditAccount(action, data));
 	};
 };
 

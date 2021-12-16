@@ -723,3 +723,26 @@ export const getGestationAge = date => {
 	const display = `${days}day${days > 1 ? 's' : ''}`;
 	return `${weeks}week${weeks > 1 ? 's' : ''} ${days > 0 ? display : ''}`;
 };
+
+export const parseFrequency = (frequency, duration) => {
+	const s = duration > 1 ? 's' : '';
+	const frequencies = [
+		{ name: 'as-needed', value: 'As Needed' },
+		{ name: 'at-night', value: `Night${s}` },
+		{ name: 'immediately', value: 'Immediately' },
+		{ name: 'hourly', value: `Hour${s}` },
+		{ name: 'daily', value: `Day${s}` },
+		{ name: 'weekly', value: `Week${s}` },
+		{ name: 'monthly', value: `Month${s}` },
+		{ name: 'quarterly', value: `Quarter${s}` },
+		{ name: 'stat', value: 'Stat' },
+	];
+
+	const item = frequencies.find(f => f.name === frequency);
+
+	if (frequency === 'as-needed' || item.value === 'immediately') {
+		return item?.value || '';
+	}
+
+	return `for ${duration} ${item?.value || ''}`;
+};

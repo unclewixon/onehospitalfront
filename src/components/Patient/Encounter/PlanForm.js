@@ -13,6 +13,7 @@ import {
 	request,
 	hasExpired,
 	formatCurrency,
+	parseFrequency,
 } from '../../../services/utilities';
 import { notifyError } from '../../../services/notify';
 import { ReactComponent as PlusIcon } from '../../../assets/svg-icons/plus.svg';
@@ -694,7 +695,14 @@ const PlanForm = ({ previous, next, patient }) => {
 												<td>{item.generic?.name || '--'}</td>
 												<td>{item.drug?.name || '--'}</td>
 												<td>
-													<div className="badge badge-dark">{`${item.quantity} - ${item.frequency}x ${item.frequencyType} for ${item.duration} ${item.frequencyType}`}</div>
+													<div className="badge badge-dark">{`${
+														item.quantity
+													} - ${item.frequency}x ${
+														item.frequencyType
+													} ${parseFrequency(
+														item.frequencyType,
+														item.duration
+													)}`}</div>
 												</td>
 												<td>
 													{item.diagnosis && item.diagnosis.length > 0
