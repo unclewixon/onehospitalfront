@@ -220,7 +220,7 @@ const AppointmentTable = ({
 																	</span>
 																) : (
 																	<>
-																		{appointment?.antenatal ? (
+																		{appointment?.antenatal && (
 																			<button
 																				onClick={() =>
 																					startAssessment(
@@ -229,21 +229,20 @@ const AppointmentTable = ({
 																						appointment.antenatal
 																					)
 																				}
-																				className="btn btn-sm btn-info text-white">
-																				Start Assessment
-																			</button>
-																		) : (
-																			<button
-																				onClick={() =>
-																					startEncounter(
-																						appointment.id,
-																						appointment?.patient
-																					)
-																				}
-																				className="btn btn-sm btn-info text-white">
-																				Start Encounter
+																				className="btn btn-sm btn-success text-white">
+																				Antenatal Assessment
 																			</button>
 																		)}
+																		<button
+																			onClick={() =>
+																				startEncounter(
+																					appointment.id,
+																					appointment?.patient
+																				)
+																			}
+																			className="btn btn-sm btn-info text-white">
+																			Start Encounter
+																		</button>
 																		<Tooltip title="Call Patient">
 																			<a
 																				onClick={() =>

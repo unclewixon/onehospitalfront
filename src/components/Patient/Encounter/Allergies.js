@@ -121,6 +121,14 @@ const Allergies = ({ previous, next, patient }) => {
 				...allergens,
 			];
 			saveAllergens(items);
+
+			dispatch(
+				updateEncounterData({
+					...encounter,
+					allergies: [...items],
+				})
+			);
+
 			setCategory('');
 			setSeverity('');
 			setAllerg('');

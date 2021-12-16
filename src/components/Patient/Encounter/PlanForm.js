@@ -71,6 +71,8 @@ const PlanForm = ({ previous, next, patient }) => {
 
 	const dispatch = useDispatch();
 
+	console.log(patient);
+
 	const loadGenericDrugs = useCallback(async () => {
 		try {
 			dispatch(startBlock());

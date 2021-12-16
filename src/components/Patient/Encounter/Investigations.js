@@ -71,25 +71,52 @@ const Investigations = ({ patient, previous, next }) => {
 
 	const retrieveData = useCallback(async () => {
 		const lab = await storage.getItem(CK_INVESTIGATION_LAB);
-		setSelectedTests(
-			lab ? lab.items : encounter.investigations?.labRequest?.tests || []
-		);
+		const labEncounters = encounter.investigations?.labRequest?.tests || [];
+		const labs = lab ? lab.items : labEncounters;
+		setSelectedTests(labs);
 
 		const scan = await storage.getItem(CK_INVESTIGATION_SCAN);
-		setSelectedScans(
-			scan
-				? scan.items || []
-				: encounter.investigations?.radiologyRequest?.tests || []
-		);
+		const scanEncs = encounter.investigations?.radiologyRequest?.tests || [];
+		const scans = scan ? scan.items : scanEncs;
+		setSelectedScans(scans);
 
 		const item = await storage.getItem(CK_INVESTIGATIONS);
 		if (item) {
 			setFormSet(item);
-			setUrgentLab(item?.urgentLab);
+			setUrgentLab(item?.urgentLab || false);
+			setUrgentScan(item?.urgentScan || false);
 			setValue('scan_request_note', item?.scan_request_note || '');
 			setValue('lab_request_note', item?.lab_request_note || '');
 		}
-	}, [encounter, setValue]);
+
+		const labRequest = {
+			requestType: 'labs',
+			patient_id: patient.id,
+			tests: [...labs],
+			request_note: item?.lab_request_note || '',
+			urgent: item?.urgentLab,
+			pay_later: 0,
+		};
+
+		const radiologyRequest = {
+			requestType: 'scans',
+			patient_id: patient.id,
+			tests: [...scans],
+			request_note: item?.scan_request_note || '',
+			urgent: item?.urgentScan,
+		};
+
+		dispatch(
+			updateEncounterData({
+				...encounter,
+				investigations: {
+					...encounter.investigations,
+					labRequest,
+					radiologyRequest,
+				},
+			})
+		);
+	}, [dispatch, encounter, patient, setValue]);
 
 	useEffect(() => {
 		if (!loaded && patient) {
@@ -150,6 +177,47 @@ const Investigations = ({ patient, previous, next }) => {
 		return res;
 	};
 
+	const onDispatchLab = (items, obj) => {
+		const labRequest = {
+			requestType: 'labs',
+			patient_id: patient.id,
+			tests: [...items],
+			request_note: obj?.lab_request_note || '',
+			urgent: obj?.urgent || false,
+			pay_later: 0,
+		};
+
+		dispatch(
+			updateEncounterData({
+				...encounter,
+				investigations: {
+					...encounter.investigations,
+					labRequest,
+				},
+			})
+		);
+	};
+
+	const onDispatchScan = (items, obj) => {
+		const radiologyRequest = {
+			requestType: 'scans',
+			patient_id: patient.id,
+			tests: [...items],
+			request_note: obj?.scan_request_note || '',
+			urgent: obj?.urgent || false,
+		};
+
+		dispatch(
+			updateEncounterData({
+				...encounter,
+				investigations: {
+					...encounter.investigations,
+					radiologyRequest,
+				},
+			})
+		);
+	};
+
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<div className="form-block encounter">
@@ -170,6 +238,7 @@ const Investigations = ({ patient, previous, next }) => {
 								];
 								setSelectedTests(items);
 								storage.setLocalStorage(CK_INVESTIGATION_LAB, { items });
+								onDispatchLab(items);
 							}}
 						/>
 					</div>
@@ -195,6 +264,7 @@ const Investigations = ({ patient, previous, next }) => {
 								storage.setLocalStorage(CK_INVESTIGATION_LAB, {
 									items: e || [],
 								});
+								onDispatchLab(e || []);
 							}}
 							placeholder="Search Lab Test"
 						/>
@@ -221,6 +291,13 @@ const Investigations = ({ patient, previous, next }) => {
 							name="lab_request_note"
 							rows="3"
 							placeholder="Enter request note"
+							onChange={e => {
+								storage.setLocalStorage(CK_INVESTIGATIONS, {
+									...formset,
+									lab_request_note: e.target.value,
+								});
+								onDispatchLab(selectedTests, { note: e.target.value });
+							}}
 							ref={register}></textarea>
 					</div>
 				</div>
@@ -239,6 +316,7 @@ const Investigations = ({ patient, previous, next }) => {
 											...formset,
 											urgentLab: !urgentLab,
 										});
+										onDispatchLab(selectedTests, { urgent: !urgentLab });
 									}}
 									ref={register}
 								/>
@@ -266,6 +344,7 @@ const Investigations = ({ patient, previous, next }) => {
 								storage.setLocalStorage(CK_INVESTIGATION_SCAN, {
 									items: e || [],
 								});
+								onDispatchScan(e);
 							}}
 							placeholder="Search Scans"
 						/>
@@ -292,6 +371,13 @@ const Investigations = ({ patient, previous, next }) => {
 							name="scan_request_note"
 							rows="3"
 							placeholder="Enter request note"
+							onChange={e => {
+								storage.setLocalStorage(CK_INVESTIGATIONS, {
+									...formset,
+									scan_request_note: e.target.value,
+								});
+								onDispatchScan(selectedScans, { note: e.target.value });
+							}}
 							ref={register}></textarea>
 					</div>
 				</div>
@@ -310,6 +396,7 @@ const Investigations = ({ patient, previous, next }) => {
 											...formset,
 											urgentScan: !urgentScan,
 										});
+										onDispatchScan(selectedScans, { urgent: !urgentScan });
 									}}
 									ref={register}
 								/>

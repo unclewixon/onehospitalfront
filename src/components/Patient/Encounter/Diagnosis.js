@@ -103,6 +103,12 @@ const Diagnosis = ({ previous, next, patient }) => {
 		if (diagnosis !== '' && type !== '') {
 			const items = [...diagnoses, { comment, diagnosis, type }];
 			saveDiagnoses(items);
+
+			updateEncounterData({
+				...encounter,
+				diagnosis: [...items],
+			});
+
 			setDiagnosis('');
 			setComment('');
 			setType('');
@@ -133,10 +139,20 @@ const Diagnosis = ({ previous, next, patient }) => {
 			const filtered = selectedPastDiagnoses.filter(o => o.id !== diagnosis.id);
 			setSelectedPastDiagnoses(filtered);
 			storage.setLocalStorage(CK_PAST_DIAGNOSIS, filtered);
+
+			updateEncounterData({
+				...encounter,
+				pastDiagnosis: [...filtered],
+			});
 		} else {
 			const items = [...selectedPastDiagnoses, { id: diagnosis.id, diagnosis }];
 			setSelectedPastDiagnoses(items);
 			storage.setLocalStorage(CK_PAST_DIAGNOSIS, items);
+
+			updateEncounterData({
+				...encounter,
+				pastDiagnosis: [...items],
+			});
 		}
 	};
 

@@ -91,7 +91,7 @@ class TopBar extends Component {
 		const { profile } = this.props;
 
 		if (profile.role.slug === 'doctor') {
-			request(`hr/staffs/unset-room/${profile.details.id}`, 'GET', true);
+			await request(`hr/staffs/unset-room/${profile.details.id}`, 'GET', true);
 			storage.removeItem('ACTIVE:ROOM');
 		}
 

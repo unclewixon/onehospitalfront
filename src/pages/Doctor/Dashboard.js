@@ -16,7 +16,6 @@ const limit = 15;
 const Dashboard = () => {
 	const [loading, setLoading] = useState(true);
 	const [appointments, setAppointments] = useState([]);
-	const [listenning, setListenning] = useState(false);
 	const [meta, setMeta] = useState({
 		currentPage: 1,
 		itemsPerPage: limit,
@@ -62,35 +61,21 @@ const Dashboard = () => {
 		[appointments]
 	);
 
-	const startListenning = useCallback(() => {
+	useEffect(() => {
+		console.log('listen to sockets');
 		socket.on('consultation-queue', res => {
 			console.log('new appointment message');
+			console.log(appointments);
+			console.log(res);
 			if (res.success) {
-				console.log(res.queue);
-				const today = moment().format('YYYY-MM-DD');
-				console.log(today);
-				if (
-					moment(res.queue.appointment.appointment_date).format(
-						'YYYY-MM-DD'
-					) === today
-				) {
-					console.log(appointments);
-					console.log(res.queue.appointment);
-					const list = [res.queue.appointment, ...appointments];
-					setAppointments(list);
-					setMeta({ ...meta, totalPages: meta.totalPages + 1 });
-					console.log(list);
-				}
+				const list = [res.queue.appointment, ...appointments];
+				setAppointments(list);
+				setMeta({ ...meta, totalPages: meta.totalPages + 1 });
+				console.log(list);
 			}
 		});
-	}, [appointments, meta]);
-
-	useEffect(() => {
-		if (!listenning) {
-			startListenning();
-			setListenning(true);
-		}
-	}, [listenning, startListenning]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const onNavigatePage = nextPage => {
 		dispatch(startBlock());
