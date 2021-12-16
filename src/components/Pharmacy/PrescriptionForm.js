@@ -13,7 +13,12 @@ import { ReactComponent as EditIcon } from '../../assets/svg-icons/edit.svg';
 import { ReactComponent as TrashIcon } from '../../assets/svg-icons/trash.svg';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { diagnosisAPI, searchAPI } from '../../services/constants';
-import { request, hasExpired, patientname } from '../../services/utilities';
+import {
+	request,
+	hasExpired,
+	patientname,
+	parseFrequency,
+} from '../../services/utilities';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const defaultValues = {
@@ -587,7 +592,12 @@ const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 									<td>{item.generic?.name || '--'}</td>
 									<td>{item.drug?.name || '--'}</td>
 									<td>
-										<div className="badge badge-dark">{`${item.quantity} - ${item.frequency}x ${item.frequencyType} for ${item.duration} ${item.frequencyType}`}</div>
+										<div className="badge badge-dark">{`${item.quantity} - ${
+											item.frequency
+										}x ${item.frequencyType} ${parseFrequency(
+											item.frequencyType,
+											item.duration
+										)}`}</div>
 									</td>
 									<td>
 										{item.diagnosis && item.diagnosis.length > 0

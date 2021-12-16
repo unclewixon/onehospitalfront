@@ -12,6 +12,7 @@ import {
 	formatCurrency,
 	request,
 	hasExpired,
+	parseFrequency,
 } from '../../../services/utilities';
 import { startBlock, stopBlock } from '../../../actions/redux-block';
 import { notifyError } from '../../../services/notify';
@@ -443,7 +444,14 @@ const Prescription = ({
 												<td>{item.generic?.name || '--'}</td>
 												<td>{item.drug?.name || '--'}</td>
 												<td>
-													<div className="badge badge-dark">{`${item.dose_quantity} - ${item.frequency}x ${item.frequencyType} for ${item.duration} days`}</div>
+													<div className="badge badge-dark">{`${
+														item.dose_quantity
+													} - ${item.frequency}x ${
+														item.frequencyType
+													} ${parseFrequency(
+														item.frequencyType,
+														item.duration
+													)}`}</div>
 												</td>
 												<td>
 													<div className="display-flex">
