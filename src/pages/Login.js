@@ -155,6 +155,10 @@ const Login = ({ location, history, error, handleSubmit }) => {
 
 	const { submitting } = state;
 
+	const query = location.search.replace('?', '');
+	const sessions = query.split('=');
+	const session = sessions.length > 0 ? sessions[0] : '';
+
 	return (
 		<section className="fxt-animation template">
 			<div className="bg-overlay">
@@ -166,6 +170,12 @@ const Login = ({ location, history, error, handleSubmit }) => {
 					</div>
 					<div className="fxt-form">
 						<form onSubmit={handleSubmit(doLogin)} autoComplete="off">
+							{session !== '' && (
+								<div
+									className="alert alert-danger"
+									dangerouslySetInnerHTML={{ __html: `Session Expired!` }}
+								/>
+							)}
 							{error && (
 								<div
 									className="alert alert-danger"

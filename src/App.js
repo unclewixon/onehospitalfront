@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import ReduxBlockUi from 'react-block-ui/redux';
 import { AbilityBuilder } from '@casl/ability';
+import IdleTimer from 'react-idle-timer';
 
 import ScrollToTop from './containers/ScrollToTop';
 import TopBar from './components/TopBar';
@@ -12,10 +13,33 @@ import ModalDialogs from './components/Modals/ModalDialogs';
 import Splash from './components/Splash';
 import SlidingPane from './components/SlidingPane';
 import SSRStorage from './services/storage';
-import { FULLSCREEN_COOKIE, MODE_COOKIE } from './services/constants';
-import { toggleProfile } from './actions/user';
+import {
+	FULLSCREEN_COOKIE,
+	MODE_COOKIE,
+	TOKEN_COOKIE,
+	USER_RECORD,
+	CK_COMPLAINTS,
+	CK_REVIEW_OF_SYSTEMS,
+	CK_HX_FORMS,
+	CK_PAST_HISTORY,
+	CK_ALLERGIES,
+	CK_PAST_ALLERGIES,
+	CK_PHYSICAL_EXAM,
+	CK_INVESTIGATIONS,
+	CK_INVESTIGATION_LAB,
+	CK_INVESTIGATION_SCAN,
+	CK_INVESTIGATION_REGIMEN,
+	CK_INVESTIGATION_PROCEDURE,
+	CK_TREATMENT_PLAN,
+	CK_CONSUMABLE,
+	CK_ITEM_OTHERS,
+	CK_DIAGNOSIS,
+	CK_PAST_DIAGNOSIS,
+} from './services/constants';
+import { toggleProfile, signOut } from './actions/user';
 import ability from './services/ability';
 import { AbilityContext } from './components/common/Can';
+import { request } from './services/utilities';
 
 import Login from './pages/Login';
 import ChangePassword from './pages/ChangePassword';
@@ -52,6 +76,25 @@ const Records = lazy(() => import('./pages/Records/Home'));
 const storage = new SSRStorage();
 
 class App extends Component {
+	constructor(props) {
+		super(props);
+		this.idleTimer = null;
+		this.timeout = 1000 * 60 * 10;
+
+		this.state = {
+			remaining: this.timeout,
+			isIdle: false,
+			lastActive: new Date(),
+			elapsed: 0,
+			lastEvent: 'Events Emitted on Leader',
+			leader: false,
+		};
+
+		// Bind event handlers and methods
+		this.handleOnActive = this.handleOnActive.bind(this);
+		this.handleOnIdle = this.handleOnIdle.bind(this);
+	}
+
 	async componentDidMount() {
 		const fullscreen = await storage.getItem(FULLSCREEN_COOKIE);
 		const theme_mode = await storage.getItem(MODE_COOKIE);
@@ -70,6 +113,68 @@ class App extends Component {
 		window.document.body.className = `menu-position-side menu-side-left${
 			fullscreen || isLogin ? ' full-screen' : ''
 		} with-content-panel${theme_mode ? ' color-scheme-dark' : ''}`;
+
+		if (this.idleTimer) {
+			this.setState({
+				remaining: this.idleTimer.getRemainingTime(),
+				lastActive: this.idleTimer.getLastActiveTime(),
+				elapsed: this.idleTimer.getElapsedTime(),
+				leader: this.idleTimer.isLeader(),
+				isIdle: this.idleTimer.isIdle(),
+			});
+
+			setInterval(() => {
+				this.setState({
+					remaining: this.idleTimer.getRemainingTime(),
+					lastActive: this.idleTimer.getLastActiveTime(),
+					elapsed: this.idleTimer.getElapsedTime(),
+					leader: this.idleTimer.isLeader(),
+					isIdle: this.idleTimer.isIdle(),
+				});
+			}, 1000);
+		}
+	}
+
+	doLogout = async () => {
+		const { profile } = this.props;
+		if (profile.role.slug === 'doctor') {
+			await request(`hr/staffs/unset-room/${profile.details.id}`, 'GET', true);
+			storage.removeItem('ACTIVE:ROOM');
+		}
+
+		storage.removeItem(USER_RECORD);
+		storage.removeItem(TOKEN_COOKIE);
+
+		storage.removeItem(CK_COMPLAINTS);
+		storage.removeItem(CK_REVIEW_OF_SYSTEMS);
+		storage.removeItem(CK_HX_FORMS);
+		storage.removeItem(CK_PAST_HISTORY);
+		storage.removeItem(CK_ALLERGIES);
+		storage.removeItem(CK_PAST_ALLERGIES);
+		storage.removeItem(CK_PHYSICAL_EXAM);
+		storage.removeItem(CK_INVESTIGATIONS);
+		storage.removeItem(CK_INVESTIGATION_LAB);
+		storage.removeItem(CK_INVESTIGATION_SCAN);
+		storage.removeItem(CK_INVESTIGATION_REGIMEN);
+		storage.removeItem(CK_INVESTIGATION_PROCEDURE);
+		storage.removeItem(CK_TREATMENT_PLAN);
+		storage.removeItem(CK_CONSUMABLE);
+		storage.removeItem(CK_ITEM_OTHERS);
+		storage.removeItem(CK_DIAGNOSIS);
+		storage.removeItem(CK_PAST_DIAGNOSIS);
+
+		this.props.signOut();
+
+		this.props.history.push('/?session=expired');
+	};
+
+	handleOnActive() {
+		this.setState({ lastEvent: 'active' });
+	}
+
+	handleOnIdle() {
+		this.setState({ lastEvent: 'idle' });
+		this.doLogout();
 	}
 
 	render() {
@@ -104,6 +209,9 @@ class App extends Component {
 								</Switch>
 							) : (
 								<AbilityContext.Provider value={ability}>
+									<div>
+										<h1>Idle: {this.state.isIdle.toString()}</h1>
+									</div>
 									<ReduxBlockUi block="REQUEST_START" unblock="REQUEST_STOP">
 										<div className="all-wrapper with-side-panel solid-bg-all">
 											<Suspense fallback={<Splash />}>
@@ -179,6 +287,19 @@ class App extends Component {
 									{is_modal_open && (
 										<div className={`modal-backdrop fade show`} />
 									)}
+									<IdleTimer
+										ref={ref => {
+											this.idleTimer = ref;
+										}}
+										onActive={this.handleOnActive}
+										onIdle={this.handleOnIdle}
+										timeout={this.timeout}
+										crossTab={{
+											emitOnAllTabs: true,
+										}}
+										startOnMount={true}
+										stopOnIdle={true}
+									/>
 								</AbilityContext.Provider>
 							)}
 						</>
@@ -214,4 +335,6 @@ const mapStateToProps = state => {
 	};
 };
 
-export default withRouter(connect(mapStateToProps, { toggleProfile })(App));
+export default withRouter(
+	connect(mapStateToProps, { toggleProfile, signOut })(App)
+);

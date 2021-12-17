@@ -63,6 +63,7 @@
 		"react-final-form": "^6.5.7",
 		"react-hook-form": "^4.9.8",
 		"react-icons": "^3.10.0",
+		"react-idle-timer": "^4.6.4",
 		"react-modal": "^3.11.1",
 		"react-redux": "^7.2.0",
 		"react-router-dom": "^5.1.2",

@@ -123,7 +123,7 @@ const ChangePassword = ({ location, history, error, handleSubmit }) => {
 
 	const doLogout = async () => {
 		if (user.role.slug === 'doctor') {
-			request(`hr/staffs/unset-room/${user.details.id}`, 'GET', true);
+			await request(`hr/staffs/unset-room/${user.details.id}`, 'GET', true);
 			storage.removeItem('ACTIVE:ROOM');
 		}
 

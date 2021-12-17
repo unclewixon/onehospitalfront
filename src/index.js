@@ -89,6 +89,8 @@ const initData = async () => {
 		// console.log(e.response);
 	}
 
+	const query = history.location.search.replace('?', '');
+	const qs = query !== 'not-authenticated' ? query : 'not-authenticated';
 	const user = await getUser();
 	if (user) {
 		try {
@@ -146,11 +148,11 @@ const initData = async () => {
 			// console.log(e);
 			storage.removeItem(TOKEN_COOKIE);
 			store.dispatch(togglePreloading(false));
-			history.push('/?not-authenticated');
+			history.push(`/?${qs}`);
 		}
 	} else {
 		store.dispatch(togglePreloading(false));
-		history.push('/?not-authenticated');
+		history.push(`/?${qs}`);
 	}
 };
 
