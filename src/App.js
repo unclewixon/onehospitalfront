@@ -40,6 +40,7 @@ import { toggleProfile, signOut } from './actions/user';
 import ability from './services/ability';
 import { AbilityContext } from './components/common/Can';
 import { request } from './services/utilities';
+import { notifyError } from './services/notify';
 
 import Login from './pages/Login';
 import ChangePassword from './pages/ChangePassword';
@@ -165,6 +166,7 @@ class App extends Component {
 
 		this.props.signOut();
 
+		notifyError('session time out!');
 		this.props.history.push('/?session=expired');
 	};
 
@@ -209,9 +211,6 @@ class App extends Component {
 								</Switch>
 							) : (
 								<AbilityContext.Provider value={ability}>
-									<div>
-										<h1>Idle: {this.state.isIdle.toString()}</h1>
-									</div>
 									<ReduxBlockUi block="REQUEST_START" unblock="REQUEST_STOP">
 										<div className="all-wrapper with-side-panel solid-bg-all">
 											<Suspense fallback={<Splash />}>
@@ -297,7 +296,6 @@ class App extends Component {
 										crossTab={{
 											emitOnAllTabs: true,
 										}}
-										startOnMount={true}
 										stopOnIdle={true}
 									/>
 								</AbilityContext.Provider>
