@@ -189,7 +189,7 @@ const ClinicalTasks = () => {
 	};
 
 	return (
-		<>
+		<div className="element-wrapper">
 			<h6 className="element-header">Clinical Tasks</h6>
 			<div className="element-box p-3 m-0 mt-3">
 				<div className="table table-responsive">
@@ -336,7 +336,7 @@ const ClinicalTasks = () => {
 			{showChartModal && (
 				<CreateChart closeModal={closeModal} taskItem={taskItem} />
 			)}
-		</>
+		</div>
 	);
 };
 

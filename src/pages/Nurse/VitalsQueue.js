@@ -79,7 +79,7 @@ const VitalsQueue = () => {
 	};
 
 	return (
-		<>
+		<div className="element-wrapper">
 			<h6 className="element-header">List of patients in queue for vitals</h6>
 			<div className="element-box p-3 m-0">
 				{loading ? (
@@ -148,7 +148,7 @@ const VitalsQueue = () => {
 					</div>
 				)}
 			</div>
-		</>
+		</div>
 	);
 };
 

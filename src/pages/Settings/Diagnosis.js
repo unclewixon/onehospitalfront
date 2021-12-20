@@ -111,9 +111,7 @@ const Diagnosis = () => {
 						<div className="os-tabs-controls os-tabs-complex">
 							<ul className="nav nav-tabs upper">
 								<li className="nav-item">
-									<a aria-expanded="true" className="nav-link active">
-										Diagnosis
-									</a>
+									<a className="nav-link active">Diagnosis</a>
 								</li>
 								<li className="nav-item nav-actions d-sm-block">
 									<div className="row no-gutters">

@@ -29,7 +29,7 @@ const DoctorMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/nurse/in-patients/care">
+				<Link to="/nurse/in-patients/admitted">
 					<div className="icon-w">
 						<div className="icon-feather-folder-plus" />
 					</div>
@@ -50,6 +50,14 @@ const DoctorMenu = () => {
 						<div className="os-icon os-icon-documents-13" />
 					</div>
 					<span>Antenatal</span>
+				</Link>
+			</li>
+			<li>
+				<Link to="/labour-mgt">
+					<div className="icon-w">
+						<div className="os-icon os-icon-documents-13" />
+					</div>
+					<span>Labour Management</span>
 				</Link>
 			</li>
 		</>

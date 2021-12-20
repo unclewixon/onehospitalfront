@@ -24,7 +24,6 @@ const Cafeteria = ({ location }) => {
 					<ul className="nav nav-tabs upper">
 						<li className="nav-item">
 							<Link
-								aria-expanded="true"
 								className={`nav-link ${
 									activePage === 'cafeteria' ? 'active' : ''
 								}`}

@@ -4,11 +4,11 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { updateEncounterData } from '../../../actions/patient';
 import SSRStorage from '../../../services/storage';
-import { CK_COMPLAINTS } from '../../../services/constants';
+import { defaultEncounter, CK_ENCOUNTER } from '../../../services/constants';
 
 const storage = new SSRStorage();
 
-const Complaints = ({ next }) => {
+const Complaints = ({ next, patient }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [complaint, setComplaint] = useState('');
 
@@ -19,22 +19,27 @@ const Complaints = ({ next }) => {
 	const saveComplaints = useCallback(
 		data => {
 			setComplaint(data);
-			storage.setLocalStorage(CK_COMPLAINTS, data);
-
 			dispatch(
-				updateEncounterData({
-					...encounter,
-					complaints: data,
-				})
+				updateEncounterData(
+					{
+						...encounter,
+						complaints: data,
+					},
+					patient.id
+				)
 			);
 		},
-		[dispatch, encounter]
+		[dispatch, encounter, patient]
 	);
 
 	const retrieveData = useCallback(async () => {
-		const data = await storage.getItem(CK_COMPLAINTS);
-		saveComplaints(data || encounter.complaints);
-	}, [encounter, saveComplaints]);
+		const data = await storage.getItem(CK_ENCOUNTER);
+		const encounterData =
+			data && data.patient_id === patient.id
+				? data?.encounter?.complaints
+				: null;
+		saveComplaints(encounterData || defaultEncounter.complaints);
+	}, [patient, saveComplaints]);
 
 	useEffect(() => {
 		if (!loaded) {
@@ -45,8 +50,10 @@ const Complaints = ({ next }) => {
 
 	const onSubmit = async e => {
 		e.preventDefault();
-		dispatch(updateEncounterData({ ...encounter, complaints: complaint }));
-		dispatch(next);
+		dispatch(
+			updateEncounterData({ ...encounter, complaints: complaint }, patient.id)
+		);
+		next();
 	};
 
 	return (
@@ -89,7 +96,6 @@ const Complaints = ({ next }) => {
 						</div>
 					</div>
 				</div>
-
 				<div className="row mt-5">
 					<div className="col-sm-12 d-flex ant-row-flex-space-between">
 						<button className="btn btn-primary" disabled>

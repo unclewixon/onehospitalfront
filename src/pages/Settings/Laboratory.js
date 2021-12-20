@@ -60,7 +60,6 @@ const Laboratory = () => {
 									<ul className="nav nav-tabs upper">
 										<li className="nav-item">
 											<a
-												aria-expanded="true"
 												className={`nav-link ${labCategoryTab ? 'active' : ''}`}
 												onClick={onLabCategory}>
 												Categories

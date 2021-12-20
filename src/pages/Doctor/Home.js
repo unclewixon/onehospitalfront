@@ -81,7 +81,7 @@ const Doctor = ({ match }) => {
 							{activeRoom && selected && (
 								<div
 									className="d-flex mb-1"
-									style={{ justifyContent: 'end', alignItems: 'center' }}>
+									style={{ justifyContent: 'flex-end', alignItems: 'center' }}>
 									<h6 className="m-0">
 										Active Room:{' '}
 										<span className="text-success">{activeRoom.name}</span>

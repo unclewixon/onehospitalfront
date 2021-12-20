@@ -52,12 +52,7 @@ const SendMail = () => {
 						<div className="os-tabs-controls os-tabs-complex">
 							<ul className="nav nav-tabs upper">
 								<li className="nav-item">
-									<a
-										aria-expanded="true"
-										className="nav-link active"
-										data-toggle="tab">
-										Send Email
-									</a>
+									<a className="nav-link active">Send Email</a>
 								</li>
 							</ul>
 						</div>

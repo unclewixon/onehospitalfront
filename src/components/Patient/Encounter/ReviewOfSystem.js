@@ -3,15 +3,16 @@ import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
+	defaultEncounter,
 	reviewOfSystem,
-	CK_REVIEW_OF_SYSTEMS,
+	CK_ENCOUNTER,
 } from '../../../services/constants';
 import { updateEncounterData } from '../../../actions/patient';
 import SSRStorage from '../../../services/storage';
 
 const storage = new SSRStorage();
 
-const ReviewOfSystem = ({ next, previous }) => {
+const ReviewOfSystem = ({ next, previous, patient }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [system, setSystem] = useState(null);
 	const [options, setOptions] = useState([]);
@@ -23,22 +24,27 @@ const ReviewOfSystem = ({ next, previous }) => {
 	const saveOptions = useCallback(
 		data => {
 			setOptions(data);
-			storage.setLocalStorage(CK_REVIEW_OF_SYSTEMS, data);
-
 			dispatch(
-				updateEncounterData({
-					...encounter,
-					reviewOfSystem: data,
-				})
+				updateEncounterData(
+					{
+						...encounter,
+						reviewOfSystem: data,
+					},
+					patient.id
+				)
 			);
 		},
-		[dispatch, encounter]
+		[dispatch, encounter, patient]
 	);
 
 	const retrieveData = useCallback(async () => {
-		const data = await storage.getItem(CK_REVIEW_OF_SYSTEMS);
-		saveOptions(data || encounter.reviewOfSystem);
-	}, [encounter, saveOptions]);
+		const data = await storage.getItem(CK_ENCOUNTER);
+		const encounterData =
+			data && data.patient_id === patient.id
+				? data?.encounter?.reviewOfSystem
+				: null;
+		saveOptions(encounterData || defaultEncounter.reviewOfSystem);
+	}, [patient, saveOptions]);
 
 	useEffect(() => {
 		if (!loaded) {
@@ -66,7 +72,9 @@ const ReviewOfSystem = ({ next, previous }) => {
 	};
 
 	const onSubmit = () => {
-		dispatch(updateEncounterData({ ...encounter, reviewOfSystem: options }));
+		dispatch(
+			updateEncounterData({ ...encounter, reviewOfSystem: options }, patient.id)
+		);
 		dispatch(next);
 		next();
 	};

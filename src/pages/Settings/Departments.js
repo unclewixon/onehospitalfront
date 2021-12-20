@@ -119,9 +119,7 @@ const Departments = () => {
 						<div className="os-tabs-controls os-tabs-complex">
 							<ul className="nav nav-tabs upper">
 								<li className="nav-item">
-									<a aria-expanded="true" className="nav-link active">
-										Departments
-									</a>
+									<a className="nav-link active">Departments</a>
 								</li>
 							</ul>
 						</div>

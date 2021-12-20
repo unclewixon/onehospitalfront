@@ -480,7 +480,7 @@ export const redirectToPage = (role, history) => {
 	try {
 		switch (role.slug) {
 			case 'front-desk':
-				uri = '/front-desk';
+				uri = '/front-desk/appointments/queue';
 				break;
 			case 'hr-manager':
 				uri = '/hr/staffs';
@@ -532,11 +532,11 @@ export const redirectToPage = (role, history) => {
 				uri = '/store';
 				break;
 			default:
-				uri = '/front-desk';
+				uri = '/front-desk/appointments/queue';
 				break;
 		}
 	} catch (e) {
-		uri = '/front-desk';
+		uri = '/front-desk/appointments/queue';
 	}
 
 	if (uri !== '') {
@@ -696,7 +696,10 @@ export const parseNote = note => {
 	}
 
 	if (note.type === 'allergy') {
-		return `${note.allergy} [${note.category}] - ${note.reaction} (${note.severity})`;
+		const generic = note?.generic?.name || '--';
+		return `${note.allergy} [${note.category}${
+			note.category === 'Drug' ? ` - ${generic}` : ''
+		}] - ${note.reaction} (${note.severity})`;
 	}
 
 	if (note.type === 'patient-history') {

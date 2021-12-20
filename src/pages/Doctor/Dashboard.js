@@ -5,11 +5,15 @@ import { withRouter } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 
-import { socket } from '../../services/constants';
+import { socket, CK_ENCOUNTER } from '../../services/constants';
 import { request, itemRender, updateImmutable } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import AppointmentTable from '../../components/Doctor/AppointmentTable';
 import { startBlock, stopBlock } from '../../actions/redux-block';
+import { updateEncounterData } from '../../actions/patient';
+import SSRStorage from '../../services/storage';
+
+const storage = new SSRStorage();
 
 const limit = 15;
 
@@ -47,11 +51,19 @@ const Dashboard = () => {
 		[dispatch]
 	);
 
+	const loadEncounter = useCallback(async () => {
+		const data = await storage.getItem(CK_ENCOUNTER);
+		if (data && data.patient_id !== '') {
+			dispatch(updateEncounterData(data.encounter, data.patient_id));
+		}
+	}, [dispatch]);
+
 	useEffect(() => {
 		if (loading) {
 			getAppointments();
+			loadEncounter();
 		}
-	}, [getAppointments, loading]);
+	}, [getAppointments, loadEncounter, loading]);
 
 	const updateAppointment = useCallback(
 		e => {

@@ -49,7 +49,7 @@ const Condition = ({ when, is, children }) => (
 );
 
 const PatientForm = ({ patient, closeModal, history, location }) => {
-	const path = location.pathname.split('/').pop();
+	const path = location.pathname.split('/');
 
 	const [loaded, setLoaded] = useState(false);
 	const [hmo, setHmo] = useState(null);
@@ -198,7 +198,7 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 				dispatch(stopBlock());
 				if (rs.success) {
 					notifySuccess('Patient account created!');
-					if (path === 'front-desk') {
+					if (path[1] === 'front-desk') {
 						history.push('/front-desk/patients');
 					} else {
 						messageService.sendMessage({

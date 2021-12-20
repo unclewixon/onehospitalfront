@@ -124,12 +124,7 @@ const ConsultingRoom = () => {
 						<div className="os-tabs-controls os-tabs-complex">
 							<ul className="nav nav-tabs upper">
 								<li className="nav-item">
-									<a
-										aria-expanded="true"
-										className="nav-link active"
-										data-toggle="tab">
-										Consulting Rooms
-									</a>
+									<a className="nav-link active">Consulting Rooms</a>
 								</li>
 							</ul>
 						</div>

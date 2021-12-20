@@ -4,11 +4,7 @@ import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
-import {
-	CK_INVESTIGATION_LAB,
-	CK_INVESTIGATION_SCAN,
-	CK_INVESTIGATIONS,
-} from '../../../services/constants';
+import { CK_ENCOUNTER } from '../../../services/constants';
 import { request, formatCurrency } from '../../../services/utilities';
 import { notifyError } from '../../../services/notify';
 import { startBlock, stopBlock } from '../../../actions/redux-block';
@@ -30,12 +26,8 @@ const Investigations = ({ patient, previous, next }) => {
 		defaultValues,
 	});
 
-	const encounter = useSelector(state => state.patient.encounterData);
-
 	const [loaded, setLoaded] = useState(false);
-
 	const [groups, setGroups] = useState([]);
-	const [formset, setFormSet] = useState(null);
 
 	// selected requests
 	const [selectedTests, setSelectedTests] = useState([]);
@@ -46,6 +38,8 @@ const Investigations = ({ patient, previous, next }) => {
 
 	// radiology
 	const [urgentScan, setUrgentScan] = useState(false);
+
+	const encounter = useSelector(state => state.patient.encounterData);
 
 	const dispatch = useDispatch();
 
@@ -70,31 +64,42 @@ const Investigations = ({ patient, previous, next }) => {
 	}, [dispatch]);
 
 	const retrieveData = useCallback(async () => {
-		const lab = await storage.getItem(CK_INVESTIGATION_LAB);
-		const labEncounters = encounter.investigations?.labRequest?.tests || [];
-		const labs = lab ? lab.items : labEncounters;
+		const data = await storage.getItem(CK_ENCOUNTER);
+
+		const investigationsData =
+			data && data.patient_id === patient.id
+				? data.encounter?.investigations
+				: null;
+
+		setUrgentLab(investigationsData?.labRequest?.urgentLab || false);
+		setValue(
+			'lab_request_note',
+			investigationsData?.labRequest?.lab_request_note || ''
+		);
+
+		setUrgentScan(investigationsData?.radiologyRequest?.urgentScan || false);
+		setValue(
+			'scan_request_note',
+			investigationsData?.radiologyRequest?.scan_request_note || ''
+		);
+
+		const labs = investigationsData.labRequest
+			? [...investigationsData.labRequest.tests]
+			: [];
+
+		const scans = investigationsData.radiologyRequest
+			? [...investigationsData.radiologyRequest.tests]
+			: [];
+
 		setSelectedTests(labs);
-
-		const scan = await storage.getItem(CK_INVESTIGATION_SCAN);
-		const scanEncs = encounter.investigations?.radiologyRequest?.tests || [];
-		const scans = scan ? scan.items : scanEncs;
 		setSelectedScans(scans);
-
-		const item = await storage.getItem(CK_INVESTIGATIONS);
-		if (item) {
-			setFormSet(item);
-			setUrgentLab(item?.urgentLab || false);
-			setUrgentScan(item?.urgentScan || false);
-			setValue('scan_request_note', item?.scan_request_note || '');
-			setValue('lab_request_note', item?.lab_request_note || '');
-		}
 
 		const labRequest = {
 			requestType: 'labs',
 			patient_id: patient.id,
 			tests: [...labs],
-			request_note: item?.lab_request_note || '',
-			urgent: item?.urgentLab,
+			request_note: investigationsData?.labRequest?.lab_request_note || '',
+			urgent: investigationsData?.labRequest?.urgentLab || false,
 			pay_later: 0,
 		};
 
@@ -102,19 +107,23 @@ const Investigations = ({ patient, previous, next }) => {
 			requestType: 'scans',
 			patient_id: patient.id,
 			tests: [...scans],
-			request_note: item?.scan_request_note || '',
-			urgent: item?.urgentScan,
+			request_note:
+				investigationsData?.radiologyRequest?.scan_request_note || '',
+			urgent: investigationsData?.radiologyRequest?.urgentScan || false,
 		};
 
 		dispatch(
-			updateEncounterData({
-				...encounter,
-				investigations: {
-					...encounter.investigations,
-					labRequest,
-					radiologyRequest,
+			updateEncounterData(
+				{
+					...encounter,
+					investigations: {
+						...encounter.investigations,
+						labRequest,
+						radiologyRequest,
+					},
 				},
-			})
+				patient.id
+			)
 		);
 	}, [dispatch, encounter, patient, setValue]);
 
@@ -145,16 +154,19 @@ const Investigations = ({ patient, previous, next }) => {
 		};
 
 		dispatch(
-			updateEncounterData({
-				...encounter,
-				investigations: {
-					...encounter.investigations,
-					labRequest,
-					radiologyRequest,
+			updateEncounterData(
+				{
+					...encounter,
+					investigations: {
+						...encounter.investigations,
+						labRequest,
+						radiologyRequest,
+					},
 				},
-			})
+				patient.id
+			)
 		);
-		dispatch(next);
+		next();
 	};
 
 	const getLabTests = async q => {
@@ -188,13 +200,16 @@ const Investigations = ({ patient, previous, next }) => {
 		};
 
 		dispatch(
-			updateEncounterData({
-				...encounter,
-				investigations: {
-					...encounter.investigations,
-					labRequest,
+			updateEncounterData(
+				{
+					...encounter,
+					investigations: {
+						...encounter.investigations,
+						labRequest,
+					},
 				},
-			})
+				patient.id
+			)
 		);
 	};
 
@@ -208,13 +223,16 @@ const Investigations = ({ patient, previous, next }) => {
 		};
 
 		dispatch(
-			updateEncounterData({
-				...encounter,
-				investigations: {
-					...encounter.investigations,
-					radiologyRequest,
+			updateEncounterData(
+				{
+					...encounter,
+					investigations: {
+						...encounter.investigations,
+						radiologyRequest,
+					},
 				},
-			})
+				patient.id
+			)
 		);
 	};
 
@@ -237,7 +255,6 @@ const Investigations = ({ patient, previous, next }) => {
 									...e.tests.map(t => ({ ...t.labTest })),
 								];
 								setSelectedTests(items);
-								storage.setLocalStorage(CK_INVESTIGATION_LAB, { items });
 								onDispatchLab(items);
 							}}
 						/>
@@ -261,9 +278,6 @@ const Investigations = ({ patient, previous, next }) => {
 								} else {
 									setSelectedTests([]);
 								}
-								storage.setLocalStorage(CK_INVESTIGATION_LAB, {
-									items: e || [],
-								});
 								onDispatchLab(e || []);
 							}}
 							placeholder="Search Lab Test"
@@ -292,10 +306,6 @@ const Investigations = ({ patient, previous, next }) => {
 							rows="3"
 							placeholder="Enter request note"
 							onChange={e => {
-								storage.setLocalStorage(CK_INVESTIGATIONS, {
-									...formset,
-									lab_request_note: e.target.value,
-								});
 								onDispatchLab(selectedTests, { note: e.target.value });
 							}}
 							ref={register}></textarea>
@@ -312,10 +322,6 @@ const Investigations = ({ patient, previous, next }) => {
 									checked={urgentLab}
 									onChange={e => {
 										setUrgentLab(!urgentLab);
-										storage.setLocalStorage(CK_INVESTIGATIONS, {
-											...formset,
-											urgentLab: !urgentLab,
-										});
 										onDispatchLab(selectedTests, { urgent: !urgentLab });
 									}}
 									ref={register}
@@ -341,9 +347,6 @@ const Investigations = ({ patient, previous, next }) => {
 							loadOptions={getServices}
 							onChange={e => {
 								setSelectedScans(e || []);
-								storage.setLocalStorage(CK_INVESTIGATION_SCAN, {
-									items: e || [],
-								});
 								onDispatchScan(e);
 							}}
 							placeholder="Search Scans"
@@ -372,10 +375,6 @@ const Investigations = ({ patient, previous, next }) => {
 							rows="3"
 							placeholder="Enter request note"
 							onChange={e => {
-								storage.setLocalStorage(CK_INVESTIGATIONS, {
-									...formset,
-									scan_request_note: e.target.value,
-								});
 								onDispatchScan(selectedScans, { note: e.target.value });
 							}}
 							ref={register}></textarea>
@@ -392,10 +391,6 @@ const Investigations = ({ patient, previous, next }) => {
 									checked={urgentScan}
 									onChange={e => {
 										setUrgentScan(!urgentScan);
-										storage.setLocalStorage(CK_INVESTIGATIONS, {
-											...formset,
-											urgentScan: !urgentScan,
-										});
 										onDispatchScan(selectedScans, { urgent: !urgentScan });
 									}}
 									ref={register}

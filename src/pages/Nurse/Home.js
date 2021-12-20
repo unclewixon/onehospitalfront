@@ -14,22 +14,24 @@ const Nurse = ({ match }) => {
 			<div className="content-box">
 				<div className="row">
 					<div className="col-sm-12">
-						<div className="element-wrapper">
-							<Suspense fallback={<Splash />}>
-								<Switch>
-									<Route exact path={`${match.url}`} component={VitalsQueue} />
-									<Route
-										path={`${match.url}/in-patients/care`}
-										component={InPatientCare}
-									/>
-									<Route
-										path={`${match.url}/in-patients/tasks`}
-										component={ClinicalTasks}
-									/>
-									<Route component={NoMatch} />
-								</Switch>
-							</Suspense>
-						</div>
+						<Suspense fallback={<Splash />}>
+							<Switch>
+								<Route exact path={`${match.url}`} component={VitalsQueue} />
+								<Route
+									path={`${match.url}/in-patients/admitted`}
+									component={InPatientCare}
+								/>
+								<Route
+									path={`${match.url}/in-patients/discharged`}
+									component={InPatientCare}
+								/>
+								<Route
+									path={`${match.url}/in-patients/tasks`}
+									component={ClinicalTasks}
+								/>
+								<Route component={NoMatch} />
+							</Switch>
+						</Suspense>
 					</div>
 				</div>
 			</div>

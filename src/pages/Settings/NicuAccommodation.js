@@ -132,12 +132,7 @@ const NicuAccommodation = () => {
 						<div className="os-tabs-controls os-tabs-complex">
 							<ul className="nav nav-tabs upper">
 								<li className="nav-item">
-									<a
-										aria-expanded="true"
-										className="nav-link active"
-										data-toggle="tab">
-										Nicu Accommodations
-									</a>
+									<a className="nav-link active">Nicu Accommodations</a>
 								</li>
 							</ul>
 						</div>

@@ -10,8 +10,9 @@ import { allergyCategories, severities } from '../../../services/constants';
 import { request } from '../../../services/utilities';
 import { notifyError } from '../../../services/notify';
 import { ReactComponent as TrashIcon } from '../../../assets/svg-icons/trash.svg';
-import { CK_ALLERGIES, CK_PAST_ALLERGIES } from '../../../services/constants';
+import { defaultEncounter, CK_ENCOUNTER } from '../../../services/constants';
 import SSRStorage from '../../../services/storage';
+import { startBlock, stopBlock } from '../../../actions/redux-block';
 
 const storage = new SSRStorage();
 
@@ -25,14 +26,27 @@ const Allergies = ({ previous, next, patient }) => {
 	const [severity, setSeverity] = useState('');
 	const [reaction, setReaction] = useState('');
 	const [allerg, setAllerg] = useState('');
-	const [drug, setDrug] = useState('');
 	const [existing, setExisting] = useState(false);
 	// eslint-disable-next-line no-unused-vars
 	const [meta, setMeta] = useState(null);
+	const [genericDrugs, setGenericDrugs] = useState([]);
+	const [generic, setGeneric] = useState(null);
 
 	const encounter = useSelector(state => state.patient.encounterData);
 
 	const dispatch = useDispatch();
+
+	const loadGenericDrugs = useCallback(async () => {
+		try {
+			dispatch(startBlock());
+			const rs = await request('inventory/generics?limit=1000', 'GET', true);
+			setGenericDrugs(rs.result);
+			dispatch(stopBlock());
+		} catch (e) {
+			dispatch(stopBlock());
+			notifyError('Error while fetching generic names');
+		}
+	}, [dispatch]);
 
 	const fetchAllergies = useCallback(async () => {
 		try {
@@ -49,48 +63,60 @@ const Allergies = ({ previous, next, patient }) => {
 	const saveAllergens = useCallback(
 		data => {
 			setAllergens(data);
-			storage.setLocalStorage(CK_ALLERGIES, data);
-
 			dispatch(
-				updateEncounterData({
-					...encounter,
-					allergies: [...data],
-				})
+				updateEncounterData(
+					{
+						...encounter,
+						allergies: [...data],
+					},
+					patient.id
+				)
 			);
 		},
-		[dispatch, encounter]
+		[dispatch, encounter, patient]
 	);
 
 	const savePastAllergens = useCallback(
 		data => {
 			setSelectedPastAllergies(data);
-			storage.setLocalStorage(CK_PAST_ALLERGIES, data);
-
 			dispatch(
-				updateEncounterData({
-					...encounter,
-					pastAllergies: [...data],
-				})
+				updateEncounterData(
+					{
+						...encounter,
+						pastAllergies: [...data],
+					},
+					patient.id
+				)
 			);
 		},
-		[dispatch, encounter]
+		[dispatch, encounter, patient]
 	);
 
 	const retrieveData = useCallback(async () => {
-		const data = await storage.getItem(CK_ALLERGIES);
-		saveAllergens(data || encounter.allergies);
+		const data = await storage.getItem(CK_ENCOUNTER);
 
-		const past = await storage.getItem(CK_PAST_ALLERGIES);
-		savePastAllergens(past || encounter.pastAllergies);
-	}, [encounter, saveAllergens, savePastAllergens]);
+		const allergiesData =
+			data && data.patient_id === patient.id
+				? data?.encounter?.allergies
+				: null;
+
+		const pastAllergiesData =
+			data && data.patient_id === patient.id
+				? data?.encounter?.pastAllergies
+				: null;
+
+		saveAllergens(allergiesData || defaultEncounter.allergies);
+		savePastAllergens(pastAllergiesData || defaultEncounter.pastAllergies);
+	}, [patient, saveAllergens, savePastAllergens]);
 
 	useEffect(() => {
 		if (!loaded) {
 			retrieveData();
-			setLoaded(true);
+			loadGenericDrugs();
 			fetchAllergies();
+			setLoaded(true);
 		}
-	}, [fetchAllergies, loaded, retrieveData]);
+	}, [fetchAllergies, loadGenericDrugs, loaded, retrieveData]);
 
 	const remove = index => {
 		const newItems = allergens.filter((item, i) => index !== i);
@@ -99,13 +125,16 @@ const Allergies = ({ previous, next, patient }) => {
 
 	const onNext = () => {
 		dispatch(
-			updateEncounterData({
-				...encounter,
-				allergies: [...allergens],
-				pastAllergies: [...selectedPastAllergies],
-			})
+			updateEncounterData(
+				{
+					...encounter,
+					allergies: [...allergens],
+					pastAllergies: [...selectedPastAllergies],
+				},
+				patient.id
+			)
 		);
-		dispatch(next);
+		next();
 	};
 
 	const divStyle = {
@@ -115,25 +144,25 @@ const Allergies = ({ previous, next, patient }) => {
 
 	const onSubmit = async e => {
 		setSeverity(e);
-		if (category !== '' && reaction !== '' && allerg !== '') {
+		if (category !== '' && reaction !== '') {
 			const items = [
-				{ allergen: allerg, category, severity: e, reaction, drug },
+				{
+					allergen: allerg,
+					category,
+					severity: e,
+					reaction,
+					generic,
+					generic_id: generic?.id || '',
+				},
 				...allergens,
 			];
 			saveAllergens(items);
-
-			dispatch(
-				updateEncounterData({
-					...encounter,
-					allergies: [...items],
-				})
-			);
 
 			setCategory('');
 			setSeverity('');
 			setAllerg('');
 			setReaction('');
-			setDrug('');
+			setGeneric('');
 			reset();
 		} else {
 			notifyError('Error, please complete the allergens form');
@@ -164,6 +193,23 @@ const Allergies = ({ previous, next, patient }) => {
 							</div>
 							<div className="col-sm-6">
 								<div className="form-group">
+									<label>Drug Generic Name</label>
+									<Select
+										placeholder="Select generic name"
+										defaultValue
+										getOptionValue={option => option.id}
+										getOptionLabel={option => option.name}
+										onChange={e => {
+											setGeneric(e);
+										}}
+										value={generic}
+										isSearchable={true}
+										options={genericDrugs}
+									/>
+								</div>
+							</div>
+							<div className="col-sm-6">
+								<div className="form-group">
 									<label>Allergen</label>
 									<input
 										className="form-control"
@@ -188,7 +234,7 @@ const Allergies = ({ previous, next, patient }) => {
 									/>
 								</div>
 							</div>
-							<div className="col-sm-4">
+							<div className="col-sm-6">
 								<div className="form-group">
 									<label>Severity</label>
 									<Select
@@ -233,7 +279,7 @@ const Allergies = ({ previous, next, patient }) => {
 									<div className="col-md-12" key={i}>
 										<div className="form-group history-item">
 											<label>
-												{`${item.drug ? item.drug.name : item.allergy}(${
+												{`${item.generic ? item.generic.name : item.allergy}(${
 													item.category
 												})`}
 											</label>
@@ -273,7 +319,7 @@ const Allergies = ({ previous, next, patient }) => {
 									<tr key={index}>
 										<td>{item.category.value}</td>
 										<td>{item.allergen}</td>
-										<td>{item?.drug?.name || ''}</td>
+										<td>{item?.generic?.name || '--'}</td>
 										<td>{item.reaction}</td>
 										<td>{item.severity.value}</td>
 										<td>

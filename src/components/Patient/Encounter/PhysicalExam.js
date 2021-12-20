@@ -3,18 +3,20 @@ import Select from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
+	defaultEncounter,
 	physicalExamination,
-	CK_PHYSICAL_EXAM,
+	CK_ENCOUNTER,
 } from '../../../services/constants';
 import { updateEncounterData } from '../../../actions/patient';
 import SSRStorage from '../../../services/storage';
 
 const storage = new SSRStorage();
 
-const PhysicalExam = ({ next, previous }) => {
+const PhysicalExam = ({ next, previous, patient }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [system, setSystem] = useState(null);
 	const [options, setOptions] = useState([]);
+	const [examNote, setExamNote] = useState('');
 
 	const encounter = useSelector(state => state.patient.encounterData);
 
@@ -23,22 +25,51 @@ const PhysicalExam = ({ next, previous }) => {
 	const saveOptions = useCallback(
 		data => {
 			setOptions(data);
-			storage.setLocalStorage(CK_PHYSICAL_EXAM, data);
-
 			dispatch(
-				updateEncounterData({
-					...encounter,
-					physicalExamination: data,
-				})
+				updateEncounterData(
+					{
+						...encounter,
+						physicalExamination: data,
+					},
+					patient.id
+				)
 			);
 		},
-		[dispatch, encounter]
+		[dispatch, encounter, patient]
+	);
+
+	const saveNote = useCallback(
+		data => {
+			setExamNote(data);
+			dispatch(
+				updateEncounterData(
+					{
+						...encounter,
+						physicalExaminationNote: data,
+					},
+					patient.id
+				)
+			);
+		},
+		[dispatch, encounter, patient]
 	);
 
 	const retrieveData = useCallback(async () => {
-		const data = await storage.getItem(CK_PHYSICAL_EXAM);
-		saveOptions(data || encounter.physicalExamination);
-	}, [encounter, saveOptions]);
+		const data = await storage.getItem(CK_ENCOUNTER);
+
+		const examsData =
+			data && data.patient_id === patient.id
+				? data?.encounter?.physicalExamination
+				: null;
+
+		const noteData =
+			data && data.patient_id === patient.id
+				? data?.encounter?.physicalExaminationNote
+				: null;
+
+		saveOptions(examsData || defaultEncounter.physicalExamination);
+		saveNote(noteData || defaultEncounter.physicalExaminationNote);
+	}, [patient, saveNote, saveOptions]);
 
 	useEffect(() => {
 		if (!loaded) {
@@ -67,9 +98,15 @@ const PhysicalExam = ({ next, previous }) => {
 
 	const onSubmit = () => {
 		dispatch(
-			updateEncounterData({ ...encounter, physicalExamination: options })
+			updateEncounterData(
+				{
+					...encounter,
+					physicalExamination: options,
+					physicalExaminationNote: examNote,
+				},
+				patient.id
+			)
 		);
-		dispatch(next);
 		next();
 	};
 
@@ -150,6 +187,20 @@ const PhysicalExam = ({ next, previous }) => {
 						</div>
 					</div>
 				)}
+				<div className="row">
+					<div className="col-sm-12">
+						<div className="form-group">
+							<label>Note</label>
+							<textarea
+								placeholder="Enter note"
+								name="exam_note"
+								className="form-control"
+								cols="3"
+								onChange={e => saveNote(e.target.value)}
+								value={examNote}></textarea>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div className="row mt-5">
 				<div className="col-sm-12 d-flex ant-row-flex-space-between">

@@ -61,10 +61,11 @@ export const loadPatientRegulationTable = data => {
 	};
 };
 
-export const updateEncounterData = data => {
+export const updateEncounterData = (data, pid) => {
 	return {
 		type: UPDATE_ENCOUNTER_DATA,
 		payload: data,
+		patient_id: pid,
 	};
 };
 

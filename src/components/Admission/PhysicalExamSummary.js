@@ -62,7 +62,7 @@ const PhysicalExamSummary = ({ next }) => {
 								width="100%"
 								placeholder="Please type here..."
 								setContents={history}
-								name="history_data"
+								name="physical_exam"
 								autoFocus={true}
 								enableToolbar={true}
 								setOptions={{

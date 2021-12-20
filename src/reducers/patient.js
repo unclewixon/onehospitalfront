@@ -1,3 +1,5 @@
+import SSRStorage from '../services/storage';
+import { CK_ENCOUNTER } from '../services/constants';
 import {
 	LOAD_VITALS,
 	UPDATE_VITALS,
@@ -21,6 +23,8 @@ import {
 	UPDATE_SOAP_DATA,
 } from '../actions/types';
 
+const storage = new SSRStorage();
+
 const soapData = {
 	complaints: '',
 	reviewOfSystem: [],
@@ -40,13 +44,13 @@ const INITIAL_STATE = {
 		complaints:
 			'<p><u>Presenting Complaints:</u>​&nbsp;</p><p><br></p><p><br></p><p><br></p><p><u>History of complains</u>:&nbsp;</p><p><br></p>',
 		reviewOfSystem: [],
-		patientHistory: null,
 		patientHistorySelected: [],
 		medicalHistory:
 			'<p><u>Past Medical History:</u>​&nbsp;</p><p><br></p><p><br></p><p><br></p><p><u><br></p>',
 		allergies: [],
 		pastAllergies: [],
 		physicalExamination: [],
+		physicalExaminationNote: '',
 		diagnosis: [],
 		pastDiagnosis: [],
 		investigations: {
@@ -90,6 +94,10 @@ const patient = (state = INITIAL_STATE, action) => {
 		case PATIENT_REGULATION_TABLE:
 			return { ...state, regulationTable: action.payload };
 		case UPDATE_ENCOUNTER_DATA:
+			storage.setLocalStorage(CK_ENCOUNTER, {
+				patient_id: action.patient_id,
+				encounter: { ...action.payload },
+			});
 			return {
 				...state,
 				encounterData: { ...action.payload },

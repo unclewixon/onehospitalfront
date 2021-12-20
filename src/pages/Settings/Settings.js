@@ -34,9 +34,7 @@ const Settings = () => {
 						<div className="os-tabs-controls os-tabs-complex">
 							<ul className="nav nav-tabs upper">
 								<li className="nav-item">
-									<a aria-expanded="true" className="nav-link active">
-										Global Settings
-									</a>
+									<a className="nav-link active">Global Settings</a>
 								</li>
 							</ul>
 						</div>

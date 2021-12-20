@@ -17,7 +17,7 @@ import { PhysicalExam } from '../../Enrollment/PhysicalExam';
 import { InitialAssessment } from '../../Enrollment/InitialAssessment';
 import { LabObservation } from '../../Enrollment/LabObservation';
 import { RoutineAssessment } from '../../Enrollment/RoutineAssessment';
-import { obstericHistory, CK_HX_FORMS } from '../../../services/constants';
+import { obstericHistory, CK_ENCOUNTER } from '../../../services/constants';
 import SSRStorage from '../../../services/storage';
 
 const storage = new SSRStorage();
@@ -31,18 +31,21 @@ class HxForm extends Component {
 		gest_date: '',
 		dob: '',
 		lmp: '',
-		patientHistory: null,
 		patientHistorySelected: [],
 	};
 
 	async componentDidMount() {
-		const data = await storage.getItem(CK_HX_FORMS);
-		const { encounter } = this.props;
-		this.setState({
-			patientHistorySelected: data || encounter.patientHistorySelected,
-		});
+		const { patient } = this.props;
+		const data = await storage.getItem(CK_ENCOUNTER);
 
-		console.log(encounter.patientHistorySelected);
+		const patientHistorySelectedData =
+			data && data.patient_id === patient.id
+				? data?.encounter?.patientHistorySelected
+				: null;
+
+		this.setState({
+			patientHistorySelected: patientHistorySelectedData || [],
+		});
 	}
 
 	setDate = (date, type) => {
@@ -214,13 +217,15 @@ class HxForm extends Component {
 			}
 		}
 
-		const { encounter, next } = this.props;
+		const { encounter, next, patient } = this.props;
 
-		this.props.updateEncounterData({
-			...encounter,
-			patientHistory: obstericsHistory,
-			patientHistorySelected,
-		});
+		this.props.updateEncounterData(
+			{
+				...encounter,
+				patientHistorySelected,
+			},
+			patient.id
+		);
 		this.props.dispatch(next);
 	};
 

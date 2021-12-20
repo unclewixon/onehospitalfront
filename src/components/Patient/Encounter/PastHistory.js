@@ -3,12 +3,12 @@ import SunEditor from 'suneditor-react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { updateEncounterData } from '../../../actions/patient';
-import { CK_PAST_HISTORY } from '../../../services/constants';
+import { defaultEncounter, CK_ENCOUNTER } from '../../../services/constants';
 import SSRStorage from '../../../services/storage';
 
 const storage = new SSRStorage();
 
-const PastHistory = ({ next }) => {
+const PastHistory = ({ next, previous, patient }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [history, setHistory] = useState('');
 
@@ -19,22 +19,27 @@ const PastHistory = ({ next }) => {
 	const saveHistory = useCallback(
 		data => {
 			setHistory(data);
-			storage.setLocalStorage(CK_PAST_HISTORY, data);
-
 			dispatch(
-				updateEncounterData({
-					...encounter,
-					medicalHistory: data,
-				})
+				updateEncounterData(
+					{
+						...encounter,
+						medicalHistory: data,
+					},
+					patient.id
+				)
 			);
 		},
-		[dispatch, encounter]
+		[dispatch, encounter, patient]
 	);
 
 	const retrieveData = useCallback(async () => {
-		const data = await storage.getItem(CK_PAST_HISTORY);
-		saveHistory(data || encounter.medicalHistory);
-	}, [encounter, saveHistory]);
+		const data = await storage.getItem(CK_ENCOUNTER);
+		const encounterData =
+			data && data.patient_id === patient.id
+				? data?.encounter?.medicalHistory
+				: null;
+		saveHistory(encounterData || defaultEncounter.medicalHistory);
+	}, [patient, saveHistory]);
 
 	useEffect(() => {
 		if (!loaded) {
@@ -45,8 +50,10 @@ const PastHistory = ({ next }) => {
 
 	const onSubmit = async e => {
 		e.preventDefault();
-		dispatch(updateEncounterData({ ...encounter, medicalHistory: history }));
-		dispatch(next);
+		dispatch(
+			updateEncounterData({ ...encounter, medicalHistory: history }, patient.id)
+		);
+		next();
 	};
 
 	return (
@@ -89,13 +96,12 @@ const PastHistory = ({ next }) => {
 						</div>
 					</div>
 				</div>
-
 				<div className="row mt-5">
 					<div className="col-sm-12 d-flex ant-row-flex-space-between">
-						<button className="btn btn-primary" disabled>
+						<button className="btn btn-primary" onClick={() => previous()}>
 							Previous
 						</button>
-						<button className="btn btn-primary" type="submit">
+						<button className="btn btn-primary" onClick={() => onSubmit()}>
 							Next
 						</button>
 					</div>

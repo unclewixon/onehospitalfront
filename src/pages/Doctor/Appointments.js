@@ -11,9 +11,14 @@ import {
 	itemRender,
 	updateImmutable,
 } from '../../services/utilities';
+import { CK_ENCOUNTER } from '../../services/constants';
 import AppointmentTable from '../../components/Doctor/AppointmentTable';
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
+import SSRStorage from '../../services/storage';
+import { updateEncounterData } from '../../actions/patient';
+
+const storage = new SSRStorage();
 
 const { RangePicker } = DatePicker;
 const limit = 15;
@@ -38,6 +43,7 @@ const Appointments = () => {
 	const getAppointments = useCallback(
 		async page => {
 			try {
+				dispatch(startBlock());
 				const staff = profile.details;
 				const p = page || 1;
 				const startDate = state.startDate || '';
@@ -58,12 +64,20 @@ const Appointments = () => {
 		[dispatch, patientId, profile, state]
 	);
 
+	const loadEncounter = useCallback(async () => {
+		const data = await storage.getItem(CK_ENCOUNTER);
+		if (data && data.patient_id !== '') {
+			dispatch(updateEncounterData(data.encounter, data.patient_id));
+		}
+	}, [dispatch]);
+
 	useEffect(() => {
 		if (loading) {
 			getAppointments();
+			loadEncounter();
 			setLoading(false);
 		}
-	}, [getAppointments, loading]);
+	}, [getAppointments, loadEncounter, loading]);
 
 	const updateAppointment = useCallback(
 		e => {
@@ -85,7 +99,7 @@ const Appointments = () => {
 	};
 
 	const dateChange = e => {
-		let date = e.map(d => {
+		const date = e.map(d => {
 			return formatDate(d._d);
 		});
 

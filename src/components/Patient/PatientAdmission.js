@@ -60,7 +60,7 @@ class PatientAdmission extends Component {
 			notifySuccess('Admission Started!');
 			storage.removeItem(USER_RECORD);
 			this.props.toggleProfile(false);
-			this.props.history.push('/nurse/in-patients/care');
+			this.props.history.push('/nurse/in-patients/admitted');
 		} catch (e) {
 			this.setState({ submitting: false });
 			throw new SubmissionError({

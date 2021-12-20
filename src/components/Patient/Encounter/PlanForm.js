@@ -21,9 +21,8 @@ import { ReactComponent as EditIcon } from '../../../assets/svg-icons/edit.svg';
 import { ReactComponent as TrashIcon } from '../../../assets/svg-icons/trash.svg';
 import {
 	diagnosisAPI,
-	CK_TREATMENT_PLAN,
-	CK_INVESTIGATION_REGIMEN,
-	CK_INVESTIGATION_PROCEDURE,
+	defaultEncounter,
+	CK_ENCOUNTER,
 } from '../../../services/constants';
 import SSRStorage from '../../../services/storage';
 
@@ -71,8 +70,6 @@ const PlanForm = ({ previous, next, patient }) => {
 
 	const dispatch = useDispatch();
 
-	console.log(patient);
-
 	const loadGenericDrugs = useCallback(async () => {
 		try {
 			dispatch(startBlock());
@@ -88,58 +85,36 @@ const PlanForm = ({ previous, next, patient }) => {
 	const saveTreatmentPlan = useCallback(
 		data => {
 			setTreatmentPlan(data);
-			storage.setLocalStorage(CK_TREATMENT_PLAN, data);
-
 			dispatch(
-				updateEncounterData({
-					...encounter,
-					treatmentPlan: data,
-				})
+				updateEncounterData(
+					{
+						...encounter,
+						treatmentPlan: data,
+					},
+					patient.id
+				)
 			);
 		},
-		[dispatch, encounter]
+		[dispatch, encounter, patient]
 	);
 
 	const saveRegimenData = useCallback(
 		data => {
 			setRegimenData(data);
-			setDrugsSelected(data.drugs || []);
-			setRegimenNote(data.regimenNote || '');
-
-			storage.setLocalStorage(CK_INVESTIGATION_REGIMEN, data);
-
-			const datum = data.drugs
-				? data.drugs.map((item, i) => ({
-						id: i + 1,
-						generic: item.generic,
-						drug: item.drug,
-						hmo_id: patient.hmo.id,
-						dose_quantity: item.quantity,
-						refills: item.refills && item.refills !== '' ? item.refills : 0,
-						frequency: item.frequency,
-						frequencyType: item.frequencyType,
-						duration: item.duration,
-						regimenInstruction: item.regimen_instruction,
-						diagnosis: item.drugDiagnoses,
-						prescription: item.prescription ? 'Yes' : 'No',
-				  }))
-				: [];
-
-			const regimen = {
-				requestType: 'drugs',
-				items: datum,
-				patient_id: patient.id,
-				request_note: data.regimenNote || '',
-			};
+			setDrugsSelected(data?.drugs || []);
+			setRegimenNote(data?.regimenNote || '');
 
 			dispatch(
-				updateEncounterData({
-					...encounter,
-					investigations: {
-						...encounter.investigations,
-						pharmacyRequest: regimen,
+				updateEncounterData(
+					{
+						...encounter,
+						investigations: {
+							...encounter.investigations,
+							pharmacyRequest: data,
+						},
 					},
-				})
+					patient.id
+				)
 			);
 		},
 		[dispatch, encounter, patient]
@@ -148,50 +123,51 @@ const PlanForm = ({ previous, next, patient }) => {
 	const saveProcedureData = useCallback(
 		data => {
 			setProcedureData(data);
-			setBill(data.bill || 'later');
-			setProcedureNote(data.procedureNote || '');
+			setBill(data?.bill || 'later');
+			setProcedureNote(data?.procedureNote || '');
 			setService(data?.service);
-			setProcDiagnoses(data.procDiagnoses || []);
-
-			storage.setLocalStorage(CK_INVESTIGATION_PROCEDURE, data);
-
-			const procedureRequest = {
-				requestType: 'procedure',
-				patient_id: patient.id,
-				tests: [{ ...data?.service }],
-				request_note: data.procedureNote || '',
-				urgent: false,
-				diagnosis: data.procDiagnoses || [],
-				bill: data?.bill === 'later' ? -1 : 0,
-			};
+			setProcDiagnoses(data?.procDiagnoses || []);
 
 			dispatch(
-				updateEncounterData({
-					...encounter,
-					investigations: {
-						...encounter.investigations,
-						procedureRequest,
+				updateEncounterData(
+					{
+						...encounter,
+						investigations: {
+							...encounter.investigations,
+							procedureRequest: data,
+						},
 					},
-				})
+					patient.id
+				)
 			);
 		},
 		[dispatch, encounter, patient]
 	);
 
 	const retrieveData = useCallback(async () => {
-		const data = await storage.getItem(CK_TREATMENT_PLAN);
-		saveTreatmentPlan(data || encounter.treatmentPlan);
+		const data = await storage.getItem(CK_ENCOUNTER);
 
-		const regimenData = await storage.getItem(CK_INVESTIGATION_REGIMEN);
-		if (regimenData) {
-			saveRegimenData(regimenData);
-		}
+		const treatmentPlanData =
+			data && data.patient_id === patient.id
+				? data?.encounter?.treatmentPlan
+				: null;
 
-		const proc = await storage.getItem(CK_INVESTIGATION_PROCEDURE);
-		if (proc) {
-			saveProcedureData(proc);
-		}
-	}, [encounter, saveRegimenData, saveTreatmentPlan, saveProcedureData]);
+		saveTreatmentPlan(treatmentPlanData || defaultEncounter.treatmentPlan);
+
+		const regimenData =
+			data && data.patient_id === patient.id
+				? data.encounter?.investigations?.pharmacyRequest
+				: null;
+
+		saveRegimenData(regimenData);
+
+		const procedureData =
+			data && data.patient_id === patient.id
+				? data.encounter?.investigations?.procedureRequest
+				: null;
+
+		saveProcedureData(procedureData);
+	}, [patient, saveProcedureData, saveRegimenData, saveTreatmentPlan]);
 
 	useEffect(() => {
 		if (!loaded) {
@@ -366,50 +342,21 @@ const PlanForm = ({ previous, next, patient }) => {
 	};
 
 	const onSubmit = () => {
-		const data = drugsSelected.map((item, i) => ({
-			id: i + 1,
-			generic: item.generic,
-			drug: item.drug,
-			hmo_id: patient.hmo.id,
-			dose_quantity: item.quantity,
-			refills: item.refills && item.refills !== '' ? item.refills : 0,
-			frequency: item.frequency,
-			frequencyType: item.frequencyType,
-			duration: item.duration,
-			regimenInstruction: item.regimen_instruction,
-			diagnosis: item.drugDiagnoses,
-			prescription: item.prescription ? 'Yes' : 'No',
-		}));
-
-		const regimen = {
-			requestType: 'drugs',
-			items: data,
-			patient_id: patient.id,
-			request_note: regimenNote,
-		};
-
-		const procedureRequest = {
-			requestType: 'procedure',
-			patient_id: patient.id,
-			tests: [{ ...service }],
-			request_note: procedureNote,
-			urgent: false,
-			diagnosis: procDiagnoses,
-			bill: bill === 'later' ? -1 : 0,
-		};
-
 		dispatch(
-			updateEncounterData({
-				...encounter,
-				investigations: {
-					...encounter.investigations,
-					pharmacyRequest: regimen,
-					procedureRequest,
+			updateEncounterData(
+				{
+					...encounter,
+					investigations: {
+						...encounter.investigations,
+						pharmacyRequest: regimenData,
+						procedureRequest: procedureData,
+					},
+					treatmentPlan,
 				},
-				treatmentPlan,
-			})
+				patient.id
+			)
 		);
-		dispatch(next);
+		next();
 	};
 
 	const getServices = async q => {
@@ -764,8 +711,7 @@ const PlanForm = ({ previous, next, patient }) => {
 							onChange={e => {
 								setRegimenNote(e.target.value);
 								const data = { ...regimenData, regimenNote: e.target.value };
-								setRegimenData(data);
-								storage.setLocalStorage(CK_INVESTIGATION_REGIMEN, data);
+								saveRegimenData(data);
 							}}
 							value={regimenNote}></textarea>
 					</div>
@@ -883,7 +829,7 @@ const PlanForm = ({ previous, next, patient }) => {
 					<button className="btn btn-primary" onClick={previous}>
 						Previous
 					</button>
-					<button className="btn btn-primary" onClick={() => onSubmit()}>
+					<button className="btn btn-primary" onClick={onSubmit}>
 						Next
 					</button>
 				</div>

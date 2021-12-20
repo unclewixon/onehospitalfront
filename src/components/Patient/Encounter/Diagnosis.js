@@ -11,8 +11,8 @@ import {
 	patientAPI,
 	diagnosisAPI,
 	diagnosisType,
-	CK_DIAGNOSIS,
-	CK_PAST_DIAGNOSIS,
+	defaultEncounter,
+	CK_ENCOUNTER,
 } from '../../../services/constants';
 import { request } from '../../../services/utilities';
 import { notifyError } from '../../../services/notify';
@@ -50,25 +50,51 @@ const Diagnosis = ({ previous, next, patient }) => {
 	const saveDiagnoses = useCallback(
 		data => {
 			setDiagnoses(data);
-			storage.setLocalStorage(CK_DIAGNOSIS, data);
-
 			dispatch(
-				updateEncounterData({
-					...encounter,
-					diagnosis: data,
-				})
+				updateEncounterData(
+					{
+						...encounter,
+						diagnosis: data,
+					},
+					patient.id
+				)
 			);
 		},
-		[dispatch, encounter]
+		[dispatch, encounter, patient]
+	);
+
+	const savePastDiagnoses = useCallback(
+		data => {
+			setSelectedPastDiagnoses(data);
+			dispatch(
+				updateEncounterData(
+					{
+						...encounter,
+						pastDiagnosis: data,
+					},
+					patient.id
+				)
+			);
+		},
+		[dispatch, encounter, patient]
 	);
 
 	const retrieveData = useCallback(async () => {
-		const data = await storage.getItem(CK_DIAGNOSIS);
-		saveDiagnoses(data || encounter.diagnosis);
+		const data = await storage.getItem(CK_ENCOUNTER);
 
-		const past = await storage.getItem(CK_PAST_DIAGNOSIS);
-		setSelectedPastDiagnoses(past || encounter.pastDiagnosis);
-	}, [encounter, saveDiagnoses]);
+		const diagnosisData =
+			data && data.patient_id === patient.id
+				? data?.encounter?.diagnosis
+				: null;
+
+		const pastDiagnosisData =
+			data && data.patient_id === patient.id
+				? data?.encounter?.pastDiagnosis
+				: null;
+
+		saveDiagnoses(diagnosisData || defaultEncounter.diagnosis);
+		savePastDiagnoses(pastDiagnosisData || defaultEncounter.pastDiagnosis);
+	}, [patient, saveDiagnoses, savePastDiagnoses]);
 
 	useEffect(() => {
 		if (!loaded) {
@@ -85,13 +111,16 @@ const Diagnosis = ({ previous, next, patient }) => {
 
 	const onNext = () => {
 		dispatch(
-			updateEncounterData({
-				...encounter,
-				diagnosis: [...diagnoses],
-				pastDiagnosis: [...selectedPastDiagnoses],
-			})
+			updateEncounterData(
+				{
+					...encounter,
+					diagnosis: [...diagnoses],
+					pastDiagnosis: [...selectedPastDiagnoses],
+				},
+				patient.id
+			)
 		);
-		dispatch(next);
+		next();
 	};
 
 	const divStyle = {
@@ -103,11 +132,6 @@ const Diagnosis = ({ previous, next, patient }) => {
 		if (diagnosis !== '' && type !== '') {
 			const items = [...diagnoses, { comment, diagnosis, type }];
 			saveDiagnoses(items);
-
-			updateEncounterData({
-				...encounter,
-				diagnosis: [...items],
-			});
 
 			setDiagnosis('');
 			setComment('');
@@ -138,21 +162,23 @@ const Diagnosis = ({ previous, next, patient }) => {
 		if (selected) {
 			const filtered = selectedPastDiagnoses.filter(o => o.id !== diagnosis.id);
 			setSelectedPastDiagnoses(filtered);
-			storage.setLocalStorage(CK_PAST_DIAGNOSIS, filtered);
-
-			updateEncounterData({
-				...encounter,
-				pastDiagnosis: [...filtered],
-			});
+			updateEncounterData(
+				{
+					...encounter,
+					pastDiagnosis: [...filtered],
+				},
+				patient.id
+			);
 		} else {
 			const items = [...selectedPastDiagnoses, { id: diagnosis.id, diagnosis }];
 			setSelectedPastDiagnoses(items);
-			storage.setLocalStorage(CK_PAST_DIAGNOSIS, items);
-
-			updateEncounterData({
-				...encounter,
-				pastDiagnosis: [...items],
-			});
+			updateEncounterData(
+				{
+					...encounter,
+					pastDiagnosis: [...items],
+				},
+				patient.id
+			);
 		}
 	};
 
@@ -215,14 +241,14 @@ const Diagnosis = ({ previous, next, patient }) => {
 									/>
 								</div>
 							</div>
-							{/* <div className="col-sm-2" style={{ position: 'relative' }}>
-								<button
-									className="btn btn-danger btn-sm"
+							<div className="col-sm-2" style={{ position: 'relative' }}>
+								<a
+									className="btn btn-info btn-sm text-white pointer"
 									style={{ margin: '45px 0 0', display: 'block' }}
-									type="submit">
+									onClick={() => onSubmit()}>
 									<i className="os-icon os-icon-plus-circle" /> Add
-								</button>
-							</div> */}
+								</a>
+							</div>
 						</div>
 					</form>
 				</div>
@@ -299,7 +325,7 @@ const Diagnosis = ({ previous, next, patient }) => {
 									<tr key={index}>
 										<td>{`${item.diagnosis.type} (${item.diagnosis.code}): ${item.diagnosis.description}`}</td>
 										<td>{item.type.value}</td>
-										<td>{item.comment}</td>
+										<td>{item.comment || '--'}</td>
 										<td>
 											<div className="display-flex">
 												<div className="ml-2">

@@ -12,23 +12,15 @@ export const FULLSCREEN_COOKIE = 'EMR:FULLSCREEN_COOKIE';
 export const MENU_COOKE = 'EMR:MENU_COOKIE';
 export const USER_RECORD = 'EMR:USER_RECORD';
 
+export const CK_ENCOUNTER = 'E:ENCOUNTER';
+
 export const CK_COMPLAINTS = 'E:COMPLAINTS';
 export const CK_REVIEW_OF_SYSTEMS = 'E:REVIEW_OF_SYSTEMS';
 export const CK_HX_FORMS = 'E:HX_FORMS';
-export const CK_PAST_HISTORY = 'E:PAST_HISTORY';
-export const CK_ALLERGIES = 'E:ALLERGIES';
-export const CK_PAST_ALLERGIES = 'E:PAST_ALLERGIES';
-export const CK_PHYSICAL_EXAM = 'E:PHYSICAL_EXAM';
 export const CK_DIAGNOSIS = 'E:DIAGNOSIS';
 export const CK_PAST_DIAGNOSIS = 'E:PAST_DIAGNOSIS';
-export const CK_INVESTIGATIONS = 'E:INVESTIGATIONS';
-export const CK_INVESTIGATION_LAB = 'E:INVESTIGATION_LAB';
-export const CK_INVESTIGATION_SCAN = 'E:INVESTIGATION_SCAN';
-export const CK_INVESTIGATION_REGIMEN = 'E:INVESTIGATION_REGIMEN';
-export const CK_INVESTIGATION_PROCEDURE = 'E:INVESTIGATION_PROCEDURE';
+export const CK_PAST_HISTORY = 'E:PAST_HISTORY';
 export const CK_TREATMENT_PLAN = 'E:TREATMENT_PLAN';
-export const CK_CONSUMABLE = 'E:CONSUMABLE';
-export const CK_ITEM_OTHERS = 'E:ITEM_OTHERS';
 
 export const socket = socketIOClient(API_URI, {
 	transports: ['websocket', 'polling'],
@@ -61,7 +53,7 @@ export const vouchersAPI = 'vouchers';
 export const serviceAPI = 'services';
 export const settingsAPI = 'settings/';
 export const diagnosisAPI = 'settings/diagnosis';
-export const labourAPI = 'labour-management/enrollments';
+export const labourAPI = 'labours';
 export const consultationAPI = 'consultation/';
 export const ivfEnroll = 'ivf/enroll';
 export const antenatalAPI = 'patient/antenatal';
@@ -1202,12 +1194,13 @@ export const defaultEncounter = {
 	complaints:
 		'<p><u>Presenting Complaints:</u>​&nbsp;</p><p><br></p><p><br></p><p><br></p><p><u>History of complains</u>:&nbsp;</p><p><br></p>',
 	reviewOfSystem: [],
-	patientHistory: null,
 	patientHistorySelected: [],
-	medicalHistory: [],
+	medicalHistory:
+		'<p><u>Past Medical History:</u>​&nbsp;</p><p><br></p><p><br></p><p><br></p><p><u><br></p>',
 	allergies: [],
 	pastAllergies: [],
 	physicalExamination: [],
+	physicalExaminationNote: '',
 	diagnosis: [],
 	pastDiagnosis: [],
 	investigations: {

@@ -13,7 +13,7 @@ const NurseMenu = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/nurse/in-patients/care">
+				<Link to="/nurse/in-patients/admitted">
 					<div className="icon-w">
 						<div className="icon-feather-folder-plus" />
 					</div>

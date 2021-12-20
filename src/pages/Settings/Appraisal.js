@@ -169,9 +169,7 @@ const Appraisal = () => {
 						<div className="os-tabs-controls os-tabs-complex">
 							<ul className="nav nav-tabs upper">
 								<li className="nav-item">
-									<a aria-expanded="true" className="nav-link active">
-										Appraisal Indicators
-									</a>
+									<a className="nav-link active">Appraisal Indicators</a>
 								</li>
 							</ul>
 						</div>

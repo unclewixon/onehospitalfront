@@ -7,6 +7,7 @@ import Pagination from 'antd/lib/pagination';
 import qs from 'querystring';
 import Tooltip from 'antd/lib/tooltip';
 import startCase from 'lodash.startcase';
+import { withRouter } from 'react-router-dom';
 
 import { socket } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
@@ -54,7 +55,7 @@ class AllAppointments extends Component {
 		if (query && query.new) {
 			const newCount = parseInt(query.new, 10);
 			if (newCount > 0 && this.state.count === 0 && !location.state) {
-				history.replace({ pathname: '/front-desk' });
+				history.replace({ pathname: '/front-desk/appointments/queue' });
 			}
 		}
 	}
@@ -123,11 +124,18 @@ class AllAppointments extends Component {
 
 	fetchAppointments = async page => {
 		try {
+			const { filter } = this.props;
 			const { startDate, endDate, patient_id, status } = this.state;
 			const p = page || 1;
+			const sd = startDate || '';
+			const ed = endDate || '';
+			const today = moment().format('YYYY-MM-DD');
+			const date =
+				filter === 'today'
+					? `&today=${today}`
+					: `&startDate=${sd}&endDate=${ed}`;
 			this.setState({ loading: true });
-			const url = `front-desk/appointments?page=${p}&limit=15&startDate=${startDate ||
-				''}&endDate=${endDate || ''}&patient_id=${patient_id}&status=${status}`;
+			const url = `front-desk/appointments?page=${p}&limit=15&patient_id=${patient_id}&status=${status}${date}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			this.setState({
@@ -197,198 +205,221 @@ class AllAppointments extends Component {
 			showAppointment,
 			appointment,
 		} = this.state;
+		const { filter } = this.props;
 
 		return (
-			<>
-				<div className="element-box m-0 mb-4 p-3">
-					<form className="row">
-						<div className="form-group col-md-3">
-							<label className="mr-2 " htmlFor="id">
-								Search
-							</label>
-							<input
-								style={{ height: '32px' }}
-								id="search"
-								className="form-control"
-								name="search"
-								onChange={e => this.setState({ patient_id: e.target.value })}
-								placeholder="search for patient: emr id, name, phone number, email"
-							/>
-						</div>
-						<div className="form-group col-md-4">
-							<label>From - To</label>
-							<RangePicker onChange={e => this.dateChange(e)} />
-						</div>
-						<div className="form-group col-md-3">
-							<label className="mr-2" htmlFor="id">
-								Status
-							</label>
-							<select
-								style={{ height: '32px' }}
-								id="status"
-								className="form-control"
-								name="status"
-								onChange={e => this.setState({ status: e.target.value })}>
-								<option value="">All</option>
-								<option value="Pending">Pending</option>
-								<option value="Approved">Approved</option>
-								<option value="Missed">Missed</option>
-								<option value="Cancelled">Cancelled</option>
-							</select>
-						</div>
-						<div className="form-group col-md-2 mt-4">
+			<div className="row">
+				<div className="col-md-12">
+					<div className="element-box m-0 mb-4 p-3">
+						<form className="row">
 							<div
-								className="btn btn-sm btn-primary btn-upper text-white filter-btn"
-								onClick={this.doFilter}>
-								<i className="os-icon os-icon-ui-37" />
-								<span>
-									{filtering ? (
-										<img src={waiting} alt="submitting" />
-									) : (
-										'Filter'
-									)}
-								</span>
+								className={`form-group${
+									filter === 'all' ? ' col-md-3' : ' col-md-6'
+								}`}>
+								<label className="mr-2 " htmlFor="id">
+									Search
+								</label>
+								<input
+									style={{ height: '32px' }}
+									id="search"
+									className="form-control"
+									name="search"
+									onChange={e => this.setState({ patient_id: e.target.value })}
+									placeholder="search for patient: emr id, name, phone number, email"
+								/>
 							</div>
-						</div>
-					</form>
-				</div>
-				<div className="element-box p-3 m-0 mt-3">
-					<div className="table-responsive">
-						{loading ? (
-							<TableLoading />
-						) : (
-							<table className="table table-theme v-middle table-hover">
-								<thead>
-									<tr>
-										<th>Date</th>
-										<th>Patient</th>
-										<th>Whom to see</th>
-										<th>Specialty</th>
-										<th>Department</th>
-										<th>Type</th>
-										<th>Status</th>
-										<th></th>
-									</tr>
-								</thead>
-								<tbody>
-									{appointments.map((item, i) => {
-										return (
-											<tr key={i}>
-												<td className="nowrap">
-													<p className="item-title text-color m-0">
-														{moment(item.appointment_date).format(
-															'DD-MMM-YYYY h:mm a'
-														)}
-													</p>
-												</td>
-												<td>
-													<p className="item-title text-color m-0">
-														<Tooltip
-															title={<ProfilePopup patient={item.patient} />}>
-															<a
-																className="cursor"
-																onClick={() => this.showProfile(item.patient)}>
-																{patientname(item.patient, true)}
-															</a>
-														</Tooltip>
-													</p>
-												</td>
-												<td>
-													<p className="item-title text-color m-0">
-														{item.consultingRoom
-															? `${item.consultingRoom.name} (${staffname(
-																	item.whomToSee
-															  ).replace('-', '')})`
-															: '--'}
-													</p>
-												</td>
-												<td>{item.service?.item?.name || '--'}</td>
-												<td>{item.department?.name || '--'}</td>
-												<td>
-													{item.consultation_type
-														? startCase(item.consultation_type)
-														: '--'}
-												</td>
-												<td>
-													{!item.encounter &&
-													(item.status === 'Cancelled' ||
-														item.status === 'Missed') ? (
-														<span className="badge badge-danger">
-															{item.status}
-														</span>
-													) : (
-														<>
-															{item.status === 'Pending' && (
-																<span className="badge badge-secondary">
-																	Pending
-																</span>
+							{filter === 'all' && (
+								<div className="form-group col-md-4">
+									<label>From - To</label>
+									<RangePicker onChange={e => this.dateChange(e)} />
+								</div>
+							)}
+							<div className="form-group col-md-3">
+								<label className="mr-2" htmlFor="id">
+									Status
+								</label>
+								<select
+									style={{ height: '32px' }}
+									id="status"
+									className="form-control"
+									name="status"
+									onChange={e => this.setState({ status: e.target.value })}>
+									<option value="">All</option>
+									<option value="Pending">Pending</option>
+									<option value="Approved">Approved</option>
+									<option value="Missed">Missed</option>
+									<option value="Cancelled">Cancelled</option>
+								</select>
+							</div>
+							<div className="form-group col-md-2 mt-4">
+								<div
+									className="btn btn-sm btn-primary btn-upper text-white filter-btn"
+									onClick={this.doFilter}>
+									<i className="os-icon os-icon-ui-37" />
+									<span>
+										{filtering ? (
+											<img src={waiting} alt="submitting" />
+										) : (
+											'Filter'
+										)}
+									</span>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div className="element-box p-3 m-0 mt-3">
+						<div className="table-responsive">
+							{loading ? (
+								<TableLoading />
+							) : (
+								<table className="table table-theme v-middle table-hover">
+									<thead>
+										<tr>
+											<th>Date</th>
+											<th>Patient</th>
+											<th>Whom to see</th>
+											<th>Specialty</th>
+											<th>Department</th>
+											<th>Type</th>
+											<th>Status</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+										{appointments.map((item, i) => {
+											return (
+												<tr key={i}>
+													<td className="nowrap">
+														<p className="item-title text-color m-0">
+															{moment(item.appointment_date).format(
+																'DD-MMM-YYYY h:mm a'
 															)}
-															{(item.status === 'Pending Paypoint Approval' ||
-																item.status === 'Pending HMO Approval') && (
-																<span className="badge badge-secondary">
-																	Pending Payment
-																</span>
-															)}
-															{item.status === 'Approved' && (
-																<span className="badge badge-primary">
-																	{item.doctorStatus === 0
-																		? 'In Queue'
-																		: 'Seeing Doctor'}
-																</span>
-															)}
-															{item.status === 'Completed' && (
-																<span className="badge badge-success">
-																	Completed
-																</span>
-															)}
-														</>
-													)}
-												</td>
-												<td className="row-actions">
-													<Tooltip title="View Appointment">
-														<a
-															onClick={() => this.viewAppointmentDetail(item)}
-															className="cursor">
-															<i className="os-icon os-icon-eye"></i>
-														</a>
-													</Tooltip>
-													{!item.encounter &&
-														!hasPassed(item.appointment_date) &&
-														item.status !== 'Cancelled' && (
-															<Tooltip title="Cancel Appointment">
+														</p>
+													</td>
+													<td>
+														<p className="item-title text-color m-0">
+															<Tooltip
+																title={<ProfilePopup patient={item.patient} />}>
 																<a
-																	className="danger cursor"
-																	onClick={() => this.cancel(item)}>
-																	<i className="os-icon os-icon-ui-15"></i>
+																	className="cursor"
+																	onClick={() =>
+																		this.showProfile(item.patient)
+																	}>
+																	{patientname(item.patient, true)}
 																</a>
 															</Tooltip>
+														</p>
+													</td>
+													<td>
+														{item.consultingRoom && item.whomToSee && (
+															<p className="item-title text-color m-0">
+																{`${item.consultingRoom.name} (${staffname(
+																	item.whomToSee
+																).replace('-', '')})`}
+															</p>
 														)}
-												</td>
+														{!item.consultingRoom && item.whomToSee && (
+															<p className="item-title text-color m-0">
+																{staffname(item.whomToSee).replace('-', '')}
+															</p>
+														)}
+														{item.consultingRoom && !item.whomToSee && (
+															<p className="item-title text-color m-0">
+																{item.consultingRoom.name}
+															</p>
+														)}
+														{!item.consultingRoom && !item.whomToSee && (
+															<p className="item-title text-color m-0">--</p>
+														)}
+													</td>
+													<td>{item.service?.item?.name || '--'}</td>
+													<td>{item.department?.name || '--'}</td>
+													<td>
+														{item.consultation_type
+															? startCase(item.consultation_type)
+															: '--'}
+													</td>
+													<td>
+														{!item.encounter &&
+														(item.status === 'Cancelled' ||
+															item.status === 'Missed') ? (
+															<span className="badge badge-danger">
+																{item.status}
+															</span>
+														) : (
+															<>
+																{item.status === 'Pending' && (
+																	<span className="badge badge-secondary">
+																		Pending
+																	</span>
+																)}
+																{(item.status === 'Pending Paypoint Approval' ||
+																	item.status === 'Pending HMO Approval') && (
+																	<span className="badge badge-secondary">
+																		Pending Payment
+																	</span>
+																)}
+																{item.status === 'Approved' && (
+																	<span className="badge badge-primary">
+																		{item.doctorStatus === 0
+																			? 'In Queue'
+																			: 'Seeing Doctor'}
+																	</span>
+																)}
+																{item.status === 'Completed' && (
+																	<span className="badge badge-success">
+																		Completed
+																	</span>
+																)}
+															</>
+														)}
+													</td>
+													<td className="row-actions">
+														<Tooltip title="View Appointment">
+															<a
+																onClick={() => this.viewAppointmentDetail(item)}
+																className="cursor">
+																<i className="os-icon os-icon-eye"></i>
+															</a>
+														</Tooltip>
+														{!item.encounter &&
+															!hasPassed(item.appointment_date) &&
+															item.status !== 'Cancelled' && (
+																<Tooltip title="Cancel Appointment">
+																	<a
+																		className="danger cursor"
+																		onClick={() => this.cancel(item)}>
+																		<i className="os-icon os-icon-ui-15"></i>
+																	</a>
+																</Tooltip>
+															)}
+													</td>
+												</tr>
+											);
+										})}
+										{appointments && appointments.length === 0 && (
+											<tr className="text-center">
+												<td colSpan="8">No Appointments</td>
 											</tr>
-										);
-									})}
-									{appointments && appointments.length === 0 && (
-										<tr className="text-center">
-											<td colSpan="8">No Appointments</td>
-										</tr>
-									)}
-								</tbody>
-							</table>
+										)}
+									</tbody>
+								</table>
+							)}
+						</div>
+
+						{meta && (
+							<div className="pagination pagination-center mt-4">
+								<Pagination
+									current={parseInt(meta.currentPage, 10)}
+									pageSize={parseInt(meta.itemsPerPage, 10)}
+									total={parseInt(meta.totalPages, 10)}
+									showTotal={total => `Total ${total} appointments`}
+									itemRender={itemRender}
+									onChange={current => this.onNavigatePage(current)}
+								/>
+							</div>
 						)}
 					</div>
-
-					{meta && (
-						<div className="pagination pagination-center mt-4">
-							<Pagination
-								current={parseInt(meta.currentPage, 10)}
-								pageSize={parseInt(meta.itemsPerPage, 10)}
-								total={parseInt(meta.totalPages, 10)}
-								showTotal={total => `Total ${total} appointments`}
-								itemRender={itemRender}
-								onChange={current => this.onNavigatePage(current)}
-							/>
-						</div>
-					)}
 				</div>
 				{showModal && (
 					<AppointmentFormModal
@@ -402,13 +433,15 @@ class AllAppointments extends Component {
 						closeModal={this.closeModal}
 					/>
 				)}
-			</>
+			</div>
 		);
 	}
 }
 
-export default connect(null, {
-	startBlock,
-	stopBlock,
-	toggleProfile,
-})(AllAppointments);
+export default withRouter(
+	connect(null, {
+		startBlock,
+		stopBlock,
+		toggleProfile,
+	})(AllAppointments)
+);

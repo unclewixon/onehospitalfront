@@ -12,23 +12,7 @@ import {
 	MODE_COOKIE,
 	TOKEN_COOKIE,
 	USER_RECORD,
-	CK_COMPLAINTS,
-	CK_REVIEW_OF_SYSTEMS,
-	CK_HX_FORMS,
-	CK_PAST_HISTORY,
-	CK_ALLERGIES,
-	CK_PAST_ALLERGIES,
-	CK_PHYSICAL_EXAM,
-	CK_INVESTIGATIONS,
-	CK_INVESTIGATION_LAB,
-	CK_INVESTIGATION_SCAN,
-	CK_INVESTIGATION_REGIMEN,
-	CK_INVESTIGATION_PROCEDURE,
-	CK_TREATMENT_PLAN,
-	CK_CONSUMABLE,
-	CK_ITEM_OTHERS,
-	CK_DIAGNOSIS,
-	CK_PAST_DIAGNOSIS,
+	CK_ENCOUNTER,
 } from '../services/constants';
 import { signOut } from '../actions/user';
 import { loginUser } from '../actions/user';
@@ -129,24 +113,7 @@ const ChangePassword = ({ location, history, error, handleSubmit }) => {
 
 		storage.removeItem(USER_RECORD);
 		storage.removeItem(TOKEN_COOKIE);
-
-		storage.removeItem(CK_COMPLAINTS);
-		storage.removeItem(CK_REVIEW_OF_SYSTEMS);
-		storage.removeItem(CK_HX_FORMS);
-		storage.removeItem(CK_PAST_HISTORY);
-		storage.removeItem(CK_ALLERGIES);
-		storage.removeItem(CK_PAST_ALLERGIES);
-		storage.removeItem(CK_PHYSICAL_EXAM);
-		storage.removeItem(CK_INVESTIGATIONS);
-		storage.removeItem(CK_INVESTIGATION_LAB);
-		storage.removeItem(CK_INVESTIGATION_SCAN);
-		storage.removeItem(CK_INVESTIGATION_REGIMEN);
-		storage.removeItem(CK_INVESTIGATION_PROCEDURE);
-		storage.removeItem(CK_TREATMENT_PLAN);
-		storage.removeItem(CK_CONSUMABLE);
-		storage.removeItem(CK_ITEM_OTHERS);
-		storage.removeItem(CK_DIAGNOSIS);
-		storage.removeItem(CK_PAST_DIAGNOSIS);
+		storage.removeItem(CK_ENCOUNTER);
 
 		dispatch(signOut());
 
