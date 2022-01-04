@@ -64,7 +64,7 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 		this.idleTimer = null;
-		this.timeout = 1000 * 60 * 10;
+		this.timeout = 1000 * 60 * 20;
 
 		this.state = {
 			remaining: this.timeout,
