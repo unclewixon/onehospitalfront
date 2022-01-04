@@ -324,8 +324,8 @@ const ViewPrescription = ({
 		updatePrescriptions({ ...prescription, requests: newRegimens });
 	};
 
-	const switchPrescription = regimenId => {
-		setPrescriptionItemId(regimenId);
+	const doSwitchPrescription = itemId => {
+		setPrescriptionItemId(itemId);
 		setShowModal(true);
 	};
 
@@ -556,7 +556,7 @@ const ViewPrescription = ({
 																		<a
 																			className="info"
 																			onClick={() =>
-																				switchPrescription(regimen.id)
+																				doSwitchPrescription(regimen.item.id)
 																			}>
 																			<i className="os-icon os-icon-grid-18" />
 																		</a>
