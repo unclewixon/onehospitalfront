@@ -174,7 +174,7 @@ const ViewPrescription = ({
 						}),
 					],
 					filled: 1,
-					filled_by: rs?.data[0]?.item?.filledBy || '--',
+					filled_by: rs?.data[0]?.filledBy || '--',
 				});
 				notifySuccess('pharmacy prescription filled');
 				closeModal();
@@ -184,6 +184,39 @@ const ViewPrescription = ({
 		} catch (e) {
 			setSubmitting(false);
 			notifyError(e.message || 'Error, could not fill prescription');
+		}
+	};
+
+	const undoFill = async () => {
+		try {
+			setSubmitting(true);
+			const url = `requests/unfill-request/${prescription.id}`;
+			const rs = await request(url, 'POST', true, {
+				items: regimens,
+				patient_id: prescription.patient.id,
+			});
+
+			setSubmitting(false);
+			if (rs.success) {
+				updatePrescriptions({
+					...prescription,
+					requests: [
+						...rs.data.map(i => {
+							const regimen = regimens.find(r => r.item.id === i.id);
+							return { ...regimen, item: { ...regimen.item, ...i } };
+						}),
+					],
+					filled: 0,
+					filled_by: '--',
+				});
+				notifySuccess('undo filled prescription');
+				closeModal();
+			} else {
+				notifyError(rs.message);
+			}
+		} catch (e) {
+			setSubmitting(false);
+			notifyError(e.message || 'Error, could not undo filled prescription');
 		}
 	};
 
@@ -570,11 +603,24 @@ const ViewPrescription = ({
 											prescription.status === 0 && (
 												<button
 													onClick={() => dispense()}
-													className="btn btn-primary ml-2">
+													className="btn btn-primary">
 													{submitting ? (
 														<img src={waiting} alt="submitting" />
 													) : (
 														<span>Dispense Prescription</span>
+													)}
+												</button>
+											)}
+										{prescription.filled === 1 &&
+											prescription.transaction_status === 0 &&
+											prescription.status === 0 && (
+												<button
+													onClick={() => undoFill()}
+													className="btn btn-primary">
+													{submitting ? (
+														<img src={waiting} alt="submitting" />
+													) : (
+														<span>Undo Filled Prescription</span>
 													)}
 												</button>
 											)}

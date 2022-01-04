@@ -412,7 +412,7 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 												<UserItem
 													icon="user"
 													label="Phone"
-													value={patient?.phone_nuber || '--'}
+													value={patient?.phone_number || '--'}
 												/>
 											</tr>
 											<tr>
