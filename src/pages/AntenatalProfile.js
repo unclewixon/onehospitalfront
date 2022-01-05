@@ -2,6 +2,7 @@
 import React, { Component, Suspense, lazy, Fragment } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { Switch, withRouter } from 'react-router-dom';
+import moment from 'moment';
 
 import { toggleProfile } from '../actions/user';
 import AntenatalMenu from '../components/Navigation/AntenatalProfileMenu';
@@ -11,6 +12,10 @@ import Splash from '../components/Splash';
 import ProfileBlock from '../components/ProfileBlock';
 import HashRoute from '../components/HashRoute';
 import ExtraBlock from '../components/ExtraBlock';
+import { request } from '../services/utilities';
+import { notifySuccess, notifyError } from '../services/notify';
+import { startBlock, stopBlock } from '../actions/redux-block';
+import { messageService } from '../services/message';
 
 const Notes = lazy(() => import('../components/Antenatal/Notes'));
 const Vitals = lazy(() => import('../components/Patient/Vitals'));
@@ -100,6 +105,36 @@ class AntenatalProfile extends Component {
 		this.props.history.push(location.pathname);
 	}
 
+	onSelectLmpDate = async date => {
+		try {
+			const { antenatal, patient } = this.props;
+			this.props.startBlock();
+			const url = `patient/antenatal/${antenatal.id}/lmp`;
+
+			const lmp = moment(date).format('YYYY-MM-DD');
+			const edd = moment(date)
+				.add(9, 'M')
+				.format('YYYY-MM-DD');
+
+			const rs = await request(url, 'POST', true, { lmp, edd });
+			if (rs.success) {
+				const data = rs.data;
+				const item = { ...antenatal, lmp: data.lmp, edd: data.edd };
+				const info = { patient, type: 'antenatal', item };
+				messageService.sendMessage({ type: 'anc', data: item });
+				this.props.toggleProfile(true, info);
+				notifySuccess('LMP saved!');
+			} else {
+				notifyError('Error saving LMP');
+			}
+			this.props.stopBlock();
+		} catch (error) {
+			console.log(error);
+			notifyError('Error saving LMP');
+			this.props.stopBlock();
+		}
+	};
+
 	render() {
 		const { location, patient, antenatal } = this.props;
 		return (
@@ -122,7 +157,11 @@ class AntenatalProfile extends Component {
 									<div className="row">
 										<div className="col-sm-12">
 											<ProfileBlock profile={true} patient={patient} />
-											<ExtraBlock module="antenatal" item={antenatal} />
+											<ExtraBlock
+												module="antenatal"
+												item={antenatal}
+												onSelectLmpDate={this.onSelectLmpDate}
+											/>
 										</div>
 										<Suspense fallback={<Splash />}>
 											<Switch>
@@ -157,5 +196,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default withRouter(
-	connect(mapStateToProps, { toggleProfile })(AntenatalProfile)
+	connect(mapStateToProps, { toggleProfile, startBlock, stopBlock })(
+		AntenatalProfile
+	)
 );

@@ -1,16 +1,38 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react';
+import React, { useState, forwardRef, useCallback, useEffect } from 'react';
 import moment from 'moment';
+import DatePicker from 'react-datepicker';
 
 import { formatDate, getGestationAge } from '../services/utilities';
 
-const ExtraBlock = ({ module, item }) => {
+const ExtraBlock = ({ module, item, onSelectLmpDate }) => {
+	const [isset, setIsset] = useState(false);
+	const [startDate, setStartDate] = useState(new Date());
+
+	const init = useCallback(() => {
+		const lmp = item && item.lmp ? new Date(moment(item.lmp)) : new Date();
+		setStartDate(lmp);
+	}, [item]);
+
+	useEffect(() => {
+		if (!isset) {
+			init();
+			setIsset(true);
+		}
+	}, [init, isset]);
+
 	let pregnancy_history = null;
 	try {
 		pregnancy_history = JSON.parse(item.pregnancy_history);
 	} catch (e) {
 		pregnancy_history = item.pregnancy_history;
 	}
+
+	const CustomInput = forwardRef(({ value, onClick }, ref) => (
+		<a className="text-bold ml-3" onClick={onClick} ref={ref}>
+			<i className="os-icon os-icon-edit-32" />
+		</a>
+	));
 
 	return (
 		<div className="element-box m-0 p-0 mb-4">
@@ -197,7 +219,7 @@ const ExtraBlock = ({ module, item }) => {
 				<ul className="breadcrumb px-3">
 					<>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`ANC #: ${item.serial_code}`}</a>
+							<a className="no-pointer text-bold">{`ANC #: ${item.serial_code}`}</a>
 						</li>
 						<li className="breadcrumb-item">
 							<a className="no-pointer">Husband</a>
@@ -223,6 +245,16 @@ const ExtraBlock = ({ module, item }) => {
 									'MMM Do, YYYY'
 								)}`}</span>
 							</a>
+							<DatePicker
+								selected={startDate}
+								onChange={date => {
+									setStartDate(date);
+									onSelectLmpDate(date);
+								}}
+								customInput={<CustomInput />}
+								dateFormat="dd-MMM-yyyy"
+								maxDate={new Date()}
+							/>
 						</li>
 						<li className="breadcrumb-item">
 							<a className="no-pointer">{`EDD: ${formatDate(

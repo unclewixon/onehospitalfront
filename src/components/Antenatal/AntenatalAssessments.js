@@ -4,7 +4,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 
 import TableLoading from '../TableLoading';
-import { request, itemRender, formatDate } from '../../services/utilities';
+import {
+	request,
+	itemRender,
+	formatDate,
+	getCustomGestationAge,
+} from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { staffname } from '../../services/utilities';
@@ -105,16 +110,32 @@ const AntenatalAssessment = ({ can_request = true }) => {
 								</thead>
 								<tbody>
 									{assessments.map((item, i) => {
-										console.log(item);
+										const rtbrim = item.relationship_to_brim
+											? ` - [${item.relationship_to_brim}]`
+											: '';
 										return (
 											<tr key={i}>
 												<td nowrap="nowrap">
 													{formatDate(item.createdAt, 'D-MMM-YYYY h:mm A')}
 												</td>
-												<td>G.A.</td>
-												<td>Measurements</td>
-												<td>{item.fetal_lie}</td>
-												<td>{item.position_of_foetus}</td>
+												<td>
+													{getCustomGestationAge(item.createdAt, antenatal.lmp)}
+												</td>
+												<td>
+													{item.measurement.fetal_heart_rate && (
+														<>{`FHR: ${item.measurement.fetal_heart_rate}`}</>
+													)}
+													{item.measurement.fetal_heart_rate &&
+														item.measurement.height_of_fundus && <br />}
+													{item.measurement.height_of_fundus && (
+														<>{`Fundus Height: ${item.measurement.height_of_fundus}cm`}</>
+													)}
+													{!item.measurement.fetal_heart_rate &&
+														!item.measurement.height_of_fundus &&
+														'--'}
+												</td>
+												<td>{item.fetal_lie || '--'}</td>
+												<td>{`${item.position_of_foetus || '--'}${rtbrim}`}</td>
 												<td>
 													<div
 														dangerouslySetInnerHTML={{
