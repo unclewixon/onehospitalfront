@@ -220,6 +220,8 @@ const Patients = ({ location, filter }) => {
 											<th>Date of Admission</th>
 											<th>Admitted By</th>
 											<th>Room/Floor</th>
+											{activePage === 'discharged' && <th>Date Discharged</th>}
+											{activePage === 'discharged' && <th>Discharged By</th>}
 											<th>Status</th>
 											<th></th>
 										</tr>
@@ -255,6 +257,17 @@ const Patients = ({ location, filter }) => {
 															? `${item.room.name} / ${item.room.floor}`
 															: '--'}
 													</td>
+													{activePage === 'discharged' && (
+														<td>
+															{formatDate(
+																item.date_discharged,
+																'DD-MMM-YYYY h:mm A'
+															)}
+														</td>
+													)}
+													{activePage === 'discharged' && (
+														<td>{staffname(item.dischargedBy)}</td>
+													)}
 													<td>
 														{item.status === 0 ? (
 															<span className="badge badge-secondary">
