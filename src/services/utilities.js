@@ -727,6 +727,18 @@ export const getGestationAge = date => {
 	return `${weeks}week${weeks > 1 ? 's' : ''} ${days > 0 ? display : ''}`;
 };
 
+export const getCustomGestationAge = (date, lmp) => {
+	const lmpDate = moment(lmp, 'YYYY-MM-DD');
+
+	const weeks = moment(date).diff(lmpDate, 'weeks');
+	const days = moment(date).diff(lmpDate.add(weeks, 'w'), 'days');
+
+	const display = `${days}day${days > 1 ? 's' : ''}`;
+	return weeks > 0
+		? `${weeks}week${weeks > 1 ? 's' : ''} ${days > 0 ? display : ''}`
+		: display;
+};
+
 export const parseFrequency = (frequency, duration) => {
 	const s = duration > 1 ? 's' : '';
 	const frequencies = [
