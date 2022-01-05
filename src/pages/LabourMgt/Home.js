@@ -4,8 +4,8 @@ import { Switch, Route, Link } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
 
-const LabourMgt = lazy(() => import('./LabourPatients'));
-const EnrollPatient = lazy(() => import('./EnrollmentForm'));
+// const LabourMgt = lazy(() => import('./LabourPatients'));
+// const EnrollPatient = lazy(() => import('./EnrollmentForm'));
 
 const Home = ({ match, location }) => {
 	const page = location.pathname.split('/').pop();
@@ -39,7 +39,7 @@ const Home = ({ match, location }) => {
 							</div>
 							<h6 className="element-header">{pageTitle}</h6>
 							<div className="element-content row">
-								<div className="col-sm-12">
+								{/* <div className="col-sm-12">
 									<Suspense fallback={<Splash />}>
 										<Switch>
 											<Route
@@ -55,7 +55,7 @@ const Home = ({ match, location }) => {
 											<Route component={NoMatch} />
 										</Switch>
 									</Suspense>
-								</div>
+								</div> */}
 							</div>
 						</div>
 					</div>
