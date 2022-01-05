@@ -1,6 +1,5 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 
 import { notifyError } from '../../services/notify';
@@ -9,21 +8,13 @@ import {
 	request,
 	itemRender,
 	patientname,
-	updateImmutable,
+	formatCurrency,
 } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
-import { getAllPendingTransactions } from '../../actions/paypoint';
-import { loadTransactions } from '../../actions/transaction';
 import TableLoading from '../TableLoading';
 import PatientBillItem from '../PatientBillItem';
 
-const ModalShowTransactions = ({
-	patient,
-	closeModal,
-	isAdmitted,
-	completeDischarge,
-	admissionId,
-}) => {
+const ModalApplyCredit = ({ closeModal, patient, refresh, depositBalance }) => {
 	const [loading, setLoading] = useState(true);
 	const [transactions, setTransactions] = useState([]);
 	const [meta, setMeta] = useState({
@@ -35,16 +26,8 @@ const ModalShowTransactions = ({
 	const [total, setTotal] = useState(0);
 	const [allChecked, setAllChecked] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
-	const [paymentMethod, setPaymentMethod] = useState('');
-	const [note, setNote] = useState('');
 
 	const dispatch = useDispatch();
-
-	const paymentMethods = useSelector(state => state.utility.methods);
-	const pendingTransactions = useSelector(
-		state => state.paypoint.pendingTransactions
-	);
-	const allTransactions = useSelector(state => state.transaction.transactions);
 
 	const fetchTransactions = useCallback(
 		async page => {
@@ -143,8 +126,9 @@ const ModalShowTransactions = ({
 				return;
 			}
 
-			if (paymentMethod === '') {
-				notifyError('select payment method');
+			const amount_remaining = depositBalance + total;
+			if (amount_remaining < 0) {
+				notifyError('insufficient credit!');
 				return;
 			}
 
@@ -153,24 +137,15 @@ const ModalShowTransactions = ({
 			const data = {
 				items: checked,
 				patient_id: patient.id,
-				payment_method: paymentMethod,
+				payment_method: 'Credit',
 				amount_paid: total,
 			};
-			const url = 'transactions/process-bulk';
-			const rs = await request(url, 'POST', true, data);
-			let newTransactions = pendingTransactions;
-			for (const item of rs.transactions) {
-				newTransactions = [...newTransactions.filter(t => t.id !== item.id)];
-			}
-			dispatch(getAllPendingTransactions(newTransactions));
-			let transactionsList = allTransactions;
-			for (const item of rs.transactions) {
-				transactionsList = updateImmutable(transactionsList, item);
-			}
-			dispatch(loadTransactions(transactionsList));
+			const url = 'transactions/process-credit';
+			await request(url, 'POST', true, data);
 			setSubmitting(false);
-			closeModal();
 			dispatch(stopBlock());
+			refresh();
+			closeModal();
 		} catch (e) {
 			dispatch(stopBlock());
 			notifyError(e.message || 'could not process transactions');
@@ -226,6 +201,22 @@ const ModalShowTransactions = ({
 														onChecked={onChecked}
 														total={total}
 													/>
+													<tr>
+														<td colSpan="3" className="text-right">
+															Credit:
+														</td>
+														<td>{formatCurrency(depositBalance)}</td>
+													</tr>
+													<tr>
+														<td colSpan="3" className="text-right">
+															<strong>Balance:</strong>
+														</td>
+														<td>
+															<strong>
+																{formatCurrency(depositBalance + total)}
+															</strong>
+														</td>
+													</tr>
 												</tbody>
 											</table>
 											{meta && (
@@ -241,66 +232,16 @@ const ModalShowTransactions = ({
 												</div>
 											)}
 										</div>
-										{isAdmitted && (
-											<div className="col-sm-12 mt-2">
-												<div className="form-group">
-													<label>Discharge note</label>
-													<textarea
-														className="form-control"
-														name="discharge_note"
-														rows="3"
-														placeholder="Enter discharge note"
-														onChange={e => setNote(e.target.value)}></textarea>
-												</div>
-											</div>
-										)}
 										<div className="col-md-12 mt-4">
-											{!isAdmitted ? (
-												<div
-													className="form-inline"
-													style={{ justifyContent: 'center' }}>
-													<div className="form-group mr-3">
-														<select
-															placeholder="Select Payment Method"
-															className="form-control"
-															onChange={e => setPaymentMethod(e.target.value)}>
-															<option value="">Select Payment Method</option>
-															{paymentMethods
-																.filter(p => p.name !== 'Voucher')
-																.map((d, i) => (
-																	<option key={i} value={d.name}>
-																		{d.name}
-																	</option>
-																))}
-														</select>
-													</div>
-													<button
-														onClick={() => processPayment()}
-														className="btn btn-primary">
-														{submitting ? (
-															<img src={waiting} alt="submitting" />
-														) : (
-															'Approve Payment'
-														)}
-													</button>
-												</div>
-											) : (
-												<div
-													className="form-inline"
-													style={{ justifyContent: 'center' }}>
-													<button
-														onClick={() =>
-															completeDischarge({ id: admissionId, note })
-														}
-														className="btn btn-primary">
-														{submitting ? (
-															<img src={waiting} alt="submitting" />
-														) : (
-															'Discharge Patient'
-														)}
-													</button>
-												</div>
-											)}
+											<button
+												onClick={() => processPayment()}
+												className="btn btn-primary">
+												{submitting ? (
+													<img src={waiting} alt="submitting" />
+												) : (
+													'Approve Payment'
+												)}
+											</button>
 										</div>
 									</div>
 								</div>
@@ -311,38 +252,6 @@ const ModalShowTransactions = ({
 										<div className="col-sm-12">
 											<div>No Transactions Pending!</div>
 										</div>
-										{isAdmitted && (
-											<div className="col-sm-12 mt-2">
-												<div className="form-group">
-													<label>Discharge note</label>
-													<textarea
-														className="form-control"
-														name="discharge_note"
-														rows="3"
-														placeholder="Enter discharge note"
-														onChange={e => setNote(e.target.value)}></textarea>
-												</div>
-											</div>
-										)}
-										{isAdmitted && (
-											<div className="col-md-12 mt-4">
-												<div
-													className="form-inline"
-													style={{ justifyContent: 'center' }}>
-													<button
-														onClick={() =>
-															completeDischarge({ id: admissionId, note })
-														}
-														className="btn btn-primary">
-														{submitting ? (
-															<img src={waiting} alt="submitting" />
-														) : (
-															'Discharge Patient'
-														)}
-													</button>
-												</div>
-											</div>
-										)}
 									</div>
 								</div>
 							)}
@@ -354,4 +263,4 @@ const ModalShowTransactions = ({
 	);
 };
 
-export default ModalShowTransactions;
+export default ModalApplyCredit;

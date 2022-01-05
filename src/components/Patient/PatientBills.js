@@ -21,6 +21,8 @@ import ModalServiceDetails from '../Modals/ModalServiceDetails';
 import waiting from '../../assets/images/waiting.gif';
 import SetCreditLimit from './Modals/SetCreditLimit';
 import MakeDeposit from './Modals/MakeDeposit';
+import ModalApplyCredit from '../Modals/ModalApplyCredit';
+import { messageService } from '../../services/message';
 
 const { RangePicker } = DatePicker;
 
@@ -51,6 +53,7 @@ const PatientBills = () => {
 	const [filtered, setFiltered] = useState(false);
 	const [date, setDate] = useState([]);
 	const [depositBalance, setDepositBalance] = useState(0);
+	const [showApplyModal, setShowApplyModal] = useState(false);
 
 	const dispatch = useDispatch();
 
@@ -110,9 +113,15 @@ const PatientBills = () => {
 		setTransaction(transaction);
 	};
 
+	const doApplyCredit = () => {
+		document.body.classList.add('modal-open');
+		setShowApplyModal(true);
+	};
+
 	const closeModal = () => {
 		document.body.classList.remove('modal-open');
 		setShowModal(false);
+		setShowApplyModal(false);
 		setTransaction(null);
 	};
 
@@ -130,6 +139,15 @@ const PatientBills = () => {
 		setFiltering(true);
 		await fetchBills(1, startDate, endDate, status);
 		setFiltered(true);
+	};
+
+	const doRefresh = async () => {
+		await fetchBills(meta.currentPage || 1, startDate, endDate, status);
+		await fetchDepositBal();
+
+		const uri = `patient/${patient.id}/outstandings`;
+		const res = await request(uri, 'GET', true);
+		messageService.sendMessage({ type: 'balance', data: res });
 	};
 
 	return (
@@ -196,7 +214,9 @@ const PatientBills = () => {
 									<span className="text-bold text-underline mr-4">
 										{formatCurrency(depositBalance)}
 									</span>
-									<button className="btn btn-primary btn-sm">
+									<button
+										className="btn btn-primary btn-sm"
+										onClick={() => doApplyCredit()}>
 										Apply Deposit
 									</button>
 								</div>
@@ -358,6 +378,14 @@ const PatientBills = () => {
 			{showModal && (
 				<ModalServiceDetails
 					transaction={transaction}
+					closeModal={() => closeModal()}
+				/>
+			)}
+			{showApplyModal && (
+				<ModalApplyCredit
+					patient={patient}
+					depositBalance={depositBalance}
+					refresh={() => doRefresh()}
 					closeModal={() => closeModal()}
 				/>
 			)}

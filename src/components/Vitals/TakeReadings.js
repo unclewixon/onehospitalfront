@@ -65,7 +65,7 @@ class TakeReadings extends Component {
 				}
 
 				if (rs.readings.isAbnormal) {
-					messageService.sendMessage('refresh');
+					messageService.sendMessage({ type: 'refresh' });
 				}
 
 				notifySuccess(`${title} updated!`);

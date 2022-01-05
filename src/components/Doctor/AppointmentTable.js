@@ -140,6 +140,7 @@ const AppointmentTable = ({
 						<th>Reason</th>
 						<th>Accepted</th>
 						<th>Whom To See</th>
+						<th>Was Scheduled</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
@@ -298,6 +299,14 @@ const AppointmentTable = ({
 											  ).replace('-', '')})`
 											: '--'}
 									</p>
+								</td>
+								<td>
+									<span
+										className={`badge badge-${
+											appointment.is_scheduled ? 'primary' : 'secondary'
+										}`}>
+										{appointment.is_scheduled ? 'Yes' : 'No'}
+									</span>
 								</td>
 								<td className="row-actions">
 									<Tooltip title="View Appointment Details">

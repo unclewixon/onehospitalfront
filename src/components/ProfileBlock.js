@@ -84,8 +84,14 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 
 	useEffect(() => {
 		const subscription = messageService.getMessage().subscribe(message => {
-			if (message !== '' && message.text === 'refresh') {
-				getAlerts();
+			if (message !== '') {
+				const { type, data } = message.text;
+
+				if (type === 'refresh') {
+					getAlerts();
+				} else if (type === 'balance') {
+					setAmount(data);
+				}
 			}
 		});
 

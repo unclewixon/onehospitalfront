@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm, SubmissionError, reset } from 'redux-form';
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 import {
 	renderSelect,
@@ -70,7 +70,7 @@ class PatientAdmission extends Component {
 	};
 
 	render() {
-		const { error, handleSubmit } = this.props;
+		const { error, handleSubmit, location } = this.props;
 		const { submitting } = this.state;
 		return (
 			<div className="col-sm-12">
@@ -163,7 +163,11 @@ class PatientAdmission extends Component {
 											'Admit'
 										)}
 									</button>
-									<button className="btn btn-secondary">Cancel</button>
+									<Link
+										to={`${location.pathname}#dashboard`}
+										className="btn btn-secondary">
+										Cancel
+									</Link>
 								</div>
 							</form>
 						</div>
