@@ -33,6 +33,7 @@ const ViewPrescription = ({
 	const [regimens, setRegimens] = useState([]);
 	const [submitting, setSubmitting] = useState(false);
 	const [noteVisible, setNoteVisible] = useState(null);
+	const [prescriptionId, setPrescriptionId] = useState(null);
 	const [prescriptionItemId, setPrescriptionItemId] = useState(null);
 	const [showModal, setShowModal] = useState(false);
 
@@ -133,7 +134,8 @@ const ViewPrescription = ({
 
 	const doFill = async () => {
 		try {
-			if (regimens.length === 0) {
+			const items = regimens.filter(r => r.item.substituted === 0);
+			if (items.length === 0) {
 				notifyError('Error, no regimens found!');
 				return;
 			}
@@ -142,7 +144,7 @@ const ViewPrescription = ({
 				return;
 			}
 
-			const emptyItem = regimens.find(
+			const emptyItem = items.find(
 				p =>
 					!p.item.fillQuantity ||
 					(p.item.fillQuantity && p.item.fillQuantity === '')
@@ -157,7 +159,7 @@ const ViewPrescription = ({
 			setSubmitting(true);
 			const url = `requests/fill-request/${prescription.id}`;
 			const rs = await request(url, 'POST', true, {
-				items: regimens,
+				items,
 				patient_id: prescription.patient.id,
 				total_amount: sumTotal,
 				code: prescription.group_code,
@@ -165,16 +167,13 @@ const ViewPrescription = ({
 
 			setSubmitting(false);
 			if (rs.success) {
+				const item = rs.data.find(r => r?.item?.filled === 1);
+
 				updatePrescriptions({
 					...prescription,
-					requests: [
-						...rs.data.map(i => {
-							const regimen = regimens.find(r => r.item.id === i.id);
-							return { ...regimen, item: { ...regimen.item, ...i } };
-						}),
-					],
+					requests: rs.data,
 					filled: 1,
-					filled_by: rs?.data[0]?.filledBy || '--',
+					filled_by: item?.filledBy || '--',
 				});
 				notifySuccess('pharmacy prescription filled');
 				closeModal();
@@ -189,23 +188,21 @@ const ViewPrescription = ({
 
 	const undoFill = async () => {
 		try {
+			const items = regimens.filter(r => r.item.substituted === 0);
+
 			setSubmitting(true);
 			const url = `requests/unfill-request/${prescription.id}`;
 			const rs = await request(url, 'POST', true, {
-				items: regimens,
+				items,
 				patient_id: prescription.patient.id,
+				code: prescription.group_code,
 			});
 
 			setSubmitting(false);
 			if (rs.success) {
 				updatePrescriptions({
 					...prescription,
-					requests: [
-						...rs.data.map(i => {
-							const regimen = regimens.find(r => r.item.id === i.id);
-							return { ...regimen, item: { ...regimen.item, ...i } };
-						}),
-					],
+					requests: rs.data,
 					filled: 0,
 					filled_by: '--',
 				});
@@ -303,17 +300,9 @@ const ViewPrescription = ({
 		setRegimens(updatedDrugs);
 	};
 
-	const updateSwichedRegimen = item => {
-		const req = regimens.find(r => r.item.id === item.id);
-		const index = regimens.findIndex(r => r.item.id === item.id);
-
-		const newRegimens = [
-			...regimens.slice(0, index),
-			{ ...req, item },
-			...regimens.slice(index + 1),
-		];
-		setRegimens(newRegimens);
-		const total = newRegimens.reduce((total, regItem) => {
+	const updateSwichedRegimen = items => {
+		setRegimens(items);
+		const total = items.reduce((total, regItem) => {
 			const amount = regItem.item?.drugBatch?.unitPrice || 0;
 
 			return (total += parseFloat(amount) * regItem.item.fillQuantity);
@@ -321,16 +310,18 @@ const ViewPrescription = ({
 
 		setSumTotal(total);
 
-		updatePrescriptions({ ...prescription, requests: newRegimens });
+		updatePrescriptions({ ...prescription, requests: items });
 	};
 
-	const doSwitchPrescription = itemId => {
+	const doSwitchPrescription = (id, itemId) => {
+		setPrescriptionId(id);
 		setPrescriptionItemId(itemId);
 		setShowModal(true);
 	};
 
 	const closeModalSwitch = () => {
 		setShowModal(false);
+		setPrescriptionId(null);
 		setPrescriptionItemId(null);
 	};
 
@@ -388,7 +379,7 @@ const ViewPrescription = ({
 													regimen.item.frequencyType === 'as-needed' ||
 													regimen.item.frequencyType === 'at-night' ||
 													regimen.item.frequencyType === 'stat'
-														? ''
+														? ` (${regimen.item.duration} times)`
 														: ` for ${regimen.item.duration} days`;
 												return (
 													<tr key={i}>
@@ -436,45 +427,43 @@ const ViewPrescription = ({
 															</div>
 														</td>
 														<td>
-															{regimen.item.filled === 0 &&
-															regimen.item.substituted === 0
-																? 'Open'
-																: ''}
-															{regimen.item.filled === 0 &&
-															regimen.item.substituted === 1
+															{regimen.item.substituted === 1
 																? 'Substituted'
-																: ''}
-															{regimen.item.filled === 1 ? 'Filled' : ''}
+																: regimen.item.filled === 0
+																? 'Open'
+																: 'Filled'}
 														</td>
 														<td>
-															{regimen.item.filled === 0 && (
-																<Popover
-																	content={
-																		<SelectDrug
-																			onHide={() => setVisible(null)}
-																			setDrug={(gen, drug) =>
-																				setDrug(gen, drug, regimen.id)
-																			}
-																			generic={regimen.item.drugGeneric}
-																		/>
-																	}
-																	overlayClassName="select-drug"
-																	trigger="click"
-																	visible={
-																		visible && visible === regimen.item.id
-																	}
-																	onVisibleChange={() =>
-																		setVisible(regimen.item.id)
-																	}>
-																	<Tooltip title="Select/Change Vaccine Drug">
-																		<a className="link-primary">
-																			<i className="os-icon os-icon-ui-49" />{' '}
-																			select drug
-																		</a>
-																	</Tooltip>
-																</Popover>
-															)}
-															{regimen.item.filled === 0 && <br />}
+															{regimen.item.filled === 0 &&
+																regimen.item.substituted === 0 && (
+																	<Popover
+																		content={
+																			<SelectDrug
+																				onHide={() => setVisible(null)}
+																				setDrug={(gen, drug) =>
+																					setDrug(gen, drug, regimen.id)
+																				}
+																				generic={regimen.item.drugGeneric}
+																			/>
+																		}
+																		overlayClassName="select-drug"
+																		trigger="click"
+																		visible={
+																			visible && visible === regimen.item.id
+																		}
+																		onVisibleChange={() =>
+																			setVisible(regimen.item.id)
+																		}>
+																		<Tooltip title="Select/Change Vaccine Drug">
+																			<a className="link-primary">
+																				<i className="os-icon os-icon-ui-49" />{' '}
+																				select drug
+																			</a>
+																		</Tooltip>
+																	</Popover>
+																)}
+															{regimen.item.filled === 0 &&
+																regimen.item.substituted === 0 && <br />}
 															{regimen.item.drug?.name || ''}
 														</td>
 														<td>
@@ -489,20 +478,31 @@ const ViewPrescription = ({
 																	</option>
 																</select>
 															) : (
-																<select
-																	className="form-control"
-																	placeholder="Select Batch"
-																	onChange={e => onSelectBatch(e, regimen)}>
-																	<option value="">Select Batch</option>
-																	{regimen.item.drug &&
-																		regimen.item.drug.batches.map(
-																			(batch, i) => (
-																				<option key={i} value={batch.id}>
-																					{batch.name}
-																				</option>
-																			)
-																		)}
-																</select>
+																<>
+																	{regimen.item.substituted === 0 ? (
+																		<select
+																			className="form-control"
+																			placeholder="Select Batch"
+																			onChange={e => onSelectBatch(e, regimen)}>
+																			<option value="">Select Batch</option>
+																			{regimen.item.drug &&
+																				regimen.item.drug.batches.map(
+																					(batch, i) => (
+																						<option key={i} value={batch.id}>
+																							{batch.name}
+																						</option>
+																					)
+																				)}
+																		</select>
+																	) : (
+																		<select
+																			className="form-control"
+																			placeholder="Select Batch"
+																			disabled>
+																			<option value="">Select Batch</option>
+																		</select>
+																	)}
+																</>
 															)}
 														</td>
 														<td>
@@ -518,7 +518,10 @@ const ViewPrescription = ({
 																	placeholder="Qty"
 																	value={regimen.item.fillQuantity || ''}
 																	onChange={e => onChange(e, regimen.item.id)}
-																	disabled={regimen.item.filled === 1}
+																	disabled={
+																		regimen.item.filled === 1 ||
+																		regimen.item.substituted === 1
+																	}
 																	style={{ width: '90px' }}
 																/>
 															</div>
@@ -550,26 +553,32 @@ const ViewPrescription = ({
 															)}
 														</td>
 														<td className="row-actions">
-															{regimen.item.filled === 0 && (
-																<>
-																	<Tooltip title="Switch Prescription">
-																		<a
-																			className="info"
-																			onClick={() =>
-																				doSwitchPrescription(regimen.item.id)
-																			}>
-																			<i className="os-icon os-icon-grid-18" />
-																		</a>
-																	</Tooltip>
-																	<Tooltip title="Cancel Prescription">
-																		<a
-																			className="danger"
-																			onClick={() => deleteItem(regimen.id)}>
-																			<i className="os-icon os-icon-ui-15" />
-																		</a>
-																	</Tooltip>
-																</>
-															)}
+															{regimen.item.filled === 0 &&
+																regimen.item.substituted === 0 && (
+																	<>
+																		{!regimen.item.substitute_id && (
+																			<Tooltip title="Switch Prescription">
+																				<a
+																					className="info"
+																					onClick={() =>
+																						doSwitchPrescription(
+																							regimen.id,
+																							regimen.item.id
+																						)
+																					}>
+																					<i className="os-icon os-icon-grid-18" />
+																				</a>
+																			</Tooltip>
+																		)}
+																		<Tooltip title="Cancel Prescription">
+																			<a
+																				className="danger"
+																				onClick={() => deleteItem(regimen.id)}>
+																				<i className="os-icon os-icon-ui-15" />
+																			</a>
+																		</Tooltip>
+																	</>
+																)}
 														</td>
 													</tr>
 												);
@@ -641,7 +650,7 @@ const ViewPrescription = ({
 			{showModal && (
 				<SwitchPrescription
 					itemId={prescriptionItemId}
-					prescriptionId={prescription.id}
+					prescriptionId={prescriptionId}
 					update={updateSwichedRegimen}
 					closeModal={() => closeModalSwitch()}
 				/>
