@@ -26,9 +26,4 @@ yarn-error.log*
 # others
 src/assets/css/*.css
 src/assets/css/*.css.map
-template
 package-lock.json
-.env.production
-debug.log
-.vs
-yarn.lock

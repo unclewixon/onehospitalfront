@@ -4,10 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
-import orderBy from 'lodash.orderby';
-import { Formik } from 'formik';
-import { Form, Image } from 'react-bootstrap';
+import { Formik, Field } from 'formik';
+import { Form, Image, Button } from 'react-bootstrap';
 import { object, string, number } from 'yup';
+import Select from 'react-select';
 
 import { request, updateImmutable } from '../../services/utilities';
 import placeholder from '../../assets/images/placeholder.jpg';
@@ -22,7 +22,6 @@ import {
 	TOKEN_COOKIE,
 } from '../../services/constants';
 import { notifyError, notifySuccess } from '../../services/notify';
-import { Button, Field, Select } from '../common';
 import SSRStorage from '../../services/storage';
 
 export const StepOneSchema = object({
@@ -80,7 +79,7 @@ function ModalCreateStaff({ updateStaffs, closeModal, staff, staffs }) {
 	const dispatch = useDispatch();
 
 	const _countries = countries.map(c => ({ value: c.id, label: c.name }));
-	const sortedCountries = orderBy(_countries, ['label'], ['asc']);
+	const sortedCountries = _countries;
 
 	const fetchDepartment = useCallback(async () => {
 		try {
@@ -581,13 +580,12 @@ function StepOne({
 			<div className="row">
 				<div className="col-sm-12 text-right">
 					<Button
-						className="btn-primary"
-						isSubmitting={isSubmitting}
+						variant="default"
+						className="btn btn-primary"
 						onClick={handleSubmit}
-						isValid={isValid}
-						value="Next"
+						disabled={isValid || isSubmitting}
 						type="submit"
-					/>
+					>Next</Button>
 				</div>
 			</div>
 		</Form>
@@ -819,13 +817,12 @@ function StepTwo({
 				</div>
 				<div className="col-sm-6 text-right">
 					<Button
-						className="btn-primary"
-						isSubmitting={isSubmitting}
+						variant="default"
+						className="btn btn-primary"
 						onClick={handleSubmit}
-						isValid={isValid}
-						value="Save"
+						isValid={isValid || isSubmitting}
 						type="submit"
-					/>
+					>Save</Button>
 				</div>
 			</div>
 		</div>

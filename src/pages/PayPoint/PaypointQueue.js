@@ -9,7 +9,6 @@ import AsyncSelect from 'react-select/async/dist/react-select.esm';
 import waiting from '../../assets/images/waiting.gif';
 import { searchAPI } from '../../services/constants';
 import TransactionTable from '../../components/Tables/TransactionTable';
-import { socket } from '../../services/constants';
 import { request, itemRender, patientname } from '../../services/utilities';
 import { getAllPendingTransactions } from './../../actions/paypoint';
 import { notifyError } from '../../services/notify';
@@ -21,7 +20,6 @@ const { RangePicker } = DatePicker;
 const PaypointQueue = () => {
 	const [loaded, setLoaded] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const [listenning, setListenning] = useState(false);
 	const [filtering, setFiltering] = useState(false);
 	const [patient, setPatient] = useState('');
 	const [startDate, setStartDate] = useState('');
@@ -91,27 +89,11 @@ const PaypointQueue = () => {
 	};
 
 	useEffect(() => {
-		// fetch transactions
 		if (!loaded) {
 			init();
 			setLoaded(true);
 		}
-
-		if (!listenning) {
-			// listen for new transactions
-			setListenning(true);
-
-			socket.on('paypoint-queue', data => {
-				if (data.payment) {
-					console.log(data.payment);
-					const transaction = data.payment;
-					const arr = [transaction, ...transactions];
-					console.log(arr);
-					dispatch(getAllPendingTransactions(arr));
-				}
-			});
-		}
-	}, [dispatch, init, listenning, transactions, loaded]);
+	}, [init, loaded]);
 
 	const doFilter = e => {
 		e.preventDefault();

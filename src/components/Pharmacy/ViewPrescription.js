@@ -49,7 +49,7 @@ const ViewPrescription = ({
 			const total = items.reduce((total, regItem) => {
 				const amount = regItem.item?.drugBatch?.unitPrice || 0;
 
-				return (total += parseFloat(amount) * regItem.item.fillQuantity);
+				return (total += parseFloat(amount) * regItem.item.fill_quantity);
 			}, 0.0);
 
 			setSumTotal(total);
@@ -63,18 +63,18 @@ const ViewPrescription = ({
 		const regimen = regimens.find(r => r.item.id === parseInt(id, 10));
 		const item = {
 			...regimen.item,
-			fillQuantity: quantity,
-			filledBy: staff.username,
+			fill_quantity: quantity,
+			filled_by: staff.username,
 		};
 		const updatedDrugs = updateImmutable(regimens, { ...regimen, item });
 		setRegimens(updatedDrugs);
 		const total = updatedDrugs.reduce((total, regItem) => {
-			if (regItem.item.fillQuantity === '') {
+			if (regItem.item.fill_quantity === '') {
 				return (total += 0);
 			}
 			const amount = regItem.item.drugBatch?.unitPrice || 0;
 			return (total +=
-				parseFloat(amount) * parseInt(regItem.item.fillQuantity, 10));
+				parseFloat(amount) * parseInt(regItem.item.fill_quantity, 10));
 		}, 0);
 		setSumTotal(total);
 	};
@@ -146,8 +146,8 @@ const ViewPrescription = ({
 
 			const emptyItem = items.find(
 				p =>
-					!p.item.fillQuantity ||
-					(p.item.fillQuantity && p.item.fillQuantity === '')
+					!p.item.fill_quantity ||
+					(p.item.fill_quantity && p.item.fill_quantity === '')
 			);
 			if (emptyItem) {
 				notifyError(
@@ -305,7 +305,7 @@ const ViewPrescription = ({
 		const total = items.reduce((total, regItem) => {
 			const amount = regItem.item?.drugBatch?.unitPrice || 0;
 
-			return (total += parseFloat(amount) * regItem.item.fillQuantity);
+			return (total += parseFloat(amount) * regItem.item.fill_quantity);
 		}, 0.0);
 
 		setSumTotal(total);
@@ -516,7 +516,7 @@ const ViewPrescription = ({
 																	type="number"
 																	className="form-control"
 																	placeholder="Qty"
-																	value={regimen.item.fillQuantity || ''}
+																	value={regimen.item.fill_quantity || ''}
 																	onChange={e => onChange(e, regimen.item.id)}
 																	disabled={
 																		regimen.item.filled === 1 ||

@@ -15,7 +15,10 @@ import {
 	CK_ENCOUNTER,
 } from '../services/constants';
 import { signOut } from '../actions/user';
+import { setConnection } from '../actions/general';
 import { loginUser } from '../actions/user';
+import { disconnectSocket } from '../services/socket';
+import { initSocket, subscribeIO } from '../services/socket';
 
 const storage = new SSRStorage();
 
@@ -93,6 +96,12 @@ const ChangePassword = ({ location, history, error, handleSubmit }) => {
 			dispatch(loginUser(rs));
 			storage.setItem(TOKEN_COOKIE, rs);
 			dispatch(reset('change-password'));
+
+			initSocket();
+			subscribeIO();
+
+			dispatch(setConnection(true));
+			
 			redirectToPage(rs.role, history);
 		} catch (e) {
 			console.log(e);
@@ -116,6 +125,9 @@ const ChangePassword = ({ location, history, error, handleSubmit }) => {
 		storage.removeItem(CK_ENCOUNTER);
 
 		dispatch(signOut());
+
+		disconnectSocket();
+		dispatch(setConnection(false));
 
 		history.push('/');
 	};

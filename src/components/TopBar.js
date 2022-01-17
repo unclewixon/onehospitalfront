@@ -14,10 +14,12 @@ import {
 	toggleFullscreen,
 	signOut,
 } from '../actions/user';
+import { setConnection } from '../actions/general';
 import SearchPatient from './SearchPatient';
 import { staffname, parseAvatar, request } from '../services/utilities';
 import SSRStorage from '../services/storage';
 import { TOKEN_COOKIE, USER_RECORD, CK_ENCOUNTER } from '../services/constants';
+import { disconnectSocket } from '../services/socket';
 
 const storage = new SSRStorage();
 
@@ -80,6 +82,9 @@ class TopBar extends Component {
 		storage.removeItem(CK_ENCOUNTER);
 
 		this.props.signOut();
+
+		disconnectSocket();
+		this.props.setConnection(false);
 
 		this.props.history.push('/');
 	};
@@ -226,5 +231,6 @@ export default withRouter(
 		toggleMenu,
 		toggleFullscreen,
 		signOut,
+		setConnection,
 	})(TopBar)
 );

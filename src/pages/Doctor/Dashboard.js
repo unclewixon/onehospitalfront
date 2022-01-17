@@ -5,13 +5,14 @@ import { withRouter } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 
-import { socket, CK_ENCOUNTER } from '../../services/constants';
+import { CK_ENCOUNTER } from '../../services/constants';
 import { request, itemRender, updateImmutable } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import AppointmentTable from '../../components/Doctor/AppointmentTable';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { updateEncounterData } from '../../actions/patient';
 import SSRStorage from '../../services/storage';
+import { messageService } from '../../services/message';
 
 const storage = new SSRStorage();
 
@@ -26,14 +27,11 @@ const Dashboard = () => {
 		totalPages: 0,
 	});
 
-	// const profile = useSelector(state => state.user.profile);
-
 	const dispatch = useDispatch();
 
 	const getAppointments = useCallback(
 		async page => {
 			try {
-				// const staff = profile.details;
 				const today = moment().format('YYYY-MM-DD');
 				const p = page || 1;
 				const url = `front-desk/appointments?page=${p}&limit=${limit}&today=${today}&canSeeDoctor=1&is_queue=1&status=Approved`;
@@ -74,20 +72,18 @@ const Dashboard = () => {
 	);
 
 	useEffect(() => {
-		console.log('listen to sockets');
-		socket.on('consultation-queue', res => {
-			console.log('new appointment message');
-			console.log(appointments);
-			console.log(res);
-			if (res.success) {
-				const list = [res.queue.appointment, ...appointments];
-				setAppointments(list);
+		const subscription = messageService.getMessage().subscribe(message => {
+			const { type, data } = message.text;
+			if (type === 'consultation-queue') {
+				setAppointments([...appointments, data.queue.appointment]);
 				setMeta({ ...meta, totalPages: meta.totalPages + 1 });
-				console.log(list);
 			}
 		});
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+
+		return () => {
+			subscription.unsubscribe();
+		};
+	}, [appointments, meta]);
 
 	const onNavigatePage = nextPage => {
 		dispatch(startBlock());

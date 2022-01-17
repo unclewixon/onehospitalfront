@@ -1,11 +1,7 @@
-import socketIOClient from 'socket.io-client';
-import range from 'lodash.range';
-
 export const DEBUG = process.env.REACT_APP_DEBUG;
 export const APP_NAME = process.env.REACT_APP_NAME;
-export const BASE_API = process.env.REACT_APP_API;
+export const API_URI = process.env.REACT_APP_API;
 
-export const API_URI = `${BASE_API}`;
 export const TOKEN_COOKIE = 'EMR:TOKEN_COOKIE';
 export const MODE_COOKIE = 'EMR:MODE_COOKIE';
 export const FULLSCREEN_COOKIE = 'EMR:FULLSCREEN_COOKIE';
@@ -21,10 +17,6 @@ export const CK_DIAGNOSIS = 'E:DIAGNOSIS';
 export const CK_PAST_DIAGNOSIS = 'E:PAST_DIAGNOSIS';
 export const CK_PAST_HISTORY = 'E:PAST_HISTORY';
 export const CK_TREATMENT_PLAN = 'E:TREATMENT_PLAN';
-
-export const socket = socketIOClient(API_URI, {
-	transports: ['websocket', 'polling'],
-});
 
 export const hmoAPI = 'hmos';
 export const cafeteriaAPI = 'cafeteria';
@@ -455,12 +447,7 @@ export const para = [
 	},
 ];
 
-export const previousPregnancies = range(1, 12).map((_, i) => {
-	return {
-		id: i,
-		name: i,
-	};
-});
+export const previousPregnancies = [...Array(12).keys()].map(i => ({ id: i, name: i }));
 
 export const obstericHistory = [
 	{
@@ -1192,11 +1179,11 @@ export const alphabets = [
 
 export const defaultEncounter = {
 	complaints:
-		'<p><u>Presenting Complaints:</u>​&nbsp;</p><p><br></p><p><br></p><p><br></p><p><u>History of complains</u>:&nbsp;</p><p><br></p>',
+		'<p><u>Presenting Complaints:</u>&nbsp;</p><p><br></p><p><br></p><p><br></p><p><u>History of complains</u>:&nbsp;</p><p><br></p>',
 	reviewOfSystem: [],
 	patientHistorySelected: [],
 	medicalHistory:
-		'<p><u>Past Medical History:</u>​&nbsp;</p><p><br></p><p><br></p><p><br></p><p><u><br></p>',
+		'<p><u>Past Medical History:</u>&nbsp;</p><p><br></p><p><br></p><p><br></p><p><u><br></p>',
 	allergies: [],
 	pastAllergies: [],
 	physicalExamination: [],
@@ -1209,7 +1196,7 @@ export const defaultEncounter = {
 		pharmacyRequest: null,
 		procedureRequest: null,
 	},
-	treatmentPlan: '<p><u>Treatment Plan:</u>​&nbsp;</p><p><br></p>',
+	treatmentPlan: '<p><u>Treatment Plan:</u>&nbsp;</p><p><br></p>',
 	nextAppointment: null,
 	instruction: '',
 	consumables: null,

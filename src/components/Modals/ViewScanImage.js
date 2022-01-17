@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { BASE_API } from '../../services/constants';
+import { API_URI } from '../../services/constants';
 
 export default function ViewScanImage({ scan, closeModal }) {
 	const imageStyle = {
@@ -28,7 +28,7 @@ export default function ViewScanImage({ scan, closeModal }) {
 							<h4 className="onboarding-title">View Scan 1</h4>
 							<div className="element-box m-0 p-2">
 								<img
-									src={`${BASE_API}/uploads/docs/${scan.document.document_name}`}
+									src={`${API_URI}/uploads/docs/${scan.document.document_name}`}
 									alt=""
 									style={imageStyle}
 								/>

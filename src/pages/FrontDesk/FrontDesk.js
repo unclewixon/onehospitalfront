@@ -3,8 +3,8 @@ import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Switch, Route, withRouter, Link } from 'react-router-dom';
 import startCase from 'lodash.startcase';
-import qs from 'querystring';
 
+import { qsParse } from '../../services/utilities';
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
 import PatientForm from '../../components/Modals/PatientForm';
@@ -31,7 +31,7 @@ const FrontDesk = ({ location }) => {
 			setTitle(startCase(page));
 		}
 
-		const query = qs.parse(location.search.replace('?', ''));
+		const query = qsParse(location.search.replace('?', ''));
 		setCount(parseInt(query?.new || 0, 10) + 1);
 	}, [location.search, page]);
 

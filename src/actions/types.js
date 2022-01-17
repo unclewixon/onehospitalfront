@@ -1,5 +1,6 @@
 // general
 export const CREAE_NEW_DRUG = 'CREAE_NEW_DRUG';
+export const TOGGLE_CONNECTED = 'TOGGLE_CONNECTED';
 export const SET_IS_STAFF_APPRAISAL = 'SET_IS_STAFF_APPRAISAL';
 export const SET_IVF = 'SET_IVF';
 export const ADD_STAFF_FOR_APPRAISAL = 'ADD_STAFF_FOR_APPRAISAL';

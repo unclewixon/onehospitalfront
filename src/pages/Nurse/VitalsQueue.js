@@ -7,11 +7,11 @@ import moment from 'moment';
 
 import { toggleProfile } from '../../actions/user';
 import { getAge, staffname, patientname } from '../../services/utilities';
-import { socket } from '../../services/constants';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { request } from '../../services/utilities';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import TableLoading from '../../components/TableLoading';
+import { messageService } from '../../services/message';
 
 const VitalsQueue = () => {
 	const [loading, setLoading] = useState(true);
@@ -36,14 +36,17 @@ const VitalsQueue = () => {
 	}, [loading, fetchQueue]);
 
 	useEffect(() => {
-		socket.on('nursing-queue', data => {
-			console.log(data);
-			if (data.queue) {
-				const queue = data.queue;
-				setQueues(queues => [...queues, queue]);
+		const subscription = messageService.getMessage().subscribe(message => {
+			const { type, data } = message.text;
+			if (type === 'nursing-queue') {
+				setQueues([...queues, data.queue]);
 			}
 		});
-	}, []);
+
+		return () => {
+			subscription.unsubscribe();
+		};
+	});
 
 	const showProfile = patient => {
 		const info = { patient, type: 'patient' };

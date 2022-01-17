@@ -7,7 +7,7 @@ import startCase from 'lodash.startcase';
 import padLeft from 'pad-left';
 import { confirmAlert } from 'react-confirm-alert';
 import JwtDecode from 'jwt-decode';
-import Multiselect from 'react-widgets/lib/Multiselect';
+// import Multiselect from 'react-widgets/lib/Multiselect';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import truncate from 'lodash.truncate';
@@ -18,7 +18,6 @@ import axios from 'axios';
 
 import placeholder from '../assets/images/placeholder.jpg';
 
-//const store = configureStore();
 export const formatCurrency = (amount, abs) =>
 	`₦${numeral(abs ? Math.abs(amount) : amount).format('0,0.00')}`;
 
@@ -199,8 +198,9 @@ export const renderTextArea = ({
 	meta: { touched, error },
 }) => (
 	<div
-		className={`form-group ${touched &&
-			(error ? 'has-error has-danger' : '')}`}>
+		className={`form-group ${
+			touched && (error ? 'has-error has-danger' : '')
+		}`}>
 		<label htmlFor={id}>{label}</label>
 		<textarea
 			{...input}
@@ -261,34 +261,34 @@ export const formatPatientId = data => {
 	return formattedId;
 };
 
-export const renderMultiselect = ({
-	input,
-	data,
-	valueField,
-	textField,
-	placeholder,
-	label,
-	meta: { touched, error },
-}) => (
-	<div>
-		<Multiselect
-			{...input}
-			onBlur={() => input.onBlur()}
-			value={input.value || []} // requires value to be an array
-			data={data}
-			valueField={valueField}
-			textField={textField}
-			label={label}
-		/>
-		{touched && error && (
-			<div className="help-block form-text with-errors form-control-feedback">
-				<ul className="list-unstyled">
-					<li>{error}</li>
-				</ul>
-			</div>
-		)}
-	</div>
-);
+// export const renderMultiselect = ({
+// 	input,
+// 	data,
+// 	valueField,
+// 	textField,
+// 	placeholder,
+// 	label,
+// 	meta: { touched, error },
+// }) => (
+// 	<div>
+// 		<Multiselect
+// 			{...input}
+// 			onBlur={() => input.onBlur()}
+// 			value={input.value || []} // requires value to be an array
+// 			data={data}
+// 			valueField={valueField}
+// 			textField={textField}
+// 			label={label}
+// 		/>
+// 		{touched && error && (
+// 			<div className="help-block form-text with-errors form-control-feedback">
+// 				<ul className="list-unstyled">
+// 					<li>{error}</li>
+// 				</ul>
+// 			</div>
+// 		)}
+// 	</div>
+// );
 
 export const renderDateTimePicker = ({
 	input,
@@ -367,8 +367,9 @@ export const renderSelectWithDefault = ({
 }) => {
 	return (
 		<div
-			className={`form-group ${touched &&
-				(error ? 'has-error has-danger' : '')}`}>
+			className={`form-group ${
+				touched && (error ? 'has-error has-danger' : '')
+			}`}>
 			<label htmlFor={id}>{label}</label>
 			<select {...input} className="form-control">
 				<option value="">{placeholder}</option>
@@ -401,8 +402,9 @@ export const renderSelect = ({
 	meta: { touched, error },
 }) => (
 	<div
-		className={`form-group ${touched &&
-			(error ? 'has-error has-danger' : '')}`}>
+		className={`form-group ${
+			touched && (error ? 'has-error has-danger' : '')
+		}`}>
 		<label htmlFor={id}>{label}</label>
 		<select {...input} className="form-control">
 			<option value="">{placeholder}</option>
@@ -571,12 +573,8 @@ export const trimText = (str, length = 50, omission = '...') =>
 
 export const getPeriod = () => {
 	const qtr = moment().format('Qo');
-	const start = moment()
-		.startOf('quarter')
-		.format('MMM');
-	const end = moment()
-		.endOf('quarter')
-		.format('MMM');
+	const start = moment().startOf('quarter').format('MMM');
+	const end = moment().endOf('quarter').format('MMM');
 
 	return `${qtr} Quarter [${start} - ${end}]`;
 };
@@ -614,8 +612,8 @@ export const getAge = dob => {
 	return `${years}years`; // ${months}months
 };
 
-export const groupBy = function(xs, key) {
-	return xs.reduce(function(rv, x) {
+export const groupBy = function (xs, key) {
+	return xs.reduce(function (rv, x) {
 		(rv[x[key]] = rv[x[key]] || []).push(x);
 		return rv;
 	}, {});
@@ -760,4 +758,8 @@ export const parseFrequency = (frequency, duration) => {
 	}
 
 	return `for ${duration} ${item?.value || ''}`;
+};
+
+export const qsParse = querystring => {
+	return Object.fromEntries(new URLSearchParams(querystring));
 };

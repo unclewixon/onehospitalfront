@@ -162,6 +162,7 @@ const IvfPatients = () => {
 							<table className="table table-striped">
 								<thead>
 									<tr>
+										<th>ID</th>
 										<th>Patient Name</th>
 										<th>Date of Enrollment</th>
 										<th>Enrolled By</th>
@@ -173,6 +174,7 @@ const IvfPatients = () => {
 									{ivfPatients.map((item, i) => {
 										return (
 											<tr key={i}>
+												<td>{item.serial_code}</td>
 												<td>
 													<p className="item-title text-color m-0">
 														<Tooltip

@@ -1,6 +1,7 @@
 import {
 	TOGGLE_PRELOADING,
 	SIGN_OUT,
+	TOGGLE_CONNECTED,
 	TOGGLE_IS_MODAL,
 	TOGGLE_MODAL,
 	TOGGLE_SHOW_HISTORY,
@@ -26,6 +27,7 @@ const INITIAL_STATE = {
 	preloading: true,
 	is_modal_open: false,
 	is_modal: false,
+	socket_connected: false,
 	set_leave: false,
 	show_history: false,
 	view_appraisal: false,
@@ -59,6 +61,8 @@ const general = (state = INITIAL_STATE, action) => {
 			return { ...state, isStaffAppraisal: action.payload };
 		case TOGGLE_PRELOADING:
 			return { ...state, preloading: action.payload };
+		case TOGGLE_CONNECTED:
+			return { ...state, socket_connected: action.payload };
 		case ADD_STAFF_FOR_APPRAISAL:
 			return { ...state, staffForApraisal: action.payload };
 		case SIGN_OUT:

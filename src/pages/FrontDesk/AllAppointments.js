@@ -4,12 +4,10 @@ import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
 import { connect } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
-import qs from 'querystring';
 import Tooltip from 'antd/lib/tooltip';
 import startCase from 'lodash.startcase';
 import { withRouter } from 'react-router-dom';
 
-import { socket } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import {
 	request,
@@ -19,6 +17,7 @@ import {
 	patientname,
 	updateImmutable,
 	staffname,
+	qsParse,
 } from '../../services/utilities';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { notifySuccess, notifyError } from '../../services/notify';
@@ -27,6 +26,7 @@ import ModalViewAppointment from '../../components/Modals/ModalViewAppointment';
 import { toggleProfile } from '../../actions/user';
 import ProfilePopup from '../../components/Patient/ProfilePopup';
 import TableLoading from '../../components/TableLoading';
+import { messageService } from '../../services/message';
 
 const { RangePicker } = DatePicker;
 
@@ -51,7 +51,7 @@ class AllAppointments extends Component {
 	componentDidMount() {
 		this.fetchAppointments();
 		const { location, history } = this.props;
-		const query = qs.parse(location.search.replace('?', ''));
+		const query = qsParse(location.search.replace('?', ''));
 		if (query && query.new) {
 			const newCount = parseInt(query.new, 10);
 			if (newCount > 0 && this.state.count === 0 && !location.state) {
@@ -61,29 +61,20 @@ class AllAppointments extends Component {
 	}
 
 	componentDidUpdate() {
-		socket.on('nursing-queue', data => {
-			console.log(data);
-			if (data.queue) {
-				const { appointments } = this.state;
-				const appointment = data.queue?.appointment;
-				const result = updateImmutable(appointments, appointment);
-				this.setState({
-					appointments: result,
-				});
+		messageService.getMessage().subscribe(message => {
+			const { type, data } = message.text;
+			if (type === 'appointment-update') {
+				console.log(data);
+				// const { appointments } = this.state;
+				// const appointment = data.appointment || data.queue?.appointment;
+				// const result = updateImmutable(appointments, appointment);
+				// this.setState({ appointments: result });
 			}
-		});
-
-		socket.on('appointment-update', data => {
-			const { appointments } = this.state;
-			const result = updateImmutable(appointments, data.appointment);
-			this.setState({
-				appointments: result,
-			});
 		});
 	}
 
 	componentWillUpdate(nextProps, nextState) {
-		const query = qs.parse(nextProps.location.search.replace('?', ''));
+		const query = qsParse(nextProps.location.search.replace('?', ''));
 		if (query && query.new) {
 			const newCount = parseInt(query.new, 10);
 			if (newCount > this.state.count) {

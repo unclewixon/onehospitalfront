@@ -1,5 +1,6 @@
 import {
 	TOGGLE_PRELOADING,
+	TOGGLE_CONNECTED,
 	TOGGLE_MODAL,
 	TOGGLE_IS_MODAL,
 	TOGGLE_SET_LEAVE,
@@ -27,6 +28,13 @@ import {
 export const createNewGeneric = status => {
 	return {
 		type: CREAE_NEW_GENERIC,
+		payload: status,
+	};
+};
+
+export const setConnection = status => {
+	return {
+		type: TOGGLE_CONNECTED,
 		payload: status,
 	};
 };

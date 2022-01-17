@@ -1,11 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Suspense, lazy, useEffect, useState } from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Switch, Route, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
-import { socket } from '../../services/constants';
 import { createNewDrug, createNewGeneric } from '../../actions/general';
 
 const PrescriptionQueue = lazy(() => import('./PrescriptionQueue'));
@@ -17,8 +16,6 @@ const Billing = lazy(() => import('./PayPoint'));
 const Inventory = lazy(() => import('./Inventory'));
 
 const Home = ({ match, location }) => {
-	const [listenning, setListenning] = useState(false);
-
 	const dispatch = useDispatch();
 
 	const page = location.pathname.split('/').pop();
@@ -33,19 +30,6 @@ const Home = ({ match, location }) => {
 	} else if (page === 'inventory') {
 		pageTitle = 'Inventory';
 	}
-
-	useEffect(() => {
-		if (!listenning) {
-			setListenning(true);
-
-			socket.on('paypoint-queue', data => {
-				if (data.payment) {
-					console.log('--------- transaction -------');
-					console.log(data);
-				}
-			});
-		}
-	}, [listenning]);
 
 	const newGeneric = () => {
 		dispatch(createNewGeneric(true));

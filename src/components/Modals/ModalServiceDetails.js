@@ -55,7 +55,7 @@ const ModalServiceDetails = ({ closeModal, transaction }) => {
 										<tbody>
 											<tr>
 												<td>{item?.request?.code}</td>
-												<td>{`${item.fillQuantity} ${
+												<td>{`${item.fill_quantity} ${
 													item.drug.unitOfMeasure
 												} of ${item.drugGeneric.name} (${
 													item.drug.name

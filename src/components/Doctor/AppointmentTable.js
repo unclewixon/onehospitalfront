@@ -5,6 +5,7 @@ import Tooltip from 'antd/lib/tooltip';
 import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import startCase from 'lodash.startcase';
+import { Button } from 'react-bootstrap';
 
 import {
 	confirmAction,
@@ -14,7 +15,6 @@ import {
 	patientname,
 } from '../../services/utilities';
 import { toggleProfile } from '../../actions/user';
-import Button from '../common/Button';
 import { notifyError, notifySuccess } from '../../services/notify';
 import ProfilePopup from '../Patient/ProfilePopup';
 import TableLoading from '../TableLoading';
@@ -193,16 +193,13 @@ const AppointmentTable = ({
 															</span>
 														) : (
 															<Button
-																isSubmitting={
-																	updating && updating === appointment.id
-																}
-																isValid={!updating}
+																variant="default"
+																disabled={!updating || (updating && updating === appointment.id)}
 																onClick={() =>
 																	confirm({ id: appointment.id, action: 1 })
 																}
 																className="btn btn-sm btn-primary"
-																value="Accept"
-															/>
+															>Accept</Button>
 														)}
 													</>
 												) : (

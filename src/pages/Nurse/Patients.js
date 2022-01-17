@@ -254,7 +254,7 @@ const Patients = ({ location, filter }) => {
 													<td>{staffname(item.admitted_by)}</td>
 													<td>
 														{item.room
-															? `${item.room.name} / ${item.room.floor}`
+															? `Room ${item.room.name} / ${item.room.floor}`
 															: '--'}
 													</td>
 													{activePage === 'discharged' && (

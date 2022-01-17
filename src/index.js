@@ -5,7 +5,6 @@ import { Router } from 'react-router-dom';
 import axios from 'axios';
 
 import './assets/bower_components/select2/dist/css/select2.css';
-import 'react-widgets/dist/css/react-widgets.css';
 import './assets/icon_fonts_assets/feather/style.css';
 import './assets/icon_fonts_assets/picons-thin/style.css';
 import './assets/icon_fonts_assets/font-awesome/css/font-awesome.css';
@@ -18,7 +17,7 @@ import 'react-block-ui/style.css';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
 import App from './App';
-import * as serviceWorker from './serviceWorker';
+import reportWebVitals from './reportWebVitals';
 import configureStore from './store';
 import history from './services/history';
 import Notify from './services/notify';
@@ -161,13 +160,13 @@ initData();
 ReactDOM.render(
 	<Provider store={store}>
 		<Router history={history}>
-			<App />
+        	<App />
 		</Router>
 	</Provider>,
 	document.getElementById('root')
 );
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();

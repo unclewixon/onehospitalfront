@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import qs from 'querystring';
 
+import { qsParse } from '../../services/utilities';
 import AllAppointments from './AllAppointments';
 import PatientForm from '../../components/Modals/PatientForm';
 
@@ -18,7 +18,7 @@ const Appointments = ({ location }) => {
 			setActivePage(page);
 		}
 
-		const query = qs.parse(location.search.replace('?', ''));
+		const query = qsParse(location.search.replace('?', ''));
 		setCount(parseInt(query?.new || 0, 10) + 1);
 	}, [activePage, location.search, page]);
 

@@ -20,7 +20,9 @@ import {
 import { loadRoles } from '../actions/role';
 import { loadDepartments } from '../actions/department';
 import { loadSpecializations } from '../actions/settings';
+import { setConnection } from '../actions/general';
 import ability from '../services/ability';
+import { initSocket, subscribeIO } from '../services/socket';
 
 const storage = new SSRStorage();
 
@@ -121,6 +123,11 @@ const Login = ({ location, history, error, handleSubmit }) => {
 					ability.update(rules);
 
 					notifySuccess('login successful!');
+
+					initSocket();
+					subscribeIO();
+
+					dispatch(setConnection(true));
 
 					if (rs.passwordChanged) {
 						redirectToPage(rs.role, history);

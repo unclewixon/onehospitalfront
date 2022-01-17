@@ -5,8 +5,7 @@ import moment from 'moment';
 import Pagination from 'antd/lib/pagination';
 import { Link } from 'react-router-dom';
 
-import { socket } from '../../services/constants';
-import { notifyError, notifyInfo } from '../../services/notify';
+import { notifyError } from '../../services/notify';
 import { request, itemRender } from '../../services/utilities';
 import HmoTable from '../../components/HMO/HmoTable';
 import { startBlock, stopBlock } from '../../actions/redux-block';
@@ -27,16 +26,6 @@ class PendingTransactions extends Component {
 
 	componentDidMount() {
 		this.fetchHmoTransaction();
-		socket.on('new-hmo-appointment', res => {
-			if (res.success && res.appointment) {
-				notifyInfo(`New HMO appointment with ${res.appointment.patient}`);
-			}
-		});
-		socket.on('new-hmo-appointment', res => {
-			if (res.success && res.appointment) {
-				notifyInfo(`New HMO appointment with ${res.appointment.patient}`);
-			}
-		});
 	}
 
 	fetchHmoTransaction = async page => {

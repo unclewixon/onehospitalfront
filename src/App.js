@@ -21,10 +21,12 @@ import {
 	CK_ENCOUNTER,
 } from './services/constants';
 import { toggleProfile, signOut } from './actions/user';
+import { setConnection } from './actions/general';
 import ability from './services/ability';
 import { AbilityContext } from './components/common/Can';
 import { request } from './services/utilities';
 import { notifyError } from './services/notify';
+import { initSocket, subscribeIO, disconnectSocket } from './services/socket';
 
 import Login from './pages/Login';
 import ChangePassword from './pages/ChangePassword';
@@ -63,6 +65,7 @@ const storage = new SSRStorage();
 class App extends Component {
 	constructor(props) {
 		super(props);
+		this.myInterval = null;
 		this.idleTimer = null;
 		this.timeout = 1000 * 60 * 20;
 
@@ -92,7 +95,7 @@ class App extends Component {
 		// update user permission
 		ability.update(rules);
 
-		const { location } = this.props;
+		const { location, connected, loggedIn } = this.props;
 
 		const isLogin = location.pathname === '/';
 		window.document.body.className = `menu-position-side menu-side-left${
@@ -108,7 +111,7 @@ class App extends Component {
 				isIdle: this.idleTimer.isIdle(),
 			});
 
-			setInterval(() => {
+			this.myInterval = setInterval(() => {
 				this.setState({
 					remaining: this.idleTimer.getRemainingTime(),
 					lastActive: this.idleTimer.getLastActiveTime(),
@@ -117,11 +120,30 @@ class App extends Component {
 					isIdle: this.idleTimer.isIdle(),
 				});
 			}, 1000);
+			console.log(this.myInterval);
+		}
+
+		if (!connected && loggedIn) {
+			initSocket();
+			subscribeIO();
+
+			this.props.setConnection(true);
+		}
+	}
+
+	componentWillUpdate(nextProps, nextState) {
+		const { connected, loggedIn } = nextProps;
+		if (!connected && loggedIn) {
+			initSocket();
+			subscribeIO();
+
+			this.props.setConnection(true);
 		}
 	}
 
 	doLogout = async () => {
 		const { profile } = this.props;
+
 		if (profile.role.slug === 'doctor') {
 			await request(`hr/staffs/unset-room/${profile.details.id}`, 'GET', true);
 			storage.removeItem('ACTIVE:ROOM');
@@ -132,6 +154,12 @@ class App extends Component {
 		storage.removeItem(CK_ENCOUNTER);
 
 		this.props.signOut();
+
+		disconnectSocket();
+		this.props.setConnection(false);
+
+		this.idleTimer = null;
+		clearInterval(this.myInterval);
 
 		notifyError('session time out!');
 		this.props.history.push('/?session=expired');
@@ -297,9 +325,10 @@ const mapStateToProps = state => {
 		theme_mode: state.user?.theme_mode,
 		menu_mode: state.user?.menu_mode,
 		fullscreen: state.user?.fullscreen,
+		connected: state.general.socket_connected,
 	};
 };
 
 export default withRouter(
-	connect(mapStateToProps, { toggleProfile, signOut })(App)
+	connect(mapStateToProps, { toggleProfile, signOut, setConnection })(App)
 );
