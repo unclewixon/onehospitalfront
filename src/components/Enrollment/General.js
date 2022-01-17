@@ -143,7 +143,6 @@ const General = ({
 								</div>
 							</div>
 						</div>
-
 						<div className="col-sm-6">
 							<Field
 								id="lmpSource"
@@ -162,21 +161,11 @@ const General = ({
 								id="edd"
 								name="edd"
 								component={renderTextInput}
-								value={
-									lmp
-										? moment(lmp)
-												.add(9, 'M')
-												.format('DD-MM-YYYY')
-										: ''
-								}
+								value={lmp ? moment(lmp).add(9, 'M').format('DD-MM-YYYY') : ''}
 								label="EDD"
 								type="text"
 								placeholder={
-									lmp
-										? moment(lmp)
-												.add(9, 'M')
-												.format('DD-MM-YYYY')
-										: ''
+									lmp ? moment(lmp).add(9, 'M').format('DD-MM-YYYY') : ''
 								}
 								readOnly
 							/>

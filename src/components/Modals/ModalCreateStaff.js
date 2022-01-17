@@ -45,9 +45,7 @@ export const StepOneSchema = object({
 		'Phone number is required',
 		value => !!value
 	),
-	email: string()
-		.email()
-		.required('Email address is required'),
+	email: string().email().required('Email address is required'),
 });
 
 export const StepTwoSchema = object({
@@ -129,14 +127,16 @@ function ModalCreateStaff({ updateStaffs, closeModal, staff, staffs }) {
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div className="modal-dialog modal-lg modal-centered" role="document">
 				<div className="modal-content">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={closeModal}>
+						onClick={closeModal}
+					>
 						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -383,7 +383,8 @@ function StepOne({
 							<button
 								type="button"
 								onClick={() => document.querySelector('#profile_pic').click()}
-								className="btn btn-info">
+								className="btn btn-info"
+							>
 								Choose Image
 							</button>
 						</div>
@@ -407,6 +408,7 @@ function StepOne({
 								placeholder="Username"
 								label={{ value: 'Username' }}
 								value={username}
+								className="form-control"
 							/>
 						</div>
 						<div className="col-sm-6">
@@ -415,6 +417,7 @@ function StepOne({
 								placeholder="Profession"
 								value={profession}
 								label={{ value: 'Profession' }}
+								className="form-control"
 							/>
 						</div>
 					</div>
@@ -461,6 +464,7 @@ function StepOne({
 						placeholder="First Name"
 						value={first_name}
 						label={{ value: 'First Name' }}
+						className="form-control"
 					/>
 				</div>
 				<div className="col-sm-4">
@@ -469,6 +473,7 @@ function StepOne({
 						placeholder="Last Name"
 						name="last_name"
 						label={{ value: 'Last Name' }}
+						className="form-control"
 					/>
 				</div>
 				<div className="col-sm-4">
@@ -477,6 +482,7 @@ function StepOne({
 						placeholder="Other Name"
 						value={other_names}
 						label={{ value: 'Other Name' }}
+						className="form-control"
 					/>
 				</div>
 			</div>
@@ -548,6 +554,7 @@ function StepOne({
 						value={lga}
 						label={{ value: 'LGA' }}
 						placeholder="LGA"
+						className="form-control"
 					/>
 				</div>
 			</div>
@@ -558,6 +565,7 @@ function StepOne({
 						label={{ value: 'Email' }}
 						placeholder="Email"
 						value={email}
+						className="form-control"
 					/>
 				</div>
 				<div className="col-sm-4">
@@ -566,6 +574,7 @@ function StepOne({
 						placeholder="Phone Number"
 						value={phone_number}
 						label={{ value: 'Phone Number' }}
+						className="form-control"
 					/>
 				</div>
 				<div className="col-sm-4">
@@ -574,6 +583,7 @@ function StepOne({
 						placeholder="Address"
 						value={address}
 						label={{ value: 'Address' }}
+						className="form-control"
 					/>
 				</div>
 			</div>
@@ -585,7 +595,9 @@ function StepOne({
 						onClick={handleSubmit}
 						disabled={isValid || isSubmitting}
 						type="submit"
-					>Next</Button>
+					>
+						Next
+					</Button>
 				</div>
 			</div>
 		</Form>
@@ -631,6 +643,7 @@ function StepTwo({
 						placeholder="Job Title"
 						value={job_title}
 						label={{ value: 'Job Title' }}
+						className="form-control"
 					/>
 				</div>
 				<div className="col-sm-4">
@@ -685,6 +698,7 @@ function StepTwo({
 						placeholder="Account Number"
 						value={account_number}
 						label={{ value: 'Account Number' }}
+						className="form-control"
 					/>
 				</div>
 				<div className="col-sm-4">
@@ -693,6 +707,7 @@ function StepTwo({
 						placeholder="Pension Manager"
 						value={pension_mngr}
 						label={{ value: 'Pension Manager' }}
+						className="form-control"
 					/>
 				</div>
 			</div>
@@ -722,6 +737,7 @@ function StepTwo({
 						placeholder="Gross Salary (Monthly)"
 						value={monthly_salary}
 						label={{ value: 'Gross Salary (Monthly)' }}
+						className="form-control"
 					/>
 				</div>
 				<div className="col-sm-4">
@@ -730,6 +746,7 @@ function StepTwo({
 						placeholder="Gross Salary (Annually)"
 						value={annual_salary}
 						label={{ value: 'Gross Salary (Annually)' }}
+						className="form-control"
 					/>
 				</div>
 			</div>
@@ -750,6 +767,7 @@ function StepTwo({
 						placeholder="Number of Children"
 						value={number_of_children}
 						label={{ value: 'Number of Children' }}
+						className="form-control"
 					/>
 				</div>
 			</div>
@@ -760,6 +778,7 @@ function StepTwo({
 						placeholder="Next of Kin Name"
 						value={next_of_kin}
 						label={{ value: 'Next of kin name' }}
+						className="form-control"
 					/>
 				</div>
 				<div className="col-sm-4">
@@ -768,6 +787,7 @@ function StepTwo({
 						placeholder="Next of Kin Relationship"
 						value={next_of_kin_relationship}
 						label={{ value: 'Next of kin relationship' }}
+						className="form-control"
 					/>
 				</div>
 				<div className="col-sm-4">
@@ -776,6 +796,7 @@ function StepTwo({
 						placeholder="Next of Kin Phone Number"
 						value={next_of_kin_contact_no}
 						label={{ value: 'Next of Kin Phone Number' }}
+						className="form-control"
 					/>
 				</div>
 			</div>
@@ -786,6 +807,7 @@ function StepTwo({
 						placeholder="Next of Kin Address"
 						value={next_of_kin_address}
 						label={{ value: 'Next of Kin address' }}
+						className="form-control"
 					/>
 				</div>
 				<div className="col-sm-4">
@@ -822,7 +844,9 @@ function StepTwo({
 						onClick={handleSubmit}
 						isValid={isValid || isSubmitting}
 						type="submit"
-					>Save</Button>
+					>
+						Save
+					</Button>
 				</div>
 			</div>
 		</div>

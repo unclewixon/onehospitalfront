@@ -11,7 +11,7 @@ import Splash from '../components/Splash';
 import ProfileBlock from '../components/ProfileBlock';
 import HashRoute from '../components/HashRoute';
 
-const Notes = lazy(() => import('../components/IVF/Notes'));
+const Notes = lazy(() => import('../components/Labour/Notes'));
 
 const storage = new SSRStorage();
 
@@ -51,14 +51,16 @@ class LabourProfile extends Component {
 					aria-label="Close"
 					className="close custom-close"
 					type="button"
-					onClick={this.closeProfile}>
+					onClick={this.closeProfile}
+				>
 					<span className="os-icon os-icon-close" />
 				</button>
 				{patient ? (
 					<Fragment>
 						<div
 							className="content-w"
-							style={{ width: 'calc(100% - 18%)', overflow: 'hidden' }}>
+							style={{ width: 'calc(100% - 18%)', overflow: 'hidden' }}
+						>
 							<LabourProfileMenu />
 							<div className="content-i">
 								<div className="content-box">

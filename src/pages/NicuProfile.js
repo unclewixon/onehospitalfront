@@ -23,35 +23,44 @@ const PharmacyRequest = lazy(() =>
 	import('../components/Patient/PharmacyRequest')
 );
 const Pharmacy = lazy(() => import('../components/Patient/Pharmacy'));
+const NursingService = lazy(() =>
+	import('../components/Patient/NursingService')
+);
 
 const storage = new SSRStorage();
 
 const Page = ({ location }) => {
+	const nicu = useSelector(state => state.user.item);
 	const hash = location.hash.substr(1).split('#');
-	const admission = useSelector(state => state.user.item);
 	switch (hash[0]) {
 		case 'vitals':
 			return <Vitals type={hash[1].split('%20').join(' ')} />;
 		case 'clinical-tasks':
-			return (
-				<ClinicalTasks can_request={admission && admission.status === 0} />
-			);
+			return <ClinicalTasks can_request={nicu && nicu.status === 0} />;
 		case 'nurse-observations':
 			return <NurseObservation />;
 		case 'fluid-chart':
 			return <FluidChart />;
 		case 'care-team':
-			return <CareTeam can_request={admission && admission.status === 0} />;
+			return <CareTeam can_request={nicu && nicu.status === 0} />;
 		case 'regimen':
 			return (
 				<Pharmacy
-					can_request={admission && admission.status === 0}
-					itemId={admission.id || ''}
+					can_request={nicu && nicu.status === 0}
+					itemId={nicu.id || ''}
 					type="admission"
 				/>
 			);
 		case 'pharmacy-request':
-			return <PharmacyRequest module="admission" itemId={admission.id || ''} />;
+			return <PharmacyRequest module="admission" itemId={nicu.id || ''} />;
+		case 'nursing-service':
+			return (
+				<NursingService
+					module="admission"
+					can_request={nicu && nicu.status === 0}
+					itemId={nicu.id || ''}
+				/>
+			);
 		case 'ward-round':
 		default:
 			return <InPatientNote />;
@@ -84,14 +93,16 @@ class NicuProfile extends Component {
 					aria-label="Close"
 					className="close custom-close"
 					type="button"
-					onClick={this.closeProfile}>
+					onClick={this.closeProfile}
+				>
 					<span className="os-icon os-icon-close" />
 				</button>
 				{patient ? (
 					<Fragment>
 						<div
 							className="content-w"
-							style={{ width: 'calc(100% - 18%)', overflow: 'hidden' }}>
+							style={{ width: 'calc(100% - 18%)', overflow: 'hidden' }}
+						>
 							<AdmissionMenu />
 							<div className="content-i">
 								<div className="content-box">

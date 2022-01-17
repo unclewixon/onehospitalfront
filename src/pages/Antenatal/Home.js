@@ -23,17 +23,19 @@ const Home = ({ match, location }) => {
 						<div className="element-wrapper">
 							<div className="element-actions">
 								<Link
-									to={`${match.path}`}
+									to={match.path}
 									className={`mx-2 btn btn-primary btn-sm  ${
 										page === 'antenatal' ? 'btn-outline-primary' : ''
-									}`}>
+									}`}
+								>
 									Dashboard
 								</Link>
 								<Link
 									to={`${match.path}/enroll-patient`}
 									className={`mr-2 btn btn-primary btn-sm  ${
 										page === 'enroll-patient' ? 'btn-outline-primary' : ''
-									}`}>
+									}`}
+								>
 									Enroll Patient
 								</Link>
 							</div>

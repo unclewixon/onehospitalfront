@@ -38,7 +38,7 @@ class EnrollmentForm extends Component {
 			this.props.startBlock();
 			const { history, location, reset } = this.props;
 			this.setState({ submitting: true });
-			const url = 'patient/antenatal/save';
+			const url = 'patient/antenatal';
 			await request(url, 'POST', true, data);
 			this.setState({ submitting: false });
 			notifySuccess('antenatal enrollment done!');
@@ -75,12 +75,7 @@ class EnrollmentForm extends Component {
 				doctors: doctors,
 				lmp: lmp !== '' ? moment(lmp).format('YYYY-MM-DD') : '',
 				lmpSource: data.lmpSource,
-				edd:
-					lmp !== ''
-						? moment(lmp)
-								.add(9, 'M')
-								.format('YYYY-MM-DD')
-						: '',
+				edd: lmp !== '' ? moment(lmp).add(9, 'M').format('YYYY-MM-DD') : '',
 				father: {
 					name: data.name,
 					phone: data.phone,

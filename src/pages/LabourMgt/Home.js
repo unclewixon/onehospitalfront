@@ -4,8 +4,8 @@ import { Switch, Route, Link } from 'react-router-dom';
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
 
-// const LabourMgt = lazy(() => import('./LabourPatients'));
-// const EnrollPatient = lazy(() => import('./EnrollmentForm'));
+const LabourMgt = lazy(() => import('./LabourPatients'));
+const EnrollPatient = lazy(() => import('./EnrollmentForm'));
 
 const Home = ({ match, location }) => {
 	const page = location.pathname.split('/').pop();
@@ -23,23 +23,25 @@ const Home = ({ match, location }) => {
 						<div className="element-wrapper">
 							<div className="element-actions">
 								<Link
-									to={`${match.path}`}
+									to={match.path}
 									className={`mx-2 btn btn-primary btn-sm  ${
-										page === '' ? 'btn-outline-primary' : ''
-									}`}>
+										page === 'labour-mgt' ? 'btn-outline-primary' : ''
+									}`}
+								>
 									Dashboard
 								</Link>
 								<Link
 									to={`${match.path}/enroll-patient`}
-									className={`mx-2 btn btn-primary btn-sm  ${
-										page === 'enrol-labour' ? 'btn-outline-primary' : ''
-									}`}>
+									className={`mr-2 btn btn-primary btn-sm  ${
+										page === 'enroll-patient' ? 'btn-outline-primary' : ''
+									}`}
+								>
 									Enroll Patient
 								</Link>
 							</div>
 							<h6 className="element-header">{pageTitle}</h6>
 							<div className="element-content row">
-								{/* <div className="col-sm-12">
+								<div className="col-sm-12">
 									<Suspense fallback={<Splash />}>
 										<Switch>
 											<Route
@@ -55,7 +57,7 @@ const Home = ({ match, location }) => {
 											<Route component={NoMatch} />
 										</Switch>
 									</Suspense>
-								</div> */}
+								</div>
 							</div>
 						</div>
 					</div>

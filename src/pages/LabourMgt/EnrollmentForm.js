@@ -1,9 +1,21 @@
 import React, { useState } from 'react';
 import { Form, Field } from 'react-final-form';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import Select from 'react-select';
+import DatePicker from 'react-datepicker';
+import { format, isValid } from 'date-fns';
+import { useDispatch } from 'react-redux';
 
 import { request, patientname } from '../../services/utilities';
-import { searchAPI, antenatalAPI } from '../../services/constants';
+import {
+	searchAPI,
+	antenatalAPI,
+	bloodGroup,
+	previousPregnancies,
+	labourAPI,
+} from '../../services/constants';
+import { notifySuccess, notifyError } from '../../services/notify';
+import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const Error = ({ name }) => (
 	<Field
@@ -15,13 +27,26 @@ const Error = ({ name }) => (
 	/>
 );
 
-const EnrollmentForm = () => {
+const ReactSelectAdapter = ({ input, ...rest }) => (
+	<Select
+		getOptionValue={option => option.id}
+		getOptionLabel={option => option.name}
+		{...input}
+		{...rest}
+		searchable
+	/>
+);
+
+const EnrollmentForm = ({ history, location }) => {
 	const [patient, setPatient] = useState(null);
 	const [antenatal, setAntenatal] = useState(null);
+	const [lmp, setLmp] = useState(null);
+
+	const dispatch = useDispatch();
 
 	const getPatientLabels = option => patientname(option, true);
 	const getAncLabels = option =>
-		`${option.serial_code} - ${patientname(option)}`;
+		`${option.serial_code} - ${patientname(option.patient)}`;
 
 	const getOptions = async q => {
 		if (!q || q.length < 1) {
@@ -44,7 +69,29 @@ const EnrollmentForm = () => {
 	};
 
 	const onSubmit = async values => {
-		console.log(values);
+		try {
+			dispatch(startBlock());
+			const data = {
+				...values,
+				father: {
+					name: values?.name || '',
+					phone: values?.phone || '',
+					blood_group: values?.blood_group?.id ?? '',
+				},
+				alive: values?.alive?.id || '',
+				miscarriage: values?.miscarriage?.id || '',
+				present_pregnancies: values?.presentPregnancy?.id || '',
+			};
+			await request(labourAPI, 'POST', true, data);
+			notifySuccess('labour enrollment done!');
+			dispatch(stopBlock());
+			history.push(
+				location.hash ? `${location.pathname}#dashboard` : '/labour-mgt'
+			);
+		} catch (e) {
+			dispatch(stopBlock());
+			notifyError(e.message || 'labour enrollment failed');
+		}
 	};
 
 	return (
@@ -107,10 +154,111 @@ const EnrollmentForm = () => {
 													setAntenatal(e);
 													e ? input.onChange(e.id) : input.onChange('');
 												}}
-												placeholder="Search antenatals"
+												placeholder="Search antenatal enrolment"
 											/>
 										)}
 									</Field>
+								</div>
+							</div>
+							<div className="row">
+								<div className="col-sm-4">
+									<div className="form-group">
+										<label>Father's Name</label>
+										<Field
+											name="name"
+											className="form-control"
+											component="input"
+											type="text"
+											placeholder="Enter father's name"
+										/>
+									</div>
+								</div>
+								<div className="col-sm-4">
+									<div className="form-group">
+										<label>Father's Phone Number</label>
+										<Field
+											name="phone"
+											className="form-control"
+											component="input"
+											type="text"
+											placeholder="Enter father's phone number"
+										/>
+									</div>
+								</div>
+								<div className="col-sm-4">
+									<div className="form-group">
+										<label>Father's Blood Group</label>
+										<Field
+											name="blood_group"
+											component={ReactSelectAdapter}
+											options={bloodGroup}
+										/>
+									</div>
+								</div>
+							</div>
+							<div className="row">
+								<div className="col-sm-4">
+									<div className="form-group">
+										<label>Alive</label>
+										<Field
+											name="alive"
+											component={ReactSelectAdapter}
+											options={previousPregnancies}
+										/>
+									</div>
+								</div>
+								<div className="col-sm-4">
+									<div className="form-group">
+										<label>Miscarriage</label>
+										<Field
+											name="miscarriage"
+											component={ReactSelectAdapter}
+											options={previousPregnancies}
+										/>
+									</div>
+								</div>
+								<div className="col-sm-4">
+									<div className="form-group">
+										<label>Present Pregnancies</label>
+										<Field
+											name="presentPregnancy"
+											component={ReactSelectAdapter}
+											options={previousPregnancies}
+										/>
+									</div>
+								</div>
+							</div>
+							<div className="row">
+								<div className="col-sm-6">
+									<div className="form-group">
+										<label>LMP</label>
+										<Field
+											name="lmp"
+											render={({ name, input: { onChange } }) => (
+												<div className="custom-date-input">
+													<DatePicker
+														selected={lmp}
+														onChange={date => {
+															isValid(date)
+																? onChange(format(new Date(date), 'dd-MM-yyyy'))
+																: onChange(null);
+															setLmp(date);
+														}}
+														peekNextMonth
+														showMonthDropdown
+														showYearDropdown
+														dropdownMode="select"
+														dateFormat="dd-MM-yyyy"
+														className="single-daterange form-control"
+														placeholderText="Select LMP"
+														maxDate={new Date()}
+														name={name}
+														disabledKeyboardNavigation
+													/>
+												</div>
+											)}
+										/>
+									</div>
 								</div>
 							</div>
 							<div className="row">

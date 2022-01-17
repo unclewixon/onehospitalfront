@@ -45,7 +45,7 @@ export const vouchersAPI = 'vouchers';
 export const serviceAPI = 'services';
 export const settingsAPI = 'settings/';
 export const diagnosisAPI = 'settings/diagnosis';
-export const labourAPI = 'labours';
+export const labourAPI = 'labour-managements';
 export const consultationAPI = 'consultation/';
 export const ivfEnroll = 'ivf/enroll';
 export const antenatalAPI = 'patient/antenatal';
@@ -447,7 +447,10 @@ export const para = [
 	},
 ];
 
-export const previousPregnancies = [...Array(12).keys()].map(i => ({ id: i, name: i }));
+export const previousPregnancies = [...Array(12).keys()].map(i => ({
+	id: i,
+	name: i,
+}));
 
 export const obstericHistory = [
 	{
