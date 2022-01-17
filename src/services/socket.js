@@ -34,9 +34,9 @@ export const subscribeIO = () => {
 			messageService.sendMessage({ type: 'new-appointment', data });
 		});
 
-		// update appointment
-		socket.on('appointment-update', data => {
-			messageService.sendMessage({ type: 'appointment-update', data });
+		// new transactions
+		socket.on('paypoint-queue', data => {
+			console.log(data);
 		});
 
 		// nursing vitals
@@ -44,14 +44,14 @@ export const subscribeIO = () => {
 			messageService.sendMessage({ type: 'nursing-queue', data });
 		});
 
-		// new transactions
-		socket.on('paypoint-queue', data => {
-			console.log(data);
-		});
-
 		// consultation queue
 		socket.on('consultation-queue', data => {
 			messageService.sendMessage({ type: 'consultation-queue', data });
+		});
+
+		// update appointment
+		socket.on('appointment-update', data => {
+			messageService.sendMessage({ type: 'appointment-update', data });
 		});
 	}
 };

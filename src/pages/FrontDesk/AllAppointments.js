@@ -64,11 +64,10 @@ class AllAppointments extends Component {
 		messageService.getMessage().subscribe(message => {
 			const { type, data } = message.text;
 			if (type === 'appointment-update') {
-				console.log(data);
-				// const { appointments } = this.state;
-				// const appointment = data.appointment || data.queue?.appointment;
-				// const result = updateImmutable(appointments, appointment);
-				// this.setState({ appointments: result });
+				const { appointments } = this.state;
+				const appointment = data.appointment || data.queue?.appointment;
+				const result = updateImmutable(appointments, appointment);
+				this.setState({ appointments: result });
 			}
 		});
 	}
@@ -206,7 +205,8 @@ class AllAppointments extends Component {
 							<div
 								className={`form-group${
 									filter === 'all' ? ' col-md-3' : ' col-md-6'
-								}`}>
+								}`}
+							>
 								<label className="mr-2 " htmlFor="id">
 									Search
 								</label>
@@ -234,7 +234,8 @@ class AllAppointments extends Component {
 									id="status"
 									className="form-control"
 									name="status"
-									onChange={e => this.setState({ status: e.target.value })}>
+									onChange={e => this.setState({ status: e.target.value })}
+								>
 									<option value="">All</option>
 									<option value="Pending">Pending</option>
 									<option value="Approved">Approved</option>
@@ -245,7 +246,8 @@ class AllAppointments extends Component {
 							<div className="form-group col-md-2 mt-4">
 								<div
 									className="btn btn-sm btn-primary btn-upper text-white filter-btn"
-									onClick={this.doFilter}>
+									onClick={this.doFilter}
+								>
 									<i className="os-icon os-icon-ui-37" />
 									<span>
 										{filtering ? (
@@ -290,12 +292,12 @@ class AllAppointments extends Component {
 													<td>
 														<p className="item-title text-color m-0">
 															<Tooltip
-																title={<ProfilePopup patient={item.patient} />}>
+																title={<ProfilePopup patient={item.patient} />}
+															>
 																<a
 																	className="cursor"
-																	onClick={() =>
-																		this.showProfile(item.patient)
-																	}>
+																	onClick={() => this.showProfile(item.patient)}
+																>
 																	{patientname(item.patient, true)}
 																</a>
 															</Tooltip>
@@ -351,7 +353,13 @@ class AllAppointments extends Component {
 																	</span>
 																)}
 																{item.status === 'Approved' && (
-																	<span className="badge badge-primary">
+																	<span
+																		className={`badge ${
+																			item.doctorStatus === 0
+																				? 'badge-primary'
+																				: 'badge-info'
+																		}`}
+																	>
 																		{item.doctorStatus === 0
 																			? 'In Queue'
 																			: 'Seeing Doctor'}
@@ -369,7 +377,8 @@ class AllAppointments extends Component {
 														<Tooltip title="View Appointment">
 															<a
 																onClick={() => this.viewAppointmentDetail(item)}
-																className="cursor">
+																className="cursor"
+															>
 																<i className="os-icon os-icon-eye"></i>
 															</a>
 														</Tooltip>
@@ -379,7 +388,8 @@ class AllAppointments extends Component {
 																<Tooltip title="Cancel Appointment">
 																	<a
 																		className="danger cursor"
-																		onClick={() => this.cancel(item)}>
+																		onClick={() => this.cancel(item)}
+																	>
 																		<i className="os-icon os-icon-ui-15"></i>
 																	</a>
 																</Tooltip>

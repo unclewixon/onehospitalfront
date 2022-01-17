@@ -173,7 +173,7 @@ const ViewPrescription = ({
 					...prescription,
 					requests: rs.data,
 					filled: 1,
-					filled_by: item?.filledBy || '--',
+					filled_by: item?.filled_by || '--',
 				});
 				notifySuccess('pharmacy prescription filled');
 				closeModal();
@@ -264,7 +264,8 @@ const ViewPrescription = ({
 								<button
 									className="btn btn-primary"
 									style={{ margin: 10 }}
-									onClick={onClose}>
+									onClick={onClose}
+								>
 									Okay
 								</button>
 							</div>
@@ -285,7 +286,8 @@ const ViewPrescription = ({
 								<button
 									className="btn btn-primary"
 									style={{ margin: 10 }}
-									onClick={onClose}>
+									onClick={onClose}
+								>
 									Okay
 								</button>
 							</div>
@@ -329,23 +331,27 @@ const ViewPrescription = ({
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div
 				className="modal-dialog modal-centered"
-				style={{ maxWidth: '1024px' }}>
+				style={{ maxWidth: '1024px' }}
+			>
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={closeModal}>
+						onClick={closeModal}
+					>
 						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div className="onboarding-content with-gradient">
 						<h4 className="onboarding-title">Prescription Details</h4>
 						<div className="onboarding-text alert-custom mb-2">
-							{`Prescription Requested By ${prescription.created_by ||
-								'--'} on ${formatDate(
+							{`Prescription Requested By ${
+								prescription.created_by || '--'
+							} on ${formatDate(
 								prescription.created_at,
 								'DD MMM, YYYY HH:mm A'
 							)}`}
@@ -393,10 +399,11 @@ const ViewPrescription = ({
 															)}
 															<div>
 																{regimen.item.drugGeneric
-																	? `${regimen.item.doseQuantity} of ${regimen
-																			.item.drugGeneric?.name || 'nil'} ${
-																			regimen.item.frequency
-																	  } x ${regimen.item.frequencyType}${when}`
+																	? `${regimen.item.doseQuantity} of ${
+																			regimen.item.drugGeneric?.name || 'nil'
+																	  } ${regimen.item.frequency} x ${
+																			regimen.item.frequencyType
+																	  }${when}`
 																	: ''}
 																{regimen.item.vaccine && (
 																	<Popover
@@ -415,7 +422,8 @@ const ViewPrescription = ({
 																		}
 																		onVisibleChange={() =>
 																			setVisible(regimen.item.id)
-																		}>
+																		}
+																	>
 																		<Tooltip title="Select/Change Vaccine Drug">
 																			<a className="link-primary">
 																				<i className="os-icon os-icon-ui-49" />{' '}
@@ -453,7 +461,8 @@ const ViewPrescription = ({
 																		}
 																		onVisibleChange={() =>
 																			setVisible(regimen.item.id)
-																		}>
+																		}
+																	>
 																		<Tooltip title="Select/Change Vaccine Drug">
 																			<a className="link-primary">
 																				<i className="os-icon os-icon-ui-49" />{' '}
@@ -472,7 +481,8 @@ const ViewPrescription = ({
 																<select
 																	className="form-control"
 																	disabled
-																	placeholder="Select Batch">
+																	placeholder="Select Batch"
+																>
 																	<option value={regimen.item.drugBatch.id}>
 																		{regimen.item.drugBatch.name}
 																	</option>
@@ -483,7 +493,8 @@ const ViewPrescription = ({
 																		<select
 																			className="form-control"
 																			placeholder="Select Batch"
-																			onChange={e => onSelectBatch(e, regimen)}>
+																			onChange={e => onSelectBatch(e, regimen)}
+																		>
 																			<option value="">Select Batch</option>
 																			{regimen.item.drug &&
 																				regimen.item.drug.batches.map(
@@ -498,7 +509,8 @@ const ViewPrescription = ({
 																		<select
 																			className="form-control"
 																			placeholder="Select Batch"
-																			disabled>
+																			disabled
+																		>
 																			<option value="">Select Batch</option>
 																		</select>
 																	)}
@@ -543,7 +555,8 @@ const ViewPrescription = ({
 																	}
 																	onVisibleChange={() =>
 																		setNoteVisible(regimen.id)
-																	}>
+																	}
+																>
 																	<a className="item-title text-primary">
 																		Note
 																	</a>
@@ -565,7 +578,8 @@ const ViewPrescription = ({
 																							regimen.id,
 																							regimen.item.id
 																						)
-																					}>
+																					}
+																				>
 																					<i className="os-icon os-icon-grid-18" />
 																				</a>
 																			</Tooltip>
@@ -573,7 +587,8 @@ const ViewPrescription = ({
 																		<Tooltip title="Cancel Prescription">
 																			<a
 																				className="danger"
-																				onClick={() => deleteItem(regimen.id)}>
+																				onClick={() => deleteItem(regimen.id)}
+																			>
 																				<i className="os-icon os-icon-ui-15" />
 																			</a>
 																		</Tooltip>
@@ -598,7 +613,8 @@ const ViewPrescription = ({
 												<button
 													onClick={() => doFill()}
 													className="btn btn-primary"
-													disabled={submitting}>
+													disabled={submitting}
+												>
 													{submitting ? (
 														<img src={waiting} alt="submitting" />
 													) : (
@@ -612,7 +628,8 @@ const ViewPrescription = ({
 											prescription.status === 0 && (
 												<button
 													onClick={() => dispense()}
-													className="btn btn-primary">
+													className="btn btn-primary"
+												>
 													{submitting ? (
 														<img src={waiting} alt="submitting" />
 													) : (
@@ -625,7 +642,8 @@ const ViewPrescription = ({
 											prescription.status === 0 && (
 												<button
 													onClick={() => undoFill()}
-													className="btn btn-primary">
+													className="btn btn-primary"
+												>
 													{submitting ? (
 														<img src={waiting} alt="submitting" />
 													) : (
@@ -636,7 +654,8 @@ const ViewPrescription = ({
 										{prescription.status === 1 && (
 											<button
 												onClick={() => doPrint(prescription)}
-												className="btn btn-success">
+												className="btn btn-success"
+											>
 												<span>Print</span>
 											</button>
 										)}
