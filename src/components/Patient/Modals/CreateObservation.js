@@ -6,7 +6,7 @@ import { startBlock, stopBlock } from '../../../actions/redux-block';
 import { notifySuccess, notifyError } from '../../../services/notify';
 import { request } from '../../../services/utilities';
 
-const CreateObservation = ({ closeModal, updateNote, item }) => {
+const CreateObservation = ({ closeModal, updateNote, item_id, type }) => {
 	const [observation, setObservation] = useState('');
 
 	const dispatch = useDispatch();
@@ -21,7 +21,8 @@ const CreateObservation = ({ closeModal, updateNote, item }) => {
 				patient_id: patient.id,
 				description: observation,
 				type: 'nurse-observation',
-				admission_id: item.id,
+				admission_id: type === 'admission' ? item_id : null,
+				nicu_id: type === 'nicu' ? item_id : null,
 			};
 
 			const rs = await request('patient-notes', 'POST', true, data);
@@ -40,14 +41,16 @@ const CreateObservation = ({ closeModal, updateNote, item }) => {
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div className="modal-dialog modal-lg modal-centered">
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={() => closeModal()}>
+						onClick={() => closeModal()}
+					>
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">

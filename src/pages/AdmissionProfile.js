@@ -43,14 +43,30 @@ const Page = ({ location }) => {
 			return <Vitals type={hash[1].split('%20').join(' ')} />;
 		case 'clinical-tasks':
 			return (
-				<ClinicalTasks can_request={admission && admission.status === 0} />
+				<ClinicalTasks
+					can_request={admission && admission.status === 0}
+					itemId={admission.id || ''}
+					type="admission"
+				/>
 			);
 		case 'nurse-observations':
-			return <NurseObservation />;
+			return (
+				<NurseObservation
+					can_request={admission && admission.status === 0}
+					itemId={admission.id || ''}
+					type="admission"
+				/>
+			);
 		case 'fluid-chart':
-			return <FluidChart />;
+			return <FluidChart itemId={admission.id || ''} type="admission" />;
 		case 'care-team':
-			return <CareTeam can_request={admission && admission.status === 0} />;
+			return (
+				<CareTeam
+					can_request={admission && admission.status === 0}
+					itemId={admission.id || ''}
+					type="admission"
+				/>
+			);
 		case 'lab':
 			return (
 				<Lab
@@ -89,7 +105,13 @@ const Page = ({ location }) => {
 			);
 		case 'ward-round':
 		default:
-			return <InPatientNote />;
+			return (
+				<InPatientNote
+					can_request={admission && admission.status === 0}
+					itemId={admission.id || ''}
+					type="admission"
+				/>
+			);
 	}
 };
 
@@ -119,14 +141,16 @@ class AdmissionProfile extends Component {
 					aria-label="Close"
 					className="close custom-close"
 					type="button"
-					onClick={this.closeProfile}>
+					onClick={this.closeProfile}
+				>
 					<span className="os-icon os-icon-close" />
 				</button>
 				{patient ? (
 					<Fragment>
 						<div
 							className="content-w"
-							style={{ width: 'calc(100% - 18%)', overflow: 'hidden' }}>
+							style={{ width: 'calc(100% - 18%)', overflow: 'hidden' }}
+						>
 							<AdmissionMenu isAdmission={true} />
 							<div className="content-i">
 								<div className="content-box">

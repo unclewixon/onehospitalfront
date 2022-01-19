@@ -42,8 +42,8 @@ const ModalScheduleDate = ({
 			const url = `requests/${procedure.id}/schedule`;
 			const data = {
 				resources: JSON.stringify(resources.map(r => r.value)),
-				start_date: moment(startDate).format('DD/MM/YYYY h:mm A'),
-				end_date: moment(endDate).format('DD/MM/YYYY h:mm A'),
+				start_date: moment(startDate).format('YYYY-MM-DD HH:mm:ss'),
+				end_date: moment(endDate).format('YYYY-MM-DD HH:mm:ss'),
 			};
 			const rs = await request(url, 'PUT', true, data);
 			const procedure_request = procedures.find(l => l.id === procedure.id);
@@ -67,16 +67,19 @@ const ModalScheduleDate = ({
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div
 				className="modal-dialog modal-centered"
-				style={{ maxWidth: '480px' }}>
+				style={{ maxWidth: '480px' }}
+			>
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={() => closeModal()}>
+						onClick={() => closeModal()}
+					>
 						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -128,7 +131,6 @@ const ModalScheduleDate = ({
 										/>
 									</div>
 								</div>
-
 								<div className="row mt-4">
 									<div className="col-sm-6">
 										<div className="form-group">
@@ -160,13 +162,13 @@ const ModalScheduleDate = ({
 										</div>
 									</div>
 								</div>
-
 								<div className="row">
 									<div className="col-sm-12 text-right">
 										<button
 											className="btn btn-primary"
 											disabled={submitting}
-											type="submit">
+											type="submit"
+										>
 											{submitting ? (
 												<img src={waiting} alt="submitting" />
 											) : (

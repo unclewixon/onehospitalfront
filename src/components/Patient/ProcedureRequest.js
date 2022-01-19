@@ -149,7 +149,8 @@ const ProcedureRequest = ({ module, history, location }) => {
 												<span
 													className={`badge badge-${
 														service ? 'info' : 'danger'
-													} text-white`}>{`Base Price: ${formatCurrency(
+													} text-white`}
+												>{`Base Price: ${formatCurrency(
 													service?.serviceCost?.tariff || 0
 												)}`}</span>
 											</div>
@@ -201,13 +202,14 @@ const ProcedureRequest = ({ module, history, location }) => {
 									name="request_note"
 									rows="3"
 									placeholder="Enter request note"
-									ref={register}></textarea>
+									ref={register}
+								></textarea>
 							</div>
 						</div>
 						<div className="row">
 							<div className="col-sm-6">
 								<div className="row">
-									<div className="form-group col-sm-3">
+									<div className="form-group col-sm-4">
 										<div className="d-flex">
 											<input
 												className="form-control"
@@ -219,7 +221,7 @@ const ProcedureRequest = ({ module, history, location }) => {
 											<label className="mx-1">Bill now</label>
 										</div>
 									</div>
-									<div className="form-group col-sm-3">
+									<div className="form-group col-sm-4">
 										<div className="d-flex">
 											<input
 												className="form-control"

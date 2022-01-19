@@ -40,9 +40,7 @@ const StaffData = ({ staff }) => {
 								<div className="value">Admission</div>
 							</td>
 							<td className="text-right">
-								<div className="value text-success">
-									{staff.is_admitted ? 'Yes' : 'No'}
-								</div>
+								<div className="value text-success"></div>
 							</td>
 						</tr>
 					</tbody>

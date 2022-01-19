@@ -39,7 +39,8 @@ const UserItem = ({ icon, label, value }) => {
 						strokeWidth="2"
 						strokeLinecap="round"
 						strokeLinejoin="round"
-						className={`mr-75 feather feather-${icon || 'user'}`}>
+						className={`mr-75 feather feather-${icon || 'user'}`}
+					>
 						<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
 						<circle cx="12" cy="7" r="4"></circle>
 					</svg>
@@ -203,7 +204,7 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 				const newPatient = {
 					...patient,
 					admission: rs.admission,
-					is_admitted: false,
+					admission_id: null,
 				};
 				messageService.sendMessage({
 					type: 'update-patient',
@@ -221,7 +222,7 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 				}
 				messageService.sendMessage({
 					...rs.admission,
-					patient: { ...rs.admission.patient, is_admitted: false },
+					patient: { ...rs.admission.patient, admission_id: null },
 				});
 				dispatch(toggleProfile(true, info));
 				notifySuccess('Patient discharged');
@@ -272,7 +273,8 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 									<div className="d-flex justify-content-start">
 										<span
 											className="b-avatar badge-light-danger rounded"
-											style={{ width: '104px', height: '104px' }}>
+											style={{ width: '104px', height: '104px' }}
+										>
 											<span className="b-avatar-img">
 												<img
 													src={parseAvatar(patient?.profile_pic)}
@@ -284,7 +286,7 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 											<div className="mb-1">
 												<h4 className="mb-0">
 													{patientname(patient)}{' '}
-													{patient.is_admitted && (
+													{(patient.admission_id || patient.nicu_id) && (
 														<Tooltip title="Admitted">
 															<i className="fa fa-hospital-o text-danger" />
 														</Tooltip>
@@ -297,53 +299,96 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 												{hasButtons && (
 													<a
 														className="btn btn-primary mr-1"
-														onClick={editPatient}>
+														onClick={editPatient}
+													>
 														Edit
 													</a>
 												)}
 												{canAdmit && (
 													<>
-														{!patient?.is_admitted ? (
-															!patient.admission && (
-																<Tooltip title="Admit">
-																	<Link
-																		to={`${location.pathname}#start-admission`}
-																		className="btn btn-primary btn-sm mr-1">
-																		<i className="os-icon os-icon-ui-22"></i>
-																		<span>Admit</span>
-																	</Link>
-																</Tooltip>
-															)
-														) : (
+														{patient?.admission_id || patient.nicu_id ? (
 															<>
-																{patient?.admission?.start_discharge ? (
-																	<Tooltip title="Complete Discharge">
-																		<button
-																			className="btn btn-warning btn-sm mr-1"
-																			onClick={() =>
-																				showTransaction(patient?.admission?.id)
-																			}>
-																			<i className="fa fa-hospital-o"></i>
-																			<span style={{ marginLeft: '4px' }}>
-																				Finish Discharge
-																			</span>
-																		</button>
-																	</Tooltip>
-																) : (
-																	<Tooltip title="Discharge">
-																		<button
-																			className="btn btn-danger btn-sm mr-1"
-																			onClick={() =>
-																				startDischarge(patient?.admission?.id)
-																			}>
-																			<i className="fa fa-hospital-o"></i>
-																			<span style={{ marginLeft: '4px' }}>
-																				Discharge
-																			</span>
-																		</button>
-																	</Tooltip>
+																{patient?.admission_id && (
+																	<>
+																		{patient?.admission?.start_discharge ? (
+																			<Tooltip title="Complete Discharge">
+																				<button
+																					className="btn btn-warning btn-sm mr-1"
+																					onClick={() =>
+																						showTransaction(
+																							patient?.admission?.id
+																						)
+																					}
+																				>
+																					<i className="fa fa-hospital-o"></i>
+																					<span style={{ marginLeft: '4px' }}>
+																						Finish Discharge
+																					</span>
+																				</button>
+																			</Tooltip>
+																		) : (
+																			<Tooltip title="Discharge">
+																				<button
+																					className="btn btn-danger btn-sm mr-1"
+																					onClick={() =>
+																						startDischarge(
+																							patient?.admission?.id
+																						)
+																					}
+																				>
+																					<i className="fa fa-hospital-o"></i>
+																					<span style={{ marginLeft: '4px' }}>
+																						Discharge
+																					</span>
+																				</button>
+																			</Tooltip>
+																		)}
+																	</>
+																)}
+																{patient?.nicu_id && (
+																	<>
+																		{patient?.nicu?.start_discharge ? (
+																			<Tooltip title="Complete Discharge">
+																				<button
+																					className="btn btn-warning btn-sm mr-1"
+																					onClick={() =>
+																						showTransaction(patient?.nicu?.id)
+																					}
+																				>
+																					<i className="fa fa-hospital-o"></i>
+																					<span style={{ marginLeft: '4px' }}>
+																						Finish Discharge
+																					</span>
+																				</button>
+																			</Tooltip>
+																		) : (
+																			<Tooltip title="Discharge">
+																				<button
+																					className="btn btn-danger btn-sm mr-1"
+																					onClick={() =>
+																						startDischarge(patient?.nicu?.id)
+																					}
+																				>
+																					<i className="fa fa-hospital-o"></i>
+																					<span style={{ marginLeft: '4px' }}>
+																						Discharge
+																					</span>
+																				</button>
+																			</Tooltip>
+																		)}
+																	</>
 																)}
 															</>
+														) : (
+															<Tooltip title="Admit">
+																<Link
+																	to={`${location.pathname}#start-admission`}
+																	className="btn btn-primary btn-sm mr-1"
+																>
+																	<i className="os-icon os-icon-ui-22"></i>
+																	<span>Admit</span>
+																</Link>
+															</Tooltip>
 														)}
 													</>
 												)}
@@ -353,14 +398,16 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 															alerts.length > 0 ? 'text-danger' : 'text-success'
 														} relative`}
 														style={{ fontSize: '20px', padding: '0 4px' }}
-														onClick={() => showAlerts()}>
+														onClick={() => showAlerts()}
+													>
 														<i className="fa fa-exclamation-triangle" />
 														<span
 															className={`alert-badge ${
 																alerts.length > 0
 																	? 'text-danger'
 																	: 'text-success'
-															}`}>
+															}`}
+														>
 															{alerts.length}
 														</span>
 													</a>
@@ -437,7 +484,8 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 				</div>
 				<div
 					className="col-md-5 col-lg-4 col-xl-3 col-12"
-					style={{ paddingLeft: 0 }}>
+					style={{ paddingLeft: 0 }}
+				>
 					<div className="element-box border-primary p-3">
 						<div className="card-header align-items-center pt-75 pb-25">
 							<h5 className="mb-0">Patient Status</h5>
@@ -462,7 +510,7 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 												</li>
 											</span>
 										)}
-										{!patient.is_admitted && (
+										{!patient.admission_id && (
 											<span className="b-avatar badge-light-primary rounded shiftright post-box">
 												<li>
 													<Link to={`${location.pathname}#start-admission`}>
@@ -492,7 +540,8 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 								</div>
 								<button
 									type="button"
-									className="btn btn-block btn-outline-danger">
+									className="btn btn-block btn-outline-danger"
+								>
 									Disable Patient
 								</button>
 							</div>

@@ -8,7 +8,13 @@ import DatePicker from 'antd/lib/date-picker';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 import { notifyError } from '../../services/notify';
-import { request, patientname, itemRender } from '../../services/utilities';
+import {
+	request,
+	patientname,
+	itemRender,
+	formatDate,
+	staffname,
+} from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { searchAPI } from '../../services/constants';
@@ -16,6 +22,12 @@ import { toggleProfile } from '../../actions/user';
 import TableLoading from '../../components/TableLoading';
 import ProfilePopup from '../../components/Patient/ProfilePopup';
 import AssignAccommodation from './AssignAccommodation';
+
+const statuses = [
+	{ label: 'All', value: '' },
+	{ label: 'Open', value: 0 },
+	{ label: 'Discharged', value: 1 },
+];
 
 const { RangePicker } = DatePicker;
 
@@ -35,15 +47,19 @@ const NicuPatients = () => {
 		totalPages: 0,
 	});
 	const [patient, setPatient] = useState('');
+	const [status, setStatus] = useState(0);
 
 	const dispatch = useDispatch();
 
 	const fetchNicuPatients = useCallback(
-		async (page, patientId, sDate, eDate) => {
+		async (page, patientId, sDate, eDate, nicu_status) => {
 			try {
 				const p = page || 1;
-				const url = `nicu?page=${p}&limit=${limit}&patient_id=${patientId ||
-					''}&startDate=${sDate || ''}&endDate=${eDate || ''}`;
+				const patient_id = patientId || '';
+				const start_date = sDate || '';
+				const end_date = eDate || '';
+				const _status = nicu_status || 0;
+				const url = `nicu?page=${p}&limit=${limit}&patient_id=${patient_id}&startDate=${start_date}&endDate=${end_date}&status=${_status}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setMeta(meta);
@@ -84,13 +100,14 @@ const NicuPatients = () => {
 
 	const doFilter = e => {
 		e.preventDefault();
+		dispatch(startBlock());
 		setFiltering(true);
-		fetchNicuPatients(1, patient, startDate, endDate);
+		fetchNicuPatients(1, patient, startDate, endDate, status);
 	};
 
 	const onNavigatePage = nextPage => {
 		dispatch(startBlock());
-		fetchNicuPatients(nextPage, patient, startDate, endDate);
+		fetchNicuPatients(nextPage, patient, startDate, endDate, status);
 	};
 
 	const showProfile = patient => {
@@ -150,10 +167,29 @@ const NicuPatients = () => {
 							<label>Admitted Between - To</label>
 							<RangePicker onChange={e => dateChange(e)} />
 						</div>
+						<div className="form-group col-md-3">
+							<label>Status</label>
+							<select
+								style={{ height: '32px' }}
+								className="form-control"
+								name="status"
+								onChange={e => setStatus(e.target.value)}
+								defaultValue={status}
+							>
+								{statuses.map((item, i) => {
+									return (
+										<option key={i} value={item.value}>
+											{item.label}
+										</option>
+									);
+								})}
+							</select>
+						</div>
 						<div className="form-group col-md-3 mt-4">
 							<div
 								className="btn btn-sm btn-primary btn-upper text-white"
-								onClick={e => doFilter(e)}>
+								onClick={e => doFilter(e)}
+							>
 								<i className="os-icon os-icon-ui-37" />
 								<span>
 									{filtering ? (
@@ -182,6 +218,8 @@ const NicuPatients = () => {
 										<th>Date of Admission</th>
 										<th>Admitted By</th>
 										<th>Accommodation</th>
+										{status === 1 && <th>Date of Discharged</th>}
+										{status === 1 && <th>Discharged By</th>}
 										<th>Status</th>
 										<th></th>
 									</tr>
@@ -193,39 +231,53 @@ const NicuPatients = () => {
 												<td>
 													<p className="item-title text-color m-0">
 														<Tooltip
-															title={<ProfilePopup patient={item.patient} />}>
+															title={<ProfilePopup patient={item.patient} />}
+														>
 															<a
 																className="cursor"
-																onClick={() => showProfile(item.patient)}>
+																onClick={() => showProfile(item.patient)}
+															>
 																{patientname(item.patient, true)}
 															</a>
 														</Tooltip>
 													</p>
 												</td>
-												<td>{item.admission.reason}</td>
+												<td>{item.reason || '--'}</td>
 												<td>
-													{moment(item.admission_date).format(
-														'DD-MMM-YYYY h:mm A'
-													)}
+													{formatDate(item.createdAt, 'DD-MMM-YYYY h:mm A')}
 												</td>
-												<td>{item.admitted_by}</td>
+												<td>{staffname(item.admitted_by)}</td>
 												<td>
 													{item.accommodation?.name || '--'}
 													{item.accommodation && (
 														<Tooltip title="Change Accommodation">
 															<a
 																onClick={() => assignAccommodation(item)}
-																className="primary ml-2">
+																className="primary ml-2"
+															>
 																<i className="fa fa-bed" />
 															</a>
 														</Tooltip>
 													)}
 												</td>
+												{status === 1 && (
+													<td>
+														{formatDate(
+															item?.date_discharged,
+															'DD-MMM-YYYY h:mm A'
+														)}
+													</td>
+												)}
+												{status === 1 && (
+													<td>{staffname(item?.dischargedBy)}</td>
+												)}
 												<td>
 													{item.status === 0 ? (
 														<span className="badge badge-secondary">Open</span>
 													) : (
-														<span className="badge badge-success">Closed</span>
+														<span className="badge badge-success">
+															Discharged
+														</span>
 													)}
 												</td>
 												<td className="row-actions">
@@ -233,7 +285,8 @@ const NicuPatients = () => {
 														<Tooltip title="Assign Accommodation">
 															<a
 																onClick={() => assignAccommodation(item)}
-																className="primary">
+																className="primary"
+															>
 																<i className="fa fa-bed" />
 															</a>
 														</Tooltip>

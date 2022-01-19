@@ -10,7 +10,7 @@ import { startBlock, stopBlock } from '../../actions/redux-block';
 import AddEditTeam from './Modals/AddEditTeam';
 import { staffname } from '../../services/utilities';
 
-const CareTeam = ({ can_request }) => {
+const CareTeam = ({ can_request, type, itemId }) => {
 	const [loading, setLoading] = useState(true);
 	const [members, setMembers] = useState([]);
 	const [meta, setMeta] = useState({
@@ -22,14 +22,13 @@ const CareTeam = ({ can_request }) => {
 
 	const dispatch = useDispatch();
 	const patient = useSelector(state => state.user.patient);
-	const admission = useSelector(state => state.user.item);
 
 	const fetchMembers = useCallback(
 		async page => {
 			try {
 				dispatch(startBlock());
 				const p = page || 1;
-				const url = `care-teams?patient_id=${patient.id}&page=${p}&limit=10&type=admission&id=${admission.id}`;
+				const url = `care-teams?patient_id=${patient.id}&page=${p}&limit=10&type=${type}&id=${itemId}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setMembers(result);
@@ -41,7 +40,7 @@ const CareTeam = ({ can_request }) => {
 				notifyError('error fetching team member');
 			}
 		},
-		[dispatch, patient, admission]
+		[dispatch, itemId, patient, type]
 	);
 
 	useEffect(() => {
@@ -82,7 +81,8 @@ const CareTeam = ({ can_request }) => {
 					{can_request && (
 						<a
 							className="btn btn-sm btn-secondary text-white ml-3"
-							onClick={() => newEntry()}>
+							onClick={() => newEntry()}
+						>
 							Add/Edit Team Member
 						</a>
 					)}
@@ -142,8 +142,8 @@ const CareTeam = ({ can_request }) => {
 				<AddEditTeam
 					closeModal={closeModal}
 					updateMembers={updateMembers}
-					item={admission}
-					type="admission"
+					item_id={itemId}
+					type={type}
 				/>
 			)}
 		</div>

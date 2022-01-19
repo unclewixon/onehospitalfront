@@ -170,9 +170,8 @@ class IVFBlock extends Component {
 											<p className="item-title text-color m-0">
 												<a
 													className="cursor"
-													onClick={() =>
-														this.showProcedure(data.patient, item)
-													}>
+													onClick={() => this.showProcedure(data.patient, item)}
+												>
 													{item.service.name}
 												</a>
 											</p>
@@ -181,14 +180,16 @@ class IVFBlock extends Component {
 											<td>
 												<p className="item-title text-color m-0">
 													<Tooltip
-														title={<ProfilePopup patient={data.patient} />}>
+														title={<ProfilePopup patient={data.patient} />}
+													>
 														<a
 															className="cursor"
-															onClick={() => this.showProfile(data.patient)}>
+															onClick={() => this.showProfile(data.patient)}
+														>
 															{data.patient_name}
 														</a>
 													</Tooltip>
-													{data.patient.is_admitted && (
+													{data.patient.admission_id && (
 														<Tooltip title="Admitted">
 															<i className="fa fa-hospital-o text-danger ml-1" />
 														</Tooltip>
@@ -253,7 +254,8 @@ class IVFBlock extends Component {
 																	item_id: item.id,
 																})
 															}
-															className="btn btn-sm btn-primary px-2 py-1">
+															className="btn btn-sm btn-primary px-2 py-1"
+														>
 															schedule date
 														</a>
 													) : (
@@ -273,7 +275,8 @@ class IVFBlock extends Component {
 															item_id: item.id,
 														})
 													}
-													className="btn btn-sm btn-primary py-1 text-white">
+													className="btn btn-sm btn-primary py-1 text-white"
+												>
 													Start
 												</a>
 											)}
@@ -285,7 +288,8 @@ class IVFBlock extends Component {
 															item_id: item.id,
 														})
 													}
-													className="btn btn-sm btn-primary py-1 text-white">
+													className="btn btn-sm btn-primary py-1 text-white"
+												>
 													Conclude
 												</a>
 											)}
@@ -298,7 +302,8 @@ class IVFBlock extends Component {
 																id: data.id,
 																item_id: item.id,
 															})
-														}>
+														}
+													>
 														<i className="os-icon os-icon-ui-15" />
 													</a>
 												</Tooltip>

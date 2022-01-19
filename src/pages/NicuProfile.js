@@ -36,34 +36,58 @@ const Page = ({ location }) => {
 		case 'vitals':
 			return <Vitals type={hash[1].split('%20').join(' ')} />;
 		case 'clinical-tasks':
-			return <ClinicalTasks can_request={nicu && nicu.status === 0} />;
+			return (
+				<ClinicalTasks
+					can_request={nicu && nicu.status === 0}
+					itemId={nicu.id || ''}
+					type="nicu"
+				/>
+			);
 		case 'nurse-observations':
-			return <NurseObservation />;
+			return (
+				<NurseObservation
+					can_request={nicu && nicu.status === 0}
+					itemId={nicu.id || ''}
+					type="nicu"
+				/>
+			);
 		case 'fluid-chart':
-			return <FluidChart />;
+			return <FluidChart itemId={nicu.id || ''} type="nicu" />;
 		case 'care-team':
-			return <CareTeam can_request={nicu && nicu.status === 0} />;
+			return (
+				<CareTeam
+					can_request={nicu && nicu.status === 0}
+					itemId={nicu.id || ''}
+					type="nicu"
+				/>
+			);
 		case 'regimen':
 			return (
 				<Pharmacy
 					can_request={nicu && nicu.status === 0}
 					itemId={nicu.id || ''}
-					type="admission"
+					type="nicu"
 				/>
 			);
 		case 'pharmacy-request':
-			return <PharmacyRequest module="admission" itemId={nicu.id || ''} />;
+			return <PharmacyRequest module="nicu" itemId={nicu.id || ''} />;
 		case 'nursing-service':
 			return (
 				<NursingService
-					module="admission"
 					can_request={nicu && nicu.status === 0}
 					itemId={nicu.id || ''}
+					type="nicu"
 				/>
 			);
 		case 'ward-round':
 		default:
-			return <InPatientNote />;
+			return (
+				<InPatientNote
+					can_request={nicu && nicu.status === 0}
+					itemId={nicu.id || ''}
+					type="nicu"
+				/>
+			);
 	}
 };
 

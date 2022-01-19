@@ -8,7 +8,7 @@ import Tooltip from 'antd/lib/tooltip';
 
 import CreateTask from '../Modals/CreateTask';
 import { itemRender, request, confirmAction } from '../../services/utilities';
-import { allVitalItems, patientAPI } from '../../services/constants';
+import { allVitalItems, admissionAPI } from '../../services/constants';
 import TakeReading from '../Modals/TakeReading';
 import { readingDone } from '../../actions/patient';
 import warning from '../../assets/images/warning.png';
@@ -17,7 +17,7 @@ import { startBlock, stopBlock } from '../../actions/redux-block';
 import { notifySuccess, notifyError } from '../../services/notify';
 import CreateChart from './Modals/CreateChart';
 
-const ClinicalTasks = ({ can_request = true }) => {
+const ClinicalTasks = ({ itemId, type, can_request = true }) => {
 	const [showTaskModal, setShowTaskModal] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [meta, setMeta] = useState({
@@ -38,9 +38,10 @@ const ClinicalTasks = ({ can_request = true }) => {
 
 	const getTasks = async page => {
 		try {
-			const url = `${patientAPI}/admissions/tasks?patient_id=${
-				patient.id
-			}&page=${page || 1}&limit=12`;
+			const p = page || 1;
+			const item_id = itemId || '';
+			const block = type || '';
+			const url = `${admissionAPI}/tasks?patient_id=${patient.id}&page=${p}&limit=12&item_id=${item_id}&type=${block}`;
 			const res = await request(url, 'GET', true);
 			return res;
 		} catch (e) {
@@ -84,7 +85,7 @@ const ClinicalTasks = ({ can_request = true }) => {
 
 	const deleteTask = async data => {
 		try {
-			const url = `${patientAPI}/admissions/tasks/${data.id}/delete-task`;
+			const url = `${admissionAPI}/tasks/${data.id}/delete-task`;
 			await request(url, 'DELETE', true);
 			const arr = tasks.filter(tsk => tsk.id !== data.id);
 			setTasks(arr);
@@ -177,13 +178,15 @@ const ClinicalTasks = ({ can_request = true }) => {
 									<button
 										className="btn btn-danger"
 										style={{ margin: '10px' }}
-										onClick={onClose}>
+										onClick={onClose}
+									>
 										No
 									</button>
 									<button
 										className="btn btn-primary"
 										style={{ margin: '10px' }}
-										onClick={onclick}>
+										onClick={onclick}
+									>
 										Yes
 									</button>
 								</div>
@@ -209,7 +212,8 @@ const ClinicalTasks = ({ can_request = true }) => {
 					{can_request && (
 						<a
 							className="btn btn-sm btn-secondary text-white ml-3"
-							onClick={() => createTask()}>
+							onClick={() => createTask()}
+						>
 							Create Task
 						</a>
 					)}
@@ -292,21 +296,24 @@ const ClinicalTasks = ({ can_request = true }) => {
 														{item.taskType === 'vitals' && (
 															<a
 																className="btn btn-primary btn-sm text-white text-uppercase"
-																onClick={() => takeReading(item)}>
+																onClick={() => takeReading(item)}
+															>
 																Take Reading
 															</a>
 														)}
 														{item.taskType === 'fluid' && (
 															<a
 																className="btn btn-primary btn-sm text-white text-uppercase"
-																onClick={() => recordFluid(item)}>
+																onClick={() => recordFluid(item)}
+															>
 																Take Reading
 															</a>
 														)}
 														{item.taskType === 'regimen' && (
 															<a
 																className="btn btn-primary btn-sm text-white text-uppercase"
-																onClick={() => recordMedication(item)}>
+																onClick={() => recordMedication(item)}
+															>
 																Take Reading
 															</a>
 														)}
@@ -317,7 +324,8 @@ const ClinicalTasks = ({ can_request = true }) => {
 												<Tooltip title="Cancel Clinical Task">
 													<a
 														className="danger"
-														onClick={e => confirmDelete(e, item)}>
+														onClick={e => confirmDelete(e, item)}
+													>
 														<i className="os-icon os-icon-ui-15"></i>
 													</a>
 												</Tooltip>

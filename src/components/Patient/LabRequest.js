@@ -112,6 +112,7 @@ const LabRequest = ({ module, history, location, itemId }) => {
 				pay_later: 0,
 				antenatal_id: module === 'antenatal' ? itemId : '',
 				admission_id: module === 'admission' ? itemId : '',
+				nicu_id: module === 'nicu' ? itemId : '',
 				ivf_id: module === 'ivf' ? itemId : '',
 			};
 
@@ -216,7 +217,8 @@ const LabRequest = ({ module, history, location, itemId }) => {
 										className={`badge badge-${
 											lab ? 'info' : 'danger'
 										} text-white ml-2`}
-										key={i}>{`${lab.name}: ${formatCurrency(
+										key={i}
+									>{`${lab.name}: ${formatCurrency(
 										lab?.service?.tariff || 0
 									)}`}</span>
 								))}
@@ -231,7 +233,8 @@ const LabRequest = ({ module, history, location, itemId }) => {
 									name="request_note"
 									rows="3"
 									placeholder="Enter request note"
-									ref={register}></textarea>
+									ref={register}
+								></textarea>
 							</div>
 						</div>
 						<div className="row">

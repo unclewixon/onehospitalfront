@@ -87,8 +87,8 @@ const AllPatients = () => {
 			try {
 				dispatch(startBlock());
 				const p = page || 1;
-				const url = `patient/list?page=${p}&limit=${pageLimit}&q=${q ||
-					''}&startDate=${startDate}&endDate=${endDate}&status=${status}&hmo_id=${hmo}`;
+				const search = q || '';
+				const url = `patient/list?page=${p}&limit=${pageLimit}&q=${search}&startDate=${startDate}&endDate=${endDate}&status=${status}&hmo_id=${hmo}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setMeta(meta);
@@ -170,7 +170,8 @@ const AllPatients = () => {
 							id="status"
 							className="form-control"
 							name="status"
-							onChange={e => setStatus(e.target.value)}>
+							onChange={e => setStatus(e.target.value)}
+						>
 							{statuses.map((status, i) => {
 								return (
 									<option key={i} value={status.value}>
@@ -183,7 +184,8 @@ const AllPatients = () => {
 					<div className="form-group col mt-4">
 						<div
 							className="btn btn-sm btn-primary btn-upper text-white filter-btn"
-							onClick={doFilter}>
+							onClick={doFilter}
+						>
 							<i className="os-icon os-icon-ui-37" />
 							<span>
 								{filtering ? <img src={waiting} alt="submitting" /> : 'Filter'}
@@ -219,7 +221,7 @@ const AllPatients = () => {
 												</td>
 												<td>
 													{patientname(data)}{' '}
-													{data.is_admitted && (
+													{(data.admission_id || data.nicu_id) && (
 														<Tooltip title="Admitted">
 															<i className="fa fa-hospital-o text-danger" />
 														</Tooltip>

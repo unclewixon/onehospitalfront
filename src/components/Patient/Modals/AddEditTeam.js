@@ -15,7 +15,7 @@ const AddEditTeam = ({
 	handleSubmit,
 	error,
 	updateMembers,
-	item,
+	item_id,
 	type,
 }) => {
 	const [submitting, setSubmitting] = useState(false);
@@ -49,7 +49,7 @@ const AddEditTeam = ({
 			setSubmitting(true);
 			const info = {
 				...data,
-				admission_id: item.id,
+				item_id,
 				type,
 				staffs,
 				primary_care_id: primaryStaff.id,
@@ -93,16 +93,19 @@ const AddEditTeam = ({
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div
 				className="modal-dialog modal-centered"
-				style={{ maxWidth: '320px' }}>
+				style={{ maxWidth: '320px' }}
+			>
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={closeModal}>
+						onClick={closeModal}
+					>
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -159,7 +162,8 @@ const AddEditTeam = ({
 										<button
 											className="btn btn-primary"
 											disabled={submitting}
-											type="submit">
+											type="submit"
+										>
 											{submitting ? (
 												<img src={waiting} alt="submitting" />
 											) : (

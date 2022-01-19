@@ -78,14 +78,17 @@ const PrescriptionBlock = ({
 									<td>
 										<p className="item-title text-color m-0">
 											<Tooltip
-												title={<ProfilePopup patient={request.patient} />}>
+												title={<ProfilePopup patient={request.patient} />}
+											>
 												<a
 													className="cursor"
-													onClick={() => showProfile(request.patient)}>
+													onClick={() => showProfile(request.patient)}
+												>
 													{patientname(request.patient, true)}
 												</a>
 											</Tooltip>
-											{request.patient.is_admitted && (
+											{(request.patient.admission_id ||
+												request.patient.nicu_id) && (
 												<Tooltip title="Admitted">
 													<i className="fa fa-hospital-o text-danger ml-1" />
 												</Tooltip>
@@ -124,7 +127,8 @@ const PrescriptionBlock = ({
 												document.body.classList.add('modal-open');
 												setPrescription(request);
 												setShowModal(true);
-											}}>
+											}}
+										>
 											<i className="os-icon os-icon-eye" />
 										</a>
 									</Tooltip>

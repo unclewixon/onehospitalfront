@@ -19,11 +19,16 @@ const storage = new SSRStorage();
 
 const validate = values => {
 	const errors = {};
-	if (!values.leave_type || values.leave_type === '') {
-		errors.leave_type = 'select leave type';
+
+	if (
+		!values.health_state ||
+		(values.health_state && values.health_state === '')
+	) {
+		errors.health_state = 'select state of health';
 	}
+
 	if (!values.reason || values.reason === '') {
-		errors.reason = 'please specify you reason';
+		errors.reason = 'please specify your reason for admitting patient';
 	}
 
 	return errors;
@@ -43,16 +48,8 @@ class PatientAdmission extends Component {
 	admitPatient = async data => {
 		try {
 			const { patient } = this.props;
-
-			const formData = {
-				healthState: data.health_state,
-				riskToFall: data.risk === true,
-				nicu: data.nicu === true,
-				reason: data.reason,
-			};
-
 			this.setState({ submitting: true });
-
+			const formData = { ...data, nicu: data.nicu === true };
 			const url = `${patientAPI}/admissions/${patient.id}/save`;
 			await request(url, 'POST', true, formData);
 			this.setState({ submitting: false });
@@ -60,7 +57,11 @@ class PatientAdmission extends Component {
 			notifySuccess('Admission Started!');
 			storage.removeItem(USER_RECORD);
 			this.props.toggleProfile(false);
-			this.props.history.push('/nurse/in-patients/admitted');
+			if (data.nicu === true) {
+				this.props.history.push('/nicu');
+			} else {
+				this.props.history.push('/nurse/in-patients/admitted');
+			}
 		} catch (e) {
 			this.setState({ submitting: false });
 			throw new SubmissionError({
@@ -93,39 +94,15 @@ class PatientAdmission extends Component {
 											id="health_state"
 											name="health_state"
 											component={renderSelect}
-											label="Patient current Health State"
-											placeholder="Select patient health state"
+											label="Health State"
+											placeholder="Select health state"
 											data={healthState}
 										/>
 									</div>
 								</div>
 								<div className="row">
 									<div className="col-sm-6 d-flex align-items-center">
-										<div
-											className="d-flex"
-											style={{ position: 'relative', top: '25%' }}>
-											<div>
-												<Field
-													name="risk"
-													id="risk"
-													component={renderTextInput}
-													type="checkbox"
-												/>
-											</div>
-											<label
-												htmlFor="risk"
-												className="ml-1"
-												style={{ marginTop: '-2px' }}>
-												Risk to Fall ?
-											</label>
-										</div>
-										<div
-											className="d-flex "
-											style={{
-												position: 'relative',
-												top: '25%',
-												marginLeft: '20px',
-											}}>
+										<div className="d-flex relative mt-3">
 											<div>
 												<Field
 													name="nicu"
@@ -137,13 +114,14 @@ class PatientAdmission extends Component {
 											<label
 												htmlFor="nicu"
 												className="ml-1"
-												style={{ marginTop: '-2px' }}>
+												style={{ marginTop: '-2px' }}
+											>
 												Admit to NICU
 											</label>
 										</div>
 									</div>
 								</div>
-								<div className="row">
+								<div className="row mt-2">
 									<div className="col-sm-6">
 										<Field
 											id="reason"
@@ -165,7 +143,8 @@ class PatientAdmission extends Component {
 									</button>
 									<Link
 										to={`${location.pathname}#dashboard`}
-										className="btn btn-secondary">
+										className="btn btn-secondary"
+									>
 										Cancel
 									</Link>
 								</div>

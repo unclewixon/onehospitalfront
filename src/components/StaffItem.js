@@ -25,7 +25,7 @@ class StaffItem extends Component {
 		try {
 			e.preventDefault();
 			const { staffs } = this.props;
-			const url = `hr/staffs/enable/?id=${data.id}`;
+			const url = `hr/staffs/${data.id}/enable`;
 			await request(url, 'PATCH', true);
 			data.isActive = true;
 			const upd = updateImmutable(staffs, data);
@@ -113,7 +113,8 @@ class StaffItem extends Component {
 											<a
 												onClick={e => this.doDisable(e, item)}
 												className="danger"
-												title="Disable Staff">
+												title="Disable Staff"
+											>
 												<i className="os-icon os-icon-x-circle" />
 											</a>
 										</Tooltip>
@@ -122,7 +123,8 @@ class StaffItem extends Component {
 											<a
 												onClick={e => this.doEnable(e, item)}
 												className="success"
-												title="Enable Staff">
+												title="Enable Staff"
+											>
 												<i className="os-icon os-icon-check-circle" />
 											</a>
 										</Tooltip>

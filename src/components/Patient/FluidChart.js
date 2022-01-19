@@ -8,7 +8,7 @@ import { request, itemRender, formatDate } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
-const FluidChart = () => {
+const FluidChart = ({ type, item_id }) => {
 	const [loading, setLoading] = useState(true);
 	const [charts, setCharts] = useState([]);
 	const [meta, setMeta] = useState({
@@ -28,7 +28,7 @@ const FluidChart = () => {
 			try {
 				dispatch(startBlock());
 				const p = page || 1;
-				const url = `fluid-charts?patient_id=${patient.id}&page=${p}&limit=10`;
+				const url = `fluid-charts?patient_id=${patient.id}&page=${p}&limit=10&type=${type}&item_id=${item_id}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setCharts(result);
@@ -42,7 +42,7 @@ const FluidChart = () => {
 				notifyError('error fetching fluid charts');
 			}
 		},
-		[dispatch, patient]
+		[dispatch, item_id, patient, type]
 	);
 
 	useEffect(() => {

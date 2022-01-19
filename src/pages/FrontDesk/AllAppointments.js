@@ -357,7 +357,7 @@ class AllAppointments extends Component {
 																		className={`badge ${
 																			item.doctorStatus === 0
 																				? 'badge-primary'
-																				: 'badge-info'
+																				: 'badge-info text-white'
 																		}`}
 																	>
 																		{item.doctorStatus === 0

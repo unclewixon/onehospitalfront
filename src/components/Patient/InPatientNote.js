@@ -12,7 +12,7 @@ import VisitNote from '../Admission/VisitNote';
 import { staffname } from '../../services/utilities';
 import { admissionAPI } from '../../services/constants';
 
-const InPatientNote = () => {
+const InPatientNote = ({ itemId, type, can_request }) => {
 	const [loading, setLoading] = useState(true);
 	const [notes, setNotes] = useState([]);
 	const [meta, setMeta] = useState({
@@ -23,7 +23,7 @@ const InPatientNote = () => {
 	const [showModal, setShowModal] = useState(false);
 
 	const dispatch = useDispatch();
-	const admission = useSelector(state => state.user.item);
+
 	const patient = useSelector(state => state.user.patient);
 
 	const fetchNotes = useCallback(
@@ -31,7 +31,7 @@ const InPatientNote = () => {
 			try {
 				dispatch(startBlock());
 				const p = page || 1;
-				const url = `${admissionAPI}/${admission.id}/ward-rounds?page=${p}&limit=10&visit=soap`;
+				const url = `${admissionAPI}/ward-rounds?page=${p}&limit=10&visit=soap&item_id=${itemId}&type=${type}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setNotes(result);
@@ -43,7 +43,7 @@ const InPatientNote = () => {
 				notifyError('error fetching notes');
 			}
 		},
-		[dispatch, admission]
+		[dispatch, itemId, type]
 	);
 
 	useEffect(() => {
@@ -74,10 +74,11 @@ const InPatientNote = () => {
 		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<div className="element-actions flex-action">
-					{admission && admission.status === 0 && (
+					{can_request && (
 						<a
 							className="btn btn-sm btn-secondary text-white"
-							onClick={() => newEntry()}>
+							onClick={() => newEntry()}
+						>
 							S . O . A . P
 						</a>
 					)}
@@ -139,7 +140,12 @@ const InPatientNote = () => {
 				</div>
 			</div>
 			{showModal && (
-				<VisitNote closeModal={closeModal} item={admission} patient={patient} />
+				<VisitNote
+					closeModal={closeModal}
+					itemId={itemId}
+					module={type}
+					patient={patient}
+				/>
 			)}
 		</div>
 	);

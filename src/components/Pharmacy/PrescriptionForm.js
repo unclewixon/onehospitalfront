@@ -179,6 +179,7 @@ const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 				antenatal_id: module === 'antenatal' ? itemId : null,
 				admission_id: module === 'admission' ? itemId : null,
 				procedure_id: module === 'procedure' ? itemId : null,
+				nicu_id: module === 'nicu' ? itemId : null,
 			};
 
 			const rs = await request('requests/save-request', 'POST', true, regimen);
@@ -255,13 +256,15 @@ const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 								<button
 									className="btn btn-primary"
 									style={{ margin: '10px' }}
-									onClick={changeBtn}>
+									onClick={changeBtn}
+								>
 									Change
 								</button>
 								<button
 									className="btn btn-secondary"
 									style={{ margin: '10px' }}
-									onClick={continueBtn}>
+									onClick={continueBtn}
+								>
 									Continue
 								</button>
 							</div>
@@ -298,13 +301,15 @@ const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 								<button
 									className="btn btn-primary"
 									style={{ margin: '10px' }}
-									onClick={changeBtn}>
+									onClick={changeBtn}
+								>
 									Change
 								</button>
 								<button
 									className="btn btn-secondary"
 									style={{ margin: '10px' }}
-									onClick={continueBtn}>
+									onClick={continueBtn}
+								>
 									Continue
 								</button>
 							</div>
@@ -372,7 +377,8 @@ const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 										<span
 											className={`badge badge-${
 												selectedDrug.qty > 0 ? 'info' : 'danger'
-											} text-white`}>{`Stock Level: ${selectedDrug.qty}; Base Price: ₦${selectedDrug.basePrice}`}</span>
+											} text-white`}
+										>{`Stock Level: ${selectedDrug.qty}; Base Price: ₦${selectedDrug.basePrice}`}</span>
 									</div>
 								</div>
 							</div>
@@ -459,8 +465,9 @@ const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 						<input
 							type="number"
 							className="form-control"
-							placeholder={`(value in ${frequencyType?.value ||
-								'daily'}) eg: 3`}
+							placeholder={`(value in ${
+								frequencyType?.value || 'daily'
+							}) eg: 3`}
 							ref={register({ required: true })}
 							name="duration"
 							onChange={onHandleInputChange}
@@ -556,7 +563,8 @@ const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 								style={{
 									backgroundColor: 'transparent',
 									border: 'none',
-								}}>
+								}}
+							>
 								<PlusIcon
 									style={{
 										width: '1.5rem',
@@ -651,14 +659,16 @@ const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 						rows="3"
 						placeholder="Regimen note"
 						value={regimenNote}
-						onChange={e => setRegimenNote(e.target.value)}></textarea>
+						onChange={e => setRegimenNote(e.target.value)}
+					></textarea>
 				</div>
 			</div>
 			<div>
 				<button
 					onClick={submitRequest}
 					disabled={submitting}
-					className="btn btn-primary mt-4">
+					className="btn btn-primary mt-4"
+				>
 					{submitting ? (
 						<img src={waiting} alt="submitting" />
 					) : (

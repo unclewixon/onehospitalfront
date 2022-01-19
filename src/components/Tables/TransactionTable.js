@@ -109,7 +109,8 @@ const TransactionTable = ({
 								<td>
 									<a onClick={() => showList(transaction.patient)}>
 										{patientname(transaction.patient, true)}
-										{transaction.patient?.is_admitted && (
+										{(transaction.patient?.admission_id ||
+											transaction.patient?.nicu_id) && (
 											<Tooltip title="Admitted">
 												<i className="fa fa-hospital-o text-danger ml-1" />
 											</Tooltip>
@@ -126,7 +127,8 @@ const TransactionTable = ({
 										{transaction.bill_source !== 'registration' && (
 											<a
 												className="item-title text-info ml-2"
-												onClick={() => viewDetails(transaction)}>
+												onClick={() => viewDetails(transaction)}
+											>
 												<i className="os-icon os-icon-alert-circle" />
 											</a>
 										)}
@@ -177,7 +179,8 @@ const TransactionTable = ({
 													<Tooltip title="Approve Transactions">
 														<a
 															className="secondary"
-															onClick={() => doApproveTransaction(transaction)}>
+															onClick={() => doApproveTransaction(transaction)}
+														>
 															<i className="os-icon os-icon-thumbs-up" />
 														</a>
 													</Tooltip>
@@ -188,7 +191,8 @@ const TransactionTable = ({
 													<Tooltip title="Delete Transactions">
 														<a
 															className="text-danger"
-															onClick={() => confirmDelete(transaction)}>
+															onClick={() => confirmDelete(transaction)}
+														>
 															<i className="os-icon os-icon-ui-15" />
 														</a>
 													</Tooltip>
@@ -202,7 +206,8 @@ const TransactionTable = ({
 											<Tooltip title="Print">
 												<a
 													className="text-info"
-													onClick={() => handlePrint(transaction)}>
+													onClick={() => handlePrint(transaction)}
+												>
 													<i className="os-icon os-icon-printer" />
 												</a>
 											</Tooltip>

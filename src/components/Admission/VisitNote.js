@@ -16,7 +16,8 @@ const EncounterTabs = ({
 	next,
 	patient,
 	closeModal,
-	admission_id,
+	item_id,
+	module,
 }) => {
 	switch (index) {
 		case 4:
@@ -25,7 +26,8 @@ const EncounterTabs = ({
 					previous={previous}
 					patient={patient}
 					closeModal={closeModal}
-					admission_id={admission_id}
+					item_id={item_id}
+					module={module}
 				/>
 			);
 		case 3:
@@ -94,7 +96,7 @@ class VisitNote extends Component {
 	}
 
 	render() {
-		const { item, patient, closeModal, type } = this.props;
+		const { itemId, module, patient, closeModal, type } = this.props;
 		const { eIndex } = this.state;
 		const current = soap[eIndex];
 		return (
@@ -103,14 +105,16 @@ class VisitNote extends Component {
 				role="dialog"
 				style={{ display: 'block' }}
 				tabIndex="1"
-				ref="theDiv">
+				ref="theDiv"
+			>
 				<div className="modal-dialog modal-lg modal-centered" role="document">
 					<div className="modal-content">
 						<button
 							aria-label="Close"
 							className="close override text-white"
 							type="button"
-							onClick={closeModal}>
+							onClick={closeModal}
+						>
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="layout-w flex-column">
@@ -123,13 +127,15 @@ class VisitNote extends Component {
 								<div className="content-i">
 									<div
 										className="content-box encounter-box"
-										style={eIndex === 3 ? { overflowY: 'visible' } : {}}>
+										style={eIndex === 3 ? { overflowY: 'visible' } : {}}
+									>
 										<EncounterTabs
 											index={eIndex}
 											next={this.next}
 											previous={this.previous}
 											patient={patient}
-											admission_id={item.id}
+											item_id={itemId}
+											module={module}
 											closeModal={closeModal}
 											type={type}
 										/>

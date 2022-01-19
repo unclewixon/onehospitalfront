@@ -20,7 +20,7 @@ import SSRStorage from '../../services/storage';
 
 const storage = new SSRStorage();
 
-const Plan = ({ previous, patient, closeModal, admission_id }) => {
+const Plan = ({ previous, patient, closeModal, item_id, module }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [treatmentPlan, setTreatmentPlan] = useState('');
 
@@ -63,8 +63,13 @@ const Plan = ({ previous, patient, closeModal, admission_id }) => {
 			const encounterData = { ...encounter, treatmentPlan };
 			dispatch(updateSoapData(encounterData));
 
-			const detail = { ...encounterData, patient_id: patient.id };
-			const url = `${admissionAPI}/${admission_id}/soap`;
+			const detail = {
+				...encounterData,
+				patient_id: patient.id,
+				item_id,
+				type: module,
+			};
+			const url = `${admissionAPI}/soap`;
 			const rs = await request(url, 'POST', true, detail);
 			if (rs && rs.success) {
 				dispatch(stopBlock());

@@ -153,6 +153,8 @@ class App extends Component {
 		storage.removeItem(TOKEN_COOKIE);
 		storage.removeItem(CK_ENCOUNTER);
 
+		this.props.toggleProfile(false);
+
 		this.props.signOut();
 
 		disconnectSocket();
@@ -218,7 +220,8 @@ class App extends Component {
 													/>
 													<div
 														className="content-w content-w-l-18"
-														id="main-content">
+														id="main-content"
+													>
 														{/* user role determines topbar menu */}
 														<TopBar
 															role={

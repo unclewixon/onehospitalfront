@@ -192,7 +192,8 @@ const Patients = ({ location, filter }) => {
 							<div className="form-group col-md-3 mt-4">
 								<div
 									className="btn btn-sm btn-primary btn-upper text-white"
-									onClick={e => doFilter(e)}>
+									onClick={e => doFilter(e)}
+								>
 									<i className="os-icon os-icon-ui-37" />
 									<span>
 										{filtering ? (
@@ -233,7 +234,8 @@ const Patients = ({ location, filter }) => {
 													<td>
 														<p className="item-title text-color m-0">
 															<Tooltip
-																title={<ProfilePopup patient={item.patient} />}>
+																title={<ProfilePopup patient={item.patient} />}
+															>
 																<a
 																	className="cursor"
 																	onClick={() =>
@@ -241,7 +243,8 @@ const Patients = ({ location, filter }) => {
 																			...item.patient,
 																			admission: item,
 																		})
-																	}>
+																	}
+																>
 																	{patientname(item.patient, true)}
 																</a>
 															</Tooltip>
@@ -282,7 +285,6 @@ const Patients = ({ location, filter }) => {
 													<td nowrap="nowrap" className="row-actions">
 														{!item.start_discharge &&
 															!item.room &&
-															!item.nicu &&
 															user &&
 															(user.role.slug === 'nurse' ||
 																user.role.slug === 'it-admin') &&
@@ -290,7 +292,8 @@ const Patients = ({ location, filter }) => {
 																<Tooltip title="Assign Bed">
 																	<a
 																		onClick={() => assignBed(item)}
-																		className="primary">
+																		className="primary"
+																	>
 																		<i className="fa fa-bed" />
 																	</a>
 																</Tooltip>
@@ -299,7 +302,8 @@ const Patients = ({ location, filter }) => {
 															<a
 																onClick={() =>
 																	showAdmission(item.patient, item)
-																}>
+																}
+															>
 																<i className="os-icon os-icon-user-male-circle2" />
 															</a>
 														</Tooltip>

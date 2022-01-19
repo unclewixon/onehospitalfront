@@ -69,6 +69,7 @@ const RequestService = ({
 				bill: -1,
 				admission_id: module === 'admission' ? itemId : '',
 				procedure_id: module === 'procedure' ? itemId : '',
+				nicu_id: module === 'nicu' ? itemId : '',
 			};
 			const rs = await request('requests/nursing-service', 'POST', true, info);
 			setSubmitting(false);
@@ -92,16 +93,19 @@ const RequestService = ({
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div
 				className="modal-dialog modal-centered"
-				style={{ maxWidth: '320px' }}>
+				style={{ maxWidth: '320px' }}
+			>
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={closeModal}>
+						onClick={closeModal}
+					>
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -136,7 +140,8 @@ const RequestService = ({
 										<button
 											className="btn btn-primary"
 											disabled={submitting}
-											type="submit">
+											type="submit"
+										>
 											{submitting ? (
 												<img src={waiting} alt="submitting" />
 											) : (
