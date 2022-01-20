@@ -5,7 +5,6 @@ import DatePicker from 'react-datepicker';
 import { format, isValid } from 'date-fns';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
-import startCase from 'lodash.startcase';
 import { withRouter } from 'react-router-dom';
 import { FORM_ERROR } from 'final-form';
 
@@ -43,10 +42,13 @@ const ReactSelectAdapter = ({ input, ...rest }) => (
 
 const ModalCreateStaff = ({ updateStaffs, closeModal, staff, staffs }) => {
 	const [loading, setLoading] = useState(true);
+	const [loaded, setLoaded] = useState(false);
 	const [dateOfBirth, setDateOfBirth] = useState(null);
+	const [nation, setNation] = useState(null);
 	const [states, setStates] = useState([]);
 	const [dateOfEmployment, setDateOfEmployment] = useState(null);
 	const [nokDateOfBirth, setNokDateOfBirth] = useState(null);
+	const [avatar, setAvatar] = useState(null);
 
 	const departments = useSelector(state => state.department);
 	const roles = useSelector(state => state.role.roles);
@@ -58,10 +60,108 @@ const ModalCreateStaff = ({ updateStaffs, closeModal, staff, staffs }) => {
 
 	const dispatch = useDispatch();
 
+	const getCountry = (staff, countries) => {
+		const id = staff.nationality ? parseInt(staff.nationality, 10) : '';
+		return countries.find(c => c.id === id);
+	};
+
 	let initialValues = {};
 	if (staff) {
-		initialValues = {};
+		const id = staff.nationality ? parseInt(staff.nationality, 10) : '';
+		const country = countries.find(c => c.id === id);
+		const state_id = staff.state_of_origin
+			? parseInt(staff.state_of_origin, 10)
+			: '';
+
+		initialValues = {
+			username: staff.user?.username || '',
+			role: staff.user?.role || '',
+			department: staff.department || '',
+			first_name: staff?.first_name || '',
+			last_name: staff?.last_name || '',
+			other_names: staff?.other_names || '',
+			date_of_birth: staff.date_of_birth
+				? moment(staff.date_of_birth, 'YYYY-MM-DD').format('DD-MM-YYYY')
+				: '',
+			gender: staff.gender ? { label: staff.gender, value: staff.gender } : '',
+			religion: staff.religion
+				? { label: staff.religion, value: staff.religion }
+				: '',
+			country: staff.nationality ? country : '',
+			state_of_origin: country
+				? country.states.find(s => s.id === state_id)
+				: '',
+			lga: staff?.lga || '',
+			email: staff?.email || '',
+			phone_number: staff?.phone_number || '',
+			address: staff?.address || '',
+			is_consultant: staff?.is_consultant || false,
+			profession: staff?.profession || '',
+			job_title: staff?.job_title || '',
+			specialization: staff?.specialization || '',
+			date_of_employment: staff.employment_start_date
+				? moment(staff.employment_start_date, 'YYYY-MM-DD').format('DD-MM-YYYY')
+				: '',
+			contract_type: staff.contract_type
+				? { label: staff.contract_type, value: staff.contract_type }
+				: '',
+			employee_number: staff?.employee_number || '',
+			bank: staff.bank_name ? banks.find(b => b.name === staff.bank_name) : '',
+			account_number: staff?.account_number || '',
+			pension_manager: staff?.pension_mngr || '',
+			monthly_salary: staff?.monthly_salary || '',
+			annual_salary: staff?.annual_salary || '',
+			marital_status: staff.marital_status
+				? { value: staff.marital_status, label: staff.marital_status }
+				: '',
+			number_of_children: staff?.number_of_children || '',
+			nok_name: staff?.next_of_kin || '',
+			nok_relationship: staff.next_of_kin_relationship
+				? {
+						value: staff.next_of_kin_relationship,
+						label: staff.next_of_kin_relationship,
+				  }
+				: '',
+			nok_phoneNumber: staff?.next_of_kin_contact_no || '',
+			nok_address: staff?.next_of_kin_address || '',
+			nok_date_of_birth: staff.next_of_kin_dob
+				? moment(staff.next_of_kin_dob, 'YYYY-MM-DD').format('DD-MM-YYYY')
+				: '',
+		};
 	}
+
+	useEffect(() => {
+		if (!loaded) {
+			if (staff) {
+				if (staff.date_of_birth) {
+					setDateOfBirth(moment(staff.date_of_birth, 'YYYY-MM-DD').toDate());
+				} else {
+					setDateOfBirth(null);
+				}
+				if (staff.nationality) {
+					const country = getCountry(staff, countries);
+					setNation(country);
+					setStates(country?.states || []);
+				}
+				if (staff.employment_start_date) {
+					setDateOfEmployment(
+						moment(staff.employment_start_date, 'YYYY-MM-DD').toDate()
+					);
+				} else {
+					setDateOfEmployment(null);
+				}
+				if (staff.next_of_kin_dob) {
+					setNokDateOfBirth(
+						moment(staff.next_of_kin_dob, 'YYYY-MM-DD').toDate()
+					);
+				} else {
+					setNokDateOfBirth(null);
+				}
+				setAvatar(staff.profile_pic);
+			}
+			setLoaded(true);
+		}
+	}, [countries, loaded, staff]);
 
 	const fetchDepartment = useCallback(async () => {
 		try {
@@ -97,22 +197,22 @@ const ModalCreateStaff = ({ updateStaffs, closeModal, staff, staffs }) => {
 								'YYYY-MM-DD'
 						  )
 						: '',
-				bank_name: values.bank_id?.name || '',
+				bank_name: values.bank?.name || '',
 				contract_type: values.contract_type?.value || '',
-				department_id: values.department_id?.id || '',
+				department_id: values.department?.id || '',
 				gender: values.gender?.value || '',
 				marital_status: values.marital_status?.value || '',
 				next_of_kin_relationship: values.nok_relationship?.value || '',
 				religion: values.religion?.value || '',
-				role_id: values.role_id?.id || '',
-				specialization_id: values.specialization_id?.id || '',
+				role_id: values.role?.id || '',
+				specialization_id: values.specialization?.id || '',
 				state_of_origin: values.state_of_origin?.id || '',
-				nationality: values.country_id || null,
+				nationality: values.country?.id || null,
 				pension_mngr: values?.pension_manager || null,
 				next_of_kin: values?.nok_name || null,
 				next_of_kin_address: values?.nok_address || null,
 				next_of_kin_contact_no: values?.nok_phoneNumber || null,
-				employee_number: values?.employee_number || null,
+				profile_pic: avatar,
 			};
 
 			dispatch(startBlock());
@@ -216,11 +316,11 @@ const ModalCreateStaff = ({ updateStaffs, closeModal, staff, staffs }) => {
 												if (!values.username) {
 													errors.username = 'Enter staff username';
 												}
-												if (!values.role_id) {
-													errors.role_id = 'Select staff role';
+												if (!values.role) {
+													errors.role = 'Select staff role';
 												}
-												if (!values.department_id) {
-													errors.department_id = 'Select staff department';
+												if (!values.department) {
+													errors.department = 'Select department';
 												}
 												if (!values.first_name) {
 													errors.first_name = 'Enter first name';
@@ -237,8 +337,8 @@ const ModalCreateStaff = ({ updateStaffs, closeModal, staff, staffs }) => {
 												if (!values.religion) {
 													errors.religion = 'Select religion';
 												}
-												if (!values.country_id) {
-													errors.country_id = 'Select nationality';
+												if (!values.country) {
+													errors.country = 'Select nationality';
 												}
 												if (!values.state_of_origin) {
 													errors.state_of_origin = 'Select state of origin';
@@ -270,6 +370,7 @@ const ModalCreateStaff = ({ updateStaffs, closeModal, staff, staffs }) => {
 															component="input"
 															type="text"
 															placeholder="Username"
+															disabled={staff !== null}
 														/>
 														<Error name="username" />
 													</div>
@@ -280,13 +381,14 @@ const ModalCreateStaff = ({ updateStaffs, closeModal, staff, staffs }) => {
 															User Role <Compulsory />
 														</label>
 														<Field
-															name="role_id"
+															name="role"
 															component={ReactSelectAdapter}
 															options={roles}
 															getOptionValue={option => option.id}
 															getOptionLabel={option => option.name}
+															isDisabled={staff !== null && staff.user.role}
 														/>
-														<Error name="role_id" />
+														<Error name="role" />
 													</div>
 												</div>
 												<div className="col-sm">
@@ -295,13 +397,13 @@ const ModalCreateStaff = ({ updateStaffs, closeModal, staff, staffs }) => {
 															Department <Compulsory />
 														</label>
 														<Field
-															name="department_id"
+															name="department"
 															component={ReactSelectAdapter}
 															options={departments}
 															getOptionValue={option => option.id}
 															getOptionLabel={option => option.name}
 														/>
-														<Error name="department_id" />
+														<Error name="department" />
 													</div>
 												</div>
 											</div>
@@ -420,7 +522,7 @@ const ModalCreateStaff = ({ updateStaffs, closeModal, staff, staffs }) => {
 															Nationality <Compulsory />
 														</label>
 														<Field
-															name="country_id"
+															name="country"
 															render={({ name, input }) => (
 																<Select
 																	name={name}
@@ -428,14 +530,16 @@ const ModalCreateStaff = ({ updateStaffs, closeModal, staff, staffs }) => {
 																	getOptionValue={option => option.id}
 																	getOptionLabel={option => option.name}
 																	options={sortedCountries}
+																	value={nation}
 																	onChange={(item, prevVal) => {
-																		input.onChange(item.id);
+																		input.onChange(item);
+																		setNation(item);
 																		setStates(item.states);
 																	}}
 																/>
 															)}
 														/>
-														<Error name="country_id" />
+														<Error name="country" />
 													</div>
 												</div>
 												<div className="col-sm">
@@ -523,8 +627,8 @@ const ModalCreateStaff = ({ updateStaffs, closeModal, staff, staffs }) => {
 												if (!values.profession) {
 													errors.profession = 'Enter staff profession';
 												}
-												if (!values.specialization_id) {
-													errors.specialization_id = 'Select specialization';
+												if (!values.specialization) {
+													errors.specialization = 'Select specialization';
 												}
 												if (!values.date_of_employment) {
 													errors.date_of_employment =
@@ -533,8 +637,8 @@ const ModalCreateStaff = ({ updateStaffs, closeModal, staff, staffs }) => {
 												if (!values.contract_type) {
 													errors.contract_type = 'Select type of contract';
 												}
-												if (!values.bank_id) {
-													errors.bank_id = 'Select bank';
+												if (!values.bank) {
+													errors.bank = 'Select bank';
 												}
 												if (!values.account_number) {
 													errors.account_number = 'Enter salary account number';
@@ -565,7 +669,7 @@ const ModalCreateStaff = ({ updateStaffs, closeModal, staff, staffs }) => {
 											<div className="row">
 												<div className="col-sm-12">
 													<div className="form-group">
-														<label>Is Consultant</label>
+														<label className="mr-3">Is Consultant</label>
 														<Field
 															name="is_consultant"
 															component="input"
@@ -608,13 +712,13 @@ const ModalCreateStaff = ({ updateStaffs, closeModal, staff, staffs }) => {
 															Specialization <Compulsory />
 														</label>
 														<Field
-															name="specialization_id"
+															name="specialization"
 															component={ReactSelectAdapter}
 															options={specializations}
 															getOptionValue={option => option.id}
 															getOptionLabel={option => option.name}
 														/>
-														<Error name="specialization_id" />
+														<Error name="specialization" />
 													</div>
 												</div>
 											</div>
@@ -688,13 +792,13 @@ const ModalCreateStaff = ({ updateStaffs, closeModal, staff, staffs }) => {
 															Bank <Compulsory />
 														</label>
 														<Field
-															name="bank_id"
+															name="bank"
 															component={ReactSelectAdapter}
 															options={banks}
 															getOptionValue={option => option.id}
 															getOptionLabel={option => option.name}
 														/>
-														<Error name="bank_id" />
+														<Error name="bank" />
 													</div>
 												</div>
 												<div className="col-sm">

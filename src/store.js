@@ -16,6 +16,7 @@ if (process.env.NODE_ENV === 'development') {
 	middlewares = [...middlewares, logger];
 }
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default (initialState = {}) => {
 	middlewares = [...middlewares, routerMiddleware(history)];
 	return createStore(reducers, initialState, applyMiddleware(...middlewares));
