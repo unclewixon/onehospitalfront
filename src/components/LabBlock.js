@@ -9,7 +9,12 @@ import Popover from 'antd/lib/popover';
 import ModalFillLabResult from './Modals/ModalFillLabResult';
 import ModalViewLabResult from './Modals/ModalViewLabResult';
 import ViewRequestNote from './Modals/ViewRequestNote';
-import { request, confirmAction, updateImmutable } from '../services/utilities';
+import {
+	request,
+	confirmAction,
+	updateImmutable,
+	patientname,
+} from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
 import { startBlock, stopBlock } from '../actions/redux-block';
 import TableLoading from './TableLoading';
@@ -211,7 +216,7 @@ class LabBlock extends Component {
 														className="cursor"
 														onClick={() => this.showProfile(lab.patient)}
 													>
-														{lab.patient_name}
+														{patientname(lab.patient, true)}
 													</a>
 												</Tooltip>
 												{(lab.patient.admission_id || lab.patient.nicu_id) && (
