@@ -94,6 +94,7 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 				? { value: patient.maritalStatus, label: patient.maritalStatus }
 				: '',
 			hmo_id: patient.hmo?.id || '',
+			enrollee_id: patient.enrollee_id || '',
 			occupation: patient.occupation || '',
 			address: patient.address || '',
 			phone_number: patient.phone_number || '',
@@ -182,6 +183,7 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 			nok_gender: values.nok_gender?.value || '',
 			nok_maritalStatus: values.nok_maritalStatus?.value || '',
 			nok_relationship: values.nok_relationship?.value || '',
+			enrollee_id: values.enrollee_id || null,
 		};
 
 		if (!patient) {
@@ -496,6 +498,18 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 												</div>
 												<div className="col-sm">
 													<div className="form-group">
+														<label>Enrollee ID</label>
+														<Field
+															name="enrollee_id"
+															className="form-control"
+															component="input"
+															type="text"
+															placeholder="Enrollee ID"
+														/>
+													</div>
+												</div>
+												<div className="col-sm">
+													<div className="form-group">
 														<label>Occupation</label>
 														<Field
 															name="occupation"
@@ -555,7 +569,7 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 											<div className="row">
 												<div className="col-sm-2">
 													<div className="form-group">
-														<label>Is Staff</label>
+														<label className="mr-2">Is Staff</label>
 														<Field
 															name="is_staff"
 															component="input"

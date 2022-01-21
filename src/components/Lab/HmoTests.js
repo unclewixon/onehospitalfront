@@ -70,6 +70,7 @@ const HmoTests = ({ hmo, toggle, doToggle, doToggleForm }) => {
 			notifySuccess('Lab test deleted');
 			dispatch(stopBlock());
 		} catch (error) {
+			console.log(error);
 			dispatch(stopBlock());
 			notifyError('Error deleting lab test');
 		}
@@ -126,7 +127,8 @@ const HmoTests = ({ hmo, toggle, doToggle, doToggleForm }) => {
 						});
 						doToggle(hmo.id);
 						setLoaded(false);
-					}}>
+					}}
+				>
 					<i className={`os-icon os-icon-${toggle ? 'minus' : 'common-03'}`} />
 				</div>
 				<h6 className="filter-header">{hmo.name}</h6>
@@ -135,7 +137,8 @@ const HmoTests = ({ hmo, toggle, doToggle, doToggleForm }) => {
 				) : (
 					<div
 						className="filter-body"
-						style={{ display: toggle ? 'block' : 'none' }}>
+						style={{ display: toggle ? 'block' : 'none' }}
+					>
 						<div className="row">
 							<div className="col-lg-12">
 								<div className="element-search">
@@ -207,8 +210,9 @@ const HmoTests = ({ hmo, toggle, doToggle, doToggleForm }) => {
 																	)) || ''}
 																</div>
 																<a className="extra-info">
-																	<span>{`${item?.parameters?.length ||
-																		0} parameters`}</span>
+																	<span>{`${
+																		item?.parameters?.length || 0
+																	} parameters`}</span>
 																</a>
 															</div>
 														</div>
@@ -220,7 +224,8 @@ const HmoTests = ({ hmo, toggle, doToggle, doToggleForm }) => {
 								{tests && tests.result.length === 0 && (
 									<div
 										className="alert alert-info text-center"
-										style={{ width: '100%' }}>
+										style={{ width: '100%' }}
+									>
 										No lab tests
 									</div>
 								)}

@@ -47,7 +47,7 @@ const ConsultingRoom = () => {
 		try {
 			setLoading(true);
 			const data = { name, id: payload.id };
-			const url = `consulting-rooms/${data.id}/update`;
+			const url = `consulting-rooms/${data.id}`;
 			const rs = await request(url, 'PATCH', true, data);
 			const rooms = updateImmutable(consultingRooms, rs);
 			setConsultingRooms([...rooms]);
@@ -146,12 +146,14 @@ const ConsultingRoom = () => {
 															<div className="pi-settings os-dropdown-trigger">
 																<i
 																	className="os-icon os-icon-ui-49"
-																	onClick={() => onClickEdit(room)}></i>
+																	onClick={() => onClickEdit(room)}
+																></i>
 															</div>
 															<div className="pi-settings os-dropdown-trigger">
 																<i
 																	className="os-icon os-icon-ui-15 text-danger"
-																	onClick={() => confirmDelete(room)}></i>
+																	onClick={() => confirmDelete(room)}
+																></i>
 															</div>
 														</div>
 														<div className="pi-body">
@@ -168,7 +170,8 @@ const ConsultingRoom = () => {
 								{consultingRooms.length === 0 && (
 									<div
 										className="alert alert-info text-center"
-										style={{ width: '100%' }}>
+										style={{ width: '100%' }}
+									>
 										No rooms
 									</div>
 								)}
@@ -179,8 +182,11 @@ const ConsultingRoom = () => {
 										<form
 											onSubmit={
 												edit ? onEditConsultingRoom : onAddConsultingRoom
-											}>
-											<h5 className="element-box-header">Add New</h5>
+											}
+										>
+											<h5 className="element-box-header">
+												{edit ? 'Edit Room' : 'Add New'}
+											</h5>
 											<div className="form-group">
 												<label className="lighter">Name</label>
 												<div className="input-group mb-2 mr-sm-2 mb-sm-0">
@@ -209,7 +215,8 @@ const ConsultingRoom = () => {
 													<>
 														<button
 															className="btn btn-secondary"
-															onClick={cancelEditButton}>
+															onClick={cancelEditButton}
+														>
 															<span>cancel</span>
 														</button>
 														<button className="btn btn-primary">

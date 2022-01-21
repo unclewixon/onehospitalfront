@@ -2,7 +2,11 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import { request, updateImmutable } from '../../services/utilities';
+import {
+	request,
+	updateImmutable,
+	patientname,
+} from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
@@ -58,20 +62,26 @@ const ModalViewLabResult = ({ closeModal, lab, labs, updateLab, role }) => {
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div
 				className="modal-dialog modal-centered"
-				style={{ maxWidth: '700px' }}>
+				style={{ maxWidth: item.labTest.hasParameters ? '1024px' : '640px' }}
+			>
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={closeModal}>
+						onClick={closeModal}
+					>
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
-						<h4 className="onboarding-title">Lab Result</h4>
+						<h4 className="onboarding-title">{`Lab Result: ${patientname(
+							lab.patient,
+							true
+						)}`}</h4>
 						<div className="onboarding-text alert-custom mb-3">
 							<div>{item.labTest.name}</div>
 							<div>
@@ -83,13 +93,39 @@ const ModalViewLabResult = ({ closeModal, lab, labs, updateLab, role }) => {
 							</div>
 						</div>
 						<div className="element-box p-2">
-							<div className="row">
-								<div className="col-sm-12">
-									{item.approved === 0 && role === 'doctor' && (
+							<div
+								className={`row ${
+									item.labTest?.hasParameters ? 'no-scroll-1' : ''
+								}`}
+							>
+								{item.approved === 0 && role !== 'doctor' && (
+									<div className="col-md-12 text-right">
+										<button
+											onClick={() => approve()}
+											className="btn btn-primary"
+										>
+											Approve
+										</button>
+										<button
+											onClick={() => reject()}
+											className="btn btn-danger ml-3"
+										>
+											Reject
+										</button>
+									</div>
+								)}
+								{item.approved === 0 && role === 'doctor' && (
+									<div className="col-sm-12">
 										<div className="alert alert-warning">
 											lab result pending approval
 										</div>
-									)}
+									</div>
+								)}
+								<div
+									className={`col-sm-12 mt-3 ${
+										item.approved === 0 ? 'scroll-within-2' : 'scroll-within-3'
+									}`}
+								>
 									<table className="table table-bordered table-sm table-striped">
 										{item.labTest.hasParameters && (
 											<thead>
@@ -130,20 +166,6 @@ const ModalViewLabResult = ({ closeModal, lab, labs, updateLab, role }) => {
 										</tbody>
 									</table>
 								</div>
-								{item.approved === 0 && role !== 'doctor' && (
-									<div className="col-md-12 mt-4">
-										<button
-											onClick={() => approve()}
-											className="btn btn-primary">
-											Approve
-										</button>
-										<button
-											onClick={() => reject()}
-											className="btn btn-danger ml-3">
-											Reject
-										</button>
-									</div>
-								)}
 							</div>
 						</div>
 					</div>

@@ -39,6 +39,7 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 					? item.parameters
 					: item.labTest?.parameters || []
 			);
+			setResult(item?.result || null);
 			setLoaded(true);
 		}
 	}, [item, loaded]);
@@ -98,16 +99,19 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div
 				className="modal-dialog modal-centered"
-				style={{ maxWidth: '700px' }}>
+				style={{ maxWidth: item.labTest?.hasParameters ? '1024px' : '640px' }}
+			>
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={closeModal}>
+						onClick={closeModal}
+					>
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -123,8 +127,25 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 							</div>
 						</div>
 						<div className="element-box p-2">
-							<div className="row">
-								<div className="col-sm-12">
+							<div
+								className={`row ${
+									item.labTest?.hasParameters ? 'no-scroll-1' : ''
+								}`}
+							>
+								<div className="col-sm-12 text-right">
+									<button
+										onClick={() => save()}
+										className="btn btn-primary"
+										disabled={submitting}
+									>
+										{submitting ? (
+											<img src={waiting} alt="submitting" />
+										) : (
+											'Save'
+										)}
+									</button>
+								</div>
+								<div className="col-sm-12 mt-3 scroll-within-1">
 									<table className="table table-bordered table-sm table-v2 table-striped">
 										<tbody>
 											{item.labTest?.hasParameters ? (
@@ -193,18 +214,6 @@ const ModalFillLabResult = ({ closeModal, lab, labs, updateLab }) => {
 											)}
 										</tbody>
 									</table>
-								</div>
-								<div className="col-md-12 mt-4">
-									<button
-										onClick={() => save()}
-										className="btn btn-primary"
-										disabled={submitting}>
-										{submitting ? (
-											<img src={waiting} alt="submitting" />
-										) : (
-											'Save'
-										)}
-									</button>
 								</div>
 							</div>
 						</div>

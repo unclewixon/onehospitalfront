@@ -901,3 +901,32 @@ h4.onboarding-title {
 		padding: 10px 55px 10px 10px !important;
 	}
 }
+
+.no-scroll {
+	height: 90vh;
+	overflow: hidden;
+}
+
+.no-scroll-1 {
+	height: calc(100vh - 260px);
+	overflow: hidden;
+}
+
+.scroll-within {
+	overflow-y: scroll;
+}
+
+.scroll-within-1 {
+	overflow-y: scroll;
+	height: calc(100% - 60px);
+}
+
+.scroll-within-2 {
+	overflow-y: scroll;
+	height: calc(100% - 80px);
+}
+
+.scroll-within-3 {
+	overflow-y: scroll;
+	height: calc(100% - 20px);
+}

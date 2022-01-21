@@ -40,30 +40,32 @@ const SelectRoomModal = ({ rooms, closeModal }) => {
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			{!rooms ? (
 				<TableLoading />
 			) : (
 				<div className="modal-dialog modal-centered" role="document">
-					<div className="modal-content text-center">
+					<div className="modal-content text-center no-scroll">
 						<div className="modal-header faded smaller">
 							<div className="modal-title">Select Room</div>
 							<button
 								aria-label="Close"
 								className="close"
 								type="button"
-								onClick={() => closeModal(null)}>
-								<span aria-hidden="true"> ×</span>
+								onClick={() => closeModal(null)}
+							>
+								<span aria-hidden="true">×</span>
 							</button>
 						</div>
-
-						<div className="onboarding-content with-gradient">
+						<div className="onboarding-content with-gradient scroll-within">
 							<div className="row">
 								{rooms.map(room => (
 									<div className="col-sm-6" key={room.id}>
 										<a
 											className="element-box el-tablo"
-											onClick={() => setRoom(room)}>
+											onClick={() => setRoom(room)}
+										>
 											<div className="value p-4">{room.name}</div>
 										</a>
 									</div>

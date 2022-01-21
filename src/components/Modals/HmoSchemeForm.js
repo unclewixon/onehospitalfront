@@ -15,7 +15,6 @@ const initialState = {
 	type: '',
 	cacNumber: '',
 	coverageType: '',
-	coverage: '',
 };
 
 const HmoSchemeForm = ({
@@ -26,16 +25,7 @@ const HmoSchemeForm = ({
 	buttonState,
 }) => {
 	const [
-		{
-			name,
-			email,
-			phoneNumber,
-			address,
-			cacNumber,
-			coverageType,
-			coverage,
-			type,
-		},
+		{ name, email, phoneNumber, address, cacNumber, coverageType, type },
 		setState,
 	] = useState(initialState);
 	const [loaded, setLoaded] = useState(false);
@@ -70,7 +60,6 @@ const HmoSchemeForm = ({
 					address: scheme.address,
 					cacNumber: scheme.cacNumber,
 					coverageType: scheme.coverageType,
-					coverage: scheme.coverage,
 					type: scheme.hmoType?.id || '',
 				}));
 				setHmo(scheme.owner);
@@ -97,7 +86,6 @@ const HmoSchemeForm = ({
 				email,
 				cacNumber,
 				coverageType,
-				coverage,
 				logo: '',
 			};
 			dispatch(startBlock());
@@ -138,7 +126,6 @@ const HmoSchemeForm = ({
 				email,
 				cacNumber,
 				coverageType,
-				coverage,
 				logo: '',
 			};
 			dispatch(startBlock());
@@ -188,14 +175,16 @@ const HmoSchemeForm = ({
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div className="modal-dialog modal-centered">
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={() => closeModal()}>
+						onClick={() => closeModal()}
+					>
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -290,7 +279,8 @@ const HmoSchemeForm = ({
 												className="form-control"
 												placeholder="Select Insurance Type"
 												onChange={handleInputChange}
-												value={type}>
+												value={type}
+											>
 												<option>Select Insurance Type</option>
 												{insuranceTypes.map((item, i) => (
 													<option key={i} value={item.id}>
@@ -323,7 +313,8 @@ const HmoSchemeForm = ({
 												className="form-control"
 												placeholder="Select Coverage Type"
 												onChange={handleInputChange}
-												value={coverageType}>
+												value={coverageType}
+											>
 												<option>Select Coverage Type</option>
 												<option value="partial">Partial</option>
 												<option value="full">Full</option>
@@ -331,29 +322,13 @@ const HmoSchemeForm = ({
 										</div>
 									</div>
 								</div>
-								{coverageType && coverageType === 'partial' && (
-									<div className="row">
-										<div className="col-md-6">
-											<div className="form-group">
-												<label>Coverage (%)</label>
-												<input
-													className="form-control"
-													placeholder="Coverage (%)"
-													type="text"
-													name="coverage"
-													onChange={handleInputChange}
-													value={coverage || ''}
-												/>
-											</div>
-										</div>
-									</div>
-								)}
 								<div className="form-buttons-w">
 									{add && (
 										<button
 											className={`btn btn-primary ${
 												submitting ? 'disabled' : ''
-											}`}>
+											}`}
+										>
 											<span>save</span>
 										</button>
 									)}
@@ -363,13 +338,15 @@ const HmoSchemeForm = ({
 												className={`btn btn-secondary ${
 													submitting ? 'disabled' : ''
 												}`}
-												onClick={() => closeModal()}>
+												onClick={() => closeModal()}
+											>
 												<span>cancel</span>
 											</button>
 											<button
 												className={`btn btn-primary ${
 													submitting ? 'disabled' : ''
-												}`}>
+												}`}
+											>
 												<span>save</span>
 											</button>
 										</>

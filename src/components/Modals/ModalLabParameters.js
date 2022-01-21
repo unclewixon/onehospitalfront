@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import AsyncCreatableSelect from 'react-select/async-creatable/dist/react-select.esm';
 
@@ -13,6 +13,8 @@ const ModalLabParameters = ({ closeModal, labTest }) => {
 	const [submitting, setSubmitting] = useState(false);
 	const [options, setOptions] = useState([]);
 	const [parameters, setParameters] = useState([]);
+
+	const elementRef = useRef(null);
 
 	const dispatch = useDispatch();
 
@@ -59,6 +61,8 @@ const ModalLabParameters = ({ closeModal, labTest }) => {
 				ref_id: null,
 			},
 		]);
+
+		elementRef.current?.scrollIntoView({ behavior: 'smooth' });
 	};
 
 	const onChange = (e, type, id, hasData) => {
@@ -136,14 +140,16 @@ const ModalLabParameters = ({ closeModal, labTest }) => {
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div className="modal-dialog modal-md modal-centered">
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={closeModal}>
+						onClick={closeModal}
+					>
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -156,14 +162,26 @@ const ModalLabParameters = ({ closeModal, labTest }) => {
 								<div className="col-sm-12 text-right">
 									<a
 										className="btn btn-success btn-sm text-white"
-										onClick={() => add()}>
+										onClick={() => add()}
+									>
 										<i className="os-icon os-icon-ui-22" /> Add New Parameter
 									</a>
+									{parameters.length > 0 && (
+										<button
+											onClick={() => save()}
+											className="btn btn-primary"
+											disabled={submitting}
+										>
+											{submitting ? (
+												<img src={waiting} alt="submitting" />
+											) : (
+												'Save'
+											)}
+										</button>
+									)}
 								</div>
-							</div>
-							<div className="row mt-3">
-								<div className="col-sm-12">
-									<table className="table table-bordered table-sm table-v2 table-striped">
+								<div className="col-sm-12 mt-3 no-scroll-1">
+									<table className="table table-bordered table-sm table-v2 table-striped m-0">
 										<thead>
 											<tr>
 												<td>Parameter</td>
@@ -171,84 +189,76 @@ const ModalLabParameters = ({ closeModal, labTest }) => {
 												<td />
 											</tr>
 										</thead>
-										<tbody>
-											{parameters.map((param, i) => {
-												return (
-													param.deleted === 0 && (
-														<tr key={i}>
-															<td className="w-50">
-																<div className="form-group mb-0">
-																	<AsyncCreatableSelect
-																		cacheOptions
-																		defaultOptions
-																		getOptionValue={option => option.id}
-																		getOptionLabel={option =>
-																			option.name || option.label
-																		}
-																		createOptionPosition="first"
-																		loadOptions={getOptions}
-																		formatCreateLabel={inputValue => {
-																			return `Create ${inputValue}`;
-																		}}
-																		value={options[i] || ''}
-																		placeholder="Parameter"
-																		onChange={e => {
-																			if (e) {
-																				setOptions([
-																					...options,
-																					{
-																						...e,
-																						id: param.id,
-																						name: e.value || e.name,
-																					},
-																				]);
-																			}
-																			onChange(e, 'name', param.id, true);
-																		}}
-																	/>
-																</div>
-															</td>
-															<td>
-																<div className="form-group mb-0">
-																	<input
-																		className="form-control"
-																		placeholder="Reference"
-																		name="reference"
-																		value={param.reference || ''}
-																		onChange={e =>
-																			onChange(e, 'reference', param.id)
-																		}
-																	/>
-																</div>
-															</td>
-															<td>
-																<a
-																	className="close text-danger"
-																	onClick={() => remove(param.id)}>
-																	<i className="os-icon os-icon-cancel-circle" />
-																</a>
-															</td>
-														</tr>
-													)
-												);
-											})}
-										</tbody>
 									</table>
-								</div>
-								{parameters.length > 0 && (
-									<div className="col-md-12 mt-4">
-										<button
-											onClick={() => save()}
-											className="btn btn-primary"
-											disabled={submitting}>
-											{submitting ? (
-												<img src={waiting} alt="submitting" />
-											) : (
-												'Save'
-											)}
-										</button>
+									<div className="scroll-within-1">
+										<table className="table table-bordered table-sm table-v2 table-striped">
+											<tbody>
+												{parameters.map((param, i) => {
+													return (
+														param.deleted === 0 && (
+															<tr key={i}>
+																<td className="w-50">
+																	<div className="form-group mb-0">
+																		<AsyncCreatableSelect
+																			cacheOptions
+																			defaultOptions
+																			getOptionValue={option => option.id}
+																			getOptionLabel={option =>
+																				option.name || option.label
+																			}
+																			createOptionPosition="first"
+																			loadOptions={getOptions}
+																			formatCreateLabel={inputValue => {
+																				return `Create ${inputValue}`;
+																			}}
+																			value={options[i] || ''}
+																			placeholder="Parameter"
+																			onChange={e => {
+																				if (e) {
+																					setOptions([
+																						...options,
+																						{
+																							...e,
+																							id: param.id,
+																							name: e.value || e.name,
+																						},
+																					]);
+																				}
+																				onChange(e, 'name', param.id, true);
+																			}}
+																		/>
+																	</div>
+																</td>
+																<td>
+																	<div className="form-group mb-0">
+																		<input
+																			className="form-control"
+																			placeholder="Reference"
+																			name="reference"
+																			value={param.reference || ''}
+																			onChange={e =>
+																				onChange(e, 'reference', param.id)
+																			}
+																		/>
+																	</div>
+																</td>
+																<td>
+																	<a
+																		className="close text-danger"
+																		onClick={() => remove(param.id)}
+																	>
+																		<i className="os-icon os-icon-cancel-circle" />
+																	</a>
+																</td>
+															</tr>
+														)
+													);
+												})}
+											</tbody>
+										</table>
+										<div ref={elementRef} />
 									</div>
-								)}
+								</div>
 							</div>
 						</div>
 					</div>
