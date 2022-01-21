@@ -163,6 +163,7 @@ export const ethnicities = [
 	{ value: 'Eloyi', label: 'Eloyi' },
 	{ value: 'Kamuku', label: 'Kamuku' },
 	{ value: 'Mandara', label: 'Mandara' },
+	{ value: 'Others', label: 'Others' },
 ];
 
 export const genders = [

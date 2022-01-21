@@ -35,19 +35,29 @@ class TakeReadings extends Component {
 	takeReading = async data => {
 		const { patient, info, task } = this.props;
 		const { title } = info;
-		this.setState({ submitting: true });
-		let _data = data;
-		if (info.type === 'blood-pressure') {
-			_data = { blood_pressure: `${data.systolic}/${data.diastolic}` };
-		} else if (info.type === 'bmi') {
-			_data = { bmi: (data.weight / (data.height * data.height)).toFixed(2) };
-		} else if (info.type === 'bsa') {
-			_data = {
-				bsa: (Math.sqrt(data.height) * (data.weight / 3600)).toFixed(2),
-			};
-		}
 
 		try {
+			this.setState({ submitting: true });
+
+			let _data = data;
+
+			const h = parseFloat(data.height);
+			const w = parseFloat(data.weight);
+
+			if (info.type === 'blood-pressure') {
+				_data = { blood_pressure: `${data.systolic}/${data.diastolic}` };
+			} else if (info.type === 'bmi') {
+				const h = parseFloat(data.height);
+				const w = parseFloat(data.weight);
+				_data = {
+					bmi: (w / (h * h)).toFixed(2),
+				};
+			} else if (info.type === 'bsa') {
+				_data = {
+					bsa: (Math.sqrt(h) * (w / 3600)).toFixed(2),
+				};
+			}
+
 			let toSave = {
 				readingType: title,
 				reading: _data,
@@ -128,7 +138,7 @@ class TakeReadings extends Component {
 																: renderTextInput
 														}
 														label={item.title}
-														type="number"
+														type="text"
 														placeholder={`Enter ${item.title}`}
 														icon={item.weight}
 														append={item.weight !== ''}
@@ -142,7 +152,8 @@ class TakeReadings extends Component {
 											<button
 												className="btn btn-primary"
 												disabled={submitting}
-												type="submit">
+												type="submit"
+											>
 												{submitting ? (
 													<img src={waiting} alt="submitting" />
 												) : (
