@@ -56,6 +56,11 @@ class TakeReadings extends Component {
 				_data = {
 					bsa: (Math.sqrt(h) * (w / 3600)).toFixed(2),
 				};
+			} else {
+				const keys = Object.keys(data);
+				const values = Object.values(data);
+				const single = values[0].replace(/[^\d.-]/g, '');
+				_data = { [keys[0]]: single };
 			}
 
 			let toSave = {
