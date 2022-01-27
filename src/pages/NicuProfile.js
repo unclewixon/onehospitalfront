@@ -76,7 +76,7 @@ const Page = ({ location }) => {
 				<NursingService
 					can_request={nicu && nicu.status === 0}
 					itemId={nicu.id || ''}
-					type="nicu"
+					module="nicu"
 				/>
 			);
 		case 'ward-round':
