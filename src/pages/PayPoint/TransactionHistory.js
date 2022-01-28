@@ -63,8 +63,9 @@ class TransactionHistory extends Component {
 		const { patient_id, startDate, endDate, status } = this.state;
 		try {
 			const p = page || 1;
+			const pid = patient_id || '';
 			this.setState({ loading: true });
-			const url = `${transactionsAPI}?page=${p}&limit=24&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&bill_source=&status=${status}`;
+			const url = `${transactionsAPI}?page=${p}&limit=24&patient_id=${pid}&startDate=${startDate}&endDate=${endDate}&bill_source=&status=${status}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			const arr = [...result];
@@ -145,7 +146,8 @@ class TransactionHistory extends Component {
 								id="status"
 								className="form-control"
 								name="status"
-								onChange={e => this.change(e)}>
+								onChange={e => this.change(e)}
+							>
 								<option value="">Choose status</option>
 								{paymentStatus.map((status, i) => {
 									return (
@@ -159,7 +161,8 @@ class TransactionHistory extends Component {
 						<div className="form-group col-md-3 mt-4">
 							<div
 								className="btn btn-sm btn-primary btn-upper text-white"
-								onClick={this.doFilter}>
+								onClick={this.doFilter}
+							>
 								<i className="os-icon os-icon-ui-37" />
 								<span>
 									{filtering ? (
