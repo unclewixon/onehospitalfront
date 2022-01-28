@@ -280,7 +280,7 @@ const NicuPatients = () => {
 														</span>
 													)}
 												</td>
-												<td className="row-actions">
+												<td nowrap className="row-actions">
 													{!item.accommodation && (
 														<Tooltip title="Assign Accommodation">
 															<a
