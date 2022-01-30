@@ -2,21 +2,32 @@ import React from 'react';
 
 import { formatDate, parseSource, formatCurrency } from '../services/utilities';
 
-const PatientBillItem = ({ transactions, onChecked, total }) => {
+const PatientBillItem = ({
+	transactions,
+	onChecked,
+	total,
+	hasChecked,
+	checked,
+}) => {
 	return (
 		<>
-			{transactions.map((item, i) => {
+			{transactions.map(item => {
+				const isChecked = checked?.find(c => parseInt(c.id, 10) === item.id);
+
 				return (
-					<tr key={i}>
-						<td>
-							<input
-								type="checkbox"
-								name="select"
-								id={`select${i}`}
-								value={item.id}
-								onChange={onChecked}
-							/>
-						</td>
+					<tr key={item.id}>
+						{hasChecked && (
+							<td>
+								<input
+									type="checkbox"
+									name="select"
+									id={`select${item.id}`}
+									value={item.id}
+									onChange={onChecked}
+									checked={!!isChecked}
+								/>
+							</td>
+						)}
 						<td>{formatDate(item.createdAt, 'DD-MMM-YYYY h:mm a')}</td>
 						<td className="flex">
 							<span className="text-capitalize">
@@ -28,7 +39,7 @@ const PatientBillItem = ({ transactions, onChecked, total }) => {
 				);
 			})}
 			<tr>
-				<td colSpan="3" className="text-right">
+				<td colSpan={hasChecked ? '3' : '2'} className="text-right">
 					Total:
 				</td>
 				<td>{formatCurrency(total, true)}</td>

@@ -41,6 +41,12 @@ class ModalApproveTransaction extends Component {
 			const { voucherId, isPart } = this.state;
 			const { transaction, pendingTransactions } = this.props;
 
+			const amount = Math.abs(parseFloat(transaction.amount));
+			if (isPart && parseFloat(data.amount_paid) > amount) {
+				notifyError('part payment should not be more than amount');
+				return;
+			}
+
 			const id = transaction.id;
 
 			const { voucher_code, ...others } = data;
@@ -66,7 +72,14 @@ class ModalApproveTransaction extends Component {
 					rs.transaction
 				);
 				this.props.loadTransactions([rs.credit, ...updatedArr]);
-				this.props.getAllPendingTransactions(newTransactions);
+				if (rs.balancePayment) {
+					this.props.getAllPendingTransactions([
+						rs.balancePayment,
+						...newTransactions,
+					]);
+				} else {
+					this.props.getAllPendingTransactions(newTransactions);
+				}
 				this.setState({ submitting: false });
 				this.props.closeModal();
 			} else {
@@ -122,20 +135,28 @@ class ModalApproveTransaction extends Component {
 	};
 
 	render() {
-		const { error, handleSubmit, paymentMethods, closeModal } = this.props;
+		const {
+			error,
+			handleSubmit,
+			paymentMethods,
+			closeModal,
+			amount_available,
+		} = this.props;
 		const { submitting, hidden, isPart } = this.state;
 		return (
 			<div
 				className="onboarding-modal modal fade animated show"
 				role="dialog"
-				style={{ display: 'block' }}>
+				style={{ display: 'block' }}
+			>
 				<div className="modal-dialog modal-centered" role="document">
 					<div className="modal-content text-center">
 						<button
 							aria-label="Close"
 							className="close"
 							type="button"
-							onClick={closeModal}>
+							onClick={closeModal}
+						>
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
@@ -206,32 +227,40 @@ class ModalApproveTransaction extends Component {
 										<div className="form-check col-sm-4">
 											<label
 												className="form-check-label"
-												style={{ marginLeft: '12px' }}>
+												style={{ marginLeft: '12px' }}
+											>
 												<input
 													className="form-check-input mt-0"
 													name="is_part_payment"
 													type="checkbox"
 													checked={isPart}
-													onChange={e =>
-														this.setState({ isPart: e.target.checked })
-													}
+													onChange={e => {
+														this.setState({ isPart: e.target.checked });
+														if (!e.target.checked) {
+															this.props.change(
+																'amount_paid',
+																amount_available
+															);
+														}
+													}}
 												/>
 												Part Payment
 											</label>
 										</div>
 									</div>
-
 									<div className="form-buttons-w text-right">
 										<button
 											className="btn btn-secondary ml-3"
 											type="button"
-											onClick={closeModal}>
+											onClick={closeModal}
+										>
 											Cancel
 										</button>
 										<button
 											className="btn btn-primary"
 											disabled={submitting}
-											type="submit">
+											type="submit"
+										>
 											{submitting ? (
 												<img src={waiting} alt="submitting" />
 											) : (

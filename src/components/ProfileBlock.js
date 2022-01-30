@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useCallback, useEffect, useState } from 'react';
 import { withRouter, Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import moment from 'moment';
 import Tooltip from 'antd/lib/tooltip';
 
@@ -13,16 +13,20 @@ import {
 	patientname,
 	confirmAction,
 } from '../services/utilities';
-import { patientAPI, admissionAPI } from '../services/constants';
+import { patientAPI, admissionAPI, USER_RECORD } from '../services/constants';
 import { notifySuccess, notifyError } from './../services/notify';
 import { startBlock, stopBlock } from '../actions/redux-block';
 import { formatCurrency } from '../services/utilities';
 import { messageService } from '../services/message';
 import ViewAlerts from './Modals/ViewAlerts';
-import { toggleProfile } from '../actions/user';
-import ModalShowTransactions from './Modals/ModalShowTransactions';
+import ModalDischargePatient from './Modals/ModalDischargePatient';
+import ModalFinishDischarge from './Modals/ModalFinishDischarge';
 import PatientForm from './Modals/PatientForm';
-import { setPatientRecord } from '../actions/user';
+import DischargeBlock from './DischargeBlock';
+import { setPatientRecord, toggleProfile } from '../actions/user';
+import SSRStorage from '../services/storage';
+
+const storage = new SSRStorage();
 
 const UserItem = ({ icon, label, value }) => {
 	return (
@@ -52,18 +56,28 @@ const UserItem = ({ icon, label, value }) => {
 	);
 };
 
-const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
+const ProfileBlock = ({
+	location,
+	history,
+	patient,
+	hasButtons,
+	canAdmit,
+	canDischarge,
+}) => {
 	const [alerts, setAlerts] = useState([]);
 	const [showModal, setShowModal] = useState(false);
 	const [editModal, setEditModal] = useState(false);
-	const [showTransactions, setShowTransactions] = useState(false);
 	const [admissionId, setAdmissionId] = useState(null);
 	const [amount, setAmount] = useState(null);
+	const [admissionDischarge, setAdmissionDischarge] = useState(false);
+	const [nicuDischarge, setNicuDischarge] = useState(false);
+	const [nicuId, setNicuId] = useState(null);
+	const [dischargeType, setDischargeType] = useState('');
+	const [admissionFinishDischarge, setAdmissionFinishDischarge] =
+		useState(false);
+	const [nicuFinishDischarge, setNicuFinishDischarge] = useState(false);
 
 	const dispatch = useDispatch();
-
-	const item = useSelector(state => state.user.item);
-	const type = useSelector(state => state.user.type);
 
 	const getAlerts = useCallback(async () => {
 		try {
@@ -145,37 +159,68 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 		setShowModal(true);
 	};
 
+	const editPatient = () => {
+		document.body.classList.add('modal-open');
+		setEditModal(true);
+	};
+
 	const closeModal = () => {
 		document.body.classList.remove('modal-open');
 		setShowModal(false);
 		setEditModal(false);
 	};
 
-	const onStartDischarge = async id => {
+	const startDischarge = id => {
+		setAdmissionId(id);
+		document.body.classList.add('modal-open');
+		setAdmissionDischarge(true);
+		setDischargeType('admission');
+	};
+
+	const startNicuDischarge = id => {
+		setNicuId(id);
+		document.body.classList.add('modal-open');
+		setNicuDischarge(true);
+		setDischargeType('nicu');
+	};
+
+	const onStartDischarge = async (id, param, type) => {
 		try {
 			dispatch(startBlock());
-			const url = `${admissionAPI}/${id}/start-discharge`;
-			const rs = await request(url, 'PUT', true, {});
+			const api = type === 'nicu' ? 'nicu' : admissionAPI;
+			const url = `${api}/${id}/start-discharge`;
+			const rs = await request(url, 'PUT', true, { ...param });
 			dispatch(stopBlock());
 			if (rs.success) {
-				const newPatient = { ...patient, admission: rs.admission };
+				const result = rs.admission;
+
+				const newPatient = {
+					...patient,
+					admission: type === 'admission' ? result : null,
+					nicu: type === 'nicu' ? result : null,
+				};
+				dispatch(setPatientRecord(newPatient));
+
 				messageService.sendMessage({
 					type: 'update-patient',
 					data: newPatient,
 				});
-				let info;
-				if (item) {
-					info = {
-						patient: newPatient,
-						type,
-						item: { ...item, ...rs.admission },
-					};
-				} else {
-					info = { patient: newPatient, type };
-				}
-				messageService.sendMessage({ ...rs.admission });
-				dispatch(toggleProfile(true, info));
+
+				const admission = {
+					id: result.id,
+					start_discharge: result.start_discharge,
+					start_discharge_date: result.start_discharge_date,
+					start_discharge_by: result.start_discharge_by,
+					patient: newPatient,
+				};
+
+				messageService.sendMessage({
+					type: `${type === 'nicu' ? 'nicu' : 'admission'}-discharge`,
+					admission,
+				});
+
 				notifySuccess('Patient discharge initiated');
+				closeDischarge();
 			} else {
 				notifyError(rs.message);
 			}
@@ -185,48 +230,63 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 		}
 	};
 
-	const startDischarge = id => {
-		confirmAction(
-			onStartDischarge,
-			id,
-			'Initiate patient discharge?',
-			'Are you sure?'
-		);
+	const finishDischarge = id => {
+		setAdmissionId(id);
+		document.body.classList.add('modal-open');
+		setAdmissionFinishDischarge(true);
+		setDischargeType('admission');
 	};
 
-	const onCompleteDischarge = async data => {
+	const finishNicuDischarge = id => {
+		setNicuId(id);
+		document.body.classList.add('modal-open');
+		setNicuFinishDischarge(true);
+		setDischargeType('nicu');
+	};
+
+	const onCompleteDischarge = async (id, param, type) => {
 		try {
 			dispatch(startBlock());
-			const url = `${admissionAPI}/${data.id}/complete-discharge`;
-			const rs = await request(url, 'PUT', true, { note: data.note });
+			const api = type === 'nicu' ? 'nicu' : admissionAPI;
+			const url = `${api}/${id}/complete-discharge`;
+			const rs = await request(url, 'PUT', true, { ...param });
 			dispatch(stopBlock());
 			if (rs.success) {
+				const result = rs.admission;
+
 				const newPatient = {
 					...patient,
-					admission: rs.admission,
 					admission_id: null,
+					nicu_id: null,
+					admission: null,
+					nicu: null,
 				};
+				dispatch(setPatientRecord(newPatient));
+
 				messageService.sendMessage({
 					type: 'update-patient',
 					data: newPatient,
 				});
-				let info;
-				if (item) {
-					info = {
-						patient: newPatient,
-						type,
-						item: { ...item, ...rs.admission },
-					};
-				} else {
-					info = { patient: newPatient, type };
-				}
+
+				const admission = {
+					id: result.id,
+					date_discharged: result.date_discharged,
+					dischargedBy: result.dischargedBy,
+					status: 1,
+					lastChangedBy: result.lastChangedBy,
+					patient: newPatient,
+				};
+
 				messageService.sendMessage({
-					...rs.admission,
-					patient: { ...rs.admission.patient, admission_id: null },
+					type: `${type === 'nicu' ? 'nicu' : 'admission'}-finish-discharge`,
+					admission,
 				});
-				dispatch(toggleProfile(true, info));
+
 				notifySuccess('Patient discharged');
 				closeDischarge();
+
+				storage.removeItem(USER_RECORD);
+				dispatch(toggleProfile(false));
 			} else {
 				notifyError(rs.message);
 			}
@@ -236,30 +296,14 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 		}
 	};
 
-	const completeDischarge = data => {
-		confirmAction(
-			onCompleteDischarge,
-			data,
-			'Completely discharge patient?',
-			'Are you sure?'
-		);
-	};
-
-	const showTransaction = id => {
-		setAdmissionId(id);
-		document.body.classList.add('modal-open');
-		setShowTransactions(true);
-	};
-
 	const closeDischarge = () => {
-		setShowTransactions(false);
+		setAdmissionDischarge(false);
+		setNicuDischarge(false);
+		setAdmissionFinishDischarge(false);
+		setNicuFinishDischarge(false);
 		document.body.classList.remove('modal-open');
 		setAdmissionId(null);
-	};
-
-	const editPatient = () => {
-		document.body.classList.add('modal-open');
-		setEditModal(true);
+		setNicuId(null);
 	};
 
 	return (
@@ -304,93 +348,17 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 														Edit
 													</a>
 												)}
-												{canAdmit && (
-													<>
-														{patient?.admission_id || patient.nicu_id ? (
-															<>
-																{patient?.admission_id && (
-																	<>
-																		{patient?.admission?.start_discharge ? (
-																			<Tooltip title="Complete Discharge">
-																				<button
-																					className="btn btn-warning btn-sm mr-1"
-																					onClick={() =>
-																						showTransaction(
-																							patient?.admission?.id
-																						)
-																					}
-																				>
-																					<i className="fa fa-hospital-o"></i>
-																					<span style={{ marginLeft: '4px' }}>
-																						Finish Discharge
-																					</span>
-																				</button>
-																			</Tooltip>
-																		) : (
-																			<Tooltip title="Discharge">
-																				<button
-																					className="btn btn-danger btn-sm mr-1"
-																					onClick={() =>
-																						startDischarge(
-																							patient?.admission?.id
-																						)
-																					}
-																				>
-																					<i className="fa fa-hospital-o"></i>
-																					<span style={{ marginLeft: '4px' }}>
-																						Discharge
-																					</span>
-																				</button>
-																			</Tooltip>
-																		)}
-																	</>
-																)}
-																{patient?.nicu_id && (
-																	<>
-																		{patient?.nicu?.start_discharge ? (
-																			<Tooltip title="Complete Discharge">
-																				<button
-																					className="btn btn-warning btn-sm mr-1"
-																					onClick={() =>
-																						showTransaction(patient?.nicu?.id)
-																					}
-																				>
-																					<i className="fa fa-hospital-o"></i>
-																					<span style={{ marginLeft: '4px' }}>
-																						Finish Discharge
-																					</span>
-																				</button>
-																			</Tooltip>
-																		) : (
-																			<Tooltip title="Discharge">
-																				<button
-																					className="btn btn-danger btn-sm mr-1"
-																					onClick={() =>
-																						startDischarge(patient?.nicu?.id)
-																					}
-																				>
-																					<i className="fa fa-hospital-o"></i>
-																					<span style={{ marginLeft: '4px' }}>
-																						Discharge
-																					</span>
-																				</button>
-																			</Tooltip>
-																		)}
-																	</>
-																)}
-															</>
-														) : (
-															<Tooltip title="Admit">
-																<Link
-																	to={`${location.pathname}#start-admission`}
-																	className="btn btn-primary btn-sm mr-1"
-																>
-																	<i className="os-icon os-icon-ui-22"></i>
-																	<span>Admit</span>
-																</Link>
-															</Tooltip>
-														)}
-													</>
+												{(canAdmit || canDischarge) && (
+													<DischargeBlock
+														patient={patient}
+														startDischarge={startDischarge}
+														finishDischarge={finishDischarge}
+														startNicuDischarge={startNicuDischarge}
+														finishNicuDischarge={finishNicuDischarge}
+														location={location}
+														canAdmit={canAdmit}
+														canDischarge={canDischarge}
+													/>
 												)}
 												<Tooltip title="Alerts">
 													<a
@@ -550,13 +518,23 @@ const ProfileBlock = ({ location, history, patient, hasButtons, canAdmit }) => {
 				</div>
 			</div>
 			{showModal && <ViewAlerts closeModal={closeModal} />}
-			{showTransactions && patient && (
-				<ModalShowTransactions
+			{(admissionDischarge || nicuDischarge) && patient && (
+				<ModalDischargePatient
+					admissionId={admissionId}
+					nicuId={nicuId}
+					startDischarge={onStartDischarge}
+					closeModal={() => closeDischarge()}
+					type={dischargeType}
+				/>
+			)}
+			{(admissionFinishDischarge || nicuFinishDischarge) && patient && (
+				<ModalFinishDischarge
 					patient={patient}
 					admissionId={admissionId}
-					completeDischarge={completeDischarge}
+					nicuId={nicuId}
+					finishDischarge={onCompleteDischarge}
 					closeModal={() => closeDischarge()}
-					isAdmitted={true}
+					type={dischargeType}
 				/>
 			)}
 			{editModal && (

@@ -30,6 +30,7 @@ const NursingService = lazy(() =>
 	import('../components/Patient/NursingService')
 );
 const Consumables = lazy(() => import('../components/Patient/Consumables'));
+const DischargeNote = lazy(() => import('../components/DischargeNote'));
 
 const storage = new SSRStorage();
 
@@ -57,6 +58,8 @@ const Page = ({ location }) => {
 					type="admission"
 				/>
 			);
+		case 'discharge-note':
+			return <DischargeNote itemId={admission.id || ''} type="admission" />;
 		case 'fluid-chart':
 			return <FluidChart itemId={admission.id || ''} type="admission" />;
 		case 'care-team':
@@ -159,7 +162,8 @@ class AdmissionProfile extends Component {
 											<ProfileBlock
 												profile={true}
 												patient={patient}
-												canAdmit={true}
+												canAdmit={false}
+												canDischarge={true}
 											/>
 										</div>
 										<Suspense fallback={<Splash />}>

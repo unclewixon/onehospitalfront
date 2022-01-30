@@ -255,7 +255,8 @@ class InsuranceTransactions extends Component {
 								id="hmo_id"
 								className="form-control"
 								name="hmo_id"
-								onChange={e => this.change(e)}>
+								onChange={e => this.change(e)}
+							>
 								<option value="">Choose Hmo</option>
 								{hmos.map((pat, i) => {
 									return (
@@ -280,7 +281,8 @@ class InsuranceTransactions extends Component {
 								id="status"
 								className="form-control"
 								name="status"
-								onChange={e => this.change(e)}>
+								onChange={e => this.change(e)}
+							>
 								<option value="">Choose status</option>
 								{paymentStatus.map((status, i) => {
 									return (
@@ -294,7 +296,8 @@ class InsuranceTransactions extends Component {
 						<div className="form-group col-md-2 mt-4">
 							<div
 								className="btn btn-primary btn-upper text-white filter-btn"
-								onClick={this.doFilter}>
+								onClick={this.doFilter}
+							>
 								<i className="os-icon os-icon-ui-37" />
 								<span>
 									{filtering ? (
@@ -318,7 +321,8 @@ class InsuranceTransactions extends Component {
 											patient_id: '',
 										});
 										await this.fetchTransactions(1);
-									}}>
+									}}
+								>
 									<i className="os-icon os-icon-close" />
 								</div>
 							)}
@@ -363,7 +367,8 @@ class InsuranceTransactions extends Component {
 													{item.bill_source !== 'registration' && (
 														<a
 															className="item-title text-primary text-underline ml-2"
-															onClick={() => this.viewDetails(item)}>
+															onClick={() => this.viewDetails(item)}
+														>
 															details
 														</a>
 													)}
@@ -381,7 +386,7 @@ class InsuranceTransactions extends Component {
 													)}
 													{item.status === -1 && (
 														<span className="badge badge-info text-white">
-															pay later
+															pending
 														</span>
 													)}
 													{item.status === 1 && (
@@ -415,7 +420,8 @@ class InsuranceTransactions extends Component {
 																	}
 																	onVisibleChange={e =>
 																		this.handleVisibleChange(e, item.id)
-																	}>
+																	}
+																>
 																	<Tooltip title="Enter Code">
 																		<a className="text-primary text-white">
 																			<i className="os-icon os-icon-thumbs-up" />
@@ -425,14 +431,16 @@ class InsuranceTransactions extends Component {
 																<Tooltip title="Approve Without Code">
 																	<a
 																		className="text-success text-white"
-																		onClick={() => this.approve(item.id)}>
+																		onClick={() => this.approve(item.id)}
+																	>
 																		<i className="os-icon os-icon-check-square" />
 																	</a>
 																</Tooltip>
 																<Tooltip title="Transfer to Paypoint">
 																	<a
 																		className="info"
-																		onClick={() => this.transfer(item.id)}>
+																		onClick={() => this.transfer(item.id)}
+																	>
 																		<i className="os-icon os-icon-mail-18" />
 																	</a>
 																</Tooltip>

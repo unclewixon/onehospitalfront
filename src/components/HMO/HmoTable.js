@@ -62,7 +62,7 @@ const HmoTable = ({ hmoTransactions, updateTransaction }) => {
 								</span>
 							)}
 							{item.status === -1 && (
-								<span className="badge badge-info text-white">pay later</span>
+								<span className="badge badge-info text-white">pending</span>
 							)}
 							{item.status === 1 && (
 								<span className="badge badge-success">paid</span>
@@ -74,7 +74,8 @@ const HmoTable = ({ hmoTransactions, updateTransaction }) => {
 									<a
 										className="danger cursor"
 										style={{ height: '2rem', width: '2rem' }}
-										onClick={() => confirmDelete(item)}>
+										onClick={() => confirmDelete(item)}
+									>
 										<i className="os-icon os-icon-ui-15" />
 									</a>
 								</Tooltip>

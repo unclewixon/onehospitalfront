@@ -124,29 +124,32 @@ const TransactionTable = ({
 												? 'Room'
 												: transaction.bill_source}
 										</span>
-										{transaction.bill_source !== 'registration' && (
-											<a
-												className="item-title text-info ml-2"
-												onClick={() => viewDetails(transaction)}
-											>
-												<i className="os-icon os-icon-alert-circle" />
-											</a>
-										)}
+										{transaction.bill_source !== 'registration' &&
+											transaction.bill_source !== 'debit' && (
+												<a
+													className="item-title text-info ml-2"
+													onClick={() => viewDetails(transaction)}
+												>
+													<i className="os-icon os-icon-alert-circle" />
+												</a>
+											)}
 									</div>
 								</td>
 								<td>{formatCurrency(transaction.amount || 0, true)}</td>
 								<td>
-									{transaction.payment_method || ''}
-									{transaction.payment_method && <br />}
+									{transaction.status === 1 && (
+										<>
+											{transaction.payment_method || ''}
+											{transaction.payment_method && <br />}
+										</>
+									)}
 									{transaction.status === 0 && (
 										<span className="badge badge-secondary text-white">
 											pending
 										</span>
 									)}
 									{transaction.status === -1 && (
-										<span className="badge badge-info text-white">
-											pay later
-										</span>
+										<span className="badge badge-info text-white">pending</span>
 									)}
 									{transaction.status === 1 && (
 										<span className="badge badge-success">paid</span>

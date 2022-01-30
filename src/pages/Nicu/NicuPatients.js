@@ -14,6 +14,7 @@ import {
 	itemRender,
 	formatDate,
 	staffname,
+	updateImmutable,
 } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
 import { startBlock, stopBlock } from '../../actions/redux-block';
@@ -22,11 +23,12 @@ import { toggleProfile } from '../../actions/user';
 import TableLoading from '../../components/TableLoading';
 import ProfilePopup from '../../components/Patient/ProfilePopup';
 import AssignAccommodation from './AssignAccommodation';
+import { messageService } from '../../services/message';
 
 const statuses = [
 	{ label: 'All', value: '' },
-	{ label: 'Open', value: 0 },
-	{ label: 'Discharged', value: 1 },
+	{ label: 'Open', value: '0' },
+	{ label: 'Discharged', value: '1' },
 ];
 
 const { RangePicker } = DatePicker;
@@ -47,19 +49,36 @@ const NicuPatients = () => {
 		totalPages: 0,
 	});
 	const [patient, setPatient] = useState('');
-	const [status, setStatus] = useState(0);
+	const [status, setStatus] = useState('0');
 
 	const dispatch = useDispatch();
 
+	useEffect(() => {
+		const subscription = messageService.getMessage().subscribe(message => {
+			const { type, admission } = message.text;
+			if (type === 'nicu-discharge') {
+				const update = updateImmutable(admittedPatients, admission);
+				setAdmittedPatients(update);
+			} else if (type === 'nicu-finish-discharge') {
+				const update = updateImmutable(admittedPatients, admission);
+				setAdmittedPatients(update);
+			}
+		});
+
+		return () => {
+			subscription.unsubscribe();
+		};
+	});
+
 	const fetchNicuPatients = useCallback(
-		async (page, patientId, sDate, eDate, nicu_status) => {
+		async (page, patientId, sDate, eDate) => {
 			try {
+				dispatch(startBlock());
 				const p = page || 1;
 				const patient_id = patientId || '';
 				const start_date = sDate || '';
 				const end_date = eDate || '';
-				const _status = nicu_status || 0;
-				const url = `nicu?page=${p}&limit=${limit}&patient_id=${patient_id}&startDate=${start_date}&endDate=${end_date}&status=${_status}`;
+				const url = `nicu?page=${p}&limit=${limit}&patient_id=${patient_id}&startDate=${start_date}&endDate=${end_date}&status=${status}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setMeta(meta);
@@ -75,7 +94,7 @@ const NicuPatients = () => {
 				setFiltering(false);
 			}
 		},
-		[dispatch]
+		[dispatch, status]
 	);
 
 	useEffect(() => {
@@ -100,14 +119,12 @@ const NicuPatients = () => {
 
 	const doFilter = e => {
 		e.preventDefault();
-		dispatch(startBlock());
 		setFiltering(true);
-		fetchNicuPatients(1, patient, startDate, endDate, status);
+		fetchNicuPatients(1, patient, startDate, endDate);
 	};
 
 	const onNavigatePage = nextPage => {
-		dispatch(startBlock());
-		fetchNicuPatients(nextPage, patient, startDate, endDate, status);
+		fetchNicuPatients(nextPage, patient, startDate, endDate);
 	};
 
 	const showProfile = patient => {
@@ -273,24 +290,32 @@ const NicuPatients = () => {
 												)}
 												<td>
 													{item.status === 0 ? (
-														<span className="badge badge-secondary">Open</span>
+														<span
+															className={`badge badge-${
+																item.start_discharge ? 'warning' : 'secondary'
+															}`}
+														>
+															{item.start_discharge ? 'Discharging' : 'Open'}
+														</span>
 													) : (
 														<span className="badge badge-success">
 															Discharged
 														</span>
 													)}
 												</td>
-												<td nowrap className="row-actions">
-													{!item.accommodation && (
-														<Tooltip title="Assign Accommodation">
-															<a
-																onClick={() => assignAccommodation(item)}
-																className="primary"
-															>
-																<i className="fa fa-bed" />
-															</a>
-														</Tooltip>
-													)}
+												<td nowrap="nowrap" className="row-actions">
+													{!item.start_discharge &&
+														!item.accommodation &&
+														item.status === 0 && (
+															<Tooltip title="Assign Accommodation">
+																<a
+																	onClick={() => assignAccommodation(item)}
+																	className="primary"
+																>
+																	<i className="fa fa-bed" />
+																</a>
+															</Tooltip>
+														)}
 													<Tooltip title="Admission">
 														<a onClick={() => openNicu(item.patient, item)}>
 															<i className="os-icon os-icon-user-male-circle2" />

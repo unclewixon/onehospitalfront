@@ -20,7 +20,6 @@ const { RangePicker } = DatePicker;
 
 const paymentStatus = [
 	{ value: 0, label: 'Pending' },
-	{ value: -1, label: 'Pay Later' },
 	{ value: 1, label: 'Paid' },
 ];
 

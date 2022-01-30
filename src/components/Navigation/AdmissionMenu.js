@@ -76,6 +76,11 @@ const AdmissionMenu = ({ location, isAdmission }) => {
 						Nursing Service
 					</Link>
 				</li>
+				<li className={checkHash(hash, 'discharge-note') ? 'active' : ''}>
+					<Link to={`${location.pathname}#discharge-note`} className="pointer">
+						Discharge Note
+					</Link>
+				</li>
 			</ul>
 		</div>
 	);

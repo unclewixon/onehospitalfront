@@ -26,6 +26,7 @@ const Pharmacy = lazy(() => import('../components/Patient/Pharmacy'));
 const NursingService = lazy(() =>
 	import('../components/Patient/NursingService')
 );
+const DischargeNote = lazy(() => import('../components/DischargeNote'));
 
 const storage = new SSRStorage();
 
@@ -51,6 +52,8 @@ const Page = ({ location }) => {
 					type="nicu"
 				/>
 			);
+		case 'discharge-note':
+			return <DischargeNote itemId={nicu.id || ''} type="nicu" />;
 		case 'fluid-chart':
 			return <FluidChart itemId={nicu.id || ''} type="nicu" />;
 		case 'care-team':
@@ -132,7 +135,12 @@ class NicuProfile extends Component {
 								<div className="content-box">
 									<div className="row">
 										<div className="col-sm-12">
-											<ProfileBlock profile={true} patient={patient} />
+											<ProfileBlock
+												profile={true}
+												patient={patient}
+												canAdmit={false}
+												canDischarge={true}
+											/>
 										</div>
 										<Suspense fallback={<Splash />}>
 											<Switch>

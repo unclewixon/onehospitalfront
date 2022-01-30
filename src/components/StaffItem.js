@@ -108,26 +108,30 @@ class StaffItem extends Component {
 											</a>
 										</Tooltip>
 									)}
-									{item.isActive ? (
-										<Tooltip title="Disable Staff">
-											<a
-												onClick={e => this.doDisable(e, item)}
-												className="danger"
-												title="Disable Staff"
-											>
-												<i className="os-icon os-icon-x-circle" />
-											</a>
-										</Tooltip>
-									) : (
-										<Tooltip title="Enable Staff">
-											<a
-												onClick={e => this.doEnable(e, item)}
-												className="success"
-												title="Enable Staff"
-											>
-												<i className="os-icon os-icon-check-circle" />
-											</a>
-										</Tooltip>
+									{profile.role.slug === 'it-admin' && (
+										<>
+											{item.isActive ? (
+												<Tooltip title="Disable Staff">
+													<a
+														onClick={e => this.doDisable(e, item)}
+														className="danger"
+														title="Disable Staff"
+													>
+														<i className="os-icon os-icon-x-circle" />
+													</a>
+												</Tooltip>
+											) : (
+												<Tooltip title="Enable Staff">
+													<a
+														onClick={e => this.doEnable(e, item)}
+														className="success"
+														title="Enable Staff"
+													>
+														<i className="os-icon os-icon-check-circle" />
+													</a>
+												</Tooltip>
+											)}
+										</>
 									)}
 								</td>
 							</tr>

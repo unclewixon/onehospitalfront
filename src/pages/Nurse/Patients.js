@@ -65,8 +65,7 @@ const Patients = ({ location, filter }) => {
 				const { result, ...meta } = rs;
 				setMeta(meta);
 				window.scrollTo({ top: 0, behavior: 'smooth' });
-				const arr = [...result];
-				setAdmittedPatients(arr);
+				setAdmittedPatients([...result]);
 				setFiltering(false);
 				setLoading(false);
 				dispatch(stopBlock());
@@ -94,8 +93,14 @@ const Patients = ({ location, filter }) => {
 
 	useEffect(() => {
 		const subscription = messageService.getMessage().subscribe(message => {
-			const update = updateImmutable(admittedPatients, message.text);
-			setAdmittedPatients(update);
+			const { type, admission } = message.text;
+			if (type === 'admission-discharge') {
+				const update = updateImmutable(admittedPatients, admission);
+				setAdmittedPatients(update);
+			} else if (type === 'admission-finish-discharge') {
+				const update = updateImmutable(admittedPatients, admission);
+				setAdmittedPatients(update);
+			}
 		});
 
 		return () => {
@@ -273,8 +278,12 @@ const Patients = ({ location, filter }) => {
 													)}
 													<td>
 														{item.status === 0 ? (
-															<span className="badge badge-secondary">
-																Open
+															<span
+																className={`badge badge-${
+																	item.start_discharge ? 'warning' : 'secondary'
+																}`}
+															>
+																{item.start_discharge ? 'Discharging' : 'Open'}
 															</span>
 														) : (
 															<span className="badge badge-success">

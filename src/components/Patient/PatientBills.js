@@ -28,7 +28,6 @@ const { RangePicker } = DatePicker;
 
 const paymentStatus = [
 	{ value: 0, label: 'Pending' },
-	{ value: -1, label: 'Pay Later' },
 	{ value: 1, label: 'Paid' },
 ];
 
@@ -171,7 +170,8 @@ const PatientBills = () => {
 											overlayClassName="set-credit-limit"
 											trigger="click"
 											visible={visible}
-											onVisibleChange={() => setVisible(!visible)}>
+											onVisibleChange={() => setVisible(!visible)}
+										>
 											<Tooltip title="Set Credit Limit">
 												<span className="btn btn-success mr-4">
 													Add Credit Limit
@@ -204,7 +204,8 @@ const PatientBills = () => {
 										overlayClassName="set-credit-limit"
 										trigger="click"
 										visible={depositVisible}
-										onVisibleChange={() => setDepositVisible(!depositVisible)}>
+										onVisibleChange={() => setDepositVisible(!depositVisible)}
+									>
 										<Tooltip title="Make Deposit">
 											<button className="btn btn-info btn-sm text-white mr-4">
 												Make Deposit
@@ -216,68 +217,66 @@ const PatientBills = () => {
 									</span>
 									<button
 										className="btn btn-primary btn-sm"
-										onClick={() => doApplyCredit()}>
+										onClick={() => doApplyCredit()}
+									>
 										Apply Deposit
 									</button>
 								</div>
 							</div>
 						</div>
 						<div className="row">
-							<div className="col-sm-12">
-								<form className="row">
-									<div className="form-group col-md-6">
-										<label>Transaction Date</label>
-										<RangePicker value={date} onChange={e => dateChange(e)} />
-									</div>
-									<div className="form-group col-md-3">
-										<label className="mr-2 " htmlFor="id">
-											Status
-										</label>
-										<select
-											style={{ height: '35px' }}
-											id="status"
-											className="form-control"
-											name="status"
-											onChange={e => setStatus(e.target.value)}>
-											<option value="">Choose status</option>
-											{paymentStatus.map((status, i) => {
-												return (
-													<option key={i} value={status.value}>
-														{status.label}
-													</option>
-												);
-											})}
-										</select>
-									</div>
-									<div className="form-group col-md-3 mt-4">
-										<div
-											className="btn btn-sm btn-primary btn-upper text-white"
-											onClick={() => doFilter()}>
-											<i className="os-icon os-icon-ui-37" />
-											<span>
-												{filtering ? (
-													<img src={waiting} alt="submitting" />
-												) : (
-													'Filter'
-												)}
-											</span>
-										</div>
-										{filtered && (
-											<div
-												className="btn btn-sm btn-secondary text-white ml-2"
-												onClick={async () => {
-													setDate([]);
-													setStatus('');
-													setStartDate('');
-													setEndDate('');
-													setFiltered(false);
-													await fetchBills(1);
-												}}>
-												<i className="os-icon os-icon-close" />
-											</div>
+							<div className="form-group col-md-6 m-0">
+								<label className="mr-2">Transaction Date</label>
+								<RangePicker value={date} onChange={e => dateChange(e)} />
+							</div>
+							<div className="form-group col-md-3 m-0 d-flex align-items-center">
+								<label className="mr-2 ">Status</label>
+								<select
+									style={{ height: '35px' }}
+									id="status"
+									className="form-control"
+									name="status"
+									onChange={e => setStatus(e.target.value)}
+								>
+									<option value="">Choose status</option>
+									{paymentStatus.map((status, i) => {
+										return (
+											<option key={i} value={status.value}>
+												{status.label}
+											</option>
+										);
+									})}
+								</select>
+							</div>
+							<div className="form-group col-md-3 m-0">
+								<div
+									className="btn btn-sm btn-primary btn-upper text-white"
+									onClick={() => doFilter()}
+								>
+									<i className="os-icon os-icon-ui-37" />
+									<span>
+										{filtering ? (
+											<img src={waiting} alt="submitting" />
+										) : (
+											'Filter'
 										)}
+									</span>
+								</div>
+								{filtered && (
+									<div
+										className="btn btn-sm btn-secondary text-white ml-2"
+										onClick={async () => {
+											setDate([]);
+											setStatus('');
+											setStartDate('');
+											setEndDate('');
+											setFiltered(false);
+											await fetchBills(1);
+										}}
+									>
+										<i className="os-icon os-icon-close" />
 									</div>
-								</form>
+								)}
 							</div>
 						</div>
 						<div className="dataTables_wrapper container-fluid dt-bootstrap4">
@@ -285,7 +284,8 @@ const PatientBills = () => {
 								<div className="col-sm-12">
 									<table
 										className="table table-striped table-lightfont dataTable"
-										style={{ width: '100%' }}>
+										style={{ width: '100%' }}
+									>
 										<thead style={{ borderCollapse: 'collapse' }}>
 											<tr>
 												<th>Bill#</th>
@@ -312,7 +312,8 @@ const PatientBills = () => {
 																item.bill_source !== 'credit' && (
 																	<a
 																		className="item-title text-primary text-underline ml-2"
-																		onClick={() => viewDetails(item)}>
+																		onClick={() => viewDetails(item)}
+																	>
 																		<i className="os-icon os-icon-alert-circle" />
 																	</a>
 																)}
@@ -332,7 +333,7 @@ const PatientBills = () => {
 															)}
 															{item.status === -1 && (
 																<span className="badge badge-info text-white">
-																	pay later
+																	pending
 																</span>
 															)}
 															{item.status === 1 && (

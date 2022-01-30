@@ -187,13 +187,15 @@ const CreateRegimenTask = ({ closeModal, setMedicalTask }) => {
 								<button
 									className="btn btn-primary"
 									style={{ margin: '10px' }}
-									onClick={changeBtn}>
+									onClick={changeBtn}
+								>
 									Change
 								</button>
 								<button
 									className="btn btn-secondary"
 									style={{ margin: '10px' }}
-									onClick={continueBtn}>
+									onClick={continueBtn}
+								>
 									Continue
 								</button>
 							</div>
@@ -230,13 +232,15 @@ const CreateRegimenTask = ({ closeModal, setMedicalTask }) => {
 								<button
 									className="btn btn-primary"
 									style={{ margin: '10px' }}
-									onClick={changeBtn}>
+									onClick={changeBtn}
+								>
 									Change
 								</button>
 								<button
 									className="btn btn-secondary"
 									style={{ margin: '10px' }}
-									onClick={continueBtn}>
+									onClick={continueBtn}
+								>
 									Continue
 								</button>
 							</div>
@@ -253,16 +257,19 @@ const CreateRegimenTask = ({ closeModal, setMedicalTask }) => {
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div
 				className="modal-dialog modal-centered"
-				style={{ maxWidth: '760px' }}>
+				style={{ maxWidth: '760px' }}
+			>
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={() => closeModal()}>
+						onClick={() => closeModal()}
+					>
 						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -295,7 +302,8 @@ const CreateRegimenTask = ({ closeModal, setMedicalTask }) => {
 														<span
 															className={`badge badge-${
 																selectedDrug.qty > 0 ? 'info' : 'danger'
-															} text-white`}>{`Stock Level: ${selectedDrug.qty}; Base Price: ₦${selectedDrug.basePrice}`}</span>
+															} text-white`}
+														>{`Stock Level: ${selectedDrug.qty}; Base Price: ₦${selectedDrug.basePrice}`}</span>
 													</div>
 												</div>
 											</div>
@@ -325,7 +333,7 @@ const CreateRegimenTask = ({ closeModal, setMedicalTask }) => {
 									<div className="form-group col-sm-6">
 										<label>Dose</label>
 										<input
-											type="number"
+											type="text"
 											className="form-control"
 											placeholder="Dose"
 											ref={register({ required: true })}
@@ -433,7 +441,8 @@ const CreateRegimenTask = ({ closeModal, setMedicalTask }) => {
 												style={{
 													backgroundColor: 'transparent',
 													border: 'none',
-												}}>
+												}}
+											>
 												<PlusIcon
 													style={{
 														width: '1.5rem',
@@ -522,7 +531,8 @@ const CreateRegimenTask = ({ closeModal, setMedicalTask }) => {
 								<div>
 									<button
 										onClick={saveTableData}
-										className="btn btn-primary mt-4">
+										className="btn btn-primary mt-4"
+									>
 										<span> Save</span>
 									</button>
 								</div>
