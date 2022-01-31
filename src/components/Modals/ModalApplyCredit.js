@@ -216,7 +216,7 @@ const ModalApplyCredit = ({ closeModal, patient, refresh, depositBalance }) => {
 														</td>
 														<td>
 															<strong>
-																{formatCurrency(depositBalance + total)}
+																{formatCurrency(depositBalance - total)}
 															</strong>
 														</td>
 													</tr>
