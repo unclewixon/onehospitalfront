@@ -124,7 +124,7 @@ const ModalApplyCredit = ({ closeModal, patient, refresh, depositBalance }) => {
 				return;
 			}
 
-			const amount_remaining = depositBalance + total;
+			const amount_remaining = depositBalance - total;
 			if (amount_remaining < 0) {
 				notifyError('insufficient credit!');
 				return;
