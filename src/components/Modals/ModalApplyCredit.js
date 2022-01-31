@@ -26,6 +26,7 @@ const ModalApplyCredit = ({ closeModal, patient, refresh, depositBalance }) => {
 	const [total, setTotal] = useState(0);
 	const [allChecked, setAllChecked] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
+	const [items, setItems] = useState([]);
 
 	const dispatch = useDispatch();
 
@@ -34,11 +35,12 @@ const ModalApplyCredit = ({ closeModal, patient, refresh, depositBalance }) => {
 			try {
 				dispatch(startBlock());
 				const p = page || 1;
-				const url = `transactions/pending?page=${p}&limit=10&patient_id=${patient.id}&startDate=&endDate=`;
+				const url = `transactions/pending?page=${p}&limit=10&patient_id=${patient.id}&startDate=&endDate=&fetch=1`;
 				const rs = await request(url, 'GET', true);
-				const { result, ...meta } = rs;
+				const { result, all, ...meta } = rs;
 				setMeta(meta);
 				setTransactions([...result]);
+				setItems([...all]);
 				setLoading(false);
 				dispatch(stopBlock());
 			} catch (e) {
@@ -63,32 +65,25 @@ const ModalApplyCredit = ({ closeModal, patient, refresh, depositBalance }) => {
 	const checkAll = e => {
 		setAllChecked(false);
 
-		let value = false;
-
-		if (e.target.checked) {
-			value = true;
-			setAllChecked(true);
-		}
-
 		let checks = [];
+		if (e.target.checked) {
+			setAllChecked(true);
 
-		Array.from(document.querySelectorAll('input[name="select"]')).forEach(
-			checkbox => {
-				const item = document.getElementById(checkbox.id);
-				item.checked = value;
-				const transaction = transactions.find(
-					t => t.id === parseInt(item.value, 10)
-				);
-				checks = e.target.checked
-					? [...checks, { id: item.value, amount: transaction.amount }]
-					: [];
+			for (const item of items) {
+				checks = [...checks, { id: item.id, amount: item.amount }];
 			}
-		);
 
-		setChecked(checks);
-		setTotal(
-			checks.reduce((total, item) => total + parseFloat(item.amount), 0)
-		);
+			setChecked(checks);
+			setTotal(
+				checks.reduce(
+					(total, item) => total + Math.abs(parseFloat(item.amount)),
+					0
+				)
+			);
+		} else {
+			setChecked(checks);
+			setTotal(0);
+		}
 	};
 
 	const onChecked = e => {
@@ -109,10 +104,13 @@ const ModalApplyCredit = ({ closeModal, patient, refresh, depositBalance }) => {
 
 		setChecked(selected);
 		setTotal(
-			selected.reduce((total, item) => total + parseFloat(item.amount), 0)
+			selected.reduce(
+				(total, item) => total + Math.abs(parseFloat(item.amount)),
+				0
+			)
 		);
 
-		if (selected.length === transactions.length) {
+		if (selected.length === items.length) {
 			setAllChecked(true);
 		} else {
 			setAllChecked(false);
@@ -157,16 +155,19 @@ const ModalApplyCredit = ({ closeModal, patient, refresh, depositBalance }) => {
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div
 				className="modal-dialog modal-centered"
-				style={{ maxWidth: '720px' }}>
+				style={{ maxWidth: '720px' }}
+			>
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={closeModal}>
+						onClick={closeModal}
+					>
 						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -198,8 +199,10 @@ const ModalApplyCredit = ({ closeModal, patient, refresh, depositBalance }) => {
 												<tbody>
 													<PatientBillItem
 														transactions={transactions}
+														checked={checked}
 														onChecked={onChecked}
 														total={total}
+														hasChecked={true}
 													/>
 													<tr>
 														<td colSpan="3" className="text-right">
@@ -235,7 +238,8 @@ const ModalApplyCredit = ({ closeModal, patient, refresh, depositBalance }) => {
 										<div className="col-md-12 mt-4">
 											<button
 												onClick={() => processPayment()}
-												className="btn btn-primary">
+												className="btn btn-primary"
+											>
 												{submitting ? (
 													<img src={waiting} alt="submitting" />
 												) : (
