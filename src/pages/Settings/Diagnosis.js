@@ -211,6 +211,7 @@ const Diagnosis = () => {
 														showTotal={total => `Total ${total} diagnoses`}
 														itemRender={itemRender}
 														onChange={current => onNavigatePage(current)}
+														showSizeChanger={false}
 													/>
 												</div>
 											)}

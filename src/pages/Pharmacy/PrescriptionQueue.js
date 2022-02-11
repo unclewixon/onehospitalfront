@@ -70,6 +70,7 @@ class PrescriptionQueue extends Component {
 							showTotal={total => `Total ${total} prescriptions`}
 							itemRender={itemRender}
 							onChange={current => this.onNavigatePage(current)}
+							showSizeChanger={false}
 						/>
 					</div>
 				)}

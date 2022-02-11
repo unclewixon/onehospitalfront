@@ -206,6 +206,7 @@ const ConsultingTypes = ({ hmo, toggle, doToggle, category }) => {
 													showTotal={total => `Total ${total} services`}
 													itemRender={itemRender}
 													onChange={current => onNavigatePage(current)}
+													showSizeChanger={false}
 												/>
 											</div>
 										)}

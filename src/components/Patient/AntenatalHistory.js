@@ -178,6 +178,7 @@ class AntenatalHistory extends Component {
 												showTotal={total => `Total ${total} enrollments`}
 												itemRender={itemRender}
 												onChange={current => this.onNavigatePage(current)}
+												showSizeChanger={false}
 											/>
 										</div>
 									)}

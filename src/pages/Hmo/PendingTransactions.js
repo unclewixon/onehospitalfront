@@ -116,6 +116,7 @@ class PendingTransactions extends Component {
 											showTotal={total => `Total ${total} transactions`}
 											itemRender={itemRender}
 											onChange={current => this.onNavigatePage(current)}
+											showSizeChanger={false}
 										/>
 									</div>
 								)}

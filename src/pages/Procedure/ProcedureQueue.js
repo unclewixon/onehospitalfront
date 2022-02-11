@@ -66,6 +66,7 @@ class ProcedureQueue extends Component {
 							showTotal={total => `Total ${total} procedure requests`}
 							itemRender={itemRender}
 							onChange={current => this.onNavigatePage(current)}
+							showSizeChanger={false}
 						/>
 					</div>
 				)}

@@ -129,6 +129,7 @@ class PatientEquipment extends Component {
 													showTotal={total => `Total ${total} data`}
 													itemRender={itemRender}
 													onChange={current => this.onNavigatePage(current)}
+													showSizeChanger={false}
 												/>
 											</div>
 										)}

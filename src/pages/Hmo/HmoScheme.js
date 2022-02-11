@@ -244,6 +244,7 @@ const HmoScheme = () => {
 														showTotal={total => `Total ${total} HMOs`}
 														itemRender={itemRender}
 														onChange={current => onNavigatePage(current)}
+														showSizeChanger={false}
 													/>
 												</div>
 											)}

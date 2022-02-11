@@ -207,6 +207,7 @@ const Requisitions = ({ category }) => {
 										showTotal={total => `Total ${total} requisitions`}
 										itemRender={itemRender}
 										onChange={current => onNavigatePage(current)}
+										showSizeChanger={false}
 									/>
 								</div>
 							)}

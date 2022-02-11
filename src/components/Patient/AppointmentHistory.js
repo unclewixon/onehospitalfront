@@ -227,6 +227,7 @@ class AppointmentHistory extends Component {
 										showTotal={total => `Total ${total} appointments`}
 										itemRender={itemRender}
 										onChange={current => this.onNavigatePage(current)}
+										showSizeChanger={false}
 									/>
 								</div>
 							)}

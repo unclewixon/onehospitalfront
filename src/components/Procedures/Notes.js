@@ -132,6 +132,7 @@ const Notes = () => {
 										showTotal={total => `Total ${total} items`}
 										itemRender={itemRender}
 										onChange={current => onNavigatePage(current)}
+										showSizeChanger={false}
 									/>
 								</div>
 							)}

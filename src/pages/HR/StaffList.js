@@ -192,6 +192,7 @@ const StaffList = () => {
 														showTotal={total => `Total ${total} staffs`}
 														itemRender={itemRender}
 														onChange={current => onNavigatePage(current)}
+														showSizeChanger={false}
 													/>
 												</div>
 											)}

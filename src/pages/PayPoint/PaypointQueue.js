@@ -163,6 +163,7 @@ const PaypointQueue = () => {
 										showTotal={total => `Total ${total} transactions`}
 										itemRender={itemRender}
 										onChange={current => onNavigatePage(current)}
+										showSizeChanger={false}
 									/>
 								</div>
 							)}

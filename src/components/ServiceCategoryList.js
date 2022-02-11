@@ -205,6 +205,7 @@ const ServiceCategoryList = ({ loaded, setLoaded }) => {
 											showTotal={total => `Total ${total} categories`}
 											itemRender={itemRender}
 											onChange={current => onNavigatePage(current)}
+											showSizeChanger={false}
 										/>
 									</div>
 								)}

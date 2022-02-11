@@ -239,6 +239,7 @@ const HmoTests = ({ hmo, toggle, doToggle, doToggleForm }) => {
 										showTotal={total => `Total ${total} lab tests`}
 										itemRender={itemRender}
 										onChange={current => onNavigatePage(current)}
+										showSizeChanger={false}
 									/>
 								</div>
 							)}

@@ -148,6 +148,7 @@ const ModalSelectServices = ({ slug, updatePackage, closeModal, item }) => {
 										showTotal={total => `Total ${total} HMOs`}
 										itemRender={itemRender}
 										onChange={current => onNavigatePage(current)}
+										showSizeChanger={false}
 									/>
 								</div>
 							)}

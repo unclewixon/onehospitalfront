@@ -250,6 +250,7 @@ const AntenatalPatients = () => {
 										showTotal={total => `Total ${total} patients`}
 										itemRender={itemRender}
 										onChange={current => onNavigatePage(current)}
+										showSizeChanger={false}
 									/>
 								</div>
 							)}

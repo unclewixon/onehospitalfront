@@ -226,6 +226,7 @@ const Dashboard = () => {
 											showTotal={total => `Total ${total} items`}
 											itemRender={itemRender}
 											onChange={onNavigatePage}
+											showSizeChanger={false}
 										/>
 									</div>
 								</div>

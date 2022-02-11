@@ -36,7 +36,7 @@ class PrescriptionRequests extends Component {
 			const url = `requests/prescriptions?startDate=${start}&endDate=${end}&limit=10&page=${page}&status=${status}&patient_id=${patient_id}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
-			this.setState({ loading: false, prescriptions: result, meta });
+			this.setState({ loading: false, prescriptions: result, meta, filtering: false });
 		} catch (e) {
 			this.setState({ loading: false });
 			notifyError('could not fetch prescription requests');
@@ -59,7 +59,6 @@ class PrescriptionRequests extends Component {
 		const { startDate, endDate } = this.state;
 		this.setState({ filtering: true });
 		this.loadPrescriptions(startDate, endDate);
-		this.setState({ filtering: false });
 	};
 
 	onNavigatePage = nextPage => {
@@ -147,7 +146,7 @@ class PrescriptionRequests extends Component {
 							removePrescription={this.removePrescription}
 						/>
 					</div>
-					{meta && (
+					{meta && !filtering && (
 						<div className="pagination pagination-center mt-4">
 							<Pagination
 								current={parseInt(meta.currentPage, 10)}
@@ -156,6 +155,7 @@ class PrescriptionRequests extends Component {
 								showTotal={total => `Total ${total} prescriptions`}
 								itemRender={itemRender}
 								onChange={current => this.onNavigatePage(current)}
+								showSizeChanger={false}
 							/>
 						</div>
 					)}

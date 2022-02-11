@@ -120,6 +120,7 @@ class VisitNotesTable extends Component {
 										showTotal={total => `Total ${total} visit notes`}
 										itemRender={itemRender}
 										onChange={current => this.onNavigatePage(current)}
+										showSizeChanger={false}
 									/>
 								</div>
 							)}

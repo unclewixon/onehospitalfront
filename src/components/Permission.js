@@ -83,6 +83,7 @@ class Permission extends Component {
 										showTotal={total => `Total ${total} permissions`}
 										itemRender={itemRender}
 										onChange={current => this.onNavigatePage(current)}
+										showSizeChanger={false}
 									/>
 								</div>
 							)}

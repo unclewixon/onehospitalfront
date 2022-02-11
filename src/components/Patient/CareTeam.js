@@ -131,6 +131,7 @@ const CareTeam = ({ can_request, type, itemId }) => {
 										showTotal={total => `Total ${total} team members`}
 										itemRender={itemRender}
 										onChange={current => onNavigatePage(current)}
+										showSizeChanger={false}
 									/>
 								</div>
 							)}

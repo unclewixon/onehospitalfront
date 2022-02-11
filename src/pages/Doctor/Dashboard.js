@@ -111,6 +111,7 @@ const Dashboard = () => {
 							showTotal={total => `Total ${total} appointments`}
 							itemRender={itemRender}
 							onChange={current => onNavigatePage(current)}
+							showSizeChanger={false}
 						/>
 					</div>
 				)}

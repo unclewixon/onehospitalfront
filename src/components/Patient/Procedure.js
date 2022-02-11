@@ -90,6 +90,7 @@ const Procedure = ({ location }) => {
 											showTotal={total => `Total ${total} procedure requests`}
 											itemRender={itemRender}
 											onChange={current => onNavigatePage(current)}
+											showSizeChanger={false}
 										/>
 									</div>
 								)}

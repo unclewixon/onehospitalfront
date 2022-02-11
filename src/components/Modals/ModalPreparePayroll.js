@@ -237,6 +237,7 @@ class ModalPreparePayroll extends Component {
 									showTotal={total => `Total ${total} staffs`}
 									itemRender={itemRender}
 									onChange={this.onNavigatePage}
+									showSizeChanger={false}
 								/>
 							</div>
 						</div>

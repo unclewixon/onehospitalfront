@@ -191,6 +191,7 @@ const ModalViewBatches = ({ closeModal, drug }) => {
 												showTotal={total => `Total ${total} batches`}
 												itemRender={itemRender}
 												onChange={current => onNavigatePage(current)}
+												showSizeChanger={false}
 											/>
 										</div>
 									)}

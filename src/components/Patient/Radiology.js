@@ -96,6 +96,7 @@ const Radiology = ({ location, itemId, type, can_request = true }) => {
 											showTotal={total => `Total ${total} scan results`}
 											itemRender={itemRender}
 											onChange={current => onNavigatePage(current)}
+											showSizeChanger={false}
 										/>
 									</div>
 								)}

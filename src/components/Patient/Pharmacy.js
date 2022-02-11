@@ -96,6 +96,7 @@ const Pharmacy = ({ location, can_request = true, type, itemId }) => {
 										showTotal={total => `Total ${total} prescriptions`}
 										itemRender={itemRender}
 										onChange={current => onNavigatePage(current)}
+										showSizeChanger={false}
 									/>
 								</div>
 							)}

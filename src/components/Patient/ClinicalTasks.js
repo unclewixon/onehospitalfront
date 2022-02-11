@@ -352,6 +352,7 @@ const ClinicalTasks = ({ itemId, type, can_request = true }) => {
 								showTotal={total => `Total ${total} lab results`}
 								itemRender={itemRender}
 								onChange={current => onNavigatePage(current)}
+								showSizeChanger={false}
 							/>
 						</div>
 					)}

@@ -253,6 +253,7 @@ const Showcase = () => {
 									showTotal={total => `Total ${total} items`}
 									itemRender={itemRender}
 									onChange={onNavigatePage}
+									showSizeChanger={false}
 								/>
 							</div>
 						</>

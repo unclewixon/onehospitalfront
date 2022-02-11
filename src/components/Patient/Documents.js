@@ -179,6 +179,7 @@ const Documents = () => {
 								showTotal={total => `Total ${total} lab results`}
 								itemRender={itemRender}
 								onChange={current => onNavigatePage(current)}
+								showSizeChanger={false}
 							/>
 						</div>
 					)}

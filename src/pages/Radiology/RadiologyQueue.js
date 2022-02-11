@@ -66,6 +66,7 @@ class RadiologyQueue extends Component {
 							showTotal={total => `Total ${total} scan results`}
 							itemRender={itemRender}
 							onChange={current => this.onNavigatePage(current)}
+							showSizeChanger={false}
 						/>
 					</div>
 				)}

@@ -193,6 +193,7 @@ class IVFHistory extends Component {
 									showTotal={total => `Total ${total} ivfs`}
 									itemRender={itemRender}
 									onChange={current => this.onNavigatePage(current)}
+									showSizeChanger={false}
 								/>
 							</div>
 						)}

@@ -227,6 +227,7 @@ const HmoData = ({ hmo, toggle, doToggle, categories }) => {
 													showTotal={total => `Total ${total} services`}
 													itemRender={itemRender}
 													onChange={current => onNavigatePage(current)}
+													showSizeChanger={false}
 												/>
 											</div>
 										)}

@@ -151,6 +151,7 @@ class AllRequest extends Component {
 								showTotal={total => `Total ${total} lab results`}
 								itemRender={itemRender}
 								onChange={current => this.onNavigatePage(current)}
+								showSizeChanger={false}
 							/>
 						</div>
 					)}
