@@ -103,7 +103,7 @@ const StaffList = () => {
 							</div>
 							<h6 className="element-header">Staff List</h6>
 							<div className="element-box m-0 mb-4 p-3">
-								<form className="row">
+								<div className="row">
 									<div className="form-group col-md-6">
 										<label className="mr-2 " htmlFor="search">
 											Search
@@ -146,7 +146,7 @@ const StaffList = () => {
 											</span>
 										</div>
 									</div>
-								</form>
+								</div>
 							</div>
 							<div className="element-box p-3 m-0">
 								<div className="table-responsive">

@@ -317,6 +317,16 @@ class LabBlock extends Component {
 															</a>
 														</Tooltip>
 													)}
+													{lab.item.approved === 1 && user.role.slug === 'lab-manager' && (
+														<Tooltip title="Fill Result">
+															<a
+																className="primary"
+																onClick={() => this.fillResult(lab)}
+															>
+																<i className="os-icon os-icon-edit" />
+															</a>
+														</Tooltip>
+													)}
 													{lab.item.filled === 1 &&
 														lab.item.approved === 0 &&
 														(user.role.slug === 'lab-manager' ||
