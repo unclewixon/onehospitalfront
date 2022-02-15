@@ -29,11 +29,21 @@ const PatientBillItem = ({
 								/>
 							</td>
 						)}
-						<td nowrap="nowrap">{formatDate(item.createdAt, 'DD-MMM-YYYY h:mm a')}</td>
+						<td nowrap="nowrap">
+							{formatDate(item.createdAt, 'DD-MMM-YYYY h:mm a')}
+						</td>
 						<td>
 							<span className="text-capitalize">
 								<strong>{parseSource(item.bill_source)}</strong>
-								{item.service?.item?.name
+								{(item?.bill_source === 'ward' ||
+									item?.bill_source === 'nicu-accommodation') &&
+									`: ${item.description}`}
+								{(item?.bill_source === 'consultancy' ||
+									item?.bill_source === 'labs' ||
+									item?.bill_source === 'scans' ||
+									item?.bill_source === 'procedure' ||
+									item?.bill_source === 'nursing-service') &&
+								item.service?.item?.name
 									? `: ${item.service?.item?.name}`
 									: ''}
 								{item?.bill_source === 'drugs' && (

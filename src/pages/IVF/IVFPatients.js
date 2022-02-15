@@ -39,9 +39,11 @@ const IvfPatients = () => {
 	const fetchIvfPatients = useCallback(
 		async (page, patientId, sDate, eDate) => {
 			try {
+				dispatch(startBlock());
 				const p = page || 1;
-				const url = `ivf?page=${p}&limit=${limit}&patient_id=${patientId ||
-					''}&startDate=${sDate || ''}&endDate=${eDate || ''}`;
+				const url = `ivf?page=${p}&limit=${limit}&patient_id=${
+					patientId || ''
+				}&startDate=${sDate || ''}&endDate=${eDate || ''}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setMeta(meta);
@@ -87,14 +89,13 @@ const IvfPatients = () => {
 	};
 
 	const onNavigatePage = nextPage => {
-		dispatch(startBlock());
 		fetchIvfPatients(nextPage, patient, startDate, endDate);
 	};
 
 	const showProfile = patient => {
 		if (patient.is_active) {
-		const info = { patient, type: 'patient' };
-		dispatch(toggleProfile(true, info));
+			const info = { patient, type: 'patient' };
+			dispatch(toggleProfile(true, info));
 		}
 	};
 

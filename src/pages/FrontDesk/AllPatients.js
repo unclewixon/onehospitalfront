@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useCallback } from 'react';
 import Tooltip from 'antd/lib/tooltip';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import Pagination from 'antd/lib/pagination';
 import DatePicker from 'antd/lib/date-picker';
@@ -15,6 +15,7 @@ import {
 	patientname,
 	formatDate,
 	updateImmutable,
+	confirmAction,
 } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { toggleProfile } from '../../actions/user';
@@ -51,6 +52,8 @@ const AllPatients = () => {
 
 	const dispatch = useDispatch();
 
+	const user = useSelector(state => state.user.profile);
+
 	const dateChange = e => {
 		const date = e.map(d => {
 			return moment(d._d).format('YYYY-MM-DD');
@@ -61,10 +64,8 @@ const AllPatients = () => {
 	};
 
 	const showProfile = patient => {
-		if (patient.is_active) {
-			const info = { patient, type: 'patient' };
-			dispatch(toggleProfile(true, info));
-		}
+		const info = { patient, type: 'patient' };
+		dispatch(toggleProfile(true, info));
 	};
 
 	const fetchPatients = useCallback(
@@ -124,6 +125,38 @@ const AllPatients = () => {
 			setLoaded(true);
 		}
 	}, [fetchPatients, loaded]);
+
+	const confirmEnable = data => {
+		confirmAction(
+			enable,
+			data,
+			'You want to enable this patient profile?',
+			'Are you sure?'
+		);
+	};
+
+	const enable = async id => {
+		try {
+			dispatch(startBlock());
+			const url = `patient/${id}/enable`;
+			const rs = await request(url, 'POST', true);
+			dispatch(stopBlock());
+			if (rs.success) {
+				const patient = rs.patient;
+				const newPatients = updateImmutable(patients, {
+					id: patient.id,
+					is_active: patient.is_active,
+				});
+				setPatients(newPatients);
+			} else {
+				notifyError(rs.message || 'could not enable patient');
+			}
+		} catch (e) {
+			console.log(e);
+			dispatch(stopBlock());
+			notifyError(e.message || 'could not enable patient');
+		}
+	};
 
 	return (
 		<>
@@ -229,6 +262,23 @@ const AllPatients = () => {
 															</a>
 														</Tooltip>
 													)}
+													{(user.role.slug === 'it-admin' ||
+														(user.role.slug === 'doctor' &&
+															user.username === 'sunday.onuh')) &&
+														!data.is_active && (
+															<>
+																<Tooltip title="Enable Patient">
+																	<a onClick={() => confirmEnable(data.id)}>
+																		<i className="os-icon os-icon-check-circle text-danger" />
+																	</a>
+																</Tooltip>
+																<Tooltip title="View Patient">
+																	<a onClick={() => showProfile(data)}>
+																		<i className="os-icon os-icon-user-male-circle2" />
+																	</a>
+																</Tooltip>
+															</>
+														)}
 												</td>
 											</tr>
 										);

@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useCallback, useEffect, useState } from 'react';
 import { withRouter, Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import Tooltip from 'antd/lib/tooltip';
 
@@ -43,8 +43,7 @@ const UserItem = ({ icon, label, value }) => {
 						strokeWidth="2"
 						strokeLinecap="round"
 						strokeLinejoin="round"
-						className={`mr-75 feather feather-${icon || 'user'}`}
-					>
+						className={`mr-75 feather feather-${icon || 'user'}`}>
 						<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
 						<circle cx="12" cy="7" r="4"></circle>
 					</svg>
@@ -78,6 +77,8 @@ const ProfileBlock = ({
 	const [nicuFinishDischarge, setNicuFinishDischarge] = useState(false);
 
 	const dispatch = useDispatch();
+
+	const user = useSelector(state => state.user.profile);
 
 	const getAlerts = useCallback(async () => {
 		try {
@@ -306,6 +307,69 @@ const ProfileBlock = ({
 		setNicuId(null);
 	};
 
+	const confirm = data => {
+		confirmAction(
+			data === 'enable' ? enablePatient : disablePatient,
+			null,
+			`You want to ${data} this patient profile?`,
+			'Are you sure?'
+		);
+	};
+
+	const enablePatient = async () => {
+		try {
+			dispatch(startBlock());
+			const url = `patient/${patient.id}/enable`;
+			const rs = await request(url, 'POST', true);
+			dispatch(stopBlock());
+			if (rs.success) {
+				const newPatient = rs.patient;
+
+				messageService.sendMessage({
+					type: 'update-patient',
+					data: { ...patient, is_active: newPatient.is_active },
+				});
+
+				dispatch(
+					setPatientRecord({ ...patient, is_active: newPatient.is_active })
+				);
+			} else {
+				notifyError(rs.message || 'could not enable patient');
+			}
+		} catch (e) {
+			console.log(e);
+			dispatch(stopBlock());
+			notifyError(e.message || 'could not enable patient');
+		}
+	};
+
+	const disablePatient = async () => {
+		try {
+			dispatch(startBlock());
+			const url = `patient/${patient.id}/disable`;
+			const rs = await request(url, 'POST', true);
+			dispatch(stopBlock());
+			if (rs.success) {
+				const newPatient = rs.patient;
+
+				messageService.sendMessage({
+					type: 'update-patient',
+					data: { ...patient, is_active: newPatient.is_active },
+				});
+
+				dispatch(
+					setPatientRecord({ ...patient, is_active: newPatient.is_active })
+				);
+			} else {
+				notifyError(rs.message || 'could not disable patient');
+			}
+		} catch (e) {
+			console.log(e);
+			dispatch(stopBlock());
+			notifyError(e.message || 'could not disable patient');
+		}
+	};
+
 	return (
 		<>
 			<div className="row profile-block">
@@ -317,8 +381,7 @@ const ProfileBlock = ({
 									<div className="d-flex justify-content-start">
 										<span
 											className="b-avatar badge-light-danger rounded"
-											style={{ width: '104px', height: '104px' }}
-										>
+											style={{ width: '104px', height: '104px' }}>
 											<span className="b-avatar-img">
 												<img
 													src={parseAvatar(patient?.profile_pic)}
@@ -343,8 +406,7 @@ const ProfileBlock = ({
 												{hasButtons && (
 													<a
 														className="btn btn-primary mr-1"
-														onClick={editPatient}
-													>
+														onClick={editPatient}>
 														Edit
 													</a>
 												)}
@@ -366,16 +428,14 @@ const ProfileBlock = ({
 															alerts.length > 0 ? 'text-danger' : 'text-success'
 														} relative`}
 														style={{ fontSize: '20px', padding: '0 4px' }}
-														onClick={() => showAlerts()}
-													>
+														onClick={() => showAlerts()}>
 														<i className="fa fa-exclamation-triangle" />
 														<span
 															className={`alert-badge ${
 																alerts.length > 0
 																	? 'text-danger'
 																	: 'text-success'
-															}`}
-														>
+															}`}>
 															{alerts.length}
 														</span>
 													</a>
@@ -452,8 +512,7 @@ const ProfileBlock = ({
 				</div>
 				<div
 					className="col-md-5 col-lg-4 col-xl-3 col-12"
-					style={{ paddingLeft: 0 }}
-				>
+					style={{ paddingLeft: 0 }}>
 					<div className="element-box border-primary p-3">
 						<div className="card-header align-items-center pt-75 pb-25">
 							<h5 className="mb-0">Patient Status</h5>
@@ -506,12 +565,27 @@ const ProfileBlock = ({
 										</span>
 									</ul>
 								</div>
-								<button
-									type="button"
-									className="btn btn-block btn-outline-danger"
-								>
-									Disable Patient
-								</button>
+								{(user.role.slug === 'it-admin' ||
+									(user.role.slug === 'doctor' &&
+										user.username === 'sunday.onuh')) && (
+									<>
+										{patient.is_active ? (
+											<button
+												type="button"
+												onClick={() => confirm('disable')}
+												className="btn btn-block btn-outline-danger">
+												Disable Patient
+											</button>
+										) : (
+											<button
+												type="button"
+												onClick={() => confirm('enable')}
+												className="btn btn-block btn-outline-info">
+												Enable Patient
+											</button>
+										)}
+									</>
+								)}
 							</div>
 						)}
 					</div>

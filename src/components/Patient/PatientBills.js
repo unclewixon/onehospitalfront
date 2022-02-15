@@ -14,10 +14,10 @@ import {
 	staffname,
 	formatCurrency,
 	formatDate,
+	parseSource,
 } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
-import ModalServiceDetails from '../Modals/ModalServiceDetails';
 import waiting from '../../assets/images/waiting.gif';
 import SetCreditLimit from './Modals/SetCreditLimit';
 import MakeDeposit from './Modals/MakeDeposit';
@@ -39,8 +39,6 @@ const PatientBills = () => {
 		itemsPerPage: 12,
 		totalPages: 0,
 	});
-	const [showModal, setShowModal] = useState(false);
-	const [transaction, setTransaction] = useState(null);
 	const [outstandingAmount, setOutstandingAmount] = useState(0);
 	const [totalAmount, setTotalAmount] = useState(0);
 	const [startDate, setStartDate] = useState('');
@@ -106,12 +104,6 @@ const PatientBills = () => {
 		fetchBills(nextPage, startDate, endDate, status);
 	};
 
-	const viewDetails = transaction => {
-		document.body.classList.add('modal-open');
-		setShowModal(true);
-		setTransaction(transaction);
-	};
-
 	const doApplyCredit = () => {
 		document.body.classList.add('modal-open');
 		setShowApplyModal(true);
@@ -119,9 +111,7 @@ const PatientBills = () => {
 
 	const closeModal = () => {
 		document.body.classList.remove('modal-open');
-		setShowModal(false);
 		setShowApplyModal(false);
-		setTransaction(null);
 	};
 
 	const dateChange = e => {
@@ -170,8 +160,7 @@ const PatientBills = () => {
 											overlayClassName="set-credit-limit"
 											trigger="click"
 											visible={visible}
-											onVisibleChange={() => setVisible(!visible)}
-										>
+											onVisibleChange={() => setVisible(!visible)}>
 											<Tooltip title="Set Credit Limit">
 												<span className="btn btn-success mr-4">
 													Add Credit Limit
@@ -204,8 +193,7 @@ const PatientBills = () => {
 										overlayClassName="set-credit-limit"
 										trigger="click"
 										visible={depositVisible}
-										onVisibleChange={() => setDepositVisible(!depositVisible)}
-									>
+										onVisibleChange={() => setDepositVisible(!depositVisible)}>
 										<Tooltip title="Make Deposit">
 											<button className="btn btn-info btn-sm text-white mr-4">
 												Make Deposit
@@ -217,8 +205,7 @@ const PatientBills = () => {
 									</span>
 									<button
 										className="btn btn-primary btn-sm"
-										onClick={() => doApplyCredit()}
-									>
+										onClick={() => doApplyCredit()}>
 										Apply Deposit
 									</button>
 								</div>
@@ -236,8 +223,7 @@ const PatientBills = () => {
 									id="status"
 									className="form-control"
 									name="status"
-									onChange={e => setStatus(e.target.value)}
-								>
+									onChange={e => setStatus(e.target.value)}>
 									<option value="">Choose status</option>
 									{paymentStatus.map((status, i) => {
 										return (
@@ -251,8 +237,7 @@ const PatientBills = () => {
 							<div className="form-group col-md-3 m-0">
 								<div
 									className="btn btn-sm btn-primary btn-upper text-white"
-									onClick={() => doFilter()}
-								>
+									onClick={() => doFilter()}>
 									<i className="os-icon os-icon-ui-37" />
 									<span>
 										{filtering ? (
@@ -272,8 +257,7 @@ const PatientBills = () => {
 											setEndDate('');
 											setFiltered(false);
 											await fetchBills(1);
-										}}
-									>
+										}}>
 										<i className="os-icon os-icon-close" />
 									</div>
 								)}
@@ -284,8 +268,7 @@ const PatientBills = () => {
 								<div className="col-sm-12">
 									<table
 										className="table table-striped table-lightfont dataTable"
-										style={{ width: '100%' }}
-									>
+										style={{ width: '100%' }}>
 										<thead style={{ borderCollapse: 'collapse' }}>
 											<tr>
 												<th>Bill#</th>
@@ -299,33 +282,45 @@ const PatientBills = () => {
 										</thead>
 										<tbody>
 											{bills.map((item, i) => {
+												const reqItem = item.patientRequestItem;
 												return (
 													<tr className={i % 2 === 0 ? 'even' : 'odd'} key={i}>
-														<td className="sorting_1">{item.id}</td>
+														<td className="sorting_1" nowrap="nowrap">{item.id}</td>
 														<td>
 															<span className="text-capitalize">
-																{item.bill_source === 'ward'
-																	? 'Room'
-																	: item.bill_source}
-															</span>
-															{item.bill_source !== 'registration' &&
-																item.bill_source !== 'credit' && (
-																	<a
-																		className="item-title text-primary text-underline ml-2"
-																		onClick={() => viewDetails(item)}
-																	>
-																		<i className="os-icon os-icon-alert-circle" />
-																	</a>
+																<strong>{parseSource(item.bill_source)}</strong>
+																{(item?.bill_source === 'ward' ||
+																	item?.bill_source === 'nicu-accommodation') &&
+																	`: ${item.description}`}
+																{(item?.bill_source === 'consultancy' ||
+																	item?.bill_source === 'labs' ||
+																	item?.bill_source === 'scans' ||
+																	item?.bill_source === 'procedure' ||
+																	item?.bill_source === 'nursing-service') &&
+																item.service?.item?.name
+																	? `: ${item.service?.item?.name}`
+																	: ''}
+																{item?.bill_source === 'drugs' && (
+																	<>
+																		{` : ${reqItem.fill_quantity} ${
+																			reqItem.drug.unitOfMeasure
+																		} of ${reqItem.drugGeneric.name} (${
+																			reqItem.drug.name
+																		}) at ${formatCurrency(
+																			reqItem.drugBatch.unitPrice
+																		)} each`}
+																	</>
 																)}
+															</span>
 														</td>
-														<td>
+														<td nowrap="nowrap">
 															{moment(item.createdAt).format(
 																'DD-MMM-YYYY h:mm a'
 															)}
 														</td>
-														<td>{formatCurrency(item.amount || 0)}</td>
-														<td>{item.payment_method || '--'}</td>
-														<td>
+														<td nowrap="nowrap">{formatCurrency(item.amount || 0)}</td>
+														<td nowrap="nowrap">{item.payment_method || '--'}</td>
+														<td nowrap="nowrap">
 															{item.status === 0 && (
 																<span className="badge badge-secondary text-white">
 																	pending
@@ -377,12 +372,6 @@ const PatientBills = () => {
 					</>
 				)}
 			</div>
-			{showModal && (
-				<ModalServiceDetails
-					transaction={transaction}
-					closeModal={() => closeModal()}
-				/>
-			)}
 			{showApplyModal && (
 				<ModalApplyCredit
 					patient={patient}

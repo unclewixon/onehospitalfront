@@ -10,11 +10,11 @@ import {
 	confirmAction,
 	formatCurrency,
 	patientname,
+	parseSource,
 } from '../../services/utilities';
 import { deleteTransaction } from '../../actions/transaction';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { Can } from '../common/Can';
-import ModalServiceDetails from '../Modals/ModalServiceDetails';
 import ModalShowTransactions from '../Modals/ModalShowTransactions';
 import ModalApproveTransaction from '../Modals/ModalApproveTransaction';
 import ModalPrintTransaction from '../Modals/ModalPrintTransaction';
@@ -25,7 +25,6 @@ const TransactionTable = ({
 	showPrint = false,
 	queue,
 }) => {
-	const [showModal, setShowModal] = useState(false);
 	const [showPrintModal, setShowPrintModal] = useState(false);
 	const [showTransactions, setShowTransactions] = useState(false);
 	const [transaction, setTransaction] = useState(null);
@@ -56,12 +55,6 @@ const TransactionTable = ({
 		confirmAction(deleteTask, data);
 	};
 
-	const viewDetails = transaction => {
-		document.body.classList.add('modal-open');
-		setShowModal(true);
-		setTransaction(transaction);
-	};
-
 	const showList = patient => {
 		document.body.classList.add('modal-open');
 		setShowTransactions(true);
@@ -70,7 +63,6 @@ const TransactionTable = ({
 
 	const closeModal = () => {
 		document.body.classList.remove('modal-open');
-		setShowModal(false);
 		setProcessTransaction(false);
 		setShowTransactions(false);
 		setTransaction(null);
@@ -101,9 +93,10 @@ const TransactionTable = ({
 				</thead>
 				<tbody>
 					{transactions.map((transaction, index) => {
+						const reqItem = transaction.patientRequestItem;
 						return (
 							<tr key={index}>
-								<td>
+								<td nowrap="nowrap">
 									{moment(transaction.createdAt).format('DD-MM-YYYY h:mm a')}
 								</td>
 								<td>
@@ -120,19 +113,32 @@ const TransactionTable = ({
 								<td>
 									<div className="flex">
 										<span className="text-capitalize">
-											{transaction.bill_source === 'ward'
-												? 'Room'
-												: transaction.bill_source}
+											<span className="text-capitalize">
+												<strong>{parseSource(transaction.bill_source)}</strong>
+												{(transaction?.bill_source === 'ward' ||
+													transaction?.bill_source === 'nicu-accommodation') &&
+													`: ${transaction.description}`}
+												{(transaction?.bill_source === 'consultancy' ||
+													transaction?.bill_source === 'labs' ||
+													transaction?.bill_source === 'scans' ||
+													transaction?.bill_source === 'procedure' ||
+													transaction?.bill_source === 'nursing-service') &&
+													transaction.service?.item?.name
+													? `: ${transaction.service?.item?.name}`
+													: ''}
+												{transaction?.bill_source === 'drugs' && (
+													<>
+														{` : ${reqItem.fill_quantity} ${
+															reqItem.drug.unitOfMeasure
+														} of ${reqItem.drugGeneric.name} (${
+															reqItem.drug.name
+														}) at ${formatCurrency(
+															reqItem.drugBatch.unitPrice
+														)} each`}
+													</>
+												)}
+											</span>
 										</span>
-										{transaction.bill_source !== 'registration' &&
-											transaction.bill_source !== 'debit' && (
-												<a
-													className="item-title text-info ml-2"
-													onClick={() => viewDetails(transaction)}
-												>
-													<i className="os-icon os-icon-alert-circle" />
-												</a>
-											)}
 									</div>
 								</td>
 								<td>{formatCurrency(transaction.amount || 0, true)}</td>
@@ -182,8 +188,7 @@ const TransactionTable = ({
 													<Tooltip title="Approve Transactions">
 														<a
 															className="secondary"
-															onClick={() => doApproveTransaction(transaction)}
-														>
+															onClick={() => doApproveTransaction(transaction)}>
 															<i className="os-icon os-icon-thumbs-up" />
 														</a>
 													</Tooltip>
@@ -194,8 +199,7 @@ const TransactionTable = ({
 													<Tooltip title="Delete Transactions">
 														<a
 															className="text-danger"
-															onClick={() => confirmDelete(transaction)}
-														>
+															onClick={() => confirmDelete(transaction)}>
 															<i className="os-icon os-icon-ui-15" />
 														</a>
 													</Tooltip>
@@ -209,8 +213,7 @@ const TransactionTable = ({
 											<Tooltip title="Print">
 												<a
 													className="text-info"
-													onClick={() => handlePrint(transaction)}
-												>
+													onClick={() => handlePrint(transaction)}>
 													<i className="os-icon os-icon-printer" />
 												</a>
 											</Tooltip>
@@ -226,12 +229,6 @@ const TransactionTable = ({
 					)}
 				</tbody>
 			</table>
-			{showModal && transaction && (
-				<ModalServiceDetails
-					transaction={transaction}
-					closeModal={() => closeModal()}
-				/>
-			)}
 			{showTransactions && patient && (
 				<ModalShowTransactions
 					patient={patient}
