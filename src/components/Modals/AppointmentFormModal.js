@@ -35,7 +35,7 @@ function SelectAppointment({ setView }) {
 							<Image src={inPatientImg} width={60} />
 						</div>
 						<div className="label">
-							Create appointment for OPD patients to Lab/Radiology
+							Create appointment for OPD patients to Paypoint
 						</div>
 						<div className="value">OPD</div>
 					</a>
@@ -74,13 +74,19 @@ const AppointmentFormModal = ({ addAppointment, closeModal }) => {
 				role="document">
 				<div className="modal-content text-center">
 					<div className="modal-header faded smaller">
-						<div className="modal-title">New Appointment</div>
+						<div className="modal-title text-center w-100">
+							{currentView === 'outpatient-form'
+								? 'Create OPD Patient'
+								: 'New Appointment'}
+						</div>
 						<button
 							aria-label="Close"
 							className="close"
 							type="button"
 							onClick={closeModal}>
-							<span aria-hidden="true"> ×</span>
+							<span aria-hidden="true">
+								<span className="os-icon os-icon-close"></span>
+							</span>
 						</button>
 					</div>
 					{

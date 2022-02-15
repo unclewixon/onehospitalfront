@@ -170,8 +170,7 @@ const AllPatients = () => {
 							id="status"
 							className="form-control"
 							name="status"
-							onChange={e => setStatus(e.target.value)}
-						>
+							onChange={e => setStatus(e.target.value)}>
 							{statuses.map((status, i) => {
 								return (
 									<option key={i} value={status.value}>
@@ -184,8 +183,7 @@ const AllPatients = () => {
 					<div className="form-group col mt-4">
 						<div
 							className="btn btn-sm btn-primary btn-upper text-white filter-btn"
-							onClick={doFilter}
-						>
+							onClick={doFilter}>
 							<i className="os-icon os-icon-ui-37" />
 							<span>
 								{filtering ? <img src={waiting} alt="submitting" /> : 'Filter'}
@@ -226,6 +224,9 @@ const AllPatients = () => {
 															<i className="fa fa-hospital-o text-danger" />
 														</Tooltip>
 													)}
+													{data.is_out_patient && (
+														<span className="badge badge-secondary">OPD</span>
+													)}
 												</td>
 												<td>{`${formatPatientId(data)} ${
 													data.legacy_patient_id
@@ -236,11 +237,13 @@ const AllPatients = () => {
 												<td>{data.hmo.name}</td>
 												<td>{formatCurrency(data.outstanding || 0)}</td>
 												<td className="row-actions">
-													<Tooltip title="View Patient">
-														<a onClick={() => showProfile(data)}>
-															<i className="os-icon os-icon-user-male-circle2" />
-														</a>
-													</Tooltip>
+													{!data.is_out_patient && (
+														<Tooltip title="View Patient">
+															<a onClick={() => showProfile(data)}>
+																<i className="os-icon os-icon-user-male-circle2" />
+															</a>
+														</Tooltip>
+													)}
 												</td>
 											</tr>
 										);

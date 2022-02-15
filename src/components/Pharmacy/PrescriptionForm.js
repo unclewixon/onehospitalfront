@@ -581,7 +581,6 @@ const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 					)}
 				</div>
 			</form>
-
 			<div>
 				<Table>
 					<thead>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Field } from 'react-final-form';
-import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import { format, isValid } from 'date-fns';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
@@ -17,35 +16,18 @@ import {
 	hmoAPI,
 	relationships,
 } from '../../services/constants';
-import { request, staffname } from '../../services/utilities';
+import {
+	request,
+	staffname,
+	Compulsory,
+	ErrorBlock,
+	ReactSelectAdapter,
+	Condition,
+} from '../../services/utilities';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { notifySuccess } from '../../services/notify';
 import { messageService } from '../../services/message';
 import { setPatientRecord } from '../../actions/user';
-
-const Compulsory = () => {
-	return <span className="compulsory-field">*</span>;
-};
-
-const Error = ({ name }) => (
-	<Field
-		name={name}
-		subscription={{ touched: true, error: true }}
-		render={({ meta: { touched, error } }) =>
-			touched && error ? <small className="text-danger">{error}</small> : null
-		}
-	/>
-);
-
-const ReactSelectAdapter = ({ input, ...rest }) => (
-	<Select {...input} {...rest} searchable />
-);
-
-const Condition = ({ when, is, children }) => (
-	<Field name={when} subscription={{ value: true }}>
-		{({ input: { value } }) => (value === is ? children : null)}
-	</Field>
-);
 
 const PatientForm = ({ patient, closeModal, history, location }) => {
 	const path = location.pathname.split('/');
@@ -245,20 +227,18 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}
-		>
+			style={{ display: 'block' }}>
 			<div className="modal-dialog modal-lg" style={{ maxWidth: '1024px' }}>
 				<div className="modal-content text-center">
 					<div className="modal-header faded smaller">
-						<h5 className="form-header">
-							{patient ? 'Edit Patient Record' : 'New Patient Registeration'}
-						</h5>
+						<div className="modal-title text-center">
+							{patient ? 'Edit Patient Record' : 'New Patient Registration'}
+						</div>
 						<button
 							aria-label="Close"
 							className="close"
 							type="button"
-							onClick={closeModal}
-						>
+							onClick={closeModal}>
 							<span className="os-icon os-icon-close" />
 						</button>
 					</div>
@@ -268,20 +248,17 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 								<div className="support-ticket-content-w">
 									<div
 										className="support-ticket-info"
-										style={{ flex: '0 0 200px' }}
-									>
+										style={{ flex: '0 0 200px' }}>
 										<div
 											className="customer mb-0 pb-0"
-											style={{ width: '110px', borderBottom: '0 none' }}
-										>
+											style={{ width: '110px', borderBottom: '0 none' }}>
 											<div
 												className="avatar"
 												style={{
 													width: '110px',
 													borderRadius: '65px',
 													margin: 'auto',
-												}}
-											>
+												}}>
 												<img
 													alt=""
 													style={{ width: '110px', borderRadius: '65px' }}
@@ -304,15 +281,13 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 									style={{
 										width: 'calc(100% - 240px)',
 										marginLeft: '20px',
-									}}
-								>
+									}}>
 									<FormWizard
 										initialValues={Object.fromEntries(
 											Object.entries(initialValues).filter(([_, v]) => v !== '')
 										)}
 										onSubmit={onSubmit}
-										btnClasses="modal-footer buttons-on-right"
-									>
+										btnClasses="modal-footer buttons-on-right">
 										<FormWizard.Page
 											validate={values => {
 												const errors = {};
@@ -349,8 +324,7 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 													errors.ethnicity = "Enter patient's ethnicity";
 												}
 												return errors;
-											}}
-										>
+											}}>
 											<div className="row">
 												<div className="col-sm">
 													<div className="form-group">
@@ -364,7 +338,7 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 															type="text"
 															placeholder="Surname"
 														/>
-														<Error name="surname" />
+														<ErrorBlock name="surname" />
 													</div>
 												</div>
 												<div className="col-sm">
@@ -379,7 +353,7 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 															type="text"
 															placeholder="Other Names"
 														/>
-														<Error name="other_names" />
+														<ErrorBlock name="other_names" />
 													</div>
 												</div>
 												<div className="col-sm">
@@ -394,7 +368,7 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 															type="email"
 															placeholder="Email e.g example@gmail.com"
 														/>
-														<Error name="email" />
+														<ErrorBlock name="email" />
 													</div>
 												</div>
 											</div>
@@ -432,7 +406,7 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 																</div>
 															)}
 														/>
-														<Error name="date_of_birth" />
+														<ErrorBlock name="date_of_birth" />
 													</div>
 												</div>
 												<div className="col-sm">
@@ -445,7 +419,7 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 															component={ReactSelectAdapter}
 															options={genders}
 														/>
-														<Error name="gender" />
+														<ErrorBlock name="gender" />
 													</div>
 												</div>
 												<div className="col-sm">
@@ -458,7 +432,7 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 															component={ReactSelectAdapter}
 															options={maritalStatuses}
 														/>
-														<Error name="maritalStatus" />
+														<ErrorBlock name="maritalStatus" />
 													</div>
 												</div>
 											</div>
@@ -493,7 +467,7 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 																/>
 															)}
 														</Field>
-														<Error name="hmo_id" />
+														<ErrorBlock name="hmo_id" />
 													</div>
 												</div>
 												<div className="col-sm">
@@ -534,7 +508,7 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 															type="text"
 															placeholder="Address"
 														/>
-														<Error name="address" />
+														<ErrorBlock name="address" />
 													</div>
 												</div>
 												<div className="col-sm">
@@ -549,7 +523,7 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 															type="text"
 															placeholder="Phone Number"
 														/>
-														<Error name="phone_number" />
+														<ErrorBlock name="phone_number" />
 													</div>
 												</div>
 												<div className="col-sm">
@@ -562,7 +536,7 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 															component={ReactSelectAdapter}
 															options={ethnicities}
 														/>
-														<Error name="ethnicity" />
+														<ErrorBlock name="ethnicity" />
 													</div>
 												</div>
 											</div>
@@ -630,8 +604,7 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 														"Select next of kin's ethnicity";
 												}
 												return errors;
-											}}
-										>
+											}}>
 											<div className="row">
 												<div className="col-sm">
 													<div className="form-group">
@@ -645,7 +618,7 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 															type="text"
 															placeholder="NOK Surname"
 														/>
-														<Error name="nok_surname" />
+														<ErrorBlock name="nok_surname" />
 													</div>
 												</div>
 												<div className="col-sm">
@@ -660,7 +633,7 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 															type="text"
 															placeholder="NOK Other Names"
 														/>
-														<Error name="nok_other_names" />
+														<ErrorBlock name="nok_other_names" />
 													</div>
 												</div>
 											</div>
@@ -708,7 +681,7 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 															component={ReactSelectAdapter}
 															options={genders}
 														/>
-														<Error name="nok_gender" />
+														<ErrorBlock name="nok_gender" />
 													</div>
 												</div>
 												<div className="col-sm">
@@ -745,7 +718,7 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 															component={ReactSelectAdapter}
 															options={ethnicities}
 														/>
-														<Error name="nok_ethnicity" />
+														<ErrorBlock name="nok_ethnicity" />
 													</div>
 												</div>
 												<div className="col-sm">
@@ -772,7 +745,7 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 															type="text"
 															placeholder="NOK Address"
 														/>
-														<Error name="nok_address" />
+														<ErrorBlock name="nok_address" />
 													</div>
 												</div>
 												<div className="col-sm">
@@ -787,7 +760,7 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 															type="text"
 															placeholder="NOK Phone Number"
 														/>
-														<Error name="nok_phoneNumber" />
+														<ErrorBlock name="nok_phoneNumber" />
 													</div>
 												</div>
 												<div className="col-sm">

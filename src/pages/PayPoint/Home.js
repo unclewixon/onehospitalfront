@@ -6,11 +6,10 @@ import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
 
 const PaypointQueue = lazy(() => import('./PaypointQueue'));
-const NewTransaction = lazy(() => import('./NewTransaction'));
 const Dashboard = lazy(() => import('./Dashboard'));
 const TransactionHistory = lazy(() => import('./TransactionHistory'));
 const Voucher = lazy(() => import('./Voucher'));
-const Proforma = lazy(() => import('./Proforma'));
+const ProformaInvoice = lazy(() => import('./ProformaInvoice'));
 
 const Home = ({ match }) => {
 	return (
@@ -41,14 +40,9 @@ const Home = ({ match }) => {
 												path={`${match.url}/vouchers`}
 												component={Voucher}
 											/>
-
-											<Route
-												path={`${match.url}/new-transaction`}
-												component={NewTransaction}
-											/>
 											<Route
 												path={`${match.url}/proforma-invoice`}
-												component={Proforma}
+												component={ProformaInvoice}
 											/>
 											<Route component={NoMatch} />
 										</Switch>

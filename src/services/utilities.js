@@ -11,6 +11,8 @@ import JwtDecode from 'jwt-decode';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import truncate from 'lodash.truncate';
+import { Field } from 'react-final-form';
+import Select from 'react-select';
 
 import SSRStorage from './storage';
 import { API_URI, patientAPI, TOKEN_COOKIE } from './constants';
@@ -763,3 +765,27 @@ export const parseFrequency = (frequency, duration) => {
 export const qsParse = querystring => {
 	return Object.fromEntries(new URLSearchParams(querystring));
 };
+
+export const Compulsory = () => {
+	return <span className="compulsory-field">*</span>;
+};
+
+export const ErrorBlock = ({ name }) => (
+	<Field
+		name={name}
+		subscription={{ touched: true, error: true }}
+		render={({ meta: { touched, error } }) =>
+			touched && error ? <small className="text-danger">{error}</small> : null
+		}
+	/>
+);
+
+export const ReactSelectAdapter = ({ input, ...rest }) => (
+	<Select {...input} {...rest} searchable />
+);
+
+export const Condition = ({ when, is, children }) => (
+	<Field name={when} subscription={{ value: true }}>
+		{({ input: { value } }) => (value === is ? children : null)}
+	</Field>
+);

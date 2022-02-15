@@ -13,6 +13,7 @@ const PatientBillItem = ({
 		<>
 			{transactions.map(item => {
 				const isChecked = checked?.find(c => parseInt(c.id, 10) === item.id);
+				const reqItem = item.patientRequestItem;
 
 				return (
 					<tr key={item.id}>
@@ -28,10 +29,22 @@ const PatientBillItem = ({
 								/>
 							</td>
 						)}
-						<td>{formatDate(item.createdAt, 'DD-MMM-YYYY h:mm a')}</td>
-						<td className="flex">
+						<td nowrap="nowrap">{formatDate(item.createdAt, 'DD-MMM-YYYY h:mm a')}</td>
+						<td>
 							<span className="text-capitalize">
-								{parseSource(item.bill_source)}
+								<strong>{parseSource(item.bill_source)}</strong>
+								{item.service?.item?.name
+									? `: ${item.service?.item?.name}`
+									: ''}
+								{item?.bill_source === 'drugs' && (
+									<>
+										{` : ${reqItem.fill_quantity} ${
+											reqItem.drug.unitOfMeasure
+										} of ${reqItem.drugGeneric.name} (${
+											reqItem.drug.name
+										}) at ${formatCurrency(reqItem.drugBatch.unitPrice)} each`}
+									</>
+								)}
 							</span>
 						</td>
 						<td>{formatCurrency(item.amount || 0, true)}</td>

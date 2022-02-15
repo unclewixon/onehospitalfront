@@ -299,7 +299,6 @@ const Allergies = ({ previous, next, patient }) => {
 					</div>
 				</div>
 			</div>
-
 			<div className="row">
 				<div className="element-box p-3 m-0 mt-3 w-100">
 					<Table>
@@ -343,7 +342,6 @@ const Allergies = ({ previous, next, patient }) => {
 					</Table>
 				</div>
 			</div>
-
 			<div className="row mt-5">
 				<div className="col-sm-12 d-flex ant-row-flex-space-between">
 					<button className="btn btn-primary" onClick={previous}>
