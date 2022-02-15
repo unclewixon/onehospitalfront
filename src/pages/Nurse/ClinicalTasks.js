@@ -184,7 +184,7 @@ const ClinicalTasks = () => {
 	};
 
 	const showProfile = patient => {
-		if (patient) {
+		if (patient && patient.is_active) {
 			const info = { patient, type: 'patient' };
 			dispatch(toggleProfile(true, info));
 		}

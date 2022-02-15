@@ -72,8 +72,10 @@ class RadiologyBlock extends Component {
 	};
 
 	showProfile = patient => {
-		const info = { patient, type: 'patient' };
-		this.props.toggleProfile(true, info);
+		if (patient.is_active) {
+			const info = { patient, type: 'patient' };
+			this.props.toggleProfile(true, info);
+		}
 	};
 
 	upload = async (e, files) => {
@@ -182,15 +184,13 @@ class RadiologyBlock extends Component {
 								<button
 									className="btn btn-secondary"
 									style={{ margin: '10px' }}
-									onClick={printSingle}
-								>
+									onClick={printSingle}>
 									Print Single
 								</button>
 								<button
 									className="btn btn-secondary"
 									style={{ margin: '10px' }}
-									onClick={printGroup}
-								>
+									onClick={printGroup}>
 									Print Group
 								</button>
 							</div>
@@ -286,12 +286,10 @@ class RadiologyBlock extends Component {
 										<td>
 											<p className="item-title text-color m-0">
 												<Tooltip
-													title={<ProfilePopup patient={scan.patient} />}
-												>
+													title={<ProfilePopup patient={scan.patient} />}>
 													<a
 														className="cursor"
-														onClick={() => this.showProfile(scan.patient)}
-													>
+														onClick={() => this.showProfile(scan.patient)}>
 														{patientname(scan.patient, true)}
 													</a>
 												</Tooltip>
@@ -324,8 +322,7 @@ class RadiologyBlock extends Component {
 												visible={visible && visible === scan.id}
 												onVisibleChange={() =>
 													this.setState({ visible: scan.id })
-												}
-											>
+												}>
 												<a className="item-title text-primary">Note</a>
 											</Popover>
 										) : (
@@ -337,8 +334,7 @@ class RadiologyBlock extends Component {
 											<Tooltip title="View Scan Image">
 												<a
 													className="success"
-													onClick={() => this.viewScan(scan.item)}
-												>
+													onClick={() => this.viewScan(scan.item)}>
 													<i className="os-icon os-icon-link" /> view
 												</a>
 											</Tooltip>
@@ -390,8 +386,7 @@ class RadiologyBlock extends Component {
 														<Tooltip title="Captured Scan?">
 															<a
 																className="secondary"
-																onClick={() => this.capturedScan(scan)}
-															>
+																onClick={() => this.capturedScan(scan)}>
 																<i className="os-icon os-icon-check-circle" />
 															</a>
 														</Tooltip>
@@ -403,8 +398,7 @@ class RadiologyBlock extends Component {
 															<Tooltip title="Upload Scan Image">
 																<a
 																	className="primary"
-																	onClick={() => this.uploadScan(scan)}
-																>
+																	onClick={() => this.uploadScan(scan)}>
 																	<i className="os-icon os-icon-camera" />
 																</a>
 															</Tooltip>
@@ -416,8 +410,7 @@ class RadiologyBlock extends Component {
 															<Tooltip title="Approve Scan Image">
 																<a
 																	className="info"
-																	onClick={() => this.approveScan(scan)}
-																>
+																	onClick={() => this.approveScan(scan)}>
 																	<i className="os-icon os-icon-thumbs-up" />
 																</a>
 															</Tooltip>
@@ -430,8 +423,7 @@ class RadiologyBlock extends Component {
 											<Tooltip title="Cancel Scan">
 												<a
 													className="danger"
-													onClick={() => this.cancelScan(scan)}
-												>
+													onClick={() => this.cancelScan(scan)}>
 													<i className="os-icon os-icon-ui-15" />
 												</a>
 											</Tooltip>

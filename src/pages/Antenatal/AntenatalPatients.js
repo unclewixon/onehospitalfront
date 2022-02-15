@@ -46,8 +46,9 @@ const AntenatalPatients = () => {
 		async (page, patientId, sDate, eDate) => {
 			try {
 				const p = page || 1;
-				const url = `${antenatalAPI}?page=${p}&limit=${limit}&patient_id=${patientId ||
-					''}&startDate=${sDate || ''}&endDate=${eDate || ''}`;
+				const url = `${antenatalAPI}?page=${p}&limit=${limit}&patient_id=${
+					patientId || ''
+				}&startDate=${sDate || ''}&endDate=${eDate || ''}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setMeta(meta);
@@ -114,8 +115,10 @@ const AntenatalPatients = () => {
 	};
 
 	const showProfile = patient => {
-		const info = { patient, type: 'patient' };
-		dispatch(toggleProfile(true, info));
+		if (patient.is_active) {
+			const info = { patient, type: 'patient' };
+			dispatch(toggleProfile(true, info));
+		}
 	};
 
 	const openAntenatal = (patient, antenatal) => {

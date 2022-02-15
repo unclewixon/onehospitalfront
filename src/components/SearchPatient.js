@@ -74,8 +74,10 @@ class SearchPatient extends Component {
 	};
 
 	showProfile = patient => () => {
-		const info = { patient, type: 'patient' };
-		this.props.toggleProfile(true, info);
+		if (patient.is_active) {
+			const info = { patient, type: 'patient' };
+			this.props.toggleProfile(true, info);
+		}
 	};
 
 	render() {

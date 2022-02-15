@@ -51,22 +51,6 @@ const AllPatients = () => {
 
 	const dispatch = useDispatch();
 
-	// const fetchHmos = useCallback(
-	// 	async page => {
-	// 		try {
-	// 			const p = page || 1;
-	// 			const url = `${hmoAPI}/schemes?page=${p}&limit=10`;
-	// 			const rs = await request(url, 'GET', true);
-	// 			setHmos([...rs.result]);
-	// 		} catch (e) {
-	// 			console.log(e);
-	// 			dispatch(stopBlock());
-	// 			notifyError('could not fetch hmo schemes');
-	// 		}
-	// 	},
-	// 	[dispatch]
-	// );
-
 	const dateChange = e => {
 		const date = e.map(d => {
 			return moment(d._d).format('YYYY-MM-DD');
@@ -77,9 +61,10 @@ const AllPatients = () => {
 	};
 
 	const showProfile = patient => {
-		console.log(patient);
-		const info = { patient, type: 'patient' };
-		dispatch(toggleProfile(true, info));
+		if (patient.is_active) {
+			const info = { patient, type: 'patient' };
+			dispatch(toggleProfile(true, info));
+		}
 	};
 
 	const fetchPatients = useCallback(
@@ -237,7 +222,7 @@ const AllPatients = () => {
 												<td>{data.hmo.name}</td>
 												<td>{formatCurrency(data.outstanding || 0)}</td>
 												<td className="row-actions">
-													{!data.is_out_patient && (
+													{!data.is_out_patient && data.is_active && (
 														<Tooltip title="View Patient">
 															<a onClick={() => showProfile(data)}>
 																<i className="os-icon os-icon-user-male-circle2" />

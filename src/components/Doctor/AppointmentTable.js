@@ -44,8 +44,10 @@ const AppointmentTable = ({
 	const dispatch = useDispatch();
 
 	const showProfile = patient => {
-		const info = { patient, type: 'patient' };
-		dispatch(toggleProfile(true, info));
+		if (patient.is_active) {
+			const info = { patient, type: 'patient' };
+			dispatch(toggleProfile(true, info));
+		}
 	};
 
 	const startEncounter = (id, patient) => {
@@ -157,12 +159,10 @@ const AppointmentTable = ({
 								<td>
 									<p className="item-title text-color m-0">
 										<Tooltip
-											title={<ProfilePopup patient={appointment.patient} />}
-										>
+											title={<ProfilePopup patient={appointment.patient} />}>
 											<a
 												className="cursor"
-												onClick={() => showProfile(appointment.patient)}
-											>
+												onClick={() => showProfile(appointment.patient)}>
 												{patientname(appointment.patient, true)}
 											</a>
 										</Tooltip>
@@ -202,8 +202,7 @@ const AppointmentTable = ({
 																onClick={() =>
 																	confirm({ id: appointment.id, action: 1 })
 																}
-																className="btn btn-sm btn-primary"
-															>
+																className="btn btn-sm btn-primary">
 																Accept
 															</Button>
 														)}
@@ -233,8 +232,7 @@ const AppointmentTable = ({
 																						appointment.antenatal
 																					)
 																				}
-																				className="btn btn-sm btn-success text-white"
-																			>
+																				className="btn btn-sm btn-success text-white">
 																				Antenatal Assessment
 																			</button>
 																		)}
@@ -245,8 +243,7 @@ const AppointmentTable = ({
 																					appointment?.patient
 																				)
 																			}
-																			className="btn btn-sm btn-info text-white"
-																		>
+																			className="btn btn-sm btn-info text-white">
 																			Start Encounter
 																		</button>
 																		<Tooltip title="Call Patient">
@@ -254,8 +251,7 @@ const AppointmentTable = ({
 																				onClick={() =>
 																					blastPrompt(appointment.id)
 																				}
-																				className="btn text-primary ml-1"
-																			>
+																				className="btn text-primary ml-1">
 																				<i className="os-icon os-icon-volume-2" />
 																			</a>
 																		</Tooltip>
@@ -310,8 +306,7 @@ const AppointmentTable = ({
 									<span
 										className={`badge badge-${
 											appointment.is_scheduled ? 'primary' : 'secondary'
-										}`}
-									>
+										}`}>
 										{appointment.is_scheduled ? 'Yes' : 'No'}
 									</span>
 								</td>

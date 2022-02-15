@@ -49,8 +49,10 @@ const VitalsQueue = () => {
 	});
 
 	const showProfile = patient => {
-		const info = { patient, type: 'patient' };
-		dispatch(toggleProfile(true, info));
+		if (patient.is_active) {
+			const info = { patient, type: 'patient' };
+			dispatch(toggleProfile(true, info));
+		}
 	};
 
 	const sendToDoctor = async queue => {

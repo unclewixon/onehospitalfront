@@ -31,8 +31,10 @@ const PrescriptionBlock = ({
 	};
 
 	const showProfile = patient => {
-		const info = { patient, type: 'patient' };
-		dispatch(toggleProfile(true, info));
+		if (patient.is_active) {
+			const info = { patient, type: 'patient' };
+			dispatch(toggleProfile(true, info));
+		}
 	};
 
 	const doPrint = async regimen => {
@@ -78,12 +80,10 @@ const PrescriptionBlock = ({
 									<td>
 										<p className="item-title text-color m-0">
 											<Tooltip
-												title={<ProfilePopup patient={request.patient} />}
-											>
+												title={<ProfilePopup patient={request.patient} />}>
 												<a
 													className="cursor"
-													onClick={() => showProfile(request.patient)}
-												>
+													onClick={() => showProfile(request.patient)}>
 													{patientname(request.patient, true)}
 												</a>
 											</Tooltip>
@@ -127,8 +127,7 @@ const PrescriptionBlock = ({
 												document.body.classList.add('modal-open');
 												setPrescription(request);
 												setShowModal(true);
-											}}
-										>
+											}}>
 											<i className="os-icon os-icon-eye" />
 										</a>
 									</Tooltip>
