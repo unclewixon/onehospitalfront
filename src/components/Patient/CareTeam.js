@@ -70,7 +70,7 @@ const CareTeam = ({ can_request, type, itemId }) => {
 		setMeta({
 			currentPage: 1,
 			itemsPerPage: 10,
-			totalPages: allMembers.length + 1,
+			totalPages: allMembers.length,
 		});
 	};
 
@@ -145,6 +145,7 @@ const CareTeam = ({ can_request, type, itemId }) => {
 					updateMembers={updateMembers}
 					item_id={itemId}
 					type={type}
+					members={members}
 				/>
 			)}
 		</div>
