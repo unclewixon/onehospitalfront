@@ -718,7 +718,7 @@ export const parseNote = note => {
 	return note.description;
 };
 
-export const parseSource = source => (source === 'ward' ? 'Room' : source);
+export const parseSource = source => (source === 'ward' ? 'Room' : startCase(source));
 
 export const getGestationAge = date => {
 	const weeks = moment().diff(moment(date), 'weeks');

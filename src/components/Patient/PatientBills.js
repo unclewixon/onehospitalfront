@@ -139,6 +139,8 @@ const PatientBills = () => {
 		messageService.sendMessage({ type: 'balance', data: res });
 	};
 
+	const doPrint = () => {};
+
 	return (
 		<div className="row">
 			<div className="m-0 w-100">
@@ -187,6 +189,7 @@ const PatientBills = () => {
 												patient={patient}
 												updateBalance={amount => {
 													setDepositBalance(amount);
+													fetchBills(1);
 												}}
 											/>
 										}
@@ -261,6 +264,12 @@ const PatientBills = () => {
 										<i className="os-icon os-icon-close" />
 									</div>
 								)}
+								<div
+									className="btn btn-sm btn-info btn-upper text-white ml-2 d-none"
+									onClick={() => doPrint()}>
+									<i className="os-icon os-icon-printer" />
+									<span>Print</span>
+								</div>
 							</div>
 						</div>
 						<div className="dataTables_wrapper container-fluid dt-bootstrap4">
@@ -285,7 +294,9 @@ const PatientBills = () => {
 												const reqItem = item.patientRequestItem;
 												return (
 													<tr className={i % 2 === 0 ? 'even' : 'odd'} key={i}>
-														<td className="sorting_1" nowrap="nowrap">{item.id}</td>
+														<td className="sorting_1" nowrap="nowrap">
+															{item.id}
+														</td>
 														<td>
 															<span className="text-capitalize">
 																<strong>{parseSource(item.bill_source)}</strong>
@@ -318,8 +329,12 @@ const PatientBills = () => {
 																'DD-MMM-YYYY h:mm a'
 															)}
 														</td>
-														<td nowrap="nowrap">{formatCurrency(item.amount || 0)}</td>
-														<td nowrap="nowrap">{item.payment_method || '--'}</td>
+														<td nowrap="nowrap">
+															{formatCurrency(item.amount || 0)}
+														</td>
+														<td nowrap="nowrap">
+															{item.payment_method || '--'}
+														</td>
 														<td nowrap="nowrap">
 															{item.status === 0 && (
 																<span className="badge badge-secondary text-white">
