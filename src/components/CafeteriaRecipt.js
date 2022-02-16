@@ -28,7 +28,7 @@ const CafeteriaRecipt = ({
 				onClick={() => onModalClick(null)}></Modal.Header>
 			<Modal.Body>
 				<div id="divToPrint" ref={receiptRef}>
-					<center className="reciept-header">
+					{/* <center className="reciept-header">
 						<div className="">
 							<img
 								width="30%"
@@ -38,7 +38,7 @@ const CafeteriaRecipt = ({
 							/>
 						</div>
 						<div></div>
-					</center>
+					</center> */}
 
 					<div className="reciept-address">
 						<p style={{ fontSize: '9px' }}>

@@ -170,11 +170,11 @@ const Login = ({ location, history, error, handleSubmit }) => {
 		<section className="fxt-animation template">
 			<div className="bg-overlay">
 				<div className="fxt-content">
-					<div className="logo-header">
+					{/* <div className="logo-header">
 						<a className="fxt-logo">
 							<img src={require('../assets/images/logo.png')} alt="logo" />
 						</a>
-					</div>
+					</div> */}
 					<div className="fxt-form">
 						<form onSubmit={handleSubmit(doLogin)} autoComplete="off">
 							{session !== '' && (
