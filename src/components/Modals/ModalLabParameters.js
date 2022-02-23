@@ -62,7 +62,7 @@ const ModalLabParameters = ({ closeModal, labTest }) => {
 			},
 		]);
 
-		elementRef.current?.scrollIntoView({ behavior: 'smooth' });
+		elementRef?.current?.scrollIntoView({ behavior: 'smooth' });
 	};
 
 	const onChange = (e, type, id, hasData) => {

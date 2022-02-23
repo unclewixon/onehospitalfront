@@ -104,7 +104,7 @@ class StaffProfile extends Component {
 								<div className="support-ticket-content-w force-show-folded-info">
 									<div className="support-ticket-content">
 										<div className="support-ticket-content-header">
-											<h4 className="ticket-header">Deda Staff Profile</h4>
+											<h4 className="ticket-header">Staff Profile</h4>
 										</div>
 										<div className="ticket-thread">
 											<div className="ticket-reply">
