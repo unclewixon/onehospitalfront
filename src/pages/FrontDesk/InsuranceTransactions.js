@@ -16,6 +16,7 @@ import {
 	formatCurrency,
 	patientname,
 	updateImmutable,
+	parseSource,
 } from '../../services/utilities';
 import { loadTransactions } from '../../actions/transaction';
 import ModalServiceDetails from '../../components/Modals/ModalServiceDetails';
@@ -349,9 +350,10 @@ class InsuranceTransactions extends Component {
 								</thead>
 								<tbody>
 									{transactions.map((item, index) => {
+										const reqItem = item.patientRequestItem;
 										return (
 											<tr key={index}>
-												<td>
+												<td style={{ width: '120px' }}>
 													{moment(item.createdAt).format('DD-MM-YYYY H:mma')}
 												</td>
 												<td>{patientname(item.patient, true)}</td>
@@ -361,19 +363,37 @@ class InsuranceTransactions extends Component {
 														: ''
 												}`}</td>
 												<td>
-													<span className="text-capitalize">
-														{item.bill_source}
-													</span>
-													{item.bill_source !== 'registration' && (
-														<a
-															className="item-title text-primary text-underline ml-2"
-															onClick={() => this.viewDetails(item)}
-														>
-															details
-														</a>
-													)}
+													<div className="flex">
+														<span className="text-capitalize">
+															<span className="text-capitalize">
+																<strong>{parseSource(item.bill_source)}</strong>
+																{(item?.bill_source === 'ward' ||
+																	item?.bill_source === 'nicu-accommodation') &&
+																	`: ${item.description}`}
+																{(item?.bill_source === 'consultancy' ||
+																	item?.bill_source === 'labs' ||
+																	item?.bill_source === 'scans' ||
+																	item?.bill_source === 'procedure' ||
+																	item?.bill_source === 'nursing-service') &&
+																item.service?.item?.name
+																	? `: ${item.service?.item?.name}`
+																	: ''}
+																{item?.bill_source === 'drugs' && (
+																	<>
+																		{` : ${reqItem.fill_quantity} ${
+																			reqItem.drug.unitOfMeasure
+																		} of ${reqItem.drugGeneric.name} (${
+																			reqItem.drug.name
+																		}) at ${formatCurrency(
+																			reqItem.drugBatch.unitPrice
+																		)} each`}
+																	</>
+																)}
+															</span>
+														</span>
+													</div>
 												</td>
-												<td>
+												<td nowrap="nowrap">
 													{item.amount ? formatCurrency(item.amount) : 0.0}
 												</td>
 
@@ -420,8 +440,7 @@ class InsuranceTransactions extends Component {
 																	}
 																	onVisibleChange={e =>
 																		this.handleVisibleChange(e, item.id)
-																	}
-																>
+																	}>
 																	<Tooltip title="Enter Code">
 																		<a className="text-primary text-white">
 																			<i className="os-icon os-icon-thumbs-up" />
@@ -431,16 +450,14 @@ class InsuranceTransactions extends Component {
 																<Tooltip title="Approve Without Code">
 																	<a
 																		className="text-success text-white"
-																		onClick={() => this.approve(item.id)}
-																	>
+																		onClick={() => this.approve(item.id)}>
 																		<i className="os-icon os-icon-check-square" />
 																	</a>
 																</Tooltip>
 																<Tooltip title="Transfer to Paypoint">
 																	<a
 																		className="info"
-																		onClick={() => this.transfer(item.id)}
-																	>
+																		onClick={() => this.transfer(item.id)}>
 																		<i className="os-icon os-icon-mail-18" />
 																	</a>
 																</Tooltip>
