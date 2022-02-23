@@ -45,6 +45,7 @@ const Patients = ({ location, filter }) => {
 	});
 	const [patient, setPatient] = useState('');
 	const [activePage, setActivePage] = useState('');
+	const [reassign, setReassign] = useState(0);
 
 	const dispatch = useDispatch();
 
@@ -134,8 +135,8 @@ const Patients = ({ location, filter }) => {
 
 	const showProfile = patient => {
 		if (patient.is_active) {
-		const info = { patient, type: 'patient' };
-		dispatch(toggleProfile(true, info));
+			const info = { patient, type: 'patient' };
+			dispatch(toggleProfile(true, info));
 		}
 	};
 
@@ -163,9 +164,17 @@ const Patients = ({ location, filter }) => {
 		setShowModal(true);
 	};
 
+	const reAssignBed = item => {
+		setReassign(1);
+		document.body.classList.add('modal-open');
+		setSelected(item);
+		setShowModal(true);
+	};
+
 	const closeModal = () => {
 		setShowModal(false);
 		setSelected(null);
+		setReassign(0);
 		document.body.classList.remove('modal-open');
 	};
 
@@ -199,8 +208,7 @@ const Patients = ({ location, filter }) => {
 							<div className="form-group col-md-3 mt-4">
 								<div
 									className="btn btn-sm btn-primary btn-upper text-white"
-									onClick={e => doFilter(e)}
-								>
+									onClick={e => doFilter(e)}>
 									<i className="os-icon os-icon-ui-37" />
 									<span>
 										{filtering ? (
@@ -241,8 +249,7 @@ const Patients = ({ location, filter }) => {
 													<td>
 														<p className="item-title text-color m-0">
 															<Tooltip
-																title={<ProfilePopup patient={item.patient} />}
-															>
+																title={<ProfilePopup patient={item.patient} />}>
 																<a
 																	className="cursor"
 																	onClick={() =>
@@ -250,8 +257,7 @@ const Patients = ({ location, filter }) => {
 																			...item.patient,
 																			admission: item,
 																		})
-																	}
-																>
+																	}>
 																	{patientname(item.patient, true)}
 																</a>
 															</Tooltip>
@@ -266,6 +272,15 @@ const Patients = ({ location, filter }) => {
 														{item.room
 															? `Room ${item.room.name} / ${item.room.floor}`
 															: '--'}
+														{item.room && (
+															<Tooltip title="Change Room">
+																<a
+																	onClick={() => reAssignBed(item)}
+																	className="primary ml-2">
+																	<i className="fa fa-bed" />
+																</a>
+															</Tooltip>
+														)}
 													</td>
 													{activePage === 'discharged' && (
 														<td>
@@ -283,8 +298,7 @@ const Patients = ({ location, filter }) => {
 															<span
 																className={`badge badge-${
 																	item.start_discharge ? 'warning' : 'secondary'
-																}`}
-															>
+																}`}>
 																{item.start_discharge ? 'Discharging' : 'Open'}
 															</span>
 														) : (
@@ -303,8 +317,7 @@ const Patients = ({ location, filter }) => {
 																<Tooltip title="Assign Bed">
 																	<a
 																		onClick={() => assignBed(item)}
-																		className="primary"
-																	>
+																		className="primary">
 																		<i className="fa fa-bed" />
 																	</a>
 																</Tooltip>
@@ -313,8 +326,7 @@ const Patients = ({ location, filter }) => {
 															<a
 																onClick={() =>
 																	showAdmission(item.patient, item)
-																}
-															>
+																}>
 																<i className="os-icon os-icon-user-male-circle2" />
 															</a>
 														</Tooltip>
@@ -355,6 +367,7 @@ const Patients = ({ location, filter }) => {
 						patients={admittedPatients}
 						updatePatient={patients => setAdmittedPatients(patients)}
 						closeModal={() => closeModal()}
+						reassign={reassign}
 					/>
 				)}
 			</div>

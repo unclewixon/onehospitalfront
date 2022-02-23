@@ -5,9 +5,15 @@ import { Image } from 'react-bootstrap';
 import capitalize from 'lodash.capitalize';
 import { connect } from 'react-redux';
 
-import { request, updateImmutable, formatDate } from '../services/utilities';
+import {
+	request,
+	updateImmutable,
+	formatDate,
+	confirmAction,
+} from '../services/utilities';
 import { notifySuccess, notifyError } from '../services/notify';
 import { staffname, parseAvatar } from '../services/utilities';
+import { startBlock, stopBlock } from '../actions/redux-block';
 
 class StaffItem extends Component {
 	state = {
@@ -24,15 +30,18 @@ class StaffItem extends Component {
 	doEnable = async (e, data) => {
 		try {
 			e.preventDefault();
+			this.props.startBlock();
 			const { staffs } = this.props;
 			const url = `hr/staffs/${data.id}/enable`;
 			await request(url, 'PATCH', true);
 			data.isActive = true;
 			const upd = updateImmutable(staffs, data);
 			this.props.updateStaffs(upd);
+			this.props.stopBlock();
 			notifySuccess('Staff Enabled');
 		} catch (error) {
 			console.log(error);
+			this.props.stopBlock();
 			notifyError('Error Enabling Staff');
 		}
 	};
@@ -40,17 +49,44 @@ class StaffItem extends Component {
 	doDisable = async (e, data) => {
 		try {
 			e.preventDefault();
+			this.props.startBlock();
 			const { staffs } = this.props;
 			const url = `hr/staffs/${data.id}`;
 			await request(url, 'DELETE', true);
 			data.isActive = false;
 			const upd = updateImmutable(staffs, data);
 			this.props.updateStaffs(upd);
+			this.props.stopBlock();
 			notifySuccess('Staff Disabled');
 		} catch (error) {
 			console.log(error);
+			this.props.stopBlock();
 			notifyError('Error Disabling Staff');
 		}
+	};
+
+	resetPassword = async data => {
+		try {
+			this.props.startBlock();
+			const url = `hr/staffs/${data.id}/reset-password`;
+			await request(url, 'POST', true);
+			this.props.stopBlock();
+			notifySuccess('Password has been reset!');
+		} catch (error) {
+			console.log(error);
+			this.props.stopBlock();
+			notifyError('Error reseting password');
+		}
+	};
+
+	doReset = async (e, data) => {
+		e.preventDefault();
+		confirmAction(
+			this.resetPassword,
+			data,
+			'Do you want to reset password?',
+			'Are you sure?'
+		);
 	};
 
 	hide = () => {
@@ -110,13 +146,18 @@ class StaffItem extends Component {
 									)}
 									{profile.role.slug === 'it-admin' && (
 										<>
+											<Tooltip title="Reset Password">
+												<a
+													onClick={e => this.doReset(e, item)}
+													className="info">
+													<i className="os-icon os-icon-grid-18" />
+												</a>
+											</Tooltip>
 											{item.isActive ? (
 												<Tooltip title="Disable Staff">
 													<a
 														onClick={e => this.doDisable(e, item)}
-														className="danger"
-														title="Disable Staff"
-													>
+														className="danger">
 														<i className="os-icon os-icon-x-circle" />
 													</a>
 												</Tooltip>
@@ -124,9 +165,7 @@ class StaffItem extends Component {
 												<Tooltip title="Enable Staff">
 													<a
 														onClick={e => this.doEnable(e, item)}
-														className="success"
-														title="Enable Staff"
-													>
+														className="success">
 														<i className="os-icon os-icon-check-circle" />
 													</a>
 												</Tooltip>
@@ -174,4 +213,4 @@ const mapStateToProps = (state, ownProps) => {
 	};
 };
 
-export default connect(mapStateToProps)(StaffItem);
+export default connect(mapStateToProps, { startBlock, stopBlock })(StaffItem);

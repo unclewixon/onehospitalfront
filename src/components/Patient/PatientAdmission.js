@@ -4,6 +4,7 @@ import { Field, reduxForm, SubmissionError, reset } from 'redux-form';
 import { Link, withRouter } from 'react-router-dom';
 
 import {
+	confirmAction,
 	renderSelect,
 	renderTextArea,
 	renderTextInput,
@@ -45,7 +46,7 @@ class PatientAdmission extends Component {
 		submitting: false,
 	};
 
-	admitPatient = async data => {
+	doAdmitPatient =async (data) => {
 		try {
 			const { patient } = this.props;
 			this.setState({ submitting: true });
@@ -68,6 +69,15 @@ class PatientAdmission extends Component {
 				_error: e.message || 'could not start admission',
 			});
 		}
+	}
+
+	admitPatient = async data => {
+		confirmAction(
+			this.doAdmitPatient,
+			data,
+			'Do you want to admit patient?',
+			'Are you sure?'
+		);
 	};
 
 	render() {

@@ -43,7 +43,7 @@ class AssignBed extends Component {
 
 	asignBed = async () => {
 		try {
-			const { item, patients, updatePatient } = this.props;
+			const { item, patients, updatePatient, reassign } = this.props;
 			const { room_id } = this.state;
 
 			this.setState({ submitting: true });
@@ -56,6 +56,7 @@ class AssignBed extends Component {
 			const data = {
 				room_id,
 				admission_id: item.id,
+				reassign,
 			};
 
 			const url = 'patient/admissions/assign-bed';
