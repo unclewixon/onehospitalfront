@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Tooltip from 'antd/lib/tooltip';
 // import DatePicker from 'antd/lib/date-picker';
 
-import { transactionsAPI, searchAPI } from '../../services/constants';
+import { searchAPI } from '../../services/constants';
 import moment from 'moment';
 import { request } from '../../services/utilities';
 import { notifyError } from '../../services/notify';
@@ -48,7 +48,7 @@ export class Billing extends Component {
 		const { startDate, endDate } = this.state;
 		try {
 			this.setState({ loading: true });
-			const url = `${transactionsAPI}?staff_id=${this.props.staff.details.id}&startDate=${startDate}&endDate=${endDate}&status=&bill_source=cafeteria&payment_method&page=2&limit=2`;
+			const url = `transactions?staff_id=${this.props.staff.details.id}&startDate=${startDate}&endDate=${endDate}&status=&bill_source=cafeteria&payment_method&page=2&limit=2`;
 			const rs = await request(url, 'GET', true);
 
 			this.props.loadStaffTransaction(rs);

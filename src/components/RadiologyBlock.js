@@ -22,6 +22,7 @@ import TableLoading from './TableLoading';
 import { toggleProfile } from '../actions/user';
 import ProfilePopup from './Patient/ProfilePopup';
 import ViewRequestNote from './Modals/ViewRequestNote';
+import Admitted from './Admitted';
 
 class RadiologyBlock extends Component {
 	state = {
@@ -269,7 +270,7 @@ class RadiologyBlock extends Component {
 						{scans.map((scan, i) => {
 							return (
 								<tr key={i} className={scan.urgent ? 'urgent' : ''}>
-									<td>
+									<td style={{ width: '120px' }}>
 										<span>
 											{moment(scan.createdAt).format('DD-MM-YYYY h:mmA')}
 										</span>
@@ -293,9 +294,16 @@ class RadiologyBlock extends Component {
 														{patientname(scan.patient, true)}
 													</a>
 												</Tooltip>
+												{scan.admission && (
+													<Tooltip
+														title={<Admitted room={scan?.admission?.room} />}>
+														<i className="fa fa-hospital-o text-danger ml-1" />
+													</Tooltip>
+												)}
 												{(scan.patient.admission_id ||
 													scan.patient.nicu_id) && (
-													<Tooltip title="Admitted">
+													<Tooltip
+														title={<Admitted room={scan?.admission?.room} />}>
 														<i className="fa fa-hospital-o text-danger ml-1" />
 													</Tooltip>
 												)}

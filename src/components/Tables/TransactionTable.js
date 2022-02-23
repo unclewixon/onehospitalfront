@@ -18,6 +18,8 @@ import { Can } from '../common/Can';
 import ModalShowTransactions from '../Modals/ModalShowTransactions';
 import ModalApproveTransaction from '../Modals/ModalApproveTransaction';
 import ModalPrintTransaction from '../Modals/ModalPrintTransaction';
+import Admitted from '../Admitted';
+import NicuAdmitted from '../NicuAdmitted';
 
 const TransactionTable = ({
 	transactions,
@@ -102,10 +104,18 @@ const TransactionTable = ({
 								<td>
 									<a onClick={() => showList(transaction.patient)}>
 										{patientname(transaction.patient, true)}
-										{(transaction.patient?.admission_id ||
-											transaction.patient?.nicu_id) && (
-											<Tooltip title="Admitted">
-												<i className="fa fa-hospital-o text-danger ml-1" />
+										{transaction.admission && (
+											<Tooltip
+												title={
+													<Admitted room={transaction?.admission?.room} />
+												}>
+												<i className="fa fa-hospital-o text-danger" />
+											</Tooltip>
+										)}
+										{transaction.patient?.nicu_id && (
+											<Tooltip
+												title={<NicuAdmitted room={transaction?.nicu?.room} />}>
+												<i className="fa fa-hospital-o text-danger" />
 											</Tooltip>
 										)}
 									</a>
@@ -123,7 +133,7 @@ const TransactionTable = ({
 													transaction?.bill_source === 'scans' ||
 													transaction?.bill_source === 'procedure' ||
 													transaction?.bill_source === 'nursing-service') &&
-													transaction.service?.item?.name
+												transaction.service?.item?.name
 													? `: ${transaction.service?.item?.name}`
 													: ''}
 												{transaction?.bill_source === 'drugs' && (

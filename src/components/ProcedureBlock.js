@@ -19,6 +19,7 @@ import ProfilePopup from './Patient/ProfilePopup';
 import { notifySuccess, notifyError } from '../services/notify';
 import ModalScheduleDate from './Modals/ModalScheduleDate';
 import ViewRequestNote from './Modals/ViewRequestNote';
+import Admitted from './Admitted';
 
 class ProcedureBlock extends Component {
 	state = {
@@ -197,9 +198,15 @@ class ProcedureBlock extends Component {
 														{patientname(data.patient, true)}
 													</a>
 												</Tooltip>
-												{(data.patient.admission_id ||
-													data.patient.nicu_id) && (
-													<Tooltip title="Admitted">
+												{data.admission && (
+													<Tooltip
+														title={<Admitted room={data?.admission?.room} />}>
+														<i className="fa fa-hospital-o text-danger ml-1" />
+													</Tooltip>
+												)}
+												{data.patient.nicu_id && (
+													<Tooltip
+														title={<Admitted room={data?.admission?.room} />}>
 														<i className="fa fa-hospital-o text-danger ml-1" />
 													</Tooltip>
 												)}

@@ -23,6 +23,8 @@ import { toggleProfile } from '../../actions/user';
 import TableLoading from '../../components/TableLoading';
 import waiting from '../../assets/images/waiting.gif';
 import { messageService } from '../../services/message';
+import Admitted from '../../components/Admitted';
+import NicuAdmitted from '../../components/NicuAdmitted';
 
 const { RangePicker } = DatePicker;
 
@@ -237,8 +239,15 @@ const AllPatients = () => {
 												</td>
 												<td>
 													{patientname(data)}{' '}
-													{(data.admission_id || data.nicu_id) && (
-														<Tooltip title="Admitted">
+													{data.admission && (
+														<Tooltip
+															title={<Admitted room={data?.admission?.room} />}>
+															<i className="fa fa-hospital-o text-danger" />
+														</Tooltip>
+													)}
+													{data.nicu_id && (
+														<Tooltip
+															title={<NicuAdmitted room={data?.nicu?.room} />}>
 															<i className="fa fa-hospital-o text-danger" />
 														</Tooltip>
 													)}

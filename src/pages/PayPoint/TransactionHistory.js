@@ -5,7 +5,6 @@ import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
 import Pagination from 'antd/lib/pagination';
 
-import { transactionsAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import { request, itemRender, patientname } from '../../services/utilities';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
@@ -64,7 +63,7 @@ class TransactionHistory extends Component {
 			const p = page || 1;
 			const pid = patient_id || '';
 			this.setState({ loading: true });
-			const url = `${transactionsAPI}?page=${p}&limit=24&patient_id=${pid}&startDate=${startDate}&endDate=${endDate}&bill_source=&status=${status}`;
+			const url = `transactions?page=${p}&limit=24&patient_id=${pid}&startDate=${startDate}&endDate=${endDate}&bill_source=&status=${status}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			const arr = [...result];

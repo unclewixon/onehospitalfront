@@ -20,6 +20,7 @@ import { startBlock, stopBlock } from '../actions/redux-block';
 import TableLoading from './TableLoading';
 import ProfilePopup from './Patient/ProfilePopup';
 import { toggleProfile } from '../actions/user';
+import Admitted from './Admitted';
 
 class LabBlock extends Component {
 	state = {
@@ -218,8 +219,15 @@ class LabBlock extends Component {
 														{patientname(lab.patient, true)}
 													</a>
 												</Tooltip>
-												{(lab.patient.admission_id || lab.patient.nicu_id) && (
-													<Tooltip title="Admitted">
+												{lab.admission && (
+													<Tooltip
+														title={<Admitted room={lab?.admission?.room} />}>
+														<i className="fa fa-hospital-o text-danger ml-1" />
+													</Tooltip>
+												)}
+												{lab.patient.nicu_id && (
+													<Tooltip
+														title={<Admitted room={lab?.admission?.room} />}>
 														<i className="fa fa-hospital-o text-danger ml-1" />
 													</Tooltip>
 												)}

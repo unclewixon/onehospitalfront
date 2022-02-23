@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 
-import { transactionsAPI, searchAPI } from '../../services/constants';
+import { searchAPI } from '../../services/constants';
 import waiting from '../../assets/images/waiting.gif';
 import DatePicker from 'antd/lib/date-picker';
 import { request, staffname, patientname } from '../../services/utilities';
@@ -49,7 +49,7 @@ class Transactions extends Component {
 		const { startDate, endDate } = this.state;
 		try {
 			this.setState({ loading: true });
-			const url = `${transactionsAPI}?patient_id=&startDate=${startDate}&endDate=${endDate}&status=&bill_source=cafeteria&payment_method&page=1&limit=10`;
+			const url = `transactions?patient_id=&startDate=${startDate}&endDate=${endDate}&status=&bill_source=cafeteria&payment_method&page=1&limit=10`;
 			const rs = await request(url, 'GET', true);
 
 			this.setState({

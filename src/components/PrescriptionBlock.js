@@ -11,6 +11,7 @@ import { toggleProfile } from '../actions/user';
 import { startBlock, stopBlock } from '../actions/redux-block';
 import { request, formatDate } from '../services/utilities';
 import { notifyError } from '../services/notify';
+import Admitted from './Admitted';
 
 const PrescriptionBlock = ({
 	loading,
@@ -87,9 +88,15 @@ const PrescriptionBlock = ({
 													{patientname(request.patient, true)}
 												</a>
 											</Tooltip>
-											{(request.patient.admission_id ||
-												request.patient.nicu_id) && (
-												<Tooltip title="Admitted">
+											{request.admission && (
+												<Tooltip
+													title={<Admitted room={request?.admission?.room} />}>
+													<i className="fa fa-hospital-o text-danger ml-1" />
+												</Tooltip>
+											)}
+											{request.patient.nicu_id && (
+												<Tooltip
+													title={<Admitted room={request?.admission?.room} />}>
 													<i className="fa fa-hospital-o text-danger ml-1" />
 												</Tooltip>
 											)}

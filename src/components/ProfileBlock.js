@@ -75,6 +75,7 @@ const ProfileBlock = ({
 	const [admissionFinishDischarge, setAdmissionFinishDischarge] =
 		useState(false);
 	const [nicuFinishDischarge, setNicuFinishDischarge] = useState(false);
+	const [admission, setAdmission] = useState(null);
 
 	const dispatch = useDispatch();
 
@@ -89,6 +90,12 @@ const ProfileBlock = ({
 			const uri = `patient/${patient.id}/outstandings`;
 			const res = await request(uri, 'GET', true);
 			setAmount(res);
+
+			if (patient.admission_id) {
+				const auri = `patient/${patient.admission_id}/admission`;
+				const _res = await request(auri, 'GET', true);
+				setAdmission(_res);
+			}
 		} catch (error) {
 			notifyError('Error fetching alerts');
 		}
@@ -393,8 +400,13 @@ const ProfileBlock = ({
 											<div className="mb-1">
 												<h4 className="mb-0">
 													{patientname(patient)}{' '}
-													{(patient.admission_id || patient.nicu_id) && (
+													{patient.admission_id && (
 														<Tooltip title="Admitted">
+															<i className="fa fa-hospital-o text-danger" />
+														</Tooltip>
+													)}
+													{patient.nicu_id && (
+														<Tooltip title="Nicu">
 															<i className="fa fa-hospital-o text-danger" />
 														</Tooltip>
 													)}
@@ -503,6 +515,15 @@ const ProfileBlock = ({
 													value={`${dob} (${getAge(patient?.date_of_birth)})`}
 												/>
 											</tr>
+											{admission && admission.room && (
+												<tr>
+													<UserItem
+														icon="user"
+														label="Amission Room"
+														value={`${admission.room?.category?.name}, Room ${admission.room?.name}`}
+													/>
+												</tr>
+											)}
 										</tbody>
 									</table>
 								</div>

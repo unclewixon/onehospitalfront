@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Pagination from 'antd/lib/pagination';
 import moment from 'moment';
 import { useSelector, useDispatch } from 'react-redux';
@@ -22,6 +22,8 @@ import GiveMedication from '../../components/Modals/GiveMedication';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { toggleProfile } from '../../actions/user';
 import CreateChart from '../../components/Patient/Modals/CreateChart';
+import Admitted from '../../components/Admitted';
+import NicuAdmitted from '../../components/NicuAdmitted';
 
 const ClinicalTasks = () => {
 	const [meta, setMeta] = useState({
@@ -40,48 +42,35 @@ const ClinicalTasks = () => {
 
 	const dispatch = useDispatch();
 
-	const getTasks = async page => {
-		try {
-			const url = `${patientAPI}/admissions/tasks?page=${page || 1}&limit=12`;
-			const res = await request(url, 'GET', true);
-			return res;
-		} catch (e) {
-			return null;
-		}
-	};
-
-	useEffect(() => {
-		async function doLoadTasks() {
-			const rs = await getTasks();
-			if (rs) {
+	const getTasks = useCallback(
+		async page => {
+			try {
+				dispatch(startBlock());
+				const url = `${patientAPI}/admissions/tasks?page=${page || 1}&limit=12`;
+				const rs = await request(url, 'GET', true);
 				const { result, ...paginate } = rs;
 				setMeta(paginate);
 				setTasks(result);
+				dispatch(stopBlock());
+			} catch (e) {
+				dispatch(stopBlock());
+				notifyError('could not fetch tasks');
 			}
+		},
+		[dispatch]
+	);
+
+	useEffect(() => {
+		if (!loaded) {
+			getTasks();
 			setLoaded(true);
 		}
 
 		if (done) {
-			doLoadTasks();
+			getTasks();
 			dispatch(readingDone(null));
 		}
-	}, [dispatch, done]);
-
-	useEffect(() => {
-		async function doLoadTasks() {
-			const rs = await getTasks();
-			if (rs) {
-				const { result, ...paginate } = rs;
-				setMeta(paginate);
-				setTasks(result);
-			}
-			setLoaded(true);
-		}
-
-		if (!loaded) {
-			doLoadTasks();
-		}
-	}, [loaded]);
+	}, [dispatch, done, getTasks, loaded]);
 
 	const deleteTask = async data => {
 		try {
@@ -102,14 +91,7 @@ const ClinicalTasks = () => {
 	};
 
 	const onNavigatePage = async nextPage => {
-		startBlock();
-		const rs = await getTasks(nextPage);
-		if (rs) {
-			const { result, ...paginate } = rs;
-			setMeta(paginate);
-			setTasks(result);
-		}
-		stopBlock();
+		await getTasks(nextPage);
 	};
 
 	const takeReading = item => {
@@ -163,15 +145,13 @@ const ClinicalTasks = () => {
 									<button
 										className="btn btn-danger"
 										style={{ margin: '10px' }}
-										onClick={onClose}
-									>
+										onClick={onClose}>
 										No
 									</button>
 									<button
 										className="btn btn-primary"
 										style={{ margin: '10px' }}
-										onClick={onclick}
-									>
+										onClick={onclick}>
 										Yes
 									</button>
 								</div>
@@ -215,21 +195,35 @@ const ClinicalTasks = () => {
 								const lastReading =
 									item.vitals.length > 0 ? item.vitals[0] : null;
 								const vital = allVitalItems.find(v => v.name === item.task);
+								const room = item.admission?.room;
 								return (
 									<tr key={i}>
 										<td width="120px">
 											<a onClick={() => showProfile(item.patient)}>
 												{patientname(item.patient)}
 											</a>{' '}
-											{(item.patient.admission_id || item.patient.nicu_id) && (
-												<Tooltip title="Admitted">
+											{item.admission && (
+												<Tooltip
+													title={<Admitted room={item?.admission?.room} />}>
+													<i className="fa fa-hospital-o text-danger" />
+												</Tooltip>
+											)}
+											{item.patient.nicu_id && (
+												<Tooltip
+													title={<NicuAdmitted room={item?.nicu?.room} />}>
 													<i className="fa fa-hospital-o text-danger" />
 												</Tooltip>
 											)}
 										</td>
-										<td>{item.admission?.room?.name || '--'}</td>
+										<td>
+											{room
+												? `${room?.category?.name}, Room ${room?.name}`
+												: '--'}
+										</td>
 										<td>{item.title}</td>
-										<td>{formatDate(item.createdAt, 'DD-MMM-YYYY HH:mm A')}</td>
+										<td style={{ width: '120px' }}>
+											{formatDate(item.createdAt, 'DD-MMM-YYYY HH:mm A')}
+										</td>
 										<td>
 											{lastReading ? (
 												<>
@@ -273,24 +267,21 @@ const ClinicalTasks = () => {
 													{item.taskType === 'vitals' && (
 														<a
 															className="btn btn-primary btn-sm text-white text-uppercase"
-															onClick={() => takeReading(item)}
-														>
+															onClick={() => takeReading(item)}>
 															Take Reading
 														</a>
 													)}
 													{item.taskType === 'fluid' && (
 														<a
 															className="btn btn-primary btn-sm text-white text-uppercase"
-															onClick={() => recordFluid(item)}
-														>
+															onClick={() => recordFluid(item)}>
 															Take Reading
 														</a>
 													)}
 													{item.taskType === 'regimen' && (
 														<a
 															className="btn btn-primary btn-sm text-white text-uppercase"
-															onClick={() => recordMedication(item)}
-														>
+															onClick={() => recordMedication(item)}>
 															Take Reading
 														</a>
 													)}
@@ -302,8 +293,7 @@ const ClinicalTasks = () => {
 												<Tooltip title="Cancel Clinical Task">
 													<a
 														className="danger"
-														onClick={e => confirmDelete(e, item)}
-													>
+														onClick={e => confirmDelete(e, item)}>
 														<i className="os-icon os-icon-ui-15"></i>
 													</a>
 												</Tooltip>
