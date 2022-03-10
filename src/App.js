@@ -43,7 +43,7 @@ const FrontDesk = lazy(() => import('./pages/FrontDesk/Home'));
 const Nurse = lazy(() => import('./pages/Nurse/Home'));
 const Pharmacy = lazy(() => import('./pages/Pharmacy/Home'));
 const Procedure = lazy(() => import('./pages/Procedure/Home'));
-const Staff = lazy(() => import('./pages/HR/index'));
+const Hr = lazy(() => import('./pages/HR/Home'));
 const Store = lazy(() => import('./pages/Store/Home'));
 const Settings = lazy(() => import('./pages/Settings/Home'));
 const StaffProfile = lazy(() => import('./pages/StaffProfile'));
@@ -238,7 +238,7 @@ class App extends Component {
 															<Route path="/antenatal" component={Antenatal} />
 															<Route path="/ivf" component={IVF} />
 															<Route path="/nicu" component={Nicu} />
-															<Route path="/hr" component={Staff} />
+															<Route path="/hr" component={Hr} />
 															<Route path="/store" component={Store} />
 															<Route path="/settings" component={Settings} />
 															<Route path="/hmo" component={Hmo} />

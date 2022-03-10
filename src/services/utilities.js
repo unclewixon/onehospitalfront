@@ -432,12 +432,12 @@ const firstLetter = item =>
 const parseDuty = item => (item && item !== '' ? ` [${uppercase(item)}]` : '');
 
 const parseClass = item => {
-	if (item === 'o') {
+	if (item === 'off') {
 		return 'bg-secondary';
-	} else if (item === 'm' || item === 'n') {
+	} else if (item === 'morning') {
 		return 'bg-primary';
 	} else {
-		return 'bg-primary';
+		return 'bg-info';
 	}
 };
 
@@ -450,7 +450,7 @@ export const parseRoster = result => {
 					...rosters,
 					{
 						title: `${startCase(item.last_name)} ${firstLetter(
-							item.first_name
+							startCase(item.first_name)
 						)}${parseDuty(schedule.duty)}`,
 						date: `${item.period}-${
 							schedule.date !== '' ? padLeft(schedule.date, 2, '0') : ''
@@ -718,7 +718,8 @@ export const parseNote = note => {
 	return note.description;
 };
 
-export const parseSource = source => (source === 'ward' ? 'Room' : startCase(source));
+export const parseSource = source =>
+	source === 'ward' ? 'Room' : startCase(source);
 
 export const getGestationAge = date => {
 	const weeks = moment().diff(moment(date), 'weeks');

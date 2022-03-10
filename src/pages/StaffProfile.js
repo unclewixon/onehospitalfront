@@ -12,7 +12,7 @@ import HashRoute from '../components/HashRoute';
 const Dashboard = lazy(() => import('../components/StaffBlock/Dashboard'));
 const EditStaff = lazy(() => import('../components/StaffBlock/EditStaff'));
 const Billing = lazy(() => import('../components/StaffBlock/Billing'));
-const DutyRooster = lazy(() => import('../components/StaffBlock/DutyRooster'));
+const DutyRoster = lazy(() => import('../components/StaffBlock/DutyRoster'));
 const ExcuseDuty = lazy(() => import('../components/StaffBlock/ExcuseDuty'));
 const CreateAppraisal = lazy(() =>
 	import('../components/StaffBlock/CreateAppraisal')
@@ -43,7 +43,7 @@ const Page = ({ location }) => {
 		case 'billing':
 			return <Billing />;
 		case 'duty-roster':
-			return <DutyRooster />;
+			return <DutyRoster />;
 		case 'leave-request':
 			return <LeaveRequest />;
 		case 'excuse-duty':

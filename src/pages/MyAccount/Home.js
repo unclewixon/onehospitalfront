@@ -7,9 +7,7 @@ import Splash from '../../components/Splash';
 
 const AccountProfile = lazy(() => import('./Profile/index'));
 const Payslip = lazy(() => import('./Payslip'));
-const DutyRooster = lazy(() =>
-	import('../../components/StaffBlock/DutyRooster')
-);
+const DutyRoster = lazy(() => import('../../components/StaffBlock/DutyRoster'));
 const ExcuseDuty = lazy(() => import('../../components/StaffBlock/ExcuseDuty'));
 const CreateAppraisal = lazy(() =>
 	import('../../components/StaffBlock/CreateAppraisal')
@@ -49,7 +47,7 @@ const Home = ({ match }) => {
 						<Route
 							exact
 							path={`${match.url}/duty-roster`}
-							component={DutyRooster}
+							component={DutyRoster}
 						/>
 						<Route
 							exact

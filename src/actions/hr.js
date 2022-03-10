@@ -1,7 +1,6 @@
 import {
 	LOAD_APPRAISALS,
 	LOAD_LEAVE,
-	LOAD_DUTY_ROSTERS,
 	LOAD_PAYROLL,
 	LOAD_UNPAID_PAYROLL,
 	LOAD_PAYROLL_HISTORY,
@@ -21,13 +20,6 @@ export const loadAppraisals = data => {
 export const loadStaffLeave = data => {
 	return {
 		type: LOAD_LEAVE,
-		payload: data,
-	};
-};
-
-export const loadRoster = data => {
-	return {
-		type: LOAD_DUTY_ROSTERS,
 		payload: data,
 	};
 };

@@ -30,8 +30,8 @@ class ExcuseDuty extends Component {
 	};
 
 	fetchStaffLeave = async () => {
-		this.setState({ searching: true });
 		try {
+			this.setState({ searching: true });
 			const rs = await request(`${leaveMgtAPI}/excuse-duty`, 'GET', true);
 			this.setState({ searching: false });
 			this.props.loadStaffLeave(rs);

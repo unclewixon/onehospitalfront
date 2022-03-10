@@ -63,7 +63,6 @@ export const ADD_ROLE = 'ADD_ROLE';
 export const UPDATE_ROLE = 'UPDATE_ROLE';
 
 // hr
-export const LOAD_DUTY_ROSTERS = 'LOAD_DUTY_ROSTERS';
 export const LOAD_LEAVE = 'LOAD_LEAVE';
 export const LOAD_APPRAISALS = 'LOAD_APPRAISALS';
 export const LOAD_PAYROLL = 'LOAD_PAYROLL';

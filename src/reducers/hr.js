@@ -1,7 +1,6 @@
 import {
 	LOAD_APPRAISALS,
 	LOAD_LEAVE,
-	LOAD_DUTY_ROSTERS,
 	LOAD_PAYROLL,
 	LOAD_UNPAID_PAYROLL,
 	LOAD_PAYROLL_HISTORY,
@@ -13,7 +12,6 @@ import {
 const INITIAL_STATE = {
 	appraisals: [],
 	staff_leave: [],
-	duty_rosters: [],
 	payrolls: [],
 	unpaid_payrolls: [],
 	history_payrolls: [],
@@ -27,8 +25,6 @@ const hr = (state = INITIAL_STATE, action) => {
 			return { ...state, appraisals: action.payload };
 		case LOAD_LEAVE:
 			return { ...state, staff_leave: action.payload };
-		case LOAD_DUTY_ROSTERS:
-			return { ...state, duty_rosters: action.payload };
 		case LOAD_PAYROLL:
 			return { ...state, payrolls: action.payload };
 		case LOAD_UNPAID_PAYROLL:
