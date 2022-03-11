@@ -70,7 +70,7 @@ class Roster extends Component {
 				setTimeout(() => {
 					this.hide();
 					window.open(rs.url, '_blank').focus();
-				}, 2000);
+				}, 200);
 			} else {
 				notifyError(rs.message || 'could not download template');
 			}

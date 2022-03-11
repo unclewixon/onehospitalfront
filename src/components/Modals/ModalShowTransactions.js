@@ -33,9 +33,6 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 	const [isPart, setIsPart] = useState(false);
 	const [items, setItems] = useState([]);
 	const [partAmount, setPartAmount] = useState(0);
-	const [printTransactions, setPrintTransactions] = useState([]);
-	const [printState, setPrintState] = useState(false);
-	const [printTotal, setPrintTotal] = useState(0);
 
 	const dispatch = useDispatch();
 
@@ -187,32 +184,24 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 		}
 	};
 
-	const printModal = () => async () => {
-		const url = `transactions/pending?patient_id=${patient.id}&startDate=&endDate=&fetch=1`;
-		const rs = await request(url, 'GET', true);
-		const { result, all, ...meta } = rs;
-		setMeta(meta);
-		setPrintTransactions(result);
-		setPrintState(true);
-		setPrintTotal(
-			result.reduce(
-				(total, item) => total + Math.abs(parseFloat(item.amount)),
-				0
-			)
-		);
-
-		const content = document.getElementById('divcontents');
-
-		const pri = document.getElementById('ifmcontentstoprint').contentWindow;
-		pri.document.open();
-		pri.document.write(
-			'<style>@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500); body { font-family: Rubik; }</style>' +
-				content.innerHTML
-		);
-		pri.document.close();
-		pri.focus();
-		pri.print();
-		closeModal();
+	const printModal = async () => {
+		try {
+			dispatch(startBlock());
+			const uri = `transactions/print?patient_id=${patient.id}&status=pending`;
+			const rs = await request(uri, 'GET', true);
+			dispatch(stopBlock());
+			if (rs.success) {
+				setTimeout(() => {
+					window.open(rs.url, '_blank').focus();
+				}, 200);
+			} else {
+				notifyError(rs.message || 'could not print transactions');
+			}
+		} catch (e) {
+			dispatch(stopBlock());
+			notifyError(e.message || 'could not print transactions');
+			setSubmitting(false);
+		}
 	};
 
 	return (
@@ -222,12 +211,7 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 			style={{ display: 'block' }}>
 			<div
 				className="modal-dialog modal-centered"
-				style={
-					printState
-						? { maxWidth: '720px', maxHeight: '500px' }
-						: { maxWidth: '720px' }
-				}
-				id="divcontents">
+				style={{ maxWidth: '720px' }}>
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
@@ -237,21 +221,6 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div className="onboarding-content with-gradient">
-						{printState ? (
-							<div className="text-center">
-								<h6
-									className="text-3"
-									style={{ textAlign: 'center', fontSize: '18px' }}>
-									DEDA HOSPITAL
-								</h6>
-								<div style={{ textAlign: 'center', fontSize: '12px' }}>
-									Plot 1847, Cadastal Zone B07, Katampe Behind ABC Cargo, Abuja
-									Municipal Area Council, FCT.
-								</div>
-							</div>
-						) : (
-							''
-						)}
 						<h6 className="onboarding-title">{`Transactions for ${patientname(
 							patient,
 							true
@@ -265,15 +234,13 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 											<table className="table table-striped">
 												<thead>
 													<tr>
-														{!printState && (
-															<th>
-																<input
-																	type="checkbox"
-																	checked={allChecked}
-																	onChange={checkAll}
-																/>
-															</th>
-														)}
+														<th>
+															<input
+																type="checkbox"
+																checked={allChecked}
+																onChange={checkAll}
+															/>
+														</th>
 														<th>DATE</th>
 														<th>Service</th>
 														<th>AMOUNT (&#x20A6;)</th>
@@ -281,125 +248,95 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 												</thead>
 												<tbody>
 													<PatientBillItem
-														transactions={
-															printState ? printTransactions : transactions
-														}
+														transactions={transactions}
 														checked={checked}
 														onChecked={onChecked}
 														total={total}
-														hasChecked={!printState}
+														hasChecked={true}
 													/>
 												</tbody>
 											</table>
 											{meta && (
 												<div className="pagination pagination-center mt-4">
-													{printState ? (
-														<div
-															style={{
-																display: 'flex',
-																justifyContent: 'space-between',
-															}}>
-															<h6 style={{ fontSize: '18px' }}>Total</h6>
-															<h6 style={{ fontSize: '18px' }}>{printTotal}</h6>
-														</div>
-													) : (
-														<Pagination
-															current={parseInt(meta.currentPage, 10)}
-															pageSize={parseInt(meta.itemsPerPage, 10)}
-															total={parseInt(meta.totalPages, 10)}
-															showTotal={total => `Total ${total} transactions`}
-															itemRender={itemRender}
-															onChange={current => onNavigatePage(current)}
-															showSizeChanger={false}
-														/>
-													)}
+													<Pagination
+														current={parseInt(meta.currentPage, 10)}
+														pageSize={parseInt(meta.itemsPerPage, 10)}
+														total={parseInt(meta.totalPages, 10)}
+														showTotal={total => `Total ${total} transactions`}
+														itemRender={itemRender}
+														onChange={current => onNavigatePage(current)}
+														showSizeChanger={false}
+													/>
 												</div>
 											)}
 										</div>
 									</div>
 									<div className="row mt-4 form-inline">
-										{printState ? (
-											''
-										) : (
-											<>
-												<div className="form-check col-sm-6">
-													<label
-														className="form-check-label"
-														style={{ marginLeft: '12px' }}>
-														<input
-															className="form-check-input mt-0"
-															name="is_part_payment"
-															type="checkbox"
-															checked={isPart}
-															onChange={e => setIsPart(e.target.checked)}
-														/>
-														Part Payment
-													</label>
-												</div>
-												<label className="my-1 mr-2" htmlFor="amount">
-													Amount
-												</label>
-												<div className="form-group my-1 mr-sm-2">
-													<input
-														id="amount"
-														type="text"
-														className="form-control"
-														placeholder="Enter Amount"
-														readOnly={!isPart}
-														value={isPart ? partAmount : total}
-														onChange={e => setPartAmount(e.target.value)}
-													/>
-												</div>
-											</>
-										)}
+										<div className="form-check col-sm-6">
+											<label
+												className="form-check-label"
+												style={{ marginLeft: '12px' }}>
+												<input
+													className="form-check-input mt-0"
+													name="is_part_payment"
+													type="checkbox"
+													checked={isPart}
+													onChange={e => setIsPart(e.target.checked)}
+												/>
+												Part Payment
+											</label>
+										</div>
+										<label className="my-1 mr-2" htmlFor="amount">
+											Amount
+										</label>
+										<div className="form-group my-1 mr-sm-2">
+											<input
+												id="amount"
+												type="text"
+												className="form-control"
+												placeholder="Enter Amount"
+												readOnly={!isPart}
+												value={isPart ? partAmount : total}
+												onChange={e => setPartAmount(e.target.value)}
+											/>
+										</div>
 									</div>
 									<div className="row mt-4">
 										<div className="col-md-12">
-											{printState ? (
-												''
-											) : (
-												<div
-													className="form-inline"
-													style={{ justifyContent: 'center' }}>
-													<div className="form-group mr-3">
-														<select
-															placeholder="Select Payment Method"
-															className="form-control"
-															onChange={e => setPaymentMethod(e.target.value)}>
-															<option value="">Select Payment Method</option>
-															{paymentMethods
-																.filter(p => p.name !== 'Voucher')
-																.map((d, i) => (
-																	<option key={i} value={d.name}>
-																		{d.name}
-																	</option>
-																))}
-														</select>
-													</div>
-													<button
-														onClick={() => processPayment()}
-														className="btn btn-primary">
-														{submitting ? (
-															<img src={waiting} alt="submitting" />
-														) : (
-															'Approve Payment'
-														)}
-													</button>
+											<div
+												className="form-inline"
+												style={{ justifyContent: 'center' }}>
+												<div className="form-group mr-3">
+													<select
+														placeholder="Select Payment Method"
+														className="form-control"
+														onChange={e => setPaymentMethod(e.target.value)}>
+														<option value="">Select Payment Method</option>
+														{paymentMethods
+															.filter(p => p.name !== 'Voucher')
+															.map((d, i) => (
+																<option key={i} value={d.name}>
+																	{d.name}
+																</option>
+															))}
+													</select>
 												</div>
-											)}
-										</div>
-
-										<div className="col-md-12">
-											{printState ? (
-												''
-											) : (
 												<button
-													className="btn btn-success mt-3"
-													onClick={printModal()}>
-													<span className="mr-2">Print bill</span>
-													<i className="fa fa-print" aria-hidden="true"></i>
+													onClick={() => processPayment()}
+													className="btn btn-primary">
+													{submitting ? (
+														<img src={waiting} alt="submitting" />
+													) : (
+														'Approve Payment'
+													)}
 												</button>
-											)}
+												<button
+													className="btn btn-success ml-3"
+													onClick={printModal}>
+													<span className="mr-2">Print bill</span>
+													<i className="fa fa-print"></i>
+												</button>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -417,10 +354,6 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 					</div>
 				</div>
 			</div>
-			<iframe
-				id="ifmcontentstoprint"
-				title="print"
-				style={{ height: '0px', width: '0px', position: 'absolute' }}></iframe>
 		</div>
 	);
 };

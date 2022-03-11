@@ -4,14 +4,6 @@ import { withRouter } from 'react-router-dom';
 
 import { closeModals } from '../../actions/general';
 import LineManagerAssessment from '../StaffBlock/LineManagerAssessment';
-// const validate = values => {
-// 	const errors = {};
-// 	if (!values.comment) {
-// 		errors.comment = 'error';
-// 	}
-
-// 	return errors;
-// };
 
 export class ModalStaffAppraisal extends Component {
 	state = {
