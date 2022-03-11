@@ -109,6 +109,25 @@ const PatientBills = () => {
 		setShowApplyModal(true);
 	};
 
+	const doPrintBills = async () => {
+		try {
+			dispatch(startBlock());
+			const uri = `transactions/print?patient_id=${patient.id}&status=pending`;
+			const rs = await request(uri, 'GET', true);
+			dispatch(stopBlock());
+			if (rs.success) {
+				setTimeout(() => {
+					window.open(rs.url, '_blank').focus();
+				}, 200);
+			} else {
+				notifyError(rs.message || 'could not print transactions');
+			}
+		} catch (e) {
+			dispatch(stopBlock());
+			notifyError(e.message || 'could not print transactions');
+		}
+	};
+
 	const closeModal = () => {
 		document.body.classList.remove('modal-open');
 		setShowApplyModal(false);
@@ -207,9 +226,15 @@ const PatientBills = () => {
 										{formatCurrency(depositBalance)}
 									</span>
 									<button
-										className="btn btn-primary btn-sm"
+										className="btn btn-primary btn-sm mr-2"
 										onClick={() => doApplyCredit()}>
 										Apply Deposit
+									</button>
+									<button
+										className="btn btn-success"
+										onClick={() => doPrintBills()}>
+										<span className="mr-2">Print Bills</span>
+										<i className="fa fa-print"></i>
 									</button>
 								</div>
 							</div>

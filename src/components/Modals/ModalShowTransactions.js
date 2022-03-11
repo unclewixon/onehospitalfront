@@ -200,7 +200,6 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 		} catch (e) {
 			dispatch(stopBlock());
 			notifyError(e.message || 'could not print transactions');
-			setSubmitting(false);
 		}
 	};
 
@@ -333,7 +332,7 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 												<button
 													className="btn btn-success ml-3"
 													onClick={printModal}>
-													<span className="mr-2">Print bill</span>
+													<span className="mr-2">Print Bills</span>
 													<i className="fa fa-print"></i>
 												</button>
 											</div>
