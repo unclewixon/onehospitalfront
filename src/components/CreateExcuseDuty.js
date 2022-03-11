@@ -137,13 +137,13 @@ const CreateExcuseDuty = ({ history }) => {
 	};
 
 	return (
-		<div className="element-wrapper my-4">
+		<div className="element-wrapper my-4 w-100">
 			<h6 className="element-header"> Create Excuse Duty</h6>
 			<div className="element-box">
 				<div className="form-block">
 					<form onSubmit={handleSubmit(onHandleSubmit)}>
 						<div className="row">
-							<div className="form-group col-sm-4">
+							<div className="form-group col-sm-6">
 								<label>Staff ID</label>
 								<AsyncSelect
 									required
@@ -160,7 +160,7 @@ const CreateExcuseDuty = ({ history }) => {
 								/>
 							</div>
 
-							<div className="col-sm-4">
+							<div className="col-sm-6">
 								<label>Exempted for day:</label>
 								<input
 									id="exempted_days"
@@ -171,21 +171,6 @@ const CreateExcuseDuty = ({ history }) => {
 									placeholder="Enter number of days for exemption"
 									onChange={e => {
 										setDuration(e.target.value);
-									}}
-								/>
-							</div>
-							<div className="col-sm-4">
-								<label>Select leave Category</label>
-								<Select
-									id="leave_type"
-									name="leave_type"
-									ref={register}
-									placeholder="Select leave type"
-									options={leaveOptions}
-									defaultValue={leaveOptions[0]}
-									onChange={e => {
-										setCategory(e.value);
-										getEndDate();
 									}}
 								/>
 							</div>
