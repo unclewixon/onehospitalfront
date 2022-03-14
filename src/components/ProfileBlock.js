@@ -25,6 +25,7 @@ import PatientForm from './Modals/PatientForm';
 import DischargeBlock from './DischargeBlock';
 import { setPatientRecord, toggleProfile } from '../actions/user';
 import SSRStorage from '../services/storage';
+import OpenEncounter from './Patient/Modals/OpenEncounter';
 
 const storage = new SSRStorage();
 
@@ -76,10 +77,12 @@ const ProfileBlock = ({
 		useState(false);
 	const [nicuFinishDischarge, setNicuFinishDischarge] = useState(false);
 	const [admission, setAdmission] = useState(null);
+	const [encounterModal, setEncounterModal] = useState(false);
 
 	const dispatch = useDispatch();
 
 	const user = useSelector(state => state.user.profile);
+	const appointmentId = useSelector(state => state.user.appointmentId);
 
 	const getAlerts = useCallback(async () => {
 		try {
@@ -172,10 +175,20 @@ const ProfileBlock = ({
 		setEditModal(true);
 	};
 
-	const closeModal = () => {
+	const closeModal = status => {
 		document.body.classList.remove('modal-open');
 		setShowModal(false);
 		setEditModal(false);
+		setEncounterModal(false);
+		if (status) {
+			storage.removeItem(USER_RECORD);
+			dispatch(toggleProfile(false));
+		}
+	};
+
+	const startEncounter = () => {
+		document.body.classList.add('modal-open');
+		setEncounterModal(true);
 	};
 
 	const startDischarge = id => {
@@ -453,6 +466,16 @@ const ProfileBlock = ({
 													</a>
 												</Tooltip>
 											</div>
+											{appointmentId && appointmentId !== '' && (
+												<div className="mt-1">
+													<button
+														type="button"
+														onClick={() => startEncounter()}
+														className="btn btn-sm btn-info text-white">
+														Start Encounter
+													</button>
+												</div>
+											)}
 										</div>
 									</div>
 									{hasButtons && (
@@ -634,6 +657,13 @@ const ProfileBlock = ({
 			)}
 			{editModal && (
 				<PatientForm patient={patient} closeModal={() => closeModal()} />
+			)}
+			{encounterModal && (
+				<OpenEncounter
+					patient={patient}
+					appointment_id={appointmentId}
+					closeModal={status => closeModal(status)}
+				/>
 			)}
 		</>
 	);

@@ -24,11 +24,12 @@ export const signOut = () => {
 	};
 };
 
-export const toggleProfile = (status, info) => {
+export const toggleProfile = (status, info, appointmentId) => {
 	return {
 		type: TOGGLE_PROFILE,
 		payload: status,
 		info,
+		appointmentId,
 	};
 };
 

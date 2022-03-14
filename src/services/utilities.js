@@ -790,3 +790,10 @@ export const Condition = ({ when, is, children }) => (
 		{({ input: { value } }) => (value === is ? children : null)}
 	</Field>
 );
+
+export const countDate = ({ start_date, end_date }) => {
+	return moment(end_date, 'YYYY-MM-DD').diff(
+		moment(start_date, 'YYYY-MM-DD'),
+		'days'
+	);
+};

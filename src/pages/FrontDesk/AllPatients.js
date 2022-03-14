@@ -28,7 +28,7 @@ import NicuAdmitted from '../../components/NicuAdmitted';
 
 const { RangePicker } = DatePicker;
 
-const pageLimit = 24;
+const pageLimit = 12;
 const statuses = [
 	{ label: 'All', value: '' },
 	{ label: 'Enabled', value: 1 },

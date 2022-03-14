@@ -12,7 +12,6 @@ import patient from './patient';
 import transaction from './transaction';
 import utility from './utility';
 import paypoint from './paypoint';
-import appointment from './appointment';
 import permission from './permission';
 import department from './department';
 
@@ -29,7 +28,6 @@ const reducers = combineReducers({
 	utility,
 	patient,
 	transaction,
-	appointment,
 	permission,
 	department,
 });

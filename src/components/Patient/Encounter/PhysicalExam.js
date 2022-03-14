@@ -203,7 +203,7 @@ const PhysicalExam = ({ next, previous, patient }) => {
 				</div>
 			</div>
 			<div className="row mt-5">
-				<div className="col-sm-12 d-flex ant-row-flex-space-between">
+				<div className="col-sm-12 d-flex space-between">
 					<button className="btn btn-primary" onClick={() => previous()}>
 						Previous
 					</button>

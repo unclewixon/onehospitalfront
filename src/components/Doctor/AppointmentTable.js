@@ -19,7 +19,6 @@ import { notifyError, notifySuccess } from '../../services/notify';
 import ProfilePopup from '../Patient/ProfilePopup';
 import TableLoading from '../TableLoading';
 import ModalViewAppointment from '../Modals/ModalViewAppointment';
-import OpenEncounter from '../Patient/Modals/OpenEncounter';
 import NewAssessment from '../Antenatal/NewAssessment';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { staffname } from '../../services/utilities';
@@ -35,7 +34,6 @@ const AppointmentTable = ({
 	const [appointmentId, setAppointmentId] = useState(null);
 	const [patient, setPatient] = useState(null);
 	const [showModal, setShowModal] = useState(false);
-	const [encounterModal, setEncounterModal] = useState(false);
 	const [assessmentModal, setAssessmentModal] = useState(false);
 	const [antenatal, setAntenatal] = useState(null);
 
@@ -43,18 +41,11 @@ const AppointmentTable = ({
 
 	const dispatch = useDispatch();
 
-	const showProfile = patient => {
+	const showProfile = (patient, appointment_id) => {
 		if (patient.is_active) {
 			const info = { patient, type: 'patient' };
-			dispatch(toggleProfile(true, info));
+			dispatch(toggleProfile(true, info, appointment_id));
 		}
-	};
-
-	const startEncounter = (id, patient) => {
-		document.body.classList.add('modal-open');
-		setPatient(patient);
-		setAppointmentId(id);
-		setEncounterModal(true);
 	};
 
 	const startAssessment = (id, patient, antenatal) => {
@@ -107,7 +98,6 @@ const AppointmentTable = ({
 
 	const closeModal = () => {
 		setShowModal(false);
-		setEncounterModal(false);
 		setAssessmentModal(false);
 		setAppointment(null);
 		setPatient(null);
@@ -236,16 +226,18 @@ const AppointmentTable = ({
 																				Antenatal Assessment
 																			</button>
 																		)}
-																		<button
-																			onClick={() =>
-																				startEncounter(
-																					appointment.id,
-																					appointment?.patient
-																				)
-																			}
-																			className="btn btn-sm btn-info text-white">
-																			Start Encounter
-																		</button>
+																		{!appointment?.antenatal && (
+																			<button
+																				onClick={() =>
+																					showProfile(
+																						appointment.patient,
+																						appointment.id
+																					)
+																				}
+																				className="btn btn-sm btn-info text-white">
+																				Start Encounter
+																			</button>
+																		)}
 																		<Tooltip title="Call Patient">
 																			<a
 																				onClick={() =>
@@ -331,14 +323,6 @@ const AppointmentTable = ({
 				<ModalViewAppointment
 					appointment={appointment}
 					closeModal={closeModal}
-				/>
-			)}
-			{encounterModal && (
-				<OpenEncounter
-					patient={patient}
-					appointment_id={appointmentId}
-					closeModal={closeModal}
-					updateAppointment={updateAppointment}
 				/>
 			)}
 			{assessmentModal && (

@@ -17,11 +17,12 @@ import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import SSRStorage from '../../services/storage';
 import { updateEncounterData } from '../../actions/patient';
+import { messageService } from '../../services/message';
 
 const storage = new SSRStorage();
 
 const { RangePicker } = DatePicker;
-const limit = 15;
+const limit = 10;
 
 const Appointments = () => {
 	const [state, setState] = useState({
@@ -87,6 +88,19 @@ const Appointments = () => {
 		[allAppointments]
 	);
 
+	useEffect(() => {
+		const subscription = messageService.getMessage().subscribe(message => {
+			const { type, data } = message.text;
+			if (type === 'update-appointment') {
+				updateAppointment(data.appointment);
+			}
+		});
+
+		return () => {
+			subscription.unsubscribe();
+		};
+	});
+
 	const doFilter = e => {
 		e.preventDefault();
 		setState({ ...state, filtering: true });
@@ -94,7 +108,6 @@ const Appointments = () => {
 	};
 
 	const onNavigatePage = nextPage => {
-		dispatch(startBlock());
 		getAppointments(nextPage);
 	};
 

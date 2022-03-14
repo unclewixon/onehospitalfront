@@ -22,7 +22,6 @@ const EncounterTabs = ({
 	next,
 	patient,
 	closeModal,
-	updateAppointment,
 	appointment_id,
 }) => {
 	switch (index) {
@@ -32,7 +31,6 @@ const EncounterTabs = ({
 					previous={previous}
 					patient={patient}
 					closeModal={closeModal}
-					updateAppointment={updateAppointment}
 					appointment_id={appointment_id}
 				/>
 			);
@@ -142,12 +140,7 @@ class OpenEncounter extends Component {
 	}
 
 	render() {
-		const {
-			appointment_id,
-			patient,
-			closeModal,
-			updateAppointment,
-		} = this.props;
+		const { appointment_id, patient, closeModal } = this.props;
 		const { eIndex } = this.state;
 		const current = encounters[eIndex];
 		return (
@@ -185,7 +178,6 @@ class OpenEncounter extends Component {
 											patient={patient}
 											appointment_id={appointment_id}
 											closeModal={closeModal}
-											updateAppointment={updateAppointment}
 										/>
 									</div>
 								</div>

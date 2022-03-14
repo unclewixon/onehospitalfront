@@ -955,3 +955,7 @@ h4.onboarding-title {
 	overflow-y: scroll;
 	height: calc(100% - 20px);
 }
+
+.space-between {
+	justify-content: space-between !important;
+}

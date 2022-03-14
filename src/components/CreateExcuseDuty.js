@@ -1,295 +1,245 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import moment from 'moment';
-import { useForm } from 'react-hook-form';
-import { withRouter } from 'react-router-dom';
-import AsyncSelect from 'react-select/async';
+import React, { useState } from 'react';
+import { Form, Field } from 'react-final-form';
 import DatePicker from 'react-datepicker';
-import Select from 'react-select';
+import { format, isValid } from 'date-fns';
+import moment from 'moment';
+import { useDispatch, useSelector } from 'react-redux';
+import { FORM_ERROR } from 'final-form';
+import { withRouter } from 'react-router-dom';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
-import waiting from '../assets/images/waiting.gif';
-import { notifySuccess, notifyError } from './../services/notify';
+import { request, Compulsory, ErrorBlock } from '../services/utilities';
 import { diagnosisAPI } from '../services/constants';
-import { request } from '../services/utilities';
+import { startBlock, stopBlock } from '../actions/redux-block';
+import { notifySuccess } from '../services/notify';
+import waiting from '../assets/images/waiting.gif';
 
-const CreateExcuseDuty = ({ history }) => {
-	const { handleSubmit, register, setValue } = useForm();
-	const [submitting, setSubmitting] = useState(false);
-	const [selectedOption, setSelectedOption] = useState('');
-	const [selectedStaff, setSelectedStaff] = useState('');
-	const [selectedDoctor, setSelectedDoctor] = useState('');
-	const [duration, setDuration] = useState(1);
-	const [date, setDate] = useState(new Date());
-	const [startDate, setStartDate] = useState('');
-	const [endDate, setEndDate] = useState('');
-	const [category, setCategory] = useState('');
-	const [cats, setCats] = useState([]);
+const CreateExcuseDuty = ({ location, history }) => {
+	const [startDate, setStartDate] = useState(null);
+	const [endDate, setEndDate] = useState(null);
+	const [diagnoses, setDiagnoses] = useState([]);
 
-	const getOptionValues = option => option.id;
-	const getOptionLabels = option => option.description;
-	const handleChangeOptions = selectedOption => {
-		setValue('diagnosis', selectedOption);
-		setSelectedOption(selectedOption);
+	const patient = useSelector(state => state.user.patient);
+
+	const dispatch = useDispatch();
+
+	const getDiagnoses = async q => {
+		if (!q || q.length < 2) {
+			return [];
+		}
+
+		const url = `${diagnosisAPI}/search?q=${q}&diagnosisType=`;
+		const res = await request(url, 'GET', true);
+		return res;
 	};
 
-	const fetchLeaveCategory = useCallback(async () => {
+	const handleSubmit = async values => {
 		try {
-			const rs = await request(`leave-category`, 'GET', true);
-			setCats(rs);
-		} catch (error) {
-			notifyError('could not fetch leave categories!');
-		}
-	}, [setCats]);
-
-	useEffect(() => {
-		fetchLeaveCategory();
-	}, [fetchLeaveCategory]);
-
-	let leaveObj = {};
-	const leaveOptions =
-		cats &&
-		cats.map(leave => {
-			leaveObj[leave.id] = {
-				...leave,
-				value: leave.id,
-				label: leave.name,
+			const data = {
+				...values,
+				start_date: moment(values.start_date, 'DD-MM-YYYY').format(
+					'YYYY-MM-DD'
+				),
+				end_date: moment(values.end_date, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+				patient_id: patient.id,
 			};
-			return leaveObj[leave.id];
-		});
-
-	const getOptions = async inputValue => {
-		if (!inputValue) {
-			return [];
-		}
-		let val = inputValue.toUpperCase();
-		const res = await request(`${diagnosisAPI}search?q=${val}`, 'GET', true);
-		return res;
-	};
-
-	const getStaffValues = option => option.id;
-	const getStaffLabels = option => {
-		return `${option.first_name} ${option.last_name} ${option.other_names}`;
-	};
-	const handleStaffOptions = selectedStaff => {
-		setValue('staff', selectedStaff);
-		setSelectedStaff(selectedStaff);
-	};
-	const getStaffs = async inputValue => {
-		if (!inputValue) {
-			return [];
-		}
-		const res = await request(`hr/staffs/find?q=${inputValue}`, 'GET', true);
-		return res;
-	};
-
-	const getDoctorValues = option => option.id;
-	const getDoctorLabels = option => {
-		return `${option.first_name} ${option.last_name} ${option.other_names}`;
-	};
-	const handleDoctorOptions = selectedDoctor => {
-		setValue('consulting_doctor', selectedDoctor);
-		setSelectedDoctor(selectedDoctor);
-	};
-	const getDoctors = async inputValue => {
-		if (!inputValue) {
-			return [];
-		}
-		const res = await request(`hr/staffs/find?q=${inputValue}`, 'GET', true);
-		// eslint-disable-next-line no-unused-vars
-		const filteredRes =
-			res && res.length
-				? res.filter(staff => staff.job_title === 'Doctor')
-				: [];
-		return res;
-	};
-
-	const getEndDate = () => {
-		const newStartDate = moment(date).format('YYYY-MM-DD');
-		const newDuration = duration ? duration : 1;
-		const newDate = moment(startDate)
-			.add(newDuration, 'days')
-			.format('YYYY-MM-DD');
-		setStartDate(newStartDate);
-		setEndDate(newDate);
-	};
-
-	const onHandleSubmit = async value => {
-		setSubmitting(true);
-		const newRequestData = {
-			staff_id: value && value.staff ? value.staff.id : '',
-			start_date: startDate ? startDate : '',
-			end_date: endDate ? endDate : '',
-			leave_category_id: category,
-			application: value ? value.reason : '',
-			appliedBy:
-				value && value.consulting_doctor ? value.consulting_doctor.id : '',
-			diagnosis_id: value && value.diagnosis ? value.diagnosis : '',
-		};
-		try {
-			await request(`hr/leave-management`, 'POST', true, newRequestData);
-			setSubmitting(false);
-			notifySuccess('Leave request added');
-			history.push('/my-account/excuse-duty');
-		} catch (error) {
-			setSubmitting(false);
-			notifyError('Could not add excuse duty');
+			dispatch(startBlock());
+			const rs = await request('patient/excuse-duties', 'POST', true, data);
+			dispatch(stopBlock());
+			if (rs.success) {
+				notifySuccess('Excuse duty created!');
+				history.push(`${location.pathname}#excuse-duty`);
+			} else {
+				return {
+					[FORM_ERROR]: rs.message || 'could not save excuse duty',
+				};
+			}
+		} catch (e) {
+			dispatch(stopBlock());
+			return { [FORM_ERROR]: 'could not save excuse duty' };
 		}
 	};
 
 	return (
-		<div className="element-wrapper my-4 w-100">
-			<h6 className="element-header"> Create Excuse Duty</h6>
-			<div className="element-box">
-				<div className="form-block">
-					<form onSubmit={handleSubmit(onHandleSubmit)}>
-						<div className="row">
-							<div className="form-group col-sm-6">
-								<label>Staff ID</label>
-								<AsyncSelect
-									required
-									cacheOptions
-									value={selectedStaff}
-									getOptionValue={getStaffValues}
-									getOptionLabel={getStaffLabels}
-									defaultOptions
-									name="staff"
-									ref={register({ name: 'staff', required: true })}
-									loadOptions={getStaffs}
-									onChange={handleStaffOptions}
-									placeholder="Enter Staff Name"
-								/>
-							</div>
-
-							<div className="col-sm-6">
-								<label>Exempted for day:</label>
-								<input
-									id="exempted_days"
-									name="exempted_days"
-									className="form-control"
-									ref={register}
-									type="number"
-									placeholder="Enter number of days for exemption"
-									onChange={e => {
-										setDuration(e.target.value);
-									}}
-								/>
-							</div>
-						</div>
-
-						<div className="row">
-							<div className="col-sm-3">
-								<label>Start Date</label>
-								<div className="custom-date-input">
-									<DatePicker
-										selected={date}
-										peekNextMonth
-										onChange={date => {
-											setDate(date);
-											getEndDate();
+		<div className="col-sm-12">
+			<div className="element-wrapper">
+				<h6 className="element-header">Create Excuse Duty</h6>
+				<div className="form-block element-box">
+					<Form
+						onSubmit={handleSubmit}
+						validate={values => {
+							const errors = {};
+							if (!values.start_date) {
+								errors.start_date = 'Select start date';
+							}
+							if (!values.end_date) {
+								errors.end_date = 'Select end date';
+							}
+							if (
+								!values.diagnoses ||
+								(values.diagnoses && values.diagnoses.length === 0)
+							) {
+								errors.diagnoses = 'Select diagnosis';
+							}
+							if (!values.comment) {
+								errors.comment = 'Enter comment';
+							}
+							return errors;
+						}}
+						render={({ handleSubmit, submitting, submitError }) => (
+							<form onSubmit={handleSubmit}>
+								{submitError && (
+									<div
+										className="alert alert-danger"
+										dangerouslySetInnerHTML={{
+											__html: `<strong>Error!</strong> ${submitError}`,
 										}}
-										showMonthDropdown
-										required
-										ref={register}
-										showYearDropdown
-										dropdownMode="select"
-										dateFormat="dd-MMM-yyyy"
-										className="single-daterange form-control"
-										placeholderText="Select date of leave"
-										minDate={new Date()}
 									/>
+								)}
+								<div className="row">
+									<div className="col-sm-6">
+										<div className="form-group">
+											<label>
+												Start Date <Compulsory />
+											</label>
+											<Field
+												name="start_date"
+												render={({ name, input: { onChange } }) => (
+													<div className="custom-date-input">
+														<DatePicker
+															selected={startDate}
+															onChange={date => {
+																isValid(date)
+																	? onChange(
+																			format(new Date(date), 'dd-MM-yyyy')
+																	  )
+																	: onChange(null);
+																setStartDate(date);
+															}}
+															peekNextMonth
+															showMonthDropdown
+															showYearDropdown
+															dropdownMode="select"
+															dateFormat="dd-MM-yyyy"
+															className="single-daterange form-control"
+															placeholderText="Select start date"
+															name={name}
+															disabledKeyboardNavigation
+														/>
+													</div>
+												)}
+											/>
+											<ErrorBlock name="start_date" />
+										</div>
+									</div>
+									<div className="col-sm-6">
+										<div className="form-group">
+											<label>
+												End Date <Compulsory />
+											</label>
+											<Field
+												name="end_date"
+												render={({ name, input: { onChange } }) => (
+													<div className="custom-date-input">
+														<DatePicker
+															selected={endDate}
+															onChange={date => {
+																isValid(date)
+																	? onChange(
+																			format(new Date(date), 'dd-MM-yyyy')
+																	  )
+																	: onChange(null);
+																setEndDate(date);
+															}}
+															peekNextMonth
+															showMonthDropdown
+															showYearDropdown
+															dropdownMode="select"
+															dateFormat="dd-MM-yyyy"
+															className="single-daterange form-control"
+															placeholderText="Select end date"
+															minDate={startDate || new Date()}
+															name={name}
+															disabledKeyboardNavigation
+															disabled={!startDate}
+														/>
+													</div>
+												)}
+											/>
+											<ErrorBlock name="end_date" />
+										</div>
+									</div>
 								</div>
-							</div>
-							<div className="col-sm-3">
-								<label>End Date</label>
-								<div className="custom-date-input">
-									<DatePicker
-										value={endDate}
-										disabled
-										peekNextMonth
-										showMonthDropdown
-										required
-										ref={register}
-										showYearDropdown
-										dropdownMode="select"
-										dateFormat="dd-MMM-yyyy"
-										className="single-daterange form-control"
-										placeholderText="Select date of leave"
-										minDate={new Date()}
-									/>
+								<div className="row">
+									<div className="col-sm-6">
+										<div className="form-group">
+											<label>Diagnosis</label>
+											<Field name="diagnoses">
+												{({ input, meta }) => (
+													<AsyncSelect
+														isClearable
+														getOptionValue={option => option.id}
+														getOptionLabel={option =>
+															`${option.description} (${option.type}: ${option.code})`
+														}
+														defaultOptions
+														isMulti
+														value={diagnoses}
+														loadOptions={getDiagnoses}
+														onChange={e => {
+															input.onChange(e);
+															setDiagnoses(e);
+														}}
+														placeholder="Search for diagnosis"
+													/>
+												)}
+											</Field>
+											<ErrorBlock name="diagnoses" />
+										</div>
+									</div>
+									<div className="col-sm-6">
+										<div className="form-group">
+											<label>
+												Note <Compulsory />
+											</label>
+											<Field
+												name="comment"
+												className="form-control"
+												component="textarea"
+												placeholder="Note"
+											/>
+											<ErrorBlock name="comment" />
+										</div>
+									</div>
 								</div>
-							</div>
-							<div className="col-sm-6">
-								<div className="form-group">
-									<label>Diagnosis Data</label>
-									<AsyncSelect
-										required
-										cacheOptions
-										value={selectedOption}
-										getOptionValue={getOptionValues}
-										getOptionLabel={getOptionLabels}
-										defaultOptions
-										name="diagnosis"
-										ref={register({ name: 'diagnosis', required: true })}
-										loadOptions={getOptions}
-										onChange={handleChangeOptions}
-										placeholder="Enter ICD10 Code"
-									/>
+								<div className="row mt-2">
+									<div className="col-sm-12 text-right">
+										<button
+											className="btn btn-secondary"
+											onClick={() =>
+												history.push(`${location.pathname}#excuse-duty`)
+											}>
+											Cancel
+										</button>
+										<button
+											className="btn btn-primary"
+											disabled={submitting}
+											type="submit">
+											{submitting ? (
+												<img src={waiting} alt="submitting" />
+											) : (
+												'Save'
+											)}
+										</button>
+									</div>
 								</div>
-							</div>
-						</div>
-						<div className="row">
-							<div className="col-sm-12">
-								<label>Consulting doctor</label>
-								<AsyncSelect
-									required
-									cacheOptions
-									value={selectedDoctor}
-									getOptionValue={getDoctorValues}
-									getOptionLabel={getDoctorLabels}
-									defaultOptions
-									name="consulting_doctor"
-									ref={register({ name: 'consulting_doctor', required: true })}
-									loadOptions={getDoctors}
-									onChange={handleDoctorOptions}
-									placeholder="Enter Staff Name"
-								/>
-							</div>
-						</div>
-						<div className="row mt-4">
-							<div className="col-sm-12 form-group">
-								<label>Doctor's Note</label>
-								<textarea
-									id="reason"
-									name="reason"
-									ref={register}
-									type="text"
-									className="form-control"
-									onChange={e => setValue('reason', e.target.value)}
-									placeholder="Enter doctor's note"
-								/>
-							</div>
-						</div>
-						<div className="row mt-2">
-							<div className="col-sm-12 text-right">
-								<button
-									className="btn btn-primary"
-									disabled={submitting}
-									type="submit">
-									{submitting ? <img src={waiting} alt="submitting" /> : 'Save'}
-								</button>
-							</div>
-						</div>
-					</form>
+							</form>
+						)}
+					/>
 				</div>
 			</div>
 		</div>
 	);
 };
 
-const mapStateToProps = state => {
-	return {
-		staff: state.user.staff,
-	};
-};
-
-export default withRouter(connect(mapStateToProps, {})(CreateExcuseDuty));
+export default withRouter(CreateExcuseDuty);

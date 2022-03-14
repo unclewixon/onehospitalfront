@@ -309,8 +309,8 @@ export const soap = [
 ];
 
 export const assessmentMenu = [
+	'Note',
 	'General Assessment',
-	'General Comments',
 	'Lab',
 	'Radiology',
 	'Prescription',
@@ -1183,7 +1183,7 @@ export const alphabets = [
 
 export const defaultEncounter = {
 	complaints:
-		'<p><u>Presenting Complaints:</u>&nbsp;</p><p><br></p><p><br></p><p><br></p><p><u>History of complains</u>:&nbsp;</p><p><br></p>',
+		'<p><u>Presenting Complaints/History of complains:</u>&nbsp;</p><p><br></p><p><br></p><p><br></p><p><u><br></p>',
 	reviewOfSystem: [],
 	patientHistorySelected: [],
 	medicalHistory:

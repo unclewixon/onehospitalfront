@@ -90,7 +90,7 @@ const Complaints = ({ next }) => {
 					</div>
 				</div>
 				<div className="row mt-5">
-					<div className="col-sm-12 d-flex ant-row-flex-space-between">
+					<div className="col-sm-12 d-flex space-between">
 						<div />
 						<button className="btn btn-primary" type="submit">
 							Next

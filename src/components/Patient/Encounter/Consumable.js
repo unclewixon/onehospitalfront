@@ -19,16 +19,11 @@ import { request } from '../../../services/utilities';
 import { notifyError, notifySuccess } from '../../../services/notify';
 import { startBlock, stopBlock } from '../../../actions/redux-block';
 import SSRStorage from '../../../services/storage';
+import { messageService } from '../../../services/message';
 
 const storage = new SSRStorage();
 
-const Consumable = ({
-	previous,
-	patient,
-	closeModal,
-	updateAppointment,
-	appointment_id,
-}) => {
+const Consumable = ({ previous, patient, closeModal, appointment_id }) => {
 	const [loaded, setLoaded] = useState(false);
 	const [instruction, setInstruction] = useState('');
 	const [requestNote, setRequestNote] = useState('');
@@ -254,13 +249,18 @@ const Consumable = ({
 			const rs = await request(url, 'POST', true, values);
 			if (rs && rs.success) {
 				dispatch(stopBlock());
-				updateAppointment(rs.appointment);
+
+				messageService.sendMessage({
+					type: 'update-appointment',
+					data: { appointment: rs.appointment },
+				});
+
 				notifySuccess('Consultation completed successfully');
 				dispatch(resetEncounterData(defaultEncounter));
 
 				storage.removeItem(CK_ENCOUNTER);
 
-				closeModal();
+				closeModal(true);
 			} else {
 				dispatch(stopBlock());
 				notifyError('Error, could not save consultation data');
@@ -470,7 +470,7 @@ const Consumable = ({
 				</div>
 
 				<div className="row mt-5">
-					<div className="col-sm-12 d-flex ant-row-flex-space-between">
+					<div className="col-sm-12 d-flex space-between">
 						<button className="btn btn-primary" onClick={previous}>
 							Previous
 						</button>

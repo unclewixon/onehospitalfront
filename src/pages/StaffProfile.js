@@ -13,7 +13,6 @@ const Dashboard = lazy(() => import('../components/StaffBlock/Dashboard'));
 const EditStaff = lazy(() => import('../components/StaffBlock/EditStaff'));
 const Billing = lazy(() => import('../components/StaffBlock/Billing'));
 const DutyRoster = lazy(() => import('../components/StaffBlock/DutyRoster'));
-const ExcuseDuty = lazy(() => import('../components/StaffBlock/ExcuseDuty'));
 const CreateAppraisal = lazy(() =>
 	import('../components/StaffBlock/CreateAppraisal')
 );
@@ -46,8 +45,6 @@ const Page = ({ location }) => {
 			return <DutyRoster />;
 		case 'leave-request':
 			return <LeaveRequest />;
-		case 'excuse-duty':
-			return <ExcuseDuty />;
 		case 'appraisal':
 			return <Appraisal />;
 		case 'create-leave':

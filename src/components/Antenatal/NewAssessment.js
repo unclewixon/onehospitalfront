@@ -61,7 +61,7 @@ const AssessmentTabs = ({
 			);
 		case 1:
 			return (
-				<GeneralComments
+				<GeneralAssessment
 					assessment={assessment}
 					next={next}
 					previous={previous}
@@ -69,7 +69,7 @@ const AssessmentTabs = ({
 			);
 		case 0:
 		default:
-			return <GeneralAssessment assessment={assessment} next={next} />;
+			return <GeneralComments assessment={assessment} next={next} />;
 	}
 };
 

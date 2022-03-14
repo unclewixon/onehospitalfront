@@ -106,8 +106,13 @@
     ]
   },
   "lint-staged": {
-    "*.js": [
+    "src/**/*.{js,jsx,ts,tsx}": [
       "prettier --write"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }

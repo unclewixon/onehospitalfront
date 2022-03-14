@@ -59,6 +59,7 @@ const Cafeteria = lazy(() => import('./pages/Cafeteria/Home'));
 const MyAccount = lazy(() => import('./pages/MyAccount/Home'));
 const Doctor = lazy(() => import('./pages/Doctor/Home'));
 const Records = lazy(() => import('./pages/Records/Home'));
+const Accounting = lazy(() => import('./pages/Accounting/Home'));
 
 const storage = new SSRStorage();
 
@@ -247,6 +248,7 @@ class App extends Component {
 															<Route path="/cafeteria" component={Cafeteria} />
 															<Route path="/paypoint" component={PayPoint} />
 															<Route path="/records" component={Records} />
+															<Route path="/accounting" component={Accounting} />
 															{/* remove path later */}
 															<Route path="/my-account" component={MyAccount} />
 															<Route component={NoMatch} />

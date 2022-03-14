@@ -167,6 +167,7 @@ const HmoScheme = () => {
 											<table className="table table-striped">
 												<thead>
 													<tr>
+														<th>S/N</th>
 														<th>HMO Company</th>
 														<th>Scheme</th>
 														<th>Type</th>
@@ -182,6 +183,7 @@ const HmoScheme = () => {
 													{schemes.map((hmo, i) => {
 														return (
 															<tr key={i}>
+																<td>{hmo.id}</td>
 																<td>
 																	<span>
 																		{capitalize(hmo.owner?.name || '--')}

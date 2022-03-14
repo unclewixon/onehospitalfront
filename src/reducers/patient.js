@@ -42,11 +42,11 @@ const INITIAL_STATE = {
 	ivf: {},
 	encounterData: {
 		complaints:
-			'<p><u>Presenting Complaints:</u>​&nbsp;</p><p><br></p><p><br></p><p><br></p><p><u>History of complains</u>:&nbsp;</p><p><br></p>',
+			'<p><u>Presenting Complaints/History of complains:</u>&nbsp;</p><p><br></p><p><br></p><p><br></p><p><u><br></p>',
 		reviewOfSystem: [],
 		patientHistorySelected: [],
 		medicalHistory:
-			'<p><u>Past Medical History:</u>​&nbsp;</p><p><br></p><p><br></p><p><br></p><p><u><br></p>',
+			'<p><u>Past Medical History:</u>&nbsp;</p><p><br></p><p><br></p><p><br></p><p><u><br></p>',
 		allergies: [],
 		pastAllergies: [],
 		physicalExamination: [],
@@ -59,7 +59,7 @@ const INITIAL_STATE = {
 			pharmacyRequest: null,
 			procedureRequest: null,
 		},
-		treatmentPlan: '<p><u>Treatment Plan:</u>​&nbsp;</p><p><br></p>',
+		treatmentPlan: '<p><u>Treatment Plan:</u>&nbsp;</p><p><br></p>',
 		nextAppointment: null,
 		instruction: '',
 		consumables: null,

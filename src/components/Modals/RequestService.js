@@ -33,7 +33,7 @@ const RequestService = ({
 	const fetchServices = useCallback(async () => {
 		try {
 			dispatch(startBlock());
-			const url = `services/nursing-service?hmo_id=${patient.hmo.id}`;
+			const url = `services/nursing-service?hmo_id=${patient.hmo.id}&limit=80`;
 			const rs = await request(url, 'GET', true);
 			setServices(rs);
 			dispatch(stopBlock());

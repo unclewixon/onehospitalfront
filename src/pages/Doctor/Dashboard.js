@@ -74,6 +74,19 @@ const Dashboard = () => {
 	useEffect(() => {
 		const subscription = messageService.getMessage().subscribe(message => {
 			const { type, data } = message.text;
+			if (type === 'update-appointment') {
+				updateAppointment(data.appointment);
+			}
+		});
+
+		return () => {
+			subscription.unsubscribe();
+		};
+	});
+
+	useEffect(() => {
+		const subscription = messageService.getMessage().subscribe(message => {
+			const { type, data } = message.text;
 			if (type === 'consultation-queue') {
 				setAppointments([...appointments, data.queue.appointment]);
 				setMeta({ ...meta, totalPages: meta.totalPages + 1 });
