@@ -40,14 +40,6 @@ const MyAccount = () => {
 				</Link>
 			</li>
 			<li>
-				<Link to="/my-account/excuse-duty">
-					<div className="icon-w">
-						<div className="os-icon os-icon-agenda-1" />
-					</div>
-					<span>Excuse Duty</span>
-				</Link>
-			</li>
-			<li>
 				<Link to="/my-account/requisitions">
 					<div className="icon-w">
 						<div className="os-icon os-icon-agenda-1" />

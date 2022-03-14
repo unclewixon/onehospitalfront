@@ -125,6 +125,17 @@ const PatientMenu = ({ location }) => {
 						<span>IVF History</span>
 					</Link>
 				</li>
+				<li className="sub-header">
+					<span>Reports</span>
+				</li>
+				<li>
+					<Link to={`${location.pathname}#excuse-duty`}>
+						<div className="icon-w">
+							<div className="os-icon os-icon-layout" />
+						</div>
+						<span>Excuse Duty</span>
+					</Link>
+				</li>
 			</ul>
 		</div>
 	);

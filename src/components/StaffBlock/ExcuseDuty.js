@@ -71,11 +71,11 @@ const ExcuseDuty = ({
 
 	const redirect = e => {
 		e.preventDefault();
-		history.push(`${location.pathname}/new`);
+		history.push(`${location.pathname}#create-excuse-duty`);
 	};
 
 	return (
-		<div className="row my-4">
+		<div className="row my-4" style={{ width: '100%' }}>
 			<div className="col-sm-12">
 				<div className="element-wrapper">
 					<div className="element-actions">

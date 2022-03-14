@@ -22,6 +22,9 @@ const Procedure = lazy(() => import('../components/Patient/Procedure'));
 const Vitals = lazy(() => import('../components/Patient/Vitals'));
 const Allergies = lazy(() => import('../components/Patient/Allergies'));
 const LabRequest = lazy(() => import('../components/Patient/LabRequest'));
+const ExcuseDuty = lazy(() => import('../components/StaffBlock/ExcuseDuty'));
+const CreateExcuseDuty = lazy(() => import('../components/CreateExcuseDuty'));
+
 
 const IVFHistory = lazy(() => import('../components/Patient/IVFHistory'));
 const AntenatalHistory = lazy(() =>
@@ -90,11 +93,14 @@ const Page = ({ location }) => {
 			return <PatientAdmission />;
 		case 'immunization-chart':
 			return <ImmunizationChart />;
+		case 'excuse-duty':
+			return <ExcuseDuty />;
+		case 'create-excuse-duty':
+			return <CreateExcuseDuty />;
 		case 'ivf-history':
 			return <IVFHistory />;
 		case 'anc-history':
 			return <AntenatalHistory />;
-		case 'dashboard':
 		default:
 			return <Dashboard />;
 	}
