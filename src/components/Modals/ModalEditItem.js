@@ -15,9 +15,6 @@ const validate = values => {
 	if (!values.name) {
 		errors.name = 'enter name';
 	}
-	if (!values.unitPrice) {
-		errors.unitPrice = 'enter unit price';
-	}
 	if (!values.unitOfMeasure) {
 		errors.unitOfMeasure = 'enter unit of measure';
 	}
@@ -116,17 +113,6 @@ const ModalEditItem = ({
 											name="name"
 											component={renderTextInput}
 											label="Name"
-											type="text"
-										/>
-									</div>
-								</div>
-								<div className="row">
-									<div className="col-sm-12">
-										<Field
-											id="unitPrice"
-											name="unitPrice"
-											component={renderTextInput}
-											label="Unit Price"
 											type="text"
 										/>
 									</div>

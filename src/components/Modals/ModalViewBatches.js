@@ -14,7 +14,7 @@ import {
 	updateImmutable,
 } from '../../services/utilities';
 import ModalEditBatch from './ModalEditBatch';
-import ModalUpdateQty from './ModalUpdateQty';
+import ModalUpdateBatchQty from './ModalUpdateBatchQty';
 import ModalNewBatch from './ModalNewBatch';
 
 const ModalViewBatches = ({ closeModal, drug }) => {
@@ -209,7 +209,7 @@ const ModalViewBatches = ({ closeModal, drug }) => {
 				/>
 			)}
 			{showQuantity && batch && (
-				<ModalUpdateQty
+				<ModalUpdateBatchQty
 					item={batch}
 					category="batches"
 					closeModal={() => closeBatchModal()}

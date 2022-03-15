@@ -102,7 +102,7 @@ const Inventory = () => {
 	return (
 		<>
 			<div className="element-box m-0 mb-4 p-3">
-				<form className="row">
+				<div className="row">
 					<div className="form-group col-md-4">
 						<label className="mr-2">Search</label>
 						<input
@@ -136,7 +136,7 @@ const Inventory = () => {
 							</a>
 						)}
 					</div>
-				</form>
+				</div>
 			</div>
 			<div className="element-box m-0 mb-4 p-3">
 				<div className="table table-responsive">
