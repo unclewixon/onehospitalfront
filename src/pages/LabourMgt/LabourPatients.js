@@ -39,6 +39,7 @@ const LabourPatients = () => {
 	const fetchLabours = useCallback(
 		async (page, patientId, sDate, eDate) => {
 			try {
+				dispatch(startBlock());
 				const p = page || 1;
 				const patient_id = patientId || '';
 				const url = `${labourAPI}?page=${p}&limit=${limit}&patient_id=${patient_id}&startDate=${
@@ -89,7 +90,6 @@ const LabourPatients = () => {
 	};
 
 	const onNavigatePage = nextPage => {
-		dispatch(startBlock());
 		fetchLabours(nextPage, patient, startDate, endDate);
 	};
 

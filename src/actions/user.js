@@ -24,12 +24,13 @@ export const signOut = () => {
 	};
 };
 
-export const toggleProfile = (status, info, appointmentId) => {
+export const toggleProfile = (status, info, appointmentId, anc) => {
 	return {
 		type: TOGGLE_PROFILE,
 		payload: status,
 		info,
 		appointmentId,
+		antenatal: anc,
 	};
 };
 

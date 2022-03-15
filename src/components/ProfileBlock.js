@@ -26,6 +26,7 @@ import DischargeBlock from './DischargeBlock';
 import { setPatientRecord, toggleProfile } from '../actions/user';
 import SSRStorage from '../services/storage';
 import OpenEncounter from './Patient/Modals/OpenEncounter';
+import NewAssessment from './Antenatal/NewAssessment';
 
 const storage = new SSRStorage();
 
@@ -78,11 +79,13 @@ const ProfileBlock = ({
 	const [nicuFinishDischarge, setNicuFinishDischarge] = useState(false);
 	const [admission, setAdmission] = useState(null);
 	const [encounterModal, setEncounterModal] = useState(false);
+	const [assessmentModal, setAssessmentModal] = useState(false);
 
 	const dispatch = useDispatch();
 
 	const user = useSelector(state => state.user.profile);
 	const appointmentId = useSelector(state => state.user.appointmentId);
+	const antenatal = useSelector(state => state.user.antenatal);
 
 	const getAlerts = useCallback(async () => {
 		try {
@@ -180,6 +183,7 @@ const ProfileBlock = ({
 		setShowModal(false);
 		setEditModal(false);
 		setEncounterModal(false);
+		setAssessmentModal(false);
 		if (status) {
 			storage.removeItem(USER_RECORD);
 			dispatch(toggleProfile(false));
@@ -189,6 +193,11 @@ const ProfileBlock = ({
 	const startEncounter = () => {
 		document.body.classList.add('modal-open');
 		setEncounterModal(true);
+	};
+
+	const startAssessment = () => {
+		document.body.classList.add('modal-open');
+		setAssessmentModal(true);
 	};
 
 	const startDischarge = id => {
@@ -468,12 +477,21 @@ const ProfileBlock = ({
 											</div>
 											{appointmentId && appointmentId !== '' && (
 												<div className="mt-1">
-													<button
-														type="button"
-														onClick={() => startEncounter()}
-														className="btn btn-sm btn-info text-white">
-														Start Encounter
-													</button>
+													{antenatal ? (
+														<button
+															type="button"
+															onClick={() => startAssessment()}
+															className="btn btn-sm btn-info text-white">
+															Start Assessment
+														</button>
+													) : (
+														<button
+															type="button"
+															onClick={() => startEncounter()}
+															className="btn btn-sm btn-info text-white">
+															Start Encounter
+														</button>
+													)}
 												</div>
 											)}
 										</div>
@@ -663,6 +681,14 @@ const ProfileBlock = ({
 					patient={patient}
 					appointment_id={appointmentId}
 					closeModal={status => closeModal(status)}
+				/>
+			)}
+			{assessmentModal && (
+				<NewAssessment
+					closeModal={status => closeModal(status)}
+					appointment_id={appointmentId}
+					patient={patient}
+					antenatal={antenatal}
 				/>
 			)}
 		</>

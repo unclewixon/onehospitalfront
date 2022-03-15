@@ -45,6 +45,7 @@ const AntenatalPatients = () => {
 	const fetchAntenatals = useCallback(
 		async (page, patientId, sDate, eDate) => {
 			try {
+				dispatch(startBlock());
 				const p = page || 1;
 				const url = `${antenatalAPI}?page=${p}&limit=${limit}&patient_id=${
 					patientId || ''
@@ -110,7 +111,6 @@ const AntenatalPatients = () => {
 	};
 
 	const onNavigatePage = nextPage => {
-		dispatch(startBlock());
 		fetchAntenatals(nextPage, patient, startDate, endDate);
 	};
 

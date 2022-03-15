@@ -19,41 +19,23 @@ import { notifyError, notifySuccess } from '../../services/notify';
 import ProfilePopup from '../Patient/ProfilePopup';
 import TableLoading from '../TableLoading';
 import ModalViewAppointment from '../Modals/ModalViewAppointment';
-import NewAssessment from '../Antenatal/NewAssessment';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import { staffname } from '../../services/utilities';
 
-const AppointmentTable = ({
-	appointments,
-	loading,
-	updateAppointment,
-	history,
-}) => {
+const AppointmentTable = ({ appointments, loading, updateAppointment }) => {
 	const [updating, setUpdating] = useState(null);
 	const [appointment, setAppointment] = useState(null);
-	const [appointmentId, setAppointmentId] = useState(null);
-	const [patient, setPatient] = useState(null);
 	const [showModal, setShowModal] = useState(false);
-	const [assessmentModal, setAssessmentModal] = useState(false);
-	const [antenatal, setAntenatal] = useState(null);
 
 	const profile = useSelector(state => state.user.profile);
 
 	const dispatch = useDispatch();
 
-	const showProfile = (patient, appointment_id) => {
+	const showProfile = (patient, appointment_id, anc) => {
 		if (patient.is_active) {
 			const info = { patient, type: 'patient' };
-			dispatch(toggleProfile(true, info, appointment_id));
+			dispatch(toggleProfile(true, info, appointment_id, anc));
 		}
-	};
-
-	const startAssessment = (id, patient, antenatal) => {
-		document.body.classList.add('modal-open');
-		setPatient(patient);
-		setAntenatal(antenatal);
-		setAppointmentId(id);
-		setAssessmentModal(true);
 	};
 
 	const updateStatus = async ({ id, action }) => {
@@ -98,10 +80,7 @@ const AppointmentTable = ({
 
 	const closeModal = () => {
 		setShowModal(false);
-		setAssessmentModal(false);
 		setAppointment(null);
-		setPatient(null);
-		setAppointmentId(null);
 		document.body.classList.remove('modal-open');
 	};
 
@@ -127,7 +106,6 @@ const AppointmentTable = ({
 					<tr>
 						<th>Date</th>
 						<th>Patient</th>
-						<th>Type</th>
 						<th>Department</th>
 						<th>Reason</th>
 						<th>Accepted</th>
@@ -140,7 +118,7 @@ const AppointmentTable = ({
 					{appointments.map((appointment, i) => {
 						return (
 							<tr key={i}>
-								<td className="nowrap">
+								<td style={{ width: '120px' }}>
 									{formatDate(
 										appointment.appointment_date,
 										'DD-MMM-YYYY h:mm a'
@@ -159,11 +137,14 @@ const AppointmentTable = ({
 									</p>
 								</td>
 								<td>
-									{appointment.consultation_type
-										? startCase(appointment.consultation_type)
-										: '--'}
+									{appointment.department?.name || '--'}
+									<br />
+									<small className="bold">
+										{appointment.consultation_type
+											? `(${startCase(appointment.consultation_type)})`
+											: '--'}
+									</small>
 								</td>
-								<td>{appointment.department?.name || '--'}</td>
 								<td>
 									<p className="item-title text-color m-0">
 										{trimText(appointment.description || '--', 150)}
@@ -212,32 +193,18 @@ const AppointmentTable = ({
 																		Completed
 																	</span>
 																) : (
-																	<>
-																		{appointment?.antenatal && (
-																			<button
-																				onClick={() =>
-																					startAssessment(
-																						appointment.id,
-																						appointment?.patient,
-																						appointment.antenatal
-																					)
-																				}
-																				className="btn btn-sm btn-success text-white">
-																				Antenatal Assessment
-																			</button>
-																		)}
-																		{!appointment?.antenatal && (
-																			<button
-																				onClick={() =>
-																					showProfile(
-																						appointment.patient,
-																						appointment.id
-																					)
-																				}
-																				className="btn btn-sm btn-info text-white">
-																				Start Encounter
-																			</button>
-																		)}
+																	<div className="d-flex">
+																		<button
+																			onClick={() =>
+																				showProfile(
+																					appointment.patient,
+																					appointment.id,
+																					appointment.antenatal
+																				)
+																			}
+																			className="btn btn-sm btn-info text-white">
+																			Open Profile
+																		</button>
 																		<Tooltip title="Call Patient">
 																			<a
 																				onClick={() =>
@@ -247,7 +214,7 @@ const AppointmentTable = ({
 																				<i className="os-icon os-icon-volume-2" />
 																			</a>
 																		</Tooltip>
-																	</>
+																	</div>
 																)}
 															</>
 														)}
@@ -323,19 +290,6 @@ const AppointmentTable = ({
 				<ModalViewAppointment
 					appointment={appointment}
 					closeModal={closeModal}
-				/>
-			)}
-			{assessmentModal && (
-				<NewAssessment
-					closeModal={closeModal}
-					appointment_id={appointmentId}
-					refreshAssessments={() => {
-						history.push(`/antenatal#assessments`);
-						const info = { patient, type: 'antenatal', item: antenatal };
-						dispatch(toggleProfile(true, info));
-					}}
-					patient={patient}
-					antenatal={antenatal}
 				/>
 			)}
 		</>

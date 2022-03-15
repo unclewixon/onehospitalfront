@@ -15,7 +15,6 @@ const AssessmentTabs = ({
 	index,
 	previous,
 	next,
-	refreshAssessments,
 	closeModal,
 	assessment,
 	appointment_id,
@@ -28,7 +27,6 @@ const AssessmentTabs = ({
 				<NextAppointment
 					assessment={assessment}
 					previous={previous}
-					refreshAssessments={refreshAssessments}
 					closeModal={closeModal}
 					appointment_id={appointment_id || ''}
 					antenatal={antenatal}
@@ -128,13 +126,7 @@ class NewAssessment extends Component {
 	}
 
 	render() {
-		const {
-			refreshAssessments,
-			closeModal,
-			appointment_id,
-			patient,
-			antenatal,
-		} = this.props;
+		const { closeModal, appointment_id, patient, antenatal } = this.props;
 		const { eIndex, assessment } = this.state;
 		const current = assessmentMenu[eIndex];
 		return (
@@ -150,7 +142,7 @@ class NewAssessment extends Component {
 							aria-label="Close"
 							className="close override text-white"
 							type="button"
-							onClick={closeModal}>
+							onClick={() => closeModal()}>
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="layout-w flex-column">
@@ -170,7 +162,6 @@ class NewAssessment extends Component {
 											next={this.next}
 											previous={this.previous}
 											closeModal={closeModal}
-											refreshAssessments={refreshAssessments}
 											assessment={assessment}
 											appointment_id={appointment_id}
 											patient={patient}

@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
 import moment from 'moment';
@@ -36,52 +36,42 @@ const ClinicalTasks = ({ itemId, type, can_request = true }) => {
 
 	const dispatch = useDispatch();
 
-	const getTasks = async page => {
-		try {
-			const p = page || 1;
-			const item_id = itemId || '';
-			const block = type || '';
-			const url = `${admissionAPI}/tasks?patient_id=${patient.id}&page=${p}&limit=12&item_id=${item_id}&type=${block}`;
-			const res = await request(url, 'GET', true);
-			return res;
-		} catch (e) {
-			return null;
-		}
-	};
-
-	useEffect(() => {
-		async function doLoadTasks() {
-			const rs = await getTasks();
-			if (rs) {
+	const fetchTasks = useCallback(
+		async page => {
+			try {
+				dispatch(startBlock());
+				const p = page || 1;
+				const item_id = itemId || '';
+				const block = type || '';
+				const admission_id = block === '' ? patient?.admission?.id || '' : '';
+				const url = `${admissionAPI}/tasks?patient_id=${patient.id}&page=${p}&limit=12&item_id=${item_id}&admission_id=${admission_id}&type=${block}`;
+				const rs = await request(url, 'GET', true);
 				const { result, ...paginate } = rs;
 				setMeta(paginate);
 				setTasks(result);
+				setLoaded(true);
+				dispatch(stopBlock());
+			} catch (e) {
+				setLoaded(true);
+				dispatch(stopBlock());
+				notifyError(e.message || 'could not fetch tasks');
 			}
-			setLoaded(true);
-		}
+		},
+		[dispatch, itemId, patient, type]
+	);
 
+	useEffect(() => {
+		if (!loaded) {
+			fetchTasks();
+		}
+	}, [fetchTasks, loaded]);
+
+	useEffect(() => {
 		if (done) {
-			doLoadTasks();
+			fetchTasks();
 			dispatch(readingDone(null));
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [dispatch, done]);
-
-	useEffect(() => {
-		async function doLoadTasks() {
-			const rs = await getTasks();
-			if (rs) {
-				const { result, ...paginate } = rs;
-				setMeta(paginate);
-				setTasks(result);
-			}
-			setLoaded(true);
-		}
-		if (!loaded) {
-			doLoadTasks();
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [loaded]);
+	}, [dispatch, done, fetchTasks]);
 
 	const deleteTask = async data => {
 		try {
@@ -129,23 +119,11 @@ const ClinicalTasks = ({ itemId, type, can_request = true }) => {
 	};
 
 	const onNavigatePage = async nextPage => {
-		dispatch(startBlock());
-		const rs = await getTasks(nextPage);
-		if (rs) {
-			const { result, ...paginate } = rs;
-			setMeta(paginate);
-			setTasks(result);
-		}
-		dispatch(stopBlock());
+		await fetchTasks(nextPage);
 	};
 
 	const refreshTasks = async () => {
-		const rs = await getTasks();
-		if (rs) {
-			const { result, ...paginate } = rs;
-			setMeta(paginate);
-			setTasks(result);
-		}
+		await fetchTasks();
 	};
 
 	const recordMedication = item => {
@@ -178,15 +156,13 @@ const ClinicalTasks = ({ itemId, type, can_request = true }) => {
 									<button
 										className="btn btn-danger"
 										style={{ margin: '10px' }}
-										onClick={onClose}
-									>
+										onClick={onClose}>
 										No
 									</button>
 									<button
 										className="btn btn-primary"
 										style={{ margin: '10px' }}
-										onClick={onclick}
-									>
+										onClick={onclick}>
 										Yes
 									</button>
 								</div>
@@ -212,8 +188,7 @@ const ClinicalTasks = ({ itemId, type, can_request = true }) => {
 					{can_request && (
 						<a
 							className="btn btn-sm btn-secondary text-white ml-3"
-							onClick={() => createTask()}
-						>
+							onClick={() => createTask()}>
 							Create Task
 						</a>
 					)}
@@ -296,24 +271,21 @@ const ClinicalTasks = ({ itemId, type, can_request = true }) => {
 														{item.taskType === 'vitals' && (
 															<a
 																className="btn btn-primary btn-sm text-white text-uppercase"
-																onClick={() => takeReading(item)}
-															>
+																onClick={() => takeReading(item)}>
 																Take Reading
 															</a>
 														)}
 														{item.taskType === 'fluid' && (
 															<a
 																className="btn btn-primary btn-sm text-white text-uppercase"
-																onClick={() => recordFluid(item)}
-															>
+																onClick={() => recordFluid(item)}>
 																Take Reading
 															</a>
 														)}
 														{item.taskType === 'regimen' && (
 															<a
 																className="btn btn-primary btn-sm text-white text-uppercase"
-																onClick={() => recordMedication(item)}
-															>
+																onClick={() => recordMedication(item)}>
 																Take Reading
 															</a>
 														)}
@@ -324,8 +296,7 @@ const ClinicalTasks = ({ itemId, type, can_request = true }) => {
 												<Tooltip title="Cancel Clinical Task">
 													<a
 														className="danger"
-														onClick={e => confirmDelete(e, item)}
-													>
+														onClick={e => confirmDelete(e, item)}>
 														<i className="os-icon os-icon-ui-15"></i>
 													</a>
 												</Tooltip>

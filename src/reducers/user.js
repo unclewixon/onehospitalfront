@@ -41,6 +41,7 @@ const INITIAL_STATE = {
 	item: null,
 	type: null,
 	appointmentId: null,
+	antenatal: null,
 };
 
 const user = (state = INITIAL_STATE, action) => {
@@ -67,6 +68,7 @@ const user = (state = INITIAL_STATE, action) => {
 				isNicuOpen: false,
 				isLabourOpen: false,
 				appointmentId: null,
+				antenatal: null,
 			};
 		case TOGGLE_MODE:
 			storage.setItem(MODE_COOKIE, !state.theme_mode);
@@ -143,6 +145,7 @@ const user = (state = INITIAL_STATE, action) => {
 					item,
 					type,
 					appointmentId: action.appointmentId,
+					antenatal: action.antenatal,
 					...data,
 				};
 			}
@@ -163,6 +166,7 @@ const user = (state = INITIAL_STATE, action) => {
 				item: null,
 				type: null,
 				appointmentId: null,
+				antenatal: null,
 			};
 		default:
 			return state;

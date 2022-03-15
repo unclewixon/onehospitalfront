@@ -11,6 +11,7 @@ import { startBlock, stopBlock } from '../../../actions/redux-block';
 import { antenatalAPI } from '../../../services/constants';
 import { notifyError } from '../../../services/notify';
 import { notifySuccess } from '../../../services/notify';
+import { messageService } from "../../../services/message";
 
 const validate = values => {
 	const errors = {};
@@ -23,7 +24,6 @@ const NextAppointment = ({
 	change,
 	previous,
 	error,
-	refreshAssessments,
 	closeModal,
 	assessment,
 	reset,
@@ -115,10 +115,14 @@ const NextAppointment = ({
 			const rs = await request(url, 'POST', true, info);
 			dispatch(stopBlock());
 			if (rs && rs.success) {
+				messageService.sendMessage({
+					type: 'update-appointment',
+					data: { appointment: rs.appointment },
+				});
+
 				notifySuccess('Assessment completed successfully');
 				dispatch(reset('antenatalAssessment'));
-				refreshAssessments();
-				closeModal();
+				closeModal(true);
 			} else {
 				dispatch(stopBlock());
 				notifyError('Error, could not save antenatal assessment');
