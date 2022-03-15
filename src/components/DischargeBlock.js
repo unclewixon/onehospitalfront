@@ -17,17 +17,18 @@ const DischargeBlock = ({
 
 	return (
 		<>
-			{patient?.admission_id || patient.nicu_id
+			{(patient?.admission_id &&
+				patient?.admission_id === patient?.admission?.id) ||
+			(patient?.nicu_id && patient?.nicu_id === patient?.nicu?.id)
 				? canDischarge && (
 						<>
-							{patient?.admission_id && (
+							{patient?.admission?.id && (
 								<>
 									{patient?.admission?.start_discharge ? (
 										<Tooltip title="Complete Discharge">
 											<button
 												className="btn btn-warning btn-sm mr-1"
-												onClick={() => finishDischarge(patient?.admission_id)}
-											>
+												onClick={() => finishDischarge(patient?.admission?.id)}>
 												<i className="fa fa-hospital-o"></i>
 												<span style={{ marginLeft: '4px' }}>
 													Finish Discharge
@@ -42,9 +43,8 @@ const DischargeBlock = ({
 													<button
 														className="btn btn-danger btn-sm mr-1"
 														onClick={() =>
-															startDischarge(patient?.admission_id)
-														}
-													>
+															startDischarge(patient?.admission?.id)
+														}>
 														<i className="fa fa-hospital-o"></i>
 														<span style={{ marginLeft: '4px' }}>Discharge</span>
 													</button>
@@ -61,14 +61,13 @@ const DischargeBlock = ({
 									)}
 								</>
 							)}
-							{patient?.nicu_id && (
+							{patient?.nicu?.id && (
 								<>
 									{patient?.nicu?.start_discharge ? (
 										<Tooltip title="Complete Discharge">
 											<button
 												className="btn btn-warning btn-sm mr-1"
-												onClick={() => finishNicuDischarge(patient?.nicu_id)}
-											>
+												onClick={() => finishNicuDischarge(patient?.nicu?.id)}>
 												<i className="fa fa-hospital-o"></i>
 												<span style={{ marginLeft: '4px' }}>
 													Finish Discharge
@@ -82,8 +81,9 @@ const DischargeBlock = ({
 												<Tooltip title="Discharge">
 													<button
 														className="btn btn-danger btn-sm mr-1"
-														onClick={() => startNicuDischarge(patient?.nicu_id)}
-													>
+														onClick={() =>
+															startNicuDischarge(patient?.nicu?.id)
+														}>
 														<i className="fa fa-hospital-o"></i>
 														<span style={{ marginLeft: '4px' }}>
 															Nicu Discharge
@@ -110,8 +110,7 @@ const DischargeBlock = ({
 						<Tooltip title="Admit">
 							<Link
 								to={`${location.pathname}#start-admission`}
-								className="btn btn-primary btn-sm mr-1"
-							>
+								className="btn btn-primary btn-sm mr-1">
 								<i className="os-icon os-icon-ui-22"></i>
 								<span>Admit</span>
 							</Link>

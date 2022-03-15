@@ -45,6 +45,11 @@ const ModalNewBatch = ({ closeModal, error, handleSubmit, drug, addBatch }) => {
 				notifyError('Please select expiration date');
 				return;
 			}
+			
+			if (!vendor) {
+				notifyError('Please select vendor');
+				return;
+			}
 
 			dispatch(startBlock());
 			setSubmitting(true);
