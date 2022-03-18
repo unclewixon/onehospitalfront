@@ -130,7 +130,7 @@ const Login = ({ location, history, error, handleSubmit }) => {
 					dispatch(setConnection(true));
 
 					if (rs.passwordChanged) {
-						redirectToPage(rs.role, history);
+						redirectToPage(rs.role, history, rs.permissions);
 					} else {
 						history.push('/change-password');
 					}

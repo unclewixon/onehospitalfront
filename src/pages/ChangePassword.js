@@ -102,7 +102,7 @@ const ChangePassword = ({ location, history, error, handleSubmit }) => {
 
 			dispatch(setConnection(true));
 			
-			redirectToPage(rs.role, history);
+			redirectToPage(rs.role, history, rs.permissions);
 		} catch (e) {
 			console.log(e);
 			setState({ ...state, submitting: false });

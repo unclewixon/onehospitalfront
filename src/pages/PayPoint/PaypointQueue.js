@@ -10,10 +10,10 @@ import waiting from '../../assets/images/waiting.gif';
 import { searchAPI } from '../../services/constants';
 import TransactionTable from '../../components/Tables/TransactionTable';
 import { request, itemRender, patientname } from '../../services/utilities';
-import { getAllPendingTransactions } from './../../actions/paypoint';
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import TableLoading from '../../components/TableLoading';
+import { loadTransactions } from '../../actions/transaction';
 
 const { RangePicker } = DatePicker;
 
@@ -32,9 +32,8 @@ const PaypointQueue = () => {
 
 	const dispatch = useDispatch();
 
-	const transactions = useSelector(
-		({ paypoint }) => paypoint.pendingTransactions
-	);
+	const transactions = useSelector(state => state.transaction.transactions);
+	
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option => patientname(option, true);
 
@@ -60,7 +59,7 @@ const PaypointQueue = () => {
 				setMeta(meta);
 				window.scrollTo({ top: 0, behavior: 'smooth' });
 				const arr = [...result];
-				dispatch(getAllPendingTransactions(arr));
+				dispatch(loadTransactions(arr));
 				setFiltering(false);
 				setLoading(false);
 				dispatch(stopBlock());

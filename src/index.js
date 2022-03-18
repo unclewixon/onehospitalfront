@@ -135,7 +135,7 @@ const initData = async () => {
 				}, 200);
 
 				if (history.location.pathname === '/') {
-					redirectToPage(user.role, history);
+					redirectToPage(user.role, history, user.permissions);
 				} else {
 					history.push(url);
 				}

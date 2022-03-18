@@ -8,6 +8,7 @@ import { qsParse } from '../../services/utilities';
 import NoMatch from '../NoMatch';
 import Splash from '../../components/Splash';
 import PatientForm from '../../components/Modals/PatientForm';
+import { hasCreateAppointmentPermission } from '../../permission-utils/appointment';
 
 const AllPatients = lazy(() => import('./AllPatients'));
 const InsuranceTransactions = lazy(() => import('./InsuranceTransactions'));
@@ -55,15 +56,17 @@ const FrontDesk = ({ location }) => {
 						className="btn btn-primary btn-sm mr-2">
 						New Patient
 					</a>
-					<Link
-						to={{
-							pathname: '/front-desk/appointments/queue',
-							search: `?new=${count}`,
-							state: { from: location.pathname },
-						}}
-						className="btn btn-primary btn-sm">
-						New Appointment
-					</Link>
+					{hasCreateAppointmentPermission(staff.permissions) && (
+						<Link
+							to={{
+								pathname: '/front-desk/appointments/queue',
+								search: `?new=${count}`,
+								state: { from: location.pathname },
+							}}
+							className="btn btn-primary btn-sm">
+							New Appointment
+						</Link>
+					)}
 				</div>
 			)}
 			<h6 className="element-header">{startCase(title)}</h6>

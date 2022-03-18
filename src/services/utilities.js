@@ -19,6 +19,7 @@ import { API_URI, patientAPI, TOKEN_COOKIE } from './constants';
 import axios from 'axios';
 
 import placeholder from '../assets/images/placeholder.jpg';
+import { hasViewAppointmentPermission } from '../permission-utils/appointment';
 
 export const formatCurrency = (amount, abs) =>
 	`₦${numeral(abs ? Math.abs(amount) : amount).format('0,0.00')}`;
@@ -479,12 +480,14 @@ export const getUser = async () => {
 	return null;
 };
 
-export const redirectToPage = (role, history) => {
+export const redirectToPage = (role, history, permissions) => {
 	let uri = '';
 	try {
 		switch (role.slug) {
 			case 'front-desk':
-				uri = '/front-desk/appointments/queue';
+				uri = hasViewAppointmentPermission(permissions)
+					? '/front-desk/appointments/queue'
+					: '/front-desk/patients';
 				break;
 			case 'hr-manager':
 				uri = '/hr/staffs';
@@ -536,11 +539,15 @@ export const redirectToPage = (role, history) => {
 				uri = '/store';
 				break;
 			default:
-				uri = '/front-desk/appointments/queue';
+				uri = hasViewAppointmentPermission(permissions)
+					? '/front-desk/appointments/queue'
+					: '/front-desk/patients';
 				break;
 		}
 	} catch (e) {
-		uri = '/front-desk/appointments/queue';
+		uri = hasViewAppointmentPermission(permissions)
+			? '/front-desk/appointments/queue'
+			: '/front-desk/patients';
 	}
 
 	if (uri !== '') {

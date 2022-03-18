@@ -11,7 +11,6 @@ import hr from './hr';
 import patient from './patient';
 import transaction from './transaction';
 import utility from './utility';
-import paypoint from './paypoint';
 import permission from './permission';
 import department from './department';
 
@@ -21,7 +20,6 @@ const reducers = combineReducers({
 	reduxBlock,
 	user,
 	general,
-	paypoint,
 	settings,
 	role,
 	hr,

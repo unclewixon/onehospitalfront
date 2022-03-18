@@ -8,10 +8,8 @@ import {
 } from '../../services/utilities';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
 import { vouchersAPI } from '../../services/constants';
-import { updateImmutable } from '../../services/utilities';
 import { notifySuccess, notifyError } from '../../services/notify';
 import waiting from '../../assets/images/waiting.gif';
-import { getAllPendingTransactions } from '../../actions/paypoint';
 import { loadTransactions } from '../../actions/transaction';
 
 const validate = values => {
@@ -39,7 +37,7 @@ class ModalApproveTransaction extends Component {
 	approveTransaction = async data => {
 		try {
 			const { voucherId, isPart } = this.state;
-			const { transaction, pendingTransactions } = this.props;
+			const { transaction, transactions } = this.props;
 
 			const amount = Math.abs(parseFloat(transaction.amount));
 			if (isPart && parseFloat(data.amount_paid) > amount) {
@@ -64,21 +62,15 @@ class ModalApproveTransaction extends Component {
 			if (rs.success) {
 				this.props.reset('approve_transaction');
 				notifySuccess('Transaction Approved!');
-				const newTransactions = pendingTransactions.filter(trans => {
-					return trans.id !== rs.transaction.id;
+				
+				const newTransactions = transactions.filter(item => {
+					return item.id !== rs.transaction.id;
 				});
-				const updatedArr = updateImmutable(
-					this.props.transactions,
-					rs.transaction
-				);
-				this.props.loadTransactions([rs.credit, ...updatedArr]);
+
 				if (rs.balancePayment) {
-					this.props.getAllPendingTransactions([
-						rs.balancePayment,
-						...newTransactions,
-					]);
+					this.props.loadTransactions([rs.balancePayment, ...newTransactions]);
 				} else {
-					this.props.getAllPendingTransactions(newTransactions);
+					this.props.loadTransactions(newTransactions);
 				}
 				this.setState({ submitting: false });
 				this.props.closeModal();
@@ -147,16 +139,14 @@ class ModalApproveTransaction extends Component {
 			<div
 				className="onboarding-modal modal fade animated show"
 				role="dialog"
-				style={{ display: 'block' }}
-			>
+				style={{ display: 'block' }}>
 				<div className="modal-dialog modal-centered" role="document">
 					<div className="modal-content text-center">
 						<button
 							aria-label="Close"
 							className="close"
 							type="button"
-							onClick={closeModal}
-						>
+							onClick={closeModal}>
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
@@ -227,8 +217,7 @@ class ModalApproveTransaction extends Component {
 										<div className="form-check col-sm-4">
 											<label
 												className="form-check-label"
-												style={{ marginLeft: '12px' }}
-											>
+												style={{ marginLeft: '12px' }}>
 												<input
 													className="form-check-input mt-0"
 													name="is_part_payment"
@@ -252,15 +241,13 @@ class ModalApproveTransaction extends Component {
 										<button
 											className="btn btn-secondary ml-3"
 											type="button"
-											onClick={closeModal}
-										>
+											onClick={closeModal}>
 											Cancel
 										</button>
 										<button
 											className="btn btn-primary"
 											disabled={submitting}
-											type="submit"
-										>
+											type="submit">
 											{submitting ? (
 												<img src={waiting} alt="submitting" />
 											) : (
@@ -289,13 +276,11 @@ const mapStateToProps = (state, ownProps) => {
 			amount_paid: Math.abs(parseFloat(ownProps.transaction.amount)),
 		},
 		amount_available: Math.abs(parseFloat(ownProps.transaction.amount)),
-		pendingTransactions: state.paypoint.pendingTransactions,
 		transactions: state.transaction.transactions,
 		paymentMethods: state.utility.methods,
 	};
 };
 
-export default connect(mapStateToProps, {
-	getAllPendingTransactions,
-	loadTransactions,
-})(ModalApproveTransaction);
+export default connect(mapStateToProps, { loadTransactions })(
+	ModalApproveTransaction
+);

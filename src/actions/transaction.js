@@ -1,5 +1,5 @@
 import {
-	LOAD_RECENT_TRANSACTION,
+	LOAD_TRANSACTIONS,
 	DELETE_TRANSACTION,
 	UPDATE_TRANSACTION,
 	ADD_TRANSACTION,
@@ -7,7 +7,7 @@ import {
 
 export const loadTransactions = data => {
 	return {
-		type: LOAD_RECENT_TRANSACTION,
+		type: LOAD_TRANSACTIONS,
 		payload: data,
 	};
 };

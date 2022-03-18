@@ -11,15 +11,16 @@ import {
 	formatCurrency,
 	patientname,
 	parseSource,
+	updateImmutable,
 } from '../../services/utilities';
-import { deleteTransaction } from '../../actions/transaction';
+import { deleteTransaction, loadTransactions } from '../../actions/transaction';
 import { notifyError, notifySuccess } from '../../services/notify';
-import { Can } from '../common/Can';
 import ModalShowTransactions from '../Modals/ModalShowTransactions';
 import ModalApproveTransaction from '../Modals/ModalApproveTransaction';
 import ModalPrintTransaction from '../Modals/ModalPrintTransaction';
 import Admitted from '../Admitted';
 import NicuAdmitted from '../NicuAdmitted';
+import { startBlock, stopBlock } from '../../actions/redux-block';
 
 const TransactionTable = ({
 	transactions,
@@ -76,6 +77,41 @@ const TransactionTable = ({
 		setTransaction(item);
 		document.body.classList.add('modal-open');
 		setShowPrintModal(true);
+	};
+
+	const sendToQueue = async transaction => {
+		confirmAction(
+			onSendToQueue,
+			transaction,
+			'You are about to push this patient to vitals queue without taking payment.'
+		);
+	};
+
+	const onSendToQueue = async transaction => {
+		try {
+			dispatch(startBlock());
+			const data = {
+				patient_id: transaction.patient?.id,
+			};
+			const url = `transactions/${transaction.id}/skip-to-queue`;
+			const rs = await request(url, 'POST', true, data);
+			if (rs.success && rs.appointment) {
+				const newTransactions = updateImmutable(transactions, {
+					...transaction,
+					appointment: rs.appointment,
+				});
+				dispatch(loadTransactions(newTransactions));
+				dispatch(stopBlock());
+				notifySuccess('Patient has been vitals queued');
+			} else {
+				dispatch(stopBlock());
+				notifyError(rs.message || 'Could not add patient to queue');
+			}
+		} catch (e) {
+			console.log(e);
+			dispatch(stopBlock());
+			notifyError('Could not add patient to queue');
+		}
 	};
 
 	return (
@@ -189,7 +225,7 @@ const TransactionTable = ({
 										)}
 									</>
 								)}
-								<td className="text-center row-actions">
+								<td nowrap="nowrap" className="text-center row-actions">
 									{showActionBtns && (
 										<>
 											{transaction.payment_type !== 'HMO' &&
@@ -203,17 +239,29 @@ const TransactionTable = ({
 														</a>
 													</Tooltip>
 												)}
-											{(transaction.status === 0 ||
-												transaction.status === -1) && (
-												<Can I="delete-transaction" on="all">
-													<Tooltip title="Delete Transactions">
+											{transaction.bill_source === 'consultancy' &&
+												transaction.appointment &&
+												transaction.appointment.status ===
+													'Pending Paypoint Approval' &&
+												(transaction.status === 0 ||
+													transaction.status === -1) && (
+													<Tooltip title="Send To Vitals">
 														<a
-															className="text-danger"
-															onClick={() => confirmDelete(transaction)}>
-															<i className="os-icon os-icon-ui-15" />
+															className="primary"
+															onClick={() => sendToQueue(transaction)}>
+															<i className="os-icon os-icon-mail-18" />
 														</a>
 													</Tooltip>
-												</Can>
+												)}
+											{(transaction.status === 0 ||
+												transaction.status === -1) && (
+												<Tooltip title="Delete Transactions">
+													<a
+														className="text-danger"
+														onClick={() => confirmDelete(transaction)}>
+														<i className="os-icon os-icon-ui-15" />
+													</a>
+												</Tooltip>
 											)}
 										</>
 									)}

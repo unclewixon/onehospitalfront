@@ -5,14 +5,8 @@ import Pagination from 'antd/lib/pagination';
 
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
-import {
-	request,
-	itemRender,
-	patientname,
-	updateImmutable,
-} from '../../services/utilities';
+import { request, itemRender, patientname } from '../../services/utilities';
 import waiting from '../../assets/images/waiting.gif';
-import { getAllPendingTransactions } from '../../actions/paypoint';
 import { loadTransactions } from '../../actions/transaction';
 import TableLoading from '../TableLoading';
 import PatientBillItem from '../PatientBillItem';
@@ -37,9 +31,6 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 	const dispatch = useDispatch();
 
 	const paymentMethods = useSelector(state => state.utility.methods);
-	const pendingTransactions = useSelector(
-		state => state.paypoint.pendingTransactions
-	);
 	const allTransactions = useSelector(state => state.transaction.transactions);
 
 	const fetchTransactions = useCallback(
@@ -158,22 +149,16 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 			};
 			const url = 'transactions/process-bulk';
 			const rs = await request(url, 'POST', true, data);
-			let newTransactions = pendingTransactions;
+			let newTransactions = allTransactions;
 			for (const item of rs.transactions) {
 				newTransactions = [...newTransactions.filter(t => t.id !== item.id)];
 			}
 			if (rs.balancePayment) {
-				dispatch(
-					getAllPendingTransactions([rs.balancePayment, ...newTransactions])
-				);
+				dispatch(loadTransactions([rs.balancePayment, ...newTransactions]));
 			} else {
-				dispatch(getAllPendingTransactions(newTransactions));
+				dispatch(loadTransactions(newTransactions));
 			}
-			let transactionsList = allTransactions;
-			for (const item of rs.transactions) {
-				transactionsList = updateImmutable(transactionsList, item);
-			}
-			dispatch(loadTransactions(transactionsList));
+
 			setSubmitting(false);
 			closeModal();
 			dispatch(stopBlock());

@@ -1,6 +1,6 @@
 import {
 	DELETE_TRANSACTION,
-	LOAD_RECENT_TRANSACTION,
+	LOAD_TRANSACTIONS,
 	UPDATE_TRANSACTION,
 	ADD_TRANSACTION,
 } from '../actions/types';
@@ -12,7 +12,7 @@ const INITIAL_STATE = {
 
 const transaction = (state = INITIAL_STATE, action) => {
 	switch (action.type) {
-		case LOAD_RECENT_TRANSACTION:
+		case LOAD_TRANSACTIONS:
 			return { ...state, transactions: action.payload };
 		case ADD_TRANSACTION:
 			return {
