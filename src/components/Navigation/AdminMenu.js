@@ -24,7 +24,7 @@ const AdminMenu = ({ role }) => {
 			</li>
 			<FrontDeskMenu />
 			<li className="sub-header">
-				<span>CLINICAL LAB</span>
+				<span>MEDICAL LAB</span>
 			</li>
 			<ClinicalLabMenu />
 			<li className="sub-header">

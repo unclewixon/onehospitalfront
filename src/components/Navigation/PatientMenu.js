@@ -78,7 +78,7 @@ const PatientMenu = ({ location }) => {
 						<div className="icon-w">
 							<div className="os-icon os-icon-layout" />
 						</div>
-						<span>Clinical Lab</span>
+						<span>Medical Lab</span>
 					</Link>
 				</li>
 				<li>

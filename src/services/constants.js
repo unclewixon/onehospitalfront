@@ -282,8 +282,8 @@ export const requestTypes = [
 		label: 'Pharmacy',
 	},
 	{
-		value: 'Clinical lab',
-		label: 'Clinical lab',
+		value: 'Medical lab',
+		label: 'Medical lab',
 	},
 ];
 

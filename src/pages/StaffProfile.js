@@ -93,7 +93,8 @@ class StaffProfile extends Component {
 							aria-label="Close"
 							className="close custom-close"
 							type="button"
-							onClick={this.closeProfile}>
+							onClick={this.closeProfile}
+						>
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="col-md-12">
@@ -108,7 +109,8 @@ class StaffProfile extends Component {
 												<div className="ticket-reply-info">
 													<Link
 														className="author with-avatar"
-														to={`${location.pathname}#dashboard`}>
+														to={`${location.pathname}#dashboard`}
+													>
 														<img alt="" src={avatar1} />
 														<span>
 															{staff.details.first_name +
@@ -119,7 +121,8 @@ class StaffProfile extends Component {
 													<div
 														className="actions"
 														style={{ zIndex: 100 }}
-														href="#">
+														href="#"
+													>
 														<i className="os-icon os-icon-ui-46"></i>
 														<div className="actions-list">
 															<Link to={`${location.pathname}#edit-staff`}>
@@ -159,7 +162,8 @@ class StaffProfile extends Component {
 									</div>
 									<div
 										className="support-ticket-info"
-										style={{ position: 'relative' }}>
+										style={{ position: 'relative' }}
+									>
 										<div className="customer text-capitalize">
 											<div className="avatar" style={{ boxShadow: 'none' }}>
 												<img alt="" src={avatar1} />
@@ -167,9 +171,7 @@ class StaffProfile extends Component {
 											<h4 className="customer-name">
 												{`${staff.details.first_name} ${staff.details.last_name}`}
 											</h4>
-											<div className="customer-tickets">
-												Clinical Laboratory
-											</div>
+											<div className="customer-tickets">Medical Laboratory</div>
 										</div>
 
 										<h5 className="info-header">A few Colleagues</h5>
