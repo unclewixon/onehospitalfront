@@ -10,7 +10,8 @@
     "build": "yarn clean && yarn scss:build && react-scripts build",
     "test": "react-scripts test",
     "clean": "rm -rf build",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@casl/ability": "^5.4.3",
@@ -82,7 +83,7 @@
     "@types/lodash.truncate": "^4.4.6",
     "@types/lodash.uppercase": "^4.3.6",
     "@types/universal-cookie": "^3.0.0",
-    "husky": "^7.0.4",
+    "husky": "^7.0.0",
     "lint-staged": "^12.1.7",
     "prettier": "^2.5.1",
     "redux-logger": "^3.0.6"
@@ -104,15 +105,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx}": [
-      "prettier --write"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   }
 }
