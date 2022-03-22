@@ -63,11 +63,12 @@ class TakeReadings extends Component {
 				_data = { [keys[0]]: single };
 			}
 
-			let toSave = {
+			const toSave = {
 				readingType: title,
 				reading: _data,
 				patient_id: patient ? patient.id : task.patient_id,
 				task_id: task ? task.id : '',
+				is_fluid: info.type === 'urine' ? 1 : 0,
 			};
 			const rs = await request(vitalsAPI, 'POST', true, toSave);
 			if (rs.success) {

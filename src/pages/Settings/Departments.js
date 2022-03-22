@@ -1,10 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 import waiting from '../../assets/images/waiting.gif';
 import { notifySuccess, notifyError } from '../../services/notify';
-import { request } from '../../services/utilities';
+import { request, staffname } from '../../services/utilities';
 import { loadDepartments, updateDepartment } from '../../actions/department';
 import TableLoading from '../../components/TableLoading';
 
@@ -12,19 +13,15 @@ const Departments = () => {
 	const initialState = {
 		name: '',
 		description: '',
-		headOfDept: '',
-		hod: '',
 		id: '',
 	};
 
-	const [{ name, description, headOfDept, hod }, setState] = useState(
-		initialState
-	);
+	const [{ name, description }, setState] = useState(initialState);
 	const [payload, setPayload] = useState(null);
 	const [loading, setLoading] = useState(true);
-	const [staffList, setStaffList] = useState([]);
-	const [staffLoaded, setStaffLoaded] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
+	const [hasAppointment, setHasAppointment] = useState(false);
+	const [staff, setStaff] = useState(null);
 
 	const departments = useSelector(state => state.department);
 
@@ -43,8 +40,9 @@ const Departments = () => {
 			const data = {
 				name: name,
 				id: payload.id,
-				hod_id: headOfDept,
+				hod_id: staff?.id || '',
 				description,
+				has_appointment: hasAppointment ? 1 : 0,
 			};
 
 			const url = `departments/${data.id}/update`;
@@ -52,7 +50,9 @@ const Departments = () => {
 			if (rs.success) {
 				dispatch(updateDepartment(rs.department));
 				setState({ ...initialState });
+				setHasAppointment(false);
 				setSubmitting(false);
+				setStaff(null);
 				notifySuccess('department updated');
 				setPayload(null);
 			} else {
@@ -70,16 +70,19 @@ const Departments = () => {
 			...prevState,
 			name: data.name,
 			id: data.id,
-			headOfDept: data.hod_id ? data.hod_id : null,
-			hod: data.hod_name ? `${data.hod_name}` : null,
 			description: data.description,
 		}));
 		setPayload(data);
+		setHasAppointment(data.has_appointment === 1);
+		setStaff(data.staff);
+		window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
 
 	const cancelEditButton = () => {
 		setState({ ...initialState });
 		setPayload(null);
+		setHasAppointment(false);
+		setStaff(null);
 	};
 
 	const fetchDepartment = useCallback(async () => {
@@ -87,29 +90,27 @@ const Departments = () => {
 			const rs = await request('departments', 'GET', true);
 			dispatch(loadDepartments(rs));
 			setLoading(false);
-			await fetchAllStaff();
 		} catch (error) {
 			setLoading(false);
 			notifyError(error.message || 'could not fetch departments!');
 		}
 	}, [dispatch]);
 
-	const fetchAllStaff = async () => {
-		try {
-			const rs = await request('hr/staffs', 'GET', true);
-			setStaffList(rs);
-			setStaffLoaded(true);
-		} catch (error) {
-			setStaffLoaded(true);
-			notifyError(error.message || 'could not departments!');
-		}
-	};
-
 	useEffect(() => {
 		if (loading) {
 			fetchDepartment();
 		}
 	}, [fetchDepartment, loading]);
+
+	const getOptionsStaff = async q => {
+		if (!q || q.length < 1) {
+			return [];
+		}
+
+		const url = `hr/staffs/find?q=${q}`;
+		const res = await request(url, 'GET', true);
+		return res;
+	};
 
 	return (
 		<div className="content-i">
@@ -128,7 +129,7 @@ const Departments = () => {
 						<div className="col-lg-7">
 							<div className="element-wrapper">
 								<div className="element-box-tp">
-									{loading && !staffLoaded ? (
+									{loading ? (
 										<TableLoading />
 									) : (
 										<div className="table-responsive">
@@ -136,23 +137,35 @@ const Departments = () => {
 												<thead>
 													<tr>
 														<th>Department</th>
+														<th>Has Appointment</th>
 														<th>Head of Department</th>
 														<th>Action</th>
 													</tr>
 												</thead>
 												<tbody>
-													{departments.map((department, i) => {
+													{departments.map((item, i) => {
 														return (
 															<tr key={i}>
-																<td className="nowrap">{department.name}</td>
+																<td className="nowrap">{item.name}</td>
 																<td>
-																	{department.hod_name && department.hod_name}
+																	<span
+																		className={`badge ${
+																			item.has_appointment === 0
+																				? 'badge-secondary'
+																				: 'badge-primary'
+																		}`}
+																	>
+																		{item.has_appointment === 0 ? 'No' : 'Yes'}
+																	</span>
+																</td>
+																<td>
+																	{item.staff ? staffname(item.staff) : '--'}
 																</td>
 																<td className="row-actions">
 																	<a role="button">
 																		<i
 																			className="os-icon os-icon-ui-49"
-																			onClick={() => onClickEdit(department)}
+																			onClick={() => onClickEdit(item)}
 																		/>
 																	</a>
 																</td>
@@ -186,21 +199,17 @@ const Departments = () => {
 											</div>
 											<div className="form-group">
 												<label className="lighter">Head of Department</label>
-												<select
-													className="form-control"
-													name="headOfDept"
-													onChange={handleInputChange}
-													placeholder="Select staff"
-													value={headOfDept || ''}>
-													{!hod && <option value="">Select staff</option>}
-													{staffList.map((hod, i) => {
-														return (
-															<option value={hod.id} key={i}>
-																{hod.first_name} {hod.last_name}
-															</option>
-														);
-													})}
-												</select>
+												<AsyncSelect
+													isClearable
+													getOptionValue={option => option.id}
+													getOptionLabel={option => staffname(option)}
+													defaultOptions
+													name="staff"
+													value={staff}
+													loadOptions={getOptionsStaff}
+													onChange={e => setStaff(e)}
+													placeholder="Search staff"
+												/>
 											</div>
 											<div className="form-group">
 												<label className="lighter">Description</label>
@@ -215,17 +224,32 @@ const Departments = () => {
 													/>
 												</div>
 											</div>
-
+											<div className="form-group">
+												<label className="lighter" htmlFor="has_appt">
+													Has Appointment
+												</label>
+												<input
+													className="form-check-input ml-4"
+													id="has_appt"
+													name="has_appointment"
+													type="checkbox"
+													onChange={() => setHasAppointment(!hasAppointment)}
+													checked={hasAppointment}
+													value={1}
+												/>
+											</div>
 											<div className="form-buttons-w text-right compact">
 												<button
 													className="btn btn-secondary ml-3"
 													onClick={cancelEditButton}
-													type="button">
+													type="button"
+												>
 													<span>cancel</span>
 												</button>
 												<button
 													className="btn btn-primary"
-													disabled={submitting}>
+													disabled={submitting}
+												>
 													{submitting ? (
 														<img src={waiting} alt="submitting" />
 													) : (
