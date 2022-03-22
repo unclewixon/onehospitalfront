@@ -53,7 +53,7 @@ const PaypointQueue = () => {
 				setLoading(true);
 				const p = page || 1;
 				const patient_id = patient || '';
-				const url = `transactions/pending?page=${p}&limit=24&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}`;
+				const url = `transactions/pending?page=${p}&limit=15&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setMeta(meta);

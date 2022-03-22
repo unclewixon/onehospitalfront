@@ -63,7 +63,7 @@ class TransactionHistory extends Component {
 			const p = page || 1;
 			const pid = patient_id || '';
 			this.setState({ loading: true });
-			const url = `transactions?page=${p}&limit=24&patient_id=${pid}&startDate=${startDate}&endDate=${endDate}&bill_source=&status=${status}`;
+			const url = `transactions?page=${p}&limit=15&patient_id=${pid}&startDate=${startDate}&endDate=${endDate}&bill_source=&status=${status}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			const arr = [...result];

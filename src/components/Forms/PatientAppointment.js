@@ -156,9 +156,12 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 						).format('DD MMM, YYYY HH:mm A')}`}
 					</div>
 				)}
-				{patient && patient.outstanding > 0 && (
+				{patient && patient.outstanding < 0 && (
 					<div className="alert alert-danger mt-3">
-						{`Outstanding Balance: ${formatCurrency(patient.outstanding)}`}
+						{`Outstanding Balance: ${formatCurrency(
+							patient.outstanding,
+							true
+						)}`}
 					</div>
 				)}
 				<div className="row mt-3">
@@ -362,13 +365,18 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 				</div>
 			</div>
 			<div className="modal-footer buttons-on-right">
-				<button className="btn btn-primary" type="submit" disabled={submitting}>
-					{submitting ? (
-						<img src={waiting} alt="submitting" />
-					) : (
-						'Schedule Appointment'
-					)}
-				</button>
+				{patient && patient.outstanding >= 0 && (
+					<button
+						className="btn btn-primary"
+						type="submit"
+						disabled={submitting}>
+						{submitting ? (
+							<img src={waiting} alt="submitting" />
+						) : (
+							'Schedule Appointment'
+						)}
+					</button>
+				)}
 				<button className="btn btn-link" type="button" onClick={closeModal}>
 					Cancel
 				</button>

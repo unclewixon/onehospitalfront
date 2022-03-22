@@ -231,7 +231,7 @@ const TransactionTable = ({
 											{transaction.payment_type !== 'HMO' &&
 												(transaction.status === 0 ||
 													transaction.status === -1) && (
-													<Tooltip title="Approve Transactions">
+													<Tooltip title="Confirm Payment">
 														<a
 															className="secondary"
 															onClick={() => doApproveTransaction(transaction)}>

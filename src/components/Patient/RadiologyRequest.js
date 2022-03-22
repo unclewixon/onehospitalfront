@@ -95,6 +95,14 @@ const RadiologyRequest = ({ module, history, location, itemId }) => {
 		<div className={!module || (module && module === '') ? '' : 'col-sm-12'}>
 			<div className="element-box m-0 p-3">
 				<div className="form-block w-100">
+			{chosenPatient && chosenPatient.outstanding < 0 && (
+						<div className="alert alert-danger">
+							{`Outstanding Balance: ${formatCurrency(
+								chosenPatient.outstanding,
+								true
+							)}`}
+						</div>
+					)}
 					<form onSubmit={handleSubmit(onSubmit)}>
 						{!currentPatient && (
 							<div className="row">
@@ -184,7 +192,7 @@ const RadiologyRequest = ({ module, history, location, itemId }) => {
 									</label>
 								</div>
 							</div>
-							<div className="col-sm-6 text-right">
+							{chosenPatient && chosenPatient.outstanding >= 0 &&<div className="col-sm-6 text-right">
 								<button className="btn btn-primary" disabled={submitting}>
 									{submitting ? (
 										<img src={waiting} alt="submitting" />
@@ -192,7 +200,7 @@ const RadiologyRequest = ({ module, history, location, itemId }) => {
 										'Send Request'
 									)}
 								</button>
-							</div>
+							</div>}
 						</div>
 					</form>
 				</div>

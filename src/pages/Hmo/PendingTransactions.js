@@ -74,7 +74,7 @@ class PendingTransactions extends Component {
 		try {
 			const p = page || 1;
 			this.setState({ loading: true });
-			const url = `hmos/transactions?page=${p}&limit=15&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=0&hmo_id=${hmo_id}`;
+			const url = `hmos/transactions?page=${p}&limit=12&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=0&hmo_id=${hmo_id}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			const arr = [...result];

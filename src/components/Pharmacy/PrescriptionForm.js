@@ -18,6 +18,7 @@ import {
 	hasExpired,
 	patientname,
 	parseFrequency,
+	formatCurrency,
 } from '../../services/utilities';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
@@ -324,6 +325,14 @@ const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 
 	return (
 		<div className="form-block element-box">
+			{chosenPatient && chosenPatient.outstanding < 0 && (
+						<div className="alert alert-danger">
+							{`Outstanding Balance: ${formatCurrency(
+								chosenPatient.outstanding,
+								true
+							)}`}
+						</div>
+					)}
 			<form onSubmit={handleSubmit(onFormSubmit)}>
 				{!patient && (
 					<div className="form-group mr-2">
@@ -662,7 +671,7 @@ const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 					></textarea>
 				</div>
 			</div>
-			<div>
+			{chosenPatient && chosenPatient.outstanding >= 0 &&<div>
 				<button
 					onClick={submitRequest}
 					disabled={submitting}
@@ -674,7 +683,7 @@ const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 						<span> Save</span>
 					)}
 				</button>
-			</div>
+			</div>}
 		</div>
 	);
 };

@@ -136,7 +136,7 @@ const LabRequest = ({ module, history, location, itemId }) => {
 		<div className={!module || (module && module === '') ? '' : 'col-sm-12'}>
 			<div className="element-box m-0 p-3">
 				<div className="form-block w-100">
-					{chosenPatient && chosenPatient.outstanding > 0 && (
+					{chosenPatient && chosenPatient.outstanding < 0 && (
 						<div className="alert alert-danger">
 							{`Outstanding Balance: ${formatCurrency(
 								chosenPatient.outstanding,
@@ -253,7 +253,7 @@ const LabRequest = ({ module, history, location, itemId }) => {
 									</label>
 								</div>
 							</div>
-							{chosenPatient && (
+							{chosenPatient && chosenPatient.outstanding >= 0 &&  (
 								<div className="col-sm-8 text-right">
 									<button className="btn btn-primary" disabled={submitting}>
 										{submitting ? (
