@@ -40,11 +40,13 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 	});
 
 	const departments = useSelector(state =>
-		state.department.map(dept => ({
-			...dept,
-			label: dept.name,
-			value: dept.id,
-		}))
+		state.department
+			.filter(d => d.has_appointment === 1)
+			.map(dept => ({
+				...dept,
+				label: dept.name,
+				value: dept.id,
+			}))
 	);
 
 	const [patient, setPatient] = useState(null);
@@ -323,7 +325,8 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 						name="description"
 						rows="3"
 						placeholder="Enter a brief description"
-						ref={register}></textarea>
+						ref={register}
+					></textarea>
 				</div>
 				<div className="row">
 					<div className="col-sm-6">
@@ -369,7 +372,8 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 					<button
 						className="btn btn-primary"
 						type="submit"
-						disabled={submitting}>
+						disabled={submitting}
+					>
 						{submitting ? (
 							<img src={waiting} alt="submitting" />
 						) : (
