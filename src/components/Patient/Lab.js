@@ -8,6 +8,7 @@ import { notifyError } from '../../services/notify';
 import { request, itemRender } from '../../services/utilities';
 import LabBlock from '../LabBlock';
 import TableLoading from '../TableLoading';
+import { hasCreateLabPermission } from '../../permission-utils/lab';
 
 const Lab = ({ location, itemId, type, can_request = true }) => {
 	const [loaded, setLoaded] = useState(false);
@@ -22,6 +23,7 @@ const Lab = ({ location, itemId, type, can_request = true }) => {
 	const endDate = '';
 
 	const patient = useSelector(state => state.user.patient);
+	const staff = useSelector(state => state.user.profile);
 
 	const fetch = useCallback(
 		async page => {
@@ -60,10 +62,11 @@ const Lab = ({ location, itemId, type, can_request = true }) => {
 		<div className="col-sm-12">
 			<div className="element-wrapper">
 				<div className="element-actions">
-					{can_request && (
+					{can_request && hasCreateLabPermission(staff.permissions) && (
 						<Link
 							to={`${location.pathname}#lab-request`}
-							className="btn btn-primary btn-sm">
+							className="btn btn-primary btn-sm"
+						>
 							<i className="os-icon os-icon-plus" />
 							New Lab Request
 						</Link>
