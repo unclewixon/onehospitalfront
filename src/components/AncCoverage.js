@@ -1,6 +1,4 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
-// import Tooltip from 'antd/lib/tooltip';
 
 const AncCoverage = ({ title, item, selectServices }) => {
 	const items = item.coverage[title];
@@ -9,7 +7,8 @@ const AncCoverage = ({ title, item, selectServices }) => {
 			<div
 				className="filter-toggle"
 				style={{ fontSize: '20px', top: '12px' }}
-				onClick={() => selectServices(title, item)}>
+				onClick={() => selectServices(title, item)}
+			>
 				<i className="fa fa-plus-circle" />
 			</div>
 			<h6 className="filter-header">{`${title} Covered`}</h6>
@@ -21,7 +20,6 @@ const AncCoverage = ({ title, item, selectServices }) => {
 								<thead>
 									<tr>
 										<th>Name</th>
-										{/* <th></th> */}
 									</tr>
 								</thead>
 								<tbody>
@@ -29,13 +27,6 @@ const AncCoverage = ({ title, item, selectServices }) => {
 										return (
 											<tr key={i}>
 												<td>{item.name}</td>
-												{/* <td>
-													<Tooltip title="Delete Service">
-														<a onClick={() => {}}>
-															<i className="os-icon os-icon-ui-15 text-danger" />
-														</a>
-													</Tooltip>
-												</td> */}
 											</tr>
 										);
 									})}

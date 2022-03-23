@@ -22,7 +22,7 @@ const AntenatalPackage = () => {
 	const [{ name, amount }, setState] = useState(initialState);
 	const [loading, setLoading] = useState(false);
 	const [{ edit, save }, setSubmitButton] = useState(initialState);
-	const [payload, getDataToEdit] = useState(null);
+	const [payload, setPayload] = useState(null);
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [slug, setSlug] = useState(null);
@@ -71,7 +71,7 @@ const AntenatalPackage = () => {
 		try {
 			e.preventDefault();
 			setLoading(true);
-			const data = { name, amount, id: payload.id };
+			const data = { name, amount, id: payload.id, coverage: payload.coverage };
 			const url = `antenatal-packages/${data.id}`;
 			const rs = await request(url, 'PATCH', true, data);
 			const allPackages = updateImmutable(packages, rs);
@@ -95,8 +95,9 @@ const AntenatalPackage = () => {
 			name: data.name,
 			amount: data.amount,
 			id: data.id,
+			coverage: data.coverage,
 		}));
-		getDataToEdit(data);
+		setPayload(data);
 	};
 
 	const onDeletePackage = async data => {
@@ -171,12 +172,14 @@ const AntenatalPackage = () => {
 																<div className="pi-settings os-dropdown-trigger">
 																	<i
 																		className="os-icon os-icon-ui-49"
-																		onClick={() => onClickEdit(item)}></i>
+																		onClick={() => onClickEdit(item)}
+																	></i>
 																</div>
 																<div className="pi-settings os-dropdown-trigger">
 																	<i
 																		className="os-icon os-icon-ui-15 text-danger"
-																		onClick={() => confirmDelete(item)}></i>
+																		onClick={() => confirmDelete(item)}
+																	></i>
 																</div>
 															</div>
 															<div className="pi-body">
@@ -195,10 +198,12 @@ const AntenatalPackage = () => {
 														<div className="col-lg-12 mt-4" key={i}>
 															<div
 																className="rentals-list-w"
-																style={{ flexDirection: 'column' }}>
+																style={{ flexDirection: 'column' }}
+															>
 																<div
 																	className="filter-side mb-2"
-																	style={{ flex: '0 0 100%' }}>
+																	style={{ flex: '0 0 100%' }}
+																>
 																	<AncCoverage
 																		title={cover}
 																		item={item}
@@ -216,7 +221,8 @@ const AntenatalPackage = () => {
 								{packages.length === 0 && (
 									<div
 										className="alert alert-info text-center"
-										style={{ width: '100%' }}>
+										style={{ width: '100%' }}
+									>
 										No packages
 									</div>
 								)}
@@ -267,7 +273,8 @@ const AntenatalPackage = () => {
 													<>
 														<button
 															className="btn btn-secondary"
-															onClick={cancelEditButton}>
+															onClick={cancelEditButton}
+														>
 															<span>cancel</span>
 														</button>
 														<button className="btn btn-primary">
