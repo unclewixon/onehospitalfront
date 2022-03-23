@@ -16,6 +16,16 @@ const defaultValues = {
 	bill: 'later',
 };
 
+const SendButton = ({ submitting }) => {
+	return (
+		<div className="col-sm-6 text-right">
+			<button className="btn btn-primary" disabled={submitting}>
+				{submitting ? <img src={waiting} alt="submitting" /> : 'Send Request'}
+			</button>
+		</div>
+	);
+};
+
 const ProcedureRequest = ({ module, history, location }) => {
 	const { register, handleSubmit, setValue } = useForm({ defaultValues });
 
@@ -217,28 +227,32 @@ const ProcedureRequest = ({ module, history, location }) => {
 						<div className="row">
 							<div className="col-sm-6">
 								<div className="row">
-									<div className="form-group col-sm-4">
+									<div className="form-group col-sm-6">
 										<div className="d-flex">
-											<input
-												className="form-control"
-												type="radio"
-												name="bill"
-												ref={register}
-												value="now"
-											/>
-											<label className="mx-1">Bill now</label>
+											<div className="d-flex w20">
+												<input
+													className="form-control"
+													type="radio"
+													name="bill"
+													ref={register}
+													value="now"
+												/>
+											</div>
+											<label className="m-0">Bill now</label>
 										</div>
 									</div>
-									<div className="form-group col-sm-4">
+									<div className="form-group col-sm-6">
 										<div className="d-flex">
-											<input
-												className="form-control"
-												type="radio"
-												name="bill"
-												ref={register}
-												value="later"
-											/>
-											<label className="mx-1">Bill later </label>
+											<div className="d-flex w20">
+												<input
+													className="form-control"
+													type="radio"
+													name="bill"
+													ref={register}
+													value="later"
+												/>
+											</div>
+											<label className="m-0">Bill later </label>
 										</div>
 									</div>
 								</div>
@@ -247,31 +261,18 @@ const ProcedureRequest = ({ module, history, location }) => {
 								<>
 									{chosenPatient.hmo?.name === 'Private' ? (
 										<>
-											{chosenPatient.outstanding >= 0 && (
-												<div className="col-sm-6 text-right">
-													<button
-														className="btn btn-primary"
-														disabled={submitting}
-													>
-														{submitting ? (
-															<img src={waiting} alt="submitting" />
-														) : (
-															'Send Request'
-														)}
-													</button>
-												</div>
+											{chosenPatient.admission ? (
+												<SendButton submitting={submitting} />
+											) : (
+												<>
+													{chosenPatient.outstanding >= 0 && (
+														<SendButton submitting={submitting} />
+													)}
+												</>
 											)}
 										</>
 									) : (
-										<div className="col-sm-6 text-right">
-											<button className="btn btn-primary" disabled={submitting}>
-												{submitting ? (
-													<img src={waiting} alt="submitting" />
-												) : (
-													'Send Request'
-												)}
-											</button>
-										</div>
+										<SendButton submitting={submitting} />
 									)}
 								</>
 							)}

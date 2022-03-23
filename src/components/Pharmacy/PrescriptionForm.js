@@ -22,6 +22,20 @@ import {
 } from '../../services/utilities';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 
+const SendButton = ({ submitting, submitRequest }) => {
+	return (
+		<div className="text-right">
+			<button
+				onClick={submitRequest}
+				disabled={submitting}
+				className="btn btn-primary mt-4"
+			>
+				{submitting ? <img src={waiting} alt="submitting" /> : 'Send Request'}
+			</button>
+		</div>
+	);
+};
+
 const defaultValues = {
 	drugId: '',
 	quantity: '',
@@ -675,36 +689,24 @@ const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 				<>
 					{chosenPatient.hmo?.name === 'Private' ? (
 						<>
-							{chosenPatient.outstanding >= 0 && (
-								<div>
-									<button
-										onClick={submitRequest}
-										disabled={submitting}
-										className="btn btn-primary mt-4"
-									>
-										{submitting ? (
-											<img src={waiting} alt="submitting" />
-										) : (
-											<span> Save</span>
-										)}
-									</button>
-								</div>
+							{chosenPatient.admission ? (
+								<SendButton
+									submitting={submitting}
+									submitRequest={submitRequest}
+								/>
+							) : (
+								<>
+									{chosenPatient.outstanding >= 0 && (
+										<SendButton
+											submitting={submitting}
+											submitRequest={submitRequest}
+										/>
+									)}
+								</>
 							)}
 						</>
 					) : (
-						<div>
-							<button
-								onClick={submitRequest}
-								disabled={submitting}
-								className="btn btn-primary mt-4"
-							>
-								{submitting ? (
-									<img src={waiting} alt="submitting" />
-								) : (
-									<span> Save</span>
-								)}
-							</button>
-						</div>
+						<SendButton submitting={submitting} submitRequest={submitRequest} />
 					)}
 				</>
 			)}

@@ -14,6 +14,16 @@ const defaultValues = {
 	urgent: false,
 };
 
+const SendButton = ({ submitting }) => {
+	return (
+		<div className="col-sm-12 text-right">
+			<button className="btn btn-primary" disabled={submitting}>
+				{submitting ? <img src={waiting} alt="submitting" /> : 'Send Request'}
+			</button>
+		</div>
+	);
+};
+
 const RadiologyRequest = ({ module, history, location, itemId }) => {
 	const { register, handleSubmit } = useForm({ defaultValues });
 
@@ -198,31 +208,18 @@ const RadiologyRequest = ({ module, history, location, itemId }) => {
 								<>
 									{chosenPatient.hmo?.name === 'Private' ? (
 										<>
-											{chosenPatient.outstanding >= 0 && (
-												<div className="col-sm-8 text-right">
-													<button
-														className="btn btn-primary"
-														disabled={submitting}
-													>
-														{submitting ? (
-															<img src={waiting} alt="submitting" />
-														) : (
-															'Send Request'
-														)}
-													</button>
-												</div>
+											{chosenPatient.admission ? (
+												<SendButton submitting={submitting} />
+											) : (
+												<>
+													{chosenPatient.outstanding >= 0 && (
+														<SendButton submitting={submitting} />
+													)}
+												</>
 											)}
 										</>
 									) : (
-										<div className="col-sm-8 text-right">
-											<button className="btn btn-primary" disabled={submitting}>
-												{submitting ? (
-													<img src={waiting} alt="submitting" />
-												) : (
-													'Send Request'
-												)}
-											</button>
-										</div>
+										<SendButton submitting={submitting} />
 									)}
 								</>
 							)}
