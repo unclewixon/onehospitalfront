@@ -95,7 +95,7 @@ const RadiologyRequest = ({ module, history, location, itemId }) => {
 		<div className={!module || (module && module === '') ? '' : 'col-sm-12'}>
 			<div className="element-box m-0 p-3">
 				<div className="form-block w-100">
-			{chosenPatient && chosenPatient.outstanding < 0 && (
+					{chosenPatient && chosenPatient.outstanding < 0 && (
 						<div className="alert alert-danger">
 							{`Outstanding Balance: ${formatCurrency(
 								chosenPatient.outstanding,
@@ -158,7 +158,8 @@ const RadiologyRequest = ({ module, history, location, itemId }) => {
 										className={`badge badge-${
 											scan ? 'info' : 'danger'
 										} text-white ml-2`}
-										key={i}>{`${scan.name}: ${formatCurrency(
+										key={i}
+									>{`${scan.name}: ${formatCurrency(
 										scan?.serviceCost?.tariff || 0
 									)}`}</span>
 								))}
@@ -173,7 +174,8 @@ const RadiologyRequest = ({ module, history, location, itemId }) => {
 									name="request_note"
 									rows="3"
 									placeholder="Enter request note"
-									ref={register}></textarea>
+									ref={register}
+								></textarea>
 							</div>
 						</div>
 						<div className="row">
@@ -192,15 +194,38 @@ const RadiologyRequest = ({ module, history, location, itemId }) => {
 									</label>
 								</div>
 							</div>
-							{chosenPatient && chosenPatient.outstanding >= 0 &&<div className="col-sm-6 text-right">
-								<button className="btn btn-primary" disabled={submitting}>
-									{submitting ? (
-										<img src={waiting} alt="submitting" />
+							{chosenPatient && (
+								<>
+									{chosenPatient.hmo?.name === 'Private' ? (
+										<>
+											{chosenPatient.outstanding >= 0 && (
+												<div className="col-sm-8 text-right">
+													<button
+														className="btn btn-primary"
+														disabled={submitting}
+													>
+														{submitting ? (
+															<img src={waiting} alt="submitting" />
+														) : (
+															'Send Request'
+														)}
+													</button>
+												</div>
+											)}
+										</>
 									) : (
-										'Send Request'
+										<div className="col-sm-8 text-right">
+											<button className="btn btn-primary" disabled={submitting}>
+												{submitting ? (
+													<img src={waiting} alt="submitting" />
+												) : (
+													'Send Request'
+												)}
+											</button>
+										</div>
 									)}
-								</button>
-							</div>}
+								</>
+							)}
 						</div>
 					</form>
 				</div>

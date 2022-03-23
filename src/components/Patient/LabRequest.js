@@ -253,16 +253,37 @@ const LabRequest = ({ module, history, location, itemId }) => {
 									</label>
 								</div>
 							</div>
-							{chosenPatient && chosenPatient.outstanding >= 0 &&  (
-								<div className="col-sm-8 text-right">
-									<button className="btn btn-primary" disabled={submitting}>
-										{submitting ? (
-											<img src={waiting} alt="submitting" />
-										) : (
-											'Send Request'
-										)}
-									</button>
-								</div>
+							{chosenPatient && (
+								<>
+									{chosenPatient.hmo?.name === 'Private' ? (
+										<>
+											{chosenPatient.outstanding >= 0 && (
+												<div className="col-sm-8 text-right">
+													<button
+														className="btn btn-primary"
+														disabled={submitting}
+													>
+														{submitting ? (
+															<img src={waiting} alt="submitting" />
+														) : (
+															'Send Request'
+														)}
+													</button>
+												</div>
+											)}
+										</>
+									) : (
+										<div className="col-sm-8 text-right">
+											<button className="btn btn-primary" disabled={submitting}>
+												{submitting ? (
+													<img src={waiting} alt="submitting" />
+												) : (
+													'Send Request'
+												)}
+											</button>
+										</div>
+									)}
+								</>
 							)}
 						</div>
 					</form>

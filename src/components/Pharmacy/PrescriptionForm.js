@@ -326,13 +326,13 @@ const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 	return (
 		<div className="form-block element-box">
 			{chosenPatient && chosenPatient.outstanding < 0 && (
-						<div className="alert alert-danger">
-							{`Outstanding Balance: ${formatCurrency(
-								chosenPatient.outstanding,
-								true
-							)}`}
-						</div>
-					)}
+				<div className="alert alert-danger">
+					{`Outstanding Balance: ${formatCurrency(
+						chosenPatient.outstanding,
+						true
+					)}`}
+				</div>
+			)}
 			<form onSubmit={handleSubmit(onFormSubmit)}>
 				{!patient && (
 					<div className="form-group mr-2">
@@ -671,19 +671,43 @@ const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 					></textarea>
 				</div>
 			</div>
-			{chosenPatient && chosenPatient.outstanding >= 0 &&<div>
-				<button
-					onClick={submitRequest}
-					disabled={submitting}
-					className="btn btn-primary mt-4"
-				>
-					{submitting ? (
-						<img src={waiting} alt="submitting" />
+			{chosenPatient && (
+				<>
+					{chosenPatient.hmo?.name === 'Private' ? (
+						<>
+							{chosenPatient.outstanding >= 0 && (
+								<div>
+									<button
+										onClick={submitRequest}
+										disabled={submitting}
+										className="btn btn-primary mt-4"
+									>
+										{submitting ? (
+											<img src={waiting} alt="submitting" />
+										) : (
+											<span> Save</span>
+										)}
+									</button>
+								</div>
+							)}
+						</>
 					) : (
-						<span> Save</span>
+						<div>
+							<button
+								onClick={submitRequest}
+								disabled={submitting}
+								className="btn btn-primary mt-4"
+							>
+								{submitting ? (
+									<img src={waiting} alt="submitting" />
+								) : (
+									<span> Save</span>
+								)}
+							</button>
+						</div>
 					)}
-				</button>
-			</div>}
+				</>
+			)}
 		</div>
 	);
 };

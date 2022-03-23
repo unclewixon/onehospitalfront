@@ -114,7 +114,7 @@ const ProcedureRequest = ({ module, history, location }) => {
 		<div className={!module || (module && module === '') ? '' : 'col-sm-12'}>
 			<div className="element-box m-0 p-3">
 				<div className="form-block w-100">
-			{chosenPatient && chosenPatient.outstanding < 0 && (
+					{chosenPatient && chosenPatient.outstanding < 0 && (
 						<div className="alert alert-danger">
 							{`Outstanding Balance: ${formatCurrency(
 								chosenPatient.outstanding,
@@ -243,15 +243,38 @@ const ProcedureRequest = ({ module, history, location }) => {
 									</div>
 								</div>
 							</div>
-							{chosenPatient && chosenPatient.outstanding >= 0 &&<div className="col-sm-6 text-right">
-								<button className="btn btn-primary" disabled={submitting}>
-									{submitting ? (
-										<img src={waiting} alt="submitting" />
+							{chosenPatient && (
+								<>
+									{chosenPatient.hmo?.name === 'Private' ? (
+										<>
+											{chosenPatient.outstanding >= 0 && (
+												<div className="col-sm-6 text-right">
+													<button
+														className="btn btn-primary"
+														disabled={submitting}
+													>
+														{submitting ? (
+															<img src={waiting} alt="submitting" />
+														) : (
+															'Send Request'
+														)}
+													</button>
+												</div>
+											)}
+										</>
 									) : (
-										'Send Request'
+										<div className="col-sm-6 text-right">
+											<button className="btn btn-primary" disabled={submitting}>
+												{submitting ? (
+													<img src={waiting} alt="submitting" />
+												) : (
+													'Send Request'
+												)}
+											</button>
+										</div>
 									)}
-								</button>
-							</div>}
+								</>
+							)}
 						</div>
 					</form>
 				</div>

@@ -368,18 +368,38 @@ const PatientAppointment = ({ addAppointment, closeModal }) => {
 				</div>
 			</div>
 			<div className="modal-footer buttons-on-right">
-				{patient && patient.outstanding >= 0 && (
-					<button
-						className="btn btn-primary"
-						type="submit"
-						disabled={submitting}
-					>
-						{submitting ? (
-							<img src={waiting} alt="submitting" />
+				{patient && (
+					<>
+						{patient.hmo?.name === 'Private' ? (
+							<>
+								{patient.outstanding >= 0 && (
+									<button
+										className="btn btn-primary"
+										type="submit"
+										disabled={submitting}
+									>
+										{submitting ? (
+											<img src={waiting} alt="submitting" />
+										) : (
+											'Schedule Appointment'
+										)}
+									</button>
+								)}
+							</>
 						) : (
-							'Schedule Appointment'
+							<button
+								className="btn btn-primary"
+								type="submit"
+								disabled={submitting}
+							>
+								{submitting ? (
+									<img src={waiting} alt="submitting" />
+								) : (
+									'Schedule Appointment'
+								)}
+							</button>
 						)}
-					</button>
+					</>
 				)}
 				<button className="btn btn-link" type="button" onClick={closeModal}>
 					Cancel
