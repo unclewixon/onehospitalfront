@@ -257,7 +257,7 @@ const ProcedureRequest = ({ module, history, location }) => {
 									</div>
 								</div>
 							</div>
-							{chosenPatient && (
+							{/* {chosenPatient && (
 								<>
 									{chosenPatient.hmo?.name === 'Private' ? (
 										<>
@@ -275,7 +275,8 @@ const ProcedureRequest = ({ module, history, location }) => {
 										<SendButton submitting={submitting} />
 									)}
 								</>
-							)}
+							)} */}
+							<SendButton submitting={submitting} />
 						</div>
 					</form>
 				</div>

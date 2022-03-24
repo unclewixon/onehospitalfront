@@ -685,7 +685,7 @@ const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 					></textarea>
 				</div>
 			</div>
-			{chosenPatient && (
+			{/* {chosenPatient && (
 				<>
 					{chosenPatient.hmo?.name === 'Private' ? (
 						<>
@@ -709,7 +709,8 @@ const PrescriptionForm = ({ patient, history, module, location, itemId }) => {
 						<SendButton submitting={submitting} submitRequest={submitRequest} />
 					)}
 				</>
-			)}
+			)} */}
+			<SendButton submitting={submitting} submitRequest={submitRequest} />
 		</div>
 	);
 };

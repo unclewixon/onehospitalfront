@@ -263,7 +263,7 @@ const LabRequest = ({ module, history, location, itemId }) => {
 									</label>
 								</div>
 							</div>
-							{chosenPatient && (
+							{/* {chosenPatient && (
 								<>
 									{chosenPatient.hmo?.name === 'Private' ? (
 										<>
@@ -281,7 +281,8 @@ const LabRequest = ({ module, history, location, itemId }) => {
 										<SendButton submitting={submitting} />
 									)}
 								</>
-							)}
+							)} */}
+							<SendButton submitting={submitting} />
 						</div>
 					</form>
 				</div>

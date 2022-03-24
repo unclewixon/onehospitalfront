@@ -435,7 +435,8 @@ tr {
 }
 
 .ant-calendar-picker-container,
-.ant-tooltip {
+.ant-tooltip,
+.ant-picker-dropdown {
 	z-index: 2100 !important;
 }
 
@@ -960,8 +961,15 @@ h4.onboarding-title {
 	justify-content: space-between !important;
 }
 
+.align-self-center {
+	align-self: center !important;
+}
+
 .bold {
 	font-weight: bold !important;
 }
 
-.w20 {width: 20px !important;align-items: center;}
+.w20 {
+	width: 20px !important;
+	align-items: center;
+}
