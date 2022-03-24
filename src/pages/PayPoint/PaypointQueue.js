@@ -29,13 +29,29 @@ const PaypointQueue = () => {
 		itemsPerPage: 24,
 		totalPages: 0,
 	});
+	const [services, setServices] = useState([]);
+	const [service, setService] = useState('');
 
 	const dispatch = useDispatch();
 
 	const transactions = useSelector(state => state.transaction.transactions);
-	
+
 	const getOptionValues = option => option.id;
 	const getOptionLabels = option => patientname(option, true);
+
+	const fetchServices = useCallback(async () => {
+		try {
+			dispatch(startBlock());
+			const url = 'service-categories';
+			const rs = await request(url, 'GET', true);
+			setServices(rs);
+			dispatch(stopBlock());
+		} catch (error) {
+			console.log(error);
+			dispatch(stopBlock());
+			notifyError('error fetching services');
+		}
+	}, [dispatch]);
 
 	const getOptions = async q => {
 		if (!q || q.length < 1) {
@@ -48,12 +64,14 @@ const PaypointQueue = () => {
 	};
 
 	const init = useCallback(
-		async page => {
+		async (page, service) => {
 			try {
 				setLoading(true);
+				dispatch(startBlock());
 				const p = page || 1;
 				const patient_id = patient || '';
-				const url = `transactions/pending?page=${p}&limit=15&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}`;
+				const service_id = service || '';
+				const url = `transactions/pending?page=${p}&limit=15&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&service_id=${service_id}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setMeta(meta);
@@ -74,8 +92,7 @@ const PaypointQueue = () => {
 	);
 
 	const onNavigatePage = nextPage => {
-		dispatch(startBlock());
-		init(nextPage);
+		init(nextPage, service);
 	};
 
 	const dateChange = e => {
@@ -89,15 +106,16 @@ const PaypointQueue = () => {
 
 	useEffect(() => {
 		if (!loaded) {
+			fetchServices();
 			init();
 			setLoaded(true);
 		}
-	}, [init, loaded]);
+	}, [fetchServices, init, loaded]);
 
 	const doFilter = e => {
 		e.preventDefault();
 		setFiltering(true);
-		init();
+		init(1, service);
 	};
 
 	return (
@@ -125,11 +143,31 @@ const PaypointQueue = () => {
 						<label>From - To</label>
 						<RangePicker onChange={e => dateChange(e)} />
 					</div>
-
+					<div className="form-group col-md-3">
+						<label className="mr-2">Service</label>
+						<select
+							style={{ height: '35px' }}
+							className="form-control"
+							name="service"
+							onChange={e => setService(e.target.value)}
+						>
+							<option value="">Service</option>
+							<option value="credit">Credit Deposit</option>
+							<option value="transfer">Credit Transfer</option>
+							{services.map((status, i) => {
+								return (
+									<option key={i} value={status.id}>
+										{status.name}
+									</option>
+								);
+							})}
+						</select>
+					</div>
 					<div className="form-group col-md-3 mt-4">
 						<div
 							className="btn btn-sm btn-primary btn-upper text-white"
-							onClick={e => doFilter(e)}>
+							onClick={e => doFilter(e)}
+						>
 							<i className="os-icon os-icon-ui-37" />
 							<span>
 								{filtering ? <img src={waiting} alt="submitting" /> : 'Filter'}

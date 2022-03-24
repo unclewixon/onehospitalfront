@@ -80,7 +80,7 @@ class InsuranceTransactions extends Component {
 		try {
 			const p = page || 1;
 			this.setState({ loading: true });
-			const url = `hmos/transactions?page=${p}&limit=15&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}&hmo_id=${hmo_id}`;
+			const url = `hmos/transactions?page=${p}&limit=15&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}&hmo_id=${hmo_id}&service_id=`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			const arr = [...result];
@@ -440,7 +440,8 @@ class InsuranceTransactions extends Component {
 																	}
 																	onVisibleChange={e =>
 																		this.handleVisibleChange(e, item.id)
-																	}>
+																	}
+																>
 																	<Tooltip title="Enter Code">
 																		<a className="text-primary text-white">
 																			<i className="os-icon os-icon-thumbs-up" />
@@ -450,14 +451,16 @@ class InsuranceTransactions extends Component {
 																<Tooltip title="Approve Without Code">
 																	<a
 																		className="text-success text-white"
-																		onClick={() => this.approve(item.id)}>
+																		onClick={() => this.approve(item.id)}
+																	>
 																		<i className="os-icon os-icon-check-square" />
 																	</a>
 																</Tooltip>
 																<Tooltip title="Transfer to Paypoint">
 																	<a
 																		className="info"
-																		onClick={() => this.transfer(item.id)}>
+																		onClick={() => this.transfer(item.id)}
+																	>
 																		<i className="os-icon os-icon-mail-18" />
 																	</a>
 																</Tooltip>

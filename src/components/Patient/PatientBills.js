@@ -6,6 +6,7 @@ import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
 import Popover from 'antd/lib/popover';
 import Tooltip from 'antd/lib/tooltip';
+import startCase from 'lodash.startcase';
 
 import TableLoading from '../TableLoading';
 import {
@@ -23,6 +24,7 @@ import SetCreditLimit from './Modals/SetCreditLimit';
 import MakeDeposit from './Modals/MakeDeposit';
 import ModalApplyCredit from '../Modals/ModalApplyCredit';
 import { messageService } from '../../services/message';
+import TransferCredit from './Modals/TransferCredit';
 
 const { RangePicker } = DatePicker;
 
@@ -51,17 +53,24 @@ const PatientBills = () => {
 	const [date, setDate] = useState([]);
 	const [depositBalance, setDepositBalance] = useState(0);
 	const [showApplyModal, setShowApplyModal] = useState(false);
+	const [transferVisible, setTransferVisible] = useState(false);
+	const [services, setServices] = useState([]);
+	const [service, setService] = useState('');
 
 	const dispatch = useDispatch();
 
 	const patient = useSelector(state => state.user.patient);
 
 	const fetchBills = useCallback(
-		async (page, startDate = '', endDate = '', status = '', search = '') => {
+		async (page, start, end, status, service) => {
 			try {
 				dispatch(startBlock());
 				const p = page || 1;
-				const url = `patient/${patient.id}/transactions?page=${p}&limit=12&startDate=${startDate}&endDate=${endDate}&status=${status}&q=${search}`;
+				const startDate = start || '';
+				const endDate = end || '';
+				const item = status || '';
+				const service_id = service || '';
+				const url = `patient/${patient.id}/transactions?page=${p}&limit=12&startDate=${startDate}&endDate=${endDate}&status=${item}&service_id=${service_id}`;
 				const rs = await request(url, 'GET', true);
 				const { result, outstanding_amount, total_amount, ...meta } = rs;
 				setBills(result);
@@ -81,6 +90,20 @@ const PatientBills = () => {
 		[dispatch, patient]
 	);
 
+	const fetchServices = useCallback(async () => {
+		try {
+			dispatch(startBlock());
+			const url = 'service-categories';
+			const rs = await request(url, 'GET', true);
+			setServices(rs);
+			dispatch(stopBlock());
+		} catch (error) {
+			console.log(error);
+			dispatch(stopBlock());
+			notifyError('error fetching services');
+		}
+	}, [dispatch]);
+
 	const fetchDepositBal = useCallback(async () => {
 		try {
 			const url = `patient/${patient.id}/deposit-balance`;
@@ -96,12 +119,13 @@ const PatientBills = () => {
 		if (loading) {
 			fetchBills(1);
 			fetchDepositBal();
+			fetchServices();
 			setLoading(false);
 		}
-	}, [fetchBills, fetchDepositBal, loading]);
+	}, [fetchBills, fetchDepositBal, fetchServices, loading]);
 
 	const onNavigatePage = nextPage => {
-		fetchBills(nextPage, startDate, endDate, status);
+		fetchBills(nextPage, startDate, endDate, status, service);
 	};
 
 	const doApplyCredit = () => {
@@ -145,20 +169,24 @@ const PatientBills = () => {
 
 	const doFilter = async () => {
 		setFiltering(true);
-		await fetchBills(1, startDate, endDate, status);
+		await fetchBills(1, startDate, endDate, status, service);
 		setFiltered(true);
 	};
 
 	const doRefresh = async () => {
-		await fetchBills(meta.currentPage || 1, startDate, endDate, status);
+		await fetchBills(
+			meta.currentPage || 1,
+			startDate,
+			endDate,
+			status,
+			service
+		);
 		await fetchDepositBal();
 
 		const uri = `patient/${patient.id}/outstandings`;
 		const res = await request(uri, 'GET', true);
 		messageService.sendMessage({ type: 'balance', data: res });
 	};
-
-	const doPrint = () => {};
 
 	return (
 		<div className="row">
@@ -167,10 +195,10 @@ const PatientBills = () => {
 					<TableLoading />
 				) : (
 					<>
-						<div className="row justify-content-end">
-							<div className="col-6">
+						<div className="row mx-0 justify-content-end">
+							<div className="col-4">
 								<div className="text-right">
-									<label className="btn">
+									<label className="btn m-0 p-0">
 										<Popover
 											content={
 												<SetCreditLimit
@@ -181,7 +209,8 @@ const PatientBills = () => {
 											overlayClassName="set-credit-limit"
 											trigger="click"
 											visible={visible}
-											onVisibleChange={() => setVisible(!visible)}>
+											onVisibleChange={() => setVisible(!visible)}
+										>
 											<Tooltip title="Set Credit Limit">
 												<span className="btn btn-success mr-4">
 													Add Credit Limit
@@ -199,7 +228,7 @@ const PatientBills = () => {
 									</label>
 								</div>
 							</div>
-							<div className="col-md-auto">
+							<div className="col-md-auto align-self-center">
 								<div className="text-right">
 									<Popover
 										content={
@@ -215,44 +244,66 @@ const PatientBills = () => {
 										overlayClassName="set-credit-limit"
 										trigger="click"
 										visible={depositVisible}
-										onVisibleChange={() => setDepositVisible(!depositVisible)}>
-										<Tooltip title="Make Deposit">
-											<button className="btn btn-info btn-sm text-white mr-4">
-												Make Deposit
-											</button>
-										</Tooltip>
+										onVisibleChange={() => setDepositVisible(!depositVisible)}
+									>
+										<button className="btn btn-info btn-sm text-white mr-4">
+											Make Deposit
+										</button>
 									</Popover>
 									<span className="text-bold text-underline mr-4">
 										{formatCurrency(depositBalance)}
 									</span>
 									<button
 										className="btn btn-primary btn-sm mr-2"
-										onClick={() => doApplyCredit()}>
+										onClick={() => doApplyCredit()}
+									>
 										Apply Deposit
 									</button>
+									<Popover
+										content={
+											<TransferCredit
+												onHide={() => setTransferVisible(false)}
+												patient={patient}
+												updateBalance={amount => {
+													setDepositBalance(amount);
+													fetchBills(1);
+												}}
+											/>
+										}
+										overlayClassName="set-credit-limit"
+										trigger="click"
+										visible={transferVisible}
+										onVisibleChange={() => setTransferVisible(!transferVisible)}
+									>
+										<button className="btn btn-secondary mr-2">
+											<i className="fa fa-send"></i>
+											<span className="ml-2">Transfer Credit</span>
+										</button>
+									</Popover>
 									<button
 										className="btn btn-success"
-										onClick={() => doPrintBills()}>
-										<span className="mr-2">Print Bills</span>
+										onClick={() => doPrintBills()}
+									>
 										<i className="fa fa-print"></i>
+										<span className="ml-2">Print Bills</span>
 									</button>
 								</div>
 							</div>
 						</div>
-						<div className="row">
-							<div className="form-group col-md-6 m-0">
+						<div className="row mt-4 mx-0">
+							<div className="form-group col-md-5 m-0">
 								<label className="mr-2">Transaction Date</label>
 								<RangePicker value={date} onChange={e => dateChange(e)} />
 							</div>
-							<div className="form-group col-md-3 m-0 d-flex align-items-center">
+							<div className="form-group col-md-2 m-0 d-flex align-items-center">
 								<label className="mr-2 ">Status</label>
 								<select
 									style={{ height: '35px' }}
-									id="status"
 									className="form-control"
 									name="status"
-									onChange={e => setStatus(e.target.value)}>
-									<option value="">Choose status</option>
+									onChange={e => setStatus(e.target.value)}
+								>
+									<option value="">Status</option>
 									{paymentStatus.map((status, i) => {
 										return (
 											<option key={i} value={status.value}>
@@ -262,10 +313,31 @@ const PatientBills = () => {
 									})}
 								</select>
 							</div>
-							<div className="form-group col-md-3 m-0">
+							<div className="form-group col-md-3 m-0 d-flex align-items-center">
+								<label className="mr-2 ">Service</label>
+								<select
+									style={{ height: '35px' }}
+									className="form-control"
+									name="service"
+									onChange={e => setService(e.target.value)}
+								>
+									<option value="">Service</option>
+									<option value="credit">Credit Deposit</option>
+									<option value="transfer">Credit Transfer</option>
+									{services.map((item, i) => {
+										return (
+											<option key={i} value={item.id}>
+												{startCase(item.name)}
+											</option>
+										);
+									})}
+								</select>
+							</div>
+							<div className="form-group col-md-2 m-0">
 								<div
 									className="btn btn-sm btn-primary btn-upper text-white"
-									onClick={() => doFilter()}>
+									onClick={() => doFilter()}
+								>
 									<i className="os-icon os-icon-ui-37" />
 									<span>
 										{filtering ? (
@@ -283,18 +355,14 @@ const PatientBills = () => {
 											setStatus('');
 											setStartDate('');
 											setEndDate('');
+											setService('');
 											setFiltered(false);
 											await fetchBills(1);
-										}}>
+										}}
+									>
 										<i className="os-icon os-icon-close" />
 									</div>
 								)}
-								<div
-									className="btn btn-sm btn-info btn-upper text-white ml-2 d-none"
-									onClick={() => doPrint()}>
-									<i className="os-icon os-icon-printer" />
-									<span>Print</span>
-								</div>
 							</div>
 						</div>
 						<div className="dataTables_wrapper container-fluid dt-bootstrap4">
@@ -302,7 +370,8 @@ const PatientBills = () => {
 								<div className="col-sm-12">
 									<table
 										className="table table-striped table-lightfont dataTable"
-										style={{ width: '100%' }}>
+										style={{ width: '100%' }}
+									>
 										<thead style={{ borderCollapse: 'collapse' }}>
 											<tr>
 												<th>Bill#</th>
@@ -310,6 +379,7 @@ const PatientBills = () => {
 												<th>Date</th>
 												<th>Amount</th>
 												<th>Payment Method</th>
+												<th>Type</th>
 												<th>Status</th>
 												<th>Received By</th>
 											</tr>
@@ -360,6 +430,7 @@ const PatientBills = () => {
 														<td nowrap="nowrap">
 															{item.payment_method || '--'}
 														</td>
+														<td>{item.transaction_type || '--'}</td>
 														<td nowrap="nowrap">
 															{item.status === 0 && (
 																<span className="badge badge-secondary text-white">

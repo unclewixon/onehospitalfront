@@ -103,7 +103,8 @@ class TopBar extends Component {
 							<div
 								className="top-icon shadowless text-white pr-0"
 								style={{ cursor: 'pointer' }}
-								onClick={this.doToggleMenu}>
+								onClick={this.doToggleMenu}
+							>
 								<i className="os-icon os-icon-hamburger-menu-1" />
 							</div>
 							<div className="fs-img shadowless pr-0">
@@ -125,7 +126,9 @@ class TopBar extends Component {
 					</div>
 				)}
 				<div className="top-menu-controls" ref="searchBox">
-					<SearchPatient style={style} onExit={this.onExit} focus={focus} />
+					{focus && (
+						<SearchPatient style={style} onExit={this.onExit} focus={focus} />
+					)}
 					<div className="element-search autosuggest-search-activator">
 						<input
 							placeholder="Find patient..."
@@ -142,7 +145,8 @@ class TopBar extends Component {
 						className={`top-icon top-settings os-dropdown-trigger os-dropdown-position-left ${
 							hover_settings ? 'over' : ''
 						}`}
-						onClick={this.toggleSettings}>
+						onClick={this.toggleSettings}
+					>
 						<i className="os-icon os-icon-ui-46" />
 						<div className="os-dropdown">
 							<div className="icon-w">

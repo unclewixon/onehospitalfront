@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import AsyncSelect from 'react-select/async/dist/react-select.esm';
 
 import { notifyError, notifySuccess } from '../../../services/notify';
-import { request } from '../../../services/utilities';
+import { patientname, request } from '../../../services/utilities';
 import { startBlock, stopBlock } from '../../../actions/redux-block';
+import { searchAPI } from '../../../services/constants';
 
-const MakeDeposit = ({ patient, onHide, updateBalance }) => {
+const TransferCredit = ({ patient, onHide, updateBalance }) => {
 	const [amount, setAmount] = useState('');
-	const [paymentMethod, setPaymentMethod] = useState('');
+	const [recipient, setRecipient] = useState(null);
 
 	const dispatch = useDispatch();
-	const paymentMethods = useSelector(state => state.utility.methods);
 
 	const save = async () => {
 		try {
-			if (paymentMethod === '') {
-				notifyError('Select payment method');
+			if (!recipient) {
+				notifyError('Select patient');
 				return;
 			}
 
@@ -23,19 +24,35 @@ const MakeDeposit = ({ patient, onHide, updateBalance }) => {
 			const data = {
 				amount,
 				patient_id: patient.id,
-				payment_method: paymentMethod,
+				recipient_id: recipient.id,
 			};
-			const url = 'transactions/credit-account';
+			const url = 'transactions/transfer-credit';
 			const rs = await request(url, 'POST', true, data);
-			updateBalance(rs.balance);
-			notifySuccess('Account Credited!');
-			onHide();
 			dispatch(stopBlock());
+			if (rs.success) {
+				updateBalance(rs.balance);
+				notifySuccess('Credit Transferred!');
+				setRecipient(null);
+				setAmount('');
+				onHide();
+			} else {
+				notifyError(rs.message || 'Could not transfer credit');
+			}
 		} catch (error) {
 			console.log(error);
-			notifyError(error.message || 'Could not credit account');
+			notifyError(error.message || 'Could not transfer credit');
 			dispatch(stopBlock());
 		}
+	};
+
+	const getPatients = async q => {
+		if (!q || q.length < 1) {
+			return [];
+		}
+
+		const url = `${searchAPI}?q=${q}`;
+		const res = await request(url, 'GET', true);
+		return res;
 	};
 
 	return (
@@ -57,21 +74,23 @@ const MakeDeposit = ({ patient, onHide, updateBalance }) => {
 					<div className="onboarding-content with-gradient">
 						<div className="form-block">
 							<div className="form-group col-sm-12">
-								<label>Payment Method</label>
-								<select
-									name="payment_method"
-									className="form-control"
-									onChange={e => setPaymentMethod(e.target.value)}
-								>
-									<option value="">Select method</option>
-									{paymentMethods.map((p, i) => {
-										return (
-											<option key={i} value={p.name}>
-												{p.name}
-											</option>
-										);
-									})}
-								</select>
+								<label>Patient</label>
+								<AsyncSelect
+									isClearable
+									getOptionValue={option => option.id}
+									getOptionLabel={option => patientname(option, true)}
+									defaultOptions
+									name="patient"
+									loadOptions={getPatients}
+									onChange={e => {
+										if (e) {
+											setRecipient(e);
+										} else {
+											setRecipient(null);
+										}
+									}}
+									placeholder="Search patients"
+								/>
 							</div>
 							<div className="form-group col-sm-12">
 								<label>Amount</label>
@@ -98,4 +117,4 @@ const MakeDeposit = ({ patient, onHide, updateBalance }) => {
 	);
 };
 
-export default MakeDeposit;
+export default TransferCredit;

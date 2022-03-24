@@ -40,8 +40,9 @@ const HmoData = ({ hmo, toggle, doToggle, categories }) => {
 		async (page, q, category) => {
 			try {
 				const p = page || 1;
-				const url = `services?page=${p}&limit=10&q=${q ||
-					''}&category_id=${category || ''}&hmo_id=${hmo.id}`;
+				const search = q || '';
+				const item = category || '';
+				const url = `services?page=${p}&limit=10&q=${search}&category_id=${item}&hmo_id=${hmo.id}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				dispatch(loadServices({ hmo, result: [...result] }));
@@ -122,7 +123,8 @@ const HmoData = ({ hmo, toggle, doToggle, categories }) => {
 						});
 						doToggle(hmo.id);
 						setLoaded(false);
-					}}>
+					}}
+				>
 					<i className={`os-icon os-icon-${toggle ? 'minus' : 'common-03'}`} />
 				</div>
 				<h6 className="filter-header">{hmo.name}</h6>
@@ -131,7 +133,8 @@ const HmoData = ({ hmo, toggle, doToggle, categories }) => {
 				) : (
 					<div
 						className="filter-body"
-						style={{ display: toggle ? 'block' : 'none' }}>
+						style={{ display: toggle ? 'block' : 'none' }}
+					>
 						<div className="row">
 							<div className="col-lg-6">
 								<div className="element-search">
@@ -159,7 +162,8 @@ const HmoData = ({ hmo, toggle, doToggle, categories }) => {
 											setSearchCategory(e);
 											setKeyword('');
 											await fetchServices(1, '', e?.id || '');
-										}}>
+										}}
+									>
 										<option>Select Category</option>
 									</Select>
 								</div>
@@ -210,7 +214,8 @@ const HmoData = ({ hmo, toggle, doToggle, categories }) => {
 														<td colSpan="4" className="text-center">
 															<div
 																className="alert alert-info text-center"
-																style={{ width: '100%' }}>
+																style={{ width: '100%' }}
+															>
 																No services found!
 															</div>
 														</td>

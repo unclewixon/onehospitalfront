@@ -27,6 +27,23 @@ class SearchPatient extends Component {
 		// this.changed = debounce(this.doSearch, 250);
 	}
 
+	listener = e => {
+		const { search } = this.state;
+		if ((e.code === 'Enter' || e.code === 'NumpadEnter') && search !== '') {
+			e.preventDefault();
+			this.doSearch();
+		}
+	};
+
+	componentDidMount() {
+		document.addEventListener('keydown', this.listener);
+		if (this.props.focus && !this.state.focused) {
+			setTimeout(() => {
+				this.setFocus();
+			}, 100);
+		}
+	}
+
 	handleChange = e => {
 		const search = e.target.value;
 		// this.setState({ search }, () => {
@@ -63,6 +80,7 @@ class SearchPatient extends Component {
 
 	componentWillUnmount() {
 		this.setState({ hasSearched: false });
+		document.removeEventListener('keydown', this.listener);
 	}
 
 	setFocus = () => {
@@ -86,7 +104,8 @@ class SearchPatient extends Component {
 		return (
 			<div
 				className="search-with-suggestions-w over-search-field"
-				style={style}>
+				style={style}
+			>
 				<div className="search-with-suggestions-modal">
 					<div className="element-search" style={{ marginBottom: 0 }}>
 						<input
@@ -112,7 +131,8 @@ class SearchPatient extends Component {
 					{!searching && (
 						<div
 							className="search-suggestions-group"
-							style={{ marginTop: '30px' }}>
+							style={{ marginTop: '30px' }}
+						>
 							<div className="ssg-header">
 								<div className="ssg-icon">
 									<div className="os-icon os-icon-users"></div>
@@ -129,21 +149,19 @@ class SearchPatient extends Component {
 									)}
 									{patients.map(p => {
 										//const ps = split(p.id, search);
-										const legacy_id = p.legacy_patient_id
-											? `[${p.legacy_patient_id}]`
-											: '';
 										return (
 											<div style={{ display: 'flex' }} key={p.id}>
 												<a
 													onClick={this.showProfile(p)}
-													className="ssg-item cursor">
+													className="ssg-item cursor"
+												>
 													{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.folderNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
 													<div
 														className="item-name"
 														dangerouslySetInnerHTML={{
-															__html: `${formatPatientId(
+															__html: `${formatPatientId(p)} - ${patientname(
 																p
-															)} ${legacy_id} - ${patientname(p)}`,
+															)}`,
 														}}
 													/>
 												</a>

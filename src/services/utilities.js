@@ -201,15 +201,15 @@ export const renderTextArea = ({
 	meta: { touched, error },
 }) => (
 	<div
-		className={`form-group ${
-			touched && (error ? 'has-error has-danger' : '')
-		}`}>
+		className={`form-group ${touched && (error ? 'has-error has-danger' : '')}`}
+	>
 		<label htmlFor={id}>{label}</label>
 		<textarea
 			{...input}
 			type={type}
 			className="form-control"
-			placeholder={placeholder || label}></textarea>
+			placeholder={placeholder || label}
+		></textarea>
 		{touched && error && (
 			<div className="help-block form-text with-errors form-control-feedback">
 				<ul className="list-unstyled">
@@ -255,13 +255,23 @@ export const renderTextInputGroup = ({ input, append, label, icon, type, id, pla
 );
 
 export const formatPatientId = data => {
+	if (!data) {
+		return '';
+	}
+
 	let formattedId = String(data.id);
 	let len = 7 - formattedId.length;
 	while (len >= 0) {
 		formattedId = '0' + formattedId;
 		len--;
 	}
-	return formattedId;
+
+	const legacyId =
+		data.legacy_patient_id && data.legacy_patient_id !== ''
+			? ` [${data.legacy_patient_id}]`
+			: '';
+
+	return `${formattedId}${legacyId}`;
 };
 
 // export const renderMultiselect = ({
@@ -342,13 +352,15 @@ export const confirmAction = (action, payload, alertText, alertHead) => {
 						<button
 							className="btn btn-danger"
 							style={{ margin: '10px' }}
-							onClick={onClose}>
+							onClick={onClose}
+						>
 							No
 						</button>
 						<button
 							className="btn btn-primary"
 							style={{ margin: '10px' }}
-							onClick={onclick}>
+							onClick={onclick}
+						>
 							Yes
 						</button>
 					</div>
@@ -372,7 +384,8 @@ export const renderSelectWithDefault = ({
 		<div
 			className={`form-group ${
 				touched && (error ? 'has-error has-danger' : '')
-			}`}>
+			}`}
+		>
 			<label htmlFor={id}>{label}</label>
 			<select {...input} className="form-control">
 				<option value="">{placeholder}</option>
@@ -405,9 +418,8 @@ export const renderSelect = ({
 	meta: { touched, error },
 }) => (
 	<div
-		className={`form-group ${
-			touched && (error ? 'has-error has-danger' : '')
-		}`}>
+		className={`form-group ${touched && (error ? 'has-error has-danger' : '')}`}
+	>
 		<label htmlFor={id}>{label}</label>
 		<select {...input} className="form-control">
 			<option value="">{placeholder}</option>
@@ -560,16 +572,11 @@ export const redirectToPage = (role, history, permissions) => {
 export const staffname = user =>
 	user ? `${startCase(user?.first_name)} ${startCase(user?.last_name)}` : '--';
 
-export const patientname = (user, pid = false) =>
-	user
-		? `${user.other_names} ${user.surname} ${
-				pid
-					? `(${formatPatientId(user)} ${
-							user.legacy_patient_id ? `[${user.legacy_patient_id}]` : ''
-					  })`
-					: ''
-		  }`
-		: '--';
+export const patientname = (user, pid = false) => {
+	const patientId = pid ? `(${formatPatientId(user)})` : '';
+
+	return user ? `${user.other_names} ${user.surname} ${patientId}` : '--';
+};
 
 export const formatNumber = n =>
 	parseFloat(n).toLocaleString(undefined, { maximumFractionDigits: 2 });

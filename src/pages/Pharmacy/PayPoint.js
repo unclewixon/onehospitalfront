@@ -22,7 +22,7 @@ class PayPoint extends Component {
 		try {
 			const p = page || 1;
 			this.setState({ loading: true });
-			const url = `transactions?page=${p}&limit=15&patient_id=&startDate=&endDate=&status=&hmo_id=&bill_source=drugs`;
+			const url = `transactions?page=${p}&limit=15&patient_id=&startDate=&endDate=&status=&hmo_id=&service_id=drugs`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			this.props.loadTransactions(result);

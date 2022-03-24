@@ -36,7 +36,8 @@ const Dashboard = () => {
 									className={
 										tab === 'visitNotes' ? 'nav-link active' : 'nav-link'
 									}
-									onClick={() => setTab('visitNotes')}>
+									onClick={() => setTab('visitNotes')}
+								>
 									Visit Notes
 								</a>
 							</li>
@@ -45,7 +46,8 @@ const Dashboard = () => {
 									className={
 										tab === 'visitSummary' ? 'nav-link active' : 'nav-link'
 									}
-									onClick={() => setTab('visitSummary')}>
+									onClick={() => setTab('visitSummary')}
+								>
 									Visit Summary
 								</a>
 							</li>
@@ -54,28 +56,31 @@ const Dashboard = () => {
 									className={
 										tab === 'appointment' ? 'nav-link active' : 'nav-link'
 									}
-									onClick={() => setTab('appointment')}>
+									onClick={() => setTab('appointment')}
+								>
 									Appointment History
 								</a>
 							</li>
 							<li className="nav-item">
 								<a
 									className={tab === 'billing' ? 'nav-link active' : 'nav-link'}
-									onClick={() => setTab('billing')}>
+									onClick={() => setTab('billing')}
+								>
 									Billing
 								</a>
 							</li>
-							{(user.role.slug === 'it-admin' ||
-								user.role.slug === 'doctor') && (
-								<li className="nav-item nav-actions d-sm-block">
-									<a
-										className="btn btn-primary btn-sm text-white"
-										onClick={() => addNote()}>
-										<i className="os-icon os-icon-ui-22"></i>
-										<span>New Note</span>
-									</a>
-								</li>
-							)}
+							{(user.role.slug === 'it-admin' || user.role.slug === 'doctor') &&
+								tab === 'visitNotes' && (
+									<li className="nav-item nav-actions d-sm-block">
+										<a
+											className="btn btn-primary btn-sm text-white"
+											onClick={() => addNote()}
+										>
+											<i className="os-icon os-icon-ui-22"></i>
+											<span>New Note</span>
+										</a>
+									</li>
+								)}
 						</ul>
 					</div>
 					<div className="tab-content">

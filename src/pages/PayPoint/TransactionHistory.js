@@ -45,9 +45,12 @@ class TransactionHistory extends Component {
 		endDate: '',
 		status: '',
 		meta: null,
+		services: null,
+		service: '',
 	};
 
 	componentDidMount() {
+		this.fetchServices();
 		this.fetchTransaction();
 	}
 
@@ -57,13 +60,29 @@ class TransactionHistory extends Component {
 		}
 	}
 
-	fetchTransaction = async page => {
-		const { patient_id, startDate, endDate, status } = this.state;
+	fetchServices = async () => {
 		try {
+			this.props.startBlock();
+			const url = 'service-categories';
+			const rs = await request(url, 'GET', true);
+			this.setState({ services: rs });
+			this.props.stopBlock();
+		} catch (error) {
+			console.log(error);
+			this.props.stopBlock();
+			notifyError('error fetching services');
+		}
+	};
+
+	fetchTransaction = async page => {
+		const { patient_id, startDate, endDate, status, service } = this.state;
+		try {
+			this.props.startBlock();
 			const p = page || 1;
 			const pid = patient_id || '';
+			const service_id = service || '';
 			this.setState({ loading: true });
-			const url = `transactions?page=${p}&limit=15&patient_id=${pid}&startDate=${startDate}&endDate=${endDate}&bill_source=&status=${status}`;
+			const url = `transactions?page=${p}&limit=15&patient_id=${pid}&startDate=${startDate}&endDate=${endDate}&service_id=${service_id}&status=${status}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			const arr = [...result];
@@ -79,7 +98,6 @@ class TransactionHistory extends Component {
 	};
 
 	onNavigatePage = nextPage => {
-		this.props.startBlock();
 		this.fetchTransaction(nextPage);
 	};
 
@@ -107,7 +125,7 @@ class TransactionHistory extends Component {
 	};
 
 	render() {
-		const { filtering, loading, meta } = this.state;
+		const { filtering, loading, meta, services } = this.state;
 		const { transactions } = this.props;
 		return (
 			<>
@@ -136,17 +154,34 @@ class TransactionHistory extends Component {
 							<RangePicker onChange={e => this.dateChange(e)} />
 						</div>
 						<div className="form-group col-md-3">
-							<label className="mr-2 " htmlFor="id">
-								Status
-							</label>
+							<label className="mr-2">Service</label>
 							<select
 								style={{ height: '35px' }}
-								id="status"
+								className="form-control"
+								name="service"
+								onChange={e => this.change(e)}
+							>
+								<option value="">Service</option>
+								<option value="credit">Credit Deposit</option>
+								<option value="transfer">Credit Transfer</option>
+								{services.map((status, i) => {
+									return (
+										<option key={i} value={status.id}>
+											{status.name}
+										</option>
+									);
+								})}
+							</select>
+						</div>
+						<div className="form-group col-md-3">
+							<label className="mr-2">Status</label>
+							<select
+								style={{ height: '35px' }}
 								className="form-control"
 								name="status"
 								onChange={e => this.change(e)}
 							>
-								<option value="">Choose status</option>
+								<option value="">Status</option>
 								{paymentStatus.map((status, i) => {
 									return (
 										<option key={i} value={status.value}>

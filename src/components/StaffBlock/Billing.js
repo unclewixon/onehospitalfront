@@ -41,14 +41,14 @@ export class Billing extends Component {
 	hmo = React.createRef();
 
 	componentDidMount() {
-		this.fetchCafeteriaTransaction();
+		this.fetchTransactions();
 	}
 
-	fetchCafeteriaTransaction = async () => {
+	fetchTransactions = async () => {
 		const { startDate, endDate } = this.state;
 		try {
 			this.setState({ loading: true });
-			const url = `transactions?staff_id=${this.props.staff.details.id}&startDate=${startDate}&endDate=${endDate}&status=&bill_source=cafeteria&payment_method&page=2&limit=2`;
+			const url = `transactions?staff_id=${this.props.staff.details.id}&startDate=${startDate}&endDate=${endDate}&status=&service_id=&payment_method&page=1&limit=2`;
 			const rs = await request(url, 'GET', true);
 
 			this.props.loadStaffTransaction(rs);
@@ -61,7 +61,7 @@ export class Billing extends Component {
 			});
 		} catch (error) {
 			console.log(error);
-			notifyError('Error fetching today cafeteria transactions request');
+			notifyError('Error fetching transactions');
 			this.setState({ loading: false, filtering: false, patient_id: '' });
 		}
 	};
@@ -75,7 +75,7 @@ export class Billing extends Component {
 		// 	this.setState({ ...this.state, patient_id: '' });
 		// 	console.log(this.state.patient_id);
 		// }
-		this.fetchCafeteriaTransaction();
+		this.fetchTransactions();
 	};
 
 	change = e => {

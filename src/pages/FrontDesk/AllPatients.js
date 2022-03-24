@@ -190,7 +190,8 @@ const AllPatients = () => {
 							id="status"
 							className="form-control"
 							name="status"
-							onChange={e => setStatus(e.target.value)}>
+							onChange={e => setStatus(e.target.value)}
+						>
 							{statuses.map((status, i) => {
 								return (
 									<option key={i} value={status.value}>
@@ -203,7 +204,8 @@ const AllPatients = () => {
 					<div className="form-group col mt-4">
 						<div
 							className="btn btn-sm btn-primary btn-upper text-white filter-btn"
-							onClick={doFilter}>
+							onClick={doFilter}
+						>
 							<i className="os-icon os-icon-ui-37" />
 							<span>
 								{filtering ? <img src={waiting} alt="submitting" /> : 'Filter'}
@@ -241,13 +243,15 @@ const AllPatients = () => {
 													{patientname(data)}{' '}
 													{data.admission && (
 														<Tooltip
-															title={<Admitted room={data?.admission?.room} />}>
+															title={<Admitted room={data?.admission?.room} />}
+														>
 															<i className="fa fa-hospital-o text-danger" />
 														</Tooltip>
 													)}
 													{data.nicu_id && (
 														<Tooltip
-															title={<NicuAdmitted room={data?.nicu?.room} />}>
+															title={<NicuAdmitted room={data?.nicu?.room} />}
+														>
 															<i className="fa fa-hospital-o text-danger" />
 														</Tooltip>
 													)}
@@ -255,11 +259,7 @@ const AllPatients = () => {
 														<span className="badge badge-secondary">OPD</span>
 													)}
 												</td>
-												<td>{`${formatPatientId(data)} ${
-													data.legacy_patient_id
-														? `[${data.legacy_patient_id}]`
-														: ''
-												}`}</td>
+												<td>{formatPatientId(data)}</td>
 												<td>{data.phone_number || '--'}</td>
 												<td>{data.hmo.name}</td>
 												<td>{formatCurrency(data.outstanding || 0)}</td>

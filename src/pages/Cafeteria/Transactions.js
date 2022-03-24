@@ -42,14 +42,14 @@ class Transactions extends Component {
 	hmo = React.createRef();
 
 	componentDidMount() {
-		this.fetchCafeteriaTransaction();
+		this.fetchTransactions();
 	}
 
-	fetchCafeteriaTransaction = async () => {
+	fetchTransactions = async () => {
 		const { startDate, endDate } = this.state;
 		try {
 			this.setState({ loading: true });
-			const url = `transactions?patient_id=&startDate=${startDate}&endDate=${endDate}&status=&bill_source=cafeteria&payment_method&page=1&limit=10`;
+			const url = `transactions?patient_id=&startDate=${startDate}&endDate=${endDate}&status=&service_id=cafeteria&payment_method&page=1&limit=10`;
 			const rs = await request(url, 'GET', true);
 
 			this.setState({
@@ -75,7 +75,7 @@ class Transactions extends Component {
 		// 	this.setState({ ...this.state, patient_id: '' });
 		// 	console.log(this.state.patient_id);
 		// }
-		this.fetchCafeteriaTransaction();
+		this.fetchTransactions();
 	};
 
 	change = e => {
@@ -213,10 +213,12 @@ class Transactions extends Component {
 									<div
 										style={{ display: 'flex' }}
 										key={pat.id}
-										className="element-box">
+										className="element-box"
+									>
 										<a
 											onClick={() => this.patientSet(pat, 'patient')}
-											className="ssg-item cursor">
+											className="ssg-item cursor"
+										>
 											<div
 												className="item-name"
 												dangerouslySetInnerHTML={{
@@ -249,10 +251,12 @@ class Transactions extends Component {
 									<div
 										style={{ display: 'flex' }}
 										key={pat.id}
-										className="element-box">
+										className="element-box"
+									>
 										<a
 											onClick={() => this.patientSet(pat, 'patient')}
-											className="ssg-item cursor">
+											className="ssg-item cursor"
+										>
 											<div
 												className="item-name"
 												dangerouslySetInnerHTML={{
@@ -274,7 +278,8 @@ class Transactions extends Component {
 					<div className="form-group col-md-1 pr-0 mt-4">
 						<div
 							className="btn btn-sm btn-primary btn-upper text-white filter-btn"
-							onClick={this.doFilter}>
+							onClick={this.doFilter}
+						>
 							<i className="os-icon os-icon-ui-37" />
 							<span>
 								{filtering ? <img src={waiting} alt="submitting" /> : 'Filter'}

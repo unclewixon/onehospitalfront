@@ -81,7 +81,7 @@ class AllTransactions extends Component {
 		try {
 			const p = page || 1;
 			this.setState({ loading: true });
-			const url = `hmos/transactions?page=${p}&limit=15&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}&hmo_id=${hmo_id}`;
+			const url = `hmos/transactions?page=${p}&limit=15&patient_id=${patient_id}&startDate=${startDate}&endDate=${endDate}&status=${status}&hmo_id=${hmo_id}&service_id=`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
 			const arr = [...result];
@@ -235,12 +235,14 @@ class AllTransactions extends Component {
 				<div className="element-actions">
 					<Link
 						to="/hmo/transactions/pending"
-						className="btn btn-primary btn-sm">
+						className="btn btn-primary btn-sm"
+					>
 						Pending Transactions
 					</Link>
 					<Link
 						to="/hmo/transactions/all"
-						className="btn btn-primary btn-sm btn-outline-primary ml-2">
+						className="btn btn-primary btn-sm btn-outline-primary ml-2"
+					>
 						All transactions
 					</Link>
 				</div>
@@ -270,7 +272,8 @@ class AllTransactions extends Component {
 								id="hmo_id"
 								className="form-control"
 								name="hmo_id"
-								onChange={e => this.change(e)}>
+								onChange={e => this.change(e)}
+							>
 								<option value="">Choose Hmo</option>
 								{hmos.map((pat, i) => {
 									return (
@@ -295,7 +298,8 @@ class AllTransactions extends Component {
 								id="status"
 								className="form-control"
 								name="status"
-								onChange={e => this.change(e)}>
+								onChange={e => this.change(e)}
+							>
 								<option value="">Choose status</option>
 								{paymentStatus.map((status, i) => {
 									return (
@@ -309,7 +313,8 @@ class AllTransactions extends Component {
 						<div className="form-group col-md-2 mt-4">
 							<div
 								className="btn btn-primary btn-upper text-white filter-btn"
-								onClick={this.doFilter}>
+								onClick={this.doFilter}
+							>
 								<i className="os-icon os-icon-ui-37" />
 								<span>
 									{filtering ? (
@@ -333,7 +338,8 @@ class AllTransactions extends Component {
 											patient_id: '',
 										});
 										await this.fetchTransactions(1);
-									}}>
+									}}
+								>
 									<i className="os-icon os-icon-close" />
 								</div>
 							)}
@@ -450,7 +456,8 @@ class AllTransactions extends Component {
 																	}
 																	onVisibleChange={e =>
 																		this.handleVisibleChange(e, item.id)
-																	}>
+																	}
+																>
 																	<Tooltip title="Enter Code">
 																		<a className="text-primary text-white">
 																			<i className="os-icon os-icon-thumbs-up" />
@@ -460,14 +467,16 @@ class AllTransactions extends Component {
 																<Tooltip title="Approve Without Code">
 																	<a
 																		className="text-success text-white"
-																		onClick={() => this.approve(item.id)}>
+																		onClick={() => this.approve(item.id)}
+																	>
 																		<i className="os-icon os-icon-check-square" />
 																	</a>
 																</Tooltip>
 																<Tooltip title="Transfer to Paypoint">
 																	<a
 																		className="info"
-																		onClick={() => this.transfer(item.id)}>
+																		onClick={() => this.transfer(item.id)}
+																	>
 																		<i className="os-icon os-icon-mail-18" />
 																	</a>
 																</Tooltip>
