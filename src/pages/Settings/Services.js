@@ -4,14 +4,12 @@ import { useSelector } from 'react-redux';
 
 import ServiceCategoryList from '../../components/ServiceCategoryList';
 import ServicesList from '../../components/ServicesList';
-import ModalUploadService from '../../components/Modals/ModalUploadService';
 import ModalCreateService from '../../components/Modals/ModalCreateService';
 
 const Services = () => {
 	const [showServiceCategory, setServiceCategory] = useState(true);
 	const [showServicesList, setServicesList] = useState(false);
 	const [loaded, setLoaded] = useState(false);
-	const [showModal, setShowModal] = useState(false);
 	const [categoriesLoaded, setCategoriesLoaded] = useState(false);
 	const [servicesLoaded, setServicesLoaded] = useState(false);
 	const [newModal, setNewModal] = useState(false);
@@ -43,11 +41,6 @@ const Services = () => {
 		}
 	}, [loaded, showServiceCategory, showServicesList]);
 
-	const onUploadService = () => {
-		document.body.classList.add('modal-open');
-		setShowModal(true);
-	};
-
 	const addService = () => {
 		document.body.classList.add('modal-open');
 		setNewModal(true);
@@ -55,7 +48,6 @@ const Services = () => {
 
 	const closeModal = () => {
 		document.body.classList.remove('modal-open');
-		setShowModal(false);
 		setLoaded(false);
 		setNewModal(false);
 
@@ -82,7 +74,8 @@ const Services = () => {
 												className={`nav-link${
 													showServiceCategory ? ' active' : ''
 												}`}
-												onClick={onServiceCategoryList}>
+												onClick={onServiceCategoryList}
+											>
 												CATEGORIES
 											</a>
 										</li>
@@ -91,7 +84,8 @@ const Services = () => {
 												className={`nav-link${
 													showServicesList ? ' active' : ''
 												}`}
-												onClick={onServicesList}>
+												onClick={onServicesList}
+											>
 												SERVICES
 											</a>
 										</li>
@@ -99,23 +93,13 @@ const Services = () => {
 											<li className="nav-item nav-actions d-sm-block">
 												<a
 													className="btn btn-primary btn-sm text-white"
-													onClick={() => addService()}>
+													onClick={() => addService()}
+												>
 													<i className="os-icon os-icon-ui-22"></i>
 													<span>New Service</span>
 												</a>
 											</li>
 										)}
-										<li
-											className={`nav-item ${
-												showServiceCategory ? 'nav-actions' : ''
-											} d-sm-block d-none`}>
-											<a
-												className="btn btn-primary btn-sm text-white"
-												onClick={() => onUploadService()}>
-												<i className="os-icon os-icon-ui-22"></i>
-												<span>Upload Services</span>
-											</a>
-										</li>
 									</ul>
 								</div>
 							</div>
@@ -136,7 +120,6 @@ const Services = () => {
 					</div>
 				</div>
 			</div>
-			{showModal && <ModalUploadService closeModal={() => closeModal()} />}
 			{newModal && <ModalCreateService closeModal={() => closeModal()} />}
 		</div>
 	);

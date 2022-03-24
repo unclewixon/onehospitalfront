@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Pagination from 'antd/lib/pagination';
 import Tooltip from 'antd/lib/tooltip';
 import { useDispatch } from 'react-redux';
@@ -12,10 +12,12 @@ import {
 	formatCurrency,
 	itemRender,
 	updateImmutable,
+	upload,
 } from '../../services/utilities';
-import { notifyError } from '../../services/notify';
+import { notifyError, notifySuccess } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import useSearchInputState from '../../services/search-hook';
+import { API_URI } from '../../services/constants';
 
 const ModalHmoTariff = ({ closeModal, hmo, categories }) => {
 	const [loaded, setLoaded] = useState(false);
@@ -32,12 +34,15 @@ const ModalHmoTariff = ({ closeModal, hmo, categories }) => {
 
 	const dispatch = useDispatch();
 
+	const inputRef = useRef();
+
 	const fetchServices = useCallback(
 		async (page, q, category) => {
 			try {
 				const p = page || 1;
-				const url = `services?page=${p}&limit=10&q=${q ||
-					''}&category_id=${category || ''}&hmo_id=${hmo.id}`;
+				const item = category || '';
+				const search = q || '';
+				const url = `services?page=${p}&limit=10&q=${search}&category_id=${item}&hmo_id=${hmo.id}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setServices([...result]);
@@ -106,24 +111,51 @@ const ModalHmoTariff = ({ closeModal, hmo, categories }) => {
 		}
 	};
 
-	const uploadHmo = async () => {
-		//
+	const chooseFile = () => {
+		inputRef.current.click();
+	};
+
+	const uploadHmo = async files => {
+		try {
+			const file = files[0];
+			dispatch(startBlock());
+
+			let formData = new FormData();
+			formData.append('file', file);
+			formData.append('hmo_id', hmo.id);
+
+			const uri = `${API_URI}/services/upload/${searchCategory.id}`;
+			await upload(uri, 'POST', formData);
+
+			await fetchServices(1, '', searchCategory.id);
+
+			inputRef.current.value = null;
+
+			dispatch(stopBlock());
+			notifySuccess(`hmo tarrifs uploaded for ${searchCategory.name}`);
+		} catch (e) {
+			dispatch(stopBlock());
+			notifyError(e.message || 'could not upload services');
+		}
 	};
 
 	return (
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div
 				className="modal-dialog modal-centered"
-				style={{ maxWidth: '1024px' }}>
+				style={{ maxWidth: '1024px' }}
+			>
 				<div className="modal-content">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={closeModal}>
+						onClick={closeModal}
+					>
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -155,7 +187,8 @@ const ModalHmoTariff = ({ closeModal, hmo, categories }) => {
 												setSearchCategory(e);
 												setKeyword('');
 												await fetchServices(1, '', e?.id || '');
-											}}>
+											}}
+										>
 											<option>Select Category</option>
 										</Select>
 									</div>
@@ -163,15 +196,25 @@ const ModalHmoTariff = ({ closeModal, hmo, categories }) => {
 								<div className="col-lg-4 text-right">
 									<a
 										className="btn btn-sm btn-secondary text-white"
-										onClick={downloadHmo}>
+										onClick={downloadHmo}
+									>
 										<i className="os-icon os-icon-download" />
 										<span>Download HMO</span>
 									</a>
 									<a
 										className="btn btn-sm btn-primary text-white"
-										onClick={uploadHmo}>
+										onClick={chooseFile}
+									>
 										<i className="os-icon os-icon-download" />
 										<span>Upload HMO</span>
+										<input
+											onChange={e => {
+												uploadHmo(e.target.files);
+											}}
+											type="file"
+											ref={inputRef}
+											className="d-none"
+										/>
 									</a>
 								</div>
 							</div>
@@ -218,7 +261,8 @@ const ModalHmoTariff = ({ closeModal, hmo, categories }) => {
 																	<td colSpan="4" className="text-center">
 																		<div
 																			className="alert alert-info text-center"
-																			style={{ width: '100%' }}>
+																			style={{ width: '100%' }}
+																		>
 																			No services found!
 																		</div>
 																	</td>
