@@ -36,7 +36,7 @@ class SearchPatient extends Component {
 	};
 
 	componentDidMount() {
-		document.addEventListener('keydown', this.listener);
+		this.searchInput.addEventListener('keydown', this.listener);
 		if (this.props.focus && !this.state.focused) {
 			setTimeout(() => {
 				this.setFocus();
@@ -80,7 +80,7 @@ class SearchPatient extends Component {
 
 	componentWillUnmount() {
 		this.setState({ hasSearched: false });
-		document.removeEventListener('keydown', this.listener);
+		this.searchInput.removeEventListener('keydown', this.listener);
 	}
 
 	setFocus = () => {

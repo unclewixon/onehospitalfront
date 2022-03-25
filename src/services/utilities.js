@@ -21,8 +21,12 @@ import axios from 'axios';
 import placeholder from '../assets/images/placeholder.jpg';
 import { hasViewAppointmentPermission } from '../permission-utils/appointment';
 
-export const formatCurrency = (amount, abs) =>
-	`₦${numeral(abs ? Math.abs(amount) : amount).format('0,0.00')}`;
+export const formatCurrency = (amount, abs) => {
+	if (!amount) {
+		return 0.0;
+	}
+	return `₦${numeral(abs ? Math.abs(amount) : amount).format('0,0.00')}`;
+};
 
 export const isUnset = o => typeof o === 'undefined' || o === null;
 

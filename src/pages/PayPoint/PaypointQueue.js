@@ -5,6 +5,7 @@ import moment from 'moment';
 import Pagination from 'antd/lib/pagination';
 import DatePicker from 'antd/lib/date-picker';
 import AsyncSelect from 'react-select/async/dist/react-select.esm';
+import startCase from 'lodash.startcase';
 
 import waiting from '../../assets/images/waiting.gif';
 import { searchAPI } from '../../services/constants';
@@ -157,7 +158,7 @@ const PaypointQueue = () => {
 							{services.map((status, i) => {
 								return (
 									<option key={i} value={status.id}>
-										{status.name}
+										{startCase(status.name)}
 									</option>
 								);
 							})}

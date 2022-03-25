@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Pagination from 'antd/lib/pagination';
+import Tooltip from 'antd/lib/tooltip';
 
 import { notifyError } from '../../services/notify';
 import { startBlock, stopBlock } from '../../actions/redux-block';
@@ -24,9 +25,8 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 	const [allChecked, setAllChecked] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
 	const [paymentMethod, setPaymentMethod] = useState('');
-	const [isPart, setIsPart] = useState(false);
 	const [items, setItems] = useState([]);
-	const [partAmount, setPartAmount] = useState(0);
+	const [amountPaid, setAmountPaid] = useState(0);
 
 	const dispatch = useDispatch();
 
@@ -132,20 +132,13 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 				return;
 			}
 
-			if (isPart && parseFloat(partAmount) > total) {
-				notifyError('part payment should not be more than amount');
-				return;
-			}
-
 			setSubmitting(true);
 			dispatch(startBlock());
 			const data = {
 				items: checked,
 				patient_id: patient.id,
 				payment_method: paymentMethod,
-				amount_paid: total,
-				is_part_payment: isPart ? 1 : 0,
-				partAmount,
+				amount_paid: amountPaid,
 			};
 			const url = 'transactions/process-bulk';
 			const rs = await request(url, 'POST', true, data);
@@ -192,16 +185,19 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div
 				className="modal-dialog modal-centered"
-				style={{ maxWidth: '720px' }}>
+				style={{ maxWidth: '720px' }}
+			>
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={closeModal}>
+						onClick={closeModal}
+					>
 						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -255,46 +251,34 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 											)}
 										</div>
 									</div>
-									<div className="row mt-4 form-inline">
-										<div className="form-check col-sm-6">
-											<label
-												className="form-check-label"
-												style={{ marginLeft: '12px' }}>
-												<input
-													className="form-check-input mt-0"
-													name="is_part_payment"
-													type="checkbox"
-													checked={isPart}
-													onChange={e => setIsPart(e.target.checked)}
-												/>
-												Part Payment
-											</label>
-										</div>
-										<label className="my-1 mr-2" htmlFor="amount">
-											Amount
-										</label>
-										<div className="form-group my-1 mr-sm-2">
-											<input
-												id="amount"
-												type="text"
-												className="form-control"
-												placeholder="Enter Amount"
-												readOnly={!isPart}
-												value={isPart ? partAmount : total}
-												onChange={e => setPartAmount(e.target.value)}
-											/>
-										</div>
-									</div>
 									<div className="row mt-4">
 										<div className="col-md-12">
 											<div
 												className="form-inline"
-												style={{ justifyContent: 'center' }}>
+												style={{ justifyContent: 'center' }}
+											>
+												<label
+													className="form-group my-1 mr-2"
+													htmlFor="amount"
+												>
+													Amount
+												</label>
+												<div className="form-group my-1 mr-sm-2">
+													<input
+														id="amount"
+														type="text"
+														className="form-control"
+														placeholder="Enter Amount"
+														value={amountPaid > 0 ? amountPaid : total}
+														onChange={e => setAmountPaid(e.target.value)}
+													/>
+												</div>
 												<div className="form-group mr-3">
 													<select
 														placeholder="Select Payment Method"
 														className="form-control"
-														onChange={e => setPaymentMethod(e.target.value)}>
+														onChange={e => setPaymentMethod(e.target.value)}
+													>
 														<option value="">Select Payment Method</option>
 														{paymentMethods
 															.filter(p => p.name !== 'Voucher')
@@ -307,19 +291,22 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 												</div>
 												<button
 													onClick={() => processPayment()}
-													className="btn btn-primary">
+													className="btn btn-primary"
+												>
 													{submitting ? (
 														<img src={waiting} alt="submitting" />
 													) : (
 														'Approve Payment'
 													)}
 												</button>
-												<button
-													className="btn btn-success ml-3"
-													onClick={printModal}>
-													<span className="mr-2">Print Bills</span>
-													<i className="fa fa-print"></i>
-												</button>
+												<Tooltip title="Print">
+													<button
+														className="btn btn-success ml-3"
+														onClick={printModal}
+													>
+														<i className="fa fa-print"></i>
+													</button>
+												</Tooltip>
 											</div>
 										</div>
 									</div>

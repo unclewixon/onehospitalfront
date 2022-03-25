@@ -142,15 +142,15 @@ const TransactionTable = ({
 										{patientname(transaction.patient, true)}
 										{transaction.admission && (
 											<Tooltip
-												title={
-													<Admitted room={transaction?.admission?.room} />
-												}>
+												title={<Admitted room={transaction?.admission?.room} />}
+											>
 												<i className="fa fa-hospital-o text-danger" />
 											</Tooltip>
 										)}
 										{transaction.patient?.nicu_id && (
 											<Tooltip
-												title={<NicuAdmitted room={transaction?.nicu?.room} />}>
+												title={<NicuAdmitted room={transaction?.nicu?.room} />}
+											>
 												<i className="fa fa-hospital-o text-danger" />
 											</Tooltip>
 										)}
@@ -187,7 +187,32 @@ const TransactionTable = ({
 										</span>
 									</div>
 								</td>
-								<td>{formatCurrency(transaction.amount || 0, true)}</td>
+								<td>
+									{transaction.status !== 1 &&
+										formatCurrency(transaction.amount, true)}
+									{transaction.status === 1 &&
+										transaction.amount_paid <= 0 &&
+										formatCurrency(transaction.amount)}
+									{transaction.status === 1 && transaction.amount_paid > 0 && (
+										<>
+											{Math.abs(transaction.amount) -
+												Math.abs(transaction.amount_paid) !==
+											0 ? (
+												<>
+													<>{formatCurrency(transaction.amount)}</>
+													<br />
+													<span className="badge badge-secondary">
+														<small>{`PAID: ${formatCurrency(
+															transaction.amount_paid
+														)}`}</small>
+													</span>
+												</>
+											) : (
+												formatCurrency(transaction.amount_paid)
+											)}
+										</>
+									)}
+								</td>
 								<td>
 									{transaction.status === 1 && (
 										<>
@@ -234,7 +259,8 @@ const TransactionTable = ({
 													<Tooltip title="Confirm Payment">
 														<a
 															className="secondary"
-															onClick={() => doApproveTransaction(transaction)}>
+															onClick={() => doApproveTransaction(transaction)}
+														>
 															<i className="os-icon os-icon-thumbs-up" />
 														</a>
 													</Tooltip>
@@ -248,7 +274,8 @@ const TransactionTable = ({
 													<Tooltip title="Send To Vitals">
 														<a
 															className="primary"
-															onClick={() => sendToQueue(transaction)}>
+															onClick={() => sendToQueue(transaction)}
+														>
 															<i className="os-icon os-icon-mail-18" />
 														</a>
 													</Tooltip>
@@ -258,7 +285,8 @@ const TransactionTable = ({
 												<Tooltip title="Delete Transactions">
 													<a
 														className="text-danger"
-														onClick={() => confirmDelete(transaction)}>
+														onClick={() => confirmDelete(transaction)}
+													>
 														<i className="os-icon os-icon-ui-15" />
 													</a>
 												</Tooltip>
@@ -271,7 +299,8 @@ const TransactionTable = ({
 											<Tooltip title="Print">
 												<a
 													className="text-info"
-													onClick={() => handlePrint(transaction)}>
+													onClick={() => handlePrint(transaction)}
+												>
 													<i className="os-icon os-icon-printer" />
 												</a>
 											</Tooltip>

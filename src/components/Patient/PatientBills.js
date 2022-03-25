@@ -135,8 +135,9 @@ const PatientBills = () => {
 
 	const doPrintBills = async () => {
 		try {
+			const service_id = service || '';
 			dispatch(startBlock());
-			const uri = `transactions/print?patient_id=${patient.id}&status=pending`;
+			const uri = `transactions/print?patient_id=${patient.id}&status=pending&start_date=${startDate}&end_date=${endDate}&service_id=${service_id}`;
 			const rs = await request(uri, 'GET', true);
 			dispatch(stopBlock());
 			if (rs.success) {
@@ -425,7 +426,29 @@ const PatientBills = () => {
 															)}
 														</td>
 														<td nowrap="nowrap">
-															{formatCurrency(item.amount || 0)}
+															{item.status !== 1 && formatCurrency(item.amount)}
+															{item.status === 1 &&
+																item.amount_paid <= 0 &&
+																formatCurrency(item.amount)}
+															{item.status === 1 && item.amount_paid > 0 && (
+																<>
+																	{Math.abs(item.amount) -
+																		Math.abs(item.amount_paid) !==
+																	0 ? (
+																		<>
+																			<>{formatCurrency(item.amount)}</>
+																			<br />
+																			<span className="badge badge-secondary">
+																				<small>{`PAID: ${formatCurrency(
+																					item.amount_paid
+																				)}`}</small>
+																			</span>
+																		</>
+																	) : (
+																		formatCurrency(item.amount_paid)
+																	)}
+																</>
+															)}
 														</td>
 														<td nowrap="nowrap">
 															{item.payment_method || '--'}

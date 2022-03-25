@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import DatePicker from 'antd/lib/date-picker';
 import Pagination from 'antd/lib/pagination';
+import startCase from 'lodash.startcase';
 
 import waiting from '../../assets/images/waiting.gif';
 import { request, itemRender, patientname } from '../../services/utilities';
@@ -45,7 +46,7 @@ class TransactionHistory extends Component {
 		endDate: '',
 		status: '',
 		meta: null,
-		services: null,
+		services: [],
 		service: '',
 	};
 
@@ -134,7 +135,6 @@ class TransactionHistory extends Component {
 					<form className="row">
 						<div className="form-group col-md-3">
 							<label htmlFor="patient_id">Patient</label>
-
 							<AsyncSelect
 								isClearable
 								getOptionValue={getOptionValues}
@@ -153,7 +153,7 @@ class TransactionHistory extends Component {
 							<label>From - To</label>
 							<RangePicker onChange={e => this.dateChange(e)} />
 						</div>
-						<div className="form-group col-md-3">
+						<div className="form-group col-md-2">
 							<label className="mr-2">Service</label>
 							<select
 								style={{ height: '35px' }}
@@ -167,13 +167,13 @@ class TransactionHistory extends Component {
 								{services.map((status, i) => {
 									return (
 										<option key={i} value={status.id}>
-											{status.name}
+											{startCase(status.name)}
 										</option>
 									);
 								})}
 							</select>
 						</div>
-						<div className="form-group col-md-3">
+						<div className="form-group col-md-2">
 							<label className="mr-2">Status</label>
 							<select
 								style={{ height: '35px' }}
@@ -191,7 +191,7 @@ class TransactionHistory extends Component {
 								})}
 							</select>
 						</div>
-						<div className="form-group col-md-3 mt-4">
+						<div className="form-group col-md-2 mt-4">
 							<div
 								className="btn btn-sm btn-primary btn-upper text-white"
 								onClick={this.doFilter}
