@@ -76,16 +76,18 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 				checks = [...checks, { id: item.id, amount: item.amount }];
 			}
 
-			setChecked(checks);
-			setTotal(
-				checks.reduce(
-					(total, item) => total + Math.abs(parseFloat(item.amount)),
-					0
-				)
+			const total = checks.reduce(
+				(total, item) => total + Math.abs(parseFloat(item.amount)),
+				0
 			);
+
+			setChecked(checks);
+			setTotal(total);
+			setAmountPaid(total);
 		} else {
 			setChecked(checks);
 			setTotal(0);
+			setAmountPaid(0);
 		}
 	};
 
@@ -105,13 +107,14 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 			);
 		}
 
-		setChecked(selected);
-		setTotal(
-			selected.reduce(
-				(total, item) => total + Math.abs(parseFloat(item.amount)),
-				0
-			)
+		const total = selected.reduce(
+			(total, item) => total + Math.abs(parseFloat(item.amount)),
+			0
 		);
+
+		setChecked(selected);
+		setTotal(total);
+		setAmountPaid(total);
 
 		if (selected.length === items.length) {
 			setAllChecked(true);
@@ -129,6 +132,11 @@ const ModalShowTransactions = ({ patient, closeModal }) => {
 
 			if (paymentMethod === '') {
 				notifyError('select payment method');
+				return;
+			}
+
+			if (amountPaid === 0) {
+				notifyError('select one transaction to make payment');
 				return;
 			}
 
