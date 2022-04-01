@@ -24,27 +24,22 @@ const Allergies = lazy(() => import('../components/Patient/Allergies'));
 const LabRequest = lazy(() => import('../components/Patient/LabRequest'));
 const ExcuseDuty = lazy(() => import('../components/Patient/ExcuseDuty'));
 const CreateExcuseDuty = lazy(() => import('../components/CreateExcuseDuty'));
-
-
 const IVFHistory = lazy(() => import('../components/Patient/IVFHistory'));
 const AntenatalHistory = lazy(() =>
 	import('../components/Patient/AntenatalHistory')
 );
-
 const PharmacyRequest = lazy(() =>
 	import('../components/Patient/PharmacyRequest')
 );
 const RadiologyRequest = lazy(() =>
 	import('../components/Patient/RadiologyRequest')
 );
-
 const ProcedureRequest = lazy(() =>
 	import('../components/Patient/ProcedureRequest')
 );
 const AllergyRequest = lazy(() =>
 	import('../components/Patient/AllergyRequest')
 );
-
 const PatientAdmission = lazy(() =>
 	import('../components/Patient/PatientAdmission')
 );

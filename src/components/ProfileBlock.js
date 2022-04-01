@@ -45,7 +45,8 @@ const UserItem = ({ icon, label, value }) => {
 						strokeWidth="2"
 						strokeLinecap="round"
 						strokeLinejoin="round"
-						className={`mr-75 feather feather-${icon || 'user'}`}>
+						className={`mr-75 feather feather-${icon || 'user'}`}
+					>
 						<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
 						<circle cx="12" cy="7" r="4"></circle>
 					</svg>
@@ -80,6 +81,7 @@ const ProfileBlock = ({
 	const [admission, setAdmission] = useState(null);
 	const [encounterModal, setEncounterModal] = useState(false);
 	const [assessmentModal, setAssessmentModal] = useState(false);
+	const [alertShown, setAlertShown] = useState(false);
 
 	const dispatch = useDispatch();
 
@@ -89,7 +91,7 @@ const ProfileBlock = ({
 
 	const getAlerts = useCallback(async () => {
 		try {
-			const url = `patient/${patient.id}/alerts`;
+			const url = `patient/${patient.id}/alerts?category=normal`;
 			const rs = await request(url, 'GET', true);
 			setAlerts(rs);
 
@@ -109,7 +111,10 @@ const ProfileBlock = ({
 
 	useEffect(() => {
 		getAlerts();
-	}, [getAlerts]);
+		if (!alertShown) {
+			showAlerts();
+		}
+	}, [alertShown, getAlerts]);
 
 	useEffect(() => {
 		const subscription = messageService.getMessage().subscribe(message => {
@@ -120,6 +125,15 @@ const ProfileBlock = ({
 					getAlerts();
 				} else if (type === 'balance') {
 					setAmount(data);
+				} else if (type === 'refresh-alert') {
+					getAlerts();
+
+					setTimeout(() => {
+						document.body.classList.add('modal-open');
+						setShowModal(true);
+					}, 1000);
+				} else if (type === 'refresh-alerts') {
+					getAlerts();
 				}
 			}
 		});
@@ -171,6 +185,7 @@ const ProfileBlock = ({
 	const showAlerts = () => {
 		document.body.classList.add('modal-open');
 		setShowModal(true);
+		setAlertShown(true);
 	};
 
 	const editPatient = () => {
@@ -410,7 +425,8 @@ const ProfileBlock = ({
 									<div className="d-flex justify-content-start">
 										<span
 											className="b-avatar badge-light-danger rounded"
-											style={{ width: '104px', height: '104px' }}>
+											style={{ width: '104px', height: '104px' }}
+										>
 											<span className="b-avatar-img">
 												<img
 													src={parseAvatar(patient?.profile_pic)}
@@ -440,7 +456,8 @@ const ProfileBlock = ({
 												{hasButtons && (
 													<a
 														className="btn btn-primary mr-1"
-														onClick={editPatient}>
+														onClick={editPatient}
+													>
 														Edit
 													</a>
 												)}
@@ -462,14 +479,16 @@ const ProfileBlock = ({
 															alerts.length > 0 ? 'text-danger' : 'text-success'
 														} relative`}
 														style={{ fontSize: '20px', padding: '0 4px' }}
-														onClick={() => showAlerts()}>
+														onClick={() => showAlerts()}
+													>
 														<i className="fa fa-exclamation-triangle" />
 														<span
 															className={`alert-badge ${
 																alerts.length > 0
 																	? 'text-danger'
 																	: 'text-success'
-															}`}>
+															}`}
+														>
 															{alerts.length}
 														</span>
 													</a>
@@ -481,14 +500,16 @@ const ProfileBlock = ({
 														<button
 															type="button"
 															onClick={() => startAssessment()}
-															className="btn btn-sm btn-info text-white">
+															className="btn btn-sm btn-info text-white"
+														>
 															Start Assessment
 														</button>
 													) : (
 														<button
 															type="button"
 															onClick={() => startEncounter()}
-															className="btn btn-sm btn-info text-white">
+															className="btn btn-sm btn-info text-white"
+														>
 															Start Encounter
 														</button>
 													)}
@@ -574,7 +595,8 @@ const ProfileBlock = ({
 				</div>
 				<div
 					className="col-md-5 col-lg-4 col-xl-3 col-12"
-					style={{ paddingLeft: 0 }}>
+					style={{ paddingLeft: 0 }}
+				>
 					<div className="element-box border-primary p-3">
 						<div className="card-header align-items-center pt-75 pb-25">
 							<h5 className="mb-0">Patient Status</h5>
@@ -635,14 +657,16 @@ const ProfileBlock = ({
 											<button
 												type="button"
 												onClick={() => confirm('disable')}
-												className="btn btn-block btn-outline-danger">
+												className="btn btn-block btn-outline-danger"
+											>
 												Disable Patient
 											</button>
 										) : (
 											<button
 												type="button"
 												onClick={() => confirm('enable')}
-												className="btn btn-block btn-outline-info">
+												className="btn btn-block btn-outline-info"
+											>
 												Enable Patient
 											</button>
 										)}

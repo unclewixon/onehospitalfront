@@ -86,6 +86,7 @@ export const planServiceCenter = [
 		label: 'Pharmacy',
 	},
 ];
+
 export const diagnosisType = [
 	{
 		value: 'Query',
@@ -1274,4 +1275,17 @@ export const fetalLies = [
 	{ id: 'Longitudinal', name: 'Longitudinal' },
 	{ id: 'Oblique', name: 'Oblique' },
 	{ id: 'Transaverse', name: 'Transaverse' },
+];
+
+export const criticalList = [
+	{ value: 'asthma', label: 'Asthma' },
+	{ value: 'diabetes', label: 'Diabetes' },
+	{ value: 'hepatitis-a', label: 'Hepatitis A' },
+	{ value: 'hepatitis-b', label: 'Hepatitis B' },
+	{ value: 'hepatitis-c', label: 'Hepatitis C' },
+	{ value: 'hiv', label: 'HIV' },
+	{ value: 'hypertension', label: 'Hypertension' },
+	{ value: 'ulcer', label: 'Peptic Ulcer' },
+	{ value: 'rh-negative', label: 'Rh Negative' },
+	{ value: 'sickle-cell', label: 'Sickle Cell' },
 ];

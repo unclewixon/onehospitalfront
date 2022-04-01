@@ -21,14 +21,14 @@ class Allergies extends Component {
 
 	fetchAllergies = async () => {
 		try {
-			this.setState({ loaded: true });
+			this.setState({ loaded: false });
 			const { patient } = this.props;
 			const url = `patient-allergens?patient_id=${patient.id}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
-			this.setState({ loaded: false, allergens: result, meta });
+			this.setState({ loaded: true, allergens: result, meta });
 		} catch (error) {
-			this.setState({ loaded: false });
+			this.setState({ loaded: true });
 			notifyError('Could not fetch allergies for the patient');
 		}
 	};
@@ -51,14 +51,15 @@ class Allergies extends Component {
 
 	render() {
 		const { location } = this.props;
-		const { loading, allergens } = this.state;
+		const { loaded, allergens } = this.state;
 		return (
 			<div className="col-sm-12">
 				<div className="element-wrapper">
 					<div className="element-actions">
 						<Link
 							className="btn btn-primary"
-							to={`${location.pathname}#allergy-request`}>
+							to={`${location.pathname}#allergy-request`}
+						>
 							<i className="os-icon os-icon-plus"></i>
 							New Allergy
 						</Link>
@@ -66,7 +67,7 @@ class Allergies extends Component {
 					<h6 className="element-header">Allergies</h6>
 					<div className="element-box m-0 p-3">
 						<div className="table-responsive">
-							{loading ? (
+							{!loaded ? (
 								<TableLoading />
 							) : (
 								<table className="table table-striped">
@@ -110,6 +111,13 @@ class Allergies extends Component {
 												</tr>
 											);
 										})}
+										{allergens.length === 0 && (
+											<tr>
+												<td colSpan="6" className="text-center">
+													No allergens found!
+												</td>
+											</tr>
+										)}
 									</tbody>
 								</table>
 							)}

@@ -89,20 +89,23 @@ class AssignBed extends Component {
 			<div
 				className="onboarding-modal modal fade animated show"
 				role="dialog"
-				style={{ display: 'block' }}>
+				style={{ display: 'block' }}
+			>
 				<div
 					className="modal-dialog modal-centered"
-					style={{ maxWidth: '320px' }}>
+					style={{ maxWidth: '320px' }}
+				>
 					<div className="modal-content text-center">
 						<button
 							aria-label="Close"
 							className="close"
 							type="button"
-							onClick={closeModal}>
+							onClick={closeModal}
+						>
 							<span className="os-icon os-icon-close" />
 						</button>
 						<div className="onboarding-content with-gradient">
-							<h4 className="onboarding-title">{`Assign Bed`}</h4>
+							<h4 className="onboarding-title">Assign Bed</h4>
 							<div className="element-box m-0 p-3">
 								<form onSubmit={handleSubmit(this.asignBed)}>
 									{error && (
@@ -144,7 +147,8 @@ class AssignBed extends Component {
 											<button
 												className="btn btn-primary"
 												disabled={submitting}
-												type="submit">
+												type="submit"
+											>
 												{submitting ? (
 													<img src={waiting} alt="submitting" />
 												) : (

@@ -12,7 +12,7 @@ import TableLoading from '../TableLoading';
 class Encounters extends Component {
 	state = {
 		encounters: [],
-		loading: false,
+		loading: true,
 		canView: false,
 		showModal: false,
 		encounter: null,
@@ -96,17 +96,21 @@ class Encounters extends Component {
 															id="dropdown-basic"
 															title="Action"
 															size="sm"
-															key={item.id}>
+															key={item.id}
+														>
 															<Dropdown.Item
-																onClick={() => this.viewEncounter(item)}>
+																onClick={() => this.viewEncounter(item)}
+															>
 																View Details
 															</Dropdown.Item>
 															<Dropdown.Item
-																onClick={() => this.viewEncounter(item)}>
+																onClick={() => this.viewEncounter(item)}
+															>
 																Add Note
 															</Dropdown.Item>
 															<Dropdown.Item
-																onClick={() => this.viewEncounter(item)}>
+																onClick={() => this.viewEncounter(item)}
+															>
 																Add Diagnosis
 															</Dropdown.Item>
 															<Dropdown.Item onClick={() => this.print(item)}>

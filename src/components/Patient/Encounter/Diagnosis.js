@@ -245,7 +245,8 @@ const Diagnosis = ({ previous, next, patient }) => {
 								<a
 									className="btn btn-info btn-sm text-white pointer"
 									style={{ margin: '45px 0 0', display: 'block' }}
-									onClick={() => onSubmit()}>
+									onClick={() => onSubmit()}
+								>
 									<i className="os-icon os-icon-plus-circle" /> Add
 								</a>
 							</div>
