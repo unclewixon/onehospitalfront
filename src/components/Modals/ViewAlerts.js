@@ -74,7 +74,7 @@ const ViewAlerts = ({ closeModal }) => {
 			role="dialog"
 			style={{ display: 'block' }}
 		>
-			<div className="modal-dialog modal-centered" role="document">
+			<div className="modal-dialog modal-centered modal-scroll" role="document">
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
