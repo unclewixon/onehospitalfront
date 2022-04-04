@@ -104,7 +104,8 @@ const EditProfile = ({ staff }) => {
 								<div className="form-group">
 									<div
 										className="col-sm profile-tile"
-										style={{ borderBottom: 'none' }}>
+										style={{ borderBottom: 'none' }}
+									>
 										<a className="profile-tile-box" style={{ width: '155px' }}>
 											<div className="pt-avatar-w">
 												{image ? (
@@ -119,7 +120,8 @@ const EditProfile = ({ staff }) => {
 													onClick={() =>
 														document.querySelector('#profile_pic').click()
 													}
-													className="btn btn-info">
+													className="btn btn-info"
+												>
 													Choose Image
 												</button>
 											</div>
@@ -216,7 +218,8 @@ const EditProfile = ({ staff }) => {
 										ref={register}
 										name="gender"
 										value={values.gender}
-										onChange={handleInputChange}>
+										onChange={handleInputChange}
+									>
 										<option value="Male">Male</option>
 										<option value="Female">Female</option>
 									</select>
@@ -230,7 +233,8 @@ const EditProfile = ({ staff }) => {
 										ref={register}
 										name="religion"
 										value={values.religion}
-										onChange={handleInputChange}>
+										onChange={handleInputChange}
+									>
 										<option value="Atheist">Atheist</option>
 										<option value="Buddhism">Buddhism</option>
 										<option value="Christianity">Christianity</option>
@@ -249,7 +253,8 @@ const EditProfile = ({ staff }) => {
 								type="text"
 								ref={register}
 								value={values.address}
-								onChange={handleInputChange}></textarea>
+								onChange={handleInputChange}
+							></textarea>
 						</div>
 						<div className="row">
 							<div className="col-sm-6">
@@ -260,7 +265,8 @@ const EditProfile = ({ staff }) => {
 										ref={register}
 										name="marital_status"
 										value={values.marital_status}
-										onChange={handleInputChange}>
+										onChange={handleInputChange}
+									>
 										<option value="single">Single</option>
 										<option value="married">Married</option>
 										<option value="divorced">Divorced</option>
@@ -303,7 +309,8 @@ const EditProfile = ({ staff }) => {
 										ref={register}
 										name="nationality"
 										value={values.nationality}
-										onChange={handleInputChange}>
+										onChange={handleInputChange}
+									>
 										<option>Choose Country</option>
 										{sortedCountries}
 									</select>
@@ -317,7 +324,8 @@ const EditProfile = ({ staff }) => {
 										ref={register}
 										name="state_of_origin"
 										value={values.state_of_origin}
-										onChange={handleInputChange}>
+										onChange={handleInputChange}
+									>
 										<option>Choose State/Region</option>
 										{states}
 									</select>
@@ -387,7 +395,8 @@ const EditProfile = ({ staff }) => {
 									type="text"
 									ref={register}
 									value={values.next_of_kin_address}
-									onChange={handleInputChange}></textarea>
+									onChange={handleInputChange}
+								></textarea>
 							</div>
 						</fieldset>
 						<button className="btn btn-primary" type="submit">

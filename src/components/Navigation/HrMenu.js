@@ -28,7 +28,7 @@ const HrMenu = () => {
 					<span>Leave Mgt</span>
 				</Link>
 			</li>
-			
+
 			<li>
 				<Link to="/hr/duty-roster">
 					<div className="icon-w">

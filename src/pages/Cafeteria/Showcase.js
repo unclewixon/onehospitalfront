@@ -211,21 +211,24 @@ const Showcase = () => {
 																<Tooltip title="Approve Item">
 																	<a
 																		className="info"
-																		onClick={() => onApprove(item)}>
+																		onClick={() => onApprove(item)}
+																	>
 																		<i className="os-icon os-icon-check-square" />
 																	</a>
 																</Tooltip>
 																<Tooltip title="Edit Item">
 																	<a
 																		className="secondary"
-																		onClick={() => onClickEdit(item)}>
+																		onClick={() => onClickEdit(item)}
+																	>
 																		<i className="os-icon os-icon-edit-32" />
 																	</a>
 																</Tooltip>
 																<Tooltip title="Delete Item">
 																	<a
 																		className="danger"
-																		onClick={() => confirmDelete(item)}>
+																		onClick={() => confirmDelete(item)}
+																	>
 																		<i className="os-icon os-icon-ui-15" />
 																	</a>
 																</Tooltip>
@@ -312,7 +315,8 @@ const Showcase = () => {
 								<>
 									<button
 										className="btn btn-secondary ml-3"
-										onClick={cancelEditButton}>
+										onClick={cancelEditButton}
+									>
 										<span>cancel</span>
 									</button>
 									<button className="btn btn-primary">

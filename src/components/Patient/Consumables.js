@@ -75,7 +75,8 @@ const Consumables = ({ itemId, type, can_request }) => {
 					{can_request && (
 						<a
 							className="btn btn-sm btn-secondary text-white"
-							onClick={() => newRequest()}>
+							onClick={() => newRequest()}
+						>
 							Add Consumable
 						</a>
 					)}

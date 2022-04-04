@@ -15,7 +15,8 @@ function SelectAppointment({ setView }) {
 				<div className="col-sm-12">
 					<a
 						className="element-box el-tablo"
-						onClick={() => setView('consultation-form')}>
+						onClick={() => setView('consultation-form')}
+					>
 						<div className="p-4">
 							<Image src={consultingImage} width={60} />
 						</div>
@@ -30,7 +31,8 @@ function SelectAppointment({ setView }) {
 				<div className="col-sm-12">
 					<a
 						className="element-box el-tablo"
-						onClick={() => setView('outpatient-form')}>
+						onClick={() => setView('outpatient-form')}
+					>
 						<div className="p-4">
 							<Image src={inPatientImg} width={60} />
 						</div>
@@ -63,7 +65,8 @@ const AppointmentFormModal = ({ addAppointment, closeModal }) => {
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div
 				className="modal-dialog modal-centered"
 				style={{
@@ -71,7 +74,8 @@ const AppointmentFormModal = ({ addAppointment, closeModal }) => {
 						currentView === 'consultation-form' ? '800px' : '550px'
 					}`,
 				}}
-				role="document">
+				role="document"
+			>
 				<div className="modal-content text-center">
 					<div className="modal-header faded smaller">
 						<div className="modal-title text-center w-100">
@@ -83,7 +87,8 @@ const AppointmentFormModal = ({ addAppointment, closeModal }) => {
 							aria-label="Close"
 							className="close"
 							type="button"
-							onClick={closeModal}>
+							onClick={closeModal}
+						>
 							<span aria-hidden="true">
 								<span className="os-icon os-icon-close"></span>
 							</span>

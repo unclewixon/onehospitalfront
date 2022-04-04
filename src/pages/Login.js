@@ -216,7 +216,8 @@ const Login = ({ location, history, error, handleSubmit }) => {
 									<button
 										className="fxt-btn-fill"
 										disabled={submitting}
-										type="submit">
+										type="submit"
+									>
 										{submitting ? (
 											<img src={waiting} alt="submitting" />
 										) : (

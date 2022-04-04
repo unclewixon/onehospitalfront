@@ -103,7 +103,8 @@ const ImmunizationChart = () => {
 															}
 															onVisibleChange={e =>
 																onHover({ show: e, id: data.id })
-															}>
+															}
+														>
 															<div className={`ibox ${checkVaccine(data)}`} />
 														</Popover>
 													</td>

@@ -33,14 +33,11 @@ class MainMenu extends Component {
 	};
 
 	componentDidMount() {
-		$(this.menu_ref).on('click', 'ul.main-menu > li.has-sub-menu', function() {
+		$(this.menu_ref).on('click', 'ul.main-menu > li.has-sub-menu', function () {
 			var $elem = $(this);
 			console.log($elem.closest('ul').hasClass('has-active'));
 			if ($elem.closest('ul').hasClass('has-active')) {
-				$elem
-					.removeClass('active')
-					.closest('ul')
-					.removeClass('has-active');
+				$elem.removeClass('active').closest('ul').removeClass('has-active');
 			} else {
 				$elem
 					.closest('ul')
@@ -73,7 +70,8 @@ class MainMenu extends Component {
 				style={{
 					width: menu_mini ? '8%' : '18%',
 					overflowY: menuHeight > clientHeight ? 'scroll' : 'hidden',
-				}}>
+				}}
+			>
 				<div className="logo-w">
 					<a className="logo">
 						<div className="logo-element" />

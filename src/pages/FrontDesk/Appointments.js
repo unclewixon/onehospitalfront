@@ -6,7 +6,10 @@ import { useSelector } from 'react-redux';
 import { qsParse } from '../../services/utilities';
 import AllAppointments from './AllAppointments';
 import PatientForm from '../../components/Modals/PatientForm';
-import { hasCreateAppointmentPermission, hasViewAppointmentPermission } from '../../permission-utils/appointment';
+import {
+	hasCreateAppointmentPermission,
+	hasViewAppointmentPermission,
+} from '../../permission-utils/appointment';
 
 const Appointments = ({ location }) => {
 	const [activePage, setActivePage] = useState('');
@@ -47,7 +50,8 @@ const Appointments = ({ location }) => {
 									className={`nav-link ${
 										activePage === 'queue' ? 'active' : ''
 									}`}
-									to="/front-desk/appointments/queue">
+									to="/front-desk/appointments/queue"
+								>
 									Todays Appointments
 								</Link>
 							</li>
@@ -59,7 +63,8 @@ const Appointments = ({ location }) => {
 									className={`nav-link ${
 										activePage === 'history' ? 'active' : ''
 									}`}
-									to="/front-desk/appointments/history">
+									to="/front-desk/appointments/history"
+								>
 									All Appointments
 								</Link>
 							</li>
@@ -69,7 +74,8 @@ const Appointments = ({ location }) => {
 								<div className="col-md-6">
 									<a
 										className="btn btn-primary btn-sm text-white"
-										onClick={() => newPatient()}>
+										onClick={() => newPatient()}
+									>
 										<i className="os-icon os-icon-plus-circle"></i>
 										<span>New Patient</span>
 									</a>
@@ -82,7 +88,8 @@ const Appointments = ({ location }) => {
 												pathname: '/front-desk/appointments/queue',
 												search: `?new=${count}`,
 												state: { from: location.pathname },
-											}}>
+											}}
+										>
 											<i className="os-icon os-icon-plus-circle"></i>
 											<span>New Appointment</span>
 										</Link>

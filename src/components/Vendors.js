@@ -92,12 +92,14 @@ class Vendors extends Component {
 																<a
 																	onClick={this.editVendor(vendor, true)}
 																	className="secondary"
-																	title="Edit Vendor">
+																	title="Edit Vendor"
+																>
 																	<i className="os-icon os-icon-edit-32" />
 																</a>
 																<a
 																	className="danger"
-																	onClick={() => this.deleteVendor(vendor)}>
+																	onClick={() => this.deleteVendor(vendor)}
+																>
 																	<i className="os-icon os-icon-ui-15"></i>
 																</a>
 															</>

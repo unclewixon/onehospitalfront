@@ -11,7 +11,7 @@ import { startBlock, stopBlock } from '../../../actions/redux-block';
 import { antenatalAPI } from '../../../services/constants';
 import { notifyError } from '../../../services/notify';
 import { notifySuccess } from '../../../services/notify';
-import { messageService } from "../../../services/message";
+import { messageService } from '../../../services/message';
 
 const validate = values => {
 	const errors = {};

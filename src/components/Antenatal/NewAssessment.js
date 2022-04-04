@@ -135,14 +135,16 @@ class NewAssessment extends Component {
 				role="dialog"
 				style={{ display: 'block' }}
 				tabIndex="1"
-				ref="theDiv">
+				ref="theDiv"
+			>
 				<div className="modal-dialog modal-lg modal-centered" role="document">
 					<div className="modal-content">
 						<button
 							aria-label="Close"
 							className="close override text-white"
 							type="button"
-							onClick={() => closeModal()}>
+							onClick={() => closeModal()}
+						>
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="layout-w flex-column">
@@ -156,7 +158,8 @@ class NewAssessment extends Component {
 								<div className="content-i">
 									<div
 										className="content-box encounter-box"
-										style={eIndex === 3 ? { overflowY: 'visible' } : {}}>
+										style={eIndex === 3 ? { overflowY: 'visible' } : {}}
+									>
 										<AssessmentTabs
 											index={eIndex}
 											next={this.next}

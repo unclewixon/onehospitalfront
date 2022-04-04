@@ -55,7 +55,8 @@ export default class FormWizard extends React.Component {
 			<Form
 				initialValues={values}
 				validate={this.validate}
-				onSubmit={this.handleSubmit}>
+				onSubmit={this.handleSubmit}
+			>
 				{({ handleSubmit, submitting, values, submitError }) => (
 					<form onSubmit={handleSubmit}>
 						{submitError && (
@@ -72,7 +73,8 @@ export default class FormWizard extends React.Component {
 								<button
 									className="btn btn-default"
 									type="button"
-									onClick={this.previous}>
+									onClick={this.previous}
+								>
 									Previous
 								</button>
 							)}
@@ -85,7 +87,8 @@ export default class FormWizard extends React.Component {
 								<button
 									className="btn btn-primary"
 									type="submit"
-									disabled={submitting}>
+									disabled={submitting}
+								>
 									Submit
 								</button>
 							)}

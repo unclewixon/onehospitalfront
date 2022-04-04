@@ -27,8 +27,9 @@ const Diagnosis = () => {
 
 	const loadDiagnosis = async (page, q, alphabet) => {
 		try {
-			const url = `${diagnosisAPI}?page=${page}&q=${q ||
-				''}&alphabet=${alphabet || ''}`;
+			const url = `${diagnosisAPI}?page=${page}&q=${q || ''}&alphabet=${
+				alphabet || ''
+			}`;
 			const rs = await request(url, 'GET', true);
 			const { data, ...info } = rs;
 			setDiagnoses([...data]);
@@ -131,7 +132,8 @@ const Diagnosis = () => {
 										<div className="col-md-6">
 											<a
 												className="btn btn-primary btn-sm"
-												onClick={() => onUploadService()}>
+												onClick={() => onUploadService()}
+											>
 												<i className="os-icon os-icon-ui-22"></i>
 												<span>Upload Diagnosis</span>
 											</a>
@@ -159,14 +161,16 @@ const Diagnosis = () => {
 																className={`btn btn-sm btn-${
 																	selected === item ? 'danger' : 'secondary'
 																} mb-1`}
-																onClick={() => searchByAlphabet(item)}>
+																onClick={() => searchByAlphabet(item)}
+															>
 																{item}
 															</a>
 														))}
 														{selected !== '' && (
 															<a
 																className="btn btn-sm btn-secondary mb-1"
-																onClick={() => searchByAlphabet('')}>
+																onClick={() => searchByAlphabet('')}
+															>
 																All
 															</a>
 														)}

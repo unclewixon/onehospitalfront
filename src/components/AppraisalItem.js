@@ -49,7 +49,8 @@ class AppraisalItem extends Component {
 							className=""
 							onClick={() => {
 								edit(item);
-							}}>
+							}}
+						>
 							<i className="os-icon os-icon-edit-32"></i>
 						</a>
 					</Tooltip>
@@ -65,7 +66,8 @@ class AppraisalItem extends Component {
 							<a
 								onClick={e => this.doDisable(e, item)}
 								className="danger"
-								title="Close Appraisal">
+								title="Close Appraisal"
+							>
 								<i className="os-icon os-icon-x-circle" />
 							</a>
 						</Tooltip>
@@ -74,7 +76,8 @@ class AppraisalItem extends Component {
 							<a
 								onClick={e => this.doDisable(e, item)}
 								className="success"
-								title="Open Appraisal">
+								title="Open Appraisal"
+							>
 								<i className="os-icon os-icon-check-circle" />
 							</a>
 						</Tooltip>

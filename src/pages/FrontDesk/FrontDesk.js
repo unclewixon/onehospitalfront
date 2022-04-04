@@ -53,7 +53,8 @@ const FrontDesk = ({ location }) => {
 				<div className="element-actions">
 					<a
 						onClick={() => newPatient()}
-						className="btn btn-primary btn-sm mr-2">
+						className="btn btn-primary btn-sm mr-2"
+					>
 						New Patient
 					</a>
 					{hasCreateAppointmentPermission(staff.permissions) && (
@@ -63,7 +64,8 @@ const FrontDesk = ({ location }) => {
 								search: `?new=${count}`,
 								state: { from: location.pathname },
 							}}
-							className="btn btn-primary btn-sm">
+							className="btn btn-primary btn-sm"
+						>
 							New Appointment
 						</Link>
 					)}

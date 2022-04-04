@@ -45,14 +45,16 @@ const SetCreditLimit = ({ patient, onHide }) => {
 		<div
 			className="onboarding-modal fade animated show"
 			role="dialog"
-			style={{ width: '300px' }}>
+			style={{ width: '300px' }}
+		>
 			<div className="modal-centered" role="document">
 				<div className="modal-content">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={() => onHide()}>
+						onClick={() => onHide()}
+					>
 						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div className="onboarding-content with-gradient">

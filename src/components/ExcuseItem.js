@@ -55,7 +55,8 @@ const ExcuseItem = ({
 								if (typeof modalClick === 'function') {
 									modalClick(leave);
 								}
-							}}>
+							}}
+						>
 							<i className="os-icon os-icon-file" />
 						</a>
 					</Tooltip>

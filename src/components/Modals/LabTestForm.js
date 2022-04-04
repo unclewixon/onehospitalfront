@@ -156,10 +156,12 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 		<div
 			className={`lab-form pipeline white lined-warning ${
 				showHide ? 'show' : 'hide'
-			}`}>
+			}`}
+		>
 			<form
 				onSubmit={edit ? onEditLabTest : onAddLabTest}
-				style={{ overflowY: 'visible' }}>
+				style={{ overflowY: 'visible' }}
+			>
 				<h6 className="form-header">{edit ? 'Edit Test' : 'Create Test'}</h6>
 				<div className="row mt-4">
 					<div className="col-md-6">
@@ -181,7 +183,8 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 							className="form-control"
 							name="category"
 							onChange={handleInputChange}
-							value={category}>
+							value={category}
+						>
 							{!category && <option value={''}>Select Category</option>};
 							{categories.map((category, i) => {
 								return (
@@ -266,7 +269,8 @@ const LabTestForm = ({ doToggleForm, showHide, labTest, refreshing }) => {
 						className="btn btn-secondary ml-3"
 						disabled={submitting}
 						type="button"
-						onClick={() => cancelEditButton()}>
+						onClick={() => cancelEditButton()}
+					>
 						<span>Cancel</span>
 					</button>
 					<button className="btn btn-primary" disabled={submitting}>

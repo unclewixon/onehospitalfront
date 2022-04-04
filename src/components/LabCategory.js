@@ -159,7 +159,8 @@ const LabCategory = () => {
 								{categories.length === 0 && (
 									<div
 										className="alert alert-info text-center"
-										style={{ width: '100%' }}>
+										style={{ width: '100%' }}
+									>
 										No categories
 									</div>
 								)}
@@ -198,7 +199,8 @@ const LabCategory = () => {
 									<button
 										className="btn btn-secondary ml-3"
 										disabled={submitting}
-										onClick={cancelEditButton}>
+										onClick={cancelEditButton}
+									>
 										<span>cancel</span>
 									</button>
 									<button className="btn btn-primary" disabled={submitting}>

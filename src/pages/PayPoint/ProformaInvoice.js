@@ -44,7 +44,7 @@ const ProformaInvoice = ({ history }) => {
 
 	const onSubmit = async values => {
 		try {
-			if(values.patient_id === ''){
+			if (values.patient_id === '') {
 				notifyError('Select a patient');
 				return;
 			}

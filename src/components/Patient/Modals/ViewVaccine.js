@@ -115,7 +115,8 @@ const ViewVaccine = ({ data, setRecords }) => {
 												<a
 													className="btn btn-success btn-sm text-white"
 													onClick={() => createAppointment(data.date_due)}
-													disabled={submitting}>
+													disabled={submitting}
+												>
 													{submitting ? (
 														<img src={waiting} alt="submitting" />
 													) : (

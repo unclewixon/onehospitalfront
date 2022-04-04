@@ -15,7 +15,8 @@ const UploadPerformanceData = ({ uploading, doUpload, hide }) => {
 		<div
 			className="onboarding-modal fade animated show"
 			role="dialog"
-			style={{ width: '400px' }}>
+			style={{ width: '400px' }}
+		>
 			<div className="modal-centered">
 				<div className="modal-content text-center">
 					<button onClick={hide} className="close" type="button">
@@ -26,7 +27,8 @@ const UploadPerformanceData = ({ uploading, doUpload, hide }) => {
 
 						<form
 							className="form-block w-100"
-							onSubmit={e => doUpload(e, files)}>
+							onSubmit={e => doUpload(e, files)}
+						>
 							<div className="row my-3">
 								<div className="custom-file col-12">
 									{/* {label ? <textarea>{label}</textarea> : null} */}
@@ -48,7 +50,8 @@ const UploadPerformanceData = ({ uploading, doUpload, hide }) => {
 									<button
 										className="btn btn-primary"
 										disabled={uploading}
-										type="submit">
+										type="submit"
+									>
 										{uploading ? (
 											<img src={waiting} alt="submitting" />
 										) : (

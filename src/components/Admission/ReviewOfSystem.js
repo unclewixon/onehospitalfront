@@ -89,7 +89,8 @@ const ReviewOfSystem = ({ next, previous }) => {
 															<span
 																className="select2-selection__choice__remove pointer"
 																role="presentation"
-																onClick={() => removeItem(item.value)}>
+																onClick={() => removeItem(item.value)}
+															>
 																×
 															</span>
 															{`${item.label}: ${item.value}`}

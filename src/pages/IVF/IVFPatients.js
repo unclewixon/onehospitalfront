@@ -142,7 +142,8 @@ const IvfPatients = () => {
 						<div className="form-group col-md-3 mt-4">
 							<div
 								className="btn btn-sm btn-primary btn-upper text-white"
-								onClick={e => doFilter(e)}>
+								onClick={e => doFilter(e)}
+							>
 								<i className="os-icon os-icon-ui-37" />
 								<span>
 									{filtering ? (
@@ -181,10 +182,12 @@ const IvfPatients = () => {
 												<td>
 													<p className="item-title text-color m-0">
 														<Tooltip
-															title={<ProfilePopup patient={item.wife} />}>
+															title={<ProfilePopup patient={item.wife} />}
+														>
 															<a
 																className="cursor"
-																onClick={() => showProfile(item.wife)}>
+																onClick={() => showProfile(item.wife)}
+															>
 																{patientname(item.wife, true)}
 															</a>
 														</Tooltip>

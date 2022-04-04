@@ -79,7 +79,8 @@ const Notes = () => {
 				<div className="element-actions flex-action">
 					<a
 						className="btn btn-sm btn-secondary text-white ml-3"
-						onClick={() => newEntry()}>
+						onClick={() => newEntry()}
+					>
 						New Note
 					</a>
 				</div>

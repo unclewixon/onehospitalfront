@@ -278,7 +278,8 @@ const OutPatientAppointmentForm = ({ closeModal, history, location }) => {
 								<button
 									className="btn btn-primary"
 									type="submit"
-									disabled={submitting}>
+									disabled={submitting}
+								>
 									Submit
 								</button>
 							</div>

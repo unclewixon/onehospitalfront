@@ -79,7 +79,8 @@ const RolePermissionModal = ({ role, closeModal }) => {
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div className="modal-dialog modal-lg" role="document">
 				<div className="modal-content">
 					<div className="modal-header faded smaller">
@@ -100,7 +101,8 @@ const RolePermissionModal = ({ role, closeModal }) => {
 							aria-label="Close"
 							className="close"
 							type="button"
-							onClick={() => closeModal()}>
+							onClick={() => closeModal()}
+						>
 							<span aria-hidden="true"> ×</span>
 						</button>
 					</div>
@@ -138,7 +140,8 @@ const RolePermissionModal = ({ role, closeModal }) => {
 								className="btn btn-teal text-dark"
 								onClick={handleSubmit}
 								type="submit"
-								disabled={loading}>
+								disabled={loading}
+							>
 								{loading ? (
 									<img src={waiting} alt="submitting" />
 								) : (
@@ -148,7 +151,8 @@ const RolePermissionModal = ({ role, closeModal }) => {
 							<button
 								className="btn btn-link ml-2"
 								type="button"
-								onClick={() => closeModal()}>
+								onClick={() => closeModal()}
+							>
 								Close
 							</button>
 						</div>

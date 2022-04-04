@@ -90,7 +90,8 @@ const RoomMgmt = () => {
 										<li className="nav-item nav-actions d-sm-block">
 											<a
 												className="btn btn-primary btn-sm text-white"
-												onClick={() => addRoom()}>
+												onClick={() => addRoom()}
+											>
 												<i className="os-icon os-icon-plus-circle"></i>
 												<span>Add Room Category</span>
 											</a>
@@ -102,7 +103,8 @@ const RoomMgmt = () => {
 								<div className="col-lg-12">
 									<div
 										className="rentals-list-w"
-										style={{ flexDirection: 'column' }}>
+										style={{ flexDirection: 'column' }}
+									>
 										{schemes.map((hmo, i) => {
 											const toggle = toggled.find(t => t.id === hmo.id);
 											return (

@@ -85,7 +85,8 @@ export class Measurement extends Component {
 															className="secondary mx-1"
 															onClick={() =>
 																this.props.labourMeasurementDetail(true, el)
-															}>
+															}
+														>
 															<i className="os-icon os-icon-eye" />
 														</a>
 													</Tooltip>

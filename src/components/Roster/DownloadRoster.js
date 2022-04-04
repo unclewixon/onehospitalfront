@@ -11,14 +11,16 @@ const DownloadRoster = ({ onHide, downloading, doDownload, departments }) => {
 		<div
 			className="onboarding-modal fade animated show"
 			role="dialog"
-			style={{ width: '300px' }}>
+			style={{ width: '300px' }}
+		>
 			<div className="modal-centered" role="document">
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={() => onHide()}>
+						onClick={() => onHide()}
+					>
 						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -46,7 +48,8 @@ const DownloadRoster = ({ onHide, downloading, doDownload, departments }) => {
 											<select
 												id="department"
 												className="form-control"
-												onChange={e => setDepartment(e.target.value)}>
+												onChange={e => setDepartment(e.target.value)}
+											>
 												<option>Select Department</option>
 												{departments.map((dept, i) => {
 													return (
@@ -64,7 +67,8 @@ const DownloadRoster = ({ onHide, downloading, doDownload, departments }) => {
 										<button
 											className="btn btn-primary"
 											disabled={downloading}
-											type="submit">
+											type="submit"
+										>
 											{downloading ? (
 												<img src={waiting} alt="submitting" />
 											) : (

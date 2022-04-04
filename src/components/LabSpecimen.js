@@ -169,7 +169,8 @@ const LabSpecimen = ({ setRefresh }) => {
 								{specimens.length === 0 && (
 									<div
 										className="alert alert-info text-center"
-										style={{ width: '100%' }}>
+										style={{ width: '100%' }}
+									>
 										No lab specimen found!
 									</div>
 								)}
@@ -207,7 +208,8 @@ const LabSpecimen = ({ setRefresh }) => {
 									<button
 										className="btn btn-secondary ml-3"
 										disabled={submitting}
-										onClick={cancelEditButton}>
+										onClick={cancelEditButton}
+									>
 										<span>cancel</span>
 									</button>
 									<button className="btn btn-primary" disabled={submitting}>

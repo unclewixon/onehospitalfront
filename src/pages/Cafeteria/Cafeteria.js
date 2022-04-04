@@ -27,7 +27,8 @@ const Cafeteria = ({ location }) => {
 								className={`nav-link ${
 									activePage === 'cafeteria' ? 'active' : ''
 								}`}
-								to="/cafeteria">
+								to="/cafeteria"
+							>
 								Dashboard
 							</Link>
 						</li>
@@ -37,7 +38,8 @@ const Cafeteria = ({ location }) => {
 								className={`nav-link ${
 									activePage === 'transactions' ? 'active' : ''
 								}`}
-								to="/cafeteria/transactions">
+								to="/cafeteria/transactions"
+							>
 								Transactions
 							</Link>
 						</li>
@@ -47,7 +49,8 @@ const Cafeteria = ({ location }) => {
 								className={`nav-link ${
 									activePage === 'showcase' ? 'active' : ''
 								}`}
-								to="/cafeteria/showcase">
+								to="/cafeteria/showcase"
+							>
 								Showcase
 							</Link>
 						</li>
@@ -57,7 +60,8 @@ const Cafeteria = ({ location }) => {
 								className={`nav-link ${
 									activePage === 'food-items' ? 'active' : ''
 								}`}
-								to="/cafeteria/food-items">
+								to="/cafeteria/food-items"
+							>
 								Food Items
 							</Link>
 						</li>

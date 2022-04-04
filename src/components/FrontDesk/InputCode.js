@@ -63,7 +63,8 @@ class InputCode extends Component {
 							<Modal.Header
 								className="center-header"
 								closeButton
-								onClick={() => this.props.doHide()}>
+								onClick={() => this.props.doHide()}
+							>
 								<h4 className="onboarding-title">{`Input Code`}</h4>
 							</Modal.Header>
 							<div className="form-block">
@@ -93,7 +94,8 @@ class InputCode extends Component {
 											<button
 												className="btn btn-primary"
 												disabled={submitting}
-												type="submit">
+												type="submit"
+											>
 												{submitting ? (
 													<img src={waiting} alt="submitting" />
 												) : (

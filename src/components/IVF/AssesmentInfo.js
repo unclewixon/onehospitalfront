@@ -146,7 +146,8 @@ const AssesmentInfo = ({
 							<button
 								className="btn btn-primary"
 								type="button"
-								onClick={previousPage}>
+								onClick={previousPage}
+							>
 								Previous
 							</button>
 							<button className="btn btn-primary" type="submit">

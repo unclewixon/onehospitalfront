@@ -11,9 +11,8 @@ const Reading = ({ vital, visible, info, setVisible, unit, task }) => {
 				<div className="last-reading">{`Last ${info.title} Reading:`}</div>
 				{vital ? (
 					<div
-						className={`reading ${
-							vital.isAbnormal ? 'text-danger' : ''
-						}`}>{`${vital._reading} ${unit}`}</div>
+						className={`reading ${vital.isAbnormal ? 'text-danger' : ''}`}
+					>{`${vital._reading} ${unit}`}</div>
 				) : (
 					<div className="reading">-</div>
 				)}
@@ -35,7 +34,8 @@ const Reading = ({ vital, visible, info, setVisible, unit, task }) => {
 						}
 						trigger="click"
 						visible={visible}
-						onVisibleChange={status => setVisible(status)}>
+						onVisibleChange={status => setVisible(status)}
+					>
 						<div>Take New Reading</div>
 					</Popover>
 				</div>

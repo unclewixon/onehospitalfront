@@ -80,7 +80,8 @@ const Notes = ({ can_request = true }) => {
 					{can_request && (
 						<a
 							className="btn btn-sm btn-secondary text-white ml-3"
-							onClick={() => newEntry()}>
+							onClick={() => newEntry()}
+						>
 							New Note
 						</a>
 					)}

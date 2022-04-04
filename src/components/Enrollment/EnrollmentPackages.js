@@ -36,14 +36,8 @@ class EnrollmentPackages extends Component {
 	};
 
 	render() {
-		const {
-			handleSubmit,
-			doSubmit,
-			previousPage,
-			error,
-			page,
-			submitting,
-		} = this.props;
+		const { handleSubmit, doSubmit, previousPage, error, page, submitting } =
+			this.props;
 		const { packages } = this.state;
 		return (
 			<>
@@ -77,13 +71,15 @@ class EnrollmentPackages extends Component {
 								<button
 									className="btn btn-primary"
 									type="button"
-									onClick={previousPage}>
+									onClick={previousPage}
+								>
 									Previous
 								</button>
 								<button
 									className="btn btn-primary"
 									type="submit"
-									disabled={submitting}>
+									disabled={submitting}
+								>
 									{submitting ? <img src={waiting} alt="submitting" /> : 'Save'}
 								</button>
 							</div>

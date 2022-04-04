@@ -29,8 +29,9 @@ const Requisitions = ({ category }) => {
 			try {
 				dispatch(startBlock());
 				const p = page || 1;
-				const url = `inventory/requisitions?page=${p}&q=${q ||
-					''}&staff_id=${staffId || ''}&category=${category || 'store'}`;
+				const url = `inventory/requisitions?page=${p}&q=${q || ''}&staff_id=${
+					staffId || ''
+				}&category=${category || 'store'}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setRequisitions(result);
@@ -172,14 +173,16 @@ const Requisitions = ({ category }) => {
 																<Tooltip title="Approve Request">
 																	<a
 																		className="info"
-																		onClick={() => approve(item)}>
+																		onClick={() => approve(item)}
+																	>
 																		<i className="os-icon os-icon-check-square" />
 																	</a>
 																</Tooltip>
 																<Tooltip title="Decline Request">
 																	<a
 																		className="danger"
-																		onClick={() => decline(item)}>
+																		onClick={() => decline(item)}
+																	>
 																		<i className="os-icon os-icon-x-square" />
 																	</a>
 																</Tooltip>

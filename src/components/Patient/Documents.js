@@ -124,7 +124,8 @@ const Documents = () => {
 						overlayClassName="upload-roster"
 						onVisibleChange={handleUploadVisibleChange}
 						visible={uploadVisible}
-						trigger="click">
+						trigger="click"
+					>
 						<a className="btn btn-sm btn-secondary text-white">
 							<i className="os-icon os-icon-upload" />
 							<span>Upload Document</span>

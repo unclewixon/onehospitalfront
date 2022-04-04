@@ -26,7 +26,8 @@ const SpeciliazationSession = ({
 						<i
 							className="os-icon os-icon-ui-15"
 							style={{ fontSize: '1rem' }}
-							onClick={() => removeParams(index)}></i>
+							onClick={() => removeParams(index)}
+						></i>
 					</div>
 				</div>
 				<div className="pi-body">
@@ -41,7 +42,8 @@ const SpeciliazationSession = ({
 									? parameters[index].specialization
 									: ''
 							}
-							onChange={e => handleParamInputChange(e, index)}>
+							onChange={e => handleParamInputChange(e, index)}
+						>
 							<option value={''}>Select service to request</option>
 							{parameterArray && parameterArray.length
 								? parameterArray.map((parameter, i) => {

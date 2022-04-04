@@ -34,7 +34,7 @@ class VitalForm extends Component {
 		const { type, vitals } = this.props;
 		//console.log(start_time, type, data);
 
-		vitals.forEach(function(value, i) {
+		vitals.forEach(function (value, i) {
 			if (value.task === type) {
 				vitals.splice(i, 1);
 			}
@@ -127,7 +127,8 @@ class VitalForm extends Component {
 							<button
 								className="btn btn-primary"
 								disabled={submitting}
-								type="submit">
+								type="submit"
+							>
 								{submitting ? <img src={waiting} alt="submitting" /> : 'Save'}
 							</button>
 						</div>

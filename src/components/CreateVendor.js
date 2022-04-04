@@ -70,7 +70,8 @@ class CreateVendor extends Component {
 								<button
 									className="btn btn-primary"
 									disabled={submitting}
-									type="submit">
+									type="submit"
+								>
 									{submitting ? <img src={waiting} alt="submitting" /> : 'save'}
 								</button>
 							</div>

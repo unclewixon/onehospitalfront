@@ -31,8 +31,8 @@ export const renderTextInput = ({
 	meta: { touched, error },
 }) => (
 	<div
-		className={`form-group ${touched &&
-			(error ? 'has-error has-danger' : '')}`}>
+		className={`form-group ${touched && (error ? 'has-error has-danger' : '')}`}
+	>
 		<input
 			{...input}
 			type={type}
@@ -184,13 +184,13 @@ class CreateAppraisal extends Component {
 					console.log(e);
 					this.setState({ submitting: false });
 					console.log(e);
-					setTimeout(function() {
+					setTimeout(function () {
 						$('.slide-pane__content').scrollTop(0);
 					}, 500);
 					notifyError(`${e.message}`);
 				}
 			} else {
-				setTimeout(function() {
+				setTimeout(function () {
 					$('.slide-pane__content').scrollTop(0);
 				}, 500);
 				notifyError('invalid department');
@@ -228,7 +228,8 @@ class CreateAppraisal extends Component {
 								<div className="element-actions">
 									<Link
 										className="btn btn-primary btn-sm text-white"
-										to={`/my-account/appraisal/staff-appraisal`}>
+										to={`/my-account/appraisal/staff-appraisal`}
+									>
 										<i className="os-icon os-icon-ui-22" />
 										<span>go back</span>
 									</Link>
@@ -323,7 +324,8 @@ class CreateAppraisal extends Component {
 										<button
 											className="btn btn-primary"
 											disabled={submitting}
-											type="submit">
+											type="submit"
+										>
 											{submitting ? (
 												<img src={waiting} alt="submitting" />
 											) : (

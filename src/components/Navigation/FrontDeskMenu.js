@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { hasViewAppointmentPermission } from "../../permission-utils/appointment";
+import { hasViewAppointmentPermission } from '../../permission-utils/appointment';
 
 const FrontDeskMenu = () => {
 	const staff = useSelector(state => state.user.profile);

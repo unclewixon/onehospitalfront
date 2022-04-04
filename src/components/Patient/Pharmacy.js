@@ -26,8 +26,9 @@ const Pharmacy = ({ location, can_request = true, type, itemId }) => {
 		async page => {
 			try {
 				const block = type || '';
-				const url = `requests/prescriptions?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=10&item_id=${itemId ||
-					''}&type=${block}&patient_id=${patient.id}`;
+				const url = `requests/prescriptions?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=10&item_id=${
+					itemId || ''
+				}&type=${block}&patient_id=${patient.id}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				setPrescriptions(result);
@@ -68,7 +69,8 @@ const Pharmacy = ({ location, can_request = true, type, itemId }) => {
 					{can_request && (
 						<Link
 							className="btn btn-primary btn-sm"
-							to={`${location.pathname}#pharmacy-request`}>
+							to={`${location.pathname}#pharmacy-request`}
+						>
 							<i className="os-icon os-icon-plus" />
 							New Pharmacy Request
 						</Link>

@@ -334,7 +334,8 @@ const Consumable = ({ previous, patient, closeModal, appointment_id }) => {
 						<a
 							className="btn btn-info btn-sm text-white pointer"
 							style={{ margin: '28px 0 0', display: 'block' }}
-							onClick={() => add()}>
+							onClick={() => add()}
+						>
 							<i className="os-icon os-icon-plus-circle" /> Add Consumable
 						</a>
 					</div>
@@ -354,11 +355,13 @@ const Consumable = ({ previous, patient, closeModal, appointment_id }) => {
 																return (
 																	<li
 																		className="select2-selection__choice"
-																		key={i}>
+																		key={i}
+																	>
 																		<span
 																			className="select2-selection__choice__remove pointer"
 																			role="presentation"
-																			onClick={() => onTrash(i)}>
+																			onClick={() => onTrash(i)}
+																		>
 																			×
 																		</span>
 																		{`${item.item.name} - ${item.quantity}`}
@@ -391,7 +394,8 @@ const Consumable = ({ previous, patient, closeModal, appointment_id }) => {
 									requestNote: e.target.value,
 								});
 							}}
-							value={requestNote}></textarea>
+							value={requestNote}
+						></textarea>
 					</div>
 				</div>
 				<div className="mt-4"></div>
@@ -425,7 +429,8 @@ const Consumable = ({ previous, patient, closeModal, appointment_id }) => {
 									const data = { ...appoinment, reason: e.target.value };
 									saveAppoinment(data);
 								}}
-								value={appointmentReason}></textarea>
+								value={appointmentReason}
+							></textarea>
 						</div>
 					</div>
 				</div>

@@ -107,16 +107,19 @@ const TakeReading = ({ closeModal, taskItem }) => {
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div
 				className="modal-dialog modal-centered"
-				style={{ maxWidth: '1024px' }}>
+				style={{ maxWidth: '1024px' }}
+			>
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={() => closeModal()}>
+						onClick={() => closeModal()}
+					>
 						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div className="onboarding-content with-gradient">

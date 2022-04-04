@@ -101,7 +101,8 @@ const Inventory = () => {
 			<div className="element-actions">
 				<a
 					className="btn btn-primary btn-sm text-white"
-					onClick={() => addItem()}>
+					onClick={() => addItem()}
+				>
 					<i className="os-icon os-icon-ui-22" />
 					<span>Add Item</span>
 				</a>
@@ -128,7 +129,8 @@ const Inventory = () => {
 									onClick={() => {
 										setHasSearched(true);
 										filterEntries();
-									}}>
+									}}
+								>
 									<i className="os-icon os-icon-ui-37" />
 									<span>Filter</span>
 								</a>
@@ -139,7 +141,8 @@ const Inventory = () => {
 											setHasSearched(false);
 											setSearch('');
 											await loadItems(1, '');
-										}}>
+										}}
+									>
 										<i className="os-icon os-icon-close" />
 									</a>
 								)}
@@ -182,7 +185,8 @@ const Inventory = () => {
 																	item.quantity < 10
 																		? lowBadge
 																		: 'badge-success'
-																}`}>
+																}`}
+															>
 																{item.quantity < 10 ? low : 'good'}
 															</span>
 														</td>
@@ -190,14 +194,16 @@ const Inventory = () => {
 															<Tooltip title="Edit Item">
 																<a
 																	className="info"
-																	onClick={() => editItem(item)}>
+																	onClick={() => editItem(item)}
+																>
 																	<i className="os-icon os-icon-ui-49" />
 																</a>
 															</Tooltip>
 															<Tooltip title="Update Quantity">
 																<a
 																	className="secondary"
-																	onClick={() => updateQuantity(item)}>
+																	onClick={() => updateQuantity(item)}
+																>
 																	<i className="os-icon os-icon-plus-circle" />
 																</a>
 															</Tooltip>

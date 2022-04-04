@@ -19,9 +19,8 @@ const Appraisal = () => {
 	};
 
 	// eslint-disable-next-line no-unused-vars
-	const [{ id, dname, keyFocus, weight, kpis, objective }, setState] = useState(
-		initialState
-	);
+	const [{ id, dname, keyFocus, weight, kpis, objective }, setState] =
+		useState(initialState);
 	const [payload, setPayload] = useState(null);
 	const [payloadView, setPayloadView] = useState(null);
 	const [loading, setLoading] = useState(true);
@@ -200,14 +199,16 @@ const Appraisal = () => {
 																	<Tooltip title="Add indicator">
 																		<a
 																			onClick={() => onClickAdd(department)}
-																			className="cursor">
+																			className="cursor"
+																		>
 																			<i className="os-icon os-icon-plus"></i>
 																		</a>
 																	</Tooltip>
 																	<Tooltip title="View Indicators">
 																		<a
 																			onClick={() => onClickView(department)}
-																			className="cursor">
+																			className="cursor"
+																		>
 																			<i className="os-icon os-icon-eye"></i>
 																		</a>
 																	</Tooltip>
@@ -282,12 +283,14 @@ const Appraisal = () => {
 												<button
 													className="btn btn-secondary ml-3"
 													onClick={cancelEditButton}
-													type="button">
+													type="button"
+												>
 													<span>cancel</span>
 												</button>
 												<button
 													className="btn btn-primary"
-													disabled={submitting}>
+													disabled={submitting}
+												>
 													{submitting ? (
 														<img src={waiting} alt="submitting" />
 													) : (
@@ -330,7 +333,8 @@ const Appraisal = () => {
 																	<Tooltip title="Delete Indicator">
 																		<a
 																			onClick={() => confirmDelete(ind)}
-																			className="cursor">
+																			className="cursor"
+																		>
 																			<i className="os-icon os-icon-trash"></i>
 																		</a>
 																	</Tooltip>
@@ -346,7 +350,8 @@ const Appraisal = () => {
 											<button
 												className="btn btn-secondary ml-3"
 												onClick={cancelViewButton}
-												type="button">
+												type="button"
+											>
 												<span>cancel</span>
 											</button>
 										</div>

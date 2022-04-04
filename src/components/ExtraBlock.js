@@ -45,36 +45,44 @@ const ExtraBlock = ({ module, item, onSelectLmpDate }) => {
 							).format('DD-MMM-YYYY')}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Pregnancy Result: ${item?.result ||
-								'--'}`}</a>
+							<a className="no-pointer">{`Pregnancy Result: ${
+								item?.result || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Indication: ${item?.indication ||
-								'--'}`}</a>
+							<a className="no-pointer">{`Indication: ${
+								item?.indication || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Treatment Plan: ${item?.treatmentPlan ||
-								'--'}`}</a>
+							<a className="no-pointer">{`Treatment Plan: ${
+								item?.treatmentPlan || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Prognosis: ${item?.prognosis ||
-								'--'}`}</a>
+							<a className="no-pointer">{`Prognosis: ${
+								item?.prognosis || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`No. of Embryo Transfer: ${item?.noOfEmbryoTransfer ||
-								'--'}`}</a>
+							<a className="no-pointer">{`No. of Embryo Transfer: ${
+								item?.noOfEmbryoTransfer || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`No Of Oocyte Retrieved: ${item?.noOfOocyteRetrieved ||
-								'--'}`}</a>
+							<a className="no-pointer">{`No Of Oocyte Retrieved: ${
+								item?.noOfOocyteRetrieved || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Assessment Comments: ${item?.assessmentComments ||
-								'--'}`}</a>
+							<a className="no-pointer">{`Assessment Comments: ${
+								item?.assessmentComments || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Endometric Thickness: ${item?.endometricThickness ||
-								'--'}`}</a>
+							<a className="no-pointer">{`Endometric Thickness: ${
+								item?.endometricThickness || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
 							<a className="no-pointer">{`Treatment Date: ${
@@ -105,112 +113,139 @@ const ExtraBlock = ({ module, item, onSelectLmpDate }) => {
 							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Wife Blood Group: ${item
-								?.wifeLabDetails?.bloodGroup || '--'}`}</a>
+							<a className="no-pointer">{`Wife Blood Group: ${
+								item?.wifeLabDetails?.bloodGroup || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Wife Chlamyda: ${item?.wifeLabDetails
-								?.chlamyda || '--'}`}</a>
+							<a className="no-pointer">{`Wife Chlamyda: ${
+								item?.wifeLabDetails?.chlamyda || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Wife Genotype: ${item?.wifeLabDetails
-								?.genotype || '--'}`}</a>
+							<a className="no-pointer">{`Wife Genotype: ${
+								item?.wifeLabDetails?.genotype || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Wife Hormonals (LH): ${item
-								?.wifeLabDetails?.hormonals?.lh || '--'}`}</a>
+							<a className="no-pointer">{`Wife Hormonals (LH): ${
+								item?.wifeLabDetails?.hormonals?.lh || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Wife Hormonals (AMH): ${item
-								?.wifeLabDetails?.hormonals?.amh || '--'}`}</a>
+							<a className="no-pointer">{`Wife Hormonals (AMH): ${
+								item?.wifeLabDetails?.hormonals?.amh || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Wife Hormonals (FSH): ${item
-								?.wifeLabDetails?.hormonals?.fsh || '--'}`}</a>
+							<a className="no-pointer">{`Wife Hormonals (FSH): ${
+								item?.wifeLabDetails?.hormonals?.fsh || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Wife Hormonals (PROL): ${item
-								?.wifeLabDetails?.hormonals?.prol || '--'}`}</a>
+							<a className="no-pointer">{`Wife Hormonals (PROL): ${
+								item?.wifeLabDetails?.hormonals?.prol || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Wife Serology (HIV): ${item
-								?.wifeLabDetails?.serology?.hiv || '--'}`}</a>
+							<a className="no-pointer">{`Wife Serology (HIV): ${
+								item?.wifeLabDetails?.serology?.hiv || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Wife Serology (HEPB): ${item
-								?.wifeLabDetails?.serology?.hepb || '--'}`}</a>
+							<a className="no-pointer">{`Wife Serology (HEPB): ${
+								item?.wifeLabDetails?.serology?.hepb || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Wife Serology (HEPC): ${item
-								?.wifeLabDetails?.serology?.hepc || '--'}`}</a>
+							<a className="no-pointer">{`Wife Serology (HEPC): ${
+								item?.wifeLabDetails?.serology?.hepc || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Wife Serology (VDRL): ${item
-								?.wifeLabDetails?.serology?.vdrl || '--'}`}</a>
+							<a className="no-pointer">{`Wife Serology (VDRL): ${
+								item?.wifeLabDetails?.serology?.vdrl || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Husband Blood Group: ${item
-								?.husbandLabDetails?.bloodGroup || '--'}`}</a>
+							<a className="no-pointer">{`Husband Blood Group: ${
+								item?.husbandLabDetails?.bloodGroup || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Husband Fasting Blood Sugar: ${item
-								?.husbandLabDetails?.fastingBloodSugar || '--'}`}</a>
+							<a className="no-pointer">{`Husband Fasting Blood Sugar: ${
+								item?.husbandLabDetails?.fastingBloodSugar || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Husband Genotype: ${item
-								?.husbandLabDetails?.genotype || '--'}`}</a>
+							<a className="no-pointer">{`Husband Genotype: ${
+								item?.husbandLabDetails?.genotype || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Husband Random Blood Sugar: ${item
-								?.husbandLabDetails?.randomBloodSugar || '--'}`}</a>
+							<a className="no-pointer">{`Husband Random Blood Sugar: ${
+								item?.husbandLabDetails?.randomBloodSugar || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Husband Hormonals (LH): ${item
-								?.husbandLabDetails?.hormonals?.lh || '--'}`}</a>
+							<a className="no-pointer">{`Husband Hormonals (LH): ${
+								item?.husbandLabDetails?.hormonals?.lh || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Husband Hormonals (PROL): ${item
-								?.husbandLabDetails?.hormonals?.prol || '--'}`}</a>
+							<a className="no-pointer">{`Husband Hormonals (PROL): ${
+								item?.husbandLabDetails?.hormonals?.prol || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Husband Hormonals (FSH): ${item
-								?.husbandLabDetails?.hormonals?.fsh || '--'}`}</a>
+							<a className="no-pointer">{`Husband Hormonals (FSH): ${
+								item?.husbandLabDetails?.hormonals?.fsh || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Husband Hormonals (Testosterone): ${item
-								?.husbandLabDetails?.hormonals?.testosterone || '--'}`}</a>
+							<a className="no-pointer">{`Husband Hormonals (Testosterone): ${
+								item?.husbandLabDetails?.hormonals?.testosterone || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Husband Serology (HIV): ${item
-								?.husbandLabDetails?.serology?.hiv || '--'}`}</a>
+							<a className="no-pointer">{`Husband Serology (HIV): ${
+								item?.husbandLabDetails?.serology?.hiv || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Husband Serology (HEPB): ${item
-								?.husbandLabDetails?.serology?.hepb || '--'}`}</a>
+							<a className="no-pointer">{`Husband Serology (HEPB): ${
+								item?.husbandLabDetails?.serology?.hepb || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Husband Serology (HEPC): ${item
-								?.husbandLabDetails?.serology?.hepc || '--'}`}</a>
+							<a className="no-pointer">{`Husband Serology (HEPC): ${
+								item?.husbandLabDetails?.serology?.hepc || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Husband Serology (VDRL): ${item
-								?.husbandLabDetails?.serology?.vdrl || '--'}`}</a>
+							<a className="no-pointer">{`Husband Serology (VDRL): ${
+								item?.husbandLabDetails?.serology?.vdrl || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`SFA Andrology Count: ${item
-								?.husbandLabDetails?.sfaAndrology?.count || '--'}`}</a>
+							<a className="no-pointer">{`SFA Andrology Count: ${
+								item?.husbandLabDetails?.sfaAndrology?.count || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`SFA Andrology Morphility: ${item
-								?.husbandLabDetails?.sfaAndrology?.morphility || '--'}`}</a>
+							<a className="no-pointer">{`SFA Andrology Morphility: ${
+								item?.husbandLabDetails?.sfaAndrology?.morphility || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`SFA Andrology Mortility: ${item
-								?.husbandLabDetails?.sfaAndrology?.mortility || '--'}`}</a>
+							<a className="no-pointer">{`SFA Andrology Mortility: ${
+								item?.husbandLabDetails?.sfaAndrology?.mortility || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`SFA Andrology Summary: ${item
-								?.husbandLabDetails?.sfaAndrology?.summary || '--'}`}</a>
+							<a className="no-pointer">{`SFA Andrology Summary: ${
+								item?.husbandLabDetails?.sfaAndrology?.summary || '--'
+							}`}</a>
 						</li>
 					</>
 				</ul>
@@ -231,8 +266,9 @@ const ExtraBlock = ({ module, item, onSelectLmpDate }) => {
 							)}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Package: ${item.ancpackage?.name ||
-								'Nil'}`}</a>
+							<a className="no-pointer">{`Package: ${
+								item.ancpackage?.name || 'Nil'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
 							<a className="no-pointer">{`Reason: ${item.booking_period}`}</a>
@@ -276,20 +312,24 @@ const ExtraBlock = ({ module, item, onSelectLmpDate }) => {
 							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Para: ${pregnancy_history?.para ||
-								'--'}`}</a>
+							<a className="no-pointer">{`Para: ${
+								pregnancy_history?.para || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Alive: ${pregnancy_history?.alive ||
-								'--'}`}</a>
+							<a className="no-pointer">{`Alive: ${
+								pregnancy_history?.alive || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Miscarriages: ${pregnancy_history?.miscarriage ||
-								'--'}`}</a>
+							<a className="no-pointer">{`Miscarriages: ${
+								pregnancy_history?.miscarriage || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
-							<a className="no-pointer">{`Abortions: ${pregnancy_history?.abortion ||
-								'--'}`}</a>
+							<a className="no-pointer">{`Abortions: ${
+								pregnancy_history?.abortion || '--'
+							}`}</a>
 						</li>
 						<li className="breadcrumb-item">
 							<a className="no-pointer">{`Gestation Age: ${getGestationAge(

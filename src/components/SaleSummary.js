@@ -11,7 +11,8 @@ export class SaleSummary extends Component {
 							<div className="table table-responsive">
 								<table
 									id="table"
-									className="table table-theme v-middle table-hover">
+									className="table table-theme v-middle table-hover"
+								>
 									<thead>
 										<tr>
 											<th data-field="id">
@@ -44,7 +45,8 @@ export class SaleSummary extends Component {
 												<a>
 													<span
 														className="w-32 avatar gd-warning"
-														style={{ boxShadow: 'none' }}>
+														style={{ boxShadow: 'none' }}
+													>
 														IN32456789
 													</span>
 												</a>
@@ -87,7 +89,8 @@ export class SaleSummary extends Component {
 												<a>
 													<span
 														className="w-32 avatar gd-warning"
-														style={{ boxShadow: 'none' }}>
+														style={{ boxShadow: 'none' }}
+													>
 														IN32456789
 													</span>
 												</a>
@@ -131,7 +134,8 @@ export class SaleSummary extends Component {
 												<a>
 													<span
 														className="w-32 avatar gd-warning"
-														style={{ boxShadow: 'none' }}>
+														style={{ boxShadow: 'none' }}
+													>
 														IN32456789
 													</span>
 												</a>
@@ -175,7 +179,8 @@ export class SaleSummary extends Component {
 												<a>
 													<span
 														className="w-32 avatar gd-warning"
-														style={{ boxShadow: 'none' }}>
+														style={{ boxShadow: 'none' }}
+													>
 														IN32456789
 													</span>
 												</a>
@@ -219,7 +224,8 @@ export class SaleSummary extends Component {
 												<a>
 													<span
 														className="w-32 avatar gd-warning"
-														style={{ boxShadow: 'none' }}>
+														style={{ boxShadow: 'none' }}
+													>
 														IN32456789
 													</span>
 												</a>

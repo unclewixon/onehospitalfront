@@ -115,13 +115,15 @@ const Prescription = ({
 								<button
 									className="btn btn-primary"
 									style={{ margin: '10px' }}
-									onClick={changeBtn}>
+									onClick={changeBtn}
+								>
 									Change
 								</button>
 								<button
 									className="btn btn-secondary"
 									style={{ margin: '10px' }}
-									onClick={continueBtn}>
+									onClick={continueBtn}
+								>
 									Continue
 								</button>
 							</div>
@@ -158,13 +160,15 @@ const Prescription = ({
 								<button
 									className="btn btn-primary"
 									style={{ margin: '10px' }}
-									onClick={changeBtn}>
+									onClick={changeBtn}
+								>
 									Change
 								</button>
 								<button
 									className="btn btn-secondary"
 									style={{ margin: '10px' }}
-									onClick={continueBtn}>
+									onClick={continueBtn}
+								>
 									Continue
 								</button>
 							</div>
@@ -260,7 +264,8 @@ const Prescription = ({
 										<span
 											className={`badge badge-${
 												selectedDrug.qty > 0 ? 'info' : 'danger'
-											} text-white`}>{`Stock Level: ${
+											} text-white`}
+										>{`Stock Level: ${
 											selectedDrug.qty
 										}; Base Price: ${formatCurrency(
 											selectedDrug.basePrice
@@ -348,8 +353,9 @@ const Prescription = ({
 						<input
 							type="number"
 							className="form-control"
-							placeholder={`(value in ${frequencyType?.value ||
-								'daily'}) eg: 3`}
+							placeholder={`(value in ${
+								frequencyType?.value || 'daily'
+							}) eg: 3`}
 							name="duration"
 							value={duration}
 							onChange={e => setDuration(e.target.value)}
@@ -405,7 +411,8 @@ const Prescription = ({
 									backgroundColor: 'transparent',
 									border: 'none',
 									cursor: 'pointer',
-								}}>
+								}}
+							>
 								<PlusIcon
 									style={{
 										width: '1.5rem',

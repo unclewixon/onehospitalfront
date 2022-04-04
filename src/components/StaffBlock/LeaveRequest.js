@@ -81,7 +81,8 @@ const LeaveRequest = ({ location }) => {
 					<div className="element-actions">
 						<Link
 							className="btn btn-primary btn-sm text-white"
-							to={`${location.pathname}/new`}>
+							to={`${location.pathname}/new`}
+						>
 							<i className="os-icon os-icon-ui-22" />
 							<span>Apply for leave</span>
 						</Link>
@@ -148,7 +149,8 @@ const LeaveRequest = ({ location }) => {
 																onClick={() => {
 																	onModalClick();
 																	setActiveRequest(leave);
-																}}>
+																}}
+															>
 																<i className="os-icon os-icon-folder" />
 															</a>
 														</Tooltip>
@@ -159,7 +161,8 @@ const LeaveRequest = ({ location }) => {
 																	onClick={() => {
 																		onEditClick();
 																		setActiveRequest(leave);
-																	}}>
+																	}}
+																>
 																	<i className="os-icon os-icon-documents-03" />
 																</a>
 															</Tooltip>
@@ -170,7 +173,8 @@ const LeaveRequest = ({ location }) => {
 																	style={{ height: '2rem', width: '2rem' }}
 																	onClick={() => {
 																		confirmDelete(leave);
-																	}}>
+																	}}
+																>
 																	<i className="os-icon os-icon-trash" />
 																</a>
 															</Tooltip>

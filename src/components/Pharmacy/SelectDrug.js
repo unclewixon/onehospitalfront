@@ -91,13 +91,15 @@ const SelectDrug = ({ onHide, setDrug, generic }) => {
 								<button
 									className="btn btn-primary"
 									style={{ margin: '10px' }}
-									onClick={changeBtn}>
+									onClick={changeBtn}
+								>
 									Change
 								</button>
 								<button
 									className="btn btn-secondary"
 									style={{ margin: '10px' }}
-									onClick={continueBtn}>
+									onClick={continueBtn}
+								>
 									Continue
 								</button>
 							</div>
@@ -134,13 +136,15 @@ const SelectDrug = ({ onHide, setDrug, generic }) => {
 								<button
 									className="btn btn-primary"
 									style={{ margin: '10px' }}
-									onClick={changeBtn}>
+									onClick={changeBtn}
+								>
 									Change
 								</button>
 								<button
 									className="btn btn-secondary"
 									style={{ margin: '10px' }}
-									onClick={continueBtn}>
+									onClick={continueBtn}
+								>
 									Continue
 								</button>
 							</div>
@@ -157,7 +161,8 @@ const SelectDrug = ({ onHide, setDrug, generic }) => {
 		<div
 			className="onboarding-modal fade animated show"
 			role="dialog"
-			style={{ width: '300px' }}>
+			style={{ width: '300px' }}
+		>
 			<div className="modal-centered" role="document">
 				<div className="modal-content text-center">
 					<button className="close" type="button" onClick={() => onHide()}>
@@ -194,7 +199,8 @@ const SelectDrug = ({ onHide, setDrug, generic }) => {
 												<span
 													className={`badge badge-${
 														selectedDrug.qty > 0 ? 'info' : 'danger'
-													} text-white`}>{`Stock Level: ${selectedDrug.qty}; Base Price: ₦${selectedDrug.basePrice}`}</span>
+													} text-white`}
+												>{`Stock Level: ${selectedDrug.qty}; Base Price: ₦${selectedDrug.basePrice}`}</span>
 											</div>
 										</div>
 									</div>
@@ -221,7 +227,8 @@ const SelectDrug = ({ onHide, setDrug, generic }) => {
 								<div className="col-sm-12 text-right">
 									<button
 										className="btn btn-primary"
-										onClick={() => selectDrug()}>
+										onClick={() => selectDrug()}
+									>
 										save
 									</button>
 								</div>

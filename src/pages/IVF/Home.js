@@ -26,14 +26,16 @@ const Home = ({ match, location }) => {
 									to={`${match.path}`}
 									className={`mx-2 btn btn-primary btn-sm  ${
 										page === 'ivf' ? 'btn-outline-primary' : ''
-									}`}>
+									}`}
+								>
 									Dashboard
 								</Link>
 								<Link
 									to={`${match.path}/enroll-patient`}
 									className={`mr-2 btn btn-primary btn-sm  ${
 										page === 'enroll-patient' ? 'btn-outline-primary' : ''
-									}`}>
+									}`}
+								>
 									Enroll Patient
 								</Link>
 							</div>

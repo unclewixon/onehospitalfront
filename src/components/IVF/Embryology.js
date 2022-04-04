@@ -19,7 +19,8 @@ const Embryology = () => {
 							<li className="nav-item">
 								<a
 									className={`nav-link ${tab === 'chart' ? 'active' : ''}`}
-									onClick={() => setTab('chart')}>
+									onClick={() => setTab('chart')}
+								>
 									<span className="tab-label">TREATMENT CHART</span>
 								</a>
 							</li>
@@ -28,28 +29,32 @@ const Embryology = () => {
 									className={`nav-link ${
 										tab === 'sperm-preparation' ? 'active' : ''
 									}`}
-									onClick={() => setTab('sperm-preparation')}>
+									onClick={() => setTab('sperm-preparation')}
+								>
 									<span className="tab-label">SPERM PREPARATION</span>
 								</a>
 							</li>
 							<li className="nav-item">
 								<a
 									className={`nav-link ${tab === 'icsi' ? 'active' : ''}`}
-									onClick={() => setTab('icsi')}>
+									onClick={() => setTab('icsi')}
+								>
 									<span className="tab-label">ICSI</span>
 								</a>
 							</li>
 							<li className="nav-item">
 								<a
 									className={`nav-link ${tab === 'assessment' ? 'active' : ''}`}
-									onClick={() => setTab('assessment')}>
+									onClick={() => setTab('assessment')}
+								>
 									<span className="tab-label">EMBRYO ASSESSMENT</span>
 								</a>
 							</li>
 							<li className="nav-item">
 								<a
 									className={`nav-link ${tab === 'transfer' ? 'active' : ''}`}
-									onClick={() => setTab('transfer')}>
+									onClick={() => setTab('transfer')}
+								>
 									<span className="tab-label">EMBRYO TRANSFER</span>
 								</a>
 							</li>

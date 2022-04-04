@@ -46,7 +46,7 @@ class PatientAdmission extends Component {
 		submitting: false,
 	};
 
-	doAdmitPatient =async (data) => {
+	doAdmitPatient = async data => {
 		try {
 			const { patient } = this.props;
 			this.setState({ submitting: true });
@@ -69,7 +69,7 @@ class PatientAdmission extends Component {
 				_error: e.message || 'could not start admission',
 			});
 		}
-	}
+	};
 
 	admitPatient = async data => {
 		confirmAction(

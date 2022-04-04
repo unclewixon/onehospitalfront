@@ -203,7 +203,8 @@ const Dashboard = () => {
 											<div
 												key={i}
 												onClick={() => addToCart(item)}
-												className="col-4 col-sm-4">
+												className="col-4 col-sm-4"
+											>
 												<div className="profile-tile profile-tile-inlined">
 													<a className="profile-tile-box">
 														<div>{item.name}</div>
@@ -249,7 +250,8 @@ const Dashboard = () => {
 														className="form-control"
 														name="customer"
 														onChange={changeCustomer}
-														value={customer}>
+														value={customer}
+													>
 														<option value="">Choose Customer ...</option>
 														<option value="staff">Staff</option>
 														<option value="patient">Patient</option>
@@ -266,7 +268,8 @@ const Dashboard = () => {
 														<div className="col-sm-12">
 															<div
 																className="form-group"
-																hidden={customer !== 'staff'}>
+																hidden={customer !== 'staff'}
+															>
 																<label>Staff</label>
 
 																<AsyncSelect
@@ -284,7 +287,8 @@ const Dashboard = () => {
 
 															<div
 																className="form-group"
-																hidden={customer !== 'patient'}>
+																hidden={customer !== 'patient'}
+															>
 																<label>Patient</label>
 
 																<AsyncSelect
@@ -357,7 +361,8 @@ const Dashboard = () => {
 																			val => val.id !== item.id
 																		);
 																		setCart(newVal);
-																	}}>
+																	}}
+																>
 																	<i className="os-icon os-icon-x-circle"></i>
 																</a>
 															</td>

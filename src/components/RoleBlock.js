@@ -98,7 +98,8 @@ class RoleBlock extends Component {
 															<a
 																onClick={this.openPermissionModal(role)}
 																className="secondary"
-																title="Permission Modal">
+																title="Permission Modal"
+															>
 																<i className="icon-feather-lock" />
 															</a>
 														</td>

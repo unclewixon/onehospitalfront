@@ -150,7 +150,8 @@ const AllergyRequest = ({ history, location }) => {
 										name="reaction"
 										rows="3"
 										placeholder="Enter reaction"
-										ref={register}></textarea>
+										ref={register}
+									></textarea>
 								</div>
 							</div>
 							<div className="row">

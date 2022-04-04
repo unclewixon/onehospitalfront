@@ -10,7 +10,8 @@ const ModalExcuseDuty = ({ showModal, onModalClick, staff, activeRequest }) => {
 			size="lg"
 			aria-labelledby="contained-modal-title-vcenter"
 			centered
-			onHide={onModalClick}>
+			onHide={onModalClick}
+		>
 			<Modal.Header closeButton></Modal.Header>
 			<Modal.Body>
 				<div className="onboarding-content with-gradient text-center">
@@ -22,7 +23,8 @@ const ModalExcuseDuty = ({ showModal, onModalClick, staff, activeRequest }) => {
 										className="up-head-w"
 										style={{
 											backgroundImage: require('../../assets/images/b3.jpeg'),
-										}}>
+										}}
+									>
 										<div className="up-main-info">
 											<h2 className="up-header" style={{ color: '#334152' }}>
 												{activeRequest && activeRequest?.staff

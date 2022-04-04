@@ -132,9 +132,8 @@ class LabDetail extends Component {
 									</h6>
 									{this.props.canCloseLabour && (
 										<button
-											className={
-												'mr-4 mx-2 btn btn-success btn-sm btn-primary'
-											}>
+											className={'mr-4 mx-2 btn btn-success btn-sm btn-primary'}
+										>
 											close labour
 										</button>
 									)}
@@ -220,7 +219,8 @@ class LabDetail extends Component {
 												className={
 													tab === 'measurement' ? 'nav-link active' : 'nav-link'
 												}
-												onClick={() => this.setTab('measurement')}>
+												onClick={() => this.setTab('measurement')}
+											>
 												MEASUREMENT
 											</a>
 										</li>
@@ -229,7 +229,8 @@ class LabDetail extends Component {
 												className={
 													tab === 'parto-graph' ? 'nav-link active' : 'nav-link'
 												}
-												onClick={() => this.setTab('parto-graph')}>
+												onClick={() => this.setTab('parto-graph')}
+											>
 												PARTO-GRAPH
 											</a>
 										</li>
@@ -241,7 +242,8 @@ class LabDetail extends Component {
 														? 'nav-link active'
 														: 'nav-link'
 												}
-												onClick={() => this.setTab('risk-assessment')}>
+												onClick={() => this.setTab('risk-assessment')}
+											>
 												RISK-ASSESSMENT
 											</a>
 										</li>
@@ -251,7 +253,8 @@ class LabDetail extends Component {
 												className={
 													tab === 'delivery' ? 'nav-link active' : 'nav-link'
 												}
-												onClick={() => this.setTab('delivery')}>
+												onClick={() => this.setTab('delivery')}
+											>
 												DELIVERY
 											</a>
 										</li>
@@ -262,7 +265,8 @@ class LabDetail extends Component {
 												className={
 													'mr-4 text-center mx-2 btn btn-primary btn-sm'
 												}
-												onClick={() => this.createForm()}>
+												onClick={() => this.createForm()}
+											>
 												{this.labMgtActions()}{' '}
 												<i className="os-icon os-icon-plus"></i>
 											</button>

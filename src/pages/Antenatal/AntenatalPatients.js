@@ -164,7 +164,8 @@ const AntenatalPatients = () => {
 						<div className="form-group col-md-3 mt-4">
 							<div
 								className="btn btn-sm btn-primary btn-upper text-white"
-								onClick={e => doFilter(e)}>
+								onClick={e => doFilter(e)}
+							>
 								<i className="os-icon os-icon-ui-37" />
 								<span>
 									{filtering ? (
@@ -203,10 +204,12 @@ const AntenatalPatients = () => {
 												<td>
 													<p className="item-title text-color m-0">
 														<Tooltip
-															title={<ProfilePopup patient={item.patient} />}>
+															title={<ProfilePopup patient={item.patient} />}
+														>
 															<a
 																className="cursor"
-																onClick={() => showProfile(item.patient)}>
+																onClick={() => showProfile(item.patient)}
+															>
 																{patientname(item.patient, true)}
 															</a>
 														</Tooltip>
@@ -226,7 +229,8 @@ const AntenatalPatients = () => {
 												<td className="row-actions">
 													<Tooltip title="Open Antenatal">
 														<a
-															onClick={() => openAntenatal(item.patient, item)}>
+															onClick={() => openAntenatal(item.patient, item)}
+														>
 															<i className="os-icon os-icon-user-male-circle2" />
 														</a>
 													</Tooltip>

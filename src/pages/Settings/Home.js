@@ -34,7 +34,8 @@ const Home = ({ match, location }) => {
 					<div className="aem-head">
 						<a
 							className="ae-side-menu-toggler"
-							onClick={() => setToggle(!toggle)}>
+							onClick={() => setToggle(!toggle)}
+						>
 							<i className="os-icon os-icon-hamburger-menu-2" />
 						</a>
 					</div>

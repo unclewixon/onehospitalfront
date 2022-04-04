@@ -26,7 +26,8 @@ const InPatientCare = ({ location, match }) => {
 									className={`nav-link ${
 										activePage === 'admitted' ? 'active' : ''
 									}`}
-									to="/nurse/in-patients/admitted">
+									to="/nurse/in-patients/admitted"
+								>
 									Admitted Patients
 								</Link>
 							</li>
@@ -35,7 +36,8 @@ const InPatientCare = ({ location, match }) => {
 									className={`nav-link ${
 										activePage === 'discharged' ? 'active' : ''
 									}`}
-									to="/nurse/in-patients/discharged">
+									to="/nurse/in-patients/discharged"
+								>
 									Dicharged
 								</Link>
 							</li>

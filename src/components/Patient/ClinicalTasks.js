@@ -156,13 +156,15 @@ const ClinicalTasks = ({ itemId, type, can_request = true }) => {
 									<button
 										className="btn btn-danger"
 										style={{ margin: '10px' }}
-										onClick={onClose}>
+										onClick={onClose}
+									>
 										No
 									</button>
 									<button
 										className="btn btn-primary"
 										style={{ margin: '10px' }}
-										onClick={onclick}>
+										onClick={onclick}
+									>
 										Yes
 									</button>
 								</div>
@@ -188,7 +190,8 @@ const ClinicalTasks = ({ itemId, type, can_request = true }) => {
 					{can_request && (
 						<a
 							className="btn btn-sm btn-secondary text-white ml-3"
-							onClick={() => createTask()}>
+							onClick={() => createTask()}
+						>
 							Create Task
 						</a>
 					)}
@@ -271,21 +274,24 @@ const ClinicalTasks = ({ itemId, type, can_request = true }) => {
 														{item.taskType === 'vitals' && (
 															<a
 																className="btn btn-primary btn-sm text-white text-uppercase"
-																onClick={() => takeReading(item)}>
+																onClick={() => takeReading(item)}
+															>
 																Take Reading
 															</a>
 														)}
 														{item.taskType === 'fluid' && (
 															<a
 																className="btn btn-primary btn-sm text-white text-uppercase"
-																onClick={() => recordFluid(item)}>
+																onClick={() => recordFluid(item)}
+															>
 																Take Reading
 															</a>
 														)}
 														{item.taskType === 'regimen' && (
 															<a
 																className="btn btn-primary btn-sm text-white text-uppercase"
-																onClick={() => recordMedication(item)}>
+																onClick={() => recordMedication(item)}
+															>
 																Take Reading
 															</a>
 														)}
@@ -296,7 +302,8 @@ const ClinicalTasks = ({ itemId, type, can_request = true }) => {
 												<Tooltip title="Cancel Clinical Task">
 													<a
 														className="danger"
-														onClick={e => confirmDelete(e, item)}>
+														onClick={e => confirmDelete(e, item)}
+													>
 														<i className="os-icon os-icon-ui-15"></i>
 													</a>
 												</Tooltip>

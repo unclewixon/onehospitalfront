@@ -115,7 +115,8 @@ const Requisitions = () => {
 					<div className="element-actions">
 						<a
 							className="btn btn-primary btn-sm text-white"
-							onClick={() => makeRequest()}>
+							onClick={() => makeRequest()}
+						>
 							<i className="os-icon os-icon-ui-22" />
 							<span>Make Requisition</span>
 						</a>
@@ -185,14 +186,16 @@ const Requisitions = () => {
 																		<Tooltip title="Edit Request">
 																			<a
 																				className="info"
-																				onClick={() => edit(item)}>
+																				onClick={() => edit(item)}
+																			>
 																				<i className="os-icon os-icon-ui-49" />
 																			</a>
 																		</Tooltip>
 																		<Tooltip title="Cancel Request">
 																			<a
 																				className="danger"
-																				onClick={() => cancel(item)}>
+																				onClick={() => cancel(item)}
+																			>
 																				<i className="os-icon os-icon-ui-15" />
 																			</a>
 																		</Tooltip>

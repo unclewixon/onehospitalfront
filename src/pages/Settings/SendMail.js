@@ -129,7 +129,8 @@ const SendMail = () => {
 											<button
 												className="btn btn-primary"
 												disabled={submitting}
-												tyoe="subit">
+												tyoe="subit"
+											>
 												{submitting ? (
 													<img src={waiting} alt="submitting" />
 												) : (

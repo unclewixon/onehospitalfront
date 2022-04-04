@@ -22,14 +22,16 @@ export class ModalStaffAppraisal extends Component {
 			<div
 				className="onboarding-modal modal fade animated show"
 				role="dialog"
-				style={{ display: 'block' }}>
+				style={{ display: 'block' }}
+			>
 				<div className="modal-dialog modal-lg modal-centered" role="document">
 					<div className="modal-content text-center">
 						<button
 							aria-label="Close"
 							className="close"
 							type="button"
-							onClick={() => this.props.closeModals(false)}>
+							onClick={() => this.props.closeModals(false)}
+						>
 							<span aria-hidden="true"> ×</span>
 						</button>
 

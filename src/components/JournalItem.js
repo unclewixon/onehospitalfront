@@ -19,7 +19,8 @@ class JournalItem extends Component {
 							className=""
 							onClick={() => {
 								edit(item);
-							}}>
+							}}
+						>
 							<i className="os-icon os-icon-edit-32"></i>
 						</a>
 					</Tooltip>

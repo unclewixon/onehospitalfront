@@ -148,7 +148,8 @@ export class Voucher extends Component {
 				<div className="element-actions">
 					<a
 						onClick={this.createVoucher}
-						className="btn btn-primary btn-sm filled-request">
+						className="btn btn-primary btn-sm filled-request"
+					>
 						New Voucher
 					</a>
 				</div>
@@ -180,7 +181,8 @@ export class Voucher extends Component {
 						<div className="form-group col-md-3 mt-4">
 							<div
 								className="btn btn-sm btn-primary btn-upper text-white"
-								onClick={this.doFilter}>
+								onClick={this.doFilter}
+							>
 								<i className="os-icon os-icon-ui-37" />
 								<span>
 									{filtering ? (
@@ -257,7 +259,8 @@ export class Voucher extends Component {
 														<Tooltip title="Cancel  Voucher">
 															<a
 																className="danger"
-																onClick={() => this.confirmDelete(voucher)}>
+																onClick={() => this.confirmDelete(voucher)}
+															>
 																<i className="os-icon os-icon-ui-15" />
 															</a>
 														</Tooltip>

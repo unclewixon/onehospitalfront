@@ -79,7 +79,8 @@ const RadiologyRequest = ({
 								className={`badge badge-${
 									scan ? 'info' : 'danger'
 								} text-white ml-2`}
-								key={i}>{`${scan.name}: ${formatCurrency(
+								key={i}
+							>{`${scan.name}: ${formatCurrency(
 								scan?.serviceCost?.tariff || 0
 							)}`}</span>
 						))}

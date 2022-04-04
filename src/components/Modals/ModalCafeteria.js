@@ -9,7 +9,8 @@ const ModalCafetaria = ({ showModal, onModalClick, activeRequest, total }) => {
 			size="md"
 			aria-labelledby="contained-modal-title-vcenter"
 			centered
-			onHide={onModalClick}>
+			onHide={onModalClick}
+		>
 			<Modal.Header closeButton style={{ borderBottom: 'none' }}>
 				Cart Details
 			</Modal.Header>
@@ -23,7 +24,8 @@ const ModalCafetaria = ({ showModal, onModalClick, activeRequest, total }) => {
 										className="text-left"
 										style={{
 											padding: '5px 0px',
-										}}>
+										}}
+									>
 										{request.title}
 									</td>
 
@@ -33,7 +35,8 @@ const ModalCafetaria = ({ showModal, onModalClick, activeRequest, total }) => {
 											textAlign: 'right',
 											borderTop: 'none',
 											padding: '5px 0px 5px 40px',
-										}}>
+										}}
+									>
 										{request.price}
 									</td>
 								</tr>
@@ -47,7 +50,8 @@ const ModalCafetaria = ({ showModal, onModalClick, activeRequest, total }) => {
 							<td
 								style={{
 									padding: '5px 0px',
-								}}>
+								}}
+							>
 								Total:
 							</td>
 							<td
@@ -55,7 +59,8 @@ const ModalCafetaria = ({ showModal, onModalClick, activeRequest, total }) => {
 									textAlign: 'right',
 
 									padding: '5px 0px 5px 40px',
-								}}>
+								}}
+							>
 								{total}
 							</td>
 						</tr>

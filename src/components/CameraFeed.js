@@ -52,7 +52,8 @@ export class CameraFeed extends Component {
 		return (
 			<div className="c-camera-feed">
 				<div
-					className={`c-camera-feed__viewer ${pictureTaken ? 'hidden' : ''}`}>
+					className={`c-camera-feed__viewer ${pictureTaken ? 'hidden' : ''}`}
+				>
 					<video
 						ref={ref => (this.videoPlayer = ref)}
 						width="200"
@@ -60,13 +61,15 @@ export class CameraFeed extends Component {
 					/>
 				</div>
 				<div
-					className={`c-camera-feed__stage ${!pictureTaken ? 'hidden' : ''}`}>
+					className={`c-camera-feed__stage ${!pictureTaken ? 'hidden' : ''}`}
+				>
 					<canvas width="200" height="150" ref={ref => (this.canvas = ref)} />
 				</div>
 				{pictureTaken ? (
 					<button
 						onClick={e => this.setState({ pictureTaken: false })}
-						className="btn btn-secondary mr-2">
+						className="btn btn-secondary mr-2"
+					>
 						Cancel
 					</button>
 				) : (

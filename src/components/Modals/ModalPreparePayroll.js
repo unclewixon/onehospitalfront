@@ -132,14 +132,16 @@ class ModalPreparePayroll extends Component {
 			<div
 				className="onboarding-modal modal fade animated show"
 				role="dialog"
-				style={{ display: 'block' }}>
+				style={{ display: 'block' }}
+			>
 				<div className="modal-dialog modal-lg modal-centered" role="document">
 					<div className="modal-content text-center">
 						<button
 							aria-label="Close"
 							className="close"
 							type="button"
-							onClick={closeModal}>
+							onClick={closeModal}
+						>
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
@@ -151,7 +153,8 @@ class ModalPreparePayroll extends Component {
 										className="form-control mb-2 mr-sm-4 mb-sm-0"
 										onChange={e => this.onChange(e, 'month')}
 										value={month}
-										placeholder="Select Month">
+										placeholder="Select Month"
+									>
 										{months.map((month, i) => {
 											return (
 												<option key={i} value={padLeft(i + 1, 2, '0')}>
@@ -165,7 +168,8 @@ class ModalPreparePayroll extends Component {
 										className="form-control mb-2 mr-sm-4 mb-sm-0"
 										onChange={e => this.onChange(e, 'year')}
 										value={year}
-										placeholder="Select Year">
+										placeholder="Select Year"
+									>
 										{years.map((year, i) => {
 											return (
 												<option key={i} value={year}>
@@ -176,7 +180,8 @@ class ModalPreparePayroll extends Component {
 									</select>
 									<button
 										className="btn btn-secondary btn-sm ml-4"
-										type="submit">
+										type="submit"
+									>
 										{generating ? (
 											<img src={waiting} alt="submitting" />
 										) : (
@@ -186,7 +191,8 @@ class ModalPreparePayroll extends Component {
 									{staffs.length > 0 && (
 										<a
 											className="btn btn-primary btn-sm ml-4 text-white"
-											onClick={this.payStaff}>
+											onClick={this.payStaff}
+										>
 											<i className="os-icon os-icon-checkmark" />
 											<span>Pay Staff</span>
 										</a>

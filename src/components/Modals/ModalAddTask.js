@@ -18,7 +18,8 @@ class ModalAddTask extends Component {
 			<div
 				className="onboarding-modal modal fade animated show"
 				role="dialog"
-				style={{ display: 'block' }}>
+				style={{ display: 'block' }}
+			>
 				<div className="modal-dialog modal-centered" role="document">
 					<div className="modal-content text-center">
 						<div className="modal-header faded smaller">
@@ -36,7 +37,8 @@ class ModalAddTask extends Component {
 								aria-label="Close"
 								className="close"
 								type="button"
-								onClick={() => this.props.closeModals(false)}>
+								onClick={() => this.props.closeModals(false)}
+							>
 								<span aria-hidden="true"> ×</span>
 							</button>
 						</div>
@@ -116,7 +118,8 @@ class ModalAddTask extends Component {
 								<button
 									className="btn btn-link"
 									type="button"
-									onClick={() => this.props.closeModals(false)}>
+									onClick={() => this.props.closeModals(false)}
+								>
 									Cancel
 								</button>
 							</div>

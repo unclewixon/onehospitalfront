@@ -188,7 +188,8 @@ const CafeteriaTransaction = ({
 							/>
 							<button
 								className="btn btn-warning ml-1"
-								onClick={e => resetCounter(e)}>
+								onClick={e => resetCounter(e)}
+							>
 								<span> Reset</span>
 							</button>
 						</div>

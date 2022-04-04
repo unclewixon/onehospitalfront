@@ -145,13 +145,15 @@ const ClinicalTasks = () => {
 									<button
 										className="btn btn-danger"
 										style={{ margin: '10px' }}
-										onClick={onClose}>
+										onClick={onClose}
+									>
 										No
 									</button>
 									<button
 										className="btn btn-primary"
 										style={{ margin: '10px' }}
-										onClick={onclick}>
+										onClick={onclick}
+									>
 										Yes
 									</button>
 								</div>
@@ -204,13 +206,15 @@ const ClinicalTasks = () => {
 											</a>{' '}
 											{item.admission && (
 												<Tooltip
-													title={<Admitted room={item?.admission?.room} />}>
+													title={<Admitted room={item?.admission?.room} />}
+												>
 													<i className="fa fa-hospital-o text-danger" />
 												</Tooltip>
 											)}
 											{item.patient.nicu_id && (
 												<Tooltip
-													title={<NicuAdmitted room={item?.nicu?.room} />}>
+													title={<NicuAdmitted room={item?.nicu?.room} />}
+												>
 													<i className="fa fa-hospital-o text-danger" />
 												</Tooltip>
 											)}
@@ -267,21 +271,24 @@ const ClinicalTasks = () => {
 													{item.taskType === 'vitals' && (
 														<a
 															className="btn btn-primary btn-sm text-white text-uppercase"
-															onClick={() => takeReading(item)}>
+															onClick={() => takeReading(item)}
+														>
 															Take Reading
 														</a>
 													)}
 													{item.taskType === 'fluid' && (
 														<a
 															className="btn btn-primary btn-sm text-white text-uppercase"
-															onClick={() => recordFluid(item)}>
+															onClick={() => recordFluid(item)}
+														>
 															Take Reading
 														</a>
 													)}
 													{item.taskType === 'regimen' && (
 														<a
 															className="btn btn-primary btn-sm text-white text-uppercase"
-															onClick={() => recordMedication(item)}>
+															onClick={() => recordMedication(item)}
+														>
 															Take Reading
 														</a>
 													)}
@@ -293,7 +300,8 @@ const ClinicalTasks = () => {
 												<Tooltip title="Cancel Clinical Task">
 													<a
 														className="danger"
-														onClick={e => confirmDelete(e, item)}>
+														onClick={e => confirmDelete(e, item)}
+													>
 														<i className="os-icon os-icon-ui-15"></i>
 													</a>
 												</Tooltip>

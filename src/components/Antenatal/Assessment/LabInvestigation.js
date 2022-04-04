@@ -129,7 +129,8 @@ const LabInvestigation = ({
 								className={`badge badge-${
 									lab ? 'info' : 'danger'
 								} text-white ml-2`}
-								key={i}>{`${lab.name}: ${formatCurrency(
+								key={i}
+							>{`${lab.name}: ${formatCurrency(
 								lab?.service?.tariff || 0
 							)}`}</span>
 						))}

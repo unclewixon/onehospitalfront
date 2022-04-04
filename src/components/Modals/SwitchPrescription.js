@@ -135,13 +135,15 @@ const SwitchPrescription = ({ closeModal, prescriptionId, itemId, update }) => {
 								<button
 									className="btn btn-primary"
 									style={{ margin: '10px' }}
-									onClick={changeBtn}>
+									onClick={changeBtn}
+								>
 									Change
 								</button>
 								<button
 									className="btn btn-secondary"
 									style={{ margin: '10px' }}
-									onClick={continueBtn}>
+									onClick={continueBtn}
+								>
 									Continue
 								</button>
 							</div>
@@ -178,13 +180,15 @@ const SwitchPrescription = ({ closeModal, prescriptionId, itemId, update }) => {
 								<button
 									className="btn btn-primary"
 									style={{ margin: '10px' }}
-									onClick={changeBtn}>
+									onClick={changeBtn}
+								>
 									Change
 								</button>
 								<button
 									className="btn btn-secondary"
 									style={{ margin: '10px' }}
-									onClick={continueBtn}>
+									onClick={continueBtn}
+								>
 									Continue
 								</button>
 							</div>
@@ -201,16 +205,19 @@ const SwitchPrescription = ({ closeModal, prescriptionId, itemId, update }) => {
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div
 				className="modal-dialog modal-centered"
-				style={{ maxWidth: '760px' }}>
+				style={{ maxWidth: '760px' }}
+			>
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={() => closeModal()}>
+						onClick={() => closeModal()}
+					>
 						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -241,7 +248,8 @@ const SwitchPrescription = ({ closeModal, prescriptionId, itemId, update }) => {
 														<span
 															className={`badge badge-${
 																selectedDrug.qty > 0 ? 'info' : 'danger'
-															} text-white`}>{`Stock Level: ${selectedDrug.qty}; Base Price: ₦${selectedDrug.basePrice}`}</span>
+															} text-white`}
+														>{`Stock Level: ${selectedDrug.qty}; Base Price: ₦${selectedDrug.basePrice}`}</span>
 													</div>
 												</div>
 											</div>
@@ -328,8 +336,9 @@ const SwitchPrescription = ({ closeModal, prescriptionId, itemId, update }) => {
 										<input
 											type="number"
 											className="form-control"
-											placeholder={`(value in ${frequencyType?.value ||
-												'daily'}) eg: 3`}
+											placeholder={`(value in ${
+												frequencyType?.value || 'daily'
+											}) eg: 3`}
 											ref={register({ required: true })}
 											name="duration"
 											onChange={onHandleInputChange}
@@ -340,7 +349,8 @@ const SwitchPrescription = ({ closeModal, prescriptionId, itemId, update }) => {
 									<div className="col-md-12 relative">
 										<button
 											disabled={submitting}
-											className="btn btn-primary mt-4">
+											className="btn btn-primary mt-4"
+										>
 											{submitting ? (
 												<img src={waiting} alt="submitting" />
 											) : (

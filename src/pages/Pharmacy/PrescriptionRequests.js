@@ -36,7 +36,12 @@ class PrescriptionRequests extends Component {
 			const url = `requests/prescriptions?startDate=${start}&endDate=${end}&limit=10&page=${page}&status=${status}&patient_id=${patient_id}`;
 			const rs = await request(url, 'GET', true);
 			const { result, ...meta } = rs;
-			this.setState({ loading: false, prescriptions: result, meta, filtering: false });
+			this.setState({
+				loading: false,
+				prescriptions: result,
+				meta,
+				filtering: false,
+			});
 		} catch (e) {
 			this.setState({ loading: false });
 			notifyError('could not fetch prescription requests');
@@ -114,7 +119,8 @@ class PrescriptionRequests extends Component {
 							<select
 								className="form-control"
 								onChange={e => this.setState({ status: e.target.value })}
-								style={{ ...customStyle }}>
+								style={{ ...customStyle }}
+							>
 								<option value="">All</option>
 								<option value="Open">Open</option>
 								<option value="Filled">Filled</option>
@@ -124,7 +130,8 @@ class PrescriptionRequests extends Component {
 						<div className="form-group col-md-3 mt-4">
 							<a
 								className="btn btn-sm btn-primary btn-upper text-white"
-								onClick={() => this.filterEntries()}>
+								onClick={() => this.filterEntries()}
+							>
 								<i className="os-icon os-icon-ui-37" />
 								<span>
 									{filtering ? (

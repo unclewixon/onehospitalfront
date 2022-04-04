@@ -14,12 +14,8 @@ class ModalCurrentPayroll extends Component {
 	componentDidMount() {
 		document.body.classList.add('modal-open');
 		this.setState({ fetching: true });
-		const {
-			payrolls,
-			history_payrolls,
-			payroll_id,
-			payroll_staff,
-		} = this.props;
+		const { payrolls, history_payrolls, payroll_id, payroll_staff } =
+			this.props;
 		const _payrolls = payroll_staff ? history_payrolls : payrolls;
 		const payroll = _payrolls.find(p => p.id === payroll_id);
 		this.setState({ payroll, fetching: false });
@@ -37,14 +33,16 @@ class ModalCurrentPayroll extends Component {
 				<div
 					className="onboarding-modal modal fade animated show"
 					role="dialog"
-					style={{ display: 'block' }}>
+					style={{ display: 'block' }}
+				>
 					<div className="modal-dialog modal-centered" role="document">
 						<div className="modal-content text-center">
 							<button
 								aria-label="Close"
 								className="close"
 								type="button"
-								onClick={() => this.props.closeCurrentPayRoll(is_modal)}>
+								onClick={() => this.props.closeCurrentPayRoll(is_modal)}
+							>
 								<span className="os-icon os-icon-close"></span>
 							</button>
 							{payroll && (

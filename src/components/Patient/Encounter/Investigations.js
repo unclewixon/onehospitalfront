@@ -291,7 +291,8 @@ const Investigations = ({ patient, previous, next }) => {
 								className={`badge badge-${
 									lab ? 'info' : 'danger'
 								} text-white ml-2`}
-								key={i}>{`${lab.name}: ${formatCurrency(
+								key={i}
+							>{`${lab.name}: ${formatCurrency(
 								lab?.service?.tariff || 0
 							)}`}</span>
 						))}
@@ -308,7 +309,8 @@ const Investigations = ({ patient, previous, next }) => {
 							onChange={e => {
 								onDispatchLab(selectedTests, { note: e.target.value });
 							}}
-							ref={register}></textarea>
+							ref={register}
+						></textarea>
 					</div>
 				</div>
 				<div className="row">
@@ -360,7 +362,8 @@ const Investigations = ({ patient, previous, next }) => {
 								className={`badge badge-${
 									scan ? 'info' : 'danger'
 								} text-white ml-2`}
-								key={i}>{`${scan.name}: ${formatCurrency(
+								key={i}
+							>{`${scan.name}: ${formatCurrency(
 								scan?.serviceCost?.tariff || 0
 							)}`}</span>
 						))}
@@ -377,7 +380,8 @@ const Investigations = ({ patient, previous, next }) => {
 							onChange={e => {
 								onDispatchScan(selectedScans, { note: e.target.value });
 							}}
-							ref={register}></textarea>
+							ref={register}
+						></textarea>
 					</div>
 				</div>
 				<div className="row">

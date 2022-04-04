@@ -106,14 +106,16 @@ class ModalEditPayroll extends Component {
 				<div
 					className="onboarding-modal modal fade animated show"
 					role="dialog"
-					style={{ display: 'block' }}>
+					style={{ display: 'block' }}
+				>
 					<div className="modal-dialog modal-centered" role="document">
 						<div className="modal-content text-center">
 							<button
 								aria-label="Close"
 								className="close"
 								type="button"
-								onClick={() => this.props.closeEditPayRoll(is_modal)}>
+								onClick={() => this.props.closeEditPayRoll(is_modal)}
+							>
 								<span className="os-icon os-icon-close"></span>
 							</button>
 							{payroll ? (
@@ -238,7 +240,8 @@ class ModalEditPayroll extends Component {
 																					<a
 																						className="text-danger"
 																						onClick={this.removeDeduction(d.id)}
-																						style={{ lineHeight: '37px' }}>
+																						style={{ lineHeight: '37px' }}
+																					>
 																						<i className="os-icon os-icon-cancel-circle" />
 																					</a>
 																				</div>
@@ -253,7 +256,8 @@ class ModalEditPayroll extends Component {
 																<div className="text-right mt-2">
 																	<a
 																		className="btn btn-success btn-sm text-white"
-																		onClick={this.addDeduction}>
+																		onClick={this.addDeduction}
+																	>
 																		<i className="os-icon os-icon-plus-circle" />
 																		<span>Add Deduction</span>
 																	</a>
@@ -278,7 +282,8 @@ class ModalEditPayroll extends Component {
 													{new_deductions.length > 0 && (
 														<button
 															className="btn btn-primary"
-															onClick={this.saveDeductions}>
+															onClick={this.saveDeductions}
+														>
 															{saving ? (
 																<img src={waiting} alt="submitting" />
 															) : (
@@ -290,7 +295,8 @@ class ModalEditPayroll extends Component {
 														className="btn btn-secondary ml-3"
 														onClick={() =>
 															this.props.closeEditPayRoll(is_modal)
-														}>
+														}
+													>
 														Close
 													</button>
 												</div>

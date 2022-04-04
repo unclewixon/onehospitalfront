@@ -127,14 +127,16 @@ const VitalsQueue = () => {
 														className="btn btn-primary btn-sm ml-2"
 														onClick={() =>
 															showProfile(queue.appointment.patient)
-														}>
+														}
+													>
 														<i className="os-icon os-icon-user" />
 													</a>
 												</Tooltip>
 												<Tooltip title="Send To Doctor">
 													<a
 														className="btn btn-primary btn-sm ml-2"
-														onClick={() => sendToDoctor(queue)}>
+														onClick={() => sendToDoctor(queue)}
+													>
 														<i className="os-icon os-icon-mail-18" />
 													</a>
 												</Tooltip>

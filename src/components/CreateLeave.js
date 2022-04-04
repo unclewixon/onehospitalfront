@@ -45,9 +45,7 @@ const CreateLeave = ({ history }) => {
 		const duration = catObj && catObj.duration ? parseInt(catObj.duration) : 0;
 		const start = date === '' ? new Date() : date;
 		const startDate = moment(start).format('YYYY-MM-DD');
-		const newDate = moment(start)
-			.add(duration, 'days')
-			.format('YYYY-MM-DD');
+		const newDate = moment(start).add(duration, 'days').format('YYYY-MM-DD');
 		setDate(start);
 		setLeaveDate(startDate);
 		setEndDate(newDate);
@@ -163,7 +161,8 @@ const CreateLeave = ({ history }) => {
 										<button
 											className="btn btn-primary"
 											disabled={submitting}
-											type="submit">
+											type="submit"
+										>
 											{submitting ? (
 												<img src={waiting} alt="submitting" />
 											) : (

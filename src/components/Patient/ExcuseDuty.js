@@ -69,7 +69,8 @@ const ExcuseDuty = ({ location }) => {
 				<div className="element-actions">
 					<Link
 						className="btn btn-primary btn-sm"
-						to={`${location.pathname}#new-excuse-duty`}>
+						to={`${location.pathname}#new-excuse-duty`}
+					>
 						<i className="os-icon os-icon-plus" />
 						New Excuse Duty
 					</Link>
@@ -113,17 +114,20 @@ const ExcuseDuty = ({ location }) => {
 																'DD-MMM-YYYY'
 															)} (${`${countDate(item)}`}days)`}</td>
 															<td>
-																{item.diagnosis.map(
-																	d =>
-																		`${d.diagnosis?.type} (${d.diagnosis?.code}): ${d.diagnosis?.description}`
-																).join(', ')}
+																{item.diagnosis
+																	.map(
+																		d =>
+																			`${d.diagnosis?.type} (${d.diagnosis?.code}): ${d.diagnosis?.description}`
+																	)
+																	.join(', ')}
 															</td>
 															<td>{staffname(item.staff)}</td>
 															<td className="row-actions">
 																<Tooltip title="Print Excuse Duty">
 																	<a
 																		className="ml-2"
-																		onClick={() => doPrint(item)}>
+																		onClick={() => doPrint(item)}
+																	>
 																		<i className="icon-feather-printer" />
 																	</a>
 																</Tooltip>

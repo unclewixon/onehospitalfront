@@ -15,7 +15,9 @@ class NotificationService {
 			if (message) {
 				switch (type) {
 					case AlertTypes.success:
-						notifications.next(() => toast.success(message, this.configuration));
+						notifications.next(() =>
+							toast.success(message, this.configuration)
+						);
 						break;
 					case AlertTypes.info:
 						notifications.next(() => toast.info(message, this.configuration));
@@ -28,7 +30,9 @@ class NotificationService {
 						break;
 					case AlertTypes.custom:
 					default:
-						notifications.next(() => toast(message, { ...this.configuration, ...options }));
+						notifications.next(() =>
+							toast(message, { ...this.configuration, ...options })
+						);
 						break;
 				}
 			}

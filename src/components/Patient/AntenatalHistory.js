@@ -98,7 +98,8 @@ class AntenatalHistory extends Component {
 						<div className="form-group col-md-2">
 							<div
 								className="btn btn-sm btn-primary btn-upper text-white filter-btn"
-								onClick={this.doFilter}>
+								onClick={this.doFilter}
+							>
 								<i className="os-icon os-icon-ui-37" />
 								<span>
 									{filtering ? (
@@ -151,7 +152,8 @@ class AntenatalHistory extends Component {
 																<a
 																	onClick={() =>
 																		this.openAntenatal(item.patient, item)
-																	}>
+																	}
+																>
 																	<i className="os-icon os-icon-user-male-circle2" />
 																</a>
 															</Tooltip>

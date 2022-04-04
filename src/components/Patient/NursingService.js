@@ -75,7 +75,8 @@ const NursingService = ({ itemId, module, can_request }) => {
 					{can_request && (
 						<a
 							className="btn btn-sm btn-secondary text-white"
-							onClick={() => newRequest()}>
+							onClick={() => newRequest()}
+						>
 							Add a Nursing Service
 						</a>
 					)}

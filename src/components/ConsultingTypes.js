@@ -39,8 +39,9 @@ const ConsultingTypes = ({ hmo, toggle, doToggle, category }) => {
 		async (page, q, category) => {
 			try {
 				const p = page || 1;
-				const url = `services?page=${p}&limit=10&q=${q ||
-					''}&category_id=${category || ''}&hmo_id=${hmo.id}`;
+				const url = `services?page=${p}&limit=10&q=${q || ''}&category_id=${
+					category || ''
+				}&hmo_id=${hmo.id}`;
 				const rs = await request(url, 'GET', true);
 				const { result, ...meta } = rs;
 				dispatch(loadServices({ hmo, result: [...result] }));
@@ -122,7 +123,8 @@ const ConsultingTypes = ({ hmo, toggle, doToggle, category }) => {
 						});
 						doToggle(hmo.id);
 						setLoaded(false);
-					}}>
+					}}
+				>
 					<i className={`os-icon os-icon-${toggle ? 'minus' : 'common-03'}`} />
 				</div>
 				<h6 className="filter-header">{hmo.name}</h6>
@@ -131,7 +133,8 @@ const ConsultingTypes = ({ hmo, toggle, doToggle, category }) => {
 				) : (
 					<div
 						className="filter-body"
-						style={{ display: toggle ? 'block' : 'none' }}>
+						style={{ display: toggle ? 'block' : 'none' }}
+					>
 						<div className="row">
 							<div className="col-lg-12">
 								<div className="element-search">
@@ -189,7 +192,8 @@ const ConsultingTypes = ({ hmo, toggle, doToggle, category }) => {
 														<td colSpan="4" className="text-center">
 															<div
 																className="alert alert-info text-center"
-																style={{ width: '100%' }}>
+																style={{ width: '100%' }}
+															>
 																No services found!
 															</div>
 														</td>

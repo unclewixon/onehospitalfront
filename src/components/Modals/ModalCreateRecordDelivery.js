@@ -130,14 +130,16 @@ class ModalCreateRecordDelivery extends Component {
 			<div
 				className="onboarding-modal modal fade animated show"
 				role="dialog"
-				style={{ display: 'block' }}>
+				style={{ display: 'block' }}
+			>
 				<div className="modal-dialog modal-lg modal-centered" role="document">
 					<div className="modal-content text-center">
 						<button
 							aria-label="Close"
 							className="close"
 							type="button"
-							onClick={() => this.props.closeModals(false)}>
+							onClick={() => this.props.closeModals(false)}
+						>
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
@@ -568,10 +570,12 @@ class ModalCreateRecordDelivery extends Component {
 																<div
 																	style={{ display: 'flex' }}
 																	key={pat.id}
-																	className="element-box">
+																	className="element-box"
+																>
 																	<a
 																		onClick={() => this.patientSet(pat)}
-																		className="ssg-item cursor">
+																		className="ssg-item cursor"
+																	>
 																		{/* <div className="item-name" dangerouslySetInnerHTML={{__html: `${p.folderNumber} - ${ps.length === 1 ? p.id : `${p[0]}${compiled({'emrid': search})}${p[1]}`}`}}/> */}
 																		<div
 																			className="item-name"
@@ -638,7 +642,8 @@ class ModalCreateRecordDelivery extends Component {
 													<button
 														className="btn btn-primary"
 														disabled={submitting}
-														type="submit">
+														type="submit"
+													>
 														{submitting ? (
 															<img src={waiting} alt="submitting" />
 														) : (
@@ -649,7 +654,8 @@ class ModalCreateRecordDelivery extends Component {
 													<button
 														className="btn btn-primary ml-2"
 														onClick={() => this.props.closeModals(false)}
-														type="button">
+														type="button"
+													>
 														Cancel
 													</button>
 												</div>

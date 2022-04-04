@@ -126,7 +126,8 @@ class StaffAppraisal extends Component {
 																	className="secondary"
 																	onClick={() => {
 																		this.createAppraisal(el);
-																	}}>
+																	}}
+																>
 																	<i className="os-icon os-icon-folder-plus" />
 																</a>
 															</Tooltip>
@@ -134,7 +135,8 @@ class StaffAppraisal extends Component {
 															<Tooltip title="View Appraisal">
 																<a
 																	className=""
-																	onClick={e => this.doViewAppraisal(e, el)}>
+																	onClick={e => this.doViewAppraisal(e, el)}
+																>
 																	<i className="os-icon os-icon-documents-03"></i>
 																</a>
 															</Tooltip>
@@ -144,7 +146,8 @@ class StaffAppraisal extends Component {
 																	className="secondary"
 																	onClick={() => {
 																		this.appraiseStaff(el);
-																	}}>
+																	}}
+																>
 																	<i className="os-icon os-icon-edit-32" />
 																</a>
 															</Tooltip>

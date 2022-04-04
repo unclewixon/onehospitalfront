@@ -43,21 +43,24 @@ class InvSubCategoryItem extends Component {
 					<a
 						onClick={editSubCategory(item, true)}
 						className="secondary"
-						title="Edit Inventory Category">
+						title="Edit Inventory Category"
+					>
 						<i className="os-icon os-icon-edit-32" />
 					</a>
 					{item.isActive ? (
 						<a
 							onClick={this.disableCategory}
 							className="danger"
-							title="Disable Category">
+							title="Disable Category"
+						>
 							<i className="os-icon os-icon-x-circle" />
 						</a>
 					) : (
 						<a
 							onClick={this.enableCategory}
 							className="success"
-							title="Enable Category">
+							title="Enable Category"
+						>
 							<i className="os-icon os-icon-check-circle" />
 						</a>
 					)}

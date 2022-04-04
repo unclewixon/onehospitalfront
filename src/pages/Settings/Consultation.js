@@ -93,7 +93,8 @@ const Consultation = () => {
 								<div className="col-lg-12">
 									<div
 										className="rentals-list-w"
-										style={{ flexDirection: 'column' }}>
+										style={{ flexDirection: 'column' }}
+									>
 										{schemes.map((hmo, i) => {
 											const toggle = toggled.find(t => t.id === hmo.id);
 											return (

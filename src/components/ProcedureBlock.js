@@ -182,7 +182,8 @@ class ProcedureBlock extends Component {
 												className="cursor"
 												onClick={() =>
 													this.showProcedure(data.patient, data.item)
-												}>
+												}
+											>
 												{data.item.service.item.name}
 											</a>
 										</p>
@@ -191,22 +192,26 @@ class ProcedureBlock extends Component {
 										<td>
 											<p className="item-title text-color m-0">
 												<Tooltip
-													title={<ProfilePopup patient={data.patient} />}>
+													title={<ProfilePopup patient={data.patient} />}
+												>
 													<a
 														className="cursor"
-														onClick={() => this.showProfile(data.patient)}>
+														onClick={() => this.showProfile(data.patient)}
+													>
 														{patientname(data.patient, true)}
 													</a>
 												</Tooltip>
 												{data.admission && (
 													<Tooltip
-														title={<Admitted room={data?.admission?.room} />}>
+														title={<Admitted room={data?.admission?.room} />}
+													>
 														<i className="fa fa-hospital-o text-danger ml-1" />
 													</Tooltip>
 												)}
 												{data.patient.nicu_id && (
 													<Tooltip
-														title={<Admitted room={data?.admission?.room} />}>
+														title={<Admitted room={data?.admission?.room} />}
+													>
 														<i className="fa fa-hospital-o text-danger ml-1" />
 													</Tooltip>
 												)}
@@ -233,7 +238,8 @@ class ProcedureBlock extends Component {
 												visible={visible && visible === data.id}
 												onVisibleChange={() =>
 													this.setState({ visible: data.id })
-												}>
+												}
+											>
 												<a className="item-title text-primary">Note</a>
 											</Popover>
 										) : (
@@ -292,7 +298,8 @@ class ProcedureBlock extends Component {
 												{!data.item?.scheduledDate ? (
 													<a
 														onClick={() => this.scheduleDate(data)}
-														className="btn btn-sm btn-primary px-2 py-1">
+														className="btn btn-sm btn-primary px-2 py-1"
+													>
 														schedule date
 													</a>
 												) : (
@@ -313,14 +320,16 @@ class ProcedureBlock extends Component {
 										{data?.item?.scheduledDate && !data?.item?.startedDate && (
 											<a
 												onClick={() => this.startProcedure(data)}
-												className="btn btn-sm btn-primary px-2 py-1 text-white">
+												className="btn btn-sm btn-primary px-2 py-1 text-white"
+											>
 												Start
 											</a>
 										)}
 										{data.item.startedDate && !data.item.finishedDate && (
 											<a
 												onClick={() => this.finishProcedure(data)}
-												className="btn btn-sm btn-primary px-2 py-1 text-white">
+												className="btn btn-sm btn-primary px-2 py-1 text-white"
+											>
 												Conclude
 											</a>
 										)}
@@ -328,7 +337,8 @@ class ProcedureBlock extends Component {
 											<Tooltip title="Cancel Lab Test">
 												<a
 													className="danger"
-													onClick={() => this.cancelProcedure(data)}>
+													onClick={() => this.cancelProcedure(data)}
+												>
 													<i className="os-icon os-icon-ui-15" />
 												</a>
 											</Tooltip>

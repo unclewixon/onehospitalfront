@@ -12,7 +12,8 @@ const AccountDetails = ({ staff, onEdit, buttonText, onView }) => {
 					className="up-head-w"
 					style={{
 						backgroundImage: `url(${parseAvatar(staff?.details?.profile_pic)})`,
-					}}>
+					}}
+				>
 					<div className="up-social">
 						<a href="#">
 							<i className="os-icon os-icon-twitter"></i>
@@ -42,14 +43,16 @@ const AccountDetails = ({ staff, onEdit, buttonText, onView }) => {
 							{buttonText === 'VIEW PROFILE' ? (
 								<button
 									className="btn btn-primary btn-sm"
-									onClick={() => onView()}>
+									onClick={() => onView()}
+								>
 									<i className="os-icon os-icon-window-content"></i>
 									<span>{buttonText}</span>
 								</button>
 							) : (
 								<button
 									className="btn btn-primary btn-sm"
-									onClick={() => onEdit()}>
+									onClick={() => onEdit()}
+								>
 									<i className="os-icon os-icon-edit-1"></i>
 									<span>{buttonText}</span>
 								</button>

@@ -32,21 +32,24 @@ const Home = ({ match, location }) => {
 									to={`${match.path}`}
 									className={`mx-2 btn btn-primary btn-sm  ${
 										page === 'procedure' ? 'btn-outline-primary' : ''
-									}`}>
+									}`}
+								>
 									Procedure Queue
 								</Link>
 								<Link
 									to={`${match.path}/all-request`}
 									className={`mr-2 btn btn-primary btn-sm  ${
 										page === 'all-request' ? 'btn-outline-primary' : ''
-									}`}>
+									}`}
+								>
 									Procedure Requests
 								</Link>
 								<Link
 									to={`${match.path}/new-request`}
 									className={`mr-2 btn btn-primary btn-sm  ${
 										page === 'new-request' ? 'btn-outline-primary' : ''
-									}`}>
+									}`}
+								>
 									New Procedure Request
 								</Link>
 							</div>

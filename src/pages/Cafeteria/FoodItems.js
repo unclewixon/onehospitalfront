@@ -223,7 +223,8 @@ const FoodItems = () => {
 								<>
 									<button
 										className="btn btn-secondary ml-3"
-										onClick={cancelEditButton}>
+										onClick={cancelEditButton}
+									>
 										<span>cancel</span>
 									</button>
 									<button className="btn btn-primary">

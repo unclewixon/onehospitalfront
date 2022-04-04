@@ -108,7 +108,8 @@ export class Recorddelivery extends Component {
 											<Tooltip title="view details">
 												<a
 													className="secondary mx-1"
-													onClick={() => this.viewDetails(record)}>
+													onClick={() => this.viewDetails(record)}
+												>
 													<i className="os-icon os-icon-eye" />
 												</a>
 											</Tooltip>

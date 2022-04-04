@@ -29,37 +29,44 @@ const ModalPrintTransaction = ({ transaction, closeModal }) => {
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div
 				className="modal-dialog modal-centered"
-				style={{ maxWidth: '480px' }}>
+				style={{ maxWidth: '480px' }}
+			>
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={closeModal}>
+						onClick={closeModal}
+					>
 						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div
 						className="onboarding-content with-gradient"
-						style={{ backgroundImage: 'none' }}>
+						style={{ backgroundImage: 'none' }}
+					>
 						<div
 							className="onboarding-content with-gradient"
 							id="divcontents"
-							style={{ backgroundImage: 'none' }}>
+							style={{ backgroundImage: 'none' }}
+						>
 							<div
 								style={{
 									fontSize: '20px',
 									borderBottom: '1px dashed',
 									textAlign: 'center',
-								}}>{`Receipt #: ${transaction.id}`}</div>
+								}}
+							>{`Receipt #: ${transaction.id}`}</div>
 							<div
 								style={{
 									marginTop: '6px',
 									fontSize: '22px',
 									textAlign: 'center',
-								}}>
+								}}
+							>
 								DEDA HOSPITAL
 							</div>
 							<div style={{ textAlign: 'center', fontSize: '12px' }}>
@@ -71,7 +78,8 @@ const ModalPrintTransaction = ({ transaction, closeModal }) => {
 									textAlign: 'center',
 									fontSize: '12px',
 									marginTop: '4px',
-								}}>
+								}}
+							>
 								{`Transaction Date: ${formatDate(
 									transaction.createdAt,
 									'YYYY MMM, DD'
@@ -83,7 +91,8 @@ const ModalPrintTransaction = ({ transaction, closeModal }) => {
 									fontSize: '12px',
 									marginTop: '12px',
 									borderBottom: '1px dashed',
-								}}>
+								}}
+							>
 								{`Received from: ${patientname(transaction.patient, true)}`}
 							</div>
 							<div
@@ -91,7 +100,8 @@ const ModalPrintTransaction = ({ transaction, closeModal }) => {
 									marginTop: '8px',
 									textAlign: 'left',
 									fontSize: '13px',
-								}}>
+								}}
+							>
 								{`The sum of ${translator.toWords(
 									transaction.amount
 								)} (${formatCurrency(transaction.amount)})`}
@@ -102,7 +112,8 @@ const ModalPrintTransaction = ({ transaction, closeModal }) => {
 									fontWeight: 'bold',
 									marginTop: '2px',
 									fontSize: '12px',
-								}}>
+								}}
+							>
 								Outstanding Balance: NGN0.00
 							</div>
 							<div
@@ -111,7 +122,8 @@ const ModalPrintTransaction = ({ transaction, closeModal }) => {
 									fontWeight: 'bold',
 									paddingBottom: '6px',
 									fontSize: '12px',
-								}}>
+								}}
+							>
 								{`Cashier: ${staffname(transaction.cashier)}`}
 							</div>
 							<div
@@ -119,7 +131,8 @@ const ModalPrintTransaction = ({ transaction, closeModal }) => {
 									padding: '8px',
 									borderBottom: '1px dashed',
 									height: '32px',
-								}}></div>
+								}}
+							></div>
 						</div>
 						<button className="btn" onClick={printReceipt}>
 							print
@@ -130,7 +143,8 @@ const ModalPrintTransaction = ({ transaction, closeModal }) => {
 			<iframe
 				id="ifmcontentstoprint"
 				title="print"
-				style={{ height: '0px', width: '0px', position: 'absolute' }}></iframe>
+				style={{ height: '0px', width: '0px', position: 'absolute' }}
+			></iframe>
 		</div>
 	);
 };

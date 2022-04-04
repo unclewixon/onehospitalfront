@@ -163,10 +163,12 @@ const CreateTask = ({ closeModal, refreshTasks }) => {
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div
 				className="modal-dialog modal-centered"
-				style={{ maxWidth: '1024px' }}>
+				style={{ maxWidth: '1024px' }}
+			>
 				<div className="modal-content text-center">
 					<div className="onboarding-content with-gradient">
 						<h4 className="onboarding-title">Create Task</h4>
@@ -190,7 +192,8 @@ const CreateTask = ({ closeModal, refreshTasks }) => {
 																vital === 'Medication'
 																	? createMedication()
 																	: setTask(vital)
-															}>
+															}
+														>
 															<i className="os-icon os-icon-delivery-box-2" />
 															<span>{vital}</span>
 														</a>
@@ -232,7 +235,8 @@ const CreateTask = ({ closeModal, refreshTasks }) => {
 															<Tooltip title="Remove Task">
 																<a
 																	className="danger"
-																	onClick={() => removeTask(item.name)}>
+																	onClick={() => removeTask(item.name)}
+																>
 																	<i className="os-icon os-icon-ui-15" />
 																</a>
 															</Tooltip>
@@ -303,7 +307,8 @@ const CreateTask = ({ closeModal, refreshTasks }) => {
 															<Tooltip title="Remove Task">
 																<a
 																	className="danger"
-																	onClick={() => removeTask(item.name)}>
+																	onClick={() => removeTask(item.name)}
+																>
 																	<i className="os-icon os-icon-ui-15" />
 																</a>
 															</Tooltip>
@@ -319,7 +324,8 @@ const CreateTask = ({ closeModal, refreshTasks }) => {
 										<button
 											onClick={() => save()}
 											className="btn btn-primary"
-											disabled={submitting}>
+											disabled={submitting}
+										>
 											{submitting ? (
 												<img src={waiting} alt="submitting" />
 											) : (
@@ -330,7 +336,8 @@ const CreateTask = ({ closeModal, refreshTasks }) => {
 									<button
 										onClick={() => closeModal()}
 										className="btn btn-secondary ml-3"
-										disabled={submitting}>
+										disabled={submitting}
+									>
 										Cancel
 									</button>
 								</div>

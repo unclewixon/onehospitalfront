@@ -45,14 +45,16 @@ class ModalUploadDiagnosis extends Component {
 			<div
 				className="onboarding-modal modal fade animated show"
 				role="dialog"
-				style={{ display: 'block' }}>
+				style={{ display: 'block' }}
+			>
 				<div className="modal-dialog modal-centered" role="document">
 					<div className="modal-content text-center">
 						<button
 							aria-label="Close"
 							className="close"
 							type="button"
-							onClick={() => closeModal(false)}>
+							onClick={() => closeModal(false)}
+						>
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
@@ -74,7 +76,8 @@ class ModalUploadDiagnosis extends Component {
 										placeholder="Type of Diagnosis"
 										name="diagnosisType"
 										onChange={this.handleSelect}
-										required>
+										required
+									>
 										<option>Choose Diagnosis Type</option>
 										<option value="10">ICD-10</option>
 										<option value="2">ICPC-2</option>

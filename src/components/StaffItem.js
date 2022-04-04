@@ -149,7 +149,8 @@ class StaffItem extends Component {
 											<Tooltip title="Reset Password">
 												<a
 													onClick={e => this.doReset(e, item)}
-													className="info">
+													className="info"
+												>
 													<i className="os-icon os-icon-grid-18" />
 												</a>
 											</Tooltip>
@@ -157,7 +158,8 @@ class StaffItem extends Component {
 												<Tooltip title="Disable Staff">
 													<a
 														onClick={e => this.doDisable(e, item)}
-														className="danger">
+														className="danger"
+													>
 														<i className="os-icon os-icon-x-circle" />
 													</a>
 												</Tooltip>
@@ -165,7 +167,8 @@ class StaffItem extends Component {
 												<Tooltip title="Enable Staff">
 													<a
 														onClick={e => this.doEnable(e, item)}
-														className="success">
+														className="success"
+													>
 														<i className="os-icon os-icon-check-circle" />
 													</a>
 												</Tooltip>

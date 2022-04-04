@@ -111,7 +111,8 @@ class IVFHistory extends Component {
 						<div className="form-group col-md-2">
 							<div
 								className="btn btn-sm btn-primary btn-upper text-white filter-btn"
-								onClick={this.doFilter}>
+								onClick={this.doFilter}
+							>
 								<i className="os-icon os-icon-ui-37" />
 								<span>
 									{filtering ? (

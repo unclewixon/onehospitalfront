@@ -93,14 +93,8 @@ class AppointmentHistory extends Component {
 	};
 
 	render() {
-		const {
-			loading,
-			filtering,
-			meta,
-			appointments,
-			appointment,
-			showModal,
-		} = this.state;
+		const { loading, filtering, meta, appointments, appointment, showModal } =
+			this.state;
 		return (
 			<div className="row">
 				<div className="m-0 w-100">
@@ -112,7 +106,8 @@ class AppointmentHistory extends Component {
 							<div className="form-group col-md-2">
 								<div
 									className="btn btn-sm btn-primary btn-upper text-white filter-btn"
-									onClick={this.doFilter}>
+									onClick={this.doFilter}
+								>
 									<i className="os-icon os-icon-ui-37" />
 									<span>
 										{filtering ? (
@@ -201,7 +196,8 @@ class AppointmentHistory extends Component {
 																onClick={() =>
 																	this.viewAppointment(appointment)
 																}
-																className="cursor">
+																className="cursor"
+															>
 																<i className="os-icon os-icon-eye"></i>
 															</a>
 														</td>

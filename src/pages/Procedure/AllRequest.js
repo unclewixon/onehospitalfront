@@ -133,7 +133,8 @@ class AllRequest extends Component {
 								id="status"
 								className="form-control"
 								name="status"
-								onChange={e => this.change(e)}>
+								onChange={e => this.change(e)}
+							>
 								{status.map((status, i) => {
 									return (
 										<option key={i} value={status.label}>
@@ -146,7 +147,8 @@ class AllRequest extends Component {
 						<div className="form-group col-md-3 mt-4">
 							<div
 								className="btn btn-sm btn-primary btn-upper text-white filter-btn"
-								onClick={this.doFilter}>
+								onClick={this.doFilter}
+							>
 								<i className="os-icon os-icon-ui-37" />
 								<span>
 									{filtering ? (

@@ -152,7 +152,8 @@ class LeaveMgt extends Component {
 										<label>Category:</label>
 										<select
 											className="form-control form-control-sm rounded mr-4"
-											onChange={e => filterByCategory(e.target.value)}>
+											onChange={e => filterByCategory(e.target.value)}
+										>
 											<option value="none">Select Category</option>
 											{leave_categories.map((cats, index) => {
 												return (
@@ -165,7 +166,8 @@ class LeaveMgt extends Component {
 										<label>Status:</label>
 										<select
 											className="form-control form-control-sm rounded"
-											onChange={e => filterByStatus(e.target.value)}>
+											onChange={e => filterByStatus(e.target.value)}
+										>
 											<option value="none">Select Status</option>
 											<option value={0}>Pending</option>
 											<option value={1}>Approved</option>

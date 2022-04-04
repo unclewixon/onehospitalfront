@@ -193,7 +193,8 @@ const NicuPatients = () => {
 								className="form-control"
 								name="status"
 								onChange={e => setStatus(e.target.value)}
-								defaultValue={status}>
+								defaultValue={status}
+							>
 								{statuses.map((item, i) => {
 									return (
 										<option key={i} value={item.value}>
@@ -206,7 +207,8 @@ const NicuPatients = () => {
 						<div className="form-group col-md-3 mt-4">
 							<div
 								className="btn btn-sm btn-primary btn-upper text-white"
-								onClick={e => doFilter(e)}>
+								onClick={e => doFilter(e)}
+							>
 								<i className="os-icon os-icon-ui-37" />
 								<span>
 									{filtering ? (
@@ -248,10 +250,12 @@ const NicuPatients = () => {
 												<td>
 													<p className="item-title text-color m-0">
 														<Tooltip
-															title={<ProfilePopup patient={item.patient} />}>
+															title={<ProfilePopup patient={item.patient} />}
+														>
 															<a
 																className="cursor"
-																onClick={() => showProfile(item.patient)}>
+																onClick={() => showProfile(item.patient)}
+															>
 																{patientname(item.patient, true)}
 															</a>
 														</Tooltip>
@@ -268,7 +272,8 @@ const NicuPatients = () => {
 														<Tooltip title="Change Accommodation">
 															<a
 																onClick={() => assignAccommodation(item)}
-																className="primary ml-2">
+																className="primary ml-2"
+															>
 																<i className="fa fa-bed" />
 															</a>
 														</Tooltip>
@@ -290,7 +295,8 @@ const NicuPatients = () => {
 														<span
 															className={`badge badge-${
 																item.start_discharge ? 'warning' : 'secondary'
-															}`}>
+															}`}
+														>
 															{item.start_discharge ? 'Discharging' : 'Open'}
 														</span>
 													) : (
@@ -306,7 +312,8 @@ const NicuPatients = () => {
 															<Tooltip title="Assign Accommodation">
 																<a
 																	onClick={() => assignAccommodation(item)}
-																	className="primary">
+																	className="primary"
+																>
 																	<i className="fa fa-bed" />
 																</a>
 															</Tooltip>

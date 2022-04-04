@@ -93,14 +93,16 @@ const ModalViewBatches = ({ closeModal, drug }) => {
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div className="modal-dialog modal-lg modal-centered">
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={closeModal}>
+						onClick={closeModal}
+					>
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -156,7 +158,8 @@ const ModalViewBatches = ({ closeModal, drug }) => {
 																	item.quantity < 10
 																		? lowBadge
 																		: 'badge-success'
-																}`}>
+																}`}
+															>
 																{item.quantity < 10 ? low : 'good'}
 															</span>
 														</td>
@@ -164,14 +167,16 @@ const ModalViewBatches = ({ closeModal, drug }) => {
 															<Tooltip title="Edit Batch">
 																<a
 																	className="secondary"
-																	onClick={() => edit(item)}>
+																	onClick={() => edit(item)}
+																>
 																	<i className="os-icon os-icon-ui-49" />
 																</a>
 															</Tooltip>
 															<Tooltip title="Update Quantity">
 																<a
 																	className="info"
-																	onClick={() => updateQuantity(item)}>
+																	onClick={() => updateQuantity(item)}
+																>
 																	<i className="os-icon os-icon-plus-circle" />
 																</a>
 															</Tooltip>

@@ -51,21 +51,24 @@ const Home = ({ match, location }) => {
 										to={`${match.path}`}
 										className={`mx-2 btn btn-primary btn-sm  ${
 											page === 'pharmacy' ? 'btn-outline-primary' : ''
-										}`}>
+										}`}
+									>
 										Prescription Queue
 									</Link>
 									<Link
 										to={`${match.path}/all-request`}
 										className={`mr-2 btn btn-primary btn-sm  ${
 											page === 'all-request' ? 'btn-outline-primary' : ''
-										}`}>
+										}`}
+									>
 										Prescription Requests
 									</Link>
 									<Link
 										to={`${match.path}/new-request`}
 										className={`mr-2 btn btn-primary btn-sm  ${
 											page === 'new-request' ? 'btn-outline-primary' : ''
-										}`}>
+										}`}
+									>
 										New Prescription
 									</Link>
 								</div>
@@ -74,12 +77,14 @@ const Home = ({ match, location }) => {
 								<div className="element-actions">
 									<a
 										className="btn btn-sm btn-primary text-white ml-3"
-										onClick={() => newGeneric()}>
+										onClick={() => newGeneric()}
+									>
 										Add Generic Name
 									</a>
 									<a
 										className="btn btn-sm btn-secondary text-white ml-3"
-										onClick={() => newDrug()}>
+										onClick={() => newDrug()}
+									>
 										New Drug
 									</a>
 								</div>

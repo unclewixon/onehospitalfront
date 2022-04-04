@@ -68,9 +68,7 @@ const ModalEditLeave = ({
 			category && category.id ? leaveObj[category.id] : leaveObj[category];
 		const duration = catObj && catObj.duration ? parseInt(catObj.duration) : 0;
 		const startDate = moment(date).format('YYYY-MM-DD');
-		const newDate = moment(date)
-			.add(duration, 'days')
-			.format('YYYY-MM-DD');
+		const newDate = moment(date).add(duration, 'days').format('YYYY-MM-DD');
 		setLeaveDate(startDate);
 		setEndDate(newDate);
 	};
@@ -108,7 +106,8 @@ const ModalEditLeave = ({
 			aria-labelledby="contained-modal-title-vcenter"
 			centered
 			onHide={onModalClick}
-			onExit={onExitModal}>
+			onExit={onExitModal}
+		>
 			<Modal.Header closeButton></Modal.Header>
 			<Modal.Body>
 				<div className="onboarding-content with-gradient text-center">
@@ -206,7 +205,8 @@ const ModalEditLeave = ({
 											<button
 												className="btn btn-primary"
 												disabled={submitting}
-												type="submit">
+												type="submit"
+											>
 												{submitting ? (
 													<img src={waiting} alt="submitting" />
 												) : (

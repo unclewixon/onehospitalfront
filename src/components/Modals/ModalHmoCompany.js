@@ -22,9 +22,8 @@ const ModalHmoCompany = ({
 	updateCompany,
 	buttonState,
 }) => {
-	const [{ name, email, phoneNumber, address }, setState] = useState(
-		initialState
-	);
+	const [{ name, email, phoneNumber, address }, setState] =
+		useState(initialState);
 	const [loaded, setLoaded] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
 
@@ -125,14 +124,16 @@ const ModalHmoCompany = ({
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div className="modal-dialog modal-centered">
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={() => closeModal()}>
+						onClick={() => closeModal()}
+					>
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -186,7 +187,8 @@ const ModalHmoCompany = ({
 										<button
 											className={`btn btn-primary ${
 												submitting ? 'disabled' : ''
-											}`}>
+											}`}
+										>
 											<span>save</span>
 										</button>
 									)}
@@ -196,13 +198,15 @@ const ModalHmoCompany = ({
 												className={`btn btn-secondary ${
 													submitting ? 'disabled' : ''
 												}`}
-												onClick={() => closeModal()}>
+												onClick={() => closeModal()}
+											>
 												<span>cancel</span>
 											</button>
 											<button
 												className={`btn btn-primary ${
 													submitting ? 'disabled' : ''
-												}`}>
+												}`}
+											>
 												<span>save</span>
 											</button>
 										</>

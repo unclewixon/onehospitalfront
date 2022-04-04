@@ -266,7 +266,8 @@ class HxForm extends Component {
 							<button
 								type="button"
 								className="btn btn-primary"
-								onClick={previous}>
+								onClick={previous}
+							>
 								Previous
 							</button>
 							<button className="btn btn-primary" type="submit">

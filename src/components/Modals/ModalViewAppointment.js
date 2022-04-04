@@ -12,10 +12,12 @@ const ModalViewAppointment = ({ appointment, closeModal }) => {
 		<div
 			className="modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div
 				className="modal-dialog modal-centered"
-				style={{ maxWidth: '440px' }}>
+				style={{ maxWidth: '440px' }}
+			>
 				<div className="modal-content">
 					<div className="modal-header">
 						<h5 className="modal-title">Appointment Detail</h5>
@@ -23,7 +25,8 @@ const ModalViewAppointment = ({ appointment, closeModal }) => {
 							aria-label="Close"
 							className="close"
 							type="button"
-							onClick={closeModal}>
+							onClick={closeModal}
+						>
 							<span aria-hidden="true">×</span>
 						</button>
 					</div>

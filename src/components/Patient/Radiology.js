@@ -62,7 +62,8 @@ const Radiology = ({ location, itemId, type, can_request = true }) => {
 					{can_request && (
 						<Link
 							to={`${location.pathname}#radiology-request`}
-							className="btn btn-primary btn-sm">
+							className="btn btn-primary btn-sm"
+						>
 							<i className="os-icon os-icon-plus" />
 							New Radiology Request
 						</Link>
@@ -78,7 +79,8 @@ const Radiology = ({ location, itemId, type, can_request = true }) => {
 						) : (
 							<div
 								className="fixed-table-container"
-								style={{ paddingBottom: '0px' }}>
+								style={{ paddingBottom: '0px' }}
+							>
 								<div className="fixed-table-body">
 									<RadiologyBlock
 										loading={false}

@@ -73,13 +73,15 @@ class EditVendor extends Component {
 								<button
 									className="btn btn-primary"
 									disabled={submitting}
-									type="submit">
+									type="submit"
+								>
 									{submitting ? <img src={waiting} alt="submitting" /> : 'save'}
 								</button>
 								<button
 									className="btn btn-secondary ml-3"
 									type="button"
-									onClick={this.props.editVendor(null, false)}>
+									onClick={this.props.editVendor(null, false)}
+								>
 									cancel
 								</button>
 							</div>

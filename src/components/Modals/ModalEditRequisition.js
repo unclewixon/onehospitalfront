@@ -111,16 +111,19 @@ const ModalEditRequisition = ({
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div
 				className="modal-dialog modal-centered"
-				style={{ maxWidth: '320px' }}>
+				style={{ maxWidth: '320px' }}
+			>
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={closeModal}>
+						onClick={closeModal}
+					>
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -168,7 +171,8 @@ const ModalEditRequisition = ({
 															<span
 																className={`badge badge-${
 																	item.quantity > 0 ? 'info' : 'danger'
-																} text-white`}>{`Stock Level: ${
+																} text-white`}
+															>{`Stock Level: ${
 																item.quantity > 0 ? 'in stock' : 'out of stock'
 															}`}</span>
 														</div>
@@ -210,7 +214,8 @@ const ModalEditRequisition = ({
 										<button
 											className="btn btn-primary"
 											disabled={submitting}
-											type="submit">
+											type="submit"
+										>
 											{submitting ? (
 												<img src={waiting} alt="submitting" />
 											) : (

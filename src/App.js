@@ -248,7 +248,10 @@ class App extends Component {
 															<Route path="/cafeteria" component={Cafeteria} />
 															<Route path="/paypoint" component={PayPoint} />
 															<Route path="/records" component={Records} />
-															<Route path="/accounting" component={Accounting} />
+															<Route
+																path="/accounting"
+																component={Accounting}
+															/>
 															{/* remove path later */}
 															<Route path="/my-account" component={MyAccount} />
 															<Route component={NoMatch} />

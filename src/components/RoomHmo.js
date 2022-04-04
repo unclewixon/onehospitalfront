@@ -130,7 +130,8 @@ const RoomHmo = ({ hmo, toggle, doToggle }) => {
 						});
 						doToggle(hmo.id);
 						setLoaded(false);
-					}}>
+					}}
+				>
 					<i className={`os-icon os-icon-${toggle ? 'minus' : 'common-03'}`} />
 				</div>
 				<h6 className="filter-header">{hmo.name}</h6>
@@ -139,7 +140,8 @@ const RoomHmo = ({ hmo, toggle, doToggle }) => {
 				) : (
 					<div
 						className="filter-body"
-						style={{ display: toggle ? 'block' : 'none' }}>
+						style={{ display: toggle ? 'block' : 'none' }}
+					>
 						<div className="row">
 							<div className="col-lg-12">
 								<div className="element-search">
@@ -200,8 +202,9 @@ const RoomHmo = ({ hmo, toggle, doToggle }) => {
 															<div className="pi-foot">
 																<div className="tags" />
 																<a className="extra-info">
-																	<span>{`${item.rooms.length ||
-																		0} rooms`}</span>
+																	<span>{`${
+																		item.rooms.length || 0
+																	} rooms`}</span>
 																</a>
 															</div>
 														</div>
@@ -213,7 +216,8 @@ const RoomHmo = ({ hmo, toggle, doToggle }) => {
 								{services && services.result.length === 0 && (
 									<div
 										className="alert alert-info text-center"
-										style={{ width: '100%' }}>
+										style={{ width: '100%' }}
+									>
 										No rooms
 									</div>
 								)}

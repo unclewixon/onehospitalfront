@@ -104,7 +104,8 @@ const HmoCompany = () => {
 							<button
 								className="btn btn-primary"
 								style={{ margin: 10 }}
-								onClick={onClose}>
+								onClick={onClose}
+							>
 								No
 							</button>
 							<button
@@ -113,7 +114,8 @@ const HmoCompany = () => {
 								onClick={() => {
 									onDeleteHmo(data);
 									onClose();
-								}}>
+								}}
+							>
 								Yes, Delete it!
 							</button>
 						</div>
@@ -128,7 +130,8 @@ const HmoCompany = () => {
 			<div className="element-actions">
 				<a
 					onClick={() => newCompany()}
-					className="btn btn-primary btn-sm btn-outline-primary">
+					className="btn btn-primary btn-sm btn-outline-primary"
+				>
 					Create Company
 				</a>
 			</div>
@@ -179,7 +182,8 @@ const HmoCompany = () => {
 																		<Tooltip title="Delete">
 																			<a
 																				className="danger"
-																				onClick={() => confirmDelete(hmo)}>
+																				onClick={() => confirmDelete(hmo)}
+																			>
 																				<i className="os-icon os-icon-ui-15" />
 																			</a>
 																		</Tooltip>

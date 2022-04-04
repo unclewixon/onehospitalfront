@@ -107,13 +107,15 @@ class LabBlock extends Component {
 								<button
 									className="btn btn-secondary"
 									style={{ margin: '10px' }}
-									onClick={printSingle}>
+									onClick={printSingle}
+								>
 									Print Single
 								</button>
 								<button
 									className="btn btn-secondary"
 									style={{ margin: '10px' }}
-									onClick={printGroup}>
+									onClick={printGroup}
+								>
 									Print Group
 								</button>
 							</div>
@@ -215,19 +217,22 @@ class LabBlock extends Component {
 												<Tooltip title={<ProfilePopup patient={lab.patient} />}>
 													<a
 														className="cursor"
-														onClick={() => this.showProfile(lab.patient)}>
+														onClick={() => this.showProfile(lab.patient)}
+													>
 														{patientname(lab.patient, true)}
 													</a>
 												</Tooltip>
 												{lab.admission && (
 													<Tooltip
-														title={<Admitted room={lab?.admission?.room} />}>
+														title={<Admitted room={lab?.admission?.room} />}
+													>
 														<i className="fa fa-hospital-o text-danger ml-1" />
 													</Tooltip>
 												)}
 												{lab.patient.nicu_id && (
 													<Tooltip
-														title={<Admitted room={lab?.admission?.room} />}>
+														title={<Admitted room={lab?.admission?.room} />}
+													>
 														<i className="fa fa-hospital-o text-danger ml-1" />
 													</Tooltip>
 												)}
@@ -254,7 +259,8 @@ class LabBlock extends Component {
 												visible={visible && visible === lab.id}
 												onVisibleChange={() =>
 													this.setState({ visible: lab.id })
-												}>
+												}
+											>
 												<a className="item-title text-primary">Note</a>
 											</Popover>
 										) : (
@@ -307,7 +313,8 @@ class LabBlock extends Component {
 														<Tooltip title="Receive Specimen">
 															<a
 																className="secondary"
-																onClick={() => this.receiveSpecimen(lab)}>
+																onClick={() => this.receiveSpecimen(lab)}
+															>
 																<i className="os-icon os-icon-check-circle" />
 															</a>
 														</Tooltip>
@@ -316,7 +323,8 @@ class LabBlock extends Component {
 														<Tooltip title="Fill Result">
 															<a
 																className="primary"
-																onClick={() => this.fillResult(lab)}>
+																onClick={() => this.fillResult(lab)}
+															>
 																<i className="os-icon os-icon-edit" />
 															</a>
 														</Tooltip>
@@ -326,7 +334,8 @@ class LabBlock extends Component {
 															<Tooltip title="Fill Result">
 																<a
 																	className="primary"
-																	onClick={() => this.fillResult(lab)}>
+																	onClick={() => this.fillResult(lab)}
+																>
 																	<i className="os-icon os-icon-edit" />
 																</a>
 															</Tooltip>
@@ -339,7 +348,8 @@ class LabBlock extends Component {
 															<Tooltip title="Approve Lab Result">
 																<a
 																	className="info"
-																	onClick={() => this.viewResult(lab)}>
+																	onClick={() => this.viewResult(lab)}
+																>
 																	<i className="os-icon os-icon-thumbs-up" />
 																</a>
 															</Tooltip>
@@ -349,7 +359,8 @@ class LabBlock extends Component {
 															<Tooltip title="View Lab Result">
 																<a
 																	className="info"
-																	onClick={() => this.viewResult(lab)}>
+																	onClick={() => this.viewResult(lab)}
+																>
 																	<i className="os-icon os-icon-eye" />
 																</a>
 															</Tooltip>
@@ -360,7 +371,8 @@ class LabBlock extends Component {
 																<Tooltip title="View Lab Result">
 																	<a
 																		className="info"
-																		onClick={() => this.viewResult(lab)}>
+																		onClick={() => this.viewResult(lab)}
+																	>
 																		<i className="os-icon os-icon-eye" />
 																	</a>
 																</Tooltip>
@@ -370,7 +382,8 @@ class LabBlock extends Component {
 																	className="info"
 																	onClick={() =>
 																		this.printResult(lab, grouped.length > 1)
-																	}>
+																	}
+																>
 																	<i className="os-icon os-icon-printer" />
 																</a>
 															</Tooltip>
@@ -382,7 +395,8 @@ class LabBlock extends Component {
 											<Tooltip title="Cancel Lab Test">
 												<a
 													className="danger"
-													onClick={() => this.cancelLab(lab)}>
+													onClick={() => this.cancelLab(lab)}
+												>
 													<i className="os-icon os-icon-ui-15" />
 												</a>
 											</Tooltip>

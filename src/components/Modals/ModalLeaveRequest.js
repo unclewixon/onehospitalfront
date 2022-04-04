@@ -17,7 +17,8 @@ const ModalLeaveRequest = ({
 			size="lg"
 			aria-labelledby="contained-modal-title-vcenter"
 			centered
-			onHide={onModalClick}>
+			onHide={onModalClick}
+		>
 			<Modal.Header closeButton></Modal.Header>
 			<Modal.Body>
 				<div className="onboarding-content with-gradient text-center">
@@ -31,7 +32,8 @@ const ModalLeaveRequest = ({
 											backgroundImage: `url(${parseAvatar(
 												staff?.profile_pic
 											)})`,
-										}}>
+										}}
+									>
 										<div className="up-main-info">
 											<h2 className="up-header" style={{ color: '#334152' }}>
 												{activeRequest && activeRequest.staff

@@ -221,13 +221,15 @@ const PlanForm = ({ previous, next, patient }) => {
 								<button
 									className="btn btn-primary"
 									style={{ margin: '10px' }}
-									onClick={changeBtn}>
+									onClick={changeBtn}
+								>
 									Change
 								</button>
 								<button
 									className="btn btn-secondary"
 									style={{ margin: '10px' }}
-									onClick={continueBtn}>
+									onClick={continueBtn}
+								>
 									Continue
 								</button>
 							</div>
@@ -264,13 +266,15 @@ const PlanForm = ({ previous, next, patient }) => {
 								<button
 									className="btn btn-primary"
 									style={{ margin: '10px' }}
-									onClick={changeBtn}>
+									onClick={changeBtn}
+								>
 									Change
 								</button>
 								<button
 									className="btn btn-secondary"
 									style={{ margin: '10px' }}
-									onClick={continueBtn}>
+									onClick={continueBtn}
+								>
 									Continue
 								</button>
 							</div>
@@ -437,7 +441,8 @@ const PlanForm = ({ previous, next, patient }) => {
 										<span
 											className={`badge badge-${
 												selectedDrug.qty > 0 ? 'info' : 'danger'
-											} text-white`}>{`Stock Level: ${
+											} text-white`}
+										>{`Stock Level: ${
 											selectedDrug.qty
 										}; Base Price: ${formatCurrency(
 											selectedDrug.basePrice
@@ -529,8 +534,9 @@ const PlanForm = ({ previous, next, patient }) => {
 						<input
 							type="number"
 							className="form-control"
-							placeholder={`(value in ${frequencyType?.value ||
-								'daily'}) eg: 3`}
+							placeholder={`(value in ${
+								frequencyType?.value || 'daily'
+							}) eg: 3`}
 							ref={register({ required: true })}
 							name="duration"
 							onChange={onHandleInputChange}
@@ -605,7 +611,8 @@ const PlanForm = ({ previous, next, patient }) => {
 								style={{
 									backgroundColor: 'transparent',
 									border: 'none',
-								}}>
+								}}
+							>
 								<PlusIcon
 									style={{
 										width: '1.5rem',
@@ -713,7 +720,8 @@ const PlanForm = ({ previous, next, patient }) => {
 								const data = { ...regimenData, regimenNote: e.target.value };
 								saveRegimenData(data);
 							}}
-							value={regimenNote}></textarea>
+							value={regimenNote}
+						></textarea>
 					</div>
 				</div>
 			</form>
@@ -729,7 +737,8 @@ const PlanForm = ({ previous, next, patient }) => {
 									<span
 										className={`badge badge-${
 											service ? 'info' : 'danger'
-										} text-white`}>{`Base Price: ${formatCurrency(
+										} text-white`}
+									>{`Base Price: ${formatCurrency(
 										service?.serviceCost?.tariff || 0
 									)}`}</span>
 								</div>
@@ -783,7 +792,8 @@ const PlanForm = ({ previous, next, patient }) => {
 							const data = { ...procedureData, procedureNote: e.target.value };
 							saveProcedureData(data);
 						}}
-						value={procedureNote}></textarea>
+						value={procedureNote}
+					></textarea>
 				</div>
 			</div>
 			<div className="row">

@@ -131,7 +131,8 @@ const PhysicalExam = ({ next, previous, patient }) => {
 															<span
 																className="select2-selection__choice__remove pointer"
 																role="presentation"
-																onClick={() => removeItem(item.value)}>
+																onClick={() => removeItem(item.value)}
+															>
 																×
 															</span>
 															{`${item.label}: ${item.value}`}
@@ -197,7 +198,8 @@ const PhysicalExam = ({ next, previous, patient }) => {
 								className="form-control"
 								cols="3"
 								onChange={e => saveNote(e.target.value)}
-								value={examNote}></textarea>
+								value={examNote}
+							></textarea>
 						</div>
 					</div>
 				</div>

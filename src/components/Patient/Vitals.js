@@ -112,7 +112,8 @@ const Vitals = props => {
 							<Link
 								className="btn btn-white btn-sm mr-2"
 								to={`${location.pathname}#vitals#${vital}`}
-								key={i}>
+								key={i}
+							>
 								<i className="os-icon os-icon-delivery-box-2" />
 								<span>{vital}</span>
 							</Link>

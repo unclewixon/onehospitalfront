@@ -81,21 +81,24 @@ const Doctor = ({ match }) => {
 							{activeRoom && selected && (
 								<div
 									className="d-flex mb-1"
-									style={{ justifyContent: 'flex-end', alignItems: 'center' }}>
+									style={{ justifyContent: 'flex-end', alignItems: 'center' }}
+								>
 									<h6 className="m-0">
 										Active Room:{' '}
 										<span className="text-success">{activeRoom.name}</span>
 									</h6>
 									<button
 										className="btn btn-sm btn-info text-white ml-4"
-										onClick={() => exitRoom()}>
+										onClick={() => exitRoom()}
+									>
 										Exit Room
 									</button>
 								</div>
 							)}
 							<button
 								className="btn btn-sm btn-primary"
-								onClick={() => setShowModal(true)}>
+								onClick={() => setShowModal(true)}
+							>
 								Select Consulting Room
 							</button>
 						</div>

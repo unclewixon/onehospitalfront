@@ -71,7 +71,8 @@ class VisitNotesTable extends Component {
 								<div className="col-sm-12">
 									<table
 										className="table table-striped table-lightfont dataTable"
-										style={{ width: '100%' }}>
+										style={{ width: '100%' }}
+									>
 										<thead style={{ borderCollapse: 'collapse' }}>
 											<tr>
 												<th>Date</th>

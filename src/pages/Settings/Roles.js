@@ -21,7 +21,8 @@ const Roles = () => {
 												className={
 													tab === 'roles' ? 'nav-link active' : 'nav-link'
 												}
-												onClick={() => setTab('roles')}>
+												onClick={() => setTab('roles')}
+											>
 												ROLES
 											</a>
 										</li>
@@ -30,7 +31,8 @@ const Roles = () => {
 												className={
 													tab === 'permissions' ? 'nav-link active' : 'nav-link'
 												}
-												onClick={() => setTab('permissions')}>
+												onClick={() => setTab('permissions')}
+											>
 												PERMISSIONS
 											</a>
 										</li>

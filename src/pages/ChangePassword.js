@@ -101,7 +101,7 @@ const ChangePassword = ({ location, history, error, handleSubmit }) => {
 			subscribeIO();
 
 			dispatch(setConnection(true));
-			
+
 			redirectToPage(rs.role, history, rs.permissions);
 		} catch (e) {
 			console.log(e);
@@ -176,7 +176,8 @@ const ChangePassword = ({ location, history, error, handleSubmit }) => {
 										<button
 											className="fxt-btn-fill"
 											disabled={submitting}
-											type="submit">
+											type="submit"
+										>
 											{submitting ? (
 												<img src={waiting} alt="submitting" />
 											) : (
@@ -187,7 +188,8 @@ const ChangePassword = ({ location, history, error, handleSubmit }) => {
 									<div className="col-md-6">
 										<a
 											className="fxt-btn-fill text-center custom-bg"
-											onClick={() => doLogout()}>
+											onClick={() => doLogout()}
+										>
 											Logout
 										</a>
 									</div>

@@ -93,17 +93,14 @@ const initData = async () => {
 	if (user) {
 		try {
 			const jwt = `Bearer ${user.token}`;
-			let [
-				rs_depts,
-				rs_roles,
-				rs_specializations,
-				rs_user,
-			] = await Promise.all([
-				axiosFetch(`${API_URI}/${departmentAPI}`, jwt),
-				axiosFetch(`${API_URI}/${rolesAPI}`, jwt),
-				axiosFetch(`${API_URI}/specializations`, jwt),
-				axiosFetch(`${API_URI}/auth/${user.username}`, jwt),
-			]);
+			let [rs_depts, rs_roles, rs_specializations, rs_user] = await Promise.all(
+				[
+					axiosFetch(`${API_URI}/${departmentAPI}`, jwt),
+					axiosFetch(`${API_URI}/${rolesAPI}`, jwt),
+					axiosFetch(`${API_URI}/specializations`, jwt),
+					axiosFetch(`${API_URI}/auth/${user.username}`, jwt),
+				]
+			);
 
 			if (rs_depts && rs_depts.data) {
 				store.dispatch(loadDepartments(rs_depts.data));
@@ -159,7 +156,7 @@ initData();
 ReactDOM.render(
 	<Provider store={store}>
 		<Router history={history}>
-        	<App />
+			<App />
 		</Router>
 	</Provider>,
 	document.getElementById('root')

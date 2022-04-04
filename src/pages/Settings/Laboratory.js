@@ -61,7 +61,8 @@ const Laboratory = () => {
 										<li className="nav-item">
 											<a
 												className={`nav-link ${labCategoryTab ? 'active' : ''}`}
-												onClick={onLabCategory}>
+												onClick={onLabCategory}
+											>
 												Categories
 											</a>
 										</li>
@@ -69,7 +70,8 @@ const Laboratory = () => {
 											<a
 												aria-expanded="false"
 												className={labTestTab ? 'nav-link active' : 'nav-link'}
-												onClick={onLabTest}>
+												onClick={onLabTest}
+											>
 												Tests
 											</a>
 										</li>
@@ -77,7 +79,8 @@ const Laboratory = () => {
 											<a
 												aria-expanded="false"
 												className={labGroupTab ? 'nav-link active' : 'nav-link'}
-												onClick={onLabGroup}>
+												onClick={onLabGroup}
+											>
 												Groups
 											</a>
 										</li>
@@ -87,7 +90,8 @@ const Laboratory = () => {
 												className={
 													labSpecimenTab ? 'nav-link active' : 'nav-link'
 												}
-												onClick={onLabParameter}>
+												onClick={onLabParameter}
+											>
 												Specimen
 											</a>
 										</li>
@@ -95,7 +99,8 @@ const Laboratory = () => {
 											<li className="nav-item nav-actions d-sm-block">
 												<a
 													className="btn btn-primary btn-sm text-white"
-													onClick={() => doToggleForm(true, null)}>
+													onClick={() => doToggleForm(true, null)}
+												>
 													<i className="os-icon os-icon-plus-circle"></i>
 													<span>Add Test</span>
 												</a>

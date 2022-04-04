@@ -144,12 +144,14 @@ const PaymentMethod = () => {
 															<div className="pi-settings os-dropdown-trigger">
 																<i
 																	className="os-icon os-icon-ui-49"
-																	onClick={() => onClickEdit(item)}></i>
+																	onClick={() => onClickEdit(item)}
+																></i>
 															</div>
 															<div className="pi-settings os-dropdown-trigger">
 																<i
 																	className="os-icon os-icon-ui-15 text-danger"
-																	onClick={() => confirmDelete(item)}></i>
+																	onClick={() => confirmDelete(item)}
+																></i>
 															</div>
 														</div>
 														<div className="pi-body">
@@ -170,7 +172,8 @@ const PaymentMethod = () => {
 								{paymentMethods.length === 0 && (
 									<div
 										className="alert alert-info text-center"
-										style={{ width: '100%' }}>
+										style={{ width: '100%' }}
+									>
 										No payment methods
 									</div>
 								)}
@@ -179,9 +182,8 @@ const PaymentMethod = () => {
 								<div className="element-wrapper">
 									<div className="element-box">
 										<form
-											onSubmit={
-												edit ? onEditPaymentMethod : onAddPaymentMethod
-											}>
+											onSubmit={edit ? onEditPaymentMethod : onAddPaymentMethod}
+										>
 											<h5 className="element-box-header">Add New</h5>
 											<div className="form-group">
 												<label className="lighter">Name</label>
@@ -211,7 +213,8 @@ const PaymentMethod = () => {
 													<>
 														<button
 															className="btn btn-secondary"
-															onClick={cancelEditButton}>
+															onClick={cancelEditButton}
+														>
 															<span>cancel</span>
 														</button>
 														<button className="btn btn-primary">

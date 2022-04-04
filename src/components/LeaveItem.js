@@ -17,8 +17,9 @@ const LeaveItem = ({
 		<tr>
 			<td>{index + 1}</td>
 			<td>
-				{`${leave.staff?.first_name || ''} ${leave.staff?.last_name ||
-					''} ${leave.staff?.other_names || ''}`}
+				{`${leave.staff?.first_name || ''} ${leave.staff?.last_name || ''} ${
+					leave.staff?.other_names || ''
+				}`}
 			</td>
 			<td>
 				{leave.category && leave.category.name ? leave.category.name : ''}
@@ -51,7 +52,8 @@ const LeaveItem = ({
 							if (typeof modalClick === 'function') {
 								modalClick(leave);
 							}
-						}}>
+						}}
+					>
 						<i className="os-icon os-icon-file" />
 					</a>
 				</Tooltip>

@@ -75,14 +75,16 @@ class IVFProfile extends Component {
 					aria-label="Close"
 					className="close custom-close"
 					type="button"
-					onClick={this.closeProfile}>
+					onClick={this.closeProfile}
+				>
 					<span className="os-icon os-icon-close" />
 				</button>
 				{patient ? (
 					<Fragment>
 						<div
 							className="content-w"
-							style={{ width: 'calc(100% - 18%)', overflow: 'hidden' }}>
+							style={{ width: 'calc(100% - 18%)', overflow: 'hidden' }}
+						>
 							<IVFProfileMenu />
 							<div className="content-i">
 								<div className="content-box">

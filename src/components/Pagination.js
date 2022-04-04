@@ -10,8 +10,9 @@ const Pagination = ({ currentPage, lastPage, gotoPage, delta = 4 }) => {
 
 	return (
 		<div className="controls-below-table">
-			<div className="table-records-info">{`Showing records ${currentPage ||
-				0} - ${lastPage || 0}`}</div>
+			<div className="table-records-info">{`Showing records ${
+				currentPage || 0
+			} - ${lastPage || 0}`}</div>
 			<div className="table-records-pages">
 				<ul>
 					<li>

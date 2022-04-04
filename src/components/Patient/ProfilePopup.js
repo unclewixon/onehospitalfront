@@ -14,7 +14,8 @@ const ProfilePopup = ({ patient }) => {
 			<div className="profile-tile m-0 p-2">
 				<a
 					className="profile-tile-box"
-					style={{ width: '64px', backgroundColor: 'transparent' }}>
+					style={{ width: '64px', backgroundColor: 'transparent' }}
+				>
 					<div className="pt-avatar-w">
 						<img
 							alt=""

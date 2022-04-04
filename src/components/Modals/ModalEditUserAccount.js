@@ -79,14 +79,16 @@ const ModalEditUserAccount = ({
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div className="modal-dialog modal-md modal-centered" role="document">
 				<div className="modal-content">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={closeModal}>
+						onClick={closeModal}
+					>
 						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -145,7 +147,8 @@ const ModalEditUserAccount = ({
 										<button
 											className="btn btn-primary"
 											disabled={submitting}
-											type="submit">
+											type="submit"
+										>
 											{submitting ? (
 												<img src={waiting} alt="submitting" />
 											) : (

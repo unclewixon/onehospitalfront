@@ -63,14 +63,16 @@ class PayrollItem extends Component {
 						<a
 							onClick={this.doEditPayroll}
 							className="primary"
-							title="View Current Payslip">
+							title="View Current Payslip"
+						>
 							<i className="os-icon os-icon-edit-1" />
 						</a>
 					) : (
 						<a
 							onClick={this.doViewCurrentPayroll}
 							className="primary"
-							title="View Current Payslip">
+							title="View Current Payslip"
+						>
 							<i className="os-icon os-icon-credit-card" />
 						</a>
 					)}
@@ -78,7 +80,8 @@ class PayrollItem extends Component {
 						<a
 							onClick={this.doViewPayroll}
 							className="secondary"
-							title="View Payment History">
+							title="View Payment History"
+						>
 							<i className="os-icon os-icon-ui-83" />
 						</a>
 					)}

@@ -54,7 +54,8 @@ const PerformanceIndicatorForm = ({
 		<div
 			className="onboarding-modal fade animated show"
 			role="dialog"
-			style={{ width: '400px' }}>
+			style={{ width: '400px' }}
+		>
 			<div className="modal-centered">
 				<div className="modal-content text-center">
 					<button onClick={hide} className="close" type="button">
@@ -68,7 +69,8 @@ const PerformanceIndicatorForm = ({
 						<form
 							name="performanceForm"
 							className="form-block w-100"
-							onSubmit={e => doUpload(e, { period, date })}>
+							onSubmit={e => doUpload(e, { period, date })}
+						>
 							<div className="row my-3">
 								<div className="form-group col-12">
 									{/* {label ? <textarea>{label}</textarea> : null} */}
@@ -106,7 +108,8 @@ const PerformanceIndicatorForm = ({
 									<button
 										className="btn btn-primary"
 										disabled={uploading}
-										type="submit">
+										type="submit"
+									>
 										{uploading ? (
 											<img src={waiting} alt="submitting" />
 										) : item ? (
@@ -242,7 +245,8 @@ class Appraisal extends Component {
 									<div
 										hidden={!form_visible}
 										className="element-actions"
-										style={{ position: 'absolute', right: '40px' }}>
+										style={{ position: 'absolute', right: '40px' }}
+									>
 										<PerformanceIndicatorForm
 											uploading={uploading}
 											doUpload={this.onUpload}
@@ -254,7 +258,8 @@ class Appraisal extends Component {
 
 									<button
 										className="btn btn-primary btn-sm text-white"
-										onClick={this.performanceIndicatorForm}>
+										onClick={this.performanceIndicatorForm}
+									>
 										<i className="os-icon os-icon-ui-22" />
 										<span>Create Performance Period</span>
 									</button>

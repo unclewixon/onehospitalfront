@@ -218,13 +218,15 @@ const CreateExcuseDuty = ({ location, history }) => {
 											className="btn btn-secondary"
 											onClick={() =>
 												history.push(`${location.pathname}#excuse-duty`)
-											}>
+											}
+										>
 											Cancel
 										</button>
 										<button
 											className="btn btn-primary"
 											disabled={submitting}
-											type="submit">
+											type="submit"
+										>
 											{submitting ? (
 												<img src={waiting} alt="submitting" />
 											) : (

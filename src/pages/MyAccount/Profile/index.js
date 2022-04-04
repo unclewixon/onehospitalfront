@@ -44,7 +44,8 @@ const AccountProfile = () => {
 												className={
 													tab === 'profile' ? 'nav-link active' : 'nav-link'
 												}
-												onClick={() => setTab('profile')}>
+												onClick={() => setTab('profile')}
+											>
 												My Profile
 											</a>
 										</li>
@@ -53,7 +54,8 @@ const AccountProfile = () => {
 												className={
 													tab === 'payroll' ? 'nav-link active' : 'nav-link'
 												}
-												onClick={() => setTab('payroll')}>
+												onClick={() => setTab('payroll')}
+											>
 												My Payroll
 											</a>
 										</li>
@@ -62,7 +64,8 @@ const AccountProfile = () => {
 												className={
 													tab === 'appraisal' ? 'nav-link active' : 'nav-link'
 												}
-												onClick={() => setTab('appraisal')}>
+												onClick={() => setTab('appraisal')}
+											>
 												My Appraisals
 											</a>
 										</li>

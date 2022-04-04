@@ -227,7 +227,8 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div className="modal-dialog modal-lg" style={{ maxWidth: '1024px' }}>
 				<div className="modal-content text-center">
 					<div className="modal-header faded smaller">
@@ -238,7 +239,8 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 							aria-label="Close"
 							className="close"
 							type="button"
-							onClick={closeModal}>
+							onClick={closeModal}
+						>
 							<span className="os-icon os-icon-close" />
 						</button>
 					</div>
@@ -248,17 +250,20 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 								<div className="support-ticket-content-w">
 									<div
 										className="support-ticket-info"
-										style={{ flex: '0 0 200px' }}>
+										style={{ flex: '0 0 200px' }}
+									>
 										<div
 											className="customer mb-0 pb-0"
-											style={{ width: '110px', borderBottom: '0 none' }}>
+											style={{ width: '110px', borderBottom: '0 none' }}
+										>
 											<div
 												className="avatar"
 												style={{
 													width: '110px',
 													borderRadius: '65px',
 													margin: 'auto',
-												}}>
+												}}
+											>
 												<img
 													alt=""
 													style={{ width: '110px', borderRadius: '65px' }}
@@ -281,13 +286,15 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 									style={{
 										width: 'calc(100% - 240px)',
 										marginLeft: '20px',
-									}}>
+									}}
+								>
 									<FormWizard
 										initialValues={Object.fromEntries(
 											Object.entries(initialValues).filter(([_, v]) => v !== '')
 										)}
 										onSubmit={onSubmit}
-										btnClasses="modal-footer buttons-on-right">
+										btnClasses="modal-footer buttons-on-right"
+									>
 										<FormWizard.Page
 											validate={values => {
 												const errors = {};
@@ -324,7 +331,8 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 													errors.ethnicity = "Enter patient's ethnicity";
 												}
 												return errors;
-											}}>
+											}}
+										>
 											<div className="row">
 												<div className="col-sm">
 													<div className="form-group">
@@ -604,7 +612,8 @@ const PatientForm = ({ patient, closeModal, history, location }) => {
 														"Select next of kin's ethnicity";
 												}
 												return errors;
-											}}>
+											}}
+										>
 											<div className="row">
 												<div className="col-sm">
 													<div className="form-group">

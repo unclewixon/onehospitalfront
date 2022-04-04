@@ -79,14 +79,16 @@ class ModalCreateRiskAssessment extends Component {
 			<div
 				className="onboarding-modal modal fade animated show"
 				role="dialog"
-				style={{ display: 'block' }}>
+				style={{ display: 'block' }}
+			>
 				<div className="modal-dialog modal-lg modal-centered" role="document">
 					<div className="modal-content text-center">
 						<button
 							aria-label="Close"
 							className="close"
 							type="button"
-							onClick={() => this.props.closeModals(false)}>
+							onClick={() => this.props.closeModals(false)}
+						>
 							<span className="os-icon os-icon-close"></span>
 						</button>
 						<div className="onboarding-content with-gradient">
@@ -236,7 +238,8 @@ class ModalCreateRiskAssessment extends Component {
 											<button
 												className="btn btn-primary"
 												disabled={submitting}
-												type="submit">
+												type="submit"
+											>
 												{submitting ? (
 													<img src={waiting} alt="submitting" />
 												) : (
@@ -247,7 +250,8 @@ class ModalCreateRiskAssessment extends Component {
 											<button
 												className="btn btn-secondary ml-2"
 												onClick={() => this.props.closeModals(false)}
-												type="button">
+												type="button"
+											>
 												Cancel
 											</button>
 										</div>

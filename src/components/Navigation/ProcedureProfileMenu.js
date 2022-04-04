@@ -37,7 +37,8 @@ const ProcedureProfileMenu = ({ location }) => {
 				<li className={checkHash(hash, 'vitals') ? 'active' : ''}>
 					<Link
 						to={`${location.pathname}#vitals#Blood Pressure`}
-						className="pointer">
+						className="pointer"
+					>
 						Vitals
 					</Link>
 				</li>

@@ -9,14 +9,16 @@ const ViewEncounter = ({ closeModal, encounter }) => {
 		<div
 			className="onboarding-modal modal fade animated show row"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div className="modal-dialog modal-lg modal-centered">
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={closeModal}>
+						onClick={closeModal}
+					>
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -28,7 +30,8 @@ const ViewEncounter = ({ closeModal, encounter }) => {
 									style={{
 										tableLayout: 'fixed',
 										borderCollapse: 'collapse',
-									}}>
+									}}
+								>
 									<tbody>
 										<tr>
 											<td>
@@ -50,7 +53,8 @@ const ViewEncounter = ({ closeModal, encounter }) => {
 									className="table table-striped text-center"
 									style={{
 										borderCollapse: 'collapse',
-									}}>
+									}}
+								>
 									<tbody>
 										<tr>
 											<td>
@@ -72,7 +76,8 @@ const ViewEncounter = ({ closeModal, encounter }) => {
 									style={{
 										tableLayout: 'fixed',
 										borderCollapse: 'collapse',
-									}}>
+									}}
+								>
 									<tbody>
 										<tr>
 											<td>
@@ -250,7 +255,8 @@ const ViewEncounter = ({ closeModal, encounter }) => {
 														style={{
 															whiteSpace: 'pre-wrap',
 															overflowWrap: 'break-word',
-														}}>
+														}}
+													>
 														{labTest?.Comment}
 													</td>
 
@@ -284,7 +290,8 @@ const ViewEncounter = ({ closeModal, encounter }) => {
 												style={{
 													whiteSpace: 'pre-wrap',
 													overflowWrap: 'break-word',
-												}}>
+												}}
+											>
 												<div
 													dangerouslySetInnerHTML={{
 														__html: encounter?.complaints?.description,
@@ -320,7 +327,8 @@ const ViewEncounter = ({ closeModal, encounter }) => {
 												style={{
 													whiteSpace: 'pre-wrap',
 													overflowWrap: 'break-word',
-												}}>
+												}}
+											>
 												<div
 													dangerouslySetInnerHTML={{
 														__html: encounter?.instruction?.description,
@@ -356,7 +364,8 @@ const ViewEncounter = ({ closeModal, encounter }) => {
 												style={{
 													whiteSpace: 'pre-wrap',
 													overflowWrap: 'break-word',
-												}}>
+												}}
+											>
 												<div
 													dangerouslySetInnerHTML={{
 														__html: encounter?.treatment_plan?.description,
@@ -390,7 +399,8 @@ const ViewEncounter = ({ closeModal, encounter }) => {
 												style={{
 													whiteSpace: 'pre-wrap',
 													overflowWrap: 'break-word',
-												}}>
+												}}
+											>
 												<div
 													dangerouslySetInnerHTML={{
 														__html: encounter?.patient_history?.description,

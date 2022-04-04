@@ -75,16 +75,19 @@ const ModalViewRooms = ({ closeModal, service, error }) => {
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div
 				className="modal-dialog modal-centered"
-				style={{ maxWidth: '640px' }}>
+				style={{ maxWidth: '640px' }}
+			>
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={closeModal}>
+						onClick={closeModal}
+					>
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -153,7 +156,8 @@ const ModalViewRooms = ({ closeModal, service, error }) => {
 																	setFloor(item.floor);
 																	setRoom(item);
 																	setState('edit');
-																}}>
+																}}
+															>
 																<i className="os-icon os-icon-edit-1" />
 															</a>
 														</Tooltip>

@@ -136,7 +136,8 @@ const Inventory = () => {
 							onClick={() => {
 								setHasSearched(true);
 								filterEntries();
-							}}>
+							}}
+						>
 							<i className="os-icon os-icon-ui-37" />
 							<span>Filter</span>
 						</a>
@@ -147,7 +148,8 @@ const Inventory = () => {
 									setHasSearched(false);
 									setSearch('');
 									await loadDrugs(1, '');
-								}}>
+								}}
+							>
 								<i className="os-icon os-icon-close" />
 							</a>
 						)}
@@ -185,7 +187,8 @@ const Inventory = () => {
 													<Tooltip title="Manage Batches">
 														<a
 															className="secondary"
-															onClick={() => openBatches(item)}>
+															onClick={() => openBatches(item)}
+														>
 															<i className="os-icon os-icon-ui-46 ml-1" />
 														</a>
 													</Tooltip>

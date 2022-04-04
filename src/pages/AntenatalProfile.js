@@ -112,9 +112,7 @@ class AntenatalProfile extends Component {
 			const url = `patient/antenatal/${antenatal.id}/lmp`;
 
 			const lmp = moment(date).format('YYYY-MM-DD');
-			const edd = moment(date)
-				.add(9, 'M')
-				.format('YYYY-MM-DD');
+			const edd = moment(date).add(9, 'M').format('YYYY-MM-DD');
 
 			const rs = await request(url, 'POST', true, { lmp, edd });
 			if (rs.success) {
@@ -143,14 +141,16 @@ class AntenatalProfile extends Component {
 					aria-label="Close"
 					className="close custom-close"
 					type="button"
-					onClick={this.closeProfile}>
+					onClick={this.closeProfile}
+				>
 					<span className="os-icon os-icon-close" />
 				</button>
 				{patient ? (
 					<Fragment>
 						<div
 							className="content-w"
-							style={{ width: 'calc(100% - 18%)', overflow: 'hidden' }}>
+							style={{ width: 'calc(100% - 18%)', overflow: 'hidden' }}
+						>
 							<AntenatalMenu />
 							<div className="content-i">
 								<div className="content-box">

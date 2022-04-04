@@ -93,16 +93,19 @@ const ModalSelectServices = ({ slug, updatePackage, closeModal, item }) => {
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div
 				className="modal-dialog modal-centered"
-				style={{ maxWidth: '1024px' }}>
+				style={{ maxWidth: '1024px' }}
+			>
 				<div className="modal-content">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={closeModal}>
+						onClick={closeModal}
+					>
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -157,7 +160,8 @@ const ModalSelectServices = ({ slug, updatePackage, closeModal, item }) => {
 									<button
 										className="btn btn-primary"
 										disabled={submitting}
-										onClick={save}>
+										onClick={save}
+									>
 										{submitting ? (
 											<img src={waiting} alt="submitting" />
 										) : (

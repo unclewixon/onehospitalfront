@@ -22,10 +22,12 @@ const CafeteriaRecipt = ({
 			onHide={() => onModalClick(null)}
 			dialogClassName="modal-90w"
 			aria-labelledby="example-custom-modal-styling-title"
-			className="onboarding-modal modal fade animated show">
+			className="onboarding-modal modal fade animated show"
+		>
 			<Modal.Header
 				closeButton
-				onClick={() => onModalClick(null)}></Modal.Header>
+				onClick={() => onModalClick(null)}
+			></Modal.Header>
 			<Modal.Body>
 				<div id="divToPrint" ref={receiptRef}>
 					<center className="reciept-header">
@@ -56,14 +58,16 @@ const CafeteriaRecipt = ({
 								borderTop: '3px solid #eee',
 								paddingtop: '20px',
 								marginBottom: '20px',
-							}}>
+							}}
+						>
 							<tbody>
 								<tr>
 									<td
 										style={{
 											fontsize: '12px',
 											padding: '5px 0px',
-										}}>
+										}}
+									>
 										{moment(Date.now()).format('DD-MM-YYYY')}
 									</td>
 									<td
@@ -72,7 +76,8 @@ const CafeteriaRecipt = ({
 											fontWeight: 'bold',
 											padding: '5px 0px 5px 40px',
 											fontSize: '12px',
-										}}>
+										}}
+									>
 										{moment(new Date().getTime()).format('h:mm a')}
 									</td>
 								</tr>
@@ -81,7 +86,8 @@ const CafeteriaRecipt = ({
 										style={{
 											fontsize: '12px',
 											padding: '5px 0px',
-										}}>
+										}}
+									>
 										Sold To
 									</td>
 									<td
@@ -90,7 +96,8 @@ const CafeteriaRecipt = ({
 											fontWeight: 'bold',
 											padding: '5px 0px 5px 40px',
 											fontSize: '12px',
-										}}>
+										}}
+									>
 										{customer}
 									</td>
 								</tr>
@@ -99,7 +106,8 @@ const CafeteriaRecipt = ({
 										style={{
 											fontsize: '12px',
 											padding: '5px 0px',
-										}}>
+										}}
+									>
 										Payment Method
 									</td>
 									<td
@@ -108,7 +116,8 @@ const CafeteriaRecipt = ({
 											fontWeight: 'bold',
 											padding: '5px 0px 5px 40px',
 											fontSize: '12px',
-										}}>
+										}}
+									>
 										{type}
 									</td>
 								</tr>
@@ -117,7 +126,8 @@ const CafeteriaRecipt = ({
 										style={{
 											fontsize: '12px',
 											padding: '5px 0px',
-										}}>
+										}}
+									>
 										Cashier:
 									</td>
 									<td
@@ -126,7 +136,8 @@ const CafeteriaRecipt = ({
 											fontWeight: 'bold',
 											padding: '5px 0px 5px 40px',
 											fontSize: '12px',
-										}}>
+										}}
+									>
 										Logged in Cashier
 									</td>
 								</tr>
@@ -207,7 +218,8 @@ const CafeteriaRecipt = ({
 					<button
 						onClick={handlePrint}
 						className="btn btn-primary btn-sm mx-3"
-						type="submit">
+						type="submit"
+					>
 						<i className="icon-feather-printer"></i>
 					</button>
 				</div>

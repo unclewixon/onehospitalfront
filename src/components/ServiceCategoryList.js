@@ -236,7 +236,8 @@ const ServiceCategoryList = ({ loaded, setLoaded }) => {
 								<button
 									className={
 										working ? 'btn btn-primary disabled' : 'btn btn-primary'
-									}>
+									}
+								>
 									{working ? (
 										<img src={waiting} alt="submitting" />
 									) : (
@@ -249,13 +250,15 @@ const ServiceCategoryList = ({ loaded, setLoaded }) => {
 									<button
 										className="btn btn-secondary"
 										disabled={working}
-										onClick={cancelEditButton}>
+										onClick={cancelEditButton}
+									>
 										<span>cancel</span>
 									</button>
 									<button
 										className={`btn btn-primary 
 											${working ? 'disabled' : ''}`}
-										disabled={working}>
+										disabled={working}
+									>
 										{working ? (
 											<img src={waiting} alt="submitting" />
 										) : (

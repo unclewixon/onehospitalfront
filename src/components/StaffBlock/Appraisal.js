@@ -93,7 +93,8 @@ export class Appraisal extends Component {
 																className="secondary"
 																onClick={() => {
 																	this.createAppraisal(appraisal, 'self');
-																}}>
+																}}
+															>
 																<i className="os-icon os-icon-folder-plus" />
 															</a>
 														</Tooltip>
@@ -102,7 +103,8 @@ export class Appraisal extends Component {
 																className="secondary"
 																onClick={() => {
 																	this.createAppraisal(appraisal, 'line');
-																}}>
+																}}
+															>
 																<i className="os-icon os-icon-layers" />
 															</a>
 														</Tooltip>
@@ -122,7 +124,8 @@ export class Appraisal extends Component {
 																className="secondary"
 																onClick={() => {
 																	this.createAppraisal(appraisal, 'staff');
-																}}>
+																}}
+															>
 																<i className="os-icon os-icon-folder-plus" />
 															</a>
 														</Tooltip>

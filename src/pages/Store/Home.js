@@ -40,7 +40,8 @@ const Home = ({ match, location }) => {
 								<div className="element-actions">
 									<a
 										className="btn btn-primary btn-sm text-white"
-										onClick={() => addItem()}>
+										onClick={() => addItem()}
+									>
 										<i className="os-icon os-icon-ui-22" />
 										<span>Add Item</span>
 									</a>

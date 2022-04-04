@@ -96,7 +96,8 @@ const StaffList = () => {
 							<div className="element-actions">
 								<a
 									className="btn btn-primary btn-sm text-white"
-									onClick={() => doCreateStaff()}>
+									onClick={() => doCreateStaff()}
+								>
 									<i className="os-icon os-icon-ui-22" />
 									<span>Create New Staff</span>
 								</a>
@@ -126,7 +127,8 @@ const StaffList = () => {
 											id="status"
 											className="form-control"
 											name="status"
-											onChange={e => setStatus(e.target.value)}>
+											onChange={e => setStatus(e.target.value)}
+										>
 											<option value="">All</option>
 											<option value="enabled">Enabled</option>
 											<option value="disabled">Disabled</option>
@@ -135,7 +137,8 @@ const StaffList = () => {
 									<div className="form-group col-md-3 mt-4">
 										<div
 											className="btn btn-sm btn-primary btn-upper text-white filter-btn"
-											onClick={doFilter}>
+											onClick={doFilter}
+										>
 											<i className="os-icon os-icon-ui-37" />
 											<span>
 												{filtering ? (

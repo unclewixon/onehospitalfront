@@ -12,14 +12,16 @@ const UploadDocument = ({ onHide, uploading, doUpload, documentType }) => {
 		<div
 			className="onboarding-modal fade animated show"
 			role="dialog"
-			style={{ width: '300px' }}>
+			style={{ width: '300px' }}
+		>
 			<div className="modal-centered" role="document">
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={() => onHide()}>
+						onClick={() => onHide()}
+					>
 						<span className="os-icon os-icon-close"></span>
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -32,7 +34,8 @@ const UploadDocument = ({ onHide, uploading, doUpload, documentType }) => {
 											<select
 												id="category"
 												className="form-control"
-												onChange={e => setDocumentType(e.target.value)}>
+												onChange={e => setDocumentType(e.target.value)}
+											>
 												<option>Select Document Type</option>
 												{documentType.map((doc, i) => {
 													return (
@@ -62,7 +65,8 @@ const UploadDocument = ({ onHide, uploading, doUpload, documentType }) => {
 												className="btn btn-outline-secondary ml-4"
 												onClick={() => {
 													uploadAttachment.click();
-												}}>
+												}}
+											>
 												<i className="os-icon os-icon-ui-51" />
 												<span>Select File</span>
 											</a>
@@ -74,7 +78,8 @@ const UploadDocument = ({ onHide, uploading, doUpload, documentType }) => {
 										<button
 											className="btn btn-primary"
 											disabled={uploading}
-											type="submit">
+											type="submit"
+										>
 											{uploading ? (
 												<img src={waiting} alt="submitting" />
 											) : (

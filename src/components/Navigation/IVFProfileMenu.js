@@ -19,7 +19,8 @@ const IVFProfileMenu = ({ location }) => {
 						checkHash(hash, 'lab') || checkHash(hash, 'lab-request')
 							? 'active'
 							: ''
-					}>
+					}
+				>
 					<Link to={`${location.pathname}#lab`} className="pointer">
 						Lab
 					</Link>
@@ -27,7 +28,8 @@ const IVFProfileMenu = ({ location }) => {
 				<li className={checkHash(hash, 'regulation-chart') ? 'active' : ''}>
 					<Link
 						to={`${location.pathname}#regulation-chart`}
-						className="pointer">
+						className="pointer"
+					>
 						Down Regulation Chart
 					</Link>
 				</li>

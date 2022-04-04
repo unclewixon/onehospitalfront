@@ -149,12 +149,14 @@ const Specialization = () => {
 																<div className="pi-settings os-dropdown-trigger">
 																	<i
 																		className="os-icon os-icon-ui-49"
-																		onClick={() => onClickEdit(item)}></i>
+																		onClick={() => onClickEdit(item)}
+																	></i>
 																</div>
 																<div className="pi-settings os-dropdown-trigger text-danger">
 																	<i
 																		className="os-icon os-icon-ui-15"
-																		onClick={() => confirmDelete(item)}></i>
+																		onClick={() => confirmDelete(item)}
+																	></i>
 																</div>
 															</div>
 															<div className="pi-body custom-padd">
@@ -171,7 +173,8 @@ const Specialization = () => {
 									{specializations.length === 0 && (
 										<div
 											className="alert alert-info text-center"
-											style={{ width: '100%' }}>
+											style={{ width: '100%' }}
+										>
 											No specializations
 										</div>
 									)}
@@ -182,9 +185,8 @@ const Specialization = () => {
 							<div className="element-wrapper">
 								<div className="element-box">
 									<form
-										onSubmit={
-											edit ? onEditSpecialization : onAddSpecialization
-										}>
+										onSubmit={edit ? onEditSpecialization : onAddSpecialization}
+									>
 										<h5 className="element-box-header">
 											{edit ? 'Edit Specialization' : 'Add New'}
 										</h5>
@@ -216,12 +218,14 @@ const Specialization = () => {
 												<>
 													<button
 														className="btn btn-secondary ml-3"
-														onClick={cancelEditButton}>
+														onClick={cancelEditButton}
+													>
 														<span>cancel</span>
 													</button>
 													<button
 														className="btn btn-primary"
-														disabled={loading}>
+														disabled={loading}
+													>
 														{loading ? (
 															<img src={waiting} alt="submitting" />
 														) : (

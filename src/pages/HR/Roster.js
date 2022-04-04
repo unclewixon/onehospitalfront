@@ -188,7 +188,8 @@ class Roster extends Component {
 										overlayClassName="download-roster"
 										trigger="click"
 										visible={download_visible}
-										onVisibleChange={this.onDownloadVisibleChange}>
+										onVisibleChange={this.onDownloadVisibleChange}
+									>
 										<a className="btn btn-success btn-sm text-white">
 											<i className="os-icon os-icon-download" />
 											<span>Download Template</span>
@@ -206,7 +207,8 @@ class Roster extends Component {
 										overlayClassName="upload-roster"
 										trigger="click"
 										visible={upload_visible}
-										onVisibleChange={this.handleUploadVisibleChange}>
+										onVisibleChange={this.handleUploadVisibleChange}
+									>
 										<a className="btn btn-sm btn-link btn-upper mr-4 d-lg-inline-block">
 											<i className="os-icon os-icon-upload" />
 											<span>Upload Roster</span>
@@ -227,7 +229,8 @@ class Roster extends Component {
 														id="department"
 														className="form-control-sm"
 														onChange={this.onChange}
-														value={department_id}>
+														value={department_id}
+													>
 														{departments.map((dept, i) => {
 															return (
 																<option key={i} value={dept.id}>
@@ -240,7 +243,8 @@ class Roster extends Component {
 												<div className="form-group mr-4">
 													<a
 														className="btn btn-sm btn-primary btn-upper text-white"
-														onClick={this.doFilter}>
+														onClick={this.doFilter}
+													>
 														<i className="os-icon os-icon-ui-37" />
 														<span>
 															{filtering ? (

@@ -61,7 +61,8 @@ const BSA = ({ vitals, task }) => {
 						width={640}
 						height={300}
 						data={data}
-						margin={{ top: 5, right: 20, bottom: 5, left: 30 }}>
+						margin={{ top: 5, right: 20, bottom: 5, left: 30 }}
+					>
 						<Line
 							type="monotone"
 							dataKey="item"

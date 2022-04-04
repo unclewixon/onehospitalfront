@@ -95,8 +95,8 @@ const LabourPatients = () => {
 
 	const showProfile = patient => {
 		if (patient.is_active) {
-		const info = { patient, type: 'patient' };
-		dispatch(toggleProfile(true, info));
+			const info = { patient, type: 'patient' };
+			dispatch(toggleProfile(true, info));
 		}
 	};
 

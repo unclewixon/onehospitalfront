@@ -85,7 +85,8 @@ const AntenatalAssessment = ({ can_request = true }) => {
 					{can_request && (
 						<a
 							className="btn btn-sm btn-secondary text-white ml-3"
-							onClick={() => newAssessment()}>
+							onClick={() => newAssessment()}
+						>
 							New Assessment
 						</a>
 					)}

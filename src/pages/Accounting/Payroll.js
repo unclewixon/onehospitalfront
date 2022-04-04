@@ -101,7 +101,8 @@ class Payroll extends Component {
 								<div className="element-actions">
 									<a
 										className="btn btn-success btn-sm text-white"
-										onClick={this.doPreparePayroll}>
+										onClick={this.doPreparePayroll}
+									>
 										<i className="os-icon os-icon-grid-10" />
 										<span>Prepare Payroll</span>
 									</a>
@@ -120,7 +121,8 @@ class Payroll extends Component {
 														id="department"
 														className="form-control-sm"
 														onChange={e => this.onChange(e, 'department_id')}
-														value={department_id}>
+														value={department_id}
+													>
 														{departments.map((dept, i) => {
 															return (
 																<option key={i} value={dept.id}>
@@ -135,7 +137,8 @@ class Payroll extends Component {
 													<select
 														className="form-control-sm"
 														onChange={e => this.onChange(e, 'month')}
-														value={month}>
+														value={month}
+													>
 														{months.map((month, i) => {
 															return (
 																<option key={i} value={padLeft(i + 1, 2, '0')}>
@@ -150,7 +153,8 @@ class Payroll extends Component {
 													<select
 														className="form-control-sm"
 														onChange={e => this.onChange(e, 'year')}
-														value={year}>
+														value={year}
+													>
 														{years.map((year, i) => {
 															return (
 																<option key={i} value={year}>
@@ -163,7 +167,8 @@ class Payroll extends Component {
 												<div className="form-group">
 													<a
 														className="btn btn-sm btn-primary btn-upper text-white"
-														onClick={this.doFilter}>
+														onClick={this.doFilter}
+													>
 														<i className="os-icon os-icon-ui-37" />
 														<span>
 															{filtering ? (

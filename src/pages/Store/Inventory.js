@@ -120,7 +120,8 @@ const Inventory = () => {
 							onClick={() => {
 								setHasSearched(true);
 								filterEntries();
-							}}>
+							}}
+						>
 							<i className="os-icon os-icon-ui-37" />
 							<span>Filter</span>
 						</a>
@@ -131,7 +132,8 @@ const Inventory = () => {
 									setHasSearched(false);
 									setSearch('');
 									await loadItems(1, '');
-								}}>
+								}}
+							>
 								<i className="os-icon os-icon-close" />
 							</a>
 						)}
@@ -170,7 +172,8 @@ const Inventory = () => {
 													<span
 														className={`badge ${
 															item.quantity < 10 ? lowBadge : 'badge-success'
-														}`}>
+														}`}
+													>
 														{item.quantity < 10 ? low : 'good'}
 													</span>
 												</td>
@@ -183,7 +186,8 @@ const Inventory = () => {
 													<Tooltip title="Update Quantity">
 														<a
 															className="secondary"
-															onClick={() => updateQuantity(item)}>
+															onClick={() => updateQuantity(item)}
+														>
 															<i className="os-icon os-icon-plus-circle" />
 														</a>
 													</Tooltip>

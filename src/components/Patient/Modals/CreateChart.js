@@ -72,14 +72,16 @@ const CreateChart = ({ closeModal, taskItem }) => {
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div className="modal-dialog modal-centered">
 				<div className="modal-content text-center">
 					<button
 						aria-label="Close"
 						className="close"
 						type="button"
-						onClick={() => closeModal()}>
+						onClick={() => closeModal()}
+					>
 						<span className="os-icon os-icon-close" />
 					</button>
 					<div className="onboarding-content with-gradient">
@@ -96,7 +98,8 @@ const CreateChart = ({ closeModal, taskItem }) => {
 												value={type}
 												onChange={e => {
 													setType(e.target.value);
-												}}>
+												}}
+											>
 												<option value="input">Input</option>
 												<option value="output">Output</option>
 											</select>
@@ -113,7 +116,8 @@ const CreateChart = ({ closeModal, taskItem }) => {
 												value={fluidRoute}
 												onChange={e => {
 													setFluidRoute(e.target.value);
-												}}>
+												}}
+											>
 												<option value="">Select Route</option>
 												{entries
 													.filter(e => e.type === type)
@@ -149,7 +153,8 @@ const CreateChart = ({ closeModal, taskItem }) => {
 												className={`btn btn-primary ${
 													submitting ? 'disabled' : ''
 												}`}
-												style={{ marginTop: '6px' }}>
+												style={{ marginTop: '6px' }}
+											>
 												{submitting ? (
 													<img src={waiting} alt="submitting" />
 												) : (

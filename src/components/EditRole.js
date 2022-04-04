@@ -68,13 +68,15 @@ class EditRole extends Component {
 						<button
 							className="btn btn-secondary ml-3"
 							type="button"
-							onClick={() => cancelEditRole(null)}>
+							onClick={() => cancelEditRole(null)}
+						>
 							cancel
 						</button>
 						<button
 							className="btn btn-primary"
 							disabled={submitting}
-							type="submit">
+							type="submit"
+						>
 							{submitting ? <img src={waiting} alt="submitting" /> : 'save'}
 						</button>
 					</div>

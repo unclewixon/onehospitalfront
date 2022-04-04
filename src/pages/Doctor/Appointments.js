@@ -145,7 +145,8 @@ const Appointments = () => {
 					<div>
 						<button
 							className="btn btn-sm btn-primary btn-upper text-white filter-btn"
-							onClick={doFilter}>
+							onClick={doFilter}
+						>
 							<i className="os-icon os-icon-ui-37" />
 							<span>
 								{filtering ? <img src={waiting} alt="submitting" /> : 'Filter'}

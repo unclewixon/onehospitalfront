@@ -32,7 +32,8 @@ const ModalServiceDetails = ({ closeModal, transaction }) => {
 		<div
 			className="onboarding-modal modal fade animated show"
 			role="dialog"
-			style={{ display: 'block' }}>
+			style={{ display: 'block' }}
+		>
 			<div className="modal-dialog modal-md modal-centered">
 				<div className="modal-content text-center">
 					<button className="close" type="button" onClick={closeModal}>
