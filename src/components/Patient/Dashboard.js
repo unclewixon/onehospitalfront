@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import VisitNotesTable from './VisitNotesTable';
-import VisitSummaryTable from './VisitSummaryTable';
+import VisitSummary from './VisitSummary';
 import PatientBills from './PatientBills';
 import AppointmentHistory from './AppointmentHistory';
 import CreateNote from '../Modals/CreateNote';
@@ -85,7 +85,7 @@ const Dashboard = () => {
 					</div>
 					<div className="tab-content">
 						{tab === 'visitNotes' && <VisitNotesTable />}
-						{tab === 'visitSummary' && <VisitSummaryTable />}
+						{tab === 'visitSummary' && <VisitSummary />}
 						{tab === 'appointment' && <AppointmentHistory />}
 						{tab === 'billing' && <PatientBills />}
 					</div>

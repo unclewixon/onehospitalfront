@@ -22,6 +22,7 @@ import AdminMenu from './AdminMenu';
 import SettingsMenu from './SettingsMenu';
 import RecordsMenu from './RecordsMenu';
 import AccountingMenu from './AccountingMenu';
+import { APP_NAME } from '../../services/constants';
 
 class MainMenu extends Component {
 	menu_ref = null;
@@ -75,7 +76,7 @@ class MainMenu extends Component {
 				<div className="logo-w">
 					<a className="logo">
 						<div className="logo-element" />
-						<div className="logo-label">Deda Hospital</div>
+						<div className="logo-label">{APP_NAME}</div>
 					</a>
 				</div>
 				<div className="logged-user-w avatar-inline">

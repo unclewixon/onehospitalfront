@@ -65,18 +65,11 @@ class PatientEquipment extends Component {
 					) : (
 						<div className="">
 							<div className="table-responsive">
-								<div
-									id="dataTable1_wrapper"
-									className="dataTables_wrapper container-fluid dt-bootstrap4"
-								>
+								<div className="dataTables_wrapper container-fluid dt-bootstrap4">
 									<div className="row">
 										<div className="col-sm-12">
 											<table
-												id="dataTable1"
-												width="100%"
 												className="table table-striped table-lightfont dataTable"
-												role="grid"
-												aria-describedby="dataTable1_info"
 												style={{ width: '100%' }}
 											>
 												<thead style={{ borderCollapse: 'collapse' }}>

@@ -9,7 +9,7 @@ import Pagination from 'antd/lib/pagination';
 import { notifyError } from '../../services/notify';
 import TableLoading from '../../components/TableLoading';
 import { request, itemRender } from '../../services/utilities';
-import { hmoAPI } from '../../services/constants';
+import { APP_NAME, hmoAPI } from '../../services/constants';
 import { startBlock, stopBlock } from '../../actions/redux-block';
 import ModalHmoCompany from '../../components/Modals/ModalHmoCompany';
 
@@ -178,7 +178,7 @@ const HmoCompany = () => {
 																			<i className="os-icon os-icon-edit-1" />
 																		</a>
 																	</Tooltip>
-																	{hmo.name !== 'Deda Hospital' && (
+																	{hmo.name !== APP_NAME && (
 																		<Tooltip title="Delete">
 																			<a
 																				className="danger"

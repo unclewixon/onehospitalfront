@@ -7,6 +7,7 @@ import {
 	staffname,
 	formatCurrency,
 } from '../../services/utilities';
+import { APP_NAME } from '../../services/constants';
 
 const translator = new T2W('EN_US');
 
@@ -67,7 +68,7 @@ const ModalPrintTransaction = ({ transaction, closeModal }) => {
 									textAlign: 'center',
 								}}
 							>
-								DEDA HOSPITAL
+								{APP_NAME}
 							</div>
 							<div style={{ textAlign: 'center', fontSize: '12px' }}>
 								Plot 1847, Cadastal Zone B07, Katampe Behind ABC Cargo, Abuja
