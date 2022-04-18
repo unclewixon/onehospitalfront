@@ -71,7 +71,7 @@ const Doctor = ({ match }) => {
 			notifyError('Error selecting consulting room');
 		}
 	};
-
+	console.log(match);
 	return (
 		<div className="content-i">
 			<div className="content-box">

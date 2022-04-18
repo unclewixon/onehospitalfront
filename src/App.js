@@ -60,6 +60,8 @@ const MyAccount = lazy(() => import('./pages/MyAccount/Home'));
 const Doctor = lazy(() => import('./pages/Doctor/Home'));
 const Records = lazy(() => import('./pages/Records/Home'));
 const Accounting = lazy(() => import('./pages/Accounting/Home'));
+const CallCenter = lazy(() => import('./pages/CallCenter/Home'));
+const UpdateCenter = lazy(() => import('./pages/UpdateCenter/Home'));
 
 const storage = new SSRStorage();
 
@@ -232,6 +234,15 @@ class App extends Component {
 														<Switch>
 															<Route path="/doctor" component={Doctor} />
 															<Route path="/front-desk" component={FrontDesk} />
+															<Route
+																path="/call-center"
+																component={CallCenter}
+															/>
+															<Route
+																path="/update-center"
+																component={UpdateCenter}
+															/>
+
 															<Route path="/nurse" component={Nurse} />
 															<Route path="/pharmacy" component={Pharmacy} />
 															<Route path="/procedure" component={Procedure} />

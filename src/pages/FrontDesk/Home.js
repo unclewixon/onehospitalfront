@@ -17,7 +17,7 @@ const Home = ({ match }) => {
 							<Switch>
 								<Route
 									exact
-									path={`${match.url}/appointments/queue`}
+									path={`/front-desk/appointments/queue`}
 									component={Appointments}
 								/>
 								<Route

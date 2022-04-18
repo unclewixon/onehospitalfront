@@ -22,7 +22,9 @@ import AdminMenu from './AdminMenu';
 import SettingsMenu from './SettingsMenu';
 import RecordsMenu from './RecordsMenu';
 import AccountingMenu from './AccountingMenu';
+import CallCenterMenu from './CallCenterMenu';
 import { APP_NAME } from '../../services/constants';
+import UpdatedCenter from './UpdatedCenter';
 
 class MainMenu extends Component {
 	menu_ref = null;
@@ -104,6 +106,9 @@ class MainMenu extends Component {
 				</div> */}
 				<ul className="main-menu" ref={ref => (this.menu_list = ref)}>
 					{role === 'front-desk' && <FrontDeskMenu />}
+					{role === 'front-desk' && <CallCenterMenu />}
+					{role === 'front-desk' && <UpdatedCenter />}
+
 					{(role === 'lab-manager' ||
 						role === 'lab-supervisor' ||
 						role === 'lab-user') && <ClinicalLabMenu />}

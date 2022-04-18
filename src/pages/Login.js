@@ -43,7 +43,7 @@ const validate = values => {
 };
 
 // prettier-ignore
-const renderTextInput = ({input, label, type, id, placeholder, icon, meta: { touched, error }}) => (
+const renderTextInput = ({ input, label, type, id, placeholder, icon, meta: { touched, error } }) => (
 	<div
 		className={`form-group ${touched &&
 			(error ? 'has-error has-danger' : '')}`}>
@@ -97,6 +97,7 @@ const Login = ({ location, history, error, handleSubmit }) => {
 			if (rs && rs.token) {
 				try {
 					const jwt = `Bearer ${rs.token}`;
+					console.log(jwt);
 					let [rs_depts, rs_roles, rs_specializations] = await Promise.all([
 						axiosFetch(`${API_URI}/${departmentAPI}`, jwt),
 						axiosFetch(`${API_URI}/${rolesAPI}`, jwt),
